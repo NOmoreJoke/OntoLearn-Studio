@@ -6,8 +6,8 @@
 - 非目标：完整映射/推理/行为/沙盘业务、v2任务协议、CSP、模型网关、pySHACL；Q5 未定，无容量达标线。
 - 依赖：无前置实施依赖；已读取 PRD FR-006/304/604/700–705/804/1000、附录 C/D/E/G 和采纳计划。
 - 仓库：/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio。origin https://github.com/NOmoreJoke/OntoLearn-Studio.git。
-- 分支：feature/I01-storage-invalidation，base：e628f5e7b6c09e10e15644552a6171c4a9a3072e，head：6d8e4b3021b368661247c03c47f01e4d32ebf6e1。
-- 阶段：Round 1双方已完成，正在同feature修复及Round 2验证；下一候选尚未冻结。最近fetch时origin/develop仍为base。
+- 分支：feature/I01-storage-invalidation，base：e628f5e7b6c09e10e15644552a6171c4a9a3072e，head：3e787fb7f8923a0848c173215af2747861e4b35a。
+- 阶段：Round 2双方已结束并明确通过；对照原S1门槛主动补齐保留问题，正在Round 3验证，尚未冻结新head。最近fetch时origin/develop仍为base。
 - 原有文件：61 项逐个 SHA-256 与外部初始快照一致，均非本次实现，不修改或暂存。来源清单保存在父目录 iteration-control/2026-10-19。必要输入逐字副本及哈希在 docs/iterations/I01/inputs，供远端重现。
 - 验证及独立agent已完成，详见下文最终证据；指定第三方Round 1已完成，修复及最终内部复核完成；待Round 2新任务。
 - push / PR / merge / origin/develop 核验：未执行，双审前禁止。
@@ -88,3 +88,27 @@ Goal工具当前仍返回blocked（工具不支持设置active/resume）；用�
 - 新版package:dir exit 0；实际app-resource引擎经verify-i01.py检查开发/包内两档各三次，共12条同样例测量。health、v2失效策略、许可证资源及本机动态链接验证通过；原始证据独立保存 evidence/round-2，首轮证据保留。Windows不可用resource和health惰性导入通过本机隔离进程模拟，实际Windows CI仍待远端，未宣称已跨平台实测。
 - fetch确认origin/develop仍e628f5e7b6c09e10e15644552a6171c4a9a3072e；61项既有文件与4组输入原件/副本逐项SHA-256一致。
 - 本次恢复收到“已解锁”后，再调用computer use时Mac再次锁定；已请求手动解锁并保持唤醒。新一轮双审尚未创建，不沿用首轮任何通过。先完成本地候选冻结；无push/PR/merge。
+
+## Round 2 候选冻结
+
+base e628f5e7b6c09e10e15644552a6171c4a9a3072e → head 3e787fb7f8923a0848c173215af2747861e4b35a。本地提交已完成，无push。全部实现/测试/配置/依赖/验收均在该提交中；仅后续流程证据可追加。新增提交37项自身文件，61项既有文件无暂存交集且哈希一致。独立git archive验证12项归档来源通过，与工作区13项的差异来自已保护的原有未提交manifest，未混入I01。
+
+Round 1通过不沿用；Round 2任务尚未创建，当前等待Mac解锁。
+
+## Round 2 UI 实际启动（2026-10-20 05:48 Asia/Shanghai）
+
+用户再次明确“已解锁”，computer use恢复。ZCode经原生目录选择器重新绑定完整仓库路径，新空白任务UI GLM-5.3/最高；任务标识 I01-R2-ZCode-GLM53-20261020-0548，已开始固定SHA/分支只读核验，逐次仅授权只读命令。MiniMax新空白任务侧栏完整路径、feature分支、M3.1-Flash/xhigh均重新核验；标识 I01-R2-MiniMax-M31Flash-20261020-0548，UI标题“审查 I01 Round 2 存储失效迭代并输出报告”，已运行固定diff核验。
+
+两任务同一e628f5e→3e787fb完整范围与完整需求/验收，允许阅读历史17条意见及processing，禁止读取另一模型本轮报告；各自输出 round-2/zcode-glm53.md、minimax-m31flash.md。未预设结论，当前不能登记通过。实现保持冻结，无push/PR/merge。Goal工具仍blocked，恢复授权及实际推进已记录，不新建替代Goal。
+
+## Round 2 正式收尾 / Round 3 再补强
+
+ZCode“ I01 Round 2 存储失效spike对抗性审查”19分30秒完成、GLM-5.3/最高，MiniMax“审查 I01 Round 2 存储失效迭代并输出报告”47分50秒完成、M3.1-Flash/xhigh。UI实际终态（发送disabled、无停止生成）与两份完整报告均已核验；双方对3e787fb明确通过，两首轮阻断关闭。原报告保留，SHA及全量新意见处理在round-2/processing.md。未向仍在运行的另一任务披露本轮结论。
+
+但原S1退出2/6要求所有权可定位与缺失输入诚实，本会话选择先修M-01/N-02及关联文档/测试再新候选双审，不沿用本轮通过、不跳过原验收。保留事实ID冲突定位与项目快照集中校验已补，167项专项曾通过，新增旧config为null两项正在运行；内部独立复核已再次请求。下轮证据独立round-3，旧证据保留。无push/PR/merge，不启动I02；origin/develop最近fetch仍e628f5e。
+
+## Round 3 最终内部复核与验证
+
+集中项目快照校验补强到嵌套存储记录后，独立agent最终只读结论通过，187项S1专项独立通过（5.43s）。完整check已通过198项Python（187S1+11协议）与4项TS；verify:sources/e2e后续输出和实际package/probe待本轮最终命令结束后登记。61项既有文件及4组冻结输入原件/副本再次逐项SHA-256一致。当前head仍3e787fb，新实现未冻结；没有push/PR/merge。
+
+Round 3最终命令已全部exit 0：check 198项Python/4TS、verify:sources 13项、e2e 1项、实际package:dir，以及app-resource引擎开发/包内两档各三次12条probe；health、v2规则与许可证校验通过，引擎目录25,123,766字节。原始证据独立evidence/round-3；JSON仅格式整理，不改原始数值。当前准备本地提交冻结，不代表双审或Windows CI已通过。

@@ -13,7 +13,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from uuid import uuid4
 
-from ontolearn_engine.invalidation import RULES, can_publish_current, family, reasons
+from ontolearn_engine.invalidation import CODES, RULES, can_publish_current, family, reasons
 from ontolearn_engine.rdf_snapshot import iri, term
 
 FORMAT_VERSION = 2
@@ -322,7 +322,12 @@ class Store:
                 ).fetchone()
                 if existing:
                     if existing["owner"] or existing["object"] != fact["object"]:
-                        raise Conflict("Explicit fact edit required; cannot take ownership")
+                        raise Conflict(
+                            "Explicit fact edit required; cannot take ownership: "
+                            f"slot={existing['subject']} {existing['predicate']}, "
+                            f"other={existing['owner'] or 'manual'}, row={existing['source_row']}, "
+                            f"id={existing['id']}"
+                        )
                     continue
                 self._check_slot(project, fact["subject"], fact["predicate"], fact["object"], set())
                 self._db.execute(
@@ -480,18 +485,18 @@ class Store:
         single = predicate in (
             self._single_predicates(project) if single_predicates is None else single_predicates
         )
+        reserved_id = digest([subject, predicate, value])
         for row in self._db.execute(
             "SELECT * FROM facts WHERE project=? AND subject=? AND predicate=?",
             (project, subject, predicate),
         ):
-            if (
-                row["id"] not in excluded
-                and row["object"] is not None
-                and (single or row["object"] == value)
+            if row["id"] not in excluded and (
+                row["id"] == reserved_id
+                or (row["object"] is not None and (single or row["object"] == value))
             ):
                 raise Conflict(
                     f"Ownership conflict: slot={subject} {predicate}, "
-                    f"other={row['owner'] or 'manual'}, row={row['source_row']}"
+                    f"other={row['owner'] or 'manual'}, row={row['source_row']}, id={row['id']}"
                 )
 
     def _replace_mapping(self, project: str, mapping: dict) -> bool:
@@ -611,6 +616,122 @@ class Store:
             raise ValueError("Snapshot integrity failure")
         return payload
 
+    def _project_snapshot(self, identity: str, project: str) -> dict:
+        """Validate storage shape; round evidence is not a formal project input."""
+        snap = self.load_snapshot(identity)
+        if not isinstance(snap, dict) or not isinstance(snap.get("project"), str):
+            raise ValueError("Project state snapshot required")
+        if snap["project"] != project:
+            raise Conflict("Cross-project snapshot")
+        revision = snap.get("projectRevision")
+        vector = snap.get("dependencyVector")
+        state = snap.get("state")
+        if (
+            type(revision) is not int
+            or revision < 0
+            or not isinstance(vector, dict)
+            or not isinstance(state, dict)
+            or not isinstance(state.get("definitions"), list)
+            or not isinstance(state.get("facts"), list)
+            or not isinstance(state.get("mappingState"), dict)
+        ):
+            raise ValueError("Project state snapshot required")
+        for key, version in vector.items():
+            family(key)
+            if type(version) is not int or version < 0:
+                raise ValueError("Invalid snapshot dependency version")
+        self._snapshot_state(state)
+        return snap
+
+    @classmethod
+    def _snapshot_state(cls, state: dict) -> None:
+        """Check persisted record shapes, not future business execution semantics."""
+        identities = set()
+        definitions = []
+        for record in state["definitions"]:
+            if (
+                not isinstance(record, dict)
+                or set(record) != {"layer", "id", "payload"}
+                or not isinstance(record["layer"], str)
+                or record["layer"] not in LAYERS
+                or not isinstance(record["id"], str)
+                or not record["id"]
+                or not isinstance(record["payload"], str)
+            ):
+                raise ValueError("Incomplete snapshot definition record")
+            key = (record["layer"], record["id"])
+            if key in identities:
+                raise ValueError("Duplicate snapshot definition")
+            identities.add(key)
+            value = json.loads(record["payload"])
+            canonical(value)
+            cls._definition(value)
+            definitions.append(value)
+        for value in definitions:
+            for reference in value.get("references", []) if isinstance(value, dict) else []:
+                if (
+                    not isinstance(reference, dict)
+                    or set(reference) != {"layer", "id"}
+                    or not isinstance(reference["layer"], str)
+                    or not isinstance(reference["id"], str)
+                    or (reference["layer"], reference["id"]) not in identities
+                ):
+                    raise ValueError("Incomplete snapshot definition reference")
+        identities = set()
+        for record in state["facts"]:
+            if (
+                not isinstance(record, dict)
+                or set(record)
+                != {"id", "subject", "predicate", "object", "owner", "source_row", "managed_value"}
+                or not isinstance(record["id"], str)
+                or not record["id"]
+                or record["id"] in identities
+            ):
+                raise ValueError("Incomplete snapshot fact record")
+            identities.add(record["id"])
+            iri(record["subject"])
+            iri(record["predicate"])
+            owner = record["owner"]
+            if owner is None:
+                if any(record[k] is not None for k in ("source_row", "managed_value")):
+                    raise ValueError("Invalid snapshot manual ownership")
+                values = [record["object"]]
+            else:
+                if not all(
+                    isinstance(record[k], str) and record[k] for k in ("owner", "source_row")
+                ):
+                    raise ValueError("Incomplete snapshot mapping ownership")
+                values = [record["managed_value"]]
+                if record["object"] is not None:
+                    values.append(record["object"])
+            for value in values:
+                if not isinstance(value, str) or term(value).n3() != value:
+                    raise ValueError("Invalid snapshot RDF object")
+            # ID stays bound to the original statement across edits and tombstones.
+        for owner, status in state["mappingState"].items():
+            if (
+                not isinstance(owner, str)
+                or not owner
+                or not isinstance(status, dict)
+                or set(status) != {"generatedVersion", "stale"}
+                or type(status["generatedVersion"]) is not int
+                or status["generatedVersion"] < -1
+                or not isinstance(status["stale"], list)
+            ):
+                raise ValueError("Incomplete snapshot mapping state")
+            for reason in status["stale"]:
+                if (
+                    not isinstance(reason, dict)
+                    or set(reason) != {"code", "dependency", "before", "after"}
+                    or reason["code"] != CODES["mapping"]
+                    or reason["dependency"] != f"mapping:{owner}"
+                    or type(reason["before"]) is not int
+                    or reason["before"] < -1
+                    or type(reason["after"]) is not int
+                    or reason["after"] < 0
+                ):
+                    raise ValueError("Invalid snapshot mapping stale reason")
+
     def publish(
         self,
         project: str,
@@ -622,14 +743,14 @@ class Store:
     ) -> str:
         """Append result evidence, publish current only after in-transaction revalidation."""
         required = set(RULES["implementationCompatibility"]["identityKeys"])
-        if set(implementation) != required or not all(
-            isinstance(value, str) and value for value in implementation.values()
+        if (
+            not isinstance(implementation, dict)
+            or set(implementation) != required
+            or not all(isinstance(value, str) and value for value in implementation.values())
         ):
             raise ValueError("Complete execution provenance required")
         with self._transaction():
-            snap = self.load_snapshot(snapshot)
-            if snap["project"] != project:
-                raise Conflict("Cross-project snapshot")
+            snap = self._project_snapshot(snapshot, project)
             if not isinstance(dependencies, list) or not dependencies:
                 raise ValueError("At least one registered dependency required")
             for key in dependencies:
@@ -763,8 +884,7 @@ class Store:
         if not isinstance(config, dict) or not isinstance(implementation, dict):
             raise ValueError("Run config and implementation must be objects")
         with self._transaction():
-            if self.load_snapshot(snapshot)["project"] != project:
-                raise Conflict("Cross-project run input")
+            self._project_snapshot(snapshot, project)
             identity = str(uuid4())
             self._db.execute(
                 "INSERT INTO runs VALUES(?,?,?,?,?)",
@@ -786,6 +906,8 @@ class Store:
             raise ValueError("operationId and jobId required")
         if type(number) is not int or not 1 <= number <= 1000:
             raise ValueError("Integer round number must be 1..1000")
+        if not isinstance(state, dict):
+            raise ValueError("Prepared round state must be an object")
         with self._transaction(hook):
             record = self._run(run)
             round_payload = {
@@ -866,11 +988,22 @@ class Store:
         record["terminal"] = dict(terminal) if terminal else None
         record["committedProgress"] = self.progress(run)
         try:
-            self.load_snapshot(record["snapshot"])
+            self._project_snapshot(record["snapshot"], record["project"])
             for r in record["rounds"]:
-                self.load_snapshot(r["snapshot"])
+                saved = self.load_snapshot(r["snapshot"])
+                if (
+                    not isinstance(saved, dict)
+                    or saved.get("project") != record["project"]
+                    or saved.get("run") != run
+                    or type(saved.get("round")) is not int
+                    or saved.get("round") != r["number"]
+                    or not isinstance(saved.get("state"), dict)
+                ):
+                    raise ValueError("Incomplete round evidence")
             config = json.loads(record["config"])
             impl = json.loads(record["implementation"])
+            if not isinstance(config, dict) or not isinstance(impl, dict):
+                raise ValueError("Incomplete run configuration or provenance")
             record["replayable"] = (
                 isinstance(config.get("parameters"), dict)
                 and isinstance(config.get("events"), list)
@@ -886,7 +1019,7 @@ class Store:
                     for key in ("executionSemanticsVersion", "engineVersion", "dependencyLockHash")
                 )
             )
-        except (KeyError, ValueError):
+        except (KeyError, ValueError, Conflict):
             record["replayable"] = False
         return record
 

@@ -24,21 +24,21 @@ SQLite `user_version=2`，格式 1 是本 spike 迁移输入样例，没有发�
 | result_pins                              | 保存报告固定的结果载荷，缓存回收跳过                                                                         |
 | runs / rounds / run_terminal             | 隔离运行输入/配置/实现来源、逐轮完整状态及 operation/job、一次性终态；无正式事实写入                         |
 
-新建事实 ID 是初始三元组规范数组的 SHA-256；对象必须等于 `term(value).n3()`，统一 xsd:string/语言标签及字面量词法后派生身份，非规范别名拒绝提交；显式 `edits={factId:object}` 保持记录身份与映射基线，不能用新增事实暗中接管所有权。`manual` 只新增，`remove` 删除手工事实或为受管事实设置墓碑。映射计划是 `{id,rows:[{row,facts}]}`，由未来业务层预先校验与预览，不能称为 CSV 映射能力已完成。
+新建事实 ID 是初始三元组规范数组的 SHA-256；对象必须等于 `term(value).n3()`，统一 xsd:string/语言标签及字面量词法后派生身份，非规范别名拒绝提交；显式 `edits={factId:object}` 保持记录身份与映射基线：编辑后 ID 仍是初始内容摘要，不再等于当前值摘要；墓碑同样保留初始 ID。新来源既不能占用该保留身份，也不能接管相同有效语句；冲突返回原 owner/source_row/slot/id。不同多值不因其他值的墓碑而被整槽拒绝，不能用新增事实暗中接管所有权。`manual` 只新增，`remove` 删除手工事实或为受管事实设置墓碑。映射计划是 `{id,rows:[{row,facts}]}`，由未来业务层预先校验与预览，不能称为 CSV 映射能力已完成。
 
 所有共享同一事实的多来源支持均拒绝；不同事实的多值关系可并存。单值声明的唯一执行格式是 ontology value 顶层的 `singleValuedPredicates` 绝对 IRI 列表，作用域为全项目并集；`properties.P.single` 等描述字段不被当作执行约束。G-behavior 已显式添加可执行列表。提交时也检查声明与既有事实是否冲突，不能引入相互矛盾的单值状态。人工修改或人工删除（墓碑）的受管记录与 `managed_value` 不符时，重跑停止，保留映射/源行/slot 定位；没有静默恢复或合并接口。恢复路径是一个新的、预览并单独确认的 ChangeSet，通过 `edits={factId:managed_value}` 显式放弃人工值或人工删除，再重新预览/提交映射；存储 API 不冒充已实现确认 UI。整个计划的显式 definition `references` 必须可解析，事实与显式 ontology `triples` 均校验绝对 IRI、规范 RDF 对象和完整三元组形状，引用形状失败也回滚；其他定义 payload 的领域语义不由本 spike 猜测；完整附录 C 业务语义属于后续能力实现。
 
 同一事务包括：基准复验、正式数据、所有权、版本、受影响结果过期、前后快照、operation/job 标记。提交前和事务中取消/异常回滚，提交成功后才收到取消或响应丢失，不能撤销已提交事实；必须另外通过 `marker(project,operation)` 对账；异常本身不能证明事务未提交，提交后投递失败不会返回普通成功值。I03/I04 必须以持久记录协调终态，不盲目重发写入。同 operation/job/计划重试返回原标记，不重复写入；身份重复但内容不同拒绝。
 
-`start_run` 显式绑定项目快照，`commit_round` 接受已由未来 E.2 执行器计算的完整轮次，不实现行为或资源模拟。轮次连续、最大 1–1000、单轮快照及提交标记原子；同 operation/run/round/job/内容重试返回原快照（终态后也只返回既有证据），不同内容或跨运行复用 operation 抛 Conflict。终态后拒绝写轮次。取消保留前轮，`progress` 零轮为 null，其余提供 runId/lastCommittedRound/snapshotRef。新运行必须显式传入快照，不自动续跑。轮次、运行输入和终态有 SQL 不可变触发器；正式提交、快照同样不可改写。
+`start_run` 显式绑定项目状态快照，存储形状必须含非负整数 projectRevision、合法依赖键与非负整数版本向量、definitions/facts 列表和 mappingState 字典；校验还包括定义记录/JSON/显式引用、每条规范事实及其owner/源行/映射基线、映射状态与原因记录的基本存储形状；不按当前对象复算已编辑记录的初始 ID。轮次证据不是项目输入，start_run/publish 均以 ValueError 拒绝，跨项目仍为 Conflict，身份缺失仍为 KeyError。`commit_round` 接受已由未来 E.2 执行器计算的完整轮次，不实现行为或资源模拟。轮次状态须为对象，连续、最大 1–1000、单轮快照及提交标记原子；同 operation/run/round/job/内容重试返回原快照（终态后也只返回既有证据），不同内容或跨运行复用 operation 抛 Conflict。终态后拒绝写轮次。取消保留前轮，`progress` 零轮为 null，其余提供 runId/lastCommittedRound/snapshotRef。新运行必须显式传入快照，不自动续跑。轮次、运行输入和终态有 SQL 不可变触发器；正式提交、快照同样不可改写。
 
 ## 依赖与派生结果
 
 唯一机器规则来源是 `packages/engine/src/ontolearn_engine/invalidation-v2.json`。D.2 前八行对应八类原因，第九行 model 的原因是 null；历史、失败、取消及实现不兼容均不进入 staleReason。原因记录 dependency、before、after，可多原因并存。规则明细及九行正反例见 acceptance.md。
 
-发布结果时在事务内复验依赖，并要求输入快照 projectRevision 等于当前正式 revision；即使领域依赖未变，旧快照迟到也只保留为历史，不覆盖当前指针。读取结果显式区分 current/stale/historical。已有领域结果不因无关元数据或模型配置变化被错误失效；这与“迟到的新发布不得回退快照版本”分别处理。替换推导只替换同业务结果身份的指针，断言与历史不变。仅改模型配置或无关项目元数据不会使领域结果过期。v2 JSON 将 implementationCompatibility 与 publicationPolicy 单列（都不是 staleReason）；当前实现默认隔离不同 engine/semantics/lock；没有未经验证的兼容版本复用。
+发布结果时在事务内复验依赖，并要求输入快照 projectRevision 等于当前正式 revision；即使领域依赖未变，旧快照迟到也只保留为历史，不覆盖当前指针。读取结果显式区分 current/stale/historical。该保守发布策略比仅复验领域依赖更严：即使某 kind 首次发布，只要计算期间正式 revision 被无关提交推进，也仅为历史，该 kind 可能暂时没有 current；必须基于新正式快照再发布。已有领域结果不因无关元数据或模型配置变化被错误失效；这与“迟到的新发布不得回退快照版本”分别处理。替换推导只替换同业务结果身份的指针，断言与历史不变。仅改模型配置或无关项目元数据不会使领域结果过期。v2 JSON 将 implementationCompatibility 与 publicationPolicy 单列（都不是 staleReason）；当前实现默认隔离不同 engine/semantics/lock；没有未经验证的兼容版本复用。
 
-`collect_cache` 只置空未被报告 pin、未作为当前结果的可重建载荷；状态、定义、来源、输入快照仍保留。运行每轮状态在不可变快照中，不属于这类载荷。此 spike 保守保留全部快照，没有快照 GC；用户明确删除运行、产品报告生命周期和存储压缩留待对应业务，不伪称完成 FR-705 全功能。
+`collect_cache` 只置空未被报告 pin、未作为当前结果的可重建载荷；状态、定义、来源、输入快照仍保留。过期而未固定的派生载荷也可被回收，条目、原因、依赖与输入保留，不能承诺过期载荷无限期直接查看；已被报告固定的载荷及运行每轮状态在不可变快照中，不属于这类可回收载荷。此 spike 保守保留全部快照，没有快照 GC；用户明确删除运行、产品报告生命周期和存储压缩留待对应业务，不伪称完成 FR-705 全功能。
 
 ## 迁移与恢复
 
@@ -58,3 +58,11 @@ v0 建立格式 1，再在同一事务升级 v2。v1→v2 增加 mapping_state�
 - 映射替换现为循环外预取 owner IDs 与项目单值集合，减少重复查询/解析；未测量性能改善，不作倍数或时延承诺。
 - 完整前后快照和保守保留继续作为正确性优先的 spike 选择，存储随历史增长；Q5 未定，不宣布容量达标。压缩/差分快照留待真实负载与兼容性设计后评估，不能清理不可变历史来冒充优化。
 - Round 1 原始验证保留于 evidence 根目录（关联 6d8e4b3）；新候选最终验证与打包测量单独存于 evidence/round-2，不覆盖原记录。
+
+## Round 3 证据补强
+
+Round 2 双方明确通过，但开发会话对照原 S1 退出条件，选择先关闭所有权定位及输入缺失标记缺口再重新双审：保留事实 ID 的冲突也可定位；项目输入形状由 start_run/publish/history 共用校验，既存不合格运行仍可查看但 replayable=false；轮次证据形状不齐同样 false。publish 的实现来源非字典统一 ValueError。完整能力依赖派生、业务输入/事件与规则版本语义仍由 I03 强制，形状通过不表示执行器已实现。
+
+存储 G-base/G-behavior fixture 使用 JSON 定义与 urn:type 等描述谓词；它们的完整集合存储回归不是 rdf:type/RDFS/SHACL 执行验证。RDFLib 探针使用另外的 G-base 结构合成孪生（标准 rdf:type、独立命名空间），固定 SELECT 仅验证该孪生。两者身份不混用。G-map-empty 固定两行的 prepared mapping 新增完整四条类型/名称事实及来源集合和重复提交回归；仍未实现 CSV 解析/预览业务。
+
+Round 3 最终检查、实际打包及原始测量单独保存 evidence/round-3；Round 1/2 原始报告与证据保留，不改写任一方结论。

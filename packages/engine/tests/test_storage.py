@@ -991,3 +991,304 @@ def test_registered_empty_mapping_scope_is_valid_but_not_unknown_mapping(db):
         definitions=[{"layer": "mapping", "id": "empty", "value": {"sourceHash": "changed"}}],
     )
     assert db.result(result)["stale"][0]["code"] == "MAPPING_INPUT_CHANGED"
+
+
+@pytest.mark.parametrize("drift", ["tombstone", "edited"])
+def test_reserved_fact_identity_conflict_is_locatable_without_blocking_other_values(db, drift):
+    original = fact()
+    if drift == "tombstone":
+        db.commit("p", 1, "drift", "job", remove=[original["id"]])
+    else:
+        db.commit("p", 1, "drift", "job", edits={original["id"]: '"人工值"'})
+    before, vector = db.state("p"), db.vector("p")
+    with pytest.raises(Conflict, match="Ownership conflict") as error:
+        db.commit("p", 2, "other-owner", "job", mapping=mapped(owner="M2"))
+    for location in ("urn:equipment/001", "urn:name", "other=M1", "row=001", original["id"]):
+        assert location in str(error.value)
+    assert db.revision("p") == 2
+    assert db.state("p") == before
+    assert db.vector("p") == vector
+    assert db.marker("p", "other-owner") is None
+    # A reserved identity is not a blanket reservation of a multi-valued SP slot.
+    db.commit("p", 2, "distinct-owner", "job", mapping=mapped('"另一值"', owner="M2"))
+    assert {r["owner"] for r in db.state("p")["facts"]} == {"M1", "M2"}
+
+
+def test_round_evidence_cannot_become_project_input_or_claim_legacy_replayability(db):
+    config = {
+        "maxRounds": 4,
+        "events": [],
+        "parameters": {},
+        "ruleVersions": {},
+        "behaviorVersions": {},
+    }
+    project_input = db.snapshot("p")
+    run = db.start_run("p", project_input, config, IMPL)
+    round_input = db.commit_round(run, 1, {"orders": ["W001"]}, "round-shape", "job")
+    counts = {
+        table: db._db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+        for table in ("runs", "results", "snapshots")
+    }
+    for start in (True, False):
+        with pytest.raises(ValueError, match="Project state snapshot"):
+            if start:
+                db.start_run("p", round_input, config, IMPL)
+            else:
+                db.publish("p", round_input, ["facts:asserted"], "q", [], IMPL)
+    assert counts == {
+        table: db._db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0] for table in counts
+    }
+    # Existing immutable records from the earlier spike remain viewable, but honest.
+    db._db.execute(
+        "INSERT INTO runs VALUES(?,?,?,?,?)",
+        ("legacy-round-input", "p", round_input, json.dumps(config), json.dumps(IMPL)),
+    )
+    history = db.history("legacy-round-input")
+    assert history["snapshot"] == round_input and history["replayable"] is False
+    assert db.history(run)["replayable"] is True
+    assert db.load_snapshot(round_input)["state"] == {"orders": ["W001"]}
+
+
+@pytest.mark.parametrize(
+    "replacement",
+    [
+        {"projectRevision": None},
+        {"projectRevision": True},
+        {"projectRevision": -1},
+        {"dependencyVector": None},
+        {"dependencyVector": {"facts:asserted": True}},
+        {"dependencyVector": {"facts:asserted": -1}},
+        {"dependencyVector": {"unknown:x": 1}},
+        {"state": {}},
+        {"state": {"definitions": [], "facts": [], "mappingState": None}},
+    ],
+)
+def test_project_input_shape_is_rejected_for_new_and_legacy_runs(db, replacement):
+    config = {
+        "maxRounds": 4,
+        "events": [],
+        "parameters": {},
+        "ruleVersions": {},
+        "behaviorVersions": {},
+    }
+    payload = db.load_snapshot(db.snapshot("p")) | replacement
+    with db._transaction():
+        bad = db._snapshot(payload)
+    with pytest.raises(ValueError):
+        db.start_run("p", bad, config, IMPL)
+    with pytest.raises(ValueError):
+        db.publish("p", bad, ["facts:asserted"], "q", [], IMPL)
+    db._db.execute(
+        "INSERT INTO runs VALUES(?,?,?,?,?)",
+        ("legacy-malformed", "p", bad, json.dumps(config), json.dumps(IMPL)),
+    )
+    assert db.history("legacy-malformed")["replayable"] is False
+
+
+@pytest.mark.parametrize("implementation", [None, [], 42, "engine"])
+def test_publish_provenance_shape_has_stable_validation_error(db, implementation):
+    with pytest.raises(ValueError, match="provenance"):
+        db.publish("p", db.snapshot("p"), ["facts:asserted"], "q", [], implementation)
+    assert db._db.execute("SELECT COUNT(*) FROM results").fetchone()[0] == 0
+
+
+def test_g_map_empty_fixed_two_row_prepared_collection_is_exact_and_repeatable(tmp_path):
+    from storage_baselines import g_definitions
+
+    store = Store(tmp_path / "two-row.db")
+    store.create_project("G-map-empty")
+    store.commit("G-map-empty", 0, "definitions", "job", definitions=g_definitions())
+    rows = [("001", "泵站A"), ("002", "泵站B")]
+    plan = {
+        "id": "fixed-csv",
+        "rows": [
+            {
+                "row": key,
+                "facts": [
+                    fact(f"urn:equipment/{key}", f'"{name}"'),
+                    fact(f"urn:equipment/{key}", "<urn:Equipment>", "urn:type"),
+                ],
+            }
+            for key, name in rows
+        ],
+    }
+    store.commit("G-map-empty", 1, "map", "job", mapping=plan)
+    expected = {
+        (f"urn:equipment/{key}", predicate, value, "fixed-csv", key)
+        for key, name in rows
+        for predicate, value in (("urn:name", f'"{name}"'), ("urn:type", "<urn:Equipment>"))
+    }
+    facts = store.state("G-map-empty")["facts"]
+    assert {
+        (r["subject"], r["predicate"], r["object"], r["owner"], r["source_row"]) for r in facts
+    } == expected
+    vector = store.vector("G-map-empty")
+    store.commit("G-map-empty", 2, "repeat", "job", mapping=plan)
+    assert store.state("G-map-empty")["facts"] == facts
+    assert store.vector("G-map-empty") == vector
+    store.close()
+
+
+def test_incomplete_round_state_is_rejected_and_legacy_evidence_not_replayable(db):
+    config = {
+        "maxRounds": 4,
+        "events": [],
+        "parameters": {},
+        "ruleVersions": {},
+        "behaviorVersions": {},
+    }
+    run = db.start_run("p", db.snapshot("p"), config, IMPL)
+    with pytest.raises(ValueError, match="round state"):
+        db.commit_round(run, 1, None, "bad-state", "job")
+    assert db.progress(run) is None
+    with db._transaction():
+        saved = db._snapshot({"project": "p", "run": run, "round": 1, "state": None})
+        db._db.execute("INSERT INTO rounds VALUES(?,?,?,?,?)", (run, 1, saved, "legacy", "job"))
+    assert db.history(run)["rounds"][0]["snapshot"] == saved
+    assert db.history(run)["replayable"] is False
+
+
+@pytest.mark.parametrize("field", ["config", "implementation"])
+def test_legacy_nonobject_run_configuration_is_not_claimed_replayable(db, field):
+    config = {
+        "maxRounds": 4,
+        "events": [],
+        "parameters": {},
+        "ruleVersions": {},
+        "behaviorVersions": {},
+    }
+    values = {"config": config, "implementation": IMPL}
+    values[field] = None
+    db._db.execute(
+        "INSERT INTO runs VALUES(?,?,?,?,?)",
+        (
+            "legacy-nonobject",
+            "p",
+            db.snapshot("p"),
+            json.dumps(values["config"]),
+            json.dumps(values["implementation"]),
+        ),
+    )
+    assert db.history("legacy-nonobject")["replayable"] is False
+
+
+@pytest.mark.parametrize(
+    "field,record",
+    [
+        ("facts", None),
+        ("facts", {}),
+        (
+            "facts",
+            {
+                "id": "x",
+                "subject": "urn:s",
+                "predicate": "urn:p",
+                "object": None,
+                "owner": None,
+                "source_row": None,
+                "managed_value": None,
+            },
+        ),
+        (
+            "facts",
+            {
+                "id": "x",
+                "subject": "urn:s",
+                "predicate": "urn:p",
+                "object": '"x"',
+                "owner": "M1",
+                "source_row": None,
+                "managed_value": '"x"',
+            },
+        ),
+        ("definitions", None),
+        ("definitions", {}),
+        ("definitions", {"layer": [], "id": "one", "payload": "{}"}),
+        ("definitions", {"layer": "rule", "id": "one", "payload": "not json"}),
+        ("definitions", {"layer": "rule", "id": "one", "payload": '{"value":NaN}'}),
+        ("definitions", {"layer": "rule", "id": "one", "payload": '{"references":[null]}'}),
+    ],
+)
+def test_incomplete_snapshot_records_are_rejected_and_legacy_history_honest(db, field, record):
+    config = {
+        "maxRounds": 4,
+        "events": [],
+        "parameters": {},
+        "ruleVersions": {},
+        "behaviorVersions": {},
+    }
+    payload = db.load_snapshot(db.snapshot("p"))
+    payload["state"][field] = [record]
+    with db._transaction():
+        bad = db._snapshot(payload)
+    with pytest.raises(ValueError):
+        db.start_run("p", bad, config, IMPL)
+    with pytest.raises(ValueError):
+        db.publish("p", bad, ["rule:risk"], "q", [], IMPL)
+    db._db.execute(
+        "INSERT INTO runs VALUES(?,?,?,?,?)",
+        ("legacy-record", "p", bad, json.dumps(config), json.dumps(IMPL)),
+    )
+    assert db.history("legacy-record")["replayable"] is False
+
+
+@pytest.mark.parametrize(
+    "status",
+    [
+        None,
+        {},
+        {"generatedVersion": True, "stale": []},
+        {"generatedVersion": -2, "stale": []},
+        {"generatedVersion": 1, "stale": [None]},
+        {
+            "generatedVersion": 1,
+            "stale": [
+                {
+                    "code": "MAPPING_INPUT_CHANGED",
+                    "dependency": "mapping:M1",
+                    "before": True,
+                    "after": 2,
+                }
+            ],
+        },
+    ],
+)
+def test_incomplete_snapshot_mapping_state_is_not_replayable(db, status):
+    config = {
+        "maxRounds": 4,
+        "events": [],
+        "parameters": {},
+        "ruleVersions": {},
+        "behaviorVersions": {},
+    }
+    payload = db.load_snapshot(db.snapshot("p"))
+    payload["state"]["mappingState"] = {"M1": status}
+    with db._transaction():
+        bad = db._snapshot(payload)
+    with pytest.raises(ValueError):
+        db.start_run("p", bad, config, IMPL)
+    db._db.execute(
+        "INSERT INTO runs VALUES(?,?,?,?,?)",
+        ("legacy-status", "p", bad, json.dumps(config), json.dumps(IMPL)),
+    )
+    assert db.history("legacy-status")["replayable"] is False
+
+
+@pytest.mark.parametrize("value", [None, '"人工值"'])
+def test_valid_edited_identity_and_tombstone_remain_usable_project_inputs(db, value):
+    config = {
+        "maxRounds": 4,
+        "events": [],
+        "parameters": {},
+        "ruleVersions": {},
+        "behaviorVersions": {},
+    }
+    key = fact()["id"]
+    changes = {"remove": [key]} if value is None else {"edits": {key: value}}
+    db.commit("p", 1, "drift-input", "job", **changes)
+    snap = db.snapshot("p")
+    run = db.start_run("p", snap, config, IMPL)
+    assert db.history(run)["replayable"] is True
+    result = db.publish("p", snap, ["facts:asserted"], "q", [], IMPL)
+    assert db.result(result)["state"] == "current"
+    assert db.state("p")["facts"][0]["id"] == key
