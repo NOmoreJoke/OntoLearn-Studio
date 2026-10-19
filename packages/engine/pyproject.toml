@@ -1,0 +1,13 @@
+[project]
+name = "ontolearn-engine"
+version = "0.1.0"
+description = "OntoLearn Studio local deterministic engine scaffold"
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[project.scripts]
+ontolearn-engine = "ontolearn_engine.__main__:main"
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"

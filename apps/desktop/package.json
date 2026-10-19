@@ -1,0 +1,19 @@
+{
+  "name": "@ontolearn/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OntoLearn Studio desktop shell",
+  "author": "NOmoreJoke",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "package:dir": "electron-builder --dir --publish never"
+  },
+  "dependencies": {
+    "@ontolearn/contracts": "*",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  }
+}

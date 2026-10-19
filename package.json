@@ -1,0 +1,51 @@
+{
+  "name": "ontolearn-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "本地优先的本体学习与落地 Agent 工作台",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "workspaces": [
+    "apps/desktop",
+    "packages/contracts"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @ontolearn/desktop",
+    "build": "npm run build --workspace @ontolearn/desktop",
+    "typecheck": "npm run typecheck --workspace @ontolearn/desktop",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:e2e": "install-electron && playwright test",
+    "engine:check": "uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest",
+    "engine:build": "node scripts/build-engine.mjs",
+    "package:dir": "npm run build && npm run engine:build && npm run package:dir --workspace @ontolearn/desktop",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check",
+    "verify:sources": "node scripts/verify-sources.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "electron": "44.9.0",
+    "electron-builder": "26.15.3",
+    "electron-vite": "6.0.0",
+    "eslint": "10.13.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.71.2",
+    "vite": "8.3.4",
+    "vitest": "5.0.5"
+  },
+  "packageManager": "npm@11.12.1",
+  "overrides": {
+    "global-agent": "4.1.3"
+  }
+}

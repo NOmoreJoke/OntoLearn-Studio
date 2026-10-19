@@ -1,0 +1,19 @@
+appId: io.github.nomorejoke.ontolearnstudio
+productName: OntoLearn Studio
+directories:
+  output: ../../release
+files:
+  - out/**/*
+  - package.json
+extraResources:
+  - from: ../../build/engine/ontolearn-engine
+    to: engine
+asar: true
+npmRebuild: false
+mac:
+  identity: null
+  target: dir
+win:
+  target: dir
+linux:
+  target: dir
