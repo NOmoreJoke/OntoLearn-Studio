@@ -1,0 +1,770 @@
+"""S1 storage spike, deliberately not a mapping/behavior execution service.
+
+One SQLite transaction owns all mutable truth. Graphs are disposable read models.
+Callers supply already validated domain plans; this layer validates storage shape,
+ownership, base revision and references, not the full Appendix C semantics.
+"""
+
+import hashlib
+import json
+import sqlite3
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
+from pathlib import Path
+from uuid import uuid4
+
+from ontolearn_engine.invalidation import family, reasons
+from ontolearn_engine.rdf_snapshot import iri, term
+
+FORMAT_VERSION = 2
+LAYERS = {"ontology", "mapping", "constraint", "rule", "behavior", "scenario", "query", "model"}
+Hook = Callable[[str], None]
+
+
+def canonical(value: object) -> str:
+    return json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False
+    )
+
+
+def digest(value: object) -> str:
+    return hashlib.sha256(canonical(value).encode()).hexdigest()
+
+
+class Conflict(ValueError):
+    """A plan must be previewed again or its ownership conflict resolved."""
+
+
+class Store:
+    def __init__(self, path: str | Path, migration_hook: Hook = lambda _: None):
+        self.path = Path(path)
+        self._db = sqlite3.connect(self.path, isolation_level=None, timeout=5)
+        self._db.row_factory = sqlite3.Row
+        self._db.execute("PRAGMA foreign_keys=ON")
+        self._db.execute("PRAGMA synchronous=FULL")
+        try:
+            self._migrate(migration_hook)
+        except BaseException:
+            self._db.close()
+            raise
+
+    def close(self) -> None:
+        self._db.close()
+
+    @contextmanager
+    def _transaction(self, hook: Hook = lambda _: None) -> Iterator[None]:
+        hook("before")
+        self._db.execute("BEGIN IMMEDIATE")
+        try:
+            yield
+            hook("before_commit")
+            self._db.execute("COMMIT")
+        except BaseException:
+            if self._db.in_transaction:
+                self._db.execute("ROLLBACK")
+            raise
+        # If delivery/cancellation fails here, the persistent marker is authoritative.
+        hook("after_commit")
+
+    def _migrate(self, hook: Hook) -> None:
+        version = self._db.execute("PRAGMA user_version").fetchone()[0]
+        if version > FORMAT_VERSION:
+            raise ValueError("Unsupported future project format")
+        # SQLite DDL is transactional. Never use executescript (implicit commit).
+        with self._transaction():
+            if version == 0:
+                for statement in SCHEMA:
+                    self._db.execute(statement)
+                self._db.execute("PRAGMA user_version=1")
+                hook("v1_created")
+            if version < 2:
+                self._db.execute(
+                    "CREATE TABLE mapping_state(project TEXT REFERENCES projects(id),owner TEXT,"
+                    "generated_version INTEGER,PRIMARY KEY(project,owner))"
+                )
+                self._db.execute(
+                    "INSERT INTO mapping_state SELECT DISTINCT project,owner,-1 "
+                    "FROM facts WHERE owner IS NOT NULL"
+                )
+                self._db.execute(
+                    "CREATE TABLE commit_evidence(project TEXT,operation TEXT,"
+                    "before_snapshot TEXT REFERENCES snapshots(id),"
+                    "after_snapshot TEXT REFERENCES snapshots(id),PRIMARY KEY(project,operation),"
+                    "FOREIGN KEY(project,operation) REFERENCES commits(project,operation))"
+                )
+                for action in ("UPDATE", "DELETE"):
+                    self._db.execute(
+                        f"CREATE TRIGGER immutable_commit_evidence_{action} BEFORE {action} "
+                        "ON commit_evidence BEGIN SELECT RAISE(ABORT,'immutable evidence'); END"
+                    )
+                self._db.execute("CREATE TABLE migration_log(version INTEGER PRIMARY KEY)")
+                self._db.execute("INSERT INTO migration_log VALUES(2)")
+                self._db.execute(
+                    "CREATE TABLE current_results_v2(project TEXT REFERENCES projects(id),"
+                    "kind TEXT,"
+                    "implementation TEXT,result TEXT REFERENCES results(id),"
+                    "PRIMARY KEY(project,kind,implementation))"
+                )
+                self._db.execute(
+                    "INSERT INTO current_results_v2 "
+                    "SELECT c.project,c.kind,r.implementation,c.result "
+                    "FROM current_results c JOIN results r ON r.id=c.result"
+                )
+                self._db.execute("DROP TABLE current_results")
+                self._db.execute("ALTER TABLE current_results_v2 RENAME TO current_results")
+                hook("migration_mid")
+                self._db.execute("PRAGMA user_version=2")
+
+    def create_project(self, project: str) -> None:
+        if not isinstance(project, str) or not project:
+            raise ValueError("Nonempty project identity required")
+        with self._transaction():
+            self._db.execute("INSERT INTO projects VALUES(?,0)", (project,))
+
+    def revision(self, project: str) -> int:
+        row = self._db.execute("SELECT revision FROM projects WHERE id=?", (project,)).fetchone()
+        if row is None:
+            raise KeyError(project)
+        return row[0]
+
+    def vector(self, project: str) -> dict[str, int]:
+        self.revision(project)
+        return dict(
+            self._db.execute("SELECT key,version FROM versions WHERE project=?", (project,))
+        )
+
+    @contextmanager
+    def _read(self) -> Iterator[None]:
+        if self._db.in_transaction:
+            yield
+        else:
+            self._db.execute("BEGIN")
+            try:
+                yield
+            finally:
+                self._db.execute("ROLLBACK")
+
+    def state(self, project: str) -> dict:
+        with self._read():
+            return self._state(project)
+
+    def _state(self, project: str) -> dict:
+        self.revision(project)
+        return {
+            "mappingState": {
+                r["owner"]: self.mapping_status(project, r["owner"])
+                for r in self._db.execute(
+                    "SELECT owner FROM mapping_state WHERE project=? ORDER BY owner", (project,)
+                )
+            },
+            "definitions": [
+                dict(r)
+                for r in self._db.execute(
+                    "SELECT layer,id,payload FROM definitions WHERE project=? ORDER BY layer,id",
+                    (project,),
+                )
+            ],
+            "facts": [
+                dict(r)
+                for r in self._db.execute(
+                    "SELECT id,subject,predicate,object,owner,source_row,managed_value "
+                    "FROM facts WHERE project=? ORDER BY id",
+                    (project,),
+                )
+            ],
+        }
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+            raise ValueError("Fact identity must be content derived")
+
+    def commit(
+        self,
+        project: str,
+        base: int,
+        operation: str,
+        job: str,
+        *,
+        definitions: list[dict] | None = None,
+        manual: list[dict] | None = None,
+        edits: dict[str, str] | None = None,
+        remove: list[str] | None = None,
+        mapping: dict | None = None,
+        hook: Hook = lambda _: None,
+    ) -> dict:
+        """Atomic ChangeSet or whole managed-range replacement.
+
+        mapping = {id, rows:[{row, facts:[...]}]}; a prepared storage plan,
+        NOT a CSV parser or complete mapping executor. No silent takeover exists.
+        """
+        plan = {
+            "base": base,
+            "definitions": definitions,
+            "manual": manual,
+            "edits": edits,
+            "remove": remove,
+            "mapping": mapping,
+        }
+        fingerprint = digest(plan)
+        if not operation or not job:
+            raise ValueError("operationId and jobId required")
+        with self._transaction(hook):
+            previous = self.marker(project, operation)
+            if previous:
+                if previous["fingerprint"] != fingerprint or previous["job"] != job:
+                    raise Conflict("operationId reused with different plan/job")
+                return previous
+            if self.revision(project) != base:
+                raise Conflict("Old projectRevision; re-preview required")
+            before_snapshot = self._snapshot(
+                {
+                    "project": project,
+                    "projectRevision": base,
+                    "dependencyVector": self.vector(project),
+                    "state": self.state(project),
+                }
+            )
+            changed: set[str] = set()
+            for definition in definitions or []:
+                if set(definition) != {"layer", "id", "value"}:
+                    raise ValueError("Definition requires layer/id/value")
+                layer, identity = definition["layer"], definition["id"]
+                if layer not in LAYERS or not isinstance(identity, str) or not identity:
+                    raise ValueError("Invalid definition layer/identity")
+                payload = canonical(definition["value"])
+                old = self._db.execute(
+                    "SELECT payload FROM definitions WHERE project=? AND layer=? AND id=?",
+                    (project, layer, identity),
+                ).fetchone()
+                if old is None or old[0] != payload:
+                    self._db.execute(
+                        "INSERT OR REPLACE INTO definitions VALUES(?,?,?,?)",
+                        (project, layer, identity, payload),
+                    )
+                    changed.add(f"{layer}:{identity}")
+            for identity in remove or []:
+                old = self._db.execute(
+                    "SELECT * FROM facts WHERE project=? AND id=?", (project, identity)
+                ).fetchone()
+                if old:
+                    if old["owner"]:
+                        self._db.execute(
+                            "UPDATE facts SET object=NULL WHERE project=? AND id=?",
+                            (project, identity),
+                        )
+                    else:
+                        self._db.execute(
+                            "DELETE FROM facts WHERE project=? AND id=?", (project, identity)
+                        )
+                    changed.add("facts:asserted")
+                    if old["owner"]:
+                        changed.add(f"mapping:{old['owner']}")
+            for identity, value in (edits or {}).items():
+                if not isinstance(value, str) or not value:
+                    raise ValueError("Edit requires a nonempty value")
+                if term(value).n3() != value:
+                    raise ValueError("Canonical RDF object required")
+                old = self._db.execute(
+                    "SELECT * FROM facts WHERE project=? AND id=?", (project, identity)
+                ).fetchone()
+                if old is None:
+                    raise Conflict("Edited fact no longer exists")
+                self._check_slot(project, old["subject"], old["predicate"], value, {identity})
+                if value != old["object"]:
+                    self._db.execute(
+                        "UPDATE facts SET object=? WHERE project=? AND id=?",
+                        (value, project, identity),
+                    )
+                    changed.add("facts:asserted")
+                    if old["owner"]:
+                        changed.add(f"mapping:{old['owner']}")
+            for fact in manual or []:
+                self._fact(fact)
+                existing = self._db.execute(
+                    "SELECT * FROM facts WHERE project=? AND id=?", (project, fact["id"])
+                ).fetchone()
+                if existing:
+                    if existing["owner"] or existing["object"] != fact["object"]:
+                        raise Conflict("Explicit fact edit required; cannot take ownership")
+                    continue
+                self._check_slot(project, fact["subject"], fact["predicate"], fact["object"], set())
+                self._db.execute(
+                    "INSERT INTO facts VALUES(?,?,?,?,?,NULL,NULL,NULL)",
+                    (project, fact["id"], fact["subject"], fact["predicate"], fact["object"]),
+                )
+                changed.add("facts:asserted")
+            hook("mid_data")
+            if mapping is not None:
+                if self._replace_mapping(project, mapping):
+                    changed.update({"facts:asserted", f"mapping:{mapping['id']}"})
+            self._validate_references(project)
+            hook("mid_ownership")
+            for key in sorted(changed):
+                family(key)
+                self._db.execute(
+                    "INSERT INTO versions VALUES(?,?,1) ON CONFLICT(project,key) "
+                    "DO UPDATE SET version=version+1",
+                    (project, key),
+                )
+            if mapping is not None:
+                version = self.vector(project).get(f"mapping:{mapping['id']}", 0)
+                self._db.execute(
+                    "INSERT OR REPLACE INTO mapping_state VALUES(?,?,?)",
+                    (project, mapping["id"], version),
+                )
+            self._invalidate(project)
+            hook("mid_invalidation")
+            new_revision = base + 1
+            self._db.execute("UPDATE projects SET revision=? WHERE id=?", (new_revision, project))
+            self._db.execute(
+                "INSERT INTO commits VALUES(?,?,?,?,?,?)",
+                (project, operation, job, new_revision, fingerprint, canonical(plan)),
+            )
+            after_snapshot = self._snapshot(
+                {
+                    "project": project,
+                    "projectRevision": new_revision,
+                    "dependencyVector": self.vector(project),
+                    "state": self.state(project),
+                }
+            )
+            self._db.execute(
+                "INSERT INTO commit_evidence VALUES(?,?,?,?)",
+                (project, operation, before_snapshot, after_snapshot),
+            )
+            hook("mid_marker")
+        return self.marker(project, operation)
+
+    def mapping_status(self, project: str, owner: str) -> dict | None:
+        row = self._db.execute(
+            "SELECT generated_version FROM mapping_state WHERE project=? AND owner=?",
+            (project, owner),
+        ).fetchone()
+        if row is None:
+            return None
+        vector = {f"mapping:{owner}": row[0]}
+        return {"generatedVersion": row[0], "stale": reasons(vector, self.vector(project))}
+
+    def _validate_references(self, project: str) -> None:
+        for row in self._db.execute("SELECT payload FROM definitions WHERE project=?", (project,)):
+            value = json.loads(row[0])
+            if not isinstance(value, dict):
+                continue
+            for reference in value.get("references", []):
+                if not isinstance(reference, dict) or set(reference) != {"layer", "id"}:
+                    raise ValueError("Malformed definition reference")
+                if not self._db.execute(
+                    "SELECT 1 FROM definitions WHERE project=? AND layer=? AND id=?",
+                    (project, reference["layer"], reference["id"]),
+                ).fetchone():
+                    raise Conflict("Unresolved definition reference")
+
+    def _check_slot(
+        self, project: str, subject: str, predicate: str, value: str, excluded: set[str]
+    ) -> None:
+        single = any(
+            predicate in json.loads(r[0]).get("singleValuedPredicates", [])
+            for r in self._db.execute(
+                "SELECT payload FROM definitions WHERE project=? AND layer='ontology'", (project,)
+            )
+            if isinstance(json.loads(r[0]), dict)
+        )
+        for row in self._db.execute(
+            "SELECT * FROM facts WHERE project=? AND subject=? AND predicate=?",
+            (project, subject, predicate),
+        ):
+            if (
+                row["id"] not in excluded
+                and row["object"] is not None
+                and (single or row["object"] == value)
+            ):
+                raise Conflict(
+                    f"Ownership conflict: slot={subject} {predicate}, "
+                    f"other={row['owner'] or 'manual'}, row={row['source_row']}"
+                )
+
+    def _replace_mapping(self, project: str, mapping: dict) -> bool:
+        if set(mapping) != {"id", "rows"} or not mapping["id"]:
+            raise ValueError("Invalid mapping plan")
+        owner = mapping["id"]
+        old = self._db.execute("SELECT * FROM facts WHERE project=? AND owner=?", (project, owner))
+        for fact in old:
+            if fact["object"] != fact["managed_value"]:
+                raise Conflict(
+                    f"Manual drift: mapping={owner}, row={fact['source_row']}, "
+                    f"slot={fact['subject']} {fact['predicate']}"
+                )
+        staged = []
+        rows = set()
+        identities = set()
+        for row in mapping["rows"]:
+            if set(row) != {"row", "facts"} or not row["row"] or row["row"] in rows:
+                raise ValueError("Empty/duplicate source row")
+            rows.add(row["row"])
+            for fact in row["facts"]:
+                self._fact(fact)
+                if fact["id"] in identities:
+                    raise Conflict("Multiple source rows support same fact")
+                identities.add(fact["id"])
+                own_ids = {
+                    r[0]
+                    for r in self._db.execute(
+                        "SELECT id FROM facts WHERE project=? AND owner=?", (project, owner)
+                    )
+                }
+                self._check_slot(
+                    project, fact["subject"], fact["predicate"], fact["object"], own_ids
+                )
+                single = any(
+                    fact["predicate"] in json.loads(r[0]).get("singleValuedPredicates", [])
+                    for r in self._db.execute(
+                        "SELECT payload FROM definitions WHERE project=? AND layer='ontology'",
+                        (project,),
+                    )
+                    if isinstance(json.loads(r[0]), dict)
+                )
+                if single and any(t[2:4] == (fact["subject"], fact["predicate"]) for t in staged):
+                    raise Conflict("Single-valued mapping slot has multiple values")
+                staged.append(
+                    (
+                        project,
+                        fact["id"],
+                        fact["subject"],
+                        fact["predicate"],
+                        fact["object"],
+                        owner,
+                        row["row"],
+                        fact["object"],
+                    )
+                )
+        existing = [
+            tuple(r)
+            for r in self._db.execute(
+                "SELECT project,id,subject,predicate,object,owner,source_row,managed_value "
+                "FROM facts WHERE project=? AND owner=?",
+                (project, owner),
+            )
+        ]
+        if sorted(existing) == sorted(staged):
+            return False
+        self._db.execute("DELETE FROM facts WHERE project=? AND owner=?", (project, owner))
+        self._db.executemany("INSERT INTO facts VALUES(?,?,?,?,?,?,?,?)", staged)
+        return True
+
+    def marker(self, project: str, operation: str) -> dict | None:
+        row = self._db.execute(
+            "SELECT c.*,e.before_snapshot,e.after_snapshot FROM commits c "
+            "LEFT JOIN commit_evidence e ON e.project=c.project AND e.operation=c.operation "
+            "WHERE c.project=? AND c.operation=?",
+            (project, operation),
+        ).fetchone()
+        return dict(row) if row else None
+
+    def snapshot(self, project: str) -> str:
+        with self._transaction():
+            payload = {
+                "project": project,
+                "projectRevision": self.revision(project),
+                "dependencyVector": self.vector(project),
+                "state": self.state(project),
+            }
+            return self._snapshot(payload)
+
+    def _snapshot(self, payload: dict) -> str:
+        identity = digest(payload)
+        self._db.execute(
+            "INSERT OR IGNORE INTO snapshots VALUES(?,?)", (identity, canonical(payload))
+        )
+        return identity
+
+    def load_snapshot(self, identity: str) -> dict:
+        row = self._db.execute("SELECT payload FROM snapshots WHERE id=?", (identity,)).fetchone()
+        if row is None:
+            raise KeyError("Missing replay input snapshot")
+        payload = json.loads(row[0])
+        if digest(payload) != identity:
+            raise ValueError("Snapshot integrity failure")
+        return payload
+
+    def publish(
+        self,
+        project: str,
+        snapshot: str,
+        dependencies: list[str],
+        kind: str,
+        payload: object,
+        implementation: dict[str, str],
+    ) -> str:
+        """Append result evidence, publish current only after in-transaction revalidation."""
+        required = {"executionSemanticsVersion", "engineVersion", "dependencyLockHash"}
+        if set(implementation) != required or not all(
+            isinstance(value, str) and value for value in implementation.values()
+        ):
+            raise ValueError("Complete execution provenance required")
+        with self._transaction():
+            snap = self.load_snapshot(snapshot)
+            if snap["project"] != project:
+                raise Conflict("Cross-project snapshot")
+            vector = {key: snap["dependencyVector"].get(key, 0) for key in dependencies}
+            for key in vector:
+                family(key)
+            stale = reasons(vector, self.vector(project))
+            identity = str(uuid4())
+            cache_key = digest(
+                {
+                    "project": project,
+                    "kind": kind,
+                    "snapshot": snapshot,
+                    "dependencies": vector,
+                    "implementation": implementation,
+                }
+            )
+            self._db.execute(
+                "INSERT INTO results VALUES(?,?,?,?,?,?,?,?)",
+                (
+                    identity,
+                    project,
+                    snapshot,
+                    kind,
+                    canonical(vector),
+                    canonical(implementation),
+                    cache_key,
+                    canonical(payload),
+                ),
+            )
+            self._db.execute("INSERT INTO result_state VALUES(?,?)", (identity, canonical(stale)))
+            if not stale:
+                self._db.execute(
+                    "INSERT OR REPLACE INTO current_results VALUES(?,?,?,?)",
+                    (project, kind, canonical(implementation), identity),
+                )
+            return identity
+
+    def _invalidate(self, project: str) -> None:
+        now = self.vector(project)
+        for row in self._db.execute(
+            "SELECT id,dependencies FROM results WHERE project=?", (project,)
+        ):
+            stale = reasons(json.loads(row["dependencies"]), now)
+            self._db.execute(
+                "UPDATE result_state SET stale=? WHERE result=?", (canonical(stale), row["id"])
+            )
+            if stale:
+                self._db.execute("DELETE FROM current_results WHERE result=?", (row["id"],))
+
+    def result(self, identity: str) -> dict:
+        row = self._db.execute(
+            "SELECT r.*,s.stale FROM results r JOIN result_state s ON s.result=r.id WHERE r.id=?",
+            (identity,),
+        ).fetchone()
+        if row is None:
+            raise KeyError(identity)
+        result = dict(row)
+        for key in ("payload", "dependencies", "implementation", "stale"):
+            result[key] = json.loads(result[key]) if result[key] is not None else None
+        return result
+
+    def current(self, project: str, kind: str, implementation: dict[str, str]) -> dict | None:
+        row = self._db.execute(
+            "SELECT result FROM current_results WHERE project=? AND kind=? AND implementation=?",
+            (project, kind, canonical(implementation)),
+        ).fetchone()
+        if not row:
+            return None
+        result = self.result(row[0])
+        # No implicit compatibility across engine, semantics or lock upgrades.
+        if (
+            result["implementation"] != implementation
+            or result["stale"]
+            or result["payload"] is None
+        ):
+            return None
+        return result
+
+    def pin_result(self, identity: str, report: str) -> None:
+        with self._transaction():
+            result = self.result(identity)
+            if result["payload"] is None:
+                raise ValueError("Cannot save report with evicted payload")
+            self._db.execute("INSERT INTO result_pins VALUES(?,?)", (identity, report))
+
+    def collect_cache(self) -> list[str]:
+        """Only unpinned result payloads; identities/definitions/snapshots remain."""
+        with self._transaction():
+            ids = [
+                r[0]
+                for r in self._db.execute(
+                    "SELECT id FROM results WHERE id NOT IN (SELECT result FROM result_pins) "
+                    "AND id NOT IN (SELECT result FROM current_results) AND payload IS NOT NULL"
+                )
+            ]
+            for identity in ids:
+                self._db.execute("UPDATE results SET payload=NULL WHERE id=?", (identity,))
+            return ids
+
+    def start_run(self, project: str, snapshot: str, config: dict, implementation: dict) -> str:
+        if not isinstance(config, dict) or not isinstance(implementation, dict):
+            raise ValueError("Run config and implementation must be objects")
+        with self._transaction():
+            if self.load_snapshot(snapshot)["project"] != project:
+                raise Conflict("Cross-project run input")
+            identity = str(uuid4())
+            self._db.execute(
+                "INSERT INTO runs VALUES(?,?,?,?,?)",
+                (identity, project, snapshot, canonical(config), canonical(implementation)),
+            )
+            return identity
+
+    def commit_round(
+        self,
+        run: str,
+        number: int,
+        state: dict,
+        operation: str,
+        job: str,
+        hook: Hook = lambda _: None,
+    ) -> str:
+        """Persist a prepared complete round, not an E.2 executor."""
+        if not isinstance(operation, str) or not operation or not isinstance(job, str) or not job:
+            raise ValueError("operationId and jobId required")
+        with self._transaction(hook):
+            record = self._run(run)
+            if self._db.execute("SELECT 1 FROM run_terminal WHERE run=?", (run,)).fetchone():
+                raise Conflict("Terminal run is immutable")
+            last = self.progress(run)
+            if number != (last["lastCommittedRound"] if last else 0) + 1:
+                raise Conflict("Nonsequential round")
+            maximum = json.loads(record["config"]).get("maxRounds")
+            if (
+                not isinstance(maximum, int)
+                or isinstance(maximum, bool)
+                or not 1 <= maximum <= 1000
+            ):
+                raise ValueError("maxRounds must be 1..1000")
+            if number > maximum:
+                raise Conflict("Round limit")
+            identity = self._snapshot(
+                {"project": record["project"], "run": run, "round": number, "state": state}
+            )
+            hook("mid_data")
+            self._db.execute(
+                "INSERT INTO rounds VALUES(?,?,?,?,?)", (run, number, identity, operation, job)
+            )
+            hook("mid_marker")
+            return identity
+
+    def _run(self, identity: str) -> sqlite3.Row:
+        row = self._db.execute("SELECT * FROM runs WHERE id=?", (identity,)).fetchone()
+        if row is None:
+            raise KeyError(identity)
+        return row
+
+    def progress(self, run: str) -> dict | None:
+        self._run(run)
+        row = self._db.execute(
+            "SELECT number,snapshot FROM rounds WHERE run=? ORDER BY number DESC LIMIT 1", (run,)
+        ).fetchone()
+        return {"runId": run, "lastCommittedRound": row[0], "snapshotRef": row[1]} if row else None
+
+    def finish_run(self, run: str, status: str, evidence: dict) -> None:
+        if status not in {"succeeded", "cancelled", "failed"}:
+            raise ValueError("Invalid terminal status")
+        with self._transaction():
+            self._run(run)
+            self._db.execute(
+                "INSERT INTO run_terminal VALUES(?,?,?)", (run, status, canonical(evidence))
+            )
+
+    def history(self, run: str) -> dict:
+        with self._read():
+            return self._history(run)
+
+    def _history(self, run: str) -> dict:
+        record = dict(self._run(run))
+        record["rounds"] = [
+            dict(r)
+            for r in self._db.execute("SELECT * FROM rounds WHERE run=? ORDER BY number", (run,))
+        ]
+        terminal = self._db.execute(
+            "SELECT status,evidence FROM run_terminal WHERE run=?", (run,)
+        ).fetchone()
+        record["terminal"] = dict(terminal) if terminal else None
+        record["committedProgress"] = self.progress(run)
+        try:
+            self.load_snapshot(record["snapshot"])
+            for r in record["rounds"]:
+                self.load_snapshot(r["snapshot"])
+            config = json.loads(record["config"])
+            impl = json.loads(record["implementation"])
+            record["replayable"] = (
+                isinstance(config.get("parameters"), dict)
+                and isinstance(config.get("events"), list)
+                and all(
+                    isinstance(config.get(key), dict)
+                    for key in ("ruleVersions", "behaviorVersions")
+                )
+                and isinstance(config.get("maxRounds"), int)
+                and not isinstance(config.get("maxRounds"), bool)
+                and 1 <= config["maxRounds"] <= 1000
+                and all(
+                    isinstance(impl.get(key), str) and impl[key]
+                    for key in ("executionSemanticsVersion", "engineVersion", "dependencyLockHash")
+                )
+            )
+        except (KeyError, ValueError):
+            record["replayable"] = False
+        return record
+
+    def backup(self, destination: str | Path) -> None:
+        if Path(destination).exists():
+            raise ValueError("Backup target must be new")
+        target = sqlite3.connect(destination)
+        try:
+            self._db.backup(target)
+        finally:
+            target.close()
+
+
+SCHEMA = [
+    "CREATE TABLE projects(id TEXT PRIMARY KEY,revision INTEGER NOT NULL)",
+    "CREATE TABLE versions(project TEXT REFERENCES projects(id),key TEXT,version INTEGER NOT NULL,"
+    "PRIMARY KEY(project,key))",
+    "CREATE TABLE definitions(project TEXT REFERENCES projects(id),layer TEXT,id TEXT,payload TEXT,"
+    "PRIMARY KEY(project,layer,id))",
+    "CREATE TABLE facts(project TEXT REFERENCES projects(id),id TEXT,subject TEXT,predicate TEXT,"
+    "object TEXT,owner TEXT,source_row TEXT,managed_value TEXT,PRIMARY KEY(project,id))",
+    "CREATE TABLE commits(project TEXT REFERENCES projects(id),operation TEXT,job TEXT,"
+    "revision INTEGER,"
+    "fingerprint TEXT,plan TEXT,PRIMARY KEY(project,operation))",
+    "CREATE TABLE snapshots(id TEXT PRIMARY KEY,payload TEXT NOT NULL)",
+    "CREATE TABLE results(id TEXT PRIMARY KEY,project TEXT REFERENCES projects(id),"
+    "snapshot TEXT REFERENCES snapshots(id),kind TEXT,dependencies TEXT,implementation TEXT,"
+    "cache_key TEXT,payload TEXT)",
+    "CREATE TABLE result_state(result TEXT PRIMARY KEY REFERENCES results(id),stale TEXT)",
+    "CREATE TABLE current_results(project TEXT REFERENCES projects(id),kind TEXT,"
+    "result TEXT REFERENCES results(id),PRIMARY KEY(project,kind))",
+    "CREATE TABLE result_pins(result TEXT REFERENCES results(id),report TEXT,"
+    "PRIMARY KEY(result,report))",
+    "CREATE TABLE runs(id TEXT PRIMARY KEY,project TEXT REFERENCES projects(id),"
+    "snapshot TEXT REFERENCES snapshots(id),config TEXT,implementation TEXT)",
+    "CREATE TABLE rounds(run TEXT REFERENCES runs(id),number INTEGER,snapshot TEXT REFERENCES "
+    "snapshots(id),operation TEXT UNIQUE,job TEXT,PRIMARY KEY(run,number))",
+    "CREATE TABLE run_terminal(run TEXT PRIMARY KEY REFERENCES runs(id),status TEXT,evidence TEXT)",
+]
+# SQL-level defenses protect immutable evidence even if a later adapter accidentally updates it.
+for _table in ("snapshots", "commits", "runs", "rounds", "run_terminal"):
+    for _action in ("UPDATE", "DELETE"):
+        SCHEMA.append(
+            f"CREATE TRIGGER immutable_{_table}_{_action} BEFORE {_action} ON {_table} "
+            "BEGIN SELECT RAISE(ABORT,'immutable evidence'); END"
+        )

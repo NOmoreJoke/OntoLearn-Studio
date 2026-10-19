@@ -1,0 +1,87 @@
+{
+  "scale": 10,
+  "trial": 0,
+  "seed": 20261019,
+  "triples": 180,
+  "inputSha256": "25393c99db270c57a75cd75c675876d148659fef7e7624e4197e90754b257ed2",
+  "querySha256": "7879b25f2833b8e485b53d3f6664220836ada716ec29ae7de82f907eae014ab5",
+  "result": [
+    "urn:case:0:alarm/A01",
+    "urn:case:1:alarm/A01",
+    "urn:case:2:alarm/A01",
+    "urn:case:3:alarm/A01",
+    "urn:case:4:alarm/A01",
+    "urn:case:5:alarm/A01",
+    "urn:case:6:alarm/A01",
+    "urn:case:7:alarm/A01",
+    "urn:case:8:alarm/A01",
+    "urn:case:9:alarm/A01"
+  ],
+  "expected": [
+    "urn:case:0:alarm/A01",
+    "urn:case:1:alarm/A01",
+    "urn:case:2:alarm/A01",
+    "urn:case:3:alarm/A01",
+    "urn:case:4:alarm/A01",
+    "urn:case:5:alarm/A01",
+    "urn:case:6:alarm/A01",
+    "urn:case:7:alarm/A01",
+    "urn:case:8:alarm/A01",
+    "urn:case:9:alarm/A01"
+  ],
+  "snapshotId": "a64336b657627d041455fc9d60e4a487d186eba6152def433bdb511c5f10d11a",
+  "measurement": {
+    "snapshotLoad": {
+      "elapsedNs": 1538500,
+      "pythonBytesBefore": 320,
+      "pythonBytesAfter": 101018,
+      "pythonBytesPeak": 394031,
+      "processHighWaterRssBytes": 39698432
+    },
+    "rdflibBuild": {
+      "elapsedNs": 58437833,
+      "pythonBytesBefore": 101611,
+      "pythonBytesAfter": 482330,
+      "pythonBytesPeak": 579670,
+      "processHighWaterRssBytes": 40288256
+    },
+    "fixedSelect": {
+      "elapsedNs": 539177792,
+      "pythonBytesBefore": 482394,
+      "pythonBytesAfter": 8091835,
+      "pythonBytesPeak": 8161289,
+      "processHighWaterRssBytes": 53280768
+    },
+    "snapshotLoadWarm": {
+      "elapsedNs": 1861250,
+      "pythonBytesBefore": 8093158,
+      "pythonBytesAfter": 8193305,
+      "pythonBytesPeak": 8486318,
+      "processHighWaterRssBytes": 53477376
+    },
+    "rdflibBuildWarm": {
+      "elapsedNs": 66453417,
+      "pythonBytesBefore": 8093467,
+      "pythonBytesAfter": 8447517,
+      "pythonBytesPeak": 8485478,
+      "processHighWaterRssBytes": 53886976
+    },
+    "fixedSelectWarm": {
+      "elapsedNs": 10471500,
+      "pythonBytesBefore": 8447581,
+      "pythonBytesAfter": 8481334,
+      "pythonBytesPeak": 8502328,
+      "processHighWaterRssBytes": 53952512
+    }
+  },
+  "device": "macOS-27.0.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "python": "3.12.12",
+  "sqlite": "3.50.4",
+  "rdflib": "7.6.0",
+  "condition": "store reopened; OS cache uncontrolled; Warm phases repeat in process",
+  "method": "perf_counter_ns; tracemalloc phase peaks; process lifetime ru_maxrss",
+  "runtime": "packaged",
+  "processElapsedNs": 802520583,
+  "stderr": ""
+}
