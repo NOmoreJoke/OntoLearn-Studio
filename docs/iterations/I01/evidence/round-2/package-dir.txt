@@ -1,0 +1,188 @@
+
+> ontolearn-studio@0.1.0 package:dir
+> npm run build && npm run engine:build && npm run package:dir --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 100 modules transformed.
+rendering chunks...
+out/main/index.js  164.54 kB
+
+✓ built in 25ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 2 modules transformed.
+rendering chunks...
+out/preload/index.js  0.20 kB
+
+✓ built in 5ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 15 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.53 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-DImnQfKh.js   571.51 kB
+
+✓ built in 42ms
+
+> ontolearn-studio@0.1.0 engine:build
+> node scripts/build-engine.mjs
+
+29 INFO: PyInstaller: 6.22.3, contrib hooks: 2026.8
+29 INFO: Python: 3.12.12
+38 INFO: Platform: macOS-27.0.1-arm64-arm-64bit
+39 INFO: Python environment: /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv
+39 INFO: wrote build/ontolearn-engine.spec
+43 INFO: Removing temporary files and cleaning cache in /Users/kyle/Library/Application Support/pyinstaller
+217 INFO: Module search paths (PYTHONPATH):
+['/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python312.zip',
+ '/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12',
+ '/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/lib/python3.12/lib-dynload',
+ '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages',
+ '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/packages/engine/src',
+ '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/packages/engine']
+282 INFO: Appending 'datas' from .spec
+284 INFO: checking Analysis
+284 INFO: Building Analysis because Analysis-00.toc is non existent
+284 INFO: Looking for Python shared library...
+286 INFO: Using Python shared library: /Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/libpython3.12.dylib
+287 INFO: Running Analysis Analysis-00.toc
+287 INFO: Target bytecode optimization level: 0
+287 INFO: Initializing module dependency graph...
+287 INFO: Initializing module graph hook caches...
+291 INFO: Analyzing modules for base_library.zip ...
+644 INFO: Processing standard module hook 'hook-encodings.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+757 INFO: Processing standard module hook 'hook-math.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+1153 INFO: Processing standard module hook 'hook-pickle.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+1473 INFO: Processing standard module hook 'hook-heapq.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+1614 INFO: Caching module dependency graph...
+1627 INFO: Analyzing /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/packages/engine/entrypoint.py
+1651 INFO: Processing standard module hook 'hook-platform.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+1662 INFO: Processing standard module hook 'hook-xml.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+1663 INFO: Processing standard module hook 'hook-sqlite3.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+1739 INFO: Processing standard module hook 'hook-rdflib.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+2095 INFO: Processing standard module hook 'hook-xml.dom.domreg.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2333 INFO: Processing standard module hook 'hook-difflib.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2405 INFO: Processing standard module hook 'hook-multiprocessing.util.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2523 INFO: Processing standard module hook 'hook-_ctypes.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2800 INFO: Processing pre-safe-import-module hook 'hook-typing_extensions.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+2801 INFO: SetuptoolsInfo: initializing cached setuptools info...
+3043 INFO: Analyzing hidden import 'rdflib.compare'
+3050 INFO: Analyzing hidden import 'rdflib.contrib'
+3050 INFO: Analyzing hidden import 'rdflib.contrib.graphdb'
+3123 INFO: Analyzing hidden import 'rdflib.extras'
+3123 INFO: Analyzing hidden import 'rdflib.extras.cmdlineutils'
+3124 INFO: Analyzing hidden import 'rdflib.extras.describer'
+3125 INFO: Analyzing hidden import 'rdflib.extras.external_graph_libs'
+3127 INFO: Analyzing hidden import 'rdflib.extras.infixowl'
+3149 INFO: Analyzing hidden import 'rdflib.extras.shacl'
+3151 INFO: Analyzing hidden import 'rdflib.plugins.parsers'
+3151 INFO: Analyzing hidden import 'rdflib.plugins.parsers.RDFVOC'
+3152 INFO: Analyzing hidden import 'rdflib.plugins.parsers.hext'
+3154 INFO: Analyzing hidden import 'rdflib.plugins.parsers.jsonld'
+3184 INFO: Analyzing hidden import 'rdflib.plugins.parsers.notation3'
+3204 INFO: Analyzing hidden import 'rdflib.plugins.parsers.nquads'
+3210 INFO: Analyzing hidden import 'rdflib.plugins.parsers.patch'
+3212 INFO: Analyzing hidden import 'rdflib.plugins.parsers.rdfxml'
+3220 INFO: Analyzing hidden import 'rdflib.plugins.parsers.trig'
+3222 INFO: Analyzing hidden import 'rdflib.plugins.parsers.trix'
+3225 INFO: Analyzing hidden import 'rdflib.plugins.serializers'
+3225 INFO: Analyzing hidden import 'rdflib.plugins.serializers.hext'
+3228 INFO: Analyzing hidden import 'rdflib.plugins.serializers.jsonld'
+3233 INFO: Analyzing hidden import 'rdflib.plugins.serializers.longturtle'
+3244 INFO: Analyzing hidden import 'rdflib.plugins.serializers.n3'
+3246 INFO: Analyzing hidden import 'rdflib.plugins.serializers.nquads'
+3248 INFO: Analyzing hidden import 'rdflib.plugins.serializers.patch'
+3250 INFO: Analyzing hidden import 'rdflib.plugins.serializers.rdfxml'
+3256 INFO: Analyzing hidden import 'rdflib.plugins.serializers.trig'
+3258 INFO: Analyzing hidden import 'rdflib.plugins.serializers.trix'
+3260 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results'
+3260 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.csvresults'
+3262 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.graph'
+3262 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.jsonresults'
+3264 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.rdfresults'
+3265 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.tsvresults'
+3267 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.txtresults'
+3269 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.xmlresults'
+3296 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3297 INFO: Analyzing hidden import 'rdflib.plugins.stores.auditable'
+3299 INFO: Analyzing hidden import 'rdflib.plugins.stores.concurrent'
+3301 INFO: Analyzing hidden import 'rdflib.plugins.stores.memory'
+3309 INFO: Analyzing hidden import 'rdflib.plugins.stores.rdf4j'
+3312 INFO: Analyzing hidden import 'rdflib.plugins.stores.regexmatching'
+3315 INFO: Analyzing hidden import 'rdflib.plugins.stores.sparqlconnector'
+3317 INFO: Analyzing hidden import 'rdflib.plugins.stores.sparqlstore'
+3326 INFO: Analyzing hidden import 'rdflib.tools'
+3327 INFO: Analyzing hidden import 'rdflib.tools.chunk_serializer'
+3329 INFO: Analyzing hidden import 'rdflib.tools.csv2rdf'
+3351 INFO: Analyzing hidden import 'rdflib.tools.defined_namespace_creator'
+3353 INFO: Analyzing hidden import 'rdflib.tools.graphisomorphism'
+3368 INFO: Analyzing hidden import 'rdflib.tools.rdf2dot'
+3370 INFO: Analyzing hidden import 'rdflib.tools.rdfpipe'
+3372 INFO: Analyzing hidden import 'rdflib.tools.rdfs2dot'
+3373 INFO: Analyzing hidden import 'rdflib.tools.sparqlquery'
+3377 INFO: Analyzing hidden import 'rdflib.void'
+3379 INFO: Processing module hooks (post-graph stage)...
+3390 INFO: Performing binary vs. data reclassification (152 entries)
+3397 INFO: Looking for ctypes DLLs
+3400 INFO: Analyzing run-time hooks ...
+3401 INFO: Including run-time hook 'pyi_rth_inspect.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks/rthooks'
+3403 INFO: Including run-time hook 'pyi_rth_pkgutil.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks/rthooks'
+3404 INFO: Including run-time hook 'pyi_rth_multiprocessing.py' from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/hooks/rthooks'
+3408 INFO: Creating base_library.zip...
+3416 INFO: Looking for dynamic libraries
+3423 INFO: Warnings written to /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/build/pyinstaller/ontolearn-engine/warn-ontolearn-engine.txt
+3431 INFO: Graph cross-reference written to /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/build/pyinstaller/ontolearn-engine/xref-ontolearn-engine.html
+3443 INFO: checking PYZ
+3443 INFO: Building PYZ because PYZ-00.toc is non existent
+3443 INFO: Building PYZ (ZlibArchive) /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/build/pyinstaller/ontolearn-engine/PYZ-00.pyz
+3631 INFO: Building PYZ (ZlibArchive) /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/build/pyinstaller/ontolearn-engine/PYZ-00.pyz completed successfully.
+3634 INFO: EXE target arch: arm64
+3634 INFO: Code signing identity: None
+3635 INFO: checking PKG
+3635 INFO: Building PKG because PKG-00.toc is non existent
+3635 INFO: Building PKG (CArchive) ontolearn-engine.pkg
+3641 INFO: Building PKG (CArchive) ontolearn-engine.pkg completed successfully.
+3642 INFO: Bootloader /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/.venv/lib/python3.12/site-packages/PyInstaller/bootloader/Darwin-64bit/run
+3642 INFO: checking EXE
+3642 INFO: Building EXE because EXE-00.toc is non existent
+3642 INFO: Building EXE from EXE-00.toc
+3642 INFO: Copying bootloader EXE to /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/build/pyinstaller/ontolearn-engine/ontolearn-engine
+3643 INFO: Converting EXE to target arch (arm64)
+3659 INFO: Removing signature(s) from EXE
+3676 INFO: Modifying Mach-O image UUID(s) in EXE
+3678 INFO: Appending PKG archive to EXE
+3679 INFO: Fixing EXE headers for code signing
+3683 INFO: Rewriting the executable's macOS SDK version (26.2.0) to match the SDK version of the Python library (15.5.0) in order to avoid inconsistent behavior and potential UI issues in the frozen application.
+3684 INFO: Re-signing the EXE
+3702 INFO: Building EXE from EXE-00.toc completed successfully.
+3704 INFO: checking COLLECT
+3704 INFO: Building COLLECT because COLLECT-00.toc is non existent
+3704 INFO: Removing dir /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/build/engine/ontolearn-engine
+3710 INFO: Building COLLECT COLLECT-00.toc
+3821 INFO: Building COLLECT COLLECT-00.toc completed successfully.
+3823 INFO: Build complete! The results are available in: /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/build/engine
+
+> @ontolearn/desktop@0.1.0 package:dir
+> electron-builder --dir --publish never
+
+  • electron-builder  version=26.15.3 os=27.0.0
+  • loaded configuration  file=/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/apps/desktop/electron-builder.yml
+  • packageManager not detected by file, falling back to environment detection  resolvedPackageManager=npm detected=/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/apps/desktop
+  • detected workspace root for project using packageManager field  pm=npm config=npm@11.12.1 resolved=/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio projectDir=/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/apps/desktop
+  • skipped dependencies rebuild  reason=npmRebuild is set to false
+  • packaging       platform=darwin arch=arm64 electron=44.9.0 appOutDir=/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/release/mac-arm64
+  • downloaded      label=electron progress=100%
+  • downloaded electron zip extracted successfully  output=/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/release/mac-arm64
+  • searching for node modules  pm=npm searchDir=/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/apps/desktop
+  • default Electron icon is used  reason=application icon is not set
+  • skipped macOS code signing  reason=identity explicitly is set to null

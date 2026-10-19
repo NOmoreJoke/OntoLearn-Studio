@@ -7,7 +7,6 @@ One fresh process per scale/trial measures load, build and fixed query phases.
 import hashlib
 import json
 import platform
-import resource
 import sqlite3
 import time
 import tracemalloc
@@ -18,6 +17,20 @@ from rdflib import Graph
 
 from ontolearn_engine.rdf_snapshot import graph_from_snapshot
 from ontolearn_engine.storage import Store, digest
+
+try:
+    import resource
+except ImportError:  # Windows: retain tracemalloc measurements and state RSS is unavailable.
+    resource = None
+
+
+def high_water_rss() -> int | None:
+    if resource is None:
+        return None
+    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * (
+        1 if platform.system() == "Darwin" else 1024
+    )
+
 
 SEED = 20261019
 QUERY = """PREFIX : <urn:ontolearn:>
@@ -84,8 +97,7 @@ def measure(scale: int = 1, trial: int = 0) -> dict:
                 "pythonBytesBefore": before,
                 "pythonBytesAfter": current,
                 "pythonBytesPeak": peak,
-                "processHighWaterRssBytes": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-                * (1 if platform.system() == "Darwin" else 1024),
+                "processHighWaterRssBytes": high_water_rss(),
             }
             return result
 
@@ -120,7 +132,13 @@ def measure(scale: int = 1, trial: int = 0) -> dict:
             "sqlite": sqlite3.sqlite_version,
             "rdflib": version("rdflib"),
             "condition": "store reopened; OS cache uncontrolled; Warm phases repeat in process",
-            "method": "perf_counter_ns; tracemalloc phase peaks; process lifetime ru_maxrss",
+            "method": "perf_counter_ns; tracemalloc phase peaks; "
+            + (
+                "process lifetime ru_maxrss"
+                if resource is not None
+                else "RSS unavailable on platform"
+            ),
+            "rssAvailable": resource is not None,
         }
 
 

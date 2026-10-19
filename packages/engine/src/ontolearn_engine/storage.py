@@ -13,7 +13,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from uuid import uuid4
 
-from ontolearn_engine.invalidation import family, reasons
+from ontolearn_engine.invalidation import RULES, can_publish_current, family, reasons
 from ontolearn_engine.rdf_snapshot import iri, term
 
 FORMAT_VERSION = 2
@@ -70,8 +70,17 @@ class Store:
         version = self._db.execute("PRAGMA user_version").fetchone()[0]
         if version > FORMAT_VERSION:
             raise ValueError("Unsupported future project format")
-        # SQLite DDL is transactional. Never use executescript (implicit commit).
-        with self._transaction():
+        if version == FORMAT_VERSION:
+            return  # Opening a current format must not take a writer lock.
+        # Re-read under the lock: another opener may have migrated while we waited.
+        with self._transaction(hook):
+            version = self._db.execute("PRAGMA user_version").fetchone()[0]
+            if version > FORMAT_VERSION:
+                raise ValueError("Unsupported future project format")
+            if version == FORMAT_VERSION:
+                return
+            if version not in {0, 1}:
+                raise ValueError("Unsupported project format")
             if version == 0:
                 for statement in SCHEMA:
                     self._db.execute(statement)
@@ -82,21 +91,25 @@ class Store:
                     "CREATE TABLE mapping_state(project TEXT REFERENCES projects(id),owner TEXT,"
                     "generated_version INTEGER,PRIMARY KEY(project,owner))"
                 )
+                hook("mapping_state_created")
                 self._db.execute(
                     "INSERT INTO mapping_state SELECT DISTINCT project,owner,-1 "
                     "FROM facts WHERE owner IS NOT NULL"
                 )
+                hook("mapping_state_backfilled")
                 self._db.execute(
                     "CREATE TABLE commit_evidence(project TEXT,operation TEXT,"
                     "before_snapshot TEXT REFERENCES snapshots(id),"
                     "after_snapshot TEXT REFERENCES snapshots(id),PRIMARY KEY(project,operation),"
                     "FOREIGN KEY(project,operation) REFERENCES commits(project,operation))"
                 )
+                hook("commit_evidence_created")
                 for action in ("UPDATE", "DELETE"):
                     self._db.execute(
                         f"CREATE TRIGGER immutable_commit_evidence_{action} BEFORE {action} "
                         "ON commit_evidence BEGIN SELECT RAISE(ABORT,'immutable evidence'); END"
                     )
+                hook("immutable_triggers_created")
                 self._db.execute("CREATE TABLE migration_log(version INTEGER PRIMARY KEY)")
                 self._db.execute("INSERT INTO migration_log VALUES(2)")
                 self._db.execute(
@@ -110,10 +123,13 @@ class Store:
                     "SELECT c.project,c.kind,r.implementation,c.result "
                     "FROM current_results c JOIN results r ON r.id=c.result"
                 )
+                hook("current_results_copied")
                 self._db.execute("DROP TABLE current_results")
                 self._db.execute("ALTER TABLE current_results_v2 RENAME TO current_results")
+                hook("current_results_replaced")
                 hook("migration_mid")
                 self._db.execute("PRAGMA user_version=2")
+                hook("format_version_updated")
 
     def create_project(self, project: str) -> None:
         if not isinstance(project, str) or not project:
@@ -207,6 +223,10 @@ class Store:
         mapping = {id, rows:[{row, facts:[...]}]}; a prepared storage plan,
         NOT a CSV parser or complete mapping executor. No silent takeover exists.
         """
+        if type(base) is not int or base < 0:
+            raise ValueError("Nonnegative integer projectRevision required")
+        if not isinstance(operation, str) or not operation or not isinstance(job, str) or not job:
+            raise ValueError("String operationId and jobId required")
         plan = {
             "base": base,
             "definitions": definitions,
@@ -216,8 +236,6 @@ class Store:
             "mapping": mapping,
         }
         fingerprint = digest(plan)
-        if not operation or not job:
-            raise ValueError("operationId and jobId required")
         with self._transaction(hook):
             previous = self.marker(project, operation)
             if previous:
@@ -226,21 +244,28 @@ class Store:
                 return previous
             if self.revision(project) != base:
                 raise Conflict("Old projectRevision; re-preview required")
+            before_state = self.state(project)
             before_snapshot = self._snapshot(
                 {
                     "project": project,
                     "projectRevision": base,
                     "dependencyVector": self.vector(project),
-                    "state": self.state(project),
+                    "state": before_state,
                 }
             )
             changed: set[str] = set()
             for definition in definitions or []:
-                if set(definition) != {"layer", "id", "value"}:
+                if not isinstance(definition, dict) or set(definition) != {"layer", "id", "value"}:
                     raise ValueError("Definition requires layer/id/value")
                 layer, identity = definition["layer"], definition["id"]
-                if layer not in LAYERS or not isinstance(identity, str) or not identity:
+                if (
+                    not isinstance(layer, str)
+                    or layer not in LAYERS
+                    or not isinstance(identity, str)
+                    or not identity
+                ):
                     raise ValueError("Invalid definition layer/identity")
+                self._definition(definition["value"])
                 payload = canonical(definition["value"])
                 old = self._db.execute(
                     "SELECT payload FROM definitions WHERE project=? AND layer=? AND id=?",
@@ -257,6 +282,8 @@ class Store:
                     "SELECT * FROM facts WHERE project=? AND id=?", (project, identity)
                 ).fetchone()
                 if old:
+                    if old["object"] is None:
+                        continue  # Repeated deletion of a managed tombstone is a no-op.
                     if old["owner"]:
                         self._db.execute(
                             "UPDATE facts SET object=NULL WHERE project=? AND id=?",
@@ -308,6 +335,30 @@ class Store:
                 if self._replace_mapping(project, mapping):
                     changed.update({"facts:asserted", f"mapping:{mapping['id']}"})
             self._validate_references(project)
+            self._validate_single_slots(project)
+            after_state = self.state(project)
+            if after_state["facts"] == before_state["facts"]:
+                changed.discard("facts:asserted")
+            before_definitions = {
+                (d["layer"], d["id"]): d["payload"] for d in before_state["definitions"]
+            }
+            after_definitions = {
+                (d["layer"], d["id"]): d["payload"] for d in after_state["definitions"]
+            }
+            for key in tuple(changed):
+                category, identity_key = key.split(":", 1)
+                if category == "facts":
+                    continue
+                if before_definitions.get((category, identity_key)) != after_definitions.get(
+                    (category, identity_key)
+                ):
+                    continue
+                if category == "mapping":
+                    before_owned = [f for f in before_state["facts"] if f["owner"] == identity_key]
+                    after_owned = [f for f in after_state["facts"] if f["owner"] == identity_key]
+                    if before_owned != after_owned:
+                        continue
+                changed.discard(key)
             hook("mid_ownership")
             for key in sorted(changed):
                 family(key)
@@ -355,9 +406,57 @@ class Store:
         vector = {f"mapping:{owner}": row[0]}
         return {"generatedVersion": row[0], "stale": reasons(vector, self.vector(project))}
 
+    @staticmethod
+    def _definition(value: object) -> None:
+        if not isinstance(value, dict):
+            return  # Other definition payloads remain opaque canonical JSON in this spike.
+        if "references" in value and not isinstance(value["references"], list):
+            raise ValueError("Definition references must be a list")
+        if "triples" in value:
+            if not isinstance(value["triples"], list):
+                raise ValueError("Definition triples must be a list")
+            for triple in value["triples"]:
+                if not isinstance(triple, dict) or set(triple) != {
+                    "subject",
+                    "predicate",
+                    "object",
+                }:
+                    raise ValueError("Malformed definition triple")
+                iri(triple["subject"])
+                iri(triple["predicate"])
+                obj = triple["object"]
+                if not isinstance(obj, str) or term(obj).n3() != obj:
+                    raise ValueError("Canonical RDF object required in definition")
+        if "singleValuedPredicates" in value:
+            predicates = value["singleValuedPredicates"]
+            if not isinstance(predicates, list):
+                raise ValueError("singleValuedPredicates must be a list")
+            for predicate in predicates:
+                iri(predicate)
+
+    def _single_predicates(self, project: str) -> set[str]:
+        predicates = set()
+        for row in self._db.execute(
+            "SELECT payload FROM definitions WHERE project=? AND layer='ontology'", (project,)
+        ):
+            value = json.loads(row[0])
+            if isinstance(value, dict):
+                predicates.update(value.get("singleValuedPredicates", []))
+        return predicates
+
+    def _validate_single_slots(self, project: str) -> None:
+        for predicate in self._single_predicates(project):
+            if self._db.execute(
+                "SELECT subject FROM facts WHERE project=? AND predicate=? AND object IS NOT NULL "
+                "GROUP BY subject HAVING COUNT(*)>1 LIMIT 1",
+                (project, predicate),
+            ).fetchone():
+                raise Conflict("Single-valued declaration conflicts with existing facts")
+
     def _validate_references(self, project: str) -> None:
         for row in self._db.execute("SELECT payload FROM definitions WHERE project=?", (project,)):
             value = json.loads(row[0])
+            self._definition(value)
             if not isinstance(value, dict):
                 continue
             for reference in value.get("references", []):
@@ -370,14 +469,16 @@ class Store:
                     raise Conflict("Unresolved definition reference")
 
     def _check_slot(
-        self, project: str, subject: str, predicate: str, value: str, excluded: set[str]
+        self,
+        project: str,
+        subject: str,
+        predicate: str,
+        value: str,
+        excluded: set[str],
+        single_predicates: set[str] | None = None,
     ) -> None:
-        single = any(
-            predicate in json.loads(r[0]).get("singleValuedPredicates", [])
-            for r in self._db.execute(
-                "SELECT payload FROM definitions WHERE project=? AND layer='ontology'", (project,)
-            )
-            if isinstance(json.loads(r[0]), dict)
+        single = predicate in (
+            self._single_predicates(project) if single_predicates is None else single_predicates
         )
         for row in self._db.execute(
             "SELECT * FROM facts WHERE project=? AND subject=? AND predicate=?",
@@ -394,7 +495,13 @@ class Store:
                 )
 
     def _replace_mapping(self, project: str, mapping: dict) -> bool:
-        if set(mapping) != {"id", "rows"} or not mapping["id"]:
+        if (
+            not isinstance(mapping, dict)
+            or set(mapping) != {"id", "rows"}
+            or not isinstance(mapping["id"], str)
+            or not mapping["id"]
+            or not isinstance(mapping["rows"], list)
+        ):
             raise ValueError("Invalid mapping plan")
         owner = mapping["id"]
         old = self._db.execute("SELECT * FROM facts WHERE project=? AND owner=?", (project, owner))
@@ -404,11 +511,26 @@ class Store:
                     f"Manual drift: mapping={owner}, row={fact['source_row']}, "
                     f"slot={fact['subject']} {fact['predicate']}"
                 )
+        own_ids = {
+            r[0]
+            for r in self._db.execute(
+                "SELECT id FROM facts WHERE project=? AND owner=?", (project, owner)
+            )
+        }
+        single_predicates = self._single_predicates(project)
+        staged_slots = set()
         staged = []
         rows = set()
         identities = set()
         for row in mapping["rows"]:
-            if set(row) != {"row", "facts"} or not row["row"] or row["row"] in rows:
+            if (
+                not isinstance(row, dict)
+                or set(row) != {"row", "facts"}
+                or not isinstance(row["row"], str)
+                or not row["row"]
+                or row["row"] in rows
+                or not isinstance(row["facts"], list)
+            ):
                 raise ValueError("Empty/duplicate source row")
             rows.add(row["row"])
             for fact in row["facts"]:
@@ -416,25 +538,18 @@ class Store:
                 if fact["id"] in identities:
                     raise Conflict("Multiple source rows support same fact")
                 identities.add(fact["id"])
-                own_ids = {
-                    r[0]
-                    for r in self._db.execute(
-                        "SELECT id FROM facts WHERE project=? AND owner=?", (project, owner)
-                    )
-                }
                 self._check_slot(
-                    project, fact["subject"], fact["predicate"], fact["object"], own_ids
+                    project,
+                    fact["subject"],
+                    fact["predicate"],
+                    fact["object"],
+                    own_ids,
+                    single_predicates,
                 )
-                single = any(
-                    fact["predicate"] in json.loads(r[0]).get("singleValuedPredicates", [])
-                    for r in self._db.execute(
-                        "SELECT payload FROM definitions WHERE project=? AND layer='ontology'",
-                        (project,),
-                    )
-                    if isinstance(json.loads(r[0]), dict)
-                )
-                if single and any(t[2:4] == (fact["subject"], fact["predicate"]) for t in staged):
+                slot = (fact["subject"], fact["predicate"])
+                if fact["predicate"] in single_predicates and slot in staged_slots:
                     raise Conflict("Single-valued mapping slot has multiple values")
+                staged_slots.add(slot)
                 staged.append(
                     (
                         project,
@@ -506,7 +621,7 @@ class Store:
         implementation: dict[str, str],
     ) -> str:
         """Append result evidence, publish current only after in-transaction revalidation."""
-        required = {"executionSemanticsVersion", "engineVersion", "dependencyLockHash"}
+        required = set(RULES["implementationCompatibility"]["identityKeys"])
         if set(implementation) != required or not all(
             isinstance(value, str) and value for value in implementation.values()
         ):
@@ -515,9 +630,27 @@ class Store:
             snap = self.load_snapshot(snapshot)
             if snap["project"] != project:
                 raise Conflict("Cross-project snapshot")
+            if not isinstance(dependencies, list) or not dependencies:
+                raise ValueError("At least one registered dependency required")
+            for key in dependencies:
+                category = family(key)
+                if key == "facts:asserted":
+                    continue  # Explicit canonical scope exists even for an empty project.
+                _, identity_key = key.split(":", 1)
+                registered = any(
+                    d["layer"] == category and d["id"] == identity_key
+                    for d in snap["state"]["definitions"]
+                )
+                registered_mapping = (
+                    category == "mapping" and identity_key in snap["state"]["mappingState"]
+                )
+                if (
+                    not registered
+                    and not registered_mapping
+                    and key not in snap["dependencyVector"]
+                ):
+                    raise ValueError(f"Unresolved snapshot dependency: {key}")
             vector = {key: snap["dependencyVector"].get(key, 0) for key in dependencies}
-            for key in vector:
-                family(key)
             stale = reasons(vector, self.vector(project))
             identity = str(uuid4())
             cache_key = digest(
@@ -543,7 +676,7 @@ class Store:
                 ),
             )
             self._db.execute("INSERT INTO result_state VALUES(?,?)", (identity, canonical(stale)))
-            if not stale:
+            if can_publish_current(snap["projectRevision"], self.revision(project), stale):
                 self._db.execute(
                     "INSERT OR REPLACE INTO current_results VALUES(?,?,?,?)",
                     (project, kind, canonical(implementation), identity),
@@ -563,6 +696,10 @@ class Store:
                 self._db.execute("DELETE FROM current_results WHERE result=?", (row["id"],))
 
     def result(self, identity: str) -> dict:
+        with self._read():
+            return self._result(identity)
+
+    def _result(self, identity: str) -> dict:
         row = self._db.execute(
             "SELECT r.*,s.stale FROM results r JOIN result_state s ON s.result=r.id WHERE r.id=?",
             (identity,),
@@ -572,9 +709,19 @@ class Store:
         result = dict(row)
         for key in ("payload", "dependencies", "implementation", "stale"):
             result[key] = json.loads(result[key]) if result[key] is not None else None
+        is_current = self._db.execute(
+            "SELECT 1 FROM current_results WHERE result=?", (identity,)
+        ).fetchone()
+        result["state"] = (
+            "stale" if result["stale"] else ("current" if is_current else "historical")
+        )
         return result
 
     def current(self, project: str, kind: str, implementation: dict[str, str]) -> dict | None:
+        with self._read():
+            return self._current(project, kind, implementation)
+
+    def _current(self, project: str, kind: str, implementation: dict[str, str]) -> dict | None:
         row = self._db.execute(
             "SELECT result FROM current_results WHERE project=? AND kind=? AND implementation=?",
             (project, kind, canonical(implementation)),
@@ -637,8 +784,28 @@ class Store:
         """Persist a prepared complete round, not an E.2 executor."""
         if not isinstance(operation, str) or not operation or not isinstance(job, str) or not job:
             raise ValueError("operationId and jobId required")
+        if type(number) is not int or not 1 <= number <= 1000:
+            raise ValueError("Integer round number must be 1..1000")
         with self._transaction(hook):
             record = self._run(run)
+            round_payload = {
+                "project": record["project"],
+                "run": run,
+                "round": number,
+                "state": state,
+            }
+            previous = self._db.execute(
+                "SELECT * FROM rounds WHERE operation=?", (operation,)
+            ).fetchone()
+            if previous:
+                if (
+                    previous["run"] != run
+                    or previous["number"] != number
+                    or previous["job"] != job
+                    or previous["snapshot"] != digest(round_payload)
+                ):
+                    raise Conflict("Round operationId reused with different content/run/job")
+                return previous["snapshot"]
             if self._db.execute("SELECT 1 FROM run_terminal WHERE run=?", (run,)).fetchone():
                 raise Conflict("Terminal run is immutable")
             last = self.progress(run)
@@ -653,9 +820,7 @@ class Store:
                 raise ValueError("maxRounds must be 1..1000")
             if number > maximum:
                 raise Conflict("Round limit")
-            identity = self._snapshot(
-                {"project": record["project"], "run": run, "round": number, "state": state}
-            )
+            identity = self._snapshot(round_payload)
             hook("mid_data")
             self._db.execute(
                 "INSERT INTO rounds VALUES(?,?,?,?,?)", (run, number, identity, operation, job)

@@ -70,7 +70,7 @@ assert health_result["result"]["capabilities"] == ["health"]
 # Package the data contract as well as actual RDFLib plugin/metadata resources.
 package_dir = executable.parent
 files = [p for p in package_dir.rglob("*") if p.is_file()]
-assert any(p.name == "invalidation-v1.json" for p in files)
+assert any(p.name == "invalidation-v2.json" for p in files)
 licenses = []
 for name in ("rdflib", "pyparsing"):
     dist = distribution(name)

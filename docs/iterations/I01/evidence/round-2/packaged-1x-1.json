@@ -1,0 +1,66 @@
+{
+  "scale": 1,
+  "trial": 1,
+  "seed": 20261019,
+  "triples": 18,
+  "inputSha256": "b0bcc466774f37d4f6a520900b8e7caa5f4fb7f827bbcf8c5ad0e9d12946ea0c",
+  "querySha256": "7879b25f2833b8e485b53d3f6664220836ada716ec29ae7de82f907eae014ab5",
+  "result": ["urn:case:0:alarm/A01"],
+  "expected": ["urn:case:0:alarm/A01"],
+  "snapshotId": "71930b09f2647f134670536bb2d4e24272c574d8c248d3795cf3ccf0cda2ba52",
+  "measurement": {
+    "snapshotLoad": {
+      "elapsedNs": 215000,
+      "pythonBytesBefore": 320,
+      "pythonBytesAfter": 10668,
+      "pythonBytesPeak": 41034,
+      "processHighWaterRssBytes": 39026688
+    },
+    "rdflibBuild": {
+      "elapsedNs": 6094167,
+      "pythonBytesBefore": 11261,
+      "pythonBytesAfter": 152558,
+      "pythonBytesPeak": 154921,
+      "processHighWaterRssBytes": 39206912
+    },
+    "fixedSelect": {
+      "elapsedNs": 543028916,
+      "pythonBytesBefore": 152622,
+      "pythonBytesAfter": 7884415,
+      "pythonBytesPeak": 7890226,
+      "processHighWaterRssBytes": 52838400
+    },
+    "snapshotLoadWarm": {
+      "elapsedNs": 318791,
+      "pythonBytesBefore": 7885148,
+      "pythonBytesAfter": 7895456,
+      "pythonBytesPeak": 7925822,
+      "processHighWaterRssBytes": 52903936
+    },
+    "rdflibBuildWarm": {
+      "elapsedNs": 7708458,
+      "pythonBytesBefore": 7885448,
+      "pythonBytesAfter": 7905951,
+      "pythonBytesPeak": 7984289,
+      "processHighWaterRssBytes": 53051392
+    },
+    "fixedSelectWarm": {
+      "elapsedNs": 9359417,
+      "pythonBytesBefore": 7906015,
+      "pythonBytesAfter": 7951623,
+      "pythonBytesPeak": 8048920,
+      "processHighWaterRssBytes": 53100544
+    }
+  },
+  "device": "macOS-27.0.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "python": "3.12.12",
+  "sqlite": "3.50.4",
+  "rdflib": "7.6.0",
+  "condition": "store reopened; OS cache uncontrolled; Warm phases repeat in process",
+  "method": "perf_counter_ns; tracemalloc phase peaks; process lifetime ru_maxrss",
+  "rssAvailable": true,
+  "runtime": "packaged",
+  "processElapsedNs": 671347625,
+  "stderr": ""
+}

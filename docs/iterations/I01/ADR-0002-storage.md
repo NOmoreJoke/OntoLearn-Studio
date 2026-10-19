@@ -6,7 +6,7 @@
 
 SQLite（外键开启、FULL synchronous、BEGIN IMMEDIATE）是唯一可变项目源真相。正式写入只经 `Store.commit`，RDFLib 的内存图由不可变规范快照重建，不能反写数据库。此次不引入第二份可变三元组真相。
 
-`projectRevision` 用于正式 ChangeSet 乐观并发；实际领域依赖使用独立版本向量；执行语义、引擎和依赖锁标识用于实现隔离。`kind` 是业务结果定义身份（例如 `query:Q1:asserted`），调用服务必须同时记录真实数据范围和全部实际依赖。当前 API 是 Python spike 内部接口，未暴露 IPC、Agent 或 UI。后续应用服务负责业务 schema、预览及确认，不允许跳过这些步骤直接使用存储接口。
+`projectRevision` 用于正式 ChangeSet 乐观并发；实际领域依赖使用独立版本向量；执行语义、引擎和依赖锁标识用于实现隔离。`kind` 是业务结果定义身份（例如 `query:Q1:asserted`），调用服务必须同时记录真实数据范围和全部实际依赖。派生结果发布必须声明非空且在输入快照中已登记的依赖（空项目也有显式 `facts:asserted` 范围）；存储层不猜测遗漏的业务依赖，完整依赖集合由 I03 能力契约强制派生。当前 API 是 Python spike 内部接口，未暴露 IPC、Agent 或 UI。后续应用服务负责业务 schema、预览及确认，不允许跳过这些步骤直接使用存储接口。
 
 ## 最小格式 v2 与接口
 
@@ -26,26 +26,35 @@ SQLite `user_version=2`，格式 1 是本 spike 迁移输入样例，没有发�
 
 新建事实 ID 是初始三元组规范数组的 SHA-256；对象必须等于 `term(value).n3()`，统一 xsd:string/语言标签及字面量词法后派生身份，非规范别名拒绝提交；显式 `edits={factId:object}` 保持记录身份与映射基线，不能用新增事实暗中接管所有权。`manual` 只新增，`remove` 删除手工事实或为受管事实设置墓碑。映射计划是 `{id,rows:[{row,facts}]}`，由未来业务层预先校验与预览，不能称为 CSV 映射能力已完成。
 
-所有共享同一事实的多来源支持均拒绝；不同事实的多值关系可并存。声明在 ontology value 的 `singleValuedPredicates` 列表中的谓语，额外检查单值 slot 冲突。人工修改的受管记录与 `managed_value` 不符时，重跑停止，保留映射/源行/slot 定位；没有静默恢复或合并接口。整个计划的显式 definition `references` 必须可解析，IRI/词法项及引用形状失败均回滚；完整附录 C 业务语义属于后续能力实现。
+所有共享同一事实的多来源支持均拒绝；不同事实的多值关系可并存。单值声明的唯一执行格式是 ontology value 顶层的 `singleValuedPredicates` 绝对 IRI 列表，作用域为全项目并集；`properties.P.single` 等描述字段不被当作执行约束。G-behavior 已显式添加可执行列表。提交时也检查声明与既有事实是否冲突，不能引入相互矛盾的单值状态。人工修改或人工删除（墓碑）的受管记录与 `managed_value` 不符时，重跑停止，保留映射/源行/slot 定位；没有静默恢复或合并接口。恢复路径是一个新的、预览并单独确认的 ChangeSet，通过 `edits={factId:managed_value}` 显式放弃人工值或人工删除，再重新预览/提交映射；存储 API 不冒充已实现确认 UI。整个计划的显式 definition `references` 必须可解析，事实与显式 ontology `triples` 均校验绝对 IRI、规范 RDF 对象和完整三元组形状，引用形状失败也回滚；其他定义 payload 的领域语义不由本 spike 猜测；完整附录 C 业务语义属于后续能力实现。
 
-同一事务包括：基准复验、正式数据、所有权、版本、受影响结果过期、前后快照、operation/job 标记。提交前和事务中取消/异常回滚，提交成功后才收到取消或响应丢失，不能撤销已提交事实；通过 `marker(project,operation)` 对账。同 operation/job/计划重试返回原标记，不重复写入；身份重复但内容不同拒绝。
+同一事务包括：基准复验、正式数据、所有权、版本、受影响结果过期、前后快照、operation/job 标记。提交前和事务中取消/异常回滚，提交成功后才收到取消或响应丢失，不能撤销已提交事实；必须另外通过 `marker(project,operation)` 对账；异常本身不能证明事务未提交，提交后投递失败不会返回普通成功值。I03/I04 必须以持久记录协调终态，不盲目重发写入。同 operation/job/计划重试返回原标记，不重复写入；身份重复但内容不同拒绝。
 
-`start_run` 显式绑定项目快照，`commit_round` 接受已由未来 E.2 执行器计算的完整轮次，不实现行为或资源模拟。轮次连续、最大 1–1000、单轮快照及提交标记原子；终态后拒绝写轮次。取消保留前轮，`progress` 零轮为 null，其余提供 runId/lastCommittedRound/snapshotRef。新运行必须显式传入快照，不自动续跑。轮次、运行输入和终态有 SQL 不可变触发器；正式提交、快照同样不可改写。
+`start_run` 显式绑定项目快照，`commit_round` 接受已由未来 E.2 执行器计算的完整轮次，不实现行为或资源模拟。轮次连续、最大 1–1000、单轮快照及提交标记原子；同 operation/run/round/job/内容重试返回原快照（终态后也只返回既有证据），不同内容或跨运行复用 operation 抛 Conflict。终态后拒绝写轮次。取消保留前轮，`progress` 零轮为 null，其余提供 runId/lastCommittedRound/snapshotRef。新运行必须显式传入快照，不自动续跑。轮次、运行输入和终态有 SQL 不可变触发器；正式提交、快照同样不可改写。
 
 ## 依赖与派生结果
 
-唯一机器规则来源是 `packages/engine/src/ontolearn_engine/invalidation-v1.json`。D.2 前八行对应八类原因，第九行 model 的原因是 null；历史、失败、取消及实现不兼容均不进入 staleReason。原因记录 dependency、before、after，可多原因并存。规则明细及九行正反例见 acceptance.md。
+唯一机器规则来源是 `packages/engine/src/ontolearn_engine/invalidation-v2.json`。D.2 前八行对应八类原因，第九行 model 的原因是 null；历史、失败、取消及实现不兼容均不进入 staleReason。原因记录 dependency、before、after，可多原因并存。规则明细及九行正反例见 acceptance.md。
 
-发布结果时在事务内复验依赖；旧快照结果保留为可查看记录，不进入当前指针。替换推导只替换同业务结果身份的指针，断言与历史不变。仅改模型配置或无关项目元数据不会使领域结果过期。当前实现默认隔离不同 engine/semantics/lock；没有未经验证的兼容版本复用。
+发布结果时在事务内复验依赖，并要求输入快照 projectRevision 等于当前正式 revision；即使领域依赖未变，旧快照迟到也只保留为历史，不覆盖当前指针。读取结果显式区分 current/stale/historical。已有领域结果不因无关元数据或模型配置变化被错误失效；这与“迟到的新发布不得回退快照版本”分别处理。替换推导只替换同业务结果身份的指针，断言与历史不变。仅改模型配置或无关项目元数据不会使领域结果过期。v2 JSON 将 implementationCompatibility 与 publicationPolicy 单列（都不是 staleReason）；当前实现默认隔离不同 engine/semantics/lock；没有未经验证的兼容版本复用。
 
 `collect_cache` 只置空未被报告 pin、未作为当前结果的可重建载荷；状态、定义、来源、输入快照仍保留。运行每轮状态在不可变快照中，不属于这类载荷。此 spike 保守保留全部快照，没有快照 GC；用户明确删除运行、产品报告生命周期和存储压缩留待对应业务，不伪称完成 FR-705 全功能。
 
 ## 迁移与恢复
 
-v0 建立格式 1，再在同一事务升级 v2。v1→v2 增加 mapping_state、commit_evidence 和按实现隔离的当前指针。旧格式无法证明映射生成版本时写 -1，显示过期，要求重新检查/生成；不猜测已知。旧提交缺少前后引用时保持空引用，不承诺已有撤销依据。迁移失败回滚 DDL/版本及数据，重开可重试。未来格式拒绝打开，不静默改写。`backup(newPath)` 使用 SQLite 在线备份、禁止覆盖目标，可恢复全部当前数据和所有权；它不是带范围选择的 FR-1000 导出 UI。
+v0 建立格式 1，再在同一事务升级 v2。v1→v2 增加 mapping_state、commit_evidence 和按实现隔离的当前指针。旧格式无法证明映射生成版本时写 -1，显示过期，要求重新检查/生成；不猜测已知。旧提交缺少前后引用时保持空引用，不承诺已有撤销依据。已为当前格式时直接打开，不取得迁移写锁；需要迁移时取得事务写锁后重新读取格式版本，防止两个 opener 使用旧版本做重复 DDL。迁移 hook 贯穿提交前、中、后，覆盖新建、回填、触发器、当前指针重建、版本更新及进程退出；失败回滚 DDL/版本及数据，重开可重试。提交后注入异常时格式已经成功持久化，重开不得倒退。未来格式拒绝打开，不静默改写。`backup(newPath)` 使用 SQLite 在线备份、禁止覆盖目标，可恢复全部当前数据和所有权；它不是带范围选择的 FR-1000 导出 UI。
 
 ## 测量与采用限制
 
-真实 RDFLib 7.6.0 与 pyparsing 固定在 uv.lock。合成图使用独立命名空间，18 / 180 三元组，固定 SELECT、稳定完整预期集合，分别保存快照加载、规范事实建图、查询及热重复的时间/内存原始值。数据/查询摘要、设备、库版本、种子、重复次数、OS cache 未控制的条件均在 evidence JSON。种子为固定元数据；生成器无随机分支。
+真实 RDFLib 7.6.0 与 pyparsing 固定在 uv.lock。探针的 Unix resource 可选：不可用时 RSS 为 null 且 method/rssAvailable 明示，tracemalloc 仍记录；普通 health 惰性隔离探针依赖。合成图使用独立命名空间，18 / 180 三元组，固定 SELECT、稳定完整预期集合，分别保存快照加载、规范事实建图、查询及热重复的时间/内存原始值。数据/查询摘要、设备、库版本、种子、重复次数、OS cache 未控制的条件均在 evidence JSON。种子为固定元数据；生成器无随机分支。
 
 这些小样本用于提前发现路线/打包错误，Q5 未定，不证明业务容量足够。此次仅承诺固定只读样例、规范事实重建及基础打包；完整 RDFS/规则/pySHACL、网络拒绝矩阵在 I05。无桌面/bridge 改动，不新增 renderer 能力。干净设备、无系统 Python、断网安装、签名与跨平台尚未验证。
+
+## Round 2 接口澄清与保留限制
+
+- `projectRevision` 对每个成功 operation 推进，事实/定义依赖版本仅在相应终态内容改变时推进；重复墓碑删除及同批删除再加回完全相同手工事实不产生领域失效。依赖是否完整仍须由后续能力契约约束，登记校验不能证明调用者没有漏报。
+- history 的 replayable 只表达本 spike 对保存输入/配置/版本形状齐全的检查，不代表真实行为/沙盘执行器或重放功能已实现；当前产品正式能力仍仅 health。缺失或形状不全明确 false，后续还需核对实际执行语义支持与业务输入内容。
+- 错误面保持内部 API 的现状：Conflict 表示基线/所有权/轮次身份冲突，ValueError 表示存储形状错误，KeyError 表示读取身份缺失；SQLite I/O/锁/唯一性错误可原样抛出（例如重复 pin/重复 finish_run）。移除未知事实当前为可审计 no-op，终态不可改写。I03/I04 统一转换为受限结构化错误，不向 UI 或模型转发原始业务异常。此处没有提前实施 v2 协议或错误码体系。
+- 映射替换现为循环外预取 owner IDs 与项目单值集合，减少重复查询/解析；未测量性能改善，不作倍数或时延承诺。
+- 完整前后快照和保守保留继续作为正确性优先的 spike 选择，存储随历史增长；Q5 未定，不宣布容量达标。压缩/差分快照留待真实负载与兼容性设计后评估，不能清理不可变历史来冒充优化。
+- Round 1 原始验证保留于 evidence 根目录（关联 6d8e4b3）；新候选最终验证与打包测量单独存于 evidence/round-2，不覆盖原记录。

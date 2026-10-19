@@ -17,17 +17,17 @@
 
 依赖键格式 `family:identity`，结果只订阅实际依赖。手工事实使用 `facts:asserted`；映射定义 value 记录 sourceHash/身份规则/版本；`mapping:M1` 同时覆盖对应输入与生成数据状态。业务后续须由能力定义派生真实依赖，不能任意省略依赖来保持当前。
 
-| 行  | 变化与原因码                               | 正例                                                | 反例                                                      |
-| --- | ------------------------------------------ | --------------------------------------------------- | --------------------------------------------------------- |
-| 1   | ontology → ONTOLOGY_CHANGED                | 订阅 ontology:one 的结果过期                        | 只订阅 ontology:other 不过期；同版本不过期                |
-| 2   | facts → FACTS_CHANGED                      | 订阅 facts:asserted 的结果在事实新增后过期          | 不相关 facts:other 不过期；完全相同人工事实不推进事实版本 |
-| 3   | mapping → MAPPING_INPUT_CHANGED            | 定义/源 hash/身份规则变化，依赖结果及旧生成数据过期 | 不相关映射不过期；相同映射计划重跑事实集合不变            |
-| 4   | constraint → VALIDATION_DEFINITION_CHANGED | 对应约束/验证范围改变过期                           | 不相关约束或范围不过期                                    |
-| 5   | rule → RULE_CHANGED                        | 对应规则定义/启停改变过期                           | 不相关规则不过期；断言不删除                              |
-| 6   | behavior → BEHAVIOR_CHANGED                | 对应行为定义/优先级/启停改变过期                    | 不相关行为不过期；历史状态不改写                          |
-| 7   | scenario → SCENARIO_CHANGED                | 对应场景初态/事件/参数/资源/指标改变过期            | 不相关场景不过期；旧运行仍可查看                          |
-| 8   | query → QUERY_CHANGED                      | 对应查询文本/范围改变过期                           | 不相关查询不过期                                          |
-| 9   | model → null                               | model:one 真正改变，订阅它也没有领域 staleReason    | 无关模型变化同样不过期；不生成第九种原因                  |
+| 行  | 变化与原因码                               | 正例                                                | 反例                                                              |
+| --- | ------------------------------------------ | --------------------------------------------------- | ----------------------------------------------------------------- |
+| 1   | ontology → ONTOLOGY_CHANGED                | 订阅 ontology:one 的结果过期                        | 只订阅 ontology:other 不过期；同版本不过期                        |
+| 2   | facts → FACTS_CHANGED                      | 订阅 facts:asserted 的结果在事实新增后过期          | 独立已登记 query:unrelated 不过期；完全相同人工事实不推进事实版本 |
+| 3   | mapping → MAPPING_INPUT_CHANGED            | 定义/源 hash/身份规则变化，依赖结果及旧生成数据过期 | 不相关映射不过期；相同映射计划重跑事实集合不变                    |
+| 4   | constraint → VALIDATION_DEFINITION_CHANGED | 对应约束/验证范围改变过期                           | 不相关约束或范围不过期                                            |
+| 5   | rule → RULE_CHANGED                        | 对应规则定义/启停改变过期                           | 不相关规则不过期；断言不删除                                      |
+| 6   | behavior → BEHAVIOR_CHANGED                | 对应行为定义/优先级/启停改变过期                    | 不相关行为不过期；历史状态不改写                                  |
+| 7   | scenario → SCENARIO_CHANGED                | 对应场景初态/事件/参数/资源/指标改变过期            | 不相关场景不过期；旧运行仍可查看                                  |
+| 8   | query → QUERY_CHANGED                      | 对应查询文本/范围改变过期                           | 不相关查询不过期                                                  |
+| 9   | model → null                               | model:one 真正改变，订阅它也没有领域 staleReason    | 无关模型变化同样不过期；不生成第九种原因                          |
 
 正反例由 test_nine_appendix_d_rows_positive_and_negative 参数化执行。实现来源升级是缓存兼容隔离，失败/取消是运行终态，历史是输入身份；三者不混入 staleReason。
 
@@ -56,3 +56,17 @@ E.5 以原表完整逐轮 created/completed/backlog/累计完成集合写入隔�
 原始命令输出、两档各三次新进程测量与包内同样例在 evidence/。加载/建图/查询使用 perf_counter_ns，内存记录 tracemalloc 当前/峰值及进程 lifetime ru_maxrss；RSS不是单阶段增量，OS缓存未清除，Warm 是同进程第二次调用。两档很小，不外推容量，也不量化未测的性能改善。
 
 npm run check 覆盖静态/类型/构建及单元运行；verify:sources 覆盖原归档。真实 package:dir 加包内引擎样例属于本机 macOS arm64 开发产物证据；不覆盖安装、签名、其他平台或生产。无桌面/bridge实现改动，test:e2e 不作为新增桌面能力证据；现有 health 对包内引擎另做基础回归。
+
+## Round 2 补强验收
+
+首轮报告原样保留于 docs/reviews/I01/round-1；修复与延期的逐项决定见其 processing.md。原 S1 范围和全部退出门槛未缩减。
+
+- 迟到快照：领域依赖未变（仅模型配置变更）后，新 revision 的结果已发布，旧 revision 晚完成也只能为 historical，staleReason 为空；新当前指针不回退。已有结果不因该模型变更被失效。
+- 依赖登记：拒绝空依赖、未知定义身份、非字符串键；D.2 正反例改为先保存真实定义再订阅，避免使用未解析的虚构 identity。facts:asserted 是空项目也存在的显式范围。
+- 定义级校验：非法 IRI、缺字段、非规范 RDF 词法均在 commit 内拒绝；有效 ontology triples 可重建。同批其他事实/版本/标记也必须回滚。单值列表格式/全项目作用域明确，G-behavior 真实声明同一格式。
+- 迁移：v1→v2 十一个注入点分别执行异常和真实子进程退出；v0 新建另覆盖 v1_created、版本更新、提交前后。提交前失败恢复原数据/全部表结构/版本；提交后异常恢复已完成 v2。并发 opener 在锁内重读版本；已有 v2 在另一个写者持锁时仍可打开读取。
+- 标记与 no-op：正式 ID 类型拒绝；轮次成功但响应丢失后相同 operation/run/job/内容重试返回原快照，不重复写轮次；跨运行或内容变化拒绝。重复墓碑和同批净零事实改动不推进事实版本，墓碑经显式确认后的 edits 恢复后可重新映射。
+- 平台：通过导入拦截模拟缺少 resource 与禁止探针模块，确认普通 health 可用；RSS 不可用时为 null 且明确标记。此为本机模拟，实际 Windows CI 须在双审通过后推送 PR 再核验，不能冒称已实跑。
+- 当前机器可读契约为 invalidation-v2.json，D.2 原九行仍保持八种 staleReason 与 model→null；实现隔离与发布策略单列，无新增领域过期原因。
+
+最终新候选命令输出和 12 条原始测量位于 evidence/round-2；根目录原 evidence 对应首轮 6d8e4b3，按其固定提交仍可复现。

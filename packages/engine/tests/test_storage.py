@@ -58,7 +58,14 @@ def db(tmp_path):
     path = tmp_path / "project.db"
     store = Store(path)
     store.create_project("p")
-    store.commit("p", 0, "initial", "initial-job", mapping=mapped())
+    store.commit(
+        "p",
+        0,
+        "initial",
+        "initial-job",
+        mapping=mapped(),
+        definitions=[{"layer": "rule", "id": "risk", "value": {"enabled": True}}],
+    )
     yield store
     store.close()
 
@@ -183,32 +190,33 @@ def test_invalid_plan_rolls_back_and_operation_reconciliation(db):
 @pytest.mark.parametrize("rule", RULES["rules"], ids=lambda r: f"D{r['appendixRow']}")
 def test_nine_appendix_d_rows_positive_and_negative(db, rule):
     category = rule["family"]
-    key = f"{category}:one"
+    key = "facts:asserted" if category == "facts" else f"{category}:one"
+    unrelated_key = "query:unrelated" if category == "facts" else f"{category}:other"
+    seeds = (
+        [{"layer": "query", "id": "unrelated", "value": {}}]
+        if category == "facts"
+        else [
+            {"layer": category, "id": identity, "value": {"initial": True}}
+            for identity in ("one", "other")
+        ]
+    )
+    db.commit("p", 1, "declare-dependencies", "job", definitions=seeds)
     snap = db.snapshot("p")
     relevant = db.publish("p", snap, [key], "relevant", [1], IMPL)
-    unrelated = db.publish("p", snap, [f"{category}:other"], "unrelated", [2], IMPL)
+    unrelated = db.publish("p", snap, [unrelated_key], "unrelated", [2], IMPL)
     if category == "facts":
-        # Canonical facts use asserted scope.
-        relevant = db.publish("p", snap, ["facts:asserted"], "relevant", [1], IMPL)
-        db.commit("p", 1, "change", "job", manual=[fact("urn:other")])
+        db.commit("p", 2, "change", "job", manual=[fact("urn:other")])
     else:
         db.commit(
             "p",
-            1,
+            2,
             "change",
             "job",
             definitions=[{"layer": category, "id": "one", "value": {"changed": True}}],
         )
     stale = db.result(relevant)["stale"]
     if rule["staleReason"]:
-        assert stale == [
-            {
-                "code": rule["staleReason"],
-                "dependency": ("facts:asserted" if category == "facts" else key),
-                "before": (1 if category == "facts" else 0),
-                "after": (2 if category == "facts" else 1),
-            }
-        ]
+        assert stale == [{"code": rule["staleReason"], "dependency": key, "before": 1, "after": 2}]
     else:
         assert stale == []
     assert db.result(unrelated)["stale"] == []
@@ -325,8 +333,9 @@ def test_migration_failure_backup_restore_and_future_format(db, tmp_path):
     copy.execute("PRAGMA user_version=1")
     copy.close()
 
-    def fail(_):
-        raise RuntimeError("migration injected failure")
+    def fail(point):
+        if point == "migration_mid":
+            raise RuntimeError("migration injected failure")
 
     with pytest.raises(RuntimeError):
         Store(backup, migration_hook=fail)
@@ -466,17 +475,17 @@ def test_explicit_manual_edits_multivalue_noop_and_single_slot(db):
     before = db.vector("p")
     db.commit("p", 4, "manual-again", "job", manual=[fact("urn:manual")])
     assert db.vector("p") == before
-    db.commit(
-        "p",
-        5,
-        "single",
-        "job",
-        definitions=[
-            {"layer": "ontology", "id": "single", "value": {"singleValuedPredicates": ["urn:name"]}}
-        ],
-    )
+    definition = {
+        "layer": "ontology",
+        "id": "single",
+        "value": {"singleValuedPredicates": ["urn:name"]},
+    }
+    with pytest.raises(Conflict, match="Single-valued declaration"):
+        db.commit("p", 5, "invalid-single", "job", definitions=[definition])
+    db.commit("p", 5, "drop-M2", "job", mapping={"id": "M2", "rows": []})
+    db.commit("p", 6, "single", "job", definitions=[definition])
     with pytest.raises(Conflict, match="Ownership"):
-        db.commit("p", 6, "single-conflict", "job", manual=[fact("urn:manual", '"other"')])
+        db.commit("p", 7, "single-conflict", "job", manual=[fact("urn:manual", '"other"')])
 
 
 def test_reference_check_and_incomplete_replay_are_explicit(db):
@@ -590,3 +599,395 @@ def test_rdf_lexical_alias_cannot_bypass_ownership(db, value):
     with pytest.raises(ValueError, match="Canonical"):
         db.commit("p", 1, "alias-manual", "job", manual=[fact(value=value)])
     assert db.state("p") == before
+
+
+def test_late_snapshot_without_domain_change_stays_history_and_cannot_displace_current(db):
+    first_input = db.snapshot("p")
+    first = db.publish("p", first_input, ["facts:asserted"], "query", ["old"], IMPL)
+    db.commit(
+        "p",
+        1,
+        "model-only",
+        "job",
+        definitions=[{"layer": "model", "id": "gateway", "value": {"displayName": "new"}}],
+    )
+    assert db.result(first)["stale"] == []
+    assert db.current("p", "query", IMPL)["id"] == first  # no meaningless invalidation
+    latest_input = db.snapshot("p")
+    latest = db.publish("p", latest_input, ["facts:asserted"], "query", ["new"], IMPL)
+    late = db.publish("p", first_input, ["facts:asserted"], "query", ["late"], IMPL)
+    assert db.result(late)["stale"] == []  # historical identity is not a staleReason
+    assert db.result(late)["state"] == "historical"
+    assert db.current("p", "query", IMPL)["id"] == latest
+    assert db.result(first)["state"] == "historical"
+    assert db.result(latest)["state"] == "current"
+
+
+@pytest.mark.parametrize(
+    "dependencies",
+    [[], ["query:unknown"], ["rule:unknown"], ["facts:asserted", "scenario:unknown"], [42]],
+)
+def test_unregistered_or_empty_dependencies_cannot_be_published(db, dependencies):
+    with pytest.raises(ValueError):
+        db.publish("p", db.snapshot("p"), dependencies, "query", [1], IMPL)
+    assert db.current("p", "query", IMPL) is None
+
+
+@pytest.mark.parametrize(
+    "triple",
+    [
+        {"subject": "relative", "predicate": "urn:p", "object": '"x"'},
+        {"subject": "urn:s", "predicate": "urn:p"},
+        {"subject": "urn:s", "predicate": "urn:p", "object": '"""alias"""'},
+        {"subject": "urn:s", "predicate": "urn:p", "object": "<relative>"},
+    ],
+)
+def test_invalid_ontology_triples_fail_in_commit_not_later_graph_build(db, triple):
+    before = db.state("p")
+    with pytest.raises(ValueError):
+        db.commit(
+            "p",
+            1,
+            "bad-definition",
+            "job",
+            definitions=[{"layer": "ontology", "id": "bad", "value": {"triples": [triple]}}],
+            manual=[fact("urn:other")],
+        )
+    assert db.state("p") == before
+    assert db.revision("p") == 1
+    assert db.marker("p", "bad-definition") is None
+
+
+def test_valid_ontology_triples_are_normalized_and_rebuilt(db):
+    from ontolearn_engine.rdf_snapshot import graph_from_snapshot
+    from rdflib import Literal, URIRef
+
+    db.commit(
+        "p",
+        1,
+        "ontology",
+        "job",
+        definitions=[
+            {
+                "layer": "ontology",
+                "id": "axiom",
+                "value": {
+                    "triples": [
+                        {"subject": "urn:class", "predicate": "urn:label", "object": '"设备"@zh'}
+                    ]
+                },
+            }
+        ],
+    )
+    assert (URIRef("urn:class"), URIRef("urn:label"), Literal("设备", lang="zh")) in (
+        graph_from_snapshot(db.load_snapshot(db.snapshot("p")))
+    )
+
+
+def make_legacy(path):
+    connection = sqlite3.connect(path)
+    for statement in SCHEMA:
+        connection.execute(statement)
+    connection.execute("INSERT INTO projects VALUES('p',1)")
+    f = fact()
+    connection.execute(
+        "INSERT INTO facts VALUES(?,?,?,?,?,?,?,?)",
+        ("p", f["id"], f["subject"], f["predicate"], f["object"], "M1", "001", f["object"]),
+    )
+    connection.execute("INSERT INTO versions VALUES('p','facts:asserted',1)")
+    connection.execute("INSERT INTO versions VALUES('p','mapping:M1',1)")
+    connection.execute("PRAGMA user_version=1")
+    connection.commit()
+    connection.close()
+
+
+MIGRATION_POINTS = [
+    "before",
+    "mapping_state_created",
+    "mapping_state_backfilled",
+    "commit_evidence_created",
+    "immutable_triggers_created",
+    "current_results_copied",
+    "current_results_replaced",
+    "migration_mid",
+    "format_version_updated",
+    "before_commit",
+    "after_commit",
+]
+
+
+@pytest.mark.parametrize("point", MIGRATION_POINTS)
+@pytest.mark.parametrize("failure", ["exception", "exit"])
+def test_migration_each_ddl_commit_and_process_exit_is_recoverable(tmp_path, point, failure):
+    path = tmp_path / "legacy.db"
+    make_legacy(path)
+    initial = sqlite3.connect(path)
+    schema = initial.execute("SELECT type,name,sql FROM sqlite_master ORDER BY name").fetchall()
+    facts = initial.execute("SELECT * FROM facts").fetchall()
+    initial.close()
+    if failure == "exception":
+
+        def fail(stage):
+            if stage == point:
+                raise RuntimeError("migration boundary failure")
+
+        with pytest.raises(RuntimeError):
+            Store(path, migration_hook=fail)
+    else:
+        code = """
+import os,sys
+from ontolearn_engine.storage import Store
+def hook(stage):
+    if stage==sys.argv[2]: os._exit(73)
+Store(sys.argv[1], migration_hook=hook)
+"""
+        result = subprocess.run([sys.executable, "-c", code, str(path), point], timeout=15)
+        assert result.returncode == 73
+    connection = sqlite3.connect(path)
+    assert connection.execute("SELECT * FROM facts").fetchall() == facts
+    if point == "after_commit":
+        assert connection.execute("PRAGMA user_version").fetchone()[0] == 2
+    else:
+        assert connection.execute("PRAGMA user_version").fetchone()[0] == 1
+        assert (
+            connection.execute("SELECT type,name,sql FROM sqlite_master ORDER BY name").fetchall()
+            == schema
+        )
+    connection.close()
+    recovered = Store(path)
+    assert recovered.revision("p") == 1
+    assert recovered.state("p")["facts"][0]["owner"] == "M1"
+    assert recovered.mapping_status("p", "M1")["generatedVersion"] == -1
+    recovered.close()
+
+
+def test_current_format_open_does_not_take_writer_lock(db):
+    db._db.execute("BEGIN IMMEDIATE")
+    reader = None
+    try:
+        reader = Store(db.path)
+        assert reader.revision("p") == 1
+        assert reader.state("p")["facts"] == db.state("p")["facts"]
+    finally:
+        db._db.execute("ROLLBACK")
+        if reader:
+            reader.close()
+
+
+def test_concurrent_migration_rereads_version_after_lock(tmp_path):
+    import threading
+
+    path = tmp_path / "legacy.db"
+    make_legacy(path)
+    waiting = threading.Event()
+    proceed = threading.Event()
+    outcomes = []
+
+    def hook(stage):
+        if stage == "before":
+            waiting.set()
+            assert proceed.wait(10)
+
+    def delayed_opener():
+        try:
+            delayed = Store(path, migration_hook=hook)
+            outcomes.append(delayed.revision("p"))
+            delayed.close()
+        except BaseException as error:
+            outcomes.append(error)
+
+    thread = threading.Thread(target=delayed_opener)
+    thread.start()
+    assert waiting.wait(10)
+    first = Store(path)
+    first.close()
+    proceed.set()
+    thread.join(10)
+    assert not thread.is_alive()
+    assert outcomes == [1]
+
+
+@pytest.mark.parametrize("bad", [12345, True, None, ""])
+def test_operation_and_job_identity_types_are_checked_before_write(db, bad):
+    with pytest.raises(ValueError):
+        db.commit("p", 1, bad, "job", manual=[fact("urn:bad")])
+    with pytest.raises(ValueError):
+        db.commit("p", 1, "operation", bad, manual=[fact("urn:bad")])
+    assert db.revision("p") == 1
+
+
+def test_round_retry_after_ack_loss_is_idempotent_and_cross_run_reuse_is_conflict(db):
+    input_id = db.snapshot("p")
+    run = db.start_run("p", input_id, {"maxRounds": 4}, IMPL)
+
+    def lost(phase):
+        if phase == "after_commit":
+            raise OSError("response delivery lost")
+
+    with pytest.raises(OSError):
+        db.commit_round(run, 1, {"orders": ["W001"]}, "once-round", "job", hook=lost)
+    original = db.progress(run)["snapshotRef"]
+    assert db.commit_round(run, 1, {"orders": ["W001"]}, "once-round", "job") == original
+    assert len(db.history(run)["rounds"]) == 1
+    with pytest.raises(Conflict, match="reused"):
+        db.commit_round(run, 1, {"orders": ["different"]}, "once-round", "job")
+    other = db.start_run("p", input_id, {"maxRounds": 4}, IMPL)
+    with pytest.raises(Conflict, match="reused"):
+        db.commit_round(other, 1, {"orders": ["W001"]}, "once-round", "job")
+    assert db.progress(other) is None
+    db.finish_run(run, "cancelled", {})
+    assert db.commit_round(run, 1, {"orders": ["W001"]}, "once-round", "job") == original
+
+
+def test_tombstone_restore_and_net_zero_change_do_not_spuriously_invalidate(db):
+    identity = db.state("p")["facts"][0]["id"]
+    db.commit("p", 1, "delete", "job", remove=[identity])
+    before = db.vector("p")
+    db.commit("p", 2, "delete-again", "job", remove=[identity])
+    assert db.vector("p") == before
+    db.commit("p", 3, "explicit-restore", "job", edits={identity: '"泵站A"'})
+    db.commit("p", 4, "rerun", "job", mapping=mapped())
+    assert db.mapping_status("p", "M1")["stale"] == []
+    db.commit("p", 5, "manual", "job", manual=[fact("urn:manual")])
+    before = db.vector("p")
+    result = db.publish("p", db.snapshot("p"), ["facts:asserted"], "query", ["stable"], IMPL)
+    db.commit(
+        "p",
+        6,
+        "replace-same",
+        "job",
+        remove=[fact("urn:manual")["id"]],
+        manual=[fact("urn:manual")],
+    )
+    assert db.vector("p") == before
+    assert db.result(result)["stale"] == []
+
+
+@pytest.mark.parametrize("blocked_module", ["resource", "ontolearn_engine.storage_probe"])
+def test_missing_unix_probe_module_cannot_break_health_or_measurement(blocked_module):
+    entry = Path(__file__).parents[1] / "entrypoint.py"
+    code = """
+import importlib.abc,runpy,sys
+blocked=sys.argv[2]
+class Block(importlib.abc.MetaPathFinder):
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname==blocked:
+            raise ModuleNotFoundError(fullname, name=fullname)
+sys.meta_path.insert(0,Block())
+if sys.argv[2]=='resource':
+    from ontolearn_engine.storage_probe import measure
+    result=measure(1)
+    assert result['rssAvailable'] is False
+    assert all(v['processHighWaterRssBytes'] is None for v in result['measurement'].values())
+    assert 'RSS unavailable' in result['method']
+entry=sys.argv[1]
+sys.argv=[entry]
+runpy.run_path(entry,run_name='__main__')
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", code, str(entry), blocked_module],
+        input=json.dumps({"id": "portable", "method": "health", "protocolVersion": 1}) + "\n",
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=True,
+    )
+    assert json.loads(result.stdout)["result"]["capabilities"] == ["health"]
+
+
+def test_machine_readable_implementation_and_publication_policy():
+    assert RULES["schemaVersion"] == 2
+    assert RULES["implementationCompatibility"]["default"] == "isolate"
+    assert RULES["implementationCompatibility"]["identityKeys"] == list(IMPL)
+    assert RULES["implementationCompatibility"]["staleReason"] is None
+    assert RULES["publicationPolicy"]["currentRequiresLatestProjectRevision"] is True
+    assert RULES["publicationPolicy"]["staleReason"] is None
+
+
+@pytest.mark.parametrize(
+    "point", ["v1_created", "format_version_updated", "before_commit", "after_commit"]
+)
+@pytest.mark.parametrize("failure", ["exception", "exit"])
+def test_initial_schema_creation_failure_is_atomic_and_retryable(tmp_path, point, failure):
+    path = tmp_path / "new.db"
+    if failure == "exception":
+
+        def fail(stage):
+            if stage == point:
+                raise RuntimeError("bootstrap boundary failure")
+
+        with pytest.raises(RuntimeError):
+            Store(path, migration_hook=fail)
+    else:
+        code = """
+import os,sys
+from ontolearn_engine.storage import Store
+def hook(stage):
+    if stage==sys.argv[2]: os._exit(73)
+Store(sys.argv[1],migration_hook=hook)
+"""
+        result = subprocess.run([sys.executable, "-c", code, str(path), point], timeout=15)
+        assert result.returncode == 73
+    connection = sqlite3.connect(path)
+    assert connection.execute("PRAGMA user_version").fetchone()[0] == (
+        2 if point == "after_commit" else 0
+    )
+    if point != "after_commit":
+        assert connection.execute("SELECT name FROM sqlite_master").fetchall() == []
+    connection.close()
+    recovered = Store(path)
+    recovered.create_project("after-recovery")
+    assert recovered.revision("after-recovery") == 0
+    recovered.close()
+
+
+def test_revision_round_and_mapping_identity_shapes_are_rejected(db):
+    with pytest.raises(ValueError, match="projectRevision"):
+        db.commit("p", True, "bool-revision", "job", manual=[fact("urn:bad")])
+    for bad_mapping in ({"id": 123, "rows": []}, {"id": "M", "rows": [{"row": 1, "facts": []}]}):
+        with pytest.raises(ValueError):
+            db.commit("p", 1, "bad-mapping-id", "job", mapping=bad_mapping)
+    run = db.start_run("p", db.snapshot("p"), {"maxRounds": 4}, IMPL)
+    with pytest.raises(ValueError, match="Integer round"):
+        db.commit_round(run, True, {}, "bool-round", "job")
+    assert db.progress(run) is None
+    assert db.revision("p") == 1
+
+
+def test_managed_delete_restore_in_same_plan_preserves_mapping_dependency_version(db):
+    identity = db.state("p")["facts"][0]["id"]
+    before_state = db.state("p")
+    before_vector = db.vector("p")
+    result = db.publish("p", db.snapshot("p"), ["mapping:M1"], "query", ["stable"], IMPL)
+    db.commit("p", 1, "net-zero-managed", "job", remove=[identity], edits={identity: '"泵站A"'})
+    assert db.state("p") == before_state
+    assert db.vector("p") == before_vector
+    assert db.mapping_status("p", "M1")["stale"] == []
+    assert db.result(result)["stale"] == []
+    db.commit(
+        "p",
+        2,
+        "real-source-change",
+        "job",
+        remove=[identity],
+        edits={identity: '"泵站A"'},
+        definitions=[{"layer": "mapping", "id": "M1", "value": {"sourceHash": "new"}}],
+    )
+    assert db.vector("p")["mapping:M1"] == before_vector["mapping:M1"] + 1
+    assert db.result(result)["stale"][0]["code"] == "MAPPING_INPUT_CHANGED"
+
+
+def test_registered_empty_mapping_scope_is_valid_but_not_unknown_mapping(db):
+    db.commit("p", 1, "empty-source", "job", mapping={"id": "empty", "rows": []})
+    result = db.publish("p", db.snapshot("p"), ["mapping:empty"], "empty-view", [], IMPL)
+    assert db.result(result)["state"] == "current"
+    with pytest.raises(ValueError, match="Unresolved"):
+        db.publish("p", db.snapshot("p"), ["mapping:never-declared"], "ghost", [], IMPL)
+    db.commit(
+        "p",
+        2,
+        "new-input",
+        "job",
+        definitions=[{"layer": "mapping", "id": "empty", "value": {"sourceHash": "changed"}}],
+    )
+    assert db.result(result)["stale"][0]["code"] == "MAPPING_INPUT_CHANGED"

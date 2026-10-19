@@ -64,6 +64,7 @@ def g_definitions(behavior=False):
                     "id": "test",
                     "value": {
                         "classes": ["TestObject", "Notification"],
+                        "singleValuedPredicates": ["urn:P", "urn:workOrderStatus"],
                         "properties": {
                             "P": {"type": "boolean", "single": True},
                             "notificationEvent": {},
