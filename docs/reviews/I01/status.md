@@ -6,8 +6,8 @@
 - 非目标：完整映射/推理/行为/沙盘业务、v2任务协议、CSP、模型网关、pySHACL；Q5 未定，无容量达标线。
 - 依赖：无前置实施依赖；已读取 PRD FR-006/304/604/700–705/804/1000、附录 C/D/E/G 和采纳计划。
 - 仓库：/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio。origin https://github.com/NOmoreJoke/OntoLearn-Studio.git。
-- 分支：feature/I01-storage-invalidation，base：e628f5e7b6c09e10e15644552a6171c4a9a3072e，head：3e787fb7f8923a0848c173215af2747861e4b35a。
-- 阶段：Round 2双方已结束并明确通过；对照原S1门槛主动补齐保留问题，正在Round 3验证，尚未冻结新head。最近fetch时origin/develop仍为base。
+- 分支：feature/I01-storage-invalidation，base：e628f5e7b6c09e10e15644552a6171c4a9a3072e，head：1e3b179de1e1f9f7ad4b6556f292ef769c113d18。
+- 阶段：Round 3双方已实际完成并同版本明确通过，原始报告已完整读回；正归档纯流程证据并推进PR/CI门禁。最近fetch时origin/develop仍为base。
 - 原有文件：61 项逐个 SHA-256 与外部初始快照一致，均非本次实现，不修改或暂存。来源清单保存在父目录 iteration-control/2026-10-19。必要输入逐字副本及哈希在 docs/iterations/I01/inputs，供远端重现。
 - 验证及独立agent已完成，详见下文最终证据；指定第三方Round 1已完成，修复及最终内部复核完成；待Round 2新任务。
 - push / PR / merge / origin/develop 核验：未执行，双审前禁止。
@@ -112,3 +112,22 @@ ZCode“ I01 Round 2 存储失效spike对抗性审查”19分30秒完成、GLM-5
 集中项目快照校验补强到嵌套存储记录后，独立agent最终只读结论通过，187项S1专项独立通过（5.43s）。完整check已通过198项Python（187S1+11协议）与4项TS；verify:sources/e2e后续输出和实际package/probe待本轮最终命令结束后登记。61项既有文件及4组冻结输入原件/副本再次逐项SHA-256一致。当前head仍3e787fb，新实现未冻结；没有push/PR/merge。
 
 Round 3最终命令已全部exit 0：check 198项Python/4TS、verify:sources 13项、e2e 1项、实际package:dir，以及app-resource引擎开发/包内两档各三次12条probe；health、v2规则与许可证校验通过，引擎目录25,123,766字节。原始证据独立evidence/round-3；JSON仅格式整理，不改原始数值。当前准备本地提交冻结，不代表双审或Windows CI已通过。
+
+## Round 3 候选冻结
+
+base e628f5e7b6c09e10e15644552a6171c4a9a3072e → head 1e3b179de1e1f9f7ad4b6556f292ef769c113d18。本地提交1e3b179已完成，无push。实现/测试/依赖/配置/验收相对HEAD无未提交差异；待审仅追加流程证据。fetch确认origin/develop仍为原base。独立git archive核对12归档源通过；工作区13与之差异为受保护原有manifest，未混入提交。双方必须各新建Round3任务，全量原base→新head及原验收，不沿用Round2通过。
+
+## Round 3 UI 实际启动（2026-10-20 06:43 Asia/Shanghai）
+
+- ZCode：新空白任务 I01-R3-ZCode-GLM53-20261020-0643；经原生目录选择器再次核验完整仓库路径，UI实际GLM-5.3/最高；已执行git HEAD/分支/状态核验并工作中。
+- MiniMax：新空白任务 I01-R3-MiniMax-M31Flash-20261020-0643，UI标题“I01 Round 3 存储失效 spike 对抗性审查”；侧栏完整路径、新任务本地/feature分支/M3.1-Flash/xhigh均重新核验；已实测HEAD1e3b179和完整diff并工作中。
+- 同一base e628f5e7b6c09e10e15644552a6171c4a9a3072e → head 1e3b179de1e1f9f7ad4b6556f292ef769c113d18，同一原始需求及完整验收。双方收到Round1/2全部原始报告与处理记录，仅作线索独立复核；不得互读Round3另一报告、不得沿用旧通过。各自输出round-3/zcode-glm53.md与minimax-m31flash.md。
+- 实现/测试/配置/依赖/验收冻结，无未提交差异；仅流程证据追加。无push/PR/merge，当前不能登记Round3通过。Goal工具仍blocked（用户恢复授权已记录，工具不支持active设置）；不替换Goal、不启动I02。
+
+## Round 3 双方正式收尾 / 推送前门禁
+
+ZCode最终标题“I01 Round 3 存储失效spike对抗性复审”，GLM-5.3/最高，24分37秒完成，明确通过；MiniMax“I01 Round 3 存储失效 spike 对抗性审查”，M3.1-Flash/xhigh，10分19秒完成，明确通过。两项UI实际终态与完整MD已核验，均对应e628f5e→1e3b179；来源/版本/范围/命令/未验证/历史逐项结论完整，双方声明未读另一模型本轮内容。报告原样保留，SHA及全部新意见处理见round-3/processing.md。
+
+原阻断关闭、S1六退出条件双方确认成立。新低优先级身份/错误面及契约边界按原报告允许延期，逐项指定I03/I04接入前要求，特别保留非法kind=NULL会写派生NULL指针这一事实，不把“正式数据未损坏”说成“零写入”。当前仅health产品能力，不直接对UI/Agent开放内部spike。
+
+准备仅提交docs/reviews/I01纯流程证据，受审实现/测试/配置/依赖/ADR/验收无差异；61预存文件及4组冻结输入哈希再次一致。fetch及远端develop保护状态待当前查询结束后读回；无push/PR/merge，下一步证据commit一致性验证后push/PR→develop、实际CI，全部通过才合并。
