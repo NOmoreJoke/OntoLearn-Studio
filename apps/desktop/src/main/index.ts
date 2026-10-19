@@ -3,9 +3,19 @@ import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { readEngineHealth } from './engine'
 import { isTrustedDocument } from './trusted-document'
+import { contentSecurityPolicy } from '../csp'
+import { hardenWebContents, securePreferences } from './window-security'
+import { installWindowRecovery } from './window-recovery'
 import type { HealthResult } from '@ontolearn/contracts'
 
 declare const __DEV_CSP_NONCE__: string
+
+app.enableSandbox()
+
+let quitting = false
+app.on('before-quit', () => {
+  quitting = true
+})
 
 let window: BrowserWindow | null = null
 let pendingHealth: Promise<HealthResult> | undefined
@@ -21,38 +31,40 @@ function createWindow(): void {
     minHeight: 720,
     title: 'OntoLearn Studio',
     backgroundColor: '#F5F9F7',
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      contextIsolation: true,
-      nodeIntegration: false,
-      sandbox: true,
-      webviewTag: false,
-    },
+    webPreferences: securePreferences(join(__dirname, '../preload/index.js')),
   })
-  window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
-  window.webContents.on('will-navigate', (event) => event.preventDefault())
+  const created = window
+  installWindowRecovery(
+    created,
+    () => {
+      // Create before destroy to avoid window-all-closed quitting on Windows/Linux.
+      createWindow()
+      created.destroy()
+    },
+    () => quitting,
+  )
   window.on('closed', () => {
-    window = null
+    if (window === created) window = null
   })
   if (devURL) void window.loadURL(devURL)
   else void window.loadFile(rendererPath)
 }
+
+app.on('web-contents-created', (_event, contents) => hardenWebContents(contents))
 
 void app.whenReady().then(() => {
   session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) =>
     callback(false),
   )
   session.defaultSession.setPermissionCheckHandler(() => false)
-  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: {
-        ...details.responseHeaders,
-        'Content-Security-Policy': [
-          `default-src 'self'; script-src 'self' ${devURL ? `'nonce-${__DEV_CSP_NONCE__}'` : ''}; style-src 'self' ${devURL ? "'unsafe-inline'" : ''}; img-src 'self' data:; connect-src 'self' ${devURL ? 'ws://127.0.0.1:5173' : ''}; object-src 'none'; base-uri 'none'; frame-src 'none'; form-action 'none'`,
-        ],
-      },
+  if (devURL) {
+    const policy = contentSecurityPolicy({ nonce: __DEV_CSP_NONCE__, origin: devURL })
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+      callback({
+        responseHeaders: { ...details.responseHeaders, 'Content-Security-Policy': [policy] },
+      })
     })
-  })
+  }
   ipcMain.handle('engine:health', (event): Promise<HealthResult> => {
     if (
       !window ||
