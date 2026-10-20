@@ -32,7 +32,7 @@ New authorized independent contract work is in progress: bounded semantic errors
 
 ## I05 修订验证收口
 
-30个内部语义错误逐项定界；INPUT/RESULT/WORK和查询、RDF/RDFS、datatype、SHACL来源分类不再错借既有类别。验证描述符保留分层引用、实现、快照、scope与显式历史选择；可信binding绑定具体约束定义和真实可用推理结果。公共校验不是实际图执行，未采用Q6路线或注册产品能力。完整check420TS/622Python、contracts strict类型、sources12通过；独立复审两项P2关闭。新候选及预备稿由candidate.json/round-1记录；两指定外审仍未创建，没有push/PR/CI/merge。
+30个内部语义错误逐项定界；INPUT/RESULT/WORK和查询、RDF/RDFS、datatype、SHACL来源分类不再错借既有类别。验证描述符保留分层引用、实现、快照、scope与显式历史选择；可信binding绑定具体约束定义和真实可用推理结果。公共校验不是实际图执行，未采用Q6路线或注册产品能力。完整check420TS/622Python、contracts strict类型、sources12通过；独立复审两项P2关闭。新候选及预备稿由candidate.json/round-1记录；当时两指定外审仍未创建，没有push/PR/CI/merge。
 
 ### I05 v3交接对齐
 
@@ -41,3 +41,21 @@ New authorized independent contract work is in progress: bounded semantic errors
 ## 新develop基线候选4
 
 已保留候选3及全部未提交证据，以merge 0ec24b7合入c2f9b03，无冲突、原36份受审文件未变。新基线完整check420TS/622Python、contracts strict类型、sources12通过；独立兼容复核实际加载v1/v2、TS420/Python435，无新阻断。总控已核验I02依赖解除并授权预约审查应用UI；仅两审查app的创建/设置/读回获准，不启动本机测试窗口。两模型将审新base→新head全范围，不沿用任何旧候选结论，未push/PR/CI/merge。
+
+## 候选4外审实际创建与控制中断（仅流程追加）
+
+冻结范围c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3→f574a7234923f28e9356a45a17253803e7602e06未改。已按总控串行UI预约，通过CUA在精确I03 worktree/feature分支分别创建独立任务，实际UI读回GLM-5.3/最高与M3.1-Flash/xhigh及运行态。关联标识为I03-R1-ZCode-GLM53-C4-f574a72、I03-R1-MiniMax-M31Flash-C4-f574a72；原生UUID未在UI提供，未臆造。完整实际prompt在本会话CUA字面量paste/send/readback记录，prepared稿不冒称与发送字节一致；任务详见round-1/tasks.json。
+
+ZCode优先共享build/out；MiniMax先只读/类型/单元/引擎，尚未释放共享构建。只一次性允许ZCode的shasum/list只读命令，未授予完全访问。最新CUA明确报Mac锁定且自动解锁失败，已请求人类手动解锁；不绕过锁屏、不重建原任务、不盲目重试。两份报告及最终结论尚无，未push/PR/CI/merge，本机测试窗口未启动。此节只更新过程状态，不改变契约、测试、依赖、验收或受审实现；固定候选状态哈希保留。
+
+## 锁屏后恢复与再次控制中断（仅流程追加）
+
+用户曾回复手动解锁，CUA实际成功恢复原两任务。原审查与必要的报告事实核对保持在各自同一任务内；未改模型、未重建任务、未启动测试窗口。现CUA再次明确报Mac锁定且自动解锁失败，已通过本会话唯一问题入口请求手动解锁，未盲目重试或修改锁屏设置。ZCode原审查和资源通知回合已有实际终态；其事实澄清文件已观察更新为164行并保存原稿/完整差异，但澄清回合真实UI终态仍未核验。文件变化不被当作终态证据，f574受审实现继续冻结；完整轮次处置与既有修订授权将在原澄清终态确认后实施。
+
+## 原双模型审查闭合与候选4归档（仅流程追加）
+
+手动解锁后已通过原 ZCode UI 确认事实澄清终态（14:06，后续输入框，GLM-5.3/最高）；164行报告SHA3ee8c7b5b870d6019ce0fba30f6414426ef7b4af672871481a576bc532fa1c7d。MiniMax及其类型检查澄清亦已终结。两份通过报告及原稿/勘误/实际任务证据保留在round-1，并随候选4归档；本轮意见可进入统一处置。开始已授权的有限源码/文档修订，旧通过不适用于新候选，修订后必须双应用新任务复审同一base/head。
+
+## 候选5修订完成待冻结
+
+已在授权范围完成F1/F2/F3/F4/F6契约、测试与脚本修订，全部首轮意见逐项处置见round-1/processing.md；Z未来fallback/性能/kind及MM未来adapter等运行项保持明确延期责任。独立审查发现的零轮成功矛盾已修正并复核闭合。标准入口真实类型注入两次exit2+TS2322，finally字节恢复；完整check424TS/626Python exit0，sources12、最终format/diff检查通过。远端develop仍c2f9b038，远端功能分支不存在；未推送/建PR/跑远端CI/合并。下一步新本地提交冻结，并在两应用各建新任务完整审查同一base/head；旧结论不继承。

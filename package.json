@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "npm run dev --workspace @ontolearn/desktop",
     "build": "npm run build --workspace @ontolearn/desktop",
-    "typecheck": "npm run typecheck --workspace @ontolearn/desktop",
+    "typecheck": "npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -23,7 +23,9 @@
     "engine:build": "node scripts/build-engine.mjs",
     "package:dir": "npm run build && npm run engine:build && npm run package:dir --workspace @ontolearn/desktop",
     "check": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check",
-    "verify:sources": "node scripts/verify-sources.mjs"
+    "verify:sources": "node scripts/verify-sources.mjs",
+    "typecheck:contracts": "npm run typecheck --workspace @ontolearn/contracts",
+    "typecheck:unit": "tsc --noEmit -p tsconfig.unit.json"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

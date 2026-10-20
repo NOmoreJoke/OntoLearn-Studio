@@ -1,0 +1,115 @@
+{
+  "base": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
+  "head": "f574a7234923f28e9356a45a17253803e7602e06",
+  "status": "both_original_reviews_and_clarifications_completed_revisions_required",
+  "tasks": {
+    "zcode": {
+      "model": "GLM-5.3",
+      "thinking": "最高",
+      "taskId": "I03-R1-ZCode-GLM53-C4-f574a72",
+      "created": true,
+      "completed": true,
+      "conclusion": "Pass with nonblocking findings; dispatcher requires bounded revisions before merge",
+      "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/docs/reviews/I03/round-1/zcode-glm53.md",
+      "preparedPrompt": "docs/reviews/I03/round-1/prompts/zcode-prepared.md",
+      "promptSha256": "785fcc36af3e32b22777848ac664a1b884d779863059939866eb7517b5be5ad9",
+      "idKind": "dispatcher correlation ID present in actually sent prompt; native UUID unavailable in UI",
+      "nativeTaskId": null,
+      "uiTitle": "I03协议契约与S1边界守卫对抗性审查",
+      "createdAt": "2026-10-20T11:45:17.780141+08:00",
+      "source": {
+        "app": "dev.zcode.app",
+        "control": "cua_repl native app",
+        "modelObserved": "GLM-5.3",
+        "thinkingObserved": "最高",
+        "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts",
+        "branchObserved": "feature/I03-protocol-contracts",
+        "runningStateObserved": true
+      },
+      "sentPromptEvidence": "Full literal prompt retained in this chat CUA paste/click/readback tool transcript; preparedPrompt is preparation, not claimed byte-identical sent content",
+      "resourceReservation": {
+        "status": "Completed; no further shared build reservation",
+        "followup": "Queued resource handoff constraint in original task; not yet falsely claimed acknowledged",
+        "allowFurtherSharedBuildWithoutReservation": false
+      },
+      "originalReviewTerminalUiObserved": true,
+      "resourceFollowupTerminalUiObserved": true,
+      "factClarificationTerminalUiObserved": true,
+      "reportSha256": "3ee8c7b5b870d6019ce0fba30f6414426ef7b4af672871481a576bc532fa1c7d",
+      "reportLines": 164,
+      "resultVisibility": "Both original tasks and necessary clarifications terminal; opinions available for disposition",
+      "completedUiObserved": true
+    },
+    "minimax": {
+      "model": "M3.1-Flash",
+      "thinking": "xhigh",
+      "taskId": "I03-R1-MiniMax-M31Flash-C4-f574a72",
+      "created": true,
+      "completed": true,
+      "conclusion": "Pass with nonblocking findings; dispatcher requires bounded revisions before merge",
+      "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/docs/reviews/I03/round-1/minimax-m31flash.md",
+      "preparedPrompt": "docs/reviews/I03/round-1/prompts/minimax-prepared.md",
+      "promptSha256": "1b89182abec2553da6b28c6fe1901f12c1780017043c02c9daaf1d173b4ae961",
+      "idKind": "dispatcher correlation ID present in actually sent prompt; native UUID unavailable in UI",
+      "nativeTaskId": null,
+      "uiTitle": "审查 I03-protocol-contracts 契约与边界守卫",
+      "createdAt": "2026-10-20T11:45:17.780141+08:00",
+      "source": {
+        "app": "com.minimax.agent.cn",
+        "control": "cua_repl native app",
+        "modelObserved": "M3.1-Flash",
+        "thinkingObserved": "xhigh",
+        "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts",
+        "branchObserved": "feature/I03-protocol-contracts",
+        "runningStateObserved": true
+      },
+      "sentPromptEvidence": "Full literal prompt retained in this chat CUA paste/click/readback tool transcript; preparedPrompt is preparation, not claimed byte-identical sent content",
+      "resourceReservation": {
+        "status": "Completed; no further shared build reservation",
+        "releasedAt": "2026-10-20T12:41:38.912007+08:00",
+        "actualUiReadback": "构建资源已释放。现在运行完整npm run check（含build），保存原始完整日志与真实退出码。",
+        "otherModelResultsTransmitted": false,
+        "continuation": "Same original task after supported follow-up, not replacement task or model"
+      },
+      "serviceRecovery": {
+        "message": "模型服务有点不稳定，请重试",
+        "supportedRetryClicksAfterUnlock": 3,
+        "actualProgressBetweenRetries": true,
+        "latestObserved": "Thinking/running in original task at 11m03s; preliminary differential probes; no final report",
+        "noQuotaExhaustionEvidence": true,
+        "modelAccountTaskUnchanged": true,
+        "updatedAt": "2026-10-20T12:28:35.822421+08:00"
+      },
+      "completedUiObserved": true,
+      "reportSha256": "f276f96052a4d4a72850c361431d599880b9327ba19f1067d898337b51ce16a8",
+      "reportLines": 339,
+      "fullCheckRawExitVerified": 0,
+      "fullCheckTs": 420,
+      "fullCheckPython": 622,
+      "resultVisibility": "Both original tasks and necessary clarifications terminal; opinions available for disposition",
+      "clarificationUiTerminalObserved": true
+    }
+  },
+  "supersedesUnsentHead": "8305d204bb132eb8e695b2122ecbf48f67120f2a",
+  "candidateNumber": 4,
+  "latestControlFailure": {
+    "at": "2026-10-20T14:13:26.023246+08:00",
+    "message": "The Mac is locked and automatic unlock could not unlock it. Ask the user to unlock the Mac manually before continuing.",
+    "lastObserved": "Original ZCode factual clarification running/thinking; not a completion observation",
+    "manualUnlockRequested": true,
+    "automaticRetryWhilePending": false
+  },
+  "controlRecovery": {
+    "at": "2026-10-20T12:17:55.522654+08:00",
+    "source": "Human replied 已手动解锁; subsequent CUA getAXState succeeded for both original app tasks",
+    "zcode": "Same GLM-5.3/最高 task; automatic reconnect 8/10 observed then actual code reasoning resumed without task/model change",
+    "minimax": "Same M3.1-Flash/xhigh task; service unstable error; one supported Retry clicked and running/thinking read back",
+    "classification": "Transient service failure; no quota exhaustion evidence, reset, purchase, account/model switch or test windows"
+  },
+  "controlRecoveryLatest": {
+    "at": "2026-10-20T14:25:20.244856+08:00",
+    "source": "Human manual unlock; CUA original task completed text, follow-up composer, GLM-5.3/最高 observed",
+    "zcodeLatestAssistantTime": "14:06",
+    "noModelTaskChange": true
+  }
+}

@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1] / "v2"
 DOCUMENT = json.loads((ROOT / "schema.json").read_text(encoding="utf-8"))
 DEFINITIONS = DOCUMENT["$defs"]
 REGISTRY = json.loads((ROOT / "registry.json").read_text(encoding="utf-8"))
+ERROR_CATALOG = json.loads((ROOT / "errors.json").read_text(encoding="utf-8"))
 KEYWORDS = {
     "$ref",
     "const",
@@ -127,7 +128,7 @@ def semantic(v):
             or derived["implementation"] != v["implementation"]
         ):
             return False
-    if "code" in v and "messageKey" in v and encoded_size(v) > 2048:
+    if "code" in v and "messageKey" in v and encoded_size(v) > ERROR_CATALOG["maxEncodedBytes"]:
         return False
     if isinstance(v.get("completed"), (int, float)) and isinstance(v.get("total"), (int, float)):
         if v["completed"] > v["total"]:

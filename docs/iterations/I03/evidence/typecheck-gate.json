@@ -1,0 +1,22 @@
+{
+  "probes": [
+    {
+      "target": "packages/contracts/src/v2.ts",
+      "entrypoint": "npm run typecheck",
+      "exit": 2,
+      "expectedDiagnostic": "TS2322",
+      "originalSha256": "09353c8ec74b90ad2fbbb4d14ef73e5a84736e98369a68ed0ea845c19f46bd68",
+      "restoredSha256": "09353c8ec74b90ad2fbbb4d14ef73e5a84736e98369a68ed0ea845c19f46bd68"
+    },
+    {
+      "target": "tests/unit/contract-v2.test.ts",
+      "entrypoint": "npm run typecheck",
+      "exit": 2,
+      "expectedDiagnostic": "TS2322",
+      "originalSha256": "96d196c4c16bb3b7a26d01c7315f6adf6c6b4cdd2a9d56c9fe7f4846a14191b8",
+      "restoredSha256": "96d196c4c16bb3b7a26d01c7315f6adf6c6b4cdd2a9d56c9fe7f4846a14191b8"
+    }
+  ],
+  "rawLogDirectory": "build/I03-validation/c5-type-gate",
+  "restored": true
+}

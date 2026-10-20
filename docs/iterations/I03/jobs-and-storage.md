@@ -69,3 +69,15 @@ schema 按状态限制 resultRef/error/finishedAt；成功 resultRef 指向同�
 Conflict 的基线/身份/所有权类别必须由 I04 结构化内部异常分类得出，不能把含原值的消息解析为 DTO。KeyError→NOT_FOUND 使用固定 resource 枚举；ValueError→INVALID_REQUEST 仅经调用上下文选择固定 field；其他 SQLite constraint 先验证幂等身份，未分类者 INTERNAL_ERROR。I03 的内部守卫仍抛固定 ValueError，不提前将 storage.py 变成协议处理器；真实 Python→主进程→bridge→UI 链路错误传播在 I04 完成并验证。
 
 job DTO 还完整保存不可变 `input` 与 `confirmationRef`。input 包含 definitionId、derivedResultIds、preparedPlanRef、snapshot/scope/parametersHash；外层重复字段必须与 input 一致。job.create 成功响应逐字段绑定完整 input 与确认身份，不仅比较参数摘要。operation_claims 的幂等指纹覆盖完整 input、确认、capability、project/base 和计划；同 operation 更换查询定义、派生输入或准备计划必须拒绝，不能返回另一次输入的 job。
+
+## 运行结束与未处理事件（E.2 / FR-701 / FR-704 / G.4）
+
+`job.succeeded` 表示运行已按选定规则结束且最终证据持久化，不表示所有事件已经处理。达到 `maxRounds` 且仍有待消费事件可以正常结束，但必须显示“存在未处理事件”；动作超限、冲突或执行失败须按 E.2 失败，保留此前已提交轮次，不能用正常达到轮次上限掩盖失败。
+
+I04 将终态摘要纳入 `scenario` 不可变结果 payload，沿已有 `job.resultRef → result.get → result.page` 读取，无需新增业务方法。该 payload 的第一行保留为 `run.summary.v1` 摘要，cells 按固定顺序为 `["run.summary.v1", runId, lastCommittedRound, snapshotRef, reachedMaxRounds, hasUnprocessedEvents, pendingEventCount, eventConsumptionRef]`，均使用既有 row 的标量值类型。成功场景摘要的 lastCommittedRound 至少为1，snapshotRef 与最后已提交快照一致。零提交失败/取消只显示已有状态与 committedProgress=null，不生成成功摘要、不增加零轮成功或提前停止规则。eventConsumptionRef 指向该次运行锁定输入及已消费记录的内容寻址引用，不能使用任意路径或业务正文。摘要必须与同项目持久 run/round/terminal、job.commitProgress 和结果来源一致，不能从进度百分比或 UI 缓存推算。
+
+`pendingEventCount` 是最后已提交状态下的待消费事件队列长度，`hasUnprocessedEvents` 必须等于 count>0；不是工单 backlog、未解决告警数或业务成功率。reachedMaxRounds 依据该次冻结 runConfig 和持久终态原因。UI 在 pending=true 时显示“运行已结束·存在未处理事件”；pending=false 只说明该队列为空，不能声称所有业务问题解决。failed/cancelled 的 job.resultRef 为 null，按已有状态及 committedProgress 展示保留轮次，不能假定 pending=0 或发布成功 current。该摘要是未来场景 payload 的保留布局；I03 通用 row/schema 校验器只检查结构及上界，当前并未实现场景执行、摘要生成、引用真实性或页面业务解码。
+
+I04 接入验收须实际覆盖：maxRounds 到达且仍有事件、队列耗尽正常结束、零提交失败/取消与 committedProgress=null、失败/取消保留已提交轮次、摘要与 job/run/snapshot 不一致、摘要缺失或畸形、payload 被清理。缺失/畸形/矛盾摘要视为不可用结果，不展示“全部处理完成”；已清理 payload 按 PAYLOAD_EVICTED，不伪造摘要。分页读取仍绑定原不可变 resultId，摘要只在首个非游标页面出现，其后页面不得插入第二份摘要。未选择的提前停止规则不在此添加。
+
+内部 S1 kind 仍按既有非空字符串身份保存。I04 从内部 kind 到公开有限枚举须显式白名单映射或拒绝未知值；不 trim、大小写归并或合并既存身份，避免把不同 current 键静默改写。全库 legacy-kind 扫描保留；I01 R6 历史增长及其原等级维持开放/延期，真实负载测量、修复政策和任何存储优化另由 I04/Q5 承接，不宣称已有性能问题或收益。

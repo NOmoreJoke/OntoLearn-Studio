@@ -45,3 +45,10 @@
 - [语义边界](I05-semantic-boundaries.md)逐项保留历史30码并优先覆盖v3的25项细码/来源分支；被替换的INPUT_LIMIT/RESULT_LIMIT/LITERAL/RDF/scope合码不用于新分支；SHAPE_PATH_UNCLASSIFIED及来源未知只INTERNAL_ERROR安全兜底，不解析异常正文；不把私有码直接穿透。
 - validationProjection严格分scope、实现与项目快照，validationResources关联角色/hash/真实reasoning结果/载荷/历史选择；TS/Python共同拒绝缺层、错项目/快照/实现/引用/结果种类、回收载荷和未选择历史。
 - 真正的分层图读取/摘要/权限/历史选择和SHACL投影仍需I04/I05：独立固定C→Mid→Equipment与x类型用例，asserted不暗增目标，combined保留x派生类型及独立派生公理，核对完整目标/违规/依据和原断言不变。描述符或纯元数据测试不替代这项真实语义联验，不采用Q6最终路线。
+
+## 候选5的审查修订验收
+
+- 根 `npm run typecheck` 必须同时严格检查 contracts 源码、全部 `tests/unit/**/*.ts` 和 desktop；`npm run check` 及现有 CI 直接调用该入口。源码与单测分别临时注入实际类型错误时标准入口必须失败，恢复原字节后完整检查成功；不使用 any、忽略注释、弱化 strict 或排除新测试。
+- TS/Python 动态穷举全部含枚举参数错误码的固定含义；错误预算直接来自 errors.json，临时缩小预算验证实际拒绝并恢复；版本与 registry/schema id 一致。通用模板键须与 schema/夹具配对，旧键有拒绝反例。
+- canonical schema 限共同词汇，所有数组显式有限上界；未来演进先统一适配器的 fallback 再复审。
+- E.2 的未处理事件摘要布局及 I04 必须实际验证的持久/分页/UI 条件以 jobs-and-storage.md 为准；成功至少一轮提交，零提交失败/取消仅显示状态。I03 只冻结设计，不把通用 row 可表达当成场景摘要已生成或可信绑定已验证。

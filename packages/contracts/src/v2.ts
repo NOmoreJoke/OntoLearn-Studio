@@ -2,6 +2,7 @@
 import { z } from 'zod'
 import document from '../v2/schema.json'
 import registry from '../v2/registry.json'
+import errorCatalog from '../v2/errors.json'
 import { permitsTransition } from './states-v2'
 
 interface Schema {
@@ -156,7 +157,7 @@ function semantic(value: unknown): boolean {
     )
       return false
   }
-  if ('code' in v && 'messageKey' in v && utf8(v) > 2048) return false
+  if ('code' in v && 'messageKey' in v && utf8(v) > errorCatalog.maxEncodedBytes) return false
   if (typeof v.completed === 'number' && typeof v.total === 'number' && v.completed > v.total)
     return false
   if ('staleReason' in v) {

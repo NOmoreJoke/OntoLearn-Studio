@@ -62,3 +62,11 @@ registryHash 定义为实际随引擎分发的 registry.json 原始 UTF-8 字节
 retryable 表示条件修复后用户可显式重新发起的提示，不是自动重放授权，也不证明没有提交/发送。写任务先对账 operation/job；读取重试也需当前授权与新请求身份。主进程网关的内部重试另由唯一网关控制，bridge不能叠加。I06的11类需求与下一版安全映射见 ../../reviews/I03/handoffs/I06-error-disposition.md，当前未注册S3方法或私有错误穿透。
 
 I05后续真实接口核对触发的有限错误类别与逐码判据见 [语义边界](I05-semantic-boundaries.md)。semanticInput/semanticResult/semanticWork分别与frame/page/附录E行为预算分开；旧合码在来源未细分前不能直接映射。SHACL参数使用版本化validationProjection与可信资源关联，不能转发任意混合图或验证器选项。此项修订生成新候选，原6f35ffd未外审记录保留，不开放新能力。
+
+## 有限错误参数与模板选择
+
+`errors.json.parameterMeanings` 覆盖全部含枚举参数的错误码（目前七码），每个值具有固定含义。当前平铺格式每码只允许一个枚举参数，新增第二个须先版本化目录结构；TS/Python 测试动态检查完整覆盖及无多余条目。`schemaVersion` 与 registry、schema `$id` 必须一致；两种适配器直接消费目录的 `maxEncodedBytes`，不维护第二份错误字节常量。
+
+`RESOURCE_LIMIT` 使用通用 `resource.limitExceeded`，由固定 resource 参数区分 worker 内存、行为动作/轮次、传输帧、分页和语义预算；不从模板命名空间推断产生者。`INVALID_STATE` 使用 `protocol.invalidState`，涵盖重复 hello 和已有运行/终态不允许的操作；params 仍为空对象。UI 使用固定模板、有限参数及本地主进程已知的请求方法选择安全说明，不显示任意异常文本、不从错误码反推未知的内部原因，也不自动重放写操作。无足够上下文时提示读取权威状态再决定下一步。历史 I03 候选中的 `job.resourceLimit` / `job.invalidState` 已在本次接入前修订，当前 canonical schema 与夹具拒绝旧配对；错误码仍为原26码。v1 health 入口不变。
+
+canonical schema 必须限于两适配器共同支持的词汇，每个 array 节点显式给出有限 `maxItems`；两侧元测试锁住这两个不变量。未来引入新词汇或省略数组上界前，须先统一适配器不支持词汇/默认上界的行为并完整复审，不能依赖当前未触达的差异。

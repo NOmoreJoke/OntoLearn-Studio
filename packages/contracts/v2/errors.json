@@ -249,7 +249,7 @@
       }
     },
     "INVALID_STATE": {
-      "messageKey": "job.invalidState",
+      "messageKey": "protocol.invalidState",
       "retryable": false,
       "paramsSchema": {
         "type": "object",
@@ -355,7 +355,7 @@
       }
     },
     "RESOURCE_LIMIT": {
-      "messageKey": "job.resourceLimit",
+      "messageKey": "resource.limitExceeded",
       "retryable": false,
       "paramsSchema": {
         "type": "object",
@@ -379,6 +379,44 @@
     }
   },
   "parameterMeanings": {
+    "INVALID_REQUEST": {
+      "envelope": "Known request envelope fields or their decoded structure.",
+      "params": "Known method parameter structure.",
+      "identity": "Request/resource identity fields or their required agreement.",
+      "config": "Run or operation configuration structure.",
+      "cursor": "Service cursor structure, before stateful cursor matching.",
+      "dependency": "Dependency reference, closure or definition membership.",
+      "kind": "Public result kind outside its finite allowlist."
+    },
+    "NOT_FOUND": {
+      "project": "Authorized project does not exist.",
+      "job": "Authorized durable job identity does not exist.",
+      "result": "Authorized result metadata does not exist; payload eviction is separate.",
+      "snapshot": "Authorized immutable snapshot does not exist.",
+      "operation": "Authorized operation identity does not exist; a missing marker may instead be a successful null read.",
+      "subscription": "Authorized notification subscription does not exist.",
+      "cursor": "Authorized cursor identity does not exist; expired or mismatched cursors have separate codes."
+    },
+    "TIMEOUT": {
+      "startup": "Coordinator process startup deadline.",
+      "handshake": "Version/session negotiation deadline.",
+      "request": "One request-response deadline; a write may already be committed.",
+      "total": "Overall job execution deadline.",
+      "heartbeat": "Session liveness heartbeat deadline.",
+      "cancel": "Cancellation cleanup deadline; durable commits remain authoritative."
+    },
+    "MAPPING_VALUE_INVALID": {
+      "key": "Worksheet key value cannot satisfy the selected mapping.",
+      "value": "Worksheet cell value cannot satisfy the selected mapping.",
+      "type": "Worksheet value type conflicts with the selected mapping.",
+      "reference": "Worksheet reference cannot be resolved under the selected mapping."
+    },
+    "SEMANTIC_INPUT_INVALID": {
+      "syntax": "Semantic document syntax is invalid.",
+      "query": "Query input is malformed or invalid under supported query semantics.",
+      "rule": "Rule input is malformed or invalid under supported rule semantics.",
+      "constraint": "Constraint input is malformed or invalid under supported constraint semantics."
+    },
     "UNSUPPORTED_CONSTRUCT": {
       "rdfBlankNode": "Blank-node construction outside the selected supported template subset.",
       "sparqlForm": "A syntactically valid query form outside SELECT/ASK.",

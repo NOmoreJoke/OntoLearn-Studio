@@ -248,13 +248,57 @@ def test_shared_validation_projection_resources(case):
     )
 
 
-def test_semantic_error_category_descriptions_are_complete():
-    errors = json.loads((ROOT / "packages/contracts/v2/errors.json").read_text(encoding="utf-8"))
-    for code, parameter in [("UNSUPPORTED_CONSTRUCT", "construct"), ("RESOURCE_LIMIT", "resource")]:
-        assert (
-            list(errors["parameterMeanings"][code])
-            == errors["codes"][code]["paramsSchema"]["properties"][parameter]["enum"]
-        )
+def test_all_enum_parameter_descriptions_are_complete():
+    errors = CONTRACT.ERROR_CATALOG
+    expected = set()
+    for code, entry in errors["codes"].items():
+        enumerations = [
+            p["enum"] for p in entry["paramsSchema"]["properties"].values() if "enum" in p
+        ]
+        if not enumerations:
+            continue
+        assert len(enumerations) == 1
+        expected.add(code)
+        descriptions = errors["parameterMeanings"][code]
+        assert list(descriptions) == enumerations[0]
+        assert all(isinstance(d, str) and d.strip() for d in descriptions.values())
+    assert set(errors["parameterMeanings"]) == expected
+
+
+def test_catalog_version_and_dynamic_error_budget(monkeypatch):
+    catalog = CONTRACT.ERROR_CATALOG
+    assert catalog["schemaVersion"] == CONTRACT.REGISTRY["schemaVersion"]
+    assert CONTRACT.DOCUMENT["$id"] == f"urn:ontolearn:contracts:{catalog['schemaVersion']}"
+    assert type(catalog["maxEncodedBytes"]) is int and catalog["maxEncodedBytes"] > 0
+    value = {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "retryable": False,
+        "params": {},
+    }
+    assert CONTRACT.validate("error", value)
+    with monkeypatch.context() as patch:
+        patch.setitem(catalog, "maxEncodedBytes", 1)
+        assert not CONTRACT.validate("error", value)
+    assert CONTRACT.validate("error", value)
+
+
+def test_canonical_schema_vocabulary_and_explicit_array_bounds():
+    def visit(node):
+        assert not set(node) - CONTRACT.KEYWORDS
+        if node.get("type") == "array":
+            assert type(node.get("maxItems")) is int and node["maxItems"] >= 0
+            assert "items" in node
+        for child in node.get("properties", {}).values():
+            visit(child)
+        for key in ("items", "propertyNames", "additionalProperties"):
+            if isinstance(node.get(key), dict):
+                visit(node[key])
+        for child in node.get("oneOf", []):
+            visit(child)
+
+    for definition in CONTRACT.DEFINITIONS.values():
+        visit(definition)
 
 
 def test_i05_handoff_source_hash_is_preserved():

@@ -15,6 +15,17 @@ import {
   v2Registry,
 } from '../../packages/contracts/src/design-v2'
 
+function objectValue(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error('Expected an object fixture')
+  return value as Record<string, unknown>
+}
+function objectFixture(name: string): Record<string, unknown> {
+  const fixture = fixtures.cases.find((c) => c.name === name)
+  if (!fixture) throw new Error(`Missing fixture: ${name}`)
+  return objectValue(fixture.value)
+}
+
 describe('shared v2 contract corpus', () => {
   for (const c of fixtures.validationBindings)
     it(c.name, () =>
@@ -101,14 +112,14 @@ describe('shared v2 contract corpus', () => {
 
 it('responses bind request, method, project, job, session and heartbeat nonce', () => {
   const q = fixtures.cases.find((c) => c.name === 'request job.get')!.value
-  const r = fixtures.cases.find((c) => c.name === 'response job.get')!.value
+  const r = objectFixture('response job.get')
   expect(matchesResponse(q, r)).toBe(true)
   for (const key of ['id', 'engineSessionId'])
     expect(matchesResponse(q, { ...r, [key]: '00000000-0000-4000-8000-000000000099' })).toBe(false)
   const bad = structuredClone(r) as { result: { projectId: string } }
   bad.result.projectId = '00000000-0000-4000-8000-000000000099'
   expect(matchesResponse(q, bad)).toBe(false)
-  const hello = fixtures.cases.find((c) => c.name === 'request hello')!.value
+  const hello = objectFixture('request hello')
   const answer = fixtures.cases.find((c) => c.name === 'response hello')!.value
   expect(matchesResponse(hello, answer)).toBe(true)
   expect(
@@ -178,11 +189,83 @@ it('derives real dependency closure, detects missing references and tracks new r
   ).toThrow('INVALID_REQUEST')
 })
 
-it('error category descriptions cover exactly the bounded wire categories', () => {
-  expect(Object.keys(errors.parameterMeanings.UNSUPPORTED_CONSTRUCT)).toEqual(
-    errors.codes.UNSUPPORTED_CONSTRUCT.paramsSchema.properties.construct.enum,
-  )
-  expect(Object.keys(errors.parameterMeanings.RESOURCE_LIMIT)).toEqual(
-    errors.codes.RESOURCE_LIMIT.paramsSchema.properties.resource.enum,
-  )
+it('all enum parameters have complete finite meanings without extra categories', () => {
+  const expected: string[] = []
+  const meanings = objectValue(errors.parameterMeanings)
+  for (const [code, entry] of Object.entries(errors.codes)) {
+    const enumerations = Object.values(entry.paramsSchema.properties)
+      .map((property) => objectValue(property).enum)
+      .filter(Array.isArray)
+    if (!enumerations.length) continue
+    // The flat catalog format permits one enum parameter per code.
+    expect(enumerations).toHaveLength(1)
+    expected.push(code)
+    const descriptions = objectValue(meanings[code])
+    expect(Object.keys(descriptions)).toEqual(enumerations[0])
+    for (const description of Object.values(descriptions)) {
+      expect(typeof description).toBe('string')
+      expect(String(description).trim().length).toBeGreaterThan(0)
+    }
+  }
+  expect(Object.keys(meanings).sort()).toEqual(expected.sort())
+})
+
+it('error catalog version and byte budget govern the adapters', () => {
+  expect(errors.schemaVersion).toBe(v2Registry.schemaVersion)
+  expect(schema.$id).toBe(`urn:ontolearn:contracts:${errors.schemaVersion}`)
+  expect(Number.isSafeInteger(errors.maxEncodedBytes)).toBe(true)
+  expect(errors.maxEncodedBytes).toBeGreaterThan(0)
+  const value = {
+    code: 'INTERNAL_ERROR',
+    messageKey: 'engine.internal',
+    retryable: false,
+    params: {},
+  }
+  expect(validateV2('error', value)).toBe(true)
+  const original = errors.maxEncodedBytes
+  try {
+    errors.maxEncodedBytes = 1
+    expect(validateV2('error', value)).toBe(false)
+  } finally {
+    errors.maxEncodedBytes = original
+  }
+  expect(validateV2('error', value)).toBe(true)
+})
+
+it('canonical schema uses the supported vocabulary and explicitly bounds every array', () => {
+  const vocabulary = new Set([
+    '$ref',
+    'const',
+    'enum',
+    'oneOf',
+    'type',
+    'properties',
+    'required',
+    'additionalProperties',
+    'propertyNames',
+    'minProperties',
+    'maxProperties',
+    'items',
+    'minItems',
+    'maxItems',
+    'minLength',
+    'maxLength',
+    'pattern',
+    'minimum',
+    'maximum',
+  ])
+  function visit(value: unknown): void {
+    const node = objectValue(value)
+    for (const key of Object.keys(node)) expect(vocabulary.has(key), key).toBe(true)
+    if (node.type === 'array') {
+      expect(Number.isSafeInteger(node.maxItems)).toBe(true)
+      expect(Number(node.maxItems)).toBeGreaterThanOrEqual(0)
+      expect(node.items).toBeDefined()
+    }
+    if (node.properties) Object.values(objectValue(node.properties)).forEach(visit)
+    for (const key of ['items', 'propertyNames', 'additionalProperties'])
+      if (node[key] && typeof node[key] === 'object') visit(node[key])
+    if (Array.isArray(node.oneOf)) node.oneOf.forEach(visit)
+  }
+  Object.values(schema.$defs).forEach(visit)
 })

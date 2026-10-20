@@ -1,0 +1,115 @@
+--- original-report
++++ clarified-report
+@@ -1,15 +1,19 @@
+ # I03 候选4 独立外审报告 — M3.1-Flash / xhigh
+ 
+ > 本报告为指定双模型外审之一，独立作出。未读取另一模型本轮报告或输出；未修改实现代码、未提交、未推送、未切换分支。仅写入本文件与 `/tmp/i03-r1-minimax/` 独立日志。
++>
++> **修订 R1（2026-10-20 12:52 后）：类型检查澄清。** 派发方在不改任何冻结文件的前提下，以只读临时 tsconfig 实跑 `tsc --noEmit`，报出 `tests/unit/contract-v2.test.ts:107` 与 `:117` 两处 **TS2698**。我已**独立复现并核验**，据此澄清本报告中"内容类型正确"的适用范围（F3 与 §9.1），并按新证据重新评估等级与结论。**澄清前逐字副本**：`docs/reviews/I03/round-1/minimax-runtime/report-before-typecheck-clarification.md`，SHA-256 `ba18535302246aff905c5cf1951b1a61d89d07c59b83cc6daef4880260bd25ac`（与澄清源记录 `docs/reviews/I03/round-1/minimax-runtime/typecheck-clarification-source.json` 一致）。
+ 
+ ## 0. 结论
+ 
+-**通过。** 未发现阻断问题；3 项中等级（P2）问题与 4 项轻等级（P3）建议全部允许延期，其中 1 项 P2 属门禁缺口、建议在 I03 合并前或最迟 I04 接线前单独处理。I03 本轮可验收范围（契约设计与公共校验器 + 最小 S1 边界守卫）经独立核验成立；I04/I05 的运行验收按设计归属不在本线，未被本报告代为宣称。
++**通过。** 未发现阻断问题；3 项中等级（P2）问题、3 项可执行 P3 建议与 2 项 P3 观察记录全部允许延期。
++
++> **R1 澄清对结论的影响：结论维持"通过"，但依据已更新。** 派发方的新反例经我独立复现属实：**本候选新增的 `tests/unit/contract-v2.test.ts` 存在 2 处真实 TypeScript 类型错误（TS2698）**，且我在同一严格配置下验证**候选前 4 个既有单测文件是严格洁净的**，故该违规由本候选引入。**我原报告"本次候选的内容类型正确"一句过宽，已更正**：类型正确性**仅对 `packages/contracts/src` 下 5 个文件成立**（即 `npm run typecheck --workspace @ontolearn/contracts` 实际覆盖范围），**不覆盖新增单测文件**——该文件实测不通过严格类型检查。详见 **F3（性质已改变）** 与 **§9.1**。
+ 
+ - 结构一致性：请求/响应 14 个方法 ↔ registry ↔ `schema.json` 的方法—schema 映射 **零错配**；`errors.json` ↔ `schema.json.error` 26/26 逐字段相同；`staleReason` 8 码与 S1 `invalidation-v2.json` 8 个非空码**逐项一致且码↔族配对完全吻合**。
+ - 候选4 焦点区（I05 v3）：v3 **25 项细码**与 I05 源快照**集合与顺序完全相同（25/25）**；五个退休合码**未出现在 v3 表或 v3 来源分支**；`SHAPE_PATH_UNCLASSIFIED` **仅**指向 `INTERNAL_ERROR/{}`；公共目录**不含任何 I05 内部码**。
+-- 双端一致性：自建 TS/Python 差分探针 **830 例**（705 + 111 + 14），**0 处语义分歧**（唯一差异为异常类型书写形式，两端同为 `INVALID_REQUEST`）。
+-- 独立验证：`npm run check` **exit 0**（lint / format / desktop 类型 / vitest 420 / **build** / ruff / pytest 622）、`npm run typecheck --workspace @ontolearn/contracts` **exit 0**、`npm run verify:sources` **exit 0**（12 项）、`git diff --check` **exit 0**。
++- 双端一致性：自建 TS/Python 差分探针 **830 例**（705 + 111 + 14），**0 处语义分歧**（唯一差异为异常类型书写形式，两端同为 `INVALID_REQUEST`）。新增反例的两处断言在**运行时语义正确**（见 §9.1），不改变该结论。
++- 独立验证：`npm run check` **exit 0**（lint / format / desktop 类型 / vitest 420 / **build** / ruff / pytest 622）、`npm run typecheck --workspace @ontolearn/contracts` **exit 0**（**仅覆盖 `packages/contracts/src`**）、`npm run verify:sources` **exit 0**（12 项）、`git diff --check` **exit 0**；R1 新增只读探针：A **exit 2**（新单测，TS2698 ×2）、B **exit 0**（候选前既有单测，严格洁净基线）、C **exit 2**（同 A 加 node 类型，证明非环境偶发）。
+ 
+ ---
+ 
+@@ -112,6 +116,10 @@
+ | `npm run engine:check` | 0 | ruff + 622 pytest | `engine-check.log` |
+ | `git diff --check` | 0 | 无空白错误 | — |
+ | 自建差分探针（TS 打包 + 双端 830 例比对） | 0 | 0 处语义分歧 | `probe-build*.log`、`probe-run*.log`、探针目录 JSON |
++| **R1-A** `tsc --noEmit -p <自建 strict 配置 extends packages/contracts/tsconfig.json，include packages/contracts/src + tests/unit/contract-v2.test.ts>` | **2** | **TS2698 ×2：`tests/unit/contract-v2.test.ts(107,33)`、`(117,9)` —— 与派发方探针结果逐字一致** | `f3-newtest-probe.log` |
++| **R1-C** 同 R1-A，另加 `types:["node"]`+`typeRoots`（排除环境偶发） | **2** | **同样 TS2698 ×2** | `f3-base-new.log` |
++| **R1-B** 同 R1-C，但 include 候选**前**的 4 个既有单测（contract/csp/native-driver/window-recovery），不含新 v2 单测 | **0** | **严格洁净基线** → 新单测的类型违规为**本候选引入** | `f3-base-pre.log` |
++| 运行时语义复核：改 `id` / 改 `engineSessionId` / `supportedVersions:[1]` 三种断言 | — | 三者均 **false**，与断言意图一致 → 两处报错**纯类型层**、无运行时影响 | `/tmp` 探针输出 |
+ 
+ **说明**：我在续接前曾因"共享 build/out 由 ZCode 优先持有"而只跑 `npm run check` 的其余 6 个分项并如实记录 build 未执行；本次续接后资源已释放，我**实际完整执行了 `npm run check`（含 build）**，退出码 0，原始完整日志已保存并核对。
+ 
+@@ -125,6 +133,7 @@
+ | I05 v3 交接来源的真实性（I05 源码未冻结、仅交接声明 123 项定向回归） | **未验证，且本报告不代为宣称** | I05 未冻结；`I05-contract-source.json` 自身标注 `status: "Unfrozen I05 handoff table; implementation checkpoint and full/package validation pending; not adopted as public API"`。我只核对了**交接文本与 I03 契约的对应关系** |
+ | Q2/Q3/Q5/Q6/Q7/Q8/Q9 产品决定 | **未决，未被本线预设** | 契约中所有上限均标注为"本版契约安全上界，不是容量或性能承诺" |
+ | 另一模型本轮报告 | **未读取** | 互不披露本轮意见的门禁要求 |
++| **R1：`tests/unit/contract-v2.test.ts` 的类型正确性** | **已验证，且不通过** | 该文件**不在任何 tsconfig 内**（`packages/contracts/tsconfig.json` include 仅 `src`；desktop tsconfig include 仅 `apps/desktop/src`）。以只读临时配置纳入后 `tsc --noEmit` **exit 2 / TS2698 ×2**；同配置下候选前 4 个既有单测 **exit 0**。→ 类型正确性**仅对 `packages/contracts/src` 下 5 个文件成立**。详见 F3、§9.1 |
+ 
+ ---
+ 
+@@ -152,14 +161,22 @@
+ - **建议**（二选一）：(a) 拆码 —— 保留 `job.resourceLimit` 承载传输/任务预算，新增 `semantics.resourceLimit` 承载三个语义预算；把 `INVALID_STATE` 拆为 `protocol.sessionStateInvalid`（重复 hello）与 `job.invalidState`（任务状态非法）；或 (b) 若确定共用，则在 `I05-semantic-boundaries.md` 与 `protocol.md` 明确记录"UI 必须同时读取 `messageKey` 与 `params.resource`/`params.field` 才能定位条件"，并把该判据固化为测试。
+ - **处理结论**：**允许延期**。建议在 **I04 接线（bridge→UI 四段式）之前**定稿，否则 UI 会固化错误命名空间；届时属破坏性变更，需走新候选与双审。
+ 
+-### F3（P2 中 · 非阻断）contracts 包与新测试文件未纳入任何自动类型检查门禁
+-
+-- **位置**：根 `package.json`（`"typecheck": "npm run typecheck --workspace @ontolearn/desktop"`、`"check": "… && npm run typecheck && npm test && …"`）；`apps/desktop/tsconfig.json`（`include: ["src","electron.vite.config.ts"]`）；`packages/contracts/tsconfig.json`（`include: ["src"]`）；`eslint.config.mjs`（`tseslint.configs.recommended`，**非**类型感知版）；`.github/workflows/ci.yml:30,68-70`。
+-- **事实（实测 `tsc --listFiles`）**：desktop 类型程序中 contracts 只有 `packages/contracts/src/index.ts`（v1 health 契约）。本候选新增的 `src/v2.ts`(556 行)、`src/dependencies-v2.ts`(50)、`src/states-v2.ts`(18)、`src/design-v2.ts`(4) **不在任何自动类型检查程序内**——`npm run check` 的 typecheck 只查 desktop；eslint 非类型感知；vitest 只转译不查类型；desktop 构建图不含 contracts；**CI 两个 job 都只跑 `npm run typecheck`（=desktop）**。此外 `tests/unit/contract-v2.test.ts`(188 行) **连手工的 contracts typecheck 都不覆盖**（两个 tsconfig 的 `include` 都不含 `tests/`）。
+-- **触发条件**：任何后续对 `packages/contracts/src/v2.ts` 等文件的改动引入类型错误（例如 `registry.capabilities[...]` 被写成可能为 `undefined` 却被直接取属性）时，`npm run check` 与 CI **全部保持绿灯**。
+-- **影响**：本次候选的**内容**类型正确（我已独立执行 `npm run typecheck --workspace @ontolearn/contracts`，exit 0；且 830 例差分全部一致，证明运行时行为正确）。**影响的是回归风险**：契约层是 I04 之后所有跨端行为的根基，却处在自动门禁之外；这与 AGENTS 第 7 节"边界数据一律经 zod `.strict()` 解析"、第 4 节"`npm run check`（lint/格式/类型/vitest/构建/ruff/pytest）"所设想的门禁覆盖面不一致。本候选的 `acceptance.md` 已把 contracts 独立 typecheck 列为**单独一行**要求，说明作者知情，但**该要求仍不在 CI 中**。
+-- **建议**：在根 `package.json` 增加 `typecheck:contracts` 脚本，并把 `check` 的 typecheck 步骤改为 `npm run typecheck && npm run typecheck --workspace @ontolearn/contracts`；`ci.yml` 的 check job 同步加入同一条命令；并把 `tests/unit/**` 纳入一个根级 `tsconfig`（或 contracts tsconfig 的 `include`）以覆盖新测试文件。
+-- **处理结论**：**允许延期，但须在 I03 合并前或最迟 I04 接线前处理**。**不建议在候选4 上直接追加**——该改动会修改 `package.json` 与 CI，按现行门禁属"实现/测试/配置/依赖/验收变更"，必须生成新候选并重新双审。请总控决定：作为 I03 合并前的一个独立小提交处理，或列为 I04 前置项。
++### F3（P2 中 · 非阻断 · **R1 后性质改变：由"门禁缺口"升级为"已确认候选引入的缺陷"**）contracts 包与新测试文件未纳入任何自动类型检查门禁，且该缺口**已实际掩盖**本候选新单测中的 2 处真实类型错误
++
++- **位置**：根 `package.json`（`"typecheck": "npm run typecheck --workspace @ontolearn/desktop"`、`"check": "… && npm run typecheck && npm test && …"`）；`apps/desktop/tsconfig.json`（`include: ["src","electron.vite.config.ts"]`）；`packages/contracts/tsconfig.json`（`include: ["src"]`）；`eslint.config.mjs`（`tseslint.configs.recommended`，**非**类型感知版）；`.github/workflows/ci.yml:30,68-70`；**缺陷文件**：`tests/unit/contract-v2.test.ts:107`、`:117`（本候选新增）。
++- **事实 A（门禁缺口，实测）**：`tsc --listFiles` 显示 desktop 类型程序中 contracts 只有 `packages/contracts/src/index.ts`（v1 health 契约）。本候选新增的 `src/v2.ts`(556 行)、`src/dependencies-v2.ts`(50)、`src/states-v2.ts`(18)、`src/design-v2.ts`(4) **不在任何自动类型检查程序内**——`npm run check` 的 typecheck 只查 desktop；eslint 非类型感知；vitest 只转译不查类型；desktop 构建图不含 contracts；**CI 两个 job 都只跑 `npm run typecheck`（=desktop）**。此外 `tests/unit/contract-v2.test.ts`(188 行) **连手工的 contracts typecheck 都不覆盖**（两个 tsconfig 的 `include` 都不含 `tests/`）。
++- **事实 B（缺陷本身，R1 新增，已确认）**：派发方以只读临时 tsconfig（extends 现有 strict contracts 配置、include 现有 v2 单测）实跑 `npx tsc --noEmit`，报 `tests/unit/contract-v2.test.ts:107` 与 `:117` 两处 **TS2698（Spread types may only be created from object types）**。**我已用自建的三个独立配置复现并交叉验证**（详见 §9.1）：新单测 **exit 2 / TS2698 ×2**；**候选前的 4 个既有单测文件在同一配置下 exit 0（严格洁净基线）** → **该类型违规由本候选引入**，不是既有基线问题。
++- **根因**：`fixtures.cases` 是异构 JSON 数组，其中 3 条（`name suffix '\n'` / `'\r\n'` / `'\r'`）的 `value` 是**字符串**。测试里 `fixtures.cases.find((c) => c.name === 'response job.get')!.value` **不是类型守卫谓词**，TS 无法收窄，`.value` 被推断为包含 `string` 的联合类型；于是 `{ ...r, [key]: … }`（第 107 行）与 `{ ...hello, params: … }`（第 117 行）的展开运算类型不安全 → TS2698。
++- **触发条件**：任何把 `tests/unit/contract-v2.test.ts` 纳入某个 tsconfig 的改动（含本报告 F3 建议的门禁补齐、或有人用类型感知编辑器打开该文件）都会立即暴露这 2 个错误；当前则被无门禁状态掩盖。
++- **影响**：
++  1. **运行时与契约无影响**：vitest 转译时剥离类型，不做类型检查，420 项全通过；我另以库级探针复现了这两处断言的**运行时语义**（改 `id`→false、改 `engineSessionId`→false、`supportedVersions:[1]`→false），**行为与意图一致**。契约 schema、公共校验器、S1 守卫、830 例差分结论均不受影响。
++  2. **但类型正确性的可断言范围必须收窄**：我原报告"本次候选的**内容**类型正确"过宽。**可断言的仅是 `packages/contracts/src` 下 5 个文件**（contracts typecheck 的实际覆盖范围，exit 0）；**新增单测文件不在此列，实测不通过严格类型检查**。本报告任何"类型正确"表述均以此为限。
++  3. **回归风险已被证实而非假设**：这不再是"将来可能漏检"，而是**门禁缺口已经掩盖了 2 个真实错误**。AGENTS 第 7 节"TypeScript `strict`"是仓库明文约定，候选前既有单测在同配置下严格洁净，**说明该约定对测试文件是可达成且此前达成的**，本候选在此退步。
++- **建议**（**必须在后续候选处理；因改动 `package.json`/CI/测试文件，按现行门禁须新候选并重新双审**）：
++  1. 修正 2 处类型错误（最小改法：把 `.find(...)` 改为类型守卫，或对取值显式断言为对象类型，如 `as Record<string, unknown>`；或让 `find` 的回调写成 `(c): c is … => …`），并加一条"新单测在 strict 下无错"的回归。
++  2. 补齐门禁：根 `package.json` 增加 `typecheck:contracts`，把 `check` 的 typecheck 步骤改为 `npm run typecheck && npm run typecheck --workspace @ontolearn/contracts`；`ci.yml` check job 同步加入同一条命令。
++  3. 把 `tests/unit/**` 纳入一个根级 tsconfig，使新测试文件进入类型检查程序——**第 1 步必须在第 3 步之前完成**，否则门禁补齐会立刻让 CI 转红。
++- **处理结论**：**非阻断，允许延期，但不得视为"已关闭"**。理由：缺陷只影响新增测试文件的**类型标注**，不影响契约、运行时行为与任何一条验收；`npm run check` 与全部既定验收仍为绿，证据链完整。但它已由"潜在门禁缺口"变为**候选引入的确定缺陷**，**必须以一个后续候选修复**（含第 1、2、3 步），**建议在 I04 开工前完成**；**不建议在候选4 上直接追加**。若总控的门禁要求"候选合并前不得残留任何已知类型错误"，则本候选须先出该小候选再合入——**该判断权在总控，我的建议是出小候选、且在 I04 之前完成**。
+ 
+ ### F4（P3 轻）`errors.json` 的 `maxEncodedBytes` / `schemaVersion` 无任何消费者
+ 
+@@ -286,9 +303,37 @@
+ **通过。**
+ 
+ - 阻断问题：**0**（无 P0/P1）。
+-- 中等问题：**3 项（F1、F2、F3），全部允许延期**；其中 F3（contracts 未纳入自动类型检查门禁）建议在 I03 合并前或最迟 I04 接线前以独立小提交关闭——因它会改动 `package.json`/CI，按现行门禁须新候选并重新双审，**不建议在候选4 上追加**。
+-- 轻等建议：**4 项（F4、F5、F6、F7，其中 F7/F8 为观察记录）**，均可延期。
++- 中等问题：**3 项（F1、F2、F3），全部允许延期**；其中 **F3 在 R1 澄清后性质改变**——已由"潜在门禁缺口"升级为"**已确认的候选引入缺陷**"（本候选新增单测 2 处 TS2698），**必须以一个后续候选修复，且建议在 I04 开工前完成**；因涉及 `package.json`/CI/测试文件，按现行门禁须新候选并重新双审，**不建议在候选4 上追加**。
++- 轻等问题：**3 项可执行建议（F4、F5、F6）+ 2 项观察记录（F7、F8）**，均可延期。
+ - 历史问题：I03 内部 A1–A6 / B1–B5 / C1–C2 **全部仍关闭**（我独立重放反例确认）；I01 三轮历史意见的 I03 承接项**逐条已关闭**，仅 R6 按原定边界保留开放。
+ - 未验证事项已逐条列出（第 4.1 节），其中桌面窗口类验证按 AGENTS 与本次派发明确禁止；`npm run check`（含 build）已由我**实际完整执行并通过**，不再存在此前因共享构建资源而未执行的项。
+ 
+ 后续仍需总控处理的事项：读取本报告与另一模型报告、逐项记录采纳/部分采纳/不采纳/延期、双方同版明确通过后再预约 develop 集成与 push；本报告不构成 push/PR/CI/merge 的授权。
++
++### 9.1 R1 类型检查澄清（2026-10-20 12:52 后追加）
++
++**触发**：派发方在**未改任何冻结文件**的前提下，用只读临时 tsconfig（extends 现有 strict contracts 配置、include 现有 v2 单测）实跑 `npx tsc --noEmit -p build/I03-validation/typecheck-proposed.json`，原始退出码 **2**，报 `tests/unit/contract-v2.test.ts:107`、`:117` 两处 **TS2698**，日志 `build/I03-validation/F3-typecheck-probe.txt`。派发方要求我独立核验，并澄清 F3 中"本次候选的内容类型正确"的范围。
++
++**我的独立核验**（三个自建配置，全部写在 `/tmp/i03-r1-minimax/typecheck/`，**未改候选、未改仓库任何文件**）：
++
++| 探针 | 配置 | 退出码 | 结果 |
++| --- | --- | --- | --- |
++| R1-A | extends `packages/contracts/tsconfig.json`；include `packages/contracts/src` + `tests/unit/contract-v2.test.ts` | **2** | TS2698 ×2：`contract-v2.test.ts(107,33)`、`(117,9)` —— **与派发方逐字一致** |
++| R1-C | 同 A，另加 `types:["node"]`+`typeRoots`（排除"类型库缺失"这一环境偶发） | **2** | TS2698 ×2 —— **证明不是环境偶发** |
++| R1-B | 同 C，但 include 候选**前**的 4 个既有单测（`contract` / `csp` / `native-driver` / `window-recovery`），**不含**新 v2 单测 | **0** | **严格洁净基线** —— 新单测的类型违规是**本候选引入** |
++
++**过程披露**：我第一次跑基线时用 shell 变量拼接 `include` 路径，因引号导致 `$R` 未展开、**测试文件根本没被纳入**，一度得出"新单测也 exit 0"的错误结论；改为写入字面绝对路径后复跑，上述 A/B/C 结果才成立。此处如实记录，以免读者误用中间结果。
++
++**根因**：`fixtures.cases` 是异构 JSON 数组，其中 3 条（`name suffix '\n'` / `'\r\n'` / `'\r'`）的 `value` 为**字符串**。`fixtures.cases.find((c) => c.name === '…')!.value` **不是类型守卫谓词**，TS 无法收窄，`.value` 被推断为含 `string` 的联合类型，故 `{ ...r, [key]: … }`（107 行）与 `{ ...hello, params: … }`（117 行）的展开运算类型不安全。
++
++**运行时影响：为零。** vitest 转译剥离类型、不做类型检查，420 项全通过；我又以库级探针复现这两处断言的运行时语义（改 `id` → false、改 `engineSessionId` → false、`supportedVersions:[1]` → false），**行为与断言意图完全一致**。契约 schema、公共校验器、S1 守卫与 830 例差分结论均不受影响。
++
++**对 F3 与结论的更正**：
++
++1. **F3"影响"段原文"本次候选的**内容**类型正确"属过宽表述，现更正为**：类型正确性**仅对 `packages/contracts/src` 下 5 个文件成立**（即 `npm run typecheck --workspace @ontolearn/contracts` 的实际覆盖范围，exit 0）；**新增单测文件不在此列，且实测不通过严格类型检查**。本报告其余任何"类型正确"表述均以此为限。
++2. **F3 的性质改变**：由"门禁缺口（潜在风险）"变为"**门禁缺口 + 已确认的候选引入缺陷**"；建议随之从"可延期"收紧为"**必须以一个后续候选修复**"（顺序不可颠倒：先修 2 处类型错误 → 再补 `typecheck --workspace @ontolearn/contracts` 入门禁与 CI → 最后把 `tests/unit/**` 纳入类型检查程序）。
++3. **等级**：维持 **P2（非阻断）**。理由：缺陷仅涉及新增测试文件的类型标注，不影响契约、运行时与任何一条既定验收。**但不得再记为"仅是风险"**。
++4. **通过结论：维持"通过"。** 判据是"阻断问题尚未关闭、或关键验收仍无法验证时不得出具通过"：本次**关键验收均可验证且已由我独立验证为绿**（`npm run check` 含 build、contracts typecheck、verify:sources、diff --check、830 例差分、397 条夹具与新单测运行时行为全部正确），该缺陷不属于阻断项，且已有明确、可执行、代价很小的修复路径。
++5. **给总控的明确建议**：**在 I04 开工前出一个小候选**完成 F3 的三步修复并重新双审；**不要**在候选4 上直接追加，也**不要**在 F3 修复前把新单测纳入任何 tsconfig（否则 CI 立即转红）。若总控决定"候选合并前不得残留已知类型错误"，则候选4 须先出该小候选再合入——**这是合入门禁的选择，不是本报告的通过判定**。
++
++**未因本次澄清重跑的部分**：`npm run check`（含 build）与 830 例差分结果**保留**（本次澄清只新增只读类型探针，未改动任何受审内容、测试、依赖、CI 或验收，原结果继续适用）。澄清**未**读取另一模型本轮任何产物，**未**改动候选、模型或思考设置，**未**运行任何窗口。

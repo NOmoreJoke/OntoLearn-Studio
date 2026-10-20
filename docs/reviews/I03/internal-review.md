@@ -62,3 +62,7 @@
 总控授权同步已合并develop后，以可追踪merge合入c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3，merge为0ec24b7e12c9ffaee5895e461800649a04bfff2f，无冲突，旧候选3的36份受审文件与未提交证据逐字保留。requirements_review重新实际审查新base→merge的全部I03差异及I02 desktop/构建/CI交互，未沿用旧结论。
 
 实际加载确认desktop仍仅用contracts根v1的PROTOCOL_VERSION/healthSchema；独立v2入口可加载且v2Runtime为空，未接入health/preload/renderer。I02未改storage、engine protocol或I03契约；恢复模块不承担job或存储提交。独立无窗口TS420项及Python435项（v2/边界守卫/原v1协议）通过，无新增阻断。开发会话新基线完整check420TS/622Python、contracts strict类型、sources12及diff检查通过。未运行Electron/e2e/native/HMR/产物，不把I02继承报告当作I03运行验证；指定双模型须审新固定base→head全范围。
+
+## 候选5有限修订独立审查
+
+/root/requirements_review 静态审查F1/F2/F3/F4/F6及Z防漂移项，发现P2：零轮成功摘要与succeeded要求已提交轮次冲突。已改成功至少一轮；零提交失败/取消仅状态与null进度，复核明确闭合。八个摘要单元可由既有row/paging承载，无新增方法/提前停止。其余有限变化未发现新问题；独立审查未运行命令/GUI，不替代指定双模型新轮。开发会话恢复后的完整check424TS/626Python通过，真实类型注入两处均标准入口exit2+TS2322且字节恢复。
