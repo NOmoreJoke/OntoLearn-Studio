@@ -102,6 +102,34 @@ export interface SupervisorOptions {
   /** Trusted test harness only. Never passed from a renderer. */
   command?: { command: string; args: string[] }
 }
+/** No inherited credentials, proxies, executable search paths or loader injection.
+ * Engine and worker executables are absolute paths. Only OS directories/locale
+ * are inherited; project authority is issued separately by the main process.
+ */
+export function getEngineEnvironment(
+  source: NodeJS.ProcessEnv,
+  options: Pick<SupervisorOptions, 'dataPath' | 'allowedProjects' | 'testMode'> = {},
+  platform: NodeJS.Platform = process.platform,
+): NodeJS.ProcessEnv {
+  const common = ['HOME', 'TMPDIR', 'TMP', 'TEMP', 'LANG', 'LC_ALL', 'LC_CTYPE', 'TZ']
+  const names =
+    platform === 'win32'
+      ? [...common, 'SystemRoot', 'WINDIR', 'USERPROFILE', 'LOCALAPPDATA']
+      : common
+  const canonical = new Map(
+    names.map((name) => [platform === 'win32' ? name.toUpperCase() : name, name]),
+  )
+  const env: NodeJS.ProcessEnv = {}
+  for (const [key, value] of Object.entries(source)) {
+    const accepted = canonical.get(platform === 'win32' ? key.toUpperCase() : key)
+    if (accepted && typeof value === 'string') env[accepted] = value
+  }
+  if (options.dataPath) env.ONTOLEARN_DB_PATH = options.dataPath
+  env.ONTOLEARN_ALLOWED_PROJECTS = JSON.stringify(options.allowedProjects ?? [])
+  if (options.testMode === true) env.ONTOLEARN_TEST_MODE = '1'
+  return env
+}
+
 function bounded(value: number | undefined, fallback: number, maximum: number): number {
   if (value === undefined) return fallback
   if (!Number.isSafeInteger(value) || value < 1 || value > maximum) throw invalid()
@@ -217,13 +245,7 @@ export class EngineSupervisor {
       throw exited()
     }
     const { command, args } = this.options.command ?? getEngineCommand(this.location)
-    const env = { ...process.env }
-    delete env.ONTOLEARN_TEST_MODE
-    delete env.ONTOLEARN_DB_PATH
-    delete env.ONTOLEARN_ALLOWED_PROJECTS
-    if (this.options.dataPath) env.ONTOLEARN_DB_PATH = this.options.dataPath
-    env.ONTOLEARN_ALLOWED_PROJECTS = JSON.stringify(this.options.allowedProjects ?? [])
-    if (this.options.testMode === true) env.ONTOLEARN_TEST_MODE = '1'
+    const env = getEngineEnvironment(process.env, this.options)
     let child: ChildProcessWithoutNullStreams
     try {
       child = spawn(command, args, {
