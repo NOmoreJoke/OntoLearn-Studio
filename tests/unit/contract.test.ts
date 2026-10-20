@@ -5,7 +5,7 @@ import { readEngineHealth, getEngineCommand } from '../../apps/desktop/src/main/
 describe('engine boundary', () => {
   it('rejects unimplemented capabilities and unexpected fields', () => {
     const valid = {
-      protocolVersion: 1,
+      protocolVersion: 2,
       engineVersion: '0.1.0',
       status: 'ok',
       capabilities: ['health'],
@@ -13,7 +13,7 @@ describe('engine boundary', () => {
     expect(healthSchema.safeParse(valid).success).toBe(true)
     expect(healthSchema.safeParse({ ...valid, capabilities: ['query'] }).success).toBe(false)
     expect(healthSchema.safeParse({ ...valid, token: 'secret' }).success).toBe(false)
-    expect(healthSchema.safeParse({ ...valid, protocolVersion: 2 }).success).toBe(false)
+    expect(healthSchema.safeParse({ ...valid, protocolVersion: 1 }).success).toBe(false)
   })
   it('uses a bundled executable rather than system Python when packaged', () => {
     const result = getEngineCommand({
@@ -46,6 +46,6 @@ describe('trusted document', () => {
         appPath: '/unused',
         resourcesPath: '/ontolearn-no-such-directory',
       }),
-    ).rejects.toThrow('ENGINE_UNAVAILABLE')
+    ).rejects.toThrow('ENGINE_EXITED')
   })
 })

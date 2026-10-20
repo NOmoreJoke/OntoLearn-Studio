@@ -85,6 +85,37 @@ def test_huge_integer_is_session_fatal_and_reader_stays_terminal():
     assert reader.feed(b"{}\n") == []
 
 
+def test_actual_worker_has_no_inherited_credentials_or_coordinator_authority(store, monkeypatch):
+    excluded = (
+        "OPENAI_API_KEY",
+        "UNRECOGNIZED_VENDOR_SECRET",
+        "HTTPS_PROXY",
+        "PYTHONPATH",
+        "ONTOLEARN_DB_PATH",
+        "ONTOLEARN_ALLOWED_PROJECTS",
+        "ONTOLEARN_TEST_MODE",
+    )
+    for key in excluded:
+        monkeypatch.setenv(key, "i04-synthetic-sentinel")
+    command(
+        monkeypatch,
+        "import os,sys;sys.stdin.readline();"
+        f"assert not set({excluded!r}).intersection(os.environ);"
+        'print(\'{"type":"ready","rows":[]}\');'
+        'print(\'{"type":"complete"}\',flush=True)',
+    )
+    job = create(store)
+    coordinator = runtime.Coordinator(store, test_mode=True, emit=lambda _: None)
+
+    async def run():
+        task, active = launch(coordinator, job)
+        await asyncio.wait_for(task, 3)
+        assert active["process"].returncode == 0
+
+    asyncio.run(run())
+    assert store.get_job(job["projectId"], job["jobId"])["state"] == "succeeded"
+
+
 def test_complete_waiting_for_worker_exit_cannot_extend_total(store, monkeypatch):
     command(
         monkeypatch,

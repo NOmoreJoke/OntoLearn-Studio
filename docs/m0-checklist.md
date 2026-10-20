@@ -18,7 +18,7 @@
 - [ ] Q7：确认附录 E 固定轮次模型与指标。
 - [ ] 固定 G-base、G-map-empty、G-behavior、E.5 的实际数据、配置、预期输出及失败样例；目前未生成或执行这些基线。
 - [ ] 项目文件格式、SQLite/图存储接口、原子提交、快照、迁移和异常恢复技术设计。
-- [ ] ExecutionJob、取消与资源限制设计；正式 IPC 协议和模型授权边界。
+- [ ] S2 常驻协调器、ExecutionJob、取消和资源限制的运行验收与合并门禁（[I04 状态](reviews/I04/status.md)、[ADR-0003](architecture/0003-resident-coordinator-and-jobs.md)）；模型授权边界待 I06 正式集成。
 - [ ] Q8/Q9：开发投入、排期和实际受测模型协议；当前不调用模型。
 - [ ] 签名、公证、安装与无开发环境设备离线启动验证。
 

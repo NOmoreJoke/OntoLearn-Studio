@@ -34,6 +34,30 @@ test('I04 reload re-queries the same durable jobs without creating or cancelling
     expect(first.ok && first.data.jobs.length).toBeGreaterThan(0)
     if (!first.ok) throw new Error('durable restore failed')
     expect(await page.evaluate(() => 'createJob' in window.ontolearn!)).toBe(false)
+    await expect(page.locator('.error-details').first()).toContainText('发生了什么：')
+    await expect(page.locator('.error-details').first()).toContainText('为什么发生：')
+    await expect(page.locator('.error-details').first()).toContainText('如何修复：')
+    await expect(page.locator('.error-details').first()).toContainText('相关知识：')
+    const safeFailure = await page.evaluate(async () => {
+      const view = await window.ontolearn!.restoreTasks()
+      return view.ok ? view.data.jobs.find((job) => job.state === 'failed')?.error : undefined
+    })
+    expect(safeFailure).toEqual({
+      code: 'INTERNAL_ERROR',
+      messageKey: 'engine.internal',
+      params: {},
+      retryable: false,
+    })
+    const active = first.data.jobs.find((job) => ['queued', 'running'].includes(job.state))
+    expect(active).toBeDefined()
+    await page.getByRole('link', { name: '模块规划' }).click()
+    await page.getByRole('link', { name: '开发概览' }).click()
+    const afterAnchor = await page.evaluate(() => window.ontolearn!.restoreTasks())
+    expect(afterAnchor.ok && afterAnchor.data.generation).toBe(first.data.generation)
+    // No refresh or authority query while awaiting this actual worker terminal.
+    await expect(page.locator(`[data-job-id="${active!.jobId}"]`)).toContainText('任务已结束', {
+      timeout: 15000,
+    })
     await page.reload()
     await expect(page.getByRole('region', { name: '后台任务状态' })).toBeVisible()
     const next = await page.evaluate(() => window.ontolearn!.restoreTasks())
@@ -219,19 +243,41 @@ test('I04 native renderer crash and real unresponsive dialog retain durable jobs
         if (evidence?.error) throw new Error(String(evidence.error))
         if (evidence?.awaitingDialog === phase) {
           try {
-            const found = await execute('xdotool', [
-              'search',
-              '--onlyvisible',
-              '--name',
-              'OntoLearn Studio 窗口恢复',
-            ])
-            dialogId = found.stdout.trim().split('\n')[0]
+            const found = await execute('xdotool', ['search', '--onlyvisible', '--name', '.*'])
+            for (const id of found.stdout.trim().split('\n').filter(Boolean)) {
+              const title = await execute('xdotool', ['getwindowname', id])
+              if (title.stdout.trim() === 'OntoLearn Studio 窗口恢复') {
+                dialogId = id
+                break
+              }
+            }
           } catch {
             /* Native prompt has not mapped yet. */
           }
           if (dialogId) break
         }
         await new Promise((done) => setTimeout(done, 100))
+      }
+      if (!dialogId) {
+        const inventory = await execute('xdotool', [
+          'search',
+          '--onlyvisible',
+          '--name',
+          '.*',
+        ]).catch(() => ({ stdout: '' }))
+        const windows = []
+        for (const id of inventory.stdout.trim().split('\n').filter(Boolean)) {
+          windows.push({
+            id,
+            name: (
+              await execute('xdotool', ['getwindowname', id]).catch(() => ({ stdout: '' }))
+            ).stdout.trim(),
+          })
+        }
+        await test.info().attach('actual-native-window-inventory', {
+          body: JSON.stringify(windows),
+          contentType: 'application/json',
+        })
       }
       expect(dialogId, `actual ${phase} native recovery dialog`).toBeTruthy()
       // The real native dialog defaults to “暂不恢复”. Move to the preceding

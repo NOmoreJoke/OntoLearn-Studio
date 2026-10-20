@@ -24,7 +24,9 @@ export const internalError: SafeError = {
   retryable: false,
 }
 export function safeError(value: unknown): SafeError {
-  return validateV2('error', value) ? structuredClone(value as SafeError) : { ...internalError }
+  return validateV2('error', value)
+    ? structuredClone(value as SafeError)
+    : structuredClone(internalError)
 }
 export type BridgeResult<T> = { ok: true; data: T } | { ok: false; error: SafeError }
 export type HealthResult = BridgeResult<EngineHealth>
@@ -36,6 +38,7 @@ export interface ProjectView {
   formatVersion: 2
 }
 export interface JobView extends Record<string, unknown> {
+  inputSnapshotId: string
   projectId: string
   jobId: string
   operationId: string
@@ -58,6 +61,40 @@ export interface TaskUpdate {
   generation: number
   job: JobView
   progress?: ProgressView
+  restoredView?: TaskView
+}
+const generationSchema = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER)
+const jobViewSchema = z.custom<JobView>((value) => validateV2('job', value))
+const projectViewSchema = z.custom<ProjectView>((value) => validateV2('result_project.get', value))
+const taskViewSchema = z
+  .object({
+    generation: generationSchema,
+    project: projectViewSchema.nullable(),
+    jobs: z.array(jobViewSchema).max(16),
+  })
+  .strict()
+  .refine(
+    (view) =>
+      new Set(view.jobs.map((job) => job.jobId)).size === view.jobs.length &&
+      view.jobs.every((job) => job.projectId === view.project?.projectId),
+  )
+const taskUpdateSchema = z
+  .object({
+    generation: generationSchema,
+    job: jobViewSchema,
+    progress: z.custom<ProgressView>((value) => validateV2('progress', value)).optional(),
+    restoredView: taskViewSchema.optional(),
+  })
+  .strict()
+  .refine(
+    (update) =>
+      !update.restoredView ||
+      (update.restoredView.generation === update.generation &&
+        update.restoredView.project?.projectId === update.job.projectId &&
+        update.restoredView.jobs.some((job) => job.jobId === update.job.jobId)),
+  )
+export function isTaskUpdate(value: unknown): value is TaskUpdate {
+  return taskUpdateSchema.safeParse(value).success
 }
 export interface JobListOptions {
   filter: 'all' | 'active' | 'terminal'
