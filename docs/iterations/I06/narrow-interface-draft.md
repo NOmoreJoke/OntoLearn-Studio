@@ -50,7 +50,7 @@ completed 文本最多 1MiB 实际 UTF-8 字节，renderer 以文本节点展示
 
 endpoint 改变生成新 configurationVersion、清除旧凭据 binding，旧 endpoint 的 key 不随目标迁移，需重新录入。model 改变也更新配置版本并撤销授权，但同 endpoint 可保留凭据；纯 displayName 改变保留同一身份/version。凭据轮换生成新主体/ref/version 和配置版本，清预览/grant。全局配置最多 32 项，使用串行 owner 与持久 CAS；不确定写入失败使模型服务 unavailable，关闭旧 context/core 配置，不能继续用旧内存授权掩盖持久更新。不可变旧密文受内部 admission 上限保护，不自动回收，产品回收策略另行设计。
 
-main 项目 context 持有选择、目录、预览、grant 与 invocation ledger。目录缓存保护当前选择、淘汰未使用目录；当前选择替换时释放完整祖先引用，依赖调用取消。ledger 只保留 4 个活动和最多 64 个终态；终态按 main 完成序淘汰，旧 ID 不重建。UI outcome cache 仅用于同 context 的结果显示，项目切换清理，恢复不触发确认/发送。设置与 grant 缓存均以真实规范配置、范围、privacy、purpose 绑定，renderer 不能请求 reusable。
+main 项目 context 持有选择、目录、预览、grant 与 invocation ledger。目录缓存保护当前选择、淘汰未使用目录；当前选择替换时释放完整祖先引用，依赖调用取消。ledger 只保留 4 个活动和最多 64 个终态；终态按调用登记（启动）顺序在终态集合中淘汰，旧 ID 不重建。UI outcome cache 仅用于同 context 的结果显示，项目切换清理，恢复不触发确认/发送。设置与 grant 缓存均以真实规范配置、范围、privacy、purpose 绑定，renderer 不能请求 reusable。
 
 当前 10 个精确公共网关错误均为 `GATEWAY_` 加内部名，messageKey 以 errors.json 为准、params 严格 `{}`、retryable=false：
 

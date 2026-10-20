@@ -22,7 +22,7 @@
 
 最终四个文档 prettier check 与 `git diff --check` 通过；完整命令与校验脚本位于本 worktree 忽略目录 `out/interface-alignment/`。最终 validator receipt SHA-256：`d045e624123ccaa8889a73116589011758e40a785170bf403cb5a72f777c81d7`。该 JSON 绑定案例与 5 个实际 contracts 源文件 SHA，列出每例四项实际/预期布尔值。最终执行 log SHA-256：`d655269aab4cf12b7cf11d3c4f9d518f59c22bf03a6b8cff158524ed8e8c942f`。
 
-| 对齐文档 | SHA-256 |
+| `11666cfc` 初次对齐文档原件 | SHA-256 |
 | --- | --- |
 | narrow-interface-draft.md | ba209a47ebf8911ec69fe9db6e838bf6faebf6d044e1b7cc362fc19aea50530e |
 | narrow-interface-examples.json | 36f5a933894f72daa4f12fa4ceb3648d630c67ed7bdcc641808a2a2ff8fac61d |
@@ -34,3 +34,21 @@
 本次没有执行 main 服务、preload/UI、真实 receiver 或平台。根线已有 998 TS/1052 Python/check/source12 是其固定实现验证回执，不是本子任务复跑；新 main/preload/UI/safeStorage/Linux 平台线尚无本次通过证据。原私有字段证据按原 hash 引用：完整 body 有执行断言，独立 probe 未归档成功 HTTP body，不声称独立重扫正文。后续正式链仅将合成 receiver 完整正文及 hash 放忽略测试证据，排除 headers/真实凭据/业务数据，产品日志不记 payload。
 
 五个 integration scenarios 保留为验收/边界描述；案例 validator 通过不表示场景执行。无当前导出入口即无实际导出测试，不发明 mock。完整 S3、其他平台、同一冻结候选指定 GLM-5.3/最高与 MiniMax M3.1-Flash/xhigh 全新全范围双方独立通过、PR/实际 CI/远端合并不由本文记为完成。未 push。
+
+## 文案复核追加：ADR、验收映射与终态顺序
+
+本次后续仅更正文档事实，运行源码仍固定 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6`。新增唯一可写范围为 ADR-0004-model-gateway.md、acceptance.md，以及独立审查指出的 narrow-interface-draft.md 一句终态淘汰顺序；本记录追加证据，不写状态或实现。
+
+ADR/验收映射原“未公开注册”“无设置页/未来录入”“待 owner 交接”等口径改为开发分支已实现 12 方法/main/preload/UI、实际平台待新完整证据；保留早期来源与原验收，不把 I05 编号或 Q9 真实协议选择扩为无关合成链前置。内部 core configVersion 与公开持久 configurationVersion 分别生成 UUID：前者绑定 grant/core preview/audit，后者绑定 UI/录入 CAS/service 预览版本；不把二者称为同一值。
+
+独立审查发现 model-service 的 Map 在调用启动时插入，完成后 set 同 key 不改变插入序；prune 过滤终态再 slice。因此 draft 的“终态按 main 完成序淘汰”更正为“按调用登记（启动）顺序在终态集合中淘汰”。未改实现或验收。
+
+`11666cfc` 原 raw `out/interface-alignment-raw-20261021.tar.gz`（SHA-256 `458ddca166bb568532944741a37216996c92e9c82925ddeca1d940564534cd01`）及其 21 份源码/文档快照、validator receipt/首轮失败/最终成功日志保持原件，绑定初次对齐文案，**不代表本次新版文案快照**。原 validator receipt 仅绑定未变案例与 contracts 源；41 例 JSON SHA-256 仍为 `36f5a933894f72daa4f12fa4ceb3648d630c67ed7bdcc641808a2a2ff8fac61d`，不重跑未变案例，不覆盖旧 receipt。
+
+| 本次文案 | 新 SHA-256 |
+| --- | --- |
+| ADR-0004-model-gateway.md | 612763d70362da65dff57d8e9615379640748dd960f73724bd11ca527955f3f8 |
+| acceptance.md | 981daada9d349fe6bdf7a345ba198118e7374122970b7bd501b36e72cc8b448f |
+| narrow-interface-draft.md | 619a97612bcd2d8305278c6d4299fd1cc89da035c399815c07f4a23a77e03484 |
+
+本次只执行 4 份修改文档 prettier check、git diff --check 和静态事实/范围检查；未改样例/契约/实现、未重跑 validator/整库/平台。新文案快照另存 `out/interface-alignment-followup/`，不能借初次归档替代。独立只读复核由根线已有 review agent 执行，其结论另行记录；本记录不预设通过。
