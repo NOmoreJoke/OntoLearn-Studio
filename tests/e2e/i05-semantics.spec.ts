@@ -413,7 +413,10 @@ test('I05 native renderer crash and real unresponsive dialog retain immutable se
             id: 1,
             method: 'Runtime.evaluate',
             params: {
-              expression: `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(hook)})`,
+              // The packaged main inspector can open before Electron has installed
+              // its built-in module. Gate instrumentation on the real ready app.
+              expression: `(async()=>{const load=process.getBuiltinModule('module').createRequire(process.execPath);const end=Date.now()+5000;while(Date.now()<end){try{if(load('electron').app?.isReady()){load(${JSON.stringify(hook)});return}}catch{}await new Promise(done=>setTimeout(done,25))}throw new Error('Electron main app did not become ready')})()`,
+              awaitPromise: true,
             },
           }),
         )
