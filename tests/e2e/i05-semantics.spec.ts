@@ -32,7 +32,12 @@ function canonical(value: unknown): string {
 }
 const hash = (value: unknown) => createHash('sha256').update(canonical(value)).digest('hex')
 function environment(fixturePath: string) {
-  const env: NodeJS.ProcessEnv = { ...process.env, I04_TEST_FIXTURE: fixturePath }
+  const env: Record<string, string> = Object.fromEntries(
+    Object.entries(process.env).filter(
+      (entry): entry is [string, string] => entry[1] !== undefined,
+    ),
+  )
+  env.I04_TEST_FIXTURE = fixturePath
   delete env.ELECTRON_RUN_AS_NODE
   return env
 }
