@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import type { SafeStorage } from 'electron'
+import { z } from 'zod'
 import { GatewayFailure, opaqueId, parse } from './policy'
 
 export type CredentialBinding = { ref: string; principal: string; version: string }
@@ -16,6 +17,11 @@ type EncryptionAdapter = Pick<
   SafeStorage,
   'isEncryptionAvailable' | 'getSelectedStorageBackend' | 'encryptString' | 'decryptString'
 >
+const bindingSchema = z.object({ ref: opaqueId, principal: opaqueId, version: opaqueId }).strict()
+const secretSchema = z.string().regex(/^[\x21-\x7e]{1,4096}$/)
+const envelopeSchema = z
+  .object({ format: z.literal(1), binding: bindingSchema, secret: secretSchema })
+  .strict()
 
 export class EncryptedCredentialBoundary implements CredentialReader {
   constructor(
@@ -35,12 +41,15 @@ export class EncryptedCredentialBoundary implements CredentialReader {
 
   async store(principal: string, secret: string): Promise<CredentialBinding> {
     parse(opaqueId, principal)
-    if (typeof secret !== 'string' || !/^[\x21-\x7e]{1,4096}$/.test(secret))
-      throw new GatewayFailure('INVALID_INPUT')
+    parse(secretSchema, secret)
     try {
       this.requireSecureBackend()
-      const ciphertext = this.encryption.encryptString(secret)
       const binding = { ref: randomUUID(), principal, version: randomUUID() }
+      // The encrypted object binds the credential to the exact ref/principal/version.
+      // Plain repository metadata cannot relabel another valid ciphertext.
+      const ciphertext = this.encryption.encryptString(
+        JSON.stringify({ format: 1, binding, secret }),
+      )
       await this.repository.write(binding, Buffer.from(ciphertext))
       return { ...binding }
     } catch {
@@ -55,12 +64,17 @@ export class EncryptedCredentialBoundary implements CredentialReader {
       const record = await this.repository.read(ref)
       // Awaiting the repository must not bypass a newly locked/unavailable backend.
       this.requireSecureBackend()
-      if (record.binding.ref !== ref) throw new Error()
-      parse(opaqueId, record.binding.principal)
-      parse(opaqueId, record.binding.version)
-      const secret = this.encryption.decryptString(Buffer.from(record.ciphertext))
-      if (!/^[\x21-\x7e]{1,4096}$/.test(secret)) throw new Error()
-      return { ...record.binding, secret }
+      const metadata = parse(bindingSchema, record.binding)
+      if (metadata.ref !== ref) throw new Error()
+      const decrypted = this.encryption.decryptString(Buffer.from(record.ciphertext))
+      const envelope = parse(envelopeSchema, JSON.parse(decrypted))
+      if (
+        envelope.binding.ref !== ref ||
+        envelope.binding.principal !== metadata.principal ||
+        envelope.binding.version !== metadata.version
+      )
+        throw new Error()
+      return { ...envelope.binding, secret: envelope.secret }
     } catch {
       throw new GatewayFailure('CREDENTIAL_UNAVAILABLE')
     }

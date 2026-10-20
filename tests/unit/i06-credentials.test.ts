@@ -9,11 +9,20 @@ import {
 // Boundary doubles only: these tests make no claim about actual OS encryption.
 function fixture(backend = 'gnome_libsecret', platform: NodeJS.Platform = 'linux') {
   const records = new Map<string, { binding: CredentialBinding; ciphertext: Buffer }>()
+  const encrypted = new Map<string, string>()
   const encryption = {
     isEncryptionAvailable: vi.fn(() => true),
     getSelectedStorageBackend: vi.fn(() => backend as 'gnome_libsecret'),
-    encryptString: vi.fn(() => Buffer.from('opaque-test-ciphertext')),
-    decryptString: vi.fn(() => 'SYNTHETIC_TEST_KEY'),
+    encryptString: vi.fn((plaintext: string) => {
+      const token = randomUUID()
+      encrypted.set(token, plaintext)
+      return Buffer.from(token)
+    }),
+    decryptString: vi.fn((ciphertext: Buffer) => {
+      const plaintext = encrypted.get(ciphertext.toString())
+      if (plaintext === undefined) throw new Error('invalid test ciphertext')
+      return plaintext
+    }),
   }
   const repository: CiphertextRepository = {
     write: vi.fn(async (binding, ciphertext) => {
@@ -40,7 +49,7 @@ describe('I06 encrypted credential boundary (no real safeStorage calls)', () => 
     const binding = await f.vault.store(principal, 'SYNTHETIC_TEST_KEY')
     expect(Object.keys(binding).sort()).toEqual(['principal', 'ref', 'version'])
     expect(binding.principal).toBe(principal)
-    expect(f.records.get(binding.ref)?.ciphertext).toEqual(Buffer.from('opaque-test-ciphertext'))
+    expect(f.records.get(binding.ref)?.ciphertext.toString()).not.toContain('SYNTHETIC_TEST_KEY')
     expect(JSON.stringify([...f.records])).not.toContain('SYNTHETIC_TEST_KEY')
     expect(await f.vault.read(binding.ref)).toEqual({ ...binding, secret: 'SYNTHETIC_TEST_KEY' })
     const next = await f.vault.store(principal, 'SYNTHETIC_TEST_KEY')
@@ -93,6 +102,52 @@ describe('I06 encrypted credential boundary (no real safeStorage calls)', () => 
     f.encryption.isEncryptionAvailable.mockReturnValueOnce(true).mockReturnValueOnce(false)
     await expect(f.vault.read(binding.ref)).rejects.toThrow('CREDENTIAL_UNAVAILABLE')
     expect(f.encryption.decryptString).not.toHaveBeenCalled()
+  })
+  it.each(['principal', 'version'] as const)(
+    'rejects tampered %s metadata instead of relabeling an existing encrypted credential',
+    async (field) => {
+      const f = fixture()
+      const binding = await f.vault.store(randomUUID(), 'SYNTHETIC_TEST_KEY')
+      f.records.get(binding.ref)!.binding[field] = randomUUID()
+      await expect(f.vault.read(binding.ref)).rejects.toThrow('CREDENTIAL_UNAVAILABLE')
+    },
+  )
+  it('rejects valid ciphertext exchanged between credential references', async () => {
+    const f = fixture()
+    const first = await f.vault.store(randomUUID(), 'SYNTHETIC_TEST_KEY')
+    const second = await f.vault.store(randomUUID(), 'ANOTHER_SYNTHETIC_KEY')
+    f.records.get(first.ref)!.ciphertext = f.records.get(second.ref)!.ciphertext
+    await expect(f.vault.read(first.ref)).rejects.toThrow('CREDENTIAL_UNAVAILABLE')
+  })
+  it('rejects unknown repository binding fields rather than returning them', async () => {
+    const f = fixture()
+    const binding = await f.vault.store(randomUUID(), 'SYNTHETIC_TEST_KEY')
+    Object.assign(f.records.get(binding.ref)!.binding, { unexpected: 'raw repository detail' })
+    await expect(f.vault.read(binding.ref)).rejects.toThrow('CREDENTIAL_UNAVAILABLE')
+  })
+  it.each([
+    'raw-key',
+    'invalid-json',
+    'future-format',
+    'extra-field',
+    'extra-binding-field',
+    'invalid-secret',
+  ])('rejects decrypted %s without a plaintext or permissive fallback', async (variant) => {
+    const f = fixture()
+    const binding = await f.vault.store(randomUUID(), 'SYNTHETIC_TEST_KEY')
+    const envelope = JSON.parse(f.encryption.encryptString.mock.calls[0][0])
+    let plaintext: string
+    if (variant === 'raw-key') plaintext = 'SYNTHETIC_TEST_KEY'
+    else if (variant === 'invalid-json') plaintext = '{'
+    else {
+      if (variant === 'future-format') envelope.format = 2
+      if (variant === 'extra-field') envelope.unknown = 'raw detail'
+      if (variant === 'extra-binding-field') envelope.binding.unknown = 'raw detail'
+      if (variant === 'invalid-secret') envelope.secret = 'key\r\nInjected: header'
+      plaintext = JSON.stringify(envelope)
+    }
+    f.encryption.decryptString.mockReturnValueOnce(plaintext)
+    await expect(f.vault.read(binding.ref)).rejects.toThrow(/^CREDENTIAL_UNAVAILABLE$/)
   })
   it.each(['', 'key\nheader: bad', 'key\u0000', 'x'.repeat(4097)])(
     'rejects malformed credential without persistence',
