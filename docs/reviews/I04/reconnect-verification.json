@@ -1,0 +1,426 @@
+{
+  "implementationHead": "cf83e18fa0c7452daacb244feeacc5974440af7a",
+  "runtimeInputManifest": {
+    "path": "build/I04-evidence/reconnect-memory-final-inputs.json",
+    "sha256": "22fd8dcc097450442978fb74556d0bdf545fa04405935e2b7659e11709904e2a",
+    "bytes": 17421,
+    "fileCount": 116,
+    "scope": "All tracked non-doc files except separately protected AGENTS.md; documentation/process files deliberately excluded.",
+    "differencesAtSummary": []
+  },
+  "protectedAGENTSSHA256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+  "checks": [
+    {
+      "command": "npm run check",
+      "platform": "macOS arm64",
+      "exit": 0,
+      "typescriptPassed": 619,
+      "pythonPassed": 1001,
+      "log": "build/I04-evidence/reconnect-memory-final-check.log"
+    },
+    {
+      "command": "npm run check",
+      "platform": "isolated Linux arm64",
+      "exit": 0,
+      "typescriptPassed": 619,
+      "pythonPassed": 999,
+      "pythonSkipped": 2,
+      "skipReason": "Darwin real RSS growth and child-exit/libproc race",
+      "log": "build/I04-evidence/memory-final-linux/check.log"
+    },
+    {
+      "command": "npm run verify:sources",
+      "exit": 0,
+      "sources": 12,
+      "log": "build/I04-evidence/reconnect-final-sources.log",
+      "scope": "Archived sources unchanged since this passed run."
+    },
+    {
+      "command": "actual coordinator exit, reload/anchors/safe errors, native crash/unresponsive and desktop/health-delivery",
+      "platform": "isolated Linux arm64",
+      "sourceExit": 0,
+      "packagedExit": 0,
+      "sourcePassed": 5,
+      "packagedPassed": 5
+    },
+    {
+      "command": "package:dir + verify-i04-package.py",
+      "platform": "macOS arm64",
+      "exit": 0,
+      "runtimePassed": 12
+    },
+    {
+      "command": "package:dir + verify-i04-package.py",
+      "platform": "isolated Linux arm64",
+      "exit": 0,
+      "runtimePassed": 12
+    }
+  ],
+  "packagedResources": {
+    "macOS": {
+      "registryHash": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+      "resources": {
+        "python/contract_v2.py": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+        "v2/binding-regressions.json": "9601d6d0a31e3e71078ac2562c6b8501c1292bc2be71de742e40c2fc54512a24",
+        "v2/dependencies.json": "dee118b368915df4172a77b875d31ce29ad8374cb5fce3915678f7f950cedad4",
+        "v2/errors.json": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+        "v2/fixtures.json": "32031804abf3283e87f070ffbfc3f95cf627f6b71e7bc49711faaff52ec31ad6",
+        "v2/frame-fixtures.json": "8e9a142ff04e908cc286c15702cd18b6c2ce9453490585d0855c3f62995dd2e5",
+        "v2/registry.json": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+        "v2/schema.json": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+        "v2/states.json": "ab54cac024f0f6b31a8a229198ae1c4ab13f63ff88184cdcef78113b9e893416"
+      },
+      "implementation": {
+        "executionSemanticsVersion": "i04-infrastructure-v1",
+        "engineVersion": "0.1.0",
+        "dependencyLockHash": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+      },
+      "frozen": true
+    },
+    "linux": {
+      "registryHash": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+      "resources": {
+        "python/contract_v2.py": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+        "v2/binding-regressions.json": "9601d6d0a31e3e71078ac2562c6b8501c1292bc2be71de742e40c2fc54512a24",
+        "v2/dependencies.json": "dee118b368915df4172a77b875d31ce29ad8374cb5fce3915678f7f950cedad4",
+        "v2/errors.json": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+        "v2/fixtures.json": "32031804abf3283e87f070ffbfc3f95cf627f6b71e7bc49711faaff52ec31ad6",
+        "v2/frame-fixtures.json": "8e9a142ff04e908cc286c15702cd18b6c2ce9453490585d0855c3f62995dd2e5",
+        "v2/registry.json": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+        "v2/schema.json": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+        "v2/states.json": "ab54cac024f0f6b31a8a229198ae1c4ab13f63ff88184cdcef78113b9e893416"
+      },
+      "implementation": {
+        "executionSemanticsVersion": "i04-infrastructure-v1",
+        "engineVersion": "0.1.0",
+        "dependencyLockHash": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+      },
+      "frozen": true
+    }
+  },
+  "desktopEvidence": "reconnect-desktop-evidence.json",
+  "internalReview": "reconnect-internal-review.json",
+  "failureHistory": [
+    {
+      "log": "build/I04-evidence/reconnect-1-linux/check.log",
+      "result": "First cloned-container check scanned packaged dependency trees without Git metadata; failed before desktop tests. Git init restored existing ignore discovery; no source/test exclusion changed."
+    },
+    {
+      "log": "build/I04-evidence/reconnect-final-check-2.log",
+      "result": "619 TS passed, 991 Python passed/one failed; real Darwin memory sampling/child-exit misclassification. Preserved and independently reproduced; cf83e18 fixes the cause without weakening expected RESOURCE_LIMIT."
+    }
+  ],
+  "lineage": [
+    "C1 local-verification.json and source-final1-manifest are preserved unchanged. Its four post-manifest document differences are explicitly recorded in round-1/source-provenance-note.json.",
+    "This input manifest deliberately excludes docs and protected dirty AGENTS, so later documentation/process commits cannot be mistaken for captured runtime bytes. Candidate records separately hash the complete reviewed diff.",
+    "Earlier reconnection runs and interim failed checks remain under build/I04-evidence; only the explicitly listed final runs support this summary."
+  ],
+  "limitations": [
+    "No host macOS Electron/native/HMR GUI was started.",
+    "Linux arm64 container is not x64 CI, Windows proof, signing or clean-device installation.",
+    "Darwin RSS sampling is not a hard allocation ceiling; bounded infrastructure workloads only.",
+    "Designated C1 external reviews were still running at evidence collection; this record does not establish final dual approval, remote CI, push or merge."
+  ],
+  "artifacts": [
+    {
+      "path": "build/I04-evidence/memory-final-linux/check.log",
+      "sha256": "5d4b02ccfd5a357e99aceefb543b09663be8f1d2a2ade69a92d1872a92b4f716",
+      "bytes": 7863
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/package-probe.log",
+      "sha256": "2acdf8d42a228e347d19ae12b6c5089190f4a3fd0e574e91079145e743946af8",
+      "bytes": 265
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/package-probe/common-examples.json",
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f",
+      "bytes": 192
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/package-probe/resources.json",
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb",
+      "bytes": 1184
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/package-probe/runtime.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/package-probe/runtime.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/package-probe/runtime.stdout",
+      "sha256": "6eccf0e9cbc86cbb79022088109c4f272b5ee32c72b968cc2cfb1e352fe91235",
+      "bytes": 99
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/package.log",
+      "sha256": "77c7cbd1fa6f938cd88bc4ddbe270d20a6e3450f132bd9d48a26adebc52849cd",
+      "bytes": 10925
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/packaged-desktop.log",
+      "sha256": "ef42b6e5215678ef8432f9b45dee3035ab0422a87d6584b9defbff5597633c1f",
+      "bytes": 297
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/packaged-disconnect.log",
+      "sha256": "c6094f4b30afd580cbf739ca980b58c9157eadfdfbd757cf6721235613b3c8f8",
+      "bytes": 172
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/packaged-native.log",
+      "sha256": "ffd90a71300498e68dea300fb88523e92e58ac312120b5099736e77c50115413",
+      "bytes": 181
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/packaged-reload.log",
+      "sha256": "2d9bb1d955c9aacefb8107eb956c0f7896a17152501d3731057cb3f08197af80",
+      "bytes": 183
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/source-desktop.log",
+      "sha256": "5f5adfb8f62584f1185b85d64367749f6d7ff78977b0e73641fb9e83b9800cc7",
+      "bytes": 298
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/source-disconnect.log",
+      "sha256": "dcb4f3b96aba2f9f84a74059ca173e775712973afe7f1685514be910702923f7",
+      "bytes": 172
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/source-native.log",
+      "sha256": "c8cdb81228ea95c08a95d49e2d982be3414b0cd3af819d9a258bcd9fad857e93",
+      "bytes": 181
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/source-reload.log",
+      "sha256": "2f4904a0391ce738bfe889e0fa1a4b270027d6419b6c9f7a32b762065b4ec9c4",
+      "bytes": 183
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/test-results/i04-memory-packaged-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/i04-coordinator-recovery.json",
+      "sha256": "5b87e5d9db526ea02ce7b777daf9b85a07ae154e5eff2f7ed84d100060e86932",
+      "bytes": 16671
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/test-results/i04-memory-packaged-health/desktop-a-health-reply-fro-c8588--replace-the-current-status/i04-health-replies.json",
+      "sha256": "ef756916757bbfdd720e0c5d4dea76a97b479a74f15ac69b065b38bafcf35b00",
+      "bytes": 1559
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/test-results/i04-memory-packaged-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-evidence-21930259cc1e616d24a90483c2a2ef1cd72da40c.json",
+      "sha256": "72b051a48ebc9bc62f5261fcbc870f1a7f03eb32a5fb6b5ee82d67c032f023a9",
+      "bytes": 32845
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/test-results/i04-memory-source-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/i04-coordinator-recovery.json",
+      "sha256": "45bcd012f9dc9a44a8952ed79fb852a7a0f4d20381d52649fd2294f2accccc89",
+      "bytes": 16671
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/test-results/i04-memory-source-health/desktop-a-health-reply-fro-c8588--replace-the-current-status/i04-health-replies.json",
+      "sha256": "ef756916757bbfdd720e0c5d4dea76a97b479a74f15ac69b065b38bafcf35b00",
+      "bytes": 1559
+    },
+    {
+      "path": "build/I04-evidence/memory-final-linux/test-results/i04-memory-source-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-evidence-50ffbe9c94b54f38de8e7cdd92844b64f115359b.json",
+      "sha256": "dcd5a3e131076418f50906ce2253ab6674d3f359619e4331d6e13265a68344a0",
+      "bytes": 32845
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/finding-summary.json",
+      "sha256": "368636fc3f96bfbe890233e10f0e898e635b8ae32840f645819832f67a5072df",
+      "bytes": 2717
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/original-final-check-2.log",
+      "sha256": "182ef85f3c3599ed05505a00bff676e2f127497fe32957481d969123561d85d4",
+      "bytes": 6629
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/probe-forced-window.json",
+      "sha256": "b3f16a831f838e1167b49903048bb983052585f26d2ff06aa154fc383bb12034",
+      "bytes": 9334
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/probe-forced-window.py",
+      "sha256": "0cc28ea92cd5e590bac56dda5f2f860753f2ff5aeac79f1b373351f7be09ed0c",
+      "bytes": 3803
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/probe-monitor-production-fix.json",
+      "sha256": "af839ba9695125b349392d485dfb71e5b5d8510ef2da031828d12990ee93e7f7",
+      "bytes": 360
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/probe-monitor-production-fix.py",
+      "sha256": "91dd08d5820bbfd9ff4b508123374059d10af7c61f317adfb113346eff59360f",
+      "bytes": 1093
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/probe-production-fix.json",
+      "sha256": "c4133ca0b1dbf2baba94b7925160abe7d197e7bbc9e1188fb5b768a90607960b",
+      "bytes": 9699
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/probe-production-fix.py",
+      "sha256": "31e9fa53476cf5e2fd079f1485375c2b8c2b89630f40c409dd694b80479db08c",
+      "bytes": 4153
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/probe-proposed-esrch-mapping.json",
+      "sha256": "a82002338dab8f5ce36e0a0bfa664ebb3857965124815d274f73bd79dc7a4db6",
+      "bytes": 9736
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/probe-proposed-esrch-mapping.py",
+      "sha256": "08a926b469a64be6c600fde207148c4249b9913fb7d1fea5e0f7dbc5e17df703",
+      "bytes": 4167
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/probe.json",
+      "sha256": "dfa18ed86249348657df9b1fcfb94739d1575be7bcffcd9625d4aa8e74dcafdc",
+      "bytes": 53047
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/probe.py",
+      "sha256": "4c111876e440aa8af56aa967b8f44c5917148c95bdc5216601951a35241baea6",
+      "bytes": 3300
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/production-fix-review.json",
+      "sha256": "c7815c57120cdbe45e66e30864bdd53bf7d89bd1022d6ab727ebb3e0de4e53d9",
+      "bytes": 2631
+    },
+    {
+      "path": "build/I04-evidence/memory-internal/pytest-production-fix.log",
+      "sha256": "dc3948894ed2e812e46ee43d8ab63c673751c3404120eabb3d65de1e3aab5ef5",
+      "bytes": 114
+    },
+    {
+      "path": "build/I04-evidence/memory-race-fixed-targeted.log",
+      "sha256": "5e3cdb544a7f3e0ad61a67d720daed4a3386a2d905ad9d1d4e07f5e28c82df1e",
+      "bytes": 99
+    },
+    {
+      "path": "build/I04-evidence/memory-ui-dispatch.log",
+      "sha256": "2dd7533df4f5d88dae0c472db69c6c679bf0d89ec148a8ec9bc06aa73de3e3df",
+      "bytes": 308
+    },
+    {
+      "path": "build/I04-evidence/reconnect-final-check-2.log",
+      "sha256": "182ef85f3c3599ed05505a00bff676e2f127497fe32957481d969123561d85d4",
+      "bytes": 6629
+    },
+    {
+      "path": "build/I04-evidence/reconnect-internal/refresh-recovery-addendum-592272f.json",
+      "sha256": "e1b9ea0ea15636d74e6c15706dec5e5b91bffef7e4d43a5ef39536b00ae46b17",
+      "bytes": 2675
+    },
+    {
+      "path": "build/I04-evidence/reconnect-internal/revision-after-bridge.json",
+      "sha256": "7ba7561b5014cae97703d1ab3a0903dc38c09f74889ccc41ec2f6f190830531a",
+      "bytes": 601
+    },
+    {
+      "path": "build/I04-evidence/reconnect-internal/revision-evidence.json",
+      "sha256": "6fd08a5af01125dbc0b2c24dadc17cc611738097dcbe9caac4abb2dc5db280d5",
+      "bytes": 522
+    },
+    {
+      "path": "build/I04-evidence/reconnect-internal/revision-probe.after-bridge.test.ts",
+      "sha256": "54740353a25cecc042a050804a2f788021b458c8c6b25f484690cad21bef0a30",
+      "bytes": 3946
+    },
+    {
+      "path": "build/I04-evidence/reconnect-internal/revision-probe.executed.test.ts",
+      "sha256": "34637f876d0c5a7078e0e2d5e47797b791e59972880db63d5e53592f15d89115",
+      "bytes": 3817
+    },
+    {
+      "path": "build/I04-evidence/reconnect-internal/revision-probe.test.ts",
+      "sha256": "34637f876d0c5a7078e0e2d5e47797b791e59972880db63d5e53592f15d89115",
+      "bytes": 3817
+    },
+    {
+      "path": "build/I04-evidence/reconnect-internal/ui-health-after-25f25db.json",
+      "sha256": "00e3845bfa4555df989f16291062ccc3336ad84cc69c4937f6359c9b6d5577a6",
+      "bytes": 2507
+    },
+    {
+      "path": "build/I04-evidence/reconnect-internal/ui-health-after-probe.mjs",
+      "sha256": "b9e8a805787052498f50ca69910195128d17228cd8c064388f897c2c06d05487",
+      "bytes": 3778
+    },
+    {
+      "path": "build/I04-evidence/reconnect-internal/ui-health-evidence.json",
+      "sha256": "602d25fc2f14755514b258bc87a37252cef36589d87436ac53cfdf4ca77e970d",
+      "bytes": 1360
+    },
+    {
+      "path": "build/I04-evidence/reconnect-internal/ui-health-probe.before.mjs",
+      "sha256": "ccfad1b67b5b740e8c3952ebb995e675b040c28096801457a4a6ef253b7b0c13",
+      "bytes": 2934
+    },
+    {
+      "path": "build/I04-evidence/reconnect-internal/ui-health-probe.mjs",
+      "sha256": "ccfad1b67b5b740e8c3952ebb995e675b040c28096801457a4a6ef253b7b0c13",
+      "bytes": 2934
+    },
+    {
+      "path": "build/I04-evidence/reconnect-internal/ui.config.mjs",
+      "sha256": "3aea7d77026034c9001c388076dc4c1193e58de5cf9ddfa52a71aa292d470093",
+      "bytes": 458
+    },
+    {
+      "path": "build/I04-evidence/reconnect-memory-final-check.log",
+      "sha256": "8eb6f98bc347630a401a47344edea1496f4d0a5fe88d9cefcb3b695ccf8a8cef",
+      "bytes": 4564
+    },
+    {
+      "path": "build/I04-evidence/reconnect-memory-final-inputs.json",
+      "sha256": "22fd8dcc097450442978fb74556d0bdf545fa04405935e2b7659e11709904e2a",
+      "bytes": 17421
+    },
+    {
+      "path": "build/I04-evidence/reconnect-memory-macos-probe.log",
+      "sha256": "deabce6c207b3c8a4cf361f5657b311802a71bb71c9ab08fe0951beab84b033e",
+      "bytes": 365
+    },
+    {
+      "path": "build/I04-evidence/reconnect-memory-macos-probe/common-examples.json",
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f",
+      "bytes": 192
+    },
+    {
+      "path": "build/I04-evidence/reconnect-memory-macos-probe/resources.json",
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb",
+      "bytes": 1184
+    },
+    {
+      "path": "build/I04-evidence/reconnect-memory-macos-probe/runtime.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/reconnect-memory-macos-probe/runtime.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-evidence/reconnect-memory-macos-probe/runtime.stdout",
+      "sha256": "6b22bc139d51b56c0634c609e1efec2e40276166c84b534a23643b14cdcc516c",
+      "bytes": 99
+    },
+    {
+      "path": "build/I04-evidence/reconnect-memory-package-macos.log",
+      "sha256": "4a486788b4105dd67ddf48c827e9201b328586b140b727d6489ad63ae7503201",
+      "bytes": 13905
+    }
+  ]
+}
