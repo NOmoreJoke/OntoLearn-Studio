@@ -1,0 +1,43 @@
+{
+  "observedAt": "2026-10-20T11:05:01.895545+08:00",
+  "candidate": "09a2e6648edfb465debe47bc9fb15e2c6f23e088",
+  "blockingCondition": "Same existing external R3 tasks cannot be safely continued or their terminal states authoritatively confirmed with currently available non-GUI tools; user desktop interaction is prohibited. GLM report missing; MiniMax completion/release source unverified.",
+  "consecutiveTurns": [
+    {
+      "turn": "Initial no-desktop transition and preservation",
+      "classification": "progress",
+      "evidence": "Preserved runtime artifacts, independent read-only review, desktop hold/integrity and same-task metadata; inability to transmit constraint without GUI remained."
+    },
+    {
+      "turn": "Controller sole quota coordinator acknowledgment",
+      "classification": "progress",
+      "evidence": "Applied explicit coordination policy and verified AGENTS hash; no quota exhaustion or supported external review continuation mechanism became available."
+    },
+    {
+      "turn": "Current automatic Goal continuation",
+      "classification": "no_progress_gate_revalidated",
+      "evidence": "Current HEAD unchanged; GLM report still absent, MiniMax report hash unchanged; actual PR OPEN at old head with terminal CI failures; available tool metadata has no ZCode/MiniMax continuation tool. Not a verified wait on a live handle."
+    }
+  ],
+  "availableSafeActionAssessment": "Static/product/runtime evidence already gathered for unchanged candidate; repeating those tests cannot supply missing designated review completion. No new source change is justified. Cannot push candidate before dual-review gate, cannot replace reviewers or infer completion from report-file existence.",
+  "remoteObservation": {
+    "source": "gh pr view 3 --json state,baseRefName,baseRefOid,headRefOid,mergeStateStatus,statusCheckRollup,url; exit0",
+    "state": "OPEN",
+    "head": "7e26155a10639365216eb56f6abf3a0979aefb47",
+    "base": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+    "quality": "FAILURE",
+    "macOS": "SUCCESS",
+    "windows": "FAILURE"
+  },
+  "resumeConditions": [
+    "Supported non-disruptive route to send the current policy to the same GLM/MiniMax tasks and verify actual task completion.",
+    "Isolated CI/independent test desktop for any remaining required native validation; alternatively an explicit user-provided available desktop time slot."
+  ],
+  "preserved": "Original Goal objective, candidate, existing review identities/reports, 16 frozen files and 64 protected files. No push/merge, no model substitution, no lowered acceptance.",
+  "quota": "No quota exhaustion evidence; no redemption or recharge attempted.",
+  "goalStatusResult": {
+    "tool": "update_goal",
+    "status": "blocked",
+    "objectivePreserved": true
+  }
+}

@@ -1,0 +1,27 @@
+(() => {
+const {app,BrowserWindow,dialog}=process.getBuiltinModule('module').createRequire(process.execPath)('electron');
+const fs=process.getBuiltinModule('fs');const inspector=process.getBuiltinModule('inspector');
+const originalDialog=dialog.showMessageBox;const log="/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/docs/reviews/I02/native-dialog-probe/run-2/events.jsonl";const control="/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/i02-real-native-2-np011lse/control.json";
+const record=(event,data={})=>fs.appendFileSync(log,JSON.stringify({time:new Date().toISOString(),event,...data})+'\n');
+let count=0;let seq=0;app.on('before-quit',()=>record('before-quit'));app.on('will-quit',()=>record('will-quit'));
+function observe(w,fresh=false){
+ const number=++count;record('window-created',{number,id:w.id,url:w.webContents.getURL(),preferences:w.webContents.getLastWebPreferences()});
+ w.webContents.on('render-process-gone',(_e,d)=>record('render-process-gone',{number,reason:d.reason}));
+ w.on('unresponsive',()=>record('unresponsive',{number,dialogUnmodified:dialog.showMessageBox===originalDialog}));
+ w.on('responsive',()=>record('responsive',{number}));
+ w.on('closed',()=>record('closed',{number}));w.on('focus',()=>record('focus',{number}));w.on('blur',()=>record('blur',{number}));
+ const loaded=async()=>{try{const state=await w.webContents.executeJavaScript('({status:document.querySelector("[role=status]")?.textContent,heading:document.querySelector("h1")?.textContent,bridge:typeof window.ontolearn?.getEngineHealth})');record('window-loaded',{number,...state,url:w.webContents.getURL()});}catch(e){record('read-failed',{number,error:String(e)})}};
+ w.webContents.on('did-finish-load',loaded);if(!fresh&&!w.webContents.isLoadingMainFrame())void loaded();
+}
+setTimeout(()=>{
+ inspector.close();record('probe-started',{packaged:app.isPackaged,versions:process.versions,inspectorClosed:inspector.url()===undefined,hangMonitorEnabled:!app.commandLine.hasSwitch('disable-hang-monitor'),dialogUnmodified:dialog.showMessageBox===originalDialog,control});
+ app.on('browser-window-created',(_e,w)=>observe(w,true));for(const w of BrowserWindow.getAllWindows())observe(w);
+ setInterval(async()=>{try{const c=JSON.parse(fs.readFileSync(control,'utf8'));if(c.seq===seq)return;seq=c.seq;const w=BrowserWindow.getAllWindows()[0];record('control',{...c,windowId:w?.id,dialogUnmodified:dialog.showMessageBox===originalDialog});
+ if(c.action==='crash')w.webContents.forcefullyCrashRenderer();
+ if(c.action==='hang'){await w.webContents.executeJavaScript('setTimeout(()=>{for(;;){}},50); "armed"');setTimeout(()=>{w.webContents.sendInputEvent({type:'mouseDown',x:400,y:400,button:'left',clickCount:1});w.webContents.sendInputEvent({type:'mouseUp',x:400,y:400,button:'left',clickCount:1});},200);}
+ if(c.action==='snapshot'){const state=await w.webContents.executeJavaScript('({status:document.querySelector("[role=status]")?.textContent,heading:document.querySelector("h1")?.textContent,bridge:typeof window.ontolearn?.getEngineHealth})');record('snapshot',state);}
+ if(c.action==='quit')app.quit();
+ }catch(e){record('control-error',{error:String(e)})}},150);
+},150);
+return 'hook installed; dialog.showMessageBox never replaced';
+})()

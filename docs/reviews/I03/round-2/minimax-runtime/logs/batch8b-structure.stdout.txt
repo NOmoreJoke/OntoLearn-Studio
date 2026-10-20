@@ -1,0 +1,20 @@
+typecheck-gate.json keys: ['probes', 'rawLogDirectory', 'restored']
+{"probes": [{"target": "packages/contracts/src/v2.ts", "entrypoint": "npm run typecheck", "exit": 2, "expectedDiagnostic": "TS2322", "originalSha256": "09353c8ec74b90ad2fbbb4d14ef73e5a84736e98369a68ed0ea845c19f46bd68", "restoredSha256": "09353c8ec74b90ad2fbbb4d14ef73e5a84736e98369a68ed0ea845c19f46bd68"}, {"target": "tests/unit/contract-v2.test.ts", "entrypoint": "npm run typecheck", "exit": 2, "expectedDiagnostic": "TS2322", "originalSha256": "96d196c4c16bb3b7a26d01c7315f6adf6c6b4cdd2a9d56c9fe7f4846a14191b8", "restoredSha256": "96d196c4c16bb3b7a26d01c7315f6adf6c6b4cdd2a9d56c9fe7f4846a14191b8"}], "rawLogDirectory": "build/I03-validation/c5-type-gate", "restored": true}
+{"total": 17, "failed": 0}
+PASS  request covers every service method :: req-only=[] reg-only=[]
+PASS  response covers every service method :: res-only=[] reg-only=[]
+PASS  no duplicate request alternatives :: 14
+PASS  response has ok/result + ok/error variant per method :: 28 vs 14
+PASS  request method count == 14 wire methods :: 14
+PASS  no new scenario/summary business method added :: ['health', 'hello', 'job.cancel', 'job.create', 'job.get', 'job.list', 'job.subscribe', 'job.unsubscribe', 'operation.get', 'project.get', 'result.current', 'result.get', 'result.page', 'session.ping']
+PASS  all registry schema refs resolve :: []
+PASS  job.create capability enum == registry capability set :: enum-only=[] reg-only=[]
+PASS  staleReason codes == S1 non-empty codes :: schema=['ONTOLOGY_CHANGED', 'FACTS_CHANGED', 'MAPPING_INPUT_CHANGED', 'VALIDATION_DEFINITION_CHANGED', 'RULE_CHANGED', 'BEHAVIOR_CHANGED', 'SCENARIO_CHANGED', 'QUERY_CHANGED'] s1=['ONTOLOGY_CHANGED', 'FACTS_CHANGED', 'MAPPING_INPUT_CHANGED', 'VALIDATION_DEFINITION_CHANGED', 'RULE_CHANGED', 'BEHAVIOR_CHANGED', 'SCENARIO_CHANGED', 'QUERY_CHANGED']
+PASS  model family has no staleReason
+PASS  staleReason dependency pattern excludes model :: ['^ontology:[A-Za-z0-9_.-]{1,128}$', '^facts:asserted$', '^mapping:[A-Za-z0-9_.-]{1,128}$', '^constraint:[A-Za-z0-9_.-]{1,128}$', '^rule:[A-Za-z0-9_.-]{1,128}$', '^behavior:[A-Za-z0-9_.-]{1,128}$', '^scenario:[A-Za-z0-9_.-]{1,128}$', '^query:[A-Za-z0-9_.-]{1,128}$']
+PASS  dependencyKey allows model: :: ^(facts:asserted|(ontology|mapping|constraint|rule|behavior|scenario|query|model):[A-Za-z0-9_.-]{1,128})$
+PASS  definitionSetDigests excludes model
+PASS  state cartesian product matches states.json (python) :: []
+PASS  states.json transitions == expected set :: {'cancelling>cancelled', 'queued>cancelled', 'running>succeeded', 'running>cancelling', 'cancelling>failed', 'cancelling>succeeded', 'queued>running', 'running>failed', 'queued>failed'}
+PASS  cancelling->succeeded blocked without final proof
+PASS  same-version transition blocked

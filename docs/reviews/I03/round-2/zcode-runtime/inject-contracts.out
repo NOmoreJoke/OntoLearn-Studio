@@ -1,0 +1,20 @@
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+src/states-v2.ts(20,14): error TS2322: Type 'string' is not assignable to type 'number'.
+npm error Lifecycle script `typecheck` failed with error:
+npm error code 2
+npm error path /private/tmp/i03-r2-zcode/inject/packages/contracts
+npm error workspace @ontolearn/contracts@0.1.0
+npm error location /private/tmp/i03-r2-zcode/inject/packages/contracts
+npm error command failed
+npm error command sh -c tsc --noEmit -p tsconfig.json

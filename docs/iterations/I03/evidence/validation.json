@@ -1,0 +1,84 @@
+{
+  "iteration": "I03",
+  "base": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
+  "environment": {
+    "platform": "macOS arm64",
+    "runtime": "independent worktree node_modules/.venv; no GUI",
+    "machine": "arm64",
+    "node": "v24.15.0",
+    "python": "Python 3.12.12"
+  },
+  "checks": [
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "typescriptTests": 424,
+      "pythonTests": 626,
+      "includes": [
+        "eslint",
+        "prettier",
+        "strict contracts typecheck",
+        "strict all-unit typecheck",
+        "desktop typecheck",
+        "vitest",
+        "build",
+        "ruff",
+        "pytest"
+      ],
+      "logSha256": "576b0f4670535268f173fd001c06d304cf8a3cce9212ddde448c0005e61a7e20",
+      "localRawLog": "build/I03-validation/check-candidate5.txt"
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "coverage": ["contracts/src", "tests/unit/**/*.ts", "desktop"]
+    },
+    {
+      "command": "npm run verify:sources",
+      "exitCode": 0,
+      "archiveFiles": 12
+    },
+    {
+      "command": "git diff --check c2f9b038..HEAD -- . ':!docs/reviews/I03/**/*.diff'",
+      "exitCode": 0,
+      "note": "Exact historical unified-diff artifacts intentionally preserve context-line trailing spaces; implementation/docs/config/tests checked without whitespace errors. Unfiltered check flags these raw artifacts only."
+    },
+    {
+      "command": "npm run typecheck with temporary real type errors in contracts and unit separately",
+      "expectedExitCode": 2,
+      "diagnostic": "TS2322",
+      "restoredByByteHash": true,
+      "evidence": "typecheck-gate.json"
+    }
+  ],
+  "notRun": [
+    "Electron e2e/native/HMR",
+    "packaged executable launch",
+    "candidate5 specified external review tasks",
+    "push/PR/remote CI/merge"
+  ],
+  "note": "Pre-freeze final validation; any later reviewed implementation/test/config/acceptance change invalidates this summary and requires rerun.",
+  "validatedAt": "2026-10-20T14:37:34.945373+08:00",
+  "revision": "Candidate5 bounded fixes after both original reviews and factual clarifications terminal; zero-round summary contradiction found and closed by independent review",
+  "targetedChecks": {
+    "typescriptContractTests": 409,
+    "pythonContractTests": 428,
+    "independentReviewer": "/root/requirements_review",
+    "conclusion": "Two P2 findings closed; no remaining blocker in targeted review; not the specified external reviews",
+    "v3DocumentationReview": "25/25 source entries matched; both snapshots byte-identical and hash-matched; no new public method or I05 runtime verification claimed",
+    "newBaselineReview": {
+      "base": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
+      "mergeHead": "0ec24b7e12c9ffaee5895e461800649a04bfff2f",
+      "typescriptTests": 420,
+      "pythonTests": 435,
+      "conclusion": "No new blocker; actual root v1 and separate v2 loading verified; no GUI or specified external review substituted"
+    },
+    "candidate5IndependentReview": {
+      "reviewer": "/root/requirements_review",
+      "scope": "static current repairs and original reports; no build or GUI",
+      "initialFinding": "P2 zero-round success summary contradicted existing rounds contract",
+      "disposition": "Closed: succeeded summary requires >=1 committed round; zero-commit failed/cancelled shows state/null progress only",
+      "otherFindings": "None in bounded changes; actual I04 runtime remains unimplemented"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{"total": 31, "failed": 0}
+PASS  publish rejects kind=None
+PASS  current rejects kind=None
+PASS  kind=None zero write side effects
+PASS  publish rejects kind=''
+PASS  current rejects kind=''
+PASS  kind='' zero write side effects
+PASS  publish rejects kind='   '
+PASS  current rejects kind='   '
+PASS  kind='   ' zero write side effects
+PASS  publish rejects kind=1
+PASS  current rejects kind=1
+PASS  kind=1 zero write side effects
+PASS  publish rejects kind=False
+PASS  current rejects kind=False
+PASS  kind=False zero write side effects
+PASS  publish rejects kind=[]
+PASS  current rejects kind=[]
+PASS  kind=[] zero write side effects
+PASS  publish rejects kind={}
+PASS  current rejects kind={}
+PASS  kind={} zero write side effects
+PASS  padded kind stored verbatim (no trim) :: [' query ', 'query']
+PASS  padded kind not merged into 'query' current key :: [' query ', 'query']
+PASS  padded kind current lookup is distinct
+PASS  padded publish returns distinct result id
+PASS  legacy NULL kind rejected at open
+PASS  legacy NULL kind no silent cleanup
+PASS  legacy non-object config raises ValueError
+PASS  legacy config zero side effects
+PASS  legacy config progress unchanged
+PASS  open-time guard still scans results and current_results

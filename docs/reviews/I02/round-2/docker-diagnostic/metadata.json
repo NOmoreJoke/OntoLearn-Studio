@@ -1,0 +1,17 @@
+{
+  "image": "docker.io/library/node:24-bookworm",
+  "imageDigest": "sha256:14078204b6bb268c107ceff6d3c43f45a888105e5c2b18b14c32b3409d93a1b0",
+  "snapshotImage": "ontolearn-i02-linux-diagnostic:20261020",
+  "source": "git archive caa0847 plus three test files before container run",
+  "hostTemp": "/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/I02-linux-diag-ay0ge_me",
+  "rootResult": "stopped after native network service root sandbox fatal loop; diagnostic only",
+  "nonrootResult": "normal UI/CSP/alien/reopen reached; native abort explicit helper root:4755 error; desktop smoke passed",
+  "notEquivalentTo": "GitHub Ubuntu x64 runner; neither proves the GitHub 90s timeout cause",
+  "weakenedSandbox": false,
+  "extraContainerCapabilities": false,
+  "testInputs": {
+    "tests/e2e/csp-lifecycle.spec.ts": "fd82a0bc0025bd9f25a0b3596fceb97eddf9f6a3c562a43110d5aa9223ec775e",
+    "tests/e2e/native-driver.ts": "7f1e7760927ac6662ad428fd5f2bef8146fac1afca13d568f24f4b3340cc4a5f",
+    "tests/unit/native-driver.test.ts": "3ff3cab7951733438817ed8a2859ec7220924c247d750089cc67f64930c7fcc1"
+  }
+}

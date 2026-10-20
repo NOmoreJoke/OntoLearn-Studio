@@ -1,0 +1,126 @@
+"""Batch 6: I05 v3 handoff integrity + frozen input hashes + retired code discipline."""
+import hashlib
+import importlib.util
+import json
+import re
+from pathlib import Path
+
+ROOT = Path("/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts")
+findings = []
+
+
+def ok(name, cond, detail=""):
+    findings.append({"name": name, "pass": bool(cond), "detail": detail})
+
+
+# --- frozen inputs (inputs/sources.json) ---
+manifest = json.loads((ROOT / "docs/reviews/I03/inputs/sources.json").read_text(encoding="utf-8"))
+entries = manifest if isinstance(manifest, list) else manifest.get("copies", [])
+ok("frozen inputs count == 6", len(entries) == 6, str(len(entries)))
+for entry in entries:
+    path = ROOT / "docs/reviews/I03/inputs" / entry["copy"]
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    ok(f"frozen input sha {entry['copy']}", digest == entry["sha256"], f"{digest[:16]} vs {entry['sha256'][:16]}")
+
+# --- I05 handoff source hashes ---
+handoff = json.loads(
+    (ROOT / "docs/reviews/I03/handoffs/I05-contract-source.json").read_text(encoding="utf-8")
+)
+for snapshot in [handoff, handoff["typedReasonsV3"]]:
+    path = ROOT / snapshot["copy"]
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    ok(f"I05 handoff sha {snapshot['copy']}", digest == snapshot["sha256"], digest[:16])
+
+# --- v3 code table vs handoff source ---
+v3_text = (ROOT / "docs/reviews/I03/handoffs/I05-typed-reasons-v3-source.md").read_text(encoding="utf-8")
+v3_source_codes = re.findall(r"^\|\s*([A-Z][A-Z0-9_]{3,})\s*\|", v3_text, flags=re.M)
+boundaries = (ROOT / "docs/iterations/I03/I05-semantic-boundaries.md").read_text(encoding="utf-8")
+lines = boundaries.splitlines()
+v3_start = next(i for i, l in enumerate(lines) if l.startswith("| 当前内部细码"))
+v3_rows = []
+for line in lines[v3_start + 2 :]:
+    if not line.startswith("|"):
+        break
+    cells = [c.strip() for c in line.strip().strip("|").split("|")]
+    if len(cells) >= 2 and re.fullmatch(r"[A-Z][A-Z0-9_]{3,}", cells[0]):
+        v3_rows.append((cells[0], cells[1]))
+ok("v3 table code count == 25", len(v3_rows) == 25, str(len(v3_rows)))
+ok("v3 source code count == 25", len(v3_source_codes) == 25, str(len(v3_source_codes)))
+ok(
+    "v3 table set == v3 source set",
+    {c for c, _ in v3_rows} == set(v3_source_codes),
+    f"table-only={sorted({c for c,_ in v3_rows}-set(v3_source_codes))} source-only={sorted(set(v3_source_codes)-{c for c,_ in v3_rows})}",
+)
+ok(
+    "v3 table order == v3 source order",
+    [c for c, _ in v3_rows] == v3_source_codes,
+    f"table={[c for c,_ in v3_rows][:5]} source={v3_source_codes[:5]}",
+)
+
+RETIRED = ["INPUT_LIMIT", "RESULT_LIMIT", "UNSUPPORTED_LITERAL", "UNSUPPORTED_RDF", "ASSERTED_SCOPE_REQUIRED"]
+v3_codes = {c for c, _ in v3_rows}
+for code in RETIRED:
+    ok(f"retired code {code} absent from v3 table", code not in v3_codes)
+    ok(
+        f"retired code {code} only in historical table",
+        all(code not in cell for cell, _ in v3_rows),
+    )
+
+# SHAPE_PATH_UNCLASSIFIED only INTERNAL_ERROR
+for code, dest in v3_rows:
+    if code == "SHAPE_PATH_UNCLASSIFIED":
+        ok("SHAPE_PATH_UNCLASSIFIED -> INTERNAL_ERROR only", "INTERNAL_ERROR" in dest and "RESOURCE_LIMIT" not in dest and "SEMANTIC_INPUT_INVALID" not in dest, dest[:120])
+
+# public catalog must not contain I05 internal codes
+spec = importlib.util.spec_from_file_location(
+    "contract_v2", ROOT / "packages/contracts/python/contract_v2.py"
+)
+contract = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(contract)
+public_codes = set(contract.ERROR_CATALOG["codes"])
+leak = sorted(public_codes & set(v3_source_codes))
+ok("public catalog contains no I05 internal code", not leak, str(leak))
+
+# every v3 destination is expressible in the public catalog (code + optional param enum value)
+public_params = {}
+for code, entry in contract.ERROR_CATALOG["codes"].items():
+    for name, prop in entry["paramsSchema"]["properties"].items():
+        if "enum" in prop:
+            public_params.setdefault(code, {})[name] = set(prop["enum"])
+unexpressible = []
+for code, dest in v3_rows:
+    found = False
+    for pub_code, params in public_params.items():
+        if pub_code not in dest:
+            continue
+        if "INVALID_REQUEST/field=params" in dest or "INVALID_REQUEST" in dest:
+            found = True
+        for pname, values in params.items():
+            for value in values:
+                if f"{pname}={value}" in dest:
+                    found = True
+    if not found:
+        unexpressible.append((code, dest[:90]))
+ok("every v3 row has a public destination", not unexpressible, str(unexpressible))
+
+# --- semantic budget categories: frame/page/actions/rounds must not be used for semantic budgets ---
+semantic_budget_values = {"semanticInput", "semanticResult", "semanticWork"}
+ok(
+    "RESOURCE_LIMIT exposes the three semantic budgets",
+    semantic_budget_values <= set(public_params["RESOURCE_LIMIT"].get("resource", set())),
+    str(sorted(public_params["RESOURCE_LIMIT"].get("resource", set()))),
+)
+misuse = []
+for code, dest in v3_rows:
+    for budget in semantic_budget_values:
+        if f"RESOURCE_LIMIT/{budget}" in dest:
+            for forbidden in ("frame", "page", "actions", "rounds"):
+                if f"RESOURCE_LIMIT/{forbidden}" in dest:
+                    misuse.append((code, budget, forbidden))
+ok("no row maps semantic budget onto frame/page/actions/rounds", not misuse, str(misuse))
+
+failed = [f for f in findings if not f["pass"]]
+print(json.dumps({"total": len(findings), "failed": len(failed)}, ensure_ascii=False))
+for f in findings:
+    print(f"{'PASS' if f['pass'] else 'FAIL'}  {f['name']}" + (f" :: {f['detail']}" if f["detail"] else ""))
+raise SystemExit(1 if failed else 0)

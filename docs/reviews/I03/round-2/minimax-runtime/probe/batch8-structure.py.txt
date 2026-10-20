@@ -1,0 +1,127 @@
+"""Batch 8: method/schema/registry mapping, staleReason vs S1, state matrix, candidate evidence claims."""
+import importlib.util
+import json
+from pathlib import Path
+
+ROOT = Path("/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts")
+spec = importlib.util.spec_from_file_location(
+    "contract_v2", ROOT / "packages/contracts/python/contract_v2.py"
+)
+contract = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(contract)
+
+DEFS = contract.DEFINITIONS
+REG = contract.REGISTRY
+RULES = json.loads((ROOT / "packages/engine/src/ontolearn_engine/invalidation-v2.json").read_text(encoding="utf-8"))
+STATES = json.loads((ROOT / "packages/contracts/v2/states.json").read_text(encoding="utf-8"))
+findings = []
+
+
+def ok(name, cond, detail=""):
+    findings.append({"name": name, "pass": bool(cond), "detail": detail})
+
+
+# --- 1. request/response oneOf method coverage vs registry service methods ---
+service_methods = [
+    k for k, v in REG["capabilities"].items()
+    if v.get("owner") in {"coordinator", "main"} and v.get("exposure") != "test-only"
+]
+capabilities = [k for k, v in REG["capabilities"].items() if v.get("exposure") == "test-only" or v.get("agentEligible")]
+
+req_methods = []
+for alt in DEFS["request"]["oneOf"]:
+    props = alt["properties"]
+    m = props.get("method", {})
+    req_methods.append(m.get("enum") or m.get("const"))
+req_flat = []
+for m in req_methods:
+    req_flat.extend(m if isinstance(m, list) else [m])
+res_methods = []
+for alt in DEFS["response"]["oneOf"]:
+    props = alt["properties"]
+    m = props.get("method", {})
+    res_methods.append(m.get("enum") or m.get("const"))
+res_flat = []
+for m in res_methods:
+    res_flat.extend(m if isinstance(m, list) else [m])
+
+ok("request covers every service method", set(req_flat) == set(service_methods),
+   f"req-only={sorted(set(req_flat)-set(service_methods))} reg-only={sorted(set(service_methods)-set(req_flat))}")
+ok("response covers every service method", set(res_flat) == set(service_methods),
+   f"res-only={sorted(set(res_flat)-set(service_methods))} reg-only={sorted(set(service_methods)-set(res_flat))}")
+ok("no duplicate request alternatives", len(req_flat) == len(set(req_flat)), str(len(req_flat)))
+ok("no duplicate response alternatives", len(res_flat) == len(set(res_flat)), str(len(res_flat)))
+
+# --- 2. every registry paramsSchema/resultSchema $ref resolves ---
+unresolved = []
+for name, entry in REG["capabilities"].items():
+    for ref in (entry["paramsSchema"], entry["resultSchema"]):
+        if not ref.startswith("#/$defs/") or ref[8:] not in DEFS:
+            unresolved.append((name, ref))
+ok("all registry schema refs resolve", not unresolved, str(unresolved))
+
+# --- 3. params_job.create capability enum == registry capabilities (not service methods) ---
+cap_enum = DEFS["params_job.create"]["properties"]["capability"]["enum"]
+ok("job.create capability enum == registry capability set", set(cap_enum) == set(capabilities),
+   f"enum-only={sorted(set(cap_enum)-set(capabilities))} reg-only={sorted(set(capabilities)-set(cap_enum))}")
+
+# --- 4. staleReason codes vs S1 invalidation-v2.json ---
+schema_codes = [alt["properties"]["code"]["const"] for alt in DEFS["staleReason"]["oneOf"]]
+s1_codes = [r["staleReason"] for r in RULES["rules"] if r.get("staleReason")]
+ok("staleReason codes == S1 non-empty codes", schema_codes == s1_codes,
+   f"schema={schema_codes} s1={s1_codes}")
+model_rule = next(r for r in RULES["rules"] if r["family"] == "model")
+ok("model family has no staleReason", model_rule["staleReason"] is None)
+stale_alts = DEFS["staleReason"]["oneOf"]
+dep_patterns = [a["properties"]["dependency"]["pattern"] for a in stale_alts]
+ok("staleReason dependency pattern excludes model", all("model" not in p for p in dep_patterns), str(dep_patterns))
+ok("dependencyKey allows model:", "model" in DEFS["dependencyKey"]["pattern"], DEFS["dependencyKey"]["pattern"])
+digests = DEFS.get("vector", {})
+set_digest_alt = None
+for alt in DEFS.get("result", {}).get("oneOf", []):
+    props = alt.get("properties", {})
+    if "definitionSetDigests" in props:
+        set_digest_alt = props["definitionSetDigests"]
+        break
+if set_digest_alt is None:
+    for alt in DEFS.get("job", {}).get("oneOf", []):
+        props = alt.get("properties", {})
+        if "definitionSetDigests" in props:
+            set_digest_alt = props["definitionSetDigests"]
+            break
+pn = (set_digest_alt or {}).get("propertyNames", {}).get("pattern", "")
+ok("definitionSetDigests excludes model", "model" not in pn, pn)
+
+# --- 5. state transition matrix, full cartesian product, both ends ---
+states = ["queued", "running", "cancelling", "succeeded", "failed", "cancelled"]
+expected = {
+    "queued>running", "queued>cancelled", "queued>failed", "running>cancelling",
+    "running>succeeded", "running>failed", "cancelling>cancelled", "cancelling>failed",
+    "cancelling>succeeded",
+}
+mismatch = []
+for before in states:
+    for after in states:
+        py = contract.permits_transition(before, after, 1, 2, True)
+        want = f"{before}>{after}" in expected
+        if py is not want:
+            mismatch.append((before, after, py, want))
+ok("state cartesian product matches states.json (python)", not mismatch, str(mismatch))
+ok("states.json transitions == expected set",
+   {f"{a}>{b}" for a, lst in STATES["transitions"].items() for b in lst} == expected,
+   str({f"{a}>{b}" for a, lst in STATES["transitions"].items() for b in lst}))
+ok("cancelling->succeeded blocked without final proof",
+   contract.permits_transition("cancelling", "succeeded", 1, 2, False) is False)
+ok("same-version transition blocked",
+   contract.permits_transition("running", "failed", 2, 2, True) is False)
+
+# --- 6. candidate evidence files: claims vs recomputed values ---
+evidence = json.loads((ROOT / "docs/iterations/I03/evidence/typecheck-gate.json").read_text(encoding="utf-8"))
+print("typecheck-gate.json keys:", list(evidence.keys()))
+print(json.dumps(evidence, ensure_ascii=False)[:1500])
+
+failed = [f for f in findings if not f["pass"]]
+print(json.dumps({"total": len(findings), "failed": len(failed)}, ensure_ascii=False))
+for f in findings:
+    print(f"{'PASS' if f['pass'] else 'FAIL'}  {f['name']}" + (f" :: {f['detail']}" if f["detail"] else ""))
+raise SystemExit(1 if failed else 0)

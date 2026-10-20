@@ -1,0 +1,46 @@
+// TS side: run the real repository validator over generated cases.
+import { readFileSync, writeFileSync } from 'node:fs'
+import {
+  validateV2,
+  matchesResponse,
+  cursorMatches,
+  jobListCursorMatches,
+  acceptsJobEvent,
+  validationProjectionMatchesResources,
+} from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/contracts/src/v2.ts'
+
+const ROOT = '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts'
+const fixtures = JSON.parse(readFileSync(`${ROOT}/packages/contracts/v2/fixtures.json`, 'utf8'))
+const generated = JSON.parse(readFileSync('/tmp/i03-r2-minimax/probe/cases.json', 'utf8'))
+
+const results = []
+function run(id, fn) {
+  try {
+    results.push({ id, result: fn() })
+  } catch (error) {
+    results.push({ id, result: 'THROW', error: String(error && error.message ? error.message : error) })
+  }
+}
+
+for (const c of generated.cases) {
+  run(`case:${c.id}`, () => validateV2(c.schema, c.value))
+}
+for (const c of fixtures.routing) {
+  run(`routing:${c.name}`, () => acceptsJobEvent(c.value, c.binding))
+}
+for (const c of fixtures.cursors) {
+  run(`cursor:${c.name}`, () => cursorMatches(c.record, c.request, c.nowMs))
+}
+for (const c of fixtures.jobListCursors) {
+  run(`jobListCursor:${c.name}`, () => jobListCursorMatches(c.record, c.request, c.nowMs))
+}
+for (const c of fixtures.responses) {
+  run(`response:${c.name}`, () => matchesResponse(c.request, c.response))
+}
+for (const c of fixtures.validationBindings) {
+  run(`validationBinding:${c.name}`, () =>
+    validationProjectionMatchesResources(c.projection, c.resources),
+  )
+}
+writeFileSync('/tmp/i03-r2-minimax/probe/results-ts.json', JSON.stringify(results))
+console.log('ts results', results.length, 'throws', results.filter((r) => r.result === 'THROW').length)

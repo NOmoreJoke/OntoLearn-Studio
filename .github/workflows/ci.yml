@@ -29,7 +29,16 @@ jobs:
       - run: uv sync --frozen
       - run: npm run check
       - run: npm run verify:sources
+      - name: Prepare Linux Chromium sandbox
+        run: |
+          ./node_modules/.bin/install-electron
+          sudo chown root:root node_modules/electron/dist/chrome-sandbox
+          sudo chmod 4755 node_modules/electron/dist/chrome-sandbox
+          stat -c '%U:%G %a %n' node_modules/electron/dist/chrome-sandbox
       - run: xvfb-run -a npm run test:e2e
+        env:
+          DEBUG: pw:browser
+          I02_EVIDENCE: test-results/i02-linux-evidence.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: failure()
         with:

@@ -1,0 +1,113 @@
+"""I03-R2 ZCode Python-side adversarial probe against contract_v2."""
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path("packages/contracts/python")))
+import contract_v2 as CONTRACT  # noqa: E402
+
+results = []
+
+
+def check(name, actual, expected):
+    ok = actual == expected
+    results.append((name, "PASS" if ok else "FAIL", f"actual={actual} expected={expected}"))
+
+
+E_OLD_RL = {"code": "RESOURCE_LIMIT", "messageKey": "job.resourceLimit", "retryable": False,
+            "params": {"resource": "memory"}}
+E_NEW_RL = {"code": "RESOURCE_LIMIT", "messageKey": "resource.limitExceeded", "retryable": False,
+            "params": {"resource": "memory"}}
+E_OLD_IS = {"code": "INVALID_STATE", "messageKey": "job.invalidState", "retryable": False,
+            "params": {}}
+E_NEW_IS = {"code": "INVALID_STATE", "messageKey": "protocol.invalidState", "retryable": False,
+            "params": {}}
+
+check("F2 old key job.resourceLimit rejected", CONTRACT.validate("error", E_OLD_RL), False)
+check("F2 new key resource.limitExceeded accepted", CONTRACT.validate("error", E_NEW_RL), True)
+check("F2 old key job.invalidState rejected", CONTRACT.validate("error", E_OLD_IS), False)
+check("F2 new key protocol.invalidState accepted", CONTRACT.validate("error", E_NEW_IS), True)
+check("F2 INVALID_STATE with nonempty params rejected",
+      CONTRACT.validate("error", {**E_NEW_IS, "params": {"method": "hello"}}), False)
+check("F2 wrong retryable rejected",
+      CONTRACT.validate("error", {**E_NEW_RL, "retryable": True}), False)
+
+# F4: dynamic budget consumption
+val = {"code": "INTERNAL_ERROR", "messageKey": "engine.internal", "retryable": False, "params": {}}
+check("F4 baseline INTERNAL_ERROR accepted", CONTRACT.validate("error", val), True)
+orig = CONTRACT.ERROR_CATALOG["maxEncodedBytes"]
+CONTRACT.ERROR_CATALOG["maxEncodedBytes"] = 1
+check("F4 shrunk budget rejects legal error", CONTRACT.validate("error", val), False)
+CONTRACT.ERROR_CATALOG["maxEncodedBytes"] = orig
+check("F4 restored budget accepts again", CONTRACT.validate("error", val), True)
+
+# version consistency
+check("F4 schemaVersion == registry", CONTRACT.ERROR_CATALOG["schemaVersion"],
+      CONTRACT.REGISTRY["schemaVersion"])
+check("F4 schema $id matches version", CONTRACT.DOCUMENT["$id"],
+      "urn:ontolearn:contracts:" + str(CONTRACT.ERROR_CATALOG["schemaVersion"]))
+
+# state machine
+check("cancelling->succeeded without final proof rejected",
+      CONTRACT.permits_transition("cancelling", "succeeded", 1, 2, False), False)
+check("cancelling->succeeded with final proof allowed",
+      CONTRACT.permits_transition("cancelling", "succeeded", 1, 2, True), True)
+check("terminal regression rejected",
+      CONTRACT.permits_transition("succeeded", "running", 1, 2, True), False)
+check("same version transition rejected",
+      CONTRACT.permits_transition("running", "failed", 2, 2, True), False)
+
+# notifications
+NTF_BASE = {
+    "kind": "notification", "protocolVersion": 2,
+    "engineSessionId": "00000000-0000-4000-8000-000000000001",
+    "projectId": "00000000-0000-4000-8000-000000000002",
+    "jobId": "00000000-0000-4000-8000-000000000003",
+    "subscriptionId": "00000000-0000-4000-8000-000000000004",
+    "seq": 4, "event": "job.state",
+    "data": {"stateVersion": 3, "state": "running"},
+}
+BIND = {"engineSessionId": NTF_BASE["engineSessionId"], "projectId": NTF_BASE["projectId"],
+        "jobId": NTF_BASE["jobId"], "subscriptionId": NTF_BASE["subscriptionId"],
+        "lastSeq": 3, "stateVersion": 2, "state": "running"}
+check("notification seq gap rejected",
+      CONTRACT.accepts_job_event({**NTF_BASE, "seq": 6}, BIND), False)
+check("notification seq replay rejected",
+      CONTRACT.accepts_job_event({**NTF_BASE, "seq": 3}, BIND), False)
+check("notification wrong subscription rejected",
+      CONTRACT.accepts_job_event(
+          {**NTF_BASE, "subscriptionId": "00000000-0000-4000-8000-000000000099"}, BIND), False)
+check("notification version jump rejected",
+      CONTRACT.accepts_job_event(
+          {**NTF_BASE, "data": {"stateVersion": 5, "state": "running"}}, BIND), False)
+
+# cursors — base taken from the repo's own "valid cursor" fixture
+import copy  # noqa: E402
+import json  # noqa: E402
+
+_fixtures = json.loads(
+    (Path("packages/contracts/v2/fixtures.json")).read_text(encoding="utf-8")
+)
+CURSOR_REC = copy.deepcopy(
+    next(c for c in _fixtures["cursors"] if c["name"] == "valid cursor")["record"]
+)
+PAGE_REQ = copy.deepcopy(
+    next(c for c in _fixtures["cursors"] if c["name"] == "valid cursor")["request"]
+)
+check("cursor valid accepted", CONTRACT.cursor_matches(CURSOR_REC, PAGE_REQ, 10), True)
+check("cursor expired rejected", CONTRACT.cursor_matches(CURSOR_REC, PAGE_REQ, 5000), False)
+check("cursor pageSize change rejected",
+      CONTRACT.cursor_matches(CURSOR_REC, {**PAGE_REQ, "pageSize": 10}, 1000), False)
+check("cursor forged token rejected",
+      CONTRACT.cursor_matches(CURSOR_REC, {**PAGE_REQ, "cursor": "00000000-0000-4000-8000-0000000000ff"}, 1000), False)
+check("cursor binding mismatch rejected",
+      CONTRACT.cursor_matches(CURSOR_REC,
+                              {**PAGE_REQ, "binding": {**PAGE_REQ["binding"], "scope": "asserted+derived"}}, 1000),
+      False)
+
+fails = [r for r in results if r[1] != "FAIL"]
+# (all expected False checks above expressed as expected values; recount properly)
+fails = [r for r in results if r[1] == "FAIL"]
+for name, st, msg in results:
+    print(f"{st}: {name}" + (f" -- {msg}" if st == 'FAIL' else ""))
+print(f"\n{len(results) - len(fails)}/{len(results)} passed")
+sys.exit(1 if fails else 0)

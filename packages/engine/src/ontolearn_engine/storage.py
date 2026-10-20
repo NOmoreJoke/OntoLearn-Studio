@@ -44,6 +44,13 @@ class Store:
         self._db.execute("PRAGMA synchronous=FULL")
         try:
             self._migrate(migration_hook)
+            invalid_kind = self._db.execute(
+                "SELECT 1 FROM results WHERE typeof(kind) != 'text' OR trim(kind) = '' "
+                "UNION ALL SELECT 1 FROM current_results "
+                "WHERE typeof(kind) != 'text' OR trim(kind) = '' LIMIT 1"
+            ).fetchone()
+            if invalid_kind:
+                raise ValueError("Invalid legacy result kind; explicit repair required")
         except BaseException:
             self._db.close()
             raise
@@ -732,6 +739,18 @@ class Store:
                 ):
                     raise ValueError("Invalid snapshot mapping stale reason")
 
+    @staticmethod
+    def _result_identity(kind: str, implementation: dict[str, str]) -> None:
+        if not isinstance(kind, str) or not kind.strip():
+            raise ValueError("Nonempty result kind required")
+        required = set(RULES["implementationCompatibility"]["identityKeys"])
+        if (
+            not isinstance(implementation, dict)
+            or set(implementation) != required
+            or not all(isinstance(value, str) and value for value in implementation.values())
+        ):
+            raise ValueError("Complete execution provenance required")
+
     def publish(
         self,
         project: str,
@@ -742,13 +761,7 @@ class Store:
         implementation: dict[str, str],
     ) -> str:
         """Append result evidence, publish current only after in-transaction revalidation."""
-        required = set(RULES["implementationCompatibility"]["identityKeys"])
-        if (
-            not isinstance(implementation, dict)
-            or set(implementation) != required
-            or not all(isinstance(value, str) and value for value in implementation.values())
-        ):
-            raise ValueError("Complete execution provenance required")
+        self._result_identity(kind, implementation)
         with self._transaction():
             snap = self._project_snapshot(snapshot, project)
             if not isinstance(dependencies, list) or not dependencies:
@@ -839,6 +852,7 @@ class Store:
         return result
 
     def current(self, project: str, kind: str, implementation: dict[str, str]) -> dict | None:
+        self._result_identity(kind, implementation)
         with self._read():
             return self._current(project, kind, implementation)
 
@@ -933,7 +947,10 @@ class Store:
             last = self.progress(run)
             if number != (last["lastCommittedRound"] if last else 0) + 1:
                 raise Conflict("Nonsequential round")
-            maximum = json.loads(record["config"]).get("maxRounds")
+            config = json.loads(record["config"])
+            if not isinstance(config, dict):
+                raise ValueError("Run config must be an object")
+            maximum = config.get("maxRounds")
             if (
                 not isinstance(maximum, int)
                 or isinstance(maximum, bool)

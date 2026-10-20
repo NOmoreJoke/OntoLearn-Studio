@@ -1,0 +1,55 @@
+
+> ontolearn-studio@0.1.0 test:e2e
+> install-electron && playwright test
+
+
+Running 2 tests using 1 worker
+
+(node:71062) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[I02] launch
+[I02] launched
+[I02] first-window
+[I02] normal-ui
+[I02] csp-probe
+[I02] foreign-window-create
+[I02] foreign-window-event
+[I02] crash-reopen
+[I02] reopened-window-event
+[I02] reopened-window-ui
+[I02] native-recovery
+[I02] cleanup-enter
+  ✘  1 tests/e2e/csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery (41.8s)
+(node:71226) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/e2e/desktop.spec.ts:4:5 › desktop calls real engine, keeps isolation and fits minimum window (893ms)
+
+
+  1) tests/e2e/csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery ─
+
+    Error: native exit 1/null: {"executable":"/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron","args":["--user-data-dir=/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/ontolearn-i02-crwoSI","/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/apps/desktop"],"exitCode":1,"stderr":"Debugger listening on ws://127.0.0.1:63612/fecddc09-1be7-4446-95bb-fd847042a8a8\nFor help, see: https://nodejs.org/learn/getting-started/debugging\nDebugger attached.\nDebugger ending on ws://127.0.0.1:63612/fecddc09-1be7-4446-95bb-fd847042a8a8\nFor help, see: https://nodejs.org/learn/getting-started/debugging\n","stdout":""}
+
+       at native-driver.ts:26
+
+      24 |     child.on('error', reject)
+      25 |     child.on('close', (code, signal) =>
+    > 26 |       code === 0 ? resolve() : reject(new Error(`native exit ${code}/${signal}: ${diagnostics()}`)),
+         |                                       ^
+      27 |     )
+      28 |   })
+      29 |   // Attach a rejection handler immediately while discovering the inspector URL.
+        at ChildProcess.<anonymous> (/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/tests/e2e/native-driver.ts:26:39)
+
+    Error Context: test-results/csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery ──
+  1 passed (43.1s)

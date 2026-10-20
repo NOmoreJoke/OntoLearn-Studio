@@ -1,0 +1,39 @@
+F1 enum codes: INVALID_REQUEST, NOT_FOUND, TIMEOUT, MAPPING_VALUE_INVALID, SEMANTIC_INPUT_INVALID, UNSUPPORTED_CONSTRUCT, RESOURCE_LIMIT
+F1 detail: [{"code":"INVALID_REQUEST","enumCount":7,"meaningCount":7,"exact":true,"nonEmpty":true},{"code":"NOT_FOUND","enumCount":7,"meaningCount":7,"exact":true,"nonEmpty":true},{"code":"TIMEOUT","enumCount":6,"meaningCount":6,"exact":true,"nonEmpty":true},{"code":"MAPPING_VALUE_INVALID","enumCount":4,"meaningCount":4,"exact":true,"nonEmpty":true},{"code":"SEMANTIC_INPUT_INVALID","enumCount":4,"meaningCount":4,"exact":true,"nonEmpty":true},{"code":"UNSUPPORTED_CONSTRUCT","enumCount":17,"meaningCount":17,"exact":true,"nonEmpty":true},{"code":"RESOURCE_LIMIT","enumCount":8,"meaningCount":8,"exact":true,"nonEmpty":true}]
+maxItems per def: error:1 result:4096 row:64 page:200 jobList:100 jobInput:32 params_hello:8 result_hello:32 definitionIdentity:4096 validationResources:5
+--- FINDINGS ---
+PASS  F1:INVALID_REQUEST meanings==enum :: ["envelope","params","identity","config","cursor","dependency","kind"]
+PASS  F1:INVALID_REQUEST meanings non-empty
+PASS  F1:NOT_FOUND meanings==enum :: ["project","job","result","snapshot","operation","subscription","cursor"]
+PASS  F1:NOT_FOUND meanings non-empty
+PASS  F1:TIMEOUT meanings==enum :: ["startup","handshake","request","total","heartbeat","cancel"]
+PASS  F1:TIMEOUT meanings non-empty
+PASS  F1:MAPPING_VALUE_INVALID meanings==enum :: ["key","value","type","reference"]
+PASS  F1:MAPPING_VALUE_INVALID meanings non-empty
+PASS  F1:SEMANTIC_INPUT_INVALID meanings==enum :: ["syntax","query","rule","constraint"]
+PASS  F1:SEMANTIC_INPUT_INVALID meanings non-empty
+PASS  F1:UNSUPPORTED_CONSTRUCT meanings==enum :: ["rdfBlankNode","sparqlForm","ruleChain","ruleRecursion","shaclPath","shaclAdvanced","owlExpression","rdfFormat","rdfConstruct","rdfsConstruct","datatype","literalValue","queryFunction","queryOrder","querySlice","ruleOutput","validationScope"]
+PASS  F1:UNSUPPORTED_CONSTRUCT meanings non-empty
+PASS  F1:RESOURCE_LIMIT meanings==enum :: ["memory","actions","rounds","frame","page","semanticInput","semanticResult","semanticWork"]
+PASS  F1:RESOURCE_LIMIT meanings non-empty
+PASS  F1: parameterMeanings key set == enum codes :: enumCodes=7
+PASS  F1: enum code count == 7 :: actual=7
+FAIL  F1: dynamic enumeration accepted == 53 :: accepted=49
+PASS  F1: dynamic enumeration unknown rejected == 53 :: rejected=53
+PASS  F2: RESOURCE_LIMIT.messageKey == resource.limitExceeded :: resource.limitExceeded
+PASS  F2: INVALID_STATE.messageKey == protocol.invalidState :: protocol.invalidState
+PASS  F2: error code count == 26 :: 26
+PASS  F2: retired messageKey job.resourceLimit rejected
+PASS  F2: retired messageKey job.invalidState rejected
+PASS  F2: schema.error oneOf count == 26 :: 26
+PASS  F2: schema.error oneOf == errors.json codes
+PASS  F4: errors.schemaVersion == registry.schemaVersion
+PASS  F4: schema $id uses catalog version :: urn:ontolearn:contracts:2
+PASS  F4: legal error accepted at catalog budget
+PASS  F4: shrinking budget to 1 rejects legal error
+PASS  F4: restored budget accepts again
+PASS  F4: registry.v2Runtime empty
+PASS  F4: registry.productRuntime == [health]
+PASS  Z: unknown schema vocabulary == 0
+PASS  Z: every array has explicit finite maxItems
+total 34 failed 1
