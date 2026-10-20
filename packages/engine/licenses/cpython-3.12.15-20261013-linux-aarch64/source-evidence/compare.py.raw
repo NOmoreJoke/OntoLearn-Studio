@@ -1,0 +1,42 @@
+import pathlib,subprocess,tarfile,json,hashlib,struct
+root=pathlib.Path(__file__).resolve().parent
+installed=json.loads((root/'installed-native.json').read_text())
+def sections(data):
+ h=struct.unpack_from('<16sHHIQQQIHHHHHH',data)
+ hs=[struct.unpack_from('<IIQQQQIIQQ',data,h[6]+i*h[11]) for i in range(h[12])]
+ n=hs[h[13]];strings=data[n[4]:n[4]+n[5]]
+ return {strings[x[0]:].split(b'\0',1)[0].decode():{'bytes':x[5],'sha256':hashlib.sha256(data[x[4]:x[4]+x[5]]).hexdigest()} for x in hs if x[2]&2 and x[1]!=8}
+observed={}
+for flavor in ['install_only_stripped.tar.gz','pgo+lto-full.tar.zst']:
+ archive=next(root.glob('*'+flavor));obs={'binaries':{},'licenses':{}}
+ proc=None
+ if archive.suffix=='.zst':
+  proc=subprocess.Popen(['zstd','-dc',str(archive)],stdout=subprocess.PIPE)
+  tf=tarfile.open(fileobj=proc.stdout,mode='r|')
+ else:tf=tarfile.open(archive,'r|gz')
+ for m in tf:
+  if not m.isfile():continue
+  prefix='python/install/' if proc else 'python/'
+  rel=m.name[len(prefix):] if m.name.startswith(prefix) else ''
+  wanted_binary=rel in installed['binaries']
+  wanted_license='LICENSE' in pathlib.PurePosixPath(m.name).name.upper() and 'site-packages/' not in m.name
+  if m.name=='python/PYTHON.json' or wanted_license or wanted_binary:
+   data=tf.extractfile(m).read()
+   dest=root/('full' if proc else 'stripped')/m.name
+   dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(data)
+   val={'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'archivePath':m.name}
+   if wanted_binary:val['allocatedSections']=sections(data);obs['binaries'][rel]=val
+   if wanted_license:obs['licenses'][m.name]=val
+ tf.close()
+ if proc:assert proc.wait()==0
+ observed[flavor]=obs
+out={'installedBuild':installed['build'],'flavors':observed,'comparisons':{}}
+for rel,entry in installed['binaries'].items():
+ full=observed['pgo+lto-full.tar.zst']['binaries'][rel]
+ stripped=observed['install_only_stripped.tar.gz']['binaries'][rel]
+ out['comparisons'][rel]={'installedSha256':entry['sha256'],'strippedSha256':stripped['sha256'],'fullSha256':full['sha256'],'installedEqualsStripped':entry['sha256']==stripped['sha256'],'installedAllocatedSectionsEqualFull':entry['allocatedSections']==full['allocatedSections'],'fullVsStrippedAllocatedSectionsEqual':full['allocatedSections']==stripped['allocatedSections'],'allocatedSectionCount':len(entry['allocatedSections'])}
+(root/'native-comparison.json').write_text(json.dumps(out,indent=2))
+meta=json.loads((root/'full/python/PYTHON.json').read_text())
+print('metadata:',{k:meta.get(k) for k in ['version','python_version','target_triple','build_options','licenses','license_path']})
+print('licenses:',list(observed['pgo+lto-full.tar.zst']['licenses']))
+print('comparison:',json.dumps(out['comparisons'],indent=2))
