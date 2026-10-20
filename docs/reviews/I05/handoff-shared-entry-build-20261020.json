@@ -1,0 +1,49 @@
+{
+  "kind": "pure process ownership handoff;not full I05 resume or implementation change",
+  "recordedAt": "2026-10-20T16:57:26.827022+08:00",
+  "sourceControllerThread": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+  "checkpointSha": "929ebffa837cdde5872dc5ab93868e4638630814",
+  "implementationSha": "2a8dcad9f9036ae49b96282d8bf64f279846b14e",
+  "branch": "feature/I05-semantic-validation",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation",
+  "files": [
+    {
+      "path": "packages/engine/entrypoint.py",
+      "bytes": 530,
+      "sha256": "9e6f363dab3806d37835f5ed1b2b4a919955cadcee33a55eaa600f751ed9a34f",
+      "gitBlobOid": "c8fd52e1a82c8b0dce3e4ded173b5d6f4bb94232",
+      "matchesCheckpointAndV4Manifest": true
+    },
+    {
+      "path": "scripts/build-engine.mjs",
+      "bytes": 1457,
+      "sha256": "488d216919378e9284717640367b98426a0c9054ff918cecc1da9c577bcc3818",
+      "gitBlobOid": "e6238eb7eb01e363ea8273b2b1709ce3c001c7b4",
+      "matchesCheckpointAndV4Manifest": true
+    }
+  ],
+  "ownershipEffective": "when actual I04 developer starts;I05 will not concurrently modify shared paths",
+  "I04Exclusive": [
+    "packages/engine/src/ontolearn_engine/__main__.py",
+    "packages/engine/src/ontolearn_engine/protocol.py",
+    "packages/engine/entrypoint.py",
+    "scripts/build-engine.mjs"
+  ],
+  "I05Retained": [
+    "Python dependencies/uv.lock",
+    "new semantic modules",
+    "dedicated semantic tests/probes/verification;preservation requirements for the existing S1 storage probe do not transfer its module ownership",
+    "scripts/i05-build-inventory.py and semantic/native license provenance",
+    "later real semantic integration on actual I04 baseline"
+  ],
+  "document": "docs/reviews/I05/handoff-shared-entry-build-20261020.md",
+  "documentSha256": "021e635d3884042b922c3e056121dc2bfb88328355763a3041b27aa18fc3fce1",
+  "substantiveConflict": false,
+  "integrationCaveat": "I05 hooks are not standalone without its dependencies/inventory/license inputs;merge hooks with I04 v2 resource wiring under sole-owner coordination rather than replacing either complete script",
+  "verification": "read exact working/committed bytes and I05 diff;both file hashes match v4 manifest;no rerun of unchanged tests,build,package or CI",
+  "protectedGuidanceSha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+  "goal": "existing full Goal remains blocked on actual I04;no resume/complete/pause change",
+  "push": null,
+  "capabilityPublished": false,
+  "sourceRebaseOrRewrite": false
+}
