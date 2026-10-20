@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { spawnSync } from 'node:child_process'
+import { spawnSync, type ChildProcessWithoutNullStreams } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -95,7 +95,10 @@ function terminalWait() {
   return {
     finished,
     observe: (update: TaskUpdate) => {
-      if (['succeeded', 'failed', 'cancelled'].includes(update.job.state)) resolveJob(update.job)
+      const jobs =
+        update.kind === 'job' ? [update.job] : update.kind === 'restored' ? update.view.jobs : []
+      for (const job of jobs)
+        if (['succeeded', 'failed', 'cancelled'].includes(job.state)) resolveJob(job)
     },
     stop: () => clearTimeout(timer),
   }
@@ -184,6 +187,7 @@ async function runtime(
         }
         return response
       },
+      onConnectionState: supervisor.onConnectionState.bind(supervisor),
       onNotification(listener: (event: unknown) => void) {
         forward = listener
         return supervisor.onNotification((value) => {
@@ -216,8 +220,7 @@ async function runtime(
     const waiting = terminalWait()
     const views: TaskView[] = []
     const observe = (update: TaskUpdate) => {
-      if ('restoredView' in update)
-        views.push((update as TaskUpdate & { restoredView: TaskView }).restoredView)
+      if (update.kind === 'restored') views.push(update.view)
       waiting.observe(update)
     }
     tasks.attachView(observe)
@@ -237,7 +240,7 @@ async function runtime(
       expect(restored.ok).toBe(true)
       if (restored.ok)
         for (const current of restored.data.jobs)
-          waiting.observe({ generation: restored.data.generation, job: current })
+          waiting.observe({ kind: 'job', generation: restored.data.generation, job: current })
       const terminal = await waiting.finished
       const result = await tasks.getJob(job.jobId)
       expect(result.ok).toBe(true)
@@ -273,7 +276,207 @@ async function runtime(
   }
 }
 
+async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', failRestarts = false) {
+  const directory = await mkdtemp(join(tmpdir(), 'ontolearn-disconnect-runtime-'))
+  let supervisor: EngineSupervisor | undefined
+  let tasks: TaskService | undefined
+  let deadline: ReturnType<typeof setTimeout> | undefined
+  try {
+    const database = join(directory, 'engine.sqlite')
+    const fixture = pythonJson(prepareScript, [
+      source,
+      database,
+      JSON.stringify({ workMs: 200, maxRounds: 50 }),
+      capability,
+    ]) as Fixture
+    const command = getEngineCommand(location)
+    supervisor = new EngineSupervisor(location, {
+      dataPath: database,
+      allowedProjects: [fixture.projectId],
+      testMode: true,
+      registryPath: join(source, 'packages/contracts/v2/registry.json'),
+      command,
+    })
+    const engine = supervisor
+    const calls: Array<{ method: string; params: Record<string, unknown> }> = []
+    const updates: TaskUpdate[] = []
+    const raw: unknown[] = []
+    let observedDisconnect = false
+    let checkpoint!: (job: JobView) => void
+    const checkpointReady = new Promise<JobView>((done) => {
+      checkpoint = done
+    })
+    let restoreView!: (view: TaskView) => void
+    const restored = new Promise<TaskView>((done) => {
+      restoreView = done
+    })
+    let markOffline!: () => void
+    const offline = new Promise<void>((done) => {
+      markOffline = done
+    })
+    const transport = {
+      get engineSessionId() {
+        return engine.engineSessionId
+      },
+      request(method: string, params: Record<string, unknown>) {
+        calls.push({ method, params: structuredClone(params) })
+        return engine.request(method, params)
+      },
+      onConnectionState: engine.onConnectionState.bind(engine),
+      onNotification(listener: (value: unknown) => void) {
+        return engine.onNotification((value) => {
+          raw.push(value)
+          listener(value)
+        })
+      },
+    }
+    tasks = new TaskService(transport)
+    const service = tasks
+    const timeout = new Promise<never>((_done, reject) => {
+      deadline = setTimeout(() => reject(new Error('real disconnect recovery deadline')), 15000)
+    })
+    void timeout.catch(() => {})
+    const bounded = <T>(value: Promise<T>) => Promise.race([value, timeout])
+    await engine.health()
+    const created = (await engine.request('job.create', {
+      projectId: fixture.projectId,
+      operationId: randomUUID(),
+      capability,
+      input: fixture.input,
+      confirmationRef: fixture.confirmationRef,
+    })) as JobView
+    service.selectProject(fixture.projectId, [created.jobId])
+    service.attachView((update) => {
+      updates.push(update)
+      if (update.kind === 'connection') {
+        observedDisconnect = true
+        if (update.state === 'offline') markOffline()
+      }
+      if (update.kind === 'restored' && observedDisconnect) restoreView(update.view)
+      const jobs =
+        update.kind === 'job' ? [update.job] : update.kind === 'restored' ? update.view.jobs : []
+      for (const job of jobs) {
+        const progress = job.commitProgress as {
+          mode: string
+          committedProgress?: { lastCommittedRound: number }
+        }
+        if (
+          capability === 'test.atomic'
+            ? job.state === 'succeeded'
+            : progress.committedProgress?.lastCommittedRound === 1
+        )
+          checkpoint(job)
+      }
+    })
+    const initial = await service.restore()
+    expect(initial.ok).toBe(true)
+    if (!initial.ok) throw new Error('initial real view missing')
+    const before = await bounded(checkpointReady)
+    await new Promise<void>((done) => setImmediate(done))
+    const internal = engine as unknown as {
+      session?: { child: ChildProcessWithoutNullStreams; pending: Map<unknown, unknown> }
+      starts: number[]
+    }
+    const old = internal.session!
+    expect(old.pending.size).toBe(0)
+    const oldPid = old.child.pid
+    const oldSession = engine.engineSessionId
+    const callCount = calls.length
+    if (failRestarts) command.args = ['-I', '-c', 'raise SystemExit(73)']
+    const closed = new Promise<void>((done) => old.child.once('close', () => done()))
+    expect(old.child.kill('SIGKILL')).toBe(true)
+    await bounded(closed)
+    let firstManual: Awaited<ReturnType<TaskService['restore']>> | undefined
+    if (failRestarts) {
+      await bounded(offline)
+      expect(internal.starts).toHaveLength(4) // one original and exactly three real failed child starts
+      expect(engine.engineSessionId).toBeUndefined()
+      expect(
+        updates.filter(
+          (update) =>
+            update.kind === 'restored' && update.view.generation > initial.data.generation,
+        ),
+      ).toEqual([])
+      await new Promise((done) => setTimeout(done, 800))
+      expect(internal.starts).toHaveLength(4)
+      command.args = getEngineCommand(location).args
+      firstManual = await bounded(service.restore())
+    } else {
+      // A user's first read during automatic recovery shares its pending result.
+      firstManual = await bounded(service.restore())
+    }
+    expect(firstManual.ok).toBe(true)
+    const view = await bounded(restored)
+    expect(firstManual.ok && firstManual.data).toEqual(view)
+    expect(engine.engineSessionId).not.toBe(oldSession)
+    expect(internal.session?.child.pid).not.toBe(oldPid)
+    const evidence = pythonJson(evidenceScript, [database, created.jobId]) as {
+      job: JobView
+      rounds: number[]
+      jobs: number
+      claims: number
+    }
+    const marker = await service.getOperation(created.operationId)
+    expect(marker.ok).toBe(true)
+    expect(calls.slice(callCount).some((call) => call.method === 'job.unsubscribe')).toBe(false)
+    expect(calls.some((call) => call.method === 'job.create' || call.method === 'job.cancel')).toBe(
+      false,
+    )
+    expect(calls.slice(callCount).some((call) => call.method === 'operation.get')).toBe(true)
+    expect(view.jobs[0]).toEqual(evidence.job)
+    expect(evidence.jobs).toBe(1)
+    expect(evidence.claims).toBe(1)
+    return { before, view, evidence, marker, updates, starts: internal.starts.length, raw }
+  } finally {
+    clearTimeout(deadline)
+    tasks?.dispose()
+    supervisor?.stop()
+    await rm(directory, { recursive: true, force: true, maxRetries: 20, retryDelay: 50 })
+  }
+}
+
 describe('actual Python → supervisor → task service runtime', () => {
+  it('automatically reconciles a real coordinator exit with zero pending requests and retained rounds', async () => {
+    const result = await disconnectRuntime('test.rounds')
+    expect(result.starts).toBe(2)
+    expect(result.before.state).toBe('running')
+    expect(result.view.jobs[0].state).toBe('failed')
+    expect(result.view.jobs[0].error).toEqual({
+      code: 'ENGINE_EXITED',
+      messageKey: 'engine.exited',
+      params: {},
+      retryable: true,
+    })
+    expect(result.view.jobs[0].commitProgress).toEqual(result.before.commitProgress)
+    expect(result.evidence.rounds).toEqual([1])
+    expect(
+      result.updates.some(
+        (update) => update.kind === 'connection' && update.state === 'reconnecting',
+      ),
+    ).toBe(true)
+    expect(
+      result.updates.some((update) => update.kind === 'connection' && update.state === 'offline'),
+    ).toBe(false)
+  }, 20000)
+  it('re-reads a real atomic marker after transport loss without changing its successful job', async () => {
+    const result = await disconnectRuntime('test.atomic')
+    expect(result.starts).toBe(2)
+    expect(result.view.jobs[0]).toEqual(result.before)
+    expect(result.view.jobs[0].state).toBe('succeeded')
+    expect(result.marker.ok && result.marker.data?.projectRevision).toBe(1)
+    expect(result.view.jobs[0].commitProgress).toEqual(result.before.commitProgress)
+  }, 20000)
+  it('enters explicit offline after three real failed restarts, then permits an explicit read recovery', async () => {
+    const result = await disconnectRuntime('test.rounds', true)
+    expect(result.starts).toBe(5)
+    const states = result.updates.filter((update) => update.kind === 'connection')
+    expect(
+      states.filter((update) => update.state === 'offline').map((update) => update.attempt),
+    ).toEqual([3])
+    expect(result.view.jobs[0].state).toBe('failed')
+    expect(result.view.jobs[0].commitProgress).toEqual(result.before.commitProgress)
+    expect(result.evidence.rounds).toEqual([1])
+  }, 20000)
   it('recovers one omitted real state notification through a durable read and fresh subscription', async () => {
     const result = await runtime('test.rounds', { workMs: 200, maxRounds: 3 }, true)
     expect(result.terminal.state).toBe('succeeded')
