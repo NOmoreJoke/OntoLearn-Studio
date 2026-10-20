@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "productRuntime": ["health"],
+  "productRuntime": ["health", "query.execute", "reasoning.execute", "validation.execute"],
   "v2Runtime": [
     "hello",
     "health",
@@ -15,7 +15,8 @@
     "result.get",
     "result.current",
     "result.page",
-    "operation.get"
+    "operation.get",
+    "semantic.start"
   ],
   "capabilities": {
     "hello": {
@@ -300,7 +301,7 @@
       "requiresConfirmation": false,
       "agentEligible": true,
       "exposure": "business-named-bridge-only",
-      "implementation": "design-only",
+      "implementation": "runtime",
       "limitProfile": "read",
       "cancelBoundary": "discard-unpublished-result",
       "dependencyPolicy": "query.execute",
@@ -316,7 +317,7 @@
       "requiresConfirmation": false,
       "agentEligible": true,
       "exposure": "business-named-bridge-only",
-      "implementation": "design-only",
+      "implementation": "runtime",
       "limitProfile": "read",
       "cancelBoundary": "discard-unpublished-result",
       "dependencyPolicy": "reasoning.execute",
@@ -332,7 +333,7 @@
       "requiresConfirmation": false,
       "agentEligible": true,
       "exposure": "business-named-bridge-only",
-      "implementation": "design-only",
+      "implementation": "runtime",
       "limitProfile": "read",
       "cancelBoundary": "discard-unpublished-result",
       "dependencyPolicy": "validation.execute",
@@ -401,6 +402,22 @@
       "cancelBoundary": "uncommitted-round",
       "dependencyPolicy": "scenario.run",
       "dataScopes": ["scenario"]
+    },
+    "semantic.start": {
+      "owner": "coordinator",
+      "paramsSchema": "#/$defs/params_semantic.start",
+      "resultSchema": "#/$defs/result_semantic.start",
+      "scope": "project",
+      "effect": "schedule",
+      "requiresChangeSet": false,
+      "requiresConfirmation": false,
+      "agentEligible": false,
+      "exposure": "business-named-bridge-only",
+      "implementation": "runtime",
+      "limitProfile": "control",
+      "cancelBoundary": "not-applicable",
+      "dependencyPolicy": null,
+      "dataScopes": []
     }
   }
 }
