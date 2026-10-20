@@ -21,14 +21,21 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
   const env = { ...process.env }
   delete env.ELECTRON_RUN_AS_NODE
   const development = Boolean(env.ELECTRON_RENDERER_URL)
+  const evidence: Record<string, unknown> = { development, target }
+  const stage = (value: string) => {
+    evidence.stage = value
+    console.info(`[I02] ${value}`)
+  }
+  stage('launch')
   const application = await electron.launch({
+    chromiumSandbox: true,
     ...(env.ONTOLEARN_PACKAGED_EXECUTABLE
       ? { executablePath: env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [] }
       : { args: [resolve('apps/desktop')] }),
     cwd: resolve('apps/desktop'),
     env,
   })
-  const evidence: Record<string, unknown> = { development, target }
+  stage('launched')
   const normal = async (page: Page) => {
     await expect(page.getByRole('heading', { level: 1 })).toContainText('转化为可验证的知识')
     expect(
@@ -40,14 +47,18 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     await expect(page.getByRole('status')).toContainText('本地引擎已连接')
   }
   try {
+    stage('first-window')
     let page = await application.firstWindow()
+    stage('normal-ui')
     await normal(page)
     evidence.runtime = await application.evaluate(({ app, BrowserWindow }) => ({
       packaged: app.isPackaged,
       nativeHangMonitorEnabled: !app.commandLine.hasSwitch('disable-hang-monitor'),
+      noSandboxSwitch: app.commandLine.hasSwitch('no-sandbox'),
       versions: process.versions,
       preferences: BrowserWindow.getAllWindows()[0].webContents.getLastWebPreferences(),
     }))
+    expect((evidence.runtime as { noSandboxSwitch: boolean }).noSandboxSwitch).toBe(false)
     const metas = await page.locator('meta[http-equiv="Content-Security-Policy"]').allTextContents()
     expect(metas).toHaveLength(development ? 0 : 1)
     evidence.meta = development
@@ -99,6 +110,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
       await expect(page.getByText('LEARN. MODEL. UNDERSTAND.')).toBeVisible()
     }
     // Native CSP violations plus visible effects and a real local HTTP receiver.
+    stage('csp-probe')
     const probe = await page.evaluate(async (target) => {
       const violations: { directive: string; blocked: string; disposition: string }[] = []
       const handler = (event: SecurityPolicyViolationEvent) =>
@@ -178,6 +190,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     await page.waitForTimeout(150)
     expect(page.url()).toBe(url)
     expect(application.windows()).toHaveLength(1)
+    stage('foreign-window-create')
     const alienWindowEvent = application.waitForEvent('window')
     evidence.newContents = await application.evaluate(({ app, BrowserWindow }, url) => {
       const current = BrowserWindow.getAllWindows()[0]
@@ -197,6 +210,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
         preferences: alien.webContents.getLastWebPreferences(),
       }
     }, url)
+    stage('foreign-window-event')
     const alien = await alienWindowEvent
     await alien.waitForFunction(() => Boolean(window.ontolearn))
     expect(await alien.evaluate(() => window.ontolearn.getEngineHealth())).toEqual({
@@ -229,11 +243,14 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
         return { response: 0, checkboxChecked: false }
       }) as typeof dialog.showMessageBox
     })
+    stage('crash-reopen')
     const reopened = application.waitForEvent('window')
     await application.evaluate(({ BrowserWindow }) =>
       BrowserWindow.getAllWindows()[0].webContents.forcefullyCrashRenderer(),
     )
+    stage('reopened-window-event')
     page = await reopened
+    stage('reopened-window-ui')
     await expect(page.getByRole('status')).toContainText('尚未检查')
     await normal(page)
     evidence.recoveryPrompts = await application.evaluate(
@@ -244,24 +261,48 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     // Renderer never has CDP/Playwright's disable-hang-monitor loader.
     const nativeDir = await mkdtemp(resolve(tmpdir(), 'ontolearn-i02-'))
     const nativeOutput = resolve(nativeDir, 'native.json')
-    const executable = env.ONTOLEARN_PACKAGED_EXECUTABLE ?? application.process().spawnfile
+    // Playwright uses a shell launcher on Windows: process().spawnfile can be cmd.exe.
+    // Read the real Electron executable from the running main process instead.
+    const executable =
+      env.ONTOLEARN_PACKAGED_EXECUTABLE ?? (await application.evaluate(() => process.execPath))
     const args = [`--user-data-dir=${nativeDir}`]
     if (!env.ONTOLEARN_PACKAGED_EXECUTABLE) args.push(resolve('apps/desktop'))
-    await runNativeRecovery(executable, args, { ...env, I02_NATIVE_EVIDENCE: nativeOutput })
+    evidence.nativeLaunch = { executable, args }
+    stage('native-recovery')
+    try {
+      await runNativeRecovery(executable, args, { ...env, I02_NATIVE_EVIDENCE: nativeOutput })
+    } catch (error) {
+      evidence.nativeFailure = String(error)
+      evidence.nativeRecovery = await readFile(nativeOutput, 'utf8')
+        .then((value) => JSON.parse(value))
+        .catch(() => undefined)
+      throw error
+    }
     evidence.nativeRecovery = JSON.parse(await readFile(nativeOutput, 'utf8'))
     const native = evidence.nativeRecovery as {
       result: string
       inspectorClosedBeforeFaults: boolean
       packaged: boolean
+      hangMonitorEnabled: boolean
+      noSandboxSwitch: boolean
       events: string[]
     }
     expect(native.result).toBe('PASS')
     expect(native.inspectorClosedBeforeFaults).toBe(true)
+    expect(native.hangMonitorEnabled).toBe(true)
+    expect(native.noSandboxSwitch).toBe(false)
     expect(native.packaged).toBe(Boolean(env.ONTOLEARN_PACKAGED_EXECUTABLE))
     expect(native.events).toContain('killed')
     expect(native.events).toContain('unresponsive')
     evidence.result = 'PASS'
   } finally {
+    evidence.lastStageBeforeCleanup = evidence.stage
+    stage('cleanup-enter')
+    // Preserve the last reached stage even when transport cleanup itself stalls.
+    if (env.I02_EVIDENCE) {
+      await mkdir(resolve(env.I02_EVIDENCE, '..'), { recursive: true })
+      await writeFile(env.I02_EVIDENCE, JSON.stringify(evidence, null, 2) + '\n')
+    }
     application.process().kill('SIGKILL')
     await application.close().catch(() => undefined)
     server.close()

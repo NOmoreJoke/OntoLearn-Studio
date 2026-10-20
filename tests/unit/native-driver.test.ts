@@ -14,6 +14,7 @@ it('rejects and cleans up a bootstrap whose socket never replies', async () => {
   vi.useFakeTimers()
   const child = Object.assign(new EventEmitter(), {
     stderr: new EventEmitter(),
+    stdout: new EventEmitter(),
     exitCode: null,
     kill: vi.fn(),
   })
@@ -42,6 +43,7 @@ it('rejects and cleans up a bootstrap whose socket never replies', async () => {
 it('fails promptly when the native executable cannot start', async () => {
   const child = Object.assign(new EventEmitter(), {
     stderr: new EventEmitter(),
+    stdout: new EventEmitter(),
     exitCode: null,
     kill: vi.fn(),
   })
@@ -50,4 +52,24 @@ it('fails promptly when the native executable cannot start', async () => {
   child.emit('error', new Error('ENOENT'))
   await expect(pending).rejects.toThrow('ENOENT')
   expect(child.kill).toHaveBeenCalledWith('SIGKILL')
+})
+
+it('preserves bounded executable and process output diagnostics when bootstrap exits', async () => {
+  const child = Object.assign(new EventEmitter(), {
+    stderr: new EventEmitter(),
+    stdout: new EventEmitter(),
+    exitCode: 7,
+    kill: vi.fn(),
+  })
+  spawn.mockReturnValue(child)
+  const pending = runNativeRecovery('/real/electron', ['--user-data-dir=/test-profile'], {})
+  child.emit('exit', 7, null)
+  // Node can emit exit before remaining pipe data; close follows stdio drain.
+  child.stdout.emit('data', 'launcher diagnostic')
+  child.stderr.emit('data', 'x'.repeat(70000) + 'sandbox diagnostic')
+  child.emit('close', 7, null)
+  await expect(pending).rejects.toThrow('sandbox diagnostic')
+  await expect(pending).rejects.toThrow('/real/electron')
+  await expect(pending).rejects.toThrow('launcher diagnostic')
+  await expect(pending).rejects.not.toThrow('x'.repeat(65537))
 })

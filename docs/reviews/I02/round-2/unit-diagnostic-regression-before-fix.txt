@@ -1,0 +1,34 @@
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio
+
+ ❯ tests/unit/native-driver.test.ts (3 tests | 1 failed) 14ms
+   × preserves bounded executable and process output diagnostics when bootstrap exits 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/native-driver.test.ts > preserves bounded executable and process output diagnostics when bootstrap exits
+AssertionError: expected [Function] to throw error including 'sandbox diagnostic' but got 'native closed before inspector: {"exe…'
+
+Expected: "sandbox diagnostic"
+Received: "native closed before inspector: {"executable":"/real/electron","args":["--user-data-dir=/test-profile"],"exitCode":7,"stderr":"","stdout":""}"
+
+ ❯ tests/unit/native-driver.test.ts:71:24
+     69|   child.stderr.emit('data', 'x'.repeat(70000) + 'sandbox diagnostic')
+     70|   child.emit('close', 7, null)
+     71|   await expect(pending).rejects.toThrow('sandbox diagnostic')
+       |                        ^
+     72|   await expect(pending).rejects.toThrow('/real/electron')
+     73|   await expect(pending).rejects.toThrow('launcher diagnostic')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 14 passed (15)
+   Start at  08:43:19
+   Duration  115ms (import 43%, transform 35%, tests 17%, worker 6%)
+

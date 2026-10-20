@@ -10,6 +10,8 @@ const evidence = {
   events: [],
   health: [],
   packaged: app.isPackaged,
+  hangMonitorEnabled: !app.commandLine.hasSwitch('disable-hang-monitor'),
+  noSandboxSwitch: app.commandLine.hasSwitch('no-sandbox'),
   versions: process.versions,
 }
 const save = (error) => {
@@ -41,8 +43,33 @@ function observeWindow(window, freshlyCreated = false) {
       if (!evidence.health.at(-1).ok) throw new Error('health unavailable')
       if (index === 1) window.webContents.forcefullyCrashRenderer()
       else if (index === 2) {
-        await window.webContents.executeJavaScript('setTimeout(() => { for (;;) {} }, 50); "armed"')
+        window.show()
+        app.focus({ steal: true })
+        window.focus()
+        const focusDeadline = Date.now() + 3000
+        while (!window.isFocused() || !window.isVisible()) {
+          if (Date.now() >= focusDeadline)
+            throw new Error('native hang requires a focused visible window')
+          await new Promise((resolve) => setTimeout(resolve, 50))
+        }
+        // Start the actual blocking script directly. A renderer timer can be throttled,
+        // allowing input to be handled before the scheduled loop begins.
+        evidence.hangFault = 'executeJavaScript-infinite-loop'
+        void window.webContents.executeJavaScript('for (;;) {}').catch((error) => {
+          if (window.isDestroyed()) evidence.hangScriptDisposed = String(error)
+          else save(error)
+        })
         setTimeout(() => {
+          evidence.hangTrigger = {
+            time: new Date().toISOString(),
+            visible: window.isVisible(),
+            focused: window.isFocused(),
+            hangMonitorEnabled: !app.commandLine.hasSwitch('disable-hang-monitor'),
+          }
+          if (!evidence.hangTrigger.visible || !evidence.hangTrigger.focused) {
+            save('native hang input requires a focused visible window')
+            return
+          }
           window.webContents.sendInputEvent({
             type: 'mouseDown',
             x: 400,
@@ -57,7 +84,7 @@ function observeWindow(window, freshlyCreated = false) {
             button: 'left',
             clickCount: 1,
           })
-        }, 200)
+        }, 250)
       } else if (index === 3) {
         if (!evidence.events.includes('unresponsive') || evidence.prompts.length !== 2)
           throw new Error('missing native events/prompts')

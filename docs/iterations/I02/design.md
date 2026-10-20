@@ -28,7 +28,7 @@ I04 接入 ExecutionJob 时，恢复页需通过 project/job 身份和权威持�
 
 ## 验证方法与边界
 
-`tests/e2e/csp-lifecycle.spec.ts` 对实际 Electron 页面注入临时 DOM，使用脚本标记、computed style、原生 securitypolicyviolation(enforce) 和真实本地 HTTP 接收端零请求交叉证明；未启用 bypassCSP，不用 page.evaluate 本身可执行证明 CSP 失效。测试创建同来源异窗口实测 IPC 拒绝。真实 forcefullyCrashRenderer 与 renderer 无限循环分别触发崩溃/无响应；自动化仅替代原生对话框的用户选择并捕获实际选项，不合成事件。Playwright loader 禁用 hang monitor，故无响应实测另启原始 executable；通过主进程 inspector 短暂加载 test-only 驱动，驱动在故障前关闭 inspector 并记录 inspector.url() 为空。渲染进程始终没有 CDP/inspector，实际 app 源码/包内 main 不变。打包 executable 会忽略任意 --require，已明确改用上述统一驱动，未把忽略参数的超时当作通过。三个窗口各验证初始“尚未检查”和手动 health，捕获原生 killed/unresponsive 事件及两次提示。
+`tests/e2e/csp-lifecycle.spec.ts` 对实际 Electron 页面注入临时 DOM，使用脚本标记、computed style、原生 securitypolicyviolation(enforce) 和真实本地 HTTP 接收端零请求交叉证明；未启用 bypassCSP，不用 page.evaluate 本身可执行证明 CSP 失效。测试创建同来源异窗口实测 IPC 拒绝。真实 forcefullyCrashRenderer 与 renderer 无限循环分别触发崩溃/无响应；自动化整体替换 `dialog.showMessageBox`，验证提示请求、文案和选择分支；它不能单独证明原生 sheet 渲染或按钮可达，不合成故障事件。真实 packaged 原生提示另由 computer use 观察并点击，详见 `../../reviews/I02/native-dialog-probe/README.md`（Run 2，同一进程 hang/crash 后恢复、拒绝不重建）。Playwright loader 禁用 hang monitor，故无响应实测另启原始 executable；通过主进程 inspector 短暂加载 test-only 驱动，驱动在故障前关闭 inspector 并记录 inspector.url() 为空。渲染进程始终没有 CDP/inspector，实际 app 源码/包内 main 不变。打包 executable 会忽略任意 --require，已明确改用上述统一驱动，未把忽略参数的超时当作通过。三个窗口各验证初始“尚未检查”和手动 health，捕获原生 killed/unresponsive 事件及两次提示。
 
 开发 HMR 探针需显式 I02_HMR=1，临时更改 CSS/React 文案后 finally 逐字节恢复；冻结审查期间不运行该写源探针，审查者读取归档与哈希证据即可，其他默认测试不写实现。
 

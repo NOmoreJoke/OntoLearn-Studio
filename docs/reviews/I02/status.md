@@ -1,8 +1,8 @@
 # I02 / C1 状态
 
 - 会话：01a15677-7ea3-7da1-b77b-c253d5815815；唯一功能：显式 CSP 与窗口生命周期。
-- 当前阶段：实现与验证；未冻结、未提交、未 push、未创建第三方任务或 PR。
-- 分支：feature/I02-csp-window-lifecycle；base：1b6df7a220fc9a67d7046133a340085f03f0a96c；head 待冻结。
+- 当前阶段：Round 2 修订验证完成，正在本地冻结新候选；PR #3 仍未合并，新修订尚未push。旧Round1通过不沿用。
+- 分支：feature/I02-csp-window-lifecycle；base：1b6df7a220fc9a67d7046133a340085f03f0a96c；Round2 head见下方实际冻结记录。
 - 需求：../../iterations/I01/inputs/goal-objective.md 第四节完整提示词，scope.md I02，m0-review-and-update-plan-2026-10-19.md C1；PRD V0.6 8.7/10.3/10.4/12.5。
 - 已核验 origin 与 develop；已安全快进本地 develop 后新建分支。唯一冲突 I01/status.md 按 before-I02 备份恢复，64 项哈希全部一致。
 - 选择生产仅 meta；开发 header 和生产 meta 均由 src/csp.ts 生成。理由与实际矩阵待记录。
@@ -61,3 +61,22 @@
 - 推送前完整性：pre-push-integrity.json记15冻结/64保护0差异、双方报告hash匹配、candidate后实现diff为空；fetch origin/develop仍为base 1b6df7a，无远端feature。仅待流程证据提交，再正常push/PR/CI/merge。
 
 - 流程证据暂存50文件，均在docs/reviews/I02；git diff --cached --check仅原始unified diff上下文的空格+tab标记告警（package-main-diff.txt），保留原文，非源码缩进缺陷；没有实现变更。
+
+## 远端阶段（实际记录）
+
+- 已push feature/I02-csp-window-lifecycle：head caa08470d1bac7ef78032acb055ad9fffc6b6d1a；其中candidate2cc03da之后仅流程证据，无受审实现改变。
+- PR #3：https://github.com/NOmoreJoke/OntoLearn-Studio/pull/3，base develop=1b6df7a，已attach本会话。没有admin/bypass。
+- CI run39346128923：Quality / Desktop(macOS) / Desktop(Windows)已创建，当前queued。尚未合并；必须实际全成功后核验base/head，再正常merge。
+
+- PR CI attempt1：macOS成功；Windows真实失败 `native closed before inspector`（/tmp/I02-ci-failed.txt）；已定位本地Playwright Windows使用shell=true，application.process().spawnfile可能为cmd.exe而不是Electron，待实际方案复核。LinuxQuality为runner自身No space left on device（check-run annotation），日志下载EOF/无artifact；已仅重跑该job以获取代码路径真实结果，不能把infra失败算通过。暂不合并；任何测试/实现修订后新candidate双方新任务。
+
+## Round 2 准备（CI修复，旧通过不沿用）
+
+- Windows测试夹具取executable方式改为实际main的process.execPath；不再复用Playwright shell spawnfile。产品apps源码/配置/依赖不改；design/acceptance/commands更正整体stub与同构建语义。
+- 因测试/验收记录改变，Round1通过仅属历史，新candidate必须双方新任务；尚未push新变更，不合并。旧freeze另保存round-2/round-1-freeze.json。Linuxinfra单job重跑仍在进行，等待真实结果。
+
+## Round 2 冻结准备完成
+
+- 最终完整check退出0：15TS/198Python；verify:sources13；新direct-loop故障方案build2/2、packaged2/2、development1/1均PASS，真实killed/unresponsive、3窗/2提示请求/3次显式health，C1/native无no-sandbox，main inspector故障前关闭，输入时可见且获焦。
+- 产品apps/packages/依赖与Round1逐字相同；修订限测试、Linux CI helper准备和证据勘误。根因未夸大；原GitHub超时/Windows失败和本机2次native timeout全保留round-2。Docker仅诊断，不替代CI，无权限/seccomp例外。
+- 内部独立最终综合只读复核无阻断；16路径新freeze、64保护哈希一致。尚未新建Round2外部任务，不push新候选，不合并。下一步本地提交后两个应用分别全新任务重新核验路径/模型/思考设置，审查同一base→新head。

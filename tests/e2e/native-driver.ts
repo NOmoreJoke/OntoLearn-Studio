@@ -13,11 +13,24 @@ export async function runNativeRecovery(
     stdio: ['ignore', 'pipe', 'pipe'],
   })
   let stderr = ''
+  let stdout = ''
+  const diagnostics = () =>
+    JSON.stringify({
+      executable,
+      args,
+      exitCode: child.exitCode,
+      signalCode: child.signalCode,
+      stderr,
+      stdout,
+    })
+  child.stdout.on('data', (chunk) => {
+    stdout = (stdout + String(chunk)).slice(-65536)
+  })
   let socket: WebSocket | undefined
   const finished = new Promise<void>((resolve, reject) => {
     child.on('error', reject)
-    child.on('exit', (code, signal) =>
-      code === 0 ? resolve() : reject(new Error(`native exit ${code}/${signal}: ${stderr}`)),
+    child.on('close', (code, signal) =>
+      code === 0 ? resolve() : reject(new Error(`native exit ${code}/${signal}: ${diagnostics()}`)),
     )
   })
   // Attach a rejection handler immediately while discovering the inspector URL.
@@ -26,11 +39,11 @@ export async function runNativeRecovery(
   const deadline = new Promise<never>((_resolve, reject) => {
     timer = setTimeout(() => {
       child.kill('SIGKILL')
-      reject(new Error('native recovery deadline exceeded'))
+      reject(new Error(`native recovery deadline exceeded: ${diagnostics()}`))
     }, 45000)
   })
   const exitedDuringBootstrap = finished.then(() => {
-    throw new Error('native exited before bootstrap completed')
+    throw new Error(`native exited before bootstrap completed: ${diagnostics()}`)
   })
   void exitedDuringBootstrap.catch(() => undefined)
   const bounded = <T>(work: Promise<T>) => Promise.race([work, exitedDuringBootstrap, deadline])
@@ -38,12 +51,14 @@ export async function runNativeRecovery(
     const endpoint = await bounded(
       new Promise<string>((resolve, reject) => {
         child.stderr.on('data', (chunk) => {
-          stderr += String(chunk)
+          stderr = (stderr + String(chunk)).slice(-65536)
           const match = stderr.match(/ws:\/\/127\.0\.0\.1:[^\s]+/)
           if (match) resolve(match[0])
         })
         child.on('error', reject)
-        child.on('exit', () => reject(new Error(`native closed before inspector: ${stderr}`)))
+        child.on('close', () =>
+          reject(new Error(`native closed before inspector: ${diagnostics()}`)),
+        )
       }),
     )
     socket = new WebSocket(endpoint)
