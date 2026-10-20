@@ -1,0 +1,1697 @@
+{
+  "implementation": {
+    "executionSemanticsVersion": "i05-finite-3",
+    "engineVersion": "0.1.0",
+    "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493"
+  },
+  "project": {
+    "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+    "projectRevision": 1,
+    "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+    "dependencyVector": {
+      "constraint:V01": 1,
+      "facts:asserted": 1,
+      "ontology:G-base": 1,
+      "query:Q01": 1,
+      "query:forbidden-service": 1,
+      "query:slow-count": 1,
+      "rule:R-risk": 1
+    },
+    "formatVersion": 2
+  },
+  "originalGBaseFactCount": 18,
+  "removedNameTriples": [
+    [
+      "urn:case:0:equipment/003",
+      "urn:ontolearn:name",
+      "\"备用泵C\""
+    ]
+  ],
+  "gBaseFactCount": 17,
+  "independentLoadFactCount": 10,
+  "assertedFactCount": 27,
+  "ontologyTripleCount": 10,
+  "inputFactsSha256": "292748955e9de833237d08348f57874a9330ec7a7c8c81243495c2a644b66ba1",
+  "definitionsSha256": "8c195e7d0cc540f0f90f95deba3ea7a2dd1adcbaa9eecc787c48aa555dc0cbe9",
+  "stateSha256": "93119e894ebea99109d025ebe3b11954634fa7020fc3a8dc7c43ec172967bad3",
+  "completed": [
+    {
+      "job": {
+        "capability": "reasoning.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536245957,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536246088,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "all",
+          "derivedResultIds": [],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "40797260-c64f-44d1-b366-d2390780017a",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "d13e30d4-fc03-4241-9c04-becd6b5d8c97",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "5c1af320-a08d-4258-9acc-dd393f8c580a"
+        },
+        "scope": "asserted",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536246088
+      },
+      "metadata": {
+        "resultId": "5c1af320-a08d-4258-9acc-dd393f8c580a",
+        "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+        "jobId": "40797260-c64f-44d1-b366-d2390780017a",
+        "kind": "reasoning",
+        "definitionId": "all",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "scope": "asserted",
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "inputProjectRevision": 1,
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "rule:R-risk": 1
+        },
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "state": "current",
+        "staleReason": [],
+        "payloadStatus": "available",
+        "createdAtMs": 1792536246087,
+        "historicalSelectionRequired": false
+      },
+      "payload": {
+        "assertedFacts": [
+          [
+            "<urn:case:0:alarm/A01>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<urn:ontolearn:Alarm>"
+          ],
+          [
+            "<urn:case:0:alarm/A01>",
+            "<urn:ontolearn:level>",
+            "\"High\""
+          ],
+          [
+            "<urn:case:0:alarm/A01>",
+            "<urn:ontolearn:status>",
+            "\"Open\""
+          ],
+          [
+            "<urn:case:0:alarm/A02>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<urn:ontolearn:Alarm>"
+          ],
+          [
+            "<urn:case:0:alarm/A02>",
+            "<urn:ontolearn:level>",
+            "\"High\""
+          ],
+          [
+            "<urn:case:0:alarm/A02>",
+            "<urn:ontolearn:status>",
+            "\"Closed\""
+          ],
+          [
+            "<urn:case:0:alarm/A03>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<urn:ontolearn:Alarm>"
+          ],
+          [
+            "<urn:case:0:alarm/A03>",
+            "<urn:ontolearn:level>",
+            "\"Low\""
+          ],
+          [
+            "<urn:case:0:alarm/A03>",
+            "<urn:ontolearn:status>",
+            "\"Open\""
+          ],
+          [
+            "<urn:case:0:equipment/001>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<urn:ontolearn:Equipment>"
+          ],
+          [
+            "<urn:case:0:equipment/001>",
+            "<urn:ontolearn:alarm>",
+            "<urn:case:0:alarm/A01>"
+          ],
+          [
+            "<urn:case:0:equipment/001>",
+            "<urn:ontolearn:name>",
+            "\"泵站A\""
+          ],
+          [
+            "<urn:case:0:equipment/002>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<urn:ontolearn:Equipment>"
+          ],
+          [
+            "<urn:case:0:equipment/002>",
+            "<urn:ontolearn:alarm>",
+            "<urn:case:0:alarm/A02>"
+          ],
+          [
+            "<urn:case:0:equipment/002>",
+            "<urn:ontolearn:name>",
+            "\"泵站B\""
+          ],
+          [
+            "<urn:case:0:equipment/003>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<urn:ontolearn:Equipment>"
+          ],
+          [
+            "<urn:case:0:equipment/003>",
+            "<urn:ontolearn:alarm>",
+            "<urn:case:0:alarm/A03>"
+          ],
+          [
+            "<urn:i05:load:0000>",
+            "<urn:i05:load>",
+            "\"0000\""
+          ],
+          [
+            "<urn:i05:load:0001>",
+            "<urn:i05:load>",
+            "\"0001\""
+          ],
+          [
+            "<urn:i05:load:0002>",
+            "<urn:i05:load>",
+            "\"0002\""
+          ],
+          [
+            "<urn:i05:load:0003>",
+            "<urn:i05:load>",
+            "\"0003\""
+          ],
+          [
+            "<urn:i05:load:0004>",
+            "<urn:i05:load>",
+            "\"0004\""
+          ],
+          [
+            "<urn:i05:load:0005>",
+            "<urn:i05:load>",
+            "\"0005\""
+          ],
+          [
+            "<urn:i05:load:0006>",
+            "<urn:i05:load>",
+            "\"0006\""
+          ],
+          [
+            "<urn:i05:load:0007>",
+            "<urn:i05:load>",
+            "\"0007\""
+          ],
+          [
+            "<urn:i05:load:0008>",
+            "<urn:i05:load>",
+            "\"0008\""
+          ],
+          [
+            "<urn:i05:load:0009>",
+            "<urn:i05:load>",
+            "\"0009\""
+          ]
+        ],
+        "definitionId": "all",
+        "executionSemanticsVersion": "i05-finite-3",
+        "inputProjectRevision": 1,
+        "inputSelection": "current",
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "kind": "reasoning",
+        "ontology": [
+          [
+            "<urn:ontolearn:Alarm>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<http://www.w3.org/2002/07/owl#Class>"
+          ],
+          [
+            "<urn:ontolearn:Equipment>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<http://www.w3.org/2002/07/owl#Class>"
+          ],
+          [
+            "<urn:ontolearn:HighRiskEquipment>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<http://www.w3.org/2002/07/owl#Class>"
+          ],
+          [
+            "<urn:ontolearn:WorkOrder>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<http://www.w3.org/2002/07/owl#Class>"
+          ],
+          [
+            "<urn:ontolearn:alarm>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+          ],
+          [
+            "<urn:ontolearn:eventWorkOrder>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+          ],
+          [
+            "<urn:ontolearn:level>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+          ],
+          [
+            "<urn:ontolearn:name>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+          ],
+          [
+            "<urn:ontolearn:status>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+          ],
+          [
+            "<urn:ontolearn:workOrderStatus>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+          ]
+        ],
+        "reasoning": {
+          "evidence": [
+            {
+              "basis": [
+                [
+                  "<urn:case:0:alarm/A01>",
+                  "<urn:ontolearn:level>",
+                  "\"High\""
+                ],
+                [
+                  "<urn:case:0:alarm/A01>",
+                  "<urn:ontolearn:status>",
+                  "\"Open\""
+                ],
+                [
+                  "<urn:case:0:equipment/001>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:Equipment>"
+                ],
+                [
+                  "<urn:case:0:equipment/001>",
+                  "<urn:ontolearn:alarm>",
+                  "<urn:case:0:alarm/A01>"
+                ]
+              ],
+              "inputs": [
+                [
+                  "<urn:case:0:equipment/001>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:Equipment>"
+                ],
+                [
+                  "<urn:case:0:equipment/001>",
+                  "<urn:ontolearn:alarm>",
+                  "<urn:case:0:alarm/A01>"
+                ],
+                [
+                  "<urn:case:0:alarm/A01>",
+                  "<urn:ontolearn:level>",
+                  "\"High\""
+                ],
+                [
+                  "<urn:case:0:alarm/A01>",
+                  "<urn:ontolearn:status>",
+                  "\"Open\""
+                ]
+              ],
+              "result": [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:HighRiskEquipment>"
+              ],
+              "rule": "R-risk"
+            }
+          ],
+          "rdfs": [],
+          "rdfsEvidence": [],
+          "rules": [
+            [
+              "<urn:case:0:equipment/001>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<urn:ontolearn:HighRiskEquipment>"
+            ]
+          ],
+          "warnings": []
+        },
+        "scope": "asserted",
+        "selectedResultIds": [],
+        "source": {
+          "assertedInputSha256": "a52cb6cf5251b388f81b578db4905681b72f092ea2418d921ae8ce3c8ff68a4c",
+          "executionSemanticsVersion": "i05-finite-3",
+          "ontologyInputSha256": "bf6356641ac48fb3eac2dfe35c98b84c1b9a87401d60f6d13bea158300324645",
+          "selectedRulesSha256": "b9de1827926c45e09f18fdd22ee1706dd14326921bd864458367d4065c33acc9"
+        }
+      },
+      "rowsSha256": "a7541ccaa282b1c8b56f68a46fb3a752933730a39c86ff99e3e8bdf4c9814776"
+    },
+    {
+      "job": {
+        "capability": "query.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536246122,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "query:Q01": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536246266,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "Q01",
+          "derivedResultIds": [
+            "5c1af320-a08d-4258-9acc-dd393f8c580a"
+          ],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted+derived"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "7c46cb31-c0e3-4dc4-8cd1-892679ac2a08",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "4243f8f5-7390-4653-a644-df41c0c43299",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "86fd34fc-283f-45e5-b29a-cce7aac365d6"
+        },
+        "scope": "asserted+derived",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536246266
+      },
+      "metadata": {
+        "resultId": "86fd34fc-283f-45e5-b29a-cce7aac365d6",
+        "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+        "jobId": "7c46cb31-c0e3-4dc4-8cd1-892679ac2a08",
+        "kind": "query",
+        "definitionId": "Q01",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "scope": "asserted+derived",
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "inputProjectRevision": 1,
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "query:Q01": 1,
+          "rule:R-risk": 1
+        },
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "state": "current",
+        "staleReason": [],
+        "payloadStatus": "available",
+        "createdAtMs": 1792536246265,
+        "historicalSelectionRequired": false
+      },
+      "payload": {
+        "definitionId": "Q01",
+        "executionSemanticsVersion": "i05-finite-3",
+        "inputProjectRevision": 1,
+        "inputSelection": "current",
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "kind": "query",
+        "provenance": {
+          "assertedInputSha256": "a52cb6cf5251b388f81b578db4905681b72f092ea2418d921ae8ce3c8ff68a4c",
+          "derivedAxioms": [],
+          "executionSemanticsVersion": "i05-finite-3",
+          "factViewSha256": "3e145c1987d622457c46d397921c03887a38c50018e1172b0b995a7d7584404c",
+          "ontologyInputSha256": "bf6356641ac48fb3eac2dfe35c98b84c1b9a87401d60f6d13bea158300324645",
+          "ontologyView": [
+            [
+              "<urn:ontolearn:Alarm>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#Class>"
+            ],
+            [
+              "<urn:ontolearn:Equipment>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#Class>"
+            ],
+            [
+              "<urn:ontolearn:HighRiskEquipment>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#Class>"
+            ],
+            [
+              "<urn:ontolearn:WorkOrder>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#Class>"
+            ],
+            [
+              "<urn:ontolearn:alarm>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+            ],
+            [
+              "<urn:ontolearn:eventWorkOrder>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+            ],
+            [
+              "<urn:ontolearn:level>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+            ],
+            [
+              "<urn:ontolearn:name>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+            ],
+            [
+              "<urn:ontolearn:status>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+            ],
+            [
+              "<urn:ontolearn:workOrderStatus>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+            ]
+          ],
+          "ontologyViewSha256": "bf6356641ac48fb3eac2dfe35c98b84c1b9a87401d60f6d13bea158300324645",
+          "reasoningSource": {
+            "assertedInputSha256": "a52cb6cf5251b388f81b578db4905681b72f092ea2418d921ae8ce3c8ff68a4c",
+            "executionSemanticsVersion": "i05-finite-3",
+            "ontologyInputSha256": "bf6356641ac48fb3eac2dfe35c98b84c1b9a87401d60f6d13bea158300324645",
+            "selectedRulesSha256": "b9de1827926c45e09f18fdd22ee1706dd14326921bd864458367d4065c33acc9"
+          },
+          "scope": "asserted+selected-derived",
+          "selectedFacts": [
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A01>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Alarm>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A01>",
+                "<urn:ontolearn:level>",
+                "\"High\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A01>",
+                "<urn:ontolearn:status>",
+                "\"Open\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A02>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Alarm>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A02>",
+                "<urn:ontolearn:level>",
+                "\"High\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A02>",
+                "<urn:ontolearn:status>",
+                "\"Closed\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A03>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Alarm>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A03>",
+                "<urn:ontolearn:level>",
+                "\"Low\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A03>",
+                "<urn:ontolearn:status>",
+                "\"Open\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Equipment>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "basis": [
+                    [
+                      "<urn:case:0:alarm/A01>",
+                      "<urn:ontolearn:level>",
+                      "\"High\""
+                    ],
+                    [
+                      "<urn:case:0:alarm/A01>",
+                      "<urn:ontolearn:status>",
+                      "\"Open\""
+                    ],
+                    [
+                      "<urn:case:0:equipment/001>",
+                      "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                      "<urn:ontolearn:Equipment>"
+                    ],
+                    [
+                      "<urn:case:0:equipment/001>",
+                      "<urn:ontolearn:alarm>",
+                      "<urn:case:0:alarm/A01>"
+                    ]
+                  ],
+                  "inputs": [
+                    [
+                      "<urn:case:0:equipment/001>",
+                      "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                      "<urn:ontolearn:Equipment>"
+                    ],
+                    [
+                      "<urn:case:0:equipment/001>",
+                      "<urn:ontolearn:alarm>",
+                      "<urn:case:0:alarm/A01>"
+                    ],
+                    [
+                      "<urn:case:0:alarm/A01>",
+                      "<urn:ontolearn:level>",
+                      "\"High\""
+                    ],
+                    [
+                      "<urn:case:0:alarm/A01>",
+                      "<urn:ontolearn:status>",
+                      "\"Open\""
+                    ]
+                  ],
+                  "kind": "rule",
+                  "rule": "R-risk"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:HighRiskEquipment>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/001>",
+                "<urn:ontolearn:alarm>",
+                "<urn:case:0:alarm/A01>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/001>",
+                "<urn:ontolearn:name>",
+                "\"泵站A\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/002>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Equipment>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/002>",
+                "<urn:ontolearn:alarm>",
+                "<urn:case:0:alarm/A02>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/002>",
+                "<urn:ontolearn:name>",
+                "\"泵站B\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/003>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Equipment>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/003>",
+                "<urn:ontolearn:alarm>",
+                "<urn:case:0:alarm/A03>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0000>",
+                "<urn:i05:load>",
+                "\"0000\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0001>",
+                "<urn:i05:load>",
+                "\"0001\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0002>",
+                "<urn:i05:load>",
+                "\"0002\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0003>",
+                "<urn:i05:load>",
+                "\"0003\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0004>",
+                "<urn:i05:load>",
+                "\"0004\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0005>",
+                "<urn:i05:load>",
+                "\"0005\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0006>",
+                "<urn:i05:load>",
+                "\"0006\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0007>",
+                "<urn:i05:load>",
+                "\"0007\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0008>",
+                "<urn:i05:load>",
+                "\"0008\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0009>",
+                "<urn:i05:load>",
+                "\"0009\""
+              ]
+            }
+          ],
+          "selectedRuleIds": [
+            "R-risk"
+          ],
+          "selectedRulesSha256": "b9de1827926c45e09f18fdd22ee1706dd14326921bd864458367d4065c33acc9",
+          "warnings": []
+        },
+        "query": {
+          "rows": [
+            [
+              "<urn:case:0:alarm/A01>"
+            ]
+          ],
+          "type": "SELECT",
+          "variables": [
+            "alarm"
+          ]
+        },
+        "queryText": "PREFIX : <urn:ontolearn:>\nSELECT ?alarm WHERE { ?alarm :level \"High\"; :status \"Open\" } ORDER BY ?alarm",
+        "scope": "asserted+derived",
+        "selectedResultIds": [
+          "5c1af320-a08d-4258-9acc-dd393f8c580a"
+        ]
+      },
+      "rowsSha256": "d6d01a5700410d3423bc2f90273a6bf0d82f5f60d009dec8c7b4b77838dfa47f"
+    },
+    {
+      "job": {
+        "capability": "validation.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536246297,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "constraint:V01": 1,
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536246435,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "V01",
+          "derivedResultIds": [
+            "5c1af320-a08d-4258-9acc-dd393f8c580a"
+          ],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted+derived"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "d3058ebe-6062-462a-bca5-f79af21a9936",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "2890c516-0361-40bc-b22f-a1d252b3a991",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "a88a6072-ca99-4592-aeb5-ac579e5984b7"
+        },
+        "scope": "asserted+derived",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536246435
+      },
+      "metadata": {
+        "resultId": "a88a6072-ca99-4592-aeb5-ac579e5984b7",
+        "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+        "jobId": "d3058ebe-6062-462a-bca5-f79af21a9936",
+        "kind": "validation",
+        "definitionId": "V01",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "scope": "asserted+derived",
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "inputProjectRevision": 1,
+        "dependencyVector": {
+          "constraint:V01": 1,
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "rule:R-risk": 1
+        },
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "state": "current",
+        "staleReason": [],
+        "payloadStatus": "available",
+        "createdAtMs": 1792536246434,
+        "historicalSelectionRequired": false
+      },
+      "payload": {
+        "constraintsHash": "bcc3ed8255146b5fd623b6d097cb64adbfa7d0d7372a4e5d83715e5f0b9332ed",
+        "constraintsVersion": 1,
+        "definitionId": "V01",
+        "executionSemanticsVersion": "i05-finite-3",
+        "inputProjectRevision": 1,
+        "inputSelection": "current",
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "kind": "validation",
+        "projection": {
+          "factViewSha256": "3e145c1987d622457c46d397921c03887a38c50018e1172b0b995a7d7584404c",
+          "ontologyViewSha256": "bf6356641ac48fb3eac2dfe35c98b84c1b9a87401d60f6d13bea158300324645",
+          "scope": "asserted+derived",
+          "selectedResultIds": [
+            "5c1af320-a08d-4258-9acc-dd393f8c580a"
+          ]
+        },
+        "provenance": {
+          "assertedInputSha256": "a52cb6cf5251b388f81b578db4905681b72f092ea2418d921ae8ce3c8ff68a4c",
+          "derivedAxioms": [],
+          "executionSemanticsVersion": "i05-finite-3",
+          "factViewSha256": "3e145c1987d622457c46d397921c03887a38c50018e1172b0b995a7d7584404c",
+          "ontologyInputSha256": "bf6356641ac48fb3eac2dfe35c98b84c1b9a87401d60f6d13bea158300324645",
+          "ontologyView": [
+            [
+              "<urn:ontolearn:Alarm>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#Class>"
+            ],
+            [
+              "<urn:ontolearn:Equipment>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#Class>"
+            ],
+            [
+              "<urn:ontolearn:HighRiskEquipment>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#Class>"
+            ],
+            [
+              "<urn:ontolearn:WorkOrder>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#Class>"
+            ],
+            [
+              "<urn:ontolearn:alarm>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+            ],
+            [
+              "<urn:ontolearn:eventWorkOrder>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+            ],
+            [
+              "<urn:ontolearn:level>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+            ],
+            [
+              "<urn:ontolearn:name>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+            ],
+            [
+              "<urn:ontolearn:status>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+            ],
+            [
+              "<urn:ontolearn:workOrderStatus>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+            ]
+          ],
+          "ontologyViewSha256": "bf6356641ac48fb3eac2dfe35c98b84c1b9a87401d60f6d13bea158300324645",
+          "reasoningSource": {
+            "assertedInputSha256": "a52cb6cf5251b388f81b578db4905681b72f092ea2418d921ae8ce3c8ff68a4c",
+            "executionSemanticsVersion": "i05-finite-3",
+            "ontologyInputSha256": "bf6356641ac48fb3eac2dfe35c98b84c1b9a87401d60f6d13bea158300324645",
+            "selectedRulesSha256": "b9de1827926c45e09f18fdd22ee1706dd14326921bd864458367d4065c33acc9"
+          },
+          "scope": "asserted+selected-derived",
+          "selectedFacts": [
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A01>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Alarm>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A01>",
+                "<urn:ontolearn:level>",
+                "\"High\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A01>",
+                "<urn:ontolearn:status>",
+                "\"Open\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A02>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Alarm>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A02>",
+                "<urn:ontolearn:level>",
+                "\"High\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A02>",
+                "<urn:ontolearn:status>",
+                "\"Closed\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A03>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Alarm>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A03>",
+                "<urn:ontolearn:level>",
+                "\"Low\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:alarm/A03>",
+                "<urn:ontolearn:status>",
+                "\"Open\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Equipment>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "basis": [
+                    [
+                      "<urn:case:0:alarm/A01>",
+                      "<urn:ontolearn:level>",
+                      "\"High\""
+                    ],
+                    [
+                      "<urn:case:0:alarm/A01>",
+                      "<urn:ontolearn:status>",
+                      "\"Open\""
+                    ],
+                    [
+                      "<urn:case:0:equipment/001>",
+                      "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                      "<urn:ontolearn:Equipment>"
+                    ],
+                    [
+                      "<urn:case:0:equipment/001>",
+                      "<urn:ontolearn:alarm>",
+                      "<urn:case:0:alarm/A01>"
+                    ]
+                  ],
+                  "inputs": [
+                    [
+                      "<urn:case:0:equipment/001>",
+                      "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                      "<urn:ontolearn:Equipment>"
+                    ],
+                    [
+                      "<urn:case:0:equipment/001>",
+                      "<urn:ontolearn:alarm>",
+                      "<urn:case:0:alarm/A01>"
+                    ],
+                    [
+                      "<urn:case:0:alarm/A01>",
+                      "<urn:ontolearn:level>",
+                      "\"High\""
+                    ],
+                    [
+                      "<urn:case:0:alarm/A01>",
+                      "<urn:ontolearn:status>",
+                      "\"Open\""
+                    ]
+                  ],
+                  "kind": "rule",
+                  "rule": "R-risk"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:HighRiskEquipment>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/001>",
+                "<urn:ontolearn:alarm>",
+                "<urn:case:0:alarm/A01>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/001>",
+                "<urn:ontolearn:name>",
+                "\"泵站A\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/002>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Equipment>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/002>",
+                "<urn:ontolearn:alarm>",
+                "<urn:case:0:alarm/A02>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/002>",
+                "<urn:ontolearn:name>",
+                "\"泵站B\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/003>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Equipment>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:case:0:equipment/003>",
+                "<urn:ontolearn:alarm>",
+                "<urn:case:0:alarm/A03>"
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0000>",
+                "<urn:i05:load>",
+                "\"0000\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0001>",
+                "<urn:i05:load>",
+                "\"0001\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0002>",
+                "<urn:i05:load>",
+                "\"0002\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0003>",
+                "<urn:i05:load>",
+                "\"0003\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0004>",
+                "<urn:i05:load>",
+                "\"0004\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0005>",
+                "<urn:i05:load>",
+                "\"0005\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0006>",
+                "<urn:i05:load>",
+                "\"0006\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0007>",
+                "<urn:i05:load>",
+                "\"0007\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0008>",
+                "<urn:i05:load>",
+                "\"0008\""
+              ]
+            },
+            {
+              "sources": [
+                {
+                  "kind": "asserted"
+                }
+              ],
+              "triple": [
+                "<urn:i05:load:0009>",
+                "<urn:i05:load>",
+                "\"0009\""
+              ]
+            }
+          ],
+          "selectedRuleIds": [
+            "R-risk"
+          ],
+          "selectedRulesSha256": "b9de1827926c45e09f18fdd22ee1706dd14326921bd864458367d4065c33acc9",
+          "warnings": []
+        },
+        "report": {
+          "conforms": false,
+          "violations": [
+            {
+              "constraint": "<http://www.w3.org/ns/shacl#MinCountConstraintComponent>",
+              "focus": "<urn:case:0:equipment/003>",
+              "path": "<urn:ontolearn:name>",
+              "severity": "<http://www.w3.org/ns/shacl#Violation>",
+              "sourceShape": "<urn:ontolearn:NameProperty>",
+              "value": null
+            }
+          ]
+        },
+        "scope": "asserted+derived",
+        "selectedResultIds": [
+          "5c1af320-a08d-4258-9acc-dd393f8c580a"
+        ],
+        "validationBinding": {
+          "projection": {
+            "assertedFactsRef": "a52cb6cf5251b388f81b578db4905681b72f092ea2418d921ae8ce3c8ff68a4c",
+            "constraintDefinitionId": "V01",
+            "constraintsRef": "bcc3ed8255146b5fd623b6d097cb64adbfa7d0d7372a4e5d83715e5f0b9332ed",
+            "derived": {
+              "axiomsRef": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "factsRef": "0348e7a143dcbea46b815ed7ab3ee93d2fb19c07f5ee065304e3fe8a00806dd3",
+              "implementation": {
+                "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+                "engineVersion": "0.1.0",
+                "executionSemanticsVersion": "i05-finite-3"
+              },
+              "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+              "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+              "resultId": "5c1af320-a08d-4258-9acc-dd393f8c580a"
+            },
+            "implementation": {
+              "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+              "engineVersion": "0.1.0",
+              "executionSemanticsVersion": "i05-finite-3"
+            },
+            "inputProjectRevision": 1,
+            "inputSelection": "current",
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "ontologyAxiomsRef": "bf6356641ac48fb3eac2dfe35c98b84c1b9a87401d60f6d13bea158300324645",
+            "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+            "projectionPolicy": "selected-facts-v1",
+            "projectionVersion": 1,
+            "scope": "asserted+derived"
+          },
+          "resources": [
+            {
+              "constraintDefinitionId": null,
+              "implementation": null,
+              "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+              "payloadStatus": null,
+              "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+              "ref": "a52cb6cf5251b388f81b578db4905681b72f092ea2418d921ae8ce3c8ff68a4c",
+              "resultId": null,
+              "resultKind": null,
+              "resultState": null,
+              "role": "assertedFacts"
+            },
+            {
+              "constraintDefinitionId": null,
+              "implementation": null,
+              "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+              "payloadStatus": null,
+              "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+              "ref": "bf6356641ac48fb3eac2dfe35c98b84c1b9a87401d60f6d13bea158300324645",
+              "resultId": null,
+              "resultKind": null,
+              "resultState": null,
+              "role": "ontologyAxioms"
+            },
+            {
+              "constraintDefinitionId": "V01",
+              "implementation": null,
+              "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+              "payloadStatus": null,
+              "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+              "ref": "bcc3ed8255146b5fd623b6d097cb64adbfa7d0d7372a4e5d83715e5f0b9332ed",
+              "resultId": null,
+              "resultKind": null,
+              "resultState": null,
+              "role": "constraints"
+            },
+            {
+              "constraintDefinitionId": null,
+              "implementation": {
+                "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+                "engineVersion": "0.1.0",
+                "executionSemanticsVersion": "i05-finite-3"
+              },
+              "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+              "payloadStatus": "available",
+              "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+              "ref": "0348e7a143dcbea46b815ed7ab3ee93d2fb19c07f5ee065304e3fe8a00806dd3",
+              "resultId": "5c1af320-a08d-4258-9acc-dd393f8c580a",
+              "resultKind": "reasoning",
+              "resultState": "current",
+              "role": "derivedFacts"
+            },
+            {
+              "constraintDefinitionId": null,
+              "implementation": {
+                "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+                "engineVersion": "0.1.0",
+                "executionSemanticsVersion": "i05-finite-3"
+              },
+              "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+              "payloadStatus": "available",
+              "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+              "ref": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "resultId": "5c1af320-a08d-4258-9acc-dd393f8c580a",
+              "resultKind": "reasoning",
+              "resultState": "current",
+              "role": "derivedAxioms"
+            }
+          ]
+        }
+      },
+      "rowsSha256": "f2b7ab0f26661287fdae7785e41415eb608afdd0f3f38d5718a8939ef447b7bc"
+    }
+  ],
+  "networkCanary": "I05_REMOTE_CANARY_DO_NOT_LEAK",
+  "queryText": "PREFIX : <urn:ontolearn:>\nSELECT ?alarm WHERE { ?alarm :level \"High\"; :status \"Open\" } ORDER BY ?alarm",
+  "slowQueryText": "SELECT (COUNT(*) AS ?count) WHERE { ?a0 <urn:i05:load> ?x0 . ?a1 <urn:i05:load> ?x1 . ?a2 <urn:i05:load> ?x2 . ?a3 <urn:i05:load> ?x3 . ?a4 <urn:i05:load> ?x4 . ?a5 <urn:i05:load> ?x5 . ?a6 <urn:i05:load> ?x6 . ?a7 <urn:i05:load> ?x7 . ?a8 <urn:i05:load> ?x8 }",
+  "slowCartesianCandidates": 1000000000,
+  "backgroundOperations": [
+    {
+      "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+      "operationId": "656b7ed5-c52a-4f98-a725-5193d2617a17",
+      "capability": "query.execute",
+      "definitionId": "slow-count",
+      "scope": "asserted",
+      "inputSelection": "current",
+      "inputSnapshotId": null,
+      "derivedResultId": null
+    },
+    {
+      "projectId": "aaf39f2d-ed12-4316-bbbe-72bad9ced384",
+      "operationId": "1a60dc87-caa9-47ba-8f4f-d883a69c2b97",
+      "capability": "query.execute",
+      "definitionId": "forbidden-service",
+      "scope": "asserted",
+      "inputSelection": "current",
+      "inputSnapshotId": null,
+      "derivedResultId": null
+    }
+  ]
+}

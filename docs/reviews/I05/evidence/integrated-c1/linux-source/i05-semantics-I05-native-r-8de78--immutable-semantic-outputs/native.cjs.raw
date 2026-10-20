@@ -1,0 +1,56 @@
+
+const {app,BrowserWindow}=require('electron')
+const {writeFileSync}=require('node:fs')
+const {execFileSync}=require('node:child_process')
+const inspector=require('node:inspector')
+const evidence={windows:[],events:[],inspectorClosed:false,hangMonitorEnabled:!app.commandLine.hasSwitch('disable-hang-monitor'),noSandboxSwitch:app.commandLine.hasSwitch('no-sandbox')}
+const save=()=>writeFileSync(process.env.I05_NATIVE_EVIDENCE,JSON.stringify(evidence,null,2))
+const fail=(error)=>{evidence.error=String(error);save();app.exit(1)}
+const deadline=setTimeout(()=>fail('native I05 deadline'),75000)
+let count=0
+async function snapshot(window){
+ const value=await window.webContents.executeJavaScript("(async()=>{\n  const bridge=window.ontolearn\n  let response=await bridge.restoreTasks()\n  if(!response.ok||!response.data.project||response.data.jobs.length!==5)throw new Error('missing semantic durable jobs')\n  const view=response.data\n  const slow=view.jobs.find(job=>job.input.definitionId==='slow-count')\n  const end=Date.now()+5000\n  let status=await bridge.getJob(slow.jobId)\n  while(status.ok&&status.data.state==='queued'&&Date.now()<end){await new Promise(done=>setTimeout(done,25));status=await bridge.getJob(slow.jobId)}\n  if(!status.ok||status.data.state!=='running')throw new Error('actual COUNT worker is not running')\n  view.jobs=view.jobs.map(job=>job.jobId===slow.jobId?status.data:job)\n  const results=[]\n  for(const job of view.jobs.filter(job=>job.state==='succeeded')){\n   const id=job.resultRef.resultId\n   const metadata=await bridge.getResult(id)\n   if(!metadata.ok)throw new Error('immutable metadata missing')\n   let cursor=null;const rows=[]\n   do{const page=await bridge.getResultPage({resultId:id,pageSize:200,cursor});if(!page.ok)throw new Error('immutable source page missing');rows.push(...page.data.rows);cursor=page.data.nextCursor}while(cursor)\n   results.push({jobId:job.jobId,metadata:metadata.data,rows})\n  }\n  if(results.map(item=>item.metadata.kind).sort().join(',')!=='query,reasoning,validation')throw new Error('three actual semantic producer outputs missing')\n  const history=await bridge.listJobs({filter:'all',pageSize:100,listSnapshotId:null,cursor:null})\n  if(!history.ok||history.data.jobs.length!==5)throw new Error('semantic history replayed or missing')\n  return {view,results,history:history.data,slowJobId:slow.jobId}\n })()")
+ const stable=JSON.stringify(value.results)
+ if(count>1){
+  const initial=evidence.windows[0].snapshot
+  if(stable!==JSON.stringify(initial.results))throw new Error('immutable semantic source or payload changed')
+  if(JSON.stringify(initial.view.project)!==JSON.stringify(value.view.project))throw new Error('project/snapshot/revision changed')
+  if(JSON.stringify(initial.view.jobs.map(job=>[job.jobId,job.operationId]))!==JSON.stringify(value.view.jobs.map(job=>[job.jobId,job.operationId])))throw new Error('semantic creation replayed')
+  for(const job of value.view.jobs){const old=initial.view.jobs.find(item=>item.jobId===job.jobId);if(job.stateVersion<old.stateVersion||job.state==='cancelled')throw new Error('semantic state regressed or cancelled by recovery')}
+ }
+ value.resultsSha256=require('node:crypto').createHash('sha256').update(stable).digest('hex')
+ return value
+}
+function observe(window,freshlyCreated=false){
+ const ordinal=++count
+ const entry={ordinal};evidence.windows.push(entry)
+ window.webContents.on('render-process-gone',(_event,details)=>{evidence.events.push(details.reason);save()})
+ window.on('unresponsive',()=>{evidence.events.push('unresponsive');evidence.awaitingDialog='hang';save()})
+ const drive=async()=>{try{
+  entry.snapshot=await snapshot(window);entry.visible=window.isVisible();save()
+  if(ordinal===1){evidence.awaitingDialog='crash';save();window.webContents.forcefullyCrashRenderer()}
+  else if(ordinal===2){
+   window.show();app.focus({steal:true});window.focus()
+   const end=Date.now()+3000
+   while(!window.isVisible()||!window.isFocused()){if(Date.now()>end)throw new Error('native focus deadline');await new Promise(done=>setTimeout(done,25))}
+   entry.focused=window.isFocused();entry.visible=window.isVisible();save()
+   const focusId=execFileSync('xdotool',['getwindowfocus'],{timeout:2000}).toString().trim()
+   const focusTitle=execFileSync('xdotool',['getwindowname',focusId],{timeout:2000}).toString().trim()
+   const visibleIds=execFileSync('xdotool',['search','--onlyvisible','--name','.*'],{timeout:2000}).toString().trim().split('\n')
+   entry.x11Focus={observer:'xdotool/XGetInputFocus',windowId:focusId,title:focusTitle,visible:visibleIds.includes(focusId)}
+   if(!entry.x11Focus.visible||focusTitle!==window.getTitle())throw new Error('external X focus does not match visible application window')
+   save()
+   void window.webContents.executeJavaScript('for(;;){}').catch(error=>{if(!window.isDestroyed())fail(error)})
+   setTimeout(()=>{if(window.isDestroyed())return;if(!window.isVisible()||!window.isFocused())return fail('native hang lost focus');window.webContents.sendInputEvent({type:'mouseDown',x:400,y:400,button:'left',clickCount:1});window.webContents.sendInputEvent({type:'mouseUp',x:400,y:400,button:'left',clickCount:1})},250)
+  }else if(ordinal===3){
+   if(evidence.noSandboxSwitch||!evidence.inspectorClosed||!evidence.hangMonitorEnabled||!evidence.events.includes('unresponsive')||!evidence.events.some(value=>['crashed','killed'].includes(value)))throw new Error('missing real native faults')
+   const cancelled=await window.webContents.executeJavaScript('(async()=>{const bridge=window.ontolearn;const id='+JSON.stringify(entry.snapshot.slowJobId)+';const response=await bridge.cancelJob(id);if(!response.ok)throw new Error("explicit cancel failed");const end=Date.now()+5000;let job;do{job=await bridge.getJob(id);if(job.ok&&job.data.state==="cancelled")return job.data;await new Promise(done=>setTimeout(done,25))}while(Date.now()<end);throw new Error("semantic cancel deadline")})()')
+   evidence.explicitCancellation=cancelled
+   if(cancelled.resultRef!==null)throw new Error('cancelled query fabricated result')
+   evidence.result='PASS';delete evidence.awaitingDialog;save();clearTimeout(deadline);app.quit()
+  }else throw new Error('unexpected extra recovery')
+ }catch(error){fail(error)}}
+ if(freshlyCreated||window.webContents.isLoadingMainFrame()||!window.webContents.getURL())window.webContents.once('did-finish-load',drive)
+ else void drive()
+}
+setTimeout(()=>{inspector.close();evidence.inspectorClosed=inspector.url()===undefined;save();app.on('browser-window-created',(_event,window)=>observe(window,true));for(const window of BrowserWindow.getAllWindows())observe(window)},150)

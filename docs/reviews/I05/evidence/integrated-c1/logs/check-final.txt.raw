@@ -1,0 +1,143 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation
+
+
+ Test Files  16 passed (16)
+      Tests  672 passed (672)
+   Start at  06:31:48
+   Duration  6.76s (tests 89%, import 7%, transform 3%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  345.98 kB
+
+✓ built in 28ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  278.87 kB
+
+✓ built in 21ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-BHeZ7xlA.js   879.15 kB
+
+✓ built in 62ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+199 files already formatted
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation
+configfile: pyproject.toml
+testpaths: packages/engine/tests
+collected 1511 items
+
+packages/engine/tests/test_binding_regressions.py ...................... [  1%]
+...................                                                      [  2%]
+packages/engine/tests/test_contract_v2.py .............................. [  4%]
+........................................................................ [  9%]
+........................................................................ [ 14%]
+........................................................................ [ 18%]
+........................................................................ [ 23%]
+........................................................................ [ 28%]
+................................................                         [ 31%]
+packages/engine/tests/test_coordinator_control.py ...................    [ 32%]
+packages/engine/tests/test_frame_corpus.py ............................. [ 34%]
+........................                                                 [ 36%]
+packages/engine/tests/test_handshake_deadline.py ...                     [ 36%]
+packages/engine/tests/test_i04_lifecycle_boundaries.py .............     [ 37%]
+packages/engine/tests/test_i04_progress.py ......                        [ 37%]
+packages/engine/tests/test_i04_round_faults.py ......................... [ 39%]
+.................................                                        [ 41%]
+packages/engine/tests/test_job_store.py ................................ [ 43%]
+........................................................................ [ 48%]
+.............................................................            [ 52%]
+packages/engine/tests/test_memory_guard_exit.py ........                 [ 53%]
+packages/engine/tests/test_native_inventory.py ..................        [ 54%]
+packages/engine/tests/test_protocol.py .............                     [ 55%]
+packages/engine/tests/test_resident_runtime.py .............             [ 56%]
+packages/engine/tests/test_runtime_bounds.py .                           [ 56%]
+packages/engine/tests/test_semantic.py ................................. [ 58%]
+........................................................                 [ 62%]
+packages/engine/tests/test_semantic_error_adapter.py ................... [ 63%]
+........................................................................ [ 68%]
+........................................................................ [ 72%]
+.............................................                            [ 75%]
+packages/engine/tests/test_semantic_error_reasons.py ................... [ 77%]
+                                                                         [ 77%]
+packages/engine/tests/test_semantic_execution.py ....................... [ 78%]
+....                                                                     [ 78%]
+packages/engine/tests/test_semantic_fresh_probe.py ..                    [ 79%]
+packages/engine/tests/test_semantic_runtime.py ......................... [ 80%]
+....                                                                     [ 80%]
+packages/engine/tests/test_semantic_scopes.py ..............             [ 81%]
+packages/engine/tests/test_semantic_selected_projection.py ............. [ 82%]
+...................................                                      [ 85%]
+packages/engine/tests/test_session_page_limits.py ...                    [ 85%]
+packages/engine/tests/test_stdio_session_shutdown.py .....               [ 85%]
+packages/engine/tests/test_storage.py .................................. [ 87%]
+........................................................................ [ 92%]
+........................................................................ [ 97%]
+.........                                                                [ 97%]
+packages/engine/tests/test_worker_owner_bootstrap.py ................... [ 99%]
+...........                                                              [ 99%]
+packages/engine/tests/test_worker_parent.py .                            [100%]
+
+============================ 1511 passed in 50.35s =============================

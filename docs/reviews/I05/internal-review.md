@@ -66,3 +66,13 @@
 
 
 新基线首次完整check的424项TS、类型与build已过，随后Ruff发现接口文档Python代码块的import格式未展开；仅修正本线文档，保留首次失败日志，再完整运行check。最终424TS / 1006Python（208adapter）及sources12通过；未借此重跑旧包或旧测量。
+
+## 正式 I04 基线集成内部独立审查
+
+只读 agent `semantic_boundary_review` 全范围复核原B1/附录C/D/E/G及真实运行边界；写入子任务分别在独立execution/bridge/native worktree提交，最终主线统一集成，没有共享文件争写。原适配器208 golden保持，不把内部审查替代指定模型审查。
+
+实际发现与处置：公开1024帧限制被误套私有worker通道→私有固定262144且真实1024公开协商反例通过；合法saved ontology超范围构造被标可信Internal→用户输入语法入口真实Unsupported并保留可信错层Internal；大字面量/规则在REASON阶段错误归类→实际Turtle输入预算semanticInput，disabled规则不计执行预算；validationBinding补充后结果行超过10000冒泡引擎退出→最终完整投影边界安全RESOURCE_LIMIT semanticResult。29项真实worker/stdio/Store联验及全库1511Python含相应反例，37项窄bridge及全库672TS通过。独立agent最后未确认新增阻断，验证范围按实际运行报告，不冒称其亲跑完整包/native或指定双审。
+
+Linux有效原生2×2及打包入口ready门槛修正另见 [C1证据](integrated-c1-verification.md)。所有历史失败与成功原始日志并存，源/包精确绑定，不改写旧检查的候选归属。
+
+最终证据只读复核逐字读取全部raw清单、重算SHA与计数，验证117份原证据及13份最终native raw；两平台suite完整result/network相等、portable stdout逐字相等、实际stdio各1passed、C4各17passed、全库672/1511。逐窗口完整results/project/jobId+operationId直接比较相等，不只信任摘要。指出117清单不能统指851最终native的文案归属，已改为分别链接原清单与sealed清单。其后sealed第14份仅补存已通过的851静态检查原log，由主线重新核验所有14份SHA；无产品/测试/验收改变。未发现新增产品阻断；Q6逐项仍待决定，不替代指定全范围双审。

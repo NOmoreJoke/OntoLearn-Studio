@@ -1,0 +1,317 @@
+........................................................................ [ 36%]
+........................................................................ [ 73%]
+........................FFFFFFF......................                    [100%]
+=================================== FAILURES ===================================
+_ test_existing_full_acceptance_is_idempotent_after_derived_source_payload_is_evicted _
+
+store = <ontolearn_engine.job_store.JobStore object at 0x10ad37dd0>
+
+    def test_existing_full_acceptance_is_idempotent_after_derived_source_payload_is_evicted(store):
+        s = store
+>       source = stored_derived_fixture(s)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_job_store.py:1294: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_job_store.py:1287: in stored_derived_fixture
+    job = create(s, "reasoning.execute")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/tests/test_job_store.py:78: in create
+    return s.create_job(project, operation or uid(), capability, input_, confirm, IMPL, LIMITS)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/job_store.py:380: in create_job
+    semantic_request = self.prepare_semantic_request(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <ontolearn_engine.job_store.JobStore object at 0x10ad37dd0>
+project = '8cbf14b4-edf4-46f4-9105-512e8e5f9b26'
+capability = 'reasoning.execute'
+input_ = {'inputSnapshotId': '159a1c4a4beb0dc1ebaff71ebd8149c8b81ea3bdbf0f430ce99e5f5ed7b7b35b', 'scope': 'asserted', 'definitionId': 'probe', 'parametersHash': '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a', ...}
+parameters = {}
+snap = {'dependencyVector': {}, 'project': 'legacy-project', 'projectRevision': 0, 'state': {'definitions': [], 'facts': [], 'mappingState': {}}}
+implementation = {'engineVersion': '0.1.0', 'executionSemanticsVersion': 'test-v1', 'dependencyLockHash': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
+
+    def prepare_semantic_request(
+        self, project, capability, input_, parameters, snap, implementation
+    ):
+        """Resolve actual immutable sources in the acceptance transaction, before a worker exists."""
+>       from ontolearn_engine.semantic_execution import (
+            SemanticExecutionFault,
+            build_request,
+        )
+E       ModuleNotFoundError: No module named 'ontolearn_engine.semantic_execution'
+
+packages/engine/src/ontolearn_engine/job_store.py:790: ModuleNotFoundError
+_ test_existing_claim_compares_every_complete_caller_binding_even_after_eviction[capability] _
+
+store = <ontolearn_engine.job_store.JobStore object at 0x10ad36c90>
+changed = 'capability'
+
+    @pytest.mark.parametrize(
+        "changed", ["capability", "definition", "parameters", "derived", "implementation", "limits"]
+    )
+    def test_existing_claim_compares_every_complete_caller_binding_even_after_eviction(store, changed):
+        s = store
+>       source = stored_derived_fixture(s)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_job_store.py:1316: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_job_store.py:1287: in stored_derived_fixture
+    job = create(s, "reasoning.execute")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/tests/test_job_store.py:78: in create
+    return s.create_job(project, operation or uid(), capability, input_, confirm, IMPL, LIMITS)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/job_store.py:380: in create_job
+    semantic_request = self.prepare_semantic_request(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <ontolearn_engine.job_store.JobStore object at 0x10ad36c90>
+project = '9a228d49-028c-4038-8609-3c7c42c5356e'
+capability = 'reasoning.execute'
+input_ = {'inputSnapshotId': '159a1c4a4beb0dc1ebaff71ebd8149c8b81ea3bdbf0f430ce99e5f5ed7b7b35b', 'scope': 'asserted', 'definitionId': 'probe', 'parametersHash': '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a', ...}
+parameters = {}
+snap = {'dependencyVector': {}, 'project': 'legacy-project', 'projectRevision': 0, 'state': {'definitions': [], 'facts': [], 'mappingState': {}}}
+implementation = {'engineVersion': '0.1.0', 'executionSemanticsVersion': 'test-v1', 'dependencyLockHash': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
+
+    def prepare_semantic_request(
+        self, project, capability, input_, parameters, snap, implementation
+    ):
+        """Resolve actual immutable sources in the acceptance transaction, before a worker exists."""
+>       from ontolearn_engine.semantic_execution import (
+            SemanticExecutionFault,
+            build_request,
+        )
+E       ModuleNotFoundError: No module named 'ontolearn_engine.semantic_execution'
+
+packages/engine/src/ontolearn_engine/job_store.py:790: ModuleNotFoundError
+_ test_existing_claim_compares_every_complete_caller_binding_even_after_eviction[definition] _
+
+store = <ontolearn_engine.job_store.JobStore object at 0x10ad36150>
+changed = 'definition'
+
+    @pytest.mark.parametrize(
+        "changed", ["capability", "definition", "parameters", "derived", "implementation", "limits"]
+    )
+    def test_existing_claim_compares_every_complete_caller_binding_even_after_eviction(store, changed):
+        s = store
+>       source = stored_derived_fixture(s)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_job_store.py:1316: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_job_store.py:1287: in stored_derived_fixture
+    job = create(s, "reasoning.execute")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/tests/test_job_store.py:78: in create
+    return s.create_job(project, operation or uid(), capability, input_, confirm, IMPL, LIMITS)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/job_store.py:380: in create_job
+    semantic_request = self.prepare_semantic_request(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <ontolearn_engine.job_store.JobStore object at 0x10ad36150>
+project = '7fbc2f97-b96e-4e37-8d5d-421f099f5271'
+capability = 'reasoning.execute'
+input_ = {'inputSnapshotId': '159a1c4a4beb0dc1ebaff71ebd8149c8b81ea3bdbf0f430ce99e5f5ed7b7b35b', 'scope': 'asserted', 'definitionId': 'probe', 'parametersHash': '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a', ...}
+parameters = {}
+snap = {'dependencyVector': {}, 'project': 'legacy-project', 'projectRevision': 0, 'state': {'definitions': [], 'facts': [], 'mappingState': {}}}
+implementation = {'engineVersion': '0.1.0', 'executionSemanticsVersion': 'test-v1', 'dependencyLockHash': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
+
+    def prepare_semantic_request(
+        self, project, capability, input_, parameters, snap, implementation
+    ):
+        """Resolve actual immutable sources in the acceptance transaction, before a worker exists."""
+>       from ontolearn_engine.semantic_execution import (
+            SemanticExecutionFault,
+            build_request,
+        )
+E       ModuleNotFoundError: No module named 'ontolearn_engine.semantic_execution'
+
+packages/engine/src/ontolearn_engine/job_store.py:790: ModuleNotFoundError
+_ test_existing_claim_compares_every_complete_caller_binding_even_after_eviction[parameters] _
+
+store = <ontolearn_engine.job_store.JobStore object at 0x10ad360f0>
+changed = 'parameters'
+
+    @pytest.mark.parametrize(
+        "changed", ["capability", "definition", "parameters", "derived", "implementation", "limits"]
+    )
+    def test_existing_claim_compares_every_complete_caller_binding_even_after_eviction(store, changed):
+        s = store
+>       source = stored_derived_fixture(s)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_job_store.py:1316: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_job_store.py:1287: in stored_derived_fixture
+    job = create(s, "reasoning.execute")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/tests/test_job_store.py:78: in create
+    return s.create_job(project, operation or uid(), capability, input_, confirm, IMPL, LIMITS)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/job_store.py:380: in create_job
+    semantic_request = self.prepare_semantic_request(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <ontolearn_engine.job_store.JobStore object at 0x10ad360f0>
+project = 'dcd3ea1f-6b82-4b6c-b1e3-402393d2e180'
+capability = 'reasoning.execute'
+input_ = {'inputSnapshotId': '159a1c4a4beb0dc1ebaff71ebd8149c8b81ea3bdbf0f430ce99e5f5ed7b7b35b', 'scope': 'asserted', 'definitionId': 'probe', 'parametersHash': '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a', ...}
+parameters = {}
+snap = {'dependencyVector': {}, 'project': 'legacy-project', 'projectRevision': 0, 'state': {'definitions': [], 'facts': [], 'mappingState': {}}}
+implementation = {'engineVersion': '0.1.0', 'executionSemanticsVersion': 'test-v1', 'dependencyLockHash': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
+
+    def prepare_semantic_request(
+        self, project, capability, input_, parameters, snap, implementation
+    ):
+        """Resolve actual immutable sources in the acceptance transaction, before a worker exists."""
+>       from ontolearn_engine.semantic_execution import (
+            SemanticExecutionFault,
+            build_request,
+        )
+E       ModuleNotFoundError: No module named 'ontolearn_engine.semantic_execution'
+
+packages/engine/src/ontolearn_engine/job_store.py:790: ModuleNotFoundError
+_ test_existing_claim_compares_every_complete_caller_binding_even_after_eviction[derived] _
+
+store = <ontolearn_engine.job_store.JobStore object at 0x10ad34e90>
+changed = 'derived'
+
+    @pytest.mark.parametrize(
+        "changed", ["capability", "definition", "parameters", "derived", "implementation", "limits"]
+    )
+    def test_existing_claim_compares_every_complete_caller_binding_even_after_eviction(store, changed):
+        s = store
+>       source = stored_derived_fixture(s)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_job_store.py:1316: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_job_store.py:1287: in stored_derived_fixture
+    job = create(s, "reasoning.execute")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/tests/test_job_store.py:78: in create
+    return s.create_job(project, operation or uid(), capability, input_, confirm, IMPL, LIMITS)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/job_store.py:380: in create_job
+    semantic_request = self.prepare_semantic_request(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <ontolearn_engine.job_store.JobStore object at 0x10ad34e90>
+project = '4e506e93-f788-4a1f-b0c0-36420f1aa806'
+capability = 'reasoning.execute'
+input_ = {'inputSnapshotId': '159a1c4a4beb0dc1ebaff71ebd8149c8b81ea3bdbf0f430ce99e5f5ed7b7b35b', 'scope': 'asserted', 'definitionId': 'probe', 'parametersHash': '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a', ...}
+parameters = {}
+snap = {'dependencyVector': {}, 'project': 'legacy-project', 'projectRevision': 0, 'state': {'definitions': [], 'facts': [], 'mappingState': {}}}
+implementation = {'engineVersion': '0.1.0', 'executionSemanticsVersion': 'test-v1', 'dependencyLockHash': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
+
+    def prepare_semantic_request(
+        self, project, capability, input_, parameters, snap, implementation
+    ):
+        """Resolve actual immutable sources in the acceptance transaction, before a worker exists."""
+>       from ontolearn_engine.semantic_execution import (
+            SemanticExecutionFault,
+            build_request,
+        )
+E       ModuleNotFoundError: No module named 'ontolearn_engine.semantic_execution'
+
+packages/engine/src/ontolearn_engine/job_store.py:790: ModuleNotFoundError
+_ test_existing_claim_compares_every_complete_caller_binding_even_after_eviction[implementation] _
+
+store = <ontolearn_engine.job_store.JobStore object at 0x10aef7e00>
+changed = 'implementation'
+
+    @pytest.mark.parametrize(
+        "changed", ["capability", "definition", "parameters", "derived", "implementation", "limits"]
+    )
+    def test_existing_claim_compares_every_complete_caller_binding_even_after_eviction(store, changed):
+        s = store
+>       source = stored_derived_fixture(s)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_job_store.py:1316: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_job_store.py:1287: in stored_derived_fixture
+    job = create(s, "reasoning.execute")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/tests/test_job_store.py:78: in create
+    return s.create_job(project, operation or uid(), capability, input_, confirm, IMPL, LIMITS)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/job_store.py:380: in create_job
+    semantic_request = self.prepare_semantic_request(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <ontolearn_engine.job_store.JobStore object at 0x10aef7e00>
+project = '072ab232-58a7-4708-8bbb-8b14ac62b25a'
+capability = 'reasoning.execute'
+input_ = {'inputSnapshotId': '159a1c4a4beb0dc1ebaff71ebd8149c8b81ea3bdbf0f430ce99e5f5ed7b7b35b', 'scope': 'asserted', 'definitionId': 'probe', 'parametersHash': '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a', ...}
+parameters = {}
+snap = {'dependencyVector': {}, 'project': 'legacy-project', 'projectRevision': 0, 'state': {'definitions': [], 'facts': [], 'mappingState': {}}}
+implementation = {'engineVersion': '0.1.0', 'executionSemanticsVersion': 'test-v1', 'dependencyLockHash': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
+
+    def prepare_semantic_request(
+        self, project, capability, input_, parameters, snap, implementation
+    ):
+        """Resolve actual immutable sources in the acceptance transaction, before a worker exists."""
+>       from ontolearn_engine.semantic_execution import (
+            SemanticExecutionFault,
+            build_request,
+        )
+E       ModuleNotFoundError: No module named 'ontolearn_engine.semantic_execution'
+
+packages/engine/src/ontolearn_engine/job_store.py:790: ModuleNotFoundError
+_ test_existing_claim_compares_every_complete_caller_binding_even_after_eviction[limits] _
+
+store = <ontolearn_engine.job_store.JobStore object at 0x10aef6b70>
+changed = 'limits'
+
+    @pytest.mark.parametrize(
+        "changed", ["capability", "definition", "parameters", "derived", "implementation", "limits"]
+    )
+    def test_existing_claim_compares_every_complete_caller_binding_even_after_eviction(store, changed):
+        s = store
+>       source = stored_derived_fixture(s)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_job_store.py:1316: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_job_store.py:1287: in stored_derived_fixture
+    job = create(s, "reasoning.execute")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/tests/test_job_store.py:78: in create
+    return s.create_job(project, operation or uid(), capability, input_, confirm, IMPL, LIMITS)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/job_store.py:380: in create_job
+    semantic_request = self.prepare_semantic_request(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <ontolearn_engine.job_store.JobStore object at 0x10aef6b70>
+project = 'b6079475-5f9d-4da9-b19c-8fb51e898c52'
+capability = 'reasoning.execute'
+input_ = {'inputSnapshotId': '159a1c4a4beb0dc1ebaff71ebd8149c8b81ea3bdbf0f430ce99e5f5ed7b7b35b', 'scope': 'asserted', 'definitionId': 'probe', 'parametersHash': '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a', ...}
+parameters = {}
+snap = {'dependencyVector': {}, 'project': 'legacy-project', 'projectRevision': 0, 'state': {'definitions': [], 'facts': [], 'mappingState': {}}}
+implementation = {'engineVersion': '0.1.0', 'executionSemanticsVersion': 'test-v1', 'dependencyLockHash': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
+
+    def prepare_semantic_request(
+        self, project, capability, input_, parameters, snap, implementation
+    ):
+        """Resolve actual immutable sources in the acceptance transaction, before a worker exists."""
+>       from ontolearn_engine.semantic_execution import (
+            SemanticExecutionFault,
+            build_request,
+        )
+E       ModuleNotFoundError: No module named 'ontolearn_engine.semantic_execution'
+
+packages/engine/src/ontolearn_engine/job_store.py:790: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_job_store.py::test_existing_full_acceptance_is_idempotent_after_derived_source_payload_is_evicted
+FAILED packages/engine/tests/test_job_store.py::test_existing_claim_compares_every_complete_caller_binding_even_after_eviction[capability]
+FAILED packages/engine/tests/test_job_store.py::test_existing_claim_compares_every_complete_caller_binding_even_after_eviction[definition]
+FAILED packages/engine/tests/test_job_store.py::test_existing_claim_compares_every_complete_caller_binding_even_after_eviction[parameters]
+FAILED packages/engine/tests/test_job_store.py::test_existing_claim_compares_every_complete_caller_binding_even_after_eviction[derived]
+FAILED packages/engine/tests/test_job_store.py::test_existing_claim_compares_every_complete_caller_binding_even_after_eviction[implementation]
+FAILED packages/engine/tests/test_job_store.py::test_existing_claim_compares_every_complete_caller_binding_even_after_eviction[limits]
+7 failed, 190 passed in 5.57s

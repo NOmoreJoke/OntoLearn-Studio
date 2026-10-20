@@ -1,0 +1,175 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation
+
+
+ Test Files  16 passed (16)
+      Tests  672 passed (672)
+   Start at  06:10:42
+   Duration  6.63s (tests 81%, transform 12%, import 7%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  345.98 kB
+
+✓ built in 27ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  278.87 kB
+
+✓ built in 17ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-BHeZ7xlA.js   879.15 kB
+
+✓ built in 59ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+195 files already formatted
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation
+configfile: pyproject.toml
+testpaths: packages/engine/tests
+collected 1479 items
+
+packages/engine/tests/test_binding_regressions.py ...................... [  1%]
+...................                                                      [  2%]
+packages/engine/tests/test_contract_v2.py .............................. [  4%]
+........................................................................ [  9%]
+........................................................................ [ 14%]
+........................................................................ [ 19%]
+........................................................................ [ 24%]
+........................................................................ [ 29%]
+................................................                         [ 32%]
+packages/engine/tests/test_coordinator_control.py ...................    [ 33%]
+packages/engine/tests/test_frame_corpus.py .F........................... [ 35%]
+........................                                                 [ 37%]
+packages/engine/tests/test_handshake_deadline.py ...                     [ 37%]
+packages/engine/tests/test_i04_lifecycle_boundaries.py .............     [ 38%]
+packages/engine/tests/test_i04_progress.py ......                        [ 38%]
+packages/engine/tests/test_i04_round_faults.py ......................... [ 40%]
+.................................                                        [ 42%]
+packages/engine/tests/test_job_store.py ................................ [ 44%]
+........................................................................ [ 49%]
+.............................................................            [ 53%]
+packages/engine/tests/test_memory_guard_exit.py ........                 [ 54%]
+packages/engine/tests/test_protocol.py .............                     [ 55%]
+packages/engine/tests/test_resident_runtime.py .............             [ 56%]
+packages/engine/tests/test_runtime_bounds.py .                           [ 56%]
+packages/engine/tests/test_semantic.py ................................. [ 58%]
+........................................................                 [ 62%]
+packages/engine/tests/test_semantic_error_adapter.py ................... [ 63%]
+........................................................................ [ 68%]
+........................................................................ [ 73%]
+.............................................                            [ 76%]
+packages/engine/tests/test_semantic_error_reasons.py ................... [ 77%]
+                                                                         [ 77%]
+packages/engine/tests/test_semantic_execution.py ....................... [ 79%]
+....                                                                     [ 79%]
+packages/engine/tests/test_semantic_fresh_probe.py ..                    [ 79%]
+packages/engine/tests/test_semantic_runtime.py ...............           [ 80%]
+packages/engine/tests/test_semantic_scopes.py ..............             [ 81%]
+packages/engine/tests/test_semantic_selected_projection.py ............. [ 82%]
+...................................                                      [ 84%]
+packages/engine/tests/test_session_page_limits.py ...                    [ 84%]
+packages/engine/tests/test_stdio_session_shutdown.py .....               [ 85%]
+packages/engine/tests/test_storage.py .................................. [ 87%]
+........................................................................ [ 92%]
+........................................................................ [ 97%]
+.........                                                                [ 97%]
+packages/engine/tests/test_worker_owner_bootstrap.py ................... [ 99%]
+...........                                                              [ 99%]
+packages/engine/tests/test_worker_parent.py .                            [100%]
+
+=================================== FAILURES ===================================
+______ test_common_examples_use_utf8_when_default_file_encoding_is_cp1252 ______
+
+cp1252_contract_default = None
+capsys = <_pytest.capture.CaptureFixture object at 0x10a90c980>
+
+    def test_common_examples_use_utf8_when_default_file_encoding_is_cp1252(
+        cp1252_contract_default, capsys
+    ):
+        contract_probe.main()
+        captured = capsys.readouterr()
+        assert captured.err == ""
+>       assert json.loads(captured.out) == {
+            "status": "passed",
+            "counts": {
+                "cases": 321,
+                "routing": 11,
+                "responses": 30,
+                "cursors": 9,
+                "jobListCursors": 7,
+                "trustedBindings": 41,
+                "rawFrames": 51,
+            },
+        }
+E       AssertionError: assert {'status': 'p...ors': 9, ...}} == {'status': 'p...ors': 9, ...}}
+E         
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'counts': {'cases': 326, 'routing': 11, 'responses': 30, 'cursors': 9, ...}} != {'counts': {'cases': 321, 'routing': 11, 'responses': 30, 'cursors': 9, ...}}
+E         Use -v to get more diff
+
+packages/engine/tests/test_frame_corpus.py:52: AssertionError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_frame_corpus.py::test_common_examples_use_utf8_when_default_file_encoding_is_cp1252
+======================= 1 failed, 1478 passed in 42.11s ========================

@@ -1,0 +1,75 @@
+
+Running 2 tests using 1 worker
+
+  ✘  1 tests/e2e/i05-semantics.spec.ts:107:5 › I05 real named semantic operations, complete source pages, reload and explicit cancellation (1.5m)
+  ✘  2 tests/e2e/i05-semantics.spec.ts:340:5 › I05 native renderer crash and real unresponsive dialog retain immutable semantic outputs (3.6s)
+
+
+  1) tests/e2e/i05-semantics.spec.ts:107:5 › I05 real named semantic operations, complete source pages, reload and explicit cancellation 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "cancelled"
+    Received: "cancelling"
+
+    Call Log:
+    - Test timeout of 90000ms exceeded
+
+       99 |       { timeout: 12000 },
+      100 |     )
+    > 101 |     .toBe(state)
+          |      ^
+      102 |   const response = await page.evaluate((identity) => window.ontolearn!.getJob(identity), jobId)
+      103 |   if (!response.ok) throw new Error('durable job unavailable')
+      104 |   return response.data
+        at waitJob (/i05/tests/e2e/i05-semantics.spec.ts:101:6)
+        at /i05/tests/e2e/i05-semantics.spec.ts:242:29
+
+    attachment #1: i05-fixture-metadata (application/json) ─────────────────────────────────────────
+    test-results/i05-source-second/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/attachments/i05-fixture-metadata-1d4cb73ac894ad3570f1d5c11430cb30b7f56bfd.json
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/i05-source-second/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/i05-source-second/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/i05-source-second/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/i05-semantics.spec.ts:340:5 › I05 native renderer crash and real unresponsive dialog retain immutable semantic outputs 
+
+    Error: native exit null: Failed to move to new namespace: PID namespaces supported, Network namespace supported, but failed: errno = Operation not permitted
+    [241:1020/222545.406154:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+    [243:0100/000000.417112:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)
+
+
+
+      363 |     child.on('error', reject)
+      364 |     child.on('close', (code) =>
+    > 365 |       code === 0 ? done() : reject(new Error(`native exit ${code}: ${stderr}\n${stdout}`)),
+          |                                    ^
+      366 |     )
+      367 |   })
+      368 |   void finished.catch(() => {})
+        at ChildProcess.<anonymous> (/i05/tests/e2e/i05-semantics.spec.ts:365:36)
+
+    attachment #1: i05-fixture-metadata (application/json) ─────────────────────────────────────────
+    test-results/i05-source-second/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-fixture-metadata-03453260f1856a5d5ccbf56ba39cca6eced32e48.json
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/i05-source-second/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/i05-source-second/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/i05-source-second/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/e2e/i05-semantics.spec.ts:107:5 › I05 real named semantic operations, complete source pages, reload and explicit cancellation 
+    tests/e2e/i05-semantics.spec.ts:340:5 › I05 native renderer crash and real unresponsive dialog retain immutable semantic outputs 

@@ -1,0 +1,246 @@
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  345.98 kB
+
+✓ built in 144ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  278.87 kB
+
+✓ built in 60ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-BHeZ7xlA.js   879.15 kB
+
+✓ built in 100ms
+
+Running 2 tests using 1 worker
+
+  ✓  1 tests/e2e/i05-semantics.spec.ts:107:5 › I05 real named semantic operations, complete source pages, reload and explicit cancellation (4.1s)
+  ✓  2 tests/e2e/i05-semantics.spec.ts:340:5 › I05 native renderer crash and real unresponsive dialog retain immutable semantic outputs (19.5s)
+
+  2 passed (23.9s)
+
+> ontolearn-studio@0.1.0 package:dir
+> npm run build && npm run engine:build && npm run package:dir --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  345.98 kB
+
+✓ built in 60ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  278.87 kB
+
+✓ built in 49ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-BHeZ7xlA.js   879.15 kB
+
+✓ built in 101ms
+
+> ontolearn-studio@0.1.0 engine:build
+> node scripts/build-engine.mjs
+
+   Building ontolearn-engine @ file:///i05/packages/engine
+      Built ontolearn-engine @ file:///i05/packages/engine
+Uninstalled 1 package in 0.50ms
+Installed 1 package in 0.56ms
+{"packages": 22, "runtime": ["html5rdf", "ontolearn-engine", "owlrl", "packaging", "prettytable", "pyparsing", "pyshacl", "rdflib", "wcwidth"], "licenseFiles": 35}
+65 INFO: PyInstaller: 6.22.3, contrib hooks: 2026.8
+65 INFO: Python: 3.12.15
+66 INFO: Platform: Linux-7.0.14-linuxkit-aarch64-with-glibc2.36
+66 INFO: Python environment: /i05/.venv
+66 INFO: wrote build/ontolearn-engine.spec
+67 INFO: Removing temporary files and cleaning cache in /i05/build/pyinstaller-cache/pyinstaller
+681 INFO: Module search paths (PYTHONPATH):
+['/i05-home/.local/share/uv/python/cpython-3.12.15-linux-aarch64-gnu/lib/python312.zip',
+ '/i05-home/.local/share/uv/python/cpython-3.12.15-linux-aarch64-gnu/lib/python3.12',
+ '/i05-home/.local/share/uv/python/cpython-3.12-linux-aarch64-gnu/lib/python3.12/lib-dynload',
+ '/i05/.venv/lib/python3.12/site-packages',
+ '/i05/packages/engine/src',
+ '/i05/packages/engine']
+755 INFO: Appending 'datas' from .spec
+759 INFO: checking Analysis
+759 INFO: Building Analysis because Analysis-00.toc is non existent
+759 INFO: Looking for Python shared library...
+763 INFO: Using Python shared library: /i05-home/.local/share/uv/python/cpython-3.12.15-linux-aarch64-gnu/lib/libpython3.12.so.1.0
+763 INFO: Running Analysis Analysis-00.toc
+763 INFO: Target bytecode optimization level: 0
+763 INFO: Initializing module dependency graph...
+763 INFO: Initializing module graph hook caches...
+767 INFO: Analyzing modules for base_library.zip ...
+1105 INFO: Processing standard module hook 'hook-encodings.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+1294 INFO: Processing standard module hook 'hook-math.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+1741 INFO: Processing standard module hook 'hook-pickle.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2067 INFO: Processing standard module hook 'hook-heapq.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2214 INFO: Caching module dependency graph...
+2228 INFO: Analyzing /i05/packages/engine/entrypoint.py
+2257 INFO: Processing standard module hook 'hook-platform.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2258 INFO: Processing standard module hook 'hook-rdflib.py' from '/i05/.venv/lib/python3.12/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+2614 INFO: Processing standard module hook 'hook-xml.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2616 INFO: Processing standard module hook 'hook-xml.dom.domreg.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2812 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3012 INFO: Processing standard module hook 'hook-difflib.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3078 INFO: Processing standard module hook 'hook-multiprocessing.util.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3181 INFO: Processing standard module hook 'hook-_ctypes.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3472 INFO: Processing pre-safe-import-module hook 'hook-typing_extensions.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3474 INFO: SetuptoolsInfo: initializing cached setuptools info...
+3799 INFO: Processing pre-safe-import-module hook 'hook-packaging.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3839 INFO: Processing pre-safe-import-module hook 'hook-importlib_metadata.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3840 INFO: Setuptools: 'importlib_metadata' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.importlib_metadata'!
+3846 INFO: Processing standard module hook 'hook-setuptools.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3850 INFO: Processing pre-safe-import-module hook 'hook-distutils.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3866 INFO: Processing standard module hook 'hook-sysconfig.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3867 INFO: Processing pre-safe-import-module hook 'hook-jaraco.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3868 INFO: Setuptools: 'jaraco' appears to be a full setuptools-vendored copy - creating alias to 'setuptools._vendor.jaraco'!
+3871 INFO: Processing pre-safe-import-module hook 'hook-more_itertools.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3872 INFO: Setuptools: 'more_itertools' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.more_itertools'!
+3930 INFO: Processing standard module hook 'hook-_osx_support.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+4017 INFO: Processing standard module hook 'hook-setuptools._vendor.jaraco.text.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+4018 INFO: Processing pre-safe-import-module hook 'hook-importlib_resources.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+4021 INFO: Processing pre-safe-import-module hook 'hook-backports.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+4021 INFO: Setuptools: 'backports' appears to be a full setuptools-vendored copy - creating alias to 'setuptools._vendor.backports'!
+4211 INFO: Processing pre-safe-import-module hook 'hook-tomli.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+4211 INFO: Setuptools: 'tomli' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.tomli'!
+4419 INFO: Processing pre-safe-import-module hook 'hook-wheel.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+4419 INFO: Setuptools: 'wheel' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.wheel'!
+4438 INFO: Processing standard module hook 'hook-setuptools._vendor.importlib_metadata.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+4456 INFO: Processing pre-safe-import-module hook 'hook-zipp.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+4456 INFO: Setuptools: 'zipp' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.zipp'!
+4727 INFO: Processing standard module hook 'hook-sqlite3.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+4866 INFO: Analyzing hidden import 'rdflib.compare'
+4875 INFO: Analyzing hidden import 'rdflib.contrib'
+4875 INFO: Analyzing hidden import 'rdflib.contrib.graphdb'
+4938 INFO: Analyzing hidden import 'rdflib.extras'
+4939 INFO: Analyzing hidden import 'rdflib.extras.cmdlineutils'
+4940 INFO: Analyzing hidden import 'rdflib.extras.describer'
+4942 INFO: Analyzing hidden import 'rdflib.extras.external_graph_libs'
+4944 INFO: Analyzing hidden import 'rdflib.extras.infixowl'
+4968 INFO: Analyzing hidden import 'rdflib.extras.shacl'
+4970 INFO: Analyzing hidden import 'rdflib.plugins.parsers.RDFVOC'
+4970 INFO: Analyzing hidden import 'rdflib.plugins.parsers.hext'
+4972 INFO: Analyzing hidden import 'rdflib.plugins.parsers.jsonld'
+4999 INFO: Analyzing hidden import 'rdflib.plugins.parsers.nquads'
+5004 INFO: Analyzing hidden import 'rdflib.plugins.parsers.patch'
+5007 INFO: Analyzing hidden import 'rdflib.plugins.parsers.rdfxml'
+5014 INFO: Analyzing hidden import 'rdflib.plugins.parsers.trig'
+5016 INFO: Analyzing hidden import 'rdflib.plugins.parsers.trix'
+5019 INFO: Analyzing hidden import 'rdflib.plugins.serializers'
+5019 INFO: Analyzing hidden import 'rdflib.plugins.serializers.hext'
+5022 INFO: Analyzing hidden import 'rdflib.plugins.serializers.jsonld'
+5029 INFO: Analyzing hidden import 'rdflib.plugins.serializers.longturtle'
+5042 INFO: Analyzing hidden import 'rdflib.plugins.serializers.n3'
+5045 INFO: Analyzing hidden import 'rdflib.plugins.serializers.nquads'
+5048 INFO: Analyzing hidden import 'rdflib.plugins.serializers.patch'
+5050 INFO: Analyzing hidden import 'rdflib.plugins.serializers.rdfxml'
+5056 INFO: Analyzing hidden import 'rdflib.plugins.serializers.trig'
+5058 INFO: Analyzing hidden import 'rdflib.plugins.serializers.trix'
+5059 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results'
+5059 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.csvresults'
+5061 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.graph'
+5061 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.jsonresults'
+5064 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.rdfresults'
+5065 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.tsvresults'
+5066 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.txtresults'
+5067 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.xmlresults'
+5070 INFO: Analyzing hidden import 'rdflib.plugins.stores.auditable'
+5073 INFO: Analyzing hidden import 'rdflib.plugins.stores.concurrent'
+5074 INFO: Analyzing hidden import 'rdflib.plugins.stores.rdf4j'
+5076 INFO: Analyzing hidden import 'rdflib.tools'
+5077 INFO: Analyzing hidden import 'rdflib.tools.chunk_serializer'
+5078 INFO: Analyzing hidden import 'rdflib.tools.csv2rdf'
+5087 INFO: Analyzing hidden import 'rdflib.tools.defined_namespace_creator'
+5089 INFO: Analyzing hidden import 'rdflib.tools.graphisomorphism'
+5103 INFO: Analyzing hidden import 'rdflib.tools.rdf2dot'
+5105 INFO: Analyzing hidden import 'rdflib.tools.rdfpipe'
+5107 INFO: Analyzing hidden import 'rdflib.tools.rdfs2dot'
+5108 INFO: Analyzing hidden import 'rdflib.tools.sparqlquery'
+5112 INFO: Analyzing hidden import 'rdflib.void'
+5113 INFO: Analyzing hidden import 'pyshacl.__main__'
+5118 INFO: Processing standard module hook 'hook-prettytable.py' from '/i05/.venv/lib/python3.12/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+5152 INFO: Processing standard module hook 'hook-wcwidth.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+5264 INFO: Analyzing hidden import 'html5rdf.contrib.webencodings.mklabels'
+5265 INFO: Analyzing hidden import 'html5rdf.contrib.webencodings.tests'
+5267 INFO: Analyzing hidden import 'html5rdf.filters.lint'
+5269 INFO: Analyzing hidden import 'html5rdf.treeadapters'
+5271 INFO: Processing module hooks (post-graph stage)...
+5377 INFO: Processing standard module hook 'hook-webbrowser.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+5398 INFO: Performing binary vs. data reclassification (406 entries)
+5402 INFO: Looking for ctypes DLLs
+5409 INFO: Analyzing run-time hooks ...
+5411 INFO: Including run-time hook 'pyi_rth_inspect.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/rthooks'
+5412 INFO: Including run-time hook 'pyi_rth_setuptools.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/rthooks'
+5412 INFO: Including run-time hook 'pyi_rth_pkgutil.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/rthooks'
+5413 INFO: Including run-time hook 'pyi_rth_multiprocessing.py' from '/i05/.venv/lib/python3.12/site-packages/PyInstaller/hooks/rthooks'
+5422 INFO: Creating base_library.zip...
+5429 INFO: Looking for dynamic libraries
+5440 INFO: Warnings written to /i05/build/pyinstaller/ontolearn-engine/warn-ontolearn-engine.txt
+5454 INFO: Graph cross-reference written to /i05/build/pyinstaller/ontolearn-engine/xref-ontolearn-engine.html
+5466 INFO: checking PYZ
+5466 INFO: Building PYZ because PYZ-00.toc is non existent
+5466 INFO: Building PYZ (ZlibArchive) /i05/build/pyinstaller/ontolearn-engine/PYZ-00.pyz
+5795 INFO: Building PYZ (ZlibArchive) /i05/build/pyinstaller/ontolearn-engine/PYZ-00.pyz completed successfully.
+5802 INFO: checking PKG
+5802 INFO: Building PKG because PKG-00.toc is non existent
+5802 INFO: Building PKG (CArchive) ontolearn-engine.pkg
+5809 INFO: Building PKG (CArchive) ontolearn-engine.pkg completed successfully.
+5809 INFO: Bootloader /i05/.venv/lib/python3.12/site-packages/PyInstaller/bootloader/Linux-64bit-arm/run
+5809 INFO: checking EXE
+5809 INFO: Building EXE because EXE-00.toc is non existent
+5809 INFO: Building EXE from EXE-00.toc
+5809 INFO: Copying bootloader EXE to /i05/build/pyinstaller/ontolearn-engine/ontolearn-engine
+5809 INFO: Appending PKG archive to custom ELF section in EXE
+5815 INFO: Building EXE from EXE-00.toc completed successfully.
+5816 INFO: checking COLLECT
+5816 INFO: Building COLLECT because COLLECT-00.toc is non existent
+5817 INFO: Building COLLECT COLLECT-00.toc
+5874 INFO: Building COLLECT COLLECT-00.toc completed successfully.
+5875 INFO: Build complete! The results are available in: /i05/build/engine
+
+> @ontolearn/desktop@0.1.0 package:dir
+> electron-builder --dir --publish never
+
+  • electron-builder  version=26.15.3 os=7.0.14-linuxkit
+  • loaded configuration  file=/i05/apps/desktop/electron-builder.yml
+  • packageManager not detected by file, falling back to environment detection  resolvedPackageManager=npm detected=/i05/apps/desktop
+  • detected workspace root for project using packageManager field  pm=npm config=npm@11.12.1 resolved=/i05 projectDir=/i05/apps/desktop
+  • skipped dependencies rebuild  reason=npmRebuild is set to false
+  • packaging       platform=linux arch=arm64 electron=44.9.0 appOutDir=/i05/release/linux-arm64-unpacked
+  • downloaded      label=electron progress=100%
+  • downloaded electron zip extracted successfully  output=/i05/release/linux-arm64-unpacked
+  • searching for node modules  pm=npm searchDir=/i05/apps/desktop
+{"status": "passed", "executableSha256": "f11e22844266a3d1bf40923191456a5d1316e82a427a7a7d61b683d1baf18ee2", "suiteFullOutputParity": true, "realStdioExit": 0, "nativeLicenseProvenanceMatched": true, "nativeLicenseScope": "matched exact Linux aarch64 CPython 3.12.15 BUILD 20261013 runtime", "limits": "Actual bundled CLI/stdio; no Electron, signing, clean-device or target-platform claim. Unmatched native runtime remains pending."}

@@ -1,0 +1,1979 @@
+{
+  "first": {
+    "generation": 3,
+    "project": {
+      "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+      "projectRevision": 1,
+      "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+      "dependencyVector": {
+        "constraint:V01": 1,
+        "facts:asserted": 1,
+        "ontology:G-base": 1,
+        "query:Q01": 1,
+        "query:forbidden-service": 1,
+        "query:slow-count": 1,
+        "rule:R-risk": 1
+      },
+      "formatVersion": 2
+    },
+    "jobs": [
+      {
+        "capability": "reasoning.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536242434,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536242576,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "all",
+          "derivedResultIds": [],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "bff4ba2b-6146-43d1-8286-4bc9f79543ca",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "b6c70f68-34f9-437f-b6ed-11196c9a12e2",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+        },
+        "scope": "asserted",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536242576
+      },
+      {
+        "capability": "query.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536242610,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "query:Q01": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536242764,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "Q01",
+          "derivedResultIds": [
+            "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+          ],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted+derived"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "27deea43-d3cb-4af5-abd4-4c93829eb5ca",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "a9905567-f12e-4033-a1a8-51d42d643c65",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "22b79efe-dc22-4352-8c65-5f5ae1e16e2d"
+        },
+        "scope": "asserted+derived",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536242764
+      },
+      {
+        "capability": "validation.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536242794,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "constraint:V01": 1,
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536242938,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "V01",
+          "derivedResultIds": [
+            "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+          ],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted+derived"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "39432a52-eb00-4d5d-8dfb-58ef7493f21c",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "d9bbcaad-aef2-4d46-ae24-d3638ce61e07",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "cc201797-4529-4a8b-9e91-742a300927c3"
+        },
+        "scope": "asserted+derived",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536242938
+      },
+      {
+        "capability": "query.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536243212,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "query:slow-count": 1
+        },
+        "error": null,
+        "finishedAtMs": null,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "slow-count",
+          "derivedResultIds": [],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "a405f367-a064-47d7-8949-422cb72f6e38",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "1cbc3855-894c-4bf7-a478-33d91358fef1",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": null,
+        "scope": "asserted",
+        "state": "running",
+        "stateVersion": 2,
+        "updatedAtMs": 1792536243219
+      },
+      {
+        "capability": "query.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536243233,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "query:forbidden-service": 1
+        },
+        "error": {
+          "code": "NETWORK_FORBIDDEN",
+          "messageKey": "semantics.networkForbidden",
+          "params": {},
+          "retryable": false
+        },
+        "finishedAtMs": 1792536243363,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "forbidden-service",
+          "derivedResultIds": [],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "6d51de82-8a51-43ac-9502-31f528a79211",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "0c9bc196-5d2e-4e3e-aaf3-a649120ef253",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": null,
+        "scope": "asserted",
+        "state": "failed",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536243363
+      }
+    ]
+  },
+  "restored": {
+    "generation": 4,
+    "project": {
+      "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+      "projectRevision": 1,
+      "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+      "dependencyVector": {
+        "constraint:V01": 1,
+        "facts:asserted": 1,
+        "ontology:G-base": 1,
+        "query:Q01": 1,
+        "query:forbidden-service": 1,
+        "query:slow-count": 1,
+        "rule:R-risk": 1
+      },
+      "formatVersion": 2
+    },
+    "jobs": [
+      {
+        "capability": "reasoning.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536242434,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536242576,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "all",
+          "derivedResultIds": [],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "bff4ba2b-6146-43d1-8286-4bc9f79543ca",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "b6c70f68-34f9-437f-b6ed-11196c9a12e2",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+        },
+        "scope": "asserted",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536242576
+      },
+      {
+        "capability": "query.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536242610,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "query:Q01": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536242764,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "Q01",
+          "derivedResultIds": [
+            "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+          ],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted+derived"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "27deea43-d3cb-4af5-abd4-4c93829eb5ca",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "a9905567-f12e-4033-a1a8-51d42d643c65",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "22b79efe-dc22-4352-8c65-5f5ae1e16e2d"
+        },
+        "scope": "asserted+derived",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536242764
+      },
+      {
+        "capability": "validation.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536242794,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "constraint:V01": 1,
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536242938,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "V01",
+          "derivedResultIds": [
+            "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+          ],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted+derived"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "39432a52-eb00-4d5d-8dfb-58ef7493f21c",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "d9bbcaad-aef2-4d46-ae24-d3638ce61e07",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "cc201797-4529-4a8b-9e91-742a300927c3"
+        },
+        "scope": "asserted+derived",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536242938
+      },
+      {
+        "capability": "query.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536243212,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "query:slow-count": 1
+        },
+        "error": null,
+        "finishedAtMs": null,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "slow-count",
+          "derivedResultIds": [],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "a405f367-a064-47d7-8949-422cb72f6e38",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "1cbc3855-894c-4bf7-a478-33d91358fef1",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": null,
+        "scope": "asserted",
+        "state": "running",
+        "stateVersion": 2,
+        "updatedAtMs": 1792536243219
+      },
+      {
+        "capability": "query.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536243233,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "query:forbidden-service": 1
+        },
+        "error": {
+          "code": "NETWORK_FORBIDDEN",
+          "messageKey": "semantics.networkForbidden",
+          "params": {},
+          "retryable": false
+        },
+        "finishedAtMs": 1792536243363,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "forbidden-service",
+          "derivedResultIds": [],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "6d51de82-8a51-43ac-9502-31f528a79211",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "0c9bc196-5d2e-4e3e-aaf3-a649120ef253",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": null,
+        "scope": "asserted",
+        "state": "failed",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536243363
+      }
+    ]
+  },
+  "baseline": [
+    {
+      "jobId": "bff4ba2b-6146-43d1-8286-4bc9f79543ca",
+      "rowsSha256": "183f543dbc4464eeb6d506bb648b7b54dfe147595abe553a8b45c1a2bef44ea4"
+    },
+    {
+      "jobId": "27deea43-d3cb-4af5-abd4-4c93829eb5ca",
+      "rowsSha256": "40b408310511a84a66b335ddbdf9e0433a7a049db11bec87661060ceadb7f5dd"
+    },
+    {
+      "jobId": "39432a52-eb00-4d5d-8dfb-58ef7493f21c",
+      "rowsSha256": "6e0103da1bccbb8ece1fe59f77b88fdd371cab388cc92beb5b52397514cf04cc"
+    }
+  ],
+  "created": [
+    {
+      "capability": "query.execute",
+      "commitProgress": {
+        "mode": "none"
+      },
+      "confirmationRef": null,
+      "createdAtMs": 1792536244634,
+      "definitionSetDigests": {
+        "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+        "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+      },
+      "dependencyVector": {
+        "facts:asserted": 1,
+        "ontology:G-base": 1,
+        "query:Q01": 1,
+        "rule:R-risk": 1
+      },
+      "error": null,
+      "finishedAtMs": 1792536244788,
+      "implementation": {
+        "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+        "engineVersion": "0.1.0",
+        "executionSemanticsVersion": "i05-finite-3"
+      },
+      "input": {
+        "definitionId": "Q01",
+        "derivedResultIds": [
+          "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+        ],
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "preparedPlanRef": null,
+        "scope": "asserted+derived"
+      },
+      "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+      "jobId": "1466b086-163c-4e06-9e7b-d19c24587f9c",
+      "limits": {
+        "cancelGraceMs": 5000,
+        "handshakeMs": 5000,
+        "heartbeatMs": 10000,
+        "maxConcurrentJobs": 2,
+        "maxFrameBytes": 262144,
+        "maxPageBytes": 131072,
+        "maxPageItems": 200,
+        "maxQueuedJobs": 32,
+        "maxWorkerMemoryBytes": 536870912,
+        "requestMs": 5000,
+        "startupMs": 10000,
+        "totalMs": 120000
+      },
+      "operationId": "45451de5-bb44-4917-be96-afcd75c53ffb",
+      "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+      "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+      "resultRef": {
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "resultId": "cb711268-bbb2-453c-9212-63a71aa3db74"
+      },
+      "scope": "asserted+derived",
+      "state": "succeeded",
+      "stateVersion": 3,
+      "updatedAtMs": 1792536244788
+    },
+    {
+      "capability": "validation.execute",
+      "commitProgress": {
+        "mode": "none"
+      },
+      "confirmationRef": null,
+      "createdAtMs": 1792536244956,
+      "definitionSetDigests": {
+        "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+        "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+      },
+      "dependencyVector": {
+        "constraint:V01": 1,
+        "facts:asserted": 1,
+        "ontology:G-base": 1,
+        "rule:R-risk": 1
+      },
+      "error": null,
+      "finishedAtMs": 1792536245101,
+      "implementation": {
+        "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+        "engineVersion": "0.1.0",
+        "executionSemanticsVersion": "i05-finite-3"
+      },
+      "input": {
+        "definitionId": "V01",
+        "derivedResultIds": [
+          "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+        ],
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "preparedPlanRef": null,
+        "scope": "asserted+derived"
+      },
+      "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+      "jobId": "e5fac100-ec0f-42bc-b813-de78f3e6f479",
+      "limits": {
+        "cancelGraceMs": 5000,
+        "handshakeMs": 5000,
+        "heartbeatMs": 10000,
+        "maxConcurrentJobs": 2,
+        "maxFrameBytes": 262144,
+        "maxPageBytes": 131072,
+        "maxPageItems": 200,
+        "maxQueuedJobs": 32,
+        "maxWorkerMemoryBytes": 536870912,
+        "requestMs": 5000,
+        "startupMs": 10000,
+        "totalMs": 120000
+      },
+      "operationId": "4815a03c-b53f-472a-a18e-238c4e25b667",
+      "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+      "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+      "resultRef": {
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "resultId": "b170866b-9876-464f-8a27-ca94e27d6ada"
+      },
+      "scope": "asserted+derived",
+      "state": "succeeded",
+      "stateVersion": 3,
+      "updatedAtMs": 1792536245101
+    },
+    {
+      "capability": "reasoning.execute",
+      "commitProgress": {
+        "mode": "none"
+      },
+      "confirmationRef": null,
+      "createdAtMs": 1792536245317,
+      "definitionSetDigests": {
+        "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+        "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+      },
+      "dependencyVector": {
+        "facts:asserted": 1,
+        "ontology:G-base": 1,
+        "rule:R-risk": 1
+      },
+      "error": null,
+      "finishedAtMs": 1792536245466,
+      "implementation": {
+        "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+        "engineVersion": "0.1.0",
+        "executionSemanticsVersion": "i05-finite-3"
+      },
+      "input": {
+        "definitionId": "all",
+        "derivedResultIds": [],
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "preparedPlanRef": null,
+        "scope": "asserted"
+      },
+      "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+      "jobId": "ef138d1a-af64-4ef0-b11b-096ea75b3670",
+      "limits": {
+        "cancelGraceMs": 5000,
+        "handshakeMs": 5000,
+        "heartbeatMs": 10000,
+        "maxConcurrentJobs": 2,
+        "maxFrameBytes": 262144,
+        "maxPageBytes": 131072,
+        "maxPageItems": 200,
+        "maxQueuedJobs": 32,
+        "maxWorkerMemoryBytes": 536870912,
+        "requestMs": 5000,
+        "startupMs": 10000,
+        "totalMs": 120000
+      },
+      "operationId": "36278757-5bb0-4d0f-9753-d7096f01b7bc",
+      "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+      "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+      "resultRef": {
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "resultId": "d84a461b-5ffa-480e-809e-6fd60e81a07e"
+      },
+      "scope": "asserted",
+      "state": "succeeded",
+      "stateVersion": 3,
+      "updatedAtMs": 1792536245466
+    }
+  ],
+  "failed": {
+    "capability": "query.execute",
+    "commitProgress": {
+      "mode": "none"
+    },
+    "confirmationRef": null,
+    "createdAtMs": 1792536243233,
+    "definitionSetDigests": {
+      "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a"
+    },
+    "dependencyVector": {
+      "facts:asserted": 1,
+      "ontology:G-base": 1,
+      "query:forbidden-service": 1
+    },
+    "error": {
+      "code": "NETWORK_FORBIDDEN",
+      "messageKey": "semantics.networkForbidden",
+      "params": {},
+      "retryable": false
+    },
+    "finishedAtMs": 1792536243363,
+    "implementation": {
+      "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+      "engineVersion": "0.1.0",
+      "executionSemanticsVersion": "i05-finite-3"
+    },
+    "input": {
+      "definitionId": "forbidden-service",
+      "derivedResultIds": [],
+      "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+      "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+      "preparedPlanRef": null,
+      "scope": "asserted"
+    },
+    "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+    "jobId": "6d51de82-8a51-43ac-9502-31f528a79211",
+    "limits": {
+      "cancelGraceMs": 5000,
+      "handshakeMs": 5000,
+      "heartbeatMs": 10000,
+      "maxConcurrentJobs": 2,
+      "maxFrameBytes": 262144,
+      "maxPageBytes": 131072,
+      "maxPageItems": 200,
+      "maxQueuedJobs": 32,
+      "maxWorkerMemoryBytes": 536870912,
+      "requestMs": 5000,
+      "startupMs": 10000,
+      "totalMs": 120000
+    },
+    "operationId": "0c9bc196-5d2e-4e3e-aaf3-a649120ef253",
+    "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+    "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+    "resultRef": null,
+    "scope": "asserted",
+    "state": "failed",
+    "stateVersion": 3,
+    "updatedAtMs": 1792536243363
+  },
+  "cancelled": {
+    "capability": "query.execute",
+    "commitProgress": {
+      "mode": "none"
+    },
+    "confirmationRef": null,
+    "createdAtMs": 1792536243212,
+    "definitionSetDigests": {
+      "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a"
+    },
+    "dependencyVector": {
+      "facts:asserted": 1,
+      "ontology:G-base": 1,
+      "query:slow-count": 1
+    },
+    "error": null,
+    "finishedAtMs": 1792536245593,
+    "implementation": {
+      "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+      "engineVersion": "0.1.0",
+      "executionSemanticsVersion": "i05-finite-3"
+    },
+    "input": {
+      "definitionId": "slow-count",
+      "derivedResultIds": [],
+      "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+      "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+      "preparedPlanRef": null,
+      "scope": "asserted"
+    },
+    "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+    "jobId": "a405f367-a064-47d7-8949-422cb72f6e38",
+    "limits": {
+      "cancelGraceMs": 5000,
+      "handshakeMs": 5000,
+      "heartbeatMs": 10000,
+      "maxConcurrentJobs": 2,
+      "maxFrameBytes": 262144,
+      "maxPageBytes": 131072,
+      "maxPageItems": 200,
+      "maxQueuedJobs": 32,
+      "maxWorkerMemoryBytes": 536870912,
+      "requestMs": 5000,
+      "startupMs": 10000,
+      "totalMs": 120000
+    },
+    "operationId": "1cbc3855-894c-4bf7-a478-33d91358fef1",
+    "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+    "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+    "resultRef": null,
+    "scope": "asserted",
+    "state": "cancelled",
+    "stateVersion": 4,
+    "updatedAtMs": 1792536245593
+  },
+  "final": {
+    "generation": 5,
+    "project": {
+      "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+      "projectRevision": 1,
+      "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+      "dependencyVector": {
+        "constraint:V01": 1,
+        "facts:asserted": 1,
+        "ontology:G-base": 1,
+        "query:Q01": 1,
+        "query:forbidden-service": 1,
+        "query:slow-count": 1,
+        "rule:R-risk": 1
+      },
+      "formatVersion": 2
+    },
+    "jobs": [
+      {
+        "capability": "reasoning.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536242434,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536242576,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "all",
+          "derivedResultIds": [],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "bff4ba2b-6146-43d1-8286-4bc9f79543ca",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "b6c70f68-34f9-437f-b6ed-11196c9a12e2",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+        },
+        "scope": "asserted",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536242576
+      },
+      {
+        "capability": "query.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536242610,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "query:Q01": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536242764,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "Q01",
+          "derivedResultIds": [
+            "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+          ],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted+derived"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "27deea43-d3cb-4af5-abd4-4c93829eb5ca",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "a9905567-f12e-4033-a1a8-51d42d643c65",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "22b79efe-dc22-4352-8c65-5f5ae1e16e2d"
+        },
+        "scope": "asserted+derived",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536242764
+      },
+      {
+        "capability": "validation.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536242794,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "constraint:V01": 1,
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536242938,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "V01",
+          "derivedResultIds": [
+            "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+          ],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted+derived"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "39432a52-eb00-4d5d-8dfb-58ef7493f21c",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "d9bbcaad-aef2-4d46-ae24-d3638ce61e07",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "cc201797-4529-4a8b-9e91-742a300927c3"
+        },
+        "scope": "asserted+derived",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536242938
+      },
+      {
+        "capability": "query.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536243212,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "query:slow-count": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536245593,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "slow-count",
+          "derivedResultIds": [],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "a405f367-a064-47d7-8949-422cb72f6e38",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "1cbc3855-894c-4bf7-a478-33d91358fef1",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": null,
+        "scope": "asserted",
+        "state": "cancelled",
+        "stateVersion": 4,
+        "updatedAtMs": 1792536245593
+      },
+      {
+        "capability": "query.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536243233,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "query:forbidden-service": 1
+        },
+        "error": {
+          "code": "NETWORK_FORBIDDEN",
+          "messageKey": "semantics.networkForbidden",
+          "params": {},
+          "retryable": false
+        },
+        "finishedAtMs": 1792536243363,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "forbidden-service",
+          "derivedResultIds": [],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "6d51de82-8a51-43ac-9502-31f528a79211",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "0c9bc196-5d2e-4e3e-aaf3-a649120ef253",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": null,
+        "scope": "asserted",
+        "state": "failed",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536243363
+      },
+      {
+        "capability": "query.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536244634,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "query:Q01": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536244788,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "Q01",
+          "derivedResultIds": [
+            "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+          ],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted+derived"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "1466b086-163c-4e06-9e7b-d19c24587f9c",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "45451de5-bb44-4917-be96-afcd75c53ffb",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "cb711268-bbb2-453c-9212-63a71aa3db74"
+        },
+        "scope": "asserted+derived",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536244788
+      },
+      {
+        "capability": "validation.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536244956,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "constraint:V01": 1,
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536245101,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "V01",
+          "derivedResultIds": [
+            "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+          ],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted+derived"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "e5fac100-ec0f-42bc-b813-de78f3e6f479",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "4815a03c-b53f-472a-a18e-238c4e25b667",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "b170866b-9876-464f-8a27-ca94e27d6ada"
+        },
+        "scope": "asserted+derived",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536245101
+      },
+      {
+        "capability": "reasoning.execute",
+        "commitProgress": {
+          "mode": "none"
+        },
+        "confirmationRef": null,
+        "createdAtMs": 1792536245317,
+        "definitionSetDigests": {
+          "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+          "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+        },
+        "dependencyVector": {
+          "facts:asserted": 1,
+          "ontology:G-base": 1,
+          "rule:R-risk": 1
+        },
+        "error": null,
+        "finishedAtMs": 1792536245466,
+        "implementation": {
+          "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+          "engineVersion": "0.1.0",
+          "executionSemanticsVersion": "i05-finite-3"
+        },
+        "input": {
+          "definitionId": "all",
+          "derivedResultIds": [],
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "preparedPlanRef": null,
+          "scope": "asserted"
+        },
+        "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+        "jobId": "ef138d1a-af64-4ef0-b11b-096ea75b3670",
+        "limits": {
+          "cancelGraceMs": 5000,
+          "handshakeMs": 5000,
+          "heartbeatMs": 10000,
+          "maxConcurrentJobs": 2,
+          "maxFrameBytes": 262144,
+          "maxPageBytes": 131072,
+          "maxPageItems": 200,
+          "maxQueuedJobs": 32,
+          "maxWorkerMemoryBytes": 536870912,
+          "requestMs": 5000,
+          "startupMs": 10000,
+          "totalMs": 120000
+        },
+        "operationId": "36278757-5bb0-4d0f-9753-d7096f01b7bc",
+        "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "resultRef": {
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "resultId": "d84a461b-5ffa-480e-809e-6fd60e81a07e"
+        },
+        "scope": "asserted",
+        "state": "succeeded",
+        "stateVersion": 3,
+        "updatedAtMs": 1792536245466
+      }
+    ]
+  },
+  "history": {
+    "ok": true,
+    "data": {
+      "binding": {
+        "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+        "listSnapshotId": "554a4ff4-07e3-42eb-bd35-a8abfe9c2eb8",
+        "filter": "all",
+        "order": "createdAtMs+jobId:asc"
+      },
+      "jobs": [
+        {
+          "capability": "reasoning.execute",
+          "commitProgress": {
+            "mode": "none"
+          },
+          "confirmationRef": null,
+          "createdAtMs": 1792536242434,
+          "definitionSetDigests": {
+            "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+            "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+          },
+          "dependencyVector": {
+            "facts:asserted": 1,
+            "ontology:G-base": 1,
+            "rule:R-risk": 1
+          },
+          "error": null,
+          "finishedAtMs": 1792536242576,
+          "implementation": {
+            "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+            "engineVersion": "0.1.0",
+            "executionSemanticsVersion": "i05-finite-3"
+          },
+          "input": {
+            "definitionId": "all",
+            "derivedResultIds": [],
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+            "preparedPlanRef": null,
+            "scope": "asserted"
+          },
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "jobId": "bff4ba2b-6146-43d1-8286-4bc9f79543ca",
+          "limits": {
+            "cancelGraceMs": 5000,
+            "handshakeMs": 5000,
+            "heartbeatMs": 10000,
+            "maxConcurrentJobs": 2,
+            "maxFrameBytes": 262144,
+            "maxPageBytes": 131072,
+            "maxPageItems": 200,
+            "maxQueuedJobs": 32,
+            "maxWorkerMemoryBytes": 536870912,
+            "requestMs": 5000,
+            "startupMs": 10000,
+            "totalMs": 120000
+          },
+          "operationId": "b6c70f68-34f9-437f-b6ed-11196c9a12e2",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+          "resultRef": {
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "resultId": "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+          },
+          "scope": "asserted",
+          "state": "succeeded",
+          "stateVersion": 3,
+          "updatedAtMs": 1792536242576
+        },
+        {
+          "capability": "query.execute",
+          "commitProgress": {
+            "mode": "none"
+          },
+          "confirmationRef": null,
+          "createdAtMs": 1792536242610,
+          "definitionSetDigests": {
+            "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+            "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+          },
+          "dependencyVector": {
+            "facts:asserted": 1,
+            "ontology:G-base": 1,
+            "query:Q01": 1,
+            "rule:R-risk": 1
+          },
+          "error": null,
+          "finishedAtMs": 1792536242764,
+          "implementation": {
+            "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+            "engineVersion": "0.1.0",
+            "executionSemanticsVersion": "i05-finite-3"
+          },
+          "input": {
+            "definitionId": "Q01",
+            "derivedResultIds": [
+              "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+            ],
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+            "preparedPlanRef": null,
+            "scope": "asserted+derived"
+          },
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "jobId": "27deea43-d3cb-4af5-abd4-4c93829eb5ca",
+          "limits": {
+            "cancelGraceMs": 5000,
+            "handshakeMs": 5000,
+            "heartbeatMs": 10000,
+            "maxConcurrentJobs": 2,
+            "maxFrameBytes": 262144,
+            "maxPageBytes": 131072,
+            "maxPageItems": 200,
+            "maxQueuedJobs": 32,
+            "maxWorkerMemoryBytes": 536870912,
+            "requestMs": 5000,
+            "startupMs": 10000,
+            "totalMs": 120000
+          },
+          "operationId": "a9905567-f12e-4033-a1a8-51d42d643c65",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+          "resultRef": {
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "resultId": "22b79efe-dc22-4352-8c65-5f5ae1e16e2d"
+          },
+          "scope": "asserted+derived",
+          "state": "succeeded",
+          "stateVersion": 3,
+          "updatedAtMs": 1792536242764
+        },
+        {
+          "capability": "validation.execute",
+          "commitProgress": {
+            "mode": "none"
+          },
+          "confirmationRef": null,
+          "createdAtMs": 1792536242794,
+          "definitionSetDigests": {
+            "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+            "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+          },
+          "dependencyVector": {
+            "constraint:V01": 1,
+            "facts:asserted": 1,
+            "ontology:G-base": 1,
+            "rule:R-risk": 1
+          },
+          "error": null,
+          "finishedAtMs": 1792536242938,
+          "implementation": {
+            "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+            "engineVersion": "0.1.0",
+            "executionSemanticsVersion": "i05-finite-3"
+          },
+          "input": {
+            "definitionId": "V01",
+            "derivedResultIds": [
+              "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+            ],
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+            "preparedPlanRef": null,
+            "scope": "asserted+derived"
+          },
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "jobId": "39432a52-eb00-4d5d-8dfb-58ef7493f21c",
+          "limits": {
+            "cancelGraceMs": 5000,
+            "handshakeMs": 5000,
+            "heartbeatMs": 10000,
+            "maxConcurrentJobs": 2,
+            "maxFrameBytes": 262144,
+            "maxPageBytes": 131072,
+            "maxPageItems": 200,
+            "maxQueuedJobs": 32,
+            "maxWorkerMemoryBytes": 536870912,
+            "requestMs": 5000,
+            "startupMs": 10000,
+            "totalMs": 120000
+          },
+          "operationId": "d9bbcaad-aef2-4d46-ae24-d3638ce61e07",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+          "resultRef": {
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "resultId": "cc201797-4529-4a8b-9e91-742a300927c3"
+          },
+          "scope": "asserted+derived",
+          "state": "succeeded",
+          "stateVersion": 3,
+          "updatedAtMs": 1792536242938
+        },
+        {
+          "capability": "query.execute",
+          "commitProgress": {
+            "mode": "none"
+          },
+          "confirmationRef": null,
+          "createdAtMs": 1792536243212,
+          "definitionSetDigests": {
+            "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a"
+          },
+          "dependencyVector": {
+            "facts:asserted": 1,
+            "ontology:G-base": 1,
+            "query:slow-count": 1
+          },
+          "error": null,
+          "finishedAtMs": 1792536245593,
+          "implementation": {
+            "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+            "engineVersion": "0.1.0",
+            "executionSemanticsVersion": "i05-finite-3"
+          },
+          "input": {
+            "definitionId": "slow-count",
+            "derivedResultIds": [],
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+            "preparedPlanRef": null,
+            "scope": "asserted"
+          },
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "jobId": "a405f367-a064-47d7-8949-422cb72f6e38",
+          "limits": {
+            "cancelGraceMs": 5000,
+            "handshakeMs": 5000,
+            "heartbeatMs": 10000,
+            "maxConcurrentJobs": 2,
+            "maxFrameBytes": 262144,
+            "maxPageBytes": 131072,
+            "maxPageItems": 200,
+            "maxQueuedJobs": 32,
+            "maxWorkerMemoryBytes": 536870912,
+            "requestMs": 5000,
+            "startupMs": 10000,
+            "totalMs": 120000
+          },
+          "operationId": "1cbc3855-894c-4bf7-a478-33d91358fef1",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+          "resultRef": null,
+          "scope": "asserted",
+          "state": "cancelled",
+          "stateVersion": 4,
+          "updatedAtMs": 1792536245593
+        },
+        {
+          "capability": "query.execute",
+          "commitProgress": {
+            "mode": "none"
+          },
+          "confirmationRef": null,
+          "createdAtMs": 1792536243233,
+          "definitionSetDigests": {
+            "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a"
+          },
+          "dependencyVector": {
+            "facts:asserted": 1,
+            "ontology:G-base": 1,
+            "query:forbidden-service": 1
+          },
+          "error": {
+            "code": "NETWORK_FORBIDDEN",
+            "messageKey": "semantics.networkForbidden",
+            "params": {},
+            "retryable": false
+          },
+          "finishedAtMs": 1792536243363,
+          "implementation": {
+            "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+            "engineVersion": "0.1.0",
+            "executionSemanticsVersion": "i05-finite-3"
+          },
+          "input": {
+            "definitionId": "forbidden-service",
+            "derivedResultIds": [],
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+            "preparedPlanRef": null,
+            "scope": "asserted"
+          },
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "jobId": "6d51de82-8a51-43ac-9502-31f528a79211",
+          "limits": {
+            "cancelGraceMs": 5000,
+            "handshakeMs": 5000,
+            "heartbeatMs": 10000,
+            "maxConcurrentJobs": 2,
+            "maxFrameBytes": 262144,
+            "maxPageBytes": 131072,
+            "maxPageItems": 200,
+            "maxQueuedJobs": 32,
+            "maxWorkerMemoryBytes": 536870912,
+            "requestMs": 5000,
+            "startupMs": 10000,
+            "totalMs": 120000
+          },
+          "operationId": "0c9bc196-5d2e-4e3e-aaf3-a649120ef253",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+          "resultRef": null,
+          "scope": "asserted",
+          "state": "failed",
+          "stateVersion": 3,
+          "updatedAtMs": 1792536243363
+        },
+        {
+          "capability": "query.execute",
+          "commitProgress": {
+            "mode": "none"
+          },
+          "confirmationRef": null,
+          "createdAtMs": 1792536244634,
+          "definitionSetDigests": {
+            "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+            "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+          },
+          "dependencyVector": {
+            "facts:asserted": 1,
+            "ontology:G-base": 1,
+            "query:Q01": 1,
+            "rule:R-risk": 1
+          },
+          "error": null,
+          "finishedAtMs": 1792536244788,
+          "implementation": {
+            "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+            "engineVersion": "0.1.0",
+            "executionSemanticsVersion": "i05-finite-3"
+          },
+          "input": {
+            "definitionId": "Q01",
+            "derivedResultIds": [
+              "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+            ],
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+            "preparedPlanRef": null,
+            "scope": "asserted+derived"
+          },
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "jobId": "1466b086-163c-4e06-9e7b-d19c24587f9c",
+          "limits": {
+            "cancelGraceMs": 5000,
+            "handshakeMs": 5000,
+            "heartbeatMs": 10000,
+            "maxConcurrentJobs": 2,
+            "maxFrameBytes": 262144,
+            "maxPageBytes": 131072,
+            "maxPageItems": 200,
+            "maxQueuedJobs": 32,
+            "maxWorkerMemoryBytes": 536870912,
+            "requestMs": 5000,
+            "startupMs": 10000,
+            "totalMs": 120000
+          },
+          "operationId": "45451de5-bb44-4917-be96-afcd75c53ffb",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+          "resultRef": {
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "resultId": "cb711268-bbb2-453c-9212-63a71aa3db74"
+          },
+          "scope": "asserted+derived",
+          "state": "succeeded",
+          "stateVersion": 3,
+          "updatedAtMs": 1792536244788
+        },
+        {
+          "capability": "validation.execute",
+          "commitProgress": {
+            "mode": "none"
+          },
+          "confirmationRef": null,
+          "createdAtMs": 1792536244956,
+          "definitionSetDigests": {
+            "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+            "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+          },
+          "dependencyVector": {
+            "constraint:V01": 1,
+            "facts:asserted": 1,
+            "ontology:G-base": 1,
+            "rule:R-risk": 1
+          },
+          "error": null,
+          "finishedAtMs": 1792536245101,
+          "implementation": {
+            "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+            "engineVersion": "0.1.0",
+            "executionSemanticsVersion": "i05-finite-3"
+          },
+          "input": {
+            "definitionId": "V01",
+            "derivedResultIds": [
+              "f21ec3cf-f758-4ff8-8bd5-5043a4784a08"
+            ],
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+            "preparedPlanRef": null,
+            "scope": "asserted+derived"
+          },
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "jobId": "e5fac100-ec0f-42bc-b813-de78f3e6f479",
+          "limits": {
+            "cancelGraceMs": 5000,
+            "handshakeMs": 5000,
+            "heartbeatMs": 10000,
+            "maxConcurrentJobs": 2,
+            "maxFrameBytes": 262144,
+            "maxPageBytes": 131072,
+            "maxPageItems": 200,
+            "maxQueuedJobs": 32,
+            "maxWorkerMemoryBytes": 536870912,
+            "requestMs": 5000,
+            "startupMs": 10000,
+            "totalMs": 120000
+          },
+          "operationId": "4815a03c-b53f-472a-a18e-238c4e25b667",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+          "resultRef": {
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "resultId": "b170866b-9876-464f-8a27-ca94e27d6ada"
+          },
+          "scope": "asserted+derived",
+          "state": "succeeded",
+          "stateVersion": 3,
+          "updatedAtMs": 1792536245101
+        },
+        {
+          "capability": "reasoning.execute",
+          "commitProgress": {
+            "mode": "none"
+          },
+          "confirmationRef": null,
+          "createdAtMs": 1792536245317,
+          "definitionSetDigests": {
+            "mapping": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ontology": "2b0233b027ed70929e0c3c031ea8105d88d62d8a4d5dd39d173778dcbb7f084a",
+            "rule": "fda3a5c46a34c0e5eabca03f4c6e819a3ea2b5c54170f6c67488c0251dd751ea"
+          },
+          "dependencyVector": {
+            "facts:asserted": 1,
+            "ontology:G-base": 1,
+            "rule:R-risk": 1
+          },
+          "error": null,
+          "finishedAtMs": 1792536245466,
+          "implementation": {
+            "dependencyLockHash": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493",
+            "engineVersion": "0.1.0",
+            "executionSemanticsVersion": "i05-finite-3"
+          },
+          "input": {
+            "definitionId": "all",
+            "derivedResultIds": [],
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+            "preparedPlanRef": null,
+            "scope": "asserted"
+          },
+          "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+          "jobId": "ef138d1a-af64-4ef0-b11b-096ea75b3670",
+          "limits": {
+            "cancelGraceMs": 5000,
+            "handshakeMs": 5000,
+            "heartbeatMs": 10000,
+            "maxConcurrentJobs": 2,
+            "maxFrameBytes": 262144,
+            "maxPageBytes": 131072,
+            "maxPageItems": 200,
+            "maxQueuedJobs": 32,
+            "maxWorkerMemoryBytes": 536870912,
+            "requestMs": 5000,
+            "startupMs": 10000,
+            "totalMs": 120000
+          },
+          "operationId": "36278757-5bb0-4d0f-9753-d7096f01b7bc",
+          "parametersHash": "d2f5d8f035129c528fdfbd3ad6f59f4b475991d1fc688116d659673c53ea11c2",
+          "projectId": "217dd86e-eb95-46b2-8cb7-d923beee8cd5",
+          "resultRef": {
+            "inputSnapshotId": "c5ad064579c702172a6a70a5bda9bc098a9bd19346c2ace5244a7750906e7a82",
+            "resultId": "d84a461b-5ffa-480e-809e-6fd60e81a07e"
+          },
+          "scope": "asserted",
+          "state": "succeeded",
+          "stateVersion": 3,
+          "updatedAtMs": 1792536245466
+        }
+      ],
+      "nextCursor": null
+    }
+  }
+}

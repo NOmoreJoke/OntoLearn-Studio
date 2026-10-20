@@ -1,0 +1,73 @@
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  345.98 kB
+
+✓ built in 111ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  278.87 kB
+
+✓ built in 65ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-BHeZ7xlA.js   879.15 kB
+
+✓ built in 122ms
+sh: 1: cannot create /i05/build/i05-openbox-source.log: Directory nonexistent
+
+Running 2 tests using 1 worker
+
+  ✓  1 tests/e2e/i05-semantics.spec.ts:107:5 › I05 real named semantic operations, complete source pages, reload and explicit cancellation (1.4m)
+  ✘  2 tests/e2e/i05-semantics.spec.ts:340:5 › I05 native renderer crash and real unresponsive dialog retain immutable semantic outputs (3.6s)
+
+
+  1) tests/e2e/i05-semantics.spec.ts:340:5 › I05 native renderer crash and real unresponsive dialog retain immutable semantic outputs 
+
+    Error: native exit null: Failed to move to new namespace: PID namespaces supported, Network namespace supported, but failed: errno = Operation not permitted
+    [660:1020/222402.443079:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+    [662:0100/000000.453537:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)
+
+
+
+      363 |     child.on('error', reject)
+      364 |     child.on('close', (code) =>
+    > 365 |       code === 0 ? done() : reject(new Error(`native exit ${code}: ${stderr}\n${stdout}`)),
+          |                                    ^
+      366 |     )
+      367 |   })
+      368 |   void finished.catch(() => {})
+        at ChildProcess.<anonymous> (/i05/tests/e2e/i05-semantics.spec.ts:365:36)
+
+    attachment #1: i05-fixture-metadata (application/json) ─────────────────────────────────────────
+    test-results/i05-source/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-fixture-metadata-01de9fa10dc8917663fe9af9c1ddfd6b95ee2fa6.json
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/i05-source/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/i05-source/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/i05-source/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/i05-semantics.spec.ts:340:5 › I05 native renderer crash and real unresponsive dialog retain immutable semantic outputs 
+  1 passed (1.5m)

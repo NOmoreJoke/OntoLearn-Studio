@@ -1,0 +1,560 @@
+EFEEEEEEEEEEEEE                                                          [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_real_reason_query_validation_complete_sources_and_stable_pages _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_real_reason_query_validat0')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+_ ERROR at setup of test_public_selection_combinations_are_safe_invalid_request[scope] _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_public_selection_combinat0')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+_ ERROR at setup of test_public_selection_combinations_are_safe_invalid_request[history] _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_public_selection_combinat1')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+_ ERROR at setup of test_public_selection_combinations_are_safe_invalid_request[reasoning-derived] _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_public_selection_combinat2')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+_ ERROR at setup of test_historical_selection_never_publishes_current_even_when_snapshot_is_latest _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_historical_selection_neve0')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+_ ERROR at setup of test_semantic_operation_idempotent_after_current_moves_and_cannot_change_meaning _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_semantic_operation_idempo0')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+_ ERROR at setup of test_real_user_query_error_has_fixed_safe_dto_and_no_unpublished_payload _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_real_user_query_error_has0')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+_ ERROR at setup of test_queued_and_real_worker_cancel_discard_only_the_selected_result _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_queued_and_real_worker_ca0')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+_ ERROR at setup of test_complete_semantic_payload_and_job_terminal_rollback_together[mid_job_terminal] _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_complete_semantic_payload0')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+_ ERROR at setup of test_complete_semantic_payload_and_job_terminal_rollback_together[before_commit] _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_complete_semantic_payload1')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+_ ERROR at setup of test_authentic_payload_hash_producer_and_eviction_boundaries _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_authentic_payload_hash_pr0')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+__ ERROR at setup of test_large_complete_output_is_chunked_not_a_single_frame __
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_large_complete_output_is_0')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+_ ERROR at setup of test_late_semantic_result_preserves_original_input_and_is_not_current _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_late_semantic_result_pres0')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+_ ERROR at setup of test_implementation_identity_is_exact_for_selected_real_result _
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_implementation_identity_i0')
+
+    @pytest.fixture
+    def runtime(tmp_path):
+        store = JobStore(tmp_path / "semantic.sqlite", contract=CONTRACT)
+>       project = seed(store)
+                  ^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+=================================== FAILURES ===================================
+_____ test_earlier_existing_real_result_is_selected_without_recomputation ______
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-274/test_earlier_existing_real_res0')
+
+    def test_earlier_existing_real_result_is_selected_without_recomputation(tmp_path):
+        s = JobStore(tmp_path / "history.sqlite", contract=CONTRACT)
+        try:
+>           p = seed(s, enabled=False)
+                ^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_runtime.py:219: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_runtime.py:48: in seed
+    store.commit(
+packages/engine/src/ontolearn_engine/storage.py:429: in commit
+    self._fact(fact)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fact = {'id': 'unit-type', 'subject': 'urn:unit', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:Child>'}
+
+    @staticmethod
+    def _fact(fact: dict) -> None:
+        if set(fact) != {"id", "subject", "predicate", "object"} or any(
+            not isinstance(v, str) or not v for v in fact.values()
+        ):
+            raise ValueError("Fact requires nonempty id/subject/predicate/object strings")
+        iri(fact["subject"])
+        iri(fact["predicate"])
+        if term(fact["object"]).n3() != fact["object"]:
+            raise ValueError("Canonical RDF object required; derive ID from term(value).n3()")
+        # A stable storage key cannot be rebound to an unrelated statement slot.
+        if fact["id"] != digest([fact["subject"], fact["predicate"], fact["object"]]):
+>           raise ValueError("Fact identity must be content derived")
+E           ValueError: Fact identity must be content derived
+
+packages/engine/src/ontolearn_engine/storage.py:257: ValueError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_runtime.py::test_earlier_existing_real_result_is_selected_without_recomputation
+ERROR packages/engine/tests/test_semantic_runtime.py::test_real_reason_query_validation_complete_sources_and_stable_pages
+ERROR packages/engine/tests/test_semantic_runtime.py::test_public_selection_combinations_are_safe_invalid_request[scope]
+ERROR packages/engine/tests/test_semantic_runtime.py::test_public_selection_combinations_are_safe_invalid_request[history]
+ERROR packages/engine/tests/test_semantic_runtime.py::test_public_selection_combinations_are_safe_invalid_request[reasoning-derived]
+ERROR packages/engine/tests/test_semantic_runtime.py::test_historical_selection_never_publishes_current_even_when_snapshot_is_latest
+ERROR packages/engine/tests/test_semantic_runtime.py::test_semantic_operation_idempotent_after_current_moves_and_cannot_change_meaning
+ERROR packages/engine/tests/test_semantic_runtime.py::test_real_user_query_error_has_fixed_safe_dto_and_no_unpublished_payload
+ERROR packages/engine/tests/test_semantic_runtime.py::test_queued_and_real_worker_cancel_discard_only_the_selected_result
+ERROR packages/engine/tests/test_semantic_runtime.py::test_complete_semantic_payload_and_job_terminal_rollback_together[mid_job_terminal]
+ERROR packages/engine/tests/test_semantic_runtime.py::test_complete_semantic_payload_and_job_terminal_rollback_together[before_commit]
+ERROR packages/engine/tests/test_semantic_runtime.py::test_authentic_payload_hash_producer_and_eviction_boundaries
+ERROR packages/engine/tests/test_semantic_runtime.py::test_large_complete_output_is_chunked_not_a_single_frame
+ERROR packages/engine/tests/test_semantic_runtime.py::test_late_semantic_result_preserves_original_input_and_is_not_current
+ERROR packages/engine/tests/test_semantic_runtime.py::test_implementation_identity_is_exact_for_selected_real_result
+1 failed, 14 errors in 0.35s

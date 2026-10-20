@@ -1,5 +1,7 @@
 # I05 / B1 状态
 
+最新进度（2026-10-21）：已采用真实I04/5f910b5，完整必要任务集成及本版本地源/包/原生验收已取得；正式C1候选和指定双审准备中。以下旧独立阶段段落保留历史来源，不能用于判断当前共享owner或前置状态。当前完整证据见 [集成验收](integrated-c1-verification.md)；未push/PR/CI/合并，未完成Goal。
+
 当前新增有界工作：已以 merge `bda48d78579622bb83cd7e326368c613033c4c2d` 合入已批准 I03/e45，完成纯语义错误适配器。新检查为424TS / 1006Python（208adapter）、sources12；接口与精确证据见 [adapter接口](semantic-error-adapter-interface.md) 和 [e45证据](../../iterations/I05/error-adapter-e45.json)。整个 I05 尚待真实 I04 后续基线、运行时 / Store / 任务 / 窗口联验与最终双方新审；Goal工具读回仍blocked，没有恢复API，未创建替代Goal、未标完成。
 
 共享entrypoint/build脚本保持交接字节，唯一维护责任仍归I04。本轮只新增适配器 / 专用测试及文档证据；没有重放旧测量 / 包、公开语义能力、Mac窗口、push或PR。下列v4及其阻塞记录是当时来源的历史证据，不表示I03现在仍未合并。
@@ -94,3 +96,13 @@ I03/e45已纳入本线Git祖先（从远端fetch并核验），未rebase或改�
 当前新增实际 Store/worker/Job/完整载荷、内容哈希、producer/input/version、current/historical、取消、事务与稳定分页接线。首15项真实 worker 联验已通过（含旧无Risk历史1违规/新Risk2违规、迟到及取消），不作为最终完整验收。Mac 未启动 Electron/native/HMR；新独立 Linux 容器 ontolearn-i05-isolated-20261021 使用空 /i05、独立 HOME/npm/uv/cache、源码导出和实际新依赖。仅复用不可变系统工具镜像，不共享 I04 可变 DB/依赖/产物，新版窗口/包内验收尚未执行。
 
 仍须：补齐实际包内/标准库来源、隔离源码及打包原生恢复、完整验收记录、内部完整复核、同候选指定双方全新审查、意见处置、push/PR→develop/CI/正常merge/远端与保护核验。Q6十二项及其他待决项仍逐项开放；未宣称完整I05通过或门禁完成。
+
+## 2026-10-21 C1 实际验收完成、正式冻结准备
+
+产品实现受测头6b57078；native harness最终851be57。`npm run check`在6b取得672TS/1511Python、来源12；后续只变原生入口ready/错误传播，定向lint/type/format与源/包真实native各2项再通过。Mac/Linux实际未签名包、源码/包内完整语义相等、真实stdio三能力、C4包内17项及公共326例通过。Mac B1本版12原测量＋12fresh、网络正校准1/拒绝命中0、每运行时28拒绝；两平台实际native来源精确匹配，import/资源/动态库/完整许可清单均保存。没有Mac Electron/native/HMR。
+
+Linux最终原生源2pass23.4秒、包2pass24.4秒；三个真实重建窗口、外部焦点、真正crash/unresponsive和GTK提示、持久完整结果及最后显式cancel通过。真实源绑定198份执行输入与容器逐字相等，生产源码与6b包输入无变化；较早0218的982路径绑定保留原归属。证据详见 integrated-c1-verification.md、evidence/integrated-c1（117raw）与integrated-c1-sealed（最终raw）。原失败、未完成早期尝试、修正及重跑边界保留，不声称首跑全绿。
+
+原checkout64保护源64/64、AGENTS与最新指南SHA一致未stage，见protection-c1.json；controller state未写。本线接收必要共享责任后完成最小真实接线，未实现不在B1的全业务编辑器/映射/行为/沙盘；Q6十二项各自仍开放，不默认产品采用。
+
+指定双模型应用已经由同一开发会话现场选择精确I05 worktree/branch和GLM-5.3/最高、M3.1-Flash/xhigh；候选还在最后内部只读核对，尚未正式发送或取得通过。下步固定完整base→head及SHA清单后两应用各新独立任务，同版完整需求、只读独立报告；全部意见处置后再预约push/PR→develop/真实CI/正常merge/远端保护核验。当前未push/PR、未CI、未合并、未完成原Goal；工具仍blocked不虚构resume。
