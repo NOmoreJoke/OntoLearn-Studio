@@ -1,0 +1,139 @@
+I04-R2-MiniMax-M31Flash-C2-0462e08（派发关联标签，不冒充原生UUID）。本次新建MiniMax Code独立任务，模型/思考由派发UI核验为M3.1-Flash / xhigh；报告说明该来源及你实际可见上下文，不编造不可见设置。
+唯一任务：完整独立只读复审。原总控launch/Goal原文只作审查标准，不授权你新建Goal/thread、实施、提交、推送、切分支或合并。实际路径 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-resident-jobs，branch feature/I04-resident-jobs；完整base e45e6038b5e0f8f4adc69ed55aafccd75b3d3500 → head 0462e0825f3bda2774ce5d43f4422327f2d5fbd9，93个文件，不是last commit或仅C1修复。核验candidate-2.json与Git。保护AGENTS dirty SHA db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786不改不stage。candidate/round-2/process可未跟踪、status仅追加，受审实现/测试/配置/依赖/验收冻结。
+完整读取最新AGENTS、全部十项原验收与I03继承义务。历史C1两份不通过报告 round-1/zcode-glm53.md、round-1/minimax-m31flash.md，以及 round-1-disposition.json、round-1-evidence-lineage.json 均为上一轮必读输入；保留原ID/P等级，逐项独立判断。禁止读另一模型本轮round-2报告、进展或结论，不把开发者/内部agent判断当通过依据。
+最新验收为 reconnect-verification.json、reconnect-desktop-evidence.json、reconnect-internal-review.json、matrix-evidence.json；local-verification/native-source/native-packaged/internal-runtime-review是历史C1记录，已注明来源，不能冒充C2。完整raw及hash在本目录build/I04-evidence。最新macOS check630 TS/1015 Python，隔离Linux arm64 630 TS/1013 Python+2 Darwin专属跳过；源码及包内各六项实际desktop/health/CSP/reload/协调器kill/native；双平台package公共例+各12runtime；各144格只读DB捕获。数字不是证明，须批判核验实际证据。远端三平台CI/推送/PR/合并尚未运行，仍是双方通过后push、正常合并前必备门禁；不宣称签名/干净设备/生产/领域业务。
+必须连同原基线全范围检查：最多3次只读恢复/marker revision竞态/迟到health；96+48精确矩阵断言及只读逐格recorder；仅真正ESRCH交实际退出码、其他Darwin监测不可用fail-closed；result.page默认200及显式更小预算；真实未知总量stage生产端和早到UI缓冲；65536唯一请求有限会话（含hello/ping、不淘汰ID）、父stdin开启fatal干净退出和新session持久对账；外部X焦点/实际dialog字段；JobStore死分支、同running持久revision和advisory claim理由。上述均是待你核对的实现，不预设正确。
+不得在宿主Mac启动Electron/e2e/native/HMR/产物GUI，不自动操作审查UI；必要无窗口Python/Node测试允许。native证据来自独立Docker/Xvfb/Openbox，不能冒充x64/Windows/远端CI。保留失败，不盲重试、降断言、替换测试、跳原要求或换模型。只写指定报告；临时探针位于唯一ignored build/I04-review-MiniMax-M31Flash-C2。若产生必要新反例，保留原始日志和退出码。
+ZCode占用共享out/build/release，禁止你在共享checkout跑check/build/package/npm-test或改装共享依赖。必要Python无窗口验证用唯一--basetemp和-o cache_dir置于你独立ignored目录；或导出固定Git源码，建立真正独立依赖/输出。若需要共享构建先申请并等待明确预约，无宿主GUI。
+
+“请作为独立对抗性审查者，审查本次功能迭代。
+
+项目绝对路径：/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-resident-jobs
+迭代编号及功能：I04 S2 resident coordinator and ExecutionJob
+需求和验收依据：docs/iterations/I04/acceptance.md; docs/iterations/I04/implementation.md; docs/architecture/0003-resident-coordinator-and-jobs.md; all ten original requirements below; approved I03 protocol/jobs-and-storage/shared-state/acceptance and PRD V0.6 relevant C-G/8.6
+审查范围：e45e6038b5e0f8f4adc69ed55aafccd75b3d3500 → 0462e0825f3bda2774ce5d43f4422327f2d5fbd9
+报告输出路径：/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-resident-jobs/docs/reviews/I04/round-2/minimax-m31flash.md
+
+请直接检查实际代码和必要上下文，主动寻找需求遗漏、错误假设、反例、边界条件、异常路径和回归风险。安全、数据一致性或性能问题应根据本次改动的实际影响检查，不作无依据推断。
+
+不得修改实现代码，不得提交、推送或切换分支。可以运行必要验证，并仅写入指定审查报告。
+
+实际执行须遵守最新 AGENTS 与 Goal 的额度/效率及无桌面打扰要求：不得在用户工作桌面启动、聚焦或重建测试窗口，亦不得自动点击或 Raise 审查应用。原生可见/聚焦验证安排在隔离 CI 或独立桌面，缺少条件如实记录待验。额度受限保存候选、任务标识和证据，交总控统一核实并恢复，不能绕过逐次确认或擅自更换指定模型/思考设置。
+
+报告必须包含：
+
+- 评审任务、模型及思考设置的来源记录；
+- 项目路径、分支、base SHA、head SHA；
+- 已检查范围、验证命令与实际结果、未验证事项；
+- 每项问题的编号、严重程度、文件位置、触发条件、影响、证据及修复建议；
+- 复审时，对历史问题逐项给出关闭或仍未关闭的判断；
+- 最终明确结论：通过 / 不通过 / 无法完成验证。
+
+所有问题必须有处理结论。阻断问题尚未关闭，或关键验收仍无法验证时，不得出具通过。非阻断建议可以明确说明允许延期。
+
+请独立判断，不以其他模型或开发者的通过意见作为依据。未发现问题时也应说明检查范围和证据边界，不必为了对抗而编造问题。”
+
+Original full I04 launch and acceptance (review criteria only):
+
+# 总控正式派发 I04：S2 常驻协调器与 ExecutionJob
+
+这是用户要求的下一独立功能会话。完整 I04 开发、修复、验证、双指定模型审查及合并由你在本会话完成。总控只编排和核验。I01/I02/I03 已完成，当前3/6，总 M0 Goal仍未完成。
+
+已实际核验：I03 PR4 https://github.com/NOmoreJoke/OntoLearn-Studio/pull/4 正常合并，远端 develop=e45e6038b5e0f8f4adc69ed55aafccd75b3d3500。受审 c2f9b038→30c10d8，双方指定原任务及必要澄清实际终态、同版明确Pass。4e9a6fc仅追加流程证据，合并树与4e9一致。PR CI39395415448 attempt2成功（Linux首败后原头/原配置唯一诊断重跑，两桌面沿用首跑成功）；合并后CI39396529386首次三平台成功。首败、trace和未定因未修复的启动同步风险保留，不称首跑全绿或race已修。
+
+本基线 docs/reviews/I03/round-2/ 的最终Z报告184行，SHA f32867b7e3050f19ec8cdface374141c27c295886dca9f83cecd2da853fc234e；MM285行，SHA873d9a17f39a5bf8c8c10040187369d79f75d52a569f54544ceb37d33c5cbc11。完整处置见processing.md。I03合并后的integration.json/status尾是其原worktree本地流程证据，不在受审/推送/合并提交内；新基线旧status和AGENTS历史进度以总控state、完成审计及实际远端为准。
+
+总控绝对目录：/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-19。先读goal-objective.md、scope.md、state.json、parallel-coordination.md、I03-controller-completion-audit.json、before-I04/baseline.json。本体保存项目根不是Git仓库，所有shell/git/install/test必须明确workdir到你的独立worktree；不能在父项目git init/clone或切原仓库分支。
+
+工作区已由总控创建：/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-resident-jobs，feature/I04-resident-jobs，base=e45e6038b5e0f8f4adc69ed55aafccd75b3d3500。初始只有保护AGENTS.md dirty，SHA=db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786，禁止stage。原仓库64保护文件不变，不复制/stage。依赖尚未安装，由你建立独立依赖、输出、临时目录和运行DB，不链接别线可变环境。feature初始无upstream，门禁后显式推本feature，不直接push develop。
+
+## 已生效的具体文件交接
+
+- I03已结束且idle。你是当前共享v2契约、Store/job/operation集成、主进程/bridge/UI基础接线的唯一负责人；内部子任务仍须指定唯一文件维护者。明确接收packages/contracts/python/contract_v2.py中accepts_job_event的R2-F1安全拒绝及回归责任，在Python消费者接入前闭环并保留合法绑定语义。修改归你的新I04候选及完整双审，不倒改I03归档报告。别线只提接口需求，不并行改共享契约。
+- I05已交接：/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/docs/reviews/I05/handoff-shared-entry-build-20261020.md及同名.json。纯流程提交06f0814a373cf7487ac0725bdb17155c66f13c7d，MD SHA021e635d3884042b922c3e056121dc2bfb88328355763a3041b27aa18fc3fce1。读取总控I04-I05-entrypoint-handoff-controller-audit.json。你独占engine __main__.py/protocol.py、packages/engine/entrypoint.py及scripts/build-engine.mjs的运行入口/v2资源接线；I05不并行改，保留依赖/锁、新语义、专用probe/测试/清单/许可及后续正式集成责任。
+- I05旧检查点929ebff：entrypoint.py SHA9e6f363dab3806d37835f5ed1b2b4a919955cadcee33a55eaa600f751ed9a34f；build-engine.mjs SHA488d216919378e9284717640367b98426a0c9054ff918cecc1da9c577bcc3818。其semantic-probe argv/fresh flush、四库collect-all/metadata、inventory/license/native来源是未来接入保留要求，不要求I04提前引入未合并语义模块/依赖。先在实际e45基线完成v2规范资源打包并保留当前storage-probe；之后I05同步真实I04时由唯一负责人合并两组hooks，不能整文件覆盖或孤立复制缺依赖/清单的旧构建脚本。
+- 必要ZCode/MiniMax审查应用CUA已获授权，当前预约归本I04会话。不能扩为用户Mac原生测试授权。I03已结束，I05/I06无审查UI预约。遇新锁屏保存同一原任务并请求手动解锁；不因观察超时/服务瞬断重建任务或Goal。额度由总控唯一负责，无真实额度证据不重置/购买/换模型。
+
+## 隔离验证及继承风险
+
+仍不得在用户当前Mac桌面启动Electron/e2e/native/HMR或显示/聚焦/恢复测试窗口。现有Docker已响应Linux arm64 daemon（context desktop-linux），只读证据见总控I04-linux-isolation-runtime-observation.json；镜像、依赖、Electron/Xvfb和显示/焦点尚未核验。可以在既有daemon中准备本线隔离的Linux虚拟显示测试环境，无用户Mac测试窗口，不共享宿主可变依赖、输出和DB。daemon存在不等于验收，arm64不冒充CI架构，真实跨平台CI仍必跑；不为测试启动Docker桌面/新VM或安装宿主服务抢占当前桌面。
+
+I03继承native驱动启动同步风险未定因/未修。新增原生联验不能靠盲循环、放宽断言、禁hang monitor或stub原生故障绕过；若复现，保留上下文、定因，必要修复纳入I04验证与新候选双审。本派发下文的条件性交接前置条件已经实际满足，按本次真实合并基线执行；其他原验收不减。
+
+
+你是本体项目 I04 独立单功能开发会话。仅负责 S2 常驻协调器与 ExecutionJob 最小基础设施，以及该功能的验证、修复、双指定模型复审、推送和正常 PR 合并。总控已授权你完成这一完整功能；不要创建另一个功能会话、不要夹带 I05 语义能力或 I06 网关。
+
+真实工作目录：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-resident-jobs`。
+唯一分支：`feature/I04-resident-jobs`。
+初始 base：`e45e6038b5e0f8f4adc69ed55aafccd75b3d3500`。
+实际远端：https://github.com/NOmoreJoke/OntoLearn-Studio.git。
+目标分支 develop，用户已确认其为目标中的 dev；不创建 dev、不合 main、不发 Release。
+
+先完整读取该 worktree 最新 AGENTS、总控 goal-objective.md/scope.md/state.json/parallel-coordination.md、本提示词实际替换后的版本、最新 I03 的 ADR/protocol/jobs-and-storage/shared-state/acceptance 与公共规范资源，以及原 M0 计划 S2 全文和 PRD 对应 FR/附录 C–G。以实际已经双审批准并合并的版本为依据，不能从本草案任何历史候选或受审未批准候选推定最终设计。
+
+独立设立 Goal，覆盖 I04 开发、原验收、两指定实际独立任务对同一完整 base/head 均通过、全部意见处置、推送/PR/实际 CI/正常合并/远端核验。维护本线 docs/reviews/I04/status.md 及可恢复检查点，不改总控 state.json。核验实际 Git 根/branch/base/remote 与保护清单后才实施。
+
+### 唯一功能及原验收
+
+1. 实际 Python 常驻协调器与主进程监督，hello 协商、registry 原始字节 SHA/资源来源、只开放已实现验证的能力。同一会话多次 health 复用同一进程，TS/Python 双端同步切换 v2；v1 开发骨架与旧组合显式不兼容，不长期维护两套业务协议；修正旧“持久任务在 M1 再设计”注释。
+2. 真实严格 JSONL reader：拆包/粘包/跨 chunk UTF-8、多字节、坏 JSON、未知方法、重复 ID、嵌套 JSON 重复键、无交集、超长未终止帧、连续超限 chunk、终态后 chunk。追加前按字节上限拒绝，停止累积并清理相关 pending；stdout 只协议且及时 flush，stderr 有界脱敏。TS/Python 消费同一已批准规范与公共正反例。
+3. 独立 requestId、全局持久 jobId/operationId、可替换 session/subscription、seq 与项目归属联合校验。并发与乱序关联正确；未知/重复/旧会话/旧项目/旧订阅响应不能结算新请求或污染 UI。
+4. 有界队列/全局并发/项目单 writer；只读任务绑定不可变快照。启动、握手、单请求、任务总时限、心跳、取消收尾、帧/队列/分页/内存分别有界。忙碌计算仍能处理取消/心跳；心跳不延长总时限；无总量只显示阶段，不捏造百分比。隔离 worker 故障不能误终止其他任务，单 job 取消不杀整个协调器。
+5. job 状态只由协调器应用服务写入与 S1 同一个 SQLite 真相。正式数据/版本/所有权/失效/operation/job 提交证据保持同事务；持久 operation_claims 全局唯一及完整输入指纹。不得建立第二个 JSON/数据库权威终态。job 输入、确认、定义/准备计划、范围/快照/参数和实现来源完整绑定，不能只比较部分 hash。
+6. 逐项运行已批准 I03 的 S1 故障对账矩阵：提交前/事务中故障，磁盘错误，旧基线，响应丢失，取消与完成竞态，零轮取消，部分轮次取消/崩溃，最后轮提交但缺完整终态，完整最终提交与终态之后才取消，迟到旧结果和真实依赖/集合变化。先隔离/fence 旧 writer、获得项目写序列权，再查同事务 marker；不以异常文本、最后轮编号或“已有提交”猜成功，不自动重放写入或续跑。已提交历史不可删除或改写。
+7. 实际 Python→主进程→受限业务命名 bridge→UI 链路保留 code/messageKey/受限 params/retryable；UI 依 PRD 8.6 给四段式、可操作说明。取消、过期、历史、不支持、失败与状态待对账分别表达。SQLite 按真实 errorcode 分类，未知内部异常安全兜底；不回传原值、路径、URI、堆栈或凭据。retryable 不是自动重放许可。
+8. 实际 I02 窗口重建后按 project/job 查询持久权威状态与提交点、重建订阅，拒绝旧通知，不重发写任务；页面卸载仅解除订阅、不取消后台任务。必须覆盖 renderer 崩溃/无响应时已提交数据保留及恢复。原生可见/焦点/故障恢复放在实际隔离环境或另行明确授权时段，不能用 headless/最小化/禁 hang monitor/stub 原生提示抵扣。
+9. 与 U1 M0 身份/依赖/分页和未来 I05/I06 的已批准边界对齐；资源投影/确认/来源读取不得信任 renderer 自报。测试专用任务可用于排队、取消、提交对账和故障探针，但不登记为已实现业务能力、不实现业务 UI/映射/行为/沙盘产品。用于验证基础设施的真实 Store 提交与轮次证据不能换成内存 mock。定义集合与真实依赖从权威快照计算，并在实际提交/发布边界复验。
+10. 更新 ADR-0003 的采用/修订结论须基于真实运行证据，不能仅因设计批准登记运行实现完成。依赖/协议资源打包按唯一规范显式纳入并核验包内 SHA，不依赖源码 checkout 路径。
+
+### 文件责任与并行方式
+
+本线负责实际 coordinator/worker/stdio runtime、主进程监督和 pending、窄 preload/bridge/UI 最小状态错误接线、S1 内必要 job/operation 持久化及提交对账、批准契约的实现状态/资源装配、对应测试/ADR/I04 文档。I03 已结束的契约成为基线；需要任何受审契约变更时记录原因与范围，在 I04 新候选完整双审，不私自变更对外语义。
+
+Python 依赖/锁文件仍由 I05 统一协调；不修改其冻结独立分支，不提前接入其业务语义。I06 网关目录/凭据模块由 I06 所有者维护，本线仅实现其未来需要的实际主进程/任务基础边界，不复制网关。共享入口/打包脚本交接须由总控记录后单一维护。
+
+按 AGENTS 拆分可独立子任务并用独立 agent/worktree，先写接口与文件责任；共享契约、Store、迁移和入口仅唯一维护者修改，避免争写。复杂部分另有独立只读审查，不能替代指定外部双审。实现子任务不另建用户功能会话、不把子任务通过当全 I04 完成。
+
+### 条件性交接：仅在对应 I03 最终设计批准合并后适用
+
+本节用于对齐原 S2 基础设施范围与审查后交接；候选5已同版双审通过，仍须原 I03 完成真实 CI 与 develop 合并后方可在 I04 采用，不删除原验收，也不把业务条款提前记为已完成。派发时逐条核对最终合并版 I03 protocol/jobs-and-storage/acceptance、两份最终报告及全部历史处置，替换发生变化的具体目录/布局。
+
+- 保留统一 npm run typecheck/check 入口对 contracts 源码、全部 unit 和 desktop 的严格覆盖；实际消费唯一错误目录的参数含义、消息键配对、版本及字节预算。UI 依据有限参数和可信请求上下文组织四段式说明，不从 namespace 猜产生者、不解析异常正文归责；parameterMeanings 是语义目录而非可直接显示的界面文案，本地化按已批准 messageKey 与受限参数映射。未知来源安全兜底，不另建目录或外传内部细码。
+- 内部 kind 到公开有限枚举须显式白名单映射或拒绝未知；不 trim、大小写归并或合并既存 current 身份。真实 Store 反例须证明不同内部键未被静默改写；旧数据问题记录保全及明确修复策略，不自动破坏性迁移。R6 历史增长保留原等级开放/延期；扫描只承接实际负载测量及修复策略，不预设性能缺陷或夹带优化。
+- I03 R2 MiniMax R2-F1（P3、允许延期）必须在 I04 接入 Python 通知处理前闭环：服务端受信 binding 的 lastSeq/stateVersion/state 及其身份字段须由可信侧构造并校验，缺字段、字符串数值、非法状态等安全拒绝，不让 KeyError/TypeError 逃逸或静默默认成初始序号/状态。沿用现有安全错误边界，不外传原异常。保留并复用本轮 24 个差异反例，增加合法绑定接受、错形状拒绝及真正接入链路回归；这些反例只改单个受信 binding 字段，公共通知 wire 值与合法基线相同，不能误称当前公共通知输入跨端分歧或权限泄漏。修复/回归纳入 I04 自己的新候选与双方全范围审查，不把 I03 当前通过当作修复已完成。
+- 接收同会话通知不等于应用：实际应用联合校验 project/job/subscription、进程/会话代次、seq/stateVersion；重连通过 job.get 对账。job.cancel 响应保留取消决策线性化时快照，accepted/queued 不等于最终 cancelled；后续状态从持久记录和订阅读取，不改写历史响应或让迟到快照倒退当前状态。
+- F6 终态摘要的 I04 基础设施子项必须用测试专用逐轮工作负载，经真实 worker、Job、Store 事务及不可变 result.get/result.page 链路执行。事件输入、消费记录、提交轮次、快照和 pendingEventCount 来自实际执行及持久证据，不手填终态、不伪造提交点、不用 mock 摘要抵扣。验证达到所选 maxRounds 时仍有事件和队列为空两种情况；队列为空不新增提前停止规则。覆盖零提交、部分提交后失败/取消、摘要与 job/run/snapshot 不一致、缺失、畸形、载荷回收、原 resultId 绑定及稳定分页；摘要仅出现在首个非游标页面，不可用时不展示“全部处理完成”。最小状态接线只表达任务结束、未处理事件及不可用状态。
+- 上项只关闭 F6 基础设施子项，不证明 E.2 全阶段、E.5/G.4 工单创建/完成集合、资源产能、领域指标或业务重放正确，也不完成 FR-704 业务场景结果页。上述业务计算和页面仍待实际领域执行器，保留未通过，不注册场景业务能力，不把测试任务称为真实 E.2 生产运行；不可将整条 FR/附录业务验收勾选完成。该边界来自原 I04 仅做基础设施和测试任务、非业务沙盘产品的范围，不能用于少做真实任务/存储/结果/窗口联验。
+- F5 内部错误到公共安全类别的适配必须在实际 producer/入口/可信上下文确定后实现，不能按异常码机械映射未知来源。未来扩 schema 词汇/默认上界先统一 TS/Python 行为并重新审查。I05 已保存 v4 所选不可变结果投影实施2a8dcad、流程929ebff；真实接入时先核对其最新原会话检查点及唯一资源/入口归属，不把私有指纹当权限或 blob 内容散列，也不代宣称 I05 全迭代完成。
+
+### 验证与双审合并
+
+运行实际改动对应的 npm run check、verify:sources、公共 TS/Python 一致性、真实子进程/worker/SQLite 故障与资源边界测试；若引擎入口/资源装配变化，做真实 package:dir 和包内同样例。桌面 e2e 与原生恢复仍属必验，当前本机只执行无窗口工作，缺隔离环境则保留待验，继续其他独立实现；不让测试自动启动产物。完整保留失败与限界，静态/纯模块/运行/包内/CI/生产证据分开。
+
+实际实现、测试、配置、依赖和验收完成后本地提交，冻结真实 base/head、文件清单及工作区影响。由本会话用 computer use 在 ZCode GLM-5.3/最高和 MiniMax Code M3.1-Flash/xhigh 各新建独立全范围只读任务，逐次核验精确 I04 路径/分支/模型/思考/创建及实际终态。复审双方各新建，不复用、不互相提前透露本轮结论。 两模型共享同一受审路径时，check/build/package 等会写 out/release/build 的命令由本开发会话唯一串行预约；只有真正独立输出环境才可并行。只读及无冲突验证可并行，不能把互相覆盖的构建产物当独立证据。完整审查提示词采用总目标原文并填真实值、传递最新无桌面打扰及额度规则；只允相关验证与各自报告，受审代码冻结。
+
+两完整正式报告实际读回，所有意见逐项采纳/部分采纳/不采纳/延期及证据；不能自己把不通过改通过或降阻断。受审实现/测试/配置/依赖/验收或集成基线变化，重新验证/新候选/双方新审查。单纯流程证据按 hash 关联，不无故重审。
+
+只有原验收通过、双方同版明确通过、阻断全关闭和意见均处置、待推送与受审一致才 push verified origin。创建指向 develop 的 PR 并 attach_artifact；实际 CI 全绿并遵守分支保护后正常合并，不 admin/绕检查。CI 改受审内容必须回完整双审；目标分支变化按原规则同步和复验复审。合并后核验远端包含受审功能、树/提交和必要 CI，保存准确记录后才完成 I04 Goal。
+
+遇锁屏/服务/额度等按实际来源分类，保存原任务与候选；只恢复真实支持的原任务，不因观察超时新建替代。额度恢复由总控唯一协调，不能把暂时服务错误当耗尽；不绕过逐次确认或新增付费条件。完整 Goal 未达成不得完成或擅自暂停；真正同一阻塞连续三个 Goal 回合且无可做独立工作后按工具规则 blocked，恢复继续同一会话。
+
+
+## 最新总目标第九节全文
+
+九、效率优先、额度恢复与持续执行（2026-10-20 用户更新）
+
+本节与最新 AGENTS/scope 一起适用于总控、现有功能 Goal、后续开发会话及模块子任务；与旧提示词统一串行、额度不足一律停止后项的文字冲突时，以本节为准。用户表示 ZCode、Codex、MiniMax Code 均仍有额外重置次数；这属于用户提供的权益信息，实际余额、可用次数和恢复结果须在执行时核实，不假定无限额度。
+
+1. **开发效率优先。** 不以节省 token 为目标压缩需求、实现、异常处理、必要上下文或验证；以正确交付和缩短关键路径为目标。充分利用实际可用的 agent 并发槽、独立 worktree 与 feature 分支，尽早开展不依赖尚未就绪接口的设计、真实探针和独立模块。不是为提高 token 消耗而重复探索、无变化重测、无效轮询或新增无关范围；普通任务不强设三轮。
+2. **保留指定模型与门禁。** ZCode 的 GLM-5.3/最高思考、MiniMax Code 的 M3.1-Flash/xhigh 继续适用；Codex 保持任务既有设置，按复杂度和已授权工具能力分配 agent，不因节省额度擅自降级或更换模型。独立审查、冻结候选、原验收、双模型通过、CI 与远端核验要求均不变。
+3. **额度受限先恢复。** 出现实际额度告警或明确 rate/usage-limit 错误时，先区分额度耗尽、短时限速、服务故障、账单异常和认证错误，保存 base/head、任务标识、报告与已运行证据。由总控指定每个平台/账号唯一额度负责人，查询当前额度、可用重置权益及恢复条件；不要让多个并行任务同时消费同一权益或重复充值。
+4. **已有权益优先自动使用。** 用户已授权在平台及工具允许的范围内，额度受限时使用该账号已有的额外重置次数、已购余额或已配置的官方恢复能力，尽快继续原任务。仅调用实际可用、经核验的官方入口；无需逐次确认且无额外新增支付时可自动执行。若工具或平台要求该次确认，则按该要求办理；若只有会占用用户桌面的 UI 入口，先保存状态，等待隔离环境或用户明确给出的可用时段。不得绕过确认、支付验证或无桌面打扰约束。
+5. **Codex 的具体限制。** 优先使用 `get_usage_limits` 查询；当前 `consume_usage_reset` 工具仅在五小时或周额度剩余不高于 10% 时尝试兑换已有重置，并硬性要求每次使用都取得用户对该次操作的明确确认。本节的未来批量授权不能替代该次确认。确认后每个逻辑尝试使用唯一 `idempotencyKey`，不确定结果重试必须复用原 key；`reset`/`alreadyRedeemed` 均表示该尝试已完成，不能再次消费；`noCredit`/`nothingToReset` 不得记为成功。使用后查询实际额度，区分兑换完成与额度刷新失败，不直接重复兑换。
+6. **ZCode / MiniMax Code 的机制核实。** 两者的额外重置次数由用户说明，目前未在本任务中核验可调用的恢复接口或实际余额。遇限时由对应开发线核实官方状态与入口，满足第 4 条才自动使用；没有支持的方式时如实记录缺少条件。不得猜测私有接口、索取或打印凭据、自动点击未知付款按钮，亦不得声称已配置三平台无人值守充值。
+7. **重置与新增付费充值分开。** 优先消费已有权益。本次用户未给出新增付款的单次金额、累计上限或套餐选项；“不考虑 token”不是无限额新增付款授权。确需新增支出时，先查明实际可选方案与费用，在交易前明确并确认单次金额及累计上限；已有明确金额授权可按其范围执行，平台/支付工具要求逐次确认时仍遵守。不得通过擅自切换付费 API、订阅升级或其他账号绕过额度门禁。
+8. **恢复后续跑、受限时不停无关工作。** 以平台实际确认及额度读回验证恢复结果，再续接原任务与同一候选，不无故新建 Goal、丢弃报告或重跑不变的验证。等待确认、自然恢复或隔离环境时，继续其他已授权且不受限的开发线；保存准确恢复条件，不无限重试。持续到目标达成，但遵守实际工具/系统预算；不能用本节绕过硬限制、伪造自动续跑或将未完成标记完成。
+9. **记录和透传。** 记录平台/账号的不敏感标识、实际额度来源、受限类型、已有权益、该次授权、幂等尝试标识、操作结果和复查结果；不记录凭据或付款敏感信息。总控统一更新状态，新任务提示词必须附本节与无桌面打扰约束；进行中任务在安全边界读取并执行，不改写已归档的冻结输入，不仅因调度/额度政策变化重开产品审查。文档更新不等于运行中 Goal 自动生效，必须向总控及各开发线实际传达并记录接收状态。
+
+
+Latest full goal source, including efficiency/quota section, must be read from: /Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-19/goal-objective.md

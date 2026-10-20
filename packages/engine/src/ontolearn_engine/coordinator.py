@@ -580,7 +580,10 @@ async def serve() -> None:
         reader = JsonlReader()
         try:
             while not stopped.is_set():
-                chunk = sys.stdin.buffer.read1(16384)
+                # The daemon may still be blocked when a session-fatal request
+                # closes the transport. Raw fd reads hold no BufferedReader lock
+                # that could abort interpreter shutdown; normal cleanup still runs.
+                chunk = os.read(sys.stdin.fileno(), 16384)
                 if not chunk:
                     reader.finish()
                     break
@@ -629,11 +632,13 @@ async def serve() -> None:
     handshake_deadline = time.monotonic() + LIMITS["handshakeMs"] / 1000
     try:
         while not coordinator.closed:
+            # Rejected pre-hello requests must not keep a busy inbox alive past
+            # the original absolute deadline or allow a late hello to negotiate.
+            if coordinator.session is None and time.monotonic() >= handshake_deadline:
+                break
             try:
                 value = inbox.get_nowait()
             except queue.Empty:
-                if coordinator.session is None and time.monotonic() > handshake_deadline:
-                    break
                 await coordinator.tick()
                 await asyncio.sleep(0.005)
                 continue

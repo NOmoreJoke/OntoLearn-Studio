@@ -8,6 +8,7 @@ import {
   type TaskUpdate,
 } from '@ontolearn/contracts'
 import { explainError, jobStatus, resultSummary } from './task-presentation'
+import { TaskProgressBuffer } from './task-progress'
 
 const modules = [
   ['01', '定义业务概念', '本体构建'],
@@ -28,6 +29,8 @@ export function App() {
   const current = useRef<TaskView | undefined>(undefined)
   const latestGeneration = useRef(-1)
   const uncertain = useRef(false)
+  const connectionEpoch = useRef(0)
+  const pendingProgress = useRef(new TaskProgressBuffer())
   const updateTasks = useCallback((value: TaskView) => {
     if (value.generation < latestGeneration.current) return false
     latestGeneration.current = value.generation
@@ -42,7 +45,7 @@ export function App() {
       uncertain.current = false
       setConnection(undefined)
       setTaskError(undefined)
-      setProgress({})
+      setProgress(pendingProgress.current.restore(value))
       setSummaries({})
     },
     [updateTasks],
@@ -55,6 +58,7 @@ export function App() {
   }
   useEffect(() => {
     let live = true
+    const progressBuffer = pendingProgress.current
     const stop = window.ontolearn?.onTaskUpdate((update) => {
       if (!live || update.generation < latestGeneration.current) return
       const view = current.current
@@ -66,7 +70,9 @@ export function App() {
         )
           return
         latestGeneration.current = update.generation
+        connectionEpoch.current++
         uncertain.current = true
+        progressBuffer.clear()
         if (view?.project?.projectId === update.projectId)
           updateTasks({ ...view, generation: update.generation })
         else {
@@ -84,6 +90,7 @@ export function App() {
         applyRestored(update.view)
         return
       }
+      if (update.progress) progressBuffer.remember(update)
       if (
         uncertain.current ||
         !view ||
@@ -98,6 +105,12 @@ export function App() {
         return
       }
       if (update.job.stateVersion === old.stateVersion) return
+      progressBuffer.forget(old.jobId)
+      setProgress((previous) => {
+        const next = { ...previous }
+        delete next[old.jobId]
+        return next
+      })
       updateTasks({
         ...view,
         jobs: view.jobs.map((job) => (job.jobId === update.job.jobId ? update.job : job)),
@@ -111,6 +124,7 @@ export function App() {
     return () => {
       live = false
       stop?.()
+      progressBuffer.clear()
       for (const job of current.current?.jobs ?? [])
         void window.ontolearn?.unsubscribeJob(job.jobId, current.current!.generation)
     }
@@ -145,6 +159,10 @@ export function App() {
   }
   const [checking, setChecking] = useState(false)
   async function checkEngine() {
+    const generation = latestGeneration.current
+    const epoch = connectionEpoch.current
+    const acceptsReply = () =>
+      generation === latestGeneration.current && epoch === connectionEpoch.current
     setChecking(true)
     try {
       const response = window.ontolearn
@@ -158,9 +176,9 @@ export function App() {
               retryable: true,
             }),
           }
-      setResult(response)
+      if (acceptsReply()) setResult(response)
     } catch {
-      setResult({ ok: false, error: safeError(undefined) })
+      if (acceptsReply()) setResult({ ok: false, error: safeError(undefined) })
     } finally {
       setChecking(false)
     }

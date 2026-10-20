@@ -11,6 +11,7 @@ import time
 from uuid import uuid4
 
 import pytest
+from ontolearn_engine.process_environment import worker_environment
 from ontolearn_engine.resources import CONTRACT
 
 
@@ -94,6 +95,106 @@ class Session:
         assert self.process.stderr.read() == b""
         self.process.stdout.close()
         self.process.stderr.close()
+
+
+def test_default_handshake_deadline_closes_real_source_or_packaged_transport(tmp_path):
+    """Same default-duration stdio case runs in check and verify-i04-package.
+
+    The deterministic busy-inbox tests separately pin the exact deadline edge;
+    this case verifies default-budget liveness/clean shutdown in the real binary.
+    A fast consumer can empty the finite traffic batch before the deadline.
+    """
+    command = (
+        [os.environ["ONTOLEARN_TEST_ENGINE"]]
+        if os.environ.get("ONTOLEARN_TEST_ENGINE")
+        else [sys.executable, "-I", "-m", "ontolearn_engine"]
+    )
+    process = subprocess.Popen(
+        command,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=worker_environment()
+        | {
+            "ONTOLEARN_DB_PATH": str(tmp_path / "handshake.sqlite"),
+            "ONTOLEARN_ALLOWED_PROJECTS": "[]",
+        },
+    )
+    replies = queue.Queue()
+    transport_errors = []
+    sent = [0]
+
+    def read():
+        try:
+            for line in process.stdout:
+                replies.put(json.loads(line))
+        except Exception as error:
+            transport_errors.append(type(error).__name__)
+
+    def frame():
+        return {
+            "kind": "request",
+            "id": str(uuid4()),
+            "protocolVersion": 2,
+            "engineSessionId": None,
+            "method": "health",
+            "params": {},
+        }
+
+    def write():
+        try:
+            while sent[0] < 60000 and time.monotonic() < started + 5.8:
+                process.stdin.write(json.dumps(frame()).encode() + b"\n")
+                sent[0] += 1
+            process.stdin.flush()
+        except BrokenPipeError:
+            pass  # Expected: the server closes while the caller still owns stdin.
+        except Exception as error:
+            transport_errors.append(type(error).__name__)
+
+    reader = threading.Thread(target=read, daemon=True)
+    writer = None
+    reader.start()
+    try:
+        process.stdin.write(json.dumps(frame()).encode() + b"\n")
+        process.stdin.flush()
+        first = replies.get(timeout=8)
+        assert first["error"]["code"] == "HANDSHAKE_REQUIRED"
+        started = time.monotonic()
+        writer = threading.Thread(target=write, daemon=True)
+        writer.start()
+        assert process.wait(timeout=7) == 0  # Do not close stdin to trigger EOF.
+        elapsed = time.monotonic() - started
+        writer.join(timeout=2)
+        reader.join(timeout=2)
+        assert not writer.is_alive() and not reader.is_alive()
+        assert sent[0] > 0 and elapsed < 6
+        assert process.stderr.read() == b"" and not transport_errors
+        observed = [first]
+        while not replies.empty():
+            observed.append(replies.get_nowait())
+        for value in observed:
+            assert CONTRACT.validate("response", value)
+            assert value["method"] == "health" and value["engineSessionId"] is None
+            assert value["ok"] is False and value["error"] == {
+                "code": "HANDSHAKE_REQUIRED",
+                "messageKey": "protocol.handshakeRequired",
+                "params": {},
+                "retryable": False,
+            }
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait(timeout=3)
+        if writer:
+            writer.join(timeout=2)
+        reader.join(timeout=2)
+        try:
+            process.stdin.close()
+        except BrokenPipeError:
+            pass
+        process.stdout.close()
+        process.stderr.close()
 
 
 @pytest.fixture
