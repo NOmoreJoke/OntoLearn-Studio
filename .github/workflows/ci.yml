@@ -55,6 +55,12 @@ jobs:
         env:
           I04_TEST_FIXTURE: ${{ github.workspace }}/build/i04-reload-ci/fixture.json
       - run: npm run package:dir
+      - name: I04 coordinator exit reconciles the active renderer
+        run: |
+          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-disconnect-ci
+          xvfb-run -a sh -c 'openbox > /tmp/i04-disconnect-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "coordinator exit" --output=test-results/i04-disconnect'
+        env:
+          I04_TEST_FIXTURE: ${{ github.workspace }}/build/i04-disconnect-ci/fixture.json
       - run: uv run --frozen python scripts/verify-i04-package.py release build/i04-package-ci
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()

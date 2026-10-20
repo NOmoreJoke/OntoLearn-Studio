@@ -2,8 +2,9 @@ import { test, expect, _electron as electron } from '@playwright/test'
 import { spawn, execFile } from 'node:child_process'
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { resolve, join } from 'node:path'
+import { resolve, join, basename } from 'node:path'
 import { promisify } from 'node:util'
+import type { TaskUpdate } from '@ontolearn/contracts'
 
 const execute = promisify(execFile)
 const fixturePath = process.env.I04_TEST_FIXTURE
@@ -85,6 +86,139 @@ test('I04 reload re-queries the same durable jobs without creating or cancelling
       } as never),
     )
     expect(denied.ok).toBe(false)
+  } finally {
+    await application.close()
+  }
+})
+
+test('I04 coordinator exit reconciles the open view without replaying jobs', async () => {
+  const testInfo = test.info()
+  test.skip(
+    process.platform !== 'linux' || !fixturePath,
+    'Requires a fresh isolated Linux fixture.',
+  )
+  const application = await electron.launch({
+    ...(process.env.ONTOLEARN_PACKAGED_EXECUTABLE
+      ? { executablePath: process.env.ONTOLEARN_PACKAGED_EXECUTABLE }
+      : {}),
+    args: appArgs(),
+    cwd: resolve('apps/desktop'),
+    env: environment(),
+  })
+  try {
+    const page = await application.firstWindow()
+    await expect(page.getByRole('region', { name: '后台任务状态' })).toBeVisible()
+    const first = await page.evaluate(() => window.ontolearn!.restoreTasks())
+    if (!first.ok) throw new Error('initial durable view unavailable')
+    const active = first.data.jobs.find((job) => ['queued', 'running'].includes(job.state))
+    const committed = first.data.jobs.find((job) => job.state === 'succeeded')
+    expect(active).toBeDefined()
+    expect(committed).toBeDefined()
+    const marker = await page.evaluate(
+      (identity) => window.ontolearn!.getOperation(identity),
+      committed!.operationId,
+    )
+    expect(marker.ok && marker.data !== null).toBe(true)
+    await expect
+      .poll(async () => {
+        const job = await page.evaluate(
+          (identity) => window.ontolearn!.getJob(identity),
+          active!.jobId,
+        )
+        return (
+          job.ok &&
+          Boolean((job.data.commitProgress as { committedProgress: unknown }).committedProgress)
+        )
+      })
+      .toBe(true)
+    const before = await page.evaluate(
+      (identity) => window.ontolearn!.getJob(identity),
+      active!.jobId,
+    )
+    if (!before.ok) throw new Error('committed running job unavailable')
+    await page.evaluate(() => {
+      const record: { updates: TaskUpdate[]; sawUnconfirmed: boolean; actionsDisabled: boolean } = {
+        updates: [],
+        sawUnconfirmed: false,
+        actionsDisabled: false,
+      }
+      ;(window as unknown as { i04Recovery: typeof record }).i04Recovery = record
+      window.ontolearn!.onTaskUpdate((update) => record.updates.push(update))
+      new MutationObserver(() => {
+        const status = document.querySelector('[aria-label="引擎连接状态"]')
+        if (!status) return
+        record.sawUnconfirmed ||= Boolean(status.textContent?.includes('当前状态尚未确认'))
+        const buttons = [...document.querySelectorAll('button')].filter(
+          (button) => button.textContent === '请求取消',
+        )
+        record.actionsDisabled ||= buttons.length > 0 && buttons.every((button) => button.disabled)
+      }).observe(document.body, {
+        subtree: true,
+        childList: true,
+        characterData: true,
+        attributes: true,
+        attributeFilter: ['disabled'],
+      })
+    })
+    const parent = application.process().pid!
+    const children = await execute('ps', ['-o', 'pid=', '--ppid', String(parent)])
+    const engines: number[] = []
+    for (const value of children.stdout.trim().split(/\s+/)) {
+      if (!/^\d+$/.test(value)) continue
+      const arguments_ = (await readFile(`/proc/${value}/cmdline`)).toString('utf8').split('\0')
+      if (arguments_.includes('ontolearn_engine') || basename(arguments_[0]) === 'ontolearn-engine')
+        engines.push(Number(value))
+    }
+    expect(engines).toHaveLength(1)
+    process.kill(engines[0], 'SIGKILL')
+    await expect(page.locator(`[data-job-id="${active!.jobId}"]`)).toContainText('执行失败', {
+      timeout: 15000,
+    })
+    await expect(page.getByRole('status', { name: '引擎连接状态' })).toHaveCount(0)
+    const record = await page.evaluate(
+      () =>
+        (
+          window as unknown as {
+            i04Recovery: {
+              updates: TaskUpdate[]
+              sawUnconfirmed: boolean
+              actionsDisabled: boolean
+            }
+          }
+        ).i04Recovery,
+    )
+    expect(record.sawUnconfirmed).toBe(true)
+    expect(record.actionsDisabled).toBe(true)
+    const disconnected = record.updates.find((update) => update.kind === 'connection')
+    const restored = record.updates.find((update) => update.kind === 'restored')
+    expect(disconnected?.kind).toBe('connection')
+    expect(restored?.kind).toBe('restored')
+    if (restored?.kind !== 'restored') throw new Error('no authoritative restored update')
+    expect(restored.view.jobs.map((job) => job.jobId)).toEqual(
+      first.data.jobs.map((job) => job.jobId),
+    )
+    const final = restored.view.jobs.find((job) => job.jobId === active!.jobId)!
+    expect(final.state).toBe('failed')
+    expect(final.operationId).toBe(active!.operationId)
+    expect(final.commitProgress).toEqual(before.data.commitProgress)
+    expect(final.error).toEqual({
+      code: 'ENGINE_EXITED',
+      messageKey: 'engine.exited',
+      params: {},
+      retryable: true,
+    })
+    expect(
+      await page.evaluate(
+        (identity) => window.ontolearn!.getOperation(identity),
+        committed!.operationId,
+      ),
+    ).toEqual(marker)
+    const firstManual = await page.evaluate(() => window.ontolearn!.restoreTasks())
+    expect(firstManual.ok).toBe(true)
+    await testInfo.attach('i04-coordinator-recovery', {
+      body: JSON.stringify({ before: before.data, final, record }, null, 2),
+      contentType: 'application/json',
+    })
   } finally {
     await application.close()
   }
