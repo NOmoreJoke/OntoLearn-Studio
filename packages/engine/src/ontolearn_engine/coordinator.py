@@ -632,11 +632,13 @@ async def serve() -> None:
     handshake_deadline = time.monotonic() + LIMITS["handshakeMs"] / 1000
     try:
         while not coordinator.closed:
+            # Rejected pre-hello requests must not keep a busy inbox alive past
+            # the original absolute deadline or allow a late hello to negotiate.
+            if coordinator.session is None and time.monotonic() >= handshake_deadline:
+                break
             try:
                 value = inbox.get_nowait()
             except queue.Empty:
-                if coordinator.session is None and time.monotonic() > handshake_deadline:
-                    break
                 await coordinator.tick()
                 await asyncio.sleep(0.005)
                 continue
