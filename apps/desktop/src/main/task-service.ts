@@ -43,11 +43,14 @@ interface Watch {
 export class TaskService {
   private projectId: string | null = null
   private generation = 0
+  private projectRevision: number | undefined
   private watches = new Map<string, Watch>()
   private remembered = new Set<string>()
   private earlyBytes = 0
   private earlyEvents = new Map<string, unknown[]>()
   private cancelledSubscriptions = new Set<string>()
+  private dirtyWatches = new WeakSet<Watch>()
+  private reconciliations = new Map<string, Promise<void>>()
   private pendingSubscriptions = new Map<string, Promise<BridgeResult<JobView>>>()
   private release: () => void
   private sink: ((value: TaskUpdate) => void) | undefined
@@ -61,6 +64,7 @@ export class TaskService {
       throw new Error('INVALID_REQUEST')
     this.detachView()
     this.projectId = projectId
+    this.projectRevision = undefined
     this.remembered = new Set(jobs)
   }
   attachView(sink: (value: TaskUpdate) => void): void {
@@ -120,10 +124,48 @@ export class TaskService {
       return { ok: false, error: safeError((error as { error?: unknown } | null)?.error) }
     }
   }
+  private observeProject(project: ProjectView): boolean {
+    if (this.projectRevision !== undefined && project.projectRevision < this.projectRevision)
+      throw {
+        error: {
+          code: 'INVALID_STATE',
+          messageKey: 'protocol.invalidState',
+          params: {},
+          retryable: false,
+        },
+      }
+    const advanced =
+      this.projectRevision !== undefined && project.projectRevision > this.projectRevision
+    this.projectRevision = project.projectRevision
+    if (advanced) {
+      // A revision is a new view generation. Preserve the view delivery target,
+      // discard its subscriptions, and keep each job's immutable input grouping.
+      const sink = this.sink
+      this.detachView()
+      this.sink = sink
+    }
+    return advanced
+  }
+  private async restoreJobs(): Promise<JobView[]> {
+    const jobs: JobView[] = []
+    for (const jobId of this.remembered) {
+      const response = await this.subscribeJob(jobId)
+      if (!response.ok) throw { error: response.error }
+      jobs.push(response.data)
+    }
+    return jobs.map((job) => this.watches.get(job.jobId)?.job ?? job)
+  }
   activeProject(): Promise<BridgeResult<ProjectView | null>> {
-    return this.guard(async () =>
-      this.projectId ? this.call<ProjectView>('project.get', { projectId: this.projectId }) : null,
-    )
+    return this.guard(async () => {
+      if (!this.projectId) return null
+      const project = await this.call<ProjectView>('project.get', { projectId: this.projectId })
+      if (this.observeProject(project)) {
+        const generation = this.generation
+        await this.restoreJobs()
+        if (generation !== this.generation) throw { error: denied }
+      }
+      return project
+    })
   }
   getJob(jobId: string): Promise<BridgeResult<JobView>> {
     return this.guard(() => this.call('job.get', { projectId: this.project(), jobId }))
@@ -197,6 +239,20 @@ export class TaskService {
       // Query first; subscribe's stateVersion must match before accepting notifications.
       for (let attempt = 0; attempt < 3; attempt++) {
         const job = await this.call<JobView>('job.get', { projectId, jobId })
+        if (
+          previous &&
+          (job.stateVersion < previous.binding.stateVersion ||
+            (job.stateVersion === previous.binding.stateVersion &&
+              job.state !== previous.binding.state))
+        )
+          throw {
+            error: {
+              code: 'INVALID_STATE',
+              messageKey: 'protocol.invalidState',
+              params: {},
+              retryable: false,
+            },
+          }
         if (this.cancelledSubscriptions.has(key)) throw { error: denied }
         const subscription = await this.call<{
           subscriptionId: string
@@ -275,22 +331,16 @@ export class TaskService {
   }
   restore(): Promise<BridgeResult<TaskView>> {
     return this.guard(async () => {
-      const generation = this.generation
       const project = this.projectId
         ? await this.call<ProjectView>('project.get', { projectId: this.projectId })
         : null
-      const jobs: JobView[] = []
-      for (const jobId of this.remembered) {
-        const response = await this.subscribeJob(jobId)
-        if (!response.ok) throw { error: response.error }
-        jobs.push(response.data)
-      }
+      if (project) this.observeProject(project)
+      // observeProject can invalidate the old view. Capture its successor only
+      // after that observation, rather than invalidating our own restoration.
+      const generation = this.generation
+      const jobs = await this.restoreJobs()
       if (generation !== this.generation) throw { error: denied }
-      return {
-        generation,
-        project,
-        jobs: jobs.map((job) => this.watches.get(job.jobId)?.job ?? job),
-      }
+      return { generation, project, jobs }
     })
   }
   getResult(resultId: string): Promise<BridgeResult<Record<string, unknown>>> {
@@ -335,6 +385,52 @@ export class TaskService {
       this.earlyBytes -= Buffer.byteLength(JSON.stringify(value))
     this.earlyEvents.delete(key)
   }
+  private reconcile(watch: Watch): void {
+    const generation = this.generation
+    const { jobId, projectId, engineSessionId } = watch.binding
+    const key = `${generation}:${jobId}`
+    this.dirtyWatches.add(watch)
+    if (this.reconciliations.has(key) || this.reconciliations.size >= 16) return
+    // One recovery per job is in flight; each recovery makes at most three
+    // bounded read/subscription attempts, including gaps arriving with a reply.
+    const recovery = Promise.resolve()
+      .then(async () => {
+        const pending = this.pendingSubscriptions.get(key)
+        if (pending) await pending
+        let target = watch
+        for (let attempt = 0; attempt < 3; attempt++) {
+          if (
+            this.generation !== generation ||
+            this.projectId !== projectId ||
+            this.engine.engineSessionId !== engineSessionId ||
+            this.watches.get(jobId) !== target ||
+            this.cancelledSubscriptions.has(key) ||
+            ['succeeded', 'failed', 'cancelled'].includes(target.binding.state)
+          )
+            return
+          this.dirtyWatches.delete(target)
+          const result = await this.subscribeJob(jobId)
+          const current = this.watches.get(jobId)
+          if (
+            !result.ok ||
+            this.generation !== generation ||
+            this.projectId !== projectId ||
+            this.engine.engineSessionId !== engineSessionId ||
+            !current
+          )
+            return
+          if (this.dirtyWatches.has(current)) {
+            target = current
+            continue
+          }
+          this.sink?.({ generation, job: structuredClone(result.data) })
+          return
+        }
+      })
+      .catch(() => {})
+      .finally(() => this.reconciliations.delete(key))
+    this.reconciliations.set(key, recovery)
+  }
   private receive(value: unknown): void {
     if (!validateV2('notification', value)) return
     const event = value as {
@@ -342,6 +438,7 @@ export class TaskService {
       projectId: string
       engineSessionId: string
       jobId: string
+      subscriptionId: string
       seq: number
       data: JobView & { progress?: ProgressView }
     }
@@ -361,10 +458,21 @@ export class TaskService {
     }
     if (
       !watch ||
-      !acceptsJobEvent(value, watch.binding) ||
-      this.engine.engineSessionId !== watch.binding.engineSessionId
+      this.engine.engineSessionId !== watch.binding.engineSessionId ||
+      event.engineSessionId !== watch.binding.engineSessionId ||
+      event.projectId !== watch.binding.projectId ||
+      event.jobId !== watch.binding.jobId ||
+      event.subscriptionId !== watch.binding.subscriptionId
     )
       return
+    if (['succeeded', 'failed', 'cancelled'].includes(watch.binding.state)) return
+    if (!acceptsJobEvent(value, watch.binding)) {
+      // Old/repeated notifications have no authority. A forward sequence gap or
+      // contradictory next state requires a fresh durable snapshot, not guesses.
+      if (event.seq > watch.binding.lastSeq || event.data.stateVersion > watch.binding.stateVersion)
+        this.reconcile(watch)
+      return
+    }
     watch.binding.lastSeq = event.seq
     if (event.event === 'job.progress') {
       this.sink?.({
