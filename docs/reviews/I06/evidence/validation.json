@@ -1,0 +1,50 @@
+{
+  "phase": "independent-core-only",
+  "base": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+  "branch": "feature/I06-model-gateway",
+  "date": "2026-10-20 Asia/Shanghai",
+  "environment": {
+    "node": "v24.15.0",
+    "os": "macOS-27.0.1-arm64-arm-64bit",
+    "electronLocked": "44.9.0",
+    "electronStarted": false
+  },
+  "checks": [
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "typescriptTests": 66,
+      "i06Tests": 62,
+      "pythonTests": 198,
+      "build": "pass; I06 not wired into product entry yet"
+    },
+    {
+      "command": "npm run verify:sources",
+      "exitCode": 0,
+      "archivedFiles": 12
+    },
+    {
+      "command": "independent agent: npx vitest run tests/unit/i06-gateway.test.ts",
+      "tests": 50,
+      "result": "pass"
+    }
+  ],
+  "limits": [
+    "No actual safeStorage/OS credential behavior",
+    "No product integration, durable audit or private ciphertext repository",
+    "No Electron e2e/native/HMR",
+    "No real model/credential/business egress",
+    "No specified external review tasks, push, PR, CI or merge"
+  ],
+  "sourceHashes": {
+    "apps/desktop/src/main/model-gateway/await-boundary.ts": "e0dd898dd90e12b31b76df04a0907288eb14533bb8dd15e8ebb24ed9fc581382",
+    "apps/desktop/src/main/model-gateway/credentials.ts": "f62b381f9e97b29b93f6a0dd4eb0caa3b2980a9a82fa876cc1b0d6be67950c2d",
+    "apps/desktop/src/main/model-gateway/gateway.ts": "db55ed50fb9deb34f20a72030cc539bcc7981905f3129d9c2ee422c413a3e091",
+    "apps/desktop/src/main/model-gateway/policy.ts": "dd09203ebe7e7f655cee40e01c84149a8c121e48ece916fa816cbc2c320d1ced",
+    "apps/desktop/src/main/model-gateway/transport.ts": "16e7816d13dc3ceb0c4e4653503d79e2dfc4149d88a5262c2d755cd5fc3ccb61",
+    "tests/unit/i06-credentials.test.ts": "3769c11299058b80aec9ff2ae50593d11f4854dbded21f39c7dc2bd6a508ff56",
+    "tests/unit/i06-gateway.test.ts": "b5c6a7f48b66f2d02a790fac1e3d7ec83b19bcb1c47db8e0263017cdd550ea1e"
+  },
+  "validationLogSha256": "165b2b861b4372a3a28ad3d65ee53a2764edc073b0b0894cc6de50a7e0361bcd",
+  "protectedAgentsSha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786"
+}
