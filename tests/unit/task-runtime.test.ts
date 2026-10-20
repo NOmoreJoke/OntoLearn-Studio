@@ -80,6 +80,7 @@ interface Notification {
   seq: number
   data: JobView
 }
+type WireNotification = Omit<Notification, 'data'> & { data: unknown }
 function terminalWait() {
   let resolveJob!: (job: JobView) => void
   let rejectWait!: (error: Error) => void
@@ -146,6 +147,7 @@ async function runtime(
     })
     const calls: Array<{ method: string; params: Record<string, unknown> }> = []
     const received: Notification[] = []
+    const allReceived: WireNotification[] = []
     let dropped: Notification | undefined
     let jobId = ''
     let forward: ((value: unknown) => void) | undefined
@@ -209,6 +211,7 @@ async function runtime(
       onNotification(listener: (event: unknown) => void) {
         forward = listener
         return supervisor.onNotification((value) => {
+          allReceived.push(structuredClone(value as WireNotification))
           const event = value as Notification
           if (event.event === 'job.state' && event.jobId === jobId) {
             received.push(structuredClone(event))
@@ -277,6 +280,7 @@ async function runtime(
         job: result.data,
         evidence,
         received,
+        allReceived,
         dropped,
         calls,
         views,
@@ -498,7 +502,15 @@ describe('actual Python → supervisor → task service runtime', () => {
   }, 20000)
   it('recovers one omitted real state notification through a durable read and fresh subscription', async () => {
     const result = await runtime('test.rounds', { workMs: 200, maxRounds: 3 }, true)
-    expect(result.terminal.state).toBe('succeeded')
+    expect(
+      result.terminal.state,
+      JSON.stringify({
+        terminalError: result.terminal.error,
+        durableState: result.evidence.job.state,
+        durableError: result.evidence.job.error,
+        rounds: result.evidence.rounds,
+      }),
+    ).toBe('succeeded')
     expect(result.job.state).toBe('succeeded')
     expect(result.evidence.job).toEqual(result.job)
     expect(result.evidence).toMatchObject({
@@ -509,11 +521,14 @@ describe('actual Python → supervisor → task service runtime', () => {
     })
     expect(result.dropped).toBeDefined()
     expect(validateV2('notification', result.dropped)).toBe(true)
-    const later = result.received.find(
+    // A genuine progress frame can expose the missing state sequence before
+    // another state arrives. It must trigger the same durable reconciliation.
+    const later = result.allReceived.find(
       (event) =>
         event.subscriptionId === result.dropped!.subscriptionId && event.seq > result.dropped!.seq,
     )
     expect(later).toBeDefined()
+    expect(validateV2('notification', later)).toBe(true)
     expect(
       new Set(result.received.map((event) => event.subscriptionId)).size,
     ).toBeGreaterThanOrEqual(2)
