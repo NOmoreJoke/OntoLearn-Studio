@@ -193,6 +193,86 @@ describe('trusted task bridge', () => {
     ).toEqual([{ generation: next.data.generation, input: before.data.jobs[0].inputSnapshotId }])
     tasks.dispose()
   })
+  it('fences old notifications on atomic completion and emits a re-read full revision view', async () => {
+    const { engine, tasks } = service()
+    engine.job = {
+      ...fixture('atomic queued no commit'),
+      state: 'running',
+      stateVersion: 2,
+    } as JobView
+    const updates: TaskUpdate[] = []
+    let restored!: (view: import('@ontolearn/contracts').TaskView) => void
+    const restoration = new Promise<import('@ontolearn/contracts').TaskView>((done) => {
+      restored = done
+    })
+    tasks.attachView((value) => {
+      updates.push(value)
+      if ('restoredView' in value)
+        restored(
+          (value as TaskUpdate & { restoredView: import('@ontolearn/contracts').TaskView })
+            .restoredView,
+        )
+    })
+    const before = await tasks.restore()
+    if (!before.ok) throw new Error('initial restore failed')
+    const oldSubscription = engine.subscriptionId
+    const original = engine.request.bind(engine)
+    let started!: () => void
+    const reading = new Promise<void>((done) => {
+      started = done
+    })
+    let resolve!: (value: unknown) => void
+    let projection: unknown
+    engine.request = async (method, params) => {
+      const response = await original(method, params)
+      if (method === 'project.get') {
+        projection = response
+        started()
+        return new Promise((done) => {
+          resolve = done
+        })
+      }
+      return response
+    }
+    const final = fixture('atomic succeeded committed') as JobView
+    ;(final.commitProgress as { marker: { projectRevision: number } }).marker.projectRevision = 2
+    engine.job = final
+    engine.projectRevision = 2
+    engine.inputSnapshotId = 'b'.repeat(64)
+    const calls = engine.calls.length
+    engine.emit(stateEvent(engine, final))
+    // These are valid old-subscription notifications while project.get is pending.
+    for (let seq = 2; seq <= 4; seq++)
+      engine.emit({
+        ...stateEvent(
+          engine,
+          {
+            ...fixture('atomic queued no commit'),
+            state: 'running',
+            stateVersion: seq + 2,
+          } as JobView,
+          seq,
+        ),
+        subscriptionId: oldSubscription,
+      })
+    await reading
+    expect(updates).toEqual([])
+    resolve(projection)
+    const view = await restoration
+    expect(view.generation).toBe(before.data.generation + 1)
+    expect(view.project?.projectRevision).toBe(2)
+    expect(view.project?.inputSnapshotId).toBe('b'.repeat(64))
+    expect(view.jobs[0]).toEqual(final)
+    expect(view.jobs[0].inputSnapshotId).toBe(before.data.jobs[0].inputSnapshotId)
+    expect(engine.calls.slice(calls).map((call) => call.method)).toEqual([
+      'job.unsubscribe',
+      'project.get',
+      'job.get',
+      'job.subscribe',
+    ])
+    expect(updates).toHaveLength(1)
+    tasks.dispose()
+  })
   it('observes activeProject revision once, rebuilds read subscriptions, and rejects an older projection', async () => {
     const { engine, tasks } = service()
     await tasks.restore()

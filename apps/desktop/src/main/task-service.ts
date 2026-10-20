@@ -44,6 +44,7 @@ export class TaskService {
   private projectId: string | null = null
   private generation = 0
   private projectRevision: number | undefined
+  private projectRefresh = new Map<number, Promise<void>>()
   private watches = new Map<string, Watch>()
   private remembered = new Set<string>()
   private earlyBytes = 0
@@ -124,7 +125,7 @@ export class TaskService {
       return { ok: false, error: safeError((error as { error?: unknown } | null)?.error) }
     }
   }
-  private observeProject(project: ProjectView): boolean {
+  private observeProject(project: ProjectView, alreadyFenced = false): boolean {
     if (this.projectRevision !== undefined && project.projectRevision < this.projectRevision)
       throw {
         error: {
@@ -137,7 +138,7 @@ export class TaskService {
     const advanced =
       this.projectRevision !== undefined && project.projectRevision > this.projectRevision
     this.projectRevision = project.projectRevision
-    if (advanced) {
+    if (advanced && !alreadyFenced) {
       // A revision is a new view generation. Preserve the view delivery target,
       // discard its subscriptions, and keep each job's immutable input grouping.
       const sink = this.sink
@@ -385,6 +386,48 @@ export class TaskService {
       this.earlyBytes -= Buffer.byteLength(JSON.stringify(value))
     this.earlyEvents.delete(key)
   }
+  private refreshProject(watch: Watch): void {
+    if (this.projectRefresh.has(this.generation) || this.projectRefresh.size >= 16) return
+    const { projectId, engineSessionId } = watch.binding
+    // A verified current subscription can request an authority read, but its
+    // marker is not itself the project projection. Fence old delivery now so
+    // no late old-input state can reach this view while that read is pending.
+    const sink = this.sink
+    this.detachView()
+    this.sink = sink
+    const generation = this.generation
+    const refresh = Promise.resolve()
+      .then(async () => {
+        if (
+          this.projectId !== projectId ||
+          this.generation !== generation ||
+          this.engine.engineSessionId !== engineSessionId
+        )
+          return
+        const project = await this.call<ProjectView>('project.get', { projectId })
+        this.observeProject(project, true)
+        const jobs = await this.restoreJobs()
+        if (
+          this.projectId !== projectId ||
+          this.generation !== generation ||
+          this.engine.engineSessionId !== engineSessionId ||
+          !jobs.length
+        )
+          return
+        const restoredView: TaskView = { generation, project, jobs }
+        const update: TaskUpdate & { restoredView: TaskView } = {
+          generation,
+          job: jobs[0],
+          restoredView,
+        }
+        this.sink?.(update)
+      })
+      .catch(() => {})
+      .finally(() => {
+        this.projectRefresh.delete(generation)
+      })
+    this.projectRefresh.set(generation, refresh)
+  }
   private reconcile(watch: Watch): void {
     const generation = this.generation
     const { jobId, projectId, engineSessionId } = watch.binding
@@ -466,6 +509,21 @@ export class TaskService {
     )
       return
     if (['succeeded', 'failed', 'cancelled'].includes(watch.binding.state)) return
+    const commit =
+      event.event === 'job.state'
+        ? (event.data.commitProgress as {
+            mode: string
+            marker?: { projectRevision: number } | null
+          })
+        : undefined
+    if (
+      commit?.mode === 'atomic' &&
+      commit.marker &&
+      (this.projectRevision === undefined || commit.marker.projectRevision > this.projectRevision)
+    ) {
+      this.refreshProject(watch)
+      return
+    }
     if (!acceptsJobEvent(value, watch.binding)) {
       // Old/repeated notifications have no authority. A forward sequence gap or
       // contradictory next state requires a fresh durable snapshot, not guesses.
