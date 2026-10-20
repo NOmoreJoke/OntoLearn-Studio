@@ -1,6 +1,7 @@
 """Single application writer; isolated workers never open the SQLite source of truth."""
 
 import asyncio
+import hashlib
 import json
 import os
 import queue
@@ -18,12 +19,13 @@ from ontolearn_engine import __version__
 from ontolearn_engine.job_store import JobFault
 from ontolearn_engine.memory_guard import MEMORY_LIMIT_EXIT, resident_bytes
 from ontolearn_engine.process_environment import worker_environment
-from ontolearn_engine.protocol import JsonlReader, ProtocolFault
+from ontolearn_engine.protocol import MAX_REQUEST_BYTES, JsonlReader, ProtocolFault, decode_payload
 from ontolearn_engine.resources import CONTRACT, IMPLEMENTATION, LIMITS, REGISTRY_HASH, safe_error
 from ontolearn_engine.storage import Conflict
 from ontolearn_engine.worker import worker_owner_arguments
 
 TERMINAL = {"succeeded", "failed", "cancelled"}
+SEMANTIC = {"query.execute", "reasoning.execute", "validation.execute"}
 
 
 class ServiceFault(Exception):
@@ -245,12 +247,18 @@ class Coordinator:
             return self.store.project_get(p["projectId"])
         if method == "job.get":
             return self.store.get_job(p["projectId"], p["jobId"])
+        if method == "semantic.start":
+            return self.start_semantic(p)
         if method == "job.create":
-            if not self.test_mode or p["capability"] not in {
-                "test.read",
-                "test.atomic",
-                "test.rounds",
-            }:
+            if p["capability"] not in SEMANTIC and (
+                not self.test_mode
+                or p["capability"]
+                not in {
+                    "test.read",
+                    "test.atomic",
+                    "test.rounds",
+                }
+            ):
                 raise ServiceFault("UNSUPPORTED_CAPABILITY")
             if len(self.queued) >= self.limits[
                 "maxQueuedJobs"
@@ -323,6 +331,66 @@ class Coordinator:
         if method == "operation.get":
             return self.store.operation_get(p["projectId"], p["operationId"])
         raise ServiceFault("METHOD_NOT_ALLOWED")
+
+    def start_semantic(self, p: dict):
+        # The application chooses an existing definition, never an RDF graph,
+        # parser, path, dependency vector or a claimed producer identity.
+        historical = p["inputSelection"] == "historical"
+        if historical != (p["inputSnapshotId"] is not None):
+            raise ServiceFault("INVALID_REQUEST", {"field": "params"})
+        if len(self.queued) >= self.limits["maxQueuedJobs"] and not self.store.has_operation_claim(
+            p["operationId"]
+        ):
+            raise ServiceFault("QUEUE_FULL", {"retryAfterMs": 250})
+        # Operation retry is bound to the exact original accepted input even
+        # after current moves. It does not create/replay a second execution.
+        accepted = self.store.accepted_operation_job(p["projectId"], p["operationId"])
+        if accepted is not None:
+            parameters = self.store.blob(p["projectId"], accepted["parametersHash"])
+            if (
+                accepted["capability"] != p["capability"]
+                or accepted["input"]["definitionId"] != p["definitionId"]
+                or accepted["scope"] != p["scope"]
+                or parameters != {"inputSelection": p["inputSelection"]}
+                or historical
+                and accepted["inputSnapshotId"] != p["inputSnapshotId"]
+                or accepted["input"]["derivedResultIds"]
+                != ([p["derivedResultId"]] if p["derivedResultId"] else [])
+            ):
+                raise ServiceFault("IDENTITY_CONFLICT")
+            return self.dispatch(
+                "job.create",
+                {
+                    "projectId": p["projectId"],
+                    "operationId": p["operationId"],
+                    "capability": p["capability"],
+                    "input": accepted["input"],
+                    "confirmationRef": None,
+                },
+            )
+        project = self.store.project_get(p["projectId"])
+        parameters_hash = self.store.put_blob(
+            p["projectId"], {"inputSelection": p["inputSelection"]}
+        )
+        return self.dispatch(
+            "job.create",
+            {
+                "projectId": p["projectId"],
+                "operationId": p["operationId"],
+                "capability": p["capability"],
+                "input": {
+                    "inputSnapshotId": p["inputSnapshotId"]
+                    if historical
+                    else project["inputSnapshotId"],
+                    "scope": p["scope"],
+                    "definitionId": p["definitionId"],
+                    "parametersHash": parameters_hash,
+                    "derivedResultIds": [p["derivedResultId"]] if p["derivedResultId"] else [],
+                    "preparedPlanRef": None,
+                },
+                "confirmationRef": None,
+            },
+        )
 
     @staticmethod
     def _snake(p: dict) -> dict:
@@ -400,6 +468,9 @@ class Coordinator:
                         pending.cancel()
                     await asyncio.gather(pending, return_exceptions=True)
 
+            private_frame_bytes = (
+                MAX_REQUEST_BYTES if job["capability"] in SEMANTIC else self.limits["maxFrameBytes"]
+            )
             process = await controlled(
                 asyncio.create_subprocess_exec(
                     *worker_command(),
@@ -408,30 +479,56 @@ class Coordinator:
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.DEVNULL,
                     env=worker_environment(),
-                    limit=self.limits["maxFrameBytes"] + 1,
+                    limit=private_frame_bytes + 1,
                 ),
                 "startup",
                 self.limits["startupMs"],
                 lambda child: active.update(process=child),
             )
             active["process"] = process
-            raw = json.dumps(
-                {
-                    "capability": job["capability"],
-                    "parameters": parameters,
-                    "memoryBytes": self.limits["maxWorkerMemoryBytes"],
-                }
-            ).encode()
+            header = {
+                "capability": job["capability"],
+                "parameters": parameters,
+                "memoryBytes": self.limits["maxWorkerMemoryBytes"],
+            }
+            input_parts = []
+            if job["capability"] in SEMANTIC:
+                text = json.dumps(
+                    {
+                        "request": context["semanticRequest"],
+                        "validationBinding": context.get("validationBinding"),
+                    },
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                    allow_nan=False,
+                )
+                if len(text.encode()) > 8388608:
+                    raise ServiceFault("RESOURCE_LIMIT", {"resource": "semanticInput"})
+                input_parts = [text[i : i + 32000] for i in range(0, len(text), 32000)]
+                header.update(
+                    semanticParts=len(input_parts),
+                    semanticHash=hashlib.sha256(text.encode()).hexdigest(),
+                )
+            raw = json.dumps(header).encode()
             if len(raw) > self.limits["maxFrameBytes"]:
                 raise ServiceFault("RESOURCE_LIMIT", {"resource": "frame"})
             process.stdin.write(raw + b"\n")
+            for index, text in enumerate(input_parts):
+                process.stdin.write(
+                    json.dumps({"index": index, "text": text}, ensure_ascii=False).encode() + b"\n"
+                )
             await controlled(process.stdin.drain(), "startup", self.limits["startupMs"])
             process.stdin.close()
             self._stage(identity, "computing")
-            reader = JsonlReader(self.limits["maxFrameBytes"])
+            # Semantic chunks have a separate fixed private-channel frame cap.
+            # Public negotiated frame limits still constrain all public requests.
+            reader = JsonlReader(private_frame_bytes)
             complete = False
             rows = None
             state = None
+            semantic_parts = []
+            semantic_bytes = 0
+            semantic_output = None
             read_task = asyncio.create_task(process.stdout.read(16384))
             try:
                 while not complete:
@@ -466,7 +563,48 @@ class Coordinator:
                             raise ProtocolFault()
                         if message.get("type") == "failure":
                             raise ServiceFault("INTERNAL_ERROR")
-                        if message.get("type") == "round" and job["capability"] == "test.rounds":
+                        if (
+                            job["capability"] in SEMANTIC
+                            and message.get("type") == "semantic.error"
+                        ):
+                            if set(message) != {"type", "error"} or not CONTRACT.validate(
+                                "error", message["error"]
+                            ):
+                                raise ProtocolFault()
+                            raise ServiceFault(message["error"]["code"], message["error"]["params"])
+                        if (
+                            job["capability"] in SEMANTIC
+                            and message.get("type") == "semantic.chunk"
+                        ):
+                            if (
+                                semantic_output is not None
+                                or set(message) != {"type", "index", "text"}
+                                or type(message["index"]) is not int
+                                or message["index"] != len(semantic_parts)
+                                or not isinstance(message["text"], str)
+                                or len(message["text"]) > 32000
+                                or len(semantic_parts) >= 1024
+                            ):
+                                raise ProtocolFault()
+                            semantic_bytes += len(message["text"].encode())
+                            if semantic_bytes > 8388608:
+                                raise ServiceFault("RESOURCE_LIMIT", {"resource": "semanticResult"})
+                            semantic_parts.append(message["text"])
+                        elif (
+                            job["capability"] in SEMANTIC and message.get("type") == "semantic.done"
+                        ):
+                            if (
+                                semantic_output is not None
+                                or set(message) != {"type", "parts", "sha256"}
+                                or type(message["parts"]) is not int
+                                or message["parts"] != len(semantic_parts)
+                            ):
+                                raise ProtocolFault()
+                            text = "".join(semantic_parts)
+                            if hashlib.sha256(text.encode()).hexdigest() != message["sha256"]:
+                                raise ProtocolFault()
+                            semantic_output = decode_payload(text.encode(), max_bytes=8388608)
+                        elif message.get("type") == "round" and job["capability"] == "test.rounds":
                             if (
                                 set(message) != {"type", "round", "state"}
                                 or type(message["round"]) is not int
@@ -489,7 +627,9 @@ class Coordinator:
                             await asyncio.sleep(
                                 0
                             )  # Allow control requests between committed rounds.
-                        elif message.get("type") == "ready" and job["capability"] != "test.rounds":
+                        elif message.get("type") == "ready" and job[
+                            "capability"
+                        ] not in SEMANTIC | {"test.rounds"}:
                             if set(message) != {"type", "rows"} or not isinstance(
                                 message["rows"], list
                             ):
@@ -535,6 +675,12 @@ class Coordinator:
                     pending_events=state["pendingEvents"],
                     event_consumption=state["consumedEvents"],
                     hook=commit_boundary,
+                )
+            elif job["capability"] in SEMANTIC:
+                if semantic_output is None:
+                    raise ProtocolFault()
+                job = self.store.finish_semantic_job(
+                    identity, semantic_output, hook=commit_boundary
                 )
             else:
                 if rows is None:

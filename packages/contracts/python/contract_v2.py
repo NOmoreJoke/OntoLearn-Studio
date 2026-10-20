@@ -182,6 +182,14 @@ def semantic(v):
         p = v["params"]
         if (p["cursor"] is None) != (p["listSnapshotId"] is None):
             return False
+    if v.get("kind") == "request" and v["method"] == "semantic.start":
+        p = v["params"]
+        if (p["inputSelection"] == "historical") != (p["inputSnapshotId"] is not None):
+            return False
+        if (p["scope"] == "asserted+derived") != (p["derivedResultId"] is not None):
+            return False
+        if p["capability"] == "reasoning.execute" and p["scope"] != "asserted":
+            return False
     if v.get("kind") == "request" and v["method"] == "job.create":
         p = v["params"]
         c = REGISTRY["capabilities"][p["capability"]]
@@ -253,7 +261,7 @@ def validate(name, value):
             and semantic(value)
             and encoded_size(value) <= 262144
         )
-        if valid and name in {"params_job.create", "params_job.list"}:
+        if valid and name in {"params_job.create", "params_job.list", "params_semantic.start"}:
             return semantic({"kind": "request", "method": name[7:], "params": value})
         return valid
     except (KeyError, TypeError, ValueError, OverflowError, RecursionError):
@@ -390,6 +398,17 @@ def matches_response(request, response):
         return False
     if method == "job.unsubscribe" and p["subscriptionId"] != data["subscriptionId"]:
         return False
+    if method == "semantic.start":
+        if any(p[k] != data[k] for k in ("operationId", "capability", "scope")):
+            return False
+        if data["input"]["definitionId"] != p["definitionId"]:
+            return False
+        if p["inputSnapshotId"] is not None and p["inputSnapshotId"] != data["inputSnapshotId"]:
+            return False
+        if data["input"]["derivedResultIds"] != (
+            [p["derivedResultId"]] if p["derivedResultId"] else []
+        ):
+            return False
     if method == "job.create":
         if p["input"] != data["input"] or p["confirmationRef"] != data["confirmationRef"]:
             return False

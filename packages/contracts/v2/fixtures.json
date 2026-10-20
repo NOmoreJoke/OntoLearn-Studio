@@ -8369,6 +8369,159 @@
           "engineVersion": "0.1.0"
         }
       }
+    },
+    {
+      "name": "request semantic.start",
+      "schema": "envelope",
+      "valid": true,
+      "value": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000009",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "semantic.start",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "reasoning.execute",
+          "definitionId": "test",
+          "scope": "asserted",
+          "inputSelection": "current",
+          "inputSnapshotId": null,
+          "derivedResultId": null
+        }
+      }
+    },
+    {
+      "name": "response semantic.start",
+      "schema": "envelope",
+      "valid": true,
+      "value": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000009",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "semantic.start",
+        "ok": true,
+        "result": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "reasoning.execute",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "asserted",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "queued",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "none"
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": null,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "asserted",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      }
+    },
+    {
+      "name": "semantic historical without snapshot",
+      "schema": "envelope",
+      "valid": false,
+      "value": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000009",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "semantic.start",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "reasoning.execute",
+          "definitionId": "test",
+          "scope": "asserted",
+          "inputSelection": "historical",
+          "inputSnapshotId": null,
+          "derivedResultId": null
+        }
+      }
+    },
+    {
+      "name": "semantic unselected derived",
+      "schema": "envelope",
+      "valid": false,
+      "value": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000009",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "semantic.start",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "reasoning.execute",
+          "definitionId": "test",
+          "scope": "asserted",
+          "inputSelection": "current",
+          "inputSnapshotId": null,
+          "derivedResultId": "00000000-0000-4000-8000-000000000099"
+        }
+      }
+    },
+    {
+      "name": "semantic extra path",
+      "schema": "envelope",
+      "valid": false,
+      "value": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000009",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "semantic.start",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "reasoning.execute",
+          "definitionId": "test",
+          "scope": "asserted",
+          "inputSelection": "current",
+          "inputSnapshotId": null,
+          "derivedResultId": null,
+          "path": "/private/canary"
+        }
+      }
     }
   ],
   "routing": [

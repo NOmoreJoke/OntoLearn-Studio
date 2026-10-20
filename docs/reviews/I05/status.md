@@ -84,3 +84,13 @@ I03 所需的新内部细码来源已交总控，未直接改公共分类。新 
 I03/e45已纳入本线Git祖先（从远端fetch并核验），未rebase或改写v4及handoff提交。canonical errors/schema/现有Python规范checker/批准的25项来源文档均与e45提交字节一致；没有复制另一份运行时错误目录，也未假定I04的模块或包内资源路径。新接口只接受Producer / Stage / Origin及固定内部细码，输出由canonical目录派生的四字段DTO。来源与阶段错配、可信违约及未分类项安全Internal，资源 / 合法有限构造用已有枚举。实际producer真实性、授权、immutable资源 / 内容摘要、Job与bridge/UI传播均未由纯测试证明。
 
 独立审查3项真实发现与开发自查2项阶段偏差均已补反例修复，失败/修正日志保留；最终独立定向208/208通过。首次完整check只因新接口文档代码块格式失败，修正后完整check与sources通过。相关受审源码 / 测试仅两份新文件，后续精确提交见checkpoint；正式全I05候选仍需实际I04后再次刷新、原验收和双方新全范围审查。
+
+## 2026-10-21 完整集成恢复（进行中）
+
+总控明确解除 I04 依赖并移交 B1 必要共享文件唯一责任。实际 origin/develop 为 PR5 合并 `5f910b52c69d86a1076b2032e5d3c63e715947f3`，已正常 merge 为 `9f8832f218517abe24009a30988a659529b1adc0`，未 rebase。唯一 build 冲突逐项保留 I05 库/metadata/inventory 与 C4 contracts/uv.lock 资源。受保护 AGENTS SHA-256 仍 `db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786`，不暂存。原 Goal 工具仍 blocked，无 resume API；依已解除依赖授权继续原完整工作，未创建新 Goal。
+
+独立子任务使用 I05-semantic-execution / feature/I05-semantic-execution 与 I05-semantic-bridge / feature/I05-semantic-bridge，base 同为9f8832f；各有明确文件所有权及独立依赖。两者实体 AGENTS 已同步最新上述字节、只读重新核验且保持 dirty；未纳入产品。纯执行与窄桥接提交已摘入主线，原只读 agent 已给需求缺口与实际私有帧配置反例；后者已改为私有通道固定262144字节、公开协商预算不变，待完整复核。
+
+当前新增实际 Store/worker/Job/完整载荷、内容哈希、producer/input/version、current/historical、取消、事务与稳定分页接线。首15项真实 worker 联验已通过（含旧无Risk历史1违规/新Risk2违规、迟到及取消），不作为最终完整验收。Mac 未启动 Electron/native/HMR；新独立 Linux 容器 ontolearn-i05-isolated-20261021 使用空 /i05、独立 HOME/npm/uv/cache、源码导出和实际新依赖。仅复用不可变系统工具镜像，不共享 I04 可变 DB/依赖/产物，新版窗口/包内验收尚未执行。
+
+仍须：补齐实际包内/标准库来源、隔离源码及打包原生恢复、完整验收记录、内部完整复核、同候选指定双方全新审查、意见处置、push/PR→develop/CI/正常merge/远端与保护核验。Q6十二项及其他待决项仍逐项开放；未宣称完整I05通过或门禁完成。

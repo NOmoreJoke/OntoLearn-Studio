@@ -25,7 +25,14 @@ def _pairs(pairs: list) -> dict:
 
 
 def decode_frame(frame: bytes) -> object:
-    if not frame or len(frame) > MAX_REQUEST_BYTES or frame.startswith(b"\xef\xbb\xbf"):
+    return decode_payload(frame, max_bytes=MAX_REQUEST_BYTES)
+
+
+def decode_payload(frame: bytes, *, max_bytes: int) -> object:
+    """Private chunk reassembly uses the same strict JSON checks, with its own bound."""
+    if not 1 <= max_bytes <= 8388608:
+        raise ProtocolFault()
+    if not frame or len(frame) > max_bytes or frame.startswith(b"\xef\xbb\xbf"):
         raise ProtocolFault()
     # Scan string/escape aware before JSON allocation/recursive parsing.
     quoted = escaped = False

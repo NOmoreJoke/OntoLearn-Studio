@@ -228,6 +228,12 @@ function semantic(value: unknown): boolean {
     if (!c.requiresConfirmation && (p.confirmationRef !== null || i.preparedPlanRef !== null))
       return false
   }
+  if (v.method === 'semantic.start' && v.kind === 'request') {
+    const p = v.params as Record<string, unknown>
+    if ((p.inputSelection === 'historical') !== (p.inputSnapshotId !== null)) return false
+    if ((p.scope === 'asserted+derived') !== (p.derivedResultId !== null)) return false
+    if (p.capability === 'reasoning.execute' && p.scope !== 'asserted') return false
+  }
   if ('capability' in v && 'commitProgress' in v) {
     const c = registry.capabilities[v.capability as keyof typeof registry.capabilities]
     if (!(c.dataScopes as string[]).includes(String(v.scope))) return false
@@ -313,7 +319,11 @@ export function validateV2(name: string, value: unknown): boolean {
   if (!compiled.has(name)) compiled.set(name, compile(definitions[name]))
   if (!compiled.get(name)!.safeParse(value).success || !semantic(value) || utf8(value) > 262144)
     return false
-  if (name === 'params_job.create' || name === 'params_job.list')
+  if (
+    name === 'params_job.create' ||
+    name === 'params_job.list' ||
+    name === 'params_semantic.start'
+  )
     return semantic({ kind: 'request', method: name.slice(7), params: value })
   return true
 }
@@ -419,6 +429,17 @@ export function matchesResponse(request: unknown, response: unknown): boolean {
   if (p.resultId && data.resultId && p.resultId !== data.resultId) return false
   if (q.method === 'operation.get' && p.operationId !== data.operationId) return false
   if (q.method === 'job.unsubscribe' && p.subscriptionId !== data.subscriptionId) return false
+  if (q.method === 'semantic.start') {
+    const input = data.input as Record<string, unknown>
+    if (['operationId', 'capability', 'scope'].some((k) => p[k] !== data[k])) return false
+    if (p.definitionId !== input.definitionId) return false
+    if (p.inputSnapshotId !== null && p.inputSnapshotId !== data.inputSnapshotId) return false
+    if (
+      JSON.stringify(input.derivedResultIds) !==
+      JSON.stringify(p.derivedResultId ? [p.derivedResultId] : [])
+    )
+      return false
+  }
   if (q.method === 'job.create') {
     const input = p.input as Record<string, unknown>
     const actual = data.input as Record<string, unknown>

@@ -1,6 +1,7 @@
 """Isolated test workload. No database, project path, network or business capability."""
 
 import ctypes
+import hashlib
 import json
 import os
 import sys
@@ -13,7 +14,7 @@ from ontolearn_engine.memory_guard import (
     MemoryGuardUnavailable,
     install_memory_guard,
 )
-from ontolearn_engine.protocol import MAX_REQUEST_BYTES, decode_frame
+from ontolearn_engine.protocol import MAX_REQUEST_BYTES, decode_frame, decode_payload
 
 
 def emit(value: dict) -> None:
@@ -211,6 +212,12 @@ def run() -> None:
 def _execute() -> None:
     request = decode_frame(sys.stdin.buffer.readline(MAX_REQUEST_BYTES + 1).rstrip(b"\n"))
     guard = install_memory_guard(request["memoryBytes"])
+    if request["capability"] in {"query.execute", "reasoning.execute", "validation.execute"}:
+        try:
+            _semantic(request)
+        finally:
+            guard.close()
+        return
     parameters = request["parameters"]
     delay = parameters.get("workMs", 0) / 1000
     rounds = parameters.get("maxRounds", 1) if request["capability"] == "test.rounds" else 1
@@ -253,6 +260,75 @@ def _execute() -> None:
             emit({"type": "ready", "rows": parameters.get("rows", [])})
     emit({"type": "complete"})
     guard.close()
+
+
+def _semantic(request):
+    # The parent monitor and memory guard are established before reading the
+    # snapshot or importing RDFLib/pySHACL. The worker has no database authority.
+    from ontolearn_engine.resources import CONTRACT, safe_error
+    from ontolearn_engine.semantic_execution import SemanticExecutionFault, _rows, execute_request
+
+    count = request.get("semanticParts")
+    if type(count) is not int or not 1 <= count <= 1024:
+        raise ValueError("SEMANTIC_INPUT_INVALID")
+    parts, size = [], 0
+    for index in range(count):
+        part = decode_frame(sys.stdin.buffer.readline(MAX_REQUEST_BYTES + 1).rstrip(b"\n"))
+        if (
+            not isinstance(part, dict)
+            or set(part) != {"index", "text"}
+            or type(part["index"]) is not int
+            or part["index"] != index
+            or not isinstance(part["text"], str)
+            or len(part["text"]) > 32000
+        ):
+            raise ValueError("SEMANTIC_INPUT_INVALID")
+        size += len(part["text"].encode())
+        if size > 8388608:
+            raise ValueError("SEMANTIC_INPUT_LIMIT")
+        parts.append(part["text"])
+    text = "".join(parts)
+    if hashlib.sha256(text.encode()).hexdigest() != request["semanticHash"]:
+        raise ValueError("SEMANTIC_INPUT_INVALID")
+    bundle = decode_payload(text.encode(), max_bytes=8388608)
+    if not isinstance(bundle, dict) or set(bundle) != {"request", "validationBinding"}:
+        raise ValueError("SEMANTIC_INPUT_INVALID")
+    try:
+        output = execute_request(
+            bundle["request"], error_catalog=CONTRACT.ERROR_CATALOG, error_schema=CONTRACT.DOCUMENT
+        )
+        if bundle["validationBinding"] is not None:
+            binding = bundle["validationBinding"]
+            if not CONTRACT.validation_projection_matches_resources(
+                binding["projection"], binding["resources"]
+            ):
+                raise ValueError("SEMANTIC_BINDING_INVALID")
+            output["payload"]["validationBinding"] = binding
+            output["rows"] = _rows(output["payload"])
+        text = json.dumps(
+            output, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False
+        )
+        if len(text.encode()) > 8388608:
+            emit(
+                {
+                    "type": "semantic.error",
+                    "error": safe_error("RESOURCE_LIMIT", {"resource": "semanticResult"}),
+                }
+            )
+            return
+        parts = [text[i : i + 32000] for i in range(0, len(text), 32000)]
+        for index, part in enumerate(parts):
+            emit({"type": "semantic.chunk", "index": index, "text": part})
+        emit(
+            {
+                "type": "semantic.done",
+                "parts": len(parts),
+                "sha256": hashlib.sha256(text.encode()).hexdigest(),
+            }
+        )
+        emit({"type": "complete"})
+    except SemanticExecutionFault as error:
+        emit({"type": "semantic.error", "error": error.error})
 
 
 def main() -> None:

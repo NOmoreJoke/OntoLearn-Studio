@@ -52,7 +52,7 @@ def test_common_examples_use_utf8_when_default_file_encoding_is_cp1252(
     assert json.loads(captured.out) == {
         "status": "passed",
         "counts": {
-            "cases": 321,
+            "cases": 326,
             "routing": 11,
             "responses": 30,
             "cursors": 9,

@@ -126,6 +126,17 @@ class JobStore(Store):
             is not None
         )
 
+    def accepted_operation_job(self, project, operation):
+        self._project(project)
+        row = self._db.execute(
+            "SELECT project,job FROM operation_claims WHERE operation=?", (operation,)
+        ).fetchone()
+        if row is None:
+            return None
+        if row["project"] != project:
+            fault("IDENTITY_CONFLICT")
+        return self.get_job(project, row["job"])
+
     def _test_parameters(self, parameters):
         bounds = {
             "workMs": (0, 10000),
@@ -364,6 +375,11 @@ class JobStore(Store):
             parameters = self.blob(project, input_["parametersHash"])
             if capability.startswith("test."):
                 self._test_parameters(parameters)
+            semantic_request = None
+            if capability in {"query.execute", "reasoning.execute", "validation.execute"}:
+                semantic_request = self.prepare_semantic_request(
+                    project, capability, input_, parameters, snap, implementation
+                )
             vector, manifests = self._dependencies(capability, input_, snap)
             for derived in input_["derivedResultIds"]:
                 result = self.result_get(project, derived)
@@ -407,6 +423,17 @@ class JobStore(Store):
                 "dependencyVector": vector,
                 "manifests": manifests,
             }
+            if semantic_request is not None:
+                context["semanticRequest"] = semantic_request
+                if capability == "validation.execute":
+                    context["validationBinding"] = self.validation_binding(
+                        project,
+                        input_,
+                        snap,
+                        implementation,
+                        semantic_request["selected"],
+                        parameters,
+                    )
             if capability == "test.rounds":
                 events = parameters.get("events", [])
                 context["runConfig"] = {
@@ -765,6 +792,239 @@ class JobStore(Store):
             hook("mid_job_terminal")
         return self._job(identity)
 
+    def prepare_semantic_request(
+        self, project, capability, input_, parameters, snap, implementation
+    ):
+        """Resolve immutable sources in the acceptance transaction, before worker launch."""
+        from ontolearn_engine.semantic_execution import (
+            SemanticExecutionFault,
+            build_request,
+        )
+
+        if not isinstance(parameters, dict) or set(parameters) - {"inputSelection"}:
+            fault("INVALID_REQUEST", field="params")
+        selection = parameters.get("inputSelection", "current")
+        if selection not in ("current", "historical"):
+            fault("INVALID_REQUEST", field="params")
+        if selection == "current" and input_["inputSnapshotId"] != self.snapshot(
+            self._project(project)
+        ):
+            fault("IDENTITY_CONFLICT")
+        identities = input_["derivedResultIds"]
+        include = input_["scope"] == "asserted+derived"
+        if (
+            len(identities) != (1 if include else 0)
+            or capability == "reasoning.execute"
+            and include
+        ):
+            fault("INVALID_REQUEST", field="params")
+        selected = None
+        if include:
+            metadata, payload = self.semantic_result(project, identities[0])
+            if (
+                metadata["kind"] != "reasoning"
+                or metadata["inputSnapshotId"] != input_["inputSnapshotId"]
+                or metadata["implementation"] != implementation
+                or selection == "current"
+                and metadata["state"] != "current"
+            ):
+                fault("IDENTITY_CONFLICT")
+            selected = {"metadata": metadata, "payload": payload}
+        try:
+            return build_request(
+                snap,
+                capability,
+                input_,
+                parameters,
+                selected,
+                error_catalog=self.contract.ERROR_CATALOG,
+                error_schema=self.contract.DOCUMENT,
+            )
+        except SemanticExecutionFault as error:
+            raise JobFault(error.error["code"], error.error["params"]) from None
+
+    def semantic_result(self, project, identity):
+        """Authenticate result, producer, accepted input, byte content and complete identity."""
+        metadata = self.result_get(project, identity)
+        if metadata["payloadStatus"] != "available":
+            fault("PAYLOAD_EVICTED", resultId=identity)
+        record = self._db.execute(
+            "SELECT * FROM semantic_payloads WHERE result=?", (identity,)
+        ).fetchone()
+        if record is None or record["payload"] is None:
+            fault("INVALID_STATE")
+        payload = json.loads(record["payload"])
+        producer = self.get_job(project, metadata["jobId"])
+        if (
+            digest(payload) != record["payload_hash"]
+            or digest(self.result(identity)["payload"]) != record["rows_hash"]
+            or producer["state"] != "succeeded"
+            or producer["capability"] != metadata["kind"] + ".execute"
+            or producer["resultRef"]
+            != {"resultId": identity, "inputSnapshotId": metadata["inputSnapshotId"]}
+            or producer["inputSnapshotId"] != metadata["inputSnapshotId"]
+            or producer["implementation"] != metadata["implementation"]
+            or producer["dependencyVector"] != metadata["dependencyVector"]
+            or producer["definitionSetDigests"] != metadata["definitionSetDigests"]
+            or any(
+                producer["input"][key] != metadata[key]
+                for key in ("definitionId", "scope", "parametersHash")
+            )
+            or payload.get("kind") != metadata["kind"]
+            or payload.get("inputSnapshotId") != metadata["inputSnapshotId"]
+        ):
+            fault("INVALID_STATE")
+        return metadata, payload
+
+    def semantic_resource(self, project, value):
+        encoded = canonical(value)
+        if len(encoded.encode()) > 8388608:
+            fault("RESOURCE_LIMIT", resource="semanticInput")
+        reference = digest(value)
+        self._db.execute(
+            "INSERT OR IGNORE INTO semantic_resources VALUES(?,?,?)",
+            (project, reference, encoded),
+        )
+        stored = self._db.execute(
+            "SELECT payload FROM semantic_resources WHERE project=? AND ref=?", (project, reference)
+        ).fetchone()
+        if stored is None or stored[0] != encoded or digest(json.loads(stored[0])) != reference:
+            fault("INVALID_STATE")
+        return reference
+
+    def validation_binding(self, project, input_, snap, implementation, selected, parameters):
+        """Real content-addressed resources, associated by the single canonical resolver."""
+        facts = sorted(
+            [
+                [f"<{r['subject']}>", f"<{r['predicate']}>", r["object"]]
+                for r in snap["state"]["facts"]
+                if r["object"] is not None
+            ]
+        )
+        definitions = {
+            (d["layer"], d["id"]): json.loads(d["payload"]) for d in snap["state"]["definitions"]
+        }
+        ontology = sorted(
+            [
+                [f"<{r['subject']}>", f"<{r['predicate']}>", r["object"]]
+                for (layer, _), definition in definitions.items()
+                if layer == "ontology"
+                for r in definition["triples"]
+            ]
+        )
+        values = {
+            "assertedFacts": facts,
+            "ontologyAxioms": ontology,
+            "constraints": definitions[("constraint", input_["definitionId"])],
+        }
+        derived = None
+        if selected:
+            reason = selected["payload"]["reasoning"]
+            triples = sorted({tuple(t) for t in reason["rdfs"] + reason["rules"]})
+            rdfs = "<http://www.w3.org/2000/01/rdf-schema#"
+            owl = "<http://www.w3.org/2002/07/owl#"
+            rdf_type = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
+
+            def axiom(t):
+                return t[1] in {rdfs + k + ">" for k in ("subClassOf", "domain", "range")} or (
+                    t[1] == rdf_type
+                    and t[2]
+                    in {
+                        rdfs + "Class>",
+                        *[owl + k + ">" for k in ("Class", "ObjectProperty", "DatatypeProperty")],
+                    }
+                )
+
+            values["derivedFacts"] = [list(t) for t in triples if not axiom(t)]
+            values["derivedAxioms"] = [list(t) for t in triples if axiom(t)]
+        refs = {role: self.semantic_resource(project, value) for role, value in values.items()}
+        if selected:
+            derived = {
+                "projectId": project,
+                "inputSnapshotId": input_["inputSnapshotId"],
+                "resultId": selected["metadata"]["resultId"],
+                "implementation": implementation,
+                "factsRef": refs["derivedFacts"],
+                "axiomsRef": refs["derivedAxioms"],
+            }
+        projection = {
+            "projectionVersion": 1,
+            "projectionPolicy": "selected-facts-v1",
+            "projectId": project,
+            "inputSnapshotId": input_["inputSnapshotId"],
+            "inputProjectRevision": snap["projectRevision"],
+            "implementation": implementation,
+            "assertedFactsRef": refs["assertedFacts"],
+            "ontologyAxiomsRef": refs["ontologyAxioms"],
+            "constraintDefinitionId": input_["definitionId"],
+            "constraintsRef": refs["constraints"],
+            "scope": input_["scope"],
+            "derived": derived,
+            "inputSelection": parameters.get("inputSelection", "current"),
+        }
+        resources = []
+        for role, reference in refs.items():
+            source = selected["metadata"] if role.startswith("derived") else None
+            resources.append(
+                {
+                    "ref": reference,
+                    "projectId": project,
+                    "inputSnapshotId": input_["inputSnapshotId"],
+                    "role": role,
+                    "resultId": source["resultId"] if source else None,
+                    "implementation": source["implementation"] if source else None,
+                    "resultKind": source["kind"] if source else None,
+                    "payloadStatus": source["payloadStatus"] if source else None,
+                    "resultState": source["state"] if source else None,
+                    "constraintDefinitionId": input_["definitionId"]
+                    if role == "constraints"
+                    else None,
+                }
+            )
+        if not self.contract.validation_projection_matches_resources(projection, resources):
+            fault("INVALID_STATE")
+        return {"projection": projection, "resources": resources}
+
+    def finish_semantic_job(self, identity, output, hook: Hook = lambda _: None):
+        with self._transaction(hook):
+            job = self._job(identity)
+            if job["state"] in TERMINAL:
+                return job
+            if job["state"] != "running" or job["capability"] not in {
+                "query.execute",
+                "reasoning.execute",
+                "validation.execute",
+            }:
+                fault("INVALID_STATE")
+            if not isinstance(output, dict) or set(output) != {"payload", "rows"}:
+                fault("INVALID_STATE")
+            payload = output["payload"]
+            kind = job["capability"].split(".")[0]
+            if (
+                not isinstance(payload, dict)
+                or payload.get("kind") != kind
+                or payload.get("inputSnapshotId") != job["inputSnapshotId"]
+            ):
+                fault("INVALID_STATE")
+            if len(canonical(output).encode()) > 8388608:
+                fault("RESOURCE_LIMIT", resource="semanticResult")
+            binding = self.job_context(identity).get("validationBinding")
+            if binding and payload.get("validationBinding") != binding:
+                fault("INVALID_STATE")
+            result = self._publish_job(job, output["rows"], kind)
+            self._db.execute(
+                "INSERT INTO semantic_payloads VALUES(?,?,?,?)",
+                (
+                    result["resultId"],
+                    canonical(payload),
+                    digest(payload),
+                    digest(self.result(result["resultId"])["payload"]),
+                ),
+            )
+            self._transition(job, "succeeded", result=result)
+            hook("mid_job_terminal")
+        return self._job(identity)
+
     def start_job_run(self, identity, config):
         with self._transaction():
             job = self._job(identity)
@@ -1067,6 +1327,7 @@ class JobStore(Store):
         if (
             kind != "receipt"
             and not stale
+            and context["parameters"].get("inputSelection") != "historical"
             and context["snapshot"]["projectRevision"] == self.revision(internal)
         ):
             self._db.execute(
@@ -1469,6 +1730,9 @@ class JobStore(Store):
             ]
             for identity in ids:
                 self._db.execute("UPDATE results SET payload=NULL WHERE id=?", (identity,))
+                self._db.execute(
+                    "UPDATE semantic_payloads SET payload=NULL WHERE result=?", (identity,)
+                )
             return ids
 
 
@@ -1489,6 +1753,10 @@ JOB_SCHEMA = [
     "REFERENCES public_projects(public),job TEXT UNIQUE REFERENCES jobs(id),fingerprint TEXT)",
     "CREATE TABLE IF NOT EXISTS job_results(id TEXT PRIMARY KEY REFERENCES results(id),"
     "job TEXT REFERENCES jobs(id),manifests TEXT,projection TEXT,created INTEGER)",
+    "CREATE TABLE IF NOT EXISTS semantic_resources(project TEXT REFERENCES public_projects(public),"
+    "ref TEXT,payload TEXT NOT NULL,PRIMARY KEY(project,ref))",
+    "CREATE TABLE IF NOT EXISTS semantic_payloads(result TEXT PRIMARY KEY REFERENCES results(id),"
+    "payload TEXT,payload_hash TEXT NOT NULL,rows_hash TEXT NOT NULL)",
     "CREATE TABLE IF NOT EXISTS job_current(key TEXT PRIMARY KEY,"
     "result TEXT REFERENCES results(id))",
     "CREATE TABLE IF NOT EXISTS job_cursors(id TEXT PRIMARY KEY,kind TEXT,binding TEXT,"
@@ -1503,6 +1771,7 @@ JOB_SCHEMA = [
 for _table in (
     "public_projects",
     "job_blobs",
+    "semantic_resources",
     "job_plans",
     "job_confirmations",
     "operation_claims",
@@ -1525,4 +1794,18 @@ JOB_SCHEMA.append(
 JOB_SCHEMA.append(
     "CREATE TRIGGER IF NOT EXISTS immutable_jobs_DELETE BEFORE DELETE ON jobs "
     "BEGIN SELECT RAISE(ABORT,'immutable job history'); END"
+)
+
+JOB_SCHEMA.extend(
+    [
+        "CREATE TRIGGER IF NOT EXISTS immutable_semantic_payloads_UPDATE "
+        "BEFORE UPDATE ON semantic_payloads "
+        "WHEN NEW.result != OLD.result OR NEW.payload_hash != OLD.payload_hash "
+        "OR NEW.rows_hash != OLD.rows_hash "
+        "OR OLD.payload IS NULL OR NEW.payload IS NOT NULL "
+        "BEGIN SELECT RAISE(ABORT,'immutable semantic evidence'); END",
+        "CREATE TRIGGER IF NOT EXISTS immutable_semantic_payloads_DELETE "
+        "BEFORE DELETE ON semantic_payloads "
+        "BEGIN SELECT RAISE(ABORT,'immutable semantic evidence'); END",
+    ]
 )

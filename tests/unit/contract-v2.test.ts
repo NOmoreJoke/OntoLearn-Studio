@@ -120,9 +120,15 @@ describe('shared v2 contract corpus', () => {
       'result.current',
       'result.page',
       'operation.get',
+      'semantic.start',
     ])
     expect(v2Registry.v2Runtime.some((name) => name.startsWith('test.'))).toBe(false)
-    expect(v2Registry.productRuntime).toEqual(['health'])
+    expect(v2Registry.productRuntime).toEqual([
+      'health',
+      'query.execute',
+      'reasoning.execute',
+      'validation.execute',
+    ])
   })
 })
 
