@@ -1,7 +1,7 @@
 {
-  "stage": "independent-v3 supplement checkpoint; real integration and formal gates pending",
+  "stage": "independent-v4 selected-result projection checkpoint;real integration and formal gates pending",
   "baseSha": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
-  "implementationHeadSha": "4447a35652ec55ed6c455826d704b0ee3bbee45c",
+  "implementationHeadSha": "2a8dcad9f9036ae49b96282d8bf64f279846b14e",
   "reviewedImplementationSha": null,
   "externalReviews": {
     "zcode": {
@@ -21,16 +21,16 @@
   "pr": null,
   "ci": null,
   "merge": null,
-  "goalStatus": "blocked",
-  "evidence": "docs/iterations/I05/independent-v3.json",
+  "goalStatus": "active",
+  "evidence": "docs/iterations/I05/independent-v4.json",
   "protectedUncommitted": [
     "AGENTS.md"
   ],
-  "next": "retain current checkpoint; wait actual frozen/merged I03 and I04; refresh baseline, integrate real tasks/store/cancel/error/package/window and original full acceptance; both fresh specified reviews in safe no-desktop conditions; no push before gates",
+  "next": "wait original I03 actual same-version approval/merge and real I04;refresh baseline,integrate tasks/store/cancel/error/selected result/package/window and original full acceptance;both specified fresh full reviews before push/PR/CI/merge",
   "blockedAudit": "docs/reviews/I05/blocked-audit.json",
-  "previousEvidence": "docs/iterations/I05/independent-v2.json;unchanged historical source/raw measurements",
-  "recordedAt": "2026-10-20T11:44:28.109165+08:00",
-  "goalStatusEvidence": "get_goal after v3 validation returned blocked; authorized independent supplement completed; full original objective remains unfinished",
+  "previousEvidence": "docs/iterations/I05/independent-v2.json and independent-v3.json;unchanged historical source/raw measurements",
+  "recordedAt": "2026-10-20T13:04:36.873228+08:00",
+  "goalStatusEvidence": "get_goal at resumed turn returned active; original full objective unchanged; no completion claim",
   "baselineStatus": {
     "measuredBaseSha": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
     "observedRemoteDevelopSha": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
@@ -39,8 +39,10 @@
   },
   "internalReview": {
     "agent": "/root/semantic_boundary_review",
-    "scope": "read-only candidate semantics, validation scopes, reason branches, fresh probe and Q6; latest full-result preservation targeted closure scopes14/14",
+    "scope": "read-only real selected-result projection;two independently reproduced defects fixed/closed;final48/48 projected selection tests;172semantic;actual full check/package by developer",
     "report": "docs/reviews/I05/internal-review.md",
     "specifiedExternalReview": false
-  }
+  },
+  "resumedAudit": "docs/reviews/I05/resumed-audit-20261020.json",
+  "executionSemanticsVersion": "i05-finite-3"
 }
