@@ -1,6 +1,6 @@
 # I06 / S3 状态
 
-日期：2026-10-20（Asia/Shanghai）。阶段：独立核心实现、无窗口验证和内部只读复核已完成，等待真实依赖接入；完整 I06 未完成。本次恢复后重新累计三次核验，I03/I04 接线依赖仍未满足，正式 update_goal 已再次返回 blocked。完整目标、同一开发会话和既有实现保留；不标为 paused 或 complete。
+日期：2026-10-21（Asia/Shanghai）。阶段：I02/I03/I04 真实依赖已合并，原会话继续私有凭据/持久审计/隔离平台验证实施；完整 I06 未完成。启动 get_goal 仍返回原 Goal blocked；此为工具实态，原依赖阻断已由实际合并消除，按总控接续授权推进，不重建 Goal、不宣称有 resume API、不标为 paused/complete。
 
 ## 身份与保护
 
@@ -29,6 +29,12 @@
 - 超时/容量续跑追加五项验收反例，未修改实现：凭据等待超时后零外发及恢复复用、审计等待超时零外发、第五个请求不排队且取消释放容量、持续 503 最多两次尝试、真实无响应本地接收端超时不自动重放。前两项以受控时钟验证等待边界，最后一项使用真实 Node socket/计时；见 [本轮证据](evidence/timeout-capacity.json)。此类测试追加仍属于未来完整冻结候选的受审范围，不能沿用指定双方旧版通过（当前也无指定通过）。
 
 ## 依赖、双审和下一步
+
+### 2026-10-21 实质接续（当前）
+
+已现场核验唯一 worktree/feature 分支/origin，正常 merge 已批准 develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`，本地 merge HEAD `0c569851baa067a08ad8cf8d6d94437ef9620d69`，保留 I06 原历史。premerge 证据逐项复验既有 I06 源码/测试与 AGENTS SHA 未变。原 Goal 和全文、最新 scope/parallel-coordination、PRD/S3 原验收及第九节已实际接收；旧依赖状态仅作历史。
+
+本阶段责任/并行接口/验证见 [实质计划](../../iterations/I06/persistence-platform-plan.md)。I05 唯一维护共享契约/Store/job/主进程/bridge/UI/入口/依赖锁/共享 CI；I06 不争写这些文件、不提前公开注册。审查应用预约仍归 I05，本机 Mac 原生/Keychain/GUI 操作禁止。Linux 平台采用本线独立 Docker 环境，不借用其他线运行数据或可变依赖。接线、实际 Store/导出/窗口联验、Mac/Windows 平台与完整指定双审/CI/合并仍待原门禁。
 
 ### 本次恢复：I02 合并已核验，I03/I04 仍待就绪
 
