@@ -1,5 +1,6 @@
 """Real Python coordinator/isolated worker/SQLite integration; no Electron windows."""
 
+import errno
 import json
 import os
 import queue
@@ -191,8 +192,16 @@ def test_default_handshake_deadline_closes_real_source_or_packaged_transport(tmp
         reader.join(timeout=2)
         try:
             process.stdin.close()
-        except BrokenPipeError:
-            pass
+        except OSError as error:
+            # Windows may report EINVAL when BufferedWriter.close retries the
+            # pending flush after the peer has already exited. This is cleanup;
+            # the transport and natural-exit assertions above still apply.
+            if not isinstance(error, BrokenPipeError) and not (
+                sys.platform == "win32"
+                and error.errno == errno.EINVAL
+                and process.poll() is not None
+            ):
+                raise
         process.stdout.close()
         process.stderr.close()
 

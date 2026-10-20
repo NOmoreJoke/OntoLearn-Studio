@@ -1,5 +1,6 @@
 """Protocol control paths do not open projects or run workloads."""
 
+import os
 import sqlite3
 from uuid import uuid4
 
@@ -132,4 +133,4 @@ main()
     result = subprocess.run([sys.executable, "-I", "-c", code], capture_output=True, timeout=5)
     assert result.returncode == 1
     assert result.stdout == b""
-    assert result.stderr == b"ENGINE_SESSION_FAILED\n"
+    assert result.stderr == b"ENGINE_SESSION_FAILED" + os.linesep.encode("ascii")
