@@ -643,3 +643,41 @@ def test_s1_conflict_structured_category_without_message_parsing(store):
     assert error.value.code == "IDENTITY_CONFLICT"
     assert error.value.params == {}
     assert Conflict("unknown internal text").code == "INTERNAL_ERROR"
+
+
+def test_queued_cancel_preserves_valid_decision_snapshot_and_durable_terminal(store):
+    job = create(store)
+    answer = store.cancel_job(store.project, job["jobId"])
+    assert answer == {
+        "jobId": job["jobId"],
+        "disposition": "accepted",
+        "state": "queued",
+        "stateVersion": 1,
+    }
+    assert CONTRACT.validate("result_job.cancel", answer)
+    saved = store.get_job(store.project, job["jobId"])
+    assert saved["state"] == "cancelled" and saved["stateVersion"] == 2
+    terminal = store.cancel_job(store.project, job["jobId"])
+    assert terminal["disposition"] == "alreadyTerminal" and terminal["state"] == "cancelled"
+    assert CONTRACT.validate("result_job.cancel", terminal)
+    assert answer["state"] == "queued" and answer["stateVersion"] == 1
+
+
+def test_round_progress_new_persistent_version_then_cancel_snapshot(store):
+    job = create(store, "test.rounds", parameters={"maxRounds": 2, "events": ["a"]})
+    running = store.start_job(job["jobId"])
+    assert running["stateVersion"] == 2
+    store.start_job_run(job["jobId"], store.job_context(job["jobId"])["runConfig"])
+    store.commit_job_round(
+        job["jobId"], {"pendingEvents": [], "consumedEvents": ["a"], "inputEvents": ["a"]}
+    )
+    progress = store.get_job(store.project, job["jobId"])
+    assert progress["state"] == "running" and progress["stateVersion"] == 3
+    assert progress["updatedAtMs"] >= running["updatedAtMs"]
+    answer = store.cancel_job(store.project, job["jobId"])
+    assert answer["state"] == "cancelling" and answer["stateVersion"] == 4
+    assert CONTRACT.validate("result_job.cancel", answer)
+    saved = store.cancelled_job(job["jobId"])
+    assert saved["stateVersion"] == 5 and saved["state"] == "cancelled"
+    assert saved["commitProgress"]["committedProgress"]["lastCommittedRound"] == 1
+    assert answer["state"] == "cancelling" and answer["stateVersion"] == 4

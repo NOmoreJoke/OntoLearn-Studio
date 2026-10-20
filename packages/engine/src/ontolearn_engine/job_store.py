@@ -553,6 +553,7 @@ class JobStore(Store):
         with self._transaction():
             job = self.get_job(project, identity)
             state = job["state"]
+            decision_version = job["stateVersion"]
             disposition = "accepted"
             if state in TERMINAL:
                 disposition = "alreadyTerminal"
@@ -561,11 +562,14 @@ class JobStore(Store):
             else:
                 self._transition(job, "cancelled" if state == "queued" else "cancelling")
             return {
-                "projectId": project,
                 "jobId": identity,
                 "disposition": disposition,
-                "state": job["state"],
-                "stateVersion": job["stateVersion"],
+                # Accepted queued cancellation reports the decision snapshot,
+                # not a promised terminal outcome. get/subscribe observes the
+                # atomically persisted cancelled version. This also preserves
+                # the canonical alreadyTerminal iff terminal response rule.
+                "state": "queued" if state == "queued" else job["state"],
+                "stateVersion": decision_version if state == "queued" else job["stateVersion"],
             }
 
     def fail_job(self, identity, error):
@@ -737,6 +741,10 @@ class JobStore(Store):
                     fault("IDENTITY_CONFLICT")
             snapshot = super().commit_round(run, number, state, str(uuid4()), identity, hook)
             job["commitProgress"]["committedProgress"] = self.progress(run)
+            # A durable running-progress version is distinct from a transient
+            # percentage notification. Subscribers apply its next exact version.
+            job["stateVersion"] += 1
+            job["updatedAtMs"] = max(self.now_ms(), job["updatedAtMs"])
             self._save(job)
             hook("mid_job_progress")
         return snapshot
