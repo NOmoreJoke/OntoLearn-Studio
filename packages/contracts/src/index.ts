@@ -57,12 +57,17 @@ export interface ProgressView {
   completed: number | null
   total: number | null
 }
-export interface TaskUpdate {
-  generation: number
-  job: JobView
-  progress?: ProgressView
-  restoredView?: TaskView
-}
+export type TaskUpdate =
+  | { kind: 'job'; generation: number; job: JobView; progress?: ProgressView }
+  | { kind: 'restored'; generation: number; view: TaskView }
+  | {
+      kind: 'connection'
+      generation: number
+      projectId: string
+      state: 'reconnecting' | 'offline'
+      attempt: number
+      error: SafeError
+    }
 const generationSchema = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER)
 const jobViewSchema = z.custom<JobView>((value) => validateV2('job', value))
 const projectViewSchema = z.custom<ProjectView>((value) => validateV2('result_project.get', value))
@@ -78,21 +83,31 @@ const taskViewSchema = z
       new Set(view.jobs.map((job) => job.jobId)).size === view.jobs.length &&
       view.jobs.every((job) => job.projectId === view.project?.projectId),
   )
-const taskUpdateSchema = z
-  .object({
-    generation: generationSchema,
-    job: jobViewSchema,
-    progress: z.custom<ProgressView>((value) => validateV2('progress', value)).optional(),
-    restoredView: taskViewSchema.optional(),
-  })
-  .strict()
-  .refine(
-    (update) =>
-      !update.restoredView ||
-      (update.restoredView.generation === update.generation &&
-        update.restoredView.project?.projectId === update.job.projectId &&
-        update.restoredView.jobs.some((job) => job.jobId === update.job.jobId)),
-  )
+const taskUpdateSchema = z.union([
+  z
+    .object({
+      kind: z.literal('job'),
+      generation: generationSchema,
+      job: jobViewSchema,
+      progress: z.custom<ProgressView>((value) => validateV2('progress', value)).optional(),
+    })
+    .strict(),
+  z
+    .object({ kind: z.literal('restored'), generation: generationSchema, view: taskViewSchema })
+    .strict()
+    .refine((update) => update.view.generation === update.generation),
+  z
+    .object({
+      kind: z.literal('connection'),
+      generation: generationSchema,
+      projectId: z.string().uuid(),
+      state: z.enum(['reconnecting', 'offline']),
+      attempt: z.number().int().min(0).max(3),
+      error: z.custom<SafeError>((value) => validateV2('error', value)),
+    })
+    .strict()
+    .refine((update) => update.state !== 'offline' || update.attempt === 3),
+])
 export function isTaskUpdate(value: unknown): value is TaskUpdate {
   return taskUpdateSchema.safeParse(value).success
 }
