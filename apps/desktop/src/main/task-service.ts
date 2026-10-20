@@ -546,44 +546,116 @@ export class TaskService {
     }
     return this.restoreOnce()
   }
-  private restoreOnce(reconcileMarkers = false): Promise<BridgeResult<TaskView>> {
+  private restoreOnce(
+    reconcileMarkers = false,
+    alreadyFenced = false,
+  ): Promise<BridgeResult<TaskView>> {
     return this.guard(async () => {
-      const project = this.projectId
-        ? await this.call<ProjectView>('project.get', { projectId: this.projectId })
-        : null
-      if (project) this.observeProject(project)
-      const generation = this.generation
-      const session = this.engine.engineSessionId
-      try {
-        const jobs = await this.restoreJobs()
-        if (reconcileMarkers) await this.reconcileMarkers(jobs)
-        if (generation !== this.generation) throw { error: denied }
-        return { generation, project, jobs }
-      } catch (error) {
-        // Only a trusted atomic-refresh transition may hand this read into its
-        // successor. A project switch, reload, or engine replacement clears or
-        // invalidates this single bounded reference instead of reviving old reads.
-        const transition = this.projectTransition
-        if (
-          transition &&
-          transition.from === generation &&
-          transition.to === this.generation &&
-          transition.projectId === project?.projectId &&
-          transition.projectId === this.projectId &&
-          transition.session === session &&
-          session === this.engine.engineSessionId
-        ) {
-          const view = await transition.view
+      // A project read and its job reads are separate transactions. A committed
+      // job can therefore prove that the earlier project projection is obsolete.
+      // Publish only after the projection covers every observed atomic marker;
+      // continuous commits get three reads, never an unbounded retry loop.
+      let requiredRevision = 0
+      let requiredSnapshot: string | undefined
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const project = this.projectId
+          ? await this.call<ProjectView>('project.get', { projectId: this.projectId })
+          : null
+        if (project) this.observeProject(project, alreadyFenced)
+        const generation = this.generation
+        const session = this.engine.engineSessionId
+        try {
+          let jobs = await this.restoreJobs()
+          if (reconcileMarkers) await this.reconcileMarkers(jobs)
+          if (generation !== this.generation) throw { error: denied }
+          // Operation reads may yield while same-generation progress advances.
+          // Return the current validated watch DTO, never overwrite it with an
+          // older job snapshot captured before that await.
+          jobs = jobs.map((job) => this.watches.get(job.jobId)?.job ?? job)
+          let conflictingSnapshot = false
+          for (const job of jobs) {
+            const commit = job.commitProgress as {
+              mode: string
+              marker?: { projectRevision: number; afterSnapshotId: string } | null
+            }
+            if (commit.mode !== 'atomic' || !commit.marker) continue
+            const marker = commit.marker
+            if (marker.projectRevision > requiredRevision) {
+              requiredRevision = marker.projectRevision
+              requiredSnapshot = marker.afterSnapshotId
+            } else if (marker.projectRevision === requiredRevision) {
+              if (requiredSnapshot && requiredSnapshot !== marker.afterSnapshotId)
+                conflictingSnapshot = true
+              requiredSnapshot = marker.afterSnapshotId
+            }
+          }
           if (
-            view &&
-            this.projectTransition === transition &&
-            view.generation === this.generation &&
-            this.projectId === transition.projectId &&
-            this.engine.engineSessionId === session
-          )
-            return view
+            conflictingSnapshot ||
+            (project?.projectRevision === requiredRevision &&
+              requiredSnapshot &&
+              project.inputSnapshotId !== requiredSnapshot)
+          ) {
+            this.fenceConnection(true)
+            throw {
+              error: {
+                code: 'INVALID_STATE',
+                messageKey: 'protocol.invalidState',
+                params: {},
+                retryable: false,
+              },
+            }
+          }
+          if (!project || project.projectRevision >= requiredRevision)
+            return { generation, project, jobs }
+          // Fence before awaiting the new projection, including on exhaustion.
+          // Preserve only this exact trusted atomic-refresh successor reference;
+          // external view/session/project changes still invalidate its handoff.
+          const transition = this.projectTransition
+          const continuesTransition =
+            transition &&
+            transition.to === generation &&
+            transition.projectId === project.projectId &&
+            transition.session === session
+          this.fenceConnection(true)
+          if (continuesTransition) {
+            transition.to = this.generation
+            this.projectTransition = transition
+          }
+          alreadyFenced = true
+        } catch (error) {
+          // Only a trusted atomic-refresh transition may hand this read into its
+          // successor. A project switch, reload, or engine replacement clears or
+          // invalidates this single bounded reference instead of reviving old reads.
+          const transition = this.projectTransition
+          if (
+            transition &&
+            transition.from === generation &&
+            transition.to === this.generation &&
+            transition.projectId === project?.projectId &&
+            transition.projectId === this.projectId &&
+            transition.session === session &&
+            session === this.engine.engineSessionId
+          ) {
+            const view = await transition.view
+            if (
+              view &&
+              this.projectTransition === transition &&
+              view.generation === this.generation &&
+              this.projectId === transition.projectId &&
+              this.engine.engineSessionId === session
+            )
+              return view
+          }
+          throw error
         }
-        throw error
+      }
+      throw {
+        error: {
+          code: 'INVALID_STATE',
+          messageKey: 'protocol.invalidState',
+          params: {},
+          retryable: false,
+        },
       }
     })
   }
@@ -654,9 +726,10 @@ export class TaskService {
     // A verified current subscription can request an authority read, but its
     // marker is not itself the project projection. Fence old delivery now so
     // no late old-input state can reach this view while that read is pending.
-    const sink = this.sink
-    this.detachView()
-    this.sink = sink
+    // This is the same observed recovery, not a view detach: retain its bounded
+    // budget and require operation evidence in the trusted successor as well.
+    const reconcileMarkers = !!this.recovery
+    this.fenceConnection(true)
     const generation = this.generation
     const refresh = Promise.resolve()
       .then(async () => {
@@ -666,18 +739,17 @@ export class TaskService {
           this.engine.engineSessionId !== engineSessionId
         )
           return
-        const project = await this.call<ProjectView>('project.get', { projectId })
-        this.observeProject(project, true)
-        const jobs = await this.restoreJobs()
+        const restored = await this.restoreOnce(reconcileMarkers, true)
         if (
+          !restored.ok ||
           this.projectId !== projectId ||
-          this.generation !== generation ||
+          this.generation !== restored.data.generation ||
           this.engine.engineSessionId !== engineSessionId ||
-          !jobs.length
+          !restored.data.jobs.length
         )
           return
-        const restoredView: TaskView = { generation, project, jobs }
-        this.sink?.({ kind: 'restored', generation, view: restoredView })
+        const restoredView = restored.data
+        this.sink?.({ kind: 'restored', generation: restoredView.generation, view: restoredView })
         return restoredView
       })
       .catch(() => undefined)
