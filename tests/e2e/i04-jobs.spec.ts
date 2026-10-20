@@ -2,8 +2,9 @@ import { test, expect, _electron as electron } from '@playwright/test'
 import { spawn, execFile } from 'node:child_process'
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { resolve, join } from 'node:path'
+import { resolve, join, basename } from 'node:path'
 import { promisify } from 'node:util'
+import type { TaskUpdate } from '@ontolearn/contracts'
 
 const execute = promisify(execFile)
 const fixturePath = process.env.I04_TEST_FIXTURE
@@ -50,6 +51,9 @@ test('I04 reload re-queries the same durable jobs without creating or cancelling
     })
     const active = first.data.jobs.find((job) => ['queued', 'running'].includes(job.state))
     expect(active).toBeDefined()
+    await expect(
+      page.locator(`[data-job-id="${active!.jobId}"] p`).filter({ hasText: '阶段：' }),
+    ).toHaveText(/^阶段：\s*计算$/)
     await page.getByRole('link', { name: '模块规划' }).click()
     await page.getByRole('link', { name: '开发概览' }).click()
     const afterAnchor = await page.evaluate(() => window.ontolearn!.restoreTasks())
@@ -90,11 +94,164 @@ test('I04 reload re-queries the same durable jobs without creating or cancelling
   }
 })
 
+test('I04 coordinator exit reconciles the open view without replaying jobs', async () => {
+  const testInfo = test.info()
+  test.skip(
+    process.platform !== 'linux' || !fixturePath,
+    'Requires a fresh isolated Linux fixture.',
+  )
+  const application = await electron.launch({
+    ...(process.env.ONTOLEARN_PACKAGED_EXECUTABLE
+      ? { executablePath: process.env.ONTOLEARN_PACKAGED_EXECUTABLE }
+      : {}),
+    args: appArgs(),
+    cwd: resolve('apps/desktop'),
+    env: environment(),
+  })
+  try {
+    const page = await application.firstWindow()
+    await expect(page.getByRole('region', { name: '后台任务状态' })).toBeVisible()
+    const first = await page.evaluate(() => window.ontolearn!.restoreTasks())
+    if (!first.ok) throw new Error('initial durable view unavailable')
+    const active = first.data.jobs.find((job) => ['queued', 'running'].includes(job.state))
+    const committed = first.data.jobs.find((job) => job.state === 'succeeded')
+    expect(active).toBeDefined()
+    expect(committed).toBeDefined()
+    await expect(
+      page.locator(`[data-job-id="${active!.jobId}"] p`).filter({ hasText: '阶段：' }),
+    ).toHaveText(/^阶段：\s*计算$/)
+    const marker = await page.evaluate(
+      (identity) => window.ontolearn!.getOperation(identity),
+      committed!.operationId,
+    )
+    expect(marker.ok && marker.data !== null).toBe(true)
+    await expect
+      .poll(async () => {
+        const job = await page.evaluate(
+          (identity) => window.ontolearn!.getJob(identity),
+          active!.jobId,
+        )
+        return (
+          job.ok &&
+          Boolean((job.data.commitProgress as { committedProgress: unknown }).committedProgress)
+        )
+      })
+      .toBe(true)
+    const before = await page.evaluate(
+      (identity) => window.ontolearn!.getJob(identity),
+      active!.jobId,
+    )
+    if (!before.ok) throw new Error('committed running job unavailable')
+    await page.evaluate(() => {
+      const record: { updates: TaskUpdate[]; sawUnconfirmed: boolean; actionsDisabled: boolean } = {
+        updates: [],
+        sawUnconfirmed: false,
+        actionsDisabled: false,
+      }
+      ;(window as unknown as { i04Recovery: typeof record }).i04Recovery = record
+      window.ontolearn!.onTaskUpdate((update) => record.updates.push(update))
+      new MutationObserver(() => {
+        const status = document.querySelector('[aria-label="引擎连接状态"]')
+        if (!status) return
+        record.sawUnconfirmed ||= Boolean(status.textContent?.includes('当前状态尚未确认'))
+        const buttons = [...document.querySelectorAll('button')].filter(
+          (button) => button.textContent === '请求取消',
+        )
+        record.actionsDisabled ||= buttons.length > 0 && buttons.every((button) => button.disabled)
+      }).observe(document.body, {
+        subtree: true,
+        childList: true,
+        characterData: true,
+        attributes: true,
+        attributeFilter: ['disabled'],
+      })
+    })
+    const parent = application.process().pid!
+    const children = await execute('ps', ['-o', 'pid=', '--ppid', String(parent)])
+    const engines: number[] = []
+    for (const value of children.stdout.trim().split(/\s+/)) {
+      if (!/^\d+$/.test(value)) continue
+      const arguments_ = (await readFile(`/proc/${value}/cmdline`)).toString('utf8').split('\0')
+      if (arguments_.includes('ontolearn_engine') || basename(arguments_[0]) === 'ontolearn-engine')
+        engines.push(Number(value))
+    }
+    expect(engines).toHaveLength(1)
+    process.kill(engines[0], 'SIGKILL')
+    await expect(page.locator(`[data-job-id="${active!.jobId}"]`)).toContainText('执行失败', {
+      timeout: 15000,
+    })
+    await expect(page.getByRole('status', { name: '引擎连接状态' })).toHaveCount(0)
+    const record = await page.evaluate(
+      () =>
+        (
+          window as unknown as {
+            i04Recovery: {
+              updates: TaskUpdate[]
+              sawUnconfirmed: boolean
+              actionsDisabled: boolean
+            }
+          }
+        ).i04Recovery,
+    )
+    expect(record.sawUnconfirmed).toBe(true)
+    expect(record.actionsDisabled).toBe(true)
+    const disconnected = record.updates.find((update) => update.kind === 'connection')
+    const restored = record.updates.find((update) => update.kind === 'restored')
+    expect(disconnected?.kind).toBe('connection')
+    expect(restored?.kind).toBe('restored')
+    if (restored?.kind !== 'restored') throw new Error('no authoritative restored update')
+    expect(restored.view.jobs.map((job) => job.jobId)).toEqual(
+      first.data.jobs.map((job) => job.jobId),
+    )
+    const final = restored.view.jobs.find((job) => job.jobId === active!.jobId)!
+    expect(final.state).toBe('failed')
+    expect(final.operationId).toBe(active!.operationId)
+    const previousProgress = before.data.commitProgress as {
+      mode: 'rounds'
+      committedProgress: { runId: string; lastCommittedRound: number; snapshotRef: string }
+    }
+    const finalProgress = final.commitProgress as typeof previousProgress
+    expect(finalProgress.mode).toBe('rounds')
+    expect(finalProgress.committedProgress.runId).toBe(previousProgress.committedProgress.runId)
+    expect(finalProgress.committedProgress.lastCommittedRound).toBeGreaterThanOrEqual(
+      previousProgress.committedProgress.lastCommittedRound,
+    )
+    if (
+      finalProgress.committedProgress.lastCommittedRound ===
+      previousProgress.committedProgress.lastCommittedRound
+    )
+      expect(finalProgress).toEqual(previousProgress)
+    expect(final.error).toEqual({
+      code: 'ENGINE_EXITED',
+      messageKey: 'engine.exited',
+      params: {},
+      retryable: true,
+    })
+    expect(
+      await page.evaluate(
+        (identity) => window.ontolearn!.getOperation(identity),
+        committed!.operationId,
+      ),
+    ).toEqual(marker)
+    const firstManual = await page.evaluate(() => window.ontolearn!.restoreTasks())
+    expect(firstManual.ok).toBe(true)
+    const evidence = testInfo.outputPath('i04-coordinator-recovery.json')
+    await writeFile(evidence, JSON.stringify({ before: before.data, final, record }, null, 2))
+    await testInfo.attach('i04-coordinator-recovery', {
+      path: evidence,
+      contentType: 'application/json',
+    })
+  } finally {
+    await application.close()
+  }
+})
+
 // Native recovery is deliberately separate from Playwright Electron: renderer CDP
 // is never attached, and the main inspector is closed before crash/hang injection.
 const nativeHook = String.raw`
 const {app,BrowserWindow}=require('electron')
 const {writeFileSync}=require('node:fs')
+const {execFileSync}=require('node:child_process')
 const inspector=require('node:inspector')
 const evidence={windows:[],events:[],inspectorClosed:false,hangMonitorEnabled:!app.commandLine.hasSwitch('disable-hang-monitor')}
 const save=()=>writeFileSync(process.env.I04_NATIVE_EVIDENCE,JSON.stringify(evidence,null,2))
@@ -137,6 +294,12 @@ function observe(window,freshlyCreated=false){
    const end=Date.now()+3000
    while(!window.isVisible()||!window.isFocused()){if(Date.now()>end)throw new Error('native focus deadline');await new Promise(done=>setTimeout(done,25))}
    entry.focused=window.isFocused();entry.visible=window.isVisible();save()
+   const focusId=execFileSync('xdotool',['getwindowfocus'],{timeout:2000}).toString().trim()
+   const focusTitle=execFileSync('xdotool',['getwindowname',focusId],{timeout:2000}).toString().trim()
+   const visibleIds=execFileSync('xdotool',['search','--onlyvisible','--name','.*'],{timeout:2000}).toString().trim().split('\n')
+   entry.x11Focus={observer:'xdotool/XGetInputFocus',windowId:focusId,title:focusTitle,visible:visibleIds.includes(focusId)}
+   if(!entry.x11Focus.visible||focusTitle!==window.getTitle())throw new Error('external X focus does not match visible application window')
+   save()
    void window.webContents.executeJavaScript('for(;;){}').catch(error=>{if(!window.isDestroyed())fail(error)})
    setTimeout(()=>{if(window.isDestroyed())return;if(!window.isVisible()||!window.isFocused())return fail('native hang lost focus');window.webContents.sendInputEvent({type:'mouseDown',x:400,y:400,button:'left',clickCount:1});window.webContents.sendInputEvent({type:'mouseUp',x:400,y:400,button:'left',clickCount:1})},250)
   }else if(ordinal===3){
@@ -168,6 +331,7 @@ test('I04 native renderer crash and real unresponsive dialog retain durable jobs
   })
   let stderr = ''
   let stdout = ''
+  const nativeDialogs: { phase: string; windowId: string; title: string; visible: boolean }[] = []
   let socket: WebSocket | undefined
   const finished = new Promise<void>((done, reject) => {
     child.on('error', reject)
@@ -280,6 +444,12 @@ test('I04 native renderer crash and real unresponsive dialog retain durable jobs
         })
       }
       expect(dialogId, `actual ${phase} native recovery dialog`).toBeTruthy()
+      nativeDialogs.push({
+        phase,
+        windowId: dialogId!,
+        title: (await execute('xdotool', ['getwindowname', dialogId!])).stdout.trim(),
+        visible: true,
+      })
       // The real native dialog defaults to “暂不恢复”. Move to the preceding
       // “重新打开窗口” button using GTK keyboard navigation; never stub its result.
       await execute('xdotool', ['windowactivate', '--sync', dialogId!])
@@ -292,6 +462,25 @@ test('I04 native renderer crash and real unresponsive dialog retain durable jobs
     expect(evidence.inspectorClosed).toBe(true)
     expect(evidence.hangMonitorEnabled).toBe(true)
     expect(evidence.windows[1]).toMatchObject({ visible: true, focused: true })
+    expect(evidence.windows[1].x11Focus).toMatchObject({
+      observer: 'xdotool/XGetInputFocus',
+      visible: true,
+    })
+    expect(nativeDialogs.map((dialog) => dialog.phase)).toEqual(['crash', 'hang'])
+    expect(nativeDialogs.every((dialog) => dialog.title === 'OntoLearn Studio 窗口恢复')).toBe(true)
+    const verifiedEvidence = test.info().outputPath('i04-native-verified-evidence.json')
+    await writeFile(
+      verifiedEvidence,
+      JSON.stringify(
+        { ...evidence, nativeDialogs, dialogObserver: 'external xdotool visible-window inventory' },
+        null,
+        2,
+      ),
+    )
+    await test.info().attach('i04-native-verified-evidence', {
+      path: verifiedEvidence,
+      contentType: 'application/json',
+    })
     await test
       .info()
       .attach('i04-native-evidence', { path: evidencePath, contentType: 'application/json' })

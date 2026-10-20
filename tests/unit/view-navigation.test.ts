@@ -16,6 +16,9 @@ it('keeps actual task subscription and generation across anchors, and replaces t
   const requests: string[] = []
   const engine = {
     engineSessionId: session,
+    onConnectionState() {
+      return () => {}
+    },
     onNotification(listener: (value: unknown) => void) {
       notifications.on('wire', listener)
       return () => {
@@ -91,7 +94,7 @@ it('keeps actual task subscription and generation across anchors, and replaces t
     notifications.emit('wire', event)
     expect(updates).toHaveLength(1)
     expect(before.ok && updates[0].generation).toBe(before.ok && before.data.generation)
-    expect(updates[0].job.state).toBe('succeeded')
+    expect(updates[0].kind === 'job' && updates[0].job.state).toBe('succeeded')
     contents.emit('did-start-navigation', {
       url: 'file:///app/index.html',
       isMainFrame: true,

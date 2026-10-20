@@ -9,17 +9,20 @@ import {
   type ResultPageOptions,
   type TaskUpdate,
   type TaskView,
+  type SafeError,
 } from '@ontolearn/contracts'
 import {
   acceptsJobEvent,
   validateV2,
   type EventBinding,
 } from '../../../../packages/contracts/src/v2'
+import type { EngineConnectionState } from './engine'
 
 interface TaskEngine {
   request(method: string, params: Record<string, unknown>): Promise<unknown>
   readonly engineSessionId: string | undefined
   onNotification(listener: (event: unknown) => void): () => void
+  onConnectionState(listener: (event: EngineConnectionState) => void): () => void
 }
 const id = z.string().uuid()
 const denied = {
@@ -33,6 +36,15 @@ const invalid = {
   messageKey: 'protocol.invalidRequest',
   params: { field: 'params' },
   retryable: false,
+}
+interface Recovery {
+  projectId: string
+  generation: number
+  attempt: number
+  cancelled: boolean
+  error: SafeError
+  promise?: Promise<BridgeResult<TaskView>>
+  wake?: () => void
 }
 interface Watch {
   binding: EventBinding
@@ -63,9 +75,18 @@ export class TaskService {
   private reconciliations = new Map<string, Promise<void>>()
   private pendingSubscriptions = new Map<string, Promise<BridgeResult<JobView>>>()
   private release: () => void
+  private releaseConnection: () => void
+  private recovery: Recovery | undefined
+  private connection: 'ready' | 'reconnecting' | 'offline' = 'ready'
+  private engineGeneration = -1
+  private lastReadySession: string | undefined
+  private disconnectedSession: string | undefined
+  private disposed = false
   private sink: ((value: TaskUpdate) => void) | undefined
   constructor(private engine: TaskEngine) {
+    this.lastReadySession = engine.engineSessionId
     this.release = engine.onNotification((value) => this.receive(value))
+    this.releaseConnection = engine.onConnectionState((value) => this.connectionChanged(value))
   }
   // Called only by trusted main-process project selection, never exposed as IPC.
   selectProject(projectId: string, jobs: string[] = []): void {
@@ -81,32 +102,195 @@ export class TaskService {
     this.detachView()
     this.sink = sink
   }
-  detachView(): void {
+  private cancelRecovery(): void {
+    const recovery = this.recovery
+    if (recovery) {
+      recovery.cancelled = true
+      recovery.wake?.()
+    }
+    this.recovery = undefined
+  }
+  private clearView(remoteUnsubscribe: boolean, cancelRecovery: boolean): void {
+    if (cancelRecovery) this.cancelRecovery()
     this.projectTransition = undefined
     this.generation++
     this.sink = undefined
-    for (const watch of this.watches.values())
-      void this.engine
-        .request('job.unsubscribe', {
-          projectId: watch.binding.projectId,
-          jobId: watch.binding.jobId,
-          subscriptionId: watch.binding.subscriptionId,
-        })
-        .catch(() => {})
+    for (const watch of this.watches.values()) {
+      if (remoteUnsubscribe && this.engine.engineSessionId === watch.binding.engineSessionId)
+        void this.engine
+          .request('job.unsubscribe', {
+            projectId: watch.binding.projectId,
+            jobId: watch.binding.jobId,
+            subscriptionId: watch.binding.subscriptionId,
+          })
+          .catch(() => {})
+    }
     this.watches.clear()
     this.earlyEvents.clear()
     this.earlyBytes = 0
   }
+  detachView(): void {
+    this.clearView(true, true)
+  }
+  private fenceConnection(remoteUnsubscribe = false): void {
+    const sink = this.sink
+    this.clearView(remoteUnsubscribe, false)
+    this.sink = sink
+    if (this.recovery) this.recovery.generation = this.generation
+  }
   dispose(): void {
+    this.disposed = true
     this.detachView()
     this.release()
+    this.releaseConnection()
+  }
+  private connectionChanged(event: EngineConnectionState): void {
+    if (
+      this.disposed ||
+      !Number.isSafeInteger(event.generation) ||
+      event.generation < this.engineGeneration ||
+      !id.safeParse(event.engineSessionId).success
+    )
+      return
+    this.engineGeneration = event.generation
+    if (event.state === 'ready') {
+      const previous = this.lastReadySession
+      this.lastReadySession = event.engineSessionId
+      if (this.recovery || !previous || previous === event.engineSessionId) return
+      if (this.projectId && this.sink) {
+        this.connection = 'reconnecting'
+        this.fenceConnection()
+        void this.beginRecovery(
+          safeError({
+            code: 'ENGINE_EXITED',
+            messageKey: 'engine.exited',
+            params: {},
+            retryable: true,
+          }),
+        )
+      }
+      return
+    }
+    if (
+      event.engineSessionId !== this.lastReadySession ||
+      this.disconnectedSession === event.engineSessionId ||
+      !validateV2('error', event.error)
+    )
+      return
+    this.disconnectedSession = event.engineSessionId
+    this.connection = 'reconnecting'
+    this.fenceConnection()
+    if (this.recovery) {
+      this.recovery.error = safeError(event.error)
+      return
+    }
+    if (this.projectId && this.sink) void this.beginRecovery(safeError(event.error))
+  }
+  private alive(recovery: Recovery): boolean {
+    return (
+      !this.disposed &&
+      !recovery.cancelled &&
+      this.recovery === recovery &&
+      this.projectId === recovery.projectId &&
+      this.generation === recovery.generation
+    )
+  }
+  private connectionUpdate(recovery: Recovery, state: 'reconnecting' | 'offline'): void {
+    if (this.alive(recovery))
+      this.sink?.({
+        kind: 'connection',
+        generation: this.generation,
+        projectId: recovery.projectId,
+        state,
+        attempt: recovery.attempt,
+        error: safeError(recovery.error),
+      })
+  }
+  private beginRecovery(error: SafeError): Promise<BridgeResult<TaskView>> {
+    if (this.connection !== 'offline' && this.recovery && this.alive(this.recovery))
+      return this.recovery.promise!
+    this.cancelRecovery()
+    const recovery: Recovery = {
+      projectId: this.project(),
+      generation: this.generation,
+      attempt: 0,
+      cancelled: false,
+      error,
+    }
+    this.recovery = recovery
+    this.connection = 'reconnecting'
+    recovery.promise = Promise.resolve()
+      .then(() => this.recover(recovery))
+      .finally(() => {
+        if (this.recovery === recovery) this.recovery = undefined
+      })
+    this.connectionUpdate(recovery, 'reconnecting')
+    return recovery.promise
+  }
+  private async recover(recovery: Recovery): Promise<BridgeResult<TaskView>> {
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      if (!this.alive(recovery)) return { ok: false, error: safeError(denied) }
+      if (attempt > 1) {
+        await new Promise<void>((done) => {
+          const timer = setTimeout(done, 250 * 2 ** (attempt - 2))
+          recovery.wake = () => {
+            clearTimeout(timer)
+            done()
+          }
+        })
+        recovery.wake = undefined
+        if (!this.alive(recovery)) return { ok: false, error: safeError(denied) }
+      }
+      recovery.attempt = attempt
+      this.connectionUpdate(recovery, 'reconnecting')
+      let timer: ReturnType<typeof setTimeout> | undefined
+      const result = await Promise.race([
+        this.restoreOnce(true),
+        new Promise<BridgeResult<TaskView>>((done) => {
+          timer = setTimeout(
+            () =>
+              done({
+                ok: false,
+                error: safeError({
+                  code: 'TIMEOUT',
+                  messageKey: 'job.timeout',
+                  params: { phase: 'request' },
+                  retryable: true,
+                }),
+              }),
+            15000,
+          )
+        }),
+      ])
+      clearTimeout(timer)
+      if (!this.alive(recovery)) return { ok: false, error: safeError(denied) }
+      if (result.ok) {
+        this.connection = 'ready'
+        this.sink?.({ kind: 'restored', generation: result.data.generation, view: result.data })
+        return result
+      }
+      recovery.error = result.error
+      this.fenceConnection(!!this.engine.engineSessionId)
+      if (attempt === 3) {
+        this.connection = 'offline'
+        this.connectionUpdate(recovery, 'offline')
+        return result
+      }
+    }
+    return { ok: false, error: safeError(denied) }
   }
   private async call<T>(method: string, params: Record<string, unknown>): Promise<T> {
     if (!validateV2(`params_${method}`, params)) throw { error: invalid }
     const generation = this.generation
+    const requestedSession = this.engine.engineSessionId
     const result = await this.engine.request(method, params)
     if (generation !== this.generation) {
-      if (method === 'job.subscribe' && validateV2('result_job.subscribe', result)) {
+      if (
+        method === 'job.subscribe' &&
+        this.engine.engineSessionId &&
+        (!requestedSession || requestedSession === this.engine.engineSessionId) &&
+        validateV2('result_job.subscribe', result)
+      ) {
         const sub = result as { subscriptionId: string }
         void this.engine
           .request('job.unsubscribe', { ...params, subscriptionId: sub.subscriptionId })
@@ -151,9 +335,12 @@ export class TaskService {
     if (advanced && !alreadyFenced) {
       // A revision is a new view generation. Preserve the view delivery target,
       // discard its subscriptions, and keep each job's immutable input grouping.
-      const sink = this.sink
-      this.detachView()
-      this.sink = sink
+      if (this.recovery) this.fenceConnection(true)
+      else {
+        const sink = this.sink
+        this.detachView()
+        this.sink = sink
+      }
     }
     return advanced
   }
@@ -241,7 +428,7 @@ export class TaskService {
         }
       const previous = this.watches.get(jobId)
       this.watches.delete(jobId)
-      if (previous)
+      if (previous && previous.binding.engineSessionId === this.engine.engineSessionId)
         await this.call('job.unsubscribe', {
           projectId,
           jobId,
@@ -335,7 +522,7 @@ export class TaskService {
       if (this.pendingSubscriptions.has(key)) this.cancelledSubscriptions.add(key)
       const watch = this.watches.get(jobId)
       this.watches.delete(jobId)
-      if (watch)
+      if (watch && watch.binding.engineSessionId === this.engine.engineSessionId)
         await this.call('job.unsubscribe', {
           projectId: watch.binding.projectId,
           jobId: watch.binding.jobId,
@@ -345,44 +532,150 @@ export class TaskService {
     })
   }
   restore(): Promise<BridgeResult<TaskView>> {
+    if (this.projectId && this.connection !== 'ready') {
+      if (!this.recovery || this.connection === 'offline')
+        this.fenceConnection(!!this.engine.engineSessionId)
+      return this.beginRecovery(
+        safeError({
+          code: 'ENGINE_EXITED',
+          messageKey: 'engine.exited',
+          params: {},
+          retryable: true,
+        }),
+      )
+    }
+    return this.restoreOnce()
+  }
+  private restoreOnce(
+    reconcileMarkers = false,
+    alreadyFenced = false,
+  ): Promise<BridgeResult<TaskView>> {
     return this.guard(async () => {
-      const project = this.projectId
-        ? await this.call<ProjectView>('project.get', { projectId: this.projectId })
-        : null
-      if (project) this.observeProject(project)
-      const generation = this.generation
-      const session = this.engine.engineSessionId
-      try {
-        const jobs = await this.restoreJobs()
-        if (generation !== this.generation) throw { error: denied }
-        return { generation, project, jobs }
-      } catch (error) {
-        // Only a trusted atomic-refresh transition may hand this read into its
-        // successor. A project switch, reload, or engine replacement clears or
-        // invalidates this single bounded reference instead of reviving old reads.
-        const transition = this.projectTransition
-        if (
-          transition &&
-          transition.from === generation &&
-          transition.to === this.generation &&
-          transition.projectId === project?.projectId &&
-          transition.projectId === this.projectId &&
-          transition.session === session &&
-          session === this.engine.engineSessionId
-        ) {
-          const view = await transition.view
+      // A project read and its job reads are separate transactions. A committed
+      // job can therefore prove that the earlier project projection is obsolete.
+      // Publish only after the projection covers every observed atomic marker;
+      // continuous commits get three reads, never an unbounded retry loop.
+      let requiredRevision = 0
+      let requiredSnapshot: string | undefined
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const project = this.projectId
+          ? await this.call<ProjectView>('project.get', { projectId: this.projectId })
+          : null
+        if (project) this.observeProject(project, alreadyFenced)
+        const generation = this.generation
+        const session = this.engine.engineSessionId
+        try {
+          let jobs = await this.restoreJobs()
+          if (reconcileMarkers) await this.reconcileMarkers(jobs)
+          if (generation !== this.generation) throw { error: denied }
+          // Operation reads may yield while same-generation progress advances.
+          // Return the current validated watch DTO, never overwrite it with an
+          // older job snapshot captured before that await.
+          jobs = jobs.map((job) => this.watches.get(job.jobId)?.job ?? job)
+          let conflictingSnapshot = false
+          for (const job of jobs) {
+            const commit = job.commitProgress as {
+              mode: string
+              marker?: { projectRevision: number; afterSnapshotId: string } | null
+            }
+            if (commit.mode !== 'atomic' || !commit.marker) continue
+            const marker = commit.marker
+            if (marker.projectRevision > requiredRevision) {
+              requiredRevision = marker.projectRevision
+              requiredSnapshot = marker.afterSnapshotId
+            } else if (marker.projectRevision === requiredRevision) {
+              if (requiredSnapshot && requiredSnapshot !== marker.afterSnapshotId)
+                conflictingSnapshot = true
+              requiredSnapshot = marker.afterSnapshotId
+            }
+          }
           if (
-            view &&
-            this.projectTransition === transition &&
-            view.generation === this.generation &&
-            this.projectId === transition.projectId &&
-            this.engine.engineSessionId === session
-          )
-            return view
+            conflictingSnapshot ||
+            (project?.projectRevision === requiredRevision &&
+              requiredSnapshot &&
+              project.inputSnapshotId !== requiredSnapshot)
+          ) {
+            this.fenceConnection(true)
+            throw {
+              error: {
+                code: 'INVALID_STATE',
+                messageKey: 'protocol.invalidState',
+                params: {},
+                retryable: false,
+              },
+            }
+          }
+          if (!project || project.projectRevision >= requiredRevision)
+            return { generation, project, jobs }
+          // Fence before awaiting the new projection, including on exhaustion.
+          // Preserve only this exact trusted atomic-refresh successor reference;
+          // external view/session/project changes still invalidate its handoff.
+          const transition = this.projectTransition
+          const continuesTransition =
+            transition &&
+            transition.to === generation &&
+            transition.projectId === project.projectId &&
+            transition.session === session
+          this.fenceConnection(true)
+          if (continuesTransition) {
+            transition.to = this.generation
+            this.projectTransition = transition
+          }
+          alreadyFenced = true
+        } catch (error) {
+          // Only a trusted atomic-refresh transition may hand this read into its
+          // successor. A project switch, reload, or engine replacement clears or
+          // invalidates this single bounded reference instead of reviving old reads.
+          const transition = this.projectTransition
+          if (
+            transition &&
+            transition.from === generation &&
+            transition.to === this.generation &&
+            transition.projectId === project?.projectId &&
+            transition.projectId === this.projectId &&
+            transition.session === session &&
+            session === this.engine.engineSessionId
+          ) {
+            const view = await transition.view
+            if (
+              view &&
+              this.projectTransition === transition &&
+              view.generation === this.generation &&
+              this.projectId === transition.projectId &&
+              this.engine.engineSessionId === session
+            )
+              return view
+          }
+          throw error
         }
-        throw error
+      }
+      throw {
+        error: {
+          code: 'INVALID_STATE',
+          messageKey: 'protocol.invalidState',
+          params: {},
+          retryable: false,
+        },
       }
     })
+  }
+  private async reconcileMarkers(jobs: JobView[]): Promise<void> {
+    for (const job of jobs) {
+      const marker = await this.call<Record<string, unknown> | null>('operation.get', {
+        projectId: job.projectId,
+        operationId: job.operationId,
+      })
+      if (marker && marker.jobId !== job.jobId) throw { error: invalid }
+      const commit = job.commitProgress as { mode: string; marker?: Record<string, unknown> | null }
+      if (
+        commit.mode === 'atomic' &&
+        ((commit.marker === null) !== (marker === null) ||
+          (commit.marker &&
+            marker &&
+            Object.keys(commit.marker).some((key) => commit.marker![key] !== marker[key])))
+      )
+        throw { error: invalid }
+    }
   }
   getResult(resultId: string): Promise<BridgeResult<Record<string, unknown>>> {
     return this.guard(() => this.call('result.get', { projectId: this.project(), resultId }))
@@ -433,9 +726,10 @@ export class TaskService {
     // A verified current subscription can request an authority read, but its
     // marker is not itself the project projection. Fence old delivery now so
     // no late old-input state can reach this view while that read is pending.
-    const sink = this.sink
-    this.detachView()
-    this.sink = sink
+    // This is the same observed recovery, not a view detach: retain its bounded
+    // budget and require operation evidence in the trusted successor as well.
+    const reconcileMarkers = !!this.recovery
+    this.fenceConnection(true)
     const generation = this.generation
     const refresh = Promise.resolve()
       .then(async () => {
@@ -445,23 +739,17 @@ export class TaskService {
           this.engine.engineSessionId !== engineSessionId
         )
           return
-        const project = await this.call<ProjectView>('project.get', { projectId })
-        this.observeProject(project, true)
-        const jobs = await this.restoreJobs()
+        const restored = await this.restoreOnce(reconcileMarkers, true)
         if (
+          !restored.ok ||
           this.projectId !== projectId ||
-          this.generation !== generation ||
+          this.generation !== restored.data.generation ||
           this.engine.engineSessionId !== engineSessionId ||
-          !jobs.length
+          !restored.data.jobs.length
         )
           return
-        const restoredView: TaskView = { generation, project, jobs }
-        const update: TaskUpdate & { restoredView: TaskView } = {
-          generation,
-          job: jobs[0],
-          restoredView,
-        }
-        this.sink?.(update)
+        const restoredView = restored.data
+        this.sink?.({ kind: 'restored', generation: restoredView.generation, view: restoredView })
         return restoredView
       })
       .catch(() => undefined)
@@ -515,7 +803,7 @@ export class TaskService {
             target = current
             continue
           }
-          this.sink?.({ generation, job: structuredClone(result.data) })
+          this.sink?.({ kind: 'job', generation, job: structuredClone(result.data) })
           return
         }
       })
@@ -583,6 +871,7 @@ export class TaskService {
     watch.binding.lastSeq = event.seq
     if (event.event === 'job.progress') {
       this.sink?.({
+        kind: 'job',
         generation: this.generation,
         job: structuredClone(watch.job),
         progress: structuredClone(event.data.progress),
@@ -593,6 +882,6 @@ export class TaskService {
     watch.binding.stateVersion = event.data.stateVersion
     watch.binding.state = event.data.state
     watch.job = event.data
-    this.sink?.({ generation: this.generation, job: structuredClone(event.data) })
+    this.sink?.({ kind: 'job', generation: this.generation, job: structuredClone(event.data) })
   }
 }

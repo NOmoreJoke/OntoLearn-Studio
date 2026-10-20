@@ -1,0 +1,284 @@
+{
+  "beforeC2": {
+    "result": "P2 confirmed: nonempty inbox bypasses the production 5000 ms pre-handshake deadline and accepts hello sent after the budget.",
+    "subject": "0462e0825f3bda2774ce5d43f4422327f2d5fbd9",
+    "sourceSha256": {
+      "packages/engine/src/ontolearn_engine/coordinator.py": "8f2ab2ac32c1e396ac230ee7f95a3cce2a35a462508b842827a11eeebb5ad44d",
+      "packages/engine/src/ontolearn_engine/protocol.py": "34f85a3572276dafcb4ef5dceda426c4b8870a89344a0992684b96ae23218ab2",
+      "packages/engine/src/ontolearn_engine/resources.py": "8bba36a3f97eedf972b4d9165e71b8046b225948b0864542a1fc3f1095c6f188"
+    },
+    "sourceReason": "serve checks handshake_deadline only inside except queue.Empty. Known methods before hello return HANDSHAKE_REQUIRED and remain valid requests, so a continuously supplied inbox can avoid that branch; a late hello sets the session and disables later pre-handshake checks.",
+    "context": "Original I04 acceptance requires separately bounded handshake time. The seen set remains independently capped at 65536 and all tested requests are valid unique IDs; that count cap does not satisfy the stated wall-clock handshake deadline. No authorized jobs, renderer generic IPC or external attacker access was claimed.",
+    "productionCounterexample": {
+      "configuration": "Unmodified frozen primary source, default handshakeMs 5000, real stdio, real SQLite initialization, no queue/clock/reader/limits monkeypatch",
+      "sentPreHello": 44401,
+      "firstReplySeconds": 0.08227341703604907,
+      "latestPossibleDeadlineSeconds": 5.082273417036049,
+      "basisForDeadlineUpperBound": "deadline is established before the first request can be processed; the client observes that first response only afterward.",
+      "lateHealthRepliesAfterSeconds": 5.3,
+      "firstHelloSentSeconds": 5.8097594999708235,
+      "firstHelloAcceptedSeconds": 5.888595249969512,
+      "minimumProvenLateHelloSeconds": 0.7274860829347745,
+      "processAliveBeforeCleanup": true,
+      "naturalExitBeforeCleanup": null,
+      "boundedExperimentFinalExit": 0,
+      "cleanup": "Explicit SIGTERM at experiment end; final zero exit is not presented as natural deadline enforcement.",
+      "stderrBytes": 0,
+      "bounds": {
+        "maxPreHelloRequests": 60000,
+        "writerDeadlineSeconds": 5.8,
+        "experimentDeadlineSeconds": 7
+      }
+    },
+    "idleNegativeControl": {
+      "configuration": "Unmodified frozen production handshakeMs=5000; no requests and caller stdin remains open",
+      "naturalExitCode": 0,
+      "elapsedSeconds": 5.126097167027183,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "cleanupTerminationNeeded": false
+    },
+    "minimalFixDirection": "Evaluate the pre-handshake absolute deadline on every serve-loop iteration before accepting the next inbox item, independent of queue emptiness. Preserve original deadline (do not renew per rejected request), pre-handshake safe replies before the cutoff, normal negotiated sessions and controlled cleanup.",
+    "testDirection": "Keep the actual default-duration counterexample as evidence; use a separately labeled short-limit deterministic busy-inbox regression if desired, without treating it as default-duration proof. Verify late hello is rejected/transport closes while idle deadline and normal timely hello still work.",
+    "readOnly": true,
+    "sourceModified": false,
+    "externalRound2ReportsOrProgressRead": false,
+    "guiStarted": false,
+    "experiments": 2,
+    "limits": "Demonstrates an approximately 0.73 s-or-greater actual default-budget overrun and late successful negotiation; does not claim an infinite lifetime or a performance/resource-exhaustion measurement.",
+    "artifacts": {
+      "probe-default.log": {
+        "sha256": "757b715700616e632623eb99216e9a4b5a951aa9953173e13d9f9bc7be2a1339",
+        "bytes": 3250
+      },
+      "probe-idle-control.py": {
+        "sha256": "0562cdeb852c51808e77f7cc84d2415846243c426f11d61a4f586430732e5214",
+        "bytes": 1222
+      },
+      "probe-default.py": {
+        "sha256": "9747f7b932e4f3aa2a818d6acc1aaaa4c01f04172c9447e219af25f44147677f",
+        "bytes": 3729
+      },
+      "probe-idle-control.log": {
+        "sha256": "b7f44a2e704fa58ffddcfecf5752464b8a4047e43b477e0b555077947526950a",
+        "bytes": 254
+      },
+      "probe-idle-control.json": {
+        "sha256": "b7f44a2e704fa58ffddcfecf5752464b8a4047e43b477e0b555077947526950a",
+        "bytes": 254
+      },
+      "probe-default.json": {
+        "sha256": "757b715700616e632623eb99216e9a4b5a951aa9953173e13d9f9bc7be2a1339",
+        "bytes": 3250
+      }
+    }
+  },
+  "afterIndependentSource": {
+    "result": "No additional issue found in the small 7d4cfaf deadline patch; the original production-default handshake overrun is corrected in independent real stdio probes.",
+    "subject": "7d4cfaf63c2a1ddf5d7b07c1844e1587b08ceaa3",
+    "isolation": "git archive export under own ignored directory; own Python 3.12 venv, SQLite directories and outputs. No primary/root source change or external round-2 report/progress read.",
+    "sourceSha256": {
+      "packages/engine/src/ontolearn_engine/coordinator.py": "fd10458aa1929098b027c62f19c98e888000a2a6e7745c9d817519bbe558e9b8",
+      "packages/engine/src/ontolearn_engine/protocol.py": "34f85a3572276dafcb4ef5dceda426c4b8870a89344a0992684b96ae23218ab2",
+      "packages/engine/src/ontolearn_engine/resources.py": "8bba36a3f97eedf972b4d9165e71b8046b225948b0864542a1fc3f1095c6f188"
+    },
+    "sourceAndTestReview": [
+      "The original absolute deadline is established once; every serve iteration checks session is None and monotonic >= deadline before reading the inbox. Busy and empty inbox paths now share the same cutoff; rejected requests cannot renew it.",
+      "A timely successful hello sets the negotiated session, so only the pre-handshake check is disabled. Normal negotiated request handling and original stop/Store/signal/temp cleanup remain unchanged.",
+      "Three new tests run actual serve/JSONL/contract/SQLite with module-local clock/stdin references replaced, without changing global modules or production LIMITS. Boundary exactly 5.0 and 6.0 reject late hello; timely hello followed by a repeated hello after cutoff still produces INVALID_STATE rather than killing the established session.",
+      "Actual default-time probes below complement the controlled-clock tests; the test itself is not called a default-duration experiment."
+    ],
+    "productionDefaultBusyProbe": {
+      "handshakeMs": 5000,
+      "maxRequests": 60000,
+      "sent": 32400,
+      "responses": 31709,
+      "readerEofSeconds": 5.087268874980509,
+      "writerPipeClosedSeconds": 5.087323707994074,
+      "naturalExitObservedSeconds": 5.087404957972467,
+      "exitCode": 0,
+      "lateHelloAccepted": false,
+      "lateResponsesAfter5_3s": [],
+      "stderrBytes": 0,
+      "cleanupSignalNeeded": false,
+      "expectedWriterObservation": "BrokenPipeError after server naturally closes, before original writer reaches its 5.8-second late-hello point."
+    },
+    "defaultIdleControl": {
+      "configuration": "Unmodified frozen production handshakeMs=5000; no requests and caller stdin remains open",
+      "naturalExitCode": 0,
+      "elapsedSeconds": 5.119883207953535,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "cleanupTerminationNeeded": false
+    },
+    "defaultTimelySession": {
+      "subject": "7d4cfaf63c2a1ddf5d7b07c1844e1587b08ceaa3",
+      "handshakeMs": 5000,
+      "helloReplySeconds": 0.08029770804569125,
+      "healthReplySeconds": 5.801618167082779,
+      "healthStatus": "ok",
+      "sameNegotiatedSession": true,
+      "normalEofExitCode": 0,
+      "stderrBytes": 0,
+      "sqliteLeaseReopened": true,
+      "shutdown": "Caller EOF after successful health, no forced signal",
+      "limits": "Actual production default-time timely session; no clock/queue/limits substitution"
+    },
+    "targetedTests": {
+      "passed": 3,
+      "seconds": 0.07,
+      "log": "pytest.log",
+      "testSourceSha256": "73fe364f5d5b8ee59214a5c2531d67746e02dc4dc915f27c56fb3b66066a7e32"
+    },
+    "oldEvidencePreservation": "All six original 0462 default positive/control script, JSON and log hashes rechecked unchanged against the original finding-summary manifest. Original late-success and the new rejection have separate paths.",
+    "harnessCorrection": "Initial export command used host Python 3.9, which lacks tarfile.extractall(filter=...). Failed before any source execution; corrected to own Python 3.12 export. Original harness error log retained separately.",
+    "probeCount": "Three substantive fixed-source cases (busy, idle, timely); busy probe repeated once solely to add required EOF/pipe-exit timing fields, with the first output retained.",
+    "limits": "No fullcheck, GUI, native Electron, packaging, Windows runtime or external designated review performed. A new frozen candidate still requires both fresh full designated reviews; no prior C2 Pass is reused.",
+    "artifacts": {
+      "pytest.log": {
+        "sha256": "f21802e5e24571b06b077e416af1539fdce6ad55b407e03af6af45b03968cb3b",
+        "bytes": 98
+      },
+      "probe-idle-control.py": {
+        "sha256": "864f4bb94033fb5f118f1850d1e2539e3f72109e6b0e5b9ca4e33ced5ecdf399",
+        "bytes": 1267
+      },
+      "probe-timely-session.py": {
+        "sha256": "aa6a0ae224b257400a25c985f4f98cddedcf0c3f547c3e991a9ff4d13dc9db54",
+        "bytes": 2366
+      },
+      "probe-timely-session.log": {
+        "sha256": "d023f74e7832b06d1f80fe95e73acc36a17829ffcc3d5b2e347b748e96a74df5",
+        "bytes": 471
+      },
+      "probe-default.py": {
+        "sha256": "479914a075f6817a275a7cda8e5012a01d156c4f7cb106935c016154c239bbc0",
+        "bytes": 3774
+      },
+      "probe-default-timed.py": {
+        "sha256": "63791c919eb33c2de54f48745544bccd23429324bf76ac3f9698b35a09e04a98",
+        "bytes": 4128
+      },
+      "probe-default-timed.log": {
+        "sha256": "e015ccacdfb6e42e344256803a7a9901ecd3f658bbff89889720b99044c78f63",
+        "bytes": 1221
+      },
+      "probe-default-production.log": {
+        "sha256": "81962ac43a7de8fecdf6ed5f21d27fae09e982e95202c7228c4eb60310717d30",
+        "bytes": 1080
+      },
+      "export-harness-failure.log": {
+        "sha256": "a7bbc91ae7e0403139e42926458e2350d7c66f33d9dd321ff684676089a3ed0f",
+        "bytes": 200
+      },
+      "probe-idle-control.log": {
+        "sha256": "7ad38cfb7dc0541aedeee2b0f0a9859639c21ac32c5687a841593dad782d125c",
+        "bytes": 254
+      },
+      "probe-default-timed.json": {
+        "sha256": "e015ccacdfb6e42e344256803a7a9901ecd3f658bbff89889720b99044c78f63",
+        "bytes": 1221
+      },
+      "probe-timely-session.json": {
+        "sha256": "d023f74e7832b06d1f80fe95e73acc36a17829ffcc3d5b2e347b748e96a74df5",
+        "bytes": 471
+      },
+      "probe-idle-control.json": {
+        "sha256": "7ad38cfb7dc0541aedeee2b0f0a9859639c21ac32c5687a841593dad782d125c",
+        "bytes": 254
+      },
+      "probe-default.json": {
+        "sha256": "81962ac43a7de8fecdf6ed5f21d27fae09e982e95202c7228c4eb60310717d30",
+        "bytes": 1080
+      }
+    }
+  },
+  "packaged": {
+    "macOS": {
+      "executable": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/I04-reconnect/release/mac-arm64/OntoLearn Studio.app/Contents/Resources/engine/ontolearn-engine",
+      "binarySha256": "5a399a3e6cfe5c23219a8cfd75ab2ddf6c36b98b42c49555973f57f8da6f2418",
+      "handshakeMs": 5000,
+      "resourceLimitsModified": false,
+      "firstResponseSeconds": 0.071992416982539,
+      "readerEofSeconds": 5.088729667011648,
+      "firstResponseToEofSeconds": 5.016737250029109,
+      "sent": 39481,
+      "received": 38747,
+      "naturalExit": true,
+      "actualExitCode": 0,
+      "stderrBytes": 0,
+      "lateSuccessfulHello": false,
+      "invalidPreHelloReplies": 0,
+      "errors": [],
+      "callerStdinOpenUntilAfterExit": true,
+      "bounds": {
+        "maxRequests": 60000,
+        "lateHelloAfterFirstReplySeconds": 5.8,
+        "maxNaturalWaitAfterFirstReplySeconds": 7
+      },
+      "boundary": "Real default-budget packaged run; request-count cap may leave queue empty before the deadline. Separate actual source positive/negative probes and controlled busy-inbox regression establish the specific fix."
+    },
+    "linux": {
+      "executable": "/i04/release/linux-arm64-unpacked/resources/engine/ontolearn-engine",
+      "binarySha256": "7c3ca412a06f813cd1d3b92b84cd46109a09e3841c578d7dc657a408d37f7c9c",
+      "handshakeMs": 5000,
+      "resourceLimitsModified": false,
+      "firstResponseSeconds": 0.07449879199702991,
+      "readerEofSeconds": 5.090424252997764,
+      "firstResponseToEofSeconds": 5.015925461000734,
+      "sent": 31111,
+      "received": 30542,
+      "naturalExit": true,
+      "actualExitCode": 0,
+      "stderrBytes": 0,
+      "lateSuccessfulHello": false,
+      "invalidPreHelloReplies": 0,
+      "errors": [],
+      "callerStdinOpenUntilAfterExit": true,
+      "bounds": {
+        "maxRequests": 60000,
+        "lateHelloAfterFirstReplySeconds": 5.8,
+        "maxNaturalWaitAfterFirstReplySeconds": 7
+      },
+      "boundary": "Real default-budget packaged run; request-count cap may leave queue empty before the deadline. Separate actual source positive/negative probes and controlled busy-inbox regression establish the specific fix."
+    }
+  },
+  "rootTests": {
+    "oldSource": "0462e08",
+    "oldSourceLog": {
+      "path": "build/I04-evidence/c3-handshake-before.log",
+      "sha256": "170161b3ce5e762c82b64960f164bd496139aa59a152dc538e070bcb1f07470b",
+      "bytes": 2696
+    },
+    "result": "2 deadline failures, 1 timely-session pass; late hello incorrectly accepted",
+    "newSource": "7d4cfaf, same coordinator bytes in bc098d0",
+    "newSourceLog": {
+      "path": "build/I04-evidence/c3-handshake-after.log",
+      "sha256": "f21802e5e24571b06b077e416af1539fdce6ad55b407e03af6af45b03968cb3b",
+      "bytes": 98
+    },
+    "resultAfter": "3 passed",
+    "harnessFailure": {
+      "log": {
+        "path": "build/I04-evidence/c3-handshake-harness-error.log",
+        "sha256": "4dfe97c955d01271ca574998e3688a05fe81b03ef3a57887df3b2fc8c8bf28bb",
+        "bytes": 9415
+      },
+      "reason": "New test initially used unsupported JobStore context manager; fixed explicit close before interpreting old-source failures. Original harness error retained."
+    }
+  },
+  "meaning": "Handshake remains an absolute pre-hello budget independent of inbox emptiness; rejected requests do not renew it. Timely negotiated sessions continue after that deadline. Default-duration real probes, controlled-clock unit tests and packaged runs have distinct evidence boundaries.",
+  "inTreeDefaultRuntimeCase": {
+    "path": "packages/engine/tests/test_resident_runtime.py",
+    "name": "test_default_handshake_deadline_closes_real_source_or_packaged_transport",
+    "firstIntroducedAt": "c5c1961214ba5074300a96af034b70ea92a0323d",
+    "behavior": "Actual default 5000ms source/binary, caller stdin stays open, bounded <=60000 plus initial legal requests below 65536 cap, natural exit 0, empty stderr, joined threads and exact safe HANDSHAKE_REQUIRED responses. Same case is automatically included by verify-i04-package.py on all three CI platforms.",
+    "limits": "This real default-duration liveness/cleanup case can drain its finite batch on a fast consumer. Exact busy-inbox causality is established separately by the deterministic three tests and the original real default counterexample; this case alone is not claimed to fail every old-version run.",
+    "sourceFullCheck": "1020 passed; Linux 1017 passed + 3 Darwin-only skips",
+    "packagedRuntimeCasesEach": 13,
+    "packagedLogs": [
+      "build/I04-evidence/c3-final-macos-probe/runtime.stdout",
+      "build/I04-evidence/c3-final-linux/current-package-probe/runtime.stdout"
+    ]
+  }
+}

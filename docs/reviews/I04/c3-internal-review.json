@@ -1,0 +1,350 @@
+{
+  "kind": "Independent read-only patch review; does not replace new full designated dual review",
+  "supervisor": {
+    "result": "No additional issue found in the small 7d4cfaf deadline patch; the original production-default handshake overrun is corrected in independent real stdio probes.",
+    "subject": "7d4cfaf63c2a1ddf5d7b07c1844e1587b08ceaa3",
+    "isolation": "git archive export under own ignored directory; own Python 3.12 venv, SQLite directories and outputs. No primary/root source change or external round-2 report/progress read.",
+    "sourceSha256": {
+      "packages/engine/src/ontolearn_engine/coordinator.py": "fd10458aa1929098b027c62f19c98e888000a2a6e7745c9d817519bbe558e9b8",
+      "packages/engine/src/ontolearn_engine/protocol.py": "34f85a3572276dafcb4ef5dceda426c4b8870a89344a0992684b96ae23218ab2",
+      "packages/engine/src/ontolearn_engine/resources.py": "8bba36a3f97eedf972b4d9165e71b8046b225948b0864542a1fc3f1095c6f188"
+    },
+    "sourceAndTestReview": [
+      "The original absolute deadline is established once; every serve iteration checks session is None and monotonic >= deadline before reading the inbox. Busy and empty inbox paths now share the same cutoff; rejected requests cannot renew it.",
+      "A timely successful hello sets the negotiated session, so only the pre-handshake check is disabled. Normal negotiated request handling and original stop/Store/signal/temp cleanup remain unchanged.",
+      "Three new tests run actual serve/JSONL/contract/SQLite with module-local clock/stdin references replaced, without changing global modules or production LIMITS. Boundary exactly 5.0 and 6.0 reject late hello; timely hello followed by a repeated hello after cutoff still produces INVALID_STATE rather than killing the established session.",
+      "Actual default-time probes below complement the controlled-clock tests; the test itself is not called a default-duration experiment."
+    ],
+    "productionDefaultBusyProbe": {
+      "handshakeMs": 5000,
+      "maxRequests": 60000,
+      "sent": 32400,
+      "responses": 31709,
+      "readerEofSeconds": 5.087268874980509,
+      "writerPipeClosedSeconds": 5.087323707994074,
+      "naturalExitObservedSeconds": 5.087404957972467,
+      "exitCode": 0,
+      "lateHelloAccepted": false,
+      "lateResponsesAfter5_3s": [],
+      "stderrBytes": 0,
+      "cleanupSignalNeeded": false,
+      "expectedWriterObservation": "BrokenPipeError after server naturally closes, before original writer reaches its 5.8-second late-hello point."
+    },
+    "defaultIdleControl": {
+      "configuration": "Unmodified frozen production handshakeMs=5000; no requests and caller stdin remains open",
+      "naturalExitCode": 0,
+      "elapsedSeconds": 5.119883207953535,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "cleanupTerminationNeeded": false
+    },
+    "defaultTimelySession": {
+      "subject": "7d4cfaf63c2a1ddf5d7b07c1844e1587b08ceaa3",
+      "handshakeMs": 5000,
+      "helloReplySeconds": 0.08029770804569125,
+      "healthReplySeconds": 5.801618167082779,
+      "healthStatus": "ok",
+      "sameNegotiatedSession": true,
+      "normalEofExitCode": 0,
+      "stderrBytes": 0,
+      "sqliteLeaseReopened": true,
+      "shutdown": "Caller EOF after successful health, no forced signal",
+      "limits": "Actual production default-time timely session; no clock/queue/limits substitution"
+    },
+    "targetedTests": {
+      "passed": 3,
+      "seconds": 0.07,
+      "log": "pytest.log",
+      "testSourceSha256": "73fe364f5d5b8ee59214a5c2531d67746e02dc4dc915f27c56fb3b66066a7e32"
+    },
+    "oldEvidencePreservation": "All six original 0462 default positive/control script, JSON and log hashes rechecked unchanged against the original finding-summary manifest. Original late-success and the new rejection have separate paths.",
+    "harnessCorrection": "Initial export command used host Python 3.9, which lacks tarfile.extractall(filter=...). Failed before any source execution; corrected to own Python 3.12 export. Original harness error log retained separately.",
+    "probeCount": "Three substantive fixed-source cases (busy, idle, timely); busy probe repeated once solely to add required EOF/pipe-exit timing fields, with the first output retained.",
+    "limits": "No fullcheck, GUI, native Electron, packaging, Windows runtime or external designated review performed. A new frozen candidate still requires both fresh full designated reviews; no prior C2 Pass is reused.",
+    "artifacts": {
+      "pytest.log": {
+        "sha256": "f21802e5e24571b06b077e416af1539fdce6ad55b407e03af6af45b03968cb3b",
+        "bytes": 98
+      },
+      "probe-idle-control.py": {
+        "sha256": "864f4bb94033fb5f118f1850d1e2539e3f72109e6b0e5b9ca4e33ced5ecdf399",
+        "bytes": 1267
+      },
+      "probe-timely-session.py": {
+        "sha256": "aa6a0ae224b257400a25c985f4f98cddedcf0c3f547c3e991a9ff4d13dc9db54",
+        "bytes": 2366
+      },
+      "probe-timely-session.log": {
+        "sha256": "d023f74e7832b06d1f80fe95e73acc36a17829ffcc3d5b2e347b748e96a74df5",
+        "bytes": 471
+      },
+      "probe-default.py": {
+        "sha256": "479914a075f6817a275a7cda8e5012a01d156c4f7cb106935c016154c239bbc0",
+        "bytes": 3774
+      },
+      "probe-default-timed.py": {
+        "sha256": "63791c919eb33c2de54f48745544bccd23429324bf76ac3f9698b35a09e04a98",
+        "bytes": 4128
+      },
+      "probe-default-timed.log": {
+        "sha256": "e015ccacdfb6e42e344256803a7a9901ecd3f658bbff89889720b99044c78f63",
+        "bytes": 1221
+      },
+      "probe-default-production.log": {
+        "sha256": "81962ac43a7de8fecdf6ed5f21d27fae09e982e95202c7228c4eb60310717d30",
+        "bytes": 1080
+      },
+      "export-harness-failure.log": {
+        "sha256": "a7bbc91ae7e0403139e42926458e2350d7c66f33d9dd321ff684676089a3ed0f",
+        "bytes": 200
+      },
+      "probe-idle-control.log": {
+        "sha256": "7ad38cfb7dc0541aedeee2b0f0a9859639c21ac32c5687a841593dad782d125c",
+        "bytes": 254
+      },
+      "probe-default-timed.json": {
+        "sha256": "e015ccacdfb6e42e344256803a7a9901ecd3f658bbff89889720b99044c78f63",
+        "bytes": 1221
+      },
+      "probe-timely-session.json": {
+        "sha256": "d023f74e7832b06d1f80fe95e73acc36a17829ffcc3d5b2e347b748e96a74df5",
+        "bytes": 471
+      },
+      "probe-idle-control.json": {
+        "sha256": "7ad38cfb7dc0541aedeee2b0f0a9859639c21ac32c5687a841593dad782d125c",
+        "bytes": 254
+      },
+      "probe-default.json": {
+        "sha256": "81962ac43a7de8fecdf6ed5f21d27fae09e982e95202c7228c4eb60310717d30",
+        "bytes": 1080
+      }
+    }
+  },
+  "bridge": {
+    "candidate": "bc098d0d8eaa0d786039a0a9d154c4be81b27103",
+    "scope": "Only 7d4cfaf handshake deadline loop move, new test_handshake_deadline.py, and bc098d0 parent RSS fail-closed regression",
+    "result": "No new blocking finding in this small-patch review",
+    "sourceHashes": {
+      "packages/engine/src/ontolearn_engine/coordinator.py": "fd10458aa1929098b027c62f19c98e888000a2a6e7745c9d817519bbe558e9b8",
+      "packages/engine/tests/test_handshake_deadline.py": "73fe364f5d5b8ee59214a5c2531d67746e02dc4dc915f27c56fb3b66066a7e32",
+      "packages/engine/tests/test_i04_lifecycle_boundaries.py": "7b39173b5d49fd3ec3dcb86808e6b7896cc70ec41414a7a400ce3c9bdcb81884",
+      "packages/engine/src/ontolearn_engine/worker.py": "da98fad890397967f8463779cc6d81efff2a981f7438901a7b7a5f7712f330e6",
+      "packages/engine/src/ontolearn_engine/memory_guard.py": "f01e1cf25211559bde24c48dceb9d20b2b48335bca19a6ec8015f328db4502ca",
+      "uv.lock": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+    },
+    "tests": {
+      "result": "4 passed",
+      "runtime": "Darwin, separate venv copy and immutable candidate source archive; original candidate assertions unchanged",
+      "logSha256": "7256316818e0211d1c4dc30d19c5b69dd944b4f7c923e409b47993643d15fb98",
+      "observations": {
+        "pytestExitStatus": 0,
+        "realChildrenAfterExecute": [
+          {
+            "jobId": "78548040-4c26-4895-8226-302b9e90b4bc",
+            "pid": 10202,
+            "returncode": -9,
+            "activeRemoved": true
+          },
+          {
+            "jobId": "cb3734f6-a551-4de7-8f78-7d9795cc04cf",
+            "pid": 10203,
+            "returncode": 0,
+            "activeRemoved": true
+          }
+        ],
+        "afterEachTest": [
+          {
+            "test": "packages/engine/tests/test_handshake_deadline.py::test_busy_inbox_cannot_accept_hello_at_or_after_absolute_deadline[0.0]",
+            "globalMonotonicUnchanged": true,
+            "globalStdinUnchanged": true,
+            "runtimeTimeRestored": true,
+            "runtimeOsRestored": true,
+            "runtimeSysRestored": true
+          },
+          {
+            "test": "packages/engine/tests/test_handshake_deadline.py::test_busy_inbox_cannot_accept_hello_at_or_after_absolute_deadline[1.0]",
+            "globalMonotonicUnchanged": true,
+            "globalStdinUnchanged": true,
+            "runtimeTimeRestored": true,
+            "runtimeOsRestored": true,
+            "runtimeSysRestored": true
+          },
+          {
+            "test": "packages/engine/tests/test_handshake_deadline.py::test_timely_hello_disables_only_the_prehandshake_deadline",
+            "globalMonotonicUnchanged": true,
+            "globalStdinUnchanged": true,
+            "runtimeTimeRestored": true,
+            "runtimeOsRestored": true,
+            "runtimeSysRestored": true
+          },
+          {
+            "test": "packages/engine/tests/test_i04_lifecycle_boundaries.py::test_parent_rss_monitor_unavailable_fails_only_the_target_real_worker",
+            "globalMonotonicUnchanged": true,
+            "globalStdinUnchanged": true,
+            "runtimeTimeRestored": true,
+            "runtimeOsRestored": true,
+            "runtimeSysRestored": true
+          }
+        ]
+      },
+      "observer": "Review-only pass-through Coordinator.execute wrapper awaits original unchanged and records child returncode after original cleanup; pytest per-test observer verifies global references and restored module attributes."
+    },
+    "assessment": [
+      "The deadline is computed once, checked using >= before every inbox dequeue, and applies only while session is None; rejected requests do not renew it.",
+      "The deterministic regression executes actual serve/reader/contracts/SQLite; only coordinator-local time/os/sys references and emit are replaced, not shared standard modules or asyncio scheduling time.",
+      "Assertions distinguish exact-deadline and after-deadline late hello rejection from timely hello and normal repeated-hello INVALID_STATE handling. Real SQLite writer lease is reopened after each serve run.",
+      "Parent RSS injection selects the actual target subprocess PID while still alive; only parent sampler lookup is changed, while both child workers execute real candidate source and actual memory guards.",
+      "Target durable state must be failed with INTERNAL_ERROR, no result or operation marker; sibling must succeed with exact immutable result page. Extra observer confirms target reaped with -9 and sibling with 0 before pytest process ends.",
+      "Windows static compatibility: controlled stdin read never consumes fd123, asyncio clock is untouched, SIGTERM setup remains standard and restores in finally; Darwin-only RSS case is explicitly skipped outside Darwin. No production platform branch or worker cleanup path is changed."
+    ],
+    "limitations": [
+      "This is a limited independent patch review, not the required new full dual-model review.",
+      "The default-duration 5-second real stdio handshake probe is not executed here; this review covers deterministic real serve-loop boundary regressions.",
+      "Windows/Linux execution was not performed; Windows compatibility was checked statically only and RSS regression is Darwin-specific.",
+      "No complete test suite, packaging, Electron, GUI or HMR was run."
+    ],
+    "excluded": [
+      "No external current review report or progress was read.",
+      "No root/shared/candidate source was modified."
+    ],
+    "preparationNote": "Initial observer compared stdin against plugin-import time, which differed because pytest capture installs its own stdin. Final observer compares before/after the same test protocol; all four confirm no test-induced global stdin change."
+  },
+  "adoptedR2N1": "In-tree Darwin-only parent sampler failure test now asserts exact safe INTERNAL_ERROR, no result/operation for target, real sibling success and exact result rows; monkeypatch scoped to actual target PID and restored. Linux skips that genuinely platform-specific test.",
+  "bridgeEvidenceAudit4db": {
+    "reviewedCommit": "4db8fe70d3d02bbecbc4d1f02f33e52ad7d00302",
+    "sourceImplementationHead": "bc098d0d8eaa0d786039a0a9d154c4be81b27103",
+    "primaryObservedHead": "0462e0825f3bda2774ce5d43f4422327f2d5fbd9",
+    "result": "passed evidence consistency audit",
+    "checksPassed": 264,
+    "checksTotal": 264,
+    "failures": [],
+    "artifacts": {
+      "indexed": 79,
+      "hashAndBytesMatched": true,
+      "archiveAndManifestAlsoMatched": true
+    },
+    "runtimeInputs": {
+      "count": 123,
+      "allArchiveAndPinnedSourceBytesMatched": true,
+      "archiveSha256": "7b0294c8ef1b7f852eb97735ed21c8782735f207d5a34354885b865f7e641878",
+      "workingTreeDrift": ["packages/engine/tests/test_resident_runtime.py"],
+      "boundary": "Subsequent c5c1961 test-only change is outside the pinned 4db checkpoint; it is recorded as expected working-tree/source drift and is not declared covered or frozen by the earlier 123-input manifest."
+    },
+    "matrices": [
+      {
+        "platform": "macOS",
+        "cells": 144,
+        "atomic": 96,
+        "round": 48,
+        "rawSha256": "131ed1c6392cf50122a99fcee572ed85e32b778cc3f9cd7b4422e17cff4fa775",
+        "sourceHashesMatchHistoricalComponent": true,
+        "passed": true
+      },
+      {
+        "platform": "linux",
+        "cells": 144,
+        "atomic": 96,
+        "round": 48,
+        "rawSha256": "e779768da076ef28037f87cff19595c9d39b90cd7420c92b9dc1b32f7a276b36",
+        "sourceHashesMatchHistoricalComponent": true,
+        "passed": true
+      }
+    ],
+    "checksRecorded": {
+      "macOS": "630 TS / 1019 Python",
+      "Linux": "630 TS / 1016 Python + 3 Darwin skips",
+      "isolatedDesktop": "source 6 and packaged 6",
+      "packagedCommonExamples": "321/11/30/9/7/41/51 on both platforms",
+      "packagedRuntime": "12 on each platform, historical 4db checkpoint"
+    },
+    "handshakeBoundary": "Old source late hello success required explicit SIGTERM cleanup; fixed source/default probes show natural exit and timely-session survival; packaged default probes are liveness checks and explicitly do not independently establish a continuously busy inbox cause. Controlled 3-case and actual old-source counterexample provide that separate proof.",
+    "history": "Original reports and protected AGENTS unchanged. C2 component matrix sources match byte-for-byte; new C3 raw captures are distinct. No C3 freeze/approval/CI/push/merge is claimed.",
+    "reviewedDocumentHashes": {
+      "c3-verification.json": "e26bfd87959a7d0998a349d1b987d387e1ce39235a76dbdf20b164ed75c6e038",
+      "c3-desktop-evidence.json": "cb4c1b782055a46a624a283fc921f332ff194b1af29347177d56323894ed6f94",
+      "c3-handshake-evidence.json": "3d10d0f497611e75e25430c84f99395deb288e83e4779eacb6c23d366ab0d1e1",
+      "c3-internal-review.json": "ca0e7785b5ea29d9e0e7ff61479ea1c28e9448e483638e1cded32824b30e2fb9"
+    },
+    "detailedAuditSha256": "e81184db1b4f6f27a4dfa90ffbfc96739768b5e67388630463bfae00ecf45eb7",
+    "boundary": "Pinned 4db8fe7 evidence/source/tar audit; expected current working-tree test drift is excluded. Read-only audit. No tests, GUI, package launch, CI or external reviews executed. C3 not declared frozen, approved or merged."
+  },
+  "bridgeDefaultRuntimeC5": {
+    "reviewedCommit": "c5c1961214ba5074300a96af034b70ea92a0323d",
+    "result": "No new blocker in scoped read-only review and one actual source case",
+    "deltaFrom4db8fe7": {
+      "files": ["packages/engine/tests/test_resident_runtime.py"],
+      "addedLines": 101,
+      "productionCodeChanged": false
+    },
+    "sourceHashes": {
+      "packages/engine/tests/test_resident_runtime.py": "d80b08023ce2eae7bbb3fad4c0e3d0db0ea851df4e5f4acbd75c06315baf3cd3",
+      "scripts/verify-i04-package.py": "c6fdae8a9e86c60774e8f34e051ff82321dae9d55484009c557b11c46bdd32cf",
+      "packages/engine/src/ontolearn_engine/coordinator.py": "fd10458aa1929098b027c62f19c98e888000a2a6e7745c9d817519bbe558e9b8"
+    },
+    "actualRun": {
+      "selection": "test_default_handshake_deadline_closes_real_source_or_packaged_transport",
+      "result": "1 passed in 15.88s",
+      "mode": "real source coordinator, own archived snapshot and independent venv; actual default clock/limits; no ONTOLEARN_TEST_ENGINE or ROOT_SOURCE_PATH",
+      "observations": {
+        "waitReturns": [
+          {
+            "pid": 14831,
+            "timeout": 7,
+            "returncode": 0,
+            "stdinOpen": true
+          }
+        ],
+        "sentAfterFirst": 37407,
+        "totalRequestsAttempted": 37408,
+        "elapsedAfterFirstReply": 5.027308166958392,
+        "observedResponses": 36721,
+        "uniqueResponseIds": 36721,
+        "readerAliveAfterCleanup": false,
+        "writerAliveAfterCleanup": false,
+        "returncodeAfterCleanup": 0,
+        "transportErrors": [],
+        "pytestExitStatus": 0
+      },
+      "observer": "Read-only per-test sys.setprofile observes process.wait and test-return locals; original test/transport unmodified, previous profile restored in finally. Post-exit validation/profile overhead is included in pytest duration, not deadline elapsed."
+    },
+    "assertionReview": {
+      "requestBound": "At most 60000 writer requests plus first request = 60001, below 65536 seen-request cap; actual attempted 37408.",
+      "naturalExit": "wait returns 0 while stdin is open; no EOF-trigger or kill on successful path; stdout/stderr drained.",
+      "responses": "Every received response validates full canonical response schema and exact HANDSHAKE_REQUIRED four-field error, health method and null session. Test does not promise acknowledgment of all attempted writes or one-to-one request-id membership.",
+      "cleanup": "Finally kills and waits only if child remains alive, joins both threads with bounds, closes all streams. Successful observed run child=0 and both threads dead; transportErrors empty.",
+      "isolation": "No global clock/module substitution, no LIMITS override, no test capability; isolated temp SQLite and source snapshot.",
+      "platform": "New path uses standard subprocess/thread/pipe operations without Unix signals; static Windows compatibility only, no Windows execution here.",
+      "packageCollection": "Existing verify-i04-package runs the entire resident-runtime file with selected actual binary and no -k filter. Collection now has 13 cases."
+    },
+    "scopeBoundary": "Default-binary transport liveness, not a stand-alone proof of continuously busy-inbox behavior or guaranteed old-version failure. Exact-edge three-case regressions plus existing real old-version counterexample establish that cause separately. First-reply-relative upper bound is asserted; no lower-bound default-duration assertion in this case.",
+    "notExecuted": [
+      "other resident runtime cases",
+      "full check",
+      "packaged binary 13-case rerun",
+      "Windows/Linux package execution",
+      "GUI",
+      "CI",
+      "merge"
+    ],
+    "manifestBoundary": "4db8fe7 79-artifact/123-input audit remains pinned to that checkpoint. This c5c1961 test-only delta is not covered by that earlier source manifest; refreshed fullcheck/package13/final manifest belong to root followup.",
+    "artifacts": {
+      "tests.log": {
+        "sha256": "55b4635925c0f0a6ce8df2bee9722f6133d383567aa0439657ff4ea219ff47e2",
+        "bytes": 99
+      },
+      "collection.log": {
+        "sha256": "c93702b4d47676523d560c04af2faabc896f219b755c29be4871ec0db1d32308",
+        "bytes": 1575
+      },
+      "observations.json": {
+        "sha256": "c0a2f93566b470acc66837aef9656cc89852c06a8924255e91c33c2f3dbc9d62",
+        "bytes": 448
+      },
+      "snapshot/review_observation.py": {
+        "sha256": "26d75bccf1ba4d44db81e468a8350e69bb35c25f1770c57fa59dd6622b260eeb",
+        "bytes": 1698
+      }
+    },
+    "writes": "Only own ignored build review directory; no root/primary/shared source modifications."
+  }
+}
