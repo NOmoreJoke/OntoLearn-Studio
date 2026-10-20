@@ -18,6 +18,10 @@
 
 本线default Docker/nonroot userns探针实际 `unshare --user --map-root-user /bin/true` 返回EPERM（kernel userns配置已开）；未据此宣称产品缺陷。只读I05成功记录确认其方案使用CAP_SYS_ADMIN、root:root/4755 helper和非root进程。按总控已授权环境准备范围，下一独立I06镜像仅修容器内helper owner/mode，测试容器仅增加CAP_SYS_ADMIN并保留Docker默认seccomp、network none/无host mounts或端口、非privileged；不使用seccomp=unconfined，不借其他线可变环境。能力扩展须明确披露，不称default Docker无额外能力；实际无no-sandbox运行仍待证据。
 
+后续平台运行（与根完整check r9分开编号）：platform-r7仅有界userns/helper预检通过，未运行app。platform-r8正常app无no-sandbox，实际UID1106、main Seccomp2/filter1、renderer NoNewPrivs1/Seccomp2/filter2与嵌套NSpid均有原件，GNOME后端可用；之后刷新了模型而未刷新实际任务UI，驱动找不到第二结果，4case/0POST/总体failed。platform-r9修驱动后实际14case通过、3次合成HTTPS POST，覆盖实际两worker授权复用、独立cancel/complete、reload、同profile第二实例、隐私/审计/配置失效和表单刷新；随后全页alert定位器撞到既有多个错误卡，未到最终scan，collector全部总体gates仍false。根实际读回cases/result和3份693bytes正文并计算hash，但该失败run尚未写receiver-manifest，不能称为最终绑定通过。platform-r10另冻harness运行，修直属alert定位并追加两轮实际source/catalog/selection/preview/grant合成原件；旧run不改。当前仍无完整平台pass。下一项为断开调试器后的真实crash→真实原生提示→窗口恢复，核对I06 ledger/Store和receiver不重放；避开会stub dialog的旧helper，不能只以reload代替native联验。
+
+总控独立检查点核验（`iteration-control/2026-10-19/I06-controller-main-wiring-checkpoint-evidence-audit.md`，总控回执SHA `1d5888302a3b63d34ba8393ae9ae36c0c52aa63f518af7153b23db56956c462f`）未提出新增实现修复请求。117source/5compiled/19logs/18raw及998TS/1052Python/source12/46专属/validator43支持其各自边界；18raw是6组同case历史重复正文，非6项新用例。headless safeStorage为double，CAS为同进程两repository实例，postpublish旧context失效和零POST不等于已归档旧pending精确cancelled对象；当时singleprofile仅静态，后续平台事实按新run单列，不倒贴旧证据。
+
 文档子线从同9fc完成四份接口/交接文档与专属记录，对齐提交 `11666cfcfcc15c8f5f8b164bfeaa3fad2acc464e`；原35例和5场景ID保留，新增6例，实际校验43/43通过，原raw SHA `458ddca166bb568532944741a37216996c92e9c82925ddeca1d940564534cd01`，根已复核21快照及41行receipt。独立只读发现终态淘汰文案顺序偏差，在追加 `302f1a440aed47b13e42fee37e3bb9c9286d9440` 纠正并同步ADR/验收旧阶段事实；复核关闭、无新增问题，未改实现/样例或重跑无关检查。新文案raw SHA `22bc2a57dff0cd185250aadca10d2d12d93390b7d7d228dc0541e328ca124bc3`，根已核对6快照，旧raw不变；两提交均已正常合入。原Goal不重建、不标完成；完整S3/平台/适用I05、同候选指定双方全新全范围审查、push/PR/实际CI/远端合并核验仍未完成。未push，不改总控state。
 
 ## 先前阶段记录（历史，当前以上文为准）
