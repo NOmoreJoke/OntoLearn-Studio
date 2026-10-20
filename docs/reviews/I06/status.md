@@ -14,9 +14,11 @@
 
 平台agent只写 `tests/i06-main-platform/` / `docs/reviews/I06/main-platform/`，已正常合入9fc固定源；独立Docker构建完成，首轮实际运行r4无项目禁用通过，但 secure backend 前置检查得到 basic_text，未写密钥、零POST。已确认 Playwright Electron loader 强制追加 password-store=basic 等参数，该次不能作为产品原生凭据失败或通过证据；保留失败原件，改为直接启动正常 Electron 后用容器内 loopback CDP/inspector 驱动。runtime network none、无host mounts/端口映射、非privileged，不运行当前Mac窗口/native/Keychain/CUA。
 
-直接正常启动的r5实际确认Electron44.9.0/browser/app-ready、gnome_libsecret/encryptionAvailable=true，无mock-keychain/readiness补丁；随后项目恢复使表单重挂，驱动填写超时，尚未录入key、零POST，原件保留。r6仍用固定9fc源码，在本线 `tests/i06-main-platform/out/9fcba6634d5c-r6` 独立容器运行，已有真实libsecret录入无回显/首字段授权的阶段事实，完整结果待collector。r5/r6命令带 `--no-sandbox`：这些只能证明实际有界凭据/HTTPS链，不能计作最终C1/C4一致的完整窗口/native门通过。总控要求另准备实际可启用Chromium sandbox的本线隔离容器，正常启动不带该switch，实证 `noSandboxSwitch=false` 后重做受环境影响的main/bridge/存储/恢复；不更改产品sandbox/CSP/window-recovery，也不把能力准备或配置文本当实际安全运行通过。当前r6原raw独立保留。
+直接正常启动的r5实际确认Electron44.9.0/browser/app-ready、gnome_libsecret/encryptionAvailable=true，无mock-keychain/readiness补丁；随后项目恢复使表单重挂，驱动填写超时，尚未录入key、零POST，原件保留。r6仍用固定9fc源码，在本线 `tests/i06-main-platform/out/9fcba6634d5c-r6` 独立容器完成：真实libsecret录入无回显/首字段授权/实际worker环境等4项通过；之后新catalog异步返回前误用旧checkbox，驱动等待失败，`result=failed/receiverRequests=0`，不记作HTTPS发送通过。根已直接读回result/cases/runtime核对一致。r5/r6命令带 `--no-sandbox`：只能保留实际已走到的有界凭据链事实，不能计作最终C1/C4一致的完整窗口/native门通过。总控要求另准备实际可启用Chromium sandbox的本线隔离容器，正常启动不带该switch，实证 `noSandboxSwitch=false` 后重做受环境影响的main/bridge/存储/恢复；不更改产品sandbox/CSP/window-recovery，也不把能力准备或配置文本当实际安全运行通过。r6原raw独立保留。
 
-文档子线从同9fc完成四份接口/交接文档与专属记录，对齐提交 `11666cfcfcc15c8f5f8b164bfeaa3fad2acc464e`；原35例和5场景ID保留，新增6例，实际校验43/43通过，独立只读复核进行中。原Goal不重建、不标完成；完整S3/平台/适用I05、同候选指定双方全新全范围审查、push/PR/实际CI/远端合并核验仍未完成。未push，不改总控state。
+本线default Docker/nonroot userns探针实际 `unshare --user --map-root-user /bin/true` 返回EPERM（kernel userns配置已开）；未据此宣称产品缺陷。只读I05成功记录确认其方案使用CAP_SYS_ADMIN、root:root/4755 helper和非root进程。按总控已授权环境准备范围，下一独立I06镜像仅修容器内helper owner/mode，测试容器仅增加CAP_SYS_ADMIN并保留Docker默认seccomp、network none/无host mounts或端口、非privileged；不使用seccomp=unconfined，不借其他线可变环境。能力扩展须明确披露，不称default Docker无额外能力；实际无no-sandbox运行仍待证据。
+
+文档子线从同9fc完成四份接口/交接文档与专属记录，对齐提交 `11666cfcfcc15c8f5f8b164bfeaa3fad2acc464e`；原35例和5场景ID保留，新增6例，实际校验43/43通过，原raw SHA `458ddca166bb568532944741a37216996c92e9c82925ddeca1d940564534cd01`，根已复核21快照及41行receipt。独立只读发现终态淘汰文案顺序偏差，在追加 `302f1a440aed47b13e42fee37e3bb9c9286d9440` 纠正并同步ADR/验收旧阶段事实；复核关闭、无新增问题，未改实现/样例或重跑无关检查。新文案raw SHA `22bc2a57dff0cd185250aadca10d2d12d93390b7d7d228dc0541e328ca124bc3`，根已核对6快照，旧raw不变；两提交均已正常合入。原Goal不重建、不标完成；完整S3/平台/适用I05、同候选指定双方全新全范围审查、push/PR/实际CI/远端合并核验仍未完成。未push，不改总控state。
 
 ## 先前阶段记录（历史，当前以上文为准）
 
