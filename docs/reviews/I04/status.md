@@ -146,3 +146,13 @@ ZCode GLM-5.3/最高完整报告153行、MiniMax M3.1-Flash/xhigh最终修订报
 最新实际macOS check 630 TS/1020 Python；独立Linux arm64 630 TS/1017 Python+3 Darwin专属跳过。两平台原C3 package公共例通过，现相同不可变引擎包各13 runtime通过；源/包内各6项隔离GUI/native恢复、两平台各144矩阵原始逐格证据均保留。新增第13项仅测试文件变化，不冒充old-version必红，不重复无变化的绿色GUI。最终123非doc输入/新tar与实际文件一致，101份raw artifact hash一致；旧1019/1016+3/12包内记录及原始tar未覆盖。独立supervisor/bridge/source/evidence审查均留证，不替代指定双审。
 
 C2双方原终态与报告纯流程提交已正常合入C3。下一步主线集成、冻结完整base/head、双方各新建完整审查；旧C2批准不沿用。尚未push、PR、远端CI或合并develop。
+
+## 2026-10-21 C3 实际双新任务派发
+
+完整base e45e6038→d3ad536bf9de71780489e32891d3e29d8ebc3dc5，共105文件，candidate-3.json冻结。123非doc输入与实际验证归档相同，原仓库64保护文件与AGENTS SHA不变。已用实际CUA各新建ZCode GLM-5.3/最高、MiniMax M3.1-Flash/xhigh任务，分别核验完整primary路径、feature分支、模型与思考，完整十项/原launch/Goal九节及C1/C2报告处置均实际透传。Z正文全字符串核对，MM展开长附件后所有非URL行核对。两个新任务实际运行，尚无最终结论。Z独占共享构建预约，MM仅真隔离export；双方本轮结论相互隔离。源/测/配置/依赖/验收继续冻结。无push/PR/远端CI/merge。
+
+## 2026-10-21 C3 同版双审正式通过并完整读回
+
+ZCode GLM-5.3/最高135行报告SHA759fa0270e493e48c1dce0a23d08d4d03e64f4698a9a27a5ec4e41b7826a3007；MiniMax M3.1-Flash/xhigh最终352行报告SHAb1acf1e2c564a904e177bfbca9cd1ab0c5da39e9ae285f1a33a79398d0bbc338，双方新完整105文件e45e6038→d3ad536均实际终态且明确通过。MM同任务方法/统计更正亦已终态：原失败、v2/v3/v4及首314行报告保留，批次与请求、显式EOF与自然退出、22原ID与继承开放项分开；源码零变动，不重建任务/Goal，不互通本轮结论。
+
+22原历史ID为21关闭+Z3原约延期1项，继承开放另列；R3-N1为审查探针自身问题，已处置，未当产品修复或新候选。完整读回/所有处置与raw哈希见round-3-processing.json。现在仅追加流程归档，受审105路径除允许status纯追加均字节一致；准备verified feature push与develop PR。三平台远端CI、正常合并与远端核验尚未执行，完整I04 Goal未完成。
