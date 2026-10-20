@@ -1,0 +1,307 @@
+{
+  "date": "2026-10-21",
+  "result": "passed",
+  "scope": "actual Electron safeStorage + production-private repository/audit/core/transport in isolated Linux; no public capability registered",
+  "baseImageId": "sha256:0497417676f686d3b35a17d6c08a2c28a4c7e81169e9f72c17a50d748ae33a44",
+  "imageId": "sha256:419ab9c6fbc8401d3c7e93f2e01496594ecdc322f67ce96f7bcc5ec0def7b04f",
+  "containerId": "be9744441f53913184f6414789e4acb635c8388ed0438262575c84781a74f571",
+  "container": "i06-private-platform-20261021-r4",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-10-20T22:12:58.773172588Z",
+    "FinishedAt": "2026-10-20T22:13:00.018326213Z"
+  },
+  "network": "none",
+  "runtime": {
+    "platform": "linux",
+    "arch": "arm64",
+    "versions": {
+      "node": "24.22.0",
+      "acorn": "8.18.0",
+      "ada": "4.0.0",
+      "amaro": "1.1.11",
+      "ares": "1.34.8",
+      "brotli": "1.2.0",
+      "cldr": "48.0",
+      "icu": "78.2",
+      "llhttp": "9.4.3",
+      "merve": "1.2.2",
+      "modules": "149",
+      "napi": "10",
+      "nbytes": "0.1.4",
+      "ncrypto": "0.0.1",
+      "nghttp2": "1.70.0",
+      "nghttp3": "",
+      "ngtcp2": "",
+      "openssl": "0.0.0",
+      "simdjson": "4.6.11",
+      "simdutf": "7.7.0",
+      "sqlite": "3.53.4",
+      "tz": "2026d",
+      "undici": "7.29.1",
+      "unicode": "17.0",
+      "uv": "1.52.1",
+      "uvwasi": "0.0.23",
+      "v8": "15.2.124.43-electron.0",
+      "zlib": "1.3.2.1-motley",
+      "zstd": "1.6.0",
+      "electron": "44.9.0",
+      "chrome": "152.0.7977.167"
+    },
+    "runtimeType": "browser",
+    "runAsNode": false
+  },
+  "sources": {
+    "apps/desktop/src/main/model-gateway/policy.ts": {
+      "sourceSha256": "dd09203ebe7e7f655cee40e01c84149a8c121e48ece916fa816cbc2c320d1ced",
+      "compiledSha256": "1334c79a4fd0d5270f2f27edfd9180aaccdcacf308022c4d6bd8ee6e96076003"
+    },
+    "apps/desktop/src/main/model-gateway/credentials.ts": {
+      "sourceSha256": "8a56addc33468467a733614a96ff4f24489d06144afe44f4dafe873dbc10482f",
+      "compiledSha256": "e4b93855bdddddcce64e28d8dba72098c42891282d1ef6295cc3b8e7fbe80453"
+    },
+    "apps/desktop/src/main/model-gateway/electron-safe-storage.ts": {
+      "sourceSha256": "724462829544f8c51b0fe1c6ed5335c7b1168cb9379baa7daf69641cf11e9b0e",
+      "compiledSha256": "0a265dcb07cf6adeedee9e2da1b222897e69698e3959ce867465af33643cdd3f"
+    },
+    "apps/desktop/src/main/model-gateway/private-directory.ts": {
+      "sourceSha256": "aec53ab5e21f3f482b9cffaed51354f3100a44e7ea34f3c6d704433c31acdf9f",
+      "compiledSha256": "b60bc8300d0e8eb0f02776f49459da8bfe18212a7d8b164245cd256481544491"
+    },
+    "apps/desktop/src/main/model-gateway/ciphertext-repository.ts": {
+      "sourceSha256": "31e4bed54746529cecbdd1100db6ccb19840ef1d5367090a5334964a2f01e41d",
+      "compiledSha256": "4db2bc2895a939cb30b570e9f9f171ad1d2182622588312d909c67f58773f3cc"
+    },
+    "apps/desktop/src/main/model-gateway/persistent-audit.ts": {
+      "sourceSha256": "62d77f33293770b3c72a0ede6ab796115ac10ebad8def1e534790015c562f5a8",
+      "compiledSha256": "c05536cc860c5a65cadbbb317e3b74b13b01be065e27b577b12cee47bd802e6c"
+    },
+    "apps/desktop/src/main/model-gateway/await-boundary.ts": {
+      "sourceSha256": "e0dd898dd90e12b31b76df04a0907288eb14533bb8dd15e8ebb24ed9fc581382",
+      "compiledSha256": "37832f2e0a6643d1e7e5513b8e52bf17d8e782501f32e84cd2c49df68af8d9d8"
+    },
+    "apps/desktop/src/main/model-gateway/transport.ts": {
+      "sourceSha256": "16e7816d13dc3ceb0c4e4653503d79e2dfc4149d88a5262c2d755cd5fc3ccb61",
+      "compiledSha256": "5bfdf7842faf93a6d1b67e34b9d638eb2efb152e27833c05cf81e9567350a792"
+    },
+    "apps/desktop/src/main/model-gateway/gateway.ts": {
+      "sourceSha256": "eeafef4186ccc017b4bcda94bd0427df311f5c70173e8b7a30558bb6a4e30042",
+      "compiledSha256": "58eeb4748093a1a46d8466dbcaa4c9b8d33137861f05d7df5cc90cf34154a22e"
+    }
+  },
+  "executedComparisons": {
+    "out/await-boundary.js": {
+      "sha256": "37832f2e0a6643d1e7e5513b8e52bf17d8e782501f32e84cd2c49df68af8d9d8",
+      "hostEqualsExecuted": true
+    },
+    "out/ciphertext-repository.js": {
+      "sha256": "4db2bc2895a939cb30b570e9f9f171ad1d2182622588312d909c67f58773f3cc",
+      "hostEqualsExecuted": true
+    },
+    "out/credentials.js": {
+      "sha256": "e4b93855bdddddcce64e28d8dba72098c42891282d1ef6295cc3b8e7fbe80453",
+      "hostEqualsExecuted": true
+    },
+    "out/electron-safe-storage.js": {
+      "sha256": "0a265dcb07cf6adeedee9e2da1b222897e69698e3959ce867465af33643cdd3f",
+      "hostEqualsExecuted": true
+    },
+    "out/gateway.js": {
+      "sha256": "58eeb4748093a1a46d8466dbcaa4c9b8d33137861f05d7df5cc90cf34154a22e",
+      "hostEqualsExecuted": true
+    },
+    "out/package.json": {
+      "sha256": "fa6944a20ca5e6fbaf98fd202eb8c7004d5b4ab786e36b9ed02ee31dbe196c9f",
+      "hostEqualsExecuted": true
+    },
+    "out/persistent-audit.js": {
+      "sha256": "c05536cc860c5a65cadbbb317e3b74b13b01be065e27b577b12cee47bd802e6c",
+      "hostEqualsExecuted": true
+    },
+    "out/policy.js": {
+      "sha256": "1334c79a4fd0d5270f2f27edfd9180aaccdcacf308022c4d6bd8ee6e96076003",
+      "hostEqualsExecuted": true
+    },
+    "out/private-directory.js": {
+      "sha256": "b60bc8300d0e8eb0f02776f49459da8bfe18212a7d8b164245cd256481544491",
+      "hostEqualsExecuted": true
+    },
+    "out/sources.json": {
+      "sha256": "585c25e0cdcba26f521d0c45b0963ca33b26021642dbdb4d753572a50aa61414",
+      "hostEqualsExecuted": true
+    },
+    "out/transport.js": {
+      "sha256": "5bfdf7842faf93a6d1b67e34b9d638eb2efb152e27833c05cf81e9567350a792",
+      "hostEqualsExecuted": true
+    },
+    "probe.cjs": {
+      "sha256": "deba33b81efc72cb11349b565af6963d52b896cb4ed04f1445aa463d6cdd2bcf",
+      "hostEqualsExecuted": true
+    },
+    "run-isolated.sh": {
+      "sha256": "5a8a83a658eb274e5b2627b708d4c0ab9f09e93ccf6d517cbc72670198765fe7",
+      "hostEqualsExecuted": true
+    },
+    "electron-package.json": {
+      "sha256": "14ad7d5a4985e49d533d069289be4b6f97ad8afe36a93d146785bd82d184f295",
+      "version": "44.9.0"
+    },
+    "zod-package.json": {
+      "sha256": "c2d190d9ee4e0bdb60332aaa2130a6a98d65ddb903fe1d29248b15de57832c45",
+      "version": "4.6.7"
+    }
+  },
+  "cases": [
+    {
+      "mode": "secure-send",
+      "assertions": [
+        "real-private-permissions",
+        "real-symlink-denied",
+        "real-excluded-overlap-denied",
+        "real-foreign-owner-denied",
+        "actual-safe-storage-private-ciphertext-durable",
+        "actual-gateway-post-once",
+        "actual-durable-metadata-audit",
+        "private-files-no-plaintext-credential-business-path"
+      ],
+      "backend": "gnome_libsecret",
+      "available": true,
+      "postCount": 1,
+      "privateFileCount": 2,
+      "result": "passed"
+    },
+    {
+      "mode": "recover-no-replay",
+      "assertions": [
+        "second-electron-process-private-recovery",
+        "durable-audit-recovery-no-replay-original-endpoint-observed"
+      ],
+      "backend": "gnome_libsecret",
+      "available": true,
+      "postCount": 0,
+      "privateFileCount": 2,
+      "result": "passed"
+    },
+    {
+      "mode": "corrupt",
+      "assertions": [
+        "valid-storage-envelope-invalid-real-os-ciphertext-denied"
+      ],
+      "backend": "gnome_libsecret",
+      "available": true,
+      "result": "passed"
+    },
+    {
+      "mode": "key-loss",
+      "assertions": [
+        "actual-new-keyring-private-credential-recovery-denied"
+      ],
+      "backend": "gnome_libsecret",
+      "available": true,
+      "result": "passed"
+    },
+    {
+      "mode": "basic",
+      "assertions": [
+        "insecure-or-unavailable-zero-real-credential-files"
+      ],
+      "backend": "basic_text",
+      "available": false,
+      "result": "passed"
+    },
+    {
+      "mode": "unavailable",
+      "assertions": [
+        "insecure-or-unavailable-zero-real-credential-files"
+      ],
+      "backend": "gnome_libsecret",
+      "available": false,
+      "result": "passed"
+    }
+  ],
+  "ordinaryLogScan": {
+    "result": "passed",
+    "ordinaryLogFiles": 16,
+    "forbiddenCredentialBusinessEndpointPathMarkers": false
+  },
+  "buildLog": {
+    "path": "tests/i06-private-platform/out/build-4.log",
+    "sha256": "1d569f4d1f5d7a80d87b4a345c737a83c318c13da0d108fb27869d08374c91b5"
+  },
+  "rawArchive": {
+    "path": "tests/i06-private-platform/out/combination-platform-raw-20261021-r4.tar.gz",
+    "sha256": "b8a37192936a32600f4b353d8c2f126f3cb872c961c6e2ff8fd4cd2af7da2361"
+  },
+  "finalRawFiles": {
+    "final-4/binding-evidence.json": "405bfcc564419a256b8f3241120a94818f3f0ae2a01a0d13b18b75534b395585",
+    "final-4/container-inspect.json": "220dd9add11c039068bdf73469a697bb57408dcee20dcce7daa8dc6a8735ebe3",
+    "final-4/electron-package.json": "14ad7d5a4985e49d533d069289be4b6f97ad8afe36a93d146785bd82d184f295",
+    "final-4/executed/await-boundary.js": "37832f2e0a6643d1e7e5513b8e52bf17d8e782501f32e84cd2c49df68af8d9d8",
+    "final-4/executed/ciphertext-repository.js": "4db2bc2895a939cb30b570e9f9f171ad1d2182622588312d909c67f58773f3cc",
+    "final-4/executed/credentials.js": "e4b93855bdddddcce64e28d8dba72098c42891282d1ef6295cc3b8e7fbe80453",
+    "final-4/executed/electron-safe-storage.js": "0a265dcb07cf6adeedee9e2da1b222897e69698e3959ce867465af33643cdd3f",
+    "final-4/executed/gateway.js": "58eeb4748093a1a46d8466dbcaa4c9b8d33137861f05d7df5cc90cf34154a22e",
+    "final-4/executed/package.json": "fa6944a20ca5e6fbaf98fd202eb8c7004d5b4ab786e36b9ed02ee31dbe196c9f",
+    "final-4/executed/persistent-audit.js": "c05536cc860c5a65cadbbb317e3b74b13b01be065e27b577b12cee47bd802e6c",
+    "final-4/executed/policy.js": "1334c79a4fd0d5270f2f27edfd9180aaccdcacf308022c4d6bd8ee6e96076003",
+    "final-4/executed/private-directory.js": "b60bc8300d0e8eb0f02776f49459da8bfe18212a7d8b164245cd256481544491",
+    "final-4/executed/sources.json": "585c25e0cdcba26f521d0c45b0963ca33b26021642dbdb4d753572a50aa61414",
+    "final-4/executed/transport.js": "5bfdf7842faf93a6d1b67e34b9d638eb2efb152e27833c05cf81e9567350a792",
+    "final-4/image-inspect.json": "7d7080cf0e483fa39a5fac63fc4aba91c8119dcc104a5e885bd8ea5e0c05d30a",
+    "final-4/probe.cjs": "deba33b81efc72cb11349b565af6963d52b896cb4ed04f1445aa463d6cdd2bcf",
+    "final-4/results/basic.json": "19b54fe16df6d1c3428dc3a1403cd1f2dd0b8af658ce5754e7989d4a4c39d9e7",
+    "final-4/results/basic.stderr.log": "1a8ffd26460c6485df01b7523c1afe0b881f3d95bf983a531b29f8453dd1e406",
+    "final-4/results/basic.stdout.log": "2dacff023fccb839fa3a9d4810710d8d9e3c26e6aa696d66a0b123224da252aa",
+    "final-4/results/corrupt.json": "dd802acf3bd502e2d5e82fa83585c2cfdb71f825963f6f552a2da411ed1c634d",
+    "final-4/results/corrupt.stderr.log": "160510a959db122608088b1060e38ee85b78c0278146e15cde7fdcafa2cc4d9a",
+    "final-4/results/corrupt.stdout.log": "47148dc91b5bd5db140c26701a42c4f6accc6bdd961f8335900024a385d3f309",
+    "final-4/results/key-loss.json": "69346f157209e0d3ce190a0b4acb90c41a52d2cccf143f443e086f32846b0118",
+    "final-4/results/key-loss.stderr.log": "efb9f31891e0588a4391881ac792c4fdaf5dc6728c03adad21f7b1c302d2a604",
+    "final-4/results/key-loss.stdout.log": "5cd629de7b775ededa358f87c41fd1e263a62ea393349c3aad2b035c0e451162",
+    "final-4/results/keyring.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-4/results/log-scan.json": "9b795e960cdf96dcf023cbe8c9402080dad0d49e94988fc726354e903899d394",
+    "final-4/results/new-keyring.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-4/results/openbox.log": "6f748c3cd02a858c087697c3afac639205c62b7b206558bd40d1bcbd98165a5c",
+    "final-4/results/os-release.txt": "59a77b5f2666d9c85c489bd1911a6eebbd91ef22fe48b90a3b75f1b21f3844d4",
+    "final-4/results/recover-no-replay.json": "295d8212dbf457012b1f7c0f849e02902256e49a6b2eeede1bd46985504d7ee7",
+    "final-4/results/recover-no-replay.stderr.log": "54ceb264dd706cfcec5f6920d38f14c9a6d6b0fd775e6af69bd43ac84f43b3f8",
+    "final-4/results/recover-no-replay.stdout.log": "5a6cac632c3f43fa7714460458372ab9f34fd6da31cecad164607b8c60ccc2b9",
+    "final-4/results/secure-send.json": "42b0cb3cecb24e73ebfca3bdf4e8c7fd7020a0a327225009a2638719e019fcfa",
+    "final-4/results/secure-send.stderr.log": "034aca62fe37aace3d5d7257c090a8589d88e79b6bbe065ff82de3feec2649c1",
+    "final-4/results/secure-send.stdout.log": "407c96915b3085cf66d416f75936f16dfbba0cd01f7f512614ec27ccc506bdd2",
+    "final-4/results/sources.json": "585c25e0cdcba26f521d0c45b0963ca33b26021642dbdb4d753572a50aa61414",
+    "final-4/results/unavailable.json": "8177e34d508c23800f03c89b3ce6d98cb71e74b3cb0c6fcef054ad663bf722c9",
+    "final-4/results/unavailable.stderr.log": "29a8f9a4a03c3bd9f7affc14ba48c7fd4a8dc5f0b9017aadaa92db49f991e49f",
+    "final-4/results/unavailable.stdout.log": "f2d36175fe3bcd076517ad042ebb5938f24a760f615439b1539f8cb4e1ab0354",
+    "final-4/results/xvfb.log": "e2861dbf17c9cb74d57668ceaa0ec8111c014cd26d10d2d0dffdf37188dac690",
+    "final-4/run-isolated.sh": "5a8a83a658eb274e5b2627b708d4c0ab9f09e93ccf6d517cbc72670198765fe7",
+    "final-4/zod-package.json": "c2d190d9ee4e0bdb60332aaa2130a6a98d65ddb903fe1d29248b15de57832c45"
+  },
+  "failuresRetained": [
+    {
+      "attempt": "r1",
+      "result": "dependency resolution failed before actual module execution; Electron ignored NODE_PATH; bounded owned container stopped; copied immutable base zod into combination directory thereafter",
+      "raw": "out/results-1/secure-send.stderr.log"
+    },
+    {
+      "attempt": "r3 collector",
+      "result": "platform scenarios passed but provenance rejected: COPY out/ had included a growing build log; explicit COPY file whitelist and exact executed filename whitelist fixed it",
+      "raw": "out/final-3/executed; original collector exception retained in tool transcript"
+    }
+  ],
+  "limits": [
+    "Linux arm64 Electron44.9.0 gnome_libsecret only; no macOS/Windows/signature/update/clean-device proof",
+    "No public main/bridge/UI/Store/export integration",
+    "No real model protocol selection; synthetic data and loopback only",
+    "100ms no-replay observation after exact original endpoint listened before recovery; source recovery path has no scheduler",
+    "Same-UID/kernel hostile namespace control outside POSIX private storage boundary"
+  ]
+}
