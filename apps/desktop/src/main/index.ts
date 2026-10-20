@@ -9,6 +9,7 @@ import { isTrustedDocument } from './trusted-document'
 import { contentSecurityPolicy } from '../csp'
 import { hardenWebContents, securePreferences } from './window-security'
 import { installWindowRecovery } from './window-recovery'
+import { installViewNavigation } from './view-navigation'
 import { safeError, type HealthResult } from '@ontolearn/contracts'
 import { validateV2 } from '../../../../packages/contracts/src/v2'
 
@@ -47,8 +48,8 @@ function createWindow(): void {
         created.webContents.send('tasks:update', update)
     })
   attach()
-  created.webContents.on('did-start-navigation', (_event, _url, _inPlace, mainFrame) => {
-    if (mainFrame && window === created) attach()
+  installViewNavigation(created.webContents, () => {
+    if (window === created) attach()
   })
   created.webContents.on('render-process-gone', () => {
     if (window === created) tasks.detachView()
