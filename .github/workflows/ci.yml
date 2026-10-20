@@ -27,6 +27,14 @@ jobs:
           enable-cache: true
       - run: npm ci
       - run: uv sync --frozen
+      - name: I04 complete matrix per-cell evidence
+        run: >-
+          uv run --frozen python -m pytest -p scripts.i04_matrix_evidence
+          --i04-matrix-evidence build/i04-matrix-ci
+          --i04-matrix-source-revision HEAD
+          packages/engine/tests/test_job_store.py::test_atomic_job_fault_reconcile_matrix
+          packages/engine/tests/test_i04_round_faults.py::test_round_job_progress_atomic_fault_matrix_fences_and_preserves_previous_round
+          -q
       - run: npm run check
       - run: npm run verify:sources
       - name: Prepare Linux Chromium sandbox
@@ -84,6 +92,8 @@ jobs:
           name: i04-package-linux
           path: |
             build/i04-package-ci/
+            build/i04-matrix-ci/summary.json
+            build/i04-matrix-ci/cases.jsonl
             test-results/i04-*/
           retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

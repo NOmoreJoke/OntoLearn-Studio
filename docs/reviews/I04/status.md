@@ -2,7 +2,9 @@
 
 同一 Goal；会话 01a15899-4318-7522-8035-353e88d34de4。2026-10-20 已实际接收完整 Goal 第九节与无桌面打扰约束。
 
-当前阶段：实现及本地/隔离/包内验收通过，准备冻结；外部双审、真实三平台 CI、正常合并与远端核验未完成。验证详情见 local-verification.json 和两份 native-*-evidence.json；下文初始记录按其时间保留。
+当前阶段：C1 双指定模型均明确不通过，原报告完整保留于 round-1。正在形成修复候选 C2，尚未冻结或提交新版双审。当前修复及新验证见 reconnect-verification.json；原 cf83e18 检查点保留在 Git 历史及本地 c2-history，不冒充最新验收。真实三平台 CI、推送、PR、合并与远端核验均未完成。
+
+以下“范围与门禁”至“用户确认恢复后的检查点”为按执行顺序保留的历史快照，不是当前完成状态。后续 C1 派发/终审记录另有时间标题。
 
 - worktree: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-resident-jobs
 - branch: feature/I04-resident-jobs
@@ -14,7 +16,7 @@
 
 采用总控 I04-launch-prompt.md 的完整原验收及实际合并 I03；只做 S2 基础设施，不接 I05/I06 业务。主会话独占共享 contracts、入口、registry、build-engine；I03 R2-F1 必须在 Python 通知消费者接入前修复。I05 entry/build 交接已接收，后续整合保留其 probe/metadata/collect-all/inventory/license 行为，不提前复制未合并依赖。
 
-原验收、静态/运行/包内/桌面证据、双指定模型同版明确 Pass、意见处置、真实 CI、正常 PR 合并和远端核验全部保留。当前无开发/运行/审查/合并通过证据。
+原验收、静态/运行/包内/桌面证据、双指定模型同版明确 Pass、意见处置、真实 CI、正常 PR 合并和远端核验全部保留。启动时尚无开发/运行/审查/合并通过证据（历史启动快照）。
 
 ## 文件责任与集成顺序
 
@@ -29,9 +31,9 @@
 
 顺序：独立纯模块/真实存储验证并行→主会话审查接口并 cherry-pick→真实进程/worker/SQLite/bridge/隔离窗口/包内联验→独立只读 agent 检查→冻结→指定双审。内部通过不代替外部审查。
 
-## 待执行
+## 启动时待执行（历史）
 
-完整实现、原矩阵验收、隔离环境准备、依赖安装、双审/推送/PR/CI/合并。协调器旧写者 fencing、完整终态证据、F6 真轮次结果链路和原生恢复均不得用替身抵扣。
+启动时待办：完整实现、原矩阵验收、隔离环境准备、依赖安装、双审/推送/PR/CI/合并。协调器旧写者 fencing、完整终态证据、F6 真轮次结果链路和原生恢复均不得用替身抵扣。
 
 ## 2026-10-20 初始实现检查点
 
@@ -100,3 +102,9 @@ MiniMax M3.1-Flash/xhigh also actually completed, terminal UI and all 325 report
 All 70 non-process files in candidate-1.json were rehashed unchanged after both terminal reports. C1 source freeze remained intact. A direct raw-path audit also resolved all 722 source-manifest entries in ce6fd54 with zero absent files; the five byte differences are approved dirty AGENTS plus the four documented docs. MiniMax's 33 absent-path claim is preserved in its report and factually challenged in source-provenance-note.json for both next reviews, without changing its Not-Pass.
 
 New next-candidate findings are being resolved in independent worktrees: progress producer/UI early delivery (bridge/root), default result page support 200 (root, actual SQLite page 200+remaining 10 proven), safe input-reader exit at the 65536 session budget (supervisor actual stdio found SIGABRT from buffered daemon reader; fix in progress), and JobStore unreachable branch/rationale (storage). Matrix per-cell machine evidence is assigned only to storage's new script; native external X focus/dialog evidence only to root. The finite session budget must preserve all prior IDs for anti-replay and explicitly disclose possible in-flight failure; it is not an unlimited same-session guarantee. No push/PR/CI/merge yet.
+
+## 2026-10-20 C2 修复与完整验证检查点
+
+C1 原不通过及全部 P 等级保留；处置见 round-1-disposition.json。实际修复自动只读恢复、投影提交竞态、迟到健康回复、Darwin ESRCH 退出竞态、分页默认 200、真实未知总量阶段、65536 有限会话及父 stdin 开启时干净退出；补齐 144 格精确断言/逐格证据、外部 X 焦点与原生提示框字段、死分支清理和存储守卫说明。独立内部审查证据不替代指定双审。
+
+macOS 无窗口 check 为 630 TS/1015 Python；隔离 Linux arm64 为 630 TS/1013 Python+2 Darwin 专属跳过。源码及包内各六项桌面/健康/CSP/reload/协调器退出/native 验收通过；两个平台 package、公共例及各12项真实包内runtime通过；矩阵两平台各144格通过。驱动 sandbox 前置失败及早期真实故障保留于索引，不记作当次通过。最终冻结/完整新双审、远端三平台 CI 与正常合并仍待执行。

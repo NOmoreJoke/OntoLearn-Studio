@@ -1,13 +1,12 @@
 {
-  "implementationHead": "cf83e18fa0c7452daacb244feeacc5974440af7a",
-  "platform": "isolated Linux arm64 Docker + Xvfb/Openbox/xdotool; private filesystem; no host GUI",
+  "kind": "Actual source and packaged Linux arm64 Docker + Xvfb/Openbox/xdotool; private filesystem, no host GUI",
   "native": [
     {
       "mode": "source",
       "raw": {
-        "path": "build/I04-evidence/memory-final-linux/test-results/i04-memory-source-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-evidence-50ffbe9c94b54f38de8e7cdd92844b64f115359b.json",
-        "sha256": "dcd5a3e131076418f50906ce2253ab6674d3f359619e4331d6e13265a68344a0",
-        "bytes": 32845
+        "path": "build/I04-evidence/c2-final-linux/test-results/i04-c2-source-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/i04-native-verified-evidence.json",
+        "sha256": "ec1f252473b553a0247587901aa1075f3c0d396030b04bba7a67ca6795fc7eb1",
+        "bytes": 33373
       },
       "events": [
         "crashed",
@@ -16,6 +15,21 @@
       "inspectorClosed": true,
       "hangMonitorEnabled": true,
       "result": "PASS",
+      "nativeDialogs": [
+        {
+          "phase": "crash",
+          "windowId": "6291458",
+          "title": "OntoLearn Studio 窗口恢复",
+          "visible": true
+        },
+        {
+          "phase": "hang",
+          "windowId": "6291613",
+          "title": "OntoLearn Studio 窗口恢复",
+          "visible": true
+        }
+      ],
+      "dialogObserver": "external xdotool visible-window inventory",
       "windows": [
         {
           "ordinal": 1,
@@ -23,7 +37,7 @@
           "view": {
             "generation": 3,
             "project": {
-              "projectId": "fc48e493-742f-41ba-bf03-fb3015cc310a",
+              "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
               "projectRevision": 1,
               "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
               "dependencyVector": {
@@ -31,11 +45,33 @@
               },
               "formatVersion": 2
             },
+            "operationEvidence": [
+              {
+                "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                "marker": {
+                  "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                  "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                  "jobId": "a66ffcbb-b4d8-417e-823c-9419c133eb36",
+                  "projectRevision": 1,
+                  "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                  "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd"
+                }
+              },
+              {
+                "operationId": "0191420c-4b90-4d95-9df2-25403101acc1",
+                "marker": null
+              },
+              {
+                "operationId": "9f3f50ec-4013-41e7-869f-ffe0f387a88b",
+                "marker": null
+              }
+            ],
             "jobs": [
               {
-                "jobId": "11eaf28c-57b0-46ea-9d34-661ce316fc5a",
-                "operationId": "913bf2c9-83c8-41a5-adc5-d0cbec9f24a8",
-                "projectId": "fc48e493-742f-41ba-bf03-fb3015cc310a",
+                "jobId": "a66ffcbb-b4d8-417e-823c-9419c133eb36",
+                "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
                 "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
                 "state": "succeeded",
                 "stateVersion": 3,
@@ -47,18 +83,18 @@
                     "projectRevision": 1
                   },
                   "mode": "atomic",
-                  "operationId": "913bf2c9-83c8-41a5-adc5-d0cbec9f24a8"
+                  "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9"
                 },
                 "error": null,
                 "resultRef": {
                   "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
-                  "resultId": "126a6b4a-ed62-4ea0-9f3f-6e539639bb19"
+                  "resultId": "883509db-f4c8-4e38-bea9-0be8fdf9a3a8"
                 }
               },
               {
-                "jobId": "6d82f87e-5837-49c9-99d5-8acdc3e02e28",
-                "operationId": "b5bf5def-3ab9-41af-af1f-b370dfda2ac4",
-                "projectId": "fc48e493-742f-41ba-bf03-fb3015cc310a",
+                "jobId": "cc004b3f-b249-4e26-bcf6-c174e77bb9e9",
+                "operationId": "0191420c-4b90-4d95-9df2-25403101acc1",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "running",
                 "stateVersion": 2,
@@ -70,9 +106,9 @@
                 "resultRef": null
               },
               {
-                "jobId": "e6fc8899-21ce-40c9-bc12-fd0c3bf2b810",
-                "operationId": "a30d10a2-8c1b-41fc-8a59-d1c11afdf9cc",
-                "projectId": "fc48e493-742f-41ba-bf03-fb3015cc310a",
+                "jobId": "8bbe283c-f09e-40ee-af7b-058e9e887873",
+                "operationId": "9f3f50ec-4013-41e7-869f-ffe0f387a88b",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "failed",
                 "stateVersion": 3,
@@ -94,10 +130,16 @@
           "ordinal": 2,
           "visible": true,
           "focused": true,
+          "x11Focus": {
+            "observer": "xdotool/XGetInputFocus",
+            "windowId": "4194323",
+            "title": "OntoLearn Studio",
+            "visible": true
+          },
           "view": {
             "generation": 6,
             "project": {
-              "projectId": "fc48e493-742f-41ba-bf03-fb3015cc310a",
+              "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
               "projectRevision": 1,
               "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
               "dependencyVector": {
@@ -105,11 +147,33 @@
               },
               "formatVersion": 2
             },
+            "operationEvidence": [
+              {
+                "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                "marker": {
+                  "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                  "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                  "jobId": "a66ffcbb-b4d8-417e-823c-9419c133eb36",
+                  "projectRevision": 1,
+                  "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                  "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd"
+                }
+              },
+              {
+                "operationId": "0191420c-4b90-4d95-9df2-25403101acc1",
+                "marker": null
+              },
+              {
+                "operationId": "9f3f50ec-4013-41e7-869f-ffe0f387a88b",
+                "marker": null
+              }
+            ],
             "jobs": [
               {
-                "jobId": "11eaf28c-57b0-46ea-9d34-661ce316fc5a",
-                "operationId": "913bf2c9-83c8-41a5-adc5-d0cbec9f24a8",
-                "projectId": "fc48e493-742f-41ba-bf03-fb3015cc310a",
+                "jobId": "a66ffcbb-b4d8-417e-823c-9419c133eb36",
+                "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
                 "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
                 "state": "succeeded",
                 "stateVersion": 3,
@@ -121,26 +185,26 @@
                     "projectRevision": 1
                   },
                   "mode": "atomic",
-                  "operationId": "913bf2c9-83c8-41a5-adc5-d0cbec9f24a8"
+                  "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9"
                 },
                 "error": null,
                 "resultRef": {
                   "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
-                  "resultId": "126a6b4a-ed62-4ea0-9f3f-6e539639bb19"
+                  "resultId": "883509db-f4c8-4e38-bea9-0be8fdf9a3a8"
                 }
               },
               {
-                "jobId": "6d82f87e-5837-49c9-99d5-8acdc3e02e28",
-                "operationId": "b5bf5def-3ab9-41af-af1f-b370dfda2ac4",
-                "projectId": "fc48e493-742f-41ba-bf03-fb3015cc310a",
+                "jobId": "cc004b3f-b249-4e26-bcf6-c174e77bb9e9",
+                "operationId": "0191420c-4b90-4d95-9df2-25403101acc1",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "running",
                 "stateVersion": 3,
                 "commitProgress": {
                   "committedProgress": {
                     "lastCommittedRound": 1,
-                    "runId": "3329274e-f5ed-4d4e-b81d-3d5562b2beba",
-                    "snapshotRef": "5ff06f31a4df13562090c8817865c3f68725d58f23f0598651dde9a3ac612696"
+                    "runId": "a05de5fa-38cd-4f7a-a5cb-9b98a1bb1bde",
+                    "snapshotRef": "e33a73c1a1b92f79768754c2066bcb7712ad2c4c0f8d99cf2f46482b325b15e3"
                   },
                   "mode": "rounds"
                 },
@@ -148,9 +212,9 @@
                 "resultRef": null
               },
               {
-                "jobId": "e6fc8899-21ce-40c9-bc12-fd0c3bf2b810",
-                "operationId": "a30d10a2-8c1b-41fc-8a59-d1c11afdf9cc",
-                "projectId": "fc48e493-742f-41ba-bf03-fb3015cc310a",
+                "jobId": "8bbe283c-f09e-40ee-af7b-058e9e887873",
+                "operationId": "9f3f50ec-4013-41e7-869f-ffe0f387a88b",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "failed",
                 "stateVersion": 3,
@@ -174,7 +238,7 @@
           "view": {
             "generation": 8,
             "project": {
-              "projectId": "fc48e493-742f-41ba-bf03-fb3015cc310a",
+              "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
               "projectRevision": 1,
               "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
               "dependencyVector": {
@@ -182,11 +246,33 @@
               },
               "formatVersion": 2
             },
+            "operationEvidence": [
+              {
+                "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                "marker": {
+                  "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                  "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                  "jobId": "a66ffcbb-b4d8-417e-823c-9419c133eb36",
+                  "projectRevision": 1,
+                  "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                  "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd"
+                }
+              },
+              {
+                "operationId": "0191420c-4b90-4d95-9df2-25403101acc1",
+                "marker": null
+              },
+              {
+                "operationId": "9f3f50ec-4013-41e7-869f-ffe0f387a88b",
+                "marker": null
+              }
+            ],
             "jobs": [
               {
-                "jobId": "11eaf28c-57b0-46ea-9d34-661ce316fc5a",
-                "operationId": "913bf2c9-83c8-41a5-adc5-d0cbec9f24a8",
-                "projectId": "fc48e493-742f-41ba-bf03-fb3015cc310a",
+                "jobId": "a66ffcbb-b4d8-417e-823c-9419c133eb36",
+                "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
                 "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
                 "state": "succeeded",
                 "stateVersion": 3,
@@ -198,26 +284,26 @@
                     "projectRevision": 1
                   },
                   "mode": "atomic",
-                  "operationId": "913bf2c9-83c8-41a5-adc5-d0cbec9f24a8"
+                  "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9"
                 },
                 "error": null,
                 "resultRef": {
                   "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
-                  "resultId": "126a6b4a-ed62-4ea0-9f3f-6e539639bb19"
+                  "resultId": "883509db-f4c8-4e38-bea9-0be8fdf9a3a8"
                 }
               },
               {
-                "jobId": "6d82f87e-5837-49c9-99d5-8acdc3e02e28",
-                "operationId": "b5bf5def-3ab9-41af-af1f-b370dfda2ac4",
-                "projectId": "fc48e493-742f-41ba-bf03-fb3015cc310a",
+                "jobId": "cc004b3f-b249-4e26-bcf6-c174e77bb9e9",
+                "operationId": "0191420c-4b90-4d95-9df2-25403101acc1",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "running",
                 "stateVersion": 36,
                 "commitProgress": {
                   "committedProgress": {
                     "lastCommittedRound": 34,
-                    "runId": "3329274e-f5ed-4d4e-b81d-3d5562b2beba",
-                    "snapshotRef": "b0bbb1201e038c0559892da04fabd758753719034beb34568d9e224c1dbf429f"
+                    "runId": "a05de5fa-38cd-4f7a-a5cb-9b98a1bb1bde",
+                    "snapshotRef": "c317c1b8fbb1a3665b7af0e4da318ebae8baa652854cbc2f8c55313f8029a581"
                   },
                   "mode": "rounds"
                 },
@@ -225,9 +311,9 @@
                 "resultRef": null
               },
               {
-                "jobId": "e6fc8899-21ce-40c9-bc12-fd0c3bf2b810",
-                "operationId": "a30d10a2-8c1b-41fc-8a59-d1c11afdf9cc",
-                "projectId": "fc48e493-742f-41ba-bf03-fb3015cc310a",
+                "jobId": "8bbe283c-f09e-40ee-af7b-058e9e887873",
+                "operationId": "9f3f50ec-4013-41e7-869f-ffe0f387a88b",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "failed",
                 "stateVersion": 3,
@@ -250,9 +336,9 @@
     {
       "mode": "packaged",
       "raw": {
-        "path": "build/I04-evidence/memory-final-linux/test-results/i04-memory-packaged-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-evidence-21930259cc1e616d24a90483c2a2ef1cd72da40c.json",
-        "sha256": "72b051a48ebc9bc62f5261fcbc870f1a7f03eb32a5fb6b5ee82d67c032f023a9",
-        "bytes": 32845
+        "path": "build/I04-evidence/c2-final-linux/test-results/i04-c2-packaged-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/i04-native-verified-evidence.json",
+        "sha256": "6b7daa430b5d12e177d11dbe9621b9683421ca71dea4b192d5a3fc50a8c088ad",
+        "bytes": 33373
       },
       "events": [
         "crashed",
@@ -261,6 +347,21 @@
       "inspectorClosed": true,
       "hangMonitorEnabled": true,
       "result": "PASS",
+      "nativeDialogs": [
+        {
+          "phase": "crash",
+          "windowId": "6291458",
+          "title": "OntoLearn Studio 窗口恢复",
+          "visible": true
+        },
+        {
+          "phase": "hang",
+          "windowId": "6291613",
+          "title": "OntoLearn Studio 窗口恢复",
+          "visible": true
+        }
+      ],
+      "dialogObserver": "external xdotool visible-window inventory",
       "windows": [
         {
           "ordinal": 1,
@@ -268,7 +369,7 @@
           "view": {
             "generation": 3,
             "project": {
-              "projectId": "c8315b26-3b56-4584-a3ee-e05f662366cc",
+              "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
               "projectRevision": 1,
               "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
               "dependencyVector": {
@@ -276,11 +377,33 @@
               },
               "formatVersion": 2
             },
+            "operationEvidence": [
+              {
+                "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                "marker": {
+                  "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                  "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                  "jobId": "9daa14c9-4e7a-4be3-89ef-d7a8f0ef7091",
+                  "projectRevision": 1,
+                  "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                  "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd"
+                }
+              },
+              {
+                "operationId": "f5a6f020-dedb-4fff-9eb3-af31a36018c1",
+                "marker": null
+              },
+              {
+                "operationId": "085e9a99-f55b-42a5-8ec4-14623c4f50cf",
+                "marker": null
+              }
+            ],
             "jobs": [
               {
-                "jobId": "77a78fb8-04b8-4480-9f51-1f48605706c7",
-                "operationId": "3c7fc860-e80a-4e01-bd1d-5305f900c48c",
-                "projectId": "c8315b26-3b56-4584-a3ee-e05f662366cc",
+                "jobId": "9daa14c9-4e7a-4be3-89ef-d7a8f0ef7091",
+                "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
                 "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
                 "state": "succeeded",
                 "stateVersion": 3,
@@ -292,18 +415,18 @@
                     "projectRevision": 1
                   },
                   "mode": "atomic",
-                  "operationId": "3c7fc860-e80a-4e01-bd1d-5305f900c48c"
+                  "operationId": "23dd3881-9570-4644-9f90-73434c748333"
                 },
                 "error": null,
                 "resultRef": {
                   "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
-                  "resultId": "c359efa1-2625-4e33-bedb-52c7e8cfe4b1"
+                  "resultId": "c4275534-8568-4977-a94a-3ee138ea53c7"
                 }
               },
               {
-                "jobId": "02a48ea0-92c4-48e6-833f-70ae38bc2c78",
-                "operationId": "60e2c1be-60ea-4e40-b8d6-bf81268d64fa",
-                "projectId": "c8315b26-3b56-4584-a3ee-e05f662366cc",
+                "jobId": "158059aa-116c-4c26-add1-cecd833fae82",
+                "operationId": "f5a6f020-dedb-4fff-9eb3-af31a36018c1",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "running",
                 "stateVersion": 2,
@@ -315,9 +438,9 @@
                 "resultRef": null
               },
               {
-                "jobId": "e0323de5-eb4d-480c-9cb0-6bc1a2501297",
-                "operationId": "1e25c146-d466-480c-8b14-141dab785bb2",
-                "projectId": "c8315b26-3b56-4584-a3ee-e05f662366cc",
+                "jobId": "9f722531-4906-4963-8136-d17ba75c7962",
+                "operationId": "085e9a99-f55b-42a5-8ec4-14623c4f50cf",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "failed",
                 "stateVersion": 3,
@@ -339,10 +462,16 @@
           "ordinal": 2,
           "visible": true,
           "focused": true,
+          "x11Focus": {
+            "observer": "xdotool/XGetInputFocus",
+            "windowId": "4194323",
+            "title": "OntoLearn Studio",
+            "visible": true
+          },
           "view": {
             "generation": 6,
             "project": {
-              "projectId": "c8315b26-3b56-4584-a3ee-e05f662366cc",
+              "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
               "projectRevision": 1,
               "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
               "dependencyVector": {
@@ -350,11 +479,33 @@
               },
               "formatVersion": 2
             },
+            "operationEvidence": [
+              {
+                "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                "marker": {
+                  "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                  "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                  "jobId": "9daa14c9-4e7a-4be3-89ef-d7a8f0ef7091",
+                  "projectRevision": 1,
+                  "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                  "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd"
+                }
+              },
+              {
+                "operationId": "f5a6f020-dedb-4fff-9eb3-af31a36018c1",
+                "marker": null
+              },
+              {
+                "operationId": "085e9a99-f55b-42a5-8ec4-14623c4f50cf",
+                "marker": null
+              }
+            ],
             "jobs": [
               {
-                "jobId": "77a78fb8-04b8-4480-9f51-1f48605706c7",
-                "operationId": "3c7fc860-e80a-4e01-bd1d-5305f900c48c",
-                "projectId": "c8315b26-3b56-4584-a3ee-e05f662366cc",
+                "jobId": "9daa14c9-4e7a-4be3-89ef-d7a8f0ef7091",
+                "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
                 "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
                 "state": "succeeded",
                 "stateVersion": 3,
@@ -366,26 +517,26 @@
                     "projectRevision": 1
                   },
                   "mode": "atomic",
-                  "operationId": "3c7fc860-e80a-4e01-bd1d-5305f900c48c"
+                  "operationId": "23dd3881-9570-4644-9f90-73434c748333"
                 },
                 "error": null,
                 "resultRef": {
                   "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
-                  "resultId": "c359efa1-2625-4e33-bedb-52c7e8cfe4b1"
+                  "resultId": "c4275534-8568-4977-a94a-3ee138ea53c7"
                 }
               },
               {
-                "jobId": "02a48ea0-92c4-48e6-833f-70ae38bc2c78",
-                "operationId": "60e2c1be-60ea-4e40-b8d6-bf81268d64fa",
-                "projectId": "c8315b26-3b56-4584-a3ee-e05f662366cc",
+                "jobId": "158059aa-116c-4c26-add1-cecd833fae82",
+                "operationId": "f5a6f020-dedb-4fff-9eb3-af31a36018c1",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "running",
                 "stateVersion": 3,
                 "commitProgress": {
                   "committedProgress": {
                     "lastCommittedRound": 1,
-                    "runId": "1abf0322-b7c1-4da7-976d-fb9d47b6e115",
-                    "snapshotRef": "6b6c9a2068fe40b68afd20334afc2e2e0ee129c810c185efa9b820e1cba11c9e"
+                    "runId": "552e2cbd-eca6-4339-bb07-cc9b124310d6",
+                    "snapshotRef": "a4008c4ad44c77ad83af16516dca60d8a7cb90a3a23956b33d01333bbc93e417"
                   },
                   "mode": "rounds"
                 },
@@ -393,9 +544,9 @@
                 "resultRef": null
               },
               {
-                "jobId": "e0323de5-eb4d-480c-9cb0-6bc1a2501297",
-                "operationId": "1e25c146-d466-480c-8b14-141dab785bb2",
-                "projectId": "c8315b26-3b56-4584-a3ee-e05f662366cc",
+                "jobId": "9f722531-4906-4963-8136-d17ba75c7962",
+                "operationId": "085e9a99-f55b-42a5-8ec4-14623c4f50cf",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "failed",
                 "stateVersion": 3,
@@ -419,7 +570,7 @@
           "view": {
             "generation": 8,
             "project": {
-              "projectId": "c8315b26-3b56-4584-a3ee-e05f662366cc",
+              "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
               "projectRevision": 1,
               "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
               "dependencyVector": {
@@ -427,11 +578,33 @@
               },
               "formatVersion": 2
             },
+            "operationEvidence": [
+              {
+                "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                "marker": {
+                  "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                  "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                  "jobId": "9daa14c9-4e7a-4be3-89ef-d7a8f0ef7091",
+                  "projectRevision": 1,
+                  "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                  "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd"
+                }
+              },
+              {
+                "operationId": "f5a6f020-dedb-4fff-9eb3-af31a36018c1",
+                "marker": null
+              },
+              {
+                "operationId": "085e9a99-f55b-42a5-8ec4-14623c4f50cf",
+                "marker": null
+              }
+            ],
             "jobs": [
               {
-                "jobId": "77a78fb8-04b8-4480-9f51-1f48605706c7",
-                "operationId": "3c7fc860-e80a-4e01-bd1d-5305f900c48c",
-                "projectId": "c8315b26-3b56-4584-a3ee-e05f662366cc",
+                "jobId": "9daa14c9-4e7a-4be3-89ef-d7a8f0ef7091",
+                "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
                 "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
                 "state": "succeeded",
                 "stateVersion": 3,
@@ -443,26 +616,26 @@
                     "projectRevision": 1
                   },
                   "mode": "atomic",
-                  "operationId": "3c7fc860-e80a-4e01-bd1d-5305f900c48c"
+                  "operationId": "23dd3881-9570-4644-9f90-73434c748333"
                 },
                 "error": null,
                 "resultRef": {
                   "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
-                  "resultId": "c359efa1-2625-4e33-bedb-52c7e8cfe4b1"
+                  "resultId": "c4275534-8568-4977-a94a-3ee138ea53c7"
                 }
               },
               {
-                "jobId": "02a48ea0-92c4-48e6-833f-70ae38bc2c78",
-                "operationId": "60e2c1be-60ea-4e40-b8d6-bf81268d64fa",
-                "projectId": "c8315b26-3b56-4584-a3ee-e05f662366cc",
+                "jobId": "158059aa-116c-4c26-add1-cecd833fae82",
+                "operationId": "f5a6f020-dedb-4fff-9eb3-af31a36018c1",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "running",
                 "stateVersion": 36,
                 "commitProgress": {
                   "committedProgress": {
                     "lastCommittedRound": 34,
-                    "runId": "1abf0322-b7c1-4da7-976d-fb9d47b6e115",
-                    "snapshotRef": "11e6a6108372cc924a48d0abe3c678563676ae48ca95a9916a63e861a833f9f3"
+                    "runId": "552e2cbd-eca6-4339-bb07-cc9b124310d6",
+                    "snapshotRef": "d57c66311eee80c6db846efa69e1dd82e5697a057597eee2d9e1fab68bd4b1cb"
                   },
                   "mode": "rounds"
                 },
@@ -470,9 +643,9 @@
                 "resultRef": null
               },
               {
-                "jobId": "e0323de5-eb4d-480c-9cb0-6bc1a2501297",
-                "operationId": "1e25c146-d466-480c-8b14-141dab785bb2",
-                "projectId": "c8315b26-3b56-4584-a3ee-e05f662366cc",
+                "jobId": "9f722531-4906-4963-8136-d17ba75c7962",
+                "operationId": "085e9a99-f55b-42a5-8ec4-14623c4f50cf",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "failed",
                 "stateVersion": 3,
@@ -497,22 +670,22 @@
     {
       "mode": "source",
       "raw": {
-        "path": "build/I04-evidence/memory-final-linux/test-results/i04-memory-source-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/i04-coordinator-recovery.json",
-        "sha256": "45bcd012f9dc9a44a8952ed79fb852a7a0f4d20381d52649fd2294f2accccc89",
+        "path": "build/I04-evidence/c2-final-linux/test-results/i04-c2-source-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/i04-coordinator-recovery.json",
+        "sha256": "c0ef1465308240b8047e6a24839a06dbddf2afa82ff69085cbb06adc6a5e5f1d",
         "bytes": 16671
       },
       "before": {
-        "jobId": "73614d46-a8d6-4e3c-b81e-fad5e8481b3e",
-        "operationId": "b54f833e-3b03-40cb-98f7-4417747a9d5f",
-        "projectId": "73932938-c23d-491d-9f9a-46f409802ada",
+        "jobId": "b9d7806d-27a0-4249-94fc-8ff16fc6e599",
+        "operationId": "021f9990-f096-4d37-82be-3e8a70a77ee1",
+        "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
         "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
         "state": "running",
         "stateVersion": 3,
         "commitProgress": {
           "committedProgress": {
             "lastCommittedRound": 1,
-            "runId": "a5379492-b1f1-4f30-992e-6020362f9854",
-            "snapshotRef": "bf4df3066a8de8ce2d87b155886dbd70d94f27cc3cef9bdcf7e2317b82673104"
+            "runId": "8367e552-f597-4fc8-b964-b8a834c3a325",
+            "snapshotRef": "5582dd1dc35323881bf996b12798bbde5de27782503181b915687da8c0ab7e4d"
           },
           "mode": "rounds"
         },
@@ -520,17 +693,17 @@
         "resultRef": null
       },
       "final": {
-        "jobId": "73614d46-a8d6-4e3c-b81e-fad5e8481b3e",
-        "operationId": "b54f833e-3b03-40cb-98f7-4417747a9d5f",
-        "projectId": "73932938-c23d-491d-9f9a-46f409802ada",
+        "jobId": "b9d7806d-27a0-4249-94fc-8ff16fc6e599",
+        "operationId": "021f9990-f096-4d37-82be-3e8a70a77ee1",
+        "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
         "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
         "state": "failed",
         "stateVersion": 4,
         "commitProgress": {
           "committedProgress": {
             "lastCommittedRound": 1,
-            "runId": "a5379492-b1f1-4f30-992e-6020362f9854",
-            "snapshotRef": "bf4df3066a8de8ce2d87b155886dbd70d94f27cc3cef9bdcf7e2317b82673104"
+            "runId": "8367e552-f597-4fc8-b964-b8a834c3a325",
+            "snapshotRef": "5582dd1dc35323881bf996b12798bbde5de27782503181b915687da8c0ab7e4d"
           },
           "mode": "rounds"
         },
@@ -548,7 +721,7 @@
         {
           "kind": "connection",
           "generation": 4,
-          "projectId": "73932938-c23d-491d-9f9a-46f409802ada",
+          "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
           "state": "reconnecting",
           "attempt": 0,
           "error": {
@@ -561,7 +734,7 @@
         {
           "kind": "connection",
           "generation": 4,
-          "projectId": "73932938-c23d-491d-9f9a-46f409802ada",
+          "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
           "state": "reconnecting",
           "attempt": 1,
           "error": {
@@ -577,7 +750,7 @@
           "view": {
             "generation": 4,
             "project": {
-              "projectId": "73932938-c23d-491d-9f9a-46f409802ada",
+              "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
               "projectRevision": 1,
               "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
               "dependencyVector": {
@@ -587,9 +760,9 @@
             },
             "jobs": [
               {
-                "jobId": "6b5f6762-3b22-4c49-882d-920c16d5b8c6",
-                "operationId": "8eb6716d-fa46-45a8-b549-18b860e86b6e",
-                "projectId": "73932938-c23d-491d-9f9a-46f409802ada",
+                "jobId": "6e8447ab-5737-426e-8f40-0c469b5a1a53",
+                "operationId": "d1a94317-f8dc-4902-9933-28e2384f623b",
+                "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
                 "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
                 "state": "succeeded",
                 "stateVersion": 3,
@@ -601,26 +774,26 @@
                     "projectRevision": 1
                   },
                   "mode": "atomic",
-                  "operationId": "8eb6716d-fa46-45a8-b549-18b860e86b6e"
+                  "operationId": "d1a94317-f8dc-4902-9933-28e2384f623b"
                 },
                 "error": null,
                 "resultRef": {
                   "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
-                  "resultId": "4f047e5c-ea80-48f8-b7b7-0b839fec919a"
+                  "resultId": "5ca31309-e714-45ee-b83d-ae88da138993"
                 }
               },
               {
-                "jobId": "73614d46-a8d6-4e3c-b81e-fad5e8481b3e",
-                "operationId": "b54f833e-3b03-40cb-98f7-4417747a9d5f",
-                "projectId": "73932938-c23d-491d-9f9a-46f409802ada",
+                "jobId": "b9d7806d-27a0-4249-94fc-8ff16fc6e599",
+                "operationId": "021f9990-f096-4d37-82be-3e8a70a77ee1",
+                "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "failed",
                 "stateVersion": 4,
                 "commitProgress": {
                   "committedProgress": {
                     "lastCommittedRound": 1,
-                    "runId": "a5379492-b1f1-4f30-992e-6020362f9854",
-                    "snapshotRef": "bf4df3066a8de8ce2d87b155886dbd70d94f27cc3cef9bdcf7e2317b82673104"
+                    "runId": "8367e552-f597-4fc8-b964-b8a834c3a325",
+                    "snapshotRef": "5582dd1dc35323881bf996b12798bbde5de27782503181b915687da8c0ab7e4d"
                   },
                   "mode": "rounds"
                 },
@@ -633,9 +806,9 @@
                 "resultRef": null
               },
               {
-                "jobId": "1cc0e531-24e6-4c5f-8cd2-d23c4aa65df1",
-                "operationId": "156c05b4-b8d1-4b4e-922b-1d9bb23bb87b",
-                "projectId": "73932938-c23d-491d-9f9a-46f409802ada",
+                "jobId": "c11efd41-d555-432d-893e-784e22576f5b",
+                "operationId": "7e54d835-6171-4431-acda-e75f86c0216f",
+                "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "failed",
                 "stateVersion": 3,
@@ -658,22 +831,22 @@
     {
       "mode": "packaged",
       "raw": {
-        "path": "build/I04-evidence/memory-final-linux/test-results/i04-memory-packaged-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/i04-coordinator-recovery.json",
-        "sha256": "5b87e5d9db526ea02ce7b777daf9b85a07ae154e5eff2f7ed84d100060e86932",
+        "path": "build/I04-evidence/c2-final-linux/test-results/i04-c2-packaged-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/i04-coordinator-recovery.json",
+        "sha256": "165c1e81165125516aba080b57991bf01385a2803ed70d9059c46e24c59f5c91",
         "bytes": 16671
       },
       "before": {
-        "jobId": "af76a6ad-7d22-4df3-a2a8-c8a6346323f0",
-        "operationId": "3ebe5db4-160e-4cf1-907d-68f38a007e07",
-        "projectId": "40cc4da8-2a21-4581-b7db-d200a588bc9f",
+        "jobId": "ba85c225-829a-41fa-8ff9-9638f4b3817a",
+        "operationId": "abb944a1-ded6-4c37-98be-1260132c6bd7",
+        "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
         "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
         "state": "running",
         "stateVersion": 3,
         "commitProgress": {
           "committedProgress": {
             "lastCommittedRound": 1,
-            "runId": "f0573c1d-4016-4cef-be08-b7a3fab2273d",
-            "snapshotRef": "c70db235b648ed6800b5fb597a2571e9d1cf0fc390252d47551e56a03d31cabc"
+            "runId": "2e5f1bbb-663a-4c48-883d-4d50d0de65df",
+            "snapshotRef": "84f9b35dab445be1e222c24ada9aff55ceb50bbd893dadba84e3ee47e8d2ad71"
           },
           "mode": "rounds"
         },
@@ -681,17 +854,17 @@
         "resultRef": null
       },
       "final": {
-        "jobId": "af76a6ad-7d22-4df3-a2a8-c8a6346323f0",
-        "operationId": "3ebe5db4-160e-4cf1-907d-68f38a007e07",
-        "projectId": "40cc4da8-2a21-4581-b7db-d200a588bc9f",
+        "jobId": "ba85c225-829a-41fa-8ff9-9638f4b3817a",
+        "operationId": "abb944a1-ded6-4c37-98be-1260132c6bd7",
+        "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
         "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
         "state": "failed",
         "stateVersion": 4,
         "commitProgress": {
           "committedProgress": {
             "lastCommittedRound": 1,
-            "runId": "f0573c1d-4016-4cef-be08-b7a3fab2273d",
-            "snapshotRef": "c70db235b648ed6800b5fb597a2571e9d1cf0fc390252d47551e56a03d31cabc"
+            "runId": "2e5f1bbb-663a-4c48-883d-4d50d0de65df",
+            "snapshotRef": "84f9b35dab445be1e222c24ada9aff55ceb50bbd893dadba84e3ee47e8d2ad71"
           },
           "mode": "rounds"
         },
@@ -709,7 +882,7 @@
         {
           "kind": "connection",
           "generation": 4,
-          "projectId": "40cc4da8-2a21-4581-b7db-d200a588bc9f",
+          "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
           "state": "reconnecting",
           "attempt": 0,
           "error": {
@@ -722,7 +895,7 @@
         {
           "kind": "connection",
           "generation": 4,
-          "projectId": "40cc4da8-2a21-4581-b7db-d200a588bc9f",
+          "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
           "state": "reconnecting",
           "attempt": 1,
           "error": {
@@ -738,7 +911,7 @@
           "view": {
             "generation": 4,
             "project": {
-              "projectId": "40cc4da8-2a21-4581-b7db-d200a588bc9f",
+              "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
               "projectRevision": 1,
               "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
               "dependencyVector": {
@@ -748,9 +921,9 @@
             },
             "jobs": [
               {
-                "jobId": "bda5c1ee-b1ee-4407-8490-1fe33413a1d1",
-                "operationId": "5cbee0f9-9854-43e5-9477-63c39e837f05",
-                "projectId": "40cc4da8-2a21-4581-b7db-d200a588bc9f",
+                "jobId": "5e686f64-0bf2-4a37-9313-107c6a664145",
+                "operationId": "a3ca84a1-e3ef-4bca-9a5c-89b49a5b5bd4",
+                "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
                 "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
                 "state": "succeeded",
                 "stateVersion": 3,
@@ -762,26 +935,26 @@
                     "projectRevision": 1
                   },
                   "mode": "atomic",
-                  "operationId": "5cbee0f9-9854-43e5-9477-63c39e837f05"
+                  "operationId": "a3ca84a1-e3ef-4bca-9a5c-89b49a5b5bd4"
                 },
                 "error": null,
                 "resultRef": {
                   "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
-                  "resultId": "cb120512-5e29-4767-af9e-75129aba8bb0"
+                  "resultId": "37a362f2-14a3-4280-a1bf-4fdf778ebe1c"
                 }
               },
               {
-                "jobId": "af76a6ad-7d22-4df3-a2a8-c8a6346323f0",
-                "operationId": "3ebe5db4-160e-4cf1-907d-68f38a007e07",
-                "projectId": "40cc4da8-2a21-4581-b7db-d200a588bc9f",
+                "jobId": "ba85c225-829a-41fa-8ff9-9638f4b3817a",
+                "operationId": "abb944a1-ded6-4c37-98be-1260132c6bd7",
+                "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "failed",
                 "stateVersion": 4,
                 "commitProgress": {
                   "committedProgress": {
                     "lastCommittedRound": 1,
-                    "runId": "f0573c1d-4016-4cef-be08-b7a3fab2273d",
-                    "snapshotRef": "c70db235b648ed6800b5fb597a2571e9d1cf0fc390252d47551e56a03d31cabc"
+                    "runId": "2e5f1bbb-663a-4c48-883d-4d50d0de65df",
+                    "snapshotRef": "84f9b35dab445be1e222c24ada9aff55ceb50bbd893dadba84e3ee47e8d2ad71"
                   },
                   "mode": "rounds"
                 },
@@ -794,9 +967,9 @@
                 "resultRef": null
               },
               {
-                "jobId": "6f7e87cb-b92f-44e2-a5bd-36c4fe9eef07",
-                "operationId": "a8edac12-e515-4989-88de-2777aa2c9acf",
-                "projectId": "40cc4da8-2a21-4581-b7db-d200a588bc9f",
+                "jobId": "2087bedd-307e-457b-be29-2c57f7ab39da",
+                "operationId": "1ce55b3c-a573-4784-ae0e-0e5f330483b7",
+                "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
                 "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
                 "state": "failed",
                 "stateVersion": 3,
@@ -821,7 +994,7 @@
     {
       "mode": "source",
       "raw": {
-        "path": "build/I04-evidence/memory-final-linux/test-results/i04-memory-source-health/desktop-a-health-reply-fro-c8588--replace-the-current-status/i04-health-replies.json",
+        "path": "build/I04-evidence/c2-final-linux/test-results/i04-c2-source-general/desktop-a-health-reply-fro-c8588--replace-the-current-status/i04-health-replies.json",
         "sha256": "ef756916757bbfdd720e0c5d4dea76a97b479a74f15ac69b065b38bafcf35b00",
         "bytes": 1559
       },
@@ -845,7 +1018,7 @@
     {
       "mode": "packaged",
       "raw": {
-        "path": "build/I04-evidence/memory-final-linux/test-results/i04-memory-packaged-health/desktop-a-health-reply-fro-c8588--replace-the-current-status/i04-health-replies.json",
+        "path": "build/I04-evidence/c2-final-linux/test-results/i04-c2-packaged-general/desktop-a-health-reply-fro-c8588--replace-the-current-status/i04-health-replies.json",
         "sha256": "ef756916757bbfdd720e0c5d4dea76a97b479a74f15ac69b065b38bafcf35b00",
         "bytes": 1559
       },
@@ -868,8 +1041,9 @@
     }
   ],
   "boundaries": [
-    "Native tests use actual crashed/unresponsive events and actual dialogs, with visible windows and the second focused; renderer CDP is absent and the main inspector is closed before fault injection.",
-    "Coordinator tests kill only the exact engine child of the owned Electron PID and use real workers/SQLite.",
-    "Health delivery tests use controlled IPC ordering and validated connection fixtures through the actual preload and React UI; they do not claim a real engine exit."
+    "Native faults and dialogs are actual; external X focus/title/visibility and dialog metadata are persisted.",
+    "Coordinator kill targets only the owned exact engine child; real workers/SQLite and first explicit refresh are asserted.",
+    "Unknown-total real computing stage is asserted through preload/UI in source and packaged reload and coordinator-kill tests.",
+    "Health uses controlled IPC delivery through actual preload/React, not an actual engine-exit simulation claim."
   ]
 }

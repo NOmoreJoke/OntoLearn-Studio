@@ -185,5 +185,282 @@
     },
     "limits": "No fullcheck, GUI, native Electron or package tests rerun by this reviewer. Monitor failure injection is controlled; original race probe uses real worker/libproc/SQLite. Evidence does not claim a hard Darwin memory cap.",
     "rootnextModifiedByReviewer": false
+  },
+  "progressIndependentReview": {
+    "result": "No new blocking finding in reviewed UI/buffer and producer progress deltas.",
+    "uiCommit": "7d3529a24b85755b357f203eb87ea68b2366424d",
+    "producerState": "Uncommitted I04-bridge progress diff on 67f9f43eeb622870fe7a11c9ba64e0ea11fa1bf5",
+    "sha256": {
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-reconnect/apps/desktop/src/renderer/src/App.tsx": "e4310bc3e905f83a4f58acb9d12c7caaee010e89b2bc2c3b23dbc4e2c111d637",
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-reconnect/apps/desktop/src/renderer/src/task-progress.ts": "12d5f1948fe96664eb6f6b4d8d4ba45f755574b23e60528adaecd419dbdc640c",
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-reconnect/tests/unit/task-progress.test.ts": "840302c20bd55e41bfeef80f880db02df6e8b5d14184f054e6af3ad6882341bd",
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-bridge/packages/engine/src/ontolearn_engine/coordinator.py": "e2abdd31592fc194430681c5661cae4330a4db1ac099f2d34e81800e64e666f8",
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-bridge/packages/engine/tests/test_i04_progress.py": "779141becc775d1225c0e3fcce8cc488575d9c85a8e9eaf3f1247ab682ef3e1b"
+    },
+    "uiReview": [
+      "Buffer stores at most sixteen entries and compact primitive identity/version fields plus a cloned finite ProgressView. No durable job DTO copy.",
+      "Progress becomes restored display only when generation, project, job membership, input snapshot, durable stateVersion and nonterminal state match authority; cloning prevents mutable aliasing.",
+      "Same-authority explicit refresh keeps stage; generation change, disconnect, newer state/terminal and unmount clear relevant progress. Older UI generation is rejected before remembering.",
+      "The live display path relies on TaskService current-watch DTO binding; receive already rejects terminal binding and project/session/subscription mismatches. Future progress waits for a matching authority view.",
+      "Unknown total remains null/null and actual DOM displays stage text only, without percentage."
+    ],
+    "producerReview": [
+      "Stage is retained only in bounded active jobs; terminal notify and final active cleanup remove it. Stage changes and a single late-subscription snapshot emit hints; no timer broadcast added.",
+      "New subscription response copies seq0 before synchronous targeted snapshot seq1. Existing subscriptions do not consume that new snapshot; state/progress use one monotonic binding sequence.",
+      "Progress uses current durable nonterminal stateVersion without changing SQLite job state. Cancellation emits state first and maps subsequent stage to reconciling.",
+      "Round commit, final commit, process wait and cancellation still use existing controlled deadlines and commit-boundary checks. Progress adds no worker, retry or commit replay.",
+      "Six tests cover actual worker read/atomic/round stage sequences, failure cleanup, raw stdio early snapshot and nonperiodic delivery, unsubscribe isolation, cancellation and a second real job."
+    ],
+    "independentExecution": {
+      "actualReactHeadlessDOM": {
+        "eightScenarios": "ui-progress-evidence.json",
+        "source": "Actual App and buffer; schema-validated controlled preload updates",
+        "claimBoundary": "No actual producer/Electron/engine-exit claim from this DOM harness."
+      },
+      "producerTests": {
+        "passed": 6,
+        "seconds": 1.23,
+        "evidence": "producer-progress-tests.log",
+        "source": "Actual bridge coordinator/workers/tests via temporary source .pth in own venv; removed in finally; own SQLite/basetemp only"
+      }
+    },
+    "harnessCorrections": "First own server ordered headers before file read; second own terminal fixture omitted finishedAtMs. Both harness issues fixed without product-source edits; final valid-terminal run completed all eight DOM scenarios. Initial logs preserved.",
+    "limits": "No fullcheck, packaging or Electron/e2e rerun by this reviewer; integrated producer-to-UI behavior remains for root integration validation.",
+    "sharedSourcesModified": false
+  },
+  "progressHeadlessDOM": {
+    "source": "7d3529a actual App and TaskProgressBuffer",
+    "headless": true,
+    "records": [
+      {
+        "name": "initial authority confirms early progress, no fabricated totals",
+        "stages": [
+          "阶段：计算"
+        ]
+      },
+      {
+        "name": "explicit same-version refresh preserves stage",
+        "stages": [
+          "阶段：计算"
+        ]
+      },
+      {
+        "name": "higher durable state version clears stage",
+        "stages": []
+      },
+      {
+        "name": "old state version cannot resurrect on explicit restore",
+        "stages": []
+      },
+      {
+        "name": "disconnect clears stage and late old generation rejected",
+        "stages": []
+      },
+      {
+        "name": "new generation restore does not reuse disconnected cache",
+        "stages": []
+      },
+      {
+        "name": "future generation hint waits for matching authority",
+        "stages": [
+          "阶段：对账"
+        ]
+      },
+      {
+        "name": "terminal clears stage and cache",
+        "stages": []
+      }
+    ],
+    "limitation": "Validated controlled preload updates and actual React DOM; no producer, actual engine exit or Electron package claim."
+  },
+  "sessionShutdownIndependentReview": {
+    "patchCommit": "70555d17e64b9accf6f61a0ddecb6952e1f1c8c8",
+    "preconditionDoNotCherryPick": "51c72db",
+    "preconditionSource": "618e92241b6b6d3aed67d25d89ce5f32b2bb141e",
+    "fix": "Use os.read(sys.stdin.fileno(), 16384) instead of the daemon BufferedReader.read1, avoiding its held shutdown lock. Store close, worker stop, writer fencing and pending protocol handling are unchanged; no os._exit.",
+    "scopeJudgment": {
+      "resultPagination": "Default 200 aligns original I03 published hard row bound and current cursor/TS schema; job.list remains independently limited to 100. Three independently rerun root tests passed.",
+      "boundedSession": "65536 total identities including hello/ping are compatible with replaceable sessions and session-only uniqueness; no eviction/reuse is allowed. Explicit lifecycle documentation suffices after controlled shutdown is fixed; no original requirement promises unlimited same-session lifetime or uninterrupted execution at transport exhaustion.",
+      "truthfulBoundary": "Exhaustion can interrupt an active job and persist ENGINE_EXITED. New transport recovers durable terminal and committed history only; it does not resume or replay writes. Proactive seamless rotation is not claimed."
+    },
+    "before": {
+      "realFullBudget": "probe-observe-exit.json",
+      "nativeFailure": "overflow-exit-raw.json",
+      "minimalDuplicate": "probe-duplicate-open-stdin.json",
+      "exitCode": -6,
+      "stderrBytes": 303
+    },
+    "after": {
+      "originalRealFullBudget": "probe-formal-fix.json",
+      "exitCode": 0,
+      "stderrBytes": 0,
+      "acceptedRequests": 65536,
+      "overflowOrdinal": 65537,
+      "atomicJobMarkerReceiptProjectUnchanged": true,
+      "tailBusyJob": "failed ENGINE_EXITED, result null"
+    },
+    "verification": {
+      "relatedPytest": "19 passed in 12.08s; pytest-formal-fix-related.log",
+      "newRealProcessCases": "5: duplicate ID, unknown method, malformed envelope, malformed JSON, full actual 65536-budget with S1 recovery",
+      "static": "ruff check, ruff format --check, git diff --check passed"
+    },
+    "windows": {
+      "status": "Source review only; Windows runtime and packaged CI not executed by this reviewer.",
+      "primarySource": "https://github.com/python/cpython/blob/v3.12.12/Modules/_io/fileio.c#L475-L479",
+      "check": "CPython FileIO on Windows sets pipe file descriptor O_BINARY; low-level descriptor reading introduces no newline/encoding conversion. Actual Windows stdio-pipe/packaged behavior remains CI verification."
+    },
+    "protectedAgentsSha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+    "sharedSourcesModified": false,
+    "limits": "No fullcheck or GUI. Tests use source runtime in own venv and own database/basetemp. New-session recovery in the original wire probe is explicit launcher behavior, not an extra automatic TaskService recovery claim.",
+    "fileSha256": {
+      "packages/engine/src/ontolearn_engine/coordinator.py": "8f2ab2ac32c1e396ac230ee7f95a3cce2a35a462508b842827a11eeebb5ad44d",
+      "packages/engine/tests/test_stdio_session_shutdown.py": "72d1d66909c71eefb39ce4e58ee6f52a94c1968208b38ba4b4cc947244d12b0e"
+    }
+  },
+  "jobStoreGuardIndependentReview": {
+    "source": "7d3529a24b85755b357f203eb87ea68b2366424d",
+    "source_sha256": {
+      "job_store.py": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2",
+      "storage.py": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842"
+    },
+    "source_delta": "only unreachable branch removal and local state/version comment from 7d3529a",
+    "recovery": {
+      "queued": {
+        "state": "failed",
+        "version": 2,
+        "recovered_count": 1,
+        "same_commit_progress": true,
+        "second_recovery_empty": true
+      },
+      "running": {
+        "state": "failed",
+        "version": 3,
+        "recovered_count": 1,
+        "same_commit_progress": true,
+        "second_recovery_empty": true
+      },
+      "cancelling": {
+        "state": "cancelled",
+        "version": 5,
+        "recovered_count": 1,
+        "same_commit_progress": true,
+        "second_recovery_empty": true
+      },
+      "cancelled": {
+        "state": "cancelled",
+        "version": 2,
+        "recovered_count": 0,
+        "same_commit_progress": true,
+        "second_recovery_empty": true
+      }
+    },
+    "round_guards": {
+      "queued": {
+        "error": "INVALID_STATE",
+        "full_database_dump_unchanged": true
+      },
+      "cancelling": {
+        "error": "INVALID_STATE",
+        "full_database_dump_unchanged": true
+      },
+      "cancelled": {
+        "error": "INVALID_STATE",
+        "full_database_dump_unchanged": true
+      },
+      "succeeded": {
+        "error": "INVALID_STATE",
+        "full_database_dump_unchanged": true
+      },
+      "failed": {
+        "error": "INVALID_STATE",
+        "full_database_dump_unchanged": true
+      },
+      "running-read": {
+        "error": "INVALID_STATE",
+        "full_database_dump_unchanged": true
+      }
+    },
+    "claim_checks": {
+      "precheck_outside_transaction": true,
+      "forced_false_hint_cannot_bypass_original_acceptance": true,
+      "different_complete_input_rejected": "IDENTITY_CONFLICT",
+      "cross_project_reuse_rejected": "IDENTITY_CONFLICT",
+      "global_matching_claim_count": 1,
+      "transaction_trace": [
+        {
+          "statement": "BEGIN IMMEDIATE",
+          "in_transaction": false
+        },
+        {
+          "statement": "COMMIT",
+          "in_transaction": true
+        },
+        {
+          "statement": "BEGIN IMMEDIATE",
+          "in_transaction": false
+        },
+        {
+          "statement": "COMMIT",
+          "in_transaction": true
+        },
+        {
+          "statement": "BEGIN IMMEDIATE",
+          "in_transaction": false
+        },
+        {
+          "statement": "INSERT INTO jobs",
+          "in_transaction": true
+        },
+        {
+          "statement": "INSERT INTO operation_claims",
+          "in_transaction": true
+        },
+        {
+          "statement": "COMMIT",
+          "in_transaction": true
+        }
+      ],
+      "operation_column_pk": 1
+    },
+    "round_success": {
+      "state": "running",
+      "before_version": 2,
+      "after_version": 3,
+      "schema_and_receiver_accept_same_state_next_version": true,
+      "state_edge_helper_rejects_running_running": true,
+      "frozen_context_claim_and_old_snapshots_unchanged": true,
+      "mid_job_progress_failure_full_dump_unchanged": true
+    },
+    "actual_lines": {
+      "reconcile_jobs": 926,
+      "commit_job_round": 799,
+      "has_operation_claim": 121,
+      "create_job": 339,
+      "_accepted_job": 485,
+      "reconcile_cancelled_branch": 942,
+      "round_guard": 802,
+      "durable_version_increment": 836
+    },
+    "boundaries": [
+      "No GUI, root/C1 writes, contract edits, or production capability changes",
+      "Uses independent .venv and SQLite databases; production JobStore is the minimal verified delta from 7d3529a",
+      "This focused evidence does not replace full candidate checks, designated external reviews, packaging, CI, or remote verification"
+    ],
+    "candidate_commit": "3b1eab6d79c57ea2bb436145734b8fa8a76f6b46",
+    "validation": {
+      "targeted_pytest": {
+        "passed": 54,
+        "deselected": 169,
+        "exit_code": 0,
+        "selection": "lease_fences or cancel_preserves or round_progress or last_round_without_final or queued_cancel or round_job_progress_atomic_fault_matrix"
+      },
+      "ruff_check": "passed",
+      "ruff_format_check": "passed",
+      "git_diff_check": "passed",
+      "production_files_changed": [
+        "packages/engine/src/ontolearn_engine/job_store.py"
+      ],
+      "contracts_or_behavior_semantics_changed": false
+    }
   }
 }

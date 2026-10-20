@@ -11,6 +11,8 @@
 - 主进程和协调器分别用显式最小 OS 环境启动 Python 和 worker，不继承宿主凭据、代理、loader/Python 注入变量；DB、项目授权和测试模式只由主进程可信配置生成，worker 不继承这些权限变量。真实自造 sentinel 与包内启动均有验证。
 - operation claim 全局唯一，完整项目/能力/input/confirmation/plan/参数内容/依赖/实现/limits 固定；公开项目身份通过持久双向唯一映射与旧内部 ID 对齐。正式 receipt 为历史结果，不能成为领域 current。
 - 队列、并发、项目 writer、请求/总量/启动/握手/心跳/取消收尾、帧/页/游标记录与内存分别有界。总期限包含排队、启动、stdin 写入、计算、等待退出与提交前复验，不由心跳延长。单任务取消仅终止对应 worker。
+- 会话请求预算为 65,536 个唯一 ID（含 hello/ping），保留全部 ID 防止旧请求重放；第 65,537 个请求及任何重复 ID 安全关闭会话。关闭后不承诺在途任务连续执行：新协调器按已提交证据恢复，未提交任务失败为 ENGINE_EXITED。主进程只读恢复可建立新会话，不自动重放写入。真实满额请求、父 stdin 保持开启的 fatal 退出与重启后 marker/receipt/项目/任务证据均有子进程回归；读取线程用 os.read 避免缓冲锁争用导致 SIGABRT。
+- result.page 的默认运行时预算与公共 schema/TS/游标共同允许 200 项，job.list 仍限 100；显式协商更小预算仍按资源限制拒绝。真实 210 行结果验证 200+10 稳定分页，201 在契约层拒绝。
 - 结果及列表使用 SQLite 持久的不可变载荷/固定集合与 UUID 游标；每次复验项目/输入/范围/参数/页大小/TTL/载荷，过期与回收不返回成功空页。依赖与定义集合由可信快照派生，发布/失效与正式提交同事务。
 
 ## 契约修订
@@ -23,6 +25,8 @@ R2-F1 在双端校验 trusted binding 的完整身份、数值类型/范围和�
 
 ## 安全错误与 UI
 
+协调器仅在真实排队、读取、计算、提交、退出对账边界发送阶段通知，未知总量保持 completed/total=null，不生成百分比。订阅时可收到当前非终态阶段，renderer 以代次/项目/任务/输入/stateVersion 验证并有界缓存最多 16 个早到阶段；断线清除、终态不回退。新订阅响应早于/晚于阶段交付均有验证。
+
 只接受本地 ServiceFault/JobFault/结构化 S1 Conflict，SQLite 按真实 errorcode 主码分类；未知来源异常统一 INTERNAL_ERROR，不能自报 code/params 或借异常文本归责。普通入口初始化异常也只有固定有界 stderr。四字段 DTO 保留至窄 bridge，UI 用固定本地模板组成“发生什么/原因/修复/相关知识”；retryable 不触发自动重放。取消、失败、状态待对账、历史、过期与不支持分别表达。
 
 ## 测试任务与未完成业务
@@ -30,6 +34,10 @@ R2-F1 在双端校验 trusted binding 的完整身份、数值类型/范围和�
 仅显式可信测试启动可创建 test.read/test.atomic/test.rounds，hello/productRuntime 不宣称测试任务或未实现业务能力。rounds 是真实 worker、真实 Job/Store/轮次快照/消费证据和 result.get/page 的基础设施负载，使用 I04-test-rounds-v1，不能当 E.2 全阶段执行器、E.5/G.4 工单集合/产能/指标/重放或 FR-704 业务结果页完成。
 
 F6 摘要从最后持久轮次及完整终态产生，队列为空仍跑至配置 maxRounds，不另加提前停止规则。零轮失败/取消不造成功摘要；部分轮次保留为失败/取消历史。摘要只在首个非游标页，缺失/矛盾/畸形/回收均不能显示全部完成。
+
+## 存储守卫说明
+
+逐轮提交仅允许正在执行的 test.rounds，保留同一 running 状态并递增持久 stateVersion，表示新的已提交轮次证据；状态名称迁移仍由 _transition 校验。原 running→running 不属于状态名称边，不能为复用函数而放宽状态机。queued/cancelling/终态/其他能力均拒绝并保持数据库不变；故障事务不留下半轮。job.create 的 claim 预查仅用于队列预算及幂等早判，权威创建仍在 BEGIN IMMEDIATE 内复验完整指纹，以 operation 主键保证唯一性。
 
 ## 平台资源边界
 
