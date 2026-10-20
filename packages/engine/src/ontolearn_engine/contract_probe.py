@@ -7,7 +7,7 @@ from ontolearn_engine.resources import CONTRACT
 
 
 def main() -> None:
-    fixtures = json.loads((CONTRACT.ROOT / "fixtures.json").read_text())
+    fixtures = json.loads((CONTRACT.ROOT / "fixtures.json").read_text(encoding="utf-8"))
     counts = {}
     for group, function, fields in [
         ("cases", CONTRACT.validate, ("schema", "value")),
@@ -20,12 +20,16 @@ def main() -> None:
             if function(*(case[k] for k in fields)) is not case["valid"]:
                 raise RuntimeError("BUNDLED_CONTRACT_MISMATCH")
         counts[group] = len(fixtures[group])
-    bindings = json.loads((CONTRACT.ROOT / "binding-regressions.json").read_text())["cases"]
+    bindings = json.loads((CONTRACT.ROOT / "binding-regressions.json").read_text(encoding="utf-8"))[
+        "cases"
+    ]
     for case in bindings:
         if CONTRACT.accepts_job_event(case["value"], case["binding"]) is not case["valid"]:
             raise RuntimeError("BUNDLED_BINDING_MISMATCH")
     counts["trustedBindings"] = len(bindings)
-    frames = json.loads((CONTRACT.ROOT / "frame-fixtures.json").read_text())["cases"]
+    frames = json.loads((CONTRACT.ROOT / "frame-fixtures.json").read_text(encoding="utf-8"))[
+        "cases"
+    ]
     for case in frames:
         reader = JsonlReader(case.get("maxBytes", 262144))
         values = []
