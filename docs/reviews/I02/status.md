@@ -80,3 +80,19 @@
 - 最终完整check退出0：15TS/198Python；verify:sources13；新direct-loop故障方案build2/2、packaged2/2、development1/1均PASS，真实killed/unresponsive、3窗/2提示请求/3次显式health，C1/native无no-sandbox，main inspector故障前关闭，输入时可见且获焦。
 - 产品apps/packages/依赖与Round1逐字相同；修订限测试、Linux CI helper准备和证据勘误。根因未夸大；原GitHub超时/Windows失败和本机2次native timeout全保留round-2。Docker仅诊断，不替代CI，无权限/seccomp例外。
 - 内部独立最终综合只读复核无阻断；16路径新freeze、64保护哈希一致。尚未新建Round2外部任务，不push新候选，不合并。下一步本地提交后两个应用分别全新任务重新核验路径/模型/思考设置，审查同一base→新head。
+
+## Round 2 候选实际冻结
+
+- base 1b6df7a220fc9a67d7046133a340085f03f0a96c → head 76b9d18bd87b9090551eb0dc39dfd6aa061eea79，本地提交49文件；candidate后实现/测试/配置/依赖/验收冻结。raw日志的CR/空白由原命令保留，git diff --check的该类提示只在raw流程日志；实际代码路径检查无告警。
+- 新候选未push；PR仍旧caa0847。新两模型任务待实际创建/核验。运行验证将错开，避免共用out/5173及桌面焦点互扰；不披露另一方本轮结论。
+
+- Round2 ZCode新任务已实际派发：I02-R2-ZCode-GLM53-20261020-0900，原生Open/GoTo重输精确root、模型popup GLM-5.3 selected非Flash、最高selected、当前feature selected；发送后工作中/停止生成可见。任务source/prompt hash见round-2/tasks.json。
+- Round2 MiniMax尚未创建；等ZCode运行验证结束后新建，避免共用out/端口/焦点冲突，不向其披露本轮ZCode结论。16冻结/64保护0差异；新candidate独立git archive verify:sources12项成功。只追加流程证据；没有push76b9d18或merge。
+
+- Round2恢复进度：原ZCode任务未完成且曾显示已停止，已在同一任务续接（未新建替代），当前实际工作中；尚无最终报告。MiniMax已新建并派发独立任务“审查 I02/C1 显式 CSP 与窗口生命周期”，M3.1-Flash/xhigh及精确repo/current feature/local均实际UI核验；先静态/单测，共享构建/桌面运行需续指令释放资源。双方当前轮意见不互相披露。详见round-2/tasks.json及prompts/minimax-sent.txt。候选仍76b9d18，未push/merge。
+
+## Round 2 双方实际通过与推送准备
+
+- 两个全新独立任务均实际结束、完整报告读回，对同一base1b6df7a→candidate76b9d18明确通过且0阻断。GLM同任务勘误也实际结束；原稿/精确diff/最终hash保存，未改等级或结论。MiniMax静态8分24秒+运行7分13秒。实际任务时序按tasks/UI，不沿用GLM“MiniMax尚未创建”的初始上下文作证据。
+- 3+8项本轮意见及历史意见逐项处理见round-2/processing.md；失败/取消/失焦、HMR与真实sheet历史边界、平台隔离/确定性构建与watch覆写限制均保留。独立内部agent只读复核无推送阻断；没有采纳跳过真实hang、放宽信任或缩小验收。
+- 最终pre-push-integrity：16冻结/64保护0差异、candidate后受审路径diff为空、两份最终报告hash记录、remote develop仍1b6df7a，PR旧head仍caa0847。只追加流程证据提交后可正常push产生新版CI；CI全绿前禁止merge，未开始I03。
