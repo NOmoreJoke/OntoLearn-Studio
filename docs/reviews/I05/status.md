@@ -2,7 +2,7 @@
 
 日期：2026-10-20，Asia/Shanghai。开发会话：`01a15744-136d-7000-abad-46de101eadaf`。
 
-当前阶段：独立真实语义、外联拒绝与打包测量已形成 `independent-v2` 检查点，已本地保存。完整 Goal active；尚无正式集成候选、指定双审、推送/PR/合并。
+当前阶段：独立真实语义、外联拒绝与打包测量已形成 `independent-v2` 检查点，已本地保存。完整 Goal blocked；尚无正式集成候选、指定双审、推送/PR/合并。
 
 - 唯一工作目录：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation`。
 - 分支：`feature/I05-semantic-validation`；初始 base/head：`1b6df7a220fc9a67d7046133a340085f03f0a96c`。origin 为 `https://github.com/NOmoreJoke/OntoLearn-Studio.git`，启动时远端 develop 与 base 一致。
@@ -38,3 +38,9 @@ I03 同版本契约设计合并后对齐纯接口；I04 常驻任务系统合并
 核验 I03 实际候选 `6f35ffd` 仍待指定双审/合并，远端 develop 仍为初始 base。已逐码核对 30 个内部语义错误与 I03 草案，交接文档提交 `baa8c8b`，见 [contract-handoff-2026-10-20.md](contract-handoff-2026-10-20.md)。输入/结果/工作量资源分类、部分有限构造分类及非法词法与超范围字面量区分仍需唯一维护者协调，已正式交总控；未修改受测实现或共享契约。
 
 本轮属于实际接口审计进展；前轮为实现/打包/证据进展。真实依赖和无干扰外审环境仍未就绪，未重跑无变化测试、未发起 GUI、未推送。准确恢复条件保留为 I03 同版设计双审合并、真实 I04 基线可用，以及两指定应用的新任务可在已核验无干扰环境执行。
+
+## 连续阻塞审计
+
+同一前置阻塞连续三个 Goal 回合仍存在。最新正式 wait_threads 返回 I03 任务已结束并明确报告 Goal blocked；远端 develop 未包含其候选，I04 仍未就绪。独立实现、包内测量和具体接口交接均已保存，受测源码/原始证据哈希再次一致。已通过 update_goal 将本会话标记 blocked；不是完成或暂停。详见 [blocked-audit.json](blocked-audit.json)。
+
+恢复后继续本会话和完整原目标：取得真实 I03/I04 集成基线与无干扰指定外审条件，再做实际联验、同版双审、CI 与远端合并核验。未推送，不重启替代任务或操作用户桌面。
