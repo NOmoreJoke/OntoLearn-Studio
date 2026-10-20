@@ -3241,6 +3241,31 @@
           },
           "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 2
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "semantic.start"
+            },
+            "params": {
+              "$ref": "#/$defs/params_semantic.start"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
         }
       ]
     },
@@ -4251,6 +4276,70 @@
           },
           "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 2
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "semantic.start"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_semantic.start"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 2
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "semantic.start"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
         }
       ]
     },
@@ -4746,6 +4835,63 @@
       },
       "minItems": 3,
       "maxItems": 5
+    },
+    "params_semantic.start": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "capability": {
+          "enum": ["query.execute", "reasoning.execute", "validation.execute"]
+        },
+        "definitionId": {
+          "$ref": "#/$defs/name"
+        },
+        "scope": {
+          "enum": ["asserted", "asserted+derived"]
+        },
+        "inputSelection": {
+          "enum": ["current", "historical"]
+        },
+        "inputSnapshotId": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "$ref": "#/$defs/hash"
+            }
+          ]
+        },
+        "derivedResultId": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "$ref": "#/$defs/id"
+            }
+          ]
+        }
+      },
+      "required": [
+        "projectId",
+        "operationId",
+        "capability",
+        "definitionId",
+        "scope",
+        "inputSelection",
+        "inputSnapshotId",
+        "derivedResultId"
+      ],
+      "additionalProperties": false
+    },
+    "result_semantic.start": {
+      "$ref": "#/$defs/job"
     }
   },
   "$ref": "#/$defs/envelope"
