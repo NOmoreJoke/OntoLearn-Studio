@@ -1,0 +1,32 @@
+import {spawn} from 'node:child_process';import fs from 'node:fs';import path from 'node:path';
+const root=process.cwd();const output=path.resolve(process.env.I02_REAL_UI_DIR || 'docs/reviews/I02/native-dialog-probe');const folder=fs.readFileSync(path.join(output,'probe-location.txt'),'utf8').trim();const control=path.join(folder,'control.json');const log=path.join(output,'events.jsonl');
+const code=`(() => {
+const {app,BrowserWindow,dialog}=process.getBuiltinModule('module').createRequire(process.execPath)('electron');
+const fs=process.getBuiltinModule('fs');const inspector=process.getBuiltinModule('inspector');
+const originalDialog=dialog.showMessageBox;const log=${JSON.stringify(log)};const control=${JSON.stringify(control)};
+const record=(event,data={})=>fs.appendFileSync(log,JSON.stringify({time:new Date().toISOString(),event,...data})+'\\n');
+let count=0;let seq=0;app.on('before-quit',()=>record('before-quit'));app.on('will-quit',()=>record('will-quit'));
+function observe(w,fresh=false){
+ const number=++count;record('window-created',{number,id:w.id,url:w.webContents.getURL(),preferences:w.webContents.getLastWebPreferences()});
+ w.webContents.on('render-process-gone',(_e,d)=>record('render-process-gone',{number,reason:d.reason}));
+ w.on('unresponsive',()=>record('unresponsive',{number,dialogUnmodified:dialog.showMessageBox===originalDialog}));
+ w.on('responsive',()=>record('responsive',{number}));
+ w.on('closed',()=>record('closed',{number}));w.on('focus',()=>record('focus',{number}));w.on('blur',()=>record('blur',{number}));
+ const loaded=async()=>{try{const state=await w.webContents.executeJavaScript('({status:document.querySelector(\"[role=status]\")?.textContent,heading:document.querySelector(\"h1\")?.textContent,bridge:typeof window.ontolearn?.getEngineHealth})');record('window-loaded',{number,...state,url:w.webContents.getURL()});}catch(e){record('read-failed',{number,error:String(e)})}};
+ w.webContents.on('did-finish-load',loaded);if(!fresh&&!w.webContents.isLoadingMainFrame())void loaded();
+}
+setTimeout(()=>{
+ inspector.close();record('probe-started',{packaged:app.isPackaged,versions:process.versions,inspectorClosed:inspector.url()===undefined,hangMonitorEnabled:!app.commandLine.hasSwitch('disable-hang-monitor'),dialogUnmodified:dialog.showMessageBox===originalDialog,control});
+ app.on('browser-window-created',(_e,w)=>observe(w,true));for(const w of BrowserWindow.getAllWindows())observe(w);
+ setInterval(async()=>{try{const c=JSON.parse(fs.readFileSync(control,'utf8'));if(c.seq===seq)return;seq=c.seq;const w=BrowserWindow.getAllWindows()[0];record('control',{...c,windowId:w?.id,dialogUnmodified:dialog.showMessageBox===originalDialog});
+ if(c.action==='crash')w.webContents.forcefullyCrashRenderer();
+ if(c.action==='hang'){await w.webContents.executeJavaScript('setTimeout(()=>{for(;;){}},50); \"armed\"');setTimeout(()=>{w.webContents.sendInputEvent({type:'mouseDown',x:400,y:400,button:'left',clickCount:1});w.webContents.sendInputEvent({type:'mouseUp',x:400,y:400,button:'left',clickCount:1});},200);}
+ if(c.action==='snapshot'){const state=await w.webContents.executeJavaScript('({status:document.querySelector(\"[role=status]\")?.textContent,heading:document.querySelector(\"h1\")?.textContent,bridge:typeof window.ontolearn?.getEngineHealth})');record('snapshot',state);}
+ if(c.action==='quit')app.quit();
+ }catch(e){record('control-error',{error:String(e)})}},150);
+},150);
+return 'hook installed; dialog.showMessageBox never replaced';
+})()`;
+fs.writeFileSync(path.join(output,'bootstrap-payload.txt'),code+'\n');const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;delete env.ELECTRON_RENDERER_URL;delete env.ONTOLEARN_PACKAGED_EXECUTABLE;const exe=path.resolve('release/mac-arm64/OntoLearn Studio.app/Contents/MacOS/OntoLearn Studio');
+const args=['--inspect=0',`--user-data-dir=${folder}/profile`];fs.writeFileSync(path.join(output,'launch.json'),JSON.stringify({executable:exe,args,candidate:'2cc03da82ffccc8448c7b03dc6cff87595027653',method:'transient main inspector for fault injection, closed before faults; no renderer CDP; native dialog API never replaced'},null,2)+'\n');
+const child=spawn(exe,args,{env,stdio:['ignore','pipe','pipe']});let attached=false;child.stderr.on('data',async b=>{process.stderr.write(b);if(attached)return;const m=String(b).match(/ws:\/\/127\.0\.0\.1:[^\s]+/);if(!m)return;attached=true;const ws=new WebSocket(m[0]);ws.onopen=()=>ws.send(JSON.stringify({id:1,method:'Runtime.evaluate',params:{expression:code,returnByValue:true}}));ws.onmessage=e=>{const d=JSON.parse(String(e.data));if(d.id===1){console.log(JSON.stringify(d));ws.close();}};ws.onerror=e=>console.error('inspector error',e);});child.stdout.on('data',b=>process.stdout.write(b));child.on('exit',(code,signal)=>{console.log(JSON.stringify({childExit:code,signal}));process.exit(code??1)});console.log(JSON.stringify({pid:child.pid,control,log}));

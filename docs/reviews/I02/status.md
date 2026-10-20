@@ -30,3 +30,34 @@
 - 64项保护哈希一致；HMR两源文件git diff为空；没有修改总控state、PRD产品范围或后续功能。
 - 正冻结本地候选，base固定1b6df7a220fc9a67d7046133a340085f03f0a96c。以下head将在提交后追加；实现/测试/配置/依赖/验收自该提交起冻结。
 - 双指定模型任务尚未创建；没有push/PR/merge。下一步：同一开发会话通过两应用新建Round1，重新核验根路径/模型/思考设置后派发同版完整对抗审查。
+
+## Round 1 冻结
+
+- base：1b6df7a220fc9a67d7046133a340085f03f0a96c。
+- candidate head：2cc03da82ffccc8448c7b03dc6cff87595027653，34文件。实现/测试/配置/依赖/验收冻结。
+- 候选git archive独立verify:sources成功（原归档12项），工作区13项与64保护文件有明确边界。全部15个frozen-files哈希与64个保护哈希一致。
+- 后续只追加流程证据；Round1两应用任务待下面实际记录，不沿用前次I01设置。
+
+- Round1 已实际创建并启动两个全新任务（同一开发会话通过computer use完成）：
+  - ZCode dev.zcode.app，I02-R1-ZCode-GLM53-20261020-0735；GLM-5.3/最高；原生Open选择器重新核验精确Git根，分支dropdown选中当前feature；发送后实际观察工作中/停止生成。
+  - MiniMax Code com.minimax.agent.cn，I02-R1-MiniMax-M31Flash-20261020-0735；UI标题“审查 I02 CSP 与窗口生命周期迭代”；M3.1-Flash/xhigh；原生Select选择器重新核验精确根，新空白任务显示本地/当前feature；发送后实际执行命令/停止生成。
+- 两方均完整原始审查提示词+同一固定base/head+全部I02/C1验收，不披露另一方本轮意见；只可写各自round-1报告，不允许I02_HMR临时改源探针。
+- 当前双方running，未出具/未读取本轮报告；详细task source见round-1/tasks.json。15冻结项/64保护项再次一致。保持冻结，等待两任务实际结束后完整读回判断；绝不先push。
+
+- Round1 MiniMax任务实际结束：UI共执行11分41秒，最终“审查完成—结论：通过(Pass)”，5项非阻断/0阻断，报告artifact已显示。尚待ZCode实际结束后完整读回双方报告与逐项处理；不能仅凭UI通过推送。
+
+- 原生提示可见性补证据待办：现有自动化只捕获showMessageBox请求并stub用户选择，不能单独证明真正native sheet显示/按钮可达。待本轮两任务实际结束后，使用真实packaged executable、不替换showMessageBox，通过computer use观察/操作崩溃与无响应提示，记录截图/原生事件/选择后UI与health。此项未完成前不宣称提示实际显示验收闭环，不push。保持实现/测试/验收冻结；仅补实际运行过程证据；若需改实现则新候选双方新任务重审。
+
+- Round1 ZCode验证临时产物偏差：其npx --prefix asar提取在仓库根生成index.html(709字节)/index.js(208字节)，超出预期/tmp位置。开发会话实际核验二者均未跟踪、均非64保护项，分别与当前renderer HTML/preload逐字节一致（SHA 27641d729b5e3de85d639191ffdb1451c2334a4c25e5d7b36f08bd03c1731cbd / c73129a6459504e5ea13830a926b01e6d2bdb61f0d2d64505d07db8c29636130），只允许清理这两个自有提取产物。不将此隐瞒为“从未出现临时文件”；实现/测试/配置/依赖/验收未改。最终门禁仍需重新核验15+64哈希。
+
+## Round 1 完成与原生补证据
+
+- 双任务均实际结束，完整报告读回，GLM-5.3/最高 与 M3.1-Flash/xhigh 对固定2cc03da均明确通过，0阻断。原文hash见tasks.json；逐项处理见round-1/processing.md，不改写任何外部结论。
+- 真实native补证据已完成：run-2同一packaged进程PID64273、主inspector故障前关闭、showMessageBox从未替换；真实unresponsive/killed原生sheet均截图+AX，接受后两次新窗尚未检查且手动health成功，暂不恢复无第4窗。正常quit/exit0；run-1工具干扰与不确定观察原样保留。见native-dialog-probe/README.md。
+- 更正原自动化证据边界：整体stub提示API，旧矩阵不单独证明native渲染；原验收未缩减，本次真实UI已补齐。M-01明确same-build vs跨构建不可复现；M-03等非阻断缺陷明确延期，未声称修复。
+- 仅追加docs/reviews/I02流程证据，15冻结路径/64保护路径待最终重核；未push/PR/merge。
+
+- 最终独立内部agent只读复核流程证据：15冻结文件匹配、实现/测试/验收diff为空；Run2原生提示/点击/同进程恢复及M01/M02/M03处理无夸大，可按原流程第五节8条关联同候选。指出driver.log被*.log忽略，已明确单文件force-add保存，避免证据断链。
+- 推送前完整性：pre-push-integrity.json记15冻结/64保护0差异、双方报告hash匹配、candidate后实现diff为空；fetch origin/develop仍为base 1b6df7a，无远端feature。仅待流程证据提交，再正常push/PR/CI/merge。
+
+- 流程证据暂存50文件，均在docs/reviews/I02；git diff --cached --check仅原始unified diff上下文的空格+tab标记告警（package-main-diff.txt），保留原文，非源码缩进缺陷；没有实现变更。
