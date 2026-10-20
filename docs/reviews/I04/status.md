@@ -2,7 +2,7 @@
 
 同一 Goal；会话 01a15899-4318-7522-8035-353e88d34de4。2026-10-20 已实际接收完整 Goal 第九节与无桌面打扰约束。
 
-当前阶段：C1 双指定模型均明确不通过，原报告完整保留于 round-1。正在形成修复候选 C2，尚未冻结或提交新版双审。当前修复及新验证见 reconnect-verification.json；原 cf83e18 检查点保留在 Git 历史及本地 c2-history，不冒充最新验收。真实三平台 CI、推送、PR、合并与远端核验均未完成。
+当前阶段：C1 双指定模型均明确不通过，原报告完整保留于 round-1。修复候选 C2 已完成本地、隔离与包内验收并集成主线，准备冻结后提交新版双审；准确受审头与文件清单见 candidate-2.json。当前修复及新验证见 reconnect-verification.json；原 cf83e18 检查点保留在 Git 历史及本地 c2-history，不冒充最新验收。真实三平台 CI、推送、PR、合并与远端核验均未完成。
 
 以下“范围与门禁”至“用户确认恢复后的检查点”为按执行顺序保留的历史快照，不是当前完成状态。后续 C1 派发/终审记录另有时间标题。
 
@@ -108,3 +108,7 @@ New next-candidate findings are being resolved in independent worktrees: progres
 C1 原不通过及全部 P 等级保留；处置见 round-1-disposition.json。实际修复自动只读恢复、投影提交竞态、迟到健康回复、Darwin ESRCH 退出竞态、分页默认 200、真实未知总量阶段、65536 有限会话及父 stdin 开启时干净退出；补齐 144 格精确断言/逐格证据、外部 X 焦点与原生提示框字段、死分支清理和存储守卫说明。独立内部审查证据不替代指定双审。
 
 macOS 无窗口 check 为 630 TS/1015 Python；隔离 Linux arm64 为 630 TS/1013 Python+2 Darwin 专属跳过。源码及包内各六项桌面/健康/CSP/reload/协调器退出/native 验收通过；两个平台 package、公共例及各12项真实包内runtime通过；矩阵两平台各144格通过。驱动 sandbox 前置失败及早期真实故障保留于索引，不记作当次通过。最终冻结/完整新双审、远端三平台 CI 与正常合并仍待执行。
+
+## C2 冻结前集成核验
+
+feature/I04-reconnect 已正常合入 feature/I04-resident-jobs。主线 122 份非文档输入逐文件 SHA 与实际验证输入一致，原仓库64保护文件与 AGENTS 均未变。最新 macOS/Linux 完整 check 覆盖新增 recorder 与 CI 接线后源码；来源核验12份通过。独立 bridge/supervisor/storage 检查已分别留证；最后归属表述与历史时点文案已校正，无运行源码变化。冻结后仅追加派发/报告流程记录，不修改实现、测试、配置、依赖或验收。
