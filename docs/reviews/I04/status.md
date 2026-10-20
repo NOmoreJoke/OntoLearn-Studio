@@ -112,3 +112,29 @@ macOS 无窗口 check 为 630 TS/1015 Python；隔离 Linux arm64 为 630 TS/101
 ## C2 冻结前集成核验
 
 feature/I04-reconnect 已正常合入 feature/I04-resident-jobs。主线 122 份非文档输入逐文件 SHA 与实际验证输入一致，原仓库64保护文件与 AGENTS 均未变。最新 macOS/Linux 完整 check 覆盖新增 recorder 与 CI 接线后源码；来源核验12份通过。独立 bridge/supervisor/storage 检查已分别留证；最后归属表述与历史时点文案已校正，无运行源码变化。冻结后仅追加派发/报告流程记录，不修改实现、测试、配置、依赖或验收。
+
+## 2026-10-20 C2 实际双审派发
+
+冻结完整 e45e6038→0462e0825f3bda2774ce5d43f4422327f2d5fbd9，共93文件，candidate-2.json逐文件SHA。通过实际CUA各新建ZCode GLM-5.3/最高、MiniMax Code M3.1-Flash/xhigh独立任务，精确primary目录/feature分支及模型思考均核验，完整原验收/Goal第九节/无宿主GUI/旧C1报告处置已透传。两任务实际运行中，均尚无最终结论。共享out/build/release仅ZCode预约；MiniMax无冲突验证使用独立目录，禁止本轮相互读对方报告。派发证据见round-2/dispatch.json。受审93路径冻结；仅追加流程证据。
+
+## 2026-10-20 C2 Round-2 MiniMax 复审结论（MiniMax Code · M3.1-Flash / xhigh）
+
+独立只读复审完成，报告见 docs/reviews/I04/round-2/minimax-m31flash.md。候选完整性由本人逐文件重算核验：candidate-2.json 声明93文件与 git show HEAD:<path> 逐字节93/93一致，声明集合与 base→head 实际 diff 集合完全相等（43提交，+33117/−236）。隔离 export 环境（build/I04-review-MiniMax-M31Flash-C2，未写共享 out/build/release、未启动宿主 GUI）独立复现：Python 1015 passed、TS 630 passed/15 files、typecheck exit 0、矩阵 recorder 144 passed（atomic 96/96、round 48/48、逐格只读DB捕获144）且负对照5例通过时 recorder exit 1 证明缺格不被计数掩盖、CI 同款 --i04-matrix-source-revision HEAD 144 passed；另实测 ESRCH fail-closed 语义与10/10竞态用例、job.progress 真实5阶段且 completed/total=null、result.page 三层上界200与 job.list 100、越权 NOT_FOUND/PERMISSION_DENIED、协调器 kill 后已提交轮次保留且不重放、reconnect-verification.json 71/71 artifact SHA 全匹配。
+
+历史条目逐项判断：P1-1/P1-2/P1-3/B1 四个阻断级问题确认关闭；P2-4/P2-5/P2-6/P3-7/P3-8/P3-9/P3-10/P3-11/P3-12/P3-13/P3-14/P3-15 及 Z1/Z2 确认关闭；Z3 与 I03 O1/O3、I01 R6 维持原延期/开放登记未上调。
+
+结论：通过。新增1项P2非阻断发现 R2-P1：handshakeMs=5000 仅在 coordinator.serve() 的 except queue.Empty 分支检查（coordinator.py:632-640），inbox 恒非空时时限不成立——本人实测控制组5.155s退出 vs 洪泛组10.639s/65536响应后退出（exit 0，stderr 空）；属 C1 遗留（与 ce6fd54 逻辑一致，C2 仅改 read1→os.read），影响有界、不涉数据一致性与权限边界。要求开发线在合并前给出“修复并重审”或“明确延期并登记”的处置，处置前不得声称握手时限已验证成立。
+
+未验证并保留：远端三平台CI、push/PR/合并、签名、干净设备、生产，以及领域业务 E.2/E.5/G.4/FR-704；原生可见/焦点仅核验既有独立Docker/Xvfb/Openbox证据的内容与哈希，未在宿主复现。受审实现/测试/配置/依赖/验收未改动，AGENTS.md 保护SHA未变未stage。
+
+## 2026-10-20 C2 Round-2 MiniMax 复审报告修订 R1（握手独立时间预算）
+
+收到开发线自有只读探针产物 build/I04-evidence/handshake-independent-c2/（不含另一指定模型本轮报告或结论）。MiniMax 复审未采信其结论：先独立重算其 3 个源码 SHA-256 与 6 个工件哈希（全部匹配，与 git show 0462e082:<path> 逐字节相同），再用本人自写 harness（build/I04-review-MiniMax-M31Flash-C2/probe_late_hello.py→probe_late_hello.json，本人隔离 export 冻结字节、真实 stdio 与真实 SQLite、无 clock/queue/limits mock）独立复现：空闲对照臂 5.1117s 自然退出 exit 0（证明 5000ms 预算本应生效），迟延 hello 臂在 40561 条合法唯一 pre-handshake health 持续占用 inbox 时，hello 于 5.3121s 发出、5.3928s 仍被接受（ok=true、签发 engineSessionId、limits.handshakeMs=5000 照常回传），最晚可能截止 5.0704s，即协商准入越出声明预算至少 0.3224s。
+
+据此修订报告：R2-P1 事实精度由“进程存活超期”收紧为“协商准入越出声明预算”，两条独立证据线互证（本人超期 0.32s / 开发线 0.73s，自然到期 5.11s / 5.13s）。严重程度维持 P2 非阻断（该阶段仍有 65536 请求身份硬上界、不涉数据一致性/授权/凭据/跨信任边界、C1 遗留非 C2 回归），但对原验收 #4 的影响明确化：握手独立时间预算子项按声明值不成立、只以请求数上限弱形式成立，其余子项不受影响。处置要求：修复 coordinator.py 握手时限检查点（移出 except queue.Empty 分支、绝对截止不因被拒请求续期、补迟到 hello 必须被拒且空闲期限仍生效的回归用例），生成新候选并重走双方全范围复审，或明确延期并登记理由；闭环前不得声称握手独立时间预算已验证成立，不得沿用本轮通过结论。证据保留说明：两份 .log 与对应 .json 字节完全相同，属同一内容副本，按 JSON 报告计，不作为独立原始日志。受审实现/测试/配置/依赖/验收未改动，AGENTS.md 保护 SHA 未变未 stage。
+
+## 2026-10-21 C2 双方实际终态与完整读回
+
+ZCode GLM-5.3/最高完整报告153行、MiniMax M3.1-Flash/xhigh最终修订报告312行均已实际完成并读回；双方结论均为通过，原P等级与附带边界原样保留。Z新增R2-N1(P3)及R2-N2(P2)，MM新增R2-P1(P2，握手同根)。原C1全部19 ID与延期项逐项保留。两原任务均含同任务必要方法修正/独立事实补证，终态已核验，未换模型、未重建Goal、无真实额度故障/重置。
+
+本线不以附条件通过抵扣原验收#4：C2独立握手期限仍不成立，故不推送C2。修复和测试在独立C3分支完成、受审primary一直冻结；C3需全范围冻结及双方各新建完整审查，不沿用C2批准。详见round-2-processing.json；无push/PR/远端CI/合并。
