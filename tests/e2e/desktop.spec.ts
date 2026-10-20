@@ -1,5 +1,6 @@
 import { test, expect, _electron as electron } from '@playwright/test'
 import { resolve } from 'node:path'
+import { writeFile } from 'node:fs/promises'
 import type { HealthResult } from '@ontolearn/contracts'
 
 test('desktop calls real engine, keeps isolation and fits minimum window', async () => {
@@ -53,6 +54,8 @@ test('desktop calls real engine, keeps isolation and fits minimum window', async
 })
 
 test('a health reply from before connection loss cannot replace the current status', async () => {
+  const testInfo = test.info()
+  const replies: { outcome: string; before: string | null; after: string | null }[] = []
   const env = { ...process.env }
   delete env.ELECTRON_RUN_AS_NODE
   const application = await electron.launch({
@@ -134,6 +137,7 @@ test('a health reply from before connection loss cannot replace the current stat
       )
       await expect(page.getByRole('button', { name: '检查本地引擎' })).toBeEnabled()
       await expect(page.locator('.health-result')).toHaveText(before!)
+      replies.push({ outcome, before, after: await page.locator('.health-result').textContent() })
     }
     // A new explicit check after the loss still accepts its own fresh reply.
     await application.evaluate(({ ipcMain }, value) => {
@@ -142,6 +146,21 @@ test('a health reply from before connection loss cannot replace the current stat
     }, health)
     await page.getByRole('button', { name: '检查本地引擎' }).click()
     await expect(page.locator('.health-result')).toContainText('本地引擎已连接')
+    const evidence = testInfo.outputPath('i04-health-replies.json')
+    await writeFile(
+      evidence,
+      JSON.stringify(
+        {
+          replies,
+          freshExplicit: await page.locator('.health-result').textContent(),
+          boundary:
+            'Controlled IPC reply ordering and validated connection fixtures; no actual engine exit claim.',
+        },
+        null,
+        2,
+      ),
+    )
+    await testInfo.attach('i04-health-replies', { path: evidence, contentType: 'application/json' })
   } finally {
     await application.close()
   }

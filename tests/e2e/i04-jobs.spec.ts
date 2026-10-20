@@ -229,8 +229,10 @@ test('I04 coordinator exit reconciles the open view without replaying jobs', asy
     ).toEqual(marker)
     const firstManual = await page.evaluate(() => window.ontolearn!.restoreTasks())
     expect(firstManual.ok).toBe(true)
+    const evidence = testInfo.outputPath('i04-coordinator-recovery.json')
+    await writeFile(evidence, JSON.stringify({ before: before.data, final, record }, null, 2))
     await testInfo.attach('i04-coordinator-recovery', {
-      body: JSON.stringify({ before: before.data, final, record }, null, 2),
+      path: evidence,
       contentType: 'application/json',
     })
   } finally {
