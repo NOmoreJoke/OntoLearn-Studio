@@ -1,0 +1,115 @@
+// Batch 2: mutations of cursor, job-list cursor, response binding and routing fixtures.
+import { readFileSync, writeFileSync } from 'node:fs'
+
+const ROOT = '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts'
+const fixtures = JSON.parse(readFileSync(`${ROOT}/packages/contracts/v2/fixtures.json`, 'utf8'))
+
+const out = []
+const seen = new Set()
+function push(id, payload) {
+  if (seen.has(id)) return
+  seen.add(id)
+  out.push({ id, ...payload })
+}
+
+function clone(x) {
+  return JSON.parse(JSON.stringify(x))
+}
+function objMutations(id, obj, mutate) {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return
+  const keys = Object.keys(obj)
+  for (const k of keys) {
+    const c = clone(obj)
+    delete c[k]
+    mutate(`${id}|drop:${k}`, c)
+    mutate(`${id}|extra:${k}`, { ...clone(obj), __x__: 1 })
+    if (typeof obj[k] === 'string') {
+      mutate(`${id}|num:${k}`, { ...clone(obj), [k]: 5 })
+      mutate(`${id}|enum:${k}`, { ...clone(obj), [k]: '__not_in_enum__' })
+      mutate(`${id}|null:${k}`, { ...clone(obj), [k]: null })
+    } else if (typeof obj[k] === 'number') {
+      mutate(`${id}|str:${k}`, { ...clone(obj), [k]: '5' })
+      mutate(`${id}|plus1:${k}`, { ...clone(obj), [k]: obj[k] + 1 })
+      mutate(`${id}|zero:${k}`, { ...clone(obj), [k]: 0 })
+    } else if (obj[k] && typeof obj[k] === 'object' && !Array.isArray(obj[k])) {
+      const inner = clone(obj[k])
+      for (const ik of Object.keys(inner)) {
+        const c2 = clone(obj)
+        delete c2[k][ik]
+        mutate(`${id}|inner-drop:${k}.${ik}`, c2)
+        if (typeof inner[ik] === 'string')
+          mutate(`${id}|inner-enum:${k}.${ik}`, { ...clone(obj), [k]: { ...inner, [ik]: '__not_in_enum__' } })
+        if (typeof inner[ik] === 'number')
+          mutate(`${id}|inner-plus1:${k}.${ik}`, { ...clone(obj), [k]: { ...inner, [ik]: inner[ik] + 1 } })
+        if (typeof inner[ik] === 'string')
+          mutate(`${id}|inner-extra:${k}.${ik}`, {
+            ...clone(obj),
+            [k]: { ...inner, __extraKey__: 'x' },
+          })
+      }
+    } else if (Array.isArray(obj[k])) {
+      mutate(`${id}|arr-extra:${k}`, { ...clone(obj), [k]: [...obj[k], '__extra__'] })
+      mutate(`${id}|arr-dup:${k}`, { ...clone(obj), [k]: obj[k].length ? [...obj[k], obj[k][0]] : ['x'] })
+      mutate(`${id}|arr-empty:${k}`, { ...clone(obj), [k]: [] })
+    }
+  }
+}
+
+// cursors
+for (const c of fixtures.cursors) {
+  push(`cursor:${c.name}`, { kind: 'cursor', record: c.record, request: c.request, nowMs: c.nowMs })
+  objMutations(`cursor:${c.name}`, c.record, (id, r) =>
+    push(id, { kind: 'cursor', record: r, request: c.request, nowMs: c.nowMs }),
+  )
+  objMutations(`cursor:${c.name}`, c.request, (id, r) =>
+    push(id, { kind: 'cursor', record: c.record, request: r, nowMs: c.nowMs }),
+  )
+  for (const nowMs of [c.nowMs - 1, c.nowMs, c.nowMs + 1, 0, Number.MAX_SAFE_INTEGER])
+    push(`cursor:${c.name}|now:${nowMs}`, {
+      kind: 'cursor',
+      record: c.record,
+      request: c.request,
+      nowMs,
+    })
+}
+// job list cursors
+for (const c of fixtures.jobListCursors) {
+  push(`jobListCursor:${c.name}`, {
+    kind: 'jobListCursor',
+    record: c.record,
+    request: c.request,
+    nowMs: c.nowMs,
+  })
+  objMutations(`jobListCursor:${c.name}`, c.record, (id, r) =>
+    push(id, { kind: 'jobListCursor', record: r, request: c.request, nowMs: c.nowMs }),
+  )
+  objMutations(`jobListCursor:${c.name}`, c.request, (id, r) =>
+    push(id, { kind: 'jobListCursor', record: c.record, request: r, nowMs: c.nowMs }),
+  )
+}
+// responses
+for (const c of fixtures.responses) {
+  push(`response:${c.name}`, { kind: 'response', request: c.request, response: c.response })
+  objMutations(`response:${c.name}`, c.request, (id, r) =>
+    push(id, { kind: 'response', request: r, response: c.response }),
+  )
+  objMutations(`response:${c.name}`, c.response, (id, r) =>
+    push(id, { kind: 'response', request: c.request, response: r }),
+  )
+}
+// routing
+for (const c of fixtures.routing) {
+  push(`routing:${c.name}`, { kind: 'routing', value: c.value, binding: c.binding })
+  objMutations(`routing:${c.name}`, c.value, (id, v) =>
+    push(id, { kind: 'routing', value: v, binding: c.binding }),
+  )
+  objMutations(`routing:${c.name}`, c.binding, (id, b) =>
+    push(id, { kind: 'routing', value: c.value, binding: b }),
+  )
+}
+
+writeFileSync(
+  '/tmp/i03-r2-minimax/probe/cases2.json',
+  JSON.stringify({ generatedFrom: 'cursor/response/routing fixture mutations', count: out.length, cases: out }),
+)
+console.log('batch2 generated', out.length, 'cases')

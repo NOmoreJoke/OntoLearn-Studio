@@ -1,0 +1,126 @@
+"""I03-R2 ZCode batch2: legitimate-baseline single-variable mutations.
+
+Baselines are the frozen candidate's own public fixtures ('valid job event'
+routing fixture, 'request hello'/'response hello' case fixtures). For every
+case we record BOTH the shape result (validate) and the target-function
+result, plus the single changed field. Original probes are untouched.
+Full stdout of this run is the batch record; no repo files are written.
+"""
+import copy
+import json
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path("packages/contracts/python")))
+import contract_v2 as CONTRACT  # noqa: E402
+
+FIX = json.loads(Path("packages/contracts/v2/fixtures.json").read_text(encoding="utf-8"))
+
+rows = []
+
+
+def record(case, changed, shape_ok, target_ok, note=""):
+    rows.append({"case": case, "changed": changed, "shape": shape_ok,
+                 "target": target_ok, "note": note})
+    print(f"{case}: changed={changed} shape={shape_ok} target={target_ok} {note}")
+
+
+# ---------- A. notification binding: fixture baseline ----------
+base = copy.deepcopy(next(c for c in FIX["routing"] if c["name"] == "valid job event"))
+event, binding = copy.deepcopy(base["value"]), copy.deepcopy(base["binding"])
+record("A0 control", "none",
+       CONTRACT.validate("notification", event),
+       CONTRACT.accepts_job_event(event, binding),
+       "must be shape=True target=True")
+
+gap = copy.deepcopy(event)
+gap["seq"] = 3
+record("A1 seq gap (lastSeq=0, seq 1->3)", "seq",
+       CONTRACT.validate("notification", gap),
+       CONTRACT.accepts_job_event(gap, binding))
+
+replay_b = copy.deepcopy(binding)
+replay_b["lastSeq"] = 1
+record("A2 seq replay (binding.lastSeq 0->1, event seq=1)", "binding.lastSeq",
+       CONTRACT.validate("notification", event),
+       CONTRACT.accepts_job_event(event, replay_b))
+
+jump = copy.deepcopy(event)
+jump["data"]["stateVersion"] = 6
+record("A3 stateVersion jump (binding 3 -> data 6)", "data.stateVersion",
+       CONTRACT.validate("notification", jump),
+       CONTRACT.accepts_job_event(jump, binding))
+
+wrongsub = copy.deepcopy(event)
+wrongsub["subscriptionId"] = "00000000-0000-4000-8000-000000000099"
+record("A4 wrong subscription (legal other UUID)", "subscriptionId",
+       CONTRACT.validate("notification", wrongsub),
+       CONTRACT.accepts_job_event(wrongsub, binding))
+
+# ---------- B. my ORIGINAL synthetic notification baseline: attribution ----------
+S = "00000000-0000-4000-8000-00000000000"
+synth = {
+    "kind": "notification", "protocolVersion": 2,
+    "engineSessionId": f"{S}1", "projectId": f"{S}2", "jobId": f"{S}3",
+    "subscriptionId": f"{S}4", "seq": 4, "event": "job.state",
+    "data": {"stateVersion": 3, "state": "running"},
+}
+synth_bind = {
+    "engineSessionId": f"{S}1", "projectId": f"{S}2", "jobId": f"{S}3",
+    "subscriptionId": f"{S}4", "lastSeq": 3, "stateVersion": 2, "state": "running",
+}
+record("B0 original synthetic baseline", "none",
+       CONTRACT.validate("notification", synth),
+       CONTRACT.accepts_job_event(synth, synth_bind),
+       "attribution check of round-2 original probe base")
+
+# ---------- C. hello capability subset via matchesResponse ----------
+hq = copy.deepcopy(next(c for c in FIX["cases"] if c["name"] == "request hello")["value"])
+hr = copy.deepcopy(next(c for c in FIX["cases"] if c["name"] == "response hello")["value"])
+record("C0 control matchesResponse(hello)", "none",
+       CONTRACT.validate("response", hr),
+       CONTRACT.matches_response(hq, hr),
+       "must be shape=True target=True")
+
+cap = copy.deepcopy(hr)
+cap["result"]["capabilities"] = ["query.execute"]
+record("C1 capabilities=['query.execute'] only", "result.capabilities",
+       CONTRACT.validate("response", cap),
+       CONTRACT.matches_response(hq, cap))
+
+# ---------- D. my ORIGINAL synthetic hello response: attribution ----------
+S7 = f"{S}7"
+synth_hr = {
+    "kind": "response", "id": f"{S}5", "protocolVersion": 2,
+    "engineSessionId": S7, "method": "hello", "ok": True,
+    "result": {"selectedVersion": 2, "engineVersion": "1", "session": S7,
+               "capabilities": ["query.execute"], "registryHash": "a" * 64,
+               "limits": {}},
+}
+synth_hq = {"kind": "request", "id": f"{S}5", "protocolVersion": 2,
+            "engineSessionId": None, "method": "hello",
+            "params": {"supportedVersions": [2], "clientId": f"{S}6"}}
+record("D0 original synthetic hello response", "none",
+       CONTRACT.validate("response", synth_hr),
+       CONTRACT.matches_response(synth_hq, synth_hr),
+       "attribution check of round-2 original probe")
+
+# ---------- verdicts ----------
+fails = []
+a0 = next(r for r in rows if r["case"].startswith("A0"))
+c0 = next(r for r in rows if r["case"].startswith("C0"))
+if a0["shape"] is not True or a0["target"] is not True:
+    fails.append("A0 control not accepted")
+if c0["shape"] is not True or c0["target"] is not True:
+    fails.append("C0 control not accepted")
+for r in rows:
+    if r["case"][0] in {"A", "C"} and r["case"][1] != "0":
+        if r["target"] is not False:
+            fails.append(f"{r['case']} not rejected")
+    if r["case"] == "C1" and r["shape"] is not True:
+        fails.append("C1 mutant lost shape validity (cannot isolate capability rule)")
+
+print("\nbatch2 verdict:", "ALL-OK" if not fails else fails)
+print("cases:", len(rows), "| rejected-mutations:",
+      sum(1 for r in rows if r["case"][0] in {"A", "C"} and r["case"][1] != "0"))
+sys.exit(0 if not fails else 1)

@@ -1,0 +1,76 @@
+diff --git a/docs/reviews/I03/round-2/minimax-runtime/report-before-worktree-recheck.md b/docs/reviews/I03/round-2/minimax-m31flash.md
+index c8b2dc2..38e92b3 100644
+--- a/docs/reviews/I03/round-2/minimax-runtime/report-before-worktree-recheck.md
++++ b/docs/reviews/I03/round-2/minimax-m31flash.md
+@@ -110,10 +110,12 @@
+ | `git diff --check base head`（未过滤） | **2** | 仅命中 4 个**原始统一 diff 工件**空上下文行的前缀空格（`docs/reviews/I03/**/*.diff`） |
+ | `git diff --check base head -- . ':(exclude)docs/reviews/I03/**/*.diff'` | **0** | 实际源码/配置/测试/文档**无空白错误** |
+ 
+-### 4.2 在隔离副本实跑（共享 build/out 由另一任务独占）
++### 4.2 在副本实跑（共享 build/out 由另一任务独占；**依赖边界更正见 §11.1**）
+ 
+ 我未在派发方未释放前触碰共享 `build/out`。改为用 `git archive 30c10d8` 导出 HEAD 到 `/tmp/i03-r2-minimax/candidate-copy`（node_modules 采用符号链接农场，`@ontolearn/*` 指向副本自身），在其中执行构建类步骤；桌面源码在本候选范围内零改动，故构建证据等价。
+ 
++> **后续更正（§11.1）**：该副本的 `node_modules` 各包与 `.bin` 均为**指回受审 worktree 的符号链接**，故它是"**源码与产物隔离、依赖包与工具链共享**"的副本，**不能称为完全独立依赖环境**；共享 build/out 释放后已在受审 worktree 原位补跑标准 `npm run check`（exit 0），见 §11.2。本小节其余事实与退出码按原样保留。
++
+ | 命令 | 退出码 | 实际结果 |
+ | --- | --- | --- |
+ | `npm run check`（含 build 全链） | **0** | eslint → prettier → 三入口 typecheck → vitest 5 文件 **424/424** → electron-vite build（main/preload/renderer 产物生成）→ ruff + **pytest 626/626** |
+@@ -227,3 +229,57 @@
+ 本通过**不**将任何未执行的运行项（I04 运行时、I05 真实语义、桌面联验、远端 CI）登记为完成，不改变 Q2/Q3/Q5–Q9 决策边界，不构成对 I05 未冻结交接或 `v2Runtime` 空集之外任何能力的承认，也**不**把 I01 R6 或 Z P3-2 由开放/延期改写为关闭。
+ 
+ —— 审查者：MiniMax Code（MiniMax-M3.1-Flash，xhigh），任务 `I03-R2-MiniMax-M31Flash-C5-30c10d8`，2026-10-20。
++
++## 11. 补充（同一候选 · 共享构建资源释放后的受审 worktree 原位补验）
++
++> 本节为**同一 base→head 候选**的后续补验记录，不改变 §0–§10 已记录的证据与失败批次；补充前的本报告原字节已保存为 `round-2/minimax-runtime/report-before-worktree-recheck.md`（SHA-256 `f1d1446684026c2d68aafbcc4737fa5b19ba4a3b6f0a0d352563d771117782ad`），本节写入后的完整 diff 保存为 `round-2/minimax-runtime/report-worktree-recheck.diff`。
++
++### 11.1 触发原因与资源事实更正
++
++派发方检查到：我在共享 build/out 未释放期间所用的 `/tmp/i03-r2-minimax/candidate-copy` **并非完全独立的依赖环境**。实测确认（`readlink` 逐项核对）：
++
++- `candidate-copy/node_modules/` 是**真实目录**，但其下**每个包**（`typescript`、`vitest`、`vite`、`electron-vite`、`zod`、`eslint` 等 317 项）均为**指向受审 worktree `node_modules/<pkg>` 的符号链接**；`node_modules/.bin` 同样是**指向受审 worktree `node_modules/.bin` 的符号链接**。
++- 为**本地真实目录**的部分：`node_modules/@ontolearn/contracts` → 副本自身 `packages/contracts`、`@ontolearn/desktop` → 副本自身 `apps/desktop`（**工作区源码解析指向副本自身**）；`apps/desktop/out`（构建产物）、`node_modules/.vite`（vitest 缓存）、`.venv`（uv 现场创建、装 14 包）。
++- 副本构建期间在受审 worktree 的 `node_modules/.vite-temp` 留下**一个空目录**（0 项内容，被 `.gitignore` 的 `node_modules/` 覆盖），**未写入任何包内容**。
++
++**准确表述**：副本与受审 worktree **共享同一套依赖包与工具链二进制**（只读使用），仅**源码解析根、构建产物、vite 缓存与 Python venv** 为副本本地。因此它**不能被称为"完全独立依赖环境"**；我在 §4.2 的表述"隔离副本"现更正为"**源码与产物隔离、依赖包与工具链共享**的副本"。该更正**不推翻**副本内已取得的事实（exit 0、424/626、注入 exit 2 + TS2322），但这些事实的**证据强度**依赖"同一 typescript 编译器 + 同一依赖集合 + 候选源码逐字一致"，故下述原位补验用于消除该依赖。
++
++### 11.2 受审 worktree 原位标准 `npm run check`（新文件名独立保存）
++
++共享 build/out 已正式预约给我后，我在**精确受审 worktree** `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts`、同一 `c2f9b038 → 30c10d8` 候选上，补跑了**标准入口** `npm run check`：
++
++| 项 | 值 |
++| --- | --- |
++| 命令 | `npm run check`（= lint → format:check → typecheck → test → build → engine:check） |
++| 退出码 | **0** |
++| stdout | `minimax-runtime/logs/worktree-recheck-full-check.stdout.txt`（105 行） |
++| stderr | `minimax-runtime/logs/worktree-recheck-full-check.stderr.txt`（**0 字节**） |
++| exit | `minimax-runtime/logs/worktree-recheck-full-check.exit.txt`（`0`） |
++| 实际阶段 | eslint `--max-warnings 0` 通过 → prettier 通过 → **tsc contracts strict + tsc 全部 unit strict + tsc desktop** 全过 → vitest **424 passed (424)** → **electron-vite build** 生成 `out/main/index.js`、`out/preload/index.js`、`out/renderer/index.html` + 资产 → `ruff check` "All checks passed!" + `ruff format --check` → **pytest 626 passed in 6.07s** |
++
++与副本那次运行的唯一可观察差异：`ruff format --check` 报告 **123** 个文件（副本为 119）。原因是受审 worktree 含候选开发线自己的 **git-ignored** `build/I03-validation/` 脚本（4 个 `.py`，含 `extend-i05-contract.py`），副本为 `git archive` 导出、不含该目录。**该差异只影响计数，不影响任何检查结论**。
++
++### 11.3 候选哈希复核
++
++- `git rev-parse HEAD` = `30c10d8ad1b9156b1fa5317c6b41b179f927c761`（补验前后一致）；`git diff --stat base head` 仍为 **101 files changed, 26214 insertions(+), 11 deletions(-)**（与 §2 一致）。
++- `docs/reviews/I03/candidate.json` 记录的 **101 份候选文件**逐份重算 SHA-256：**100/101 与冻结值一致**，**0 缺失**。
++- **唯一不一致**：`docs/reviews/I03/status.md`（冻结 `f23cc7e5…` → 当前 `c40bd556…`）。逐行核对差异内容为**单一新增小节**「候选5第二轮实际创建（仅流程追加）」，记录的是任务创建、模型/思考读回与资源先后顺序；**不含任何契约、schema、registry、fixtures、双端校验器、测试、依赖、CI 或验收内容**。属"单纯证据/流程追加"（与 `scope.md` 第 5 条一致），**不构成受审内容变化**，亦不触发重新审查。
++- 补验前后 `git status --porcelain` 一致：`M AGENTS.md`（受保护、他方规则文件）、`M docs/reviews/I03/status.md`（上述流程追加）、`?? docs/reviews/I03/{blocked-audit,candidate,frozen-integrity}.json`、`?? docs/reviews/I03/round-2/`（本审查工件）。**无任何受审实现/测试/依赖的未提交改动**。
++
++### 11.4 本次补验未做的事（边界声明）
++
++- **未在受审 worktree 重做 F3 注入实验**：注入必然临时改写候选字节，与"不改候选"冲突；F3 的证据仍基于副本，且其**编译器与依赖集合与受审 worktree 完全同源**（见 §11.1），同时 §11.2 中 worktree 原位 `npm run typecheck` 通过，构成"门禁在真实 worktree 上有效"的正向证据。
++- **未运行**任何测试窗口（Electron / Playwright / e2e / 原生 / HMR / 产物启动）。
++- **未读取**另一模型本轮报告、运行输出或意见；**未因共享资源释放而推断其进度或结论**。
++- **未重写**任何既有证据：副本 fullcheck exit 0、626 pytest、batch5 的失败批次与 batch5b 的更正批次、全部原始 stdout/stderr 与退出码均按原样保留（批次独立命名，未覆盖早批）。
++
++### 11.5 对结论的复核
++
++按"不机械维持原结论"的要求，我以 §11.2、§11.3 的新证据重新审视了 §0 结论与 §6 的 R2-F1：
++
++- 原结论依赖的关键项——`npm run check` 全链通过、424/626 双端回归、类型门禁有效性、候选内容未变——**在受审 worktree 原位全部独立复现成立**。
++- §11.1 的依赖边界更正**削弱**了"副本 = 独立环境"的表述强度，但**不产生新的失败项**：该表述此前仅用于说明"未写入共享 build/out"这一操作事实，而非用于证明依赖隔离。
++- R2-F1（P3，Python `accepts_job_event` 对畸形可信 binding 抛异常 vs TS 返回 false）与本次补验**无因果关系**，等级与处置**不变**。
++- I01 R6、Z P3-2 等开放/延期项**未被改写为关闭**；I04/I05 运行项与桌面联验**仍未登记为完成**。
++
++**结论维持：通过。** 未发现阻断（P0/P1）问题；新增 1 项非阻断 P3（R2-F1，建议 I04 前修复）；历史 15 项与 I01 7 项按原状态关闭或明确延期。

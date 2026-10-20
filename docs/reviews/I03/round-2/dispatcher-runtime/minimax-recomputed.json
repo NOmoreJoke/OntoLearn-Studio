@@ -1,0 +1,53 @@
+{
+  "method": "Recount retained inputs/results and compare aligned id/result records; no independent rerun of validators",
+  "initialAuditFailure": "First assertion assumed generated cases file included 77 direct fixture-section calls; run-ts.mjs actually appends those. Corrected recount includes them; input/results files unchanged.",
+  "batches": [
+    {
+      "batch": "1",
+      "generatedInputs": 25742,
+      "additionalFixtureSectionCases": 77,
+      "count": 25819,
+      "divergences": 0,
+      "tsThrows": 0,
+      "pyThrows": 0,
+      "examples": [],
+      "inputSha256": "a877964d7028a3664e534467ac29a232a1a3c215a57dba2e6b4483f3842e47f1"
+    },
+    {
+      "batch": "2",
+      "generatedInputs": 3948,
+      "additionalFixtureSectionCases": 0,
+      "count": 3948,
+      "divergences": 24,
+      "tsThrows": 0,
+      "pyThrows": 24,
+      "examples": [
+        {
+          "id": "routing:valid job event|drop:lastSeq",
+          "ts": {
+            "id": "routing:valid job event|drop:lastSeq",
+            "result": false
+          },
+          "py": {
+            "id": "routing:valid job event|drop:lastSeq",
+            "result": "THROW",
+            "error": "KeyError"
+          }
+        }
+      ],
+      "inputSha256": "ac688ca325e216c6bcee1a3a064c160c8a9367efdc250001c792a3de61d89194"
+    },
+    {
+      "batch": "3",
+      "generatedInputs": 26400,
+      "additionalFixtureSectionCases": 0,
+      "count": 26400,
+      "divergences": 0,
+      "tsThrows": 0,
+      "pyThrows": 0,
+      "examples": [],
+      "inputSha256": "edce734209a294ea84071adb16eaeacc62e0b04a840b1c882ff1bddbcb4bd19c"
+    }
+  ],
+  "total": 56167
+}

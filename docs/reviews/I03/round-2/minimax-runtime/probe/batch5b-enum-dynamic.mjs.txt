@@ -1,0 +1,64 @@
+// Batch 5b: F1 dynamic enumeration with fully valid sibling params, TS side.
+import errorCatalog from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/contracts/v2/errors.json'
+import { validateV2 } from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/contracts/src/v2.ts'
+
+const SIBLINGS = {
+  worksheetId: '00000000-0000-4000-8000-0000000000a1',
+  row: 1,
+  column: 1,
+}
+let total = 0
+let accepted = 0
+let rejected = []
+let unknownAccepted = []
+for (const [code, entry] of Object.entries(errorCatalog.codes)) {
+  const props = entry.paramsSchema.properties
+  for (const [param, sp] of Object.entries(props)) {
+    if (!sp.enum) continue
+    for (const value of sp.enum) {
+      const params = {}
+      for (const [k, v] of Object.entries(props)) {
+        if (k === param) params[k] = value
+        else if (k in SIBLINGS) params[k] = SIBLINGS[k]
+      }
+      const err = { code, messageKey: entry.messageKey, retryable: entry.retryable, params }
+      total++
+      if (validateV2('error', err)) accepted++
+      else rejected.push({ code, param, value, params })
+      const bad = { ...err, params: { ...params, [param]: '__not_in_enum__' } }
+      if (validateV2('error', bad)) unknownAccepted.push({ code, param, value })
+    }
+  }
+}
+console.log('batch5b total enum values:', total)
+console.log('batch5b accepted:', accepted)
+console.log('batch5b rejected:', JSON.stringify(rejected))
+console.log('batch5b unknown-value accepted:', JSON.stringify(unknownAccepted))
+// cross-parameter misuse: use another code's enum value in this code's enum param
+const misuse = []
+const codes = Object.entries(errorCatalog.codes)
+for (const [code, entry] of codes) {
+  for (const [param, sp] of Object.entries(entry.paramsSchema.properties)) {
+    if (!sp.enum) continue
+    for (const [otherCode, otherEntry] of codes) {
+      if (otherCode === code) continue
+      for (const [otherParam, otherSp] of Object.entries(otherEntry.paramsSchema.properties)) {
+        if (!otherSp.enum) continue
+        for (const foreign of otherSp.enum) {
+          if (sp.enum.includes(foreign)) continue
+          const params = {}
+          for (const [k, v] of Object.entries(entry.paramsSchema.properties)) {
+            if (k === param) params[k] = foreign
+            else if (k in SIBLINGS) params[k] = SIBLINGS[k]
+          }
+          const err = { code, messageKey: entry.messageKey, retryable: entry.retryable, params }
+          if (validateV2('error', err)) misuse.push({ code, param, foreign, from: `${otherCode}.${otherParam}` })
+        }
+      }
+    }
+  }
+}
+console.log('batch5b cross-code enum misuse accepted:', misuse.length, JSON.stringify(misuse.slice(0, 10)))
+const failed = total !== 53 || accepted !== 53 || rejected.length || unknownAccepted.length || misuse.length
+console.log('batch5b result:', failed ? 'FAIL' : 'PASS')
+process.exit(failed ? 1 : 0)
