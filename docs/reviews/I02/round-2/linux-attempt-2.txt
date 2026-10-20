@@ -1,0 +1,489 @@
+Quality	Set up job	﻿2026-10-20T00:39:46.7567941Z Current runner version: '2.337.0'
+Quality	Set up job	2026-10-20T00:39:46.7610113Z ##[group]Runner Image Provisioner
+Quality	Set up job	2026-10-20T00:39:46.7611823Z Hosted Compute Agent
+Quality	Set up job	2026-10-20T00:39:46.7613113Z Version: 20261015.610
+Quality	Set up job	2026-10-20T00:39:46.7614236Z Commit: 267fdb4e8bbec4ab5ea31367f3a00d5c480c7656
+Quality	Set up job	2026-10-20T00:39:46.7615567Z Build Date: 2026-10-14T17:06:54Z
+Quality	Set up job	2026-10-20T00:39:46.7616826Z Worker ID: {e5914bef-96e4-460a-bee4-ccc3e1125fcc}
+Quality	Set up job	2026-10-20T00:39:46.7618052Z Region: eastus2
+Quality	Set up job	2026-10-20T00:39:46.7619194Z Cloud: Azure
+Quality	Set up job	2026-10-20T00:39:46.7620201Z ##[endgroup]
+Quality	Set up job	2026-10-20T00:39:46.7623006Z ##[group]Operating System
+Quality	Set up job	2026-10-20T00:39:46.7624217Z Ubuntu
+Quality	Set up job	2026-10-20T00:39:46.7625058Z 24.04.5
+Quality	Set up job	2026-10-20T00:39:46.7626130Z LTS
+Quality	Set up job	2026-10-20T00:39:46.7627081Z ##[endgroup]
+Quality	Set up job	2026-10-20T00:39:46.7628123Z ##[group]Runner Image
+Quality	Set up job	2026-10-20T00:39:46.7629194Z Image: ubuntu-24.04
+Quality	Set up job	2026-10-20T00:39:46.7630216Z Version: 20261018.339.1
+Quality	Set up job	2026-10-20T00:39:46.7632542Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261018.339/images/ubuntu/Ubuntu2404-Readme.md
+Quality	Set up job	2026-10-20T00:39:46.7635782Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261018.339
+Quality	Set up job	2026-10-20T00:39:46.7637578Z ##[endgroup]
+Quality	Set up job	2026-10-20T00:39:46.7639673Z ##[group]GITHUB_TOKEN Permissions
+Quality	Set up job	2026-10-20T00:39:46.7643098Z Contents: read
+Quality	Set up job	2026-10-20T00:39:46.7644308Z Metadata: read
+Quality	Set up job	2026-10-20T00:39:46.7645346Z ##[endgroup]
+Quality	Set up job	2026-10-20T00:39:46.7648810Z Secret source: Actions
+Quality	Set up job	2026-10-20T00:39:46.7650449Z Cache mode: write
+Quality	Set up job	2026-10-20T00:39:46.7651966Z Prepare workflow directory
+Quality	Set up job	2026-10-20T00:39:46.8167468Z Prepare all required actions
+Quality	Set up job	2026-10-20T00:39:46.8241797Z Getting action download info
+Quality	Set up job	2026-10-20T00:39:47.0546827Z Download action repository 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+Quality	Set up job	2026-10-20T00:39:47.1829937Z Download action repository 'actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38' (SHA:249970729cb0ef3589644e2896645e5dc5ba9c38)
+Quality	Set up job	2026-10-20T00:39:47.3336355Z Download action repository 'astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78' (SHA:37802adc94f370d6bfd71619e3f0bf239e1f3b78)
+Quality	Set up job	2026-10-20T00:39:47.5602882Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+Quality	Set up job	2026-10-20T00:39:47.8209798Z Complete job name: Quality
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	﻿2026-10-20T00:39:47.9053097Z ##[group]Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9054275Z with:
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9054793Z   repository: NOmoreJoke/OntoLearn-Studio
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9058978Z   token: ***
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9059449Z   ssh-strict: true
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9059912Z   ssh-user: git
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9060380Z   persist-credentials: true
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9061315Z   clean: true
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9061824Z   sparse-checkout-cone-mode: true
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9062385Z   fetch-depth: 1
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9062866Z   fetch-tags: false
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9063335Z   show-progress: true
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9063846Z   lfs: false
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9064282Z   submodules: false
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9064766Z   set-safe-directory: true
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9065318Z   allow-unsafe-pr-checkout: false
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:47.9066176Z ##[endgroup]
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0359088Z Syncing repository: NOmoreJoke/OntoLearn-Studio
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0362338Z ##[group]Getting Git version info
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0363861Z Working directory is '/home/runner/work/OntoLearn-Studio/OntoLearn-Studio'
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0395906Z [command]/usr/bin/git version
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0571217Z git version 2.55.0
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0602860Z ##[endgroup]
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0615578Z Temporarily overriding HOME='/home/runner/work/_temp/39decb23-f4aa-41fc-a098-92a9ce233ea0' before making global git config changes
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0620018Z Adding repository directory to the temporary git global config as a safe directory
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0623447Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/OntoLearn-Studio/OntoLearn-Studio
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0724866Z Deleting the contents of '/home/runner/work/OntoLearn-Studio/OntoLearn-Studio'
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0727595Z ##[group]Determining repository object format
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0729479Z ##[endgroup]
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0751487Z ##[group]Initializing the repository
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0757593Z [command]/usr/bin/git init /home/runner/work/OntoLearn-Studio/OntoLearn-Studio
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0885430Z hint: Using 'master' as the name for the initial branch. This default branch name
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0892015Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0922249Z hint: to use in all of your new repositories, which will suppress this warning,
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0941923Z hint: call:
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0943067Z hint:
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0958824Z hint: 	git config --global init.defaultBranch <name>
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0960239Z hint:
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0962490Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0964453Z hint: 'development'. The just-created branch can be renamed via this command:
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0967743Z hint:
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0968778Z hint: 	git branch -m <name>
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0974545Z hint:
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0975951Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.0996240Z Initialized empty Git repository in /home/runner/work/OntoLearn-Studio/OntoLearn-Studio/.git/
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.1160066Z [command]/usr/bin/git remote add origin https://github.com/NOmoreJoke/OntoLearn-Studio
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.1165386Z ##[endgroup]
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.1167275Z ##[group]Disabling automatic garbage collection
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.1168973Z [command]/usr/bin/git config --local gc.auto 0
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.1173199Z ##[endgroup]
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.1175231Z ##[group]Setting up auth
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.1191736Z Removing SSH command configuration
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.1203730Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.1234674Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.1841806Z Removing HTTP extra header
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.1862393Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.1882321Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.2170255Z Removing includeIf entries pointing to credentials config files
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.2176092Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.2232625Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.2526973Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.2592877Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/.git.path /home/runner/work/_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.2649201Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.2706312Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.2759629Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.2807595Z ##[endgroup]
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.2809883Z ##[group]Fetching the repository
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.2818494Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +6b230a253052eb02eda3f4fed6bcf879b0f59c14:refs/remotes/pull/3/merge
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.6934075Z From https://github.com/NOmoreJoke/OntoLearn-Studio
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.6985634Z  * [new ref]         6b230a253052eb02eda3f4fed6bcf879b0f59c14 -> pull/3/merge
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.6990734Z ##[endgroup]
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.6993291Z ##[group]Determining the checkout info
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.6995573Z ##[endgroup]
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.6999106Z [command]/usr/bin/git sparse-checkout disable
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7034581Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7099294Z ##[group]Checking out the ref
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7101613Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/3/merge
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7559513Z Note: switching to 'refs/remotes/pull/3/merge'.
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7561116Z 
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7562234Z You are in 'detached HEAD' state. You can look around, make experimental
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7564779Z changes and commit them, and you can discard any commits you make in this
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7567337Z state without impacting any branches by switching back to a branch.
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7568710Z 
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7569742Z If you want to create a new branch to retain commits you create, you may
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7572448Z do so (now or later) by using -c with the switch command. Example:
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7573725Z 
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7574519Z   git switch -c <new-branch-name>
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7575526Z 
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7576233Z Or undo this operation with:
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7577207Z 
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7577929Z   git switch -
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7578766Z 
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7579868Z Turn off this advice by setting config variable advice.detachedHead to false
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7581798Z 
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7583333Z HEAD is now at 6b230a2 Merge caa08470d1bac7ef78032acb055ad9fffc6b6d1a into 1b6df7a220fc9a67d7046133a340085f03f0a96c
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7588563Z ##[endgroup]
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7592393Z [command]/usr/bin/git log -1 --format=%H
+Quality	Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:39:48.7595442Z 6b230a253052eb02eda3f4fed6bcf879b0f59c14
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	﻿2026-10-20T00:39:48.8138243Z ##[group]Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:48.8140352Z with:
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:48.8142011Z   node-version-file: .node-version
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:48.8143569Z   cache: npm
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:48.8144956Z   check-latest: false
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:48.8154404Z   token: ***
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:48.8155838Z   package-manager-cache: true
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:48.8157374Z ##[endgroup]
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:49.0120691Z Resolved .node-version as 24
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:49.0192893Z Found in cache @ /opt/hostedtoolcache/node/24.22.0/x64
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:49.0199319Z ##[group]Environment details
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:50.0542259Z node: v24.22.0
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:50.0544610Z npm: 11.19.1
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:50.0546297Z yarn: 1.22.22
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:50.0548908Z ##[endgroup]
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:50.0574247Z [command]/opt/hostedtoolcache/node/24.22.0/x64/bin/npm config get cache
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:50.1863256Z /home/runner/.npm
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:50.2873892Z Cache hit for: node-cache-Linux-x64-npm-2cebd269df31a528e93e1b2426cae08258c7a0bb236a746731f5c458b3bc4e6e
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:50.8912251Z Received 58200355 of 58200355 (100.0%), 107.2 MBs/sec
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:50.8913774Z Cache Size: ~56 MB (58200355 B)
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:50.9070973Z [command]/usr/bin/tar -xf /home/runner/work/_temp/4182ded4-6e54-4069-bfd9-be924953e1f3/cache.tzst -P -C /home/runner/work/OntoLearn-Studio/OntoLearn-Studio --use-compress-program unzstd
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:51.1208756Z Cache restored successfully
+Quality	Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38	2026-10-20T00:39:51.1239930Z Cache restored from key: node-cache-Linux-x64-npm-2cebd269df31a528e93e1b2426cae08258c7a0bb236a746731f5c458b3bc4e6e
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	﻿2026-10-20T00:39:51.1574019Z ##[group]Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1574510Z with:
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1574727Z   version: 0.11.12
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1574991Z   enable-cache: true
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1575232Z   activate-environment: false
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1575628Z   working-directory: /home/runner/work/OntoLearn-Studio/OntoLearn-Studio
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1578548Z   github-token: ***
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1579162Z   cache-dependency-glob: **/*requirements*.txt
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	**/*requirements*.in
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	**/*constraints*.txt
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	**/*constraints*.in
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	**/pyproject.toml
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	**/uv.lock
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	**/*.py.lock
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1579830Z   restore-cache: true
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1580061Z   save-cache: true
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1580287Z   prune-cache: true
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1580519Z   cache-python: false
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1580974Z   ignore-nothing-to-cache: false
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1581293Z   ignore-empty-workdir: false
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1581568Z   add-problem-matchers: true
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1581854Z   resolution-strategy: highest
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.1582157Z ##[endgroup]
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.3887916Z Fetching version data from https://raw.githubusercontent.com/astral-sh/versions/main/v1/uv.ndjson ...
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:51.5193410Z Downloading uv from "https://releases.astral.sh/github/uv/releases/download/0.11.12/uv-x86_64-unknown-linux-gnu.tar.gz" ...
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.0073926Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/a8f480d7-ea65-4464-95fe-9a5dd501a1ed -f /home/runner/work/_temp/85c2a573-415f-49ec-8b14-d6a0f0f0932f
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.5079949Z Added /home/runner/.local/bin to the path
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.5088842Z Added /opt/hostedtoolcache/uv/0.11.12/x86_64 to the path
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.5090463Z Set UV_PYTHON_INSTALL_DIR to /home/runner/work/_temp/uv-python-dir
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.5099344Z Added /home/runner/work/_temp/uv-python-dir to the path
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.5106324Z Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.5107729Z Successfully installed uv version 0.11.12
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.6306330Z Searching files using cache dependency glob: /home/runner/work/OntoLearn-Studio/OntoLearn-Studio/**/*requirements*.txt,/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/**/*requirements*.in,/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/**/*constraints*.txt,/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/**/*constraints*.in,/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/**/pyproject.toml,/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/**/uv.lock,/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/**/*.py.lock
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.6880251Z /home/runner/work/OntoLearn-Studio/OntoLearn-Studio/packages/engine/pyproject.toml
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.6928869Z /home/runner/work/OntoLearn-Studio/OntoLearn-Studio/pyproject.toml
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.6973145Z /home/runner/work/OntoLearn-Studio/OntoLearn-Studio/uv.lock
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.6981896Z Found 3 files to hash.
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.7084673Z Trying to restore cache from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.12.3-pruned-f289bf3ca90b93cf21c5a37ae8a74f1a2a7140696fb42d8fa204aa51813368c9
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.8152927Z Cache hit for: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.12.3-pruned-f289bf3ca90b93cf21c5a37ae8a74f1a2a7140696fb42d8fa204aa51813368c9
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.8820557Z Received 91585 of 91585 (100.0%), 3.1 MBs/sec
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.8822200Z Cache Size: ~0 MB (91585 B)
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.8855376Z [command]/usr/bin/tar -xf /home/runner/work/_temp/2d4cd439-92a3-4788-b005-3fecb945ee87/cache.tzst -P -C /home/runner/work/OntoLearn-Studio/OntoLearn-Studio --use-compress-program unzstd
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.8973618Z Cache restored successfully
+Quality	Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78	2026-10-20T00:39:52.8982054Z cache restored from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.12.3-pruned-f289bf3ca90b93cf21c5a37ae8a74f1a2a7140696fb42d8fa204aa51813368c9
+Quality	Run npm ci	﻿2026-10-20T00:39:52.9683120Z ##[group]Run npm ci
+Quality	Run npm ci	2026-10-20T00:39:52.9683666Z ^[[36;1mnpm ci^[[0m
+Quality	Run npm ci	2026-10-20T00:39:52.9909237Z shell: /usr/bin/bash -e {0}
+Quality	Run npm ci	2026-10-20T00:39:52.9909605Z env:
+Quality	Run npm ci	2026-10-20T00:39:52.9909923Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+Quality	Run npm ci	2026-10-20T00:39:52.9910383Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+Quality	Run npm ci	2026-10-20T00:39:52.9910954Z ##[endgroup]
+Quality	Run npm ci	2026-10-20T00:39:56.2641892Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+Quality	Run npm ci	2026-10-20T00:39:56.3111533Z npm warn deprecated rimraf@2.6.3: Rimraf versions prior to v4 are no longer supported
+Quality	Run npm ci	2026-10-20T00:39:56.4074800Z npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+Quality	Run npm ci	2026-10-20T00:39:59.2311568Z 
+Quality	Run npm ci	2026-10-20T00:39:59.2312750Z added 439 packages, and audited 442 packages in 6s
+Quality	Run npm ci	2026-10-20T00:39:59.2313952Z 
+Quality	Run npm ci	2026-10-20T00:39:59.2314682Z 90 packages are looking for funding
+Quality	Run npm ci	2026-10-20T00:39:59.2316607Z   run `npm fund` for details
+Quality	Run npm ci	2026-10-20T00:39:59.2330441Z 
+Quality	Run npm ci	2026-10-20T00:39:59.2331242Z found 0 vulnerabilities
+Quality	Run npm ci	2026-10-20T00:39:59.2342768Z npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+Quality	Run npm ci	2026-10-20T00:39:59.2344646Z npm warn install-scripts   electron-winstaller@5.4.0 (install: node ./script/select-7z-arch.js)
+Quality	Run npm ci	2026-10-20T00:39:59.2346016Z npm warn install-scripts
+Quality	Run npm ci	2026-10-20T00:39:59.2347750Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+Quality	Run uv sync --frozen	﻿2026-10-20T00:39:59.3158799Z ##[group]Run uv sync --frozen
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.3159209Z ^[[36;1muv sync --frozen^[[0m
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.3211937Z shell: /usr/bin/bash -e {0}
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.3212222Z env:
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.3212547Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.3212982Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.3213308Z ##[endgroup]
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.3762141Z Using CPython 3.12.3 interpreter at: /usr/bin/python3.12
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.3763482Z Creating virtual environment at: .venv
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.3819678Z    Building ontolearn-engine @ file:///home/runner/work/OntoLearn-Studio/OntoLearn-Studio/packages/engine
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.4689671Z Downloading pygments (1.2MiB)
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.4838170Z Downloading ruff (9.9MiB)
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.8275828Z  Downloaded ruff
+Quality	Run uv sync --frozen	2026-10-20T00:39:59.9017421Z  Downloaded pygments
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1214922Z       Built ontolearn-engine @ file:///home/runner/work/OntoLearn-Studio/OntoLearn-Studio/packages/engine
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1262216Z Prepared 13 packages in 742ms
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1647745Z Installed 13 packages in 43ms
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1650470Z  + altgraph==0.17.5
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1651145Z  + iniconfig==2.3.1
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1652106Z  + ontolearn-engine==0.1.0 (from file:///home/runner/work/OntoLearn-Studio/OntoLearn-Studio/packages/engine)
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1653095Z  + packaging==26.3
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1653530Z  + pluggy==1.7.0
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1653945Z  + pygments==2.21.0
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1654400Z  + pyinstaller==6.22.3
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1654817Z  + pyinstaller-hooks-contrib==2026.8
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1655408Z  + pyparsing==3.3.3
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1655793Z  + pytest==9.1.1
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1656145Z  + rdflib==7.6.0
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1656535Z  + ruff==0.17.1
+Quality	Run uv sync --frozen	2026-10-20T00:40:00.1656903Z  + setuptools==84.0.0
+Quality	Run npm run check	﻿2026-10-20T00:40:00.1819294Z ##[group]Run npm run check
+Quality	Run npm run check	2026-10-20T00:40:00.1819631Z ^[[36;1mnpm run check^[[0m
+Quality	Run npm run check	2026-10-20T00:40:00.1871511Z shell: /usr/bin/bash -e {0}
+Quality	Run npm run check	2026-10-20T00:40:00.1871816Z env:
+Quality	Run npm run check	2026-10-20T00:40:00.1872119Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+Quality	Run npm run check	2026-10-20T00:40:00.1872560Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+Quality	Run npm run check	2026-10-20T00:40:00.1873116Z ##[endgroup]
+Quality	Run npm run check	2026-10-20T00:40:00.3077504Z 
+Quality	Run npm run check	2026-10-20T00:40:00.3079230Z > ontolearn-studio@0.1.0 check
+Quality	Run npm run check	2026-10-20T00:40:00.3081288Z > npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+Quality	Run npm run check	2026-10-20T00:40:00.3083013Z 
+Quality	Run npm run check	2026-10-20T00:40:00.4732692Z 
+Quality	Run npm run check	2026-10-20T00:40:00.4733088Z > ontolearn-studio@0.1.0 lint
+Quality	Run npm run check	2026-10-20T00:40:00.4733657Z > eslint . --max-warnings 0
+Quality	Run npm run check	2026-10-20T00:40:00.4734005Z 
+Quality	Run npm run check	2026-10-20T00:40:04.2371130Z 
+Quality	Run npm run check	2026-10-20T00:40:04.2392127Z > ontolearn-studio@0.1.0 format:check
+Quality	Run npm run check	2026-10-20T00:40:04.2393166Z > prettier --check .
+Quality	Run npm run check	2026-10-20T00:40:04.2411301Z 
+Quality	Run npm run check	2026-10-20T00:40:04.3771760Z Checking formatting...
+Quality	Run npm run check	2026-10-20T00:40:06.9514245Z All matched files use Prettier code style!
+Quality	Run npm run check	2026-10-20T00:40:07.1481521Z 
+Quality	Run npm run check	2026-10-20T00:40:07.1482649Z > ontolearn-studio@0.1.0 typecheck
+Quality	Run npm run check	2026-10-20T00:40:07.1501887Z > npm run typecheck --workspace @ontolearn/desktop
+Quality	Run npm run check	2026-10-20T00:40:07.1521287Z 
+Quality	Run npm run check	2026-10-20T00:40:07.3441700Z 
+Quality	Run npm run check	2026-10-20T00:40:07.3462431Z > @ontolearn/desktop@0.1.0 typecheck
+Quality	Run npm run check	2026-10-20T00:40:07.3463751Z > tsc --noEmit -p tsconfig.json
+Quality	Run npm run check	2026-10-20T00:40:07.3491508Z 
+Quality	Run npm run check	2026-10-20T00:40:10.0641362Z 
+Quality	Run npm run check	2026-10-20T00:40:10.0642369Z > ontolearn-studio@0.1.0 test
+Quality	Run npm run check	2026-10-20T00:40:10.0643384Z > vitest run
+Quality	Run npm run check	2026-10-20T00:40:10.0644315Z 
+Quality	Run npm run check	2026-10-20T00:40:10.4522399Z 
+Quality	Run npm run check	2026-10-20T00:40:10.4525850Z ^[[1m^[[30m^[[46m RUN ^[[49m^[[39m^[[22m ^[[36mv5.0.5 ^[[39m^[[90m/home/runner/work/OntoLearn-Studio/OntoLearn-Studio^[[39m
+Quality	Run npm run check	2026-10-20T00:40:10.4533753Z 
+Quality	Run npm run check	2026-10-20T00:40:10.6751182Z  ^[[32m✓^[[39m tests/unit/window-recovery.test.ts ^[[2m(^[[22m^[[2m6 tests^[[22m^[[2m)^[[22m^[[32m 7^[[2mms^[[22m^[[39m
+Quality	Run npm run check	2026-10-20T00:40:10.9172964Z  ^[[32m✓^[[39m tests/unit/contract.test.ts ^[[2m(^[[22m^[[2m4 tests^[[22m^[[2m)^[[22m^[[32m 17^[[2mms^[[22m^[[39m
+Quality	Run npm run check	2026-10-20T00:40:11.1139449Z  ^[[32m✓^[[39m tests/unit/native-driver.test.ts ^[[2m(^[[22m^[[2m2 tests^[[22m^[[2m)^[[22m^[[32m 39^[[2mms^[[22m^[[39m
+Quality	Run npm run check	2026-10-20T00:40:11.2568527Z  ^[[32m✓^[[39m tests/unit/csp.test.ts ^[[2m(^[[22m^[[2m2 tests^[[22m^[[2m)^[[22m^[[32m 5^[[2mms^[[22m^[[39m
+Quality	Run npm run check	2026-10-20T00:40:11.2641992Z 
+Quality	Run npm run check	2026-10-20T00:40:11.2643211Z ^[[2m Test Files ^[[22m ^[[1m^[[32m4 passed^[[39m^[[22m^[[90m (4)^[[39m
+Quality	Run npm run check	2026-10-20T00:40:11.2645138Z ^[[2m      Tests ^[[22m ^[[1m^[[32m14 passed^[[39m^[[22m^[[90m (14)^[[39m
+Quality	Run npm run check	2026-10-20T00:40:11.2646552Z ^[[2m   Start at ^[[22m 00:40:10
+Quality	Run npm run check	2026-10-20T00:40:11.2648494Z ^[[2m   Duration ^[[22m 805ms^[[2m (import 37%, transform 34%, tests 22%, worker 6%)^[[22m
+Quality	Run npm run check	2026-10-20T00:40:11.2658148Z 
+Quality	Run npm run check	2026-10-20T00:40:11.2662534Z ^[[2m    Isolate ^[[22m ^[[33m4 workers spawned^[[39m^[[2m · ~114ms startup each (spawn + environment, per file)^[[22m
+Quality	Run npm run check	2026-10-20T00:40:11.2664618Z ^[[2m            ^[[22m ^[[2mat least ~343ms faster with ^[[22m^[[33misolate: false^[[39m^[[2m — reuses workers across files instead of one per file^[[22m
+Quality	Run npm run check	2026-10-20T00:40:11.2665588Z 
+Quality	Run npm run check	2026-10-20T00:40:11.4257316Z 
+Quality	Run npm run check	2026-10-20T00:40:11.4258380Z > ontolearn-studio@0.1.0 build
+Quality	Run npm run check	2026-10-20T00:40:11.4259442Z > npm run build --workspace @ontolearn/desktop
+Quality	Run npm run check	2026-10-20T00:40:11.4260070Z 
+Quality	Run npm run check	2026-10-20T00:40:11.5636566Z 
+Quality	Run npm run check	2026-10-20T00:40:11.5637571Z > @ontolearn/desktop@0.1.0 build
+Quality	Run npm run check	2026-10-20T00:40:11.5655317Z > electron-vite build
+Quality	Run npm run check	2026-10-20T00:40:11.5656027Z 
+Quality	Run npm run check	2026-10-20T00:40:11.8614728Z ^[[36mvite v8.3.4 ^[[32mbuilding ssr environment for production...^[[36m^[[39m
+Quality	Run npm run check	2026-10-20T00:40:11.8619677Z transforming...
+Quality	Run npm run check	2026-10-20T00:40:11.9555557Z ✓ 103 modules transformed.
+Quality	Run npm run check	2026-10-20T00:40:11.9687081Z rendering chunks...
+Quality	Run npm run check	2026-10-20T00:40:11.9801364Z out/main/index.js  167.55 kB
+Quality	Run npm run check	2026-10-20T00:40:11.9802385Z 
+Quality	Run npm run check	2026-10-20T00:40:11.9803935Z ^[[32m✓ built in 132ms^[[39m
+Quality	Run npm run check	2026-10-20T00:40:11.9854522Z ^[[36mvite v8.3.4 ^[[32mbuilding ssr environment for production...^[[36m^[[39m
+Quality	Run npm run check	2026-10-20T00:40:11.9914923Z transforming...
+Quality	Run npm run check	2026-10-20T00:40:11.9930456Z ✓ 2 modules transformed.
+Quality	Run npm run check	2026-10-20T00:40:11.9955393Z rendering chunks...
+Quality	Run npm run check	2026-10-20T00:40:11.9977493Z out/preload/index.js  0.20 kB
+Quality	Run npm run check	2026-10-20T00:40:11.9978240Z 
+Quality	Run npm run check	2026-10-20T00:40:11.9978917Z ^[[32m✓ built in 12ms^[[39m
+Quality	Run npm run check	2026-10-20T00:40:12.0026521Z ^[[36mvite v8.3.4 ^[[32mbuilding client environment for production...^[[36m^[[39m
+Quality	Run npm run check	2026-10-20T00:40:12.0089727Z transforming...
+Quality	Run npm run check	2026-10-20T00:40:12.1021483Z ✓ 15 modules transformed.
+Quality	Run npm run check	2026-10-20T00:40:12.1140527Z rendering chunks...
+Quality	Run npm run check	2026-10-20T00:40:12.1386263Z out/renderer/index.html                   0.70 kB
+Quality	Run npm run check	2026-10-20T00:40:12.1387781Z out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+Quality	Run npm run check	2026-10-20T00:40:12.1392882Z out/renderer/assets/index-DImnQfKh.js   571.51 kB
+Quality	Run npm run check	2026-10-20T00:40:12.1394798Z 
+Quality	Run npm run check	2026-10-20T00:40:12.1395398Z ^[[32m✓ built in 136ms^[[39m
+Quality	Run npm run check	2026-10-20T00:40:12.2773952Z 
+Quality	Run npm run check	2026-10-20T00:40:12.2774972Z > ontolearn-studio@0.1.0 engine:check
+Quality	Run npm run check	2026-10-20T00:40:12.2776731Z > uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+Quality	Run npm run check	2026-10-20T00:40:12.2777871Z 
+Quality	Run npm run check	2026-10-20T00:40:12.3072717Z All checks passed!
+Quality	Run npm run check	2026-10-20T00:40:12.3361270Z 61 files already formatted
+Quality	Run npm run check	2026-10-20T00:40:13.0985600Z ============================= test session starts ==============================
+Quality	Run npm run check	2026-10-20T00:40:13.0987010Z platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.7.0
+Quality	Run npm run check	2026-10-20T00:40:13.0988597Z rootdir: /home/runner/work/OntoLearn-Studio/OntoLearn-Studio
+Quality	Run npm run check	2026-10-20T00:40:13.0989714Z configfile: pyproject.toml
+Quality	Run npm run check	2026-10-20T00:40:13.0990560Z testpaths: packages/engine/tests
+Quality	Run npm run check	2026-10-20T00:40:13.0991677Z collected 198 items
+Quality	Run npm run check	2026-10-20T00:40:13.0992192Z 
+Quality	Run npm run check	2026-10-20T00:40:13.1463185Z packages/engine/tests/test_protocol.py ...........                       [  5%]
+Quality	Run npm run check	2026-10-20T00:40:13.6111446Z packages/engine/tests/test_storage.py .................................. [ 22%]
+Quality	Run npm run check	2026-10-20T00:40:20.1491489Z ........................................................................ [ 59%]
+Quality	Run npm run check	2026-10-20T00:40:24.6059053Z ........................................................................ [ 95%]
+Quality	Run npm run check	2026-10-20T00:40:24.7582095Z .........                                                                [100%]
+Quality	Run npm run check	2026-10-20T00:40:24.7582979Z 
+Quality	Run npm run check	2026-10-20T00:40:24.7583493Z ============================= 198 passed in 11.93s =============================
+Quality	Run npm run verify:sources	﻿2026-10-20T00:40:24.8309549Z ##[group]Run npm run verify:sources
+Quality	Run npm run verify:sources	2026-10-20T00:40:24.8309948Z ^[[36;1mnpm run verify:sources^[[0m
+Quality	Run npm run verify:sources	2026-10-20T00:40:24.8361726Z shell: /usr/bin/bash -e {0}
+Quality	Run npm run verify:sources	2026-10-20T00:40:24.8362079Z env:
+Quality	Run npm run verify:sources	2026-10-20T00:40:24.8362377Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+Quality	Run npm run verify:sources	2026-10-20T00:40:24.8362811Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+Quality	Run npm run verify:sources	2026-10-20T00:40:24.8363128Z ##[endgroup]
+Quality	Run npm run verify:sources	2026-10-20T00:40:24.9541618Z 
+Quality	Run npm run verify:sources	2026-10-20T00:40:24.9542319Z > ontolearn-studio@0.1.0 verify:sources
+Quality	Run npm run verify:sources	2026-10-20T00:40:24.9542781Z > node scripts/verify-sources.mjs
+Quality	Run npm run verify:sources	2026-10-20T00:40:24.9542988Z 
+Quality	Run npm run verify:sources	2026-10-20T00:40:24.9984587Z 已核对 12 个归档源文件。
+Quality	Run xvfb-run -a npm run test:e2e	﻿2026-10-20T00:40:25.0150664Z ##[group]Run xvfb-run -a npm run test:e2e
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:25.0151476Z ^[[36;1mxvfb-run -a npm run test:e2e^[[0m
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:25.0203751Z shell: /usr/bin/bash -e {0}
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:25.0204037Z env:
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:25.0204342Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:25.0204773Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:25.0205113Z ##[endgroup]
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:25.7341430Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:25.7364801Z > ontolearn-studio@0.1.0 test:e2e
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:25.7382095Z > install-electron && playwright test
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:25.7411508Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:28.9487243Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:28.9510703Z Running 2 tests using 1 worker
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:40:28.9511803Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:41:59.5202816Z   ✘  1 tests/e2e/csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery (1.5m)
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:29.5432424Z Worker teardown timeout of 30000ms exceeded.
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:29.5433104Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:29.5433431Z Failed worker ran 1 test:
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:29.5456962Z tests/e2e/csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.7723564Z   ✘  2 tests/e2e/desktop.spec.ts:4:5 › desktop calls real engine, keeps isolation and fits minimum window (2.5s)
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8191882Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8202250Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8223083Z   1) tests/e2e/csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery ─
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8224414Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8224927Z     Test timeout of 90000ms exceeded.
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8225463Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8226455Z     Error Context: test-results/csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery/error-context.md
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8227607Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8228706Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8231803Z     test-results/csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery/trace.zip
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8235311Z     Usage:
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8235716Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8236722Z         npx playwright show-trace test-results/csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery/trace.zip
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8237762Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8238642Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8239356Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8240372Z   2) tests/e2e/desktop.spec.ts:4:5 › desktop calls real engine, keeps isolation and fits minimum window 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8241532Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8242301Z     Error: electronApplication.firstWindow: Target page, context or browser has been closed
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8243143Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8243438Z       13 |   })
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8243973Z       14 |   try {
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8244676Z     > 15 |     const page = await application.firstWindow()
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8245487Z          |                                    ^
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8246695Z       16 |     await expect(page.getByRole('heading', { level: 1 })).toContainText('转化为可验证的知识')
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8248042Z       17 |     await expect(page.getByRole('status')).toContainText('尚未检查')
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8249212Z       18 |     await page.getByRole('button', { name: '检查本地引擎' }).click()
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8250427Z         at /home/runner/work/OntoLearn-Studio/OntoLearn-Studio/tests/e2e/desktop.spec.ts:15:36
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8251462Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8252417Z     Error Context: test-results/desktop-desktop-calls-real-749f8-ion-and-fits-minimum-window/error-context.md
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8253431Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8254337Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8255746Z     test-results/desktop-desktop-calls-real-749f8-ion-and-fits-minimum-window/trace.zip
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8256757Z     Usage:
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8257103Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8258090Z         npx playwright show-trace test-results/desktop-desktop-calls-real-749f8-ion-and-fits-minimum-window/trace.zip
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8261209Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8262157Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8275856Z 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8276248Z   2 failed
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8277487Z     tests/e2e/csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery ──
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8279160Z     tests/e2e/desktop.spec.ts:4:5 › desktop calls real engine, keeps isolation and fits minimum window 
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8280374Z   1 error was not a part of any test, see above for details
+Quality	Run xvfb-run -a npm run test:e2e	2026-10-20T00:42:33.8963255Z ##[error]Process completed with exit code 1.
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	﻿2026-10-20T00:42:33.9535396Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:33.9536226Z with:
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:33.9536603Z   name: failure-traces-linux
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:33.9537053Z   path: test-results/
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:33.9537460Z   retention-days: 7
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:33.9537841Z   if-no-files-found: warn
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:33.9538259Z   compression-level: 6
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:33.9538659Z   overwrite: false
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:33.9539049Z   include-hidden-files: false
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:33.9539473Z env:
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:33.9539943Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:33.9540615Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:33.9542743Z ##[endgroup]
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:34.6345354Z (node:2814) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:34.6358974Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:34.6565412Z With the provided path, there will be 4 files uploaded
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:34.6568963Z Artifact name is valid!
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:34.6569689Z Root directory input is valid!
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:34.9498402Z Beginning upload of artifact content to blob storage
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:34.9944291Z (node:2814) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:35.0495976Z Uploaded bytes 13417
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:35.0789221Z Finished uploading artifact content to blob storage!
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:35.0806953Z SHA256 digest of uploaded artifact zip is 915ae17e3838b6e7be2458c7b5b65bd34f8ce31c3f389d3731820c81248a0518
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:35.0808473Z Finalizing artifact upload
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:35.3072743Z Artifact failure-traces-linux.zip successfully finalized. Artifact ID 12232567095
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:35.3074785Z Artifact failure-traces-linux has been successfully uploaded! Final size is 13417 bytes. Artifact ID is 12232567095
+Quality	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-10-20T00:42:35.3082227Z Artifact download URL: https://github.com/NOmoreJoke/OntoLearn-Studio/actions/runs/39346128923/artifacts/12232567095
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	﻿2026-10-20T00:42:35.3333919Z Post job cleanup.
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.4394320Z [command]/usr/bin/git version
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.4483187Z git version 2.55.0
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.4553623Z Temporarily overriding HOME='/home/runner/work/_temp/16aab6d4-cf4b-4cd4-821e-c431c1ef46af' before making global git config changes
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.4561698Z Adding repository directory to the temporary git global config as a safe directory
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.4575721Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/OntoLearn-Studio/OntoLearn-Studio
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.4633195Z Removing SSH command configuration
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.4634395Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.4747406Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.5161374Z Removing HTTP extra header
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.5170256Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.5232881Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.5928174Z Removing includeIf entries pointing to credentials config files
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.5929593Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6020262Z includeif.gitdir:/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/.git.path
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6025957Z includeif.gitdir:/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/.git/worktrees/*.path
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6041743Z includeif.gitdir:/github/workspace/.git.path
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6045927Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6069516Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/.git.path
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6123152Z /home/runner/work/_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6183626Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/.git.path /home/runner/work/_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6220449Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/.git/worktrees/*.path
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6274253Z /home/runner/work/_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6300694Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/OntoLearn-Studio/OntoLearn-Studio/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6373451Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6396307Z /github/runner_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6408089Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6459491Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6497828Z /github/runner_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6512381Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6567243Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Quality	Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803	2026-10-20T00:42:35.6825502Z Removing credentials config '/home/runner/work/_temp/git-credentials-9b018a9b-b968-44f8-a8f7-4952af0dd6cb.config'
+Quality	Complete job	﻿2026-10-20T00:42:35.6997510Z Cleaning up orphan processes
+Quality	Complete job	2026-10-20T00:42:35.7526203Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

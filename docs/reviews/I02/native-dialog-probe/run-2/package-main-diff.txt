@@ -1,0 +1,11 @@
+--- package/main
++++ current-out/main
+@@ -5105,7 +5105,7 @@
+ 	electron.session.defaultSession.setPermissionCheckHandler(() => false);
+ 	if (devURL) {
+ 		const policy = contentSecurityPolicy({
+-			nonce: "tBy7NGgiqyIFBClEjKalHhq7",
++			nonce: "BdKRlIROedSkbw5IlfX/8Ay8",
+ 			origin: devURL
+ 		});
+ 		electron.session.defaultSession.webRequest.onHeadersReceived((details, callback) => {

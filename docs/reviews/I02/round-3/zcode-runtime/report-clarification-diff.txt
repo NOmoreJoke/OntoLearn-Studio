@@ -1,0 +1,59 @@
+--- report-before-clarification.md
++++ zcode-glm53.md
+@@ -18,7 +18,7 @@
+ - 来源：派发方按 `docs/iterations/I01/inputs/goal-objective.md` 第四节流程，通过 computer use 在 ZCode 桌面端新建的独立空白审查任务；本报告依据该任务提示词全文执行。任务参数与 `docs/reviews/I02/round-3/tasks.json` 中本任务条目一致（base/head、报告路径、promptSha256 对应）。
+ - 模型：GLM-5.3；思考程度：最高。以上为派发方在任务创建时经应用 UI 实际核验的声明（tasks.json 记录 GLM-5.3 popup selected 非 Flash、最高 selected、feature 分支选中），本报告不自行推断。
+ - 独立性：本轮未读取另一模型任何 Round 3 产物（其报告文件按流程记录已存在，我未打开）、未读取 `round-3/processing.md`（审查中途接到的新执行约束明令禁止，此前亦未读过）、未读取另一模型任何 /tmp 运行记录。允许读取的 Round 1/Round 2 历史双方报告与候选前共同证据（preparation、candidate-validation、CI 原始日志/artifact、electron 契约 JSON）均已读，仅作核对对象，不作为通过依据。
+-- 审查中途的执行约束变化：任务开始后用户下达"无桌面打扰"新政策（工作区 AGENTS 第 4/5 节、仓库外 `../iteration-control/2026-10-19/goal-objective.md` 第九节、`guidance-transition-2026-10-20/policy.md`，三份均已实际读取）。政策下达前我已完成全部本机桌面验证（当时经用户明确授权，含日志方式修正指令）；政策下达后我未再启动任何 Electron/Playwright/dev/native/HMR 窗口操作。我已完成的 15 份原始日志/矩阵被派发方按原字节保全于 `round-3/zcode-runtime/`（`runtime-preservation-manifest.json` 记录 hash），我逐文件核验保全件与我 `/tmp` 原件 SHA-256 一致（15/15）。保全是归档行为，不是新的验证结果。
++- 执行约束变化与时序（勘误见文末，按"实际送达本任务"区分）：用户"无桌面打扰"政策文档（工作区 AGENTS 第 4/5 节、仓库外 `../iteration-control/2026-10-19/goal-objective.md` 第九节、`guidance-transition-2026-10-20/policy.md`，三份均已实际读取）与派发方 hold 记录在项目层面先于我的桌面运行即已存在。本任务的全部桌面验证（构建态、打包态两次、开发态、M-03 复现；自有日志时间 11:08–11:13）均在任务对话内用户明确授权（"本次验证已授权"及日志方式修正指令，先于这些运行送达本任务）之后执行。该政策经续传**实际送达本任务并得到本任务停止确认**是在上述运行与原稿报告完成之后（11:14 之后）；此后本任务未再启动任何 Electron/Playwright/dev/native/HMR 窗口操作。我不以文档存在时间推断送达前的运行为合规或违规，不改写任何失败或运行时间记录。我已完成的 15 份原始日志/矩阵被派发方按原字节保全于 `round-3/zcode-runtime/`（`runtime-preservation-manifest.json` 记录 hash），我逐文件核验保全件与我 `/tmp` 原件 SHA-256 一致（15/15）。保全是归档行为，不是新的验证结果。
+ 
+ ## 二、项目路径、分支、base/head 与冻结核验
+ 
+@@ -28,7 +28,7 @@
+ | 分支 | `feature/I02-csp-window-lifecycle`（`git branch --show-current`，全程未切换） |
+ | base SHA | `1b6df7a220fc9a67d7046133a340085f03f0a96c`（固定审查基点，与历轮一致） |
+ | head SHA | `09a2e6648edfb465debe47bc9fb15e2c6f23e088`（当前 HEAD，审查首尾复验一致） |
+-| 提交构成 | base→head 共 5 笔：`2cc03da` 实现 → `caa0847` 流程证据/native UI 补证（已 push，PR#3 head）→ `7e26155` R2 门禁证据（已 push）→ `76b9d18` 测试/CI 修订 → `09a2e66` 本轮断言修订 |
++| 提交构成 | base→head 共 5 笔（`git log --reverse` 实际顺序）：`2cc03da` 实现 → `caa0847` 流程证据/native UI 补证 → `76b9d18` 测试/CI 修订（Round 2 双审候选）→ `7e26155` R2 门禁证据（已 push，当前 PR#3 head）→ `09a2e66` 本轮断言修订（未 push）。勘误（见文末）：原稿颠倒 76b9d18/7e26155 顺序，并误称 caa0847 为当前 PR head（其为 Round 1 时期旧 head；当前 head 由 `round-2/pr-ci-head7e26155.json` 与 preparation.md 证实为 7e26155） |
+ | 新候选唯一受审差异 | `git show 09a2e66 -- tests/e2e/csp-lifecycle.spec.ts`：仅 292–296 行一处断言 + 一行契约注释；`docs/iterations/I02/evidence/frozen-files.json` 同步该文件新 hash；其余为 round-3 证据/流程文件。产品 `apps/`、`packages/`、依赖、锁文件、CI、验收文档相对 `76b9d18` 零改动 |
+ | 冻结核验 | `round-3/frozen-files.json` 16 项：HEAD 提交树与工作区均与清单一致（审查开始与结束各一次，中途并发变更后再验一次，均 0 差异）；`docs/iterations/I02/preexisting-files.json` 64 项：工作区与清单一致（0 差异）。其中 57 项本为未入库保护资料、7 项为候选前既有工作区差异，均未被 I02 触碰 |
+ | 工作区纪律 | 审查期间并发开发会话追加了流程文件（`status.md`/`preparation.md` 工作区修改、round-3 下 hold/policy 等新未跟踪文件、`docs/decisions/`）。我逐一确认均非冻结 16 项、非实现/测试/配置/依赖/验收；`AGENTS.md` 工作区差异为新版扩展指南，产品不变量与 HEAD 版一致且更严格。受审候选本身未受影响（见 R3-O2） |
+@@ -70,7 +70,7 @@
+ 
+ ### R3-Z1（P3）R2-01 失焦脆弱性在新候选上复现：我的真实打包首跑失败
+ - 位置：`tests/e2e/native-recovery.cjs:46-87`（3 秒取焦确认 + 250ms 后投递前二次复核）、`tests/e2e/native-driver.ts:33`（`native exit 1` 呈现）。
+-- 触发条件：取焦确认通过后、250ms 投递窗口内焦点被其他前台活动夺走。本轮本人打包首跑实际发生（`hangTrigger:{visible:true,focused:false}`）；同命令复跑即通过。前两轮各有 1 次同类失败（R2-01、R2-Z2 相关记录），同版本同环境非确定性行为成立。
++- 触发条件：取焦确认通过后、250ms 投递窗口内焦点被其他前台活动夺走。本轮本人打包首跑实际发生（`hangTrigger:{visible:true,focused:false}`，确定失焦）；同命令复跑即通过。历史样本须分开表述（勘误见文末）：Round 2 的 MiniMax 首跑为**确定失焦**失败（R2-01，其证据记录 `focused:false`），与本轮同类、不同执行者，可共同证明该前提的非确定性；Round 2 的 ZCode 首跑（R2-Z2）错误原文缺失、处理记录明确**至今未归因**，不能由本轮 focused=false 倒推其亦为失焦，本报告不将其计入失焦样本、不改变其未归因状态与历史等级。
+ - 影响：失败时产品侧行为本身正常（崩溃事件、提示请求、窗口重建、health 全部通过），但 CI 会变红且以 `native exit 1` 呈现，与产品错误同形；证据 JSON 中 `hangTrigger.focused:false` 与 `error` 字段可区分夹具前提失败。
+ - 证据：`/tmp/i02-r3-zcode-glm53-packaged-matrix.json`（失败）与 `…-packaged-matrix2.json`（通过），两份完整日志均已保全。
+ - 建议：与 R2-01 合并跟踪，待下一次测试夹具修订时处理（处理记录中的既有立场：不降低硬断言、不跳过真实 unresponsive）；修订属受审文件变更，须新候选双方重审。可延期。
+@@ -123,7 +123,7 @@
+ 2. **生产仅 meta 交付 + 锁定版本与理由**：design.md 记录 Electron 44.9.0/Vite 8.3.4、比较与理由，明示不以 meta 声称支持 frame-ancestors 等 header 专用指令；我实测生产响应无 CSP header、meta 为 head 首元素先于资源。达标。
+ 3. **开发 nonce/HMR 与生产 meta 隔离**：生产插件 `apply:'build'`、`cspNonce` 仅 serve；开发态实测 0 meta + nonce header；归档 HMR 写源证据（`hmr:{css,reactRefresh,documentAndStateRetained:true}`）按约束未重跑（本轮禁止 `I02_HMR=1`），开发态其余断言全部本人复现。达标（HMR 部分为归档证据，边界如实）。
+ 4. **脚本禁 unsafe-inline/eval + 样式三分验证**：生产变体无 unsafe/nonce（单测断言 + 产物实测）；style 元素/属性被拦、CSSOM 赋值允许在我构建态与打包态矩阵实测。达标。
+-5. **实际 enforce + 接收端零请求**：三环境 7 类 directive 全 `enforce`（原生 securitypolicyviolation 事件）+ 本地 HTTP 接收端零请求 + `inlineExecuted/remoteExecuted=false`；未以"meta 存在/控制台无错"代替。达标。
++5. **实际 enforce + 接收端零请求**（本人矩阵逐字段复算，勘误见文末）：构建态与打包态各捕获 **7 条 violation 事件、覆盖 6 种 directive**（`script-src-elem`×2〔内联与未授权外部〕、`style-src-elem`、`style-src-attr`、`connect-src`、`img-src`、`frame-src`），全部 `enforce`；开发态 **5 条事件、4 种 directive**（`script-src-elem`×2、`connect-src`、`img-src`、`frame-src`）全部 `enforce`，样式元素/属性在开发变体下按设计允许（`style-src 'unsafe-inline'`），不计入阻断断言。三环境接收端零请求 + `inlineExecuted/remoteExecuted=false`；未以"meta 存在/控制台无错"代替。达标。
+ 6. **正常 UI/CSS/导航/health**：三环境页面矩阵（标题/布局 computed style/模块锚点导航/手动 health `本地引擎已连接`）全部通过；导航/popup 拒绝、窗口数保持 1。达标。
+ 7. **全 contents 加固 + sender/mainFrame/文档来源校验**：`web-contents-created` 模块顶层注册先于任何窗口；`enableSandbox`+session 权限全拒；health 三重校验保持；异窗口（复制 preferences + 同可信文档）实测拒绝；后建 contents 监听数 >0 且 preferences 隔离字段生效。达标。
+ 8. **真实崩溃/无响应 + 显式恢复**：真实 `forcefullyCrashRenderer`（killed/crashed）与无限循环 + 真实输入（可见获焦时）触发原生 `unresponsive`；默认/取消不重建、显式选择才重建；先建后销、旧 closed 回调保护、退出/销毁/自愈守卫（6 项竞态单测）；真实 native sheet 由 Run 2 历史证据覆盖（非本轮新拍）。达标。
+@@ -148,6 +148,18 @@
+ 通过附带的门禁事实（缺一不可合并 develop）：
+ 1. 另一指定模型对同版 `09a2e66` 明确通过（本轮未知、未读）。
+ 2. push 产生新 head 的远端 CI，三平台实际全部成功（旧 run 39359486479 为 failure，不当作通过；若 CI 再需改受审文件，回新候选双方重审）。
+-3. 合并前核验远端 develop 实际包含本功能。
++3. 前两项满足后正常合并 develop（遵守分支保护与 CI 要求，不绕过），**合并后**按 goal-objective.md 第六节第 6 条核验远端 dev 确实包含本功能并记录合并 SHA 与必要验证。勘误：原稿误作"合并前核验远端 develop"，与原文"合并后核验"顺序相反。
+ 
+-运行资源释放记录：本人自有 dev 服务器已停止、5173 无监听、无遗留测试进程；政策下达后未再启动任何窗口操作。本报告是本轮我唯一写入的文件；未修改实现/测试/配置/依赖/验收，未提交/push/切分支，未写入任何全局或跨会话记忆。
++运行资源释放记录：本人自有 dev 服务器已停止、5173 无监听、无遗留测试进程；政策实际送达本任务后未再启动任何窗口操作。本报告是本轮我唯一写入的文件；未修改实现/测试/配置/依赖/验收，未提交/push/切分支，未写入任何全局或跨会话记忆。
++
++## 十二、勘误记录（2026-10-20 流程澄清；原稿按字节保全）
++
++原稿已由派发方按字节保全于 `round-3/zcode-runtime/report-before-clarification.md`（SHA-256 `2911f8093e9cdb9e324c8e57dfade5840afa598854c753589ebdf177d0d185c9`，本人本轮复核一致）。应流程澄清，对 5 处事实/措辞逐一独立核验后就地更正，在此汇总：
++
++1. §二提交构成：`git log --reverse` 证实实际顺序为 2cc03da → caa0847 → **76b9d18 → 7e26155** → 09a2e66，原稿颠倒后两笔；当前 PR#3 head 为 7e26155（`round-2/pr-ci-head7e26155.json`、preparation.md 证实），caa0847 为 Round 1 时期旧 head。
++2. §十一门禁第 3 条：按 goal-objective.md 第六节第 6 条更正为"正常合并后核验远端 dev 确实包含本功能"，原稿"合并前核验"与原文顺序相反；本条为门禁措辞勘误，不改变门禁未闭合的事实判断。
++3. §九第 5 条：按本人三份矩阵逐字段复算更正——build/packaged 各 7 条 violation 事件、6 种 directive（`script-src-elem` 出现 2 次）全部 enforce；dev 5 条事件、4 种 directive 全部 enforce，样式元素/属性按开发变体设计允许。原稿"三环境 7 类 directive"混淆了事件数与指令种类；阻断覆盖结论不变。
++4. §一时序：区分"政策文档/派发方 hold 在项目层面存在"（先于我的桌面运行）与"政策实际送达本任务并确认停止"（11:14 之后，即全部桌面运行与原稿完成之后）；送达前的运行不凭文件 mtime 宣称合规或违规，失败与运行时间记录未改写。
++5. §六 R3-Z1：确定失焦样本（R2-01 与本轮 R3-Z1，均各有 `focused:false` 证据）与未归因失败（R2-Z2，错误原文缺失、处理记录明确至今未归因）分开保留；不把 R2-Z2 计入失焦样本，不改变其等级与未归因状态。
++
++**对结论的影响评估：5 处均为事实/措辞更正。不改变任何问题级别（R3-Z1 维持 P3 非阻断，R2-Z2 维持未归因观察），不改变任何历史意见的关闭/未关闭判断，不改变最终"通过"结论及其附带的门禁条件。**
