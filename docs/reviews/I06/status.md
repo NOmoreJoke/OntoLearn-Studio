@@ -6,6 +6,8 @@
 
 当前交接：[具体 main 内部类型、调用顺序、失败行为和共享文件面](../../iterations/I06/main-integration-handoff.md)、[持久化独立审查](persistence-review.md)、[实际组合证据](platform/combination-linux-evidence.json)。正式接线、真实 Store/导出/窗口联验、Windows ACL/其他平台、指定双审/PR/实际 CI/远端合并仍未完成。未 push，不改总控 state 或 I05 共享文件。
 
+实质代码保全提交 `6316c1952add9625e914dea096950a4b4dbf81b0`；之后只同步 ADR/验收/状态中旧的“未实现”描述。main 交接文档 SHA-256 `f77edfa9703dadc988647db4bd0b87ac199ee09f2c8f7dea5b9a180e5361fa90`，[阶段验证 manifest](evidence/persistence-platform-20261021.json) SHA-256 `a272a3325d5ea8ce74733d83a1a102a673ea860b99ed2d7c6c13ccb7f334467e`，组合证据 SHA-256 `7a7462d6c37612cd5fee2daf7e6209cac95dc5313454b1c05542cffcb645194f`。实际 raw archive 已复制保存在本 worktree 忽略目录 `tests/i06-private-platform/out/combination-platform-raw-20261021-r4.tar.gz`，SHA-256 `b8a37192936a32600f4b353d8c2f126f3cb872c961c6e2ff8fd4cd2af7da2361`；391 个归档文件中 43 项最终 raw 已在根独立逐项复验。仅 protected AGENTS 继续 dirty，原仓库 SHA 同值未变。
+
 ## 身份与保护
 
 - 开发会话：`01a15746-c2e2-7ee0-836b-c8c92346ddd4`；总控/额度唯一负责人：`01a154de-843b-7a00-8a80-51ba1c0aebce`。

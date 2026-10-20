@@ -1,5 +1,7 @@
 # I06 platform 子任务状态
 
+2026-10-21 最新补充：下文为独立 fixture 检查点历史；真实私有仓库/持久审计/网关组合现已完成，见 [组合证据](combination-linux-evidence.json) 和 [内部独立复核](../persistence-review.md)。根实际全量验证为 770 TS / 1052 Python；不能沿用下文旧 fixture 的 716 计数作为新组合通过。总控已直接补存旧停止 r3 容器运行字节/inspect，归档 SHA `a3616343b64c2ddb4f048dcc5fb291494650fc02e5a03abe0579362c6b44de87`；旧 docker-build-final/binary 日志不作精确 r3 镜像构建来源。新组合 r4 保存其独立实际 build/inspect/runtime/hash/raw 绑定。
+
 身份：原 I06 下的独立 platform 子任务；worktree `I06-safe-storage-platform`，branch `feature/I06-safe-storage-platform`，base `405881f4f9015c67bd93c91c7dbc800a1a1fdf5b`。protected AGENTS SHA `db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786` 保持 dirty，未纳入本功能提交。不另建 Goal、不 push、不改共享 main/bridge/UI/contracts/依赖或 CI。
 
 已实现 `createElectronCredentialBoundary(repository)`：必须正常 Electron browser 主进程且 app ready；直接使用导入的实际 safeStorage，不注入替代 encryptor、不开明文降级。既有 boundary 在每次 store/read 继续检查后端可用性/白名单及绑定身份，失败使用既有私有 `CREDENTIAL_UNAVAILABLE`。
