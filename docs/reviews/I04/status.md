@@ -138,3 +138,11 @@ feature/I04-reconnect 已正常合入 feature/I04-resident-jobs。主线 122 份
 ZCode GLM-5.3/最高完整报告153行、MiniMax M3.1-Flash/xhigh最终修订报告312行均已实际完成并读回；双方结论均为通过，原P等级与附带边界原样保留。Z新增R2-N1(P3)及R2-N2(P2)，MM新增R2-P1(P2，握手同根)。原C1全部19 ID与延期项逐项保留。两原任务均含同任务必要方法修正/独立事实补证，终态已核验，未换模型、未重建Goal、无真实额度故障/重置。
 
 本线不以附条件通过抵扣原验收#4：C2独立握手期限仍不成立，故不推送C2。修复和测试在独立C3分支完成、受审primary一直冻结；C3需全范围冻结及双方各新建完整审查，不沿用C2批准。详见round-2-processing.json；无push/PR/远端CI/合并。
+
+## 2026-10-21 C3 完整本地验证与集成准备
+
+握手绝对期限现于每次读取下一请求前以>=检查，固定原deadline且及时协商后不误终止会话；R2-N2/R2-P1同根均采纳，R2-N1父侧采样故障也新增在树真实worker隔离回归。原默认反例/精确定时两红一绿与修后全绿、真实默认源/包内自然退出及及时会话对照分开留证。
+
+最新实际macOS check 630 TS/1020 Python；独立Linux arm64 630 TS/1017 Python+3 Darwin专属跳过。两平台原C3 package公共例通过，现相同不可变引擎包各13 runtime通过；源/包内各6项隔离GUI/native恢复、两平台各144矩阵原始逐格证据均保留。新增第13项仅测试文件变化，不冒充old-version必红，不重复无变化的绿色GUI。最终123非doc输入/新tar与实际文件一致，101份raw artifact hash一致；旧1019/1016+3/12包内记录及原始tar未覆盖。独立supervisor/bridge/source/evidence审查均留证，不替代指定双审。
+
+C2双方原终态与报告纯流程提交已正常合入C3。下一步主线集成、冻结完整base/head、双方各新建完整审查；旧C2批准不沿用。尚未push、PR、远端CI或合并develop。

@@ -22,6 +22,7 @@ if os.environ.get("ROOT_SOURCE_PATH"):
 
 import ontolearn_engine.coordinator as runtime  # noqa: E402
 from ontolearn_engine.job_store import JobStore  # noqa: E402
+from ontolearn_engine.memory_guard import MemoryGuardUnavailable  # noqa: E402
 from ontolearn_engine.protocol import JsonlReader, ProtocolFault  # noqa: E402
 from ontolearn_engine.resources import CONTRACT, IMPLEMENTATION, LIMITS  # noqa: E402
 
@@ -279,6 +280,54 @@ def test_memory_failure_isolated_from_other_project_real_worker(store, monkeypat
     assert bad["resultRef"] is None
     assert bad["error"] == runtime.safe_error("RESOURCE_LIMIT", {"resource": "memory"})
     assert good["state"] == "succeeded"
+    result = store.result_get(good["projectId"], good["resultRef"]["resultId"])
+    binding = {
+        "projectId": good["projectId"],
+        "resultId": result["resultId"],
+        "inputSnapshotId": result["inputSnapshotId"],
+        "scope": result["scope"],
+        "parametersHash": result["parametersHash"],
+        "order": "ordinal+rowId:asc",
+    }
+    assert store.result_page(binding, page_size=100, cursor=None)["rows"] == rows
+
+
+@pytest.mark.skipif(sys.platform != "darwin", reason="Darwin parent RSS sampler failure")
+def test_parent_rss_monitor_unavailable_fails_only_the_target_real_worker(store, monkeypatch):
+    actual_worker(monkeypatch)
+    store.create_project("lifecycle-other")
+    failed = create(store, parameters={"workMs": 1500}, total_ms=4000)
+    rows = [{"rowId": uid(), "ordinal": 0, "cells": ["survived"]}]
+    succeeded = create(store, parameters={"rows": rows}, total_ms=4000, internal="lifecycle-other")
+    coordinator = runtime.Coordinator(store, test_mode=True, emit=lambda _: None)
+    native_rss = runtime.resident_bytes
+    sampled = set()
+
+    def unavailable_for_target(pid):
+        active = coordinator.active.get(failed["jobId"])
+        target = active and active.get("process")
+        if target is not None and target.pid == pid:
+            assert target.returncode is None
+            sampled.add(pid)
+            raise MemoryGuardUnavailable()
+        return native_rss(pid)
+
+    monkeypatch.setattr(runtime, "resident_bytes", unavailable_for_target)
+
+    async def run():
+        coordinator.queued.extend([failed["jobId"], succeeded["jobId"]])
+        await coordinator.tick()
+        await asyncio.wait_for(asyncio.gather(*coordinator.tasks), 6)
+        assert not coordinator.active
+
+    asyncio.run(run())
+    assert len(sampled) == 1
+    bad = store.get_job(failed["projectId"], failed["jobId"])
+    good = store.get_job(succeeded["projectId"], succeeded["jobId"])
+    assert bad["state"] == "failed" and bad["resultRef"] is None
+    assert bad["error"] == runtime.safe_error("INTERNAL_ERROR")
+    assert store.operation_get(bad["projectId"], bad["operationId"]) is None
+    assert good["state"] == "succeeded" and good["resultRef"] is not None
     result = store.result_get(good["projectId"], good["resultRef"]["resultId"])
     binding = {
         "projectId": good["projectId"],
