@@ -831,6 +831,8 @@ class JobStore(Store):
             job["commitProgress"]["committedProgress"] = self.progress(run)
             # A durable running-progress version is distinct from a transient
             # percentage notification. Subscribers apply its next exact version.
+            # _transition owns state-name edges; the running/rounds guard above
+            # permits this evidence revision within the same nonterminal state.
             job["stateVersion"] += 1
             job["updatedAtMs"] = max(self.now_ms(), job["updatedAtMs"])
             self._save(job)
@@ -937,9 +939,7 @@ class JobStore(Store):
                 # Atomic completion is committed in the same transaction as its
                 # receipt and terminal; marker alone can never invent success.
                 state = "cancelled" if job["state"] == "cancelling" else "failed"
-                if state == "cancelled" and job["state"] == "queued":
-                    self._transition(job, state)
-                elif state == "cancelled":
+                if state == "cancelled":
                     self._finish_unsuccessful(job, state, None)
                 else:
                     error = {
