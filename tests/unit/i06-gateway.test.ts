@@ -1,6 +1,6 @@
 import http from 'node:http'
 import { randomUUID } from 'node:crypto'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   ModelGatewayCore,
   type AuditRecord,
@@ -10,6 +10,7 @@ import type { OpenCredential } from '../../apps/desktop/src/main/model-gateway/c
 
 const servers: http.Server[] = []
 afterEach(async () => {
+  vi.useRealTimers()
   await Promise.all(
     servers.splice(0).map(
       (server) =>
@@ -538,4 +539,99 @@ describe('I06 main-owned synthetic gateway with real loopback receivers', () => 
     ).toBe(true)
     expect(JSON.parse(f.received[0].body).parts).toEqual([{ kind: 'tool', text: 'copied' }])
   })
+
+  it('bounds a stuck credential wait, sends nothing, and can reuse unchanged authorization after recovery', async () => {
+    let first = true
+    const f = await fixture({
+      read: () => {
+        if (first) {
+          first = false
+          return new Promise<OpenCredential>(() => {})
+        }
+        return Promise.resolve({ ...f.credential })
+      },
+    })
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    const invocation = f.gateway.invoke(f.invocation)
+    await vi.advanceTimersByTimeAsync(5000)
+    expect(await invocation).toEqual({ ok: false, code: 'CREDENTIAL_UNAVAILABLE' })
+    expect(f.received).toEqual([])
+    expect(vi.getTimerCount()).toBe(0)
+    vi.useRealTimers()
+    expect(await f.gateway.invoke(f.invocation)).toEqual({ ok: true, text: 'synthetic-response' })
+    expect(f.received).toHaveLength(1)
+  })
+
+  it('bounds a hung durable audit and never dispatches without its acknowledgement', async () => {
+    const f = await fixture({ append: () => new Promise<void>(() => {}) })
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    const invocation = f.gateway.invoke(f.invocation)
+    await vi.advanceTimersByTimeAsync(5000)
+    expect(await invocation).toEqual({ ok: false, code: 'AUDIT_UNAVAILABLE' })
+    expect(f.received).toEqual([])
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it('rejects capacity overflow without queueing more credential work and frees capacity on cancellation', async () => {
+    let reads = 0
+    const f = await fixture({
+      read: () => {
+        reads++
+        return new Promise<OpenCredential>(() => {})
+      },
+    })
+    const pending = Array.from({ length: 4 }, () => f.gateway.invoke(f.invocation))
+    expect(reads).toBe(4)
+    expect(await f.gateway.invoke(f.invocation)).toEqual({ ok: false, code: 'MODEL_UNAVAILABLE' })
+    expect(reads).toBe(4)
+    f.gateway.setPrivacy(f.projectId, 'local')
+    expect(await Promise.all(pending)).toEqual(
+      Array.from({ length: 4 }, () => ({ ok: false, code: 'CANCELLED' })),
+    )
+    expect(f.received).toEqual([])
+    // Cancellation cleared slots: a fresh grant reaches credentials again.
+    f.gateway.setPrivacy(f.projectId, 'minimal')
+    const preview = f.gateway.previewAuthorization({
+      projectId: f.projectId,
+      configId: f.config.id,
+      purpose: 'explain',
+      scopes: [f.scope],
+    })
+    const next = f.gateway.invoke({
+      ...f.invocation,
+      grantId: f.gateway.confirmAuthorization(preview.previewId),
+    })
+    expect(reads).toBe(5)
+    f.gateway.setPrivacy(f.projectId, 'local')
+    expect(await next).toEqual({ ok: false, code: 'CANCELLED' })
+  })
+
+  it('stops after the single permitted retry instead of replaying indefinitely', async () => {
+    const f = await fixture({
+      handler: (_req, res) => {
+        res.statusCode = 503
+        res.end('synthetic-upstream-error')
+      },
+    })
+    expect(await f.gateway.invoke(f.invocation)).toEqual({ ok: false, code: 'MODEL_UNAVAILABLE' })
+    expect(f.received.map(({ url, body }) => ({ url, body }))).toEqual(
+      [0, 1].map(() => ({
+        url: '/synthetic',
+        body: JSON.stringify({
+          model: 'synthetic-protocol',
+          parts: [{ kind: 'selected', text: 'SYNTHETIC_BUSINESS_I06' }],
+        }),
+      })),
+    )
+    expect(f.records.filter(({ event }) => event === 'attempt-intent')).toHaveLength(2)
+    expect(f.records.at(-1)?.event).toBe('attempt-failed')
+    expect(JSON.stringify(f.records)).not.toContain('synthetic-upstream-error')
+  })
+
+  it('bounds a real unresponsive local receiver and never automatically replays a network timeout', async () => {
+    const f = await fixture({ handler: () => {} })
+    expect(await f.gateway.invoke(f.invocation)).toEqual({ ok: false, code: 'MODEL_UNAVAILABLE' })
+    expect(f.received).toHaveLength(1)
+    expect(f.records.map(({ event }) => event)).toEqual(['attempt-intent', 'attempt-failed'])
+  }, 10000)
 })
