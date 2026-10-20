@@ -20,3 +20,11 @@ r9完整check998TS/1052Python及source12已在最终代码上通过；46专属St
 main有限field policy只由既有可信fixture path+env且unpackaged选择固定literal，implementation锁摘要由main读本应用uv.lock，正常product models=[]；tag仅校验shape，不由结果自选权限。I05尚未批准的新版本/候选未采纳。读→send窗口和所选不可变版本按实际展示，不引入live-current lease承诺。
 
 Linux平台在独立worktree从9fc正常合入后构建/运行；完整S3、可用导出事实、适用I05批准merge联验、指定双方全新同候选审查及PR/CI/远端合并仍待完成。
+
+## Linux正常链追加复核
+
+platform-r11完整22case、3次合成HTTPS POST与collector五gates通过。产品source仍为9fc；独立只读agent重新核对851份source、19份归档compiled/harness、14份harness原件、before/build/after和5个binary记录，未执行或重跑平台。实际UID1106/noSandboxSwitch=false、renderer NoNewPrivs1/Seccomp2且filter多于main；容器仅SYS_ADMIN/default seccomp、network none、无host mounts/ports、非privileged。binding SHA `058a61825c78816b1ba586585edb32c7ec66341f61475361ce5815b33d05068c`。
+
+两轮实际worker/source/catalog/selected/preview/grant原件证明同旧grant、不同result/job/catalog/selection；私列与派生值确实存在于三行source，两轮输入/参数/依赖/implementation/有序rows相同。三份完整693bytes正文各自与receiver manifest匹配，均SHA `4bea2fec09859fae6a3f5f685630b22bd3c3595f486edde3df2b5cedaedda2f0`，重建projectionHash吻合且原rowUUID/ordinal/私列/派生/secret/header均未出现。scope UUID未公开，scope一致由冻结映射和同grant复用验证，不声称DTO中直接公开scope。
+
+实际GNOME跨app恢复后可发送，basic/unavailable真实录入拒绝且零credential文件；审计不安全时同一operation尚未提交，仍在故障未恢复前完成真实Store commit；坏audit初始化下本地窗口/worker保存亦完成。定向取消、singleton/reload只读及旧grant失效由本run源码绑定执行断言/22case支持，并非所有outcome原DTO均归档。22私有文件/5DB的scanner receipt支持当次扫描结论，独立review未重扫未归档vault/DB。r11范围限定Linux正常main/preload/UI/HTTPS/reload链；真实native恢复另验，不能替代其他平台或完整S3/指定双审。

@@ -4,7 +4,7 @@
 
 当前代码完整 `npm run check` r9 exit0：998TS、1052Python、lint/format/typecheck/build/ruff 全过；`verify:sources` 12项及diff检查通过，两处protected AGENTS仍db1fb184，未stage。该完整检查已覆盖最终UI表单key、终态缓存、精确读取状态copy和严格UTF8修正，不沿用此前copy前的r7作为当前完整检查。
 
-[正式接线计划](../../iterations/I06/main-wiring-plan.md)记录唯一main服务、strict12方法/10G错误、独立取消、实际项目context与单profile锁、私有配置原子journal/安全录入版本边界、独立启动与有界退出、只读恢复/纯文本结果。头部无实际项目默认local；无通用转发/secret读回/worker模型入口。配置journal两实例竞争/不确定发布后失败、password随版本清空及新建草稿保留已修，独立只读复核关闭；实际Electron/bridge/UI行为待本线隔离Linux运行，当前不称平台通过。
+[正式接线计划](../../iterations/I06/main-wiring-plan.md)记录唯一main服务、strict12方法/10G错误、独立取消、实际项目context与单profile锁、私有配置原子journal/安全录入版本边界、独立启动与有界退出、只读恢复/纯文本结果。头部无实际项目默认local；无通用转发/secret读回/worker模型入口。配置journal两实例竞争/不确定发布后失败、password随版本清空及新建草稿保留已修，独立只读复核关闭；最新Linux正常main/preload/UI链platform-r11已22项通过，独立证据复核通过，真实native恢复与完整候选验收仍待后续事实。
 
 专属真实链46项含37来源/字段、6配置、3named-service HTTPS。凭据加解密在这一headless服务测试中是明确double，密文/配置/审计实际私有文件、实际批准Store/coordinator/test.read worker与经证书校验HTTPS receiver均运行；已保存合成完整body原件，不记录headers。正常生产字段模型仍为空、runtime-only；固定finite policy仅既有可信launchfixture/test-runtime且非packaged可启用，不外推生产业务provenance。I05实际新语义批准merge后再刷新/绑定/冲突处理和全新联验。
 
@@ -19,6 +19,8 @@
 本线default Docker/nonroot userns探针实际 `unshare --user --map-root-user /bin/true` 返回EPERM（kernel userns配置已开）；未据此宣称产品缺陷。只读I05成功记录确认其方案使用CAP_SYS_ADMIN、root:root/4755 helper和非root进程。按总控已授权环境准备范围，下一独立I06镜像仅修容器内helper owner/mode，测试容器仅增加CAP_SYS_ADMIN并保留Docker默认seccomp、network none/无host mounts或端口、非privileged；不使用seccomp=unconfined，不借其他线可变环境。能力扩展须明确披露，不称default Docker无额外能力；实际无no-sandbox运行仍待证据。
 
 后续平台运行（与根完整check r9分开编号）：platform-r7仅有界userns/helper预检通过，未运行app。platform-r8正常app无no-sandbox，实际UID1106、main Seccomp2/filter1、renderer NoNewPrivs1/Seccomp2/filter2与嵌套NSpid均有原件，GNOME后端可用；之后刷新了模型而未刷新实际任务UI，驱动找不到第二结果，4case/0POST/总体failed。platform-r9修驱动后实际14case通过、3次合成HTTPS POST，覆盖实际两worker授权复用、独立cancel/complete、reload、同profile第二实例、隐私/审计/配置失效和表单刷新；随后全页alert定位器撞到既有多个错误卡，未到最终scan，collector全部总体gates仍false。根实际读回cases/result和3份693bytes正文并计算hash，但该失败run尚未写receiver-manifest，不能称为最终绑定通过。platform-r10另冻harness运行，修直属alert定位并追加两轮实际source/catalog/selection/preview/grant合成原件；旧run不改。当前仍无完整平台pass。下一项为断开调试器后的真实crash→真实原生提示→窗口恢复，核对I06 ledger/Store和receiver不重放；避开会stub dialog的旧helper，不能只以reload代替native联验。
+
+最新platform-r11：固定9fc产品、22项实际case/3次合成HTTPS POST/collector五gates均通过，root直接读回并逐项核对正文长度/SHA。独立只读复核核对851份源码、19个实际compiled+harness产物、14份harness原件、before/build/after与5个binary记录；image `sha256:f7fc7b481eb6270fc169a173970846ce998e1b59b4a42fffdb9b36295730dff1`，正常sandbox/GNOME、namespace/seccomp、isolated container事实均吻合。binding SHA `058a61825c78816b1ba586585edb32c7ec66341f61475361ce5815b33d05068c`。A03两轮实际raw同旧grant、不同result/job/catalog/selection，三行实际source含私列/派生值；3份693bytes完整body均SHA `4bea2fec09859fae6a3f5f685630b22bd3c3595f486edde3df2b5cedaedda2f0`，逐项无原rowUUID/ordinal/私列/派生值/secret/header。scope一致由冻结projector映射和同grant复用验证，不能称直接读取未公开scope UUID；取消/重载等依赖本run执行断言与case记录，不宣称每次outcome完整DTO均归档。22私有文件/5DB扫描由本run冻结scanner与receipt支持，独立复核没有重扫未归档vault/DB原件。native/C4、其他平台、适用I05与完整S3仍待验；真实crash→原生prompt→恢复单独准备，不倒贴r11为native通过。
 
 总控独立检查点核验（`iteration-control/2026-10-19/I06-controller-main-wiring-checkpoint-evidence-audit.md`，总控回执SHA `1d5888302a3b63d34ba8393ae9ae36c0c52aa63f518af7153b23db56956c462f`）未提出新增实现修复请求。117source/5compiled/19logs/18raw及998TS/1052Python/source12/46专属/validator43支持其各自边界；18raw是6组同case历史重复正文，非6项新用例。headless safeStorage为double，CAS为同进程两repository实例，postpublish旧context失效和零POST不等于已归档旧pending精确cancelled对象；当时singleprofile仅静态，后续平台事实按新run单列，不倒贴旧证据。
 
