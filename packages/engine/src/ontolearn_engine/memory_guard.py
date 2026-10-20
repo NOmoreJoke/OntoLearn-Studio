@@ -8,6 +8,7 @@ No business/native-library workload is approved by this infrastructure guard.
 """
 
 import ctypes
+import errno
 import os
 import sys
 import threading
@@ -80,7 +81,12 @@ def resident_bytes(pid: int) -> int:
         raise MemoryGuardUnavailable()
     info = _TaskInfo()
     size = ctypes.sizeof(info)
-    if _darwin_library().proc_pidinfo(pid, 4, 0, ctypes.byref(info), size) != size:
+    library = _darwin_library()
+    ctypes.set_errno(0)
+    read = library.proc_pidinfo(pid, 4, 0, ctypes.byref(info), size)
+    if read != size:
+        if read <= 0 and ctypes.get_errno() == errno.ESRCH:
+            raise ProcessLookupError(errno.ESRCH, "worker no longer exists")
         raise MemoryGuardUnavailable()
     return info.resident_size
 
@@ -201,7 +207,7 @@ class MemoryGuard:
                 self.check_allocation(0)
             except MemoryError:
                 os._exit(MEMORY_LIMIT_EXIT)
-            except MemoryGuardUnavailable:
+            except (MemoryGuardUnavailable, OSError):
                 os._exit(MEMORY_GUARD_EXIT)
 
     def close(self) -> None:
