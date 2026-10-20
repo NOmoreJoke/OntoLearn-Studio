@@ -70,7 +70,7 @@ export class GatewayApplication {
   async selectFields(input: {
     catalogId: string
     fieldIds: string[]
-  }): Promise<{ selectionId: string; bodyHash: string }> {
+  }): Promise<{ selectionId: string; bodyHash: string; rowCount: number; byteCount: number }> {
     this.open()
     if (this.selected.size >= 128) throw new GatewayFailure('INVALID_INPUT')
     const projection = await this.projector.select(input)
@@ -91,7 +91,12 @@ export class GatewayApplication {
       field: projection,
       fieldBodies: [projection.bodyText],
     })
-    return { selectionId: id, bodyHash: projection.bodyHash }
+    return {
+      selectionId: id,
+      bodyHash: projection.bodyHash,
+      rowCount: projection.rowCount,
+      byteCount: projection.byteCount,
+    }
   }
   releaseFieldCatalog(catalogId: string): void {
     this.projector.releaseCatalog(catalogId)
@@ -145,9 +150,13 @@ export class GatewayApplication {
       return entry
     })
   }
-  async selectStoredResult(
-    input: StoredSelection,
-  ): Promise<{ selectionId: string; metadata: Record<string, unknown>; bodyHash: string }> {
+  async selectStoredResult(input: StoredSelection): Promise<{
+    selectionId: string
+    metadata: Record<string, unknown>
+    bodyHash: string
+    rowCount: number
+    byteCount: number
+  }> {
     this.open()
     if (this.selected.size >= 128) throw new GatewayFailure('INVALID_INPUT')
     const copied = parse(storedSelectionSchema, input)
@@ -174,6 +183,8 @@ export class GatewayApplication {
       selectionId: id,
       metadata: structuredClone(snapshot.metadata),
       bodyHash: snapshot.bodyHash,
+      rowCount: (JSON.parse(snapshot.bodyText) as { rows: unknown[] }).rows.length,
+      byteCount: Buffer.byteLength(snapshot.bodyText),
     }
   }
 
@@ -284,6 +295,11 @@ export class GatewayApplication {
     parse(opaqueId, previewId)
     if (!this.previews.delete(previewId)) throw new GatewayFailure('AUTHORIZATION_REQUIRED')
     return this.core.confirmAuthorization(previewId)
+  }
+  discardPreview(previewId: string): void {
+    parse(opaqueId, previewId)
+    this.previews.delete(previewId)
+    this.core.discardAuthorizationPreview(previewId)
   }
 
   start(input: z.infer<typeof startInput>): {

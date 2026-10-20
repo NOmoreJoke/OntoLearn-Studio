@@ -3,7 +3,7 @@ import { randomUUID, createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { resolve, join } from 'node:path'
 import { type EngineHealth } from '@ontolearn/contracts'
-import { matchesResponse, validateV2, v2Registry } from '@ontolearn/contracts/v2'
+import { matchesResponse, validateV2, v2Registry, isModelMethod } from '@ontolearn/contracts/v2'
 import { JsonlReader, parseStrictJson } from './jsonl'
 
 export interface EngineLocation {
@@ -489,7 +489,7 @@ export class EngineSupervisor {
     })
   }
   async request(method: string, params: Record<string, unknown>): Promise<unknown> {
-    if (method === 'hello')
+    if (method === 'hello' || isModelMethod(method))
       throw new EngineError({
         code: 'INVALID_STATE',
         messageKey: 'protocol.invalidState',

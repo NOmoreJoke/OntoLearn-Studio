@@ -1,5 +1,7 @@
 import fs from 'node:fs/promises'
 import http from 'node:http'
+import https from 'node:https'
+import tls from 'node:tls'
 import os from 'node:os'
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
@@ -13,6 +15,13 @@ import {
 import { GatewayApplication } from '../../apps/desktop/src/main/model-gateway/gateway-application'
 import { ModelGatewayCore } from '../../apps/desktop/src/main/model-gateway/gateway'
 import { PersistentGatewayAudit } from '../../apps/desktop/src/main/model-gateway/persistent-audit'
+import { PrivateCiphertextRepository } from '../../apps/desktop/src/main/model-gateway/ciphertext-repository'
+import { ConfigurationRepository } from '../../apps/desktop/src/main/model-gateway/configuration-repository'
+import { EncryptedCredentialBoundary } from '../../apps/desktop/src/main/model-gateway/credentials'
+import { ModelGatewayService } from '../../apps/desktop/src/main/model-gateway/model-service'
+import type { ModelMethod, ModelParamsMap } from '@ontolearn/contracts'
+import type { PrivateWriteObserver } from '../../apps/desktop/src/main/model-gateway/private-directory'
+import { finiteFixturePolicy } from '../../apps/desktop/src/main/model-gateway/finite-fixture-policy'
 import type { CredentialReader } from '../../apps/desktop/src/main/model-gateway/credentials'
 import {
   StoredFieldProjector,
@@ -207,48 +216,13 @@ function deferred() {
 }
 
 async function fieldModel(): Promise<StoredFieldModel> {
-  return {
-    id: 'i06-finite-probe',
-    version: 'v1',
-    producerCapability: 'test.read',
-    definitionId: 'i06-material-probe',
-    kind: 'test',
-    tag: 'I06_FINITE_FIELDS',
-    implementation: {
-      executionSemanticsVersion: 'i04-infrastructure-v1',
-      engineVersion: '0.1.0',
-      dependencyLockHash: createHash('sha256')
-        .update(await fs.readFile('uv.lock'))
-        .digest('hex'),
-    },
-    fields: [
-      {
-        key: 'public',
-        label: 'Public label',
-        index: 1,
-        type: 'string',
-        nullable: false,
-        dependsOn: [],
-      },
-      {
-        key: 'private',
-        label: 'PRIVATE_LABEL_SENTINEL',
-        index: 2,
-        type: 'string',
-        nullable: false,
-        dependsOn: [],
-      },
-      {
-        key: 'privateDerived',
-        label: 'PRIVATE_DERIVED_LABEL_SENTINEL',
-        index: 3,
-        type: 'string',
-        nullable: false,
-        dependsOn: ['private'],
-      },
-    ],
-  }
+  return finiteFixturePolicy(
+    createHash('sha256')
+      .update(await fs.readFile('uv.lock'))
+      .digest('hex'),
+  )
 }
+
 function fieldRows(): Row[] {
   // Worker echoes actual structured fixture rows. Derived semantics are trusted finite-model policy,
   // not a claim that the approved synthetic worker computes arbitrary business provenance.
@@ -263,6 +237,336 @@ function fieldRows(): Row[] {
     ],
   }))
 }
+
+async function service(f: Awaited<ReturnType<typeof fixture>>, observer?: PrivateWriteObserver) {
+  const certPath = path.join(f.root, 'synthetic-cert.pem'),
+    keyPath = path.join(f.root, 'synthetic-key.pem')
+  const generated = spawnSync(
+    'openssl',
+    [
+      'req',
+      '-x509',
+      '-newkey',
+      'rsa:2048',
+      '-nodes',
+      '-keyout',
+      keyPath,
+      '-out',
+      certPath,
+      '-subj',
+      '/CN=127.0.0.1',
+      '-addext',
+      'subjectAltName=IP:127.0.0.1',
+      '-days',
+      '1',
+    ],
+    { encoding: 'utf8', timeout: 10000 },
+  )
+  expect(generated.status, generated.stderr).toBe(0)
+  const cert = await fs.readFile(certPath, 'utf8'),
+    key = await fs.readFile(keyPath, 'utf8')
+  const oldCertificates = tls.getCACertificates('default')
+  tls.setDefaultCACertificates([...oldCertificates, cert])
+  cleanups.push(async () => {
+    tls.setDefaultCACertificates(oldCertificates)
+  })
+  const received: string[] = []
+  const server = https.createServer({ cert, key }, (request, response) => {
+    let body = ''
+    request.on('data', (chunk) => {
+      body += chunk
+    })
+    request.on('end', () => {
+      received.push(body)
+      response.end('SYNTHETIC_SERVICE_RESPONSE <img src=x onerror=alert(1)>')
+    })
+  })
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve))
+  cleanups.push(
+    () =>
+      new Promise<void>((resolve) => {
+        server.closeAllConnections()
+        server.close(() => resolve())
+      }),
+  )
+  const address = server.address()
+  if (!address || typeof address === 'string') throw new Error('RECEIVER')
+  const endpoint = `https://127.0.0.1:${address.port}/synthetic`
+  const location = {
+    userDataPath: path.join(f.root, 'service-private'),
+    excludedRoots: [path.join(f.root, 'project')],
+  }
+  const ciphertexts = await PrivateCiphertextRepository.open(location)
+  const configurations = await ConfigurationRepository.open(location, observer)
+  const audit = await PersistentGatewayAudit.open(location)
+  cleanups.push(
+    () => ciphertexts.close(),
+    () => configurations.close(),
+    () => audit.close(),
+  )
+  // Explicit safeStorage double in this headless service test; not OS encryption evidence.
+  const boundary = new EncryptedCredentialBoundary(
+    {
+      isEncryptionAvailable: () => true,
+      getSelectedStorageBackend: () => 'gnome_libsecret',
+      encryptString: (value) => Buffer.from(Buffer.from(value).map((byte) => byte ^ 0xa5)),
+      decryptString: (bytes) =>
+        Buffer.from(Buffer.from(bytes).map((byte) => byte ^ 0xa5)).toString('utf8'),
+    },
+    ciphertexts,
+    'linux',
+  )
+  const owner = await ModelGatewayService.open({
+    engine: f.engine,
+    repository: configurations,
+    credentials: boundary,
+    audit,
+    producerPolicy: 'synthetic-test-runtime',
+    fieldModels: [await fieldModel()],
+  })
+  cleanups.push(() => owner.close())
+  expect(owner.status()).toMatchObject({
+    availability: 'unavailable',
+    contextId: null,
+    projectId: null,
+  })
+  owner.selectProject(f.prepared.projectId)
+  const contextId = owner.status().contextId!
+  async function call<M extends ModelMethod>(method: M, params: ModelParamsMap[M]) {
+    const reply = await owner.handle(method, params)
+    expect(reply, method).toMatchObject({ ok: true })
+    if (!reply.ok) throw new Error(reply.error.code)
+    return reply.data
+  }
+  const configuration = await call('configureModel', {
+    contextId,
+    configurationId: null,
+    configurationVersion: null,
+    displayName: 'Synthetic local receiver',
+    endpoint,
+    model: 'synthetic',
+  })
+  const configured = await call('storeModelCredential', {
+    contextId,
+    configurationId: configuration.configurationId,
+    configurationVersion: configuration.configurationVersion,
+    secret: 'SYNTHETIC_SERVICE_SECRET',
+  })
+  async function terminal(invocationId: string) {
+    const deadline = Date.now() + 8000
+    for (;;) {
+      const outcome = await call('getModelExplanationOutcome', { contextId, invocationId })
+      if (outcome.state !== 'running' && outcome.state !== 'cancelling') return outcome
+      if (Date.now() > deadline) throw new Error('SYNTHETIC_MODEL_DEADLINE')
+      await new Promise((resolve) => setTimeout(resolve, 10))
+    }
+  }
+  return {
+    owner,
+    configurations,
+    boundary,
+    endpoint,
+    call,
+    contextId,
+    configuration: { ...configuration, ...configured },
+    received,
+    terminal,
+    audit,
+  }
+}
+
+describe('I06 named main model service with actual Store/worker and verified HTTPS receiver', () => {
+  it('requires explicit consent, reuses public-field grant after a new actual worker result and restores only reads', async () => {
+    const f = await fixture(fieldRows()),
+      s = await service(f),
+      { contextId } = s
+    expect((await s.call('getModelAccessStatus', {})).privacy).toBe('local')
+    const catalog = await s.call('getModelFieldCatalog', {
+      contextId,
+      resultId: f.result.resultId,
+      selection: 'current',
+    })
+    const selected = await s.call('selectModelFields', {
+      contextId,
+      catalogId: catalog.catalogId,
+      fieldIds: [catalog.fields[0].fieldId],
+    })
+    expect(selected.fields.map((field) => field.label)).toEqual(['Public label'])
+    const input = {
+      contextId,
+      configurationId: s.configuration.configurationId,
+      selectionIds: [selected.selectionId],
+    }
+    expect(await s.owner.handle('previewModelExplanation', input)).toMatchObject({
+      ok: false,
+      error: { code: 'GATEWAY_LOCAL_ONLY', params: {}, retryable: false },
+    })
+    await s.call('setModelPrivacy', { contextId, privacy: 'minimal' })
+    const preview = await s.call('previewModelExplanation', input)
+    expect(preview.authorization.state).toBe('required')
+    const confirmation = await s.call('confirmModelAuthorization', {
+      contextId,
+      previewId: preview.previewId,
+    })
+    const second = await f.create()
+    const fullSource = await f.source.load({ resultId: second.resultId, selection: 'current' })
+    const nextCatalog = await s.call('getModelFieldCatalog', {
+      contextId,
+      resultId: second.resultId,
+      selection: 'current',
+    })
+    const next = await s.call('selectModelFields', {
+      contextId,
+      catalogId: nextCatalog.catalogId,
+      fieldIds: [nextCatalog.fields[0].fieldId],
+    })
+    const nextInput = { ...input, selectionIds: [next.selectionId] }
+    const nextPreview = await s.call('previewModelExplanation', nextInput)
+    expect(nextPreview.authorization).toEqual({ state: 'reusable', grantId: confirmation.grantId })
+    const invocation = await s.call('startModelExplanation', {
+      ...nextInput,
+      grantId: confirmation.grantId,
+    })
+    const outcome = await s.terminal(invocation.invocationId)
+    expect(outcome).toMatchObject({
+      state: 'completed',
+      text: expect.stringContaining('<img src=x onerror=alert(1)>'),
+    })
+    expect(s.received).toHaveLength(1)
+    const actual = s.received[0]
+    expect(actual).toContain('PUBLIC_VALUE_0')
+    for (const marker of [
+      'PRIVATE_',
+      'SYNTHETIC_SERVICE_SECRET',
+      fullSource.bodyHash,
+      fullSource.sourceFingerprint,
+      ...f.payload.flatMap((row) => [row.rowId, String(row.ordinal)]),
+    ])
+      expect(actual).not.toContain(marker)
+    await s.call('getModelAccessStatus', {})
+    await s.call('getModelExplanationOutcome', { contextId, invocationId: invocation.invocationId })
+    expect(s.received).toHaveLength(1)
+    const raw = path.resolve('tests/i06-stored-material/out', `named-service-${randomUUID()}`)
+    await fs.mkdir(raw, { recursive: true })
+    await fs.writeFile(path.join(raw, 'receiver-body.json'), actual)
+    await fs.writeFile(path.join(raw, 'source-tool-result.json'), fullSource.bodyText)
+    await fs.writeFile(
+      path.join(raw, 'receipt.json'),
+      JSON.stringify(
+        {
+          contextId,
+          firstResult: f.result.resultId,
+          secondResult: second.resultId,
+          preview,
+          confirmation,
+          nextPreview,
+          outcome,
+          receiverBodySHA256: createHash('sha256').update(actual).digest('hex'),
+          boundary:
+            'SafeStorage double; actual private ciphertext/configuration/audit stores and approved Store/worker; HTTPS certificate verified using test-worker-local CA only; no headers recorded',
+        },
+        null,
+        2,
+      ),
+    )
+  })
+
+  it('rejects stale credential forms and leaves endpoint replacement missing credentials without copying the old key', async () => {
+    const f = await fixture(fieldRows()),
+      s = await service(f),
+      { contextId } = s
+    const changed = await s.call('configureModel', {
+      contextId,
+      configurationId: s.configuration.configurationId,
+      configurationVersion: s.configuration.configurationVersion,
+      displayName: 'Changed target',
+      endpoint: s.endpoint + '/changed',
+      model: 'synthetic',
+    })
+    expect(changed.credentialState).toBe('missing')
+    expect(changed.configurationVersion).not.toBe(s.configuration.configurationVersion)
+    const store = vi.spyOn(s.boundary, 'store')
+    expect(
+      await s.owner.handle('storeModelCredential', {
+        contextId,
+        configurationId: s.configuration.configurationId,
+        configurationVersion: s.configuration.configurationVersion,
+        secret: 'STALE_SECRET_MUST_NOT_INSTALL',
+      }),
+    ).toMatchObject({ ok: false, error: { code: 'GATEWAY_CONFIGURATION_CHANGED' } })
+    expect(store).not.toHaveBeenCalled()
+    const restored = (await s.configurations.load())[0]
+    expect(restored).toMatchObject({ endpoint: changed.endpoint, binding: null })
+    expect(s.received).toEqual([])
+  })
+
+  it('stops the model owner after post-publication failure and preserves the actual durable replacement for restart', async () => {
+    let fail = false
+    const f = await fixture(fieldRows()),
+      s = await service(f, (phase) => {
+        if (fail && phase === 'published') throw new Error('SYNTHETIC_POST_LINK_EIO')
+      })
+    const { contextId } = s
+    await s.call('setModelPrivacy', { contextId, privacy: 'minimal' })
+    const selected = await s.call('selectModelResults', {
+      contextId,
+      results: [{ resultId: f.result.resultId, selection: 'current' }],
+    })
+    const input = {
+      contextId,
+      configurationId: s.configuration.configurationId,
+      selectionIds: selected.selections.map((value) => value.selectionId),
+    }
+    const preview = await s.call('previewModelExplanation', input)
+    const confirmation = await s.call('confirmModelAuthorization', {
+      contextId,
+      previewId: preview.previewId,
+    })
+    const gate = deferred(),
+      entered = deferred(),
+      originalRead = s.boundary.read.bind(s.boundary)
+    vi.spyOn(s.boundary, 'read').mockImplementation(async (ref) => {
+      entered.resolve()
+      await gate.promise
+      return originalRead(ref)
+    })
+    const invocation = await s.call('startModelExplanation', {
+      ...input,
+      grantId: confirmation.grantId,
+    })
+    await entered.promise
+    fail = true
+    expect(
+      await s.owner.handle('configureModel', {
+        contextId,
+        configurationId: s.configuration.configurationId,
+        configurationVersion: s.configuration.configurationVersion,
+        displayName: 'Uncertain replacement',
+        endpoint: s.endpoint + '/after-publish',
+        model: 'synthetic',
+      }),
+    ).toMatchObject({ ok: false, error: { code: 'GATEWAY_CREDENTIAL_UNAVAILABLE' } })
+    gate.resolve()
+    expect(await s.call('getModelAccessStatus', {})).toMatchObject({
+      availability: 'unavailable',
+      contextId: null,
+    })
+    expect(
+      await s.owner.handle('startModelExplanation', { ...input, grantId: confirmation.grantId }),
+    ).toMatchObject({ ok: false })
+    expect(
+      await s.owner.handle('getModelExplanationOutcome', {
+        contextId,
+        invocationId: invocation.invocationId,
+      }),
+    ).toMatchObject({ ok: false })
+    expect((await s.configurations.load())[0]).toMatchObject({
+      endpoint: s.endpoint + '/after-publish',
+      binding: null,
+    })
+    expect(s.received).toEqual([])
+  })
+})
 
 describe('I06 finite field policy over real approved Store/worker results', () => {
   it('reuses an explicitly granted public field after a second real worker result and emits zero private/derived bytes', async () => {

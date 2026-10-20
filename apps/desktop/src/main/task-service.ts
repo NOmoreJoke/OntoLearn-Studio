@@ -83,7 +83,10 @@ export class TaskService {
   private disconnectedSession: string | undefined
   private disposed = false
   private sink: ((value: TaskUpdate) => void) | undefined
-  constructor(private engine: TaskEngine) {
+  constructor(
+    private engine: TaskEngine,
+    private readonly onProjectChanged?: (projectId: string | null) => void,
+  ) {
     this.lastReadySession = engine.engineSessionId
     this.release = engine.onNotification((value) => this.receive(value))
     this.releaseConnection = engine.onConnectionState((value) => this.connectionChanged(value))
@@ -93,10 +96,16 @@ export class TaskService {
     id.parse(projectId)
     if (jobs.length > 16 || jobs.some((job) => !id.safeParse(job).success))
       throw new Error('INVALID_REQUEST')
+    const changed = this.projectId !== projectId
     this.detachView()
     this.projectId = projectId
     this.projectRevision = undefined
     this.remembered = new Set(jobs)
+    if (changed) this.onProjectChanged?.(projectId)
+  }
+  // Main-owned selection identity, independent of renderer generation and RPC/recovery state.
+  projectContext(): string | null {
+    return this.disposed ? null : this.projectId
   }
   attachView(sink: (value: TaskUpdate) => void): void {
     this.detachView()
@@ -143,6 +152,7 @@ export class TaskService {
     this.detachView()
     this.release()
     this.releaseConnection()
+    this.onProjectChanged?.(null)
   }
   private connectionChanged(event: EngineConnectionState): void {
     if (

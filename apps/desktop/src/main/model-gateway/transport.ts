@@ -51,9 +51,16 @@ export function sendOnce(
           } else chunks.push(chunk)
         })
         response.on('error', () => finish(new GatewayFailure('MODEL_UNAVAILABLE')))
-        response.on('end', () =>
-          finish(undefined, { status, body: Buffer.concat(chunks).toString('utf8') }),
-        )
+        response.on('end', () => {
+          try {
+            // Replacement decoding can expand malformed bytes beyond the public
+            // UTF-8 text budget. Reject malformed responses rather than return them.
+            const text = new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(chunks))
+            finish(undefined, { status, body: text })
+          } catch {
+            finish(new GatewayFailure('MODEL_UNAVAILABLE'))
+          }
+        })
       },
     )
     const deadline = setTimeout(() => {

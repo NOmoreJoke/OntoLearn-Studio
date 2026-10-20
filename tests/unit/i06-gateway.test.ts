@@ -512,6 +512,22 @@ describe('I06 main-owned synthetic gateway with real loopback receivers', () => 
     expect(await f.gateway.invoke(f.invocation)).toEqual({ ok: false, code: 'RESPONSE_LIMIT' })
     expect(f.received).toHaveLength(1)
   })
+  it('rejects malformed UTF-8 instead of expanding replacement characters beyond the public text budget', async () => {
+    const f = await fixture({ handler: (_req, res) => res.end(Buffer.alloc(400000, 0xff)) })
+    expect(await f.gateway.invoke(f.invocation)).toEqual({ ok: false, code: 'MODEL_UNAVAILABLE' })
+    expect(f.received).toHaveLength(1)
+    expect(JSON.stringify(f.records)).not.toContain('\ufffd')
+  })
+  it('decodes complete UTF-8 correctly when a response character crosses stream chunks', async () => {
+    const bytes = Buffer.from('中文解释')
+    const f = await fixture({
+      handler: (_req, res) => {
+        res.write(bytes.subarray(0, 1))
+        res.end(bytes.subarray(1))
+      },
+    })
+    expect(await f.gateway.invoke(f.invocation)).toEqual({ ok: true, text: '中文解释' })
+  })
 
   it('does not mutate the main-owned bytes when input objects or preview arrays change', async () => {
     const f = await fixture()

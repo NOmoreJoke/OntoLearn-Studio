@@ -106,6 +106,19 @@ export class ModelGatewayCore {
       if (pending.projectId === projectId) controller.abort()
   }
 
+  removeConfiguration(configId: string): void {
+    parse(opaqueId, configId)
+    this.configs.delete(configId)
+    for (const [id, grant] of this.grants) if (grant.config.id === configId) this.grants.delete(id)
+    for (const [id, preview] of this.previews)
+      if (preview.config.id === configId) this.previews.delete(id)
+    for (const [controller, pending] of this.pending)
+      if (pending.configId === configId) controller.abort()
+  }
+  discardAuthorizationPreview(previewId: string): void {
+    this.previews.delete(parse(opaqueId, previewId))
+  }
+
   // Trusted application assembler only. Never accept scope labels from model text,
   // Python notifications, imports, tool results or renderer without owner validation.
   registerMaterial(input: unknown): string {

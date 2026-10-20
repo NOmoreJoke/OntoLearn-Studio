@@ -57,6 +57,8 @@ export type FieldProjection = {
   bodyText: string
   bodyHash: string
   scopes: string[]
+  rowCount: number
+  byteCount: number
   // Internal main-owned refresh handle. Never serialized into outgoing content.
   catalogId: string
   fieldIds: string[]
@@ -265,6 +267,8 @@ export class StoredFieldProjector {
       bodyText,
       bodyHash: createHash('sha256').update(bodyText).digest('hex'),
       scopes,
+      rowCount: catalog.rows.length,
+      byteCount: Buffer.byteLength(bodyText),
       catalogId: value.catalogId,
       fieldIds: [...value.fieldIds],
     }

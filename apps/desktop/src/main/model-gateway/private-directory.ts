@@ -23,7 +23,7 @@ export type PrivateWritePhase =
 // Fault observation is an internal test seam, never a bridge/request parameter.
 export type PrivateWriteObserver = (phase: PrivateWritePhase) => void | Promise<void>
 const pendingName = /^\.pending-[1-9][0-9]*-[0-9a-f-]{36}$/
-const recordName = /^[0-9a-f-]{36}\.(credential|audit)$/
+const recordName = /^[0-9a-f-]{36}\.(credential|audit|configuration)$/
 const unavailable = () => new Error('PRIVATE_STORAGE_UNAVAILABLE')
 const within = (parent: string, child: string) => {
   const relative = path.relative(parent, child)
@@ -161,7 +161,7 @@ export class PrivateDirectory {
 
   static async open(
     input: PrivateLocation,
-    bucket: 'credentials' | 'audit',
+    bucket: 'credentials' | 'audit' | 'configurations',
     observer?: PrivateWriteObserver,
   ): Promise<PrivateDirectory> {
     const anchors: Anchor[] = []
