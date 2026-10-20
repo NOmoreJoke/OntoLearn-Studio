@@ -1,0 +1,32 @@
+{
+  "identity": {
+    "system": "Linux",
+    "machine": "aarch64",
+    "pythonVersion": "3.12.15",
+    "build": "20261013"
+  },
+  "matchedElfFiles": 10,
+  "readOnly": true,
+  "scriptSha256": "e5f7725f4c312e0ac56e9f9871713b38a46a514f334f601f5511027a21705c07",
+  "command": [
+    "docker",
+    "exec",
+    "-i",
+    "--user",
+    "node",
+    "-e",
+    "HOME=/i05-home",
+    "-e",
+    "UV_CACHE_DIR=/i05-cache/uv",
+    "-e",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "-w",
+    "/i05",
+    "ontolearn-i05-isolated-20261021",
+    "/i05/.venv/bin/python",
+    "-B",
+    "-c",
+    "<code preserved in runnerCode>"
+  ],
+  "runnerCode": "import json,sys,platform,pathlib\npayload=json.load(sys.stdin)\nmodule={\"__name__\":\"i05_read_only_inventory_check\"}\nexec(compile(payload[\"script\"],\"i05-build-inventory.py\",\"exec\"),module)\nidentity={\"system\":platform.system(),\"machine\":platform.machine(),\"pythonVersion\":platform.python_version(),\"build\":(pathlib.Path(sys.base_prefix)/\"BUILD\").read_text().strip()}\nassert identity==payload[\"native\"][\"runtime\"]\nmodule[\"_match_linux\"](pathlib.Path(sys.base_prefix),payload[\"native\"])\nprint(json.dumps({\"identity\":identity,\"matchedElfFiles\":len(payload[\"native\"][\"binaryFiles\"]),\"readOnly\":True}))\n"
+}
