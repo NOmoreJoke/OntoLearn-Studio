@@ -14,6 +14,10 @@ import { GatewayApplication } from '../../apps/desktop/src/main/model-gateway/ga
 import { ModelGatewayCore } from '../../apps/desktop/src/main/model-gateway/gateway'
 import { PersistentGatewayAudit } from '../../apps/desktop/src/main/model-gateway/persistent-audit'
 import type { CredentialReader } from '../../apps/desktop/src/main/model-gateway/credentials'
+import {
+  StoredFieldProjector,
+  type StoredFieldModel,
+} from '../../apps/desktop/src/main/model-gateway/stored-field-projector'
 
 type Row = { rowId: string; ordinal: number; cells: (string | boolean | number | null)[] }
 type Fixture = {
@@ -59,7 +63,7 @@ const rows = (count = 2, prefix = 'SYNTHETIC_RESULT') =>
     ordinal,
     cells: [prefix + ordinal, ordinal],
   }))
-async function fixture(payload = rows(), sameWriterCollectionHook = false) {
+async function fixture(payload: Row[] = rows(), sameWriterCollectionHook = false) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'i06-stored-result-'))
   cleanups.push(() => fs.rm(root, { recursive: true, force: true }))
   await fs.mkdir(path.join(root, 'project'))
@@ -132,7 +136,7 @@ function restartedSource(f: { database: string; prepared: Fixture }): StoredResu
 }
 async function application(
   f: Awaited<ReturnType<typeof fixture>>,
-  options: { read?: CredentialReader['read']; status?: number } = {},
+  options: { read?: CredentialReader['read']; status?: number; models?: StoredFieldModel[] } = {},
 ) {
   const received: { body: string; authorization: string | undefined }[] = []
   const server = http.createServer((request, response) => {
@@ -182,7 +186,7 @@ async function application(
     model: 'synthetic-only',
   })
   core.setPrivacy(f.prepared.projectId, 'minimal')
-  const app = new GatewayApplication(core, f.source)
+  const app = new GatewayApplication(core, f.source, options.models)
   cleanups.push(() => app.close())
   const selected = await app.selectStoredResult({
     resultId: f.result.resultId,
@@ -201,6 +205,374 @@ function deferred() {
   })
   return { promise, resolve }
 }
+
+async function fieldModel(): Promise<StoredFieldModel> {
+  return {
+    id: 'i06-finite-probe',
+    version: 'v1',
+    producerCapability: 'test.read',
+    definitionId: 'i06-material-probe',
+    kind: 'test',
+    tag: 'I06_FINITE_FIELDS',
+    implementation: {
+      executionSemanticsVersion: 'i04-infrastructure-v1',
+      engineVersion: '0.1.0',
+      dependencyLockHash: createHash('sha256')
+        .update(await fs.readFile('uv.lock'))
+        .digest('hex'),
+    },
+    fields: [
+      {
+        key: 'public',
+        label: 'Public label',
+        index: 1,
+        type: 'string',
+        nullable: false,
+        dependsOn: [],
+      },
+      {
+        key: 'private',
+        label: 'PRIVATE_LABEL_SENTINEL',
+        index: 2,
+        type: 'string',
+        nullable: false,
+        dependsOn: [],
+      },
+      {
+        key: 'privateDerived',
+        label: 'PRIVATE_DERIVED_LABEL_SENTINEL',
+        index: 3,
+        type: 'string',
+        nullable: false,
+        dependsOn: ['private'],
+      },
+    ],
+  }
+}
+function fieldRows(): Row[] {
+  // Worker echoes actual structured fixture rows. Derived semantics are trusted finite-model policy,
+  // not a claim that the approved synthetic worker computes arbitrary business provenance.
+  return rows(3).map((row) => ({
+    ...row,
+    ordinal: 854736291 + row.ordinal,
+    cells: [
+      'I06_FINITE_FIELDS',
+      `PUBLIC_VALUE_${row.ordinal}`,
+      `PRIVATE_VALUE_SENTINEL_${row.ordinal}`,
+      `PRIVATE_DERIVED_SENTINEL_${row.ordinal}`,
+    ],
+  }))
+}
+
+describe('I06 finite field policy over real approved Store/worker results', () => {
+  it('reuses an explicitly granted public field after a second real worker result and emits zero private/derived bytes', async () => {
+    const f = await fixture(fieldRows()),
+      a = await application(f, { models: [await fieldModel()] })
+    const first = await a.app.getFieldCatalog({ resultId: f.result.resultId, selection: 'current' })
+    const selected = await a.app.selectFields({
+      catalogId: first.catalogId,
+      fieldIds: [first.fields[0].fieldId],
+    })
+    const grantId = await a.authorize([selected.selectionId])
+    const secondResult = await f.create()
+    expect(secondResult.resultId).not.toBe(f.result.resultId)
+    const actualFullResult = await f.source.load({
+      resultId: secondResult.resultId,
+      selection: 'current',
+    })
+    expect(actualFullResult.bodyText).toContain('PRIVATE_VALUE_SENTINEL')
+    expect(actualFullResult.bodyText).toContain('PRIVATE_DERIVED_SENTINEL')
+    const second = await a.app.getFieldCatalog({
+      resultId: secondResult.resultId,
+      selection: 'current',
+    })
+    const next = await a.app.selectFields({
+      catalogId: second.catalogId,
+      fieldIds: [second.fields[0].fieldId],
+    })
+    let selectionId = next.selectionId
+    for (const kind of ['tool', 'history', 'summary', 'error'] as const) {
+      selectionId = a.app.projectFromFields({ inputs: [selectionId], kind })
+      expect(() =>
+        a.app.deriveFromMaterials({
+          inputs: [selectionId],
+          kind: 'summary',
+          text: 'PRIVATE_VALUE_SENTINEL',
+        }),
+      ).toThrow('SCOPE_EXCEEDED')
+      expect(
+        await a.app.start({
+          configId: a.configId,
+          grantId,
+          purpose: 'explain',
+          selectionIds: [selectionId],
+        }).completion,
+      ).toMatchObject({ status: 'completed' })
+    }
+    expect(a.received).toHaveLength(4)
+    for (const { body } of a.received) {
+      expect(body).toContain('PUBLIC_VALUE_0')
+      expect(body).toContain(secondResult.resultId)
+      for (const row of f.payload) {
+        expect(body).not.toContain(row.rowId)
+        expect(body).not.toContain(String(row.ordinal))
+      }
+      for (const marker of [
+        'PRIVATE_VALUE_SENTINEL',
+        'PRIVATE_DERIVED_SENTINEL',
+        'PRIVATE_LABEL_SENTINEL',
+        'PRIVATE_DERIVED_LABEL_SENTINEL',
+        String(f.prepared.input.parametersHash),
+        actualFullResult.bodyHash,
+        actualFullResult.sourceFingerprint,
+      ])
+        expect(body).not.toContain(marker)
+    }
+    const denied = await a.app.selectFields({
+      catalogId: second.catalogId,
+      fieldIds: [second.fields[1].fieldId],
+    })
+    expect(
+      await a.app.start({
+        configId: a.configId,
+        grantId,
+        purpose: 'explain',
+        selectionIds: [denied.selectionId],
+      }).completion,
+    ).toMatchObject({ status: 'failed', failure: { code: 'SCOPE_EXCEEDED' } })
+    expect(a.received).toHaveLength(4)
+    expect(() =>
+      a.app.projectFromFields({ inputs: [next.selectionId, a.selected.selectionId], kind: 'tool' }),
+    ).toThrow('SCOPE_EXCEEDED')
+    await expect(
+      a.app.selectFields({ catalogId: second.catalogId, fieldIds: [first.fields[0].fieldId] }),
+    ).rejects.toThrow('SCOPE_EXCEEDED')
+    await expect(
+      a.app.selectFields({ catalogId: second.catalogId, fieldIds: [second.fields[2].fieldId] }),
+    ).rejects.toThrow('SCOPE_EXCEEDED')
+    a.app.releaseFieldCatalog(second.catalogId)
+    expect(
+      await a.app.start({
+        configId: a.configId,
+        grantId,
+        purpose: 'explain',
+        selectionIds: [selectionId],
+      }).completion,
+    ).toMatchObject({ status: 'failed' })
+    expect(a.received).toHaveLength(4)
+  })
+
+  it('copies trusted policy and reuses the same field scope only within that immutable model instance', async () => {
+    const f = await fixture(fieldRows()),
+      model = await fieldModel(),
+      projector = new StoredFieldProjector(f.source, [model])
+    const input = { resultId: f.result.resultId, selection: 'current' as const }
+    model.fields[0].label = 'Changed after constructor'
+    const catalog = await projector.catalog(input)
+    expect(catalog.fields[0].label).toBe('Public label')
+    const original = await projector.select({
+      catalogId: catalog.catalogId,
+      fieldIds: [catalog.fields[0].fieldId],
+    })
+    const second = await projector.catalog(input)
+    expect(
+      (
+        await projector.select({
+          catalogId: second.catalogId,
+          fieldIds: [second.fields[0].fieldId],
+        })
+      ).scopes,
+    ).toEqual(original.scopes)
+    projector.close()
+    await expect(projector.catalog(input)).rejects.toThrow('CANCELLED')
+  })
+
+  it('changes scope for selected values, cardinality and order, while excluding unselected values from field scope', async () => {
+    const f = await fixture(fieldRows()),
+      projector = new StoredFieldProjector(f.source, [await fieldModel()])
+    const input = { resultId: f.result.resultId, selection: 'current' as const }
+    const originalLoad = f.source.load.bind(f.source)
+    const baseline = await originalLoad(input)
+    let mutation = 'none'
+    // Deliberate main-source boundary fault fixture; this is not a claim of a second Store mutation.
+    vi.spyOn(f.source, 'load').mockImplementation(async () => {
+      const value = structuredClone(baseline),
+        body = JSON.parse(value.bodyText)
+      if (mutation === 'selected') body.rows[0].cells[1] = 'CHANGED_PUBLIC'
+      if (mutation === 'private') body.rows[0].cells[2] = 'CHANGED_PRIVATE'
+      if (mutation === 'count') body.rows.pop()
+      if (mutation === 'order')
+        [body.rows[0].cells[1], body.rows[1].cells[1]] = [
+          body.rows[1].cells[1],
+          body.rows[0].cells[1],
+        ]
+      value.bodyText = materialCanonical(body)
+      value.bodyHash = createHash('sha256').update(value.bodyText).digest('hex')
+      value.sourceFingerprint = value.bodyHash
+      return value
+    })
+    const select = async () => {
+      const catalog = await projector.catalog(input)
+      return projector.select({
+        catalogId: catalog.catalogId,
+        fieldIds: [catalog.fields[0].fieldId],
+      })
+    }
+    const first = await select()
+    mutation = 'private'
+    expect((await select()).scopes).toEqual(first.scopes)
+    for (mutation of ['selected', 'count', 'order'])
+      expect((await select()).scopes).not.toEqual(first.scopes)
+  })
+
+  it.each(['local', 'configuration', 'cancel', 'release', 'middle'] as const)(
+    'blocks the affected field request on %s before any receiver bytes',
+    async (boundary) => {
+      const f = await fixture(fieldRows()),
+        gate = deferred(),
+        entered = deferred()
+      const a = await application(f, {
+        models: [await fieldModel()],
+        read: async () => {
+          entered.resolve()
+          await gate.promise
+          return credential
+        },
+      })
+      const credential = a.credential
+      const catalog = await a.app.getFieldCatalog({
+        resultId: f.result.resultId,
+        selection: 'current',
+      })
+      const selected = await a.app.selectFields({
+        catalogId: catalog.catalogId,
+        fieldIds: [catalog.fields[0].fieldId],
+      })
+      const grantId = await a.authorize([selected.selectionId])
+      const intermediate =
+        boundary === 'middle'
+          ? a.app.projectFromFields({ inputs: [selected.selectionId], kind: 'tool' })
+          : selected.selectionId
+      const requestSelection =
+        boundary === 'middle'
+          ? a.app.projectFromFields({ inputs: [intermediate], kind: 'summary' })
+          : selected.selectionId
+      const call = a.app.start({
+        configId: a.configId,
+        grantId,
+        purpose: 'explain',
+        selectionIds: [requestSelection],
+      })
+      await entered.promise
+      if (boundary === 'local') a.core.setPrivacy(f.prepared.projectId, 'local')
+      if (boundary === 'configuration')
+        a.core.configure({
+          id: a.configId,
+          endpoint: 'http://127.0.0.1:65534/changed',
+          credentialRef: a.credential.ref,
+          principal: a.credential.principal,
+          credentialVersion: a.credential.version,
+          model: 'synthetic-only',
+        })
+      if (boundary === 'cancel')
+        expect(a.app.cancel(call.invocationId)).toEqual({ requested: true })
+      if (boundary === 'release') a.app.releaseSelection(selected.selectionId)
+      if (boundary === 'middle') a.app.releaseSelection(intermediate)
+      gate.resolve()
+      expect((await call.completion).status).not.toBe('completed')
+      expect(a.received).toEqual([])
+      if (boundary === 'middle')
+        expect(
+          (
+            await a.app.start({
+              configId: a.configId,
+              grantId,
+              purpose: 'explain',
+              selectionIds: [requestSelection],
+            }).completion
+          ).status,
+        ).toBe('failed')
+    },
+  )
+
+  it.each([
+    [503, 2],
+    [302, 1],
+  ])(
+    'keeps bounded field retry/redirect behavior for receiver status %i',
+    async (status, count) => {
+      const f = await fixture(fieldRows()),
+        a = await application(f, { models: [await fieldModel()], status })
+      const catalog = await a.app.getFieldCatalog({
+        resultId: f.result.resultId,
+        selection: 'current',
+      })
+      const selected = await a.app.selectFields({
+        catalogId: catalog.catalogId,
+        fieldIds: [catalog.fields[0].fieldId],
+      })
+      const grantId = await a.authorize([selected.selectionId])
+      expect(
+        (
+          await a.app.start({
+            configId: a.configId,
+            grantId,
+            purpose: 'explain',
+            selectionIds: [selected.selectionId],
+          }).completion
+        ).status,
+      ).toBe('failed')
+      expect(a.received).toHaveLength(count)
+      for (const { body } of a.received) expect(body).not.toContain('PRIVATE_')
+    },
+  )
+
+  it.each(['tag', 'width', 'type'] as const)(
+    'rejects actual stored %s mismatch before establishing a field catalog',
+    async (failure) => {
+      const payload = fieldRows()
+      if (failure === 'tag') payload[0].cells[0] = 'UNKNOWN_TAG'
+      if (failure === 'width') payload[0].cells.push('EXTRA_PRIVATE_SENTINEL')
+      if (failure === 'type') payload[0].cells[1] = 42
+      const f = await fixture(payload),
+        a = await application(f, { models: [await fieldModel()] })
+      await expect(
+        a.app.getFieldCatalog({ resultId: f.result.resultId, selection: 'current' }),
+      ).rejects.toThrow('SCOPE_EXCEEDED')
+      expect(a.received).toEqual([])
+    },
+  )
+
+  it('rejects unknown/ambiguous producer policies, cycles and missing transitive dependency selection', async () => {
+    const f = await fixture(fieldRows()),
+      model = await fieldModel()
+    const input = { resultId: f.result.resultId, selection: 'current' as const }
+    await expect(new StoredFieldProjector(f.source).catalog(input)).rejects.toThrow(
+      'SCOPE_EXCEEDED',
+    )
+    await expect(new StoredFieldProjector(f.source, [model, model]).catalog(input)).rejects.toThrow(
+      'SCOPE_EXCEEDED',
+    )
+    const cycle = structuredClone(model)
+    cycle.fields[1].dependsOn = ['privateDerived']
+    expect(() => new StoredFieldProjector(f.source, [cycle])).toThrow('SCOPE_EXCEEDED')
+    const missing = structuredClone(model)
+    missing.fields[0].dependsOn = ['absent']
+    expect(() => new StoredFieldProjector(f.source, [missing])).toThrow('SCOPE_EXCEEDED')
+    model.fields[0].dependsOn = ['privateDerived']
+    const projector = new StoredFieldProjector(f.source, [model]),
+      catalog = await projector.catalog(input)
+    expect(catalog.fields[0].requires).toEqual(
+      expect.arrayContaining([catalog.fields[1].fieldId, catalog.fields[2].fieldId]),
+    )
+    await expect(
+      projector.select({
+        catalogId: catalog.catalogId,
+        fieldIds: [catalog.fields[0].fieldId, catalog.fields[2].fieldId],
+      }),
+    ).rejects.toThrow('SCOPE_EXCEEDED')
+  })
+})
 
 describe('I06 real approved Store/coordinator/worker → private material → receiver', () => {
   it('reads every stored page, binds producer/version, hashes actual copied bytes and sends only after separate consent', async () => {
