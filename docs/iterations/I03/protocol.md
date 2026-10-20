@@ -58,3 +58,5 @@ I03 纯值校验使用两端相同的保守编码预算：所有数值 token 按
 I05 内部错误固定映射为 SEMANTIC_INPUT_INVALID（syntax/query/rule/constraint）、NETWORK_FORBIDDEN、UNSUPPORTED_CONSTRUCT（有限枚举）或 RESOURCE_LIMIT（memory/actions/rounds/frame/page）。这些只是安全解释码，不宣称语义能力已实现或扩展附录 C。输入文本、查询、原值、库异常和 URL 不进入 params；尚不能安全归类者 INTERNAL_ERROR。
 
 registryHash 定义为实际随引擎分发的 registry.json 原始 UTF-8 字节 SHA-256，主进程必须与同版构建预期核验；失配不开放调用。已采用协议的破坏性 schema/错误语义变化必须提高协商版本，不能在相同已发布版本内静默替换。I04 与 I05 打包负责人协调，将同源 schema/registry/dependencies/states 和校验适配器作为明确资源纳入包内并核对哈希；不依赖源码 checkout 路径，也不维护另抄一份协议真相。
+
+retryable 表示条件修复后用户可显式重新发起的提示，不是自动重放授权，也不证明没有提交/发送。写任务先对账 operation/job；读取重试也需当前授权与新请求身份。主进程网关的内部重试另由唯一网关控制，bridge不能叠加。I06的11类需求与下一版安全映射见 ../../reviews/I03/handoffs/I06-error-disposition.md，当前未注册S3方法或私有错误穿透。

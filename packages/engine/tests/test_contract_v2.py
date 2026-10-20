@@ -13,7 +13,7 @@ SPEC = importlib.util.spec_from_file_location(
 )
 CONTRACT = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CONTRACT)
-FIXTURES = json.loads((ROOT / "packages/contracts/v2/fixtures.json").read_text())
+FIXTURES = json.loads((ROOT / "packages/contracts/v2/fixtures.json").read_text(encoding="utf-8"))
 IMPL = {
     "executionSemanticsVersion": "test-v1",
     "engineVersion": "0.1.0",
@@ -172,7 +172,7 @@ def test_frozen_input_hashes_are_self_contained():
     import hashlib
 
     folder = ROOT / "docs/reviews/I03/inputs"
-    manifest = json.loads((folder / "sources.json").read_text())
+    manifest = json.loads((folder / "sources.json").read_text(encoding="utf-8"))
     for entry in manifest:
         assert hashlib.sha256((folder / entry["copy"]).read_bytes()).hexdigest() == entry["sha256"]
 

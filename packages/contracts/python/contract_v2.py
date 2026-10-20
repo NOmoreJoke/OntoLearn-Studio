@@ -9,9 +9,9 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1] / "v2"
-DOCUMENT = json.loads((ROOT / "schema.json").read_text())
+DOCUMENT = json.loads((ROOT / "schema.json").read_text(encoding="utf-8"))
 DEFINITIONS = DOCUMENT["$defs"]
-REGISTRY = json.loads((ROOT / "registry.json").read_text())
+REGISTRY = json.loads((ROOT / "registry.json").read_text(encoding="utf-8"))
 KEYWORDS = {
     "$ref",
     "const",
@@ -285,7 +285,7 @@ def cursor_matches(record, request, now_ms):
 
 
 def derive_dependencies(capability, definition_id, scope, definitions):
-    policies = json.loads((ROOT / "dependencies.json").read_text())["policies"]
+    policies = json.loads((ROOT / "dependencies.json").read_text(encoding="utf-8"))["policies"]
     if capability not in policies or scope not in {"asserted", "asserted+derived", "scenario"}:
         raise ValueError("INVALID_REQUEST")
     if scope not in REGISTRY["capabilities"][capability]["dataScopes"]:
@@ -379,7 +379,7 @@ def matches_response(request, response):
 
 
 def permits_transition(before, after, before_version, after_version, final_before_cancel):
-    states = json.loads((ROOT / "states.json").read_text())["transitions"]
+    states = json.loads((ROOT / "states.json").read_text(encoding="utf-8"))["transitions"]
     return (
         after in states.get(before, [])
         and type(before_version) in {int, float}
