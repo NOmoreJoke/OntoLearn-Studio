@@ -1,5 +1,23 @@
 # I06 / S3 状态
 
+2026-10-21 当前接续：正式 main / 命名 bridge / 最小 UI 已在本线实现并固定代码提交 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6`，其前契约子线 `69dd44d` 已正常合入为 `0ce0258`。批准依赖仍为远端实际核验的 develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`；不采用 I05 未批准 C1/C2 或其语义常量。14文件移交已生效，其他 Python/入口 build/锁/CI/安全恢复未改。
+
+当前代码完整 `npm run check` r9 exit0：998TS、1052Python、lint/format/typecheck/build/ruff 全过；`verify:sources` 12项及diff检查通过，两处protected AGENTS仍db1fb184，未stage。该完整检查已覆盖最终UI表单key、终态缓存、精确读取状态copy和严格UTF8修正，不沿用此前copy前的r7作为当前完整检查。
+
+[正式接线计划](../../iterations/I06/main-wiring-plan.md)记录唯一main服务、strict12方法/10G错误、独立取消、实际项目context与单profile锁、私有配置原子journal/安全录入版本边界、独立启动与有界退出、只读恢复/纯文本结果。头部无实际项目默认local；无通用转发/secret读回/worker模型入口。配置journal两实例竞争/不确定发布后失败、password随版本清空及新建草稿保留已修，独立只读复核关闭；实际Electron/bridge/UI行为待本线隔离Linux运行，当前不称平台通过。
+
+专属真实链46项含37来源/字段、6配置、3named-service HTTPS。凭据加解密在这一headless服务测试中是明确double，密文/配置/审计实际私有文件、实际批准Store/coordinator/test.read worker与经证书校验HTTPS receiver均运行；已保存合成完整body原件，不记录headers。正常生产字段模型仍为空、runtime-only；固定finite policy仅既有可信launchfixture/test-runtime且非packaged可启用，不外推生产业务provenance。I05实际新语义批准merge后再刷新/绑定/冲突处理和全新联验。
+
+字段阶段 `a930e11` 的旧manifest/源码/raw保持；追加独立v2是新运行，4份实际receiver原正文和100工件hash根已逐项复核，归档SHA `588cd43c6851352ab36e74526b59d5ef666c30996c10679d98bc0213cf2dd180`，不倒贴到旧run。原v2专属证据含明确synthetic header，不含真实凭据；后续正式集成raw只收正文。根读回见[evidence](evidence/finite-fields-v2-raw-readback.json)。
+
+本轮[源码与验证 manifest](evidence/main-wiring-20261021.json) SHA-256 `718198c2797ab03a64ddec5b644bf1ff10ca1f18fe3246725ea07bf255acb1d4`；归档 `tests/i06-stored-material/out/main-wiring-raw-20261021.tar.gz` SHA-256 `536f80923ec23b44e7caeed54b95ae93fce6357e67fddcfbc26990a5cfb45ba6`。归档保留117项固定源码/测试输入、5项构建输出、19份日志及18份合成服务原件，当前实现意见与验证边界见[内审记录](main-wiring-safety-review.md)。
+
+平台agent只写 `tests/i06-main-platform/` / `docs/reviews/I06/main-platform/`，已正常合入9fc固定源；独立Docker构建完成，首轮实际运行r4无项目禁用通过，但 secure backend 前置检查得到 basic_text，未写密钥、零POST。已确认 Playwright Electron loader 强制追加 password-store=basic 等参数，该次不能作为产品原生凭据失败或通过证据；保留失败原件，改为直接启动正常 Electron 后用容器内 loopback CDP/inspector 驱动。runtime network none、无host mounts/端口映射、非privileged，不运行当前Mac窗口/native/Keychain/CUA。
+
+文档子线从同9fc完成四份接口/交接文档与专属记录，对齐提交 `11666cfcfcc15c8f5f8b164bfeaa3fad2acc464e`；原35例和5场景ID保留，新增6例，实际校验43/43通过，独立只读复核进行中。原Goal不重建、不标完成；完整S3/平台/适用I05、同候选指定双方全新全范围审查、push/PR/实际CI/远端合并核验仍未完成。未push，不改总控state。
+
+## 先前阶段记录（历史，当前以上文为准）
+
 日期：2026-10-21（Asia/Shanghai）。阶段：I02/I03/I04 真实依赖已合并，原会话继续私有凭据/持久审计/隔离平台验证实施；完整 I06 未完成。启动 get_goal 仍返回原 Goal blocked；此为工具实态，原依赖阻断已由实际合并消除，按总控接续授权推进，不重建 Goal、不宣称有 resume API、不标为 paused/complete。
 
 最新阶段：已实现 `StoredResultSource` 与 `GatewayApplication` 私有整份既存结果读取/应用服务，使用批准 I04 的实际 Store/coordinator/worker，只读来源、用户确认、完整内容复核、来源并集、定向取消和持久审计贯通合成 receiver。23项新测试通过，完整 `npm run check` exit0（793TS、1052Python、构建/静态检查）；之后预览集合硬界的一行修正完成必要lint/typecheck/23项复验。独立复核无新增阻断。首轮夹具违反单写者租约的6项失败及修正原件保留，真实保存改走同 coordinator 的 test.atomic，不绕过 Store 所有权。
