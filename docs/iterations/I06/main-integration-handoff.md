@@ -1,52 +1,46 @@
 # I06 主进程接线交接约束
 
-2026-10-21。此文件供总控按共享文件唯一 owner 责任组织接线交接；当前没有注册公共模型能力，没有要求 I05 实现 S3。有限可信字段模型/投影与 A-03 私有实际证明可基于已批准 I04 Store/worker 独立推进，不要求 I05 先合并。下列“可消费”仅指已经实现的 main 内部接口，不表示公共契约已经批准。完整验收仍按原 S3 和总控 `I05-I06-controller-completion-evidence-map.md`。
+2026-10-21；对齐开发实现 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6`，批准依赖 develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`。本文件取代此前“公共方法尚未注册”的提案口径；当前 12 个专名方法已经在本开发分支 main/preload/UI 接线，精确参数见 [命名接口](narrow-interface-draft.md)。完成度与验收待办只由 [status](../../reviews/I06/status.md) 维护，不采用 I05 未批准 C1/C2。
 
-## 现有私有模块可消费接口
+## 运行 owner 与责任
 
-| 接口                                           | 输入与结果                                                                                                     | 调用约束 / 失败行为                                                                                                                                                                                                                                                         |
-| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PrivateCiphertextRepository.open(location)`   | `{ userDataPath: absolutePath, excludedRoots: absolutePath[] }` → repository；路径 ≤4096 字符、排除根 1–128 个 | 只能由可信 main 提供真实 app userData、项目及可用导出根。固定 `model-gateway-private-v1/credentials`；任何祖先/后代相交均拒绝。POSIX owner/mode/目录身份与原始祖先信任检查失败时 `CREDENTIAL_UNAVAILABLE`。当前 Windows ACL 未实现，明确拒绝。                              |
-| `createElectronCredentialBoundary(repository)` | 现有 `CiphertextRepository` → `EncryptedCredentialBoundary`                                                    | Electron `process.type=browser` 且 app ready 后。实际 safeStorage 每次读写再次检查后端；Linux basic_text/unknown/不可用拒绝，不回退明文。factory 不打开窗口，不创建自己的 Store。                                                                                           |
-| `boundary.store(principal, secret)`            | UUID 主体、1–4096 位可打印 ASCII secret → `{ref, principal, version}`                                          | secret 只停留于 main 调用栈及平台加密 API；repo 只接收密文。生成新 ref/version，不覆写旧密文；返回不含 secret。绑定与密文内身份逐项核对。读取 secret 的 `read(ref)` 结果只允许注入 gateway，不能出 main。非法输入 `INVALID_INPUT`，平台/存储失败 `CREDENTIAL_UNAVAILABLE`。 |
-| `PersistentGatewayAudit.open(location)`        | 同上 location → `AuditSink`                                                                                    | 固定私有 `audit` 目录，与项目/Job 数据没有第二权威关系。仅 metadata；严格 UUID/用途/范围/事件/原因/规范 origin/time。已发布损坏记录拒绝恢复并保留文件，错误 `AUDIT_UNAVAILABLE`。                                                                                           |
-| `audit.append(record)`                         | 现有 `AuditRecord` → `Promise<void>`                                                                           | 临时文件独占创建、文件同步、同目录硬链接无覆写发布、删除自身临时名、目录同步及身份复核全部成功后才 resolve。失败不得发送；最终文件即使已存在也不删除，不把失败当成功确认。重开只读历史，绝不重发 intent。                                                                   |
-| `repository.close()` / `audit.close()`         | 无参数 → `Promise<void>`                                                                                       | 拒绝新操作并等待已接纳工作，再关闭目录句柄。单实例最多 32 项 private 操作，超量立即固定错误。main 不得先关闭依赖再继续发送，也不得为失败存储创建内存成功替身。                                                                                                              |
-| `new ModelGatewayCore(boundary, audit)`        | 已就绪的两个私有实例 → gateway                                                                                 | 产品默认 HTTPS；`loopback-probe-only` 仅测试可用，不由 renderer 设置。不允许 Python 或 renderer 持有 `OpenCredential`/transport。当前合成 wire payload 仍受 Q9 未决约束。                                                                                                   |
+总控已将约定的精确 14 文件交接 I06 唯一维护，见 [接收回执](shared-owner-acceptance-20261021.md)：contracts 的 index.ts/v2.ts/schema/registry/errors/fixtures/binding-regressions，main index/task-service/engine，preload index，renderer env/App/style。该权限不扩展到 Python Store/job/worker/protocol、入口 build、依赖锁/CI、CSP/窗口安全/恢复文件；新增必要变更须先协调精确路径责任。独立文档、契约、平台和只读审查各有独立 worktree，不能争写 root。
 
-`listBindings()`、`readEntries()` 是 main 内部恢复/诊断方法，不是 renderer 的凭据或审计批量查询权限。全部私有模式使用严格 schema、有限字节和已发布记录完整性摘要。SHA-256 检测损坏，不声称防御完全控制同一 OS 账号的攻击者。私有目录 0700、文件 0600；不自动修复既有放宽权限。只有 root 拥有的系统路径别名可作为原始祖先（例如 macOS `/tmp`），最终 userData 本身不能是 symlink。
+main 的 `ModelGatewayService` 为 app 唯一配置、授权与调用 owner。app profile 单实例锁阻止第二主进程继续持有旧授权。TaskService 仅把实际主项目变更通知 `selectProject`；renderer 不传项目身份。每个 context 默认 local，持有 GatewayApplication、选择/目录/预览/grant 与最多 4 活动+64 终态 ledger；切项目关闭旧 application，使旧 context/句柄失效。窗口重建保留 owner，UI 读取状态/outcome cache，不自动确认/重发。main 重启不恢复执行、grant 或旧 response，持久审计仅恢复 metadata。
 
-准入阈值为 credentials 4096、audit 10000；它们是单次观察的内部资源保护，跨进程不承诺原子计数。合法小幅并发越线仍可恢复；总目录枚举有界 11024 项（包含 pending），超过后失败关闭并保留证据。未发布 pending 不读作成功，也不自动清理其他进程可能仍在写的临时文件。禁止把这些数值写成 Q5 产品容量或性能指标。
+所有 12 个 IPC handler 先验证可信 sender/mainFrame/document，再按固定专名验证 params；mainCapabilities 不进入 Python 方法表。`handle` 复制输入，并对输出执行 validateModelResult/matchesModelResult。配置保存及来源读取后复核同一 context，旧 UI 的结构合法请求仍会被权限拒绝。字段描述、requires 闭包、whole/fields 的实际 rowCount/byteCount 和 cancellation 独立状态均贯通，UI 只按文本展示输出。
 
-## 现有授权与材料调用顺序
+## app 初始化、私有存储与退出
 
-1. 可信 owner 验证当前项目与选择，读取有权限的真实 Store/Job 结果。需要解释已有结果时，验证项目、producer、输入/版本、真实内容 hash、当前/历史身份、完整结果及依据来源；缺损/已回收拒绝，不按当前规则重算冒充旧结果。此处消费已批准 I04 的实际只读接口，不读取未合并 I05 候选；I05 特有业务语义按之后实际可用能力另验，不自行定义第三份协议。PRD 附录 D/F 已允许明确选择不可变历史版本，需持续展示实际 version、read-time-state 与历史身份；不能静默从 current 降为历史。
-2. main 调用 `registerMaterial({projectId, scopes, kind, text})` 建立不透明 handle；`kind` 为 selected/tool/history/summary/error。不得使用 renderer、Python、模型文本或导入内容自报的 scope 作为授权事实。派生材料的输入 scope 并集只是范围边界，不证明任意 text 来源。A-03 需要从实际有限结构化 Store/worker 输出和 main-owned producer shape 模型建立字段目录/投影，工具/历史/摘要/错误只通过已授权字段重建字节，无法证明来源的任意 text 拒绝；whole-result 不替代选中字段授权。当前 core 的 `deriveMaterial` 低层接口不能单独作为字段来源验收。每份最多 256 scope，调用至多 64 份材料，总唯一 scope 也至多 256；超限在建立审计 metadata 前 `INVALID_INPUT`，不截断来源。
-3. `configure({id, endpoint, credentialRef, principal, credentialVersion, model})`，返回 `{id, version}`。配置 ID 是身份，不是显示名；当前 core 没有显示名字段。相同规范配置复用版本；endpoint/主体/凭据版本/model/新身份变化撤销对应 grant/preview 并取消关联等待，不改变领域 staleReason。
-4. 项目默认 local。经明确用户选择用 `setPrivacy(projectId, minimal|project)`；`previewAuthorization({projectId, configId, purpose, scopes})` 返回真实规范 endpoint、主体、配置版本、范围、隐私档。真实 UI 展示该预览后，可信确认动作才调用 `confirmAuthorization(previewId)`。不得由后台自动确认，或将工具读取权自动视为外发同意。
-5. `invoke({projectId, configId, grantId, purpose, materials})` 只用 main 已复制的字节和 handle。凭据、持久审计及 socket 发送前逐次重检。撤销用 `revokeAuthorization(grantId)`，项目关闭用 `closeProject(projectId)`，材料释放用 `releaseMaterial(id)`。窗口重连只查询既有状态，不重新 invoke/确认。网络错误不自动重放；429/503 至多一次内部重试，每次重新检查并先持久记录。
+| 模块                                           | 实际约束                                                                                                                                                                             |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PrivateCiphertextRepository.open(location)`   | main 提供 app userData 与实际 Store db/wal/shm 排除根；固定私有目录，POSIX owner/mode/原始祖先/目录身份复核。Windows ACL 尚未实现时明确拒绝。任何相交根拒绝。                        |
+| `ConfigurationRepository`                      | 仅非秘密配置与凭据 binding，严格有界；串行 owner、持久 CAS/发布。持久结果不确定则 fail closed，不能继续用旧内存配置/grant。                                                          |
+| `createElectronCredentialBoundary(repository)` | app ready 后实际 Electron browser safeStorage；Linux basic_text/unknown/不可用拒绝，无明文回退。secret 仅传平台加密 API 和唯一网关，不出 main。                                      |
+| `boundary.store(principal,secret)`             | secret 为 1–4096 可打印 ASCII；主体/ref/version 由 main 生成，密文严格绑定，生成新 immutable 记录，不覆写旧密文。公开 store 另核对 expected configurationVersion，并返回新配置版本。 |
+| `PersistentGatewayAudit`                       | 只保存受限 metadata；独占 temp、fsync、同目录无覆写发布、目录同步/身份复核后才准发送。损坏记录拒绝恢复并保留，失败不能补造成功。恢复不重放 intent。                                  |
+| `ModelGatewayCore`                             | 产品 HTTPS，仅 main 私有测试 policy 可用 loopback；凭据、持久 audit 和 socket 发送前重检；拒绝 redirect，429/503 最多一次内部重试。响应 1MiB、fatal UTF-8 解码。                     |
 
-版本与发送窗口：发送的是 main 核验的用户已选版本副本及读取时状态，不承诺发送瞬间仍 current。实际读回后到 socket 之间的跨 Store 变化窗口、检测到变化时的保守拒绝及明确历史选择必须向指定双方披露。原 FR-902/S3 没有要求所有写者/socket 原子互锁，live-current lease 仅是更强持续 current 保证的候选增强，不自动增加原验收阻断；凭据/授权/最终载荷检查仍在真实发送边界执行。
+私有目录 0700/文件 0600，最多 32 项 private 操作；credentials admission 4096、audit 10000、总枚举 11024（含 pending）。内部资源界限不是 Q5 容量承诺；并发越线不宣称跨进程原子计数。pending 不当成功、不删除其他进程可能仍写的原件。SHA 只检测损坏，不防御完全控制同一 OS 账号者。旧密文不自动回收，产品回收策略仍需后续设计。secret 录入控件提交后清除，但 JS 字符串不承诺物理内存清零。
 
-生命周期应由主进程项目服务持有，与可重建窗口分离。模型模块初始化、超时、凭据不可用或审计失败只能禁用相应模型操作；不得使本地 Store 启动/保存/历史读取依赖模型初始化成功。接线时需要真实 Store 保存/失败隔离与窗口重建证据，当前独立模块和 loopback probe 不能代替。
+模型初始化独立于 Store/窗口启动，失败只让模型 unavailable；不能创建内存“成功”仓库替代磁盘错误。退出先取消模型等待并排空私有操作，再停止 tasks/engine，整体等待上限 5 秒；同步 OS 凭据提示无法靠 JS timer 撤销，不能将退出上限表述为平台提示已可取消。当前 Mac 不启动 GUI/Keychain，实际原生行为在隔离环境或授权窗口验证。
 
-## 未来公共契约扩展：尚未批准
+## 真实配置与调用顺序
 
-- 当前 contracts 没有 S3 公共 capability，不直接把私有 zod 类型或方法名注册成 IPC/JSON-RPC。新版本由唯一公共 owner 冻结 TS/Python schema、registry、正反例及安全错误，之后才接 main/preload/UI。
-- 凭据录入需要最窄的受信调用，输入只用于 main 加密，响应不回显；不得新增通用 `request(method, params)`、任意 URL/headers/body 转发、secret 读取或批量 vault 导出。是否持久化非秘密模型配置、凭据轮换/旧记录回收策略仍需正式生命周期设计，不将当前不可变文件当可无限积累的产品方案。
-- [I03 错误 disposition 读回](public-error-requirements.md) 保持：现有通用错误仅安全兜底；精确网关错误需要新契约/公共正反例和完整双审。固定 params、messageKey、retryable 来自批准表，不透传 upstream body、路径、平台异常或凭据。未来公共取消是独立结果分支；当前私有 `CANCELLED` 不能原样作为公共错误或领域 staleReason。retryable 不授权 bridge/重连自动重发，写任务先对账。
-- Q9 模型协议未决；当前 `{model,parts}` / 合成字符串响应不是公开支持的 provider 协议、结构化输出或工具调用。不得借测试静默冻结 provider。
+1. `configureModel` 新建为 configurationId/configurationVersion 双 null，更新为双 UUID，后者必须匹配 owner 版本。endpoint 规范化后变化产生新版本并清凭据，key 不沿用到新目标；model 变化更新版本但可保留同 endpoint binding；displayName-only 保留身份/version。凭据轮换必须带预期配置版本，生成新配置版本并撤销对应预览/grant。
+2. `selectModelResults` 真实完整读取批准 I04 来源；批次成功替换，失败保留旧选择。`getModelFieldCatalog/selectModelFields` 只接受 main 有限模型产生的 catalog/field ID，包含类型、nullable 和 requires 闭包。普通生产模型列表为空，未知 shape 拒绝；有限 launch fixture 是 main 绝对 path+env+unpackaged/test-runtime 条件，不由 renderer 开启。
+3. 用户明确设置 minimal/project，main `previewModelExplanation` 重读来源并返回精确 endpoint/配置版本/主体/范围/状态；确认动作才签发 grant。reusable 由 main scope/版本/privacy/purpose 计算，UI 不自报。字段 grant 与 whole-result 分开，允许同源且已选字段不变的新真实 worker 结果复用授权，不把未选列带入。
+4. `startModelExplanation` 立即登记 invocationId/running，异步失败由 `getModelExplanationOutcome` 独立 failed 分支返回。cancel 只对单 invocation，cancelling 不等于远端未收；cancelled.externalEffect=unknown。释放选择/中间派生祖先定向取消所有依赖后代；窗口重连、retryable 或 audit 恢复都不重新 invoke。
+5. 实际 EngineError 使用批准 catalog/受限参数；10 个固定 GATEWAY_* 错误 params={}、retryable=false；格式错误固定 INVALID_REQUEST 的 field=params。内部 CANCELLED 只投影独立 cancelled，不透传 raw error/body/path/key。endpoint 已变且未新录入凭据时 start 先拒绝 CREDENTIAL_UNAVAILABLE；新凭据录入后旧 grant 仍已撤销，不能借重新 running 绕过异步授权检查。
 
-## 涉及的共享文件及交接后检查
+## 来源、字段与证据边界
 
-以下仅列未来接线面，本阶段未修改；具体变更需在总控交接唯一 owner 后落地并纳入同一候选双审：
+`StoredResultSource` 固定实际 EngineSupervisor/项目，读取 project/result/job/全页 rows 并重读身份；无第二 SQLite writer，不重算 evicted 历史。metadata/hash 不是外发权限。明确历史版本是 PRD D/F 已允许语义；current 不静默降为 historical，UI 展示实际 version、read-time-state、选择模式。读回到 socket 的跨 Store 变化窗口必须披露；检测到变化时保守拒绝，发送边界仍重检配置/凭据/grant/材料。原 S3 不要求所有写者/socket 原子 live-current lease；更强持续 current 承诺才另审。
 
-| 共享面                     | 当前文件 / 范围                                                                                | 应核对的行为                                                                                                                     |
-| -------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| main 生命周期与受信 sender | `apps/desktop/src/main/index.ts`、`task-service.ts`、`trusted-document.ts`、window-*           | 私有实例 app ready 后初始化/退出排空；sender/mainFrame/document 门；项目切换/关闭、重连不重放；模型失败不阻断 Store。            |
-| 窄 bridge / 展示           | `apps/desktop/src/preload/index.ts`、`apps/desktop/src/renderer/src/App.tsx`、env/呈现相关文件 | 明确用户同意和窄方法，禁止秘密查询；安全错误和独立取消分支贯通，不信任 UI 自报身份/范围。                                        |
-| 唯一公共协议               | `packages/contracts/src/`、`packages/contracts/v2/`、`packages/contracts/python/`              | 同一版本 schema/registry/fixtures/错误映射，Python 不得新增模型凭据或外发入口。                                                  |
-| 真实 Store/结果/导出       | I05/I04 所有的实际服务与持久化实现                                                             | 从真实权限与不变结果派生材料；用合成标记核验实际可用保存/导出/普通日志排除，模型失败、重连不破坏保存。不存在的导出器不伪造成功。 |
-| 构建/入口/依赖/CI          | app build/package 脚本及共享 CI、锁文件                                                        | 正式打包确实包含唯一 gateway；真实候选运行链和实际平台 CI，不以纯模块测试替代。当前不要求新增依赖。                              |
+有限字段来源模型绑定完整 main policy digest、producer/definition/精确 implementation、项目/输入/参数/依赖和实际有序字段值。目录绑定具体 result/job/完整副本以重读，scope 身份另允许同源不变字段复用。tool/history/summary/error 仅用允许投影重建；无法证明的任意 text 拒绝。外发不含原 row UUID/ordinal、未选列与相关派生值、完整输入/参数 hash。原 UUID/ordinal 泄露反例及祖先释放反例已在字段阶段修复，按原 hash 保全，不以新漂移源码代替旧证据。
 
-隔离 Linux 实测、实际文件故障与内部独立审查的结果只按各自 source hash/环境引用。macOS/Windows 平台加密、Windows ACL、签名升级/干净设备保持待验。完整正式链和指定 GLM-5.3/最高、MiniMax M3.1-Flash/xhigh 同一冻结候选双审通过前不 push；之后仍须 PR→develop、实际 CI 和远端合并核验。
+当前策略是固定 main 合成 policy + 批准 test.read echo worker。static dependsOn 不是 worker 计算出的生产溯源；未批准 I05 的 `i05-finite-3` 不作为最终常量。真正 I05 特定业务模型仅在其新语义实际批准合并后绑定、刷新冲突并重验。A-03 有限证明不要求全 M1 CSV、恰好两个 API 或 I05 编号前置。
+
+旧私有字段实际请求完整字节已有执行断言，独立 probe 未保存成功 HTTP 原 body，不能声称独立重扫归档正文。新正式平台证据须在忽略目录保存仅合成 receiver 完整 body 和 hash，排除 headers/凭据/业务数据；产品日志/导出仍不记录 payload。当前批准基线无导出入口，不能用不存在的导出器或 mock 计通过。Q9 真实 provider 未决不阻止既定合成 S3 验证，也不使 `{model,parts}` 自动成为公开 provider 协议。
+
+本次文档对齐仅执行四个同版 validator、ID 保全和格式检查；已有 998 TS/1052 Python/check/source12 是根线固定实现验证回执，本子任务不重复或扩写为平台通过。新 main/preload/UI/safeStorage/Linux 实际运行及其他平台、完整指定 GLM-5.3/最高 + M3.1-Flash/xhigh 同版全范围双方审查、PR/实际 CI/远端合并均以 status 追踪；旧私有 Linux 结果不继承为当前全候选通过。

@@ -1,27 +1,31 @@
-# I06 既存结果可信材料阶段
+# I06 既存结果与有限字段实施记录
 
-2026-10-21，接续 `4ace4c4`；现场远端 develop 仍为批准的 `5f910b52`，原 Goal 工具保持 blocked，但按接续授权推进原目标，不重建。AGENTS 两处 SHA `db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786` 不变。完整 scope/Goal（含第九节）和当前 parallel-coordination/state 已读回；无额度告警，不兑换或新增支付。I05 未合并源码不作为接口批准依据。
+2026-10-21；本页对齐固定开发提交 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6`，批准依赖仍为 develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`。原 `4ace4c4`/`1911ce1` 整结果阶段记录与 source-bound 失败/验证原件保留；本页更新当前接口，不重写历史证据。完整状态由 [status](../../reviews/I06/status.md) 维护。
 
-文档纠偏（2026-10-21）：保留以上接续 checkpoint 与旧证据。明确历史选择是 PRD 附录 D/F 已有语义；跨写者/socket 的持续 current lease 不是原 S3 自动前置。A-03 可用有限真实结构化 Store/worker 输出+main 可信字段模型/投影+actual receiver 字节反例证明，不要求全部 M1 CSV/单元格溯源、特定两个公共 API 或 I05 先合并。
+## 实际来源与选择
 
-已批准依据：coordinator `_authorize` 对 main 注入 allowedProjects 检查；`project.get` / `result.get` / `job.get` / `result.page` 是真实运行读取方法。result_get 检查实际项目，分页绑定 project/result/inputSnapshot/scope/parametersHash；producer job 返回持久成功状态、resultRef 和版本。当前 schema 没有整结果正文 hash 或字段级 provenance，scope 只是图层。当前真实 producer 只有 test-mode `test.*`，业务 producer 仍 design-only。
+`StoredResultSource(engine,mainProjectId,producerPolicy='runtime-only')` 固定 supervisor/项目，只用批准 project.get/result.get/job.get/result.page，复用严格 V2 校验及 allowedProjects；不直接开 SQLite 或新增 RPC。逐项核对成功 producer/job/resultRef、输入/参数/定义/依赖/执行版本、current/historical 与 payloadStatus；完整固定分页、顺序/重复/循环/行字节上限检查后重读 result/job/session。任何失败丢弃片段，evicted 不重算冒充历史。
 
-## 独立实施与唯一文件责任
+`load({resultId,selection},signal?)` 返回 main 复制的 metadata/bodyText/bodyHash/sourceFingerprint；正文包含真实整份 metadata+rows，hash 仅用于一致性。`GatewayApplication.selectStoredResult` 签发 whole-result 材料并返回实际 rowCount/byteCount。公开 `selectModelResults` 批次成功才替换，失败释放新临时材料保留旧选择；选择替换/清空会定向取消依赖旧来源的活动调用。
 
-- 根只新增 `main/model-gateway/stored-result-source.ts`、`gateway-application.ts`，必要维护同目录 gateway 的私有定向取消边界，新增专属 I06 Store/worker/receiver 测试与 I06 文档。整份结果只读材料从实际 EngineSupervisor 读取，不直接访问项目 SQLite 或新增 RPC。范围/正文/生产者不由 renderer 提供。
-- 只读 independent agent 核对批准接口与之后新代码/真实探针，不修改实现。草案 agent 使用新独立 `I06-narrow-interface-draft` worktree / `feature/I06-narrow-interface-draft`（base4ace4c4），只写 narrow-interface-draft.md / narrow-interface-examples.json；不争写根源码。之后正常 merge，不 push。
-- I05 继续唯一维护共享 contracts/registry/errors、Store/job、main index/preload/bridge/UI/runtime/entry/build/locks/CI。公共窄接口只是提案，不能注册或假称批准。
+来源加载每实例最多 4 项，单次和整批重读各 5 秒预算；固定 64 行/页、最多 64 页/1024 行，整份实际 UTF-8 64KiB，超限拒绝不截断。选择与读取检查不授予外发；默认 local，预览真实范围后仅用户明确确认签发 grant。发送再重读完整来源，core 发送边界重检授权、配置/凭据和实际材料。
 
-## 读取与外发边界
+PRD D/F 已允许显式不可变历史选择，无需再次产品批准。展示实际 result/input/version、读取时 state、历史身份；检测到 current 变化保守拒绝，不静默降级 historical。最后异步读回与 socket 间存在跨 Store 观察窗口；只发送已核验所选版本副本，不声称发送瞬间仍 current。原 FR-902/S3 不要求跨全部写者/socket 原子 lease；仅新增更强持续 current 承诺时另审。
 
-固定 main 项目上下文和 EngineSupervisor；选择输入只有结果 UUID 与 current/historical 选择。读取 project/result/producer job，验证结果引用、输入/参数/图层/定义/依赖/执行版本；默认拒绝历史/过期，显式历史选择保留真实状态。按首次 binding 固定 pageSize 读取全部分页，检查顺序/重复/循环、字节/页数边界；任何失败或回收丢弃所有片段，不能截断。读完重新检查 result/job 与引擎会话，项目关闭/取消丢弃晚到结果。
+## 有限字段实现与 A-03
 
-材料正文包含真实来源 metadata 与整份 rows；本地对实际复制字节计算 SHA-256，只用于内容副本比较。它不是 Store 签发的结果 hash，不授予读取或外发许可。外发范围是 main 签发的不透明整结果材料 scope，不将图层、输入 hash、resultId 或普通摘要冒充字段级授权。整结果范围不能替代 A-03 字段授权；派生输入来源并集本身也不证明任意正文来源。有限字段投影阶段须基于固定 main-owned producer shape 模型和实际完整 body rows，签发绑定模型版本/项目/结果/输入/副本的 opaque field IDs；renderer 只选 IDs。工具/历史/摘要/错误只从结构化允许字段重建，未知/嵌套/不符形状或无法证明来源的任意 text 拒绝，不做自然语言污染分析。此为实施边界，具体私有 API 待实际实现后对齐，不声明已通过。
+`StoredFieldProjector` 在实际 load 的结构化 rows 上应用可信 main 固定模型。模型精确绑定 producer/definition/kind/implementation/tag/全字段宽度，最多 16 个平坦 scalar 字段，复制冻结完整 policy，验证索引/键唯一及依赖无环并取传递闭包。未知/嵌套/不符形状拒绝。`getFieldCatalog` 对应公开 `getModelFieldCatalog` 返回 1–16 个 `{fieldId,label,type,nullable,requires}`；`selectFields` 对应公开 `selectModelFields` 仅收 main 签发 ID，重读来源并要求依赖闭包，返回实际投影 hash/行数/字节数与展示字段描述。
 
-应用服务在预览和每次 invoke 前读回完整来源，拒绝内容或选择身份变化；同一不可变来源可复用 grant。它选择的是结果/输入的不可变材料副本及“读取时状态”，不是 live-current lease。最后异步读回与最终 socket 之间不能原子观察另一个 Store 进程的变化，必须披露该窗口及实际保守拒绝行为给正式接线与指定双方。PRD 已允许明确选择不可变历史输入，发送内容需标明实际 version/read-time-state/历史，不能静默降为历史；原 FR-902/S3 没有要求所有 Store 写者与 socket 原子锁住，因此缺少持续 current lease 或历史语义的再次批准不作为原验收自动阻断。若以后承诺更强“发送瞬间始终 current”/实时撤销，才另审共享 lease/epoch 与全部写入/关闭路径协调；现有 hash/最后一次异步读不证明该更强保证。
+catalog 绑定具体 result/job/完整副本；授权 scope 另绑定完整模型 digest、项目/producer/定义/输入/参数/依赖/精确执行版本和实际有序字段值/行身份，允许第二个同源且授权字段未变的真实 worker 结果复用原 grant。最终 body 只含选中字段和允许来源摘要；用投影密集 ordinal 替代原 rowUUID/ordinal，不含未选列/派生值、完整输入/参数 hash。tool/history/summary/error 仅重建允许投影，任意 text 无法证明来源就拒绝；完整来源祖先释放取消后代调用。
 
-## 真实联验与保留边界
+当前有限模型是固定 main 合成 policy，来源是批准 test.read echo worker，privateDerived 值由合成夹具准备，dependsOn 为静态 policy，不能说成真实业务语义派生或通用生产溯源。普通生产 fieldModels=[]/runtime-only；index 只在既有可信 main 绝对 path+同值 env 的 unpackaged/test-runtime launch fixture 开启有限策略，不能由 renderer、result tag 或公共参数选模型。当前批准业务 producer 仍 design-only；不采用 I05 未批准 C1/C2 或固定其旧 executionSemanticsVersion 为最终生产来源。
 
-用本 worktree 自有 Python 环境、真实 JobStore/常驻 coordinator/隔离 worker 制备 test.read 结果，经实际只读 RPC 进入新应用服务，使用实际持久 audit 和动态 loopback receiver；覆盖无授权、跨项目、完整多页、历史选择、损坏/回收/错误绑定、项目关闭/定向取消、来源并集及发送失败后的真实 Store.commit 保存。凭据只用合成 double；前阶段实际 Linux safeStorage 证据按原 hash 保留，不重复平台不变测试。本机不启动 Electron/GUI/HMR/Keychain。
+原 A-03 是授权选中字段后工具返回其他列，其值及相关派生值不得进入下一次实际模型请求。有限真实 Store/worker+main 模型/投影+receiver 全 bytes 可以证明 M0 有限要求；不要求 M1 全 CSV 单元格溯源、恰好两个 API 或 I05 编号前置。whole-result/hash/random scope/self-label 不能替代。I05 特定实际材料在其新语义批准合并后另绑定与重验。
 
-整结果链验证 I04 合成基础设施结果，不能冒充查询/推理/SHACL，也不能单独算 A-03 通过。后续有限字段模块可在这条真实结构化 Store/worker 链上验证：工具返回包含选中字段与其他列的标记，actual receiver 对最终完整请求 bytes 断言其他列/其派生值零外发，同时拒绝伪造字段、跨模型/版本和任意 text。完成该实际证据即可作为 M0 A-03 的有限证明，不以全部 CSV/单元格来源或 I05 为前置；真实 I05 特有语义之后另验。正式 main→bridge→UI、可用导出日志排除及窗口失败隔离、其他平台缺口和指定双审仍按原 S3 保留；Q9 真实协议不作为本合成 S3 的自动前置条件。
+## 文件责任、验证与后续接线
+
+根线持有 model-gateway 实现/真实来源测试及总控正式交接的精确 14 共享文件；契约、平台、文档、只读审查分别在独立 worktree 按任务唯一文件责任推进。Python Store/job/worker/protocol、build/锁/CI/CSP/恢复不在交接范围。此文档线只写 narrow-interface-draft/examples、main-integration-handoff、stored-result-plan 与自身对齐检查，不改 root、实现、状态或控制文件。
+
+整结果阶段 [manifest](../../reviews/I06/evidence/stored-result-20261021.json) 与 [内审](../../reviews/I06/stored-result-review.md)、有限字段阶段 [manifest](../../reviews/I06/evidence/finite-fields-20261021.json) 与 [内审](../../reviews/I06/finite-fields-review.md) 按原源码 hash 保留。字段阶段真实 Store/coordinator/worker、原 grant、四种投影、完整请求字节断言、UUID/ordinal 零泄露与祖先释放取消/零 POST 有原执行记录；独立 probe 未归档成功 HTTP 原正文，不能声称独立重扫归档 body。后续正式平台测试保存仅合成完整 receiver body 和 hash 于测试忽略证据，不保存 headers/真实 key/业务数据，不进入产品日志。
+
+本次实际检查仅同版四个 contract validators、原 35 例 ID/5 场景 ID 保全与文档格式，见 [对齐检查](../../reviews/I06/interface-alignment-review.md)。根线已有 998 TS/1052 Python/check/source12 回执按固定源归属，不由本页冒充复跑。新 main/preload/UI/safeStorage/Linux 平台线正在准备，其他平台和真实窗口/保存/日志隔离、完整 S3 同版指定双审/PR/CI/远端合并由 status 跟踪。无当前导出入口即无该项实际导出测试，不能发明 mock 通过；Q9 provider 选择不因合成链冻结。模型初始化失败隔离、单 profile owner、5 秒退出等待及严格 UTF-8 响应已接入代码，运行结论必须由新平台证据支撑。
