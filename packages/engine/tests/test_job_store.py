@@ -330,7 +330,7 @@ def test_f6_summary_real_rounds_terminal_result_page(store, pending):
         pending,
         int(pending),
     ]
-    assert page["nextCursor"] is None
+    assert page["nextCursor"] is not None
     assert store.history(progress["runId"])["terminal"]["status"] == "succeeded"
     assert store.cancel_job(store.project, job["jobId"])["state"] == "succeeded"
 
@@ -998,3 +998,129 @@ def test_removal_input_shape_rejected_without_effect(store, removals):
     with pytest.raises(ValueError):
         store.commit("legacy-project", 0, uid(), uid(), remove_definitions=removals)
     assert list(store._db.iterdump()) == before
+
+
+def stored_derived_fixture(s):
+    """Real immutable storage metadata only; no semantic executor or capability is opened."""
+    job = create(s, "reasoning.execute")
+    s.start_job(job["jobId"])
+    return s.finish_read_job(job["jobId"], [], kind="reasoning")
+
+
+def test_existing_full_acceptance_is_idempotent_after_derived_source_payload_is_evicted(store):
+    s = store
+    source = stored_derived_fixture(s)
+    original_input = {**source["input"], "derivedResultIds": [source["resultRef"]["resultId"]]}
+    operation = uid()
+    accepted = s.create_job(s.project, operation, "test.read", original_input, None, IMPL, LIMITS)
+    stored_derived_fixture(s)  # Same result identity is now a newer immutable result.
+    assert source["resultRef"]["resultId"] in s.collect_cache()
+    assert s.result_get(s.project, source["resultRef"]["resultId"])["payloadStatus"] == "evicted"
+    assert (
+        s.create_job(s.project, operation, "test.read", original_input, None, IMPL, LIMITS)
+        == accepted
+    )
+    # A new acceptance still requires actual available source payloads.
+    with pytest.raises(JobFault, match="IDENTITY_CONFLICT"):
+        s.create_job(s.project, uid(), "test.read", original_input, None, IMPL, LIMITS)
+    assert s.get_job(s.project, accepted["jobId"]) == accepted
+
+
+@pytest.mark.parametrize(
+    "changed", ["capability", "definition", "parameters", "derived", "implementation", "limits"]
+)
+def test_existing_claim_compares_every_complete_caller_binding_even_after_eviction(store, changed):
+    s = store
+    source = stored_derived_fixture(s)
+    input_ = {**source["input"], "derivedResultIds": [source["resultRef"]["resultId"]]}
+    operation = uid()
+    s.create_job(s.project, operation, "test.read", input_, None, IMPL, LIMITS)
+    stored_derived_fixture(s)
+    s.collect_cache()
+    capability, implementation, limits = "test.read", dict(IMPL), dict(LIMITS)
+    if changed == "capability":
+        capability = "query.execute"
+    elif changed == "definition":
+        input_ = {**input_, "definitionId": "different"}
+    elif changed == "parameters":
+        input_ = {**input_, "parametersHash": s.put_blob(s.project, {"workMs": 1})}
+    elif changed == "derived":
+        input_ = {**input_, "derivedResultIds": []}
+    elif changed == "implementation":
+        implementation["engineVersion"] = "0.2.0"
+    elif changed == "limits":
+        limits["totalMs"] += 1
+    with pytest.raises(JobFault, match="IDENTITY_CONFLICT"):
+        s.create_job(s.project, operation, capability, input_, None, implementation, limits)
+
+
+def test_existing_atomic_acceptance_keeps_full_frozen_plan_after_later_revision(store):
+    s = store
+    original = create(
+        s, "test.atomic", plan={"definitions": [{"layer": "rule", "id": "R", "value": {}}]}
+    )
+    atomic_plan(s, {"definitions": [{"layer": "rule", "id": "different", "value": {}}]})
+    assert (
+        s.create_job(
+            s.project,
+            original["operationId"],
+            original["capability"],
+            original["input"],
+            original["confirmationRef"],
+            IMPL,
+            LIMITS,
+        )
+        == original
+    )
+    # A distinct genuine confirmation for another complete plan is not interchangeable.
+    other = create(
+        s, "test.atomic", plan={"definitions": [{"layer": "rule", "id": "different2", "value": {}}]}
+    )
+    with pytest.raises(JobFault, match="IDENTITY_CONFLICT"):
+        s.create_job(
+            s.project,
+            original["operationId"],
+            original["capability"],
+            original["input"],
+            other["confirmationRef"],
+            IMPL,
+            LIMITS,
+        )
+
+
+def test_existing_claim_rechecks_frozen_parameter_body_not_only_caller_hash(store, monkeypatch):
+    s = store
+    original = create(s, parameters={"workMs": 1})
+    monkeypatch.setattr(s, "blob", lambda *_: {"workMs": 2})
+    with pytest.raises(JobFault, match="INVALID_STATE"):
+        s.create_job(
+            s.project,
+            original["operationId"],
+            original["capability"],
+            original["input"],
+            None,
+            IMPL,
+            LIMITS,
+        )
+
+
+def test_existing_round_claim_rechecks_frozen_event_blob_binding(store, monkeypatch):
+    s = store
+    original = create(s, "test.rounds", parameters={"maxRounds": 2, "events": ["a"]})
+    events_ref = s.job_context(original["jobId"])["runConfig"]["eventsRef"]
+    actual_blob = s.blob
+    monkeypatch.setattr(
+        s,
+        "blob",
+        lambda project, ref: ["changed"] if ref == events_ref else actual_blob(project, ref),
+    )
+    with pytest.raises(JobFault, match="INVALID_STATE"):
+        s.create_job(
+            s.project,
+            original["operationId"],
+            original["capability"],
+            original["input"],
+            None,
+            IMPL,
+            LIMITS,
+        )
