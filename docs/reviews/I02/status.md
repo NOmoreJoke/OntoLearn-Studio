@@ -1,7 +1,7 @@
 # I02 / C1 状态
 
 - 会话：01a15677-7ea3-7da1-b77b-c253d5815815；唯一功能：显式 CSP 与窗口生命周期。
-- 当前阶段：Round 2 修订验证完成，正在本地冻结新候选；PR #3 仍未合并，新修订尚未push。旧Round1通过不沿用。
+- 当前阶段：Round3 同版双审实际通过，原报告勘误及最终独立核验完成，流程证据提交/推送中；PR#3尚未合并，新版真实CI尚待。用户最新允许续接原审查应用，双方已收到禁止新增本机测试窗口的约束。最新详情见本文末。
 - 分支：feature/I02-csp-window-lifecycle；base：1b6df7a220fc9a67d7046133a340085f03f0a96c；Round2 head见下方实际冻结记录。
 - 需求：../../iterations/I01/inputs/goal-objective.md 第四节完整提示词，scope.md I02，m0-review-and-update-plan-2026-10-19.md C1；PRD V0.6 8.7/10.3/10.4/12.5。
 - 已核验 origin 与 develop；已安全快进本地 develop 后新建分支。唯一冲突 I01/status.md 按 before-I02 备份恢复，64 项哈希全部一致。
@@ -106,3 +106,55 @@
 - 新完整check退出0（15TS/198Python），verify:sources13成功；三环境运行验证进行中。改测试后旧双审不沿用，待Windows本次结果与本地验证齐备，冻结新candidate，两应用均新建Round3任务重新独立审查。原90s超时根因仍未证明，不以此次具体断言诊断替代。
 
 - Round3冻结前验证已齐：build2/2、真实packaged2/2、development1/1全部通过，原始日志/矩阵/sha见round-3/candidate-validation.json。Windows旧head最终也仅因同一killed/crashed断言失败，后续desktop通过；原始日志已归档，未取得Windows完整matrix，不夸大。16项新freeze仅测试断言hash变化，64保护保持；待本地新提交后双方全新Round3任务，不提前push。
+
+## Round 3 候选冻结并已派发双新任务
+
+- base1b6df7a → candidate `09a2e6648edfb465debe47bc9fb15e2c6f23e088`，本地提交29文件，仅一处受审测试断言+其注释，其余为freeze/流程与原始证据。未push，PR仍7e26155且旧CI失败。
+- git archive独立verify:sources12成功，工作区13；16新freeze与64保护0差异，candidate后受审路径diff为空。详见round-3/review-start-integrity.json。raw日志空白告警仅流程材料，测试源检查无告警；Windows日志原字节另gzip保留。
+- ZCode已新建本轮空白任务，Open/GoTo精确root并Open，GLM-5.3 popup selected非Flash、最高selected、feature当前分支selected；完整原范围prompt发送后实际工作中1秒/停止生成。
+- MiniMax已在当前精确root项目中新建空白任务，sidebar及路径tooltip核验全路径，M3.1-Flash popup value1、xhigh/local/current feature实际显示；完整同版prompt发送后实际已执行4秒/停止生成，任务标题“审查 I02 CSP 与窗口生命周期迭代 Round 3”。
+- 两方任务source/prompt hash及报告路径在round-3/tasks.json。仅GLM先运行构建/桌面，MiniMax先静态/单测等待资源释放；两方当前轮意见不互相披露。尚无本轮报告，不push/merge，不进入后续迭代。
+
+## 2026-10-20 无桌面打扰约束已落实
+
+- 已重新读取最新 AGENTS 第4/5节与仓库外过渡 policy；停止新增或授权本机测试窗口、焦点操作和外部审查 UI 操作，不为传达限制而 Raise。操作约束尚待无干扰方式传达，未声称外部审查者已收悉或应用队列已取消。
+- 本任务测试进程未检出、5173 无监听，无需清理进程；未结束用户应用。HEAD 仍09a2e66，16冻结/64保护零差异，受审路径diff与暂存区为空。规则变更不修改候选、不重建原Goal/原R3任务。
+- GLM既有check、sources和构建态2/2输出已保全，R3报告未生成。MiniMax新报告文件写为Pass、0阻断/3低，已全文读回并保存三态矩阵；实际任务结束状态尚未确认。报告“已获运行释放”的说法与本会话最后资源待答记录存在来源差异，保留原文待无干扰方式澄清，不能据文件存在判定双审闭合。
+- 详见round-3/desktop-execution-hold.md、desktop-hold-integrity.json及runtime-preservation-manifest.json。缺失桌面项保留待隔离环境验证；不降低验收，不重跑未变更代码。当前不push新候选、不merge；本会话不启动其他迭代，不改总控state。
+
+- 已实际接收并读取最新Goal提示词第九节、AGENTS/scope效率与额度恢复条款，来源hash与适用边界见round-3/execution-policy-receipt.json。未发现本任务额度耗尽证据，未触发重置或充值；保持原Goal与门禁，外部审查任务的无干扰续传仍待条件。
+
+- 已接收总控额度协调安排：三平台/账号唯一额度协调者为总控会话01a154de-843b-7a00-8a80-51ba1c0aebce。本开发线遇明确受限时仅报平台/任务/证据，不并发消费重置；无告警不兑换。最新AGENTS SHA实测与总控提供值一致：True。不改候选、Goal或其他开发线文件；外部审查约束仍待无干扰方式传达。
+
+## 当前阻塞审计
+
+- 相同阻塞已连续三个工作回合：缺少可用的无干扰方式向原双审任务续传约束并核实终态；GLM报告仍缺失，MiniMax文件通过不等于任务实际结束。现有可调用工具无两应用的非UI续传入口，不能为推进而Raise/点击，也不能用重复静态测试替代。详见round-3/blocked-audit.json。
+- 本次已实际读取PR#3：OPEN，base仍1b6df7a，head仍7e26155；Quality/Windows失败、macOS成功，均为旧head终态。新候选09a2e66未推送，不合并。
+- 按Goal连续阻塞规则已实际标记blocked；这不取消目标、不改候选、不缩减验收。恢复条件：可用的正式无干扰原任务续传/终态核验方式，以及缺失桌面验证所需的隔离环境或用户明确测试时段。总控与其他独立worktree工作不受本阻塞扩展影响。
+
+## 恢复后的第一轮安全推进
+
+- 原Goal已恢复active；重新计连续阻塞审计，不沿用上次blocked次数。HEAD仍09a2e66，GLM报告仍缺失，MiniMax报告hash未变。
+- 已找到并执行安装包内ZCode CLI的help-only命令（exit0、0.16.9），确有--resume/--prompt；未发送prompt或续跑任何session，未创建替代审查。原R3 session ID及桌面模型/账号设置兼容性尚未核验，不能使用--continue猜选最新任务。未调用未建立公开契约的app-server私有方法。MiniMax官方CLI与桌面接管范围有区别，本机官方安装路径也无mcode。记录见round-3/non-gui-route-investigation.json。
+- 已备妥两个原任务各自的执行约束续传稿与hash（tasks.json），互不披露本轮意见；尚未发送。已向用户请求可用原任务ID/入口或独立桌面/明确可用时段，等待期间不得把未回复视为授权。没有新增桌面运行、重置或付费，也不重跑未变更代码。
+
+## 恢复后连续三回合阻塞
+
+- 本次恢复重新计数：第一回合发现ZCode官方CLI，第二、三回合确认原任务身份/无干扰续传条件仍缺，GLM报告仍未生成，MiniMax报告不变；用户入口问题尚待答。没有当前可核验的外部任务运行句柄，不能称为verified wait。
+- 候选及16冻结/64保护的本次核验见round-3/resumed-blocked-audit.json。当前没有可满足原双审门禁的下一项已授权动作，不猜选最新session、不用私有协议/数据库绕过，不进行桌面操作或重复测试。
+- 按恢复后连续三回合规则重新标记blocked；保留完整目标、同一候选和原审查任务，待原任务正式入口或可用隔离桌面/明确测试时段后继续。
+
+## 用户新指示下已续接原双审
+
+- 用户直接要求通过computer use操作，现已在两个原任务中实际续传无本机测试窗口约束；不新建任务、不改模型/账号、不授权新Electron/Playwright运行。
+- 直接UI核实MiniMax原任务已结束并Pass0阻断3低，且历史资源问题明确有10:51“现在释放”答复，此前两个待确认项已关闭。原报告hash不变。
+- GLM原任务实际上仍工作，已有三态结果及首次packaged失焦失败/另次成功；全部原始文件已保全。安全边界停止新增窗口探针后，同一任务已收到新约束并明确确认，只继续非GUI审查与报告。MiniMax也在同一任务确认规则；两方当前轮意见不互相披露。
+- 详见round-3/review-ui-continuation.md及tasks.json。当前候选仍09a2e66；待GLM最终报告实际完成并读回，双审门禁闭合后才push，实际CI全绿前不merge。
+
+## Round3 双审实际通过，最终推送核验中
+
+- 两个原独立任务均实际结束，完整报告均读回，对同一base1b6df7a→candidate09a2e66明确通过且无阻断。MiniMax原稿hash未变；GLM原稿与五项事实勘误的完整diff保留，勘误回合11:26实际结束，明确等级/通过结论不变。
+- 本轮GLM一项P3/两项观察与MiniMax三项低级意见均已处理，历史遗留不改写。事件数与directive种类、未归因与确定失焦、历史sheet与本轮stub矩阵边界分开，时间线残余口误在processing中按直接UI更正。
+- 当前无受审代码变更；仅准备提交本轮流程证据。须最终核对16冻结/64保护/报告hash/归档/远端base，再正常push产生新CI；不沿用旧失败run，不提前merge。
+
+- 已精确提交50个本任务流程文件，未混入64保护项、AGENTS或其他会话内容。暂存后核验脚本曾误用绝对路径读取Git blob而中断，流程提交当时已产生但未push；现已用正确相对路径复核提交树19份运行归档及两份最终报告SHA均匹配，candidate后50个改动路径全部限于docs/reviews/I02。git diff --check的4处告警仅为原始unified diff空白上下文标记，按原文保留，无受审源码变更。

@@ -1,0 +1,13 @@
+import { _electron as electron } from '/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/node_modules/playwright-core/index.mjs'
+const app = await electron.launch({ executablePath: process.argv[2], args: [] })
+const win = await app.firstWindow()
+const before = await win.evaluate(() => window.ontolearn.getEngineHealth())
+const pushError = await win.evaluate(() => {
+  try { history.pushState({}, '', '/modules'); return null } catch (e) { return String(e) }
+})
+await win.waitForTimeout(300)
+const after = await win.evaluate(() => ({ href: location.href, health: window.ontolearn.getEngineHealth() }))
+console.log(JSON.stringify({ beforeOk: before.ok, pushError, afterHref: after.href, afterOk: after.health.ok, afterErr: after.health.error }, null, 2))
+app.process().kill('SIGKILL')
+await app.close().catch(() => {})
+process.exit(0)
