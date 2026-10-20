@@ -10,7 +10,7 @@ from uuid import uuid4
 
 import pytest
 from ontolearn_engine.job_store import JobFault, JobStore
-from ontolearn_engine.storage import digest
+from ontolearn_engine.storage import Store, digest
 
 ROOT = Path(__file__).resolve().parents[3]
 SPEC = importlib.util.spec_from_file_location(
@@ -180,7 +180,7 @@ PHASES = [
 ]
 
 
-@pytest.mark.parametrize("mode", ["changeset", "mapping"])
+@pytest.mark.parametrize("mode", ["changeset", "mapping", "definition-remove"])
 @pytest.mark.parametrize("phase", PHASES)
 @pytest.mark.parametrize("failure", ["exception", "disk", "cancel", "exit"])
 def test_atomic_job_fault_reconcile_matrix(store, mode, phase, failure):
@@ -192,6 +192,17 @@ def test_atomic_job_fault_reconcile_matrix(store, mode, phase, failure):
         if mode == "mapping"
         else {"manual": [fact]}
     )
+    if mode == "definition-remove":
+        s.commit(
+            "legacy-project",
+            0,
+            "seed-definition",
+            "seed-job",
+            definitions=[{"layer": "rule", "id": "R", "value": {"enabled": True}}],
+        )
+        plan = {"remove_definitions": [{"layer": "rule", "id": "R"}]}
+    before_revision = s.revision("legacy-project")
+    before_state = s.state("legacy-project")
     job = create(s, "test.atomic", plan=plan)
     s.start_job(job["jobId"])
     path = s.path
@@ -242,12 +253,16 @@ s.commit_job(sys.argv[3],hook)
     marker = reopened.operation_get(project, job["operationId"])
     if phase == "after_commit":
         assert saved["state"] == "succeeded" and marker is not None
-        assert reopened.revision("legacy-project") == 1
-        assert reopened.state("legacy-project")["facts"]
+        assert reopened.revision("legacy-project") == before_revision + 1
+        if mode == "definition-remove":
+            assert reopened.state("legacy-project")["definitions"] == []
+            assert "rule:R" not in reopened.vector("legacy-project")
+        else:
+            assert reopened.state("legacy-project")["facts"]
     else:
         assert saved["state"] == "failed" and marker is None
-        assert reopened.revision("legacy-project") == 0
-        assert reopened.state("legacy-project")["facts"] == []
+        assert reopened.revision("legacy-project") == before_revision
+        assert reopened.state("legacy-project") == before_state
     reopened.close()
     # Fixture owns the closed original; make repeated close harmless here only.
     store.close = lambda: None
@@ -724,3 +739,262 @@ def test_cancel_dto_all_states_matches_canonical_schema(store, state):
     else:
         assert answer["state"] == ("queued" if state == "queued" else "cancelling")
     assert set(answer) == {"jobId", "disposition", "state", "stateVersion"}
+
+
+def atomic_plan(s, plan):
+    job = create(s, "test.atomic", plan=plan)
+    s.start_job(job["jobId"])
+    return s.commit_job(job["jobId"])
+
+
+def test_formal_definition_withdrawal_readd_and_late_input_preserve_all_history(store):
+    s = store
+    atomic_plan(s, {"definitions": [{"layer": "rule", "id": "R", "value": {"enabled": True}}]})
+    initial = s.project_get(s.project)
+    result = read_result(s, [])
+    late = create(s)
+    s.start_job(late["jobId"])
+    deleting = create(s, "test.atomic", plan={"remove_definitions": [{"layer": "rule", "id": "R"}]})
+    assert s.project_get(s.project) == initial  # Real preview was rollback-only.
+    assert s.state("legacy-project")["definitions"]
+    s.start_job(deleting["jobId"])
+    saved = s.commit_job(deleting["jobId"])
+    assert saved["state"] == "succeeded"
+    marker = s.marker("legacy-project", deleting["operationId"])
+    assert json.loads(marker["plan"])["remove_definitions"] == [{"layer": "rule", "id": "R"}]
+    assert s.load_snapshot(marker["before_snapshot"])["state"]["definitions"]
+    assert s.load_snapshot(marker["after_snapshot"])["state"]["definitions"] == []
+    assert "rule:R" not in s.project_get(s.project)["dependencyVector"]
+    assert (
+        s._db.execute(
+            "SELECT version FROM versions WHERE project=? AND key='rule:R'", ("legacy-project",)
+        ).fetchone()[0]
+        == 2
+    )
+    expected = [{"code": "RULE_CHANGED", "dependency": "rule:R", "before": 1, "after": 0}]
+    assert s.result_get(s.project, result["resultId"])["staleReason"] == expected
+    late = s.finish_read_job(late["jobId"], [])
+    assert s.result_get(s.project, late["resultRef"]["resultId"])["staleReason"] == expected
+    after_delete = create(s)
+    assert "rule:R" not in after_delete["dependencyVector"]
+    assert after_delete["definitionSetDigests"]["rule"] == digest([])
+    # Deleted rules cannot enter the new all-rules dependency closure.
+    projection = s._definitions(s.load_snapshot(s.project_get(s.project)["inputSnapshotId"]))
+    selected = s.contract.derive_dependencies("reasoning.execute", "probe", "asserted", projection)
+    assert selected["sets"]["rule"] == [] and "rule:R" not in selected["keys"]
+    atomic_plan(s, {"definitions": [{"layer": "rule", "id": "R", "value": {"enabled": True}}]})
+    assert s.project_get(s.project)["dependencyVector"]["rule:R"] == 3
+    assert s.result_get(s.project, result["resultId"])["staleReason"] == [
+        {"code": "RULE_CHANGED", "dependency": "rule:R", "before": 1, "after": 3}
+    ]
+    assert s.load_snapshot(initial["inputSnapshotId"])["dependencyVector"]["rule:R"] == 1
+    with pytest.raises(sqlite3.IntegrityError):
+        s._db.execute("DELETE FROM snapshots WHERE id=?", (initial["inputSnapshotId"],))
+
+
+def test_removal_of_referenced_definition_rejects_whole_plan_until_both_removed(store):
+    from ontolearn_engine.storage import Conflict
+
+    s = store
+    atomic_plan(
+        s,
+        {
+            "definitions": [
+                {"layer": "ontology", "id": "O", "value": {}},
+                {
+                    "layer": "rule",
+                    "id": "R",
+                    "value": {"references": [{"layer": "ontology", "id": "O"}]},
+                },
+            ]
+        },
+    )
+    before = list(s._db.iterdump())
+    with pytest.raises(Conflict) as error:
+        create(s, "test.atomic", plan={"remove_definitions": [{"layer": "ontology", "id": "O"}]})
+    assert error.value.category == "dependency"
+    assert list(s._db.iterdump()) == before
+    atomic_plan(
+        s, {"remove_definitions": [{"layer": "rule", "id": "R"}, {"layer": "ontology", "id": "O"}]}
+    )
+    assert s.state("legacy-project")["definitions"] == []
+    assert "ontology:O" not in s.vector("legacy-project")
+    assert "rule:R" not in s.vector("legacy-project")
+
+
+def test_definition_enable_and_reference_changes_invalidate_with_true_family_versions(store):
+    s = store
+    atomic_plan(
+        s,
+        {
+            "definitions": [
+                {"layer": "ontology", "id": "O", "value": {}},
+                {"layer": "rule", "id": "R", "value": {"enabled": False}},
+            ]
+        },
+    )
+    result = read_result(s, [])
+    atomic_plan(s, {"definitions": [{"layer": "rule", "id": "R", "value": {"enabled": True}}]})
+    assert s.result_get(s.project, result["resultId"])["staleReason"] == [
+        {"code": "RULE_CHANGED", "dependency": "rule:R", "before": 1, "after": 2}
+    ]
+    result2 = read_result(s, [])
+    atomic_plan(
+        s,
+        {
+            "definitions": [
+                {
+                    "layer": "rule",
+                    "id": "R",
+                    "value": {"enabled": True, "references": [{"layer": "ontology", "id": "O"}]},
+                }
+            ]
+        },
+    )
+    assert s.result_get(s.project, result2["resultId"])["staleReason"] == [
+        {"code": "RULE_CHANGED", "dependency": "rule:R", "before": 2, "after": 3}
+    ]
+
+
+def test_definition_withdrawal_project_isolation_and_noop_audit(store):
+    s = store
+    s.create_project("other")
+    other = s.public_project("other")
+    for project in [s.project, other]:
+        job = create(
+            s,
+            "test.atomic",
+            project=project,
+            plan={"definitions": [{"layer": "rule", "id": "R", "value": {}}]},
+        )
+        s.start_job(job["jobId"])
+        s.commit_job(job["jobId"])
+    other_before = s.project_get(other)
+    atomic_plan(s, {"remove_definitions": [{"layer": "rule", "id": "R"}]})
+    assert s.project_get(other) == other_before
+    assert s.project_get(other)["dependencyVector"]["rule:R"] == 1
+    before = s.vector("legacy-project")
+    noop = atomic_plan(s, {"remove_definitions": [{"layer": "rule", "id": "unknown"}]})
+    assert s.vector("legacy-project") == before
+    marker = s.marker("legacy-project", noop["operationId"])
+    assert json.loads(marker["plan"])["remove_definitions"] == [{"layer": "rule", "id": "unknown"}]
+    assert (
+        s.load_snapshot(marker["before_snapshot"])["state"]
+        == s.load_snapshot(marker["after_snapshot"])["state"]
+    )
+
+
+def test_removal_default_none_keeps_old_marker_fingerprint_and_format2_open_is_readonly(tmp_path):
+    path = tmp_path / "legacy-format2.sqlite"
+    s = Store(path)
+    s.create_project("p")
+    marker = s.commit("p", 0, "old", "old-job")
+    assert set(json.loads(marker["plan"])) == {
+        "base",
+        "definitions",
+        "manual",
+        "edits",
+        "remove",
+        "mapping",
+    }
+    assert s.commit("p", 0, "old", "old-job", remove_definitions=None) == marker
+    s._db.execute("DROP TABLE definition_retirements")
+    s.close()
+    writer = sqlite3.connect(path, isolation_level=None)
+    writer.execute("BEGIN IMMEDIATE")
+    reopened = Store(path)  # No implicit DDL on legacy current-format open.
+    assert reopened.revision("p") == 1
+    assert not reopened._has_retirements()
+    reopened.close()
+    writer.execute("ROLLBACK")
+    writer.close()
+    reopened = Store(path)
+    added = reopened.commit(
+        "p", 1, "add", "job2", definitions=[{"layer": "rule", "id": "R", "value": {}}]
+    )
+    removed = reopened.commit(
+        "p", 2, "remove", "job3", remove_definitions=[{"layer": "rule", "id": "R"}]
+    )
+    assert reopened._has_retirements()
+    assert "rule:R" not in reopened.vector("p")
+    assert reopened.load_snapshot(added["after_snapshot"])["dependencyVector"]["rule:R"] == 1
+    assert removed["revision"] == 3
+    reopened.close()
+
+
+def test_selected_query_cannot_be_referenced_after_formal_withdrawal(store):
+    s = store
+    atomic_plan(s, {"definitions": [{"layer": "query", "id": "Q", "value": {}}]})
+    before = s._definitions(s.load_snapshot(s.project_get(s.project)["inputSnapshotId"]))
+    assert (
+        "query:Q"
+        in s.contract.derive_dependencies("query.execute", "Q", "asserted", before)["keys"]
+    )
+    atomic_plan(s, {"remove_definitions": [{"layer": "query", "id": "Q"}]})
+    after = s._definitions(s.load_snapshot(s.project_get(s.project)["inputSnapshotId"]))
+    assert all(d["id"] != "Q" for d in after)
+    with pytest.raises(ValueError):
+        s.contract.derive_dependencies("query.execute", "Q", "asserted", after)
+
+
+def test_withdrawing_mapping_retains_asserted_ownership_and_historical_source(store):
+    s = store
+    fact = {"subject": "urn:probe", "predicate": "urn:name", "object": '"source-value"'}
+    fact["id"] = digest([fact["subject"], fact["predicate"], fact["object"]])
+    atomic_plan(
+        s,
+        {
+            "definitions": [{"layer": "mapping", "id": "M", "value": {}}],
+            "mapping": {"id": "M", "rows": [{"row": "1", "facts": [fact]}]},
+        },
+    )
+    facts_before = s.state("legacy-project")["facts"]
+    result = read_result(s, [])
+    atomic_plan(s, {"remove_definitions": [{"layer": "mapping", "id": "M"}]})
+    assert s.state("legacy-project")["facts"] == facts_before
+    assert s.state("legacy-project")["facts"][0]["owner"] == "M"
+    assert "mapping:M" not in s.project_get(s.project)["dependencyVector"]
+    assert s.result_get(s.project, result["resultId"])["staleReason"] == [
+        {"code": "MAPPING_INPUT_CHANGED", "dependency": "mapping:M", "before": 1, "after": 0}
+    ]
+    assert s.mapping_status("legacy-project", "M")["generatedVersion"] == 1
+
+
+def test_retired_mapping_cannot_write_again_without_explicit_readd(store):
+    from ontolearn_engine.storage import Conflict
+
+    s = store
+    atomic_plan(s, {"definitions": [{"layer": "mapping", "id": "M", "value": {}}]})
+    atomic_plan(s, {"remove_definitions": [{"layer": "mapping", "id": "M"}]})
+    before = list(s._db.iterdump())
+    with pytest.raises(Conflict) as error:
+        create(s, "test.atomic", plan={"mapping": {"id": "M", "rows": []}})
+    assert error.value.category == "dependency"
+    assert list(s._db.iterdump()) == before
+    atomic_plan(
+        s,
+        {
+            "definitions": [{"layer": "mapping", "id": "M", "value": {}}],
+            "mapping": {"id": "M", "rows": []},
+        },
+    )
+    assert s.project_get(s.project)["dependencyVector"]["mapping:M"] == 3
+
+
+@pytest.mark.parametrize(
+    "removals",
+    [
+        True,
+        {},
+        [None],
+        [{"layer": "unknown", "id": "R"}],
+        [{"layer": "rule", "id": ""}],
+        [{"layer": "rule", "id": "R", "extra": True}],
+        [{"layer": "rule", "id": "R"}] * 2,
+    ],
+)
+def test_removal_input_shape_rejected_without_effect(store, removals):
+    before = list(store._db.iterdump())
+    with pytest.raises(ValueError):
+        store.commit("legacy-project", 0, uid(), uid(), remove_definitions=removals)
+    assert list(store._db.iterdump()) == before

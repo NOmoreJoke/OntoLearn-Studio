@@ -179,8 +179,26 @@ class Store:
 
     def vector(self, project: str) -> dict[str, int]:
         self.revision(project)
-        return dict(
+        vector = dict(
             self._db.execute("SELECT key,version FROM versions WHERE project=?", (project,))
+        )
+        # Version counters are an append-forward ledger. A withdrawn definition
+        # is absent from current membership, while its previous counter remains
+        # available for a later re-addition. Legacy format-2 readers need no
+        # opening-time writer lock just to inspect this optional projection.
+        if self._has_retirements():
+            for row in self._db.execute(
+                "SELECT layer,id FROM definition_retirements WHERE project=?", (project,)
+            ):
+                vector.pop(f"{row['layer']}:{row['id']}", None)
+        return vector
+
+    def _has_retirements(self) -> bool:
+        return (
+            self._db.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='definition_retirements'"
+            ).fetchone()
+            is not None
         )
 
     @contextmanager
@@ -246,6 +264,7 @@ class Store:
         job: str,
         *,
         definitions: list[dict] | None = None,
+        remove_definitions: list[dict] | None = None,
         manual: list[dict] | None = None,
         edits: dict[str, str] | None = None,
         remove: list[str] | None = None,
@@ -269,6 +288,30 @@ class Store:
             "remove": remove,
             "mapping": mapping,
         }
+        # Keep every pre-I04 S1 marker's canonical plan/hash unchanged when the
+        # new operation is omitted or None. Explicit [] is an audited no-op plan.
+        if remove_definitions is not None:
+            if not isinstance(remove_definitions, list):
+                raise ValueError("Definition removals must be a list")
+            seen_removals = set()
+            for removal in remove_definitions:
+                if (
+                    not isinstance(removal, dict)
+                    or set(removal) != {"layer", "id"}
+                    or not isinstance(removal["layer"], str)
+                    or removal["layer"] not in LAYERS
+                    or not isinstance(removal["id"], str)
+                    or not removal["id"]
+                    or (removal["layer"], removal["id"]) in seen_removals
+                ):
+                    raise ValueError("Definition removal requires unique layer/id identities")
+                seen_removals.add((removal["layer"], removal["id"]))
+            if any(
+                isinstance(d, dict) and (d.get("layer"), d.get("id")) in seen_removals
+                for d in definitions or []
+            ):
+                raise ValueError("Cannot add and withdraw the same definition in one plan")
+            plan["remove_definitions"] = remove_definitions
         fingerprint = digest(plan)
         with self._transaction(hook):
             previous = self.marker(project, operation)
@@ -315,6 +358,33 @@ class Store:
                     self._db.execute(
                         "INSERT OR REPLACE INTO definitions VALUES(?,?,?,?)",
                         (project, layer, identity, payload),
+                    )
+                    changed.add(f"{layer}:{identity}")
+                    if self._has_retirements():
+                        self._db.execute(
+                            "DELETE FROM definition_retirements "
+                            "WHERE project=? AND layer=? AND id=?",
+                            (project, layer, identity),
+                        )
+            if remove_definitions is not None:
+                # This format-2 extension is transactional and demand-created
+                # for existing stores, preserving read-only current-format open.
+                self._db.execute(RETIREMENTS_SCHEMA)
+                for removal in remove_definitions:
+                    layer, identity = removal["layer"], removal["id"]
+                    previous_definition = self._db.execute(
+                        "SELECT 1 FROM definitions WHERE project=? AND layer=? AND id=?",
+                        (project, layer, identity),
+                    ).fetchone()
+                    if previous_definition is None:
+                        continue  # Explicit no-op remains in immutable plan/marker.
+                    self._db.execute(
+                        "DELETE FROM definitions WHERE project=? AND layer=? AND id=?",
+                        (project, layer, identity),
+                    )
+                    self._db.execute(
+                        "INSERT INTO definition_retirements VALUES(?,?,?)",
+                        (project, layer, identity),
                     )
                     changed.add(f"{layer}:{identity}")
             for identity in remove or []:
@@ -378,6 +448,21 @@ class Store:
                 changed.add("facts:asserted")
             hook("mid_data")
             if mapping is not None:
+                if (
+                    isinstance(mapping, dict)
+                    and isinstance(mapping.get("id"), str)
+                    and self._has_retirements()
+                    and self._db.execute(
+                        "SELECT 1 FROM definition_retirements "
+                        "WHERE project=? AND layer='mapping' AND id=?",
+                        (project, mapping["id"]),
+                    ).fetchone()
+                ):
+                    raise Conflict(
+                        "Withdrawn mapping requires explicit definition restoration",
+                        category="dependency",
+                        params={"field": "dependency"},
+                    )
                 if self._replace_mapping(project, mapping):
                     changed.update({"facts:asserted", f"mapping:{mapping['id']}"})
             self._validate_references(project)
@@ -1103,12 +1188,18 @@ class Store:
             target.close()
 
 
+RETIREMENTS_SCHEMA = (
+    "CREATE TABLE IF NOT EXISTS definition_retirements("
+    "project TEXT REFERENCES projects(id),layer TEXT,id TEXT,PRIMARY KEY(project,layer,id))"
+)
+
 SCHEMA = [
     "CREATE TABLE projects(id TEXT PRIMARY KEY,revision INTEGER NOT NULL)",
     "CREATE TABLE versions(project TEXT REFERENCES projects(id),key TEXT,version INTEGER NOT NULL,"
     "PRIMARY KEY(project,key))",
     "CREATE TABLE definitions(project TEXT REFERENCES projects(id),layer TEXT,id TEXT,payload TEXT,"
     "PRIMARY KEY(project,layer,id))",
+    RETIREMENTS_SCHEMA,
     "CREATE TABLE facts(project TEXT REFERENCES projects(id),id TEXT,subject TEXT,predicate TEXT,"
     "object TEXT,owner TEXT,source_row TEXT,managed_value TEXT,PRIMARY KEY(project,id))",
     "CREATE TABLE commits(project TEXT REFERENCES projects(id),operation TEXT,job TEXT,"
