@@ -108,6 +108,7 @@ async function runtime(
   parameters: Record<string, unknown>,
   dropFirstState = false,
   coalesceAtomicCompletion = false,
+  commitBeforeFirstJobRead = false,
 ) {
   const directory = await mkdtemp(join(tmpdir(), 'ontolearn-task-runtime-'))
   try {
@@ -148,6 +149,7 @@ async function runtime(
     let dropped: Notification | undefined
     let jobId = ''
     let forward: ((value: unknown) => void) | undefined
+    let heldProject: unknown
     let delayedSubscribe = false
     let heldAtomic: Notification | undefined
     let releaseAtomic!: (event: Notification) => void
@@ -161,6 +163,22 @@ async function runtime(
       async request(method: string, params: Record<string, unknown>) {
         calls.push({ method, params: structuredClone(params) })
         const response = await supervisor.request(method, params)
+        if (commitBeforeFirstJobRead && method === 'project.get' && !heldProject) {
+          heldProject = structuredClone(response)
+          // Only delay a real response: the worker and every returned DTO stay real.
+          // No subscription exists while the actual atomic write finishes.
+          const deadline = Date.now() + 6000
+          while (true) {
+            const actual = (await supervisor.request('job.get', {
+              projectId: fixture.projectId,
+              jobId,
+            })) as JobView
+            if (actual.state === 'succeeded') break
+            if (Date.now() >= deadline || ['failed', 'cancelled'].includes(actual.state))
+              throw new Error('Atomic write did not finish before project response delivery')
+            await new Promise((done) => setTimeout(done, 10))
+          }
+        }
         if (coalesceAtomicCompletion && method === 'job.subscribe' && !delayedSubscribe) {
           delayedSubscribe = true
           let timer: ReturnType<typeof setTimeout> | undefined
@@ -265,6 +283,7 @@ async function runtime(
         operation,
         initial: restored,
         heldAtomic,
+        heldProject,
       }
     } finally {
       waiting.stop()
@@ -547,6 +566,24 @@ describe('actual Python → supervisor → task service runtime', () => {
     expect(
       result.calls.some((call) => call.method === 'job.create' || call.method === 'job.cancel'),
     ).toBe(false)
+  }, 20000)
+  it('re-reads project authority when an actual atomic write finishes before the first job read', async () => {
+    const result = await runtime('test.atomic', { workMs: 200 }, false, false, true)
+    expect(result.heldProject).toMatchObject({ projectRevision: 0 })
+    expect(result.initial.ok).toBe(true)
+    if (!result.initial.ok) throw new Error('fresh initial restoration missing')
+    expect(result.initial.data.project?.projectRevision).toBe(1)
+    expect(result.initial.data.jobs[0]).toEqual(result.evidence.job)
+    expect(result.initial.data.jobs[0].state).toBe('succeeded')
+    expect(result.initial.data.jobs[0].inputSnapshotId).not.toBe(
+      result.initial.data.project?.inputSnapshotId,
+    )
+    expect(result.operation.ok && result.operation.data?.projectRevision).toBe(1)
+    expect(result.evidence).toMatchObject({ jobs: 1, claims: 1, rounds: [] })
+    expect(result.calls.filter((call) => call.method === 'project.get')).toHaveLength(2)
+    expect(result.calls.some((call) => ['job.create', 'job.cancel'].includes(call.method))).toBe(
+      false,
+    )
   }, 20000)
   it('preserves persisted worker-failure error fields through the safe presentation boundary', async () => {
     const result = await runtime('test.read', { workMs: 200, failRound: 1 })
