@@ -1,7 +1,7 @@
 {
-  "stage": "independent-stage-checkpoint; integration and formal gate pending",
+  "stage": "independent-v3 supplement checkpoint; real integration and formal gates pending",
   "baseSha": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
-  "implementationHeadSha": "02a8c90902788963206d7ef60fbeccc801e27c5c",
+  "implementationHeadSha": "4447a35652ec55ed6c455826d704b0ee3bbee45c",
   "reviewedImplementationSha": null,
   "externalReviews": {
     "zcode": {
@@ -22,10 +22,25 @@
   "ci": null,
   "merge": null,
   "goalStatus": "blocked",
-  "evidence": "docs/iterations/I05/independent-v2.json",
+  "evidence": "docs/iterations/I05/independent-v3.json",
   "protectedUncommitted": [
     "AGENTS.md"
   ],
-  "next": "wait actual frozen/merged I03 and I04; refresh baseline, integrate, full original acceptance, both fresh specified reviews; safe no-desktop conditions only",
-  "blockedAudit": "docs/reviews/I05/blocked-audit.json"
+  "next": "retain current checkpoint; wait actual frozen/merged I03 and I04; refresh baseline, integrate real tasks/store/cancel/error/package/window and original full acceptance; both fresh specified reviews in safe no-desktop conditions; no push before gates",
+  "blockedAudit": "docs/reviews/I05/blocked-audit.json",
+  "previousEvidence": "docs/iterations/I05/independent-v2.json;unchanged historical source/raw measurements",
+  "recordedAt": "2026-10-20T11:44:28.109165+08:00",
+  "goalStatusEvidence": "get_goal after v3 validation returned blocked; authorized independent supplement completed; full original objective remains unfinished",
+  "baselineStatus": {
+    "measuredBaseSha": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+    "observedRemoteDevelopSha": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
+    "evidence": "git ls-remote confirmed controller PR3 merge notification; fixed-source v3 measured without rebasing",
+    "next": "I03 is refreshing/finalizing against new base;wait actual frozen/merged I03 and actual I04,then refresh I05 before formal integrated acceptance"
+  },
+  "internalReview": {
+    "agent": "/root/semantic_boundary_review",
+    "scope": "read-only candidate semantics, validation scopes, reason branches, fresh probe and Q6; latest full-result preservation targeted closure scopes14/14",
+    "report": "docs/reviews/I05/internal-review.md",
+    "specifiedExternalReview": false
+  }
 }
