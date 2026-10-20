@@ -1,0 +1,276 @@
+"""Versioned real G.2 candidate samples, shared by source and frozen executable.
+
+Only semantic G-base is executed here; mapping, behavior and simulation remain
+separate dependencies. S1's 18*scale synthetic input is reused byte-for-byte.
+"""
+
+from rdflib import RDF, RDFS, Literal, Namespace, URIRef, Variable
+
+from ontolearn_engine.semantic import Rule, check_shapes, parse_turtle, query, reason
+from ontolearn_engine.semantic_offline import SemanticError
+from ontolearn_engine.storage_probe import QUERY, SEED, fixture
+
+EX = Namespace("urn:ontolearn:")
+PREFIX = """@prefix : <urn:ontolearn:> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+"""
+ONTOLOGY = """@prefix : <urn:ontolearn:> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+:Equipment a owl:Class . :Alarm a owl:Class . :WorkOrder a owl:Class .
+:HighRiskEquipment a owl:Class .
+:name a owl:DatatypeProperty . :level a owl:DatatypeProperty .
+:status a owl:DatatypeProperty . :alarm a owl:ObjectProperty .
+:workOrderStatus a owl:DatatypeProperty . :eventWorkOrder a owl:ObjectProperty .
+"""
+SHAPES = (
+    PREFIX
+    + """
+:EquipmentName a sh:NodeShape; sh:targetClass :Equipment; sh:property :NameProperty .
+:NameProperty a sh:PropertyShape; sh:path :name; sh:minCount 1 .
+"""
+)
+e, a = Variable("equipment"), Variable("alarm")
+RISK = Rule(
+    "R-risk",
+    (
+        (e, RDF.type, EX.Equipment),
+        (e, EX.alarm, a),
+        (a, EX.level, Literal("High")),
+        (a, EX.status, Literal("Open")),
+    ),
+    (e, RDF.type, EX.HighRiskEquipment),
+)
+NEXT = Rule("R-next", ((e, RDF.type, EX.HighRiskEquipment),), (e, RDF.type, EX.NeedsInspection))
+
+
+def suite() -> dict:
+    """Assert complete identities and evidence, never counts alone."""
+    graph = parse_turtle(fixture(1))
+    schema = parse_turtle(ONTOLOGY)
+    for triple in schema:
+        graph.add(triple)
+    shapes = parse_turtle(SHAPES, shapes=True)
+    q1 = query(graph, QUERY)
+    assert q1 == {"type": "SELECT", "variables": ["alarm"], "rows": [["<urn:case:0:alarm/A01>"]]}
+    assert query(graph, "ASK { <urn:case:0:alarm/A01> ?p ?o }") == {"type": "ASK", "value": True}
+    assert query(graph, 'SELECT ?x WHERE { BIND("SERVICE FROM" AS ?x) }')["rows"] == [
+        ['"SERVICE FROM"']
+    ]
+    q2graph = parse_turtle(fixture(1))
+    a01 = URIRef("urn:case:0:alarm/A01")
+    equipment = URIRef("urn:case:0:equipment/001")
+    q2graph.set((a01, EX.status, Literal("Closed")))
+    assert query(q2graph, QUERY)["rows"] == []
+    before = check_shapes(graph, shapes)
+    assert before == {"conforms": True, "violations": []}
+    missing = URIRef("urn:case:0:equipment/003")
+    graph.remove((missing, EX.name, None))
+    v1 = check_shapes(graph, shapes)
+    assert v1 == {
+        "conforms": False,
+        "violations": [
+            {
+                "focus": missing.n3(),
+                "path": EX.name.n3(),
+                "constraint": "<http://www.w3.org/ns/shacl#MinCountConstraintComponent>",
+                "sourceShape": EX.NameProperty.n3(),
+                "value": None,
+                "severity": "<http://www.w3.org/ns/shacl#Violation>",
+            }
+        ],
+    }
+    graph.add((missing, EX.name, Literal("备用泵C")))
+    assert check_shapes(graph, shapes) == before
+    r1 = reason(graph, (RISK,))
+    risk_triple = (equipment.n3(), RDF.type.n3(), EX.HighRiskEquipment.n3())
+    assert r1["rules"] == [risk_triple]
+    assert r1["evidence"] == [
+        {
+            "rule": "R-risk",
+            "result": risk_triple,
+            "inputs": [
+                (equipment.n3(), RDF.type.n3(), EX.Equipment.n3()),
+                (equipment.n3(), EX.alarm.n3(), a01.n3()),
+                (a01.n3(), EX.level.n3(), '"High"'),
+                (a01.n3(), EX.status.n3(), '"Open"'),
+            ],
+            "basis": sorted(
+                [
+                    (equipment.n3(), RDF.type.n3(), EX.Equipment.n3()),
+                    (equipment.n3(), EX.alarm.n3(), a01.n3()),
+                    (a01.n3(), EX.level.n3(), '"High"'),
+                    (a01.n3(), EX.status.n3(), '"Open"'),
+                ]
+            ),
+        }
+    ]
+    graph.remove((a01, None, None))
+    graph.remove((None, EX.alarm, a01))
+    assert reason(graph, (RISK,))["rules"] == []
+    a04 = URIRef("urn:case:0:alarm/A04")
+    for triple in (
+        (equipment, EX.alarm, a04),
+        (a04, EX.level, Literal("High")),
+        (a04, EX.status, Literal("Open")),
+    ):
+        graph.add(triple)
+    r3 = reason(graph, (RISK,))
+    assert r3["rules"] == [risk_triple]
+    assert all(
+        a01.n3() not in term for row in r3["evidence"] for triple in row["basis"] for term in triple
+    )
+    assert (equipment.n3(), EX.alarm.n3(), a04.n3()) in r3["evidence"][0]["inputs"]
+    critical, pump, alert = EX.CriticalPump, EX.P001, EX.A04
+    for triple in (
+        (critical, RDFS.subClassOf, EX.Equipment),
+        (pump, RDF.type, critical),
+        (pump, EX.alarm, alert),
+        (alert, EX.level, Literal("High")),
+        (alert, EX.status, Literal("Open")),
+    ):
+        graph.add(triple)
+    r4 = reason(graph, (RISK,))
+    expected = sorted([risk_triple, (pump.n3(), RDF.type.n3(), EX.HighRiskEquipment.n3())])
+    assert r4["rules"] == expected
+    assert (pump.n3(), RDF.type.n3(), EX.Equipment.n3()) in r4["rdfs"]
+    r5 = reason(graph, (RISK, NEXT))
+    assert r5 == reason(graph, (NEXT, RISK))
+    assert r5["rules"] == expected
+    assert "RULE_CHAIN_UNSUPPORTED:R-next" in r5["warnings"]
+    # Absence is not a negative fact. No alarm does not entail an OWL complement.
+    a03 = URIRef("urn:case:0:alarm/A03")
+    graph.remove((missing, EX.alarm, a03))
+    graph.remove((a03, None, None))
+    assert query(graph, f"SELECT ?a WHERE {{ {missing.n3()} <{EX.alarm}> ?a }}")["rows"] == []
+    return {
+        "baseline": "I05-G2-v1",
+        "seed": SEED,
+        "Q-01": q1,
+        "Q-02": [],
+        "V-01": v1,
+        "R-01": r1,
+        "R-02": [],
+        "R-03": r3,
+        "R-04": r4,
+        "R-05-06": r5,
+        "O-01": "no recorded alarm; no closed-world negative assertion",
+        "finiteTemplates": template_suite(),
+        "scope": "pure G.2 semantics; no storage/task/UI integration",
+    }
+
+
+def template_suite():
+    """All advertised finite SHACL templates, executed in both runtimes."""
+    results = {}
+    for name, constraint, values, component in (
+        ("datatype", "sh:datatype xsd:integer", '"wrong"', "Datatype"),
+        ("maximum", "sh:maxCount 1", '"a", "b"', "MaxCount"),
+        ("allowed", 'sh:in ("good" "ok")', '"bad"', "In"),
+        ("minimum", "sh:minInclusive 2", "1", "MinInclusive"),
+        ("upper", "sh:maxInclusive 2", "3", "MaxInclusive"),
+    ):
+        data = parse_turtle(PREFIX + f":x a :Equipment; :name {values} .")
+        shapes = parse_turtle(
+            PREFIX
+            + f"""
+            :S a sh:NodeShape; sh:targetClass :Equipment; sh:property :P .
+            :P a sh:PropertyShape; sh:path :name; {constraint} .""",
+            shapes=True,
+        )
+        result = check_shapes(data, shapes)
+        assert result == {
+            "conforms": False,
+            "violations": [
+                {
+                    "focus": EX.x.n3(),
+                    "path": EX.name.n3(),
+                    "sourceShape": EX.P.n3(),
+                    "constraint": f"<http://www.w3.org/ns/shacl#{component}ConstraintComponent>",
+                    "value": None
+                    if component == "MaxCount"
+                    else next(data.objects(EX.x, EX.name)).n3(),
+                    "severity": "<http://www.w3.org/ns/shacl#Violation>",
+                }
+            ],
+        }
+        results[name] = result
+    return results
+
+
+def rejection_cases(endpoint: str) -> list[tuple[str, str, dict]]:
+    """Same explicit inputs for source, unit tests, and real packaged executable."""
+    cases = []
+    for name, text in {
+        "service": f"SELECT * WHERE {{ SERVICE <{endpoint}> {{ ?s ?p ?o }} }}",
+        "service-silent": f"ASK {{ SERVICE SILENT <{endpoint}> {{ ?s ?p ?o }} }}",
+        "service-variable": (
+            f"SELECT * WHERE {{ VALUES ?e {{ <{endpoint}> }} SERVICE ?e {{ ?s ?p ?o }} }}"
+        ),
+        "service-nested": (
+            f"SELECT * WHERE {{ {{ SELECT * WHERE {{ SeRvIcE <{endpoint}> {{ ?s ?p ?o }} }} }} }}"
+        ),
+        "from": f"SELECT * FROM <{endpoint}> WHERE {{ ?s ?p ?o }}",
+        "from-named": f"SELECT * FROM NAMED <{endpoint}> WHERE {{ GRAPH ?g {{ ?s ?p ?o }} }}",
+        "base-from": f"BASE <{endpoint}> SELECT * FROM <relative> WHERE {{ ?s ?p ?o }}",
+        "file-from": "SELECT * FROM <file:///must-not-read.ttl> WHERE { ?s ?p ?o }",
+    }.items():
+        cases.append((name, "EXTERNAL_ACCESS_DENIED", {"kind": "query", "text": text}))
+    for name, format, text in (
+        ("jsonld-context", "json-ld", '{"@context":"' + endpoint + '"}'),
+        ("jsonld-import", "json-ld", '{"@context":{"@import":"' + endpoint + '"}}'),
+        ("xml-entity", "xml", '<!DOCTYPE x [<!ENTITY e SYSTEM "' + endpoint + '">]><x>&e;</x>'),
+        ("n3-formula", "n3", "{ <urn:s> <urn:p> <urn:o> } <urn:p> <urn:o> ."),
+    ):
+        cases.append(
+            (name, "UNSUPPORTED_FORMAT", {"kind": "parse", "text": text, "format": format})
+        )
+    for role in ("data", "ontology", "shapes"):
+        for scheme in (endpoint, "file:///must-not-read.ttl"):
+            cases.append(
+                (
+                    f"imports-{role}-{scheme.split(':')[0]}",
+                    "EXTERNAL_ACCESS_DENIED",
+                    {
+                        "kind": "parse",
+                        "shapes": role == "shapes",
+                        "text": (
+                            f"<urn:ontology> <http://www.w3.org/2002/07/owl#imports> <{scheme}> ."
+                        ),
+                    },
+                )
+            )
+    for name, predicate, value in (
+        ("sparql", "sparql", ":Remote"),
+        ("js", "js", ":Remote"),
+        ("js-library", "jsLibrary", f"<{endpoint}>"),
+        ("rule", "rule", ":Remote"),
+        ("target", "target", ":Remote"),
+        ("validator", "validator", ":Remote"),
+        ("function", "select", '"SELECT * {}"'),
+        ("logical", "or", "(:Remote)"),
+        ("inverse", "inversePath", ":name"),
+    ):
+        cases.append(
+            (
+                "shacl-" + name,
+                "UNSUPPORTED_SHACL",
+                {"kind": "validate", "text": SHAPES + f"\n:Remote sh:{predicate} {value} ."},
+            )
+        )
+    return cases
+
+
+def execute_case(request: dict):
+    if request["kind"] == "query":
+        return query(parse_turtle(fixture(1)), request["text"])
+    if request["kind"] == "parse":
+        return parse_turtle(
+            request["text"],
+            format=request.get("format", "turtle"),
+            shapes=request.get("shapes", False),
+        )
+    if request["kind"] == "validate":
+        return check_shapes(parse_turtle(fixture(1)), parse_turtle(request["text"], shapes=True))
+    raise SemanticError("INVALID_PROBE_CASE")
