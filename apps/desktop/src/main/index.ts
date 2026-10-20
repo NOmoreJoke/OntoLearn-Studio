@@ -89,7 +89,7 @@ void app.whenReady().then(async () => {
     })
   }
   // Test fixtures are accepted only through a main-process launch argument. They are
-  // never supplied by renderer IPC, and do not enable task creation in the product.
+  // never supplied by renderer IPC; semantic starts still use real registered capabilities.
   const fixtureArg = process.argv.find((arg) => arg.startsWith('--i04-test-fixture='))
   const fixturePath = fixtureArg?.slice('--i04-test-fixture='.length)
   const fixture =
@@ -105,10 +105,14 @@ void app.whenReady().then(async () => {
                   .record(z.string(), z.unknown())
                   .refine(
                     (value) =>
-                      validateV2('params_job.create', value) &&
-                      ['test.read', 'test.atomic', 'test.rounds'].includes(
-                        String(value.capability),
-                      ),
+                      (validateV2('params_job.create', value) &&
+                        ['test.read', 'test.atomic', 'test.rounds'].includes(
+                          String(value.capability),
+                        )) ||
+                      (validateV2('params_semantic.start', value) &&
+                        ['query.execute', 'reasoning.execute', 'validation.execute'].includes(
+                          String(value.capability),
+                        )),
                   ),
               )
               .max(2)
@@ -129,7 +133,8 @@ void app.whenReady().then(async () => {
     const jobIds = [...fixture.jobIds]
     for (const request of fixture.startRequests ?? []) {
       if (request.projectId !== fixture.projectId) throw new Error('INVALID_TEST_FIXTURE')
-      const job = (await supervisor.request('job.create', request)) as { jobId: string }
+      const method = validateV2('params_semantic.start', request) ? 'semantic.start' : 'job.create'
+      const job = (await supervisor.request(method, request)) as { jobId: string }
       jobIds.push(job.jobId)
     }
     tasks.selectProject(fixture.projectId, jobIds)
@@ -161,6 +166,9 @@ void app.whenReady().then(async () => {
   })
   // This routing table is main-only and finite. No generic method crosses preload.
   const routes: Record<string, (argument: never) => Promise<unknown>> = {
+    'semantic:query': (options) => tasks.runSavedQuery(options),
+    'semantic:reasoning': (options) => tasks.runReasoning(options),
+    'semantic:validation': (options) => tasks.runValidation(options),
     'tasks:restore': () => tasks.restore(),
     'project:active': () => tasks.activeProject(),
     'job:get': (id) => tasks.getJob(id),
