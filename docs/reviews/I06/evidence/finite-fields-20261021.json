@@ -1,0 +1,55 @@
+{
+  "phase": "finite-field-projection",
+  "approvedBaseline": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "parentHead": "1d9f784",
+  "fullCheck": {
+    "exit": 0,
+    "typescript": 807,
+    "python": 1052,
+    "log": "tests/i06-stored-material/out/field-check-r6.log"
+  },
+  "sourcesCheck": {
+    "exit": 0,
+    "count": 12
+  },
+  "dedicatedTests": 37,
+  "independentArchive": {
+    "sha256": "408385a95365c6eb5a93e9f9127584a6aac7b2709cfbc42a2e9e6781f7d63023"
+  },
+  "sources": {
+    "apps/desktop/src/main/model-gateway/stored-field-projector.ts": "26cef85c2ca8db12f7f0a3014215140c015318638b3a602b785bb8c9146e51d5",
+    "apps/desktop/src/main/model-gateway/gateway-application.ts": "f7a2307f091c9b60f12136177dfdb8f4e68661fd7554d4102d48f426584d803b",
+    "apps/desktop/src/main/model-gateway/stored-result-source.ts": "b77f2acf2e93af1e212fa7d3539b63f0090800a86dcb4587d347c3fde0d8e2d3",
+    "apps/desktop/src/main/model-gateway/gateway.ts": "7dfaf71c62ffc4571c2f18e1191517715b5caa39028f95f2d219e8b6e6e2fc81",
+    "apps/desktop/src/main/model-gateway/policy.ts": "dd09203ebe7e7f655cee40e01c84149a8c121e48ece916fa816cbc2c320d1ced",
+    "apps/desktop/src/main/model-gateway/credentials.ts": "8a56addc33468467a733614a96ff4f24489d06144afe44f4dafe873dbc10482f",
+    "apps/desktop/src/main/model-gateway/private-directory.ts": "aec53ab5e21f3f482b9cffaed51354f3100a44e7ea34f3c6d704433c31acdf9f",
+    "apps/desktop/src/main/model-gateway/ciphertext-repository.ts": "31e4bed54746529cecbdd1100db6ccb19840ef1d5367090a5334964a2f01e41d",
+    "apps/desktop/src/main/model-gateway/persistent-audit.ts": "62d77f33293770b3c72a0ede6ab796115ac10ebad8def1e534790015c562f5a8",
+    "tests/unit/i06-stored-result.test.ts": "d964c0b47dda69febfa5daf7fe926520a54a9dcaf997668caff4be6808e94d15",
+    "tests/i06-stored-material/fixture.py": "2288aef295d4fbb7f5864fb26a73fa76fff88af5eb469726fdb8527c78e32c2a",
+    "packages/engine/src/ontolearn_engine/worker.py": "2fa848aa3a2148e59a24f01c9333701f0f03eed95cffe55a0a78b74f1d06f2f0",
+    "packages/engine/src/ontolearn_engine/storage.py": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+    "packages/engine/src/ontolearn_engine/coordinator.py": "597d74e318645d0ae4e7152acc29487efc37cb23b501404e60b21f5ed87fc7cb",
+    "packages/contracts/v2/schema.json": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+    "packages/contracts/v2/registry.json": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+    "packages/contracts/v2/errors.json": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+    "uv.lock": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+  },
+  "logs": {
+    "tests/i06-stored-material/out/field-check-r5.log": "9624dce130ae8c9a9059e0be7b29616b3aa06cde5e384c360b93a5551481c8a6",
+    "tests/i06-stored-material/out/field-check-r6.log": "d9e181ed5ad48f3c29960b47deb986aef611d3efee148124a387681b597a1a68",
+    "tests/i06-stored-material/out/field-lint-r3.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/i06-stored-material/out/field-r2.log": "6c58cac924bc4671da36c049182c22f15df87f52def775dfaac6bfa42dd6a997",
+    "tests/i06-stored-material/out/field-r4.log": "abc45ce74723ce900d4c686816a94bc5341c841919fb9978369e7b2d4560c296",
+    "tests/i06-stored-material/out/field-sources-r6.log": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
+    "tests/i06-stored-material/out/field-typecheck-r2.log": "a41a3fb808d42d039edf3f9dfa005b8cc9cb3e8234789ab8cc39aa3674878442",
+    "tests/i06-stored-material/out/field-typecheck-r4.log": "a41a3fb808d42d039edf3f9dfa005b8cc9cb3e8234789ab8cc39aa3674878442"
+  },
+  "limits": [
+    "Finite main model over approved test.read echo producer; synthetic derived values declared by main policy, not general business provenance",
+    "Credential reader test double; no OS native behavior newly exercised",
+    "No formal main/bridge/UI wiring or current complete-candidate platform/external dual review pass",
+    "Earlier r2/r4 logs precede lifecycle/row-ID fixes; r6 binds current source inputs; r5 lint failure preserved"
+  ]
+}
