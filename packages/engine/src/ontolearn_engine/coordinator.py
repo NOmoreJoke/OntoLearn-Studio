@@ -580,7 +580,10 @@ async def serve() -> None:
         reader = JsonlReader()
         try:
             while not stopped.is_set():
-                chunk = sys.stdin.buffer.read1(16384)
+                # The daemon may still be blocked when a session-fatal request
+                # closes the transport. Raw fd reads hold no BufferedReader lock
+                # that could abort interpreter shutdown; normal cleanup still runs.
+                chunk = os.read(sys.stdin.fileno(), 16384)
                 if not chunk:
                     reader.finish()
                     break
