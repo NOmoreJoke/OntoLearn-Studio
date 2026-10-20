@@ -209,5 +209,142 @@
     ],
     "preparationNote": "Initial observer compared stdin against plugin-import time, which differed because pytest capture installs its own stdin. Final observer compares before/after the same test protocol; all four confirm no test-induced global stdin change."
   },
-  "adoptedR2N1": "In-tree Darwin-only parent sampler failure test now asserts exact safe INTERNAL_ERROR, no result/operation for target, real sibling success and exact result rows; monkeypatch scoped to actual target PID and restored. Linux skips that genuinely platform-specific test."
+  "adoptedR2N1": "In-tree Darwin-only parent sampler failure test now asserts exact safe INTERNAL_ERROR, no result/operation for target, real sibling success and exact result rows; monkeypatch scoped to actual target PID and restored. Linux skips that genuinely platform-specific test.",
+  "bridgeEvidenceAudit4db": {
+    "reviewedCommit": "4db8fe70d3d02bbecbc4d1f02f33e52ad7d00302",
+    "sourceImplementationHead": "bc098d0d8eaa0d786039a0a9d154c4be81b27103",
+    "primaryObservedHead": "0462e0825f3bda2774ce5d43f4422327f2d5fbd9",
+    "result": "passed evidence consistency audit",
+    "checksPassed": 264,
+    "checksTotal": 264,
+    "failures": [],
+    "artifacts": {
+      "indexed": 79,
+      "hashAndBytesMatched": true,
+      "archiveAndManifestAlsoMatched": true
+    },
+    "runtimeInputs": {
+      "count": 123,
+      "allArchiveAndPinnedSourceBytesMatched": true,
+      "archiveSha256": "7b0294c8ef1b7f852eb97735ed21c8782735f207d5a34354885b865f7e641878",
+      "workingTreeDrift": ["packages/engine/tests/test_resident_runtime.py"],
+      "boundary": "Subsequent c5c1961 test-only change is outside the pinned 4db checkpoint; it is recorded as expected working-tree/source drift and is not declared covered or frozen by the earlier 123-input manifest."
+    },
+    "matrices": [
+      {
+        "platform": "macOS",
+        "cells": 144,
+        "atomic": 96,
+        "round": 48,
+        "rawSha256": "131ed1c6392cf50122a99fcee572ed85e32b778cc3f9cd7b4422e17cff4fa775",
+        "sourceHashesMatchHistoricalComponent": true,
+        "passed": true
+      },
+      {
+        "platform": "linux",
+        "cells": 144,
+        "atomic": 96,
+        "round": 48,
+        "rawSha256": "e779768da076ef28037f87cff19595c9d39b90cd7420c92b9dc1b32f7a276b36",
+        "sourceHashesMatchHistoricalComponent": true,
+        "passed": true
+      }
+    ],
+    "checksRecorded": {
+      "macOS": "630 TS / 1019 Python",
+      "Linux": "630 TS / 1016 Python + 3 Darwin skips",
+      "isolatedDesktop": "source 6 and packaged 6",
+      "packagedCommonExamples": "321/11/30/9/7/41/51 on both platforms",
+      "packagedRuntime": "12 on each platform, historical 4db checkpoint"
+    },
+    "handshakeBoundary": "Old source late hello success required explicit SIGTERM cleanup; fixed source/default probes show natural exit and timely-session survival; packaged default probes are liveness checks and explicitly do not independently establish a continuously busy inbox cause. Controlled 3-case and actual old-source counterexample provide that separate proof.",
+    "history": "Original reports and protected AGENTS unchanged. C2 component matrix sources match byte-for-byte; new C3 raw captures are distinct. No C3 freeze/approval/CI/push/merge is claimed.",
+    "reviewedDocumentHashes": {
+      "c3-verification.json": "e26bfd87959a7d0998a349d1b987d387e1ce39235a76dbdf20b164ed75c6e038",
+      "c3-desktop-evidence.json": "cb4c1b782055a46a624a283fc921f332ff194b1af29347177d56323894ed6f94",
+      "c3-handshake-evidence.json": "3d10d0f497611e75e25430c84f99395deb288e83e4779eacb6c23d366ab0d1e1",
+      "c3-internal-review.json": "ca0e7785b5ea29d9e0e7ff61479ea1c28e9448e483638e1cded32824b30e2fb9"
+    },
+    "detailedAuditSha256": "e81184db1b4f6f27a4dfa90ffbfc96739768b5e67388630463bfae00ecf45eb7",
+    "boundary": "Pinned 4db8fe7 evidence/source/tar audit; expected current working-tree test drift is excluded. Read-only audit. No tests, GUI, package launch, CI or external reviews executed. C3 not declared frozen, approved or merged."
+  },
+  "bridgeDefaultRuntimeC5": {
+    "reviewedCommit": "c5c1961214ba5074300a96af034b70ea92a0323d",
+    "result": "No new blocker in scoped read-only review and one actual source case",
+    "deltaFrom4db8fe7": {
+      "files": ["packages/engine/tests/test_resident_runtime.py"],
+      "addedLines": 101,
+      "productionCodeChanged": false
+    },
+    "sourceHashes": {
+      "packages/engine/tests/test_resident_runtime.py": "d80b08023ce2eae7bbb3fad4c0e3d0db0ea851df4e5f4acbd75c06315baf3cd3",
+      "scripts/verify-i04-package.py": "c6fdae8a9e86c60774e8f34e051ff82321dae9d55484009c557b11c46bdd32cf",
+      "packages/engine/src/ontolearn_engine/coordinator.py": "fd10458aa1929098b027c62f19c98e888000a2a6e7745c9d817519bbe558e9b8"
+    },
+    "actualRun": {
+      "selection": "test_default_handshake_deadline_closes_real_source_or_packaged_transport",
+      "result": "1 passed in 15.88s",
+      "mode": "real source coordinator, own archived snapshot and independent venv; actual default clock/limits; no ONTOLEARN_TEST_ENGINE or ROOT_SOURCE_PATH",
+      "observations": {
+        "waitReturns": [
+          {
+            "pid": 14831,
+            "timeout": 7,
+            "returncode": 0,
+            "stdinOpen": true
+          }
+        ],
+        "sentAfterFirst": 37407,
+        "totalRequestsAttempted": 37408,
+        "elapsedAfterFirstReply": 5.027308166958392,
+        "observedResponses": 36721,
+        "uniqueResponseIds": 36721,
+        "readerAliveAfterCleanup": false,
+        "writerAliveAfterCleanup": false,
+        "returncodeAfterCleanup": 0,
+        "transportErrors": [],
+        "pytestExitStatus": 0
+      },
+      "observer": "Read-only per-test sys.setprofile observes process.wait and test-return locals; original test/transport unmodified, previous profile restored in finally. Post-exit validation/profile overhead is included in pytest duration, not deadline elapsed."
+    },
+    "assertionReview": {
+      "requestBound": "At most 60000 writer requests plus first request = 60001, below 65536 seen-request cap; actual attempted 37408.",
+      "naturalExit": "wait returns 0 while stdin is open; no EOF-trigger or kill on successful path; stdout/stderr drained.",
+      "responses": "Every received response validates full canonical response schema and exact HANDSHAKE_REQUIRED four-field error, health method and null session. Test does not promise acknowledgment of all attempted writes or one-to-one request-id membership.",
+      "cleanup": "Finally kills and waits only if child remains alive, joins both threads with bounds, closes all streams. Successful observed run child=0 and both threads dead; transportErrors empty.",
+      "isolation": "No global clock/module substitution, no LIMITS override, no test capability; isolated temp SQLite and source snapshot.",
+      "platform": "New path uses standard subprocess/thread/pipe operations without Unix signals; static Windows compatibility only, no Windows execution here.",
+      "packageCollection": "Existing verify-i04-package runs the entire resident-runtime file with selected actual binary and no -k filter. Collection now has 13 cases."
+    },
+    "scopeBoundary": "Default-binary transport liveness, not a stand-alone proof of continuously busy-inbox behavior or guaranteed old-version failure. Exact-edge three-case regressions plus existing real old-version counterexample establish that cause separately. First-reply-relative upper bound is asserted; no lower-bound default-duration assertion in this case.",
+    "notExecuted": [
+      "other resident runtime cases",
+      "full check",
+      "packaged binary 13-case rerun",
+      "Windows/Linux package execution",
+      "GUI",
+      "CI",
+      "merge"
+    ],
+    "manifestBoundary": "4db8fe7 79-artifact/123-input audit remains pinned to that checkpoint. This c5c1961 test-only delta is not covered by that earlier source manifest; refreshed fullcheck/package13/final manifest belong to root followup.",
+    "artifacts": {
+      "tests.log": {
+        "sha256": "55b4635925c0f0a6ce8df2bee9722f6133d383567aa0439657ff4ea219ff47e2",
+        "bytes": 99
+      },
+      "collection.log": {
+        "sha256": "c93702b4d47676523d560c04af2faabc896f219b755c29be4871ec0db1d32308",
+        "bytes": 1575
+      },
+      "observations.json": {
+        "sha256": "c0a2f93566b470acc66837aef9656cc89852c06a8924255e91c33c2f3dbc9d62",
+        "bytes": 448
+      },
+      "snapshot/review_observation.py": {
+        "sha256": "26d75bccf1ba4d44db81e468a8350e69bb35c25f1770c57fa59dd6622b260eeb",
+        "bytes": 1698
+      }
+    },
+    "writes": "Only own ignored build review directory; no root/primary/shared source modifications."
+  }
 }

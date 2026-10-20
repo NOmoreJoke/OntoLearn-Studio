@@ -1,17 +1,17 @@
 {
   "kind": "C3 follow-up verification; C2 is historical and its handshake deadline finding is fixed here",
-  "sourceImplementationHead": "bc098d0d8eaa0d786039a0a9d154c4be81b27103",
+  "sourceImplementationHead": "c5c1961214ba5074300a96af034b70ea92a0323d",
   "runtimeInputManifest": {
-    "path": "build/I04-evidence/c3-runtime-inputs.json",
-    "sha256": "05aa7e9baa1428b661173e4759c1f75f13e606f26641856c840ed8e5defc6413",
-    "bytes": 18526,
+    "path": "build/I04-evidence/c3-final-runtime-inputs.json",
+    "sha256": "c17caedc9fe02cec423a82f77e97c43706b94b770fe31a06ee0a6b6449671747",
+    "bytes": 18912,
     "fileCount": 123,
     "differencesFromActualRunArchive": []
   },
   "sourceArchive": {
-    "path": "build/I04-evidence/c3-runtime-source.tar",
-    "sha256": "7b0294c8ef1b7f852eb97735ed21c8782735f207d5a34354885b865f7e641878",
-    "bytes": 11816960
+    "path": "build/I04-evidence/c3-final-runtime-source.tar",
+    "sha256": "f2a8c770660aaba221989a18f18fcf201a0b67a5f5f5f940b89c8d0ccbbd95df",
+    "bytes": 11192320
   },
   "protectedAGENTSSHA256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
   "checks": [
@@ -20,18 +20,18 @@
       "platform": "macOS arm64, no GUI",
       "exit": 0,
       "typescriptPassed": 630,
-      "pythonPassed": 1019,
-      "log": "build/I04-evidence/c3-first-check.log"
+      "pythonPassed": 1020,
+      "log": "build/I04-evidence/c3-final-check.log"
     },
     {
       "command": "npm run check",
       "platform": "isolated Linux arm64",
       "exit": 0,
       "typescriptPassed": 630,
-      "pythonPassed": 1016,
+      "pythonPassed": 1017,
       "pythonSkipped": 3,
       "skipReason": "Darwin RSS growth, child-exit/libproc race and parent-sampler fault",
-      "log": "build/I04-evidence/c3-final-linux/check.log"
+      "log": "build/I04-evidence/c3-final-linux/current-check.log"
     },
     {
       "command": "actual desktop/health/CSP, reload/stage, coordinator kill/stage and native crash/unresponsive",
@@ -42,14 +42,20 @@
       "packagedExit": 0
     },
     {
-      "command": "package:dir + common examples + 12 real runtime tests",
+      "command": "same immutable package common examples + 13 real runtime tests",
       "platform": "macOS arm64",
-      "exit": 0
+      "exit": 0,
+      "runtimePassed": 13,
+      "output": "build/I04-evidence/c3-final-macos-probe",
+      "buildBoundary": "Original C3 package build remains valid: only the host-side runtime test file was extended after packaging; engine/app/build/config/dependencies are identical."
     },
     {
-      "command": "package:dir + common examples + 12 real runtime tests",
+      "command": "same immutable package common examples + 13 real runtime tests",
       "platform": "isolated Linux arm64",
-      "exit": 0
+      "exit": 0,
+      "runtimePassed": 13,
+      "output": "build/I04-evidence/c3-final-linux/current-package-probe",
+      "buildBoundary": "Original C3 package build remains valid: only the host-side runtime test file was extended after packaging; engine/app/build/config/dependencies are identical."
     },
     {
       "command": "complete per-cell readonly matrix evidence",
@@ -144,7 +150,7 @@
   "desktopEvidence": "c3-desktop-evidence.json",
   "handshakeEvidence": "c3-handshake-evidence.json",
   "internalReview": "c3-internal-review.json",
-  "historicalEvidence": "reconnect-* and matrix-evidence are labeled C2 component records; original C1 reports, failures and lineage remain preserved. C3 source/tests/config bytes are bound by this new archive/manifest.",
+  "historicalEvidence": "reconnect-* and matrix-evidence are labeled C2 component records; original C1 reports, failures and lineage remain preserved. C3 source/tests/config bytes are bound by this new archive/manifest. The bc098d0 manifest/tar and 12-case package logs are retained as earlier C3 checkpoints; latest checks and 13-case package logs have separate names.",
   "limitations": [
     "New candidate requires two NEW full base/head designated external tasks; no C2 approval is carried forward.",
     "No push, PR, remote CI or normal merge yet.",
@@ -547,6 +553,157 @@
       "path": "build/I04-evidence/c3-doc-format-fixed.log",
       "sha256": "094349bc9eee0b1588faaf15543257f4aa0d37814b8d8953ec935204b5ebff9f",
       "bytes": 408
+    },
+    {
+      "path": "build/I04-evidence/c3-default-wire-test.log",
+      "sha256": "f0aa6983aa6ef7cda778aedb9445ff6594b411bf3a29de55662b7cf930d05b99",
+      "bytes": 98
+    },
+    {
+      "path": "build/I04-evidence/c3-final-check.log",
+      "sha256": "26a9cf8a240dfd577faf99ca27ed27be85d95db3ffaff85d7067c9215a68bf53",
+      "bytes": 4884
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/current-check.log",
+      "sha256": "c9c7075adf28b56a89cd132173bfe7d6ea00eb68ae68c613e945be12ff84712a",
+      "bytes": 8292
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/current-package-probe.log",
+      "sha256": "2acdf8d42a228e347d19ae12b6c5089190f4a3fd0e574e91079145e743946af8",
+      "bytes": 265
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/current-package-probe/common-examples.json",
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f",
+      "bytes": 192
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/current-package-probe/resources.json",
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb",
+      "bytes": 1184
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/current-package-probe/runtime.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/current-package-probe/runtime.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/current-package-probe/runtime.stdout",
+      "sha256": "427f3b12e7225c01fcf328afa277289188da09ca3f20ad7f5f41221e49b2e5f3",
+      "bytes": 100
+    },
+    {
+      "path": "build/I04-evidence/c3-final-macos-probe.log",
+      "sha256": "deabce6c207b3c8a4cf361f5657b311802a71bb71c9ab08fe0951beab84b033e",
+      "bytes": 365
+    },
+    {
+      "path": "build/I04-evidence/c3-final-macos-probe/common-examples.json",
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f",
+      "bytes": 192
+    },
+    {
+      "path": "build/I04-evidence/c3-final-macos-probe/resources.json",
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb",
+      "bytes": 1184
+    },
+    {
+      "path": "build/I04-evidence/c3-final-macos-probe/runtime.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c3-final-macos-probe/runtime.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-evidence/c3-final-macos-probe/runtime.stdout",
+      "sha256": "76436a470a7168ec1b0e637fb15242bb5fc04e6e9ce947c00c7b117be974126e",
+      "bytes": 100
+    },
+    {
+      "path": "build/I04-evidence/c3-final-runtime-inputs.json",
+      "sha256": "c17caedc9fe02cec423a82f77e97c43706b94b770fe31a06ee0a6b6449671747",
+      "bytes": 18912
+    },
+    {
+      "path": "build/I04-evidence/bridge-c3-final-review/review-4db8fe7/audit.json",
+      "sha256": "9dd3240ca33d1e65a89ce2843a03fe5bc4603caf7892ccfc43aee6af809a2e8c",
+      "bytes": 3108
+    },
+    {
+      "path": "build/I04-evidence/bridge-c3-final-review/review-c5c1961/collection.log",
+      "sha256": "c93702b4d47676523d560c04af2faabc896f219b755c29be4871ec0db1d32308",
+      "bytes": 1575
+    },
+    {
+      "path": "build/I04-evidence/bridge-c3-final-review/review-c5c1961/observations.json",
+      "sha256": "c0a2f93566b470acc66837aef9656cc89852c06a8924255e91c33c2f3dbc9d62",
+      "bytes": 448
+    },
+    {
+      "path": "build/I04-evidence/bridge-c3-final-review/review-c5c1961/review.json",
+      "sha256": "7dbc16e764cb75d143f0f986f5c32f06aaa6e5632fa7d34b92c0e5ca8bd90d1c",
+      "bytes": 4498
+    },
+    {
+      "path": "build/I04-evidence/bridge-c3-final-review/review-c5c1961/snapshot/review_observation.py",
+      "sha256": "26d75bccf1ba4d44db81e468a8350e69bb35c25f1770c57fa59dd6622b260eeb",
+      "bytes": 1698
+    },
+    {
+      "path": "build/I04-evidence/bridge-c3-final-review/review-c5c1961/tests.log",
+      "sha256": "55b4635925c0f0a6ce8df2bee9722f6133d383567aa0439657ff4ea219ff47e2",
+      "bytes": 99
     }
-  ]
+  ],
+  "productionAndNativeRunCheckpoint": {
+    "sourceImplementationHead": "bc098d0d8eaa0d786039a0a9d154c4be81b27103",
+    "runtimeInputManifest": {
+      "path": "build/I04-evidence/c3-runtime-inputs.json",
+      "sha256": "05aa7e9baa1428b661173e4759c1f75f13e606f26641856c840ed8e5defc6413",
+      "bytes": 18526,
+      "fileCount": 123,
+      "differencesFromActualRunArchive": []
+    },
+    "sourceArchive": {
+      "path": "build/I04-evidence/c3-runtime-source.tar",
+      "sha256": "7b0294c8ef1b7f852eb97735ed21c8782735f207d5a34354885b865f7e641878",
+      "bytes": 11816960
+    },
+    "checksBeforeAdditionalTest": [
+      {
+        "command": "npm run check",
+        "platform": "macOS arm64, no GUI",
+        "exit": 0,
+        "typescriptPassed": 630,
+        "pythonPassed": 1020,
+        "log": "build/I04-evidence/c3-final-check.log"
+      },
+      {
+        "command": "npm run check",
+        "platform": "isolated Linux arm64",
+        "exit": 0,
+        "typescriptPassed": 630,
+        "pythonPassed": 1017,
+        "pythonSkipped": 3,
+        "skipReason": "Darwin RSS growth, child-exit/libproc race and parent-sampler fault",
+        "log": "build/I04-evidence/c3-final-linux/current-check.log"
+      }
+    ],
+    "packageRuntimeCasesBeforeAdditionalTest": 12,
+    "boundary": "Retained immutable earlier production build/GUI/matrix evidence. Subsequent c5c1961 extends only test_resident_runtime.py; no app, engine, build/config/dependency input changed."
+  },
+  "unchangedPackagedEngines": {
+    "macOS": "5a399a3e6cfe5c23219a8cfd75ab2ddf6c36b98b42c49555973f57f8da6f2418",
+    "linux": "7c3ca412a06f813cd1d3b92b84cd46109a09e3841c578d7dc657a408d37f7c9c"
+  }
 }

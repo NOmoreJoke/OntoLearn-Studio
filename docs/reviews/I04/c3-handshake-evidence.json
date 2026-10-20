@@ -195,7 +195,7 @@
   },
   "packaged": {
     "macOS": {
-      "executable": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-reconnect/release/mac-arm64/OntoLearn Studio.app/Contents/Resources/engine/ontolearn-engine",
+      "executable": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/I04-reconnect/release/mac-arm64/OntoLearn Studio.app/Contents/Resources/engine/ontolearn-engine",
       "binarySha256": "5a399a3e6cfe5c23219a8cfd75ab2ddf6c36b98b42c49555973f57f8da6f2418",
       "handshakeMs": 5000,
       "resourceLimitsModified": false,
@@ -267,5 +267,18 @@
       "reason": "New test initially used unsupported JobStore context manager; fixed explicit close before interpreting old-source failures. Original harness error retained."
     }
   },
-  "meaning": "Handshake remains an absolute pre-hello budget independent of inbox emptiness; rejected requests do not renew it. Timely negotiated sessions continue after that deadline. Default-duration real probes, controlled-clock unit tests and packaged runs have distinct evidence boundaries."
+  "meaning": "Handshake remains an absolute pre-hello budget independent of inbox emptiness; rejected requests do not renew it. Timely negotiated sessions continue after that deadline. Default-duration real probes, controlled-clock unit tests and packaged runs have distinct evidence boundaries.",
+  "inTreeDefaultRuntimeCase": {
+    "path": "packages/engine/tests/test_resident_runtime.py",
+    "name": "test_default_handshake_deadline_closes_real_source_or_packaged_transport",
+    "firstIntroducedAt": "c5c1961214ba5074300a96af034b70ea92a0323d",
+    "behavior": "Actual default 5000ms source/binary, caller stdin stays open, bounded <=60000 plus initial legal requests below 65536 cap, natural exit 0, empty stderr, joined threads and exact safe HANDSHAKE_REQUIRED responses. Same case is automatically included by verify-i04-package.py on all three CI platforms.",
+    "limits": "This real default-duration liveness/cleanup case can drain its finite batch on a fast consumer. Exact busy-inbox causality is established separately by the deterministic three tests and the original real default counterexample; this case alone is not claimed to fail every old-version run.",
+    "sourceFullCheck": "1020 passed; Linux 1017 passed + 3 Darwin-only skips",
+    "packagedRuntimeCasesEach": 13,
+    "packagedLogs": [
+      "build/I04-evidence/c3-final-macos-probe/runtime.stdout",
+      "build/I04-evidence/c3-final-linux/current-package-probe/runtime.stdout"
+    ]
+  }
 }
