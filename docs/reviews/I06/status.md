@@ -8,6 +8,7 @@
 - 唯一可写 worktree：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-model-gateway`，分支 `feature/I06-model-gateway`。
 - base/启动 HEAD：`1b6df7a220fc9a67d7046133a340085f03f0a96c`；origin `https://github.com/NOmoreJoke/OntoLearn-Studio.git`。尚未冻结完整候选。
 - 初始核心检查点：`8336559c65b8d8ece3fcb15ea3dc224c398b7d9c`，流程追加为 `56de8312c72d8ec2dd7a6739ac01f5737e5914fe`。续跑发现凭据密文与主体/版本绑定缺口，已修复并完成新版内部复核和验证，后续检查点记录于本文件末尾；旧检查结果仅对应旧版，不作为新实现通过依据。以上均不是完整验收或指定双审候选。
+- 当前受检核心检查点：`637e0e6869091610141b0b9b9ebf01545205e648`；之后仅追加本引用和证据的 SHA 对应，不改变实现或验收。工作区仍只保留 protected AGENTS.md dirty。
 - 已完整读取 Goal（含第九节）、scope、transition policy、parallel coordination、state 和 before-I06 两清单。最新指南与原仓库 SHA 均为 `db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786`。AGENTS.md 是唯一启动时 dirty 文件，保护、不暂存、不混入功能。
 - 仅写新 `apps/desktop/src/main/model-gateway/`、`tests/unit/i06-*`、`docs/iterations/I06/`、`docs/reviews/I06/`。未写 main/preload/renderer/CSP、公共契约、storage/protocol/失效表、依赖/锁、总控 state 或其他工作区。
 - `npm ci --ignore-scripts`、`uv sync --frozen` 建立本 worktree 独立 node_modules/.venv；未链接他线环境。无 Electron/GUI/native/HMR 启动、无凭据提示、无真实模型/真实密钥/业务外发。
