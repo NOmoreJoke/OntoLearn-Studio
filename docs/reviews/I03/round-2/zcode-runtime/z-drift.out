@@ -1,0 +1,444 @@
+
+ RUN  v5.0.5 /private/tmp/i03-r2-zcode/inject
+
+ ❯ tests/unit/contract-v2.test.ts (409 tests | 1 failed | 408 skipped) 7ms
+   ↓ shared v2 contract corpus (403)
+     ↓ resolved asserted validation layers
+     ↓ resolved combined validation layers
+     ↓ validation binding rejects wrong content reference
+     ↓ validation binding rejects wrong resource project
+     ↓ validation binding rejects wrong resource snapshot
+     ↓ validation binding rejects wrong derived result
+     ↓ validation binding rejects wrong derived implementation
+     ↓ validation binding rejects wrong layer role
+     ↓ validation binding rejects project layer is not derived evidence
+     ↓ validation binding requires every selected layer
+     ↓ asserted validation cannot silently resolve derived layers
+     ↓ validation binding rejects non reasoning result
+     ↓ validation binding rejects evicted derived payload
+     ↓ validation binding rejects historical input without explicit selection
+     ↓ explicit historical validation retains snapshot and derived evidence
+     ↓ historical derived metadata must have a state
+     ↓ same derived result cannot have contradictory layer states
+     ↓ selected validation constraint must match actual resource identity
+     ↓ actual constraint resource cannot claim another definition
+     ↓ non constraint layer cannot claim selected constraint identity
+     ↓ integral float state versions
+     ↓ fractional state version rejected
+     ↓ bounded 1200 references
+     ↓ over vector capacity references
+     ↓ unpaired high surrogate
+     ↓ unpaired low surrogate
+     ↓ matching hello
+     ↓ matching health
+     ↓ matching session.ping
+     ↓ matching project.get
+     ↓ matching job.create
+     ↓ matching job.get
+     ↓ matching job.cancel
+     ↓ matching job.list
+     ↓ matching job.subscribe
+     ↓ matching job.unsubscribe
+     ↓ matching result.get
+     ↓ matching result.current
+     ↓ matching result.page
+     ↓ matching operation.get
+     ↓ matching full current key
+     ↓ current key mismatch kind
+     ↓ current key mismatch definitionId
+     ↓ current key mismatch scope
+     ↓ current key mismatch parametersHash
+     ↓ current implementation mismatch
+     ↓ historical cannot satisfy current
+     ↓ wrong operation marker
+     ↓ wrong unsubscribed identity
+     ↓ page exceeds requested size
+     ↓ created operation mismatch
+     ↓ active list contains cancelled
+     ↓ full selected query input matching
+     ↓ full input mismatch definitionId
+     ↓ full input mismatch derivedResultIds
+     ↓ full input mismatch preparedPlanRef
+     ↓ valid job list cursor
+     ↓ job list cursor mismatch projectId
+     ↓ job list cursor mismatch filter
+     ↓ job list cursor mismatch listSnapshotId
+     ↓ job list cursor mismatch cursor
+     ↓ job list cursor mismatch pageSize
+     ↓ expired job list cursor
+     ↓ request hello
+     ↓ response hello
+     ↓ unknown params hello
+     ↓ request health
+     ↓ response health
+     ↓ unknown params health
+     ↓ request session.ping
+     ↓ response session.ping
+     ↓ unknown params session.ping
+     ↓ request project.get
+     ↓ response project.get
+     ↓ unknown params project.get
+     ↓ request job.create
+     ↓ response job.create
+     ↓ unknown params job.create
+     ↓ request job.get
+     ↓ response job.get
+     ↓ unknown params job.get
+     ↓ request job.cancel
+     ↓ response job.cancel
+     ↓ unknown params job.cancel
+     ↓ request job.list
+     ↓ response job.list
+     ↓ unknown params job.list
+     ↓ request job.subscribe
+     ↓ response job.subscribe
+     ↓ unknown params job.subscribe
+     ↓ request job.unsubscribe
+     ↓ response job.unsubscribe
+     ↓ unknown params job.unsubscribe
+     ↓ request result.get
+     ↓ response result.get
+     ↓ unknown params result.get
+     ↓ request result.current
+     ↓ response result.current
+     ↓ unknown params result.current
+     ↓ request result.page
+     ↓ response result.page
+     ↓ unknown params result.page
+     ↓ request operation.get
+     ↓ response operation.get
+     ↓ unknown params operation.get
+     ↓ error INVALID_REQUEST
+     ↓ unsafe error param INVALID_REQUEST
+     ↓ wrong message key INVALID_REQUEST
+     ↓ wrong retry policy INVALID_REQUEST
+     ↓ error METHOD_NOT_ALLOWED
+     ↓ unsafe error param METHOD_NOT_ALLOWED
+     ↓ wrong message key METHOD_NOT_ALLOWED
+     ↓ wrong retry policy METHOD_NOT_ALLOWED
+     ↓ error VERSION_INCOMPATIBLE
+     ↓ unsafe error param VERSION_INCOMPATIBLE
+     ↓ wrong message key VERSION_INCOMPATIBLE
+     ↓ wrong retry policy VERSION_INCOMPATIBLE
+     ↓ error HANDSHAKE_REQUIRED
+     ↓ unsafe error param HANDSHAKE_REQUIRED
+     ↓ wrong message key HANDSHAKE_REQUIRED
+     ↓ wrong retry policy HANDSHAKE_REQUIRED
+     ↓ error SESSION_MISMATCH
+     ↓ unsafe error param SESSION_MISMATCH
+     ↓ wrong message key SESSION_MISMATCH
+     ↓ wrong retry policy SESSION_MISMATCH
+     ↓ error NOT_FOUND
+     ↓ unsafe error param NOT_FOUND
+     ↓ wrong message key NOT_FOUND
+     ↓ wrong retry policy NOT_FOUND
+     ↓ error PERMISSION_DENIED
+     ↓ unsafe error param PERMISSION_DENIED
+     ↓ wrong message key PERMISSION_DENIED
+     ↓ wrong retry policy PERMISSION_DENIED
+     ↓ error UNSUPPORTED_CAPABILITY
+     ↓ unsafe error param UNSUPPORTED_CAPABILITY
+     ↓ wrong message key UNSUPPORTED_CAPABILITY
+     ↓ wrong retry policy UNSUPPORTED_CAPABILITY
+     ↓ error QUEUE_FULL
+     ↓ unsafe error param QUEUE_FULL
+     ↓ wrong message key QUEUE_FULL
+     ↓ wrong retry policy QUEUE_FULL
+     ↓ error TIMEOUT
+     ↓ unsafe error param TIMEOUT
+     ↓ wrong message key TIMEOUT
+     ↓ wrong retry policy TIMEOUT
+     ↓ error ENGINE_EXITED
+     ↓ unsafe error param ENGINE_EXITED
+     ↓ wrong message key ENGINE_EXITED
+     ↓ wrong retry policy ENGINE_EXITED
+     ↓ error REVISION_CONFLICT
+     ↓ unsafe error param REVISION_CONFLICT
+     ↓ wrong message key REVISION_CONFLICT
+     ↓ wrong retry policy REVISION_CONFLICT
+     ↓ error OWNERSHIP_CONFLICT
+     ↓ unsafe error param OWNERSHIP_CONFLICT
+     ↓ wrong message key OWNERSHIP_CONFLICT
+     ↓ wrong retry policy OWNERSHIP_CONFLICT
+     ↓ error IDENTITY_CONFLICT
+     ↓ unsafe error param IDENTITY_CONFLICT
+     ↓ wrong message key IDENTITY_CONFLICT
+     ↓ wrong retry policy IDENTITY_CONFLICT
+     ↓ error STORAGE_BUSY
+     ↓ unsafe error param STORAGE_BUSY
+     ↓ wrong message key STORAGE_BUSY
+     ↓ wrong retry policy STORAGE_BUSY
+     ↓ error STORAGE_FAILURE
+     ↓ unsafe error param STORAGE_FAILURE
+     ↓ wrong message key STORAGE_FAILURE
+     ↓ wrong retry policy STORAGE_FAILURE
+     ↓ error CURSOR_MISMATCH
+     ↓ unsafe error param CURSOR_MISMATCH
+     ↓ wrong message key CURSOR_MISMATCH
+     ↓ wrong retry policy CURSOR_MISMATCH
+     ↓ error CURSOR_EXPIRED
+     ↓ unsafe error param CURSOR_EXPIRED
+     ↓ wrong message key CURSOR_EXPIRED
+     ↓ wrong retry policy CURSOR_EXPIRED
+     ↓ error PAYLOAD_EVICTED
+     ↓ unsafe error param PAYLOAD_EVICTED
+     ↓ wrong message key PAYLOAD_EVICTED
+     ↓ wrong retry policy PAYLOAD_EVICTED
+     ↓ error INVALID_STATE
+     ↓ unsafe error param INVALID_STATE
+     ↓ wrong message key INVALID_STATE
+     ↓ wrong retry policy INVALID_STATE
+     ↓ error MAPPING_VALUE_INVALID
+     ↓ unsafe error param MAPPING_VALUE_INVALID
+     ↓ wrong message key MAPPING_VALUE_INVALID
+     ↓ wrong retry policy MAPPING_VALUE_INVALID
+     ↓ error INTERNAL_ERROR
+     ↓ unsafe error param INTERNAL_ERROR
+     ↓ wrong message key INTERNAL_ERROR
+     ↓ wrong retry policy INTERNAL_ERROR
+     ↓ error SEMANTIC_INPUT_INVALID
+     ↓ unsafe error param SEMANTIC_INPUT_INVALID
+     ↓ wrong message key SEMANTIC_INPUT_INVALID
+     ↓ wrong retry policy SEMANTIC_INPUT_INVALID
+     ↓ error NETWORK_FORBIDDEN
+     ↓ unsafe error param NETWORK_FORBIDDEN
+     ↓ wrong message key NETWORK_FORBIDDEN
+     ↓ wrong retry policy NETWORK_FORBIDDEN
+     ↓ error UNSUPPORTED_CONSTRUCT
+     ↓ unsafe error param UNSUPPORTED_CONSTRUCT
+     ↓ wrong message key UNSUPPORTED_CONSTRUCT
+     ↓ wrong retry policy UNSUPPORTED_CONSTRUCT
+     ↓ error RESOURCE_LIMIT
+     ↓ unsafe error param RESOURCE_LIMIT
+     ↓ wrong message key RESOURCE_LIMIT
+     ↓ wrong retry policy RESOURCE_LIMIT
+     ↓ cancelled with two rounds
+     ↓ cancelled zero rounds
+     ↓ job queued
+     ↓ job running
+     ↓ job cancelling
+     ↓ job succeeded
+     ↓ job failed
+     ↓ failed without error
+     ↓ invalid round zero
+     ↓ non round carrying rounds
+     ↓ unknown raw exception
+     ↓ invalid bool revision
+     ↓ fact subject fake dependency
+     ↓ not a stale reason history
+     ↓ not a stale reason failure
+     ↓ not a stale reason cancel
+     ↓ not a stale reason model
+     ↓ not a stale reason implementation
+     ↓ stale facts
+     ↓ stale same version
+     ↓ current with reasons
+     ↓ late historical without domain stale
+     ↓ evicted current
+     ↓ result error both
+     ↓ unknown method
+     ↓ version one
+     ↓ null kind
+     ↓ no session business
+     ↓ state event
+     ↓ nested cross project
+     ↓ unknown total phase only
+     ↓ fake percent without total
+     ↓ known progress
+     ↓ progress exceeds total
+     ↓ session separate schema
+     ↓ fake project on session
+     ↓ over page item limit
+     ↓ duplicate row keys
+     ↓ unicode cell
+     ↓ name suffix '\n'
+     ↓ name suffix '\r\n'
+     ↓ name suffix '\r'
+     ↓ numeric equality 2.0
+     ↓ astral Unicode cell
+     ↓ atomic queued no commit
+     ↓ queued cannot claim commit
+     ↓ nested operation mismatch
+     ↓ atomic succeeded committed
+     ↓ atomic succeeded missing marker
+     ↓ job result snapshot mismatch
+     ↓ alreadyTerminal running
+     ↓ alreadyRequested cancelled
+     ↓ two unique stable rows
+     ↓ same rowId another ordinal
+     ↓ direct params confirmation required
+     ↓ direct params half cursor
+     ↓ historical commit receipt
+     ↓ receipt cannot be current
+     ↓ duplicate list members
+     ↓ duplicate stale dependency
+     ↓ stale before differs from saved input
+     ↓ new rule without tracked set
+     ↓ new rule tracked via set
+     ↓ result cannot omit actual facts dependency
+     ↓ job cannot omit actual facts dependency
+     ↓ semantic category rdfBlankNode
+     ↓ semantic category rejects raw value rdfBlankNode
+     ↓ semantic category rejects wrong key rdfBlankNode
+     ↓ semantic category sparqlForm
+     ↓ semantic category rejects raw value sparqlForm
+     ↓ semantic category rejects wrong key sparqlForm
+     ↓ semantic category ruleChain
+     ↓ semantic category rejects raw value ruleChain
+     ↓ semantic category rejects wrong key ruleChain
+     ↓ semantic category ruleRecursion
+     ↓ semantic category rejects raw value ruleRecursion
+     ↓ semantic category rejects wrong key ruleRecursion
+     ↓ semantic category shaclPath
+     ↓ semantic category rejects raw value shaclPath
+     ↓ semantic category rejects wrong key shaclPath
+     ↓ semantic category shaclAdvanced
+     ↓ semantic category rejects raw value shaclAdvanced
+     ↓ semantic category rejects wrong key shaclAdvanced
+     ↓ semantic category owlExpression
+     ↓ semantic category rejects raw value owlExpression
+     ↓ semantic category rejects wrong key owlExpression
+     ↓ semantic category rdfFormat
+     ↓ semantic category rejects raw value rdfFormat
+     ↓ semantic category rejects wrong key rdfFormat
+     ↓ semantic category rdfConstruct
+     ↓ semantic category rejects raw value rdfConstruct
+     ↓ semantic category rejects wrong key rdfConstruct
+     ↓ semantic category rdfsConstruct
+     ↓ semantic category rejects raw value rdfsConstruct
+     ↓ semantic category rejects wrong key rdfsConstruct
+     ↓ semantic category datatype
+     ↓ semantic category rejects raw value datatype
+     ↓ semantic category rejects wrong key datatype
+     ↓ semantic category literalValue
+     ↓ semantic category rejects raw value literalValue
+     ↓ semantic category rejects wrong key literalValue
+     ↓ semantic category queryFunction
+     ↓ semantic category rejects raw value queryFunction
+     ↓ semantic category rejects wrong key queryFunction
+     ↓ semantic category queryOrder
+     ↓ semantic category rejects raw value queryOrder
+     ↓ semantic category rejects wrong key queryOrder
+     ↓ semantic category querySlice
+     ↓ semantic category rejects raw value querySlice
+     ↓ semantic category rejects wrong key querySlice
+     ↓ semantic category ruleOutput
+     ↓ semantic category rejects raw value ruleOutput
+     ↓ semantic category rejects wrong key ruleOutput
+     ↓ semantic category validationScope
+     ↓ semantic category rejects raw value validationScope
+     ↓ semantic category rejects wrong key validationScope
+     ↓ semantic category rejects UNSUPPORTED_CONSTRUCT "unknown"
+     ↓ semantic category rejects UNSUPPORTED_CONSTRUCT "https://private.invalid/input"
+     ↓ semantic category rejects UNSUPPORTED_CONSTRUCT null
+     ↓ semantic category rejects UNSUPPORTED_CONSTRUCT false
+     ↓ semantic category rejects UNSUPPORTED_CONSTRUCT 42
+     ↓ semantic category rejects UNSUPPORTED_CONSTRUCT []
+     ↓ semantic category rejects UNSUPPORTED_CONSTRUCT {}
+     ↓ semantic category memory
+     ↓ semantic category rejects raw value memory
+     ↓ semantic category rejects wrong key memory
+     ↓ semantic category actions
+     ↓ semantic category rejects raw value actions
+     ↓ semantic category rejects wrong key actions
+     ↓ semantic category rounds
+     ↓ semantic category rejects raw value rounds
+     ↓ semantic category rejects wrong key rounds
+     ↓ semantic category frame
+     ↓ semantic category rejects raw value frame
+     ↓ semantic category rejects wrong key frame
+     ↓ semantic category page
+     ↓ semantic category rejects raw value page
+     ↓ semantic category rejects wrong key page
+     ↓ semantic category semanticInput
+     ↓ semantic category rejects raw value semanticInput
+     ↓ semantic category rejects wrong key semanticInput
+     ↓ semantic category semanticResult
+     ↓ semantic category rejects raw value semanticResult
+     ↓ semantic category rejects wrong key semanticResult
+     ↓ semantic category semanticWork
+     ↓ semantic category rejects raw value semanticWork
+     ↓ semantic category rejects wrong key semanticWork
+     ↓ semantic category rejects RESOURCE_LIMIT "unknown"
+     ↓ semantic category rejects RESOURCE_LIMIT "https://private.invalid/input"
+     ↓ semantic category rejects RESOURCE_LIMIT null
+     ↓ semantic category rejects RESOURCE_LIMIT false
+     ↓ semantic category rejects RESOURCE_LIMIT 42
+     ↓ semantic category rejects RESOURCE_LIMIT []
+     ↓ semantic category rejects RESOURCE_LIMIT {}
+     ↓ validation projection asserted
+     ↓ validation projection includes derived facts and retains axioms
+     ↓ combined validation cannot omit derived reference
+     ↓ asserted validation cannot include derived reference
+     ↓ derived validation project mismatch
+     ↓ derived validation snapshot mismatch
+     ↓ derived validation engine mismatch
+     ↓ derived validation semantics mismatch
+     ↓ derived validation dependency lock mismatch
+     ↓ projection cannot smuggle mixed graph reference
+     ↓ projection cannot choose validator inference
+     ↓ projection requires content-addressed facts
+     ↓ projection cannot discard derived axiom reference
+     ↓ projection cannot use scenario scope
+     ↓ reject retired messageKey job.resourceLimit
+     ↓ reject retired messageKey job.invalidState
+     ↓ valid job event
+     ↓ route mismatch engineSessionId
+     ↓ route mismatch projectId
+     ↓ route mismatch jobId
+     ↓ route mismatch subscriptionId
+     ↓ old lastSeq1
+     ↓ old lastSeq2
+     ↓ old stateVersion5
+     ↓ terminal state cannot regress
+     ↓ sequence gap requires get
+     ↓ same version contradictory event rejected
+     ↓ valid cursor
+     ↓ cursor mismatch projectId
+     ↓ cursor mismatch resultId
+     ↓ cursor mismatch inputSnapshotId
+     ↓ cursor mismatch scope
+     ↓ cursor mismatch parametersHash
+     ↓ cursor mismatch cursor
+     ↓ cursor mismatch pageSize
+     ↓ expired cursor
+     ↓ rejects oversized multi-byte page before serving
+     ↓ all error catalog entries equal canonical schema alternatives
+     ↓ domain stale codes come only from S1; model has no code
+     ↓ registry schema references resolve, and v2 advertises no unimplemented runtime
+   ↓ responses bind request, method, project, job, session and heartbeat nonce
+   ↓ terminal states never regress and partial rounds cannot resolve cancelling to success
+   ↓ derives real dependency closure, detects missing references and tracks new rule membership
+   ↓ all enum parameters have complete finite meanings without extra categories
+   ↓ error catalog version and byte budget govern the adapters
+   × canonical schema uses the supported vocabulary and explicitly bounds every array 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/contract-v2.test.ts > canonical schema uses the supported vocabulary and explicitly bounds every array
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ visit tests/unit/contract-v2.test.ts:261:51
+    259|     for (const key of Object.keys(node)) expect(vocabulary.has(key), k…
+    260|     if (node.type === 'array') {
+    261|       expect(Number.isSafeInteger(node.maxItems)).toBe(true)
+       |                                                   ^
+    262|       expect(Number(node.maxItems)).toBeGreaterThanOrEqual(0)
+    263|       expect(node.items).toBeDefined()
+ ❯ visit tests/unit/contract-v2.test.ts:265:70
+ ❯ tests/unit/contract-v2.test.ts:270:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 408 skipped (409)
+   Start at  15:54:36
+   Duration  176ms (import 53%, transform 36%, tests 8%, worker 3%)
+

@@ -1,0 +1,12 @@
+A0 control: changed=none shape=True target=True must be shape=True target=True
+A1 seq gap (lastSeq=0, seq 1->3): changed=seq shape=True target=False 
+A2 seq replay (binding.lastSeq 0->1, event seq=1): changed=binding.lastSeq shape=True target=False 
+A3 stateVersion jump (binding 3 -> data 6): changed=data.stateVersion shape=True target=False 
+A4 wrong subscription (legal other UUID): changed=subscriptionId shape=True target=False 
+B0 original synthetic baseline: changed=none shape=False target=False attribution check of round-2 original probe base
+C0 control matchesResponse(hello): changed=none shape=True target=True must be shape=True target=True
+C1 capabilities=['query.execute'] only: changed=result.capabilities shape=True target=False 
+D0 original synthetic hello response: changed=none shape=False target=False attribution check of round-2 original probe
+
+batch2 verdict: ALL-OK
+cases: 9 | rejected-mutations: 5

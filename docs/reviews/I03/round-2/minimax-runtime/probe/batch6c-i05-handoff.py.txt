@@ -1,0 +1,133 @@
+"""Batch 6b: I05 v3 handoff integrity with corrected parsing (exact tokens, slash destinations)."""
+import hashlib
+import importlib.util
+import json
+import re
+from pathlib import Path
+
+ROOT = Path("/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts")
+findings = []
+
+
+def ok(name, cond, detail=""):
+    findings.append({"name": name, "pass": bool(cond), "detail": detail})
+
+
+# --- v3 source codes (row format: | branch / CODE | meaning | public class |) ---
+v3_text = (ROOT / "docs/reviews/I03/handoffs/I05-typed-reasons-v3-source.md").read_text(encoding="utf-8")
+source_rows = []
+for line in v3_text.splitlines():
+    if not line.startswith("|") or line.startswith("| ---"):
+        continue
+    cells = [c.strip() for c in line.strip().strip("|").split("|")]
+    if len(cells) < 3:
+        continue
+    m = re.search(r"/\s*([A-Z][A-Z0-9_]{3,})\s*$", cells[0])
+    if m:
+        source_rows.append((m.group(1), cells[1], cells[2]))
+source_codes = [c for c, _, _ in source_rows]
+
+# --- I03 v3 table ---
+boundaries = (ROOT / "docs/iterations/I03/I05-semantic-boundaries.md").read_text(encoding="utf-8")
+lines = boundaries.splitlines()
+start = next(i for i, l in enumerate(lines) if l.startswith("| 当前内部细码"))
+table_rows = []
+for line in lines[start + 2 :]:
+    if not line.startswith("|"):
+        break
+    cells = [c.strip() for c in line.strip().strip("|").split("|")]
+    if len(cells) >= 2 and re.fullmatch(r"[A-Z][A-Z0-9_]{3,}", cells[0]):
+        table_rows.append((cells[0], cells[1]))
+table_codes = [c for c, _ in table_rows]
+
+ok("v3 source rows == 25", len(source_codes) == 25, str(len(source_codes)))
+ok("v3 table rows == 25", len(table_codes) == 25, str(len(table_codes)))
+ok("v3 set equal", set(table_codes) == set(source_codes),
+   f"table-only={sorted(set(table_codes)-set(source_codes))} source-only={sorted(set(source_codes)-set(table_codes))}")
+ok("v3 order equal", table_codes == source_codes,
+   f"table={table_codes[:4]} source={source_codes[:4]}")
+
+# --- retired codes: exact token only, must not appear as a standalone code in the v3 table ---
+RETIRED = ["INPUT_LIMIT", "RESULT_LIMIT", "UNSUPPORTED_LITERAL", "UNSUPPORTED_RDF", "ASSERTED_SCOPE_REQUIRED"]
+for code in RETIRED:
+    exact_hits = [c for c in table_codes if c == code]
+    substring_hits = [c for c in table_codes if code in c]
+    ok(f"retired {code} not a v3 code", not exact_hits, str(exact_hits))
+    ok(
+        f"retired {code} only substring of new fine codes (TEXT_INPUT_LIMIT etc.)",
+        all(c in {"TEXT_INPUT_LIMIT", "GRAPH_INPUT_LIMIT", "QUERY_RESULT_LIMIT", "RDFS_RESULT_LIMIT",
+                  "RULE_EVIDENCE_RESULT_LIMIT", "WORK_LIMIT", "UNSUPPORTED_LITERAL_DATATYPE",
+                  "UNSUPPORTED_NONFINITE_LITERAL", "UNSUPPORTED_RDFS", "UNSUPPORTED_SHACL_PATH",
+                  "UNSUPPORTED_DATATYPE"} for c in substring_hits),
+        str(substring_hits),
+    )
+    # historical table (older section) must still carry them
+    hist = [l for l in lines if l.startswith("| " + code + " ")]
+    ok(f"retired {code} retained in historical table", len(hist) >= 1, str(len(hist)))
+
+# --- SHAPE_PATH_UNCLASSIFIED ---
+for code, dest in table_rows:
+    if code == "SHAPE_PATH_UNCLASSIFIED":
+        ok("SHAPE_PATH_UNCLASSIFIED -> INTERNAL_ERROR only",
+           "INTERNAL_ERROR" in dest and not any(x in dest for x in ("RESOURCE_LIMIT", "SEMANTIC_INPUT_INVALID", "UNSUPPORTED_CONSTRUCT")),
+           dest[:100])
+
+# --- public catalog ---
+spec = importlib.util.spec_from_file_location(
+    "contract_v2", ROOT / "packages/contracts/python/contract_v2.py"
+)
+contract = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(contract)
+public_codes = set(contract.ERROR_CATALOG["codes"])
+ok("public catalog has no I05 internal code", not (public_codes & set(source_codes)),
+   str(sorted(public_codes & set(source_codes))))
+
+public_params = {}
+for code, entry in contract.ERROR_CATALOG["codes"].items():
+    for name, prop in entry["paramsSchema"]["properties"].items():
+        if "enum" in prop:
+            public_params.setdefault(code, {})[name] = set(prop["enum"])
+
+# destination expressibility: PUBLIC/PARAM=VALUE or PUBLIC/PARAMVALUE or bare PUBLIC or INVALID_REQUEST/field=...
+unexpressible = []
+for code, dest in table_rows:
+    ok_dest = False
+    for pub_code in public_codes:
+        if pub_code not in dest:
+            continue
+        params = public_params.get(pub_code, {})
+        if not params:
+            ok_dest = True  # code with empty params, e.g. INTERNAL_ERROR/{}
+            continue
+        for pname, values in params.items():
+            for value in values:
+                if f"{pname}={value}" in dest or f"/{value}" in dest or f"{pname}:{value}" in dest:
+                    ok_dest = True
+        if "真实入口" in dest or "按真实入口" in dest:
+            # entry point determines the field value; the enum must cover all four entry points
+            ok_dest = ok_dest or set(values) >= {"syntax", "query", "rule", "constraint"}
+    if not ok_dest:
+        unexpressible.append((code, dest[:80]))
+ok("every v3 row maps to a public code/param", not unexpressible, str(unexpressible))
+
+# semantic budgets must not be conflated with frame/page/actions/rounds
+confusion = []
+for code, dest in table_rows:
+    if "RESOURCE_LIMIT" not in dest:
+        continue
+    for budget in ("semanticInput", "semanticResult", "semanticWork"):
+        if budget in dest and any(f"{other}" in dest for other in ("/frame", "/page", "/actions", "/rounds")):
+            confusion.append((code, dest[:80]))
+ok("no v3 row mixes semantic budget with frame/page/actions/rounds", not confusion, str(confusion))
+
+# --- the three semantic budgets exist and are distinct categories ---
+res = public_params["RESOURCE_LIMIT"]["resource"]
+ok("RESOURCE_LIMIT has 8 categories incl. 3 semantic budgets",
+   res == {"memory", "actions", "rounds", "frame", "page", "semanticInput", "semanticResult", "semanticWork"},
+   str(sorted(res)))
+
+failed = [f for f in findings if not f["pass"]]
+print(json.dumps({"total": len(findings), "failed": len(failed)}, ensure_ascii=False))
+for f in findings:
+    print(f"{'PASS' if f['pass'] else 'FAIL'}  {f['name']}" + (f" :: {f['detail']}" if f["detail"] else ""))
+raise SystemExit(1 if failed else 0)

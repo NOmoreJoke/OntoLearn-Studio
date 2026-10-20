@@ -1,0 +1,158 @@
+"""I03-R2 ZCode storage guard probe. Real SQLite, temp dirs only."""
+import json
+import sqlite3
+import sys
+import tempfile
+from pathlib import Path
+
+sys.path.insert(0, "src")
+from ontolearn_engine.storage import Store  # noqa: E402
+
+results = []
+
+
+def check(name, fn):
+    try:
+        fn()
+        results.append((name, "PASS", ""))
+    except AssertionError as e:
+        results.append((name, "FAIL", str(e)))
+    except Exception as e:  # noqa: BLE001
+        results.append((name, "ERROR", f"{type(e).__name__}: {e}"))
+
+
+IMPL = {"executionSemanticsVersion": "esv-1", "engineVersion": "e-1", "dependencyLockHash": "a" * 64}
+
+
+# P1: existing NULL kind rejected on open, no silent cleanup
+def p1():
+    d = tempfile.mkdtemp(prefix="i03r2z-")
+    p = Path(d) / "t.sqlite"
+    db = sqlite3.connect(p)
+    db.execute("CREATE TABLE results (kind TEXT)")
+    db.execute("CREATE TABLE current_results (kind TEXT)")
+    db.execute("INSERT INTO results VALUES (NULL)")
+    db.commit()
+    db.close()
+    try:
+        Store(p)
+        raise AssertionError("opened despite NULL kind")
+    except ValueError as e:
+        assert "Invalid legacy result kind" in str(e)
+    db = sqlite3.connect(p)
+    n = db.execute("SELECT COUNT(*) FROM results WHERE kind IS NULL").fetchone()[0]
+    db.close()
+    assert n == 1, "NULL row silently cleaned"
+
+
+check("P1 existing NULL kind rejected, no cleanup", p1)
+
+
+# P2: publish rejects illegal kinds with zero writes
+def p2():
+    d = tempfile.mkdtemp(prefix="i03r2z-")
+    s = Store(Path(d) / "t.sqlite")
+    dump_before = list(s._db.iterdump())
+    for bad in [None, "", "   ", 1, False, [], {}]:
+        try:
+            s.publish("proj", bad, {"snapshot": "x"}, [], IMPL)
+            raise AssertionError(f"publish accepted kind={bad!r}")
+        except ValueError:
+            pass
+    assert list(s._db.iterdump()) == dump_before, "illegal kind wrote data"
+
+
+check("P2 publish rejects illegal kinds with zero writes", p2)
+
+
+# P3: publish rejects incomplete provenance with zero writes
+def p3():
+    d = tempfile.mkdtemp(prefix="i03r2z-")
+    s = Store(Path(d) / "t.sqlite")
+    dump_before = list(s._db.iterdump())
+    bad_impls = [
+        None,
+        [],
+        1,
+        False,
+        {},
+        {"executionSemanticsVersion": "a"},
+        {"executionSemanticsVersion": "a", "engineVersion": "b"},
+    ]
+    for bad in bad_impls:
+        try:
+            s.publish("proj", "query", {"snapshot": "x"}, [], bad)
+            raise AssertionError(f"publish accepted impl={bad!r}")
+        except ValueError:
+            pass
+    assert list(s._db.iterdump()) == dump_before
+
+
+check("P3 publish rejects incomplete provenance with zero writes", p3)
+
+
+# P4: current distinguishes shape error from legitimate not-found null
+def p4():
+    d = tempfile.mkdtemp(prefix="i03r2z-")
+    s = Store(Path(d) / "t.sqlite")
+    bad_args = [
+        (None, IMPL),
+        ("", IMPL),
+        (1, IMPL),
+        ("query", None),
+        ("query", []),
+        ("query", 1),
+        ("query", {}),
+    ]
+    for bad_k, bad_i in bad_args:
+        try:
+            s.current("proj", bad_k, bad_i)
+            raise AssertionError(f"current accepted ({bad_k!r},{type(bad_i).__name__})")
+        except ValueError:
+            pass
+    assert s.current("proj", "query", IMPL) is None
+
+
+check("P4 current distinguishes shape error from not-found null", p4)
+
+
+# P5: legal identity replaces current (single current per identity)
+def p5():
+    d = tempfile.mkdtemp(prefix="i03r2z-")
+    s = Store(Path(d) / "t.sqlite")
+    s.publish("proj", "query", {"snapshot": "x1"}, [], IMPL)
+    r1 = s.current("proj", "query", IMPL)
+    s.publish("proj", "query", {"snapshot": "x2"}, [], IMPL)
+    r2 = s.current("proj", "query", IMPL)
+    assert r1 and r2 and r1["inputSnapshotId"] != r2["inputSnapshotId"]
+    assert r2["inputSnapshotId"] == "x2", "old current not replaced"
+
+
+check("P5 legal identity keeps single current", p5)
+
+
+# P6: legacy non-object config -> ValueError, no progress/round side effects
+def p6():
+    d = tempfile.mkdtemp(prefix="i03r2z-")
+    s = Store(Path(d) / "t.sqlite")
+    rid = s.create_run("proj", {"maxRounds": 3})
+    s._db.execute("UPDATE runs SET config=? WHERE id=?", (json.dumps([1, 2]), rid))
+    s._db.commit()
+    try:
+        s.commit_round("proj", rid, {"events": []}, {"snapshot": "s"})
+        raise AssertionError("commit_round accepted non-object config")
+    except ValueError as e:
+        assert "Run config must be an object" in str(e)
+    assert s.progress("proj", rid) is None, "progress side effect"
+    rounds = s._db.execute("SELECT COUNT(*) FROM rounds").fetchone()[0]
+    assert rounds == 0, "round side effect"
+
+
+check("P6 legacy non-object config ValueError, zero side effects", p6)
+
+
+fails = [r for r in results if r[1] != "PASS"]
+for name, st, msg in results:
+    print(f"{st}: {name}" + (f" -- {msg}" if msg else ""))
+print(f"\n{len(results) - len(fails)}/{len(results)} passed")
+sys.exit(1 if fails else 0)

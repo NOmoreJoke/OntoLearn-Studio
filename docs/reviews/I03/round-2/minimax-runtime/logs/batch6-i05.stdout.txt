@@ -1,0 +1,29 @@
+{"total": 28, "failed": 8}
+PASS  frozen inputs count == 6 :: 6
+PASS  frozen input sha goal-objective.md :: d1e4993b5c0ecfe8 vs d1e4993b5c0ecfe8
+PASS  frozen input sha scope.md :: 853162d9d9dceea3 vs 853162d9d9dceea3
+PASS  frozen input sha parallel-coordination.md :: d5901c2fcd82b481 vs d5901c2fcd82b481
+PASS  frozen input sha policy.md :: 1915bf751ed66374 vs 1915bf751ed66374
+PASS  frozen input sha m0-review-and-update-plan-2026-10-19.md :: c289a1cd1a9cf401 vs c289a1cd1a9cf401
+PASS  frozen input sha parallel-coordination-20261020-I06.md :: a018e0962055fa88 vs a018e0962055fa88
+PASS  I05 handoff sha docs/reviews/I03/handoffs/I05-contract-handoff-20261020-source.md :: ad84c43919b60f04
+PASS  I05 handoff sha docs/reviews/I03/handoffs/I05-typed-reasons-v3-source.md :: ea40f827ca472f88
+PASS  v3 table code count == 25 :: 25
+FAIL  v3 source code count == 25 :: 0
+FAIL  v3 table set == v3 source set :: table-only=['FACT_SCOPE_CONTAINS_AXIOMS', 'GRAPH_INPUT_LIMIT', 'INVALID_LITERAL_LEXICAL', 'ONTOLOGY_SCOPE_CONTAINS_FACTS', 'QUERY_RESULT_LIMIT', 'RDFS_RESULT_LIMIT', 'RDFS_TERM_INVALID', 'RDF_TERM_INVALID', 'RDF_TYPE_OBJECT_INVALID', 'RULE_EVIDENCE_RESULT_LIMIT', 'RULE_MATCH_WORK_LIMIT', 'SCOPE_SELECTION_TYPE_INVALID', 'SHAPE_DATATYPE_INVALID', 'SHAPE_PATH_INVALID', 'SHAPE_PATH_UNCLASSIFIED', 'SHAPE_TARGET_CLASS_INVALID', 'TEXT_INPUT_LIMIT', 'TEXT_TYPE_INVALID', 'UNSELECTED_RULES_PRESENT', 'UNSUPPORTED_DATATYPE', 'UNSUPPORTED_LITERAL_DATATYPE', 'UNSUPPORTED_NONFINITE_LITERAL', 'UNSUPPORTED_RDFS', 'UNSUPPORTED_SHACL_PATH', 'WORK_LIMIT'] source-only=[]
+FAIL  v3 table order == v3 source order :: table=['TEXT_TYPE_INVALID', 'TEXT_INPUT_LIMIT', 'GRAPH_INPUT_LIMIT', 'INVALID_LITERAL_LEXICAL', 'UNSUPPORTED_LITERAL_DATATYPE'] source=[]
+PASS  retired code INPUT_LIMIT absent from v3 table
+FAIL  retired code INPUT_LIMIT only in historical table
+PASS  retired code RESULT_LIMIT absent from v3 table
+FAIL  retired code RESULT_LIMIT only in historical table
+PASS  retired code UNSUPPORTED_LITERAL absent from v3 table
+FAIL  retired code UNSUPPORTED_LITERAL only in historical table
+PASS  retired code UNSUPPORTED_RDF absent from v3 table
+FAIL  retired code UNSUPPORTED_RDF only in historical table
+PASS  retired code ASSERTED_SCOPE_REQUIRED absent from v3 table
+PASS  retired code ASSERTED_SCOPE_REQUIRED only in historical table
+PASS  SHAPE_PATH_UNCLASSIFIED -> INTERNAL_ERROR only :: 未安全分类的匿名路径→INTERNAL_ERROR/{}；不得归责用户、假称支持或返回检查通过
+PASS  public catalog contains no I05 internal code :: []
+FAIL  every v3 row has a public destination :: [('TEXT_INPUT_LIMIT', '真实UTF-8字节量超限→RESOURCE_LIMIT/semanticInput'), ('GRAPH_INPUT_LIMIT', '实际输入三元组量超限→RESOURCE_LIMIT/semanticInput'), ('INVALID_LITERAL_LEXICAL', '已确认用户输入非法词法→SEMANTIC_INPUT_INVALID/真实入口；可信生成项违约→INTERNAL_ERROR'), ('UNSUPPORTED_LITERAL_DATATYPE', '合法、未被ill_typed标记、候选列表外datatype→UNSUPPORTED_CONSTRUCT/datatype'), ('UNSUPPORTED_NONFINITE_LITERAL', '已支持datatype但实际值非有限→UNSUPPORTED_CONSTRUCT/literalValue；不得把大而有限Decimal误归此类'), ('UNSUPPORTED_DATATYPE', '模板中合法但当前不支持的datatype IRI→UNSUPPORTED_CONSTRUCT/datatype'), ('RDF_TERM_INVALID', '已知非法RDF主体/谓词形状；用户输入按真实入口SEMANTIC_INPUT_INVALID，可信生成项违约INTERNAL_ERROR，不借rdfConstruct'), ('RDF_TYPE_OBJECT_INVALID', '当前领域事实形状要求rdf:type对象为类IRI；用户输入按真实入口SEMANTIC_INPUT_INVALID，可信生成项违约INTERNAL_ERROR'), ('RDFS_TERM_INVALID', '已知非法subclass/domain/range项形状；用户输入按真实入口SEMANTIC_INPUT_INVALID，可信生成项违约INTERNAL_ERROR，不借合法范围外'), ('UNSUPPORTED_RDFS', '合法但范围外RDFS词汇→UNSUPPORTED_CONSTRUCT/rdfsConstruct'), ('SHAPE_TARGET_CLASS_INVALID', '用户模板目标类非IRI→SEMANTIC_INPUT_INVALID/constraint；可信模板生成违约→INTERNAL_ERROR'), ('SHAPE_DATATYPE_INVALID', '用户模板datatype对象非IRI→SEMANTIC_INPUT_INVALID/constraint；可信模板生成违约→INTERNAL_ERROR，不称shaclPath'), ('SHAPE_PATH_INVALID', '已确认用户模板非法字面量path→SEMANTIC_INPUT_INVALID/constraint；可信生成违约→INTERNAL_ERROR'), ('UNSUPPORTED_SHACL_PATH', '新来源分支已确认合法单一inversePath且对象为IRI→UNSUPPORTED_CONSTRUCT/shaclPath；不能扩大为所有匿名路径均合法'), ('SHAPE_PATH_UNCLASSIFIED', '未安全分类的匿名路径→INTERNAL_ERROR/{}；不得归责用户、假称支持或返回检查通过'), ('QUERY_RESULT_LIMIT', '最终查询行量超限→RESOURCE_LIMIT/semanticResult，非page'), ('RDFS_RESULT_LIMIT', '最终闭包三元组量超限→RESOURCE_LIMIT/semanticResult'), ('RULE_MATCH_WORK_LIMIT', '中间匹配集合量超限→RESOURCE_LIMIT/semanticWork'), ('RULE_EVIDENCE_RESULT_LIMIT', '最终推导与解释证据条目预算超限→RESOURCE_LIMIT/semanticResult'), ('WORK_LIMIT', '累计闭包/匹配步骤预算→RESOURCE_LIMIT/semanticWork'), ('FACT_SCOPE_CONTAINS_AXIOMS', '可信事实投影混入公理→INTERNAL_ERROR；不能映射validationScope，不要求用户改合法scope或删除数据'), ('ONTOLOGY_SCOPE_CONTAINS_FACTS', '可信本体角色混入领域事实→INTERNAL_ERROR；不静默丢弃事实')]
+PASS  RESOURCE_LIMIT exposes the three semantic budgets :: ['actions', 'frame', 'memory', 'page', 'rounds', 'semanticInput', 'semanticResult', 'semanticWork']
+PASS  no row maps semantic budget onto frame/page/actions/rounds :: []

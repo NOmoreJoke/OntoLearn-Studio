@@ -1,0 +1,14 @@
+import { readFileSync } from 'node:fs'
+import { validateV2, acceptsJobEvent } from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/contracts/src/v2.ts'
+const root='/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts'
+const fixtures=JSON.parse(readFileSync(root+'/packages/contracts/v2/fixtures.json','utf8'))
+const route=fixtures.routing.find(c=>c.name==='valid job event')
+if (!route || !acceptsJobEvent(route.value,route.binding)) throw new Error('Invalid routing control')
+const wrong=structuredClone(route.value)
+wrong.subscriptionId='00000000-0000-4000-8000-000000000099'
+const hello=fixtures.cases.find(c=>c.name==='response hello').value
+const advertised=structuredClone(hello)
+advertised.result.capabilities=['query.execute']
+const result={routing:{controlSchema:validateV2('notification',route.value),controlAccepted:acceptsJobEvent(route.value,route.binding),mutatedSchema:validateV2('notification',wrong),mutatedAccepted:acceptsJobEvent(wrong,route.binding),changedFields:Object.keys(wrong).filter(k=>JSON.stringify(wrong[k])!==JSON.stringify(route.value[k]))},hello:{controlAccepted:validateV2('envelope',hello),mutatedAccepted:validateV2('envelope',advertised),changedFields:Object.keys(advertised.result).filter(k=>JSON.stringify(advertised.result[k])!==JSON.stringify(hello.result[k])),limitsUnchanged:JSON.stringify(advertised.result.limits)===JSON.stringify(hello.result.limits)}}
+console.log(JSON.stringify(result,null,2))
+if (!result.routing.controlSchema || !result.routing.controlAccepted || !result.routing.mutatedSchema || result.routing.mutatedAccepted || !result.hello.controlAccepted || result.hello.mutatedAccepted || !result.hello.limitsUnchanged) process.exitCode=1

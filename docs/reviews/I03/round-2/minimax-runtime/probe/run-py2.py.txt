@@ -1,0 +1,40 @@
+"""Batch 2: Python side."""
+import importlib.util
+import json
+from pathlib import Path
+
+ROOT = Path("/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts")
+spec = importlib.util.spec_from_file_location(
+    "contract_v2", ROOT / "packages/contracts/python/contract_v2.py"
+)
+contract = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(contract)
+
+cases = json.loads(Path("/tmp/i03-r2-minimax/probe/cases2.json").read_text(encoding="utf-8"))["cases"]
+results = []
+
+
+def run(cid, fn):
+    try:
+        results.append({"id": cid, "result": fn()})
+    except Exception as error:  # noqa: BLE001
+        results.append({"id": cid, "result": "THROW", "error": type(error).__name__})
+
+
+for case in cases:
+    if case["kind"] == "cursor":
+        run(case["id"], lambda c=case: contract.cursor_matches(c["record"], c["request"], c["nowMs"]))
+    elif case["kind"] == "jobListCursor":
+        run(
+            case["id"],
+            lambda c=case: contract.job_list_cursor_matches(
+                c["record"], c["request"], c["nowMs"]
+            ),
+        )
+    elif case["kind"] == "response":
+        run(case["id"], lambda c=case: contract.matches_response(c["request"], c["response"]))
+    elif case["kind"] == "routing":
+        run(case["id"], lambda c=case: contract.accepts_job_event(c["value"], c["binding"]))
+
+Path("/tmp/i03-r2-minimax/probe/results-py2.json").write_text(json.dumps(results))
+print("py batch2", len(results), "throws", sum(1 for r in results if r["result"] == "THROW"))

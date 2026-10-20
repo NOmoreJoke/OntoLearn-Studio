@@ -1,0 +1,104 @@
+diff --git a/docs/reviews/I03/round-2/zcode-runtime/report-before-factual-clarification.md b/docs/reviews/I03/round-2/zcode-glm53.md
+index bfa164f..fdd5cc7 100644
+--- a/docs/reviews/I03/round-2/zcode-runtime/report-before-factual-clarification.md
++++ b/docs/reviews/I03/round-2/zcode-glm53.md
+@@ -5,7 +5,7 @@
+ - 任务标识：`I03-R2-ZCode-GLM53-C5-30c10d8`（派发相关 ID，非原生 UUID，本环境未提供原生 task UUID，如实注明）。来源分层：总控核验人类授权并预约；I03 派发会话经原生文件夹选择器在精确 worktree 实际创建本任务并读回 GLM-5.3/最高（派发方声明，见 `round-2/tasks.json`）；本任务环境自报模型标识 `account:bigmodel-individual-coding-plan/GLM-5.3`、思考最高，属任务环境自报标签，任务内部无法独立核验 UI 读回结果，两者分开记录。
+ - 独立性：本报告对 base→head 全范围独立重审，未读取、未使用另一模型（M3.1-Flash/xhigh）round-2 的报告、运行输出或本轮意见，也不以其结论为依据；本轮允许对等读取的 round-1 历史材料（含对方 round-1 报告原稿与勘误）已实读，仅作历史事实输入，不影响本轮独立判断。未因任何历史通过预设本候选通过。
+ - 操作约束遵守：仅纯 CLI 验证（typecheck/check/verify:sources/pytest/tsc/vitest 探针）；未运行 Electron/Playwright/e2e/native/HMR/产物窗口，未点击/聚焦/重建任何窗口；未提交/推送/切分支；候选工作树零写入（`git status` 验证前后一致）；仓库内仅写入本报告与 `round-2/zcode-runtime/` 日志；未替换模型/思考/账号，未购买/重置额度。
+-- 资源边界（重要，按派发约定记录）：本轮首段独占本 worktree 共享 build/out，在该窗口完成 `npm run typecheck`、`npm run verify:sources` 与完整 `npm run check`（含 electron-vite build）；check 退出（exit 0）后我**立即在会话中明确通知派发方释放共享构建资源**，总控随后确认预约已转交另一任务。此后全部工作为固定源码只读检查与自有 /tmp 阶段：类型注入与漂移探针在 `/tmp/i03-r2-zcode/inject`（`git archive HEAD` 副本 + node_modules 只读符号链接）进行，Python 探针 `uv run` 只读源码、临时 SQLite 仅在 /tmp，TS 探针用 /tmp vitest 配置挂仓库源运行——均不读取也不写入任何共享构建输出。
++- 资源边界（重要，按派发约定记录）：本轮首段独占本 worktree 共享 build/out，在该窗口完成 `npm run typecheck`、`npm run verify:sources` 与完整 `npm run check`（含 electron-vite build）。check 退出（exit 0）后，由**派发方读取 raw 日志确认退出**并**在同任务向我发送资源交接通知**（首段 UI 随即显示为"已停止"，属资源段停止而非审查完成）；我在同原任务续接后**明确 ACK 此后仅固定源码与自有 /tmp 阶段**，共享 build/out 预约由派发方转交另一任务，本审查继续进行直至报告交付才实际完结。续接后全部工作为固定源码只读检查与自有 /tmp 阶段：类型注入与漂移探针在 `/tmp/i03-r2-zcode/inject`（`git archive HEAD` 副本 + node_modules 只读符号链接）进行，Python 探针 `uv run` 只读源码、临时 SQLite 仅在 /tmp，TS 探针用 /tmp vitest 配置挂仓库源运行——均不读取也不写入任何共享构建输出。
+ 
+ ## 2 项目路径、分支、base 与 head（实际核验）
+ 
+@@ -18,7 +18,7 @@
+ | 提交序列 | ad9756e → 6f35ffd → 8305d20 → 0ec24b7（merge origin/develop，含 I02 基线）→ f574a72 → **30c10d8（候选5修订：close review findings and enforce strict type gates）** |
+ | 变更规模 | 101 文件，+26214/−11（其中 30c10d8 本身 +4576/−68；代码改动集中在 9 个文件，其余为评审材料归档） |
+ | 受保护 AGENTS.md | 工作树 SHA-256 `db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786` 实测与保护声明一致；dirty 未 stage、未混入任何提交（candidate.json `featureCommitIncludesFile:false` 亦记录） |
+-| 其他 dirty | `docs/reviews/I03/status.md` 为总控纯流程追加（候选5第二轮任务创建记录，diff 实读核实只含流程段落），不属于受审实现；未跟踪的 candidate.json/frozen-integrity.json/blocked-audit.json/round-2/ 为流程件 |
++| 其他 dirty | `docs/reviews/I03/status.md` 为**I03 原开发会话**写入的纯流程追加（候选5第二轮任务创建记录，diff 实读核实只含流程段落；总控仅维护仓库外全局 state/coordination 并做核验，不直接写该文件），不属于受审实现；未跟踪的 candidate.json/frozen-integrity.json/blocked-audit.json/round-2/ 为流程件 |
+ | push/PR/CI/合并 | 均未发生（candidate.json 记录与本地状态一致） |
+ 
+ ## 3 实际执行的验证（原始退出码与完整日志在 round-2/zcode-runtime/，镜像于 /tmp/i03-r2-zcode/）
+@@ -33,8 +33,8 @@
+ | 类型注入（/tmp 副本）：contracts 源码注入真实 TS2322 → `npm run typecheck` | **2** | `src/states-v2.ts(20,14): error TS2322`；git archive 恢复后 exit 0 |
+ | 类型注入：unit 测试注入真实 TS2322 → `npm run typecheck` | **2** | `tests/unit/contract-v2.test.ts(273,37): error TS2322`；恢复后 SHA `96d196c4…` 与候选逐字节一致，exit 0 |
+ | SQLite 守卫探针（真实库，自写 7 断言组） | **0** | **7/7**：results 与 current_results 既存 NULL kind 开库拒绝且 iterdump 逐字节不变；publish 对 7 种非法 kind/7 种残缺 provenance 全部 ValueError 且零写入；current 形状错误与合法未找到 null 区分；同合法身份恰好一条 current；legacy 非对象 config `Run config must be an object` 且 progress/rounds 零副作用 |
+-| Python 对抗探针（自写 24 断言） | **0** | **24/24**：F2 旧键双拒/新键双收/非空 params 拒/错误 retryable 拒；F4 预算缩至 1 拒、恢复后收；版本三元一致；cancelling→succeeded 证明门；终态倒退/同版本拒；通知 seq 缺口/重放/错订阅/版本跳变拒；游标到期/页大小变更/伪造 token/绑定失配拒 |
+-| TS 对抗探针（vitest /tmp 配置挂仓库源，20 断言） | **0** | **20/20**：与 Python 侧同批断言完全一致（含 hello capabilities⊆v2Runtime=[] 拒绝） |
++| Python 对抗探针（自写 24 断言） | **0** | **24/24**：F2 旧键双拒/新键双收/非空 params 拒/错误 retryable 拒；F4 预算缩至 1 拒、恢复后收；版本三元一致；cancelling→succeeded 证明门；终态倒退/同版本拒；通知 seq 缺口/重放/错订阅/版本跳变拒；游标到期/页大小变更/伪造 token/绑定失配拒。**勘误（附录 A.2）**：通知四项当时用自合成基线，batch2 核实该基线形状不合法，四项拒绝实为形状层拒绝；游标五项以仓内 `valid cursor` 夹具为基底，归因有效 |
++| TS 对抗探针（vitest /tmp 配置挂仓库源，19 目标断言+1 汇总） | **0** | **20/20**。与 Python 共同子集 18 项（F2×6、F4 预算×3+版本一致×1、状态机×4、通知×4）两端行为一致；TS 独有 1 项（hello 能力子集）；Python 独有 6 项（schema `$id`×1、游标×5）。非"同批完全差分一致"，逐项覆盖清单见附录 A.1 |
+ | F1 漂移注入（/tmp 副本删 `TIMEOUT.heartbeat` 含义） | **1** | 仓内动态穷举测试**真实失败**（1 failed/408 skipped）；errors.json 恢复后 SHA `6986be7c…` 与候选一致。Python 侧同漂移以 AssertionError 检出 |
+ | Z 漂移注入（/tmp 副本删 `params_hello.supportedVersions.maxItems`） | **1** | 词汇/上界元测试**真实失败**；schema.json 恢复后 SHA `adc99635…` 与候选一致 |
+ | 哈希核验 | — | 两份 I05 交接快照 SHA-256（`ad84c439…`/`ea40f827…`）与 `I05-contract-source.json` 声明一致；注入证据 `typecheck-gate.json` 的 original/restored SHA 与当前工作树实测一致 |
+@@ -61,7 +61,7 @@
+ | 验收行 | 判断 | 依据摘要 |
+ | --- | --- | --- |
+ | 信封与每方法严格 | 通过 | 每方法 params/result `$ref` 可解析；399 条夹具双端一致重放（424 测试含 399 夹具驱动）；unknown method/extra params 反例实测拒绝 |
+-| hello、身份与响应绑定 | 通过（设计层） | bootstrap/无交集[2]/二次 hello INVALID_STATE/握手前 HANDSHAKE_REQUIRED 在 schema 与文档；matchesResponse 绑定 id/method/session/project/job/nonce/operation/subscription；hello capabilities⊆v2Runtime=[] 我实测拒绝；常驻握手属 I04 |
++| hello、身份与响应绑定 | 通过（设计层） | bootstrap/无交集[2]/二次 hello INVALID_STATE/握手前 HANDSHAKE_REQUIRED 在 schema 与文档；matchesResponse 绑定 id/method/session/project/job/nonce/operation/subscription；hello capabilities⊆v2Runtime=[] 拒绝经 batch2 合法基线复核成立（C1：仅改 `result.capabilities=['query.execute']`，形状仍合法而 matchesResponse 拒绝；原合成探针为形状层拒绝，见附录 A.2）；常驻握手属 I04 |
+ | 安全错误 | 通过 | 全码正反例跨端语料；五参数、2048 字节预算（现为目录驱动）、受限引用；固定错误码/无自由文本/无堆栈路径原值（探针复证）；分层语义文档互斥 |
+ | 取消与状态 | 通过 | states.json 转移表与文档一致；cancelling→succeeded 需 finalBeforeCancel 证明门（我两端探针复证含 false 拒绝）；零轮 null/两轮保留/非轮次拒绝在 commitProgress 分支 |
+ | 真实依赖 | 通过 | 7 策略与九能力表一致；deriveDependencies 环去重/悬空拒绝/4096 上界（夹具+round-1 差分，本轮结构未变）；model 可跟踪不产生领域码 |
+@@ -125,4 +125,60 @@
+ 
+ 本通过不将任何 I04/I05 运行项、桌面联验或远端 CI 登记为完成，不改变 Q2/Q3/Q5–Q9 决策边界，不构成 push/PR/合并授权；处理方仍须按门禁汇总双方本轮意见并逐项记录处置。
+ 
+-——审查者：ZCode（GLM-5.3，思考最高），任务 I03-R2-ZCode-GLM53-C5-30c10d8，2026-10-20。原始日志与探针输出：`docs/reviews/I03/round-2/zcode-runtime/`（24 项）与 `/tmp/i03-r2-zcode/`。
++——审查者：ZCode（GLM-5.3，思考最高），任务 I03-R2-ZCode-GLM53-C5-30c10d8，2026-10-20。证据留存分三类（详见附录 A.4）：`zcode-runtime/` 保留的最终成功输出（24 项+batch2 6 项）；派发方独立保全于 `zcode-runtime/retained-failures/` 的首版失败原稿（首版 storage 探针源码/out/exit 全套、首次观察到的 Python 探针版本）；仅工具会话历史可见、未单独保留的中间尝试（同名覆盖前的 Python 23/24 首跑、首版 vitest 配置加载失败输出、两版被 Mimosa 拦截未执行的写入尝试，以及 batch2 Python 判定段两次索引错误的中间运行——其 out 亦被成功重跑覆盖，失败原因已在正文如实记录）。探针源码在 `/tmp/i03-r2-zcode/{probes,batch2}/`。
++
++## 附录 A：报告事实澄清与合法基线补核（2026-10-20 追加）
++
++派发方对本报告首版（128 行，SHA-256 `8ce46f91ddb870e35742ab4313ddd5c9085aaffca7ab2b03cb01bae03f63cda3`）提出五点事实澄清。原稿已按原字节保存于 `zcode-runtime/report-before-factual-clarification.md`（我实算 SHA 一致），本次前后差异另存 `zcode-runtime/factual-clarification.diff`。本轮仅勘误自己的报告与补核自己的证据：固定 base/head、模型/思考与全范围不变；未改候选（`git status` 前后一致）、未重跑不变的 fullcheck、未读另一模型 round-2 任何产物；全部新验证在独立命名 `/tmp/i03-r2-zcode/batch2/` 与 `zcode-runtime/batch2-*` 工件中，输入/输出/exit 可复算。
++
++### A.1 探针覆盖实数（对应澄清点 1）
++
++实读两份探针源码（`/tmp/i03-r2-zcode/probes/{py_probe.py,ts_probe.test.ts}`）逐项点数：
++
++| 分组 | Python（24） | TS（19 目标+1 汇总） |
++| --- | --- | --- |
++| F2 messageKey | 6（旧键×2 拒、新键×2 收、非空 params 拒、错 retryable 拒） | 同 6（共同） |
++| F4 预算 | 3（基线/缩至 1/恢复）+版本 2（==registry、`$id`） | 预算 3+版本 1（==registry）；`$id` 为 Python 独有 |
++| 状态机 | 4（证明门正反、终态倒退、同版本） | 同 4（共同） |
++| 通知 | 4（seq 缺口/重放/错订阅/版本跳变，自合成基线） | 同 4（共同，同基线；TS 错订阅用 `${S}99` 拼接为畸形 UUID，Python 用合法完整 UUID——两者基线均形状不合法，见 A.2） |
++| 游标 | 5（合法/到期/页大小/伪造 token/绑定失配，仓内夹具基底） | 无 |
++| hello 能力子集 | 无 | 1（自合成响应，形状不合法，见 A.3） |
++
++共同子集 18 项两端行为一致；TS 独有 1（hello）；Python 独有 6（`$id`+游标×5）。首版"同批断言完全一致"表述不准确，已按实数更正；正确的"同一输入双端一致"结论由 batch2（A.3，9 用例两端逐值相同）与仓内 399 条公共夹具双端重放承载。
++
++### A.2 合法基线补核 batch2（对应澄清点 2，两端各 exit 0）
++
++以固定候选公共夹具为合法基线（routing `valid job event`、cases `request hello`/`response hello`），每个用例分别记录**形状结果**（validate）与**目标函数结果**，且每次只改一个字段：
++
++| 用例 | 唯一变化字段 | 形状 | 目标 | 归因 |
++| --- | --- | --- | --- | --- |
++| A0 控制组 | 无 | true | true | 基线合法且被接受 |
++| A1 seq 缺口（lastSeq=0, seq 1→3） | seq | true | false | 绑定层拒绝 |
++| A2 seq 重放（binding.lastSeq 0→1） | binding.lastSeq | true | false | 绑定层拒绝 |
++| A3 stateVersion 跳变（binding 3→data 6） | data.stateVersion | true | false | 应用层版本规则拒绝 |
++| A4 错订阅（合法他 UUID …099） | subscriptionId | true | false | 订阅绑定拒绝 |
++| C0 hello 控制组 | 无 | true | true | 基线合法且 matchesResponse 收 |
++| C1 仅 `result.capabilities=['query.execute']` | result.capabilities | true | false | **能力子集规则拒绝（形状仍合法，单变量隔离成立）** |
++| B0 首版合成通知基线 | 无 | **false** | false | 首版四个通知负例实为**形状层拒绝**，不能单独证明绑定规则 |
++| D0 首版合成 hello 响应 | 无 | **false** | false | 首版 hello 负例实为**形状层拒绝**（`session` 非 schema 字段、`limits:{}` 缺必填，不能归因能力子集） |
++
++过程披露：batch2 Python 判定段先因行号索引错误两次非零退出（IndexError/StopIteration，控制组与变异组实质结果已在输出中完整产出），修正查找方式后 exit 0；两次中间 out 未单独保留。TS（verbose 输出逐用例含 shape/target）与 Python 九项**逐值完全一致**；A1–A4/C1 拒绝均发生在形状合法前提下，绑定/版本/能力子集规则的归因自此成立。首版探针相应表述已更正（§3、§5）；此外这些规则在仓内公共语料中本有夹具级覆盖（routing 组 `route mismatch subscriptionId`（合法 UUID）、`old lastSeq1/2`、`sequence gap`、`old stateVersion5` 等 11 条已在双端 424/626 套件中通过），batch2 是我自有证据层面的归因补齐。
++
++### A.3 角色与时序更正（对应澄清点 3、4）
++
++- §2 已更正：`docs/reviews/I03/status.md` 的本地追加由 **I03 原开发会话**写入（记录候选5第二轮任务创建）；总控只维护仓库外全局 state/coordination 并核验，不直接写该文件。
++- §1 已更正资源时序为真实消息顺序：check 退出 → **派发方读 raw 确认** → **派发方同任务发送资源交接通知**（首段 UI 显示"已停止"，属资源段停止而非审查完成）→ 我在同原任务续接后 **ACK 仅固定源/自有 tmp** → 审查继续至报告交付才实际完结。首版"我立即通知派发方释放"的表述不符合实际顺序。
++
++### A.4 工件留存核对（对应澄清点 5）
++
++逐一核对后分三类，首版"全部原始输出保留于 zcode-runtime"表述过宽，已更正：
++
++1. **最终成功输出（保留于 `zcode-runtime/`）**：typecheck/verify:sources/check 的 stdout+stderr+exit、storage 7/7、Python 24/24、TS 20/20、注入×2、F1/Z 漂移、diffcheck，共 24 项；batch2 新增 6 项（py/ts 的 out+exit×2 套）。
++2. **派发方独立保全的失败原稿（`zcode-runtime/retained-failures/`，含 SHA manifest）**：`zcode-first-storage-probe/`——首版 storage 探针源码+out+exit（API 签名错误，1/6）；`zcode-python-probe-at-first-observation/`——派发方首次观察到的 Python 探针版本（已是修正后 24/24 版；按派发方声明不冒称涵盖更早批次）。
++3. **仅工具会话历史可见、未单独保留的尝试**：Python 探针首跑 23/24（自造游标基线缺 `lastOrdinal/lastRowId`，其 out/exit 被同名成功重跑覆盖）；TS 探针首版 vitest 配置加载失败输出（`vitest/config` 在 /tmp 不可解析，exit 1，被成功重跑覆盖）；两版被 Mimosa 钩子拦截、从未落盘执行的写入（storage 探针动态 SQL 版、batch2 首版固定路径 JSON dump 版）。这些内容仅存在于本会话工具调用记录，报告以叙述保留其失败与修正原因，不计入可复算工件。
++
++### A.5 独立重估与结论
++
++逐项重估五点澄清对实质判断的影响：(1) 探针覆盖表述修正不改变任何断言的真值，只收窄"双端一致"的准确范围；(2) 通知/hello 归因缺陷是**我自有探针证据的归因缺陷**——被审规则本身（订阅/项目/会话绑定、seq 单调、stateVersion 严格下一、能力⊆v2Runtime）经 batch2 合法基线单变量复核全部成立，且仓内公共夹具本就有对应负例并在 424/626 双端套件中通过；(3)(4) 角色与时序为流程记录精度问题；(5) 工件留存分类不改变任何已执行验证的事实。F1/F2/F3/F4/F6/Z/kind/I05 交接与 SQLite 守卫的全部独立证据不受影响。
++
++**结论（独立重估后维持）：通过。** 维持依据：全部 I03 可现实验收仍由不受上述缺陷影响的证据支撑（标准命令三件套、注入门禁、SQLite 守卫 7/7、F1/F2/F4 数据层与运行时复证、漂移检出、I05 逐行比对），本轮补核使通知绑定与能力子集两项规则的自有证据归因完整化，反而补强了 §5 相应行。无阻断或重要问题；3 项 P3 观察/残留不变。本通过的含义与边界同 §8–§9，不因本附录扩大。
