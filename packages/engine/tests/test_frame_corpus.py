@@ -18,16 +18,17 @@ def cp1252_contract_default(monkeypatch):
         CONTRACT.ROOT / name
         for name in ("fixtures.json", "binding-regressions.json", "frame-fixtures.json")
     }
-    original_open = Path.open
+    original_read_text = Path.read_text
 
-    def open_fixture(path, mode="r", buffering=-1, encoding=None, errors=None, newline=None):
+    def read_fixture(path, encoding=None, errors=None):
         # Emulate only this resource's platform default, leaving source loading,
-        # pytest output and the real byte parser untouched.
+        # pytest output and the real byte parser untouched. Inject before
+        # read_text resolves None via io.text_encoding (including UTF-8 mode).
         if path in fixtures and encoding in {None, "locale"}:
             encoding = "cp1252"
-        return original_open(path, mode, buffering, encoding, errors, newline)
+        return original_read_text(path, encoding=encoding, errors=errors)
 
-    monkeypatch.setattr(Path, "open", open_fixture)
+    monkeypatch.setattr(Path, "read_text", read_fixture)
 
 
 def test_corpus_uses_utf8_when_default_file_encoding_is_cp1252(cp1252_contract_default):
