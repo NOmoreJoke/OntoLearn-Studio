@@ -1,0 +1,75 @@
+{
+  "kind": "factual process/evidence lineage clarification; frozen implementation and frozen evidence file unchanged",
+  "observedAtUtc": "2026-10-20T17:54:17.633759+00:00",
+  "candidateHead": "8f8eda1e24c0425ea2a65d2566978913ee310b8b",
+  "frozenFile": {
+    "path": "docs/reviews/I04/c4-verification.json",
+    "sha256": "327263aab4ae29523ec6967d3e57efde76e52f00f2e1f0c2e406e065b6c5cc53",
+    "bytes": 61262
+  },
+  "field": "productionAndDesktopRunCheckpoint.checks",
+  "issue": "Collector retained the checks list by reference, then replaced final list elements. As serialized, the older f504b30 production/GUI checkpoint checks field repeats final sealed9eb0b6e check log paths/counts. Those final counts must not be attributed to f504b30.",
+  "correctHistoricalCheckpoint": {
+    "source": "f504b304266bfa04647790bc37a77c7a9d03cb05",
+    "macOS": {
+      "TS": 630,
+      "Python": 1051,
+      "log": {
+        "path": "build/I04-evidence/c4-root/check.log",
+        "sha256": "3f6c88b594c51410cff065a0da2fd7323a73b62b81cc6679b8d6c3eef786b262",
+        "bytes": 5044
+      }
+    },
+    "linux": {
+      "TS": 630,
+      "Python": 1048,
+      "skipped": 3,
+      "log": {
+        "path": "build/I04-evidence/c4-final-linux/check.log",
+        "sha256": "19de6002a6d9bef814829fbc0b1947f393b89f63e6ae02e7f8182b9c0d57b816",
+        "bytes": 8451
+      }
+    },
+    "packageRuntimeCases": 13,
+    "productionGUI": "Source and package each6; actual recorded raw GUI artifacts remain at this production checkpoint."
+  },
+  "correctFinalCheckpoint": {
+    "source": "9eb0b6e33870629c99d917feb18e0cd253712868",
+    "macOS": {
+      "TS": 630,
+      "Python": 1052,
+      "log": {
+        "path": "build/I04-evidence/c4-sealed-check.log",
+        "sha256": "58993b4309958eab1301367864ccc4badf124fbe2d678339b9daab45705160ac",
+        "bytes": 5044
+      }
+    },
+    "linux": {
+      "TS": 630,
+      "Python": 1049,
+      "skipped": 3,
+      "log": {
+        "path": "build/I04-evidence/c4-final-linux/sealed-check.log",
+        "sha256": "d8ce5d628478856bf5ee54b905436f34bc7d0f5c2f94442b7eac7c9fa7be8a08",
+        "bytes": 8631
+      }
+    },
+    "packageRuntimeCases": 17,
+    "packageLogs": [
+      {
+        "path": "build/I04-evidence/c4-sealed-macos-probe/runtime.stdout",
+        "sha256": "c898db7dee2496688279354b674a1019387a3ae0b7f7a9b05ba9c4d0fca2868f",
+        "bytes": 100
+      },
+      {
+        "path": "build/I04-evidence/c4-final-linux/sealed-package-probe/runtime.stdout",
+        "sha256": "40055f38b0b9d7cf7c73f7829febd6995eceff1ed979795e298c5cc6009bb862",
+        "bytes": 100
+      }
+    ]
+  },
+  "unchangedLineage": "Final124 input manifest and actual primary/container bytes remain exact. Only test_worker_parent.py, test_worker_owner_bootstrap.py and verify-i04-package.py changed after earlier production/GUI run. Both new engine binaries and all app/engine/Store/resource/build/config/dependency inputs stayed identical. Original13/16 and final17 raw logs are distinct; no older result is relabeled.",
+  "disposition": "Preserve frozen JSON and original collector/raw evidence; use this explicit correction for historical check attribution. Both current original independent reviewers receive this same factual note and judge its effect independently. No current reviewer conclusion is shared.",
+  "sourceChanges": [],
+  "acceptanceChanges": []
+}

@@ -160,3 +160,9 @@ ZCode GLM-5.3/最高135行报告SHA759fa0270e493e48c1dce0a23d08d4d03e64f4698a9a2
 ## C4 final local checkpoint (2026-10-21)
 
 C3 actual PR CI failure and hosted-runner capacity cancellation are retained in c4-ci-trigger.json. C4 integrated production owner bootstrap and explicit UTF-8 resource decoding, plus precise platform stderr/closed-pipe cleanup test adaptations. Final source checkpoint9eb0b6e: macOS630TS/1052Python; isolatedLinux630TS/1049Python+3Darwin-only skips. Two fresh engines each pass common examples and17 runtime cases, including frozen worker exact3s owner death and three invalid-owner rejections before stdin read while stdin stays open. Source/package Linux GUI each6 and two144-cell matrices were executed at identical production/Store inputs; only three later host verification files changed. Both124-file final manifests match actual primary/container bytes. All original failures and13/16-case checkpoints remain distinct. Finite independent reviews and their boundaries are indexed in c4-internal-review.json; final verification in c4-verification.json. Full new same-base/head designated dual review, feature push, actual three-platform CI, normal develop merge and remote verification are still required.
+
+## 2026-10-21 C4 最新检查点：同版完整双审已通过
+
+本段为最新状态，前文均保留为历史。冻结 e45e6038→8f8eda1e24c0425ea2a65d2566978913ee310b8b 的121文件：ZCode GLM-5.3/最高最终206行与 MiniMax M3.1-Flash/xhigh最终532行均实际原任务终态、明确Pass并完整读回。报告及所有原22项、新意见、原等级、延期与方法失败边界见 round-4/ 和 round-4-processing.json。双方独立计数保留，MiniMax 的原P1-3阻断缺陷已关闭，退出75细分类按其允许延期的P3另列；不伪造一致计数，不倒改历史报告。范围/焦点字段更正均在同一原任务完成，首版/R1/原始探针保留，源码零变化。
+
+121受审文件、124运行输入、148原始工件及原仓库64保护文件均匹配哈希；AGENTS保护不变。仅追加流程归档及本段状态，准备推送现有feature并更新PR #5。C4实际三平台CI、正常develop合并与远端/合并后CI核验仍未完成。既有Linux隔离原生证据满足原要求；现有Mac/Windows CI不会证明整套I04原生焦点/崩溃恢复。I04 Goal尚未完成，I05/I06/领域业务与未来政策未由本次交付完成。
