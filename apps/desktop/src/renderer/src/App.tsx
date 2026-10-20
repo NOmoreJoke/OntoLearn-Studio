@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   safeError,
   type HealthResult,
   type TaskView,
   type SafeError,
   type ProgressView,
+  type TaskUpdate,
 } from '@ontolearn/contracts'
 import { explainError, jobStatus, resultSummary } from './task-presentation'
 
@@ -23,38 +24,68 @@ export function App() {
   const [progress, setProgress] = useState<Record<string, ProgressView>>({})
   const [taskError, setTaskError] = useState<SafeError>()
   const [summaries, setSummaries] = useState<Record<string, string>>({})
+  const [connection, setConnection] = useState<Extract<TaskUpdate, { kind: 'connection' }>>()
   const current = useRef<TaskView | undefined>(undefined)
-  const updateTasks = (value: TaskView) => {
-    if (current.current && value.generation < current.current.generation) return
+  const latestGeneration = useRef(-1)
+  const uncertain = useRef(false)
+  const updateTasks = useCallback((value: TaskView) => {
+    if (value.generation < latestGeneration.current) return false
+    latestGeneration.current = value.generation
     current.current = value
     setTasks(value)
-  }
+    return true
+  }, [])
+  const applyRestored = useCallback(
+    (value: TaskView) => {
+      if (!updateTasks(value)) return
+      if (uncertain.current) setResult(undefined)
+      uncertain.current = false
+      setConnection(undefined)
+      setTaskError(undefined)
+      setProgress({})
+      setSummaries({})
+    },
+    [updateTasks],
+  )
   async function restore() {
     const response = await window.ontolearn?.restoreTasks()
     if (response?.ok) {
-      updateTasks(response.data)
-      setTaskError(undefined)
+      applyRestored(response.data)
     } else if (response) setTaskError(response.error)
   }
   useEffect(() => {
     let live = true
     const stop = window.ontolearn?.onTaskUpdate((update) => {
+      if (!live || update.generation < latestGeneration.current) return
       const view = current.current
-      if (
-        live &&
-        update.restoredView &&
-        (!view || update.generation > view.generation) &&
-        update.restoredView.generation === update.generation &&
-        (!view || update.restoredView.project?.projectId === view.project?.projectId)
-      ) {
-        updateTasks(update.restoredView)
+      if (update.kind === 'connection') {
+        if (
+          view &&
+          update.generation === view.generation &&
+          view.project?.projectId !== update.projectId
+        )
+          return
+        latestGeneration.current = update.generation
+        uncertain.current = true
+        if (view?.project?.projectId === update.projectId)
+          updateTasks({ ...view, generation: update.generation })
+        else {
+          current.current = undefined
+          setTasks(undefined)
+        }
+        setConnection(update)
+        setResult({ ok: false, error: update.error })
+        setTaskError(undefined)
         setProgress({})
         setSummaries({})
-        setTaskError(undefined)
+        return
+      }
+      if (update.kind === 'restored') {
+        applyRestored(update.view)
         return
       }
       if (
-        !live ||
+        uncertain.current ||
         !view ||
         update.generation !== view.generation ||
         update.job.projectId !== view.project?.projectId
@@ -74,7 +105,7 @@ export function App() {
     })
     void window.ontolearn?.restoreTasks().then((response) => {
       if (!live) return
-      if (response.ok) updateTasks(response.data)
+      if (response.ok) applyRestored(response.data)
       else if (!current.current) setTaskError(response.error)
     })
     return () => {
@@ -83,7 +114,7 @@ export function App() {
       for (const job of current.current?.jobs ?? [])
         void window.ontolearn?.unsubscribeJob(job.jobId, current.current!.generation)
     }
-  }, [])
+  }, [applyRestored, updateTasks])
   async function loadSummary(job: import('@ontolearn/contracts').JobView) {
     const bridge = window.ontolearn
     if (!bridge || !job.resultRef) return
@@ -200,14 +231,32 @@ export function App() {
             )}
           </div>
         </section>
+        {connection && (
+          <section role="status" aria-label="引擎连接状态">
+            <h2>
+              {connection.state === 'offline'
+                ? '引擎连接已离线；任务状态待对账'
+                : '引擎连接中断；正在对账'}
+            </h2>
+            <p>任务卡片仅显示最后记录，当前状态尚未确认。不会重发写任务。</p>
+            <p>已尝试 {connection.attempt}/3 次只读恢复。</p>
+            <ErrorDetails error={connection.error} context="task" />
+            <button onClick={() => void restore()} disabled={connection.state === 'reconnecting'}>
+              重新连接并对账
+            </button>
+          </section>
+        )}
         {tasks?.project && (
           <section className="health-panel" aria-label="后台任务状态">
             <h2>后台任务</h2>
             <p>窗口恢复后读取持久状态；不会重发写任务。</p>
-            <button onClick={() => void restore()}>刷新任务状态</button>
+            <button onClick={() => void restore()} disabled={Boolean(connection)}>
+              刷新任务状态
+            </button>
             {tasks.jobs.map((job) => (
               <article key={job.jobId} data-testid="durable-job" data-job-id={job.jobId}>
                 <p>
+                  {connection ? '最后记录：' : ''}
                   {jobStatus(job)} · 状态版本 {job.stateVersion}
                 </p>
                 <p>
@@ -236,6 +285,7 @@ export function App() {
                 {job.error && <ErrorDetails error={job.error} context="task" />}
                 {['queued', 'running'].includes(job.state) && (
                   <button
+                    disabled={Boolean(connection)}
                     onClick={() => {
                       void window.ontolearn?.cancelJob(job.jobId).then((response) => {
                         if (!response.ok) setTaskError(response.error)
@@ -247,6 +297,7 @@ export function App() {
                   </button>
                 )}
                 <button
+                  disabled={Boolean(connection)}
                   onClick={() => {
                     void window.ontolearn?.getOperation(job.operationId).then((response) => {
                       if (!response.ok) setTaskError(response.error)
@@ -263,14 +314,16 @@ export function App() {
                   查看提交点
                 </button>
                 {job.resultRef && (
-                  <button onClick={() => void loadSummary(job)}>查看运行摘要</button>
+                  <button onClick={() => void loadSummary(job)} disabled={Boolean(connection)}>
+                    查看运行摘要
+                  </button>
                 )}
                 {summaries[job.jobId] && <p>{summaries[job.jobId]}</p>}
               </article>
             ))}
           </section>
         )}
-        {taskError && <ErrorDetails error={taskError} context="task" />}
+        {taskError && !connection && <ErrorDetails error={taskError} context="task" />}
         <section id="modules" className="modules-section">
           <div className="section-title">
             <h2>六个模块，一条学习路径</h2>
