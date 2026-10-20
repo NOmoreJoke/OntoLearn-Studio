@@ -1,6 +1,6 @@
 # I06 主进程接线交接约束
 
-2026-10-21。此文件供总控在 I05 接线稳定或完成后组织唯一 owner 交接；当前没有注册公共模型能力，没有要求 I05 实现 S3。下列“可消费”仅指已经实现的 main 内部接口，不表示公共契约已经批准。完整验收仍按原 S3 和总控 `I05-I06-controller-completion-evidence-map.md`。
+2026-10-21。此文件供总控按共享文件唯一 owner 责任组织接线交接；当前没有注册公共模型能力，没有要求 I05 实现 S3。有限可信字段模型/投影与 A-03 私有实际证明可基于已批准 I04 Store/worker 独立推进，不要求 I05 先合并。下列“可消费”仅指已经实现的 main 内部接口，不表示公共契约已经批准。完整验收仍按原 S3 和总控 `I05-I06-controller-completion-evidence-map.md`。
 
 ## 现有私有模块可消费接口
 
@@ -20,11 +20,13 @@
 
 ## 现有授权与材料调用顺序
 
-1. 可信 owner 验证当前项目与选择，读取有权限的真实 Store/Job 结果。需要解释已有结果时，验证项目、producer、输入/版本、真实内容 hash、当前/历史身份、完整结果及依据来源；缺损/已回收拒绝，不按当前规则重算冒充旧结果。这部分消费 I05 的已批准能力，当前不自行定义第三份协议。
-2. main 调用 `registerMaterial({projectId, scopes, kind, text})` 建立不透明 handle；`kind` 为 selected/tool/history/summary/error。不得使用 renderer、Python、模型文本或导入内容自报的 scope 作为授权事实。派生材料调用 `deriveMaterial({projectId, inputs, kind, text})` 保留输入 scope 并集。每份最多 256 scope，调用至多 64 份材料，总唯一 scope 也至多 256；超限在建立审计 metadata 前 `INVALID_INPUT`，不截断来源。
+1. 可信 owner 验证当前项目与选择，读取有权限的真实 Store/Job 结果。需要解释已有结果时，验证项目、producer、输入/版本、真实内容 hash、当前/历史身份、完整结果及依据来源；缺损/已回收拒绝，不按当前规则重算冒充旧结果。此处消费已批准 I04 的实际只读接口，不读取未合并 I05 候选；I05 特有业务语义按之后实际可用能力另验，不自行定义第三份协议。PRD 附录 D/F 已允许明确选择不可变历史版本，需持续展示实际 version、read-time-state 与历史身份；不能静默从 current 降为历史。
+2. main 调用 `registerMaterial({projectId, scopes, kind, text})` 建立不透明 handle；`kind` 为 selected/tool/history/summary/error。不得使用 renderer、Python、模型文本或导入内容自报的 scope 作为授权事实。派生材料的输入 scope 并集只是范围边界，不证明任意 text 来源。A-03 需要从实际有限结构化 Store/worker 输出和 main-owned producer shape 模型建立字段目录/投影，工具/历史/摘要/错误只通过已授权字段重建字节，无法证明来源的任意 text 拒绝；whole-result 不替代选中字段授权。当前 core 的 `deriveMaterial` 低层接口不能单独作为字段来源验收。每份最多 256 scope，调用至多 64 份材料，总唯一 scope 也至多 256；超限在建立审计 metadata 前 `INVALID_INPUT`，不截断来源。
 3. `configure({id, endpoint, credentialRef, principal, credentialVersion, model})`，返回 `{id, version}`。配置 ID 是身份，不是显示名；当前 core 没有显示名字段。相同规范配置复用版本；endpoint/主体/凭据版本/model/新身份变化撤销对应 grant/preview 并取消关联等待，不改变领域 staleReason。
 4. 项目默认 local。经明确用户选择用 `setPrivacy(projectId, minimal|project)`；`previewAuthorization({projectId, configId, purpose, scopes})` 返回真实规范 endpoint、主体、配置版本、范围、隐私档。真实 UI 展示该预览后，可信确认动作才调用 `confirmAuthorization(previewId)`。不得由后台自动确认，或将工具读取权自动视为外发同意。
 5. `invoke({projectId, configId, grantId, purpose, materials})` 只用 main 已复制的字节和 handle。凭据、持久审计及 socket 发送前逐次重检。撤销用 `revokeAuthorization(grantId)`，项目关闭用 `closeProject(projectId)`，材料释放用 `releaseMaterial(id)`。窗口重连只查询既有状态，不重新 invoke/确认。网络错误不自动重放；429/503 至多一次内部重试，每次重新检查并先持久记录。
+
+版本与发送窗口：发送的是 main 核验的用户已选版本副本及读取时状态，不承诺发送瞬间仍 current。实际读回后到 socket 之间的跨 Store 变化窗口、检测到变化时的保守拒绝及明确历史选择必须向指定双方披露。原 FR-902/S3 没有要求所有写者/socket 原子互锁，live-current lease 仅是更强持续 current 保证的候选增强，不自动增加原验收阻断；凭据/授权/最终载荷检查仍在真实发送边界执行。
 
 生命周期应由主进程项目服务持有，与可重建窗口分离。模型模块初始化、超时、凭据不可用或审计失败只能禁用相应模型操作；不得使本地 Store 启动/保存/历史读取依赖模型初始化成功。接线时需要真实 Store 保存/失败隔离与窗口重建证据，当前独立模块和 loopback probe 不能代替。
 
