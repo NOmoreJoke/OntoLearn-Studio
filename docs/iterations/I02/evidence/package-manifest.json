@@ -1,0 +1,35 @@
+{
+  "platform": "darwin",
+  "arch": "arm64",
+  "os": "ProductName:\t\tmacOS\nProductVersion:\t\t27.0.1\nBuildVersion:\t\t26A434\n",
+  "node": "v24.15.0",
+  "files": [
+    {
+      "path": "out/main/index.js",
+      "sha256": "9780c6b9d8ab39d453203c61dd8e91eb6c8a0a3b61a933feaf0627cd238b75f7",
+      "bytes": 167555,
+      "equalsBuild": true
+    },
+    {
+      "path": "out/preload/index.js",
+      "sha256": "c73129a6459504e5ea13830a926b01e6d2bdb61f0d2d64505d07db8c29636130",
+      "bytes": 208,
+      "equalsBuild": true
+    },
+    {
+      "path": "out/renderer/index.html",
+      "sha256": "27641d729b5e3de85d639191ffdb1451c2334a4c25e5d7b36f08bd03c1731cbd",
+      "bytes": 709,
+      "equalsBuild": true
+    }
+  ],
+  "asarSha256": "2b6c259f073ef5d87195c83a3ec118096fe7dec5bd332e490d2ef4468b58324d",
+  "executable": "release/mac-arm64/OntoLearn Studio.app/Contents/MacOS/OntoLearn Studio",
+  "executableSha256": "71bf2b1ac594dd309f7c140de5833678ffc2bfb66895fb1460bef8dc1f7a35a7",
+  "metaBeforeResources": true,
+  "nativeLifecycleHook": "tests/e2e/native-driver.ts + native-recovery.cjs; transient main inspector bootstrap, inspector.close before faults, no renderer CDP; package code unchanged",
+  "limitations": [
+    "unsigned local development package",
+    "not clean-device/install/release proof"
+  ]
+}
