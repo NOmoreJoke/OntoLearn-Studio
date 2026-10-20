@@ -251,6 +251,7 @@ test('I04 coordinator exit reconciles the open view without replaying jobs', asy
 const nativeHook = String.raw`
 const {app,BrowserWindow}=require('electron')
 const {writeFileSync}=require('node:fs')
+const {execFileSync}=require('node:child_process')
 const inspector=require('node:inspector')
 const evidence={windows:[],events:[],inspectorClosed:false,hangMonitorEnabled:!app.commandLine.hasSwitch('disable-hang-monitor')}
 const save=()=>writeFileSync(process.env.I04_NATIVE_EVIDENCE,JSON.stringify(evidence,null,2))
@@ -293,6 +294,12 @@ function observe(window,freshlyCreated=false){
    const end=Date.now()+3000
    while(!window.isVisible()||!window.isFocused()){if(Date.now()>end)throw new Error('native focus deadline');await new Promise(done=>setTimeout(done,25))}
    entry.focused=window.isFocused();entry.visible=window.isVisible();save()
+   const focusId=execFileSync('xdotool',['getwindowfocus'],{timeout:2000}).toString().trim()
+   const focusTitle=execFileSync('xdotool',['getwindowname',focusId],{timeout:2000}).toString().trim()
+   const visibleIds=execFileSync('xdotool',['search','--onlyvisible','--name','.*'],{timeout:2000}).toString().trim().split('\n')
+   entry.x11Focus={observer:'xdotool/XGetInputFocus',windowId:focusId,title:focusTitle,visible:visibleIds.includes(focusId)}
+   if(!entry.x11Focus.visible||focusTitle!==window.getTitle())throw new Error('external X focus does not match visible application window')
+   save()
    void window.webContents.executeJavaScript('for(;;){}').catch(error=>{if(!window.isDestroyed())fail(error)})
    setTimeout(()=>{if(window.isDestroyed())return;if(!window.isVisible()||!window.isFocused())return fail('native hang lost focus');window.webContents.sendInputEvent({type:'mouseDown',x:400,y:400,button:'left',clickCount:1});window.webContents.sendInputEvent({type:'mouseUp',x:400,y:400,button:'left',clickCount:1})},250)
   }else if(ordinal===3){
@@ -324,6 +331,7 @@ test('I04 native renderer crash and real unresponsive dialog retain durable jobs
   })
   let stderr = ''
   let stdout = ''
+  const nativeDialogs: { phase: string; windowId: string; title: string; visible: boolean }[] = []
   let socket: WebSocket | undefined
   const finished = new Promise<void>((done, reject) => {
     child.on('error', reject)
@@ -436,6 +444,12 @@ test('I04 native renderer crash and real unresponsive dialog retain durable jobs
         })
       }
       expect(dialogId, `actual ${phase} native recovery dialog`).toBeTruthy()
+      nativeDialogs.push({
+        phase,
+        windowId: dialogId!,
+        title: (await execute('xdotool', ['getwindowname', dialogId!])).stdout.trim(),
+        visible: true,
+      })
       // The real native dialog defaults to “暂不恢复”. Move to the preceding
       // “重新打开窗口” button using GTK keyboard navigation; never stub its result.
       await execute('xdotool', ['windowactivate', '--sync', dialogId!])
@@ -448,6 +462,25 @@ test('I04 native renderer crash and real unresponsive dialog retain durable jobs
     expect(evidence.inspectorClosed).toBe(true)
     expect(evidence.hangMonitorEnabled).toBe(true)
     expect(evidence.windows[1]).toMatchObject({ visible: true, focused: true })
+    expect(evidence.windows[1].x11Focus).toMatchObject({
+      observer: 'xdotool/XGetInputFocus',
+      visible: true,
+    })
+    expect(nativeDialogs.map((dialog) => dialog.phase)).toEqual(['crash', 'hang'])
+    expect(nativeDialogs.every((dialog) => dialog.title === 'OntoLearn Studio 窗口恢复')).toBe(true)
+    const verifiedEvidence = test.info().outputPath('i04-native-verified-evidence.json')
+    await writeFile(
+      verifiedEvidence,
+      JSON.stringify(
+        { ...evidence, nativeDialogs, dialogObserver: 'external xdotool visible-window inventory' },
+        null,
+        2,
+      ),
+    )
+    await test.info().attach('i04-native-verified-evidence', {
+      path: verifiedEvidence,
+      contentType: 'application/json',
+    })
     await test
       .info()
       .attach('i04-native-evidence', { path: evidencePath, contentType: 'application/json' })
