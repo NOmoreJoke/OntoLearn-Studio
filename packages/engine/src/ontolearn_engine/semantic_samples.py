@@ -4,12 +4,14 @@ Only semantic G-base is executed here; mapping, behavior and simulation remain
 separate dependencies. S1's 18*scale synthetic input is reused byte-for-byte.
 """
 
+import json
+
 from pyshacl.validator import Validator
-from rdflib import RDF, RDFS, Graph, Literal, Namespace, URIRef, Variable
+from rdflib import RDF, RDFS, XSD, Graph, Literal, Namespace, URIRef, Variable
 
 from ontolearn_engine.semantic import Rule, check_shapes, parse_turtle, query, reason
 from ontolearn_engine.semantic_offline import SemanticError, offline
-from ontolearn_engine.semantic_scopes import prepare_validation_scope
+from ontolearn_engine.semantic_scopes import prepare_validation_scope, project_validation_scope
 from ontolearn_engine.storage_probe import QUERY, SEED, fixture
 
 EX = Namespace("urn:ontolearn:")
@@ -308,6 +310,105 @@ def scope_suite():
         assert error.code == "FACT_SCOPE_CONTAINS_AXIOMS"
     else:
         raise AssertionError("mixed inferred axioms were accepted as validation facts")
+    # A real earlier computation with a different producer plan remains selected.
+    # JSON round-trip is a payload boundary, not a simulated Store/Job/history API.
+    earlier = prepare_validation_scope(asserted, ontology, include_derived=True)
+    selected_bytes = json.dumps(earlier.reasoning_result, ensure_ascii=False, sort_keys=True)
+    selected_payload = json.loads(selected_bytes)
+    selected = project_validation_scope(
+        asserted,
+        ontology,
+        include_derived=True,
+        reasoning_result=selected_payload,
+        reasoning_source=earlier.provenance["reasoningSource"],
+        rules=(),
+    )
+    selected_validation, selected_targets = (
+        check_shapes(selected.facts, shapes),
+        targets(selected.facts),
+    )
+    assert selected.reasoning_result is selected_payload
+    assert json.dumps(selected_payload, ensure_ascii=False, sort_keys=True) == selected_bytes
+    assert selected_validation == {"conforms": False, "violations": expected[:1]}
+    assert selected_targets == {**derived_targets, EX.RiskShape.n3(): []}
+    assert (EX.unit, RDF.type, EX.HighRiskEquipment) not in selected.facts
+    assert (EX.unit, RDF.type, EX.HighRiskEquipment) in inferred.facts
+    assert set(selected.facts) == set(earlier.facts)
+    corrupt = json.loads(selected_bytes)
+    corrupt["rdfsEvidence"].pop()
+    extra_facts = Graph()
+    for triple in asserted:
+        extra_facts.add(triple)
+    extra_facts.add((EX.unused, EX.name, Literal("unrelated changed input")))
+    rejected_selection = {}
+    for case, data, payload, source, selected_rules, expected_code in (
+        (
+            "missingPayload",
+            asserted,
+            None,
+            earlier.provenance["reasoningSource"],
+            (),
+            "REASONING_RESULT_INVALID",
+        ),
+        (
+            "missingEvidence",
+            asserted,
+            corrupt,
+            earlier.provenance["reasoningSource"],
+            (),
+            "REASONING_RESULT_INVALID",
+        ),
+        (
+            "changedInput",
+            extra_facts,
+            selected_payload,
+            earlier.provenance["reasoningSource"],
+            (),
+            "REASONING_SOURCE_MISMATCH",
+        ),
+        (
+            "changedRulePlan",
+            asserted,
+            selected_payload,
+            earlier.provenance["reasoningSource"],
+            (RISK,),
+            "REASONING_SOURCE_MISMATCH",
+        ),
+    ):
+        try:
+            project_validation_scope(
+                data,
+                ontology,
+                include_derived=True,
+                reasoning_result=payload,
+                reasoning_source=source,
+                rules=selected_rules,
+            )
+        except SemanticError as error:
+            assert error.code == expected_code
+            rejected_selection[case] = error.code
+        else:
+            raise AssertionError("invalid selected payload/context accepted")
+    assert set(asserted) == original_asserted and set(ontology) == original_ontology
+    lexical_value = Literal("01", datatype=XSD.integer, normalize=False)
+    lexical_rule = Rule(
+        "R-lexical", ((EX.unit, RDF.type, EX.CriticalPump),), (EX.unit, EX.name, lexical_value)
+    )
+    lexical_generated = prepare_validation_scope(
+        asserted, ontology, include_derived=True, rules=(lexical_rule,)
+    )
+    lexical_payload = json.loads(json.dumps(lexical_generated.reasoning_result))
+    lexical_selected = project_validation_scope(
+        asserted,
+        ontology,
+        include_derived=True,
+        reasoning_result=lexical_payload,
+        reasoning_source=lexical_generated.provenance["reasoningSource"],
+        rules=(lexical_rule,),
+    )
+    assert (EX.unit, EX.name, lexical_value) in lexical_selected.facts
+    assert lexical_selected.reasoning_result is lexical_payload
+    assert lexical_payload["rules"][0][2] == lexical_value.n3()
     asserted.add((EX.unit, EX.name, Literal("Pump")))
     repaired = prepare_validation_scope(asserted, ontology, include_derived=True, rules=(RISK,))
     assert check_shapes(repaired.facts, shapes) == {"conforms": True, "violations": []}
@@ -326,6 +427,18 @@ def scope_suite():
             "provenance": inferred.provenance,
             "targets": derived_targets,
             "reasoningResult": inferred.reasoning_result,
+        },
+        "selectedEarlierComputation": {
+            "validation": selected_validation,
+            "targets": selected_targets,
+            "provenance": selected.provenance,
+            "reasoningResult": selected_payload,
+            "rejectedSelections": rejected_selection,
+        },
+        "lexicalSelection": {
+            "literal": lexical_value.n3(),
+            "reasoningResult": lexical_payload,
+            "provenance": lexical_selected.provenance,
         },
         "mixedAxiomsRejected": "FACT_SCOPE_CONTAINS_AXIOMS",
         "repaired": {"conforms": True, "violations": []},

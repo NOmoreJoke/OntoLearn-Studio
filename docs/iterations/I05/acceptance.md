@@ -2,11 +2,13 @@
 
 执行状态、验证版本和剩余门禁统一见 [I05 状态](../../reviews/I05/status.md)。依据为 PRD V0.6 附录 C/D/E/G、原计划 B1 全文及 S1 测量定义；原文保留在 I01/inputs，不改写归档。
 
-当前补充的原始证据与源文件哈希见 [independent-v3.json](independent-v3.json)，35 份证据共 2,306,595 bytes。JSON 原字节以 `.json.raw` 保留，用于尚无 CI artifact 时的离线复核；[independent-v2.json](independent-v2.json) 及其原字节证据保留为历史。大构建缓存、下载压缩包、二进制和未采用的中间测量只保留在独立 build 目录，不提交。
+最新指定结果投影补充的原始证据与源文件哈希见 [independent-v4.json](independent-v4.json)。[independent-v3.json](independent-v3.json) 的35份证据及此前独立版本均按原字节保留。JSON 原字节以 `.json.raw` 保留，用于尚无 CI artifact 时的离线复核；[independent-v2.json](independent-v2.json) 及其原字节证据保留为历史。大构建缓存、下载压缩包、二进制和未采用的中间测量只保留在独立 build 目录，不提交。
 
 本轮固定受测 base 为 `1b6df7a220fc9a67d7046133a340085f03f0a96c`。测量期间总控通知 PR3 已合并，随后 `git ls-remote` 实查 develop 已为 `c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3`；未中途改动受测基线。正式 I05 仍需等待实际 I03/I04、刷新基线并完成原联验与新指定双审。
 
 许可与导入证据包含 uv.lock 全依赖、实际 PyInstaller 归档模块、RDFLib plugin entries、pySHACL assets、wheel 元数据/许可、CPython 及其静态原生依赖。PyInstaller bootloader 的 COPYING/例外和工具的 vendored 许可亦保留；清单角色表示声明依赖或构建工具，不声称工具的间接 vendored 模块一定未进入归档。当前 macOS Python 原生来源以官方 PBS 的 15 个文件段匹配验证，原始 PYTHON 元数据按字节保留；跨平台运行时另行匹配，不能套用本机来源。系统 libz 的上游元数据存在 zlib-ng 许可路径缺失，实际 link=system z 且动态链接可核对；不冒称包含 zlib-ng。
+
+新增指定已有推理载荷的纯投影入口及与生成入口的区分见 [选中结果投影](selected-result-projection.md)，新增安全来源分支见 [v4 细码交接](../../reviews/I05/typed-reasons-v4.md)。旧结果不因当前规则变化被重算替换，实际持久身份 / 权限绑定仍待 I04。
 
 逐项原要求、候选差异、反例、影响及待负责人的采用 / 修订 / 淘汰判断见 [Q6 差异登记](q6-candidate-differences.md)，包括 FR-505 比较与多结论尚未覆盖等明确缺口。候选限制不自动成为批准产品边界。
 
@@ -37,6 +39,7 @@ RDFLib 7.6.0、pySHACL 0.30.1 及全部传递依赖固定于 uv.lock；规则使
 - R-05/06 R-next 保存启用但无二阶 NeedsInspection；交换规则顺序得到完全相同结果/依据/提示。
 - O-01 删除 003 告警后查询为空，只表达未记录，无闭世界否定推导。
 - 两范围补充：真实 RDFS 传递公理与派生类型分图；仅断言通过，含选定推导时 unit 恰好两项必填违规，补名后通过。直接混合公理输入拒绝而不丢类型，公理与来源完整保留；该纯计算不是持久结果身份或真实任务联验。
+- 指定结果补充：实际较早无 R-risk 的计算与当前有 R-risk 的计算产生不同目标 / 违规。明确投影前者的 JSON 载荷仍只有一项违规，原载荷 / 原始输入不变；缺载荷 / 依据、无关事实或生产规则计划变化均拒绝。原词法 integer `01` 的真实规则输出经 JSON 往返投影仍为 `01`，不改变 RDFLib 全局设置。纯测试禁止投影时调用 reason，未模拟真实 Store / Job。
 - 额外单元覆盖子类循环、多跳、domain/range、无规则/RDFS反馈、多个依据、重复变量、非法规则与类型、相同路径/组件的不同形状、混合范围拒绝和工作预算。
 
 映射、行为、E.5 沙盘不是该纯语义模块的实现范围。附录 D 的过期、原子提交、历史及取消必须在真实 S1/I04 集成阶段按原验收补齐，不能用预制状态或任务替身抵扣。
@@ -61,7 +64,7 @@ S1 原 seed=20261019、独立 urn:case:{i} 命名空间、18/180 事实、输入
 
 - 应用层将已授权、不可变项目输入和明确 scope 交给 worker；分别提供 ontology、断言/选定推导范围、query/SHACL/rules 定义。禁止传 URL、SQL、任意代码或库配置。
 - 全部实际依赖包括相关 facts/ontology/规则/约束/查询定义及定义集合成员摘要，新增定义也要改变集合来源；不使用伪 facts 键替代漏报依赖。
-- 入参与结果记录 inputSnapshotId、projectId、scope、dependencyVector/集合摘要、executionSemanticsVersion（当前独立修订为 i05-finite-2）、engineVersion、dependencyLockHash；纯函数自身不决定 job/operation/session 身份或持久终态。
+- 入参与结果记录 inputSnapshotId、projectId、scope、dependencyVector/集合摘要、executionSemanticsVersion（当前独立修订为 i05-finite-3）、engineVersion、dependencyLockHash；纯函数自身不决定 job/operation/session 身份或持久终态。
 - 结果载荷分 asserted/derived、完整来源依据和真实 validation 违规；安全错误 code 最终映射 I03 注册表，不直接跨 bridge 暴露 Python 异常链。
 - read-only 不改项目；发布结果经 Store 实际依赖复验，迟到/取消/失败不冒充 current。I04 worker 管总时限、取消和内存/队列，不能只靠文本/工作量上限。
 - 实际任务、持久化、取消、错误、包内执行和窗口重建重连联验后，才可评估正式注册该能力；不得在当前 health 声明中提前加入。

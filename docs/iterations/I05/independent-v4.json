@@ -1,0 +1,482 @@
+{
+  "stage": "independent-v4 selected-result projection supplement; not formal I05 completion or external review candidate",
+  "recordedAt": "2026-10-20T13:03:08.613613+08:00",
+  "base": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+  "baselineStatus": {
+    "measuredSourceBase": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+    "remoteDevelopObserved": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
+    "observation": "git ls-remote origin refs/heads/develop; after controller notified PR3 merged; no baseline update during fixed-source measurement",
+    "requiredNext": "refresh against real frozen/merged I03 and actual I04 before formal integration acceptance and specified fresh dual review"
+  },
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation",
+  "branch": "feature/I05-semantic-validation",
+  "executionSemanticsVersion": "i05-finite-3",
+  "guidanceSha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+  "sourceFiles": [
+    {
+      "path": "packages/engine/entrypoint.py",
+      "sha256": "9e6f363dab3806d37835f5ed1b2b4a919955cadcee33a55eaa600f751ed9a34f"
+    },
+    {
+      "path": "packages/engine/pyproject.toml",
+      "sha256": "1e076532307c2ccbdd48d138d618603cc7bcbc16a08d3d91f1b2c714d5c8676c"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "sha256": "a11a057c25a842a10b3392d0c298d9c75a131ffbed1cf4828b5dfccdd7965d53"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_probe.py",
+      "sha256": "63f575302cf0796ab279d7a970cd8a9c62344fbc39128c7f60a3d204038a418d"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+      "sha256": "1bfe105a24d267a769537a46910dd9552d4ff2ba682e3e92472fc35f717d6192"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "sha256": "667ecd9fd6db0789b4587ba8faca8f7324c0e92e12193b1b278d334ebbaab61a"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic.py",
+      "sha256": "5f021d7f81b1e754589bd43927c22d567a32b8b8abe16191a0d5420c4cc52297"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_error_reasons.py",
+      "sha256": "3b0c4cbad1c5b18986da429398d28490929cda2d2fb200d03f105f9aafa1ae9b"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_fresh_probe.py",
+      "sha256": "525ab477466fe46440ddb40e87167625e247a0c4da9a50c7f2764129772db83e"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_scopes.py",
+      "sha256": "015b1966693bd92bb318431d606401e644354b722689dc80b7f8a1f6dbcacd83"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_selected_projection.py",
+      "sha256": "34ff730532e71d247d1389439fbd8745db97ae5839afc6ec75f95ada0d84f283"
+    },
+    {
+      "path": "scripts/build-engine.mjs",
+      "sha256": "488d216919378e9284717640367b98426a0c9054ff918cecc1da9c577bcc3818"
+    },
+    {
+      "path": "scripts/i05-build-inventory.py",
+      "sha256": "79ed52e6cdd830e9845da547e8f01b098b4acb35e50ab3964fcd94b9ea0bc165"
+    },
+    {
+      "path": "scripts/verify-i05.py",
+      "sha256": "89a36e70fd020b37417e7f86b8d29a853d64a85bc6494c0892164696334ba194"
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493"
+    }
+  ],
+  "evidenceFiles": [
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/check.txt",
+      "bytes": 3154,
+      "sha256": "a0afe105b37667a071698b434479cb0bad494054054e4c714de4bcff63589d61"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/dynamic-linkage.txt",
+      "bytes": 1536,
+      "sha256": "7cc7ab89744e772c7bd824d188601d518a302089553faa772efba4cf6092272c"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/network.json.raw",
+      "bytes": 318,
+      "sha256": "dccdae95fb3f1b1626f44767f7a506429abdcdaa4d1b461f20fa5990eac2bf6b"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/package-dir.txt",
+      "bytes": 19455,
+      "sha256": "03d2ac709daebe2362342d58e4dca281273a980bcecb817d6e132c9cf2ad2bb0"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/package-manifest.json.raw",
+      "bytes": 109879,
+      "sha256": "55e158a9b87ca929556b68b024774e017733766b2b6f568db35dbf7054544e7f"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/package-probe.txt",
+      "bytes": 435,
+      "sha256": "d46511009170bfecca98371bfb0e7446d6cad939023dfdc4ea4d75cbc6d571b3"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-10x-0.json.raw",
+      "bytes": 93478,
+      "sha256": "71f62039eb70bc0a3bb6dba01a6ce0857c8514fbf89a2be1fafb14a64d7981fc"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-10x-1.json.raw",
+      "bytes": 93478,
+      "sha256": "3584bd09cee0151717216477d216d8a1f849eff8e04f3a2fc9dcabfb9761ee86"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-10x-2.json.raw",
+      "bytes": 93478,
+      "sha256": "751acc3f85280ca413fdd518981c1df7655f996e7aa7c3716234b087076615da"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-1x-0.json.raw",
+      "bytes": 14973,
+      "sha256": "c387fa1d0d6c3d2100fde106de3c7d11d87861bc088af276f0824573fe634c74"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-1x-1.json.raw",
+      "bytes": 14973,
+      "sha256": "d86b1d195d115b3b408abd587348811ecc4b785e111386e274c770ab57b8aa72"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-1x-2.json.raw",
+      "bytes": 14972,
+      "sha256": "4881a9abbc8d86883342fbaed039bcaedc8fcdd82de4b135db4f695f5c98fe3c"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-fresh-10x-0.json.raw",
+      "bytes": 203883,
+      "sha256": "a2fdb3a358eafd3fe3f5a9a2cdf844295c7a7e73cfb234dd3d90b521a1ab2a8a"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-fresh-10x-1.json.raw",
+      "bytes": 203883,
+      "sha256": "b099213559a2bf0b7ea084d437f5b87db9ae04a1b0ddb28fbf12bd440667091c"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-fresh-10x-2.json.raw",
+      "bytes": 203883,
+      "sha256": "63a402140e94650ce163ada688de2a09032aa6b4b8ef8dfa9834fcee70bcd973"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-fresh-1x-0.json.raw",
+      "bytes": 28850,
+      "sha256": "155d4d58dfa4e8f61d1e94043c0613de6a80e864d44b231f919a80a1c8a5da22"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-fresh-1x-1.json.raw",
+      "bytes": 28851,
+      "sha256": "1b2f8c0f4123e437f3816ed9caf7240c286d5dc46698c3abcf589cfba3648946"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-fresh-1x-2.json.raw",
+      "bytes": 28851,
+      "sha256": "d265cf289ddd37d258b958aabfd33579b4dfcab009c73327fca0ba2a00739593"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/packaged-semantic.json.raw",
+      "bytes": 64900,
+      "sha256": "34bb2b978ad0020eb5d708617efd0187e133dd8faca7591e123aaa6955991d52"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/pyinstaller-imports.txt",
+      "bytes": 32691,
+      "sha256": "01a65b47a8015b4b3c8fb0a7047ed8795af85c332942bad72404bca939139d8e"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/pyinstaller-warnings.txt",
+      "bytes": 8109,
+      "sha256": "cd63d60f766b5c3c632326f36ed134b426211c47c38b1d9d650a3f49133ae215"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-10x-0.json.raw",
+      "bytes": 93479,
+      "sha256": "02b62e12ffae1d42584426e4e80df252cc0bcbb03767a2881f9dba3de8f9ebe7"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-10x-1.json.raw",
+      "bytes": 93479,
+      "sha256": "075580e4ce1f0388757ad27f461c9bb8173594b45605379ccef7dc7e8ac465ab"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-10x-2.json.raw",
+      "bytes": 93479,
+      "sha256": "4b35f49e9c1f1113f4cdb46fc20b353aafde123cb5e7664fbe1e850a92befeec"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-1x-0.json.raw",
+      "bytes": 14971,
+      "sha256": "9a2d88cfec1e3dae8e6320cf6ef28179ef7014f325cb990ca89a2cce2f35e1ff"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-1x-1.json.raw",
+      "bytes": 14971,
+      "sha256": "94c72a62ebc93bc160dbf2c6910975832cb1a1960ff2d4b5a6e217fca2804f03"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-1x-2.json.raw",
+      "bytes": 14971,
+      "sha256": "c812cf3077318c2bbcb9e3768c8a9261fb57e4745a7de42a0be439b2f05b1eb5"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-fresh-10x-0.json.raw",
+      "bytes": 203882,
+      "sha256": "d22f884a029adee7c8e4ef14711d3ba403f734f1ce5cc3307aed0fc2aeda6093"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-fresh-10x-1.json.raw",
+      "bytes": 203882,
+      "sha256": "bce1482b4dbcaaae7cc7efb321d68a088e1c354280c7fd26289a3086848ac0be"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-fresh-10x-2.json.raw",
+      "bytes": 203881,
+      "sha256": "5e8a954a0ece5175a6838703b0f106a4451dcd040f5072d9cca68d36db8d80ef"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-fresh-1x-0.json.raw",
+      "bytes": 28849,
+      "sha256": "a2abffb75e8b4676d5fcbe561cad4b9a7afd316d7c13416309b6f6b627e308a7"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-fresh-1x-1.json.raw",
+      "bytes": 28849,
+      "sha256": "a42ae81810a68b91073236ad3713fbb947f231e91fb909151bb1cfa6e1a31bd2"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-fresh-1x-2.json.raw",
+      "bytes": 28849,
+      "sha256": "5b4090404291956845a8075a00a384ee58b5ad3234b6c43fb716a733aaa92e73"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/source-semantic.json.raw",
+      "bytes": 64899,
+      "sha256": "53307aee8c00d2514cd5c2f35e479c059ee99ec7ecfeaf1b59934a1588663f4a"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v4/verify-sources.txt",
+      "bytes": 111,
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+    }
+  ],
+  "checks": {
+    "npmCheck": "PASS;4 TS/370 Python incl172 semantic;lint/format/type/build",
+    "verifySources": "PASS;12 originals",
+    "packageDir": "PASS;unsigned macOS arm64;no Electron launch",
+    "sameSampleAndMeasurements": "PASS;full source/package results including selected earlier computation, lexical01, both validation scopes and original reasoning output;12 legacy measurements plus12 fresh measurements (24 first/warm observations)",
+    "network": {
+      "receiver": "controlled test-only loopback HTTP receiver, not a product service",
+      "positiveCalibrationHits": 1,
+      "deniedRequestHits": 0,
+      "perRuntimeCases": 28,
+      "audit": "entry gates zero socket/DNS/urllib attempts; forced library JSON-LD path reached urllib.Request and guard denied it before socket I/O"
+    },
+    "nativeLicenseProvenanceMatched": true,
+    "independentReview": "read-only semantic_boundary_review; real findings fixed; final selected projection48/48 targeted closure;not specified external dual review"
+  },
+  "hardware": {
+    "chip": "Apple M5 Pro",
+    "physicalMemoryBytes": 68719476736,
+    "logicalCpus": 18
+  },
+  "python": "3.12.12",
+  "engineDirectoryBytes": 36700557,
+  "appDirectoryBytes": 558397049,
+  "executableSha256": "ef117acdade33e5f9b3dc32b0caa14238a12a17d6f2f3ab348ebd7664dfc7925",
+  "measurements": [
+    {
+      "runtime": "source",
+      "scale": 1,
+      "assertedTriples": 18,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 9,
+      "ruleTriples": 1,
+      "startupMsTrials": [122.680125, 126.844041, 123.265583],
+      "processWorkloadMsTrials": [410.93275, 401.541334, 413.247208],
+      "reasonFirstAfterS1MsTrials": [6.41, 6.617208, 6.841542],
+      "reasonWarmMsTrials": [7.124417, 7.02975, 7.214833],
+      "shaclFirstAfterS1MsTrials": [3.930584, 4.307125, 3.999542],
+      "rssHighWaterBytesTrials": [49774592, 49610752, 49692672]
+    },
+    {
+      "runtime": "source",
+      "scale": 10,
+      "assertedTriples": 180,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 81,
+      "ruleTriples": 10,
+      "startupMsTrials": [122.680125, 126.844041, 123.265583],
+      "processWorkloadMsTrials": [780.219542, 807.091458, 773.256417],
+      "reasonFirstAfterS1MsTrials": [47.746333, 49.518541, 47.906458],
+      "reasonWarmMsTrials": [51.00125, 49.282709, 49.349333],
+      "shaclFirstAfterS1MsTrials": [18.332875, 18.145458, 18.546625],
+      "rssHighWaterBytesTrials": [53313536, 53608448, 53264384]
+    },
+    {
+      "runtime": "packaged",
+      "scale": 1,
+      "assertedTriples": 18,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 9,
+      "ruleTriples": 1,
+      "startupMsTrials": [156.773208, 168.52025, 156.626875],
+      "processWorkloadMsTrials": [451.948292, 439.145208, 448.956959],
+      "reasonFirstAfterS1MsTrials": [7.20875, 7.288542, 7.297167],
+      "reasonWarmMsTrials": [7.689125, 6.940625, 7.556792],
+      "shaclFirstAfterS1MsTrials": [5.693167, 4.122208, 3.991416],
+      "rssHighWaterBytesTrials": [57851904, 57917440, 58048512]
+    },
+    {
+      "runtime": "packaged",
+      "scale": 10,
+      "assertedTriples": 180,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 81,
+      "ruleTriples": 10,
+      "startupMsTrials": [156.773208, 168.52025, 156.626875],
+      "processWorkloadMsTrials": [802.080458, 796.78, 770.008417],
+      "reasonFirstAfterS1MsTrials": [45.336458, 46.17625, 46.489542],
+      "reasonWarmMsTrials": [51.837917, 50.845709, 48.683125],
+      "shaclFirstAfterS1MsTrials": [17.977583, 17.728791, 17.524542],
+      "rssHighWaterBytesTrials": [62177280, 62341120, 62193664]
+    }
+  ],
+  "freshProcessMeasurements": [
+    {
+      "runtime": "source",
+      "scale": 1,
+      "assertedTriples": 18,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 9,
+      "ruleTriples": 1,
+      "spawnToFirstCompleteResultMsTrials": [326.018708, 309.976541, 324.601875],
+      "wholeProcessMsTrials": [387.303417, 370.883875, 387.624875],
+      "firstWorkloadMsTrials": [214.66875, 211.423125, 223.561958],
+      "warmWorkloadMsTrials": [31.047167, 31.980375, 33.002],
+      "firstPhaseMsTrials": {
+        "graphBuild": [0.117333, 0.118875, 0.116709],
+        "ontologyParse": [0.818625, 0.839042, 0.832958],
+        "rdfsRules": [7.092667, 7.891375, 7.580792],
+        "select": [181.398834, 178.43525, 186.9255],
+        "shacl": [4.213875, 4.10575, 4.62975],
+        "shapesParse": [1.274875, 1.289042, 1.570583],
+        "turtleParse": [2.715458, 2.68, 2.627667]
+      },
+      "warmPhaseMsTrials": {
+        "graphBuild": [0.122833, 0.167542, 0.125542],
+        "ontologyParse": [1.027459, 1.278042, 1.394833],
+        "rdfsRules": [7.11, 7.541542, 7.329083],
+        "select": [10.806792, 11.257167, 11.620916],
+        "shacl": [3.6435, 3.859333, 3.921834],
+        "shapesParse": [1.14225, 1.14825, 1.2545],
+        "turtleParse": [2.899459, 2.907875, 3.060458]
+      },
+      "rssHighWaterBytesTrials": [49790976, 48840704, 48971776]
+    },
+    {
+      "runtime": "source",
+      "scale": 10,
+      "assertedTriples": 180,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 81,
+      "ruleTriples": 10,
+      "spawnToFirstCompleteResultMsTrials": [402.917166, 396.407458, 395.287458],
+      "wholeProcessMsTrials": [552.940416, 546.967458, 550.975208],
+      "firstWorkloadMsTrials": [301.464375, 294.227292, 296.579125],
+      "warmWorkloadMsTrials": [119.152583, 118.555875, 121.030875],
+      "firstPhaseMsTrials": {
+        "graphBuild": [0.375042, 0.378041, 0.371291],
+        "ontologyParse": [1.001166, 1.052167, 0.909417],
+        "rdfsRules": [51.86725, 49.765958, 52.658292],
+        "select": [189.20325, 186.754708, 185.489208],
+        "shacl": [18.510416, 18.141125, 18.059209],
+        "shapesParse": [1.526917, 1.363167, 1.511208],
+        "turtleParse": [16.372917, 16.292208, 16.244834]
+      },
+      "warmPhaseMsTrials": {
+        "graphBuild": [0.444167, 0.3825, 0.4235],
+        "ontologyParse": [1.116125, 1.048458, 1.057416],
+        "rdfsRules": [51.088084, 51.488833, 52.655667],
+        "select": [20.325542, 20.107167, 20.740583],
+        "shacl": [17.653708, 17.803208, 18.357625],
+        "shapesParse": [1.369125, 1.37125, 1.388458],
+        "turtleParse": [18.694125, 18.212416, 18.400542]
+      },
+      "rssHighWaterBytesTrials": [51822592, 51904512, 51789824]
+    },
+    {
+      "runtime": "packaged",
+      "scale": 1,
+      "assertedTriples": 18,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 9,
+      "ruleTriples": 1,
+      "spawnToFirstCompleteResultMsTrials": [335.400416, 333.425875, 340.281375],
+      "wholeProcessMsTrials": [405.5685, 403.115083, 409.719791],
+      "firstWorkloadMsTrials": [208.959208, 209.064084, 211.707166],
+      "warmWorkloadMsTrials": [33.511541, 32.3565, 32.458166],
+      "firstPhaseMsTrials": {
+        "graphBuild": [0.109625, 0.135125, 0.12],
+        "ontologyParse": [0.766041, 0.980417, 0.994],
+        "rdfsRules": [7.313667, 7.065583, 7.728583],
+        "select": [177.269917, 177.16275, 179.260292],
+        "shacl": [3.983667, 3.970416, 3.928625],
+        "shapesParse": [1.221334, 1.516333, 1.316708],
+        "turtleParse": [2.060625, 2.22525, 2.272958]
+      },
+      "warmPhaseMsTrials": {
+        "graphBuild": [0.126541, 0.207833, 0.120583],
+        "ontologyParse": [0.946292, 1.277, 1.13925],
+        "rdfsRules": [7.855958, 7.374792, 7.517334],
+        "select": [12.162625, 11.668542, 12.61375],
+        "shacl": [4.088458, 3.872208, 3.647167],
+        "shapesParse": [1.43125, 1.218541, 1.144583],
+        "turtleParse": [2.355542, 2.601375, 2.555542]
+      },
+      "rssHighWaterBytesTrials": [57556992, 57262080, 57425920]
+    },
+    {
+      "runtime": "packaged",
+      "scale": 10,
+      "assertedTriples": 180,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 81,
+      "ruleTriples": 10,
+      "spawnToFirstCompleteResultMsTrials": [438.987625, 411.699, 409.463666],
+      "wholeProcessMsTrials": [599.895584, 579.48625, 565.676666],
+      "firstWorkloadMsTrials": [306.547416, 291.894917, 291.174625],
+      "warmWorkloadMsTrials": [123.677541, 123.682042, 118.84925],
+      "firstPhaseMsTrials": {
+        "graphBuild": [0.362792, 0.364042, 0.369334],
+        "ontologyParse": [0.905209, 0.967625, 0.930042],
+        "rdfsRules": [57.282208, 55.814459, 54.567292],
+        "select": [194.179666, 182.542584, 182.961375],
+        "shacl": [17.145375, 16.777083, 17.097],
+        "shapesParse": [1.269042, 1.257667, 1.246708],
+        "turtleParse": [15.875334, 15.253416, 15.049916]
+      },
+      "warmPhaseMsTrials": {
+        "graphBuild": [0.408041, 0.447958, 0.3925],
+        "ontologyParse": [1.387584, 1.141334, 1.130042],
+        "rdfsRules": [53.944375, 50.476042, 51.180417],
+        "select": [20.990959, 19.464208, 19.877375],
+        "shacl": [17.6155, 22.675167, 17.600333],
+        "shapesParse": [1.367292, 1.294833, 1.360625],
+        "turtleParse": [19.124375, 18.117333, 18.780959]
+      },
+      "rssHighWaterBytesTrials": [60276736, 60211200, 59981824]
+    }
+  ],
+  "selectionBoundary": "Pure producer-context fingerprints and internal consistency do not prove authorization, content digest, immutable result identity, global completeness or atomic source/version binding. Actual I04 integration remains required.",
+  "limitations": [
+    "Only fixed-base pure semantics and unsigned macOS arm64 app-resource engine CLI; no GUI/Electron/native integration was launched.",
+    "Fresh first workload has no S1/suite/shapes prewarm; spawn-to-first result includes imports/work/serialization/pipe, separately from workload phases and exit. OS caches uncontrolled; no capacity or performance improvement claim.",
+    "Public error taxonomy and persisted scope identity remain I03/I04 responsibilities; no shared contracts/registry/store changes or task substitutes.",
+    "Q6 has12 explicit candidate differences pending accountable adoption/revision/discard;FR505 comparisons and multiple conclusions remain unimplemented.",
+    "Actual I03/I04 integration, original full acceptance, two specified fresh external reviews, push/PR/CI/merge and remote verification remain pending."
+  ],
+  "previousEvidence": "docs/iterations/I05/independent-v2.json and independent-v3.json;unchanged historical source/raw measurements",
+  "contractReference": {
+    "candidateSha": "f574a7234923f28e9356a45a17253803e7602e06",
+    "path": "docs/iterations/I03/I05-semantic-boundaries.md",
+    "sha256": "a1e279f8d55a82af12cf27dbf11e71b78a11005b310748c3a5b3496062fae61d",
+    "status": "fixed upstream design reference only;not approved/merged adoption or actual runtime integration"
+  },
+  "goalTurnClassification": "progress; previous turn delivered v3; current resumed turn adds real selected-result projection and closes two independently reproduced defects"
+}

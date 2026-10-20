@@ -22,7 +22,7 @@ MAX_TEXT_BYTES = 1_048_576
 MAX_TRIPLES = 100_000
 MAX_RULE_MATCHES = 100_000
 MAX_WORK = 1_000_000
-SEMANTICS_VERSION = "i05-finite-2"
+SEMANTICS_VERSION = "i05-finite-3"
 Triple = tuple[Identifier, Identifier, Identifier]
 
 
@@ -263,6 +263,21 @@ def _rule(rule):
         raise SemanticError("UNSUPPORTED_RULE_OUTPUT")
 
 
+def _chain_warnings(rules):
+    return sorted(
+        {
+            "RULE_CHAIN_UNSUPPORTED:" + consumer.id
+            for producer in rules
+            for consumer in rules
+            for pattern in consumer.when
+            if all(
+                isinstance(a, Variable) or isinstance(b, Variable) or a == b
+                for a, b in zip(producer.then, pattern, strict=True)
+            )
+        }
+    )
+
+
 def reason(graph: Graph, rules: tuple[Rule, ...] = ()) -> dict:
     with offline():
         asserted = _copy(graph)
@@ -378,18 +393,7 @@ def reason(graph: Graph, rules: tuple[Rule, ...] = ()) -> dict:
                 )
         rdfs = set(closure) - set(asserted)
         # Advisory only: a rule can still match a fact explicitly present in its input.
-        warnings = sorted(
-            {
-                "RULE_CHAIN_UNSUPPORTED:" + consumer.id
-                for producer in rules
-                for consumer in rules
-                for pattern in consumer.when
-                if all(
-                    isinstance(a, Variable) or isinstance(b, Variable) or a == b
-                    for a, b in zip(producer.then, pattern, strict=True)
-                )
-            }
-        )
+        warnings = _chain_warnings(rules)
         return {
             "rdfs": sorted(_key(t) for t in rdfs),
             "warnings": warnings,

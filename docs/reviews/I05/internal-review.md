@@ -32,3 +32,17 @@
 | Q6 | G 最小样例通过不能证明全部 FR-505。 | 12 行差异表明确比较运算 / 同规则多结论未覆盖、查询与模板的候选收窄及逐项待决定，不代替本体＋技术负责人批准。 |
 
 补充后语义测试 124 项通过，含 scopes 14 项。独立 agent 未构建最终包、未运行真实任务系统或 GUI；最终打包与全库验证按 [v3 证据](../../iterations/I05/independent-v3.json) 记录。原 v2 的 89 项结论和原始测量保持历史，不倒写成已经覆盖新分支。
+
+
+## v4 指定已有结果投影的独立审查
+
+本轮由同一独立只读 agent 审实际纯入口、匹配 / 来源边界和真实反例。初始162项语义测试通过仍未覆盖下列两项；据此补反例修复后定向关闭，不把原通过当成这些新边界的证明。
+
+| 实际发现 | 处置与复核 |
+| --- | --- |
+| `_from_n3` 默认规范化使真实 reason 的 `Literal("01",xsd:integer,normalize=False)` 被投影器误拒，亦可能改写原词法视图。 | 固定内存 Turtle SinkParser，局部 RDFSink.newLiteral 使用 normalize=False；不切换全局规范化或 boolean converter。真实 integer01、decimal1.00、boolean、语言及中文 / 转义值 native/JSON 回归，独立 agent 实测原反例关闭。 |
+| 损坏所选载荷中的 surrogate 进入最终摘要，抛裸 UnicodeEncodeError。 | 每行解析前UTF-8可编码性检查并转换固定 REASONING_RESULT_INVALID；原输入/规则摘要编码错误转固定 INVALID_UNICODE。独立 agent 实测两类安全错误，原项关闭。 |
+
+设计复核指出：规则实际可读集合还包括原 ontology，不能由投影器暗删；实际 ontology 条件正例已通过。完整结果和依据覆盖、重复变量、生产计划、冻结输入、schema角色、警示与多依据按真实有限语义检查；全局推理完备性 / RDFS证明真实性仍不在该一致性检查内，不通过重算补齐。展示来源独立复制，原选中载荷保留原对象。私有生产上下文摘要不声称授权 / Store / 不可变ID验证。
+
+最后补入版本 i05-finite-3、共享包内的真实01词法样例及最终分图预算反例。完整语义172项，新增指定投影48项；最终全库及真实包证据见 [v4清单](../../iterations/I05/independent-v4.json)。内部复核不替代指定全范围双审或真实I04联验。

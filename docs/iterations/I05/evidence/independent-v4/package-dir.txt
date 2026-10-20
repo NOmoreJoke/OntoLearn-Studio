@@ -1,0 +1,214 @@
+
+> ontolearn-studio@0.1.0 package:dir
+> npm run build && npm run engine:build && npm run package:dir --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 100 modules transformed.
+rendering chunks...
+out/main/index.js  164.54 kB
+
+✓ built in 26ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 2 modules transformed.
+rendering chunks...
+out/preload/index.js  0.20 kB
+
+✓ built in 5ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 15 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.53 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-DImnQfKh.js   571.51 kB
+
+✓ built in 42ms
+
+> ontolearn-studio@0.1.0 engine:build
+> node scripts/build-engine.mjs
+
+{"packages": 22, "runtime": ["html5rdf", "ontolearn-engine", "owlrl", "packaging", "prettytable", "pyparsing", "pyshacl", "rdflib", "wcwidth"], "licenseFiles": 36}
+29 INFO: PyInstaller: 6.22.3, contrib hooks: 2026.8
+29 INFO: Python: 3.12.12
+38 INFO: Platform: macOS-27.0.1-arm64-arm-64bit
+38 INFO: Python environment: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv
+39 INFO: wrote build/ontolearn-engine.spec
+43 INFO: Removing temporary files and cleaning cache in /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/build/pyinstaller-cache/pyinstaller
+591 INFO: Module search paths (PYTHONPATH):
+['/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python312.zip',
+ '/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12',
+ '/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/lib/python3.12/lib-dynload',
+ '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages',
+ '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/src',
+ '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine']
+664 INFO: Appending 'datas' from .spec
+670 INFO: checking Analysis
+670 INFO: Building Analysis because Analysis-00.toc is non existent
+671 INFO: Looking for Python shared library...
+675 INFO: Using Python shared library: /Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/libpython3.12.dylib
+675 INFO: Running Analysis Analysis-00.toc
+675 INFO: Target bytecode optimization level: 0
+675 INFO: Initializing module dependency graph...
+675 INFO: Initializing module graph hook caches...
+678 INFO: Analyzing modules for base_library.zip ...
+976 INFO: Processing standard module hook 'hook-heapq.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+1012 INFO: Processing standard module hook 'hook-encodings.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+1510 INFO: Processing standard module hook 'hook-math.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+1581 INFO: Processing standard module hook 'hook-pickle.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2054 INFO: Caching module dependency graph...
+2066 INFO: Analyzing /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/entrypoint.py
+2093 INFO: Processing standard module hook 'hook-platform.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2104 INFO: Processing standard module hook 'hook-xml.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2105 INFO: Processing standard module hook 'hook-rdflib.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+2494 INFO: Processing standard module hook 'hook-xml.dom.domreg.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2684 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2897 INFO: Processing standard module hook 'hook-difflib.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+2973 INFO: Processing standard module hook 'hook-multiprocessing.util.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3087 INFO: Processing standard module hook 'hook-_ctypes.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3399 INFO: Processing pre-safe-import-module hook 'hook-typing_extensions.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3400 INFO: SetuptoolsInfo: initializing cached setuptools info...
+3653 INFO: Processing pre-safe-import-module hook 'hook-packaging.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3695 INFO: Processing pre-safe-import-module hook 'hook-importlib_metadata.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3695 INFO: Setuptools: 'importlib_metadata' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.importlib_metadata'!
+3701 INFO: Processing standard module hook 'hook-setuptools.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3706 INFO: Processing pre-safe-import-module hook 'hook-distutils.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3725 INFO: Processing standard module hook 'hook-sysconfig.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3730 INFO: Processing standard module hook 'hook-_osx_support.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3732 INFO: Processing pre-safe-import-module hook 'hook-jaraco.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3733 INFO: Setuptools: 'jaraco' appears to be a full setuptools-vendored copy - creating alias to 'setuptools._vendor.jaraco'!
+3737 INFO: Processing pre-safe-import-module hook 'hook-more_itertools.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3737 INFO: Setuptools: 'more_itertools' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.more_itertools'!
+3874 INFO: Processing standard module hook 'hook-setuptools._vendor.jaraco.text.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+3875 INFO: Processing pre-safe-import-module hook 'hook-importlib_resources.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3878 INFO: Processing pre-safe-import-module hook 'hook-backports.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+3878 INFO: Setuptools: 'backports' appears to be a full setuptools-vendored copy - creating alias to 'setuptools._vendor.backports'!
+4085 INFO: Processing pre-safe-import-module hook 'hook-tomli.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+4085 INFO: Setuptools: 'tomli' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.tomli'!
+4304 INFO: Processing pre-safe-import-module hook 'hook-wheel.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+4305 INFO: Setuptools: 'wheel' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.wheel'!
+4325 INFO: Processing standard module hook 'hook-setuptools._vendor.importlib_metadata.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+4335 INFO: Processing pre-safe-import-module hook 'hook-zipp.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/pre_safe_import_module'
+4335 INFO: Setuptools: 'zipp' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.zipp'!
+4621 INFO: Processing standard module hook 'hook-sqlite3.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+4719 INFO: Analyzing hidden import 'rdflib.compare'
+4729 INFO: Analyzing hidden import 'rdflib.contrib'
+4729 INFO: Analyzing hidden import 'rdflib.contrib.graphdb'
+4810 INFO: Analyzing hidden import 'rdflib.extras'
+4810 INFO: Analyzing hidden import 'rdflib.extras.cmdlineutils'
+4812 INFO: Analyzing hidden import 'rdflib.extras.describer'
+4814 INFO: Analyzing hidden import 'rdflib.extras.external_graph_libs'
+4816 INFO: Analyzing hidden import 'rdflib.extras.infixowl'
+4842 INFO: Analyzing hidden import 'rdflib.extras.shacl'
+4844 INFO: Analyzing hidden import 'rdflib.plugins.parsers.RDFVOC'
+4845 INFO: Analyzing hidden import 'rdflib.plugins.parsers.hext'
+4848 INFO: Analyzing hidden import 'rdflib.plugins.parsers.jsonld'
+4883 INFO: Analyzing hidden import 'rdflib.plugins.parsers.nquads'
+4890 INFO: Analyzing hidden import 'rdflib.plugins.parsers.patch'
+4893 INFO: Analyzing hidden import 'rdflib.plugins.parsers.rdfxml'
+4901 INFO: Analyzing hidden import 'rdflib.plugins.parsers.trig'
+4903 INFO: Analyzing hidden import 'rdflib.plugins.parsers.trix'
+4907 INFO: Analyzing hidden import 'rdflib.plugins.serializers'
+4908 INFO: Analyzing hidden import 'rdflib.plugins.serializers.hext'
+4911 INFO: Analyzing hidden import 'rdflib.plugins.serializers.jsonld'
+4916 INFO: Analyzing hidden import 'rdflib.plugins.serializers.longturtle'
+4928 INFO: Analyzing hidden import 'rdflib.plugins.serializers.n3'
+4930 INFO: Analyzing hidden import 'rdflib.plugins.serializers.nquads'
+4933 INFO: Analyzing hidden import 'rdflib.plugins.serializers.patch'
+4934 INFO: Analyzing hidden import 'rdflib.plugins.serializers.rdfxml'
+4942 INFO: Analyzing hidden import 'rdflib.plugins.serializers.trig'
+4944 INFO: Analyzing hidden import 'rdflib.plugins.serializers.trix'
+4946 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results'
+4946 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.csvresults'
+4948 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.graph'
+4949 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.jsonresults'
+4951 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.rdfresults'
+4952 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.tsvresults'
+4954 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.txtresults'
+4955 INFO: Analyzing hidden import 'rdflib.plugins.sparql.results.xmlresults'
+4959 INFO: Analyzing hidden import 'rdflib.plugins.stores.auditable'
+4962 INFO: Analyzing hidden import 'rdflib.plugins.stores.concurrent'
+4964 INFO: Analyzing hidden import 'rdflib.plugins.stores.rdf4j'
+4967 INFO: Analyzing hidden import 'rdflib.tools'
+4967 INFO: Analyzing hidden import 'rdflib.tools.chunk_serializer'
+4969 INFO: Analyzing hidden import 'rdflib.tools.csv2rdf'
+4981 INFO: Analyzing hidden import 'rdflib.tools.defined_namespace_creator'
+4983 INFO: Analyzing hidden import 'rdflib.tools.graphisomorphism'
+5000 INFO: Analyzing hidden import 'rdflib.tools.rdf2dot'
+5002 INFO: Analyzing hidden import 'rdflib.tools.rdfpipe'
+5004 INFO: Analyzing hidden import 'rdflib.tools.rdfs2dot'
+5017 INFO: Analyzing hidden import 'rdflib.tools.sparqlquery'
+5021 INFO: Analyzing hidden import 'rdflib.void'
+5024 INFO: Analyzing hidden import 'pyshacl.__main__'
+5030 INFO: Processing standard module hook 'hook-prettytable.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/_pyinstaller_hooks_contrib/stdhooks'
+5069 INFO: Processing standard module hook 'hook-wcwidth.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+5159 INFO: Analyzing hidden import 'html5rdf.contrib.webencodings.mklabels'
+5160 INFO: Analyzing hidden import 'html5rdf.contrib.webencodings.tests'
+5163 INFO: Analyzing hidden import 'html5rdf.filters.lint'
+5165 INFO: Analyzing hidden import 'html5rdf.treeadapters'
+5167 INFO: Processing module hooks (post-graph stage)...
+5268 INFO: Processing standard module hook 'hook-webbrowser.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks'
+5303 INFO: Performing binary vs. data reclassification (387 entries)
+5323 INFO: Looking for ctypes DLLs
+5330 INFO: Analyzing run-time hooks ...
+5332 INFO: Including run-time hook 'pyi_rth_inspect.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/rthooks'
+5333 INFO: Including run-time hook 'pyi_rth_setuptools.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/rthooks'
+5334 INFO: Including run-time hook 'pyi_rth_pkgutil.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/rthooks'
+5335 INFO: Including run-time hook 'pyi_rth_multiprocessing.py' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/hooks/rthooks'
+5344 INFO: Creating base_library.zip...
+5353 INFO: Looking for dynamic libraries
+5366 INFO: Warnings written to /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/build/pyinstaller/ontolearn-engine/warn-ontolearn-engine.txt
+5388 INFO: Graph cross-reference written to /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/build/pyinstaller/ontolearn-engine/xref-ontolearn-engine.html
+5410 INFO: checking PYZ
+5410 INFO: Building PYZ because PYZ-00.toc is non existent
+5410 INFO: Building PYZ (ZlibArchive) /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/build/pyinstaller/ontolearn-engine/PYZ-00.pyz
+5746 INFO: Building PYZ (ZlibArchive) /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/build/pyinstaller/ontolearn-engine/PYZ-00.pyz completed successfully.
+5751 INFO: EXE target arch: arm64
+5751 INFO: Code signing identity: None
+5752 INFO: checking PKG
+5752 INFO: Building PKG because PKG-00.toc is non existent
+5752 INFO: Building PKG (CArchive) ontolearn-engine.pkg
+5760 INFO: Building PKG (CArchive) ontolearn-engine.pkg completed successfully.
+5760 INFO: Bootloader /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/.venv/lib/python3.12/site-packages/PyInstaller/bootloader/Darwin-64bit/run
+5761 INFO: checking EXE
+5761 INFO: Building EXE because EXE-00.toc is non existent
+5761 INFO: Building EXE from EXE-00.toc
+5761 INFO: Copying bootloader EXE to /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/build/pyinstaller/ontolearn-engine/ontolearn-engine
+5761 INFO: Converting EXE to target arch (arm64)
+5780 INFO: Removing signature(s) from EXE
+5798 INFO: Modifying Mach-O image UUID(s) in EXE
+5802 INFO: Appending PKG archive to EXE
+5803 INFO: Fixing EXE headers for code signing
+5808 INFO: Rewriting the executable's macOS SDK version (26.2.0) to match the SDK version of the Python library (15.5.0) in order to avoid inconsistent behavior and potential UI issues in the frozen application.
+5808 INFO: Re-signing the EXE
+5831 INFO: Building EXE from EXE-00.toc completed successfully.
+5833 INFO: checking COLLECT
+5833 INFO: Building COLLECT because COLLECT-00.toc is non existent
+5833 INFO: Removing dir /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/build/engine/ontolearn-engine
+5861 INFO: Building COLLECT COLLECT-00.toc
+6047 INFO: Building COLLECT COLLECT-00.toc completed successfully.
+6051 INFO: Build complete! The results are available in: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/build/engine
+
+> @ontolearn/desktop@0.1.0 package:dir
+> electron-builder --dir --publish never
+
+  • electron-builder  version=26.15.3 os=27.0.0
+  • loaded configuration  file=/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/apps/desktop/electron-builder.yml
+  • packageManager not detected by file, falling back to environment detection  resolvedPackageManager=npm detected=/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/apps/desktop
+  • detected workspace root for project using packageManager field  pm=npm config=npm@11.12.1 resolved=/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation projectDir=/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/apps/desktop
+  • skipped dependencies rebuild  reason=npmRebuild is set to false
+  • packaging       platform=darwin arch=arm64 electron=44.9.0 appOutDir=/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/release/mac-arm64
+  • downloaded      label=electron progress=100%
+  • downloaded electron zip extracted successfully  output=/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/release/mac-arm64
+  • searching for node modules  pm=npm searchDir=/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/apps/desktop
+  • default Electron icon is used  reason=application icon is not set
+  • skipped macOS code signing  reason=identity explicitly is set to null
