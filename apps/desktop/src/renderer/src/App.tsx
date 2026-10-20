@@ -25,6 +25,7 @@ export function App() {
   const [summaries, setSummaries] = useState<Record<string, string>>({})
   const current = useRef<TaskView | undefined>(undefined)
   const updateTasks = (value: TaskView) => {
+    if (current.current && value.generation < current.current.generation) return
     current.current = value
     setTasks(value)
   }
@@ -39,6 +40,19 @@ export function App() {
     let live = true
     const stop = window.ontolearn?.onTaskUpdate((update) => {
       const view = current.current
+      if (
+        live &&
+        update.restoredView &&
+        (!view || update.generation > view.generation) &&
+        update.restoredView.generation === update.generation &&
+        (!view || update.restoredView.project?.projectId === view.project?.projectId)
+      ) {
+        updateTasks(update.restoredView)
+        setProgress({})
+        setSummaries({})
+        setTaskError(undefined)
+        return
+      }
       if (
         !live ||
         !view ||
@@ -61,7 +75,7 @@ export function App() {
     void window.ontolearn?.restoreTasks().then((response) => {
       if (!live) return
       if (response.ok) updateTasks(response.data)
-      else setTaskError(response.error)
+      else if (!current.current) setTaskError(response.error)
     })
     return () => {
       live = false
@@ -192,9 +206,15 @@ export function App() {
             <p>窗口恢复后读取持久状态；不会重发写任务。</p>
             <button onClick={() => void restore()}>刷新任务状态</button>
             {tasks.jobs.map((job) => (
-              <article key={job.jobId} data-testid="durable-job">
+              <article key={job.jobId} data-testid="durable-job" data-job-id={job.jobId}>
                 <p>
                   {jobStatus(job)} · 状态版本 {job.stateVersion}
+                </p>
+                <p>
+                  输入快照 {job.inputSnapshotId.slice(0, 12)} ·
+                  {job.inputSnapshotId === tasks.project?.inputSnapshotId
+                    ? '当前输入'
+                    : '历史输入；此任务保留原执行依据'}
                 </p>
                 {progress[job.jobId] && ['queued', 'running', 'cancelling'].includes(job.state) && (
                   <p>

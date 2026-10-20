@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import type { DesktopBridge, TaskUpdate } from '@ontolearn/contracts'
+import { isTaskUpdate, type DesktopBridge } from '@ontolearn/contracts'
 
 const bridge: DesktopBridge = {
   getEngineHealth: () => ipcRenderer.invoke('engine:health'),
@@ -15,7 +15,9 @@ const bridge: DesktopBridge = {
   getResultPage: (options) => ipcRenderer.invoke('result:page', options),
   getOperation: (id) => ipcRenderer.invoke('operation:get', id),
   onTaskUpdate: (listener) => {
-    const receive = (_event: Electron.IpcRendererEvent, update: TaskUpdate) => listener(update)
+    const receive = (_event: Electron.IpcRendererEvent, update: unknown) => {
+      if (isTaskUpdate(update)) listener(update)
+    }
     ipcRenderer.on('tasks:update', receive)
     return () => ipcRenderer.removeListener('tasks:update', receive)
   },

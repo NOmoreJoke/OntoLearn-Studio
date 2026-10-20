@@ -1,0 +1,452 @@
+{
+  "sourceManifest": {
+    "path": "build/I04-evidence/source-final1-manifest.json",
+    "sha256": "5122a861f770870c907cc28a6a8c4d87ae29dfce8293049085192e985cc995bf",
+    "differences": []
+  },
+  "checks": [
+    {
+      "command": "npm run check",
+      "platform": "macOS arm64",
+      "exit": 0,
+      "typescriptTests": 593,
+      "pythonTests": 992,
+      "log": "build/I04-evidence/logs/full-check-4.log"
+    },
+    {
+      "command": "npm run verify:sources",
+      "exit": 0,
+      "sources": 12,
+      "log": "build/I04-evidence/logs/verify-sources-final1.log"
+    },
+    {
+      "command": "npm run engine:check",
+      "platform": "isolated Linux arm64",
+      "exit": 0,
+      "passed": 991,
+      "skipped": 1,
+      "skipReason": "Darwin-specific RSS probe"
+    },
+    {
+      "command": "npm test",
+      "platform": "isolated Linux arm64",
+      "exit": 0,
+      "passed": 593
+    },
+    {
+      "command": "playwright desktop + CSP",
+      "platform": "isolated Linux arm64",
+      "exit": 0,
+      "passed": 2
+    },
+    {
+      "command": "I04 reload + same-document anchors + safe error UI",
+      "platform": "isolated Linux arm64",
+      "sourceExit": 0,
+      "packagedExit": 0
+    },
+    {
+      "command": "I04 actual crash + visible focused unresponsive + native dialog",
+      "platform": "isolated Linux arm64",
+      "sourceExit": 0,
+      "packagedExit": 0
+    },
+    {
+      "command": "npm run package:dir + verify-i04-package.py release",
+      "platform": "macOS arm64",
+      "exit": 0,
+      "runtimePassed": 12
+    },
+    {
+      "command": "npm run package:dir + verify-i04-package.py release",
+      "platform": "isolated Linux arm64",
+      "exit": 0,
+      "runtimePassed": 12
+    }
+  ],
+  "commonExamples": {
+    "status": "passed",
+    "counts": {
+      "cases": 321,
+      "routing": 11,
+      "responses": 30,
+      "cursors": 9,
+      "jobListCursors": 7,
+      "trustedBindings": 41,
+      "rawFrames": 51
+    }
+  },
+  "resources": {
+    "registryHash": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+    "resources": {
+      "python/contract_v2.py": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+      "v2/binding-regressions.json": "9601d6d0a31e3e71078ac2562c6b8501c1292bc2be71de742e40c2fc54512a24",
+      "v2/dependencies.json": "dee118b368915df4172a77b875d31ce29ad8374cb5fce3915678f7f950cedad4",
+      "v2/errors.json": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+      "v2/fixtures.json": "32031804abf3283e87f070ffbfc3f95cf627f6b71e7bc49711faaff52ec31ad6",
+      "v2/frame-fixtures.json": "8e9a142ff04e908cc286c15702cd18b6c2ce9453490585d0855c3f62995dd2e5",
+      "v2/registry.json": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+      "v2/schema.json": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+      "v2/states.json": "ab54cac024f0f6b31a8a229198ae1c4ab13f63ff88184cdcef78113b9e893416"
+    },
+    "implementation": {
+      "executionSemanticsVersion": "i04-infrastructure-v1",
+      "engineVersion": "0.1.0",
+      "dependencyLockHash": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+    },
+    "frozen": true
+  },
+  "limitations": [
+    "No host macOS GUI was started.",
+    "Linux arm64 container is not CI x64 or Windows evidence.",
+    "Windows memory and package probes remain required in real CI.",
+    "Unsigned directory builds do not verify signing, installation, clean-device startup, product semantics or M0 completion."
+  ],
+  "artifacts": [
+    {
+      "path": "build/I04-evidence/logs/I04-runtime-initial.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/I04-evidence/logs/I04-runtime-initial.stdout",
+      "bytes": 11241,
+      "sha256": "62626f5b7d9eaa6b6623043a965a96aa21bbcbc36d23dceb38bf597399969ad0"
+    },
+    {
+      "path": "build/I04-evidence/logs/frames-runtime-3.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/I04-evidence/logs/frames-runtime-3.stdout",
+      "bytes": 99,
+      "sha256": "029deef6a92c8d65c74765f71fc94e9f1ab82273b2abbb55c0c8a3338deebf91"
+    },
+    {
+      "path": "build/I04-evidence/logs/full-check-2.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/I04-evidence/logs/full-check-2.stdout",
+      "bytes": 4097,
+      "sha256": "4a6d66b278460155a392f93af052dc2a89a051c1ac5ac0c04a1fd683df14698f"
+    },
+    {
+      "path": "build/I04-evidence/logs/full-check-3.stderr",
+      "bytes": 403,
+      "sha256": "1aea07d5531e9f87cd2a1114693af8e613cf7928ae60f2a893fbc9a4c72766b0"
+    },
+    {
+      "path": "build/I04-evidence/logs/full-check-3.stdout",
+      "bytes": 894,
+      "sha256": "73bd913dc120331dd8b71134eab436c98fb2de41692583fe8e8481da99f8a150"
+    },
+    {
+      "path": "build/I04-evidence/logs/full-check-4.log",
+      "bytes": 4503,
+      "sha256": "35e687ad8fb31bc1afe9e765fbd1f8d974801729e2278c0a4270c43237dd655a"
+    },
+    {
+      "path": "build/I04-evidence/logs/lifecycle-after-classification.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/I04-evidence/logs/lifecycle-after-classification.stdout",
+      "bytes": 99,
+      "sha256": "f949e3325533c566885179d530eefeea0e84e0a8c0c75d5e9f2d58f016ba00a2"
+    },
+    {
+      "path": "build/I04-evidence/logs/lifecycle-after-review.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/I04-evidence/logs/lifecycle-after-review.stdout",
+      "bytes": 99,
+      "sha256": "58e6e003892cea7ced5652c7cf660a7cd99af48375aa268048c36cfc2068fe18"
+    },
+    {
+      "path": "build/I04-evidence/logs/package-macos-2.stderr",
+      "bytes": 11616,
+      "sha256": "1b8f828348e9611c361128dc06e7b05999178584b47939a4435fbf1a4a62d2d8"
+    },
+    {
+      "path": "build/I04-evidence/logs/package-macos-2.stdout",
+      "bytes": 2436,
+      "sha256": "635d99fbdd02962422d0e22df2b0c208b069757eaad0d6a70f0447f99ccdba41"
+    },
+    {
+      "path": "build/I04-evidence/logs/package-macos-final1-probe.log",
+      "bytes": 369,
+      "sha256": "74ef4e263f9018c14effab7c62e79828781cc1782ce6874b809a3c253d8eb146"
+    },
+    {
+      "path": "build/I04-evidence/logs/package-macos-final1.log",
+      "bytes": 14057,
+      "sha256": "ef4587f49031007c17cb1d2c404a41417bdf135d48d86268d396e37f9c658131"
+    },
+    {
+      "path": "build/I04-evidence/logs/package-macos-initial.stderr",
+      "bytes": 11490,
+      "sha256": "c0bfb572d38ec27e5c6a0ef521db0728b0e165d333de35212cb67bc40a361b0d"
+    },
+    {
+      "path": "build/I04-evidence/logs/package-macos-initial.stdout",
+      "bytes": 2436,
+      "sha256": "2dd88438d51cc5c93aeae363fbab03bf917cfc90ab4e49c949e1ecf3d0f9d101"
+    },
+    {
+      "path": "build/I04-evidence/logs/runtime-after-integration.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/I04-evidence/logs/runtime-after-integration.stdout",
+      "bytes": 98,
+      "sha256": "eb86ba2e29b1bdd43b589ccd48e26678af17d4e4e746425957fdc3a46fb34fc3"
+    },
+    {
+      "path": "build/I04-evidence/logs/runtime-cancel-boundaries.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/I04-evidence/logs/runtime-cancel-boundaries.stdout",
+      "bytes": 98,
+      "sha256": "c50809b3a7483dc065f14e7ca3f5f51495ab7f180ac4b3d49af28c9fed4560ac"
+    },
+    {
+      "path": "build/I04-evidence/logs/runtime-f6-final.log",
+      "bytes": 99,
+      "sha256": "90b37dcbbead4c942413913886a8a6a3f4f6676baa751ed7dac0cf2154bf5373"
+    },
+    {
+      "path": "build/I04-evidence/logs/runtime-f6-paging-gc.log",
+      "bytes": 98,
+      "sha256": "ca2c5cf448a1e6914c2bc3423e18f7223c9588e84d7a71075a1bac2cbac35df3"
+    },
+    {
+      "path": "build/I04-evidence/logs/task-chain-current.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/I04-evidence/logs/task-chain-current.stdout",
+      "bytes": 292,
+      "sha256": "dabd96eecef45b72d1cf7847e02d89b915c0e1d64af86cfe6a8feb6b61906f2c"
+    },
+    {
+      "path": "build/I04-evidence/logs/typecheck-pre-freeze.log",
+      "bytes": 468,
+      "sha256": "ef35be543aff1f7e82be979906158f1f2f1448dfaa41256cfc157c03071e55d2"
+    },
+    {
+      "path": "build/I04-evidence/logs/typecheck-view.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/I04-evidence/logs/typecheck-view.stdout",
+      "bytes": 468,
+      "sha256": "ef35be543aff1f7e82be979906158f1f2f1448dfaa41256cfc157c03071e55d2"
+    },
+    {
+      "path": "build/I04-evidence/logs/verify-sources-final1.log",
+      "bytes": 111,
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+    },
+    {
+      "path": "build/I04-evidence/package-macos-final1/common-examples.json",
+      "bytes": 192,
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f"
+    },
+    {
+      "path": "build/I04-evidence/package-macos-final1/resources.json",
+      "bytes": 1184,
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb"
+    },
+    {
+      "path": "build/I04-evidence/package-macos-final1/runtime.exit",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "build/I04-evidence/package-macos-final1/runtime.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/I04-evidence/package-macos-final1/runtime.stdout",
+      "bytes": 99,
+      "sha256": "93255192bc5082c09a6e83d1cd05ab903ba69e91b72cfe36cc8d81690525560c"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/generic/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-build.log",
+      "bytes": 768,
+      "sha256": "c568b632676e46f5964091ec5af835fb0d9a7719370d9984ebee4d726b54924d"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-engine.log",
+      "bytes": 2764,
+      "sha256": "c9478e1416a6957ff9b04573b28caac9cb78ff9cb45607f41945efee59da9b41"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-generic-openbox.log",
+      "bytes": 150,
+      "sha256": "1174836b8af02b27445842587ff99c29bf075ed387b7ee396e7f3ea08df8b865"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-generic.log",
+      "bytes": 531,
+      "sha256": "ce190e9391dbbc7821060db4e701b6efa8d3bf40eb6d7599bf9e4caa3a038c60"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-native-fixture.log",
+      "bytes": 42,
+      "sha256": "ae77594267be146357855d4a97c54012316a98e05346b23ef0142429b59aad85"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-native-openbox.log",
+      "bytes": 150,
+      "sha256": "1174836b8af02b27445842587ff99c29bf075ed387b7ee396e7f3ea08df8b865"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-native.log",
+      "bytes": 181,
+      "sha256": "47f98f464edc4fbc7e02be52ebf15205e3430aa884457918f3a7b4160c99df0c"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-package-probe.log",
+      "bytes": 265,
+      "sha256": "2acdf8d42a228e347d19ae12b6c5089190f4a3fd0e574e91079145e743946af8"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-package.log",
+      "bytes": 10865,
+      "sha256": "aacb939cf42dc14d9eca1f744324b965749e8ab7c6221726ab11c1c72822e36e"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-reload-fixture.log",
+      "bytes": 42,
+      "sha256": "c972a038bc88b327b69475b095e39078832fb1aeaf2951ae8ba6883948e3fd73"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-reload-openbox.log",
+      "bytes": 150,
+      "sha256": "1174836b8af02b27445842587ff99c29bf075ed387b7ee396e7f3ea08df8b865"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-reload.log",
+      "bytes": 183,
+      "sha256": "eedec52502e1643dbcf1d2031209669bd03747da42d3907bade4bb668aa36d61"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-final1-unit.log",
+      "bytes": 2486,
+      "sha256": "17550b025e2d06dded1dd13c65e42e62a07b848ede741fa2976c436c40c20f5c"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-packaged-native-fixture.log",
+      "bytes": 44,
+      "sha256": "c7d71d0543a7dde12a7ef8d966a303349d50569722b2ab3ef6de19622078d552"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-packaged-native-openbox.log",
+      "bytes": 150,
+      "sha256": "1174836b8af02b27445842587ff99c29bf075ed387b7ee396e7f3ea08df8b865"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-packaged-native.log",
+      "bytes": 181,
+      "sha256": "cd6f0e9bd5a3e0eac8f41381eacf13288b5e3dcf203bb046c1a53a6f89bf1981"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-packaged-reload-fixture.log",
+      "bytes": 44,
+      "sha256": "ef61828c2fd75db2401b970581734a99ebe8a1166927041b918ef7d010c174bd"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-packaged-reload-openbox.log",
+      "bytes": 150,
+      "sha256": "1174836b8af02b27445842587ff99c29bf075ed387b7ee396e7f3ea08df8b865"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/i04-packaged-reload.log",
+      "bytes": 183,
+      "sha256": "84dc9820b9b4c70df6fbf7f883e3490db66b363f1901ec74c72af1b6da88bdf6"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/native/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-evidence-455c4215cad44bcbcf89fb22e7a2161d2e004025.json",
+      "bytes": 32628,
+      "sha256": "3e3ef4bfa5fe3a37c5418887fff6880a722019c9095803af9857cf2b77c6ae67"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-final-evidence-455c4215cad44bcbcf89fb22e7a2161d2e004025.json",
+      "bytes": 32628,
+      "sha256": "3e3ef4bfa5fe3a37c5418887fff6880a722019c9095803af9857cf2b77c6ae67"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/package-probe/common-examples.json",
+      "bytes": 192,
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/package-probe/resources.json",
+      "bytes": 1184,
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/package-probe/runtime.exit",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/package-probe/runtime.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/package-probe/runtime.stdout",
+      "bytes": 99,
+      "sha256": "feaa228f1a58c9829605064fc451e608332619577506f07b3a9a58939ad125d2"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/packaged-native/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/packaged-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-evidence-21ea57f2025421fc75b8bbff0102b2e28a206e33.json",
+      "bytes": 32845,
+      "sha256": "dcf648bba696ee71eef8f07ed083ff37e76e3603bab8fe1cf1ada4e7aa56040e"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/packaged-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-final-evidence-21ea57f2025421fc75b8bbff0102b2e28a206e33.json",
+      "bytes": 32845,
+      "sha256": "dcf648bba696ee71eef8f07ed083ff37e76e3603bab8fe1cf1ada4e7aa56040e"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/packaged-reload/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "build/I04-evidence/linux-final1/reload/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    }
+  ]
+}
