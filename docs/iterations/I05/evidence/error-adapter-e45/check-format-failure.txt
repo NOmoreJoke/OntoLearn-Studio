@@ -1,0 +1,97 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation
+
+
+ Test Files  5 passed (5)
+      Tests  424 passed (424)
+   Start at  17:48:23
+   Duration  544ms (tests 53%, transform 29%, import 16%, worker 2%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 103 modules transformed.
+rendering chunks...
+out/main/index.js  167.55 kB
+
+✓ built in 24ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 2 modules transformed.
+rendering chunks...
+out/preload/index.js  0.20 kB
+
+✓ built in 5ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 15 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-DImnQfKh.js   571.51 kB
+
+✓ built in 45ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+unformatted: File would be reformatted
+  --> docs/reviews/I05/semantic-error-adapter-interface.md:9:18
+   |
+8  | from ontolearn_engine.semantic_error_adapter import (
+   -     ErrorContext, Origin, Producer, SemanticErrorAdapter, Stage,
+9  +     ErrorContext,
+10 +     Origin,
+11 +     Producer,
+12 +     SemanticErrorAdapter,
+13 +     Stage,
+14 | )
+   |
+
+1 file would be reformatted, 154 files already formatted

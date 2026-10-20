@@ -1,8 +1,12 @@
 # I05 / B1 状态
 
+当前新增有界工作：已以 merge `bda48d78579622bb83cd7e326368c613033c4c2d` 合入已批准 I03/e45，完成纯语义错误适配器。新检查为424TS / 1006Python（208adapter）、sources12；接口与精确证据见 [adapter接口](semantic-error-adapter-interface.md) 和 [e45证据](../../iterations/I05/error-adapter-e45.json)。整个 I05 尚待真实 I04 后续基线、运行时 / Store / 任务 / 窗口联验与最终双方新审；Goal工具读回仍blocked，没有恢复API，未创建替代Goal、未标完成。
+
+共享entrypoint/build脚本保持交接字节，唯一维护责任仍归I04。本轮只新增适配器 / 专用测试及文档证据；没有重放旧测量 / 包、公开语义能力、Mac窗口、push或PR。下列v4及其阻塞记录是当时来源的历史证据，不表示I03现在仍未合并。
+
 日期：2026-10-20，Asia/Shanghai。开发会话：`01a15744-136d-7000-abad-46de101eadaf`。
 
-当前阶段：指定已有推理结果的纯投影已形成 `independent-v4` 证据，完整原载荷保留、不重算替换；真实源码 / 包内验证通过。恢复时 get_goal 返回 active；随后 v4 实际进展及两个已验证等待回合均缺少同一真实 I03/I04 前置，已按三回合审计标记 blocked。完整目标保留，未标完成或暂停。尚无正式集成候选、指定双审、推送/PR/合并。
+v4独立检查点阶段（历史）：指定已有推理结果的纯投影已形成 `independent-v4` 证据，完整原载荷保留、不重算替换；真实源码 / 包内验证通过。恢复时 get_goal 返回 active；随后 v4 实际进展及两个已验证等待回合均缺少同一真实 I03/I04 前置，已按三回合审计标记 blocked。完整目标保留，未标完成或暂停。尚无正式集成候选、指定双审、推送/PR/合并。
 
 - 唯一工作目录：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation`。
 - 分支：`feature/I05-semantic-validation`；初始 base/head：`1b6df7a220fc9a67d7046133a340085f03f0a96c`。origin 为 `https://github.com/NOmoreJoke/OntoLearn-Studio.git`，启动时远端 develop 与 base 一致。
@@ -73,3 +77,10 @@ I03 所需的新内部细码来源已交总控，未直接改公共分类。新 
 恢复后的三个回合依次为 v4 实际实现进展、已验证等待、再次已验证等待；同一正式集成前置始终未满足。最新 I03 原任务通过实际 wait_threads 仍为 active/inProgress（cursor212），不是被判停止或因观察超时重建。远端 develop 仍 c2f9，真实 I04 未启动；独立模块、包内验证与具体投影交接均已保存，未找到新的必要独立改动。已调用 update_goal 返回 blocked，避免继续无效轮询或用任务替身推进。
 
 完整实现 / 原字节证据 / 受保护指南哈希再次一致；仅追加流程审计，无实现或验收改变。详见 [v4阻塞审计](blocked-audit-v4.json)。恢复仍沿本会话完整原目标，在实际 I03/I04 就绪后刷新基线、原联验及双方指定新审查、PR/CI/合并；本记录不表示 I03 停工或 I05 完成。
+
+
+## 已批准e45上的纯错误适配器
+
+I03/e45已纳入本线Git祖先（从远端fetch并核验），未rebase或改写v4及handoff提交。canonical errors/schema/现有Python规范checker/批准的25项来源文档均与e45提交字节一致；没有复制另一份运行时错误目录，也未假定I04的模块或包内资源路径。新接口只接受Producer / Stage / Origin及固定内部细码，输出由canonical目录派生的四字段DTO。来源与阶段错配、可信违约及未分类项安全Internal，资源 / 合法有限构造用已有枚举。实际producer真实性、授权、immutable资源 / 内容摘要、Job与bridge/UI传播均未由纯测试证明。
+
+独立审查3项真实发现与开发自查2项阶段偏差均已补反例修复，失败/修正日志保留；最终独立定向208/208通过。首次完整check只因新接口文档代码块格式失败，修正后完整check与sources通过。相关受审源码 / 测试仅两份新文件，后续精确提交见checkpoint；正式全I05候选仍需实际I04后再次刷新、原验收和双方新全范围审查。

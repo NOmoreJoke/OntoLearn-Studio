@@ -1,0 +1,135 @@
+{
+  "stage": "pure error adapter on approved I03/e45;not full I05 runtime integration or external review candidate",
+  "recordedAt": "2026-10-20T17:52:04.114776+08:00",
+  "baseSha": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+  "mergeSha": "bda48d78579622bb83cd7e326368c613033c4c2d",
+  "preMergeHead": "06f0814a373cf7487ac0725bdb17155c66f13c7d",
+  "originDevelopAtFetch": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+  "originContainsApprovedBase": true,
+  "noRebaseOrHistoryRewrite": true,
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation",
+  "branch": "feature/I05-semantic-validation",
+  "previousImplementation": "2a8dcad9f9036ae49b96282d8bf64f279846b14e;independent-v4.json unchanged historical packaging/measurements",
+  "sourceFiles": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+      "sha256": "582ba8fd4a4aa6696261c1c858e41738d068905604e60a08265fe6737e092ac3"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_error_adapter.py",
+      "sha256": "da6ec8822137293dbbfd21b54f81b4b9b293436a5f8cc6937e75373aeb09542d"
+    }
+  ],
+  "canonicalSources": [
+    {
+      "path": "packages/contracts/v2/errors.json",
+      "sha256": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+      "approvedCommitBytesMatch": true
+    },
+    {
+      "path": "packages/contracts/v2/schema.json",
+      "sha256": "adc9963573bd3fc7b819e441d0c00d0c44a935d40dcca51ff1557754c2637a86",
+      "approvedCommitBytesMatch": true
+    },
+    {
+      "path": "packages/contracts/python/contract_v2.py",
+      "sha256": "645dade08dbe93add826948fffb1eb91d3927544666ce488ebe1b4f1a7802875",
+      "approvedCommitBytesMatch": true
+    },
+    {
+      "path": "docs/iterations/I03/I05-semantic-boundaries.md",
+      "sha256": "a1e279f8d55a82af12cf27dbf11e71b78a11005b310748c3a5b3496062fae61d",
+      "approvedCommitBytesMatch": true
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+      "unchanged": true
+    },
+    {
+      "path": "packages/engine/entrypoint.py",
+      "sha256": "9e6f363dab3806d37835f5ed1b2b4a919955cadcee33a55eaa600f751ed9a34f",
+      "unchanged": true
+    },
+    {
+      "path": "scripts/build-engine.mjs",
+      "sha256": "488d216919378e9284717640367b98426a0c9054ff918cecc1da9c577bcc3818",
+      "unchanged": true
+    }
+  ],
+  "interface": "docs/reviews/I05/semantic-error-adapter-interface.md",
+  "interfaceSha256": "5d0fa2ca2a37dff841451bead40d129cf54cde26055c82702bfc4005a6af9dc8",
+  "checks": {
+    "npmCheck": "PASS;424 TS/1006 Python;208 adapter tests;lint/format/contracts+unit+desktop type checks/build",
+    "verifySources": "PASS;12originals",
+    "canonicalGolden25": "PASS;25literal normative rows x3origins plus unrelated/unknown/canary/schema/byte-boundary cases",
+    "independentReview": "3actual findings fixed and independently reproduced closed;208/208;internal review does not replace specified final full dual reviews"
+  },
+  "retainedFailures": [
+    "two developer-discovered stage mapping errors:2failed/177passed",
+    "three independent findings exercised by6regressions:6failed/193passed",
+    "first full check failed only interface Python code-block formatting;fixed document and reran full check"
+  ],
+  "evidenceFiles": [
+    {
+      "path": "docs/iterations/I05/evidence/error-adapter-e45/after-independent-fixes.txt",
+      "sha256": "05aded8fbb2d2586bc7c0713c4b9023c64a0697901c873efb92063c986099d20",
+      "bytes": 260
+    },
+    {
+      "path": "docs/iterations/I05/evidence/error-adapter-e45/after-stage-fix.txt",
+      "sha256": "c650b1c8508871cf78a649ec5caed39e21845571f6f73ff8d3c1e8cb12aff78c",
+      "bytes": 260
+    },
+    {
+      "path": "docs/iterations/I05/evidence/error-adapter-e45/before-independent-fixes.txt",
+      "sha256": "16179010490b0ed18a537ebaa807c1e8a9ba3fa5d0d576babcd7d81a79a808a5",
+      "bytes": 4690
+    },
+    {
+      "path": "docs/iterations/I05/evidence/error-adapter-e45/before-stage-fix.txt",
+      "sha256": "76abd149dd7f608d4c3a6abf50c6d81cf365c6fb70bed10fff9c3211288d84bf",
+      "bytes": 2069
+    },
+    {
+      "path": "docs/iterations/I05/evidence/error-adapter-e45/check-format-failure.txt",
+      "sha256": "1de3cc1ab4571420b868597989a0ba21edf6cdbacf4b3e5ff26162abfe49c039",
+      "bytes": 2420
+    },
+    {
+      "path": "docs/iterations/I05/evidence/error-adapter-e45/check.txt",
+      "sha256": "baee3c9f9f7f099cbf345494911cc80a30832bb578405f2a8376322a1cc249cf",
+      "bytes": 4348
+    },
+    {
+      "path": "docs/iterations/I05/evidence/error-adapter-e45/normative-golden-25.json.raw",
+      "sha256": "1dabb5ae82298e9b5edc06fa3328b65a47c3acf2426cef64092f2a0bc48d4bc7",
+      "bytes": 16947
+    },
+    {
+      "path": "docs/iterations/I05/evidence/error-adapter-e45/validation-format-failure.json.raw",
+      "sha256": "68acb8880cd5e66c2074fc70bc8d7deb69186f035a99a91dfba204736929fc09",
+      "bytes": 171
+    },
+    {
+      "path": "docs/iterations/I05/evidence/error-adapter-e45/validation.json.raw",
+      "sha256": "a5a5b9a6d8e18003ab7e46bf4987d317d7f3132fe8251fe9a6e9495b064b9f44",
+      "bytes": 350
+    },
+    {
+      "path": "docs/iterations/I05/evidence/error-adapter-e45/verify-sources.txt",
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
+      "bytes": 111
+    }
+  ],
+  "limitations": [
+    "Canonical documents and finite context are trusted caller inputs;the adapter does not verify their authority,producer truth,immutable resources,contenthash,permissions or transaction/currentness.",
+    "No Store/Job/bridge/UI/runtime resource loader or capability registration was changed.",
+    "Shared entrypoint/build files remain exact handoff bytes;I04soleownership preserved.",
+    "No old measurements/package replay,no Macwindow,no I05push/PR/CI/merge or external review approval.",
+    "Actual I04 integrated baseline and all original runtime/store/task/window acceptance plus both specified fresh full reviews remain required."
+  ],
+  "goalTool": "get_goal returned original goal blocked;no resume operation available;no duplicate goal created;bounded authorized work completed without full completion claim"
+}

@@ -1,0 +1,638 @@
+{
+  "kind": "Static normative inputs/expectations from the source test constants;execution proven by208passing tests,not an extra runtime error catalog",
+  "cases": [
+    {
+      "reason": "TEXT_TYPE_INVALID",
+      "producer": "public-params",
+      "stage": "params",
+      "verifiedUserExpected": {
+        "code": "INVALID_REQUEST",
+        "messageKey": "protocol.invalidRequest",
+        "params": {
+          "field": "params"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "TEXT_INPUT_LIMIT",
+      "producer": "turtle",
+      "stage": "syntax",
+      "verifiedUserExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticInput"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticInput"
+        },
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "GRAPH_INPUT_LIMIT",
+      "producer": "reason",
+      "stage": "syntax",
+      "verifiedUserExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticInput"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticInput"
+        },
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "producer": "turtle",
+      "stage": "syntax",
+      "verifiedUserExpected": {
+        "code": "SEMANTIC_INPUT_INVALID",
+        "messageKey": "semantics.inputInvalid",
+        "params": {
+          "field": "syntax"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "UNSUPPORTED_LITERAL_DATATYPE",
+      "producer": "turtle",
+      "stage": "syntax",
+      "verifiedUserExpected": {
+        "code": "UNSUPPORTED_CONSTRUCT",
+        "messageKey": "semantics.unsupportedConstruct",
+        "params": {
+          "construct": "datatype"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "UNSUPPORTED_NONFINITE_LITERAL",
+      "producer": "turtle",
+      "stage": "syntax",
+      "verifiedUserExpected": {
+        "code": "UNSUPPORTED_CONSTRUCT",
+        "messageKey": "semantics.unsupportedConstruct",
+        "params": {
+          "construct": "literalValue"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "UNSUPPORTED_DATATYPE",
+      "producer": "shacl",
+      "stage": "constraint",
+      "verifiedUserExpected": {
+        "code": "UNSUPPORTED_CONSTRUCT",
+        "messageKey": "semantics.unsupportedConstruct",
+        "params": {
+          "construct": "datatype"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "RDF_TERM_INVALID",
+      "producer": "turtle",
+      "stage": "syntax",
+      "verifiedUserExpected": {
+        "code": "SEMANTIC_INPUT_INVALID",
+        "messageKey": "semantics.inputInvalid",
+        "params": {
+          "field": "syntax"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "RDF_TYPE_OBJECT_INVALID",
+      "producer": "turtle",
+      "stage": "syntax",
+      "verifiedUserExpected": {
+        "code": "SEMANTIC_INPUT_INVALID",
+        "messageKey": "semantics.inputInvalid",
+        "params": {
+          "field": "syntax"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "RDFS_TERM_INVALID",
+      "producer": "turtle",
+      "stage": "syntax",
+      "verifiedUserExpected": {
+        "code": "SEMANTIC_INPUT_INVALID",
+        "messageKey": "semantics.inputInvalid",
+        "params": {
+          "field": "syntax"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "UNSUPPORTED_RDFS",
+      "producer": "turtle",
+      "stage": "syntax",
+      "verifiedUserExpected": {
+        "code": "UNSUPPORTED_CONSTRUCT",
+        "messageKey": "semantics.unsupportedConstruct",
+        "params": {
+          "construct": "rdfsConstruct"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "SHAPE_TARGET_CLASS_INVALID",
+      "producer": "shacl",
+      "stage": "constraint",
+      "verifiedUserExpected": {
+        "code": "SEMANTIC_INPUT_INVALID",
+        "messageKey": "semantics.inputInvalid",
+        "params": {
+          "field": "constraint"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "SHAPE_DATATYPE_INVALID",
+      "producer": "shacl",
+      "stage": "constraint",
+      "verifiedUserExpected": {
+        "code": "SEMANTIC_INPUT_INVALID",
+        "messageKey": "semantics.inputInvalid",
+        "params": {
+          "field": "constraint"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "SHAPE_PATH_INVALID",
+      "producer": "shacl",
+      "stage": "constraint",
+      "verifiedUserExpected": {
+        "code": "SEMANTIC_INPUT_INVALID",
+        "messageKey": "semantics.inputInvalid",
+        "params": {
+          "field": "constraint"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "UNSUPPORTED_SHACL_PATH",
+      "producer": "shacl",
+      "stage": "constraint",
+      "verifiedUserExpected": {
+        "code": "UNSUPPORTED_CONSTRUCT",
+        "messageKey": "semantics.unsupportedConstruct",
+        "params": {
+          "construct": "shaclPath"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "SHAPE_PATH_UNCLASSIFIED",
+      "producer": "shacl",
+      "stage": "constraint",
+      "verifiedUserExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "QUERY_RESULT_LIMIT",
+      "producer": "query",
+      "stage": "query",
+      "verifiedUserExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticResult"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticResult"
+        },
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "RDFS_RESULT_LIMIT",
+      "producer": "reason",
+      "stage": "rule",
+      "verifiedUserExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticResult"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticResult"
+        },
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "RULE_MATCH_WORK_LIMIT",
+      "producer": "reason",
+      "stage": "rule",
+      "verifiedUserExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticWork"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticWork"
+        },
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "RULE_EVIDENCE_RESULT_LIMIT",
+      "producer": "reason",
+      "stage": "rule",
+      "verifiedUserExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticResult"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticResult"
+        },
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "WORK_LIMIT",
+      "producer": "reason",
+      "stage": "rule",
+      "verifiedUserExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticWork"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticWork"
+        },
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "FACT_SCOPE_CONTAINS_AXIOMS",
+      "producer": "shacl",
+      "stage": "syntax",
+      "verifiedUserExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "ONTOLOGY_SCOPE_CONTAINS_FACTS",
+      "producer": "projection",
+      "stage": "projection",
+      "verifiedUserExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "SCOPE_SELECTION_TYPE_INVALID",
+      "producer": "public-params",
+      "stage": "params",
+      "verifiedUserExpected": {
+        "code": "INVALID_REQUEST",
+        "messageKey": "protocol.invalidRequest",
+        "params": {
+          "field": "params"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    },
+    {
+      "reason": "UNSELECTED_RULES_PRESENT",
+      "producer": "public-params",
+      "stage": "params",
+      "verifiedUserExpected": {
+        "code": "INVALID_REQUEST",
+        "messageKey": "protocol.invalidRequest",
+        "params": {
+          "field": "params"
+        },
+        "retryable": false
+      },
+      "trustedInternalExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      },
+      "unknownOriginExpected": {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": false
+      }
+    }
+  ]
+}

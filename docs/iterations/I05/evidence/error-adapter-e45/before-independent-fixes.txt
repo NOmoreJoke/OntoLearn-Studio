@@ -1,0 +1,60 @@
+........................................................................ [ 36%]
+...................................FFF.................................. [ 72%]
+......................FFF..............................                  [100%]
+=================================== FAILURES ===================================
+_ test_known_reason_cannot_override_wrong_actual_producer_or_stage[Producer.REASON-Stage.SYNTAX-UNSUPPORTED_RULE_OUTPUT] _
+packages/engine/tests/test_semantic_error_adapter.py:411: in test_known_reason_cannot_override_wrong_actual_producer_or_stage
+    assert (
+E   AssertionError: assert {'code': 'UNS...yable': False} == {'code': 'INT...yable': False}
+E     
+E     Omitting 1 identical items, use -vv to show
+E     Differing items:
+E     {'messageKey': 'semantics.unsupportedConstruct'} != {'messageKey': 'engine.internal'}
+E     {'params': {'construct': 'ruleOutput'}} != {'params': {}}
+E     {'code': 'UNSUPPORTED_CONSTRUCT'} != {'code': 'INTERNAL_ERROR'}
+E     Use -v to get more diff
+_ test_known_reason_cannot_override_wrong_actual_producer_or_stage[Producer.QUERY-Stage.SYNTAX-QUERY_RESULT_LIMIT] _
+packages/engine/tests/test_semantic_error_adapter.py:411: in test_known_reason_cannot_override_wrong_actual_producer_or_stage
+    assert (
+E   AssertionError: assert {'code': 'RES...yable': False} == {'code': 'INT...yable': False}
+E     
+E     Omitting 1 identical items, use -vv to show
+E     Differing items:
+E     {'messageKey': 'resource.limitExceeded'} != {'messageKey': 'engine.internal'}
+E     {'params': {'resource': 'semanticResult'}} != {'params': {}}
+E     {'code': 'RESOURCE_LIMIT'} != {'code': 'INTERNAL_ERROR'}
+E     Use -v to get more diff
+_ test_known_reason_cannot_override_wrong_actual_producer_or_stage[Producer.REASON-Stage.SYNTAX-RDFS_RESULT_LIMIT] _
+packages/engine/tests/test_semantic_error_adapter.py:411: in test_known_reason_cannot_override_wrong_actual_producer_or_stage
+    assert (
+E   AssertionError: assert {'code': 'RES...yable': False} == {'code': 'INT...yable': False}
+E     
+E     Omitting 1 identical items, use -vv to show
+E     Differing items:
+E     {'messageKey': 'resource.limitExceeded'} != {'messageKey': 'engine.internal'}
+E     {'params': {'resource': 'semanticResult'}} != {'params': {}}
+E     {'code': 'RESOURCE_LIMIT'} != {'code': 'INTERNAL_ERROR'}
+E     Use -v to get more diff
+_ test_inconsistent_canonical_configuration_stops_with_fixed_safe_error[error-root-keyword] _
+packages/engine/tests/test_semantic_error_adapter.py:642: in test_inconsistent_canonical_configuration_stops_with_fixed_safe_error
+    with pytest.raises(ValueError, match="^SEMANTIC_ERROR_CATALOG_INVALID$"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_ test_inconsistent_canonical_configuration_stops_with_fixed_safe_error[enum-overlap-branch] _
+packages/engine/tests/test_semantic_error_adapter.py:642: in test_inconsistent_canonical_configuration_stops_with_fixed_safe_error
+    with pytest.raises(ValueError, match="^SEMANTIC_ERROR_CATALOG_INVALID$"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_ test_inconsistent_canonical_configuration_stops_with_fixed_safe_error[meanings-list] _
+packages/engine/tests/test_semantic_error_adapter.py:642: in test_inconsistent_canonical_configuration_stops_with_fixed_safe_error
+    with pytest.raises(ValueError, match="^SEMANTIC_ERROR_CATALOG_INVALID$"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_error_adapter.py::test_known_reason_cannot_override_wrong_actual_producer_or_stage[Producer.REASON-Stage.SYNTAX-UNSUPPORTED_RULE_OUTPUT]
+FAILED packages/engine/tests/test_semantic_error_adapter.py::test_known_reason_cannot_override_wrong_actual_producer_or_stage[Producer.QUERY-Stage.SYNTAX-QUERY_RESULT_LIMIT]
+FAILED packages/engine/tests/test_semantic_error_adapter.py::test_known_reason_cannot_override_wrong_actual_producer_or_stage[Producer.REASON-Stage.SYNTAX-RDFS_RESULT_LIMIT]
+FAILED packages/engine/tests/test_semantic_error_adapter.py::test_inconsistent_canonical_configuration_stops_with_fixed_safe_error[error-root-keyword]
+FAILED packages/engine/tests/test_semantic_error_adapter.py::test_inconsistent_canonical_configuration_stops_with_fixed_safe_error[enum-overlap-branch]
+FAILED packages/engine/tests/test_semantic_error_adapter.py::test_inconsistent_canonical_configuration_stops_with_fixed_safe_error[meanings-list]
+6 failed, 193 passed in 0.18s

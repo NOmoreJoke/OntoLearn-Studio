@@ -1,0 +1,28 @@
+........................................................................ [ 40%]
+........FF.............................................................. [ 80%]
+...................................                                      [100%]
+=================================== FAILURES ===================================
+_ test_additional_unreplaced_and_v4_reasons_reuse_canonical_categories[Producer.TURTLE-Stage.CONSTRAINT-INVALID_TURTLE-expected4] _
+packages/engine/tests/test_semantic_error_adapter.py:361: in test_additional_unreplaced_and_v4_reasons_reuse_canonical_categories
+    assert dto == expected
+E   AssertionError: assert {'code': 'SEM...yable': False} == {'code': 'SEM...yable': False}
+E     
+E     Omitting 3 identical items, use -vv to show
+E     Differing items:
+E     {'params': {'field': 'constraint'}} != {'params': {'field': 'syntax'}}
+E     Use -v to get more diff
+_ test_additional_unreplaced_and_v4_reasons_reuse_canonical_categories[Producer.QUERY-Stage.QUERY-INVALID_UNICODE-expected5] _
+packages/engine/tests/test_semantic_error_adapter.py:361: in test_additional_unreplaced_and_v4_reasons_reuse_canonical_categories
+    assert dto == expected
+E   AssertionError: assert {'code': 'INT...yable': False} == {'code': 'SEM...yable': False}
+E     
+E     Omitting 1 identical items, use -vv to show
+E     Differing items:
+E     {'messageKey': 'engine.internal'} != {'messageKey': 'semantics.inputInvalid'}
+E     {'params': {}} != {'params': {'field': 'query'}}
+E     {'code': 'INTERNAL_ERROR'} != {'code': 'SEMANTIC_INPUT_INVALID'}
+E     Use -v to get more diff
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_error_adapter.py::test_additional_unreplaced_and_v4_reasons_reuse_canonical_categories[Producer.TURTLE-Stage.CONSTRAINT-INVALID_TURTLE-expected4]
+FAILED packages/engine/tests/test_semantic_error_adapter.py::test_additional_unreplaced_and_v4_reasons_reuse_canonical_categories[Producer.QUERY-Stage.QUERY-INVALID_UNICODE-expected5]
+2 failed, 177 passed in 0.16s

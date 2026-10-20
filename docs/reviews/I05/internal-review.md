@@ -46,3 +46,23 @@
 设计复核指出：规则实际可读集合还包括原 ontology，不能由投影器暗删；实际 ontology 条件正例已通过。完整结果和依据覆盖、重复变量、生产计划、冻结输入、schema角色、警示与多依据按真实有限语义检查；全局推理完备性 / RDFS证明真实性仍不在该一致性检查内，不通过重算补齐。展示来源独立复制，原选中载荷保留原对象。私有生产上下文摘要不声称授权 / Store / 不可变ID验证。
 
 最后补入版本 i05-finite-3、共享包内的真实01词法样例及最终分图预算反例。完整语义172项，新增指定投影48项；最终全库及真实包证据见 [v4清单](../../iterations/I05/independent-v4.json)。内部复核不替代指定全范围双审或真实I04联验。
+
+
+## e45 基线纯错误适配器审查
+
+总控 / I04 明确交接后，独立 agent 先读已批准 I03 规范并复核 producer / stage / origin 设计，再只读审实际新适配器和 golden DTO。该内部审查不替代最终全 I05 两指定模型的新全范围审查。
+
+开发自查先补出两处实际阶段偏差并保留失败：constraint 文档的 INVALID_TURTLE 应固定 syntax，query 的 INVALID_UNICODE 应按真实 query 入口分类。修复后专用193项通过；不是把原通过当成新增反例已覆盖。
+
+| 独立实际发现 | 修复与复核 |
+| --- | --- |
+| 已知细码配对阶段过宽：REASON/SYNTAX 可报 ruleOutput，QUERY/SYNTAX 可报查询结果预算，REASON/SYNTAX 可报 RDFS结果预算。 | 内部理由×producer×stage 精确白名单；TEXT / GRAPH 输入阶段也分开。三项原反例及同类错配安全 Internal。 |
+| 只核对命中的 const 分支不足：追加 code 为 enum 的重叠 Internal oneOf 分支，或 error 根加入未知关键字后仍能构造，实际 owning checker却拒绝DTO。 | error 根封闭为oneOf；全部分支必须唯一const code并和catalog codes集合、四字段规范严格对应。重复 / 非const / 根未知字段拒绝，不再输出不符合注入规范的DTO。 |
+| parameterMeanings 同值list误被当作有效字典。 | exact dict、枚举键一致、非空字符串定义；损坏配置固定本地配置错误。 |
+
+独立审查的6个新触发用例修复前真实6failed/193passed，修复后208passed，原始日志均保留。补充细码1–64字符的精确匹配门、不trim；输出恰好2048bytes可接受，多1byte的配置拒绝。messageKey / retryable来自注入且一致的canonical目录，返回对象 / 枚举spec与外部输入隔离。独立agent最后复现三项关闭，208/208通过，未发现同类新增问题；未修改文件或操作GUI。
+
+完整check / 相关回归和精确来源记录见 error-adapter-e45.json。仅证明纯分类器和规范DTO，不证明producer真实性、授权、immutable资源、Job/bridge/UI传播或当前包内调用。
+
+
+新基线首次完整check的424项TS、类型与build已过，随后Ruff发现接口文档Python代码块的import格式未展开；仅修正本线文档，保留首次失败日志，再完整运行check。最终424TS / 1006Python（208adapter）及sources12通过；未借此重跑旧包或旧测量。
