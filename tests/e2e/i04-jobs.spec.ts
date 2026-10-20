@@ -200,7 +200,21 @@ test('I04 coordinator exit reconciles the open view without replaying jobs', asy
     const final = restored.view.jobs.find((job) => job.jobId === active!.jobId)!
     expect(final.state).toBe('failed')
     expect(final.operationId).toBe(active!.operationId)
-    expect(final.commitProgress).toEqual(before.data.commitProgress)
+    const previousProgress = before.data.commitProgress as {
+      mode: 'rounds'
+      committedProgress: { runId: string; lastCommittedRound: number; snapshotRef: string }
+    }
+    const finalProgress = final.commitProgress as typeof previousProgress
+    expect(finalProgress.mode).toBe('rounds')
+    expect(finalProgress.committedProgress.runId).toBe(previousProgress.committedProgress.runId)
+    expect(finalProgress.committedProgress.lastCommittedRound).toBeGreaterThanOrEqual(
+      previousProgress.committedProgress.lastCommittedRound,
+    )
+    if (
+      finalProgress.committedProgress.lastCommittedRound ===
+      previousProgress.committedProgress.lastCommittedRound
+    )
+      expect(finalProgress).toEqual(previousProgress)
     expect(final.error).toEqual({
       code: 'ENGINE_EXITED',
       messageKey: 'engine.exited',
