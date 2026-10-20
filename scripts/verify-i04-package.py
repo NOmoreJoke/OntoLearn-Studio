@@ -59,7 +59,15 @@ def main() -> None:
     (output / "common-examples.json").write_text(json.dumps(contract, indent=2) + "\n")
     env = os.environ | {"ONTOLEARN_TEST_ENGINE": str(executable)}
     result = subprocess.run(
-        [sys.executable, "-m", "pytest", "packages/engine/tests/test_resident_runtime.py", "-q"],
+        [
+            sys.executable,
+            "-m",
+            "pytest",
+            "packages/engine/tests/test_resident_runtime.py",
+            "packages/engine/tests/test_worker_parent.py",
+            "packages/engine/tests/test_worker_owner_bootstrap.py::test_actual_worker_refuses_work_before_a_valid_owner_is_established",
+            "-q",
+        ],
         env=env,
         capture_output=True,
         timeout=90,

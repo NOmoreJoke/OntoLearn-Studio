@@ -46,6 +46,9 @@ from uuid import uuid4
 from ontolearn_engine.job_store import JobStore
 from ontolearn_engine.resources import CONTRACT,IMPLEMENTATION,LIMITS
 from ontolearn_engine.coordinator import Coordinator
+from ontolearn_engine import coordinator as coordinator_module
+if executable:=os.environ.get('ONTOLEARN_TEST_ENGINE'):
+ coordinator_module.worker_command=lambda:[executable,'--worker']
 async def run():
  s=JobStore(sys.argv[1],contract=CONTRACT);s.create_project('parent-probe')
  p=s.public_project('parent-probe')

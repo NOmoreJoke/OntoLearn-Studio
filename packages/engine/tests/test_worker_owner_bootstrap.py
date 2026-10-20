@@ -6,6 +6,7 @@ only Windows CI can establish actual native behavior through venv/frozen launche
 
 import ctypes
 import json
+import os
 import subprocess
 import sys
 from types import SimpleNamespace
@@ -210,8 +211,14 @@ def test_actual_worker_refuses_work_before_a_valid_owner_is_established(bootstra
         assert identity.returncode == 0 and identity.stderr == b""
         arguments = json.loads(identity.stdout)
     request = {"memoryBytes": 536870912, "parameters": {}, "capability": "test.read"}
+    executable = os.environ.get("ONTOLEARN_TEST_ENGINE")
+    command = (
+        [executable, "--worker"]
+        if executable
+        else [sys.executable, "-I", "-m", "ontolearn_engine.worker"]
+    )
     process = subprocess.run(
-        [sys.executable, "-I", "-m", "ontolearn_engine.worker", *arguments],
+        [*command, *arguments],
         input=json.dumps(request).encode() + b"\n",
         capture_output=True,
         env=worker_environment(),
