@@ -1,6 +1,6 @@
 # I06 / S3 状态
 
-日期：2026-10-20（Asia/Shanghai）。阶段：独立核心实现、无窗口验证和内部只读复核已完成，等待真实依赖接入；完整 I06 未完成。完整 Goal 原目标不变，已由正式工具记录为 blocked（外部依赖/隔离环境），不是 paused 或 complete。
+日期：2026-10-20（Asia/Shanghai）。阶段：独立核心实现、无窗口验证和内部只读复核已完成，等待真实依赖接入；完整 I06 未完成。本次恢复后正式 get_goal 返回 active，原目标保持完整；此前 blocked 记录作为历史保留，重新累计阻塞核验，不沿用旧次数。
 
 ## 身份与保护
 
@@ -30,7 +30,13 @@
 
 ## 依赖、双审和下一步
 
-### 阻塞核验与恢复条件
+### 本次恢复：I02 合并已核验，I03/I04 仍待就绪
+
+- 本次已直接核验远端 develop 为 `c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3`，PR #3 实际 MERGED 到 develop，原 base 是该 merge 的祖先；PR run39364497557 的 Quality/macOS/Windows 三项 SUCCESS。合并后 push run39364825646 同一 head 也 completed/success，三个实际 job 均 success。没有沿用总控陈旧 state 中 I02 merge=null 的值。
+- I03 的实际任务已 terminal（idle/completed，cursor `4e760116-fc4e-44e4-82df-053fdee3eaa5:91`），不是仍在运行的等待句柄。已观察到本地候选 `8305d204bb132eb8e695b2122ecbf48f67120f2a` 仅在 feature/I03-protocol-contracts；开发者回执指定双审未创建、未推送/合并。I04 在总控清单仍 pending，无线程 handle。依赖门未全部满足，不能提前接线或把本地冻结当已合并。
+- I06 保持原分支/实现基线，没有 rebase、产品接线、依赖或测试修改。本轮只追加 [真实依赖核验证据](evidence/dependency-resume-20261020.json)，不重复无变化检查；已有实现/测试哈希仍匹配上次完整验证。I02 依赖已解除，剩余为 I03/I04 合并与后续隔离运行条件；本次恢复按新一轮核验处理。
+
+### 此前阻塞核验与恢复条件（历史快照，I02 状态以上文为准）
 
 - 同一“正式依赖尚未合并、平台/指定审查缺少本会话可用环境”条件跨初始交付及后续多次 Goal turn 持续存在；期间仍完成凭据绑定修复、I03 接口交接和超时/容量反例。当前未发现仍可在授权阶段内独立推进的必要工作，不能用新文档/重复测试或提前复制未批准协议替代实际依赖。
 - 本次 `git ls-remote origin refs/heads/develop` 实际返回 `1b6df7a220fc9a67d7046133a340085f03f0a96c`；核心/测试哈希与最新已通过验证一致。检查点为 `208f48bf9888a78b19e4a8049eb29772b3f10f24`，后续仅追加流程记录。
