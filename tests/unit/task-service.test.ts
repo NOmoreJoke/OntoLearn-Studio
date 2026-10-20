@@ -19,6 +19,9 @@ const session = '00000000-0000-4000-8000-000000000002'
 const subscriptionId = '00000000-0000-4000-8000-000000000008'
 class Engine {
   engineSessionId = session
+  subscriptionId = subscriptionId
+  projectRevision = 1
+  inputSnapshotId = 'a'.repeat(64)
   job = fixture('job running') as JobView
   calls: Array<{ method: string; params: Record<string, unknown> }> = []
   listeners = new Set<(value: unknown) => void>()
@@ -36,20 +39,22 @@ class Engine {
     if (method === 'project.get')
       return {
         projectId,
-        projectRevision: 1,
-        inputSnapshotId: this.job.inputSnapshotId,
+        projectRevision: this.projectRevision,
+        inputSnapshotId: this.inputSnapshotId,
         dependencyVector: { 'facts:asserted': 1 },
         formatVersion: 2,
       }
     if (method === 'job.get') return structuredClone(this.job)
-    if (method === 'job.subscribe')
+    if (method === 'job.subscribe') {
+      this.subscriptionId = `00000000-0000-4000-8000-${String(7 + this.calls.filter((call) => call.method === 'job.subscribe').length).padStart(12, '0')}`
       return {
-        subscriptionId,
+        subscriptionId: this.subscriptionId,
         projectId,
         jobId: this.job.jobId,
         seq: 0,
         stateVersion: this.job.stateVersion,
       }
+    }
     if (method === 'job.unsubscribe')
       return { subscriptionId: params.subscriptionId, unsubscribed: true }
     if (method === 'job.cancel')
@@ -72,10 +77,10 @@ function stateEvent(engine: Engine, job: JobView, seq = 1) {
   return {
     kind: 'notification',
     protocolVersion: 2,
-    engineSessionId: session,
+    engineSessionId: engine.engineSessionId,
     projectId,
     jobId: engine.job.jobId,
-    subscriptionId,
+    subscriptionId: engine.subscriptionId,
     seq,
     event: 'job.state',
     data: job,
@@ -129,7 +134,7 @@ describe('trusted task bridge', () => {
     expect(updates).toEqual([])
     tasks.dispose()
   })
-  it('rejects old project/session/subscription, duplicate, gap and regressive state notifications', async () => {
+  it('rejects old project/session/subscription, duplicate and post-terminal notifications', async () => {
     const { engine, tasks } = service()
     const updates: TaskUpdate[] = []
     tasks.attachView((value) => updates.push(value))
@@ -141,8 +146,6 @@ describe('trusted task bridge', () => {
       { projectId: subscriptionId },
       { engineSessionId: subscriptionId },
       { subscriptionId: session },
-      { seq: 2 },
-      { data: { ...complete, stateVersion: engine.job.stateVersion } },
     ])
       engine.emit({ ...valid, ...mutation })
     expect(updates).toEqual([])
@@ -151,6 +154,235 @@ describe('trusted task bridge', () => {
     expect(updates.map((value) => value.job.state)).toEqual(['succeeded'])
     engine.emit(stateEvent(engine, { ...engine.job, stateVersion: complete.stateVersion + 1 }, 2))
     expect(updates).toHaveLength(1)
+    tasks.dispose()
+  })
+  it('advances the view generation on a newer project revision and retains historical job input', async () => {
+    const { engine, tasks } = service()
+    const updates: TaskUpdate[] = []
+    tasks.attachView((value) => updates.push(value))
+    const before = await tasks.restore()
+    if (!before.ok) throw new Error('fixture restore failed')
+    const oldSubscription = engine.subscriptionId
+    const calls = engine.calls.length
+    engine.projectRevision = 2
+    engine.inputSnapshotId = 'b'.repeat(64)
+    const next = await tasks.restore()
+    if (!next.ok) throw new Error('revision restore failed')
+    expect(next.data.generation).toBe(before.data.generation + 1)
+    expect(next.data.project?.inputSnapshotId).toBe('b'.repeat(64))
+    expect(next.data.jobs[0].inputSnapshotId).toBe(before.data.jobs[0].inputSnapshotId)
+    expect(next.data.jobs[0].input).toEqual(before.data.jobs[0].input)
+    expect(engine.calls.slice(calls).map((call) => call.method)).toEqual([
+      'project.get',
+      'job.unsubscribe',
+      'job.get',
+      'job.subscribe',
+    ])
+    const final = {
+      ...fixture('job succeeded'),
+      stateVersion: engine.job.stateVersion + 1,
+    } as JobView
+    const count = engine.calls.length
+    engine.emit({ ...stateEvent(engine, final, 2), subscriptionId: oldSubscription })
+    await new Promise((done) => setTimeout(done, 0))
+    expect(updates).toEqual([])
+    expect(engine.calls).toHaveLength(count)
+    engine.emit(stateEvent(engine, final))
+    expect(
+      updates.map((value) => ({ generation: value.generation, input: value.job.inputSnapshotId })),
+    ).toEqual([{ generation: next.data.generation, input: before.data.jobs[0].inputSnapshotId }])
+    tasks.dispose()
+  })
+  it('observes activeProject revision once, rebuilds read subscriptions, and rejects an older projection', async () => {
+    const { engine, tasks } = service()
+    await tasks.restore()
+    const count = engine.calls.length
+    expect((await tasks.activeProject()).ok).toBe(true)
+    expect(engine.calls.slice(count).map((call) => call.method)).toEqual(['project.get'])
+    const before = engine.calls.length
+    engine.projectRevision = 3
+    expect((await tasks.activeProject()).ok).toBe(true)
+    expect(engine.calls.slice(before).map((call) => call.method)).toEqual([
+      'project.get',
+      'job.unsubscribe',
+      'job.get',
+      'job.subscribe',
+    ])
+    const stable = engine.calls.length
+    engine.projectRevision = 2
+    const stale = await tasks.activeProject()
+    expect(stale.ok).toBe(false)
+    expect(engine.calls.slice(stable).map((call) => call.method)).toEqual(['project.get'])
+    tasks.dispose()
+  })
+  it('coalesces a missing notification into an authoritative read and fresh working subscription', async () => {
+    const { engine, tasks } = service()
+    const updates: TaskUpdate[] = []
+    let recovered!: (value: TaskUpdate) => void
+    const recovery = new Promise<TaskUpdate>((done) => {
+      recovered = done
+    })
+    tasks.attachView((value) => {
+      updates.push(value)
+      recovered(value)
+    })
+    await tasks.restore()
+    const oldSubscription = engine.subscriptionId
+    const before = engine.calls.length
+    const wire = {
+      ...fixture('job succeeded'),
+      stateVersion: engine.job.stateVersion + 1,
+    } as JobView
+    engine.job = { ...engine.job, stateVersion: engine.job.stateVersion + 2 }
+    const gap = stateEvent(engine, wire, 2)
+    for (let i = 0; i < 5; i++) engine.emit(gap)
+    expect(updates).toEqual([])
+    expect((await recovery).job).toEqual(engine.job)
+    expect(engine.subscriptionId).not.toBe(oldSubscription)
+    expect(engine.calls.slice(before).map((call) => call.method)).toEqual([
+      'job.unsubscribe',
+      'job.get',
+      'job.subscribe',
+    ])
+    // A late old subscription cannot settle the new watch; its seq is irrelevant.
+    engine.emit({ ...stateEvent(engine, wire), subscriptionId: oldSubscription })
+    expect(updates).toHaveLength(1)
+    const final = {
+      ...fixture('job succeeded'),
+      stateVersion: engine.job.stateVersion + 1,
+    } as JobView
+    engine.emit(stateEvent(engine, final))
+    expect(updates.map((value) => value.job.state)).toEqual(['running', 'succeeded'])
+    const calls = engine.calls.length
+    engine.emit(stateEvent(engine, { ...engine.job, stateVersion: final.stateVersion + 1 }, 3))
+    expect(engine.calls).toHaveLength(calls)
+    tasks.dispose()
+  })
+  it('re-reads a further gap that arrives with the replacement subscription response', async () => {
+    const { engine, tasks } = service()
+    let recovered!: (value: TaskUpdate) => void
+    const recovery = new Promise<TaskUpdate>((done) => {
+      recovered = done
+    })
+    tasks.attachView(recovered)
+    await tasks.restore()
+    const original = engine.request.bind(engine)
+    let introduced = false
+    engine.request = async (method, params) => {
+      const response = await original(method, params)
+      if (method === 'job.subscribe' && !introduced) {
+        introduced = true
+        engine.job = { ...engine.job, stateVersion: engine.job.stateVersion + 1 }
+        engine.emit(stateEvent(engine, engine.job, 2))
+      }
+      return response
+    }
+    engine.job = { ...engine.job, stateVersion: engine.job.stateVersion + 1 }
+    const before = engine.calls.length
+    engine.emit(stateEvent(engine, engine.job, 2))
+    expect((await recovery).job).toEqual(engine.job)
+    expect(engine.calls.slice(before).map((call) => call.method)).toEqual([
+      'job.unsubscribe',
+      'job.get',
+      'job.subscribe',
+      'job.unsubscribe',
+      'job.get',
+      'job.subscribe',
+    ])
+    tasks.dispose()
+  })
+  it('reconciles a contradictory next stateVersion without accepting its wire state', async () => {
+    const { engine, tasks } = service()
+    let recovered!: (value: TaskUpdate) => void
+    const recovery = new Promise<TaskUpdate>((done) => {
+      recovered = done
+    })
+    tasks.attachView(recovered)
+    await tasks.restore()
+    const wire = { ...engine.job, stateVersion: engine.job.stateVersion + 3 }
+    engine.job = { ...fixture('job failed'), stateVersion: wire.stateVersion + 1 } as JobView
+    engine.emit(stateEvent(engine, wire))
+    expect((await recovery).job).toEqual(engine.job)
+    tasks.dispose()
+  })
+  it('discards an in-flight gap recovery after the view generation changes', async () => {
+    const { engine, tasks } = service()
+    const updates: TaskUpdate[] = []
+    tasks.attachView((value) => updates.push(value))
+    await tasks.restore()
+    const original = engine.request.bind(engine)
+    let started!: () => void
+    const reading = new Promise<void>((done) => {
+      started = done
+    })
+    let resolve!: (value: unknown) => void
+    let held = false
+    engine.request = async (method, params) => {
+      if (method === 'job.get' && !held) {
+        held = true
+        started()
+        return new Promise((done) => {
+          resolve = done
+        })
+      }
+      return original(method, params)
+    }
+    engine.emit(
+      stateEvent(
+        engine,
+        { ...fixture('job succeeded'), stateVersion: engine.job.stateVersion + 1 } as JobView,
+        2,
+      ),
+    )
+    await reading
+    tasks.attachView((value) => updates.push(value))
+    const restored = await tasks.restore()
+    expect(restored.ok).toBe(true)
+    resolve({ ...fixture('job succeeded'), stateVersion: engine.job.stateVersion + 10 })
+    // A macrotask lets the old bounded read finish and its recovery continuation settle.
+    await new Promise((done) => setTimeout(done, 0))
+    expect(updates).toEqual([])
+    const final = {
+      ...fixture('job succeeded'),
+      stateVersion: engine.job.stateVersion + 1,
+    } as JobView
+    engine.emit(stateEvent(engine, final))
+    expect(updates.map((value) => value.job.state)).toEqual(['succeeded'])
+    tasks.dispose()
+  })
+  it('does not recover an old engine binding until explicit restore reads the new session', async () => {
+    const { engine, tasks } = service()
+    const updates: TaskUpdate[] = []
+    tasks.attachView((value) => updates.push(value))
+    await tasks.restore()
+    const before = engine.calls.length
+    engine.engineSessionId = '00000000-0000-4000-8000-000000000099'
+    const final = {
+      ...fixture('job succeeded'),
+      stateVersion: engine.job.stateVersion + 1,
+    } as JobView
+    engine.emit(stateEvent(engine, final, 2))
+    await new Promise((done) => setTimeout(done, 0))
+    expect(engine.calls).toHaveLength(before)
+    await tasks.restore()
+    engine.emit(stateEvent(engine, final))
+    expect(updates.map((value) => value.job.state)).toEqual(['succeeded'])
+    tasks.dispose()
+  })
+  it('does not replay a read recovery after the current job was unsubscribed', async () => {
+    const { engine, tasks } = service()
+    await tasks.restore()
+    const before = engine.calls.length
+    engine.emit(
+      stateEvent(
+        engine,
+        { ...fixture('job succeeded'), stateVersion: engine.job.stateVersion + 1 } as JobView,
+        2,
+      ),
+    )
+    await tasks.unsubscribeJob(engine.job.jobId)
+    await new Promise((done) => setTimeout(done, 0))
+    expect(engine.calls.slice(before).map((call) => call.method)).toEqual(['job.unsubscribe'])
     tasks.dispose()
   })
   it('keeps cancellation decision separate from live state and coalesces subscriptions', async () => {
