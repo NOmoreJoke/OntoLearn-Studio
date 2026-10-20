@@ -1,6 +1,6 @@
 """Build isolated G-base SQLite evidence through the actual semantic coordinator/workers.
 
-The only input mutation is the documented missing equipment/003 name. The 1,000
+The only input mutation is the documented missing equipment/003 name. The ten
 independent load facts support a real, cancellable COUNT Cartesian query; no test
 capability, sleep surrogate or fabricated successful job is used.
 """
@@ -20,9 +20,11 @@ from ontolearn_engine.storage import digest
 from ontolearn_engine.storage_probe import QUERY, fixture
 from rdflib import Graph, URIRef, Variable
 
-SLOW_QUERY = """SELECT (COUNT(*) AS ?count) WHERE {
-  ?a <urn:i05:load> ?x . ?b <urn:i05:load> ?y . ?c <urn:i05:load> ?z
-}"""
+SLOW_QUERY = (
+    "SELECT (COUNT(*) AS ?count) WHERE { "
+    + " . ".join(f"?a{i} <urn:i05:load> ?x{i}" for i in range(9))
+    + " }"
+)
 NETWORK_CANARY = "I05_REMOTE_CANARY_DO_NOT_LEAK"
 FORBIDDEN_QUERY = (
     "SELECT ?s WHERE { SERVICE <http://127.0.0.1:9/" + NETWORK_CANARY + "> { ?s ?p ?o } }"
@@ -124,7 +126,7 @@ async def prepare(directory):
             }
             for s, p, o in sorted(original)
         ]
-        for index in range(1000):
+        for index in range(10):
             triple = [f"urn:i05:load:{index:04d}", "urn:i05:load", f'"{index:04d}"']
             facts.append(
                 {
@@ -213,7 +215,7 @@ async def prepare(directory):
             "originalGBaseFactCount": 18,
             "removedNameTriples": removed_triples,
             "gBaseFactCount": len(original),
-            "independentLoadFactCount": 1000,
+            "independentLoadFactCount": 10,
             "assertedFactCount": len(facts),
             "ontologyTripleCount": len(ontology),
             "inputFactsSha256": digest(facts),
@@ -223,7 +225,7 @@ async def prepare(directory):
             "networkCanary": NETWORK_CANARY,
             "queryText": QUERY,
             "slowQueryText": SLOW_QUERY,
-            "slowCartesianCandidates": 1000**3,
+            "slowCartesianCandidates": 10**9,
             "backgroundOperations": trusted_fixture["startRequests"],
         }
         target = directory / "fixture.json"

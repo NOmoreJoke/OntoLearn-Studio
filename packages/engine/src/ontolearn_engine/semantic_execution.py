@@ -258,7 +258,6 @@ def _graph(records):
         graph.add((_iri(record["subject"]), _iri(record["predicate"]), _term(record["object"])))
         if len(graph) > semantic.MAX_TRIPLES:
             raise SemanticError("GRAPH_INPUT_LIMIT")
-    semantic._terms(graph)
     return graph
 
 
@@ -350,7 +349,18 @@ def execute_request(request, *, error_catalog, error_schema):
             snapshot, input_ = request["snapshot"], request["input"]
             capability = request["capability"]
             definitions = _definitions(snapshot)
-            producer, stage = Producer.REASON, Stage.SYNTAX
+            # These records and term encodings came from a verified immutable
+            # Store snapshot. Corrupt structure stays an internal failure. The
+            # actual bounded Turtle-term decoder owns lexical byte limits.
+            producer, stage = Producer.TURTLE, Stage.SYNTAX
+            # Rule terms use the same bounded lexical decoder. Check that
+            # branch here too, before switching to actual rule evaluation.
+            if capability == "reasoning.execute" or input_["scope"] == "asserted+derived":
+                for (layer, _), definition in definitions.items():
+                    if layer == "rule" and definition["enabled"]:
+                        for triple in [*definition["when"], definition["then"]]:
+                            for value in triple:
+                                semantic._text(value)
             facts = _graph(snapshot["state"]["facts"])
             ontology = _graph(
                 [
@@ -360,6 +370,13 @@ def execute_request(request, *, error_catalog, error_schema):
                     for t in value["triples"]
                 ]
             )
+            # A valid saved definition can still contain a supported-standard
+            # construct outside this candidate's finite semantics. Its content
+            # is user input; it must not be mislabeled as an engine defect.
+            producer, stage, origin = Producer.REASON, Stage.SYNTAX, Origin.VERIFIED_USER_INPUT
+            semantic._terms(facts)
+            semantic._terms(ontology)
+            origin = Origin.TRUSTED_INTERNAL  # Trusted layer construction follows.
             _inputs(facts, ontology, False, ())
             producer, stage, origin = Producer.REASON, Stage.RULE, Origin.VERIFIED_USER_INPUT
             rules = (

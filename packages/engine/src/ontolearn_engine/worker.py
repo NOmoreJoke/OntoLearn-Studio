@@ -266,7 +266,15 @@ def _semantic(request):
     # The parent monitor and memory guard are established before reading the
     # snapshot or importing RDFLib/pySHACL. The worker has no database authority.
     from ontolearn_engine.resources import CONTRACT, safe_error
+    from ontolearn_engine.semantic_error_adapter import (
+        ErrorContext,
+        Origin,
+        Producer,
+        SemanticErrorAdapter,
+        Stage,
+    )
     from ontolearn_engine.semantic_execution import SemanticExecutionFault, _rows, execute_request
+    from ontolearn_engine.semantic_offline import SemanticError
 
     count = request.get("semanticParts")
     if type(count) is not int or not 1 <= count <= 1024:
@@ -329,6 +337,26 @@ def _semantic(request):
         emit({"type": "complete"})
     except SemanticExecutionFault as error:
         emit({"type": "semantic.error", "error": error.error})
+    except SemanticError as error:
+        # Binding metadata is added after the pure executor. Its final lossless
+        # projection has the same semantic result budget and safe classification.
+        adapter = SemanticErrorAdapter(
+            error_catalog=CONTRACT.ERROR_CATALOG, error_schema=CONTRACT.DOCUMENT
+        )
+        emit(
+            {
+                "type": "semantic.error",
+                "error": adapter.adapt(
+                    producer=Producer.PROJECTION,
+                    reason=error.code,
+                    context=ErrorContext(Stage.PROJECTION, Origin.TRUSTED_INTERNAL),
+                ),
+            }
+        )
+    except MemoryError:
+        raise  # The actual worker memory guard/exit code owns this classification.
+    except Exception:
+        emit({"type": "semantic.error", "error": safe_error("INTERNAL_ERROR")})
 
 
 def main() -> None:

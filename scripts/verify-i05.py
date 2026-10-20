@@ -13,6 +13,7 @@ import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from tempfile import TemporaryFile
+from uuid import uuid4
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--packaged", type=Path, required=True)
@@ -203,18 +204,42 @@ finally:
     server.server_close()
     thread.join(timeout=5)
 
-# Existing real health remains unchanged; no semantic product capability is advertised.
-health = subprocess.run(
+# Actual v2 resident handshake and health. CLI probes do not negotiate product methods.
+
+process = subprocess.Popen(
     [str(executable)],
     env=environment,
-    input=json.dumps({"id": "I05-cli-health", "method": "health", "protocolVersion": 1}) + "\n",
-    capture_output=True,
-    text=True,
-    timeout=15,
-    check=True,
+    stdin=subprocess.PIPE,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
 )
-health_value = json.loads(health.stdout)
-assert health_value["ok"] and health_value["result"]["capabilities"] == ["health"]
+
+
+def exchange(method, params, session=None):
+    request = {
+        "kind": "request",
+        "id": str(uuid4()),
+        "protocolVersion": 2,
+        "engineSessionId": session,
+        "method": method,
+        "params": params,
+    }
+    process.stdin.write(json.dumps(request).encode() + b"\n")
+    process.stdin.flush()
+    response = json.loads(process.stdout.readline())
+    assert response["id"] == request["id"] and response["ok"]
+    return response
+
+
+hello_value = exchange("hello", {"supportedVersions": [2], "clientId": str(uuid4())})
+registry = json.loads((root / "packages/contracts/v2/registry.json").read_text())
+assert hello_value["result"]["capabilities"] == registry["v2Runtime"]
+health_value = exchange("health", {}, hello_value["engineSessionId"])
+assert health_value["result"]["status"] == "ok"
+process.stdin.close()
+assert process.wait(timeout=15) == 0 and process.stderr.read() == b""
+process.stdout.close()
+process.stderr.close()
 package = executable.parent
 inventory = package / "_internal/i05-inventory"
 metadata = json.loads((inventory / "manifest.json").read_text())
@@ -243,6 +268,7 @@ manifest = {
     "engineDirectoryBytes": sum(p.stat().st_size for p in resources),
     "appDirectoryBytes": sum(p.stat().st_size for p in app_files),
     "fileCount": len(resources),
+    "hello": hello_value,
     "health": health_value,
     "files": [
         {"path": str(p.relative_to(package)), "bytes": p.stat().st_size, "sha256": sha(p)}

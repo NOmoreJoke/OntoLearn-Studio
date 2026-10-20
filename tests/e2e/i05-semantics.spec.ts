@@ -55,7 +55,7 @@ async function prepare(testInfo: TestInfo) {
   const fixturePath = result.stdout.trim()
   expect(fixturePath).toBe(join(directory, 'fixture.json'))
   const meta = JSON.parse(await readFile(join(directory, 'metadata.json'), 'utf8')) as FixtureMeta
-  expect(meta.assertedFactCount).toBe(1017)
+  expect(meta.assertedFactCount).toBe(27)
   await testInfo.attach('i05-fixture-metadata', {
     path: join(directory, 'metadata.json'),
     contentType: 'application/json',
@@ -284,7 +284,7 @@ const {app,BrowserWindow}=require('electron')
 const {writeFileSync}=require('node:fs')
 const {execFileSync}=require('node:child_process')
 const inspector=require('node:inspector')
-const evidence={windows:[],events:[],inspectorClosed:false,hangMonitorEnabled:!app.commandLine.hasSwitch('disable-hang-monitor')}
+const evidence={windows:[],events:[],inspectorClosed:false,hangMonitorEnabled:!app.commandLine.hasSwitch('disable-hang-monitor'),noSandboxSwitch:app.commandLine.hasSwitch('no-sandbox')}
 const save=()=>writeFileSync(process.env.I05_NATIVE_EVIDENCE,JSON.stringify(evidence,null,2))
 const fail=(error)=>{evidence.error=String(error);save();app.exit(1)}
 const deadline=setTimeout(()=>fail('native I05 deadline'),75000)
@@ -324,7 +324,7 @@ function observe(window,freshlyCreated=false){
    void window.webContents.executeJavaScript('for(;;){}').catch(error=>{if(!window.isDestroyed())fail(error)})
    setTimeout(()=>{if(window.isDestroyed())return;if(!window.isVisible()||!window.isFocused())return fail('native hang lost focus');window.webContents.sendInputEvent({type:'mouseDown',x:400,y:400,button:'left',clickCount:1});window.webContents.sendInputEvent({type:'mouseUp',x:400,y:400,button:'left',clickCount:1})},250)
   }else if(ordinal===3){
-   if(!evidence.inspectorClosed||!evidence.hangMonitorEnabled||!evidence.events.includes('unresponsive')||!evidence.events.some(value=>['crashed','killed'].includes(value)))throw new Error('missing real native faults')
+   if(evidence.noSandboxSwitch||!evidence.inspectorClosed||!evidence.hangMonitorEnabled||!evidence.events.includes('unresponsive')||!evidence.events.some(value=>['crashed','killed'].includes(value)))throw new Error('missing real native faults')
    const cancelled=await window.webContents.executeJavaScript('(async()=>{const bridge=window.ontolearn;const id='+JSON.stringify(entry.snapshot.slowJobId)+';const response=await bridge.cancelJob(id);if(!response.ok)throw new Error("explicit cancel failed");const end=Date.now()+5000;let job;do{job=await bridge.getJob(id);if(job.ok&&job.data.state==="cancelled")return job.data;await new Promise(done=>setTimeout(done,25))}while(Date.now()<end);throw new Error("semantic cancel deadline")})()')
    evidence.explicitCancellation=cancelled
    if(cancelled.resultRef!==null)throw new Error('cancelled query fabricated result')
@@ -497,6 +497,7 @@ test('I05 native renderer crash and real unresponsive dialog retain immutable se
     expect(evidence.explicitCancellation.capability).toBe('query.execute')
     expect(evidence.inspectorClosed).toBe(true)
     expect(evidence.hangMonitorEnabled).toBe(true)
+    expect(evidence.noSandboxSwitch).toBe(false)
     expect(evidence.windows[1]).toMatchObject({ visible: true, focused: true })
     expect(evidence.windows[1].x11Focus).toMatchObject({
       observer: 'xdotool/XGetInputFocus',

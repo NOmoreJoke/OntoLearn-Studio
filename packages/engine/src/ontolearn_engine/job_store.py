@@ -371,6 +371,13 @@ class JobStore(Store):
                 return self._accepted_job(
                     claim, project, capability, input_, confirmation_ref, implementation, limits
                 )
+            if (
+                capability in {"query.execute", "reasoning.execute", "validation.execute"}
+                and not self._db.execute(
+                    "SELECT 1 FROM snapshots WHERE id=?", (input_["inputSnapshotId"],)
+                ).fetchone()
+            ):
+                fault("NOT_FOUND", resource="snapshot")
             snap = self._project_snapshot(input_["inputSnapshotId"], internal)
             parameters = self.blob(project, input_["parametersHash"])
             if capability.startswith("test."):
@@ -806,6 +813,14 @@ class JobStore(Store):
         selection = parameters.get("inputSelection", "current")
         if selection not in ("current", "historical"):
             fault("INVALID_REQUEST", field="params")
+        family = {"query.execute": "query", "validation.execute": "constraint"}.get(capability)
+        if family and not any(
+            d["layer"] == family and d["id"] == input_["definitionId"]
+            for d in snap["state"]["definitions"]
+        ):
+            # Unknown public selection differs from corrupt saved definition
+            # structure, which the trusted request builder handles internally.
+            fault("INVALID_REQUEST", field="dependency")
         if selection == "current" and input_["inputSnapshotId"] != self.snapshot(
             self._project(project)
         ):
@@ -852,7 +867,7 @@ class JobStore(Store):
             "SELECT * FROM semantic_payloads WHERE result=?", (identity,)
         ).fetchone()
         if record is None or record["payload"] is None:
-            fault("INVALID_STATE")
+            fault("INTERNAL_ERROR")
         payload = json.loads(record["payload"])
         producer = self.get_job(project, metadata["jobId"])
         if (
@@ -872,8 +887,14 @@ class JobStore(Store):
             )
             or payload.get("kind") != metadata["kind"]
             or payload.get("inputSnapshotId") != metadata["inputSnapshotId"]
+            or payload.get("inputProjectRevision") != metadata["inputProjectRevision"]
+            or payload.get("executionSemanticsVersion")
+            != metadata["implementation"]["executionSemanticsVersion"]
+            or any(payload.get(key) != metadata[key] for key in ("definitionId", "scope"))
+            or payload.get("inputSelection")
+            != self.blob(project, producer["parametersHash"]).get("inputSelection", "current")
         ):
-            fault("INVALID_STATE")
+            fault("INTERNAL_ERROR")
         return metadata, payload
 
     def semantic_resource(self, project, value):
@@ -1467,6 +1488,8 @@ class JobStore(Store):
             fault("PAYLOAD_EVICTED", resultId=identity)
         if not isinstance(payload, list):
             fault("INVALID_STATE")
+        if result["kind"] in {"reasoning", "query", "validation"}:
+            self.semantic_result(project, identity)
         if result["kind"] == "scenario":
             self._check_summary(result, payload)
         return result, payload

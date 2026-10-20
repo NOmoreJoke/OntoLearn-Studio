@@ -63,6 +63,13 @@ jobs:
         env:
           I04_TEST_FIXTURE: ${{ github.workspace }}/build/i04-reload-ci/fixture.json
       - run: npm run package:dir
+      - name: I05 real semantic source and isolated native recovery
+        run: >-
+          xvfb-run -a sh -c 'openbox > /tmp/i05-native-openbox.log 2>&1 &
+          npx playwright test tests/e2e/i05-semantics.spec.ts --output=test-results/i05-source'
+        env:
+          I05_SEMANTIC_E2E: '1'
+          I05_NATIVE_ISOLATED: '1'
       - name: I04 coordinator exit reconciles the active renderer
         run: |
           uv run --frozen python scripts/prepare-i04-fixture.py build/i04-disconnect-ci
@@ -70,6 +77,7 @@ jobs:
         env:
           I04_TEST_FIXTURE: ${{ github.workspace }}/build/i04-disconnect-ci/fixture.json
       - run: uv run --frozen python scripts/verify-i04-package.py release build/i04-package-ci
+      - run: uv run --frozen python scripts/verify-i05-runtime.py release build/i05-package-ci
       - name: I04 packaged application recovery
         shell: bash
         run: |
@@ -86,6 +94,7 @@ jobs:
           I04_TEST_FIXTURE="$GITHUB_WORKSPACE/build/i04-packaged-reload-ci/fixture.json" xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-reload-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "reload re-queries" --output=test-results/i04-packaged-reload'
           uv run --frozen python scripts/prepare-i04-fixture.py build/i04-packaged-native-ci
           I04_TEST_FIXTURE="$GITHUB_WORKSPACE/build/i04-packaged-native-ci/fixture.json" I04_NATIVE_ISOLATED=1 xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-native-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "native renderer" --output=test-results/i04-packaged-native'
+          I05_SEMANTIC_E2E=1 I05_NATIVE_ISOLATED=1 xvfb-run -a sh -c 'openbox > /tmp/i05-packaged-native-openbox.log 2>&1 & npx playwright test tests/e2e/i05-semantics.spec.ts --output=test-results/i05-packaged'
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
@@ -95,6 +104,8 @@ jobs:
             build/i04-matrix-ci/summary.json
             build/i04-matrix-ci/cases.jsonl
             test-results/i04-*/
+            build/i05-package-ci/
+            test-results/i05-*/
           retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: failure()
@@ -128,9 +139,12 @@ jobs:
       - run: npm run test:e2e
       - run: npm run package:dir
       - run: uv run --frozen python scripts/verify-i04-package.py release build/i04-package-ci
+      - run: uv run --frozen python scripts/verify-i05-runtime.py release build/i05-package-ci
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: i04-package-${{ matrix.os }}
-          path: build/i04-package-ci/
+          path: |
+            build/i04-package-ci/
+            build/i05-package-ci/
           retention-days: 7

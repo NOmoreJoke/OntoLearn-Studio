@@ -476,3 +476,254 @@ def test_private_semantic_chunks_do_not_use_the_smaller_public_frame_budget(runt
     _, _, output = completed(c, s, p)
     assert output["reasoning"]["rules"]
     assert len(canonical(output).encode()) > 1024
+
+
+def test_actual_stdio_source_or_packaged_jobs_persist_all_three_semantic_outputs(tmp_path):
+    from test_resident_runtime import Session
+
+    database = tmp_path / "stdio-semantic.sqlite"
+    s = JobStore(database, contract=CONTRACT)
+    p = seed(s)
+    snapshot = s.project_get(p)["inputSnapshotId"]
+    before = s.state("semantic")
+    s.close()
+    session = Session(database, [p], test_mode=False)
+    saved = []
+    try:
+        for capability, definition_id in [
+            ("reasoning.execute", "all"),
+            ("query.execute", "types"),
+            ("validation.execute", "names"),
+        ]:
+            request = {
+                "projectId": p,
+                "operationId": uid(),
+                "capability": capability,
+                "definitionId": definition_id,
+                "scope": "asserted" if not saved else "asserted+derived",
+                "derivedResultId": saved[0]["resultRef"]["resultId"] if saved else None,
+                "inputSelection": "current",
+                "inputSnapshotId": None,
+            }
+            job = session.call("semantic.start", request)
+            assert "jobId" in job, job
+            terminal = session.terminal(p, job["jobId"])
+            assert terminal["state"] == "succeeded", terminal
+            result = session.call(
+                "result.get", {"projectId": p, "resultId": terminal["resultRef"]["resultId"]}
+            )
+            assert (
+                result["kind"] == capability.split(".")[0] and result["inputSnapshotId"] == snapshot
+            )
+            assert result["implementation"] == IMPLEMENTATION
+            saved.append(terminal)
+        error = session.call(
+            "semantic.start", {**request, "projectId": uid(), "operationId": uid()}
+        )
+        assert error["code"] == "PERMISSION_DENIED"
+    finally:
+        session.close()
+    s = JobStore(database, contract=CONTRACT)
+    try:
+        payloads = [s.semantic_result(p, job["resultRef"]["resultId"])[1] for job in saved]
+        assert payloads[0]["reasoning"]["rules"] == [["<urn:unit>", f"<{TYPE}>", "<urn:Risk>"]]
+        assert payloads[1]["query"]["rows"] == [["<urn:Child>"], ["<urn:Parent>"], ["<urn:Risk>"]]
+        assert len(payloads[2]["report"]["violations"]) == 2
+        binding = payloads[2]["validationBinding"]
+        assert CONTRACT.validation_projection_matches_resources(
+            binding["projection"], binding["resources"]
+        )
+        assert binding["projection"]["derived"]["resultId"] == saved[0]["resultRef"]["resultId"]
+        assert all(
+            s._db.execute(
+                "SELECT payload FROM semantic_resources WHERE project=? AND ref=?", (p, r["ref"])
+            ).fetchone()
+            for r in binding["resources"]
+        )
+        assert s.state("semantic") == before
+    finally:
+        s.close()
+
+
+@pytest.mark.parametrize("tamper", ["bytes", "rehash-wrong-input-version", "producer-ref"])
+def test_corrupt_selected_immutable_evidence_is_internal_not_user_input(runtime, tamper):
+    s, c, p = runtime
+    job, meta, payload = completed(c, s, p)
+    identity = meta["resultId"]
+    if tamper == "producer-ref":
+        job["resultRef"]["resultId"] = uid()
+        s._db.execute("UPDATE jobs SET dto=? WHERE id=?", (canonical(job), job["jobId"]))
+    else:
+        # Deliberately bypass an already-tested immutable trigger to model disk
+        # corruption. This is never a product API or accepted renderer option.
+        s._db.execute("DROP TRIGGER immutable_semantic_payloads_UPDATE")
+        payload["inputProjectRevision"] += 1
+        if tamper == "bytes":
+            s._db.execute(
+                "UPDATE semantic_payloads SET payload=? WHERE result=?",
+                (canonical(payload), identity),
+            )
+        else:
+            s._db.execute(
+                "UPDATE semantic_payloads SET payload=?,payload_hash=? WHERE result=?",
+                (canonical(payload), digest(payload), identity),
+            )
+    rejected = start(
+        c,
+        p,
+        "validation.execute",
+        definition_id="names",
+        scope="asserted+derived",
+        derived=identity,
+    )
+    assert rejected["error"] == {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": False,
+    }
+
+
+def test_real_validation_binding_rejects_wrong_role_ref_constraint_and_result_identity(runtime):
+    s, c, p = runtime
+    _, reason, _ = completed(c, s, p)
+    _, _, payload = completed(
+        c,
+        s,
+        p,
+        capability="validation.execute",
+        definition_id="names",
+        scope="asserted+derived",
+        derived=reason["resultId"],
+    )
+    original = payload["validationBinding"]
+    import copy
+
+    for field, value in [
+        ("ref", "a" * 64),
+        ("role", "constraints"),
+        ("resultId", uid()),
+        ("projectId", uid()),
+        ("inputSnapshotId", "b" * 64),
+        ("resultState", "historical"),
+        ("constraintDefinitionId", "other"),
+    ]:
+        changed = copy.deepcopy(original)
+        row = next(r for r in changed["resources"] if r["role"] == "derivedFacts")
+        row[field] = value
+        assert not CONTRACT.validation_projection_matches_resources(
+            changed["projection"], changed["resources"]
+        )
+
+
+@pytest.mark.parametrize(
+    "predicate,obj,code,params",
+    [
+        (
+            TYPE,
+            "<http://www.w3.org/2002/07/owl#Restriction>",
+            "UNSUPPORTED_CONSTRUCT",
+            {"construct": "owlExpression"},
+        ),
+        (
+            "http://www.w3.org/2000/01/rdf-schema#subPropertyOf",
+            "<urn:p>",
+            "UNSUPPORTED_CONSTRUCT",
+            {"construct": "rdfsConstruct"},
+        ),
+        (
+            "urn:p",
+            '"value"^^<urn:customDatatype>',
+            "UNSUPPORTED_CONSTRUCT",
+            {"construct": "datatype"},
+        ),
+        ("urn:p", json.dumps("x" * 1048577), "RESOURCE_LIMIT", {"resource": "semanticInput"}),
+    ],
+)
+def test_saved_user_ontology_content_has_real_safe_semantic_classification(
+    runtime, predicate, obj, code, params
+):
+    s, c, p = runtime
+    s.commit(
+        "semantic",
+        1,
+        uid(),
+        uid(),
+        definitions=[
+            definition(
+                "ontology",
+                "outside",
+                {
+                    "triples": [
+                        {"subject": "urn:Unsupported", "predicate": predicate, "object": obj}
+                    ]
+                },
+            )
+        ],
+    )
+    job = start(c, p)["result"]
+    done = drain(c, s, p, job)[0]
+    assert done["state"] == "failed" and done["resultRef"] is None
+    assert done["error"]["code"] == code and done["error"]["params"] == params
+    assert CONTRACT.validate("error", done["error"])
+
+
+def test_rule_term_lexical_budget_is_not_misclassified_as_internal(runtime):
+    s, c, p = runtime
+    rule = risk(True)
+    rule["value"]["then"] = ["?x", "<urn:long>", json.dumps("x" * 1048577)]
+    s.commit("semantic", 1, uid(), uid(), definitions=[rule])
+    job = start(c, p)["result"]
+    done = drain(c, s, p, job)[0]
+    assert done["state"] == "failed" and done["error"]["code"] == "RESOURCE_LIMIT"
+    assert done["error"]["params"] == {"resource": "semanticInput"}
+
+
+def test_disabled_rule_lexical_content_is_not_executed_or_charged(runtime):
+    s, c, p = runtime
+    rule = risk(False)
+    rule["id"] = "disabled-large"
+    rule["value"]["then"] = ["?x", "<urn:long>", json.dumps("x" * 1048577)]
+    s.commit("semantic", 1, uid(), uid(), definitions=[rule])
+    _, _, payload = completed(c, s, p)
+    assert payload["reasoning"]["rules"] == [["<urn:unit>", f"<{TYPE}>", "<urn:Risk>"]]
+
+
+def test_unknown_user_definition_or_historical_snapshot_is_a_safe_selection_error(runtime):
+    s, c, p = runtime
+    missing_definition = start(c, p, "query.execute", definition_id="not-saved")
+    assert missing_definition["error"]["code"] == "INVALID_REQUEST"
+    assert missing_definition["error"]["params"] == {"field": "dependency"}
+    missing_snapshot = start(
+        c, p, "query.execute", definition_id="types", selection="historical", snapshot="a" * 64
+    )
+    assert missing_snapshot["error"]["code"] == "NOT_FOUND"
+    assert missing_snapshot["error"]["params"] == {"resource": "snapshot"}
+    assert s._db.execute("SELECT count(*) FROM jobs").fetchone()[0] == 0
+
+
+def test_final_authenticated_binding_row_budget_has_safe_result_error(runtime):
+    from ontolearn_engine.semantic_execution import execute_request
+
+    s, c, p = runtime
+    facts = [
+        {
+            "id": digest([f"urn:many{i}", TYPE, "<urn:Parent>"]),
+            "subject": f"urn:many{i}",
+            "predicate": TYPE,
+            "object": "<urn:Parent>",
+        }
+        for i in range(994)
+    ]
+    s.commit("semantic", 1, uid(), uid(), manual=facts)
+    job = start(c, p, "validation.execute", definition_id="names")["result"]
+    request = s.job_context(job["jobId"])["semanticRequest"]
+    raw = execute_request(
+        request, error_catalog=CONTRACT.ERROR_CATALOG, error_schema=CONTRACT.DOCUMENT
+    )
+    assert len(raw["rows"]) <= 10000  # Pure result fits; authenticated binding is additional.
+    done = drain(c, s, p, job)[0]
+    assert done["state"] == "failed" and done["resultRef"] is None
+    assert done["error"]["code"] == "RESOURCE_LIMIT"
+    assert done["error"]["params"] == {"resource": "semanticResult"}
+    assert s._db.execute("SELECT count(*) FROM semantic_payloads").fetchone()[0] == 0
