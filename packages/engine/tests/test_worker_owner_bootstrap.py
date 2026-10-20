@@ -192,7 +192,7 @@ def test_monitor_exits_with_fixed_code_on_owner_death_or_guard_failure(monkeypat
     assert exits == [73]
 
 
-@pytest.mark.parametrize("bootstrap", ["missing", "owner-already-dead"])
+@pytest.mark.parametrize("bootstrap", ["missing", "owner-already-dead", "owner-mismatch"])
 def test_actual_worker_refuses_work_before_a_valid_owner_is_established(bootstrap):
     arguments = []
     if bootstrap == "owner-already-dead":
@@ -210,23 +210,36 @@ def test_actual_worker_refuses_work_before_a_valid_owner_is_established(bootstra
         )
         assert identity.returncode == 0 and identity.stderr == b""
         arguments = json.loads(identity.stdout)
-    request = {"memoryBytes": 536870912, "parameters": {}, "capability": "test.read"}
+    elif bootstrap == "owner-mismatch":
+        arguments = worker.worker_owner_arguments()
+        if sys.platform == "win32":
+            arguments[2] = str(int(arguments[2]) + 1)  # Live PID, wrong creation identity.
+        else:
+            arguments[1] = str(os.getpid() + 1)  # Not this worker's direct owner.
     executable = os.environ.get("ONTOLEARN_TEST_ENGINE")
     command = (
         [executable, "--worker"]
         if executable
         else [sys.executable, "-I", "-m", "ontolearn_engine.worker"]
     )
-    process = subprocess.run(
+    process = subprocess.Popen(
         [*command, *arguments],
-        input=json.dumps(request).encode() + b"\n",
-        capture_output=True,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         env=worker_environment(),
-        timeout=5,
-        check=False,
     )
-    assert process.returncode == 73
-    assert process.stdout == b"" and process.stderr == b""
+    try:
+        # Keep stdin open and send no request: bootstrap must reject before read.
+        assert process.wait(timeout=5) == 73
+        assert process.stdout.read() == b"" and process.stderr.read() == b""
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait(timeout=3)
+        process.stdin.close()
+        process.stdout.close()
+        process.stderr.close()
 
 
 @pytest.mark.parametrize(
