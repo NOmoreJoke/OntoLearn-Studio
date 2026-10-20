@@ -1,0 +1,170 @@
+{
+  "candidateStatus": "Follow-up implementation and evidence in progress; no item claims external reviewer approval. Original C1 Not Pass and severities are retained.",
+  "reports": {
+    "zcode-glm53": "round-1/zcode-glm53.md",
+    "minimax-m31flash": "round-1/minimax-m31flash.md"
+  },
+  "items": [
+    {
+      "id": "B1",
+      "severity": "P2",
+      "reviewer": "zcode-glm53",
+      "implementation": "cf83e18",
+      "disposition": "Only true ESRCH becomes ProcessLookupError and uses the actual child exit code; short read, permission and guard-unavailable remain fail-closed. Forced real exit-window and own-monitor failures have independent evidence.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "Z1",
+      "severity": "P3",
+      "reviewer": "zcode-glm53",
+      "implementation": "process evidence",
+      "disposition": "Historical collection-time manifest retained; explicit cross-reference and NUL-path audit clarify four finalized documents plus protected AGENTS.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "Z2",
+      "severity": "P3",
+      "reviewer": "zcode-glm53",
+      "implementation": "618e922",
+      "disposition": "Removed unreachable queued/cancelling recovery branch; real cancellation and recovery guards independently checked.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "Z3",
+      "severity": "P3",
+      "reviewer": "zcode-glm53",
+      "implementation": "deferred with I03 O1",
+      "disposition": "Keep current schema bounds and fatal frame protection. A future vocabulary/budget change must unify both ends and receive a fresh review; not claimed closed.",
+      "status": "deferred"
+    },
+    {
+      "id": "P1-1",
+      "severity": "P1",
+      "reviewer": "minimax-m31flash",
+      "implementation": "d3a8070/f532d14/e7a39d3/25f25db",
+      "disposition": "Disconnected lifecycle fences old bindings immediately; at most three whole read-only recoveries, operation reconciliation and generation/epoch guards; first explicit restore succeeds without replay.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P1-2",
+      "severity": "P1",
+      "reviewer": "minimax-m31flash",
+      "implementation": "5caeb1d",
+      "disposition": "All 96 atomic matrix cells now assert exact facts/ownership/version/stale/dependency/claim/receipt/marker/snapshot and idempotence; 48 round cells remain. Disk/cancel branches are injected OSError/KeyboardInterrupt, distinct from actual SQLite READONLY/persisted cancel tests.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P1-3",
+      "severity": "P1",
+      "reviewer": "minimax-m31flash",
+      "implementation": "cf83e18",
+      "disposition": "Same fix as B1, without broadly ignoring MemoryGuardUnavailable or classifying unknown monitor errors as memory exhaustion. Original natural failed check and independent real-window reproductions preserved.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P2-4",
+      "severity": "P2",
+      "reviewer": "minimax-m31flash",
+      "implementation": "eb0327e",
+      "disposition": "Default runtime result-page budget 200 matches public schema/TS/cursor. job.list remains 100. Real 210-row 200+10 paging and explicit lower budget are tested.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P2-5",
+      "severity": "P2",
+      "reviewer": "minimax-m31flash",
+      "implementation": "d83442e/7d3529a",
+      "disposition": "Actual coordinator stage-only producer plus identity/version-fenced early progress buffer; no invented total or percentage. Full source/packaged stage assertions required in final evidence.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P2-6",
+      "severity": "P2",
+      "reviewer": "minimax-m31flash",
+      "implementation": "eb0327e/2e94c03/ADR-0003",
+      "disposition": "Finite 65536-request session policy documented, including hello/ping and no ID eviction. Actual complete budget and replay tests; new session preserves commits and fails interrupted uncommitted job. Raw reader fix prevents exit abort while parent stdin remains open. No infinite-session or seamless in-flight guarantee.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P3-7",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "implementation": "local-verification provenanceClarification",
+      "disposition": "See Z1; original report unchanged and its 33-absent-path claim is explicitly disputed by raw-NUL audit, not silently accepted.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P3-8",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "implementation": "round-1-evidence-lineage.json",
+      "disposition": "Pre-freeze internal review describes mutable worktree file hashes, not a fully committed tree at observed_git_head; old complete tree cannot be reconstructed. New independent checks explicitly bind actual source hashes.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P3-9",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "implementation": "round-1-evidence-lineage.json",
+      "disposition": "Index original native1..4 failures and raw hashes without claiming an unsupported root cause or replacing failures with later green runs.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P3-10",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "implementation": "status.md",
+      "disposition": "Current state states both C1 Not Pass; historical startup lines and pending list now explicitly labeled historical.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P3-11",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "implementation": "32aaf4b/matrix-evidence.json/.github/workflows/ci.yml",
+      "disposition": "Actual root run: all unique 96 atomic + 48 round cases passed setup/call/teardown and 144 read-only DB captures; per-cell state/commit/result/error/projection/table fingerprints committed, complete raw JSONL retained and CI uploads its own independent artifact. Missing-cell negative run exits 1 even when selected five tests pass.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P3-12",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "implementation": "f65bdd4",
+      "disposition": "External XGetInputFocus/visible X window/title evidence and actual crash/hang native dialog metadata persisted; actual source and packaged isolated native tests both passed. New designated dual review and remote CI remain required.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P3-13",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "implementation": "618e922",
+      "disposition": "Same dead-branch removal as Z2.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P3-14",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "implementation": "618e922/implementation.md",
+      "disposition": "Round commit is durable evidence revision while state remains running, not a running-to-running state-name edge. Existing guards reject queued/cancelling/terminal/wrong capability with whole DB unchanged; legal round and rollback independently checked.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    },
+    {
+      "id": "P3-15",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "implementation": "implementation.md",
+      "disposition": "Precheck is advisory queue/idempotency handling; authoritative creation checks full identity inside BEGIN IMMEDIATE and operation primary key enforces uniqueness. Independent bypass/changed-fingerprint proof retained.",
+      "status": "implemented; awaiting complete C2 verification and both designated reviewers"
+    }
+  ],
+  "inherited": {
+    "I03 R2-F1": "Keep full 41-case shared corpus and real consumer regression in complete new dual review.",
+    "I03 O1": "Future vocabulary/default bounds policy remains open; do not reinterpret a historical conditional approval as universal closure.",
+    "I03 O2": "Fixed local UI templates; parameterMeanings not UI text.",
+    "I03 O3/I01 R6": "Open/deferred with measured workload boundaries.",
+    "F5": "Producer-based safe classification retained; Darwin resource fix subject to new dual review.",
+    "F6": "Infrastructure only; domain E.2/E.5/G.4/FR-704 remain open.",
+    "I05/I06": "No product integration."
+  }
+}

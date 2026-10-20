@@ -5,6 +5,7 @@ import json
 import sqlite3
 import subprocess
 import sys
+from copy import deepcopy
 from pathlib import Path
 from uuid import uuid4
 
@@ -185,28 +186,123 @@ PHASES = [
 @pytest.mark.parametrize("failure", ["exception", "disk", "cancel", "exit"])
 def test_atomic_job_fault_reconcile_matrix(store, mode, phase, failure):
     s = store
-    fact = {"subject": "urn:probe", "predicate": "urn:name", "object": '"real"'}
-    fact["id"] = digest([fact["subject"], fact["predicate"], fact["object"]])
-    plan = (
-        {"mapping": {"id": "M1", "rows": [{"row": "1", "facts": [fact]}]}}
-        if mode == "mapping"
-        else {"manual": [fact]}
+    internal = "legacy-project"
+
+    def fact(subject, value):
+        return {
+            "id": digest([subject, "urn:name", value]),
+            "subject": subject,
+            "predicate": "urn:name",
+            "object": value,
+        }
+
+    def stored_fact(value, owner=None, source_row=None):
+        return {
+            **value,
+            "owner": owner,
+            "source_row": source_row,
+            "managed_value": value["object"] if owner else None,
+        }
+
+    def records(database, query):
+        return [dict(row) for row in database._db.execute(query)]
+
+    kept = fact("urn:kept-manual", '"kept"')
+    old_owned = fact("urn:owned", '"old managed value"')
+    added = fact("urn:probe", '"real"')
+    s.commit(
+        internal,
+        0,
+        "seed-source",
+        "seed-source-job",
+        definitions=[
+            {"layer": "rule", "id": "R", "value": {"enabled": True}},
+            {"layer": "mapping", "id": "M1", "value": {"source": "matrix-seed"}},
+        ],
+        manual=[kept],
+        mapping={"id": "M1", "rows": [{"row": "old-row", "facts": [old_owned]}]},
     )
-    if mode == "definition-remove":
-        s.commit(
-            "legacy-project",
-            0,
-            "seed-definition",
-            "seed-job",
-            definitions=[{"layer": "rule", "id": "R", "value": {"enabled": True}}],
+    # Each S2 fault cell owns an actual available result produced through a real
+    # JobStore read job. Its actual facts/mapping/rule inputs can become stale.
+    seeded_result = read_result(s, [row(0, ["seeded source payload"])])
+    seeded_payload = s.result(seeded_result["resultId"])
+    assert seeded_result["state"] == "current" and seeded_result["staleReason"] == []
+    assert seeded_result["dependencyVector"] == {"facts:asserted": 1, "mapping:M1": 1, "rule:R": 1}
+    plan = {
+        "changeset": {"manual": [added]},
+        "mapping": {"mapping": {"id": "M1", "rows": [{"row": "1", "facts": [added]}]}},
+        "definition-remove": {"remove_definitions": [{"layer": "rule", "id": "R"}]},
+    }[mode]
+    before_revision = s.revision(internal)
+    before_state = s.state(internal)
+    before_vector = s.vector(internal)
+    assert before_vector == {"facts:asserted": 1, "mapping:M1": 1, "rule:R": 1}
+    assert before_state["definitions"] == [
+        {"layer": "mapping", "id": "M1", "payload": '{"source":"matrix-seed"}'},
+        {"layer": "rule", "id": "R", "payload": '{"enabled":true}'},
+    ]
+    expected_state = deepcopy(before_state)
+    expected_vector = dict(before_vector)
+    expected_ledger = dict(before_vector)
+    if mode == "changeset":
+        expected_state["facts"] = sorted(
+            [*before_state["facts"], stored_fact(added)], key=lambda f: f["id"]
         )
-        plan = {"remove_definitions": [{"layer": "rule", "id": "R"}]}
-    before_revision = s.revision("legacy-project")
-    before_state = s.state("legacy-project")
+        expected_vector["facts:asserted"] = expected_ledger["facts:asserted"] = 2
+        expected_stale = [
+            {"code": "FACTS_CHANGED", "dependency": "facts:asserted", "before": 1, "after": 2}
+        ]
+    elif mode == "mapping":
+        expected_state["facts"] = sorted(
+            [stored_fact(kept), stored_fact(added, "M1", "1")], key=lambda f: f["id"]
+        )
+        expected_state["mappingState"] = {"M1": {"generatedVersion": 2, "stale": []}}
+        expected_vector.update({"facts:asserted": 2, "mapping:M1": 2})
+        expected_ledger.update({"facts:asserted": 2, "mapping:M1": 2})
+        expected_stale = [
+            {"code": "FACTS_CHANGED", "dependency": "facts:asserted", "before": 1, "after": 2},
+            {"code": "MAPPING_INPUT_CHANGED", "dependency": "mapping:M1", "before": 1, "after": 2},
+        ]
+    else:
+        expected_state["definitions"] = [
+            d for d in before_state["definitions"] if d["layer"] != "rule"
+        ]
+        expected_vector.pop("rule:R")
+        expected_ledger["rule:R"] = 2  # The counter is retained even though membership is absent.
+        expected_stale = [{"code": "RULE_CHANGED", "dependency": "rule:R", "before": 1, "after": 0}]
+    assert before_state["facts"] == sorted(
+        [stored_fact(kept), stored_fact(old_owned, "M1", "old-row")], key=lambda f: f["id"]
+    )
+    assert before_state["mappingState"] == {"M1": {"generatedVersion": 1, "stale": []}}
+
     job = create(s, "test.atomic", plan=plan)
-    s.start_job(job["jobId"])
-    path = s.path
-    project = s.project
+    running = s.start_job(job["jobId"])
+    frozen = dict(s._db.execute("SELECT * FROM jobs WHERE id=?", (job["jobId"],)).fetchone())
+    frozen_context = json.loads(frozen["context"])
+    claims = records(s, "SELECT * FROM operation_claims ORDER BY operation")
+    assert next(c for c in claims if c["operation"] == job["operationId"]) == {
+        "operation": job["operationId"],
+        "project": s.project,
+        "job": job["jobId"],
+        "fingerprint": digest(frozen_context),
+    }
+    immutable_tables = {
+        query: records(s, query)
+        for query in [
+            "SELECT * FROM job_blobs ORDER BY project,ref",
+            "SELECT * FROM job_plans ORDER BY ref",
+            "SELECT * FROM job_confirmations ORDER BY id",
+        ]
+    }
+    before_commits = records(s, "SELECT * FROM commits ORDER BY project,operation")
+    before_evidence = records(s, "SELECT * FROM commit_evidence ORDER BY project,operation")
+    before_snapshots = records(s, "SELECT * FROM snapshots ORDER BY id")
+    before_current = records(s, "SELECT * FROM job_current ORDER BY key")
+    before_versions = records(s, "SELECT * FROM versions ORDER BY project,key")
+    before_retirements = records(
+        s, "SELECT * FROM definition_retirements ORDER BY project,layer,id"
+    )
+    path, project = s.path, s.project
     s.close()
     if failure == "exit":
         code = """
@@ -244,27 +340,213 @@ s.commit_job(sys.argv[3],hook)
             if stage == phase:
                 raise exception("not returned across protocol")
 
+        # An injected cancellation interrupt is not a persisted cancel request;
+        # the original recovery expectation remains failed before durable commit.
         with pytest.raises(exception):
             s.commit_job(job["jobId"], hook)
         s.close()
     reopened = JobStore(path, contract=CONTRACT)
-    reopened.reconcile_jobs()
+    recovered = reopened.reconcile_jobs()
     saved = reopened.get_job(project, job["jobId"])
     marker = reopened.operation_get(project, job["operationId"])
-    if phase == "after_commit":
-        assert saved["state"] == "succeeded" and marker is not None
-        assert reopened.revision("legacy-project") == before_revision + 1
-        if mode == "definition-remove":
-            assert reopened.state("legacy-project")["definitions"] == []
-            assert "rule:R" not in reopened.vector("legacy-project")
-        else:
-            assert reopened.state("legacy-project")["facts"]
+    committed = phase == "after_commit"
+    assert CONTRACT.validate("job", saved)
+    assert saved["stateVersion"] == 3
+    assert saved["finishedAtMs"] == saved["updatedAtMs"] >= running["updatedAtMs"]
+    for key in set(running) - {
+        "state",
+        "stateVersion",
+        "updatedAtMs",
+        "finishedAtMs",
+        "resultRef",
+        "error",
+        "commitProgress",
+    }:
+        assert saved[key] == running[key]
+    final_row = dict(
+        reopened._db.execute("SELECT * FROM jobs WHERE id=?", (job["jobId"],)).fetchone()
+    )
+    for key in ("id", "project", "operation", "context", "fingerprint", "run"):
+        assert final_row[key] == frozen[key]
+    assert records(reopened, "SELECT * FROM operation_claims ORDER BY operation") == claims
+    for query, original in immutable_tables.items():
+        assert records(reopened, query) == original
+    assert reopened.job_context(job["jobId"])["plan"] == frozen_context["plan"]
+
+    formal = expected_state if committed else before_state
+    vector = expected_vector if committed else before_vector
+    ledger = expected_ledger if committed else before_vector
+    assert reopened.revision(internal) == before_revision + committed
+    assert reopened.state(internal) == formal
+    assert reopened.vector(internal) == vector
+    assert records(reopened, "SELECT * FROM versions ORDER BY project,key") == [
+        {"project": internal, "key": key, "version": version}
+        for key, version in sorted(ledger.items())
+    ]
+    assert records(reopened, "SELECT * FROM facts ORDER BY project,id") == [
+        {"project": internal, **value} for value in formal["facts"]
+    ]
+    assert records(reopened, "SELECT * FROM mapping_state ORDER BY project,owner") == [
+        {
+            "project": internal,
+            "owner": "M1",
+            "generated_version": 2 if committed and mode == "mapping" else 1,
+        }
+    ]
+    expected_result = deepcopy(seeded_result)
+    expected_payload = deepcopy(seeded_payload)
+    if committed:
+        expected_result.update(
+            state="stale", staleReason=expected_stale, historicalSelectionRequired=True
+        )
+        expected_payload.update(state="stale", stale=expected_stale)
+    assert reopened.result_get(project, seeded_result["resultId"]) == expected_result
+    assert reopened.result(seeded_result["resultId"]) == expected_payload
+    assert records(reopened, "SELECT * FROM job_current ORDER BY key") == (
+        [] if committed else before_current
+    )
+    assert records(reopened, "SELECT * FROM current_results") == []
+    assert records(reopened, "SELECT * FROM definition_retirements ORDER BY project,layer,id") == (
+        [{"project": internal, "layer": "rule", "id": "R"}]
+        if committed and mode == "definition-remove"
+        else before_retirements
+    )
+    if committed:
+        assert recovered == [] and saved["state"] == "succeeded" and saved["error"] is None
+        assert marker is not None and CONTRACT.validate("commitMarker", marker)
+        expected_after_snapshot = {
+            "project": internal,
+            "projectRevision": before_revision + 1,
+            "dependencyVector": expected_vector,
+            "state": expected_state,
+        }
+        assert marker == {
+            "projectId": project,
+            "operationId": job["operationId"],
+            "jobId": job["jobId"],
+            "projectRevision": before_revision + 1,
+            "beforeSnapshotId": job["inputSnapshotId"],
+            "afterSnapshotId": digest(expected_after_snapshot),
+            "planHash": digest(frozen_context["plan"]),
+        }
+        assert saved["commitProgress"] == {
+            "mode": "atomic",
+            "operationId": job["operationId"],
+            "marker": {
+                key: marker[key]
+                for key in ("projectRevision", "beforeSnapshotId", "afterSnapshotId", "planHash")
+            },
+        }
+        raw_marker = reopened.marker(internal, job["operationId"])
+        assert json.loads(raw_marker["plan"]) == frozen_context["plan"]
+        assert raw_marker["fingerprint"] == marker["planHash"] and raw_marker["job"] == job["jobId"]
+        assert reopened.load_snapshot(marker["afterSnapshotId"]) == expected_after_snapshot
+        assert reopened.load_snapshot(marker["beforeSnapshotId"]) == frozen_context["snapshot"]
+        assert (
+            saved["resultRef"] is not None
+            and saved["resultRef"]["inputSnapshotId"] == job["inputSnapshotId"]
+        )
+        receipt_id = saved["resultRef"]["resultId"]
+        receipt = reopened.result_get(project, receipt_id)
+        expected_receipt = {
+            "resultId": receipt_id,
+            "projectId": project,
+            "jobId": job["jobId"],
+            "kind": "receipt",
+            "definitionId": job["input"]["definitionId"],
+            "inputSnapshotId": job["inputSnapshotId"],
+            "inputProjectRevision": before_revision,
+            "dependencyVector": job["dependencyVector"],
+            "definitionSetDigests": job["definitionSetDigests"],
+            "implementation": IMPL,
+            "scope": job["scope"],
+            "parametersHash": job["parametersHash"],
+            "state": "historical",
+            "staleReason": [],
+            "payloadStatus": "available",
+            "createdAtMs": receipt["createdAtMs"],
+            "historicalSelectionRequired": True,
+        }
+        assert receipt == expected_receipt
+        assert job["createdAtMs"] <= receipt["createdAtMs"] <= saved["updatedAtMs"]
+        page = reopened.result_page(page_binding(receipt), 100, None)
+        assert page["nextCursor"] is None and len(page["rows"]) == 1
+        assert CONTRACT.validate("row", page["rows"][0])
+        assert page["rows"][0]["ordinal"] == 0
+        assert page["rows"][0]["cells"] == [
+            "commit.receipt.v1",
+            job["operationId"],
+            before_revision + 1,
+            marker["beforeSnapshotId"],
+            marker["afterSnapshotId"],
+            marker["planHash"],
+        ]
+        assert {r["id"] for r in records(reopened, "SELECT id FROM results")} == {
+            seeded_result["resultId"],
+            receipt_id,
+        }
+        assert {r["id"] for r in records(reopened, "SELECT id FROM job_results")} == {
+            seeded_result["resultId"],
+            receipt_id,
+        }
+        assert records(reopened, "SELECT * FROM commits ORDER BY project,operation") == sorted(
+            [
+                *before_commits,
+                {
+                    key: raw_marker[key]
+                    for key in ("project", "operation", "job", "revision", "fingerprint", "plan")
+                },
+            ],
+            key=lambda r: (r["project"], r["operation"]),
+        )
+        assert records(
+            reopened, "SELECT * FROM commit_evidence ORDER BY project,operation"
+        ) == sorted(
+            [
+                *before_evidence,
+                {
+                    "project": internal,
+                    "operation": job["operationId"],
+                    "before_snapshot": marker["beforeSnapshotId"],
+                    "after_snapshot": marker["afterSnapshotId"],
+                },
+            ],
+            key=lambda r: (r["project"], r["operation"]),
+        )
+        snapshots = records(reopened, "SELECT * FROM snapshots ORDER BY id")
+        assert [r for r in snapshots if r["id"] != marker["afterSnapshotId"]] == before_snapshots
     else:
-        assert saved["state"] == "failed" and marker is None
-        assert reopened.revision("legacy-project") == before_revision
-        assert reopened.state("legacy-project") == before_state
+        assert recovered == [saved] and saved["state"] == "failed" and marker is None
+        assert saved["resultRef"] is None
+        assert saved["error"] == {
+            "code": "ENGINE_EXITED",
+            "messageKey": "engine.exited",
+            "params": {},
+            "retryable": True,
+        }
+        assert saved["commitProgress"] == {
+            "mode": "atomic",
+            "operationId": job["operationId"],
+            "marker": None,
+        }
+        assert records(reopened, "SELECT * FROM versions ORDER BY project,key") == before_versions
+        assert (
+            records(reopened, "SELECT * FROM commits ORDER BY project,operation") == before_commits
+        )
+        assert (
+            records(reopened, "SELECT * FROM commit_evidence ORDER BY project,operation")
+            == before_evidence
+        )
+        assert records(reopened, "SELECT * FROM snapshots ORDER BY id") == before_snapshots
+        assert {r["id"] for r in records(reopened, "SELECT id FROM results")} == {
+            seeded_result["resultId"]
+        }
+        assert {r["id"] for r in records(reopened, "SELECT id FROM job_results")} == {
+            seeded_result["resultId"]
+        }
+    assert reopened.reconcile_jobs() == []
+    assert reopened.get_job(project, job["jobId"]) == saved
     reopened.close()
-    # Fixture owns the closed original; make repeated close harmless here only.
     store.close = lambda: None
 
 

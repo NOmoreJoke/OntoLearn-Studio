@@ -6,9 +6,12 @@ normal CI imports the installed package without it. No Electron/UI is started.
 """
 
 import asyncio
+import ctypes
+import errno
 import os
 import subprocess
 import sys
+import time
 from pathlib import Path
 from uuid import uuid4
 
@@ -286,6 +289,54 @@ def test_memory_failure_isolated_from_other_project_real_worker(store, monkeypat
         "order": "ordinal+rowId:asc",
     }
     assert store.result_page(binding, page_size=100, cursor=None)["rows"] == rows
+
+
+@pytest.mark.skipif(sys.platform != "darwin", reason="Actual libproc/child-watcher exit race")
+def test_actual_memory_worker_exit_precedes_asyncio_returncode_delivery(store, monkeypatch):
+    actual_worker(monkeypatch)
+    store.create_project("lifecycle-other")
+    failed = create(store, parameters={"allocateBytes": 1073741824}, total_ms=3000)
+    succeeded = create(store, parameters={}, total_ms=3000, internal="lifecycle-other")
+    coordinator = runtime.Coordinator(store, test_mode=True, emit=lambda _: None)
+    native_rss = runtime.resident_bytes
+    observations = []
+    child = None
+
+    def sample(pid):
+        nonlocal child
+        active = coordinator.active.get(failed["jobId"])
+        target = active and active.get("process")
+        if target is None or target.pid != pid:
+            return native_rss(pid)
+        child = target
+        # Hold only parent scheduling until the actual native sample observes
+        # the real allocation worker's exit. No substituted syscall or exit code.
+        deadline = time.monotonic() + 1
+        while time.monotonic() < deadline:
+            try:
+                native_rss(pid)
+            except ProcessLookupError as failure:
+                observations.append((failure.errno, ctypes.get_errno(), target.returncode))
+                raise
+            time.sleep(0.001)
+        raise AssertionError("real memory worker did not exit within sampling window")
+
+    monkeypatch.setattr(runtime, "resident_bytes", sample)
+
+    async def run():
+        coordinator.queued.extend([failed["jobId"], succeeded["jobId"]])
+        await coordinator.tick()
+        await asyncio.wait_for(asyncio.gather(*coordinator.tasks), 4)
+        assert not coordinator.active
+
+    asyncio.run(run())
+    assert observations == [(errno.ESRCH, errno.ESRCH, None)]
+    assert child is not None and child.returncode == 74
+    bad = store.get_job(failed["projectId"], failed["jobId"])
+    assert bad["state"] == "failed" and bad["resultRef"] is None
+    assert bad["error"] == runtime.safe_error("RESOURCE_LIMIT", {"resource": "memory"})
+    assert store.operation_get(failed["projectId"], failed["operationId"]) is None
+    assert store.get_job(succeeded["projectId"], succeeded["jobId"])["state"] == "succeeded"
 
 
 def test_busy_worker_still_allows_heartbeat_and_cancel(store, monkeypatch):

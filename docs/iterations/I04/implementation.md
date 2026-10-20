@@ -5,10 +5,14 @@
 ## 实际职责
 
 - Electron EngineSupervisor 管理一个常驻 stdio 子进程、hello、原始 registry 字节 SHA、pending/代次/控制心跳与有限退避。主进程应用服务掌握当前授权项目及可丢视图上下文，preload 仅有业务命名方法；renderer 无任务创建、路径或通用 invoke。
+- 协调器连接退出后立即隔离旧订阅，将任务卡片标为最后记录；同一观察项目最多三次只读恢复，间隔 250/500ms、单次整体 15 秒，最多重建 16 个记忆任务及 operation 标记。失败显示离线，显式刷新可重新尝试；不跨 session 注销旧订阅、不重放创建/取消/写入，传输状态不改任务终态。健康检查回复同时核对视图代次及连接 epoch，旧成功或错误都不能覆盖新连接状态。
+- 项目投影与任务分开读取时，所有 restore/atomic-refresh 路径按已见最高提交 revision/snapshot 最多三次完整重读；同版快照矛盾安全失败。恢复中提前到达的原子完成通知保留同一恢复次数及整体计时，继承 operation 复验；结果原输入仍保留为历史。
 - Python 单协调器持有 OS 排他 writer lease。JobStore 与 S1 使用同一个 SQLite 和事务；worker 没有数据库或正式提交入口，只返回隔离计算输出。父死亡守卫避免旧 worker 占用资源继续运行；新协调器取得 lease 后再按持久 marker/round/terminal 对账，不续跑或重发写入。
 - 主进程和协调器分别用显式最小 OS 环境启动 Python 和 worker，不继承宿主凭据、代理、loader/Python 注入变量；DB、项目授权和测试模式只由主进程可信配置生成，worker 不继承这些权限变量。真实自造 sentinel 与包内启动均有验证。
 - operation claim 全局唯一，完整项目/能力/input/confirmation/plan/参数内容/依赖/实现/limits 固定；公开项目身份通过持久双向唯一映射与旧内部 ID 对齐。正式 receipt 为历史结果，不能成为领域 current。
 - 队列、并发、项目 writer、请求/总量/启动/握手/心跳/取消收尾、帧/页/游标记录与内存分别有界。总期限包含排队、启动、stdin 写入、计算、等待退出与提交前复验，不由心跳延长。单任务取消仅终止对应 worker。
+- 会话请求预算为 65,536 个唯一 ID（含 hello/ping），保留全部 ID 防止旧请求重放；第 65,537 个请求及任何重复 ID 安全关闭会话。关闭后不承诺在途任务连续执行：新协调器按已提交证据恢复，未提交任务失败为 ENGINE_EXITED。主进程只读恢复可建立新会话，不自动重放写入。真实满额请求、父 stdin 保持开启的 fatal 退出与重启后 marker/receipt/项目/任务证据均有子进程回归；读取线程用 os.read 避免缓冲锁争用导致 SIGABRT。
+- result.page 的默认运行时预算与公共 schema/TS/游标共同允许 200 项，job.list 仍限 100；显式协商更小预算仍按资源限制拒绝。真实 210 行结果验证 200+10 稳定分页，201 在契约层拒绝。
 - 结果及列表使用 SQLite 持久的不可变载荷/固定集合与 UUID 游标；每次复验项目/输入/范围/参数/页大小/TTL/载荷，过期与回收不返回成功空页。依赖与定义集合由可信快照派生，发布/失效与正式提交同事务。
 
 ## 契约修订
@@ -21,6 +25,8 @@ R2-F1 在双端校验 trusted binding 的完整身份、数值类型/范围和�
 
 ## 安全错误与 UI
 
+协调器仅在真实排队、读取、计算、提交、退出对账边界发送阶段通知，未知总量保持 completed/total=null，不生成百分比。订阅时可收到当前非终态阶段，renderer 以代次/项目/任务/输入/stateVersion 验证并有界缓存最多 16 个早到阶段；断线清除、终态不回退。新订阅响应早于/晚于阶段交付均有验证。
+
 只接受本地 ServiceFault/JobFault/结构化 S1 Conflict，SQLite 按真实 errorcode 主码分类；未知来源异常统一 INTERNAL_ERROR，不能自报 code/params 或借异常文本归责。普通入口初始化异常也只有固定有界 stderr。四字段 DTO 保留至窄 bridge，UI 用固定本地模板组成“发生什么/原因/修复/相关知识”；retryable 不触发自动重放。取消、失败、状态待对账、历史、过期与不支持分别表达。
 
 ## 测试任务与未完成业务
@@ -29,8 +35,12 @@ R2-F1 在双端校验 trusted binding 的完整身份、数值类型/范围和�
 
 F6 摘要从最后持久轮次及完整终态产生，队列为空仍跑至配置 maxRounds，不另加提前停止规则。零轮失败/取消不造成功摘要；部分轮次保留为失败/取消历史。摘要只在首个非游标页，缺失/矛盾/畸形/回收均不能显示全部完成。
 
+## 存储守卫说明
+
+逐轮提交仅允许正在执行的 test.rounds，保留同一 running 状态并递增持久 stateVersion，表示新的已提交轮次证据；状态名称迁移仍由 _transition 校验。原 running→running 不属于状态名称边，不能为复用函数而放宽状态机。queued/cancelling/终态/其他能力均拒绝并保持数据库不变；故障事务不留下半轮。job.create 的 claim 预查仅用于队列预算及幂等早判，权威创建仍在 BEGIN IMMEDIATE 内复验完整指纹，以 operation 主键保证唯一性。
+
 ## 平台资源边界
 
-Linux 使用 RLIMIT_AS，Windows 使用 JobObject 进程内存限制；Darwin 本机实测不能使用这些 rlimit，采用 libproc RSS 采样与受控分配前预算。Darwin 不是硬分配上限，存在采样间超量边界，仅支持当前有界测试负载，不批准未来语义原生库。各平台测试结果必须分别记录。
+Linux 使用 RLIMIT_AS，Windows 使用 JobObject 进程内存限制；Darwin 本机实测不能使用这些 rlimit，采用 libproc RSS 采样与受控分配前预算。Darwin RSS 采样仅在实际非正返回且内核 errno 为 ESRCH 时按子进程消失处理，等待真实退出码后归类；短读、权限或监测不可用不静默忽略，worker 自身监测故障以固定码退出。Darwin 不是硬分配上限，存在采样间超量边界，仅支持当前有界测试负载，不批准未来语义原生库。各平台测试结果必须分别记录。
 
 用户 Mac 桌面不运行 Electron/native/HMR；开发包生成不自动启动。Linux Docker 虚拟显示可执行真实可见、焦点、崩溃/无响应和实际提示框，不禁 sandbox/hang monitor、不 stub 提示。arm64 容器不冒充 CI x64，也不代替签名、干净设备或生产验证。I01 R6 历史增长原等级开放/延期，未引入无证据优化或性能提升承诺。

@@ -1,0 +1,1043 @@
+{
+  "kind": "Actual source and packaged Linux arm64 Docker + Xvfb/Openbox/xdotool; private filesystem, no host GUI",
+  "native": [
+    {
+      "mode": "source",
+      "raw": {
+        "path": "build/I04-evidence/c2-final-linux/test-results/i04-c2-source-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/i04-native-verified-evidence.json",
+        "sha256": "ec1f252473b553a0247587901aa1075f3c0d396030b04bba7a67ca6795fc7eb1",
+        "bytes": 33373
+      },
+      "events": ["crashed", "unresponsive"],
+      "inspectorClosed": true,
+      "hangMonitorEnabled": true,
+      "result": "PASS",
+      "nativeDialogs": [
+        {
+          "phase": "crash",
+          "windowId": "6291458",
+          "title": "OntoLearn Studio 窗口恢复",
+          "visible": true
+        },
+        {
+          "phase": "hang",
+          "windowId": "6291613",
+          "title": "OntoLearn Studio 窗口恢复",
+          "visible": true
+        }
+      ],
+      "dialogObserver": "external xdotool visible-window inventory",
+      "windows": [
+        {
+          "ordinal": 1,
+          "visible": true,
+          "view": {
+            "generation": 3,
+            "project": {
+              "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "operationEvidence": [
+              {
+                "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                "marker": {
+                  "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                  "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                  "jobId": "a66ffcbb-b4d8-417e-823c-9419c133eb36",
+                  "projectRevision": 1,
+                  "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                  "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd"
+                }
+              },
+              {
+                "operationId": "0191420c-4b90-4d95-9df2-25403101acc1",
+                "marker": null
+              },
+              {
+                "operationId": "9f3f50ec-4013-41e7-869f-ffe0f387a88b",
+                "marker": null
+              }
+            ],
+            "jobs": [
+              {
+                "jobId": "a66ffcbb-b4d8-417e-823c-9419c133eb36",
+                "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "883509db-f4c8-4e38-bea9-0be8fdf9a3a8"
+                }
+              },
+              {
+                "jobId": "cc004b3f-b249-4e26-bcf6-c174e77bb9e9",
+                "operationId": "0191420c-4b90-4d95-9df2-25403101acc1",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "running",
+                "stateVersion": 2,
+                "commitProgress": {
+                  "committedProgress": null,
+                  "mode": "rounds"
+                },
+                "error": null,
+                "resultRef": null
+              },
+              {
+                "jobId": "8bbe283c-f09e-40ee-af7b-058e9e887873",
+                "operationId": "9f3f50ec-4013-41e7-869f-ffe0f387a88b",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          }
+        },
+        {
+          "ordinal": 2,
+          "visible": true,
+          "focused": true,
+          "x11Focus": {
+            "observer": "xdotool/XGetInputFocus",
+            "windowId": "4194323",
+            "title": "OntoLearn Studio",
+            "visible": true
+          },
+          "view": {
+            "generation": 6,
+            "project": {
+              "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "operationEvidence": [
+              {
+                "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                "marker": {
+                  "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                  "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                  "jobId": "a66ffcbb-b4d8-417e-823c-9419c133eb36",
+                  "projectRevision": 1,
+                  "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                  "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd"
+                }
+              },
+              {
+                "operationId": "0191420c-4b90-4d95-9df2-25403101acc1",
+                "marker": null
+              },
+              {
+                "operationId": "9f3f50ec-4013-41e7-869f-ffe0f387a88b",
+                "marker": null
+              }
+            ],
+            "jobs": [
+              {
+                "jobId": "a66ffcbb-b4d8-417e-823c-9419c133eb36",
+                "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "883509db-f4c8-4e38-bea9-0be8fdf9a3a8"
+                }
+              },
+              {
+                "jobId": "cc004b3f-b249-4e26-bcf6-c174e77bb9e9",
+                "operationId": "0191420c-4b90-4d95-9df2-25403101acc1",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "running",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "committedProgress": {
+                    "lastCommittedRound": 1,
+                    "runId": "a05de5fa-38cd-4f7a-a5cb-9b98a1bb1bde",
+                    "snapshotRef": "e33a73c1a1b92f79768754c2066bcb7712ad2c4c0f8d99cf2f46482b325b15e3"
+                  },
+                  "mode": "rounds"
+                },
+                "error": null,
+                "resultRef": null
+              },
+              {
+                "jobId": "8bbe283c-f09e-40ee-af7b-058e9e887873",
+                "operationId": "9f3f50ec-4013-41e7-869f-ffe0f387a88b",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          }
+        },
+        {
+          "ordinal": 3,
+          "visible": true,
+          "view": {
+            "generation": 8,
+            "project": {
+              "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "operationEvidence": [
+              {
+                "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                "marker": {
+                  "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                  "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                  "jobId": "a66ffcbb-b4d8-417e-823c-9419c133eb36",
+                  "projectRevision": 1,
+                  "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                  "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd"
+                }
+              },
+              {
+                "operationId": "0191420c-4b90-4d95-9df2-25403101acc1",
+                "marker": null
+              },
+              {
+                "operationId": "9f3f50ec-4013-41e7-869f-ffe0f387a88b",
+                "marker": null
+              }
+            ],
+            "jobs": [
+              {
+                "jobId": "a66ffcbb-b4d8-417e-823c-9419c133eb36",
+                "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "341df0c0-c6b7-4d5e-9ed0-a4141f67f7f9"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "883509db-f4c8-4e38-bea9-0be8fdf9a3a8"
+                }
+              },
+              {
+                "jobId": "cc004b3f-b249-4e26-bcf6-c174e77bb9e9",
+                "operationId": "0191420c-4b90-4d95-9df2-25403101acc1",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "running",
+                "stateVersion": 36,
+                "commitProgress": {
+                  "committedProgress": {
+                    "lastCommittedRound": 34,
+                    "runId": "a05de5fa-38cd-4f7a-a5cb-9b98a1bb1bde",
+                    "snapshotRef": "c317c1b8fbb1a3665b7af0e4da318ebae8baa652854cbc2f8c55313f8029a581"
+                  },
+                  "mode": "rounds"
+                },
+                "error": null,
+                "resultRef": null
+              },
+              {
+                "jobId": "8bbe283c-f09e-40ee-af7b-058e9e887873",
+                "operationId": "9f3f50ec-4013-41e7-869f-ffe0f387a88b",
+                "projectId": "21079977-b49c-4e11-90b7-c56ae8bc5a34",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "mode": "packaged",
+      "raw": {
+        "path": "build/I04-evidence/c2-final-linux/test-results/i04-c2-packaged-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/i04-native-verified-evidence.json",
+        "sha256": "6b7daa430b5d12e177d11dbe9621b9683421ca71dea4b192d5a3fc50a8c088ad",
+        "bytes": 33373
+      },
+      "events": ["crashed", "unresponsive"],
+      "inspectorClosed": true,
+      "hangMonitorEnabled": true,
+      "result": "PASS",
+      "nativeDialogs": [
+        {
+          "phase": "crash",
+          "windowId": "6291458",
+          "title": "OntoLearn Studio 窗口恢复",
+          "visible": true
+        },
+        {
+          "phase": "hang",
+          "windowId": "6291613",
+          "title": "OntoLearn Studio 窗口恢复",
+          "visible": true
+        }
+      ],
+      "dialogObserver": "external xdotool visible-window inventory",
+      "windows": [
+        {
+          "ordinal": 1,
+          "visible": true,
+          "view": {
+            "generation": 3,
+            "project": {
+              "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "operationEvidence": [
+              {
+                "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                "marker": {
+                  "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                  "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                  "jobId": "9daa14c9-4e7a-4be3-89ef-d7a8f0ef7091",
+                  "projectRevision": 1,
+                  "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                  "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd"
+                }
+              },
+              {
+                "operationId": "f5a6f020-dedb-4fff-9eb3-af31a36018c1",
+                "marker": null
+              },
+              {
+                "operationId": "085e9a99-f55b-42a5-8ec4-14623c4f50cf",
+                "marker": null
+              }
+            ],
+            "jobs": [
+              {
+                "jobId": "9daa14c9-4e7a-4be3-89ef-d7a8f0ef7091",
+                "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "23dd3881-9570-4644-9f90-73434c748333"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "c4275534-8568-4977-a94a-3ee138ea53c7"
+                }
+              },
+              {
+                "jobId": "158059aa-116c-4c26-add1-cecd833fae82",
+                "operationId": "f5a6f020-dedb-4fff-9eb3-af31a36018c1",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "running",
+                "stateVersion": 2,
+                "commitProgress": {
+                  "committedProgress": null,
+                  "mode": "rounds"
+                },
+                "error": null,
+                "resultRef": null
+              },
+              {
+                "jobId": "9f722531-4906-4963-8136-d17ba75c7962",
+                "operationId": "085e9a99-f55b-42a5-8ec4-14623c4f50cf",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          }
+        },
+        {
+          "ordinal": 2,
+          "visible": true,
+          "focused": true,
+          "x11Focus": {
+            "observer": "xdotool/XGetInputFocus",
+            "windowId": "4194323",
+            "title": "OntoLearn Studio",
+            "visible": true
+          },
+          "view": {
+            "generation": 6,
+            "project": {
+              "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "operationEvidence": [
+              {
+                "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                "marker": {
+                  "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                  "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                  "jobId": "9daa14c9-4e7a-4be3-89ef-d7a8f0ef7091",
+                  "projectRevision": 1,
+                  "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                  "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd"
+                }
+              },
+              {
+                "operationId": "f5a6f020-dedb-4fff-9eb3-af31a36018c1",
+                "marker": null
+              },
+              {
+                "operationId": "085e9a99-f55b-42a5-8ec4-14623c4f50cf",
+                "marker": null
+              }
+            ],
+            "jobs": [
+              {
+                "jobId": "9daa14c9-4e7a-4be3-89ef-d7a8f0ef7091",
+                "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "23dd3881-9570-4644-9f90-73434c748333"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "c4275534-8568-4977-a94a-3ee138ea53c7"
+                }
+              },
+              {
+                "jobId": "158059aa-116c-4c26-add1-cecd833fae82",
+                "operationId": "f5a6f020-dedb-4fff-9eb3-af31a36018c1",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "running",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "committedProgress": {
+                    "lastCommittedRound": 1,
+                    "runId": "552e2cbd-eca6-4339-bb07-cc9b124310d6",
+                    "snapshotRef": "a4008c4ad44c77ad83af16516dca60d8a7cb90a3a23956b33d01333bbc93e417"
+                  },
+                  "mode": "rounds"
+                },
+                "error": null,
+                "resultRef": null
+              },
+              {
+                "jobId": "9f722531-4906-4963-8136-d17ba75c7962",
+                "operationId": "085e9a99-f55b-42a5-8ec4-14623c4f50cf",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          }
+        },
+        {
+          "ordinal": 3,
+          "visible": true,
+          "view": {
+            "generation": 8,
+            "project": {
+              "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "operationEvidence": [
+              {
+                "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                "marker": {
+                  "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                  "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                  "jobId": "9daa14c9-4e7a-4be3-89ef-d7a8f0ef7091",
+                  "projectRevision": 1,
+                  "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                  "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd"
+                }
+              },
+              {
+                "operationId": "f5a6f020-dedb-4fff-9eb3-af31a36018c1",
+                "marker": null
+              },
+              {
+                "operationId": "085e9a99-f55b-42a5-8ec4-14623c4f50cf",
+                "marker": null
+              }
+            ],
+            "jobs": [
+              {
+                "jobId": "9daa14c9-4e7a-4be3-89ef-d7a8f0ef7091",
+                "operationId": "23dd3881-9570-4644-9f90-73434c748333",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "23dd3881-9570-4644-9f90-73434c748333"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "c4275534-8568-4977-a94a-3ee138ea53c7"
+                }
+              },
+              {
+                "jobId": "158059aa-116c-4c26-add1-cecd833fae82",
+                "operationId": "f5a6f020-dedb-4fff-9eb3-af31a36018c1",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "running",
+                "stateVersion": 36,
+                "commitProgress": {
+                  "committedProgress": {
+                    "lastCommittedRound": 34,
+                    "runId": "552e2cbd-eca6-4339-bb07-cc9b124310d6",
+                    "snapshotRef": "d57c66311eee80c6db846efa69e1dd82e5697a057597eee2d9e1fab68bd4b1cb"
+                  },
+                  "mode": "rounds"
+                },
+                "error": null,
+                "resultRef": null
+              },
+              {
+                "jobId": "9f722531-4906-4963-8136-d17ba75c7962",
+                "operationId": "085e9a99-f55b-42a5-8ec4-14623c4f50cf",
+                "projectId": "41e2f2a3-f10f-4866-b0c8-1d0e9c2e2986",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "coordinatorRecovery": [
+    {
+      "mode": "source",
+      "raw": {
+        "path": "build/I04-evidence/c2-final-linux/test-results/i04-c2-source-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/i04-coordinator-recovery.json",
+        "sha256": "c0ef1465308240b8047e6a24839a06dbddf2afa82ff69085cbb06adc6a5e5f1d",
+        "bytes": 16671
+      },
+      "before": {
+        "jobId": "b9d7806d-27a0-4249-94fc-8ff16fc6e599",
+        "operationId": "021f9990-f096-4d37-82be-3e8a70a77ee1",
+        "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
+        "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+        "state": "running",
+        "stateVersion": 3,
+        "commitProgress": {
+          "committedProgress": {
+            "lastCommittedRound": 1,
+            "runId": "8367e552-f597-4fc8-b964-b8a834c3a325",
+            "snapshotRef": "5582dd1dc35323881bf996b12798bbde5de27782503181b915687da8c0ab7e4d"
+          },
+          "mode": "rounds"
+        },
+        "error": null,
+        "resultRef": null
+      },
+      "final": {
+        "jobId": "b9d7806d-27a0-4249-94fc-8ff16fc6e599",
+        "operationId": "021f9990-f096-4d37-82be-3e8a70a77ee1",
+        "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
+        "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+        "state": "failed",
+        "stateVersion": 4,
+        "commitProgress": {
+          "committedProgress": {
+            "lastCommittedRound": 1,
+            "runId": "8367e552-f597-4fc8-b964-b8a834c3a325",
+            "snapshotRef": "5582dd1dc35323881bf996b12798bbde5de27782503181b915687da8c0ab7e4d"
+          },
+          "mode": "rounds"
+        },
+        "error": {
+          "code": "ENGINE_EXITED",
+          "messageKey": "engine.exited",
+          "params": {},
+          "retryable": true
+        },
+        "resultRef": null
+      },
+      "sawUnconfirmed": true,
+      "actionsDisabled": true,
+      "updates": [
+        {
+          "kind": "connection",
+          "generation": 4,
+          "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
+          "state": "reconnecting",
+          "attempt": 0,
+          "error": {
+            "code": "ENGINE_EXITED",
+            "messageKey": "engine.exited",
+            "params": {},
+            "retryable": true
+          }
+        },
+        {
+          "kind": "connection",
+          "generation": 4,
+          "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
+          "state": "reconnecting",
+          "attempt": 1,
+          "error": {
+            "code": "ENGINE_EXITED",
+            "messageKey": "engine.exited",
+            "params": {},
+            "retryable": true
+          }
+        },
+        {
+          "kind": "restored",
+          "generation": 4,
+          "view": {
+            "generation": 4,
+            "project": {
+              "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "jobs": [
+              {
+                "jobId": "6e8447ab-5737-426e-8f40-0c469b5a1a53",
+                "operationId": "d1a94317-f8dc-4902-9933-28e2384f623b",
+                "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
+                "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "d1a94317-f8dc-4902-9933-28e2384f623b"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "5ca31309-e714-45ee-b83d-ae88da138993"
+                }
+              },
+              {
+                "jobId": "b9d7806d-27a0-4249-94fc-8ff16fc6e599",
+                "operationId": "021f9990-f096-4d37-82be-3e8a70a77ee1",
+                "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "failed",
+                "stateVersion": 4,
+                "commitProgress": {
+                  "committedProgress": {
+                    "lastCommittedRound": 1,
+                    "runId": "8367e552-f597-4fc8-b964-b8a834c3a325",
+                    "snapshotRef": "5582dd1dc35323881bf996b12798bbde5de27782503181b915687da8c0ab7e4d"
+                  },
+                  "mode": "rounds"
+                },
+                "error": {
+                  "code": "ENGINE_EXITED",
+                  "messageKey": "engine.exited",
+                  "params": {},
+                  "retryable": true
+                },
+                "resultRef": null
+              },
+              {
+                "jobId": "c11efd41-d555-432d-893e-784e22576f5b",
+                "operationId": "7e54d835-6171-4431-acda-e75f86c0216f",
+                "projectId": "be633ed8-bf6c-4fbd-9fb7-8b294188b7cc",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "mode": "packaged",
+      "raw": {
+        "path": "build/I04-evidence/c2-final-linux/test-results/i04-c2-packaged-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/i04-coordinator-recovery.json",
+        "sha256": "165c1e81165125516aba080b57991bf01385a2803ed70d9059c46e24c59f5c91",
+        "bytes": 16671
+      },
+      "before": {
+        "jobId": "ba85c225-829a-41fa-8ff9-9638f4b3817a",
+        "operationId": "abb944a1-ded6-4c37-98be-1260132c6bd7",
+        "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
+        "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+        "state": "running",
+        "stateVersion": 3,
+        "commitProgress": {
+          "committedProgress": {
+            "lastCommittedRound": 1,
+            "runId": "2e5f1bbb-663a-4c48-883d-4d50d0de65df",
+            "snapshotRef": "84f9b35dab445be1e222c24ada9aff55ceb50bbd893dadba84e3ee47e8d2ad71"
+          },
+          "mode": "rounds"
+        },
+        "error": null,
+        "resultRef": null
+      },
+      "final": {
+        "jobId": "ba85c225-829a-41fa-8ff9-9638f4b3817a",
+        "operationId": "abb944a1-ded6-4c37-98be-1260132c6bd7",
+        "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
+        "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+        "state": "failed",
+        "stateVersion": 4,
+        "commitProgress": {
+          "committedProgress": {
+            "lastCommittedRound": 1,
+            "runId": "2e5f1bbb-663a-4c48-883d-4d50d0de65df",
+            "snapshotRef": "84f9b35dab445be1e222c24ada9aff55ceb50bbd893dadba84e3ee47e8d2ad71"
+          },
+          "mode": "rounds"
+        },
+        "error": {
+          "code": "ENGINE_EXITED",
+          "messageKey": "engine.exited",
+          "params": {},
+          "retryable": true
+        },
+        "resultRef": null
+      },
+      "sawUnconfirmed": true,
+      "actionsDisabled": true,
+      "updates": [
+        {
+          "kind": "connection",
+          "generation": 4,
+          "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
+          "state": "reconnecting",
+          "attempt": 0,
+          "error": {
+            "code": "ENGINE_EXITED",
+            "messageKey": "engine.exited",
+            "params": {},
+            "retryable": true
+          }
+        },
+        {
+          "kind": "connection",
+          "generation": 4,
+          "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
+          "state": "reconnecting",
+          "attempt": 1,
+          "error": {
+            "code": "ENGINE_EXITED",
+            "messageKey": "engine.exited",
+            "params": {},
+            "retryable": true
+          }
+        },
+        {
+          "kind": "restored",
+          "generation": 4,
+          "view": {
+            "generation": 4,
+            "project": {
+              "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "jobs": [
+              {
+                "jobId": "5e686f64-0bf2-4a37-9313-107c6a664145",
+                "operationId": "a3ca84a1-e3ef-4bca-9a5c-89b49a5b5bd4",
+                "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
+                "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "a3ca84a1-e3ef-4bca-9a5c-89b49a5b5bd4"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "37a362f2-14a3-4280-a1bf-4fdf778ebe1c"
+                }
+              },
+              {
+                "jobId": "ba85c225-829a-41fa-8ff9-9638f4b3817a",
+                "operationId": "abb944a1-ded6-4c37-98be-1260132c6bd7",
+                "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "failed",
+                "stateVersion": 4,
+                "commitProgress": {
+                  "committedProgress": {
+                    "lastCommittedRound": 1,
+                    "runId": "2e5f1bbb-663a-4c48-883d-4d50d0de65df",
+                    "snapshotRef": "84f9b35dab445be1e222c24ada9aff55ceb50bbd893dadba84e3ee47e8d2ad71"
+                  },
+                  "mode": "rounds"
+                },
+                "error": {
+                  "code": "ENGINE_EXITED",
+                  "messageKey": "engine.exited",
+                  "params": {},
+                  "retryable": true
+                },
+                "resultRef": null
+              },
+              {
+                "jobId": "2087bedd-307e-457b-be29-2c57f7ab39da",
+                "operationId": "1ce55b3c-a573-4784-ae0e-0e5f330483b7",
+                "projectId": "52a92a49-8a75-49cf-9b15-27220650273f",
+                "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "healthDelivery": [
+    {
+      "mode": "source",
+      "raw": {
+        "path": "build/I04-evidence/c2-final-linux/test-results/i04-c2-source-general/desktop-a-health-reply-fro-c8588--replace-the-current-status/i04-health-replies.json",
+        "sha256": "ef756916757bbfdd720e0c5d4dea76a97b479a74f15ac69b065b38bafcf35b00",
+        "bytes": 1559
+      },
+      "observations": {
+        "replies": [
+          {
+            "outcome": "success",
+            "before": "发生了什么：本地引擎连接已中断。为什么发生：协调器进程已退出，最终状态需要对账。如何修复：重新检查连接并刷新任务状态，确认提交点后再操作。相关知识：错误代码：ENGINE_EXITED。重试提示不代表允许自动重放写入。",
+            "after": "发生了什么：本地引擎连接已中断。为什么发生：协调器进程已退出，最终状态需要对账。如何修复：重新检查连接并刷新任务状态，确认提交点后再操作。相关知识：错误代码：ENGINE_EXITED。重试提示不代表允许自动重放写入。"
+          },
+          {
+            "outcome": "error",
+            "before": "发生了什么：本地引擎连接已中断。为什么发生：协调器进程已退出，最终状态需要对账。如何修复：重新检查连接并刷新任务状态，确认提交点后再操作。相关知识：错误代码：ENGINE_EXITED。重试提示不代表允许自动重放写入。",
+            "after": "发生了什么：本地引擎连接已中断。为什么发生：协调器进程已退出，最终状态需要对账。如何修复：重新检查连接并刷新任务状态，确认提交点后再操作。相关知识：错误代码：ENGINE_EXITED。重试提示不代表允许自动重放写入。"
+          }
+        ],
+        "freshExplicit": "本地引擎已连接 · v0.1.0 · 协议 v2",
+        "boundary": "Controlled IPC reply ordering and validated connection fixtures; no actual engine exit claim."
+      }
+    },
+    {
+      "mode": "packaged",
+      "raw": {
+        "path": "build/I04-evidence/c2-final-linux/test-results/i04-c2-packaged-general/desktop-a-health-reply-fro-c8588--replace-the-current-status/i04-health-replies.json",
+        "sha256": "ef756916757bbfdd720e0c5d4dea76a97b479a74f15ac69b065b38bafcf35b00",
+        "bytes": 1559
+      },
+      "observations": {
+        "replies": [
+          {
+            "outcome": "success",
+            "before": "发生了什么：本地引擎连接已中断。为什么发生：协调器进程已退出，最终状态需要对账。如何修复：重新检查连接并刷新任务状态，确认提交点后再操作。相关知识：错误代码：ENGINE_EXITED。重试提示不代表允许自动重放写入。",
+            "after": "发生了什么：本地引擎连接已中断。为什么发生：协调器进程已退出，最终状态需要对账。如何修复：重新检查连接并刷新任务状态，确认提交点后再操作。相关知识：错误代码：ENGINE_EXITED。重试提示不代表允许自动重放写入。"
+          },
+          {
+            "outcome": "error",
+            "before": "发生了什么：本地引擎连接已中断。为什么发生：协调器进程已退出，最终状态需要对账。如何修复：重新检查连接并刷新任务状态，确认提交点后再操作。相关知识：错误代码：ENGINE_EXITED。重试提示不代表允许自动重放写入。",
+            "after": "发生了什么：本地引擎连接已中断。为什么发生：协调器进程已退出，最终状态需要对账。如何修复：重新检查连接并刷新任务状态，确认提交点后再操作。相关知识：错误代码：ENGINE_EXITED。重试提示不代表允许自动重放写入。"
+          }
+        ],
+        "freshExplicit": "本地引擎已连接 · v0.1.0 · 协议 v2",
+        "boundary": "Controlled IPC reply ordering and validated connection fixtures; no actual engine exit claim."
+      }
+    }
+  ],
+  "boundaries": [
+    "Native faults and dialogs are actual; external X focus/title/visibility and dialog metadata are persisted.",
+    "Coordinator kill targets only the owned exact engine child; real workers/SQLite and first explicit refresh are asserted.",
+    "Unknown-total real computing stage is asserted through preload/UI in source and packaged reload and coordinator-kill tests.",
+    "Health uses controlled IPC delivery through actual preload/React, not an actual engine-exit simulation claim."
+  ]
+}

@@ -40,7 +40,7 @@ LIMITS = {
     "maxFrameBytes": 262144,
     "maxQueuedJobs": 32,
     "maxConcurrentJobs": 2,
-    "maxPageItems": 100,
+    "maxPageItems": 200,
     "maxPageBytes": 131072,
     "maxWorkerMemoryBytes": 536870912,
 }

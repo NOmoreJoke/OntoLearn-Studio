@@ -28,6 +28,11 @@ export interface SafeEngineError {
   params: Record<string, unknown>
   retryable: boolean
 }
+/** Process generations are transport identities, never durable job outcomes. */
+export type EngineConnectionState =
+  | { generation: number; engineSessionId: string; state: 'ready' }
+  | { generation: number; engineSessionId: string; state: 'disconnected'; error: SafeEngineError }
+
 export class EngineError extends Error {
   constructor(readonly error: SafeEngineError) {
     super(error.code)
@@ -146,6 +151,7 @@ export class EngineSupervisor {
   private retryAt = 0
   private failures = 0
   private listeners = new Set<(event: unknown) => void>()
+  private connectionListeners = new Set<(state: EngineConnectionState) => void>()
   private readonly startupMs: number
   private readonly handshakeMs: number
   private readonly requestMs: number
@@ -167,6 +173,20 @@ export class EngineSupervisor {
   onNotification(listener: (event: unknown) => void): () => void {
     this.listeners.add(listener)
     return () => this.listeners.delete(listener)
+  }
+  /** Events only: callers subscribe before starting a connection. No automatic replay. */
+  onConnectionState(listener: (state: EngineConnectionState) => void): () => void {
+    this.connectionListeners.add(listener)
+    return () => this.connectionListeners.delete(listener)
+  }
+  private connectionState(state: EngineConnectionState): void {
+    for (const listener of [...this.connectionListeners]) {
+      try {
+        listener(structuredClone(state))
+      } catch {
+        this.diagnostic('listenerFailed')
+      }
+    }
   }
   private diagnostic(event: Parameters<NonNullable<SupervisorOptions['onDiagnostic']>>[0]): void {
     try {
@@ -201,12 +221,28 @@ export class EngineSupervisor {
     }, 1000)
     killTimer.unref()
     session.child.once('close', () => clearTimeout(killTimer))
+    if (!this.stopped && session.hello) {
+      this.connectionState({
+        state: 'disconnected',
+        generation: session.generation,
+        engineSessionId: session.hello.engineSessionId,
+        error: validateV2('error', error.error)
+          ? error.error
+          : {
+              code: 'INTERNAL_ERROR',
+              messageKey: 'engine.internal',
+              params: {},
+              retryable: false,
+            },
+      })
+    }
   }
   stop(): void {
     this.stopped = true
     this.generation++
     if (this.session) this.finish(this.session, exited())
     this.listeners.clear()
+    this.connectionListeners.clear()
   }
   private async ensure(): Promise<Session> {
     if (this.stopped) throw exited()
@@ -385,6 +421,11 @@ export class EngineSupervisor {
       }
       session.reader.restrictLimit(hello.limits.maxFrameBytes)
       session.hello = hello
+      this.connectionState({
+        state: 'ready',
+        generation: session.generation,
+        engineSessionId: hello.engineSessionId,
+      })
     }
     clearTimeout(pending.timer)
     session.pending.delete(String(response.id))

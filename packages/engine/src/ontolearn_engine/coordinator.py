@@ -95,7 +95,53 @@ class Coordinator:
             raise ServiceFault("PERMISSION_DENIED")
         return project
 
+    def _progress(self, job: dict, stage: str, subscription: str | None = None) -> None:
+        # Progress is a disposable execution hint, never a persistent job state
+        # or a guessed amount of work. Share the subscription sequence with state.
+        if job["state"] in TERMINAL:
+            return
+        for identity, binding in list(self.subscriptions.items()):
+            if (
+                (subscription is None or identity == subscription)
+                and binding["projectId"] == job["projectId"]
+                and binding["jobId"] == job["jobId"]
+                and binding["stateVersion"] == job["stateVersion"]
+            ):
+                binding["seq"] += 1
+                self.emit(
+                    {
+                        "kind": "notification",
+                        "protocolVersion": 2,
+                        "engineSessionId": self.session,
+                        "subscriptionId": identity,
+                        "projectId": job["projectId"],
+                        "jobId": job["jobId"],
+                        "seq": binding["seq"],
+                        "event": "job.progress",
+                        "data": {
+                            "stateVersion": job["stateVersion"],
+                            "progress": {"stage": stage, "completed": None, "total": None},
+                        },
+                    }
+                )
+
+    def _stage(self, identity: str, stage: str) -> None:
+        active = self.active.get(identity)
+        if active is None:
+            return
+        job = self.store.get_job(active["project"], identity)
+        if job["state"] in TERMINAL:
+            active.pop("stage", None)
+            return
+        if job["state"] == "cancelling":
+            stage = "reconciling"
+        if active.get("stage") != stage:
+            active["stage"] = stage
+            self._progress(job, stage)
+
     def _notify(self, job: dict) -> None:
+        if job["state"] in TERMINAL:
+            self.active.get(job["jobId"], {}).pop("stage", None)
         for identity, binding in list(self.subscriptions.items()):
             if binding["projectId"] == job["projectId"] and binding["jobId"] == job["jobId"]:
                 if job["stateVersion"] <= binding["stateVersion"]:
@@ -225,6 +271,8 @@ class Coordinator:
             answer = self.store.cancel_job(p["projectId"], p["jobId"])
             job = self.store.get_job(p["projectId"], p["jobId"])
             self._notify(job)
+            if job["state"] == "cancelling":
+                self._stage(job["jobId"], "reconciling")
             if job["state"] == "cancelled":
                 try:
                     self.queued.remove(job["jobId"])
@@ -244,7 +292,17 @@ class Coordinator:
                 "seq": 0,
             }
             self.subscriptions[identity] = binding
-            return dict(binding)
+            # The stage snapshot may reach the consumer before this response.
+            # Preserve seq=0 in the response; the first buffered hint is seq=1.
+            response = dict(binding)
+            stage = (
+                "queued"
+                if job["state"] == "queued"
+                else self.active.get(job["jobId"], {}).get("stage")
+            )
+            if stage:
+                self._progress(job, stage, identity)
+            return response
         if method == "job.unsubscribe":
             binding = self.subscriptions.get(p["subscriptionId"])
             if binding is None or any(binding[k] != p[k] for k in ("projectId", "jobId")):
@@ -308,6 +366,7 @@ class Coordinator:
         try:
             job = self.store.start_job(identity)
             self._notify(job)
+            self._stage(identity, "loading")
             parameters = context["parameters"]
             if job["capability"] == "test.rounds":
                 self.store.start_job_run(identity, context["runConfig"])
@@ -366,6 +425,7 @@ class Coordinator:
             process.stdin.write(raw + b"\n")
             await controlled(process.stdin.drain(), "startup", self.limits["startupMs"])
             process.stdin.close()
+            self._stage(identity, "computing")
             reader = JsonlReader(self.limits["maxFrameBytes"])
             complete = False
             rows = None
@@ -382,7 +442,7 @@ class Coordinator:
                         try:
                             if resident_bytes(process.pid) > job["limits"]["maxWorkerMemoryBytes"]:
                                 raise ServiceFault("RESOURCE_LIMIT", {"resource": "memory"})
-                        except OSError:
+                        except ProcessLookupError:
                             pass  # Child exit is reconciled through its actual exit status.
                     done, _ = await asyncio.wait({read_task}, timeout=0.02)
                     if not done:
@@ -420,8 +480,10 @@ class Coordinator:
                             ):
                                 raise ProtocolFault()
                             state = message["state"]
+                            self._stage(identity, "committing")
                             self.store.commit_job_round(identity, state, hook=commit_boundary)
                             self._notify(self.store.get_job(active["project"], identity))
+                            self._stage(identity, "computing")
                             await asyncio.sleep(
                                 0
                             )  # Allow control requests between committed rounds.
@@ -445,6 +507,7 @@ class Coordinator:
                 if not read_task.done():
                     read_task.cancel()
                 await asyncio.gather(read_task, return_exceptions=True)
+            self._stage(identity, "reconciling")
             exit_task = asyncio.create_task(process.wait())
             while process.returncode is None:
                 if self.store.get_job(active["project"], identity)["state"] == "cancelling":
@@ -459,6 +522,7 @@ class Coordinator:
                 raise asyncio.CancelledError()
 
             commit_boundary("before")
+            self._stage(identity, "committing")
             if job["capability"] == "test.atomic":
                 job = self.store.commit_job(identity, hook=commit_boundary)
             elif job["capability"] == "test.rounds":
@@ -516,7 +580,10 @@ async def serve() -> None:
         reader = JsonlReader()
         try:
             while not stopped.is_set():
-                chunk = sys.stdin.buffer.read1(16384)
+                # The daemon may still be blocked when a session-fatal request
+                # closes the transport. Raw fd reads hold no BufferedReader lock
+                # that could abort interpreter shutdown; normal cleanup still runs.
+                chunk = os.read(sys.stdin.fileno(), 16384)
                 if not chunk:
                     reader.finish()
                     break
