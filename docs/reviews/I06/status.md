@@ -2,7 +2,11 @@
 
 日期：2026-10-21（Asia/Shanghai）。阶段：I02/I03/I04 真实依赖已合并，原会话继续私有凭据/持久审计/隔离平台验证实施；完整 I06 未完成。启动 get_goal 仍返回原 Goal blocked；此为工具实态，原依赖阻断已由实际合并消除，按总控接续授权推进，不重建 Goal、不宣称有 resume API、不标为 paused/complete。
 
-最新实质结果：已实现实际 POSIX 私有密文仓库与 metadata 持久审计，接入实际 Electron safeStorage factory；完整 `npm run check` exit 0（770 TS、1052 Python、构建/静态检查），`verify:sources` 12 项通过。新增文件/发送门故障反例 54 项；实际 Linux arm64 Electron 44.9.0 组合六场景通过，源码、容器运行字节与 43 项 raw 摘要匹配，独立只读审查关闭三项问题并复核组合证据无新增阻断。下文较旧计数/依赖值保留为历史，不作为新版通过结论。
+最新阶段：已实现 `StoredResultSource` 与 `GatewayApplication` 私有整份既存结果读取/应用服务，使用批准 I04 的实际 Store/coordinator/worker，只读来源、用户确认、完整内容复核、来源并集、定向取消和持久审计贯通合成 receiver。23项新测试通过，完整 `npm run check` exit0（793TS、1052Python、构建/静态检查）；之后预览集合硬界的一行修正完成必要lint/typecheck/23项复验。独立复核无新增阻断。首轮夹具违反单写者租约的6项失败及修正原件保留，真实保存改走同 coordinator 的 test.atomic，不绕过 Store 所有权。
+
+本轮 [最小命名接口草案](../../iterations/I06/narrow-interface-draft.md)、[35个合成正反样例](../../iterations/I06/narrow-interface-examples.json) 和 [内部审查](stored-result-review.md) 已交付；公共接口尚未批准/注册。A-03字段映射与其他列零外发、Store跨进程原子lease、I05真实语义、正式main/bridge/UI/可用导出日志排除/窗口联验仍未验收。Q9真实协议不是本合成S3自动前置；原Goal工具仍blocked，原目标未重建或标完成。
+
+上一阶段结果：实际 POSIX 私有密文仓库与 metadata 持久审计、Electron safeStorage factory，完整check770TS/1052Python、sources12及54项文件/发送门故障反例均保留。Linux arm64 Electron44.9.0组合六场景曾按当时源码/运行字节与43项raw摘要验证；本轮gateway新增私有定向取消，因此该旧组合不能称为当前完整候选的平台通过。未变化的凭据/私有仓库/审计/factory平台事实仍按其原hash引用，没有重复不变平台测试。下文旧计数/依赖值作为历史。
 
 当前交接：[具体 main 内部类型、调用顺序、失败行为和共享文件面](../../iterations/I06/main-integration-handoff.md)、[持久化独立审查](persistence-review.md)、[实际组合证据](platform/combination-linux-evidence.json)。正式接线、真实 Store/导出/窗口联验、Windows ACL/其他平台、指定双审/PR/实际 CI/远端合并仍未完成。未 push，不改总控 state 或 I05 共享文件。
 

@@ -244,10 +244,14 @@ export class ModelGatewayCore {
 
   async invoke(
     input: unknown,
+    cancellation?: AbortSignal,
   ): Promise<{ ok: true; text: string } | { ok: false; code: FailureCode }> {
     let metadata: Omit<AuditRecord, 'decision' | 'event' | 'reason' | 'time'> | undefined
     let dispatched = false
     const controller = new AbortController()
+    const cancel = () => controller.abort()
+    cancellation?.addEventListener('abort', cancel, { once: true })
+    if (cancellation?.aborted) cancel()
     try {
       const value = parse(invocationSchema, input)
       const config = this.configs.get(value.configId)
@@ -269,6 +273,7 @@ export class ModelGatewayCore {
       }
       const grant = this.grants.get(value.grantId)
       const guard = () => {
+        if (cancellation?.aborted) throw new GatewayFailure('CANCELLED')
         if (this.mode(value.projectId) === 'local') throw new GatewayFailure('LOCAL_ONLY')
         if (!grant || this.grants.get(value.grantId) !== grant)
           throw new GatewayFailure('AUTHORIZATION_REQUIRED')
@@ -365,6 +370,7 @@ export class ModelGatewayCore {
       }
       return { ok: false, code }
     } finally {
+      cancellation?.removeEventListener('abort', cancel)
       this.pending.delete(controller)
     }
   }
