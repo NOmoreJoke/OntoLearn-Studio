@@ -21,6 +21,7 @@ from ontolearn_engine.process_environment import worker_environment
 from ontolearn_engine.protocol import JsonlReader, ProtocolFault
 from ontolearn_engine.resources import CONTRACT, IMPLEMENTATION, LIMITS, REGISTRY_HASH, safe_error
 from ontolearn_engine.storage import Conflict
+from ontolearn_engine.worker import worker_owner_arguments
 
 TERMINAL = {"succeeded", "failed", "cancelled"}
 
@@ -402,6 +403,7 @@ class Coordinator:
             process = await controlled(
                 asyncio.create_subprocess_exec(
                     *worker_command(),
+                    *worker_owner_arguments(),
                     stdin=asyncio.subprocess.PIPE,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.DEVNULL,
