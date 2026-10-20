@@ -1,0 +1,552 @@
+{
+  "kind": "C3 follow-up verification; C2 is historical and its handshake deadline finding is fixed here",
+  "sourceImplementationHead": "bc098d0d8eaa0d786039a0a9d154c4be81b27103",
+  "runtimeInputManifest": {
+    "path": "build/I04-evidence/c3-runtime-inputs.json",
+    "sha256": "05aa7e9baa1428b661173e4759c1f75f13e606f26641856c840ed8e5defc6413",
+    "bytes": 18526,
+    "fileCount": 123,
+    "differencesFromActualRunArchive": []
+  },
+  "sourceArchive": {
+    "path": "build/I04-evidence/c3-runtime-source.tar",
+    "sha256": "7b0294c8ef1b7f852eb97735ed21c8782735f207d5a34354885b865f7e641878",
+    "bytes": 11816960
+  },
+  "protectedAGENTSSHA256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+  "checks": [
+    {
+      "command": "npm run check",
+      "platform": "macOS arm64, no GUI",
+      "exit": 0,
+      "typescriptPassed": 630,
+      "pythonPassed": 1019,
+      "log": "build/I04-evidence/c3-first-check.log"
+    },
+    {
+      "command": "npm run check",
+      "platform": "isolated Linux arm64",
+      "exit": 0,
+      "typescriptPassed": 630,
+      "pythonPassed": 1016,
+      "pythonSkipped": 3,
+      "skipReason": "Darwin RSS growth, child-exit/libproc race and parent-sampler fault",
+      "log": "build/I04-evidence/c3-final-linux/check.log"
+    },
+    {
+      "command": "actual desktop/health/CSP, reload/stage, coordinator kill/stage and native crash/unresponsive",
+      "platform": "isolated Linux arm64",
+      "sourcePassed": 6,
+      "packagedPassed": 6,
+      "sourceExit": 0,
+      "packagedExit": 0
+    },
+    {
+      "command": "package:dir + common examples + 12 real runtime tests",
+      "platform": "macOS arm64",
+      "exit": 0
+    },
+    {
+      "command": "package:dir + common examples + 12 real runtime tests",
+      "platform": "isolated Linux arm64",
+      "exit": 0
+    },
+    {
+      "command": "complete per-cell readonly matrix evidence",
+      "platform": "macOS arm64 and isolated Linux arm64",
+      "exit": 0,
+      "atomicEach": 96,
+      "roundEach": 48,
+      "databaseCapturesEach": 144
+    },
+    {
+      "command": "default 5000ms pre-hello budget with bounded real stdin traffic",
+      "sourceIndependent": "natural EOF at 5.087s, idle at 5.120s; timely session survives original deadline; exact raw fields in c3-handshake-evidence.json",
+      "macOSPackagedExit": 0,
+      "linuxPackagedExit": 0,
+      "lateHelloSucceeded": false,
+      "resourceLimitsReduced": false
+    },
+    {
+      "command": "npm run verify:sources",
+      "exit": 0,
+      "sources": 12,
+      "log": "build/I04-evidence/c3-sources.log"
+    }
+  ],
+  "packagedResources": {
+    "macOS": {
+      "registryHash": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+      "resources": {
+        "python/contract_v2.py": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+        "v2/binding-regressions.json": "9601d6d0a31e3e71078ac2562c6b8501c1292bc2be71de742e40c2fc54512a24",
+        "v2/dependencies.json": "dee118b368915df4172a77b875d31ce29ad8374cb5fce3915678f7f950cedad4",
+        "v2/errors.json": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+        "v2/fixtures.json": "32031804abf3283e87f070ffbfc3f95cf627f6b71e7bc49711faaff52ec31ad6",
+        "v2/frame-fixtures.json": "8e9a142ff04e908cc286c15702cd18b6c2ce9453490585d0855c3f62995dd2e5",
+        "v2/registry.json": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+        "v2/schema.json": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+        "v2/states.json": "ab54cac024f0f6b31a8a229198ae1c4ab13f63ff88184cdcef78113b9e893416"
+      },
+      "implementation": {
+        "executionSemanticsVersion": "i04-infrastructure-v1",
+        "engineVersion": "0.1.0",
+        "dependencyLockHash": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+      },
+      "frozen": true
+    },
+    "linux": {
+      "registryHash": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+      "resources": {
+        "python/contract_v2.py": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+        "v2/binding-regressions.json": "9601d6d0a31e3e71078ac2562c6b8501c1292bc2be71de742e40c2fc54512a24",
+        "v2/dependencies.json": "dee118b368915df4172a77b875d31ce29ad8374cb5fce3915678f7f950cedad4",
+        "v2/errors.json": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+        "v2/fixtures.json": "32031804abf3283e87f070ffbfc3f95cf627f6b71e7bc49711faaff52ec31ad6",
+        "v2/frame-fixtures.json": "8e9a142ff04e908cc286c15702cd18b6c2ce9453490585d0855c3f62995dd2e5",
+        "v2/registry.json": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+        "v2/schema.json": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+        "v2/states.json": "ab54cac024f0f6b31a8a229198ae1c4ab13f63ff88184cdcef78113b9e893416"
+      },
+      "implementation": {
+        "executionSemanticsVersion": "i04-infrastructure-v1",
+        "engineVersion": "0.1.0",
+        "dependencyLockHash": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+      },
+      "frozen": true
+    }
+  },
+  "matrix": {
+    "currentMacSummary": {
+      "path": "build/I04-evidence/c3-matrix/summary.json",
+      "sha256": "7a206ff9d758d4451153f08752483d2263826a3e02244774654005f3ead1e9f0",
+      "bytes": 76422
+    },
+    "currentLinuxSummary": {
+      "path": "build/I04-evidence/c3-final-linux/matrix/summary.json",
+      "sha256": "6b7c237eabb0d20bf9f3a4608293b30c49cde22f699e039d09d9d20dad30024e",
+      "bytes": 76420
+    },
+    "completeRawMac": {
+      "path": "build/I04-evidence/c3-matrix/cases.jsonl",
+      "sha256": "131ed1c6392cf50122a99fcee572ed85e32b778cc3f9cd7b4422e17cff4fa775",
+      "bytes": 881820
+    },
+    "completeRawLinux": {
+      "path": "build/I04-evidence/c3-final-linux/matrix/cases.jsonl",
+      "sha256": "e779768da076ef28037f87cff19595c9d39b90cd7420c92b9dc1b32f7a276b36",
+      "bytes": 881820
+    },
+    "committedDetailedObservations": "matrix-evidence.json",
+    "detailedObservationSourceHashesAllMatchCurrent": true,
+    "boundary": "Committed detailed C2 component observations remain valid for byte-identical matrix tests/Store/JobStore/contracts/lock. C3 reran all 144 exact cases on each platform and records new per-cell JSONL separately; random IDs and timestamps need not match the earlier run."
+  },
+  "desktopEvidence": "c3-desktop-evidence.json",
+  "handshakeEvidence": "c3-handshake-evidence.json",
+  "internalReview": "c3-internal-review.json",
+  "historicalEvidence": "reconnect-* and matrix-evidence are labeled C2 component records; original C1 reports, failures and lineage remain preserved. C3 source/tests/config bytes are bound by this new archive/manifest.",
+  "limitations": [
+    "New candidate requires two NEW full base/head designated external tasks; no C2 approval is carried forward.",
+    "No push, PR, remote CI or normal merge yet.",
+    "No host macOS Electron/native/HMR. Linux arm64 container is not x64 or Windows CI, signing or clean-device install.",
+    "Finite 65536-request sessions may fail an uncommitted in-flight job; only durable evidence is restored and no writes are replayed.",
+    "Darwin RSS monitoring is a sampled soft boundary; I05/I06/domain work and R6/O1 future policies remain open."
+  ],
+  "artifacts": [
+    {
+      "path": "build/I04-evidence/bridge-c3-review/review.json",
+      "sha256": "7d370486ffba7be3b0423602fa3c7133da5ef30cb55f387eef85b5022ea8d05a",
+      "bytes": 5606
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/check.log",
+      "sha256": "b536980bf276a211319171540072c78e46e840ca64ae6b66abcffb975e08a2a4",
+      "bytes": 8472
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/matrix.log",
+      "sha256": "ff672545834751d2d5e9d0537c418bfb25a4d8f1632f49a6d0ba1ad7e3dcb0d1",
+      "bytes": 343
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/matrix/cases.jsonl",
+      "sha256": "e779768da076ef28037f87cff19595c9d39b90cd7420c92b9dc1b32f7a276b36",
+      "bytes": 881820
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/matrix/summary.json",
+      "sha256": "6b7c237eabb0d20bf9f3a4608293b30c49cde22f699e039d09d9d20dad30024e",
+      "bytes": 76420
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/package-handshake.json",
+      "sha256": "f42b7b6994cccb5d266760b25902a5c9bbdd4ac3bdac508c9e59c4c678042735",
+      "bytes": 956
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/package-handshake.log",
+      "sha256": "86f1d8c792bc783c6419dde6aeeeec43af9bfa3e91892e65bbd3c8180121c8da",
+      "bytes": 902
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/package-probe.log",
+      "sha256": "2acdf8d42a228e347d19ae12b6c5089190f4a3fd0e574e91079145e743946af8",
+      "bytes": 265
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/package-probe/common-examples.json",
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f",
+      "bytes": 192
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/package-probe/resources.json",
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb",
+      "bytes": 1184
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/package-probe/runtime.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/package-probe/runtime.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/package-probe/runtime.stdout",
+      "sha256": "0e1610ec686fb3fe2beb8c16df57ec6a2f4869a3777a1ad00173a4883ca3fc8b",
+      "bytes": 99
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/package.log",
+      "sha256": "5d5e0bd988d96829b53dc227ebd7d43785f9a75d3b9caa565626e776b1823659",
+      "bytes": 10924
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/packaged-csp.json",
+      "sha256": "97efe2b34b24abe661a696431eb56cd0380f4143ad7169dd0be21918f661d776",
+      "bytes": 7539
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/packaged-disconnect-fixture.log",
+      "sha256": "87359e448a286ef32e095cc7e286f27641ac5b5e3a9c34cecc006c84c9b7c51f",
+      "bytes": 51
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/packaged-disconnect.log",
+      "sha256": "b8846bc77460f3555e69bed4497111103c2f4395ecf66af75eaf0bfa148ef51c",
+      "bytes": 172
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/packaged-general.log",
+      "sha256": "c971d7ce8bf14ce9d02fec0099c97a6c64972e163b29efb60ae5d5e00bd02aab",
+      "bytes": 661
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/packaged-native-fixture.log",
+      "sha256": "0fa058a3db3835dc2d6dc4b969b45dcba5c937ae31c91bc7407493be0ff44eb6",
+      "bytes": 47
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/packaged-native.log",
+      "sha256": "b05c6209e698b00d4ee686e125ab9b4e1eeb377885193a8cbf90a91170ae596f",
+      "bytes": 181
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/packaged-reload-fixture.log",
+      "sha256": "7405e940214b9452a414b8aa4ceedaa45782cbddf625b14e27796d22c6b23ee3",
+      "bytes": 47
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/packaged-reload.log",
+      "sha256": "2d9bb1d955c9aacefb8107eb956c0f7896a17152501d3731057cb3f08197af80",
+      "bytes": 183
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/source-csp.json",
+      "sha256": "eb6a1bc53597bdea0b1ce8a69f896de041656c810e97e882ad68b8e495abeaae",
+      "bytes": 7558
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/source-disconnect-fixture.log",
+      "sha256": "6ca227de08c6f6f06d7eec22ac7b8f70c94b05e279e955fb58b3240a5c551aea",
+      "bytes": 49
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/source-disconnect.log",
+      "sha256": "b8846bc77460f3555e69bed4497111103c2f4395ecf66af75eaf0bfa148ef51c",
+      "bytes": 172
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/source-general.log",
+      "sha256": "c9f883ef37ca146ac95a305979758d1a62af3a698509619fdae79c4a628e7ed8",
+      "bytes": 661
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/source-native-fixture.log",
+      "sha256": "80f50d426ce3c049623c054e0c52cfca9b362b7266ae25a43f96c05c23b0292c",
+      "bytes": 45
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/source-native.log",
+      "sha256": "b05c6209e698b00d4ee686e125ab9b4e1eeb377885193a8cbf90a91170ae596f",
+      "bytes": 181
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/source-reload-fixture.log",
+      "sha256": "db2a976bf14dcbf3f28f4a6ffa116a6a73628a317fa340d453ef09fbdc605d47",
+      "bytes": 45
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/source-reload.log",
+      "sha256": "2d9bb1d955c9aacefb8107eb956c0f7896a17152501d3731057cb3f08197af80",
+      "bytes": 183
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/test-results/i04-c3-packaged-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/i04-coordinator-recovery.json",
+      "sha256": "9b131ed4b5a50647b72157ed9296ec1f9abc1115579127928d331d1d7aac1c23",
+      "bytes": 16671
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/test-results/i04-c3-packaged-general/desktop-a-health-reply-fro-c8588--replace-the-current-status/i04-health-replies.json",
+      "sha256": "ef756916757bbfdd720e0c5d4dea76a97b479a74f15ac69b065b38bafcf35b00",
+      "bytes": 1559
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/test-results/i04-c3-packaged-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/i04-native-verified-evidence.json",
+      "sha256": "8214e01620472b7244b639bd62c4f30398fed0971da84ec5b13890f35ec064cc",
+      "bytes": 33373
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/test-results/i04-c3-source-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/i04-coordinator-recovery.json",
+      "sha256": "d05cf73d09d8122e74435efaf250ea45c3e092bb9ca6e3b54e148606d304490e",
+      "bytes": 16671
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/test-results/i04-c3-source-general/desktop-a-health-reply-fro-c8588--replace-the-current-status/i04-health-replies.json",
+      "sha256": "ef756916757bbfdd720e0c5d4dea76a97b479a74f15ac69b065b38bafcf35b00",
+      "bytes": 1559
+    },
+    {
+      "path": "build/I04-evidence/c3-final-linux/test-results/i04-c3-source-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/i04-native-verified-evidence.json",
+      "sha256": "bb8d1d98b83b5fd0c668f1f5aa5b6b8084e281222716e7e45482c4715e1f6a40",
+      "bytes": 33373
+    },
+    {
+      "path": "build/I04-evidence/c3-first-check.log",
+      "sha256": "8a490ba67b3cd0442716222e391f9af599f2195c8b55958799d318143a737d68",
+      "bytes": 4884
+    },
+    {
+      "path": "build/I04-evidence/c3-handshake-after.log",
+      "sha256": "f21802e5e24571b06b077e416af1539fdce6ad55b407e03af6af45b03968cb3b",
+      "bytes": 98
+    },
+    {
+      "path": "build/I04-evidence/c3-handshake-before.log",
+      "sha256": "170161b3ce5e762c82b64960f164bd496139aa59a152dc538e070bcb1f07470b",
+      "bytes": 2696
+    },
+    {
+      "path": "build/I04-evidence/c3-handshake-harness-error.log",
+      "sha256": "4dfe97c955d01271ca574998e3688a05fe81b03ef3a57887df3b2fc8c8bf28bb",
+      "bytes": 9415
+    },
+    {
+      "path": "build/I04-evidence/c3-macos-handshake.json",
+      "sha256": "96e9d9a46512c32109d58aa4e8c61419a7cd0c31cb2d4405dfcf6834097c894e",
+      "bytes": 1036
+    },
+    {
+      "path": "build/I04-evidence/c3-macos-handshake.log",
+      "sha256": "735d273dea66c54e0c7b158c39100a8d60a035705ca613a9365945be33075e66",
+      "bytes": 982
+    },
+    {
+      "path": "build/I04-evidence/c3-macos-package.log",
+      "sha256": "325e4fd98c23398bcdc1de0218070dfd8cf20196da6ffcfbaf94613c64706787",
+      "bytes": 13905
+    },
+    {
+      "path": "build/I04-evidence/c3-macos-probe.log",
+      "sha256": "deabce6c207b3c8a4cf361f5657b311802a71bb71c9ab08fe0951beab84b033e",
+      "bytes": 365
+    },
+    {
+      "path": "build/I04-evidence/c3-macos-probe/common-examples.json",
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f",
+      "bytes": 192
+    },
+    {
+      "path": "build/I04-evidence/c3-macos-probe/resources.json",
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb",
+      "bytes": 1184
+    },
+    {
+      "path": "build/I04-evidence/c3-macos-probe/runtime.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c3-macos-probe/runtime.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-evidence/c3-macos-probe/runtime.stdout",
+      "sha256": "2fd86e04d18c1f72d59b911461fae8dc9c225e4a96e36d7001737c467699b271",
+      "bytes": 99
+    },
+    {
+      "path": "build/I04-evidence/c3-matrix.log",
+      "sha256": "3659b0eaaef48e75853086ea1a9345155267b03de7e70c43cb0cf3787a3fa7ed",
+      "bytes": 400
+    },
+    {
+      "path": "build/I04-evidence/c3-matrix/cases.jsonl",
+      "sha256": "131ed1c6392cf50122a99fcee572ed85e32b778cc3f9cd7b4422e17cff4fa775",
+      "bytes": 881820
+    },
+    {
+      "path": "build/I04-evidence/c3-matrix/summary.json",
+      "sha256": "7a206ff9d758d4451153f08752483d2263826a3e02244774654005f3ead1e9f0",
+      "bytes": 76422
+    },
+    {
+      "path": "build/I04-evidence/c3-new-boundaries.log",
+      "sha256": "566b533769efda184c621fadcbb3499a3de7b732897627c27b430e8565082bbb",
+      "bytes": 98
+    },
+    {
+      "path": "build/I04-evidence/c3-package-handshake.py",
+      "sha256": "d491577cfdbcacefeb82c7a957894b38b9bc64ba33ad222f83302f28139e81e4",
+      "bytes": 3681
+    },
+    {
+      "path": "build/I04-evidence/c3-runtime-inputs.json",
+      "sha256": "05aa7e9baa1428b661173e4759c1f75f13e606f26641856c840ed8e5defc6413",
+      "bytes": 18526
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c2/finding-summary.json",
+      "sha256": "1e876b30d37f353a4150c4ae9aa61a8bf1c5b0ac7811708e7bc3465ae1fe12a8",
+      "bytes": 4465
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c2/probe-default.json",
+      "sha256": "757b715700616e632623eb99216e9a4b5a951aa9953173e13d9f9bc7be2a1339",
+      "bytes": 3250
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c2/probe-default.log",
+      "sha256": "757b715700616e632623eb99216e9a4b5a951aa9953173e13d9f9bc7be2a1339",
+      "bytes": 3250
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c2/probe-default.py",
+      "sha256": "9747f7b932e4f3aa2a818d6acc1aaaa4c01f04172c9447e219af25f44147677f",
+      "bytes": 3729
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c2/probe-idle-control.json",
+      "sha256": "b7f44a2e704fa58ffddcfecf5752464b8a4047e43b477e0b555077947526950a",
+      "bytes": 254
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c2/probe-idle-control.log",
+      "sha256": "b7f44a2e704fa58ffddcfecf5752464b8a4047e43b477e0b555077947526950a",
+      "bytes": 254
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c2/probe-idle-control.py",
+      "sha256": "0562cdeb852c51808e77f7cc84d2415846243c426f11d61a4f586430732e5214",
+      "bytes": 1222
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/export-harness-failure.log",
+      "sha256": "a7bbc91ae7e0403139e42926458e2350d7c66f33d9dd321ff684676089a3ed0f",
+      "bytes": 200
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/independent-fix-review.json",
+      "sha256": "e5d0b5de76b86c07a9f9f3cddbae04d1c28b5b2619c0c9dccade661ed57bb908",
+      "bytes": 6248
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/probe-default-production.log",
+      "sha256": "81962ac43a7de8fecdf6ed5f21d27fae09e982e95202c7228c4eb60310717d30",
+      "bytes": 1080
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/probe-default-timed.json",
+      "sha256": "e015ccacdfb6e42e344256803a7a9901ecd3f658bbff89889720b99044c78f63",
+      "bytes": 1221
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/probe-default-timed.log",
+      "sha256": "e015ccacdfb6e42e344256803a7a9901ecd3f658bbff89889720b99044c78f63",
+      "bytes": 1221
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/probe-default-timed.py",
+      "sha256": "63791c919eb33c2de54f48745544bccd23429324bf76ac3f9698b35a09e04a98",
+      "bytes": 4128
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/probe-default.json",
+      "sha256": "81962ac43a7de8fecdf6ed5f21d27fae09e982e95202c7228c4eb60310717d30",
+      "bytes": 1080
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/probe-default.py",
+      "sha256": "479914a075f6817a275a7cda8e5012a01d156c4f7cb106935c016154c239bbc0",
+      "bytes": 3774
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/probe-idle-control.json",
+      "sha256": "7ad38cfb7dc0541aedeee2b0f0a9859639c21ac32c5687a841593dad782d125c",
+      "bytes": 254
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/probe-idle-control.log",
+      "sha256": "7ad38cfb7dc0541aedeee2b0f0a9859639c21ac32c5687a841593dad782d125c",
+      "bytes": 254
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/probe-idle-control.py",
+      "sha256": "864f4bb94033fb5f118f1850d1e2539e3f72109e6b0e5b9ca4e33ced5ecdf399",
+      "bytes": 1267
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/probe-timely-session.json",
+      "sha256": "d023f74e7832b06d1f80fe95e73acc36a17829ffcc3d5b2e347b748e96a74df5",
+      "bytes": 471
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/probe-timely-session.log",
+      "sha256": "d023f74e7832b06d1f80fe95e73acc36a17829ffcc3d5b2e347b748e96a74df5",
+      "bytes": 471
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/probe-timely-session.py",
+      "sha256": "aa6a0ae224b257400a25c985f4f98cddedcf0c3f547c3e991a9ff4d13dc9db54",
+      "bytes": 2366
+    },
+    {
+      "path": "build/I04-evidence/handshake-independent-c3/pytest.log",
+      "sha256": "f21802e5e24571b06b077e416af1539fdce6ad55b407e03af6af45b03968cb3b",
+      "bytes": 98
+    },
+    {
+      "path": "build/I04-evidence/c3-sources.log",
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
+      "bytes": 111
+    },
+    {
+      "path": "build/I04-evidence/c3-doc-format-fixed.log",
+      "sha256": "094349bc9eee0b1588faaf15543257f4aa0d37814b8d8953ec935204b5ebff9f",
+      "bytes": 408
+    }
+  ]
+}
