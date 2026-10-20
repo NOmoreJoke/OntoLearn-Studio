@@ -2,6 +2,8 @@
 
 import copy
 import json
+import subprocess
+import sys
 from pathlib import Path
 from uuid import UUID, uuid4
 
@@ -169,6 +171,33 @@ def test_build_request_copies_and_does_not_compute(monkeypatch):
     snapshot["state"]["facts"].clear()
     assert len(req["snapshot"]["state"]["facts"]) == 3
     assert json.loads(json.dumps(req)) == req
+
+
+def test_coordinator_request_construction_never_imports_heavy_libraries(errors):
+    req = request()
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            """
+import json, sys
+from ontolearn_engine.semantic_execution import build_request
+data = json.loads(sys.stdin.read())
+r = data["request"]
+build_request(r["snapshot"], r["capability"], r["input"], r["parameters"], r["selected"],
+              **data["errors"])
+assert not any(m == "rdflib" or m.startswith("rdflib.") or m == "pyshacl"
+               or m.startswith("pyshacl.") for m in sys.modules)
+assert "ontolearn_engine.semantic" not in sys.modules
+assert "ontolearn_engine.semantic_scopes" not in sys.modules
+""",
+        ],
+        input=json.dumps({"request": req, "errors": errors}),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
 
 
 def test_query_preserves_lexical_form_tombstone_and_scope(errors):

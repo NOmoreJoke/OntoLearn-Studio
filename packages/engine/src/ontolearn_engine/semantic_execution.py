@@ -4,28 +4,17 @@ Request construction performs no RDF computation. Worker execution only consumes
 memory data and injects the canonical public error documents at its boundary.
 """
 
+import hashlib
 import json
 import re
 from uuid import uuid4
 
-from rdflib import Graph, Literal, URIRef, Variable
-from rdflib.plugins.parsers.notation3 import SinkParser
-
-from ontolearn_engine import semantic
 from ontolearn_engine.semantic_error_adapter import (
     ErrorContext,
     Origin,
     Producer,
     SemanticErrorAdapter,
     Stage,
-)
-from ontolearn_engine.semantic_offline import SemanticError, offline
-from ontolearn_engine.semantic_scopes import (
-    _digest,
-    _inputs,
-    _LexicalSink,
-    _source,
-    project_validation_scope,
 )
 
 SEMANTIC_CAPABILITIES = frozenset({"query.execute", "reasoning.execute", "validation.execute"})
@@ -67,6 +56,10 @@ def _json(value):
 
 def _copy(value):
     return json.loads(_json(value))
+
+
+def _digest(value):
+    return hashlib.sha256(_json(value).encode("utf-8")).hexdigest()
 
 
 def _definitions(snapshot):
@@ -209,6 +202,13 @@ def build_request(
 
 
 def _term(text):
+    from rdflib import Graph, Literal, URIRef
+    from rdflib.plugins.parsers.notation3 import SinkParser
+
+    from ontolearn_engine import semantic
+    from ontolearn_engine.semantic_offline import SemanticError
+    from ontolearn_engine.semantic_scopes import _LexicalSink
+
     if type(text) is not str or not (text.startswith("<") or text.startswith('"')):
         raise SemanticError("RDF_TERM_INVALID")
     semantic._text(text)
@@ -230,6 +230,10 @@ def _term(text):
 
 
 def _iri(text):
+    from rdflib import URIRef
+
+    from ontolearn_engine.semantic_offline import SemanticError
+
     if (
         type(text) is not str
         or ":" not in text
@@ -240,6 +244,11 @@ def _iri(text):
 
 
 def _graph(records):
+    from rdflib import Graph
+
+    from ontolearn_engine import semantic
+    from ontolearn_engine.semantic_offline import SemanticError
+
     graph = Graph()
     for record in records:
         if type(record) is not dict or not {"subject", "predicate", "object"} <= set(record):
@@ -254,6 +263,10 @@ def _graph(records):
 
 
 def _rules(definitions):
+    from rdflib import Variable
+
+    from ontolearn_engine import semantic
+
     def pattern(values):
         return tuple(
             Variable(value[1:])
@@ -274,6 +287,8 @@ def _rules(definitions):
 
 def _rows(payload):
     """Lossless, stable JSON-pointer display, including every evidence leaf."""
+    from ontolearn_engine.semantic_offline import SemanticError
+
     rows = []
 
     def add(cells):
@@ -304,9 +319,18 @@ def _rows(payload):
 
 def execute_request(request, *, error_catalog, error_schema):
     """Execute real pinned libraries and return only canonical safe failures."""
+    from ontolearn_engine.semantic_offline import SemanticError, offline
+
     adapter = SemanticErrorAdapter(error_catalog=error_catalog, error_schema=error_schema)
     producer, stage, origin = Producer.PROJECTION, Stage.PROJECTION, Origin.TRUSTED_INTERNAL
     try:
+        from ontolearn_engine import semantic
+        from ontolearn_engine.semantic_scopes import (
+            _inputs,
+            _source,
+            project_validation_scope,
+        )
+
         if type(request) is not dict or set(request) != {
             "snapshot",
             "capability",
