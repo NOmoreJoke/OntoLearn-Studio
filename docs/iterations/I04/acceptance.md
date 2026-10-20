@@ -51,4 +51,4 @@ C3 最新完整 check 为 macOS 630 TS/1020 Python；Linux arm64 630 TS/1017 Pyt
 
 worker 在读取请求前建立实际协调器身份监控：私有 PID，Windows 创建时间及固定句柄；非法、已死、复用或 API/线程失败均闭口退出73。原实际父死亡用例保留3秒断言，并由实际协调器打印身份后精确终止它。Win32 doubles 用于签名、身份与失败策略反例；当前 Mac/Linux source 与 onedir 真实运行另列，不能据此代替 Windows native 或断言原 CI 完整亲缘链已复现。
 
-完整 C4 check：macOS 630 TS/1051 Python；Linux arm64 630 TS/1048 Python+3 Darwin 专属跳过。两平台新包均通过相同公共例及13项真实 runtime；两平台各144格矩阵重新逐格通过，Linux recorder 通过本次 Git bundle 的提交校验源字节。124个运行输入与实际根目录及容器均逐项同源。Linux 源码及打包应用各六项桌面/健康/CSP/reload/协调器退出/native 验收通过；实际窗口、外部 X 焦点、原生提示框、任务及提交点证据使用 C4 独立路径。C3 原完整包及旧失败未覆盖。C4 双指定新完整审查、之后的三平台 CI 和合并门禁继续保留。
+完整 C4 check：macOS 630 TS/1052 Python；Linux arm64 630 TS/1049 Python+3 Darwin 专属跳过。两平台新包均通过相同公共例及17项真实 runtime：保留原13项，再验证真实协调器启动 frozen worker 后精确父死亡3秒退出，以及 stdin 保持开启时对缺失、已死和身份不符 owner 的三项读前拒绝。Windows 身份反例使用真实活 PID 及错误创建时间。两平台各144格矩阵重新逐格通过，Linux recorder 通过本次 Git bundle 的提交校验源字节。124个最终运行输入与实际根目录及容器均逐项同源。Linux 源码及打包应用各六项桌面/健康/CSP/reload/协调器退出/native 验收通过；后续仅三个宿主验证文件变化，生产字节、包哈希及矩阵输入未变，不重跑已绿 GUI。实际窗口、外部 X 焦点、原生提示框、任务及提交点证据使用 C4 独立路径。C3 原完整包及旧失败、C4 原13/16项检查点均未覆盖。C4 双指定新完整审查、之后的三平台 CI 和合并门禁继续保留。
