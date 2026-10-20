@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import { z } from 'zod'
 import {
   safeError,
@@ -10,6 +11,8 @@ import {
   type TaskUpdate,
   type TaskView,
   type SafeError,
+  type SemanticRunOptions,
+  type ReasoningRunOptions,
 } from '@ontolearn/contracts'
 import {
   acceptsJobEvent,
@@ -25,6 +28,20 @@ interface TaskEngine {
   onConnectionState(listener: (event: EngineConnectionState) => void): () => void
 }
 const id = z.string().uuid()
+const semanticOptions = z
+  .object({
+    definitionId: z.string().regex(/^[A-Za-z0-9_.-]{1,128}$/),
+    scope: z.enum(['asserted', 'asserted+derived']),
+    inputSelection: z.enum(['current', 'historical']),
+    inputSnapshotId: z
+      .string()
+      .regex(/^[0-9a-f]{64}$/)
+      .nullable(),
+    derivedResultId: id.nullable(),
+  })
+  .strict()
+  .refine((value) => (value.inputSelection === 'current') === (value.inputSnapshotId === null))
+  .refine((value) => (value.scope === 'asserted') === (value.derivedResultId === null))
 const denied = {
   code: 'PERMISSION_DENIED',
   messageKey: 'permission.denied',
@@ -68,6 +85,8 @@ export class TaskService {
     | undefined
   private watches = new Map<string, Watch>()
   private remembered = new Set<string>()
+  private acceptedSemanticJobs = new Map<string, Set<string>>()
+  private pendingSemanticStarts = 0
   private earlyBytes = 0
   private earlyEvents = new Map<string, unknown[]>()
   private cancelledSubscriptions = new Set<string>()
@@ -96,7 +115,9 @@ export class TaskService {
     this.detachView()
     this.projectId = projectId
     this.projectRevision = undefined
-    this.remembered = new Set(jobs)
+    this.remembered = new Set(
+      [...jobs, ...(this.acceptedSemanticJobs.get(projectId) ?? [])].slice(0, 16),
+    )
   }
   attachView(sink: (value: TaskUpdate) => void): void {
     this.detachView()
@@ -352,6 +373,95 @@ export class TaskService {
       jobs.push(response.data)
     }
     return jobs.map((job) => this.watches.get(job.jobId)?.job ?? job)
+  }
+  runSavedQuery(options: SemanticRunOptions): Promise<BridgeResult<JobView>> {
+    return this.startSemantic('query.execute', options)
+  }
+  runReasoning(options: ReasoningRunOptions): Promise<BridgeResult<JobView>> {
+    return this.startSemantic('reasoning.execute', options)
+  }
+  runValidation(options: SemanticRunOptions): Promise<BridgeResult<JobView>> {
+    return this.startSemantic('validation.execute', options)
+  }
+  private startSemantic(
+    capability: 'query.execute' | 'reasoning.execute' | 'validation.execute',
+    options: SemanticRunOptions,
+  ): Promise<BridgeResult<JobView>> {
+    return this.guard(async () => {
+      const parsed = semanticOptions.safeParse(options)
+      if (
+        !parsed.success ||
+        (capability === 'reasoning.execute' && parsed.data.scope !== 'asserted')
+      )
+        throw { error: invalid }
+      const projectId = this.project()
+      if (this.disposed || this.connection !== 'ready') throw { error: denied }
+      if (this.remembered.size + this.pendingSemanticStarts >= 16)
+        throw {
+          error: {
+            code: 'RESOURCE_LIMIT',
+            messageKey: 'resource.limitExceeded',
+            params: { resource: 'memory' },
+            retryable: false,
+          },
+        }
+      const generation = this.generation
+      const session = this.engine.engineSessionId
+      const params = { ...parsed.data, projectId, operationId: randomUUID(), capability }
+      if (!validateV2('params_semantic.start', params)) throw { error: invalid }
+      this.pendingSemanticStarts++
+      try {
+        // Creation is sent exactly once. Recovery only reads its durable job/operation;
+        // a transport failure must never create an automatic second operation.
+        const response = await this.engine.request('semantic.start', params)
+        if (!validateV2('result_semantic.start', response)) throw new Error('INVALID_RESPONSE')
+        const job = response as JobView
+        const input = job.input as { definitionId: string; derivedResultIds: string[] }
+        if (
+          job.projectId !== projectId ||
+          job.operationId !== params.operationId ||
+          job.capability !== capability ||
+          job.scope !== params.scope ||
+          input.definitionId !== params.definitionId ||
+          JSON.stringify(input.derivedResultIds) !==
+            JSON.stringify(params.derivedResultId ? [params.derivedResultId] : []) ||
+          (params.inputSelection === 'historical' && job.inputSnapshotId !== params.inputSnapshotId)
+        )
+          throw new Error('INVALID_RESPONSE')
+        let accepted = this.acceptedSemanticJobs.get(projectId)
+        if (!accepted) {
+          if (this.acceptedSemanticJobs.size >= 16)
+            this.acceptedSemanticJobs.delete(this.acceptedSemanticJobs.keys().next().value!)
+          accepted = new Set()
+          this.acceptedSemanticJobs.set(projectId, accepted)
+        }
+        // Keep successful late admissions discoverable by an explicit refresh of
+        // the same project without delivering them into a successor window view.
+        if (accepted.size < 16) accepted.add(job.jobId)
+        if (this.projectId === projectId && this.remembered.size < 16)
+          this.remembered.add(job.jobId)
+        if (
+          this.disposed ||
+          this.projectId !== projectId ||
+          this.generation !== generation ||
+          (session !== undefined && this.engine.engineSessionId !== session)
+        )
+          throw { error: denied }
+        const subscribed = await this.subscribeJob(job.jobId)
+        if (
+          this.disposed ||
+          this.projectId !== projectId ||
+          this.generation !== generation ||
+          (session !== undefined && this.engine.engineSessionId !== session)
+        )
+          throw { error: denied }
+        // A failed subscription does not undo admission. Return the accepted DTO;
+        // the existing restore flow will read its authoritative durable state.
+        return subscribed.ok ? subscribed.data : job
+      } finally {
+        this.pendingSemanticStarts--
+      }
+    })
   }
   activeProject(): Promise<BridgeResult<ProjectView | null>> {
     return this.guard(async () => {

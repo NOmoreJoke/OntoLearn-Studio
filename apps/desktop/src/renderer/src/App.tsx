@@ -6,6 +6,8 @@ import {
   type SafeError,
   type ProgressView,
   type TaskUpdate,
+  type JobView,
+  type SemanticRunOptions,
 } from '@ontolearn/contracts'
 import { explainError, jobStatus, resultSummary } from './task-presentation'
 import { TaskProgressBuffer } from './task-progress'
@@ -26,6 +28,27 @@ export function App() {
   const [taskError, setTaskError] = useState<SafeError>()
   const [summaries, setSummaries] = useState<Record<string, string>>({})
   const [connection, setConnection] = useState<Extract<TaskUpdate, { kind: 'connection' }>>()
+  const [definitionIds, setDefinitionIds] = useState({ query: '', reasoning: '', validation: '' })
+  const [semanticScope, setSemanticScope] = useState<'asserted' | 'asserted+derived'>('asserted')
+  const [inputSelection, setInputSelection] = useState<'' | 'current' | 'historical'>('')
+  const [snapshotId, setSnapshotId] = useState('')
+  const [derivedResultId, setDerivedResultId] = useState('')
+  const [starting, setStarting] = useState(false)
+  const [pages, setPages] = useState<
+    Record<
+      string,
+      {
+        metadata: Record<string, unknown>
+        rows: Array<{ rowId: string; ordinal: number; cells: unknown[] }>
+        nextCursor: string | null
+      }
+    >
+  >({})
+  const [history, setHistory] = useState<{
+    jobs: JobView[]
+    nextCursor: string | null
+    listSnapshotId: string
+  }>()
   const current = useRef<TaskView | undefined>(undefined)
   const latestGeneration = useRef(-1)
   const uncertain = useRef(false)
@@ -47,6 +70,8 @@ export function App() {
       setTaskError(undefined)
       setProgress(pendingProgress.current.restore(value))
       setSummaries({})
+      setPages({})
+      setHistory(undefined)
     },
     [updateTasks],
   )
@@ -84,6 +109,8 @@ export function App() {
         setTaskError(undefined)
         setProgress({})
         setSummaries({})
+        setPages({})
+        setHistory(undefined)
         return
       }
       if (update.kind === 'restored') {
@@ -129,7 +156,7 @@ export function App() {
         void window.ontolearn?.unsubscribeJob(job.jobId, current.current!.generation)
     }
   }, [applyRestored, updateTasks])
-  async function loadSummary(job: import('@ontolearn/contracts').JobView) {
+  async function loadSummary(job: JobView, cursor: string | null = null) {
     const bridge = window.ontolearn
     if (!bridge || !job.resultRef) return
     const generation = current.current?.generation
@@ -142,20 +169,136 @@ export function App() {
     const page = await bridge.getResultPage({
       resultId: job.resultRef.resultId,
       pageSize: 20,
-      cursor: null,
+      cursor,
     })
     if (current.current?.generation !== generation) return
     if (!page.ok) {
       setTaskError(page.error)
       return
     }
+    setPages((old) => ({
+      ...old,
+      [job.jobId]: {
+        metadata: metadata.data,
+        rows: page.data.rows as Array<{ rowId: string; ordinal: number; cells: unknown[] }>,
+        nextCursor: page.data.nextCursor as string | null,
+      },
+    }))
     const label =
       metadata.data.state === 'stale'
         ? '结果已过期；显示原输入的历史计算。'
         : metadata.data.state === 'historical'
           ? '历史结果；不代表当前项目状态。'
           : '当前结果。'
-    setSummaries((old) => ({ ...old, [job.jobId]: `${label}${resultSummary(page.data, job)}` }))
+    setSummaries((old) => ({
+      ...old,
+      [job.jobId]: `${label}${['query.execute', 'reasoning.execute', 'validation.execute'].includes(String(job.capability)) ? '下方为实际结果、告警与依据分页。' : resultSummary(page.data, job)}`,
+    }))
+  }
+  async function runSemantic(kind: 'query' | 'reasoning' | 'validation') {
+    const bridge = window.ontolearn
+    const view = current.current
+    if (!bridge || !view?.project || !inputSelection || starting || uncertain.current) return
+    const generation = view.generation
+    const projectId = view.project.projectId
+    const epoch = connectionEpoch.current
+    const acceptsReply = () =>
+      current.current?.generation === generation &&
+      current.current?.project?.projectId === projectId &&
+      connectionEpoch.current === epoch
+    const options: SemanticRunOptions = {
+      definitionId: definitionIds[kind],
+      scope: kind === 'reasoning' ? 'asserted' : semanticScope,
+      inputSelection,
+      inputSnapshotId: inputSelection === 'historical' ? snapshotId : null,
+      derivedResultId:
+        kind !== 'reasoning' && semanticScope === 'asserted+derived' ? derivedResultId : null,
+    }
+    setStarting(true)
+    try {
+      const response =
+        kind === 'query'
+          ? await bridge.runSavedQuery(options)
+          : kind === 'validation'
+            ? await bridge.runValidation(options)
+            : await bridge.runReasoning({ ...options, scope: 'asserted', derivedResultId: null })
+      if (!acceptsReply()) return
+      if (!response.ok) setTaskError(response.error)
+      else await restore()
+    } catch {
+      if (acceptsReply()) setTaskError(safeError(undefined))
+    } finally {
+      setStarting(false)
+    }
+  }
+  async function loadHistory(next = false) {
+    const bridge = window.ontolearn
+    const view = current.current
+    if (!bridge || !view?.project || uncertain.current) return
+    const epoch = connectionEpoch.current
+    const response = await bridge.listJobs({
+      filter: 'all',
+      pageSize: 20,
+      listSnapshotId: next ? (history?.listSnapshotId ?? null) : null,
+      cursor: next ? (history?.nextCursor ?? null) : null,
+    })
+    if (current.current?.generation !== view.generation || connectionEpoch.current !== epoch) return
+    if (!response.ok) setTaskError(response.error)
+    else {
+      const binding = response.data.binding as { listSnapshotId: string }
+      setHistory({
+        jobs: response.data.jobs as JobView[],
+        nextCursor: response.data.nextCursor as string | null,
+        listSnapshotId: binding.listSnapshotId,
+      })
+    }
+  }
+  function resultPage(job: JobView) {
+    const page = pages[job.jobId]
+    if (!page) return null
+    return (
+      <div aria-label="不可变结果与完整来源">
+        <p>
+          结果 {String(page.metadata.resultId)} · 输入快照 {String(page.metadata.inputSnapshotId)} ·
+          范围 {String(page.metadata.scope)} · {String(page.metadata.state)}
+        </p>
+        <details>
+          <summary>结果版本、依赖和过期原因</summary>
+          <pre>{JSON.stringify(page.metadata, null, 2)}</pre>
+        </details>
+        {page.rows.length ? (
+          <table>
+            <caption>固定顺序结果与来源；逐页查看全部记录</caption>
+            <thead>
+              <tr>
+                <th>序号</th>
+                <th>结果 / 告警 / 依据</th>
+              </tr>
+            </thead>
+            <tbody>
+              {page.rows.map((row) => (
+                <tr key={row.rowId}>
+                  <td>{row.ordinal}</td>
+                  <td>
+                    <pre>{JSON.stringify(row.cells, null, 2)}</pre>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>本页无结果。请核对数据范围、输入版本、筛选条件和保存的定义。</p>
+        )}
+        {page.nextCursor && (
+          <button
+            disabled={Boolean(connection)}
+            onClick={() => void loadSummary(job, page.nextCursor)}
+          >
+            下一页结果与来源
+          </button>
+        )}
+      </div>
+    )
   }
   const [checking, setChecking] = useState(false)
   async function checkEngine() {
@@ -245,7 +388,7 @@ export function App() {
                 <ErrorDetails error={result.error} context="health" />
               )
             ) : (
-              '尚未检查 · 当前仅开放连接检查能力。'
+              '尚未检查本地引擎连接。'
             )}
           </div>
         </section>
@@ -278,7 +421,7 @@ export function App() {
                   {jobStatus(job)} · 状态版本 {job.stateVersion}
                 </p>
                 <p>
-                  输入快照 {job.inputSnapshotId.slice(0, 12)} ·
+                  输入快照 {job.inputSnapshotId} · 范围 {String(job.scope)} ·
                   {job.inputSnapshotId === tasks.project?.inputSnapshotId
                     ? '当前输入'
                     : '历史输入；此任务保留原执行依据'}
@@ -300,6 +443,9 @@ export function App() {
                       : ''}
                   </p>
                 )}
+                <p>
+                  任务 {job.jobId} · 操作 {job.operationId}
+                </p>
                 {job.error && <ErrorDetails error={job.error} context="task" />}
                 {['queued', 'running'].includes(job.state) && (
                   <button
@@ -333,12 +479,133 @@ export function App() {
                 </button>
                 {job.resultRef && (
                   <button onClick={() => void loadSummary(job)} disabled={Boolean(connection)}>
-                    查看运行摘要
+                    查看结果与来源
                   </button>
                 )}
                 {summaries[job.jobId] && <p>{summaries[job.jobId]}</p>}
+                {resultPage(job)}
               </article>
             ))}
+          </section>
+        )}
+        {tasks?.project && (
+          <section className="health-panel" aria-label="本地语义技术验证">
+            <h2>运行已保存的本地语义定义</h2>
+            <p>
+              技术验证入口：项目必须由可信应用配置授权。当前没有项目创建或定义编辑流程；仅执行该项目已保存的查询、规则和约束。
+            </p>
+            <p>
+              项目 {tasks.project.projectId} · 当前快照 {tasks.project.inputSnapshotId}
+            </p>
+            <label>
+              执行输入{' '}
+              <select
+                value={inputSelection}
+                onChange={(event) =>
+                  setInputSelection(event.target.value as '' | 'current' | 'historical')
+                }
+              >
+                <option value="">请明确选择输入</option>
+                <option value="current">当前项目输入</option>
+                <option value="historical">指定历史快照</option>
+              </select>
+            </label>
+            {inputSelection === 'historical' && (
+              <label>
+                历史输入快照标识{' '}
+                <input
+                  value={snapshotId}
+                  onChange={(event) => setSnapshotId(event.target.value)}
+                  maxLength={64}
+                />
+              </label>
+            )}
+            <label>
+              查询与验证范围{' '}
+              <select
+                value={semanticScope}
+                onChange={(event) =>
+                  setSemanticScope(event.target.value as 'asserted' | 'asserted+derived')
+                }
+              >
+                <option value="asserted">断言事实</option>
+                <option value="asserted+derived">断言事实＋明确选中的已有推导结果</option>
+              </select>
+            </label>
+            {semanticScope === 'asserted+derived' && (
+              <label>
+                已有推理结果标识{' '}
+                <input
+                  value={derivedResultId}
+                  onChange={(event) => setDerivedResultId(event.target.value)}
+                  maxLength={36}
+                />
+              </label>
+            )}
+            <p>
+              推理只读取所选输入的断言事实与本体；不会为了查询或检查自动重算已有推导。规则链、递归及范围外构造仍不支持；当前候选范围等待
+              Q6 确认。
+            </p>
+            {(['query', 'reasoning', 'validation'] as const).map((kind) => (
+              <div key={kind}>
+                <label>
+                  {
+                    {
+                      query: '已保存查询标识',
+                      reasoning: '已保存规则集标识',
+                      validation: '已保存约束标识',
+                    }[kind]
+                  }
+                  <input
+                    value={definitionIds[kind]}
+                    maxLength={128}
+                    onChange={(event) =>
+                      setDefinitionIds((old) => ({ ...old, [kind]: event.target.value }))
+                    }
+                  />
+                </label>
+                <button
+                  disabled={
+                    starting || Boolean(connection) || !inputSelection || !definitionIds[kind]
+                  }
+                  onClick={() => void runSemantic(kind)}
+                >
+                  {{ query: '运行查询', reasoning: '运行推理', validation: '运行检查' }[kind]}
+                </button>
+              </div>
+            ))}
+            <p>请求只提交一次。连接中断后请先查询持久任务历史，核对原操作，勿直接重复提交。</p>
+          </section>
+        )}
+        {tasks?.project && (
+          <section aria-label="持久任务历史">
+            <h2>持久任务历史</h2>
+            <button disabled={Boolean(connection)} onClick={() => void loadHistory()}>
+              读取任务历史首页
+            </button>
+            {history?.jobs.map((job) => (
+              <article key={job.jobId}>
+                <p>
+                  {jobStatus(job)} · 任务 {job.jobId} · 操作 {job.operationId}
+                </p>
+                <p>
+                  输入快照 {job.inputSnapshotId} · 范围 {String(job.scope)} ·{' '}
+                  {job.inputSnapshotId === tasks.project?.inputSnapshotId ? '当前输入' : '历史输入'}
+                </p>
+                {job.error && <ErrorDetails error={job.error} context="task" />}
+                {job.resultRef && (
+                  <button disabled={Boolean(connection)} onClick={() => void loadSummary(job)}>
+                    查看结果与来源
+                  </button>
+                )}
+                {resultPage(job)}
+              </article>
+            ))}
+            {history?.nextCursor && (
+              <button disabled={Boolean(connection)} onClick={() => void loadHistory(true)}>
+                下一页任务历史
+              </button>
+            )}
           </section>
         )}
         {taskError && !connection && <ErrorDetails error={taskError} context="task" />}
@@ -361,7 +628,10 @@ export function App() {
           </div>
         </section>
         <footer>
-          需求基准 PRD V0.6<span>项目编辑、自动保存、模型调用与六模块业务能力尚未接入。</span>
+          需求基准 PRD V0.6
+          <span>
+            当前为开发与语义验证入口；项目编辑、自动保存、模型调用和完整六模块流程尚未接入。
+          </span>
         </footer>
       </main>
     </div>

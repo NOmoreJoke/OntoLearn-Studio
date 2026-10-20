@@ -122,9 +122,23 @@ export interface ResultPageOptions {
   pageSize: number
   cursor: string | null
 }
+export interface SemanticRunOptions {
+  definitionId: string
+  scope: 'asserted' | 'asserted+derived'
+  inputSelection: 'current' | 'historical'
+  inputSnapshotId: string | null
+  derivedResultId: string | null
+}
+export type ReasoningRunOptions = SemanticRunOptions & {
+  scope: 'asserted'
+  derivedResultId: null
+}
 // Renderer receives named operations only; project authority comes from main, never a supplied UUID.
 export interface DesktopBridge {
   getEngineHealth(): Promise<HealthResult>
+  runSavedQuery(options: SemanticRunOptions): Promise<BridgeResult<JobView>>
+  runReasoning(options: ReasoningRunOptions): Promise<BridgeResult<JobView>>
+  runValidation(options: SemanticRunOptions): Promise<BridgeResult<JobView>>
   restoreTasks(): Promise<BridgeResult<TaskView>>
   getActiveProject(): Promise<BridgeResult<ProjectView | null>>
   getJob(jobId: string): Promise<BridgeResult<JobView>>

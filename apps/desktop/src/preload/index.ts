@@ -2,6 +2,9 @@ import { contextBridge, ipcRenderer } from 'electron'
 import { isTaskUpdate, type DesktopBridge } from '@ontolearn/contracts'
 
 const bridge: DesktopBridge = {
+  runSavedQuery: (options) => ipcRenderer.invoke('semantic:query', options),
+  runReasoning: (options) => ipcRenderer.invoke('semantic:reasoning', options),
+  runValidation: (options) => ipcRenderer.invoke('semantic:validation', options),
   getEngineHealth: () => ipcRenderer.invoke('engine:health'),
   restoreTasks: () => ipcRenderer.invoke('tasks:restore'),
   getActiveProject: () => ipcRenderer.invoke('project:active'),
