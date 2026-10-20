@@ -2,7 +2,7 @@
 
 同一 Goal；会话 01a15899-4318-7522-8035-353e88d34de4。2026-10-20 已实际接收完整 Goal 第九节与无桌面打扰约束。
 
-当前阶段：C3 双指定新任务已对同版完整候选明确通过，报告、实际终态及逐项处置保留于 round-3 与 round-3-processing.json；已推送 24fd202 并创建 PR #5。实际首轮 PR CI：Linux Quality 成功，Windows engine:check 失败，macOS 未取得 hosted runner 而取消；未合并。当前正在独立 worktree 修复 C4，必须重新验证、冻结新版并完成双方新建完整审查，不能沿用 C3 通过。实际 CI 失败边界见 c4-ci-trigger.json；合并及远端核验仍未完成。
+当前阶段：C3 双指定新任务已对同版完整候选明确通过，报告、实际终态及逐项处置保留于 round-3 与 round-3-processing.json；已推送 24fd202 并创建 PR #5。实际首轮 PR CI：Linux Quality 成功，Windows engine:check 失败，macOS 未取得 hosted runner 而取消；未合并。C4 修复及本地、隔离与包内复验已完成并集成，准备冻结后提交双方各新建的完整审查，不能沿用 C3 通过。实际 CI 失败边界见 c4-ci-trigger.json；C4 尚未推送，新 CI、合并及远端核验仍未完成。
 
 以下“范围与门禁”至“用户确认恢复后的检查点”为按执行顺序保留的历史快照，不是当前完成状态。后续 C1 派发/终审记录另有时间标题。
 
@@ -156,3 +156,7 @@ C2双方原终态与报告纯流程提交已正常合入C3。下一步主线集�
 ZCode GLM-5.3/最高135行报告SHA759fa0270e493e48c1dce0a23d08d4d03e64f4698a9a27a5ec4e41b7826a3007；MiniMax M3.1-Flash/xhigh最终352行报告SHAb1acf1e2c564a904e177bfbca9cd1ab0c5da39e9ae285f1a33a79398d0bbc338，双方新完整105文件e45e6038→d3ad536均实际终态且明确通过。MM同任务方法/统计更正亦已终态：原失败、v2/v3/v4及首314行报告保留，批次与请求、显式EOF与自然退出、22原ID与继承开放项分开；源码零变动，不重建任务/Goal，不互通本轮结论。
 
 22原历史ID为21关闭+Z3原约延期1项，继承开放另列；R3-N1为审查探针自身问题，已处置，未当产品修复或新候选。完整读回/所有处置与raw哈希见round-3-processing.json。现在仅追加流程归档，受审105路径除允许status纯追加均字节一致；准备verified feature push与develop PR。三平台远端CI、正常合并与远端核验尚未执行，完整I04 Goal未完成。
+
+## C4 final local checkpoint (2026-10-21)
+
+C3 actual PR CI failure and hosted-runner capacity cancellation are retained in c4-ci-trigger.json. C4 integrated production owner bootstrap and explicit UTF-8 resource decoding, plus precise platform stderr/closed-pipe cleanup test adaptations. Final source checkpoint9eb0b6e: macOS630TS/1052Python; isolatedLinux630TS/1049Python+3Darwin-only skips. Two fresh engines each pass common examples and17 runtime cases, including frozen worker exact3s owner death and three invalid-owner rejections before stdin read while stdin stays open. Source/package Linux GUI each6 and two144-cell matrices were executed at identical production/Store inputs; only three later host verification files changed. Both124-file final manifests match actual primary/container bytes. All original failures and13/16-case checkpoints remain distinct. Finite independent reviews and their boundaries are indexed in c4-internal-review.json; final verification in c4-verification.json. Full new same-base/head designated dual review, feature push, actual three-platform CI, normal develop merge and remote verification are still required.
