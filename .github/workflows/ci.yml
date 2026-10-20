@@ -62,11 +62,29 @@ jobs:
         env:
           I04_TEST_FIXTURE: ${{ github.workspace }}/build/i04-disconnect-ci/fixture.json
       - run: uv run --frozen python scripts/verify-i04-package.py release build/i04-package-ci
+      - name: I04 packaged application recovery
+        shell: bash
+        run: |
+          mapfile -t sandboxes < <(find release -type f -name chrome-sandbox)
+          mapfile -t executables < <(find release -type f -name '@ontolearndesktop')
+          test "${#sandboxes[@]}" -eq 1
+          test "${#executables[@]}" -eq 1
+          sudo chown root:root "${sandboxes[0]}"
+          sudo chmod 4755 "${sandboxes[0]}"
+          export ONTOLEARN_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/${executables[0]}"
+          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-packaged-disconnect-ci
+          I04_TEST_FIXTURE="$GITHUB_WORKSPACE/build/i04-packaged-disconnect-ci/fixture.json" xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-disconnect-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "coordinator exit" --output=test-results/i04-packaged-disconnect'
+          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-packaged-reload-ci --background-rounds 12
+          I04_TEST_FIXTURE="$GITHUB_WORKSPACE/build/i04-packaged-reload-ci/fixture.json" xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-reload-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "reload re-queries" --output=test-results/i04-packaged-reload'
+          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-packaged-native-ci
+          I04_TEST_FIXTURE="$GITHUB_WORKSPACE/build/i04-packaged-native-ci/fixture.json" I04_NATIVE_ISOLATED=1 xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-native-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "native renderer" --output=test-results/i04-packaged-native'
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: i04-package-linux
-          path: build/i04-package-ci/
+          path: |
+            build/i04-package-ci/
+            test-results/i04-*/
           retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: failure()
