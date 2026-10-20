@@ -1,0 +1,56 @@
+{
+  "iteration": "I04",
+  "candidate": 4,
+  "scope": "Independent finite internal reviews; each original author/snapshot/actual commands and platform limits are recorded in the raw JSON. These do not replace full external designated dual review.",
+  "reviews": {
+    "encodingInitial": {
+      "path": "build/I04-evidence/I04-c4-encoding-review-5cbe39c/review.json",
+      "sha256": "46e192e0496368cf0e2fe1d174ff6fd700be024e83957dbd0549e78a334f897b",
+      "bytes": 3705
+    },
+    "encodingFixed": {
+      "path": "build/I04-evidence/I04-c4-encoding-review-223f978/review.json",
+      "sha256": "156723a216f3efd2e25b4f1b3941e5a38605efce77245ac8a050b1a505257ace",
+      "bytes": 6710
+    },
+    "rootTests": {
+      "path": "build/I04-bridge-handoff/review-dded7bc/review.json",
+      "sha256": "52536cc3803f97c732566bda5fa06f616422b26fe327df2b2938c8e51872977d",
+      "bytes": 2114
+    },
+    "owner": {
+      "path": "build/I04-evidence/I04-c4-owner-review-06e5e51/review.json",
+      "sha256": "4faaec5f73ed294cc58f3ff178b3f5ea709fb7fcf93f805a59b929f8a5a25bd3",
+      "bytes": 10890
+    },
+    "packageOwnerFirst": {
+      "path": "build/I04-evidence/c4-owner-adaptation-review/review.json",
+      "sha256": "104ce790ca4857fa58e8c1e5967fbab19668d4ff5392c0b332b2d6d7f484f442",
+      "bytes": 2236
+    },
+    "packageOwnerFinal": {
+      "path": "build/I04-evidence/c4-owner-adaptation-final-review/review.json",
+      "sha256": "fc5957441544af755e3a32f0ce8430ea75146942a261a39dab9a50d015e475d3",
+      "bytes": 2399
+    }
+  },
+  "findings": [
+    {
+      "id": "C4-ENC-01",
+      "severity": "P2",
+      "source": "storage independent review5cbe39c",
+      "problem": "First cp1252 fixture injection missed UTF-8 mode normalization and falsely failed.",
+      "disposition": "Adopted223f978; exact read_text-default injection independently rechecked normal and UTF8 modes; old negative preserved; closed."
+    },
+    {
+      "id": "C4-PACKAGED-OWNER-COVERAGE",
+      "severity": null,
+      "source": "storage owner finite review frozen13 evidence boundary",
+      "problem": "Normal frozen13 was not an exact orphan-death or early-bootstrap rejection measurement.",
+      "disposition": "Adopted58e270c and9eb0b6e actual binary worker routing; final two platforms17 each incl exact3s death plus missing/dead/mismatch before input; finite supervisor independent review4 actualMac cases; Windows native still gated by actual CI."
+    }
+  ],
+  "remainingInternalImplementationBlockingFindings": [],
+  "externalApproval": "pending actual new complete same-base/head GLM53/highest and M31Flash/xhigh tasks",
+  "boundary": "No C4 source push or merge yet. Original CI failure and all intermediate failures retained."
+}

@@ -4155,6 +4155,102 @@
           },
           "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 2
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "const": null
+            },
+            "method": {
+              "enum": [
+                "health",
+                "session.ping",
+                "project.get",
+                "job.create",
+                "job.get",
+                "job.cancel",
+                "job.list",
+                "job.subscribe",
+                "job.unsubscribe",
+                "result.get",
+                "result.current",
+                "result.page",
+                "operation.get"
+              ]
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "const": "VERSION_INCOMPATIBLE"
+                    },
+                    "messageKey": {
+                      "const": "protocol.versionIncompatible"
+                    },
+                    "retryable": {
+                      "const": false
+                    },
+                    "params": {
+                      "type": "object",
+                      "properties": {
+                        "supportedVersions": {
+                          "type": "array",
+                          "items": {
+                            "const": 2
+                          },
+                          "minItems": 1,
+                          "maxItems": 1
+                        }
+                      },
+                      "required": ["supportedVersions"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": ["code", "messageKey", "retryable", "params"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "const": "HANDSHAKE_REQUIRED"
+                    },
+                    "messageKey": {
+                      "const": "protocol.handshakeRequired"
+                    },
+                    "retryable": {
+                      "const": false
+                    },
+                    "params": {
+                      "type": "object",
+                      "properties": {},
+                      "required": [],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": ["code", "messageKey", "retryable", "params"],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
         }
       ]
     },

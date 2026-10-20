@@ -1,4 +1,4 @@
-"""I03 pure contract checker; not imported by the production v1 engine.
+"""Shared v2 contract checker; resources are shipped byte-for-byte with the engine.
 
 Same deliberately small JSON Schema vocabulary as the TS/zod adapter.
 """
@@ -261,6 +261,38 @@ def validate(name, value):
 
 
 def accepts_job_event(value, binding):
+    # The binding is a trusted-side projection, but never assume its shape. Reject
+    # corruption before arithmetic/indexing; never silently default sequence/state.
+    fields = {
+        "engineSessionId",
+        "projectId",
+        "jobId",
+        "subscriptionId",
+        "lastSeq",
+        "stateVersion",
+        "state",
+    }
+    if not isinstance(binding, dict) or set(binding) != fields:
+        return False
+    if any(
+        not validate("id", binding[k])
+        for k in ("engineSessionId", "projectId", "jobId", "subscriptionId")
+    ):
+        return False
+    if any(
+        type(binding[k]) is not int or not low <= binding[k] <= 9007199254740991
+        for k, low in (("lastSeq", 0), ("stateVersion", 1))
+    ):
+        return False
+    if not isinstance(binding["state"], str) or binding["state"] not in {
+        "queued",
+        "running",
+        "cancelling",
+        "succeeded",
+        "failed",
+        "cancelled",
+    }:
+        return False
     if not validate("notification", value) or value["event"] == "session.status":
         return False
     if not (
