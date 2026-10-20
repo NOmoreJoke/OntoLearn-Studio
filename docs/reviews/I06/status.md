@@ -25,6 +25,7 @@
 - 续跑新增的四项凭据绑定反例在旧实现上实际失败；密文改为封装并核对 ref/主体/版本，新增严格格式反例。独立 agent 再次实际验证 72/72，并确认绑定问题关闭、未发现新增阻断，见 [记录](credential-binding-review.md)。本轮 check 先后遇到测试变量 lint/格式错误，均修正后完整通过；新版文件哈希和日志摘要见 [证据](evidence/credential-binding.json)。
 - 依赖已通过正式 `wait_threads` 重新核验：I03/I05 的实际 turn 为 inProgress；I02 为 inProgress，尚无 I02/I03 合并证据，I04 在总控清单仍 pending。未把对 I02 的审查应用授权扩大到本会话桌面操作；本会话继续无 GUI。
 - 2026-10-20 总控请求受限错误需求：已整理 [11 类公共错误映射输入](../../iterations/I06/public-error-requirements.md)，含建议 messageKey、严格空 safe params、禁止透传集合和 retryable/禁止自动重放边界；供总控转交 I03。未修改公共 contracts 或提前接线。远端 develop 本次只读核验仍为 `1b6df7a220fc9a67d7046133a340085f03f0a96c`，正式依赖尚未合入。
+- 已实际只读核对 I03 的 `docs/reviews/I03/handoffs/I06-error-disposition.md`（SHA-256 `25910655ff5f03e20509393a45863af0093a0d7d0436cceb72ff1603deaee50a`），[承接读回](../../iterations/I06/public-error-requirements.md)记录了通用错误仅安全兜底、新契约版本/公共正反例/双审后才精确接线、独立 cancelled 结果分支、网关新错误空 params/false、retryable 不授权自动重放及写任务先对账。现有 INVALID_REQUEST 的固定 `{field:"params"}` 兜底按实际源文件明确保留，没有误写为空参数。未修改 I03、共享契约、实现或测试；Goal 仍为 blocked，原待验不变。
 - 超时/容量续跑追加五项验收反例，未修改实现：凭据等待超时后零外发及恢复复用、审计等待超时零外发、第五个请求不排队且取消释放容量、持续 503 最多两次尝试、真实无响应本地接收端超时不自动重放。前两项以受控时钟验证等待边界，最后一项使用真实 Node socket/计时；见 [本轮证据](evidence/timeout-capacity.json)。此类测试追加仍属于未来完整冻结候选的受审范围，不能沿用指定双方旧版通过（当前也无指定通过）。
 
 ## 依赖、双审和下一步
@@ -32,7 +33,7 @@
 ### 阻塞核验与恢复条件
 
 - 同一“正式依赖尚未合并、平台/指定审查缺少本会话可用环境”条件跨初始交付及后续多次 Goal turn 持续存在；期间仍完成凭据绑定修复、I03 接口交接和超时/容量反例。当前未发现仍可在授权阶段内独立推进的必要工作，不能用新文档/重复测试或提前复制未批准协议替代实际依赖。
-- 本次 `git ls-remote origin refs/heads/develop` 实际返回 `1b6df7a220fc9a67d7046133a340085f03f0a96c`；核心/测试哈希与最新已通过验证一致。检查点为 `208f48bf9888a78b19e4a8049eb29772b3f10f24`，后续仅追加本阻塞记录。
+- 本次 `git ls-remote origin refs/heads/develop` 实际返回 `1b6df7a220fc9a67d7046133a340085f03f0a96c`；核心/测试哈希与最新已通过验证一致。检查点为 `208f48bf9888a78b19e4a8049eb29772b3f10f24`，后续仅追加流程记录。
 - 对同一实际任务执行 45 秒 `wait_threads`，均仍 inProgress：I03 cursor `4e760116-fc4e-44e4-82df-053fdee3eaa5:49`，已明确收到 11 类需求，尚在形成新候选；I02 cursor `72c9322d-f0e9-4b8f-bd47-081efdc63a8c:638`，正在核对 GLM 报告勘误，未合并。总控清单 I04 仍 pending、无任务 handle。观察超时不等于任务终止，没有重启他方任务。
 - 正式 `update_goal(status=blocked)` 返回 blocked；未缩小完整目标，也未声称全验收、指定双审或远端集成已完成。
 - 恢复：由同一开发会话在总控核验 I02/I03/I04 实际合并后继续；刷新包含依赖的 develop，按 I03 冻结公共契约映射并接线。实际 safeStorage/native 与指定双外审须有不干扰用户的隔离环境或用户明确时段；当前仍无本会话 GUI 许可。语义特定来源仅在需要时等待 I05。之后按原全验收 → 同版双方独立通过 → PR/实际 CI/正常合并/远端核验完成，不能沿用阶段内审作为指定通过。

@@ -29,3 +29,14 @@
 ## 采用后的必要验证
 
 I03 维护公共 code/messageKey/params 配对、未知字段和错误参数拒绝样例；I06 在依赖合并后的实际主进程 → bridge → UI 路径验证本表 11 类的完整固定映射和安全说明。测试须断言返回字段全集，不以文件中存在枚举、单元 mock 或当前私有码直接穿透作为接入完成。若最终公共契约需要细分 timeout/忙碌/上游错误，先保留本表安全兜底，再由 I06 在实际来源处产生精确类别，不能从异常文本猜分类。
+
+## I03 实际承接读回（2026-10-20）
+
+总控转交后，I06 已只读核对 I03 的 `docs/reviews/I03/handoffs/I06-error-disposition.md`，来源工作树为 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts`。读回内容 SHA-256：`25910655ff5f03e20509393a45863af0093a0d7d0436cceb72ff1603deaee50a`。以下记录是接口协作证据，不表示 I03 新契约已冻结或 S3 能力已注册。
+
+- I03 当前不新增 S3 方法/能力，不透传 I06 私有码。现有 `INVALID_REQUEST`、`PERMISSION_DENIED`、`INTERNAL_ERROR` 只能作安全兜底，不能冒充已经精确表达 11 类网关语义。特别不把配置失效映射成项目 revision/session 冲突，不把重定向拒绝映射成确定性查询外联禁止，不借用业务存储或引擎帧/分页错误。
+- 原文件对 `INVALID_INPUT` 的现有兜底是 `INVALID_REQUEST / protocol.invalidRequest / {field:"params"} / retryable=false`，其中 field 只能为固定类别，不能含输入或校验 issue。其余网关新错误采用严格空 params、固定 messageKey、`retryable=false`。这一区别按实际文件保留；不将“新网关错误应为空参数”的要求误写成现有通用错误也是空参数。
+- 精确网关 code/messageKey 在实际 I06 接线前由共享契约唯一维护者形成新版本、新候选，包含公共正反例并履行当时完整双审门禁。I03 表中 `GATEWAY_*` 等均是候选命名，当前不属于已批准 schema；I06 不能另建公共注册表或提前接线。
+- `CANCELLED` 后续采用独立取消结果分支，不能直接塞入当前公共 error 枚举，也不作为确定性任务 failed 或领域 staleReason。只说明停止本地等待/连接，已发送内容无法撤回。
+- 公共 `retryable` 只说明条件修复后用户能否显式重发，不授权自动重放。写任务先以 operation/job 对账；模型失败不证明未发送，bridge 恢复不得叠加网关已掌握的一次 429/503 重试。用户手动发送仍须重新进行完整授权、配置和最终载荷检查。
+- 新版本落地后验证真实 main → 窄 bridge → UI 的全部字段、安全参数拒绝、取消分支和四段式说明；不得因模型失败阻断本地保存。这份设计承接不替代正式接线、实际 safeStorage、存储/导出和窗口重连验收，也不解除依赖/隔离环境阻塞。
