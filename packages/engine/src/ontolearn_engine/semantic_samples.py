@@ -4,10 +4,12 @@ Only semantic G-base is executed here; mapping, behavior and simulation remain
 separate dependencies. S1's 18*scale synthetic input is reused byte-for-byte.
 """
 
-from rdflib import RDF, RDFS, Literal, Namespace, URIRef, Variable
+from pyshacl.validator import Validator
+from rdflib import RDF, RDFS, Graph, Literal, Namespace, URIRef, Variable
 
 from ontolearn_engine.semantic import Rule, check_shapes, parse_turtle, query, reason
-from ontolearn_engine.semantic_offline import SemanticError
+from ontolearn_engine.semantic_offline import SemanticError, offline
+from ontolearn_engine.semantic_scopes import prepare_validation_scope
 from ontolearn_engine.storage_probe import QUERY, SEED, fixture
 
 EX = Namespace("urn:ontolearn:")
@@ -157,7 +159,177 @@ def suite() -> dict:
         "R-05-06": r5,
         "O-01": "no recorded alarm; no closed-world negative assertion",
         "finiteTemplates": template_suite(),
+        "validationScopes": scope_suite(),
         "scope": "pure G.2 semantics; no storage/task/UI integration",
+    }
+
+
+def scope_suite():
+    """Real asserted / asserted+selected-derived ranges; never a mocked result."""
+    ontology = parse_turtle(
+        PREFIX
+        + """
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        :CriticalPump rdfs:subClassOf :Pump . :Pump rdfs:subClassOf :Equipment .
+    """
+    )
+    asserted = parse_turtle(
+        PREFIX
+        + """
+        :unit a :CriticalPump; :alarm :alert . :alert :level "High"; :status "Open" .
+        :explicit a :Equipment; :name "Explicit" .
+    """
+    )
+    shapes = parse_turtle(
+        SHAPES
+        + """
+        :RiskShape a sh:NodeShape; sh:targetClass :HighRiskEquipment; sh:property :RiskName .
+        :RiskName a sh:PropertyShape; sh:path :name; sh:minCount 1 .
+    """,
+        shapes=True,
+    )
+    original_asserted, original_ontology = set(asserted), set(ontology)
+    direct = prepare_validation_scope(asserted, ontology, include_derived=False)
+    inferred = prepare_validation_scope(asserted, ontology, include_derived=True, rules=(RISK,))
+    direct_result = check_shapes(direct.facts, shapes)
+    derived_result = check_shapes(inferred.facts, shapes)
+
+    def targets(data):
+        with offline():
+            local_data, local_shapes = Graph(), Graph()
+            for triple in data:
+                local_data.add(triple)
+            for triple in shapes:
+                local_shapes.add(triple)
+            validator = Validator(
+                local_data,
+                shacl_graph=local_shapes,
+                options={
+                    "inference": "none",
+                    "advanced": False,
+                    "use_js": False,
+                    "inplace": False,
+                    "sparql_mode": False,
+                },
+            )
+            return {
+                shape.node.n3(): sorted(node.n3() for node in shape.focus_nodes(local_data))
+                for shape in validator.shacl_graph.shapes
+            }
+
+    direct_targets, derived_targets = targets(direct.facts), targets(inferred.facts)
+    assert direct_targets == {
+        EX.EquipmentName.n3(): [EX.explicit.n3()],
+        EX.RiskShape.n3(): [],
+        EX.NameProperty.n3(): [],
+        EX.RiskName.n3(): [],
+    }
+    assert derived_targets == {
+        EX.EquipmentName.n3(): [EX.explicit.n3(), EX.unit.n3()],
+        EX.RiskShape.n3(): [EX.unit.n3()],
+        EX.NameProperty.n3(): [],
+        EX.RiskName.n3(): [],
+    }
+    assert direct_result == {"conforms": True, "violations": []}
+    expected = [
+        {
+            "focus": EX.unit.n3(),
+            "path": EX.name.n3(),
+            "constraint": "<http://www.w3.org/ns/shacl#MinCountConstraintComponent>",
+            "sourceShape": shape.n3(),
+            "value": None,
+            "severity": "<http://www.w3.org/ns/shacl#Violation>",
+        }
+        for shape in (EX.NameProperty, EX.RiskName)
+    ]
+    assert derived_result == {"conforms": False, "violations": expected}
+    type_rows = {
+        (EX.unit, RDF.type, cls)
+        for cls in (EX.CriticalPump, EX.Pump, EX.Equipment, EX.HighRiskEquipment)
+    }
+    assert set(direct.facts) == original_asserted
+    assert set(inferred.facts) == original_asserted | type_rows
+    transitive_axiom = (EX.CriticalPump, RDFS.subClassOf, EX.Equipment)
+    assert set(inferred.ontology) == original_ontology | {transitive_axiom}
+    assert transitive_axiom not in inferred.facts
+    assert set(asserted) == original_asserted and set(ontology) == original_ontology
+    sources = {row["triple"]: row["sources"] for row in inferred.provenance["selectedFacts"]}
+    expected_rdfs_basis = sorted(
+        [
+            tuple(t.n3() for t in triple)
+            for triple in (
+                (EX.unit, RDF.type, EX.CriticalPump),
+                (EX.CriticalPump, RDFS.subClassOf, EX.Pump),
+                (EX.Pump, RDFS.subClassOf, EX.Equipment),
+            )
+        ]
+    )
+    assert sources[(EX.unit.n3(), RDF.type.n3(), EX.Equipment.n3())] == [
+        {"kind": "rdfs", "basis": expected_rdfs_basis}
+    ]
+    risk_sources = sources[(EX.unit.n3(), RDF.type.n3(), EX.HighRiskEquipment.n3())]
+    assert risk_sources == [
+        {
+            "kind": "rule",
+            "rule": "R-risk",
+            "inputs": [
+                (EX.unit.n3(), RDF.type.n3(), EX.Equipment.n3()),
+                (EX.unit.n3(), EX.alarm.n3(), EX.alert.n3()),
+                (EX.alert.n3(), EX.level.n3(), '"High"'),
+                (EX.alert.n3(), EX.status.n3(), '"Open"'),
+            ],
+            "basis": sorted(
+                [
+                    *expected_rdfs_basis,
+                    (EX.unit.n3(), EX.alarm.n3(), EX.alert.n3()),
+                    (EX.alert.n3(), EX.level.n3(), '"High"'),
+                    (EX.alert.n3(), EX.status.n3(), '"Open"'),
+                ]
+            ),
+        }
+    ]
+    assert inferred.provenance["derivedAxioms"] == [
+        {
+            "triple": tuple(t.n3() for t in transitive_axiom),
+            "source": {
+                "kind": "rdfs",
+                "basis": sorted([tuple(t.n3() for t in row) for row in original_ontology]),
+            },
+        }
+    ]
+    assert direct.provenance["assertedInputSha256"] == inferred.provenance["assertedInputSha256"]
+    assert direct.provenance["ontologyInputSha256"] == inferred.provenance["ontologyInputSha256"]
+    combined = Graph()
+    for triple in (*inferred.facts, *inferred.ontology):
+        combined.add(triple)
+    try:
+        check_shapes(combined, shapes)
+    except SemanticError as error:
+        assert error.code == "FACT_SCOPE_CONTAINS_AXIOMS"
+    else:
+        raise AssertionError("mixed inferred axioms were accepted as validation facts")
+    asserted.add((EX.unit, EX.name, Literal("Pump")))
+    repaired = prepare_validation_scope(asserted, ontology, include_derived=True, rules=(RISK,))
+    assert check_shapes(repaired.facts, shapes) == {"conforms": True, "violations": []}
+    chain = prepare_validation_scope(asserted, ontology, include_derived=True, rules=(RISK, NEXT))
+    assert chain.provenance["warnings"] == ["RULE_CHAIN_UNSUPPORTED:R-next"]
+    assert (EX.unit, RDF.type, EX.NeedsInspection) not in chain.facts
+    return {
+        "asserted": {
+            "validation": direct_result,
+            "provenance": direct.provenance,
+            "targets": direct_targets,
+            "reasoningResult": direct.reasoning_result,
+        },
+        "assertedWithSelectedDerived": {
+            "validation": derived_result,
+            "provenance": inferred.provenance,
+            "targets": derived_targets,
+            "reasoningResult": inferred.reasoning_result,
+        },
+        "mixedAxiomsRejected": "FACT_SCOPE_CONTAINS_AXIOMS",
+        "repaired": {"conforms": True, "violations": []},
+        "chainWarnings": chain.provenance["warnings"],
     }
 
 

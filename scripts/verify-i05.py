@@ -12,6 +12,7 @@ import time
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from tempfile import TemporaryFile
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--packaged", type=Path, required=True)
@@ -52,6 +53,61 @@ def run(runtime, *arguments):
     }
 
 
+def run_fresh(runtime, scale, trial):
+    """Timestamp first complete JSONL arrival, not warm completion or process exit."""
+    command = (
+        [sys.executable, "-m", "ontolearn_engine.semantic_probe"]
+        if runtime == "source"
+        else [str(executable), "--semantic-probe"]
+    )
+    with TemporaryFile() as diagnostics:
+        start = time.perf_counter_ns()
+        process = subprocess.Popen(
+            [*command, "--mode", "fresh", "--scale", str(scale), "--trial", str(trial)],
+            env=environment,
+            stdout=subprocess.PIPE,
+            stderr=diagnostics,
+            cwd=root,
+        )
+        watchdog = threading.Timer(90, process.kill)
+        watchdog.start()
+        events = []
+        try:
+            for line in process.stdout:
+                received_ns = time.perf_counter_ns()
+                assert len(line) <= 2_097_152
+                events.append(
+                    {"receivedElapsedNs": received_ns - start, **json.loads(line.decode("utf-8"))}
+                )
+                assert len(events) <= 2
+            return_code = process.wait(timeout=5)
+            elapsed = time.perf_counter_ns() - start
+        finally:
+            watchdog.cancel()
+            if process.poll() is None:
+                process.kill()
+                process.wait(timeout=5)
+            process.stdout.close()
+        diagnostics.seek(0)
+        stderr = diagnostics.read().decode("utf-8")
+    assert return_code == 0, stderr
+    assert [event["event"] for event in events] == ["firstComplete", "warmComplete"]
+    assert events[0]["observation"]["result"] == events[1]["observation"]["result"]
+    assert events[0]["receivedElapsedNs"] < events[1]["receivedElapsedNs"] <= elapsed
+    return {
+        "runtime": runtime,
+        "scale": scale,
+        "trial": trial,
+        "events": events,
+        "spawnToFirstCompleteResultNs": events[0]["receivedElapsedNs"],
+        "processElapsedNs": elapsed,
+        "stderr": stderr,
+        "method": "parent perf_counter_ns starts immediately before Popen; timestamp first "
+        "complete JSONL receipt before reading warm result or waiting for exit; "
+        "includes spawn/imports/first workload/serialization/pipe delivery; OS cache uncontrolled",
+    }
+
+
 hits = []
 
 
@@ -76,6 +132,7 @@ try:
     assert len(hits) == 1  # Positive calibration proves the receiver is reachable.
     results = {}
     measurements = []
+    fresh_measurements = []
     for runtime in ("source", "packaged"):
         results[runtime] = {
             "suite": run(runtime),
@@ -93,6 +150,20 @@ try:
                 (output / f"{runtime}-{scale}x-{trial}.json").write_text(
                     json.dumps(value, ensure_ascii=False, indent=2) + "\n"
                 )
+                fresh = run_fresh(runtime, scale, trial)
+                fresh_measurements.append(fresh)
+                assert fresh["events"][0]["observation"]["result"] == value["result"]["result"]
+                assert (
+                    fresh["events"][0]["observation"]["inputSha256"]
+                    == value["result"]["s1"]["inputSha256"]
+                )
+                assert (
+                    fresh["events"][0]["observation"]["semanticInputSha256"]
+                    == value["result"]["semanticInputSha256"]
+                )
+                (output / f"{runtime}-fresh-{scale}x-{trial}.json").write_text(
+                    json.dumps(fresh, ensure_ascii=False, indent=2) + "\n"
+                )
         (output / f"{runtime}-semantic.json").write_text(
             json.dumps(results[runtime], ensure_ascii=False, indent=2) + "\n"
         )
@@ -105,6 +176,19 @@ try:
                 value["s1"][field] == observations[0]["s1"][field] for value in observations
             ), field
         assert all(value["result"] == observations[0]["result"] for value in observations)
+        fresh = [
+            item["events"][0]["observation"]
+            for item in fresh_measurements
+            if item["scale"] == scale
+        ]
+        for field in (
+            "inputSha256",
+            "querySha256",
+            "semanticInputSha256",
+            "shapesSha256",
+            "result",
+        ):
+            assert all(item[field] == fresh[0][field] for item in fresh)
     network = {
         "receiver": "controlled test-only loopback HTTP receiver, not a product service",
         "positiveCalibrationHits": 1,
@@ -166,6 +250,7 @@ manifest = {
     ],
     "inventory": metadata,
     "measurements": len(measurements),
+    "freshProcessMeasurements": len(fresh_measurements),
     "network": network,
     "limits": "current macOS arm64 unsigned development app-resource executable; "
     "PATH excludes development Python; no Electron launch, clean-device, "
@@ -208,6 +293,7 @@ print(
         {
             "parity": True,
             "measurements": len(measurements),
+            "freshProcessMeasurements": len(fresh_measurements),
             "network": network,
             "engineBytes": manifest["engineDirectoryBytes"],
             "appBytes": manifest["appDirectoryBytes"],

@@ -1,0 +1,470 @@
+{
+  "stage": "independent-v3 supplement; not formal I05 completion or external review candidate",
+  "recordedAt": "2026-10-20T11:42:36.209157+08:00",
+  "base": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+  "baselineStatus": {
+    "measuredSourceBase": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+    "remoteDevelopObserved": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
+    "observation": "git ls-remote origin refs/heads/develop; after controller notified PR3 merged; no baseline update during fixed-source measurement",
+    "requiredNext": "refresh against real frozen/merged I03 and actual I04 before formal integration acceptance and specified fresh dual review"
+  },
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation",
+  "branch": "feature/I05-semantic-validation",
+  "executionSemanticsVersion": "i05-finite-2",
+  "guidanceSha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+  "sourceFiles": [
+    {
+      "path": "packages/engine/entrypoint.py",
+      "sha256": "9e6f363dab3806d37835f5ed1b2b4a919955cadcee33a55eaa600f751ed9a34f"
+    },
+    {
+      "path": "packages/engine/pyproject.toml",
+      "sha256": "1e076532307c2ccbdd48d138d618603cc7bcbc16a08d3d91f1b2c714d5c8676c"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "sha256": "9fdad4eea8dccfe5ca619b4e76f7f5f0f54522f1383c59ea46d2b2eb1ca9477f"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_probe.py",
+      "sha256": "63f575302cf0796ab279d7a970cd8a9c62344fbc39128c7f60a3d204038a418d"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+      "sha256": "1f8b0b03aa3fb2229d52d6a1458b2eb7b1ca503b9779d81684ff43320aa5d043"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "sha256": "3a92b5d065b92435f7affc79ff7d61629040784e829ebc63307e2648a393b5b5"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic.py",
+      "sha256": "5f021d7f81b1e754589bd43927c22d567a32b8b8abe16191a0d5420c4cc52297"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_error_reasons.py",
+      "sha256": "3b0c4cbad1c5b18986da429398d28490929cda2d2fb200d03f105f9aafa1ae9b"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_fresh_probe.py",
+      "sha256": "525ab477466fe46440ddb40e87167625e247a0c4da9a50c7f2764129772db83e"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_scopes.py",
+      "sha256": "015b1966693bd92bb318431d606401e644354b722689dc80b7f8a1f6dbcacd83"
+    },
+    {
+      "path": "scripts/build-engine.mjs",
+      "sha256": "488d216919378e9284717640367b98426a0c9054ff918cecc1da9c577bcc3818"
+    },
+    {
+      "path": "scripts/i05-build-inventory.py",
+      "sha256": "79ed52e6cdd830e9845da547e8f01b098b4acb35e50ab3964fcd94b9ea0bc165"
+    },
+    {
+      "path": "scripts/verify-i05.py",
+      "sha256": "89a36e70fd020b37417e7f86b8d29a853d64a85bc6494c0892164696334ba194"
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "a3a8b72868c949efbbb0b88a787191fbe37cc57485f6608005ff677dba09f493"
+    }
+  ],
+  "evidenceFiles": [
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/check.txt",
+      "bytes": 2997,
+      "sha256": "fdcd6fd3563f8d4174f9d99d62dc376cdf7f6b381916f2b0a63632acba8e83c3"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/dynamic-linkage.txt",
+      "bytes": 1536,
+      "sha256": "7cc7ab89744e772c7bd824d188601d518a302089553faa772efba4cf6092272c"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/network.json.raw",
+      "bytes": 318,
+      "sha256": "dccdae95fb3f1b1626f44767f7a506429abdcdaa4d1b461f20fa5990eac2bf6b"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/package-dir.txt",
+      "bytes": 19717,
+      "sha256": "d72a8e59de5119705516ef334048a379e361103112bc7359ba4db6eefec7cd07"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/package-manifest.json.raw",
+      "bytes": 109879,
+      "sha256": "3fb3e9de36016a3303dbae79dd6ab14c9a3cb306b3cc175e67185fd954210140"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/package-probe.txt",
+      "bytes": 435,
+      "sha256": "b92d3065ade2e58d09bf4687d2e90c20d153ee78120b7c99eff257592815ae86"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-10x-0.json.raw",
+      "bytes": 93483,
+      "sha256": "9907f3edef62642705e11b64c71a2d30f3b36c441b0ec27d6e2051fb2facb2d4"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-10x-1.json.raw",
+      "bytes": 93483,
+      "sha256": "f132f28476bb8ae0b1a8d0f84d00e6204d48df4dce5ce176b971ffc129bce7d2"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-10x-2.json.raw",
+      "bytes": 93495,
+      "sha256": "5f0cdd9024c5ee7108e2af95d6729c56aa08b4420977d5d8d6249dd8c9c4ab01"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-1x-0.json.raw",
+      "bytes": 14978,
+      "sha256": "960ad6e5fb135b8d61a7ade8db563930049de8625988450593cdedae5de721b1"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-1x-1.json.raw",
+      "bytes": 14986,
+      "sha256": "d850eca2c11ac8fb64c176196d77dc56fc54898a540201d8ba4c7407419eb87a"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-1x-2.json.raw",
+      "bytes": 14983,
+      "sha256": "cfe6a0a85fed6cccef589a4635259d5d8e2735aa7869e3c1951278e069421096"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-fresh-10x-0.json.raw",
+      "bytes": 203893,
+      "sha256": "37e8165b4095c1cd67aae4fa70be4fde6af3f56ae33c0c8e341012c19b4b27f7"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-fresh-10x-1.json.raw",
+      "bytes": 203893,
+      "sha256": "c5229400c5c60cb25f46e10ff8a6b600b801f701ba6dc8281d5668530d671f37"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-fresh-10x-2.json.raw",
+      "bytes": 203902,
+      "sha256": "0635ade26846a6bbf0e8474581ec487606f68c104229f3cee518e9d30a7471a3"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-fresh-1x-0.json.raw",
+      "bytes": 28868,
+      "sha256": "f4a9fdab623db407ba8a4d7e30fe8685a02b8294004d026ca16aa9172ca653aa"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-fresh-1x-1.json.raw",
+      "bytes": 28870,
+      "sha256": "f241dc9b85dddd03f265e6d3b5a7e52329899776e25ebe8b446e2d8869767d90"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-fresh-1x-2.json.raw",
+      "bytes": 28869,
+      "sha256": "13ee9782982ed0abcfb2598910efb300fc84df95a777ec092c63e682870f78b7"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/packaged-semantic.json.raw",
+      "bytes": 41742,
+      "sha256": "a272613b6d9d681821a2adc2651da8295a8ab5f226172508f2d82e472b4f0592"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/pyinstaller-imports.txt",
+      "bytes": 32691,
+      "sha256": "8903d8abb0592907f03065a70505a46ea07ca7b094c1023920d2fa07a5622f4c"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/pyinstaller-warnings.txt",
+      "bytes": 8109,
+      "sha256": "040bf0527b4cad6282dc9fbb8bea5f2a84690e5f1c218e160e34972dd4518ace"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-10x-0.json.raw",
+      "bytes": 93484,
+      "sha256": "e10feebd060f9c03a5e584c57abdf3d614ec9973d61effa1ffc9d0aa3521f72c"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-10x-1.json.raw",
+      "bytes": 93484,
+      "sha256": "26f75d0b29b44710cea2ad0227e2ddaf6537e5486ceab7533a53c67dde7a7fda"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-10x-2.json.raw",
+      "bytes": 93484,
+      "sha256": "2ee91e1b2405e11f6078651048278122f55e2796a1fa1431fb4eb1e880759f4d"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-1x-0.json.raw",
+      "bytes": 14975,
+      "sha256": "08100d9441d9b9da51a6a9f8efe0ef5e8d0e9a53f84b3e119f68c03a1328cf56"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-1x-1.json.raw",
+      "bytes": 14977,
+      "sha256": "3d306551365df74e7f184284cb299ffb8065f426bf63278b5a77d50669c46348"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-1x-2.json.raw",
+      "bytes": 14977,
+      "sha256": "ba1eca3c108eb17a9c33458ffcc8369053b0bdce229283e99d3966b2cf789edf"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-fresh-10x-0.json.raw",
+      "bytes": 203890,
+      "sha256": "0b40f9ba7dce5204a6d72e02bc3518a45cd074ceff4a1a88da4be315c380f98e"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-fresh-10x-1.json.raw",
+      "bytes": 203886,
+      "sha256": "b43e62035e74aded0897db35a656bb40265939186328b2e14cdfe2543bbff638"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-fresh-10x-2.json.raw",
+      "bytes": 203890,
+      "sha256": "bdf73fe1da49499bb2ae08f4060c66f76f74bfb44e42afee7f253719a6c57e72"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-fresh-1x-0.json.raw",
+      "bytes": 28856,
+      "sha256": "a5dc34481c90b817d078180e09bdab4b590d8df248e7d1127a9fbb1f0446c372"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-fresh-1x-1.json.raw",
+      "bytes": 28857,
+      "sha256": "e5fcbf79c81133bbb106f9f04bb964ca5eb4127a4c46c4366f23fb7f101569d9"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-fresh-1x-2.json.raw",
+      "bytes": 28856,
+      "sha256": "08d6bd182a5d1c786a29c0f7148649e65b2e93a9f7b226a60a5014cb12f1bb41"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/source-semantic.json.raw",
+      "bytes": 41741,
+      "sha256": "8eb3204058f4b55793fe565571be872c91e245390d1ad1cff0bb1cbc17e690ca"
+    },
+    {
+      "path": "docs/iterations/I05/evidence/independent-v3/verify-sources.txt",
+      "bytes": 111,
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+    }
+  ],
+  "checks": {
+    "npmCheck": "PASS;4 TS/322 Python incl124 semantic;lint/format/type/build",
+    "verifySources": "PASS;12 originals",
+    "packageDir": "PASS;unsigned macOS arm64;no Electron launch",
+    "sameSampleAndMeasurements": "PASS;full source/package results including both validation scopes and original reasoning output;12 legacy measurements plus12 fresh measurements (24 first/warm observations)",
+    "network": {
+      "receiver": "controlled test-only loopback HTTP receiver, not a product service",
+      "positiveCalibrationHits": 1,
+      "deniedRequestHits": 0,
+      "perRuntimeCases": 28,
+      "audit": "entry gates zero socket/DNS/urllib attempts; forced library JSON-LD path reached urllib.Request and guard denied it before socket I/O"
+    },
+    "nativeLicenseProvenanceMatched": true,
+    "independentReview": "read-only semantic_boundary_review; real findings fixed; final scope14/14 targeted closure;not specified external dual review"
+  },
+  "hardware": {
+    "chip": "Apple M5 Pro",
+    "physicalMemoryBytes": 68719476736,
+    "logicalCpus": 18
+  },
+  "python": "3.12.12",
+  "engineDirectoryBytes": 36693213,
+  "appDirectoryBytes": 558389705,
+  "executableSha256": "c0bbb0df76a9eb191f600045646a4f406587c917066256b013bb48db5eb0798b",
+  "measurements": [
+    {
+      "runtime": "source",
+      "scale": 1,
+      "assertedTriples": 18,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 9,
+      "ruleTriples": 1,
+      "startupMsTrials": [276.930208, 285.892959, 285.236542],
+      "processWorkloadMsTrials": [882.887458, 944.368542, 990.5305],
+      "reasonFirstAfterS1MsTrials": [15.542625, 17.197792, 19.584416],
+      "reasonWarmMsTrials": [15.784875, 18.065, 18.503292],
+      "shaclFirstAfterS1MsTrials": [8.692459, 10.489417, 10.090625],
+      "rssHighWaterBytesTrials": [49725440, 49627136, 50069504]
+    },
+    {
+      "runtime": "source",
+      "scale": 10,
+      "assertedTriples": 180,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 81,
+      "ruleTriples": 10,
+      "startupMsTrials": [276.930208, 285.892959, 285.236542],
+      "processWorkloadMsTrials": [2000.395167, 1946.182542, 2013.812542],
+      "reasonFirstAfterS1MsTrials": [134.768333, 116.810542, 125.728083],
+      "reasonWarmMsTrials": [126.963291, 110.18975, 130.827],
+      "shaclFirstAfterS1MsTrials": [47.351, 41.360417, 46.648375],
+      "rssHighWaterBytesTrials": [53542912, 53460992, 53739520]
+    },
+    {
+      "runtime": "packaged",
+      "scale": 1,
+      "assertedTriples": 18,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 9,
+      "ruleTriples": 1,
+      "startupMsTrials": [459.394875, 535.248542, 563.130875],
+      "processWorkloadMsTrials": [1469.868083, 7006.56775, 3123.584459],
+      "reasonFirstAfterS1MsTrials": [24.04225, 80.237208, 36.346167],
+      "reasonWarmMsTrials": [22.975042, 68.854875, 47.145917],
+      "shaclFirstAfterS1MsTrials": [13.8185, 82.155459, 18.830542],
+      "rssHighWaterBytesTrials": [58163200, 58589184, 58343424]
+    },
+    {
+      "runtime": "packaged",
+      "scale": 10,
+      "assertedTriples": 180,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 81,
+      "ruleTriples": 10,
+      "startupMsTrials": [459.394875, 535.248542, 563.130875],
+      "processWorkloadMsTrials": [3080.792375, 3729.155584, 11733.442834],
+      "reasonFirstAfterS1MsTrials": [163.701875, 218.31225, 654.402041],
+      "reasonWarmMsTrials": [167.880833, 217.712041, 497.830958],
+      "shaclFirstAfterS1MsTrials": [63.945167, 79.651458, 198.709083],
+      "rssHighWaterBytesTrials": [62111744, 61685760, 61849600]
+    }
+  ],
+  "freshProcessMeasurements": [
+    {
+      "runtime": "source",
+      "scale": 1,
+      "assertedTriples": 18,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 9,
+      "ruleTriples": 1,
+      "spawnToFirstCompleteResultMsTrials": [684.049833, 802.232166, 756.170167],
+      "wholeProcessMsTrials": [804.472791, 949.105916, 882.397375],
+      "firstWorkloadMsTrials": [472.718083, 551.749542, 506.657334],
+      "warmWorkloadMsTrials": [69.352125, 83.162875, 70.918042],
+      "firstPhaseMsTrials": {
+        "graphBuild": [0.3075, 0.818208, 0.330541],
+        "ontologyParse": [2.929166, 3.376375, 3.285792],
+        "rdfsRules": [16.50175, 19.213792, 18.541167],
+        "select": [395.567, 462.225792, 422.598],
+        "shacl": [8.792792, 10.218292, 9.631417],
+        "shapesParse": [2.774959, 3.426917, 2.982667],
+        "turtleParse": [10.638541, 12.124875, 11.786125]
+      },
+      "warmPhaseMsTrials": {
+        "graphBuild": [0.282875, 0.33575, 0.307375],
+        "ontologyParse": [2.275417, 2.66275, 2.535542],
+        "rdfsRules": [16.34625, 19.115209, 16.450625],
+        "select": [24.470875, 29.959458, 24.836542],
+        "shacl": [8.371417, 9.984833, 8.438667],
+        "shapesParse": [2.588041, 3.076125, 2.559417],
+        "turtleParse": [6.182042, 7.219833, 6.330125]
+      },
+      "rssHighWaterBytesTrials": [48939008, 48971776, 49266688]
+    },
+    {
+      "runtime": "source",
+      "scale": 10,
+      "assertedTriples": 180,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 81,
+      "ruleTriples": 10,
+      "spawnToFirstCompleteResultMsTrials": [1044.050375, 903.447833, 1058.329833],
+      "wholeProcessMsTrials": [1428.765208, 1298.287958, 1617.094792],
+      "firstWorkloadMsTrials": [796.449125, 672.00325, 805.828834],
+      "warmWorkloadMsTrials": [318.965334, 313.630292, 426.443667],
+      "firstPhaseMsTrials": {
+        "graphBuild": [1.051667, 0.904334, 1.011708],
+        "ontologyParse": [2.448375, 2.051167, 2.37],
+        "rdfsRules": [127.295125, 111.581917, 133.679083],
+        "select": [512.563834, 421.359959, 483.781666],
+        "shacl": [48.6075, 42.526125, 67.719833],
+        "shapesParse": [3.463333, 3.182875, 4.798375],
+        "turtleParse": [49.584875, 46.301875, 50.295834]
+      },
+      "warmPhaseMsTrials": {
+        "graphBuild": [1.039458, 0.8935, 1.312541],
+        "ontologyParse": [3.092125, 2.42, 3.6065],
+        "rdfsRules": [139.770875, 141.581458, 188.592958],
+        "select": [53.264375, 51.69425, 66.567],
+        "shacl": [48.428542, 49.236833, 66.241917],
+        "shapesParse": [3.373125, 4.016125, 6.42225],
+        "turtleParse": [47.827542, 41.945583, 63.122542]
+      },
+      "rssHighWaterBytesTrials": [51675136, 51281920, 51412992]
+    },
+    {
+      "runtime": "packaged",
+      "scale": 1,
+      "assertedTriples": 18,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 9,
+      "ruleTriples": 1,
+      "spawnToFirstCompleteResultMsTrials": [1080.078625, 4271.843958, 2243.514375],
+      "wholeProcessMsTrials": [2013.4045, 4686.60275, 2621.250708],
+      "firstWorkloadMsTrials": [693.980667, 2531.794375, 1536.606541],
+      "warmWorkloadMsTrials": [658.705792, 210.584209, 165.954541],
+      "firstPhaseMsTrials": {
+        "graphBuild": [0.404, 0.505791, 0.607125],
+        "ontologyParse": [3.263125, 5.481333, 8.241958],
+        "rdfsRules": [28.984833, 39.680041, 61.336416],
+        "select": [551.50275, 2282.925792, 1286.631708],
+        "shacl": [16.311625, 25.137625, 23.755542],
+        "shapesParse": [6.592417, 10.298416, 9.61225],
+        "turtleParse": [18.351542, 76.853167, 48.362875]
+      },
+      "warmPhaseMsTrials": {
+        "graphBuild": [0.877167, 1.733417, 0.540583],
+        "ontologyParse": [4.000917, 6.361959, 11.912292],
+        "rdfsRules": [53.28525, 59.433417, 40.876417],
+        "select": [52.904125, 63.47725, 53.510833],
+        "shacl": [93.180542, 22.141333, 16.982625],
+        "shapesParse": [311.015375, 5.89775, 5.980292],
+        "turtleParse": [10.834541, 24.322625, 11.985917]
+      },
+      "rssHighWaterBytesTrials": [57278464, 57720832, 57311232]
+    },
+    {
+      "runtime": "packaged",
+      "scale": 10,
+      "assertedTriples": 180,
+      "ontologyTriples": 4,
+      "derivedRdfsTriples": 81,
+      "ruleTriples": 10,
+      "spawnToFirstCompleteResultMsTrials": [1499.964333, 1541.113084, 5317.270917],
+      "wholeProcessMsTrials": [2246.992791, 2115.473584, 6721.757167],
+      "firstWorkloadMsTrials": [1052.137084, 1076.228333, 3055.827417],
+      "warmWorkloadMsTrials": [551.590666, 431.294334, 1131.471083],
+      "firstPhaseMsTrials": {
+        "graphBuild": [1.2845, 2.08675, 16.796583],
+        "ontologyParse": [3.096334, 3.752583, 11.909417],
+        "rdfsRules": [183.330584, 187.588834, 554.112375],
+        "select": [633.850166, 635.939125, 1756.953125],
+        "shacl": [89.808042, 96.020291, 256.1275],
+        "shapesParse": [4.802917, 4.798875, 5.919166],
+        "turtleParse": [64.645333, 70.769916, 255.903583]
+      },
+      "warmPhaseMsTrials": {
+        "graphBuild": [3.1685, 1.49775, 2.071584],
+        "ontologyParse": [4.290417, 3.492834, 7.494083],
+        "rdfsRules": [250.519041, 174.081541, 566.1565],
+        "select": [87.135417, 70.0255, 195.591334],
+        "shacl": [79.06675, 66.109667, 144.320875],
+        "shapesParse": [6.316667, 4.607, 8.556916],
+        "turtleParse": [82.466208, 79.771666, 148.384791]
+      },
+      "rssHighWaterBytesTrials": [59949056, 60243968, 60538880]
+    }
+  ],
+  "limitations": [
+    "Only fixed-base pure semantics and unsigned macOS arm64 app-resource engine CLI; no GUI/Electron/native integration was launched.",
+    "Fresh first workload has no S1/suite/shapes prewarm; spawn-to-first result includes imports/work/serialization/pipe, separately from workload phases and exit. OS caches uncontrolled; no capacity or performance improvement claim.",
+    "Public error taxonomy and persisted scope identity remain I03/I04 responsibilities; no shared contracts/registry/store changes or task substitutes.",
+    "Q6 has12 explicit candidate differences pending accountable adoption/revision/discard;FR505 comparisons and multiple conclusions remain unimplemented.",
+    "Actual I03/I04 integration, original full acceptance, two specified fresh external reviews, push/PR/CI/merge and remote verification remain pending."
+  ],
+  "previousEvidence": "docs/iterations/I05/independent-v2.json;unchanged historical source/raw measurements"
+}

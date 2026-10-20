@@ -1,0 +1,805 @@
+{
+  "runtime": "packaged",
+  "scale": 1,
+  "trial": 2,
+  "events": [
+    {
+      "receivedElapsedNs": 2243514375,
+      "event": "firstComplete",
+      "observation": {
+        "assertedTriples": 18,
+        "condition": "fresh CLI path before First has no S1 measure/suite/shapes parse; imports precede workload; Warm repeats in process; OS cache uncontrolled",
+        "device": "macOS-27.0.1-arm64-arm-64bit",
+        "inputSha256": "b0bcc466774f37d4f6a520900b8e7caa5f4fb7f827bbcf8c5ad0e9d12946ea0c",
+        "machine": "arm64",
+        "method": "perf_counter_ns phases and workload; tracemalloc; lifetime ru_maxrss; parent separately timestamps First JSONL arrival before waiting for exit",
+        "ontologyTriples": 4,
+        "phases": {
+          "graphBuild": {
+            "elapsedNs": 607125,
+            "processHighWaterRssBytes": 53280768,
+            "pythonBytesAfter": 290384,
+            "pythonBytesBefore": 281260,
+            "pythonBytesPeak": 292208
+          },
+          "ontologyParse": {
+            "elapsedNs": 8241958,
+            "processHighWaterRssBytes": 53280768,
+            "pythonBytesAfter": 281168,
+            "pythonBytesBefore": 259902,
+            "pythonBytesPeak": 286928
+          },
+          "rdfsRules": {
+            "elapsedNs": 61336416,
+            "processHighWaterRssBytes": 55967744,
+            "pythonBytesAfter": 2699067,
+            "pythonBytesBefore": 2660249,
+            "pythonBytesPeak": 2751285
+          },
+          "select": {
+            "elapsedNs": 1286631708,
+            "processHighWaterRssBytes": 55885824,
+            "pythonBytesAfter": 2659529,
+            "pythonBytesBefore": 290700,
+            "pythonBytesPeak": 2667858
+          },
+          "shacl": {
+            "elapsedNs": 23755542,
+            "processHighWaterRssBytes": 56016896,
+            "pythonBytesAfter": 2774660,
+            "pythonBytesBefore": 2724295,
+            "pythonBytesPeak": 2782650
+          },
+          "shapesParse": {
+            "elapsedNs": 9612250,
+            "processHighWaterRssBytes": 55984128,
+            "pythonBytesAfter": 2723995,
+            "pythonBytesBefore": 2699159,
+            "pythonBytesPeak": 2729360
+          },
+          "turtleParse": {
+            "elapsedNs": 48362875,
+            "processHighWaterRssBytes": 53198848,
+            "pythonBytesAfter": 237088,
+            "pythonBytesBefore": 1592,
+            "pythonBytesPeak": 249916
+          }
+        },
+        "profile": "fresh-process-first-candidate-then-warm",
+        "python": "3.12.12",
+        "querySha256": "7879b25f2833b8e485b53d3f6664220836ada716ec29ae7de82f907eae014ab5",
+        "result": {
+          "reason": {
+            "evidence": [
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:alarm/A01>",
+                    "<urn:ontolearn:level>",
+                    "\"High\""
+                  ],
+                  [
+                    "<urn:case:0:alarm/A01>",
+                    "<urn:ontolearn:status>",
+                    "\"Open\""
+                  ],
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                    "<urn:ontolearn:CriticalPump>"
+                  ],
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A01>"
+                  ],
+                  [
+                    "<urn:ontolearn:CriticalPump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Pump>"
+                  ],
+                  [
+                    "<urn:ontolearn:Pump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Equipment>"
+                  ]
+                ],
+                "inputs": [
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                    "<urn:ontolearn:Equipment>"
+                  ],
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A01>"
+                  ],
+                  [
+                    "<urn:case:0:alarm/A01>",
+                    "<urn:ontolearn:level>",
+                    "\"High\""
+                  ],
+                  [
+                    "<urn:case:0:alarm/A01>",
+                    "<urn:ontolearn:status>",
+                    "\"Open\""
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:equipment/001>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:HighRiskEquipment>"
+                ],
+                "rule": "R-risk"
+              }
+            ],
+            "rdfs": [
+              [
+                "<urn:case:0:alarm/A01>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Event>"
+              ],
+              [
+                "<urn:case:0:alarm/A02>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Event>"
+              ],
+              [
+                "<urn:case:0:alarm/A03>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Event>"
+              ],
+              [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Equipment>"
+              ],
+              [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:MonitoredEquipment>"
+              ],
+              [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Pump>"
+              ],
+              [
+                "<urn:case:0:equipment/002>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:MonitoredEquipment>"
+              ],
+              [
+                "<urn:case:0:equipment/003>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:MonitoredEquipment>"
+              ],
+              [
+                "<urn:ontolearn:CriticalPump>",
+                "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                "<urn:ontolearn:Equipment>"
+              ]
+            ],
+            "rdfsEvidence": [
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A01>"
+                  ],
+                  [
+                    "<urn:ontolearn:alarm>",
+                    "<http://www.w3.org/2000/01/rdf-schema#range>",
+                    "<urn:ontolearn:Event>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:alarm/A01>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:Event>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/002>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A02>"
+                  ],
+                  [
+                    "<urn:ontolearn:alarm>",
+                    "<http://www.w3.org/2000/01/rdf-schema#range>",
+                    "<urn:ontolearn:Event>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:alarm/A02>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:Event>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/003>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A03>"
+                  ],
+                  [
+                    "<urn:ontolearn:alarm>",
+                    "<http://www.w3.org/2000/01/rdf-schema#range>",
+                    "<urn:ontolearn:Event>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:alarm/A03>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:Event>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                    "<urn:ontolearn:CriticalPump>"
+                  ],
+                  [
+                    "<urn:ontolearn:CriticalPump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Pump>"
+                  ],
+                  [
+                    "<urn:ontolearn:Pump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Equipment>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:equipment/001>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:Equipment>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A01>"
+                  ],
+                  [
+                    "<urn:ontolearn:alarm>",
+                    "<http://www.w3.org/2000/01/rdf-schema#domain>",
+                    "<urn:ontolearn:MonitoredEquipment>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:equipment/001>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:MonitoredEquipment>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                    "<urn:ontolearn:CriticalPump>"
+                  ],
+                  [
+                    "<urn:ontolearn:CriticalPump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Pump>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:equipment/001>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:Pump>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/002>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A02>"
+                  ],
+                  [
+                    "<urn:ontolearn:alarm>",
+                    "<http://www.w3.org/2000/01/rdf-schema#domain>",
+                    "<urn:ontolearn:MonitoredEquipment>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:equipment/002>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:MonitoredEquipment>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/003>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A03>"
+                  ],
+                  [
+                    "<urn:ontolearn:alarm>",
+                    "<http://www.w3.org/2000/01/rdf-schema#domain>",
+                    "<urn:ontolearn:MonitoredEquipment>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:equipment/003>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:MonitoredEquipment>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:ontolearn:CriticalPump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Pump>"
+                  ],
+                  [
+                    "<urn:ontolearn:Pump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Equipment>"
+                  ]
+                ],
+                "result": [
+                  "<urn:ontolearn:CriticalPump>",
+                  "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                  "<urn:ontolearn:Equipment>"
+                ]
+              }
+            ],
+            "rules": [
+              [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:HighRiskEquipment>"
+              ]
+            ],
+            "warnings": []
+          },
+          "select": {
+            "rows": [
+              [
+                "<urn:case:0:alarm/A01>"
+              ]
+            ],
+            "type": "SELECT",
+            "variables": [
+              "alarm"
+            ]
+          },
+          "shacl": {
+            "conforms": true,
+            "violations": []
+          }
+        },
+        "scale": 1,
+        "seed": 20261019,
+        "semanticInputSha256": "2dad42bf98d5ecc43e5ad4dacc5405671834d0b7c0a76736b741872da34e7a87",
+        "semanticInputTriples": 22,
+        "shapeTriples": 6,
+        "shapesSha256": "95dc9a28b234205e687a4b6b846a5a5ac26e8983d9541a80abc027cb9d7c09a0",
+        "stage": "First",
+        "trial": 2,
+        "versions": {
+          "owlrl": "7.6.2",
+          "pyshacl": "0.30.1",
+          "rdflib": "7.6.0"
+        },
+        "workloadElapsedNs": 1536606541
+      }
+    },
+    {
+      "receivedElapsedNs": 2410562458,
+      "event": "warmComplete",
+      "observation": {
+        "assertedTriples": 18,
+        "condition": "fresh CLI path before First has no S1 measure/suite/shapes parse; imports precede workload; Warm repeats in process; OS cache uncontrolled",
+        "device": "macOS-27.0.1-arm64-arm-64bit",
+        "inputSha256": "b0bcc466774f37d4f6a520900b8e7caa5f4fb7f827bbcf8c5ad0e9d12946ea0c",
+        "machine": "arm64",
+        "method": "perf_counter_ns phases and workload; tracemalloc; lifetime ru_maxrss; parent separately timestamps First JSONL arrival before waiting for exit",
+        "ontologyTriples": 4,
+        "phases": {
+          "graphBuild": {
+            "elapsedNs": 540583,
+            "processHighWaterRssBytes": 56852480,
+            "pythonBytesAfter": 2978460,
+            "pythonBytesBefore": 2969816,
+            "pythonBytesPeak": 2980284
+          },
+          "ontologyParse": {
+            "elapsedNs": 11912292,
+            "processHighWaterRssBytes": 56836096,
+            "pythonBytesAfter": 2969884,
+            "pythonBytesBefore": 2965487,
+            "pythonBytesPeak": 2975596
+          },
+          "rdfsRules": {
+            "elapsedNs": 40876417,
+            "processHighWaterRssBytes": 57180160,
+            "pythonBytesAfter": 3208736,
+            "pythonBytesBefore": 3098206,
+            "pythonBytesPeak": 3220014
+          },
+          "select": {
+            "elapsedNs": 53510833,
+            "processHighWaterRssBytes": 57049088,
+            "pythonBytesAfter": 3097922,
+            "pythonBytesBefore": 2978776,
+            "pythonBytesPeak": 3145620
+          },
+          "shacl": {
+            "elapsedNs": 16982625,
+            "processHighWaterRssBytes": 57311232,
+            "pythonBytesAfter": 3298291,
+            "pythonBytesBefore": 3232981,
+            "pythonBytesPeak": 3300562
+          },
+          "shapesParse": {
+            "elapsedNs": 5980292,
+            "processHighWaterRssBytes": 57212928,
+            "pythonBytesAfter": 3232681,
+            "pythonBytesBefore": 3208828,
+            "pythonBytesPeak": 3238140
+          },
+          "turtleParse": {
+            "elapsedNs": 11985917,
+            "processHighWaterRssBytes": 56819712,
+            "pythonBytesAfter": 2944945,
+            "pythonBytesBefore": 2905365,
+            "pythonBytesPeak": 2950851
+          }
+        },
+        "profile": "fresh-process-first-candidate-then-warm",
+        "python": "3.12.12",
+        "querySha256": "7879b25f2833b8e485b53d3f6664220836ada716ec29ae7de82f907eae014ab5",
+        "result": {
+          "reason": {
+            "evidence": [
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:alarm/A01>",
+                    "<urn:ontolearn:level>",
+                    "\"High\""
+                  ],
+                  [
+                    "<urn:case:0:alarm/A01>",
+                    "<urn:ontolearn:status>",
+                    "\"Open\""
+                  ],
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                    "<urn:ontolearn:CriticalPump>"
+                  ],
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A01>"
+                  ],
+                  [
+                    "<urn:ontolearn:CriticalPump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Pump>"
+                  ],
+                  [
+                    "<urn:ontolearn:Pump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Equipment>"
+                  ]
+                ],
+                "inputs": [
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                    "<urn:ontolearn:Equipment>"
+                  ],
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A01>"
+                  ],
+                  [
+                    "<urn:case:0:alarm/A01>",
+                    "<urn:ontolearn:level>",
+                    "\"High\""
+                  ],
+                  [
+                    "<urn:case:0:alarm/A01>",
+                    "<urn:ontolearn:status>",
+                    "\"Open\""
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:equipment/001>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:HighRiskEquipment>"
+                ],
+                "rule": "R-risk"
+              }
+            ],
+            "rdfs": [
+              [
+                "<urn:case:0:alarm/A01>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Event>"
+              ],
+              [
+                "<urn:case:0:alarm/A02>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Event>"
+              ],
+              [
+                "<urn:case:0:alarm/A03>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Event>"
+              ],
+              [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Equipment>"
+              ],
+              [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:MonitoredEquipment>"
+              ],
+              [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:Pump>"
+              ],
+              [
+                "<urn:case:0:equipment/002>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:MonitoredEquipment>"
+              ],
+              [
+                "<urn:case:0:equipment/003>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:MonitoredEquipment>"
+              ],
+              [
+                "<urn:ontolearn:CriticalPump>",
+                "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                "<urn:ontolearn:Equipment>"
+              ]
+            ],
+            "rdfsEvidence": [
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A01>"
+                  ],
+                  [
+                    "<urn:ontolearn:alarm>",
+                    "<http://www.w3.org/2000/01/rdf-schema#range>",
+                    "<urn:ontolearn:Event>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:alarm/A01>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:Event>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/002>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A02>"
+                  ],
+                  [
+                    "<urn:ontolearn:alarm>",
+                    "<http://www.w3.org/2000/01/rdf-schema#range>",
+                    "<urn:ontolearn:Event>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:alarm/A02>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:Event>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/003>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A03>"
+                  ],
+                  [
+                    "<urn:ontolearn:alarm>",
+                    "<http://www.w3.org/2000/01/rdf-schema#range>",
+                    "<urn:ontolearn:Event>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:alarm/A03>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:Event>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                    "<urn:ontolearn:CriticalPump>"
+                  ],
+                  [
+                    "<urn:ontolearn:CriticalPump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Pump>"
+                  ],
+                  [
+                    "<urn:ontolearn:Pump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Equipment>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:equipment/001>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:Equipment>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A01>"
+                  ],
+                  [
+                    "<urn:ontolearn:alarm>",
+                    "<http://www.w3.org/2000/01/rdf-schema#domain>",
+                    "<urn:ontolearn:MonitoredEquipment>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:equipment/001>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:MonitoredEquipment>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/001>",
+                    "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                    "<urn:ontolearn:CriticalPump>"
+                  ],
+                  [
+                    "<urn:ontolearn:CriticalPump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Pump>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:equipment/001>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:Pump>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/002>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A02>"
+                  ],
+                  [
+                    "<urn:ontolearn:alarm>",
+                    "<http://www.w3.org/2000/01/rdf-schema#domain>",
+                    "<urn:ontolearn:MonitoredEquipment>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:equipment/002>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:MonitoredEquipment>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:case:0:equipment/003>",
+                    "<urn:ontolearn:alarm>",
+                    "<urn:case:0:alarm/A03>"
+                  ],
+                  [
+                    "<urn:ontolearn:alarm>",
+                    "<http://www.w3.org/2000/01/rdf-schema#domain>",
+                    "<urn:ontolearn:MonitoredEquipment>"
+                  ]
+                ],
+                "result": [
+                  "<urn:case:0:equipment/003>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:ontolearn:MonitoredEquipment>"
+                ]
+              },
+              {
+                "basis": [
+                  [
+                    "<urn:ontolearn:CriticalPump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Pump>"
+                  ],
+                  [
+                    "<urn:ontolearn:Pump>",
+                    "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                    "<urn:ontolearn:Equipment>"
+                  ]
+                ],
+                "result": [
+                  "<urn:ontolearn:CriticalPump>",
+                  "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+                  "<urn:ontolearn:Equipment>"
+                ]
+              }
+            ],
+            "rules": [
+              [
+                "<urn:case:0:equipment/001>",
+                "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                "<urn:ontolearn:HighRiskEquipment>"
+              ]
+            ],
+            "warnings": []
+          },
+          "select": {
+            "rows": [
+              [
+                "<urn:case:0:alarm/A01>"
+              ]
+            ],
+            "type": "SELECT",
+            "variables": [
+              "alarm"
+            ]
+          },
+          "shacl": {
+            "conforms": true,
+            "violations": []
+          }
+        },
+        "scale": 1,
+        "seed": 20261019,
+        "semanticInputSha256": "2dad42bf98d5ecc43e5ad4dacc5405671834d0b7c0a76736b741872da34e7a87",
+        "semanticInputTriples": 22,
+        "shapeTriples": 6,
+        "shapesSha256": "95dc9a28b234205e687a4b6b846a5a5ac26e8983d9541a80abc027cb9d7c09a0",
+        "stage": "Warm",
+        "trial": 2,
+        "versions": {
+          "owlrl": "7.6.2",
+          "pyshacl": "0.30.1",
+          "rdflib": "7.6.0"
+        },
+        "workloadElapsedNs": 165954541
+      }
+    }
+  ],
+  "spawnToFirstCompleteResultNs": 2243514375,
+  "processElapsedNs": 2621250708,
+  "stderr": "",
+  "method": "parent perf_counter_ns starts immediately before Popen; timestamp first complete JSONL receipt before reading warm result or waiting for exit; includes spawn/imports/first workload/serialization/pipe delivery; OS cache uncontrolled"
+}

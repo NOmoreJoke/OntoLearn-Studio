@@ -326,10 +326,15 @@ def test_query_execution_failure_has_safe_code():
 
 
 @pytest.mark.parametrize(
-    "value", ['"NaN"^^xsd:double', '"INF"^^xsd:double', '"private-invalid-int"^^xsd:integer']
+    "value,code",
+    [
+        ('"NaN"^^xsd:double', "UNSUPPORTED_NONFINITE_LITERAL"),
+        ('"INF"^^xsd:double', "UNSUPPORTED_NONFINITE_LITERAL"),
+        ('"private-invalid-int"^^xsd:integer', "INVALID_LITERAL_LEXICAL"),
+    ],
 )
-def test_invalid_literals_fail_without_raw_diagnostics(value, capsys, caplog):
-    with pytest.raises(SemanticError, match="UNSUPPORTED_LITERAL"):
+def test_invalid_literals_fail_without_raw_diagnostics(value, code, capsys, caplog):
+    with pytest.raises(SemanticError, match=code):
         parse_turtle(PREFIX + f":s :p {value} .")
     assert capsys.readouterr().err == ""
     assert "private-invalid-int" not in caplog.text
@@ -341,7 +346,7 @@ def test_shacl_rejects_mixed_ontology_scope():
         + """@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
         :CriticalPump rdfs:subClassOf :Equipment . :pump a :CriticalPump ."""
     )
-    with pytest.raises(SemanticError, match="ASSERTED_SCOPE_REQUIRED"):
+    with pytest.raises(SemanticError, match="FACT_SCOPE_CONTAINS_AXIOMS"):
         check_shapes(data, parse_turtle(SHAPES, shapes=True))
 
 

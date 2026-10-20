@@ -22,19 +22,19 @@ MAX_TEXT_BYTES = 1_048_576
 MAX_TRIPLES = 100_000
 MAX_RULE_MATCHES = 100_000
 MAX_WORK = 1_000_000
-SEMANTICS_VERSION = "i05-finite-1"
+SEMANTICS_VERSION = "i05-finite-2"
 Triple = tuple[Identifier, Identifier, Identifier]
 
 
 def _text(text):
     if not isinstance(text, str):
-        raise SemanticError("INPUT_LIMIT")
+        raise SemanticError("TEXT_TYPE_INVALID")
     try:
         size = len(text.encode("utf-8"))
     except UnicodeEncodeError as error:
         raise SemanticError("INVALID_UNICODE") from error
     if size > MAX_TEXT_BYTES:
-        raise SemanticError("INPUT_LIMIT")
+        raise SemanticError("TEXT_INPUT_LIMIT")
 
 
 def _copy(graph):
@@ -42,7 +42,7 @@ def _copy(graph):
     if type(graph) is not Graph or type(graph.store) is not Memory:
         raise SemanticError("IN_MEMORY_GRAPH_REQUIRED")
     if len(graph) > MAX_TRIPLES:
-        raise SemanticError("INPUT_LIMIT")
+        raise SemanticError("GRAPH_INPUT_LIMIT")
     result = Graph()
     for triple in graph:
         result.add(triple)
@@ -65,7 +65,7 @@ def _terms(graph, *, shapes=False):
         if p == OWL.imports:
             raise SemanticError("EXTERNAL_ACCESS_DENIED")
         if not isinstance(s, URIRef | BNode) or not isinstance(p, URIRef):
-            raise SemanticError("UNSUPPORTED_RDF")
+            raise SemanticError("RDF_TERM_INVALID")
         for term in (s, p, o):
             if isinstance(term, BNode) and not shapes:
                 raise SemanticError("UNSUPPORTED_BLANK_NODE")
@@ -80,17 +80,19 @@ def _terms(graph, *, shapes=False):
                 if value.startswith(str(SH)) and not shapes:
                     raise SemanticError("UNSUPPORTED_SHACL")
             if isinstance(term, Literal):
-                if term.ill_typed or (
-                    term.datatype is not None and term.datatype not in _DATATYPES | {RDF.langString}
-                ):
-                    raise SemanticError("UNSUPPORTED_LITERAL")
+                if term.ill_typed:
+                    raise SemanticError("INVALID_LITERAL_LEXICAL")
+                if term.datatype is not None and term.datatype not in _DATATYPES | {RDF.langString}:
+                    raise SemanticError("UNSUPPORTED_LITERAL_DATATYPE")
                 value = term.toPython()
-                if isinstance(value, float | Decimal) and not isfinite(value):
-                    raise SemanticError("UNSUPPORTED_LITERAL")
+                if (isinstance(value, Decimal) and not value.is_finite()) or (
+                    isinstance(value, float) and not isfinite(value)
+                ):
+                    raise SemanticError("UNSUPPORTED_NONFINITE_LITERAL")
         if p in {RDFS.subClassOf, RDFS.domain, RDFS.range} and not isinstance(o, URIRef):
-            raise SemanticError("UNSUPPORTED_RDFS")
+            raise SemanticError("RDFS_TERM_INVALID")
         if p == RDF.type and not isinstance(o, URIRef):
-            raise SemanticError("UNSUPPORTED_RDF")
+            raise SemanticError("RDF_TYPE_OBJECT_INVALID")
 
 
 def parse_turtle(text: str, *, format: str = "turtle", shapes: bool = False) -> Graph:
@@ -104,7 +106,7 @@ def parse_turtle(text: str, *, format: str = "turtle", shapes: bool = False) -> 
         except Exception as error:
             raise SemanticError("INVALID_TURTLE") from error
         if len(graph) > MAX_TRIPLES:
-            raise SemanticError("INPUT_LIMIT")
+            raise SemanticError("GRAPH_INPUT_LIMIT")
         _terms(graph, shapes=shapes)
         return graph
 
@@ -171,7 +173,7 @@ def query(graph: Graph, text: str) -> dict:
             for row in result:
                 values.append(tuple(row))
                 if len(values) > MAX_TRIPLES:
-                    raise SemanticError("RESULT_LIMIT")
+                    raise SemanticError("QUERY_RESULT_LIMIT")
 
             def canonical(row):
                 return tuple((v is not None, v.n3() if v is not None else "") for v in row)
@@ -327,7 +329,7 @@ def reason(graph: Graph, rules: tuple[Rule, ...] = ()) -> dict:
                     proofs[triple] = set().union(*(proofs[i] for i in inputs))
                     changed = True
                     if len(closure) > MAX_TRIPLES:
-                        raise SemanticError("RESULT_LIMIT")
+                        raise SemanticError("RDFS_RESULT_LIMIT")
         # Freeze all rule inputs before applying any conclusion.
         derived = Graph()
         evidence = []
@@ -352,7 +354,7 @@ def reason(graph: Graph, rules: tuple[Rule, ...] = ()) -> dict:
                         else:
                             next_matches.append((updated, [*inputs, triple]))
                             if len(next_matches) > MAX_RULE_MATCHES:
-                                raise SemanticError("RESULT_LIMIT")
+                                raise SemanticError("RULE_MATCH_WORK_LIMIT")
                 matches = next_matches
             for binding, inputs in matches:
                 output = tuple(binding.get(t, t) for t in rule.then)
@@ -362,7 +364,7 @@ def reason(graph: Graph, rules: tuple[Rule, ...] = ()) -> dict:
                 _terms(candidate)
                 derived.add(output)
                 if len(derived) + len(evidence) >= MAX_RULE_MATCHES:
-                    raise SemanticError("RESULT_LIMIT")
+                    raise SemanticError("RULE_EVIDENCE_RESULT_LIMIT")
                 evidence.append(
                     {
                         "rule": rule.id,
@@ -431,6 +433,28 @@ def _shapes(graph):
     properties = set(graph.objects(None, SH.property))
     if any(not isinstance(n, URIRef) for n in nodes | properties) or nodes & properties:
         raise SemanticError("UNSUPPORTED_BLANK_NODE")
+    # Diagnose the actual template field before the generic whole-graph whitelist.
+    # A non-IRI target/datatype is not a complex path. Only the structurally proven
+    # inverse form is classified here; unclassified anonymous paths fail safely.
+    for value in graph.objects(None, SH.targetClass):
+        if not isinstance(value, URIRef):
+            raise SemanticError("SHAPE_TARGET_CLASS_INVALID")
+    for value in graph.objects(None, SH.datatype):
+        if not isinstance(value, URIRef):
+            raise SemanticError("SHAPE_DATATYPE_INVALID")
+    for value in graph.objects(None, SH.path):
+        if isinstance(value, URIRef):
+            continue
+        if isinstance(value, Literal):
+            raise SemanticError("SHAPE_PATH_INVALID")
+        triples = list(graph.triples((value, None, None)))
+        if (
+            len(triples) == 1
+            and triples[0][1] == SH.inversePath
+            and isinstance(triples[0][2], URIRef)
+        ):
+            raise SemanticError("UNSUPPORTED_SHACL_PATH")
+        raise SemanticError("SHAPE_PATH_UNCLASSIFIED")
     lists = set()
     for head in graph.objects(None, SH["in"]):
         visited = set()
@@ -458,8 +482,6 @@ def _shapes(graph):
                 raise SemanticError("INVALID_SHAPE")
         elif s not in properties:
             raise SemanticError("INVALID_SHAPE")
-        if p in {SH.targetClass, SH.path, SH.datatype} and not isinstance(o, URIRef):
-            raise SemanticError("UNSUPPORTED_SHACL_PATH")
         if p == SH.datatype and o not in _DATATYPES:
             raise SemanticError("UNSUPPORTED_DATATYPE")
         if p in {SH.minCount, SH.maxCount} and (
@@ -497,7 +519,7 @@ def check_shapes(data: Graph, shapes: Graph) -> dict:
         if any(p in {RDFS.subClassOf, RDFS.domain, RDFS.range} for _s, p, _o in local):
             # Even without inference pySHACL follows targetClass subclass paths.
             # Require an explicit asserted/derived fact scope, never mixed ontology.
-            raise SemanticError("ASSERTED_SCOPE_REQUIRED")
+            raise SemanticError("FACT_SCOPE_CONTAINS_AXIOMS")
         # Pin the real Validator API, bypassing validate()'s Graph/URL loader and
         # process-global temporary RDFLib boolean conversion monkeypatch.
         # No ontology loader, imports, metaSHACL, AF, JS or remote store path exists.

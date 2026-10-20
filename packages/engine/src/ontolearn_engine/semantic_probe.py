@@ -198,15 +198,138 @@ def measurement(scale, trial):
     }
 
 
+def fresh_measurements(scale, trial):
+    """Yield the first complete real workload before executing the warm workload.
+
+    This path never calls S1 measure(), suite(), or parses shapes beforehand.
+    The parent records arrival of the first JSONL result independently of exit.
+    """
+    tracemalloc.start()
+    try:
+        reference = None
+        for suffix in ("First", "Warm"):
+            workload_start = time.perf_counter_ns()
+            phases = {}
+
+            def phase(name, action, measurements=phases):
+                tracemalloc.reset_peak()
+                before = tracemalloc.get_traced_memory()[0]
+                start = time.perf_counter_ns()
+                result = action()
+                current, peak = tracemalloc.get_traced_memory()
+                measurements[name] = {
+                    "elapsedNs": time.perf_counter_ns() - start,
+                    "pythonBytesBefore": before,
+                    "pythonBytesAfter": current,
+                    "pythonBytesPeak": peak,
+                    "processHighWaterRssBytes": high_water_rss(),
+                }
+                return result
+
+            text = fixture(scale)
+            graph = phase("turtleParse", lambda text=text: parse_turtle(text))
+            asserted_scope = Graph()
+            for triple in graph:
+                asserted_scope.add(triple)
+            ontology = phase(
+                "ontologyParse",
+                lambda: parse_turtle("""
+                @prefix : <urn:ontolearn:> .
+                @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+                :CriticalPump rdfs:subClassOf :Pump . :Pump rdfs:subClassOf :Equipment .
+                :alarm rdfs:domain :MonitoredEquipment; rdfs:range :Event .
+            """),
+            )
+
+            def build(data=graph, schema=ontology):
+                for i in range(scale):
+                    data.set((URIRef(f"urn:case:{i}:equipment/001"), RDF.type, EX.CriticalPump))
+                for triple in schema:
+                    data.add(triple)
+                return data
+
+            graph = phase("graphBuild", build)
+            selected = phase("select", lambda graph=graph: query(graph, QUERY))
+            inferred = phase("rdfsRules", lambda graph=graph: reason(graph, (RISK,)))
+            shapes = phase("shapesParse", lambda: parse_turtle(SHAPES, shapes=True))
+            validated = phase(
+                "shacl",
+                lambda asserted_scope=asserted_scope, shapes=shapes: check_shapes(
+                    asserted_scope, shapes
+                ),
+            )
+            expected_select = sorted([[f"<urn:case:{i}:alarm/A01>"] for i in range(scale)])
+            expected_rules = sorted(
+                (f"<urn:case:{i}:equipment/001>", RDF.type.n3(), EX.HighRiskEquipment.n3())
+                for i in range(scale)
+            )
+            expected_rdfs = [(EX.CriticalPump.n3(), RDFS.subClassOf.n3(), EX.Equipment.n3())]
+            for i in range(scale):
+                for identifier, cls in (
+                    ("equipment/001", EX.Pump),
+                    ("equipment/001", EX.Equipment),
+                    *((f"equipment/{j}", EX.MonitoredEquipment) for j in ("001", "002", "003")),
+                    *((f"alarm/{j}", EX.Event) for j in ("A01", "A02", "A03")),
+                ):
+                    expected_rdfs.append((f"<urn:case:{i}:{identifier}>", RDF.type.n3(), cls.n3()))
+            assert selected == {"type": "SELECT", "variables": ["alarm"], "rows": expected_select}
+            assert inferred["rules"] == expected_rules
+            assert inferred["rdfs"] == sorted(expected_rdfs)
+            assert validated == {"conforms": True, "violations": []}
+            result = {"select": selected, "reason": inferred, "shacl": validated}
+            if reference is None:
+                reference = result
+            else:
+                assert reference == result
+            observation = {
+                "profile": "fresh-process-first-candidate-then-warm",
+                "stage": suffix,
+                "scale": scale,
+                "trial": trial,
+                "seed": SEED,
+                "assertedTriples": 18 * scale,
+                "ontologyTriples": len(ontology),
+                "semanticInputTriples": len(graph),
+                "shapeTriples": len(shapes),
+                "inputSha256": hashlib.sha256(text.encode()).hexdigest(),
+                "querySha256": hashlib.sha256(QUERY.encode()).hexdigest(),
+                "shapesSha256": hashlib.sha256(SHAPES.encode()).hexdigest(),
+                "semanticInputSha256": hashlib.sha256(
+                    "\n".join(sorted(" ".join(t.n3() for t in row) for row in graph)).encode()
+                ).hexdigest(),
+                "phases": phases,
+                "result": result,
+                "python": platform.python_version(),
+                "versions": {name: version(name) for name in ("rdflib", "pyshacl", "owlrl")},
+                "device": platform.platform(),
+                "machine": platform.machine(),
+                "condition": "fresh CLI path before First has no S1 measure/suite/shapes parse; "
+                "imports precede workload; Warm repeats in process; OS cache uncontrolled",
+                "method": "perf_counter_ns phases and workload; tracemalloc; lifetime ru_maxrss; "
+                "parent separately timestamps First JSONL arrival before waiting for exit",
+            }
+            observation["workloadElapsedNs"] = time.perf_counter_ns() - workload_start
+            yield {
+                "event": "firstComplete" if suffix == "First" else "warmComplete",
+                "observation": observation,
+            }
+    finally:
+        tracemalloc.stop()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--mode", choices=["suite", "reject", "measure", "startup"], default="suite"
+        "--mode", choices=["suite", "reject", "measure", "startup", "fresh"], default="suite"
     )
     parser.add_argument("--endpoint", default="http://127.0.0.1:9/deny")
     parser.add_argument("--scale", type=int, choices=[1, 10], default=1)
     parser.add_argument("--trial", type=int, default=0)
     args = parser.parse_args()
+    if args.mode == "fresh":
+        for event in fresh_measurements(args.scale, args.trial):
+            print(json.dumps(event, ensure_ascii=False, sort_keys=True), flush=True)
+        return
     if args.mode == "startup":
         result = {
             "ready": True,
