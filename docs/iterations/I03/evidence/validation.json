@@ -1,0 +1,43 @@
+{
+  "iteration": "I03",
+  "base": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+  "environment": {
+    "platform": "macOS arm64",
+    "runtime": "independent worktree node_modules/.venv; no GUI",
+    "machine": "arm64",
+    "node": "v24.15.0",
+    "python": "Python 3.12.12"
+  },
+  "checks": [
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "typescriptTests": 285,
+      "pythonTests": 497,
+      "includes": ["eslint", "prettier", "desktop typecheck", "vitest", "build", "ruff", "pytest"],
+      "logSha256": "7ed52a28623cddf1921c842ba9c471773258841db514f3414f0508f6d5393b5e",
+      "localRawLog": "build/I03-validation/check-final.txt"
+    },
+    {
+      "command": "npm run typecheck --workspace @ontolearn/contracts",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run verify:sources",
+      "exitCode": 0,
+      "archiveFiles": 12
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "notRun": [
+    "Electron e2e/native/HMR",
+    "packaged executable launch",
+    "specified external review tasks",
+    "push/PR/remote CI/merge"
+  ],
+  "note": "Pre-freeze final validation; any later reviewed implementation/test/config/acceptance change invalidates this summary and requires rerun.",
+  "validatedAt": "2026-10-20T11:19:03.430149+08:00"
+}

@@ -1,0 +1,362 @@
+{
+  "schemaVersion": 2,
+  "maxEncodedBytes": 2048,
+  "codes": {
+    "INVALID_REQUEST": {
+      "messageKey": "protocol.invalidRequest",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "enum": ["envelope", "params", "identity", "config", "cursor", "dependency", "kind"]
+          }
+        },
+        "required": ["field"],
+        "additionalProperties": false
+      }
+    },
+    "METHOD_NOT_ALLOWED": {
+      "messageKey": "protocol.methodNotAllowed",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "VERSION_INCOMPATIBLE": {
+      "messageKey": "protocol.versionIncompatible",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "supportedVersions": {
+            "type": "array",
+            "items": {
+              "const": 2
+            },
+            "minItems": 1,
+            "maxItems": 1
+          }
+        },
+        "required": ["supportedVersions"],
+        "additionalProperties": false
+      }
+    },
+    "HANDSHAKE_REQUIRED": {
+      "messageKey": "protocol.handshakeRequired",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "SESSION_MISMATCH": {
+      "messageKey": "protocol.sessionMismatch",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "NOT_FOUND": {
+      "messageKey": "resource.notFound",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "resource": {
+            "enum": ["project", "job", "result", "snapshot", "operation", "subscription", "cursor"]
+          }
+        },
+        "required": ["resource"],
+        "additionalProperties": false
+      }
+    },
+    "PERMISSION_DENIED": {
+      "messageKey": "permission.denied",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "UNSUPPORTED_CAPABILITY": {
+      "messageKey": "capability.unsupported",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "QUEUE_FULL": {
+      "messageKey": "job.queueFull",
+      "retryable": true,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "retryAfterMs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60000
+          }
+        },
+        "required": ["retryAfterMs"],
+        "additionalProperties": false
+      }
+    },
+    "TIMEOUT": {
+      "messageKey": "job.timeout",
+      "retryable": true,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "phase": {
+            "enum": ["startup", "handshake", "request", "total", "heartbeat", "cancel"]
+          }
+        },
+        "required": ["phase"],
+        "additionalProperties": false
+      }
+    },
+    "ENGINE_EXITED": {
+      "messageKey": "engine.exited",
+      "retryable": true,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "REVISION_CONFLICT": {
+      "messageKey": "project.revisionConflict",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "expected": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "actual": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": ["expected", "actual"],
+        "additionalProperties": false
+      }
+    },
+    "OWNERSHIP_CONFLICT": {
+      "messageKey": "project.ownershipConflict",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "detailRef": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "required": ["detailRef"],
+        "additionalProperties": false
+      }
+    },
+    "IDENTITY_CONFLICT": {
+      "messageKey": "operation.identityConflict",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "STORAGE_BUSY": {
+      "messageKey": "storage.busy",
+      "retryable": true,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "retryAfterMs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60000
+          }
+        },
+        "required": ["retryAfterMs"],
+        "additionalProperties": false
+      }
+    },
+    "STORAGE_FAILURE": {
+      "messageKey": "storage.failure",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "operationId": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "CURSOR_MISMATCH": {
+      "messageKey": "result.cursorMismatch",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "CURSOR_EXPIRED": {
+      "messageKey": "result.cursorExpired",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "PAYLOAD_EVICTED": {
+      "messageKey": "result.payloadEvicted",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "resultId": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "required": ["resultId"],
+        "additionalProperties": false
+      }
+    },
+    "INVALID_STATE": {
+      "messageKey": "job.invalidState",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "MAPPING_VALUE_INVALID": {
+      "messageKey": "mapping.valueInvalid",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "worksheetId": {
+            "$ref": "#/$defs/id"
+          },
+          "row": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1048576
+          },
+          "column": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16384
+          },
+          "field": {
+            "enum": ["key", "value", "type", "reference"]
+          },
+          "detailRef": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "required": ["worksheetId", "row", "column", "field"],
+        "additionalProperties": false
+      }
+    },
+    "INTERNAL_ERROR": {
+      "messageKey": "engine.internal",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "SEMANTIC_INPUT_INVALID": {
+      "messageKey": "semantics.inputInvalid",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "enum": ["syntax", "query", "rule", "constraint"]
+          }
+        },
+        "required": ["field"],
+        "additionalProperties": false
+      }
+    },
+    "NETWORK_FORBIDDEN": {
+      "messageKey": "semantics.networkForbidden",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "UNSUPPORTED_CONSTRUCT": {
+      "messageKey": "semantics.unsupportedConstruct",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "construct": {
+            "enum": [
+              "rdfBlankNode",
+              "sparqlForm",
+              "ruleChain",
+              "ruleRecursion",
+              "shaclPath",
+              "shaclAdvanced",
+              "owlExpression"
+            ]
+          }
+        },
+        "required": ["construct"],
+        "additionalProperties": false
+      }
+    },
+    "RESOURCE_LIMIT": {
+      "messageKey": "job.resourceLimit",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {
+          "resource": {
+            "enum": ["memory", "actions", "rounds", "frame", "page"]
+          }
+        },
+        "required": ["resource"],
+        "additionalProperties": false
+      }
+    }
+  }
+}

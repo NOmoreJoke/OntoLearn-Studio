@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "factsScope": "facts:asserted",
+  "policies": {
+    "query.execute": {
+      "selectedFamily": "query",
+      "sets": ["ontology", "mapping"],
+      "withDerived": ["rule"]
+    },
+    "reasoning.execute": {
+      "selectedFamily": null,
+      "sets": ["ontology", "mapping", "rule"],
+      "withDerived": []
+    },
+    "validation.execute": {
+      "selectedFamily": "constraint",
+      "sets": ["ontology", "mapping"],
+      "withDerived": ["rule"]
+    },
+    "mapping.commit": {
+      "selectedFamily": "mapping",
+      "sets": ["ontology", "mapping"],
+      "withDerived": []
+    },
+    "changeset.commit": {
+      "selectedFamily": null,
+      "sets": ["ontology", "mapping", "constraint", "rule", "behavior", "scenario", "query"],
+      "withDerived": []
+    },
+    "behavior.test": {
+      "selectedFamily": "behavior",
+      "sets": ["ontology", "mapping", "rule", "behavior"],
+      "withDerived": []
+    },
+    "scenario.run": {
+      "selectedFamily": "scenario",
+      "sets": ["ontology", "mapping", "rule", "behavior"],
+      "withDerived": []
+    }
+  },
+  "readOnlyViewPolicies": {
+    "comparison": "union of explicitly selected immutable result dependency vectors and definition-set manifests; retain each snapshot group; no mixed current label",
+    "report": "same union; pin every selected available payload in one transaction before report confirmation; historical selections explicit"
+  }
+}
