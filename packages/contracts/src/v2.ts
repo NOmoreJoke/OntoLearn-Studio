@@ -1,4 +1,4 @@
-/** I03 pure design validators. No transport, scheduler or renderer bridge is installed. */
+/** Shared v2 value validators. Transport additionally validates raw JSONL bytes. */
 import { z } from 'zod'
 import document from '../v2/schema.json'
 import registry from '../v2/registry.json'
@@ -328,6 +328,21 @@ export interface EventBinding {
   state: string
 }
 export function acceptsJobEvent(value: unknown, binding: EventBinding): boolean {
+  if (
+    !binding ||
+    typeof binding !== 'object' ||
+    Object.keys(binding).sort().join(',') !==
+      'engineSessionId,jobId,lastSeq,projectId,state,stateVersion,subscriptionId' ||
+    !['engineSessionId', 'projectId', 'jobId', 'subscriptionId'].every((key) =>
+      validateV2('id', binding[key as keyof EventBinding]),
+    ) ||
+    !Number.isSafeInteger(binding.lastSeq) ||
+    binding.lastSeq < 0 ||
+    !Number.isSafeInteger(binding.stateVersion) ||
+    binding.stateVersion < 1 ||
+    !['queued', 'running', 'cancelling', 'succeeded', 'failed', 'cancelled'].includes(binding.state)
+  )
+    return false
   if (!validateV2('notification', value)) return false
   const v = value as Record<string, unknown>
   if (v.event === 'session.status') return false

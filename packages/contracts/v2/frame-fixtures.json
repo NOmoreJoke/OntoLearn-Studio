@@ -1,0 +1,778 @@
+{
+  "schemaVersion": 2,
+  "cases": [
+    {
+      "name": "UTF8 chunk boundary 0",
+      "chunks": ["", "7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 1",
+      "chunks": ["7b", "2274657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 2",
+      "chunks": ["7b22", "74657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 3",
+      "chunks": ["7b2274", "657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 4",
+      "chunks": ["7b227465", "7874223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 5",
+      "chunks": ["7b22746578", "74223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 6",
+      "chunks": ["7b2274657874", "223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 7",
+      "chunks": ["7b227465787422", "3a22e4b8ade69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 8",
+      "chunks": ["7b2274657874223a", "22e4b8ade69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 9",
+      "chunks": ["7b2274657874223a22", "e4b8ade69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 10",
+      "chunks": ["7b2274657874223a22e4", "b8ade69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 11",
+      "chunks": ["7b2274657874223a22e4b8", "ade69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 12",
+      "chunks": ["7b2274657874223a22e4b8ad", "e69687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 13",
+      "chunks": ["7b2274657874223a22e4b8ade6", "9687f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 14",
+      "chunks": ["7b2274657874223a22e4b8ade696", "87f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 15",
+      "chunks": ["7b2274657874223a22e4b8ade69687", "f09f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 16",
+      "chunks": ["7b2274657874223a22e4b8ade69687f0", "9f9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 17",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f", "9880227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 18",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f98", "80227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 19",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880", "227d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 20",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f988022", "7d0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 21",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d", "0d0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 22",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d", "0a7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 23",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a", "7b226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 24",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b", "226f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 25",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b22", "6f6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 26",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b226f", "6b223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 27",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b", "223a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 28",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b22", "3a747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 29",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a", "747275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 30",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a74", "7275657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 31",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a7472", "75657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 32",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a747275", "657d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 33",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a74727565", "7d0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 34",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a747275657d", "0a"],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "UTF8 chunk boundary 35",
+      "chunks": ["7b2274657874223a22e4b8ade69687f09f9880227d0d0a7b226f6b223a747275657d0a", ""],
+      "expectedFrames": [
+        {
+          "text": "中文😀"
+        },
+        {
+          "ok": true
+        }
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "empty",
+      "chunks": ["0a", "7b7d0a"],
+      "expectedFrames": [],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "BOM",
+      "chunks": ["efbbbf7b7d0a", "7b7d0a"],
+      "expectedFrames": [],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "utf8",
+      "chunks": ["ff0a", "7b7d0a"],
+      "expectedFrames": [],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "json",
+      "chunks": ["7b0a", "7b7d0a"],
+      "expectedFrames": [],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "trailing",
+      "chunks": ["7b7d7b7d0a", "7b7d0a"],
+      "expectedFrames": [],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "duplicate",
+      "chunks": ["7b2278223a7b2261223a312c2261223a327d7d0a", "7b7d0a"],
+      "expectedFrames": [],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "escaped duplicate",
+      "chunks": ["7b2261223a312c225c7530303631223a327d0a", "7b7d0a"],
+      "expectedFrames": [],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "NaN",
+      "chunks": ["7b2261223a4e614e7d0a", "7b7d0a"],
+      "expectedFrames": [],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "surrogate",
+      "chunks": ["7b2261223a225c7564383030227d0a", "7b7d0a"],
+      "expectedFrames": [],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "number",
+      "chunks": ["393030373139393235343734303939320a", "7b7d0a"],
+      "expectedFrames": [],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "deep",
+      "chunks": [
+        "5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b305d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d5d0a",
+        "7b7d0a"
+      ],
+      "expectedFrames": [],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "coalesced bounded frames",
+      "chunks": [
+        "7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a7b7d0a"
+      ],
+      "expectedFrames": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ],
+      "expectedErrors": [],
+      "end": true,
+      "terminal": true,
+      "maxBytes": 8
+    },
+    {
+      "name": "append before byte limit",
+      "chunks": [
+        "3132333435363738",
+        "78787878787878787878787878787878",
+        "78787878787878787878787878787878",
+        "7b7d0a"
+      ],
+      "expectedFrames": [],
+      "expectedErrors": ["frame"],
+      "end": true,
+      "terminal": true,
+      "maxBytes": 8
+    },
+    {
+      "name": "unterminated EOF",
+      "chunks": ["7b7d"],
+      "expectedFrames": [],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    },
+    {
+      "name": "valid frame before fatal JSON preserved",
+      "chunks": ["7b7d0a7b0a7b7d0a"],
+      "expectedFrames": [{}],
+      "expectedErrors": ["json"],
+      "end": true,
+      "terminal": true
+    }
+  ]
+}

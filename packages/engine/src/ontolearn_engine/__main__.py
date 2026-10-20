@@ -1,16 +1,19 @@
-"""Serve one bounded request on stdin and exit; stdout is protocol-only."""
+"""Run one supervised resident v2 session. Stdout is exclusively flushed JSONL."""
 
-import json
+import asyncio
 import sys
-
-from ontolearn_engine.protocol import MAX_REQUEST_BYTES, handle_request
 
 
 def main() -> None:
-    raw = sys.stdin.buffer.readline(MAX_REQUEST_BYTES + 1)
-    response = handle_request(raw)
-    sys.stdout.buffer.write((json.dumps(response, ensure_ascii=False) + "\n").encode("utf-8"))
-    sys.stdout.buffer.flush()
+    try:
+        from ontolearn_engine.coordinator import serve
+
+        asyncio.run(serve())
+    except Exception:
+        # Only a fixed bounded diagnostic crosses stderr, including initialization.
+        sys.stderr.write("ENGINE_SESSION_FAILED\n")
+        sys.stderr.flush()
+        raise SystemExit(1) from None
 
 
 if __name__ == "__main__":

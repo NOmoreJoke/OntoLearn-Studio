@@ -886,13 +886,28 @@ runpy.run_path(entry,run_name='__main__')
 """
     result = subprocess.run(
         [sys.executable, "-c", code, str(entry), blocked_module],
-        input=json.dumps({"id": "portable", "method": "health", "protocolVersion": 1}) + "\n",
+        input=json.dumps(
+            {
+                "kind": "request",
+                "id": "00000000-0000-4000-8000-000000000011",
+                "method": "hello",
+                "protocolVersion": 2,
+                "engineSessionId": None,
+                "params": {
+                    "supportedVersions": [2],
+                    "clientId": "00000000-0000-4000-8000-000000000012",
+                },
+            }
+        )
+        + "\n",
         capture_output=True,
         text=True,
         timeout=30,
         check=True,
     )
-    assert json.loads(result.stdout)["result"]["capabilities"] == ["health"]
+    hello = json.loads(result.stdout)["result"]
+    assert "health" in hello["capabilities"] and hello["selectedVersion"] == 2
+    assert all(not name.startswith("test.") for name in hello["capabilities"])
 
 
 def test_machine_readable_implementation_and_publication_policy():

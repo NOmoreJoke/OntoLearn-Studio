@@ -1,49 +1,118 @@
-"""Versioned JSON-lines transport; no sockets, filesystem or model access."""
+"""Strict bounded raw JSONL transport. No v1 fallback and no raw diagnostics."""
 
 import json
+import math
 
-from ontolearn_engine import __version__
-
-PROTOCOL_VERSION = 1
-MAX_REQUEST_BYTES = 16384
+MAX_REQUEST_BYTES = 262144
+MAX_DEPTH = 32
 
 
-def handle_request(raw: bytes) -> dict:
-    request_id = None
+class ProtocolFault(Exception):
+    """Session-fatal protocol violation, never carries input text."""
+
+    def __init__(self):
+        super().__init__("PROTOCOL_FAULT")
+        self.frames = []  # Previously completed frames precede the fatal boundary.
+
+
+def _pairs(pairs: list) -> dict:
+    value = {}
+    for key, item in pairs:
+        if key in value:
+            raise ProtocolFault()
+        value[key] = item
+    return value
+
+
+def decode_frame(frame: bytes) -> object:
+    if not frame or len(frame) > MAX_REQUEST_BYTES or frame.startswith(b"\xef\xbb\xbf"):
+        raise ProtocolFault()
+    # Scan string/escape aware before JSON allocation/recursive parsing.
+    quoted = escaped = False
+    depth = 0
+    for byte in frame:
+        if quoted:
+            if escaped:
+                escaped = False
+            elif byte == 92:
+                escaped = True
+            elif byte == 34:
+                quoted = False
+        elif byte == 34:
+            quoted = True
+        elif byte in (91, 123):
+            depth += 1
+            if depth > MAX_DEPTH:
+                raise ProtocolFault()
+        elif byte in (93, 125):
+            depth -= 1
     try:
-        if len(raw) > MAX_REQUEST_BYTES:
-            raise ValueError("REQUEST_TOO_LARGE")
-        request = json.loads(raw)
-        if not isinstance(request, dict):
-            raise ValueError("INVALID_REQUEST")
-        request_id = request.get("id")
-        if not isinstance(request_id, str) or not 1 <= len(request_id) <= 128:
-            request_id = None
-            raise ValueError("INVALID_ID")
-        if set(request) != {"id", "method", "protocolVersion"}:
-            raise ValueError("INVALID_REQUEST")
-        if type(request["protocolVersion"]) is not int or request["protocolVersion"] != 1:
-            raise ValueError("UNSUPPORTED_PROTOCOL")
-        if request["method"] != "health":
-            raise ValueError("METHOD_NOT_ALLOWED")
-    except (ValueError, UnicodeError) as error:
-        # 错误只返回固定代码，禁止回显导入内容或异常原文。
-        allowed = {
-            "REQUEST_TOO_LARGE",
-            "INVALID_REQUEST",
-            "INVALID_ID",
-            "UNSUPPORTED_PROTOCOL",
-            "METHOD_NOT_ALLOWED",
-        }
-        code = str(error) if str(error) in allowed else "INVALID_JSON"
-        return {"id": request_id, "ok": False, "error": {"code": code}}
-    return {
-        "id": request_id,
-        "ok": True,
-        "result": {
-            "protocolVersion": PROTOCOL_VERSION,
-            "engineVersion": __version__,
-            "status": "ok",
-            "capabilities": ["health"],
-        },
-    }
+        value = json.loads(
+            frame.decode("utf-8", errors="strict"),
+            object_pairs_hook=_pairs,
+            parse_constant=lambda _: (_ for _ in ()).throw(ProtocolFault()),
+        )
+        stack = [value]
+        while stack:
+            item = stack.pop()
+            if isinstance(item, dict):
+                stack.extend(item.keys())
+                stack.extend(item.values())
+            elif isinstance(item, list):
+                stack.extend(item)
+            elif isinstance(item, str) and any(0xD800 <= ord(c) <= 0xDFFF for c in item):
+                raise ProtocolFault()
+            elif type(item) in {int, float} and (
+                abs(item) > 9007199254740991 or not math.isfinite(item)
+            ):
+                raise ProtocolFault()
+        return value
+    except (ValueError, UnicodeError, RecursionError) as error:
+        raise ProtocolFault() from error
+
+
+class JsonlReader:
+    def __init__(self, max_bytes: int = MAX_REQUEST_BYTES):
+        if not 1 <= max_bytes <= MAX_REQUEST_BYTES:
+            raise ValueError("INVALID_FRAME_LIMIT")
+        self.max_bytes = max_bytes
+        self.buffer = bytearray()
+        self.terminal = False
+
+    def stop(self) -> None:
+        self.terminal = True
+        self.buffer.clear()
+
+    def feed(self, chunk: bytes) -> list:
+        if self.terminal:
+            return []
+        frames = []
+        offset = 0
+        try:
+            while offset < len(chunk):
+                end = chunk.find(b"\n", offset)
+                stop = len(chunk) if end < 0 else end
+                length = stop - offset
+                # Check BEFORE copying any new bytes; even no-LF and repeated chunks bounded.
+                if len(self.buffer) + length > self.max_bytes:
+                    raise ProtocolFault()
+                self.buffer.extend(memoryview(chunk)[offset:stop])
+                if end < 0:
+                    break
+                raw = bytes(self.buffer)
+                self.buffer.clear()
+                if raw.endswith(b"\r"):
+                    raw = raw[:-1]
+                frames.append(decode_frame(raw))
+                offset = end + 1
+            return frames
+        except ProtocolFault as error:
+            error.frames = frames
+            self.stop()
+            raise
+
+    def finish(self) -> None:
+        incomplete = bool(self.buffer)
+        self.stop()
+        if incomplete:
+            raise ProtocolFault()

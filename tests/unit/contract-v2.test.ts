@@ -105,7 +105,23 @@ describe('shared v2 contract corpus', () => {
     for (const entry of Object.values(v2Registry.capabilities))
       for (const ref of [entry.paramsSchema, entry.resultSchema])
         expect(ref.slice(8) in schema.$defs).toBe(true)
-    expect(v2Registry.v2Runtime).toEqual([])
+    expect(v2Registry.v2Runtime).toEqual([
+      'hello',
+      'health',
+      'session.ping',
+      'project.get',
+      'job.create',
+      'job.get',
+      'job.cancel',
+      'job.list',
+      'job.subscribe',
+      'job.unsubscribe',
+      'result.get',
+      'result.current',
+      'result.page',
+      'operation.get',
+    ])
+    expect(v2Registry.v2Runtime.some((name) => name.startsWith('test.'))).toBe(false)
     expect(v2Registry.productRuntime).toEqual(['health'])
   })
 })

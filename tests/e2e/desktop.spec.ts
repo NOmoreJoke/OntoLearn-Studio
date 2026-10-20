@@ -20,7 +20,7 @@ test('desktop calls real engine, keeps isolation and fits minimum window', async
     await expect(page.getByRole('status')).toContainText('本地引擎已连接')
     await page.getByRole('button', { name: '检查本地引擎' }).click()
     await expect(page.getByRole('button', { name: '检查本地引擎' })).toBeEnabled()
-    await expect(page.getByRole('status')).toContainText('协议 v1')
+    await expect(page.getByRole('status')).toContainText('协议 v2')
     expect(
       await page.evaluate(() => typeof (window as unknown as { require?: unknown }).require),
     ).toBe('undefined')
