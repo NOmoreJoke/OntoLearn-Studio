@@ -273,6 +273,100 @@ describe('trusted task bridge', () => {
     expect(updates).toHaveLength(1)
     tasks.dispose()
   })
+  it('hands the initial restore into a trusted atomic completion received with subscribe response', async () => {
+    const { engine, tasks } = service()
+    engine.job = {
+      ...fixture('atomic queued no commit'),
+      state: 'running',
+      stateVersion: 2,
+    } as JobView
+    const final = fixture('atomic succeeded committed') as JobView
+    ;(final.commitProgress as { marker: { projectRevision: number } }).marker.projectRevision = 2
+    const original = engine.request.bind(engine)
+    let first = true
+    engine.request = async (method, params) => {
+      const response = await original(method, params)
+      if (method === 'job.subscribe' && first) {
+        first = false
+        engine.job = final
+        engine.projectRevision = 2
+        engine.inputSnapshotId = 'b'.repeat(64)
+        engine.emit(stateEvent(engine, final))
+      }
+      return response
+    }
+    const updates: TaskUpdate[] = []
+    tasks.attachView((value) => updates.push(value))
+    const view = await tasks.restore()
+    expect(view.ok).toBe(true)
+    if (!view.ok) throw new Error('atomic restore handoff failed')
+    expect(view.data.project?.projectRevision).toBe(2)
+    expect(view.data.jobs[0]).toEqual(final)
+    expect(view.data.jobs[0].inputSnapshotId).not.toBe(view.data.project?.inputSnapshotId)
+    expect(updates).toHaveLength(1)
+    expect(
+      (updates[0] as TaskUpdate & { restoredView: import('@ontolearn/contracts').TaskView })
+        .restoredView,
+    ).toEqual(view.data)
+    expect(engine.calls.map((call) => call.method)).toEqual([
+      'project.get',
+      'job.get',
+      'job.subscribe',
+      'job.unsubscribe',
+      'project.get',
+      'job.get',
+      'job.subscribe',
+    ])
+    tasks.dispose()
+  })
+  it('does not hand an old initial restore through a later window generation', async () => {
+    const { engine, tasks } = service()
+    engine.job = {
+      ...fixture('atomic queued no commit'),
+      state: 'running',
+      stateVersion: 2,
+    } as JobView
+    const final = fixture('atomic succeeded committed') as JobView
+    ;(final.commitProgress as { marker: { projectRevision: number } }).marker.projectRevision = 2
+    const original = engine.request.bind(engine)
+    let first = true
+    let release!: (value: unknown) => void
+    let started!: () => void
+    const refreshing = new Promise<void>((done) => {
+      started = done
+    })
+    engine.request = async (method, params) => {
+      const response = await original(method, params)
+      if (method === 'job.subscribe' && first) {
+        first = false
+        engine.job = final
+        engine.projectRevision = 2
+        engine.emit(stateEvent(engine, final))
+      } else if (method === 'project.get' && !first) {
+        started()
+        return new Promise((done) => {
+          release = done
+        })
+      }
+      return response
+    }
+    const updates: TaskUpdate[] = []
+    tasks.attachView((value) => updates.push(value))
+    const pending = tasks.restore()
+    await refreshing
+    tasks.attachView((value) => updates.push(value))
+    release({
+      projectId,
+      projectRevision: 2,
+      inputSnapshotId: 'b'.repeat(64),
+      dependencyVector: { 'facts:asserted': 1 },
+      formatVersion: 2,
+    })
+    const result = await pending
+    expect(result.ok).toBe(false)
+    expect(updates).toEqual([])
+    tasks.dispose()
+  })
   it('observes activeProject revision once, rebuilds read subscriptions, and rejects an older projection', async () => {
     const { engine, tasks } = service()
     await tasks.restore()

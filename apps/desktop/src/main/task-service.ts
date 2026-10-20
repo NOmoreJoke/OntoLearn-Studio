@@ -44,7 +44,16 @@ export class TaskService {
   private projectId: string | null = null
   private generation = 0
   private projectRevision: number | undefined
-  private projectRefresh = new Map<number, Promise<void>>()
+  private projectRefresh = new Map<number, Promise<TaskView | undefined>>()
+  private projectTransition:
+    | {
+        from: number
+        to: number
+        projectId: string
+        session: string
+        view: Promise<TaskView | undefined>
+      }
+    | undefined
   private watches = new Map<string, Watch>()
   private remembered = new Set<string>()
   private earlyBytes = 0
@@ -73,6 +82,7 @@ export class TaskService {
     this.sink = sink
   }
   detachView(): void {
+    this.projectTransition = undefined
     this.generation++
     this.sink = undefined
     for (const watch of this.watches.values())
@@ -286,7 +296,11 @@ export class TaskService {
           const events = this.earlyEvents.get(key) ?? []
           this.dropEarly(key)
           for (const event of events) this.receive(event)
-          return this.watches.get(jobId)!.job
+          const active = this.watches.get(jobId)
+          // Applying an early atomic commit can fence this exact subscription.
+          // Its restoration owns the successor; never dereference a removed watch.
+          if (!active) throw { error: denied }
+          return active.job
         }
         await this.call('job.unsubscribe', {
           projectId,
@@ -336,12 +350,38 @@ export class TaskService {
         ? await this.call<ProjectView>('project.get', { projectId: this.projectId })
         : null
       if (project) this.observeProject(project)
-      // observeProject can invalidate the old view. Capture its successor only
-      // after that observation, rather than invalidating our own restoration.
       const generation = this.generation
-      const jobs = await this.restoreJobs()
-      if (generation !== this.generation) throw { error: denied }
-      return { generation, project, jobs }
+      const session = this.engine.engineSessionId
+      try {
+        const jobs = await this.restoreJobs()
+        if (generation !== this.generation) throw { error: denied }
+        return { generation, project, jobs }
+      } catch (error) {
+        // Only a trusted atomic-refresh transition may hand this read into its
+        // successor. A project switch, reload, or engine replacement clears or
+        // invalidates this single bounded reference instead of reviving old reads.
+        const transition = this.projectTransition
+        if (
+          transition &&
+          transition.from === generation &&
+          transition.to === this.generation &&
+          transition.projectId === project?.projectId &&
+          transition.projectId === this.projectId &&
+          transition.session === session &&
+          session === this.engine.engineSessionId
+        ) {
+          const view = await transition.view
+          if (
+            view &&
+            this.projectTransition === transition &&
+            view.generation === this.generation &&
+            this.projectId === transition.projectId &&
+            this.engine.engineSessionId === session
+          )
+            return view
+        }
+        throw error
+      }
     })
   }
   getResult(resultId: string): Promise<BridgeResult<Record<string, unknown>>> {
@@ -389,6 +429,7 @@ export class TaskService {
   private refreshProject(watch: Watch): void {
     if (this.projectRefresh.has(this.generation) || this.projectRefresh.size >= 16) return
     const { projectId, engineSessionId } = watch.binding
+    const fromGeneration = this.generation
     // A verified current subscription can request an authority read, but its
     // marker is not itself the project projection. Fence old delivery now so
     // no late old-input state can reach this view while that read is pending.
@@ -421,12 +462,20 @@ export class TaskService {
           restoredView,
         }
         this.sink?.(update)
+        return restoredView
       })
-      .catch(() => {})
+      .catch(() => undefined)
       .finally(() => {
         this.projectRefresh.delete(generation)
       })
     this.projectRefresh.set(generation, refresh)
+    this.projectTransition = {
+      from: fromGeneration,
+      to: generation,
+      projectId,
+      session: engineSessionId,
+      view: refresh,
+    }
   }
   private reconcile(watch: Watch): void {
     const generation = this.generation

@@ -104,6 +104,7 @@ async function runtime(
   capability: 'test.rounds' | 'test.read' | 'test.atomic',
   parameters: Record<string, unknown>,
   dropFirstState = false,
+  coalesceAtomicCompletion = false,
 ) {
   const directory = await mkdtemp(join(tmpdir(), 'ontolearn-task-runtime-'))
   try {
@@ -143,19 +144,63 @@ async function runtime(
     const received: Notification[] = []
     let dropped: Notification | undefined
     let jobId = ''
+    let forward: ((value: unknown) => void) | undefined
+    let delayedSubscribe = false
+    let heldAtomic: Notification | undefined
+    let releaseAtomic!: (event: Notification) => void
+    const atomicNotification = new Promise<Notification>((done) => {
+      releaseAtomic = done
+    })
     const transport = {
       get engineSessionId() {
         return supervisor.engineSessionId
       },
-      request(method: string, params: Record<string, unknown>) {
+      async request(method: string, params: Record<string, unknown>) {
         calls.push({ method, params: structuredClone(params) })
-        return supervisor.request(method, params)
+        const response = await supervisor.request(method, params)
+        if (coalesceAtomicCompletion && method === 'job.subscribe' && !delayedSubscribe) {
+          delayedSubscribe = true
+          let timer: ReturnType<typeof setTimeout> | undefined
+          try {
+            const event = await Promise.race([
+              atomicNotification,
+              new Promise<never>((_done, reject) => {
+                timer = setTimeout(
+                  () =>
+                    reject(new Error('No real atomic completion for subscribe scheduling probe')),
+                  6000,
+                )
+              }),
+            ])
+            expect(event.subscriptionId).toBe(
+              (response as { subscriptionId: string }).subscriptionId,
+            )
+            // Delay only response delivery, then forward the unmodified real
+            // notification in its promise turn before exposing that response.
+            forward?.(event)
+          } finally {
+            clearTimeout(timer)
+          }
+        }
+        return response
       },
       onNotification(listener: (event: unknown) => void) {
+        forward = listener
         return supervisor.onNotification((value) => {
           const event = value as Notification
           if (event.event === 'job.state' && event.jobId === jobId) {
             received.push(structuredClone(event))
+            const commit = event.data.commitProgress as { mode: string; marker?: unknown }
+            if (
+              coalesceAtomicCompletion &&
+              !heldAtomic &&
+              commit.mode === 'atomic' &&
+              commit.marker
+            ) {
+              heldAtomic = event
+              releaseAtomic(event)
+              return
+            }
             // Transport fault injection only: omit one actual wire notification.
             // Neither worker output, Store state nor any delivered wire value changes.
             if (dropFirstState && !dropped) {
@@ -216,6 +261,7 @@ async function runtime(
         views,
         operation,
         initial: restored,
+        heldAtomic,
       }
     } finally {
       waiting.stop()
@@ -279,6 +325,22 @@ describe('actual Python → supervisor → task service runtime', () => {
     expect(view.jobs[0].inputSnapshotId).not.toBe(view.project!.inputSnapshotId)
     expect(result.operation.ok && result.operation.data?.projectRevision).toBe(1)
     expect(result.calls.filter((call) => call.method === 'project.get')).toHaveLength(2)
+    expect(
+      result.calls.some((call) => call.method === 'job.create' || call.method === 'job.cancel'),
+    ).toBe(false)
+  }, 20000)
+  it('hands initial restoration over when a real atomic completion precedes subscribe response delivery', async () => {
+    const result = await runtime('test.atomic', { workMs: 200 }, false, true)
+    expect(result.heldAtomic).toBeDefined()
+    expect(validateV2('notification', result.heldAtomic)).toBe(true)
+    expect(result.initial.ok).toBe(true)
+    if (!result.initial.ok) throw new Error('fresh initial restoration missing')
+    expect(result.initial.data.project?.projectRevision).toBe(1)
+    expect(result.initial.data.jobs[0]).toEqual(result.evidence.job)
+    expect(result.initial.data.jobs[0].state).toBe('succeeded')
+    expect(result.views).toHaveLength(1)
+    expect(result.views[0]).toEqual(result.initial.data)
+    expect(result.evidence).toMatchObject({ jobs: 1, claims: 1, rounds: [] })
     expect(
       result.calls.some((call) => call.method === 'job.create' || call.method === 'job.cancel'),
     ).toBe(false)
