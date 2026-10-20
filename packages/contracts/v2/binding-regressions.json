@@ -3227,5 +3227,833 @@
       },
       "valid": false
     }
+  ],
+  "mainCases": [
+    {
+      "name": "main identity getModelAccessStatus",
+      "method": "getModelAccessStatus",
+      "params": {},
+      "result": {
+        "availability": "ready",
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "projectId": "00000000-0000-4000-8000-000000000110",
+        "privacy": "minimal",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "invocations": [
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000107",
+            "state": "running"
+          }
+        ]
+      },
+      "valid": true
+    },
+    {
+      "name": "main identity configureModel",
+      "method": "configureModel",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1"
+      },
+      "result": {
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1",
+        "credentialState": "configured"
+      },
+      "valid": true
+    },
+    {
+      "name": "main identity storeModelCredential",
+      "method": "storeModelCredential",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "SYNTHETIC_CONTRACT_ONLY_KEY"
+      },
+      "result": {
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000120",
+        "credentialState": "configured"
+      },
+      "valid": true
+    },
+    {
+      "name": "main identity setModelPrivacy",
+      "method": "setModelPrivacy",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "privacy": "minimal"
+      },
+      "result": {
+        "privacy": "minimal"
+      },
+      "valid": true
+    },
+    {
+      "name": "main identity selectModelResults",
+      "method": "selectModelResults",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "results": [
+          {
+            "resultId": "00000000-0000-4000-8000-000000000108",
+            "selection": "current"
+          }
+        ]
+      },
+      "result": {
+        "selections": [
+          {
+            "kind": "whole-result",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "bodyHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 1024
+          }
+        ]
+      },
+      "valid": true
+    },
+    {
+      "name": "main identity getModelFieldCatalog",
+      "method": "getModelFieldCatalog",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "resultId": "00000000-0000-4000-8000-000000000108",
+        "selection": "current"
+      },
+      "result": {
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": []
+          }
+        ]
+      },
+      "valid": true
+    },
+    {
+      "name": "main identity selectModelFields",
+      "method": "selectModelFields",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "fieldIds": ["00000000-0000-4000-8000-000000000112"]
+      },
+      "result": {
+        "kind": "fields",
+        "selectionId": "00000000-0000-4000-8000-000000000104",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": []
+          }
+        ],
+        "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "rowCount": 1,
+        "byteCount": 128
+      },
+      "valid": true
+    },
+    {
+      "name": "main identity previewModelExplanation",
+      "method": "previewModelExplanation",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "selectionIds": ["00000000-0000-4000-8000-000000000104"]
+      },
+      "result": {
+        "previewId": "00000000-0000-4000-8000-000000000105",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1",
+        "principal": "00000000-0000-4000-8000-000000000121",
+        "purpose": "explain",
+        "privacy": "minimal",
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "authorization": {
+          "state": "required"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "main identity confirmModelAuthorization",
+      "method": "confirmModelAuthorization",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "previewId": "00000000-0000-4000-8000-000000000105"
+      },
+      "result": {
+        "grantId": "00000000-0000-4000-8000-000000000106",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103"
+      },
+      "valid": true
+    },
+    {
+      "name": "main identity startModelExplanation",
+      "method": "startModelExplanation",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "grantId": "00000000-0000-4000-8000-000000000106",
+        "selectionIds": ["00000000-0000-4000-8000-000000000104"]
+      },
+      "result": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "running"
+      },
+      "valid": true
+    },
+    {
+      "name": "main identity getModelExplanationOutcome",
+      "method": "getModelExplanationOutcome",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "invocationId": "00000000-0000-4000-8000-000000000107"
+      },
+      "result": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "completed",
+        "text": "合成解释。"
+      },
+      "valid": true
+    },
+    {
+      "name": "main identity cancelModelExplanation",
+      "method": "cancelModelExplanation",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "invocationId": "00000000-0000-4000-8000-000000000107"
+      },
+      "result": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "cancelled",
+        "externalEffect": "unknown"
+      },
+      "valid": true
+    },
+    {
+      "name": "main wrong configuration configureModel",
+      "method": "configureModel",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1"
+      },
+      "result": {
+        "configurationId": "00000000-0000-4000-8000-000000000198",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1",
+        "credentialState": "configured"
+      },
+      "valid": false
+    },
+    {
+      "name": "main wrong configuration storeModelCredential",
+      "method": "storeModelCredential",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "SYNTHETIC_CONTRACT_ONLY_KEY"
+      },
+      "result": {
+        "configurationId": "00000000-0000-4000-8000-000000000198",
+        "configurationVersion": "00000000-0000-4000-8000-000000000120",
+        "credentialState": "configured"
+      },
+      "valid": false
+    },
+    {
+      "name": "main wrong configuration previewModelExplanation",
+      "method": "previewModelExplanation",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "selectionIds": ["00000000-0000-4000-8000-000000000104"]
+      },
+      "result": {
+        "previewId": "00000000-0000-4000-8000-000000000105",
+        "configurationId": "00000000-0000-4000-8000-000000000198",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1",
+        "principal": "00000000-0000-4000-8000-000000000121",
+        "purpose": "explain",
+        "privacy": "minimal",
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "authorization": {
+          "state": "required"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "main credential stale enrollment reply",
+      "method": "storeModelCredential",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "SYNTHETIC_CONTRACT_ONLY_KEY"
+      },
+      "result": {
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "credentialState": "configured"
+      },
+      "valid": false
+    },
+    {
+      "name": "main normalized endpoint differs",
+      "method": "configureModel",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1"
+      },
+      "result": {
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://different.example.invalid/",
+        "model": "synthetic-v1",
+        "credentialState": "configured"
+      },
+      "valid": false
+    },
+    {
+      "name": "main privacy differs",
+      "method": "setModelPrivacy",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "privacy": "minimal"
+      },
+      "result": {
+        "privacy": "project"
+      },
+      "valid": false
+    },
+    {
+      "name": "main selected result substituted",
+      "method": "selectModelResults",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "results": [
+          {
+            "resultId": "00000000-0000-4000-8000-000000000108",
+            "selection": "current"
+          }
+        ]
+      },
+      "result": {
+        "selections": [
+          {
+            "kind": "whole-result",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000198",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "bodyHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 1024
+          }
+        ]
+      },
+      "valid": false
+    },
+    {
+      "name": "main catalog result substituted",
+      "method": "getModelFieldCatalog",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "resultId": "00000000-0000-4000-8000-000000000108",
+        "selection": "current"
+      },
+      "result": {
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000198",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": []
+          }
+        ]
+      },
+      "valid": false
+    },
+    {
+      "name": "main projection catalog substituted",
+      "method": "selectModelFields",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "fieldIds": ["00000000-0000-4000-8000-000000000112"]
+      },
+      "result": {
+        "kind": "fields",
+        "selectionId": "00000000-0000-4000-8000-000000000104",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "catalogId": "00000000-0000-4000-8000-000000000198",
+        "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": []
+          }
+        ],
+        "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "rowCount": 1,
+        "byteCount": 128
+      },
+      "valid": false
+    },
+    {
+      "name": "main preview source handle substituted",
+      "method": "previewModelExplanation",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "selectionIds": ["00000000-0000-4000-8000-000000000104"]
+      },
+      "result": {
+        "previewId": "00000000-0000-4000-8000-000000000105",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1",
+        "principal": "00000000-0000-4000-8000-000000000121",
+        "purpose": "explain",
+        "privacy": "minimal",
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000198",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "authorization": {
+          "state": "required"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "main outcome call substituted getModelExplanationOutcome",
+      "method": "getModelExplanationOutcome",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "invocationId": "00000000-0000-4000-8000-000000000107"
+      },
+      "result": {
+        "invocationId": "00000000-0000-4000-8000-000000000198",
+        "state": "completed",
+        "text": "合成解释。"
+      },
+      "valid": false
+    },
+    {
+      "name": "main outcome call substituted cancelModelExplanation",
+      "method": "cancelModelExplanation",
+      "params": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "invocationId": "00000000-0000-4000-8000-000000000107"
+      },
+      "result": {
+        "invocationId": "00000000-0000-4000-8000-000000000198",
+        "state": "cancelled",
+        "externalEffect": "unknown"
+      },
+      "valid": false
+    }
   ]
 }
