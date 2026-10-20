@@ -681,3 +681,46 @@ def test_round_progress_new_persistent_version_then_cancel_snapshot(store):
     assert saved["stateVersion"] == 5 and saved["state"] == "cancelled"
     assert saved["commitProgress"]["committedProgress"]["lastCommittedRound"] == 1
     assert answer["state"] == "cancelling" and answer["stateVersion"] == 4
+
+
+@pytest.mark.parametrize(
+    "state", ["queued", "running", "cancelling", "succeeded", "failed", "cancelled"]
+)
+def test_cancel_dto_all_states_matches_canonical_schema(store, state):
+    job = create(store)
+    identity = job["jobId"]
+    if state in {"running", "cancelling", "succeeded"}:
+        store.start_job(identity)
+    if state == "cancelling":
+        store.cancel_job(store.project, identity)
+    elif state == "succeeded":
+        store.finish_read_job(identity, [])
+    elif state == "failed":
+        store.fail_job(
+            identity,
+            {
+                "code": "INTERNAL_ERROR",
+                "messageKey": "engine.internal",
+                "params": {},
+                "retryable": False,
+            },
+        )
+    elif state == "cancelled":
+        store.cancel_job(store.project, identity)
+    before = store.get_job(store.project, identity)
+    answer = store.cancel_job(store.project, identity)
+    assert CONTRACT.validate("result_job.cancel", answer)
+    expected_disposition = (
+        "alreadyTerminal"
+        if state in {"succeeded", "failed", "cancelled"}
+        else "alreadyRequested"
+        if state == "cancelling"
+        else "accepted"
+    )
+    assert answer["disposition"] == expected_disposition
+    if state in {"succeeded", "failed", "cancelled", "cancelling"}:
+        assert answer["stateVersion"] == before["stateVersion"]
+        assert answer["state"] == before["state"]
+    else:
+        assert answer["state"] == ("queued" if state == "queued" else "cancelling")
+    assert set(answer) == {"jobId", "disposition", "state", "stateVersion"}
