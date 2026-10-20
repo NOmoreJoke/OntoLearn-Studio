@@ -6,6 +6,8 @@
 
 本轮 [最小命名接口草案](../../iterations/I06/narrow-interface-draft.md)、[35个合成正反样例](../../iterations/I06/narrow-interface-examples.json) 和 [内部审查](stored-result-review.md) 已交付；公共接口尚未批准/注册。A-03字段映射与其他列零外发、Store跨进程原子lease、I05真实语义、正式main/bridge/UI/可用导出日志排除/窗口联验仍未验收。Q9真实协议不是本合成S3自动前置；原Goal工具仍blocked，原目标未重建或标完成。
 
+本阶段实质代码保全 `373d88ac36f8fac52b4d930f67b8e2a28e418d85`；窄接口草案 SHA-256 `d18c1033c9ff98e8a90f628f60d14e755afdd09fa48badced238e06c809b82d4`，样例 SHA-256 `ca3b86473b06a21f79983ac11f6925cb2d84a10ca54e72a124541415e21ae5a2`。[本轮来源与验证 manifest](evidence/stored-result-20261021.json) SHA-256 `77a524e2d40ee21169d77e7613df1242c1ac258d5ad37f5f7a90623ba55e05c4`；本线忽略目录 `tests/i06-stored-material/out/stored-result-raw-20261021.tar.gz` SHA-256 `353046febce55867c30a30931bcd01465a90511b6e1fc6a8dc5b1875c4714e7b`，保留12原始日志、首次失败源码、19最终源码/测试输入及两份结构化测试报告，无项目DB。仅protected AGENTS保持dirty，未push；后续唯一owner交接和完整候选新审仍由总控安排。
+
 上一阶段结果：实际 POSIX 私有密文仓库与 metadata 持久审计、Electron safeStorage factory，完整check770TS/1052Python、sources12及54项文件/发送门故障反例均保留。Linux arm64 Electron44.9.0组合六场景曾按当时源码/运行字节与43项raw摘要验证；本轮gateway新增私有定向取消，因此该旧组合不能称为当前完整候选的平台通过。未变化的凭据/私有仓库/审计/factory平台事实仍按其原hash引用，没有重复不变平台测试。下文旧计数/依赖值作为历史。
 
 当前交接：[具体 main 内部类型、调用顺序、失败行为和共享文件面](../../iterations/I06/main-integration-handoff.md)、[持久化独立审查](persistence-review.md)、[实际组合证据](platform/combination-linux-evidence.json)。正式接线、真实 Store/导出/窗口联验、Windows ACL/其他平台、指定双审/PR/实际 CI/远端合并仍未完成。未 push，不改总控 state 或 I05 共享文件。
