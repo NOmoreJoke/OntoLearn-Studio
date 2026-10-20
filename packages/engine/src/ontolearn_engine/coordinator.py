@@ -382,7 +382,7 @@ class Coordinator:
                         try:
                             if resident_bytes(process.pid) > job["limits"]["maxWorkerMemoryBytes"]:
                                 raise ServiceFault("RESOURCE_LIMIT", {"resource": "memory"})
-                        except OSError:
+                        except ProcessLookupError:
                             pass  # Child exit is reconciled through its actual exit status.
                     done, _ = await asyncio.wait({read_task}, timeout=0.02)
                     if not done:
