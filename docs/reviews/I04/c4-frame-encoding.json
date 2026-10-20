@@ -1,0 +1,142 @@
+{
+  "baseline": "24fd202feb6b0fe573d41eb27ae1f3c50e5356ec",
+  "localBaselineMerge": "902e032",
+  "platform": "macOS arm64; independent worktree .venv uv sync --frozen",
+  "cause": "UTF-8 JSON corpus was read with the Windows locale default: raw byte parser correctly returned Chinese/emoji while expectedFrames had cp1252 mojibake.",
+  "change": "Explicit utf-8 decoding for frame test corpus and all three bundled common-example JSON resources; exact fixtures and original frame/assertion logic unchanged.",
+  "scope": [
+    "packages/engine/tests/test_frame_corpus.py",
+    "packages/engine/src/ontolearn_engine/contract_probe.py"
+  ],
+  "simulation": {
+    "injection": "Path.open only for the three exact contract JSON resources and only unspecified/locale encoding; no parser, bytes, expected frames, global locale, env or runner flag changes",
+    "oldFrameAssertions": {
+      "passed": 15,
+      "failed": 36,
+      "names": [
+        "UTF8 chunk boundary 0",
+        "UTF8 chunk boundary 1",
+        "UTF8 chunk boundary 2",
+        "UTF8 chunk boundary 3",
+        "UTF8 chunk boundary 4",
+        "UTF8 chunk boundary 5",
+        "UTF8 chunk boundary 6",
+        "UTF8 chunk boundary 7",
+        "UTF8 chunk boundary 8",
+        "UTF8 chunk boundary 9",
+        "UTF8 chunk boundary 10",
+        "UTF8 chunk boundary 11",
+        "UTF8 chunk boundary 12",
+        "UTF8 chunk boundary 13",
+        "UTF8 chunk boundary 14",
+        "UTF8 chunk boundary 15",
+        "UTF8 chunk boundary 16",
+        "UTF8 chunk boundary 17",
+        "UTF8 chunk boundary 18",
+        "UTF8 chunk boundary 19",
+        "UTF8 chunk boundary 20",
+        "UTF8 chunk boundary 21",
+        "UTF8 chunk boundary 22",
+        "UTF8 chunk boundary 23",
+        "UTF8 chunk boundary 24",
+        "UTF8 chunk boundary 25",
+        "UTF8 chunk boundary 26",
+        "UTF8 chunk boundary 27",
+        "UTF8 chunk boundary 28",
+        "UTF8 chunk boundary 29",
+        "UTF8 chunk boundary 30",
+        "UTF8 chunk boundary 31",
+        "UTF8 chunk boundary 32",
+        "UTF8 chunk boundary 33",
+        "UTF8 chunk boundary 34",
+        "UTF8 chunk boundary 35"
+      ]
+    },
+    "oldCommonExamples": "BUNDLED_FRAME_MISMATCH",
+    "fixedFrameAssertions": {
+      "passed": 51,
+      "failed": 0
+    },
+    "fixedCommonExamples": {
+      "status": "passed",
+      "counts": {
+        "cases": 321,
+        "routing": 11,
+        "responses": 30,
+        "cursors": 9,
+        "jobListCursors": 7,
+        "trustedBindings": 41,
+        "rawFrames": 51
+      }
+    }
+  },
+  "verification": {
+    "targeted": "53 passed (51 original corpus cases plus 2 cp1252-default regressions)",
+    "sourceCli": "entrypoint.py --contract-probe passed, exact 321/11/30/9/7/41/51 counts",
+    "fullCheck": "npm run check exit 0; 630 TypeScript and 1022 Python passed",
+    "parser": "Production protocol parser unchanged; actual parser was used in both old/fixed probes"
+  },
+  "resources": {
+    "packages/contracts/v2/binding-regressions.json": {
+      "sha256": "9601d6d0a31e3e71078ac2562c6b8501c1292bc2be71de742e40c2fc54512a24",
+      "bytes": 123964,
+      "nonAsciiBytes": false
+    },
+    "packages/contracts/v2/fixtures.json": {
+      "sha256": "32031804abf3283e87f070ffbfc3f95cf627f6b71e7bc49711faaff52ec31ad6",
+      "bytes": 472098,
+      "nonAsciiBytes": true
+    },
+    "packages/contracts/v2/frame-fixtures.json": {
+      "sha256": "8e9a142ff04e908cc286c15702cd18b6c2ce9453490585d0855c3f62995dd2e5",
+      "bytes": 17537,
+      "nonAsciiBytes": true
+    }
+  },
+  "readOnlyEncodingInventory": {
+    "test_binding_regressions.py": "Default read_text remains; bundled binding-regressions bytes are all ASCII, so no concrete current cp1252 corruption; not edited.",
+    "invalidation.py": "Older default Traversable.read_text; invalidation-v2.json is all ASCII; not edited.",
+    "contract_v2.py": "All JSON text resource reads already explicitly utf-8.",
+    "resources.py": "Contract hashing/resource provenance reads bytes.",
+    "i04_matrix_evidence.py": "JSONL/summary writes and reads explicitly utf-8.",
+    "prepare-i04-fixture.py and verify-i04-package.py": "Default text writes contain default json.dumps ensure_ascii=True or numeric exit; currently ASCII-safe. Reported only; not edited."
+  },
+  "sourceHashes": {
+    "packages/engine/tests/test_frame_corpus.py": "44e4712311e9a4445a794d5825e673046dac2f9ffa7fe283c3c242147cc0a2e3",
+    "packages/engine/src/ontolearn_engine/contract_probe.py": "2f86f43d186960ecb890ec98748857a9e8bca181ac6e7dd348db075693c686ea"
+  },
+  "rawArtifacts": {
+    "probe.py": {
+      "path": "build/I04-bridge-handoff/c4-encoding/probe.py",
+      "sha256": "df131c7f603ab6573890d5de5b912f6559181876276a9a9244e7d04fae198bf8",
+      "bytes": 3052
+    },
+    "probe.json": {
+      "path": "build/I04-bridge-handoff/c4-encoding/probe.json",
+      "sha256": "59d9dfa752d4904edf9f8bc878fce8dcb11331cc18ff7cbc0f00e360327c8284",
+      "bytes": 2523
+    },
+    "probe.log": {
+      "path": "build/I04-bridge-handoff/c4-encoding/probe.log",
+      "sha256": "a340e45de492803e3a8a956667af4ff2efdc8d25c3f548e7e9ef01479fbf148e",
+      "bytes": 2013
+    },
+    "targeted.log": {
+      "path": "build/I04-bridge-handoff/c4-encoding/targeted.log",
+      "sha256": "8db0254ebafb84d23b112fc26ba453cd893e8d2f415519547e67bb05e2e0a27e",
+      "bytes": 99
+    },
+    "contract-cli.log": {
+      "path": "build/I04-bridge-handoff/c4-encoding/contract-cli.log",
+      "sha256": "7aa863eb432c13eb1dc9b7443525e40a2f195dfdfd7f139ad809e9db89f09a7e",
+      "bytes": 138
+    },
+    "check.log": {
+      "path": "build/I04-bridge-handoff/c4-encoding/check.log",
+      "sha256": "87e03ebc10d7a33ed6cc98b3c1d01351bbcf9549c65ba89b755a990a64ba5663",
+      "bytes": 4878
+    }
+  },
+  "protectedAgentsSha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+  "limits": "cp1252 is targeted local emulation, not an actual Windows run. No global PYTHONUTF8 setting, skip, assertion relaxation, contract-byte or protocol change. No package/GUI run, push or CI claim. C4 still requires fresh complete dual review and actual platform CI."
+}

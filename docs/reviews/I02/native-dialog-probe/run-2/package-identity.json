@@ -1,0 +1,31 @@
+{
+  "candidate": "2cc03da82ffccc8448c7b03dc6cff87595027653",
+  "asarSha256": "180edc2b326c93c25de3a2322dc5f305e812f2c1b0e830a76206e8c9fe01629f",
+  "comparison": "main differs only by one inactive packaged development nonce between independently generated build artifacts; preload/HTML byte-identical. This is NOT same-build equality.",
+  "files": [
+    {
+      "path": "out/main/index.js",
+      "packageSha256": "696266f8e644fcf0037362681acb93cd27a9db5e8f4b993dd253915606ef8b56",
+      "outSha256": "b3423abe93d3a6ce64eaa7760e79bfe6703ffc7155404ceca6f93b9f5901401a",
+      "equalsCurrentOut": false
+    },
+    {
+      "path": "out/preload/index.js",
+      "packageSha256": "c73129a6459504e5ea13830a926b01e6d2bdb61f0d2d64505d07db8c29636130",
+      "outSha256": "c73129a6459504e5ea13830a926b01e6d2bdb61f0d2d64505d07db8c29636130",
+      "equalsCurrentOut": true
+    },
+    {
+      "path": "out/renderer/index.html",
+      "packageSha256": "27641d729b5e3de85d639191ffdb1451c2334a4c25e5d7b36f08bd03c1731cbd",
+      "outSha256": "27641d729b5e3de85d639191ffdb1451c2334a4c25e5d7b36f08bd03c1731cbd",
+      "equalsCurrentOut": true
+    }
+  ],
+  "mainDifference": {
+    "onlyDifference": "one development CSP nonce literal",
+    "matchesEach": 1,
+    "bytesEqualAfterReplacingNonceLiteral": true,
+    "normalizedSha256": "2c4574f78631819525fc45047cb3a23b9ac2cd37d1180b7319b39c978760a970"
+  }
+}

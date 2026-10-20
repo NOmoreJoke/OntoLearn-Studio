@@ -1,0 +1,8 @@
+ERROR: P1 existing NULL kind rejected, no cleanup -- OperationalError: table results already exists
+ERROR: P2 publish rejects illegal kinds with zero writes -- TypeError: Store.publish() missing 1 required positional argument: 'implementation'
+ERROR: P3 publish rejects incomplete provenance with zero writes -- TypeError: Store.publish() missing 1 required positional argument: 'implementation'
+PASS: P4 current distinguishes shape error from not-found null
+ERROR: P5 legal identity keeps single current -- TypeError: Store.publish() missing 1 required positional argument: 'implementation'
+ERROR: P6 legacy non-object config ValueError, zero side effects -- AttributeError: 'Store' object has no attribute 'create_run'
+
+1/6 passed

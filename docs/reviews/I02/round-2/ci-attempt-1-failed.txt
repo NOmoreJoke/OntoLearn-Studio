@@ -1,0 +1,49 @@
+Desktop (windows-latest)	Run npm run test:e2e	﻿2026-10-20T00:13:00.8975095Z ##[group]Run npm run test:e2e
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:00.8975634Z ^[[36;1mnpm run test:e2e^[[0m
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:00.9046985Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:00.9047337Z env:
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:00.9047549Z   UV_TOOL_BIN_DIR: D:\a\_temp\uv-tool-bin-dir
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:00.9047843Z   UV_TOOL_DIR: D:\a\_temp\uv-tool-dir
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:00.9048449Z   UV_PYTHON_INSTALL_DIR: D:\a\_temp\uv-python-dir
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:00.9048757Z   UV_CACHE_DIR: D:\a\_temp\setup-uv-cache
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:00.9049006Z ##[endgroup]
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:01.7127326Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:01.7128284Z > ontolearn-studio@0.1.0 test:e2e
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:01.7129150Z > install-electron && playwright test
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:01.7129724Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:07.7807506Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:07.7808349Z Running 2 tests using 1 worker
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:07.7809576Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:12.1464511Z   x  1 tests\e2e\csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery (3.8s)
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3210275Z   ok 2 tests\e2e\desktop.spec.ts:4:5 › desktop calls real engine, keeps isolation and fits minimum window (1.6s)
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3401690Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3407659Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3423574Z   1) tests\e2e\csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery ─
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3425027Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3425569Z     Error: native closed before inspector: 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3426833Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3427268Z        at native-driver.ts:46
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3427745Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3428050Z       44 |         })
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3428737Z       45 |         child.on('error', reject)
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3430208Z     > 46 |         child.on('exit', () => reject(new Error(`native closed before inspector: ${stderr}`)))
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3431581Z          |                                       ^
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3432961Z       47 |       }),
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3433526Z       48 |     )
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3434175Z       49 |     socket = new WebSocket(endpoint)
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3436735Z         at ChildProcess.<anonymous> (D:\a\OntoLearn-Studio\OntoLearn-Studio\tests\e2e\native-driver.ts:46:39)
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3437861Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3438861Z     Error Context: test-results\csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery\error-context.md
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3440000Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3441017Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3443167Z     test-results\csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery\trace.zip
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3451820Z     Usage:
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3452230Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3453510Z         npx playwright show-trace test-results\csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery\trace.zip
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3454829Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3455948Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3456695Z 
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3457011Z   1 failed
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3458041Z     tests\e2e\csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery ──
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.3458999Z   1 passed (7.5s)
+Desktop (windows-latest)	Run npm run test:e2e	2026-10-20T00:13:14.4164013Z ##[error]Process completed with exit code 1.

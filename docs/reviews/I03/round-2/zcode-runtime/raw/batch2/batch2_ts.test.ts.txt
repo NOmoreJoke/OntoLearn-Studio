@@ -1,0 +1,108 @@
+import { describe, expect, it } from 'vitest'
+import fixtures from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/contracts/v2/fixtures.json'
+import {
+  acceptsJobEvent,
+  matchesResponse,
+  validateV2,
+} from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/contracts/src/design-v2'
+
+type Row = { case: string; changed: string; shape: boolean; target: boolean }
+const rows: Row[] = []
+function record(name: string, changed: string, shape: boolean, target: boolean) {
+  rows.push({ case: name, changed, shape, target })
+  it(`${name} (changed=${changed} shape=${shape} target=${target})`, () => {
+    expect(typeof shape).toBe('boolean')
+  })
+}
+
+function clone<T>(v: T): T {
+  return structuredClone(v)
+}
+
+// ---------- A. notification binding: fixture baseline ----------
+const base = fixtures.routing.find((c) => c.name === 'valid job event')!
+const event = clone(base.value)
+const binding = clone(base.binding)
+record('A0 control', 'none',
+  validateV2('notification', event),
+  acceptsJobEvent(event, binding))
+
+const gap = clone(event); (gap as { seq: number }).seq = 3
+record('A1 seq gap (lastSeq=0, seq 1->3)', 'seq',
+  validateV2('notification', gap),
+  acceptsJobEvent(gap, binding))
+
+const replayB = clone(binding); (replayB as { lastSeq: number }).lastSeq = 1
+record('A2 seq replay (binding.lastSeq 0->1, event seq=1)', 'binding.lastSeq',
+  validateV2('notification', event),
+  acceptsJobEvent(event, replayB))
+
+const jump = clone(event)
+;(jump as { data: { stateVersion: number } }).data.stateVersion = 6
+record('A3 stateVersion jump (binding 3 -> data 6)', 'data.stateVersion',
+  validateV2('notification', jump),
+  acceptsJobEvent(jump, binding))
+
+const wrongsub = clone(event)
+;(wrongsub as { subscriptionId: string }).subscriptionId = '00000000-0000-4000-8000-000000000099'
+record('A4 wrong subscription (legal other UUID)', 'subscriptionId',
+  validateV2('notification', wrongsub),
+  acceptsJobEvent(wrongsub, binding))
+
+// ---------- B. original synthetic baseline attribution ----------
+const S = '00000000-0000-4000-8000-00000000000'
+const synth = {
+  kind: 'notification', protocolVersion: 2,
+  engineSessionId: `${S}1`, projectId: `${S}2`, jobId: `${S}3`,
+  subscriptionId: `${S}4`, seq: 4, event: 'job.state',
+  data: { stateVersion: 3, state: 'running' },
+}
+const synthBind = {
+  engineSessionId: `${S}1`, projectId: `${S}2`, jobId: `${S}3`,
+  subscriptionId: `${S}4`, lastSeq: 3, stateVersion: 2, state: 'running',
+}
+record('B0 original synthetic baseline', 'none',
+  validateV2('notification', synth),
+  acceptsJobEvent(synth, synthBind))
+
+// ---------- C. hello capability subset via matchesResponse ----------
+const hq = clone(fixtures.cases.find((c) => c.name === 'request hello')!.value)
+const hr = clone(fixtures.cases.find((c) => c.name === 'response hello')!.value)
+record('C0 control matchesResponse(hello)', 'none',
+  validateV2('response', hr),
+  matchesResponse(hq, hr))
+
+const cap = clone(hr)
+;(cap as { result: { capabilities: string[] } }).result.capabilities = ['query.execute']
+record('C1 capabilities=[query.execute] only', 'result.capabilities',
+  validateV2('response', cap),
+  matchesResponse(hq, cap))
+
+// ---------- D. original synthetic hello response attribution ----------
+const synthHr = {
+  kind: 'response', id: `${S}5`, protocolVersion: 2,
+  engineSessionId: `${S}7`, method: 'hello', ok: true,
+  result: { selectedVersion: 2, engineVersion: '1', session: `${S}7`,
+            capabilities: ['query.execute'], registryHash: 'a'.repeat(64), limits: {} },
+}
+const synthHq = { kind: 'request', id: `${S}5`, protocolVersion: 2,
+                  engineSessionId: null, method: 'hello',
+                  params: { supportedVersions: [2], clientId: `${S}6` } }
+record('D0 original synthetic hello response', 'none',
+  validateV2('response', synthHr),
+  matchesResponse(synthHq, synthHr))
+
+describe('I03-R2 ZCode batch2 TS', () => {
+  it('batch2 verdict', () => {
+    const a0 = rows.find((r) => r.case.startsWith('A0'))!
+    const c0 = rows.find((r) => r.case.startsWith('C0'))!
+    expect([a0.shape, a0.target]).toEqual([true, true])
+    expect([c0.shape, c0.target]).toEqual([true, true])
+    for (const r of rows)
+      if (/^[AC][1-9]/.test(r.case)) {
+        expect(r.target).toBe(false)
+      }
+    const c1 = rows.find((r) => r.case.startsWith('C1'))!
+    expect(c1.shape).toBe(true)
+  })
+})

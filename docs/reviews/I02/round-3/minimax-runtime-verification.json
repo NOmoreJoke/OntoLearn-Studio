@@ -1,0 +1,74 @@
+{
+  "scope": "File-based corroboration only; not actual review-task completion or runtime authorization proof.",
+  "checks": [
+    {
+      "file": "build-matrix.json",
+      "sha256": "1722b31a3bd2c73dd2d65bc134787eeabff602501b411458dab0c99cc1b84955",
+      "matchesReportHash": true,
+      "result": "PASS",
+      "nativeResult": "PASS",
+      "events": ["killed", "unresponsive"],
+      "nativeKeys": [
+        "windows",
+        "prompts",
+        "events",
+        "health",
+        "packaged",
+        "hangMonitorEnabled",
+        "noSandboxSwitch",
+        "versions",
+        "inspectorClosedBeforeFaults",
+        "hangFault",
+        "hangTrigger",
+        "result"
+      ],
+      "nativePackaged": false
+    },
+    {
+      "file": "packaged-matrix.json",
+      "sha256": "ca61f4e4bc6fc75d876c4f8afb24385e2e4785f5ca44dd129b887d1be8b68a6f",
+      "matchesReportHash": true,
+      "result": "PASS",
+      "nativeResult": "PASS",
+      "events": ["killed", "unresponsive"],
+      "nativeKeys": [
+        "windows",
+        "prompts",
+        "events",
+        "health",
+        "packaged",
+        "hangMonitorEnabled",
+        "noSandboxSwitch",
+        "versions",
+        "inspectorClosedBeforeFaults",
+        "hangFault",
+        "hangTrigger",
+        "result"
+      ],
+      "nativePackaged": true
+    },
+    {
+      "file": "development-matrix.json",
+      "sha256": "6ff4e4ddfe1369b60d9a5b11f293edd0ca12cedc179c50436607d73424c265c3",
+      "matchesReportHash": true,
+      "result": "PASS",
+      "nativeResult": "PASS",
+      "events": ["killed", "unresponsive"],
+      "nativeKeys": [
+        "windows",
+        "prompts",
+        "events",
+        "health",
+        "packaged",
+        "hangMonitorEnabled",
+        "noSandboxSwitch",
+        "versions",
+        "inspectorClosedBeforeFaults",
+        "hangFault",
+        "hangTrigger",
+        "result"
+      ],
+      "nativePackaged": false
+    }
+  ]
+}

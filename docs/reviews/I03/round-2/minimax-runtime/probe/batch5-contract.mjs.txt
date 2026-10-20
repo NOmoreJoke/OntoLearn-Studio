@@ -1,0 +1,128 @@
+// Batch 5 (independent, not relying on repo tests): F1 parameterMeanings, F2 messageKey negatives,
+// F4 dynamic budget + version consistency, Z vocabulary/array bounds, I05 v3/retired codes.
+import { readFileSync } from 'node:fs'
+import { validateV2 } from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/contracts/src/v2.ts'
+import errorCatalog from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/contracts/v2/errors.json'
+import schema from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/contracts/v2/schema.json'
+import registry from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/contracts/v2/registry.json'
+
+const findings = []
+const ok = (name, cond, detail = '') => findings.push({ name, pass: !!cond, detail })
+
+// ---- F1: every enum-parameter code has exactly matching parameterMeanings ----
+let enumCodes = []
+let f1Detail = []
+for (const [code, entry] of Object.entries(errorCatalog.codes)) {
+  const enumerations = Object.values(entry.paramsSchema.properties)
+    .map((p) => p.enum)
+    .filter(Array.isArray)
+  if (!enumerations.length) continue
+  enumCodes.push(code)
+  const meanings = errorCatalog.parameterMeanings[code]
+  const keys = meanings ? Object.keys(meanings) : []
+  const exact = meanings && keys.length === enumerations[0].length && keys.every((k, i) => k === enumerations[0][i])
+  const nonEmpty = meanings && Object.values(meanings).every((m) => typeof m === 'string' && m.trim().length > 0)
+  f1Detail.push({ code, enumCount: enumerations[0].length, meaningCount: keys.length, exact, nonEmpty })
+  ok(`F1:${code} meanings==enum`, exact, JSON.stringify(keys))
+  ok(`F1:${code} meanings non-empty`, nonEmpty)
+}
+ok('F1: parameterMeanings key set == enum codes', JSON.stringify(Object.keys(errorCatalog.parameterMeanings).sort()) === JSON.stringify(enumCodes.slice().sort()), `enumCodes=${enumCodes.length}`)
+ok('F1: enum code count == 7', enumCodes.length === 7, `actual=${enumCodes.length}`)
+
+// ---- F1 dynamic enumeration: every enum value produces an accepted error; unknown rejected ----
+let f1Dyn = { accepted: 0, rejectedUnknown: 0, mismatched: 0, detail: [] }
+for (const [code, entry] of Object.entries(errorCatalog.codes)) {
+  const props = entry.paramsSchema.properties
+  for (const [param, schemaProp] of Object.entries(props)) {
+    if (!schemaProp.enum) continue
+    for (const value of schemaProp.enum) {
+      const params = { [param]: value }
+      const err = { code, messageKey: entry.messageKey, retryable: entry.retryable, params }
+      const accepted = validateV2('error', err)
+      if (accepted) f1Dyn.accepted++
+      else {
+        f1Dyn.mismatched++
+        f1Dyn.detail.push({ code, param, value, issue: 'valid enum value rejected' })
+      }
+      const bad = { code, messageKey: entry.messageKey, retryable: entry.retryable, params: { [param]: '__not_in_enum__' } }
+      if (!validateV2('error', bad)) f1Dyn.rejectedUnknown++
+      else f1Dyn.detail.push({ code, param, value, issue: 'unknown enum value accepted' })
+    }
+  }
+}
+ok('F1: dynamic enumeration accepted == 53', f1Dyn.accepted === 53, `accepted=${f1Dyn.accepted}`)
+ok('F1: dynamic enumeration unknown rejected == 53', f1Dyn.rejectedUnknown === 53, `rejected=${f1Dyn.rejectedUnknown}`)
+
+// ---- F2: generic messageKeys present, retired keys rejected ----
+const resLimit = errorCatalog.codes.RESOURCE_LIMIT
+const invalidState = errorCatalog.codes.INVALID_STATE
+ok('F2: RESOURCE_LIMIT.messageKey == resource.limitExceeded', resLimit.messageKey === 'resource.limitExceeded', resLimit.messageKey)
+ok('F2: INVALID_STATE.messageKey == protocol.invalidState', invalidState.messageKey === 'protocol.invalidState', invalidState.messageKey)
+ok('F2: error code count == 26', Object.keys(errorCatalog.codes).length === 26, String(Object.keys(errorCatalog.codes).length))
+for (const retired of ['job.resourceLimit', 'job.invalidState']) {
+  const forged = { code: 'RESOURCE_LIMIT', messageKey: retired, retryable: false, params: { resource: 'memory' } }
+  ok(`F2: retired messageKey ${retired} rejected`, !validateV2('error', forged))
+}
+ok('F2: schema.error oneOf count == 26', schema.$defs.error.oneOf.length === 26, String(schema.$defs.error.oneOf.length))
+ok(
+  'F2: schema.error oneOf == errors.json codes',
+  JSON.stringify(schema.$defs.error.oneOf) ===
+    JSON.stringify(
+      Object.entries(errorCatalog.codes).map(([code, e]) => ({
+        type: 'object',
+        properties: { code: { const: code }, messageKey: { const: e.messageKey }, retryable: { const: e.retryable }, params: e.paramsSchema },
+        required: ['code', 'messageKey', 'retryable', 'params'],
+        additionalProperties: false,
+      })),
+    ),
+)
+
+// ---- F4: dynamic budget consumption and version identity ----
+ok('F4: errors.schemaVersion == registry.schemaVersion', errorCatalog.schemaVersion === registry.schemaVersion)
+ok('F4: schema $id uses catalog version', schema.$id === `urn:ontolearn:contracts:${errorCatalog.schemaVersion}`, schema.$id)
+const legalError = { code: 'INTERNAL_ERROR', messageKey: 'engine.internal', retryable: false, params: {} }
+const beforeBudget = errorCatalog.maxEncodedBytes
+ok('F4: legal error accepted at catalog budget', validateV2('error', legalError))
+errorCatalog.maxEncodedBytes = 1
+const shrunk = validateV2('error', legalError)
+errorCatalog.maxEncodedBytes = beforeBudget
+ok('F4: shrinking budget to 1 rejects legal error', shrunk === false)
+ok('F4: restored budget accepts again', validateV2('error', legalError) === true)
+ok('F4: registry.v2Runtime empty', JSON.stringify(registry.v2Runtime) === '[]')
+ok('F4: registry.productRuntime == [health]', JSON.stringify(registry.productRuntime) === '["health"]')
+
+// ---- Z: vocabulary + explicit finite array bounds (own traversal, both key styles) ----
+const VOCAB = new Set(['$ref','const','enum','oneOf','type','properties','required','additionalProperties','propertyNames','minProperties','maxProperties','items','minItems','maxItems','minLength','maxLength','pattern','minimum','maximum'])
+let unknownVocab = []
+let unboundedArrays = []
+function visit(node, path) {
+  if (!node || typeof node !== 'object') return
+  for (const key of Object.keys(node)) if (!VOCAB.has(key)) unknownVocab.push(`${path}.${key}`)
+  if (node.type === 'array') {
+    if (!Number.isSafeInteger(node.maxItems)) unboundedArrays.push(`${path} maxItems=${node.maxItems}`)
+    if (!node.items) unboundedArrays.push(`${path} missing items`)
+  }
+  if (node.properties) for (const [k, v] of Object.entries(node.properties)) visit(v, `${path}.${k}`)
+  for (const key of ['items', 'propertyNames', 'additionalProperties']) if (node[key] && typeof node[key] === 'object') visit(node[key], `${path}.${key}`)
+  if (Array.isArray(node.oneOf)) node.oneOf.forEach((v, i) => visit(v, `${path}.oneOf[${i}]`))
+}
+for (const [name, def] of Object.entries(schema.$defs)) visit(def, name)
+ok('Z: unknown schema vocabulary == 0', unknownVocab.length === 0, unknownVocab.join(','))
+ok('Z: every array has explicit finite maxItems', unboundedArrays.length === 0, unboundedArrays.join(','))
+const maxItems = []
+for (const [name, def] of Object.entries(schema.$defs)) {
+  const s = JSON.stringify(def)
+  const m = [...s.matchAll(/"maxItems":(\d+)/g)].map((x) => Number(x[1]))
+  if (m.length) maxItems.push(`${name}:${Math.max(...m)}`)
+}
+console.log('F1 enum codes:', enumCodes.join(', '))
+console.log('F1 detail:', JSON.stringify(f1Detail))
+console.log('maxItems per def:', maxItems.join(' '))
+console.log('--- FINDINGS ---')
+let failed = 0
+for (const f of findings) {
+  if (!f.pass) failed++
+  console.log(`${f.pass ? 'PASS' : 'FAIL'}  ${f.name}${f.detail ? ' :: ' + f.detail : ''}`)
+}
+console.log('total', findings.length, 'failed', failed)
+process.exit(failed ? 1 : 0)

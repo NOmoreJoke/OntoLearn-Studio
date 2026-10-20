@@ -1,0 +1,33 @@
+{
+  "observedAt": "2026-10-20T11:07:47.209033+08:00",
+  "invocation": ["node", "/Applications/ZCode.app/Contents/Resources/glm/zcode.cjs", "--help"],
+  "exit": 0,
+  "helpSha256": "909d0089e0a53030aba409806025e7bd59b4f7f88fe2c0760821d8e26ef20e96",
+  "verified": "Bundled CLI 0.16.9 supports --resume <sessionId> and non-TUI --prompt; help exited0 without opening windows.",
+  "notVerified": [
+    "Exact existing R3 session ID via supported public interface",
+    "Resume compatibility with desktop session/model/reasoning/account and current pending permission state",
+    "Non-GUI management or completion readback of original MiniMax desktop task"
+  ],
+  "actionsNotTaken": [
+    "No prompt sent, no session resumed or created, no provider/config/credential file read or changed.",
+    "No app-server protocol call: no public vendor contract established; did not adopt third-party undocumented API claims.",
+    "No package installed; MiniMax official installer location ~/.minimax-code/bin/mcode is absent.",
+    "No GUI/native validation, quota redemption, purchase, candidate change, push or merge."
+  ],
+  "primarySources": [
+    {
+      "url": "https://zcode.z.ai/cn/docs/remote-control",
+      "finding": "Remote Control operates existing desktop workspaces and requires a desktop-established connection; it does not create an isolated runtime."
+    },
+    {
+      "url": "https://zcode.z.ai/cn/docs/qa",
+      "finding": "Terminal and desktop model setup are separate; headless/desktop identity must not be assumed."
+    },
+    {
+      "url": "https://github.com/MiniMax-AI/minimax-code/blob/main/docs/tui-capabilities.md",
+      "finding": "Official CLI capability documentation separates desktop remote/handoff/native features from the CLI distribution."
+    }
+  ],
+  "nextAction": "Need exact existing session identity and supported non-disruptive resume/completion route, or an isolated desktop / explicit available desktop time. Ask-user input pending; no assumption after timeout."
+}

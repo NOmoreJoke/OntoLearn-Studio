@@ -1,0 +1,247 @@
+{
+  "development": false,
+  "target": "http://127.0.0.1:57581",
+  "stage": "cleanup-enter",
+  "runtime": {
+    "packaged": false,
+    "nativeHangMonitorEnabled": false,
+    "noSandboxSwitch": false,
+    "versions": {
+      "node": "24.22.0",
+      "acorn": "8.18.0",
+      "ada": "4.0.0",
+      "amaro": "1.1.11",
+      "ares": "1.34.8",
+      "brotli": "1.2.0",
+      "cldr": "48.0",
+      "icu": "78.2",
+      "llhttp": "9.4.3",
+      "merve": "1.2.2",
+      "modules": "149",
+      "napi": "10",
+      "nbytes": "0.1.4",
+      "ncrypto": "0.0.1",
+      "nghttp2": "1.70.0",
+      "nghttp3": "",
+      "ngtcp2": "",
+      "openssl": "0.0.0",
+      "simdjson": "4.6.11",
+      "simdutf": "7.7.0",
+      "sqlite": "3.53.4",
+      "tz": "2026d",
+      "undici": "7.29.1",
+      "unicode": "17.0",
+      "uv": "1.52.1",
+      "uvwasi": "0.0.23",
+      "v8": "15.2.124.43-electron.0",
+      "zlib": "1.3.2.1-motley",
+      "zstd": "1.6.0",
+      "electron": "44.9.0",
+      "chrome": "152.0.7977.167"
+    },
+    "preferences": {
+      "allowRunningInsecureContent": false,
+      "contextIsolation": true,
+      "disableDialogs": false,
+      "disablePopups": false,
+      "enableBlinkFeatures": "",
+      "experimentalFeatures": false,
+      "javascript": true,
+      "nodeIntegration": false,
+      "nodeIntegrationInSubFrames": false,
+      "nodeIntegrationInWorker": false,
+      "safeDialogs": false,
+      "safeDialogsMessage": "",
+      "sandbox": true,
+      "webSecurity": true,
+      "webviewTag": false
+    }
+  },
+  "meta": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; frame-src 'none'; form-action 'none'",
+  "responseCSP": null,
+  "probe": {
+    "inlineExecuted": false,
+    "remoteExecuted": false,
+    "styleElement": false,
+    "styleAttribute": false,
+    "cssom": true,
+    "fetchBlocked": true,
+    "violations": [
+      {
+        "directive": "script-src-elem",
+        "blocked": "inline",
+        "disposition": "enforce"
+      },
+      {
+        "directive": "script-src-elem",
+        "blocked": "http://127.0.0.1:57581/script",
+        "disposition": "enforce"
+      },
+      {
+        "directive": "style-src-elem",
+        "blocked": "inline",
+        "disposition": "enforce"
+      },
+      {
+        "directive": "style-src-attr",
+        "blocked": "inline",
+        "disposition": "enforce"
+      },
+      {
+        "directive": "connect-src",
+        "blocked": "http://127.0.0.1:57581/fetch",
+        "disposition": "enforce"
+      },
+      {
+        "directive": "img-src",
+        "blocked": "http://127.0.0.1:57581/image",
+        "disposition": "enforce"
+      },
+      {
+        "directive": "frame-src",
+        "blocked": "http://127.0.0.1:57581/",
+        "disposition": "enforce"
+      }
+    ],
+    "require": "undefined"
+  },
+  "receiverRequests": [],
+  "newContents": {
+    "id": 2,
+    "navigate": 1,
+    "frame": 1,
+    "webview": 1,
+    "preferences": {
+      "allowRunningInsecureContent": false,
+      "contextIsolation": true,
+      "disableDialogs": false,
+      "disablePopups": false,
+      "enableBlinkFeatures": "",
+      "experimentalFeatures": false,
+      "javascript": true,
+      "nodeIntegration": false,
+      "nodeIntegrationInSubFrames": false,
+      "nodeIntegrationInWorker": false,
+      "safeDialogs": false,
+      "safeDialogsMessage": "",
+      "sandbox": true,
+      "webSecurity": true,
+      "webviewTag": false
+    }
+  },
+  "foreignSenderRejected": true,
+  "recoveryPrompts": [
+    {
+      "type": "warning",
+      "title": "OntoLearn Studio 窗口恢复",
+      "message": "显示窗口已停止运行。",
+      "detail": "渲染进程异常或繁忙。可以重新打开窗口；已提交的本地数据不受窗口重建影响，未提交的界面输入可能丢失。恢复不会自动执行或重试任务。当前仅支持连接检查，重新打开后请手动检查本地引擎。",
+      "buttons": [
+        "重新打开窗口",
+        "暂不恢复"
+      ],
+      "defaultId": 1,
+      "cancelId": 1,
+      "noLink": true
+    }
+  ],
+  "nativeLaunch": {
+    "executable": "/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron",
+    "args": [
+      "--user-data-dir=/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/ontolearn-i02-D1YERZ",
+      "/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/apps/desktop"
+    ]
+  },
+  "nativeFailure": "Error: native exit 1/null: {\"executable\":\"/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron\",\"args\":[\"--user-data-dir=/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/ontolearn-i02-D1YERZ\",\"/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/apps/desktop\"],\"exitCode\":1,\"signalCode\":null,\"stderr\":\"Debugger listening on ws://127.0.0.1:57602/fdd5f098-d4bb-4442-a8c1-05cfe7beb733\\nFor help, see: https://nodejs.org/learn/getting-started/debugging\\nDebugger attached.\\nDebugger ending on ws://127.0.0.1:57602/fdd5f098-d4bb-4442-a8c1-05cfe7beb733\\nFor help, see: https://nodejs.org/learn/getting-started/debugging\\n\",\"stdout\":\"\"}",
+  "nativeRecovery": {
+    "windows": 2,
+    "prompts": [
+      {
+        "type": "warning",
+        "title": "OntoLearn Studio 窗口恢复",
+        "message": "显示窗口已停止运行。",
+        "detail": "渲染进程异常或繁忙。可以重新打开窗口；已提交的本地数据不受窗口重建影响，未提交的界面输入可能丢失。恢复不会自动执行或重试任务。当前仅支持连接检查，重新打开后请手动检查本地引擎。",
+        "buttons": [
+          "重新打开窗口",
+          "暂不恢复"
+        ],
+        "defaultId": 1,
+        "cancelId": 1,
+        "noLink": true
+      }
+    ],
+    "events": [
+      "killed"
+    ],
+    "health": [
+      {
+        "ok": true,
+        "data": {
+          "protocolVersion": 1,
+          "engineVersion": "0.1.0",
+          "status": "ok",
+          "capabilities": [
+            "health"
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "data": {
+          "protocolVersion": 1,
+          "engineVersion": "0.1.0",
+          "status": "ok",
+          "capabilities": [
+            "health"
+          ]
+        }
+      }
+    ],
+    "packaged": false,
+    "hangMonitorEnabled": true,
+    "noSandboxSwitch": false,
+    "versions": {
+      "node": "24.22.0",
+      "acorn": "8.18.0",
+      "ada": "4.0.0",
+      "amaro": "1.1.11",
+      "ares": "1.34.8",
+      "brotli": "1.2.0",
+      "cldr": "48.0",
+      "icu": "78.2",
+      "llhttp": "9.4.3",
+      "merve": "1.2.2",
+      "modules": "149",
+      "napi": "10",
+      "nbytes": "0.1.4",
+      "ncrypto": "0.0.1",
+      "nghttp2": "1.70.0",
+      "nghttp3": "",
+      "ngtcp2": "",
+      "openssl": "0.0.0",
+      "simdjson": "4.6.11",
+      "simdutf": "7.7.0",
+      "sqlite": "3.53.4",
+      "tz": "2026d",
+      "undici": "7.29.1",
+      "unicode": "17.0",
+      "uv": "1.52.1",
+      "uvwasi": "0.0.23",
+      "v8": "15.2.124.43-electron.0",
+      "zlib": "1.3.2.1-motley",
+      "zstd": "1.6.0",
+      "electron": "44.9.0",
+      "chrome": "152.0.7977.167"
+    },
+    "inspectorClosedBeforeFaults": true,
+    "hangFault": "executeJavaScript-infinite-loop",
+    "hangTrigger": {
+      "time": "2026-10-20T02:21:13.906Z",
+      "visible": true,
+      "focused": false,
+      "hangMonitorEnabled": true
+    },
+    "error": "native hang input requires a focused visible window"
+  },
+  "lastStageBeforeCleanup": "native-recovery"
+}

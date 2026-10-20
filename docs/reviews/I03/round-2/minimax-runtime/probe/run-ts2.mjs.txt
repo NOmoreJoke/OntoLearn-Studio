@@ -1,0 +1,27 @@
+// Batch 2 runners: TS side.
+import { readFileSync, writeFileSync } from 'node:fs'
+import {
+  matchesResponse,
+  cursorMatches,
+  jobListCursorMatches,
+  acceptsJobEvent,
+} from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/contracts/src/v2.ts'
+
+const cases = JSON.parse(readFileSync('/tmp/i03-r2-minimax/probe/cases2.json', 'utf8')).cases
+const results = []
+function run(id, fn) {
+  try {
+    results.push({ id, result: fn() })
+  } catch (error) {
+    results.push({ id, result: 'THROW', error: String(error && error.message ? error.message : error) })
+  }
+}
+for (const c of cases) {
+  if (c.kind === 'cursor') run(c.id, () => cursorMatches(c.record, c.request, c.nowMs))
+  else if (c.kind === 'jobListCursor')
+    run(c.id, () => jobListCursorMatches(c.record, c.request, c.nowMs))
+  else if (c.kind === 'response') run(c.id, () => matchesResponse(c.request, c.response))
+  else if (c.kind === 'routing') run(c.id, () => acceptsJobEvent(c.value, c.binding))
+}
+writeFileSync('/tmp/i03-r2-minimax/probe/results-ts2.json', JSON.stringify(results))
+console.log('ts batch2', results.length, 'throws', results.filter((r) => r.result === 'THROW').length)

@@ -1,0 +1,65 @@
+#!/bin/bash
+# Batch 4 (F3): typecheck gate injection test in an isolated copy of the candidate HEAD.
+# Nothing in the reviewed worktree is modified; all logs land in /tmp/i03-r2-minimax/logs.
+set -u
+DST="/tmp/i03-r2-minimax/candidate-copy"
+LOG="/tmp/i03-r2-minimax/logs"
+SRC_REPO="/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts"
+cd "$DST" || exit 9
+
+run_step() { # name
+  local name="$1"
+  npm run typecheck > "$LOG/f3-$name.stdout.txt" 2> "$LOG/f3-$name.stderr.txt"
+  local code=$?
+  echo "$code" > "$LOG/f3-$name.exit.txt"
+  echo "[$name] exit=$code"
+  grep -E "error TS[0-9]+" "$LOG/f3-$name.stdout.txt" "$LOG/f3-$name.stderr.txt" | head -5
+  grep -E "npm error code" "$LOG/f3-$name.stderr.txt" | head -2
+}
+
+hash_of() { shasum -a 256 "$1" | awk '{print $1}'; }
+
+CT="$DST/packages/contracts/src/v2.ts"
+UT="$DST/tests/unit/contract-v2.test.ts"
+H_CT_ORIG=$(hash_of "$CT")
+H_UT_ORIG=$(hash_of "$UT")
+# canonical bytes from git for restoration proof
+git -C "$SRC_REPO" show 30c10d8ad1b9156b1fa5317c6b41b179f927c761:packages/contracts/src/v2.ts > "$LOG/f3-contracts-src.orig.ts"
+git -C "$SRC_REPO" show 30c10d8ad1b9156b1fa5317c6b41b179f927c761:tests/unit/contract-v2.test.ts > "$LOG/f3-unit-test.orig.ts"
+echo "orig contracts sha256=$H_CT_ORIG"
+echo "orig unit sha256=$H_UT_ORIG"
+
+echo "### step 1: baseline (no injection)"
+run_step baseline
+
+echo "### step 2: inject TS2322 into packages/contracts/src/v2.ts"
+printf '\nconst __i03InjectedTypeError: string = 42\n' >> "$CT"
+run_step inject-contracts
+echo "injected contracts sha256=$(hash_of "$CT")"
+# restore from git bytes
+git -C "$SRC_REPO" show 30c10d8ad1b9156b1fa5317c6b41b179f927c761:packages/contracts/src/v2.ts > "$CT"
+echo "restored contracts sha256=$(hash_of "$CT") (expect $H_CT_ORIG)"
+
+echo "### step 3: inject TS2322 into tests/unit/contract-v2.test.ts"
+printf '\nconst __i03InjectedTypeError: string = 42\n' >> "$UT"
+run_step inject-unit
+echo "injected unit sha256=$(hash_of "$UT")"
+git -C "$SRC_REPO" show 30c10d8ad1b9156b1fa5317c6b41b179f927c761:tests/unit/contract-v2.test.ts > "$UT"
+echo "restored unit sha256=$(hash_of "$UT") (expect $H_UT_ORIG)"
+
+echo "### step 4: after restoration"
+run_step restored
+
+echo "### step 5: injection into desktop source (not in candidate scope, control)"
+DT="$DST/apps/desktop/src/main/index.ts"
+if [ -f "$DT" ]; then
+  H_DT=$(hash_of "$DT")
+  printf '\nconst __i03InjectedTypeError: string = 42\n' >> "$DT"
+  run_step inject-desktop
+  git -C "$SRC_REPO" show 30c10d8ad1b9156b1fa5317c6b41b179f927c761:apps/desktop/src/main/index.ts > "$DT"
+  echo "restored desktop sha256=$(hash_of "$DT") (expect $H_DT)"
+  run_step restored-after-desktop
+fi
+
+echo "### final byte check"
+echo "contracts=$(hash_of "$CT") unit=$(hash_of "$UT")"

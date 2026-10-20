@@ -1,0 +1,73 @@
+--- initial-139-line-report
++++ observed-report-ui-terminal-not-verified
+@@ -2,9 +2,9 @@
+ 
+ ## 1 评审任务、模型及思考设置的来源记录
+ 
+-- 任务标识：`I03-R1-ZCode-GLM53-C4-f574a72`。该标识由总控在真实 UI 中核验人类授权并预约审查应用后派发，本审查在本应用（ZCode）作为新建独立任务执行；本环境未提供原生 task UUID，按派发要求如实注明来源，不臆造 UUID。配套流程记录见同目录 `tasks.json` 与 `docs/reviews/I03/status.md` 第 45–49 节。
++- 任务标识：`I03-R1-ZCode-GLM53-C4-f574a72`。来源分两层如实记录：总控核验人类授权并串行预约两审查应用 UI；本 I03 派发会话随后通过 CUA 在精确 worktree/feature 分支实际创建本任务并读回 GLM-5.3/最高与运行态（据 `docs/reviews/I03/status.md`「候选4外审实际创建与控制中断（仅流程追加）」一节，45–49 行；任务明细见同目录 `tasks.json`）。本任务环境自报模型标识 `account:bigmodel-individual-coding-plan/GLM-5.3`、思考最高，属任务环境自报标签，任务内部无法独立核验派发 UI 的读回结果；本环境未提供原生 task UUID，按派发要求如实注明，不臆造。
+ - 实际模型：GLM-5.3（`account:bigmodel-individual-coding-plan/GLM-5.3`），思考设置：最高。与总控预约的指定设置一致，未替换模型或降低门禁。
+-- 独立性：本任务从头全量审查固定 base→head，未读取另一指定模型（M3.1-Flash/xhigh）本轮任何报告或输出（截至本报告完成时 round-1/ 目录亦不存在该报告），不以其结论为依据。未运行任何 Electron/原生/HMR/产物窗口类验证；未修改实现代码、未提交、未推送、未切换分支；在仓库内仅写入本报告文件。
++- 独立性：本任务从头全量审查固定 base→head，未读取、未使用另一指定模型（M3.1-Flash/xhigh）本轮报告或输出的任何内容，不以其结论为依据；对其报告文件的存在性不作断言（勘误核对时仅以 `ls` 确认文件名，未打开其内容）。未运行任何 Electron/原生/HMR/产物窗口类验证；未修改实现代码、未提交、未推送、未切换分支；在仓库内仅写入本报告文件。
+ - 额度与操作约束遵守：仅执行纯 CLI 验证（typecheck/check/verify:sources/pytest/自写探针），原始 stdout/stderr 与真实退出码存于本机 `/tmp/i03-review-zcode/` 各独立子目录；无额度受限事件，未消费任何恢复权益。
+ 
+ ## 2 项目路径、分支、base 与 head
+@@ -39,9 +39,9 @@
+ 
+ ### 机器可核对的结构一致性（本审查程序化验证）
+ 
+-- `errors.json` 24 码与 `schema.json` `$defs.error.oneOf` 24 分支逐字段一致（测试锁定，且我独立比对成立）；`UNSUPPORTED_CONSTRUCT` 17 枚举与 `parameterMeanings` 键完全一致；`RESOURCE_LIMIT` 8 枚举同理。
++- `errors.json` 26 码与 `schema.json` `$defs.error.oneOf` 26 分支逐字段一致（测试锁定，且我独立比对成立；勘误：原稿误记 24/24，经 `git show f574` 重数更正）；`UNSUPPORTED_CONSTRUCT` 17 枚举与 `parameterMeanings` 键完全一致；`RESOURCE_LIMIT` 8 枚举同理。
+ - `staleReason` 8 码与 S1 `invalidation-v2.json` 逐字一致，`model` 家族 `staleReason=null`（附录 D 第 9 行反例规则在契约层保持）。
+-- registry 19 项的 params/result `$ref` 全部可解析；依赖策略 7 项与 registry `dependencyPolicy` 一一对应、无孤儿；`v2Runtime=[]`、`productRuntime=["health"]`、全部能力 `implementation` 为 design-only/test-design-only，无未实现能力进入运行声明。
++- registry 24 项（14 个服务方法 + 10 个 job 能力）的 params/result `$ref` 全部可解析；依赖策略 7 项与 registry `dependencyPolicy` 一一对应、无孤儿；`v2Runtime=[]`、`productRuntime=["health"]`、全部能力 `implementation` 为 design-only/test-design-only，无未实现能力进入运行声明。
+ - `schema.json` 在双端受限词汇表内（按 compile 实际遍历方式核验，未知词汇 0 个）；所有数组节点均带显式 `maxItems`；公开身份为 UUIDv4、哈希为小写 SHA-256，`name` 模式排除空白与超长。
+ - 硬上界落实：帧 262144、错误 2048、页 131072/200 行/64 格/8192 标量、错误参数≤5 项、job.list≤100、limits 各字段与 protocol.md 数值一一对应；错误参数仅含固定枚举、有界整数与不透明 id/hash，无原值/路径/堆栈/自由文本。
+ - I05 v3 细码表：I03 文档 25 行与源交接 25 行代码集合程序化比对完全一致；历史 30 码表完整保留；五个退休合码（INPUT_LIMIT/RESULT_LIMIT/UNSUPPORTED_LITERAL/UNSUPPORTED_RDF/ASSERTED_SCOPE_REQUIRED）明确不再用于新执行分支；SHAPE_PATH_UNCLASSIFIED 仅 INTERNAL_ERROR/{}；来源归责（用户输入/可信违约/无法分类三分）逐行与交接一致。
+@@ -58,7 +58,7 @@
+ | U1 | 通过 | 项目/任务/结果/current 指针/草稿/选中态身份表完整；result 分 current/stale/historical + payloadStatus=evicted；result.page 完整六字段 binding + 服务端 cursorRecord + CURSOR_MISMATCH/EXPIRED/PAYLOAD_EVICTED；job.list 双身份初始 null/后续非 null、不可变列表快照、稳定 (createdAtMs,jobId) 序 |
+ | S1 实际边界 | 通过 | storage.py 开库守卫显式拒绝既存 NULL/空 kind 且零清理（iterdump 比对实测）；publish/current 共用 `_result_identity`，非法 kind/实现来源零写入、合法身份唯一 current；legacy 非对象 config 统一 ValueError 且零副作用（真实 SQLite 反例） |
+ | S1 交接无遗漏 | 通过 | jobs-and-storage「I01 交接闭环」11 项与 I01 round-3 处理记录逐条对上（见 §6） |
+-| 独立审查与源输入 | 通过 | inputs/sources.json 12 项 SHA 由测试锁定且我实跑通过；内部审查 A/B/C 三系列均有独立关闭记录；本报告为指定双外审之一，另一模型独立进行 |
++| 独立审查与源输入 | 通过 | inputs/sources.json 的 6 份冻结输入 SHA 由 `test_frozen_input_hashes_are_self_contained` 锁定且我实跑通过；`verify:sources` 核对的 12 项是 `docs/source-manifest.json` 归档源清单，属另一份清单，我另行实跑通过（勘误：原稿将两者混称为"inputs/sources 12 项"）；内部审查 A/B/C 三系列均有独立关闭记录；本报告为指定双外审之一，另一模型独立进行 |
+ | 仓库静态与引擎回归 | 通过 | 本审查独立复跑四类命令全过；未启动任何本机窗口类验证 |
+ 
+ I04 必须实际完成的原验收、I05 真实语义执行、真实分层图投影/C→Mid→Equipment 反例在本候选中均如实标注未执行（fixtures 的 `validationProjectionSemantics.runtimeStatus` 明示需 I04/I05 真实集成证据），未以描述符或元数据测试冒充——符合"不能要求以替身冒充已完成"的审查边界。
+@@ -111,7 +111,7 @@
+ | F-07 提交后投递失败 | 已关闭（契约层） | operation.get 权威对账 + 传输失败≠提交失败 + 不自动新 operation |
+ | F-11 / R4 / N-07 锁与 I/O 映射 | 已关闭（契约层） | 仅 sqlite 主码 BUSY/LOCKED→STORAGE_BUSY、IOERR/FULL/READONLY/CORRUPT→STORAGE_FAILURE，禁文本匹配，未知→INTERNAL_ERROR |
+ | N-06 重复 finish_run/pin 幂等 | 已关闭（契约层） | 同证据幂等返回、异内容 INVALID_STATE、evicted→PAYLOAD_EVICTED，I04 服务事务内实现 |
+-| R6 历史增长 | 已关闭（延期保留） | 不删历史补性能，差分/压缩留真实负载与 Q5 |
++| R6 历史增长 | 承接说明已记录（契约层）；原问题本身保持 I01 登记的开放/延期状态与原等级，不构成关闭 | 本线仅在 jobs-and-storage 记录"不以删除历史补性能"的承接约束；按 I01 round-3 处理记录，差分/压缩/容量设计留待真实负载与 Q5 目标确定后进行，该历史问题在彼时前保持开放 |
+ 
+ ### 本会话内部审查 A/B/C 系列（候选演进中产生）
+ 
+@@ -137,3 +137,28 @@
+ 候选 4（base `c2f9b038…` → head `f574a723…`）在 I03 冻结范围内满足全部可现实验收：严格信封/逐方法 schema、hello 与身份绑定、安全错误目录、状态机与取消语义、真实依赖策略、U1 身份/过期/分页、S1 最小边界守卫（真实 SQLite 反例）、I01 全部历史移交项承接、源输入哈希一致；四类静态/单测/引擎验证由本审查独立复跑全过，双端适配器在交付语料之外追加的 40+ 对抗反例上行为完全一致。发现的 3 项 P3 与 4 条观察均不阻断，已给出触发条件与延期建议，供 I04/I05 处理。本通过不将任何未执行的运行项（I04 运行时、I05 真实语义、桌面联验、远端 CI）登记为完成，不改变 Q2/Q3/Q5–Q9 决策边界，亦不构成对 I05 未冻结交接或 v2Runtime 空集之外的能力承认。
+ 
+ ——审查者：ZCode（GLM-5.3，思考最高），任务 I03-R1-ZCode-GLM53-C4-f574a72，2026-10-20。
++
++## 附录 A：运行资源通知与日志自查（2026-10-20，报告交付后追加）
++
++- 本审查全部验证命令（typecheck/check/verify:sources/diff --check/两批探针）均在收到"共享 build/out 已预约给另一审查任务独占"的通知**之前**完成并保存原始退出码；通知到达时报告已交付，无未结束的验证步骤。
++- 按通知要求自查已有日志：`check` 完整 stdout 确认七阶段齐全（eslint `--max-warnings 0`、prettier 全过、desktop tsc、vitest 5 文件 420/420 其中 contract-v2 为 405 项、electron-vite main/preload/renderer 三段构建成功、ruff 与 format 通过、pytest 622/622），exit=0 且 stderr 为空；contracts typecheck、verify:sources（12 项）、Python/TS 探针的 exit 码均为 0。TS 探针 stderr 仅含 Vite 对 `/tmp` 配置文件的 ESM/CJS `configLoader` 迁移警告，非失败。日志内容与本报告 §3 声明逐项一致，无需修正。另勘误（见附录 B）：我对本报告文件执行 `npx prettier --check` 的退出码 0 属实，但报告路径位于 `.prettierignore` 的 `docs/reviews` 忽略范围（`--file-info` 显示 `ignored:true`、`inferredParser:null`），退出 0 源于被忽略而非内容经过格式校验；上文 check 阶段的"prettier 全过"指仓库内未被忽略文件的 `format:check`，属实际校验，两者不同，本报告文本本身未经 prettier 内容格式检查。
++- 自本通知起不再运行或读取任何依赖共享构建输出的命令；此前 `npm run check` 的 build 阶段写入发生在预约生效前且已结束。若后续确需构建类验证，将先请派发方重新预约。
++- 本通知不用于推断另一审查任务的任何进度或结论；f574a72 全范围、GLM-5.3/最高、禁止本机测试窗口、不读另一模型本轮产物、不改候选等原约束继续有效。本附录为纯流程记录，不改变受审实现与本报告结论。
++
++## 附录 B：报告事实澄清与勘误（2026-10-20，第二轮追加）
++
++派发方对本报告提出事实澄清（来源快照 `zcode-runtime/factual-clarification-source.json`）。原 139 行初稿已按原字节保存于 `zcode-runtime/report-before-factual-clarification.md`，SHA-256 `834f5c717f9a7db48e494b162b7679d5360b45b63d8d108e77fdfca2ccb50bc6`，经我实算一致；附录 A 的追加差异另存于该目录。本轮仅勘误本报告，未改实现、未重跑不变的 full check、未打开另一模型报告内容、未运行任何窗口。全部勘误均以 `git show f574a7234923f28e9356a45a17253803e7602e06` 读取固定候选重验，未机械替换：
++
++| 原稿表述 | 核验事实 | 处置 |
++| --- | --- | --- |
++| errors 24 码 / schema error.oneOf 24 分支 | 实为 **26/26**（`git show f574` 逐项重数；逐字段一致性结论不变，仅计数笔误） | §3 已更正并注勘误来源 |
++| registry 19 项 | 实为 **24 项**（14 服务方法 + 10 job 能力；$ref 全部可解析的结论不变） | §3 已更正 |
++| "inputs/sources.json 12 项 SHA 由测试锁定" | inputs/sources.json 实为 **6 份冻结输入**；`verify:sources` 的 12 项是 `docs/source-manifest.json` 归档源清单，两者不同源 | §4 已拆分表述；两项校验本身均实跑通过 |
++| "截至本报告完成时 round-1 目录亦不存在另一报告" | 不符合文件历史（勘误时 `ls` 显示另一报告已于本轮中途存在）；存在性非我可回溯证明的事实 | §1 改为仅陈述未读取/未使用其内容，不再断言存在性 |
++| R6"已关闭（延期保留）" | I01 round-3 处理记录原文为"R6 历史增长留真实负载/Q5 目标后设计"，属开放延期项 | §6 改为"承接说明已记录（契约层），原问题保持 I01 登记的开放/延期状态与原等级，不构成关闭" |
++| 隐含"报告文本经过 prettier 格式校验" | `--file-info` 显示报告位于 `.prettierignore` 的 `docs/reviews` 下（`ignored:true`、`inferredParser:null`）；退出 0 源于忽略 | 附录 A 已区分"命令退出 0"与"内容被格式校验"，明示报告文本未经 prettier 内容检查 |
++| 任务来源表述 | 需区分"总控核验人类授权并预约"与"I03 派发会话经 CUA 实际创建任务并读回"；account 标识为任务环境自报标签 | §1 已分层改写，status.md 引用改为真实标题「候选4外审实际创建与控制中断（仅流程追加）」（45–49 行） |
++
++其余数字经 `git show f574` 独立复验无误，未改动：fixtures cases 314 / responses 30 / validationBindings 20 / routing 11 / cursors 9 / jobListCursors 7、变更文件 37 份、TS 420（5 文件，其中 contract-v2 405）/ Python 622、UNSUPPORTED_CONSTRUCT 17 枚举、RESOURCE_LIMIT 8 枚举、依赖策略 7 项。
++
++**结论重申（独立重估，非默认维持）**：上述勘误全部属于报告事实表述精度问题——被误记的计数背后，集合相等性、引用可解析、哈希锁定等实质校验当时均已真实通过；R6 重分类还原的是 I01 原始开放状态，其本身从来不是 I03 退出门槛；prettier 与任务来源两项只影响流程记录口径。逐项重估后，没有任何一项动摇 §4 验收核对、§5 问题清单（3 项 P3 + 4 条观察）或 §7 证据边界的实质判断。最终结论仍为**通过**，原失败/未验边界全部保留不变。本附录为纯流程勘误，不改变受审实现。

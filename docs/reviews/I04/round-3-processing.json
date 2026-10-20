@@ -1,0 +1,657 @@
+{
+  "candidate": 3,
+  "base": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+  "head": "d3ad536bf9de71780489e32891d3e29d8ebc3dc5",
+  "fileCount": 105,
+  "completedAndReadAtUtc": "2026-10-20T17:01:33.837657+00:00",
+  "reports": {
+    "ZCode": {
+      "path": "docs/reviews/I04/round-3/zcode-glm53.md",
+      "sha256": "759fa0270e493e48c1dce0a23d08d4d03e64f4698a9a27a5ec4e41b7826a3007",
+      "bytes": 27346,
+      "lines": 135,
+      "model": "GLM-5.3",
+      "thinking": "最高",
+      "conclusion": "通过",
+      "actualTaskTerminal": true,
+      "completeReportRead": true
+    },
+    "MiniMax": {
+      "path": "docs/reviews/I04/round-3/minimax-m31flash.md",
+      "sha256": "b1acf1e2c564a904e177bfbca9cd1ab0c5da39e9ae285f1a33a79398d0bbc338",
+      "bytes": 68921,
+      "lines": 352,
+      "model": "M3.1-Flash（订阅限免）",
+      "thinking": "xhigh",
+      "conclusion": "通过",
+      "actualTaskTerminalIncludingSameTaskCorrections": true,
+      "completeReportRead": true,
+      "nativeTaskTitleObserved": "第三轮只读审查 I04 S2 常驻协调器与 ExecutionJob"
+    }
+  },
+  "original22Items": [
+    {
+      "id": "B1",
+      "severity": "P2",
+      "reviewer": "zcode-glm53",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "Z1",
+      "severity": "P3",
+      "reviewer": "zcode-glm53",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "Z2",
+      "severity": "P3",
+      "reviewer": "zcode-glm53",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "Z3",
+      "severity": "P3",
+      "reviewer": "zcode-glm53",
+      "disposition": "retain original agreed deferral with I03 O1; no vocabulary/budget expansion or closure claimed",
+      "C3Judgment": "deferred/open",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P1-1",
+      "severity": "P1",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P1-2",
+      "severity": "P1",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P1-3",
+      "severity": "P1",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P2-4",
+      "severity": "P2",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P2-5",
+      "severity": "P2",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P2-6",
+      "severity": "P2",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P3-7",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P3-8",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P3-9",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P3-10",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P3-11",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P3-12",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P3-13",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P3-14",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "P3-15",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain earlier concrete fix and both current independent closure judgments",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-1-disposition.json"
+    },
+    {
+      "id": "R2-N1",
+      "severity": "P3",
+      "reviewer": "ZCode",
+      "disposition": "adopted in C3; both new full designated tasks independently close",
+      "implementation": "bc098d0",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-2-processing.json"
+    },
+    {
+      "id": "R2-N2",
+      "severity": "P2",
+      "reviewer": "ZCode",
+      "disposition": "adopted in C3; both new full designated tasks independently close",
+      "implementation": "7d4cfaf",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-2-processing.json"
+    },
+    {
+      "id": "R2-P1",
+      "severity": "P2",
+      "reviewer": "MiniMax",
+      "disposition": "adopted in C3; both new full designated tasks independently close",
+      "implementation": "7d4cfaf",
+      "C3Judgment": "closed",
+      "previousDisposition": "round-2-processing.json"
+    }
+  ],
+  "originalIDCount": {
+    "total": 22,
+    "closed": 21,
+    "deferred": 1,
+    "deferredIDs": ["Z3"],
+    "remainingBlockers": 0
+  },
+  "newItems": [
+    {
+      "id": "R3-N1",
+      "reviewer": "MiniMax",
+      "severity": "none assigned; reviewer harness issue, not product defect",
+      "disposition": "adopt corrective methodology and accurate reporting in the SAME original task; no candidate source edit",
+      "facts": "v2 reused 200 UUIDs and blocked on stderr of a timely live session. Reviewer verified and terminated only own PIDs28165/28397, retained v2 unchanged, generated separate v3/v4 and packaged probes. -I ignoring PYTHONPATH made initial red arm invalid; final explicit -c/sys.path red arm uses exact C2 coordinator, other Python files equal C3.",
+      "additionalAccuracyCorrection": "Initial v3/v4 MAX_TOTAL_REQUESTS compares WRITE BATCHES, not individual requests; theoretical cap8,000,000 is not a safe65536 bound. Original scripts/raw data remain unchanged. Corrected report discloses this and separates actual observed counts, real EOF cleanup, and original IDs. First314-line report retained; final352-line revision independently remains Pass.",
+      "rootConservativeObservedBounds": "Each successful busy write carries200 requests; at most one failed batch can add200 requests, plus the separate late hello. For observed new arms183/192/193 successful writes, conservative attempted maxima36801/38601/38801 remain below65536 independently of replies count or the flawed global cap. Red317 successful writes include316 health batches+hello1=63201 responses exactly. No theoretical-cap assertion is used as evidence.",
+      "redExitBoundary": "33.571s has cleanupTimedOut=true and explicit stdin EOF after reviewer wait; it is not a natural handshake expiry or a performance claim. Valid contrast is old late hello accepted vs fixed natural closure before late hello, with timely negotiated session surviving."
+    }
+  ],
+  "inheritedOpenSeparateFrom22": [
+    "I03 O1 future vocabulary/default-bound policy, linked to Z3",
+    "I03 O3 / I01 R6 historical-growth/capacity policy",
+    "Domain E.2/E.5/G.4/FR-704 not completed by I04",
+    "I05 semantic / I06 gateway integration outside I04"
+  ],
+  "validation": "c3-verification.json; actual source/package/native/matrix evidence and source identity unchanged",
+  "methodEvents": [
+    {
+      "reviewer": "ZCode",
+      "facts": "Actual full check630/1020 rc0; default-time busy/idle/timely probe; old exact tests2fail1pass vs fixed3pass; no new findings. External hook blocked file write/copy, reviewer used inline execution/read-only source selection and disclosed events; no safety settings changed."
+    },
+    {
+      "reviewer": "MiniMax",
+      "facts": "Initial isolated fullcheck8 ENOENT TS errors due misplaced own venv, preserved rc1 log. Corrected own export venv then fullcheck630/1020 rc0; verify:sources12; independent144 matrix plus8-pass missing-cell negative exit1; actual source and immutable macOS binary deadline probes, Darwin7-case subset20iterations0fail. No product code was changed for probe repairs or report corrections."
+    }
+  ],
+  "freezeAudit": {
+    "files": 105,
+    "onlyAllowedChanges": [
+      {
+        "path": "docs/reviews/I04/status.md",
+        "pureAppendBytes": 737
+      }
+    ],
+    "otherFrozenFileBytesAllMatch": true,
+    "protectedAGENTSSHA256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+    "actualBothTerminal": true,
+    "noQueuedFollowupsRemain": true,
+    "noOtherCurrentReviewerConclusionDisclosed": true
+  },
+  "artifacts": [
+    {
+      "path": "build/I04-evidence/minimax-c3-harness-observation.txt",
+      "sha256": "f047901f3e2e4642b5269920d830d18a211746751cf41a8f47beafc2536f1460",
+      "bytes": 1009
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-independent/handshake-green-C3-v4.json",
+      "sha256": "6559b3e1867c1eda2658683068c145ddd641962d13ce1b9dcd9ed20677df4275",
+      "bytes": 2101
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-independent/handshake-new-C3-v3.json",
+      "sha256": "4f008ee46aec094bca7e23317233334efaa0eed65558184a40c457e3cc9d226d",
+      "bytes": 2453
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-independent/handshake-packaged-C3.json",
+      "sha256": "90a0bbd6f97ce090e81d5cedd583eb12b74441292daba1a06474cc217cb081f7",
+      "bytes": 2069
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-independent/handshake-red-C2-v4.json",
+      "sha256": "f2e264a74a3001fb3e70cdc574b255e01283c1bd646895c18dda54165654165b",
+      "bytes": 2245
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-independent/minimax-c3-matrix-negative-control.json",
+      "sha256": "93ed777de90d8cf70c766c22ab1c6cbd44a0fff6c034791881c26408c94dfcd0",
+      "bytes": 7349
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-independent/minimax-c3-matrix-summary.json",
+      "sha256": "43da48e43f8bf10e2091135117696f4d9041ef184b97c71b43d581ea80ee5f75",
+      "bytes": 76458
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-independent/minimax-c3-npm-run-check.log",
+      "sha256": "24f558041a5d8bf3b2f094ce507a0f306a37e6d23801abc0a7e2aac5c0ff80cd",
+      "bytes": 4980
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-independent/probe_handshake_packaged.py",
+      "sha256": "3d860990a230dbf6dc9a7e95c13696e8bcfae9935045758ea12fac84bd4ee58e",
+      "bytes": 9030
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-independent/probe_handshake_real_v3.py",
+      "sha256": "37770b835cccb720ad30b0eb3bbe7a776642591b6484af145bf030b30f3397c3",
+      "bytes": 11772
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-independent/probe_handshake_real_v4.py",
+      "sha256": "7ea874d4381f8981abe2cca702833f1095365893b73f76c3b148aae63723e734",
+      "bytes": 10074
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-independent/verify-sources.log",
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
+      "bytes": 111
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-probe-v2-before-harness-correction.py",
+      "sha256": "cee0ac6a41e4c8f1b090ac8e280dbd6b045e56b4863988bb7131f2d817856089",
+      "bytes": 8736
+    },
+    {
+      "path": "build/I04-evidence/minimax-c3-red-source-identity.json",
+      "sha256": "067564ee13a68da930cf958238e099470b281b797ffc476de8e55c9fd0738d2f",
+      "bytes": 464
+    },
+    {
+      "path": "build/I04-evidence/minimax-r3-accuracy-correction-message.txt",
+      "sha256": "f977ba779becfaff5abe12a734f8eee0c324e567880988e81b0b83d991d916e5",
+      "bytes": 1719
+    },
+    {
+      "path": "build/I04-evidence/minimax-r3-accuracy-correction-sent-ax.txt",
+      "sha256": "93ed7af97e435df45c8fc459c8a72d2f691ad22e6dae07e744789d1d01826857",
+      "bytes": 12706
+    },
+    {
+      "path": "build/I04-evidence/minimax-r3-final-full-terminal-ax.txt",
+      "sha256": "e8bd9318b63813b70286b8c07e98634d6ddac9aac7a239b4092248f78eb9c597",
+      "bytes": 16272
+    },
+    {
+      "path": "build/I04-evidence/minimax-r3-final-r1-full-terminal-ax.txt",
+      "sha256": "5b9ec65f995159cdd2a822fa2df7627bf7dd70da7d1d63f5612231e1ec75f222",
+      "bytes": 24869
+    },
+    {
+      "path": "build/I04-evidence/minimax-r3-first-terminal-report.md",
+      "sha256": "8cbaba1dd275b80cd1079e2122ad610befbd2971a6cd521938c576ec577634b5",
+      "bytes": 59974
+    },
+    {
+      "path": "build/I04-evidence/minimax-r3-harness-correction-dispatched-ax.txt",
+      "sha256": "4a6c52e1e12cb0b001760738d400fd52ebe4717c041f8dec7832d788b55153e6",
+      "bytes": 1876
+    },
+    {
+      "path": "build/I04-evidence/minimax-r3-harness-correction-message.txt",
+      "sha256": "fb350124cf4b04fdb51d3d9aa1b8980b13951aca71141cc2b3ff772705c246cf",
+      "bytes": 1455
+    },
+    {
+      "path": "build/I04-evidence/zcode-r3-final-full-terminal-ax.txt",
+      "sha256": "7b4a927fc3d530f0611f7bd42b8024afa69a0b32b6cdad576aa5da7daa5f94fb",
+      "bytes": 15612
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/darwin-tests.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/item45.log",
+      "sha256": "33dd901eb8893ae39ae42b70cff26d254b15ee89abdad204c2e7099880d679df",
+      "bytes": 100
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/matrix-full.log",
+      "sha256": "38f41c8bb11030369c90ebb4967c04985cfeba841904bfa724f584a5f25a5535",
+      "bytes": 424
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/matrix-neg.log",
+      "sha256": "ed994592ddfd8c103fed54390a26ca8dd39b4fb4b1f2426d2076cfe0f01c9a22",
+      "bytes": 356
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/npm-ci.log",
+      "sha256": "a42da9a0538702b27b14d97b780b2812b442df40bdff5b46cceda34781622f9a",
+      "bytes": 631
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/npm-run-check.log",
+      "sha256": "30dbcf6e701e34fe70ea9e3d60e84157b2efd4266c4b11e52b32c4de16163611",
+      "bytes": 24527
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/npm-run-check.rc",
+      "sha256": "767bd86353cde1c45cd5ac8596a79f78fd701d8552c95895648fe2fe6efd320f",
+      "bytes": 11
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/npm-run-check2.log",
+      "sha256": "24f558041a5d8bf3b2f094ce507a0f306a37e6d23801abc0a7e2aac5c0ff80cd",
+      "bytes": 4980
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/npm-run-check2.rc",
+      "sha256": "98fb9d66922286fc8d9a26bd0e12f44ffb442447b7dc7285e7aa401519bbe6a4",
+      "bytes": 11
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-green-C3-v4.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-green-C3-v4.json",
+      "sha256": "6559b3e1867c1eda2658683068c145ddd641962d13ce1b9dcd9ed20677df4275",
+      "bytes": 2101
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-green-C3-v4.out",
+      "sha256": "cdfa31d7f67e316992fb8b0a8f75b9ea9355ad6f413c46eab358fce69b5f3eb3",
+      "bytes": 2251
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-new-C3-v3.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-new-C3-v3.json",
+      "sha256": "4f008ee46aec094bca7e23317233334efaa0eed65558184a40c457e3cc9d226d",
+      "bytes": 2453
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-new-C3-v3.out",
+      "sha256": "d8c446f73d7e5045b1f244aa932cb4d10e1bb114408d93a2e24d65aa55cb9a37",
+      "bytes": 2601
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-old-C2.json",
+      "sha256": "2036fa820fe31bc38fa7e934efac46ba7e6ad1920950d2babb702d81bfafbc7d",
+      "bytes": 834
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-packaged-C3.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-packaged-C3.json",
+      "sha256": "90a0bbd6f97ce090e81d5cedd583eb12b74441292daba1a06474cc217cb081f7",
+      "bytes": 2069
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-packaged-C3.out",
+      "sha256": "3d0f739e95bf71ba6d5b575311710b5d22b0f00e29f481ea906cf84612443076",
+      "bytes": 2219
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-real.json",
+      "sha256": "aae32bc6264ae1c564d72c91b342b13229c00b871358ae0bf8264247b7f9071f",
+      "bytes": 833
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-red-C2-v4.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-red-C2-v4.json",
+      "sha256": "f2e264a74a3001fb3e70cdc574b255e01283c1bd646895c18dda54165654165b",
+      "bytes": 2245
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/handshake-red-C2-v4.out",
+      "sha256": "b811f9e53600741655c298f38d9b8ee90e8b5568d97f124d22763e9b9fc42686",
+      "bytes": 2393
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/probe_handshake_packaged.py",
+      "sha256": "3d860990a230dbf6dc9a7e95c13696e8bcfae9935045758ea12fac84bd4ee58e",
+      "bytes": 9030
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/probe_handshake_real.py",
+      "sha256": "cee0ac6a41e4c8f1b090ac8e280dbd6b045e56b4863988bb7131f2d817856089",
+      "bytes": 8736
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/probe_handshake_real_v3.py",
+      "sha256": "37770b835cccb720ad30b0eb3bbe7a776642591b6484af145bf030b30f3397c3",
+      "bytes": 11772
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/probes/probe_handshake_real_v4.py",
+      "sha256": "7ea874d4381f8981abe2cca702833f1095365893b73f76c3b148aae63723e734",
+      "bytes": 10074
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-1.log",
+      "sha256": "718c66d52c2be77f78497667d3ddb460042c3213684f7950688ab17c210bc6a0",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-10.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-11.log",
+      "sha256": "b94a492e0b6299f3f5ed62293fe404def5b34574e9b36822d2bee7d9dda616f1",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-12.log",
+      "sha256": "b94a492e0b6299f3f5ed62293fe404def5b34574e9b36822d2bee7d9dda616f1",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-13.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-14.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-15.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-16.log",
+      "sha256": "b94a492e0b6299f3f5ed62293fe404def5b34574e9b36822d2bee7d9dda616f1",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-17.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-18.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-19.log",
+      "sha256": "a41c2d9d242d7ab00b87126ebfa611ba2170d5bc0a4a254ae9a9c9cced1bd0b2",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-2.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-20.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-3.log",
+      "sha256": "a41c2d9d242d7ab00b87126ebfa611ba2170d5bc0a4a254ae9a9c9cced1bd0b2",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-4.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-5.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-6.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-7.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-8.log",
+      "sha256": "78b08513e0b619302862b461adfbc263732d91dd91670c78c001ae186f11cc7f",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/rep-9.log",
+      "sha256": "b94a492e0b6299f3f5ed62293fe404def5b34574e9b36822d2bee7d9dda616f1",
+      "bytes": 112
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/session-tests.log",
+      "sha256": "cfbcef2c88cdcf253d0c8f2c6692ee12d6a8d03db219421152a2465eaff45bf4",
+      "bytes": 261
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/uv-sync.log",
+      "sha256": "b237a3f9036a3498c1a4cc2ac0d625c9579ae66eea47a4d4beef5b832088a56d",
+      "bytes": 885
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/uv-sync2.log",
+      "sha256": "58293f6a4baec1849750b89d19568175bef188e9568f679bee4804e8354c2e2c",
+      "bytes": 749
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C3/verify-sources.log",
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
+      "bytes": 111
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C3/check-full.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C3/check-full.log",
+      "sha256": "598d8ca7eef7b4519df2cdc75f5b65cba0179eca8b1f28fd8bb25975648e473d",
+      "bytes": 6960
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C3/new-handshake-tests.log",
+      "sha256": "86288ee89a493b657a4f02c2118272c4f6a9a7afa049f10741e60f3a564db934",
+      "bytes": 98
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C3/old-handshake-tests.log",
+      "sha256": "24a677d47c0f622cef5ae1d94729f9086f7e5fedead1f7de335f36dca876ce4e",
+      "bytes": 2770
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C3/probe-handshake-c3.log",
+      "sha256": "31b429ecd4cdb7f73374bc4181828e56b2f4d9c74c716417deeb789a6b3a9c0c",
+      "bytes": 629
+    }
+  ],
+  "gateDecision": "Local acceptance and SAME complete base/head two NEW full designated independent Pass tasks are satisfied, all opinions disposed, no remaining blocker. Permit process-only archive commit and verified feature push/PR. Actual three-platform CI and normal develop merge/remote verification remain mandatory and not yet claimed.",
+  "scopeBoundary": "Signature/clean-device/production and domain work remain unverified outside this infrastructure delivery; report wording is not treated as authorization to expand I04."
+}

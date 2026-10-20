@@ -1,0 +1,26 @@
+PASS: F2 old key job.resourceLimit rejected
+PASS: F2 new key resource.limitExceeded accepted
+PASS: F2 old key job.invalidState rejected
+PASS: F2 new key protocol.invalidState accepted
+PASS: F2 INVALID_STATE with nonempty params rejected
+PASS: F2 wrong retryable rejected
+PASS: F4 baseline INTERNAL_ERROR accepted
+PASS: F4 shrunk budget rejects legal error
+PASS: F4 restored budget accepts again
+PASS: F4 schemaVersion == registry
+PASS: F4 schema $id matches version
+PASS: cancelling->succeeded without final proof rejected
+PASS: cancelling->succeeded with final proof allowed
+PASS: terminal regression rejected
+PASS: same version transition rejected
+PASS: notification seq gap rejected
+PASS: notification seq replay rejected
+PASS: notification wrong subscription rejected
+PASS: notification version jump rejected
+PASS: cursor valid accepted
+PASS: cursor expired rejected
+PASS: cursor pageSize change rejected
+PASS: cursor forged token rejected
+PASS: cursor binding mismatch rejected
+
+24/24 passed

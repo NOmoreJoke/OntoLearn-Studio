@@ -1,0 +1,25 @@
+{"total": 24, "failed": 1}
+PASS  v3 source rows == 25 :: 25
+PASS  v3 table rows == 25 :: 25
+PASS  v3 set equal :: table-only=[] source-only=[]
+PASS  v3 order equal :: table=['TEXT_TYPE_INVALID', 'TEXT_INPUT_LIMIT', 'GRAPH_INPUT_LIMIT', 'INVALID_LITERAL_LEXICAL'] source=['TEXT_TYPE_INVALID', 'TEXT_INPUT_LIMIT', 'GRAPH_INPUT_LIMIT', 'INVALID_LITERAL_LEXICAL']
+PASS  retired INPUT_LIMIT not a v3 code :: []
+PASS  retired INPUT_LIMIT only substring of new fine codes (TEXT_INPUT_LIMIT etc.) :: ['TEXT_INPUT_LIMIT', 'GRAPH_INPUT_LIMIT']
+PASS  retired INPUT_LIMIT retained in historical table :: 1
+PASS  retired RESULT_LIMIT not a v3 code :: []
+PASS  retired RESULT_LIMIT only substring of new fine codes (TEXT_INPUT_LIMIT etc.) :: ['QUERY_RESULT_LIMIT', 'RDFS_RESULT_LIMIT', 'RULE_EVIDENCE_RESULT_LIMIT']
+PASS  retired RESULT_LIMIT retained in historical table :: 1
+PASS  retired UNSUPPORTED_LITERAL not a v3 code :: []
+PASS  retired UNSUPPORTED_LITERAL only substring of new fine codes (TEXT_INPUT_LIMIT etc.) :: ['UNSUPPORTED_LITERAL_DATATYPE']
+PASS  retired UNSUPPORTED_LITERAL retained in historical table :: 1
+PASS  retired UNSUPPORTED_RDF not a v3 code :: []
+PASS  retired UNSUPPORTED_RDF only substring of new fine codes (TEXT_INPUT_LIMIT etc.) :: ['UNSUPPORTED_RDFS']
+PASS  retired UNSUPPORTED_RDF retained in historical table :: 1
+PASS  retired ASSERTED_SCOPE_REQUIRED not a v3 code :: []
+PASS  retired ASSERTED_SCOPE_REQUIRED only substring of new fine codes (TEXT_INPUT_LIMIT etc.) :: []
+PASS  retired ASSERTED_SCOPE_REQUIRED retained in historical table :: 1
+PASS  SHAPE_PATH_UNCLASSIFIED -> INTERNAL_ERROR only :: 未安全分类的匿名路径→INTERNAL_ERROR/{}；不得归责用户、假称支持或返回检查通过
+PASS  public catalog has no I05 internal code :: []
+FAIL  every v3 row maps to a public code/param :: [('INVALID_LITERAL_LEXICAL', '已确认用户输入非法词法→SEMANTIC_INPUT_INVALID/真实入口；可信生成项违约→INTERNAL_ERROR'), ('RDF_TERM_INVALID', '已知非法RDF主体/谓词形状；用户输入按真实入口SEMANTIC_INPUT_INVALID，可信生成项违约INTERNAL_ERROR，不借rdfConstr'), ('RDF_TYPE_OBJECT_INVALID', '当前领域事实形状要求rdf:type对象为类IRI；用户输入按真实入口SEMANTIC_INPUT_INVALID，可信生成项违约INTERNAL_ERROR'), ('RDFS_TERM_INVALID', '已知非法subclass/domain/range项形状；用户输入按真实入口SEMANTIC_INPUT_INVALID，可信生成项违约INTERNAL_ERR'), ('SHAPE_PATH_UNCLASSIFIED', '未安全分类的匿名路径→INTERNAL_ERROR/{}；不得归责用户、假称支持或返回检查通过'), ('FACT_SCOPE_CONTAINS_AXIOMS', '可信事实投影混入公理→INTERNAL_ERROR；不能映射validationScope，不要求用户改合法scope或删除数据'), ('ONTOLOGY_SCOPE_CONTAINS_FACTS', '可信本体角色混入领域事实→INTERNAL_ERROR；不静默丢弃事实')]
+PASS  no v3 row mixes semantic budget with frame/page/actions/rounds :: []
+PASS  RESOURCE_LIMIT has 8 categories incl. 3 semantic budgets :: ['actions', 'frame', 'memory', 'page', 'rounds', 'semanticInput', 'semanticResult', 'semanticWork']

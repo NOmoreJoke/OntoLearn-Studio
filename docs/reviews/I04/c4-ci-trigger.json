@@ -1,0 +1,69 @@
+{
+  "iteration": "I04",
+  "candidate": 3,
+  "reviewedHead": "d3ad536bf9de71780489e32891d3e29d8ebc3dc5",
+  "pushedHead": "24fd202feb6b0fe573d41eb27ae1f3c50e5356ec",
+  "PR": "https://github.com/NOmoreJoke/OntoLearn-Studio/pull/5",
+  "run": 39462746525,
+  "attempt": 1,
+  "conclusion": "failure",
+  "jobs": {
+    "linux": "success; complete Quality job, including source and packaged native recovery",
+    "windows": "failure in engine:check: 39 failed, 978 passed, 3 skipped; downstream desktop/package steps did not run",
+    "macOS": "cancelled before any steps, runner_id=0; official annotations: hosted runner not acquired and macOS arm64 capacity constraints"
+  },
+  "windowsFailureGroups": [
+    {
+      "id": "C4-CI-UTF8",
+      "failedCases": 36,
+      "cause": "fixture expected values decoded using locale default instead of UTF-8; production frame parser decoded the actual raw UTF-8 correctly",
+      "disposition": "explicit UTF-8 resource readers; exact original parser assertions and resource bytes retained; new regression simulates only exact resource default encoding"
+    },
+    {
+      "id": "C4-CI-STDERR",
+      "failedCases": 1,
+      "cause": "exact test assumed LF while native Windows text stderr emits CRLF",
+      "disposition": "expected fixed bounded message plus exact platform-native os.linesep; no production stderr behavior change"
+    },
+    {
+      "id": "C4-CI-PIPE-CLOSE",
+      "failedCases": 1,
+      "cause": "after all natural-exit/transport assertions passed, BufferedWriter.close retried flushing already-closed child pipe and raised Windows EINVAL",
+      "disposition": "cleanup alone accepts EINVAL only on win32 with child already exited; unexpected errors rethrow, all original runtime assertions retained"
+    },
+    {
+      "id": "C4-CI-WORKER-OWNER",
+      "failedCases": 1,
+      "cause": "actual owner-liveness regression did not reap worker within original three-second bound; current getppid-based monitoring and subprocess launcher identity require correction",
+      "disposition": "investigation and actual owner identity fix in progress; launcher hypothesis not asserted as fully reproduced Windows cause"
+    }
+  ],
+  "boundary": "C3 both external Pass reports remain historical evidence; they do not approve C4 changes. C4 must complete fresh full same-base/head dual review and local acceptance before a new feature push, then actual three-platform CI before normal merge. No claim of Windows/macOS package or desktop success in this run.",
+  "rawArtifacts": [
+    {
+      "path": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/I04-resident-jobs/build/I04-evidence/pr-ci-attempt1-final-run.json",
+      "sha256": "de34aa0715adb6a22fd4f086b717dd49d89dec19336b3500b853aab82cd6e528",
+      "bytes": 13406
+    },
+    {
+      "path": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/I04-resident-jobs/build/I04-evidence/pr-ci-attempt1-final-jobs.json",
+      "sha256": "fe6309a7ce85afa2f63cef6ce8d384569c25ff5c384b6507ed7ac3604e64c20b",
+      "bytes": 10396
+    },
+    {
+      "path": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/I04-resident-jobs/build/I04-evidence/pr-ci-macos-attempt1-annotations.json",
+      "sha256": "814d67091de1077006bccec91cdc1da0b83f5e688911e08b9b677889ab9daadd",
+      "bytes": 1450
+    },
+    {
+      "path": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/I04-resident-jobs/build/I04-evidence/pr-ci-linux-attempt1-job.log",
+      "sha256": "439813594eeab4bf5bc5f804a323785f5f5db72c08fb4792fed1ba906b9e206c",
+      "bytes": 111058
+    },
+    {
+      "path": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/I04-resident-jobs/build/I04-evidence/pr-ci-windows-attempt1-job.log",
+      "sha256": "e25ac2a7f019fb3beddc5152e34bcff1a2391630dcc0535d992697618c7c730a",
+      "bytes": 165361
+    }
+  ]
+}

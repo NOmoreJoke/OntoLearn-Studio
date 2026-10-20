@@ -34,6 +34,19 @@ def digest(value: object) -> str:
 class Conflict(ValueError):
     """A plan must be previewed again or its ownership conflict resolved."""
 
+    def __init__(self, message: str, *, category: str = "unknown", params: dict | None = None):
+        super().__init__(message)  # Internal diagnostics only; never parse or send this text.
+        self.category = category
+        self.params = params or {}
+        self.code = {
+            "identity": "IDENTITY_CONFLICT",
+            "revision": "REVISION_CONFLICT",
+            "state": "INVALID_STATE",
+            "rounds": "RESOURCE_LIMIT",
+            "dependency": "INVALID_REQUEST",
+            "input": "INVALID_REQUEST",
+        }.get(category, "INTERNAL_ERROR")
+
 
 class Store:
     def __init__(self, path: str | Path, migration_hook: Hook = lambda _: None):
@@ -44,6 +57,13 @@ class Store:
         self._db.execute("PRAGMA synchronous=FULL")
         try:
             self._migrate(migration_hook)
+            invalid_kind = self._db.execute(
+                "SELECT 1 FROM results WHERE typeof(kind) != 'text' OR trim(kind) = '' "
+                "UNION ALL SELECT 1 FROM current_results "
+                "WHERE typeof(kind) != 'text' OR trim(kind) = '' LIMIT 1"
+            ).fetchone()
+            if invalid_kind:
+                raise ValueError("Invalid legacy result kind; explicit repair required")
         except BaseException:
             self._db.close()
             raise
@@ -53,6 +73,20 @@ class Store:
 
     @contextmanager
     def _transaction(self, hook: Hook = lambda _: None) -> Iterator[None]:
+        # Application services compose S1 writes with job/evidence writes on this
+        # same connection. A nested operation may roll back its own savepoint,
+        # but only the outermost application transaction publishes a commit.
+        if self._db.in_transaction:
+            savepoint = "s_" + uuid4().hex
+            self._db.execute(f"SAVEPOINT {savepoint}")
+            try:
+                yield
+                self._db.execute(f"RELEASE {savepoint}")
+            except BaseException:
+                self._db.execute(f"ROLLBACK TO {savepoint}")
+                self._db.execute(f"RELEASE {savepoint}")
+                raise
+            return
         hook("before")
         self._db.execute("BEGIN IMMEDIATE")
         try:
@@ -145,8 +179,26 @@ class Store:
 
     def vector(self, project: str) -> dict[str, int]:
         self.revision(project)
-        return dict(
+        vector = dict(
             self._db.execute("SELECT key,version FROM versions WHERE project=?", (project,))
+        )
+        # Version counters are an append-forward ledger. A withdrawn definition
+        # is absent from current membership, while its previous counter remains
+        # available for a later re-addition. Legacy format-2 readers need no
+        # opening-time writer lock just to inspect this optional projection.
+        if self._has_retirements():
+            for row in self._db.execute(
+                "SELECT layer,id FROM definition_retirements WHERE project=?", (project,)
+            ):
+                vector.pop(f"{row['layer']}:{row['id']}", None)
+        return vector
+
+    def _has_retirements(self) -> bool:
+        return (
+            self._db.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='definition_retirements'"
+            ).fetchone()
+            is not None
         )
 
     @contextmanager
@@ -212,6 +264,7 @@ class Store:
         job: str,
         *,
         definitions: list[dict] | None = None,
+        remove_definitions: list[dict] | None = None,
         manual: list[dict] | None = None,
         edits: dict[str, str] | None = None,
         remove: list[str] | None = None,
@@ -235,15 +288,45 @@ class Store:
             "remove": remove,
             "mapping": mapping,
         }
+        # Keep every pre-I04 S1 marker's canonical plan/hash unchanged when the
+        # new operation is omitted or None. Explicit [] is an audited no-op plan.
+        if remove_definitions is not None:
+            if not isinstance(remove_definitions, list):
+                raise ValueError("Definition removals must be a list")
+            seen_removals = set()
+            for removal in remove_definitions:
+                if (
+                    not isinstance(removal, dict)
+                    or set(removal) != {"layer", "id"}
+                    or not isinstance(removal["layer"], str)
+                    or removal["layer"] not in LAYERS
+                    or not isinstance(removal["id"], str)
+                    or not removal["id"]
+                    or (removal["layer"], removal["id"]) in seen_removals
+                ):
+                    raise ValueError("Definition removal requires unique layer/id identities")
+                seen_removals.add((removal["layer"], removal["id"]))
+            if any(
+                isinstance(d, dict) and (d.get("layer"), d.get("id")) in seen_removals
+                for d in definitions or []
+            ):
+                raise ValueError("Cannot add and withdraw the same definition in one plan")
+            plan["remove_definitions"] = remove_definitions
         fingerprint = digest(plan)
         with self._transaction(hook):
             previous = self.marker(project, operation)
             if previous:
                 if previous["fingerprint"] != fingerprint or previous["job"] != job:
-                    raise Conflict("operationId reused with different plan/job")
+                    raise Conflict(
+                        "operationId reused with different plan/job", category="identity"
+                    )
                 return previous
             if self.revision(project) != base:
-                raise Conflict("Old projectRevision; re-preview required")
+                raise Conflict(
+                    "Old projectRevision; re-preview required",
+                    category="revision",
+                    params={"expected": base, "actual": self.revision(project)},
+                )
             before_state = self.state(project)
             before_snapshot = self._snapshot(
                 {
@@ -277,6 +360,33 @@ class Store:
                         (project, layer, identity, payload),
                     )
                     changed.add(f"{layer}:{identity}")
+                    if self._has_retirements():
+                        self._db.execute(
+                            "DELETE FROM definition_retirements "
+                            "WHERE project=? AND layer=? AND id=?",
+                            (project, layer, identity),
+                        )
+            if remove_definitions is not None:
+                # This format-2 extension is transactional and demand-created
+                # for existing stores, preserving read-only current-format open.
+                self._db.execute(RETIREMENTS_SCHEMA)
+                for removal in remove_definitions:
+                    layer, identity = removal["layer"], removal["id"]
+                    previous_definition = self._db.execute(
+                        "SELECT 1 FROM definitions WHERE project=? AND layer=? AND id=?",
+                        (project, layer, identity),
+                    ).fetchone()
+                    if previous_definition is None:
+                        continue  # Explicit no-op remains in immutable plan/marker.
+                    self._db.execute(
+                        "DELETE FROM definitions WHERE project=? AND layer=? AND id=?",
+                        (project, layer, identity),
+                    )
+                    self._db.execute(
+                        "INSERT INTO definition_retirements VALUES(?,?,?)",
+                        (project, layer, identity),
+                    )
+                    changed.add(f"{layer}:{identity}")
             for identity in remove or []:
                 old = self._db.execute(
                     "SELECT * FROM facts WHERE project=? AND id=?", (project, identity)
@@ -305,7 +415,7 @@ class Store:
                     "SELECT * FROM facts WHERE project=? AND id=?", (project, identity)
                 ).fetchone()
                 if old is None:
-                    raise Conflict("Edited fact no longer exists")
+                    raise Conflict("Edited fact no longer exists", category="state")
                 self._check_slot(project, old["subject"], old["predicate"], value, {identity})
                 if value != old["object"]:
                     self._db.execute(
@@ -326,7 +436,8 @@ class Store:
                             "Explicit fact edit required; cannot take ownership: "
                             f"slot={existing['subject']} {existing['predicate']}, "
                             f"other={existing['owner'] or 'manual'}, row={existing['source_row']}, "
-                            f"id={existing['id']}"
+                            f"id={existing['id']}",
+                            category="ownership",
                         )
                     continue
                 self._check_slot(project, fact["subject"], fact["predicate"], fact["object"], set())
@@ -337,6 +448,21 @@ class Store:
                 changed.add("facts:asserted")
             hook("mid_data")
             if mapping is not None:
+                if (
+                    isinstance(mapping, dict)
+                    and isinstance(mapping.get("id"), str)
+                    and self._has_retirements()
+                    and self._db.execute(
+                        "SELECT 1 FROM definition_retirements "
+                        "WHERE project=? AND layer='mapping' AND id=?",
+                        (project, mapping["id"]),
+                    ).fetchone()
+                ):
+                    raise Conflict(
+                        "Withdrawn mapping requires explicit definition restoration",
+                        category="dependency",
+                        params={"field": "dependency"},
+                    )
                 if self._replace_mapping(project, mapping):
                     changed.update({"facts:asserted", f"mapping:{mapping['id']}"})
             self._validate_references(project)
@@ -456,7 +582,9 @@ class Store:
                 "GROUP BY subject HAVING COUNT(*)>1 LIMIT 1",
                 (project, predicate),
             ).fetchone():
-                raise Conflict("Single-valued declaration conflicts with existing facts")
+                raise Conflict(
+                    "Single-valued declaration conflicts with existing facts", category="ownership"
+                )
 
     def _validate_references(self, project: str) -> None:
         for row in self._db.execute("SELECT payload FROM definitions WHERE project=?", (project,)):
@@ -471,7 +599,11 @@ class Store:
                     "SELECT 1 FROM definitions WHERE project=? AND layer=? AND id=?",
                     (project, reference["layer"], reference["id"]),
                 ).fetchone():
-                    raise Conflict("Unresolved definition reference")
+                    raise Conflict(
+                        "Unresolved definition reference",
+                        category="dependency",
+                        params={"field": "dependency"},
+                    )
 
     def _check_slot(
         self,
@@ -496,7 +628,8 @@ class Store:
             ):
                 raise Conflict(
                     f"Ownership conflict: slot={subject} {predicate}, "
-                    f"other={row['owner'] or 'manual'}, row={row['source_row']}, id={row['id']}"
+                    f"other={row['owner'] or 'manual'}, row={row['source_row']}, id={row['id']}",
+                    category="ownership",
                 )
 
     def _replace_mapping(self, project: str, mapping: dict) -> bool:
@@ -514,7 +647,8 @@ class Store:
             if fact["object"] != fact["managed_value"]:
                 raise Conflict(
                     f"Manual drift: mapping={owner}, row={fact['source_row']}, "
-                    f"slot={fact['subject']} {fact['predicate']}"
+                    f"slot={fact['subject']} {fact['predicate']}",
+                    category="ownership",
                 )
         own_ids = {
             r[0]
@@ -541,7 +675,11 @@ class Store:
             for fact in row["facts"]:
                 self._fact(fact)
                 if fact["id"] in identities:
-                    raise Conflict("Multiple source rows support same fact")
+                    raise Conflict(
+                        "Multiple source rows support same fact",
+                        category="input",
+                        params={"field": "identity"},
+                    )
                 identities.add(fact["id"])
                 self._check_slot(
                     project,
@@ -553,7 +691,11 @@ class Store:
                 )
                 slot = (fact["subject"], fact["predicate"])
                 if fact["predicate"] in single_predicates and slot in staged_slots:
-                    raise Conflict("Single-valued mapping slot has multiple values")
+                    raise Conflict(
+                        "Single-valued mapping slot has multiple values",
+                        category="input",
+                        params={"field": "params"},
+                    )
                 staged_slots.add(slot)
                 staged.append(
                     (
@@ -622,7 +764,7 @@ class Store:
         if not isinstance(snap, dict) or not isinstance(snap.get("project"), str):
             raise ValueError("Project state snapshot required")
         if snap["project"] != project:
-            raise Conflict("Cross-project snapshot")
+            raise Conflict("Cross-project snapshot", category="identity")
         revision = snap.get("projectRevision")
         vector = snap.get("dependencyVector")
         state = snap.get("state")
@@ -732,6 +874,18 @@ class Store:
                 ):
                     raise ValueError("Invalid snapshot mapping stale reason")
 
+    @staticmethod
+    def _result_identity(kind: str, implementation: dict[str, str]) -> None:
+        if not isinstance(kind, str) or not kind.strip():
+            raise ValueError("Nonempty result kind required")
+        required = set(RULES["implementationCompatibility"]["identityKeys"])
+        if (
+            not isinstance(implementation, dict)
+            or set(implementation) != required
+            or not all(isinstance(value, str) and value for value in implementation.values())
+        ):
+            raise ValueError("Complete execution provenance required")
+
     def publish(
         self,
         project: str,
@@ -742,13 +896,7 @@ class Store:
         implementation: dict[str, str],
     ) -> str:
         """Append result evidence, publish current only after in-transaction revalidation."""
-        required = set(RULES["implementationCompatibility"]["identityKeys"])
-        if (
-            not isinstance(implementation, dict)
-            or set(implementation) != required
-            or not all(isinstance(value, str) and value for value in implementation.values())
-        ):
-            raise ValueError("Complete execution provenance required")
+        self._result_identity(kind, implementation)
         with self._transaction():
             snap = self._project_snapshot(snapshot, project)
             if not isinstance(dependencies, list) or not dependencies:
@@ -839,6 +987,7 @@ class Store:
         return result
 
     def current(self, project: str, kind: str, implementation: dict[str, str]) -> dict | None:
+        self._result_identity(kind, implementation)
         with self._read():
             return self._current(project, kind, implementation)
 
@@ -926,14 +1075,20 @@ class Store:
                     or previous["job"] != job
                     or previous["snapshot"] != digest(round_payload)
                 ):
-                    raise Conflict("Round operationId reused with different content/run/job")
+                    raise Conflict(
+                        "Round operationId reused with different content/run/job",
+                        category="identity",
+                    )
                 return previous["snapshot"]
             if self._db.execute("SELECT 1 FROM run_terminal WHERE run=?", (run,)).fetchone():
-                raise Conflict("Terminal run is immutable")
+                raise Conflict("Terminal run is immutable", category="state")
             last = self.progress(run)
             if number != (last["lastCommittedRound"] if last else 0) + 1:
-                raise Conflict("Nonsequential round")
-            maximum = json.loads(record["config"]).get("maxRounds")
+                raise Conflict("Nonsequential round", category="state")
+            config = json.loads(record["config"])
+            if not isinstance(config, dict):
+                raise ValueError("Run config must be an object")
+            maximum = config.get("maxRounds")
             if (
                 not isinstance(maximum, int)
                 or isinstance(maximum, bool)
@@ -941,7 +1096,7 @@ class Store:
             ):
                 raise ValueError("maxRounds must be 1..1000")
             if number > maximum:
-                raise Conflict("Round limit")
+                raise Conflict("Round limit", category="rounds", params={"resource": "rounds"})
             identity = self._snapshot(round_payload)
             hook("mid_data")
             self._db.execute(
@@ -1033,12 +1188,18 @@ class Store:
             target.close()
 
 
+RETIREMENTS_SCHEMA = (
+    "CREATE TABLE IF NOT EXISTS definition_retirements("
+    "project TEXT REFERENCES projects(id),layer TEXT,id TEXT,PRIMARY KEY(project,layer,id))"
+)
+
 SCHEMA = [
     "CREATE TABLE projects(id TEXT PRIMARY KEY,revision INTEGER NOT NULL)",
     "CREATE TABLE versions(project TEXT REFERENCES projects(id),key TEXT,version INTEGER NOT NULL,"
     "PRIMARY KEY(project,key))",
     "CREATE TABLE definitions(project TEXT REFERENCES projects(id),layer TEXT,id TEXT,payload TEXT,"
     "PRIMARY KEY(project,layer,id))",
+    RETIREMENTS_SCHEMA,
     "CREATE TABLE facts(project TEXT REFERENCES projects(id),id TEXT,subject TEXT,predicate TEXT,"
     "object TEXT,owner TEXT,source_row TEXT,managed_value TEXT,PRIMARY KEY(project,id))",
     "CREATE TABLE commits(project TEXT REFERENCES projects(id),operation TEXT,job TEXT,"

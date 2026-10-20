@@ -1,0 +1,14 @@
+{
+  "candidate": "2cc03da82ffccc8448c7b03dc6cff87595027653",
+  "originalManifest": "docs/iterations/I02/evidence/package-manifest.json",
+  "equalsBuildMeaning": "same-build package bytes equal the build bytes used for that package; not a promise that a separate rebuild has the same hash",
+  "crossBuildReproducible": false,
+  "reason": "unconditional main define embeds a random development nonce; main and asar change across rebuilds",
+  "independentlyStableFiles": [
+    "out/renderer/index.html",
+    "out/preload/index.js"
+  ],
+  "productionRuntimeUseOfDevelopmentNonce": false,
+  "implementationChanged": false,
+  "handling": "M-01 evidence annotation alternative accepted; deterministic production define deferred"
+}

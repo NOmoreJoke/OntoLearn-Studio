@@ -1,0 +1,85 @@
+"""Batch 5b: Python side dynamic enumeration (mirrors batch5b-enum-dynamic.mjs)."""
+import importlib.util
+import json
+from pathlib import Path
+
+ROOT = Path("/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts")
+spec = importlib.util.spec_from_file_location(
+    "contract_v2", ROOT / "packages/contracts/python/contract_v2.py"
+)
+contract = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(contract)
+
+SIBLINGS = {"worksheetId": "00000000-0000-4000-8000-0000000000a1", "row": 1, "column": 1}
+codes = contract.ERROR_CATALOG["codes"]
+
+total = accepted = 0
+rejected = []
+unknown_accepted = []
+misuse = []
+for code, entry in codes.items():
+    props = entry["paramsSchema"]["properties"]
+    for param, sp in props.items():
+        if "enum" not in sp:
+            continue
+        for value in sp["enum"]:
+            params = {
+                k: (value if k == param else SIBLINGS[k]) for k in props if k == param or k in SIBLINGS
+            }
+            err = {
+                "code": code,
+                "messageKey": entry["messageKey"],
+                "retryable": entry["retryable"],
+                "params": params,
+            }
+            total += 1
+            if contract.validate("error", err):
+                accepted += 1
+            else:
+                rejected.append({"code": code, "param": param, "value": value})
+            bad = {**err, "params": {**params, param: "__not_in_enum__"}}
+            if contract.validate("error", bad):
+                unknown_accepted.append({"code": code, "param": param, "value": value})
+            for other_code, other in codes.items():
+                if other_code == code:
+                    continue
+                for other_param, other_sp in other["paramsSchema"]["properties"].items():
+                    if "enum" not in other_sp:
+                        continue
+                    for foreign in other_sp["enum"]:
+                        if foreign in sp["enum"]:
+                            continue
+                        p2 = {
+                            k: (foreign if k == param else SIBLINGS[k])
+                            for k in props
+                            if k == param or k in SIBLINGS
+                        }
+                        e2 = {
+                            "code": code,
+                            "messageKey": entry["messageKey"],
+                            "retryable": entry["retryable"],
+                            "params": p2,
+                        }
+                        if contract.validate("error", e2):
+                            misuse.append({"code": code, "param": param, "foreign": foreign})
+
+print("batch5b-py total enum values:", total)
+print("batch5b-py accepted:", accepted)
+print("batch5b-py rejected:", json.dumps(rejected))
+print("batch5b-py unknown-value accepted:", json.dumps(unknown_accepted))
+print("batch5b-py cross-code enum misuse accepted:", len(misuse), json.dumps(misuse[:10]))
+failed = total != 53 or accepted != 53 or rejected or unknown_accepted or misuse
+print("batch5b-py result:", "FAIL" if failed else "PASS")
+Path("/tmp/i03-r2-minimax/logs/batch5b-py.stdout.txt").write_text(
+    json.dumps(
+        {
+            "total": total,
+            "accepted": accepted,
+            "rejected": rejected,
+            "unknownAccepted": unknown_accepted,
+            "misuse": misuse,
+        },
+        ensure_ascii=False,
+    )
+)
+raise SystemExit(1 if failed else 0)

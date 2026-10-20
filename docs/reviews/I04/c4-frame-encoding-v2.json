@@ -1,0 +1,132 @@
+{
+  "baseline": "24fd202feb6b0fe573d41eb27ae1f3c50e5356ec",
+  "supersedesSimulation": "5cbe39c and c4-frame-encoding.json remain preserved as original ordinary-mode results; its Path.open injection did not cover -X utf8 and must not be treated as UTF-8-mode evidence.",
+  "independentFinding": {
+    "source": "storage read-only review of exact5cbe39c on Python3.12.12",
+    "result": "normal53pass; -Xutf8 selected regression1failed1passed; default_cases==loaded_cases because io.text_encoding(None) normalized to utf-8 before Path.open",
+    "reviewJsonSha256": "46e192e0496368cf0e2fe1d174ff6fd700be024e83957dbd0549e78a334f897b"
+  },
+  "change": "Inject cp1252 at Path.read_text entry only for three exact contract resources when encoding is None/locale; explicit utf-8 remains untouched. No skip, assertion change, parser change, global locale or PYTHONUTF8 setting.",
+  "originalFailureReproduced": "Exact original5cbe39c test module exported to own ignored directory: -Xutf8 =>1failed52passed, retained log.",
+  "pairedModes": {
+    "normal": {
+      "utf8Mode": 0,
+      "oldFrameAssertions": {
+        "passed": 15,
+        "failed": 36
+      },
+      "oldCommonExamples": "BUNDLED_FRAME_MISMATCH",
+      "fixedFrameAssertions": {
+        "passed": 51,
+        "failed": 0
+      },
+      "fixedCommonExamples": {
+        "status": "passed",
+        "counts": {
+          "cases": 321,
+          "routing": 11,
+          "responses": 30,
+          "cursors": 9,
+          "jobListCursors": 7,
+          "trustedBindings": 41,
+          "rawFrames": 51
+        }
+      }
+    },
+    "utf8-mode": {
+      "utf8Mode": 1,
+      "oldFrameAssertions": {
+        "passed": 15,
+        "failed": 36
+      },
+      "oldCommonExamples": "BUNDLED_FRAME_MISMATCH",
+      "fixedFrameAssertions": {
+        "passed": 51,
+        "failed": 0
+      },
+      "fixedCommonExamples": {
+        "status": "passed",
+        "counts": {
+          "cases": 321,
+          "routing": 11,
+          "responses": 30,
+          "cursors": 9,
+          "jobListCursors": 7,
+          "trustedBindings": 41,
+          "rawFrames": 51
+        }
+      }
+    }
+  },
+  "fixedTests": {
+    "normal": "53passed",
+    "-Xutf8": "53passed",
+    "fullCheck": "npm run check exit0;630TS/1022Python"
+  },
+  "resourcesUnchanged": {
+    "packages/contracts/v2/binding-regressions.json": {
+      "sha256": "9601d6d0a31e3e71078ac2562c6b8501c1292bc2be71de742e40c2fc54512a24",
+      "bytes": 123964,
+      "nonAsciiBytes": false
+    },
+    "packages/contracts/v2/fixtures.json": {
+      "sha256": "32031804abf3283e87f070ffbfc3f95cf627f6b71e7bc49711faaff52ec31ad6",
+      "bytes": 472098,
+      "nonAsciiBytes": true
+    },
+    "packages/contracts/v2/frame-fixtures.json": {
+      "sha256": "8e9a142ff04e908cc286c15702cd18b6c2ce9453490585d0855c3f62995dd2e5",
+      "bytes": 17537,
+      "nonAsciiBytes": true
+    }
+  },
+  "sourceSha256": "522c6748496065667fc310bf5fc29a3aca48abc50228402f56ba95daf48e2898",
+  "rawArtifacts": {
+    "probe.py": {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/probe.py",
+      "sha256": "7b9de7e8d5232eaa7a7ed4f213570e71a08ace2aa5e285a7f2b98c1259fc425c",
+      "bytes": 3221
+    },
+    "probe-normal.json": {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/probe-normal.json",
+      "sha256": "75d429a213fc1f77dfa2743d760615069cac1a4208a35ff3af9746e43b78386d",
+      "bytes": 2616
+    },
+    "probe-utf8-mode.json": {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/probe-utf8-mode.json",
+      "sha256": "97cbdb6a3b16e172df539b589377e99133c7c9f533c68fe2785f0a619af48dbc",
+      "bytes": 2616
+    },
+    "probe-normal.log": {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/probe-normal.log",
+      "sha256": "993511a2252266b9386ad5307bcd86a7d6a9f0aba3b2cb9312933f528437cead",
+      "bytes": 2102
+    },
+    "probe-utf8-mode.log": {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/probe-utf8-mode.log",
+      "sha256": "e37bb1def88a2280e2f73e292f210a5b34bc296f4ec4b5104fe4a6bc8cfbf624",
+      "bytes": 2102
+    },
+    "normal.log": {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/normal.log",
+      "sha256": "8db0254ebafb84d23b112fc26ba453cd893e8d2f415519547e67bb05e2e0a27e",
+      "bytes": 99
+    },
+    "utf8-mode.log": {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/utf8-mode.log",
+      "sha256": "8db0254ebafb84d23b112fc26ba453cd893e8d2f415519547e67bb05e2e0a27e",
+      "bytes": 99
+    },
+    "original-utf8-mode.log": {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/original-utf8-mode.log",
+      "sha256": "da2e6dfb88ed81ced48a55221ec86a659c2586c24879a98ca48007df4804c5f5",
+      "bytes": 1724
+    },
+    "check.log": {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/check.log",
+      "sha256": "2cbf885326aff2cc445a9e9bc27208afa2754e50be91c19e96a8198939415ff1",
+      "bytes": 4878
+    }
+  },
+  "boundary": "macOS arm64 targeted cp1252 emulation in both Python modes, not Windows execution. Production explicit UTF-8 reads remain correct and unchanged by this followup. Original5c commit and raw failure retained. No shared source/GUI/package/CI/push/approval claim."
+}
