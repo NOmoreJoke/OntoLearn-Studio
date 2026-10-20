@@ -8,6 +8,7 @@
 - 协调器连接退出后立即隔离旧订阅，将任务卡片标为最后记录；同一观察项目最多三次只读恢复，间隔 250/500ms、单次整体 15 秒，最多重建 16 个记忆任务及 operation 标记。失败显示离线，显式刷新可重新尝试；不跨 session 注销旧订阅、不重放创建/取消/写入，传输状态不改任务终态。健康检查回复同时核对视图代次及连接 epoch，旧成功或错误都不能覆盖新连接状态。
 - 项目投影与任务分开读取时，所有 restore/atomic-refresh 路径按已见最高提交 revision/snapshot 最多三次完整重读；同版快照矛盾安全失败。恢复中提前到达的原子完成通知保留同一恢复次数及整体计时，继承 operation 复验；结果原输入仍保留为历史。
 - Python 单协调器持有 OS 排他 writer lease。JobStore 与 S1 使用同一个 SQLite 和事务；worker 没有数据库或正式提交入口，只返回隔离计算输出。父死亡守卫避免旧 worker 占用资源继续运行；新协调器取得 lease 后再按持久 marker/round/terminal 对账，不续跑或重发写入。
+- worker 在读 stdin 前同步校验私有启动参数中的实际协调器 PID。Windows 使用创建时间和固定句柄排除 PID 复用并监测退出；POSIX 校验实际直接父进程。参数非法、owner 已死、监测 API 或线程异常均退出73。当前源码/onedir 之外的父链需重新验证；原 Windows CI 未记录完整亲缘链，不能把启动器机制推断写成唯一已复现根因。
 - 主进程和协调器分别用显式最小 OS 环境启动 Python 和 worker，不继承宿主凭据、代理、loader/Python 注入变量；DB、项目授权和测试模式只由主进程可信配置生成，worker 不继承这些权限变量。真实自造 sentinel 与包内启动均有验证。
 - operation claim 全局唯一，完整项目/能力/input/confirmation/plan/参数内容/依赖/实现/limits 固定；公开项目身份通过持久双向唯一映射与旧内部 ID 对齐。正式 receipt 为历史结果，不能成为领域 current。
 - 队列、并发、项目 writer、请求/总量/启动/握手/心跳/取消收尾、帧/页/游标记录与内存分别有界。总期限包含排队、启动、stdin 写入、计算、等待退出与提交前复验，不由心跳延长。单任务取消仅终止对应 worker。
@@ -22,7 +23,7 @@ I03 未握手错误设计需要非 hello 的 null-session 错误响应，而旧 
 
 R2-F1 在双端校验 trusted binding 的完整身份、数值类型/范围和合法状态，缺字段不默认值、不逃出 KeyError/TypeError。保留原24个内部 binding 变异，与合法公共通知及合法控制组分开。共享原始帧语料覆盖 UTF-8 每个拆分点、粘包/CRLF、嵌套重复/转义同名键、深度、数值、非法 Unicode、追加前限制、终止后丢弃；已完成帧先于坏帧的边界保留。
 
-唯一规范与 Python 适配器显式纳入 PyInstaller，锁来源也以实际 uv.lock 原字节打包；主进程读取同源 registry 预期并核验返回 SHA。资源清单和公共例 CLI 在临时工作目录执行，不能借源码 checkout 找回资源。I05 未合并 hooks 不提前复制，后续其 probe/collect-all/metadata/inventory/license 必须与本线 hooks 合并承接。
+唯一规范与 Python 适配器显式纳入 PyInstaller，锁来源也以实际 uv.lock 原字节打包；主进程读取同源 registry 预期并核验返回 SHA。包内公共例和帧测试的 JSON 文本显式按 UTF-8 解码，不依赖 Windows 默认代码页。资源清单和公共例 CLI 在临时工作目录执行，不能借源码 checkout 找回资源。I05 未合并 hooks 不提前复制，后续其 probe/collect-all/metadata/inventory/license 必须与本线 hooks 合并承接。
 
 ## 安全错误与 UI
 
