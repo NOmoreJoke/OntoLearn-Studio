@@ -14,7 +14,7 @@
       "exit": 0,
       "typescriptPassed": 630,
       "pythonPassed": 1015,
-      "log": "build/I04-evidence/c2-pre-plugin-check.log"
+      "log": "build/I04-evidence/c2-final-check.log"
     },
     {
       "command": "npm run check",
@@ -24,7 +24,7 @@
       "pythonPassed": 1013,
       "pythonSkipped": 2,
       "skipReason": "Darwin RSS/real child-exit probes",
-      "log": "build/I04-evidence/c2-final-linux/check.log"
+      "log": "build/I04-evidence/c2-final-linux/check-complete.log"
     },
     {
       "command": "actual desktop/health/CSP + reload/stage + coordinator kill/stage + native crash/unresponsive",
@@ -52,6 +52,12 @@
       "round": 48,
       "readonlyDatabaseCapturesEach": 144,
       "committedEvidence": "matrix-evidence.json"
+    },
+    {
+      "command": "npm run verify:sources",
+      "exit": 0,
+      "sources": 12,
+      "log": "build/I04-evidence/c2-sources.log"
     }
   ],
   "packagedResources": {
@@ -109,7 +115,8 @@
     "productionTestResourceChangesSinceArchive": [],
     "newValidationScript": "scripts/i04_matrix_evidence.py separately passed ruff and real complete matrix on both platforms",
     "CIChange": "New recorder step and artifact upload are statically inspected; actual remote run still required. It runs before npm run check so a first matrix failure retains evidence.",
-    "sourceAndPackageRuntime": "All app/engine/contracts/runtime tests and resources match the archived actual full-check/build inputs; later additions are process docs and the separately checked evidence recorder/CI wiring."
+    "sourceAndPackageRuntime": "All app/engine/contracts/runtime tests and resources match the archived actual full-check/build inputs; later additions are process docs and the separately checked evidence recorder/CI wiring.",
+    "latestFullCheck": "After recorder and CI wiring were committed at 28602b3, full no-GUI checks were repeated on macOS and Linux. Only evidence/attribution documents subsequently change; final byte manifest is compared before external freeze."
   },
   "failureHistory": [
     "C1 original failures and review findings remain indexed; no old Not Pass is replaced.",
@@ -460,6 +467,30 @@
       "path": "build/I04-evidence/session-internal/pytest-pages.log",
       "sha256": "006389d3a63501532c2410f53a6b320ea7c57c886fb46d7d98950c8be58844c9",
       "bytes": 98
+    },
+    {
+      "path": "build/I04-evidence/bridge-final-review/review.json",
+      "sha256": "79fc2d145c01b718ec380effe8810619332790d35d5a6e004d6fee27bd0ec8b6",
+      "bytes": 9088
+    },
+    {
+      "path": "build/I04-evidence/c2-final-check.log",
+      "sha256": "8d0035713a157369445631233753f58af7cf3d82a9632f8f8c80e27addc1a2ba",
+      "bytes": 4804
+    },
+    {
+      "path": "build/I04-evidence/c2-sources.log",
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
+      "bytes": 111
+    },
+    {
+      "path": "build/I04-evidence/c2-final-linux/check-complete.log",
+      "sha256": "1f7abecf61ebdba0d85b7fd1addb39d85d0cb53cae2efb1a78691b265525d54a",
+      "bytes": 8391
     }
-  ]
+  ],
+  "originalRepositoryProtection": {
+    "files": 64,
+    "differences": []
+  }
 }

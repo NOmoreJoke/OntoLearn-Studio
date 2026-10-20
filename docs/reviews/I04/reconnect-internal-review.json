@@ -1,6 +1,6 @@
 {
   "kind": "independent internal source/runtime review; not the designated external dual-model gate",
-  "reviewer": "/root/supervisor",
+  "reviewer": "Aggregate of independent supervisor, storage and bridge reviews; per-section attribution below",
   "revisionBefore": {
     "returnedProjectRevision": 0,
     "actualProjectRevision": 1,
@@ -12,11 +12,7 @@
     },
     "returnedJobState": "succeeded",
     "inputEqualsDisplayedCurrent": true,
-    "calls": [
-      "project.get",
-      "job.get",
-      "job.subscribe"
-    ]
+    "calls": ["project.get", "job.get", "job.subscribe"]
   },
   "revisionAfter": {
     "returnedProjectRevision": 1,
@@ -173,11 +169,7 @@
         "source": "tests from rootnext; interpreter/env and basetemp from own supervisor worktree"
       },
       "realMonitorSubprocessFaultInjection": {
-        "cases": [
-          "MemoryGuardUnavailable",
-          "ProcessLookupError",
-          "PermissionError"
-        ],
+        "cases": ["MemoryGuardUnavailable", "ProcessLookupError", "PermissionError"],
         "allActualExitCodes": 75,
         "allStdoutStderrEmpty": true,
         "evidence": "probe-monitor-production-fix.json"
@@ -234,15 +226,11 @@
     "records": [
       {
         "name": "initial authority confirms early progress, no fabricated totals",
-        "stages": [
-          "阶段：计算"
-        ]
+        "stages": ["阶段：计算"]
       },
       {
         "name": "explicit same-version refresh preserves stage",
-        "stages": [
-          "阶段：计算"
-        ]
+        "stages": ["阶段：计算"]
       },
       {
         "name": "higher durable state version clears stage",
@@ -262,9 +250,7 @@
       },
       {
         "name": "future generation hint waits for matching authority",
-        "stages": [
-          "阶段：对账"
-        ]
+        "stages": ["阶段：对账"]
       },
       {
         "name": "terminal clears stage and cache",
@@ -457,10 +443,186 @@
       "ruff_check": "passed",
       "ruff_format_check": "passed",
       "git_diff_check": "passed",
-      "production_files_changed": [
-        "packages/engine/src/ontolearn_engine/job_store.py"
-      ],
+      "production_files_changed": ["packages/engine/src/ontolearn_engine/job_store.py"],
       "contracts_or_behavior_semantics_changed": false
+    }
+  },
+  "sectionAttribution": {
+    "revisionBefore/revisionAfter/healthBefore/healthAfter/recoveryHandoff/memoryFailure/memoryProductionReview/progressIndependentReview/progressHeadlessDOM/sessionShutdownIndependentReview": "/root/supervisor",
+    "jobStoreGuardIndependentReview": "/root/storage",
+    "finalBridgeReview": "/root/bridge"
+  },
+  "finalBridgeReview": {
+    "candidate": "2e94c039a8261c31b1b42a92208ae863e3802822",
+    "additionalPluginCommit": "32aaf4b1d5d28c61ba98a6b673fb50eb01392c46",
+    "result": "No new blocking finding in the reviewed scope",
+    "sourceHashes": {
+      "packages/engine/src/ontolearn_engine/coordinator.py": "8f2ab2ac32c1e396ac230ee7f95a3cce2a35a462508b842827a11eeebb5ad44d",
+      "packages/engine/tests/test_stdio_session_shutdown.py": "72d1d66909c71eefb39ce4e58ee6f52a94c1968208b38ba4b4cc947244d12b0e",
+      "apps/desktop/src/main/task-service.ts": "8d513fe5a25a4dc82839cdc6200ae1972b7743620175bc7e309834a712655122",
+      "apps/desktop/src/main/engine.ts": "f7aee77b0bf558dd8e6a375d5524d3cc55817689bdde8ae07556f1e2456633b4",
+      "apps/desktop/src/main/index.ts": "7df36c6d51a63de4ba6a302cb5063affffeb2dd6a1d9598bec29da8b09ea6bc9",
+      "apps/desktop/src/main/view-navigation.ts": "2481a30ad2dd47beb4e68c2c38c033ab976cca6aa573b3c28ccb89085ba4192c",
+      "apps/desktop/src/preload/index.ts": "727e1ff11c5acbd23c098e5c3a6f4161320b0fec02fb62b9291c702c06e7fe94",
+      "apps/desktop/src/renderer/src/App.tsx": "e4310bc3e905f83a4f58acb9d12c7caaee010e89b2bc2c3b23dbc4e2c111d637",
+      "apps/desktop/src/renderer/src/task-progress.ts": "12d5f1948fe96664eb6f6b4d8d4ba45f755574b23e60528adaecd419dbdc640c",
+      "packages/contracts/src/index.ts": "e105ebcf8263e0b513992ff80cb8ea0396f485b2156f5360fb63274162b6066c"
+    },
+    "executed": {
+      "realFatalSessionTests": {
+        "cases": [
+          "duplicate-id with caller stdin open",
+          "65536 real accepted requests, 65537 fatal, lease cleanup and durable history in new session"
+        ],
+        "result": "2 passed, 3 deselected",
+        "log": "shutdown-tests.log",
+        "logSha256": "345c2a8fddb69e346141b224793ef29b1a5aecf0116e7d1bb9a2ab3dfb7f0eef",
+        "runtime": "Separate copy of this worktree venv; editable source points only at immutable archive snapshot; actual coordinator and worker paths verified"
+      },
+      "ui": {
+        "candidate": "2e94c03",
+        "mode": "headless Chrome, actual frozen production React bundle, narrow bridge scheduling adapter; no Electron",
+        "results": [
+          {
+            "case": "progress-before-authority",
+            "stageVisible": true,
+            "unknownAmountHidden": true
+          },
+          {
+            "case": "terminal-and-old-progress",
+            "stageRemoved": true
+          },
+          {
+            "case": "new-connection-then-old-restore",
+            "offlinePreserved": true,
+            "oldStageHidden": true
+          },
+          {
+            "case": "wrong-project-before-authority",
+            "stageHidden": true
+          }
+        ],
+        "pageErrors": []
+      },
+      "artifactAudit": {
+        "pluginCommit": "32aaf4b",
+        "pluginSha256": "e3448d63a1320298baa9792afe86f4cc01af8982e3e102dd97f7141dd953e540",
+        "documentSha256": "ce90fe70977307c05ac19b26956dc6f540e6d6b21db7fac152e63311e5fde72f",
+        "summarySha256": "6630c63a5d0464942b264e25ba1e571565fcc3b1eb82effdb651dfc2a52015f6",
+        "rawSha256": "c20619eba0c48ccbf51345a363113d198d73cbf239e73beec33fc383b393c4c3",
+        "uniqueCells": 144,
+        "atomicCells": 96,
+        "roundCells": 48,
+        "cellOutcomeAndSnapshotHashesMatch": true,
+        "compactJobAndTableAndProjectProjectionsMatch": true,
+        "sourceChecks": [
+          {
+            "file": "packages/engine/tests/test_job_store.py",
+            "sha256": "0cf93ea0ccc9b6832901d07e099692fc7bbbddc4cc1606b4353727cc6894c55e",
+            "matchesFrozenCandidate": true,
+            "matchesCurrentSource": true
+          },
+          {
+            "file": "packages/engine/tests/test_i04_round_faults.py",
+            "sha256": "03f80c391ec46fdd8dbd10f9544858d21234e8237af0eb2e0a1cbbf9c5fa2c57",
+            "matchesFrozenCandidate": true,
+            "matchesCurrentSource": true
+          },
+          {
+            "file": "packages/engine/src/ontolearn_engine/job_store.py",
+            "sha256": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2",
+            "matchesFrozenCandidate": true,
+            "matchesCurrentSource": true
+          },
+          {
+            "file": "packages/engine/src/ontolearn_engine/storage.py",
+            "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+            "matchesFrozenCandidate": true,
+            "matchesCurrentSource": true
+          },
+          {
+            "file": "packages/contracts/python/contract_v2.py",
+            "sha256": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+            "matchesFrozenCandidate": true,
+            "matchesCurrentSource": true
+          },
+          {
+            "file": "packages/contracts/v2/schema.json",
+            "sha256": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+            "matchesFrozenCandidate": true,
+            "matchesCurrentSource": true
+          },
+          {
+            "file": "packages/contracts/v2/registry.json",
+            "sha256": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+            "matchesFrozenCandidate": true,
+            "matchesCurrentSource": true
+          },
+          {
+            "file": "packages/contracts/v2/states.json",
+            "sha256": "ab54cac024f0f6b31a8a229198ae1c4ab13f63ff88184cdcef78113b9e893416",
+            "matchesFrozenCandidate": true,
+            "matchesCurrentSource": true
+          },
+          {
+            "file": "packages/contracts/v2/errors.json",
+            "sha256": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+            "matchesFrozenCandidate": true,
+            "matchesCurrentSource": true
+          },
+          {
+            "file": "packages/contracts/v2/dependencies.json",
+            "sha256": "dee118b368915df4172a77b875d31ce29ad8374cb5fce3915678f7f950cedad4",
+            "matchesFrozenCandidate": true,
+            "matchesCurrentSource": true
+          },
+          {
+            "file": "uv.lock",
+            "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e",
+            "matchesFrozenCandidate": true,
+            "matchesCurrentSource": true
+          }
+        ],
+        "boundary": "Read-only artifact/source audit only; original matrix not rerun, observed table hashes do not replace test assertions."
+      }
+    },
+    "inspected": {
+      "teardown": [
+        "Raw fd is the only coordinator stdin reader; JsonlReader framing/limits remain unchanged",
+        "Seen set, duplicate-id and >=65536 guards remain unchanged",
+        "Fatal path still sets stopped, cancels/awaits workers, closes Store lease and restores signal handler",
+        "No intentional-stop or request replay was added"
+      ],
+      "progressAndPageSession": [
+        "Stage producer uses active-only cache and persistent nonterminal stateVersion; subscription response seq0 clone precedes targeted seq1 hint",
+        "TaskService checks current session/project/job/subscription and view generation before progress routing",
+        "Preload validates strict TaskUpdate; App applies pending progress only after trusted view confirms project/job/input/version and clears on connection, state advance and unmount",
+        "Main document replacement still advances generation; same-document navigation leaves subscriptions intact"
+      ],
+      "matrixPlugin": [
+        "Plugin changes no original assertion, fixture, retry, limits or implementation; original test sources/hashes match frozen candidate",
+        "SQLite capture uses mode=ro, query_only, read-only authorizer and one read transaction",
+        "Capture exceptions append DATABASE_CAPTURE_FAILED; status becomes failed and exit0 is changed to TESTS_FAILED, never the reverse",
+        "Unique exact 96+48 parameter sets, setup/call/teardown success, complete call/capture counts, imported paths and source immutability are required",
+        "Fresh output guard prevents stale passed evidence; raw and compact 144-cell snapshot/source/table projection hashes match"
+      ]
+    },
+    "limitations": [
+      "No Electron, native window, macOS GUI or HMR was launched",
+      "Headless DOM uses actual production React bundle plus a narrow bridge scheduling adapter; it does not prove native IPC or OS window recovery",
+      "Only two new teardown boundary tests were executed; existing full progress/runtime suites were not repeated",
+      "Windows/Linux teardown and packaged-engine behavior were not executed by this review",
+      "Original 144 matrix cases were not rerun; artifact/source consistency was independently checked for every cell",
+      "Capture-failure and missing-cell fail-closed branches were reviewed by inspection only; prior other-agent negative evidence was not rerun"
+    ],
+    "preparationNotes": [
+      "Fresh uv sync was cancelled after download retries; no test result was claimed from the incomplete environment",
+      "Separate review-venv copies only this worktree environment; uv.lock matches frozen candidate",
+      "UI probe first used a wrong expected banner literal; corrected to actual source text before the passing four-case run"
+    ],
+    "artifacts": {
+      "uiEvidenceSha256": "6dff097e88c126cb32ab8e91fc6d658ced2d2a43ae5c81685a83c63490167fc6",
+      "matrixAuditSha256": "9da4d2e77969f82ba7e0f758b32438d822d4b3f6e32d0362cf88982c7b93edbb"
     }
   }
 }
