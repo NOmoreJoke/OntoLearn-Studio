@@ -17,10 +17,12 @@ type EncryptionAdapter = Pick<
   SafeStorage,
   'isEncryptionAvailable' | 'getSelectedStorageBackend' | 'encryptString' | 'decryptString'
 >
-const bindingSchema = z.object({ ref: opaqueId, principal: opaqueId, version: opaqueId }).strict()
+export const credentialBindingSchema = z
+  .object({ ref: opaqueId, principal: opaqueId, version: opaqueId })
+  .strict()
 const secretSchema = z.string().regex(/^[\x21-\x7e]{1,4096}$/)
 const envelopeSchema = z
-  .object({ format: z.literal(1), binding: bindingSchema, secret: secretSchema })
+  .object({ format: z.literal(1), binding: credentialBindingSchema, secret: secretSchema })
   .strict()
 
 export class EncryptedCredentialBoundary implements CredentialReader {
@@ -64,7 +66,7 @@ export class EncryptedCredentialBoundary implements CredentialReader {
       const record = await this.repository.read(ref)
       // Awaiting the repository must not bypass a newly locked/unavailable backend.
       this.requireSecureBackend()
-      const metadata = parse(bindingSchema, record.binding)
+      const metadata = parse(credentialBindingSchema, record.binding)
       if (metadata.ref !== ref) throw new Error()
       const decrypted = this.encryption.decryptString(Buffer.from(record.ciphertext))
       const envelope = parse(envelopeSchema, JSON.parse(decrypted))

@@ -253,6 +253,10 @@ export class ModelGatewayCore {
       const config = this.configs.get(value.configId)
       if (!config) throw new GatewayFailure('CONFIGURATION_CHANGED')
       const parts = this.resolveMaterials(value.projectId, value.materials)
+      const scopes = [...new Set(parts.flatMap((part) => part.scopes))].sort()
+      // Authorization and durable audit share the same bounded scope vocabulary.
+      // An oversized request has no valid audit metadata; never truncate its provenance.
+      parse(scopesSchema, scopes)
       metadata = {
         targetId: config.id,
         configVersion: config.version,
@@ -261,7 +265,7 @@ export class ModelGatewayCore {
         endpointDigest: createHash('sha256').update(config.endpoint).digest('hex'),
         projectId: value.projectId,
         purpose: value.purpose,
-        scopes: [...new Set(parts.flatMap((part) => part.scopes))].sort(),
+        scopes,
       }
       const grant = this.grants.get(value.grantId)
       const guard = () => {

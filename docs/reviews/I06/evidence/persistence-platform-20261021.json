@@ -1,0 +1,202 @@
+{
+  "observedAt": "2026-10-20T22:16:08.327Z",
+  "scope": "I06 independent private persistence and actual isolated Linux combination; not full S3",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-model-gateway",
+  "branch": "feature/I06-model-gateway",
+  "parentAtValidation": "fc39eea133668e05f9a5f6db0a87fbe4f413a706",
+  "sourceWasUncommittedAtRun": true,
+  "frozenFullCandidate": false,
+  "approvedDevelop": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "developMerge": "0c569851baa067a08ad8cf8d6d94437ef9620d69",
+  "platformFixtureMerge": "90fbe3b",
+  "combinationMerge": "fc39eea133668e05f9a5f6db0a87fbe4f413a706",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.15.0"
+  },
+  "checks": [
+    {
+      "command": "npm run check",
+      "attempt": 1,
+      "exit": 1,
+      "reason": "unused PrivateDirectory test import; removed"
+    },
+    {
+      "command": "npm run check",
+      "attempt": 2,
+      "exit": 0,
+      "typescriptTests": 770,
+      "pythonTests": 1052,
+      "includes": [
+        "lint",
+        "format",
+        "typecheck",
+        "vitest",
+        "production build",
+        "ruff",
+        "pytest"
+      ],
+      "boundary": "Build does not include unregistered I06 modules; dedicated TS checks/tests and actual Linux compiled-module probe cover them."
+    },
+    {
+      "command": "npm run verify:sources",
+      "exit": 0,
+      "archivedSources": 12
+    },
+    {
+      "command": "npm run lint && npm run format:check && git diff --check",
+      "afterCombinationMerge": true,
+      "exit": 0
+    },
+    {
+      "command": "npx vitest run tests/unit/i06-private-persistence.test.ts tests/unit/i06-persistence-gateway.test.ts",
+      "initialCombinedPass": 51,
+      "latestFullCheckPrivateTests": 54,
+      "details": {
+        "filesystemTests": 41,
+        "persistenceGatewayTests": 13,
+        "realSIGKILLBoundaries": 12,
+        "actualAuditDeadlineMs": 5000,
+        "capacityFixture": "4097 valid repository envelopes, not 4097 real decrypted credentials",
+        "faultInjection": "observer-phase EIO and rejected fs.open ENOSPC/fs.link EIO are injected; no actual full-disk claim"
+      }
+    }
+  ],
+  "sourceSHA256": {
+    "apps/desktop/src/main/model-gateway/policy.ts": "dd09203ebe7e7f655cee40e01c84149a8c121e48ece916fa816cbc2c320d1ced",
+    "apps/desktop/src/main/model-gateway/credentials.ts": "8a56addc33468467a733614a96ff4f24489d06144afe44f4dafe873dbc10482f",
+    "apps/desktop/src/main/model-gateway/electron-safe-storage.ts": "724462829544f8c51b0fe1c6ed5335c7b1168cb9379baa7daf69641cf11e9b0e",
+    "apps/desktop/src/main/model-gateway/private-directory.ts": "aec53ab5e21f3f482b9cffaed51354f3100a44e7ea34f3c6d704433c31acdf9f",
+    "apps/desktop/src/main/model-gateway/ciphertext-repository.ts": "31e4bed54746529cecbdd1100db6ccb19840ef1d5367090a5334964a2f01e41d",
+    "apps/desktop/src/main/model-gateway/persistent-audit.ts": "62d77f33293770b3c72a0ede6ab796115ac10ebad8def1e534790015c562f5a8",
+    "apps/desktop/src/main/model-gateway/await-boundary.ts": "e0dd898dd90e12b31b76df04a0907288eb14533bb8dd15e8ebb24ed9fc581382",
+    "apps/desktop/src/main/model-gateway/transport.ts": "16e7816d13dc3ceb0c4e4653503d79e2dfc4149d88a5262c2d755cd5fc3ccb61",
+    "apps/desktop/src/main/model-gateway/gateway.ts": "eeafef4186ccc017b4bcda94bd0427df311f5c70173e8b7a30558bb6a4e30042"
+  },
+  "testSHA256": {
+    "tests/unit/i06-gateway.test.ts": "b91024c9a11ceddda394ba22cf3d6af083518c04afb21cbd45154185c9ea6659",
+    "tests/unit/i06-credentials.test.ts": "438686d1cfe47cc45666bcf24b21c1fd36a8e19fabbe8d8d85c4c65e96c7419e",
+    "tests/unit/i06-platform-factory.test.ts": "ae975b9932833906d7b5241c7f8bac8c6a1020e852218e86d59b2a9d706f2746",
+    "tests/unit/i06-private-persistence.test.ts": "9363da97c26760296d7ed736799d35531f75f26265f3ce27f112be973fabee43",
+    "tests/unit/i06-persistence-gateway.test.ts": "0c360f9ed07ef811f27c0bb0f588efaf0ee89284cac7a21811cbeca959ada44a",
+    "tests/i06-private/crash-child.mjs": "89464a8c0fc7114ab9c7ace62493402178ae27ad581b18cf735e8ca9d0a194a1"
+  },
+  "logsSHA256": {
+    "tests/i06-private/out/validation/i06-persistence-combo-tests.log": "6a4241d14f0d2df2bc986e0ef7335404fec5dbe26bd56f3860ad60c52a877733",
+    "tests/i06-private/out/validation/i06-persistence-full-check-r2.log": "ed2bcad4b3c537f381c4f60571d8a722f1a4d6defc0e2f777ae492fa4c6abdc0",
+    "tests/i06-private/out/validation/i06-persistence-full-check.log": "5131ae5d018bb77ebe4655d8e445c1cbc1420c6a93532c6059a9ecdb974404d3",
+    "tests/i06-private/out/validation/i06-persistence-path-capacity-tests.log": "bf311320ea0b59867ad5461d749429f9780f63eafef72dade93b02337820d84a",
+    "tests/i06-private/out/validation/i06-persistence-typecheck.log": "ef35be543aff1f7e82be979906158f1f2f1448dfaa41256cfc157c03071e55d2",
+    "tests/i06-private/out/validation/i06-persistence-verify-sources.log": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
+    "tests/i06-private/out/validation/i06-private-files-tests.log": "2e00f9f90700f28d290156b3256e93dc91e43de1d2a70f2b0d45060ee2f07b8a"
+  },
+  "handoff": {
+    "path": "docs/iterations/I06/main-integration-handoff.md",
+    "sha256": "f77edfa9703dadc988647db4bd0b87ac199ee09f2c8f7dea5b9a180e5361fa90"
+  },
+  "independentReview": {
+    "agent": "/root/i06_design_review",
+    "codeFindingsClosed": 3,
+    "finalCombinationEvidenceReview": "No new blocker; actual stopped-container metadata,43raw hashes,9source hashes and probe assertions read; no rerun",
+    "path": "docs/reviews/I06/persistence-review.md",
+    "sha256": "f1514836d40682c518e7c7a40e260d086d60e481140b12c9826e38616f2daa46"
+  },
+  "platform": {
+    "evidence": "docs/reviews/I06/platform/combination-linux-evidence.json",
+    "evidenceSHA256": "7a7462d6c37612cd5fee2daf7e6209cac95dc5313454b1c05542cffcb645194f",
+    "actualCases": 6,
+    "sourceMatches": 9,
+    "rawHashesVerified": 43,
+    "archive": {
+      "path": "tests/i06-private-platform/out/combination-platform-raw-20261021-r4.tar.gz",
+      "sha256": "b8a37192936a32600f4b353d8c2f126f3cb872c961c6e2ff8fd4cd2af7da2361"
+    },
+    "stoppedContainer": {
+      "id": "be9744441f53913184f6414789e4acb635c8388ed0438262575c84781a74f571",
+      "image": "sha256:419ab9c6fbc8401d3c7e93f2e01496594ecdc322f67ce96f7bcc5ec0def7b04f",
+      "exit": 0,
+      "network": "none",
+      "privileged": false,
+      "mountCount": 0
+    },
+    "independentReplayObservationMs": 100
+  },
+  "oldFixtureProvenanceClosure": {
+    "controllerReport": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-19/I06-controller-platform-fixture-evidence-audit.json",
+    "archiveSHA256": "a3616343b64c2ddb4f048dcc5fb291494650fc02e5a03abe0579362c6b44de87",
+    "boundary": "Controller directly archived stopped r3 runtime bytes/inspect; earlier build-final/binary logs not exact r3 build attestation. Fixture is historical, not production private repository combo."
+  },
+  "protection": {
+    "AGENTS_SHA256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+    "originalCheckoutMatches": true,
+    "noSharedFilesModifiedBeyondProtectedAGENTS": true,
+    "baselineDiffPaths": [
+      "AGENTS.md",
+      "apps/desktop/src/main/model-gateway/await-boundary.ts",
+      "apps/desktop/src/main/model-gateway/ciphertext-repository.ts",
+      "apps/desktop/src/main/model-gateway/credentials.ts",
+      "apps/desktop/src/main/model-gateway/electron-safe-storage.ts",
+      "apps/desktop/src/main/model-gateway/gateway.ts",
+      "apps/desktop/src/main/model-gateway/persistent-audit.ts",
+      "apps/desktop/src/main/model-gateway/policy.ts",
+      "apps/desktop/src/main/model-gateway/private-directory.ts",
+      "apps/desktop/src/main/model-gateway/transport.ts",
+      "docs/iterations/I06/ADR-0004-model-gateway.md",
+      "docs/iterations/I06/acceptance.md",
+      "docs/iterations/I06/main-integration-handoff.md",
+      "docs/iterations/I06/persistence-platform-plan.md",
+      "docs/iterations/I06/platform/combination-isolated-probe.md",
+      "docs/iterations/I06/platform/isolated-probe.md",
+      "docs/iterations/I06/public-error-requirements.md",
+      "docs/reviews/I06/credential-binding-review.md",
+      "docs/reviews/I06/evidence/credential-binding.json",
+      "docs/reviews/I06/evidence/dependency-resume-20261020.json",
+      "docs/reviews/I06/evidence/premerge-I04-20261021.json",
+      "docs/reviews/I06/evidence/timeout-capacity.json",
+      "docs/reviews/I06/evidence/validation.json",
+      "docs/reviews/I06/internal-review.md",
+      "docs/reviews/I06/persistence-review.md",
+      "docs/reviews/I06/platform/combination-linux-evidence.json",
+      "docs/reviews/I06/platform/linux-safe-storage-evidence.json",
+      "docs/reviews/I06/platform/status.md",
+      "docs/reviews/I06/status.md",
+      "tests/i06-platform/.dockerignore",
+      "tests/i06-platform/Dockerfile",
+      "tests/i06-platform/build-probe.mjs",
+      "tests/i06-platform/probe.cjs",
+      "tests/i06-platform/run-isolated.sh",
+      "tests/i06-private-platform/.dockerignore",
+      "tests/i06-private-platform/Dockerfile",
+      "tests/i06-private-platform/build-probe.mjs",
+      "tests/i06-private-platform/collect-evidence.mjs",
+      "tests/i06-private-platform/probe.cjs",
+      "tests/i06-private-platform/run-isolated.sh",
+      "tests/i06-private/crash-child.mjs",
+      "tests/unit/i06-credentials.test.ts",
+      "tests/unit/i06-gateway.test.ts",
+      "tests/unit/i06-persistence-gateway.test.ts",
+      "tests/unit/i06-platform-factory.test.ts",
+      "tests/unit/i06-private-persistence.test.ts"
+    ],
+    "noPush": true,
+    "noPR": true,
+    "noHostGUI": true,
+    "noRealCredentialsOrBusinessEgress": true
+  },
+  "goalTool": {
+    "threadId": "01a15746-c2e2-7ee0-836b-c8c92346ddd4",
+    "status": "blocked",
+    "tokensUsed": 766385,
+    "objectiveUnchanged": true,
+    "notRecreatedOrMarkedComplete": true
+  },
+  "remaining": [
+    "unique-owner main/public contract/bridge/UI integration after I05 handoff",
+    "actual Store save/export/log exclusion and window reconnection failure isolation",
+    "Windows private-storage ACL and actual macOS/Windows platform checks,signature/update/clean-device evidence",
+    "Q9 protocol decision,exact safe public errors and independent cancelled result",
+    "same complete frozen candidate specified GLM-5.3/highest and MiniMax M3.1-Flash/xhigh reviews",
+    "PR to develop,actual CI,remote merge verification"
+  ]
+}

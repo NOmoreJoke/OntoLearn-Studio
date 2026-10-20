@@ -2,6 +2,10 @@
 
 日期：2026-10-21（Asia/Shanghai）。阶段：I02/I03/I04 真实依赖已合并，原会话继续私有凭据/持久审计/隔离平台验证实施；完整 I06 未完成。启动 get_goal 仍返回原 Goal blocked；此为工具实态，原依赖阻断已由实际合并消除，按总控接续授权推进，不重建 Goal、不宣称有 resume API、不标为 paused/complete。
 
+最新实质结果：已实现实际 POSIX 私有密文仓库与 metadata 持久审计，接入实际 Electron safeStorage factory；完整 `npm run check` exit 0（770 TS、1052 Python、构建/静态检查），`verify:sources` 12 项通过。新增文件/发送门故障反例 54 项；实际 Linux arm64 Electron 44.9.0 组合六场景通过，源码、容器运行字节与 43 项 raw 摘要匹配，独立只读审查关闭三项问题并复核组合证据无新增阻断。下文较旧计数/依赖值保留为历史，不作为新版通过结论。
+
+当前交接：[具体 main 内部类型、调用顺序、失败行为和共享文件面](../../iterations/I06/main-integration-handoff.md)、[持久化独立审查](persistence-review.md)、[实际组合证据](platform/combination-linux-evidence.json)。正式接线、真实 Store/导出/窗口联验、Windows ACL/其他平台、指定双审/PR/实际 CI/远端合并仍未完成。未 push，不改总控 state 或 I05 共享文件。
+
 ## 身份与保护
 
 - 开发会话：`01a15746-c2e2-7ee0-836b-c8c92346ddd4`；总控/额度唯一负责人：`01a154de-843b-7a00-8a80-51ba1c0aebce`。
