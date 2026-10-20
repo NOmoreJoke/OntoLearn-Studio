@@ -292,7 +292,8 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     expect(native.hangMonitorEnabled).toBe(true)
     expect(native.noSandboxSwitch).toBe(false)
     expect(native.packaged).toBe(Boolean(env.ONTOLEARN_PACKAGED_EXECUTABLE))
-    expect(native.events).toContain('killed')
+    // Electron documents forcefullyCrashRenderer as killed or crashed across platforms.
+    expect(native.events.some((reason) => reason === 'killed' || reason === 'crashed')).toBe(true)
     expect(native.events).toContain('unresponsive')
     evidence.result = 'PASS'
   } finally {

@@ -1,0 +1,431 @@
+﻿2026-10-20T02:32:41.8605760Z Current runner version: '2.337.0'
+2026-10-20T02:32:41.8642820Z ##[group]Runner Image Provisioner
+2026-10-20T02:32:41.8644110Z Hosted Compute Agent
+2026-10-20T02:32:41.8645093Z Version: 20261002.596
+2026-10-20T02:32:41.8646219Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-20T02:32:41.8647875Z Build Date: 2026-10-02T22:28:27Z
+2026-10-20T02:32:41.8649079Z Worker ID: {bd3656ea-e669-4ae8-9a13-5e284d5b66f8}
+2026-10-20T02:32:41.8650329Z Region: westus
+2026-10-20T02:32:41.8651292Z Cloud: Azure
+2026-10-20T02:32:41.8652288Z ##[endgroup]
+2026-10-20T02:32:41.8654623Z ##[group]Operating System
+2026-10-20T02:32:41.8655708Z Microsoft Windows Server 2025
+2026-10-20T02:32:41.8656836Z 10.0.26100
+2026-10-20T02:32:41.8657738Z Datacenter
+2026-10-20T02:32:41.8658705Z ##[endgroup]
+2026-10-20T02:32:41.8659630Z ##[group]Runner Image
+2026-10-20T02:32:41.8660619Z Image: windows-2025-vs2026
+2026-10-20T02:32:41.8661707Z Version: 20261007.264.1
+2026-10-20T02:32:41.8664341Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261007.264/images/windows/Windows2025-VS2026-Readme.md
+2026-10-20T02:32:41.8667430Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20261007.264
+2026-10-20T02:32:41.8669585Z ##[endgroup]
+2026-10-20T02:32:41.8671537Z ##[group]GITHUB_TOKEN Permissions
+2026-10-20T02:32:41.8674104Z Contents: read
+2026-10-20T02:32:41.8675091Z Metadata: read
+2026-10-20T02:32:41.8676017Z ##[endgroup]
+2026-10-20T02:32:41.8678970Z Secret source: Actions
+2026-10-20T02:32:41.8680472Z Cache mode: write
+2026-10-20T02:32:41.8681665Z Prepare workflow directory
+2026-10-20T02:32:41.9212431Z Prepare all required actions
+2026-10-20T02:32:41.9285344Z Getting action download info
+2026-10-20T02:32:42.2910670Z Download action repository 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-10-20T02:32:42.4416884Z Download action repository 'actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38' (SHA:249970729cb0ef3589644e2896645e5dc5ba9c38)
+2026-10-20T02:32:42.6180269Z Download action repository 'astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78' (SHA:37802adc94f370d6bfd71619e3f0bf239e1f3b78)
+2026-10-20T02:32:43.1856531Z Complete job name: Desktop (windows-latest)
+2026-10-20T02:32:43.3584176Z ##[group]Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+2026-10-20T02:32:43.3586174Z with:
+2026-10-20T02:32:43.3586988Z   repository: NOmoreJoke/OntoLearn-Studio
+2026-10-20T02:32:43.3595503Z   token: ***
+2026-10-20T02:32:43.3596275Z   ssh-strict: true
+2026-10-20T02:32:43.3597059Z   ssh-user: git
+2026-10-20T02:32:43.3597843Z   persist-credentials: true
+2026-10-20T02:32:43.3598716Z   clean: true
+2026-10-20T02:32:43.3600939Z   sparse-checkout-cone-mode: true
+2026-10-20T02:32:43.3602172Z   fetch-depth: 1
+2026-10-20T02:32:43.3602861Z   fetch-tags: false
+2026-10-20T02:32:43.3603822Z   show-progress: true
+2026-10-20T02:32:43.3604908Z   lfs: false
+2026-10-20T02:32:43.3605362Z   submodules: false
+2026-10-20T02:32:43.3605864Z   set-safe-directory: true
+2026-10-20T02:32:43.3606396Z   allow-unsafe-pr-checkout: false
+2026-10-20T02:32:43.3607342Z ##[endgroup]
+2026-10-20T02:32:46.2209702Z Syncing repository: NOmoreJoke/OntoLearn-Studio
+2026-10-20T02:32:46.2215801Z ##[group]Getting Git version info
+2026-10-20T02:32:46.2218978Z Working directory is 'D:\a\OntoLearn-Studio\OntoLearn-Studio'
+2026-10-20T02:32:47.4834038Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-20T02:32:53.3853240Z git version 2.56.0.windows.2
+2026-10-20T02:32:53.4679621Z ##[endgroup]
+2026-10-20T02:32:53.4708596Z Temporarily overriding HOME='D:\a\_temp\8c789427-7e36-4b83-8863-4bbc84181db1' before making global git config changes
+2026-10-20T02:32:53.4710229Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-20T02:32:53.4711823Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\OntoLearn-Studio\OntoLearn-Studio
+2026-10-20T02:32:53.5108605Z Deleting the contents of 'D:\a\OntoLearn-Studio\OntoLearn-Studio'
+2026-10-20T02:32:53.5457060Z ##[group]Determining repository object format
+2026-10-20T02:32:53.5459335Z ##[endgroup]
+2026-10-20T02:32:53.5460843Z ##[group]Initializing the repository
+2026-10-20T02:32:53.5462019Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\OntoLearn-Studio\OntoLearn-Studio
+2026-10-20T02:32:53.6915475Z Initialized empty Git repository in D:/a/OntoLearn-Studio/OntoLearn-Studio/.git/
+2026-10-20T02:32:53.6992059Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/NOmoreJoke/OntoLearn-Studio
+2026-10-20T02:32:53.7972543Z ##[endgroup]
+2026-10-20T02:32:53.8182375Z ##[group]Disabling automatic garbage collection
+2026-10-20T02:32:53.8184964Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-10-20T02:32:53.8323200Z ##[endgroup]
+2026-10-20T02:32:53.8324130Z ##[group]Setting up auth
+2026-10-20T02:32:53.8325706Z Removing SSH command configuration
+2026-10-20T02:32:53.8339777Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-20T02:32:53.8748331Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-20T02:32:55.3414469Z Removing HTTP extra header
+2026-10-20T02:32:55.3416763Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-20T02:32:55.3888354Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-20T02:32:56.0114078Z Removing includeIf entries pointing to credentials config files
+2026-10-20T02:32:56.0120787Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-20T02:32:56.0447286Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-20T02:32:56.7026974Z [command]"C:\Program Files\Git\bin\git.exe" config --file D:\a\_temp\git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-10-20T02:32:56.7433871Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:D:/a/OntoLearn-Studio/OntoLearn-Studio/.git.path D:\a\_temp\git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config
+2026-10-20T02:32:56.7829002Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:D:/a/OntoLearn-Studio/OntoLearn-Studio/.git/worktrees/*.path D:\a\_temp\git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config
+2026-10-20T02:32:56.8270415Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config
+2026-10-20T02:32:56.8670058Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config
+2026-10-20T02:32:56.9191297Z ##[endgroup]
+2026-10-20T02:32:56.9210895Z ##[group]Fetching the repository
+2026-10-20T02:32:56.9213127Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +67426c22c77e8a74827125b332516a88e5f94b2e:refs/remotes/pull/3/merge
+2026-10-20T02:32:58.0650607Z From https://github.com/NOmoreJoke/OntoLearn-Studio
+2026-10-20T02:32:58.0651777Z  * [new ref]         67426c22c77e8a74827125b332516a88e5f94b2e -> pull/3/merge
+2026-10-20T02:32:58.0699397Z ##[endgroup]
+2026-10-20T02:32:58.0700316Z ##[group]Determining the checkout info
+2026-10-20T02:32:58.0701350Z ##[endgroup]
+2026-10-20T02:32:58.0712855Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-10-20T02:32:58.1297227Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-10-20T02:32:58.2021933Z ##[group]Checking out the ref
+2026-10-20T02:32:58.2027686Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force refs/remotes/pull/3/merge
+2026-10-20T02:32:58.3832762Z Note: switching to 'refs/remotes/pull/3/merge'.
+2026-10-20T02:32:58.3834426Z 
+2026-10-20T02:32:58.3835599Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-20T02:32:58.3837171Z changes and commit them, and you can discard any commits you make in this
+2026-10-20T02:32:58.3846737Z state without impacting any branches by switching back to a branch.
+2026-10-20T02:32:58.3853894Z 
+2026-10-20T02:32:58.3877159Z If you want to create a new branch to retain commits you create, you may
+2026-10-20T02:32:58.3879282Z do so (now or later) by using -c with the switch command. Example:
+2026-10-20T02:32:58.3899706Z 
+2026-10-20T02:32:58.3942169Z   git switch -c <new-branch-name>
+2026-10-20T02:32:58.3958549Z 
+2026-10-20T02:32:58.3960183Z Or undo this operation with:
+2026-10-20T02:32:58.3962860Z 
+2026-10-20T02:32:58.3983353Z   git switch -
+2026-10-20T02:32:58.4040773Z 
+2026-10-20T02:32:58.4042348Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-20T02:32:58.4044072Z 
+2026-10-20T02:32:58.4066502Z HEAD is now at 67426c2 Merge 7e26155a10639365216eb56f6abf3a0979aefb47 into 1b6df7a220fc9a67d7046133a340085f03f0a96c
+2026-10-20T02:32:58.4322094Z ##[endgroup]
+2026-10-20T02:32:58.4597636Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-10-20T02:32:58.5140182Z 67426c22c77e8a74827125b332516a88e5f94b2e
+2026-10-20T02:32:58.5866782Z ##[group]Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+2026-10-20T02:32:58.5867405Z with:
+2026-10-20T02:32:58.5867660Z   node-version-file: .node-version
+2026-10-20T02:32:58.5868005Z   cache: npm
+2026-10-20T02:32:58.5868230Z   check-latest: false
+2026-10-20T02:32:58.5871537Z   token: ***
+2026-10-20T02:32:58.5871802Z   package-manager-cache: true
+2026-10-20T02:32:58.5872105Z ##[endgroup]
+2026-10-20T02:32:58.7994819Z Resolved .node-version as 24
+2026-10-20T02:32:58.8162908Z Found in cache @ C:\hostedtoolcache\windows\node\24.21.0\x64
+2026-10-20T02:32:58.8164620Z ##[group]Environment details
+2026-10-20T02:33:03.8228379Z node: v24.21.0
+2026-10-20T02:33:03.8229134Z npm: 11.19.0
+2026-10-20T02:33:03.8229669Z yarn: 1.22.22
+2026-10-20T02:33:03.8230616Z ##[endgroup]
+2026-10-20T02:33:03.9322902Z [command]C:\Windows\system32\cmd.exe /D /S /C "C:\hostedtoolcache\windows\node\24.21.0\x64\npm.cmd config get cache"
+2026-10-20T02:33:04.4555759Z C:\npm\cache
+2026-10-20T02:33:04.9461058Z Cache hit for: node-cache-Windows-x64-npm-2cebd269df31a528e93e1b2426cae08258c7a0bb236a746731f5c458b3bc4e6e
+2026-10-20T02:33:06.5080233Z Received 29360128 of 58139885 (50.5%), 27.9 MBs/sec
+2026-10-20T02:33:06.6156170Z Received 58139885 of 58139885 (100.0%), 40.7 MBs/sec
+2026-10-20T02:33:06.6160941Z Cache Size: ~55 MB (58139885 B)
+2026-10-20T02:33:06.6235870Z [command]"C:\Program Files\Git\usr\bin\tar.exe" -xf D:/a/_temp/12415e3b-b91b-4915-af9c-46dca73bc53e/cache.tzst -P -C D:/a/OntoLearn-Studio/OntoLearn-Studio --force-local --use-compress-program "zstd -d"
+2026-10-20T02:33:10.1911925Z Cache restored successfully
+2026-10-20T02:33:10.1983702Z Cache restored from key: node-cache-Windows-x64-npm-2cebd269df31a528e93e1b2426cae08258c7a0bb236a746731f5c458b3bc4e6e
+2026-10-20T02:33:10.2441493Z ##[group]Run astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
+2026-10-20T02:33:10.2441968Z with:
+2026-10-20T02:33:10.2442159Z   version: 0.11.12
+2026-10-20T02:33:10.2442374Z   enable-cache: true
+2026-10-20T02:33:10.2442594Z   activate-environment: false
+2026-10-20T02:33:10.2442915Z   working-directory: D:\a\OntoLearn-Studio\OntoLearn-Studio
+2026-10-20T02:33:10.2445441Z   github-token: ***
+2026-10-20T02:33:10.2446444Z   cache-dependency-glob: **/*requirements*.txt
+**/*requirements*.in
+**/*constraints*.txt
+**/*constraints*.in
+**/pyproject.toml
+**/uv.lock
+**/*.py.lock
+
+2026-10-20T02:33:10.2447076Z   restore-cache: true
+2026-10-20T02:33:10.2447289Z   save-cache: true
+2026-10-20T02:33:10.2447485Z   prune-cache: true
+2026-10-20T02:33:10.2447691Z   cache-python: false
+2026-10-20T02:33:10.2447914Z   ignore-nothing-to-cache: false
+2026-10-20T02:33:10.2448173Z   ignore-empty-workdir: false
+2026-10-20T02:33:10.2448417Z   add-problem-matchers: true
+2026-10-20T02:33:10.2448695Z   resolution-strategy: highest
+2026-10-20T02:33:10.2448937Z ##[endgroup]
+2026-10-20T02:33:10.5199233Z Fetching version data from https://raw.githubusercontent.com/astral-sh/versions/main/v1/uv.ndjson ...
+2026-10-20T02:33:10.5874596Z Downloading uv from "https://releases.astral.sh/github/uv/releases/download/0.11.12/uv-x86_64-pc-windows-msvc.zip" ...
+2026-10-20T02:33:11.6444038Z [command]C:\Windows\system32\tar.exe x -C D:\a\_temp\3691167c-fbd3-49bc-b871-35a5c5b12b1f -f D:\a\_temp\46a0d8f8-6ae3-4ea4-80de-c5f612f275fa
+2026-10-20T02:33:11.8792368Z Set UV_TOOL_BIN_DIR to D:\a\_temp\uv-tool-bin-dir
+2026-10-20T02:33:11.8812627Z Added D:\a\_temp\uv-tool-bin-dir to the path
+2026-10-20T02:33:11.8814247Z Added C:\hostedtoolcache\windows\uv\0.11.12\x86_64 to the path
+2026-10-20T02:33:11.8815454Z Set UV_TOOL_DIR to D:\a\_temp\uv-tool-dir
+2026-10-20T02:33:11.8819383Z Set UV_PYTHON_INSTALL_DIR to D:\a\_temp\uv-python-dir
+2026-10-20T02:33:11.8820412Z Added D:\a\_temp\uv-python-dir to the path
+2026-10-20T02:33:11.8829010Z Set UV_CACHE_DIR to D:\a\_temp\setup-uv-cache
+2026-10-20T02:33:11.8831683Z Successfully installed uv version 0.11.12
+2026-10-20T02:33:13.4696965Z Searching files using cache dependency glob: D:\a\OntoLearn-Studio\OntoLearn-Studio\**\*requirements*.txt,D:\a\OntoLearn-Studio\OntoLearn-Studio\**\*requirements*.in,D:\a\OntoLearn-Studio\OntoLearn-Studio\**\*constraints*.txt,D:\a\OntoLearn-Studio\OntoLearn-Studio\**\*constraints*.in,D:\a\OntoLearn-Studio\OntoLearn-Studio\**\pyproject.toml,D:\a\OntoLearn-Studio\OntoLearn-Studio\**\uv.lock,D:\a\OntoLearn-Studio\OntoLearn-Studio\**\*.py.lock
+2026-10-20T02:33:13.5978637Z D:\a\OntoLearn-Studio\OntoLearn-Studio\packages\engine\pyproject.toml
+2026-10-20T02:33:13.5982440Z D:\a\OntoLearn-Studio\OntoLearn-Studio\pyproject.toml
+2026-10-20T02:33:13.6051847Z D:\a\OntoLearn-Studio\OntoLearn-Studio\uv.lock
+2026-10-20T02:33:13.6077571Z Found 3 files to hash.
+2026-10-20T02:33:13.6223232Z Trying to restore cache from GitHub Actions cache with key: setup-uv-2-x86_64-pc-windows-msvc-windows-2025-3.12.10-pruned-f289bf3ca90b93cf21c5a37ae8a74f1a2a7140696fb42d8fa204aa51813368c9
+2026-10-20T02:33:13.9814552Z Cache hit for: setup-uv-2-x86_64-pc-windows-msvc-windows-2025-3.12.10-pruned-f289bf3ca90b93cf21c5a37ae8a74f1a2a7140696fb42d8fa204aa51813368c9
+2026-10-20T02:33:14.7336926Z Received 91876 of 91876 (100.0%), 0.2 MBs/sec
+2026-10-20T02:33:14.7356191Z Cache Size: ~0 MB (91876 B)
+2026-10-20T02:33:14.7380697Z [command]"C:\Program Files\Git\usr\bin\tar.exe" -xf D:/a/_temp/e8ecb9ea-4094-4221-8cbd-ce9c01b41f75/cache.tzst -P -C D:/a/OntoLearn-Studio/OntoLearn-Studio --force-local --use-compress-program "zstd -d"
+2026-10-20T02:33:14.8126175Z Cache restored successfully
+2026-10-20T02:33:14.8135944Z cache restored from GitHub Actions cache with key: setup-uv-2-x86_64-pc-windows-msvc-windows-2025-3.12.10-pruned-f289bf3ca90b93cf21c5a37ae8a74f1a2a7140696fb42d8fa204aa51813368c9
+2026-10-20T02:33:14.9155906Z ##[group]Run npm ci
+2026-10-20T02:33:14.9156391Z [36;1mnpm ci[0m
+2026-10-20T02:33:14.9457820Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-20T02:33:14.9458811Z env:
+2026-10-20T02:33:14.9459182Z   UV_TOOL_BIN_DIR: D:\a\_temp\uv-tool-bin-dir
+2026-10-20T02:33:14.9459771Z   UV_TOOL_DIR: D:\a\_temp\uv-tool-dir
+2026-10-20T02:33:14.9460250Z   UV_PYTHON_INSTALL_DIR: D:\a\_temp\uv-python-dir
+2026-10-20T02:33:14.9460759Z   UV_CACHE_DIR: D:\a\_temp\setup-uv-cache
+2026-10-20T02:33:14.9461529Z ##[endgroup]
+2026-10-20T02:33:31.9999351Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+2026-10-20T02:33:36.0632168Z npm warn deprecated rimraf@2.6.3: Rimraf versions prior to v4 are no longer supported
+2026-10-20T02:33:36.0634924Z npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-10-20T02:33:39.0319152Z 
+2026-10-20T02:33:39.0320864Z added 439 packages, and audited 442 packages in 23s
+2026-10-20T02:33:39.0324230Z 
+2026-10-20T02:33:39.0324723Z 90 packages are looking for funding
+2026-10-20T02:33:39.0327101Z   run `npm fund` for details
+2026-10-20T02:33:39.0339792Z 
+2026-10-20T02:33:39.0340208Z found 0 vulnerabilities
+2026-10-20T02:33:39.0355087Z npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+2026-10-20T02:33:39.0356797Z npm warn install-scripts   electron-winstaller@5.4.0 (install: node ./script/select-7z-arch.js)
+2026-10-20T02:33:39.0360574Z npm warn install-scripts
+2026-10-20T02:33:39.0361827Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+2026-10-20T02:33:41.7485697Z ##[group]Run uv sync --frozen
+2026-10-20T02:33:41.7486180Z [36;1muv sync --frozen[0m
+2026-10-20T02:33:41.7572912Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-20T02:33:41.7573277Z env:
+2026-10-20T02:33:41.7573510Z   UV_TOOL_BIN_DIR: D:\a\_temp\uv-tool-bin-dir
+2026-10-20T02:33:41.7573828Z   UV_TOOL_DIR: D:\a\_temp\uv-tool-dir
+2026-10-20T02:33:41.7574129Z   UV_PYTHON_INSTALL_DIR: D:\a\_temp\uv-python-dir
+2026-10-20T02:33:41.7575198Z   UV_CACHE_DIR: D:\a\_temp\setup-uv-cache
+2026-10-20T02:33:41.7575512Z ##[endgroup]
+2026-10-20T02:33:42.2413045Z Using CPython 3.12.10 interpreter at: C:\hostedtoolcache\windows\Python\3.12.10\x64\python3.exe
+2026-10-20T02:33:42.2414160Z Creating virtual environment at: .venv
+2026-10-20T02:33:42.2886150Z    Building ontolearn-engine @ file:///D:/a/OntoLearn-Studio/OntoLearn-Studio/packages/engine
+2026-10-20T02:33:42.3718492Z Downloading pygments (1.2MiB)
+2026-10-20T02:33:42.3938773Z Downloading ruff (9.6MiB)
+2026-10-20T02:33:42.3939843Z Downloading pyinstaller (1.4MiB)
+2026-10-20T02:33:42.6248385Z  Downloaded ruff
+2026-10-20T02:33:43.0300494Z  Downloaded pygments
+2026-10-20T02:33:43.1238247Z  Downloaded pyinstaller
+2026-10-20T02:33:44.8054038Z       Built ontolearn-engine @ file:///D:/a/OntoLearn-Studio/OntoLearn-Studio/packages/engine
+2026-10-20T02:33:44.8086667Z Prepared 16 packages in 2.52s
+2026-10-20T02:33:45.1624302Z Installed 16 packages in 353ms
+2026-10-20T02:33:45.1626217Z  + altgraph==0.17.5
+2026-10-20T02:33:45.1628145Z  + colorama==0.4.6
+2026-10-20T02:33:45.1630193Z  + iniconfig==2.3.1
+2026-10-20T02:33:45.1634679Z  + ontolearn-engine==0.1.0 (from file:///D:/a/OntoLearn-Studio/OntoLearn-Studio/packages/engine)
+2026-10-20T02:33:45.1635904Z  + packaging==26.3
+2026-10-20T02:33:45.1637333Z  + pefile==2024.8.26
+2026-10-20T02:33:45.1661590Z  + pluggy==1.7.0
+2026-10-20T02:33:45.1662680Z  + pygments==2.21.0
+2026-10-20T02:33:45.1663407Z  + pyinstaller==6.22.3
+2026-10-20T02:33:45.1664159Z  + pyinstaller-hooks-contrib==2026.8
+2026-10-20T02:33:45.1664917Z  + pyparsing==3.3.3
+2026-10-20T02:33:45.1665515Z  + pytest==9.1.1
+2026-10-20T02:33:45.1666121Z  + pywin32-ctypes==0.2.3
+2026-10-20T02:33:45.1666766Z  + rdflib==7.6.0
+2026-10-20T02:33:45.1667339Z  + ruff==0.17.1
+2026-10-20T02:33:45.1667922Z  + setuptools==84.0.0
+2026-10-20T02:33:45.3355893Z ##[group]Run npm run engine:check
+2026-10-20T02:33:45.3356483Z [36;1mnpm run engine:check[0m
+2026-10-20T02:33:45.3480250Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-20T02:33:45.3481969Z env:
+2026-10-20T02:33:45.3482976Z   UV_TOOL_BIN_DIR: D:\a\_temp\uv-tool-bin-dir
+2026-10-20T02:33:45.3483550Z   UV_TOOL_DIR: D:\a\_temp\uv-tool-dir
+2026-10-20T02:33:45.3484106Z   UV_PYTHON_INSTALL_DIR: D:\a\_temp\uv-python-dir
+2026-10-20T02:33:45.3484687Z   UV_CACHE_DIR: D:\a\_temp\setup-uv-cache
+2026-10-20T02:33:45.3485179Z ##[endgroup]
+2026-10-20T02:33:46.2782046Z 
+2026-10-20T02:33:46.2783224Z > ontolearn-studio@0.1.0 engine:check
+2026-10-20T02:33:46.2785009Z > uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+2026-10-20T02:33:46.2811152Z 
+2026-10-20T02:33:46.3721531Z All checks passed!
+2026-10-20T02:33:46.4556420Z 66 files already formatted
+2026-10-20T02:33:48.6574057Z ============================= test session starts =============================
+2026-10-20T02:33:48.6657638Z platform win32 -- Python 3.12.10, pytest-9.1.1, pluggy-1.7.0
+2026-10-20T02:33:48.6659176Z rootdir: D:\a\OntoLearn-Studio\OntoLearn-Studio
+2026-10-20T02:33:48.6660245Z configfile: pyproject.toml
+2026-10-20T02:33:48.6661148Z testpaths: packages/engine/tests
+2026-10-20T02:33:48.6662263Z collected 198 items
+2026-10-20T02:33:48.6699451Z 
+2026-10-20T02:33:48.7343817Z packages\engine\tests\test_protocol.py ...........                       [  5%]
+2026-10-20T02:33:55.5361000Z packages\engine\tests\test_storage.py .................................. [ 22%]
+2026-10-20T02:34:16.3458634Z ........................................................................ [ 59%]
+2026-10-20T02:34:58.6665928Z ........................................................................ [ 95%]
+2026-10-20T02:35:10.9641918Z .........                                                                [100%]
+2026-10-20T02:35:10.9642890Z 
+2026-10-20T02:35:10.9643490Z ======================= 198 passed in 83.01s (0:01:23) ========================
+2026-10-20T02:35:11.4051610Z ##[group]Run npm run typecheck
+2026-10-20T02:35:11.4052180Z [36;1mnpm run typecheck[0m
+2026-10-20T02:35:11.4720083Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-20T02:35:11.4720761Z env:
+2026-10-20T02:35:11.4721144Z   UV_TOOL_BIN_DIR: D:\a\_temp\uv-tool-bin-dir
+2026-10-20T02:35:11.4721718Z   UV_TOOL_DIR: D:\a\_temp\uv-tool-dir
+2026-10-20T02:35:11.4722269Z   UV_PYTHON_INSTALL_DIR: D:\a\_temp\uv-python-dir
+2026-10-20T02:35:11.4722857Z   UV_CACHE_DIR: D:\a\_temp\setup-uv-cache
+2026-10-20T02:35:11.4723335Z ##[endgroup]
+2026-10-20T02:35:13.8124794Z 
+2026-10-20T02:35:13.8162781Z > ontolearn-studio@0.1.0 typecheck
+2026-10-20T02:35:13.8242175Z > npm run typecheck --workspace @ontolearn/desktop
+2026-10-20T02:35:13.8271346Z 
+2026-10-20T02:35:15.0354548Z 
+2026-10-20T02:35:15.0369761Z > @ontolearn/desktop@0.1.0 typecheck
+2026-10-20T02:35:15.0406066Z > tsc --noEmit -p tsconfig.json
+2026-10-20T02:35:15.0430857Z 
+2026-10-20T02:35:21.9966857Z ##[group]Run npm run build
+2026-10-20T02:35:21.9967393Z [36;1mnpm run build[0m
+2026-10-20T02:35:22.0122026Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-20T02:35:22.0142370Z env:
+2026-10-20T02:35:22.0142760Z   UV_TOOL_BIN_DIR: D:\a\_temp\uv-tool-bin-dir
+2026-10-20T02:35:22.0143308Z   UV_TOOL_DIR: D:\a\_temp\uv-tool-dir
+2026-10-20T02:35:22.0143849Z   UV_PYTHON_INSTALL_DIR: D:\a\_temp\uv-python-dir
+2026-10-20T02:35:22.0144419Z   UV_CACHE_DIR: D:\a\_temp\setup-uv-cache
+2026-10-20T02:35:22.0144897Z ##[endgroup]
+2026-10-20T02:35:23.5830454Z 
+2026-10-20T02:35:23.5845683Z > ontolearn-studio@0.1.0 build
+2026-10-20T02:35:23.5902001Z > npm run build --workspace @ontolearn/desktop
+2026-10-20T02:35:23.5903338Z 
+2026-10-20T02:35:24.1474145Z 
+2026-10-20T02:35:24.1490194Z > @ontolearn/desktop@0.1.0 build
+2026-10-20T02:35:24.1549004Z > electron-vite build
+2026-10-20T02:35:24.1593143Z 
+2026-10-20T02:35:24.7618324Z [36mvite v8.3.4 [32mbuilding ssr environment for production...[36m[39m
+2026-10-20T02:35:24.7683496Z transforming...
+2026-10-20T02:35:25.0043081Z ✓ 103 modules transformed.
+2026-10-20T02:35:25.0324251Z rendering chunks...
+2026-10-20T02:35:25.0632762Z out/main/index.js  167.55 kB
+2026-10-20T02:35:25.0643354Z 
+2026-10-20T02:35:25.0648258Z [32m✓ built in 325ms[39m
+2026-10-20T02:35:25.0763253Z [36mvite v8.3.4 [32mbuilding ssr environment for production...[36m[39m
+2026-10-20T02:35:25.1041631Z transforming...
+2026-10-20T02:35:25.1074327Z ✓ 2 modules transformed.
+2026-10-20T02:35:25.1123389Z rendering chunks...
+2026-10-20T02:35:25.1181190Z out/preload/index.js  0.20 kB
+2026-10-20T02:35:25.1183730Z 
+2026-10-20T02:35:25.1188549Z [32m✓ built in 43ms[39m
+2026-10-20T02:35:25.1316059Z [36mvite v8.3.4 [32mbuilding client environment for production...[36m[39m
+2026-10-20T02:35:25.1417269Z transforming...
+2026-10-20T02:35:25.3925248Z ✓ 15 modules transformed.
+2026-10-20T02:35:25.6132451Z rendering chunks...
+2026-10-20T02:35:25.6180787Z out/renderer/index.html                   0.70 kB
+2026-10-20T02:35:25.6183492Z out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+2026-10-20T02:35:25.6186533Z out/renderer/assets/index-DImnQfKh.js   571.51 kB
+2026-10-20T02:35:25.6189461Z 
+2026-10-20T02:35:25.6291198Z [32m✓ built in 487ms[39m
+2026-10-20T02:35:25.8480399Z ##[group]Run npm run test:e2e
+2026-10-20T02:35:25.8480952Z [36;1mnpm run test:e2e[0m
+2026-10-20T02:35:25.8632062Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-20T02:35:25.8632712Z env:
+2026-10-20T02:35:25.8633091Z   UV_TOOL_BIN_DIR: D:\a\_temp\uv-tool-bin-dir
+2026-10-20T02:35:25.8633628Z   UV_TOOL_DIR: D:\a\_temp\uv-tool-dir
+2026-10-20T02:35:25.8634172Z   UV_PYTHON_INSTALL_DIR: D:\a\_temp\uv-python-dir
+2026-10-20T02:35:25.8634745Z   UV_CACHE_DIR: D:\a\_temp\setup-uv-cache
+2026-10-20T02:35:25.8635225Z ##[endgroup]
+2026-10-20T02:35:27.6312999Z 
+2026-10-20T02:35:27.6354706Z > ontolearn-studio@0.1.0 test:e2e
+2026-10-20T02:35:27.6399582Z > install-electron && playwright test
+2026-10-20T02:35:27.6466910Z 
+2026-10-20T02:35:35.0910660Z 
+2026-10-20T02:35:35.0911736Z Running 2 tests using 1 worker
+2026-10-20T02:35:35.0913072Z 
+2026-10-20T02:35:35.7215922Z [I02] launch
+2026-10-20T02:35:36.0512559Z [I02] launched
+2026-10-20T02:35:36.0777351Z [I02] first-window
+2026-10-20T02:35:36.3881417Z [I02] normal-ui
+2026-10-20T02:35:37.9975355Z [I02] csp-probe
+2026-10-20T02:35:38.5271982Z [I02] foreign-window-create
+2026-10-20T02:35:38.5610690Z [I02] foreign-window-event
+2026-10-20T02:35:38.8267314Z [I02] crash-reopen
+2026-10-20T02:35:38.8305830Z [I02] reopened-window-event
+2026-10-20T02:35:39.0539200Z [I02] reopened-window-ui
+2026-10-20T02:35:39.4427239Z [I02] native-recovery
+2026-10-20T02:35:57.3762771Z [I02] cleanup-enter
+2026-10-20T02:35:57.4984747Z   x  1 tests\e2e\csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery (21.8s)
+2026-10-20T02:35:59.6742800Z   ok 2 tests\e2e\desktop.spec.ts:4:5 › desktop calls real engine, keeps isolation and fits minimum window (1.6s)
+2026-10-20T02:35:59.6924370Z 
+2026-10-20T02:35:59.6930238Z 
+2026-10-20T02:35:59.6941994Z   1) tests\e2e\csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery ─
+2026-10-20T02:35:59.6943064Z 
+2026-10-20T02:35:59.6943655Z     Error: expect(received).toContain(expected) // indexOf
+2026-10-20T02:35:59.6944353Z 
+2026-10-20T02:35:59.6944715Z     Expected value: "killed"
+2026-10-20T02:35:59.6945972Z     Received array: ["crashed", "unresponsive"]
+2026-10-20T02:35:59.6947078Z 
+2026-10-20T02:35:59.6947846Z       293 |     expect(native.noSandboxSwitch).toBe(false)
+2026-10-20T02:35:59.6949043Z       294 |     expect(native.packaged).toBe(Boolean(env.ONTOLEARN_PACKAGED_EXECUTABLE))
+2026-10-20T02:35:59.6950622Z     > 295 |     expect(native.events).toContain('killed')
+2026-10-20T02:35:59.6951451Z           |                           ^
+2026-10-20T02:35:59.6952909Z       296 |     expect(native.events).toContain('unresponsive')
+2026-10-20T02:35:59.6953971Z       297 |     evidence.result = 'PASS'
+2026-10-20T02:35:59.6954662Z       298 |   } finally {
+2026-10-20T02:35:59.6956744Z         at D:\a\OntoLearn-Studio\OntoLearn-Studio\tests\e2e\csp-lifecycle.spec.ts:295:27
+2026-10-20T02:35:59.6958244Z 
+2026-10-20T02:35:59.6959258Z     Error Context: test-results\csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery\error-context.md
+2026-10-20T02:35:59.6960421Z 
+2026-10-20T02:35:59.6961405Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+2026-10-20T02:35:59.6962968Z     test-results\csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery\trace.zip
+2026-10-20T02:35:59.6969909Z     Usage:
+2026-10-20T02:35:59.6970490Z 
+2026-10-20T02:35:59.6976369Z         npx playwright show-trace test-results\csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery\trace.zip
+2026-10-20T02:35:59.6977570Z 
+2026-10-20T02:35:59.6978372Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+2026-10-20T02:35:59.6979076Z 
+2026-10-20T02:35:59.6980011Z   1 failed
+2026-10-20T02:35:59.6981153Z     tests\e2e\csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery ──
+2026-10-20T02:35:59.6984712Z   1 passed (25.6s)
+2026-10-20T02:35:59.7519352Z ##[error]Process completed with exit code 1.
+2026-10-20T02:35:59.7799074Z Post job cleanup.
+2026-10-20T02:36:00.1409437Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-20T02:36:00.1789641Z git version 2.56.0.windows.2
+2026-10-20T02:36:00.1897554Z Temporarily overriding HOME='D:\a\_temp\297882f3-2e4d-4bbe-a39b-af9d82fc41df' before making global git config changes
+2026-10-20T02:36:00.1899162Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-20T02:36:00.1915406Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\OntoLearn-Studio\OntoLearn-Studio
+2026-10-20T02:36:00.2323951Z Removing SSH command configuration
+2026-10-20T02:36:00.2336808Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-20T02:36:00.2771319Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-20T02:36:00.9716046Z Removing HTTP extra header
+2026-10-20T02:36:00.9728784Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-20T02:36:01.0313127Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-20T02:36:01.6221927Z Removing includeIf entries pointing to credentials config files
+2026-10-20T02:36:01.6236320Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-20T02:36:01.6599240Z includeif.gitdir:D:/a/OntoLearn-Studio/OntoLearn-Studio/.git.path
+2026-10-20T02:36:01.6600644Z includeif.gitdir:D:/a/OntoLearn-Studio/OntoLearn-Studio/.git/worktrees/*.path
+2026-10-20T02:36:01.6602845Z includeif.gitdir:/github/workspace/.git.path
+2026-10-20T02:36:01.6603860Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-20T02:36:01.6647145Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:D:/a/OntoLearn-Studio/OntoLearn-Studio/.git.path
+2026-10-20T02:36:01.7075400Z D:\a\_temp\git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config
+2026-10-20T02:36:01.7264929Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:D:/a/OntoLearn-Studio/OntoLearn-Studio/.git.path D:\a\_temp\git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config
+2026-10-20T02:36:01.7599006Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:D:/a/OntoLearn-Studio/OntoLearn-Studio/.git/worktrees/*.path
+2026-10-20T02:36:01.7963558Z D:\a\_temp\git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config
+2026-10-20T02:36:01.8010540Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:D:/a/OntoLearn-Studio/OntoLearn-Studio/.git/worktrees/*.path D:\a\_temp\git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config
+2026-10-20T02:36:01.8415527Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-20T02:36:01.8772639Z /github/runner_temp/git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config
+2026-10-20T02:36:01.8817452Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config
+2026-10-20T02:36:01.9219156Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-20T02:36:01.9620863Z /github/runner_temp/git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config
+2026-10-20T02:36:01.9678807Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config
+2026-10-20T02:36:02.0078110Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-20T02:36:02.6054528Z Removing credentials config 'D:\a\_temp\git-credentials-db6eead6-9afa-4e3a-b3d2-e2579eb7c20f.config'
+2026-10-20T02:36:02.6374525Z Cleaning up orphan processes

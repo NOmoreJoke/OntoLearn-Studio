@@ -96,3 +96,13 @@
 - 两个全新独立任务均实际结束、完整报告读回，对同一base1b6df7a→candidate76b9d18明确通过且0阻断。GLM同任务勘误也实际结束；原稿/精确diff/最终hash保存，未改等级或结论。MiniMax静态8分24秒+运行7分13秒。实际任务时序按tasks/UI，不沿用GLM“MiniMax尚未创建”的初始上下文作证据。
 - 3+8项本轮意见及历史意见逐项处理见round-2/processing.md；失败/取消/失焦、HMR与真实sheet历史边界、平台隔离/确定性构建与watch覆写限制均保留。独立内部agent只读复核无推送阻断；没有采纳跳过真实hang、放宽信任或缩小验收。
 - 最终pre-push-integrity：16冻结/64保护0差异、candidate后受审路径diff为空、两份最终报告hash记录、remote develop仍1b6df7a，PR旧head仍caa0847。只追加流程证据提交后可正常push产生新版CI；CI全绿前禁止merge，未开始I03。
+
+## Round 2 新版CI失败与Round 3准备
+
+- 已正常push流程head `7e26155a10639365216eb56f6abf3a0979aefb47` 并更新PR#3完整Round2正文；受审candidate后仅34个docs/reviews/I02流程文件。
+- 新CI `39359486479`：macOS成功，LinuxQuality失败，Windows仍在执行（最后观察已进入e2e）。未合并。
+- 本次Linux完整job日志与artifact均已成功下载，保存在round-3。真实nativeRecovery为PASS：events=[crashed,unresponsive]、3窗/2提示/3health、inspector关闭、hangMonitor开且无no-sandbox、可见获焦；全部到达，唯一失败点是测试295行只期待killed。随后desktop冒烟成功。整体job仍是failure，不改写为通过。
+- 锁定Electron44.9.0的官方类型文档18656–18666明确forcefullyCrashRenderer的reason可为killed或crashed，hash/位置记录round-3/electron-force-crash-contract.json。只修这一处断言接受这两种契约值，保留真实unresponsive及其他全部断言/时限；产品/CI/依赖/验收不改。独立内部只读复核认可准确契合原验收，无新增阻断。
+- 新完整check退出0（15TS/198Python），verify:sources13成功；三环境运行验证进行中。改测试后旧双审不沿用，待Windows本次结果与本地验证齐备，冻结新candidate，两应用均新建Round3任务重新独立审查。原90s超时根因仍未证明，不以此次具体断言诊断替代。
+
+- Round3冻结前验证已齐：build2/2、真实packaged2/2、development1/1全部通过，原始日志/矩阵/sha见round-3/candidate-validation.json。Windows旧head最终也仅因同一killed/crashed断言失败，后续desktop通过；原始日志已归档，未取得Windows完整matrix，不夸大。16项新freeze仅测试断言hash变化，64保护保持；待本地新提交后双方全新Round3任务，不提前push。
