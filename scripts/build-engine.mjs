@@ -19,6 +19,12 @@ const result = spawnSync(
     'rdflib',
     '--copy-metadata',
     'pyparsing',
+    '--add-data',
+    `${resolve(root, 'packages/contracts/python/contract_v2.py')}:contracts/python`,
+    '--add-data',
+    `${resolve(root, 'packages/contracts/v2')}:contracts/v2`,
+    '--add-data',
+    `${resolve(root, 'uv.lock')}:provenance`,
     '--name',
     'ontolearn-engine',
     '--distpath',
@@ -29,7 +35,12 @@ const result = spawnSync(
     'build',
     'packages/engine/entrypoint.py',
   ],
-  { cwd: root, stdio: 'inherit', shell: false },
+  {
+    cwd: root,
+    stdio: 'inherit',
+    shell: false,
+    env: { ...process.env, PYINSTALLER_CONFIG_DIR: resolve(root, 'build/pyinstaller-cache') },
+  },
 )
 if (result.error) {
   console.error('需要先安装 uv 并执行 uv sync --frozen。')

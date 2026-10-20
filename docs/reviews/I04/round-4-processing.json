@@ -1,0 +1,670 @@
+{
+  "candidate": 4,
+  "base": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+  "head": "8f8eda1e24c0425ea2a65d2566978913ee310b8b",
+  "fileCount": 121,
+  "runtimeInputCount": 124,
+  "completedAndReadAtUtc": "2026-10-20T18:36:11.329145+00:00",
+  "reports": {
+    "ZCode": {
+      "path": "docs/reviews/I04/round-4/zcode-glm53.md",
+      "sha256": "e191aa47c7f03018f169d4ba54eb32b818b17ab5ff961e4090c0a2abaf488052",
+      "bytes": 40068,
+      "lines": 206,
+      "model": "GLM-5.3",
+      "thinking": "highest",
+      "conclusion": "Pass",
+      "actualOriginalTaskAndFactualContinuationsTerminal": true,
+      "completeFinalReportRead": true
+    },
+    "MiniMax": {
+      "path": "docs/reviews/I04/round-4/minimax-m31flash.md",
+      "sha256": "056b79f76e6e1234cc768737442ffae58cce067ec00b373d69bd80f898de5121",
+      "bytes": 74697,
+      "lines": 532,
+      "model": "M3.1-Flash (subscription free)",
+      "thinking": "xhigh",
+      "conclusion": "Pass",
+      "actualOriginalTaskAndFactualContinuationsTerminal": true,
+      "completeFinalReportRead": true
+    }
+  },
+  "original22Items": [
+    {
+      "id": "B1",
+      "originalSeverity": "P2",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "Z1",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "Z2",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "Z3",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "deferred/open",
+      "MiniMaxC4Judgment": "deferred/open",
+      "disposition": "Retain original agreed deferral linked to I03 O1; no vocabulary/default-bound expansion; no closure claimed."
+    },
+    {
+      "id": "P1-1",
+      "originalSeverity": "P1",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P1-2",
+      "originalSeverity": "P1",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P1-3",
+      "originalSeverity": "P1",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "Original blocking defect closed; separately record literal remediation differences as nonblocking M2 P3, explicitly allowed to defer by reviewer.",
+      "disposition": "Accept independent closure of actual memory-exhaustion misclassification and retain original P1 severity/history. Partially accept classification-granularity suggestion as M2 future work; do not invent new fixed public error category in frozen candidate."
+    },
+    {
+      "id": "P2-4",
+      "originalSeverity": "P2",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P2-5",
+      "originalSeverity": "P2",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P2-6",
+      "originalSeverity": "P2",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P3-7",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P3-8",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P3-9",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P3-10",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P3-11",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P3-12",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P3-13",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P3-14",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "P3-15",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "R2-N1",
+      "originalSeverity": "P3",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "R2-N2",
+      "originalSeverity": "P2",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    },
+    {
+      "id": "R2-P1",
+      "originalSeverity": "P2",
+      "previousDispositions": [
+        "round-1-disposition.json",
+        "round-2-processing.json",
+        "round-3-processing.json"
+      ],
+      "ZCodeC4Judgment": "closed",
+      "MiniMaxC4Judgment": "closed",
+      "disposition": "Retain concrete implementation and independently checked C4 closure evidence in the respective final report; no retroactive modification of original severity or historical verdict."
+    }
+  ],
+  "independentCountBoundary": {
+    "ZCode": "21 closed + Z3 agreed deferral, original22; no blockers.",
+    "MiniMax": "20 closed + Z3 agreed deferral + P1-3 core blocking defect closed with M2 P3 literal-remediation residual, original22; no blockers. Final table6.1, count6.4, conclusion9 item6 and actual terminal agree. Conclusion9 item5 retains stale R1 19+2+1 shorthand; preserved as a report summary inconsistency, not used instead of detailed judgments and not silently edited by root.",
+    "root": "Retain independent counting and original severities; do not fabricate identical closure counts or downgrade original P1. M2 is separately accepted deferrable by reviewer. Seven new open P3 suggestions individually disposed, M8 withdrawn."
+  },
+  "newItems": [
+    {
+      "id": "C4-Z1",
+      "originalSeverity": "P3",
+      "reviewer": "ZCode",
+      "disposition": "Adopt explicit source-lineage correction, preserve original frozen JSON, raw logs and same-task independent verification. Reviewer accepts as nonblocking closed; future collector alias fix deferred."
+    },
+    {
+      "id": "M1",
+      "originalSeverity": "P3",
+      "reviewer": "MiniMax",
+      "disposition": "Adopt factual correction via source-lineage-note.json, do not overwrite frozen historical checkpoint. Same issue as C4-Z1, not two distinct implementation defects. Collector cleanup explicitly deferred as nonblocking."
+    },
+    {
+      "id": "M2",
+      "originalSeverity": "P3",
+      "reviewer": "MiniMax",
+      "disposition": "Partially adopt: retain fail-closed behavior and independent core P1-3 closure; defer finer safe classification of exit75 pending contract/error-catalog design and new candidate full dual review. No claim this granularity was fixed."
+    },
+    {
+      "id": "M3",
+      "originalSeverity": "P3",
+      "reviewer": "MiniMax",
+      "disposition": "Partially adopt future I04 cross-reference for actual result.page200/job.list100; preserve original I03 proposal/history. No runtime divergence; reviewer explicitly permits documentation deferral."
+    },
+    {
+      "id": "M4",
+      "originalSeverity": "P3",
+      "reviewer": "MiniMax",
+      "disposition": "Adopt clarification here: c4-ci-trigger.json records failed C3 push24fd CI39462746525, not C4 CI. Keep original filename/bytes for audit; C4 CI recorded separately in integration evidence. Naming cleanup deferred."
+    },
+    {
+      "id": "M5",
+      "originalSeverity": "P3",
+      "reviewer": "MiniMax",
+      "disposition": "Adopt semantic clarification here: currentDifferences=[] was current files vs collected runtime-input manifest; final sealed124 inputs now independently verified against current primary, separate container identity and148 raw artifacts. Frozen JSON unchanged, future inline schema definition deferred."
+    },
+    {
+      "id": "M6",
+      "originalSeverity": "P3",
+      "reviewer": "MiniMax",
+      "disposition": "Partially adopt optional adjacent pointer; existing three statements and11 exact matrix input hashes already prove source-binding scope. No missing matrix rerun required; readability change deferred."
+    },
+    {
+      "id": "M7",
+      "originalSeverity": "P3",
+      "reviewer": "MiniMax",
+      "disposition": "Adopt clarification here: scope states complete original obligations retained, not complete all verification. failuresAndLimits remains authoritative; actual C4 CI and normal merge remain required. Future inline pointer deferred."
+    },
+    {
+      "id": "M8",
+      "originalSeverity": "P3",
+      "currentStatus": "withdrawn by reviewer as factually unsupported",
+      "reviewer": "MiniMax",
+      "disposition": "Do not adopt superseded finding: existing round-1-evidence-lineage:P3_8_internalReview fully indexes historical C1 record and reconstruction limits. Reviewer withdrew after independent check; no old record relabeled as C4."
+    }
+  ],
+  "remainingImplementationBlockers": 0,
+  "inheritedSeparateFrom22": {
+    "R2-F1": "I04-owned strict binding validation implemented here, not retroactive I03 repair; independent current reports verify closure.",
+    "O1_Z3": "Original deferral remains open.",
+    "O2_F5": "Current I04 local templates and fixed trusted safe error chain satisfied; future producer/semantic mappings remain open.",
+    "O3_I01_R6": "Original historical growth/capacity policy remains open; no capacity/performance guarantee.",
+    "F6": "Only actual infrastructure workload/Store/immutable result/round summary/page subset closed. E.2/E.5/G.4/FR-704 business remains unfinished.",
+    "I05_I06": "No domain semantic/gateway integration or acceptance completion claimed."
+  },
+  "methodEvents": [
+    {
+      "reviewer": "ZCode",
+      "facts": "Own86 targeted Python +2parent/default +53UTF8 +57TS, own real default busy probe. Full630/1052 and package/native/matrix evidence read from owning root logs, not independently rerun full suite. Successful probes do not quantify performance improvement.",
+      "failureBoundary": "Reporter option and wrong venv/startup failures overwritten by reviewer; recovered session record contains model-attributed excerpts/ellipsis, not byte-exact original logs. Original first report snapshot retained; final R1 discloses this. Tool write-hook refusal recorded; no permission/security setting changed."
+    },
+    {
+      "reviewer": "MiniMax",
+      "facts": "Own exact776-blob export, isolated fullcheck630/1052 and actual Mac engine package17. v1 timely arm only2.1s, killed/no wait: invalid. v1 flood did not observe inbox occupancy or actually attempt late hello: limited. Originals retained. v2 source/frozen timely6.60/6.59s with natural EOF0 and flood5.11/5.10s natural0, conservative attempted upper38913/39401<65536. In-tree deterministic tests/code establish exact late rejection; busy probe does not.",
+      "scopeBoundary": "Original isolated Linux native requirement distinguished from optional future Mac/Windows whole-native matrix; actual three-platform configured CI and Windows native owner behavior remain mandatory."
+    }
+  ],
+  "freezeAudit": {
+    "observedAtUtc": "2026-10-20T18:36:11.276807+00:00",
+    "candidateHead": "8f8eda1e24c0425ea2a65d2566978913ee310b8b",
+    "actualHead": "8f8eda1e24c0425ea2a65d2566978913ee310b8b",
+    "frozenCount": 121,
+    "frozenDifferences": [],
+    "allowedProcessAppend": [
+      {
+        "path": "docs/reviews/I04/status.md",
+        "pureAppendBytes": 1191
+      }
+    ],
+    "runtimeCount": 124,
+    "runtimeDifferences": [],
+    "rawArtifactCount": 148,
+    "rawDifferences": [],
+    "originalProtectedCount": 64,
+    "originalDifferences": [],
+    "AGENTSSha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786"
+  },
+  "artifacts": [
+    {
+      "path": "build/I04-evidence/zcode-r4-before-send-ax.txt",
+      "sha256": "5b857c7821e20f79819375efc06c1fd18a0a1360617a1e6449aead4459432e8a",
+      "bytes": 129845
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-branch-ax.txt",
+      "sha256": "1c761e1720bed399f3e3dbc58fdaa6dc1e8dcecdf70e1307432e32b41e20c3ef",
+      "bytes": 12107
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-dispatched-ax.txt",
+      "sha256": "c5a8c4b89402f99fae367e4474670b017c8c202752fc47d2523b0790a25b5001",
+      "bytes": 70512
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-final-r1-terminal-ax.txt",
+      "sha256": "1dcf911a43370d022735dabb64c22f0075ef43c3151a37fcea2603d7939aad7e",
+      "bytes": 23536
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-first-report-state-ax.txt",
+      "sha256": "44e1ea7fe1e6537b1d2f29c253eeb594091fac849847fdfa0b76413f846de9ac",
+      "bytes": 18214
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-first-terminal-report.md",
+      "sha256": "af5a3b9cfa5c8117625c7bffadb7aba85ed8de4af2ddf6b18c828b97302e29e6",
+      "bytes": 37555
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-folder-ax.txt",
+      "sha256": "3d87f7ba2ea2bb8acb6b9bf61e17f83d6a540fd0774da841bc8a4334d988b876",
+      "bytes": 12769
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-lineage-delivered-ax.txt",
+      "sha256": "c341310ab78adc0d718a7ad1466431c5478424c17ef9fe8015b6a8d2e55bddbe",
+      "bytes": 13912
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-lineage-received-ax.txt",
+      "sha256": "6c5d628389fd29f69a29d238aea4eefddd377188e2f40043411ed214d8ebe15b",
+      "bytes": 17416
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-lineage-sent-ax.txt",
+      "sha256": "6b8a2037789ba1e45e6e57a6b6e19a60a41546a76081e392036d40232631b782",
+      "bytes": 35649
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-prepush-terminal-ax.txt",
+      "sha256": "0f3969567c7d634795cae66f94d6c6e05dc35ad6e10feb65361f1e54b73e0b73",
+      "bytes": 23536
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-report-facts-message.txt",
+      "sha256": "41203a43d3cc7cdef4159eb7854f69e99c145299dbc1fe683201de7bf0726863",
+      "bytes": 1816
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-report-facts-sent-ax.txt",
+      "sha256": "5a74e4250064ac7f9d046acbb37632aa366b40e8242a93068304038fc142cd77",
+      "bytes": 21144
+    },
+    {
+      "path": "build/I04-evidence/zcode-r4-running-ax.txt",
+      "sha256": "d1dc95aa81a33bdf49b7fd3e887a7c61f91e7824a598a1c59f64440022e8a61b",
+      "bytes": 17978
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-before-send-ax.txt",
+      "sha256": "5aa79cda981509b5badae2990d2679566fa7afe0454833b4a33f510c32214aa0",
+      "bytes": 131725
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-dispatched-ax.txt",
+      "sha256": "9f79f212ffbe9394eb5cbf363e435c9f82bf241da284a2c79912c3a2b8b03aaa",
+      "bytes": 11173
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-final-r2-terminal-ax.txt",
+      "sha256": "05978d4478db5678b01fb4e05cf720e7667ee117d5a7c1df39a75e3b5e3326c0",
+      "bytes": 43448
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-first-report-state-ax.txt",
+      "sha256": "ed050e019f758aa65a466036e965588b7711a29d2c68aaa0c00d0e5d05e2a06c",
+      "bytes": 19907
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-first-terminal-report.md",
+      "sha256": "dfc74ab6a7451e20d21c047fc70e3ded1d0f65907e408b13d4a0becd57f1f63e",
+      "bytes": 52864
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-focus-field-immediate-ax.txt",
+      "sha256": "75320ef9e552df7ea70e2f676720e6698f156855549b4f190faaaaf49bad1876",
+      "bytes": 1569
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-focus-field-message.txt",
+      "sha256": "75f724df634ba6b9f155b0ae72e34d2cddef6ac1f086108af1f894dd892f2eb4",
+      "bytes": 742
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-focus-field-sent-ax.txt",
+      "sha256": "0541cec284faf33a979ab92dbe32c5f27ca1388507b3881f4cf139af6df9cee2",
+      "bytes": 1870
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-folder-ax.txt",
+      "sha256": "8eebf1065dacce5e4de9aca536c21eed9a279921647b44bab1d0452e4984c71e",
+      "bytes": 12810
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-lineage-received-ax.txt",
+      "sha256": "4cb41885a3d82d688fbc5b98f9894a7938d36356d232b9667924f14cad33abc3",
+      "bytes": 19103
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-lineage-sent-ax.txt",
+      "sha256": "7f611854054de2d16191fb4c2e4d9a7d4223bb6053c86be2dfda3903c7ce4b89",
+      "bytes": 17100
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-model-ax.txt",
+      "sha256": "9b96e366b8cba7ce32613df3e831a270932694483d8a9b5a60e93083920e27cd",
+      "bytes": 881
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-native-scope-message.txt",
+      "sha256": "1633016b8ded7265f68a3d4e3d4cc8c86114f3b9905480f54d4140dd6e8e5012",
+      "bytes": 2051
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-native-scope-sent-ax.txt",
+      "sha256": "0f5561c2b5b531203b712d083b8a90b8f6841ba090d1e630741667439b5bfb51",
+      "bytes": 1909
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-r1-terminal-ax.txt",
+      "sha256": "6e3c5c64b7fb964f7b09199a5f9500fa682d898068b232710cea4de5e7cca7b3",
+      "bytes": 32845
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-r1-terminal-report.md",
+      "sha256": "e6698554a32aeae1bd1e82febde10bc80c97b33455c51d38c6755dc0fef85128",
+      "bytes": 65991
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-ready-ax.txt",
+      "sha256": "bbe20fcb7c26eea96348c0074d193cfb42e5db838fc7e99f2c97756bb8012e10",
+      "bytes": 7060
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-report-facts-message.txt",
+      "sha256": "337d3289d96a822c8201a5c687feefa971e5b5d8c2ae3673883ecc866042144c",
+      "bytes": 4052
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-report-facts-sent-ax.txt",
+      "sha256": "a6a9f5d116acc38c8f2dd0af6de3c2295d0dbf8d3decaaa510376eaddb7f366d",
+      "bytes": 22070
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-probe-corrections/README-invalid-v1-arms.md",
+      "sha256": "1b5ada2786cd2d9625aa71fb04a7c7a0ec05d4d5d2c4078dedcf8e0798abae69",
+      "bytes": 1266
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-probe-corrections/handshake_flood_probe.v1.output.json",
+      "sha256": "a7624f52465139edd20b7f20f26f532d921750af7f57273621a9caed2e3e6d38",
+      "bytes": 224
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-probe-corrections/handshake_flood_probe.v1.py",
+      "sha256": "cf8163cb76b65c3b679e664dba46604cf2257f3b2bea0a796647267bd4925217",
+      "bytes": 2303
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-probe-corrections/handshake_probe.v2.output.frozen.json",
+      "sha256": "7830fce3c9ba90b446b4089f7674f6a9725281545a660bdeeb955addaf1d181f",
+      "bytes": 1797
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-probe-corrections/handshake_probe.v2.output.source.json",
+      "sha256": "d404bc39bed2dfb61be694f65fc319826d210168b9f8c0915b0680727b9fdd10",
+      "bytes": 1866
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-probe-corrections/handshake_probe.v2.py",
+      "sha256": "9cc6a7aa4737aae4cffedc15bd3818c60fc5b5c8e949b3bd29ee2ed57d1ca835",
+      "bytes": 11042
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-probe-corrections/handshake_timely_probe.v1.output.packaged.json",
+      "sha256": "3135aec1c99280d06bd9c5e5206ce5e9addb4caaeda1c58cc166081b83f6cde8",
+      "bytes": 161
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-probe-corrections/handshake_timely_probe.v1.output.source.json",
+      "sha256": "d32f8ef9d1af07bdfafd3eb8e3877c6606e19e02ad5ffa7d7cda44baad2b1de3",
+      "bytes": 161
+    },
+    {
+      "path": "build/I04-evidence/minimax-r4-probe-corrections/handshake_timely_probe.v1.py",
+      "sha256": "2d5a78385dc154cfbe2e2b7c0917a84de72e903633a67499ab2142b27bf97f8d",
+      "bytes": 1398
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C4/npm-ci.log",
+      "sha256": "e210726cf5bd5d997cc265fcda5afaf9849dfe5f8b8cc99329d0d3a4217c8bdf",
+      "bytes": 853
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C4/probe-handshake-c4.log",
+      "sha256": "62f1acdebf5d460bdeb9e1a5e0264bcab7f05c00e78d36b7abc3a5351b528455",
+      "bytes": 225
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C4/pytest-frame.log",
+      "sha256": "6a19f8df05882d779de750712ac1f36d97e2cda0862a7ec54490dd3fd24729d1",
+      "bytes": 179
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C4/pytest-parent.log",
+      "sha256": "31f6a56d1d5cc77ce41feb5fbbb44e0f38ee51c4ec75c29e5f4d747200adfa77",
+      "bytes": 98
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C4/pytest-utf8mode.log",
+      "sha256": "8db0254ebafb84d23b112fc26ba453cd893e8d2f415519547e67bb05e2e0a27e",
+      "bytes": 99
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C4/vitest-key.log",
+      "sha256": "e86bea377472355fcf6f9fbb8bf2c77b5afde20c93f3944b82d31a36556922f7",
+      "bytes": 1560
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C4/failures-recovered-from-session.md",
+      "sha256": "69f4ba12ec7c705ad2a67744ced691ed19a75c945dbb3adbb060789ca9b18d16",
+      "bytes": 3483
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C4/logs/npm-ci.log",
+      "sha256": "97b839fda0b6d128c23f78e3ecbfb7eedd053f6598836467d6b5a2c9a05d0550",
+      "bytes": 841
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C4/logs/npm-run-check.log",
+      "sha256": "ab70fb95a33d694558f774adbbea7def9379a1df9d510221830c54b995a92b6b",
+      "bytes": 5322
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C4/logs/uv-sync.log",
+      "sha256": "c6eebf6a5511705554ef8e4a804ffa0ec9a490f4c70c617bd72e4e466c74de2c",
+      "bytes": 776
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C4/logs/verify-i04-package.log",
+      "sha256": "deabce6c207b3c8a4cf361f5657b311802a71bb71c9ab08fe0951beab84b033e",
+      "bytes": 365
+    }
+  ],
+  "gateDecision": "Both actual NEW full designated tasks for same complete base/head independently Pass; final reports fully read, no queued continuation, all opinions disposed. Permit process-only archival commit and verified feature push/update PR5. Actual C4 three-platform CI, normal develop merge, remote and postmerge verification remain mandatory and not claimed.",
+  "scopeBoundary": "No signature/clean-device/production/domain/I05/I06 completion. Additional Mac/Windows full native visibility/focus/crash-hang matrix is unverified and is not covered by existing desktop CI."
+}

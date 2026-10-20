@@ -1,0 +1,34 @@
+{
+  "scope": "I04 final independent read-only lifecycle/resource review; mutable pre-freeze source",
+  "observed_git_head": "83a122834716361c31662b3d99c35e878679d54e",
+  "files_sha256": {
+    "packages/engine/src/ontolearn_engine/coordinator.py": "5ca0400ff3732c1742b423b84b1c4b6824ab5d3433dfc7de27e7844975284ad2",
+    "packages/engine/src/ontolearn_engine/worker.py": "da98fad890397967f8463779cc6d81efff2a981f7438901a7b7a5f7712f330e6",
+    "packages/engine/src/ontolearn_engine/memory_guard.py": "cf28e9602addabc9c66e14acdaec99bded6d19b4eb98126fe2677ce944d07cfe",
+    "packages/engine/src/ontolearn_engine/protocol.py": "34f85a3572276dafcb4ef5dceda426c4b8870a89344a0992684b96ae23218ab2",
+    "packages/engine/src/ontolearn_engine/resources.py": "ab315f01f2cbd10c37c16a414ee3fdad6f6a8ae543e41dc1783528d6f9002cf1",
+    "packages/engine/src/ontolearn_engine/process_environment.py": "9a1d305201576cc6cdefa06e89f24b308049d597fd5cb04be950a28eae2f5ef5",
+    "apps/desktop/src/main/engine.ts": "0820655cf44d118b8a7040fc408bbcf32c0f528596a1a7577209cefcebcfa9fa",
+    "apps/desktop/src/main/jsonl.ts": "12c0437f66b73b0aa88617b551394f6771529d2e5f307a5ab2765feb1fc05357"
+  },
+  "new_blocker": {
+    "id": "I04-ENV-01",
+    "severity": "P1",
+    "trigger": "main supervisor inherited arbitrary host environment and coordinator inherited it into workers",
+    "evidence": "engine.ts environment clone; no real credentials read",
+    "fix_commit": "f90f051",
+    "regression": "fabricated dictionaries and fabricated sentinel real child; 95 JSONL/supervisor/environment tests, unit typecheck and scoped lint pass",
+    "integration_limit": "main owner must integrate and verify actual Python/package/CI"
+  },
+  "new_readonly_probe": {
+    "type": "actual Python subprocess plus real JobStore/SQLite",
+    "probe_path": ".tmp/review/fast_exit_rss_probe.py",
+    "results": {
+      "succeeded": 60,
+      "failed": 0
+    },
+    "claim_limit": "targeted fast worker-exit regression only; no performance or universal race guarantee"
+  },
+  "remaining_runtime_blockers": "No additional reproduced blocker in reviewed lifecycle scope; final integrated frozen candidate and external dual-review remain owner responsibility",
+  "gui_started": false
+}

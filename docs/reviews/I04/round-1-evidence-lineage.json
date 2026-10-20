@@ -1,0 +1,568 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Append-only lineage and failure index for original I04 C1 review evidence; no old report, evidence record, source, or status file is modified.",
+  "roots": {
+    "c1Primary": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-resident-jobs",
+    "followUp": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-reconnect",
+    "independentSupervisor": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I04-supervisor"
+  },
+  "originalCandidate": {
+    "base": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+    "head": "ce6fd54fd51bb16a6eda5f45d2675506799710f5",
+    "reportsArchivedBy": "299605b35ab5fa7f0c963d8efe06d75aa3f8ee84"
+  },
+  "reviewPreservation": {
+    "originalConclusions": {
+      "zcodeGLM53": "不通过; B1 P2 blocker, Z1-Z3 P3 nonblocking as written in original report.",
+      "minimaxM31Flash": "不通过; original P1/P2/P3 findings and P3-7/8/9 classification remain unchanged."
+    },
+    "thisIndexDoesNotCloseOrDowngradeFindings": true,
+    "nextCandidateStillRequiresItsOwnFrozenFullRangeReview": true,
+    "primaryFiles": [
+      {
+        "root": "c1Primary",
+        "path": "docs/reviews/I04/round-1/zcode-glm53.md",
+        "bytes": 22199,
+        "sha256": "c81f46f2cf521d3826e847d66a5f4443fb99b4d16a2f13d12ebd8a09da17bd4b",
+        "gitCommit": "299605b35ab5fa7f0c963d8efe06d75aa3f8ee84"
+      },
+      {
+        "root": "c1Primary",
+        "path": "docs/reviews/I04/round-1/minimax-m31flash.md",
+        "bytes": 37215,
+        "sha256": "fb371ceb7bab46a406175f1464741815d17b099e15cde54c300d05f01100d749",
+        "gitCommit": "299605b35ab5fa7f0c963d8efe06d75aa3f8ee84"
+      },
+      {
+        "root": "c1Primary",
+        "path": "docs/reviews/I04/round-1/source-provenance-note.json",
+        "bytes": 4001,
+        "sha256": "09c322e32bce197961b27e13599e7042f15f2502d2f8a84e82552d128b284504",
+        "gitCommit": "299605b35ab5fa7f0c963d8efe06d75aa3f8ee84"
+      },
+      {
+        "root": "c1Primary",
+        "path": "docs/reviews/I04/round-1/dispatch.json",
+        "bytes": 3087,
+        "sha256": "89f0ac73ff5725249b65c3388548ad798d6d953eea58688ccda3378aa7c226da",
+        "gitCommit": "299605b35ab5fa7f0c963d8efe06d75aa3f8ee84"
+      },
+      {
+        "root": "c1Primary",
+        "path": "docs/reviews/I04/candidate-1.json",
+        "bytes": 9360,
+        "sha256": "f8bc44219754da8fb4e119d2c551bbe5c81f1670e8655364a99f4c1ef2c7d76e",
+        "gitCommit": "299605b35ab5fa7f0c963d8efe06d75aa3f8ee84"
+      }
+    ]
+  },
+  "timeline": [
+    {
+      "event": "Original linux-native1..4 failures",
+      "orderingSource": "Recorded wall times in preserved trace archives",
+      "attempts": [
+        "linux-native1",
+        "linux-native2",
+        "linux-native3",
+        "linux-native4"
+      ]
+    },
+    {
+      "event": "Branch commit later referenced as observed_git_head in internal pre-freeze review",
+      "gitCommit": "83a122834716361c31662b3d99c35e878679d54e",
+      "gitCommitTime": "2026-10-20T17:54:26+08:00",
+      "timeMeaning": "Time of the observed branch commit, not the time or full-tree identity of each review/probe.",
+      "scope": "The record explicitly says mutable pre-freeze source and records eight file hashes. Its blocker observation, follow-up fix and later targeted probe are not one immutable whole-tree subject."
+    },
+    {
+      "event": "Source-final1 manifest captured before final documentation edits",
+      "time": null,
+      "timeMeaning": "Relative ordering is stated by source-provenance-note; no exact collection timestamp asserted.",
+      "manifest": {
+        "root": "c1Primary",
+        "path": "build/I04-evidence/source-final1-manifest.json",
+        "bytes": 93463,
+        "sha256": "5122a861f770870c907cc28a6a8c4d87ae29dfce8293049085192e985cc995bf",
+        "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+      },
+      "entries": 722,
+      "originalLocalVerification": {
+        "root": "c1Primary",
+        "path": "docs/reviews/I04/local-verification.json",
+        "bytes": 17005,
+        "sha256": "60084abb46619b6b22776a65c2fe3c62e80727febdf75e64682fcae7e26e1ec0",
+        "gitCommit": "ce6fd54fd51bb16a6eda5f45d2675506799710f5"
+      },
+      "originalDifferencesField": []
+    },
+    {
+      "event": "C1 frozen",
+      "gitCommit": "ce6fd54fd51bb16a6eda5f45d2675506799710f5",
+      "gitCommitTime": "2026-10-20T20:24:39+08:00",
+      "scope": "Implementation/test/config/runtime resources captured by the source manifest match this frozen candidate; five differences are enumerated below."
+    },
+    {
+      "event": "Both C1 reports and explicit provenance correction archived",
+      "gitCommit": "299605b35ab5fa7f0c963d8efe06d75aa3f8ee84",
+      "gitCommitTime": "2026-10-20T22:13:05+08:00",
+      "scope": "Both original Not-Pass conclusions preserved; later audits are factual addenda, not retroactive changes to those conclusions."
+    },
+    {
+      "event": "Follow-up candidate retained C1 reports by merge",
+      "gitCommit": "604f728e390d2947989fc79524e756dc372ba2c6",
+      "gitCommitTime": "2026-10-20T22:20:44+08:00",
+      "scope": "Retention does not recast C1 as passed."
+    }
+  ],
+  "P3_7_sourceManifest": {
+    "originalMiniMaxReportLines": [
+      195,
+      204
+    ],
+    "relatedZCodeZ1Lines": [
+      81,
+      85
+    ],
+    "originalReportedClaim": "MiniMax reports 38 inconsistencies: five byte differences and 33 paths absent from HEAD; original claim remains untouched.",
+    "rawPathAudit": {
+      "method": "git ls-tree -r -z --name-only ce6fd54; decode raw UTF-8 paths; each manifest path resolved by direct argv git show commit:path and its raw blob hashed. No shell filename quoting and no hash of failed-command stdout.",
+      "resolved": 722,
+      "absent": [],
+      "differences": [
+        {
+          "path": "AGENTS.md",
+          "manifestSHA256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+          "frozenGitSHA256": "1b3c02916e9bab79f463a61f2818846f01e849014b70251b37c112377443a6fb"
+        },
+        {
+          "path": "docs/architecture/0003-resident-coordinator-and-jobs.md",
+          "manifestSHA256": "0a380002857f88de721e2f711739a3e8a2189c324e794f0c0b62588c54d0ea06",
+          "frozenGitSHA256": "e550056a2e74c16fae9af160a0ee3f0a818ba6e59d6453ceb2ffc47d87fc6377"
+        },
+        {
+          "path": "docs/iterations/I04/acceptance.md",
+          "manifestSHA256": "362a337c45308358302ce1bc6d97ec2b6a72b242334437f01079b75aa8c4e86e",
+          "frozenGitSHA256": "997c75a4d1d8ce0ce066038758789820adcba8751f146c2551b5014e171e103a"
+        },
+        {
+          "path": "docs/iterations/I04/implementation.md",
+          "manifestSHA256": "fd9c62701ee9776f7dd1019f64d277b744d1a1952140ebff5f2e8d9f10dbc568",
+          "frozenGitSHA256": "c47ed9e7a48e2a789e990d9f1caf6947b1437412271dc68902bc7d6b768236af"
+        },
+        {
+          "path": "docs/reviews/I04/status.md",
+          "manifestSHA256": "41731682ac1aa6b7d1101ca25aa172e39da02f531b403828f679850f8894917d",
+          "frozenGitSHA256": "feadb357fc51655b15f357b370b591aa3cd7843f8bfcaa657ce2ab7cea48c5e5"
+        }
+      ]
+    },
+    "interpretation": "Independent raw-path audit reproduces zero missing paths and five differences: approved dirty AGENTS plus four post-manifest documentation edits. It does not reproduce the 33-absent claim and does not establish why the earlier reviewer command differed. local-verification.differences=[] is a historical collection record, not a claim of equality to the later whole frozen tree.",
+    "dispositionInThisFile": "Provenance cross-reference and factual disagreement supplied for next review; original classification and Not-Pass unchanged."
+  },
+  "P3_8_internalReview": {
+    "originalMiniMaxReportLines": [
+      206,
+      215
+    ],
+    "record": {
+      "root": "c1Primary",
+      "path": "docs/reviews/I04/internal-runtime-review.json",
+      "bytes": 2230,
+      "sha256": "2bd275609a15f028d8504b39ec35e9e81cb64694aa2ebd4660c71df23e3c4929",
+      "gitCommit": "ce6fd54fd51bb16a6eda5f45d2675506799710f5"
+    },
+    "observedGitHead": "83a122834716361c31662b3d99c35e878679d54e",
+    "explicitOriginalScope": "I04 final independent read-only lifecycle/resource review; mutable pre-freeze source",
+    "selectedFileMapping": [
+      {
+        "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+        "recordedSHA256": "5ca0400ff3732c1742b423b84b1c4b6824ab5d3433dfc7de27e7844975284ad2",
+        "matchesC1": true,
+        "presentInObservedHead": false,
+        "observedHeadSHA256": null
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/worker.py",
+        "recordedSHA256": "da98fad890397967f8463779cc6d81efff2a981f7438901a7b7a5f7712f330e6",
+        "matchesC1": true,
+        "presentInObservedHead": false,
+        "observedHeadSHA256": null
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/memory_guard.py",
+        "recordedSHA256": "cf28e9602addabc9c66e14acdaec99bded6d19b4eb98126fe2677ce944d07cfe",
+        "matchesC1": true,
+        "presentInObservedHead": true,
+        "observedHeadSHA256": "cf28e9602addabc9c66e14acdaec99bded6d19b4eb98126fe2677ce944d07cfe"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/protocol.py",
+        "recordedSHA256": "34f85a3572276dafcb4ef5dceda426c4b8870a89344a0992684b96ae23218ab2",
+        "matchesC1": true,
+        "presentInObservedHead": true,
+        "observedHeadSHA256": "e0ac0ef4415d607c58fc1ac98ebc79705ae46997c24f47a128e5817a9fffb7d6"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/resources.py",
+        "recordedSHA256": "ab315f01f2cbd10c37c16a414ee3fdad6f6a8ae543e41dc1783528d6f9002cf1",
+        "matchesC1": true,
+        "presentInObservedHead": false,
+        "observedHeadSHA256": null
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/process_environment.py",
+        "recordedSHA256": "9a1d305201576cc6cdefa06e89f24b308049d597fd5cb04be950a28eae2f5ef5",
+        "matchesC1": true,
+        "presentInObservedHead": false,
+        "observedHeadSHA256": null
+      },
+      {
+        "path": "apps/desktop/src/main/engine.ts",
+        "recordedSHA256": "0820655cf44d118b8a7040fc408bbcf32c0f528596a1a7577209cefcebcfa9fa",
+        "matchesC1": true,
+        "presentInObservedHead": true,
+        "observedHeadSHA256": "1f4407055035d328ac2413f799a421701e969ae33c42d055c76eedc97bb2852a"
+      },
+      {
+        "path": "apps/desktop/src/main/jsonl.ts",
+        "recordedSHA256": "12c0437f66b73b0aa88617b551394f6771529d2e5f307a5ab2765feb1fc05357",
+        "matchesC1": true,
+        "presentInObservedHead": true,
+        "observedHeadSHA256": "12c0437f66b73b0aa88617b551394f6771529d2e5f307a5ab2765feb1fc05357"
+      }
+    ],
+    "wholeTreeReconstruction": "Unavailable: no contemporaneous full mutable worktree snapshot/manifest or immutable review-subject commit was recorded. observed_git_head identifies the branch tip seen, not the complete reviewed working tree. Eight per-file hashes can be matched to C1; this neither reconstructs all uncommitted files at every probe nor proves C1 was the subject of that earlier internal review.",
+    "dispositionInThisFile": "Clarifies scope and unrecoverable historical boundary without inventing a replacement subject SHA, regenerating the old record, or substituting internal review for the original/new external review gates."
+  },
+  "P3_9_nativeFailures": {
+    "originalMiniMaxReportLines": [
+      217,
+      226
+    ],
+    "failures": [
+      {
+        "attempt": "linux-native1",
+        "originalOutcome": "failed; retained",
+        "recordedTraceTime": {
+          "unixMilliseconds": 1792489429924,
+          "utc": "2026-10-20T09:43:49.924000+00:00",
+          "source": "build/I04-evidence/linux-native1/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/trace.zip::test.trace",
+          "meaning": "Trace-recorded wall time, not an independently synchronized clock."
+        },
+        "log": {
+          "root": "c1Primary",
+          "path": "build/I04-evidence/linux-native1/native.log",
+          "bytes": 2048,
+          "sha256": "91f58de1bd7096e292d5bb53c463947b4621b10df577091d5387b315f1c0a652",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        "confirmedSymptom": "Chromium namespace setup failed with Operation not permitted; zygote exited before native test could run.",
+        "causeBoundary": "Namespace permission failure is explicit in the original log. This identifies an unmet Linux container launch prerequisite, not a completed native recovery acceptance.",
+        "relatedRawArtifacts": [
+          {
+            "root": "c1Primary",
+            "path": "build/I04-evidence/linux-native1/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/trace.zip",
+            "bytes": 11547,
+            "sha256": "ec4d4ecd6f58478cab0ee42366989df23bd9bca705bfad7eea71f2b4b302c494",
+            "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+          },
+          {
+            "root": "c1Primary",
+            "path": "build/I04-evidence/linux-native1/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/error-context.md",
+            "bytes": 13132,
+            "sha256": "1f2af466b23cd3aab2181db89e820f9b685e0c6660f0d06754a86171ffce73fe",
+            "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+          }
+        ],
+        "laterSuccessDoesNotRewriteThisFailure": true
+      },
+      {
+        "attempt": "linux-native2",
+        "originalOutcome": "failed; retained",
+        "recordedTraceTime": {
+          "unixMilliseconds": 1792489490779,
+          "utc": "2026-10-20T09:44:50.779000+00:00",
+          "source": "build/I04-evidence/linux-native2/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/trace.zip::test.trace",
+          "meaning": "Trace-recorded wall time, not an independently synchronized clock."
+        },
+        "log": {
+          "root": "c1Primary",
+          "path": "build/I04-evidence/linux-native2/native.log",
+          "bytes": 2618,
+          "sha256": "80de9e0a54b21fc73f45f7298a87089f561a662294f586182eb5206f8458b6a1",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        "confirmedSymptom": "Actual crash event recorded, but dialogId remained undefined when driver waited for native recovery dialog; test failed at about 30 seconds.",
+        "causeBoundary": "Specific cause is not established by the retained original logs/attachments. Missing dialog detection alone does not prove an openbox/xdotool environment defect or product defect.",
+        "relatedRawArtifacts": [
+          {
+            "root": "c1Primary",
+            "path": "build/I04-evidence/linux-native2/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/trace.zip",
+            "bytes": 11336,
+            "sha256": "bb9aa4d7c8fa0bd0bb3afa4aff7be1548a5980e33985e3d778d90c756b090d3d",
+            "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+          },
+          {
+            "root": "c1Primary",
+            "path": "build/I04-evidence/linux-native2/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-final-evidence-fb14a95805d14afdf6fbe495d2111814ba261086.json",
+            "bytes": 7789,
+            "sha256": "4b8f2544d03b51970392f81a3ff8eb81a0110c790bc3c3db70187b592efebba0",
+            "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup.",
+            "observedFields": {
+              "events": [
+                "crashed"
+              ],
+              "inspectorClosed": true,
+              "hangMonitorEnabled": true,
+              "awaitingDialog": "crash"
+            }
+          },
+          {
+            "root": "c1Primary",
+            "path": "build/I04-evidence/linux-native2/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/error-context.md",
+            "bytes": 6644,
+            "sha256": "6e3cd6058b00c73ef3054370761ed6db078f3c1b8711791bd991843bc6a87b8a",
+            "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+          }
+        ],
+        "laterSuccessDoesNotRewriteThisFailure": true
+      },
+      {
+        "attempt": "linux-native3",
+        "originalOutcome": "failed; retained",
+        "recordedTraceTime": {
+          "unixMilliseconds": 1792489597892,
+          "utc": "2026-10-20T09:46:37.892000+00:00",
+          "source": "build/I04-evidence/linux-native3/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/trace.zip::test.trace",
+          "meaning": "Trace-recorded wall time, not an independently synchronized clock."
+        },
+        "log": {
+          "root": "c1Primary",
+          "path": "build/I04-evidence/linux-native3/native.log",
+          "bytes": 2572,
+          "sha256": "0e6c57434e671e30f1666f252ebdfa554346e1fe67d8c20ce6a869254a65b3a3",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        "confirmedSymptom": "Actual crash event recorded, but dialogId remained undefined when driver waited for native recovery dialog; test failed at about 30 seconds.",
+        "causeBoundary": "Specific cause is not established by the retained original logs/attachments. Missing dialog detection alone does not prove an openbox/xdotool environment defect or product defect.",
+        "relatedRawArtifacts": [
+          {
+            "root": "c1Primary",
+            "path": "build/I04-evidence/linux-native3/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/trace.zip",
+            "bytes": 11834,
+            "sha256": "f2777c25fcb1e4e5ac9d8a0b8f926bc7f2faf265c511361f0fa29cf4ee2e4903",
+            "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+          },
+          {
+            "root": "c1Primary",
+            "path": "build/I04-evidence/linux-native3/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-final-evidence-507d8966e7cfc16254dd42d40e0bca6bfaebe6d7.json",
+            "bytes": 7789,
+            "sha256": "77a6600f19f543c51ddc9c21244cb0467c4d942d86e227a24c3a5973b98b0387",
+            "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup.",
+            "observedFields": {
+              "events": [
+                "crashed"
+              ],
+              "inspectorClosed": true,
+              "hangMonitorEnabled": true,
+              "awaitingDialog": "crash"
+            }
+          },
+          {
+            "root": "c1Primary",
+            "path": "build/I04-evidence/linux-native3/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/error-context.md",
+            "bytes": 6392,
+            "sha256": "a40b66dceda718a594f2b86dee9ab7d47147f72ef5d6490ce0071f79dcba502e",
+            "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+          }
+        ],
+        "laterSuccessDoesNotRewriteThisFailure": true
+      },
+      {
+        "attempt": "linux-native4",
+        "originalOutcome": "failed; retained",
+        "recordedTraceTime": {
+          "unixMilliseconds": 1792489701393,
+          "utc": "2026-10-20T09:48:21.393000+00:00",
+          "source": "build/I04-evidence/linux-native4/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/trace.zip::test.trace",
+          "meaning": "Trace-recorded wall time, not an independently synchronized clock."
+        },
+        "log": {
+          "root": "c1Primary",
+          "path": "build/I04-evidence/linux-native4/native.log",
+          "bytes": 2570,
+          "sha256": "26427ac78f1d349d124115a15fd7038d168e6acebf643dcfe0aba02450726fc3",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        "confirmedSymptom": "Actual crash event recorded, but dialogId remained undefined when driver waited for native recovery dialog; test failed at about 30 seconds.",
+        "causeBoundary": "Specific cause is not established by the retained original logs/attachments. Missing dialog detection alone does not prove an openbox/xdotool environment defect or product defect.",
+        "relatedRawArtifacts": [
+          {
+            "root": "c1Primary",
+            "path": "build/I04-evidence/linux-native4/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/trace.zip",
+            "bytes": 11863,
+            "sha256": "55c7493ed777cd564a3009f7609a50d4f6933b8e1b0dcd630a7fe69ed7db42ab",
+            "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+          },
+          {
+            "root": "c1Primary",
+            "path": "build/I04-evidence/linux-native4/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-final-evidence-716298030e702cebb4265ea2f99c146f53b2cd8b.json",
+            "bytes": 7789,
+            "sha256": "2f7c173afa2b7e99e373fbf3486521616736a3a03baacb6e7e768aeef25ffd7c",
+            "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup.",
+            "observedFields": {
+              "events": [
+                "crashed"
+              ],
+              "inspectorClosed": true,
+              "hangMonitorEnabled": true,
+              "awaitingDialog": "crash"
+            }
+          },
+          {
+            "root": "c1Primary",
+            "path": "build/I04-evidence/linux-native4/test-results/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/error-context.md",
+            "bytes": 6525,
+            "sha256": "77b169f124838227c05bb1b01e8b5e26a47029a89f07f3bed780e59f8ed25078",
+            "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+          }
+        ],
+        "laterSuccessDoesNotRewriteThisFailure": true
+      }
+    ],
+    "laterSeparateValidation": {
+      "rawLogs": [
+        {
+          "root": "c1Primary",
+          "path": "build/I04-evidence/linux-native5/native.log",
+          "bytes": 181,
+          "sha256": "f6bfeb22054b1b8560127b3a68c12fb5bd65846281bcb52532ba9886f7e39cf0",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        {
+          "root": "c1Primary",
+          "path": "build/I04-evidence/linux-final1/i04-final1-native.log",
+          "bytes": 181,
+          "sha256": "47f98f464edc4fbc7e02be52ebf15205e3430aa884457918f3a7b4160c99df0c",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        {
+          "root": "c1Primary",
+          "path": "build/I04-evidence/linux-final1/i04-packaged-native.log",
+          "bytes": 181,
+          "sha256": "cd6f0e9bd5a3e0eac8f41381eacf13288b5e3dcf203bb046c1a53a6f89bf1981",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        }
+      ],
+      "sourceSummary": {
+        "root": "c1Primary",
+        "path": "docs/reviews/I04/native-source-evidence.json",
+        "bytes": 32629,
+        "sha256": "1c278f3fab310e29cb60ad4850b898b54823c09eb41783a3d4c4ce8a4a342cdf",
+        "gitCommit": "ce6fd54fd51bb16a6eda5f45d2675506799710f5"
+      },
+      "packagedSummary": {
+        "root": "c1Primary",
+        "path": "docs/reviews/I04/native-packaged-evidence.json",
+        "bytes": 32846,
+        "sha256": "fe522310703b961f4d0c5c4035cd5e44af0fda4eec3d0ed7e7142adfec1011da",
+        "gitCommit": "ce6fd54fd51bb16a6eda5f45d2675506799710f5"
+      },
+      "interpretation": "native5 and final1 success records are later distinct attempts. They do not delete failures or independently prove the cause of native2..4; no reconstruction of their entire historical source trees is claimed."
+    },
+    "retentionBoundary": "build artifacts are gitignored. This JSON preserves exact paths, hashes, symptoms and selected original fields, but is not a backup of logs/traces. Raw files listed here must be retained/exported by the owner before cleanup or clone-only archival."
+  },
+  "laterIndependentFailureIndex": [
+    {
+      "name": "Darwin memory exit/RSS race",
+      "verifiedScope": "Original fullcheck RESOURCE_LIMIT expectation failed as INTERNAL_ERROR. Independent real libproc/worker/SQLite probe recorded ESRCH with returncode temporarily None, then actual exit 74. Formal ESRCH-specific correction was separately verified; no broad guard suppression was accepted.",
+      "artifacts": [
+        {
+          "root": "independentSupervisor",
+          "path": ".tmp/review/memory-race/original-final-check-2.log",
+          "bytes": 6629,
+          "sha256": "182ef85f3c3599ed05505a00bff676e2f127497fe32957481d969123561d85d4",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        {
+          "root": "independentSupervisor",
+          "path": ".tmp/review/memory-race/probe.json",
+          "bytes": 53047,
+          "sha256": "dfa18ed86249348657df9b1fcfb94739d1575be7bcffcd9625d4aa8e74dcafdc",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        {
+          "root": "independentSupervisor",
+          "path": ".tmp/review/memory-race/probe-forced-window.json",
+          "bytes": 9334,
+          "sha256": "b3f16a831f838e1167b49903048bb983052585f26d2ff06aa154fc383bb12034",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        {
+          "root": "independentSupervisor",
+          "path": ".tmp/review/memory-race/probe-production-fix.json",
+          "bytes": 9699,
+          "sha256": "c4133ca0b1dbf2baba94b7925160abe7d197e7bbc9e1188fb5b768a90607960b",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        {
+          "root": "independentSupervisor",
+          "path": ".tmp/review/memory-race/production-fix-review.json",
+          "bytes": 2631,
+          "sha256": "c7815c57120cdbe45e66e30864bdd53bf7d89bd1022d6ab727ebb3e0de4e53d9",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        }
+      ],
+      "notC1ReportRewrites": true
+    },
+    {
+      "name": "Session-fatal BufferedReader shutdown abort",
+      "verifiedScope": "Caller stdin stayed open; real duplicate-ID and full-budget exits returned SIGABRT (-6) with fatal BufferedReader shutdown-lock diagnostics. Formal os.read patch retained normal cleanup; separate new evidence records exit 0/empty stderr and unchanged durable atomic job/marker/receipt/project. An active job can fail ENGINE_EXITED; no seamless resumption claim.",
+      "artifacts": [
+        {
+          "root": "independentSupervisor",
+          "path": ".tmp/review/session-budget/overflow-exit-raw.json",
+          "bytes": 360,
+          "sha256": "528997f2f2e707b8b15fd9ae18fb0669712a55455ff26f037d15479f9e7e381e",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        {
+          "root": "independentSupervisor",
+          "path": ".tmp/review/session-budget/probe-observe-exit.json",
+          "bytes": 820,
+          "sha256": "6ae5fb21dbfbaefa24018669c808909b4f78cb63e17128b683de53e2178a5299",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        {
+          "root": "independentSupervisor",
+          "path": ".tmp/review/session-budget/probe-duplicate-open-stdin.json",
+          "bytes": 507,
+          "sha256": "ee072faf653d7277a2550d536bdd5d226171ff80b2d919e656a8186439c07c2c",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        {
+          "root": "independentSupervisor",
+          "path": ".tmp/review/session-budget/probe-formal-fix.json",
+          "bytes": 818,
+          "sha256": "9767f82ab04bcfaa9e46199e73bc4f9d046e3331df902d194ded2f748b67b926",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        },
+        {
+          "root": "independentSupervisor",
+          "path": ".tmp/review/session-budget/formal-fix-summary.json",
+          "bytes": 3130,
+          "sha256": "892eba07011e169fad422c6b0838fe5ceb7ec8d5b14854d900235dd4d1220681",
+          "retention": "Ignored local raw artifact; availability checked during this indexing, index is not a backup."
+        }
+      ],
+      "notC1ReportRewrites": true
+    }
+  ],
+  "indexingVerification": {
+    "runtimeOrGuiRerun": false,
+    "method": "Read original fixed-commit report bytes, dispatch/provenance, original logs/traces/attachments and later evidence; recompute artifact hashes and raw path provenance only.",
+    "oldFilesModified": false,
+    "onlyNewTrackedFile": "docs/reviews/I04/round-1-evidence-lineage.json",
+    "limits": "No new Pass, P-grade reassignment, native environment root-cause inference, performance claim, Windows/runtime/CI/signing/production completion claim."
+  }
+}

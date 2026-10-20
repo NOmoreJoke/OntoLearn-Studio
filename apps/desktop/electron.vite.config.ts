@@ -11,7 +11,7 @@ export default defineConfig(({ command }) => ({
     define: { __DEV_CSP_NONCE__: JSON.stringify(devNonce) },
     build: { externalizeDeps: { exclude: ['@ontolearn/contracts'] } },
   },
-  preload: {},
+  preload: { build: { externalizeDeps: { exclude: ['@ontolearn/contracts', 'zod'] } } },
   renderer: {
     plugins: [
       react(),

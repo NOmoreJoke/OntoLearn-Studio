@@ -215,7 +215,12 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     await alien.waitForFunction(() => Boolean(window.ontolearn))
     expect(await alien.evaluate(() => window.ontolearn.getEngineHealth())).toEqual({
       ok: false,
-      error: '请求来源不受信任。',
+      error: {
+        code: 'PERMISSION_DENIED',
+        messageKey: 'permission.denied',
+        params: {},
+        retryable: false,
+      },
     })
     await application.evaluate(
       ({ BrowserWindow }, id) => BrowserWindow.fromId(id)?.destroy(),

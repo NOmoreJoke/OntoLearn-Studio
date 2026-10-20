@@ -1,0 +1,67 @@
+{
+  "candidate": "ce6fd54fd51bb16a6eda5f45d2675506799710f5",
+  "sourceManifest": "build/I04-evidence/source-final1-manifest.json",
+  "sourceManifestFileCount": 722,
+  "changedDocumentsAfterManifestCollection": [
+    {
+      "path": "docs/architecture/0003-resident-coordinator-and-jobs.md",
+      "sourceManifestSHA256": "0a380002857f88de721e2f711739a3e8a2189c324e794f0c0b62588c54d0ea06",
+      "frozenCandidateSHA256": "e550056a2e74c16fae9af160a0ee3f0a818ba6e59d6453ceb2ffc47d87fc6377"
+    },
+    {
+      "path": "docs/iterations/I04/acceptance.md",
+      "sourceManifestSHA256": "362a337c45308358302ce1bc6d97ec2b6a72b242334437f01079b75aa8c4e86e",
+      "frozenCandidateSHA256": "997c75a4d1d8ce0ce066038758789820adcba8751f146c2551b5014e171e103a"
+    },
+    {
+      "path": "docs/iterations/I04/implementation.md",
+      "sourceManifestSHA256": "fd9c62701ee9776f7dd1019f64d277b744d1a1952140ebff5f2e8d9f10dbc568",
+      "frozenCandidateSHA256": "c47ed9e7a48e2a789e990d9f1caf6947b1437412271dc68902bc7d6b768236af"
+    },
+    {
+      "path": "docs/reviews/I04/status.md",
+      "sourceManifestSHA256": "41731682ac1aa6b7d1101ca25aa172e39da02f531b403828f679850f8894917d",
+      "frozenCandidateSHA256": "feadb357fc51655b15f357b370b591aa3cd7843f8bfcaa657ce2ab7cea48c5e5"
+    }
+  ],
+  "protectedAGENTS": {
+    "sourceManifestAndWorkingTreeSHA256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+    "note": "Approved dirty operating instructions; intentionally not committed. Comparing this file with git-show HEAD is expected to differ."
+  },
+  "interpretation": "local-verification.sourceManifest.differences=[] was recorded before final documentation edits. It is not a claim that all 722 file bytes equal the later ce6fd54 commit. All captured implementation, tests, configuration and runtime resources equal ce6fd54. Four documents recorded actual results, corrected the existing three-mode matrix count, stated adopted ADR evidence and appended process progress; original ten requirements and execution acceptance conditions were not removed or weakened.",
+  "runtimeEvidenceUnchanged": true,
+  "frozenDocumentBytesPreserved": true,
+  "postReviewRawPathAudit": {
+    "method": "NUL-delimited git ls-tree and direct argv git show; no shell filename quoting or missing-command stdout hashing",
+    "resolvedTrackedPaths": 722,
+    "absentFromHead": [],
+    "differences": [
+      {
+        "path": "AGENTS.md",
+        "manifestSHA256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+        "headSHA256": "1b3c02916e9bab79f463a61f2818846f01e849014b70251b37c112377443a6fb"
+      },
+      {
+        "path": "docs/architecture/0003-resident-coordinator-and-jobs.md",
+        "manifestSHA256": "0a380002857f88de721e2f711739a3e8a2189c324e794f0c0b62588c54d0ea06",
+        "headSHA256": "e550056a2e74c16fae9af160a0ee3f0a818ba6e59d6453ceb2ffc47d87fc6377"
+      },
+      {
+        "path": "docs/iterations/I04/acceptance.md",
+        "manifestSHA256": "362a337c45308358302ce1bc6d97ec2b6a72b242334437f01079b75aa8c4e86e",
+        "headSHA256": "997c75a4d1d8ce0ce066038758789820adcba8751f146c2551b5014e171e103a"
+      },
+      {
+        "path": "docs/iterations/I04/implementation.md",
+        "manifestSHA256": "fd9c62701ee9776f7dd1019f64d277b744d1a1952140ebff5f2e8d9f10dbc568",
+        "headSHA256": "c47ed9e7a48e2a789e990d9f1caf6947b1437412271dc68902bc7d6b768236af"
+      },
+      {
+        "path": "docs/reviews/I04/status.md",
+        "manifestSHA256": "41731682ac1aa6b7d1101ca25aa172e39da02f531b403828f679850f8894917d",
+        "headSHA256": "feadb357fc51655b15f357b370b591aa3cd7843f8bfcaa657ce2ab7cea48c5e5"
+      }
+    ],
+    "reviewDisagreement": "MiniMax P3-7 reported 33 absent empty-file paths. This was not reproduced: all 722 raw paths resolve in ce6fd54. Five byte differences consist of approved dirty AGENTS plus the four documented post-manifest documents. This factual correction is submitted for both next reviews; neither C1 Not-Pass is changed."
+  }
+}

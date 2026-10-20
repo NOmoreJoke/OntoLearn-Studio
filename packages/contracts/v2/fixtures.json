@@ -8272,6 +8272,103 @@
         "retryable": false,
         "params": {}
       }
+    },
+    {
+      "name": "I04 pre-handshake health HANDSHAKE_REQUIRED",
+      "schema": "response",
+      "valid": true,
+      "value": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000009",
+        "engineSessionId": null,
+        "method": "health",
+        "ok": false,
+        "error": {
+          "code": "HANDSHAKE_REQUIRED",
+          "messageKey": "protocol.handshakeRequired",
+          "retryable": false,
+          "params": {}
+        }
+      }
+    },
+    {
+      "name": "I04 pre-handshake health VERSION_INCOMPATIBLE",
+      "schema": "response",
+      "valid": true,
+      "value": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000009",
+        "engineSessionId": null,
+        "method": "health",
+        "ok": false,
+        "error": {
+          "code": "VERSION_INCOMPATIBLE",
+          "messageKey": "protocol.versionIncompatible",
+          "retryable": false,
+          "params": {
+            "supportedVersions": [2]
+          }
+        }
+      }
+    },
+    {
+      "name": "I04 pre-handshake health INVALID_REQUEST",
+      "schema": "response",
+      "valid": false,
+      "value": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000009",
+        "engineSessionId": null,
+        "method": "health",
+        "ok": false,
+        "error": {
+          "code": "INVALID_REQUEST",
+          "messageKey": "protocol.invalidRequest",
+          "retryable": false,
+          "params": {
+            "field": "params"
+          }
+        }
+      }
+    },
+    {
+      "name": "I04 pre-handshake health INTERNAL_ERROR",
+      "schema": "response",
+      "valid": false,
+      "value": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000009",
+        "engineSessionId": null,
+        "method": "health",
+        "ok": false,
+        "error": {
+          "code": "INTERNAL_ERROR",
+          "messageKey": "engine.internal",
+          "retryable": false,
+          "params": {}
+        }
+      }
+    },
+    {
+      "name": "I04 null session cannot succeed",
+      "schema": "response",
+      "valid": false,
+      "value": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000009",
+        "engineSessionId": null,
+        "method": "health",
+        "ok": true,
+        "result": {
+          "status": "ok",
+          "engineVersion": "0.1.0"
+        }
+      }
     }
   ],
   "routing": [
