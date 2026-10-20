@@ -224,16 +224,20 @@ class JobStore(Store):
     def _plan(base, plan):
         if not isinstance(plan, dict) or set(plan) - {
             "definitions",
+            "remove_definitions",
             "manual",
             "edits",
             "remove",
             "mapping",
         }:
             fault("INVALID_REQUEST", field="params")
-        return {
+        complete = {
             "base": base,
             **{k: plan.get(k) for k in ("definitions", "manual", "edits", "remove", "mapping")},
         }
+        if plan.get("remove_definitions") is not None:
+            complete["remove_definitions"] = plan["remove_definitions"]
+        return complete
 
     def prepare_plan(self, project, base, plan, *, actor, permission):
         """Trusted confirmation service only; never accepts renderer-issued confirmation IDs.
@@ -865,6 +869,9 @@ class JobStore(Store):
             }
             for key in old.keys() | new.keys():
                 expanded.setdefault(key, old.get(key, 0))
+                # Set membership is authoritative even if old counters/source
+                # provenance remain in the history ledger.
+                now[key] = new.get(key, 0)
         return reasons(expanded, now)
 
     def _invalidate(self, project):
