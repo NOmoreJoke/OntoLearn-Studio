@@ -24,6 +24,7 @@
 - 首次 check 仅被 no-control-regex lint 阻断；已等价改为字符码检查，最终完整 check 通过。验证摘要和文件哈希见 [evidence](evidence/validation.json)。
 - 续跑新增的四项凭据绑定反例在旧实现上实际失败；密文改为封装并核对 ref/主体/版本，新增严格格式反例。独立 agent 再次实际验证 72/72，并确认绑定问题关闭、未发现新增阻断，见 [记录](credential-binding-review.md)。本轮 check 先后遇到测试变量 lint/格式错误，均修正后完整通过；新版文件哈希和日志摘要见 [证据](evidence/credential-binding.json)。
 - 依赖已通过正式 `wait_threads` 重新核验：I03/I05 的实际 turn 为 inProgress；I02 为 inProgress，尚无 I02/I03 合并证据，I04 在总控清单仍 pending。未把对 I02 的审查应用授权扩大到本会话桌面操作；本会话继续无 GUI。
+- 2026-10-20 总控请求受限错误需求：已整理 [11 类公共错误映射输入](../../iterations/I06/public-error-requirements.md)，含建议 messageKey、严格空 safe params、禁止透传集合和 retryable/禁止自动重放边界；供总控转交 I03。未修改公共 contracts 或提前接线。远端 develop 本次只读核验仍为 `1b6df7a220fc9a67d7046133a340085f03f0a96c`，正式依赖尚未合入。
 
 ## 依赖、双审和下一步
 
