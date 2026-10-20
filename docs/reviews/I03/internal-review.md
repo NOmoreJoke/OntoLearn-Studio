@@ -56,3 +56,9 @@
 ### 冻结前收到的I05 v3细码更新
 
 总控转交typed-reasons-v3.md后，本线保存第二份逐字快照与SHA，并将25项当前来源细码置于历史30码之前；退休合码仅留审计。独立agent定向文档复核确认25/25无漏项、重复、误分类，SHAPE_PATH_UNCLASSIFIED仅INTERNAL_ERROR，双快照逐字及SHA一致；未把I05未冻结源码或123项定向交接声明当作全量/包内通过，未新增公共方法。hash回归覆盖两份快照后，开发会话最终完整check仍409TS/622Python通过，contracts strict类型、sources12、diff检查通过；原始日志与hash已更新。未重跑不变的语义探针，指定外审仍未创建。
+
+## I02合并后新基线独立兼容审查
+
+总控授权同步已合并develop后，以可追踪merge合入c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3，merge为0ec24b7e12c9ffaee5895e461800649a04bfff2f，无冲突，旧候选3的36份受审文件与未提交证据逐字保留。requirements_review重新实际审查新base→merge的全部I03差异及I02 desktop/构建/CI交互，未沿用旧结论。
+
+实际加载确认desktop仍仅用contracts根v1的PROTOCOL_VERSION/healthSchema；独立v2入口可加载且v2Runtime为空，未接入health/preload/renderer。I02未改storage、engine protocol或I03契约；恢复模块不承担job或存储提交。独立无窗口TS420项及Python435项（v2/边界守卫/原v1协议）通过，无新增阻断。开发会话新基线完整check420TS/622Python、contracts strict类型、sources12及diff检查通过。未运行Electron/e2e/native/HMR/产物，不把I02继承报告当作I03运行验证；指定双模型须审新固定base→head全范围。

@@ -1,6 +1,6 @@
 {
   "iteration": "I03",
-  "base": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+  "base": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
   "environment": {
     "platform": "macOS arm64",
     "runtime": "independent worktree node_modules/.venv; no GUI",
@@ -12,11 +12,11 @@
     {
       "command": "npm run check",
       "exitCode": 0,
-      "typescriptTests": 409,
+      "typescriptTests": 420,
       "pythonTests": 622,
       "includes": ["eslint", "prettier", "desktop typecheck", "vitest", "build", "ruff", "pytest"],
-      "logSha256": "e879643e7f579d35cb76f830336407941023ef294c1e248ef78cbc7a4a042fb8",
-      "localRawLog": "build/I03-validation/check-i05-v3-final.txt"
+      "logSha256": "56906a720f39b65ed2d3e798a3bb2cd6b58f9d343d1807e3c5c48bb43b00b889",
+      "localRawLog": "build/I03-validation/check-develop-sync.txt"
     },
     {
       "command": "npm run typecheck --workspace @ontolearn/contracts",
@@ -39,13 +39,20 @@
     "push/PR/remote CI/merge"
   ],
   "note": "Pre-freeze final validation; any later reviewed implementation/test/config/acceptance change invalidates this summary and requires rerun.",
-  "validatedAt": "2026-10-20T11:37:20.960242+08:00",
-  "revision": "I05 finite semantic categories and validation projection; current v3 25-source table supersedes retired codes; both source snapshots hashed",
+  "validatedAt": "2026-10-20T11:41:10.798519+08:00",
+  "revision": "New develop base includes merged I02; traceable merge with I03 source unchanged; full validation and independent compatibility review",
   "targetedChecks": {
     "typescriptContractTests": 405,
     "pythonContractTests": 424,
     "independentReviewer": "/root/requirements_review",
     "conclusion": "Two P2 findings closed; no remaining blocker in targeted review; not the specified external reviews",
-    "v3DocumentationReview": "25/25 source entries matched; both snapshots byte-identical and hash-matched; no new public method or I05 runtime verification claimed"
+    "v3DocumentationReview": "25/25 source entries matched; both snapshots byte-identical and hash-matched; no new public method or I05 runtime verification claimed",
+    "newBaselineReview": {
+      "base": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
+      "mergeHead": "0ec24b7e12c9ffaee5895e461800649a04bfff2f",
+      "typescriptTests": 420,
+      "pythonTests": 435,
+      "conclusion": "No new blocker; actual root v1 and separate v2 loading verified; no GUI or specified external review substituted"
+    }
   }
 }
