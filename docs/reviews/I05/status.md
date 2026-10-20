@@ -2,13 +2,15 @@
 
 日期：2026-10-20，Asia/Shanghai。开发会话：`01a15744-136d-7000-abad-46de101eadaf`。
 
-当前阶段：独立真实语义、外联拒绝与打包测量已形成 `independent-v2` 检查点，准备本地保存。完整 Goal active；尚无正式集成候选、指定双审、推送/PR/合并。
+当前阶段：独立真实语义、外联拒绝与打包测量已形成 `independent-v2` 检查点，已本地保存。完整 Goal active；尚无正式集成候选、指定双审、推送/PR/合并。
 
 - 唯一工作目录：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation`。
 - 分支：`feature/I05-semantic-validation`；初始 base/head：`1b6df7a220fc9a67d7046133a340085f03f0a96c`。origin 为 `https://github.com/NOmoreJoke/OntoLearn-Studio.git`，启动时远端 develop 与 base 一致。
 - 已读取总控最新 goal/scope/policy/parallel/state 和 before-I05 两清单；PRD V0.6 C/D/E/G、B1 原文、S1 口径及 ADR/退出证据。
 - 既有唯一 dirty 文件 AGENTS.md 属他方操作规则；SHA-256 `db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786`，与原仓库最新指南一致；不 stage、不修改。
 - 原仓库 I02 冻结与 I03 worktree 均不写入；总控 state.json 不写入。独立 node_modules/.venv/build/release/临时数据，无共享可变环境或产品端口。
+
+本地实现检查点：`02a8c90902788963206d7ef60fbeccc801e27c5c`（未推送）；随后只追加流程证据，不表示正式 I05 审查候选已齐备。`checkpoint.json` 对应固定实现及待依赖状态。
 
 ## 范围、责任与依赖
 
