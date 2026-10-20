@@ -13420,5 +13420,3803 @@
       ],
       "valid": false
     }
+  ],
+  "mainCases": [
+    {
+      "name": "main getModelAccessStatus params",
+      "method": "getModelAccessStatus",
+      "part": "params",
+      "valid": true,
+      "value": {}
+    },
+    {
+      "name": "main getModelAccessStatus result",
+      "method": "getModelAccessStatus",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "availability": "ready",
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "projectId": "00000000-0000-4000-8000-000000000110",
+        "privacy": "minimal",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "invocations": [
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000107",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main getModelAccessStatus extra param",
+      "method": "getModelAccessStatus",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "untrustedExtra": "synthetic"
+      }
+    },
+    {
+      "name": "main getModelAccessStatus secret output forbidden",
+      "method": "getModelAccessStatus",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "availability": "ready",
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "projectId": "00000000-0000-4000-8000-000000000110",
+        "privacy": "minimal",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "invocations": [
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000107",
+            "state": "running"
+          }
+        ],
+        "secret": "SYNTHETIC_ONLY"
+      }
+    },
+    {
+      "name": "main getModelAccessStatus exact reply",
+      "method": "getModelAccessStatus",
+      "part": "reply",
+      "valid": true,
+      "value": {
+        "ok": true,
+        "data": {
+          "availability": "ready",
+          "contextId": "00000000-0000-4000-8000-000000000101",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "privacy": "minimal",
+          "configurations": [
+            {
+              "configurationId": "00000000-0000-4000-8000-000000000102",
+              "configurationVersion": "00000000-0000-4000-8000-000000000103",
+              "displayName": "合成配置",
+              "endpoint": "https://model.example.invalid/v1",
+              "model": "synthetic-v1",
+              "credentialState": "configured"
+            }
+          ],
+          "selections": [
+            {
+              "kind": "fields",
+              "selectionId": "00000000-0000-4000-8000-000000000104",
+              "metadata": {
+                "resultId": "00000000-0000-4000-8000-000000000108",
+                "projectId": "00000000-0000-4000-8000-000000000110",
+                "jobId": "00000000-0000-4000-8000-000000000109",
+                "kind": "test",
+                "definitionId": "Q1",
+                "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "inputProjectRevision": 1,
+                "dependencyVector": {
+                  "facts:asserted": 1
+                },
+                "definitionSetDigests": {
+                  "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "implementation": {
+                  "executionSemanticsVersion": "E1",
+                  "engineVersion": "0.1.0",
+                  "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "scope": "asserted",
+                "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "state": "current",
+                "staleReason": [],
+                "payloadStatus": "available",
+                "createdAtMs": 9,
+                "historicalSelectionRequired": false
+              },
+              "selection": "current",
+              "catalogId": "00000000-0000-4000-8000-000000000111",
+              "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+              "fields": [
+                {
+                  "fieldId": "00000000-0000-4000-8000-000000000112",
+                  "label": "允许的字段",
+                  "type": "string",
+                  "nullable": false,
+                  "requires": []
+                }
+              ],
+              "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rowCount": 1,
+              "byteCount": 128
+            }
+          ],
+          "invocations": [
+            {
+              "invocationId": "00000000-0000-4000-8000-000000000107",
+              "state": "running"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "main configureModel params",
+      "method": "configureModel",
+      "part": "params",
+      "valid": true,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1"
+      }
+    },
+    {
+      "name": "main configureModel result",
+      "method": "configureModel",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1",
+        "credentialState": "configured"
+      }
+    },
+    {
+      "name": "main configureModel extra param",
+      "method": "configureModel",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1",
+        "untrustedExtra": "synthetic"
+      }
+    },
+    {
+      "name": "main configureModel secret output forbidden",
+      "method": "configureModel",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1",
+        "credentialState": "configured",
+        "secret": "SYNTHETIC_ONLY"
+      }
+    },
+    {
+      "name": "main configureModel exact reply",
+      "method": "configureModel",
+      "part": "reply",
+      "valid": true,
+      "value": {
+        "ok": true,
+        "data": {
+          "configurationId": "00000000-0000-4000-8000-000000000102",
+          "configurationVersion": "00000000-0000-4000-8000-000000000103",
+          "displayName": "合成配置",
+          "endpoint": "https://model.example.invalid/v1",
+          "model": "synthetic-v1",
+          "credentialState": "configured"
+        }
+      }
+    },
+    {
+      "name": "main storeModelCredential params",
+      "method": "storeModelCredential",
+      "part": "params",
+      "valid": true,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "SYNTHETIC_CONTRACT_ONLY_KEY"
+      }
+    },
+    {
+      "name": "main storeModelCredential result",
+      "method": "storeModelCredential",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000120",
+        "credentialState": "configured"
+      }
+    },
+    {
+      "name": "main storeModelCredential extra param",
+      "method": "storeModelCredential",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "SYNTHETIC_CONTRACT_ONLY_KEY",
+        "untrustedExtra": "synthetic"
+      }
+    },
+    {
+      "name": "main storeModelCredential secret output forbidden",
+      "method": "storeModelCredential",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000120",
+        "credentialState": "configured",
+        "secret": "SYNTHETIC_ONLY"
+      }
+    },
+    {
+      "name": "main storeModelCredential exact reply",
+      "method": "storeModelCredential",
+      "part": "reply",
+      "valid": true,
+      "value": {
+        "ok": true,
+        "data": {
+          "configurationId": "00000000-0000-4000-8000-000000000102",
+          "configurationVersion": "00000000-0000-4000-8000-000000000120",
+          "credentialState": "configured"
+        }
+      }
+    },
+    {
+      "name": "main setModelPrivacy params",
+      "method": "setModelPrivacy",
+      "part": "params",
+      "valid": true,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "privacy": "minimal"
+      }
+    },
+    {
+      "name": "main setModelPrivacy result",
+      "method": "setModelPrivacy",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "privacy": "minimal"
+      }
+    },
+    {
+      "name": "main setModelPrivacy extra param",
+      "method": "setModelPrivacy",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "privacy": "minimal",
+        "untrustedExtra": "synthetic"
+      }
+    },
+    {
+      "name": "main setModelPrivacy secret output forbidden",
+      "method": "setModelPrivacy",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "privacy": "minimal",
+        "secret": "SYNTHETIC_ONLY"
+      }
+    },
+    {
+      "name": "main setModelPrivacy exact reply",
+      "method": "setModelPrivacy",
+      "part": "reply",
+      "valid": true,
+      "value": {
+        "ok": true,
+        "data": {
+          "privacy": "minimal"
+        }
+      }
+    },
+    {
+      "name": "main selectModelResults params",
+      "method": "selectModelResults",
+      "part": "params",
+      "valid": true,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "results": [
+          {
+            "resultId": "00000000-0000-4000-8000-000000000108",
+            "selection": "current"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main selectModelResults result",
+      "method": "selectModelResults",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "selections": [
+          {
+            "kind": "whole-result",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "bodyHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 1024
+          }
+        ]
+      }
+    },
+    {
+      "name": "main selectModelResults extra param",
+      "method": "selectModelResults",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "results": [
+          {
+            "resultId": "00000000-0000-4000-8000-000000000108",
+            "selection": "current"
+          }
+        ],
+        "untrustedExtra": "synthetic"
+      }
+    },
+    {
+      "name": "main selectModelResults secret output forbidden",
+      "method": "selectModelResults",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "selections": [
+          {
+            "kind": "whole-result",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "bodyHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 1024
+          }
+        ],
+        "secret": "SYNTHETIC_ONLY"
+      }
+    },
+    {
+      "name": "main selectModelResults exact reply",
+      "method": "selectModelResults",
+      "part": "reply",
+      "valid": true,
+      "value": {
+        "ok": true,
+        "data": {
+          "selections": [
+            {
+              "kind": "whole-result",
+              "selectionId": "00000000-0000-4000-8000-000000000104",
+              "metadata": {
+                "resultId": "00000000-0000-4000-8000-000000000108",
+                "projectId": "00000000-0000-4000-8000-000000000110",
+                "jobId": "00000000-0000-4000-8000-000000000109",
+                "kind": "test",
+                "definitionId": "Q1",
+                "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "inputProjectRevision": 1,
+                "dependencyVector": {
+                  "facts:asserted": 1
+                },
+                "definitionSetDigests": {
+                  "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "implementation": {
+                  "executionSemanticsVersion": "E1",
+                  "engineVersion": "0.1.0",
+                  "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "scope": "asserted",
+                "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "state": "current",
+                "staleReason": [],
+                "payloadStatus": "available",
+                "createdAtMs": 9,
+                "historicalSelectionRequired": false
+              },
+              "selection": "current",
+              "bodyHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rowCount": 1,
+              "byteCount": 1024
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "main getModelFieldCatalog params",
+      "method": "getModelFieldCatalog",
+      "part": "params",
+      "valid": true,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "resultId": "00000000-0000-4000-8000-000000000108",
+        "selection": "current"
+      }
+    },
+    {
+      "name": "main getModelFieldCatalog result",
+      "method": "getModelFieldCatalog",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "main getModelFieldCatalog extra param",
+      "method": "getModelFieldCatalog",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "resultId": "00000000-0000-4000-8000-000000000108",
+        "selection": "current",
+        "untrustedExtra": "synthetic"
+      }
+    },
+    {
+      "name": "main getModelFieldCatalog secret output forbidden",
+      "method": "getModelFieldCatalog",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": []
+          }
+        ],
+        "secret": "SYNTHETIC_ONLY"
+      }
+    },
+    {
+      "name": "main getModelFieldCatalog exact reply",
+      "method": "getModelFieldCatalog",
+      "part": "reply",
+      "valid": true,
+      "value": {
+        "ok": true,
+        "data": {
+          "catalogId": "00000000-0000-4000-8000-000000000111",
+          "metadata": {
+            "resultId": "00000000-0000-4000-8000-000000000108",
+            "projectId": "00000000-0000-4000-8000-000000000110",
+            "jobId": "00000000-0000-4000-8000-000000000109",
+            "kind": "test",
+            "definitionId": "Q1",
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "inputProjectRevision": 1,
+            "dependencyVector": {
+              "facts:asserted": 1
+            },
+            "definitionSetDigests": {
+              "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "implementation": {
+              "executionSemanticsVersion": "E1",
+              "engineVersion": "0.1.0",
+              "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "scope": "asserted",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "current",
+            "staleReason": [],
+            "payloadStatus": "available",
+            "createdAtMs": 9,
+            "historicalSelectionRequired": false
+          },
+          "selection": "current",
+          "fields": [
+            {
+              "fieldId": "00000000-0000-4000-8000-000000000112",
+              "label": "允许的字段",
+              "type": "string",
+              "nullable": false,
+              "requires": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "main selectModelFields params",
+      "method": "selectModelFields",
+      "part": "params",
+      "valid": true,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "fieldIds": ["00000000-0000-4000-8000-000000000112"]
+      }
+    },
+    {
+      "name": "main selectModelFields result",
+      "method": "selectModelFields",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "kind": "fields",
+        "selectionId": "00000000-0000-4000-8000-000000000104",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": []
+          }
+        ],
+        "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "rowCount": 1,
+        "byteCount": 128
+      }
+    },
+    {
+      "name": "main selectModelFields extra param",
+      "method": "selectModelFields",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+        "untrustedExtra": "synthetic"
+      }
+    },
+    {
+      "name": "main selectModelFields secret output forbidden",
+      "method": "selectModelFields",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "kind": "fields",
+        "selectionId": "00000000-0000-4000-8000-000000000104",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": []
+          }
+        ],
+        "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "rowCount": 1,
+        "byteCount": 128,
+        "secret": "SYNTHETIC_ONLY"
+      }
+    },
+    {
+      "name": "main selectModelFields exact reply",
+      "method": "selectModelFields",
+      "part": "reply",
+      "valid": true,
+      "value": {
+        "ok": true,
+        "data": {
+          "kind": "fields",
+          "selectionId": "00000000-0000-4000-8000-000000000104",
+          "metadata": {
+            "resultId": "00000000-0000-4000-8000-000000000108",
+            "projectId": "00000000-0000-4000-8000-000000000110",
+            "jobId": "00000000-0000-4000-8000-000000000109",
+            "kind": "test",
+            "definitionId": "Q1",
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "inputProjectRevision": 1,
+            "dependencyVector": {
+              "facts:asserted": 1
+            },
+            "definitionSetDigests": {
+              "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "implementation": {
+              "executionSemanticsVersion": "E1",
+              "engineVersion": "0.1.0",
+              "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "scope": "asserted",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "current",
+            "staleReason": [],
+            "payloadStatus": "available",
+            "createdAtMs": 9,
+            "historicalSelectionRequired": false
+          },
+          "selection": "current",
+          "catalogId": "00000000-0000-4000-8000-000000000111",
+          "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+          "fields": [
+            {
+              "fieldId": "00000000-0000-4000-8000-000000000112",
+              "label": "允许的字段",
+              "type": "string",
+              "nullable": false,
+              "requires": []
+            }
+          ],
+          "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "rowCount": 1,
+          "byteCount": 128
+        }
+      }
+    },
+    {
+      "name": "main previewModelExplanation params",
+      "method": "previewModelExplanation",
+      "part": "params",
+      "valid": true,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "selectionIds": ["00000000-0000-4000-8000-000000000104"]
+      }
+    },
+    {
+      "name": "main previewModelExplanation result",
+      "method": "previewModelExplanation",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "previewId": "00000000-0000-4000-8000-000000000105",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1",
+        "principal": "00000000-0000-4000-8000-000000000121",
+        "purpose": "explain",
+        "privacy": "minimal",
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "authorization": {
+          "state": "required"
+        }
+      }
+    },
+    {
+      "name": "main previewModelExplanation extra param",
+      "method": "previewModelExplanation",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "selectionIds": ["00000000-0000-4000-8000-000000000104"],
+        "untrustedExtra": "synthetic"
+      }
+    },
+    {
+      "name": "main previewModelExplanation secret output forbidden",
+      "method": "previewModelExplanation",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "previewId": "00000000-0000-4000-8000-000000000105",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1",
+        "principal": "00000000-0000-4000-8000-000000000121",
+        "purpose": "explain",
+        "privacy": "minimal",
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "authorization": {
+          "state": "required"
+        },
+        "secret": "SYNTHETIC_ONLY"
+      }
+    },
+    {
+      "name": "main previewModelExplanation exact reply",
+      "method": "previewModelExplanation",
+      "part": "reply",
+      "valid": true,
+      "value": {
+        "ok": true,
+        "data": {
+          "previewId": "00000000-0000-4000-8000-000000000105",
+          "configurationId": "00000000-0000-4000-8000-000000000102",
+          "configurationVersion": "00000000-0000-4000-8000-000000000103",
+          "endpoint": "https://model.example.invalid/v1",
+          "model": "synthetic-v1",
+          "principal": "00000000-0000-4000-8000-000000000121",
+          "purpose": "explain",
+          "privacy": "minimal",
+          "selections": [
+            {
+              "kind": "fields",
+              "selectionId": "00000000-0000-4000-8000-000000000104",
+              "metadata": {
+                "resultId": "00000000-0000-4000-8000-000000000108",
+                "projectId": "00000000-0000-4000-8000-000000000110",
+                "jobId": "00000000-0000-4000-8000-000000000109",
+                "kind": "test",
+                "definitionId": "Q1",
+                "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "inputProjectRevision": 1,
+                "dependencyVector": {
+                  "facts:asserted": 1
+                },
+                "definitionSetDigests": {
+                  "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "implementation": {
+                  "executionSemanticsVersion": "E1",
+                  "engineVersion": "0.1.0",
+                  "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "scope": "asserted",
+                "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "state": "current",
+                "staleReason": [],
+                "payloadStatus": "available",
+                "createdAtMs": 9,
+                "historicalSelectionRequired": false
+              },
+              "selection": "current",
+              "catalogId": "00000000-0000-4000-8000-000000000111",
+              "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+              "fields": [
+                {
+                  "fieldId": "00000000-0000-4000-8000-000000000112",
+                  "label": "允许的字段",
+                  "type": "string",
+                  "nullable": false,
+                  "requires": []
+                }
+              ],
+              "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rowCount": 1,
+              "byteCount": 128
+            }
+          ],
+          "authorization": {
+            "state": "required"
+          }
+        }
+      }
+    },
+    {
+      "name": "main confirmModelAuthorization params",
+      "method": "confirmModelAuthorization",
+      "part": "params",
+      "valid": true,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "previewId": "00000000-0000-4000-8000-000000000105"
+      }
+    },
+    {
+      "name": "main confirmModelAuthorization result",
+      "method": "confirmModelAuthorization",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "grantId": "00000000-0000-4000-8000-000000000106",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103"
+      }
+    },
+    {
+      "name": "main confirmModelAuthorization extra param",
+      "method": "confirmModelAuthorization",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "previewId": "00000000-0000-4000-8000-000000000105",
+        "untrustedExtra": "synthetic"
+      }
+    },
+    {
+      "name": "main confirmModelAuthorization secret output forbidden",
+      "method": "confirmModelAuthorization",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "grantId": "00000000-0000-4000-8000-000000000106",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "SYNTHETIC_ONLY"
+      }
+    },
+    {
+      "name": "main confirmModelAuthorization exact reply",
+      "method": "confirmModelAuthorization",
+      "part": "reply",
+      "valid": true,
+      "value": {
+        "ok": true,
+        "data": {
+          "grantId": "00000000-0000-4000-8000-000000000106",
+          "configurationVersion": "00000000-0000-4000-8000-000000000103"
+        }
+      }
+    },
+    {
+      "name": "main startModelExplanation params",
+      "method": "startModelExplanation",
+      "part": "params",
+      "valid": true,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "grantId": "00000000-0000-4000-8000-000000000106",
+        "selectionIds": ["00000000-0000-4000-8000-000000000104"]
+      }
+    },
+    {
+      "name": "main startModelExplanation result",
+      "method": "startModelExplanation",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "running"
+      }
+    },
+    {
+      "name": "main startModelExplanation extra param",
+      "method": "startModelExplanation",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "grantId": "00000000-0000-4000-8000-000000000106",
+        "selectionIds": ["00000000-0000-4000-8000-000000000104"],
+        "untrustedExtra": "synthetic"
+      }
+    },
+    {
+      "name": "main startModelExplanation secret output forbidden",
+      "method": "startModelExplanation",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "running",
+        "secret": "SYNTHETIC_ONLY"
+      }
+    },
+    {
+      "name": "main startModelExplanation exact reply",
+      "method": "startModelExplanation",
+      "part": "reply",
+      "valid": true,
+      "value": {
+        "ok": true,
+        "data": {
+          "invocationId": "00000000-0000-4000-8000-000000000107",
+          "state": "running"
+        }
+      }
+    },
+    {
+      "name": "main getModelExplanationOutcome params",
+      "method": "getModelExplanationOutcome",
+      "part": "params",
+      "valid": true,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "invocationId": "00000000-0000-4000-8000-000000000107"
+      }
+    },
+    {
+      "name": "main getModelExplanationOutcome result",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "completed",
+        "text": "合成解释。"
+      }
+    },
+    {
+      "name": "main getModelExplanationOutcome extra param",
+      "method": "getModelExplanationOutcome",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "untrustedExtra": "synthetic"
+      }
+    },
+    {
+      "name": "main getModelExplanationOutcome secret output forbidden",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "completed",
+        "text": "合成解释。",
+        "secret": "SYNTHETIC_ONLY"
+      }
+    },
+    {
+      "name": "main getModelExplanationOutcome exact reply",
+      "method": "getModelExplanationOutcome",
+      "part": "reply",
+      "valid": true,
+      "value": {
+        "ok": true,
+        "data": {
+          "invocationId": "00000000-0000-4000-8000-000000000107",
+          "state": "completed",
+          "text": "合成解释。"
+        }
+      }
+    },
+    {
+      "name": "main cancelModelExplanation params",
+      "method": "cancelModelExplanation",
+      "part": "params",
+      "valid": true,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "invocationId": "00000000-0000-4000-8000-000000000107"
+      }
+    },
+    {
+      "name": "main cancelModelExplanation result",
+      "method": "cancelModelExplanation",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "cancelled",
+        "externalEffect": "unknown"
+      }
+    },
+    {
+      "name": "main cancelModelExplanation extra param",
+      "method": "cancelModelExplanation",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "untrustedExtra": "synthetic"
+      }
+    },
+    {
+      "name": "main cancelModelExplanation secret output forbidden",
+      "method": "cancelModelExplanation",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "cancelled",
+        "externalEffect": "unknown",
+        "secret": "SYNTHETIC_ONLY"
+      }
+    },
+    {
+      "name": "main cancelModelExplanation exact reply",
+      "method": "cancelModelExplanation",
+      "part": "reply",
+      "valid": true,
+      "value": {
+        "ok": true,
+        "data": {
+          "invocationId": "00000000-0000-4000-8000-000000000107",
+          "state": "cancelled",
+          "externalEffect": "unknown"
+        }
+      }
+    },
+    {
+      "name": "main configuration create null pair",
+      "method": "configureModel",
+      "part": "params",
+      "valid": true,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": null,
+        "configurationVersion": null,
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1"
+      }
+    },
+    {
+      "name": "main rejects mixed configure configurationId",
+      "method": "configureModel",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000190",
+        "configurationVersion": null,
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1"
+      }
+    },
+    {
+      "name": "main rejects mixed configure configurationVersion",
+      "method": "configureModel",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": null,
+        "configurationVersion": "00000000-0000-4000-8000-000000000190",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/v1",
+        "model": "synthetic-v1"
+      }
+    },
+    {
+      "name": "main rejects unsafe endpoint 'http://127.0.0.1:12345/probe'",
+      "method": "configureModel",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "http://127.0.0.1:12345/probe",
+        "model": "synthetic-v1"
+      }
+    },
+    {
+      "name": "main rejects unsafe endpoint 'https://user:pass@model.example.invalid/'",
+      "method": "configureModel",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://user:pass@model.example.invalid/",
+        "model": "synthetic-v1"
+      }
+    },
+    {
+      "name": "main rejects unsafe endpoint 'https://model.example.invalid/?secret=synthetic'",
+      "method": "configureModel",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/?secret=synthetic",
+        "model": "synthetic-v1"
+      }
+    },
+    {
+      "name": "main rejects unsafe endpoint 'https://model.example.invalid/#fragment'",
+      "method": "configureModel",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/#fragment",
+        "model": "synthetic-v1"
+      }
+    },
+    {
+      "name": "main rejects unsafe endpoint ' https://model.example.invalid/'",
+      "method": "configureModel",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": " https://model.example.invalid/",
+        "model": "synthetic-v1"
+      }
+    },
+    {
+      "name": "main rejects unsafe endpoint 'https://model.example.invalid/\\\\bad'",
+      "method": "configureModel",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/\\bad",
+        "model": "synthetic-v1"
+      }
+    },
+    {
+      "name": "main rejects unsafe endpoint 'https://model.example.invalid/\\x00'",
+      "method": "configureModel",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "displayName": "合成配置",
+        "endpoint": "https://model.example.invalid/\u0000",
+        "model": "synthetic-v1"
+      }
+    },
+    {
+      "name": "main credential rejects principal",
+      "method": "storeModelCredential",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "SYNTHETIC_CONTRACT_ONLY_KEY",
+        "principal": "synthetic"
+      }
+    },
+    {
+      "name": "main credential rejects credentialVersion",
+      "method": "storeModelCredential",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "SYNTHETIC_CONTRACT_ONLY_KEY",
+        "credentialVersion": "synthetic"
+      }
+    },
+    {
+      "name": "main credential rejects headers",
+      "method": "storeModelCredential",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "SYNTHETIC_CONTRACT_ONLY_KEY",
+        "headers": "synthetic"
+      }
+    },
+    {
+      "name": "main credential rejects body",
+      "method": "storeModelCredential",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "SYNTHETIC_CONTRACT_ONLY_KEY",
+        "body": "synthetic"
+      }
+    },
+    {
+      "name": "main credential rejects endpointPolicy",
+      "method": "storeModelCredential",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "SYNTHETIC_CONTRACT_ONLY_KEY",
+        "endpointPolicy": "synthetic"
+      }
+    },
+    {
+      "name": "main credential rejects secret variant 75",
+      "method": "storeModelCredential",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": ""
+      }
+    },
+    {
+      "name": "main credential rejects secret variant 76",
+      "method": "storeModelCredential",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "synthetic\nheader"
+      }
+    },
+    {
+      "name": "main credential rejects secret variant 77",
+      "method": "storeModelCredential",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+    },
+    {
+      "name": "main credential rejects secret variant 78",
+      "method": "storeModelCredential",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "configurationVersion": "00000000-0000-4000-8000-000000000103",
+        "secret": "synthetic key"
+      }
+    },
+    {
+      "name": "main no project status",
+      "method": "getModelAccessStatus",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "availability": "unavailable",
+        "contextId": null,
+        "projectId": null,
+        "privacy": "local",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [],
+        "invocations": []
+      }
+    },
+    {
+      "name": "main status rejects mismatched contextId",
+      "method": "getModelAccessStatus",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "availability": "unavailable",
+        "contextId": "00000000-0000-4000-8000-000000000191",
+        "projectId": null,
+        "privacy": "local",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [],
+        "invocations": []
+      }
+    },
+    {
+      "name": "main status rejects mismatched projectId",
+      "method": "getModelAccessStatus",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "availability": "unavailable",
+        "contextId": null,
+        "projectId": "00000000-0000-4000-8000-000000000191",
+        "privacy": "local",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [],
+        "invocations": []
+      }
+    },
+    {
+      "name": "main no context cannot retain selections",
+      "method": "getModelAccessStatus",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "availability": "unavailable",
+        "contextId": null,
+        "projectId": null,
+        "privacy": "local",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "invocations": []
+      }
+    },
+    {
+      "name": "main no context cannot retain invocations",
+      "method": "getModelAccessStatus",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "availability": "unavailable",
+        "contextId": null,
+        "projectId": null,
+        "privacy": "local",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [],
+        "invocations": [
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000107",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main duplicate configurations",
+      "method": "getModelAccessStatus",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "availability": "ready",
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "projectId": "00000000-0000-4000-8000-000000000110",
+        "privacy": "minimal",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          },
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "invocations": [
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000107",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main duplicate selection handles",
+      "method": "getModelAccessStatus",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "availability": "ready",
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "projectId": "00000000-0000-4000-8000-000000000110",
+        "privacy": "minimal",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          },
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "invocations": [
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000107",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main status other project selection",
+      "method": "getModelAccessStatus",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "availability": "ready",
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "projectId": "00000000-0000-4000-8000-000000000110",
+        "privacy": "minimal",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000192",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "invocations": [
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000107",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main active limit four",
+      "method": "getModelAccessStatus",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "availability": "ready",
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "projectId": "00000000-0000-4000-8000-000000000110",
+        "privacy": "minimal",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "invocations": [
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000200",
+            "state": "running"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000201",
+            "state": "running"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000202",
+            "state": "running"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000203",
+            "state": "running"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000204",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main terminal limit sixty four",
+      "method": "getModelAccessStatus",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "availability": "ready",
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "projectId": "00000000-0000-4000-8000-000000000110",
+        "privacy": "minimal",
+        "configurations": [
+          {
+            "configurationId": "00000000-0000-4000-8000-000000000102",
+            "configurationVersion": "00000000-0000-4000-8000-000000000103",
+            "displayName": "合成配置",
+            "endpoint": "https://model.example.invalid/v1",
+            "model": "synthetic-v1",
+            "credentialState": "configured"
+          }
+        ],
+        "selections": [
+          {
+            "kind": "fields",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "catalogId": "00000000-0000-4000-8000-000000000111",
+            "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+            "fields": [
+              {
+                "fieldId": "00000000-0000-4000-8000-000000000112",
+                "label": "允许的字段",
+                "type": "string",
+                "nullable": false,
+                "requires": []
+              }
+            ],
+            "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 128
+          }
+        ],
+        "invocations": [
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000200",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000201",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000202",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000203",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000204",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000205",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000206",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000207",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000208",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000209",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000210",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000211",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000212",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000213",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000214",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000215",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000216",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000217",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000218",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000219",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000220",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000221",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000222",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000223",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000224",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000225",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000226",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000227",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000228",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000229",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000230",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000231",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000232",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000233",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000234",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000235",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000236",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000237",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000238",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000239",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000240",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000241",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000242",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000243",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000244",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000245",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000246",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000247",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000248",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000249",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000250",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000251",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000252",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000253",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000254",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000255",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000256",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000257",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000258",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000259",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000260",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000261",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000262",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000263",
+            "state": "completed"
+          },
+          {
+            "invocationId": "00000000-0000-4000-8000-000000000264",
+            "state": "completed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main duplicate selectModelResults",
+      "method": "selectModelResults",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "results": [
+          {
+            "resultId": "00000000-0000-4000-8000-000000000108",
+            "selection": "current"
+          },
+          {
+            "resultId": "00000000-0000-4000-8000-000000000108",
+            "selection": "current"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main duplicate selectModelFields",
+      "method": "selectModelFields",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "fieldIds": ["00000000-0000-4000-8000-000000000112", "00000000-0000-4000-8000-000000000112"]
+      }
+    },
+    {
+      "name": "main duplicate previewModelExplanation",
+      "method": "previewModelExplanation",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "selectionIds": [
+          "00000000-0000-4000-8000-000000000104",
+          "00000000-0000-4000-8000-000000000104"
+        ]
+      }
+    },
+    {
+      "name": "main duplicate startModelExplanation",
+      "method": "startModelExplanation",
+      "part": "params",
+      "valid": false,
+      "value": {
+        "contextId": "00000000-0000-4000-8000-000000000101",
+        "configurationId": "00000000-0000-4000-8000-000000000102",
+        "grantId": "00000000-0000-4000-8000-000000000106",
+        "selectionIds": [
+          "00000000-0000-4000-8000-000000000104",
+          "00000000-0000-4000-8000-000000000104"
+        ]
+      }
+    },
+    {
+      "name": "main field descriptor excludes raw source",
+      "method": "getModelFieldCatalog",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": [],
+            "source": "synthetic"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main field descriptor excludes raw text",
+      "method": "getModelFieldCatalog",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": [],
+            "text": "synthetic"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main field descriptor excludes raw columnKey",
+      "method": "getModelFieldCatalog",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": [],
+            "columnKey": "synthetic"
+          }
+        ]
+      }
+    },
+    {
+      "name": "main field descriptor mismatches chosen id",
+      "method": "selectModelFields",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "kind": "fields",
+        "selectionId": "00000000-0000-4000-8000-000000000104",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000199",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": []
+          }
+        ],
+        "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "rowCount": 1,
+        "byteCount": 128
+      }
+    },
+    {
+      "name": "main projected dependency not selected",
+      "method": "selectModelFields",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "kind": "fields",
+        "selectionId": "00000000-0000-4000-8000-000000000104",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "fieldIds": ["00000000-0000-4000-8000-000000000112"],
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": ["00000000-0000-4000-8000-000000000199"]
+          }
+        ],
+        "projectionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "rowCount": 1,
+        "byteCount": 128
+      }
+    },
+    {
+      "name": "main field dependency cycle",
+      "method": "getModelFieldCatalog",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": ["00000000-0000-4000-8000-000000000112"]
+          }
+        ]
+      }
+    },
+    {
+      "name": "main repeated catalog identity",
+      "method": "getModelFieldCatalog",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "catalogId": "00000000-0000-4000-8000-000000000111",
+        "metadata": {
+          "resultId": "00000000-0000-4000-8000-000000000108",
+          "projectId": "00000000-0000-4000-8000-000000000110",
+          "jobId": "00000000-0000-4000-8000-000000000109",
+          "kind": "test",
+          "definitionId": "Q1",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "inputProjectRevision": 1,
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {
+            "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "scope": "asserted",
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "state": "current",
+          "staleReason": [],
+          "payloadStatus": "available",
+          "createdAtMs": 9,
+          "historicalSelectionRequired": false
+        },
+        "selection": "current",
+        "fields": [
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": []
+          },
+          {
+            "fieldId": "00000000-0000-4000-8000-000000000112",
+            "label": "允许的字段",
+            "type": "string",
+            "nullable": false,
+            "requires": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "main evicted whole material",
+      "method": "selectModelResults",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "selections": [
+          {
+            "kind": "whole-result",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "current",
+              "staleReason": [],
+              "payloadStatus": "evicted",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": false
+            },
+            "selection": "current",
+            "bodyHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 1024
+          }
+        ]
+      }
+    },
+    {
+      "name": "main current selection cannot pretend historical",
+      "method": "selectModelResults",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "selections": [
+          {
+            "kind": "whole-result",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "historical",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": true
+            },
+            "selection": "current",
+            "bodyHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 1024
+          }
+        ]
+      }
+    },
+    {
+      "name": "main explicit historical selection permitted",
+      "method": "selectModelResults",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "selections": [
+          {
+            "kind": "whole-result",
+            "selectionId": "00000000-0000-4000-8000-000000000104",
+            "metadata": {
+              "resultId": "00000000-0000-4000-8000-000000000108",
+              "projectId": "00000000-0000-4000-8000-000000000110",
+              "jobId": "00000000-0000-4000-8000-000000000109",
+              "kind": "test",
+              "definitionId": "Q1",
+              "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "inputProjectRevision": 1,
+              "dependencyVector": {
+                "facts:asserted": 1
+              },
+              "definitionSetDigests": {
+                "ontology": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "implementation": {
+                "executionSemanticsVersion": "E1",
+                "engineVersion": "0.1.0",
+                "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "scope": "asserted",
+              "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": "historical",
+              "staleReason": [],
+              "payloadStatus": "available",
+              "createdAtMs": 9,
+              "historicalSelectionRequired": true
+            },
+            "selection": "historical",
+            "bodyHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rowCount": 1,
+            "byteCount": 1024
+          }
+        ]
+      }
+    },
+    {
+      "name": "main separate outcome running",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "running"
+      }
+    },
+    {
+      "name": "main separate outcome cancelling",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "cancelling"
+      }
+    },
+    {
+      "name": "main cancellation no error mixed branch",
+      "method": "cancelModelExplanation",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "cancelled",
+        "externalEffect": "unknown",
+        "error": {
+          "code": "CANCELLED"
+        }
+      }
+    },
+    {
+      "name": "main exact fixed GATEWAY_INVALID_INPUT",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_INVALID_INPUT",
+          "messageKey": "gateway.invalidInput",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_INVALID_INPUT param",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_INVALID_INPUT",
+          "messageKey": "gateway.invalidInput",
+          "params": {
+            "path": "/synthetic/private",
+            "key": "SYNTHETIC_ONLY"
+          },
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_INVALID_INPUT retry",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_INVALID_INPUT",
+          "messageKey": "gateway.invalidInput",
+          "params": {},
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_INVALID_INPUT message",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_INVALID_INPUT",
+          "messageKey": "upstream.arbitrary",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main exact fixed GATEWAY_LOCAL_ONLY",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_LOCAL_ONLY",
+          "messageKey": "gateway.localOnly",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_LOCAL_ONLY param",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_LOCAL_ONLY",
+          "messageKey": "gateway.localOnly",
+          "params": {
+            "path": "/synthetic/private",
+            "key": "SYNTHETIC_ONLY"
+          },
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_LOCAL_ONLY retry",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_LOCAL_ONLY",
+          "messageKey": "gateway.localOnly",
+          "params": {},
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_LOCAL_ONLY message",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_LOCAL_ONLY",
+          "messageKey": "upstream.arbitrary",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main exact fixed GATEWAY_AUTHORIZATION_REQUIRED",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_AUTHORIZATION_REQUIRED",
+          "messageKey": "gateway.authorizationRequired",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_AUTHORIZATION_REQUIRED param",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_AUTHORIZATION_REQUIRED",
+          "messageKey": "gateway.authorizationRequired",
+          "params": {
+            "path": "/synthetic/private",
+            "key": "SYNTHETIC_ONLY"
+          },
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_AUTHORIZATION_REQUIRED retry",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_AUTHORIZATION_REQUIRED",
+          "messageKey": "gateway.authorizationRequired",
+          "params": {},
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_AUTHORIZATION_REQUIRED message",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_AUTHORIZATION_REQUIRED",
+          "messageKey": "upstream.arbitrary",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main exact fixed GATEWAY_SCOPE_EXCEEDED",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_SCOPE_EXCEEDED",
+          "messageKey": "gateway.scopeExceeded",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_SCOPE_EXCEEDED param",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_SCOPE_EXCEEDED",
+          "messageKey": "gateway.scopeExceeded",
+          "params": {
+            "path": "/synthetic/private",
+            "key": "SYNTHETIC_ONLY"
+          },
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_SCOPE_EXCEEDED retry",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_SCOPE_EXCEEDED",
+          "messageKey": "gateway.scopeExceeded",
+          "params": {},
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_SCOPE_EXCEEDED message",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_SCOPE_EXCEEDED",
+          "messageKey": "upstream.arbitrary",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main exact fixed GATEWAY_CONFIGURATION_CHANGED",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_CONFIGURATION_CHANGED",
+          "messageKey": "gateway.configurationChanged",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_CONFIGURATION_CHANGED param",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_CONFIGURATION_CHANGED",
+          "messageKey": "gateway.configurationChanged",
+          "params": {
+            "path": "/synthetic/private",
+            "key": "SYNTHETIC_ONLY"
+          },
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_CONFIGURATION_CHANGED retry",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_CONFIGURATION_CHANGED",
+          "messageKey": "gateway.configurationChanged",
+          "params": {},
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_CONFIGURATION_CHANGED message",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_CONFIGURATION_CHANGED",
+          "messageKey": "upstream.arbitrary",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main exact fixed GATEWAY_CREDENTIAL_UNAVAILABLE",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_CREDENTIAL_UNAVAILABLE",
+          "messageKey": "gateway.credentialUnavailable",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_CREDENTIAL_UNAVAILABLE param",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_CREDENTIAL_UNAVAILABLE",
+          "messageKey": "gateway.credentialUnavailable",
+          "params": {
+            "path": "/synthetic/private",
+            "key": "SYNTHETIC_ONLY"
+          },
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_CREDENTIAL_UNAVAILABLE retry",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_CREDENTIAL_UNAVAILABLE",
+          "messageKey": "gateway.credentialUnavailable",
+          "params": {},
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_CREDENTIAL_UNAVAILABLE message",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_CREDENTIAL_UNAVAILABLE",
+          "messageKey": "upstream.arbitrary",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main exact fixed GATEWAY_AUDIT_UNAVAILABLE",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_AUDIT_UNAVAILABLE",
+          "messageKey": "gateway.auditUnavailable",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_AUDIT_UNAVAILABLE param",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_AUDIT_UNAVAILABLE",
+          "messageKey": "gateway.auditUnavailable",
+          "params": {
+            "path": "/synthetic/private",
+            "key": "SYNTHETIC_ONLY"
+          },
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_AUDIT_UNAVAILABLE retry",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_AUDIT_UNAVAILABLE",
+          "messageKey": "gateway.auditUnavailable",
+          "params": {},
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_AUDIT_UNAVAILABLE message",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_AUDIT_UNAVAILABLE",
+          "messageKey": "upstream.arbitrary",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main exact fixed GATEWAY_REDIRECT_REJECTED",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_REDIRECT_REJECTED",
+          "messageKey": "gateway.redirectRejected",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_REDIRECT_REJECTED param",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_REDIRECT_REJECTED",
+          "messageKey": "gateway.redirectRejected",
+          "params": {
+            "path": "/synthetic/private",
+            "key": "SYNTHETIC_ONLY"
+          },
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_REDIRECT_REJECTED retry",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_REDIRECT_REJECTED",
+          "messageKey": "gateway.redirectRejected",
+          "params": {},
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_REDIRECT_REJECTED message",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_REDIRECT_REJECTED",
+          "messageKey": "upstream.arbitrary",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main exact fixed GATEWAY_MODEL_UNAVAILABLE",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_MODEL_UNAVAILABLE",
+          "messageKey": "gateway.modelUnavailable",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_MODEL_UNAVAILABLE param",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_MODEL_UNAVAILABLE",
+          "messageKey": "gateway.modelUnavailable",
+          "params": {
+            "path": "/synthetic/private",
+            "key": "SYNTHETIC_ONLY"
+          },
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_MODEL_UNAVAILABLE retry",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_MODEL_UNAVAILABLE",
+          "messageKey": "gateway.modelUnavailable",
+          "params": {},
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_MODEL_UNAVAILABLE message",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_MODEL_UNAVAILABLE",
+          "messageKey": "upstream.arbitrary",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main exact fixed GATEWAY_RESPONSE_LIMIT",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": true,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_RESPONSE_LIMIT",
+          "messageKey": "gateway.responseLimit",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_RESPONSE_LIMIT param",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_RESPONSE_LIMIT",
+          "messageKey": "gateway.responseLimit",
+          "params": {
+            "path": "/synthetic/private",
+            "key": "SYNTHETIC_ONLY"
+          },
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_RESPONSE_LIMIT retry",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_RESPONSE_LIMIT",
+          "messageKey": "gateway.responseLimit",
+          "params": {},
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "main rejects GATEWAY_RESPONSE_LIMIT message",
+      "method": "getModelExplanationOutcome",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "failed",
+        "error": {
+          "code": "GATEWAY_RESPONSE_LIMIT",
+          "messageKey": "upstream.arbitrary",
+          "params": {},
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "main cancel acknowledgment cannot remain running",
+      "method": "cancelModelExplanation",
+      "part": "result",
+      "valid": false,
+      "value": {
+        "invocationId": "00000000-0000-4000-8000-000000000107",
+        "state": "running"
+      }
+    }
   ]
 }

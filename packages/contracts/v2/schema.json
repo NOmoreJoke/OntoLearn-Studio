@@ -838,6 +838,226 @@
           },
           "required": ["code", "messageKey", "retryable", "params"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "GATEWAY_INVALID_INPUT"
+            },
+            "messageKey": {
+              "const": "gateway.invalidInput"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "GATEWAY_LOCAL_ONLY"
+            },
+            "messageKey": {
+              "const": "gateway.localOnly"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "GATEWAY_AUTHORIZATION_REQUIRED"
+            },
+            "messageKey": {
+              "const": "gateway.authorizationRequired"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "GATEWAY_SCOPE_EXCEEDED"
+            },
+            "messageKey": {
+              "const": "gateway.scopeExceeded"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "GATEWAY_CONFIGURATION_CHANGED"
+            },
+            "messageKey": {
+              "const": "gateway.configurationChanged"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "GATEWAY_CREDENTIAL_UNAVAILABLE"
+            },
+            "messageKey": {
+              "const": "gateway.credentialUnavailable"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "GATEWAY_AUDIT_UNAVAILABLE"
+            },
+            "messageKey": {
+              "const": "gateway.auditUnavailable"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "GATEWAY_REDIRECT_REJECTED"
+            },
+            "messageKey": {
+              "const": "gateway.redirectRejected"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "GATEWAY_MODEL_UNAVAILABLE"
+            },
+            "messageKey": {
+              "const": "gateway.modelUnavailable"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "GATEWAY_RESPONSE_LIMIT"
+            },
+            "messageKey": {
+              "const": "gateway.responseLimit"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
         }
       ]
     },
@@ -4746,6 +4966,1237 @@
       },
       "minItems": 3,
       "maxItems": 5
+    },
+    "modelPrivacy": {
+      "enum": ["local", "minimal", "project"]
+    },
+    "modelStoredSelection": {
+      "enum": ["current", "historical"]
+    },
+    "modelEndpoint": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "modelName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "modelConfiguration": {
+      "type": "object",
+      "properties": {
+        "configurationId": {
+          "$ref": "#/$defs/id"
+        },
+        "configurationVersion": {
+          "$ref": "#/$defs/id"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "endpoint": {
+          "$ref": "#/$defs/modelEndpoint"
+        },
+        "model": {
+          "$ref": "#/$defs/modelName"
+        },
+        "credentialState": {
+          "enum": ["missing", "configured", "unavailable"]
+        }
+      },
+      "required": [
+        "configurationId",
+        "configurationVersion",
+        "displayName",
+        "endpoint",
+        "model",
+        "credentialState"
+      ],
+      "additionalProperties": false
+    },
+    "modelCatalogField": {
+      "type": "object",
+      "properties": {
+        "fieldId": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "type": {
+          "enum": ["string", "number", "boolean"]
+        },
+        "nullable": {
+          "type": "boolean"
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 16
+        }
+      },
+      "required": ["fieldId", "label", "type", "nullable", "requires"],
+      "additionalProperties": false
+    },
+    "modelFieldCatalog": {
+      "type": "object",
+      "properties": {
+        "catalogId": {
+          "$ref": "#/$defs/id"
+        },
+        "metadata": {
+          "$ref": "#/$defs/result"
+        },
+        "selection": {
+          "$ref": "#/$defs/modelStoredSelection"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/modelCatalogField"
+          },
+          "minItems": 1,
+          "maxItems": 16
+        }
+      },
+      "required": ["catalogId", "metadata", "selection", "fields"],
+      "additionalProperties": false
+    },
+    "modelWholeResultSelection": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "whole-result"
+        },
+        "selectionId": {
+          "$ref": "#/$defs/id"
+        },
+        "metadata": {
+          "$ref": "#/$defs/result"
+        },
+        "selection": {
+          "$ref": "#/$defs/modelStoredSelection"
+        },
+        "bodyHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "rowCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1024
+        },
+        "byteCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65536
+        }
+      },
+      "required": [
+        "kind",
+        "selectionId",
+        "metadata",
+        "selection",
+        "bodyHash",
+        "rowCount",
+        "byteCount"
+      ],
+      "additionalProperties": false
+    },
+    "modelFieldSelection": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "fields"
+        },
+        "selectionId": {
+          "$ref": "#/$defs/id"
+        },
+        "metadata": {
+          "$ref": "#/$defs/result"
+        },
+        "selection": {
+          "$ref": "#/$defs/modelStoredSelection"
+        },
+        "catalogId": {
+          "$ref": "#/$defs/id"
+        },
+        "fieldIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "maxItems": 16
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/modelCatalogField"
+          },
+          "minItems": 1,
+          "maxItems": 16
+        },
+        "projectionHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "rowCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1024
+        },
+        "byteCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65536
+        }
+      },
+      "required": [
+        "kind",
+        "selectionId",
+        "metadata",
+        "selection",
+        "catalogId",
+        "fieldIds",
+        "fields",
+        "projectionHash",
+        "rowCount",
+        "byteCount"
+      ],
+      "additionalProperties": false
+    },
+    "modelSelection": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/modelWholeResultSelection"
+        },
+        {
+          "$ref": "#/$defs/modelFieldSelection"
+        }
+      ]
+    },
+    "modelInvocationState": {
+      "enum": ["running", "cancelling", "completed", "failed", "cancelled"]
+    },
+    "modelInvocationSummary": {
+      "type": "object",
+      "properties": {
+        "invocationId": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "$ref": "#/$defs/modelInvocationState"
+        }
+      },
+      "required": ["invocationId", "state"],
+      "additionalProperties": false
+    },
+    "modelAccessStatus": {
+      "type": "object",
+      "properties": {
+        "availability": {
+          "enum": ["ready", "unavailable"]
+        },
+        "contextId": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "$ref": "#/$defs/id"
+            }
+          ]
+        },
+        "projectId": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "$ref": "#/$defs/id"
+            }
+          ]
+        },
+        "privacy": {
+          "$ref": "#/$defs/modelPrivacy"
+        },
+        "configurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/modelConfiguration"
+          },
+          "minItems": 0,
+          "maxItems": 32
+        },
+        "selections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/modelSelection"
+          },
+          "minItems": 0,
+          "maxItems": 64
+        },
+        "invocations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/modelInvocationSummary"
+          },
+          "minItems": 0,
+          "maxItems": 68
+        }
+      },
+      "required": [
+        "availability",
+        "contextId",
+        "projectId",
+        "privacy",
+        "configurations",
+        "selections",
+        "invocations"
+      ],
+      "additionalProperties": false
+    },
+    "modelExplanationPreview": {
+      "type": "object",
+      "properties": {
+        "previewId": {
+          "$ref": "#/$defs/id"
+        },
+        "configurationId": {
+          "$ref": "#/$defs/id"
+        },
+        "configurationVersion": {
+          "$ref": "#/$defs/id"
+        },
+        "endpoint": {
+          "$ref": "#/$defs/modelEndpoint"
+        },
+        "model": {
+          "$ref": "#/$defs/modelName"
+        },
+        "principal": {
+          "$ref": "#/$defs/id"
+        },
+        "purpose": {
+          "const": "explain"
+        },
+        "privacy": {
+          "enum": ["minimal", "project"]
+        },
+        "selections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/modelSelection"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "authorization": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "state": {
+                  "const": "required"
+                }
+              },
+              "required": ["state"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "state": {
+                  "const": "reusable"
+                },
+                "grantId": {
+                  "$ref": "#/$defs/id"
+                }
+              },
+              "required": ["state", "grantId"],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": [
+        "previewId",
+        "configurationId",
+        "configurationVersion",
+        "endpoint",
+        "model",
+        "principal",
+        "purpose",
+        "privacy",
+        "selections",
+        "authorization"
+      ],
+      "additionalProperties": false
+    },
+    "modelExplanationOutcome": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "invocationId": {
+              "$ref": "#/$defs/id"
+            },
+            "state": {
+              "const": "running"
+            }
+          },
+          "required": ["invocationId", "state"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "invocationId": {
+              "$ref": "#/$defs/id"
+            },
+            "state": {
+              "const": "cancelling"
+            }
+          },
+          "required": ["invocationId", "state"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "invocationId": {
+              "$ref": "#/$defs/id"
+            },
+            "state": {
+              "const": "completed"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1048576
+            }
+          },
+          "required": ["invocationId", "state", "text"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "invocationId": {
+              "$ref": "#/$defs/id"
+            },
+            "state": {
+              "const": "cancelled"
+            },
+            "externalEffect": {
+              "const": "unknown"
+            }
+          },
+          "required": ["invocationId", "state", "externalEffect"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "invocationId": {
+              "$ref": "#/$defs/id"
+            },
+            "state": {
+              "const": "failed"
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["invocationId", "state", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelParams_getModelAccessStatus": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "modelResult_getModelAccessStatus": {
+      "$ref": "#/$defs/modelAccessStatus"
+    },
+    "modelReply_getModelAccessStatus": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "$ref": "#/$defs/modelResult_getModelAccessStatus"
+            }
+          },
+          "required": ["ok", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelParams_configureModel": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "contextId": {
+              "$ref": "#/$defs/id"
+            },
+            "configurationId": {
+              "const": null
+            },
+            "configurationVersion": {
+              "const": null
+            },
+            "displayName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "endpoint": {
+              "$ref": "#/$defs/modelEndpoint"
+            },
+            "model": {
+              "$ref": "#/$defs/modelName"
+            }
+          },
+          "required": [
+            "contextId",
+            "configurationId",
+            "configurationVersion",
+            "displayName",
+            "endpoint",
+            "model"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contextId": {
+              "$ref": "#/$defs/id"
+            },
+            "configurationId": {
+              "$ref": "#/$defs/id"
+            },
+            "configurationVersion": {
+              "$ref": "#/$defs/id"
+            },
+            "displayName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "endpoint": {
+              "$ref": "#/$defs/modelEndpoint"
+            },
+            "model": {
+              "$ref": "#/$defs/modelName"
+            }
+          },
+          "required": [
+            "contextId",
+            "configurationId",
+            "configurationVersion",
+            "displayName",
+            "endpoint",
+            "model"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelResult_configureModel": {
+      "$ref": "#/$defs/modelConfiguration"
+    },
+    "modelReply_configureModel": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "$ref": "#/$defs/modelResult_configureModel"
+            }
+          },
+          "required": ["ok", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelParams_storeModelCredential": {
+      "type": "object",
+      "properties": {
+        "contextId": {
+          "$ref": "#/$defs/id"
+        },
+        "configurationId": {
+          "$ref": "#/$defs/id"
+        },
+        "configurationVersion": {
+          "$ref": "#/$defs/id"
+        },
+        "secret": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^[!-~]{1,4096}$"
+        }
+      },
+      "required": ["contextId", "configurationId", "configurationVersion", "secret"],
+      "additionalProperties": false
+    },
+    "modelResult_storeModelCredential": {
+      "type": "object",
+      "properties": {
+        "configurationId": {
+          "$ref": "#/$defs/id"
+        },
+        "configurationVersion": {
+          "$ref": "#/$defs/id"
+        },
+        "credentialState": {
+          "const": "configured"
+        }
+      },
+      "required": ["configurationId", "configurationVersion", "credentialState"],
+      "additionalProperties": false
+    },
+    "modelReply_storeModelCredential": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "$ref": "#/$defs/modelResult_storeModelCredential"
+            }
+          },
+          "required": ["ok", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelParams_setModelPrivacy": {
+      "type": "object",
+      "properties": {
+        "contextId": {
+          "$ref": "#/$defs/id"
+        },
+        "privacy": {
+          "$ref": "#/$defs/modelPrivacy"
+        }
+      },
+      "required": ["contextId", "privacy"],
+      "additionalProperties": false
+    },
+    "modelResult_setModelPrivacy": {
+      "type": "object",
+      "properties": {
+        "privacy": {
+          "$ref": "#/$defs/modelPrivacy"
+        }
+      },
+      "required": ["privacy"],
+      "additionalProperties": false
+    },
+    "modelReply_setModelPrivacy": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "$ref": "#/$defs/modelResult_setModelPrivacy"
+            }
+          },
+          "required": ["ok", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelParams_selectModelResults": {
+      "type": "object",
+      "properties": {
+        "contextId": {
+          "$ref": "#/$defs/id"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "resultId": {
+                "$ref": "#/$defs/id"
+              },
+              "selection": {
+                "$ref": "#/$defs/modelStoredSelection"
+              }
+            },
+            "required": ["resultId", "selection"],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 64
+        }
+      },
+      "required": ["contextId", "results"],
+      "additionalProperties": false
+    },
+    "modelResult_selectModelResults": {
+      "type": "object",
+      "properties": {
+        "selections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/modelWholeResultSelection"
+          },
+          "minItems": 0,
+          "maxItems": 64
+        }
+      },
+      "required": ["selections"],
+      "additionalProperties": false
+    },
+    "modelReply_selectModelResults": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "$ref": "#/$defs/modelResult_selectModelResults"
+            }
+          },
+          "required": ["ok", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelParams_getModelFieldCatalog": {
+      "type": "object",
+      "properties": {
+        "contextId": {
+          "$ref": "#/$defs/id"
+        },
+        "resultId": {
+          "$ref": "#/$defs/id"
+        },
+        "selection": {
+          "$ref": "#/$defs/modelStoredSelection"
+        }
+      },
+      "required": ["contextId", "resultId", "selection"],
+      "additionalProperties": false
+    },
+    "modelResult_getModelFieldCatalog": {
+      "$ref": "#/$defs/modelFieldCatalog"
+    },
+    "modelReply_getModelFieldCatalog": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "$ref": "#/$defs/modelResult_getModelFieldCatalog"
+            }
+          },
+          "required": ["ok", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelParams_selectModelFields": {
+      "type": "object",
+      "properties": {
+        "contextId": {
+          "$ref": "#/$defs/id"
+        },
+        "catalogId": {
+          "$ref": "#/$defs/id"
+        },
+        "fieldIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "maxItems": 16
+        }
+      },
+      "required": ["contextId", "catalogId", "fieldIds"],
+      "additionalProperties": false
+    },
+    "modelResult_selectModelFields": {
+      "$ref": "#/$defs/modelFieldSelection"
+    },
+    "modelReply_selectModelFields": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "$ref": "#/$defs/modelResult_selectModelFields"
+            }
+          },
+          "required": ["ok", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelParams_previewModelExplanation": {
+      "type": "object",
+      "properties": {
+        "contextId": {
+          "$ref": "#/$defs/id"
+        },
+        "configurationId": {
+          "$ref": "#/$defs/id"
+        },
+        "selectionIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        }
+      },
+      "required": ["contextId", "configurationId", "selectionIds"],
+      "additionalProperties": false
+    },
+    "modelResult_previewModelExplanation": {
+      "$ref": "#/$defs/modelExplanationPreview"
+    },
+    "modelReply_previewModelExplanation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "$ref": "#/$defs/modelResult_previewModelExplanation"
+            }
+          },
+          "required": ["ok", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelParams_confirmModelAuthorization": {
+      "type": "object",
+      "properties": {
+        "contextId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewId": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": ["contextId", "previewId"],
+      "additionalProperties": false
+    },
+    "modelResult_confirmModelAuthorization": {
+      "type": "object",
+      "properties": {
+        "grantId": {
+          "$ref": "#/$defs/id"
+        },
+        "configurationVersion": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": ["grantId", "configurationVersion"],
+      "additionalProperties": false
+    },
+    "modelReply_confirmModelAuthorization": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "$ref": "#/$defs/modelResult_confirmModelAuthorization"
+            }
+          },
+          "required": ["ok", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelParams_startModelExplanation": {
+      "type": "object",
+      "properties": {
+        "contextId": {
+          "$ref": "#/$defs/id"
+        },
+        "configurationId": {
+          "$ref": "#/$defs/id"
+        },
+        "grantId": {
+          "$ref": "#/$defs/id"
+        },
+        "selectionIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        }
+      },
+      "required": ["contextId", "configurationId", "grantId", "selectionIds"],
+      "additionalProperties": false
+    },
+    "modelResult_startModelExplanation": {
+      "type": "object",
+      "properties": {
+        "invocationId": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "const": "running"
+        }
+      },
+      "required": ["invocationId", "state"],
+      "additionalProperties": false
+    },
+    "modelReply_startModelExplanation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "$ref": "#/$defs/modelResult_startModelExplanation"
+            }
+          },
+          "required": ["ok", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelParams_getModelExplanationOutcome": {
+      "type": "object",
+      "properties": {
+        "contextId": {
+          "$ref": "#/$defs/id"
+        },
+        "invocationId": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": ["contextId", "invocationId"],
+      "additionalProperties": false
+    },
+    "modelResult_getModelExplanationOutcome": {
+      "$ref": "#/$defs/modelExplanationOutcome"
+    },
+    "modelReply_getModelExplanationOutcome": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "$ref": "#/$defs/modelResult_getModelExplanationOutcome"
+            }
+          },
+          "required": ["ok", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelParams_cancelModelExplanation": {
+      "type": "object",
+      "properties": {
+        "contextId": {
+          "$ref": "#/$defs/id"
+        },
+        "invocationId": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": ["contextId", "invocationId"],
+      "additionalProperties": false
+    },
+    "modelResult_cancelModelExplanation": {
+      "$ref": "#/$defs/modelCancelOutcome"
+    },
+    "modelReply_cancelModelExplanation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "$ref": "#/$defs/modelResult_cancelModelExplanation"
+            }
+          },
+          "required": ["ok", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "modelCancelOutcome": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "invocationId": {
+              "$ref": "#/$defs/id"
+            },
+            "state": {
+              "const": "cancelling"
+            }
+          },
+          "required": ["invocationId", "state"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "invocationId": {
+              "$ref": "#/$defs/id"
+            },
+            "state": {
+              "const": "completed"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1048576
+            }
+          },
+          "required": ["invocationId", "state", "text"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "invocationId": {
+              "$ref": "#/$defs/id"
+            },
+            "state": {
+              "const": "cancelled"
+            },
+            "externalEffect": {
+              "const": "unknown"
+            }
+          },
+          "required": ["invocationId", "state", "externalEffect"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "invocationId": {
+              "$ref": "#/$defs/id"
+            },
+            "state": {
+              "const": "failed"
+            },
+            "error": {
+              "$ref": "#/$defs/error"
+            }
+          },
+          "required": ["invocationId", "state", "error"],
+          "additionalProperties": false
+        }
+      ]
     }
   },
   "$ref": "#/$defs/envelope"

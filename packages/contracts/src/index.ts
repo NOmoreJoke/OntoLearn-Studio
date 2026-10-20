@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { validateV2 } from './v2'
+import errorCatalog from '../v2/errors.json'
 
 export const PROTOCOL_VERSION = 2 as const
 export const healthSchema = z
@@ -27,6 +28,35 @@ export function safeError(value: unknown): SafeError {
   return validateV2('error', value)
     ? structuredClone(value as SafeError)
     : structuredClone(internalError)
+}
+export const modelGatewayErrorCodeMap = Object.freeze({
+  INVALID_INPUT: 'GATEWAY_INVALID_INPUT',
+  LOCAL_ONLY: 'GATEWAY_LOCAL_ONLY',
+  AUTHORIZATION_REQUIRED: 'GATEWAY_AUTHORIZATION_REQUIRED',
+  SCOPE_EXCEEDED: 'GATEWAY_SCOPE_EXCEEDED',
+  CONFIGURATION_CHANGED: 'GATEWAY_CONFIGURATION_CHANGED',
+  CREDENTIAL_UNAVAILABLE: 'GATEWAY_CREDENTIAL_UNAVAILABLE',
+  AUDIT_UNAVAILABLE: 'GATEWAY_AUDIT_UNAVAILABLE',
+  REDIRECT_REJECTED: 'GATEWAY_REDIRECT_REJECTED',
+  MODEL_UNAVAILABLE: 'GATEWAY_MODEL_UNAVAILABLE',
+  RESPONSE_LIMIT: 'GATEWAY_RESPONSE_LIMIT',
+} as const)
+export type ModelGatewayFailureCode = keyof typeof modelGatewayErrorCodeMap
+/** CANCELLED is intentionally absent: project it to the independent outcome branch. */
+export function modelGatewayError(code: unknown): SafeError {
+  if (typeof code !== 'string' || !Object.hasOwn(modelGatewayErrorCodeMap, code))
+    return structuredClone(internalError)
+  const publicCode = modelGatewayErrorCodeMap[code as ModelGatewayFailureCode]
+  const entry = errorCatalog.codes[publicCode]
+  return safeError({ code: publicCode, messageKey: entry.messageKey, params: {}, retryable: false })
+}
+export function modelInvalidRequestError(): SafeError {
+  return safeError({
+    code: 'INVALID_REQUEST',
+    messageKey: 'protocol.invalidRequest',
+    params: { field: 'params' },
+    retryable: false,
+  })
 }
 export type BridgeResult<T> = { ok: true; data: T } | { ok: false; error: SafeError }
 export type HealthResult = BridgeResult<EngineHealth>
@@ -122,8 +152,166 @@ export interface ResultPageOptions {
   pageSize: number
   cursor: string | null
 }
+// Main-owned S3 DTOs. These methods never enter the Python JSONL method registry.
+export type ModelPrivacy = 'local' | 'minimal' | 'project'
+export type ModelStoredSelection = 'current' | 'historical'
+export interface ModelResultMetadata {
+  resultId: string
+  projectId: string
+  jobId: string
+  kind: 'query' | 'reasoning' | 'validation' | 'behavior' | 'scenario' | 'test' | 'receipt'
+  definitionId: string
+  inputSnapshotId: string
+  inputProjectRevision: number
+  dependencyVector: Record<string, number>
+  definitionSetDigests: Record<string, string>
+  implementation: {
+    executionSemanticsVersion: string
+    engineVersion: string
+    dependencyLockHash: string
+  }
+  scope: 'asserted' | 'asserted+derived' | 'scenario'
+  parametersHash: string
+  state: 'current' | 'stale' | 'historical'
+  staleReason: { code: string; dependency: string; before: number; after: number }[]
+  payloadStatus: 'available' | 'evicted'
+  createdAtMs: number
+  historicalSelectionRequired: boolean
+}
+export interface ModelConfiguration {
+  configurationId: string
+  configurationVersion: string
+  displayName: string
+  endpoint: string
+  model: string
+  credentialState: 'missing' | 'configured' | 'unavailable'
+}
+export interface ModelWholeResultSelection {
+  kind: 'whole-result'
+  selectionId: string
+  metadata: ModelResultMetadata
+  selection: ModelStoredSelection
+  bodyHash: string
+  rowCount: number
+  byteCount: number
+}
+export interface ModelFieldSelection {
+  kind: 'fields'
+  selectionId: string
+  metadata: ModelResultMetadata
+  selection: ModelStoredSelection
+  catalogId: string
+  fieldIds: string[]
+  fields: ModelCatalogField[]
+  projectionHash: string
+  rowCount: number
+  byteCount: number
+}
+export type ModelSelection = ModelWholeResultSelection | ModelFieldSelection
+export interface ModelCatalogField {
+  fieldId: string
+  label: string
+  type: 'string' | 'number' | 'boolean'
+  nullable: boolean
+  requires: string[]
+}
+export interface ModelFieldCatalog {
+  catalogId: string
+  metadata: ModelResultMetadata
+  selection: ModelStoredSelection
+  fields: ModelCatalogField[]
+}
+export type ModelInvocationState = 'running' | 'cancelling' | 'completed' | 'cancelled' | 'failed'
+export type ModelExplanationOutcome =
+  | { invocationId: string; state: 'running' }
+  | { invocationId: string; state: 'cancelling' }
+  | { invocationId: string; state: 'completed'; text: string }
+  | { invocationId: string; state: 'cancelled'; externalEffect: 'unknown' }
+  | { invocationId: string; state: 'failed'; error: SafeError }
+export interface ModelAccessStatus {
+  availability: 'ready' | 'unavailable'
+  contextId: string | null
+  projectId: string | null
+  privacy: ModelPrivacy
+  configurations: ModelConfiguration[]
+  selections: ModelSelection[]
+  invocations: { invocationId: string; state: ModelInvocationState }[]
+}
+export interface ModelExplanationPreview {
+  previewId: string
+  configurationId: string
+  configurationVersion: string
+  endpoint: string
+  model: string
+  principal: string
+  purpose: 'explain'
+  privacy: 'minimal' | 'project'
+  selections: ModelSelection[]
+  authorization: { state: 'required' } | { state: 'reusable'; grantId: string }
+}
+export interface ModelParamsMap {
+  getModelAccessStatus: Record<string, never>
+  configureModel: {
+    contextId: string
+    displayName: string
+    endpoint: string
+    model: string
+  } & (
+    | { configurationId: null; configurationVersion: null }
+    | { configurationId: string; configurationVersion: string }
+  )
+  storeModelCredential: {
+    contextId: string
+    configurationId: string
+    configurationVersion: string
+    secret: string
+  }
+  setModelPrivacy: { contextId: string; privacy: ModelPrivacy }
+  selectModelResults: {
+    contextId: string
+    results: { resultId: string; selection: ModelStoredSelection }[]
+  }
+  getModelFieldCatalog: { contextId: string; resultId: string; selection: ModelStoredSelection }
+  selectModelFields: { contextId: string; catalogId: string; fieldIds: string[] }
+  previewModelExplanation: {
+    contextId: string
+    configurationId: string
+    selectionIds: string[]
+  }
+  confirmModelAuthorization: { contextId: string; previewId: string }
+  startModelExplanation: {
+    contextId: string
+    configurationId: string
+    grantId: string
+    selectionIds: string[]
+  }
+  getModelExplanationOutcome: { contextId: string; invocationId: string }
+  cancelModelExplanation: { contextId: string; invocationId: string }
+}
+export interface ModelResultMap {
+  getModelAccessStatus: ModelAccessStatus
+  configureModel: ModelConfiguration
+  storeModelCredential: {
+    configurationId: string
+    configurationVersion: string
+    credentialState: 'configured'
+  }
+  setModelPrivacy: { privacy: ModelPrivacy }
+  selectModelResults: { selections: ModelWholeResultSelection[] }
+  getModelFieldCatalog: ModelFieldCatalog
+  selectModelFields: ModelFieldSelection
+  previewModelExplanation: ModelExplanationPreview
+  confirmModelAuthorization: { grantId: string; configurationVersion: string }
+  startModelExplanation: { invocationId: string; state: 'running' }
+  getModelExplanationOutcome: ModelExplanationOutcome
+  cancelModelExplanation: Exclude<ModelExplanationOutcome, { state: 'running' }>
+}
+export type ModelMethod = keyof ModelParamsMap
+export type ModelBridge = {
+  [M in ModelMethod]: (params: ModelParamsMap[M]) => Promise<BridgeResult<ModelResultMap[M]>>
+}
 // Renderer receives named operations only; project authority comes from main, never a supplied UUID.
-export interface DesktopBridge {
+export interface DesktopBridge extends ModelBridge {
   getEngineHealth(): Promise<HealthResult>
   restoreTasks(): Promise<BridgeResult<TaskView>>
   getActiveProject(): Promise<BridgeResult<ProjectView | null>>
