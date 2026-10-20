@@ -28,6 +28,7 @@ export function App() {
   const current = useRef<TaskView | undefined>(undefined)
   const latestGeneration = useRef(-1)
   const uncertain = useRef(false)
+  const connectionEpoch = useRef(0)
   const updateTasks = useCallback((value: TaskView) => {
     if (value.generation < latestGeneration.current) return false
     latestGeneration.current = value.generation
@@ -66,6 +67,7 @@ export function App() {
         )
           return
         latestGeneration.current = update.generation
+        connectionEpoch.current++
         uncertain.current = true
         if (view?.project?.projectId === update.projectId)
           updateTasks({ ...view, generation: update.generation })
@@ -145,6 +147,10 @@ export function App() {
   }
   const [checking, setChecking] = useState(false)
   async function checkEngine() {
+    const generation = latestGeneration.current
+    const epoch = connectionEpoch.current
+    const acceptsReply = () =>
+      generation === latestGeneration.current && epoch === connectionEpoch.current
     setChecking(true)
     try {
       const response = window.ontolearn
@@ -158,9 +164,9 @@ export function App() {
               retryable: true,
             }),
           }
-      setResult(response)
+      if (acceptsReply()) setResult(response)
     } catch {
-      setResult({ ok: false, error: safeError(undefined) })
+      if (acceptsReply()) setResult({ ok: false, error: safeError(undefined) })
     } finally {
       setChecking(false)
     }
