@@ -34,6 +34,19 @@ def digest(value: object) -> str:
 class Conflict(ValueError):
     """A plan must be previewed again or its ownership conflict resolved."""
 
+    def __init__(self, message: str, *, category: str = "unknown", params: dict | None = None):
+        super().__init__(message)  # Internal diagnostics only; never parse or send this text.
+        self.category = category
+        self.params = params or {}
+        self.code = {
+            "identity": "IDENTITY_CONFLICT",
+            "revision": "REVISION_CONFLICT",
+            "state": "INVALID_STATE",
+            "rounds": "RESOURCE_LIMIT",
+            "dependency": "INVALID_REQUEST",
+            "input": "INVALID_REQUEST",
+        }.get(category, "INTERNAL_ERROR")
+
 
 class Store:
     def __init__(self, path: str | Path, migration_hook: Hook = lambda _: None):
@@ -60,6 +73,20 @@ class Store:
 
     @contextmanager
     def _transaction(self, hook: Hook = lambda _: None) -> Iterator[None]:
+        # Application services compose S1 writes with job/evidence writes on this
+        # same connection. A nested operation may roll back its own savepoint,
+        # but only the outermost application transaction publishes a commit.
+        if self._db.in_transaction:
+            savepoint = "s_" + uuid4().hex
+            self._db.execute(f"SAVEPOINT {savepoint}")
+            try:
+                yield
+                self._db.execute(f"RELEASE {savepoint}")
+            except BaseException:
+                self._db.execute(f"ROLLBACK TO {savepoint}")
+                self._db.execute(f"RELEASE {savepoint}")
+                raise
+            return
         hook("before")
         self._db.execute("BEGIN IMMEDIATE")
         try:
@@ -247,10 +274,16 @@ class Store:
             previous = self.marker(project, operation)
             if previous:
                 if previous["fingerprint"] != fingerprint or previous["job"] != job:
-                    raise Conflict("operationId reused with different plan/job")
+                    raise Conflict(
+                        "operationId reused with different plan/job", category="identity"
+                    )
                 return previous
             if self.revision(project) != base:
-                raise Conflict("Old projectRevision; re-preview required")
+                raise Conflict(
+                    "Old projectRevision; re-preview required",
+                    category="revision",
+                    params={"expected": base, "actual": self.revision(project)},
+                )
             before_state = self.state(project)
             before_snapshot = self._snapshot(
                 {
@@ -312,7 +345,7 @@ class Store:
                     "SELECT * FROM facts WHERE project=? AND id=?", (project, identity)
                 ).fetchone()
                 if old is None:
-                    raise Conflict("Edited fact no longer exists")
+                    raise Conflict("Edited fact no longer exists", category="state")
                 self._check_slot(project, old["subject"], old["predicate"], value, {identity})
                 if value != old["object"]:
                     self._db.execute(
@@ -333,7 +366,8 @@ class Store:
                             "Explicit fact edit required; cannot take ownership: "
                             f"slot={existing['subject']} {existing['predicate']}, "
                             f"other={existing['owner'] or 'manual'}, row={existing['source_row']}, "
-                            f"id={existing['id']}"
+                            f"id={existing['id']}",
+                            category="ownership",
                         )
                     continue
                 self._check_slot(project, fact["subject"], fact["predicate"], fact["object"], set())
@@ -463,7 +497,9 @@ class Store:
                 "GROUP BY subject HAVING COUNT(*)>1 LIMIT 1",
                 (project, predicate),
             ).fetchone():
-                raise Conflict("Single-valued declaration conflicts with existing facts")
+                raise Conflict(
+                    "Single-valued declaration conflicts with existing facts", category="ownership"
+                )
 
     def _validate_references(self, project: str) -> None:
         for row in self._db.execute("SELECT payload FROM definitions WHERE project=?", (project,)):
@@ -478,7 +514,11 @@ class Store:
                     "SELECT 1 FROM definitions WHERE project=? AND layer=? AND id=?",
                     (project, reference["layer"], reference["id"]),
                 ).fetchone():
-                    raise Conflict("Unresolved definition reference")
+                    raise Conflict(
+                        "Unresolved definition reference",
+                        category="dependency",
+                        params={"field": "dependency"},
+                    )
 
     def _check_slot(
         self,
@@ -503,7 +543,8 @@ class Store:
             ):
                 raise Conflict(
                     f"Ownership conflict: slot={subject} {predicate}, "
-                    f"other={row['owner'] or 'manual'}, row={row['source_row']}, id={row['id']}"
+                    f"other={row['owner'] or 'manual'}, row={row['source_row']}, id={row['id']}",
+                    category="ownership",
                 )
 
     def _replace_mapping(self, project: str, mapping: dict) -> bool:
@@ -521,7 +562,8 @@ class Store:
             if fact["object"] != fact["managed_value"]:
                 raise Conflict(
                     f"Manual drift: mapping={owner}, row={fact['source_row']}, "
-                    f"slot={fact['subject']} {fact['predicate']}"
+                    f"slot={fact['subject']} {fact['predicate']}",
+                    category="ownership",
                 )
         own_ids = {
             r[0]
@@ -548,7 +590,11 @@ class Store:
             for fact in row["facts"]:
                 self._fact(fact)
                 if fact["id"] in identities:
-                    raise Conflict("Multiple source rows support same fact")
+                    raise Conflict(
+                        "Multiple source rows support same fact",
+                        category="input",
+                        params={"field": "identity"},
+                    )
                 identities.add(fact["id"])
                 self._check_slot(
                     project,
@@ -560,7 +606,11 @@ class Store:
                 )
                 slot = (fact["subject"], fact["predicate"])
                 if fact["predicate"] in single_predicates and slot in staged_slots:
-                    raise Conflict("Single-valued mapping slot has multiple values")
+                    raise Conflict(
+                        "Single-valued mapping slot has multiple values",
+                        category="input",
+                        params={"field": "params"},
+                    )
                 staged_slots.add(slot)
                 staged.append(
                     (
@@ -629,7 +679,7 @@ class Store:
         if not isinstance(snap, dict) or not isinstance(snap.get("project"), str):
             raise ValueError("Project state snapshot required")
         if snap["project"] != project:
-            raise Conflict("Cross-project snapshot")
+            raise Conflict("Cross-project snapshot", category="identity")
         revision = snap.get("projectRevision")
         vector = snap.get("dependencyVector")
         state = snap.get("state")
@@ -940,13 +990,16 @@ class Store:
                     or previous["job"] != job
                     or previous["snapshot"] != digest(round_payload)
                 ):
-                    raise Conflict("Round operationId reused with different content/run/job")
+                    raise Conflict(
+                        "Round operationId reused with different content/run/job",
+                        category="identity",
+                    )
                 return previous["snapshot"]
             if self._db.execute("SELECT 1 FROM run_terminal WHERE run=?", (run,)).fetchone():
-                raise Conflict("Terminal run is immutable")
+                raise Conflict("Terminal run is immutable", category="state")
             last = self.progress(run)
             if number != (last["lastCommittedRound"] if last else 0) + 1:
-                raise Conflict("Nonsequential round")
+                raise Conflict("Nonsequential round", category="state")
             config = json.loads(record["config"])
             if not isinstance(config, dict):
                 raise ValueError("Run config must be an object")
@@ -958,7 +1011,7 @@ class Store:
             ):
                 raise ValueError("maxRounds must be 1..1000")
             if number > maximum:
-                raise Conflict("Round limit")
+                raise Conflict("Round limit", category="rounds", params={"resource": "rounds"})
             identity = self._snapshot(round_payload)
             hook("mid_data")
             self._db.execute(
