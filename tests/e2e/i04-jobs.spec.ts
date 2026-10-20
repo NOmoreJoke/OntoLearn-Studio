@@ -51,6 +51,9 @@ test('I04 reload re-queries the same durable jobs without creating or cancelling
     })
     const active = first.data.jobs.find((job) => ['queued', 'running'].includes(job.state))
     expect(active).toBeDefined()
+    await expect(
+      page.locator(`[data-job-id="${active!.jobId}"] p`).filter({ hasText: '阶段：' }),
+    ).toHaveText(/^阶段：\s*计算$/)
     await page.getByRole('link', { name: '模块规划' }).click()
     await page.getByRole('link', { name: '开发概览' }).click()
     const afterAnchor = await page.evaluate(() => window.ontolearn!.restoreTasks())
@@ -114,6 +117,9 @@ test('I04 coordinator exit reconciles the open view without replaying jobs', asy
     const committed = first.data.jobs.find((job) => job.state === 'succeeded')
     expect(active).toBeDefined()
     expect(committed).toBeDefined()
+    await expect(
+      page.locator(`[data-job-id="${active!.jobId}"] p`).filter({ hasText: '阶段：' }),
+    ).toHaveText(/^阶段：\s*计算$/)
     const marker = await page.evaluate(
       (identity) => window.ontolearn!.getOperation(identity),
       committed!.operationId,
