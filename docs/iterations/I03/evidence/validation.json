@@ -12,11 +12,11 @@
     {
       "command": "npm run check",
       "exitCode": 0,
-      "typescriptTests": 285,
-      "pythonTests": 497,
+      "typescriptTests": 409,
+      "pythonTests": 622,
       "includes": ["eslint", "prettier", "desktop typecheck", "vitest", "build", "ruff", "pytest"],
-      "logSha256": "485a492a6c7ee3a7169d58fa84c1f08f96b330f1cb3a26e456034699800111a9",
-      "localRawLog": "build/I03-validation/check-utf8.txt"
+      "logSha256": "e879643e7f579d35cb76f830336407941023ef294c1e248ef78cbc7a4a042fb8",
+      "localRawLog": "build/I03-validation/check-i05-v3-final.txt"
     },
     {
       "command": "npm run typecheck --workspace @ontolearn/contracts",
@@ -39,5 +39,13 @@
     "push/PR/remote CI/merge"
   ],
   "note": "Pre-freeze final validation; any later reviewed implementation/test/config/acceptance change invalidates this summary and requires rerun.",
-  "validatedAt": "2026-10-20T11:22:32.057198+08:00"
+  "validatedAt": "2026-10-20T11:37:20.960242+08:00",
+  "revision": "I05 finite semantic categories and validation projection; current v3 25-source table supersedes retired codes; both source snapshots hashed",
+  "targetedChecks": {
+    "typescriptContractTests": 405,
+    "pythonContractTests": 424,
+    "independentReviewer": "/root/requirements_review",
+    "conclusion": "Two P2 findings closed; no remaining blocker in targeted review; not the specified external reviews",
+    "v3DocumentationReview": "25/25 source entries matched; both snapshots byte-identical and hash-matched; no new public method or I05 runtime verification claimed"
+  }
 }

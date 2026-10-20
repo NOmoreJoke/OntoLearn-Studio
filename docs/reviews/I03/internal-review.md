@@ -41,3 +41,18 @@
 ## 首次冻结后的修订核验
 
 首次本地候选ad9756e尚未创建外审任务。冻结复核后明确6处JSON读取UTF-8编码，避免平台locale影响；独立agent核对仅编码参数变化，无其他逻辑变化。全check重新通过285TS/497Python、contracts strict类型与sources12通过。总控随后交付I06的11类错误需求，本线记录为安全兜底/下一版精确语义承接，protocol明确retryable不是自动重放授权；独立agent确认11类无漏项、未误称schema批准、不混淆取消、未削弱新候选/双审/真实接线门禁。生成新本地候选，旧未审候选与预备稿保留在candidates/candidate-1，不沿用旧通过。
+
+## I05 语义契约修订独立审查
+
+审查者仍为 `/root/requirements_review`，只读检查本次新增契约、公共样例和30码处置，并实际运行定向校验；未改文件、未操作GUI或启动Electron。首次指出两项P2，全部采纳：
+
+| 编号 | 独立反例 | 修订与回归 |
+| --- | --- | --- |
+| I03-C1 P2 | 根constraintDefinitionId可改为另一合法ID，而原constraintsRef元数据仍接受，未绑定具体已存定义 | 资源binding必须有constraintDefinitionId；constraints角色与根一致，其他层必须null。公共根ID错配、资源ID错配、其他层冒充3反例；真实接入仍须核对job.input和实际命名模板 |
+| I03-C2 P2 | I05的UNSUPPORTED_SHACL_PATH也用于targetClass/datatype非IRI，表格一律映射path不支持会误分类 | 按合法范围外路径、已确认非法模板项、可信违约/未知来源三分支；必须在来源产生typed reason，不能仅按合码猜测 |
+
+最终定向独立复审确认两项均关闭、无残余阻断，实际TS405/Python424通过。开发会话完整npm run check另实跑409TS/622Python通过，contracts strict typecheck、sources12及diff检查通过。本次没有执行真实RDFS/SHACL或分层图投影；它们由I05/I04提供真实执行与接线证据。新候选须重新进行指定双外审，不能沿用旧候选或本内部结论。
+
+### 冻结前收到的I05 v3细码更新
+
+总控转交typed-reasons-v3.md后，本线保存第二份逐字快照与SHA，并将25项当前来源细码置于历史30码之前；退休合码仅留审计。独立agent定向文档复核确认25/25无漏项、重复、误分类，SHAPE_PATH_UNCLASSIFIED仅INTERNAL_ERROR，双快照逐字及SHA一致；未把I05未冻结源码或123项定向交接声明当作全量/包内通过，未新增公共方法。hash回归覆盖两份快照后，开发会话最终完整check仍409TS/622Python通过，contracts strict类型、sources12、diff检查通过；原始日志与hash已更新。未重跑不变的语义探针，指定外审仍未创建。

@@ -783,7 +783,17 @@
                     "ruleRecursion",
                     "shaclPath",
                     "shaclAdvanced",
-                    "owlExpression"
+                    "owlExpression",
+                    "rdfFormat",
+                    "rdfConstruct",
+                    "rdfsConstruct",
+                    "datatype",
+                    "literalValue",
+                    "queryFunction",
+                    "queryOrder",
+                    "querySlice",
+                    "ruleOutput",
+                    "validationScope"
                   ]
                 }
               },
@@ -810,7 +820,16 @@
               "type": "object",
               "properties": {
                 "resource": {
-                  "enum": ["memory", "actions", "rounds", "frame", "page"]
+                  "enum": [
+                    "memory",
+                    "actions",
+                    "rounds",
+                    "frame",
+                    "page",
+                    "semanticInput",
+                    "semanticResult",
+                    "semanticWork"
+                  ]
                 }
               },
               "required": ["resource"],
@@ -4359,6 +4378,278 @@
       },
       "required": ["family", "id", "version", "references"],
       "additionalProperties": false
+    },
+    "validationDerivedLayers": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "inputSnapshotId": {
+          "$ref": "#/$defs/hash"
+        },
+        "resultId": {
+          "$ref": "#/$defs/id"
+        },
+        "implementation": {
+          "$ref": "#/$defs/implementation"
+        },
+        "factsRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "axiomsRef": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": [
+        "projectId",
+        "inputSnapshotId",
+        "resultId",
+        "implementation",
+        "factsRef",
+        "axiomsRef"
+      ],
+      "additionalProperties": false
+    },
+    "validationProjection": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "projectionVersion": {
+              "const": 1
+            },
+            "projectionPolicy": {
+              "const": "selected-facts-v1"
+            },
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "inputSnapshotId": {
+              "$ref": "#/$defs/hash"
+            },
+            "inputProjectRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "implementation": {
+              "$ref": "#/$defs/implementation"
+            },
+            "assertedFactsRef": {
+              "$ref": "#/$defs/hash"
+            },
+            "ontologyAxiomsRef": {
+              "$ref": "#/$defs/hash"
+            },
+            "constraintDefinitionId": {
+              "$ref": "#/$defs/name"
+            },
+            "constraintsRef": {
+              "$ref": "#/$defs/hash"
+            },
+            "scope": {
+              "const": "asserted"
+            },
+            "derived": {
+              "const": null
+            },
+            "inputSelection": {
+              "enum": ["current", "historical"]
+            }
+          },
+          "required": [
+            "projectionVersion",
+            "projectionPolicy",
+            "projectId",
+            "inputSnapshotId",
+            "inputProjectRevision",
+            "implementation",
+            "assertedFactsRef",
+            "ontologyAxiomsRef",
+            "constraintDefinitionId",
+            "constraintsRef",
+            "scope",
+            "derived",
+            "inputSelection"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "projectionVersion": {
+              "const": 1
+            },
+            "projectionPolicy": {
+              "const": "selected-facts-v1"
+            },
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "inputSnapshotId": {
+              "$ref": "#/$defs/hash"
+            },
+            "inputProjectRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "implementation": {
+              "$ref": "#/$defs/implementation"
+            },
+            "assertedFactsRef": {
+              "$ref": "#/$defs/hash"
+            },
+            "ontologyAxiomsRef": {
+              "$ref": "#/$defs/hash"
+            },
+            "constraintDefinitionId": {
+              "$ref": "#/$defs/name"
+            },
+            "constraintsRef": {
+              "$ref": "#/$defs/hash"
+            },
+            "scope": {
+              "const": "asserted+derived"
+            },
+            "derived": {
+              "$ref": "#/$defs/validationDerivedLayers"
+            },
+            "inputSelection": {
+              "enum": ["current", "historical"]
+            }
+          },
+          "required": [
+            "projectionVersion",
+            "projectionPolicy",
+            "projectId",
+            "inputSnapshotId",
+            "inputProjectRevision",
+            "implementation",
+            "assertedFactsRef",
+            "ontologyAxiomsRef",
+            "constraintDefinitionId",
+            "constraintsRef",
+            "scope",
+            "derived",
+            "inputSelection"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "validationResourceBinding": {
+      "type": "object",
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/hash"
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "inputSnapshotId": {
+          "$ref": "#/$defs/hash"
+        },
+        "role": {
+          "enum": [
+            "assertedFacts",
+            "ontologyAxioms",
+            "constraints",
+            "derivedFacts",
+            "derivedAxioms"
+          ]
+        },
+        "resultId": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "$ref": "#/$defs/id"
+            }
+          ]
+        },
+        "implementation": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "$ref": "#/$defs/implementation"
+            }
+          ]
+        },
+        "resultKind": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "enum": [
+                "reasoning",
+                "query",
+                "validation",
+                "behavior",
+                "scenario",
+                "receipt",
+                "test"
+              ]
+            }
+          ]
+        },
+        "payloadStatus": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "enum": ["available", "evicted"]
+            }
+          ]
+        },
+        "resultState": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "enum": ["current", "stale", "historical"]
+            }
+          ]
+        },
+        "constraintDefinitionId": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "$ref": "#/$defs/name"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ref",
+        "projectId",
+        "inputSnapshotId",
+        "role",
+        "resultId",
+        "implementation",
+        "resultKind",
+        "payloadStatus",
+        "resultState",
+        "constraintDefinitionId"
+      ],
+      "additionalProperties": false
+    },
+    "validationResources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/validationResourceBinding"
+      },
+      "minItems": 3,
+      "maxItems": 5
     }
   },
   "$ref": "#/$defs/envelope"

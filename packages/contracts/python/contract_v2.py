@@ -119,6 +119,14 @@ def semantic(v):
         return all(semantic(x) for x in v)
     if not isinstance(v, dict):
         return True
+    if v.get("projectionVersion") == 1 and v.get("projectionPolicy") == "selected-facts-v1":
+        derived = v["derived"]
+        if derived and (
+            derived["projectId"] != v["projectId"]
+            or derived["inputSnapshotId"] != v["inputSnapshotId"]
+            or derived["implementation"] != v["implementation"]
+        ):
+            return False
     if "code" in v and "messageKey" in v and encoded_size(v) > 2048:
         return False
     if isinstance(v.get("completed"), (int, float)) and isinstance(v.get("total"), (int, float)):
@@ -404,3 +412,62 @@ def job_list_cursor_matches(record, request, now_ms):
         and record["pageSize"] == request["pageSize"]
         and record["expiresAtMs"] > now_ms
     )
+
+
+def validation_projection_matches_resources(projection, resources):
+    """Association only: trusted lookup/hash verification and real projection are caller duties."""
+    if not validate("validationProjection", projection) or not validate(
+        "validationResources", resources
+    ):
+        return False
+    derived = projection["derived"]
+    expected = {
+        role: projection[role + "Ref"]
+        for role in ("assertedFacts", "ontologyAxioms", "constraints")
+    }
+    if derived:
+        expected.update(derivedFacts=derived["factsRef"], derivedAxioms=derived["axiomsRef"])
+    if len(resources) != len(expected):
+        return False
+    if (
+        derived
+        and len(
+            {
+                row["resultState"]
+                for row in resources
+                if row["role"] in {"derivedFacts", "derivedAxioms"}
+            }
+        )
+        != 1
+    ):
+        return False
+    for role, reference in expected.items():
+        matches = [row for row in resources if row["role"] == role]
+        if len(matches) != 1:
+            return False
+        row = matches[0]
+        if row["constraintDefinitionId"] != (
+            projection["constraintDefinitionId"] if role == "constraints" else None
+        ):
+            return False
+        if row["ref"] != reference or any(
+            row[k] != projection[k] for k in ("projectId", "inputSnapshotId")
+        ):
+            return False
+        if role in {"derivedFacts", "derivedAxioms"}:
+            if (
+                not derived
+                or row["resultId"] != derived["resultId"]
+                or row["resultKind"] != "reasoning"
+                or row["payloadStatus"] != "available"
+                or row["resultState"] not in {"current", "stale", "historical"}
+                or row["implementation"] != derived["implementation"]
+                or (projection["inputSelection"] == "current" and row["resultState"] != "current")
+            ):
+                return False
+        elif any(
+            row[k] is not None
+            for k in ("resultId", "implementation", "resultKind", "payloadStatus", "resultState")
+        ):
+            return False
+    return True

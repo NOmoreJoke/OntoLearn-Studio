@@ -238,3 +238,31 @@ def test_shared_long_dependency_chains(case):
     else:
         with pytest.raises(ValueError, match="INVALID_REQUEST"):
             CONTRACT.derive_dependencies("query.execute", "Q0", "asserted", definitions)
+
+
+@pytest.mark.parametrize("case", FIXTURES["validationBindings"], ids=lambda c: c["name"])
+def test_shared_validation_projection_resources(case):
+    assert (
+        CONTRACT.validation_projection_matches_resources(case["projection"], case["resources"])
+        is case["valid"]
+    )
+
+
+def test_semantic_error_category_descriptions_are_complete():
+    errors = json.loads((ROOT / "packages/contracts/v2/errors.json").read_text(encoding="utf-8"))
+    for code, parameter in [("UNSUPPORTED_CONSTRUCT", "construct"), ("RESOURCE_LIMIT", "resource")]:
+        assert (
+            list(errors["parameterMeanings"][code])
+            == errors["codes"][code]["paramsSchema"]["properties"][parameter]["enum"]
+        )
+
+
+def test_i05_handoff_source_hash_is_preserved():
+    import hashlib
+
+    handoff = ROOT / "docs/reviews/I03/handoffs/I05-contract-source.json"
+    record = json.loads(handoff.read_text(encoding="utf-8"))
+    for snapshot in (record, record["typedReasonsV3"]):
+        assert (
+            hashlib.sha256((ROOT / snapshot["copy"]).read_bytes()).hexdigest() == snapshot["sha256"]
+        )

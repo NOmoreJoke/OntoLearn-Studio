@@ -56,3 +56,5 @@ job.list 也不能用可变状态列表作 offset：初次 `(listSnapshotId,curs
 正式写任务的不可变收据采用 result.kind=receipt，只能 state=historical，不能查询为领域 current；收据引用 operation/marker 的完整持久证据，UI 显示“已提交”与 revision，而不冒充查询/推理成功。取消、页和列表响应另按原请求绑定校验；job.list 对成员项目/唯一性/过滤/稳定顺序和请求页大小均检查。jobListCursorRecord 明确绑定固定列表身份、过滤、页大小与最后(createdAtMs,jobId)，与结果 cursor 分开存储。
 
 契约派生算法采用有界迭代遍历，最多4096个定义投影/4096个真实依赖键（包含 facts:asserted），环去重、悬空引用拒绝；不依赖语言递归栈深度。超出该安全上界由应用服务映射 RESOURCE_LIMIT，不代表 Q5 业务容量线。job/result 向量必须含 facts:asserted，空项目可为0；project.get 的正式项目版本投影仍允许空向量。staleReason 每个 dependency 最多一条，before 必须等于结果保存的输入版本；只有跟踪了对应定义集合、before=0 且 after≥1 时才允许旧向量没有该新增成员键。不得伪造无实际依赖的过期原因。
+
+SHACL所选事实范围不等于本体依赖范围。版本化validationProjection与可信validationResources将ontology/断言/派生事实/派生公理/约束分开关联；含推导选择必须保留派生rdf:type，公理独立保留并继续参与真实依赖，不直接混入Validator数据图。完整算法、资源校验和必须由I05/I04真实执行的反例见 [语义边界](I05-semantic-boundaries.md)。这些结构由parametersHash绑定，未新增调用方法或注册实现。

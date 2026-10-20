@@ -145,6 +145,17 @@ function semantic(value: unknown): boolean {
   if (Array.isArray(value)) return value.every(semantic)
   if (!value || typeof value !== 'object') return true
   const v = value as Record<string, unknown>
+  if (v.projectionVersion === 1 && v.projectionPolicy === 'selected-facts-v1' && v.derived) {
+    const derived = v.derived as Record<string, unknown>
+    const expected = v.implementation as Record<string, unknown>
+    const actual = derived.implementation as Record<string, unknown>
+    if (
+      derived.projectId !== v.projectId ||
+      derived.inputSnapshotId !== v.inputSnapshotId ||
+      Object.keys(expected).some((key) => expected[key] !== actual[key])
+    )
+      return false
+  }
   if ('code' in v && 'messageKey' in v && utf8(v) > 2048) return false
   if (typeof v.completed === 'number' && typeof v.total === 'number' && v.completed > v.total)
     return false
@@ -470,4 +481,76 @@ export function jobListCursorMatches(record: unknown, request: unknown, nowMs: n
     c.pageSize === p.pageSize &&
     c.expiresAtMs > nowMs
   )
+}
+
+/** Pure metadata association check; callers must fetch these bindings from the trusted store. */
+export function validationProjectionMatchesResources(
+  projection: unknown,
+  resources: unknown,
+): boolean {
+  if (
+    !validateV2('validationProjection', projection) ||
+    !validateV2('validationResources', resources)
+  )
+    return false
+  const p = projection as Record<string, unknown>
+  const rows = resources as Array<Record<string, unknown>>
+  const derived = p.derived as Record<string, unknown> | null
+  const expected: Record<string, unknown> = {
+    assertedFacts: p.assertedFactsRef,
+    ontologyAxioms: p.ontologyAxiomsRef,
+    constraints: p.constraintsRef,
+  }
+  if (derived) {
+    expected.derivedFacts = derived.factsRef
+    expected.derivedAxioms = derived.axiomsRef
+  }
+  if (rows.length !== Object.keys(expected).length) return false
+  if (
+    derived &&
+    new Set(
+      rows
+        .filter((row) => row.role === 'derivedFacts' || row.role === 'derivedAxioms')
+        .map((row) => row.resultState),
+    ).size !== 1
+  )
+    return false
+  return Object.entries(expected).every(([role, ref]) => {
+    const matches = rows.filter((row) => row.role === role)
+    if (matches.length !== 1) return false
+    const row = matches[0]
+    if (
+      role === 'constraints'
+        ? row.constraintDefinitionId !== p.constraintDefinitionId
+        : row.constraintDefinitionId !== null
+    )
+      return false
+    if (
+      row.ref !== ref ||
+      row.projectId !== p.projectId ||
+      row.inputSnapshotId !== p.inputSnapshotId
+    )
+      return false
+    if (role === 'derivedFacts' || role === 'derivedAxioms') {
+      if (
+        !derived ||
+        row.resultId !== derived.resultId ||
+        row.resultKind !== 'reasoning' ||
+        row.payloadStatus !== 'available' ||
+        !['current', 'stale', 'historical'].includes(String(row.resultState))
+      )
+        return false
+      if (p.inputSelection === 'current' && row.resultState !== 'current') return false
+      const actual = row.implementation as Record<string, unknown> | null
+      const expectedImpl = derived.implementation as Record<string, unknown>
+      return !!actual && Object.keys(expectedImpl).every((key) => actual[key] === expectedImpl[key])
+    }
+    return (
+      row.resultId === null &&
+      row.implementation === null &&
+      row.resultKind === null &&
+      row.payloadStatus === null &&
+      row.resultState === null
+    )
+  })
 }

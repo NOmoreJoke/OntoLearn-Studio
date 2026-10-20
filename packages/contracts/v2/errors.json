@@ -336,7 +336,17 @@
               "ruleRecursion",
               "shaclPath",
               "shaclAdvanced",
-              "owlExpression"
+              "owlExpression",
+              "rdfFormat",
+              "rdfConstruct",
+              "rdfsConstruct",
+              "datatype",
+              "literalValue",
+              "queryFunction",
+              "queryOrder",
+              "querySlice",
+              "ruleOutput",
+              "validationScope"
             ]
           }
         },
@@ -351,12 +361,52 @@
         "type": "object",
         "properties": {
           "resource": {
-            "enum": ["memory", "actions", "rounds", "frame", "page"]
+            "enum": [
+              "memory",
+              "actions",
+              "rounds",
+              "frame",
+              "page",
+              "semanticInput",
+              "semanticResult",
+              "semanticWork"
+            ]
           }
         },
         "required": ["resource"],
         "additionalProperties": false
       }
+    }
+  },
+  "parameterMeanings": {
+    "UNSUPPORTED_CONSTRUCT": {
+      "rdfBlankNode": "Blank-node construction outside the selected supported template subset.",
+      "sparqlForm": "A syntactically valid query form outside SELECT/ASK.",
+      "ruleChain": "Custom rule output used as a further custom-rule input.",
+      "ruleRecursion": "Recursive custom-rule evaluation outside the finite candidate.",
+      "shaclPath": "A valid SHACL path outside the supported direct-property path subset.",
+      "shaclAdvanced": "Any valid SHACL constraint or feature outside the selected whitelist, not only advanced rules.",
+      "owlExpression": "A valid OWL expression or axiom outside the selected finite subset.",
+      "rdfFormat": "A serialization format outside the selected parser format, not malformed Turtle.",
+      "rdfConstruct": "A well-formed RDF construct outside the selected finite subset; never a malformed triple.",
+      "rdfsConstruct": "A well-formed RDFS construct outside the selected finite subset; never a guessed syntax failure.",
+      "datatype": "A valid datatype outside the selected template or literal datatype whitelist.",
+      "literalValue": "A lexically valid literal value category outside the selected finite semantics, such as non-finite values.",
+      "queryFunction": "A valid query function or aggregate outside the selected deterministic subset.",
+      "queryOrder": "A valid query ordering expression outside the selected ordering subset.",
+      "querySlice": "A valid query LIMIT/OFFSET slice outside the selected query semantics; unrelated to service pagination.",
+      "ruleOutput": "A valid rule-head construct outside domain facts/class membership, including schema axioms or arbitrary predicates.",
+      "validationScope": "An explicitly requested validation scope unsupported by the actual implementation, not an adapter mixing graph layers."
+    },
+    "RESOURCE_LIMIT": {
+      "memory": "Worker memory budget.",
+      "actions": "Appendix E behavior-action budget.",
+      "rounds": "Appendix E run-round budget.",
+      "frame": "Encoded transport frame byte budget.",
+      "page": "Encoded service page budget.",
+      "semanticInput": "Actual semantic input text/blob byte or graph-size budget, never a type error or transport limit.",
+      "semanticResult": "Total semantic result rows/triples/evidence payload budget, never just one page.",
+      "semanticWork": "Cumulative closure/matching work or intermediate match-set budget, never behavior actions/rounds."
     }
   }
 }

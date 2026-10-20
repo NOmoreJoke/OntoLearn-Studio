@@ -38,3 +38,10 @@
 总控于 2026-10-20 转交的接口需求仅作为内部设计输入：`parse_turtle(text, format=Turtle)`、`query(immutableGraph, SELECT|ASK)`、`reason(asserted+ontology, boundedRules)`、`check_shapes(assertedScope, namedTemplates)`。I05 固定真实库/外联拒绝/打包与许可证；I03 统一公开输入身份与结果/错误；I04 做 ExecutionJob、持久发布和取消接线。
 
 适配器不得自行打开网络或发模型请求，不能把 graph 可变对象放到 DTO 或直接写 Store。解析/查询结果是独立载荷引用；解析成功不等于语义支持。reason 只做 RDFS 后一阶段受控规则，规则输出不再次触发规则或 RDFS；check_shapes 默认明确 asserted，若包含推导必须记录对应范围/实际依赖，不能默认扩展完整 SHACL。保留真实输入、engine/semantics/lock 三键版本与完整依据范围。内部固定错误须在服务边界映射到本版白名单，原异常和输入文本不越界；尚未登记的错误使用 INTERNAL_ERROR 并记录安全诊断码，不能直接开放任意 code。
+
+## I05兼容核对后的补充验收
+
+- errors目录新增有限semanticInput/semanticResult/semanticWork与十类unsupported分类，每类完整成功/非法参数/错误messageKey公共TS/Python反例；parameterMeanings与枚举精确对应，不借frame/page/actions归类语义预算。
+- [语义边界](I05-semantic-boundaries.md)逐项保留历史30码并优先覆盖v3的25项细码/来源分支；被替换的INPUT_LIMIT/RESULT_LIMIT/LITERAL/RDF/scope合码不用于新分支；SHAPE_PATH_UNCLASSIFIED及来源未知只INTERNAL_ERROR安全兜底，不解析异常正文；不把私有码直接穿透。
+- validationProjection严格分scope、实现与项目快照，validationResources关联角色/hash/真实reasoning结果/载荷/历史选择；TS/Python共同拒绝缺层、错项目/快照/实现/引用/结果种类、回收载荷和未选择历史。
+- 真正的分层图读取/摘要/权限/历史选择和SHACL投影仍需I04/I05：独立固定C→Mid→Equipment与x类型用例，asserted不暗增目标，combined保留x派生类型及独立派生公理，核对完整目标/违规/依据和原断言不变。描述符或纯元数据测试不替代这项真实语义联验，不采用Q6最终路线。

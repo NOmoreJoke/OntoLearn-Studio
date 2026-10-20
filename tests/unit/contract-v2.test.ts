@@ -11,10 +11,15 @@ import {
   matchesResponse,
   permitsTransition,
   validateV2,
+  validationProjectionMatchesResources,
   v2Registry,
 } from '../../packages/contracts/src/design-v2'
 
 describe('shared v2 contract corpus', () => {
+  for (const c of fixtures.validationBindings)
+    it(c.name, () =>
+      expect(validationProjectionMatchesResources(c.projection, c.resources)).toBe(c.valid),
+    )
   for (const c of fixtures.transitions)
     it(c.name, () =>
       expect(
@@ -171,4 +176,13 @@ it('derives real dependency closure, detects missing references and tracks new r
       { family: 'rule', id: 'dangling', version: 1, references: ['ontology:missing'] },
     ]),
   ).toThrow('INVALID_REQUEST')
+})
+
+it('error category descriptions cover exactly the bounded wire categories', () => {
+  expect(Object.keys(errors.parameterMeanings.UNSUPPORTED_CONSTRUCT)).toEqual(
+    errors.codes.UNSUPPORTED_CONSTRUCT.paramsSchema.properties.construct.enum,
+  )
+  expect(Object.keys(errors.parameterMeanings.RESOURCE_LIMIT)).toEqual(
+    errors.codes.RESOURCE_LIMIT.paramsSchema.properties.resource.enum,
+  )
 })
