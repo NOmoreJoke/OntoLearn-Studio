@@ -353,6 +353,13 @@ class JobStore(Store):
         self._valid("limits", limits)
         internal = self._project(project)
         with self._transaction():
+            claim = self._db.execute(
+                "SELECT * FROM operation_claims WHERE operation=?", (operation,)
+            ).fetchone()
+            if claim:
+                return self._accepted_job(
+                    claim, project, capability, input_, confirmation_ref, implementation, limits
+                )
             snap = self._project_snapshot(input_["inputSnapshotId"], internal)
             parameters = self.blob(project, input_["parametersHash"])
             if capability.startswith("test."):
@@ -422,13 +429,6 @@ class JobStore(Store):
                     "triggerOrder": "input-ordinal:asc",
                 }
             fingerprint = digest(context)
-            claim = self._db.execute(
-                "SELECT * FROM operation_claims WHERE operation=?", (operation,)
-            ).fetchone()
-            if claim:
-                if claim["project"] != project or claim["fingerprint"] != fingerprint:
-                    fault("IDENTITY_CONFLICT")
-                return self.get_job(project, claim["job"])
             identity = str(uuid4())
             now = self.now_ms()
             mode = (
@@ -481,6 +481,90 @@ class JobStore(Store):
                 (operation, project, identity, fingerprint),
             )
             return job
+
+    def _accepted_job(
+        self, claim, project, capability, input_, confirmation_ref, implementation, limits
+    ):
+        """Read an existing acceptance, independent of mutable current/cache state.
+
+        The full frozen context remains content-verified; only the original
+        accepted source's present payload availability/currentness is irrelevant.
+        New operations still use all normal live-reference validation above.
+        """
+        if claim["project"] != project:
+            fault("IDENTITY_CONFLICT")
+        row = self._db.execute("SELECT * FROM jobs WHERE id=?", (claim["job"],)).fetchone()
+        if row is None:
+            fault("INVALID_STATE")
+        context = json.loads(row["context"])
+        if (
+            digest(context) != claim["fingerprint"]
+            or row["fingerprint"] != claim["fingerprint"]
+            or row["project"] != project
+            or row["operation"] != claim["operation"]
+        ):
+            fault("INVALID_STATE")
+        supplied = {
+            "projectId": project,
+            "capability": capability,
+            "input": input_,
+            "confirmationRef": confirmation_ref,
+            "implementation": implementation,
+            "limits": limits,
+        }
+        if any(canonical(context.get(key)) != canonical(value) for key, value in supplied.items()):
+            fault("IDENTITY_CONFLICT")
+        snapshot = self._project_snapshot(input_["inputSnapshotId"], self._project(project))
+        if snapshot != context["snapshot"]:
+            fault("INVALID_STATE")
+        parameters = self.blob(project, input_["parametersHash"])
+        if parameters != context["parameters"] or digest(parameters) != input_["parametersHash"]:
+            fault("INVALID_STATE")
+        if "runConfig" in context:
+            config = context["runConfig"]
+            if (
+                config["parameters"] != parameters
+                or config["parametersRef"] != input_["parametersHash"]
+                or config["initialSnapshotId"] != input_["inputSnapshotId"]
+                or self.blob(project, config["eventsRef"]) != config["events"]
+                or digest(config["events"]) != config["eventsRef"]
+                or self.blob(project, config["eventConsumptionRef"])
+                != {"inputEvents": config["events"], "consumedEvents": []}
+            ):
+                fault("INVALID_STATE")
+        if input_["preparedPlanRef"] is not None:
+            plan = self._db.execute(
+                "SELECT * FROM job_plans WHERE project=? AND ref=?",
+                (project, input_["preparedPlanRef"]),
+            ).fetchone()
+            confirmation = self._db.execute(
+                "SELECT * FROM job_confirmations WHERE project=? AND id=?",
+                (project, confirmation_ref),
+            ).fetchone()
+            if (
+                not plan
+                or not confirmation
+                or json.loads(plan["payload"]) != context["plan"]
+                or plan["plan_hash"] != digest(context["plan"])
+                or plan["base"] != snapshot["projectRevision"]
+                or digest(
+                    {
+                        "projectId": project,
+                        "plan": context["plan"],
+                        "before": input_["inputSnapshotId"],
+                        "diffHash": plan["diff_hash"],
+                    }
+                )
+                != input_["preparedPlanRef"]
+                or confirmation["plan_ref"] != plan["ref"]
+                or confirmation["plan_hash"] != plan["plan_hash"]
+                or confirmation["base"] != plan["base"]
+                or confirmation["permission"] != "write"
+            ):
+                fault("INVALID_STATE")
+        elif context["plan"] is not None or confirmation_ref is not None:
+            fault("INVALID_STATE")
+        return self.get_job(project, claim["job"])
 
     def get_job(self, project, identity):
         self._project(project)
@@ -821,6 +905,17 @@ class JobStore(Store):
                     ],
                 }
             ]
+            # The audit is read from the actual immutable round ledger. Its
+            # rows make the infrastructure result genuinely pageable without
+            # inventing business metrics, work orders, or execution phases.
+            for committed in self.history(run)["rounds"]:
+                rows.append(
+                    {
+                        "rowId": str(uuid4()),
+                        "ordinal": committed["number"],
+                        "cells": self._round_audit_cells(run, identity, committed),
+                    }
+                )
             result = self._publish_job(job, rows, "scenario")
             self._transition(job, "succeeded", result=result)
             hook("mid_job_terminal")
@@ -1118,6 +1213,10 @@ class JobStore(Store):
     def _check_summary(self, result, payload):
         job = self.get_job(result["projectId"], result["jobId"])
         progress = job["commitProgress"]
+        if any(not self.contract.validate("row", row) for row in payload):
+            fault("INVALID_STATE")
+        if len({row["rowId"] for row in payload}) != len(payload):
+            fault("INVALID_STATE")
         if (
             job["state"] != "succeeded"
             or job["resultRef"]
@@ -1147,6 +1246,19 @@ class JobStore(Store):
             or history["terminal"]["status"] != "succeeded"
         ):
             fault("INVALID_STATE")
+        if len(payload) != 1 + len(history["rounds"]):
+            fault("INVALID_STATE")
+        if (
+            payload[0].get("ordinal") != 0
+            or sum(r.get("cells", [None])[0] == "run.summary.v1" for r in payload if r.get("cells"))
+            != 1
+        ):
+            fault("INVALID_STATE")
+        for row, committed in zip(payload[1:], history["rounds"], strict=True):
+            if row.get("ordinal") != committed["number"] or row.get(
+                "cells"
+            ) != self._round_audit_cells(p["runId"], job["jobId"], committed):
+                fault("INVALID_STATE")
         evidence = json.loads(history["terminal"]["evidence"])
         if (
             evidence.get("jobId") != job["jobId"]
@@ -1154,6 +1266,7 @@ class JobStore(Store):
             or evidence.get("pendingEventCount") != c[6]
         ):
             fault("INVALID_STATE")
+
         consumption = self.blob(result["projectId"], c[7])
         state = self.load_snapshot(p["snapshotRef"])["state"]
         if (
@@ -1163,6 +1276,29 @@ class JobStore(Store):
             or len(state.get("pendingEvents", [])) != c[6]
         ):
             fault("INVALID_STATE")
+
+    def _round_audit_cells(self, run, identity, committed):
+        if (
+            committed["job"] != identity
+            or committed["run"] != run
+            or not UUID.fullmatch(committed["operation"])
+        ):
+            fault("INVALID_STATE")
+        snapshot = self.load_snapshot(committed["snapshot"])
+        if (
+            snapshot.get("run") != run
+            or snapshot.get("round") != committed["number"]
+            or snapshot.get("project") != self._run(run)["project"]
+        ):
+            fault("INVALID_STATE")
+        return [
+            "run.round.v1",
+            run,
+            committed["number"],
+            committed["snapshot"],
+            committed["operation"],
+            identity,
+        ]
 
     def result_page(self, binding, page_size, cursor):
         self._valid(
