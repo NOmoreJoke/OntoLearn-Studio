@@ -415,3 +415,136 @@ def test_lexical_query_and_unrelated_global_parser_are_isolated_across_threads()
         local_values
         == [{"type": "SELECT", "variables": ["x"], "rows": [[typed("01", XSD.integer)]]}] * 8
     )
+
+
+STATEMENT_VALID_CASES = [
+    ("empty", "", 0),
+    ("whitespace", " \t\r\n", 0),
+    ("comment", "# only\r\n# comment", 0),
+    ("directives", "@prefix : <urn:> . @base <https://example.invalid/> .", 0),
+    ("sparql-directives", "PREFIX : <urn:> BASE <https://example.invalid/>", 0),
+    ("one-triple", "<urn:s> <urn:p> <urn:o> .", 1),
+    ("duplicate-statements", "<urn:s> <urn:p> <urn:o> . <urn:s> <urn:p> <urn:o> .", 1),
+    ("duplicate-objects", "<urn:s> <urn:p> <urn:o>, <urn:o> .", 1),
+    ("empty-bnode-subject-with-property", "[] <urn:p> <urn:o> .", 1),
+    ("standalone-property-list", "[<urn:p> <urn:o>] .", 1),
+    ("nested-standalone-property-list", "[<urn:p> [<urn:q> <urn:o>]] .", 2),
+    ("standalone-property-list-with-collection", "[<urn:p> (01 02)] .", 5),
+    ("empty-bnode-object", "<urn:s> <urn:p> [] .", 1),
+    ("empty-collection-object", "<urn:s> <urn:p> () .", 1),
+    ("collection-object", "<urn:s> <urn:p> (01 02) .", 5),
+    ("collection-subject-with-property", "(01 02) <urn:p> <urn:o> .", 5),
+    ("nil-subject-with-property", "() <urn:p> <urn:o> .", 1),
+    ("nested-collection-subject-with-property", "((01 02) (03 04)) <urn:p> <urn:o> .", 13),
+    (
+        "property-list-object-and-outer-property",
+        "[<urn:p> ([<urn:q> <urn:o>])] <urn:r> <urn:t> .",
+        5,
+    ),
+    ("comments-before-property-list", "# before\r\n[ # object\r\n<urn:p> <urn:o>] .", 1),
+    ("trailing-semicolons", "<urn:s> <urn:p> <urn:o>; ; .", 1),
+    ("labeled-bnode-and-property-list", "_:a <urn:p> <urn:o> . [<urn:q> _:a] .", 2),
+]
+
+
+def _statement_expected_graph(name):
+    """Build expected RDF content directly, independently of any Turtle parser."""
+    from rdflib import BNode
+
+    graph = Graph()
+    a, b = BNode("a"), BNode("b")
+    o, r, t = map(URIRef, ("urn:o", "urn:r", "urn:t"))
+
+    def collection(values, label):
+        nodes = [BNode(f"{label}{i}") for i in range(len(values))]
+        for i, value in enumerate(values):
+            graph.add((nodes[i], RDF.first, value))
+            graph.add((nodes[i], RDF.rest, nodes[i + 1] if i + 1 < len(nodes) else RDF.nil))
+        return nodes[0] if nodes else RDF.nil
+
+    numbers = [Literal(x, datatype=XSD.integer, normalize=False) for x in ("01", "02", "03", "04")]
+    if name in {"empty", "whitespace", "comment", "directives", "sparql-directives"}:
+        return graph
+    if name in {"one-triple", "duplicate-statements", "duplicate-objects", "trailing-semicolons"}:
+        graph.add((S, P, o))
+    elif name in {
+        "empty-bnode-subject-with-property",
+        "standalone-property-list",
+        "comments-before-property-list",
+    }:
+        graph.add((a, P, o))
+    elif name == "nested-standalone-property-list":
+        graph.add((a, P, b))
+        graph.add((b, Q, o))
+    elif name == "standalone-property-list-with-collection":
+        graph.add((a, P, collection(numbers[:2], "list")))
+    elif name == "empty-bnode-object":
+        graph.add((S, P, a))
+    elif name == "empty-collection-object":
+        graph.add((S, P, RDF.nil))
+    elif name == "collection-object":
+        graph.add((S, P, collection(numbers[:2], "list")))
+    elif name == "collection-subject-with-property":
+        graph.add((collection(numbers[:2], "list"), P, o))
+    elif name == "nil-subject-with-property":
+        graph.add((RDF.nil, P, o))
+    elif name == "nested-collection-subject-with-property":
+        inner_left = collection(numbers[:2], "left")
+        inner_right = collection(numbers[2:], "right")
+        graph.add((collection([inner_left, inner_right], "outer"), P, o))
+    elif name == "property-list-object-and-outer-property":
+        graph.add((b, Q, o))
+        graph.add((a, P, collection([b], "list")))
+        graph.add((a, r, t))
+    elif name == "labeled-bnode-and-property-list":
+        graph.add((a, P, o))
+        graph.add((b, Q, a))
+    else:
+        raise AssertionError(f"Missing independent expected graph: {name}")
+    return graph
+
+
+@pytest.mark.parametrize(
+    "name,text,triples", STATEMENT_VALID_CASES, ids=[x[0] for x in STATEMENT_VALID_CASES]
+)
+def test_statement_guard_preserves_valid_empty_and_nonempty_graph_content(name, text, triples):
+    from rdflib.compare import isomorphic
+
+    actual = parse_turtle(text, shapes=True)
+    expected = _statement_expected_graph(name)
+    assert len(actual) == len(expected) == triples
+    assert isomorphic(actual, expected)
+
+
+STATEMENT_INVALID_CASES = [
+    ("numeric-tail", "<urn:s> <urn:p> 1.2.3 ."),
+    ("orphan-iri", "<urn:s> ."),
+    ("orphan-literal", '"literal" .'),
+    ("orphan-integer", "01 ."),
+    ("orphan-boolean", "true ."),
+    ("orphan-bnode-label", "_:s ."),
+    ("empty-anon", "[] ."),
+    ("empty-property-list", "[;] ."),
+    ("orphan-empty-collection", "() ."),
+    ("orphan-collection", "(01 02) ."),
+    ("orphan-collection-with-child-property-list", "([<urn:p> <urn:o>]) ."),
+    ("orphan-nested-collection-with-child-property-list", "(([<urn:p> <urn:o>])) ."),
+    ("valid-triple-then-orphan-iri", "<urn:s> <urn:p> <urn:o> . <urn:ignored> ."),
+    (
+        "valid-triple-then-orphan-collection",
+        "<urn:s> <urn:p> <urn:o> . ([<urn:q> <urn:r>]) .",
+    ),
+]
+
+
+@pytest.mark.parametrize(
+    "name,text", STATEMENT_INVALID_CASES, ids=[x[0] for x in STATEMENT_INVALID_CASES]
+)
+def test_statement_guard_rejects_orphan_input_even_when_nested_nodes_emit_triples(name, text):
+    del name
+    with pytest.raises(SemanticError) as error:
+        parse_turtle(text, shapes=True)
+    assert type(error.value) is SemanticError
+    assert error.value.code == "INVALID_TURTLE"
+    assert error.value.args == ("INVALID_TURTLE",)
+    assert str(error.value) == "INVALID_TURTLE"
