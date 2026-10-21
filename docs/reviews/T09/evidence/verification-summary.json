@@ -1,0 +1,95 @@
+{
+  "scope": "T09 private implementation, fixture preparation and test Store rebuild; not product domain runtime",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "manifestSha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+  "sourceCodeSha256": {
+    "packages/engine/src/ontolearn_engine/learning/__init__.py": "daad19bb53b8341d69f62c25374f0f60a2aa313a4ebea485cd9a4d65fe0c7b1b",
+    "packages/engine/src/ontolearn_engine/learning/baselines.py": "a2435502cf7aee0190f468c865aeefb60b63efa069f92b24ba4b92fd4a0552a0",
+    "packages/engine/src/ontolearn_engine/learning/service.py": "87d26be67856b66a19c212e820b0f29e76af5d51cc11e8b3b2bce4aa6b7344f4",
+    "scripts/verify-product-baselines.py": "7df27bfc8f4ff8c096a684b9a70a846e6af2048a36a49a2f98c8892e7a8b10aa",
+    "packages/engine/tests/test_learning_baselines.py": "4b8fbf3c8d7abe076b0d619a89596404777fb21332c4c6b507895f191fe0c3c9",
+    "packages/engine/tests/test_learning_service.py": "9d301fedaa8582599541a3fed4351a60921889706bf799431cce60ecb8a0f40e"
+  },
+  "commands": [
+    {
+      "command": "python3 scripts/verify-product-baselines.py",
+      "exitCode": 0,
+      "filesVerified": 17,
+      "casePlans": 50,
+      "productRuntime": "not-executed"
+    },
+    {
+      "command": "uv run --frozen pytest packages/engine/tests/test_learning_baselines.py packages/engine/tests/test_learning_service.py -q",
+      "exitCode": 0,
+      "passed": 35
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "vitestPassed": 630,
+      "pytestPassed": 1087,
+      "staticTypeFormatBuild": "passed"
+    }
+  ],
+  "resetExports": [
+    {
+      "baseline": "G-behavior",
+      "command": "python3 scripts/verify-product-baselines.py --reset G-behavior",
+      "exitCode": 0,
+      "stdoutSha256": "ddb70201ed2a8222fa4ad1aa7f6ae048abbb70324efe9c578481c971a11aecd0",
+      "completeModelEqualsFixture": true
+    },
+    {
+      "baseline": "E.5",
+      "command": "python3 scripts/verify-product-baselines.py --reset E.5",
+      "exitCode": 0,
+      "stdoutSha256": "af1d647a6e6018381bfccab4b7a36b3ae7a64fd45f17da3fef4e396e0f9506de",
+      "completeModelEqualsFixture": true
+    }
+  ],
+  "firstFailures": {
+    "first-ruff.txt": "Long line/import formatting issues, repaired before final check.",
+    "first-npm-check.txt": "27 digest mismatch failures because fixture content changed during the first check; invalid snapshot preserved. Regenerated manifest and froze all code/content before passing full reruns."
+  },
+  "rawLogs": {
+    "first-learning-pytest.txt": {
+      "sha256": "4a9570256aa3bdb8aeee7a4c68b5b61967a69334a7de4d49c1f16f6db5606af9",
+      "bytes": 99
+    },
+    "first-npm-check.txt": {
+      "sha256": "683f953090c59e361f11e9fcc952a62c34bd700ea5ff923dfb9acac7cb8989b9",
+      "bytes": 66464,
+      "losslessArchive": "first-npm-check.txt.gz",
+      "archiveSha256": "a4117a43311bf1712e3acd06622d80fc8794b0450e7b22590a65680d8f54a234"
+    },
+    "first-ruff.txt": {
+      "sha256": "9e594a33ba2caa7f582b08a24e1f66dc5eb3cbbe87346535ffe47faebd3484d2",
+      "bytes": 12579
+    },
+    "learning-pytest-after-review.txt": {
+      "sha256": "63f4d60d03f934060c793ddaef0feb11de246c6058ff303d8437deb53047859b",
+      "bytes": 99
+    },
+    "learning-pytest-final.txt": {
+      "sha256": "63f4d60d03f934060c793ddaef0feb11de246c6058ff303d8437deb53047859b",
+      "bytes": 99
+    },
+    "npm-check-after-review.txt": {
+      "sha256": "fa97b8f2d1cd43b2548386e97993fb34456dc9436fcd3468fe95986d738de281",
+      "bytes": 5222
+    },
+    "npm-check-final.txt": {
+      "sha256": "0f58ea8f1161dccf8f9db4b39a8517ab0e9db163f734e1b41ee105ac7647509e",
+      "bytes": 5222
+    }
+  },
+  "unexecuted": [
+    "production domain tools",
+    "product UI/bridge/learning persistence",
+    "package resources/Windows/macOS E2E",
+    "actual Agent full-assistance path and report export",
+    "five human acceptance",
+    "designated two-model reviews",
+    "push/PR/CI/merge/release"
+  ]
+}
