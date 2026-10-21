@@ -1,0 +1,49 @@
+# T01 显式内部 business3 与启动诊断阶段：正式实施授权
+
+总控现正式授权原 T01 会话在原独立工作树直接完成本阶段实现、必要验证、独立实现审查、修复和原始证据封存。前一纯表材料内部阶段已收口，本次结束该内部执行输入冻结；bf04169/27a全部历史对象和原件保留。没有指定模型正在审查此树，不重建功能会话或Goal。
+
+## 固定方案及根复核
+
+从 T01 自己原树 `.worktrees/T01-project-transactions` 的固定文档过程 `79d6bc4998ef49f8401636166b7e9fa7193c6b21` 继续；其源码仍为已独立读回的 bf04169，27a与79d仅补证/计划，不复制未批准I05/I06实现。原批准集成基线5f及全部后续自己的产品/过程身份分开记录，最终外审前仍按原规则同步真实依赖和基线。
+
+完整采用 `docs/iterations/T01/business3-startup-implementation-plan.md`（38501B，SHA `e9999d37a034fc365b8c5a345c3c135220e13c78b4f4907a763d81351d846b07`）的17产品/7测试精确范围、接口、错误及证据合同。根已读原计划及全部实际修订、作者11700B独审3804e8bd…15c0，以及根独立阶段报告14180B/SHA `cd1bfb39f0bb86169240ee3875d80a82da010394dc995dfa33878c4df5f46df3`；已实际逐Git补绑79d两文档与工作字节、确认仅plan/review/status三文档增量。
+
+原 P1 构造清理、P2 不可伪原attempt来源、计数与最终版本绑定现均在计划层关闭，实施和真实反例仍须本阶段证明。不是已实现、通过外审或父T01/目标平台完成。
+
+## 本次明确批准的接口与行为
+
+批准同一 canonical 内独立 startupFailure/error_startup，固定 kind、diagnosticVersion1、engineSessionId:null、同build真实registryHash、诊断封套严格为上述五字段，error严格为code/messageKey/retryable/params四字段；不含protocolVersion/requestId/项目路径/实际format/异常原值。只允许可信显式3且成功hello之前一次产生，实际payload最多1024字节，LF不计、去CR之前所有payload计入。
+
+其有限安全投影仅：PROJECT_FORMAT_UNSUPPORTED / project.formatUnsupported / false / `{supportedFormats:[3]}`；STORAGE_BUSY / storage.busy / true / `{retryAfterMs:250}`；STORAGE_FAILURE / storage.failure / false / `{}`；INTERNAL_ERROR / engine.internal / false / `{}`。来源与分类严格按固定计划，typed格式错误只来自实际不支持版本检查。新格式码不进入普通codes/error2/error3或null-session业务通配；canonical只一份，无资源/TS/Python第二catalog。
+
+批准计划中的validateStartupFailure、validateStartupError、validate_startup_failure、startup_error、business3_error及严格business3/display helper/export分工，原PROTOCOL_VERSION2、validateV2/validate、默认safeError/healthSchema和生产2保留。展示有限union只消费已投影DTO，不选择运行协议或提供权限。registry/fixtures的内部profile状态在真实实施后同步准确，不能仅改状态宣称ready。
+
+批准仅未打包main的内部 `--t01-internal-business3` 工厂，签发固定引擎argv、原可信DB/allowedProjects和同目录随机新绝对backup目标；默认2与packaged desktop保持原入口。renderer、继承环境或child不能选profile/路径；不新增generic IPC。包内独立CLI显式3只用于机制验证，不能据此宣布应用入口已开放。
+
+Store3、JobStore3第二层、真实reconcile与全部初始化成功才协商hello3；维护原worker内部通道及原Job/claim/receipt/D7。逐资源及父子构造所有权移交/清理、保首因、收尾失败不伪settled，按原计划实现。原reader提供唯一原长metadata，通用帧限不降低，不复制解析器；同步首错/stop/deferred/pending/generation规则及同chunk后续不消费均须真实验证。
+
+Supervisor来源认证必须实际使用ES运行时 `#private` 或模块闭包的每实例私有WeakMap，不能仅TypeScript private或公开tag。绑定原Session/attempt/generation/profile/prehello/已验证安全值及原startup/request/health promise/operation，projectFailure只凭真实caught对象和已内部登记原promise提取；合法旧promise仍可返回原首因，但不得更新新连接。每listener实际交付clone由Supervisor先登记；普通再次clone、公开EngineError、属性篡改、跨实例、错promise、当前profile均不能晋升来源。逐层TaskService/main catch/recovery/共享DTO/最终固定文案按计划完整接线，不能拿展示sanitizer重新认证。
+
+## 精确文件范围
+
+产品仅17条：
+
+- `packages/contracts/v2/schema.json`、`errors.json`、`registry.json`、`fixtures.json`、`binding-regressions.json`（均同v2目录）；
+- `packages/contracts/src/v2.ts`、`packages/contracts/src/index.ts`、`packages/contracts/python/contract_v2.py`；
+- `packages/engine/src/ontolearn_engine/storage.py`、`job_store.py`、`coordinator.py`、`__main__.py`（均同engine目录）；
+- `apps/desktop/src/main/jsonl.ts`、`engine.ts`、`task-service.ts`、`index.ts`（均同main目录）；
+- `apps/desktop/src/renderer/src/task-presentation.ts`。
+
+job_store.py只修构造失败清理及必要关闭幂等/状态，不扩SQL/迁移/事务/claim/业务；storage同类清理和真实typed版本检查不改原权威。其余改动职责逐条以固定计划§2为准，不因持维护权而扩大本阶段。
+
+新增专属测试仅5条：`packages/engine/tests/test_project_startup_contract.py`、`packages/engine/tests/test_project_startup_stdio.py`、`tests/unit/t01-startup-canonical.test.ts`、`tests/unit/t01-startup-supervisor.test.ts`、`tests/unit/t01-startup-presentation.test.ts`。已有专属两条仅按计划同步准确profile状态/必要回归：`packages/engine/tests/test_project_business3_contract.py`、`tests/unit/t01-business3-contract.test.ts`。旧通用测试只读运行，不改预期/时限/skip掩盖回归；本线docs保全计划、意见与全部原件。
+
+I06的preload/index.ts、renderer env.d.ts/App.tsx/style.css、protocol.py/resources.py/worker.py/project/format3.py、design-v2出口、package/entrypoint/build/锁/CI等不获本阶段写权。实际必要新增路径/故障修复先给精确差异与证据，不临时绕路；可继续不依赖部分。
+
+## 必须完成的验证与剩余门
+
+执行固定计划§7–8全部相关验证：同源canonical/完整原bytes golden/1024边界与CRLF/转义/跨chunk；真实SQLite/Python CLI的0/1/2→3/已有3重开、backup/lease/两层及reconcile、构造/cleanup故障、实际格式和安全分类；无窗口Node监督真实Python、四种App/Engine组合、真实project.get3与Job/operation恢复幂等、原promise/事件凭据及全部第二次错误门到最终固定文案。故障注入与真实OS故障、机制/静态接线与实际IPC分开记录。正常check与verify:sources按实际改动完成，失败和所有真实终态原件保留，固定候选及完整执行输入，不留只摘要或调用无终态。
+
+允许既有unsigned目录打包与包内引擎CLI/资源原bytes一致性验证，不修改构建链、不启动desktop产物。本机禁止Electron/e2e/native/HMR/焦点/凭据提示和审查应用操作。main/index的helper+静态接线/类型检查不得冒称真实Electron handler/IPC/sender/页面已运行；隔离native和目标Windows/macOS、全产品/真人、原指定双模型同版新完整审查、意见处置、双Pass后push/PR/真实CI/正常合并/远端门继续保留。
+
+完成后由独立agent审查实际实现及完整异常/伪造/换代反例，原会话修复复审再交固定代码/证据；无变化不重复旧材料或旧r1–r3检查。本阶段不增加source/learning/完整恢复业务、不声明parser/语义producer或父P0完成，不以内部显式3成功代替最终应用验收。

@@ -1,0 +1,37 @@
+# T05 已采用规则 profile 私有机制阶段：正式实施授权
+
+总控现授权原 T05 会话在原隔离工作树直接完成本阶段代码、必要验证、独立实现审查、修复与可恢复证据。本授权依据用户实际采用的完整 Q6 决定，不再申请该政策。它不完成父功能、真实图执行或发布验收。
+
+## 固定依据与已关闭问题
+
+使用原树 `.worktrees/T05-quality-reasoning`，保持原分支及历史 WIP/候选，起点为本线固定文档过程 `e6ea0f77411d71ac3b226b2d7e00280628848bca` 及其原产品，不重置或消费他线未批准实现。用户采用原决定 SHA `328a59c42ae69a5c2426c494c1c979cb629692f389cdacf591e8789738c6b4f0`，真实回执见 `Q6-user-adoption-receipt.json`。
+
+授权完整执行固定 profile（16428B，SHA `9259f4ac6622857182570509378afb6c96ab5c4dc19d2e887db559c27a282427`）与阶段规格（26782B，SHA `8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424`），包括其精确词法、六类型直接目标 binary32/64 舍入与精确比较、Gregorian/calendar、九域六算子、给定 binding 的全部 comparison 与原子多 head/batch、源位置和失败边界。
+
+根已全文读独立规格报告 `T05-controller-profile-mechanism-phase-review.md`（18525B，SHA `4af9caf8b2c0a0e74efc05d10fae58e24d2d2715a7d2f190b9839d99769166d3`）。PM-1/P2 的 decimal 矩阵误替换已由新固定 Git 和36格逐项读回关闭，旧023错误与内部漏检记录保留；不沿用旧Pass替代最终字节。Budget调用专属可变计费器的 N1 文案已关闭。合法 XML1.1/S、Unicode/L、RFC well-formed 层及已采用 REC pin 按固定 profile 执行，不自行换为其他规范版本或有效性层。
+
+## 唯一代码、测试与 fixture 范围
+
+代码仅七条，前缀 `packages/engine/src/ontolearn_engine/quality/`：`__init__.py`、`rule_profile.py`、`rule_terms.py`、`rule_numbers.py`、`rule_calendar.py`、`rule_comparator.py`、`rule_firing.py`。仅修改既有 init，另六条新建。lazy 导出须保留 DefinitionError、ValidatedDefinition、validate_definition、build_plan 的 API、对象身份、`__all__` 及原行为；新纯模块导入不触旧 parser/filter，不改其他既有 quality 模块。
+
+新测试仅 `packages/engine/tests/` 下七条：`test_quality_profile_terms.py`、`test_quality_profile_numbers.py`、`test_quality_profile_calendar.py`、`test_quality_profile_comparator.py`、`test_quality_profile_firing.py`、`test_quality_profile_limits.py`、`test_quality_profile_imports.py`。
+
+新 fixture 仅 `tests/fixtures/quality/profile-v1/` 下六条：`lexical.json`、`numeric-oracles.json`、`calendar-oracles.json`、`comparison-matrix.json`、`firing-cases.json`、`manifest.json`。独立 oracle、手工推导/精确分数/IEEE hex、完整输入/输出、首失败与原工具终态按本线 docs/iterations/T05、docs/reviews/T05 保全，不以被测输出回填 expected。
+
+不增加依赖，不修改四 semantic future 路径、Graph/matcher/RDFS/SHACL、Store/Job/worker/main、协议/公共路由、renderer、锁、build、CI 或旧I05测试。source/profile/私有失败不提供真实producer认证、图成员或全局完备证明，也不发布当前结果/成功Job。未来唯一I05执行器复用本机制，query/SHACL仍按各自批准合同。
+
+## 一次冻结的保护值与 N2 实施验收
+
+采用固定 `mechanism-budget/1`：输入/输出各262144 UTF8字节；单term16384/source65536字节；各数字组件4096 ASCII digits；持久整数组件16384bit、临时32768bit；100规则，每规则16when/32comparison/16heads/64变量；1024给定binding/firing、16384head occurrence、8192trace逻辑项；累计work16777216。它们是保守保护值，不是已测容量、性能或生产limits，不能由caller抬高或重置绕过。按较小限额验证阈值±1。
+
+N2作为本次实现与独立审查的必需项直接执行：在既有私有模块内冻结可检查的trace计数单位；每个保留的firing、when/comparison/head occurrence、basis叶/引用等都应计费，不能把任意大组藏作一个廉价trace。逻辑输入/输出出现次数不得因对象alias免费。长公共前缀字符串比较、排序、term key/basis去重、UTF8/source复制与序列化须在操作前按实际扫描或可证明的保守费用扣减，不能仅comparison=1。bigint的幂/乘/移位/除法/GCD/转换与临时位宽检查均在昂贵分配之前，禁止先完整json.dumps再数预算。缓存不恢复余额或逃避收费。
+
+CompiledPlan/输入/limits冻结，编译对象须来自本机制实际预检，不能靠caller标记绕过零匹配坏常量检查；同调用Budget只扣减且不跨调用共享。未知内部/损坏计划与可信绑定不降为用户错；安全异常字段只读，原traceback/路径/原值不进入公共输出或日志。真实source未知则明确缺失，不伪造索引或权限。此项可在本次代码/测试/证据中直接收口，不加无变化文档审批门。
+
+## 执行及完成门
+
+直接实施上述完整机制，运行七组有意义的专项、原quality兼容性及仓库正常check；保留每次实际失败、修前/修后身份、完整工具call/output和真实终态，固定最终本地提交/所有执行输入及原件清单。复杂实现必须由独立agent复核，所有真实问题在原会话修复验证，修后按实际变化复审。通过后无新变化不重复全量检查；不量化未实测性能。
+
+本阶段可按批准的标准库机制使用无窗口CLI与fresh subprocess import验证，禁止当前Mac窗口/e2e/native/HMR/凭据提示或审查应用操作。实际新文件/共享接口或预算调整确有必要时，先完成不依赖部分，再给总控精确触发/差异，不扩目录或抬全局限制。
+
+父T05完整FR500–505、C/D/G.2及生命周期、真实工具/图/producer/领域数据/源码和包内、目标平台/真人、指定两个模型同候选新完整审查、意见处置、双Pass后push/PR/CI/正常合并/远端门全部保留。原Goal不重建；工具状态不能恢复时如实记录，不妨碍完成本次已授权阶段，不把内部机制通过登记为父Goal完成。
