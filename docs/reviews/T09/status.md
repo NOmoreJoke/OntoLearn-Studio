@@ -6,7 +6,7 @@
 
 - 工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines`
 - 分支：`feature/weekly-t09-learning-baselines`
-- 批准 base：`5f910b52c69d86a1076b2032e5d3c63e715947f3`；本地恢复提交见后续 recovery.json。
+- 批准 base：`5f910b52c69d86a1076b2032e5d3c63e715947f3`；实现恢复提交 `51cdc0e9d138c98cdd4ace865074a71883657a68`；后续仅证据提交，见 recovery.json。
 - 启动实查：`pwd`、`git status --short`、`git branch --show-current`、`git rev-parse HEAD`、`shasum -a 256 AGENTS.md`；启动只有指南未暂存修改，无任务路径冲突。
 - 指南 SHA 始终为 `db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786`；保持未暂存、不入产品提交。
 - 仅新增授权的 content/learning、tests/fixtures/product-baselines、learning 私有 Python 包、test_learning_*.py、固定验证脚本与本任务 docs。未改共享 Store/worker/协议/契约/main/App/依赖锁或总控状态。读取最新总控回执确认 storage.py 后续唯一 owner 为 T01，未采用其未批准实现。
