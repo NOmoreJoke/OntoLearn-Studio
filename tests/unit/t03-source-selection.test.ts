@@ -119,6 +119,58 @@ describe('trusted main-only source selection over real temporary files', () => {
     expect((await value.readForPreview(scope, second.selectionId)).summary.sheet).toBe('设备B')
   })
 
+  it('allows real XLSX bytes to be inspected before sheet selection without issuing a commit proof', async () => {
+    const raw = Buffer.from('unvalidated workbook candidate bytes')
+    const value = broker(async () => xlsx)
+    const { scope, selected } = await chosen(value)
+    const inspected = await value.readForInspection(scope, selected.selectionId)
+    expect(inspected.summary.sheet).toBeNull()
+    expect(Buffer.from(inspected.bytes)).toEqual(raw)
+    expect(Object.keys(inspected).sort()).toEqual(['bytes', 'summary'])
+    await expect(value.readForCommit(scope, inspected as never)).rejects.toMatchObject({
+      kind: 'stale-proof',
+    })
+    await expect(value.readForPreview(scope, selected.selectionId)).rejects.toMatchObject({
+      kind: 'sheet-required',
+    })
+    inspected.bytes[0] = 0
+    expect(Buffer.from((await value.readForInspection(scope, selected.selectionId)).bytes)).toEqual(
+      raw,
+    )
+  })
+
+  it('an inspection invalidated by configuration cannot return late bytes or resurrect its selection', async () => {
+    const value = broker(async () => xlsx)
+    const { scope, selected } = await chosen(value)
+    const inspection = value
+      .readForInspection(scope, selected.selectionId)
+      .catch((failure) => failure)
+    const configuring = value.configure(scope, selected.selectionId, { encoding: null, sheet: 'A' })
+    await expect(value.readForInspection(scope, selected.selectionId)).rejects.toMatchObject({
+      kind: 'busy',
+    })
+    const latest = await configuring
+    expect(await inspection).toMatchObject({ kind: 'stale-context' })
+    await expect(value.readForInspection(scope, selected.selectionId)).rejects.toMatchObject({
+      kind: 'stale-context',
+    })
+    expect((await value.readForInspection(scope, latest.selectionId)).summary.sheet).toBe('A')
+  })
+
+  it('inspection rechecks the real source hash and a changed file invalidates existing preview proofs', async () => {
+    const value = broker(async () => csv)
+    const { scope, selected } = await chosen(value)
+    const snapshot = await value.readForPreview(scope, selected.selectionId)
+    await writeFile(csv, Buffer.from('equipment_id,equipment_name\n002,泵站A\n'))
+    await expect(value.readForInspection(scope, selected.selectionId)).rejects.toMatchObject({
+      kind: 'source-changed',
+    })
+    await writeFile(csv, bytes)
+    await expect(value.readForCommit(scope, snapshot.proof)).rejects.toMatchObject({
+      kind: 'stale-proof',
+    })
+  })
+
   it('captures options before real async I/O so later caller mutation cannot change the operation', async () => {
     const value = broker(async () => csv)
     const { scope, selected } = await chosen(value)

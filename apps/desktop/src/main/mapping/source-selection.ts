@@ -27,6 +27,8 @@ export type SourceSnapshot = Readonly<{
   bytes: Uint8Array
   proof: SourceProof
 }>
+/** Main-only bytes for format/sheet inspection; conveys no preview/commit authority. */
+export type SourceInspection = Readonly<{ summary: SourceSummary; bytes: Uint8Array }>
 export type SourceFailureKind =
   | 'invalid-input'
   | 'invalid-choice'
@@ -199,6 +201,15 @@ export class SourceSelectionBroker {
     } finally {
       if (this.configuring === ticket) this.configuring = null
     }
+  }
+
+  async readForInspection(scope: SourceScope, selectionId: string): Promise<SourceInspection> {
+    const selected = this.current(scope, selectionId)
+    const ticket = this.generation
+    const bytes = await this.readVerified(scope, selected)
+    this.assertTicket(scope, ticket)
+    // An XLSX needs this read before selecting a real sheet. No proof is minted.
+    return Object.freeze({ summary: selected.summary, bytes: new Uint8Array(bytes) })
   }
 
   async readForPreview(scope: SourceScope, selectionId: string): Promise<SourceSnapshot> {
