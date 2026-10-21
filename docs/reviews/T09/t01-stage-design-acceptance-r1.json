@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-21",
+  "timezone": "Asia/Shanghai",
+  "scope": "T09 receipt of fixed T01 section4 design response only",
+  "T01": {
+    "commit": "f51dd38dbdfd2fbb1b9923efee666a19d5b415cc",
+    "path": "docs/iterations/T01/owner-interface-responses-r1.md",
+    "sha256": "0f3ab7e539b9b69c6a602f4eabd089936a37afd9d842fa836748793031df6768",
+    "readSection": 4,
+    "lines": [
+      52,
+      54
+    ]
+  },
+  "T09": {
+    "commit": "e6519932b0b20fd1862dcd6f038a621fce8177f5",
+    "path": "docs/iterations/T09/stage-evidence-contract.md",
+    "sha256": "637daea093465952aab800e329317f31514325285077850b81589e5cdd1e4ce7"
+  },
+  "decision": "accept-design-alignment",
+  "semanticConflicts": [],
+  "acceptedBoundaries": [
+    "Owner atomically persists immutable completion evidence when actual successful result is current; no later reconstruction from today result",
+    "Keep today canonical stale metadata unchanged; terminal must still be current at consumption",
+    "Trusted persisted plan/slots, input and completion ledger sequence, attempt epoch/root/ancestry, job/result and full pages share consistent read authority",
+    "Consumption and actual current-input/epoch revalidation are atomic in T01 CAS",
+    "T01 owns attempts and monotonic assistance provenance; reject renderer passed and arbitrary StageCompletion",
+    "T09 binder remains a private read-only validator, not a durable learning ledger or public/runtime authority"
+  ],
+  "contractChangeRequired": false,
+  "implementationOrTestsChanged": false,
+  "productRetestsRun": false,
+  "remainingPrerequisites": [
+    "T01 actual durable attempt/assistance and completion ledger plus versioned reader/CAS interface",
+    "T00/T01 canonical approval and allowed dependency adoption",
+    "Actual relevant domain and integration acceptance",
+    "Designated review resources and same-candidate gates"
+  ],
+  "runtimeAdoptionApproved": false,
+  "currentT01LearningCapability": "rejected; no completed learning receipt supplied",
+  "goalStatus": "blocked retained; design receipt does not resume or complete original Goal"
+}
