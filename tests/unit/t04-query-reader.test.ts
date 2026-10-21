@@ -160,6 +160,10 @@ describe('T04 renderer read adapter; synthetic transport tests only, no query ex
       expect(await reader.nextPage(id(8))).toBe(false)
       expect(reader.snapshot().result).toBeNull()
       expect(reader.snapshot().phase).toBe('error')
+      expect(reader.snapshot().error).toMatchObject({
+        code: 'INVALID_REQUEST',
+        params: { field: 'cursor' },
+      })
     }
   })
   it('discards late metadata after a project/generation switch before requesting any page', async () => {
@@ -215,6 +219,10 @@ describe('T04 renderer read adapter; synthetic transport tests only, no query ex
       expect(await reader.read(presentation())).toBe(false)
       expect(bridge.getResultPage).not.toHaveBeenCalled()
       expect(reader.snapshot().result).toBeNull()
+      expect(reader.snapshot().error).toMatchObject({
+        code: 'INVALID_REQUEST',
+        params: { field: 'identity' },
+      })
     }
     for (const size of [0, 201, 1.5]) {
       const { reader, bridge } = setup()

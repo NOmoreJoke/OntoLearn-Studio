@@ -54,12 +54,12 @@ export interface QueryReaderSnapshot {
   cancelRequested: boolean
   error: SafeError | null
 }
-const invalid = () =>
+const invalid = (field: 'identity' | 'params' | 'cursor' = 'identity') =>
   safeError({
     code: 'INVALID_REQUEST',
     messageKey: 'protocol.invalidRequest',
     retryable: false,
-    params: {},
+    params: { field },
   })
 const terminal = (job: JobView) => ['succeeded', 'failed', 'cancelled'].includes(job.state)
 
@@ -217,7 +217,7 @@ export class QueryResultReader {
       parsed.data.binding.projectId !== this.state.projectId ||
       this.state.phase === 'disposed'
     ) {
-      return this.fail(invalid(), epoch, token)
+      return this.fail(invalid('params'), epoch, token)
     }
     this.presentation = structuredClone(parsed.data)
     this.pageSize = pageSize
@@ -253,7 +253,12 @@ export class QueryResultReader {
       const response = await this.bridge.getResult(presentation.binding.resultId)
       if (!this.current(epoch, token)) return false
       if (!response.ok) return this.fail(response.error, epoch, token)
-      const metadata = queryMetadata(response.data)
+      let metadata: QueryResultMetadata
+      try {
+        metadata = queryMetadata(response.data)
+      } catch {
+        return this.fail(invalid(), epoch, token)
+      }
       if (
         !sameResult(metadata, presentation.binding) ||
         metadata.projectId !== this.state.projectId
@@ -280,7 +285,12 @@ export class QueryResultReader {
       })
       if (!this.current(epoch, token)) return false
       if (!responsePage.ok) return this.fail(responsePage.error, epoch, token)
-      const page = acceptPage(responsePage.data, metadata, presentation.columns)
+      let page: QueryPageData
+      try {
+        page = acceptPage(responsePage.data, metadata, presentation.columns)
+      } catch {
+        return this.fail(invalid('cursor'), epoch, token)
+      }
       const first = page.rows[0]
       if (
         (after &&
@@ -289,7 +299,7 @@ export class QueryResultReader {
             (first.ordinal === after.ordinal && first.rowId <= after.rowId))) ||
         (cursor !== null && page.nextCursor === cursor)
       )
-        return this.fail(invalid(), epoch, token)
+        return this.fail(invalid('cursor'), epoch, token)
       const last = page.rows.at(-1)
       if (last) this.afterRow = { ordinal: last.ordinal, rowId: last.rowId }
       this.state = {
