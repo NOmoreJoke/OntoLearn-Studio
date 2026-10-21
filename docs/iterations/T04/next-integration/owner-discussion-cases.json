@@ -1,0 +1,623 @@
+{
+  "artifactKind": "owner-discussion-cases-not-public-protocol",
+  "status": "proposal-awaiting-canonical-owner",
+  "approvedRuntimeOrSchema": false,
+  "publicSchemaAndPersistenceOwner": "T01 by effective handoff; actual executor owner remains assigned separately",
+  "basis": {
+    "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "t04PrivateReferenceCandidate": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+    "commonInstructionsSha256": "b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39"
+  },
+  "notation": "Keys describe synthetic observations and required outcomes, not RPC methods/DTOs/schema. Synthetic receipts/ids/hashes are not real Store/engine evidence. No state transition is executed here. Field names and version granularity must be finalized only in the single canonical contract.",
+  "exampleDraft": {
+    "name": "未闭环高危告警",
+    "description": "设备运维案例中的 High/Open 告警",
+    "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+    "scope": "asserted",
+    "capabilityQuestion": "哪些高危告警尚未闭环？",
+    "source": "editor"
+  },
+  "exampleDraftDigest": "e9a0fd54a4ebe787ee74012dbae5b3e176b23c489b2252a8781f53c4a1dafbb9",
+  "digestBoundary": "Authoring draft digest only; not parametersHash, snapshotId, commit fingerprint or authorization",
+  "cases": [
+    {
+      "id": "QSAVE-01",
+      "topic": "new-save-receipt",
+      "observed": {
+        "projectRevision": 3,
+        "workspaceGeneration": 1,
+        "selectedDefinitionId": null,
+        "loadedQueryValue": {
+          "name": "未闭环高危告警",
+          "description": "设备运维案例中的 High/Open 告警",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        }
+      },
+      "userDraft": {
+        "name": "未闭环高危告警",
+        "description": "设备运维案例中的 High/Open 告警",
+        "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+        "scope": "asserted",
+        "capabilityQuestion": "哪些高危告警尚未闭环？",
+        "source": "editor"
+      },
+      "syntheticFutureReceipt": {
+        "definitionId": "Q-21",
+        "persisted": true
+      },
+      "requiredOutcome": {
+        "selectedDefinitionId": "Q-21",
+        "savedQueryFields": {
+          "name": "未闭环高危告警",
+          "description": "设备运维案例中的 High/Open 告警",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        },
+        "receiptMustBeFromRealCommit": true,
+        "secondSaveUpdatesSameIdentity": true
+      }
+    },
+    {
+      "id": "QSAVE-02",
+      "topic": "same-name-distinct-identities",
+      "observed": {
+        "queries": {
+          "Q-01": {
+            "name": "未闭环高危告警",
+            "description": "设备运维案例中的 High/Open 告警",
+            "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+            "scope": "asserted",
+            "capabilityQuestion": "哪些高危告警尚未闭环？",
+            "source": "editor"
+          },
+          "Q-02": {
+            "name": "未闭环高危告警",
+            "description": "设备运维案例中的 High/Open 告警",
+            "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+            "scope": "asserted",
+            "capabilityQuestion": "哪些高危告警尚未闭环？",
+            "source": "editor"
+          }
+        }
+      },
+      "selection": "Q-02",
+      "userDraft": {
+        "name": "未闭环高危告警",
+        "description": "用户正在编辑的新说明",
+        "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+        "scope": "asserted",
+        "capabilityQuestion": "哪些高危告警尚未闭环？",
+        "source": "editor"
+      },
+      "requiredOutcome": {
+        "queries": {
+          "Q-01": {
+            "name": "未闭环高危告警",
+            "description": "设备运维案例中的 High/Open 告警",
+            "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+            "scope": "asserted",
+            "capabilityQuestion": "哪些高危告警尚未闭环？",
+            "source": "editor"
+          },
+          "Q-02": {
+            "name": "未闭环高危告警",
+            "description": "用户正在编辑的新说明",
+            "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+            "scope": "asserted",
+            "capabilityQuestion": "哪些高危告警尚未闭环？",
+            "source": "editor"
+          }
+        },
+        "returnedDefinitionId": "Q-02",
+        "matchByNameForbidden": true
+      }
+    },
+    {
+      "id": "QSAVE-03",
+      "topic": "stale-loaded-query",
+      "observed": {
+        "projectRevision": 3,
+        "workspaceGeneration": 1,
+        "selectedDefinitionId": "Q-01",
+        "loadedQueryValue": {
+          "name": "未闭环高危告警",
+          "description": "设备运维案例中的 High/Open 告警",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        }
+      },
+      "authorityNow": {
+        "projectRevision": 4,
+        "queries": {
+          "Q-01": {
+            "name": "未闭环高危告警",
+            "description": "设备运维案例中的 High/Open 告警",
+            "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Closed\" . } ORDER BY ?alarm",
+            "scope": "asserted",
+            "capabilityQuestion": "哪些高危告警尚未闭环？",
+            "source": "editor"
+          }
+        }
+      },
+      "userDraft": {
+        "name": "未闭环高危告警",
+        "description": "用户正在编辑的新说明",
+        "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+        "scope": "asserted",
+        "capabilityQuestion": "哪些高危告警尚未闭环？",
+        "source": "editor"
+      },
+      "errorExample": {
+        "code": "REVISION_CONFLICT",
+        "messageKey": "project.revisionConflict",
+        "retryable": false,
+        "params": {
+          "expected": 3,
+          "actual": 4
+        }
+      },
+      "requiredOutcome": {
+        "queries": {
+          "Q-01": {
+            "name": "未闭环高危告警",
+            "description": "设备运维案例中的 High/Open 告警",
+            "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Closed\" . } ORDER BY ?alarm",
+            "scope": "asserted",
+            "capabilityQuestion": "哪些高危告警尚未闭环？",
+            "source": "editor"
+          }
+        },
+        "localDraft": {
+          "name": "未闭环高危告警",
+          "description": "用户正在编辑的新说明",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        },
+        "repreviewOrConflictRequired": true,
+        "usingLatestRevisionToHideOldLoadForbidden": true
+      }
+    },
+    {
+      "id": "QSAVE-04",
+      "topic": "preview-confirm-race",
+      "observed": {
+        "projectRevision": 3,
+        "workspaceGeneration": 1,
+        "selectedDefinitionId": "Q-01",
+        "loadedQueryValue": {
+          "name": "未闭环高危告警",
+          "description": "设备运维案例中的 High/Open 告警",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        }
+      },
+      "previewBaseRevision": 3,
+      "authorityAtConfirm": {
+        "projectRevision": 4,
+        "queries": {
+          "Q-01": {
+            "name": "未闭环高危告警",
+            "description": "设备运维案例中的 High/Open 告警",
+            "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Closed\" . } ORDER BY ?alarm",
+            "scope": "asserted",
+            "capabilityQuestion": "哪些高危告警尚未闭环？",
+            "source": "editor"
+          }
+        }
+      },
+      "userDraft": {
+        "name": "未闭环高危告警",
+        "description": "用户正在编辑的新说明",
+        "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+        "scope": "asserted",
+        "capabilityQuestion": "哪些高危告警尚未闭环？",
+        "source": "editor"
+      },
+      "errorExample": {
+        "code": "REVISION_CONFLICT",
+        "messageKey": "project.revisionConflict",
+        "retryable": false,
+        "params": {
+          "expected": 3,
+          "actual": 4
+        }
+      },
+      "requiredOutcome": {
+        "queries": {
+          "Q-01": {
+            "name": "未闭环高危告警",
+            "description": "设备运维案例中的 High/Open 告警",
+            "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Closed\" . } ORDER BY ?alarm",
+            "scope": "asserted",
+            "capabilityQuestion": "哪些高危告警尚未闭环？",
+            "source": "editor"
+          }
+        },
+        "oldDiffCannotCommit": true,
+        "newPreviewAndConfirmationRequired": true
+      }
+    },
+    {
+      "id": "QSAVE-05",
+      "topic": "response-lost-after-real-commit",
+      "observed": {
+        "projectRevision": 3,
+        "workspaceGeneration": 1,
+        "selectedDefinitionId": null,
+        "loadedQueryValue": {
+          "name": "未闭环高危告警",
+          "description": "设备运维案例中的 High/Open 告警",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        }
+      },
+      "userDraft": {
+        "name": "未闭环高危告警",
+        "description": "设备运维案例中的 High/Open 告警",
+        "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+        "scope": "asserted",
+        "capabilityQuestion": "哪些高危告警尚未闭环？",
+        "source": "editor"
+      },
+      "authorityAfterLostResponse": {
+        "queries": {
+          "Q-21": {
+            "name": "未闭环高危告警",
+            "description": "设备运维案例中的 High/Open 告警",
+            "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+            "scope": "asserted",
+            "capabilityQuestion": "哪些高危告警尚未闭环？",
+            "source": "editor"
+          }
+        },
+        "commitReceiptExists": true
+      },
+      "requiredOutcome": {
+        "reconcileExistingOperation": true,
+        "blindNewDefinitionRetryForbidden": true,
+        "exceptionDoesNotProveRollback": true,
+        "queries": {
+          "Q-21": {
+            "name": "未闭环高危告警",
+            "description": "设备运维案例中的 High/Open 告警",
+            "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+            "scope": "asserted",
+            "capabilityQuestion": "哪些高危告警尚未闭环？",
+            "source": "editor"
+          }
+        }
+      }
+    },
+    {
+      "id": "QSAVE-06",
+      "topic": "late-receipt-after-document-switch",
+      "requestContext": {
+        "projectRevision": 3,
+        "workspaceGeneration": 1,
+        "selectedDefinitionId": "Q-01",
+        "loadedQueryValue": {
+          "name": "未闭环高危告警",
+          "description": "设备运维案例中的 High/Open 告警",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        }
+      },
+      "currentEditor": {
+        "workspaceGeneration": 2,
+        "selectedDefinitionId": "Q-02",
+        "draft": {
+          "name": "未闭环高危告警",
+          "description": "设备运维案例中的 High/Open 告警",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Closed\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        }
+      },
+      "syntheticFutureReceipt": {
+        "definitionId": "Q-01",
+        "persisted": true
+      },
+      "requiredOutcome": {
+        "workspaceGeneration": 2,
+        "selectedDefinitionId": "Q-02",
+        "draft": {
+          "name": "未闭环高危告警",
+          "description": "设备运维案例中的 High/Open 告警",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Closed\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        },
+        "oldReceiptMustNotRebindEditor": true
+      }
+    },
+    {
+      "id": "QSAVE-07",
+      "topic": "edit-during-create-save",
+      "requestContext": {
+        "projectRevision": 3,
+        "workspaceGeneration": 1,
+        "selectedDefinitionId": null,
+        "loadedQueryValue": {
+          "name": "未闭环高危告警",
+          "description": "设备运维案例中的 High/Open 告警",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        }
+      },
+      "currentEditor": {
+        "workspaceGeneration": 1,
+        "selectedDefinitionId": null,
+        "draft": {
+          "name": "未闭环高危告警",
+          "description": "用户正在编辑的新说明",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        }
+      },
+      "syntheticFutureReceipt": {
+        "definitionId": "Q-21",
+        "persisted": true
+      },
+      "requiredOutcome": {
+        "selectedDefinitionId": "Q-21",
+        "draft": {
+          "name": "未闭环高危告警",
+          "description": "用户正在编辑的新说明",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        },
+        "unsavedChanges": true,
+        "savedVersion": {
+          "name": "未闭环高危告警",
+          "description": "设备运维案例中的 High/Open 告警",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        }
+      }
+    },
+    {
+      "id": "QSAVE-08",
+      "topic": "scope-change-invalidation",
+      "before": {
+        "definitionId": "Q-01",
+        "query": {
+          "name": "未闭环高危告警",
+          "description": "设备运维案例中的 High/Open 告警",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        },
+        "savedResultState": "current"
+      },
+      "userDraft": {
+        "name": "未闭环高危告警",
+        "description": "设备运维案例中的 High/Open 告警",
+        "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+        "scope": "asserted+derived",
+        "capabilityQuestion": "哪些高危告警尚未闭环？",
+        "source": "editor"
+      },
+      "requiredOutcome": {
+        "sameDefinitionId": "Q-01",
+        "priorResultState": "stale",
+        "reasonMustComeFromCanonicalDependencyPolicy": true,
+        "newRunRequiresExplicitCurrentOrHistoricalInput": true
+      }
+    },
+    {
+      "id": "QPRES-01",
+      "topic": "actual-query-after-editor-change",
+      "executionInput": {
+        "query": {
+          "name": "未闭环高危告警",
+          "description": "设备运维案例中的 High/Open 告警",
+          "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+          "scope": "asserted",
+          "capabilityQuestion": "哪些高危告警尚未闭环？",
+          "source": "editor"
+        },
+        "inputSelection": "historical",
+        "snapshotId": "synthetic-snapshot-A"
+      },
+      "currentEditor": {
+        "name": "未闭环高危告警",
+        "description": "设备运维案例中的 High/Open 告警",
+        "sparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Closed\" . } ORDER BY ?alarm",
+        "scope": "asserted",
+        "capabilityQuestion": "哪些高危告警尚未闭环？",
+        "source": "editor"
+      },
+      "requiredOutcome": {
+        "executedSparql": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm",
+        "visibleSnapshot": "synthetic-snapshot-A",
+        "editorMustNotSupplyExecutionText": true,
+        "queryExecutionProvenanceRequired": true
+      }
+    },
+    {
+      "id": "QPRES-02",
+      "topic": "columns-and-query-from-other-result",
+      "resultIds": {
+        "project": "00000000-0000-4000-8000-000000000001",
+        "resultA": "00000000-0000-4000-8000-000000000002",
+        "resultB": "00000000-0000-4000-8000-000000000012",
+        "jobA": "00000000-0000-4000-8000-000000000003",
+        "jobB": "00000000-0000-4000-8000-000000000013"
+      },
+      "actualResult": "resultA",
+      "presentationFrom": "resultB",
+      "requiredOutcome": {
+        "rejectBeforeDisplay": true,
+        "allBindingsMustMatch": [
+          "project",
+          "result",
+          "job",
+          "inputSnapshot",
+          "scope",
+          "parameters",
+          "queryDefinitionOrActualQuerySource"
+        ]
+      }
+    },
+    {
+      "id": "QPRES-03",
+      "topic": "ask-false-versus-empty-select",
+      "inputs": [
+        {
+          "actualEngineForm": "ASK",
+          "actualEngineBoolean": false
+        },
+        {
+          "actualEngineForm": "SELECT",
+          "actualRows": []
+        }
+      ],
+      "requiredOutcome": {
+        "showAskBooleanFalse": true,
+        "showSelectEmptyDirections": true,
+        "doNotInferFormFromEditorOrRowCount": true,
+        "notAProofOfBusinessNonexistence": true
+      }
+    },
+    {
+      "id": "QPRES-04",
+      "topic": "iri-looking-literal-is-not-an-edge",
+      "cells": [
+        {
+          "kind": "iri",
+          "value": "urn:example:A01"
+        },
+        {
+          "kind": "literal",
+          "value": "urn:example:A01",
+          "language": null,
+          "datatype": null
+        },
+        {
+          "kind": "literal",
+          "value": "泵站A",
+          "language": "zh-cn",
+          "datatype": null
+        },
+        {
+          "kind": "literal",
+          "value": "001",
+          "language": null,
+          "datatype": "http://www.w3.org/2001/XMLSchema#string"
+        }
+      ],
+      "requiredOutcome": {
+        "keepTermKindsLanguageDatatypeAndLexicalForm": true,
+        "localGraphUsesOnlyActualIriRelationships": true,
+        "guessingFromStringAppearanceForbidden": true,
+        "valuesRemainSafePlainText": true
+      }
+    },
+    {
+      "id": "QPRES-05",
+      "topic": "stale-derived-input",
+      "selection": {
+        "scope": "asserted+derived",
+        "inputSelection": "current"
+      },
+      "derivedAuthority": {
+        "state": "stale",
+        "boundToOlderSnapshot": true
+      },
+      "requiredOutcome": {
+        "notSuccessfulCurrentExecution": true,
+        "ownerMustRejectOrRequireExplicitValidInput": true,
+        "clientMustNotInventStaleReason": true
+      }
+    },
+    {
+      "id": "QPRES-06",
+      "topic": "cursor-from-previous-result",
+      "resultIds": {
+        "project": "00000000-0000-4000-8000-000000000001",
+        "resultA": "00000000-0000-4000-8000-000000000002",
+        "resultB": "00000000-0000-4000-8000-000000000012",
+        "jobA": "00000000-0000-4000-8000-000000000003",
+        "jobB": "00000000-0000-4000-8000-000000000013"
+      },
+      "cursorIssuedFor": "resultA",
+      "requestedResult": "resultB",
+      "errorExample": {
+        "code": "CURSOR_MISMATCH",
+        "messageKey": "result.cursorMismatch",
+        "retryable": false,
+        "params": {}
+      },
+      "requiredOutcome": {
+        "noMixedRows": true,
+        "notAnEmptyResult": true,
+        "sameImmutableResultFirstPageCanBeRequestedAgain": true
+      }
+    },
+    {
+      "id": "QPRES-07",
+      "topic": "historical-payload-evicted",
+      "metadata": {
+        "state": "historical",
+        "payloadStatus": "evicted",
+        "snapshotId": "synthetic-snapshot-A"
+      },
+      "requiredOutcome": {
+        "historicalIdentityRemainsVisible": true,
+        "notAnEmptyQueryResult": true,
+        "notAChangedJobTerminal": true,
+        "rerunRequiresExplicitInput": true
+      }
+    },
+    {
+      "id": "QPRES-08",
+      "topic": "untrusted-model-draft-network-capability",
+      "draft": {
+        "name": "未闭环高危告警",
+        "description": "设备运维案例中的 High/Open 告警",
+        "sparql": "SELECT ?s WHERE { SERVICE <https://invalid.example> { ?s ?p ?o } }",
+        "scope": "asserted",
+        "capabilityQuestion": "哪些高危告警尚未闭环？",
+        "source": "model"
+      },
+      "errorExample": {
+        "code": "NETWORK_FORBIDDEN",
+        "messageKey": "semantics.networkForbidden",
+        "retryable": false,
+        "params": {}
+      },
+      "requiredOutcome": {
+        "draftVisibleBeforeExecution": true,
+        "noModelOrNetworkCallInThisArtifact": true,
+        "actualApprovedExecutorMustDeny": true,
+        "noFakeSuccessOrStoredBusinessResult": true
+      }
+    }
+  ]
+}
