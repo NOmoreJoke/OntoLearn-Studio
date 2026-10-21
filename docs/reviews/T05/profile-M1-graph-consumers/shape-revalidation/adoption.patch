@@ -1,0 +1,31 @@
+diff --git a/packages/engine/src/ontolearn_engine/semantic.py b/packages/engine/src/ontolearn_engine/semantic.py
+index 9e6fa6a..46bb76a 100644
+--- a/packages/engine/src/ontolearn_engine/semantic.py
++++ b/packages/engine/src/ontolearn_engine/semantic.py
+@@ -1257,7 +1257,7 @@ def _shapes(graph):
+                 raise SemanticError("INVALID_SHAPE")
+         elif s not in properties:
+             raise SemanticError("INVALID_SHAPE")
+-        if p == SH.datatype and o not in _DATATYPES:
++        if p == SH.datatype and o not in _DATATYPES | {RDF.langString}:
+             raise SemanticError("UNSUPPORTED_DATATYPE")
+         if p in {SH.minCount, SH.maxCount} and (
+             not isinstance(o, Literal)
+@@ -1268,7 +1268,16 @@ def _shapes(graph):
+             raise SemanticError("INVALID_SHAPE")
+         if p in {SH.minInclusive, SH.maxInclusive} and (
+             not isinstance(o, Literal)
+-            or o.datatype not in {XSD.integer, XSD.int, XSD.decimal, XSD.float, XSD.double}
++            or o.datatype
++            not in {
++                XSD.integer,
++                XSD.int,
++                XSD.nonNegativeInteger,
++                XSD.decimal,
++                XSD.float,
++                XSD.double,
++                XSD.dateTime,
++            }
+             or o.ill_typed
+         ):
+             raise SemanticError("INVALID_SHAPE")

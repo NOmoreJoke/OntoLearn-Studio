@@ -1,0 +1,193 @@
+{
+  "candidate": "b3f72d10e3c6ab5eb8eb24247dcd096aea90a0d5",
+  "cases": [
+    {
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "fixturePValueNodeCount": 1,
+        "realValidatorReport": {
+          "conforms": true,
+          "rows": []
+        },
+        "result": {
+          "conforms": true,
+          "violations": []
+        },
+        "shapeTripleCount": 7,
+        "stage": "returned",
+        "status": "success",
+        "validatorRuns": 1
+      },
+      "assertion": "pass",
+      "expected": {
+        "components": [],
+        "conforms": true,
+        "currentEntryGap": "valid dateTime shape bound rejected INVALID_SHAPE",
+        "entryAndReportAreSeparate": true
+      },
+      "id": "C-inclusive-dateTime-equal",
+      "input": {
+        "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"2000-01-01T01:00:00+01:00\"^^xsd:dateTime .\nex:s a ex:Focus .\n",
+        "id": "C-inclusive-dateTime-equal",
+        "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive \"2000-01-01T00:00:00Z\"^^xsd:dateTime; sh:maxInclusive \"2000-01-01T00:00:00Z\"^^xsd:dateTime ."
+      },
+      "inputSourceSha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6",
+      "kind": "consumer-cell",
+      "normativeStatus": "matched",
+      "testSourceSha256": "3ee46c9c633cdb611cf75a6fae3148b6abad8828ebf55327138549ad7cb8811c"
+    },
+    {
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "fixturePValueNodeCount": 1,
+        "realValidatorReport": {
+          "conforms": true,
+          "rows": []
+        },
+        "result": {
+          "conforms": true,
+          "violations": []
+        },
+        "shapeTripleCount": 6,
+        "stage": "returned",
+        "status": "success",
+        "validatorRuns": 1
+      },
+      "assertion": "pass",
+      "expected": {
+        "components": [],
+        "conforms": true,
+        "currentEntryGap": "nonNegativeInteger not in inclusive parameter whitelist",
+        "entryAndReportAreSeparate": true
+      },
+      "id": "C-inclusive-nni",
+      "input": {
+        "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"2\"^^xsd:nonNegativeInteger .\nex:s a ex:Focus .\n",
+        "id": "C-inclusive-nni",
+        "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive \"2\"^^xsd:nonNegativeInteger ."
+      },
+      "inputSourceSha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6",
+      "kind": "consumer-cell",
+      "normativeStatus": "matched",
+      "testSourceSha256": "3ee46c9c633cdb611cf75a6fae3148b6abad8828ebf55327138549ad7cb8811c"
+    },
+    {
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "fixturePValueNodeCount": 1,
+        "realValidatorReport": {
+          "conforms": false,
+          "rows": [
+            {
+              "actualResultNode": "_:N4e2b7af03a164d329f4c217386809dc8",
+              "focusNode": [
+                "<urn:m1:s>"
+              ],
+              "resultPath": [
+                "<urn:m1:p>"
+              ],
+              "resultSeverity": [
+                "<http://www.w3.org/ns/shacl#Violation>"
+              ],
+              "sourceConstraintComponent": [
+                "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>"
+              ],
+              "sourceShape": [
+                "<urn:m1:shape>"
+              ],
+              "value": [
+                "\"1999-12-31T23:59:59Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime>"
+              ]
+            }
+          ]
+        },
+        "result": {
+          "conforms": false,
+          "violations": [
+            {
+              "constraint": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+              "focus": "<urn:m1:s>",
+              "path": "<urn:m1:p>",
+              "severity": "<http://www.w3.org/ns/shacl#Violation>",
+              "sourceShape": "<urn:m1:shape>",
+              "value": "\"1999-12-31T23:59:59Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime>"
+            }
+          ]
+        },
+        "shapeTripleCount": 6,
+        "stage": "returned",
+        "status": "success",
+        "validatorRuns": 1
+      },
+      "assertion": "pass",
+      "expected": {
+        "components": [
+          "MinInclusiveConstraintComponent"
+        ],
+        "conforms": false,
+        "currentEntryGap": "valid dateTime shape bound rejected INVALID_SHAPE",
+        "entryAndReportAreSeparate": true,
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+            "sourceShape": "<urn:m1:shape>",
+            "value": "\"1999-12-31T23:59:59Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime>",
+            "valueExpectation": "exact RDF term"
+          }
+        ]
+      },
+      "id": "C-inclusive-dateTime-before",
+      "input": {
+        "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"1999-12-31T23:59:59Z\"^^xsd:dateTime .\nex:s a ex:Focus .\n",
+        "id": "C-inclusive-dateTime-before",
+        "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive \"2000-01-01T00:00:00Z\"^^xsd:dateTime ."
+      },
+      "inputSourceSha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6",
+      "kind": "consumer-cell",
+      "normativeStatus": "matched",
+      "testSourceSha256": "3ee46c9c633cdb611cf75a6fae3148b6abad8828ebf55327138549ad7cb8811c"
+    },
+    {
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "fixturePValueNodeCount": 1,
+        "realValidatorReport": {
+          "conforms": true,
+          "rows": []
+        },
+        "result": {
+          "conforms": true,
+          "violations": []
+        },
+        "shapeTripleCount": 6,
+        "stage": "returned",
+        "status": "success",
+        "validatorRuns": 1
+      },
+      "assertion": "pass",
+      "expected": {
+        "components": [],
+        "conforms": true,
+        "currentEntryGap": "sh:datatype rdf:langString rejected UNSUPPORTED_DATATYPE at _shapes",
+        "entryAndReportAreSeparate": true
+      },
+      "id": "C-langString",
+      "input": {
+        "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"a\"@en .\nex:s a ex:Focus .\n",
+        "id": "C-langString",
+        "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:datatype rdf:langString ."
+      },
+      "inputSourceSha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6",
+      "kind": "consumer-cell",
+      "normativeStatus": "matched",
+      "testSourceSha256": "3ee46c9c633cdb611cf75a6fae3148b6abad8828ebf55327138549ad7cb8811c"
+    }
+  ]
+}
