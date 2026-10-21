@@ -106,3 +106,10 @@
 最终资源复核：总控execution-state更新至2026-10-21 09:02:26北京时间，批准develop仍5f910b5；后续共享归属已变更为T01 storage+formatPython4、T03 build/dependency4，I06十四文件未变且format8交接待单独完成。这些变更没有给T08正式共享接线或未批准实现消费权。外审预约已从早前I05调整至T06-S1，**不是T08资源预约**；不能按旧记录声称仍归I05。真实DeepSeek主体/消费上限仍未建立。故本线正式接线/真实验收/指定外审的同一阻塞条件未解除；新T09输入已充分用于本批独立进展，现无能合法推进剩余门禁的独立动作。
 
 Goal工具实际回执：已调用 `update_goal(status="blocked")` 并返回blocked，原threadId/完整objective保留。此为重复外部依赖阻塞，不是complete或用户请求的pause；收到具体已批准接口/资源后在原聊天恢复。最后实现候选93516fa，完整check/独立内审8/固定输入实际观测证据已保存，未push/PR/合并。
+
+
+## 最新责任政策接收（2026-10-21）
+
+已全文读回共同指南（SHA256 `b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39`）及三份生效交接，AGENTS仍`78df2825…`。当前T01拥有storage、Python4及canonical/main8；T03拥有构建依赖4文件；I06保留其余6文件及私有网关；I05保留未交路径。上段“format8交接待完成”仅描述当时快照，本段记录其现已生效。完整清单和实际独立agent政策回执见[policy-receipt-2026-10-21](policy-receipt-2026-10-21.md)。
+
+本次只补记责任政策；测试/CI/resources不自动转移，冻结树与未批准代码限制保持。未改产品、未重测或重审、未重开Goal。实现候选93516fa、既有check与内审8证据保持；Goal仍blocked，正式接线/真实API与领域验收/隔离指定外审及后续PR/CI/合并仍按原恢复条件推进。

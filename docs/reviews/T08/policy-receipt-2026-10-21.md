@@ -20,3 +20,17 @@ T08原聊天/Goal `01a15bc2-40dd-7393-a1cb-1e87086e6993` 已在安全边界全�
 - 已实际透传独立agent `/root/t08_internal_review`，其明确回执全文读完并核对AGENTS/共同指令SHA；没有文件修改或无变化产品重测，原3a4c2ea内审结论保留。
 
 原Goal/受审代码/冻结输入保持，AGENTS仍不暂存；本次仅追加操作政策与验收缺口记录，不因政策更新重启计算或重开产品审查。
+
+
+## 共享文件责任交接更新
+
+在安全边界全文读取最新版共同指南及三份生效交接；本次仅接收政策，不重开Goal、产品审查或无变化测试。
+
+- 共同指南实际SHA256：`b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39`，与总控通知一致；前述`df09014a…`保留为历史权限政策快照。AGENTS仍为`78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`，未暂存。
+- T01今后独占storage.py、Python 4文件及canonical/main 8文件；T03独占pyproject.toml、uv.lock、scripts/build-engine.mjs、engine/entrypoint.py。I06保留main/index.ts、main/task-service.ts、preload/index.ts、renderer/src/env.d.ts、App.tsx、style.css及其私有网关模块；I05保留其余未交接共享路径。
+- 三份生效依据为总控目录`iteration-control/2026-10-21-weekly-release/`内的`I05-T01-format3-ownership-handoff.md`（SHA256 `18485767098d448a4fcce2fc7e59b5a325433826894b98111cab96926fdc2097`）、`I06-T01-format3-ownership-handoff.md`（`add9884ab9a0cda3a8a562f26a3b7c515255919d65eb0487d6c254681ed4991d`）、`I05-T03-build-ownership-handoff.md`（`88057b59e173453d197bfeae183dc99b8c09c71e30d518781bf774ebc037e95b`）。完整逐文件清单、排除项及回拨规则以这三份原件为准。
+- 未来编辑从已批准5f910b5基线在相应owner工作树实施；冻结旧树不改、不消费未批准代码。测试、CI、resources责任不自动继承；返还共享文件须总控明确批准。责任交接不等同schema、公共接口、format3运行或T08接线获批。
+- 原第九节、无当前桌面GUI/native、无实际API费用或secret读取等边界保持。T06-S1资源预约不属于T08，指定外审仍待总控预约。
+- 已实际透传独立agent `/root/t08_internal_review`；其回执确认全文读取四份原件、指南与AGENTS哈希匹配、归属及排除项一致，未修改文件、重审或重测。
+
+T08实现候选仍`93516fa8455cf4b195cbfb699aa7a6652d428b6f`，本次开始时本地HEAD为`61582d816134181859bc3e97598c7d597842e9c5`。Goal已blocked；此次未获得新接口、真实运行、消费或共享文件修改授权，原恢复条件继续有效。
