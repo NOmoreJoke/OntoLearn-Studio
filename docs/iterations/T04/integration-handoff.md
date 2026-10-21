@@ -31,7 +31,7 @@ T01 需提供保存后权威查询读取及同项目/旧基线拒绝、原子失
 ## T08 / T09 / T10
 
 - T08：只提供可见 `modelDraft`；用户查看/编辑实际 SPARQL 和范围后再点击正式执行。该 UI 属性不是模型网关，Python 无密钥。真实 API、零伪造评估和模型失败离线继续由 T08 联验。
-- T09：authoring-case.json 使用独立 `urn:t04:` 合成查询探针，测试完整 A01/High/Open 以及 A01 Closed 后空集；不是完整 G-base，不替代 T09 固定全案例/版本/重置。正式 Q-01/02 必须用已批准共享 fixture 和 I05 query.execute 完整联验。
+- T09：authoring-case.json 使用独立 `urn:t04:` 合成查询探针，测试完整 A01/High/Open 以及 A01 Closed 后空集；不是完整 G-base，不替代 T09 固定全案例/版本/重置。总控后续批准873c8c0固定输入后，本线已按manifest验证17项并用原字节G-base/查询做编写互操作完整输出探针（见 acceptance.md）；未消费T09实现。正式 Q-01/02 仍必须用 I05 query.execute 完整联验。
 - T10：当前页 CSV 仅最多 200 行，防公式解释；大结果导出另走授权流程。保存 SPARQL 与 scope/question 等元数据需进入正式项目包并跨设备复现。
 
 ## 原父验收保留
