@@ -16,7 +16,9 @@ import pytest
 from ontolearn_engine import semantic
 from ontolearn_engine.quality import rule_firing
 from ontolearn_engine.quality.rule_firing import Comparison, RuleSpec, Triple, Variable
+from ontolearn_engine.quality.rule_numbers import Number
 from ontolearn_engine.quality.rule_profile import PROFILE, Budget, SourceRecord, TermInput
+from ontolearn_engine.quality.rule_terms import ProfileValue
 from ontolearn_engine.resources import CONTRACT, ROOT
 from ontolearn_engine.semantic_profile_input import CaptureLedger, prepare_profile_material
 from ontolearn_engine.semantic_profile_production import execute_admitted_profile_job
@@ -432,10 +434,8 @@ def assert_complete_heads(produced, restored, expected):
         for term_index, term_value in enumerate(
             (match.when[0].subject, match.when[0].predicate, match.when[0].object)
         ):
-            assert_source(
-                term_value.source,
-                f"/cases/0/asserted/{0 if match is matches[0] else 1}/{term_index}",
-            )
+            record_index = 0 if match is matches[0] or term_index == 1 else 1
+            assert_source(term_value.source, f"/cases/0/asserted/{record_index}/{term_index}")
     (firing,) = child["batch"].firings
     assert firing.rule_id == expected["ruleId"]
     assert firing.when == matches[0].when and firing.bindings == matches[0].bindings
@@ -446,6 +446,8 @@ def assert_complete_heads(produced, restored, expected):
     assert comparison.result is true["comparison"]["result"]
     assert comparison.operator == true["comparison"]["operator"]
     for actual, side in ((comparison.left, "left"), (comparison.right, "right")):
+        assert type(actual) is ProfileValue and type(actual.value) is Number
+        assert type(actual.term) is TermInput
         assert actual.domain == "N" and actual.language == ""
         number = true["comparison"][side + "Number"]
         assert (
@@ -465,7 +467,7 @@ def assert_complete_heads(produced, restored, expected):
     assert [h.index for h in firing.heads] == [h["headIndex"] for h in true["heads"]]
     assert [triple_key(h.triple) for h in firing.heads] == [h["triple"] for h in true["heads"]]
     assert len(firing.heads) == expected["headOccurrences"] == 3
-    assert len(native["rules"]) == expected["uniqueDerivedRdfTriples"] == 2
+    assert [list(row) for row in native["rules"]] == expected["uniqueDerivedRdfTriples"]
     assert {tuple(k) for k in native["rules"]} == {tuple(h["triple"]) for h in true["heads"]}
     leaves = {r["reference"]: r["triple"] for r in native["proofLeaves"]}
     assert {tuple(leaves[r]) for r in firing.basis} == {tuple(k) for k in true["leafBasis"]}
