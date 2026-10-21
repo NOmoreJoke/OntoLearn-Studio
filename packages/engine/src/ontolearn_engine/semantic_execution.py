@@ -716,7 +716,9 @@ def _execute_profile(
                 )
         producer, stage, origin = Producer.PROJECTION, Stage.PROJECTION, Origin.TRUSTED_INTERNAL
         if _capture is not None:
-            _capture.before_projection(result, source, tuple(rules))
+            if _capture.direct_ledger is not None:
+                _capture.before_explanation_projection(result, source, tuple(rules))
+            _capture.before_projection()
         projection = _ProfileProjection()
         safe_result = projection.value(result)
         if _capture is not None:

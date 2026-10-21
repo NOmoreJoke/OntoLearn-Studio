@@ -220,13 +220,15 @@ class _ProductionCapture:
         # is checked after the original same-projection source gate as well.
         _require(type(source) is type(self.material.source))
 
-    def before_projection(self, native=None, source=None, rules=None):
+    def before_explanation_projection(self, native, source, rules):
         if self.direct_ledger is not None:
             self.direct_ledger.enter("encode")
             bound = _direct_bound(native, self.direct_ledger)
             bound += _direct_bound(source, self.direct_ledger)
             bound += _direct_bound(rules, self.direct_ledger) + 2048
             _direct_stream(self.direct_ledger, bound, passes=3)
+
+    def before_projection(self):
         self.ledger.enter(6, 3 * MAX_BYTES)
         # Prepay all five original digests before the first (input/source/defs)
         # in the projection stage. Q<=2M, defs<=M, payload+rows<=M.
@@ -441,9 +443,17 @@ def _execute_admitted_profile_job(
 
 
 def execute_admitted_profile_job(material, *, error_catalog, error_schema, ledger=None):
-    return _execute_admitted_profile_job(
-        material, error_catalog=error_catalog, error_schema=error_schema, ledger=ledger
-    )
+    # Retain the original public traceback's explicitly empty result slots.
+    # The common operation owns/clears the actual objects before raising.
+    capture = checked = catalog_json = allocation = receipt = outcome = None
+    encoded_source = actual = supplied = value = None
+    try:
+        return _execute_admitted_profile_job(
+            material, error_catalog=error_catalog, error_schema=error_schema, ledger=ledger
+        )
+    finally:
+        assert capture is checked is catalog_json is allocation is receipt is outcome is None
+        assert encoded_source is actual is supplied is value is None
 
 
 def execute_profile_explanation(material, *, error_catalog, error_schema, ledger, direct_ledger):
