@@ -42,6 +42,53 @@ void require(bool condition, const char* label) {
 [[maybe_unused]] bool identity_equal(const nl_identity& a, const nl_identity& b) {
   return std::memcmp(&a, &b, sizeof(a)) == 0;
 }
+// Test CLI spelling only, not file identity or permission evidence. Accept rooted
+// drive paths and ordinary UNC paths with server/share/artifact components.
+// Device namespaces, drive-relative/root-relative paths and ambiguous components
+// are outside this fixture contract. Pure input cases below need no OS dispatch.
+constexpr bool windows_probe_artifact_path(const wchar_t* path) noexcept {
+  if (!path) return false;
+  size_t length = 0;
+  while (length < 1024 && path[length] != L'\0') ++length;
+  if (length < 4 || length == 1024) return false;
+  const auto separator = [](wchar_t c) constexpr { return c == L'\\' || c == L'/'; };
+  const bool drive = ((path[0] >= L'A' && path[0] <= L'Z') ||
+      (path[0] >= L'a' && path[0] <= L'z')) && path[1] == L':' && separator(path[2]);
+  const bool unc = path[0] == L'\\' && path[1] == L'\\';
+  if (!drive && !unc) return false;
+  size_t start = drive ? 3 : 2;
+  unsigned components = 0;
+  for (size_t i = start; i <= length; ++i) {
+    if (i < length && !separator(path[i])) {
+      const auto c = path[i];
+      if (c < L' ' || c == 0x7f || c == L':' || c == L'"' ||
+          c == L'<' || c == L'>' || c == L'|' || c == L'*' || c == L'?') return false;
+      continue;
+    }
+    // UNC uses its ordinary backslash spelling; no device/extended prefixes.
+    if (unc && i < length && path[i] != L'\\') return false;
+    const auto count = i - start;
+    if (count == 0 || path[i - 1] == L'.' || path[i - 1] == L' ') return false;
+    ++components;
+    start = i + 1;
+  }
+  return components >= (drive ? 1u : 3u);
+}
+static_assert(windows_probe_artifact_path(L"C:\\artifacts\\probe.exe"), "drive-rooted artifact");
+static_assert(windows_probe_artifact_path(L"c:/artifacts/probe.exe"), "CMake drive-rooted spelling");
+static_assert(windows_probe_artifact_path(L"\\\\server\\share\\probe.exe"), "ordinary UNC artifact");
+static_assert(!windows_probe_artifact_path(L"C:probe.exe"), "reject drive-relative artifact");
+static_assert(!windows_probe_artifact_path(L"C:"), "reject drive current directory");
+static_assert(!windows_probe_artifact_path(L"1:\\probe.exe"), "reject non-letter drive");
+static_assert(!windows_probe_artifact_path(L"\\probe.exe"), "reject rooted current-drive artifact");
+static_assert(!windows_probe_artifact_path(L"probe.exe"), "reject relative artifact");
+static_assert(!windows_probe_artifact_path(L"\\\\server\\share"), "reject UNC without artifact");
+static_assert(!windows_probe_artifact_path(L"\\\\server\\\\probe.exe"), "reject empty UNC share");
+static_assert(!windows_probe_artifact_path(L"\\\\?\\C:\\probe.exe"), "reject extended device namespace");
+static_assert(!windows_probe_artifact_path(L"\\\\.\\pipe\\probe.exe"), "reject device namespace");
+static_assert(!windows_probe_artifact_path(L"C:\\artifacts\\..\\probe.exe"), "reject parent segment");
+static_assert(!windows_probe_artifact_path(L"C:\\artifacts\\probe.exe:stream"), "reject alternate stream");
+static_assert(!windows_probe_artifact_path(L"C:\\artifacts\\probe.exe."), "reject trailing dot");
 #if defined(__APPLE__)
 struct fixture {
   nl_owner_ref node_owner{}; // Test-addon fallback retains the exact native owner.
@@ -239,7 +286,7 @@ struct probe {
     try {
     wchar_t target[1024]{};
     require(MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, executable, -1, target, 1024) > 0 &&
-      ((target[0] && target[1] == L':') || (target[0] == L'\\' && target[1] == L'\\')), "probe-absolute");
+      windows_probe_artifact_path(target), "probe-absolute");
     SECURITY_ATTRIBUTES security{sizeof(security), nullptr, TRUE};
     require(CreatePipe(&read_input, &input, &security, 0) &&
       CreatePipe(&output, &write_output, &security, 0), "probe-pipes");
