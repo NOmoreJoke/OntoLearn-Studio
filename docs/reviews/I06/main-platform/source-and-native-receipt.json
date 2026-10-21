@@ -1,0 +1,300 @@
+{
+  "result": "passed-with-explicit-scope",
+  "candidate": "9fcba6634d5c16983c36ef671d4ec8e79694b6d6",
+  "productBaseline": "5f910b5",
+  "normal": {
+    "imageId": "sha256:f7fc7b481eb6270fc169a173970846ce998e1b59b4a42fffdb9b36295730dff1",
+    "containerId": "801d16226c943c31df7adf43770cae489a60d901dc9efcc56d04a06c5913ef30",
+    "gates": {
+      "probePassed": true,
+      "containerExitedZero": true,
+      "runtimeUnchanged": true,
+      "leakageScanPassed": true,
+      "receiverBodiesBound": true
+    },
+    "cases": [
+      {
+        "name": "default-local-no-project-disabled",
+        "result": "passed"
+      },
+      {
+        "name": "explicit-settings-actual-libsecret-no-secret-readback",
+        "result": "passed",
+        "backend": "gnome_libsecret"
+      },
+      {
+        "name": "first-real-worker-public-field-authorized-before-second-completes",
+        "result": "passed"
+      },
+      {
+        "name": "actual-running-coordinator-and-worker-environments-exclude-key-ca-proxy",
+        "result": "passed"
+      },
+      {
+        "name": "actual-ui-second-worker-reuses-public-grant-https-selected-bytes-only",
+        "result": "passed",
+        "firstJobId": "57f6efbf-83ca-472f-9c0a-118d015a282d",
+        "secondJobId": "f0fb9104-4b31-474f-9f19-6cfd41412c29",
+        "receiverIndex": 0
+      },
+      {
+        "name": "window-reload-read-only-main-ledger-no-repost",
+        "result": "passed"
+      },
+      {
+        "name": "actual-second-same-profile-process-exits-original-window-ledger-receiver-unchanged",
+        "result": "passed"
+      },
+      {
+        "name": "main-named-model-calls-leave-real-engine-healthy",
+        "result": "passed"
+      },
+      {
+        "name": "targeted-ui-cancel-other-invocation-completes",
+        "result": "passed",
+        "cancelled": "5334c8b8-f4e1-4adc-b566-448326e6e824",
+        "completed": "df998a54-8560-4b73-a08c-ede00629b806"
+      },
+      {
+        "name": "privacy-local-and-back-does-not-revive-old-grant",
+        "result": "passed"
+      },
+      {
+        "name": "actual-audit-permission-failure-blocks-post-local-window-readable",
+        "result": "passed"
+      },
+      {
+        "name": "configuration-identity-switch-cannot-use-another-grant",
+        "result": "passed"
+      },
+      {
+        "name": "actual-ui-config-switch-clears-password-new-configuration-draft-survives-poll",
+        "result": "passed"
+      },
+      {
+        "name": "actual-ui-configuration-version-change-remounts-empty-password",
+        "result": "passed"
+      },
+      {
+        "name": "actual-ui-whole-result-current-denial-and-explicit-history-read-only-selection",
+        "result": "passed"
+      },
+      {
+        "name": "endpoint-change-missing-key-old-credential-version-and-grant-denied",
+        "result": "passed"
+      },
+      {
+        "name": "second-app-process-durable-audit-recovery-never-replays",
+        "result": "passed"
+      },
+      {
+        "name": "actual-store-worker-commit-while-audit-directory-remains-unsafe",
+        "result": "passed",
+        "jobId": "8c1a936d-7192-43a1-9893-52c511a0e889",
+        "operationId": "ecfee342-493e-4517-9b7c-30127f1f6122"
+      },
+      {
+        "name": "actual-model-init-audit-recovery-failure-local-store-worker-commit-window-works",
+        "result": "passed",
+        "jobId": "114b62cc-3da4-4697-996b-3e3dfce7fbac",
+        "operationId": "45604352-6077-41cc-bb85-3a92d243e85e"
+      },
+      {
+        "name": "actual-main-basic-backend-zero-credential-files",
+        "result": "passed"
+      },
+      {
+        "name": "actual-main-unavailable-backend-zero-credential-files",
+        "result": "passed"
+      },
+      {
+        "name": "actual-worker-protocol-rejects-main-only-method",
+        "result": "passed"
+      }
+    ],
+    "receiver": [
+      {
+        "index": 0,
+        "requestPath": "/v1/chat/completions",
+        "byteCount": 693,
+        "sha256": "4bea2fec09859fae6a3f5f685630b22bd3c3595f486edde3df2b5cedaedda2f0"
+      },
+      {
+        "index": 1,
+        "requestPath": "/v1/chat/completions",
+        "byteCount": 693,
+        "sha256": "4bea2fec09859fae6a3f5f685630b22bd3c3595f486edde3df2b5cedaedda2f0"
+      },
+      {
+        "index": 2,
+        "requestPath": "/v1/chat/completions",
+        "byteCount": 693,
+        "sha256": "4bea2fec09859fae6a3f5f685630b22bd3c3595f486edde3df2b5cedaedda2f0"
+      }
+    ],
+    "bindingSha256": "058a61825c78816b1ba586585edb32c7ec66341f61475361ce5815b33d05068c",
+    "leakScan": {
+      "result": "passed",
+      "ordinaryLogFiles": 40,
+      "privateGatewayFiles": 22,
+      "databases": [
+        {
+          "path": "/probe-data/fixtures/append-failure-local-save/engine.sqlite",
+          "result": "passed",
+          "tables": 29,
+          "rows": 23,
+          "expectedSourceRowsPresent": true,
+          "credentialModelResponseOrExactOutboundPayloadPresent": false
+        },
+        {
+          "path": "/probe-data/fixtures/basic/engine.sqlite",
+          "result": "passed",
+          "tables": 29,
+          "rows": 10,
+          "expectedSourceRowsPresent": true,
+          "credentialModelResponseOrExactOutboundPayloadPresent": false
+        },
+        {
+          "path": "/probe-data/fixtures/fields/engine.sqlite",
+          "result": "passed",
+          "tables": 29,
+          "rows": 19,
+          "expectedSourceRowsPresent": true,
+          "credentialModelResponseOrExactOutboundPayloadPresent": false
+        },
+        {
+          "path": "/probe-data/fixtures/initialization-failure/engine.sqlite",
+          "result": "passed",
+          "tables": 29,
+          "rows": 18,
+          "expectedSourceRowsPresent": true,
+          "credentialModelResponseOrExactOutboundPayloadPresent": false
+        },
+        {
+          "path": "/probe-data/fixtures/protocol-negative/engine.sqlite",
+          "result": "passed",
+          "tables": 29,
+          "rows": 3,
+          "expectedSourceRowsPresent": false,
+          "credentialModelResponseOrExactOutboundPayloadPresent": false
+        }
+      ],
+      "rawDatabaseFiles": [
+        {
+          "path": "/probe-data/fixtures/append-failure-local-save/engine.sqlite",
+          "bytes": 278528
+        },
+        {
+          "path": "/probe-data/fixtures/basic/engine.sqlite",
+          "bytes": 270336
+        },
+        {
+          "path": "/probe-data/fixtures/fields/engine.sqlite",
+          "bytes": 278528
+        },
+        {
+          "path": "/probe-data/fixtures/initialization-failure/engine.sqlite",
+          "bytes": 270336
+        },
+        {
+          "path": "/probe-data/fixtures/protocol-negative/engine.sqlite",
+          "bytes": 270336
+        }
+      ],
+      "exportEntry": "No project export entry exists in this candidate; actual export artifact scan unavailable."
+    },
+    "runtimeSha256": "bfd6c3f2b654e1f45ca1fc4a042272964be6d2782f6d53e788a36421bd0543ca",
+    "identitySha256": "91bfe5c34c6ca1d82e26905e00a605d22eadd3858bc5d1415d52a19584066566",
+    "storageReadbackSha256": "d560c6b869574c8b59407f038072bbcc1a71b96deabc3c44724745731b21c0a1"
+  },
+  "native": {
+    "imageId": "sha256:495979a381da8be793248a520d8ed4f75e87ea02dd69adae5cfb57ada57bc61c",
+    "containerId": "f075e9f48f64138aea65bc602fe722f71a02b4c55c5840e7906a0f564a9a2afc",
+    "gates": {
+      "probePassed": true,
+      "containerExitedZero": true,
+      "runtimeUnchanged": true,
+      "leakageScanPassed": true,
+      "receiverBodiesBound": true
+    },
+    "result": {
+      "result": "passed",
+      "receiverRequests": 1,
+      "actualNativeCrashRecovery": true,
+      "inspectorClosedBeforeFault": true,
+      "rendererCDPEverAttached": false,
+      "windows": 2,
+      "recoveryReadOnly": true,
+      "noAutomaticResend": true,
+      "scope": "Incremental actual crash and visible recovery prompt; no unresponsive/hang matrix claim."
+    },
+    "bindingSha256": "9bade372085b53c7e95e9fe0c2d337ec648e6767d63b4b14ab0baf166af35637",
+    "receiver": [
+      {
+        "index": 0,
+        "byteCount": 695,
+        "sha256": "e68444f3c86a2dd54d692b2c1cedd4e4642c2457e5be4b383f7b983400c5e1a4"
+      }
+    ],
+    "observerSha256": "2c72c2703ddb8872117eb58dd9cf072de2e3c54a37eab1f9abcc299b615cabf1",
+    "actionsSha256": "347a306a70f86a937d948765f95f05227c0d424edae8c6cc945147366fe5160c",
+    "promptScreenshotSha256": "093bd6fa6ec23ed24f02d9d73da72d991f3e3d5a88e25a842ed0373b0d876e19",
+    "storageReadbackSha256": "a765852442015d7c599c7e05a2312243a091f7ae8ef48a60af1ec28c10a93e50",
+    "sameCompiledAppAndBinariesAsNormalRun": true
+  },
+  "isolation": {
+    "architecture": "linux-arm64",
+    "Electron": "44.9.0",
+    "Node": "24.22.0",
+    "backend": "gnome_libsecret",
+    "user": 1106,
+    "runtimeNetwork": "none",
+    "hostMounts": 0,
+    "hostPorts": 0,
+    "privileged": false,
+    "capAdd": [
+      "SYS_ADMIN"
+    ],
+    "seccomp": "Docker default",
+    "chromeSandboxHelper": "root:root 4755",
+    "noSandboxSwitch": false,
+    "rendererNoNewPrivs": 1,
+    "rendererSeccomp": 2,
+    "normalDriver": "direct Electron spawn with container loopback dynamic main inspector/CDP; no Playwright Electron loader",
+    "nativeDriver": "main inspector closed before fault; never renderer CDP; real X11 prompt/action"
+  },
+  "sourceIdentity": {
+    "files": 851,
+    "App.tsx": "bc46ae15214386ef5f99b516b2fcd15e81272fce3321ec7daeb3794d2373e736",
+    "hashesOfSourcesBuildHarnessBinaries": "Full per-file map in raw runtime-before/build-manifest/identity, collector reads executed artifacts back."
+  },
+  "staticChecks": {
+    "eslint": "pass own static image exact current harness",
+    "prettier": "pass own static image tests/i06-main-platform; docs checked via stdin due repository docs/reviews ignore",
+    "ruff": "0.17.1 scoped 5 Python files check/format pass",
+    "syntax": {
+      "result": "passed",
+      "nodeSyntaxFiles": 11,
+      "pythonASTFiles": 5,
+      "bashSyntaxFiles": 2
+    },
+    "fullSuiteRepeated": false
+  },
+  "rawArchive": {
+    "archive": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/i06-main-platform-9fc-r11-native4-raw.tar.gz",
+    "sha256": "9dac44b0cd0a588c902b85b35079f691a52ef13a0e51dce5c9b9e5f9dd99f0fe",
+    "bytes": 13744955,
+    "indexSha256": "d2602b4f18ca9eb67ebf727e0b8a0ee580d4a0a421705717ebf000f3312b070e",
+    "files": 953
+  },
+  "limitations": [
+    "Actual source-app build, app.isPackaged=false. Packaged executable verification remains separate required work.",
+    "Only finite trusted synthetic I04 test producers; normal business field models remain empty, I05 semantics not approved.",
+    "No Mac/Windows/signed-upgrade/real service Q9 claim.",
+    "Native incremental crash proof only; no unresponsive/hang matrix. GTK CJK fonts missing, screenshot does not prove Chinese readability.",
+    "Project export entry absent; no actual export artifact scan.",
+    "No atomic all-writer/current lease claim. Historical selection is explicit, normal source read-to-send window remains disclosed.",
+    "Independent subagent review is not designated dual-model audit.",
+    "OS sandbox result uses added SYS_ADMIN, not default Docker capability set."
+  ]
+}
