@@ -58,3 +58,9 @@ r3中“仍等待Table投影”是其固定历史输入状态；本线0b74的完
 已只读T01固定b35cb4e的digest r1/生命周期r4两文档并核精确SHA，保存 [事实与声明建议](../../../iterations/T03/source-selection/parser-producer-and-options-r3.md)、[固定来源索引](parser-producer-and-options-r3-facts.json)及 [独立复核](parser-producer-and-options-r3-review.md)。S1固定303没有独立parser语义/已接入的完整producer身份；通用I04三字段、包0.1.0、完整锁9f5b及三库版本均只按各自实际来源说明，不能拼成parser真实身份。`t03-source-parser-v1`仅待采用profile提案。真实CSV编码为utf-8/utf-8-sig/gb18030/big5/utf-16，默认sig；受限新digest profile不缩减其他4种待正式接线验收的原能力。CSV options.sheet=null与Table.sheet=CSV、XLSX parser非空/存在与broker私有256字节/NUL边界分别披露。
 
 独立复核通过，两项r4措辞P3已关闭：已有claim先鉴当前项目读权/原context，不再检查今天CAS或新人确认；unknown先原operation+barrier/fence，确认从未受理且不会迟到后才可新operation。最终主稿SHA `df94bdec2bdb66659941e36bc8ee853bc79b54765527bf4b08b342da93814a6c`、facts SHA `832a2fc6b4758293afa03976ae218d8787db9012a8e47483ef9b7cf963f5f1ee`、独审SHA `e9f7488b82135e7239ecada49b446963126e50c424de873dc34a1fb66bddd6dc`。仅Git/文本/哈希与文档格式核对，未读T01 runtime、未import/运行parser/test/GUI、未重复提取0b74数据或改冻结产品。原Goal仍blocked，六缺口/正式接线与外审发布门保留。
+
+## 四文件未来维护生效回执（2026-10-21 11:40+08）
+
+已在安全点实际全文读取新版共同指南：17891字节，SHA `e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0`；前16317字节SHA仍为ff5f9fd0…cfaff，旧全文逐字保留，AGENTS仍78df未暂存。已全文读 `foundation-four-file-handoff-effective.json` 的2026-10-21T11:40:05.102755+08:00生效登记，历史待门协议保留为历史。
+
+未来唯一维护者T01新增且仅限 `apps/desktop/src/main/jsonl.ts`、`apps/desktop/src/renderer/src/task-presentation.ts`、`apps/desktop/src/main/task-service.ts`、`apps/desktop/src/main/index.ts`，沿其批准5f施工，不消费未批C4/e2c/961实现。I06保留 `preload/index.ts` 及renderer的 `env.d.ts/App.tsx/style.css` 四路径和其私有模块；其余责任不随转，T03仍原parser/build/broker边界。返还需T01先停写并保全SHA/WIP/测试状态、root精确登记唯一owner后生效。仅维护责任变更，不授权startup/schema/新码/runtime3/ready；原§9/无桌面干扰/双审及push/CI/正常合并门继续，冻结执行输入不改。本轮仅流程回执/格式检查，无产品改动、无变化复测或GUI，原Goal保持blocked。
