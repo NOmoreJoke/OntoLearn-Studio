@@ -80,3 +80,21 @@ Goal保持 active：父功能FR-001–006/804全部完成、持久项目/草稿/
 第二阶段实际本地提交：`d9d7138f8838474038bd856e3cd2460af25d9eaf`。提交后产品源码/测试未再修改，工作树原只保留受保护 AGENTS 未暂存。指定双审前不push。
 
 格式3设计首轮独立挑战提出5处具体缺失，已在合同第7节逐项补齐：迁移backup/两层ready清单、CAS/claim/receipt/代次防ABA、保留原域no-op语义、checkpoint版本coverage/不可洗白辅助审计、hello有限错误和关闭边界。完整公共JSON及受限格式启动诊断留唯一canonical/main owner统一，未手抄第二schema或假称可执行。该文档修订仅为后续设计；独立复核已确认5项处置准确、可交T00统一，补充旧端[2]仅终止诊断分支。详见format3-contract-review.md；不触发无变化产品复测。
+
+## 续跑政策回执与私有CAS计划器
+
+本轮续跑核验 head=`0a2a4372dc64f9f6d90a18938f9a42ddc5721af7`、分支/AGENTS SHA和独占范围不变。上一轮为实质进展，不是等待或无进展。
+
+已全文读取总控新透传消息和更新后的共同指令，实查其SHA `9717f699e14b5941e15d90269f33cbebc32ef9bec6e7439739be848753419880` 匹配；第九节9条及无桌面5条实际接收生效。原Goal/候选/已归档输入不重建，不因纯操作政策重开产品审查。Codex重置仍需本人每次明确确认、阈值和幂等；不新增付费/API/外发/GUI授权，不自行消费同账号权益。无GUI/native/e2e/HMR/审查应用任务排队。本轮独立审查已附政策全文并要求实际读回新共同指令。
+
+共享接线没有新增生效路径。本轮在原私有范围新增 `project/draft_plan.py` 的无I/O CAS计划器及 `test_project_draft_plan.py`：首次保存、删除header墓碑、重建和恢复均推进持久generation；允许旧domain来源草稿安全保存但不伪称当前；拒绝旧CAS/错project/editor/未来来源，canonical不可变输入，JSON null与删除区分。该模块不建表、不分配operation/receipt、不写库、不注册公共schema；真实并发CAS/原子持久化仍需Store3事务内重新加载并核验，未计完成。
+
+专用首跑14 passed，ruff/格式通过。独立只读审查和新全仓检查准备进行；不能用前轮1196 Python代替本轮新增代码验证。UI易失编辑token与持久header generation分别维护，迟到保存回调不得据持久CAS擅自清空新本地编辑。
+
+## 新默认审查权限接收与CAS阶段验证
+
+安全边界已实际读取AGENTS追加段、共同指令追加段和 external-review-permissions.md，实算后SHA分别为 `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`、`df09014af4d6cf757ca0977a995497f3646cd330e8921710876663a40a8cbcb4`。接收ZCode yolo/MiniMax bypassPermissions默认；逐实际审查任务核验，仍只读、指定模型和无桌面约束，不新增付费/密钥/GUI授权。两独立agent已全文透传；主内审agent已实际核验回执，设计agent等下个正常边界。保护AGENTS不stage，纯政策不重跑不变产品。
+
+纯draft计划器修复孤立Unicode编码P2后，最终20专用和独立复核通过；完整 `npm run check` 退出0，630 TS、1216 Python，lint/格式/typecheck/构建/ruff全过。此证据只证明纯计划器及既有回归，不是Store3持久并发。准备本地恢复提交。
+
+总控刚明确允许在已有storage.py/project/专属测试内实施私有Store3 foundation，默认协议2与公开metadata capability保持不变，原Store唯一权威与lease不绕过；未移交文件/既有17测试不写。下一步将做显式私有格式门、Store层迁移/备份/结构验证/异常回滚，不复制JOB_SCHEMA或反向导入JobStore。T09固定873输入亦获只读引用授权，已读固定manifest和根审计；未调用其未批准helper或把expected预填Store。
