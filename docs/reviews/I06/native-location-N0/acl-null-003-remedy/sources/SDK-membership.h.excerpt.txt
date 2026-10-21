@@ -1,0 +1,15 @@
+	@function   mbr_uid_to_uuid
+	@abstract	convert a UID to a corresponding UUID
+	@discussion	will convert a UID of a user to a corresponding UUID value.
+				This call will always succeed and may return a synthesized
+				UUID with the prefix FFFFEEEE-DDDD-CCCC-BBBB-AAAAxxxxxxxx,
+				where 'xxxxxxxx' is a hex conversion of the UID. The returned
+				UUID can be used for any operation including ACL and SACL
+				memberships, even if a UUID is later assigned to the user
+				record.
+	@param		uid the uid_t to be converted
+	@param		uu is the UUID found for the provided UID
+	@result		returns 0 on success or appropriate errno code.
+*/
+int mbr_uid_to_uuid(uid_t uid, uuid_t uu);
+

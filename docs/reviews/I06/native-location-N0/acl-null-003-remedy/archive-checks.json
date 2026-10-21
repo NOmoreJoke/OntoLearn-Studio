@@ -1,0 +1,62 @@
+{
+  "scope": "read-only design archive; no product/runtime tests",
+  "defaultAllStagedWhitespaceCheck": {
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exit": 2,
+    "stdout": "docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/SDK-membership.h.excerpt.txt:15: new blank line at EOF.\ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/gen--filesec.c:5: trailing whitespace.\n+ * \ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/gen--filesec.c:12: trailing whitespace.\n+ * \ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/gen--filesec.c:20: trailing whitespace.\n+ * \ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/posix1e--acl_file.c:5: trailing whitespace.\n+ * \ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/posix1e--acl_file.c:12: trailing whitespace.\n+ * \ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/posix1e--acl_file.c:20: trailing whitespace.\n+ * \ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/sys--statx_np.c:5: trailing whitespace.\n+ * \ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/sys--statx_np.c:12: trailing whitespace.\n+ * \ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/sys--statx_np.c:20: trailing whitespace.\n+ * \ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/sys--statx_np.c:153: trailing whitespace.\n+\t\ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/sys--statx_np.c:155: trailing whitespace.\n+\t\t\ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/sys--statx_np.c:162: trailing whitespace.\n+\t}\t\t\ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/sys--statx_np.c:190: trailing whitespace.\n+\t\ndocs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/sys--statx_np.c:200: trailing whitespace.\n+\t\t\n",
+    "stderr": ""
+  },
+  "rawSourceSnapshotPathsWithExactWhitespaceException": [
+    "docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/SDK-membership.h.excerpt.txt",
+    "docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/gen--filesec.c",
+    "docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/posix1e--acl_file.c",
+    "docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/sys--statx_np.c"
+  ],
+  "defaultCheckExcludingThoseRawSnapshots": {
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--check",
+      "--",
+      ".",
+      ":(exclude)docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/SDK-membership.h.excerpt.txt",
+      ":(exclude)docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/gen--filesec.c",
+      ":(exclude)docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/posix1e--acl_file.c",
+      ":(exclude)docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/sys--statx_np.c"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "perCommandRawSnapshotWhitespaceException": {
+    "argv": [
+      "git",
+      "-c",
+      "core.whitespace=-blank-at-eof,-blank-at-eol,-space-before-tab",
+      "diff",
+      "--cached",
+      "--check",
+      "--",
+      "docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/SDK-membership.h.excerpt.txt",
+      "docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/gen--filesec.c",
+      "docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/posix1e--acl_file.c",
+      "docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/sys--statx_np.c"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "exceptionMeaning": "preserve exact cited official source/declaration bytes; no persistent Git config or product whitespace exception",
+  "finalIndependentReview": {
+    "bytes": 7910,
+    "sha256": "c74caa6ccb40d7a3ba3c1a8eab1d19962152c1de31a5f45c0f484d8714b907b0"
+  },
+  "sourceAndTestChanges": 0,
+  "nativeApiFsProbeBuildCliCount": 0
+}

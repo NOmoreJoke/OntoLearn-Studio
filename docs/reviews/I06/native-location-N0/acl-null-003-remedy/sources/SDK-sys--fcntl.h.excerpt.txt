@@ -1,0 +1,48 @@
+
+#include <sys/_types/_filesec_t.h>
+
+typedef enum {
+	FILESEC_OWNER = 1,
+	FILESEC_GROUP = 2,
+	FILESEC_UUID = 3,
+	FILESEC_MODE = 4,
+	FILESEC_ACL = 5,
+	FILESEC_GRPUUID = 6,
+
+/* XXX these are private to the implementation */
+	FILESEC_ACL_RAW = 100,
+	FILESEC_ACL_ALLOCSIZE = 101
+} filesec_property_t;
+
+/* XXX backwards compatibility */
+#define FILESEC_GUID FILESEC_UUID
+#endif /* (_POSIX_C_SOURCE && !_DARWIN_C_SOURCE) */
+
+__BEGIN_DECLS
+int     open(const char *, int, ...) __DARWIN_ALIAS_C(open);
+#if __DARWIN_C_LEVEL >= 200809L
+int     openat(int, const char *, int, ...) __DARWIN_NOCANCEL(openat) __OSX_AVAILABLE_STARTING(__MAC_10_10, __IPHONE_8_0);
+#endif
+int     creat(const char *, mode_t) __DARWIN_ALIAS_C(creat);
+int     fcntl(int, int, ...) __DARWIN_ALIAS_C(fcntl);
+#if !defined(_POSIX_C_SOURCE) || defined(_DARWIN_C_SOURCE)
+
+int     openx_np(const char *, int, filesec_t);
+/*
+ * data-protected non-portable open(2) :
+ *  int open_dprotected_np(user_addr_t path, int flags, int class, int dpflags, int mode)
+ */
+int open_dprotected_np( const char *, int, int, int, ...);
+int openat_dprotected_np( int, const char *, int, int, int, ...);
+int openat_authenticated_np(int, const char *, int, int);
+int     flock(int, int);
+filesec_t filesec_init(void);
+filesec_t filesec_dup(filesec_t);
+void    filesec_free(filesec_t);
+int     filesec_get_property(filesec_t, filesec_property_t, void *);
+int     filesec_query_property(filesec_t, filesec_property_t, int *);
+int     filesec_set_property(filesec_t, filesec_property_t, const void *);
+int     filesec_unset_property(filesec_t, filesec_property_t) __OSX_AVAILABLE_STARTING(__MAC_10_6, __IPHONE_3_2);
+#define _FILESEC_UNSET_PROPERTY ((void *)0)
+#define _FILESEC_REMOVE_ACL     ((void *)1)
+#endif /* (!_POSIX_C_SOURCE || _DARWIN_C_SOURCE) */

@@ -1,0 +1,27 @@
+
+__END_DECLS
+
+#if !defined(_POSIX_C_SOURCE) || defined(_DARWIN_C_SOURCE)
+
+#include <sys/_types/_filesec_t.h>
+
+__BEGIN_DECLS
+int     chflags(const char *, __uint32_t);
+int     chmodx_np(const char *, filesec_t);
+int     fchflags(int, __uint32_t);
+int     fchmodx_np(int, filesec_t);
+int     fstatx_np(int, struct stat *, filesec_t) __DARWIN_INODE64(fstatx_np);
+int     lchflags(const char *, __uint32_t) __OSX_AVAILABLE_STARTING(__MAC_10_5, __IPHONE_2_0);
+int     lchmod(const char *, mode_t) __OSX_AVAILABLE_STARTING(__MAC_10_5, __IPHONE_2_0);
+int     lstatx_np(const char *, struct stat *, filesec_t) __DARWIN_INODE64(lstatx_np);
+int     mkdirx_np(const char *, filesec_t);
+int     mkfifox_np(const char *, filesec_t);
+int     statx_np(const char *, struct stat *, filesec_t) __DARWIN_INODE64(statx_np);
+int     umaskx_np(filesec_t) __OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_4, __MAC_10_6, __IPHONE_NA, __IPHONE_NA);
+
+#if !__DARWIN_ONLY_64_BIT_INO_T
+/* The following deprecated routines are simillar to stat and friends except provide struct stat64 instead of struct stat  */
+int     fstatx64_np(int, struct stat64 *, filesec_t) __OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_5, __MAC_10_6, __IPHONE_NA, __IPHONE_NA);
+int     lstatx64_np(const char *, struct stat64 *, filesec_t) __OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_5, __MAC_10_6, __IPHONE_NA, __IPHONE_NA);
+int     statx64_np(const char *, struct stat64 *, filesec_t) __OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_5, __MAC_10_6, __IPHONE_NA, __IPHONE_NA);
+int     fstat64(int, struct stat64 *) __OSX_AVAILABLE_BUT_DEPRECATED(__MAC_10_5, __MAC_10_6, __IPHONE_NA, __IPHONE_NA);

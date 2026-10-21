@@ -1,0 +1,37 @@
+ * Implementation constants.
+ *
+ * The ACL_TYPE_EXTENDED binary format permits 169 entries plus
+ * the ACL header in a page.  Give ourselves some room to grow;
+ * this limit is arbitrary.
+ */
+#define ACL_MAX_ENTRIES		128
+
+
+__BEGIN_DECLS
+/* 23.1.6.1 ACL Storage Management */
+extern acl_t	acl_dup(acl_t acl);
+extern int	acl_free(void *obj_p);
+extern acl_t	acl_init(int count);
+
+/* 23.1.6.2 (1) ACL Entry manipulation */
+extern int	acl_copy_entry(acl_entry_t dest_d, acl_entry_t src_d);
+extern int	acl_create_entry(acl_t *acl_p, acl_entry_t *entry_p);
+extern int	acl_create_entry_np(acl_t *acl_p, acl_entry_t *entry_p, int entry_index);
+extern int	acl_delete_entry(acl_t acl, acl_entry_t entry_d);
+extern int	acl_get_entry(acl_t acl, int entry_id, acl_entry_t *entry_p);
+extern int	acl_valid(acl_t acl);
+extern int	acl_valid_fd_np(int fd, acl_type_t type, acl_t acl);
+extern int	acl_valid_file_np(const char *path, acl_type_t type, acl_t acl);
+extern int	acl_valid_link_np(const char *path, acl_type_t type, acl_t acl);
+extern int	acl_get_tag_type(acl_entry_t entry_d, acl_tag_t *tag_type_p);
+extern int	acl_set_qualifier(acl_entry_t entry_d, const void *tag_qualifier_p);
+extern int	acl_set_tag_type(acl_entry_t entry_d, acl_tag_t tag_type);
+
+/* 23.1.6.3 ACL manipulation on an Object */
+extern int	acl_delete_def_file(const char *path_p); /* not supported */
+extern acl_t 	acl_get_fd(int fd);
+extern acl_t	acl_get_fd_np(int fd, acl_type_t type);
+extern acl_t	acl_get_file(const char *path_p, acl_type_t type);
+extern acl_t	acl_get_link_np(const char *path_p, acl_type_t type);
+extern int	acl_set_fd(int fd, acl_t acl);
+extern int	acl_set_fd_np(int fd, acl_t acl, acl_type_t acl_type);
