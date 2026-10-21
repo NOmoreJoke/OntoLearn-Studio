@@ -1,0 +1,32 @@
+{
+  "kind": "C2-plan-static-checks-only",
+  "baseProductRef": "423b7e4c799f188cf2ce6e8e7121893ce85624cd",
+  "headBeforePlanCommit": "a33cc80e82475e54d74b4e48c1fd32f32979983a",
+  "foundation52GitCurrentBytesSHAExact": true,
+  "foundationAllReadonly": 52,
+  "pythonSourceASTParsed": 32,
+  "C1Original59CurrentGitExact": 59,
+  "C1ClosureA33CurrentGitExact": true,
+  "AGENTSProtected": {
+    "bytes": 15852,
+    "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+  },
+  "plannedTreeCreated": false,
+  "plannedProductsCreated": false,
+  "runtimeOrDatabaseOrTestsExecuted": false,
+  "formatCommands": [
+    {
+      "command": "prettier --ignore-path /dev/null --check main-plan independent-plan-review budget-investigation",
+      "terminalChunk": "c14d42",
+      "exit": 0,
+      "log": "/tmp/t01-operation-evidence-C2-plan-format-01.log"
+    },
+    {
+      "command": "prettier --ignore-path /dev/null --check main-plan independent-plan-review budget-investigation review-dispositions",
+      "log": "/tmp/t01-operation-evidence-C2-plan-format-02.log",
+      "terminalChunk": "423cc7",
+      "exit": 0
+    }
+  ],
+  "notes": "Only documentation formatting, static AST, Git and hashes; no product import, DB, child fixture, tests, GUI, native, network or model execution. Parallel dispatch docs are unrelated untracked work and not staged by C2."
+}
