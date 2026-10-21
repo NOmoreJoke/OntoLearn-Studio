@@ -1,0 +1,77 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.74kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24-bookworm@sha256:14078204b6bb268c107ceff6d3c43f45a888105e5c2b18b14c32b3409d93a1b0
+#2 DONE 0.0s
+
+#3 [internal] load metadata for ghcr.io/astral-sh/uv:0.11.12
+#3 DONE 1.7s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 16.32kB done
+#5 DONE 0.0s
+
+#6 FROM ghcr.io/astral-sh/uv:0.11.12@sha256:3a59a3cdd5f7c217faa36e32dbc7fddbb0412889c2a0a5229f6d790e5a019dd7
+#6 resolve ghcr.io/astral-sh/uv:0.11.12@sha256:3a59a3cdd5f7c217faa36e32dbc7fddbb0412889c2a0a5229f6d790e5a019dd7 0.0s done
+#6 DONE 0.0s
+
+#7 [stage-0  1/10] FROM docker.io/library/node:24-bookworm@sha256:14078204b6bb268c107ceff6d3c43f45a888105e5c2b18b14c32b3409d93a1b0
+#7 resolve docker.io/library/node:24-bookworm@sha256:14078204b6bb268c107ceff6d3c43f45a888105e5c2b18b14c32b3409d93a1b0 0.0s done
+#7 DONE 0.0s
+
+#8 [stage-0  2/10] COPY --from=ghcr.io/astral-sh/uv:0.11.12 /uv /uvx /usr/local/bin/
+#8 CACHED
+
+#9 [stage-0  4/10] COPY source.tar /tmp/t10-source.tar
+#9 CACHED
+
+#10 [stage-0  6/10] WORKDIR /opt/t10
+#10 CACHED
+
+#11 [stage-0  7/10] RUN npm ci --ignore-scripts     && ./node_modules/.bin/install-electron     && uv sync --frozen --python 3.12     && npm run build
+#11 CACHED
+
+#12 [stage-0  3/10] RUN apt-get update && apt-get install -y --no-install-recommends     xvfb xauth openbox xdotool dbus-x11 libgtk-3-0 libnss3 libxss1 libasound2     libgbm1 libx11-xcb1 libdrm2 libxcomposite1 libxrandr2 libxtst6 libxdamage1     libcups2 libatk-bridge2.0-0 fonts-noto-cjk ca-certificates     && rm -rf /var/lib/apt/lists/*     && npm install -g npm@11.12.1     && groupadd --gid 1110 t10     && useradd --uid 1110 --gid 1110 --create-home --shell /bin/bash t10     && mkdir -p /opt/t10 /opt/t10-controls /opt/t10-evidence /opt/python-managed /opt/uv-cache
+#12 CACHED
+
+#13 [stage-0  5/10] RUN tar --no-same-owner --no-same-permissions -xf /tmp/t10-source.tar -C /opt/t10     && rm /tmp/t10-source.tar     && chown -R 1110:1110 /opt/t10 /opt/t10-controls /opt/t10-evidence /opt/python-managed /opt/uv-cache
+#13 CACHED
+
+#14 [stage-0  8/10] RUN chown root:root /opt/t10/node_modules/electron/dist/chrome-sandbox     && chmod 4755 /opt/t10/node_modules/electron/dist/chrome-sandbox
+#14 CACHED
+
+#15 [stage-0  9/10] RUN apt-get update && apt-get install -y --no-install-recommends imagemagick     && rm -rf /var/lib/apt/lists/*
+#15 0.482 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+#15 0.712 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+#15 0.857 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+#15 2.382 Get:4 http://deb.debian.org/debian bookworm/main arm64 Packages [8689 kB]
+#15 2.540 Get:5 http://deb.debian.org/debian bookworm-updates/main arm64 Packages [6936 B]
+#15 2.812 Get:6 http://deb.debian.org/debian-security bookworm-security/main arm64 Packages [352 kB]
+#15 2.982 Fetched 9290 kB in 3s (3265 kB/s)
+#15 2.982 Reading package lists...
+#15 3.236 Reading package lists...
+#15 3.468 Building dependency tree...
+#15 3.548 Reading state information...
+#15 3.640 imagemagick is already the newest version (8:6.9.11.60+dfsg-1.6+deb12u13).
+#15 3.640 0 upgraded, 0 newly installed, 0 to remove and 9 not upgraded.
+#15 DONE 3.7s
+
+#16 [stage-0 10/10] COPY --chown=1110:1110 controls/ /opt/t10-controls/
+#16 DONE 0.0s
+
+#17 exporting to image
+#17 exporting layers 0.0s done
+#17 exporting manifest sha256:8923087c1650302a38ca0d1321a917782c9ced51066c2af5fbc1024e2e560492 done
+#17 exporting config sha256:a4fe64d62ee83db40b744952f99b219f40abc88ceb3b6018b6e716cd24d1528e done
+#17 exporting attestation manifest sha256:ac56a8169511558f52c70c232d9c2870dca152f933240cecf0233236fdb1939f done
+#17 exporting manifest list sha256:475ba702e6d1425542aedfed5638cc780875c140b6bacdd50a46a44c84602e1f done
+#17 naming to docker.io/library/ontolearn-t10-native:a8a497a-v1 done
+#17 unpacking to docker.io/library/ontolearn-t10-native:a8a497a-v1 0.0s done
+#17 DONE 0.1s

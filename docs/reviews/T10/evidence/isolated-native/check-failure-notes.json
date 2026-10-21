@@ -1,0 +1,22 @@
+{
+  "sourceUnchanged": true,
+  "firstFinalCheck": {
+    "exitCode": 1,
+    "failure": "tests/unit/engine-connection-state.test.ts > announces a safe disconnection once and reconnects only upon explicit caller request",
+    "error": "EngineError: TIMEOUT",
+    "passed": 690,
+    "failed": 1,
+    "raw": "check-isolated-final.txt"
+  },
+  "isolatedRecheck": {
+    "exitCode": 0,
+    "passed": 8,
+    "raw": "engine-connection-isolated-recheck.txt"
+  },
+  "cause": "not established; no shared tests/engine implementation changes",
+  "priorPreparationLint": {
+    "error": "I001 import block un-sorted run-container.py",
+    "resolution": "ruff sorted imports, later lint/format passed",
+    "raw": "tool transcript; no standalone raw log created"
+  }
+}

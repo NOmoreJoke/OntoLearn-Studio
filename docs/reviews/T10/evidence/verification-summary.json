@@ -3,7 +3,7 @@
   "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
   "implementationParent": "a1c76d8a136519455267c00d08f63c68ecea0806",
   "remoteDevelopObserved": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
-  "remoteSource": "read-only gh api git/ref/heads/develop",
+  "remoteSource": "read-only git ls-remote origin refs/heads/develop, 2026-10-21 after native attempt3",
   "node": "v24.15.0",
   "python": "3.12.12",
   "check": {
@@ -12,7 +12,9 @@
     "typescriptFiles": 17,
     "typescriptTests": 691,
     "pythonTests": 1112,
-    "build": "passed"
+    "build": "passed",
+    "raw": "isolated-native/check-isolated-retry.txt",
+    "precedingFailureRetained": "isolated-native/check-isolated-final.txt"
   },
   "t10Tests": {
     "python": 60,
@@ -51,10 +53,10 @@
     "apps/desktop/src/renderer/src/transfer/report.ts": "b5e508106bf6072f8b72f9c77cce9ab77d9e06bc91a926840ea2eaac379b8c05",
     "tests/fixtures/transfer/malicious-texts.json": "b1b41d908b66559e4a3ee66e86d2065411613353765a27a1eec6cafe248d4e0f"
   },
-  "internalReview": "complete_current_private_candidate_passed_after_3_P2_fixes; prior_2_P2_history_preserved",
+  "internalReview": "prior 2+3 P2 fixes retained; isolated controls reviewed; attempt3 raw/screenshots/bytes independently verified",
   "formalIntegration": false,
   "approvedFormat": false,
-  "nativePicker": false,
+  "nativePicker": true,
   "desktopE2E": false,
   "dualPlatform": false,
   "crossDeviceAcceptance": false,
@@ -73,5 +75,150 @@
     "check-report-file-fsync-failure.txt": "37c60dde4e2ac9cd4036c8d721dc245d5756246fe12f5c64b0131e339d12cef8",
     "browser-report-file.txt": "0001a93c101c54e60f390e4327a5de8e57f04275654061da6d4a4c06213b1842"
   },
-  "implementationCommit": "c3c7e90f721344113c4279d663127f9c8d5bda59"
+  "implementationCommit": "c3c7e90f721344113c4279d663127f9c8d5bda59",
+  "nativePickerScope": "private service; Linux arm64 container only; not formal App wiring, package or platform release",
+  "directNative": {
+    "passed": true,
+    "attempt": 3,
+    "sourceCommit": "a8a497a8b1b7d52fcc365f8b128972867b2bd433",
+    "image": "sha256:475ba702e6d1425542aedfed5638cc780875c140b6bacdd50a46a44c84602e1f",
+    "native": {
+      "stage": "complete",
+      "selections": [
+        {
+          "cancelled": false,
+          "filename": "native-report.html"
+        },
+        {
+          "cancelled": true,
+          "filename": null
+        }
+      ],
+      "nativeDialogs": 2,
+      "mainInspectorClosed": true,
+      "rendererBridge": {
+        "bridge": "function",
+        "require": "undefined"
+      },
+      "engineHealth": {
+        "ok": true,
+        "data": {
+          "protocolVersion": 2,
+          "status": "ok",
+          "engineVersion": "0.1.0",
+          "capabilities": [
+            "health"
+          ]
+        }
+      },
+      "runtime": {
+        "uid": 1110,
+        "platform": "linux",
+        "arch": "arm64",
+        "versions": {
+          "node": "24.22.0",
+          "acorn": "8.18.0",
+          "ada": "4.0.0",
+          "amaro": "1.1.11",
+          "ares": "1.34.8",
+          "brotli": "1.2.0",
+          "cldr": "48.0",
+          "icu": "78.2",
+          "llhttp": "9.4.3",
+          "merve": "1.2.2",
+          "modules": "149",
+          "napi": "10",
+          "nbytes": "0.1.4",
+          "ncrypto": "0.0.1",
+          "nghttp2": "1.70.0",
+          "nghttp3": "",
+          "ngtcp2": "",
+          "openssl": "0.0.0",
+          "simdjson": "4.6.11",
+          "simdutf": "7.7.0",
+          "sqlite": "3.53.4",
+          "tz": "2026d",
+          "undici": "7.29.1",
+          "unicode": "17.0",
+          "uv": "1.52.1",
+          "uvwasi": "0.0.23",
+          "v8": "15.2.124.43-electron.0",
+          "zlib": "1.3.2.1-motley",
+          "zstd": "1.6.0",
+          "electron": "44.9.0",
+          "chrome": "152.0.7977.167"
+        },
+        "noSandbox": false,
+        "hangMonitorEnabled": true,
+        "mockKeychain": false,
+        "preferences": {
+          "sandbox": true,
+          "contextIsolation": true,
+          "nodeIntegration": false
+        },
+        "rendererDevTools": false
+      },
+      "rendererIsolation": {
+        "NSpid": "179\t4\t1",
+        "CapEff": "0000000000000000",
+        "NoNewPrivs": "1",
+        "Seccomp": "2",
+        "Seccomp_filters": "2"
+      },
+      "save": {
+        "state": "published",
+        "sha256": "ad367a3158a8adc989378239d68d992e9c281f0269561af7fd31027a1743cdcd",
+        "byteLength": 3896,
+        "durability": "confirmed",
+        "postPublicationError": false,
+        "cleanup": "complete"
+      },
+      "actualFile": {
+        "byteLength": 3896,
+        "sha256": "ad367a3158a8adc989378239d68d992e9c281f0269561af7fd31027a1743cdcd",
+        "mode": 384
+      },
+      "cancel": {
+        "state": "cancelled",
+        "cleanup": "complete"
+      },
+      "cancelFileAbsent": true,
+      "pickerUnchanged": true,
+      "result": "PASS",
+      "boundary": "Private service and real Linux save/cancel dialog; no public App/bridge, trusted projection, credentials, Windows/macOS or G.6 claim."
+    },
+    "driver": {
+      "result": "PASS",
+      "childPid": 127,
+      "executable": "/opt/t10/node_modules/electron/dist/electron",
+      "events": [
+        {
+          "window": "6291462",
+          "pid": "127",
+          "title": "T10 01a15bce save",
+          "focused": true,
+          "key": "alt+s"
+        },
+        {
+          "window": "6293181",
+          "pid": "127",
+          "title": "T10 01a15bce cancel",
+          "focused": true,
+          "key": "Escape"
+        }
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "boundary": "Actual native save/cancel on container-only display; no host/native-desktop or product App/bridge wiring claim."
+    },
+    "failedAttemptsRetained": [
+      1,
+      2
+    ],
+    "reportBrowserBehaviorOnThisFile": false,
+    "hostDesktopUsed": false,
+    "crossPlatform": false
+  }
 }

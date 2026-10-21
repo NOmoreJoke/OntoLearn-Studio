@@ -1,0 +1,61 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.63kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24-bookworm@sha256:14078204b6bb268c107ceff6d3c43f45a888105e5c2b18b14c32b3409d93a1b0
+#2 DONE 0.0s
+
+#3 [internal] load metadata for ghcr.io/astral-sh/uv:0.11.12
+#3 DONE 1.4s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 16.16kB done
+#5 DONE 0.0s
+
+#6 FROM ghcr.io/astral-sh/uv:0.11.12@sha256:3a59a3cdd5f7c217faa36e32dbc7fddbb0412889c2a0a5229f6d790e5a019dd7
+#6 resolve ghcr.io/astral-sh/uv:0.11.12@sha256:3a59a3cdd5f7c217faa36e32dbc7fddbb0412889c2a0a5229f6d790e5a019dd7 done
+#6 DONE 0.0s
+
+#7 [stage-0 1/9] FROM docker.io/library/node:24-bookworm@sha256:14078204b6bb268c107ceff6d3c43f45a888105e5c2b18b14c32b3409d93a1b0
+#7 resolve docker.io/library/node:24-bookworm@sha256:14078204b6bb268c107ceff6d3c43f45a888105e5c2b18b14c32b3409d93a1b0 done
+#7 DONE 0.0s
+
+#8 [stage-0 7/9] RUN npm ci --ignore-scripts     && ./node_modules/.bin/install-electron     && uv sync --frozen --python 3.12     && npm run build
+#8 CACHED
+
+#9 [stage-0 6/9] WORKDIR /opt/t10
+#9 CACHED
+
+#10 [stage-0 4/9] COPY source.tar /tmp/t10-source.tar
+#10 CACHED
+
+#11 [stage-0 5/9] RUN tar --no-same-owner --no-same-permissions -xf /tmp/t10-source.tar -C /opt/t10     && rm /tmp/t10-source.tar     && chown -R 1110:1110 /opt/t10 /opt/t10-controls /opt/t10-evidence /opt/python-managed /opt/uv-cache
+#11 CACHED
+
+#12 [stage-0 3/9] RUN apt-get update && apt-get install -y --no-install-recommends     xvfb xauth openbox xdotool dbus-x11 libgtk-3-0 libnss3 libxss1 libasound2     libgbm1 libx11-xcb1 libdrm2 libxcomposite1 libxrandr2 libxtst6 libxdamage1     libcups2 libatk-bridge2.0-0 fonts-noto-cjk ca-certificates     && rm -rf /var/lib/apt/lists/*     && npm install -g npm@11.12.1     && groupadd --gid 1110 t10     && useradd --uid 1110 --gid 1110 --create-home --shell /bin/bash t10     && mkdir -p /opt/t10 /opt/t10-controls /opt/t10-evidence /opt/python-managed /opt/uv-cache
+#12 CACHED
+
+#13 [stage-0 2/9] COPY --from=ghcr.io/astral-sh/uv:0.11.12 /uv /uvx /usr/local/bin/
+#13 CACHED
+
+#14 [stage-0 8/9] RUN chown root:root /opt/t10/node_modules/electron/dist/chrome-sandbox     && chmod 4755 /opt/t10/node_modules/electron/dist/chrome-sandbox
+#14 CACHED
+
+#15 [stage-0 9/9] COPY --chown=1110:1110 controls/ /opt/t10-controls/
+#15 DONE 0.0s
+
+#16 exporting to image
+#16 exporting layers 0.0s done
+#16 exporting manifest sha256:123114466edebdb03a6a5ab178b979bcdbca2e69a042b18c1207cabc0de22eb0 done
+#16 exporting config sha256:e40dfe9113c9bda680fa7950e7d06727090d6900aa32ded4368d45eb62c0939e done
+#16 exporting attestation manifest sha256:9553ab00bba966437cdc2a890610cc70c6c9a5e6b07e760784684ac67bb01206 done
+#16 exporting manifest list sha256:ed1a6f41bcc6cc7d9c508c9cc0f8687e0b8b0e1f985318ba7d47d7e7c986246c done
+#16 naming to docker.io/library/ontolearn-t10-native:a8a497a-v1 done
+#16 unpacking to docker.io/library/ontolearn-t10-native:a8a497a-v1 0.0s done
+#16 DONE 0.1s

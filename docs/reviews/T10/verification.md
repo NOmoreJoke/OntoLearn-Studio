@@ -25,3 +25,8 @@
 没有改归档 PRD/source-manifest，未重新跑 sources；没有引入依赖/修改打包配置，未执行 unsigned 目录包或包内探针。新增私有 main 服务触发的 e2e 要求保留，当前服务和组件未接入 App/bridge；普通旧桌面 e2e 不覆盖该能力，后续正式接线需隔离环境的真实 e2e/native picker/包内及双平台验证，本机未启动 Electron。
 
 未取得正式导出投影/格式/checkpoint 与原子导入发布接口；未验收实际凭据排除、业务范围完整迁移、跨设备续编辑/查询/映射重跑冲突/撤销、真实逐 attempt 证据或沙盘重放。未进行指定 ZCode/MiniMax 双新审，未 push/PR/CI/合并。保留全部原父功能与完整发布门。
+
+
+## 隔离原生增量
+
+固定产品a8a497a、受审私有工具在Linux arm64容器真实保存/取消通过；原件、失败attempt1/2、成功attempt3、两张实际对话框截图、源码/controls逐hash和独立复核见`evidence/isolated-native/`、`isolated-native-review.md`。稳定最终check日志为`evidence/isolated-native/check-isolated-retry.txt`，此前TIMEOUT与单文件8通过均保留。原report-file阶段summary保存在`evidence/report-file-stage-summary.json`；当前summary增加限定范围native结果，不改历史fileProbe为native。原生验证不代替浏览器行为、通用e2e、正式业务与迁移/跨平台验收。

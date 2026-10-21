@@ -1,0 +1,66 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-transfer-export
+
+ ❯ tests/unit/engine-connection-state.test.ts (8 tests | 1 failed) 1004ms
+   ❯ engine connection lifecycle (8)
+     × announces a safe disconnection once and reconnects only upon explicit caller request 434ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/engine-connection-state.test.ts > engine connection lifecycle > announces a safe disconnection once and reconnects only upon explicit caller request
+EngineError: TIMEOUT
+ ❯ timeout apps/desktop/src/main/engine.ts:59:10
+     57| }
+     58| function timeout(phase: string): EngineError {
+     59|   return new EngineError({
+       |          ^
+     60|     code: 'TIMEOUT',
+     61|     messageKey: 'job.timeout',
+ ❯ Timeout._onTimeout apps/desktop/src/main/engine.ts:475:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 16 passed (17)
+      Tests  1 failed | 690 passed (691)
+   Start at  09:41:28
+   Duration  6.92s (tests 90%, import 7%, transform 3%)
+

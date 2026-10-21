@@ -15,7 +15,7 @@
 
 当前阶段：私有包检查、安全报告、页面和主进程报告文件发布服务已验证。T10 Python 60、报告 TS 18、文件发布 TS 43 项通过；最新稳定整仓 check 为 691 项 TS / 1,112 项 Python 与构建全通过。headless Chrome 打开真实文件服务产物，12 组攻击文本及前导 LF 完整，无执行/外联。新增文件服务内审 3 项 P2 实际修复并完整复核通过；前一版两项 P2 历史仍保留。详情见 verification.md、report-file-internal-review.md；正式集成/父功能未关闭。
 
-首个可恢复实现提交：`d3546af3b6fe895957f9626fd4de28bf59dc600a`，后续记录 `a1c76d8a136519455267c00d08f63c68ecea0806`。本轮实现提交 `c3c7e90f721344113c4279d663127f9c8d5bda59`，在相同批准 base 新增报告文件服务并修复首 LF；提交后实际核验源码哈希与新内审读回一致，git 仅受保护 AGENTS 未暂存，未 push。随后只追加提交记录，不改受审源码。下一交付是消费实际批准的 checkpoint/凭据安全投影/原子导入接口及真实 main picker 并补正式接线，不把草案开放为迁移器；指定外审仍由总控预约。
+首个可恢复实现提交：`d3546af3b6fe895957f9626fd4de28bf59dc600a`，后续记录 `a1c76d8a136519455267c00d08f63c68ecea0806`。本轮实现提交 `c3c7e90f721344113c4279d663127f9c8d5bda59`，在相同批准 base 新增报告文件服务并修复首 LF；提交后实际核验源码哈希与新内审读回一致，git 仅受保护 AGENTS 未暂存，未 push。随后只追加提交记录，不改受审源码。下一交付是消费实际批准的 checkpoint/凭据安全投影/原子导入接口并补真实 main picker 的正式接线，不把草案开放为迁移器；指定外审仍由总控预约。
 
 本轮已通过只读 GitHub API 实查远端 develop 仍为 `5f910b52c69d86a1076b2032e5d3c63e715947f3`。不是仅依据根状态文件推断；当前没有可消费的格式基础 merge。上一 Goal 轮与本轮均有实质实现/验证进展，没有把静态状态或聊天意图记成 verified wait。
 
@@ -34,6 +34,14 @@ T09 获批只读输入版本 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 的 mani
 - T07：可支持的真实运行语义和重放输入验证。
 - I06：vault、最小外发记录、端点凭据与发送授权始终排除，不能导出数据库整文件绕过选择项。
 - 保留 FR-1000/1001/104、A-06–08、G.6、12.4/12.5、全部父功能和跨模块门。
-- 尚未执行：正式接线、真实 native picker、跨设备续编辑/查询/重跑冲突/撤销、真实学习联验、双平台包内与原生验证、指定双方新审、push/PR/CI/合并/发布。主进程新增触发的 e2e 要求保留；不在用户桌面启动旧 App e2e 冒充覆盖未接线服务。
+- 尚未执行：正式接线、产品入口的真实 native picker、跨设备续编辑/查询/重跑冲突/撤销、真实学习联验、双平台包内与原生验证、指定双方新审、push/PR/CI/合并/发布。主进程新增触发的 e2e 要求保留；不在用户桌面启动旧 App e2e 冒充覆盖未接线服务。
 
 本机只允许无窗口 CLI/unit/Python/build/unsigned 目录包，不启动 Electron/e2e/native/HMR，不读取凭据或外发业务数据；指定审查应用等待总控预约。
+
+## 隔离 Linux 原生验证增量
+
+在同一固定产品源码 `a8a497a8b1b7d52fcc365f8b128972867b2bd433` 上，新增独占路径测试工具完成真实 `showSaveDialog` 保存/取消；未改产品、共享测试/配置或启动 host GUI。独立审查推动修复隔离断言、命令硬超时、固定容器ID和镜像controls读回。attempt1启动前cap名称差异拦下，attempt2保存Enter无回执并超时；失败原件均保留。attempt3真实GTK截图、Alt+s保存/Escape取消、picker未改写、容器exit0，私有文件3896字节/0600/hash与服务回执及审查方独立生成预期逐字节一致。
+
+容器实际非root1110、networknone/无挂载端口/defaultseccomp，额外SYS_ADMIN公开；renderer NoNewPrivs1/Seccomp2/CapEff0、sandbox/contextIsolation true、Node false。短时main loopback inspector在picker前关闭。此为Linux arm64私有服务native保存/取消，不提升为通用e2e、正式App/可信投影、G.6、跨平台或包内完成。详情：`isolated-native-review.md`、`../../iterations/T10/isolated-native-validation.md`、`evidence/isolated-native/manifest.json`（SHA256 `9e515ec939ff5ef732b88955da9b0360d08bae243abcecf7cf58cd6c512e31e1`）。
+
+工具最终整仓check先遇既有engine-connection-state测试TIMEOUT（690通过/1失败），单文件8项复测通过，随后完整retry实际exit0，691TS/1112Python及lint/格式/类型/构建通过；失败和复测raw一并保留，未擅改共享测试，原因未证实。最后只读git ls-remote再次核验develop仍为5f910b52。私有阶段候选写在`private-stage-candidate.md`，待总控登记和指定外审租约；完整Goal保持未完成，未push/PR/CI/merge。
