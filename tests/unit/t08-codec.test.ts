@@ -189,3 +189,13 @@ it('T08 accepts provider punctuation IDs consistently and rejects zero or oversi
     ).toThrow('INVALID_PROTOCOL')
   }
 })
+
+it('T08 preserves SPARQL bytes, including final newline, for actual execution and query identity', () => {
+  const sparql = '\nSELECT ?s WHERE { ?s ?p ?o }\n'
+  expect(
+    parseToolArguments('query_execute', JSON.stringify({ sparql, scope: 'asserted' })),
+  ).toEqual({ sparql, scope: 'asserted' })
+  expect(() =>
+    parseToolArguments('query_execute', JSON.stringify({ sparql: ' \n\t ', scope: 'asserted' })),
+  ).toThrow('INVALID_TOOL_ARGUMENTS')
+})

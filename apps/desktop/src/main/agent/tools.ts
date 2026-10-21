@@ -17,6 +17,11 @@ export const toolNames = [
 export const toolNameSchema = z.enum(toolNames)
 export type ToolName = z.infer<typeof toolNameSchema>
 const instruction = z.string().trim().min(1).max(8000)
+const sparql = z
+  .string()
+  .min(1)
+  .max(8000)
+  .refine((value) => value.trim().length > 0)
 const id = z.string().regex(/^[A-Za-z0-9:_-]{1,128}$/)
 const scope = z.enum(['asserted', 'asserted-and-derived', 'selected-history'])
 export const argumentSchemas = {
@@ -24,7 +29,7 @@ export const argumentSchemas = {
   ontology_propose: z.object({ instruction }).strict(),
   mapping_propose: z.object({ sourceId: id, instruction }).strict(),
   query_draft: z.object({ question: instruction, scope }).strict(),
-  query_execute: z.object({ sparql: instruction, scope }).strict(),
+  query_execute: z.object({ sparql, scope }).strict(),
   quality_check: z.object({ scope }).strict(),
   reasoning_run: z.object({ scope }).strict(),
   behavior_test: z.object({ behaviorId: id, sampleId: id }).strict(),
