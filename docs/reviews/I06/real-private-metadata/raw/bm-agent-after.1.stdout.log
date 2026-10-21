@@ -1,0 +1,58 @@
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-real-private-metadata
+
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > observes the four real roles while the full inventory stays incomplete
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > records actual bigint file and parent identities without opening content
+ × tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > includes legal orphan records and standalone pending names in all buckets 11ms
+   → {"reason":"inventory-rejected","inventoryAccepted":false}: expected 'unknown' to be 'observed' // Object.is equality
+ × tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > recognizes a real final plus pending hardlink pair as two distinct protected names 3ms
+   → {"reason":"inventory-rejected","inventoryAccepted":false}: expected 'unknown' to be 'observed' // Object.is equality
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > closes actual aliases across two private buckets without counting directory nlink as aliases
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects final plus pending with an actual third link outside the protected root
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects a real file hardlink whose other name is outside the observed root
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > retains unknown root members and their metadata instead of returning a green truncation
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > retains an unknown nested directory and cannot claim the subtree is complete
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > does not follow a real symlink into a sibling fixture directory
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects a real symlink used as the private root
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > reserves a genuinely missing root and never creates it while observing
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > does not classify a root below a missing parent as confirmed empty
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > retains protection after a real root directory is moved and a new inode appears at the same name
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > retains old and new file identities and reports the frozen A same-location rejection
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > retains a removed file as retired rather than silently dropping the old identity
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > invalidates an in-flight observation on mutation without issuing a mutation ticket
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > blocks observations for a real idle mutation ticket and rejects forged or reused tokens
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > keeps an actual Node metadata operation charged after same-stack cancellation
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > blocks admission on close while the actual Node callback still occupies its slot
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > fails initialization after actual root reserve while retaining the reserved identity [injected fault]
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > retains a held slot on a simulated close-receipt failure after real Dir.close [injected receipt]
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects a real non-private writable root without treating it as an empty inventory
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects a real mode-000 bucket separately from injected faults
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > applies a real low entry budget to a larger fixture without reporting a truncated success
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > keeps an outstanding mutation barrier after cancel until the precise token settles
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > keeps a mutation barrier across close and permits only its exact token to finish
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > enforces recursive depth inside the private root without treating absolute ancestors as that depth
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > measures actual absolute paths in UTF8 bytes rather than UTF16 character count
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects an actual undecodable POSIX leaf name without silently observing a different replacement name
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > conservatively rejects a real replacement-character leaf without claiming undecodable bytes were observed
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"extra":true}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"limits":{"extra":1}}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"limits":{"entries":0}}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"limits":{"entries":32769}}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"limits":{"depth":0}}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"limits":{"depth":129}}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"limits":{"pathBytes":0}}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"limits":{"pathBytes":16385}}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"limits":{"observationMs":0}}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"limits":{"observationMs":5001}}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"limits":{"entries":1.5}}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"limits":{"depth":null}}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects invalid strict options before starting metadata IO: {"testFault":"arbitrary-fs-operation"}
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects option and binding getters without executing them or starting IO
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects a real group-writable bucket and world-writable leaf while retaining their facts
+ ↓ tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: unsupported Windows boundary > reports unsupported-platform without fabricated POSIX evidence or content access
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 45 skipped (47)
+   Start at  17:47:55
+   Duration  132ms (import 51%, transform 26%, tests 20%, worker 3%)
+

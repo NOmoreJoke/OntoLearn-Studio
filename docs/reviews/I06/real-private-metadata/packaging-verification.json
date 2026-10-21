@@ -1,0 +1,78 @@
+{
+  "recordedAtUtc": "2026-10-21T10:02:52.290980+00:00",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "adoption": "f63fe6fa0ba9eff944b11b9e4bbd7e6235e43dbc",
+  "frozenInputRecordsVerified": 5,
+  "readonlyAdoptionBytesVerified": 2,
+  "independentReportHashVerified": true,
+  "zipCrcAndSetAndMemberHashesVerified": true,
+  "zipMembers": 61,
+  "manifestRecords": 62,
+  "manifest": {
+    "path": "docs/reviews/I06/real-private-metadata/manifest.json",
+    "bytes": 17607,
+    "sha256": "cf9580bd1ddd50ef0da3f99589c809d30f074acd8a7e9ab62aa3a7f425f0cb1c"
+  },
+  "archive": {
+    "path": "docs/reviews/I06/real-private-metadata/evidence.zip",
+    "bytes": 103606,
+    "sha256": "4e37007c1112242f71fa6841b56d03f5e9efa2985322778ec3bb1be586a4d467"
+  },
+  "oldFrozenTreesUnchanged": 3,
+  "verificationExcludedFromArchiveAndManifest": true,
+  "checks": {
+    "fullCheckExit": 0,
+    "tsPassed": 713,
+    "tsSkipped": 2,
+    "pythonPassed": 1052,
+    "sourcesExit": 0,
+    "archivedSources": 12
+  },
+  "scopeVerification": {
+    "baseToIndexPaths": 64,
+    "exactlyManifestPlusTwoSelfExcluded": true,
+    "productAndTestPaths": 4,
+    "ignoredOriginalLogsStagedByExactPath": [
+      "docs/reviews/I06/real-private-metadata/raw/bm-agent-after.3.static-2.stderr.log",
+      "docs/reviews/I06/real-private-metadata/raw/bm-agent-after.2.stderr.log",
+      "docs/reviews/I06/real-private-metadata/raw/bm-agent-after.3.static-3.stdout.log",
+      "docs/reviews/I06/real-private-metadata/raw/bm-agent-after.1.stdout.log",
+      "docs/reviews/I06/real-private-metadata/raw/bm-agent-first.stdout.log",
+      "docs/reviews/I06/real-private-metadata/raw/bm-agent-after.3.static-1.stdout.log",
+      "docs/reviews/I06/real-private-metadata/raw/bm-agent-after.2.stdout.log",
+      "docs/reviews/I06/real-private-metadata/raw/bm-agent-after.3.static-2.stdout.log",
+      "docs/reviews/I06/real-private-metadata/raw/bm-agent-after.3.static-3.stderr.log",
+      "docs/reviews/I06/real-private-metadata/raw/bm-agent-first.stderr.log",
+      "docs/reviews/I06/real-private-metadata/raw/bm-agent-after.3.static-1.stderr.log",
+      "docs/reviews/I06/real-private-metadata/raw/bm-agent-after.1.stderr.log"
+    ],
+    "agentsUnstaged": true
+  },
+  "gitDiffCheck": {
+    "allOriginals": {
+      "exit": 2,
+      "stdout": "docs/reviews/I06/real-private-metadata/raw/bm-agent-after.1.stderr.log:35: new blank line at EOF.\ndocs/reviews/I06/real-private-metadata/raw/bm-agent-after.1.stdout.log:58: new blank line at EOF.\ndocs/reviews/I06/real-private-metadata/raw/bm-agent-after.2.stdout.log:58: new blank line at EOF.\ndocs/reviews/I06/real-private-metadata/raw/bm-agent-first.stderr.log:125: new blank line at EOF.\ndocs/reviews/I06/real-private-metadata/raw/bm-agent-first.stdout.log:63: new blank line at EOF.\n",
+      "stderr": ""
+    },
+    "sourceAndOwnedSummaries": {
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  "artifactFormatFirst": {
+    "argv": [
+      "./node_modules/.bin/prettier",
+      "--ignore-path",
+      "/dev/null",
+      "--check",
+      "docs/reviews/I06/real-private-metadata/disposition.md",
+      "docs/reviews/I06/real-private-metadata/manifest.json",
+      "docs/reviews/I06/real-private-metadata/packaging-verification.json"
+    ],
+    "exit": 1,
+    "observedCombinedToolDiagnostic": "Checking formatting...\n[warn] docs/reviews/I06/real-private-metadata/manifest.json\n[warn] Code style issues found in the above file. Run Prettier with --write to fix.\n",
+    "streamLimitation": "Combined tool display transcription; separate original streams were not retained for this artifact-only command. Not a product/test failure.",
+    "disposition": "Format only self-excluded manifest; update external manifest hash; no archived original or source changed."
+  }
+}

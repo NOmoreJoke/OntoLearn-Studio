@@ -1,0 +1,67 @@
+{
+  "testSha256": "633403a489542b6fd1130a8d4e05c8b7ebc81874b3c24b648e32d80c2fbcdad3",
+  "checks": [
+    {
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-real-private-metadata",
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "tests/unit/i06-private-resource-owner.test.ts"
+      ],
+      "startedAt": "2026-10-21T09:54:05.400422+00:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-21T09:54:05.536579+00:00",
+      "stdout": {
+        "bytes": 66,
+        "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-real-private-metadata",
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "tests/unit/i06-private-resource-owner.test.ts"
+      ],
+      "startedAt": "2026-10-21T09:54:05.536629+00:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-21T09:54:06.238121+00:00",
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-real-private-metadata",
+      "argv": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/dev/null",
+        "tests/unit/i06-private-resource-owner.test.ts"
+      ],
+      "startedAt": "2026-10-21T09:54:06.238190+00:00",
+      "exitCode": 1,
+      "endedAt": "2026-10-21T09:54:06.249515+00:00",
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ]
+}

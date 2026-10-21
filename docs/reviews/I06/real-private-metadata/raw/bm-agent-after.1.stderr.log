@@ -1,0 +1,35 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > includes legal orphan records and standalone pending names in all buckets
+AssertionError: {"reason":"inventory-rejected","inventoryAccepted":false}: expected 'unknown' to be 'observed' // Object.is equality
+
+Expected: "observed"
+Received: "unknown"
+
+ ❯ tests/unit/i06-private-resource-owner.test.ts:149:9
+    147|         view.state,
+    148|         JSON.stringify({ reason: view.reason, inventoryAccepted: view.…
+    149|       ).toBe('observed')
+       |         ^
+    150|       expect(named(view, ids.orphan)).toHaveLength(1)
+    151|       expect(named(view, ids.pending)).toHaveLength(3)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > recognizes a real final plus pending hardlink pair as two distinct protected names
+AssertionError: {"reason":"inventory-rejected","inventoryAccepted":false}: expected 'unknown' to be 'observed' // Object.is equality
+
+Expected: "observed"
+Received: "unknown"
+
+ ❯ tests/unit/i06-private-resource-owner.test.ts:167:9
+    165|         view.state,
+    166|         JSON.stringify({ reason: view.reason, inventoryAccepted: view.…
+    167|       ).toBe('observed')
+       |         ^
+    168|       const records = view.facts.filter(
+    169|         (entry) => entry.identity?.fileId === `i${actual.ino.toString(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

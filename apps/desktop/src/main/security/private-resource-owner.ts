@@ -1,0 +1,744 @@
+import fs from 'node:fs/promises'
+import type { BigIntStats, Dir } from 'node:fs'
+import path from 'node:path'
+import { Buffer } from 'node:buffer'
+import { z } from 'zod'
+import {
+  type createPrivateResourceInventory,
+  type InventoryOwner,
+  type MetadataIdentity,
+  type ProtectedResource,
+} from './private-resource-inventory'
+
+type Inventory = ReturnType<typeof createPrivateResourceInventory>
+const roles = ['private-root', 'credentials', 'configurations', 'audit'] as const
+type Role = (typeof roles)[number]
+const boundary = {
+  mechanismOnly: true,
+  productionAdmission: 'unsupported',
+  nodeEvidence: 'node-observed-unfenced',
+} as const
+const maxima = { entries: 32768, depth: 128, pathBytes: 16384, observationMs: 5000 }
+const optionsSchema = z
+  .object({
+    limits: z
+      .object({
+        entries: z.number().int().min(1).max(maxima.entries).optional(),
+        depth: z.number().int().min(1).max(maxima.depth).optional(),
+        pathBytes: z.number().int().min(1).max(maxima.pathBytes).optional(),
+        observationMs: z.number().int().min(1).max(maxima.observationMs).optional(),
+      })
+      .strict()
+      .optional(),
+    // Fixed error-injection seams only; neither runs caller code nor grants IO.
+    testFault: z.enum(['after-root-reserve', 'close-receipt-once']).optional(),
+  })
+  .strict()
+const bindingSchema = z
+  .object({
+    processEpoch: z.string().regex(/^[A-Za-z0-9._-]{1,128}$/),
+    profileEpoch: z.string().regex(/^[A-Za-z0-9._-]{1,128}$/),
+    rootPath: z.string().min(1).max(16384),
+  })
+  .strict()
+const failureReasons = new WeakMap<object, string>()
+type Binding = z.infer<typeof bindingSchema>
+type Options = z.infer<typeof optionsSchema>
+type State = 'reserved' | 'observing' | 'observed' | 'unknown' | 'cancelled' | 'closed' | 'failed'
+type Fact = ProtectedResource & { readonly role: Role }
+type Unsupported = Readonly<{
+  name: string
+  parent: MetadataIdentity
+  volume: string
+  fileId: string
+  nativeType: string
+}>
+export type PrivateResourceOwnerView = typeof boundary &
+  Readonly<{
+    state: State
+    reason: string | null
+    inventoryState: ReturnType<Inventory['inspect']>['state']
+    inventoryAccepted: boolean
+    actualUnsettled: number
+    acquireSlots: number
+    heldDirectories: number
+    mutationOutstanding: boolean
+    started: number
+    settled: number
+    reservedRoot: Readonly<{ rootPath: string; basis: 'unverified' | 'observed-parent' }>
+    facts: readonly Fact[]
+    unsupported: readonly Unsupported[]
+  }>
+export type PrivateResourceMutation = Readonly<{ kind: 'private-resource-mutation' }>
+type MutationResult = typeof boundary &
+  ({ ok: true; mutation: PrivateResourceMutation } | { ok: false; reason: string })
+type MutationEndResult = typeof boundary & { ok: boolean; reason?: string }
+class ObservationFailure extends Error {
+  constructor(readonly reason: string) {
+    super('PRIVATE_METADATA_UNAVAILABLE')
+    failureReasons.set(this, reason)
+  }
+}
+function fail(reason: string): never {
+  throw new ObservationFailure(reason)
+}
+// Do not invoke getters on configuration or inspect arbitrary thrown values.
+function data(raw: unknown, depth = 0): unknown {
+  if (depth > 3 || !raw || typeof raw !== 'object' || Array.isArray(raw)) fail('invalid')
+  const proto = Object.getPrototypeOf(raw)
+  if (proto !== Object.prototype && proto !== null) fail('invalid')
+  const ds = Object.getOwnPropertyDescriptors(raw)
+  const keys = Reflect.ownKeys(ds)
+  if (keys.length > 8 || keys.some((k) => typeof k !== 'string')) fail('invalid')
+  const out: Record<string, unknown> = Object.create(null)
+  for (const key of keys as string[]) {
+    const d = ds[key]
+    if (!('value' in d)) fail('invalid')
+    const v: unknown = d.value
+    if (v && typeof v === 'object') out[key] = data(v, depth + 1)
+    else if (typeof v === 'string' && v.length <= 16384) out[key] = v
+    else if (typeof v === 'number' && Number.isFinite(v)) out[key] = v
+    else fail('invalid')
+  }
+  return out
+}
+function reasonOf(error: unknown): string {
+  try {
+    if (error && typeof error === 'object') {
+      const internal = failureReasons.get(error)
+      if (internal) return internal
+      const d = Object.getOwnPropertyDescriptor(error, 'code')
+      if (d && 'value' in d && ['EACCES', 'EPERM'].includes(d.value)) return 'permission'
+    }
+  } catch {
+    // Even classification of an unexpected throw must not throw again.
+  }
+  return 'io'
+}
+function missing(error: unknown): boolean {
+  try {
+    return (
+      !!error &&
+      typeof error === 'object' &&
+      Object.getOwnPropertyDescriptor(error, 'code')?.value === 'ENOENT'
+    )
+  } catch {
+    return false
+  }
+}
+function resourceValue(f: Fact): ProtectedResource {
+  // A captures trees, rejecting repeated object references as well as cycles.
+  return {
+    id: f.id,
+    category: f.category,
+    kind: f.kind,
+    parent: { ...f.parent },
+    components: [...f.components],
+    identity: f.identity ? { ...f.identity } : null,
+    presence: f.presence,
+    state: f.state,
+  }
+}
+function identity(s: BigIntStats): MetadataIdentity {
+  if ((!s.isFile() && !s.isDirectory()) || s.nlink < 1n || s.nlink > 32768n)
+    fail('unsupported-entry')
+  return Object.freeze({
+    kind: 'posix',
+    volume: `v${s.dev.toString(16)}`,
+    fileId: `i${s.ino.toString(16)}`,
+    type: s.isDirectory() ? 'directory' : 'file',
+    links: Number(s.nlink),
+  })
+}
+const key = (v: MetadataIdentity) => `${v.kind}/${v.volume}/${v.fileId}`
+const loc = (v: ProtectedResource) => `${key(v.parent)}/${JSON.stringify(v.components)}`
+const same = (a: BigIntStats, b: BigIntStats) =>
+  a.dev === b.dev &&
+  a.ino === b.ino &&
+  a.mode === b.mode &&
+  a.nlink === b.nlink &&
+  a.mtimeNs === b.mtimeNs &&
+  a.ctimeNs === b.ctimeNs
+
+/**
+ * Trusted-main-private metadata supplier. No bootstrap/IPC, content opener,
+ * mutable dependency injection, IO callback, lease, or production snapshot.
+ */
+export function createPrivateResourceOwner(
+  inventory: Inventory,
+  rawBinding: unknown,
+  rawOptions: unknown = {},
+) {
+  let binding: Binding | undefined
+  let options: Options = {}
+  let limits = { ...maxima }
+  let state: State = 'reserved'
+  let reason: string | null = null
+  let basis: 'unverified' | 'observed-parent' = 'unverified'
+  let inventoryAccepted = false
+  let stopped = false
+  let generation = 0
+  let sequence = 0
+  let started = 0
+  let settled = 0
+  let retainedStringBytes = 0
+  let running: Promise<PrivateResourceOwnerView> | undefined
+  let mutation: PrivateResourceMutation | undefined
+  const owners = new Map<Role, InventoryOwner>()
+  const facts = new Map<string, { path: string; fact: Fact }>()
+  const latest = new Map<string, string>()
+  const unsupported = new Map<string, Unsupported>()
+  // A directory retains its acquire slot through read and actual close.
+  const slots = new Set<object>()
+  const active = new Set<object>()
+  const directories = new Map<Dir, object>()
+  let releaseUnknown = false
+  let injectedClose = false
+  let rootFaultUsed = false
+  const issue = (r: string) => {
+    reason ??= r
+  }
+  try {
+    binding = bindingSchema.parse(data(rawBinding))
+    options = optionsSchema.parse(data(rawOptions))
+    limits = { ...maxima, ...options.limits }
+    if (
+      !path.isAbsolute(binding.rootPath) ||
+      path.resolve(binding.rootPath) !== binding.rootPath ||
+      binding.rootPath.includes(String.fromCharCode(0)) ||
+      path.basename(binding.rootPath) !== 'model-gateway-private-v1' ||
+      Buffer.byteLength(binding.rootPath) > limits.pathBytes
+    )
+      fail('invalid')
+    const v = inventory.inspect()
+    if (v.processEpoch !== binding.processEpoch || v.profileEpoch !== binding.profileEpoch)
+      fail('stale')
+    for (const role of roles) {
+      const result = inventory.registerOwner(role)
+      if (!result.ok) fail('inventory-rejected')
+      owners.set(role, result.value)
+    }
+  } catch {
+    state = 'failed'
+    reason = 'invalid'
+  }
+  const view = (): PrivateResourceOwnerView =>
+    Object.freeze({
+      ...boundary,
+      state,
+      reason,
+      inventoryState: inventory.inspect().state,
+      inventoryAccepted,
+      actualUnsettled: active.size,
+      acquireSlots: slots.size,
+      heldDirectories: directories.size,
+      mutationOutstanding: !!mutation,
+      started,
+      settled,
+      reservedRoot: Object.freeze({ rootPath: binding?.rootPath ?? '', basis }),
+      facts: Object.freeze([...facts.values()].map((v) => v.fact)),
+      unsupported: Object.freeze([...unsupported.values()]),
+    })
+  const invalidate = () => {
+    inventoryAccepted = false
+    if (!Number.isSafeInteger(++generation)) fail('budget')
+    for (const owner of owners.values()) {
+      if (!inventory.beginMutation(owner).ok) fail('stale')
+    }
+  }
+  const reserveSlot = () => {
+    if (slots.size >= 2) fail('budget')
+    const slot = Object.freeze({})
+    slots.add(slot)
+    return slot
+  }
+  // All starts below are fixed private call sites. Pre-admission precedes start().
+  async function operation<T>(slot: object, start: () => Promise<T>): Promise<T> {
+    if (!slots.has(slot) || active.has(slot) || started >= Number.MAX_SAFE_INTEGER) fail('budget')
+    active.add(slot)
+    started++
+    try {
+      return await start()
+    } finally {
+      active.delete(slot)
+      settled++
+    }
+  }
+  async function stat(name: string): Promise<BigIntStats> {
+    const slot = reserveSlot()
+    try {
+      return await operation(slot, () => fs.lstat(name, { bigint: true }))
+    } finally {
+      slots.delete(slot)
+    }
+  }
+  async function closeDirectory(dir: Dir): Promise<void> {
+    const slot = directories.get(dir)
+    if (!slot) return
+    try {
+      await operation(slot, () => dir.close())
+      if (options.testFault === 'close-receipt-once' && !injectedClose) {
+        injectedClose = true
+        fail('release-unknown') // Actual close ran; only its receipt is fault-injected.
+      }
+      directories.delete(dir)
+      slots.delete(slot)
+    } catch {
+      releaseUnknown = true
+      issue('release-unknown')
+      // Even ERR_DIR_CLOSED is not used to retroactively certify a failed close.
+    }
+  }
+  function remember(
+    name: string,
+    role: Role,
+    parent: MetadataIdentity,
+    parts: string[],
+    held: MetadataIdentity | null,
+    present: boolean,
+  ): Fact {
+    const oldId = latest.get(name)
+    const old = oldId ? facts.get(oldId)?.fact : undefined
+    const location = `${key(parent)}/${JSON.stringify(parts)}`
+    const reusable =
+      old &&
+      old.state === 'active' &&
+      loc(old) === location &&
+      (!old.identity || (held && key(old.identity) === key(held)))
+    if (!reusable && facts.size + unsupported.size >= limits.entries) fail('budget')
+    const cost =
+      Buffer.byteLength(name) +
+      Buffer.byteLength(parts.join('/')) +
+      parent.volume.length +
+      parent.fileId.length +
+      (held ? held.volume.length + held.fileId.length : 0) +
+      128
+    if (!reusable && retainedStringBytes + cost > 16 * 1024 * 1024) fail('budget')
+    if (
+      !reusable &&
+      role === 'private-root' &&
+      name === binding!.rootPath &&
+      [...facts.values()].filter((v) => v.fact.kind === 'root').length >= 32
+    )
+      fail('budget')
+    if (!reusable && ++sequence > 65536) fail('budget')
+    const id = reusable ? old.id : `bm-${sequence}`
+    if (!reusable) retainedStringBytes += cost
+    if (old && !reusable) {
+      const certainAbsent = loc(old) === location
+      facts.set(old.id, {
+        path: name,
+        fact: Object.freeze({
+          ...old,
+          state: 'retired',
+          presence: certainAbsent ? 'absent' : old.presence,
+        }),
+      })
+      issue('race')
+    }
+    const fact: Fact = Object.freeze({
+      id,
+      role,
+      category: 'private-deny',
+      kind: role === 'private-root' && name === binding!.rootPath ? 'root' : 'member',
+      parent,
+      components: Object.freeze([...parts]),
+      identity: held,
+      presence: present ? 'present' : 'absent',
+      state: 'active',
+    })
+    facts.set(id, { path: name, fact })
+    latest.set(name, id)
+    return fact
+  }
+  function project(status: 'complete' | 'unknown'): boolean {
+    let accepted = true
+    const lists = new Map<Role, ProtectedResource[]>()
+    for (const role of roles) {
+      const list = [...facts.values()]
+        .filter((v) => v.fact.role === role)
+        .map(({ fact }) => resourceValue(fact))
+      lists.set(role, list)
+      if (!inventory.reserve(owners.get(role), list).ok) accepted = false
+    }
+    const revision = inventory.inspect().revision
+    for (const role of roles) {
+      const observation = inventory.beginObservation(owners.get(role))
+      if (!observation.ok) {
+        accepted = false
+        continue
+      }
+      const resources = lists.get(role)!
+      const result = inventory.observe(observation.value, {
+        processEpoch: binding!.processEpoch,
+        profileEpoch: binding!.profileEpoch,
+        revision,
+        status,
+        coverage: resources.length ? 'present' : 'confirmed-absent',
+        retirementSource: 'not-owner',
+        resources,
+      })
+      if (!result.ok) accepted = false
+    }
+    return accepted
+  }
+  async function scan(g: number): Promise<PrivateResourceOwnerView> {
+    const begin = performance.now()
+    const anchors = new Map<string, BigIntStats>()
+    const seen = new Set<string>()
+    const fresh = new Set<string>()
+    let entries = 0
+    const check = (name?: string, depth = 0) => {
+      if (stopped || g !== generation) fail('cancelled')
+      if (performance.now() - begin >= limits.observationMs) fail('expired')
+      if (
+        depth > limits.depth ||
+        (name &&
+          (Buffer.byteLength(name) > limits.pathBytes ||
+            name.split(path.sep).filter(Boolean).length > maxima.depth))
+      )
+        fail('budget')
+    }
+    const add = (
+      name: string,
+      role: Role,
+      parent: MetadataIdentity,
+      parts: string[],
+      held: MetadataIdentity | null,
+      present: boolean,
+    ) => {
+      const f = remember(name, role, parent, parts, held, present)
+      seen.add(name)
+      fresh.add(f.id)
+      return f
+    }
+    async function descend(
+      name: string,
+      role: Role,
+      before: BigIntStats,
+      depth: number,
+    ): Promise<void> {
+      check(name, depth)
+      anchors.set(name, before)
+      const parent = identity(before)
+      const slot = reserveSlot()
+      let dir: Dir
+      try {
+        dir = await operation(slot, () => fs.opendir(name))
+      } catch (error) {
+        slots.delete(slot)
+        throw error
+      }
+      directories.set(dir, slot)
+      const children: string[] = []
+      try {
+        for (;;) {
+          check(name, depth)
+          const item = await operation(slot, () => dir.read())
+          if (!item) break
+          if (++entries > limits.entries) fail('budget')
+          // String paths cannot losslessly address undecodable POSIX bytes.
+          if (item.name.includes('\uFFFD')) fail('unsupported-name')
+          const child = path.join(name, item.name)
+          check(child, depth + 1)
+          children.push(item.name)
+        }
+      } finally {
+        await closeDirectory(dir)
+      }
+      check(name, depth)
+      if (releaseUnknown) fail('release-unknown')
+      for (const childName of children) {
+        const child = path.join(name, childName)
+        check(child, depth + 1)
+        const s = await stat(child)
+        check(child, depth + 1)
+        let childRole = role
+        if (name === binding!.rootPath) {
+          if (roles.includes(childName as Role) && childName !== 'private-root')
+            childRole = childName as Role
+          else issue('unrecognized-entry')
+        }
+        if (s.isSymbolicLink() || (!s.isFile() && !s.isDirectory())) {
+          const unsupportedKey = `${child}/${s.dev.toString(16)}/${s.ino.toString(16)}`
+          const cost = Buffer.byteLength(child) + Buffer.byteLength(childName) + 256
+          if (
+            !unsupported.has(unsupportedKey) &&
+            (facts.size + unsupported.size >= limits.entries ||
+              retainedStringBytes + cost > 16 * 1024 * 1024)
+          )
+            fail('budget')
+          if (!unsupported.has(unsupportedKey)) retainedStringBytes += cost
+          unsupported.set(
+            unsupportedKey,
+            Object.freeze({
+              name: childName,
+              parent,
+              volume: `v${s.dev.toString(16)}`,
+              fileId: `i${s.ino.toString(16)}`,
+              nativeType: s.isSymbolicLink()
+                ? 'symbolic-link'
+                : s.isFIFO()
+                  ? 'fifo'
+                  : s.isSocket()
+                    ? 'socket'
+                    : s.isCharacterDevice()
+                      ? 'character-device'
+                      : s.isBlockDevice()
+                        ? 'block-device'
+                        : 'unsupported',
+            }),
+          )
+          issue('unsupported-entry')
+          continue
+        }
+        add(child, childRole, parent, [childName], identity(s), true)
+        if (
+          (typeof process.getuid === 'function' && s.uid !== BigInt(process.getuid())) ||
+          (s.mode & 0o022n) !== 0n
+        )
+          issue('permission')
+        if (s.isDirectory()) {
+          if (name !== binding!.rootPath || childRole === 'private-root')
+            issue('unrecognized-entry')
+          await descend(child, childRole, s, depth + 1)
+        } else {
+          const suffix =
+            childRole === 'credentials'
+              ? 'credential'
+              : childRole === 'configurations'
+                ? 'configuration'
+                : 'audit'
+          if (
+            !/^\.pending-[1-9][0-9]*-[0-9a-f-]{36}$/.test(childName) &&
+            !new RegExp(`^[0-9a-f-]{36}\\.${suffix}$`).test(childName)
+          )
+            issue('unrecognized-entry')
+        }
+      }
+      const after = await stat(name)
+      check(name, depth)
+      if (!same(before, after)) fail('race')
+    }
+    try {
+      if (process.platform === 'win32') fail('unsupported-platform')
+      const root = binding!.rootPath
+      const parsed = path.parse(root)
+      const parts = root.slice(parsed.root.length).split(path.sep)
+      if (parts.length > maxima.depth) fail('budget')
+      let current = parsed.root
+      let parentStats = await stat(current)
+      check(current)
+      if (!parentStats.isDirectory()) fail('unsupported-entry')
+      anchors.set(current, parentStats)
+      let rootStats: BigIntStats | undefined
+      for (let i = 0; i < parts.length; i++) {
+        check(current)
+        const next = path.join(current, parts[i])
+        let s: BigIntStats
+        try {
+          s = await stat(next)
+        } catch (error) {
+          if (!missing(error)) throw error
+          basis = 'observed-parent'
+          add(root, 'private-root', identity(parentStats), parts.slice(i), null, false)
+          for (const role of roles.slice(1))
+            add(
+              path.join(root, role),
+              role,
+              identity(parentStats),
+              [...parts.slice(i), role],
+              null,
+              false,
+            )
+          project('unknown')
+          fail(i === parts.length - 1 ? 'missing-root' : 'missing-parent')
+        }
+        check(next)
+        if (s.isSymbolicLink() || !s.isDirectory()) fail('unsupported-entry')
+        if (i === parts.length - 1) {
+          basis = 'observed-parent'
+          add(root, 'private-root', identity(parentStats), [parts[i]], identity(s), true)
+          if (
+            (typeof process.getuid === 'function' && s.uid !== BigInt(process.getuid())) ||
+            (s.mode & 0o022n) !== 0n
+          )
+            issue('permission')
+          if (
+            !inventory.reserve(
+              owners.get('private-root'),
+              [...facts.values()]
+                .filter((v) => v.fact.role === 'private-root')
+                .map(({ fact }) => resourceValue(fact)),
+            ).ok
+          )
+            issue('inventory-rejected')
+          rootStats = s
+        } else anchors.set(next, s)
+        current = next
+        parentStats = s
+      }
+      if (!rootStats) fail('missing-root')
+      if (options.testFault === 'after-root-reserve' && !rootFaultUsed) {
+        rootFaultUsed = true
+        fail('injected-initialization')
+      }
+      entries = 1
+      await descend(root, 'private-root', rootStats, 0)
+      for (const role of roles.slice(1)) {
+        const name = path.join(root, role)
+        if (!seen.has(name)) {
+          add(name, role, identity(rootStats), [role], null, false)
+          issue('missing-bucket')
+        }
+      }
+      // A changed/removed name never deletes its old identity from this provider.
+      for (const [id, old] of facts) {
+        if (fresh.has(id) || old.fact.state !== 'active') continue
+        const observedParent = anchors.get(path.dirname(old.path))
+        const absent = observedParent && key(identity(observedParent)) === key(old.fact.parent)
+        facts.set(id, {
+          path: old.path,
+          fact: Object.freeze({
+            ...old.fact,
+            state: 'retired',
+            presence: absent ? 'absent' : old.fact.presence,
+          }),
+        })
+        if (!absent) issue('race')
+      }
+      const aliases = new Map<string, { links: number; names: Set<string> }>()
+      for (const id of fresh) {
+        const f = facts.get(id)!.fact
+        if (!f.identity || f.identity.type !== 'file') continue
+        const k = key(f.identity),
+          a = aliases.get(k) ?? { links: f.identity.links, names: new Set<string>() }
+        if (a.links !== f.identity.links) issue('alias-unknown')
+        a.names.add(loc(f))
+        aliases.set(k, a)
+      }
+      for (const a of aliases.values()) if (a.names.size !== a.links) issue('alias-unknown')
+      for (const [name, s] of anchors) {
+        check(name)
+        const after = await stat(name)
+        const inside = name === root || name.startsWith(root + path.sep)
+        if (
+          inside
+            ? !same(s, after)
+            : s.dev !== after.dev ||
+              s.ino !== after.ino ||
+              s.mode !== after.mode ||
+              s.uid !== after.uid
+        )
+          fail('race')
+      }
+      check()
+    } catch (error) {
+      issue(reasonOf(error))
+    }
+    if (unsupported.size) issue('unsupported-entry')
+    if (releaseUnknown) reason = 'release-unknown'
+    if (stopped || generation !== g) reason = 'cancelled'
+    // Four lists are reserved before taking any observation revision.
+    inventoryAccepted = project(reason ? 'unknown' : 'complete')
+    // Projection can consume time too; A's per-ticket TTL starts later.
+    if (performance.now() - begin >= limits.observationMs || generation !== g) {
+      reason = generation !== g ? 'cancelled' : 'expired'
+      inventoryAccepted = project('unknown')
+    }
+    if (!inventoryAccepted && !reason) reason = 'inventory-rejected'
+    state = stopped
+      ? releaseUnknown
+        ? 'unknown'
+        : 'closed'
+      : reason === 'cancelled'
+        ? 'cancelled'
+        : reason
+          ? 'unknown'
+          : 'observed'
+    return view()
+  }
+  return Object.freeze({
+    inspect: view,
+    observe(): Promise<PrivateResourceOwnerView> {
+      if (state === 'failed' || stopped) return Promise.resolve(view())
+      if (running || mutation)
+        return Promise.resolve(
+          Object.freeze({ ...view(), state: 'unknown' as const, reason: 'busy' }),
+        )
+      reason = null
+      try {
+        invalidate()
+      } catch {
+        state = 'failed'
+        reason = 'stale'
+        return Promise.resolve(view())
+      }
+      state = 'observing'
+      const p = scan(generation).catch(() => {
+        reason = 'io'
+        state = 'unknown'
+        inventoryAccepted = false
+        return view()
+      })
+      running = p
+      void p.then(() => {
+        if (running === p) running = undefined
+      })
+      return p
+    },
+    cancel(): PrivateResourceOwnerView {
+      if (!stopped && state !== 'failed') {
+        try {
+          invalidate()
+        } catch {
+          state = 'failed'
+        }
+        if (state !== 'failed') state = 'cancelled'
+        reason = 'cancelled'
+      }
+      return view()
+    },
+    beginMutation(): MutationResult {
+      if (stopped || state === 'failed')
+        return Object.freeze({ ...boundary, ok: false, reason: 'closed' })
+      if (mutation) return Object.freeze({ ...boundary, ok: false, reason: 'busy' })
+      try {
+        invalidate()
+      } catch {
+        return Object.freeze({ ...boundary, ok: false, reason: 'stale' })
+      }
+      if (running) return Object.freeze({ ...boundary, ok: false, reason: 'busy' })
+      mutation = Object.freeze({ kind: 'private-resource-mutation' })
+      state = 'reserved'
+      return Object.freeze({ ...boundary, ok: true, mutation })
+    },
+    endMutation(token: unknown): MutationEndResult {
+      if (!mutation || token !== mutation)
+        return Object.freeze({ ...boundary, ok: false, reason: 'stale' })
+      mutation = undefined
+      try {
+        invalidate()
+      } catch {
+        return Object.freeze({ ...boundary, ok: false, reason: 'stale' })
+      }
+      return Object.freeze({ ...boundary, ok: true })
+    },
+    async close(): Promise<PrivateResourceOwnerView> {
+      if (!stopped) {
+        stopped = true
+        try {
+          invalidate()
+        } catch {
+          issue('stale')
+        }
+      }
+      if (running) await running
+      for (const dir of directories.keys()) await closeDirectory(dir)
+      state = releaseUnknown || mutation ? 'unknown' : 'closed'
+      if (releaseUnknown) reason = 'release-unknown'
+      else if (mutation) reason = 'mutation-unsettled'
+      return view()
+    },
+  })
+}

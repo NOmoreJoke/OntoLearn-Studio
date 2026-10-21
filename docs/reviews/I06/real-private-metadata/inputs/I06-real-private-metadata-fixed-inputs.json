@@ -1,0 +1,25 @@
+{
+  "kind": "Exact B-M readonly adoption; usable only with separate root implementation authorization",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "planRef": "ffb55e0e694bde00b64fed400260e47392aa3554",
+  "targetTree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-real-private-metadata",
+  "targetBranch": "feature/I06-real-private-metadata",
+  "readonlyInputs": [
+    {
+      "path": "apps/desktop/src/main/security/private-resource-inventory.ts",
+      "ref": "6a38fcb8135343ba5e62a8a8effe57b18c3de00c",
+      "bytes": 23598,
+      "sha256": "0f6a2125d5dea53b5e5badde99401086284d4fd776b0cefadad324e408c786e5"
+    },
+    {
+      "path": "tests/unit/i06-private-resource-inventory.test.ts",
+      "ref": "6a38fcb8135343ba5e62a8a8effe57b18c3de00c",
+      "bytes": 22330,
+      "sha256": "7d82c1012bbe7fc35c5faf6eaf167b82d93a357e0b1060db6256ba809a118f49"
+    }
+  ],
+  "newPaths": [
+    "apps/desktop/src/main/security/private-resource-owner.ts",
+    "tests/unit/i06-private-resource-owner.test.ts"
+  ]
+}

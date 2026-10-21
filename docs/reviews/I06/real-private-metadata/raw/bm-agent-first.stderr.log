@@ -1,0 +1,125 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > includes legal orphan records and standalone pending names in all buckets
+AssertionError: expected 'unknown' to be 'observed' // Object.is equality
+
+Expected: "observed"
+Received: "unknown"
+
+ ❯ tests/unit/i06-private-resource-owner.test.ts:140:26
+    138|       for (const bucket of buckets) await file(f.rootPath, bucket, ids…
+    139|       const view = await f.owner().observe()
+    140|       expect(view.state).toBe('observed')
+       |                          ^
+    141|       expect(named(view, ids.orphan)).toHaveLength(1)
+    142|       expect(named(view, ids.pending)).toHaveLength(3)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > recognizes a real final plus pending hardlink pair as two distinct protected names
+AssertionError: expected 'unknown' to be 'observed' // Object.is equality
+
+Expected: "observed"
+Received: "unknown"
+
+ ❯ tests/unit/i06-private-resource-owner.test.ts:155:26
+    153|       expect(actual.nlink).toBe(2n)
+    154|       const view = await f.owner().observe()
+    155|       expect(view.state).toBe('observed')
+       |                          ^
+    156|       const records = view.facts.filter(
+    157|         (entry) => entry.identity?.fileId === `i${actual.ino.toString(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects a real non-private writable root without treating it as an empty inventory
+AssertionError: expected 'observed' to be 'unknown' // Object.is equality
+
+Expected: "unknown"
+Received: "observed"
+
+ ❯ tests/unit/i06-private-resource-owner.test.ts:429:26
+    427|       await fs.chmod(f.rootPath, 0o777)
+    428|       const view = await f.owner().observe()
+    429|       expect(view.state).toBe('unknown')
+       |                          ^
+    430|       expect(view.facts.length).toBeGreaterThan(0)
+    431|       boundary(view)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > keeps an outstanding mutation barrier after cancel until the precise token settles
+AssertionError: expected undefined to be true // Object.is equality
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ tests/unit/i06-private-resource-owner.test.ts:468:45
+    466|       if (!mutation.ok) throw new Error('expected idle mutation admiss…
+    467|       const cancelled = owner.cancel()
+    468|       expect(cancelled.mutationOutstanding).toBe(true)
+       |                                             ^
+    469|       expect(cancelled.actualUnsettled).toBe(0)
+    470|       expect((await owner.observe()).reason).toBe('busy')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > keeps a mutation barrier across close and permits only its exact token to finish
+AssertionError: expected { mechanismOnly: true, …(14) } to match object { state: 'unknown', …(2) }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "mutationOutstanding": true,
+-   "reason": "mutation-unsettled",
+-   "state": "unknown",
++   "reason": null,
++   "state": "closed",
+  }
+
+ ❯ tests/unit/i06-private-resource-owner.test.ts:484:23
+    482|       if (!mutation.ok) throw new Error('expected idle mutation admiss…
+    483|       const closing = await owner.close()
+    484|       expect(closing).toMatchObject({
+       |                       ^
+    485|         state: 'unknown',
+    486|         reason: 'mutation-unsettled',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects an actual undecodable POSIX leaf name without silently observing a different replacement name
+Error: EILSEQ: illegal byte sequence, open '/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/i06-private-owner-DpY6Cw/model-gateway-private-v1/credentials/�'
+ ❯ tests/unit/i06-private-resource-owner.test.ts:529:7
+    527|         Buffer.from([0xff]),
+    528|       ])
+    529|       await fs.writeFile(destination, 'synthetic fixture', { mode: 0o6…
+       |       ^
+    530|       const view = await f.owner().observe()
+    531|       expect(view.state).toBe('unknown')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -92, code: 'EILSEQ', syscall: 'open', path: '/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/i06-private-owner-DpY6Cw/model-gateway-private-v1/credentials/�' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/unit/i06-private-resource-owner.test.ts > I06 real private metadata owner: POSIX fixtures > rejects a real group-writable bucket and world-writable leaf while retaining their facts
+AssertionError: expected 'observed' to be 'unknown' // Object.is equality
+
+Expected: "unknown"
+Received: "observed"
+
+ ❯ tests/unit/i06-private-resource-owner.test.ts:597:26
+    595|       await fs.chmod(destination, 0o606)
+    596|       const view = await f.owner().observe()
+    597|       expect(view.state).toBe('unknown')
+       |                          ^
+    598|       expect(named(view, 'credentials')).toHaveLength(1)
+    599|       expect(named(view, ids.credential)).toHaveLength(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
