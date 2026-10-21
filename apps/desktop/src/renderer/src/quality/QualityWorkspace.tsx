@@ -178,31 +178,31 @@ function QualityEditor({
   const [upper, setUpper] = useState('')
   const [conditions, setConditions] = useState<Pattern[]>([blank()])
   const [conclusions, setConclusions] = useState<Pattern[]>([blank()])
-  const [draft, setDraft] = useState('')
-  const [error, setError] = useState('')
+  const [preparation, setPreparation] = useState({ source: '', draft: '', error: '' })
   const [sample, setSample] = useState('')
   const [expected, setExpected] = useState('[]')
   const [scope, setScope] = useState('asserted')
   const view = visibleObservation(observation, projectId)
   const comparison = view?.actual == null ? null : compareStatements(view.expected, view.actual)
   const field = (name: string) => `${uid}-${name}`
+  const editorInput = {
+    kind,
+    identity,
+    label,
+    revision,
+    enabled,
+    targetClass,
+    path,
+    template,
+    parameter,
+    upper,
+    conditions,
+    conclusions,
+  }
+  const source = JSON.stringify(editorInput)
+  const { draft, error } = preparation.source === source ? preparation : { draft: '', error: '' }
   function prepare() {
-    const result = prepareEditorDraft({
-      kind,
-      identity,
-      label,
-      revision,
-      enabled,
-      targetClass,
-      path,
-      template,
-      parameter,
-      upper,
-      conditions,
-      conclusions,
-    })
-    setError(result.error)
-    if (result.draft) setDraft(result.draft)
+    setPreparation({ source, ...prepareEditorDraft(editorInput) })
   }
   return (
     <section className="quality-workspace" aria-label="质量与推理">
