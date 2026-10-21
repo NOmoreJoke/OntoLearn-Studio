@@ -1,0 +1,21 @@
+I001 [*] Import block is un-sorted or un-formatted
+    --> packages/engine/tests/test_profile_M1_graph_consumers.py:1108:5
+     |
+1107 |   def observe_integer_text_stage(case, directory, policy):
+1108 | /     import rdflib
+1109 | |     from rdflib import Literal, XSD
+1110 | |     from rdflib import term as rdf_term
+     | |_______________________________________^
+1111 |
+1112 |       directory.mkdir()
+     |
+help: Organize imports
+     |
+1108 |     import rdflib
+     -     from rdflib import Literal, XSD
+1109 +     from rdflib import XSD, Literal
+1110 |     from rdflib import term as rdf_term
+     |
+
+Found 1 error.
+[*] 1 fixable with `--fix`.

@@ -1,0 +1,64 @@
+I001 [*] Import block is un-sorted or un-formatted
+    --> packages/engine/tests/test_profile_M1_graph_consumers.py:1108:5
+     |
+1107 |   def observe_integer_text_stage(case, directory, policy):
+1108 | /     import rdflib
+1109 | |     from rdflib import Literal, XSD
+1110 | |     from rdflib import term as rdf_term
+     | |_______________________________________^
+1111 |
+1112 |       directory.mkdir()
+     |
+help: Organize imports
+     |
+1108 |     import rdflib
+     -     from rdflib import Literal, XSD
+1109 +     from rdflib import XSD, Literal
+1110 |     from rdflib import term as rdf_term
+     |
+
+E501 Line too long (103 > 100)
+    --> packages/engine/tests/test_profile_M1_graph_consumers.py:1159:101
+     |
+1157 |                             for name in names}})
+1158 |         actual["realValidatorReport"] = {
+1159 |             "conforms": conforms, "conformsTerms": [v.n3() for v in report.objects(None, SH.conforms)],
+     |                                                                                                     ^^^
+1160 |             "rows": rows,
+1161 |         }
+     |
+
+E501 Line too long (106 > 100)
+    --> packages/engine/tests/test_profile_M1_graph_consumers.py:1165:101
+     |
+1164 |     try:
+1165 |         with patch.object(semantic, "_parse_turtle", parse), patch.object(semantic.Validator, "run", run):
+     |                                                                                                     ^^^^^^
+1166 |             if policy is None:
+1167 |                 data = semantic.parse_turtle(case["dataTurtle"])
+     |
+
+E501 Line too long (110 > 100)
+    --> packages/engine/tests/test_profile_M1_graph_consumers.py:1258:101
+     |
+1256 |         "id": case_id, "kind": "explicit-integer-text-consumer", "baseCaseId": case["id"],
+1257 |         "testSourceSha256": sha(Path(__file__).read_bytes()),
+1258 |         "semanticSourceSha256": sha((REPO / "packages/engine/src/ontolearn_engine/semantic.py").read_bytes()),
+     |                                                                                                     ^^^^^^^^^^
+1259 |         "inputSourceSha256": sha((READONLY / "consumer-C-inputs.json").read_bytes()),
+1260 |         "sourceBinding": {"pointer": f"/cases/{case_index}",
+     |
+
+E501 Line too long (112 > 100)
+    --> packages/engine/tests/test_profile_M1_graph_consumers.py:1265:101
+     |
+1263 |                           "meaning": "content/fixture pointer only; no Job or actor authority"},
+1264 |         "input": case, "actual": {"stages": stages}, "expected": expected,
+1265 |         "assertion": "fail", "history": "Explicit component supplement; original pending observation unchanged",
+     |                                                                                                     ^^^^^^^^^^^^
+1266 |     }
+1267 |     try:
+     |
+
+Found 5 errors.
+[*] 1 fixable with `--fix`.

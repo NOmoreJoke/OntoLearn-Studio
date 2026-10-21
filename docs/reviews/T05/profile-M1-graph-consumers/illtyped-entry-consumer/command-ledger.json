@@ -1,0 +1,418 @@
+{
+  "allRawStreamsVerified": true,
+  "commands": [
+    {
+      "tag": "audit-format",
+      "result": {
+        "argv": [
+          "uv",
+          "run",
+          "--frozen",
+          "ruff",
+          "format",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/audit-evidence.py"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:04:06.898019+00:00",
+        "environment": {
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/m1-cache/uv"
+        },
+        "exit": 0,
+        "finishedUtc": "2026-10-21T21:04:06.925026+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 19,
+            "sha256": "413a709001976657cb743636fd34e48fc41d8d302d665460d3f874b3313da127"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "audit-lint",
+      "result": {
+        "argv": [
+          "uv",
+          "run",
+          "--frozen",
+          "ruff",
+          "check",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/audit-evidence.py"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:04:06.947263+00:00",
+        "environment": {
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/m1-cache/uv"
+        },
+        "exit": 0,
+        "finishedUtc": "2026-10-21T21:04:06.975215+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 19,
+            "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "check-new-docs",
+      "result": {
+        "argv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--ignore-path",
+          "/dev/null",
+          "--check",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/README.md",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/independent-review.md"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:06:57.172721+00:00",
+        "environment": {},
+        "exit": 0,
+        "finishedUtc": "2026-10-21T21:06:57.246929+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 66,
+            "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "entry-normal",
+      "result": {
+        "argv": [
+          "npm",
+          "run",
+          "check"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:02:08.999604+00:00",
+        "environment": {
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/m1-cache/uv",
+          "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/m1-cache/npm",
+          "M1_ILLTYPED_OBSERVATION_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/illtyped-actual/entry-normal",
+          "PYTEST_ADDOPTS": "--basetemp=build/illtyped-basetemp/entry-normal"
+        },
+        "exit": 0,
+        "finishedUtc": "2026-10-21T21:04:51.049616+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 13000,
+            "sha256": "4e27293915dbf599fa5a7bf5a404a63998ddd743e91a6f9942d4f80bdb381b0f"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "final-process-lint",
+      "result": {
+        "argv": [
+          "uv",
+          "run",
+          "--frozen",
+          "ruff",
+          "check",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/run-command.py",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/archive-run.py"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:02:54.395155+00:00",
+        "environment": {
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/m1-cache/uv"
+        },
+        "exit": 0,
+        "finishedUtc": "2026-10-21T21:02:54.420268+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 19,
+            "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "final-test-lint",
+      "result": {
+        "argv": [
+          "uv",
+          "run",
+          "--frozen",
+          "ruff",
+          "check",
+          "packages/engine/tests/test_profile_M1_graph_consumers.py"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:01:50.685781+00:00",
+        "environment": {
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/m1-cache/uv"
+        },
+        "exit": 0,
+        "finishedUtc": "2026-10-21T21:01:50.716764+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 19,
+            "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "first-lint",
+      "result": {
+        "argv": [
+          "uv",
+          "run",
+          "--frozen",
+          "ruff",
+          "check",
+          "packages/engine/tests/test_profile_M1_graph_consumers.py"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:01:42.612336+00:00",
+        "environment": {
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/m1-cache/uv"
+        },
+        "exit": 1,
+        "finishedUtc": "2026-10-21T21:01:42.674414+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 2881,
+            "sha256": "59dcd4c563e8c37a1f394d178e9ec751c1e02317fa8524818989850fbcab6b96"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "format-new-docs",
+      "result": {
+        "argv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--ignore-path",
+          "/dev/null",
+          "--write",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/README.md",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/independent-review.md"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:06:57.075830+00:00",
+        "environment": {},
+        "exit": 0,
+        "finishedUtc": "2026-10-21T21:06:57.150884+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 189,
+            "sha256": "cf2c4f11f9514392230d50b9234f35828cc6039557a6ccc792aaa983ec33e696"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "format-test",
+      "result": {
+        "argv": [
+          "uv",
+          "run",
+          "--frozen",
+          "ruff",
+          "format",
+          "packages/engine/tests/test_profile_M1_graph_consumers.py"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:01:42.696781+00:00",
+        "environment": {
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/m1-cache/uv"
+        },
+        "exit": 0,
+        "finishedUtc": "2026-10-21T21:01:42.723325+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 19,
+            "sha256": "413a709001976657cb743636fd34e48fc41d8d302d665460d3f874b3313da127"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "formatted-lint",
+      "result": {
+        "argv": [
+          "uv",
+          "run",
+          "--frozen",
+          "ruff",
+          "check",
+          "packages/engine/tests/test_profile_M1_graph_consumers.py"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:01:42.745179+00:00",
+        "environment": {
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/m1-cache/uv"
+        },
+        "exit": 1,
+        "finishedUtc": "2026-10-21T21:01:42.775388+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 650,
+            "sha256": "a4177d31cc86ece343fb880f687ae945cfb27474a05f11c37bef96c424fc17ea"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "freeze-entry-normal",
+      "result": {
+        "argv": [
+          ".venv/bin/python",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/archive-run.py",
+          "entry-normal",
+          "build/illtyped-actual/entry-normal",
+          "df2fa46d1979af918a56f39aea7f61622456f81a"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:05:13.195785+00:00",
+        "environment": {},
+        "exit": 0,
+        "finishedUtc": "2026-10-21T21:05:13.224749+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 576,
+            "sha256": "e656fba6cf8586a0947794ed8906d184b41bc1cb25d7c9ab094e8656c35194bc"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "process-format",
+      "result": {
+        "argv": [
+          "uv",
+          "run",
+          "--frozen",
+          "ruff",
+          "format",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/run-command.py",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/archive-run.py"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:02:49.513110+00:00",
+        "environment": {
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/m1-cache/uv"
+        },
+        "exit": 0,
+        "finishedUtc": "2026-10-21T21:02:49.540812+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 23,
+            "sha256": "43affe539ba0ae8b202b306a3294d04f3b7fc062316c1c825399076d966c8f2d"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "process-lint",
+      "result": {
+        "argv": [
+          "uv",
+          "run",
+          "--frozen",
+          "ruff",
+          "check",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/run-command.py",
+          "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/archive-run.py"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:02:49.563465+00:00",
+        "environment": {
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/m1-cache/uv"
+        },
+        "exit": 1,
+        "finishedUtc": "2026-10-21T21:02:49.592072+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 530,
+            "sha256": "7eb40d8db0768c6af643ee110f888604a8eca82f9a686bbc7a7672c996be5d3b"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    },
+    {
+      "tag": "verify-sources",
+      "result": {
+        "argv": [
+          "npm",
+          "run",
+          "verify:sources"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+        "startedUtc": "2026-10-21T21:02:08.546493+00:00",
+        "environment": {},
+        "exit": 0,
+        "finishedUtc": "2026-10-21T21:02:08.704943+00:00",
+        "streams": {
+          "stdout.raw": {
+            "bytes": 111,
+            "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+          },
+          "stderr.raw": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      }
+    }
+  ]
+}

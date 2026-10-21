@@ -1,0 +1,239 @@
+{
+  "summary": {
+    "tag": "entry-normal",
+    "candidate": "df2fa46d1979af918a56f39aea7f61622456f81a",
+    "actualDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/illtyped-actual/entry-normal",
+    "archive": "entry-normal-originals.zip",
+    "archiveBytes": 11768,
+    "archiveSha256": "3b59e78dfe3e5e1be0c2e31a981922d152639c34db01499601ddc8159b0219c9",
+    "memberCount": 18,
+    "caseCount": 1,
+    "allMemberBytesSha256AndCrcVerified": true,
+    "scope": "One explicit integer text component; old regression not recaptured; no Job/Store authority"
+  },
+  "cases": [
+    {
+      "id": "C-illtyped-entry-explicit-integer-report",
+      "kind": "explicit-integer-text-consumer",
+      "assertion": "pass",
+      "actual": {
+        "stages": [
+          {
+            "actual": {
+              "diagnostic": null,
+              "exceptionType": "SemanticError",
+              "globalState": {
+                "converterIdentitiesUnchanged": true,
+                "converterKeysUnchanged": true,
+                "normalizationUnchanged": true,
+                "normalizeAfter": true,
+                "normalizeBefore": true
+              },
+              "parseTrace": [
+                {
+                  "kwargs": {
+                    "_allow_illtyped_integer": false,
+                    "_check_iris": true
+                  },
+                  "returned": false,
+                  "stage": "parse-data"
+                }
+              ],
+              "publicError": null,
+              "reason": "INVALID_LITERAL_LEXICAL",
+              "stage": "parse-data",
+              "status": "error",
+              "validatorRuns": 0
+            },
+            "dataPolicyArgument": "strict",
+            "name": "strict-before"
+          },
+          {
+            "actual": {
+              "dataAfter": [
+                [
+                  "<urn:m1:s>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:m1:Focus>"
+                ],
+                [
+                  "<urn:m1:s>",
+                  "<urn:m1:p>",
+                  "\"not-an-int\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+                ]
+              ],
+              "dataBefore": [
+                [
+                  "<urn:m1:s>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:m1:Focus>"
+                ],
+                [
+                  "<urn:m1:s>",
+                  "<urn:m1:p>",
+                  "\"not-an-int\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+                ]
+              ],
+              "globalState": {
+                "converterIdentitiesUnchanged": true,
+                "converterKeysUnchanged": true,
+                "normalizationUnchanged": true,
+                "normalizeAfter": true,
+                "normalizeBefore": true
+              },
+              "literalObjects": [
+                {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                  "illTyped": true,
+                  "isIntegerDatatype": true,
+                  "language": null,
+                  "lexical": "not-an-int"
+                }
+              ],
+              "parseTrace": [
+                {
+                  "kwargs": {
+                    "_allow_illtyped_integer": true,
+                    "_check_iris": true
+                  },
+                  "returned": true,
+                  "stage": "parse-data",
+                  "tripleCount": 2
+                },
+                {
+                  "kwargs": {
+                    "_check_iris": true,
+                    "shapes": true
+                  },
+                  "returned": true,
+                  "stage": "parse-shapes",
+                  "tripleCount": 6
+                }
+              ],
+              "realValidatorReport": {
+                "conforms": false,
+                "conformsTerms": [
+                  "\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+                ],
+                "rows": [
+                  {
+                    "actualResultNode": "_:Nb2bf1c52768447a0abd3f3d9f6e12fa8",
+                    "focusNode": [
+                      "<urn:m1:s>"
+                    ],
+                    "resultPath": [
+                      "<urn:m1:p>"
+                    ],
+                    "resultSeverity": [
+                      "<http://www.w3.org/ns/shacl#Violation>"
+                    ],
+                    "sourceConstraintComponent": [
+                      "<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>"
+                    ],
+                    "sourceShape": [
+                      "<urn:m1:shape>"
+                    ],
+                    "value": [
+                      "\"not-an-int\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+                    ]
+                  }
+                ]
+              },
+              "result": {
+                "dataPolicy": "integer-illtyped-report-v1",
+                "entryVersion": "i05-shacl-text-1",
+                "rangePolicy": "legacy",
+                "report": {
+                  "conforms": false,
+                  "violations": [
+                    {
+                      "constraint": "<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>",
+                      "focus": "<urn:m1:s>",
+                      "path": "<urn:m1:p>",
+                      "severity": "<http://www.w3.org/ns/shacl#Violation>",
+                      "sourceShape": "<urn:m1:shape>",
+                      "value": "\"not-an-int\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+                    }
+                  ]
+                }
+              },
+              "stage": "returned",
+              "status": "success",
+              "validatorRuns": 1
+            },
+            "dataPolicyArgument": "integer-illtyped-report-v1",
+            "name": "wide"
+          },
+          {
+            "actual": {
+              "diagnostic": null,
+              "exceptionType": "SemanticError",
+              "globalState": {
+                "converterIdentitiesUnchanged": true,
+                "converterKeysUnchanged": true,
+                "normalizationUnchanged": true,
+                "normalizeAfter": true,
+                "normalizeBefore": true
+              },
+              "parseTrace": [
+                {
+                  "kwargs": {
+                    "_allow_illtyped_integer": false,
+                    "_check_iris": true
+                  },
+                  "returned": false,
+                  "stage": "parse-data"
+                }
+              ],
+              "publicError": null,
+              "reason": "INVALID_LITERAL_LEXICAL",
+              "stage": "parse-data",
+              "status": "error",
+              "validatorRuns": 0
+            },
+            "dataPolicyArgument": "strict",
+            "name": "strict-after"
+          },
+          {
+            "actual": {
+              "diagnostic": null,
+              "exceptionType": "SemanticError",
+              "globalState": {
+                "converterIdentitiesUnchanged": true,
+                "converterKeysUnchanged": true,
+                "normalizationUnchanged": true,
+                "normalizeAfter": true,
+                "normalizeBefore": true
+              },
+              "parseTrace": [
+                {
+                  "kwargs": {
+                    "format": "turtle",
+                    "shapes": false
+                  },
+                  "returned": false,
+                  "stage": "parse-data"
+                }
+              ],
+              "publicError": null,
+              "reason": "INVALID_LITERAL_LEXICAL",
+              "stage": "parse-data",
+              "status": "error",
+              "validatorRuns": 0
+            },
+            "dataPolicyArgument": null,
+            "name": "legacy-after"
+          }
+        ]
+      },
+      "expected": {
+        "components": [
+          "DatatypeConstraintComponent"
+        ],
+        "conforms": false
+      },
+      "member": "observations/22d9f82954ab9ca4cbece08c318990055ecd7dcfe23c7ba7098d61ad1205a1a5/observation.json",
+      "sha256": "ff5ad1027c0f885625d1c7978b2df702f2c0e47f928a028462d8f44f9aa24156"
+    }
+  ]
+}
