@@ -1,0 +1,165 @@
+{
+  "oracle": "Fixed profile lexical cases; XML1.1 Char and RFC5646 ABNF only, no SUT outputs",
+  "valid": [
+    {
+      "type": "string",
+      "lexical": ""
+    },
+    {
+      "type": "string",
+      "lexical": " \t\n"
+    },
+    {
+      "type": "string",
+      "lexical": "\u0001"
+    },
+    {
+      "type": "string",
+      "lexical": "\ud800\udc00"
+    },
+    {
+      "type": "langString",
+      "lexical": "\u0000",
+      "language": "EN-us"
+    },
+    {
+      "type": "langString",
+      "lexical": "\ufffe",
+      "language": "x-A"
+    },
+    {
+      "type": "boolean",
+      "lexical": "1"
+    },
+    {
+      "type": "integer",
+      "lexical": "+001"
+    },
+    {
+      "type": "nonNegativeInteger",
+      "lexical": "-0"
+    },
+    {
+      "type": "decimal",
+      "lexical": ".1"
+    },
+    {
+      "type": "decimal",
+      "lexical": "1."
+    },
+    {
+      "type": "int",
+      "lexical": "-2147483648"
+    }
+  ],
+  "invalid": [
+    {
+      "type": "string",
+      "lexical": "\u0000",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "string",
+      "lexical": "\ufffe",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "string",
+      "lexical": "\uffff",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "boolean",
+      "lexical": "True",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "boolean",
+      "lexical": "01",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "integer",
+      "lexical": "1.0",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "integer",
+      "lexical": "\u0661",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "int",
+      "lexical": "2147483648",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "nonNegativeInteger",
+      "lexical": "-1",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "decimal",
+      "lexical": "1e2",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "decimal",
+      "lexical": ".",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "double",
+      "lexical": "+NaN",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "float",
+      "lexical": "nan",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "integer",
+      "lexical": " 1",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "date",
+      "lexical": "2001-02-29",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "dateTime",
+      "lexical": "2000-01-01T23:59:60Z",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "date",
+      "lexical": "+2000-01-01",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "date",
+      "lexical": "02000-01-01",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    },
+    {
+      "type": "date",
+      "lexical": "2000-01-01+14:01",
+      "reason": "INVALID_LITERAL_LEXICAL"
+    }
+  ],
+  "valid_languages": [
+    "en",
+    "EN-latn-US",
+    "zh-cmn-Hans-CN",
+    "de-CH-1901",
+    "en-a-abc-b-def-x-Test",
+    "x-a",
+    "i-klingon",
+    "sgn-BE-FR",
+    "en-abcde-abcde",
+    "en-a-ab-a-cd"
+  ],
+  "invalid_languages": ["", "en_US", "en-", "x", "en-x", "e", "abcd-efg", "en-1234a1234", "en-a-a"]
+}
