@@ -2,6 +2,8 @@
 
 ## 当前状态：blocked，完整目标保留
 
+2026-10-21 11:48+08已收到原资源问题的实际人类答复：“现在可操作，仅限两个审查应用”。该问题已回答，不再按未答处理，不重复询问；当前短时范围仅ZCode/MiniMax创建指定任务及核设置。按总控既有要求先交串行协调，实查root currentActualLease仍none/指定任务0，条件首位不当租约，尚无本次应用操作或任务创建。回执 round-1/desktop-approval-receipt.json；派发前12产品来源/两冻结提示hash匹配，产品diff为空，实际远端develop仍5f。此许可不扩为产品GUI/永久桌面授权，不重建Goal，不关闭正式接口/验收门。
+
 最新队列通知：T06 S1仍首条件，I05 C4已完成总控固定文件/完整双审输入预检，列第二条件。两项指定新任务均0，安全独立应用入口及租约仍未核验，无新增GUI许可/时间窗口；原在途资源问题不重复询问，不在当前Mac启动应用/e2e/native。
 
 2026-10-21 11:40+08四文件未来维护生效已实际全文读回新版共同指南/生效JSON：main/jsonl.ts、renderer/task-presentation.ts、main/task-service.ts、main/index.ts仅归T01；I06保留preload/index及renderer env/App/style四路径，其余排除/精确返还保留。common 17891B/SHA e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0，原16317B/ff5前缀逐字核验，AGENTS78df不变；完整路径/边界见operating-policy-ownership-update.md。本次无startup/schema/新码/runtime3/ready授权，不复测、不造新工作、不恢复Goal。
