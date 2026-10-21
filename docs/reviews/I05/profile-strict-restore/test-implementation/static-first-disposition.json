@@ -1,0 +1,50 @@
+{
+  "firstRuffResult": {
+    "exit": 1,
+    "count": 28,
+    "kinds": [
+      "E501",
+      "I001"
+    ],
+    "officialToolChunk": "59779d",
+    "rawOutputRetainedInToolTranscript": true
+  },
+  "fix": "ruff format limited to the two owned new tests, then ruff check --fix",
+  "finalStatic": [
+    {
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "packages/engine/tests/test_semantic_profile_restore.py",
+        "packages/engine/tests/test_semantic_profile_restore_limits.py"
+      ],
+      "exit": 0,
+      "output": "02-ruff-final.txt"
+    },
+    {
+      "argv": [
+        ".venv/bin/ruff",
+        "format",
+        "--check",
+        "packages/engine/tests/test_semantic_profile_restore.py",
+        "packages/engine/tests/test_semantic_profile_restore_limits.py"
+      ],
+      "exit": 0,
+      "output": "03-format-final.txt"
+    }
+  ],
+  "files": [
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "bytes": 33199,
+      "sha256": "a6cc3b8f03379a6d3e78c9ab723e9db48e31d794b475eb90a59045d40bf83160"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "bytes": 15865,
+      "sha256": "7eb6d78fc352608196c1a263c5f704529a5b62ff27858444a5e60f1d36e66f97"
+    }
+  ],
+  "productOrPytestRun": false,
+  "awaitingModules": "root main and budget final integration before actual execution"
+}
