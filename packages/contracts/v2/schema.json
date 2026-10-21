@@ -5989,6 +5989,81 @@
           },
           "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.preview"
+            },
+            "params": {
+              "$ref": "#/$defs/params_changeset.preview"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.diff.page"
+            },
+            "params": {
+              "$ref": "#/$defs/params_changeset.diff.page"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.confirm"
+            },
+            "params": {
+              "$ref": "#/$defs/params_changeset.confirm"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
         }
       ]
     },
@@ -6889,6 +6964,198 @@
           },
           "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.preview"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_changeset.preview"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.preview"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.diff.page"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_changeset.diff.page"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.diff.page"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.confirm"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_changeset.confirm"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.confirm"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
         }
       ]
     },
@@ -7172,6 +7439,554 @@
         }
       },
       "required": ["kind", "diagnosticVersion", "engineSessionId", "registryHash", "error"],
+      "additionalProperties": false
+    },
+    "changeSetDefinitionReference": {
+      "type": "object",
+      "properties": {
+        "layer": {
+          "enum": [
+            "ontology",
+            "mapping",
+            "constraint",
+            "rule",
+            "behavior",
+            "scenario",
+            "query",
+            "model"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/name"
+        }
+      },
+      "required": ["layer", "id"],
+      "additionalProperties": false
+    },
+    "changeSetTriple": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        },
+        "predicate": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        },
+        "object": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        }
+      },
+      "required": ["subject", "predicate", "object"],
+      "additionalProperties": false
+    },
+    "changeSetOntologyValue": {
+      "type": "object",
+      "properties": {
+        "triples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetTriple"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "singleValuedPredicates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 262144
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetDefinitionReference"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "changeSetDefinition": {
+      "type": "object",
+      "properties": {
+        "layer": {
+          "const": "ontology"
+        },
+        "id": {
+          "$ref": "#/$defs/name"
+        },
+        "value": {
+          "$ref": "#/$defs/changeSetOntologyValue"
+        }
+      },
+      "required": ["layer", "id", "value"],
+      "additionalProperties": false
+    },
+    "changeSetDefinitionRemoval": {
+      "type": "object",
+      "properties": {
+        "layer": {
+          "const": "ontology"
+        },
+        "id": {
+          "$ref": "#/$defs/name"
+        }
+      },
+      "required": ["layer", "id"],
+      "additionalProperties": false
+    },
+    "changeSetFact": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/hash"
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        },
+        "predicate": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        },
+        "object": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        }
+      },
+      "required": ["id", "subject", "predicate", "object"],
+      "additionalProperties": false
+    },
+    "changeSetPlan": {
+      "type": "object",
+      "properties": {
+        "definitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetDefinition"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "remove_definitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetDefinitionRemoval"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "manual": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetFact"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "edits": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/hash"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 262144
+          },
+          "maxProperties": 4096
+        },
+        "remove": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/hash"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "changeSetSegmentDescriptor": {
+      "type": "object",
+      "properties": {
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 511
+        },
+        "byteOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16777215
+        },
+        "rawByteLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32768
+        },
+        "sha256": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": ["ordinal", "byteOffset", "rawByteLength", "sha256"],
+      "additionalProperties": false
+    },
+    "changeSetSegment": {
+      "type": "object",
+      "properties": {
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 511
+        },
+        "byteOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16777215
+        },
+        "rawByteLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32768
+        },
+        "sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "dataBase64": {
+          "type": "string",
+          "maxLength": 43692,
+          "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+        }
+      },
+      "required": ["ordinal", "byteOffset", "rawByteLength", "sha256", "dataBase64"],
+      "additionalProperties": false
+    },
+    "changeSetManifest": {
+      "type": "object",
+      "properties": {
+        "documentKind": {
+          "enum": ["diff", "undo-impact"]
+        },
+        "documentHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "totalBytes": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 16777216
+        },
+        "segmentCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 512
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetSegmentDescriptor"
+          },
+          "minItems": 1,
+          "maxItems": 512
+        }
+      },
+      "required": ["documentKind", "documentHash", "totalBytes", "segmentCount", "segments"],
+      "additionalProperties": false
+    },
+    "params_changeset.preview": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "intent": {
+              "const": "change"
+            },
+            "plan": {
+              "$ref": "#/$defs/changeSetPlan"
+            }
+          },
+          "required": ["projectId", "baseRevision", "intent", "plan"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "intent": {
+              "const": "undo"
+            },
+            "targetOperationId": {
+              "$ref": "#/$defs/id"
+            }
+          },
+          "required": ["projectId", "baseRevision", "intent", "targetOperationId"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "result_changeset.preview": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "ready"
+            },
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "previewHash": {
+              "$ref": "#/$defs/hash"
+            },
+            "preparedPlanRef": {
+              "$ref": "#/$defs/hash"
+            },
+            "inputSnapshotId": {
+              "$ref": "#/$defs/hash"
+            },
+            "parametersHash": {
+              "$ref": "#/$defs/hash"
+            },
+            "intent": {
+              "enum": ["change", "undo"]
+            },
+            "targetOperationId": {
+              "oneOf": [
+                {
+                  "const": null
+                },
+                {
+                  "$ref": "#/$defs/id"
+                }
+              ]
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "manifest": {
+              "$ref": "#/$defs/changeSetManifest"
+            }
+          },
+          "required": [
+            "status",
+            "projectId",
+            "baseRevision",
+            "previewHash",
+            "preparedPlanRef",
+            "inputSnapshotId",
+            "parametersHash",
+            "intent",
+            "targetOperationId",
+            "summary",
+            "manifest"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "conflict"
+            },
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "previewHash": {
+              "$ref": "#/$defs/hash"
+            },
+            "targetOperationId": {
+              "$ref": "#/$defs/id"
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "impactComplete": {
+              "type": "boolean"
+            },
+            "manifest": {
+              "$ref": "#/$defs/changeSetManifest"
+            }
+          },
+          "required": [
+            "status",
+            "projectId",
+            "baseRevision",
+            "previewHash",
+            "targetOperationId",
+            "summary",
+            "impactComplete",
+            "manifest"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "params_changeset.diff.page": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "documentKind": {
+          "enum": ["diff", "undo-impact"]
+        },
+        "pageSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "cursor": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "$ref": "#/$defs/id"
+            }
+          ]
+        }
+      },
+      "required": ["projectId", "previewHash", "documentKind", "pageSize", "cursor"],
+      "additionalProperties": false
+    },
+    "changeSetPage": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "documentKind": {
+          "enum": ["diff", "undo-impact"]
+        },
+        "documentHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetSegment"
+          },
+          "minItems": 0,
+          "maxItems": 200
+        },
+        "nextCursor": {
+          "$ref": "#/$defs/id"
+        },
+        "complete": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "projectId",
+        "previewHash",
+        "documentKind",
+        "documentHash",
+        "segments",
+        "nextCursor",
+        "complete"
+      ],
+      "additionalProperties": false
+    },
+    "result_changeset.diff.page": {
+      "$ref": "#/$defs/changeSetPage"
+    },
+    "params_changeset.confirm": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "completionCursor": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": ["projectId", "previewHash", "completionCursor"],
+      "additionalProperties": false
+    },
+    "result_changeset.confirm": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "preparedPlanRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "confirmationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "inputSnapshotId": {
+          "$ref": "#/$defs/hash"
+        },
+        "parametersHash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": [
+        "projectId",
+        "previewHash",
+        "preparedPlanRef",
+        "confirmationRef",
+        "inputSnapshotId",
+        "parametersHash"
+      ],
       "additionalProperties": false
     }
   },

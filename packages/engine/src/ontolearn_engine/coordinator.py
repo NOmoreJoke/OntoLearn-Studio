@@ -133,6 +133,8 @@ class Coordinator:
         if not CONTRACT.validate("limits", self.limits):
             raise ValueError("INVALID_LIMITS")
         self.session = None
+        # Attribution of the trusted stdio client, never proof of human consent.
+        self.host_client_id = None
         self.seen = set()
         self.subscriptions = {}
         self.queued = deque()
@@ -284,6 +286,7 @@ class Coordinator:
                 if self.version == 3 and not self.validate("request", value):
                     raise ServiceFault("INVALID_REQUEST", {"field": "params"})
                 self.session = str(uuid4())
+                self.host_client_id = value["params"]["clientId"]
                 response["engineSessionId"] = self.session
                 data = {
                     "selectedVersion": self.version,
@@ -334,28 +337,69 @@ class Coordinator:
             return {"nonce": p["nonce"]}
         if method == "project.get":
             return self.store.project_get(p["projectId"])
+        if method in {"changeset.preview", "changeset.diff.page", "changeset.confirm"}:
+            if self.version != 3 or self.host_client_id is None or self.session is None:
+                raise ServiceFault("METHOD_NOT_ALLOWED")
+            origin = {
+                "host_client_id": self.host_client_id,
+                "engine_session_id": self.session,
+            }
+            if method == "changeset.preview":
+                return self.store.preview_changeset(
+                    p["projectId"], p["baseRevision"], p, limits=self.limits, **origin
+                )
+            if method == "changeset.diff.page":
+                return self.store.changeset_diff_page(
+                    p["projectId"],
+                    p["previewHash"],
+                    p["documentKind"],
+                    p["pageSize"],
+                    p["cursor"],
+                    limits=self.limits,
+                    **origin,
+                )
+            return self.store.confirm_changeset(
+                p["projectId"], p["previewHash"], p["completionCursor"], **origin
+            )
         if method == "job.get":
             return self.store.get_job(p["projectId"], p["jobId"])
         if method == "job.create":
-            if not self.test_mode or p["capability"] not in {
-                "test.read",
-                "test.atomic",
-                "test.rounds",
-            }:
+            formal = self.version == 3 and p["capability"] == "changeset.commit"
+            if not formal and (
+                not self.test_mode
+                or p["capability"]
+                not in {
+                    "test.read",
+                    "test.atomic",
+                    "test.rounds",
+                }
+            ):
                 raise ServiceFault("UNSUPPORTED_CAPABILITY")
             if len(self.queued) >= self.limits[
                 "maxQueuedJobs"
             ] and not self.store.has_operation_claim(p["operationId"]):
                 raise ServiceFault("QUEUE_FULL", {"retryAfterMs": 250})
-            job = self.store.create_job(
-                p["projectId"],
-                p["operationId"],
-                p["capability"],
-                p["input"],
-                p["confirmationRef"],
-                IMPLEMENTATION,
-                self.limits,
-            )
+            if formal:
+                job = self.store.create_changeset_job(
+                    p["projectId"],
+                    p["operationId"],
+                    p["input"],
+                    p["confirmationRef"],
+                    IMPLEMENTATION,
+                    self.limits,
+                    host_client_id=self.host_client_id,
+                    engine_session_id=self.session,
+                )
+            else:
+                job = self.store.create_job(
+                    p["projectId"],
+                    p["operationId"],
+                    p["capability"],
+                    p["input"],
+                    p["confirmationRef"],
+                    IMPLEMENTATION,
+                    self.limits,
+                )
             if job["state"] == "queued" and job["jobId"] not in self.queued:
                 self.queued.append(job["jobId"])
             return job
@@ -453,7 +497,61 @@ class Coordinator:
             self.tasks.add(task)
             task.add_done_callback(self.tasks.discard)
 
+    async def execute_changeset(self, identity: str, context: dict, active: dict) -> None:
+        """Execute a confirmed deterministic transaction in the sole writer.
+
+        Acceptance is already durable. A normal dispatcher turn precedes the
+        commit gate; an input-thread read alone never linearizes cancellation.
+        No worker computation, test parameters or fabricated rows are involved.
+        """
+        try:
+            job = self.store.start_job(identity)
+            self._notify(job)
+            self._stage(identity, "loading")
+            deadline = (
+                (job["createdAtMs"] + job["limits"]["totalMs"]) / 1000
+                - time.time()
+                + time.monotonic()
+            )
+            await asyncio.sleep(0)
+
+            def boundary(_phase):
+                current = self.store.get_job(active["project"], identity)
+                if current["state"] == "cancelling":
+                    raise asyncio.CancelledError()
+                if time.monotonic() >= deadline:
+                    raise ServiceFault("TIMEOUT", {"phase": "total"})
+
+            boundary("before")
+            self._stage(identity, "committing")
+            job = self.store.commit_job(identity, hook=boundary)
+            self._notify(job)
+        except asyncio.CancelledError:
+            job = self.store.get_job(active["project"], identity)
+            if job["state"] in TERMINAL:
+                self._notify(job)
+            elif job["state"] == "cancelling":
+                self._notify(self.store.cancelled_job(identity))
+            else:
+                self._notify(
+                    self.store.fail_job(
+                        identity, classify(ServiceFault("ENGINE_EXITED"), profile=self.profile)
+                    )
+                )
+        except Exception as error:
+            # A boundary may fail after COMMIT. Never rewrite persisted success.
+            job = self.store.get_job(active["project"], identity)
+            if job["state"] in TERMINAL:
+                self._notify(job)
+            else:
+                self._notify(self.store.fail_job(identity, classify(error, profile=self.profile)))
+        finally:
+            self.active.pop(identity, None)
+
     async def execute(self, identity: str, context: dict, active: dict) -> None:
+        if context["capability"] == "changeset.commit":
+            await self.execute_changeset(identity, context, active)
+            return
         process = None
         try:
             job = self.store.start_job(identity)

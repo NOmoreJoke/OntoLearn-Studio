@@ -616,6 +616,103 @@ class JobStore(Store):
             )
             return {"preparedPlanRef": ref, "confirmationRef": confirmation}
 
+    def preview_changeset(
+        self,
+        project,
+        base,
+        request,
+        *,
+        host_client_id,
+        engine_session_id,
+        limits,
+        hook: Hook = lambda _: None,
+    ):
+        from ontolearn_engine.project.domain_changesets import preview_changeset
+
+        return preview_changeset(
+            self,
+            project,
+            base,
+            request,
+            host_client_id=host_client_id,
+            engine_session_id=engine_session_id,
+            limits=limits,
+            hook=hook,
+        )
+
+    def changeset_diff_page(
+        self,
+        project,
+        preview_hash,
+        document_kind,
+        page_size,
+        cursor,
+        *,
+        host_client_id,
+        engine_session_id,
+        limits,
+    ):
+        from ontolearn_engine.project.domain_changesets import diff_page
+
+        return diff_page(
+            self,
+            project,
+            preview_hash,
+            document_kind,
+            page_size,
+            cursor,
+            host_client_id=host_client_id,
+            engine_session_id=engine_session_id,
+            limits=limits,
+        )
+
+    def confirm_changeset(
+        self,
+        project,
+        preview_hash,
+        completion_cursor,
+        *,
+        host_client_id,
+        engine_session_id,
+        hook: Hook = lambda _: None,
+    ):
+        from ontolearn_engine.project.domain_changesets import confirm
+
+        return confirm(
+            self,
+            project,
+            preview_hash,
+            completion_cursor,
+            host_client_id=host_client_id,
+            engine_session_id=engine_session_id,
+            hook=hook,
+        )
+
+    def create_changeset_job(
+        self,
+        project,
+        operation,
+        input_,
+        confirmation_ref,
+        implementation,
+        limits,
+        *,
+        host_client_id,
+        engine_session_id,
+        hook: Hook = lambda _: None,
+    ):
+        return self.create_job(
+            project,
+            operation,
+            "changeset.commit",
+            input_,
+            confirmation_ref,
+            implementation,
+            limits,
+            _changeset_host=(host_client_id, engine_session_id),
+            _acceptance_hook=hook,
+        )
+
     def _definitions(self, snap):
         output = []
         for d in snap["state"]["definitions"]:
@@ -668,7 +765,15 @@ class JobStore(Store):
         return vector, manifests
 
     def _job_prepared_plan(
-        self, project, input_, confirmation_ref, snapshot, *, error="IDENTITY_CONFLICT"
+        self,
+        project,
+        input_,
+        confirmation_ref,
+        snapshot,
+        *,
+        error="IDENTITY_CONFLICT",
+        capability=None,
+        changeset_host=None,
     ):
         """Validate the ordinary domain-plan namespace before accepting a Job.
 
@@ -677,6 +782,17 @@ class JobStore(Store):
         The actor is supplied only by the trusted prepare service; create_job
         has no renderer-issued actor or authority to replace that binding.
         """
+        if capability == "changeset.commit":
+            from ontolearn_engine.project.domain_changesets import accepted_plan
+
+            try:
+                return accepted_plan(
+                    self, project, input_, confirmation_ref, snapshot, host=changeset_host
+                )
+            except JobFault as exc:
+                if error == "INVALID_STATE":
+                    fault(error)
+                raise exc
         row = self._db.execute(
             "SELECT * FROM job_plans WHERE project=? AND ref=?",
             (project, input_["preparedPlanRef"]),
@@ -727,7 +843,17 @@ class JobStore(Store):
         return plan
 
     def create_job(
-        self, project, operation, capability, input_, confirmation_ref, implementation, limits
+        self,
+        project,
+        operation,
+        capability,
+        input_,
+        confirmation_ref,
+        implementation,
+        limits,
+        *,
+        _changeset_host=None,
+        _acceptance_hook: Hook = lambda _: None,
     ):
         self._valid(
             "params_job.create",
@@ -742,7 +868,7 @@ class JobStore(Store):
         self._valid("implementation", implementation)
         self._valid("limits", limits)
         internal = self._project(project)
-        with self._transaction():
+        with self._transaction(_acceptance_hook):
             claim = self._db.execute(
                 "SELECT * FROM operation_claims WHERE operation=?", (operation,)
             ).fetchone()
@@ -763,7 +889,16 @@ class JobStore(Store):
                     fault("IDENTITY_CONFLICT")
             writing = capability in {"test.atomic", "changeset.commit", "mapping.commit"}
             if writing:
-                plan = self._job_prepared_plan(project, input_, confirmation_ref, snap)
+                if capability == "changeset.commit" and _changeset_host is None:
+                    fault("IDENTITY_CONFLICT")
+                plan = self._job_prepared_plan(
+                    project,
+                    input_,
+                    confirmation_ref,
+                    snap,
+                    capability=capability,
+                    changeset_host=_changeset_host,
+                )
             else:
                 if input_["preparedPlanRef"] is not None or confirmation_ref is not None:
                     fault("INVALID_REQUEST", field="identity")
@@ -850,6 +985,8 @@ class JobStore(Store):
                     fingerprint,
                 ),
             )
+            if capability == "changeset.commit":
+                _acceptance_hook("changeset_queued")
             if self._target_format == 3:
                 self._db.execute(
                     "INSERT INTO operation_claims(operation,project,job,fingerprint,kind,context) "
@@ -862,6 +999,8 @@ class JobStore(Store):
                     "VALUES(?,?,?,?)",
                     (operation, project, identity, fingerprint),
                 )
+            if capability == "changeset.commit":
+                _acceptance_hook("changeset_claim")
             return job
 
     def _accepted_job(
@@ -916,7 +1055,12 @@ class JobStore(Store):
                 fault("INVALID_STATE")
         if input_["preparedPlanRef"] is not None:
             plan = self._job_prepared_plan(
-                project, input_, confirmation_ref, snapshot, error="INVALID_STATE"
+                project,
+                input_,
+                confirmation_ref,
+                snapshot,
+                error="INVALID_STATE",
+                capability=capability,
             )
             if canonical(plan) != canonical(context["plan"]):
                 fault("INVALID_STATE")
@@ -1081,16 +1225,21 @@ class JobStore(Store):
             context = self.job_context(identity)
             plan = context["plan"]
             internal = self._project(job["projectId"])
-            if self.revision(internal) != plan["base"]:
+            if job["capability"] == "changeset.commit":
+                from ontolearn_engine.project.domain_changesets import commit
+
+                marker = commit(self, job, context, hook)
+            elif self.revision(internal) != plan["base"]:
                 fault("REVISION_CONFLICT", expected=plan["base"], actual=self.revision(internal))
-            marker = super().commit(
-                internal,
-                plan["base"],
-                job["operationId"],
-                identity,
-                hook=hook,
-                **{k: v for k, v in plan.items() if k != "base"},
-            )
+            else:
+                marker = super().commit(
+                    internal,
+                    plan["base"],
+                    job["operationId"],
+                    identity,
+                    hook=hook,
+                    **{k: v for k, v in plan.items() if k != "base"},
+                )
             job["commitProgress"]["marker"] = self._marker_dto(marker)
             rows = [
                 {
@@ -1107,6 +1256,8 @@ class JobStore(Store):
                 }
             ]
             result = self._publish_job(job, rows, "receipt")
+            if job["capability"] == "changeset.commit":
+                hook("changeset_result")
             self._transition(job, "succeeded", result=result)
             hook("mid_job_terminal")
         return self._job(identity)

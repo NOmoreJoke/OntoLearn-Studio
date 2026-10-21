@@ -313,8 +313,57 @@ export function validateV2(name: string, value: unknown): boolean {
   if (!compiled.has(name)) compiled.set(name, compile(definitions[name]))
   if (!compiled.get(name)!.safeParse(value).success || !semantic(value) || utf8(value) > 262144)
     return false
+  if (!changeSetSemantics(name, value)) return false
   if (name === 'params_job.create' || name === 'params_job.list')
     return semantic({ kind: 'request', method: name.slice(7), params: value })
+  return true
+}
+
+// Additional invariants apply only to the new typed ChangeSet definitions/strict3 methods.
+function changeSetSemantics(name: string, value: unknown): boolean {
+  const v = value as Record<string, unknown>
+  if (['request3', 'response3', 'envelope3'].includes(name)) {
+    if (v.kind === 'response' && v.ok && String(v.method).startsWith('changeset.'))
+      return changeSetSemantics(`result_${v.method}`, v.result)
+    return true
+  }
+  if (name === 'changeSetManifest') {
+    const parts = v.segments as Array<Record<string, unknown>>
+    let offset = 0
+    if (parts.length !== v.segmentCount) return false
+    for (const [ordinal, part] of parts.entries()) {
+      if (part.ordinal !== ordinal || part.byteOffset !== offset) return false
+      offset += part.rawByteLength as number
+    }
+    return offset === v.totalBytes
+  }
+  if (name === 'result_changeset.preview') {
+    const manifest = v.manifest as Record<string, unknown>
+    return (
+      changeSetSemantics('changeSetManifest', manifest) &&
+      (v.status === 'conflict'
+        ? manifest.documentKind === 'undo-impact'
+        : manifest.documentKind === 'diff' &&
+          (v.intent === 'change' ? v.targetOperationId === null : v.targetOperationId !== null))
+    )
+  }
+  if (name === 'changeSetSegment') {
+    const encoded = v.dataBase64 as string
+    const padding = encoded.endsWith('==') ? 2 : encoded.endsWith('=') ? 1 : 0
+    return (encoded.length / 4) * 3 - padding === v.rawByteLength
+  }
+  if (name === 'changeSetPage' || name === 'result_changeset.diff.page') {
+    const parts = v.segments as Array<Record<string, unknown>>
+    return parts.every(
+      (part, index) =>
+        changeSetSemantics('changeSetSegment', part) &&
+        (index === 0 ||
+          (part.ordinal === (parts[index - 1].ordinal as number) + 1 &&
+            part.byteOffset ===
+              (parts[index - 1].byteOffset as number) +
+                (parts[index - 1].rawByteLength as number))),
+    )
+  }
   return true
 }
 
@@ -380,6 +429,28 @@ export function matchesBusiness3Response(
   const q = request as Record<string, unknown>
   const r = response as Record<string, unknown>
   if (q.id !== r.id || q.method !== r.method) return false
+  if (String(q.method).startsWith('changeset.')) {
+    if (q.engineSessionId !== r.engineSessionId) return false
+    if (!r.ok) return true
+    const p = q.params as Record<string, unknown>
+    const data = r.result as Record<string, unknown>
+    if (p.projectId !== data.projectId) return false
+    if (q.method === 'changeset.preview')
+      return (
+        p.baseRevision === data.baseRevision &&
+        (p.intent === 'change'
+          ? data.status === 'ready' && data.intent === 'change' && data.targetOperationId === null
+          : data.targetOperationId === p.targetOperationId &&
+            (data.status === 'conflict' || data.intent === 'undo'))
+      )
+    if (p.previewHash !== data.previewHash) return false
+    if (q.method === 'changeset.diff.page')
+      return (
+        p.documentKind === data.documentKind &&
+        (data.segments as unknown[]).length <= (p.pageSize as number)
+      )
+    return q.method === 'changeset.confirm'
+  }
   if (q.method === 'hello' && r.ok) {
     const offered = (q.params as Record<string, unknown>).supportedVersions as number[]
     const result = r.result as Record<string, unknown>
@@ -391,6 +462,9 @@ export function matchesBusiness3Response(
       )
     )
       return false
+    // A successful strict3 hello may advertise internal3-only methods. Projecting
+    // it through the legacy2 capability allowlist would reject this valid build.
+    return true
   }
   // Strict v3 validation precedes this binding-only projection. It never sends
   // a v2 fallback, drops unknown fields or changes the caller's actual objects.

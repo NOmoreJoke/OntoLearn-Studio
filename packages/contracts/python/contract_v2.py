@@ -254,11 +254,59 @@ def validate(name, value):
             and semantic(value)
             and encoded_size(value) <= 262144
         )
+        if valid and not _changeset_semantics(name, value):
+            return False
         if valid and name in {"params_job.create", "params_job.list"}:
             return semantic({"kind": "request", "method": name[7:], "params": value})
         return valid
     except (KeyError, TypeError, ValueError, OverflowError, RecursionError):
         return False
+
+
+def _changeset_semantics(name, value):
+    if name in {"request3", "response3", "envelope3"}:
+        if value["kind"] == "response" and value["ok"] and value["method"].startswith("changeset."):
+            return _changeset_semantics("result_" + value["method"], value["result"])
+        return True
+    if name == "changeSetManifest":
+        parts = value["segments"]
+        if len(parts) != value["segmentCount"]:
+            return False
+        offset = 0
+        for ordinal, part in enumerate(parts):
+            if part["ordinal"] != ordinal or part["byteOffset"] != offset:
+                return False
+            offset += part["rawByteLength"]
+        return offset == value["totalBytes"]
+    if name == "result_changeset.preview":
+        manifest = value["manifest"]
+        return _changeset_semantics("changeSetManifest", manifest) and (
+            manifest["documentKind"] == "undo-impact"
+            if value["status"] == "conflict"
+            else manifest["documentKind"] == "diff"
+            and (
+                value["targetOperationId"] is None
+                if value["intent"] == "change"
+                else value["targetOperationId"] is not None
+            )
+        )
+    if name == "changeSetSegment":
+        encoded = value["dataBase64"]
+        padding = 2 if encoded.endswith("==") else 1 if encoded.endswith("=") else 0
+        return len(encoded) // 4 * 3 - padding == value["rawByteLength"]
+    if name in {"changeSetPage", "result_changeset.diff.page"}:
+        parts = value["segments"]
+        return all(
+            _changeset_semantics("changeSetSegment", part)
+            and (
+                index == 0
+                or part["ordinal"] == parts[index - 1]["ordinal"] + 1
+                and part["byteOffset"]
+                == parts[index - 1]["byteOffset"] + parts[index - 1]["rawByteLength"]
+            )
+            for index, part in enumerate(parts)
+        )
+    return True
 
 
 def validate_startup_failure(value, payload_byte_length, expected_registry_hash):
@@ -336,6 +384,30 @@ def matches_business3_response(request, response, expected_registry_hash):
         return False
     if any(request[k] != response[k] for k in ("id", "method")):
         return False
+    if request["method"].startswith("changeset."):
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        p, data = request["params"], response["result"]
+        if p["projectId"] != data["projectId"]:
+            return False
+        if request["method"] == "changeset.preview":
+            return p["baseRevision"] == data["baseRevision"] and (
+                data["status"] == "ready"
+                and data["intent"] == "change"
+                and data["targetOperationId"] is None
+                if p["intent"] == "change"
+                else data["targetOperationId"] == p["targetOperationId"]
+                and (data["status"] == "conflict" or data["intent"] == "undo")
+            )
+        if p["previewHash"] != data["previewHash"]:
+            return False
+        if request["method"] == "changeset.diff.page":
+            return (
+                p["documentKind"] == data["documentKind"] and len(data["segments"]) <= p["pageSize"]
+            )
+        return request["method"] == "changeset.confirm"
     if request["method"] == "hello" and response["ok"]:
         result = response["result"]
         if (
@@ -347,6 +419,8 @@ def matches_business3_response(request, response, expected_registry_hash):
             )
         ):
             return False
+        # Strict3-only advertised methods must not be checked against legacy2.
+        return True
     # Validate v3 first; projecting only known literals reuses the existing
     # strict resource/operation/page bindings without any runtime downgrade.
     q, r = deepcopy(request), deepcopy(response)

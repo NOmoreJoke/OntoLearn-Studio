@@ -6463,8 +6463,8 @@
       "currentGeneration": 2,
       "preHello": true,
       "alreadyReported": false,
-      "expectedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
-      "receivedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "expectedRegistryHash": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
+      "receivedRegistryHash": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
       "eligible": true
     },
     {
@@ -6474,8 +6474,8 @@
       "currentGeneration": 2,
       "preHello": true,
       "alreadyReported": false,
-      "expectedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
-      "receivedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "expectedRegistryHash": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
+      "receivedRegistryHash": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
       "eligible": false
     },
     {
@@ -6485,8 +6485,8 @@
       "currentGeneration": 2,
       "preHello": true,
       "alreadyReported": false,
-      "expectedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
-      "receivedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "expectedRegistryHash": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
+      "receivedRegistryHash": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
       "eligible": false
     },
     {
@@ -6496,8 +6496,8 @@
       "currentGeneration": 2,
       "preHello": false,
       "alreadyReported": false,
-      "expectedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
-      "receivedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "expectedRegistryHash": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
+      "receivedRegistryHash": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
       "eligible": false
     },
     {
@@ -6507,8 +6507,8 @@
       "currentGeneration": 2,
       "preHello": true,
       "alreadyReported": true,
-      "expectedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
-      "receivedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "expectedRegistryHash": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
+      "receivedRegistryHash": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
       "eligible": false
     },
     {
@@ -6518,9 +6518,1309 @@
       "currentGeneration": 2,
       "preHello": true,
       "alreadyReported": false,
-      "expectedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "expectedRegistryHash": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
       "receivedRegistryHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
       "eligible": false
+    }
+  ],
+  "changesets": [
+    {
+      "name": "change",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "change",
+          "plan": {
+            "definitions": [
+              {
+                "layer": "ontology",
+                "id": "Asset",
+                "value": {
+                  "triples": [
+                    {
+                      "subject": "urn:Asset",
+                      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                      "object": "<http://www.w3.org/2000/01/rdf-schema#Class>"
+                    }
+                  ],
+                  "singleValuedPredicates": ["urn:name"],
+                  "references": []
+                }
+              }
+            ],
+            "manual": [
+              {
+                "id": "8173a135ce70fcfb4cb69db1711b8f241057b824a14e043c4cc73fc8949ebcc9",
+                "subject": "urn:asset-1",
+                "predicate": "urn:name",
+                "object": "\"设备甲\""
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "ready",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "intent": "change",
+          "targetOperationId": null,
+          "summary": "新增2项",
+          "manifest": {
+            "documentKind": "diff",
+            "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+            "totalBytes": 655,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 655,
+                "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63"
+              }
+            ]
+          }
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "change wrong id",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "change",
+          "plan": {
+            "definitions": [
+              {
+                "layer": "ontology",
+                "id": "Asset",
+                "value": {
+                  "triples": [
+                    {
+                      "subject": "urn:Asset",
+                      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                      "object": "<http://www.w3.org/2000/01/rdf-schema#Class>"
+                    }
+                  ],
+                  "singleValuedPredicates": ["urn:name"],
+                  "references": []
+                }
+              }
+            ],
+            "manual": [
+              {
+                "id": "8173a135ce70fcfb4cb69db1711b8f241057b824a14e043c4cc73fc8949ebcc9",
+                "subject": "urn:asset-1",
+                "predicate": "urn:name",
+                "object": "\"设备甲\""
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000006",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "ready",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "intent": "change",
+          "targetOperationId": null,
+          "summary": "新增2项",
+          "manifest": {
+            "documentKind": "diff",
+            "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+            "totalBytes": 655,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 655,
+                "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63"
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "change wrong engineSessionId",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "change",
+          "plan": {
+            "definitions": [
+              {
+                "layer": "ontology",
+                "id": "Asset",
+                "value": {
+                  "triples": [
+                    {
+                      "subject": "urn:Asset",
+                      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                      "object": "<http://www.w3.org/2000/01/rdf-schema#Class>"
+                    }
+                  ],
+                  "singleValuedPredicates": ["urn:name"],
+                  "references": []
+                }
+              }
+            ],
+            "manual": [
+              {
+                "id": "8173a135ce70fcfb4cb69db1711b8f241057b824a14e043c4cc73fc8949ebcc9",
+                "subject": "urn:asset-1",
+                "predicate": "urn:name",
+                "object": "\"设备甲\""
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000006",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "ready",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "intent": "change",
+          "targetOperationId": null,
+          "summary": "新增2项",
+          "manifest": {
+            "documentKind": "diff",
+            "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+            "totalBytes": 655,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 655,
+                "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63"
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "change wrong projectId",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "change",
+          "plan": {
+            "definitions": [
+              {
+                "layer": "ontology",
+                "id": "Asset",
+                "value": {
+                  "triples": [
+                    {
+                      "subject": "urn:Asset",
+                      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                      "object": "<http://www.w3.org/2000/01/rdf-schema#Class>"
+                    }
+                  ],
+                  "singleValuedPredicates": ["urn:name"],
+                  "references": []
+                }
+              }
+            ],
+            "manual": [
+              {
+                "id": "8173a135ce70fcfb4cb69db1711b8f241057b824a14e043c4cc73fc8949ebcc9",
+                "subject": "urn:asset-1",
+                "predicate": "urn:name",
+                "object": "\"设备甲\""
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "ready",
+          "projectId": "00000000-0000-4000-8000-000000000006",
+          "baseRevision": 1,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "intent": "change",
+          "targetOperationId": null,
+          "summary": "新增2项",
+          "manifest": {
+            "documentKind": "diff",
+            "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+            "totalBytes": 655,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 655,
+                "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63"
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "change wrong baseRevision",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "change",
+          "plan": {
+            "definitions": [
+              {
+                "layer": "ontology",
+                "id": "Asset",
+                "value": {
+                  "triples": [
+                    {
+                      "subject": "urn:Asset",
+                      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                      "object": "<http://www.w3.org/2000/01/rdf-schema#Class>"
+                    }
+                  ],
+                  "singleValuedPredicates": ["urn:name"],
+                  "references": []
+                }
+              }
+            ],
+            "manual": [
+              {
+                "id": "8173a135ce70fcfb4cb69db1711b8f241057b824a14e043c4cc73fc8949ebcc9",
+                "subject": "urn:asset-1",
+                "predicate": "urn:name",
+                "object": "\"设备甲\""
+              }
+            ]
+          }
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "ready",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 2,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "intent": "change",
+          "targetOperationId": null,
+          "summary": "新增2项",
+          "manifest": {
+            "documentKind": "diff",
+            "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+            "totalBytes": 655,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 655,
+                "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63"
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "undo ready",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "ready",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005",
+          "summary": "新增2项",
+          "manifest": {
+            "documentKind": "diff",
+            "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+            "totalBytes": 655,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 655,
+                "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63"
+              }
+            ]
+          }
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "undo ready wrong id",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000006",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "ready",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005",
+          "summary": "新增2项",
+          "manifest": {
+            "documentKind": "diff",
+            "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+            "totalBytes": 655,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 655,
+                "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63"
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "undo ready wrong engineSessionId",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000006",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "ready",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005",
+          "summary": "新增2项",
+          "manifest": {
+            "documentKind": "diff",
+            "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+            "totalBytes": 655,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 655,
+                "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63"
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "undo ready wrong projectId",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "ready",
+          "projectId": "00000000-0000-4000-8000-000000000006",
+          "baseRevision": 1,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005",
+          "summary": "新增2项",
+          "manifest": {
+            "documentKind": "diff",
+            "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+            "totalBytes": 655,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 655,
+                "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63"
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "undo ready wrong baseRevision",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "ready",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 2,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005",
+          "summary": "新增2项",
+          "manifest": {
+            "documentKind": "diff",
+            "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+            "totalBytes": 655,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 655,
+                "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63"
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "undo conflict",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "conflict",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005",
+          "summary": "后续修改导致撤销暂停",
+          "impactComplete": false,
+          "manifest": {
+            "documentKind": "undo-impact",
+            "documentHash": "5da79c0d114103e6bcbe2b1f302ddde7033bccbb9782ca82f1bf41d0e16abb69",
+            "totalBytes": 492,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 492,
+                "sha256": "5da79c0d114103e6bcbe2b1f302ddde7033bccbb9782ca82f1bf41d0e16abb69"
+              }
+            ]
+          }
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "undo conflict wrong id",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000006",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "conflict",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005",
+          "summary": "后续修改导致撤销暂停",
+          "impactComplete": false,
+          "manifest": {
+            "documentKind": "undo-impact",
+            "documentHash": "5da79c0d114103e6bcbe2b1f302ddde7033bccbb9782ca82f1bf41d0e16abb69",
+            "totalBytes": 492,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 492,
+                "sha256": "5da79c0d114103e6bcbe2b1f302ddde7033bccbb9782ca82f1bf41d0e16abb69"
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "undo conflict wrong engineSessionId",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000006",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "conflict",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005",
+          "summary": "后续修改导致撤销暂停",
+          "impactComplete": false,
+          "manifest": {
+            "documentKind": "undo-impact",
+            "documentHash": "5da79c0d114103e6bcbe2b1f302ddde7033bccbb9782ca82f1bf41d0e16abb69",
+            "totalBytes": 492,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 492,
+                "sha256": "5da79c0d114103e6bcbe2b1f302ddde7033bccbb9782ca82f1bf41d0e16abb69"
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "undo conflict wrong projectId",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "conflict",
+          "projectId": "00000000-0000-4000-8000-000000000006",
+          "baseRevision": 1,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005",
+          "summary": "后续修改导致撤销暂停",
+          "impactComplete": false,
+          "manifest": {
+            "documentKind": "undo-impact",
+            "documentHash": "5da79c0d114103e6bcbe2b1f302ddde7033bccbb9782ca82f1bf41d0e16abb69",
+            "totalBytes": 492,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 492,
+                "sha256": "5da79c0d114103e6bcbe2b1f302ddde7033bccbb9782ca82f1bf41d0e16abb69"
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "undo conflict wrong baseRevision",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 1,
+          "intent": "undo",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.preview",
+        "ok": true,
+        "result": {
+          "status": "conflict",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "baseRevision": 2,
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "targetOperationId": "00000000-0000-4000-8000-000000000005",
+          "summary": "后续修改导致撤销暂停",
+          "impactComplete": false,
+          "manifest": {
+            "documentKind": "undo-impact",
+            "documentHash": "5da79c0d114103e6bcbe2b1f302ddde7033bccbb9782ca82f1bf41d0e16abb69",
+            "totalBytes": 492,
+            "segmentCount": 1,
+            "segments": [
+              {
+                "ordinal": 0,
+                "byteOffset": 0,
+                "rawByteLength": 492,
+                "sha256": "5da79c0d114103e6bcbe2b1f302ddde7033bccbb9782ca82f1bf41d0e16abb69"
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "page",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.diff.page",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "documentKind": "diff",
+          "pageSize": 2,
+          "cursor": null
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.diff.page",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "documentKind": "diff",
+          "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+          "segments": [
+            {
+              "ordinal": 0,
+              "byteOffset": 0,
+              "rawByteLength": 655,
+              "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+              "dataBase64": "W3siYWZ0ZXIiOnsiaWQiOiJBc3NldCIsImxheWVyIjoib250b2xvZ3kiLCJwYXlsb2FkIjoie1wicmVmZXJlbmNlc1wiOltdLFwic2luZ2xlVmFsdWVkUHJlZGljYXRlc1wiOltcInVybjpuYW1lXCJdLFwidHJpcGxlc1wiOlt7XCJvYmplY3RcIjpcIjxodHRwOi8vd3d3LnczLm9yZy8yMDAwLzAxL3JkZi1zY2hlbWEjQ2xhc3M+XCIsXCJwcmVkaWNhdGVcIjpcImh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyN0eXBlXCIsXCJzdWJqZWN0XCI6XCJ1cm46QXNzZXRcIn1dfSJ9LCJiZWZvcmUiOm51bGwsInJlc291cmNlIjpbImRlZmluaXRpb24iLCJvbnRvbG9neSIsIkFzc2V0Il19LHsiYWZ0ZXIiOnsiaWQiOiI4MTczYTEzNWNlNzBmY2ZiNGNiNjlkYjE3MTFiOGYyNDEwNTdiODI0YTE0ZTA0M2M0Y2M3M2ZjODk0OWViY2M5IiwibWFuYWdlZF92YWx1ZSI6bnVsbCwib2JqZWN0IjoiXCLorr7lpIfnlLJcIiIsIm93bmVyIjpudWxsLCJwcmVkaWNhdGUiOiJ1cm46bmFtZSIsInNvdXJjZV9yb3ciOm51bGwsInN1YmplY3QiOiJ1cm46YXNzZXQtMSJ9LCJiZWZvcmUiOm51bGwsInJlc291cmNlIjpbImZhY3QiLCI4MTczYTEzNWNlNzBmY2ZiNGNiNjlkYjE3MTFiOGYyNDEwNTdiODI0YTE0ZTA0M2M0Y2M3M2ZjODk0OWViY2M5Il19XQ=="
+            }
+          ],
+          "nextCursor": "00000000-0000-4000-8000-000000000004",
+          "complete": true
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "page wrong id",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.diff.page",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "documentKind": "diff",
+          "pageSize": 2,
+          "cursor": null
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000006",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.diff.page",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "documentKind": "diff",
+          "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+          "segments": [
+            {
+              "ordinal": 0,
+              "byteOffset": 0,
+              "rawByteLength": 655,
+              "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+              "dataBase64": "W3siYWZ0ZXIiOnsiaWQiOiJBc3NldCIsImxheWVyIjoib250b2xvZ3kiLCJwYXlsb2FkIjoie1wicmVmZXJlbmNlc1wiOltdLFwic2luZ2xlVmFsdWVkUHJlZGljYXRlc1wiOltcInVybjpuYW1lXCJdLFwidHJpcGxlc1wiOlt7XCJvYmplY3RcIjpcIjxodHRwOi8vd3d3LnczLm9yZy8yMDAwLzAxL3JkZi1zY2hlbWEjQ2xhc3M+XCIsXCJwcmVkaWNhdGVcIjpcImh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyN0eXBlXCIsXCJzdWJqZWN0XCI6XCJ1cm46QXNzZXRcIn1dfSJ9LCJiZWZvcmUiOm51bGwsInJlc291cmNlIjpbImRlZmluaXRpb24iLCJvbnRvbG9neSIsIkFzc2V0Il19LHsiYWZ0ZXIiOnsiaWQiOiI4MTczYTEzNWNlNzBmY2ZiNGNiNjlkYjE3MTFiOGYyNDEwNTdiODI0YTE0ZTA0M2M0Y2M3M2ZjODk0OWViY2M5IiwibWFuYWdlZF92YWx1ZSI6bnVsbCwib2JqZWN0IjoiXCLorr7lpIfnlLJcIiIsIm93bmVyIjpudWxsLCJwcmVkaWNhdGUiOiJ1cm46bmFtZSIsInNvdXJjZV9yb3ciOm51bGwsInN1YmplY3QiOiJ1cm46YXNzZXQtMSJ9LCJiZWZvcmUiOm51bGwsInJlc291cmNlIjpbImZhY3QiLCI4MTczYTEzNWNlNzBmY2ZiNGNiNjlkYjE3MTFiOGYyNDEwNTdiODI0YTE0ZTA0M2M0Y2M3M2ZjODk0OWViY2M5Il19XQ=="
+            }
+          ],
+          "nextCursor": "00000000-0000-4000-8000-000000000004",
+          "complete": true
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "page wrong engineSessionId",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.diff.page",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "documentKind": "diff",
+          "pageSize": 2,
+          "cursor": null
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000006",
+        "method": "changeset.diff.page",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "documentKind": "diff",
+          "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+          "segments": [
+            {
+              "ordinal": 0,
+              "byteOffset": 0,
+              "rawByteLength": 655,
+              "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+              "dataBase64": "W3siYWZ0ZXIiOnsiaWQiOiJBc3NldCIsImxheWVyIjoib250b2xvZ3kiLCJwYXlsb2FkIjoie1wicmVmZXJlbmNlc1wiOltdLFwic2luZ2xlVmFsdWVkUHJlZGljYXRlc1wiOltcInVybjpuYW1lXCJdLFwidHJpcGxlc1wiOlt7XCJvYmplY3RcIjpcIjxodHRwOi8vd3d3LnczLm9yZy8yMDAwLzAxL3JkZi1zY2hlbWEjQ2xhc3M+XCIsXCJwcmVkaWNhdGVcIjpcImh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyN0eXBlXCIsXCJzdWJqZWN0XCI6XCJ1cm46QXNzZXRcIn1dfSJ9LCJiZWZvcmUiOm51bGwsInJlc291cmNlIjpbImRlZmluaXRpb24iLCJvbnRvbG9neSIsIkFzc2V0Il19LHsiYWZ0ZXIiOnsiaWQiOiI4MTczYTEzNWNlNzBmY2ZiNGNiNjlkYjE3MTFiOGYyNDEwNTdiODI0YTE0ZTA0M2M0Y2M3M2ZjODk0OWViY2M5IiwibWFuYWdlZF92YWx1ZSI6bnVsbCwib2JqZWN0IjoiXCLorr7lpIfnlLJcIiIsIm93bmVyIjpudWxsLCJwcmVkaWNhdGUiOiJ1cm46bmFtZSIsInNvdXJjZV9yb3ciOm51bGwsInN1YmplY3QiOiJ1cm46YXNzZXQtMSJ9LCJiZWZvcmUiOm51bGwsInJlc291cmNlIjpbImZhY3QiLCI4MTczYTEzNWNlNzBmY2ZiNGNiNjlkYjE3MTFiOGYyNDEwNTdiODI0YTE0ZTA0M2M0Y2M3M2ZjODk0OWViY2M5Il19XQ=="
+            }
+          ],
+          "nextCursor": "00000000-0000-4000-8000-000000000004",
+          "complete": true
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "page wrong projectId",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.diff.page",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "documentKind": "diff",
+          "pageSize": 2,
+          "cursor": null
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.diff.page",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000006",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "documentKind": "diff",
+          "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+          "segments": [
+            {
+              "ordinal": 0,
+              "byteOffset": 0,
+              "rawByteLength": 655,
+              "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+              "dataBase64": "W3siYWZ0ZXIiOnsiaWQiOiJBc3NldCIsImxheWVyIjoib250b2xvZ3kiLCJwYXlsb2FkIjoie1wicmVmZXJlbmNlc1wiOltdLFwic2luZ2xlVmFsdWVkUHJlZGljYXRlc1wiOltcInVybjpuYW1lXCJdLFwidHJpcGxlc1wiOlt7XCJvYmplY3RcIjpcIjxodHRwOi8vd3d3LnczLm9yZy8yMDAwLzAxL3JkZi1zY2hlbWEjQ2xhc3M+XCIsXCJwcmVkaWNhdGVcIjpcImh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyN0eXBlXCIsXCJzdWJqZWN0XCI6XCJ1cm46QXNzZXRcIn1dfSJ9LCJiZWZvcmUiOm51bGwsInJlc291cmNlIjpbImRlZmluaXRpb24iLCJvbnRvbG9neSIsIkFzc2V0Il19LHsiYWZ0ZXIiOnsiaWQiOiI4MTczYTEzNWNlNzBmY2ZiNGNiNjlkYjE3MTFiOGYyNDEwNTdiODI0YTE0ZTA0M2M0Y2M3M2ZjODk0OWViY2M5IiwibWFuYWdlZF92YWx1ZSI6bnVsbCwib2JqZWN0IjoiXCLorr7lpIfnlLJcIiIsIm93bmVyIjpudWxsLCJwcmVkaWNhdGUiOiJ1cm46bmFtZSIsInNvdXJjZV9yb3ciOm51bGwsInN1YmplY3QiOiJ1cm46YXNzZXQtMSJ9LCJiZWZvcmUiOm51bGwsInJlc291cmNlIjpbImZhY3QiLCI4MTczYTEzNWNlNzBmY2ZiNGNiNjlkYjE3MTFiOGYyNDEwNTdiODI0YTE0ZTA0M2M0Y2M3M2ZjODk0OWViY2M5Il19XQ=="
+            }
+          ],
+          "nextCursor": "00000000-0000-4000-8000-000000000004",
+          "complete": true
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "page wrong previewHash",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.diff.page",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "documentKind": "diff",
+          "pageSize": 2,
+          "cursor": null
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.diff.page",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "documentKind": "diff",
+          "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+          "segments": [
+            {
+              "ordinal": 0,
+              "byteOffset": 0,
+              "rawByteLength": 655,
+              "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+              "dataBase64": "W3siYWZ0ZXIiOnsiaWQiOiJBc3NldCIsImxheWVyIjoib250b2xvZ3kiLCJwYXlsb2FkIjoie1wicmVmZXJlbmNlc1wiOltdLFwic2luZ2xlVmFsdWVkUHJlZGljYXRlc1wiOltcInVybjpuYW1lXCJdLFwidHJpcGxlc1wiOlt7XCJvYmplY3RcIjpcIjxodHRwOi8vd3d3LnczLm9yZy8yMDAwLzAxL3JkZi1zY2hlbWEjQ2xhc3M+XCIsXCJwcmVkaWNhdGVcIjpcImh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyN0eXBlXCIsXCJzdWJqZWN0XCI6XCJ1cm46QXNzZXRcIn1dfSJ9LCJiZWZvcmUiOm51bGwsInJlc291cmNlIjpbImRlZmluaXRpb24iLCJvbnRvbG9neSIsIkFzc2V0Il19LHsiYWZ0ZXIiOnsiaWQiOiI4MTczYTEzNWNlNzBmY2ZiNGNiNjlkYjE3MTFiOGYyNDEwNTdiODI0YTE0ZTA0M2M0Y2M3M2ZjODk0OWViY2M5IiwibWFuYWdlZF92YWx1ZSI6bnVsbCwib2JqZWN0IjoiXCLorr7lpIfnlLJcIiIsIm93bmVyIjpudWxsLCJwcmVkaWNhdGUiOiJ1cm46bmFtZSIsInNvdXJjZV9yb3ciOm51bGwsInN1YmplY3QiOiJ1cm46YXNzZXQtMSJ9LCJiZWZvcmUiOm51bGwsInJlc291cmNlIjpbImZhY3QiLCI4MTczYTEzNWNlNzBmY2ZiNGNiNjlkYjE3MTFiOGYyNDEwNTdiODI0YTE0ZTA0M2M0Y2M3M2ZjODk0OWViY2M5Il19XQ=="
+            }
+          ],
+          "nextCursor": "00000000-0000-4000-8000-000000000004",
+          "complete": true
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "page wrong kind",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.diff.page",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "documentKind": "diff",
+          "pageSize": 2,
+          "cursor": null
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.diff.page",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "documentKind": "undo-impact",
+          "documentHash": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+          "segments": [
+            {
+              "ordinal": 0,
+              "byteOffset": 0,
+              "rawByteLength": 655,
+              "sha256": "f952655af5a5c4501b08d27830454310e748ba0049d2330f3468414492a51c63",
+              "dataBase64": "W3siYWZ0ZXIiOnsiaWQiOiJBc3NldCIsImxheWVyIjoib250b2xvZ3kiLCJwYXlsb2FkIjoie1wicmVmZXJlbmNlc1wiOltdLFwic2luZ2xlVmFsdWVkUHJlZGljYXRlc1wiOltcInVybjpuYW1lXCJdLFwidHJpcGxlc1wiOlt7XCJvYmplY3RcIjpcIjxodHRwOi8vd3d3LnczLm9yZy8yMDAwLzAxL3JkZi1zY2hlbWEjQ2xhc3M+XCIsXCJwcmVkaWNhdGVcIjpcImh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyN0eXBlXCIsXCJzdWJqZWN0XCI6XCJ1cm46QXNzZXRcIn1dfSJ9LCJiZWZvcmUiOm51bGwsInJlc291cmNlIjpbImRlZmluaXRpb24iLCJvbnRvbG9neSIsIkFzc2V0Il19LHsiYWZ0ZXIiOnsiaWQiOiI4MTczYTEzNWNlNzBmY2ZiNGNiNjlkYjE3MTFiOGYyNDEwNTdiODI0YTE0ZTA0M2M0Y2M3M2ZjODk0OWViY2M5IiwibWFuYWdlZF92YWx1ZSI6bnVsbCwib2JqZWN0IjoiXCLorr7lpIfnlLJcIiIsIm93bmVyIjpudWxsLCJwcmVkaWNhdGUiOiJ1cm46bmFtZSIsInNvdXJjZV9yb3ciOm51bGwsInN1YmplY3QiOiJ1cm46YXNzZXQtMSJ9LCJiZWZvcmUiOm51bGwsInJlc291cmNlIjpbImZhY3QiLCI4MTczYTEzNWNlNzBmY2ZiNGNiNjlkYjE3MTFiOGYyNDEwNTdiODI0YTE0ZTA0M2M0Y2M3M2ZjODk0OWViY2M5Il19XQ=="
+            }
+          ],
+          "nextCursor": "00000000-0000-4000-8000-000000000004",
+          "complete": true
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "confirm",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.confirm",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "completionCursor": "00000000-0000-4000-8000-000000000004"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.confirm",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "confirmationRef": "00000000-0000-4000-8000-000000000006",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "confirm wrong id",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.confirm",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "completionCursor": "00000000-0000-4000-8000-000000000004"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000006",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.confirm",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "confirmationRef": "00000000-0000-4000-8000-000000000006",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "confirm wrong engineSessionId",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.confirm",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "completionCursor": "00000000-0000-4000-8000-000000000004"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000006",
+        "method": "changeset.confirm",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "confirmationRef": "00000000-0000-4000-8000-000000000006",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "confirm wrong projectId",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.confirm",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "completionCursor": "00000000-0000-4000-8000-000000000004"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.confirm",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000006",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "confirmationRef": "00000000-0000-4000-8000-000000000006",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "confirm wrong previewHash",
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.confirm",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "completionCursor": "00000000-0000-4000-8000-000000000004"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "method": "changeset.confirm",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "previewHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "preparedPlanRef": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "confirmationRef": "00000000-0000-4000-8000-000000000006",
+          "inputSnapshotId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "parametersHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      },
+      "valid": false
     }
   ]
 }

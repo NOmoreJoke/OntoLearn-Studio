@@ -224,3 +224,15 @@ startup实际本地恢复提交为`fd3944a35aed05c279d7d0c2f9a077c84d99aaf2`。�
 独立[计划审查](changeset-business-service-plan-review.md)已关闭Diff字节/重组、确认归因与重试、两事务/取消三项初稿P2，固定最终计划SHA`5eb576f029bdf652ff2f52c82a335cf977afeb57cdf8db807d82d323832271e8`，可交根一次精确阶段决定；不是新实施授权。初稿19085B/446c4d已从原完整cat工具记录按原字节恢复为独立ZIP，保留初稿和审查历史，不重写。此次只文档/证据，不重复已通过的无变化产品检查/包；指定双审前不push，完整Goal仍active。
 
 总控固定5eb技术审查14378B/SHA`50f6d5fcd20c883a2e9d585193f2dab32c6c6a006d54939b6e2de69413610cc9`已实际全文读并核hash，仅新增两项合同P2：确认已签丢响应遇cursor TTL/GC，以及正式undo的ABA/引用冲突完整影响读取。当前计划27888B/SHA`39ebbf378386004eb9e8654bf9dbd7465e50d5215a87c55fde01cffc258d71e1`在原10+4内明确原confirm业务请求/同事务持久回执先于临时cursor、首次签发与原回执分支、新RPC id不改业务幂等；preview ready/conflict有限分支和原page文档kind隔离，从实际不可变历史/当前refs/owner-slot完整投影影响，证据不全明确暂停。独立修订报告19255B/SHA`d4869249d713abd168a352e5ac0fe5996bcbe972ddad6ab99725f3b255aeb6a0`已实际读回新增全文并核hash，两项计划层关闭，无新增阻断，可交根仅复核delta作阶段决定。原5eb/dafe历史保留，尚未实施/测试；产品与fd完全相同，不提前称真实确认、撤销或FR完成。
+
+## 正式 ChangeSet 业务服务阶段内部完成
+
+根正式实施授权8818B/SHA `421f974c43975886d280386316b34b5f1e284712d68d38f338d8083beb217467` 已实际全文读回，按固定39eb计划在10产品+4新测试实施。preview/fullDiff/confirm及原changeset.commit已从显式内部3走真实typed ontology/人工RDF、唯一Store原子提交、选择undo、持久确认原请求回执、Job/operation/receipt重开；default2和原测试保持。完整影响实际列ABA B/C、后续引用、owner-slot/墓碑及retirement，缺证据暂停。host调用是受信机制测试，不是真人确认/UI验收。
+
+独审两项P2（helper getter预算capture、同ref坏blob预览延迟拒绝）已修并原探针独立关闭；真实hello投影旧2白名单缺陷亦修复。最终14源码清单SHA `21ce587382ed854b29c1b38ad2646a573e01273b3efd4950709e0786e8518b21`、ZIP SHA `64d03db87de4523dd4c2d5e547e3e98ba0431ade82f1ebde760a747916a35d68` 反复核验未变。最终完整check实际exit0：1125TS、2789Python、44既有不适用skip，lint/格式/类型/build/ruff全过；verify:sources核12源。27真实os._exit、13SQLite authorizer和各异常/取消/持久全状态反例纳入证据。
+
+新同候选unsigned package:dir实际exit0；包内正式3Job提交/不相交B/undo/重开对账、claims/receipt/revision/sequence各3、只保留B通过。实际asar/main逐字同源，main `fcdd498ce6084b10369648512a11fba931306f3164d88448caf7ef841776b850`，9契约资源/lock/engine实际核验；首并行build随机nonce错配与旧AST探针不识静态JSON.parse字串均保首失败，串行新包及修正纯数据探针后通过，未改产品。详情见[实施报告](changeset-business-service-implementation-review.md)和[独立审查](changeset-business-service-independent-review.md)。
+
+本阶段准备本地恢复提交及同候选双模型完整输入；不push，尚无指定双审实际Pass/PR/CI/合并或生产/真人证据。原44项/FR-001–006/804完整Goal仍active；I06项目选择/命名bridge/完整Diff和真人UI、真实Agent/来源producer、完整学习账本、全项目restore、跨功能/双平台/native/用户验收等继续保留，不由后端服务通过删除或关闭。当前无本机GUI/Electron/e2e/native/HMR/凭据/外部审查应用操作。
+
+原始封存163成员/281对完整工具call-output已逐原字节回读：raw包1189059B/SHA `29a3f65fdff1f7635f1595db8a6d368d26050455c719ac92c53ab733cac85c0a`、索引SHA `40ce9396152a431ad0417105ccbecaa8d7929bf01978e39d3aab6bbe1cdf1673`。最终独审30586B/SHA `3acb0305f1ece626c07f192c3ccb07af1c69907ec3a3ec816137475481e31a30` 无未解代码阻断，非指定双审替代；双模型相同完整只读输入已备，实际独立安全桌面/租约仍由总控条件调度，不假称新任务已创建。
