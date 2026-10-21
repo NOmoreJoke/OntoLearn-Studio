@@ -1,0 +1,73 @@
+# I05 → T05 真实执行接口事实：独立静态文档审查
+
+结论：**有限静态文档 Pass；本次发现的两项准确性问题已落实修正，当前无未关闭的实质文档阻断。** 审查对象是事实与后续缺口文档，不是新产品候选、T05机制实现验收或跨线消费批准。本报告没有重开C4，也没有批准E1实施。
+
+## 1. 固定对象、实际操作与证据边界
+
+主供方树 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation` 只读。真实实现定位绑定冻结C4 `523c478d5f39671c4ac7c1ea6997e51d3047d58e`，而不是现场后续T01逻辑或T05实现。
+
+- 首次完整读入的草稿：`docs/reviews/I05/round-4/t05-real-executor-facts/interface-facts.md`，21572 B，SHA256 `a53b8174fe96266b40dbce28a357be206e22ff416547f3a7a9aaa1e0d133c81f`。
+- 最终事实文档：同路径，过程提交 `400259f3899cf7b9edbdf36afe652fbd7f1fc52f`，**22096 B，SHA256 `502d7c70f670a6cc9c20e8683f0141468edaf45c1acc825fdcc6e3c71999fcae`**。本次实际 `git show 400259f:<path>` 与现场全文bytes相等，重新核对已修段及后续路径/权限段。
+- 固定源：全文读 semantic.py、semantic_execution.py、semantic_scopes.py、semantic_turtle.py、semantic_offline.py、resources.py；补读 semantic_error_adapter 的实际reason/producer/stage/origin/公开错误映射段、coordinator取消/提交段。标准库 `ast.parse` 只读取定义/签名，没有import这些模块。七模块完整源bytes/SHA、AST签名及当前指南hash在 `source-static-binding.json`。
+- 测试仅阅读冻结源码证据：test_semantic.py 闭包/无反馈/实际多匹配/变量/预算段、test_semantic_rdfs_basis_determinism.py 的完整九scenario独立expected及6seed测试结构；selected/scopes/execution/string/runtime等相关测试的定义与关键断言。另对照冻结semantic_samples.py及已封存的selected-result-projection/q6差异说明。没有把测试文件存在当作本轮通过。
+- T05只读固定 `6e4f19bd95d6b8850879ebb770ef003ffd9d9a61` 的完整下一阶段计划、profile及阶段规格的API/预算/后续联验边界，未读取或复制其1e3产品代码。本报告不重新核1408、635 TS/2608 Python，或根closure原件真实性；它们仍按固定文档/根收据的原归属引用。新加入90c原件不在本人本次完整规范矩阵重审范围，不冒称已重新审过其全部C格或规范符合性。
+
+实际命令仅 `git show <固定ref>:<path>`、`git ls-tree`、文件完整读回、SHA/JSON/标准库AST静态读取。没有产品import、函数执行、pytest、构建、包、GUI/CUA、容器或指定模型操作，没有向其他聊天发送消息。与父开发者仅反馈本次独审问题。
+
+新增文件只在 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-bridge/build/i05-t05-real-interface-review/`。未改任何产品、测试、冻结材料或主线文档。实际读当前共同指令SHA `e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0`：前16317字节与冻结ff5快照完整相同，追加foundation四文件责任已生效；因此不沿用旧offer待生效来夺回桌面文件。semantic future4仍未交。被审502d文档中的task-runtime临时窗口是当时T01唯一writer的观察，本人全程只读。根在报告收束时通知该窗口于2026-10-21 14:04:13.952488+08:00明确关闭，未来逻辑维护已返I05、T01只读；原C4与T01临时版本分别冻结，不复制或重测。本报告按最新通知记录，不反向改写400259/502d历史文档，也不据此进行任何产品编辑。
+
+## 2. 本次两项发现及关闭
+
+### IF-1：旧owner答复的编号覆盖范围写大（文档准确性，已关闭）
+
+首稿第11行将D/M/P答复写成D1–9、M1–16、P1–10。固定523的 `docs/reviews/I05/t05-design-response-c3/owner-response.md` 实际只有D1–D9、M1–M11（M8分a/b/c）、P1–P6表；文件80行/23281 B/SHA `723368ccc8902c70dcd28939f7b4a21f7dc6d8488d39c7b981b1952caf33fc4e`。首稿可能使接收方误认为不存在的编号已经获得owner答复。
+
+最终第11行已准确改为实际表范围并另指责任段，加入90c的独立固定引用。本人实际读回确认，不把后续责任/历史说明计成不存在的编号表。该问题无需产品变更或重跑测试。
+
+### IF-2：1 MiB单项限额未限定触发入口（接口事实准确性，已关闭）
+
+首稿第66行泛称“文本每项1 MiB”，没有分清有_text调用的路径和直接接收Graph的路径。冻结 `semantic.py:30–38/41–50/99–112/128–133/294–299/534–539` 表明：Turtle/query文本有_text门，但纯reason/check_shapes的Graph Literal并无统一逐项1 MiB检查；`semantic_execution.py:204–247/362–375` 中_term对object N3限文本，_iri对subject/predicate不调用_text。外层请求和内存限制不能改写成每个Graph term的同一上限。
+
+最终第66行已明确Turtle/query、execute启用rule token预扫、_term object的实际覆盖点，另明确纯Graph及subject/predicate没有该统一单项字节门，并区分8 MiB请求/worker内存等外层门。本人实际读回确认。这里只指出静态调用路径，没有运行超长输入探针或宣称测得容量。
+
+## 3. 其余关键事实核对
+
+### callable、编码与raw/source：相符
+
+semantic.py:99/208/294、scopes:234/301、execution:168/323及query/check_shapes的签名与文档一致。Rule为单then三元组的frozen dataclass，无comparison、多head或source/revision/profile字段。_copy只接受精确Graph+Memory，不能把URL/Dataset/远程Store当图。prepare会生成新结果，project只核给定选择并投影，两者未混用。
+
+execution:65–165/204–288严格区分定义JSON与T05私有RuleSpec。事实subject/predicate为裸绝对IRI，object为严格N3；ontology triples为具名三个字段的dict；rule when为triple数组列表、then为一个triple，只有enabled=true进入实际_rules；停用定义不能被描述为完成全部语义/引用预检。_term先原N3规范相等，再canonical_string；不是任意Turtle往返门。额外source_row等元数据没有进入_graph的triple来源。
+
+semantic_turtle:14–32/64–93局部normalize=False及numeric token恢复，string唯一抽象身份转换边界与文档相符。numeric/date/lang不因该string转换重写，不等于已实现T05精确值profile。Graph去重及N3序列化不能恢复每个原token、转义壳、原标签写法或span；当前language/source不能写成完整ABNF、独立raw与认证定位接口。文档已清楚列为缺口，不从term逆造原文。
+
+### 完整输出、稳定witness与无反馈：相符
+
+semantic.py:294–423先完成有限RDFS闭包，再让全部规则读同一冻结closure。规则输出不反馈规则/RDFS。闭包按每轮(output, ordered direct inputs)全键首个有效新增候选固定proof，并非枚举全部可能路径或找最短proof。
+
+rdfs为closure减原输入图；rules为自定义输出集合，不减asserted/RDFS。rule evidence保留所有实际匹配/规则的记录；每条inputs保持when顺序，basis取其输入已记录proof叶的并集。**规则全部匹配证据与RDFS单个稳定witness是不同维度**。rdfsEvidence只返回result/basis，没有全形式证明DAG或直接推理步骤。最终第48、58、80行区分准确。
+
+scopes:88–223/234–298核的是给定载荷内部一致性与投影视图，既不重新reason补全，也不独立证明RDFS basis逻辑有效或全局匹配完备。source的语义版本+三输入hash仅一致性摘要，不是Store权限、producer认证或raw source。文档未将它们混淆。
+
+### 输出保护、错误、版本及预算：相符且保留限度
+
+_rule:219–266/391–409已有schema输出/位置/未绑定变量保护，**没有T05 Catalog中已声明类/属性及对象种类的完整权威校验**。文档既未虚称完全没有保护，也未把当前门称完整受控引用。
+
+纯SemanticError仅code；公开adapter由准确producer/stage/origin产出四字段安全错误，现params无rule/condition/head索引或source span。普通SHACL violations已有六字段身份，与规则诊断不同。M3/M8a/M9等未来路由没有被写成现有实现。
+
+semantic.py:26、resources.py:28–32均finite6；实际读取冻结uv.lock SHA为 `86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73`，engineVersion0.1.0。T05 profile/预算标识与整个implementation严格分开，不复用finite6认证新语义或重写旧结果。
+
+固定图/匹配/work/output/投影限额及计费并非所有成本预扣、不是容量通过线，和T05机制预算分开。纯callable无合作取消参数。coordinator:535–546/654–709的历史实际路径由父进程监视：cancelling分支terminate后等待cancelGrace、超时再kill；总deadline抛异常进入异常清理kill。文档所述外层权威取消机制不能被扩写成pure合作取消或新执行器已获驱动信号。本人只读这些分支，没有重测取消或原子提交。
+
+## 4. 最小新候选与独立oracle：足以作为后续审批材料
+
+第94–102行把T05固定机制采用、精确跨线消费授权、新隔离候选、唯一I05真实图matcher及T01/T03/I06权威依赖分开。没有复制第二执行器、默认接收future4、批准共享路径写权或把本件当E1实施许可。入口/selected的同版validator、比较完整预检/all-head原子组、source/位置与新版本、真实Store身份/历史/取消晚到、query/SHACL原合同均列为实际新候选验收条件。
+
+第99行明确要求从固定T09原输入和22扩展独立推导完整预期：输入引用/hash、有限RDFS新增、custom全集、所有匹配/head与basis、直接前提和应用有限规则依据、推导层次及无其他产物覆盖理由，再独审冻结；禁止被测reason/wrapper或同次actual生成golden。现九个手写scenario仅作为独立方法例，不冒称产品17+22案已有全closure oracle。该区分满足本次文档审查重点。原FR502最低要求是相关公理与直接输入的实际反查，**不把穷尽全部RDFS证明路径或全形式证明DAG追加为新强制验收**；单稳定witness是现实现边界。完整有限closure的独立预期集合与实际规则多匹配/多依据要求继续保留，不能以这一区分删减。
+
+Q6/规范pin采用和旧文档历史时态分开，未以政策采用冒称图解码/执行/公共载体已支持。C4冻结523、原任务记录及队列门保留；不把新纯过程提交400259f当新产品候选或本轮指定模型审查终态。
+
+## 5. 未亲核与最终使用限制
+
+本次未重跑任何产品/测试/新探针，未审1e3实现或重验其纯机制容量；未重新展开C4的1254 raw、核包内二进制/190结果/B1/native或复做1284/205字节审计。第4节已验结论仅核对其既有准确出处和范围表达，不改写归属为本人新测。没有独立确认应用当前UI任务/队列/root状态；本件状态按固定输入和父方明确边界理解。
+
+原TA/90c/profile完整规范矩阵、规范pin正确性、root采用/closure历史原件真伪、整仓相对链接与8份输入归档由供方另保存/核验，本次不扩展重审。已核核心签名、编码、语义、proof/source限度及两处修正足以给出上述**有限静态文档Pass**。具体后续实现仍须精确授权、同候选真实验证和原指定双审/CI/合并门；本报告不能关闭完整FR500–505或父Goal。

@@ -1,0 +1,374 @@
+{
+  "scope": "Static Git source/AST only; no product import/evaluation/tests",
+  "source": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+  "files": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "bytes": 23890,
+      "sha256": "b8c4ed3c3e8aa4e527858d0fd9589ebc7581118af990a0e977f80111ee35e017",
+      "definitions": [
+        {
+          "name": "_text",
+          "line": 30,
+          "signature": "def _text(text):"
+        },
+        {
+          "name": "_copy",
+          "line": 41,
+          "signature": "def _copy(graph):"
+        },
+        {
+          "name": "_terms",
+          "line": 53,
+          "signature": "def _terms(graph, *, shapes=False):"
+        },
+        {
+          "name": "parse_turtle",
+          "line": 99,
+          "signature": "def parse_turtle(text: str, *, format: str='turtle', shapes: bool=False) -> Graph:"
+        },
+        {
+          "name": "_walk",
+          "line": 115,
+          "signature": "def _walk(value):"
+        },
+        {
+          "name": "query",
+          "line": 128,
+          "signature": "def query(graph: Graph, text: str) -> dict:"
+        },
+        {
+          "name": "Rule",
+          "line": 209,
+          "classFields": [
+            "id: str",
+            "when: tuple[Triple, ...]",
+            "then: Triple"
+          ]
+        },
+        {
+          "name": "_key",
+          "line": 215,
+          "signature": "def _key(triple):"
+        },
+        {
+          "name": "_rule",
+          "line": 219,
+          "signature": "def _rule(rule):"
+        },
+        {
+          "name": "_chain_warnings",
+          "line": 269,
+          "signature": "def _chain_warnings(rules):"
+        },
+        {
+          "name": "_canonical_rule",
+          "line": 284,
+          "signature": "def _canonical_rule(rule):"
+        },
+        {
+          "name": "reason",
+          "line": 294,
+          "signature": "def reason(graph: Graph, rules: tuple[Rule, ...]=()) -> dict:"
+        },
+        {
+          "name": "_shapes",
+          "line": 451,
+          "signature": "def _shapes(graph):"
+        },
+        {
+          "name": "check_shapes",
+          "line": 534,
+          "signature": "def check_shapes(data: Graph, shapes: Graph) -> dict:"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "bytes": 19390,
+      "sha256": "69f453be13734a02bf92ce468de146198ad9bd2b10595b892b1217f1643e4a27",
+      "definitions": [
+        {
+          "name": "SemanticRequestFault",
+          "line": 26,
+          "classFields": []
+        },
+        {
+          "name": "SemanticExecutionFault",
+          "line": 36,
+          "classFields": []
+        },
+        {
+          "name": "_fail",
+          "line": 42,
+          "signature": "def _fail(reason='REQUEST_INVALID', *, public=False):"
+        },
+        {
+          "name": "_json",
+          "line": 51,
+          "signature": "def _json(value):"
+        },
+        {
+          "name": "_copy",
+          "line": 57,
+          "signature": "def _copy(value):"
+        },
+        {
+          "name": "_digest",
+          "line": 61,
+          "signature": "def _digest(value):"
+        },
+        {
+          "name": "_definitions",
+          "line": 65,
+          "signature": "def _definitions(snapshot):"
+        },
+        {
+          "name": "_shape",
+          "line": 86,
+          "signature": "def _shape(value, required, optional=()):"
+        },
+        {
+          "name": "_request",
+          "line": 93,
+          "signature": "def _request(snapshot, capability, input_, parameters, selected):"
+        },
+        {
+          "name": "build_request",
+          "line": 168,
+          "signature": "def build_request(snapshot, capability, input_, parameters, selected=None, *, error_catalog=None, error_schema=None):"
+        },
+        {
+          "name": "_term",
+          "line": 204,
+          "signature": "def _term(text):"
+        },
+        {
+          "name": "_iri",
+          "line": 236,
+          "signature": "def _iri(text):"
+        },
+        {
+          "name": "_graph",
+          "line": 250,
+          "signature": "def _graph(records):"
+        },
+        {
+          "name": "_rules",
+          "line": 268,
+          "signature": "def _rules(definitions):"
+        },
+        {
+          "name": "_rows",
+          "line": 291,
+          "signature": "def _rows(payload):"
+        },
+        {
+          "name": "execute_request",
+          "line": 323,
+          "signature": "def execute_request(request, *, error_catalog, error_schema):"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "bytes": 13051,
+      "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+      "definitions": [
+        {
+          "name": "_axiom",
+          "line": 34,
+          "signature": "def _axiom(triple):"
+        },
+        {
+          "name": "_digest",
+          "line": 42,
+          "signature": "def _digest(value):"
+        },
+        {
+          "name": "_inputs",
+          "line": 52,
+          "signature": "def _inputs(asserted, ontology, include_derived, rules):"
+        },
+        {
+          "name": "_source",
+          "line": 73,
+          "signature": "def _source(facts, axioms, rules):"
+        },
+        {
+          "name": "_selected_output",
+          "line": 88,
+          "signature": "def _selected_output(result, original, rules):"
+        },
+        {
+          "name": "ValidationScope",
+          "line": 227,
+          "classFields": [
+            "facts: Graph",
+            "ontology: Graph",
+            "provenance: dict",
+            "reasoning_result: dict | None"
+          ]
+        },
+        {
+          "name": "project_validation_scope",
+          "line": 234,
+          "signature": "def project_validation_scope(asserted: Graph, ontology: Graph, *, include_derived: bool, reasoning_result: dict | None=None, reasoning_source: dict | None=None, rules: tuple[Rule, ...]=()) -> ValidationScope:"
+        },
+        {
+          "name": "prepare_validation_scope",
+          "line": 301,
+          "signature": "def prepare_validation_scope(asserted: Graph, ontology: Graph, *, include_derived: bool, rules: tuple[Rule, ...]=()) -> ValidationScope:"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "bytes": 3951,
+      "sha256": "9513e064634952ac68b13d3f41526407d7ec37860b56638a0c3dfd4aae1dc0e2",
+      "definitions": [
+        {
+          "name": "canonical_string",
+          "line": 14,
+          "signature": "def canonical_string(term):"
+        },
+        {
+          "name": "LexicalSink",
+          "line": 25,
+          "classFields": []
+        },
+        {
+          "name": "LexicalSinkParser",
+          "line": 35,
+          "classFields": []
+        },
+        {
+          "name": "parse_graph",
+          "line": 86,
+          "signature": "def parse_graph(text, *, base_uri):"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "bytes": 1351,
+      "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+      "definitions": [
+        {
+          "name": "SemanticError",
+          "line": 13,
+          "classFields": []
+        },
+        {
+          "name": "_audit",
+          "line": 24,
+          "signature": "def _audit(event, args):"
+        },
+        {
+          "name": "_NoRawLiteralDiagnostics",
+          "line": 35,
+          "classFields": []
+        },
+        {
+          "name": "offline",
+          "line": 46,
+          "signature": "@contextmanager"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "bytes": 2406,
+      "sha256": "29697d034d0ea7f401dced45ca6ff42c2baf85eac4757d124d9de843482e3143",
+      "definitions": [
+        {
+          "name": "resource_manifest",
+          "line": 49,
+          "signature": "def resource_manifest() -> dict:"
+        },
+        {
+          "name": "safe_error",
+          "line": 61,
+          "signature": "def safe_error(code: str, params: dict | None=None) -> dict:"
+        },
+        {
+          "name": "main",
+          "line": 78,
+          "signature": "def main() -> None:"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+      "bytes": 14773,
+      "sha256": "5a05e93b4588577b97bcbe7f6b4ffda1fe2b27f917c25375e444b260ae3443f7",
+      "definitions": [
+        {
+          "name": "Producer",
+          "line": 14,
+          "classFields": []
+        },
+        {
+          "name": "Stage",
+          "line": 23,
+          "classFields": []
+        },
+        {
+          "name": "Origin",
+          "line": 32,
+          "classFields": []
+        },
+        {
+          "name": "ErrorContext",
+          "line": 39,
+          "classFields": [
+            "stage: Stage",
+            "origin: Origin"
+          ]
+        },
+        {
+          "name": "_Spec",
+          "line": 45,
+          "classFields": [
+            "message_key: str",
+            "retryable: bool",
+            "parameter: str | None",
+            "values: frozenset[str]"
+          ]
+        },
+        {
+          "name": "_same_json",
+          "line": 167,
+          "signature": "def _same_json(a, b):"
+        },
+        {
+          "name": "_encoded",
+          "line": 177,
+          "signature": "def _encoded(value):"
+        },
+        {
+          "name": "SemanticErrorAdapter",
+          "line": 181,
+          "classFields": []
+        }
+      ]
+    }
+  ],
+  "guidance": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/AGENTS.md",
+      "bytes": 15852,
+      "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+      "bytes": 17891,
+      "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/external-review-permissions.md",
+      "bytes": 3729,
+      "sha256": "3630cc78ad87d1833ad33102f437d9027814cb688b319c4cd3ae9a2d0fbde4f7"
+    }
+  ]
+}
