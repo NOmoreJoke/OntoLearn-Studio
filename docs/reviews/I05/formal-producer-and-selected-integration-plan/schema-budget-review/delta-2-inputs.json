@@ -1,0 +1,71 @@
+{
+  "reviewer": "/root/restore_budget_code_review",
+  "candidate": "f68c7516c6ea96a2655c3aef2d89abd749f5d805",
+  "prior": "651c4c2d2dd498ebc572543d116f2cdddb678045",
+  "static_only": true,
+  "product_import_or_execution": false,
+  "inputs": [
+    {
+      "path": "docs/iterations/I05/formal-producer-and-selected-integration-plan.md",
+      "ref": "f68c7516c6ea96a2655c3aef2d89abd749f5d805",
+      "bytes": 69441,
+      "sha256": "0d866d896224eb82abfe3d87537f10b7671c7eff068c0e0a6015f9698b55d9e6",
+      "scope": "complete main plan/disposition; closure/inventory metadata only"
+    },
+    {
+      "path": "docs/reviews/I05/formal-producer-and-selected-integration-plan/counterexample-dispositions.md",
+      "ref": "f68c7516c6ea96a2655c3aef2d89abd749f5d805",
+      "bytes": 5244,
+      "sha256": "4ad3087218904f1426f08294e660bc6e318e990ebf2b8fe2555ce68a4b65c220",
+      "scope": "complete main plan/disposition; closure/inventory metadata only"
+    },
+    {
+      "path": "docs/reviews/I05/formal-producer-and-selected-integration-plan/proposed-initial-readonly-closure.json",
+      "ref": "f68c7516c6ea96a2655c3aef2d89abd749f5d805",
+      "bytes": 40847,
+      "sha256": "2041d9315aa716943be5ae9c93c796d876be7b3a8355e9e6f59de7aab014e3f6",
+      "scope": "complete main plan/disposition; closure/inventory metadata only"
+    },
+    {
+      "path": "docs/reviews/I05/formal-producer-and-selected-integration-plan/i05-static-entry-consumer-inventory.json",
+      "ref": "f68c7516c6ea96a2655c3aef2d89abd749f5d805",
+      "bytes": 37620,
+      "sha256": "c8decb676fcf937a2cdc9da6370882b2b37f3672e82107ff3ec936285fb3a3b1",
+      "scope": "complete main plan/disposition; closure/inventory metadata only"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/job_store.py",
+      "ref": "423b7e4c799f188cf2ce6e8e7121893ce85624cd",
+      "bytes": 87227,
+      "sha256": "8896c3e30007e1dec04eaf47ae5bb5c33a1e9b3a1d016cb9165f99d8b4deeacc",
+      "scope": "actual _dependencies758-773 and prior create_job895-898 constraints"
+    }
+  ],
+  "AGENTS_sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+  "proposed_135_closure_bytes_unchanged_since_first_review": true,
+  "changed_paths_docs_only": [
+    "docs/iterations/I05/formal-producer-and-selected-integration-plan.md",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/candidate-2-checks.json",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/counterexample-dispositions.md",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/document-edit-context-failure.json",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/i05-static-entry-consumer-inventory.json",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/manifest.json",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/report.md",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/static-inputs.json",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/static-read-first-failure.json",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/report.md",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/static-input-manifest.json"
+  ],
+  "arithmetic": {
+    "production_raw_MiB": 48,
+    "selected_raw_MiB_K32": 1312,
+    "selected_raw_MiB_K0": 32,
+    "role_count_K32": 164,
+    "frame_max_bytes": 69633,
+    "maximum_child_slots_all_artifacts": 3200,
+    "16c_aggregate_work_bound_at_K32_all_N100": 1645898112,
+    "16c_aggregate_input_bound_K32": 16777216,
+    "16c_aggregate_output_bound_K32": 16777216
+  },
+  "note": "these are static arithmetic source bounds, not successful N100 witnesses, actual quotas, CPU or RSS"
+}

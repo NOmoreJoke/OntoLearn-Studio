@@ -1,0 +1,9 @@
+{
+  "scope": "Existing local Prettier on new plan and all currently present review-prefix .md/.json; no product runtime",
+  "command": "node_modules/.bin/prettier --check --ignore-path /dev/null <explicit plan and review files>",
+  "formatterExitCode": 1,
+  "rawStdout": "Checking formatting...\n",
+  "rawStderr": "[warn] docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/report.md\n[warn] docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/static-input-manifest.json\n[warn] Code style issues found in 2 files. Run Prettier with --write to fix.\n",
+  "disposition": "Preserve both fixed first-review originals byte-for-byte. Send finding to original reviewer to clarify default-ignore check and check delta files explicitly. Any formatted derivative must be separate, never overwrite original evidence.",
+  "productMutationOrExecution": false
+}

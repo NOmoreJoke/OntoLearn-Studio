@@ -1,0 +1,408 @@
+{
+  "kind": "independent full revised docs-only trusted-origin/lifecycle delta review",
+  "priorRef": "651c4c2d2dd498ebc572543d116f2cdddb678045",
+  "ref": "f68c7516c6ea96a2655c3aef2d89abd749f5d805",
+  "inputs": [
+    {
+      "ref": "f68c7516c6ea96a2655c3aef2d89abd749f5d805",
+      "path": "docs/iterations/I05/formal-producer-and-selected-integration-plan.md",
+      "bytes": 69441,
+      "sha256": "0d866d896224eb82abfe3d87537f10b7671c7eff068c0e0a6015f9698b55d9e6",
+      "readScope": "full219lines plus complete old/new delta",
+      "currentMatchesFixed": true
+    },
+    {
+      "ref": "651c4c2d2dd498ebc572543d116f2cdddb678045",
+      "path": "docs/iterations/I05/formal-producer-and-selected-integration-plan.md",
+      "bytes": 59605,
+      "sha256": "fe28f883c1db687b4c20da4f91046d66216fcb4322a43633306af159a9cb861f",
+      "readScope": "prior full213line plan and original OL1 comparison",
+      "currentMatchesFixed": false
+    },
+    {
+      "ref": "f68c7516c6ea96a2655c3aef2d89abd749f5d805",
+      "path": "docs/reviews/I05/formal-producer-and-selected-integration-plan/counterexample-dispositions.md",
+      "bytes": 5244,
+      "sha256": "4ad3087218904f1426f08294e660bc6e318e990ebf2b8fe2555ce68a4b65c220",
+      "readScope": "full",
+      "currentMatchesFixed": true
+    },
+    {
+      "ref": "f68c7516c6ea96a2655c3aef2d89abd749f5d805",
+      "path": "docs/reviews/I05/formal-producer-and-selected-integration-plan/candidate-2-checks.json",
+      "bytes": 537,
+      "sha256": "a4a463ccb371cc1cdca02f3fb6133c724ebf68e1966d3aa5561d330ec7005981",
+      "readScope": "full identity and closure boundary",
+      "currentMatchesFixed": true
+    },
+    {
+      "ref": "f68c7516c6ea96a2655c3aef2d89abd749f5d805",
+      "path": "docs/reviews/I05/formal-producer-and-selected-integration-plan/i05-static-entry-consumer-inventory.json",
+      "bytes": 37620,
+      "sha256": "c8decb676fcf937a2cdc9da6370882b2b37f3672e82107ff3ec936285fb3a3b1",
+      "readScope": "all fixed file/hash/line-text entries; lexical inventory only",
+      "currentMatchesFixed": true
+    },
+    {
+      "ref": "f68c7516c6ea96a2655c3aef2d89abd749f5d805",
+      "path": "docs/reviews/I05/formal-producer-and-selected-integration-plan/proposed-initial-readonly-closure.json",
+      "bytes": 40847,
+      "sha256": "2041d9315aa716943be5ae9c93c796d876be7b3a8355e9e6f59de7aab014e3f6",
+      "readScope": "unchanged identity compared with prior fixed plan",
+      "currentMatchesFixed": true
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "bytes": 50276,
+      "sha256": "aa3d51c1ccc487ce21a78560ad6cdf7a6485cc86f746c29ee329e6a0bc4c4d09",
+      "readScope": "AST literal fixed payload/reasoning/child field table; no product import",
+      "currentMatchesFixed": true
+    }
+  ],
+  "originalReviewPreserved": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-restore/docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/report.md",
+      "bytes": 14767,
+      "sha256": "7e35c4bf6bebea298c7c132a1a7f00af410cc553ed519eb52c515c31a5f13cf9",
+      "preserved": true
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-restore/docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/static-input-manifest.json",
+      "bytes": 62034,
+      "sha256": "f312a36fc66be5f6f9ef6490641c9dfae5fe294403e16f713fba7c6b144c66f3",
+      "preserved": true
+    }
+  ],
+  "diff": {
+    "bytes": 53752,
+    "sha256": "f50460d83812c2586a26acfae01eaa1a47127ca4df935b4225558ce76a2cf3ba",
+    "hunks": [
+      "@@ -67,0 +68,2 @@",
+      "@@ -77 +79 @@",
+      "@@ -82 +84,3 @@",
+      "@@ -108,9 +112,9 @@ B/Q大载体及display rows需T01同Store的**派生cache角色存储**：拟 `p",
+      "@@ -130 +134 @@ B/Q大载体及display rows需T01同Store的**派生cache角色存储**：拟 `p",
+      "@@ -136,8 +140,8 @@ B/Q大载体及display rows需T01同Store的**派生cache角色存储**：拟 `p",
+      "@@ -147 +151,3 @@ B/Q大载体及display rows需T01同Store的**派生cache角色存储**：拟 `p",
+      "@@ -149 +155 @@ T按每actor实际收发合计raw X和role数r先算h=Σceil(roleBytes/32768)，",
+      "@@ -155 +161 @@ S令V=Σ原结果(B_j+Q_j)、N_total=ΣN_j、t为最终待构图三元组数（",
+      "@@ -157 +163 @@ S令V=Σ原结果(B_j+Q_j)、N_total=ΣN_j、t为最终待构图三元组数（",
+      "@@ -159 +165 @@ I05新adapter只接受该完整selection handle。对每个原结果j建立独",
+      "@@ -161 +167 @@ I05新adapter只接受该完整selection handle。对每个原结果j建立独",
+      "@@ -174 +180 @@ I05新adapter只接受该完整selection handle。对每个原结果j建立独",
+      "@@ -197,15 +203,15 @@ I05拟旧writer：semantic.py、semantic_execution.py、semantic_scopes.py、sem"
+    ]
+  },
+  "fixedPureSchemaComparison": {
+    "_PAYLOAD": {
+      "fields": [
+        "format",
+        "implementation",
+        "reasoning",
+        "inputDigest",
+        "inputDigestDomain",
+        "sourceDigest",
+        "definitionsDigest"
+      ],
+      "count": 7,
+      "equalsActualFixedSchema": true
+    },
+    "_REASONING": {
+      "fields": [
+        "formatVersion",
+        "semanticsVersion",
+        "profile",
+        "rdfs",
+        "rules",
+        "warnings",
+        "evidence",
+        "rdfsEvidence",
+        "firingGroups",
+        "mechanismBatches",
+        "definitions",
+        "catalog",
+        "proofLeaves",
+        "termSources",
+        "graphBudget"
+      ],
+      "count": 15,
+      "equalsActualFixedSchema": true
+    },
+    "_CHILD": {
+      "fields": [
+        "ruleId",
+        "definitionOrdinal",
+        "disabled",
+        "planDigest",
+        "batch",
+        "originalMatches",
+        "definitions",
+        "catalog",
+        "limits",
+        "budgetLimits",
+        "budgetUsage"
+      ],
+      "count": 11,
+      "equalsActualFixedSchema": true
+    }
+  },
+  "staticInventory": {
+    "fileCount": 29,
+    "lexicalHitCount": 241,
+    "matchesAllFixedLines": true,
+    "files": [
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+        "bytes": 7372,
+        "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+        "bytes": 11987,
+        "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+        "bytes": 6288,
+        "sha256": "9e9258cfefdef56f369dad6bb7838afd22478ea6714e4322b2d872d12616200e",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+        "bytes": 6176,
+        "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/semantic.py",
+        "bytes": 52609,
+        "sha256": "5a3a53fc79928a7aa7de280a8477541db4053ec9b2bec489bf28a2ad4e935549",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+        "bytes": 15426,
+        "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "bytes": 32917,
+        "sha256": "cc701dba39cdeb7f2ae281dfd4a9580b879b9e85f34d3c87a09a3414e7c32731",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_probe.py",
+        "bytes": 13391,
+        "sha256": "2b2dabd91745b4b4c2a3fad39b6386e4edd985189336bf029d9b07a638fc7bf6",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+        "bytes": 50276,
+        "sha256": "aa3d51c1ccc487ce21a78560ad6cdf7a6485cc86f746c29ee329e6a0bc4c4d09",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+        "bytes": 37478,
+        "sha256": "593b2a832dd510063bb60d7b3d5526fbd6cf4dcba53ad9c513e82dbfdd77ef7f",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+        "bytes": 33858,
+        "sha256": "387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "bytes": 13051,
+        "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/src/ontolearn_engine/storage.py",
+        "bytes": 55364,
+        "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_i04_lifecycle_boundaries.py",
+        "bytes": 17211,
+        "sha256": "7b39173b5d49fd3ec3dcb86808e6b7896cc70ec41414a7a400ce3c9bdcb81884",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_quality_profile_revalidation.py",
+        "bytes": 23773,
+        "sha256": "8876220e84e6124d327c39d6335957a8d5625afcdcd057b962a80da9be5c4676",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic.py",
+        "bytes": 13779,
+        "sha256": "5f021d7f81b1e754589bd43927c22d567a32b8b8abe16191a0d5420c4cc52297",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic_error_adapter.py",
+        "bytes": 23172,
+        "sha256": "aeff14c189b814cc89e5684cc31ce2d569b67fe47f72af5c6f4ca702250409a2",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic_error_reasons.py",
+        "bytes": 4662,
+        "sha256": "3b0c4cbad1c5b18986da429398d28490929cda2d2fb200d03f105f9aafa1ae9b",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic_execution.py",
+        "bytes": 18450,
+        "sha256": "8eab07aace07d4abdd9f8a1db8f9c3860aa0bfaa3dacdecde015ba34b7b6774d",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic_lexical.py",
+        "bytes": 21918,
+        "sha256": "f298e085fd54538822d9e55109e10f94033f16ab8e0381ed357c9fff6c6cbfca",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic_profile_errors.py",
+        "bytes": 9996,
+        "sha256": "5e56ba118b35f333852759079dee87a79353331924c0f295c45fd9fa221466ec",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic_profile_integration.py",
+        "bytes": 48284,
+        "sha256": "69d7afd9d5b836f61591cfebffeca5ddbebba607bad0a0c1e8ff6a5becf8e562",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic_profile_restore.py",
+        "bytes": 33681,
+        "sha256": "d3726f6170d126f7a6b495f53b951093faf0b3caa935b3d87a06c18c25619aac",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+        "bytes": 21089,
+        "sha256": "4eed5e316f0033080b3f2761b83ddcd53f093f18a6e2aa48706619d109872a8c",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic_rdfs_basis_determinism.py",
+        "bytes": 9390,
+        "sha256": "0d2c33dcd5e76d7d6d745c99805399da6f3002ba7a42449899c07a82b053ef39",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic_scopes.py",
+        "bytes": 6772,
+        "sha256": "015b1966693bd92bb318431d606401e644354b722689dc80b7f8a1f6dbcacd83",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic_selected_projection.py",
+        "bytes": 15237,
+        "sha256": "34ff730532e71d247d1389439fbd8745db97ae5839afc6ec75f95ada0d84f283",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_semantic_string_identity.py",
+        "bytes": 18211,
+        "sha256": "0992663e427649870c3fb07047a415dd95b2bd93a8a754babb190972fdbe5240",
+        "lineTextAndHashMatch": true
+      },
+      {
+        "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+        "path": "packages/engine/tests/test_storage.py",
+        "bytes": 49233,
+        "sha256": "f405fb231fb7838410f96964d063c6b9378a3c05a2ec21aceb003c9f688d0e5e",
+        "lineTextAndHashMatch": true
+      }
+    ],
+    "notDynamicCallGraph": true
+  },
+  "selectedRawArithmetic": {
+    "K32MiB": 1312,
+    "K0MiB": 32,
+    "notSimultaneousMemoryOrCapacityClaim": true
+  },
+  "old160GitUnchanged": {
+    "from": "4be2360aac0e6ea06211731364a14beec683310d",
+    "changedPaths": [
+      "docs/iterations/I05/formal-producer-and-selected-integration-plan.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/candidate-1-checks.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/candidate-2-checks.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/counterexample-dispositions.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/document-edit-context-failure.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/document-edit-first-failure.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/actual-83-census.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/census-static.py.raw",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/delivery.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/readonly-inputs.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/report.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/static-first-failure.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/i05-entry-and-consumer-inputs.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/i05-static-entry-consumer-inventory.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/inputs/plan-preparation-authorization.md.raw",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/inputs/strict-restore-root-closure.md.raw",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/proposed-initial-readonly-closure.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/manifest.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/report.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/static-inputs.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/static-read-first-failure.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/checks.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/fixed-interface-inputs.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/future-readonly-T01-52.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/report.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/report.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/static-input-manifest.json"
+    ],
+    "onlyNewPlanPrefix": true
+  },
+  "priorClosureByteUnchanged": true,
+  "productImportRunSQLWorkerAdoptionGoal": false,
+  "formatCorrection": {
+    "priorDefaultIgnoreFile": ".prettierignore",
+    "ignoredPrefix": "docs/reviews",
+    "priorDefaultExit0DidNotProveReviewFilesFormatted": true,
+    "explicitOldFilesCheck": "delta-2-first-format.json",
+    "oldFilesKeptUnformattedAsEvidence": true
+  }
+}

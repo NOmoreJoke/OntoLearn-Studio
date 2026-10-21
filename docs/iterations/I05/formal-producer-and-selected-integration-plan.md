@@ -154,7 +154,7 @@ S令V=U+Σ原结果(B_j+Q_j)、N_total=ΣN_j、t为最终待构图三元组数�
 
 R与16c多artifact合同独立于上述S：每producer j分配一个`R_j`，只针对其B_j/Q_j/N_j原界执行new→running→terminal一次；不把N_total≤3200塞进N≤100纯ledger，也不将K个payload/source合并解析。consumer Job持不可重置的外层聚合账（不是第二个pure ledger/Store），受理时从可信角色长度/原allocation计算每域`Σ_j cap(R_j)`并核原owner有限job quota，运行前逐阶段预付、累计`Σ_j actual_usage(R_j)`；每child原term parse记录也按(j,i)唯一记入，切换/失败/重读不退累计费用。若总quota不能覆盖本次预付，潜在超分配前有限失败，不借S/H或另一actor票。串行R临时peak按实际当前R_j及尚未释放部分计，已转交view/native/图由S/H继续同时持有，不能以max单个R_j冒充全部live。16c控制项记`k_ji=1+33F_ji+4O_ji+128+70+4`，总体三池上界为`Σ_jΣ_i(3W_ji+k_ji), 2Σ_jΣ_i I_ji, 2Σ_jΣ_i O_ji`，每原child仍只一次原L的API，不跨结果重分。K=0无R_j/16c，但U的parent C、双方T、worker S及H仍按原owner先付。新view所需R_j delta未证明前不采用，旧3ef单次cap/算法不因聚合而扩大。
 
-这些公式要求C/T/S supplier对最终实际代码逐loop/库委托/并持证明、低限±1和实物资源观测再接收，不假称本轮已证明不存在的实现。H只有T01真实owner能核全actor/retired与持久history累计；提出的per-job最大原物料48MiB不是全进程内存或产品Q5容量线。新artifact/history quota字段必须由root/T01冻结实际有限配置，未设置生产准入关闭，内部真实Job验收显式给有限配置；不设Q5默认答案。已闭3ef R不重测充新证据，新view不能自动沿用其R证明。原request/total/memory/concurrency不增。
+这些公式要求C/T/S supplier对最终实际代码逐loop/库委托/并持证明、低限±1和实物资源观测再接收，不假称本轮已证明不存在的实现。H只有T01真实owner能核全actor/retired与持久history累计；提出的production单次准备原物料48MiB、selected累计raw1312MiB都不是全进程内存或产品Q5容量线，不能以48MiB作为selected累计上界。新artifact/history quota字段必须由root/T01冻结实际有限配置，未设置生产准入关闭，内部真实Job验收显式给有限配置；不设Q5默认答案。已闭3ef R不重测充新证据，新view不能自动沿用其R证明。原request/total/memory/concurrency不增。
 
 ## 9. selected完整消费与原请求约束
 
