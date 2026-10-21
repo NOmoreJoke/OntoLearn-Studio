@@ -1,0 +1,33 @@
+"""C1 actual Store/coordinator/worker repro. Writes only caller's output folder."""
+import asyncio
+import json
+import runpy
+import sys
+from pathlib import Path
+from ontolearn_engine.coordinator import Coordinator
+from ontolearn_engine.job_store import JobStore
+from ontolearn_engine.resources import CONTRACT
+from ontolearn_engine.storage import digest
+h = runpy.run_path('packages/engine/tests/test_semantic_runtime.py')
+root = Path(sys.argv[1]); root.mkdir(parents=True, exist_ok=False)
+s = JobStore(root / 'probe.sqlite', contract=CONTRACT)
+p = h['seed'](s)
+c = Coordinator(s, allowed_projects={p}, emit=lambda _: None)
+type_ = h['TYPE']; uid=h['uid']; definition=h['definition']
+shapes = '''@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+<urn:S> a sh:NodeShape; sh:targetClass <urn:Child>; sh:property <urn:P> .
+<urn:P> sh:path <urn:p>; sh:in ("01"^^xsd:integer) .'''
+obj='"1"^^<http://www.w3.org/2001/XMLSchema#integer>'
+s.commit('semantic', 1, uid(), uid(), definitions=[
+    definition('constraint','lexical', {'enabled': True,'turtle': shapes}),
+    definition('query','lexical', {'text':'ASK { <urn:unit> <urn:p> 01 }'}),
+], manual=[{'id':digest(['urn:unit','urn:p',obj]),'subject':'urn:unit','predicate':'urn:p','object':obj}])
+try:
+    outputs={}
+    for capability in ('validation.execute','query.execute'):
+        job, metadata, payload=h['completed'](c,s,p,capability=capability,definition_id='lexical')
+        outputs[capability]={'job':job,'metadata':metadata,'payload':payload}
+    print(json.dumps({'head':'043c20cc7934191339a8814c79666dbd2e94a62a','storedObject':obj,'constraintAllowedObject':'"01"^^<http://www.w3.org/2001/XMLSchema#integer>','queryNumericToken':'01','outputs':outputs},indent=2))
+finally:
+    asyncio.run(c.stop()); s.close()

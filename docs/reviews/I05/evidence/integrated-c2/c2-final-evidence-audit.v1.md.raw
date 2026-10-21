@@ -1,0 +1,154 @@
+# I05 C2 最终证据只读审计
+
+日期：2026-10-21。审计者：独立子任务 semantic_bridge。
+
+结论：**本次证据归属、可恢复原件和索引一致性核对通过；在本次授权范围内，没有仍待关闭的新增阻断缺口。** 本结论是对既有原件的只读审计，不是本次重新实跑产品的结论，不替代新的 ZCode / MiniMax 完整独立 C2 双审，不继承任何 C1 Pass。正式 freeze、外审、CI、push、PR、合并和发布均不由此报告宣告完成。
+
+首次 Linux native 两轮验收的 driver log 内存附件未落盘，确实不能恢复。这项历史缺口没有被抹去；同一代码、配置和包的后续两次 native-only 验收已分别保留完整 JSON reporter 及其有界 driver body，关闭的是后续可审计采集的缺口。不得把新附件说成首次运行的日志。
+
+## 1. 范围、固定输入与操作边界
+
+审查主线：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation`，分支 `feature/I05-semantic-validation`。产品源码固定为：
+
+`26eb632f0e1210b03ac3aef4cfd71fdc4a0c5222`
+
+本审计独立工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-bridge`，分支 `feature/I05-semantic-bridge`，HEAD `7b9c4677885c60a534a098b436f087702d1c1b46`。该树只有受保护的 `AGENTS.md` guidance dirty；没有 stage、改写该文件。本报告只新增到此树 ignored `build/`。
+
+本任务已实际读回主线最新 AGENTS、根总控 `developer-common-instructions.md` 和 `external-review-permissions.md`；最终核对仍遵守当前 T01 / T03 / I06 的所有权。既有 I05 产品逻辑已冻结，不接管维护。AGENTS SHA256 为 `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`；总控说明 SHA256 为 `b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39`。
+
+本阶段只做文件读取、JSON / tar 解码、字节比较和哈希计算。没有修改主线源、测试、配置、包、文档、环境或原件；没有启动 Electron、原生窗口、HMR 或 CUA，没有操作 Docker，没有读取或复制运行数据库，也没有创建或更改 Goal。本阶段没有重跑任何产品测试、构建或打包。以下测试数字均来自主任务实际运行所留下的原件；本人的实际执行是证据读回，不冒充这些验收的执行者。
+
+## 2. 源码与运行证据归属
+
+读回 `build/i05-integrated/c2/source-export-manifest.json`，确认 head 为上述 26eb632，归档含 1159 个文件，其中单列 203 个执行输入。独立读取当前主线宿主文件并复算该 203 项哈希，零漂移；与此前本人固定 26 源码导出的 203 项也零漂移。`execution-and-protection-post.json` 的 203 项与源清单一致。
+
+完整 `source-export.tar.gz` 的 SHA256 为 `0e39dba8d0cf3b266de30cfb8a1008a323625f55310fa04b85becefe061bd6ae`，共 6,295,347 字节。已实际在内存解包读回 1159 个文件，逐项与源码清单比较，零缺失、零哈希不符。外层原件归档中保留的是该完整嵌套压缩字节。本核对没有将解包内容写入主线。
+
+保护记录 `execution-and-protection-post.json` SHA256 为 `f3c73e8f3a2cc335f76b2819626acfbb1388b873a414080d88a6854dd8700c38`。记录的 Linux 203 项执行输入零漂移、宿主零漂移、原 checkout 64 项保护及 AGENTS 均有明确值。本人又对 `/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio` 的 64 个实际文件逐项复算，全部匹配。Linux Docker 内部的零漂移结论来自主任务记录；本人未进入容器重查。保护记录时间早于最后两次补采集，故不将它冒称为补采集后的容器重测；当前宿主 203 项另经本人只读比对一致。
+
+`internal-review-complete/retention-manifest.json` 的 20 份独立审查工件，已同时与本人原文件、主线保全副本、记录的长度及 SHA256 比较，全部一致。
+
+## 3. 旧阻断与 26 修复关闭的记录没有混淆
+
+原 e7a6119 产品 / 3c0b3ba guard 测试检查点报告继续为 **NotPass，IB-1 阻断**，原报告字节未改：
+
+- `c2-review-original-IB-1.md`：`b27b6850802b15eae1de8369e4d7ae26e467c791af501808ce789021c704ff5f`。
+- 反例为无空白签名数字的 `STR(-01)` / `STR(+01)` 被 Unary 计算规范化，未按完整 token 保留 lexical form；BIND / VALUES / sameTerm 可观察到结果差异。原检查点测试全绿不能否定该反例。
+
+26eb632 的独立增量补审明确重新验证并关闭 IB-1，补审保留为另一个文件：
+
+- `c2-review-26-supplement.md`：`8d27233752d68827eb125229c7b20a78676f0ecb2fda7eeb1094b871b646392b`。
+- 此前本人实际独立执行过 488 项选定测试、134 项 cold / global-warm 矩阵，以及 10 项真实 worker / stdio 的签名查询和结果分页；本次只读回这些原件，没有重跑。
+- 修复保留带 parseAction 的 Var wrapper，按安全 streamline 条件得到 81 个分支（3 Unary + 78 Primary），只重排私有 clone；此前 2 / 4 分支 gate、错误 81 / blind 82 方案以及 Var wrapper 回归失败日志均仍在，不把失败实验改写成成功。
+- 新包真实 suite 的 `literalIdentity` 内容哈希 `056e55e102fe99c59df1363376af79051bddf2adff35595f3c7bdff985db3e2a` 与独立关闭证据一致，包含表达式 / token 身份检查及非法 Turtle 情形。
+
+原先说明的语言覆盖限制仍保留：这不构成完整 Turtle / SPARQL 规范符合性证明；既有 leading-semicolon 接受及混合 unsupported-function / SERVICE 优先级边界，没有在本次证据读回中被扩大为已修复或新 Pass。
+
+## 4. 主任务实跑结果与本人的核对内容
+
+| 原件类别 | 主任务实际结果 | 本人实际读回与判定 |
+| --- | --- | --- |
+| `check-full.txt` | 16 个 TS 测试文件，672 项通过；完整 lint / format / type / build / ruff 链；1764 项 Python 通过，81.14 秒 | 完整日志读回，未把旧 1712 项版本当最新结果 |
+| `verify-sources.txt` | 12 份来源通过 | 来源验收原件归属 26 检查点 |
+| macOS / Linux `*-runtime` | 各 7 项真实 stdio；分别 7.42 / 7.99 秒，exit 0 | summary、stdout、stderr 和 source / packaged 完整 suite 读回；stderr 为空，suite 完整相等 |
+| macOS / Linux `*-i04-package` | 各 17 项真实包验收；分别 13.56 / 14.37 秒，exit 0 | 完整输出与退出码读回；stderr 为空 |
+| B1 测量 | 各平台 legacy 12 + fresh 12，共各 24 份 | 每份 JSON 均读回；source / packaged、legacy / fresh 在各规模的完整结果一致；fresh 的 firstComplete / warmComplete 和到达时间 / 退出时间关系一致 |
+| 网络隔离测试 | 各平台 28 例；受控 loopback 接收器 positive calibration 1，denied hits 0 | 实际 audit / canary 输出读回；禁止请求未触发 socket / DNS / urllib。此证据不扩展为整机离线或 OS 沙箱证明 |
+| Linux source / packaged 原生完整文件 | 各 2 passed，24.8 / 24.3 秒 | bridge + native 原件、全结果、外部焦点及 GTK 对话框证据读回；首次内存 driver body 缺口单独保留 |
+| Linux source / packaged 补采集 | 各 native-only 1 passed，20.0631 / 20.163819 秒 | 完整 JSON reporter、base64 body、落盘 driver JSON、三窗口结果及对话框证据再次独立核对 |
+
+测量记录如实区分 legacy 的 firstAfterS1 和 fresh 的独立首次运行。每个平台的全部测量输出均保持相同业务结果；raw elapsedNs、tracemalloc、lifetime RSS 等仍按原定义记录，OS cache 未控制。本审计不从这些数据推导未设门槛的容量承诺或性能提升。
+
+两平台 `pyinstaller-imports.txt` 都含 `ontolearn_engine.semantic_query` 与 `ontolearn_engine.semantic_turtle`。库清单含固定的 rdflib 7.6.0、pyparsing 3.3.3、pyshacl 0.30.1、owlrl 7.6.2 等，第三方许可证文件与 native license provenance 有对应证据；这不是法律合规裁定，也不是 Electron 全依赖审计。
+
+## 5. 两平台包身份及已明示的 Linux 元数据错误
+
+macOS 包记录 arm64、CPython 3.12.12；engine 目录 37,640,421 字节 / 400 文件，app 目录 561,710,329 字节。engine SHA256：
+
+`16a70c7ac72c95834f9d9b9e548734e1102968a21e9da0361692c5893a14611f`
+
+本人独立对现存 macOS release 的实际 engine 可执行文件复算，吻合。Linux 记录 aarch64 / glibc 2.36、CPython 3.12.15 BUILD20261013；engine 目录 43,876,255 字节 / 409 文件。engine SHA256：
+
+`32fb61edc773557a17c25362d72b65f64428a8f4fa489ac1e6a1ca9da061b222`
+
+两份 engine 文件清单的逐项 bytes 之和，均由本人独立重算，与总量一致。
+
+Linux 原 package manifest 中 `appDirectoryBytes=0` 和 macOS-only limits 是旧脚本硬编码元数据问题，原字节仍保留，不能解释成实际 Linux app 为 0。独立校正记录给出实际 Linux app 363,175,466 字节，采用对真实 unpacked app 的递归 `is_file` 大小求和，且 engine 身份与保护记录一致。本人核对校正记录与 post 中数值一致，未进入 Docker 重新计算 app 大小。
+
+`package-platform-correction.json` SHA256：`873d6e2a4c147886a60a952fdcbc6fd9f24575b883f6e11f6a251c6d82b63832`。保留的错误原 manifest SHA256：`e3ebae0bad0195fc5ab2d41c7e8f663de31507db3876c05908fed258e4a636ab`。
+
+## 6. 原生故障、持久结果与 driver 日志补采集
+
+原 source / packaged 的 bridge 证据保留三种真实命名业务调用、真实 completed reasoning / query / validation、分页来源、scope / snapshot / version、四字段 NETWORK_FORBIDDEN、无原始 canary 泄露、慢查询 reload 后同 job / operation、历史 job 保持、仅主动 cancel 自己的慢查询及 cancelled / null result。
+
+原 native 证据和补采集证据都可读到：3 个可见窗口，真实 crashed / unresponsive，Main inspector 已关闭，hang monitor 保持开启，`noSandboxSwitch=false`；真实 GTK 标题“OntoLearn Studio 窗口恢复”，外部 xdotool 的 crash / hang 对话框记录；恢复后第二窗可见且取得实际 XGetInputFocus；三个窗口的项目 / snapshot / revision 相同，三个 completed 类型的完整结果不变；同一个真实慢 query 在三个窗口均 running，最后明确 cancel 成 cancelled。没有使用 `test.rounds` 冒充 semantic 慢任务，没有因 reload / fault 自动重放创建。
+
+本人使用 Node 的 `JSON.stringify` 对实际完整结果重算 SHA，而非只比较 summary 或行数。每个 runtime 内三个窗口的全结果相同，吻合各自记录的 hash；不同 runtime 的 UUID 不同，不强求跨 runtime 的完整 JSON 字节相同。补采集全结果的重算 hash 为：
+
+- source：`19c15cb7fc3daee5c1042ae21e7da7b4a491996b103eb3de4365a2011123871f`。
+- packaged：`b766edb4f93a087b943554a48b1248f56649201dc9ed5beb60181603a270b1ec`。
+
+本次审计最初发现：首次仅 list reporter 留下 path 附件，`i05-native-driver-log` 的内存 body 未落盘。原 source / packaged 的 2 × 2 通过仍有结构化故障和结果证据，但不能声称留存该次 stdout / stderr。主任务承认并保留缺口，仅为补全保全，各 runtime 后续执行一次 native-only，增加 list,json reporter；未改产品、配置、包和验收。新 report 的 errors 为空、expected=1、unexpected=0、flaky=0、skipped=0，实际 result passed。
+
+本人已从完整 JSON 的 base64 body 解码，与对应落盘 driver JSON 逐字节比较，均相同。关键 SHA256：
+
+| 补采集原件 | SHA256 |
+| --- | --- |
+| `linux-native-source-retained-report.json` | `2900d1a90d3a08554baf1c77e6effc3d4d005231f32b7f0bfdb5058c5b9ae358` |
+| `linux-native-packaged-retained-report.json` | `fe0cdba25fb7ef40f53312ca7c9e16f38e79cc1ee0d77c64b0b40a2ce45ecc48` |
+| `linux-native-source-retained-driver-log.json` | `3a00c7f4ff02bf1e2e02feda4972a782691c2adacad43172287fd0be7ff32040` |
+| `linux-native-packaged-retained-driver-log.json` | `0d94bfd04500a6f0b79c0673fdc63f89cfe6e05d9290ffdacd1825e7ef7849d3` |
+| `native-retention-supplement.json` | `7aad1f3bf8717364c746afaec833115e232c8b2010ae29ef6fb87b2b90e249d1` |
+
+source / packaged driver 文件分别 2381 / 2219 字节，stdout 为空，stderr 2319 / 2158 字符。harness 仅保留各 stdout / stderr 末 65536 字符，本次均未触及该上限；这不承诺所有子进程无界日志，也不追溯恢复首次运行的 body。
+
+## 7. 可恢复无损原件归档
+
+归档路径：主线 `docs/reviews/I05/evidence/integrated-c2/`。
+
+- `manifest.json` SHA256：`2ab6617d58ff469c723264ed4c89556f12e380f92142ff2854dab09b569a8740`。
+- `raw-evidence.tar.gz` SHA256：`6cbd669bcb54c877e9af5d4997959ea3643dd81d0ad85f694f0446f1947e783b`。
+- 压缩字节 8,673,247；258 个文件成员；展开成员总字节 31,539,919。
+
+本人独立打开归档，逐成员实际读取 bytes，与 manifest 的 member 名称集合、长度、SHA256 比较：成员数 / 名称完全一致、零缺失、零额外、零不符。总字节吻合。不是仅采信 `allMembersReadBackVerified=true`。嵌套 source-export 也独立按其 1159 项清单读回校验。
+
+归档包含：旧 C1 报告快照、C2 设计探针、历史失败及 superseded 文本证据、独立 IB-1 原阻断与关闭补审的原字节、完整测量 JSON、运行日志、native payload 与新 retained reporter / driver body、完整 source26 嵌套 gzip。此报告自身不反向加入受审归档，避免自引用；由主任务另行保全本报告及 SHA。
+
+没有 runtime DB / SQLite / WAL / SHM、writer lock、`.env` 或缓存。嵌套源码也核对过运行库 / 环境文件名排除；合法的 `LICENSE.sqlite.txt` 不是数据库，保留正确。没有解包 / 打开 / 复制 raw 目录中的运行 DB。
+
+当前真实 app 二进制仍在主任务 ignored release 路径；外层归档保留其身份、清单和验收证据，**不是完整 app 二进制备份**。这项排除已在 manifest 明示，不能把“完整证据归档”扩展为“可直接恢复全部已构建二进制或运行数据库”。源码与证据可恢复；重新生成 app 仍需指定构建环境及依赖。
+
+## 8. 本人实际命令与核对方法
+
+本次实际使用系统 `python3` / Node 做只读解析、标准库 hashlib / tarfile / JSON，以及 `git branch --show-current` / `git status --short` / `pwd` 核实自己的树。所有路径均显式指定。没有安装依赖或运行受审代码。代表性实际归档校验命令如下（同等逻辑已实际执行并得到上述结果）：
+
+```python
+from pathlib import Path
+import hashlib, io, json, tarfile
+root = Path('/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation')
+p = root / 'docs/reviews/I05/evidence/integrated-c2'
+m = json.loads((p / 'manifest.json').read_text())
+sha = lambda b: hashlib.sha256(b).hexdigest()
+archive = p / m['archive']
+assert sha(archive.read_bytes()) == m['archiveSha256']
+with tarfile.open(archive, 'r:gz') as t:
+    files = {x.name: x for x in t.getmembers() if x.isfile()}
+    index = {x['member']: x for x in m['members']}
+    assert files.keys() == index.keys()
+    for name, member in files.items():
+        data = t.extractfile(member).read()
+        assert len(data) == index[name]['bytes']
+        assert sha(data) == index[name]['sha256']
+    assert sum(x.size for x in files.values()) == m['uncompressedBytes']
+    source = next(n for n in files if n.endswith('/source-export.tar.gz'))
+    source_bytes = t.extractfile(source).read()
+    assert sha(source_bytes) == '0e39dba8d0cf3b266de30cfb8a1008a323625f55310fa04b85becefe061bd6ae'
+```
+
+另外实际逐项读取源码导出清单及保护清单，对每项对应文件计算 SHA256；JSON reporter 的 `i05-native-driver-log` base64 解码后与 driver 文件 bytes 比较；全部 B1 measurement JSON 比较完整 result；native 全结果通过 `crypto.createHash('sha256').update(JSON.stringify(result)).digest('hex')` 重算。以上属于读取证据与计算，不是产品运行验证。
+
+## 9. 结论的边界与交接
+
+没有发现新的证据归属冲突、索引不一致或本次必须补采集的未闭合阻断。两项需持续明确的历史事实均已无损保留：Linux 旧 manifest 的 app 大小 / 平台说明错误，以及首次 native driver body 未落盘。前者有单独校正记录；后者有单独新运行及完整 JSON body，不能篡改原轮次归属。
+
+本次允许将这些原件交给新的完整 C2 双审，但不能据此宣布双审通过。旧 C1 报告、本人原阻断 / 补审和本次证据审计均属于带固定输入的历史记录。未补做全 Q6、签名、目标平台选择、干净终端安装或生产验收，不将 B1 / Linux native 限定证据外推到这些范围。正式 freeze 应在本报告独立保全和流程文档封口后按主任务流程生成；纯文档与归档收口不要求重跑已通过且未变化的产品测试。

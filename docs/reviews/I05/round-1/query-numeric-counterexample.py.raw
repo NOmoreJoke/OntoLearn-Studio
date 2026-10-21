@@ -1,0 +1,16 @@
+"""Read-only C1 numeric-token probe; no implementation/grammar/global mutation."""
+import json
+from ontolearn_engine.semantic import query
+from ontolearn_engine.semantic_execution import _graph
+cases = []
+for token, datatype in [("01", "integer"), ("-01.00", "decimal"), ("01e+00", "double")]:
+    explicit = f'"{token}"^^<http://www.w3.org/2001/XMLSchema#{datatype}>'
+    graph = _graph([{"subject": "urn:s", "predicate": "urn:p", "object": explicit}])
+    outcomes = {}
+    for label, term in [("explicit", explicit), ("numericToken", token)]:
+        try:
+            outcomes[label] = query(graph, f"ASK {{ <urn:s> <urn:p> {term} }}")
+        except Exception as error:
+            outcomes[label] = {"exceptionType": type(error).__name__, "code": str(error)}
+    cases.append({"token": token, "savedObject": explicit, "results": outcomes})
+print(json.dumps({"head": "043c20cc7934191339a8814c79666dbd2e94a62a", "normativeSource": "https://www.w3.org/TR/sparql11-query/#QSynLiterals", "cases": cases}, indent=2))

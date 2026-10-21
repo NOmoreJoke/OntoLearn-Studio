@@ -1,0 +1,48 @@
+{
+  "head": "043c20cc7934191339a8814c79666dbd2e94a62a",
+  "normativeSource": "https://www.w3.org/TR/sparql11-query/#QSynLiterals",
+  "cases": [
+    {
+      "token": "01",
+      "savedObject": "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>",
+      "results": {
+        "explicit": {
+          "type": "ASK",
+          "value": true
+        },
+        "numericToken": {
+          "type": "ASK",
+          "value": false
+        }
+      }
+    },
+    {
+      "token": "-01.00",
+      "savedObject": "\"-01.00\"^^<http://www.w3.org/2001/XMLSchema#decimal>",
+      "results": {
+        "explicit": {
+          "type": "ASK",
+          "value": true
+        },
+        "numericToken": {
+          "exceptionType": "SemanticError",
+          "code": "INVALID_QUERY"
+        }
+      }
+    },
+    {
+      "token": "01e+00",
+      "savedObject": "\"01e+00\"^^<http://www.w3.org/2001/XMLSchema#double>",
+      "results": {
+        "explicit": {
+          "type": "ASK",
+          "value": true
+        },
+        "numericToken": {
+          "type": "ASK",
+          "value": false
+        }
+      }
+    }
+  ]
+}

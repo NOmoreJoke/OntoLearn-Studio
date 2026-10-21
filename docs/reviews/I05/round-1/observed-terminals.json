@@ -1,0 +1,67 @@
+{
+  "candidate": "043c20cc7934191339a8814c79666dbd2e94a62a",
+  "scope": "Same original C1 tasks; factual corrections never count as formal C2 review.",
+  "nativeUUID": "not exposed; association labels are not UUIDs",
+  "zcode": {
+    "fullReviewTerminal": true,
+    "allFactualFollowupsTerminal": true,
+    "currentTaskTitle": "I05 C1核实：事实身份与SHACL词法反例评估",
+    "associationLabel": "I05-C1-ZCode-GLM53-043c20cc7934191339a8814c79666dbd2e94a62a",
+    "state": "Actual final full response observed; completed54m31s, empty composer, Send disabled, no Stop or queued task; GLM-5.3 highest retained. Full151-line report read by developer.",
+    "final": {
+      "sha256": "9b34bb72eaeb35826434448ef84e205cbda865d769402c62200f28982aed8b31",
+      "bytes": 25625,
+      "lines": 151,
+      "verdict": "Pass conditional on new-candidate fixes; Z-1/Z-2 P1 confirmed. Not a dual-Pass gate.",
+      "notC2FormalReview": true
+    }
+  },
+  "minimax": {
+    "currentTaskTitle": "I05 语义校验分支第一轮独立只读审查",
+    "allFactualFollowupsTerminal": true,
+    "state": "Actual final response visible, no pending queue, empty composer Send message disabled, M3.1-Flash/xhigh retained; final report independently read by developer through prior text plus full deltas.",
+    "observedCompletedTurns": [
+      {
+        "phase": "lineage fact correction",
+        "verdict": "Pass before new lexical evidence; unusable for current gate",
+        "reportSha256": "03fd0f8983fe3131137cbeea48eac72ee158389b0e00a3cc24594fbf8a67e0f1",
+        "bytes": 44932,
+        "lines": 393,
+        "proof": "Actual completed response and no Stop generating observed before sending lexical evidence."
+      },
+      {
+        "phase": "SHACL counterexample factual investigation",
+        "verdict": "NotPass; B-1-prime blocker",
+        "reportSha256": "cd32b3a504b112c0fe3c8809e4e64d1cef96f0c694dcd456f4f4a4b613f698d4",
+        "bytes": 63445,
+        "lines": 511,
+        "proof": "Actual completed13m25 response, final path/SHA/verdict shown; queued next turn started."
+      },
+      {
+        "phase": "CI timing correction",
+        "verdict": "NotPass unchanged; CI follows push/PR and precedes merge",
+        "reportSha256": "b23d99de9fd31199640a71ad2df22e05ec28a85ca7260c5deec494b21a1913ee",
+        "bytes": 73801,
+        "lines": 574,
+        "proof": "Actual completed response, final path/SHA/verdict shown; final consolidated factual turn started."
+      }
+    ],
+    "final": {
+      "sha256": "62001ba637de4937d78f8f07c50982155940817041961259481298e5348a998b",
+      "bytes": 93217,
+      "lines": 690,
+      "verdict": "NotPass; SHACL B-1-prime remains blocker (false positive/negative); rule same-value assertion withdrawn by reviewer; M-3 numeric query new nonblocking finding",
+      "notC2FormalReview": true
+    }
+  },
+  "implementationStillFrozen": true,
+  "pushPrCiMerge": "not performed",
+  "c1ClosedBeforeProductEdits": true,
+  "finalDeveloperDriftCheck": {
+    "files": [],
+    "fullTrackedFilesExceptProtectedGuidance": [],
+    "executionInputs": []
+  },
+  "protectedGuidanceSha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+  "observedAt": "2026-10-21T00:46:19.717094+00:00"
+}

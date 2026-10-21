@@ -1,0 +1,1563 @@
+{
+  "sourceHead": "26eb632f0e1210b03ac3aef4cfd71fdc4a0c5222",
+  "createdAt": "2026-10-21T09:23:42.752886+08:00",
+  "archive": "raw-evidence.tar.gz",
+  "archiveBytes": 8673247,
+  "archiveSha256": "6cbd669bcb54c877e9af5d4997959ea3643dd81d0ad85f694f0446f1947e783b",
+  "memberCount": 258,
+  "uncompressedBytes": 31539919,
+  "allMembersReadBackVerified": true,
+  "scope": "Complete C2 relevant text/JSON/native payload/logs including first failures and superseded textual evidence, full source export26, independent raw probes and C1 report snapshots. Old superseded binary apps/venvs/caches and all runtime DB/SQLite/WAL excluded. Current actual binary packages remain own ignored release paths with identity/inventory in this archive.",
+  "whyTracked": "No C2 CI artifacts yet. Preserve full counterexamples and raw source/runtime/native evidence in a recoverable lossless archive for external and offline review; hashes alone are insufficient.",
+  "notIncluded": "Memory-only driver logs from first native2x2 cannot be recovered retrospectively; fresh same-input native1-per-runtime JSON reporter supplement captures its own bounded driver body. See native-retention-supplement.json. Original source export is nested compressed bytes and validated database/key/env exclusions.",
+  "members": [
+    {
+      "member": "c1-observations/manifest.json",
+      "originalPath": "build/i05-integrated/c1-observations/manifest.json",
+      "bytes": 2669,
+      "sha256": "eadbe02d04bf91152d377ae24bc8400a72bd76c810a86609bf9e0c7cbc981a55"
+    },
+    {
+      "member": "c1-observations/minimax-after-lineage-03fd0f.md",
+      "originalPath": "build/i05-integrated/c1-observations/minimax-after-lineage-03fd0f.md",
+      "bytes": 44932,
+      "sha256": "03fd0f8983fe3131137cbeea48eac72ee158389b0e00a3cc24594fbf8a67e0f1"
+    },
+    {
+      "member": "c1-observations/minimax-b23-to-final.diff.raw",
+      "originalPath": "build/i05-integrated/c1-observations/minimax-b23-to-final.diff.raw",
+      "bytes": 45940,
+      "sha256": "7dd2b44a64c985d3f67c85662d87a87f80db21094a4aee60d37e436a80b7c14a"
+    },
+    {
+      "member": "c1-observations/minimax-ci-clarification-terminal-b23d99de9fd31199640a71ad2df22e05ec28a85ca7260c5deec494b21a1913ee.md",
+      "originalPath": "build/i05-integrated/c1-observations/minimax-ci-clarification-terminal-b23d99de9fd31199640a71ad2df22e05ec28a85ca7260c5deec494b21a1913ee.md",
+      "bytes": 73801,
+      "sha256": "b23d99de9fd31199640a71ad2df22e05ec28a85ca7260c5deec494b21a1913ee"
+    },
+    {
+      "member": "c1-observations/minimax-final-terminal-62001ba637de4937d78f8f07c50982155940817041961259481298e5348a998b.md",
+      "originalPath": "build/i05-integrated/c1-observations/minimax-final-terminal-62001ba637de4937d78f8f07c50982155940817041961259481298e5348a998b.md",
+      "bytes": 93217,
+      "sha256": "62001ba637de4937d78f8f07c50982155940817041961259481298e5348a998b"
+    },
+    {
+      "member": "c1-observations/minimax-live-3ac7fcfaa83e6d86dc72ca2296455abaadeca57488dda850ef2a5f200ca9c66a.md",
+      "originalPath": "build/i05-integrated/c1-observations/minimax-live-3ac7fcfaa83e6d86dc72ca2296455abaadeca57488dda850ef2a5f200ca9c66a.md",
+      "bytes": 46491,
+      "sha256": "3ac7fcfaa83e6d86dc72ca2296455abaadeca57488dda850ef2a5f200ca9c66a"
+    },
+    {
+      "member": "c1-observations/minimax-live-74d1b77d7e1c993e8daa7bb2a6b9ee6456acf3b8701337ea2ee6a3b08ba1776f.md",
+      "originalPath": "build/i05-integrated/c1-observations/minimax-live-74d1b77d7e1c993e8daa7bb2a6b9ee6456acf3b8701337ea2ee6a3b08ba1776f.md",
+      "bytes": 55109,
+      "sha256": "74d1b77d7e1c993e8daa7bb2a6b9ee6456acf3b8701337ea2ee6a3b08ba1776f"
+    },
+    {
+      "member": "c1-observations/minimax-live-numeric-55f1fc67d9b1db1a2d9b44622a189f7ece90585069c122885034c3897b3ab5b8.md",
+      "originalPath": "build/i05-integrated/c1-observations/minimax-live-numeric-55f1fc67d9b1db1a2d9b44622a189f7ece90585069c122885034c3897b3ab5b8.md",
+      "bytes": 87478,
+      "sha256": "55f1fc67d9b1db1a2d9b44622a189f7ece90585069c122885034c3897b3ab5b8"
+    },
+    {
+      "member": "c1-observations/minimax-shacl-terminal-cd32b3a504b112c0fe3c8809e4e64d1cef96f0c694dcd456f4f4a4b613f698d4.md",
+      "originalPath": "build/i05-integrated/c1-observations/minimax-shacl-terminal-cd32b3a504b112c0fe3c8809e4e64d1cef96f0c694dcd456f4f4a4b613f698d4.md",
+      "bytes": 63445,
+      "sha256": "cd32b3a504b112c0fe3c8809e4e64d1cef96f0c694dcd456f4f4a4b613f698d4"
+    },
+    {
+      "member": "c1-observations/zcode-final-terminal-9b34bb72eaeb35826434448ef84e205cbda865d769402c62200f28982aed8b31.md",
+      "originalPath": "build/i05-integrated/c1-observations/zcode-final-terminal-9b34bb72eaeb35826434448ef84e205cbda865d769402c62200f28982aed8b31.md",
+      "bytes": 25625,
+      "sha256": "9b34bb72eaeb35826434448ef84e205cbda865d769402c62200f28982aed8b31"
+    },
+    {
+      "member": "c1-observations/zcode-first-written-9b34bb72eaeb35826434448ef84e205cbda865d769402c62200f28982aed8b31.md",
+      "originalPath": "build/i05-integrated/c1-observations/zcode-first-written-9b34bb72eaeb35826434448ef84e205cbda865d769402c62200f28982aed8b31.md",
+      "bytes": 25625,
+      "sha256": "9b34bb72eaeb35826434448ef84e205cbda865d769402c62200f28982aed8b31"
+    },
+    {
+      "member": "c2/affected-after-orphan.txt",
+      "originalPath": "build/i05-integrated/c2/affected-after-orphan.txt",
+      "bytes": 581,
+      "sha256": "fa1da4e8eecbdc0a4ed1d90f3c5c8fad96aa1214ef1f496c983e699b2b32dcc6"
+    },
+    {
+      "member": "c2/check-full.txt",
+      "originalPath": "build/i05-integrated/c2/check-full.txt",
+      "bytes": 6984,
+      "sha256": "24c34090f2b9f205dc2ebd7f432501856a8e9affaf5ee27bcf8faa69b610ffb6"
+    },
+    {
+      "member": "c2/document-format-final.txt",
+      "originalPath": "build/i05-integrated/c2/document-format-final.txt",
+      "bytes": 66,
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "member": "c2/evidence-retention-first-attempt.txt",
+      "originalPath": "build/i05-integrated/c2/evidence-retention-first-attempt.txt",
+      "bytes": 332,
+      "sha256": "417d36576be1b49266a9d111bfbe3c9379b2340d132e0491fe0c21f041b2243b"
+    },
+    {
+      "member": "c2/execution-and-protection-post.json",
+      "originalPath": "build/i05-integrated/c2/execution-and-protection-post.json",
+      "bytes": 42845,
+      "sha256": "f3c73e8f3a2cc335f76b2819626acfbb1388b873a414080d88a6854dd8700c38"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-IB-1-fixed-candidate.json",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-IB-1-fixed-candidate.json",
+      "bytes": 8532,
+      "sha256": "2b5f6691c7442be78e0331578f060289ca08e663502d741cb5f2110d54137bdb"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-flat-sign-probe-82.json",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-flat-sign-probe-82.json",
+      "bytes": 4986,
+      "sha256": "28cb188423cbefdec1c1f8c15018f2411a320b07b7c388e2d774275ec3b2ec8a"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-flat-sign-probe-82.py.raw",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-flat-sign-probe-82.py.raw",
+      "bytes": 2787,
+      "sha256": "4f957e811e8902a890a26bdf7474a91e7df177bbbe880117bd24052819803de6"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-flat-sign-probe.json",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-flat-sign-probe.json",
+      "bytes": 3640,
+      "sha256": "14d92241819d6949865f0548bbae080f82f91bd7156de5b6d3bcf962395ed9cb"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-flat-sign-probe.py.raw",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-flat-sign-probe.py.raw",
+      "bytes": 2784,
+      "sha256": "dc7fd68b0ba8afb926bd592a2e4bb341ece4bfc5bc35d1c23833e131d6d5efad"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-flat82-filter-ast.json",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-flat82-filter-ast.json",
+      "bytes": 4737,
+      "sha256": "0f6aabfd63d1182fb92f00b6fd4f0123d0b824ed80afcae5855912a0b233c2bd"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-local-sign-probe.json",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-local-sign-probe.json",
+      "bytes": 10542,
+      "sha256": "b8b6ca22b8d73e94f196c68388c0ba54a5fc3b5bdbbe5bda8e6502bf48313a85"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-local-sign-probe.py.raw",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-local-sign-probe.py.raw",
+      "bytes": 3482,
+      "sha256": "f4c41d4a5049c937ba64b55293f84a72b2bb17f07c34de0fe2edcd852bdcf5c6"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-review-26-independent-probe.json",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-review-26-independent-probe.json",
+      "bytes": 79671,
+      "sha256": "4637659cc6fe8ae914bc4ec6093e73ae11b550ede33ddc41758ebb194f1b7ecb"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-review-26-independent-probe.py.raw",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-review-26-independent-probe.py.raw",
+      "bytes": 3366,
+      "sha256": "6b8e5489eb4cacc5b8f39d2b7cdd0a6a7cba17883f5f65085ee8943d1c1f3206"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-review-26-manifest.json",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-review-26-manifest.json",
+      "bytes": 3212,
+      "sha256": "3a3b9daa3cb21d4c7af27d6a16d04ac3d9443d710bf5edd73f3bcd808781516b"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-review-26-real-signed-runtime.json",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-review-26-real-signed-runtime.json",
+      "bytes": 107668,
+      "sha256": "1fa6a3fbd99dcf50d63ba033943521889dfa4acb17fb2505411d2c885c7dc96b"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-review-26-real-signed-runtime.py.raw",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-review-26-real-signed-runtime.py.raw",
+      "bytes": 2759,
+      "sha256": "f5eb93ffc76a3c0b349c05baffc7533a13800054ecae06386b3f8429f69b12df"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-review-26-selected-tests.log",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-review-26-selected-tests.log",
+      "bytes": 581,
+      "sha256": "6f386c9fa732a8efbb1ce02dc7cace582ad3cb8690bc17dbea5ca683d901d8e5"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-review-26-supplement.md",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-review-26-supplement.md",
+      "bytes": 6669,
+      "sha256": "8d27233752d68827eb125229c7b20a78676f0ecb2fda7eeb1094b871b646392b"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-review-original-IB-1.md",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-review-original-IB-1.md",
+      "bytes": 7975,
+      "sha256": "b27b6850802b15eae1de8369e4d7ae26e467c791af501808ce789021c704ff5f"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-review-tests-e7a6119.log",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-review-tests-e7a6119.log",
+      "bytes": 22836,
+      "sha256": "32a87fa14e201cb3c33c4ca7e3add42a99e1057e8eb212c0b9362afa3aa5b76e"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-review-tests-fixed-env.log",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-review-tests-fixed-env.log",
+      "bytes": 581,
+      "sha256": "2ee791bf2b4082ba22fc9f393d6b7fca019cd3332a3b5941b35071b2c21fd65c"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-safe81-sign-probe.json",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-safe81-sign-probe.json",
+      "bytes": 5168,
+      "sha256": "44739c47b21b5d146579b4a63df8b4f727a0a4ea595d448a1b6553be40d2deb6"
+    },
+    {
+      "member": "c2/internal-review-complete/c2-safe81-sign-probe.py.raw",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/c2-safe81-sign-probe.py.raw",
+      "bytes": 2855,
+      "sha256": "de583dd6f7aad134fe87d1519ae2f0265eedf3c867a151f04809682450b74388"
+    },
+    {
+      "member": "c2/internal-review-complete/retention-manifest.json",
+      "originalPath": "build/i05-integrated/c2/internal-review-complete/retention-manifest.json",
+      "bytes": 7002,
+      "sha256": "ddf9997b92bcf8a6d862bf2c7c45752008ce519e8187a1376f7a1cf502f0f997"
+    },
+    {
+      "member": "c2/internal-review-original/c2-IB-1-fixed-candidate.json",
+      "originalPath": "build/i05-integrated/c2/internal-review-original/c2-IB-1-fixed-candidate.json",
+      "bytes": 8532,
+      "sha256": "2b5f6691c7442be78e0331578f060289ca08e663502d741cb5f2110d54137bdb"
+    },
+    {
+      "member": "c2/internal-review-original/c2-review-original-IB-1.md",
+      "originalPath": "build/i05-integrated/c2/internal-review-original/c2-review-original-IB-1.md",
+      "bytes": 7975,
+      "sha256": "b27b6850802b15eae1de8369e4d7ae26e467c791af501808ce789021c704ff5f"
+    },
+    {
+      "member": "c2/internal-review-original/manifest.json",
+      "originalPath": "build/i05-integrated/c2/internal-review-original/manifest.json",
+      "bytes": 699,
+      "sha256": "1ca0e7a9ac10618eea43ff5e039a53a2ae798c35a6afdeddd1c32329c0c75746"
+    },
+    {
+      "member": "c2/lexical-runtime-c1-red/manifest.json",
+      "originalPath": "build/i05-integrated/c2/lexical-runtime-c1-red/manifest.json",
+      "bytes": 1036,
+      "sha256": "5ceffbbc78ac7beebfb9bf4657fba143e15a3e3dd22bece9c29c68a502a6e124"
+    },
+    {
+      "member": "c2/lexical-runtime-c1-red/red-junit.xml",
+      "originalPath": "build/i05-integrated/c2/lexical-runtime-c1-red/red-junit.xml",
+      "bytes": 67933,
+      "sha256": "9562ce0aea9e49f6653e17313fe62befce0512c882a4f160d50716e676399422"
+    },
+    {
+      "member": "c2/lexical-runtime-c1-red/red-pytest.log",
+      "originalPath": "build/i05-integrated/c2/lexical-runtime-c1-red/red-pytest.log",
+      "bytes": 63702,
+      "sha256": "b5435cca807e5bc0b12b0f1fe1f233b3a61932cc78196433b4ceb10c4c03f1c1"
+    },
+    {
+      "member": "c2/lexical-runtime-c1-red/red-summary.json",
+      "originalPath": "build/i05-integrated/c2/lexical-runtime-c1-red/red-summary.json",
+      "bytes": 6338,
+      "sha256": "f84dd11692d952a60ed4f9d440c3c3884ef23dd4ba1a78cc20d8f3c45be986e7"
+    },
+    {
+      "member": "c2/lexical-runtime-signed-fixed.txt",
+      "originalPath": "build/i05-integrated/c2/lexical-runtime-signed-fixed.txt",
+      "bytes": 99,
+      "sha256": "289c520f9a5c3e8af153acb90cf5e57ee2c7167ed08a2db9f94ce3d324251539"
+    },
+    {
+      "member": "c2/lexical-unit-c1-red/c1-submitted-red.txt",
+      "originalPath": "build/i05-integrated/c2/lexical-unit-c1-red/c1-submitted-red.txt",
+      "bytes": 72926,
+      "sha256": "95c415fe354de554cc714ef88701e02f1e09eb65f9978089a71188af4640b41b"
+    },
+    {
+      "member": "c2/lexical-unit-c1-red/c2-current-source.txt",
+      "originalPath": "build/i05-integrated/c2/lexical-unit-c1-red/c2-current-source.txt",
+      "bytes": 1646,
+      "sha256": "23ce923f7bf128986f820bffc8bf553f5d56e7c1711441a4a28419d3b0443d23"
+    },
+    {
+      "member": "c2/lexical-unit-c1-red/manifest.json",
+      "originalPath": "build/i05-integrated/c2/lexical-unit-c1-red/manifest.json",
+      "bytes": 922,
+      "sha256": "19533c13a816b37f9972bb86c2758ce06d90af1c3bbde79af85b72ee9b9c66b6"
+    },
+    {
+      "member": "c2/lexical-unit-green.txt",
+      "originalPath": "build/i05-integrated/c2/lexical-unit-green.txt",
+      "bytes": 260,
+      "sha256": "9bc4eb23bde7ce7bcb92ea9116fe74b85361f4eda371cf4df1420d8c320928d6"
+    },
+    {
+      "member": "c2/lexical-unit-green.xml",
+      "originalPath": "build/i05-integrated/c2/lexical-unit-green.xml",
+      "bytes": 31519,
+      "sha256": "cab017831bafe9c60e592aad1b06444c4deb83d136369111a0ca2aca6365ca09"
+    },
+    {
+      "member": "c2/linux-cli.txt",
+      "originalPath": "build/i05-integrated/c2/linux-cli.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "member": "c2/linux-i04-package/common-examples.json",
+      "originalPath": "build/i05-integrated/c2/linux-i04-package/common-examples.json",
+      "bytes": 192,
+      "sha256": "9ff0f4b0bfbbac32b7e1e64c5327031bdb78831e44eab1813b7ad0cc6628f98a"
+    },
+    {
+      "member": "c2/linux-i04-package/resources.json",
+      "originalPath": "build/i05-integrated/c2/linux-i04-package/resources.json",
+      "bytes": 1175,
+      "sha256": "93e69a7ff0cc69fd6fe9f000ef8c6e37dae0e6c83be6f6cb6fbb1fc7c142393c"
+    },
+    {
+      "member": "c2/linux-i04-package.txt",
+      "originalPath": "build/i05-integrated/c2/linux-i04-package.txt",
+      "bytes": 265,
+      "sha256": "9e2e522d0088b68258e4a0f2554263f8ddf0207dd7d1b4da23f02a60f81ff52f"
+    },
+    {
+      "member": "c2/linux-lexical-source.txt",
+      "originalPath": "build/i05-integrated/c2/linux-lexical-source.txt",
+      "bytes": 341,
+      "sha256": "3af48d974dd8a8aa93175d8d64ce27cc9b11e8284a7b703edbc35bb11531c618"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/.last-run.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-fixture-metadata-0ab187bf60254bca005ab9a1494f608e21081307.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-fixture-metadata-0ab187bf60254bca005ab9a1494f608e21081307.json",
+      "bytes": 56952,
+      "sha256": "038a0fd7aaf92b97c1b366ac68e4db64302e761dcda288ce3c036aec483c30bd"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-evidence-8d06db47e09051c7b909ce95a4ed37aaa4a856d3.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-evidence-8d06db47e09051c7b909ce95a4ed37aaa4a856d3.json",
+      "bytes": 710815,
+      "sha256": "d13ffd41390f7f5980561d581594635b7d5849c899ce8bc8a6153eff4d40e515"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-final-evidence-8d06db47e09051c7b909ce95a4ed37aaa4a856d3.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-final-evidence-8d06db47e09051c7b909ce95a4ed37aaa4a856d3.json",
+      "bytes": 710815,
+      "sha256": "d13ffd41390f7f5980561d581594635b7d5849c899ce8bc8a6153eff4d40e515"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-verified-evidence-afdd64ab7ca5128348bd53511a0a1a625050bd2b.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-verified-evidence-afdd64ab7ca5128348bd53511a0a1a625050bd2b.json",
+      "bytes": 711176,
+      "sha256": "5a766face02996420edd936c28607e9c9c2056fe638315ec62465574dce250b4"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/evidence.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/evidence.json",
+      "bytes": 710815,
+      "sha256": "d13ffd41390f7f5980561d581594635b7d5849c899ce8bc8a6153eff4d40e515"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/i05-native-verified-evidence.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/i05-native-verified-evidence.json",
+      "bytes": 711176,
+      "sha256": "5a766face02996420edd936c28607e9c9c2056fe638315ec62465574dce250b4"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/fixture.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/fixture.json",
+      "bytes": 1060,
+      "sha256": "159146c7bc1e4a8a208e07ce4e555e389c70e307dfab104c520ae1320bc7c25b"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/metadata.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/metadata.json",
+      "bytes": 56952,
+      "sha256": "038a0fd7aaf92b97c1b366ac68e4db64302e761dcda288ce3c036aec483c30bd"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/native.cjs",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/native.cjs",
+      "bytes": 6683,
+      "sha256": "fd904c49a2808a49eb58aa7a9126c6136bbabcfbdc3e89a578396391cec23672"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/attachments/i05-fixture-metadata-85f2f130f6cd36cccd5cb4c5b4b8b66bbaca4ad4.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/attachments/i05-fixture-metadata-85f2f130f6cd36cccd5cb4c5b4b8b66bbaca4ad4.json",
+      "bytes": 56952,
+      "sha256": "7b830422bf5ba8b301ec75d480c98587e4d9d1effccc8adb479a7724ecd04904"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/attachments/i05-semantic-bridge-evidence-206bb17751dc80c26a57b37d7652ec839beead6e.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/attachments/i05-semantic-bridge-evidence-206bb17751dc80c26a57b37d7652ec839beead6e.json",
+      "bytes": 76353,
+      "sha256": "4af7e5ca93d301a809566bd2bf343d5d8bdc7195ff792db8a241f32eafd10520"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/i05-semantic-bridge-evidence.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/i05-semantic-bridge-evidence.json",
+      "bytes": 76353,
+      "sha256": "4af7e5ca93d301a809566bd2bf343d5d8bdc7195ff792db8a241f32eafd10520"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/isolated-sqlite-fixture/fixture.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/isolated-sqlite-fixture/fixture.json",
+      "bytes": 1060,
+      "sha256": "92c06cd1652b906acacc9a81721507d4ce748c7e93885b04965c36f28f9dc0cc"
+    },
+    {
+      "member": "c2/linux-native-packaged-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/isolated-sqlite-fixture/metadata.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/isolated-sqlite-fixture/metadata.json",
+      "bytes": 56952,
+      "sha256": "7b830422bf5ba8b301ec75d480c98587e4d9d1effccc8adb479a7724ecd04904"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained-driver-log.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained-driver-log.json",
+      "bytes": 2219,
+      "sha256": "0d94bfd04500a6f0b79c0673fdc63f89cfe6e05d9290ffdacd1825e7ef7849d3"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained-raw/.last-run.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained-raw/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-fixture-metadata-8e90a58f7af6f881a6c02bd5db1af14216ae0c3d.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-fixture-metadata-8e90a58f7af6f881a6c02bd5db1af14216ae0c3d.json",
+      "bytes": 56952,
+      "sha256": "7fcadee4617b6000f0b46bf55139cadbc1b2e699973275e1648809d4d49ea552"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-evidence-cfdd6bb6a106b3a0b7ba63b906f8fe437126f04f.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-evidence-cfdd6bb6a106b3a0b7ba63b906f8fe437126f04f.json",
+      "bytes": 710815,
+      "sha256": "e5734187376f0c8eb781dd23b8d2cda16aabf8c1a9b0c6f009c978565f907764"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-final-evidence-cfdd6bb6a106b3a0b7ba63b906f8fe437126f04f.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-final-evidence-cfdd6bb6a106b3a0b7ba63b906f8fe437126f04f.json",
+      "bytes": 710815,
+      "sha256": "e5734187376f0c8eb781dd23b8d2cda16aabf8c1a9b0c6f009c978565f907764"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-verified-evidence-d018a59635772129d6f201de4a11eebd67d878be.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-verified-evidence-d018a59635772129d6f201de4a11eebd67d878be.json",
+      "bytes": 711176,
+      "sha256": "02bc92833064b04518f465200de7177cea54aac4bcb1981bc79c4d9a6c21d680"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/evidence.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/evidence.json",
+      "bytes": 710815,
+      "sha256": "e5734187376f0c8eb781dd23b8d2cda16aabf8c1a9b0c6f009c978565f907764"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/i05-native-verified-evidence.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/i05-native-verified-evidence.json",
+      "bytes": 711176,
+      "sha256": "02bc92833064b04518f465200de7177cea54aac4bcb1981bc79c4d9a6c21d680"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/fixture.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/fixture.json",
+      "bytes": 1069,
+      "sha256": "cd4792cd68e2aa29697002eb4aa148e160a4b6b945bab039d7824d2375bf86aa"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/metadata.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/metadata.json",
+      "bytes": 56952,
+      "sha256": "7fcadee4617b6000f0b46bf55139cadbc1b2e699973275e1648809d4d49ea552"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/native.cjs",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/native.cjs",
+      "bytes": 6683,
+      "sha256": "fd904c49a2808a49eb58aa7a9126c6136bbabcfbdc3e89a578396391cec23672"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained-report.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained-report.json",
+      "bytes": 8257,
+      "sha256": "fe0cdba25fb7ef40f53312ca7c9e16f38e79cc1ee0d77c64b0b40a2ce45ecc48"
+    },
+    {
+      "member": "c2/linux-native-packaged-retained.txt",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged-retained.txt",
+      "bytes": 200,
+      "sha256": "51836f93c37a55463e487c955452092278d00c09d02ebdf29d11a36592ef402b"
+    },
+    {
+      "member": "c2/linux-native-packaged.txt",
+      "originalPath": "build/i05-integrated/c2/linux-native-packaged.txt",
+      "bytes": 351,
+      "sha256": "b67c7b7e3a42a5b101d61762c701be9d717bb00bc036dde8f0babfe3ead91b38"
+    },
+    {
+      "member": "c2/linux-native-sandbox.txt",
+      "originalPath": "build/i05-integrated/c2/linux-native-sandbox.txt",
+      "bytes": 116,
+      "sha256": "1af948ef15d3ef311b526aeb61017b8f448c749c26ca8dbacc70f7d648c45be8"
+    },
+    {
+      "member": "c2/linux-native-source-raw/.last-run.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-fixture-metadata-1edae8a5353bc73b43ea3b154a805f342886250d.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-fixture-metadata-1edae8a5353bc73b43ea3b154a805f342886250d.json",
+      "bytes": 56952,
+      "sha256": "2be62749a8862639e5ee080dac6d5deb9da378cd7e6f2a3dbdc845daa9a9d553"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-evidence-5252a439180a859ac68bf67cf31952080e9f428b.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-evidence-5252a439180a859ac68bf67cf31952080e9f428b.json",
+      "bytes": 710815,
+      "sha256": "da1a8e71aa8429fd9d54c7a44e9c35984c383861b25bc200813072e4e2a8962d"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-final-evidence-5252a439180a859ac68bf67cf31952080e9f428b.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-final-evidence-5252a439180a859ac68bf67cf31952080e9f428b.json",
+      "bytes": 710815,
+      "sha256": "da1a8e71aa8429fd9d54c7a44e9c35984c383861b25bc200813072e4e2a8962d"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-verified-evidence-ea2bef92a2817882cc00c172c4c47045335ff480.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-verified-evidence-ea2bef92a2817882cc00c172c4c47045335ff480.json",
+      "bytes": 711176,
+      "sha256": "bce8d327d595c14c75c26fe7a35e815acd0b956f944342ffd03f4741f66f4c9b"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/evidence.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/evidence.json",
+      "bytes": 710815,
+      "sha256": "da1a8e71aa8429fd9d54c7a44e9c35984c383861b25bc200813072e4e2a8962d"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/i05-native-verified-evidence.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/i05-native-verified-evidence.json",
+      "bytes": 711176,
+      "sha256": "bce8d327d595c14c75c26fe7a35e815acd0b956f944342ffd03f4741f66f4c9b"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/fixture.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/fixture.json",
+      "bytes": 1058,
+      "sha256": "19a5c801314f3e7b2f9b55634f98d66ea9944d529405c601a82febb2267fae42"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/metadata.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/metadata.json",
+      "bytes": 56952,
+      "sha256": "2be62749a8862639e5ee080dac6d5deb9da378cd7e6f2a3dbdc845daa9a9d553"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/native.cjs",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/native.cjs",
+      "bytes": 6683,
+      "sha256": "fd904c49a2808a49eb58aa7a9126c6136bbabcfbdc3e89a578396391cec23672"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/attachments/i05-fixture-metadata-9dd8ae0f859c5e480ac09c84d82738ae463ffa71.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/attachments/i05-fixture-metadata-9dd8ae0f859c5e480ac09c84d82738ae463ffa71.json",
+      "bytes": 56952,
+      "sha256": "ed72f8970861d3191a26dfda91a9e87a6bdf680fd5b465c7026b679142ed5bac"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/attachments/i05-semantic-bridge-evidence-3058ea03fcd97a96f502c8262785496cf2a2fddf.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/attachments/i05-semantic-bridge-evidence-3058ea03fcd97a96f502c8262785496cf2a2fddf.json",
+      "bytes": 76353,
+      "sha256": "d0b7d576c72de69afc22c15d9a1c285daa723aad8f35c82aebfe9e1b69b160f2"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/i05-semantic-bridge-evidence.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/i05-semantic-bridge-evidence.json",
+      "bytes": 76353,
+      "sha256": "d0b7d576c72de69afc22c15d9a1c285daa723aad8f35c82aebfe9e1b69b160f2"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/isolated-sqlite-fixture/fixture.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/isolated-sqlite-fixture/fixture.json",
+      "bytes": 1058,
+      "sha256": "38a05ffb3526427f6c48f8cca59d76d05f48c02579d4d0aa925de3348899cd41"
+    },
+    {
+      "member": "c2/linux-native-source-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/isolated-sqlite-fixture/metadata.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-raw/i05-semantics-I05-real-nam-8545a-d-and-explicit-cancellation/isolated-sqlite-fixture/metadata.json",
+      "bytes": 56952,
+      "sha256": "ed72f8970861d3191a26dfda91a9e87a6bdf680fd5b465c7026b679142ed5bac"
+    },
+    {
+      "member": "c2/linux-native-source-retained-driver-log.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained-driver-log.json",
+      "bytes": 2381,
+      "sha256": "3a00c7f4ff02bf1e2e02feda4972a782691c2adacad43172287fd0be7ff32040"
+    },
+    {
+      "member": "c2/linux-native-source-retained-raw/.last-run.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained-raw/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "member": "c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-fixture-metadata-cda2b0ca6f086f5c2bce30b733f8851c3eb45dc5.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-fixture-metadata-cda2b0ca6f086f5c2bce30b733f8851c3eb45dc5.json",
+      "bytes": 56952,
+      "sha256": "1bcb518a2ad0fb6a52374adbb8159cf67485ec9cd1b2d2b52e259c2c4c933491"
+    },
+    {
+      "member": "c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-evidence-e1da4179c260d3856adbf8e36a2c1585d2c3aab3.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-evidence-e1da4179c260d3856adbf8e36a2c1585d2c3aab3.json",
+      "bytes": 711006,
+      "sha256": "72add576ee0eec2c0d44114a747948acd497819c31e1f61e3c33df9ff82d6680"
+    },
+    {
+      "member": "c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-final-evidence-e1da4179c260d3856adbf8e36a2c1585d2c3aab3.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-final-evidence-e1da4179c260d3856adbf8e36a2c1585d2c3aab3.json",
+      "bytes": 711006,
+      "sha256": "72add576ee0eec2c0d44114a747948acd497819c31e1f61e3c33df9ff82d6680"
+    },
+    {
+      "member": "c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-verified-evidence-896359e6648e3b4a57f893497d831e60c6d26fc4.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/attachments/i05-native-verified-evidence-896359e6648e3b4a57f893497d831e60c6d26fc4.json",
+      "bytes": 711367,
+      "sha256": "a623b8f0c3e167e20724a29fd711c50994d717ce29f605c67472bae10ae5ca18"
+    },
+    {
+      "member": "c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/evidence.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/evidence.json",
+      "bytes": 711006,
+      "sha256": "72add576ee0eec2c0d44114a747948acd497819c31e1f61e3c33df9ff82d6680"
+    },
+    {
+      "member": "c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/i05-native-verified-evidence.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/i05-native-verified-evidence.json",
+      "bytes": 711367,
+      "sha256": "a623b8f0c3e167e20724a29fd711c50994d717ce29f605c67472bae10ae5ca18"
+    },
+    {
+      "member": "c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/fixture.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/fixture.json",
+      "bytes": 1067,
+      "sha256": "353a7bf4d0e05f7d6b5a5d5e874a2aeccf09a31b505a6bcd0415c02faab837d3"
+    },
+    {
+      "member": "c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/metadata.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/isolated-sqlite-fixture/metadata.json",
+      "bytes": 56952,
+      "sha256": "1bcb518a2ad0fb6a52374adbb8159cf67485ec9cd1b2d2b52e259c2c4c933491"
+    },
+    {
+      "member": "c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/native.cjs",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained-raw/i05-semantics-I05-native-r-8de78--immutable-semantic-outputs/native.cjs",
+      "bytes": 6683,
+      "sha256": "fd904c49a2808a49eb58aa7a9126c6136bbabcfbdc3e89a578396391cec23672"
+    },
+    {
+      "member": "c2/linux-native-source-retained-report.json",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained-report.json",
+      "bytes": 8457,
+      "sha256": "2900d1a90d3a08554baf1c77e6effc3d4d005231f32b7f0bfdb5058c5b9ae358"
+    },
+    {
+      "member": "c2/linux-native-source-retained.txt",
+      "originalPath": "build/i05-integrated/c2/linux-native-source-retained.txt",
+      "bytes": 200,
+      "sha256": "989cd1531c5241a7c0a75ab24f044f5b188c5e43f15854736b0a8d32461292c1"
+    },
+    {
+      "member": "c2/linux-native-source.txt",
+      "originalPath": "build/i05-integrated/c2/linux-native-source.txt",
+      "bytes": 351,
+      "sha256": "bf04c3a28562fc60ee8a10c39468a3ee32cb3f9e9f29dda8bc4ab35ea8fd3d01"
+    },
+    {
+      "member": "c2/linux-parity/network.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/network.json",
+      "bytes": 318,
+      "sha256": "dccdae95fb3f1b1626f44767f7a506429abdcdaa4d1b461f20fa5990eac2bf6b"
+    },
+    {
+      "member": "c2/linux-parity/package-manifest.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/package-manifest.json",
+      "bytes": 114158,
+      "sha256": "e3ebae0bad0195fc5ab2d41c7e8f663de31507db3876c05908fed258e4a636ab"
+    },
+    {
+      "member": "c2/linux-parity/packaged-10x-0.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-10x-0.json",
+      "bytes": 93510,
+      "sha256": "fbf34603b83dad4e8350e304b52cd146cd9e9d37da9083d50652585d95f0ea40"
+    },
+    {
+      "member": "c2/linux-parity/packaged-10x-1.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-10x-1.json",
+      "bytes": 93510,
+      "sha256": "821913664df2b7bb507bdbc0d9bfe912078ab4f4a8c4521051aa532ed9f753f8"
+    },
+    {
+      "member": "c2/linux-parity/packaged-10x-2.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-10x-2.json",
+      "bytes": 93510,
+      "sha256": "638d08ca55e23b25c8190da5f2b10c4bcb97f57c7c767838013bc9cb988732f2"
+    },
+    {
+      "member": "c2/linux-parity/packaged-1x-0.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-1x-0.json",
+      "bytes": 15019,
+      "sha256": "b9c9795ec01353df44308633f5229082e59c0257af409ff12856dd3e6489cc25"
+    },
+    {
+      "member": "c2/linux-parity/packaged-1x-1.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-1x-1.json",
+      "bytes": 15017,
+      "sha256": "3d62da7075352d366d4da0062fb14739a87edae8b3d7a51f2b825afc5075199c"
+    },
+    {
+      "member": "c2/linux-parity/packaged-1x-2.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-1x-2.json",
+      "bytes": 15020,
+      "sha256": "a2ac279bf19f51a71a148909ce8e5f654b545caa571a9bffb0cac508130ec3ae"
+    },
+    {
+      "member": "c2/linux-parity/packaged-fresh-10x-0.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-fresh-10x-0.json",
+      "bytes": 203936,
+      "sha256": "235cd8c800d72c3c5ecff8c89c426afb06f8c6f8a28c8a55ad5c97aba401f0d9"
+    },
+    {
+      "member": "c2/linux-parity/packaged-fresh-10x-1.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-fresh-10x-1.json",
+      "bytes": 203936,
+      "sha256": "4ccf0f2a76e9722d6c5ab0c551bce3e5b8a4f5268888adb9f71bb781011d59ae"
+    },
+    {
+      "member": "c2/linux-parity/packaged-fresh-10x-2.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-fresh-10x-2.json",
+      "bytes": 203936,
+      "sha256": "5776c8c2e20f5d549b279eec95a08a56dd41ff1a0a64648356c35e26c4b7e3ca"
+    },
+    {
+      "member": "c2/linux-parity/packaged-fresh-1x-0.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-fresh-1x-0.json",
+      "bytes": 28897,
+      "sha256": "4bc4c96b0151777346fc341d4517e908fd8cc2c2cc71ccf872b9970a44a29e1b"
+    },
+    {
+      "member": "c2/linux-parity/packaged-fresh-1x-1.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-fresh-1x-1.json",
+      "bytes": 28898,
+      "sha256": "edd497433a1b3d9c1243bd5921b491cb6478d8d673bc6d7e5ec09736f49380ec"
+    },
+    {
+      "member": "c2/linux-parity/packaged-fresh-1x-2.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-fresh-1x-2.json",
+      "bytes": 28897,
+      "sha256": "462f2775524019301c1e0788f5825365b0988d6126e3b37e4db818abf4371720"
+    },
+    {
+      "member": "c2/linux-parity/packaged-semantic.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/packaged-semantic.json",
+      "bytes": 95604,
+      "sha256": "4971ded21051c63fcddc81b6183193bda5b5e7c7b5a86d488252564e7a0c12aa"
+    },
+    {
+      "member": "c2/linux-parity/pyinstaller-imports.txt",
+      "originalPath": "build/i05-integrated/c2/linux-parity/pyinstaller-imports.txt",
+      "bytes": 33252,
+      "sha256": "05a6a464dde14d678474c1f931e92f5618c3e1d6ec3d2590cdab901bdf0f2df4"
+    },
+    {
+      "member": "c2/linux-parity/source-10x-0.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-10x-0.json",
+      "bytes": 93508,
+      "sha256": "52a4b8b72eff4a88a282483515e130b52b5c5e189a944ec5126659c57791cc6d"
+    },
+    {
+      "member": "c2/linux-parity/source-10x-1.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-10x-1.json",
+      "bytes": 93506,
+      "sha256": "baf00b8f5a017e2edfc27190643f19ae305b5a9bf5fe6aa435da792abbbd5658"
+    },
+    {
+      "member": "c2/linux-parity/source-10x-2.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-10x-2.json",
+      "bytes": 93508,
+      "sha256": "afe4cf426486e15522aea4996e6bdf37ea92d5b816e2f666f13837103dffe8f1"
+    },
+    {
+      "member": "c2/linux-parity/source-1x-0.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-1x-0.json",
+      "bytes": 15014,
+      "sha256": "6c137f59699d80b70c3256af5db62ee358e1165bfdb3c0ab455256b7ddab5a18"
+    },
+    {
+      "member": "c2/linux-parity/source-1x-1.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-1x-1.json",
+      "bytes": 15014,
+      "sha256": "368647c2ef4fb617905a27ca5be6af31f9e6fe4d8172ac210c502657a3f0337e"
+    },
+    {
+      "member": "c2/linux-parity/source-1x-2.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-1x-2.json",
+      "bytes": 15014,
+      "sha256": "b64b9e59be9a5bd4888e3431ff8f3d971f4ce4f4bb0be288bb9c78aa16233193"
+    },
+    {
+      "member": "c2/linux-parity/source-fresh-10x-0.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-fresh-10x-0.json",
+      "bytes": 203927,
+      "sha256": "8125defdc6265eb5d54ac9e4fe72f72f2ceb68342387767d3e16da08eb705e70"
+    },
+    {
+      "member": "c2/linux-parity/source-fresh-10x-1.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-fresh-10x-1.json",
+      "bytes": 203927,
+      "sha256": "894e7593a68faacb8dd8b480e68d027b86639e2bac6b089a871ad77b70596e54"
+    },
+    {
+      "member": "c2/linux-parity/source-fresh-10x-2.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-fresh-10x-2.json",
+      "bytes": 203929,
+      "sha256": "5c40eec7d5ba0308edad09cb991395f965e9e7a6122871fc69a7febe92445ee2"
+    },
+    {
+      "member": "c2/linux-parity/source-fresh-1x-0.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-fresh-1x-0.json",
+      "bytes": 28892,
+      "sha256": "a98b13cea96637eab8c42f6a6a99fbea7930c7562b12d3b8b0734fc5a3d2343e"
+    },
+    {
+      "member": "c2/linux-parity/source-fresh-1x-1.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-fresh-1x-1.json",
+      "bytes": 28892,
+      "sha256": "61fa8a168f98ec5b9b1cc22f4883165a85fa7696805cb7203c979de1648d902d"
+    },
+    {
+      "member": "c2/linux-parity/source-fresh-1x-2.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-fresh-1x-2.json",
+      "bytes": 28893,
+      "sha256": "96d895b72452e1e2d8260aead12a951db55f87c82a71d4b50c338e0347c6a65d"
+    },
+    {
+      "member": "c2/linux-parity/source-semantic.json",
+      "originalPath": "build/i05-integrated/c2/linux-parity/source-semantic.json",
+      "bytes": 95604,
+      "sha256": "fced38f03a1c2b9cfd5e8d43bdbf4ac4d0f0f3823f0e5d287cfcfd77aa0862c0"
+    },
+    {
+      "member": "c2/linux-parity-run.txt",
+      "originalPath": "build/i05-integrated/c2/linux-parity-run.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "member": "c2/linux-parity.txt",
+      "originalPath": "build/i05-integrated/c2/linux-parity.txt",
+      "bytes": 427,
+      "sha256": "b69c7c33aa733ba254abbd28157d0550b387203187c06ebc9b73d8747ef5cda5"
+    },
+    {
+      "member": "c2/linux-runtime/summary.json",
+      "originalPath": "build/i05-integrated/c2/linux-runtime/summary.json",
+      "bytes": 450,
+      "sha256": "67c9f6b6ee23e313b92545c3f2f4022139e5bb485717f2b8550dff22ad4bd934"
+    },
+    {
+      "member": "c2/linux-runtime.txt",
+      "originalPath": "build/i05-integrated/c2/linux-runtime.txt",
+      "bytes": 434,
+      "sha256": "54deb4438badb2135c9f708f4e454c34a9412ee5bbc0ed612d0ffb56528a83b4"
+    },
+    {
+      "member": "c2/linux-source-and-package.txt",
+      "originalPath": "build/i05-integrated/c2/linux-source-and-package.txt",
+      "bytes": 15017,
+      "sha256": "d0e6ef483ca12af4cc7ad4df250ddad6a59c7bbdcbbe80bd210915d7f469692c"
+    },
+    {
+      "member": "c2/linux-source-binding.json",
+      "originalPath": "build/i05-integrated/c2/linux-source-binding.json",
+      "bytes": 257,
+      "sha256": "01394e304749aa32422fb60b741df6aabe6f74a39b37422b45c243a2348d7dc5"
+    },
+    {
+      "member": "c2/macos-i04-package/common-examples.json",
+      "originalPath": "build/i05-integrated/c2/macos-i04-package/common-examples.json",
+      "bytes": 192,
+      "sha256": "9ff0f4b0bfbbac32b7e1e64c5327031bdb78831e44eab1813b7ad0cc6628f98a"
+    },
+    {
+      "member": "c2/macos-i04-package/resources.json",
+      "originalPath": "build/i05-integrated/c2/macos-i04-package/resources.json",
+      "bytes": 1175,
+      "sha256": "93e69a7ff0cc69fd6fe9f000ef8c6e37dae0e6c83be6f6cb6fbb1fc7c142393c"
+    },
+    {
+      "member": "c2/macos-i04-package.txt",
+      "originalPath": "build/i05-integrated/c2/macos-i04-package.txt",
+      "bytes": 375,
+      "sha256": "2fba533a406741a5f6aeb3899f95974df03c0f6dfe383dc182532c1b0ac88950"
+    },
+    {
+      "member": "c2/macos-parity/dynamic-linkage.txt",
+      "originalPath": "build/i05-integrated/c2/macos-parity/dynamic-linkage.txt",
+      "bytes": 1536,
+      "sha256": "7cc7ab89744e772c7bd824d188601d518a302089553faa772efba4cf6092272c"
+    },
+    {
+      "member": "c2/macos-parity/network.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/network.json",
+      "bytes": 318,
+      "sha256": "dccdae95fb3f1b1626f44767f7a506429abdcdaa4d1b461f20fa5990eac2bf6b"
+    },
+    {
+      "member": "c2/macos-parity/package-manifest.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/package-manifest.json",
+      "bytes": 113126,
+      "sha256": "1885e622e152230c8203d2c54beedf086da0258c84793a051f83b1cdcae46c2c"
+    },
+    {
+      "member": "c2/macos-parity/packaged-10x-0.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-10x-0.json",
+      "bytes": 93489,
+      "sha256": "60e16fce5538abb3eafd9daf5c8f9919883f5fcb427c1341c1ee5af5156183b9"
+    },
+    {
+      "member": "c2/macos-parity/packaged-10x-1.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-10x-1.json",
+      "bytes": 93489,
+      "sha256": "0350389114fd603e3996607ffaa5a41e755b3b09ba9115d1406457a80202ae4b"
+    },
+    {
+      "member": "c2/macos-parity/packaged-10x-2.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-10x-2.json",
+      "bytes": 93489,
+      "sha256": "efb8e131bb0ce1227410a33a253fdcbd6f4458aa36a7760968ec72934a8316a5"
+    },
+    {
+      "member": "c2/macos-parity/packaged-1x-0.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-1x-0.json",
+      "bytes": 14998,
+      "sha256": "34d8c96e6cd90c34e4d88e3148e3a9ca650e9bdf2568a883a8fdd508ac737d13"
+    },
+    {
+      "member": "c2/macos-parity/packaged-1x-1.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-1x-1.json",
+      "bytes": 14998,
+      "sha256": "fa55e603b0ae7aadfc7d899d0af6546f1c6ba1d9b60b68f323a68a1c533d579d"
+    },
+    {
+      "member": "c2/macos-parity/packaged-1x-2.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-1x-2.json",
+      "bytes": 14998,
+      "sha256": "8eab1843b52114f34c2df78d05a35f04a282aeb32726bb28a1f4c1a888f5e881"
+    },
+    {
+      "member": "c2/macos-parity/packaged-fresh-10x-0.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-fresh-10x-0.json",
+      "bytes": 203900,
+      "sha256": "877c8ffb4902874ad3f5cfd5ca34be636068330a99b823fdbc8c6426439b9d08"
+    },
+    {
+      "member": "c2/macos-parity/packaged-fresh-10x-1.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-fresh-10x-1.json",
+      "bytes": 203901,
+      "sha256": "15fb8d3dd3e32dd908d89fe36ac6a92cdbadcb61424827e6a0551428a1c82818"
+    },
+    {
+      "member": "c2/macos-parity/packaged-fresh-10x-2.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-fresh-10x-2.json",
+      "bytes": 203901,
+      "sha256": "0592d169377af45aef54e3ed85311d12e68b56a5058a10ba3f073a075aeb2f64"
+    },
+    {
+      "member": "c2/macos-parity/packaged-fresh-1x-0.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-fresh-1x-0.json",
+      "bytes": 28859,
+      "sha256": "43a3d53236c25b233ccd102b5a4582c3c5a1c1e2bb4e73f8b7d3dddf8264e859"
+    },
+    {
+      "member": "c2/macos-parity/packaged-fresh-1x-1.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-fresh-1x-1.json",
+      "bytes": 28860,
+      "sha256": "0dd2330281b3dc93ea2c8f7a38e0bc977cd19cf78ff8c69fced7d10f91a53bdd"
+    },
+    {
+      "member": "c2/macos-parity/packaged-fresh-1x-2.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-fresh-1x-2.json",
+      "bytes": 28860,
+      "sha256": "7dac54ba5790efcb044d127f8bcc86834b751faada8c605848ed7c181bf889ad"
+    },
+    {
+      "member": "c2/macos-parity/packaged-semantic.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/packaged-semantic.json",
+      "bytes": 95604,
+      "sha256": "cccba37147d4989f6100c05a9fd7635268430d968b66faa4eae14a87a812decd"
+    },
+    {
+      "member": "c2/macos-parity/pyinstaller-imports.txt",
+      "originalPath": "build/i05-integrated/c2/macos-parity/pyinstaller-imports.txt",
+      "bytes": 33272,
+      "sha256": "4d7bf4724717e90f40bb130c9ac3c98f3ab844cae8eb10fda8493fca5dbcd2c2"
+    },
+    {
+      "member": "c2/macos-parity/source-10x-0.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-10x-0.json",
+      "bytes": 93487,
+      "sha256": "60db72204dc61f10b035c6e92241e175d5a345ed6ff9232b189bca4bfdff33e4"
+    },
+    {
+      "member": "c2/macos-parity/source-10x-1.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-10x-1.json",
+      "bytes": 93488,
+      "sha256": "3c6e6635b8c26448e0982820e1a239dc221ff9f0c21fd588539fd5c3038fc330"
+    },
+    {
+      "member": "c2/macos-parity/source-10x-2.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-10x-2.json",
+      "bytes": 93488,
+      "sha256": "02cd9aa4014902ec88bad6ef06e6a0b8603192c05444a1c46afe9f0c75f4e58c"
+    },
+    {
+      "member": "c2/macos-parity/source-1x-0.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-1x-0.json",
+      "bytes": 14995,
+      "sha256": "0cd6ae92a513bdeb8555db63319c72121139a1d000c883dfa33eca88c4d11e47"
+    },
+    {
+      "member": "c2/macos-parity/source-1x-1.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-1x-1.json",
+      "bytes": 14996,
+      "sha256": "2fbaa3172287c58384197b13b0d3adad96e978707ecfb34915a09e299cc72e90"
+    },
+    {
+      "member": "c2/macos-parity/source-1x-2.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-1x-2.json",
+      "bytes": 14996,
+      "sha256": "1a8273c103e377e5f3ce14e995f77142692638887e1da004c74206d6675a7a79"
+    },
+    {
+      "member": "c2/macos-parity/source-fresh-10x-0.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-fresh-10x-0.json",
+      "bytes": 203889,
+      "sha256": "f38353fc2dc0b32dcfcd647aa3e1f1d8dd9eb93bc0f972f96fc37c6d83a976bb"
+    },
+    {
+      "member": "c2/macos-parity/source-fresh-10x-1.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-fresh-10x-1.json",
+      "bytes": 203890,
+      "sha256": "b2ec49150bfc398be0033115ee9244572959f02d6e11cafb40cfcf82578e63ba"
+    },
+    {
+      "member": "c2/macos-parity/source-fresh-10x-2.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-fresh-10x-2.json",
+      "bytes": 203890,
+      "sha256": "23ee83f443d1960e39f130d2e75a0a23579cb57aaa77b577a8957686d0cf05e8"
+    },
+    {
+      "member": "c2/macos-parity/source-fresh-1x-0.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-fresh-1x-0.json",
+      "bytes": 28856,
+      "sha256": "49d1f5bffc9fa4ea086204a6f4a3a5391ff80a6ca130d94a561d34c36d9b4870"
+    },
+    {
+      "member": "c2/macos-parity/source-fresh-1x-1.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-fresh-1x-1.json",
+      "bytes": 28857,
+      "sha256": "c3ed47e913e6995e2e06292cb4a0bc150ce2ca57a793c6da34adc285b36e0a9b"
+    },
+    {
+      "member": "c2/macos-parity/source-fresh-1x-2.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-fresh-1x-2.json",
+      "bytes": 28855,
+      "sha256": "c1f96be7ac7202e99ed3a7ac3bddfaa3f2bd480da3f08bd66ac7bdd5feda5116"
+    },
+    {
+      "member": "c2/macos-parity/source-semantic.json",
+      "originalPath": "build/i05-integrated/c2/macos-parity/source-semantic.json",
+      "bytes": 95604,
+      "sha256": "37d4585827b9b43bf3b982a0ff99fb071f8204e4ead7eff340d0239a2b0fb535"
+    },
+    {
+      "member": "c2/macos-parity.txt",
+      "originalPath": "build/i05-integrated/c2/macos-parity.txt",
+      "bytes": 435,
+      "sha256": "ab3dea37a26f705832d05a0d397e75653f36ea13cf2ab5685659d2fa3eac92a3"
+    },
+    {
+      "member": "c2/macos-runtime/summary.json",
+      "originalPath": "build/i05-integrated/c2/macos-runtime/summary.json",
+      "bytes": 417,
+      "sha256": "c40466c309d8bf0e9beca15fc7f8f3ccc3e7199832f4fd533861321ec15c9f86"
+    },
+    {
+      "member": "c2/macos-runtime.txt",
+      "originalPath": "build/i05-integrated/c2/macos-runtime.txt",
+      "bytes": 401,
+      "sha256": "8d3c6cf5d23536697d74e749292847fcb5491d68e05a7c17c8e2a486c08e637d"
+    },
+    {
+      "member": "c2/native-retention-supplement.json",
+      "originalPath": "build/i05-integrated/c2/native-retention-supplement.json",
+      "bytes": 1770,
+      "sha256": "7aad1f3bf8717364c746afaec833115e232c8b2010ae29ef6fb87b2b90e249d1"
+    },
+    {
+      "member": "c2/orphan-statement-evidence/c1-statement-red.txt",
+      "originalPath": "build/i05-integrated/c2/orphan-statement-evidence/c1-statement-red.txt",
+      "bytes": 87857,
+      "sha256": "b11bbe47e8bda97beb5a096ccf7cc8ee407d22f393f02823b0f82f2aa04f07b7"
+    },
+    {
+      "member": "c2/orphan-statement-evidence/c2-statement-bound-run-success.json",
+      "originalPath": "build/i05-integrated/c2/orphan-statement-evidence/c2-statement-bound-run-success.json",
+      "bytes": 3810,
+      "sha256": "cc72cb07ce021ce505fbefda9d9fe68008bd87c61734a460c2e42362eebcb7f2"
+    },
+    {
+      "member": "c2/orphan-statement-evidence/c2-statement-current-source.txt",
+      "originalPath": "build/i05-integrated/c2/orphan-statement-evidence/c2-statement-current-source.txt",
+      "bytes": 260,
+      "sha256": "785a7baaecf0e6210510d3106c7de08afcee5e7e55fb71e5ec5024dc5adffff6"
+    },
+    {
+      "member": "c2/orphan-statement-evidence/manifest.json",
+      "originalPath": "build/i05-integrated/c2/orphan-statement-evidence/manifest.json",
+      "bytes": 1833,
+      "sha256": "dc4ea8d3d5a7135ba1cacba23a49018b2106616798d931bde87b08a4371bac2a"
+    },
+    {
+      "member": "c2/orphan-statement-evidence/probe.py.raw",
+      "originalPath": "build/i05-integrated/c2/orphan-statement-evidence/probe.py.raw",
+      "bytes": 5757,
+      "sha256": "f40d15b7fbce53801976497e9e7f457a75e7635e6a5d18cfe02aadc6bcf8384d"
+    },
+    {
+      "member": "c2/orphan-statement-evidence/raw.json",
+      "originalPath": "build/i05-integrated/c2/orphan-statement-evidence/raw.json",
+      "bytes": 19897,
+      "sha256": "b0cd9ee423d02b1eab39afc2ffdaac7ba19d02083b1940108ec5e8edee463800"
+    },
+    {
+      "member": "c2/package-macos.txt",
+      "originalPath": "build/i05-integrated/c2/package-macos.txt",
+      "bytes": 19462,
+      "sha256": "30f71303342e731f8bfd49f289dca1eaaba9cac58b601a15c55acb382780bb08"
+    },
+    {
+      "member": "c2/package-platform-correction.json",
+      "originalPath": "build/i05-integrated/c2/package-platform-correction.json",
+      "bytes": 1021,
+      "sha256": "873d6e2a4c147886a60a952fdcbc6fd9f24575b883f6e11f6a251c6d82b63832"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/dynamic-linkage.txt",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/dynamic-linkage.txt",
+      "bytes": 1536,
+      "sha256": "7cc7ab89744e772c7bd824d188601d518a302089553faa772efba4cf6092272c"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/network.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/network.json",
+      "bytes": 318,
+      "sha256": "dccdae95fb3f1b1626f44767f7a506429abdcdaa4d1b461f20fa5990eac2bf6b"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/package-manifest.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/package-manifest.json",
+      "bytes": 113126,
+      "sha256": "6fc376498aa50015954342344b0a6ce51a2157a30be31a69fdbba3318c81a351"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-10x-0.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-10x-0.json",
+      "bytes": 93488,
+      "sha256": "9787600c7ce483d212470959a7219a20977a29764462eb87e70c92645e3f33fa"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-10x-1.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-10x-1.json",
+      "bytes": 93488,
+      "sha256": "f3ef1ccafe94e70bfc8f275a8d6294d5fb7ff143d3a79325a90dc2b39153c968"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-10x-2.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-10x-2.json",
+      "bytes": 93488,
+      "sha256": "fe0275076fd632dce008f72bb3b33df7a7645b0af408e7d966e0b09d4fb2f75b"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-1x-0.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-1x-0.json",
+      "bytes": 14996,
+      "sha256": "69a3ed55fa76ea80e6ecf1b8871081af4357643ef1a07bc6f4e19f75fba3ce72"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-1x-1.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-1x-1.json",
+      "bytes": 14998,
+      "sha256": "19be1a368c2e9895bc7631d55636cc62769b11bb68501ed37abfa0869b7ab48e"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-1x-2.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-1x-2.json",
+      "bytes": 14995,
+      "sha256": "eb9401d74e1a3234b663260a6bfb7e436f78f38cac21a6a8218746e9aab115ee"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-fresh-10x-0.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-fresh-10x-0.json",
+      "bytes": 203901,
+      "sha256": "08f800b3f9a1a09d071c4e2c74c14dbf2e52481943dbd45371872f787f37d485"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-fresh-10x-1.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-fresh-10x-1.json",
+      "bytes": 203900,
+      "sha256": "bb96310dcd0c00641215bf3ce28a997b00c93fbcea5f2354731a97fed3d88d3f"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-fresh-10x-2.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-fresh-10x-2.json",
+      "bytes": 203901,
+      "sha256": "56e6681dced25901b292d3833134a79cbdbaa2f4b1a179292f499052b1fdb6ca"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-fresh-1x-0.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-fresh-1x-0.json",
+      "bytes": 28861,
+      "sha256": "8f14b10b8184e22ae213f6c2050f4b36fa639a01e46c60b633efc0d43be395f6"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-fresh-1x-1.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-fresh-1x-1.json",
+      "bytes": 28857,
+      "sha256": "111736818635aa0460e725f81025add5c9d485a9be3f95c37411c15330cc4f18"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-fresh-1x-2.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-fresh-1x-2.json",
+      "bytes": 28857,
+      "sha256": "64f07b89e492876234cf7c749fa3861ebe6ad535f472a5392464ad286722bfda"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/packaged-semantic.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/packaged-semantic.json",
+      "bytes": 88285,
+      "sha256": "bda3edef7af8331d28cf539c7ce21683b338a4744aa52af676eb538bc8ec7dcc"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/pyinstaller-imports.txt",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/pyinstaller-imports.txt",
+      "bytes": 33272,
+      "sha256": "cebeff516b208e051665ad9d95ed4e997bec2e4fdd5240d380d61753de4e521d"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-10x-0.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-10x-0.json",
+      "bytes": 93486,
+      "sha256": "beb6129280af67c962dd3be1c9505f3166463b7002816e06eb76f2395d67ab59"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-10x-1.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-10x-1.json",
+      "bytes": 93486,
+      "sha256": "f799beace37039ba3e630ea2976abe6897a00b02be7211d7515f729484674393"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-10x-2.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-10x-2.json",
+      "bytes": 93488,
+      "sha256": "eb6d07e7a6c481ba6d7daf2c3bd79724f5cb7e23927bdddbabf8a184d7b2c4fa"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-1x-0.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-1x-0.json",
+      "bytes": 14993,
+      "sha256": "163393b9aeb4799e97ea9b6c93617bfb6209bdb25cd14111f116b77f96cf3a4d"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-1x-1.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-1x-1.json",
+      "bytes": 14994,
+      "sha256": "8186da0655b8991848134e9f2c8c628ee28c0118bc12fc68ad7269b2dc8a81d7"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-1x-2.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-1x-2.json",
+      "bytes": 14993,
+      "sha256": "c3b8e446c1a17011c5b0c9c63c6d21c7f23b30453390701218d349328cbb1730"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-fresh-10x-0.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-fresh-10x-0.json",
+      "bytes": 203891,
+      "sha256": "39d1746da9360a644271a4d7edbe5fcc430e95c9dfc1ce04157ceccce7612271"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-fresh-10x-1.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-fresh-10x-1.json",
+      "bytes": 203888,
+      "sha256": "f6c30f7ee9cf86009187aa2dc08d631e0e7f8c2656b610d1a380078e6a9933d6"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-fresh-10x-2.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-fresh-10x-2.json",
+      "bytes": 203891,
+      "sha256": "8c99f653ed9dbc6f7ef2ad67b947fd866fa53730c3b9873076b3cb01dbded491"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-fresh-1x-0.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-fresh-1x-0.json",
+      "bytes": 28853,
+      "sha256": "e309eefcd5af108ca2481671fb98ff2856c462f2168155a8d8251970e34910c3"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-fresh-1x-1.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-fresh-1x-1.json",
+      "bytes": 28857,
+      "sha256": "83831bd3d7ad569cbe224226c33f092f1af641252fd2f8f1f59f0e1dd6c215d7"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-fresh-1x-2.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-fresh-1x-2.json",
+      "bytes": 28853,
+      "sha256": "1790b1dea52e66799364d4a4d5bb1c31fad6c478688fb6fe4aa6be6ae0428730"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity/source-semantic.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity/source-semantic.json",
+      "bytes": 88285,
+      "sha256": "2569a76a21fe89a7b477c949197cfa487da916ceb7e1645171abd058ca4da33b"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-parity.txt",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-parity.txt",
+      "bytes": 435,
+      "sha256": "f31c791dfaa45c4de3234fe5d23cd5a8d22b32941dc87fce0404e7a0f39da6a2"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-runtime/summary.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-runtime/summary.json",
+      "bytes": 417,
+      "sha256": "835ad9be71bc8d6759fb36bd5c4dcd2a327e4806bd6fb027977179919ed6d358"
+    },
+    {
+      "member": "c2/pre-orphan-fix/macos-runtime.txt",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/macos-runtime.txt",
+      "bytes": 401,
+      "sha256": "fcd342f74032d92bcd64ccc8a375655c6d328506a704d7774297ad6921fb2df4"
+    },
+    {
+      "member": "c2/pre-orphan-fix/package-macos.txt",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/package-macos.txt",
+      "bytes": 19463,
+      "sha256": "df95e37d13ab2a6de54ad274cc2fdcdee9ac257238496043ef012b4a73e6a8c1"
+    },
+    {
+      "member": "c2/pre-orphan-fix/status.json",
+      "originalPath": "build/i05-integrated/c2/pre-orphan-fix/status.json",
+      "bytes": 364,
+      "sha256": "81fcf25d25f30396d082216230123cd991ab609704a42823545f2fa8cdd34981"
+    },
+    {
+      "member": "c2/pre-signed-expression-fix/check-full.txt",
+      "originalPath": "build/i05-integrated/c2/pre-signed-expression-fix/check-full.txt",
+      "bytes": 6824,
+      "sha256": "01187ed2994caed0d715720aeb2ef77f2da40324ce8a05e9aa701ec194d301c2"
+    },
+    {
+      "member": "c2/pre-signed-expression-fix/checkpoint.json",
+      "originalPath": "build/i05-integrated/c2/pre-signed-expression-fix/checkpoint.json",
+      "bytes": 402,
+      "sha256": "3075d43c4ee802a5567fa134febdc50d53ecec0bc965b857b80131f2ab7eb089"
+    },
+    {
+      "member": "c2/pre-signed-expression-fix/linux-source-and-package.txt",
+      "originalPath": "build/i05-integrated/c2/pre-signed-expression-fix/linux-source-and-package.txt",
+      "bytes": 15018,
+      "sha256": "ddae78ba31e165b64fa1427b5e2265c3de882a429566485b481df44fee3c5184"
+    },
+    {
+      "member": "c2/pre-signed-expression-fix/package-macos.txt",
+      "originalPath": "build/i05-integrated/c2/pre-signed-expression-fix/package-macos.txt",
+      "bytes": 19472,
+      "sha256": "4c3b7588a926fa466c21206e04feae773d09f8358d120c77283891bed0f9a698"
+    },
+    {
+      "member": "c2/pre-signed-expression-fix/source-export-manifest.json",
+      "originalPath": "build/i05-integrated/c2/pre-signed-expression-fix/source-export-manifest.json",
+      "bytes": 185659,
+      "sha256": "ab9cd26a3d674acd3d629a2d980d9e325f8c1b5fafc1b844ddeabf13d5eac19e"
+    },
+    {
+      "member": "c2/pre-signed-expression-fix/verify-sources.txt",
+      "originalPath": "build/i05-integrated/c2/pre-signed-expression-fix/verify-sources.txt",
+      "bytes": 111,
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+    },
+    {
+      "member": "c2/signed-expression-action-preserving-affected.txt",
+      "originalPath": "build/i05-integrated/c2/signed-expression-action-preserving-affected.txt",
+      "bytes": 661,
+      "sha256": "9307456804ff4f6f29d9e7642e8f2ce1c54c9b0cdb4ab92a7df5528e1f848ed5"
+    },
+    {
+      "member": "c2/signed-expression-affected.txt",
+      "originalPath": "build/i05-integrated/c2/signed-expression-affected.txt",
+      "bytes": 166136,
+      "sha256": "e1d49035031b2211ff9de707afb4a5f0c01a0709cbd3290d9e7c8c383dbfdaf5"
+    },
+    {
+      "member": "c2/signed-expression-final-affected.txt",
+      "originalPath": "build/i05-integrated/c2/signed-expression-final-affected.txt",
+      "bytes": 19057,
+      "sha256": "878dd680cf1839cc4f419762a236e5071d8040d310d959fc78ea970d621fa52f"
+    },
+    {
+      "member": "c2/signed-expression-fixed-affected.txt",
+      "originalPath": "build/i05-integrated/c2/signed-expression-fixed-affected.txt",
+      "bytes": 695309,
+      "sha256": "b5c56c5f0d401c00f72a67d71624228a743e6a2b0a16a783992ada2572d39bd0"
+    },
+    {
+      "member": "c2/source-export-manifest.json",
+      "originalPath": "build/i05-integrated/c2/source-export-manifest.json",
+      "bytes": 186313,
+      "sha256": "198a679ad23d499ef8b41f51a833824836610d129b0c4c5ba47e6439c1cbba79"
+    },
+    {
+      "member": "c2/source-export.tar.gz",
+      "originalPath": "build/i05-integrated/c2/source-export.tar.gz",
+      "bytes": 6295347,
+      "sha256": "0e39dba8d0cf3b266de30cfb8a1008a323625f55310fa04b85becefe061bd6ae"
+    },
+    {
+      "member": "c2/source-suite-after-orphan.json",
+      "originalPath": "build/i05-integrated/c2/source-suite-after-orphan.json",
+      "bytes": 44061,
+      "sha256": "1d0bb8f47388403a7c2117dc287d2c5f1b3e4c3f89129f48602fc55acbc2d222"
+    },
+    {
+      "member": "c2/source-suite-signed-fixed.json",
+      "originalPath": "build/i05-integrated/c2/source-suite-signed-fixed.json",
+      "bytes": 46054,
+      "sha256": "d2fbd0bea7e3d3c24756afe7799a39302aff4b4c0448820c1ea0ce8218e83def"
+    },
+    {
+      "member": "c2/verify-sources.txt",
+      "originalPath": "build/i05-integrated/c2/verify-sources.txt",
+      "bytes": 111,
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+    },
+    {
+      "member": "c2-design-inputs/controller-rule-identity-scope-note.md",
+      "originalPath": "build/i05-integrated/c2-design-inputs/controller-rule-identity-scope-note.md",
+      "bytes": 4335,
+      "sha256": "233bcbf02010bb876e7cec80e1c42e3e9eed62f6b92162fb008e6c045674b838"
+    },
+    {
+      "member": "c2-design-inputs/initial-affected-check.txt",
+      "originalPath": "build/i05-integrated/c2-design-inputs/initial-affected-check.txt",
+      "bytes": 340,
+      "sha256": "9e7a8be1e5259a12a0c0ec21fc37e4ccd3392938cc4618d39b041f995373e70c"
+    },
+    {
+      "member": "c2-design-inputs/large-numeric-probe.json",
+      "originalPath": "build/i05-integrated/c2-design-inputs/large-numeric-probe.json",
+      "bytes": 210,
+      "sha256": "3bd08ccc307dcf279a906f5706eed2992a8a837285ba264f3cb1477372b829a1"
+    },
+    {
+      "member": "c2-design-inputs/lexical-runtime-green.txt",
+      "originalPath": "build/i05-integrated/c2-design-inputs/lexical-runtime-green.txt",
+      "bytes": 491,
+      "sha256": "5ef77f9756f13f79a008fb0dca207fb457f4b4bc5831d2a34c9141bfb9d5cbbd"
+    },
+    {
+      "member": "c2-design-inputs/lexical-runtime-green.xml",
+      "originalPath": "build/i05-integrated/c2-design-inputs/lexical-runtime-green.xml",
+      "bytes": 2330,
+      "sha256": "310a0593209511015563f7ab45fce62aa0260e9c4b71935d95967ee515af1a50"
+    },
+    {
+      "member": "c2-design-inputs/minimax-c1-disposition-draft.md",
+      "originalPath": "build/i05-integrated/c2-design-inputs/minimax-c1-disposition-draft.md",
+      "bytes": 6179,
+      "sha256": "08466059f56c3bacfd775d4b5a5d9b4b988474d60ec7256608f8e38950d20672"
+    },
+    {
+      "member": "c2-design-inputs/plan.md",
+      "originalPath": "build/i05-integrated/c2-design-inputs/plan.md",
+      "bytes": 3967,
+      "sha256": "2f904e0907c6ad97e6cc4745748bdcacad8984f870163ebb2e26491d04110e2d"
+    },
+    {
+      "member": "c2-design-inputs/query-minimal-sketch.py.raw",
+      "originalPath": "build/i05-integrated/c2-design-inputs/query-minimal-sketch.py.raw",
+      "bytes": 2129,
+      "sha256": "bba8c34cc3ae6a63d57fa6df48f679f9aed0e7f7e7d3b2fbd8d380ce6a8bdd27"
+    },
+    {
+      "member": "c2-design-inputs/query-probe.py.raw",
+      "originalPath": "build/i05-integrated/c2-design-inputs/query-probe.py.raw",
+      "bytes": 8153,
+      "sha256": "d475f65ae62577c1dc9ec0c8edcca128a34284aa63ae89f500b4e15ecf7971ea"
+    },
+    {
+      "member": "c2-design-inputs/query-report.json",
+      "originalPath": "build/i05-integrated/c2-design-inputs/query-report.json",
+      "bytes": 9178,
+      "sha256": "6c26963d77fb077d942003e2d2762cc1db3375f2a772ff3387e06efce60ddb4b"
+    },
+    {
+      "member": "c2-design-inputs/runtime-existing.txt",
+      "originalPath": "build/i05-integrated/c2-design-inputs/runtime-existing.txt",
+      "bytes": 99,
+      "sha256": "a1fd9291099f29b171d445942f8ea4eaf3689482fb5b376be51e1e3ec5c8e402"
+    },
+    {
+      "member": "c2-design-inputs/source-suite-initial.json",
+      "originalPath": "build/i05-integrated/c2-design-inputs/source-suite-initial.json",
+      "bytes": 43775,
+      "sha256": "b806412a1372a8990bd69aff553b6bf3be41298a60dea987f1f75637b9ab6d01"
+    },
+    {
+      "member": "c2-design-inputs/turtle-safer-probe.py.raw",
+      "originalPath": "build/i05-integrated/c2-design-inputs/turtle-safer-probe.py.raw",
+      "bytes": 3138,
+      "sha256": "1bf81ecb03012b9372fa4c1046ef996afa64e2beddbdcde576bb95516726c668"
+    },
+    {
+      "member": "c2-design-inputs/turtle-safer-report.json",
+      "originalPath": "build/i05-integrated/c2-design-inputs/turtle-safer-report.json",
+      "bytes": 9245,
+      "sha256": "a0e80ebdefac54b68c41059b36b35b5499fc103b8b0866c5f5954bbe37b5d9b5"
+    }
+  ]
+}

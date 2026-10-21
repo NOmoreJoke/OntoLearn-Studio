@@ -1,0 +1,33 @@
+"""Read-only C1 counterexample. Run with project .venv/bin/python."""
+import json
+
+from rdflib import Graph, RDF, SH
+from rdflib.plugins.parsers.notation3 import SinkParser
+from ontolearn_engine.semantic import check_shapes, parse_turtle
+from ontolearn_engine.semantic_execution import _graph
+from ontolearn_engine.semantic_scopes import _LexicalSink
+
+HEAD = "043c20cc7934191339a8814c79666dbd2e94a62a"
+text = '''@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+<urn:S> a sh:NodeShape; sh:targetClass <urn:C>; sh:property <urn:P> .
+<urn:P> sh:path <urn:p>; sh:in ("01"^^xsd:integer) .'''
+data = _graph([
+    {"subject": "urn:s", "predicate": str(RDF.type), "object": "<urn:C>"},
+    {"subject": "urn:s", "predicate": "urn:p", "object": '"01"^^<http://www.w3.org/2001/XMLSchema#integer>'},
+])
+current = parse_turtle(text, shapes=True)
+lexical = Graph()
+SinkParser(_LexicalSink(lexical), baseURI="urn:ontolearn:i05:", turtle=True).loadBuf(text)
+def values(graph):
+    return sorted(o.n3() for _, _, o in graph.triples((None, RDF.first, None)))
+print(json.dumps({
+    "data": sorted(o.n3() for _, _, o in data),
+    "currentShapeListValues": values(current),
+    "lexicalShapeListValues": values(lexical),
+    "actualCurrentResult": check_shapes(data, current),
+    "comparisonWithLexicalShapes": check_shapes(data, lexical),
+    "sourceHead": HEAD,
+    "normativeSource": "https://www.w3.org/TR/shacl/#InConstraintComponent",
+    "scope": "Read-only counterexample using actual saved-fact graph parser and identical explicit typed literal in named allowed-values template; comparison graph only uses existing per-parser sink, no global setting or implementation change.",
+}, ensure_ascii=False, indent=2))

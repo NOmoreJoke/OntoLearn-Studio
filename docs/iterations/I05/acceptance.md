@@ -64,7 +64,7 @@ S1 原 seed=20261019、独立 urn:case:{i} 命名空间、18/180 事实、输入
 
 - 应用层将已授权、不可变项目输入和明确 scope 交给 worker；分别提供 ontology、断言/选定推导范围、query/SHACL/rules 定义。禁止传 URL、SQL、任意代码或库配置。
 - 全部实际依赖包括相关 facts/ontology/规则/约束/查询定义及定义集合成员摘要，新增定义也要改变集合来源；不使用伪 facts 键替代漏报依赖。
-- 入参与结果记录 inputSnapshotId、projectId、scope、dependencyVector/集合摘要、executionSemanticsVersion（当前独立修订为 i05-finite-3）、engineVersion、dependencyLockHash；纯函数自身不决定 job/operation/session 身份或持久终态。
+- 入参与结果记录 inputSnapshotId、projectId、scope、dependencyVector/集合摘要、executionSemanticsVersion（C2 修订为 i05-finite-4，旧证据仍按其 finite-3 来源归属）、engineVersion、dependencyLockHash；纯函数自身不决定 job/operation/session 身份或持久终态。
 - 结果载荷分 asserted/derived、完整来源依据和真实 validation 违规；安全错误 code 最终映射 I03 注册表，不直接跨 bridge 暴露 Python 异常链。
 - read-only 不改项目；发布结果经 Store 实际依赖复验，迟到/取消/失败不冒充 current。I04 worker 管总时限、取消和内存/队列，不能只靠文本/工作量上限。
 - 实际任务、持久化、取消、错误、包内执行和窗口重建重连联验后，才可评估正式注册该能力；不得在当前 health 声明中提前加入。
@@ -78,3 +78,19 @@ S1 原 seed=20261019、独立 urn:case:{i} 命名空间、18/180 事实、输入
 源码与包内G语义全例、断言/断言＋明确既存推导两范围、较早无Risk1违规/新Risk2违规、01原词法等完整结果通过。真实Linux源码与打包语义桥接及可见/外部焦点/原生崩溃/死循环无响应恢复各2项通过；Mac仅无窗口引擎与未签名构建。完整check672TS/1511Python、原来源12、两平台真实包内C4公共326例与17runtime、B1同样例与网络/依赖许可/原始测量均有本版来源。
 
 Q6十二项仍逐项保留待负责人采用/修订/淘汰；这不是全业务PRD完成或发布授权。最终I05还须同版本指定双方新完整审查和全部意见处置、实际CI/正常合并/远端保护核验，未用本地验收跳过这些门禁。
+
+## C2 数值词法与查询分类修复
+
+C1 原报告和所有历史版本保留在 `docs/reviews/I05/round-1/`。MiniMax 最终为不通过，ZCode 为附新候选修复条件的通过；两者均不作为 C2 通过证据。
+
+- Turtle 显式类型字面量与裸数字保留输入词法；局部 sink/parser 不修改 RDFLib 的全局 Literal 设置。事实/规则常量、形状 `sh:in` 成员遵守 RDF term equality：`"01"^^xsd:integer` 与 `"1"^^xsd:integer` 值相等但不是同一 RDF term。规则仍为三元组模式匹配，未新增数值比较表达层。
+- SPARQL 裸整数、小数、科学计数及相邻签号在独立复制的锁定语法中按最长匹配保留 token 词法；显式类型字面量原先就正确，未以它解释缺陷。`STR(-01)` 保留 `-01`；`STR(- 01)`、换行/注释分隔的 Unary 运算产生新值，仍使用库的计算语义，不承诺保留运算前词法。clone 保留 Var 的 parseAction、锁定81路签号/Primary形状，真实公有 Graph.query 冷/热调用前后全局拓扑与动作不变；不把库的正常 parse cache 更新说成没有任何库内状态变化。锁定语法结构不匹配属于内部错误，不伪装为用户语法错误。
+- 命名图 `GRAPH` 明确返回既有 `UNSUPPORTED_CONSTRUCT` / `sparqlForm`；其中嵌套的 SERVICE/FROM 仍按网络禁止拒绝。没有新增 Dataset/命名图执行能力或公共错误码。
+- 函数策略是代数节点拒绝表，不是穷尽的函数白名单。COUNT 和实际验证的 STR、langMatches、CONCAT、SUBSTR、STRLEN、IRI 等属于代表性正例；该例举不构成对所有库内置函数的逐项产品承诺。原拒绝集和 Q6-06 最终支持范围待负责人决定。
+- `productRuntime` 是能力目录声明；实际 hello 方法与可调用运行表看 `v2Runtime`。窄业务桥接的 semantic.start 不等于向 Agent 暴露任意方法。
+
+另补齐孤立数字/集合语句拒绝，用发射事件而非 Graph 长度判断，重复合法三元组与内部自带属性节点保留。锁定库仍有前导分号容忍，本次不宣称完整 Turtle 文法一致性。含 RAND 与 SERVICE 的混合未支持组合可能先报 unsupported，仍执行前拒绝/零外联，不扩称所有组合的错误优先级。
+
+语义版本与实施身份同步升至 `i05-finite-4`。本节记录本次修复和验证要求，实际完整源码/包/stdio/native 结果以本候选证据为准，不能沿用 C1 的旧通过。Q6 十二行采用/修订/淘汰仍待逐项决定。
+
+本次26eb632的完整检查、Mac/Linux新包/完整B1/各7stdio与17C4、Linux源/包各2真实native，以及独立IB-1发现与修复的原始来源见 [C2验收](../../reviews/I05/integrated-c2-verification.md)。本段记录实际验证归属；最终指定双新审/CI/合并状态仍只见status.md。

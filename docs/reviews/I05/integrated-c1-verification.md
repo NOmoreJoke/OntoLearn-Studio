@@ -30,7 +30,7 @@ fixture保留G原业务事实，删除003名称后17条，再加10条独立负�
 ## 保留的失败与修正
 
 - 首轮全库 check：新增5例导致公共样例326，旧计数断言321失败；修断言期望后完整检查通过。未删契约例或改变解析行为。
-- 第一轮集成测试 fixture 误用非UUID事实身份，S1真实校验拒绝；修fixture后实际worker联验继续。原14errors/1failed不掩盖。
+- 第一轮集成测试 fixture 误用 `id="unit-type"`，未满足事实身份须由 `[subject,predicate,object]` 内容派生的校验（并非 UUID 要求）；修fixture后实际worker联验继续。原14errors/1failed不掩盖。此措辞更正依据 round-1/source-lineage-note.json；043c20c 原文与原始失败 raw 保留。
 - 初次 Linux fixture含1000条无关负载事实，在现有完整source分页下拖慢恢复取证；改为10条、9模式维持同10^9工作量。未改生产Store、分页上限或扩大超时。
 - 首次 Openbox 重定向缺少build目录；随后真正namespace检查拒绝无特权容器；各原日志保留。创建本线支持sandbox的隔离容器后才执行有效原生验收。
 - 第一次最终打包 native 在故障注入前失败：主进程 inspector 早于 Electron 内建模块安装，外置hook得到路径字符串而非app。0218只加5秒真实 `app.isReady()` 门槛和 `awaitPromise`，无fallback/stub。定向type/lint通过，并对源码/打包各重跑完整2项真实语义/native验收关闭。

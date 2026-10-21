@@ -1,0 +1,52 @@
+{
+  "status": "offered_not_effective_until_controller_and_named_T01_owner_accept",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation",
+  "branch": "feature/I05-semantic-validation",
+  "approvedReceiverBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "currentHead": "f7a1cfe7fdc82c9eb66100cb51b41a7d40584641",
+  "files": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/job_store.py",
+      "currentSha256": "09d39d6c1dba20e939224ca000460d766e0903440beb8bdee75323d117a5bcc4",
+      "approvedBaseSha256": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2",
+      "dirty": false,
+      "c1ToC2Modified": false
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+      "currentSha256": "1f9cf65e6d1842412084dbbe0e45f1983b30ed4847bc91e73b02eb29674c164a",
+      "approvedBaseSha256": "597d74e318645d0ae4e7152acc29487efc37cb23b501404e60b21f5ed87fc7cb",
+      "dirty": false,
+      "c1ToC2Modified": false
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/__main__.py",
+      "currentSha256": "1fa0f9711a4d90db6fe8ef6c0948aebd93c910526838d6d41fac8a00a568c1d9",
+      "approvedBaseSha256": "1fa0f9711a4d90db6fe8ef6c0948aebd93c910526838d6d41fac8a00a568c1d9",
+      "dirty": false,
+      "c1ToC2Modified": false
+    },
+    {
+      "path": "packages/contracts/python/contract_v2.py",
+      "currentSha256": "b12067a6b6c81b611b9e6fe2874aba85a5c9d7b43e11979d2d2967bbe53f43cd",
+      "approvedBaseSha256": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+      "dirty": false,
+      "c1ToC2Modified": false
+    }
+  ],
+  "c2Needs": "No current C2 lexical/parser/GRAPH repair changes these files. Publication/read authentication tested without changing JobStore; Z-5 earlier-publication checks explicitly deferred.",
+  "handoff": "Transfer future maintenance in receiver independent approved5f tree only. I05 old tree exact bytes stay. Receiver may not consume unapproved semantic additions. Any necessary future I05 edit requires exact controller return.",
+  "claimBoundary": "Single owner of actual operation_claims table must author kind job/application migration with preserved old project/job/fingerprint and immutable triggers, and same-connection non-Job adapter; no second claim table in project package, no arbitrary IF NOT EXISTS repair. Releasing entire job_store.py makes receiver that sole owner after effective acceptance; actual DDL/API/fixtures/ready still require receiver implementation and joint contract review, not claimed completed here.",
+  "ready": "Store-ready does not imply Job-ready. No successful session before current lease, Job schema/claim migration/identity/reconciliation and canonical validation all succeeded. Structured startup classification needs I06 same-version approved contract; no stderr string parsing.",
+  "notTransferred": [
+    "worker.py",
+    "protocol.py",
+    "resources.py",
+    "entrypoint.py",
+    "build scripts",
+    "locks",
+    "CI",
+    "existing tests"
+  ],
+  "observedAt": "2026-10-21T00:55:51.082920+00:00"
+}

@@ -1,0 +1,39 @@
+{
+  "status": "offered_not_effective_until_controller_and_named_future_owner_accept",
+  "head": "f7a1cfe7fdc82c9eb66100cb51b41a7d40584641",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation",
+  "branch": "feature/I05-semantic-validation",
+  "files": [
+    {
+      "path": "packages/engine/pyproject.toml",
+      "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365",
+      "dirty": true
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+      "dirty": true
+    },
+    {
+      "path": "scripts/build-engine.mjs",
+      "sha256": "48e360723d22da756af9142ba3c89c12dff114d509c67ef12c5c3ca468193937",
+      "dirty": false
+    },
+    {
+      "path": "packages/engine/entrypoint.py",
+      "sha256": "ade6cded44bb4c11f3ca073b4675936ca27d78cf9c926684566fc44b3064a393",
+      "dirty": false
+    }
+  ],
+  "c2Change": "pyproject and lock only declare existing pinned pyparsing3.3.3 as direct dependency; no package versions changed. Two build/entry files unchanged C1->C2.",
+  "condition": "Future ownership permits changes only in receiver own branch/tree after explicit full-path acceptance and hash check; never writes this I05 worktree or implicitly adopts unapproved I05 source. I05 builds/reads frozen own files continue. No further edits to these four files planned; any required change asks controller exact temporary return first.",
+  "notTransferred": [
+    "scripts/verify-i05-runtime.py",
+    "scripts/verify-i05.py",
+    "scripts/i05-build-inventory.py",
+    "packages/engine/src/ontolearn_engine/resources.py",
+    ".github/workflows/ci.yml"
+  ],
+  "scope": "T03 new XLSX deps and probe collection/dispatcher only as separately authorized; no changes mixed into I05 C2.",
+  "observedAt": "2026-10-21T00:54:53.172908+00:00"
+}

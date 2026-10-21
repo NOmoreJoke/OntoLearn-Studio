@@ -1,0 +1,25 @@
+{
+  "recordedAt": "2026-10-20T22:53:23.792050+00:00",
+  "candidate": "I05-C1",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "head": "043c20cc7934191339a8814c79666dbd2e94a62a",
+  "classification": "One historical failed-fixture cause wording correction; no source/test/config/dependency/acceptance/base change. Original frozen document and raw preserved.",
+  "incorrectHistoricalWording": {
+    "path": "docs/reviews/I05/integrated-c1-verification.md",
+    "text": "第一轮集成测试 fixture 误用非UUID事实身份"
+  },
+  "actualRaw": {
+    "path": "docs/reviews/I05/evidence/integrated-c1/logs/semantic-runtime-first.txt.raw",
+    "sha256": "56474ccf2b4e15c30b87cea928ee075e5cf16a4318a7ed380b9f432ace407ef5",
+    "factId": "unit-type",
+    "condition": "fact[\"id\"] != digest([fact[\"subject\"], fact[\"predicate\"], fact[\"object\"]])",
+    "error": "Fact identity must be content derived"
+  },
+  "actualOwningCode": {
+    "path": "packages/engine/src/ontolearn_engine/storage.py",
+    "line": 256,
+    "scope": "unchanged approved S1 identity validation; not a UUID requirement"
+  },
+  "correctedMeaning": "第一轮集成测试fixture误用未按subject/predicate/object内容派生的事实ID；S1内容身份校验拒绝。后来修fixture符合真实内容派生规则，原失败与后来验证均保留。",
+  "limits": "Does not change acceptance or imply a review verdict. Reviewers independently verify original raw and owning code and judge any effect."
+}

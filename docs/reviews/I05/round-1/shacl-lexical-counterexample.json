@@ -1,0 +1,32 @@
+{
+  "data": [
+    "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>",
+    "<urn:C>"
+  ],
+  "currentShapeListValues": [
+    "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+  ],
+  "lexicalShapeListValues": [
+    "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+  ],
+  "actualCurrentResult": {
+    "conforms": false,
+    "violations": [
+      {
+        "focus": "<urn:s>",
+        "path": "<urn:p>",
+        "constraint": "<http://www.w3.org/ns/shacl#InConstraintComponent>",
+        "sourceShape": "<urn:P>",
+        "value": "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>",
+        "severity": "<http://www.w3.org/ns/shacl#Violation>"
+      }
+    ]
+  },
+  "comparisonWithLexicalShapes": {
+    "conforms": true,
+    "violations": []
+  },
+  "sourceHead": "043c20cc7934191339a8814c79666dbd2e94a62a",
+  "normativeSource": "https://www.w3.org/TR/shacl/#InConstraintComponent",
+  "scope": "Read-only counterexample using actual saved-fact graph parser and identical explicit typed literal in named allowed-values template; comparison graph only uses existing per-parser sink, no global setting or implementation change."
+}

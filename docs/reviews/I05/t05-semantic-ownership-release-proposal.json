@@ -1,0 +1,49 @@
+{
+  "status": "proposed_future_owner_offer_not_effective",
+  "currentHead": "3c0b3bafcdab86159962ff3331bb161c40d349bc",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation",
+  "files": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "sha256": "7a83a1236c5262578256cc01ac6c57318a3688ab2df76fefaa61fb60a6b93033",
+      "dirty": false
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "sha256": "5bec13ea42db3a9fbc04df3895fceb6945508b31e74e07b96fa98b56ac47fb5a",
+      "dirty": false
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "sha256": "db9729f9f87ddb8fb7b6747d5ee3b1f371d041fdf6df28d78cd7b7268b246913",
+      "dirty": false
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "sha256": "cfba5cc0b9b8dd83bc8023d0f090bc5db253e0c105a810394d61fce8b25e0268",
+      "dirty": false
+    }
+  ],
+  "currentC2Needs": "Remaining signed-token repair is in semantic_query.py, semantic_samples.py and dedicated tests. These four files have no planned C2 changes; new real blockers would require exact temporary return before editing.",
+  "futureScope": "Single existing semantic executor FR505 comparison/multiple-output adaptation, selected-result proof verification, strict definition parsing and execution identity version. Not a second evaluator or public schema approval.",
+  "noUnapprovedAdoption": "Do not consume/copy current unapproved I05 implementation into approved5f receiver. Concrete private plan/typed comparison matrix/22+complete fixtures may progress now; actual adapter applies approved I05 version after its gate, or separate controller-approved experimental provenance with full combined new review. No silent dependency adoption.",
+  "notOffered": [
+    "semantic_query.py",
+    "semantic_turtle.py",
+    "semantic_samples.py",
+    "semantic_error_adapter.py",
+    "existing tests",
+    "contracts",
+    "worker/protocol",
+    "locks/build/entrypoint/CI"
+  ],
+  "exactExistingInterface": {
+    "Rule": "Rule(id:str, when:tuple[Triple,...], then:Triple), Triple=tuple[URIRef|Literal|Variable,...] with exactly3 terms; when1..16; id1..128; <=100 rules in scoped execution",
+    "execution": "reason(Graph, tuple[Rule,...]) after finite RDFS; reads same frozen closure, outputs never feed rules/RDFS",
+    "trace": "Each evidence item exact rule/result/inputs/basis; inputs preserve when-order, basis sorted full assertions+axioms; rules output deduped/sorted; rdfsEvidence separate",
+    "definitions": "rule definition strict enabled/when/then (+references optional); enabled false ignored at execution. Unknown compare/multi fields rejected by trusted request shape, not silently skipped.",
+    "selection": "semantic_scopes._selected_output verifies each selected evidence against exact original rule and frozen facts/axioms; must extend with same-rule multi-result/common-binding validation, not regenerate selected result",
+    "persistence": "Finite4 payload implementation/version/snapshot hash and Store-authenticated selected producer bindings must remain exact; extension requires new semantics version and full current/history/failure atomic-publication regressions"
+  },
+  "recordedAt": "2026-10-21T01:07:02.880068+00:00"
+}
