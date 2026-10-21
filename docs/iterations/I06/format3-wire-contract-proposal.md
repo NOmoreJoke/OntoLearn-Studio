@@ -8,13 +8,15 @@
 
 建议保留一个 canonical 目录，暂保留现 `packages/contracts/v2/` 和适配器文件名，版本语义由同一资源描述；不复制 v3 目录维持第二真相。schemaVersion/registry/errors 元版本和 schema `$id` 的最终具体值由 T01 一次冻结，不能机械替换所有数字2。现有受限 schema 词汇及严格对象保持，不为本提案引入新依赖或宽松 catchall。
 
-| 项目              | 提案约束                                                                                                                               |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| SQLite 实际格式   | 迁移与完整 Store/JobStore ready 后 Project.formatVersion 才为3；不能在未迁移库上预报3                                                  |
-| bootstrap         | request/response 外层 protocolVersion=2，仅首次 hello；client 发 supportedVersions=[3]、engineSessionId=null                           |
-| hello 成功        | selectedVersion=3，response 外层和 result 内的 engineSessionId 是同一新非 null UUID；id/method 精确对应；success 仅有 result，无 error |
-| 后续业务          | request/response/notification 外层 protocolVersion=3；session 精确等于已协商 UUID，任何业务 error 也不例外                             |
-| 私有应用/模型状态 | 不因数据库3或业务协议3自动改格式，不进 Project/域输入 hash/checkpoint；不从 I06 未批准实现复制进接收候选                               |
+| 项目             | 提案约束                                                                                                                               |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| SQLite 实际格式  | 迁移与完整 Store/JobStore ready 后 Project.formatVersion 才为3；不能在未迁移库上预报3                                                  |
+| bootstrap        | request/response 外层 protocolVersion=2，仅首次 hello；client 发 supportedVersions=[3]、engineSessionId=null                           |
+| hello 成功       | selectedVersion=3，response 外层和 result 内的 engineSessionId 是同一新非 null UUID；id/method 精确对应；success 仅有 result，无 error |
+| 后续业务         | request/response/notification 外层 protocolVersion=3；session 精确等于已协商 UUID，任何业务 error 也不例外                             |
+| I06 私有网关状态 | I06 私有网关配置/凭据/授权及发送 ledger 不因本协议升级进入 Project/域 input hash/T01 checkpoint；不从 I06 未批准实现复制进接收候选     |
+
+上述排除仅针对 I06 私有网关状态，**不排除 T01 自己的应用状态覆盖**；T01 完整 checkpoint 仍须包含 metadata、drafts、learningCurrent、assistanceAudit，并按其合同保存真实来源/版本。
 
 通用 hello 参数 schema 可保留原1–8项、1–99整数的 supportedVersions 数组并要求唯一，以便服务端拒绝旧客户端；**本版 main 发出的列表只能是 [3]，无自动降级**。hello success 只能选择双方交集里的3，不能选2或先建会话再解释格式3。capabilities 必须唯一且逐项属于同版 registry 真实 runtime/已实现交集；fixture 的四项只是 schema 样例，不是生产能力清单。所有 limits 字段、整数/字节上限沿实际同版资源严格校验。
 
@@ -67,7 +69,7 @@ function matchesResponse(q: unknown, r: unknown): boolean {
 }
 ```
 
-`matches_response` 同判，Python bool 不充当 integer，TS 数字须安全整数。此纯函数不替代 main 的 pending、阶段、hash 或实际项目读取权限检查。JSON 的 `pureMatchesResponse` 与 `normalPendingAcceptance` 分开：重复 hello、无 pending 的 N13/N14 可以是纯 pair 合法，但 main 接纳必须 false。H03/H04/H05 不能由普通 matcher 成功接纳；终止诊断另走上节有限分类器。旧2兼容不进入上述函数的业务/成功路径。
+`matches_response` 同判，Python bool 不充当 integer，TS 数字须安全整数。此纯函数不替代 main 的 pending、阶段、hash 或实际项目读取权限检查。JSON 的 `pureMatchesResponse` 与 `preHashPendingMatch` 分开：后者仅包含完整 shape、pair、pending 和 phase，**排除 hash、实际候选 catalog 校验和 ready**。重复 hello、无 pending 的 N13/N14 可以是纯 pair 合法，但 preHashPendingMatch 必须 false。N05 的 shape/pair/pending/phase 均匹配，故 preHashPendingMatch=true；hash 比较失败后最终 pending 必须 reject、连接 terminal，绝不能 resolve 或 ready。H03/H04/H05 不能由普通 matcher 成功接纳；终止诊断另走上节有限分类器。旧2兼容不进入上述函数的业务/成功路径。
 
 `matchesAllExistingMethodBindings` 保留批准5f既有约束：project/job/result/operation/subscription 的实际请求响应身份，job.create 的 operation/capability/完整 input/confirmationRef 与输入扁平引用，result.current 的 kind/definition/scope/parameters/implementation/current，session.ping nonce，result.page 完整 binding/页数上限，job.list 项目/filter/listSnapshotId/每项项目与 pageSize。新方法未冻结不注册 runtime，更不因 protocol3 自动获得写能力。
 
@@ -124,7 +126,7 @@ registryHash = lowercase hex(SHA256(registryBytes))
 
 八文件未来维护 ack 已由根单独登记（`24b224f`）；本文不修改或替代该回执及其安全生效条件。最小八文件是 canonical7（src/index.ts、src/v2.ts 及 v2/schema.json/registry.json/errors.json/fixtures.json/binding-regressions.json）+ `apps/desktop/src/main/engine.ts`；接收与集成只消费批准5f基础及明确格式3 patch，不顺带采用 I06 gateway。其余 main/task-service/preload/env/App/style 不随这八文件移交；worker/protocol reader/resources/入口build/锁/CI及旧测试也未由本文新增授权。
 
-Python adapter、coordinator、`__main__.py`、job_store.py 仍按总控/I05精确 ack 配套；Store3内部由 T01 承接。TS与Python必须合成同一个已定义候选：任一端未同步，不能对外打开数据库3。新增跨端 TS 测试路径须单独登记 owner，不能修改原测试消除失败。
+Python 四路径 `packages/contracts/python/contract_v2.py`、`packages/engine/src/ontolearn_engine/coordinator.py`、`packages/engine/src/ontolearn_engine/__main__.py`、`packages/engine/src/ontolearn_engine/job_store.py` 已按总控 `I05-T01-format3-ownership-handoff.md` 正式转原 T01 唯一维护（SHA-256 `18485767098d448a4fcce2fc7e59b5a325433826894b98111cab96926fdc2097`）。默认格式2、显式内部3隔离，只基于批准5f，不复制 I05 未批准语义；worker/protocol/resources/既有测试未随之转交。Store3内部由 T01 承接；T03构建四文件为独立交接，不混入本合同。canonical/main 八文件仍须独立总控登记与 T01 ack 才生效，不因 Python 四文件转交而自动生效。TS与Python必须合成同一个已定义候选：任一端未同步，不能对外打开数据库3。新增跨端 TS 测试路径须单独登记 owner，不能修改原测试消除失败。
 
 T01 实施前须一次冻结：
 
