@@ -1,0 +1,1000 @@
+{
+  "candidate": "b0fcb7dc1dd8b4ebe3436e996926dba55f9e19d6",
+  "run": "first-full-math",
+  "testResult": "2failed/1330passed;1331observations plus1corpus test",
+  "counterexamples": [
+    {
+      "family": "errorOperandCases",
+      "id": "error/28",
+      "input": {
+        "id": "error/28",
+        "input": {
+          "kind": "iri",
+          "lexical_form": "relative"
+        }
+      },
+      "expected": {
+        "reason": "INVALID_RULE"
+      },
+      "actual": {
+        "label": "main",
+        "status": "error",
+        "stage": "production",
+        "exceptionType": "ProfileExecutionFault",
+        "diagnostic": {
+          "reason": "ABSOLUTE_IRI_REQUIRED",
+          "classification": "input",
+          "ruleId": "m1",
+          "location": {
+            "section": "comparison",
+            "index": 0,
+            "side": "left",
+            "span": null
+          }
+        },
+        "reason": "ABSOLUTE_IRI_REQUIRED",
+        "publicError": {
+          "code": "SEMANTIC_INPUT_INVALID",
+          "messageKey": "semantics.inputInvalid",
+          "params": {
+            "field": "rule"
+          },
+          "retryable": false
+        },
+        "producedResultReturned": false,
+        "restoredResultReturned": false
+      },
+      "ledgers": {
+        "materialC": {
+          "state": {
+            "type": "str",
+            "value": "transferred"
+          },
+          "caps": {
+            "type": "dict",
+            "fields": {
+              "traversal": {
+                "type": "int",
+                "value": "3221291008"
+              },
+              "scan_copy": {
+                "type": "int",
+                "value": "1610678272"
+              },
+              "hash": {
+                "type": "int",
+                "value": "402718720"
+              },
+              "scalar": {
+                "type": "int",
+                "value": "402784256"
+              },
+              "objects": {
+                "type": "int",
+                "value": "201332736"
+              }
+            }
+          },
+          "used": {
+            "type": "dict",
+            "fields": {
+              "traversal": {
+                "type": "int",
+                "value": "67111879"
+              },
+              "scan_copy": {
+                "type": "int",
+                "value": "268519004"
+              },
+              "hash": {
+                "type": "int",
+                "value": "404"
+              }
+            }
+          },
+          "live": {
+            "type": "dict",
+            "fields": {
+              "scalar": {
+                "type": "int",
+                "value": "19897"
+              },
+              "objects": {
+                "type": "int",
+                "value": "6809"
+              }
+            }
+          },
+          "peaks": {
+            "type": "dict",
+            "fields": {
+              "scalar": {
+                "type": "int",
+                "value": "50343107"
+              },
+              "objects": {
+                "type": "int",
+                "value": "8388953"
+              }
+            }
+          },
+          "stage": {
+            "type": "int",
+            "value": "8"
+          }
+        },
+        "productionC": {
+          "state": {
+            "type": "str",
+            "value": "failed"
+          },
+          "caps": {
+            "type": "dict",
+            "fields": {
+              "traversal": {
+                "type": "int",
+                "value": "3221723008"
+              },
+              "scan_copy": {
+                "type": "int",
+                "value": "1610894272"
+              },
+              "hash": {
+                "type": "int",
+                "value": "402772720"
+              },
+              "scalar": {
+                "type": "int",
+                "value": "402838256"
+              },
+              "objects": {
+                "type": "int",
+                "value": "201359736"
+              }
+            }
+          },
+          "used": {
+            "type": "dict",
+            "fields": {
+              "traversal": {
+                "type": "int",
+                "value": "83889100"
+              },
+              "scan_copy": {
+                "type": "int",
+                "value": "335641724"
+              },
+              "hash": {
+                "type": "int",
+                "value": "404"
+              }
+            }
+          },
+          "live": {
+            "type": "dict",
+            "fields": {
+              "scalar": {
+                "type": "int",
+                "value": "19897"
+              },
+              "objects": {
+                "type": "int",
+                "value": "6778"
+              }
+            }
+          },
+          "peaks": {
+            "type": "dict",
+            "fields": {
+              "scalar": {
+                "type": "int",
+                "value": "50350613"
+              },
+              "objects": {
+                "type": "int",
+                "value": "8395426"
+              }
+            }
+          },
+          "stage": {
+            "type": "int",
+            "value": "5"
+          }
+        },
+        "restoreR": {
+          "state": {
+            "type": "str",
+            "value": "new"
+          },
+          "caps": {
+            "type": "tuple",
+            "items": []
+          },
+          "usage": {
+            "type": "tuple",
+            "items": [
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "wire"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "schema"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "traversal"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "integer"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "copy"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "cache_query"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "cache_split"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "cache_alloc"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "rule"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "pv_compare"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "hash"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              }
+            ]
+          },
+          "live": {
+            "type": "tuple",
+            "items": [
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "scalar"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "objects"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "trie_nodes"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "trie_slots"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "opaque_scalar"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "opaque_objects"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              }
+            ]
+          },
+          "peaks": {
+            "type": "tuple",
+            "items": [
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "scalar"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "objects"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "trie_nodes"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "trie_slots"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "opaque_scalar"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "opaque_objects"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "artifactPath": "build/m1-actual/first-full/7aaf932c2b9a545846df4064ff08773a424ff844fd112795ead4d4877897e7ef/observation.json",
+      "observationBytes": 30403,
+      "observationSha256": "4ff21ecc9836637be89a6b25270b368529e3b9a40798d93f7afa3c333c80765c"
+    },
+    {
+      "family": "errorOperandCases",
+      "id": "error/31",
+      "input": {
+        "id": "error/31",
+        "operator": 1,
+        "left": {
+          "kind": "literal",
+          "lexical_form": "2",
+          "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer"
+        },
+        "right": {
+          "kind": "literal",
+          "lexical_form": "2",
+          "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer"
+        }
+      },
+      "expected": {
+        "reason": "INTERNAL_ERROR"
+      },
+      "actual": {
+        "label": "main",
+        "status": "error",
+        "stage": "material",
+        "exceptionType": "MaterialFailure",
+        "diagnostic": null,
+        "reason": "MATERIAL_INVALID",
+        "publicError": null,
+        "producedResultReturned": false,
+        "restoredResultReturned": false
+      },
+      "ledgers": {
+        "materialC": {
+          "state": {
+            "type": "str",
+            "value": "failed"
+          },
+          "caps": {
+            "type": "dict",
+            "fields": {
+              "traversal": {
+                "type": "int",
+                "value": "3221291008"
+              },
+              "scan_copy": {
+                "type": "int",
+                "value": "1610678272"
+              },
+              "hash": {
+                "type": "int",
+                "value": "402718720"
+              },
+              "scalar": {
+                "type": "int",
+                "value": "402784256"
+              },
+              "objects": {
+                "type": "int",
+                "value": "201332736"
+              }
+            }
+          },
+          "used": {
+            "type": "dict",
+            "fields": {
+              "traversal": {
+                "type": "int",
+                "value": "33555420"
+              },
+              "scan_copy": {
+                "type": "int",
+                "value": "134238596"
+              },
+              "hash": {
+                "type": "int",
+                "value": "0"
+              }
+            }
+          },
+          "live": {
+            "type": "dict",
+            "fields": {
+              "scalar": {
+                "type": "int",
+                "value": "1525"
+              },
+              "objects": {
+                "type": "int",
+                "value": "82"
+              }
+            }
+          },
+          "peaks": {
+            "type": "dict",
+            "fields": {
+              "scalar": {
+                "type": "int",
+                "value": "50335226"
+              },
+              "objects": {
+                "type": "int",
+                "value": "8388869"
+              }
+            }
+          },
+          "stage": {
+            "type": "int",
+            "value": "3"
+          }
+        },
+        "productionC": {
+          "state": {
+            "type": "str",
+            "value": "new"
+          },
+          "caps": {
+            "type": "NoneType",
+            "value": null
+          },
+          "used": {
+            "type": "NoneType",
+            "value": null
+          },
+          "live": {
+            "type": "NoneType",
+            "value": null
+          },
+          "peaks": {
+            "type": "NoneType",
+            "value": null
+          },
+          "stage": {
+            "type": "int",
+            "value": "0"
+          }
+        },
+        "restoreR": {
+          "state": {
+            "type": "str",
+            "value": "new"
+          },
+          "caps": {
+            "type": "tuple",
+            "items": []
+          },
+          "usage": {
+            "type": "tuple",
+            "items": [
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "wire"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "schema"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "traversal"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "integer"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "copy"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "cache_query"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "cache_split"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "cache_alloc"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "rule"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "pv_compare"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "hash"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              }
+            ]
+          },
+          "live": {
+            "type": "tuple",
+            "items": [
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "scalar"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "objects"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "trie_nodes"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "trie_slots"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "opaque_scalar"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "opaque_objects"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              }
+            ]
+          },
+          "peaks": {
+            "type": "tuple",
+            "items": [
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "scalar"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "objects"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "trie_nodes"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "trie_slots"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "opaque_scalar"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "type": "tuple",
+                "items": [
+                  {
+                    "type": "str",
+                    "value": "opaque_objects"
+                  },
+                  {
+                    "type": "int",
+                    "value": "0"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "artifactPath": "build/m1-actual/first-full/7aff71157d88edeeca4448971c130d1c92288035e11d49bd77eef42999592d55/observation.json",
+      "observationBytes": 981816,
+      "observationSha256": "dd6209da7fdb8b4c13c8b7bed7c622456b469739ca2fa038f68e8a4b5deae08e"
+    }
+  ],
+  "notModified": "All149 original inputs including four goldens; no skip/xfail/expected change"
+}

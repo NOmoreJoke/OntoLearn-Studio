@@ -1,0 +1,12 @@
+# T05 M1 两项错误分层的断言决定
+
+2026-10-22。根已读首反例核心字段并实际核6c源码；独立审查者亦已确认目前没有改I05产品的依据。两项失败来自将纯机制golden直接用于更早的typed material/producer入口。四份原golden和149输入继续只读，本决定不修改其纯机制预期或Q6政策。
+
+- error/28，相对IRI：纯机制parse的INVALID_RULE仍保留。实际producer先执行semantic.py::_profile_rule_iris797–831、_profile_iri581–589的完整IRI词法门，因ABSOLUTE_IRI_REQUIRED失败；semantic_execution758–775保诊断并作公开错误映射。因此本入口独立预期是production/ProfileExecutionFault，diagnostic reason ABSOLUTE_IRI_REQUIRED、classification input、ruleId m1、comparison/index0/left/spanNone；public error精确为SEMANTIC_INPUT_INVALID/semantics.inputInvalid/{field:rule}/retryable false，且无生产结果/无恢复结果。
+- error/31，operator为整数1：直接纯比较器对非str的INTERNAL_ERROR仍保留；连compile_rules也会在rule_firing.py288–289先以operator不在OPS中拒为INVALID_RULE，不能把直接比较器合同泛称所有纯入口。typed codec在semantic_profile_input.py376–381先要求Comparison.operator为exact str；正常生产不可绕过此前门。本入口独立预期是material/MaterialFailure/MATERIAL_INVALID，尚未进入production、diagnosticNone、无public adapter错误、无生产或恢复结果。
+
+允许仅已授新test内增加这两个固定ID的独立分层预期，依据上述源码合同，不从actual动态生成expected，也不放松为任意错误通过。其余纯机制golden仍严格比对，不能扩大例外表。原b0f、两失败双流、原actual及处置保留；修订后固定新候选并独立复核。
+
+报告分别给出全部输入的入口观察、真正到达比较器/产生结果/完成restore的数量与被前门拒绝的两个ID。不能将新test通过称为这两条纯层golden已经由admitted API执行验证；该入口不可达事实明确列出。真实机制层若后续需要直接验证，另列实际路径与授权，不制造假Job或绕过codec补绿。
+
+新test中true comparison左右完整typed值相等的原P2仍须补强并复审，本决定不关闭该问题。原1331输入不删、无skip/xfail、不修改实现、错误公共契约、query/SHACL或carriers。首失败保持失败历史，后续必要验证绑定新版本。

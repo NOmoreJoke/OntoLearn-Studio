@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "scope": "M1 real mathematical component observation; not parent M1 closure",
+  "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-math",
+  "branch": "feature/weekly-t05-profile-m1-math",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "adoption": "6eb4d6bfd209d06682fbfb9bd666ae54b4982e08",
+  "implementationCandidate": "051ae4cb9b5e58560c8e45cdc56fd98522777b5c",
+  "processCommitBinding": "The Git commit containing this receipt; exact ref supplied in formal controller delivery, avoiding self reference",
+  "controlled": {
+    "readonly": 149,
+    "newCodePaths": 2,
+    "total": 151,
+    "actualBaseDelta": 142,
+    "manifest": "controlled-151.json",
+    "finalAudit": "final-controlled-audit.json"
+  },
+  "newCodeFiles": [
+    {
+      "path": "tests/fixtures/quality/profile-M1-math-inputs.json",
+      "bytes": 490953,
+      "sha256": "9f198fcefa50ca30a87acfa3cef021360100a9dea3fb5ed829c5f62fc02b0d9f"
+    },
+    {
+      "path": "packages/engine/tests/test_profile_M1_math_explanation.py",
+      "bytes": 24239,
+      "sha256": "250a760bd1c0f2710a9585a67650c3d0b743f376c1ecdd308fdf0d3d8aaf6047"
+    }
+  ],
+  "observations": {
+    "candidate": "051ae4cb9b5e58560c8e45cdc56fd98522777b5c",
+    "actualDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-math/build/m1-actual/final-full",
+    "caseObservations": 1331,
+    "families": {
+      "numericComparisonCases": {
+        "pass": 648
+      },
+      "domainComparisonCases": {
+        "pass": 486
+      },
+      "termComparisonCases": {
+        "pass": 54
+      },
+      "calendarDecodeCases": {
+        "pass": 15
+      },
+      "numberDecodeCases": {
+        "pass": 38
+      },
+      "signedZeroComparisonCases": {
+        "pass": 24
+      },
+      "errorOperandCases": {
+        "pass": 32
+      },
+      "mixedNumericComparisonCases": {
+        "pass": 30
+      },
+      "languageAbnfInputs": {
+        "pass": 4
+      }
+    },
+    "operations": {
+      "success:restored": 3329,
+      "error:production": 491,
+      "error:material": 1
+    },
+    "comparatorCallCounters": {
+      "material": 0,
+      "production": 7116,
+      "restore": 6658
+    },
+    "operationsReachingComparator": {
+      "material": 0,
+      "production": 3787,
+      "restore": 3329
+    },
+    "mainOperationsReachingComparator": {
+      "material": 0,
+      "production": 1297,
+      "restore": 839
+    },
+    "callCounterCoverage": {
+      "observed": 3821
+    },
+    "pureReasonsNotExecutedByThisEntry": [
+      {
+        "family": "errorOperandCases",
+        "id": "error/28"
+      },
+      {
+        "family": "errorOperandCases",
+        "id": "error/31"
+      }
+    ],
+    "archive": "final-full-actuals.zip",
+    "archiveBytes": 120953467,
+    "archiveSha256": "65d81a465c2551fee9dbdb6c6be42383efb326439c8bbc86a955d5362af707ef",
+    "archiveMembers": 17976,
+    "uncompressedBytes": 1696398994,
+    "scope": "Real component observations only; no formal T01 Job/worker/Store/selected claim",
+    "retention": "C/R counters and logical live/retained values are not physical memory/GC proof"
+  },
+  "validation": {
+    "targetedMath": "1332 passed (1331 family/id + 1 corpus integrity), 194.17s",
+    "normalCheck": "exit0; frontend 1125 passed /22 files; Python 6219 passed /44 existing skips, 303.35s; lint/format/types/build/ruff passed",
+    "verifySources": "exit0; 12 archived sources",
+    "processLintAndFormat": "passed; process-only documentation change after product checks",
+    "commandLedger": "command-ledger.json",
+    "originalStreamsVerified": true,
+    "archiveIntegrity": "All three ZIPs; all original member bytes/SHA256/CRC verified",
+    "existingFailures": "failure-dispositions.json; first and P2 runs remain failed historical records",
+    "rawEvidenceWhitespace": "git diff --cached --check exit2 on historical pytest raw stdout whitespace; authored-only check exit0; originals unchanged, disposition recorded"
+  },
+  "independentReview": {
+    "reviewer": "/root/m1_observation_independent_review",
+    "history": "independent-review-history.md",
+    "finalReport": "independent-review-final.md",
+    "initialP2": "closed by final candidate",
+    "finalEvidenceStatus": "passed; no remaining blockers in this restricted component window; original P2 closed; not parent M1 closure"
+  },
+  "storage": {
+    "localRawArchives": "local-original-archives.json",
+    "archiveGitTracking": false,
+    "indicesAndOriginalCommandStreamsGitTracked": true,
+    "originalsPreserved": true
+  },
+  "boundaries": [
+    "error/28 pure INVALID_RULE and error/31 direct-comparator INTERNAL_ERROR not executed by this admitted entry",
+    "No formal T01 Job/Store/reopen/ownedworker/new selected",
+    "No directstep carrier; leaf basis only",
+    "SHACL/query consumer13, date policy, E5/repair/intermediate states remain separate",
+    "No physical memory/H lease/capacity proof from logical live0",
+    "No parent FR/57P0/targetOS/manual/specified dual review/CI/release closure",
+    "No Goal state changes, push, PR, merge, desktop/e2e/native/HMR/model/credential calls"
+  ]
+}

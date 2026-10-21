@@ -1,0 +1,109 @@
+{
+  "historicalFailuresPreserved": true,
+  "initialLint": {
+    "commands": [
+      "test-lint",
+      "test-lint-fix"
+    ],
+    "cause": "I001/UP017 and E501 in new test / owned process runner",
+    "resolution": "restricted formatting/import fixes only; test-lint-final exit0"
+  },
+  "firstMathAndNormalCheck": {
+    "candidate": "b0fcb7dc1dd8b4ebe3436e996926dba55f9e19d6",
+    "math": "2failed/1330passed",
+    "normalCheck": "exit1; Python2failed/6217passed/44existing skips; frontend1125passed",
+    "counterexamples": "first-counterexamples.json",
+    "actuals": "first-full-actuals.zip"
+  },
+  "independentP2": {
+    "finding": "true main comparison full left/right typed values were not bound to independently checked operand probes",
+    "fixedCandidate": "e686a112fdbffdcc2b2bd042e5c131c1e2d586b1",
+    "resolution": "full type-sensitive main PV equals independently checked corresponding operand PV; unary both sides",
+    "review": "closed by independent reviewer",
+    "p2FullRun": "2failed/1330passed; same two upstream-contract differences, complete p2-full actuals preserved"
+  },
+  "rootDecision": {
+    "path": "guidance/two-error-layer-decision.md",
+    "bytes": 2461,
+    "sha256": "c10a07b1ad4da626ca005d5ee2b2bd62db5a72d811680f0b1085e4a322f85faa",
+    "changesOnlyTwoFixedIds": [
+      {
+        "family": "errorOperandCases",
+        "id": "error/28",
+        "expected": {
+          "reason": "INVALID_RULE"
+        },
+        "admittedEntryExpected": {
+          "status": "error",
+          "stage": "production",
+          "exceptionType": "ProfileExecutionFault",
+          "reason": "ABSOLUTE_IRI_REQUIRED",
+          "diagnostic": {
+            "reason": "ABSOLUTE_IRI_REQUIRED",
+            "classification": "input",
+            "ruleId": "m1",
+            "location": {
+              "section": "comparison",
+              "index": 0,
+              "side": "left",
+              "span": null
+            }
+          },
+          "publicError": {
+            "code": "SEMANTIC_INPUT_INVALID",
+            "messageKey": "semantics.inputInvalid",
+            "params": {
+              "field": "rule"
+            },
+            "retryable": false
+          },
+          "producedResultReturned": false,
+          "restoredResultReturned": false
+        },
+        "pureReasonExecutedByThisEntry": false,
+        "completeObservationMember": "7aaf932c2b9a545846df4064ff08773a424ff844fd112795ead4d4877897e7ef/observation.json",
+        "completeObservationSha256": "8cc8995aecc8a5d0b5cb9db332a472acf09faf26cfab13b756ec353bb2bda2aa"
+      },
+      {
+        "family": "errorOperandCases",
+        "id": "error/31",
+        "expected": {
+          "reason": "INTERNAL_ERROR"
+        },
+        "admittedEntryExpected": {
+          "status": "error",
+          "stage": "material",
+          "exceptionType": "MaterialFailure",
+          "reason": "MATERIAL_INVALID",
+          "diagnostic": null,
+          "publicError": null,
+          "producedResultReturned": false,
+          "restoredResultReturned": false
+        },
+        "pureReasonExecutedByThisEntry": false,
+        "completeObservationMember": "7aff71157d88edeeca4448971c130d1c92288035e11d49bd77eef42999592d55/observation.json",
+        "completeObservationSha256": "b46fd9772efc5a50e4338cbec8223b8b5d94f83479592ad0234c746f37ffdfdc"
+      }
+    ],
+    "goldensAnd149ReadonlyInputsChanged": false,
+    "claim": "two pure reasons remain unexecuted through this admitted entry; full upstream contract assertions are not pure comparator reason proof"
+  },
+  "final": {
+    "candidate": "051ae4cb9b5e58560c8e45cdc56fd98522777b5c",
+    "math": "1332passed",
+    "normalCheck": "exit0; frontend1125passed; Python6219passed/44existing skips",
+    "noNewSkipOrXfail": true
+  },
+  "authoringToolFailure": {
+    "event": "one apply_patch context verification failed on owned archive process script after formatting",
+    "effect": "no file mutated by that attempt; patch reapplied against current context",
+    "productFailure": false
+  },
+  "rawEvidenceWhitespaceCheck": {
+    "command": "process-diff-check-raw",
+    "exit": 2,
+    "cause": "Original pytest stdout has trailing spaces; first-full, p2-full and failed normal-check original raw streams",
+    "disposition": "Preserve original bytes and hashes; do not edit evidence to satisfy whitespace checks",
+    "authoredFilesCheck": "process-diff-check-authored exit0, excludes only original *.raw streams"
+  }
+}

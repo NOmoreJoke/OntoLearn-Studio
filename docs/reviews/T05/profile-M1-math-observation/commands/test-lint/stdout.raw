@@ -1,0 +1,75 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> docs/reviews/T05/profile-M1-math-observation/run-command.py:3:1
+   |
+ 1 |   """Run an exact argv with separate streams and immutable per-attempt metadata."""
+ 2 |
+ 3 | / import datetime
+ 4 | | import hashlib
+ 5 | | import json
+ 6 | | import os
+ 7 | | from pathlib import Path
+ 8 | | import subprocess
+ 9 | | import sys
+   | |__________^
+10 |
+11 |   tag, cwd, *argv = sys.argv[1:]
+   |
+help: Organize imports
+   |
+6  | import os
+   - from pathlib import Path
+7  | import subprocess
+8  | import sys
+9  + from pathlib import Path
+10 |
+   |
+
+UP017 [*] Use `datetime.UTC` alias
+  --> docs/reviews/T05/profile-M1-math-observation/run-command.py:17:41
+   |
+15 |     "argv": argv,
+16 |     "cwd": str(Path(cwd).resolve()),
+17 |     "startedUtc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+   |                                         ^^^^^^^^^^^^^^^^^^^^^
+18 |     "environment": {
+19 |         k: os.environ[k]
+   |
+help: Convert to `datetime.UTC` alias
+   |
+16 |     "cwd": str(Path(cwd).resolve()),
+   -     "startedUtc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+17 +     "startedUtc": datetime.datetime.now(datetime.UTC).isoformat(),
+18 |     "environment": {
+   |
+
+UP017 [*] Use `datetime.UTC` alias
+  --> docs/reviews/T05/profile-M1-math-observation/run-command.py:34:47
+   |
+32 |     result = subprocess.run(argv, cwd=cwd, stdout=stdout, stderr=stderr, check=False)
+33 | record["exit"] = result.returncode
+34 | record["finishedUtc"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+   |                                               ^^^^^^^^^^^^^^^^^^^^^
+35 | record["streams"] = {}
+36 | for name in ["stdout.raw", "stderr.raw"]:
+   |
+help: Convert to `datetime.UTC` alias
+   |
+33 | record["exit"] = result.returncode
+   - record["finishedUtc"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+34 + record["finishedUtc"] = datetime.datetime.now(datetime.UTC).isoformat()
+35 | record["streams"] = {}
+   |
+
+E501 Line too long (116 > 100)
+   --> packages/engine/tests/test_profile_M1_math_explanation.py:258:101
+    |
+256 |             sourcePreimageEqual=produced.source_encoded == material.source_preimage,
+257 |             definitionsPreimageEqual=produced.definitions_encoded == material.definitions_preimage,
+258 |             retentionMeaning="Returned references remain held; R live=0 does not prove physical release or H lease",
+    |                                                                                                     ^^^^^^^^^^^^^^^^
+259 |         )
+260 |     finally:
+    |
+
+Found 4 errors.
+[*] 3 fixable with `--fix`.

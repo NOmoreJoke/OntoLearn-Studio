@@ -1,0 +1,118 @@
+........................................................................ [  5%]
+........................................................................ [ 10%]
+........................................................................ [ 16%]
+........................................................................ [ 21%]
+........................................................................ [ 27%]
+........................................................................ [ 32%]
+........................................................................ [ 37%]
+........................................................................ [ 43%]
+........................................................................ [ 48%]
+........................................................................ [ 54%]
+........................................................................ [ 59%]
+........................................................................ [ 64%]
+........................................................................ [ 70%]
+........................................................................ [ 75%]
+........................................................................ [ 81%]
+........................................................................ [ 86%]
+........................................................................ [ 91%]
+........................................................................ [ 97%]
+...........................F..F.....                                     [100%]
+=================================== FAILURES ===================================
+______________ test_math_observation[errorOperandCases-error/28] _______________
+
+family = 'errorOperandCases', index = 28
+row = {'id': 'error/28', 'input': {'kind': 'iri', 'lexical_form': 'relative'}}
+assertion_goldens = {'domain': {'status': 'independent expected only; zero product executions', 'method': 'Explicit profile cell policy an...xical/support/resource before type classification. Nonfinite is not false. Resource maps existing adapter only.', ...}}
+
+    @pytest.mark.parametrize("family,index,row", CASES, ids=[f"{f}-{r['id']}" for f, _, r in CASES])
+    def test_math_observation(family, index, row, assertion_goldens):
+        """Complete per-ID actuals are saved before any expected-field assertion."""
+        directory = None
+        if os.environ.get("M1_OBSERVATION_DIR"):
+            key = sha((family + "/" + row["id"]).encode())
+            directory = Path(os.environ["M1_OBSERVATION_DIR"]) / key
+            directory.mkdir(parents=True, exist_ok=False)
+        observation = {
+            "family": family,
+            "id": row["id"],
+            "fixtureIndex": index,
+            "sourceSha256": SOURCE_SHA,
+            "input": row,
+        }
+        try:
+            observation["actual"] = _observe(family, index, row, directory)
+            observation["expected"] = _expected(family, row, assertion_goldens)
+>           _assert_case(family, index, row, observation["actual"], observation["expected"])
+
+packages/engine/tests/test_profile_M1_math_explanation.py:478: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+family = 'errorOperandCases', index = 28
+row = {'id': 'error/28', 'input': {'kind': 'iri', 'lexical_form': 'relative'}}
+actual = {'main': {'label': 'main', 'sourceDefinition': {'type': 'ontolearn_engine.quality.rule_firing.RuleSpec', 'fields': {'r...'tuple', 'items': [{...}, {...}, {...}]}, {'type': 'tuple', 'items': [{...}, {...}, {...}]}]}, 'status': 'error', ...}}
+expected = {'reason': 'INVALID_RULE'}
+
+    def _assert_case(family, index, row, actual, expected):
+        main = actual["main"]
+        if "reason" in expected:
+            assert main["status"] == "error", main
+            assert not main["producedResultReturned"] and not main["restoredResultReturned"]
+>           assert main["reason"] == expected["reason"], main
+E           AssertionError: {'label': 'main', 'sourceDefinition': {'type': 'ontolearn_engine.quality.rule_firing.RuleSpec', 'fields': {'rule_id': ...lds': {...}}, {'type': 'ontolearn_engine.quality.rule_profile.TermInput', 'fields': {...}}]}]}, 'status': 'error', ...}
+E           assert 'ABSOLUTE_IRI_REQUIRED' == 'INVALID_RULE'
+E             
+E             - INVALID_RULE
+E             + ABSOLUTE_IRI_REQUIRED
+
+packages/engine/tests/test_profile_M1_math_explanation.py:427: AssertionError
+______________ test_math_observation[errorOperandCases-error/31] _______________
+
+family = 'errorOperandCases', index = 31
+row = {'id': 'error/31', 'operator': 1, 'left': {'kind': 'literal', 'lexical_form': '2', 'datatype_iri': 'http://www.w3.org/...teger'}, 'right': {'kind': 'literal', 'lexical_form': '2', 'datatype_iri': 'http://www.w3.org/2001/XMLSchema#integer'}}
+assertion_goldens = {'domain': {'status': 'independent expected only; zero product executions', 'method': 'Explicit profile cell policy an...xical/support/resource before type classification. Nonfinite is not false. Resource maps existing adapter only.', ...}}
+
+    @pytest.mark.parametrize("family,index,row", CASES, ids=[f"{f}-{r['id']}" for f, _, r in CASES])
+    def test_math_observation(family, index, row, assertion_goldens):
+        """Complete per-ID actuals are saved before any expected-field assertion."""
+        directory = None
+        if os.environ.get("M1_OBSERVATION_DIR"):
+            key = sha((family + "/" + row["id"]).encode())
+            directory = Path(os.environ["M1_OBSERVATION_DIR"]) / key
+            directory.mkdir(parents=True, exist_ok=False)
+        observation = {
+            "family": family,
+            "id": row["id"],
+            "fixtureIndex": index,
+            "sourceSha256": SOURCE_SHA,
+            "input": row,
+        }
+        try:
+            observation["actual"] = _observe(family, index, row, directory)
+            observation["expected"] = _expected(family, row, assertion_goldens)
+>           _assert_case(family, index, row, observation["actual"], observation["expected"])
+
+packages/engine/tests/test_profile_M1_math_explanation.py:478: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+family = 'errorOperandCases', index = 31
+row = {'id': 'error/31', 'operator': 1, 'left': {'kind': 'literal', 'lexical_form': '2', 'datatype_iri': 'http://www.w3.org/...teger'}, 'right': {'kind': 'literal', 'lexical_form': '2', 'datatype_iri': 'http://www.w3.org/2001/XMLSchema#integer'}}
+actual = {'main': {'label': 'main', 'sourceDefinition': {'type': 'ontolearn_engine.quality.rule_firing.RuleSpec', 'fields': {'r...uple', 'items': [{...}, {...}, {...}]}, {'type': 'tuple', 'items': [{...}, {...}, {...}]}]}, 'status': 'success', ...}}
+expected = {'reason': 'INTERNAL_ERROR'}
+
+    def _assert_case(family, index, row, actual, expected):
+        main = actual["main"]
+        if "reason" in expected:
+            assert main["status"] == "error", main
+            assert not main["producedResultReturned"] and not main["restoredResultReturned"]
+>           assert main["reason"] == expected["reason"], main
+E           AssertionError: {'label': 'main', 'sourceDefinition': {'type': 'ontolearn_engine.quality.rule_firing.RuleSpec', 'fields': {'rule_id': ...lds': {...}}, {'type': 'ontolearn_engine.quality.rule_profile.TermInput', 'fields': {...}}]}]}, 'status': 'error', ...}
+E           assert 'MATERIAL_INVALID' == 'INTERNAL_ERROR'
+E             
+E             - INTERNAL_ERROR
+E             + MATERIAL_INVALID
+
+packages/engine/tests/test_profile_M1_math_explanation.py:427: AssertionError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_profile_M1_math_explanation.py::test_math_observation[errorOperandCases-error/28]
+FAILED packages/engine/tests/test_profile_M1_math_explanation.py::test_math_observation[errorOperandCases-error/31]
+2 failed, 1330 passed in 194.48s (0:03:14)
