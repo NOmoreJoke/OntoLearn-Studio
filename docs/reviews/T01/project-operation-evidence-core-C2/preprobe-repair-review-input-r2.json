@@ -1,0 +1,157 @@
+{
+  "purpose": "Immutable authored R2 review input; product and evidence bindings, independent conclusion remains separate.",
+  "productRef": "ab792c494db09ada1f20d0a598c3e0c96c338992",
+  "processCommitParent": "ab792c494db09ada1f20d0a598c3e0c96c338992",
+  "preservedPreviousProcess": "aa199fb179a38681d78a5bb58fb76ef76023fe53",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "adoption": "f927f4188fc2d285b405f55ff7ca03f675340af2",
+  "fixedCount": 54,
+  "readonly423bCount": 52,
+  "inputs": [
+    {
+      "path": "docs/reviews/T01/project-operation-evidence-core-C2/preprobe-repair-candidate-manifest-r2.json",
+      "bytes": 12387,
+      "sha256": "02e6962ae0174674b16b432f975b90e861803fcbe355ee132f34ddd82f6be337"
+    },
+    {
+      "path": "docs/reviews/T01/project-operation-evidence-core-C2/preprobe-repair-checks-r2.json",
+      "bytes": 3165,
+      "sha256": "ba789eb4171d201bb71562f073e422b005e80d5100565ea0355d51a094f4ee1f"
+    },
+    {
+      "path": "docs/reviews/T01/project-operation-evidence-core-C2/preprobe-repair-source-proof-r2.json",
+      "bytes": 1613,
+      "sha256": "4e0d436c5551b8a14752e10c9b2e58644c60b0213fa9853855c90557803b8849"
+    },
+    {
+      "path": "docs/reviews/T01/project-operation-evidence-core-C2/preprobe-resource-repair-r2.md",
+      "bytes": 3509,
+      "sha256": "e236253ba3446b6746ace523f229585438c58f42b452579febf3b086d47b199e"
+    },
+    {
+      "path": "docs/reviews/T01/project-operation-evidence-core-C2/preprobe-repair-evidence-r2.json",
+      "bytes": 184680,
+      "sha256": "3f3b2f271412dc22b8dbfbae30150922a4b96f09481abb855ef626859f8a71e1"
+    },
+    {
+      "path": "docs/reviews/T01/project-operation-evidence-core-C2/preprobe-repair-evidence-r2.zip",
+      "bytes": 21731943,
+      "sha256": "7518d343440bf904b160c97621dfec5c1d27c7a8f9ebf3c99150edeb99a0a6f2"
+    },
+    {
+      "path": "docs/reviews/T01/project-operation-evidence-core-C2/preprobe-repair-final-static-audit-r2.json",
+      "bytes": 505,
+      "sha256": "4cf25b92bb555acc36b2d449e8f3039be628c4b2e1ed173116cb40f8e277def5"
+    }
+  ],
+  "writers": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/project/operation_evidence.py",
+      "bytes": 60251,
+      "sha256": "e47f2689dcbf9519aeb3f64026094545e41f5401f309520bc805eb85f3fb56c8"
+    },
+    {
+      "path": "packages/engine/tests/test_project_operation_evidence.py",
+      "bytes": 70063,
+      "sha256": "8b03aeac29e0a6ca1f53c8b3a81aef31b6110d8f722a4b275e6a7a10ed77cd6f"
+    }
+  ],
+  "normalCheck": {
+    "startTool": "192d79",
+    "session": 74678,
+    "terminalTool": "14c887",
+    "exitCode": 0,
+    "command": "UV_OFFLINE=1 UV_CACHE_DIR=/tmp/t01-operation-evidence-core-runtime-cache/uv PYTEST_ADDOPTS=--basetemp=/tmp/t01-c2-preprobe-repair-20261022-01/r2-check-03-tmp npm run check",
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-operation-evidence-core",
+    "log": "/tmp/t01-c2-preprobe-repair-20261022-01/r2-check-03.log",
+    "typescriptPassed": 1125,
+    "pythonPassed": 3129,
+    "pythonSkipped": 44,
+    "specializedTests": 160,
+    "newSmallR2Cases": 19
+  },
+  "sources": {
+    "tool": "de486a",
+    "exitCode": 0,
+    "command": "npm run verify:sources",
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-operation-evidence-core",
+    "log": "/tmp/t01-c2-preprobe-repair-20261022-01/r2-source-03.log",
+    "count": 12
+  },
+  "priorNormalFailure": {
+    "product": "0223d70212ac21ea07f9d180a7efeacac6485b8f",
+    "start": "e594ce",
+    "session": 26008,
+    "terminal": "ef5d16",
+    "exitCode": 1,
+    "log": "/tmp/t01-c2-preprobe-repair-20261022-01/r2-check-02.log",
+    "passed": 3128,
+    "failed": 1,
+    "skipped": 44,
+    "reason": "Older empty-child test forbade all native metadata, whereas required schema gate first reads paid sqlite_master. Only assertion target scoped; implementation unchanged."
+  },
+  "ledgerCounts": {
+    "specializedTestFiles": 160,
+    "actualGateRuns": 170,
+    "normalRollbackSummaries": 141,
+    "notAllGateRunsReleased": true
+  },
+  "rawToolStreams": {
+    "priorArchive02Pairs": 57,
+    "priorArchive02Records": 114,
+    "r2Pairs": 30,
+    "r2Records": 60,
+    "repairTotalPairs": 87,
+    "repairTotalRecords": 174,
+    "r2SelectionFirstLine1": 2519,
+    "r2FirstActualRecordLine1": 2524,
+    "r2LastLine1": 2811,
+    "source": "/Users/kyle/.codex/sessions/2026/10/21/rollout-2026-10-21T20-28-12-01a15e6e-f47e-7960-8e8b-d79eff4f21b8.jsonl",
+    "normalTerminalOriginals": [
+      {
+        "chunkId": "ef5d16",
+        "exitCode": 1,
+        "sourceOutputLine1": 2720,
+        "callId": "call_149a0efb8fd24f9e82da79d1818b34bf"
+      },
+      {
+        "chunkId": "de486a",
+        "exitCode": 0,
+        "sourceOutputLine1": 2742,
+        "callId": "call_5cfdd6c9f2484c0a8128f41c3975c14e"
+      },
+      {
+        "chunkId": "14c887",
+        "exitCode": 0,
+        "sourceOutputLine1": 2789,
+        "callId": "call_8f56aa1e285b4333948f49b5dd0d67ec"
+      }
+    ],
+    "captureBoundary": "Only completed pairs before this sealing call. Sealing/check/commit followups after capture remain in actual source and external receipt, not silently claimed inside ZIP."
+  },
+  "staticAudit": {
+    "startTool": "d4b119",
+    "session": 85876,
+    "terminalTool": "7fbfd6",
+    "exitCode": 0,
+    "logReadTool": "0ce86a",
+    "logReadExitCode": 0,
+    "scope": "Exact archive bytes/hash/CRC/source offsets/line/ordinal/time/pair matching plus fixed54/readonly52/Git/protected AGENTS. No runtime rerun.",
+    "log": "/tmp/t01-c2-preprobe-repair-20261022-01/final-static-audit.log"
+  },
+  "knownEvidenceGap": {
+    "count": 11,
+    "scope": "focused-01 intermediate unsupported-profile ledgers rotated before capture",
+    "retained": "original log and tool exit",
+    "reconstruction": false
+  },
+  "preserved": "Original C2 430 records/215 pairs/129 specialized tests and old main/report/manifest remain unchanged. Prior2c425 actual blockers and0223 first normal failure retained.",
+  "independentReview": {
+    "reviewer": "/root/create_budget_review",
+    "status": "Different agent reviewing same fixedab792; final signed append is separate and is deliberately not bound as already existing in this authored input.",
+    "excludedPath": "docs/reviews/T01/project-operation-evidence-core-C2/independent-preprobe-repair-review.md",
+    "authorPass": false
+  },
+  "postCapture": "Formatting, static readback, process commit and external final Git receipt occur after this frozen ZIP capture. They are not claimed inside the ZIP. External receipt binds final process commit without self-reference.",
+  "scopeBoundary": "Only original two writers and new process docs. Protected AGENTS unstaged; original52/caps/profile1/Store/Job/schema unchanged; no production authority/profile2/combination56/formal resolution or external/GUI/native/model/paid/push/PR/merge."
+}

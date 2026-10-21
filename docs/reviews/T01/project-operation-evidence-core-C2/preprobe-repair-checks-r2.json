@@ -1,0 +1,76 @@
+{
+  "product": "ab792c494db09ada1f20d0a598c3e0c96c338992",
+  "implementation": "0223d70212ac21ea07f9d180a7efeacac6485b8f",
+  "writerIdentity": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/project/operation_evidence.py",
+      "bytes": 60251,
+      "sha256": "e47f2689dcbf9519aeb3f64026094545e41f5401f309520bc805eb85f3fb56c8"
+    },
+    {
+      "path": "packages/engine/tests/test_project_operation_evidence.py",
+      "bytes": 70063,
+      "sha256": "8b03aeac29e0a6ca1f53c8b3a81aef31b6110d8f722a4b275e6a7a10ed77cd6f"
+    }
+  ],
+  "normalCheck": {
+    "startTool": "192d79",
+    "session": 74678,
+    "terminalTool": "14c887",
+    "exitCode": 0,
+    "command": "UV_OFFLINE=1 UV_CACHE_DIR=/tmp/t01-operation-evidence-core-runtime-cache/uv PYTEST_ADDOPTS=--basetemp=/tmp/t01-c2-preprobe-repair-20261022-01/r2-check-03-tmp npm run check",
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-operation-evidence-core",
+    "log": "/tmp/t01-c2-preprobe-repair-20261022-01/r2-check-03.log",
+    "typescriptPassed": 1125,
+    "pythonPassed": 3129,
+    "pythonSkipped": 44,
+    "specializedTests": 160,
+    "newSmallR2Cases": 19
+  },
+  "sources": {
+    "tool": "de486a",
+    "exitCode": 0,
+    "command": "npm run verify:sources",
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-operation-evidence-core",
+    "log": "/tmp/t01-c2-preprobe-repair-20261022-01/r2-source-03.log",
+    "count": 12
+  },
+  "targeted": [
+    {
+      "start": "d80db4",
+      "terminal": "3bdbde",
+      "exitCode": 0,
+      "count": 20,
+      "log": "/tmp/t01-c2-preprobe-repair-20261022-01/r2-target-01.log",
+      "scope": "R2 source exact; initial spy fixture before real boundary correction and prior globally scoped older canary assertion"
+    },
+    {
+      "tool": "e84173",
+      "exitCode": 0,
+      "count": 9,
+      "log": "/tmp/t01-c2-preprobe-repair-20261022-01/r2-close-02.log",
+      "scope": "actual _Cursor.close driver boundary, same finalsource"
+    }
+  ],
+  "priorNormalFailure": {
+    "product": "0223d70212ac21ea07f9d180a7efeacac6485b8f",
+    "start": "e594ce",
+    "session": 26008,
+    "terminal": "ef5d16",
+    "exitCode": 1,
+    "log": "/tmp/t01-c2-preprobe-repair-20261022-01/r2-check-02.log",
+    "passed": 3128,
+    "failed": 1,
+    "skipped": 44,
+    "reason": "Older empty-child test forbade all native metadata, whereas required schema gate first reads paid sqlite_master. Only assertion target scoped; implementation unchanged."
+  },
+  "preservedBlockers": "2c425 actual rowid alias and finalSELECT Rewind originals in preprobe-repair-r1-counterexamples.zip;2c425 check is not evidence for this candidate.",
+  "independentReview": "pending append by different independent reviewer; not author Pass; report excluded from this immutable input because still being authored",
+  "protected": "52 readonly423b/caps/old process/report unchanged; AGENTS78df unstaged; only2 writers",
+  "notRun": [
+    "external services or user data",
+    "GUI/native/model/paid/packaging/push/PR/merge",
+    "production authority/formal resolution/profile2/combination56",
+    "designated dual external review/CI/OS/human gates"
+  ]
+}
