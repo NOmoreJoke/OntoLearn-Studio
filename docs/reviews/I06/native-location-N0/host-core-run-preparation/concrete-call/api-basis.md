@@ -26,7 +26,7 @@
 
 实际本地subprocess.py:1872-1883的_try_wait在ECHILD时合成status0；因此本调用不使用Popen.wait/poll/communicate/run/context manager，也不在末尾触发其__del__隐式poll。只有控制器 `os.waitpid(proc.pid,WNOHANG)`，确切终态自行解码并更新proc.returncode；ECHILD、权限或其他wait错误均unknown且撤销号码发信号许可。最终os._exit避免第二个内部wait。全程没有wait(-1)、probe PID wait或外部reaper。
 
-本地subprocess.py:1774-1809构造会读exec errpipe，失败分支内部可能waitpid(...,0)。这发生在Popen返回精确receipt之前，**不受后续15秒保护**；单线程和短preexec减少风险但不证明硬截止。构造抛出且proc尚无值时可能存在未知子进程，不猜PID/组、不重试；保dispatchAttempted和unknown。不得把此准备合同写成整个工具调用20秒绝对上限。
+本地subprocess.py:1774-1809构造会读exec errpipe，失败分支内部可能waitpid(...,0)。这发生在Popen返回精确receipt之前，**不受后续15秒保护**；单线程和短preexec减少风险但不证明硬截止。构造抛出且proc尚无值时可能存在未知子进程，不猜PID/组、不重试；保dispatchAttempted和unknown。不得把此准备合同写成整个工具调用20秒绝对上限。本脚本对Python层已经抛出的EINTR或其他异常不另作重试；不承诺CPython/OS没有PEP475内部syscall重试。
 
 ## 15+1+2秒及异常分支
 

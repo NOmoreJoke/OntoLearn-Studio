@@ -146,7 +146,8 @@ def wait_until(deadline, allow_cancel=True):
         try:
             pid, status = os.waitpid(proc.pid, os.WNOHANG)
         except BaseException as exc:
-            # 包括ECHILD/EINTR/权限拒绝：不伪造exit0，不再依号码发信号，不重试API。
+            # Python层收到ECHILD/EINTR/权限等异常即停；CPython可能已按PEP475内部重试EINTR。
+            # 不伪造exit0，不再依号码发信号，不在本脚本重试该异常API。
             owned_unreaped = False
             process_api_refused = True
             event("waitpid-stopped-unknown", exc)
@@ -294,9 +295,14 @@ try:
     post["artifacts"] = pin_pass()
     post["streams"] = [stream_pass(raw[0], "core.stdout"), stream_pass(raw[1], "core.stderr")]
     post["completeness"] = "snapshot only; descendants/residue not independently certified"
-    if result["status"] == "HOST_CASE_EXIT0" and all(x["stable"] for x in post["streams"]):
+    if cancel_signal:
+        result["status"] = "FAILED_CANCELLED_POSTFLIGHT"
+        exit_code = 1
+    elif result["status"] == "HOST_CASE_EXIT0" and all(x["stable"] for x in post["streams"]):
         exit_code = 0
     else:
+        if result["status"] == "HOST_CASE_EXIT0":
+            result["status"] = "FAILED_POSTFLIGHT"
         exit_code = 1
 except BaseException as exc:
     event("control-stopped", exc)
@@ -307,6 +313,10 @@ except BaseException as exc:
         stop_owned_group()
     exit_code = 74
 finally:
+    if cancel_signal:
+        result["status"] = "FAILED_CANCELLED_CONTROL"
+        if exit_code == 0:
+            exit_code = 1
     leader_state = "unreaped" if owned_unreaped else (
         "reaped" if proc is not None and proc.returncode is not None else "unknown")
     result.update({"dispatchAttempted": dispatch_attempted, "leaderState": leader_state,
@@ -326,10 +336,12 @@ finally:
             exit_code = 74
     # 防止Popen.__del__/subprocess._cleanup/上下文管理器另作poll/wait；未reap须明确unknown。
     # SIGKILL/OS崩溃等外部终止可能绕过finally，没有有界恢复/原始记录完整性保证。
-    os._exit(exit_code)
+    # 最后返回快照再查一次已观测取消；写记录/close期间取消也不能让控制返回0。
+    # 记录不重写，较早快照可能不同；此参数快照以后到达的信号没有原子捕获保证。
+    os._exit(1 if cancel_signal and exit_code == 0 else exit_code)
 I06_N0_ONE_SHOT_PY
 ```
 
-上述控制代码不认证 fixture 路径身份或 native drain，也不删除任何 `/tmp` 对象。只在 core 精确终态0、产物复核及流快照稳定时返回控制退出0；仍不得外推 probe 各自exit0、macOS15/Win11或完整N0。解释器启动、import、Popen构造/preexec/exec握手、文件与系统调用不具硬wall截止；15+1+2秒限于已取得确切core receipt后的正常控制路径，20秒只是逻辑预算。权限/平台拒绝不换方法、不重试；记录写失败时可能只有部分证据，最终工具退出非零。
+上述控制代码不认证 fixture 路径身份或 native drain，也不删除任何 `/tmp` 对象。只在 core 精确终态0、产物复核、流快照稳定且最终返回快照未观察到取消时返回控制退出0；仍不得外推 probe 各自exit0、macOS15/Win11或完整N0。coreReturncode保原始事实，控制状态与工具返回另表取消/后核失败；写记录后的取消会令工具非0而不重写原记录，最后快照后到达的信号无原子捕获保证。解释器启动、import、Popen构造/preexec/exec握手、文件与系统调用不具硬wall截止；15+1+2秒限于已取得确切core receipt后的正常控制路径，20秒只是逻辑预算。权限/平台拒绝不换方法、不重试；“不重试异常API”仅指本脚本Python层，CPython可能按PEP475内部重试EINTR。记录写失败时可能只有部分证据，最终工具退出非零。
 
 独立单线程前置既包含 `threading.enumerate()` 拒绝，也要求根认可这是未嵌入工具进程的全新CLI、无站点启动/环境注入/native instrumentation线程、无外部waiter。Python线程枚举不认证所有原生线程；若该前置不能确定，禁止执行，不用探针或隐式假设补成事实。此具体调用新增的**私有控制进程** SIGCHLD/取消状态仅作用于未来新Python进程，须根审此相对旧“仅core子进程”文案的最小必要细化；不修改已经运行的tool host、shell、系统或全UID。所有旧证据保持原字节。
