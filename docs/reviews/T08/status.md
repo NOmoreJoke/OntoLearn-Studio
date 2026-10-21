@@ -17,3 +17,15 @@
 计划无窗口执行 npm run check；独立内审。main变更要求的e2e仅可在已预约隔离环境执行，本机不启动Electron/e2e/HMR/GUI或凭据提示。
 
 仍需批准I06唯一安全传输、T01项目/ChangeSet与撤销、T02–T07真实工具、T00公共接线；API主体权限/消费硬上限尚未提供，不读取secret、不调用真实服务。指定ZCode/MiniMax资源当前I05占用，最终同候选双方全新审查仍待总控预约。未push/PR/合并。
+
+## 独立实现交付（2026-10-21）
+
+- 可恢复实现候选：`9bfd3105a2f847771d8039b93e6615fa94c4fdfa`，本地提交，未push。
+- 已实现：严格文字/非流式DeepSeek Chat Completions codec、完整thinking工具多轮字段和ID关联、白名单和参数整批预验、获批领域端口缺省不可用、可信上下文/迟到隔离、版本化待确认草稿、完整真实工具收据展示、有限教育提示、结构化/工具/评估与漂移分开的能力判定，以及每页最多4个动作/离线策略纯函数。
+- 版本化合成基线：manifest.v1 + 13份完整输入/预期，T08共49项定向回归。它只验证协议/调度/证据忠实性，未实际执行查询/推理/沙盘；真实11.3/12.2/A系列仍待接线验收。
+- `npm run check` 最终exit0：18个TS测试文件、679项测试，Python1052项，lint/format/typecheck/build/ruff通过。`npm run verify:sources` exit0，12份归档一致。摘要及固定候选文件哈希见 evidence/verification.json。
+- 首次check因新工作树缺少`.venv/bin/python`，8项既有task-runtime测试ENOENT；已用`uv sync --frozen`建立本树独立环境。原失败全文保留evidence/check-first-failure.txt（入库理由：保留首次失败环境审计证据，仅合成数据，23KB），不将首跑改记为通过。`npm ci --ignore-scripts`未改依赖锁。
+- 内审1明确不通过：发现自由回答隐藏失败、工具ID校验不一致；已修复并新增回归，原意见见internal-review-1.md。固定候选的独立修复复核已明确通过（原P1/P2关闭、3文件49项独立测试通过），见internal-review-2.md；这不是指定双模型外审。
+- I06/T01/T00精确接口、版本/取消/预算/字段溯源需求见 [design-and-integration](../../iterations/T08/design-and-integration.md)。当前不消费未批准代码，未新建网关/项目权威。
+
+本轮完成纯服务独立实现与本地预验；T08父P0、Goal仍active。main纯模块对应的e2e待预约隔离环境；页面/正式API/所有实际领域工具/安全存储/最终字节授权与最小外发记录/原子Diff撤销/目标双平台/同候选指定双方新审/CI合并均未验。下一步按总控批准接口和资源预约接线并留在本聊天完成原门禁，不因局部完成关闭父任务。
