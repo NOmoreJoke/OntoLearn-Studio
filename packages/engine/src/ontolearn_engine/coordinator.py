@@ -15,40 +15,82 @@ from pathlib import Path
 from uuid import uuid4
 
 from ontolearn_engine import __version__
-from ontolearn_engine.job_store import JobFault
+from ontolearn_engine.job_store import JobFault, JobStore
 from ontolearn_engine.memory_guard import MEMORY_LIMIT_EXIT, resident_bytes
 from ontolearn_engine.process_environment import worker_environment
 from ontolearn_engine.protocol import JsonlReader, ProtocolFault
 from ontolearn_engine.resources import CONTRACT, IMPLEMENTATION, LIMITS, REGISTRY_HASH, safe_error
-from ontolearn_engine.storage import Conflict
+from ontolearn_engine.storage import Conflict, UnsupportedProjectFormat
 from ontolearn_engine.worker import worker_owner_arguments
 
 TERMINAL = {"succeeded", "failed", "cancelled"}
+_JOB_READY = object()
 
 
-class ServiceFault(Exception):
-    def __init__(self, code: str, params: dict | None = None):
-        self.error = safe_error(code, params)
+class StartupInitializationFailure(Exception):
+    """Internal carrier created only after initialization cleanup was attempted."""
+
+    def __init__(self, cause, cleanup_failures=(), reader_state=None):
+        super().__init__("STARTUP_INITIALIZATION_FAILED")
+        self.cause = cause
+        self.cleanup_failures = tuple(cleanup_failures)
+        self.reader_state = dict(reader_state or {})
 
 
-def classify(error: Exception, *, resource: str = "job", field: str = "params") -> dict:
-    if isinstance(error, ServiceFault):
-        return error.error
-    if isinstance(error, (JobFault, Conflict)):
-        return safe_error(error.code, error.params)
+def startup_code(error):
+    from ontolearn_engine.project.format3 import Format3Fault
+
+    if isinstance(error, UnsupportedProjectFormat):
+        return "PROJECT_FORMAT_UNSUPPORTED"
+    if isinstance(error, Format3Fault):
+        if error.category == "leaseBusy":
+            return "STORAGE_BUSY"
+        if error.category == "structure":
+            return "STORAGE_FAILURE"
+    if isinstance(error, JobFault) and error.code == "STORAGE_BUSY":
+        return "STORAGE_BUSY"
     if isinstance(error, sqlite3.Error):
         primary = getattr(error, "sqlite_errorcode", 0) & 0xFF
         if primary in {sqlite3.SQLITE_BUSY, sqlite3.SQLITE_LOCKED}:
-            return safe_error("STORAGE_BUSY", {"retryAfterMs": 250})
+            return "STORAGE_BUSY"
         if primary in {
             sqlite3.SQLITE_IOERR,
             sqlite3.SQLITE_FULL,
             sqlite3.SQLITE_READONLY,
             sqlite3.SQLITE_CORRUPT,
         }:
-            return safe_error("STORAGE_FAILURE")
-        return safe_error("INTERNAL_ERROR")
-    return safe_error("INTERNAL_ERROR")
+            return "STORAGE_FAILURE"
+    return "INTERNAL_ERROR"
+
+
+class ServiceFault(Exception):
+    def __init__(self, code: str, params: dict | None = None):
+        self.code = code
+        self.params = params
+        self.error = safe_error(code, params)
+
+
+def classify(
+    error: Exception, *, resource: str = "job", field: str = "params", profile="legacy2"
+) -> dict:
+    formatter = CONTRACT.business3_error if profile == "business3" else safe_error
+    if isinstance(error, ServiceFault):
+        return formatter(error.code, error.params)
+    if isinstance(error, (JobFault, Conflict)):
+        return formatter(error.code, error.params)
+    if isinstance(error, sqlite3.Error):
+        primary = getattr(error, "sqlite_errorcode", 0) & 0xFF
+        if primary in {sqlite3.SQLITE_BUSY, sqlite3.SQLITE_LOCKED}:
+            return formatter("STORAGE_BUSY", {"retryAfterMs": 250})
+        if primary in {
+            sqlite3.SQLITE_IOERR,
+            sqlite3.SQLITE_FULL,
+            sqlite3.SQLITE_READONLY,
+            sqlite3.SQLITE_CORRUPT,
+        }:
+            return formatter("STORAGE_FAILURE")
+        return formatter("INTERNAL_ERROR")
+    return formatter("INTERNAL_ERROR")
 
 
 def worker_command() -> list[str]:
@@ -66,7 +108,24 @@ class Coordinator:
         allowed_projects: set | None = None,
         limits: dict | None = None,
         emit=None,
+        profile="legacy2",
+        _ready=None,
     ):
+        if profile not in {"legacy2", "business3"}:
+            raise ValueError("INVALID_PROFILE")
+        version = 3 if profile == "business3" else 2
+        if getattr(store, "actual_format", 2) != version or (
+            version == 3 and (_ready is not _JOB_READY or not isinstance(store, JobStore))
+        ):
+            raise ServiceFault("INVALID_STATE")
+        self.profile = profile
+        self.version = version
+        self.validate = CONTRACT.validate_business3 if version == 3 else CONTRACT.validate
+        self.methods = (
+            CONTRACT.REGISTRY["foundationProfiles"]["business3"]["methods"]
+            if version == 3
+            else CONTRACT.REGISTRY["v2Runtime"]
+        )
         self.store = store
         self.test_mode = test_mode
         self.allowed_projects = allowed_projects or set()
@@ -74,13 +133,21 @@ class Coordinator:
         if not CONTRACT.validate("limits", self.limits):
             raise ValueError("INVALID_LIMITS")
         self.session = None
+        # Attribution of the trusted stdio client, never proof of human consent.
+        self.host_client_id = None
         self.seen = set()
         self.subscriptions = {}
         self.queued = deque()
         self.active = {}
         self.closed = False
-        self.emit = emit or self._emit
+        self._output = emit or self._emit
+        self.emit = self._validated_emit
         self.tasks = set()
+
+    def _validated_emit(self, value):
+        if not self.validate("envelope", value):
+            raise ProtocolFault()
+        self._output(value)
 
     @staticmethod
     def _emit(value: dict) -> None:
@@ -112,7 +179,7 @@ class Coordinator:
                 self.emit(
                     {
                         "kind": "notification",
-                        "protocolVersion": 2,
+                        "protocolVersion": self.version,
                         "engineSessionId": self.session,
                         "subscriptionId": identity,
                         "projectId": job["projectId"],
@@ -152,7 +219,7 @@ class Coordinator:
                 self.emit(
                     {
                         "kind": "notification",
-                        "protocolVersion": 2,
+                        "protocolVersion": self.version,
                         "engineSessionId": self.session,
                         "subscriptionId": identity,
                         "projectId": job["projectId"],
@@ -165,10 +232,12 @@ class Coordinator:
 
     def request(self, value: object) -> dict:
         # Unknown envelope/method/id is session-fatal: never reflect unknown wire data.
+        if self.version == 3 and self.closed:
+            raise ProtocolFault()
         if not isinstance(value, dict) or not CONTRACT.validate("id", value.get("id")):
             raise ProtocolFault()
         method = value.get("method")
-        if not isinstance(method, str) or method not in CONTRACT.REGISTRY["v2Runtime"]:
+        if not isinstance(method, str) or method not in self.methods:
             raise ProtocolFault()
         if value["id"] in self.seen or len(self.seen) >= 65536:
             raise ProtocolFault()
@@ -176,34 +245,54 @@ class Coordinator:
         required = {"kind", "id", "protocolVersion", "engineSessionId", "method", "params"}
         if set(value) != required or value["kind"] != "request":
             raise ProtocolFault()
+        if self.version == 3 and (
+            (method == "hello" and self.session is not None)
+            or (
+                method != "hello"
+                and (
+                    self.session is None
+                    or value["engineSessionId"] != self.session
+                    or type(value["protocolVersion"]) is not int
+                    or value["protocolVersion"] != 3
+                )
+            )
+        ):
+            self.closed = True
+            raise ProtocolFault()
         response = {
             "kind": "response",
             "id": value["id"],
             "method": method,
-            "protocolVersion": 2,
+            "protocolVersion": 2 if method == "hello" else self.version,
             "engineSessionId": self.session,
         }
         try:
-            if type(value["protocolVersion"]) is not int or value["protocolVersion"] != 2:
-                raise ServiceFault("VERSION_INCOMPATIBLE", {"supportedVersions": [2]})
+            expected = 2 if method == "hello" else self.version
+            if type(value["protocolVersion"]) is not int or value["protocolVersion"] != expected:
+                raise ServiceFault("VERSION_INCOMPATIBLE", {"supportedVersions": [self.version]})
             if method != "hello" and self.session is None:
                 raise ServiceFault("HANDSHAKE_REQUIRED")
-            if not CONTRACT.validate("params_" + method, value["params"]):
+            if not self.validate("params_" + method, value["params"]):
                 raise ServiceFault("INVALID_REQUEST", {"field": "params"})
             if method == "hello":
                 if self.session is not None:
                     raise ServiceFault("INVALID_STATE")
                 if value["engineSessionId"] is not None:
                     raise ServiceFault("SESSION_MISMATCH")
-                if 2 not in value["params"]["supportedVersions"]:
-                    raise ServiceFault("VERSION_INCOMPATIBLE", {"supportedVersions": [2]})
+                if self.version not in value["params"]["supportedVersions"]:
+                    raise ServiceFault(
+                        "VERSION_INCOMPATIBLE", {"supportedVersions": [self.version]}
+                    )
+                if self.version == 3 and not self.validate("request", value):
+                    raise ServiceFault("INVALID_REQUEST", {"field": "params"})
                 self.session = str(uuid4())
+                self.host_client_id = value["params"]["clientId"]
                 response["engineSessionId"] = self.session
                 data = {
-                    "selectedVersion": 2,
+                    "selectedVersion": self.version,
                     "engineVersion": __version__,
                     "engineSessionId": self.session,
-                    "capabilities": CONTRACT.REGISTRY["v2Runtime"],
+                    "capabilities": self.methods,
                     "limits": self.limits,
                     "registryHash": REGISTRY_HASH,
                 }
@@ -212,6 +301,8 @@ class Coordinator:
                     raise ServiceFault("HANDSHAKE_REQUIRED")
                 if value["engineSessionId"] != self.session:
                     raise ServiceFault("SESSION_MISMATCH")
+                if self.version == 3 and not self.validate("request", value):
+                    raise ServiceFault("INVALID_REQUEST", {"field": "params"})
                 self._authorize(value["params"])
                 data = self.dispatch(method, value["params"])
                 if (
@@ -225,6 +316,7 @@ class Coordinator:
                 ok=False,
                 error=classify(
                     error,
+                    profile=self.profile,
                     resource="project"
                     if method == "project.get"
                     else "result"
@@ -232,8 +324,10 @@ class Coordinator:
                     else "job",
                 ),
             )
-        if not CONTRACT.validate("response", response):
+        if not self.validate("response", response):
             raise ProtocolFault()
+        if self.version == 3 and method == "hello" and not response["ok"]:
+            self.closed = True  # No second hello after a rejected3 bootstrap.
         return response
 
     def dispatch(self, method: str, p: dict):
@@ -243,28 +337,69 @@ class Coordinator:
             return {"nonce": p["nonce"]}
         if method == "project.get":
             return self.store.project_get(p["projectId"])
+        if method in {"changeset.preview", "changeset.diff.page", "changeset.confirm"}:
+            if self.version != 3 or self.host_client_id is None or self.session is None:
+                raise ServiceFault("METHOD_NOT_ALLOWED")
+            origin = {
+                "host_client_id": self.host_client_id,
+                "engine_session_id": self.session,
+            }
+            if method == "changeset.preview":
+                return self.store.preview_changeset(
+                    p["projectId"], p["baseRevision"], p, limits=self.limits, **origin
+                )
+            if method == "changeset.diff.page":
+                return self.store.changeset_diff_page(
+                    p["projectId"],
+                    p["previewHash"],
+                    p["documentKind"],
+                    p["pageSize"],
+                    p["cursor"],
+                    limits=self.limits,
+                    **origin,
+                )
+            return self.store.confirm_changeset(
+                p["projectId"], p["previewHash"], p["completionCursor"], **origin
+            )
         if method == "job.get":
             return self.store.get_job(p["projectId"], p["jobId"])
         if method == "job.create":
-            if not self.test_mode or p["capability"] not in {
-                "test.read",
-                "test.atomic",
-                "test.rounds",
-            }:
+            formal = self.version == 3 and p["capability"] == "changeset.commit"
+            if not formal and (
+                not self.test_mode
+                or p["capability"]
+                not in {
+                    "test.read",
+                    "test.atomic",
+                    "test.rounds",
+                }
+            ):
                 raise ServiceFault("UNSUPPORTED_CAPABILITY")
             if len(self.queued) >= self.limits[
                 "maxQueuedJobs"
             ] and not self.store.has_operation_claim(p["operationId"]):
                 raise ServiceFault("QUEUE_FULL", {"retryAfterMs": 250})
-            job = self.store.create_job(
-                p["projectId"],
-                p["operationId"],
-                p["capability"],
-                p["input"],
-                p["confirmationRef"],
-                IMPLEMENTATION,
-                self.limits,
-            )
+            if formal:
+                job = self.store.create_changeset_job(
+                    p["projectId"],
+                    p["operationId"],
+                    p["input"],
+                    p["confirmationRef"],
+                    IMPLEMENTATION,
+                    self.limits,
+                    host_client_id=self.host_client_id,
+                    engine_session_id=self.session,
+                )
+            else:
+                job = self.store.create_job(
+                    p["projectId"],
+                    p["operationId"],
+                    p["capability"],
+                    p["input"],
+                    p["confirmationRef"],
+                    IMPLEMENTATION,
+                    self.limits,
+                )
             if job["state"] == "queued" and job["jobId"] not in self.queued:
                 self.queued.append(job["jobId"])
             return job
@@ -362,7 +497,61 @@ class Coordinator:
             self.tasks.add(task)
             task.add_done_callback(self.tasks.discard)
 
+    async def execute_changeset(self, identity: str, context: dict, active: dict) -> None:
+        """Execute a confirmed deterministic transaction in the sole writer.
+
+        Acceptance is already durable. A normal dispatcher turn precedes the
+        commit gate; an input-thread read alone never linearizes cancellation.
+        No worker computation, test parameters or fabricated rows are involved.
+        """
+        try:
+            job = self.store.start_job(identity)
+            self._notify(job)
+            self._stage(identity, "loading")
+            deadline = (
+                (job["createdAtMs"] + job["limits"]["totalMs"]) / 1000
+                - time.time()
+                + time.monotonic()
+            )
+            await asyncio.sleep(0)
+
+            def boundary(_phase):
+                current = self.store.get_job(active["project"], identity)
+                if current["state"] == "cancelling":
+                    raise asyncio.CancelledError()
+                if time.monotonic() >= deadline:
+                    raise ServiceFault("TIMEOUT", {"phase": "total"})
+
+            boundary("before")
+            self._stage(identity, "committing")
+            job = self.store.commit_job(identity, hook=boundary)
+            self._notify(job)
+        except asyncio.CancelledError:
+            job = self.store.get_job(active["project"], identity)
+            if job["state"] in TERMINAL:
+                self._notify(job)
+            elif job["state"] == "cancelling":
+                self._notify(self.store.cancelled_job(identity))
+            else:
+                self._notify(
+                    self.store.fail_job(
+                        identity, classify(ServiceFault("ENGINE_EXITED"), profile=self.profile)
+                    )
+                )
+        except Exception as error:
+            # A boundary may fail after COMMIT. Never rewrite persisted success.
+            job = self.store.get_job(active["project"], identity)
+            if job["state"] in TERMINAL:
+                self._notify(job)
+            else:
+                self._notify(self.store.fail_job(identity, classify(error, profile=self.profile)))
+        finally:
+            self.active.pop(identity, None)
+
     async def execute(self, identity: str, context: dict, active: dict) -> None:
+        if context["capability"] == "changeset.commit":
+            await self.execute_changeset(identity, context, active)
+            return
         process = None
         try:
             job = self.store.start_job(identity)
@@ -560,7 +749,7 @@ class Coordinator:
             if process and process.returncode is None:
                 process.kill()
                 await process.wait()
-            self._notify(self.store.fail_job(identity, classify(error)))
+            self._notify(self.store.fail_job(identity, classify(error, profile=self.profile)))
         finally:
             self.active.pop(identity, None)
 
@@ -572,14 +761,32 @@ class Coordinator:
         self.subscriptions.clear()
 
 
-async def serve() -> None:
+async def serve(*, profile="legacy2", backup_path=None) -> dict:
+    if profile not in {"legacy2", "business3"}:
+        raise ValueError("INVALID_PROFILE")
+    if backup_path is not None and (profile != "business3" or not Path(backup_path).is_absolute()):
+        raise ValueError("INVALID_BACKUP")
     from ontolearn_engine.job_store import JobStore
 
     inbox = queue.Queue(maxsize=64)
     stopped = threading.Event()
+    thread = None
+    reader_state = {
+        "threadCreated": False,
+        "threadStartAttempted": False,
+        "threadStarted": False,
+        "stopRequested": False,
+        "readerCreated": False,
+        "readerStopAttempted": False,
+        "readerStopped": False,
+        "threadFinished": False,
+        "threadAlive": False,
+        "settled": False,
+    }
 
     def read() -> None:
         reader = JsonlReader()
+        reader_state["readerCreated"] = True
         try:
             while not stopped.is_set():
                 # The daemon may still be blocked when a session-fatal request
@@ -606,36 +813,60 @@ async def serve() -> None:
         except ProtocolFault:
             pass
         finally:
+            # The reading thread exclusively owns parser state. The main thread
+            # only requests stop; it cannot clear the buffer during feed().
+            reader_state["readerStopAttempted"] = True
             reader.stop()
+            reader_state["readerStopped"] = reader.terminal
             while not stopped.is_set():
                 try:
                     inbox.put(None, timeout=0.05)
                     break
                 except queue.Full:
                     continue
+            reader_state["threadFinished"] = True
 
-    temporary = tempfile.TemporaryDirectory(prefix="ontolearn-session-")
-    database = os.environ.get("ONTOLEARN_DB_PATH", str(Path(temporary.name) / "engine.sqlite"))
-    Path(database).parent.mkdir(parents=True, exist_ok=True)
-    store = JobStore(database, contract=CONTRACT)
-    store.reconcile_jobs()  # OS writer lease acquired by constructor, no old worker can commit.
-    allowed = json.loads(os.environ.get("ONTOLEARN_ALLOWED_PROJECTS", "[]"))
-    if not isinstance(allowed, list) or any(not CONTRACT.validate("id", p) for p in allowed):
-        raise ValueError("INVALID_PROJECT_AUTHORIZATION")
-    coordinator = Coordinator(
-        store, test_mode=os.environ.get("ONTOLEARN_TEST_MODE") == "1", allowed_projects=set(allowed)
-    )
-    loop = asyncio.get_running_loop()
-    previous_signal = signal.signal(
-        signal.SIGTERM, lambda *_: loop.call_soon_threadsafe(setattr, coordinator, "closed", True)
-    )
-    thread = threading.Thread(target=read, daemon=True)
-    thread.start()
-    handshake_deadline = time.monotonic() + LIMITS["handshakeMs"] / 1000
+    temporary = store = coordinator = None
+    previous_signal = None
+    signal_installed = False
+    initialization = True
+    failure = None
+    cleanup_failures = []
     try:
+        temporary = tempfile.TemporaryDirectory(prefix="ontolearn-session-")
+        database = os.environ.get("ONTOLEARN_DB_PATH", str(Path(temporary.name) / "engine.sqlite"))
+        Path(database).parent.mkdir(parents=True, exist_ok=True)
+        store = JobStore(
+            database,
+            contract=CONTRACT,
+            target_format=3 if profile == "business3" else 2,
+            backup_path=backup_path,
+        )
+        store.reconcile_jobs()  # Same lifetime lease; no old worker can commit.
+        allowed = json.loads(os.environ.get("ONTOLEARN_ALLOWED_PROJECTS", "[]"))
+        if not isinstance(allowed, list) or any(not CONTRACT.validate("id", p) for p in allowed):
+            raise ValueError("INVALID_PROJECT_AUTHORIZATION")
+        coordinator = Coordinator(
+            store,
+            test_mode=os.environ.get("ONTOLEARN_TEST_MODE") == "1",
+            allowed_projects=set(allowed),
+            profile=profile,
+            _ready=_JOB_READY,
+        )
+        loop = asyncio.get_running_loop()
+        previous_signal = signal.signal(
+            signal.SIGTERM,
+            lambda *_: loop.call_soon_threadsafe(setattr, coordinator, "closed", True),
+        )
+        signal_installed = True
+        thread = threading.Thread(target=read, daemon=True)
+        reader_state["threadCreated"] = True
+        reader_state["threadStartAttempted"] = True
+        thread.start()
+        reader_state["threadStarted"] = True
+        initialization = False
+        handshake_deadline = time.monotonic() + LIMITS["handshakeMs"] / 1000
         while not coordinator.closed:
-            # Rejected pre-hello requests must not keep a busy inbox alive past
-            # the original absolute deadline or allow a late hello to negotiate.
             if coordinator.session is None and time.monotonic() >= handshake_deadline:
                 break
             try:
@@ -648,12 +879,56 @@ async def serve() -> None:
                 break
             coordinator.emit(coordinator.request(value))
             await coordinator.tick()
-            await asyncio.sleep(0)  # A continuously nonempty inbox must not starve workers/cancel.
-    except (ProtocolFault, BrokenPipeError):
-        pass
+            await asyncio.sleep(0)
+    except (ProtocolFault, BrokenPipeError) as error:
+        if initialization:
+            failure = error
+    except BaseException as error:
+        failure = error
     finally:
         stopped.set()
-        await coordinator.stop()
-        store.close()
-        signal.signal(signal.SIGTERM, previous_signal)
-        temporary.cleanup()
+        reader_state["stopRequested"] = stopped.is_set()
+        if thread is not None:
+            # is_alive is a bounded observation, not a join or permission to
+            # close user stdin. An OS read may remain blocked until process exit.
+            try:
+                reader_state["threadStarted"] |= getattr(thread, "ident", None) is not None
+                reader_state["threadAlive"] = thread.is_alive()
+            except BaseException as error:
+                reader_state["threadAlive"] = None
+                cleanup_failures.append(("readerObservation", error))
+        reader_state["settled"] = (thread is None and not reader_state["readerCreated"]) or (
+            reader_state["threadStarted"]
+            and reader_state["threadFinished"]
+            and reader_state["readerStopped"]
+            and reader_state["threadAlive"] is False
+        )
+        if coordinator is not None:
+            try:
+                await coordinator.stop()
+            except BaseException as error:
+                cleanup_failures.append(("coordinator", error))
+        for name, action in (
+            ("store", store.close if store is not None else None),
+            (
+                "signal",
+                (lambda: signal.signal(signal.SIGTERM, previous_signal))
+                if signal_installed
+                else None,
+            ),
+            ("temporary", temporary.cleanup if temporary is not None else None),
+        ):
+            if action is not None:
+                try:
+                    action()
+                except BaseException as error:
+                    cleanup_failures.append((name, error))
+    if failure is not None:
+        if initialization and profile == "business3" and isinstance(failure, Exception):
+            raise StartupInitializationFailure(
+                failure, [name for name, _ in cleanup_failures], reader_state
+            ) from None
+        raise failure
+    if cleanup_failures:
+        raise cleanup_failures[0][1]
+    return dict(reader_state)  # Internal observation only; never a wire ready/cleanup receipt.

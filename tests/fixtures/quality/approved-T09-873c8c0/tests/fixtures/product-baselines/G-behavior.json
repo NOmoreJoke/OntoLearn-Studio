@@ -1,0 +1,459 @@
+{
+  "id": "G-behavior",
+  "fixtureVersion": "prd-v0.6-learning-1",
+  "inputVersion": "g0-1",
+  "ruleVersion": "rules-1",
+  "behaviorVersion": "behaviors-1",
+  "semanticsVersion": "PRD-V0.6-E",
+  "ontology": [
+    {
+      "subject": "urn:ontolearn:learning:Equipment",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:Alarm",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:WorkOrder",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:HighRiskEquipment",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:name",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:level",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:status",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:alarm",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:workOrderStatus",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:eventOrder",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:TestObject",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:Notification",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:P",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:P",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#range",
+      "object": "<http://www.w3.org/2001/XMLSchema#boolean>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:notificationEvent",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "name-required",
+      "targetClass": "urn:ontolearn:learning:Equipment",
+      "path": "urn:ontolearn:learning:name",
+      "minCount": 1,
+      "scope": "current-asserted",
+      "includeInferred": false
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-risk",
+      "version": 1,
+      "enabled": true,
+      "conditions": [
+        {
+          "subject": "?equipment",
+          "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "object": "<urn:ontolearn:learning:Equipment>"
+        },
+        {
+          "subject": "?equipment",
+          "predicate": "urn:ontolearn:learning:alarm",
+          "object": "?alarm"
+        },
+        {
+          "subject": "?alarm",
+          "predicate": "urn:ontolearn:learning:level",
+          "object": "\"High\""
+        },
+        {
+          "subject": "?alarm",
+          "predicate": "urn:ontolearn:learning:status",
+          "object": "\"Open\""
+        }
+      ],
+      "conclusions": [
+        {
+          "subject": "?equipment",
+          "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+        }
+      ],
+      "inputScope": "asserted-plus-rdfs",
+      "outputReentry": false
+    }
+  ],
+  "behaviors": [
+    {
+      "id": "B-risk",
+      "version": 1,
+      "enabled": true,
+      "priority": 0,
+      "trigger": {
+        "eventType": "alarm-added"
+      },
+      "conditions": [
+        {
+          "eventAlarmLevel": "High"
+        },
+        {
+          "eventAlarmStatus": "Open"
+        },
+        {
+          "eventEquipmentType": "urn:ontolearn:learning:HighRiskEquipment"
+        }
+      ],
+      "actions": [
+        {
+          "kind": "create-individual",
+          "class": "urn:ontolearn:learning:WorkOrder",
+          "id": "W:{eventId}",
+          "properties": {
+            "workOrderStatus": "待处理"
+          }
+        },
+        {
+          "kind": "add-relation",
+          "subject": "{eventId}",
+          "predicate": "urn:ontolearn:learning:eventOrder",
+          "object": "W:{eventId}"
+        }
+      ]
+    },
+    {
+      "id": "B-a",
+      "version": 1,
+      "enabled": true,
+      "priority": 0,
+      "trigger": {
+        "eventType": "工单竞争触发"
+      },
+      "conditions": [],
+      "actions": [
+        {
+          "kind": "update-attribute",
+          "target": "W-test",
+          "property": "workOrderStatus",
+          "value": "S-a"
+        }
+      ]
+    },
+    {
+      "id": "B-b",
+      "version": 1,
+      "enabled": true,
+      "priority": 0,
+      "trigger": {
+        "eventType": "工单竞争触发"
+      },
+      "conditions": [],
+      "actions": [
+        {
+          "kind": "update-attribute",
+          "target": "W-test",
+          "property": "workOrderStatus",
+          "value": "S-b"
+        }
+      ]
+    },
+    {
+      "id": "B-multi",
+      "version": 1,
+      "enabled": true,
+      "priority": 0,
+      "trigger": {
+        "eventType": "多目标触发"
+      },
+      "conditions": [],
+      "actions": [
+        {
+          "kind": "update-attribute",
+          "target": "{payload.target}",
+          "property": "workOrderStatus",
+          "value": "{payload.value}"
+        },
+        {
+          "kind": "notify",
+          "id": "N:{eventId}:B-multi",
+          "event": "{eventId}"
+        }
+      ]
+    },
+    {
+      "id": "X",
+      "version": 1,
+      "enabled": true,
+      "priority": 0,
+      "trigger": {
+        "eventId": "E-B06"
+      },
+      "conditions": [],
+      "actions": [
+        {
+          "kind": "update-attribute",
+          "target": "T1",
+          "property": "P",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "Y",
+      "version": 1,
+      "enabled": true,
+      "priority": 0,
+      "trigger": {
+        "eventId": "E-B06"
+      },
+      "conditions": [
+        {
+          "target": "T1",
+          "property": "P",
+          "equals": false
+        }
+      ],
+      "actions": [
+        {
+          "kind": "notify",
+          "id": "N:E-B06:Y",
+          "event": "E-B06"
+        }
+      ]
+    },
+    {
+      "id": "B-probe",
+      "version": 1,
+      "enabled": true,
+      "priority": 0,
+      "trigger": {
+        "eventId": "E-probe"
+      },
+      "conditions": [
+        {
+          "target": "equipment/001",
+          "type": "urn:ontolearn:learning:HighRiskEquipment"
+        }
+      ],
+      "actions": [
+        {
+          "kind": "notify",
+          "id": "N:E-probe:B-probe",
+          "event": "E-probe"
+        }
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "subject": "urn:ontolearn:learning:equipment/001",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:ontolearn:learning:Equipment>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:equipment/001",
+      "predicate": "urn:ontolearn:learning:name",
+      "object": "\"泵站A\""
+    },
+    {
+      "subject": "urn:ontolearn:learning:equipment/002",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:ontolearn:learning:Equipment>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:equipment/002",
+      "predicate": "urn:ontolearn:learning:name",
+      "object": "\"泵站B\""
+    },
+    {
+      "subject": "urn:ontolearn:learning:equipment/003",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:ontolearn:learning:Equipment>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:equipment/003",
+      "predicate": "urn:ontolearn:learning:name",
+      "object": "\"备用泵C\""
+    },
+    {
+      "subject": "urn:ontolearn:learning:alarm/A01",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:ontolearn:learning:Alarm>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:alarm/A01",
+      "predicate": "urn:ontolearn:learning:level",
+      "object": "\"High\""
+    },
+    {
+      "subject": "urn:ontolearn:learning:alarm/A01",
+      "predicate": "urn:ontolearn:learning:status",
+      "object": "\"Open\""
+    },
+    {
+      "subject": "urn:ontolearn:learning:equipment/001",
+      "predicate": "urn:ontolearn:learning:alarm",
+      "object": "<urn:ontolearn:learning:alarm/A01>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:alarm/A02",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:ontolearn:learning:Alarm>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:alarm/A02",
+      "predicate": "urn:ontolearn:learning:level",
+      "object": "\"High\""
+    },
+    {
+      "subject": "urn:ontolearn:learning:alarm/A02",
+      "predicate": "urn:ontolearn:learning:status",
+      "object": "\"Closed\""
+    },
+    {
+      "subject": "urn:ontolearn:learning:equipment/002",
+      "predicate": "urn:ontolearn:learning:alarm",
+      "object": "<urn:ontolearn:learning:alarm/A02>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:alarm/A03",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:ontolearn:learning:Alarm>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:alarm/A03",
+      "predicate": "urn:ontolearn:learning:level",
+      "object": "\"Low\""
+    },
+    {
+      "subject": "urn:ontolearn:learning:alarm/A03",
+      "predicate": "urn:ontolearn:learning:status",
+      "object": "\"Open\""
+    },
+    {
+      "subject": "urn:ontolearn:learning:equipment/003",
+      "predicate": "urn:ontolearn:learning:alarm",
+      "object": "<urn:ontolearn:learning:alarm/A03>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:T1",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:ontolearn:learning:TestObject>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:T1",
+      "predicate": "urn:ontolearn:learning:P",
+      "object": "\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:W-test",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:ontolearn:learning:WorkOrder>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:W-test",
+      "predicate": "urn:ontolearn:learning:workOrderStatus",
+      "object": "\"待处理\""
+    },
+    {
+      "subject": "urn:ontolearn:learning:W-other",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:ontolearn:learning:WorkOrder>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:W-other",
+      "predicate": "urn:ontolearn:learning:workOrderStatus",
+      "object": "\"待处理\""
+    }
+  ],
+  "singleValuedPredicates": ["urn:ontolearn:learning:workOrderStatus", "urn:ontolearn:learning:P"],
+  "queries": [
+    {
+      "id": "unclosed-high",
+      "file": "unclosed-high.rq",
+      "scope": "current-asserted"
+    }
+  ],
+  "mappings": [
+    {
+      "id": "equipment-csv",
+      "file": "equipment.csv",
+      "encoding": "utf-8",
+      "keyColumn": "equipment_id",
+      "keyType": "string",
+      "normalization": "none",
+      "subjectTemplate": "urn:ontolearn:learning:equipment/{equipment_id}",
+      "columns": {
+        "equipment_name": "urn:ontolearn:learning:name"
+      },
+      "type": "urn:ontolearn:learning:Equipment",
+      "sourceRowConvention": "physical-line-including-header"
+    }
+  ],
+  "initialState": {
+    "orders": [
+      {
+        "id": "W-test",
+        "status": "待处理"
+      },
+      {
+        "id": "W-other",
+        "status": "待处理"
+      }
+    ],
+    "pendingEvents": [],
+    "consumedEvents": [],
+    "triggeredInstances": []
+  },
+  "scenario": {
+    "maxRounds": 1,
+    "capacityMode": "direct",
+    "capacity": 0
+  }
+}
