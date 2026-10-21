@@ -2,6 +2,8 @@
 
 ## 当前状态：blocked，完整目标保留
 
+2026-10-21 11:40+08四文件未来维护生效已实际全文读回新版共同指南/生效JSON：main/jsonl.ts、renderer/task-presentation.ts、main/task-service.ts、main/index.ts仅归T01；I06保留preload/index及renderer env/App/style四路径，其余排除/精确返还保留。common 17891B/SHA e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0，原16317B/ff5前缀逐字核验，AGENTS78df不变；完整路径/边界见operating-policy-ownership-update.md。本次无startup/schema/新码/runtime3/ready授权，不复测、不造新工作、不恢复Goal。
+
 已实际读回2026-10-21 10:21+08的worker.py单文件生效协议与共同指南追加段：未来维护唯一归T01，批准5f与未批C3字节严格区分，其余排除/返还边界保留。新common SHA ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff，原b24逐字前缀已核验，AGENTS仍78df；详见operating-policy-ownership-update.md。仅政策读回，无实现/复测/新任务/Goal恢复。
 
 2026-10-21新增有界保全任务已完成：按固定verification封存UI当前9/旧11、独立out5、临时脚本1件/当时构建4件、来源清单3件，共33原文件；另封存自己已核验子session的三目标六条call/output原行（独立34 exit0、两次旧装配失败exit1），逐call_id/行号/byte offset/length/SHA读回，无请求目标缺件。两包约2.24MB，已从Git blob及全部42成员恢复读回；索引 evidence/ui-archive-index-20261021.json，说明 evidence/ui-archive-20261021.md。原产品/测试/旧结论不改，未重跑、重建或启动GUI，Goal仍blocked；这次保全不解除真实接口或桌面条件。

@@ -1,6 +1,19 @@
 # 当前责任更新读回
 
-## 最新单文件补充：worker.py
+## 最新四文件补充：2026-10-21 11:40+08
+
+已实际全文读回新版共同指南及 foundation-four-file-handoff-effective.json。共同指南17891字节，SHA e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0；原16317字节前缀SHA ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff 精确匹配，AGENTS仍78df。原冻结旧输入与协议bad9716a…的历史待门文字保留，当前维护归属按生效登记。
+
+仅以下四路径未来唯一维护交T01，从其批准5f施工：
+
+- apps/desktop/src/main/jsonl.ts。
+- apps/desktop/src/renderer/src/task-presentation.ts。
+- apps/desktop/src/main/task-service.ts。
+- apps/desktop/src/main/index.ts。
+
+原I05/I06停止未来编辑，固定C4/e2c/961只读字节保留；返还前T01停写、保存HEAD/文件SHA/WIP与测试状态，再由root精确登记唯一接手者。I06仍保留 apps/desktop/src/preload/index.ts 及 renderer/src/{env.d.ts,App.tsx,style.css} 四路径。protocol/resources/旧tests/依赖/build/CI/语义与其余责任不随转移。本次仅维护权生效，纯表材料阶段不变，startup/schema/新码/runtime3/ready仍待精确阶段授权；没有采纳未批准gateway/语义、无GUI/产品复测/新Goal或blocked恢复。
+
+## 前次单文件补充：worker.py
 
 2026-10-21 10:21+08 生效通知已在安全边界实际全文读取 I05-T01-worker-ownership-handoff.md，并读回共同指南追加段。当前共同指南 SHA 为 ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff；已核验原 b24 全部字节仍为其精确前缀，AGENTS仍78df2825…a759。旧指南/冻结输入不改写。
 
