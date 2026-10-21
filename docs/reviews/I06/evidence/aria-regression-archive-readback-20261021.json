@@ -1,0 +1,30 @@
+{
+  "sourceContentCommit": "e2c269ad78a78e1a042cadc93b1c81a874707153",
+  "rawArchive": "tests/i06-main-platform/out/i06-main-e2c-aria2-native-retry1-raw.tar.gz",
+  "rawArchiveSha256": "f13d9a6f0cb06b39703a91bfd76e85266c87583c0123f5c31a92ee8ccb1afa34",
+  "archiveBytes": 154270058,
+  "archiveEntries": 598,
+  "indexedEntriesVerified": 597,
+  "indexSha256": "f29eecfe97648e650f5c896095f4a9695d64d101b873212e4408b5cb86356205",
+  "receiptSha256": "974ee6e93e0f027a96abe76a0dca13ddf62648e0d86bae6023015eb16d3b7757",
+  "receiptResult": "passed-on-targeted-retry-with-initial-failure-retained",
+  "initialGatePasses": 9,
+  "initialGateFailures": [
+    "source-native"
+  ],
+  "targetedRetry": {
+    "result": "passed",
+    "exit": 0,
+    "stats": {
+      "startTime": "2026-10-21T00:44:37.643Z",
+      "duration": 18637.725000000002,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "sameImmutableImageSourceAndRuntime": true,
+    "inlineRunnerSha256": "79d4dab5df069db98fce757c6ddaae0f8e1d9b0fae62214a910fc899ea58ce2a"
+  },
+  "verification": "Root read-only archive bytes/SHA-256 verification. Initial native failure and unknown wall-clock/trace difference retained; not an all-green initial run or complete S3 proof."
+}
