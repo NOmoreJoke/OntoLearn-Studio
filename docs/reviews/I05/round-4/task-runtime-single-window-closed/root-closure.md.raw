@@ -1,0 +1,29 @@
+# T01 内部启动阶段根最终收口与旧测试窗口关闭
+
+结论：本次17产品/8测试的内部显式business3/startup阶段可收口。固定源码、独立实现审查、实际完整检查、重新构建包内引擎与资源、原始失败/修后工具记录和最终Git均已核验。关闭范围仅本阶段：默认生产仍2，正式领域/source/learning/完整恢复、真实Electron IPC/native、目标双平台/签名、指定双模型、CI/PR/正常develop合并及父T01/完整目标仍未通过。
+
+## 固定实现与源码
+
+提交 `fd3944a35aed05c279d7d0c2f9a077c84d99aaf2`，亲代 `79d6bc4998ef49f8401636166b7e9fa7193c6b21`。root实际git diff-tree核37路径：17产品、8测试、12本线过程/证据；全部25源码Git blob、当前磁盘、manifest4500B/SHA `6ef21895a7e2b370f87896bc4f79a04425de852751cef16272a1f124d798c5b4`及ZIP175431B/SHA `d3927873679cb89bf28031023f89081301df70c3c63a655afc6d588b5ed6e86a`逐字相等，26 ZIP成员精确为25源+清单。原保护AGENTS仍78df…a759未纳入提交，原型及64原保护文件另逐bytes/hash实核未变。
+
+root完整实现预读与四delta补核22721B/SHA `0e5efe360118e50455d9d22fc49a7a3a539b7900b2ea963b9f99b42549621b6f`已全文读；P2-CHAIN真正原结果+原promise+context/fence私有转交、clone/错promise拒绝及140转义同decoded1024/1025精确原bytes均有关闭依据。原17+7源码预读、旧失败、r1/r2迁移历史不覆盖。原线最终独立报告32421B/`1afdbb2f8e4d6c4efba09fd796cf16d1aced4605ba1d71e7d66ae45046e7a5a7`与阶段报告8964B/`01196732e3156ac1d188105db02f3d32271da7738279c136432ae623af74a2c2`亦全文读回，未沿用作者Pass代替根独立判断。
+
+## 实际验证与恢复性
+
+根最终证据独审 `T01-controller-startup-final-evidence-readback.md`10513B/SHA `d924abc6b501c5cb1146d06fe5fc5e66ceb8766f2a8a286fd17a72e1be11c649`已全文读取。672930B tar/SHA `5fff9da5a2c9eccf8cd13ab8099768e7f888d85bfb61409f9c899e966ea89039`、185341B索引/SHA `ff446b032c42c916aff541694b7aebbaec8ffd9e5aa424848f2ce7db40a69ce2`的61成员2464498原字节逐成员校验；四原session捕获prefix均实际存在、hash匹配，602原行按line/offset/bytes/hash完整匹配301对call/output。首失败、被替代候选、完整脚本、旧包/新包分别保留，不从summary重构。
+
+- 原session20694/chunk1a3ca0实际exit0：1030 TS、2706 Python、44原有不适用skip，完整lint/format/types/build/ruff。root还独立经官方read_thread核命令exec-5cb517ae-f02f-4a5c-b4b4-f4f5f5848c38 completed/exit0；8029B/f33b8aba完整原log已全文读。首次3反射fail/1024pass和随后435B说明格式失败保留，未称首稿通过。
+- 新unsigned package session95246/chunk80910e实际exit0，14324B/b1fac979完整日志。Darwin arm64当前环境，identity=null且跳过签名；不算macOS15/Windows、签名/公证或桌面已启动。
+- 新包引擎session63701/chunk2a9c3b实际exit0。58234B/2dbb6ccd完整JSON支持5真实session：默认2、显式3、未来格式4安全失败、包内Coordinator/worker原子Job、重开同operation幂等。实际46条canonical记录独立静态校验及请求完整配对，原子同Job/operation/result、revision0→1和claim1；是测试专用任务而非领域功能。
+- future子进程退出1与外层成功0明确分开；单条291B payload+LF=292B安全诊断，原库版本4不变由实际脚本断言。该session未单列stdin字段，脚本input=b''可恢复空输入；临时库已清理，root没有重新打开或伪称原DB实物封存。
+- 8 JSON+helper共9资源与最终source相等，desktop/engine两处、uv.lock、build与包内exe全字节绑定；asar内main388655B/SHA `46e6b7908b29dc71b20f6c0e25081285ce258f3ba0c41983202413092a06b9f3`等out，AST完整registry等同canonical。exe hash未变不能代替新fixtures ba4d…b8ae和新main刷新。旧main/旧fixtures在旧包证据中独立保留。
+
+root及根独审均未执行产品、probe、测试、包或GUI；核对的是原真实执行及当前实物/完整原件。真实IPC/handler/renderer/native等没有被静态asar或engine CLI替代。
+
+## 临时旧测试窗口关闭
+
+自 2026-10-21T14:04:13.952488+08:00 起，根明确关闭 `tests/unit/task-runtime.test.ts` 的T01临时写窗口，后续逻辑维护者明确返还 **I05**，T01对此旧共享路径停止未来写入。不是自动回收或永久交接；本结论依原供方同意的临时安排、根最后实核clean与T01产品已停止写入，并将实际通知双方。I05不复制本次T01候选或改冻结C4；旧C4仍自己的26406B/2f8f…ee50输入，T01固定fd保留28774B/5a190b输入，只读审查/构建权均保持。
+
+root已核旧test新Git blob `3a68a5d912390bed01ad4d1ef241b72d14924ad9`、28774B/SHA `5a190b3ccde080b3e5b1059e2da944d56397d04e53b1a659c1bbdbeb4ae5ec99`，79d→fd按原上下文生成的unified diff逐字等唯一已审r2 6659B/SHA `ef49df07c0798a9946cc17e38e9018b29d8d49cfdb351baa4f36d034637b68bc`。8旧测试与期限/原故障恢复/单Job-claim/不重放断言保持，原39组及最终完整TS已绑定原工具终态；此wire观测不伪称读ES私有Map。无其他旧test扩权，需再次修改仍先精确单一路径/基线/窗口协调。
+
+原实施授权17产品/7专属测试与当前内部阶段收口不授新的业务接线或产品写入。原T01下一项实际定义/引用/ChangeSet/Store/Job链阶段可先在本线准备精确计划；root按真正依赖和唯一责任协调，后续实现另按精确授权和同候选验证/指定双方全新完整审查推进。原完整父范围与所有未完成验收不删减，不为本内部阶段重建或完成Goal。
