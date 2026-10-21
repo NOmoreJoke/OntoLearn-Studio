@@ -89,7 +89,10 @@ export class JsonlReader {
   private size = 0
   private ended = false
   constructor(
-    private readonly frame: (value: unknown) => void,
+    private readonly frame: (
+      value: unknown,
+      metadata: Readonly<{ payloadByteLength: number }>,
+    ) => void,
     private readonly failure: (reason: 'frame' | 'json') => void,
     private maxBytes = 262144,
   ) {
@@ -137,13 +140,14 @@ export class JsonlReader {
         this.size += length
       }
       if (newline < 0) return
+      const payloadByteLength = this.size
       let bytes = this.buffer!.subarray(0, this.size)
       this.size = 0
       if (bytes[bytes.length - 1] === 13) bytes = bytes.subarray(0, -1)
       try {
         // ignoreBOM=true preserves a BOM so the grammar rejects it.
         const text = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes)
-        this.frame(parseStrictJson(text))
+        this.frame(parseStrictJson(text), Object.freeze({ payloadByteLength }))
       } catch {
         this.fail('json')
         return
