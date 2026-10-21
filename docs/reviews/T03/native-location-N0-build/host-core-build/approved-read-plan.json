@@ -1,0 +1,32 @@
+{
+  "authorizedBuildReadGuardBytes": 34359738368,
+  "authorizedRecordGuard": 200000,
+  "previousSupplyReadBytesPreserved": 9745727085,
+  "sdkRegularFiles": 33464,
+  "sdkRegularDeclaredBytesPerPass": 931393813,
+  "resourceRegularFiles": 9308,
+  "resourceRegularDeclaredBytesPerPass": 7588760397,
+  "largestListedFileBytes": 1674805248,
+  "otherPinnedExecutablesSettingsTermsDeclaredBytesPerPass": 280208808,
+  "twoFrontDoorDeclaredPinBytes": 17600726036,
+  "manifestMetadataBytesPerDriverPassApprox": 38734004,
+  "method": "Static metadata declared bytes, not measured IO. Will record successful/failed/interrupted gate outcomes separately; compiler actual reads not inferred from depfile counts.",
+  "onlyBuildCommand": [
+    "/usr/local/bin/node",
+    "scripts/build-native-location.mjs",
+    "--target",
+    "darwin-arm64",
+    "--component",
+    "core",
+    "--build"
+  ],
+  "onlyDriverCommands": 13,
+  "noArtifactExecution": true,
+  "historicalPlan": "scope-and-read-plan.json",
+  "measuredActualIOBytes": null,
+  "outcome": "NOT_STARTED",
+  "declaredRecordUpperBoundTwoFrontDoors": 85560,
+  "manifestMetadataBytesPerPass": 38734470,
+  "twoFrontDoorDeclaredPinPlusManifestBytes": 17678194976,
+  "guardAssessment": "Declared verification bytes and records below authorized guard; actual OS/cache/compiler IO not instrumented or claimed. Each gate completion recorded separately."
+}

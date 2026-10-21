@@ -1,0 +1,40 @@
+{
+  "candidateRef": "f6e9f4209e5c285cac248b036d9ac95149725e7d",
+  "review": {
+    "path": "docs/reviews/T03/native-location-N0-build/host-core-build/independent-environment-review.md",
+    "bytes": 8221,
+    "sha256": "308d288cbd1077182cac76bfc81ed6774e0d9740cd2e18d4903027b838ac5699"
+  },
+  "approvals": [
+    {
+      "field": "toolchains.darwin-arm64.approval",
+      "reference": "d6ed4e4bb9401ff310337937acd3196b9392e2fa",
+      "authorization": {
+        "path": "docs/reviews/T03/native-location-N0-build/host-core-build/gnumake-authorization.md.raw",
+        "bytes": 1879,
+        "sha256": "2279b03c9acd0d969c6e1ea14cbe22f6c3cd84463e099fb43c102d0af20a041b"
+      },
+      "inheritsReference": "c66f6e8ce7fee7f77ed7ed259d0771ef8c8ff278"
+    },
+    {
+      "field": "execution.darwin-arm64.core",
+      "reference": "c66f6e8ce7fee7f77ed7ed259d0771ef8c8ff278",
+      "authorization": {
+        "path": "docs/reviews/T03/native-location-N0-build/host-core-build/authorization.md.raw",
+        "bytes": 7961,
+        "sha256": "697ed52b2aab00ba737cb85b61228f65770a16692d44105627db0e47b21dea00"
+      }
+    }
+  ],
+  "unchangedApprovals": "source/API3/testAssembly=ac37ebf4d0fceaa2aabd9c06e33cc4c6ede26c47; Node/Windows/all addon execution remain false/null",
+  "allowedCommand": [
+    "/usr/local/bin/node",
+    "scripts/build-native-location.mjs",
+    "--target",
+    "darwin-arm64",
+    "--component",
+    "core",
+    "--build"
+  ],
+  "artifactExecution": "NOT_AUTHORIZED"
+}
