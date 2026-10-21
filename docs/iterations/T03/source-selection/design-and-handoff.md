@@ -11,11 +11,12 @@
 | `openProject(projectId)`                 | 新建按对象身份核验的 scope，撤销旧 scope、选择与证明                                 |
 | `pick(scope, encoding)`                  | 撤销旧选择，可信 host 选择后真实有界读文件并计算摘要；用户取消返回 null              |
 | `configure(scope, selectionId, options)` | 校验精确选项，入口即撤销旧证明并更新代次；重读原字节，后发配置生效，成功后换新选择ID |
+| `readForInspection(scope, selectionId)`  | 选表前复验并读取main-only bytes/summary供真实解析器枚举工作表，不生成proof           |
 | `readForPreview(scope, selectionId)`     | 重新读取与验指纹后返回 main-only 字节副本及弱引用表登记的证明                        |
 | `readForCommit(scope, proof)`            | 核验同一实际证明对象、scope/generation 和当前来源指纹，返回新字节副本；不写数据      |
 | `cancel / closeProject / dispose`        | 撤销选择与证明并发出 abort；关闭/销毁使旧 scope 不可再用                             |
 
-XLSX 选择后 sheet 为 null，必须显式配置后才能读取预览。工作表是否存在、文件是否为合法工作簿、缓存公式/外链处理由真实解析器负责。CSV 只接收枚举编码，原始字节在此不解码、不猜测。伪造同值 scope/proof 或跨 broker 重用均拒绝。
+XLSX 选择后 sheet 为 null；先通过 `readForInspection` 读取主进程检查字节交给真实 `xlsx_sheets`，再显式配置所选sheet，之后才能读取预览。检查入口不能用于提交，也不能向renderer返回字节。工作表是否存在、文件是否为合法工作簿、缓存公式/外链处理由真实解析器负责。CSV 只接收枚举编码，原始字节在此不解码、不猜测。伪造同值 scope/proof 或跨 broker 重用均拒绝。
 
 ## 读取、并发与失效
 

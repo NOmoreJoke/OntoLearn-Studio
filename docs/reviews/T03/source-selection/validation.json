@@ -6,11 +6,11 @@
   "productFiles": [
     {
       "path": "apps/desktop/src/main/mapping/source-selection.ts",
-      "sha256": "25a340ce7d8e0f2f3cdd4659c06c0a5ae3139cb3b44fde7812b1e782122f2fa3"
+      "sha256": "700337e055974708fe848edf58187fe161c2af2a0feb908bd41241abfea9e989"
     },
     {
       "path": "tests/unit/t03-source-selection.test.ts",
-      "sha256": "c992984ece21c463f9ae55245996c1a63891bfac120fcb18962b509e9fad38c5"
+      "sha256": "734ec4fb10ac617a5c5659b40f9366ae35838eacd820539d759bc432a6ef247e"
     }
   ],
   "protectedGuidance": {
@@ -30,29 +30,6 @@
     "npm": "11.12.1",
     "uv": "uv 0.11.12 (63c5f57d3 2026-05-08 aarch64-apple-darwin)"
   },
-  "checks": [
-    {
-      "command": "npx vitest run tests/unit/t03-source-selection.test.ts",
-      "exitCode": 0,
-      "passed": 29,
-      "log": "unit-config-concurrency.txt"
-    },
-    {
-      "command": "npm run check",
-      "exitCode": 0,
-      "tsPassed": 659,
-      "pythonPassed": 1052,
-      "skipped": 0,
-      "log": "check-config-concurrency.txt"
-    }
-  ],
-  "independentReview": {
-    "first": "internal-review.md",
-    "finding": "P2 concurrent configure ordering",
-    "disposition": "fixed, five real-FS regressions added",
-    "followup": "internal-review-followup.md",
-    "result": "passed private broker scope; independent 29 tests, full check terminal read by developer"
-  },
   "rawLogs": [
     {
       "path": "docs/reviews/T03/source-selection/check-config-concurrency.txt",
@@ -63,6 +40,11 @@
       "path": "docs/reviews/T03/source-selection/check-first.txt",
       "bytes": 439,
       "sha256": "95886345a025b96564e5524abd6e873a1affc825080478465b957adc368a8051"
+    },
+    {
+      "path": "docs/reviews/T03/source-selection/check-inspection.txt",
+      "bytes": 5058,
+      "sha256": "19e938b980af19b80996bab0cb16cda66fb36db7c8e9418c0431a8a7c5f8f428"
     },
     {
       "path": "docs/reviews/T03/source-selection/check-second.txt",
@@ -90,6 +72,11 @@
       "sha256": "b3d419643d7443829184ff0d1991b043f7a5cdef30591937e7b9e8a9217286d2"
     },
     {
+      "path": "docs/reviews/T03/source-selection/unit-inspection.txt",
+      "bytes": 236,
+      "sha256": "59f32cde822a4e0dbcc1508e8931c76dc2a3fcb14aad02aec2f1e4dcf2e1a332"
+    },
+    {
       "path": "docs/reviews/T03/source-selection/unit-reentrancy.txt",
       "bytes": 237,
       "sha256": "48b3f5ab916401ad4288d04d88a1f9fa2e9bf6cd5cae744f2db3968a1e61cf88"
@@ -107,6 +94,58 @@
     "remote CI, merge and release"
   ],
   "s1Frozen": true,
-  "productCommit": "f2c7deb8139255bc11e44c5b4a958ecbdae6a373",
-  "reviewedProductHashesMatchCommittedFiles": true
+  "reviewedProductHashesMatchCommittedFiles": true,
+  "supersedesProductCommit": "f2c7deb8139255bc11e44c5b4a958ecbdae6a373",
+  "candidateState": "inspection_delta_checks_and_independent_review_passed_private_scope",
+  "checksBeforeInspectionDelta": [
+    {
+      "command": "npx vitest run tests/unit/t03-source-selection.test.ts",
+      "exitCode": 0,
+      "passed": 29,
+      "log": "unit-config-concurrency.txt"
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "tsPassed": 659,
+      "pythonPassed": 1052,
+      "skipped": 0,
+      "log": "check-config-concurrency.txt"
+    }
+  ],
+  "checks": [
+    {
+      "command": "npx vitest run tests/unit/t03-source-selection.test.ts",
+      "exitCode": 0,
+      "passed": 32,
+      "log": "unit-inspection.txt"
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "tsPassed": 662,
+      "pythonPassed": 1052,
+      "skipped": 0,
+      "log": "check-inspection.txt"
+    }
+  ],
+  "independentReviewBeforeInspectionDelta": {
+    "first": "internal-review.md",
+    "finding": "P2 concurrent configure ordering",
+    "disposition": "fixed, five real-FS regressions added",
+    "followup": "internal-review-followup.md",
+    "result": "passed private broker scope; independent 29 tests, full check terminal read by developer"
+  },
+  "independentReview": {
+    "report": "internal-review-inspection.md",
+    "result": "passed private broker scope, old P2 remains closed",
+    "independentSpecializedTests": 32,
+    "fullCheckTerminalReadBy": "developer after independent review; no repeated full check"
+  },
+  "productCommit": "8c904b57b7c5aac7b2b19273e679e7e36304dd1c",
+  "controllerHistoricalReadback": {
+    "file": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T03-controller-source-selection-candidate-readback.md",
+    "sha256": "3354ca6fe58242cabe6d36d1b01d1452bbb84aafbba0ae12f02c027d4c1f6edb",
+    "scope": "old f2c/2f7 historical bounded candidate only, not current inspection candidate acceptance"
+  }
 }
