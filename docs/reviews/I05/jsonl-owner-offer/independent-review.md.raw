@@ -1,0 +1,53 @@
+# jsonl.ts 单文件未来责任 offer 独立审查
+
+结论：**有限静态文档 Pass；未发现阻断项。** 本结论仅核对单文件字节绑定与未来责任门，不宣布交接生效，不授权实施。没有运行产品、单元测试、构建、打包或 GUI。
+
+## 实际范围与读取对象
+
+2026-10-21，独立审查写入仅限 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-bridge/build/jsonl-owner-offer-review.md`。自有分支 `feature/I05-semantic-bridge`，`git status --short` 仅有受保护 `AGENTS.md` 未暂存；未改写、stage 该指南。
+
+只读主树 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation`，现场分支 `feature/I05-semantic-validation`、HEAD `d233d2915c8c3bf95e155b3ad0180cd42cb44049`。全文读回：
+
+| 输入 | 实际 bytes | SHA-256 |
+| --- | ---: | --- |
+| `docs/reviews/I05/jsonl-owner-offer/offer.md` | 2425 | `089ef96093db677fdf4faca65d7b906eb46695ffa36da3ed5b613baf7264a843` |
+| 同目录 `source-binding.json` | 578 | `2022f9d4b049ecdc0c9906981c333d79c9057c5eeb4315025fa2585fe4e62069` |
+| 同目录 `approved-jsonl.ts.raw` | 4774 | `12c0437f66b73b0aa88617b551394f6771529d2e5f307a5ab2765feb1fc05357` |
+
+同时实际读回最新版主树 `AGENTS.md`（SHA `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`）、本体根 `iteration-control/2026-10-21-weekly-release/developer-common-instructions.md`（SHA `ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff`）和 `external-review-permissions.md`（SHA `3630cc78ad87d1833ad33102f437d9027814cb688b319c4cd3ae9a2d0fbde4f7`）。既有 T01/T03/I06 责任、当前共享文件停写与精确返还门继续有效。
+
+## 字节与现场状态：通过
+
+对 `apps/desktop/src/main/jsonl.ts` 分别用 `git show <ref>:<path>` 读取完整字节，`git rev-parse <ref>:<path>` 读取 Git blob；Python 标准库重新计算长度/SHA，并直接比较完整字节。四个 Git 来源为：
+
+- 已批准 develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`；
+- C4 产品固定源 `1a79731091e671c497824c94e12dae34a4e8609b`；
+- offer 指定的 C4 完整回归源 `40c18ea1b9ce4fef9a5235718fd7e622e2d06cc4`；
+- 现场 `HEAD` `d233d2915c8c3bf95e155b3ad0180cd42cb44049`。
+
+四者均为 **4774 B**，Git blob 均为 `665c972f0401109bbeeffb8642685a4ac9ae5e62`，SHA-256 均为 `12c0437f66b73b0aa88617b551394f6771529d2e5f307a5ab2765feb1fc05357`。这四份与现场工作文件、`approved-jsonl.ts.raw` 共六份完整 bytes 相等，不只是长度相等。`source-binding.json` 的对应数值与独立读回一致。
+
+实际执行以下三项限定路径查询，输出全部为空：
+
+```text
+git status --porcelain=v1 -- apps/desktop/src/main/jsonl.ts
+git diff -- apps/desktop/src/main/jsonl.ts
+git diff --cached -- apps/desktop/src/main/jsonl.ts
+```
+
+因此核验时该 path 无 staged/unstaged 修改；这是该路径的现场结论，不声称主树全局 clean，也不从文件相等推断整个 C4 已获批准。
+
+## 责任与生效门：通过
+
+1. offer 首段明确“尚未生效，不授权 T01 写入”，要求总控完整登记、T01 明确接收、独立核查后由总控宣布生效点。本文只提供独立核查意见，不代替 root 批准、生效登记或 receiver 接收。
+2. I05 自 offer 起停止新增写入；生效前遵守现行责任表，例外先交根总控。停止写入与授予新 owner 写权分开，未造成隐式双写。
+3. 未来唯一维护范围精确限定 `apps/desktop/src/main/jsonl.ts`。receiver 从自己已批准 5f 上同一 blob 施工；没有把未批准 I05 产品、语义 worker、协议或其他路径作为正式依赖或一并交接。
+4. 旧 C4 冻结字节继续保有只读构建、验证、全范围审查权。未来 T01 实现/新测试不会自动进入 C4，也不能用旧验收背书；正式批准、集成与按 delta 验证仍保留。
+5. 外审若需要该路径修复，须 I05 提交精确文件、理由、目标基线和验收；T01 先停写并保存 HEAD、工作文件 SHA、WIP diff、测试状态，再由 root 书面返还精确路径和必要时间窗，I05 才能在独立树写入。返还/回收还要求 receiver 确认、实际 SHA 与 root 生效点，未允许从旧写权推定自动收回。
+6. offer 明确仅解决责任；raw-length 接口仍需 T01 完整设计与独立审查。没有批准新 parser、hello 全帧限额变更、用 JSON.stringify 反推原 raw 长度或协议/worker/测试改变。本审查不评价其具体接口方案，不补设计、不实施。
+
+## 边界与最终意见
+
+没有发现需要改 offer 的实质问题。可将本报告作为交接前独立核查材料；**仍须 root、receiver 与总控独立登记的实际后续动作才产生新写权**。本次没有操作 root state、其他聊天、应用或容器，没有修改主树任何源码、测试、配置、文档，也没有重新解释 C4 验收、重跑既有测试或替代指定外审。
+
+本结论绑定以上实际读回字节和限定路径现场状态；之后若 offer、源码或责任记录发生实质变化，应按变化重新核对，不能将本文当作已完成交接或 raw-length 设计批准。
