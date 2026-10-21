@@ -1,0 +1,41 @@
+{
+  "schema": "T05-batch-revalidation-proposal-revision-receipt/1",
+  "baseHead": "ede46ad0ad78323f805561e9eeeba20067b27253",
+  "status": "revised proposal and dependency gates only; not implemented",
+  "actualChecks": {
+    "fullSourceFactsAndControllerRead": "source byte/hash and archived bytes verified",
+    "fixed20": "current bytes equal fixed1e3 and c1a; hash metadata only",
+    "oldProposalRecovery": "archived c1a bytes equal git show; prior archive/reports untouched",
+    "proposalPrettier": {
+      "command": "npx prettier --ignore-path /dev/null --check docs/iterations/T05/rule-batch-revalidation-proposal.md",
+      "exitCode": 0
+    },
+    "ownDocWhitespace": {
+      "command": "git diff --check -- docs/iterations/T05/rule-batch-revalidation-proposal.md",
+      "exitCode": 0
+    },
+    "targetedRequiredTextAssertions": "passed; no product test coverage claim"
+  },
+  "changes": [
+    "Explicit required trusted original child ProfileLimits; finite exact value copy and private aggregate allocator provenance remain separate",
+    "Three pools use same child limits; explicit K_i and 3ΣW_i+ΣK_i / 2ΣI_i / 2ΣO_i",
+    "Disabled and absent empty-definition batch compile-only; no fake batch or unconditional old-success implication",
+    "I05 temporary capture authorized elsewhere but not verified delivered; complete true/false original matches preserve original order",
+    "Restore/reparse/cache/hash/capture/projection budgets and success→restore→recheck proof separate from three pools",
+    "T01 producer/source/permissions/window/retract/GC and cross-child selected remain dependencies",
+    "Version/2 distinguishes revised unimplemented budget contract; old20, prior raw docs/archives preserved"
+  ],
+  "unresolved": [
+    "I05 trusted child allocator and aggregate limits ledger/capture delivery",
+    "I05 exact restore and independent whole-request R/cache/hash/cost proof; proposed R<=W/I not proven",
+    "Disabled/empty-definition actual original bounded compile and budget evidence",
+    "T01 actual immutable producer/source carrier and cross-child lifecycle contract",
+    "New fixed same-candidate independent review and actual implementation success/budget/tamper tests after authorization"
+  ],
+  "notPerformed": [
+    "Product implementation or any mechanism/test/runtime execution",
+    "API or I05 new-consumption approval",
+    "GUI/Electron/e2e/native/HMR/model/credential/paid actions",
+    "Independent review of this revision, staging, commit, push or goal completion"
+  ]
+}

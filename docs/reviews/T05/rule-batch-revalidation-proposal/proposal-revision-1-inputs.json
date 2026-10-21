@@ -1,0 +1,245 @@
+{
+  "schema": "T05-batch-revalidation-proposal-revision-inputs/1",
+  "baseHead": "ede46ad0ad78323f805561e9eeeba20067b27253",
+  "revisionScope": "docs only; product implementation not authorized",
+  "previousProposal": {
+    "commit": "c1a616bbc8fc699ad11cd73cbf663c3692515e5f",
+    "path": "docs/iterations/T05/rule-batch-revalidation-proposal.md",
+    "bytes": 24357,
+    "sha256": "578032f78cd8571496c5709f18c7f5c02292db89cf316a52e3d2f49c61234bea",
+    "archivedAs": "docs/reviews/T05/rule-batch-revalidation-proposal/proposal-revision-1-c1a-original.raw.md"
+  },
+  "sources": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-integration/docs/iterations/I05/profile-selected-carrier-facts.md",
+      "bytes": 5316,
+      "sha256": "d7f128c22719561e75a737a7093a01d19132265f805f429eb9811cf7b74dcd47",
+      "readScope": "full text, not product execution",
+      "archive": "docs/reviews/T05/rule-batch-revalidation-proposal/proposal-revision-1-I05-carrier-facts.raw.md"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T05-controller-batch-revalidation-proposal-review.md",
+      "bytes": 17078,
+      "sha256": "a44ed73f2668a7684b55adc4cf94b861bb1e4fd243660069207588b03da66385",
+      "readScope": "full text, not product execution",
+      "archive": "docs/reviews/T05/rule-batch-revalidation-proposal/proposal-revision-1-controller-review.raw.md"
+    }
+  ],
+  "guidelines": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning/AGENTS.md",
+      "bytes": 15852,
+      "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+      "readScope": "full text; not changed"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+      "bytes": 17891,
+      "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0",
+      "readScope": "full text; not changed"
+    }
+  ],
+  "fixedTwentyPaths": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+      "bytes": 548,
+      "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+      "gitBlobAt1e3": "1405a985b4220dc18576a4c02c8df57646b6ad02",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "bytes": 4047,
+      "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+      "gitBlobAt1e3": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+      "bytes": 1750,
+      "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+      "gitBlobAt1e3": "1148fbd40c12c6138a689ee64580e08afa6c349c",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "bytes": 19149,
+      "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "gitBlobAt1e3": "4fc50930c20b8184b3bae5df34d691111351e6bd",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "bytes": 7372,
+      "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+      "gitBlobAt1e3": "31a0d150ae82d48e03fee2b9051273c99997b415",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "bytes": 11987,
+      "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "gitBlobAt1e3": "85a683b3c7daf9d5b7c4199b190d1cb56901a402",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "bytes": 5909,
+      "sha256": "8f58a68b896a62443ab3681c29802905d5ff1e010a944d32eb07f988319cc19a",
+      "gitBlobAt1e3": "bcea7c7fa2b98a816e05bf0f785962986506627c",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/tests/test_quality_profile_calendar.py",
+      "bytes": 2161,
+      "sha256": "f6e92592186e309a251cbbab592b851f866c943de8904b9a1b0fa281f6185e1c",
+      "gitBlobAt1e3": "7e77d119f926979350eec2ffcd1cff5cc3fc710d",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/tests/test_quality_profile_comparator.py",
+      "bytes": 3104,
+      "sha256": "db51f846890b30431e77ac632ec4f23c9ec92b43fb1d54e309a8b1a52df9ea08",
+      "gitBlobAt1e3": "9df94b697b0d7ff887f83c357ab6d36555bb3a04",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/tests/test_quality_profile_firing.py",
+      "bytes": 13589,
+      "sha256": "faebe038b897ee4e375a9db0c1eff909e45d19b9aad1fab39c1869357dab363f",
+      "gitBlobAt1e3": "ba6bc2b397160a2940a4dc8aae5901f916ec5be4",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/tests/test_quality_profile_imports.py",
+      "bytes": 2078,
+      "sha256": "05b28ee714c19397a349fc4d38aba5bde0986c235dd1ed7d26ae9d73072d981c",
+      "gitBlobAt1e3": "1a9afcc50a7f18120c1adc9f44e8855319fd980d",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/tests/test_quality_profile_limits.py",
+      "bytes": 12576,
+      "sha256": "94daa65e1ca762b78c95fd6f3d32ff921ae5e9ffc0be77d2983bcba70272c650",
+      "gitBlobAt1e3": "f0442193d99a358a36f2f703d1349169667bf258",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/tests/test_quality_profile_numbers.py",
+      "bytes": 2370,
+      "sha256": "40c15c6003b38affb79b499b104ea866bec6f51cfd4f2127aeb5e9516aed992e",
+      "gitBlobAt1e3": "b742da29028523aed4611811c6e0bb75fa0a3be3",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "packages/engine/tests/test_quality_profile_terms.py",
+      "bytes": 6394,
+      "sha256": "c487c46312c03b2a5d9e7d3d8de0c29b23ecf07a3883e7fdc1c5b63c9370cf76",
+      "gitBlobAt1e3": "8234d93cb89f723dffe03705edb044cd5a33f1fa",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "tests/fixtures/quality/profile-v1/calendar-oracles.json",
+      "bytes": 1004,
+      "sha256": "616fd0c5d4bc052f5abfc14b02bba095f849bd672b2beda63933e79186ab2016",
+      "gitBlobAt1e3": "f3602fa286418b0d0047ada34c2615e0383d187a",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "tests/fixtures/quality/profile-v1/comparison-matrix.json",
+      "bytes": 5512,
+      "sha256": "9bbbb0c8351999bb1cf7152fa2ecacc1b24b36f6f23772c395ba90b27978fb72",
+      "gitBlobAt1e3": "71f08eaf13fe624e178443eb3358fbd613fa0697",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "tests/fixtures/quality/profile-v1/firing-cases.json",
+      "bytes": 9298,
+      "sha256": "c001a6462b7f3ae54563b99c699bf6281c09020f2695f62f7bd2a92a715e6599",
+      "gitBlobAt1e3": "fad5330b596170bef4632eb35016a2cab9a02c65",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "tests/fixtures/quality/profile-v1/lexical.json",
+      "bytes": 3294,
+      "sha256": "2d893831f1c4ecbee88e93f75a03c302e92cef1999eadfad68ca1d4abcf5bf79",
+      "gitBlobAt1e3": "abc0cc3bb306f7adb41025e0ba534a33b89e454f",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "tests/fixtures/quality/profile-v1/manifest.json",
+      "bytes": 1057,
+      "sha256": "1bfb51fabf7c8eb60bc63c469a56315f4a2b4bad17a959472de6fb2a2e78323b",
+      "gitBlobAt1e3": "5d4328dc689f0bd3942bae24280cb85391d8505f",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    },
+    {
+      "path": "tests/fixtures/quality/profile-v1/numeric-oracles.json",
+      "bytes": 9898,
+      "sha256": "554882960460ba2416e0d4dcc5cbf72d43525e3838decee8bc72215e3dae26c3",
+      "gitBlobAt1e3": "a10b4c3236f2637f1eec2d302fc122bc158e9f67",
+      "currentEquals1e3AndC1a": true,
+      "scope": "bytes/hash only; no source or tests executed in revision"
+    }
+  ],
+  "currentProposal": {
+    "path": "docs/iterations/T05/rule-batch-revalidation-proposal.md",
+    "bytes": 32769,
+    "sha256": "e5fefefd78f62b4b5c989acd02aba6dc227042a3517fe3d90dc23bc0e3bae750"
+  },
+  "unchangedPolicy": [
+    "PROFILE/1 and mechanism-budget/1 unchanged",
+    "No product/test/source imports or execution",
+    "No reads/writes in separate IRI correction tree",
+    "No oracle reads/writes",
+    "No staging/commit/branch switch/push",
+    "Original Goal unchanged and blocked"
+  ],
+  "trustedCarrierStatus": "Root separately authorized I05 temporary capture increment; not verified implemented or approved for restore/selected/long-term Store; source facts still show absent controlled carrier and exact restore code.",
+  "N1Clarification": {
+    "scope": "Section 3 step 4 one sentence only",
+    "change": "Explicit fresh.payload == canonical_saved; canonical_saved == saved.payload; fresh.digest == saved.digest. Any inequality gives safe INTERNAL_ERROR/internal. Same two payload and one digest comparisons; profile remains precharged in step 1.",
+    "priorRawInputs": [
+      {
+        "path": "docs/reviews/T05/rule-batch-revalidation-proposal/proposal-revision-1-before-N1-proposal.raw.md",
+        "bytes": 32567,
+        "sha256": "d7df87c723bdc340b0b039fc0e79b742e3b162a4393b386fb8283b574d55125d"
+      },
+      {
+        "path": "docs/reviews/T05/rule-batch-revalidation-proposal/proposal-revision-1-before-N1-inputs.raw.json",
+        "bytes": 10201,
+        "sha256": "97127cb4b958d5c99af85424ac0de3113032ebcaca0bc3f5bd2073c67d75fd3d"
+      },
+      {
+        "path": "docs/reviews/T05/rule-batch-revalidation-proposal/proposal-revision-1-before-N1-manifest.raw.json",
+        "bytes": 1567,
+        "sha256": "d4fa7dedc61002b72788e6c76a1ffc4dc55129005b42e401326c192f2798aa40"
+      },
+      {
+        "path": "docs/reviews/T05/rule-batch-revalidation-proposal/proposal-revision-1-before-N1-receipt.raw.json",
+        "bytes": 2533,
+        "sha256": "c1789edf5ddf52f70f17e28d79af75acfa2bac44f1c3b491804bf1f0a57b1a3f"
+      }
+    ],
+    "independentClosure": "pending parent-directed focused readback; not claimed by author"
+  }
+}
