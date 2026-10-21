@@ -50,3 +50,6 @@ T09 获批只读输入版本 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 的 mani
 
 
 总控已依据固定66eeedd独立读回登记待审T10-S1，未使双审/推送/正式格式或投影生效。原线按E1保全40个既有raw/browser/合成HTML（含11个历史summary逐hash原件）；旧browser3900B/26af与新native3896B/ad367是不同实物。另从已停同一attempt3容器补存三份cjs输出，明确仅为运行后读回；不改旧55项manifest或追称运行时独立输出归档。两条旧snapshot引用文件已不在，索引记录缺口。详见evidence-preservation-E1.md。没有重跑浏览器/产品或扩大包内证据。
+
+
+已为登记阶段准备离线双外审完整任务正文和固定Git输入清单：external-review-task-packet.md、external-review-input-manifest.json。清单绑定a1e7efef候选的141个delta及6个不变上下文，已逐Git blob读回hash；66之后无产品/测试/依赖变动。该文件仅准备输入，尚无本线实际审查任务/模型终态/报告，不占用GUI或触发push；实际派发前仍须核验新基线、冻结树及总控资源租约。
