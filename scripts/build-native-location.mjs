@@ -26,7 +26,9 @@ const writers = [
 ]
 const targets = ['darwin-arm64', 'win32-x64']
 const components = ['core', 'addon', 'fixture-addon']
-let processExecution = false
+// A dispatch attempt is not evidence that a child actually started.
+const processExecution = { dispatchAttempted: false, anyPidObserved: false, lastAttempt: null }
+let activeBuildContext = null
 const hash = (b) => crypto.createHash('sha256').update(b).digest('hex')
 const sha = (v) => typeof v === 'string' && /^[a-f0-9]{64}$/.test(v)
 const ref = (v) => typeof v === 'string' && /^[a-f0-9]{40}$/.test(v)
@@ -538,61 +540,199 @@ function build(l, opts, result) {
   const log = {
     preflight: result,
     environment: env,
-    commands: [],
-    firstFailure: null,
-    tests: 'NOT_RUN',
-    dependencyClosure: 'PENDING_POST_BUILD_AUDIT',
-  }
-  fs.writeFileSync(path.join(buildDir, 'supplier-log.json'), JSON.stringify(log, null, 2), {
-    flag: 'wx',
-  })
-  for (const [i, command] of commands.entries()) {
-    const { executable, argv } = command
-    const out = fs.openSync(path.join(buildDir, `${i}.stdout`), 'wx')
-    const err = fs.openSync(path.join(buildDir, `${i}.stderr`), 'wx')
-    let run
-    try {
-      processExecution = true
-      run = spawnSync(executable, argv, {
-        cwd: root,
-        env,
-        shell: false,
-        stdio: ['ignore', out, err],
-        timeout: 600000,
-        windowsHide: true,
-      })
-    } finally {
-      fs.closeSync(out)
-      fs.closeSync(err)
-    }
-    const record = {
+    commands: commands.map(({ executable, argv }, index) => ({
+      index,
       executable,
       argv,
       cwd: root,
-      status: run.status,
-      signal: run.signal,
-      error: run.error?.message ?? null,
+      outputs: {
+        stdout: { path: path.join(buildDir, `${index}.stdout`), state: 'not-opened' },
+        stderr: { path: path.join(buildDir, `${index}.stderr`), state: 'not-opened' },
+      },
+      phase: 'planned',
+      dispatch: { state: 'not-attempted', attempted: false, startEvidence: 'none', pid: null },
+      run: null,
+      failures: [],
+      cleanupErrors: [],
+      outputValidation: 'not-attempted',
+    })),
+    firstFailure: null,
+    persistenceFailures: [],
+    tests: 'NOT_RUN',
+    dependencyClosure: 'PENDING_POST_BUILD_AUDIT',
+  }
+  activeBuildContext = { buildDir, log, lastPersistedSnapshot: null }
+  let snapshot = 0
+  let lastPersistedSnapshot = null
+  const describe = (error) => ({
+    message: String(error?.message ?? error),
+    code: error?.code ?? null,
+  })
+  function failure(record, phase, error, cleanup = false) {
+    const entry = { commandIndex: record?.index ?? null, phase, ...describe(error) }
+    if (record) (cleanup ? record.cleanupErrors : record.failures).push(entry)
+    if (log.firstFailure === null) log.firstFailure = entry
+    return entry
+  }
+  // Exclusive snapshots preserve prior bytes even if a later write partially fails.
+  // This is best effort persistence, not a durability/crash-drain guarantee.
+  function persist(phase, record = null) {
+    const destination = path.join(
+      buildDir,
+      snapshot === 0
+        ? 'supplier-log.json'
+        : `supplier-log.${String(snapshot).padStart(4, '0')}.json`,
+    )
+    snapshot++
+    try {
+      fs.writeFileSync(destination, JSON.stringify({ ...log, snapshotPhase: phase }, null, 2), {
+        flag: 'wx',
+      })
+      lastPersistedSnapshot = destination
+      activeBuildContext.lastPersistedSnapshot = destination
+      return true
+    } catch (error) {
+      const entry = failure(record, 'log-persistence', error)
+      log.persistenceFailures.push({ ...entry, intendedPhase: phase, destination })
+      // A failed snapshot may be partial. Do not replace it or claim it persisted.
+      // stderr itself can fail; no fallback sink is guaranteed.
+      try {
+        console.error(
+          JSON.stringify({
+            status: 'log-not-persisted',
+            destination,
+            lastPersistedSnapshot,
+            processExecution,
+            log,
+          }),
+        )
+      } catch {
+        /* No additional IO can be guaranteed here. */
+      }
+      return false
     }
-    log.commands.push(record)
-    if (
-      run.status === 0 &&
-      !run.error &&
-      (command.expected !== undefined || command.sha256 || command.commitReceipt)
-    ) {
-      const stdout = fs.readFileSync(path.join(buildDir, `${i}.stdout`))
-      if (command.expected !== undefined && stdout.toString('utf8') !== command.expected)
-        record.error = 'Product sources/writers are dirty or untracked'
-      if (command.sha256 && hash(stdout) !== command.sha256)
-        record.error = 'Fixed source Git blob differs from adopted bytes'
-      if (command.commitReceipt) {
-        const commit = stdout.toString('utf8').trim()
-        if (!ref(commit)) record.error = 'Invalid supplier HEAD receipt'
-        else log.supplierCommit = commit
+  }
+  // Register every argv/cwd/output path before even the first output open.
+  if (!persist('all-commands-planned')) {
+    process.exitCode = 1
+    return
+  }
+  for (const [i, command] of commands.entries()) {
+    const record = log.commands[i]
+    const handles = { stdout: null, stderr: null }
+    let persistOK = true
+    let run = null
+    record.phase = 'preparing-output'
+    try {
+      for (const name of ['stdout', 'stderr']) {
+        record.outputs[name].state = 'open-intent-outcome-unknown'
+        if (!persist(`before-open-${name}`, record)) {
+          persistOK = false
+          break
+        }
+        try {
+          handles[name] = fs.openSync(record.outputs[name].path, 'wx')
+          record.outputs[name].state = 'opened'
+        } catch (error) {
+          record.outputs[name].state = 'open-threw'
+          failure(record, `open-${name}`, error)
+          break
+        }
+      }
+      if (persistOK && record.failures.length === 0) {
+        record.phase = 'dispatch-intent'
+        // If interrupted after this snapshot, whether the call occurred is unknown.
+        record.dispatch = {
+          state: 'intent-recorded-start-unknown',
+          attempted: null,
+          startEvidence: 'unknown',
+          pid: null,
+        }
+        if (!persist('before-dispatch', record)) persistOK = false
+        else {
+          processExecution.dispatchAttempted = true
+          processExecution.lastAttempt = { commandIndex: i, state: 'call-attempted-start-unknown' }
+          record.dispatch.attempted = true
+          record.dispatch.state = 'call-attempted-start-unknown'
+          try {
+            run = spawnSync(command.executable, command.argv, {
+              cwd: root,
+              env,
+              shell: false,
+              stdio: ['ignore', handles.stdout, handles.stderr],
+              timeout: 600000,
+              windowsHide: true,
+            })
+            record.dispatch.state = 'call-returned'
+            record.dispatch.pid = Number.isInteger(run.pid) && run.pid > 0 ? run.pid : null
+            record.dispatch.startEvidence =
+              record.dispatch.pid === null ? 'unknown' : 'child-pid-reported'
+            if (record.dispatch.pid !== null) processExecution.anyPidObserved = true
+            record.run = {
+              pid: record.dispatch.pid,
+              status: run.status,
+              signal: run.signal,
+              error: run.error ? describe(run.error) : null,
+            }
+            // Preserve the earlier run failure before any descriptor cleanup failure.
+            if (run.error) failure(record, 'spawn-result', run.error)
+            else if (run.status !== 0 || run.signal)
+              failure(
+                record,
+                'process-result',
+                new Error(`status=${run.status}; signal=${run.signal ?? 'none'}`),
+              )
+          } catch (error) {
+            record.dispatch.state = 'call-threw-start-unknown'
+            failure(record, 'spawn-throw', error)
+          }
+          processExecution.lastAttempt = { commandIndex: i, ...record.dispatch }
+          if (!persist('dispatch-outcome-before-cleanup', record)) persistOK = false
+        }
+      }
+    } finally {
+      // Close independently. A thrown close has unknown outcome; never retry that fd.
+      for (const name of ['stdout', 'stderr']) {
+        const fd = handles[name]
+        handles[name] = null
+        if (fd === null) continue
+        try {
+          fs.closeSync(fd)
+          record.outputs[name].state = 'closed'
+        } catch (error) {
+          record.outputs[name].state = 'close-threw-outcome-unknown'
+          failure(record, `close-${name}`, error, true)
+        }
       }
     }
-    if (run.status !== 0 || record.error) log.firstFailure = record
-    fs.writeFileSync(path.join(buildDir, 'supplier-log.json'), JSON.stringify(log, null, 2))
-    if (log.firstFailure) {
+    if (
+      run &&
+      run.status === 0 &&
+      !run.error &&
+      !run.signal &&
+      (command.expected !== undefined || command.sha256 || command.commitReceipt)
+    ) {
+      record.outputValidation = 'attempted'
+      try {
+        const stdout = fs.readFileSync(record.outputs.stdout.path)
+        if (command.expected !== undefined && stdout.toString('utf8') !== command.expected)
+          throw new Error('Product sources/writers are dirty or untracked')
+        if (command.sha256 && hash(stdout) !== command.sha256)
+          throw new Error('Fixed source Git blob differs from adopted bytes')
+        if (command.commitReceipt) {
+          const commit = stdout.toString('utf8').trim()
+          if (!ref(commit)) throw new Error('Invalid supplier HEAD receipt')
+          log.supplierCommit = commit
+        }
+        record.outputValidation = 'matched'
+      } catch (error) {
+        record.outputValidation = 'failed'
+        failure(record, 'output-validation', error)
+      }
+    }
+    record.phase = log.firstFailure === null ? 'completed' : 'failed'
+    if (!persist('command-final', record)) persistOK = false
+    if (!persistOK || log.firstFailure !== null) {
       process.exitCode = 1
       return
     }
@@ -610,6 +750,15 @@ try {
   if (result.gaps.length) process.exitCode = 2
   else if (opts.build) build(lock, opts, result)
 } catch (error) {
-  console.error(JSON.stringify({ status: 'rejected', message: error.message, processExecution }))
+  console.error(
+    JSON.stringify({
+      status: 'rejected',
+      message: error.message,
+      processExecution,
+      buildContext: activeBuildContext,
+      persistence:
+        'Only completed exclusive snapshots are known; this fallback may not reach a durable sink',
+    }),
+  )
   process.exitCode = 1
 }

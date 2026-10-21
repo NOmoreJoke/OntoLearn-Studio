@@ -1,0 +1,35 @@
+{
+  "status": "incomplete",
+  "mode": "verify-only",
+  "target": "darwin-arm64",
+  "component": "fixture-addon",
+  "processExecution": false,
+  "inputWrites": false,
+  "lockSha256": "865c7c8ea12a2038437b81fb5718eaa3ce1ff9c3e30709f2ce03029e4456a30f",
+  "inputDigest": "7cee99c948d0037a490e2c0304c04f8b44eaa10fd08bbfe4e47a9bb1c8ec4210",
+  "writers": [
+    {
+      "path": "packages/native-location/CMakeLists.txt",
+      "bytes": 13332,
+      "sha256": "81df2fbf6169cfb8d990080cf9f804adc6e275accdfc912f9c334028578d7a5d"
+    },
+    {
+      "path": "packages/native-location/toolchain-lock.json",
+      "bytes": 4624,
+      "sha256": "865c7c8ea12a2038437b81fb5718eaa3ce1ff9c3e30709f2ce03029e4456a30f"
+    },
+    {
+      "path": "scripts/build-native-location.mjs",
+      "bytes": 27002,
+      "sha256": "d1ddcbd699be1feccd85a39ec583bcab6563d08597f70df5ad430f9879f06714"
+    }
+  ],
+  "gaps": [
+    "source: full nine fixed inputs/adoption pending; not read",
+    "darwin-arm64: supplied/extracted toolchain and SDK acceptance pending; not read",
+    "fixed complete source test assembly approval pending",
+    "actual complete binding API minimum approval pending; candidate NAPI_VERSION=3 only",
+    "Node headers/license supply adoption pending; not read",
+    "configure/build execution window pending: darwin-arm64/fixture-addon"
+  ]
+}

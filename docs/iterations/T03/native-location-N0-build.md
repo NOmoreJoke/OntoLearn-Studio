@@ -1,5 +1,7 @@
 # T03 N0 三构建源码与官方工具材料交付
 
+2026-10-22 追加状态：控制侧在 c7 静态预审中新增 R5 日志异常路径问题，现已最小修订 driver 并另交同候选独审、静态及只读 incomplete 校验；详 review 下 `logging-fix-disposition.md`。另获准的工具提取/版本/供应清单窗口由独立材料 agent 执行，真实出口与读取 guard 缺口详 `tool-supply/index.md`。所有 source/toolchain/execution/binding/testAssembly 审批仍 false，API3 仍待完整 binding 固定源证明。以下原章节及原 manifest/报告记录 c7 首轮静态交付，保留其原始证据和阶段边界。
+
 2026-10-22（授权日期 2026-10-21）。本轮完成三份真实构建源码及官方材料静态准备，**未进入 configure、try_compile、编译、CTest、native/child/FS 测试或 addon/Electron 加载；N0 不记构建通过。**锁中九源码采用、工具链供应、实际 binding 最低 API 和执行窗口均明确 pending。没有用假头、业务 stub、猜测 exports 或临时 helper 凑出可执行闭包。
 
 源码树 `.worktrees/T03-native-location-N0-build`，branch `feature/T03-native-location-N0-build`，从批准 `5f910b52c69d86a1076b2032e5d3c63e715947f3` 新建。产品改动只含 `packages/native-location/CMakeLists.txt`、`packages/native-location/toolchain-lock.json`、`scripts/build-native-location.mjs`；过程仅本稿和 `docs/reviews/T03/native-location-N0-build/`。没有切换旧树、采用 I06 WIP、修改旧配置/依赖/锁/入口/打包/CI、重测 D2、push/PR/merge 或改变原 Goal。

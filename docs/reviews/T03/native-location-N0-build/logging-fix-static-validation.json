@@ -1,0 +1,153 @@
+{
+  "candidate": "R5-logging-1",
+  "writers": [
+    {
+      "path": "packages/native-location/CMakeLists.txt",
+      "bytes": 13332,
+      "sha256": "81df2fbf6169cfb8d990080cf9f804adc6e275accdfc912f9c334028578d7a5d"
+    },
+    {
+      "path": "packages/native-location/toolchain-lock.json",
+      "bytes": 4624,
+      "sha256": "865c7c8ea12a2038437b81fb5718eaa3ce1ff9c3e30709f2ce03029e4456a30f"
+    },
+    {
+      "path": "scripts/build-native-location.mjs",
+      "bytes": 27002,
+      "sha256": "d1ddcbd699be1feccd85a39ec583bcab6563d08597f70df5ad430f9879f06714"
+    }
+  ],
+  "checks": [
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "--check",
+        "scripts/build-native-location.mjs"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 0,
+      "stdout": "logging-fix-static-0.stdout",
+      "stderr": "logging-fix-static-0.stderr"
+    },
+    {
+      "argv": [
+        "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-profile-build/node_modules/.bin/prettier",
+        "--check",
+        "scripts/build-native-location.mjs",
+        "packages/native-location/toolchain-lock.json"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 0,
+      "stdout": "logging-fix-static-1.stdout",
+      "stderr": "logging-fix-static-1.stderr"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "scripts/build-native-location.mjs",
+        "--target",
+        "darwin-arm64",
+        "--component",
+        "core",
+        "--verify-only"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 2,
+      "stdout": "logging-fix-verify-darwin-arm64-core.stdout",
+      "stderr": "logging-fix-verify-darwin-arm64-core.stderr"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "scripts/build-native-location.mjs",
+        "--target",
+        "darwin-arm64",
+        "--component",
+        "addon",
+        "--verify-only"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 2,
+      "stdout": "logging-fix-verify-darwin-arm64-addon.stdout",
+      "stderr": "logging-fix-verify-darwin-arm64-addon.stderr"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "scripts/build-native-location.mjs",
+        "--target",
+        "darwin-arm64",
+        "--component",
+        "fixture-addon",
+        "--verify-only"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 2,
+      "stdout": "logging-fix-verify-darwin-arm64-fixture-addon.stdout",
+      "stderr": "logging-fix-verify-darwin-arm64-fixture-addon.stderr"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "scripts/build-native-location.mjs",
+        "--target",
+        "win32-x64",
+        "--component",
+        "core",
+        "--verify-only"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 2,
+      "stdout": "logging-fix-verify-win32-x64-core.stdout",
+      "stderr": "logging-fix-verify-win32-x64-core.stderr"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "scripts/build-native-location.mjs",
+        "--target",
+        "win32-x64",
+        "--component",
+        "addon",
+        "--verify-only"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 2,
+      "stdout": "logging-fix-verify-win32-x64-addon.stdout",
+      "stderr": "logging-fix-verify-win32-x64-addon.stderr"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "scripts/build-native-location.mjs",
+        "--target",
+        "win32-x64",
+        "--component",
+        "fixture-addon",
+        "--verify-only"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 2,
+      "stdout": "logging-fix-verify-win32-x64-fixture-addon.stdout",
+      "stderr": "logging-fix-verify-win32-x64-fixture-addon.stderr"
+    }
+  ],
+  "beforeAfterWriterIdentityEqual": true,
+  "noNativeBuildDirectory": true,
+  "allExecutionApprovalsFalse": true,
+  "notRun": [
+    "--build",
+    "future complete",
+    "fault injection",
+    "CMake configure",
+    "try_compile",
+    "compiler input",
+    "CTest test",
+    "native",
+    "child",
+    "FS experiment",
+    "addon",
+    "Electron"
+  ],
+  "limits": "Complete/error branches static review only; separate authorized material version probes are not these checks"
+}

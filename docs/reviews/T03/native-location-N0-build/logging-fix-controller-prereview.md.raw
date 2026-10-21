@@ -1,0 +1,92 @@
+# T03 N0：三构建源码与官方材料独立预审
+
+2026-10-22。结论：67路径交付和官方材料字节闭环，当前verify-only准确incomplete，未发现其运行构建/写文件的路径。但**新增R5/P2：未来build dispatch之后的异常仍可能丢失本次命令完整history**。已有R1修复保住processExecution布尔，没有保证argv/输出路径/进程状态/首失败在异常时可读回。建议先仅修driver这一点并独立静态复核；当前材料可以受限接收，不能把此候选直接投入真实编译。I06九源、工具审批及API最低集仍是准确前置，不因未齐制造其它P2，也不因当前全false掩盖未来完整分支。
+
+本审仅Git/文件/stdlib JSON/hash/tar目录和内存读取/struct/文本审查，不运行产品、driver、CMake/compiler/CTest/native/addon/Electron、材料审查脚本或FS/child实验，不网络/提取安装/修改源。唯一写本报告，旧D2/plan报告、owner证据和sharedstate/Goal不变。以下argv结果来自既有原件，不冒称本审执行。
+
+## 1. 固定完整范围与原件
+
+实际树 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build`，HEAD `c7ca9f517d3a4cffc39ce823b8f0bb16091e68a5`，base批准5f910b52c69d86a1076b2032e5d3c63e715947f3，当前Git status为空。新树AGENTS1056B/SHA1b3c02916e9bab79f463a61f2818846f01e849014b70251b37c112377443a6fb保原base；它与旧树保护AGENTS15852B/78df的区别已在start/protection proof如实记录，没有覆盖新树旧基线或把旧规则丢弃。
+
+| 固定对象 | bytes / SHA256 |
+| --- | --- |
+| 根授权raw | 6607 / 3f4c0aba50d613a717b4402a7d982c38aa3f017996667c0cc6ae1aa94ff21977 |
+| CMakeLists.txt | 13332 / `81df2fbf6169cfb8d990080cf9f804adc6e275accdfc912f9c334028578d7a5d` |
+| toolchain-lock.json | 4624 / `865c7c8ea12a2038437b81fb5718eaa3ce1ff9c3e30709f2ce03029e4456a30f` |
+| build-native-location.mjs | 21117 / `cf0ad744bffaa29a7c2b932fa50d55bf4936584c477bf0bb7947ee64a5d04f0b` |
+| 主说明 | 12201 / abda3089264abd36ee56d82552ffd25d8638bbaeb26a3e4df2ac732fef57239f |
+| 原独审 | 10427 / a33f358b845287e25532399c336cf9446f0639508a3b61b6465e2c082ba03ad3 |
+| 最终manifest | 13934 / 92c934fbdad03b3249108c720666e4b28977bcd611fac575c9fef9a3b8397dd1 |
+
+三源码、主稿、独审及处置均全文读取。实际base→HEAD恰67新增路径，等于manifest66条+self，3产品+64过程；每条current=Git=bytes/SHA，manifest自身也核current=Git，没有未知产品夹带。全部材料脚本作为证据静态保存，未在本审执行。新源码不包含I06九原件、旧构建/入口/依赖锁或T01共享产品；D2没有在此候选再采用/重测。
+
+两份只读ABI契约从真实6a7789bf0c1e5e7b0f25f37c86e0c9d64c6dc20d Git读取，H13296B/fc3f7983…和handoff17562B/8b3ba7c4…均准确；不把未提交WIP或handoff里的binding hash变成可采用源码。
+
+## 2. 当前只读出口与未来完整前门
+
+CLI精确target/component和恰一模式；unknown/duplicate不接受。jsonStrict先JSON.parse并遍历同一语法拒重复key；schema逐层exact keys、布尔/固定ref、路径/bytes/hash及九路径顺序核验。所用argv没有任意source或CMake define扩展口。
+
+verify-only调用链为parseArgs→readBounded锁→validateSchema→verify→输出：只含stat/readFile/realpath/hash，不调用build、spawn或mkdir/write，也不跑版本探针。未审批source/toolchain/Node/windowsAddon均不读取相应路径；材料index为固定readonly输入。当前源码本三文件和index读回不能等同已用SDK/工具通过。审批由受信根提交固定lock/引用，这是源代码供方政策记录，不是用任意外部boolean为产品赋权。
+
+当前8份最终检查原记录及其stdout/stderr已读：Node语法exit0、Prettier exit0；6个target/component verify-only全exit2，stdout均status=incomplete、processExecution=false/inputWrites=false，stderr空。core不含Node/Windows-addon缺口；Win另列host darwin-arm64不匹配，不冒称Win运行。此结果只核现有raw与固定源码相符，不是本审重跑或未来complete分支动态证明。初版输出/candidate1–4与材料首失败全部保留在67件中。
+
+未来complete要求source批准ref/九pin、选定toolchain与resource/SDK清单、相关testAssembly或binding API/Node/Win供方、execution批准和实际platform-arch匹配。build才会创建独占输出目录，不复用现有cache；所有进程位于门后。inputDigest包含三个writer字节；lock摘要因而把source/工具pin绑定进本次输入身份。固定Git也是已批准绝对pin，未来先核三writer+九源clean、真实HEAD、原ref逐blob hash，再configure/build。不会自动下载/安装/依PATH换工具，输出不进D2/release。
+
+CMake自有前门在project()242之前检查锁摘要/target/component、source/工具/执行审批、全部九源、固定H、generator/实际运行CMake、版本元信息/SDK settings/terms、两inventory、五工具、所需Node/Win pins与系统库。核心CMake语义未实际parse/configure；审查不把文本已写视为compiler probing已经被实测拦住。指针宽度与compiler/processor的最终验证在project后，它们不能当作两OS支持证明；驱动更早以实际host拒跨平台。
+
+inventory根+path/realpath/bytes/hash先验证，合法0B仅inventory逐文件允许，工具/license/manifest仍非空，原hello.f=0反例处理准确。清单语法/逐pin正确不自动证明供方穷尽，根仍需审实际供应覆盖。对应根/SDK/source审批未齐则前门拒，不以“当前false所以安全”取代完整分支审查。
+
+## 3. 新增 R5/P2：dispatch后的异常丢完整进程history
+
+位置：`scripts/build-native-location.mjs:549–594`，异常出口612–614。具体静态路径：
+
+1. supplier-log.json在546–548先落盘，但commands为空。循环到命令时551–552创建双流文件，555把processExecution置true，然后556调用spawnSync。
+2. command record只在spawnSync返回且finally里的两个closeSync都成功后，于568–576创建并push。若spawnSync本身抛异常，或实际进程已执行完但closeSync抛异常，该次record尚不存在；finally第一个close抛错还会阻第二个close。
+3. 另一个路径是进程已有run.status/signal/error，record已push到内存，但582读取Git stdout或594重写log抛IO异常；新的command/首失败未必已持久。外层catch只输出status/message/processExecution，不包含buildDir、当前executable/argv/cwd、双流路径、dispatch阶段或已有run status/signal/error。磁盘上可能只留上一轮log/空commands和编号stdout，不能还原完整原过程history。
+
+这是当前源码可达的异常控制流，不是本审实际制造磁盘故障，也不是声称本轮已经运行后丢失日志。影响是未来获准编译/工具已执行后无法完整核验发生了什么；根授权明确要求真实argv/双流/exit/首失败。原独审R1确已把错误的false改为单调true，但该修复只能保“发生过进程调用”，不能兑现完整执行原件。
+
+最小修正仅在现有driver writer：dispatch前先建立当前attempt记录（executable/argv/cwd、双流路径、attempt/dispatch状态）并持久；不能持久则不dispatch。调用之后立即保存已拿到的run status/signal/error，两个fd分别独立收尾，close错误不得覆盖进程原结果或阻另一fd清理。最外层异常出口保当前attempt、buildDir及历史/首失败，log后续写失败时至少向既有stderr输出完整有限结构化fallback，明确日志不完整/进程终态unknown，不能只回一个布尔。不要删旧raw或把catch称success/drained，不新增业务helper/改I06预算。
+
+建议该点修后冻结新candidate、静态复核异常分支/语法和必要raw，原四P2处置保留；本审不授权运行--build或造fake complete锁试验。真实未来失败/超时仍按实际窗口核进程树与资源归属，driver日志不签native cleanup/drain。
+
+## 4. ABI1、API3与同registry装配
+
+H原头与handoff全文读回，11 core C函数加NL_WITH_NODE下第12个nl_node_bind_fixture，64bit静态布局/Win __cdecl与导出宏、有限资源、metadata-only与productionAdmission0都保原合同。CMake hidden内部C++，NL_API/public注册符号须后续实际exports核验，不能靠属性猜产物正确。
+
+原计划API8已由新的**具体同步调用候选合同**改成3：handoff列11个napi函数，最高为napi_add_env_cleanup_hook(API3)，无BigInt/async cleanup/work/TSFN。当前6a固定ref只提供H/handoff，本次ls-tree没有对应binding源码；因此**不能由metadata或handoff断言实际最终binding最低API已经是3**。lock.bindingMinimumApproval仍false，verify明确列candidate only，门保持正确。正式采用九源时须从实际node_binding所有调用/宏和固定官方头再次核集，若更多API或合同变化，先新同版合同/源码审查，不只把approval置true。
+
+三个component装配准确：core仅core+本平台+core_test与独立child_probe；普通addon core+平台+binding；fixture-addon在同一MODULE中加core_test四TU并定义NL_NODE_FIXTURE_HOST/NL_WITH_NODE。不在host exe与.node各静态复制registry后跨实例传owner。实际测试源码是否按宏排除main、bootstrap是否真调用同实例bind、TS I06_NATIVE_LOCATION_TEST_ADDON注入和child argv/cleanup仍待最终固定九源及实际链接/运行；四TU的CMake文字不替这层证明。普通addon只三个未bound标志，不新增JS opener/owner constructor，fixture标志自身也不授权限。
+
+Mac C++17/REQUIRED/NO extensions/PIC、arm64/sysroot/min15在project前，dynamic_lookup只用于addon；不借它豁免未知导入。actual undefined/export、SDK API availability、最低系统/目标mac15实机都未证。Win独立Ninja+MSVC/x64/动态CRT，直接hook+node.lib/delayimp+HOST_BINARY/DELAYLOAD；Win工具/input不存在不能改叫平台可用。Node load/Electron fuse/headless与两target OS仍各后置，本驱动无CTest或加载执行入口。CTest注册原child绝对target及15s外部timeout，不证明真实child/drain。
+
+## 5. 官方材料的独立静态读回
+
+受控目录 `/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe`。index28386B/SHA `e6eea559a28087bebcd965f3632e2be7c8f0a58f3e593f25c5415b067c86e2e6` tmp=仓内Git。index和下载元信息保7件起止URL/redirect/HTTP200、时间/bytes/SHA/限额。网络首restricted URL无HTTP终态与首次archive静态检查误报均保留；本审未联网重下或独立声称官方网页当前仍latest。
+
+本审逐7份实际原下载流式重算bytes/SHA，全同：
+
+- CMake macOS universal4.4.4归档89454352B/SHA `4b7b73704b1db9b374e5c9ab8e17ac6148b817b6396ee75cd94a852cbac9d305`，小于250MiB；官方checksum原件2015B/560231a0…共21行，唯一正确basename的SHA与归档吻合。未作PGP验证。
+- Node v24.15.0完整LICENSE156926B/4573185d…及四API头合计52569B，均在限额；四头又逐字同/usr/local/include/node对应原件。没有把npm/node-gyp MIT或types包代成Node许可，也未取新Node runtime。
+
+本审自己用stdlib tar目录/内存读取重核9041成员，按原序逐path/normalized/type/size/mode/linkname与完整成员JSON比同：8839 regular、189目录、13symlink，合计252707197声明bytes。路径唯一/归档根内/无异常type，13链接逐段最多64跳解析至归档内现存目标，无磁盘提取。Modules regular1686件，真实IntelVSImplicitPath/hello.f=0B。
+
+在内存读取实际cmake和ctest成员：cmake26639440B/SHA80cbc0d5ee08c9e6166bcc44bf51faf5469e360346f5cefbf36e8f8e4351a4cb；ctest29114000B/SHA3c91499c53345b601504d30f84662dbaa043ecaee8915c66a769c95b7d6fcd88。二者fat头均含x86_64和arm64，未动态加载/运行。Info.plist原件版本4.4.4，十份保存的许可/版本文本逐hash并逐对应archive原件核同，主BSD LICENSE1498B/4382e7…保原文。CMAKE_ROOT/CTest在同一完整分发包有实物，不再只是单binary元信息。
+
+本审首个自写目录断言把带额外resolved_archive_target注解的symlink条目与原Tar字段作完全dict等式，因注解字段而停；已只比较实际Tar字段并独立逐段解析，全部9041/13通过。该中间断言是本审比较器字段选择问题，不是材料或链接不安全，也不抹去owner其更早真实初审失败。没有运行任何owner审查脚本。
+
+材料结论仅静态身份/目录/许可文本通过；未提取为批准供应树、未执行cmake --version、未证明host27兼容或mac15/Win11运行。tmp丢失须按既有来源/身份另授恢复，不默许自动重下；二进制未入67产品Git。
+
+## 6. 最小下一窗口建议（不授执行权）
+
+先修R5，保持原候选/报告和67原件不覆盖，形成新driver/docs候选并复核。其余source/工具pending不是本轮源码错误，不需要造full-lock/fake源测试凑绿。
+
+然后由根核I06完整九原件的fixed ref/逐path hash/真实ABI和testAssembly：core只需其实际测试拼装正确，Node binding最低API/Node许可采用不应挡core；addon/fixture-addon才要求实际API3核定及相应Node/Win供方。若头变化，原6a固定常量会正确拒绝，先重审新合同，不静默换SHA。
+
+合法材料已取到，可单独批准**受控新tmp的CMake工具提取与供应inventory准备**，先按已审路径/链接规则保持CMAKE_ROOT/CTest/许可证和配套dylib/resources完整；禁止全局安装/PATH改变或运行CMake.app GUI。固定真实executable/realpath/hash与资源inventory、Apple原安装compiler/linker/SDK root/settings/terms/version及有限清单；清单覆盖由真实供方审核，不能把inventory中列一个SDK root就称全部headers已锁。
+
+供应对象是构建前固定的完整合法离线发行/已安装工具SDK来源；compile_commands/depfiles/实际used headers/stubs/libs/imports是首构建的观测输出。不要把后者设为前门已完成，造成先编译才能有输入的循环；也不能借待输出跳过前门。首次build后仍保dependencyClosure=PENDING_POST_BUILD_AUDIT，不自动签complete目标/资源终态。
+
+根具备修后driver、九源采用与core分支完整供方后，最薄运行窗口是**宿主darwin-arm64 core configure/build，仅两个测试exe产出**：明确源码ref/工具锁/目录/argv/CPU/SDK/min15/环境和双流，configure包含try_compile必须属于编译授权。此窗不运行CTest/child/FS实验、addon或Electron。编译成功后才按I06真实fixture/timeout/cleanup合同开受控测试，再单独Node addon/fuse核实的Electron/两目标OS。Windows、N1 SQLite/CPython/VFS和生产fresh/首IO不阻独立宿主core准备，也不能被该core通过抵扣。
+
+T03不接T01 C2/dispatch/Store/worker/canonical，I06资源语义仍原owner；T03仅既定三writer/构建供方，不改I06ABI/测试去消除编译失败。完整N0目标OS/真实终态、生产LocationLease/同库VFS/B-R/fresh/跨崩溃holder、T01全消费、57P0/C–G/PRD10–12、指定同候选双新审/意见/CI/正常develop合并和远端核验均保留。本审新增产品/构建/运行/推送/PR/merge为0，Goal未变。
