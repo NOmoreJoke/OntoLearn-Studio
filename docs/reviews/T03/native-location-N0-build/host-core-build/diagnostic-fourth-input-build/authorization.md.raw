@@ -1,0 +1,28 @@
+# T03 诊断新输入一次构建窗口
+
+2026-10-22。继续原T03聊天/Goal、`.worktrees/T03-native-location-N0-build`，从纯过程113e接续。此为源码变化所需第四次输入构建，不是重跑第三次无变化输入。旧三轮输入、失败、产物及证据冻结。root已全文读I06新交接与独立增量报告，接收fc6237e8cad1a4043d46a1c7198439f1da06ad67 / 9410a89c27dde528e4faf4480e39c01ad4f633f1为新的九源供方；完整check637TS/1052Python/1native跳过及12sources均0，不代表native成功。
+
+## 精确输入与唯一维护者
+
+先实际核当前树/原12固定输入/最新AGENTS及总控common。仅从I06固定fc Git采用两件：
+
+- `packages/native-location/tests/location_core_test.cc`：30037B/SHA256 `4cec7d67ba66fdf47d0ae26ba056372dc437e67ac076e768a548c334bd260319`，五处owner-create有界诊断；原断言/调用/cleanup不变。
+- `tests/unit/i06-native-location-owner.test.ts`：8424B/SHA256 `4552db106b86a8a8a80b9fcb7b55292a1696f69b72a20bd97bdfaae2bdc104ce`，删除提前let、原赋值点const，mock和初始化顺序保持。
+
+九源全部对应I06固定941的 `docs/reviews/I06/native-location-N0/owner-create-diagnostic/lint-repair/provider-handoff.json`，其余七源不变；原构建三writer只能更新必要的批准引用、输入九源指纹/新digest与诊断回执，不得改编译算法、权限、工具链selector或limits。完整12固定候选由T03唯一owner维护。先固定新采用/lock候选并让独立agent检查两源精确diff、其余七源及构建三writer最小差异；通过后本窗口授权一次原driver构建，无需为纯收件再等root许可。
+
+原argv仍为 `node scripts/build-native-location.mjs --target darwin-arm64 --component core --build`，原13命令、固定DEVELOPER_DIR/CMake/gnumake/tool供应及parallel2不变，仅darwin-arm64 core与child两产物。try_compile仅编译链接；禁try_run、ctest、测试产物或addon执行。若工具供应/真实前门/指纹发生新不匹配则保原件回报，不自动替换工具或重试。
+
+## 有限累计预算
+
+保留所有旧账、首轮ETIMEDOUT与drainunknown、第二轮旧255超cap及关闭决定；不把历史消费清零。旧构建累计声明55068578800B与独立供应9745727085B继续带入。因新必要输入构建，构建累计guard显式提高为80GiB=`85899345920`B，含旧供应的combined guard=`95645073005`B。预计新增若仍17755667816B，累计72824246616B，但必须按实际新计划先计票，不能把估算当实际IO。
+
+metadata累计从根保守1328343继续，不释放原预留，新guard1800000；entity record累计从第三次保守256632继续，新guard400000。先付本轮枚举/核验/采用/构建/收件有限票，再执行；额外预留owner15000、owner独审15000、closing10000、root独审15000，另preflight2000。若本轮枚举仍171088，则保守1556431，余243569；这些只是预算算式，实际回执优先。任何超guard或无法覆盖动作在执行前停止，不擅自再抬上限。
+
+尽量复用已经冻结的供应witness与相同依赖对象，只核真实增量；不重新穷举系统、重读旧全量日志或为未变字节重复完整产品check。原metadata读取优化和准确alias身份方法继续，实际compiler-open/runtime未知照旧记录，不据此发起额外构建。
+
+## 交付与运行边界
+
+一次真实构建及必要静态产物检查后固定新输入digest、product/process、两artifact字节/SHA/真实路径、13命令双流/exit、来源前后身份和费用增量。新证据单独目录，不覆盖旧原件；独立审查只核新源码/新构建结果及增量闭包。失败只收件，不自动第五次构建。root收件后才能由原I06补新pair精确调用、另授权下次native CLI。
+
+T03本窗口无任何native/GUI/e2e/HMR/外部模型/凭据/付费/push/PR/merge；不删除未知fixture残留，不结束旧未知PID。成功也仅built-unverified/NOT_RUN，首次owner-create根因与EXCL实际行为仍未证明，目标OS/父N0/指定双外审/CI/develop门保留。
