@@ -1,6 +1,7 @@
 """Real component observations; source operands and assertion-only goldens stay separate.
 
-No fake Job/origin/Store/worker, comparator calls, numeric parser or new codec.
+No fake Job/origin/Store/worker, direct comparator evaluation, parser or new codec.
+Transparent call-count observers invoke the original comparator without replacing results.
 False rules have no typed trace: separately labelled real eq-self operations
 observe their operands. Errors publish no result. These are component claims.
 """
@@ -11,8 +12,10 @@ import json
 import os
 from dataclasses import asdict, fields, is_dataclass
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
+from ontolearn_engine.quality import rule_firing
 from ontolearn_engine.quality.rule_calendar import Calendar
 from ontolearn_engine.quality.rule_firing import Comparison, RuleSpec, Triple, Variable
 from ontolearn_engine.quality.rule_numbers import Number
@@ -46,6 +49,40 @@ CASES = [
     if isinstance(rows, list)
     for index, row in enumerate(rows)
 ]
+# Root decision c10a07b1...: exactly two upstream contracts, not replacement
+# pure goldens. Neither pure reason is executed by this admitted entry.
+ENTRY_GUARDS = {
+    "error/28": {
+        "status": "error",
+        "stage": "production",
+        "exceptionType": "ProfileExecutionFault",
+        "reason": "ABSOLUTE_IRI_REQUIRED",
+        "diagnostic": {
+            "reason": "ABSOLUTE_IRI_REQUIRED",
+            "classification": "input",
+            "ruleId": "m1",
+            "location": {"section": "comparison", "index": 0, "side": "left", "span": None},
+        },
+        "publicError": {
+            "code": "SEMANTIC_INPUT_INVALID",
+            "messageKey": "semantics.inputInvalid",
+            "params": {"field": "rule"},
+            "retryable": False,
+        },
+        "producedResultReturned": False,
+        "restoredResultReturned": False,
+    },
+    "error/31": {
+        "status": "error",
+        "stage": "material",
+        "exceptionType": "MaterialFailure",
+        "reason": "MATERIAL_INVALID",
+        "diagnostic": None,
+        "publicError": None,
+        "producedResultReturned": False,
+        "restoredResultReturned": False,
+    },
+}
 
 
 def sha(raw):
@@ -147,6 +184,15 @@ def ledger_observation(ledger):
     return {name: signature(getattr(ledger, name)) for name in names if hasattr(ledger, name)}
 
 
+def _invoke(function, phase, observation, *args, **kwargs):
+    """Count actual original calls, including raising calls; no result injection."""
+    with patch.object(rule_firing, "compare_values", wraps=rule_firing.compare_values) as calls:
+        try:
+            return function(*args, **kwargs)
+        finally:
+            observation["realComparatorCalls"][phase] = calls.call_count
+
+
 def _operation(left, operator, right, label, directory):
     """Inputs only. No golden argument, file access, allocation or encoded payload injection."""
     records = (
@@ -162,7 +208,12 @@ def _operation(left, operator, right, label, directory):
         source(label, definition=True),
         revision="sha256:" + TEST_SHA,
     )
-    result = {"label": label, "sourceDefinition": signature(spec), "records": signature(records)}
+    result = {
+        "label": label,
+        "sourceDefinition": signature(spec),
+        "records": signature(records),
+        "realComparatorCalls": {"material": 0, "production": 0, "restore": 0},
+    }
     material_ledger, production_ledger, restore_ledger = (
         CaptureLedger(),
         CaptureLedger(),
@@ -171,9 +222,19 @@ def _operation(left, operator, right, label, directory):
     produced = restored = material = None
     stage = "material"
     try:
-        material = prepare_profile_material(rules=(spec,), records=records, ledger=material_ledger)
+        material = _invoke(
+            prepare_profile_material,
+            "material",
+            result,
+            rules=(spec,),
+            records=records,
+            ledger=material_ledger,
+        )
         stage = "production"
-        produced = execute_admitted_profile_job(
+        produced = _invoke(
+            execute_admitted_profile_job,
+            "production",
+            result,
             material,
             error_catalog=CONTRACT.ERROR_CATALOG,
             error_schema=SCHEMA,
@@ -193,7 +254,10 @@ def _operation(left, operator, right, label, directory):
             produced.material.source_preimage,
         )
         stage = "restore"
-        restored = restore_profile_result(
+        restored = _invoke(
+            restore_profile_result,
+            "restore",
+            result,
             produced.payload_json,
             produced.rows_json,
             expected=context,
@@ -392,6 +456,8 @@ def _check_component(op):
     assert op["ledgers"]["restoreR"]["state"]["value"] == "success"
     assert not any(op["restoreLive"].values())
     assert op["logicalRetention"]["scalar"] > 0
+    assert op["realComparatorCalls"]["production"] > 0
+    assert op["realComparatorCalls"]["restore"] > 0
 
 
 def _check_raw(pv, raw, pointer):
@@ -424,7 +490,19 @@ def _assert_case(family, index, row, actual, expected):
     if "reason" in expected:
         assert main["status"] == "error", main
         assert not main["producedResultReturned"] and not main["restoredResultReturned"]
-        assert main["reason"] == expected["reason"], main
+        if family == "errorOperandCases" and row["id"] in ENTRY_GUARDS:
+            contract = ENTRY_GUARDS[row["id"]]
+            assert signature({k: main[k] for k in contract}) == signature(contract)
+            assert main["realComparatorCalls"] == {"material": 0, "production": 0, "restore": 0}
+            assert main["ledgers"]["restoreR"]["state"]["value"] == "new"
+            assert main["ledgers"]["productionC"]["state"]["value"] == (
+                "failed" if row["id"] == "error/28" else "new"
+            )
+            assert expected["reason"] == (
+                "INVALID_RULE" if row["id"] == "error/28" else "INTERNAL_ERROR"
+            )
+        else:
+            assert main["reason"] == expected["reason"], main
         if "input" in row:
             return  # Invalid operand has only its actual error, never an invented typed value.
     else:
@@ -487,6 +565,9 @@ def test_math_observation(family, index, row, assertion_goldens):
     try:
         observation["actual"] = _observe(family, index, row, directory)
         observation["expected"] = _expected(family, row, assertion_goldens)
+        if family == "errorOperandCases" and row["id"] in ENTRY_GUARDS:
+            observation["admittedEntryExpected"] = ENTRY_GUARDS[row["id"]]
+            observation["pureReasonExecutedByThisEntry"] = False
         _assert_case(family, index, row, observation["actual"], observation["expected"])
         observation["assertion"] = "pass"
     finally:
