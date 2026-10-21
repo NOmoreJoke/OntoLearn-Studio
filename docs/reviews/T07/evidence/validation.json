@@ -1,0 +1,79 @@
+{
+  "date": "2026-10-21",
+  "stage": "private_implementation_validated",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "checks": {
+    "npm run check": {
+      "exitCode": 0,
+      "typescriptTests": 657,
+      "pythonTests": 1098,
+      "t07Python": 46,
+      "t07TypeScript": 27,
+      "includes": ["eslint", "prettier", "typecheck", "vitest", "build", "ruff", "pytest"]
+    },
+    "npm run verify:sources": {
+      "exitCode": 0,
+      "sourceFiles": 12
+    },
+    "headlessUi": {
+      "exitCode": 0,
+      "result": "evidence/ui-probe.json",
+      "viewports": ["1440x1100", "390x844"],
+      "scope": "synthetic fixture UI; actual domain adapters not connected"
+    },
+    "independentReview": {
+      "agent": "/root/t07_internal_review",
+      "verdict": "ordinary internal review passed",
+      "closedP2": 4
+    }
+  },
+  "localRawEvidenceHashes": [
+    {
+      "path": "evidence/check-context.log",
+      "sha256": "38bfc15ff8a087fd8080f5b418169db8297fa321651df009e09d176784eab724"
+    },
+    {
+      "path": "evidence/ui-identity.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/verify-sources.log",
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+    },
+    {
+      "path": "evidence/ruff-first.log",
+      "sha256": "2187c83e2a15cde301549ce4e996510cb21fa6ac1804a7563e3270ef37029bb5"
+    },
+    {
+      "path": "evidence/pytest-first.log",
+      "sha256": "a5aa9a11ac0b6e75c92c0cae262669692d13f3366325bd8e4b49f95bcd9fcd34"
+    },
+    {
+      "path": "evidence/ui-first.log",
+      "sha256": "6c2a37282680f44e108c727cc6ba11a344be1c3ee8950418a86d1a88855cd6fa"
+    },
+    {
+      "path": "evidence/ui-final.log",
+      "sha256": "12867241f9284901665132d4644a22570adbcdc166e96bdcc452126c1cb85978"
+    },
+    {
+      "path": "evidence/ruff-context.log",
+      "sha256": "306b685ee94bc42c8a0defa0caf56510ebd79a8827d08f8030c9359cf8c29777"
+    },
+    {
+      "path": "evidence/pytest-context.log",
+      "sha256": "934cddb86db4d7ca2c35bf75972e9fd10b22d30456062cc683600db558066824"
+    }
+  ],
+  "rawEvidencePolicy": "Logs and PNGs retained locally under evidence, ignored in Git to keep product commits concise. Summaries/hashes and reproducible headless script are committed.",
+  "notExecutedOrNotPassed": [
+    "real T05 inference/T06 behavior integration",
+    "T01/I04 durable round commit/cancel/recovery/ack-loss reconciliation",
+    "public contracts/bridge/App mounting",
+    "full E.5 RDF facts/inferred/actionTrace/triggeredInstances",
+    "T10 cross-device replay",
+    "designated same-candidate dual external reviews",
+    "push/PR/CI/merge/remote publication",
+    "native Windows/macOS clean-device/full-product acceptance"
+  ]
+}
