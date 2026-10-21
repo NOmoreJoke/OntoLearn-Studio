@@ -1,0 +1,779 @@
+[
+  {
+    "id": "query-complete-set",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "query_execute",
+        "arguments": "{\"sparql\":\"SELECT ?id WHERE { ?equipment <urn:id> ?id } ORDER BY ?id\",\"scope\":\"asserted\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "evidence",
+      "projectId": "synthetic:p1",
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "resultId": "synthetic:r1",
+      "status": "current",
+      "traceRefs": [],
+      "fields": [
+        {
+          "fieldId": "row:001",
+          "value": "001"
+        },
+        {
+          "fieldId": "row:002",
+          "value": "002"
+        }
+      ]
+    },
+    "answer": {
+      "kind": "evidence",
+      "callIds": ["call1"]
+    },
+    "expected": {
+      "kind": "evidence",
+      "receipts": [
+        {
+          "callId": "call1",
+          "tool": "query_execute",
+          "outcome": {
+            "kind": "evidence",
+            "projectId": "synthetic:p1",
+            "inputSnapshotId": "synthetic:s1",
+            "scopeRef": "synthetic:scope",
+            "resultId": "synthetic:r1",
+            "status": "current",
+            "traceRefs": [],
+            "fields": [
+              {
+                "fieldId": "row:001",
+                "value": "001"
+              },
+              {
+                "fieldId": "row:002",
+                "value": "002"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "execute": true
+  },
+  {
+    "id": "query-semantic-error-remains-draft",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "query_draft",
+        "arguments": "{\"question\":\"列出全部设备\",\"scope\":\"asserted\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "draft",
+      "draftType": "query",
+      "summary": "仅草稿：过滤条件未验证",
+      "detail": "SELECT ?id WHERE { ?s <urn:id> ?id FILTER(?id = \"002\") }"
+    },
+    "answer": {
+      "kind": "evidence",
+      "callIds": ["call1"]
+    },
+    "expected": {
+      "kind": "evidence",
+      "receipts": [
+        {
+          "callId": "call1",
+          "tool": "query_draft",
+          "outcome": {
+            "kind": "draft",
+            "draftType": "query",
+            "summary": "仅草稿：过滤条件未验证",
+            "detail": "SELECT ?id WHERE { ?s <urn:id> ?id FILTER(?id = \"002\") }",
+            "projectId": "synthetic:p1",
+            "baseRevision": 1,
+            "inputSnapshotId": "synthetic:s1",
+            "requiresHumanDiffConfirmation": true
+          }
+        }
+      ]
+    },
+    "execute": true
+  },
+  {
+    "id": "reasoning-exact-trace",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "reasoning_run",
+        "arguments": "{\"scope\":\"asserted-and-derived\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "evidence",
+      "projectId": "synthetic:p1",
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "resultId": "synthetic:r1",
+      "status": "current",
+      "traceRefs": ["synthetic:rule-risk", "synthetic:rdfs-domain"],
+      "fields": [
+        {
+          "fieldId": "inferred:001",
+          "value": "HighRiskEquipment"
+        },
+        {
+          "fieldId": "basis:alarm",
+          "value": "A01"
+        },
+        {
+          "fieldId": "domain-range",
+          "value": "类型推导，不是必填验证"
+        },
+        {
+          "fieldId": "open-world",
+          "value": "未记录不代表已证明不存在"
+        }
+      ]
+    },
+    "answer": {
+      "kind": "evidence",
+      "callIds": ["call1"]
+    },
+    "expected": {
+      "kind": "evidence",
+      "receipts": [
+        {
+          "callId": "call1",
+          "tool": "reasoning_run",
+          "outcome": {
+            "kind": "evidence",
+            "projectId": "synthetic:p1",
+            "inputSnapshotId": "synthetic:s1",
+            "scopeRef": "synthetic:scope",
+            "resultId": "synthetic:r1",
+            "status": "current",
+            "traceRefs": ["synthetic:rule-risk", "synthetic:rdfs-domain"],
+            "fields": [
+              {
+                "fieldId": "inferred:001",
+                "value": "HighRiskEquipment"
+              },
+              {
+                "fieldId": "basis:alarm",
+                "value": "A01"
+              },
+              {
+                "fieldId": "domain-range",
+                "value": "类型推导，不是必填验证"
+              },
+              {
+                "fieldId": "open-world",
+                "value": "未记录不代表已证明不存在"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "execute": true
+  },
+  {
+    "id": "scenario-exact-record",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "scenario_run",
+        "arguments": "{\"scenarioId\":\"synthetic:scenario1\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "evidence",
+      "projectId": "synthetic:p1",
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "resultId": "synthetic:r1",
+      "status": "current",
+      "traceRefs": ["synthetic:round1"],
+      "fields": [
+        {
+          "fieldId": "round:1:created",
+          "value": "W1"
+        },
+        {
+          "fieldId": "round:1:completed",
+          "value": "W1"
+        },
+        {
+          "fieldId": "backlog",
+          "value": 0
+        },
+        {
+          "fieldId": "metric:formula",
+          "value": "created - completed"
+        },
+        {
+          "fieldId": "assumption",
+          "value": "合成资源产能为1"
+        }
+      ]
+    },
+    "answer": {
+      "kind": "evidence",
+      "callIds": ["call1"]
+    },
+    "expected": {
+      "kind": "evidence",
+      "receipts": [
+        {
+          "callId": "call1",
+          "tool": "scenario_run",
+          "outcome": {
+            "kind": "evidence",
+            "projectId": "synthetic:p1",
+            "inputSnapshotId": "synthetic:s1",
+            "scopeRef": "synthetic:scope",
+            "resultId": "synthetic:r1",
+            "status": "current",
+            "traceRefs": ["synthetic:round1"],
+            "fields": [
+              {
+                "fieldId": "round:1:created",
+                "value": "W1"
+              },
+              {
+                "fieldId": "round:1:completed",
+                "value": "W1"
+              },
+              {
+                "fieldId": "backlog",
+                "value": 0
+              },
+              {
+                "fieldId": "metric:formula",
+                "value": "created - completed"
+              },
+              {
+                "fieldId": "assumption",
+                "value": "合成资源产能为1"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "execute": true
+  },
+  {
+    "id": "truthful-stale",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "result_read",
+        "arguments": "{\"resultId\":\"synthetic:r1\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "evidence",
+      "projectId": "synthetic:p1",
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "resultId": "synthetic:r1",
+      "status": "stale",
+      "traceRefs": [],
+      "fields": []
+    },
+    "answer": {
+      "kind": "evidence",
+      "callIds": ["call1"]
+    },
+    "expected": {
+      "kind": "evidence",
+      "receipts": [
+        {
+          "callId": "call1",
+          "tool": "result_read",
+          "outcome": {
+            "kind": "evidence",
+            "projectId": "synthetic:p1",
+            "inputSnapshotId": "synthetic:s1",
+            "scopeRef": "synthetic:scope",
+            "resultId": "synthetic:r1",
+            "status": "stale",
+            "traceRefs": [],
+            "fields": []
+          }
+        }
+      ]
+    },
+    "execute": true
+  },
+  {
+    "id": "truthful-historical",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "result_read",
+        "arguments": "{\"resultId\":\"synthetic:r1\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "evidence",
+      "projectId": "synthetic:p1",
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "resultId": "synthetic:r1",
+      "status": "historical",
+      "traceRefs": [],
+      "fields": []
+    },
+    "answer": {
+      "kind": "evidence",
+      "callIds": ["call1"]
+    },
+    "expected": {
+      "kind": "evidence",
+      "receipts": [
+        {
+          "callId": "call1",
+          "tool": "result_read",
+          "outcome": {
+            "kind": "evidence",
+            "projectId": "synthetic:p1",
+            "inputSnapshotId": "synthetic:s1",
+            "scopeRef": "synthetic:scope",
+            "resultId": "synthetic:r1",
+            "status": "historical",
+            "traceRefs": [],
+            "fields": []
+          }
+        }
+      ]
+    },
+    "execute": true
+  },
+  {
+    "id": "truthful-failed",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "result_read",
+        "arguments": "{\"resultId\":\"synthetic:r1\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "evidence",
+      "projectId": "synthetic:p1",
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "resultId": "synthetic:r1",
+      "status": "failed",
+      "traceRefs": [],
+      "fields": []
+    },
+    "answer": {
+      "kind": "evidence",
+      "callIds": ["call1"]
+    },
+    "expected": {
+      "kind": "evidence",
+      "receipts": [
+        {
+          "callId": "call1",
+          "tool": "result_read",
+          "outcome": {
+            "kind": "evidence",
+            "projectId": "synthetic:p1",
+            "inputSnapshotId": "synthetic:s1",
+            "scopeRef": "synthetic:scope",
+            "resultId": "synthetic:r1",
+            "status": "failed",
+            "traceRefs": [],
+            "fields": []
+          }
+        }
+      ]
+    },
+    "execute": true
+  },
+  {
+    "id": "truthful-cancelled",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "result_read",
+        "arguments": "{\"resultId\":\"synthetic:r1\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "evidence",
+      "projectId": "synthetic:p1",
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "resultId": "synthetic:r1",
+      "status": "cancelled",
+      "traceRefs": [],
+      "fields": []
+    },
+    "answer": {
+      "kind": "evidence",
+      "callIds": ["call1"]
+    },
+    "expected": {
+      "kind": "evidence",
+      "receipts": [
+        {
+          "callId": "call1",
+          "tool": "result_read",
+          "outcome": {
+            "kind": "evidence",
+            "projectId": "synthetic:p1",
+            "inputSnapshotId": "synthetic:s1",
+            "scopeRef": "synthetic:scope",
+            "resultId": "synthetic:r1",
+            "status": "cancelled",
+            "traceRefs": [],
+            "fields": []
+          }
+        }
+      ]
+    },
+    "execute": true
+  },
+  {
+    "id": "fabricated-reference-rejected",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "query_execute",
+        "arguments": "{\"sparql\":\"ASK{}\",\"scope\":\"asserted\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "evidence",
+      "projectId": "synthetic:p1",
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "resultId": "synthetic:r1",
+      "status": "current",
+      "traceRefs": [],
+      "fields": [
+        {
+          "fieldId": "row:001",
+          "value": "001"
+        },
+        {
+          "fieldId": "row:002",
+          "value": "002"
+        }
+      ]
+    },
+    "answer": {
+      "kind": "evidence",
+      "callIds": ["invented"]
+    },
+    "expected": {
+      "error": "INVALID_EVIDENCE"
+    },
+    "execute": true
+  },
+  {
+    "id": "injected-success-text-rejected",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "query_execute",
+        "arguments": "{\"sparql\":\"ASK{}\",\"scope\":\"asserted\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "evidence",
+      "projectId": "synthetic:p1",
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "resultId": "synthetic:r1",
+      "status": "current",
+      "traceRefs": [],
+      "fields": [
+        {
+          "fieldId": "row:001",
+          "value": "001"
+        },
+        {
+          "fieldId": "row:002",
+          "value": "002"
+        }
+      ]
+    },
+    "answer": {
+      "kind": "evidence",
+      "callIds": ["call1"],
+      "text": "推理及检查全部通过"
+    },
+    "expected": {
+      "error": "INVALID_JSON"
+    },
+    "execute": true
+  },
+  {
+    "id": "no-basis-uncertain",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "query_execute",
+        "arguments": "{\"sparql\":\"ASK{}\",\"scope\":\"asserted\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "evidence",
+      "projectId": "synthetic:p1",
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "resultId": "synthetic:r1",
+      "status": "current",
+      "traceRefs": [],
+      "fields": [
+        {
+          "fieldId": "row:001",
+          "value": "001"
+        },
+        {
+          "fieldId": "row:002",
+          "value": "002"
+        }
+      ]
+    },
+    "answer": {
+      "kind": "uncertain"
+    },
+    "expected": {
+      "kind": "uncertain",
+      "text": "依据不足，无法确认；请运行本地工具或补充授权范围。"
+    },
+    "execute": false
+  },
+  {
+    "id": "mapping-leading-zero-draft",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "mapping_propose",
+        "arguments": "{\"sourceId\":\"synthetic:csv1\",\"instruction\":\"保留001字符串身份\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "draft",
+      "draftType": "mapping",
+      "summary": "身份字段保持字符串001",
+      "detail": "将 source.device_id 映射为字符串身份，001不得转换为数值1；建议尚未执行"
+    },
+    "answer": {
+      "kind": "evidence",
+      "callIds": ["call1"]
+    },
+    "expected": {
+      "kind": "evidence",
+      "receipts": [
+        {
+          "callId": "call1",
+          "tool": "mapping_propose",
+          "outcome": {
+            "kind": "draft",
+            "draftType": "mapping",
+            "summary": "身份字段保持字符串001",
+            "detail": "将 source.device_id 映射为字符串身份，001不得转换为数值1；建议尚未执行",
+            "projectId": "synthetic:p1",
+            "baseRevision": 1,
+            "inputSnapshotId": "synthetic:s1",
+            "requiresHumanDiffConfirmation": true
+          }
+        }
+      ]
+    },
+    "execute": true
+  },
+  {
+    "id": "ontology-versioned-draft",
+    "source": "synthetic-only",
+    "context": {
+      "projectId": "synthetic:p1",
+      "projectRevision": 1,
+      "inputSnapshotId": "synthetic:s1",
+      "scopeRef": "synthetic:scope",
+      "module": "query",
+      "mode": "tutor",
+      "selectedObjectIds": ["001"]
+    },
+    "call": {
+      "id": "call1",
+      "type": "function",
+      "function": {
+        "name": "ontology_propose",
+        "arguments": "{\"instruction\":\"建立设备类\"}"
+      }
+    },
+    "adapterOutcome": {
+      "kind": "draft",
+      "draftType": "ontology",
+      "summary": "建议增加设备类",
+      "detail": "新增urn:Equipment；尚未正式写入，需真实Diff确认"
+    },
+    "answer": {
+      "kind": "evidence",
+      "callIds": ["call1"]
+    },
+    "expected": {
+      "kind": "evidence",
+      "receipts": [
+        {
+          "callId": "call1",
+          "tool": "ontology_propose",
+          "outcome": {
+            "kind": "draft",
+            "draftType": "ontology",
+            "summary": "建议增加设备类",
+            "detail": "新增urn:Equipment；尚未正式写入，需真实Diff确认",
+            "projectId": "synthetic:p1",
+            "baseRevision": 1,
+            "inputSnapshotId": "synthetic:s1",
+            "requiresHumanDiffConfirmation": true
+          }
+        }
+      ]
+    },
+    "execute": true
+  }
+]
