@@ -1,0 +1,670 @@
+import { afterEach, describe, expect, it } from 'vitest'
+import {
+  mkdirSync,
+  statSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from 'node:fs'
+import { tmpdir } from 'node:os'
+import { dirname, join } from 'node:path'
+import { spawnSync } from 'node:child_process'
+import {
+  compareComplete,
+  DEVICE_CHECKS,
+  digest,
+  ENGINEERING_CHECKS,
+  MIGRATION_CHECKS,
+  MODEL_CHECKS,
+  RECOVERY_CHECKS,
+  verifyManifest,
+  type Manifest,
+  type Expected,
+  type Report,
+} from '../../scripts/release/verify'
+
+const profile = JSON.parse(readFileSync('tests/fixtures/release/synthetic-profile.json', 'utf8'))
+const roots: string[] = []
+afterEach(() => {
+  for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true })
+})
+
+function fixture() {
+  const root = mkdtempSync(join(tmpdir(), 't11-release-'))
+  roots.push(root)
+  let n = 0
+  const put = (value: unknown, path = `evidence/${++n}.json`) => {
+    const content =
+      typeof value === 'string' || Buffer.isBuffer(value) ? value : JSON.stringify(value)
+    mkdirSync(dirname(join(root, path)), { recursive: true })
+    writeFileSync(join(root, path), content)
+    return { path, sha256: digest(content) }
+  }
+  const prdText = readFileSync('docs/prd/PRD-本体学习与落地Agent工作台.md', 'utf8')
+  const prd = put(prdText, 'docs/prd/PRD-本体学习与落地Agent工作台.md')
+  const p0 = [...prdText.matchAll(/^### (FR-\d+) .*【[^\n]*P0[^\n]*】/gm)].map((x) => x[1])
+  const named = [
+    ...prdText.slice(prdText.indexOf('### G.1')).matchAll(/^(\| ([A-Z]-\d{2}) \|.*)$/gm),
+  ].map((x) => ({ id: x[2], source: x[1] }))
+  const lists = prdText
+    .slice(prdText.indexOf('### G.4'))
+    .split('\n')
+    .filter((l) => l.startsWith('- '))
+    .map((l, i) => ({ id: `G-list-${String(i + 1).padStart(2, '0')}`, source: l.slice(2) }))
+  const entries = [...named, ...lists]
+  const coverage = put(
+    { sourceSha256: prd.sha256, entries },
+    'tests/fixtures/product-baselines/coverage.json',
+  )
+  const files: Record<string, string> = { [coverage.path]: coverage.sha256 }
+  for (const name of ['G-base.json', 'G-map-empty.json', 'G-behavior.json', 'E.5.json']) {
+    const r = put({ synthetic: true, name }, `tests/fixtures/product-baselines/${name}`)
+    files[r.path] = r.sha256
+  }
+  const cases = put(
+    {
+      fixtureVersion: 'synthetic-regression-only',
+      cases: entries.map((c) => ({ ...c, expected: { id: c.id, objects: ['A01'] } })),
+    },
+    'tests/fixtures/product-baselines/cases.json',
+  )
+  files[cases.path] = cases.sha256
+  const baseline = put(
+    { version: 'synthetic-regression-only', source: prd, files },
+    'tests/fixtures/product-baselines/manifest.json',
+  )
+  const expected: Expected = {
+    candidateSha: profile.candidateSha,
+    prdSha256: prd.sha256,
+    baselineSha256: baseline.sha256,
+    expectedResults: {},
+    recoverySnapshotSha256: '0'.repeat(64),
+    migrationSnapshotSha256: { 'windows11-x64': '0'.repeat(64), 'macos15-arm64': '0'.repeat(64) },
+    previousAssets: [],
+    now: profile.now,
+    candidateFrozenAt: profile.frozenAt,
+    modelMode: 'thinking' as const,
+    evaluationSha256: '',
+    returnedModel: 'synthetic-model',
+    serviceVersion: 'synthetic-1',
+  }
+  const result = put({ ids: ['A01'], status: 'complete', provenance: ['synthetic-input'] })
+  const raw = put('Synthetic command transcript; not a native/platform/signing result')
+  expected.evaluationSha256 = raw.sha256
+  const report = (ids: string[], artifactSha256: string): Report => ({
+    candidateSha: profile.candidateSha,
+    baselineSha256: baseline.sha256,
+    artifactSha256,
+    testedAt: profile.testedAt,
+    operator: 'synthetic-runner',
+    environment: 'synthetic-only',
+    raw,
+    checks: ids.map((id) => ({ id, expected: result, actual: result })),
+  })
+  const artifacts = (['windows11-x64', 'macos15-arm64'] as const).map((target) => {
+    const mac = target === 'macos15-arm64'
+    const binary = Buffer.alloc(512)
+    if (mac) binary.write('koly', 0)
+    else {
+      binary.writeUInt16LE(0x5a4d, 0)
+      binary.writeUInt32LE(64, 0x3c)
+      binary.writeUInt32LE(0x4550, 64)
+      binary.writeUInt16LE(0x14c, 68)
+    }
+    binary.write(`synthetic-${target}`, 128)
+    const file = put(binary)
+
+    const r = (ids: string[]) => report(ids, file.sha256)
+    return {
+      target,
+      appVersion: profile.version,
+      format: mac ? 'dmg' : 'nsis',
+      file,
+      bytes: statSync(join(root, file.path)).size,
+      appArch: mac ? 'arm64' : 'x64',
+      engineArch: mac ? 'arm64' : 'x64',
+      build: {
+        sourceSha: profile.candidateSha,
+        nodeLock: raw,
+        pythonLock: raw,
+        config: raw,
+        report: r([
+          'source-checkout',
+          'dependency-locks',
+          'app-engine-architecture',
+          'embedded-components',
+        ]),
+      },
+      signature: {
+        scheme: mac ? 'developer-id' : 'authenticode',
+        identity: 'SYNTHETIC-CERTIFICATE',
+        valid: true,
+        timestamped: true,
+        hardenedRuntime: mac,
+        notarized: mac,
+        stapled: mac,
+        report: r(
+          mac
+            ? ['codesign-deep-strict', 'nested-python-signatures', 'gatekeeper', 'stapler-validate']
+            : ['signtool-pa-all', 'timestamp-chain', 'installed-executables'],
+        ),
+      },
+      components: [{ name: 'synthetic-component', version: '1.0.0', license: 'MIT', notice: raw }],
+      inventory: put([{ name: 'synthetic-component', version: '1.0.0' }]),
+      device: {
+        id: `synthetic-${target}`,
+        os: mac ? 'macOS' : 'Windows 11',
+        version: mac ? '15.7' : '25H2',
+        build: 'synthetic-build',
+        cpu: 'synthetic-cpu',
+        ramGiB: 16,
+        arch: mac ? 'arm64' : 'x64',
+        cleanImage: 'synthetic-image',
+        isolatedSession: 'synthetic-session',
+        nodeInstalled: false,
+        pythonInstalled: false,
+        dockerRequired: false,
+        report: r(DEVICE_CHECKS),
+      },
+      download: {
+        url: `https://example.invalid/${target}`,
+        audience: 'synthetic',
+        file,
+        installed: true,
+        report: r(['download-hash', 'download-install-start', 'audience-access']),
+      },
+    }
+  }) as Manifest['artifacts']
+  const asset = artifacts[0].file.sha256
+  const snapshot = put(JSON.parse(readFileSync('tests/fixtures/release/comparison.json', 'utf8')))
+  const m: Manifest = {
+    schemaVersion: 1,
+    mode: 'synthetic',
+    version: profile.version,
+    sourceSha: profile.candidateSha,
+    candidateSha: profile.candidateSha,
+    reviewedSha: profile.candidateSha,
+    candidateFrozenAt: profile.frozenAt,
+    prd,
+    baseline,
+    artifacts,
+    product: {
+      ...report([...p0, ...entries.map((e) => e.id)], asset),
+      checks: [...p0, ...entries.map((e) => e.id)].map((id) => {
+        const value = put(
+          entries.some((c) => c.id === id)
+            ? { id, objects: ['A01'] }
+            : { requirement: id, objects: ['A01'] },
+        )
+        return { id, expected: value, actual: value }
+      }),
+    },
+    model: {
+      endpoint: 'https://api.deepseek.com/chat/completions',
+      requestedModel: 'deepseek-v4-pro',
+      returnedModel: 'synthetic-model',
+      serviceVersion: 'synthetic-1',
+      mode: 'thinking',
+      evaluation: raw,
+      fabricatedResults: 0,
+      report: report(MODEL_CHECKS, asset),
+    },
+    users: Array.from({ length: 5 }, (_, i) => ({
+      id: `SYNTHETIC-P0${i + 1}`,
+      human: true,
+      developer: false,
+      ontologyNovice: true,
+      artifactSha256: asset,
+      testedAt: profile.testedAt,
+      record: raw,
+      assistance: 'independent',
+      coreCompleted: i < 4,
+      transferCompleted: true,
+      transferIndependent: true,
+      agentFullCounterexample: true,
+      agentMarkedIndependent: false,
+      blockers: [],
+    })),
+    reviews: [
+      {
+        provider: 'zcode',
+        model: 'GLM-5.3',
+        effort: 'highest',
+        taskId: 'synthetic-zcode',
+        verdict: 'pass',
+        unresolved: 0,
+        report: report(['full-scope', 'historical-findings-closed', 'same-candidate'], asset),
+      },
+      {
+        provider: 'minimax',
+        model: 'M3.1-Flash',
+        effort: 'xhigh',
+        taskId: 'synthetic-minimax',
+        verdict: 'pass',
+        unresolved: 0,
+        report: report(['full-scope', 'historical-findings-closed', 'same-candidate'], asset),
+      },
+    ],
+    engineering: report(ENGINEERING_CHECKS, asset),
+    recovery: {
+      backup: snapshot,
+      restored: snapshot,
+      rollbackInstallers: artifacts.map((a) => {
+        const oldBytes = Buffer.from(readFileSync(join(root, a.file.path)))
+        oldBytes.write('previous-version', 200)
+        const oldFile = put(oldBytes)
+        return {
+          target: a.target,
+          version: '0.0.9',
+          sourceSha: '9'.repeat(40),
+          file: oldFile,
+          signature: {
+            ...a.signature,
+            report: report(
+              [
+                'previous-source-version',
+                'previous-signature',
+                'rollback-format-compatible',
+                'rollback-install',
+              ],
+              oldFile.sha256,
+            ),
+          },
+        }
+      }),
+      report: report(RECOVERY_CHECKS, asset),
+    },
+    migration: [
+      {
+        from: 'windows11-x64',
+        to: 'macos15-arm64',
+        before: snapshot,
+        after: snapshot,
+        report: report(MIGRATION_CHECKS, artifacts[1].file.sha256),
+      },
+      {
+        from: 'macos15-arm64',
+        to: 'windows11-x64',
+        before: snapshot,
+        after: snapshot,
+        report: report(MIGRATION_CHECKS, asset),
+      },
+    ],
+  }
+  expected.recoverySnapshotSha256 = snapshot.sha256
+  expected.migrationSnapshotSha256 = {
+    'windows11-x64': snapshot.sha256,
+    'macos15-arm64': snapshot.sha256,
+  }
+  expected.previousAssets = m.recovery.rollbackInstallers.map((a) => ({
+    target: a.target,
+    version: a.version,
+    sourceSha: a.sourceSha,
+    sha256: a.file.sha256,
+  }))
+  const pin = (r: Report, label: string) => {
+    for (const c of r.checks) expected.expectedResults[`${label}:${c.id}`] = c.expected.sha256
+  }
+  for (const a of artifacts) {
+    const label = a.target === 'macos15-arm64' ? 'MAC' : 'WIN'
+    pin(a.build.report, `${label}_BUILD`)
+    pin(a.signature.report, `${label}_SIGN`)
+    pin(a.device.report, `${label}_DEVICE`)
+    pin(a.download.report, `${label}_CHANNEL`)
+  }
+  pin(m.product, 'PRODUCT')
+  pin(m.engineering, 'ENGINEERING')
+  pin(m.model.report, 'MODEL')
+  pin(m.recovery.report, 'RECOVERY')
+  for (const r of m.reviews) pin(r.report, `REVIEW_${r.provider}`)
+  for (const a of m.recovery.rollbackInstallers) pin(a.signature.report, `ROLLBACK_${a.target}`)
+  for (const x of m.migration) pin(x.report, `MIGRATION_${x.from}_${x.to}`)
+  return { root, m, expected, put }
+}
+
+describe('T11 evidence consistency (all fixtures are synthetic)', () => {
+  it('checks the complete positive fixture without granting release authority', () => {
+    const { root, m, expected } = fixture()
+    expect(verifyManifest(m, root, expected)).toEqual({
+      consistent: true,
+      releaseAuthorized: false,
+      mode: 'synthetic',
+      issues: [],
+    })
+  })
+  const negatives: [string, (m: Manifest) => void, string][] = [
+    [
+      'missing signature',
+      (m) => {
+        m.artifacts[0].signature.valid = false
+      },
+      'WIN_SIGNATURE',
+    ],
+    [
+      'adhoc identity',
+      (m) => {
+        m.artifacts[1].signature.identity = 'adhoc'
+      },
+      'MAC_SIGNATURE',
+    ],
+    [
+      'missing notarization',
+      (m) => {
+        m.artifacts[1].signature.stapled = false
+      },
+      'MAC_NOTARIZATION',
+    ],
+    [
+      'wrong architecture',
+      (m) => {
+        m.artifacts[0].engineArch = 'arm64'
+      },
+      'WIN_ARCH',
+    ],
+    [
+      'wrong candidate SHA',
+      (m) => {
+        m.reviewedSha = '2'.repeat(40)
+      },
+      'CANDIDATE_SHA',
+    ],
+    [
+      'stale report SHA',
+      (m) => {
+        m.model.report.candidateSha = '2'.repeat(40)
+      },
+      'MODEL_BINDING',
+    ],
+    [
+      'drifted artifact',
+      (m) => {
+        m.artifacts[0].file.sha256 = '0'.repeat(64)
+      },
+      'WIN_ARTIFACT',
+    ],
+    [
+      'wrong artifact version',
+      (m) => {
+        m.artifacts[0].appVersion = '0.0.1'
+      },
+      'WIN_VERSION',
+    ],
+    [
+      'license omitted',
+      (m) => {
+        m.artifacts[0].components[0].version = '2.0.0'
+      },
+      'WIN_LICENSE_COVERAGE',
+    ],
+    [
+      'wrong target OS',
+      (m) => {
+        m.artifacts[1].device.version = '26.6.2'
+      },
+      'MAC_CLEAN_TARGET',
+    ],
+    [
+      'developer dependency installed',
+      (m) => {
+        m.artifacts[0].device.pythonInstalled = true
+      },
+      'WIN_CLEAN_TARGET',
+    ],
+    [
+      'incomplete native tests',
+      (m) => {
+        m.artifacts[0].device.report.checks.pop()
+      },
+      'WIN_DEVICE_COVERAGE',
+    ],
+    [
+      'channel drift',
+      (m) => {
+        m.artifacts[0].download.file = m.artifacts[1].file
+      },
+      'WIN_CHANNEL_HASH',
+    ],
+    [
+      'channel credentials',
+      (m) => {
+        m.artifacts[0].download.url = 'https://user:password@example.invalid/file'
+      },
+      'WIN_CHANNEL_URL',
+    ],
+    [
+      'old user evidence',
+      (m) => {
+        m.users[0].testedAt = '2026-10-20T00:00:00+08:00'
+      },
+      'USER_STALE',
+    ],
+    [
+      'old model evidence',
+      (m) => {
+        m.model.report.testedAt = '2026-10-20T00:00:00+08:00'
+      },
+      'MODEL_STALE',
+    ],
+    [
+      'AI users',
+      (m) => {
+        m.users[0].human = false
+      },
+      'USER_ELIGIBILITY',
+    ],
+    [
+      'developer users',
+      (m) => {
+        m.users[0].developer = true
+      },
+      'USER_ELIGIBILITY',
+    ],
+    [
+      'duplicate users',
+      (m) => {
+        m.users[0].id = m.users[1].id
+      },
+      'USER_DUPLICATE',
+    ],
+    [
+      'below 80%',
+      (m) => {
+        m.users[0].coreCompleted = false
+      },
+      'USER_COMPLETION_RATE',
+    ],
+    [
+      'human help counted',
+      (m) => {
+        m.users[0].assistance = 'partial-human-help'
+      },
+      'USER_COMPLETION_RATE',
+    ],
+    [
+      'agent transfer counted',
+      (m) => {
+        m.users[0].agentMarkedIndependent = true
+      },
+      'USER_ASSISTANCE',
+    ],
+    [
+      'missing full-assistance negative',
+      (m) => {
+        m.users[0].agentFullCounterexample = false
+      },
+      'USER_ASSISTANCE',
+    ],
+    [
+      'fabricated model results',
+      (m) => {
+        m.model.fabricatedResults = 1
+      },
+      'MODEL_FABRICATION',
+    ],
+    [
+      'failed designated review',
+      (m) => {
+        m.reviews[0].verdict = 'fail'
+      },
+      'REVIEW_VERDICT',
+    ],
+    [
+      'wrong review model',
+      (m) => {
+        m.reviews[0].model = 'another-model'
+      },
+      'REVIEW_VERDICT',
+    ],
+    [
+      'old review evidence',
+      (m) => {
+        m.reviews[0].report.testedAt = '2026-10-20T00:00:00+08:00'
+      },
+      'REVIEW_zcode_STALE',
+    ],
+    [
+      'missing P0 coverage',
+      (m) => {
+        m.product.checks.shift()
+      },
+      'PRODUCT_COVERAGE',
+    ],
+    [
+      'one-way migration',
+      (m) => {
+        m.migration[1] = m.migration[0]
+      },
+      'MIGRATION_DIRECTIONS',
+    ],
+    [
+      'duplicate targets',
+      (m) => {
+        m.artifacts[1] = m.artifacts[0]
+      },
+      'TARGET_MATRIX',
+    ],
+    [
+      'wrong build source',
+      (m) => {
+        m.artifacts[0].build.sourceSha = '3'.repeat(40)
+      },
+      'WIN_BUILD_SHA',
+    ],
+  ]
+  it.each(negatives)('rejects %s', (_, mutate, code) => {
+    const { root, m, expected } = fixture()
+    mutate(m)
+    const result = verifyManifest(m, root, expected)
+    expect(result.consistent).toBe(false)
+    expect(result.issues).toContain(code)
+  })
+  it('rejects equal counts with different objects', () => {
+    const { root, m, expected, put } = fixture()
+    m.product.checks[0].actual = put({
+      ids: ['A02'],
+      status: 'complete',
+      provenance: ['synthetic-input'],
+    })
+    expect(verifyManifest(m, root, expected).issues).toContain('PRODUCT_RESULT')
+    expect(compareComplete({ a: [1, 2] }, { a: [2, 1] })).toBe(false)
+    expect(compareComplete({ a: 1, b: 2 }, { b: 2, a: 1 })).toBe(true)
+  })
+  it('rejects lost ownership in otherwise same recovery', () => {
+    const { root, m, expected, put } = fixture()
+    const changed = JSON.parse(readFileSync('tests/fixtures/release/comparison.json', 'utf8'))
+    changed.ownership = []
+    m.recovery.restored = put(changed)
+    m.migration[0].after = put(changed)
+    const result = verifyManifest(m, root, expected)
+    expect(result.issues).toContain('RECOVERY_DATA')
+    expect(result.issues).toContain('MIGRATION_DATA')
+  })
+  it('rejects count-only snapshots and unavailable data', () => {
+    const { root, m, expected, put } = fixture()
+    m.recovery.backup = put({ count: 1 })
+    m.recovery.restored = m.recovery.backup
+    expect(verifyManifest(m, root, expected).issues).toContain('RECOVERY_BACKUP_SCHEMA')
+    rmSync(join(root, m.recovery.backup.path))
+    expect(verifyManifest(m, root, expected).issues).toContain('RECOVERY_BACKUP')
+  })
+  it('rejects traversal, external symlink, malformed JSON and extra keys', () => {
+    const { root, m, expected } = fixture()
+    m.model.evaluation.path = '../outside.json'
+    expect(verifyManifest(m, root, expected).issues).toContain('MODEL_EVALUATION')
+    symlinkSync('/etc/hosts', join(root, 'outside'))
+    m.model.evaluation.path = 'outside'
+    expect(verifyManifest(m, root, expected).issues).toContain('MODEL_EVALUATION')
+    expect(verifyManifest({ ...m, publish: true }, root, expected).issues).toEqual([
+      'MANIFEST_SCHEMA',
+    ])
+  })
+  it('rejects changed pinned baselines and future reports', () => {
+    const { root, m, expected } = fixture()
+    expect(
+      verifyManifest(m, root, { ...expected, baselineSha256: '0'.repeat(64) }).issues,
+    ).toContain('BASELINE_IDENTITY')
+    m.users[0].testedAt = '2026-10-26T00:00:00+08:00'
+    expect(verifyManifest(m, root, expected).issues).toContain('USER_STALE')
+  })
+  it('rejects forged freeze time, model drift, empty snapshots and count-only fixed expectations', () => {
+    const { root, m, expected, put } = fixture()
+    m.candidateFrozenAt = '2020-01-01T00:00:00+08:00'
+    expect(verifyManifest(m, root, expected).issues).toContain('FREEZE_IDENTITY')
+    m.candidateFrozenAt = profile.frozenAt
+    m.model.mode = 'non-thinking'
+    expect(verifyManifest(m, root, expected).issues).toContain('MODEL_PROFILE_DRIFT')
+    for (const c of m.product.checks) c.expected = c.actual = put({ count: 1 })
+    expect(verifyManifest(m, root, expected).issues).toContain('PRODUCT_EXPECTATION_BASELINE')
+    const snapshot = JSON.parse(readFileSync('tests/fixtures/release/comparison.json', 'utf8'))
+    for (const key of Object.keys(snapshot)) if (Array.isArray(snapshot[key])) snapshot[key] = []
+    snapshot.executionVersions = {}
+    m.recovery.backup = m.recovery.restored = put(snapshot)
+    expect(verifyManifest(m, root, expected).issues).toContain('RECOVERY_BACKUP_SCHEMA')
+  })
+  it('rejects unsigned-text rollback installer and incomplete transfer closure', () => {
+    const { root, m, expected, put } = fixture()
+    m.recovery.rollbackInstallers[0].file = put('not an installer')
+    for (const u of m.users) {
+      u.transferCompleted = false
+      u.transferIndependent = false
+    }
+    const result = verifyManifest(m, root, expected)
+    expect(result.issues).toContain('ROLLBACK_BINARY_FORMAT')
+    expect(result.issues).toContain('USER_COMPLETION_RATE')
+  })
+  it('rejects arbitrary equal snapshot rows, forged FR expectations and current-asset rollback', () => {
+    const { root, m, expected, put } = fixture()
+    const snapshot = JSON.parse(readFileSync('tests/fixtures/release/comparison.json', 'utf8'))
+    for (const key of Object.keys(snapshot))
+      if (Array.isArray(snapshot[key])) snapshot[key] = [{ a: null, b: null }]
+    m.recovery.backup = m.recovery.restored = put(snapshot)
+    m.migration[0].before = m.migration[0].after = m.recovery.backup
+    for (const c of m.product.checks.filter((c) => c.id.startsWith('FR-')))
+      c.expected = c.actual = put({ count: 1 })
+    m.recovery.rollbackInstallers[0].file = m.artifacts[0].file
+    const result = verifyManifest(m, root, expected)
+    expect(result.issues).toContain('RECOVERY_SOURCE_PIN')
+    expect(result.issues).toContain('RECOVERY_BACKUP_SCHEMA')
+    expect(result.issues).toContain('MIGRATION_SOURCE_PIN')
+    expect(result.issues).toContain('PRODUCT_EXPECTATION_PIN')
+    expect(result.issues).toContain('ROLLBACK_IDENTITY_PIN')
+  })
+  it('CLI fails closed for synthetic and malformed inputs without printing contents', () => {
+    const { root, m, expected } = fixture()
+    const path = join(root, 'manifest.json')
+    writeFileSync(path, JSON.stringify(m))
+    const { now: _now, ...pins } = expected
+    void _now
+    writeFileSync(join(root, 'freeze.json'), JSON.stringify(pins))
+    const args = ['scripts/release/verify-release.mjs', path, root, join(root, 'freeze.json')]
+    const run = spawnSync(process.execPath, args, { encoding: 'utf8' })
+    expect(run.status).toBe(1)
+    expect(JSON.parse(run.stdout).releaseAuthorized).toBe(false)
+    writeFileSync(path, 'sensitive invalid contents')
+    const bad = spawnSync(process.execPath, args, { encoding: 'utf8' })
+    expect(bad.status).toBe(2)
+    expect(bad.stderr).not.toContain('sensitive')
+  })
+})

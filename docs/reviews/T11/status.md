@@ -1,0 +1,22 @@
+# T11 发布与整体验收状态
+
+2026-10-21（Asia/Shanghai）。阶段：private_implementation_validated，独立 Goal 保持 active；完整T11尚未验收。
+
+- 会话：01a15bc2-4551-7b51-8453-add1943f3b6e；仅负责 T11。
+- 工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-release`。
+- 分支：`feature/weekly-t11-release`；base/head：`5f910b52c69d86a1076b2032e5d3c63e715947f3`。
+- 启动实际 git 状态：仅 ` M AGENTS.md`；这是总控同步规则，保持未暂存，不进入产品提交。
+- 指南 SHA256：`db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786`，与共同指令一致。
+- 远端 develop 实查为同一 base。分支保护 API 返回 HTTP403（private repo 计划限制）；未证明服务端保护启用，不绕过原流程门禁。
+- 独占新增：`scripts/release/`、`tests/unit/t11-*.test.ts`、`tests/fixtures/release/`、`docs/reviews/T11/`、`docs/iterations/T11/`、`docs/release/`。
+- 不改共享 package/lock/builder/build/CI/main/security；不写总控 state/tasks。
+
+已实现：严格manifest v1与离线核验器，候选/版本/锁/安装文件格式/哈希/签名公证/许可证/渠道一致性检查；T09唯一manifest及G完整预期引用；外部freeze固定时间、模型评估、全部检查预期、恢复快照和上一版资产。提供双平台只读取证脚本、设备验收流程、恢复/双向迁移规范、周六至少5真人主持脚本与空观察表。
+
+实际验证：41个T11合成正反例通过；最新 `npm run check` 通过671个TS测试、构建、ruff及1052个Python测试；sources核对12份归档；被既有release忽略规则排除的脚本另做显式lint/格式检查，Mac shell语法通过。Windows脚本仅静态审阅，未运行。T09只读对齐17文件/50用例/3指针，观察时head及manifest哈希见 `t09-readonly-alignment.json`，未采用为批准依赖。
+
+独立agent内审首轮及残留复核发现的预期自证、空壳快照、冻结时间回填、当前包冒充旧版及真人完成矛盾均已修复，最终复核通过，见 `internal-review.md`。该结果不替代正式指定双模型审查。失败原件与重跑日志保留本树ignored的 `*.log`；提交摘要和哈希见 `verification.json`，未把失败覆盖为通过。
+
+下一交付：按 `docs/iterations/T11/shared-file-handoff.md` 由总控完成唯一owner交接；待完整批准候选、真实资源后接线与联验，重新冻结base/head、双方指定新审、门禁push/PR/实际CI/正常合并/远端核验和最终下载实装。当前只作可恢复本地阶段提交，无推送。
+
+仍缺完整 P0 同候选、目标干净设备、有效签名/公证、最终下载渠道、真实模型/API资源及真人预约；总控已集中询问，T11 不重复询问。不运行本机 Electron/native/e2e/HMR，不触发凭据提示，不签名/公证提交/发API/外发/购买；正式接线、双指定模型新同候选审查、push/PR/实际CI/合并及发布另按原门禁继续。

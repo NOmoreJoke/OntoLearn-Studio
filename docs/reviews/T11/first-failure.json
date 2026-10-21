@@ -1,0 +1,13 @@
+{
+  "command": "npx vitest run tests/unit/t11-release.test.ts",
+  "timestampFromRunner": "08:05:09",
+  "exitCode": 1,
+  "tests": 38,
+  "failed": 38,
+  "retainedExactExcerpts": [
+    "TypeError: digest is not a function",
+    "Usage: node scripts/release/verify.mjs MANIFEST EVIDENCE_ROOT CANDIDATE_SHA PRD_SHA256 T09_MANIFEST_SHA256"
+  ],
+  "diagnosis": "Extensionless test import resolved same-basename verify.mjs CLI before verify.ts library; renamed CLI verify-release.mjs",
+  "scope": "First-run excerpts and summary; full output retained in tool transcript, not represented here as full raw log"
+}

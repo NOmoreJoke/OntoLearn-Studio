@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-21",
+  "timezone": "Asia/Shanghai",
+  "baseSha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "branch": "feature/weekly-t11-release",
+  "scope": "T11 private verifier and acceptance preparation only",
+  "passed": {
+    "t11SyntheticUnitTests": 41,
+    "allTypeScriptTests": 671,
+    "pythonTests": 1052,
+    "build": true,
+    "ruff": true,
+    "sourceFiles": 12,
+    "explicitReleaseLint": true,
+    "explicitReleaseFormat": true,
+    "macCollectorShellSyntax": true
+  },
+  "failuresRetained": [
+    {
+      "run": "first unit",
+      "failed": 38,
+      "reason": "same basename CLI import; exact excerpts and full tool transcript retained"
+    },
+    {
+      "run": "unit-third-run.log / check-first-run.log",
+      "reason": "refactor removed declarations; repaired before latest verification"
+    },
+    {
+      "run": "check-second-run.log",
+      "failed": 8,
+      "reason": "new worktree .venv/bin/python ENOENT; independent uv sync --frozen then rerun passed"
+    }
+  ],
+  "notExecuted": [
+    "Windows collector runtime",
+    "target-device installation/native/e2e/credentials",
+    "signing/notarization submission",
+    "real model API",
+    "human study",
+    "designated dual-model reviews",
+    "T11 remote CI/push/PR/merge/distribution"
+  ],
+  "releaseAuthorized": false,
+  "rawLogs": {
+    "location": "this worktree docs/reviews/T11/*.log (gitignored; not in stage commit)",
+    "sha256": {
+      "alignment-format.log": "690de5966f8743990bb1b4b1ed7b093c3a369f0503144ad3f886e957c1e23bda",
+      "check-first-run.log": "3124d8c4f641ee01b4498ac645adf334dc5d8ff04b90fd29545687481eb744e6",
+      "check-fourth-run.log": "f6205af4f008d463e36ab06c21642ff0f6ebe7de07ec1e0b495bca2a314ab2bd",
+      "check-second-run.log": "cafebb9b80ae0d8e1c1900953d52159cf1082c24a21065ee81d384ccbc6c4e33",
+      "check-third-run.log": "380f3715f7bae16a8d1437c739849ebb965579c3157f0fdb20089380873c6cd2",
+      "docs-format-final.log": "1ee02f3ad95b2575ec919a81198322e4c04aae79b24b9300f0c22bf0c1c010b1",
+      "docs-format.log": "747f65d0a892b6caa0191ea25477ebfb92980fffc02c479276de3315212051e2",
+      "explicit-format-final.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "explicit-format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "explicit-lint-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "explicit-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "format-final-repair.log": "351d50e864a0dda3d48b32cf21e6998e41e74bd1fd35b3b66e732367f8bcc8a2",
+      "format-repair.log": "3f9f553ec36c8154c09d23cffc89fb648517c1733bcc830a162435ccd25e5be3",
+      "format.log": "b72ae7204279a49f8ac987bb94a48fae47bb2f535b938f3658ed01e5727080a2",
+      "review-format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "sources.log": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
+      "unit-fifth-run.log": "f93b9c135f5afa422a60ace2445e59493c3f8d47be180e981a8e081909c914ed",
+      "unit-fourth-run.log": "29a68766d61b6f82a031b5c38d039aa5d01c3a1d083a8fd0095faa464cdbfc7a",
+      "unit-second-run.log": "b972d85ad694f9ee90489108f98503e9a09d5013348bfcc8279f7c13d794c05c",
+      "unit-third-run.log": "0523c201ef8a81bd41e718e429fa853f401d9615e8448db7104be47e0e918469"
+    }
+  },
+  "reviewedFilesSha256": {
+    "scripts/release/verify.ts": "8370444e17fee4345d8a145ad6ec7f1094c8792a09ec395ab9a08d63b3a0ff87",
+    "scripts/release/verify-release.mjs": "184141eb1169172789d85a875310f29d91f86493177a82b6338f58256ae1b491",
+    "scripts/release/collect-macos.sh": "f273da7b4eaf8eb25fee2d4479817c0b559ef64b83567b8be04f28e48f266fb4",
+    "scripts/release/collect-windows.ps1": "9194c70522154249a16fa8b7d5902416c46622b2c121307cfab9dbd73a77add8",
+    "tests/unit/t11-release.test.ts": "0e2f373700851481b8fcb52b1a564a8a8e7ce76f24dd3d2b5c7a7eb79d503f47"
+  }
+}
