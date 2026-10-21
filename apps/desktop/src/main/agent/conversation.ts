@@ -96,12 +96,7 @@ export class AgentConversation {
       exchanges: this.exchanges,
       requestedTokenCeiling: this.requestedTokenCeiling,
       error: this.error,
-      inputContext: {
-        projectId: this.context.projectId,
-        projectRevision: this.context.projectRevision,
-        inputSnapshotId: this.context.inputSnapshotId,
-        scopeRef: this.context.scopeRef,
-      },
+      inputContext: structuredClone(this.context),
       localReceipts: this.session.currentTurnReceipts(),
       answer: structuredClone(this.answer),
     }

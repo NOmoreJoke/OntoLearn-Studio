@@ -108,12 +108,7 @@ describe('T08 pure conversation, synthetic protocol-to-adapter round trips; no t
       exchanges: 2,
       requestedTokenCeiling: 2048,
       error: null,
-      inputContext: {
-        projectId: 'p1',
-        projectRevision: 1,
-        inputSnapshotId: 's1',
-        scopeRef: 'scope1',
-      },
+      inputContext: context,
       localReceipts: [{ callId: call.id, tool: 'query_execute', outcome: evidence }],
       answer: {
         kind: 'evidence',
@@ -203,12 +198,7 @@ describe('T08 pure conversation, synthetic protocol-to-adapter round trips; no t
       exchanges: 1,
       requestedTokenCeiling: 1024,
       error: 'TIMED_OUT',
-      inputContext: {
-        projectId: 'p1',
-        projectRevision: 1,
-        inputSnapshotId: 's1',
-        scopeRef: 'scope1',
-      },
+      inputContext: context,
       localReceipts: [],
       answer: null,
     })
@@ -392,4 +382,13 @@ it('T08 preserves completed receipts when cancellation interrupts the middle of 
     { callId: call.id, tool: 'query_execute', outcome: evidence },
     { callId: 'call2', tool: 'query_execute', outcome: { kind: 'failure', code: 'CANCELLED' } },
   ])
+})
+
+it('T08 full input-context snapshots cannot mutate nested selected objects in the main session', () => {
+  const conversation = new AgentConversation(context, '查询', options)
+  const snapshot = conversation.state()
+  expect(snapshot.inputContext).toEqual(context)
+  snapshot.inputContext.selectedObjectIds.push('002')
+  expect(conversation.state().inputContext).toEqual(context)
+  expect(() => conversation.prepareExchange(current)).not.toThrow()
 })
