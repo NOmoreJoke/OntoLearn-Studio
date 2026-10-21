@@ -1,0 +1,53 @@
+# I05 真实物料、唯一计算捕获与完整恢复视图：实施窗口
+
+2026-10-22。根已全文读最终a3592837d854628948ef4c468b6c839f21763273主方案69523B/SHA23a4ae9f7974185db61664fb1db892586140ea20995f1bb5950943717bd0ed4c全部219行、两原delta及最后措辞澄清；控制审35841B/SHAac6934f2b2e842aad90cba252835629064ae4ee06452892f3f4f551a774c6909已全文读回（前23258/12909原字节保持）。CPS01/SB01–03/OL1在固定方案层关闭，44新docs/旧160保全已独立核同。方案受限接收，不是新producer/Job/selected或新费用已运行通过。
+
+## 基线、资源差异与范围
+
+继续同一原I05聊天，在批准5f910b52c69d86a1076b2032e5d3c63e715947f3新树 .worktrees/I05-formal-profile-integration、branch feature/I05-formal-profile-integration 实施，不在原3ef/4be/a359树改产品，不重建Goal。保护原160、最终44、AGENTS/common及64原件/原型，不stage其他改动。
+
+批准初始工程基线只按控制 I05-producer-fullview-fixed-inputs.json 逐135项原Git字节采用，单独adoption与实际ref/hash回执。该清单38921B/SHAbb2519d2483297250a79df38a1abd71575c66b65e81be7b8509877d50ab61131，根已逐135真实Git/bytes/SHA核同。它只拼装固定已核内部组件，不把尚未供应S1–S5、旧阶段边界或正式权限变成已存在；不wholecommit、不复制旧环境。所有未列路径仍5f，真正供应回供后须另逐路径批准，不消费当前T01 C2/dispatch/ontology或I06 WIP。
+
+resources冲突在本初始内部工程基线明确选择3ef的2927B版本：实际423b→3ef diff仅增加私有semantic_identity(profile)，IMPLEMENTATION、resource_manifest与LIMITS原实现不变。保持原i04 startup/health身份，不将全局身份改finite7，不以此提供新capability准入；正式per-capability身份解析仍T01供应。实际锁沿清单的固定pyproject/uv/T03来源；全组合检查必须实证兼容，失败交精确反例，不用整体precedence或改锁求绿。resources.py保持只读、维护权不转。
+
+只准五个继承writer（全部起点以135清单原SHA绑定）：
+
+- packages/engine/src/ontolearn_engine/semantic.py
+- packages/engine/src/ontolearn_engine/semantic_execution.py
+- packages/engine/src/ontolearn_engine/semantic_profile_restore.py
+- packages/engine/tests/test_semantic_profile_restore.py
+- packages/engine/tests/test_semantic_profile_restore_limits.py
+
+只准四个新增writer：semantic_profile_input.py、semantic_profile_production.py（同engine源码前缀），test_semantic_profile_input.py、test_semantic_profile_production.py（同tests前缀）。完整相对5f为135+4=139产品/test，再加新过程docs，非仅九writer。其余130继承路径全部只读。
+
+新过程仅 docs/iterations/I05/profile-production-fullview.md 与 docs/reviews/I05/profile-production-fullview/。semantic_scopes.py/new selected及Job integration测试、semantic_turtle/probe/samples/resources、restore_budget、T05七机制/16c、所有T01 Store/canonical/coordinator/worker/main、T03四build/依赖/锁/CI均无写权。确需新helper/旧test/预算切点时给实际反例、精确路径/原hash/minimal diff另申，不泛授目录。
+
+## 三个必要模块，保持同一真实链目标
+
+一、data-only codec按最终方案§4完整实现producer input/source/typed RuleSpec以及所有K共用的consumer assertedRecords/ontologyRecords分层U/D。保原有序Triple/TermInput五字段、SourceRecord四字段、None/空串/语言拼写、comparisons/heads/disabled/source/revision/digest/policy及原parser身份，不从图set/N3重造原文，不猜span/规则/快照。不执行matcher/compile/evaluate/PV，不打开任意路径。前像在唯一计算前固定，UTF8/canonical/精确类型与长度先界。Turtle1MiB、structured input8MiB、producer Q16MiB、consumer U16MiB（input/source各8MiB）、definition D8MiB原界保持；U不借producer旧input或definition充图。
+
+二、在现唯一_profile_reason体中，于_profile_definitions返回点捕获实际完整tuple/ordinal/disabled、_profile_catalog返回点捕获实际Catalog、每个真实ProfileLimits创建后compile前平行记录原17L。semantic_execution保唯一parser/preflight/core/projection/rows/error体，同次保真实encoded/source_encoded/defs_encoded；原reason/execute facade继续原wire与错误兼容，legacy分支不改。新production模块用exact frozen records承载实际capture，整次成功才发布，不带formal authority位。不能从mechanismBatches/payload反推独立L、第二次reason修补、复制matcher/数学/typed编码或用test monkeypatch供应生产上下文。若测试计数 instrumentation，只能观察真实调用，不能代生产结果/alloc/expected。
+
+三、新restore_profile_result与旧batches共用一次decoder/API core。完整保外7/reasoning15/child11字段族、原容器schema位置/叶值/顺序/None/exactint/bytes/source及planDigest、原17L、budgetLimits/Usage；list转tuple只读视图明确不是原native容器身份，不回写wire，不从旧RestoredChild/allocation补造。原rows仍原bytes校验，不从view重算。native仍可达、safe树已释放后，在A16前票及新增freeze预留通过才构建完整view，成功唯一交付，失败不留半结果/新locals或原异常链。旧batches格式/字段/全部原验收保持。
+
+这三个模块就是将来T01真Job链会调用的实现，不造临时toy runtime/第二Store/自签Job成功。trusted handles/原Job受理/worker通道/origin事务/reader由T01后供，当前计算record或codec通过不认证其来源。内部真实计算可先验证，正式selected与新worker/Store接线仍必须随后按最终方案完成，不将目标改为永久unsupported。
+
+## 新费用与真实持有
+
+按最终主稿§8批准本窗口C域算法合同：A=Q+D+8388608+16777216≤48MiB，N为本次真实原槽数；consumer data准备可独立C令Q=U、N=0，不向pure R传N=0。C traversal≤128A+65536N、scan/copy≤64A+65536N、hash≤16A+65536N、scalar live≤16A+131072N、objects≤8A+2048N+4096；固定八准备/投影/metadata阶段分别≤16J字段访问，J为实际相关canonical字节上界。所有nested精确类型先于foreign len/iter/hash，所有新循环/UTF8/hash/record/拷贝/大encoder真实预付并列源码逐操作映射；不是公式即证明。第九遍/新并持或额外delegate无已付来源须先交具体delta，不静默扩cap或挪原W/I/O。
+
+原17L分池/disabled占槽、每child一次16c与原W/I/O/F/head/trace/bindings都不变。restore_budget默认只读，新fullview freeze须给实际遍历/对象/普通标量/opaque/receipt/转交/失败引用的票据映射与原cap余量证明，紧池与差1验证；不足则先交根精确预算delta，涉及16c API交T05，不拿纸面≤J/≤2J替源码证明。
+
+输入/前像/defs/Catalog/原L和返回native/view实际同时持有要计全，成功移交时明确接收owner及保留责任，不因ledger live0/函数return就称真实引用已释放。异常frame、constructor/usage/peaks/freeze/receipt新增locals逐一清理，成功只有唯一record/handle路径；returned record不自行签H/权限或无限留存。后续T/S/H和每artifact R_j/不可重置Σcap/usage仍按T01真owner合同供给，不在此模块偷加worker通道、cache/Job表或scope工厂。
+
+## 实际验证与冻结
+
+允许本树独立锁定环境/cache的三个模块专项与受影响reason/execute/strict旧回归、正常npm run check及独立npm run verify:sources。必要依赖沿固定锁安装，不升级/改锁/借他树venv/node_modules；本树唯一临时路径和真实自有子进程，不宽泛kill。可用独立Python进程验证新真实producer输出→新完整恢复/字段签名/原L API；这只证本组件跨进程，不冒正式T01 owned worker/Job链。不运行GUI/Electron/e2e/native/Keychain/用户目录/业务或模型网络/付费/包。
+
+新test_input与test_production必须调用实际原parser/reason/compile/evaluate路径，覆盖source/定义/Catalog/实际alloc捕获点、调用恰一次、完整false/true/多head/disabled/dummy/空batch/原顺序，before像失配/精确类型/Unicode/长source/最后字段/预算差1；不从expected喂计算。新fullview验完整7/15/11字段级无损signature及原payload/rows，旧capture fixture迁移真实producer API但不删原输入/断言；全部首fail与原139/142/S1/S2等历史不洗。
+
+新freeze/constructor/usage/peaks/receipt/转交/异常traceback和低限故障覆盖实际新持有，注入只记受控故障，不冒OS OOM。原78成功与4资源/1缺规则边界按实际新候选验证；四资源与缺规则不能算成功或补空规则取绿。完整89/40/数学M1、真实query/SHACL/来源与所有K selected的端到端验收仍后续真owner驱动，当前单元数字不代整链。新增skip/预期变化准确说明。
+
+先固定139完整候选及新过程原件，独立agent审实际源码/预算/来源/生命周期并修复复审，受审实现冻结。交base/adoption/product/process ref、逐current/Git/bytes/SHA全差异manifest、实际命令独立exit/timeout/完整双流/首失败及capture/持有/源码映射；保存原44docs和160不重写，不用无变化旧145/23exec充新成功。
+
+T01 S1–S5/typed私有受理/consumer U/roles/origin/cache schema/selection租期quota与真实来源、T05数学解释与E5/repair原状态、T03最终真Job源包、I06原scope/dispatch/native仍须按唯一owner供应。完整父I05/57P0/C–G/PRD10–12、两目标OS/真人、指定GLM-5.3最高与M3.1-Flash xhigh同版双方新审、CI、正常develop推送合并及远端门保持；本窗口不授push/PR/merge或Goal状态更改。

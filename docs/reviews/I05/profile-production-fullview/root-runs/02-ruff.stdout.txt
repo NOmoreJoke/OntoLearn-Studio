@@ -1,0 +1,46 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/engine/tests/test_semantic_profile_restore_limits.py:3:1
+   |
+ 1 |   """Independent boundary inputs for whole restore costs and atomic failure."""
+ 2 |
+ 3 | / import copy
+ 4 | | import gc
+ 5 | | import os
+ 6 | | from dataclasses import fields, replace
+ 7 | | from pathlib import Path
+ 8 | | from unittest.mock import patch
+ 9 | |
+10 | | import pytest
+11 | | import test_semantic_profile_restore as support
+12 | | from ontolearn_engine import semantic, semantic_execution
+13 | | from ontolearn_engine import semantic_profile_restore as restore
+14 | | from ontolearn_engine import semantic_profile_restore_budget as resources
+15 | | from ontolearn_engine.quality.rule_firing import RuleSpec, Triple, Variable
+16 | | from ontolearn_engine.quality.rule_profile import (
+17 | |     Budget,
+18 | |     ProfileFailure,
+19 | |     ProfileLimits,
+20 | |     SourceRecord,
+21 | |     TermInput,
+22 | | )
+23 | | from ontolearn_engine.quality import rule_terms
+24 | | from ontolearn_engine.quality.rule_terms import parse_value
+25 | | from ontolearn_engine.semantic_profile_restore import ChildAllocation
+26 | | from ontolearn_engine.semantic_profile_restore_budget import RestoreFailure, RestoreLedger
+   | |__________________________________________________________________________________________^
+27 |
+28 |   CUMULATIVE = (
+   |
+help: Organize imports
+   |
+14 | from ontolearn_engine import semantic_profile_restore_budget as resources
+15 + from ontolearn_engine.quality import rule_terms
+16 | from ontolearn_engine.quality.rule_firing import RuleSpec, Triple, Variable
+--------------------------------------------------------------------------------
+23 | )
+   - from ontolearn_engine.quality import rule_terms
+24 | from ontolearn_engine.quality.rule_terms import parse_value
+   |
+
+Found 1 error.
+[*] 1 fixable with `--fix`.

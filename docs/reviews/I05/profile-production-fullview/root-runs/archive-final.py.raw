@@ -1,0 +1,58 @@
+import hashlib
+import json
+import subprocess
+import zipfile
+from pathlib import Path
+
+root = Path.cwd()
+d = root / 'docs/reviews/I05/profile-production-fullview'
+children = Path('/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/i05-production-fullview-sip1qwmh/final-child-execs')
+runs = []
+entries = []
+for folder in sorted(p for p in children.iterdir() if p.is_dir()):
+    r = json.loads((folder / 'supervisor.json').read_bytes())
+    assert r['exit'] == 0 and not r['timed_out']
+    assert r['pid'] != r['parent_pid']
+    assert (folder / 'stderr.txt').stat().st_size == 0
+    response = json.loads((folder / 'stdout.json').read_bytes())
+    assert response['initial_issued'] == 0 and response['ledger_state'] == 'success'
+    assert not any(v for _, v in response['live'])
+    assert not response['formal_authority'] and not response['aggregate_recomputed']
+    runs.append(r)
+for p in sorted(children.rglob('*')):
+    if not p.is_file():
+        continue
+    raw = p.read_bytes()
+    entries.append(dict(path=str(p.relative_to(children)), bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest()))
+assert len(runs) == 38, len(runs)
+z = d / 'root-runs/12-final-child-execs.zip'
+with zipfile.ZipFile(z, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+    for item in entries:
+        archive.write(children / item['path'], item['path'])
+with zipfile.ZipFile(z) as archive:
+    assert archive.testzip() is None
+    for item in entries:
+        assert hashlib.sha256(archive.read(item['path'])).hexdigest() == item['sha256']
+(d / 'root-runs/12-final-child-execs-manifest.json').write_text(json.dumps(dict(
+    product='6c1eec41091a997f898cb448bfc7d4000c154307', count=len(runs), fullview=15,
+    originalBatchApi=23, allActualProcesses=True, allExitZero=True, noTimeout=True,
+    noStderr=True, extraOriginalResourceFailure='allocator-100-original-failure.json',
+    zipBytes=z.stat().st_size, zipSha256=hashlib.sha256(z.read_bytes()).hexdigest(),
+    files=entries, supervisors=runs), ensure_ascii=False, indent=2) + '\n')
+print('child execs', len(runs), 'zip', z.stat().st_size)
+old = Path('/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-restore')
+archived = [root / x['path'] for x in json.loads((root / 'docs/source-manifest.json').read_bytes())['files']]
+archived += sorted(p for p in (root / 'design/prototypes').rglob('*') if p.is_file())
+rows = []
+for p in archived:
+    rel = str(p.relative_to(root))
+    raw = p.read_bytes()
+    git = subprocess.check_output(['git', 'show', '5f910b52c69d86a1076b2032e5d3c63e715947f3:' + rel])
+    assert raw == git == (old / rel).read_bytes()
+    rows.append(dict(path=rel, bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest(), equalsBaseGitAndOldTree=True))
+a = (root / 'AGENTS.md').read_bytes()
+assert hashlib.sha256(a).hexdigest() == '1b3c02916e9bab79f463a61f2818846f01e849014b70251b37c112377443a6fb'
+(d / 'protected-archive-and-guidance.json').write_text(json.dumps(dict(count=len(rows), allEqualsBaseGitAndOldTree=True,
+    baseAGENTS=dict(bytes=len(a), sha256=hashlib.sha256(a).hexdigest()), files=rows), ensure_ascii=False, indent=2) + '\n')
+print('archive/prototypes', len(archived))
+print('final83', json.loads((d / 'root-runs/10-final-producer83.stdout.txt').read_bytes())['counts'])

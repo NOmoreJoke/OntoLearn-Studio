@@ -1,0 +1,266 @@
+[
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 78,
+    "function": "__init__",
+    "code": "for pair in overrides:\n            if type(pair) is not tuple or len(pair) != 2:\n                raise MaterialFailure()\n            name, value = pair\n            if type(name) is not str or name not in _WORK + _LIVE or type(value) is not int:\n                raise MaterialFailure()\n            if value < 0 or any(name == old for old, _ in checked):\n                raise MaterialFailure()\n            checked.append(pair)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 84,
+    "function": "__init__",
+    "code": "(name == old for old, _ in checked)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 97,
+    "function": "begin",
+    "code": "(type(v) is int for v in (Q, D, N))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 109,
+    "function": "begin",
+    "code": "for name, value in self.overrides:\n            self.caps[name] = min(value, self.caps[name])"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 274,
+    "function": "_text",
+    "code": "for character in value:\n        point = ord(character)\n        escaped_bytes += (\n            6\n            if point < 32\n            else 2\n            if point in (34, 92)\n            else 1\n            if point < 128\n            else 2\n            if point < 2048\n            else 3\n            if point < 65536\n            else 4\n        )\n        if escaped_bytes > MAX_BYTES:\n            raise MaterialFailure(\"MATERIAL_LIMIT\", stage=ledger.stage)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 317,
+    "function": "_project",
+    "code": "[_project(item, ledger, depth + 1, json_data=json_data) for item in value]"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 322,
+    "function": "_project",
+    "code": "for key in value:\n            _require(type(key) is str)\n            _require(len(key) <= MAX_BYTES)\n            key_width += 4 * len(key) + 1"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 334,
+    "function": "_project",
+    "code": "for key, item in value.items():\n            _require(type(key) is str)\n            output[_text(key, ledger)] = _project(item, ledger, depth + 1, json_data=True)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 338,
+    "function": "_project",
+    "code": "for cls, names in _RECORDS:\n        ledger.debit(\"traversal\", 1)\n        if kind is cls:\n            ledger.debit(\"traversal\", 2 * len(names))\n            ledger.reserve(\"objects\", 2 * len(names) + 3)\n            output = {\"recordType\": cls.__name__}\n            for name in names:\n                item = getattr(value, name)\n                # Exact field grammar before recursion/foreign len/hash/iter.\n                if cls is SourceRecord:\n                    _require(item is None or type(item) is str)\n                elif cls is TermInput:\n                    if name == \"source\":\n                        _require(item is None or type(item) is SourceRecord)\n                    elif name in (\"kind\", \"lexical_form\"):\n                        _require(type(item) is str)\n                    else:\n                        _require(item is None or type(item) is str)\n                elif cls is Variable:\n                    _require(type(item) is str)\n                elif cls is Triple:\n                    _require(\n                        type(item) is TermInput\n                        if name == \"predicate\"\n                        else type(item) is TermInput or type(item) is Variable\n                    )\n                elif cls is Comparison:\n                    _require(\n                        type(item) is str\n                        if name == \"operator\"\n                        else type(item) is TermInput or type(item) is Variable\n                    )\n                elif cls is RuleSpec:\n                    if name in (\"when\", \"comparisons\", \"heads\"):\n                        _require(type(item) is tuple)\n                        expected = Comparison if name == \"comparisons\" else Triple\n                        ledger.debit(\"traversal\", len(item))\n                        _require(all(type(element) is expected for element in item))\n                    elif name == \"source\":\n                        _require(item is None or type(item) is SourceRecord)\n                    else:\n                        _require(item is None or type(item) is str)\n                output[name] = _project(item, ledger, depth + 1)\n            return output"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 344,
+    "function": "_project",
+    "code": "for name in names:\n                item = getattr(value, name)\n                # Exact field grammar before recursion/foreign len/hash/iter.\n                if cls is SourceRecord:\n                    _require(item is None or type(item) is str)\n                elif cls is TermInput:\n                    if name == \"source\":\n                        _require(item is None or type(item) is SourceRecord)\n                    elif name in (\"kind\", \"lexical_form\"):\n                        _require(type(item) is str)\n                    else:\n                        _require(item is None or type(item) is str)\n                elif cls is Variable:\n                    _require(type(item) is str)\n                elif cls is Triple:\n                    _require(\n                        type(item) is TermInput\n                        if name == \"predicate\"\n                        else type(item) is TermInput or type(item) is Variable\n                    )\n                elif cls is Comparison:\n                    _require(\n                        type(item) is str\n                        if name == \"operator\"\n                        else type(item) is TermInput or type(item) is Variable\n                    )\n                elif cls is RuleSpec:\n                    if name in (\"when\", \"comparisons\", \"heads\"):\n                        _require(type(item) is tuple)\n                        expected = Comparison if name == \"comparisons\" else Triple\n                        ledger.debit(\"traversal\", len(item))\n                        _require(all(type(element) is expected for element in item))\n                    elif name == \"source\":\n                        _require(item is None or type(item) is SourceRecord)\n                    else:\n                        _require(item is None or type(item) is str)\n                output[name] = _project(item, ledger, depth + 1)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 375,
+    "function": "_project",
+    "code": "(type(element) is expected for element in item)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 401,
+    "function": "_encode",
+    "code": "for chunk in encoder.iterencode(safe):\n            upper = 4 * len(chunk)\n            ledger.debit(\"scan_copy\", 2 * upper + 1)\n            ledger.reserve(\"scalar\", 4 * len(chunk) + upper)\n            try:\n                data = chunk.encode(\"utf-8\", errors=\"strict\")\n                if len(output) + len(data) > MAX_BYTES:\n                    raise MaterialFailure(\"MATERIAL_LIMIT\", stage=ledger.stage)\n                ledger.debit(\"scan_copy\", len(data))\n                ledger.reserve(\"scalar\", len(data))\n                output.extend(data)\n            finally:\n                data = None\n                ledger.release(\"scalar\", 4 * len(chunk) + upper)\n                chunk = None"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 439,
+    "function": "_records",
+    "code": "for triple in value:\n        _require(type(triple) is tuple and len(triple) == 3)\n        _require(all(type(term) is TermInput for term in triple))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 441,
+    "function": "_records",
+    "code": "(type(term) is TermInput for term in triple)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 448,
+    "function": "_identity",
+    "code": "for field in identity:\n        _require(type(field) is str and 0 < len(field) <= 16384)\n        _text(field, ledger, 16384)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 459,
+    "function": "_definitions",
+    "code": "for spec in rules:\n        ledger.debit(\"traversal\", len(ids) + 3)\n        _require(type(spec) is RuleSpec and type(spec.rule_id) is str)\n        _text(spec.rule_id, ledger, 16384)\n        ledger.debit(\"scan_copy\", 2 * (len(ids) + 1) * (len(spec.rule_id) + 1))\n        _require(spec.rule_id not in ids)\n        _require(type(spec.policy) is str and spec.policy == PROFILE)\n        ids.append(spec.rule_id)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 467,
+    "function": "_definitions",
+    "code": "for pos, identity in enumerate(disabled):\n        _require(type(identity) is str)\n        _text(identity, ledger, 16384)\n        ledger.debit(\"traversal\", len(ids) + pos + 1)\n        ledger.debit(\"scan_copy\", 2 * (len(ids) + pos + 1) * (len(identity) + 1))\n        _require(identity in ids and identity not in disabled[:pos])"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 477,
+    "function": "_definitions",
+    "code": "for spec in rules:\n        ledger.debit(\"traversal\", len(disabled) + 10)\n        ledger.reserve(\"objects\", 24)\n        body.append(\n            {\n                \"enabled\": spec.rule_id not in disabled,\n                \"rule_id\": spec.rule_id,\n                \"when\": spec.when,\n                \"comparisons\": spec.comparisons,\n                \"heads\": spec.heads,\n                \"source\": spec.source,\n                \"revision\": spec.revision,\n                \"definition_digest\": spec.definition_digest,\n                \"policy\": spec.policy,\n            }\n        )"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 518,
+    "function": "_read_syntax_json",
+    "code": "for char in data:\n        if quoted:\n            if escaped:\n                escaped = False\n            elif char == 92:\n                escaped = True\n            elif char == 34:\n                quoted = False\n        elif char == 34:\n            quoted = True\n        elif char in (91, 123):\n            depth += 1\n            _require(depth <= 32)\n        elif char in (93, 125):\n            depth -= 1\n            _require(depth >= 0)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 587,
+    "function": "pairs",
+    "code": "for name, value in items:\n            _require(type(name) is str and len(name) <= 32)\n            _require(name in allowed and name not in output)\n            output[name] = value"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 607,
+    "function": "_syntax_native",
+    "code": "(_syntax_native(item, ledger) for item in value)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 611,
+    "function": "_syntax_native",
+    "code": "for cls, names in _RECORDS:\n        ledger.debit(\"traversal\", 1)\n        if tag == cls.__name__:\n            _require(len(value) == len(names) + 1 and all(n in value for n in names))\n            ledger.debit(\"traversal\", 2 * len(names))\n            ledger.reserve(\"objects\", 2 * len(names) + 2)\n            return cls(**{name: _syntax_native(value[name], ledger) for name in names})"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 614,
+    "function": "_syntax_native",
+    "code": "(n in value for n in names)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 617,
+    "function": "_syntax_native",
+    "code": "{name: _syntax_native(value[name], ledger) for name in names}"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 632,
+    "function": "decode_rule_definitions",
+    "code": "(name in tree for name in (\"version\", \"rules\", \"disabledRuleIds\"))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 639,
+    "function": "decode_rule_definitions",
+    "code": "for body in entries:\n            ledger.debit(\"traversal\", 32)\n            _require(type(body) is dict and len(body) == len(names) + 1)\n            _require(\"enabled\" in body and all(n in body for n in names))\n            _require(type(body[\"enabled\"]) is bool)\n            ledger.reserve(\"objects\", 2 * len(names) + 4)\n            decoded.append(RuleSpec(**{name: _syntax_native(body[name], ledger) for name in names}))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 642,
+    "function": "decode_rule_definitions",
+    "code": "(n in body for n in names)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 645,
+    "function": "decode_rule_definitions",
+    "code": "{name: _syntax_native(body[name], ledger) for name in names}"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 649,
+    "function": "decode_rule_definitions",
+    "code": "for body, spec in zip(entries, rules, strict=True):\n            ledger.debit(\"traversal\", len(disabled) + 1)\n            _require(body[\"enabled\"] is (spec.rule_id not in disabled))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 713,
+    "function": "_prepare_profile_material",
+    "code": "(len(part) for part in parser_identity)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 729,
+    "function": "_prepare_profile_material",
+    "code": "(term.source for triple in records for term in triple)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 802,
+    "function": "_consumer_definition",
+    "code": "for key in value:\n        _require(type(key) is str and key in (\"text\", \"turtle\", \"enabled\", \"references\"))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 816,
+    "function": "_consumer_definition",
+    "code": "for ref in refs:\n            _require(type(ref) is dict and len(ref) == 2)\n            for key in ref:\n                _require(type(key) is str and key in (\"layer\", \"id\"))\n            _require(\"layer\" in ref and \"id\" in ref)\n            _require(type(ref[\"layer\"]) is str and type(ref[\"id\"]) is str)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 818,
+    "function": "_consumer_definition",
+    "code": "for key in ref:\n                _require(type(key) is str and key in (\"layer\", \"id\"))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 854,
+    "function": "_selected_source",
+    "code": "for value in (source.reference, source.digest, source.revision, source.text):\n            _text(value, ledger, optional=True)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 870,
+    "function": "_selected_source",
+    "code": "(term.source for row in layer.content for term in row)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 875,
+    "function": "_layer_from_json",
+    "code": "(key in value for key in (\"inputDomain\", \"input\", \"parserIdentity\"))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 951,
+    "function": "_prepare_selected_material",
+    "code": "(k in definition_tree for k in (\"version\", \"kind\", \"definition\"))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 958,
+    "function": "_prepare_selected_material",
+    "code": "for actual, supplied in zip(\n                (original, source_bytes, encoded_definition), encoded, strict=True\n            ):\n                ledger.debit(\"scan_copy\", len(actual) + len(supplied) + 1)\n                _require(actual == supplied)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "line": 1011,
+    "function": "decode_selected_material",
+    "code": "for value in (input_preimage, source_preimage, definition_material):\n        _require(type(value) is bytes and len(value) <= MAX_BYTES)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+    "line": 154,
+    "function": "execute_admitted_profile_job",
+    "code": "for value in (\n            material.input_preimage,\n            material.source_preimage,\n            material.definitions_preimage,\n            material.definition_material,\n        ):\n            _require(type(value) is bytes and len(value) <= MAX_BYTES)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+    "line": 186,
+    "function": "execute_admitted_profile_job",
+    "code": "for actual, supplied in (\n            (checked.input_preimage, material.input_preimage),\n            (checked.source_preimage, material.source_preimage),\n            (checked.definitions_preimage, material.definitions_preimage),\n            (checked.definition_material, material.definition_material),\n        ):\n            _same_bytes(actual, supplied, ledger)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+    "line": 211,
+    "function": "execute_admitted_profile_job",
+    "code": "(spec.rule_id for spec in capture.raw_rules)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+    "line": 213,
+    "function": "execute_admitted_profile_job",
+    "code": "(\n                ChildAllocation(slot.rule_id, slot.definition_ordinal, slot.limits)\n                for slot in capture.slots\n            )"
+  }
+]

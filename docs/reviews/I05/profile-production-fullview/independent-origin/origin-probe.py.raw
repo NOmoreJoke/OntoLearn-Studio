@@ -1,0 +1,113 @@
+"""Read-only real-path audit; injected failures never supply engine results."""
+import gc
+import hashlib
+import json
+from dataclasses import replace
+from unittest.mock import patch
+from ontolearn_engine import semantic
+from ontolearn_engine import semantic_profile_input as inp
+from ontolearn_engine import semantic_profile_production as prod
+from ontolearn_engine import semantic_profile_restore as rest
+from ontolearn_engine.quality import rule_firing, rule_terms
+from ontolearn_engine.resources import CONTRACT, ROOT
+from ontolearn_engine.semantic_profile_restore_budget import RestoreLedger
+import test_semantic_profile_restore as support
+
+schema = json.loads((ROOT / 'v2/schema.json').read_bytes())
+def run(material, ledger=None):
+    return prod.execute_admitted_profile_job(material, error_catalog=CONTRACT.ERROR_CATALOG,
+                                             error_schema=schema, ledger=ledger)
+def frame_state(exc, name, fields):
+    tb=exc.__traceback__; found=[]
+    while tb:
+        if tb.tb_frame.f_code.co_name == name:
+            state={key:tb.tb_frame.f_locals.get(key) is None for key in fields}
+            found.append(state)
+        tb=tb.tb_next
+    assert len(found)==1 and all(found[0].values()),found
+    assert exc.__context__ is None and exc.__cause__ is None
+    return found[0]
+def fault(*args, **kwargs):
+    raise MemoryError('audit controlled failure')
+
+out={'cases':[]}
+material=inp.prepare_profile_material(support.turtle(), (support.rule('z'),support.rule('a')),
+                                     disabled_rule_ids=('z',))
+with (patch.object(semantic,'_profile_reason',wraps=semantic._profile_reason) as rc,
+      patch.object(semantic,'_profile_definitions',wraps=semantic._profile_definitions) as dc,
+      patch.object(semantic,'_profile_catalog',wraps=semantic._profile_catalog) as cc,
+      patch.object(rule_firing,'compile_rules',wraps=rule_firing.compile_rules) as comp,
+      patch.object(rule_firing,'evaluate_bound_batch',wraps=rule_firing.evaluate_bound_batch) as ev):
+    record=run(material)
+    assert (rc.call_count,dc.call_count,cc.call_count,comp.call_count,ev.call_count)==(1,1,1,2,1)
+    assert all(s.limits is c.args[2].limits for s,c in zip(record.original_allocation.children,comp.call_args_list,strict=True))
+    assert record.actual_catalog is record.native_result['catalog']
+    out['cases'].append({'case':'actual-capture','core_defs_catalog_compile_evaluate':[rc.call_count,dc.call_count,cc.call_count,comp.call_count,ev.call_count],'limits_identity':True,'raw_rule_order':list(record.original_allocation.rule_ids),'compiled_order':[r.rule_id for _,r in record.actual_definitions]})
+for target,owner,name in [('receipt',inp,'CaptureReceipt'),('record',prod,'ProfileComputation'),
+                          ('transfer',inp.CaptureLedger,'transferred')]:
+    ledger=inp.CaptureLedger()
+    with (patch.object(owner,name,side_effect=fault),
+          patch.object(semantic,'_profile_reason',wraps=semantic._profile_reason) as reason):
+        try:
+            run(material,ledger)
+            raise AssertionError('failure did not propagate')
+        except inp.MaterialFailure as exc:
+            state=frame_state(exc,'execute_admitted_profile_job',('capture','checked','catalog_json','allocation','receipt','outcome','encoded_source','actual','supplied','value','reference','revision'))
+            assert reason.call_count==1 and ledger.state=='failed'
+            out['cases'].append({'case':'producer-'+target,'reason_calls':reason.call_count,'error':exc.reason,'ledger':ledger.state,'frame_none':state,'context_none':True})
+
+# Real independent witnesses are built before production in this fixture.
+capture=support.capture_case(rules=(support.rule('z'),support.rule('a')))
+def forbidden(*args,**kwargs):
+    raise AssertionError('reason must not run during restoration')
+with patch.object(semantic,'_profile_reason',forbidden):
+    full,ledger=support.restore_capture(capture,fullview=True)
+assert support.signature(support.thaw_view(full.projection.payload))==support.signature({**capture.payload,'reasoning':capture.native})
+assert full.rows_json is capture.rows_json
+assert len(full.projection.payload.entries)==7
+assert len(full.projection.payload['reasoning'].entries)==15
+assert all(len(c.entries)==11 for c in full.projection.payload['reasoning']['mechanismBatches'].items)
+assert not any(v for _,v in ledger.live) and dict(full.retention)['objects']>0
+out['cases'].append({'case':'fullview-signature-and-retention','schema':[7,15,11],'rows_identity':True,'no_reason':True,'live0_but_retained':True})
+del full
+for target,owner,name in [('freeze',rest,'_freeze_native'),('projection',rest,'RestoredProfileProjection'),
+                          ('batch',rest,'RestoredBatchSet'),('result',rest,'RestoredProfileResult'),
+                          ('usage',RestoreLedger,'usage'),('peaks',RestoreLedger,'peaks'),('live',RestoreLedger,'live')]:
+    ledger=RestoreLedger()
+    replacement=property(fault) if target in ('usage','peaks','live') else fault
+    with patch.object(owner,name,replacement):
+        try:
+            support.restore_capture(capture,fullview=True,ledger=ledger)
+            raise AssertionError('failure did not propagate')
+        except rest.RestoreFailure as exc:
+            state=frame_state(exc,'_restore_operation',('children','parse_usage','caps','projection','inner_batches','retention','outcome','decoder'))
+            assert ledger.state=='failed'
+            if target!='live':assert not any(v for _,v in ledger.live)
+            out['cases'].append({'case':'fullview-'+target,'error':exc.reason,'ledger':ledger.state,'frame_none':state,'context_none':True})
+# Verify original final-slot failure after a preceding real 16c result.
+original=rest.check_firing_batch;calls=[]
+def late(*args,**kwargs):
+    calls.append(1)
+    if len(calls)==2:raise MemoryError('last slot audit failure')
+    return original(*args,**kwargs)
+ledger=RestoreLedger()
+with patch.object(rest,'check_firing_batch',late):
+    try:support.restore_capture(capture,fullview=True,ledger=ledger)
+    except rest.RestoreFailure as exc:
+        state=frame_state(exc,'_restore_operation',('children','parse_usage','caps','projection','inner_batches','retention','outcome','decoder'))
+        assert len(calls)==2 and ledger.state=='failed' and not any(v for _,v in ledger.live)
+        out['cases'].append({'case':'fullview-last-slot','calls':len(calls),'frame_none':state})
+    else:raise AssertionError('last failure absent')
+# Mixed raw layer identities, empty spelling and source fields survive codecs.
+source=inp.SourceRecord('',None,'','')
+rows=((inp.TermInput('iri','urn:s',source=source),inp.TermInput('iri','urn:p'),
+       inp.TermInput('literal','',language_raw='ZH-cn',source=source)),)
+selected=inp.prepare_selected_material(rows,(),{'text':'SELECT * WHERE {?s ?p ?o}','references':[]},parser_identity=('owner','1'))
+decoded=inp.decode_selected_material(selected.input_preimage,selected.source_preimage,selected.definition_material,parser_identity=('owner','1'))
+assert decoded.asserted_records.content==rows
+assert decoded.asserted_records.content[0][2].language_raw=='ZH-cn'
+assert decoded.asserted_records.content[0][0].source==source
+assert decoded.ontology_records.content==()
+assert decoded.input_preimage==selected.input_preimage and decoded.source_preimage==selected.source_preimage
+out['cases'].append({'case':'consumer-U-D-raw-roundtrip','raw_language':'ZH-cn','none_empty_and_order':True,'empty_ontology':True})
+print(json.dumps(out,sort_keys=True))

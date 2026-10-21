@@ -1,0 +1,8 @@
+{
+  "operation": "first inline archive inventory before archive-final.py.raw; python3 stdin",
+  "exitCode": 1,
+  "errorType": "NotADirectoryError",
+  "message": "allocator-100-original-failure.json was a file, not a child process evidence directory; no artifacts overwritten",
+  "failedExpression": "(folder / 'supervisor.json').read_bytes()",
+  "resolution": "filter process folders with is_dir and separately include all files, preserving original allocator resource failure"
+}

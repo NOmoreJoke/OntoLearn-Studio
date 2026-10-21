@@ -1,0 +1,533 @@
+{
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "adoption": "e4460763890cf9550f359395df83260d75fe2e0a",
+  "product": "6c1eec41091a997f898cb448bfc7d4000c154307",
+  "controlledCount": 139,
+  "actualProductDiffCount": 130,
+  "sameAsBaseCount": 9,
+  "readonlyCount": 130,
+  "allCurrentEqualsProductGit": true,
+  "allReadonlyEqualsApprovedAdoption": true,
+  "independentReviews": [
+    {
+      "path": "independent-budget/report.md",
+      "bytes": 17415,
+      "sha256": "256b7c13044994e443ab55e53bb733104223fa2756df7add58c0ecd511fa25c1"
+    },
+    {
+      "path": "independent-budget/delta-6c1eec4-report.md",
+      "bytes": 6464,
+      "sha256": "1a1289b5a516d9acb2e06a1e0f4f1dc62ec50a1b7aba84ed6d1a3bdb2bff0ba9"
+    },
+    {
+      "path": "independent-origin/report.md",
+      "bytes": 16647,
+      "sha256": "02d036cd801abd0c59ffee92a613fde270973c72516cf79a9479281be747bb6d"
+    },
+    {
+      "path": "independent-origin/delta-6c1eec4-report.md",
+      "bytes": 9549,
+      "sha256": "20891d1c7f22cb0b5da05ca9f62449723cb32eba45dcbdcf212e040c7ca54de9"
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "packages/engine/tests/test_semantic_profile_restore.py",
+        "packages/engine/tests/test_semantic_profile_restore_limits.py",
+        "packages/engine/tests/test_semantic_profile_input.py",
+        "packages/engine/tests/test_semantic_profile_production.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "start": "2026-10-21T17:06:07.154162+00:00",
+      "timeoutSeconds": 600,
+      "end": "2026-10-21T17:06:28.265054+00:00",
+      "elapsedSeconds": 21.11076733400114,
+      "exitCode": 0,
+      "timeout": false,
+      "evidence": "root-runs/01-pytest.json",
+      "streams": [
+        {
+          "path": "root-runs/01-pytest.stdout.txt",
+          "bytes": 341,
+          "sha256": "4a46fdf4efd18f3720af83a65e2a079e8fb966f77598705ae11cf417679350b1"
+        },
+        {
+          "path": "root-runs/01-pytest.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "packages/engine/src/ontolearn_engine/semantic.py",
+        "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+        "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+        "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+        "packages/engine/tests/test_semantic_profile_restore.py",
+        "packages/engine/tests/test_semantic_profile_restore_limits.py",
+        "packages/engine/tests/test_semantic_profile_input.py",
+        "packages/engine/tests/test_semantic_profile_production.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "start": "2026-10-21T17:06:42.545032+00:00",
+      "timeoutSeconds": 600,
+      "end": "2026-10-21T17:06:42.563774+00:00",
+      "elapsedSeconds": 0.018631916027516127,
+      "exitCode": 1,
+      "timeout": false,
+      "evidence": "root-runs/02-ruff.json",
+      "streams": [
+        {
+          "path": "root-runs/02-ruff.stdout.txt",
+          "bytes": 1883,
+          "sha256": "6212bdeee452fbef5859a424ebb21c87fbed020f3a768829040da0da72fcc6f2"
+        },
+        {
+          "path": "root-runs/02-ruff.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "packages/engine/tests/test_semantic_profile_restore_limits.py",
+        "-k",
+        "fullview_object_reservation"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "start": "2026-10-21T17:06:42.584585+00:00",
+      "timeoutSeconds": 600,
+      "end": "2026-10-21T17:06:42.864876+00:00",
+      "elapsedSeconds": 0.28016420791391283,
+      "exitCode": 0,
+      "timeout": false,
+      "evidence": "root-runs/03-prepay.json",
+      "streams": [
+        {
+          "path": "root-runs/03-prepay.stdout.txt",
+          "bytes": 114,
+          "sha256": "f074e639bf3780eb5c02b512745f2f3adeee6f54ec1dc097b76fc19395f1e981"
+        },
+        {
+          "path": "root-runs/03-prepay.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": ["npm", "run", "check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "start": "2026-10-21T17:09:45.037987+00:00",
+      "timeoutSeconds": 600,
+      "end": "2026-10-21T17:10:02.606549+00:00",
+      "elapsedSeconds": 17.568451082916,
+      "exitCode": 1,
+      "timeout": false,
+      "evidence": "root-runs/04-npm-check.json",
+      "streams": [
+        {
+          "path": "root-runs/04-npm-check.stdout.txt",
+          "bytes": 10383,
+          "sha256": "b18c641181c1a16d256d28c48c095c709b5c400a4381669d624b1f82c46cd876"
+        },
+        {
+          "path": "root-runs/04-npm-check.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": ["npm", "run", "check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "start": "2026-10-21T17:13:52.856472+00:00",
+      "timeoutSeconds": 600,
+      "end": "2026-10-21T17:14:06.539576+00:00",
+      "elapsedSeconds": 13.682997707976028,
+      "exitCode": 1,
+      "timeout": false,
+      "evidence": "root-runs/05-npm-check.json",
+      "streams": [
+        {
+          "path": "root-runs/05-npm-check.stdout.txt",
+          "bytes": 3767,
+          "sha256": "62612256506979ed03d1400aa8636430e5adb951fe363d1091c703669627e355"
+        },
+        {
+          "path": "root-runs/05-npm-check.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": ["npm", "run", "verify:sources"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "start": "2026-10-21T17:14:36.400713+00:00",
+      "timeoutSeconds": 600,
+      "end": "2026-10-21T17:14:36.517145+00:00",
+      "elapsedSeconds": 0.11631124990526587,
+      "exitCode": 0,
+      "timeout": false,
+      "evidence": "root-runs/06-verify-sources.json",
+      "streams": [
+        {
+          "path": "root-runs/06-verify-sources.stdout.txt",
+          "bytes": 111,
+          "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+        },
+        {
+          "path": "root-runs/06-verify-sources.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "packages/engine/tests/test_semantic_profile_input.py",
+        "packages/engine/tests/test_semantic_profile_production.py",
+        "packages/engine/tests/test_semantic_profile_restore.py",
+        "packages/engine/tests/test_semantic_profile_restore_limits.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "start": "2026-10-21T17:24:45.696819+00:00",
+      "timeoutSeconds": 600,
+      "environment": {},
+      "end": "2026-10-21T17:25:06.808939+00:00",
+      "elapsedSeconds": 21.111989790922962,
+      "exitCode": 0,
+      "timeout": false,
+      "evidence": "root-runs/07-delta-tests.json",
+      "streams": [
+        {
+          "path": "root-runs/07-delta-tests.stdout.txt",
+          "bytes": 341,
+          "sha256": "f5cf50dccd8772736160791663f3cd1aedb197e5f6d026990d3797d4b1615f79"
+        },
+        {
+          "path": "root-runs/07-delta-tests.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [".venv/bin/ruff", "check", "."],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "start": "2026-10-21T17:25:41.204451+00:00",
+      "timeoutSeconds": 600,
+      "environment": {},
+      "end": "2026-10-21T17:25:41.220590+00:00",
+      "elapsedSeconds": 0.0159964170306921,
+      "exitCode": 0,
+      "timeout": false,
+      "evidence": "root-runs/08-ruff.json",
+      "streams": [
+        {
+          "path": "root-runs/08-ruff.stdout.txt",
+          "bytes": 19,
+          "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+        },
+        {
+          "path": "root-runs/08-ruff.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": ["npm", "run", "check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "gitHead": "6c1eec41091a997f898cb448bfc7d4000c154307",
+      "supervisorPython": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/.venv/bin/python",
+      "start": "2026-10-21T17:27:22.307510+00:00",
+      "timeoutSeconds": 600,
+      "environment": {
+        "UV_CACHE_DIR": "/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/i05-production-fullview-sip1qwmh/uv",
+        "I05_RESTORE_EVIDENCE_DIR": "/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/i05-production-fullview-sip1qwmh/final-child-execs"
+      },
+      "end": "2026-10-21T17:29:56.853904+00:00",
+      "elapsedSeconds": 154.54610700008925,
+      "exitCode": 0,
+      "timeout": false,
+      "evidence": "root-runs/09-final-npm-check.json",
+      "streams": [
+        {
+          "path": "root-runs/09-final-npm-check.stdout.txt",
+          "bytes": 12840,
+          "sha256": "5db4a1dc09feab70d1755fe35c54e10e3cd0038ed6a700cccf78f70cbae10713"
+        },
+        {
+          "path": "root-runs/09-final-npm-check.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/I05/profile-production-fullview/producer-implementation/producer83.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "gitHead": "6c1eec41091a997f898cb448bfc7d4000c154307",
+      "supervisorPython": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/.venv/bin/python",
+      "start": "2026-10-21T17:28:01.742441+00:00",
+      "timeoutSeconds": 600,
+      "environment": {},
+      "end": "2026-10-21T17:28:07.922411+00:00",
+      "elapsedSeconds": 6.179751416086219,
+      "exitCode": 0,
+      "timeout": false,
+      "evidence": "root-runs/10-final-producer83.json",
+      "streams": [
+        {
+          "path": "root-runs/10-final-producer83.stdout.txt",
+          "bytes": 174420,
+          "sha256": "5f432f74a3ef41afe7520573cc26666aa9f8155b5f0ed981689ee4eef4cca315"
+        },
+        {
+          "path": "root-runs/10-final-producer83.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": ["npm", "run", "verify:sources"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "gitHead": "6c1eec41091a997f898cb448bfc7d4000c154307",
+      "supervisorPython": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/.venv/bin/python",
+      "start": "2026-10-21T17:28:01.742449+00:00",
+      "timeoutSeconds": 600,
+      "environment": {},
+      "end": "2026-10-21T17:28:01.866815+00:00",
+      "elapsedSeconds": 0.12419350002892315,
+      "exitCode": 0,
+      "timeout": false,
+      "evidence": "root-runs/11-final-verify-sources.json",
+      "streams": [
+        {
+          "path": "root-runs/11-final-verify-sources.stdout.txt",
+          "bytes": 111,
+          "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+        },
+        {
+          "path": "root-runs/11-final-verify-sources.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/I05/profile-production-fullview/root-runs/archive-final.py.raw"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "gitHead": "6c1eec41091a997f898cb448bfc7d4000c154307",
+      "supervisorPython": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/.venv/bin/python",
+      "start": "2026-10-21T17:32:16.769502+00:00",
+      "timeoutSeconds": 600,
+      "environment": {},
+      "end": "2026-10-21T17:32:17.114334+00:00",
+      "elapsedSeconds": 0.3446650409605354,
+      "exitCode": 0,
+      "timeout": false,
+      "evidence": "root-runs/12-final-archive.json",
+      "streams": [
+        {
+          "path": "root-runs/12-final-archive.stdout.txt",
+          "bytes": 105,
+          "sha256": "e3575158b6f179fce7c5269cd6a75e25106d0a8172c905e590ec23f767f3660d"
+        },
+        {
+          "path": "root-runs/12-final-archive.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "node_modules/.bin/prettier",
+        "--check",
+        "--ignore-path",
+        "/dev/null",
+        "docs/iterations/I05/profile-production-fullview.md",
+        "docs/reviews/I05/profile-production-fullview/final-delivery.md",
+        "docs/reviews/I05/profile-production-fullview/counterexample-dispositions.md",
+        "docs/reviews/I05/profile-production-fullview/final-validation.json",
+        "docs/reviews/I05/profile-production-fullview/candidate-f677d8a.json",
+        "docs/reviews/I05/profile-production-fullview/candidate-6c1eec4.json",
+        "docs/reviews/I05/profile-production-fullview/protected-archive-and-guidance.json",
+        "docs/reviews/I05/profile-production-fullview/protected-parent-originals.json",
+        "docs/reviews/I05/profile-production-fullview/protected-predecessors.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "gitHead": "6c1eec41091a997f898cb448bfc7d4000c154307",
+      "supervisorPython": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/.venv/bin/python",
+      "start": "2026-10-21T17:38:50.832226+00:00",
+      "timeoutSeconds": 600,
+      "environment": {},
+      "end": "2026-10-21T17:38:50.969549+00:00",
+      "elapsedSeconds": 0.13715833297464997,
+      "exitCode": 0,
+      "timeout": false,
+      "evidence": "root-runs/13-final-doc-format.json",
+      "streams": [
+        {
+          "path": "root-runs/13-final-doc-format.stdout.txt",
+          "bytes": 66,
+          "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+        },
+        {
+          "path": "root-runs/13-final-doc-format.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": ["git", "diff", "--cached", "--check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "gitHead": "6c1eec41091a997f898cb448bfc7d4000c154307",
+      "supervisorPython": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/.venv/bin/python",
+      "start": "2026-10-21T17:39:09.716327+00:00",
+      "timeoutSeconds": 600,
+      "environment": {},
+      "end": "2026-10-21T17:39:09.735252+00:00",
+      "elapsedSeconds": 0.01876287499908358,
+      "exitCode": 2,
+      "timeout": false,
+      "evidence": "root-runs/14-staged-diff-check.json",
+      "streams": [
+        {
+          "path": "root-runs/14-staged-diff-check.stdout.txt",
+          "bytes": 816,
+          "sha256": "067db7c15de1c4920080aa441ede441efeb929528236a21d6080201c90608956"
+        },
+        {
+          "path": "root-runs/14-staged-diff-check.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        ".",
+        ":!docs/reviews/I05/profile-production-fullview/producer-implementation/01-pytest.stdout.txt",
+        ":!docs/reviews/I05/profile-production-fullview/root-runs/14-staged-diff-check.stdout.txt"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "gitHead": "6c1eec41091a997f898cb448bfc7d4000c154307",
+      "supervisorPython": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/.venv/bin/python",
+      "start": "2026-10-21T17:39:25.407355+00:00",
+      "timeoutSeconds": 600,
+      "environment": {},
+      "end": "2026-10-21T17:39:25.426100+00:00",
+      "elapsedSeconds": 0.01856420806143433,
+      "exitCode": 0,
+      "timeout": false,
+      "evidence": "root-runs/15-preserved-raw-diff-check.json",
+      "streams": [
+        {
+          "path": "root-runs/15-preserved-raw-diff-check.stdout.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "root-runs/15-preserved-raw-diff-check.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "e4460763890cf9550f359395df83260d75fe2e0a",
+        "6c1eec41091a997f898cb448bfc7d4000c154307"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration",
+      "gitHead": "6c1eec41091a997f898cb448bfc7d4000c154307",
+      "supervisorPython": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/.venv/bin/python",
+      "start": "2026-10-21T17:39:25.456987+00:00",
+      "timeoutSeconds": 600,
+      "environment": {},
+      "end": "2026-10-21T17:39:25.469399+00:00",
+      "elapsedSeconds": 0.012257875059731305,
+      "exitCode": 0,
+      "timeout": false,
+      "evidence": "root-runs/16-product-diff-check.json",
+      "streams": [
+        {
+          "path": "root-runs/16-product-diff-check.stdout.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "root-runs/16-product-diff-check.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "normalCheck": {
+    "exitCode": 0,
+    "tsPassed": 1125,
+    "pythonPassed": 4887,
+    "pythonSkipped": 44,
+    "newSkipOrXfailInFourWriterTests": false
+  },
+  "producer83": {
+    "failure": 4,
+    "not-executed": 1,
+    "success": 78
+  },
+  "protectedPredecessors": 204,
+  "uniqueArchivedSources": 12,
+  "execCount": 38,
+  "formalJobSelectedOrGoalComplete": false,
+  "scope": "local component implementation only; no push PR merge GUI/native/e2e/paid/model/Goal mutation",
+  "diffCheck": {
+    "fullStagedExit": 2,
+    "reason": "Original first pytest failure has five trailing-whitespace lines; original bytes preserved. First diff stdout quotes those bytes.",
+    "rawExceptions": [
+      "producer-implementation/01-pytest.stdout.txt",
+      "root-runs/14-staged-diff-check.stdout.txt"
+    ],
+    "allOtherStagedPathsExit": 0,
+    "allNineProductWriterDiffExit": 0
+  },
+  "parentPrototypeObservation": "Parent working .pen differs from archived copy, mtime predates window; read only, not reset or declared initially identical."
+}

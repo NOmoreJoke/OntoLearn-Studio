@@ -1,0 +1,223 @@
+E501 Line too long (105 > 100)
+  --> packages/engine/src/ontolearn_engine/semantic_profile_input.py:31:101
+   |
+29 |     (
+30 |         RuleSpec,
+31 |         ("rule_id", "when", "comparisons", "heads", "source", "revision", "definition_digest", "policy"),
+   |                                                                                                     ^^^^^
+32 |     ),
+33 | )
+   |
+
+E501 Line too long (101 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_profile_input.py:439:101
+    |
+437 |             domain = "profile-structured-records-json/1"
+438 |             identity = ("semantic_turtle.profile_graph_from_records", "i05-finite-7")
+439 |         parser_identity = _identity(identity if parser_identity is None else parser_identity, ledger)
+    |                                                                                                     ^
+440 |         ledger.enter(2, MAX_BYTES)
+441 |         if records is None:
+    |
+
+E501 Line too long (103 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_profile_input.py:466:101
+    |
+464 |             receipt = ledger.receipt()
+465 |         material = ProfileMaterial(text, records, rules, disabled_rule_ids, source, domain,
+466 |                                    original, source_bytes, defs, definitions, parser_identity, receipt)
+    |                                                                                                     ^^^
+467 |         if finish:
+468 |             ledger.transferred()
+    |
+
+E501 Line too long (102 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_profile_production.py:169:101
+    |
+167 |         )
+168 |         ledger.enter(4, 3 * MAX_BYTES)
+169 |         _require(type(material.input_domain) is str and material.input_domain == checked.input_domain)
+    |                                                                                                     ^^
+170 |         for actual, supplied in (
+171 |             (checked.input_preimage, material.input_preimage),
+    |
+
+E501 Line too long (102 > 100)
+  --> packages/engine/tests/test_semantic_profile_input.py:46:101
+   |
+44 |     assert material.records is records
+45 |     assert material.input_preimage == canonical(project(records))
+46 |     assert material.source_preimage == canonical(project(tuple(t.source for r in records for t in r)))
+   |                                                                                                     ^^
+47 |     assert material.records[0][2].language_raw == "ZH-cn"
+48 |     assert material.source[0] is source
+   |
+
+E501 Line too long (106 > 100)
+  --> packages/engine/tests/test_semantic_profile_input.py:74:101
+   |
+72 |     material = prepare_selected_material(row, (), {"query": "SELECT * WHERE {?s ?p ?o}"},
+73 |                                          parser_identity=("actual-owner-parser", "1"))
+74 |     assert json.loads(material.input_preimage) == {"assertedRecords": project(row), "ontologyRecords": []}
+   |                                                                                                     ^^^^^^
+75 |     assert json.loads(material.source_preimage) == {"assertedRecords": [None, None, None], "ontologyRecords": []}
+76 |     assert material.asserted_records is row
+   |
+
+E501 Line too long (113 > 100)
+  --> packages/engine/tests/test_semantic_profile_input.py:75:101
+   |
+73 |                                          parser_identity=("actual-owner-parser", "1"))
+74 |     assert json.loads(material.input_preimage) == {"assertedRecords": project(row), "ontologyRecords": []}
+75 |     assert json.loads(material.source_preimage) == {"assertedRecords": [None, None, None], "ontologyRecords": []}
+   |                                                                                                     ^^^^^^^^^^^^^
+76 |     assert material.asserted_records is row
+77 |     assert material.parser_identity == ("actual-owner-parser", "1")
+   |
+
+E501 Line too long (102 > 100)
+   --> packages/engine/tests/test_semantic_profile_input.py:147:101
+    |
+145 |     assert "remain live" in material.capture_receipt.retention_owner
+146 |     assert all(used <= bound for used, bound in zip(material.capture_receipt.stage_visits,
+147 |                                                   material.capture_receipt.stage_bounds, strict=True))
+    |                                                                                                     ^^
+
+E501 Line too long (110 > 100)
+  --> packages/engine/tests/test_semantic_profile_production.py:36:101
+   |
+34 |     material = prepare_profile_material(turtle(), specs, disabled_rule_ids=("z",))
+35 |     with patch.object(semantic, "_profile_reason", wraps=semantic._profile_reason) as reason_call, \
+36 |          patch.object(semantic, "_profile_definitions", wraps=semantic._profile_definitions) as definitions, \
+   |                                                                                                     ^^^^^^^^^^
+37 |          patch.object(semantic, "_profile_catalog", wraps=semantic._profile_catalog) as catalog, \
+38 |          patch.object(rule_firing, "compile_rules", wraps=rule_firing.compile_rules) as compile_call, \
+   |
+
+E501 Line too long (103 > 100)
+  --> packages/engine/tests/test_semantic_profile_production.py:38:101
+   |
+36 |          patch.object(semantic, "_profile_definitions", wraps=semantic._profile_definitions) as definitions, \
+37 |          patch.object(semantic, "_profile_catalog", wraps=semantic._profile_catalog) as catalog, \
+38 |          patch.object(rule_firing, "compile_rules", wraps=rule_firing.compile_rules) as compile_call, \
+   |                                                                                                     ^^^
+39 |          patch.object(rule_firing, "evaluate_bound_batch", wraps=rule_firing.evaluate_bound_batch) as evaluate:
+40 |         produced = execute(material)
+   |
+
+E501 Line too long (111 > 100)
+  --> packages/engine/tests/test_semantic_profile_production.py:39:101
+   |
+37 |          patch.object(semantic, "_profile_catalog", wraps=semantic._profile_catalog) as catalog, \
+38 |          patch.object(rule_firing, "compile_rules", wraps=rule_firing.compile_rules) as compile_call, \
+39 |          patch.object(rule_firing, "evaluate_bound_batch", wraps=rule_firing.evaluate_bound_batch) as evaluate:
+   |                                                                                                     ^^^^^^^^^^^
+40 |         produced = execute(material)
+41 |     assert reason_call.call_count == definitions.call_count == catalog.call_count == 1
+   |
+
+E501 Line too long (107 > 100)
+  --> packages/engine/tests/test_semantic_profile_production.py:47:101
+   |
+45 |     assert produced.original_allocation.rule_ids == ("z", "a")
+46 |     assert produced.original_allocation.disabled_rule_ids == ("z",)
+47 |     for slot, call in zip(produced.original_allocation.children, compile_call.call_args_list, strict=True):
+   |                                                                                                     ^^^^^^^
+48 |         assert slot.limits is call.args[2].limits
+49 |     assert produced.actual_catalog is produced.native_result["catalog"]
+   |
+
+E501 Line too long (106 > 100)
+  --> packages/engine/tests/test_semantic_profile_production.py:69:101
+   |
+67 |                     iri("http://www.w3.org/2002/07/owl#DatatypeProperty")),
+68 |                    (iri("urn:s"), iri("urn:value"),
+69 |                     TermInput("literal", "2", "http://www.w3.org/2001/XMLSchema#integer", source=source)))
+   |                                                                                                     ^^^^^^
+70 |         text = None
+71 |     elif kind == "disabled":
+   |
+
+E501 Line too long (107 > 100)
+  --> packages/engine/tests/test_semantic_profile_production.py:85:101
+   |
+83 |     if records is None:
+84 |         old = semantic_execution.execute_profile(text, specs, disabled_rule_ids=disabled,
+85 |                                                  error_catalog=CONTRACT.ERROR_CATALOG, error_schema=SCHEMA)
+   |                                                                                                     ^^^^^^^
+86 |     else:
+87 |         old = semantic_execution.execute_profile_records(records, specs, disabled_rule_ids=disabled,
+   |
+
+E501 Line too long (115 > 100)
+  --> packages/engine/tests/test_semantic_profile_production.py:88:101
+   |
+86 |     else:
+87 |         old = semantic_execution.execute_profile_records(records, specs, disabled_rule_ids=disabled,
+88 |                                                          error_catalog=CONTRACT.ERROR_CATALOG, error_schema=SCHEMA)
+   |                                                                                                     ^^^^^^^^^^^^^^^
+89 |     assert produced.wire == old
+90 |     children = produced.native_result["mechanismBatches"]
+   |
+
+E501 Line too long (118 > 100)
+   --> packages/engine/tests/test_semantic_profile_production.py:99:101
+    |
+ 97 |         assert children[0]["batch"].firings == ()
+ 98 |     elif kind == "multihead":
+ 99 |         assert [head.triple.object.lexical_form for head in children[0]["batch"].firings[0].heads] == ["ok", "second"]
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^
+100 |     elif kind == "text":
+101 |         assert len(children[0]["originalMatches"]) == 2
+    |
+
+E731 Do not assign a `lambda` expression, use a `def`
+   --> packages/engine/tests/test_semantic_profile_production.py:107:5
+    |
+105 | def test_actual_producer_can_supply_original_pure_restore_context():
+106 |     produced = execute(prepare_profile_material(turtle(), (rule(),)))
+107 |     sha = lambda b: hashlib.sha256(b).hexdigest()
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+108 |     payload = produced.wire["payload"]
+109 |     expected = RestoreExpectation(
+    |
+help: Rewrite `sha` as a `def`
+    |
+106 |     produced = execute(prepare_profile_material(turtle(), (rule(),)))
+    -     sha = lambda b: hashlib.sha256(b).hexdigest()
+107 +     def sha(b):
+108 +         return hashlib.sha256(b).hexdigest()
+109 |     payload = produced.wire["payload"]
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+E501 Line too long (103 > 100)
+   --> packages/engine/tests/test_semantic_profile_production.py:116:101
+    |
+114 |     )
+115 |     restored = restore_profile_batches(produced.payload_json, produced.rows_json, expected=expected,
+116 |                                        allocation=produced.original_allocation, ledger=RestoreLedger())
+    |                                                                                                     ^^^
+117 |     assert restored.formal_authority is False
+118 |     assert signature(restored.children[0].batch) == signature(produced.native_result["mechanismBatches"][0]["batch"])
+    |
+
+E501 Line too long (117 > 100)
+   --> packages/engine/tests/test_semantic_profile_production.py:118:101
+    |
+116 |                                        allocation=produced.original_allocation, ledger=RestoreLedger())
+117 |     assert restored.formal_authority is False
+118 |     assert signature(restored.children[0].batch) == signature(produced.native_result["mechanismBatches"][0]["batch"])
+    |                                                                                                     ^^^^^^^^^^^^^^^^^
+
+E501 Line too long (119 > 100)
+   --> packages/engine/tests/test_semantic_profile_production.py:121:101
+    |
+121 | @pytest.mark.parametrize("field", ["input_preimage", "source_preimage", "definitions_preimage", "definition_material"])
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^
+122 | def test_preimage_mismatch_rejected_before_unique_reason(field):
+123 |     material = prepare_profile_material(turtle(), (rule(),))
+    |
+
+Found 22 errors (2 fixed, 20 remaining).
+1 unsafe fix available with `--fix --unsafe-fixes`.

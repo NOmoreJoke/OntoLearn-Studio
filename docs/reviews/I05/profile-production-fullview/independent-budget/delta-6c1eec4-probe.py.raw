@@ -1,0 +1,48 @@
+import hashlib
+import json
+from unittest.mock import patch
+from ontolearn_engine import semantic_execution
+from ontolearn_engine.resources import CONTRACT, ROOT
+from ontolearn_engine.semantic_profile_input import CaptureLedger, MaterialFailure, prepare_profile_material
+from ontolearn_engine.semantic_profile_production import execute_admitted_profile_job
+from test_semantic_profile_restore import rule, turtle, capture_case, restore_capture
+
+schema=json.loads((ROOT/'v2/schema.json').read_bytes())
+material=prepare_profile_material(turtle(), (rule(),))
+original_sha=hashlib.sha256
+
+def run(override=None):
+    ledger=CaptureLedger(overrides=() if override is None else (('hash',override),))
+    events=[]
+    def observe(data=b'', *args, **kwargs):
+        if ledger.stage in (6,7):
+            events.append({'stage':ledger.stage,'bytes':len(data),'hash_used_before':ledger.used['hash'],'hash_cap':ledger.caps['hash']})
+        return original_sha(data,*args,**kwargs)
+    with patch.object(semantic_execution.hashlib,'sha256',observe):
+        try:
+            output=execute_admitted_profile_job(material,error_catalog=CONTRACT.ERROR_CATALOG,error_schema=schema,ledger=ledger)
+            status={'success':True,'usage':dict(output.capture_receipt.usage)}
+        except MaterialFailure as error:
+            status={'success':False,'reason':error.reason,'domain':error.domain,'stage':error.stage,'context':error.__context__ is None}
+    return {'events':events,'status':status,'state':ledger.state}
+first=run()
+low=first['events'][0]['hash_used_before']
+print(json.dumps({'kind':'hash_precharge','normal':first,'low_cap':low,'limited':run(low)},sort_keys=True))
+for limit in (0,63,64):
+    overrides=(('objects',limit),)
+    ledger=CaptureLedger(overrides=overrides)
+    try:
+        ledger.begin()
+        status={'success':True,'cap':ledger.caps['objects'],'live':ledger.live['objects'],'peak':ledger.peaks['objects']}
+        try: ledger.reserve('objects',1)
+        except MaterialFailure as error: status['one_extra_rejected']=error.domain=='objects'
+    except MaterialFailure as error:
+        status={'success':False,'reason':error.reason,'domain':error.domain,'stage':error.stage,'all_containers_none':all(value is None for value in (ledger.caps,ledger.used,ledger.live,ledger.peaks,ledger.stage_visits,ledger.stage_bounds))}
+    print(json.dumps({'kind':'bootstrap','limit':limit,'original_tuple_retained':ledger.overrides is overrides,'status':status},sort_keys=True))
+for overrides in ((('objects',64),('objects',65)), (('objects',True),), (('objects',64),('hash',1),('scan_copy',2),('scalar',3),('traversal',4),('objects',65))):
+    try: CaptureLedger(overrides=overrides)
+    except MaterialFailure: print(json.dumps({'kind':'invalid_overrides','rejected':True,'items':len(overrides)}))
+    else: raise AssertionError('invalid override accepted')
+case=capture_case()
+result, ledger=restore_capture(case,fullview=True)
+print(json.dumps({'kind':'fullview','J':ledger.J,'retention':dict(result.retention),'peaks':dict(result.batches.restore_peaks) if hasattr(result.batches,'restore_peaks') else dict(ledger.peaks),'usage':dict(ledger.usage),'terminal':ledger.state,'live_after':dict(ledger.live),'outer_fields':len(result.projection.payload.entries),'inner_fields':len(result.projection.payload['reasoning'].entries)},sort_keys=True))

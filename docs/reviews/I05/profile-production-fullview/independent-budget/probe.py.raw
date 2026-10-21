@@ -1,0 +1,43 @@
+import hashlib
+import json
+from unittest.mock import patch
+from ontolearn_engine import semantic_execution
+from ontolearn_engine.resources import CONTRACT, ROOT
+from ontolearn_engine.semantic_profile_input import CaptureLedger, MaterialFailure, prepare_profile_material
+from ontolearn_engine.semantic_profile_production import execute_admitted_profile_job
+from test_semantic_profile_restore import rule, turtle, capture_case, restore_capture
+
+schema=json.loads((ROOT/'v2/schema.json').read_bytes())
+material=prepare_profile_material(turtle(), (rule(),))
+original_sha=hashlib.sha256
+
+def run(override=None):
+    ledger=CaptureLedger(overrides=() if override is None else (('hash',override),))
+    events=[]
+    def observe(data=b'', *args, **kwargs):
+        if ledger.stage in (6,7):
+            events.append({'stage':ledger.stage,'bytes':len(data),'hash_used_before':ledger.used['hash'],'hash_cap':ledger.caps['hash']})
+        return original_sha(data,*args,**kwargs)
+    with patch.object(semantic_execution.hashlib,'sha256',observe):
+        try:
+            output=execute_admitted_profile_job(material,error_catalog=CONTRACT.ERROR_CATALOG,error_schema=schema,ledger=ledger)
+            status={'success':True,'usage':dict(output.capture_receipt.usage)}
+        except MaterialFailure as error:
+            status={'success':False,'reason':error.reason,'domain':error.domain,'stage':error.stage,'context':error.__context__ is None}
+    return {'events':events,'status':status,'state':ledger.state}
+first=run()
+low=first['events'][0]['hash_used_before']
+print(json.dumps({'kind':'hash_precharge','normal':first,'low_cap':low,'limited':run(low)},sort_keys=True))
+original_reserve=CaptureLedger.reserve
+seen=[]
+def reserve(self,domain,count):
+    if domain=='objects' and count==64:
+        seen.append({'caps_already_allocated':type(self.caps) is dict,'used_already_allocated':type(self.used) is dict,'live_already_allocated':type(self.live) is dict,'peaks_already_allocated':type(self.peaks) is dict,'stage_arrays_already_allocated':type(self.stage_visits) is list and type(self.stage_bounds) is list,'objects_before':self.live['objects']})
+    return original_reserve(self,domain,count)
+ledger=CaptureLedger(overrides=(('objects',0),))
+with patch.object(CaptureLedger,'reserve',reserve):
+    try: prepare_profile_material(turtle(),ledger=ledger)
+    except MaterialFailure as error: print(json.dumps({'kind':'bootstrap','observed':seen,'failure':{'reason':error.reason,'domain':error.domain,'stage':error.stage},'state':ledger.state},sort_keys=True))
+case=capture_case()
+result, ledger=restore_capture(case,fullview=True)
+print(json.dumps({'kind':'fullview','J':ledger.J,'retention':dict(result.retention),'peaks':dict(result.batches.restore_peaks) if hasattr(result.batches,'restore_peaks') else dict(ledger.peaks),'usage':dict(ledger.usage),'terminal':ledger.state,'live_after':dict(ledger.live),'outer_fields':len(result.projection.payload.entries),'inner_fields':len(result.projection.payload['reasoning'].entries)},sort_keys=True))

@@ -1,0 +1,2148 @@
+{
+  "product": "6c1eec41091a997f898cb448bfc7d4000c154307",
+  "scope": "all loops in all nine writer files; includes inherited loops, not only new ones",
+  "loops": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 48,
+      "kind": "For",
+      "source": "for triple in graph:\n        result.add(tuple(canonical_string(term) for term in triple))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 65,
+      "kind": "For",
+      "source": "for s, p, o in sorted(graph, key=_key):\n        if p == OWL.imports:\n            raise SemanticError(\"EXTERNAL_ACCESS_DENIED\")\n        if not isinstance(s, URIRef | BNode) or not isinstance(p, URIRef):\n            raise SemanticError(\"RDF_TERM_INVALID\")\n        for term in (s, p, o):\n            if isinstance(term, BNode) and not shapes:\n                raise SemanticError(\"UNSUPPORTED_BLANK_NODE\")\n            if isinstance(term, URIRef):\n                value = str(term)\n                if \":\" not in value or any(c.isspace() or c in '<>\"{}|^`\\\\' for c in value):\n                    raise SemanticError(\"ABSOLUTE_IRI_REQUIRED\")\n                if value.startswith(str(OWL)) and term not in allowed_owl:\n                    raise SemanticError(\"UNSUPPORTED_OWL\")\n                if value.startswith(str(RDFS)) and term not in allowed_rdfs:\n                    raise SemanticError(\"UNSUPPORTED_RDFS\")\n                if value.startswith(str(SH)) and not shapes:\n                    raise SemanticError(\"UNSUPPORTED_SHACL\")\n            if isinstance(term, Literal):\n                if term.ill_typed:\n                    raise SemanticError(\"INVALID_LITERAL_LEXICAL\")\n                if term.datatype is not None and term.datatype not in _DATATYPES | {RDF.langString}:\n                    raise SemanticError(\"UNSUPPORTED_LITERAL_DATATYPE\")\n                value = term.toPython()\n                if (isinstance(value, Decimal) and not value.is_finite()) or (\n                    isinstance(value, float) and not isfinite(value)\n                ):\n                    raise SemanticError(\"UNSUPPORTED_NONFINITE_LITERAL\")\n        if p in {RDFS.subClassOf, RDFS.domain, RDFS.range} and not isinstance(o, URIRef):\n            raise SemanticError(\"RDFS_TERM_INVALID\")\n        if p == RDF.type and not isinstance(o, URIRef):\n            raise SemanticError(\"RDF_TYPE_OBJECT_INVALID\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 229,
+      "kind": "For",
+      "source": "for pattern in (*rule.when, rule.then):\n        if not isinstance(pattern, tuple) or len(pattern) != 3:\n            raise SemanticError(\"INVALID_RULE\")\n        for term in pattern:\n            if not isinstance(term, URIRef | Literal | Variable):\n                raise SemanticError(\"INVALID_RULE\")\n        if not isinstance(pattern[0], URIRef | Variable) or not isinstance(\n            pattern[1], URIRef | Variable\n        ):\n            raise SemanticError(\"INVALID_RULE\")\n        candidate = Graph()\n        candidate.add(\n            tuple(\n                URIRef(\"urn:ontolearn:rule-variable\") if isinstance(t, Variable) else t\n                for t in pattern\n            )\n        )\n        _terms(candidate)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 247,
+      "kind": "For",
+      "source": "for pattern in rule.when:\n        variables.update(t for t in pattern if isinstance(t, Variable))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 394,
+      "kind": "While",
+      "source": "while changed:\n        additions = []\n\n        def append(triple, inputs, _additions=additions):\n            if meter is not None:\n                meter.debit(1 + len(inputs))\n            _additions.append((triple, inputs))\n\n        for child, _, parent in ordered(closure.triples((None, RDFS.subClassOf, None)), key=key):\n            for s, _, _o in ordered(closure.triples((None, RDF.type, child)), key=key):\n                charge()\n                append(\n                    (s, RDF.type, parent), [(s, RDF.type, child), (child, RDFS.subClassOf, parent)]\n                )\n            for _p, _, ancestor in closure.triples((parent, RDFS.subClassOf, None)):\n                charge()\n                append(\n                    (child, RDFS.subClassOf, ancestor),\n                    [(child, RDFS.subClassOf, parent), (parent, RDFS.subClassOf, ancestor)],\n                )\n        for predicate, relation, target in ordered(closure, key=key):\n            if relation in {RDFS.domain, RDFS.range} and predicate not in {\n                RDFS.label,\n                RDFS.comment,\n            }:\n                for s, _, o in closure.triples((None, predicate, None)):\n                    charge()\n                    subject = s if relation == RDFS.domain else o\n                    if isinstance(subject, URIRef):\n                        append(\n                            (subject, RDF.type, target),\n                            [(predicate, relation, target), (s, predicate, o)],\n                        )\n        changed = False\n        for triple, inputs in ordered(\n            additions, key=lambda item: (key(item[0]), tuple(key(t) for t in item[1]))\n        ):\n            if triple not in closure:\n                # Profile rejects before insertion/allocation. Legacy keeps its\n                # original post-insertion limit and error identity.\n                if meter is not None:\n                    if len(closure) >= MAX_TRIPLES:\n                        raise ProfileReasonError(\n                            \"RDFS_RESULT_LIMIT\", classification=\"resource\", context=\"closure\"\n                        )\n                    meter.debit()\n                    basis = meter.union([proofs[i] for i in inputs])\n                else:\n                    basis = set().union(*(proofs[i] for i in inputs))\n                closure.add(triple)\n                proofs[triple] = basis\n                changed = True\n                if len(closure) > MAX_TRIPLES:\n                    raise SemanticError(\"RDFS_RESULT_LIMIT\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 458,
+      "kind": "For",
+      "source": "for pattern in patterns:\n        next_matches = []\n        for binding, inputs in matches:\n            if meter is not None:\n                meter.debit(3)\n            lookup = tuple(binding.get(t) if isinstance(t, Variable) else t for t in pattern)\n            for triple in ordered(closure.triples(lookup), key=key):\n                charge()\n                if triple[1] in {RDFS.label, RDFS.comment}:\n                    continue\n                if meter is not None:\n                    meter.debit(len(binding) + 3)\n                updated = dict(binding)\n                for expected, value in zip(pattern, triple, strict=True):\n                    if isinstance(expected, Variable):\n                        if expected in updated and updated[expected] != value:\n                            break\n                        updated[expected] = value\n                else:\n                    if meter is not None:\n                        # Limit before copying inputs or appending the binding.\n                        if len(next_matches) >= limit:\n                            raise ProfileReasonError(\n                                \"RULE_INPUT_BUDGET\", classification=\"resource\", context=\"rule\"\n                            )\n                        meter.debit(1 + len(inputs))\n                    next_matches.append((updated, [*inputs, triple]))\n                    if meter is None and len(next_matches) > limit:\n                        raise SemanticError(\"RULE_MATCH_WORK_LIMIT\")\n        matches = next_matches"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 512,
+      "kind": "For",
+      "source": "for rule in sorted(rules, key=lambda r: r.id):\n        matches = _finite_matches(closure, rule.when, charge, MAX_RULE_MATCHES)\n        for binding, inputs in matches:\n            output = tuple(binding.get(t, t) for t in rule.then)\n            _rule(Rule(rule.id, (output,), output))\n            candidate = Graph()\n            candidate.add(output)\n            _terms(candidate)\n            derived.add(output)\n            if len(derived) + len(evidence) >= MAX_RULE_MATCHES:\n                raise SemanticError(\"RULE_EVIDENCE_RESULT_LIMIT\")\n            evidence.append(\n                {\n                    \"rule\": rule.id,\n                    \"result\": _key(output),\n                    \"inputs\": [_key(t) for t in inputs],\n                    \"basis\": [\n                        _key(t) for t in sorted(set().union(*(proofs[t] for t in inputs)), key=_key)\n                    ],\n                }\n            )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 600,
+      "kind": "For",
+      "source": "for spec in rules:\n        if type(spec) is not RuleSpec or type(spec.rule_id) is not str or not spec.rule_id:\n            raise ProfileReasonError(\"INVALID_RULE\")\n        if len(spec.rule_id) > ProfileLimits().term_bytes:\n            raise ProfileReasonError(\"RULE_INPUT_BUDGET\", classification=\"resource\")\n        size = meter.input_text(spec.rule_id)\n        if size > ProfileLimits().term_bytes:\n            raise ProfileReasonError(\"RULE_INPUT_BUDGET\", classification=\"resource\")\n        if spec.rule_id in ids:\n            raise ProfileReasonError(\"INVALID_RULE\")\n        ids.add(spec.rule_id)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 619,
+      "kind": "For",
+      "source": "for categories in ((OWL.Class, RDFS.Class), (OWL.ObjectProperty,), (OWL.DatatypeProperty,)):\n        members = set()\n        for category in categories:\n            for subject, _, _ in graph.triples((None, RDF.type, category)):\n                meter.debit(1 + _term_characters(subject))\n                if type(subject) is not URIRef:\n                    raise ProfileReasonError(\"INVALID_RULE\")\n                _profile_iri(str(subject), context=\"catalog\")\n                members.add(str(subject))\n        meter.debit(sum(map(len, members)) * max(1, len(members).bit_length()))\n        groups.append(tuple(sorted(members)))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 670,
+      "kind": "For",
+      "source": "for triple in graph:\n        meter.debit(4)\n        for term in triple:\n            if type(term) not in (URIRef, Literal):\n                raise ProfileReasonError(\n                    \"UNSUPPORTED_BLANK_NODE\" if isinstance(term, BNode) else \"RDF_TERM_INVALID\"\n                )\n            meter.input_text(str(term))\n            maximum_field_width = max(maximum_field_width, 7 + _term_characters(term))\n            if type(term) is Literal:\n                if term.datatype is not None:\n                    meter.input_text(str(term.datatype))\n                if term.language is not None:\n                    meter.input_text(term.language)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 696,
+      "kind": "For",
+      "source": "for s, p, o in graph:\n        meter.debit(3)\n        if type(s) is not URIRef or type(p) is not URIRef:\n            raise ProfileReasonError(\"RDF_TERM_INVALID\")\n        for term in (s, p, o):\n            if term in seen:\n                continue\n            meter.debit()\n            seen.add(term)\n            if type(term) is URIRef:\n                iri = str(term)\n                meter.debit(len(iri))\n                _profile_iri(iri)\n                if iri.startswith(str(OWL)) and term not in allowed_owl:\n                    raise ProfileReasonError(\n                        \"EXTERNAL_ACCESS_DENIED\" if term == OWL.imports else \"UNSUPPORTED_OWL\"\n                    )\n                if iri.startswith(str(RDFS)) and term not in allowed_rdfs:\n                    raise ProfileReasonError(\"UNSUPPORTED_RDFS\")\n                if iri.startswith(str(SH)):\n                    raise ProfileReasonError(\"UNSUPPORTED_SHACL\")\n        if p in {RDFS.subClassOf, RDFS.domain, RDFS.range} and type(o) is not URIRef:\n            raise ProfileReasonError(\"RDFS_TERM_INVALID\")\n        if p == RDF.type and type(o) is not URIRef:\n            raise ProfileReasonError(\"RDF_TYPE_OBJECT_INVALID\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 726,
+      "kind": "For",
+      "source": "for occurrence in context.occurrences:\n        meter.debit()\n        if canonical_string(occurrence.term) not in actual_terms:\n            continue\n        value = occurrence.value\n        for iri in (value.lexical_form if value.kind == \"iri\" else None, value.datatype_iri):\n            if iri is not None:\n                meter.debit(len(iri))\n                _profile_iri(iri)\n        meter.debit()\n        entry_values.append(value)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 741,
+      "kind": "For",
+      "source": "for value in entry_values:\n        previous = dict(entry.usage)[\"work\"]\n        try:\n            parse_value(value, None, entry)\n        except ProfileFailure as error:\n            if error.reason == \"INVALID_RULE\" and error.classification == \"input\":\n                raise ProfileReasonError(\"RDF_TERM_INVALID\", context=\"graph\") from None\n            raise _profile_failure(error) from None\n        finally:\n            meter.debit(dict(entry.usage)[\"work\"] - previous)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 804,
+      "kind": "For",
+      "source": "for section, items, item_type in (\n        (\"when\", spec.when, ProfileTriple),\n        (\"comparison\", spec.comparisons, Comparison),\n        (\"head\", spec.heads, ProfileTriple),\n    ):\n        limit = {\"when\": 16, \"comparison\": 32, \"head\": 16}[section]\n        if type(items) is not tuple or len(items) > limit:\n            continue\n        for index, item in enumerate(items):\n            if type(item) is not item_type:\n                continue\n            terms = (\n                ((\"left\", item.left), (\"right\", item.right))\n                if section == \"comparison\"\n                else (\n                    (None, item.subject),\n                    (None, item.predicate),\n                    (None, item.object),\n                )\n            )\n            for side, term in terms:\n                if type(term) is not TermInput:\n                    continue\n                location = InputLocation(section, index, side)\n                for iri in (term.lexical_form if term.kind == \"iri\" else None, term.datatype_iri):\n                    if iri is not None and type(iri) is str:\n                        meter.input_text(iri)\n                        _profile_iri(iri, context=\"rule\", location=location, rule_id=spec.rule_id)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 838,
+      "kind": "For",
+      "source": "for spec in plans:\n        for head in spec.heads:\n            meter.debit(3)\n            producers.append(\n                tuple(\n                    _profile_as_term(t, meter) for t in (head.subject, head.predicate, head.object)\n                )\n            )\n        for pattern in spec.when:\n            meter.debit(3)\n            consumers.append(\n                (\n                    spec.rule_id,\n                    tuple(\n                        _profile_as_term(t, meter)\n                        for t in (pattern.subject, pattern.predicate, pattern.object)\n                    ),\n                )\n            )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 858,
+      "kind": "For",
+      "source": "for head in producers:\n        for rule_id, pattern in consumers:\n            meter.debit(3 + sum(_term_characters(t) for t in head + pattern))\n            if all(\n                isinstance(a, Variable) or isinstance(b, Variable) or a == b\n                for a, b in zip(head, pattern, strict=True)\n            ):\n                warnings.add(\"RULE_CHAIN_UNSUPPORTED:\" + rule_id)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 908,
+      "kind": "For",
+      "source": "for rule_id in disabled:\n        if type(rule_id) is not str or rule_id not in ids or rule_id in disabled_set:\n            raise ProfileReasonError(\"INVALID_RULE\", context=\"rule\")\n        meter.debit(1 + len(rule_id))\n        disabled_set.add(rule_id)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 928,
+      "kind": "For",
+      "source": "for position, (ordinal, spec) in enumerate(ordered_specs or ((None, None),)):\n        limits = ProfileLimits(\n            **{\n                name: divmod(total, count)[0] + (position < divmod(total, count)[1])\n                for name, total in _PROFILE_POOLS.items()\n            }\n        )\n        if _capture is not None:\n            _capture.allocation(spec, ordinal, limits)\n        budget = Budget(limits)\n        meter.debit(2)\n        child_definitions = () if spec is None else (spec,)\n        if spec is not None:\n            _profile_rule_iris(spec, meter)\n        try:\n            plan = compile_rules(child_definitions, actual_catalog, budget)\n        except ProfileFailure as error:\n            raise _profile_failure(\n                error,\n                rule_id=(\n                    spec.rule_id\n                    if spec is not None\n                    and (error.location is not None or error.classification != \"resource\")\n                    else None\n                ),\n                context=\"rule\",\n            ) from None\n        meter.debit()\n        plans.append((ordinal, spec, plan, budget, child_definitions))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 961,
+      "kind": "For",
+      "source": "for triple in meter.ordered(asserted):\n        key = meter.key(triple)\n        meter.debit(1 + sum(map(len, key)))\n        raw = (\"i05-profile-proof-leaf/1\\0\" + \"\\0\".join(key)).encode(\"utf-8\")\n        meter.debit(len(raw))\n        reference = \"i05-proof:\" + sha256(raw).hexdigest()\n        meter.debit(2)\n        leaf_ids[triple] = reference\n        leaf_records.append({\"reference\": reference, \"triple\": key})"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 974,
+      "kind": "For",
+      "source": "for ordinal, spec, plan, budget, child_definitions in plans:\n        inactive = spec is not None and spec.rule_id in disabled_set\n        batch = None\n        original_matches = None\n        if not inactive:\n            matches = (\n                []\n                if spec is None\n                else _finite_matches(\n                    closure,\n                    _profile_patterns(spec, meter),\n                    meter.debit,\n                    budget.limits.bindings,\n                    meter,\n                )\n            )\n            controlled = []\n            for binding, inputs in matches:\n                meter.debit(1 + len(binding) + 4 * len(inputs))\n                proof_refs = []\n                actual_when = []\n                for triple in inputs:\n                    meter.debit(1 + len(proofs[triple]))\n                    proof_refs.append(\n                        tuple(\n                            meter.ordered(\n                                (leaf_ids[leaf] for leaf in proofs[triple]), key=lambda value: value\n                            )\n                        )\n                    )\n                    actual_when.append(ProfileTriple(*(actual_term(t) for t in triple)))\n                meter.debit(len(binding) * max(1, len(binding).bit_length()))\n                controlled.append(\n                    BindingMatch(\n                        spec.rule_id,\n                        tuple(\n                            (\"?\" + str(var), actual_term(value))\n                            for var, value in sorted(binding.items(), key=lambda pair: str(pair[0]))\n                        ),\n                        tuple(actual_when),\n                        tuple(proof_refs),\n                    )\n                )\n            try:\n                meter.debit(1 + len(controlled))\n                original_matches = tuple(controlled)\n                batch = evaluate_bound_batch(plan, original_matches, budget)\n            except ProfileFailure as error:\n                raise _profile_failure(\n                    error, rule_id=None if spec is None else spec.rule_id, context=\"rule\"\n                ) from None\n            meter.debit(len(batch.firings) + len(batch.facts))\n            for firing in batch.firings:\n                firing_index = len(firings)\n                meter.debit(1 + len(firing.when) + len(firing.basis))\n                firings.append(firing)\n                for head in firing.heads:\n                    triple = tuple(\n                        _profile_as_term(term, meter)\n                        for term in (head.triple.subject, head.triple.predicate, head.triple.object)\n                    )\n                    meter.debit(1 + len(firing.when) + len(firing.basis))\n                    derived.add(triple)\n                    evidence.append(\n                        {\n                            \"rule\": firing.rule_id,\n                            \"firingIndex\": firing_index,\n                            \"headIndex\": head.index,\n                            \"result\": meter.key(triple),\n                            \"inputs\": [\n                                meter.key(\n                                    tuple(\n                                        _profile_as_term(term, meter)\n                                        for term in (t.subject, t.predicate, t.object)\n                                    )\n                                )\n                                for t in firing.when\n                            ],\n                            \"basis\": firing.basis,\n                        }\n                    )\n        meter.debit(6 + len(child_definitions))\n        mechanism_batches.append(\n            {\n                \"ruleId\": None if spec is None else spec.rule_id,\n                \"definitionOrdinal\": ordinal,\n                \"disabled\": inactive,\n                \"planDigest\": plan.digest,\n                \"batch\": batch,\n                \"originalMatches\": original_matches,\n                \"definitions\": child_definitions,\n                \"catalog\": actual_catalog,\n                \"limits\": budget.limits,\n                \"budgetLimits\": asdict(budget.limits),\n                \"budgetUsage\": dict(budget.usage),\n            }\n        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1074,
+      "kind": "For",
+      "source": "for triple in meter.ordered(rdfs):\n        meter.debit(1 + len(proofs[triple]))\n        rdfs_evidence.append(\n            {\n                \"result\": meter.key(triple),\n                \"basis\": [meter.key(leaf) for leaf in meter.ordered(proofs[triple])],\n                \"proofLeaves\": tuple(\n                    meter.ordered(\n                        (leaf_ids[leaf] for leaf in proofs[triple]), key=lambda value: value\n                    )\n                ),\n            }\n        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1091,
+      "kind": "For",
+      "source": "for occurrence in context.occurrences:\n        meter.debit(1 + _term_characters(occurrence.term))\n        term_sources.append(\n            {\n                \"term\": occurrence.term.n3(),\n                \"value\": occurrence.value,\n                \"ordinal\": occurrence.ordinal,\n                \"span\": occurrence.span,\n            }\n        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1214,
+      "kind": "For",
+      "source": "for value in graph.objects(None, SH.targetClass):\n        if not isinstance(value, URIRef):\n            raise SemanticError(\"SHAPE_TARGET_CLASS_INVALID\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1217,
+      "kind": "For",
+      "source": "for value in graph.objects(None, SH.datatype):\n        if not isinstance(value, URIRef):\n            raise SemanticError(\"SHAPE_DATATYPE_INVALID\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1220,
+      "kind": "For",
+      "source": "for value in graph.objects(None, SH.path):\n        if isinstance(value, URIRef):\n            continue\n        if isinstance(value, Literal):\n            raise SemanticError(\"SHAPE_PATH_INVALID\")\n        triples = list(graph.triples((value, None, None)))\n        if (\n            len(triples) == 1\n            and triples[0][1] == SH.inversePath\n            and isinstance(triples[0][2], URIRef)\n        ):\n            raise SemanticError(\"UNSUPPORTED_SHACL_PATH\")\n        raise SemanticError(\"SHAPE_PATH_UNCLASSIFIED\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1234,
+      "kind": "For",
+      "source": "for head in graph.objects(None, SH[\"in\"]):\n        visited = set()\n        while head != RDF.nil:\n            if not isinstance(head, BNode) or head in visited:\n                raise SemanticError(\"INVALID_SHAPE_LIST\")\n            visited.add(head)\n            lists.add(head)\n            first = list(graph.objects(head, RDF.first))\n            rest = list(graph.objects(head, RDF.rest))\n            if len(first) != 1 or len(rest) != 1 or not isinstance(first[0], URIRef | Literal):\n                raise SemanticError(\"INVALID_SHAPE_LIST\")\n            head = rest[0]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1246,
+      "kind": "For",
+      "source": "for s, p, o in graph:\n        if s in lists and p in {RDF.first, RDF.rest}:\n            continue\n        if p == RDF.type and (\n            (s in nodes and o == SH.NodeShape) or (s in properties and o == SH.PropertyShape)\n        ):\n            continue\n        if p not in _SH_PREDICATES:\n            raise SemanticError(\"UNSUPPORTED_SHACL\")\n        if p in {SH.targetClass, SH.property}:\n            if s not in nodes or not isinstance(o, URIRef | BNode):\n                raise SemanticError(\"INVALID_SHAPE\")\n        elif s not in properties:\n            raise SemanticError(\"INVALID_SHAPE\")\n        if p == SH.datatype and o not in _DATATYPES:\n            raise SemanticError(\"UNSUPPORTED_DATATYPE\")\n        if p in {SH.minCount, SH.maxCount} and (\n            not isinstance(o, Literal)\n            or o.datatype not in {XSD.integer, XSD.int}\n            or type(o.toPython()) is not int\n            or o.toPython() < 0\n        ):\n            raise SemanticError(\"INVALID_SHAPE\")\n        if p in {SH.minInclusive, SH.maxInclusive} and (\n            not isinstance(o, Literal)\n            or o.datatype not in {XSD.integer, XSD.int, XSD.decimal, XSD.float, XSD.double}\n            or o.ill_typed\n        ):\n            raise SemanticError(\"INVALID_SHAPE\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1275,
+      "kind": "For",
+      "source": "for node in nodes:\n        if len(list(graph.objects(node, SH.targetClass))) != 1:\n            raise SemanticError(\"INVALID_SHAPE\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1278,
+      "kind": "For",
+      "source": "for node in properties:\n        if len(list(graph.objects(node, SH.path))) != 1:\n            raise SemanticError(\"INVALID_SHAPE\")\n        for p in _SH_PREDICATES - {SH.property}:\n            if len(list(graph.objects(node, p))) > 1:\n                raise SemanticError(\"INVALID_SHAPE\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 70,
+      "kind": "For",
+      "source": "for term in (s, p, o):\n            if isinstance(term, BNode) and not shapes:\n                raise SemanticError(\"UNSUPPORTED_BLANK_NODE\")\n            if isinstance(term, URIRef):\n                value = str(term)\n                if \":\" not in value or any(c.isspace() or c in '<>\"{}|^`\\\\' for c in value):\n                    raise SemanticError(\"ABSOLUTE_IRI_REQUIRED\")\n                if value.startswith(str(OWL)) and term not in allowed_owl:\n                    raise SemanticError(\"UNSUPPORTED_OWL\")\n                if value.startswith(str(RDFS)) and term not in allowed_rdfs:\n                    raise SemanticError(\"UNSUPPORTED_RDFS\")\n                if value.startswith(str(SH)) and not shapes:\n                    raise SemanticError(\"UNSUPPORTED_SHACL\")\n            if isinstance(term, Literal):\n                if term.ill_typed:\n                    raise SemanticError(\"INVALID_LITERAL_LEXICAL\")\n                if term.datatype is not None and term.datatype not in _DATATYPES | {RDF.langString}:\n                    raise SemanticError(\"UNSUPPORTED_LITERAL_DATATYPE\")\n                value = term.toPython()\n                if (isinstance(value, Decimal) and not value.is_finite()) or (\n                    isinstance(value, float) and not isfinite(value)\n                ):\n                    raise SemanticError(\"UNSUPPORTED_NONFINITE_LITERAL\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 118,
+      "kind": "For",
+      "source": "for child in value.values():\n            yield from _walk(child)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 138,
+      "kind": "For",
+      "source": "for node in _walk(prepared.algebra):\n            if node.name in {\"ServiceGraphPattern\", \"DatasetClause\"}:\n                raise SemanticError(\"EXTERNAL_ACCESS_DENIED\")\n            if node.name == \"Graph\":\n                named_graph = True\n            if node.name.startswith(\"Aggregate_\") and node.name != \"Aggregate_Count\":\n                # Floating reductions and equal-valued MIN/MAX terms depend on the\n                # library's hash iteration order. Candidate only promises COUNT.\n                raise SemanticError(\"UNSUPPORTED_QUERY_FUNCTION\")\n            if node.name in {\n                \"Function\",\n                \"Builtin_RAND\",\n                \"Builtin_NOW\",\n                \"Builtin_UUID\",\n                \"Builtin_STRUUID\",\n                \"Builtin_BNODE\",\n                \"Aggregate_Sample\",\n                \"Aggregate_GroupConcat\",\n            }:\n                raise SemanticError(\"UNSUPPORTED_QUERY_FUNCTION\")\n            if node.name == \"Slice\":\n                raise SemanticError(\"QUERY_SLICE_UNSUPPORTED\")\n            if node.name == \"OrderBy\":\n                orderings.append(node)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 232,
+      "kind": "For",
+      "source": "for term in pattern:\n            if not isinstance(term, URIRef | Literal | Variable):\n                raise SemanticError(\"INVALID_RULE\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 367,
+      "kind": "For",
+      "source": "for value in values:\n            self.debit()\n            result.append(value)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 392,
+      "kind": "DictComp",
+      "source": "{triple: {triple} for triple in asserted}"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 402,
+      "kind": "For",
+      "source": "for child, _, parent in ordered(closure.triples((None, RDFS.subClassOf, None)), key=key):\n            for s, _, _o in ordered(closure.triples((None, RDF.type, child)), key=key):\n                charge()\n                append(\n                    (s, RDF.type, parent), [(s, RDF.type, child), (child, RDFS.subClassOf, parent)]\n                )\n            for _p, _, ancestor in closure.triples((parent, RDFS.subClassOf, None)):\n                charge()\n                append(\n                    (child, RDFS.subClassOf, ancestor),\n                    [(child, RDFS.subClassOf, parent), (parent, RDFS.subClassOf, ancestor)],\n                )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 414,
+      "kind": "For",
+      "source": "for predicate, relation, target in ordered(closure, key=key):\n            if relation in {RDFS.domain, RDFS.range} and predicate not in {\n                RDFS.label,\n                RDFS.comment,\n            }:\n                for s, _, o in closure.triples((None, predicate, None)):\n                    charge()\n                    subject = s if relation == RDFS.domain else o\n                    if isinstance(subject, URIRef):\n                        append(\n                            (subject, RDF.type, target),\n                            [(predicate, relation, target), (s, predicate, o)],\n                        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 428,
+      "kind": "For",
+      "source": "for triple, inputs in ordered(\n            additions, key=lambda item: (key(item[0]), tuple(key(t) for t in item[1]))\n        ):\n            if triple not in closure:\n                # Profile rejects before insertion/allocation. Legacy keeps its\n                # original post-insertion limit and error identity.\n                if meter is not None:\n                    if len(closure) >= MAX_TRIPLES:\n                        raise ProfileReasonError(\n                            \"RDFS_RESULT_LIMIT\", classification=\"resource\", context=\"closure\"\n                        )\n                    meter.debit()\n                    basis = meter.union([proofs[i] for i in inputs])\n                else:\n                    basis = set().union(*(proofs[i] for i in inputs))\n                closure.add(triple)\n                proofs[triple] = basis\n                changed = True\n                if len(closure) > MAX_TRIPLES:\n                    raise SemanticError(\"RDFS_RESULT_LIMIT\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 460,
+      "kind": "For",
+      "source": "for binding, inputs in matches:\n            if meter is not None:\n                meter.debit(3)\n            lookup = tuple(binding.get(t) if isinstance(t, Variable) else t for t in pattern)\n            for triple in ordered(closure.triples(lookup), key=key):\n                charge()\n                if triple[1] in {RDFS.label, RDFS.comment}:\n                    continue\n                if meter is not None:\n                    meter.debit(len(binding) + 3)\n                updated = dict(binding)\n                for expected, value in zip(pattern, triple, strict=True):\n                    if isinstance(expected, Variable):\n                        if expected in updated and updated[expected] != value:\n                            break\n                        updated[expected] = value\n                else:\n                    if meter is not None:\n                        # Limit before copying inputs or appending the binding.\n                        if len(next_matches) >= limit:\n                            raise ProfileReasonError(\n                                \"RULE_INPUT_BUDGET\", classification=\"resource\", context=\"rule\"\n                            )\n                        meter.debit(1 + len(inputs))\n                    next_matches.append((updated, [*inputs, triple]))\n                    if meter is None and len(next_matches) > limit:\n                        raise SemanticError(\"RULE_MATCH_WORK_LIMIT\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 514,
+      "kind": "For",
+      "source": "for binding, inputs in matches:\n            output = tuple(binding.get(t, t) for t in rule.then)\n            _rule(Rule(rule.id, (output,), output))\n            candidate = Graph()\n            candidate.add(output)\n            _terms(candidate)\n            derived.add(output)\n            if len(derived) + len(evidence) >= MAX_RULE_MATCHES:\n                raise SemanticError(\"RULE_EVIDENCE_RESULT_LIMIT\")\n            evidence.append(\n                {\n                    \"rule\": rule.id,\n                    \"result\": _key(output),\n                    \"inputs\": [_key(t) for t in inputs],\n                    \"basis\": [\n                        _key(t) for t in sorted(set().union(*(proofs[t] for t in inputs)), key=_key)\n                    ],\n                }\n            )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 621,
+      "kind": "For",
+      "source": "for category in categories:\n            for subject, _, _ in graph.triples((None, RDF.type, category)):\n                meter.debit(1 + _term_characters(subject))\n                if type(subject) is not URIRef:\n                    raise ProfileReasonError(\"INVALID_RULE\")\n                _profile_iri(str(subject), context=\"catalog\")\n                members.add(str(subject))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 638,
+      "kind": "For",
+      "source": "for proposed, real in zip(\n            (supplied.classes, supplied.object_properties, supplied.data_properties),\n            groups,\n            strict=True,\n        ):\n            if type(proposed) is not tuple or len(proposed) != len(real):\n                raise ProfileReasonError(\"INVALID_RULE\")\n            if any(type(value) is not str for value in proposed):\n                raise ProfileReasonError(\"INVALID_RULE\")\n            for value in proposed:\n                meter.input_text(value)\n                _profile_iri(value, context=\"catalog\")\n            meter.debit(sum(map(len, proposed)) * max(1, len(proposed).bit_length()))\n            if len(set(proposed)) != len(proposed) or tuple(sorted(proposed)) != real:\n                raise ProfileReasonError(\"INVALID_RULE\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 672,
+      "kind": "For",
+      "source": "for term in triple:\n            if type(term) not in (URIRef, Literal):\n                raise ProfileReasonError(\n                    \"UNSUPPORTED_BLANK_NODE\" if isinstance(term, BNode) else \"RDF_TERM_INVALID\"\n                )\n            meter.input_text(str(term))\n            maximum_field_width = max(maximum_field_width, 7 + _term_characters(term))\n            if type(term) is Literal:\n                if term.datatype is not None:\n                    meter.input_text(str(term.datatype))\n                if term.language is not None:\n                    meter.input_text(term.language)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 700,
+      "kind": "For",
+      "source": "for term in (s, p, o):\n            if term in seen:\n                continue\n            meter.debit()\n            seen.add(term)\n            if type(term) is URIRef:\n                iri = str(term)\n                meter.debit(len(iri))\n                _profile_iri(iri)\n                if iri.startswith(str(OWL)) and term not in allowed_owl:\n                    raise ProfileReasonError(\n                        \"EXTERNAL_ACCESS_DENIED\" if term == OWL.imports else \"UNSUPPORTED_OWL\"\n                    )\n                if iri.startswith(str(RDFS)) and term not in allowed_rdfs:\n                    raise ProfileReasonError(\"UNSUPPORTED_RDFS\")\n                if iri.startswith(str(SH)):\n                    raise ProfileReasonError(\"UNSUPPORTED_SHACL\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 722,
+      "kind": "SetComp",
+      "source": "{canonical_string(term) for term in seen}"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 731,
+      "kind": "For",
+      "source": "for iri in (value.lexical_form if value.kind == \"iri\" else None, value.datatype_iri):\n            if iri is not None:\n                meter.debit(len(iri))\n                _profile_iri(iri)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 812,
+      "kind": "For",
+      "source": "for index, item in enumerate(items):\n            if type(item) is not item_type:\n                continue\n            terms = (\n                ((\"left\", item.left), (\"right\", item.right))\n                if section == \"comparison\"\n                else (\n                    (None, item.subject),\n                    (None, item.predicate),\n                    (None, item.object),\n                )\n            )\n            for side, term in terms:\n                if type(term) is not TermInput:\n                    continue\n                location = InputLocation(section, index, side)\n                for iri in (term.lexical_form if term.kind == \"iri\" else None, term.datatype_iri):\n                    if iri is not None and type(iri) is str:\n                        meter.input_text(iri)\n                        _profile_iri(iri, context=\"rule\", location=location, rule_id=spec.rule_id)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 839,
+      "kind": "For",
+      "source": "for head in spec.heads:\n            meter.debit(3)\n            producers.append(\n                tuple(\n                    _profile_as_term(t, meter) for t in (head.subject, head.predicate, head.object)\n                )\n            )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 846,
+      "kind": "For",
+      "source": "for pattern in spec.when:\n            meter.debit(3)\n            consumers.append(\n                (\n                    spec.rule_id,\n                    tuple(\n                        _profile_as_term(t, meter)\n                        for t in (pattern.subject, pattern.predicate, pattern.object)\n                    ),\n                )\n            )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 859,
+      "kind": "For",
+      "source": "for rule_id, pattern in consumers:\n            meter.debit(3 + sum(_term_characters(t) for t in head + pattern))\n            if all(\n                isinstance(a, Variable) or isinstance(b, Variable) or a == b\n                for a, b in zip(head, pattern, strict=True)\n            ):\n                warnings.add(\"RULE_CHAIN_UNSUPPORTED:\" + rule_id)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1236,
+      "kind": "While",
+      "source": "while head != RDF.nil:\n            if not isinstance(head, BNode) or head in visited:\n                raise SemanticError(\"INVALID_SHAPE_LIST\")\n            visited.add(head)\n            lists.add(head)\n            first = list(graph.objects(head, RDF.first))\n            rest = list(graph.objects(head, RDF.rest))\n            if len(first) != 1 or len(rest) != 1 or not isinstance(first[0], URIRef | Literal):\n                raise SemanticError(\"INVALID_SHAPE_LIST\")\n            head = rest[0]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1281,
+      "kind": "For",
+      "source": "for p in _SH_PREDICATES - {SH.property}:\n            if len(list(graph.objects(node, p))) > 1:\n                raise SemanticError(\"INVALID_SHAPE\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1317,
+      "kind": "For",
+      "source": "for result in report.subjects(RDF.type, SH.ValidationResult):\n            violations.append(\n                {\n                    \"focus\": report.value(result, SH.focusNode).n3(),\n                    \"path\": report.value(result, SH.resultPath).n3(),\n                    \"constraint\": report.value(result, SH.sourceConstraintComponent).n3(),\n                    \"sourceShape\": report.value(result, SH.sourceShape).n3(),\n                    \"value\": (\n                        value.n3()\n                        if (value := report.value(result, SH.value)) is not None\n                        else None\n                    ),\n                    \"severity\": report.value(result, SH.resultSeverity).n3(),\n                }\n            )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 121,
+      "kind": "For",
+      "source": "for child in value.values():\n            yield from _walk(child)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 176,
+      "kind": "For",
+      "source": "for row in result:\n                values.append(tuple(row))\n                if len(values) > MAX_TRIPLES:\n                    raise SemanticError(\"QUERY_RESULT_LIMIT\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 216,
+      "kind": "GeneratorExp",
+      "source": "(term.n3() for term in triple)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 249,
+      "kind": "GeneratorExp",
+      "source": "(isinstance(t, Variable) and t not in variables for t in rule.then)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 271,
+      "kind": "SetComp",
+      "source": "{\n            \"RULE_CHAIN_UNSUPPORTED:\" + consumer.id\n            for producer in rules\n            for consumer in rules\n            for pattern in consumer.when\n            if all(\n                isinstance(a, Variable) or isinstance(b, Variable) or a == b\n                for a, b in zip(producer.then, pattern, strict=True)\n            )\n        }"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 403,
+      "kind": "For",
+      "source": "for s, _, _o in ordered(closure.triples((None, RDF.type, child)), key=key):\n                charge()\n                append(\n                    (s, RDF.type, parent), [(s, RDF.type, child), (child, RDFS.subClassOf, parent)]\n                )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 408,
+      "kind": "For",
+      "source": "for _p, _, ancestor in closure.triples((parent, RDFS.subClassOf, None)):\n                charge()\n                append(\n                    (child, RDFS.subClassOf, ancestor),\n                    [(child, RDFS.subClassOf, parent), (parent, RDFS.subClassOf, ancestor)],\n                )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 464,
+      "kind": "For",
+      "source": "for triple in ordered(closure.triples(lookup), key=key):\n                charge()\n                if triple[1] in {RDFS.label, RDFS.comment}:\n                    continue\n                if meter is not None:\n                    meter.debit(len(binding) + 3)\n                updated = dict(binding)\n                for expected, value in zip(pattern, triple, strict=True):\n                    if isinstance(expected, Variable):\n                        if expected in updated and updated[expected] != value:\n                            break\n                        updated[expected] = value\n                else:\n                    if meter is not None:\n                        # Limit before copying inputs or appending the binding.\n                        if len(next_matches) >= limit:\n                            raise ProfileReasonError(\n                                \"RULE_INPUT_BUDGET\", classification=\"resource\", context=\"rule\"\n                            )\n                        meter.debit(1 + len(inputs))\n                    next_matches.append((updated, [*inputs, triple]))\n                    if meter is None and len(next_matches) > limit:\n                        raise SemanticError(\"RULE_MATCH_WORK_LIMIT\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 496,
+      "kind": "GeneratorExp",
+      "source": "(not isinstance(rule, Rule) for rule in rules)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 498,
+      "kind": "GeneratorExp",
+      "source": "(_canonical_rule(rule) for rule in rules)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 539,
+      "kind": "ListComp",
+      "source": "[\n            {\"result\": _key(t), \"basis\": [_key(i) for i in sorted(proofs[t], key=_key)]}\n            for t in sorted(rdfs, key=_key)\n        ]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 622,
+      "kind": "For",
+      "source": "for subject, _, _ in graph.triples((None, RDF.type, category)):\n                meter.debit(1 + _term_characters(subject))\n                if type(subject) is not URIRef:\n                    raise ProfileReasonError(\"INVALID_RULE\")\n                _profile_iri(str(subject), context=\"catalog\")\n                members.add(str(subject))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 647,
+      "kind": "For",
+      "source": "for value in proposed:\n                meter.input_text(value)\n                _profile_iri(value, context=\"catalog\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 791,
+      "kind": "GeneratorExp",
+      "source": "(\n        tuple(_profile_as_term(term, meter) for term in (p.subject, p.predicate, p.object))\n        for p in spec.when\n    )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 824,
+      "kind": "For",
+      "source": "for side, term in terms:\n                if type(term) is not TermInput:\n                    continue\n                location = InputLocation(section, index, side)\n                for iri in (term.lexical_form if term.kind == \"iri\" else None, term.datatype_iri):\n                    if iri is not None and type(iri) is str:\n                        meter.input_text(iri)\n                        _profile_iri(iri, context=\"rule\", location=location, rule_id=spec.rule_id)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 991,
+      "kind": "For",
+      "source": "for binding, inputs in matches:\n                meter.debit(1 + len(binding) + 4 * len(inputs))\n                proof_refs = []\n                actual_when = []\n                for triple in inputs:\n                    meter.debit(1 + len(proofs[triple]))\n                    proof_refs.append(\n                        tuple(\n                            meter.ordered(\n                                (leaf_ids[leaf] for leaf in proofs[triple]), key=lambda value: value\n                            )\n                        )\n                    )\n                    actual_when.append(ProfileTriple(*(actual_term(t) for t in triple)))\n                meter.debit(len(binding) * max(1, len(binding).bit_length()))\n                controlled.append(\n                    BindingMatch(\n                        spec.rule_id,\n                        tuple(\n                            (\"?\" + str(var), actual_term(value))\n                            for var, value in sorted(binding.items(), key=lambda pair: str(pair[0]))\n                        ),\n                        tuple(actual_when),\n                        tuple(proof_refs),\n                    )\n                )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1026,
+      "kind": "For",
+      "source": "for firing in batch.firings:\n                firing_index = len(firings)\n                meter.debit(1 + len(firing.when) + len(firing.basis))\n                firings.append(firing)\n                for head in firing.heads:\n                    triple = tuple(\n                        _profile_as_term(term, meter)\n                        for term in (head.triple.subject, head.triple.predicate, head.triple.object)\n                    )\n                    meter.debit(1 + len(firing.when) + len(firing.basis))\n                    derived.add(triple)\n                    evidence.append(\n                        {\n                            \"rule\": firing.rule_id,\n                            \"firingIndex\": firing_index,\n                            \"headIndex\": head.index,\n                            \"result\": meter.key(triple),\n                            \"inputs\": [\n                                meter.key(\n                                    tuple(\n                                        _profile_as_term(term, meter)\n                                        for term in (t.subject, t.predicate, t.object)\n                                    )\n                                )\n                                for t in firing.when\n                            ],\n                            \"basis\": firing.basis,\n                        }\n                    )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1108,
+      "kind": "ListComp",
+      "source": "[meter.key(t) for t in meter.ordered(rdfs)]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1109,
+      "kind": "ListComp",
+      "source": "[meter.key(t) for t in meter.ordered(derived)]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 124,
+      "kind": "For",
+      "source": "for child in value:\n            yield from _walk(child)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 174,
+      "kind": "ListComp",
+      "source": "[str(v) for v in result.vars]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 187,
+      "kind": "For",
+      "source": "for order in orderings:\n                    for condition in order.expr:\n                        index = variables.index(str(condition.expr))\n                        a, b = left[index], right[index]\n                        a_key = _val(a) if a is not None else (0, \"\")\n                        b_key = _val(b) if b is not None else (0, \"\")\n                        delta = -1 if a_key < b_key else (1 if b_key < a_key else 0)\n                        if delta:\n                            return -delta if condition.order == \"DESC\" else delta"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 200,
+      "kind": "ListComp",
+      "source": "[[v.n3() if v is not None else None for v in row] for row in values]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 248,
+      "kind": "GeneratorExp",
+      "source": "(t for t in pattern if isinstance(t, Variable))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 264,
+      "kind": "GeneratorExp",
+      "source": "(str(target).startswith(str(ns)) for ns in (RDF, RDFS, OWL, SH))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 289,
+      "kind": "GeneratorExp",
+      "source": "(tuple(canonical_string(term) for term in pattern) for pattern in rule.when)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 290,
+      "kind": "GeneratorExp",
+      "source": "(canonical_string(term) for term in rule.then)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 419,
+      "kind": "For",
+      "source": "for s, _, o in closure.triples((None, predicate, None)):\n                    charge()\n                    subject = s if relation == RDFS.domain else o\n                    if isinstance(subject, URIRef):\n                        append(\n                            (subject, RDF.type, target),\n                            [(predicate, relation, target), (s, predicate, o)],\n                        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 471,
+      "kind": "For",
+      "source": "for expected, value in zip(pattern, triple, strict=True):\n                    if isinstance(expected, Variable):\n                        if expected in updated and updated[expected] != value:\n                            break\n                        updated[expected] = value\n                else:\n                    if meter is not None:\n                        # Limit before copying inputs or appending the binding.\n                        if len(next_matches) >= limit:\n                            raise ProfileReasonError(\n                                \"RULE_INPUT_BUDGET\", classification=\"resource\", context=\"rule\"\n                            )\n                        meter.debit(1 + len(inputs))\n                    next_matches.append((updated, [*inputs, triple]))\n                    if meter is None and len(next_matches) > limit:\n                        raise SemanticError(\"RULE_MATCH_WORK_LIMIT\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 499,
+      "kind": "SetComp",
+      "source": "{r.id for r in rules}"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 535,
+      "kind": "GeneratorExp",
+      "source": "(_key(t) for t in rdfs)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 537,
+      "kind": "GeneratorExp",
+      "source": "(_key(t) for t in derived)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 780,
+      "kind": "GeneratorExp",
+      "source": "(\n            len(value)\n            for value in (term.lexical_form, term.datatype_iri, term.language_raw)\n            if value is not None\n        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 828,
+      "kind": "For",
+      "source": "for iri in (term.lexical_form if term.kind == \"iri\" else None, term.datatype_iri):\n                    if iri is not None and type(iri) is str:\n                        meter.input_text(iri)\n                        _profile_iri(iri, context=\"rule\", location=location, rule_id=spec.rule_id)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 995,
+      "kind": "For",
+      "source": "for triple in inputs:\n                    meter.debit(1 + len(proofs[triple]))\n                    proof_refs.append(\n                        tuple(\n                            meter.ordered(\n                                (leaf_ids[leaf] for leaf in proofs[triple]), key=lambda value: value\n                            )\n                        )\n                    )\n                    actual_when.append(ProfileTriple(*(actual_term(t) for t in triple)))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1030,
+      "kind": "For",
+      "source": "for head in firing.heads:\n                    triple = tuple(\n                        _profile_as_term(term, meter)\n                        for term in (head.triple.subject, head.triple.predicate, head.triple.object)\n                    )\n                    meter.debit(1 + len(firing.when) + len(firing.basis))\n                    derived.add(triple)\n                    evidence.append(\n                        {\n                            \"rule\": firing.rule_id,\n                            \"firingIndex\": firing_index,\n                            \"headIndex\": head.index,\n                            \"result\": meter.key(triple),\n                            \"inputs\": [\n                                meter.key(\n                                    tuple(\n                                        _profile_as_term(term, meter)\n                                        for term in (t.subject, t.predicate, t.object)\n                                    )\n                                )\n                                for t in firing.when\n                            ],\n                            \"basis\": firing.basis,\n                        }\n                    )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1088,
+      "kind": "GeneratorExp",
+      "source": "(spec for _, spec in ordered_specs if spec.rule_id not in disabled_set)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1209,
+      "kind": "GeneratorExp",
+      "source": "(not isinstance(n, URIRef) for n in nodes | properties)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1294,
+      "kind": "GeneratorExp",
+      "source": "(p in {RDFS.subClassOf, RDFS.domain, RDFS.range} for _s, p, _o in local)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 49,
+      "kind": "GeneratorExp",
+      "source": "(canonical_string(term) for term in triple)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 164,
+      "kind": "GeneratorExp",
+      "source": "(\n            not isinstance(c.expr, Variable) or c.expr not in prepared.algebra.PV\n            for order in orderings\n            for c in order.expr\n        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 188,
+      "kind": "For",
+      "source": "for condition in order.expr:\n                        index = variables.index(str(condition.expr))\n                        a, b = left[index], right[index]\n                        a_key = _val(a) if a is not None else (0, \"\")\n                        b_key = _val(b) if b is not None else (0, \"\")\n                        delta = -1 if a_key < b_key else (1 if b_key < a_key else 0)\n                        if delta:\n                            return -delta if condition.order == \"DESC\" else delta"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 200,
+      "kind": "ListComp",
+      "source": "[v.n3() if v is not None else None for v in row]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 241,
+      "kind": "GeneratorExp",
+      "source": "(\n                URIRef(\"urn:ontolearn:rule-variable\") if isinstance(t, Variable) else t\n                for t in pattern\n            )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 258,
+      "kind": "GeneratorExp",
+      "source": "(str(predicate).startswith(str(ns)) for ns in (RDF, RDFS, OWL, SH))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 375,
+      "kind": "GeneratorExp",
+      "source": "(len(value) for value in sets)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 463,
+      "kind": "GeneratorExp",
+      "source": "(binding.get(t) if isinstance(t, Variable) else t for t in pattern)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 515,
+      "kind": "GeneratorExp",
+      "source": "(binding.get(t, t) for t in rule.then)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 540,
+      "kind": "ListComp",
+      "source": "[_key(i) for i in sorted(proofs[t], key=_key)]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 611,
+      "kind": "GeneratorExp",
+      "source": "(len(spec.rule_id) for spec in rules)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 645,
+      "kind": "GeneratorExp",
+      "source": "(type(value) is not str for value in proposed)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 792,
+      "kind": "GeneratorExp",
+      "source": "(_profile_as_term(term, meter) for term in (p.subject, p.predicate, p.object))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 861,
+      "kind": "GeneratorExp",
+      "source": "(\n                isinstance(a, Variable) or isinstance(b, Variable) or a == b\n                for a, b in zip(head, pattern, strict=True)\n            )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 930,
+      "kind": "DictComp",
+      "source": "{\n                name: divmod(total, count)[0] + (position < divmod(total, count)[1])\n                for name, total in _PROFILE_POOLS.items()\n            }"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1079,
+      "kind": "ListComp",
+      "source": "[meter.key(leaf) for leaf in meter.ordered(proofs[triple])]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 182,
+      "kind": "GeneratorExp",
+      "source": "((v is not None, v.n3() if v is not None else \"\") for v in row)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 276,
+      "kind": "GeneratorExp",
+      "source": "(\n                isinstance(a, Variable) or isinstance(b, Variable) or a == b\n                for a, b in zip(producer.then, pattern, strict=True)\n            )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 289,
+      "kind": "GeneratorExp",
+      "source": "(canonical_string(term) for term in pattern)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 527,
+      "kind": "ListComp",
+      "source": "[_key(t) for t in inputs]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 528,
+      "kind": "ListComp",
+      "source": "[\n                        _key(t) for t in sorted(set().union(*(proofs[t] for t in inputs)), key=_key)\n                    ]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 842,
+      "kind": "GeneratorExp",
+      "source": "(\n                    _profile_as_term(t, meter) for t in (head.subject, head.predicate, head.object)\n                )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 75,
+      "kind": "GeneratorExp",
+      "source": "(c.isspace() or c in '<>\"{}|^`\\\\' for c in value)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 360,
+      "kind": "GeneratorExp",
+      "source": "(_term_characters(term) for term in triple)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 440,
+      "kind": "ListComp",
+      "source": "[proofs[i] for i in inputs]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 851,
+      "kind": "GeneratorExp",
+      "source": "(\n                        _profile_as_term(t, meter)\n                        for t in (pattern.subject, pattern.predicate, pattern.object)\n                    )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 860,
+      "kind": "GeneratorExp",
+      "source": "(_term_characters(t) for t in head + pattern)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1031,
+      "kind": "GeneratorExp",
+      "source": "(\n                        _profile_as_term(term, meter)\n                        for term in (head.triple.subject, head.triple.predicate, head.triple.object)\n                    )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1082,
+      "kind": "GeneratorExp",
+      "source": "(leaf_ids[leaf] for leaf in proofs[triple])"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1332,
+      "kind": "GeneratorExp",
+      "source": "(str(v) for v in row.values())"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 429,
+      "kind": "GeneratorExp",
+      "source": "(key(t) for t in item[1])"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 442,
+      "kind": "GeneratorExp",
+      "source": "(proofs[i] for i in inputs)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1009,
+      "kind": "GeneratorExp",
+      "source": "(\n                            (\"?\" + str(var), actual_term(value))\n                            for var, value in sorted(binding.items(), key=lambda pair: str(pair[0]))\n                        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1043,
+      "kind": "ListComp",
+      "source": "[\n                                meter.key(\n                                    tuple(\n                                        _profile_as_term(term, meter)\n                                        for term in (t.subject, t.predicate, t.object)\n                                    )\n                                )\n                                for t in firing.when\n                            ]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1000,
+      "kind": "GeneratorExp",
+      "source": "(leaf_ids[leaf] for leaf in proofs[triple])"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1004,
+      "kind": "GeneratorExp",
+      "source": "(actual_term(t) for t in triple)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 529,
+      "kind": "GeneratorExp",
+      "source": "(proofs[t] for t in inputs)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "line": 1045,
+      "kind": "GeneratorExp",
+      "source": "(\n                                        _profile_as_term(term, meter)\n                                        for term in (t.subject, t.predicate, t.object)\n                                    )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 80,
+      "kind": "For",
+      "source": "for record in state[\"definitions\"]:\n        if type(record) is not dict or set(record) != {\"layer\", \"id\", \"payload\"}:\n            _fail()\n        layer, identity, encoded = record[\"layer\"], record[\"id\"], record[\"payload\"]\n        if not all(type(x) is str and x for x in (layer, identity, encoded)):\n            _fail()\n        key = (layer, identity)\n        if key in definitions:\n            _fail()\n        value = json.loads(encoded)\n        definitions[key] = value"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 136,
+      "kind": "For",
+      "source": "for (layer, _identity), value in definitions.items():\n        if layer == \"ontology\":\n            _shape(value, {\"triples\"}, {\"singleValuedPredicates\", \"references\"})\n            if type(value[\"triples\"]) is not list:\n                _fail()\n            for triple in value[\"triples\"]:\n                _shape(triple, {\"subject\", \"predicate\", \"object\"})\n                if any(type(term) is not str for term in triple.values()):\n                    _fail()\n        if layer == \"rule\" and (capability == \"reasoning.execute\" or scope == \"asserted+derived\"):\n            _shape(value, {\"enabled\", \"when\", \"then\"}, {\"references\"})\n            if type(value[\"enabled\"]) is not bool or type(value[\"when\"]) is not list:\n                _fail()\n            for triple in [*value[\"when\"], value[\"then\"]]:\n                if type(triple) is not list or len(triple) != 3:\n                    _fail()\n                if any(type(term) is not str for term in triple):\n                    _fail()"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 265,
+      "kind": "For",
+      "source": "for record in records:\n        if type(record) is not dict or not {\"subject\", \"predicate\", \"object\"} <= set(record):\n            _fail()\n        if record.get(\"object\") is None:  # Managed tombstones are not assertions.\n            continue\n        graph.add((_iri(record[\"subject\"]), _iri(record[\"predicate\"]), _term(record[\"object\"])))\n        if len(graph) > semantic.MAX_TRIPLES:\n            raise SemanticError(\"GRAPH_INPUT_LIMIT\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 294,
+      "kind": "For",
+      "source": "for rule in output:\n        semantic._rule(rule)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 601,
+      "kind": "For",
+      "source": "for chunk in encoder.iterencode(value):\n        data = chunk.encode(\"utf-8\")\n        if len(output) + len(data) > MAX_OUTPUT_BYTES:\n            raise SemanticError(\"PROJECTION_RESULT_LIMIT\")\n        output.extend(data)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 662,
+      "kind": "For",
+      "source": "for item in (source_reference, source_revision):\n            if item is not None:\n                if type(item) is not str:\n                    raise SemanticError(\"TEXT_TYPE_INVALID\")\n                if len(item) > 16384:\n                    raise SemanticError(\"TEXT_INPUT_LIMIT\")\n                try:\n                    encoded_item = item.encode(\"utf-8\")\n                except UnicodeEncodeError:\n                    raise SemanticError(\"INVALID_UNICODE\") from None\n                if len(encoded_item) > 16384:\n                    raise SemanticError(\"TEXT_INPUT_LIMIT\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 141,
+      "kind": "For",
+      "source": "for triple in value[\"triples\"]:\n                _shape(triple, {\"subject\", \"predicate\", \"object\"})\n                if any(type(term) is not str for term in triple.values()):\n                    _fail()"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 149,
+      "kind": "For",
+      "source": "for triple in [*value[\"when\"], value[\"then\"]]:\n                if type(triple) is not list or len(triple) != 3:\n                    _fail()\n                if any(type(term) is not str for term in triple):\n                    _fail()"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 289,
+      "kind": "GeneratorExp",
+      "source": "(\n        semantic.Rule(identity, tuple(pattern(p) for p in value[\"when\"]), pattern(value[\"then\"]))\n        for (layer, identity), value in sorted(definitions.items())\n        if layer == \"rule\" and value[\"enabled\"]\n    )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 314,
+      "kind": "For",
+      "source": "for key in sorted(value):\n                walk(value[key], path + \"/\" + key.replace(\"~\", \"~0\").replace(\"/\", \"~1\"))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 741,
+      "kind": "ListComp",
+      "source": "[\n            [serialized[index : index + MAX_CELL]] for index in range(0, len(serialized), MAX_CELL)\n        ]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 252,
+      "kind": "GeneratorExp",
+      "source": "(c.isspace() or c in '<>\"{}|^`\\\\' for c in text)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 282,
+      "kind": "GeneratorExp",
+      "source": "(\n            Variable(value[1:])\n            if re.fullmatch(r\"\\?[A-Za-z_][A-Za-z_0-9]*\", value)\n            else _term(value)\n            for value in values\n        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 317,
+      "kind": "For",
+      "source": "for index, child in enumerate(value):\n                walk(child, path + \"/\" + str(index))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 322,
+      "kind": "For",
+      "source": "for index, piece in enumerate(pieces):\n                add([path, piece, index + 1, len(pieces)])"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 371,
+      "kind": "For",
+      "source": "for (layer, _), definition in definitions.items():\n                    if layer == \"rule\" and definition[\"enabled\"]:\n                        for triple in [*definition[\"when\"], definition[\"then\"]]:\n                            for value in triple:\n                                semantic._text(value)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 554,
+      "kind": "ListComp",
+      "source": "[self.value(item, depth + 1) for item in value]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 559,
+      "kind": "DictComp",
+      "source": "{\n                self.value(key, depth + 1): self.value(item, depth + 1)\n                for key, item in value.items()\n            }"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 586,
+      "kind": "DictComp",
+      "source": "{\n                field.name: self.value(getattr(value, field.name), depth + 1)\n                for field in fields(value)\n            }"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 84,
+      "kind": "GeneratorExp",
+      "source": "(type(x) is str and x for x in (layer, identity, encoded))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 306,
+      "kind": "GeneratorExp",
+      "source": "(type(c) is str and len(c) > MAX_CELL for c in cells)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 378,
+      "kind": "ListComp",
+      "source": "[\n                    t\n                    for (layer, _), value in sorted(definitions.items())\n                    if layer == \"ontology\"\n                    for t in value[\"triples\"]\n                ]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 557,
+      "kind": "GeneratorExp",
+      "source": "(type(key) is not str for key in value)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 143,
+      "kind": "GeneratorExp",
+      "source": "(type(term) is not str for term in triple.values())"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 152,
+      "kind": "GeneratorExp",
+      "source": "(type(term) is not str for term in triple)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 290,
+      "kind": "GeneratorExp",
+      "source": "(pattern(p) for p in value[\"when\"])"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 321,
+      "kind": "ListComp",
+      "source": "[encoded[i : i + MAX_CELL] for i in range(0, len(encoded), MAX_CELL)]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 373,
+      "kind": "For",
+      "source": "for triple in [*definition[\"when\"], definition[\"then\"]]:\n                            for value in triple:\n                                semantic._text(value)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 700,
+      "kind": "GeneratorExp",
+      "source": "(term.source for triple in records for term in triple)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 374,
+      "kind": "For",
+      "source": "for value in triple:\n                                semantic._text(value)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 415,
+      "kind": "GeneratorExp",
+      "source": "(semantic._key(t) for t in facts)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "line": 416,
+      "kind": "GeneratorExp",
+      "source": "(semantic._key(t) for t in ontology)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 958,
+      "kind": "For",
+      "source": "for names in (allocation.rule_ids, allocation.disabled_rule_ids):\n        for name in names:\n            decoder.string(name, 16384)\n            _require(bool(name), \"entry\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 962,
+      "kind": "For",
+      "source": "for child in allocation.children:\n        _require(type(child) is ChildAllocation and type(child.limits) is ProfileLimits, \"entry\")\n        decoder.optional_string(child.rule_id, 16384)\n        _require(\n            child.definition_ordinal is None\n            or (type(child.definition_ordinal) is int and 0 <= child.definition_ordinal < 100),\n            \"entry\",\n        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 980,
+      "kind": "For",
+      "source": "for value in (\n        e.payload_digest,\n        e.rows_digest,\n        e.input_digest,\n        e.source_digest,\n        e.definitions_digest,\n        e.catalog_digest,\n    ):\n        decoder.sha(value)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 990,
+      "kind": "For",
+      "source": "for pair, key in zip(e.implementation, _IDENTITY, strict=True):\n        _require(\n            type(pair) is tuple and len(pair) == 2 and type(pair[0]) is str and pair[0] == key,\n            \"entry\",\n        )\n        decoder.string(pair[1], 16384)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1138,
+      "kind": "For",
+      "source": "for key, value in expected.implementation:\n        _same(raw[\"implementation\"][key], value, ledger, stage=\"A3\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1140,
+      "kind": "For",
+      "source": "for key, value in (\n        (\"inputDigest\", expected.input_digest),\n        (\"sourceDigest\", expected.source_digest),\n        (\"definitionsDigest\", expected.definitions_digest),\n    ):\n        _same(decoder.sha(raw[key]), value, ledger, stage=\"A3\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1217,
+      "kind": "For",
+      "source": "for slot, child in enumerate(decoder.children):\n        decoder.slot, decoder.stage = slot, \"A16\"\n        ledger.start_slot(slot)\n        with ledger.opaque():\n            fact = check_firing_batch(\n                child[\"definitions\"],\n                child[\"catalog\"],\n                () if child[\"disabled\"] else child[\"originalMatches\"],\n                child[\"batch\"],\n                limits=decoder.allocation.children[slot].limits,\n                disabled=child[\"disabled\"],\n            )\n        ledger.complete_slot(slot)\n        children.append(\n            RestoredChild(\n                child[\"ruleId\"],\n                child[\"definitionOrdinal\"],\n                child[\"disabled\"],\n                child[\"definitions\"],\n                child[\"catalog\"],\n                child[\"originalMatches\"],\n                child[\"batch\"],\n                fact,\n            )\n        )\n        limits = decoder.allocation.children[slot].limits\n        control = 1 + 33 * limits.firings + 4 * limits.output_bytes + 128 + 70 + 4\n        caps.append(\n            (\n                (\"work\", 3 * limits.work + control),\n                (\"input_bytes\", 2 * limits.input_bytes),\n                (\"output_bytes\", 2 * limits.output_bytes),\n                (\"control\", control),\n            )\n        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 65,
+      "kind": "GeneratorExp",
+      "source": "((f.name, f.default) for f in fields(ProfileLimits))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 179,
+      "kind": "For",
+      "source": "for key, value in self.entries:\n            if key == name:\n                return value"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 326,
+      "kind": "For",
+      "source": "for key in keys:\n            _require(key in value)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 363,
+      "kind": "For",
+      "source": "for char in value:\n            number = ord(char)\n            _require(not 0xD800 <= number <= 0xDFFF)\n            size += 1 if number < 128 else 2 if number < 2048 else 3 if number < 65536 else 4"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 597,
+      "kind": "For",
+      "source": "for index, comparison in enumerate(comparisons):\n            _require(comparison.index == index)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 599,
+      "kind": "For",
+      "source": "for index, head in enumerate(heads):\n            _require(head.index == index)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 733,
+      "kind": "For",
+      "source": "for name, maximum in _LIMITS:\n            if name not in (\"work\", \"output_bytes\"):\n                _require(entry[name] == maximum)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 767,
+      "kind": "For",
+      "source": "for ordinal, name in enumerate(allocation.rule_ids):\n            self.string(name, 16384)\n            _require(bool(name), \"A3\")\n            total += len(name)\n            _require(total <= self.ledger.B, \"A3\")\n            position = len(ordered)\n            while position:\n                compared = self.id_compare(name, ordered[position - 1][1])\n                _require(compared != 0, \"A3\")\n                if compared > 0:\n                    break\n                position -= 1\n            self.ledger.charge(\"rule\", len(ordered) - position + 1, stage=\"A3\")\n            ordered.insert(position, (ordinal, name))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 792,
+      "kind": "For",
+      "source": "for name in allocation.disabled_rule_ids:\n            self.string(name, 16384)\n            slot = self.find_slot(name, ordered)\n            _require(not flags[slot], \"A3\")\n            flags[slot] = True"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 797,
+      "kind": "For",
+      "source": "for slot, ((ordinal, name), child) in enumerate(\n            zip(ordered, allocation.children, strict=True)\n        ):\n            _require(type(child) is ChildAllocation and type(child.limits) is ProfileLimits, \"A3\")\n            _same(child.rule_id, name, self.ledger, domain=\"rule\", stage=\"A3\")\n            _same(child.definition_ordinal, ordinal, self.ledger, domain=\"rule\", stage=\"A3\")\n            self.ledger.charge(\"rule\", 17, stage=\"A3\")\n            for field, default in _LIMITS:\n                actual = getattr(child.limits, field)\n                _require(type(actual) is int, \"A3\")\n                total_pool = semantic._PROFILE_POOLS.get(field)\n                expected = (\n                    default\n                    if total_pool is None\n                    else (total_pool // len(ordered) + (slot < total_pool % len(ordered)))\n                )\n                _require(actual == expected, \"A3\")\n            # Includes values/kwargs, ProfileLimits, Budget and its six counters.\n            self.ledger.reserve(\"objects\", 128, stage=\"A3\")\n            values = {field: getattr(child.limits, field) for field, _ in _LIMITS}\n            values[\"output_bytes\"] = 0\n            self.parse_pools.append(Budget(ProfileLimits(**values)))\n            self.caches.append(TermCache(self.ledger))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 824,
+      "kind": "For",
+      "source": "for slot, (_, candidate) in enumerate(ordered):\n            if candidate is not None and self.id_compare(name, candidate) == 0:\n                return slot"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 851,
+      "kind": "For",
+      "source": "for field, _ in _LIMITS:\n            _require(limit_values[field] == getattr(limits, field), \"A3\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 886,
+      "kind": "For",
+      "source": "for spec, name in zip(definitions, self.allocation.rule_ids, strict=True):\n            _same(spec.rule_id, name, self.ledger, stage=\"A3\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 902,
+      "kind": "For",
+      "source": "for raw in groups:\n            _require(type(raw) is dict and \"rule_id\" in raw)\n            name = self.string(raw[\"rule_id\"], 16384)\n            self.slot = self.find_slot(name, ordered)\n            native_groups.append(self.firing(raw))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 908,
+      "kind": "For",
+      "source": "for child in native_children:\n            batch = child[\"batch\"]\n            if batch is not None:\n                for firing in batch.firings:\n                    _same(native_groups[cursor], firing, self.ledger, stage=\"A5\")\n                    cursor += 1"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 916,
+      "kind": "For",
+      "source": "for ordinal, occurrence in enumerate(occurrences):\n            _require(occurrence[\"ordinal\"] == ordinal)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 940,
+      "kind": "For",
+      "source": "for cache in self.caches:\n            cache.clear()"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 959,
+      "kind": "For",
+      "source": "for name in names:\n            decoder.string(name, 16384)\n            _require(bool(name), \"entry\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1075,
+      "kind": "For",
+      "source": "for cls, _names in _EQUAL_FIELDS:\n            if kind is cls:\n                return value"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1149,
+      "kind": "For",
+      "source": "for occurrence in occurrences:\n            _same(occurrence[\"value\"].source, source, ledger, stage=\"A9\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1197,
+      "kind": "DictComp",
+      "source": "{key: safe_reason if key == \"reasoning\" else raw[key] for key in _PAYLOAD}"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1270,
+      "kind": "For",
+      "source": "for row in rows:\n            decoder.sequence(row, 1)\n            _require(len(row) == 1 and type(row[0]) is str and len(row[0]) <= 8192, \"A12\")\n            ledger.charge(\"traversal\", 1, stage=\"A12\")\n            chunk = text[offset : offset + 8192]\n            _same(row[0], chunk, ledger, stage=\"A12\")\n            offset += len(chunk)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 345,
+      "kind": "ListComp",
+      "source": "[decode(item) for item in value]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 644,
+      "kind": "DictComp",
+      "source": "{\n            name: self.integer(value[name], minimum=0, maximum=maximum) for name, maximum in _LIMITS\n        }"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 654,
+      "kind": "DictComp",
+      "source": "{\n            name: self.integer(value[name], minimum=0, maximum=getattr(limits, name))\n            for name in _COUNTERS\n        }"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 727,
+      "kind": "DictComp",
+      "source": "{\n            name: self.integer(value[\"limits\"][name], minimum=maximum, maximum=maximum)\n            for name, maximum in maxima\n        }"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 773,
+      "kind": "While",
+      "source": "while position:\n                compared = self.id_compare(name, ordered[position - 1][1])\n                _require(compared != 0, \"A3\")\n                if compared > 0:\n                    break\n                position -= 1"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 804,
+      "kind": "For",
+      "source": "for field, default in _LIMITS:\n                actual = getattr(child.limits, field)\n                _require(type(actual) is int, \"A3\")\n                total_pool = semantic._PROFILE_POOLS.get(field)\n                expected = (\n                    default\n                    if total_pool is None\n                    else (total_pool // len(ordered) + (slot < total_pool % len(ordered)))\n                )\n                _require(actual == expected, \"A3\")"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1056,
+      "kind": "For",
+      "source": "for index, (key, item) in enumerate(value.items()):\n                if type(key) is not str:\n                    raise RestoreFailure(\"RESTORE_INTERNAL\", \"internal\", stage=\"A16\")\n                builder[index] = (key, _freeze_native(item, ledger, depth + 1))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1067,
+      "kind": "For",
+      "source": "for index in range(size):\n                builder[index] = _freeze_native(value[index], ledger, depth + 1)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1094,
+      "kind": "DictComp",
+      "source": "{key: native if key == \"reasoning\" else raw[key] for key in _PAYLOAD}"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1214,
+      "kind": "GeneratorExp",
+      "source": "(pool.usage for pool in decoder.parse_pools)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 258,
+      "kind": "GeneratorExp",
+      "source": "(name for name, _ in _LIMITS)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 816,
+      "kind": "DictComp",
+      "source": "{field: getattr(child.limits, field) for field, _ in _LIMITS}"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 893,
+      "kind": "GeneratorExp",
+      "source": "(\n            self.child(raw, i, ordered, flags, definitions, catalog)\n            for i, raw in enumerate(children)\n        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 911,
+      "kind": "For",
+      "source": "for firing in batch.firings:\n                    _same(native_groups[cursor], firing, self.ledger, stage=\"A5\")\n                    cursor += 1"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1156,
+      "kind": "GeneratorExp",
+      "source": "(\n            tuple(occurrences[i + j][\"value\"] for j in range(3))\n            for i in range(0, len(occurrences), 3)\n        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1161,
+      "kind": "GeneratorExp",
+      "source": "(item[\"value\"].source for item in occurrences)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 289,
+      "kind": "For",
+      "source": "for a, b in zip(left, right, strict=True):\n            _same(a, b, ledger, domain=domain, stage=stage)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 294,
+      "kind": "For",
+      "source": "for cls, names in _EQUAL_FIELDS:\n            if kind is cls:\n                ledger.charge(\"traversal\", len(names), stage=stage)\n                for name in names:\n                    _same(\n                        getattr(left, name),\n                        getattr(right, name),\n                        ledger,\n                        domain=domain,\n                        stage=stage,\n                    )\n                return"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 397,
+      "kind": "GeneratorExp",
+      "source": "(self.optional_string(value[k], 65536) for k in keys)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 471,
+      "kind": "GeneratorExp",
+      "source": "(self.collect(value[name], lambda s: self.string(s, 16384)) for name in names)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 642,
+      "kind": "GeneratorExp",
+      "source": "(n for n, _ in _LIMITS)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 726,
+      "kind": "GeneratorExp",
+      "source": "(name for name, _ in maxima)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 389,
+      "kind": "GeneratorExp",
+      "source": "(c in \"0123456789abcdef\" for c in value)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 1157,
+      "kind": "GeneratorExp",
+      "source": "(occurrences[i + j][\"value\"] for j in range(3))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "line": 297,
+      "kind": "For",
+      "source": "for name in names:\n                    _same(\n                        getattr(left, name),\n                        getattr(right, name),\n                        ledger,\n                        domain=domain,\n                        stage=stage,\n                    )"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 369,
+      "kind": "For",
+      "source": "for child in restored.children:\n        if child.batch is not None:\n            for firing in child.batch.firings:\n                for comparison in firing.comparisons:\n                    rule_terms.check_value(comparison.left, Budget())\n                    rule_terms.check_value(comparison.right, Budget())"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 454,
+      "kind": "For",
+      "source": "for used, allocation in zip(response[\"parse_usage\"], capture.allocation.children, strict=True):\n        used = dict(used)\n        assert used[\"work\"] <= allocation.limits.work\n        assert used[\"input_bytes\"] <= allocation.limits.input_bytes\n        assert used[\"output_bytes\"] == 0"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 459,
+      "kind": "For",
+      "source": "for call, child in zip(response[\"calls\"], capture.native[\"mechanismBatches\"], strict=True):\n        assert call[\"limits\"] == signature(child[\"limits\"])\n        assert call[\"definitions\"] == signature(child[\"definitions\"])\n        assert call[\"catalog\"] == signature(child[\"catalog\"])\n        assert call[\"original_matches\"] == signature(\n            () if child[\"disabled\"] else child[\"originalMatches\"]\n        )\n        assert call[\"disabled\"] is child[\"disabled\"]\n        assert call[\"saved_none\"] is (child[\"batch\"] is None)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 641,
+      "kind": "For",
+      "source": "for key in path:\n        value = value[key]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 662,
+      "kind": "For",
+      "source": "for path in paths:\n        payload = copy.deepcopy(captured.payload)\n        parent, final = at(payload, path[:-1]), path[-1]\n        parent[final] = changed_leaf(parent[final])\n        wire, _enemy_expectation = rebound_wire(captured, payload)\n        assert_rejected(captured, wire=wire)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 898,
+      "kind": "For",
+      "source": "for value in (manual, restored_pickle):\n        with pytest.raises(ProfileFailure):\n            rule_terms.check_value(value, Budget())"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 915,
+      "kind": "For",
+      "source": "for blob in (\n        captured.payload,\n        original,\n        captured.native[\"mechanismBatches\"][0][\"batch\"],\n        pickle.dumps(original),\n    ):\n        assert_rejected(captured, wire=(blob, captured.rows_json))"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 966,
+      "kind": "For",
+      "source": "for child in reasoning[\"mechanismBatches\"].items:\n        assert len(child.entries) == 11"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 527,
+      "kind": "ListComp",
+      "source": "[item[\"value\"] for item in capture.native[\"termSources\"] if item[\"value\"].source]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 631,
+      "kind": "For",
+      "source": "for key, item in value.items():\n            yield from iter_leaf_paths(item, (*path, key))"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 95,
+      "kind": "GeneratorExp",
+      "source": "(\n        f'<urn:s{index}> <urn:value> \"{value}\"^^<{XSD}{datatype}> .\\n'\n        for index, value in enumerate(values, 1)\n    )"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 123,
+      "kind": "ListComp",
+      "source": "[[field.name, signature(getattr(value, field.name))] for field in fields(value)]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 128,
+      "kind": "DictComp",
+      "source": "{key: child[key] for key in COPY_FIELDS}"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 262,
+      "kind": "ListComp",
+      "source": "[[text[index : index + 8192]] for index in range(0, len(text), 8192)]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 283,
+      "kind": "DictComp",
+      "source": "{\n            field.name: (\n                getattr(e, field.name).hex()\n                if type(getattr(e, field.name)) is bytes\n                else getattr(e, field.name)\n            )\n            for field in fields(e)\n        }"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 312,
+      "kind": "GeneratorExp",
+      "source": "(tuple(item) for item in values[\"implementation\"])"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 371,
+      "kind": "For",
+      "source": "for firing in child.batch.firings:\n                for comparison in firing.comparisons:\n                    rule_terms.check_value(comparison.left, Budget())\n                    rule_terms.check_value(comparison.right, Budget())"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 379,
+      "kind": "ListComp",
+      "source": "[restored_child_signature(child) for child in restored.children]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 380,
+      "kind": "ListComp",
+      "source": "[child.fact for child in restored.children]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 445,
+      "kind": "ListComp",
+      "source": "[\n        original_child_signature(child) for child in capture.native[\"mechanismBatches\"]\n    ]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 478,
+      "kind": "ListComp",
+      "source": "[dict(item.bindings)[\"?v\"].lexical_form for item in native[\"originalMatches\"]]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 634,
+      "kind": "For",
+      "source": "for index, item in enumerate(value):\n            yield from iter_leaf_paths(item, (*path, index))"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 927,
+      "kind": "DictComp",
+      "source": "{key: thaw_view(item) for key, item in value.entries}"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 116,
+      "kind": "ListComp",
+      "source": "[signature(item) for item in value]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 118,
+      "kind": "ListComp",
+      "source": "[[name, signature(item)] for name, item in sorted(value.items())]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 171,
+      "kind": "GeneratorExp",
+      "source": "(term.source for triple in records for term in triple)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 226,
+      "kind": "GeneratorExp",
+      "source": "(spec.rule_id for spec in rules)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 228,
+      "kind": "GeneratorExp",
+      "source": "(\n        (child.rule_id, child.definition_ordinal, child.limits) for child in allocation.children\n    )"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 230,
+      "kind": "GeneratorExp",
+      "source": "(\n        (item[\"ruleId\"], item[\"definitionOrdinal\"], item[\"limits\"])\n        for item in native[\"mechanismBatches\"]\n    )"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 273,
+      "kind": "GeneratorExp",
+      "source": "(value for _, value in ledger.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 295,
+      "kind": "ListComp",
+      "source": "[\n                {\n                    \"rule_id\": item.rule_id,\n                    \"definition_ordinal\": item.definition_ordinal,\n                    \"limits\": {\n                        field.name: getattr(item.limits, field.name)\n                        for field in fields(item.limits)\n                    },\n                }\n                for item in capture.allocation.children\n            ]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 320,
+      "kind": "GeneratorExp",
+      "source": "(\n            ChildAllocation(\n                child[\"rule_id\"], child[\"definition_ordinal\"], ProfileLimits(**child[\"limits\"])\n            )\n            for child in original[\"children\"]\n        )"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 372,
+      "kind": "For",
+      "source": "for comparison in firing.comparisons:\n                    rule_terms.check_value(comparison.left, Budget())\n                    rule_terms.check_value(comparison.right, Budget())"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 449,
+      "kind": "GeneratorExp",
+      "source": "(value for _, value in response[\"live\"])"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 929,
+      "kind": "GeneratorExp",
+      "source": "(thaw_view(item) for item in value.items)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 972,
+      "kind": "GeneratorExp",
+      "source": "(v for _, v in ledger.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "line": 299,
+      "kind": "DictComp",
+      "source": "{\n                        field.name: getattr(item.limits, field.name)\n                        for field in fields(item.limits)\n                    }"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 108,
+      "kind": "For",
+      "source": "for bad in (\n        ((\"wire\", dict(original.caps)[\"wire\"] + 1),),\n        ((\"wire\", True),),\n        ((\"wire\", -1),),\n        ((\"unknown-domain\", 1),),\n        ((\"wire\", 0), (\"wire\", 0)),\n    ):\n        with pytest.raises(RestoreFailure):\n            support.restore_capture(captured, ledger=RestoreLedger(overrides=bad))"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 160,
+      "kind": "For",
+      "source": "for name, total in semantic._PROFILE_POOLS.items():\n        assert sum(getattr(item[\"limits\"], name) for item in children) == total\n        assert [getattr(item[\"limits\"], name) for item in children] == [\n            total // count + (position < total % count) for position in range(count)\n        ]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 200,
+      "kind": "For",
+      "source": "for allocation in (\n        replace(original, children=()),\n        replace(original, children=original.children * 2),\n        replace(original, rule_ids=(\"fake\",)),\n        replace(original, rule_ids=(\"r\", \"r\")),\n        replace(original, disabled_rule_ids=(\"r\",)),\n        replace(original, budget_version=\"mechanism-budget/0\"),\n    ):\n        support.assert_rejected(captured, allocation=allocation)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 223,
+      "kind": "For",
+      "source": "for expected, allocation, wire in (\n        (foreign, captured.allocation, None),\n        (captured.expected, foreign, None),\n        (captured.expected, captured.allocation, (foreign, captured.rows_json)),\n    ):\n        support.assert_rejected(captured, expected=expected, allocation=allocation, wire=wire)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 260,
+      "kind": "For",
+      "source": "for field in (\"rule_ids\", \"disabled_rule_ids\", \"children\"):\n        for value in (foreign, ForeignTuple((\"r\",)), (foreign,)):\n            allocation = replace(captured.allocation, **{field: value})\n            support.assert_rejected(captured, allocation=allocation)\n            assert calls == [], (field, calls)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 322,
+      "kind": "While",
+      "source": "while traceback is not None:\n        # Both public APIs now share this exact operation frame. Checking only\n        # the thin compatibility wrapper would miss retained decoded values.\n        if traceback.tb_frame.f_code.co_name == \"_restore_operation\":\n            public_frames.append(traceback.tb_frame)\n        traceback = traceback.tb_next"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 329,
+      "kind": "For",
+      "source": "for name in (\n        \"children\",\n        \"parse_usage\",\n        \"caps\",\n        \"outcome\",\n        \"decoder\",\n        \"projection\",\n        \"inner_batches\",\n        \"retention\",\n    ):\n        assert public_frames[0].f_locals[name] is None, (fault, name)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 352,
+      "kind": "For",
+      "source": "for blob in (\n        bytearray(captured.payload_json),\n        memoryview(captured.payload_json),\n        ForeignBytes(captured.payload_json),\n    ):\n        support.assert_rejected(captured, wire=(blob, captured.rows_json))"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 651,
+      "kind": "While",
+      "source": "while tb:\n        if tb.tb_frame.f_code.co_name == \"_restore_operation\":\n            frames.append(tb.tb_frame)\n        tb = tb.tb_next"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 656,
+      "kind": "For",
+      "source": "for name in (\n        \"children\",\n        \"parse_usage\",\n        \"caps\",\n        \"projection\",\n        \"inner_batches\",\n        \"retention\",\n        \"outcome\",\n        \"decoder\",\n    ):\n        assert frames[0].f_locals[name] is None, (fault, name)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 180,
+      "kind": "ListComp",
+      "source": "[field.name for field in fields(ProfileLimits)]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 261,
+      "kind": "For",
+      "source": "for value in (foreign, ForeignTuple((\"r\",)), (foreign,)):\n            allocation = replace(captured.allocation, **{field: value})\n            support.assert_rejected(captured, allocation=allocation)\n            assert calls == [], (field, calls)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 491,
+      "kind": "For",
+      "source": "for term in variants:\n            key = resources.term_key(term, ledger)\n            keys.append(key)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 497,
+      "kind": "While",
+      "source": "while keys:\n            key = keys.pop()\n            resources.release_key(key, ledger)\n            del key"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 527,
+      "kind": "ListComp",
+      "source": "[\n        TermInput(\"iri\", \"urn:branch\", source=SourceRecord(text=\"a\" * size)) for size in range(256)\n    ]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 530,
+      "kind": "ListComp",
+      "source": "[\n        TermInput(\"iri\", \"urn:prefix:\" + \"a\" * 8000 + ending) for ending in (\"a\", \"b\", \"ba\", \"bb\")\n    ]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 536,
+      "kind": "For",
+      "source": "for term in terms:\n            key = resources.term_key(term, ledger)\n            retained_key_ids.add(id(key))\n            try:\n                values.append(cache.get_or_insert(key, lambda term=term: make(term)))\n            finally:\n                resources.release_key(key, ledger)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 547,
+      "kind": "While",
+      "source": "while pending:\n            node = pending.pop()\n            assert id(node.key) in retained_key_ids\n            assert type(node.key) is bytes and 0 <= node.start < node.end <= len(node.key)\n            branch_widths.append(len(node.children))\n            pending.extend(node.children)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 554,
+      "kind": "For",
+      "source": "for term, expected in zip(terms, values, strict=True):\n            key = resources.term_key(term, ledger)\n            try:\n                assert (\n                    cache.get_or_insert(key, lambda: pytest.fail(\"unexpected cache miss\"))\n                    is expected\n                )\n            finally:\n                resources.release_key(key, ledger)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 121,
+      "kind": "GeneratorExp",
+      "source": "(\n        RuleSpec(str(index), (triple,), (), (triple,)) for index in reversed(range(count))\n    )"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 155,
+      "kind": "ListComp",
+      "source": "[item[\"ruleId\"] for item in children]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 156,
+      "kind": "ListComp",
+      "source": "[item[\"definitionOrdinal\"] for item in children]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 156,
+      "kind": "ListComp",
+      "source": "[\n        next(i for i, spec in enumerate(rules) if spec.rule_id == item[\"ruleId\"])\n        for item in children\n    ]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 174,
+      "kind": "ListComp",
+      "source": "[item[\"ruleId\"] for item in children]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 175,
+      "kind": "ListComp",
+      "source": "[item[\"disabled\"] for item in children]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 176,
+      "kind": "ListComp",
+      "source": "[item[\"limits\"].firings for item in children]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 64,
+      "kind": "GeneratorExp",
+      "source": "(value for _, value in short.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 80,
+      "kind": "GeneratorExp",
+      "source": "(value for _, value in short.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 92,
+      "kind": "GeneratorExp",
+      "source": "(value for _, value in ledger.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 155,
+      "kind": "GeneratorExp",
+      "source": "(spec.rule_id for spec in rules)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 162,
+      "kind": "ListComp",
+      "source": "[getattr(item[\"limits\"], name) for item in children]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 162,
+      "kind": "ListComp",
+      "source": "[\n            total // count + (position < total % count) for position in range(count)\n        ]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 165,
+      "kind": "GeneratorExp",
+      "source": "(item[\"limits\"].firings for item in children)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 408,
+      "kind": "GeneratorExp",
+      "source": "(value for _, value in ledger.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 439,
+      "kind": "GeneratorExp",
+      "source": "(value for _, value in ledger.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 495,
+      "kind": "GeneratorExp",
+      "source": "(key.startswith(b\"I05RTK1\\0\") for key in keys)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 574,
+      "kind": "GeneratorExp",
+      "source": "(value for _, value in ledger.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 675,
+      "kind": "GeneratorExp",
+      "source": "(v for _, v in ledger.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 157,
+      "kind": "GeneratorExp",
+      "source": "(i for i, spec in enumerate(rules) if spec.rule_id == item[\"ruleId\"])"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 161,
+      "kind": "GeneratorExp",
+      "source": "(getattr(item[\"limits\"], name) for item in children)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 319,
+      "kind": "GeneratorExp",
+      "source": "(value for _, value in ledger.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 563,
+      "kind": "SetComp",
+      "source": "{id(value) for value in values}"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 588,
+      "kind": "GeneratorExp",
+      "source": "(v for _, v in short.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 648,
+      "kind": "GeneratorExp",
+      "source": "(v for _, v in ledger.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 707,
+      "kind": "GeneratorExp",
+      "source": "(v for _, v in ledger.live)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 361,
+      "kind": "DictComp",
+      "source": "{\n                field.name: getattr(captured.expected, field.name)\n                for field in fields(captured.expected)\n            }"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "line": 370,
+      "kind": "DictComp",
+      "source": "{\n                field.name: getattr(captured.allocation, field.name)\n                for field in fields(captured.allocation)\n            }"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 286,
+      "kind": "For",
+      "source": "for character in value:\n        point = ord(character)\n        escaped_bytes += (\n            6\n            if point < 32\n            else 2\n            if point in (34, 92)\n            else 1\n            if point < 128\n            else 2\n            if point < 2048\n            else 3\n            if point < 65536\n            else 4\n        )\n        if escaped_bytes > MAX_BYTES:\n            raise MaterialFailure(\"MATERIAL_LIMIT\", stage=ledger.stage)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 350,
+      "kind": "For",
+      "source": "for cls, names in _RECORDS:\n        ledger.debit(\"traversal\", 1)\n        if kind is cls:\n            ledger.debit(\"traversal\", 2 * len(names))\n            ledger.reserve(\"objects\", 2 * len(names) + 3)\n            output = {\"recordType\": cls.__name__}\n            for name in names:\n                item = getattr(value, name)\n                # Exact field grammar before recursion/foreign len/hash/iter.\n                if cls is SourceRecord:\n                    _require(item is None or type(item) is str)\n                elif cls is TermInput:\n                    if name == \"source\":\n                        _require(item is None or type(item) is SourceRecord)\n                    elif name in (\"kind\", \"lexical_form\"):\n                        _require(type(item) is str)\n                    else:\n                        _require(item is None or type(item) is str)\n                elif cls is Variable:\n                    _require(type(item) is str)\n                elif cls is Triple:\n                    _require(\n                        type(item) is TermInput\n                        if name == \"predicate\"\n                        else type(item) is TermInput or type(item) is Variable\n                    )\n                elif cls is Comparison:\n                    _require(\n                        type(item) is str\n                        if name == \"operator\"\n                        else type(item) is TermInput or type(item) is Variable\n                    )\n                elif cls is RuleSpec:\n                    if name in (\"when\", \"comparisons\", \"heads\"):\n                        _require(type(item) is tuple)\n                        expected = Comparison if name == \"comparisons\" else Triple\n                        ledger.debit(\"traversal\", len(item))\n                        _require(all(type(element) is expected for element in item))\n                    elif name == \"source\":\n                        _require(item is None or type(item) is SourceRecord)\n                    else:\n                        _require(item is None or type(item) is str)\n                output[name] = _project(item, ledger, depth + 1)\n            return output"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 451,
+      "kind": "For",
+      "source": "for triple in value:\n        _require(type(triple) is tuple and len(triple) == 3)\n        _require(all(type(term) is TermInput for term in triple))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 460,
+      "kind": "For",
+      "source": "for field in identity:\n        _require(type(field) is str and 0 < len(field) <= 16384)\n        _text(field, ledger, 16384)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 471,
+      "kind": "For",
+      "source": "for spec in rules:\n        ledger.debit(\"traversal\", len(ids) + 3)\n        _require(type(spec) is RuleSpec and type(spec.rule_id) is str)\n        _text(spec.rule_id, ledger, 16384)\n        ledger.debit(\"scan_copy\", 2 * (len(ids) + 1) * (len(spec.rule_id) + 1))\n        _require(spec.rule_id not in ids)\n        _require(type(spec.policy) is str and spec.policy == PROFILE)\n        ids.append(spec.rule_id)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 479,
+      "kind": "For",
+      "source": "for pos, identity in enumerate(disabled):\n        _require(type(identity) is str)\n        _text(identity, ledger, 16384)\n        ledger.debit(\"traversal\", len(ids) + pos + 1)\n        ledger.debit(\"scan_copy\", 2 * (len(ids) + pos + 1) * (len(identity) + 1))\n        _require(identity in ids and identity not in disabled[:pos])"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 489,
+      "kind": "For",
+      "source": "for spec in rules:\n        ledger.debit(\"traversal\", len(disabled) + 10)\n        ledger.reserve(\"objects\", 24)\n        body.append(\n            {\n                \"enabled\": spec.rule_id not in disabled,\n                \"rule_id\": spec.rule_id,\n                \"when\": spec.when,\n                \"comparisons\": spec.comparisons,\n                \"heads\": spec.heads,\n                \"source\": spec.source,\n                \"revision\": spec.revision,\n                \"definition_digest\": spec.definition_digest,\n                \"policy\": spec.policy,\n            }\n        )"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 530,
+      "kind": "For",
+      "source": "for char in data:\n        if quoted:\n            if escaped:\n                escaped = False\n            elif char == 92:\n                escaped = True\n            elif char == 34:\n                quoted = False\n        elif char == 34:\n            quoted = True\n        elif char in (91, 123):\n            depth += 1\n            _require(depth <= 32)\n        elif char in (93, 125):\n            depth -= 1\n            _require(depth >= 0)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 623,
+      "kind": "For",
+      "source": "for cls, names in _RECORDS:\n        ledger.debit(\"traversal\", 1)\n        if tag == cls.__name__:\n            _require(len(value) == len(names) + 1 and all(n in value for n in names))\n            ledger.debit(\"traversal\", 2 * len(names))\n            ledger.reserve(\"objects\", 2 * len(names) + 2)\n            return cls(**{name: _syntax_native(value[name], ledger) for name in names})"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 814,
+      "kind": "For",
+      "source": "for key in value:\n        _require(type(key) is str and key in (\"text\", \"turtle\", \"enabled\", \"references\"))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 1023,
+      "kind": "For",
+      "source": "for value in (input_preimage, source_preimage, definition_material):\n        _require(type(value) is bytes and len(value) <= MAX_BYTES)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 79,
+      "kind": "For",
+      "source": "for position, pair in enumerate(overrides):\n            if type(pair) is not tuple or len(pair) != 2:\n                raise MaterialFailure()\n            name, value = pair\n            if type(name) is not str or name not in _WORK + _LIVE or type(value) is not int:\n                raise MaterialFailure()\n            if value < 0:\n                raise MaterialFailure()\n            for previous in range(position):\n                if name == overrides[previous][0]:\n                    raise MaterialFailure()"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 110,
+      "kind": "For",
+      "source": "for name, value in self.overrides:\n            if name == \"objects\":\n                control_limit = min(value, control_limit)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 122,
+      "kind": "For",
+      "source": "for name, value in self.overrides:\n            self.caps[name] = min(value, self.caps[name])"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 334,
+      "kind": "For",
+      "source": "for key in value:\n            _require(type(key) is str)\n            _require(len(key) <= MAX_BYTES)\n            key_width += 4 * len(key) + 1"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 346,
+      "kind": "For",
+      "source": "for key, item in value.items():\n            _require(type(key) is str)\n            output[_text(key, ledger)] = _project(item, ledger, depth + 1, json_data=True)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 413,
+      "kind": "For",
+      "source": "for chunk in encoder.iterencode(safe):\n            upper = 4 * len(chunk)\n            ledger.debit(\"scan_copy\", 2 * upper + 1)\n            ledger.reserve(\"scalar\", 4 * len(chunk) + upper)\n            try:\n                data = chunk.encode(\"utf-8\", errors=\"strict\")\n                if len(output) + len(data) > MAX_BYTES:\n                    raise MaterialFailure(\"MATERIAL_LIMIT\", stage=ledger.stage)\n                ledger.debit(\"scan_copy\", len(data))\n                ledger.reserve(\"scalar\", len(data))\n                output.extend(data)\n            finally:\n                data = None\n                ledger.release(\"scalar\", 4 * len(chunk) + upper)\n                chunk = None"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 599,
+      "kind": "For",
+      "source": "for name, value in items:\n            _require(type(name) is str and len(name) <= 32)\n            _require(name in allowed and name not in output)\n            output[name] = value"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 651,
+      "kind": "For",
+      "source": "for body in entries:\n            ledger.debit(\"traversal\", 32)\n            _require(type(body) is dict and len(body) == len(names) + 1)\n            _require(\"enabled\" in body and all(n in body for n in names))\n            _require(type(body[\"enabled\"]) is bool)\n            ledger.reserve(\"objects\", 2 * len(names) + 4)\n            decoded.append(RuleSpec(**{name: _syntax_native(body[name], ledger) for name in names}))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 661,
+      "kind": "For",
+      "source": "for body, spec in zip(entries, rules, strict=True):\n            ledger.debit(\"traversal\", len(disabled) + 1)\n            _require(body[\"enabled\"] is (spec.rule_id not in disabled))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 828,
+      "kind": "For",
+      "source": "for ref in refs:\n            _require(type(ref) is dict and len(ref) == 2)\n            for key in ref:\n                _require(type(key) is str and key in (\"layer\", \"id\"))\n            _require(\"layer\" in ref and \"id\" in ref)\n            _require(type(ref[\"layer\"]) is str and type(ref[\"id\"]) is str)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 866,
+      "kind": "For",
+      "source": "for value in (source.reference, source.digest, source.revision, source.text):\n            _text(value, ledger, optional=True)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 87,
+      "kind": "For",
+      "source": "for previous in range(position):\n                if name == overrides[previous][0]:\n                    raise MaterialFailure()"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 329,
+      "kind": "ListComp",
+      "source": "[_project(item, ledger, depth + 1, json_data=json_data) for item in value]"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 356,
+      "kind": "For",
+      "source": "for name in names:\n                item = getattr(value, name)\n                # Exact field grammar before recursion/foreign len/hash/iter.\n                if cls is SourceRecord:\n                    _require(item is None or type(item) is str)\n                elif cls is TermInput:\n                    if name == \"source\":\n                        _require(item is None or type(item) is SourceRecord)\n                    elif name in (\"kind\", \"lexical_form\"):\n                        _require(type(item) is str)\n                    else:\n                        _require(item is None or type(item) is str)\n                elif cls is Variable:\n                    _require(type(item) is str)\n                elif cls is Triple:\n                    _require(\n                        type(item) is TermInput\n                        if name == \"predicate\"\n                        else type(item) is TermInput or type(item) is Variable\n                    )\n                elif cls is Comparison:\n                    _require(\n                        type(item) is str\n                        if name == \"operator\"\n                        else type(item) is TermInput or type(item) is Variable\n                    )\n                elif cls is RuleSpec:\n                    if name in (\"when\", \"comparisons\", \"heads\"):\n                        _require(type(item) is tuple)\n                        expected = Comparison if name == \"comparisons\" else Triple\n                        ledger.debit(\"traversal\", len(item))\n                        _require(all(type(element) is expected for element in item))\n                    elif name == \"source\":\n                        _require(item is None or type(item) is SourceRecord)\n                    else:\n                        _require(item is None or type(item) is str)\n                output[name] = _project(item, ledger, depth + 1)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 830,
+      "kind": "For",
+      "source": "for key in ref:\n                _require(type(key) is str and key in (\"layer\", \"id\"))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 882,
+      "kind": "GeneratorExp",
+      "source": "(term.source for row in layer.content for term in row)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 970,
+      "kind": "For",
+      "source": "for actual, supplied in zip(\n                (original, source_bytes, encoded_definition), encoded, strict=True\n            ):\n                ledger.debit(\"scan_copy\", len(actual) + len(supplied) + 1)\n                _require(actual == supplied)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 619,
+      "kind": "GeneratorExp",
+      "source": "(_syntax_native(item, ledger) for item in value)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 887,
+      "kind": "GeneratorExp",
+      "source": "(key in value for key in (\"inputDomain\", \"input\", \"parserIdentity\"))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 453,
+      "kind": "GeneratorExp",
+      "source": "(type(term) is TermInput for term in triple)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 644,
+      "kind": "GeneratorExp",
+      "source": "(name in tree for name in (\"version\", \"rules\", \"disabledRuleIds\"))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 741,
+      "kind": "GeneratorExp",
+      "source": "(term.source for triple in records for term in triple)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 629,
+      "kind": "DictComp",
+      "source": "{name: _syntax_native(value[name], ledger) for name in names}"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 963,
+      "kind": "GeneratorExp",
+      "source": "(k in definition_tree for k in (\"version\", \"kind\", \"definition\"))"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 626,
+      "kind": "GeneratorExp",
+      "source": "(n in value for n in names)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 654,
+      "kind": "GeneratorExp",
+      "source": "(n in body for n in names)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 657,
+      "kind": "DictComp",
+      "source": "{name: _syntax_native(body[name], ledger) for name in names}"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 725,
+      "kind": "GeneratorExp",
+      "source": "(len(part) for part in parser_identity)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "line": 387,
+      "kind": "GeneratorExp",
+      "source": "(type(element) is expected for element in item)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "line": 156,
+      "kind": "For",
+      "source": "for value in (\n            material.input_preimage,\n            material.source_preimage,\n            material.definitions_preimage,\n            material.definition_material,\n        ):\n            _require(type(value) is bytes and len(value) <= MAX_BYTES)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "line": 188,
+      "kind": "For",
+      "source": "for actual, supplied in (\n            (checked.input_preimage, material.input_preimage),\n            (checked.source_preimage, material.source_preimage),\n            (checked.definitions_preimage, material.definitions_preimage),\n            (checked.definition_material, material.definition_material),\n        ):\n            _same_bytes(actual, supplied, ledger)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "line": 213,
+      "kind": "GeneratorExp",
+      "source": "(spec.rule_id for spec in capture.raw_rules)"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "line": 215,
+      "kind": "GeneratorExp",
+      "source": "(\n                ChildAllocation(slot.rule_id, slot.definition_ordinal, slot.limits)\n                for slot in capture.slots\n            )"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_input.py",
+      "line": 264,
+      "kind": "For",
+      "source": "for method in (ledger.debit, ledger.reserve, ledger.release):\n        with pytest.raises(MaterialFailure):\n            method(hostile, 1)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_input.py",
+      "line": 39,
+      "kind": "DictComp",
+      "source": "{k: v for k, v in body[\"rules\"][0].items() if k != \"enabled\"}"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_input.py",
+      "line": 39,
+      "kind": "DictComp",
+      "source": "{\n        k: v for k, v in project(spec).items() if k != \"recordType\"\n    }"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_input.py",
+      "line": 69,
+      "kind": "ListComp",
+      "source": "[r[\"rule_id\"] for r in body[\"rules\"]]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_input.py",
+      "line": 70,
+      "kind": "ListComp",
+      "source": "[r[\"enabled\"] for r in body[\"rules\"]]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_input.py",
+      "line": 169,
+      "kind": "GeneratorExp",
+      "source": "(\n        used <= bound\n        for used, bound in zip(\n            material.capture_receipt.stage_visits,\n            material.capture_receipt.stage_bounds,\n            strict=True,\n        )\n    )"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_input.py",
+      "line": 59,
+      "kind": "GeneratorExp",
+      "source": "(t.source for r in records for t in r)"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_production.py",
+      "line": 54,
+      "kind": "For",
+      "source": "for slot, call in zip(\n        produced.original_allocation.children, compile_call.call_args_list, strict=True\n    ):\n        assert slot.limits is call.args[2].limits"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_production.py",
+      "line": 244,
+      "kind": "While",
+      "source": "while frame:\n        if frame.tb_frame.f_code.co_name == \"execute_admitted_profile_job\":\n            locals_ = frame.tb_frame.f_locals\n            assert all(\n                locals_[name] is None\n                for name in (\n                    \"capture\",\n                    \"checked\",\n                    \"catalog_json\",\n                    \"allocation\",\n                    \"receipt\",\n                    \"outcome\",\n                    \"encoded_source\",\n                    \"actual\",\n                    \"supplied\",\n                    \"value\",\n                )\n            )\n        frame = frame.tb_next"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_production.py",
+      "line": 51,
+      "kind": "ListComp",
+      "source": "[s.rule_id for _, s in produced.actual_definitions]"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_production.py",
+      "line": 207,
+      "kind": "GeneratorExp",
+      "source": "(\n        a <= b\n        for a, b in zip(\n            produced.capture_receipt.stage_visits,\n            produced.capture_receipt.stage_bounds,\n            strict=True,\n        )\n    )"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_production.py",
+      "line": 247,
+      "kind": "GeneratorExp",
+      "source": "(\n                locals_[name] is None\n                for name in (\n                    \"capture\",\n                    \"checked\",\n                    \"catalog_json\",\n                    \"allocation\",\n                    \"receipt\",\n                    \"outcome\",\n                    \"encoded_source\",\n                    \"actual\",\n                    \"supplied\",\n                    \"value\",\n                )\n            )"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_production.py",
+      "line": 138,
+      "kind": "ListComp",
+      "source": "[\n            head.triple.object.lexical_form for head in children[0][\"batch\"].firings[0].heads\n        ]"
+    }
+  ]
+}

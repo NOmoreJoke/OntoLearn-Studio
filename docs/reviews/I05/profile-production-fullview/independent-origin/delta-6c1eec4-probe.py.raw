@@ -1,0 +1,62 @@
+"""Real-path delta checks; prior raw probe remains byte-for-byte preserved."""
+import json
+import runpy
+from unittest.mock import patch
+ctx=runpy.run_path('docs/reviews/I05/profile-production-fullview/independent-origin/origin-probe.py.raw')
+inp=ctx['inp'];prod=ctx['prod'];semantic=ctx['semantic'];support=ctx['support'];run=ctx['run'];frame_state=ctx['frame_state']
+results=[]
+for cap in (0,63):
+    ledger=inp.CaptureLedger(overrides=(('objects',cap),))
+    try:inp.prepare_profile_material(support.turtle(),ledger=ledger)
+    except inp.MaterialFailure as exc:
+        assert ledger.state=='failed' and exc.domain=='objects' and exc.stage==0
+        assert all(getattr(ledger,n) is None for n in ('caps','used','live','peaks','stage_visits','stage_bounds'))
+        state=frame_state(exc,'_prepare_profile_material',('source','original','source_bytes','defs','definitions','receipt','material'))
+        results.append({'case':'bootstrap-'+str(cap),'counters_unallocated':True,'new_locals_none':state})
+    else:raise AssertionError('bootstrap cap accepted')
+ledger=inp.CaptureLedger(overrides=(('objects',64),));ledger.begin()
+assert ledger.live==ledger.peaks=={'scalar':0,'objects':64}
+try:ledger.reserve('objects',1)
+except inp.MaterialFailure:pass
+else:raise AssertionError('extra object accepted')
+results.append({'case':'bootstrap-64','live':ledger.live,'caps_objects':ledger.caps['objects']})
+# The new failure ordering happens after one real reason, before projection hashes.
+material=inp.prepare_profile_material(support.turtle(),(support.rule(),));boundary=[]
+original_before=prod._ProductionCapture.before_projection
+
+def before(capture):
+    boundary.append(capture.ledger.used['hash'])
+    return original_before(capture)
+with patch.object(prod._ProductionCapture,'before_projection',before):run(material)
+assert len(boundary)==1
+ledger=inp.CaptureLedger(overrides=(('hash',boundary[0]),));calls=[]
+original_hash=ctx['hashlib'].sha256
+
+def observe(data=b'',*args,**kwargs):
+    if ledger.stage==6:calls.append(len(data))
+    return original_hash(data,*args,**kwargs)
+with (patch.object(ctx['hashlib'],'sha256',observe),
+      patch.object(semantic,'_profile_reason',wraps=semantic._profile_reason) as reason):
+    try:run(material,ledger)
+    except inp.MaterialFailure as exc:
+        state=frame_state(exc,'execute_admitted_profile_job',('capture','checked','catalog_json','allocation','receipt','outcome','encoded_source','actual','supplied','value','reference','revision'))
+        assert exc.domain=='hash' and exc.stage==6 and reason.call_count==1 and not calls
+        assert ledger.state=='failed'
+        results.append({'case':'stage6-hash-prepayment','real_reason':reason.call_count,'projection_hash_calls':calls,'public_locals_none':state})
+    else:raise AssertionError('hash lower cap accepted')
+# A reservation failure during partially initialized capture must lose its frame.
+original_reserve=inp.CaptureLedger.reserve
+
+def reserve(self,domain,count):
+    if self.stage==5 and domain=='objects' and count==4:
+        raise inp.MaterialFailure('MATERIAL_LIMIT',domain='objects',stage=5)
+    return original_reserve(self,domain,count)
+ledger=inp.CaptureLedger()
+with patch.object(inp.CaptureLedger,'reserve',reserve):
+    try:run(material,ledger)
+    except inp.MaterialFailure as exc:
+        state=frame_state(exc,'execute_admitted_profile_job',('capture','checked','catalog_json','allocation','receipt','outcome','encoded_source','actual','supplied','value','reference','revision'))
+        assert ledger.state=='failed' and exc.stage==5
+        results.append({'case':'capture-reservation-before-slots','public_locals_none':state})
+    else:raise AssertionError('reserve failure absent')
+print(json.dumps({'delta_cases':results},sort_keys=True))

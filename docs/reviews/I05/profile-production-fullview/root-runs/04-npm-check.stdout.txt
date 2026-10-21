@@ -1,0 +1,260 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration
+
+
+ Test Files  22 passed (22)
+      Tests  1125 passed (1125)
+   Start at  01:09:54
+   Duration  7.02s (tests 81%, transform 12%, import 7%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  404.50 kB
+
+✓ built in 29ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  330.22 kB
+
+✓ built in 19ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-Bms3LrTp.js   919.74 kB
+
+✓ built in 56ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> docs/reviews/I05/profile-production-fullview/producer-implementation/producer83.py:2:1
+   |
+ 1 |   """Actual approved original input projection -> producer API census; no oracle."""
+ 2 | / import hashlib
+ 3 | | import json
+ 4 | | from collections import Counter
+ 5 | | from dataclasses import asdict
+ 6 | | from ontolearn_engine import semantic_profile_probe as original
+ 7 | | from ontolearn_engine.resources import CONTRACT, ROOT
+ 8 | | from ontolearn_engine.semantic_execution import ProfileExecutionFault
+ 9 | | from ontolearn_engine.semantic_profile_input import MaterialFailure, prepare_profile_material
+10 | | from ontolearn_engine.semantic_profile_production import execute_admitted_profile_job
+   | |_____________________________________________________________________________________^
+11 |
+12 |   inputs = original._load_inputs()
+   |
+help: Organize imports
+  |
+5 | from dataclasses import asdict
+6 +
+7 | from ontolearn_engine import semantic_profile_probe as original
+  |
+
+E501 Line too long (104 > 100)
+  --> docs/reviews/I05/profile-production-fullview/producer-implementation/producer83.py:29:101
+   |
+27 |             result = execute_admitted_profile_job(material,
+28 |                        error_catalog=CONTRACT.ERROR_CATALOG, error_schema=schema)
+29 |             item.update(status='success', payloadSha256=hashlib.sha256(result.payload_json).hexdigest(),
+   |                                                                                                     ^^^^
+30 |                         rowsSha256=hashlib.sha256(result.rows_json).hexdigest(),
+31 |                         sourceSha256=hashlib.sha256(result.source_encoded).hexdigest(),
+   |
+
+E401 [*] Multiple imports on one line
+ --> docs/reviews/I05/profile-production-fullview/root-runs/run.py:1:1
+  |
+1 | import datetime,json,os,subprocess,sys,time
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2 | from pathlib import Path
+3 | label=sys.argv[1]; argv=sys.argv[2:]; here=Path(__file__).resolve().parent
+  |
+help: Split imports
+  |
+  - import datetime,json,os,subprocess,sys,time
+1 + import datetime
+2 + import json
+3 + import os
+4 + import subprocess
+5 + import sys
+6 + import time
+7 | from pathlib import Path
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> docs/reviews/I05/profile-production-fullview/root-runs/run.py:1:1
+  |
+1 | / import datetime,json,os,subprocess,sys,time
+2 | | from pathlib import Path
+  | |________________________^
+3 |   label=sys.argv[1]; argv=sys.argv[2:]; here=Path(__file__).resolve().parent
+4 |   r={"argv":argv,"cwd":os.getcwd(),"start":datetime.datetime.now(datetime.UTC).isoformat(),"timeoutSeconds":600}
+  |
+help: Organize imports
+  |
+  - import datetime,json,os,subprocess,sys,time
+1 + import datetime
+2 + import json
+3 + import os
+4 + import subprocess
+5 + import sys
+6 + import time
+7 | from pathlib import Path
+8 +
+9 | label=sys.argv[1]; argv=sys.argv[2:]; here=Path(__file__).resolve().parent
+  |
+
+E702 Multiple statements on one line (semicolon)
+ --> docs/reviews/I05/profile-production-fullview/root-runs/run.py:3:18
+  |
+1 | import datetime,json,os,subprocess,sys,time
+2 | from pathlib import Path
+3 | label=sys.argv[1]; argv=sys.argv[2:]; here=Path(__file__).resolve().parent
+  |                  ^
+4 | r={"argv":argv,"cwd":os.getcwd(),"start":datetime.datetime.now(datetime.UTC).isoformat(),"timeoutSeconds":600}
+5 | start=time.monotonic(); timeout=False
+  |
+
+E702 Multiple statements on one line (semicolon)
+ --> docs/reviews/I05/profile-production-fullview/root-runs/run.py:3:37
+  |
+1 | import datetime,json,os,subprocess,sys,time
+2 | from pathlib import Path
+3 | label=sys.argv[1]; argv=sys.argv[2:]; here=Path(__file__).resolve().parent
+  |                                     ^
+4 | r={"argv":argv,"cwd":os.getcwd(),"start":datetime.datetime.now(datetime.UTC).isoformat(),"timeoutSeconds":600}
+5 | start=time.monotonic(); timeout=False
+  |
+
+E702 Multiple statements on one line (semicolon)
+ --> docs/reviews/I05/profile-production-fullview/root-runs/run.py:5:23
+  |
+3 | label=sys.argv[1]; argv=sys.argv[2:]; here=Path(__file__).resolve().parent
+4 | r={"argv":argv,"cwd":os.getcwd(),"start":datetime.datetime.now(datetime.UTC).isoformat(),"timeoutSeconds":600}
+5 | start=time.monotonic(); timeout=False
+  |                       ^
+6 | try:
+7 |  p=subprocess.run(argv,capture_output=True,timeout=600); out,err,code=p.stdout,p.stderr,p.returncode
+  |
+
+E702 Multiple statements on one line (semicolon)
+ --> docs/reviews/I05/profile-production-fullview/root-runs/run.py:7:56
+  |
+5 | start=time.monotonic(); timeout=False
+6 | try:
+7 |  p=subprocess.run(argv,capture_output=True,timeout=600); out,err,code=p.stdout,p.stderr,p.returncode
+  |                                                        ^
+8 | except subprocess.TimeoutExpired as e:
+9 |  out,err,code=e.stdout or b"",e.stderr or b"",None;timeout=True
+  |
+
+E702 Multiple statements on one line (semicolon)
+  --> docs/reviews/I05/profile-production-fullview/root-runs/run.py:9:51
+   |
+ 7 |  p=subprocess.run(argv,capture_output=True,timeout=600); out,err,code=p.stdout,p.stderr,p.returncode
+ 8 | except subprocess.TimeoutExpired as e:
+ 9 |  out,err,code=e.stdout or b"",e.stderr or b"",None;timeout=True
+   |                                                   ^
+10 | (here/(label+".stdout.txt")).write_bytes(out);(here/(label+".stderr.txt")).write_bytes(err)
+11 | r.update(end=datetime.datetime.now(datetime.UTC).isoformat(),elapsedSeconds=time.monotonic()-start,exitCode=code,timeout=timeout)
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> docs/reviews/I05/profile-production-fullview/root-runs/run.py:10:46
+   |
+ 8 | except subprocess.TimeoutExpired as e:
+ 9 |  out,err,code=e.stdout or b"",e.stderr or b"",None;timeout=True
+10 | (here/(label+".stdout.txt")).write_bytes(out);(here/(label+".stderr.txt")).write_bytes(err)
+   |                                              ^
+11 | r.update(end=datetime.datetime.now(datetime.UTC).isoformat(),elapsedSeconds=time.monotonic()-start,exitCode=code,timeout=timeout)
+12 | (here/(label+".json")).write_text(json.dumps(r,ensure_ascii=False,indent=2)+"\n")
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> docs/reviews/I05/profile-production-fullview/root-runs/run.py:13:40
+   |
+11 | r.update(end=datetime.datetime.now(datetime.UTC).isoformat(),elapsedSeconds=time.monotonic()-start,exitCode=code,timeout=timeout)
+12 | (here/(label+".json")).write_text(json.dumps(r,ensure_ascii=False,indent=2)+"\n")
+13 | print(json.dumps(r,ensure_ascii=False));print(out[-6000:].decode(errors="replace"));print(err[-3000:].decode(errors="replace"));sys.ex…
+   |                                        ^
+
+E702 Multiple statements on one line (semicolon)
+  --> docs/reviews/I05/profile-production-fullview/root-runs/run.py:13:84
+   |
+11 | r.update(end=datetime.datetime.now(datetime.UTC).isoformat(),elapsedSeconds=time.monotonic()-start,exitCode=code,timeout=timeout)
+12 | (here/(label+".json")).write_text(json.dumps(r,ensure_ascii=False,indent=2)+"\n")
+13 | print(json.dumps(r,ensure_ascii=False));print(out[-6000:].decode(errors="replace"));print(err[-3000:].decode(errors="replace"));sys.ex…
+   |                                                                                    ^
+
+E501 Line too long (160 > 100)
+  --> docs/reviews/I05/profile-production-fullview/root-runs/run.py:13:101
+   |
+11 | …psedSeconds=time.monotonic()-start,exitCode=code,timeout=timeout)
+12 | …e,indent=2)+"\n")
+13 | …(errors="replace"));print(err[-3000:].decode(errors="replace"));sys.exit(1 if timeout else code)
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+E702 Multiple statements on one line (semicolon)
+  --> docs/reviews/I05/profile-production-fullview/root-runs/run.py:13:128
+   |
+11 | r.update(end=datetime.datetime.now(datetime.UTC).isoformat(),elapsedSeconds=time.monotonic()-start,exitCode=code,timeout=timeout)
+12 | (here/(label+".json")).write_text(json.dumps(r,ensure_ascii=False,indent=2)+"\n")
+13 | print(json.dumps(r,ensure_ascii=False));print(out[-6000:].decode(errors="replace"));print(err[-3000:].decode(errors="replace"));sys.ex…
+   |                                                                                                                                ^
+
+Found 14 errors.
+[*] 3 fixable with `--fix`.

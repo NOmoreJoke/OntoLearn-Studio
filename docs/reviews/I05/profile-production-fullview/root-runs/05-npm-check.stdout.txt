@@ -1,0 +1,119 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration
+
+
+ Test Files  22 passed (22)
+      Tests  1125 passed (1125)
+   Start at  01:13:59
+   Duration  6.89s (tests 88%, import 7%, transform 5%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  404.50 kB
+
+✓ built in 28ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  330.22 kB
+
+✓ built in 20ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-Bms3LrTp.js   919.74 kB
+
+✓ built in 54ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> docs/reviews/I05/profile-production-fullview/producer-implementation/producer83.py:2:1
+   |
+ 1 |   """Actual approved original input projection -> producer API census; no oracle."""
+ 2 | / import hashlib
+ 3 | | import json
+ 4 | | from collections import Counter
+ 5 | | from dataclasses import asdict
+ 6 | | from ontolearn_engine import semantic_profile_probe as original
+ 7 | | from ontolearn_engine.resources import CONTRACT, ROOT
+ 8 | | from ontolearn_engine.semantic_execution import ProfileExecutionFault
+ 9 | | from ontolearn_engine.semantic_profile_input import MaterialFailure, prepare_profile_material
+10 | | from ontolearn_engine.semantic_profile_production import execute_admitted_profile_job
+   | |_____________________________________________________________________________________^
+11 |
+12 |   inputs = original._load_inputs()
+   |
+help: Organize imports
+  |
+5 | from dataclasses import asdict
+6 +
+7 | from ontolearn_engine import semantic_profile_probe as original
+  |
+
+E501 Line too long (104 > 100)
+  --> docs/reviews/I05/profile-production-fullview/producer-implementation/producer83.py:29:101
+   |
+27 |             result = execute_admitted_profile_job(material,
+28 |                        error_catalog=CONTRACT.ERROR_CATALOG, error_schema=schema)
+29 |             item.update(status='success', payloadSha256=hashlib.sha256(result.payload_json).hexdigest(),
+   |                                                                                                     ^^^^
+30 |                         rowsSha256=hashlib.sha256(result.rows_json).hexdigest(),
+31 |                         sourceSha256=hashlib.sha256(result.source_encoded).hexdigest(),
+   |
+
+Found 2 errors.
+[*] 1 fixable with `--fix`.

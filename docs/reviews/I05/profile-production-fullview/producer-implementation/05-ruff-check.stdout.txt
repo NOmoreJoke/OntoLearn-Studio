@@ -1,0 +1,106 @@
+F841 Local variable `text` is assigned to but never used
+   --> packages/engine/src/ontolearn_engine/semantic_profile_input.py:663:63
+    |
+661 |         error = MaterialFailure("MATERIAL_INVALID")
+662 |     finally:
+663 |         tree = rules = disabled = raw = canonical = receipt = text = None
+    |                                                               ^^^^
+664 |         # Closures/items are also explicitly dropped before a finite failure.
+665 |         entries = decoded = body = spec = value = None
+    |
+help: Remove assignment to unused variable `text`
+    |
+662 |     finally:
+    -         tree = rules = disabled = raw = canonical = receipt = text = None
+663 +         tree = rules = disabled = raw = canonical = receipt = None
+664 |         # Closures/items are also explicitly dropped before a finite failure.
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+F841 Local variable `value` is assigned to but never used
+   --> packages/engine/src/ontolearn_engine/semantic_profile_input.py:665:43
+    |
+663 |         tree = rules = disabled = raw = canonical = receipt = text = None
+664 |         # Closures/items are also explicitly dropped before a finite failure.
+665 |         entries = decoded = body = spec = value = None
+    |                                           ^^^^^
+666 |         if error is not None:
+667 |             result = None
+    |
+help: Remove assignment to unused variable `value`
+    |
+664 |         # Closures/items are also explicitly dropped before a finite failure.
+    -         entries = decoded = body = spec = value = None
+665 +         entries = decoded = body = spec = None
+666 |         if error is not None:
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+F841 Local variable `text` is assigned to but never used
+   --> packages/engine/src/ontolearn_engine/semantic_profile_input.py:838:9
+    |
+836 |         ledger.reserve("scalar", 4 * len(value.content))
+837 |         text = value.content.decode("utf-8", errors="strict")
+838 |         text = None
+    |         ^^^^
+839 |         ledger.release("scalar", 4 * len(value.content))
+840 |     else:
+    |
+help: Remove assignment to unused variable `text`
+    |
+837 |         text = value.content.decode("utf-8", errors="strict")
+    -         text = None
+838 |         ledger.release("scalar", 4 * len(value.content))
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/engine/tests/test_semantic_profile_input.py:3:1
+   |
+ 1 |   """Actual data material, before computation; no saved expected supplies input."""
+ 2 |
+ 3 | / import json
+ 4 | | import hashlib
+ 5 | | from dataclasses import FrozenInstanceError, replace
+ 6 | |
+ 7 | | import pytest
+ 8 | | from ontolearn_engine.quality.rule_profile import SourceRecord, TermInput
+ 9 | | from ontolearn_engine.semantic_profile_input import (
+10 | |     CaptureLedger,
+11 | |     MaterialFailure,
+12 | |     ProfileInputLayer,
+13 | |     decode_rule_definitions,
+14 | |     decode_selected_material,
+15 | |     prepare_profile_material,
+16 | |     prepare_selected_material,
+17 | | )
+18 | | from test_semantic_profile_restore import canonical, project, rule, turtle
+   | |__________________________________________________________________________^
+help: Organize imports
+  |
+2 |
+3 + import hashlib
+4 | import json
+  - import hashlib
+5 | from dataclasses import FrozenInstanceError, replace
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> packages/engine/tests/test_semantic_profile_input.py:270:5
+    |
+269 |   def test_escaped_wide_string_rejected_before_encoder_delegate():
+270 | /     from unittest.mock import patch
+271 | |     from ontolearn_engine.semantic_profile_input import MAX_BYTES, _encode
+    | |__________________________________________________________________________^
+272 |
+273 |       ledger = CaptureLedger()
+    |
+help: Organize imports
+    |
+270 |     from unittest.mock import patch
+271 +
+272 |     from ontolearn_engine.semantic_profile_input import MAX_BYTES, _encode
+    |
+
+Found 5 errors.
+[*] 2 fixable with `--fix` (3 unsafe fixes available with `--fix --unsafe-fixes`).
