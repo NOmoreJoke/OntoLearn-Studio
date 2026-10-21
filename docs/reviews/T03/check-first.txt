@@ -1,0 +1,94 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping
+
+
+ Test Files  16 passed (16)
+      Tests  635 passed (635)
+   Start at  08:47:17
+   Duration  6.52s (tests 81%, transform 13%, import 5%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  339.29 kB
+
+✓ built in 32ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  276.26 kB
+
+✓ built in 18ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-DaDpMxpv.js   865.34 kB
+
+✓ built in 66ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+E501 Line too long (108 > 100)
+  --> packages/engine/tests/test_mapping_source.py:68:101
+   |
+66 |     items = {
+67 |         "[Content_Types].xml": '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+68 |         '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+   |                                                                                                     ^^^^^^^^
+69 |         '<Default Extension="xml" ContentType="application/xml"/>'
+70 |         '<Override PartName="/xl/workbook.xml" '
+   |
+
+Found 1 error.

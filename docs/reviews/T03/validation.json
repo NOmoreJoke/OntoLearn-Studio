@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-21",
+  "timezone": "Asia/Shanghai",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "scope": "private implementation only; formal dependency/integration/dual-review/CI/release pending",
+  "sourceSha256": {
+    "packages/engine/src/ontolearn_engine/mapping/plan.py": "cea9ca3264fcf54b1f3714057f4b085aa6d821670c37a5bf3fcc01c934af75a0",
+    "packages/engine/src/ontolearn_engine/mapping/__init__.py": "e9d26d4818736111740053c9fd98c420d75ca8ad1444ca9347153399118459fa",
+    "packages/engine/src/ontolearn_engine/mapping/probe.py": "1d80e1982f7c0086dd62b9d59afb986851bf67d0fb723031290e1c7ad740e3ee",
+    "packages/engine/src/ontolearn_engine/mapping/source.py": "93bf09e10723c8522f1e9fbb8e170ffece596143c5e00ddcf7be950d15e1ddc8",
+    "packages/engine/tests/test_mapping_source.py": "399780c162fb29f1f97c7328b2f42dfaa26285106a8abefff0d2421cff71b8f8",
+    "packages/engine/tests/test_mapping_plan.py": "7a10b0546c4875b446df03c3fc72c5532581aeaa99f4208f624901765f1ac440",
+    "apps/desktop/src/renderer/src/mapping/MappingPage.tsx": "84fec13c3368341d93ac60d34219aa7dfbf3349d821267200d443279b25afd41",
+    "apps/desktop/src/renderer/src/mapping/model.ts": "eb4bb0427d83ef1736aa9a92202f736444ca8027c2bf66944cdfcd264e68c579",
+    "apps/desktop/src/renderer/src/mapping/mapping.css": "b65fb3ac927e1973e3e4f2cdf0aa3c349b7eee84e7dc3c75adfd486ab5708672",
+    "tests/unit/t03-mapping-state.test.ts": "9b4a78ada1d5782ea289f601cc80cf09fbb9b5061ae8cbaa8819723a9030770d",
+    "tests/fixtures/mapping/equipment.csv": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8"
+  },
+  "candidatePackage": {
+    "approvedProductPackage": false,
+    "executableSha256": "f1e4a0b5b79e38b71106a45894bbf127414ca07ca74bd82542e2cff6719015b5",
+    "runtimeExitCode": 0,
+    "command": "build/T03-probe/dist/t03-mapping-probe/t03-mapping-probe",
+    "dependencies": "isolated uv --with openpyxl==3.1.5 et-xmlfile==2.0.0 defusedxml==0.7.1",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "architecture": "arm64",
+    "targetPlatformAcceptance": false
+  },
+  "independentReview": {
+    "agent": "/root/t03_service_review",
+    "conclusion": "passed within private scope",
+    "findingsClosed": 5
+  },
+  "guiRun": false,
+  "secretAccess": false,
+  "pushed": false,
+  "prCreated": false,
+  "verification": {
+    "check": {
+      "exitCode": 0,
+      "typescriptTests": 638,
+      "pythonPassed": 1088,
+      "pythonSkipped": 4,
+      "log": "check-final.txt"
+    },
+    "isolatedParserTests": 40,
+    "privateUiStateTests": 8,
+    "publicBridgeOrProductUiVerified": false
+  }
+}
