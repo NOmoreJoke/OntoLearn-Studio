@@ -1,0 +1,210 @@
+{
+  "status": "expected normative cells vs current static entry gaps, not actual results",
+  "pins": [
+    "https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping",
+    "https://www.w3.org/TR/2017/REC-shacl-20170720/#DatatypeConstraintComponent",
+    "https://www.w3.org/TR/2017/REC-shacl-20170720/#MinInclusiveConstraintComponent",
+    "https://www.w3.org/TR/2017/REC-shacl-20170720/#InConstraintComponent"
+  ],
+  "cases": [
+    {
+      "id": "C-query-numeric-promotion",
+      "expected": {
+        "rows": [
+          {
+            "s": "<urn:m1:s>"
+          }
+        ],
+        "ruleProfileComparison": false,
+        "reason": "SPARQL numeric promotion rounds integer to float; rule exact rational policy compares16777217>16777216",
+        "entryAndReportAreSeparate": true
+      }
+    },
+    {
+      "id": "C-query-type-error",
+      "expected": {
+        "rows": [],
+        "reason": "FILTER type error excludes row; not a failed Job under query semantics",
+        "entryAndReportAreSeparate": true
+      }
+    },
+    {
+      "id": "C-datatype-exact",
+      "expected": {
+        "conforms": false,
+        "components": ["DatatypeConstraintComponent"],
+        "reason": "Datatype IRI exact equality, int is not integer",
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "sourceShape": "<urn:m1:shape>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "value": "\"1\"^^<http://www.w3.org/2001/XMLSchema#int>",
+            "valueExpectation": "exact RDF term"
+          }
+        ],
+        "entryAndReportAreSeparate": true
+      }
+    },
+    {
+      "id": "C-langString",
+      "expected": {
+        "conforms": true,
+        "components": [],
+        "currentEntryGap": "sh:datatype rdf:langString rejected UNSUPPORTED_DATATYPE at _shapes",
+        "entryAndReportAreSeparate": true
+      }
+    },
+    {
+      "id": "C-count-term-identity",
+      "expected": {
+        "conforms": false,
+        "components": ["MaxCountConstraintComponent"],
+        "valueNodeCount": 2,
+        "reason": "Different RDF lexical terms count separately despite equal integer values",
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "sourceShape": "<urn:m1:shape>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#MaxCountConstraintComponent>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "value": null,
+            "valueExpectation": "SHACL maxCount does not require value; observe actual optional field without inventing a node"
+          }
+        ],
+        "entryAndReportAreSeparate": true
+      }
+    },
+    {
+      "id": "C-in-term-identity",
+      "expected": {
+        "conforms": false,
+        "components": ["InConstraintComponent"],
+        "reason": "sh:in term identity, not numeric equality",
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "sourceShape": "<urn:m1:shape>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#InConstraintComponent>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "value": "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>",
+            "valueExpectation": "exact RDF term"
+          }
+        ],
+        "entryAndReportAreSeparate": true
+      }
+    },
+    {
+      "id": "C-inclusive-numeric",
+      "expected": {
+        "conforms": true,
+        "components": [],
+        "entryAndReportAreSeparate": true
+      }
+    },
+    {
+      "id": "C-inclusive-nni",
+      "expected": {
+        "conforms": true,
+        "components": [],
+        "currentEntryGap": "nonNegativeInteger not in inclusive parameter whitelist",
+        "entryAndReportAreSeparate": true
+      }
+    },
+    {
+      "id": "C-inclusive-dateTime-equal",
+      "expected": {
+        "conforms": true,
+        "components": [],
+        "currentEntryGap": "valid dateTime shape bound rejected INVALID_SHAPE",
+        "entryAndReportAreSeparate": true
+      }
+    },
+    {
+      "id": "C-inclusive-dateTime-before",
+      "expected": {
+        "conforms": false,
+        "components": ["MinInclusiveConstraintComponent"],
+        "currentEntryGap": "valid dateTime shape bound rejected INVALID_SHAPE",
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "sourceShape": "<urn:m1:shape>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "value": "\"1999-12-31T23:59:59Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime>",
+            "valueExpectation": "exact RDF term"
+          }
+        ],
+        "entryAndReportAreSeparate": true
+      }
+    },
+    {
+      "id": "C-inclusive-type-error",
+      "expected": {
+        "conforms": false,
+        "components": ["MinInclusiveConstraintComponent"],
+        "reason": "SHACL range nontrue including type error produces ordinary validation result",
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "sourceShape": "<urn:m1:shape>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "value": "\"a\"",
+            "valueExpectation": "Canonical N3 string or equivalent abstract xsd:string term, not unnormalized string display comparison"
+          }
+        ],
+        "entryAndReportAreSeparate": true
+      }
+    },
+    {
+      "id": "C-inclusive-date-entry",
+      "expected": {
+        "currentEntryGap": "valid date shape bound rejected INVALID_SHAPE",
+        "afterEntryPolicy": "Actual I05 date extension policy must be fixed independently; below are both independently derived conditional expectations, neither is actual runtime",
+        "entryAndReportAreSeparate": true,
+        "coreOnlyExpectedReport": {
+          "conforms": false,
+          "requiredResultRows": [
+            {
+              "focusNode": "<urn:m1:s>",
+              "resultPath": "<urn:m1:p>",
+              "sourceShape": "<urn:m1:shape>",
+              "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+              "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+              "value": "\"2000-01-01Z\"^^<http://www.w3.org/2001/XMLSchema#date>"
+            }
+          ],
+          "derivation": "SPARQL core <= mapping has no xsd:date row; error is nontrue so SHACL emits normal MinInclusive result"
+        },
+        "ifI05ExplicitlySupportsXsdDateOperatorExtension": {
+          "conforms": true,
+          "requiredResultRows": [],
+          "derivation": "Same valid date, same explicit offset and lexical denotes equal value; inclusive <= true under the explicitly chosen date relation extension"
+        },
+        "policyNotAdoptedByThisDocument": true
+      }
+    },
+    {
+      "id": "C-illtyped-entry",
+      "expected": {
+        "currentEntryGap": "_terms rejects ill_typed before Validator",
+        "directSHACLNormativeResult": {
+          "conforms": false,
+          "components": ["DatatypeConstraintComponent"]
+        },
+        "reason": "Record adapter input rejection separately; do not claim normal Validator report happened",
+        "entryAndReportAreSeparate": true
+      }
+    }
+  ],
+  "reportComparison": "compare full focusNode/resultPath/value/sourceShape/component/severity+conforms, report blank-node IDs by structural correspondence, no exact report serialization invented",
+  "noConflation": "Rule errors are private failures; query FILTER error drops row; SHACL nontrue range yields ordinary violation when valid input reaches Validator."
+}
