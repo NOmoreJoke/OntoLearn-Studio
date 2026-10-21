@@ -269,6 +269,7 @@ class Store:
         edits: dict[str, str] | None = None,
         remove: list[str] | None = None,
         mapping: dict | None = None,
+        preview_identity: str | None = None,
         hook: Hook = lambda _: None,
     ) -> dict:
         """Atomic ChangeSet or whole managed-range replacement.
@@ -312,6 +313,14 @@ class Store:
             ):
                 raise ValueError("Cannot add and withdraw the same definition in one plan")
             plan["remove_definitions"] = remove_definitions
+        if preview_identity is not None:
+            if (
+                not isinstance(preview_identity, str)
+                or len(preview_identity) != 64
+                or any(c not in "0123456789abcdef" for c in preview_identity)
+            ):
+                raise ValueError("Canonical preview digest required")
+            plan["preview_identity"] = preview_identity
         fingerprint = digest(plan)
         with self._transaction(hook):
             previous = self.marker(project, operation)
