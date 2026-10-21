@@ -1,0 +1,764 @@
+"""Static D2 archive evidence: never imports or executes OntoLearn code.
+
+The only code transformation for source/PYZ comparison is recursive co_filename
+normalization. Marshal, source, PYZ and engine hashes remain separate domains.
+"""
+
+import argparse
+import collections
+import hashlib
+import importlib.metadata
+import importlib.util
+import json
+import marshal
+import os
+import struct
+import subprocess
+import sys
+import types
+import zipfile
+from pathlib import Path
+
+if sys.flags.optimize != 0:
+    raise SystemExit("AUDIT_REQUIRES_OPTIMIZE_ZERO")
+
+from PyInstaller.archive.readers import CArchiveReader
+
+ROOT = Path(__file__).resolve().parents[2]
+APPROVED = ROOT / "docs/reviews/T03/profile-D2-package/approved-readonly-inputs.json.raw"
+APPROVED_SHA = "7778309e8beec0f5ff8ac89531f1a70282f12f257beebae4ff8d7899f393e4b1"
+PREFIX = "packages/engine/src/"
+DIST_VERSIONS = {
+    "rdflib": "7.6.0",
+    "pyshacl": "0.30.1",
+    "pyparsing": "3.3.3",
+    "owlrl": "7.6.2",
+    "html5rdf": "1.2.1",
+    "prettytable": "3.18.0",
+    "wcwidth": "0.9.2",
+    "packaging": "26.3",
+}
+COLLECT_ALL_DATA = {"rdflib", "pyshacl", "owlrl", "html5rdf"}
+
+
+def check(condition, reason):
+    if not condition:
+        raise ValueError(reason)
+
+
+def identity(raw):
+    return {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+
+
+def file_identity(path):
+    return identity(path.read_bytes())
+
+
+def canonical(value):
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
+
+
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        check(key not in result, "DUPLICATE_JSON_KEY")
+        result[key] = value
+    return result
+
+
+def load_json(raw):
+    return json.loads(raw, object_pairs_hook=unique_object)
+
+
+def module_name(path):
+    check(path.startswith(PREFIX) and path.endswith(".py"), "MODULE_SOURCE_PATH_INVALID")
+    value = path[len(PREFIX) : -3].replace("/", ".")
+    return value[: -len(".__init__")] if value.endswith(".__init__") else value
+
+
+def normalize_code(code):
+    """Preserve all code fields except the explicitly allowed filename domain."""
+    check(type(code) is types.CodeType, "NOT_CODE_OBJECT")
+    constants = tuple(
+        normalize_code(value) if type(value) is types.CodeType else value
+        for value in code.co_consts
+    )
+    return code.replace(co_consts=constants, co_filename="<D2_FILENAME_DOMAIN>")
+
+
+def typed_value(value):
+    kind = type(value)
+    if kind is types.CodeType:
+        # All Python 3.12 constructor fields are retained, apart from co_filename.
+        return {
+            "type": "code",
+            "argcount": value.co_argcount,
+            "posonlyargcount": value.co_posonlyargcount,
+            "kwonlyargcount": value.co_kwonlyargcount,
+            "nlocals": value.co_nlocals,
+            "stacksize": value.co_stacksize,
+            "flags": value.co_flags,
+            "code": value.co_code.hex(),
+            "consts": [typed_value(item) for item in value.co_consts],
+            "names": list(value.co_names),
+            "varnames": list(value.co_varnames),
+            "filename": "<D2_FILENAME_DOMAIN>",
+            "name": value.co_name,
+            "qualname": value.co_qualname,
+            "firstlineno": value.co_firstlineno,
+            "linetable": value.co_linetable.hex(),
+            "exceptiontable": value.co_exceptiontable.hex(),
+            "freevars": list(value.co_freevars),
+            "cellvars": list(value.co_cellvars),
+        }
+    if value is None or kind is bool or value is Ellipsis:
+        return {"type": kind.__name__, "value": repr(value)}
+    if kind is int:
+        return {"type": "int", "hex": hex(value)}
+    if kind is float:
+        return {"type": "float", "ieee754": struct.pack("!d", value).hex()}
+    if kind is complex:
+        return {"type": "complex", "parts": [typed_value(value.real), typed_value(value.imag)]}
+    if kind is str:
+        return {"type": "str", "value": value}
+    if kind is bytes:
+        return {"type": "bytes", "hex": value.hex()}
+    if kind is tuple:
+        return {"type": "tuple", "items": [typed_value(item) for item in value]}
+    if kind is frozenset:
+        # A frozenset has no observable ordering; preserve every typed member.
+        members = [typed_value(item) for item in value]
+        return {"type": "frozenset", "items": sorted(members, key=canonical)}
+    raise ValueError("UNSUPPORTED_CODE_CONSTANT_" + kind.__name__)
+
+
+def code_fingerprint(code):
+    return hashlib.sha256(canonical(typed_value(code))).hexdigest()
+
+
+def code_object_receipts(source, packaged, path="module"):
+    check(code_fingerprint(source) == code_fingerprint(packaged), "CODE_OBJECT_FIELDS_DIFF:" + path)
+    result = [
+        {
+            "objectPath": path,
+            "name": source.co_qualname,
+            "filenameNormalizedCodeSha256": code_fingerprint(packaged),
+        }
+    ]
+    for index, value in enumerate(source.co_consts):
+        if type(value) is types.CodeType:
+            result.extend(
+                code_object_receipts(
+                    value, packaged.co_consts[index], path + ".co_consts[" + str(index) + "]"
+                )
+            )
+    return result
+
+
+def raw_carchive(engine):
+    """Read original ordered TOC before CArchiveReader turns it into a dict."""
+    with engine.open("rb") as stream:
+        cookie_offset = CArchiveReader._find_magic_pattern(
+            stream, CArchiveReader._COOKIE_MAGIC_PATTERN
+        )
+        check(cookie_offset >= 0, "CARCHIVE_COOKIE_MISSING")
+        stream.seek(cookie_offset)
+        cookie = stream.read(CArchiveReader._COOKIE_LENGTH)
+        magic, length, offset, size, python_version, python_library = struct.unpack(
+            CArchiveReader._COOKIE_FORMAT, cookie
+        )
+        check(magic == CArchiveReader._COOKIE_MAGIC_PATTERN, "CARCHIVE_MAGIC_INVALID")
+        start = cookie_offset + CArchiveReader._COOKIE_LENGTH - length
+        check(start >= 0 and offset + size <= length, "CARCHIVE_RANGE_INVALID")
+        stream.seek(start + offset)
+        raw = stream.read(size)
+    entries = []
+    position = 0
+    while position < len(raw):
+        begin = position
+        header = raw[position : position + CArchiveReader._TOC_ENTRY_LENGTH]
+        check(len(header) == CArchiveReader._TOC_ENTRY_LENGTH, "CARCHIVE_TOC_TRUNCATED")
+        entry_size, entry_offset, data_size, unpacked_size, compressed, typecode = struct.unpack(
+            CArchiveReader._TOC_ENTRY_FORMAT, header
+        )
+        check(entry_size >= CArchiveReader._TOC_ENTRY_LENGTH, "CARCHIVE_ENTRY_SIZE_INVALID")
+        position += CArchiveReader._TOC_ENTRY_LENGTH
+        name_size = entry_size - CArchiveReader._TOC_ENTRY_LENGTH
+        name_bytes = raw[position : position + name_size]
+        check(len(name_bytes) == name_size, "CARCHIVE_NAME_TRUNCATED")
+        position += name_size
+        check(position == begin + entry_size, "CARCHIVE_ENTRY_RANGE_INVALID")
+        name = name_bytes.rstrip(b"\0").decode("utf-8")
+        typecode = typecode.decode("ascii")
+        check(compressed in (0, 1), "CARCHIVE_COMPRESSION_INVALID")
+        check(entry_offset + data_size <= offset, "CARCHIVE_DATA_RANGE_INVALID")
+        entries.append(
+            {
+                "name": name,
+                "type": typecode,
+                "offset": entry_offset,
+                "compressedBytes": data_size,
+                "uncompressedBytes": unpacked_size,
+                "compressionFlag": compressed,
+            }
+        )
+    duplicates = {
+        name: count
+        for name, count in collections.Counter(
+            entry["name"] for entry in entries if entry["type"] != "o"
+        ).items()
+        if count != 1
+    }
+    check(not duplicates, "CARCHIVE_DUPLICATE_NONOPTION_NAMES")
+    check(python_version == sys.version_info.major * 100 + sys.version_info.minor, "PYTHON_ABI")
+    return entries, {
+        "startOffset": start,
+        "cookieOffset": cookie_offset,
+        "archiveBytes": length,
+        "tocOffset": offset,
+        "tocBytes": size,
+        "tocSha256": identity(raw)["sha256"],
+        "pythonVersion": python_version,
+        "pythonLibrary": python_library.rstrip(b"\0").decode(),
+        "nonoptionDuplicates": duplicates,
+        "optionCount": sum(entry["type"] == "o" for entry in entries),
+    }
+
+
+def raw_pyz(engine, absolute_start):
+    with engine.open("rb") as stream:
+        stream.seek(absolute_start)
+        check(stream.read(4) == b"PYZ\0", "PYZ_MAGIC_INVALID")
+        check(stream.read(4) == importlib.util.MAGIC_NUMBER, "PYZ_PYTHON_MAGIC_INVALID")
+        offset = struct.unpack("!i", stream.read(4))[0]
+        stream.seek(absolute_start + offset)
+        toc_begin = stream.tell()
+        original = marshal.load(stream)
+        toc_end = stream.tell()
+        stream.seek(toc_begin)
+        toc_raw = stream.read(toc_end - toc_begin)
+    check(type(original) is list, "PYZ_ORIGINAL_TOC_NOT_SEQUENCE")
+    entries = []
+    for row in original:
+        check(type(row) is tuple and len(row) == 2, "PYZ_TOC_ROW_INVALID")
+        name, entry = row
+        check(type(name) is str and type(entry) is tuple and len(entry) == 3, "PYZ_ENTRY")
+        typecode, location, size = entry
+        check(typecode in (0, 1, 3), "PYZ_TYPE_INVALID")
+        check(location >= 0 and size >= 0 and location + size <= offset, "PYZ_RANGE_INVALID")
+        entries.append(
+            {"name": name, "type": typecode, "offset": location, "compressedBytes": size}
+        )
+    counts = collections.Counter(entry["name"] for entry in entries)
+    check(all(count == 1 for count in counts.values()), "PYZ_ORIGINAL_TOC_DUPLICATES")
+    return entries, {
+        "absoluteStart": absolute_start,
+        "tocOffset": offset,
+        "originalTocMarshal": identity(toc_raw),
+        "duplicates": {},
+    }
+
+
+def safe_relative(path):
+    check(not path.is_absolute() and ".." not in path.parts, "RESOURCE_RELATIVE_PATH_INVALID")
+    return path
+
+
+def match_file(path, expected, reason):
+    check(path.is_file(), reason + "_MISSING")
+    actual = file_identity(path)
+    check(actual == {"bytes": expected["bytes"], "sha256": expected["sha256"]}, reason + "_CHANGED")
+    return {"path": str(path), **actual}
+
+
+def audit(engine):
+    check(sys.version_info[:2] == (3, 12), "AUDIT_PYTHON_VERSION")
+    check(importlib.metadata.version("pyinstaller") == "6.22.3", "AUDIT_PYINSTALLER_VERSION")
+    check(engine.is_file(), "FINAL_ENGINE_MISSING")
+    check("ontolearn_engine" not in sys.modules, "PRODUCT_ALREADY_IMPORTED")
+    approved_raw = APPROVED.read_bytes()
+    check(identity(approved_raw) == {"bytes": 20169, "sha256": APPROVED_SHA}, "APPROVAL_CHANGED")
+    approved = load_json(approved_raw)
+    all_fixed = (
+        approved["readonlySourceAndAsset"]
+        + approved["frozenD1Pair"]
+        + approved["inheritedBaseline"]
+    )
+    source_verified = [
+        {"relativePath": entry["path"], **match_file(ROOT / entry["path"], entry, "SOURCE")}
+        for entry in all_fixed
+    ]
+    initial_engine_hash = file_identity(engine)
+    c_entries, c_info = raw_carchive(engine)
+    archive = CArchiveReader(str(engine))
+    check(len(archive.toc) == sum(entry["type"] != "o" for entry in c_entries), "CARCHIVE_MAP")
+    code_objects = {}
+    pyz_entries = []
+    pyz_info = []
+    for entry in c_entries:
+        if entry["type"] == "o":
+            continue
+        expected = (
+            entry["offset"],
+            entry["compressedBytes"],
+            entry["uncompressedBytes"],
+            entry["compressionFlag"],
+            entry["type"],
+        )
+        check(archive.toc[entry["name"]] == expected, "CARCHIVE_READER_MAPPING_CHANGED")
+        data = archive.extract(entry["name"])
+        entry["extracted"] = identity(data)
+        if entry["type"] in ("s", "m", "M"):
+            code = marshal.loads(data)
+            check(type(code) is types.CodeType, "CARCHIVE_CODE_TYPE_INVALID")
+            key = "CArchive:" + entry["name"]
+            code_objects[key] = code
+            entry["filenameNormalizedCodeSha256"] = code_fingerprint(code)
+        if entry["type"] != "z":
+            continue
+        rows, info = raw_pyz(engine, c_info["startOffset"] + entry["offset"])
+        reader = archive.open_embedded_archive(entry["name"])
+        check(len(reader.toc) == len(rows), "PYZ_READER_COUNT")
+        for row in rows:
+            check(
+                reader.toc[row["name"]] == (row["type"], row["offset"], row["compressedBytes"]),
+                "PYZ_READER_MAPPING_CHANGED",
+            )
+            data = reader.extract(row["name"], raw=True)
+            row["extractedMarshal"] = None if data is None else identity(data)
+            if data is not None:
+                code = marshal.loads(data)
+                check(type(code) is types.CodeType, "PYZ_CODE_INVALID")
+                code_objects[row["name"]] = code
+                row["filenameNormalizedCodeSha256"] = code_fingerprint(code)
+        pyz_entries.extend(rows)
+        pyz_info.append({"container": entry["name"], **info, "entries": len(rows)})
+    check(len(pyz_info) == 1, "ONE_PYZ_REQUIRED")
+    pyz_names = [entry["name"] for entry in pyz_entries]
+    check(len(pyz_names) == len(set(pyz_names)), "CROSS_PYZ_DUPLICATE_NAME")
+
+    approved_code = [
+        entry
+        for entry in all_fixed
+        if entry["path"].startswith(PREFIX) and entry["path"].endswith(".py")
+    ]
+    expected_engine = {module_name(entry["path"]) for entry in approved_code}
+    actual_engine = {
+        name
+        for name in pyz_names
+        if name == "ontolearn_engine" or name.startswith("ontolearn_engine.")
+    }
+    check(
+        actual_engine == expected_engine,
+        "ENGINE_MODULE_SET_DIFF:"
+        + repr(
+            {
+                "missing": sorted(expected_engine - actual_engine),
+                "extra": sorted(actual_engine - expected_engine),
+            }
+        ),
+    )
+    adopted_code = [
+        entry for entry in approved["readonlySourceAndAsset"] if entry["path"].endswith(".py")
+    ]
+    check(len(adopted_code) == 17, "ADOPTED_17_COUNT")
+    quality = {module_name(entry["path"]) for entry in adopted_code if "/quality/" in entry["path"]}
+    check(len(quality) == 7, "QUALITY_SEVEN_COUNT")
+    actual_quality = {
+        name
+        for name in pyz_names
+        if name == "ontolearn_engine.quality" or name.startswith("ontolearn_engine.quality.")
+    }
+    check(actual_quality == quality, "QUALITY_MODULE_SET_DIFF")
+    code_checks = []
+    quality_fingerprints = {}
+    for entry in approved_code:
+        name = module_name(entry["path"])
+        raw = (ROOT / entry["path"]).read_bytes()
+        compiled = compile(raw, str(ROOT / entry["path"]), "exec", dont_inherit=True, optimize=0)
+        expected_code = normalize_code(compiled)
+        packaged_code = normalize_code(code_objects[name])
+        expected_fingerprint = code_fingerprint(expected_code)
+        packaged_fingerprint = code_fingerprint(packaged_code)
+        check(expected_fingerprint == packaged_fingerprint, "CODE_FIELDS_DIFF:" + name)
+        check(expected_code == packaged_code, "CODE_OBJECT_DIFF:" + name)
+        code_checks.append(
+            {
+                "module": name,
+                "source": entry,
+                "optimize": 0,
+                "filenameNormalizedSourceCodeSha256": expected_fingerprint,
+                "filenameNormalizedPackagedCodeSha256": packaged_fingerprint,
+                "allOtherCodeFieldsEqual": True,
+                "objects": code_object_receipts(compiled, code_objects[name]),
+            }
+        )
+        if name in quality:
+            quality_fingerprints[expected_fingerprint] = name
+    aliases = []
+    for name, code in code_objects.items():
+        fingerprint = code_fingerprint(code)
+        if fingerprint in quality_fingerprints and name != quality_fingerprints[fingerprint]:
+            aliases.append({"name": name, "duplicates": quality_fingerprints[fingerprint]})
+    check(not aliases, "QUALITY_CODE_ALIAS_IN_ARCHIVE")
+
+    candidates = [engine.parent / "_internal", engine.parent]
+    data_roots = [
+        path for path in candidates if (path / "provenance/d2-build-inputs.json").is_file()
+    ]
+    check(len(data_roots) == 1, "ONEDIR_DATA_ROOT_AMBIGUOUS")
+    data_root = data_roots[0]
+    source_provenance = ROOT / "build/profile-d2/provenance/d2-build-inputs.json"
+    provenance_raw = (data_root / "provenance/d2-build-inputs.json").read_bytes()
+    check(provenance_raw == source_provenance.read_bytes(), "PROVENANCE_PACKAGED_BYTES_DIFF")
+    provenance = load_json(provenance_raw)
+    check(provenance["format"] == "ontolearn-d2-build-inputs/1", "PROVENANCE_FORMAT")
+    check(
+        provenance["sourceRef"] == "0475d0ec6c486a63c7e8f62f11f35181da6b2576",
+        "PROVENANCE_SOURCE_REF",
+    )
+    check(provenance["pythonOptimize"] == 0, "PROVENANCE_OPTIMIZE")
+    arguments = provenance["command"]
+    check(
+        arguments.count("--optimize") == 1 and arguments[arguments.index("--optimize") + 1] == "0",
+        "ACTUAL_OPTIMIZE_NOT_FIXED",
+    )
+    check(
+        len(provenance["canonicalModules"]) == 17
+        and set(provenance["canonicalModules"])
+        == {module_name(entry["path"]) for entry in adopted_code},
+        "PROVENANCE_MODULES",
+    )
+    check(len(provenance["files"]) == len(all_fixed) == 43, "PROVENANCE_INPUT_COUNT")
+    check(
+        len(provenance["excludedModules"]) == 3
+        and set(provenance["excludedModules"])
+        == {
+            "ontolearn_engine.quality." + name
+            for name in ("definitions", "planning", "rule_revalidation")
+        },
+        "PROVENANCE_EXCLUSIONS",
+    )
+    check(
+        {
+            item["path"]: {"bytes": item["bytes"], "sha256": item["sha256"]}
+            for item in provenance["files"]
+        }
+        == {item["path"]: {"bytes": item["bytes"], "sha256": item["sha256"]} for item in all_fixed},
+        "PROVENANCE_APPROVED_INPUTS_DIFF",
+    )
+    check(
+        len(provenance["writerInputs"]) == 2
+        and {item["path"] for item in provenance["writerInputs"]}
+        == {"scripts/build-engine.mjs", "packages/engine/entrypoint.py"},
+        "PROVENANCE_WRITER_SET",
+    )
+    for entry in provenance["writerInputs"]:
+        match_file(ROOT / entry["path"], entry, "WRITER_INPUT")
+        git_raw = subprocess.check_output(
+            ["git", "-C", str(ROOT), "show", provenance["combinationRef"] + ":" + entry["path"]]
+        )
+        check(git_raw == (ROOT / entry["path"]).read_bytes(), "WRITER_REF_DIFF")
+    entrypoint_path = ROOT / "packages/engine/entrypoint.py"
+    entrypoint_code = compile(
+        entrypoint_path.read_bytes(), str(entrypoint_path), "exec", dont_inherit=True, optimize=0
+    )
+    check("CArchive:entrypoint" in code_objects, "PACKAGED_ENTRYPOINT_MISSING")
+    entrypoint_receipts = code_object_receipts(entrypoint_code, code_objects["CArchive:entrypoint"])
+
+    resources = []
+    for entry in all_fixed:
+        source = entry["path"]
+        destination = None
+        if source == "docs/iterations/I05/profile-probe-inputs.json":
+            destination = "provenance/i05/profile-probe-inputs.json"
+        elif source == "uv.lock":
+            destination = "provenance/uv.lock"
+        elif source.startswith("packages/contracts/"):
+            destination = "contracts/" + source.removeprefix("packages/contracts/")
+        elif source == PREFIX + "ontolearn_engine/invalidation-v2.json":
+            destination = "ontolearn_engine/invalidation-v2.json"
+        if destination is not None:
+            safe_relative(Path(destination))
+            resources.append(
+                {
+                    "source": source,
+                    "packageRelative": destination,
+                    **match_file(data_root / destination, entry, "PACKAGE_RESOURCE"),
+                }
+            )
+    check(len(resources) == 12, "RESOURCE_TWELVE_COUNT")
+    distributions = []
+    meta = provenance["toolsAndDistributions"]
+    check(meta["pyinstaller"] == "6.22.3", "PROVENANCE_PYINSTALLER")
+    check(
+        {entry["name"]: entry["version"] for entry in meta["distributions"]} == DIST_VERSIONS,
+        "PROVENANCE_DISTRIBUTIONS",
+    )
+    for dist in meta["distributions"]:
+        installed = importlib.metadata.distribution(dist["name"])
+        check(installed.version == dist["version"], "INSTALLED_DIST_VERSION")
+        check(
+            len(dist["files"]) == len(installed.files)
+            and {entry["path"] for entry in dist["files"]}
+            == {str(path).replace("\\", "/") for path in installed.files},
+            "DISTRIBUTION_SOURCE_INVENTORY_DIFF",
+        )
+        check(dist["name"] in pyz_names, "DISTRIBUTION_TOP_MODULE_MISSING")
+        record = {
+            "name": dist["name"],
+            "version": dist["version"],
+            "metadata": [],
+            "licenses": [],
+            "requiredCollectedData": [],
+            "otherDataObservations": [],
+            "sourceOnlyEntryScripts": [],
+            "collectedSourceModules": [],
+            "uncollectedSourceModules": [],
+        }
+        for entry in dist["files"]:
+            relative = Path(entry["path"])
+            source = Path(installed.locate_file(entry["path"])).resolve()
+            check(source.is_relative_to(ROOT / ".venv"), "DISTRIBUTION_SOURCE_OUTSIDE_VENV")
+            match_file(source, entry, "DISTRIBUTION_SOURCE")
+            check(
+                entry["licenseFile"]
+                == any(
+                    word in source.name.lower()
+                    for word in ("license", "licence", "copying", "notice")
+                ),
+                "DISTRIBUTION_LICENSE_TAG_DIFF",
+            )
+            if ".." in relative.parts:
+                record["sourceOnlyEntryScripts"].append(entry)
+                continue
+            safe_relative(relative)
+            target = data_root / relative
+            if relative.suffix == ".py":
+                name = entry["path"][:-3].replace("/", ".")
+                if name.endswith(".__init__"):
+                    name = name[: -len(".__init__")]
+                if name in code_objects:
+                    compiled = compile(
+                        source.read_bytes(), str(source), "exec", dont_inherit=True, optimize=0
+                    )
+                    fingerprint = code_fingerprint(compiled)
+                    check(
+                        fingerprint == code_fingerprint(code_objects[name]),
+                        "DISTRIBUTION_CODE_FIELDS_DIFF:" + name,
+                    )
+                    record["collectedSourceModules"].append(
+                        {
+                            "module": name,
+                            "source": entry,
+                            "filenameNormalizedCodeSha256": fingerprint,
+                        }
+                    )
+                else:
+                    record["uncollectedSourceModules"].append({"module": name, "source": entry})
+            is_metadata = any(part.endswith(".dist-info") for part in relative.parts)
+            if is_metadata or entry["licenseFile"]:
+                observed = {
+                    "relativePath": entry["path"],
+                    **match_file(target, entry, "PACKAGE_METADATA_OR_LICENSE"),
+                }
+                record["metadata"].append(observed)
+                if entry["licenseFile"]:
+                    record["licenses"].append(observed)
+            elif relative.suffix not in (".py", ".pyc"):
+                if dist["name"] in COLLECT_ALL_DATA:
+                    record["requiredCollectedData"].append(
+                        {
+                            "relativePath": entry["path"],
+                            **match_file(target, entry, "REQUIRED_COLLECT_ALL_DATA"),
+                        }
+                    )
+                elif target.is_file():
+                    actual = file_identity(target)
+                    record["otherDataObservations"].append(
+                        {
+                            "relativePath": entry["path"],
+                            "source": entry,
+                            "packaged": actual,
+                            "sameBytes": actual
+                            == {"bytes": entry["bytes"], "sha256": entry["sha256"]},
+                            "domain": (
+                                "native binary may be transformed by PyInstaller; "
+                                "raw hashes separate"
+                            ),
+                        }
+                    )
+                else:
+                    check(
+                        relative.suffix not in (".so", ".pyd", ".dll", ".dylib"),
+                        "NATIVE_DISTRIBUTION_CODE_MISSING",
+                    )
+                    record["otherDataObservations"].append(
+                        {
+                            "relativePath": entry["path"],
+                            "source": entry,
+                            "packaged": None,
+                            "domain": (
+                                "not required collect-all data; "
+                                "type hints/developer files not runtime proof"
+                            ),
+                        }
+                    )
+        check(record["metadata"] and record["licenses"], "DIST_METADATA_LICENSE_EMPTY")
+        distributions.append(record)
+
+    file_tree = []
+    loose_code_checked = []
+    source_quality_hashes = {
+        entry["sha256"]: entry["path"] for entry in adopted_code if "/quality/" in entry["path"]
+    }
+    for path in sorted(engine.parent.rglob("*")):
+        relative = path.relative_to(engine.parent).as_posix()
+        if path.is_symlink():
+            check(path.resolve().is_relative_to(engine.parent.resolve()), "PACKAGE_SYMLINK_ESCAPES")
+            file_tree.append({"path": relative, "type": "symlink", "target": os.readlink(path)})
+            continue
+        if not path.is_file():
+            continue
+        actual = file_identity(path)
+        check(actual["sha256"] not in source_quality_hashes, "QUALITY_SOURCE_COPY_IN_DATA")
+        check(
+            not any(
+                part in {"definitions.py", "planning.py", "rule_revalidation.py"}
+                for part in path.parts
+                if "quality" in path.parts
+            ),
+            "FORBIDDEN_QUALITY_DATA",
+        )
+        check(
+            not (
+                "ontolearn_engine" in path.parts
+                and "quality" in path.parts
+                and path.suffix in (".py", ".pyc")
+            ),
+            "QUALITY_CODE_OUTSIDE_PYZ",
+        )
+        file_tree.append({"path": relative, "type": "file", **actual})
+        if path.suffix in (".py", ".pyc"):
+            data = path.read_bytes()
+            if path.suffix == ".pyc":
+                check(data[:4] == importlib.util.MAGIC_NUMBER, "LOOSE_PYC_PYTHON_MAGIC")
+                loose_code = marshal.loads(data[16:])
+            else:
+                loose_code = compile(data, str(path), "exec", dont_inherit=True, optimize=0)
+            fingerprint = code_fingerprint(loose_code)
+            check(fingerprint not in quality_fingerprints, "QUALITY_ALIAS_IN_LOOSE_CODE")
+            loose_code_checked.append(
+                {"file": relative, "filenameNormalizedCodeSha256": fingerprint}
+            )
+        if path.name == "base_library.zip":
+            with zipfile.ZipFile(path) as archive_zip:
+                for name in archive_zip.namelist():
+                    if not name.endswith(".pyc"):
+                        continue
+                    data = archive_zip.read(name)
+                    check(data[:4] == importlib.util.MAGIC_NUMBER, "BASE_LIBRARY_PYTHON_MAGIC")
+                    code = marshal.loads(data[16:])
+                    check(
+                        code_fingerprint(code) not in quality_fingerprints,
+                        "QUALITY_ALIAS_IN_BASE_LIBRARY",
+                    )
+                    loose_code_checked.append(
+                        {
+                            "container": relative,
+                            "member": name,
+                            "filenameNormalizedCodeSha256": code_fingerprint(code),
+                        }
+                    )
+    check(file_identity(engine) == initial_engine_hash, "ENGINE_CHANGED_DURING_AUDIT")
+    build_engine = ROOT / "build/engine/ontolearn-engine" / engine.name
+    check(file_identity(build_engine) == initial_engine_hash, "BUILD_FINAL_ENGINE_DIFF")
+    check(not any(name.startswith("ontolearn_engine") for name in sys.modules), "PRODUCT_IMPORTED")
+    tools = []
+    for path in [
+        Path(sys.modules[CArchiveReader.__module__].__file__),
+        ROOT / ".venv/lib/python3.12/site-packages/PyInstaller/loader/pyimod01_archive.py",
+    ]:
+        tools.append({"path": str(path), **file_identity(path)})
+    return {
+        "format": "ontolearn-d2-static-archive-audit/1",
+        "pass": True,
+        "scope": "static artifact/code/resource evidence; no product execution or algorithm proof",
+        "engine": {"path": str(engine), **initial_engine_hash},
+        "buildEngine": {"path": str(build_engine), **file_identity(build_engine)},
+        "dataRoot": str(data_root),
+        "approvedInput": {"path": str(APPROVED), **identity(approved_raw)},
+        "sourceVerified": source_verified,
+        "cArchive": {**c_info, "entries": c_entries},
+        "pyz": {"archives": pyz_info, "entries": pyz_entries},
+        "expectedEngineModules": sorted(expected_engine),
+        "actualEngineModules": sorted(actual_engine),
+        "qualityModules": sorted(quality),
+        "qualityAliasFindings": aliases,
+        "sourceToFrozenCode": code_checks,
+        "entrypointCode": {"source": str(entrypoint_path), "objects": entrypoint_receipts},
+        "normalization": "recursive co_filename only; all other Python 3.12 code fields retained",
+        "provenance": {
+            "source": str(source_provenance),
+            "packaged": str(data_root / "provenance/d2-build-inputs.json"),
+            **identity(provenance_raw),
+            "combinationRef": provenance["combinationRef"],
+        },
+        "resources": resources,
+        "distributions": distributions,
+        "fileTree": file_tree,
+        "looseAndBaseLibraryCodeChecked": loose_code_checked,
+        "readerToolSources": tools,
+        "auditor": {
+            "path": str(Path(__file__).resolve()),
+            **file_identity(Path(__file__).resolve()),
+            "python": sys.version,
+            "pythonOptimize": sys.flags.optimize,
+        },
+        "productImported": False,
+        "productCodeExecuted": False,
+        "limitations": [
+            "Static archive identity does not prove dynamic instances or business correctness",
+            "Source-only console entry scripts are not necessary engine runtime modules",
+            "Uncollected distribution Python modules are listed; exercised-path proof is separate",
+            "Uncollected type-hint/developer data disclosed; CLI path evidence is separate",
+            "Native binary transformation hashes are separate from source distribution raw bytes",
+            "No target-platform/native/UI/CI/external-review or parent acceptance claim",
+        ],
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--engine", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    arguments = parser.parse_args()
+    check(not arguments.output.exists(), "PRESERVE_PRIOR_AUDIT_OUTPUT")
+    try:
+        result = audit(arguments.engine.resolve())
+    except Exception as error:
+        result = {
+            "format": "ontolearn-d2-static-archive-audit/1",
+            "pass": False,
+            "errorType": type(error).__name__,
+            "reason": str(error),
+            "productCodeExecuted": False,
+            "productImported": False,
+        }
+    arguments.output.parent.mkdir(parents=True, exist_ok=True)
+    arguments.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+    print(
+        json.dumps(
+            {
+                "pass": result["pass"],
+                "output": str(arguments.output),
+                "outputIdentity": file_identity(arguments.output),
+                "reason": result.get("reason"),
+            }
+        )
+    )
+    return 0 if result["pass"] else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

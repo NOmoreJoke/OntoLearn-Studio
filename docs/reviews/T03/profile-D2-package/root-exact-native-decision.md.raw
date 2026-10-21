@@ -1,0 +1,13 @@
+# T03 D2：wcwidth 精确签名域差异裁定
+
+2026-10-21。根已全文读独立报告最终17664B/SHAd8afa69fe977fe00aac723be7faa0fe431d83791199086c5ae9fb27b700981b4，含原17102B/2e95d980前缀及check_shapes函数名勘误。准许本D2候选记录下面唯一实际binarypair为经核验的签名域构建变换，保两个raw hash，不写原字节相同，不把诊断归零操作加入正式比较器。
+
+源wcwidth0.9.2 _wcwidth_c.abi3.so：1389136B/SHA385bccbd2efdcf0e0d4288d8f4ae5586b7ac5797965b8f79268188ae5b5e8d62；a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98实际最终App内对应文件：1381184B/SHAf5e36bc58a9605c02f499e9622b6af4c6a430fe66eb3b007e7a5f3d588f5e31e。仅此pair，不泛及所有MachO/native/未来源或产物hash。
+
+独立raw核14commands/4segments/10sections：签名前完整1378224B除__LINKEDIT.filesize@1096/8与LC_CODE_SIGNATURE.datasize@1444/4的实际4byte差异外全部逐字同，所有section描述/代码/常量/数据同，完整剩余尾变都在同offset签名容量区内。CodeDirectory源337页与包85页全部实算SHA256吻合各自真实prefix，输出flags ADHOC、无Team、空CMS。包签名容量中16B非零尾填充是原同偏移签名残留，已由输出raw hash精确固定，不授任意padding豁免或把它写成零。实际RECORD/source→PyInstaller cacheindex→cache/build/finalApp及真实处理源码/日志闭环；没有逐so codesign argv审计，不能谎称亲见该系统调用，也不授发行者身份/Developer ID/公证/系统信任或安装通过。
+
+[PyInstaller官方说明](https://www.pyinstaller.org/en/latest/man/pyinstaller.html)说明无identity时使用ad-hoc；它只是流程背景，本pair批准依据是上述完整实际字节、签名结构和工具/实物链。根未执行产品、签名、Keychain或验签。
+
+34个未收模块按实际308已收源/34未收源AST与用途分层审查，对当前17canonical固定profile入口未见新的具体闭包阻断；不据83通过豁免所有missing。wcwidth实际C导出与pure fallback分开：两边width签名False，另wcstwidth为True；不能用pure控制流自证C全路径。20个终端override显式True/任意终端功能、彩色CLI/开发工具/其它packaging API不在本固定计算承诺；未来SHACL check_shapes/任意八库接口/B1须另验。保完整missing清单与错误概括纠正记录，不把未收说成全部库接口完整。
+
+原业务JSON仅9处身份差异、Python代码指纹仅co_filename规则不改；不得因本例删除identity/source/false/head/basis或掩新逻辑差异。任一binaryhash/arch/签名offset/签名前差异变化、另一个native需变换，均交具体新pair另核，不继承本裁定。本件只解除本次精确构建差异的待决项，不是D2全阶段/包/全P2/父/平台/指定双审/CI/正常合并放行。a4d产品/原raw保持，现可完成仅docs/process封存并交根完整D2固定交付，不为本裁定重打包或重跑无变化产品。

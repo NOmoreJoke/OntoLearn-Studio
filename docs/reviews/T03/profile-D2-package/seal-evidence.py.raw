@@ -1,0 +1,99 @@
+"""Seal existing observations only; no product import or product execution."""
+import hashlib
+import json
+import subprocess
+import sys
+import zipfile
+from pathlib import Path
+
+if sys.flags.optimize != 0:
+    raise SystemExit('EVIDENCE_PYTHON_OPTIMIZATION_INVALID')
+root = Path(__file__).resolve().parents[2]
+review = root / 'docs/reviews/T03/profile-D2-package'
+evidence = root / 'build/profile-d2-evidence'
+external = root / 'build/profile-d2-external'
+
+
+def identity(raw):
+    return {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+
+
+def require(value, reason):
+    if not value:
+        raise ValueError(reason)
+
+
+approved = json.loads((review / 'approved-readonly-inputs.json.raw').read_text())
+head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root).decode().strip()
+require(head == 'a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98', 'FIXED_PRODUCT_HEAD')
+readonly = []
+for group in ('readonlySourceAndAsset', 'readonlyValidation', 'frozenD1Pair', 'inheritedBaseline'):
+    for row in approved[group]:
+        current = (root / row['path']).read_bytes()
+        committed = subprocess.check_output(['git', 'show', head + ':' + row['path']], cwd=root)
+        require(current == committed and identity(current) == {k: row[k] for k in ('bytes', 'sha256')}, 'READONLY_INPUT_CHANGED:' + row['path'])
+        readonly.append({'group': group, **row})
+require(len(readonly) == 67, 'READONLY_COUNT')
+writers = ['scripts/build-engine.mjs', 'packages/engine/entrypoint.py']
+full_scope = []
+for group in ('frozenD1Pair', 'readonlySourceAndAsset', 'readonlyValidation'):
+    full_scope.extend({**row, 'group': group} for row in approved[group])
+for path in writers:
+    raw = (root / path).read_bytes()
+    require(raw == subprocess.check_output(['git', 'show', head + ':' + path], cwd=root), 'WRITER_DIRTY')
+    full_scope.append({'path': path, 'group': 'two D2 writers', 'ref': head, **identity(raw)})
+require(len(full_scope) == len({r['path'] for r in full_scope}) == 46, 'FULL_SCOPE_COUNT')
+changed = subprocess.check_output(['git', 'diff', '--name-only', approved['approvedBase'], head], cwd=root).decode().splitlines()
+expected = {row['path'] for row in full_scope}
+actual = {path for path in changed if not (path.startswith('docs/iterations/T03/') or path.startswith('docs/reviews/T03/'))}
+require(actual == expected, 'FULL_BASE_SCOPE_CHANGED')
+execution = []
+for file in sorted(evidence.glob('*.execution.json')):
+    d = json.loads(file.read_text())
+    for kind in ('stdout', 'stderr'):
+        raw = (evidence / d[kind]['file']).read_bytes()
+        require(identity(raw) == {k: d[kind][k] for k in ('bytes', 'sha256')}, 'CAPTURE_HASH_CHANGED:' + file.name)
+    require(not d['timedOut'] and d['exitCode'] is not None, 'TIMEOUT_REQUIRES_DISCLOSURE')
+    execution.append({'label': file.name.removesuffix('.execution.json'), 'exitCode': d['exitCode'], 'hardTimeoutSeconds': d['hardTimeoutSeconds'], 'elapsedSeconds': d['elapsedSeconds'], 'stdout': d['stdout'], 'stderr': d['stderr']})
+for file in sorted(external.iterdir()):
+    if file.is_file() and file.suffix == '.py':
+        raw_target = review / (file.stem.replace('_', '-') + '.py.raw')
+        if raw_target.exists():
+            require(raw_target.read_bytes() == file.read_bytes(), 'SEALED_SCRIPT_CHANGED')
+        else:
+            raw_target.write_bytes(file.read_bytes())
+inputs = {'format': 'ontolearn-d2-final-input-scope/1', 'base': approved['approvedBase'], 'productHead': head, 'fullScope46': full_scope, 'readonly67': readonly, 'stagedAGENTS': False, 'execution': execution, 'noTimeout': True, 'sourcePackageJSONDifferencesStillOnlyNine': True, 'nativeRawDifferenceAcceptedHere': False}
+path = review / 'final-inputs-and-executions.json'
+require(not path.exists(), 'PRESERVE_MANIFEST')
+path.write_text(json.dumps(inputs, ensure_ascii=False, indent=2) + '\n')
+items = {}
+for file in sorted(evidence.rglob('*')):
+    if file.is_file():
+        items['runtime/' + file.relative_to(evidence).as_posix()] = file.read_bytes()
+for file in sorted(external.iterdir()):
+    if file.is_file():
+        items['external/' + file.name] = file.read_bytes()
+for file in sorted((root / 'build/pyinstaller/ontolearn-engine').iterdir()):
+    if file.is_file() and (file.suffix == '.toc' or file.name.startswith(('warn-', 'xref-'))):
+        items['pyinstaller/' + file.name] = file.read_bytes()
+for name in ('build/ontolearn-engine.spec', 'build/profile-d2/provenance/d2-build-inputs.json'):
+    items[name] = (root / name).read_bytes()
+container = approved['externalCheckerDependencies'][0]['container']
+raw = subprocess.check_output(['git', 'show', container['ref'] + ':' + container['path']], cwd=root)
+require(identity(raw) == {k: container[k] for k in ('bytes', 'sha256')}, 'FIXED_CHECKER_CONTAINER_CHANGED')
+items['fixed-external/original-evidence.zip'] = raw
+items['scope/final-inputs-and-executions.json'] = path.read_bytes()
+items['scope/cli-suite-first.py.raw'] = (review / 'cli-suite-first.py.raw').read_bytes()
+archive = review / 'runtime-evidence.zip'
+require(not archive.exists(), 'PRESERVE_ARCHIVE')
+manifest = [{'member': name, **identity(raw)} for name, raw in sorted(items.items())]
+with zipfile.ZipFile(archive, 'x', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as bundle:
+    for name, raw in sorted(items.items()):
+        bundle.writestr(name, raw)
+with zipfile.ZipFile(archive) as bundle:
+    require(bundle.namelist() == [row['member'] for row in manifest], 'MEMBER_INVENTORY')
+    for row in manifest:
+        require(identity(bundle.read(row['member'])) == {k: row[k] for k in ('bytes', 'sha256')}, 'MEMBER_READBACK')
+receipt = {'format': 'ontolearn-d2-evidence-manifest/1', 'productHead': head, 'archive': {'file': archive.name, **identity(archive.read_bytes())}, 'memberCount': len(manifest), 'members': manifest, 'allMembersReadBack': True, 'noProductBinariesCopiedToGit': True, 'originalFailedAttemptsRetained': ['13-cli-suite', 'reg-source-contract'], 'intentionalNonzeroEvidenceRetained': ['source/package probes and oracle exit1', '12 arguments exit2', 'three isolated resource failures exit1', 'two optimizer refusals exit1']}
+(review / 'runtime-evidence-manifest.json').write_text(json.dumps(receipt, ensure_ascii=False, indent=2) + '\n')
+print(json.dumps({'readonly':len(readonly),'scope':len(full_scope),'executionRecords':len(execution),'archive':receipt['archive'],'memberCount':len(manifest)}))

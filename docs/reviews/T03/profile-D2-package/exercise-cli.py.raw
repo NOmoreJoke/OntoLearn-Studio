@@ -1,0 +1,129 @@
+"""Authorized CLI and isolated resource-copy checks; no business computation implementation."""
+
+import hashlib
+import json
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+from validate_reports import deep, loads
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / "build/profile-d2-evidence"
+if sys.flags.optimize != 0:
+    raise SystemExit("EVIDENCE_PYTHON_OPTIMIZATION_INVALID")
+locations = loads((OUT / "locations.json").read_bytes())
+engine = Path(locations["engine"])
+directory = locations["cwdOutsideCheckout"]
+python = str(ROOT / ".venv/bin/python")
+original_engine = hashlib.sha256(engine.read_bytes()).hexdigest()
+records = []
+
+
+def execute(label, command, expected_exit):
+    label = "v2-" + label
+    collector = subprocess.run(
+        [python, str(ROOT / "build/profile-d2-external/capture.py"), label, "120", directory, *command],
+        capture_output=True,
+    )
+    result = loads((OUT / (label + ".execution.json")).read_bytes())
+    assert not result["timedOut"]
+    assert result["exitCode"] == expected_exit == collector.returncode, (label, result)
+    records.append({"label": label, "command": command, "exitCode": result["exitCode"]})
+    return (OUT / (label + ".stdout")).read_bytes(), (OUT / (label + ".stderr")).read_bytes()
+
+
+regressions = {}
+for name, module, flag in (
+    ("contract", "contract_probe", "--contract-probe"),
+    ("resources", "resources", "--protocol-resources"),
+    ("storage", "storage_probe", "--storage-probe"),
+):
+    extra = ["--scale", "1", "--trial", "0"] if name == "storage" else []
+    source_command = ([python, "-m", "ontolearn_engine." + module, *extra] if name == "storage" else [python, "-c", "from ontolearn_engine." + module + " import main; main()"] )
+    source, error = execute("reg-source-" + name, source_command, 0)
+    assert error == b""
+    package, error = execute("reg-package-" + name, [str(engine), flag, *extra], 0)
+    assert error == b""
+    a, b = loads(source), loads(package)
+    exceptions = {("frozen",): (False, True)} if name == "resources" else {}
+    if name == "storage":
+        assert type(a["measurement"]) is type(b["measurement"]) is dict
+        source_measurement, package_measurement = a.pop("measurement"), b.pop("measurement")
+        assert set(source_measurement) == set(package_measurement)
+        for phase in source_measurement:
+            assert set(source_measurement[phase]) == set(package_measurement[phase])
+        regressions["storageMeasurementsAreActualSeparateObservations"] = True
+    visited = set()
+    nodes = deep(a, b, exceptions, visited=visited)
+    assert visited == set(exceptions)
+    regressions[name] = {"equalExcept": [list(path) for path in exceptions], "nodes": nodes}
+
+for index, args in enumerate((["--help"], [""], ["input.json"], ["https://example.invalid/input.json"])):
+    stdout, stderr = execute(
+        "args-source-" + str(index),
+        [python, "-m", "ontolearn_engine.semantic_profile_probe", *args],
+        2,
+    )
+    assert stdout == b"" and stderr == b"PROFILE_PROBE_ARGUMENTS_INVALID\n"
+
+for index, args in enumerate((
+    ["--semantic-profile-probe", "--help"],
+    ["--semantic-profile-probe", ""],
+    ["--semantic-profile-probe", "input.json"],
+    ["--semantic-profile-probe", "https://example.invalid/input.json"],
+    ["--worker", "--semantic-profile-probe"],
+    ["--semantic-profile-probe", "--worker"],
+    ["--storage-probe", "--semantic-profile-probe"],
+    ["--semantic-profile-probe=input.json"],
+)):
+    stdout, stderr = execute("args-package-" + str(index), [str(engine), *args], 2)
+    assert stdout == b"" and stderr == b"PROFILE_PROBE_ARGUMENTS_INVALID\n"
+
+negative_root = ROOT / "build/profile-d2-negative-assets"
+negative_root.mkdir(parents=True, exist_ok=True)
+negative_assets = []
+for name in ("missing-asset", "bad-hash", "over-cap"):
+    target = negative_root / name
+    assert not target.exists()
+    shutil.copytree(engine.parent, target, symlinks=True)
+    copied_engine = target / engine.name
+    assert hashlib.sha256(copied_engine.read_bytes()).hexdigest() == original_engine
+    asset = target / "_internal/provenance/i05/profile-probe-inputs.json"
+    assert asset.is_file()
+    assert hashlib.sha256(asset.read_bytes()).hexdigest() == "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+    if name == "missing-asset":
+        asset.unlink()
+    elif name == "bad-hash":
+        raw = asset.read_bytes()
+        asset.write_bytes(b"!" + raw[1:])
+    else:
+        asset.write_bytes(b" " * 2_097_153)
+    negative_assets.append({
+        "case": name,
+        "copy": str(target),
+        "assetBytes": asset.stat().st_size if asset.exists() else None,
+        "assetSha256": hashlib.sha256(asset.read_bytes()).hexdigest() if asset.exists() else None,
+    })
+    stdout, stderr = execute("resource-" + name, [str(copied_engine), "--semantic-profile-probe"], 1)
+    assert stdout == b"" and stderr == b"PROFILE_PROBE_FAILED\n"
+
+assert hashlib.sha256(engine.read_bytes()).hexdigest() == original_engine
+assert hashlib.sha256((engine.parent / "_internal/provenance/i05/profile-probe-inputs.json").read_bytes()).hexdigest() == "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+report = {
+    "scope": "CLI rejection, inherited probe regression and three authorized resource-copy failures",
+    "productHead": locations["productHead"],
+    "engineSha256": original_engine,
+    "finalEngineAndAssetUnchanged": True,
+    "cwdOutsideCheckout": directory,
+    "commands": records,
+    "regressions": regressions,
+    "negativeResourceCopies": negative_assets,
+    "noGUIOrNetworkInputOrProductMutation": True,
+    "storagePerformanceImprovementClaim": False,
+}
+output = OUT / "cli-resource-suite.json"
+assert not output.exists()
+output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
+print(json.dumps({"commands": len(records), "regressions": regressions, "resourceFailures": len(negative_assets)}))

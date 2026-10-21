@@ -1,0 +1,82 @@
+"""External command capture only; no product code or expected-value evaluation."""
+
+import datetime
+import hashlib
+import json
+import os
+import signal
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / "build/profile-d2-evidence"
+if sys.flags.optimize != 0:
+    raise SystemExit("EVIDENCE_PYTHON_OPTIMIZATION_INVALID")
+label, seconds, directory, *command = sys.argv[1:]
+assert label and all(c in "abcdefghijklmnopqrstuvwxyz0123456789-" for c in label)
+assert command
+paths = [OUT / (label + suffix) for suffix in (".stdout", ".stderr", ".execution.json")]
+assert not any(p.exists() for p in paths), "preserve original attempts"
+environment = os.environ.copy()
+environment.pop("PYTHONPATH", None)
+environment.pop("PYTHONHOME", None)
+environment.pop("PYTHONOPTIMIZE", None)
+controlled = {
+    "UV_CACHE_DIR": str(ROOT / "build/profile-d2-uv-cache"),
+    "UV_LINK_MODE": "copy",
+    "UV_PYTHON_DOWNLOADS": "never",
+    "PYTHONUTF8": "1",
+    "PYTHONOPTIMIZE": "0",
+    "CSC_IDENTITY_AUTO_DISCOVERY": "false",
+    "ELECTRON_SKIP_BINARY_DOWNLOAD": "1",
+    "CI": "1",
+}
+environment.update(controlled)
+started = time.monotonic()
+cwd = str(ROOT) if directory == "ROOT" else directory
+record = {
+    "command": command,
+    "cwd": cwd,
+    "environment": controlled,
+    "clearedEnvironmentKeys": ["PYTHONPATH", "PYTHONHOME", "PYTHONOPTIMIZE"],
+    "collectorOptimize": sys.flags.optimize,
+    "headAtStart": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT).decode().strip(),
+    "collectorSha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+    "startedAt": datetime.datetime.now(datetime.UTC).isoformat(),
+    "hardTimeoutSeconds": int(seconds),
+    "timedOut": False,
+}
+with paths[0].open("xb") as stdout, paths[1].open("xb") as stderr:
+    process = subprocess.Popen(
+        command,
+        cwd=cwd,
+        env=environment,
+        stdin=subprocess.DEVNULL,
+        stdout=stdout,
+        stderr=stderr,
+        shell=False,
+        start_new_session=True,
+    )
+    record.update(pid=process.pid, ownedProcessGroup=process.pid)
+    try:
+        record["exitCode"] = process.wait(timeout=int(seconds))
+    except subprocess.TimeoutExpired:
+        record.update(timedOut=True, exitCode=None)
+        os.killpg(process.pid, signal.SIGKILL)
+        record["terminationReturncode"] = process.wait(timeout=5)
+record["elapsedSeconds"] = time.monotonic() - started
+for key, path in zip(("stdout", "stderr"), paths):
+    data = path.read_bytes()
+    record[key] = {
+        "file": path.name,
+        "bytes": len(data),
+        "sha256": hashlib.sha256(data).hexdigest(),
+    }
+paths[2].write_text(json.dumps(record, indent=2) + "\n")
+print(json.dumps(record))
+if record["stdout"]["bytes"] < 20000:
+    print(paths[0].read_text(errors="replace"))
+print(paths[1].read_text(errors="replace")[-12000:])
+raise SystemExit(record["exitCode"] if record["exitCode"] is not None else 124)

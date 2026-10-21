@@ -1,0 +1,111 @@
+# T03 D2 wcwidth native 差异：独立静态字节与签名结构复核
+
+2026-10-21。结论：本次实际源/包二进制对的差异可精确定位为既有 ad-hoc/linker 签名换为 PyInstaller ad-hoc 签名，以及相应两处签名长度字段；未发现机器指令、常量、数据、重定位/绑定/符号等签名前内容变更。两份 CodeDirectory 的全部 code-slot 页哈希均与各自实际文件对应，最终签名结构确实带 CS_ADHOC、无 Team ID、无非空 CMS，而非只凭作者“ad-hoc”口述。
+
+**建议仅允许root把下列精确hash对作为已审查的签名域构建变换另记，保留两个raw hash且不声称原字节相等；不新增全native、所有Mach-O或任意签名字段归一化。**这是技术审查建议，不自动授包/P2/发布通过。83项业务深比及原九处允许差异、Python代码指纹仅co_filename规则完全不变。
+
+本审只运行文件读取、stdlib struct/hash/JSON/AST/CSV/base64/marshal的静态数据检查；没有import产品、PyInstaller、归档reader，没有执行so/引擎/probe/测试/签名/codesign/Keychain/native GUI或业务网络。为查C来源做过官方仓库搜索及固定tag页面读取，两者无可用结果，未据此作技术结论；本件结构与源码依据均为实际本机固定文件。唯一写入是本报告；未改源文件、最终App、owner证据/审计JSON、比较器、产品或共享状态。既有build日志/原件作为历史证据读取，不冒称本审亲跑。
+
+## 1. 固定对象与字节身份
+
+当前T03树 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build`，实际产品HEAD `a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98`。
+
+| 对象 | 实际bytes | SHA256 |
+| --- | ---: | --- |
+| source：.venv/lib/python3.12/site-packages/wcwidth/_wcwidth_c.abi3.so | 1389136 | 385bccbd2efdcf0e0d4288d8f4ae5586b7ac5797965b8f79268188ae5b5e8d62 |
+| final App：release/mac-arm64/OntoLearn Studio.app/Contents/Resources/engine/_internal/wcwidth/_wcwidth_c.abi3.so | 1381184 | f5e36bc58a9605c02f499e9622b6af4c6a430fe66eb3b007e7a5f3d588f5e31e |
+| owner wcwidth-native-difference.json | 已读完整 | cfbb849bc93ea4e3cb146a3d669fff9923a5dcb72b756d4199f4ec30edcb3419 |
+| owner archive-audit.json | 829115 | a5878ca164d57996bf4bcd25c63b0386621b875f0ae1dbcc0db423449afcba65 |
+
+本审从JSON获取实际路径后独立读raw文件与解析，不将JSON自报相等作为断言来源。source在wcwidth0.9.2 RECORD中的长度1389136及base64url SHA256亦与当前raw吻合。最终App、build/engine/ontolearn-engine/_internal对应文件、该树PyInstaller `bincache00py31264bit/arm64/adhoc/no-entitlements/wcwidth/_wcwidth_c.abi3.so` 三者逐字相同，均为上述f5e36…输出。
+
+## 2. 完整Mach-O签名前内容
+
+独立以little-endian mach_header_64/segment_command_64/section_64逐项解析并检查所有边界：两件均thin arm64、MH_BUNDLE，header相同，14个load commands，sizeofcmds1416，4个segments、10个sections；每command的cmdsize/总范围有效。12个其他load commands原字节完全相同，只有__LINKEDIT segment command与LC_CODE_SIGNATURE各一处size字段不同。
+
+| 字段 | 文件偏移/宽度 | source | package |
+| --- | --- | ---: | ---: |
+| __LINKEDIT.filesize | 1096/8 | 45648 | 37696 |
+| LC_CODE_SIGNATURE.datasize | 1444/4 | 10912 | 2960 |
+| LC_CODE_SIGNATURE.dataoff | 同一字段 | 1378224 | 1378224 |
+
+签名前完整prefix `[0,1378224)`逐字比较，实际不同byte仅1096、1097、1444、1445四个，全部属于上两字段；不是只比section或主动忽略其他未知header变化。将这两字段各自归零仅用于本次独立诊断后，完整prefix SHA256共同为 `2399d98dc25e3b73aecedb7cdd3c1351767fa920e000b080200e587ebe09c4f9`。本审未把这一诊断操作写入任何正式比较器。
+
+十section的完整80B描述及实际payload全部相同：__TEXT的__text(61948B)、__stubs、__stub_helper、__cstring、__const(1240944B)、__unwind_info；__DATA_CONST的__got、__const；__DATA的__la_symbol_ptr、__data。其flags/alignment/relocation offset/count/reserved亦逐描述相同，无zero-fill项。`__text` SHA为043df74ca3c50da0ca5a20aee496c5c4c183ae5fbabec6fc080ddb0fec7615ab。
+
+__DATA_CONST(16384B)整个segment hash `e1e610b8f9a678ca20acfb3ad438fc9343f330207c1880524c990a6f67b4d324`相同；__DATA(16384B)整个segment hash `f8a55323c30e6d52f6a87c6360c1ea6bb4f6c7763270971ba90b8fe393a73d26`相同。__TEXT整个segment raw hash不同，因为其包含上述load-command长度字段，不能写“所有segment原字节全同”。__LINKEDIT的fileoff1343488、vmaddr/vmsize/maxprot/initprot及此前符号/绑定/重定位等所有签名前bytes仍完全相同；唯一末尾签名区更短。两件LC_CODE_SIGNATURE末端都恰等文件末端，没有签名区之外新增或删除尾部载荷。
+
+## 3. 独立SuperBlob/CodeDirectory核验
+
+以本机Apple SDK的primary头文件定义读big-endian签名结构，未调用codesign：`kern/cs_blobs.h` 14805B/SHA b3ecf166337427329bd9e8df90d08f1403e08191401ac0ad8b54b71052dd775d；`mach-o/loader.h` 74809B/SHA5862aeb7fbf183453080bc887c0d502fe25a86ff5bd81291bbcc408bd7fe6e74。SDK路径为 `/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/`。这提供结构/常量依据，不代表目标macOS运行/Apple信任链验证。
+
+| 项目 | source | final package |
+| --- | --- | --- |
+| embedded SuperBlob magic | 0xfade0cc0 | 0xfade0cc0 |
+| SuperBlob length / LC datasize | 10911 / 10912 | 2944 / 2960 |
+| 子blob数 | 1 | 3 |
+| CodeDirectory version | 0x20400 | 0x20400 |
+| CodeDirectory flags | 0x20002 (ADHOC及LINKER_SIGNED) | 0x2 (ADHOC) |
+| identifier | _wcwidth_c.abi3.so | _wcwidth_c.abi3 |
+| Team offset/Team ID | 0 / 无 | 0 / 无 |
+| codeLimit | 1378224 | 1378224 |
+| hash type/size | SHA256 / 32B | SHA256 / 32B |
+| page size / nCodeSlots | 4096 / 337 | 16384 / 85 |
+| scatterOffset / spare2 / spare3 / codeLimit64 | 全0 | 全0 |
+| execSegBase / execSegLimit / flags | 0 / 61948 / 0 | 0 / 1310720 / 0 |
+| special slots | 0 | 2 |
+
+本审对source337页、package85页分别按其真实pageSize/codeLimit从文件offset0起重算SHA256，末页只hash余1968B；全部slot逐一吻合，无坏页、无未覆盖的签名前尾段。新签名不会只验证机器代码section而漏掉load-command变动；它恰验证本次实际更新了两size字段的完整prefix。CodeDirectory哈希表大小/offset/范围与blob长度检查一致，子blob互不重叠且位于SuperBlob界内。
+
+source唯一slot0 CodeDirectory长度10891，SHA256 `26d04c6552e1599de600e1989233c13cc073d648466fe716c6fbcbab32d35d20`；package slot0 CodeDirectory长度2888，SHA256 `547a34a0aba690cc11672526f0cba1e9876ee0eae0b6c3b820f95f1f11278c27`。package slot2是12B空requirements集合，SHA `987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986`恰等CodeDirectory special slot2；special slot1全零。slot0x10000为8B空CMS wrapper（仅magic/length，无CMS签名字节）。没有非空证书签名、Team ID、entitlements或额外alternate CodeDirectory。本审据结构和code-slot事实判为ad-hoc，不将其当Developer ID、notary或发布签名证明。
+
+必须披露：package SuperBlob后的16B LC签名容量尾填充不是全零，hex为 `f7f76d1d4179ae6dac49ec9dcbf8c5cb`，SHA256 `632b8b9ce7d060629e7c9a168c095c69718639f7512c2a3c7552103764755e03`。它逐字等source在同偏移1381168:1381184处原签名数据，位于LC_CODE_SIGNATURE内、SuperBlob声明长度外；不能把此区报成新业务payload或全零padding。source的对应SuperBlob长度外仅1B零。精确binarypair的raw输出hash已固定该16B；本审不授任意padding通配豁免。
+
+## 4. PyInstaller实际流程与实物关联
+
+静态读取该独立环境PyInstaller6.22.3实际处理源码：`building/utils.py` 39781B/SHA a6ebe3ebed9433a60fa62f188a290ddfbecadb76b9b2e6d3bf8104559472568c；`utils/osx.py` 32833B/SHA1d6a43c4af39802c125e389c89509513975e329f2ccfdd696eb3ab9ff244abb7。
+
+`process_collected_binary`在darwin路径选目标arch、调整dylib路径后调用sign_binary；无identity时cache分区为adhoc/no-entitlements，sign_binary实际构造 `/usr/bin/codesign -s - --force --all-architectures --timestamp ...`，无identity不会加options=runtime、无entitlements不加其参数。该分支会保原signature至force重签，注释亦解释此行为。这里证明实际工具逻辑，不是本审执行签名。
+
+本次实际COLLECT/Analysis TOC都把 `wcwidth/_wcwidth_c.abi3.so` 精确映射到上述venv源，类型EXTENSION。cache index经只接受dict/string/bytearray常量的AST静态解码，wcwidth键的source digest恰等源实际SHA1 `4a674e6c592f7fbbefcea7b78b3b369d0eed1917`；这只是工具cache键，不当安全hash。已处理cache→build→App三份完整raw相同，提供具体实物链。
+
+08-package.execution.json1319B/SHA83d37839df8cba591b1e7ea60a52b21093527cd80dba849433bee0259b8e91c0实际绑定本次a4d1457、隔离cache/uv环境、PYTHONOPTIMIZE0、CSC_IDENTITY_AUTO_DISCOVERY=false，npm package:dir exit0、未timeout。stdout2441B/f705200…和stderr16508B/f4d823…均按receipt hash实核，正文中PyInstaller记录identity None、重签EXE、COLLECT成功，Electron builder明确跳过App identity签名。**日志没有逐个so的codesign argv/子进程审计**，不能说我们观测到这个so签名系统调用；本次pair为已重签ad-hoc的判断来自raw结构、cache源绑定、处理源码和实物链相互印证，不单由常规文档推定。
+
+两份已有otool load-command原输出实际已读：source4946B/SHA1ed4b9af086aea8172730302c6ee0091ee068c8f06d9d492bb8ba009d5a9ce9c，package4985B/SHAf8ceadaf8c4aba6d4f9d71ac57cedb2f1e38bb86e39eceff9aa1f0c0f401c2c7。真正结论仍基于独立raw parser而非otool摘要。没有重新运行otool或其他native工具。
+
+## 5. 追加：34个未收第三方模块的实际静态闭包判断
+
+按根追加任务，本审核archive-audit829115B/a587…原字节，并直接从最终engine6077232B/SHA99adbd67fe7f1cfdb07684bc09165d6b4eda29e42b631a09574f7a95ba2e9ba7解析原PKG cookie/12 TOC项及嵌入PYZ的原始marshal TOC（只数据、不exec），749个名字无重复；34个missing名实际均未在PYZ。没有import归档reader或执行任何归档code。
+
+八distribution的308个已收Python源逐当前bytes/hash与清单核同，再AST解析全部import；34个未收源也逐当前bytes/hash核同。已收→未收的静态import边数为0；这不是“任意动态import都不可能”的证明，所以另读实际相关动态分支与17canonical入口。
+
+| 未收集合 | 实际用途/静态依据 | 本次精确边界 |
+| --- | --- | --- |
+| pyshacl.assets.make_builtin | 顶层从当前工作目录读schema/shacl/dash等TTL并写pickle的开发资产生成脚本；正常validator/entrypoints加载的是已有assets/*.pickle | 不属于当前profile数学计算；既有必要pickle/TTL数据另列真实required data，不能因生成脚本未收认定runtime资产缺失，也不由此授全部SHACL功能通过 |
+| pyparsing.ai、ai.show_best_practices及其__main__、tools与cvt_pyparsing_pep8_names | best-practice显示CLI及Python源API名转换工具；根show_best_practices会读ai markdown，缺失走内嵌fallback | 当前RDFLib parser不调用这些帮助/转换API；未收best_practices.md和py.typed不影响当前解析，不声称帮助API全文等价 |
+| prettytable.__main__、prettytable.colortable | __main__明确导入ColorTable作彩色示例；正常根仅导入PrettyTable等，已收prettytable.py不导入colortable | 当前validator依赖普通PrettyTable，不提供彩色CLI/API完整性；py.typed是类型标记 |
+| wcwidth.table_grapheme_overrides._known_* 共20个 | `_registry`映射后由get(term_canonical)动态import；ImportError返回{}，确实可在指定终端模式被触发 | 不可把“fallback不抛错”当全功能等价。PrettyTable仅调用wcwidth.width(val)；实际导出有C和pure两分支，详见下段，不用pure默认概括C控制流。当前profile不调用Validator.run；未来Python term_program=True/字符串的终端修正可能因丢表fallback产生不同宽度，必须另补收或验证 |
+| packaging._structures | 旧pickle的InfinityType/NegativeInfinityType兼容模块，version注释说明旧pickle情形 | 当前profile无该反序列化路径，不当所有旧pickle支持 |
+| packaging.dependency_groups、direct_url、errors、metadata、pylock | 独立依赖组/安装来源/元数据校验/lock API；已收版本/requirements/marker/tag路径无静态导入这些缺项，相关元数据用途由stdlib importlib.metadata读取 | 不属于本固定计算及身份读取闭包；不声称packaging任意API/pylock可用 |
+
+rdflib136、pyshacl63、pyparsing12、owlrl12、html5rdf38、prettytable3、wcwidth28、packaging16个已收源合计308。rdflib/owlrl/html5rdf清单无未收Python源；对可选动态分支不靠数量推通过。未收py.typed/ai markdown是各发行类型/开发资料，不是license；八库license和metadata仍须依原正式实物校验，不能因这些文件可省就豁免许可或必要runtime data。
+
+实际wcwidth.__init__全文已读：无WCWIDTH_PYTHON且C import成功时，width/ljust等直接来自_wcwidth_c；只有C缺失或被禁用才导出_width.width。不能把pure源码的resolve_terminal逻辑直接写成实际C执行事实。本审进一步直接读真实so：offset65794的width签名为term_program=False；另wcstwidth签名为term_program=True，两者不混同。C的字符串区包含wcwidth._width/align/escape_sequences/sgr_state/grapheme及PyImport API，存在受限fallback线索；不能据字符串缺失泛证无动态导入。Mach-O实际符号与section5还含与20个known键逐一对应的WCWIDTH_GRAPHEME_POOL常量及grapheme_override_lookup/resolve_terminal本地函数，所在机器码和常量原包逐字相同；本轮没有对全部C控制流作反汇编证明。pure分支的width默认False、resolve_terminal(False)立即None且无需20个动态表可由所读Python源码直接证明；C分支的默认参数证据限实际binary签名，未将它升级成逐指令等价证明。
+
+17canonical中的semantic.py顶层导入Validator，固定profile入口execute_profile_records→reason执行有限RDFS/join/机制，并不调用semantic.validate的Validator(...).run；后者是不同的真实SHACL入口。因此当前profile数学计算不依赖表格终端宽度可选功能，本轮未发现这些missing对该固定入口的新具体阻断。将来真正走PrettyTable/SHACL的输入仍要按实际C/pure分支验证；本报告不替代legacy SHACL/meta-shacl/advanced模式的源包实测，更不放行完整B1或全部第三方API。本审没有以83输出一致自动接受所有missing；是逐用途、AST来边和已读动态分支对当前指定入口作有限判断。未来调用面/输入/收集配方变化需重新评估，尤其20个终端override不能泛记“永不需要”。
+
+## 6. 根可裁定的最小例外及保留限制
+
+建议只在source385bcc…→packagef5e36…这对实际wcwidth0.9.2 thin-arm64扩展上，记录以下已审事实：两个完整raw hash各自固定；签名前仅__LINKEDIT.filesize与LC_CODE_SIGNATURE.datasize改变；所有其余prefix bytes和十sections不变；完整尾部变化在同offset签名容量区内；两个真实CodeDirectory页哈希全部匹配；最终ad-hoc结构及上述非零尾填充精确固定；原source/RECORD/cache/build/App链保留。
+
+这不是把二者归一化后写“same bytes”，更不是给所有native binary、所有signature/domain字段任意忽略的规则。若未来该源或产物hash任一改变、签名前新增差异/arch变化/offset变化、另一个binary需变换或签名结构不再符合本例，应重新提交具体pair/全部证据，不继承本例结论。源/包83深比九处固定差异和Python co_filename-only证明不改。
+
+未做Apple系统验签/信任评估、Developer ID/公证/安装/平台运行，未审签名工具执行安全；ad-hoc完整页哈希不是发行者身份认证。正常包流程与本pair字节证据可支持受限构建差异裁定；其余原D2算法/资源/错误/参数/最终App回归、缺资源负例、两平台/干净设备/B1、指定双模型新同版审查/CI/正常合并/父功能等门仍由根按原证据分别核验，本报告不自动放行。
+
+本审自写只读脚本曾对cache index直接ast.literal_eval遇bytearray Call拒绝；随后改为仅静态识别dict/字符串/bytearray(bytes常量)结构而不执行，完成实际source digest对账。该审查脚本错误不改产品，也不冒称首脚本全绿。
+
+报告交付前，根提醒实际width优先导出C分支；本审据实际__init__、binary字符串和符号补核并修正上文，未保留“实际总走pure resolve_terminal”的概括。根此前对owner的同类概括已由其撤回，原消息保留；本次纠正没有触发产品变更、扩包或重测。
+
+## 追加勘误：SHACL入口函数名
+
+已只读核固定0475d0ec6c486a63c7e8f62f11f35181da6b2576的semantic.py：第1254行函数名为check_shapes，第1267行起调用Validator(...).run()；前文§5末的“semantic.validate”应读作“semantic.check_shapes”。原17102B前缀及SHA2e95d9802dad19f9a5d1f1bf45ba9133992dbe6d2dbbea2e53bf8cd99e09707d保持，不覆盖原错误历史。这仅纠正名称，不改变固定profile未调用此SHACL入口的范围判断、逻辑、源码、比较白名单或任何放行结论；未运行产品或重审。

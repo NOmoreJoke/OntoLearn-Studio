@@ -1,0 +1,199 @@
+"""Strict external source/package JSON comparison, without graph computation."""
+
+import argparse
+import collections
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def digest(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def unique(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("DUPLICATE_JSON_KEY")
+        result[key] = value
+    return result
+
+
+def loads(raw):
+    return json.loads(
+        raw,
+        object_pairs_hook=unique,
+        parse_constant=lambda _: (_ for _ in ()).throw(ValueError("NONFINITE_JSON")),
+    )
+
+
+def encoded(value):
+    return json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False
+    ).encode()
+
+
+def deep(left, right, exceptions, path=(), visited=None):
+    if path in exceptions:
+        source_value, package_value = exceptions[path]
+        assert type(left) is type(source_value) and left == source_value, path
+        assert type(right) is type(package_value) and right == package_value, path
+        visited.add(path)
+        return 1
+    assert type(left) is type(right), (path, "TYPE")
+    nodes = 1
+    if type(left) is dict:
+        assert set(left) == set(right), (path, "KEYS")
+        for key in left:
+            nodes += deep(left[key], right[key], exceptions, (*path, key), visited)
+    elif type(left) is list:
+        assert len(left) == len(right), (path, "LENGTH")
+        for index, (a, b) in enumerate(zip(left, right)):
+            nodes += deep(a, b, exceptions, (*path, index), visited)
+    else:
+        assert left == right, (path, "VALUE")
+    return nodes
+
+
+def check_batch_hashes(value):
+    count = 0
+    if type(value) is dict:
+        if value.get("recordType") == "PreparedFiringBatch":
+            payload = value["payload"]
+            assert payload["encoding"] == "hex"
+            raw = bytes.fromhex(payload["bytes"])
+            assert raw.hex() == payload["bytes"]
+            assert digest(raw) == value["digest"]
+            count += 1
+        count += sum(check_batch_hashes(item) for item in value.values())
+    elif type(value) is list:
+        count += sum(check_batch_hashes(item) for item in value)
+    return count
+
+
+def validate_one(report, asset):
+    assert report["format"] == "i05-profile-probe/2"
+    assert report["inputSha256"] == digest(asset[0])
+    assert report["inputBytes"] == len(asset[0])
+    assert report["collectionComplete"] is True
+    for key in (
+        "acceptanceOracleCompared", "lifecycleExecuted",
+        "originalRequestedOperationPassed", "sourceAuthorityAuthenticated",
+    ):
+        assert report[key] is False
+    assert report["counts"] == asset[1]["counts"]
+    assert [item["caseId"] for item in report["cases"]] == [
+        item["id"] for item in asset[1]["mathInputs"]
+    ]
+    assert len(report["cases"]) == len({item["caseId"] for item in report["cases"]}) == 83
+    counts = collections.Counter(item["status"] for item in report["cases"])
+    assert counts == {"success": 78, "failure": 4, "not-executed": 1}
+    implementation = {
+        "executionSemanticsVersion": "i05-finite-7", "engineVersion": "0.1.0",
+        "dependencyLockHash": digest((ROOT / "uv.lock").read_bytes()),
+    }
+    checked_batches = 0
+    success_digests = []
+    for case in report["cases"]:
+        if case["status"] != "success":
+            assert "result" not in case
+            if case["caseId"] == "transfer:repair":
+                assert case["status"] == "not-executed"
+                assert case["reason"] == "ORIGINAL_INPUT_CONTEXT_INCOMPLETE"
+            else:
+                prefix = "E.5:event-fragment:round:"
+                assert case["caseId"].startswith(prefix)
+                round_number = int(case["caseId"][len(prefix):])
+                assert round_number in (1, 2, 3, 4)
+                resource = "semanticInput" if round_number < 3 else "semanticWork"
+                assert case["error"] == {
+                    "code": "RESOURCE_LIMIT", "messageKey": "resource.limitExceeded",
+                    "params": {"resource": resource}, "retryable": False,
+                }
+                assert case["diagnostic"] == {
+                    "reason": "RULE_INPUT_BUDGET" if round_number < 3 else "WORK_LIMIT",
+                    "classification": "resource", "location": None,
+                    "ruleId": "R-risk" if round_number < 3 else None,
+                }
+            continue
+        result = case["result"]
+        assert result["payload"]["implementation"] == implementation
+        payload = encoded(result["payload"])
+        rows = encoded(result["rows"])
+        assert len(payload) + len(rows) <= 8_388_608
+        assert len(result["rows"]) <= 10000
+        assert all(
+            type(row) is list and len(row) == 1 and type(row[0]) is str and len(row[0]) <= 8192
+            for row in result["rows"]
+        )
+        assert "".join(row[0] for row in result["rows"]).encode() == payload
+        assert digest(payload) == result["jsonPayloadDigest"]
+        assert digest(rows) == result["rowsDigest"]
+        checked_batches += check_batch_hashes(result["payload"])
+        success_digests.append({"caseId": case["caseId"], "payload": digest(payload), "rows": digest(rows)})
+    return {"statusCounts": dict(counts), "batchHashesChecked": checked_batches, "success": success_digests}
+
+
+def main():
+    if sys.flags.optimize != 0:
+        raise SystemExit("EVIDENCE_PYTHON_OPTIMIZATION_INVALID")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source", type=Path, required=True)
+    parser.add_argument("--package", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    raw_source, raw_package = args.source.read_bytes(), args.package.read_bytes()
+    assert len(raw_source) <= 67_108_865 and len(raw_package) <= 67_108_865
+    source, package = loads(raw_source), loads(raw_package)
+    asset_raw = (ROOT / "docs/iterations/I05/profile-probe-inputs.json").read_bytes()
+    assert digest(asset_raw) == "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+    asset = (asset_raw, loads(asset_raw))
+    source_check = validate_one(source, asset)
+    package_check = validate_one(package, asset)
+    manifest = loads((ROOT / "docs/reviews/T03/profile-D2-package/approved-readonly-inputs.json.raw").read_bytes())
+    quality = {}
+    for item in manifest["readonlySourceAndAsset"]:
+        if "/quality/" in item["path"]:
+            name = item["path"].split("/src/", 1)[1][:-3].replace("/", ".")
+            quality[name.removesuffix(".__init__")] = item["sha256"]
+    modules = [
+        "ontolearn_engine.quality",
+        *("ontolearn_engine.quality." + name for name in (
+            "rule_profile", "rule_terms", "rule_numbers", "rule_calendar", "rule_comparator", "rule_firing",
+        )),
+    ]
+    exceptions = {
+        ("identity", "frozen"): (False, True),
+        ("identity", "resources", "frozen"): (False, True),
+    }
+    for index, name in enumerate(modules):
+        assert source["identity"]["modules"][index]["module"] == name
+        assert package["identity"]["modules"][index]["module"] == name
+        exceptions[("identity", "modules", index, "sourceSha256")] = (quality[name], None)
+    assert len(source["identity"]["modules"]) == len(package["identity"]["modules"]) == 7
+    visited = set()
+    nodes = deep(source, package, exceptions, visited=visited)
+    assert visited == set(exceptions)
+    record = {
+        "scope": "strict source/package equivalence; not full mathematical or parent acceptance",
+        "source": {"bytes": len(raw_source), "sha256": digest(raw_source)},
+        "package": {"bytes": len(raw_package), "sha256": digest(raw_package)},
+        "comparedNodes": nodes,
+        "allowedDifferences": [list(path) for path in exceptions],
+        "sourceValidation": source_check,
+        "packageValidation": package_check,
+        "allOtherFieldsTypesOrderAndDuplicatesCompared": True,
+        "expectedProductAndCheckerExitCode": 1,
+        "fullBusinessAcceptancePassed": False,
+    }
+    assert not args.output.exists()
+    args.output.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n")
+    print(json.dumps({"comparedNodes": nodes, "allowedDifferences": len(exceptions), "statusCounts": source_check["statusCounts"]}))
+
+
+if __name__ == "__main__":
+    main()

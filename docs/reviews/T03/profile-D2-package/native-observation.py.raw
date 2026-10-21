@@ -1,0 +1,82 @@
+"""Read-only observation of one fixed Mach-O signing domain; no acceptance rule."""
+import hashlib
+import json
+import struct
+import sys
+from pathlib import Path
+
+if sys.flags.optimize != 0:
+    raise SystemExit('EVIDENCE_PYTHON_OPTIMIZATION_INVALID')
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / 'build/profile-d2-evidence'
+previous = json.loads((OUT / 'wcwidth-native-difference.json').read_text())
+
+
+def require(value, message):
+    if not value:
+        raise ValueError(message)
+
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def inspect(path):
+    raw = path.read_bytes()
+    header = struct.unpack_from('<8I', raw)
+    require(header[0] == 0xFEEDFACF, 'FIXED_LITTLE_ENDIAN_MACHO64_REQUIRED')
+    cursor = 32
+    sections = []
+    fields = []
+    commands = []
+    signature = None
+    for _ in range(header[4]):
+        command, size = struct.unpack_from('<II', raw, cursor)
+        require(size >= 8 and cursor + size <= 32 + header[5], 'COMMAND_BOUNDS')
+        commands.append({'cmd': command, 'offset': cursor, 'bytes': size, 'sha256': sha(raw[cursor:cursor + size])})
+        if command == 0x19:
+            segment = raw[cursor + 8:cursor + 24].split(b'\0')[0].decode()
+            if segment == '__LINKEDIT':
+                fields.append({'field': '__LINKEDIT.filesize', 'offset': cursor + 48, 'width': 8, 'value': struct.unpack_from('<Q', raw, cursor + 48)[0]})
+            count = struct.unpack_from('<I', raw, cursor + 64)[0]
+            require(size == 72 + count * 80, 'SECTION_BOUNDS')
+            for index in range(count):
+                start = cursor + 72 + index * 80
+                descriptor = raw[start:start + 80]
+                name = descriptor[:16].split(b'\0')[0].decode()
+                length = struct.unpack_from('<Q', descriptor, 40)[0]
+                offset = struct.unpack_from('<I', descriptor, 48)[0]
+                flags = struct.unpack_from('<I', descriptor, 64)[0]
+                zero = flags & 0xFF in (1, 12, 18)
+                require(zero or offset + length <= len(raw), 'SECTION_PAYLOAD_BOUNDS')
+                sections.append({'segment': segment, 'section': name, 'offset': offset, 'bytes': length, 'zeroFill': zero, 'payloadSha256': None if zero else sha(raw[offset:offset + length]), 'descriptorSha256': sha(descriptor)})
+        if command == 0x1D:
+            require(signature is None, 'ONE_SIGNATURE_REQUIRED')
+            offset, length = struct.unpack_from('<II', raw, cursor + 8)
+            require(offset + length == len(raw), 'SIGNATURE_IS_FINAL_DOMAIN')
+            signature = {'offset': offset, 'bytes': length, 'sha256': sha(raw[offset:offset + length])}
+            fields.append({'field': 'LC_CODE_SIGNATURE.datasize', 'offset': cursor + 12, 'width': 4, 'value': length})
+        cursor += size
+    require(cursor == 32 + header[5] and signature is not None, 'LOAD_COMMANDS_COMPLETE')
+    result = {'path': str(path), 'bytes': len(raw), 'sha256': sha(raw), 'header': list(header), 'loadCommands': commands, 'sections': sections, 'signature': signature, 'variableSizeFields': fields}
+    return result, raw
+
+
+source, left = inspect(Path(previous['source']['path']))
+package, right = inspect(Path(previous['package']['path']))
+require(source == previous['source'] and package == previous['package'], 'PREVIOUS_OBSERVATION_REPRODUCED')
+require(source['sections'] == package['sections'] and len(source['sections']) == 10, 'TEN_SECTION_DESCRIPTORS_AND_PAYLOADS_EQUAL')
+require(source['signature']['offset'] == package['signature']['offset'], 'SIGNATURE_OFFSET_SAME')
+prefix = source['signature']['offset']
+a, b = bytearray(left[:prefix]), bytearray(right[:prefix])
+require(len(source['variableSizeFields']) == len(package['variableSizeFields']) == 2, 'ONLY_TWO_REPORTED_SIZE_FIELDS')
+for x, y in zip(source['variableSizeFields'], package['variableSizeFields']):
+    require({k: x[k] for k in ('field', 'offset', 'width')} == {k: y[k] for k in ('field', 'offset', 'width')}, 'SAME_FIELD_LOCATION')
+    a[x['offset']:x['offset'] + x['width']] = bytes(x['width'])
+    b[y['offset']:y['offset'] + y['width']] = bytes(y['width'])
+require(a == b and sha(a) == previous['observedPrefixWithTwoSizeFieldsZeroedSha256'], 'FINITE_PREFIX_OBSERVATION')
+report = {'scope': 'reproduction of observed native signing difference only; no normalization or acceptance authorization', 'previousReportSha256': sha((OUT / 'wcwidth-native-difference.json').read_bytes()), 'source': source, 'package': package, 'allTenSectionsEqual': True, 'observedPrefixEqualAfterOnlyTwoReportedSizeFields': True, 'rawBinaryBytesEqual': left == right, 'rootApprovalStillRequired': True, 'observer': {'bytes': Path(__file__).stat().st_size, 'sha256': sha(Path(__file__).read_bytes())}}
+output = OUT / 'wcwidth-native-reproduced.json'
+require(not output.exists(), 'PRESERVE_ORIGINAL')
+output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+print(json.dumps({'observationsReproduced': True, 'rootApprovalStillRequired': True, 'outputSha256': sha(output.read_bytes())}))
