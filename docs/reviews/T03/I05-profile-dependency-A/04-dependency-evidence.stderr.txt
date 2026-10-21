@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build/docs/reviews/T03/I05-profile-dependency-A/dependency-evidence.py", line 156, in <module>
+    shape = Graph().parse(
+            ^^^^^^^^^^^^^^
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build/.venv/lib/python3.12/site-packages/rdflib/graph.py", line 1669, in parse
+    raise se
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build/.venv/lib/python3.12/site-packages/rdflib/graph.py", line 1660, in parse
+    parser.parse(source, self, **args)
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build/.venv/lib/python3.12/site-packages/rdflib/plugins/parsers/notation3.py", line 2034, in parse
+    p.loadStream(stream)
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build/.venv/lib/python3.12/site-packages/rdflib/plugins/parsers/notation3.py", line 492, in loadStream
+    return self.loadBuf(stream.read())  # Not ideal
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build/.venv/lib/python3.12/site-packages/rdflib/plugins/parsers/notation3.py", line 498, in loadBuf
+    self.feed(buf)
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build/.venv/lib/python3.12/site-packages/rdflib/plugins/parsers/notation3.py", line 527, in feed
+    self.BadSyntax(s, j, "expected directive or statement")
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build/.venv/lib/python3.12/site-packages/rdflib/plugins/parsers/notation3.py", line 1743, in BadSyntax
+    raise BadSyntax(self._thisDoc, self.lines, argstr, i, msg)
+rdflib.plugins.parsers.notation3.BadSyntax: at line 3 of <>:
+Bad syntax (expected directive or statement) at ^ in:
+"...b'sh: <http://www.w3.org/ns/shacl#> .\n@prefix ex: <urn:d1:> .\n'^b'ex.Shape a sh:NodeShape; sh:targetNode ex.item;\nsh:property '..."

@@ -1,0 +1,501 @@
+{
+  "scope": "D1 actual dependency A candidate; internal review passed; root integration approval still required",
+  "createdAt": "2026-10-21T15:01:36.332883+08:00",
+  "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build",
+  "branch": "feature/T03-profile-build",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "authoritySha256": "ec8f6c92c66daf2ba8b6bc8216a208a6801cbd226d91f297b5955cc7c5a15914",
+  "reviewedProduct": {
+    "packages/engine/pyproject.toml": {
+      "bytes": 398,
+      "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365"
+    },
+    "uv.lock": {
+      "bytes": 28440,
+      "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73"
+    }
+  },
+  "decodedProductPatch": {
+    "bytes": 10446,
+    "sha256": "bd40fb379d0771a7321580ddbdd02ed49230f12ee2bb2a7590f20ce269991734",
+    "container": "docs/reviews/T03/I05-profile-dependency-A/product-patch.json"
+  },
+  "unchangedD2": {
+    "scripts/build-engine.mjs": {
+      "equalsApproved5f": true,
+      "bytes": 1234,
+      "sha256": "2a9036fd76ed32f8df52d7ffa7afee2213c00008986269cd2d1cf66f1857aa81"
+    },
+    "packages/engine/entrypoint.py": {
+      "equalsApproved5f": true,
+      "bytes": 787,
+      "sha256": "979b65e5efc3d19ad9851cc2a97255594591626fbed2efbecd8713723e9f2f60"
+    }
+  },
+  "validation": {
+    "normalCheck": "pass: 630 TS + 1052 Python; zero skips; lint/format/types/build passed",
+    "sources": "pass: 12 archived files",
+    "thirdPartySmoke": "pass after preserved 04 failure; no OntoLearn import",
+    "eightInstalledDistributionVersionsMetadataLicenses": "pass",
+    "downloadedWheelHashSizeAnd391InstalledMembers": "pass",
+    "installedRecord417Hashes": "pass",
+    "frozenLockAndEnvironmentAndPipChecks": "pass",
+    "independentInternalReview": "pass: no unclosed findings; agent /root/t03_service_review",
+    "targetedFinalEvidenceRuffAndDocFormat": "pass"
+  },
+  "preservedFirstFailures": [
+    "04: evidence helper Turtle prefix punctuation; fixed input, immutable current-D1 artifact reuse and successful 08",
+    "05: evidence helper E501; fixed wrapping and successful normal full 07"
+  ],
+  "commandTerminalRecords": [
+    {
+      "record": "01-uv-lock.command.json",
+      "exitCode": 0,
+      "command": [
+        "uv",
+        "lock",
+        "--upgrade-package",
+        "owlrl==7.6.2",
+        "--upgrade-package",
+        "prettytable==3.18.0",
+        "--upgrade-package",
+        "wcwidth==0.9.2",
+        "--upgrade-package",
+        "html5rdf==1.2.1",
+        "--no-progress"
+      ],
+      "stdout": "01-uv-lock.stdout.txt",
+      "stderr": "01-uv-lock.stderr.txt"
+    },
+    {
+      "record": "02-npm-ci.command.json",
+      "exitCode": 0,
+      "command": [
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "stdout": "02-npm-ci.stdout.txt",
+      "stderr": "02-npm-ci.stderr.txt"
+    },
+    {
+      "record": "03-uv-sync.command.json",
+      "exitCode": 0,
+      "command": [
+        "uv",
+        "sync",
+        "--frozen",
+        "--no-progress"
+      ],
+      "stdout": "03-uv-sync.stdout.txt",
+      "stderr": "03-uv-sync.stderr.txt"
+    },
+    {
+      "record": "04-dependency-evidence.command.json",
+      "exitCode": 1,
+      "command": [
+        ".venv/bin/python",
+        "docs/reviews/T03/I05-profile-dependency-A/dependency-evidence.py"
+      ],
+      "stdout": "04-dependency-evidence.stdout.txt",
+      "stderr": "04-dependency-evidence.stderr.txt"
+    },
+    {
+      "record": "05-npm-check.command.json",
+      "exitCode": 1,
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "stdout": "05-npm-check.stdout.txt",
+      "stderr": "05-npm-check.stderr.txt"
+    },
+    {
+      "record": "06-source-check.command.json",
+      "exitCode": 0,
+      "command": [
+        "npm",
+        "run",
+        "verify:sources"
+      ],
+      "stdout": "06-source-check.stdout.txt",
+      "stderr": "06-source-check.stderr.txt"
+    },
+    {
+      "record": "07-npm-check.command.json",
+      "exitCode": 0,
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "stdout": "07-npm-check.stdout.txt",
+      "stderr": "07-npm-check.stderr.txt"
+    },
+    {
+      "record": "08-dependency-evidence.command.json",
+      "exitCode": 0,
+      "command": [
+        ".venv/bin/python",
+        "docs/reviews/T03/I05-profile-dependency-A/dependency-evidence.py"
+      ],
+      "stdout": "08-dependency-evidence.stdout.txt",
+      "stderr": "08-dependency-evidence.stderr.txt"
+    },
+    {
+      "record": "09-frozen-check.command.json",
+      "exitCode": 0,
+      "command": [
+        "uv",
+        "sync",
+        "--frozen",
+        "--check",
+        "--no-progress"
+      ],
+      "stdout": "09-frozen-check.stdout.txt",
+      "stderr": "09-frozen-check.stderr.txt"
+    },
+    {
+      "record": "10-lock-check.command.json",
+      "exitCode": 0,
+      "command": [
+        "uv",
+        "lock",
+        "--check",
+        "--no-progress"
+      ],
+      "stdout": "10-lock-check.stdout.txt",
+      "stderr": "10-lock-check.stderr.txt"
+    },
+    {
+      "record": "11-pip-check.command.json",
+      "exitCode": 0,
+      "command": [
+        "uv",
+        "pip",
+        "check"
+      ],
+      "stdout": "11-pip-check.stdout.txt",
+      "stderr": "11-pip-check.stderr.txt"
+    },
+    {
+      "record": "12-final-evidence-lint.command.json",
+      "exitCode": 0,
+      "command": [
+        ".venv/bin/ruff",
+        "check",
+        "docs/reviews/T03/I05-profile-dependency-A"
+      ],
+      "stdout": "12-final-evidence-lint.stdout.txt",
+      "stderr": "12-final-evidence-lint.stderr.txt"
+    },
+    {
+      "record": "13-final-evidence-format.command.json",
+      "exitCode": 0,
+      "command": [
+        ".venv/bin/ruff",
+        "format",
+        "--check",
+        "docs/reviews/T03/I05-profile-dependency-A"
+      ],
+      "stdout": "13-final-evidence-format.stdout.txt",
+      "stderr": "13-final-evidence-format.stderr.txt"
+    },
+    {
+      "record": "14-final-doc-format.command.json",
+      "exitCode": 0,
+      "command": [
+        "node_modules/.bin/prettier",
+        "--check",
+        "docs/iterations/T03/I05-profile-dependency-A.md"
+      ],
+      "stdout": "14-final-doc-format.stdout.txt",
+      "stderr": "14-final-doc-format.stderr.txt"
+    },
+    {
+      "record": "15-diff-check.command.json",
+      "exitCode": 0,
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "stdout": "15-diff-check.stdout.txt",
+      "stderr": "15-diff-check.stderr.txt"
+    },
+    {
+      "record": "16-final-doc-format.command.json",
+      "exitCode": 0,
+      "command": [
+        "node_modules/.bin/prettier",
+        "--check",
+        "docs/iterations/T03/I05-profile-dependency-A.md"
+      ],
+      "stdout": "16-final-doc-format.stdout.txt",
+      "stderr": "16-final-doc-format.stderr.txt"
+    }
+  ],
+  "artifactsExcludingThisReceipt": {
+    "docs/reviews/T03/I05-profile-dependency-A/01-uv-lock.command.json": {
+      "bytes": 805,
+      "sha256": "fdb15ca7c8ff8e45f84594a10294d70f5b33a2d8d05403cb74b952e8c23d3c07"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/01-uv-lock.stderr.txt": {
+      "bytes": 163,
+      "sha256": "94518dfa9863bde9535bc6dd267a94352a12f174ba8dd966ac26b08c758d2bd4"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/01-uv-lock.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/02-npm-ci.command.json": {
+      "bytes": 647,
+      "sha256": "668d824361eab46d601106bc2a5bf9f4f37f320229439937ba186e5a1b715ef9"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/02-npm-ci.stderr.txt": {
+      "bytes": 605,
+      "sha256": "895c225a0b3597dbcd103bbe9dcb8e3ca26cd91b356f63280a6565d3e191e400"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/02-npm-ci.stdout.txt": {
+      "bytes": 26,
+      "sha256": "830b45a3b3b31db9cbd0bdc777ce0e429ffe3f11eaa5a9308722222185c91b50"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/03-uv-sync.command.json": {
+      "bytes": 629,
+      "sha256": "48c1ba433f56cff13c15012694067ad7152cdbd8b38db4ff4c8c9fb6d0a0213f"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/03-uv-sync.stderr.txt": {
+      "bytes": 1175,
+      "sha256": "2f027dbca9e82231ede15e1827f2e4efa2a3177120542adec5aef933b5ce27b4"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/03-uv-sync.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/04-dependency-evidence.command.json": {
+      "bytes": 690,
+      "sha256": "827cb08bdaefd16faf5c98f7bd6891ce72f257a9868d735b6192bd77555d1062"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/04-dependency-evidence.input.py.txt": {
+      "bytes": 8452,
+      "sha256": "8bcc511526f3484eca186832b2b19d73437b6d0b1e9baf138c0013ccb8ec94b5"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/04-dependency-evidence.stderr.txt": {
+      "bytes": 2000,
+      "sha256": "dffa8a0d80c94384c01ef88a03beac2fad1065367f6f2dce006124aa9b15359c"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/04-dependency-evidence.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/05-npm-check.command.json": {
+      "bytes": 607,
+      "sha256": "b88a2b202209cfca12feb62334836a7bfbb31e33ef40f9bcbea4092485af836f"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/05-npm-check.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/05-npm-check.stdout.txt": {
+      "bytes": 2514,
+      "sha256": "3ce3938c6a7486fa6b383bf67d5ad0354699bd4721be5d33c2e241d254a6bdd4"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/06-source-check.command.json": {
+      "bytes": 623,
+      "sha256": "21a256cc9a62c92ca3004a0f44cb0a421139d40e17cbb584eab47547139513e4"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/06-source-check.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/06-source-check.stdout.txt": {
+      "bytes": 111,
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/07-npm-check.command.json": {
+      "bytes": 608,
+      "sha256": "67d28bf4646ec483a08fb27f7894816410fdc0c90c1595e96190680bafeff22d"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/07-npm-check.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/07-npm-check.stdout.txt": {
+      "bytes": 5052,
+      "sha256": "097bd139607161761a919e49a1768fa76286d34c6a4a26b32e6ee847231508e4"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/08-dependency-evidence.command.json": {
+      "bytes": 689,
+      "sha256": "b428732e5ccf3cb80e1e9bcaec5e1117468fccf62d2986267c3d22951a07f7c7"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/08-dependency-evidence.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/08-dependency-evidence.stdout.txt": {
+      "bytes": 29819,
+      "sha256": "3c84eef58cb5ddf5427d99ea201dc2c7a0c6539b1e960fee7767055c5af45f56"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/09-frozen-check.command.json": {
+      "bytes": 653,
+      "sha256": "74b58b4ff0f74c7b6305a13b132f58650add5fba87dd1c1e291a44d09b5e4c24"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/09-frozen-check.stderr.txt": {
+      "bytes": 89,
+      "sha256": "40f053cec51e6c1b7cb50e7c9c81fc86b3336ca8fb11d479876a0e1e720561e5"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/09-frozen-check.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/10-lock-check.command.json": {
+      "bytes": 633,
+      "sha256": "b977ccc8f0de89d2c4fc51b5ef16f34c1f4203ca9b095a53862df698693c4cda"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/10-lock-check.stderr.txt": {
+      "bytes": 28,
+      "sha256": "89efddb71a98cd46bb3268528f9a911de91f597a71a62e620881068a592a22db"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/10-lock-check.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/11-pip-check.command.json": {
+      "bytes": 607,
+      "sha256": "9280c405436ec15d1429cf9f847353e012142be956e8a595a7ce0c21a6ef84b5"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/11-pip-check.stderr.txt": {
+      "bytes": 65,
+      "sha256": "67daf9a6957617029f4c2974c88df96d0cfee5a6a148370b103b57a2923d30f0"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/11-pip-check.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/12-final-evidence-lint.command.json": {
+      "bytes": 677,
+      "sha256": "cce843cdc2b520c5ed86afcb1b3c839a917def63ae7960f5adcf97d0d7ea59be"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/12-final-evidence-lint.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/12-final-evidence-lint.stdout.txt": {
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/13-final-evidence-format.command.json": {
+      "bytes": 697,
+      "sha256": "1d9ddcfc3132a0e657c81577ed3d586595ce08a8770b7bbbf425d53292fd2ead"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/13-final-evidence-format.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/13-final-evidence-format.stdout.txt": {
+      "bytes": 26,
+      "sha256": "eee76f865de5a9f2456950f710ae5d5f9b5bd0ea02aa54f614c5eed6642a0bfd"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/14-final-doc-format.command.json": {
+      "bytes": 691,
+      "sha256": "140847463ce234d79e08edfece657720d3edd77692e6d28f8082e0c56c230b48"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/14-final-doc-format.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/14-final-doc-format.stdout.txt": {
+      "bytes": 66,
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/15-diff-check.command.json": {
+      "bytes": 613,
+      "sha256": "c2a7a9f635b2fca650dfbbf05c3a9a1dc96c954637e20024172bbfb666915446"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/15-diff-check.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/15-diff-check.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/16-final-doc-format.command.json": {
+      "bytes": 691,
+      "sha256": "f0b2b3a3bcec5e05d454da76fc7cbd053f3eb07e59ef68021b07b79acf1c4b62"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/16-final-doc-format.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/16-final-doc-format.stdout.txt": {
+      "bytes": 66,
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/authorization.md": {
+      "bytes": 4518,
+      "sha256": "ec8f6c92c66daf2ba8b6bc8216a208a6801cbd226d91f297b5955cc7c5a15914"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/dependency-evidence.json": {
+      "bytes": 29819,
+      "sha256": "3c84eef58cb5ddf5427d99ea201dc2c7a0c6539b1e960fee7767055c5af45f56"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/dependency-evidence.py": {
+      "bytes": 8672,
+      "sha256": "8f2019237da3ccbf778c6eade3e22018b9028b481f248888805ef23f8d000669"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/frozen-tree-readback.json": {
+      "bytes": 578,
+      "sha256": "b322cea87da817ae8620633b2d5dd80de32cd95436b31699b73d62970004e84e"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/independent-review.md": {
+      "bytes": 8347,
+      "sha256": "d3c7eacc37ea1ffc8d057f5462f79086468bf69e5ed7132971597774947f02e8"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/inputs.json": {
+      "bytes": 3227,
+      "sha256": "a88077795d157728aacacd4bde46885e577ed452eb0f26de01593166815185c6"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/lock-delta.json": {
+      "bytes": 783,
+      "sha256": "95a33775deb2a2c423926b43c0a3cc4f245f1b775bbfb446de83cb1f3496422b"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/product-patch.json": {
+      "bytes": 11232,
+      "sha256": "bd3719132f4e3ff77b3b82dea3c84778512381b64a29e3fcbc15bd45cfb4ace0"
+    },
+    "docs/reviews/T03/I05-profile-dependency-A/run-command.py": {
+      "bytes": 2153,
+      "sha256": "9e791310fcc1ca20a05bc450517b9e14d3ad662e2273bcfc456d0410b3b44dfb"
+    },
+    "docs/iterations/T03/I05-profile-dependency-A.md": {
+      "bytes": 9101,
+      "sha256": "7c035620246982422bb440b33eff9c2d44ca1ba82c34db8a95b7047a2a0e8879"
+    }
+  },
+  "protectedAgents": {
+    "staged": false,
+    "bytes": 15852,
+    "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+  },
+  "boundaries": {
+    "D2Modified": false,
+    "XlsxBAdopted": false,
+    "I05OrQualityProductSourceImported": false,
+    "packageRun": false,
+    "guiNativeE2eHmrRun": false,
+    "specifiedZcodeMinimaxNewReviewsCreated": 0,
+    "pushPrCiMerge": false,
+    "goalRecreatedOrResumed": false,
+    "goalStatus": "blocked"
+  },
+  "remaining": [
+    "Root exact D1 candidate readback and integration authorization",
+    "D2 frozen I05 canonical probe/CLI/private JSON/resource identity/budgets/inputs/assets and separated oracle",
+    "Actual composed source/package same-input calculation and failure matrix plus module/data/metadata/license archive identity",
+    "Original B1/platform/native, specified same-version two fresh external reviews, CI/normal merge/remote and parent acceptance gates"
+  ]
+}
