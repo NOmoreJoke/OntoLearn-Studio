@@ -73,3 +73,15 @@ T01待提供：基于上述草稿产生真实结构与引用检查的preview（�
 接线顺序：批准I06安全传输/字段溯源 → 批准T01及各真实领域服务 → T00唯一命名bridge/页面与T09离线处理 → 实际API主体/预算批准后分开连接/JSON/工具探针 → 原11.3/12.2及A系列真实路径评估 → 固定正式模式/受测返回标识/manifest → 刷新批准base、同候选指定双审及原门禁。
 
 UI当前只有context-actions纯策略，没有页面已接线。每页不超过4个主要动作；无模型时只标已有本地handler为可用，缺服务明确unavailable；演示/项目模式标记full-assistance，交T09记录，不计独立迁移成功。模型设置页复用I06安全接口，未另建存储或配置权威。
+
+## 纯会话往返（第二批独立实现）
+
+`main/agent/conversation.ts` 把已存在codec和AgentSession串成纯数据会话：`prepareExchange → acceptResponse → 实际已批准工具端口 → prepareExchange → 真实收据回答`。只有最后接入I06后才存在实际发送；prepareExchange返回exchangeId/body并不授予外发权限。
+
+会话仅在ready时准备一笔请求，并绑定递增exchangeId；未知/旧exchangeId不能消费当前待响应笔数。已消费provider响应ID、同session工具调用ID均不可复用，异步工具执行时拒绝并行响应。当前项目/snapshot/scope变化则终止旧会话，禁止把旧结果标为新结果。所有工具输出按宿主给出的字段列表做最小化，完整正文/历史/思考/工具参数仍须I06最终字节授权。
+
+思考模式携带工具时，响应缺少reasoning_content在工具执行前失败；后续请求与追加用户回合保留此前所有assistant的思考字段及工具ID关联。模型最终JSON仍经AgentSession真实收据规则解析；原始模型文本不会替代结果。
+
+会话具有有限exchange数、每请求输出token上限、累计已请求输出token上限与工具超时；一笔请求准备时即占用上限，失败也不退还。此处是请求数量/输出token的保守本地上限，不是费用核算或输入token预算，I06仍须控制实际总token、请求时间、费用硬上限和API主体权限。providerFailed只记录安全错误，不自动重试；失败后由页面保留用户输入并通过显式重试建立新操作。取消传播至正在等待的领域端口并忽略迟到响应；真实引擎是否已取消、已提交多少轮仍由I04/T01持久记录证明。
+
+`state()`只暴露本地安全状态、计数、错误码与宿主答案，不暴露prompt/history/provider异常。单测使用合成响应与注入端口验证往返，不能计入真实DeepSeek或领域集成验收。对应测试：`tests/unit/t08-conversation.test.ts`。
