@@ -1,0 +1,171 @@
+{
+  "source": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/tasks.json",
+  "sourceBytes": 61698,
+  "sourceSha256": "c32b92ea0bf58582629fd445c15c9fbe82cd844ec5e35bf099be09f820e72978",
+  "use": "owner routing metadata only; no WIP source adopted or status inferred",
+  "owners": [
+    {
+      "id": "T01",
+      "name": "项目与事务",
+      "actual_agent_or_thread": "01a15bba-0884-7401-b24f-f50c1fcf60aa",
+      "proposed_exclusive_boundaries": [
+        "project services",
+        "storage schema/migrations after explicit ownership handoff",
+        "shell/draft/cache services"
+      ],
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/project/",
+        "packages/engine/tests/test_project_*.py",
+        "tests/unit/t01-*.test.ts",
+        "docs/reviews/T01/",
+        "docs/iterations/T01/",
+        "packages/engine/src/ontolearn_engine/storage.py",
+        "packages/engine/src/ontolearn_engine/job_store.py",
+        "packages/engine/src/ontolearn_engine/coordinator.py",
+        "packages/engine/src/ontolearn_engine/__main__.py",
+        "packages/contracts/python/contract_v2.py",
+        "packages/contracts/src/index.ts",
+        "packages/contracts/src/v2.ts",
+        "packages/contracts/v2/schema.json",
+        "packages/contracts/v2/registry.json",
+        "packages/contracts/v2/errors.json",
+        "packages/contracts/v2/fixtures.json",
+        "packages/contracts/v2/binding-regressions.json",
+        "apps/desktop/src/main/engine.ts",
+        "apps/desktop/src/main/jsonl.ts",
+        "apps/desktop/src/renderer/src/task-presentation.ts",
+        "apps/desktop/src/main/task-service.ts",
+        "apps/desktop/src/main/index.ts"
+      ]
+    },
+    {
+      "id": "T02",
+      "name": "本体编辑",
+      "actual_agent_or_thread": "01a15bcd-f40b-7c91-81fa-7c481d2030d5",
+      "proposed_exclusive_boundaries": [
+        "ontology services",
+        "ontology page"
+      ],
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/ontology/",
+        "packages/engine/tests/test_ontology_*.py",
+        "apps/desktop/src/renderer/src/ontology/",
+        "tests/unit/t02-*.test.ts",
+        "tests/fixtures/ontology/",
+        "docs/reviews/T02/",
+        "docs/iterations/T02/"
+      ]
+    },
+    {
+      "id": "T04",
+      "name": "查询",
+      "actual_agent_or_thread": "01a15bcd-fcba-7583-a307-56497cdde347",
+      "proposed_exclusive_boundaries": [
+        "query services",
+        "query page"
+      ],
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/query_service/",
+        "packages/engine/tests/test_query_service_*.py",
+        "apps/desktop/src/renderer/src/query/",
+        "tests/unit/t04-*.test.ts",
+        "tests/fixtures/query/",
+        "docs/reviews/T04/",
+        "docs/iterations/T04/"
+      ]
+    },
+    {
+      "id": "T05",
+      "name": "质量与推理",
+      "actual_agent_or_thread": "01a15bce-021c-74e0-a7ac-a899380b424a",
+      "proposed_exclusive_boundaries": [
+        "quality/reasoning services",
+        "quality page"
+      ],
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/quality/",
+        "packages/engine/tests/test_quality_*.py",
+        "apps/desktop/src/renderer/src/quality/",
+        "tests/unit/t05-*.test.ts",
+        "tests/fixtures/quality/",
+        "docs/reviews/T05/",
+        "docs/iterations/T05/"
+      ]
+    },
+    {
+      "id": "T06",
+      "name": "行为",
+      "actual_agent_or_thread": "01a15bba-0c8a-7dc2-b612-5b5c4ec4a4b9",
+      "proposed_exclusive_boundaries": [
+        "behavior services",
+        "behavior page"
+      ],
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/behavior/",
+        "packages/engine/tests/test_behavior_*.py",
+        "tests/fixtures/behavior/",
+        "docs/reviews/T06/",
+        "docs/iterations/T06/",
+        "apps/desktop/src/renderer/src/behavior/",
+        "tests/unit/t06-*.test.ts"
+      ]
+    },
+    {
+      "id": "T07",
+      "name": "沙盘",
+      "actual_agent_or_thread": "01a15bce-0706-7360-8e99-df8fe9b15ad2",
+      "proposed_exclusive_boundaries": [
+        "scenario services",
+        "scenario page"
+      ],
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/scenario/",
+        "packages/engine/tests/test_scenario_*.py",
+        "apps/desktop/src/renderer/src/scenario/",
+        "tests/unit/t07-*.test.ts",
+        "tests/fixtures/scenario/",
+        "docs/reviews/T07/",
+        "docs/iterations/T07/"
+      ]
+    },
+    {
+      "id": "T09",
+      "name": "离线学习",
+      "actual_agent_or_thread": "01a15bba-1133-7933-9c6f-156f70f60c60",
+      "proposed_exclusive_boundaries": [
+        "course and fixture content",
+        "learning services/page"
+      ],
+      "exclusive_write_paths": [
+        "content/learning/",
+        "tests/fixtures/product-baselines/",
+        "scripts/verify-product-baselines.py",
+        "packages/engine/src/ontolearn_engine/learning/",
+        "packages/engine/tests/test_learning_*.py",
+        "docs/reviews/T09/",
+        "docs/iterations/T09/",
+        "apps/desktop/src/renderer/src/learning/",
+        "tests/unit/learning-*.test.ts"
+      ]
+    },
+    {
+      "id": "T10",
+      "name": "导出与迁移",
+      "actual_agent_or_thread": "01a15bce-0a94-7870-9694-f100e78f406a",
+      "proposed_exclusive_boundaries": [
+        "export/import services",
+        "report templates"
+      ],
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/transfer/",
+        "packages/engine/tests/test_transfer_*.py",
+        "apps/desktop/src/main/project-transfer/",
+        "apps/desktop/src/renderer/src/transfer/",
+        "tests/unit/t10-*.test.ts",
+        "tests/fixtures/transfer/",
+        "docs/reviews/T10/",
+        "docs/iterations/T10/"
+      ]
+    }
+  ]
+}

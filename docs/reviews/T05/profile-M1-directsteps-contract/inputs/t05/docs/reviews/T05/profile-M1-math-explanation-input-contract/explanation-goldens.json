@@ -1,0 +1,331 @@
+{
+  "status": "independently authored expected only; not production input",
+  "matchOrder": "ordered existing binding keys, s1 before s2; exact child order follows definition order",
+  "completeHeads": {
+    "caseId": "M1-complete-heads",
+    "originalMatches": [
+      {
+        "bindings": {
+          "?s": "<urn:m1:s1>",
+          "?v": "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        },
+        "when": [
+          ["<urn:m1:s1>", "<urn:m1:score>", "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>"]
+        ],
+        "accepted": true,
+        "comparison": {
+          "operator": "eq",
+          "leftNumber": {
+            "numerator": "1",
+            "denominator": "1",
+            "negative_zero": false
+          },
+          "rightNumber": {
+            "numerator": "1",
+            "denominator": "1",
+            "negative_zero": false
+          },
+          "result": true,
+          "leftSource": {
+            "sourceFile": "supplemental-graph-inputs.json",
+            "pointer": "/cases/0/asserted/0/2",
+            "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+            "byteSpan": null,
+            "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication"
+          },
+          "rightSource": {
+            "sourceFile": "supplemental-graph-inputs.json",
+            "pointer": "/cases/0/rules/0/conditions/1/right",
+            "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+            "byteSpan": null,
+            "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication"
+          }
+        },
+        "heads": [
+          {
+            "headIndex": 0,
+            "triple": [
+              "<urn:m1:s1>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<urn:m1:Matched>"
+            ],
+            "source": {
+              "sourceFile": "supplemental-graph-inputs.json",
+              "pointer": "/cases/0/rules/0/conclusions/0",
+              "rawToken": "unavailable: source is canonical structured definition JSON",
+              "byteSpan": null
+            }
+          },
+          {
+            "headIndex": 1,
+            "triple": [
+              "<urn:m1:s1>",
+              "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+              "<urn:m1:Matched>"
+            ],
+            "source": {
+              "sourceFile": "supplemental-graph-inputs.json",
+              "pointer": "/cases/0/rules/0/conclusions/1",
+              "rawToken": "unavailable: source is canonical structured definition JSON",
+              "byteSpan": null
+            }
+          },
+          {
+            "headIndex": 2,
+            "triple": ["<urn:m1:s1>", "<urn:m1:label>", "\"ok\""],
+            "source": {
+              "sourceFile": "supplemental-graph-inputs.json",
+              "pointer": "/cases/0/rules/0/conclusions/2",
+              "rawToken": "unavailable: source is canonical structured definition JSON",
+              "byteSpan": null
+            }
+          }
+        ],
+        "leafBasis": [
+          ["<urn:m1:s1>", "<urn:m1:score>", "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>"]
+        ],
+        "source": {
+          "sourceFile": "supplemental-graph-inputs.json",
+          "pointer": "/cases/0/rules/0",
+          "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+          "byteSpan": null,
+          "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication"
+        }
+      },
+      {
+        "bindings": {
+          "?s": "<urn:m1:s2>",
+          "?v": "\"0\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        },
+        "when": [
+          ["<urn:m1:s2>", "<urn:m1:score>", "\"0\"^^<http://www.w3.org/2001/XMLSchema#integer>"]
+        ],
+        "accepted": false,
+        "expectedComparisonBoolean": false,
+        "heads": [],
+        "source": {
+          "sourceFile": "supplemental-graph-inputs.json",
+          "pointer": "/cases/0/asserted/1",
+          "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+          "byteSpan": null,
+          "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication"
+        },
+        "expectedLeftNumber": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "expectedRightNumber": {
+          "numerator": "1",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "leafBasis": [
+          ["<urn:m1:s2>", "<urn:m1:score>", "\"0\"^^<http://www.w3.org/2001/XMLSchema#integer>"]
+        ]
+      }
+    ],
+    "uniqueDerivedRdfTriples": [
+      ["<urn:m1:s1>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "<urn:m1:Matched>"],
+      ["<urn:m1:s1>", "<urn:m1:label>", "\"ok\""]
+    ],
+    "headOccurrences": 3,
+    "policy": "Preserve every accepted match and head index; RDF set deduplicates only output triple. False originalMatch remains. No new persisted false ComparisonEvidence contract.",
+    "ruleId": "M1-complete-heads",
+    "definitionOrdinal": 0
+  },
+  "falseThenError": {
+    "caseId": "M1-false-then-error",
+    "comparisonsInDefinitionOrder": [
+      {
+        "operator": "gt",
+        "mathematicalResult": false
+      },
+      {
+        "operator": "eq",
+        "reason": "RULE_COMPARISON_TYPE_MISMATCH",
+        "source": {
+          "sourceFile": "supplemental-graph-inputs.json",
+          "pointer": "/cases/1/rules/0/conditions/3",
+          "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+          "byteSpan": null,
+          "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication"
+        }
+      }
+    ],
+    "overall": "entire operation fails, no success prefix/batch/heads published",
+    "persistentFalseTraceRequired": false,
+    "expectedPrivateLocation": {
+      "section": "comparison",
+      "index": 1
+    },
+    "originalConditionIndex": 3,
+    "ruleId": "M1-false-then-error"
+  },
+  "directSteps": {
+    "caseId": "M1-direct-step",
+    "leaves": [
+      {
+        "id": "l0",
+        "triple": ["<urn:m1:x>", "<urn:m1:p>", "<urn:m1:y>"],
+        "source": {
+          "sourceFile": "supplemental-graph-inputs.json",
+          "pointer": "/cases/2/asserted/0",
+          "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+          "byteSpan": null,
+          "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication"
+        },
+        "depth": 0
+      },
+      {
+        "id": "l1",
+        "triple": ["<urn:m1:p>", "<http://www.w3.org/2000/01/rdf-schema#domain>", "<urn:m1:A>"],
+        "source": {
+          "sourceFile": "supplemental-graph-inputs.json",
+          "pointer": "/cases/2/ontology/0",
+          "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+          "byteSpan": null,
+          "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication"
+        },
+        "depth": 0
+      },
+      {
+        "id": "l2",
+        "triple": ["<urn:m1:A>", "<http://www.w3.org/2000/01/rdf-schema#subClassOf>", "<urn:m1:B>"],
+        "source": {
+          "sourceFile": "supplemental-graph-inputs.json",
+          "pointer": "/cases/2/ontology/1",
+          "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+          "byteSpan": null,
+          "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication"
+        },
+        "depth": 0
+      }
+    ],
+    "steps": [
+      {
+        "id": "d1",
+        "rule": "rdfs2-domain",
+        "result": ["<urn:m1:x>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "<urn:m1:A>"],
+        "orderedDirectInputs": ["l1", "l0"],
+        "depth": 1,
+        "leafBasis": ["l0", "l1"]
+      },
+      {
+        "id": "d2",
+        "rule": "rdfs9-type-via-subclass",
+        "result": ["<urn:m1:x>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "<urn:m1:B>"],
+        "orderedDirectInputs": ["d1", "l2"],
+        "depth": 2,
+        "leafBasis": ["l0", "l1", "l2"]
+      }
+    ],
+    "witnessPolicy": "one actual stable first selected witness at closure insertion; not all proofs; unique applicable path in this fixture",
+    "explanation": "x has p y and p domain A, so x type A. That derived type plus A subClassOf B yields x type B. Leaves alone cannot identify these two direct steps."
+  },
+  "existingR04Reference": {
+    "oracle": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+    "pointer": "/rdfsWitnesses/R04-equipment",
+    "orderedDirectPremises": ["t0117", "t0116"],
+    "result": "t0063",
+    "depth": 1,
+    "leafBasis": ["t0116", "t0117"],
+    "note": "Do not replace fixed original oracle; new depth2 is supplemental input."
+  },
+  "additionalDirectStepCases": [
+    {
+      "caseId": "M1-direct-range",
+      "leaves": [
+        {
+          "id": "l0",
+          "triple": ["<urn:m1:x>", "<urn:m1:p>", "<urn:m1:y>"],
+          "source": {
+            "sourceFile": "supplemental-graph-inputs.json",
+            "pointer": "/cases/3/asserted/0"
+          },
+          "depth": 0
+        },
+        {
+          "id": "l1",
+          "triple": ["<urn:m1:p>", "<http://www.w3.org/2000/01/rdf-schema#range>", "<urn:m1:C>"],
+          "source": {
+            "sourceFile": "supplemental-graph-inputs.json",
+            "pointer": "/cases/3/ontology/0"
+          },
+          "depth": 0
+        }
+      ],
+      "steps": [
+        {
+          "id": "d1",
+          "rule": "rdfs3-range",
+          "result": [
+            "<urn:m1:y>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<urn:m1:C>"
+          ],
+          "orderedDirectInputs": ["l1", "l0"],
+          "depth": 1,
+          "leafBasis": ["l0", "l1"]
+        }
+      ]
+    },
+    {
+      "caseId": "M1-direct-subclass-transitive",
+      "leaves": [
+        {
+          "id": "l0",
+          "triple": [
+            "<urn:m1:A>",
+            "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+            "<urn:m1:B>"
+          ],
+          "source": {
+            "sourceFile": "supplemental-graph-inputs.json",
+            "pointer": "/cases/4/ontology/0"
+          },
+          "depth": 0
+        },
+        {
+          "id": "l1",
+          "triple": [
+            "<urn:m1:B>",
+            "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+            "<urn:m1:C>"
+          ],
+          "source": {
+            "sourceFile": "supplemental-graph-inputs.json",
+            "pointer": "/cases/4/ontology/1"
+          },
+          "depth": 0
+        }
+      ],
+      "steps": [
+        {
+          "id": "d1",
+          "rule": "rdfs11-subclass-transitive",
+          "result": [
+            "<urn:m1:A>",
+            "<http://www.w3.org/2000/01/rdf-schema#subClassOf>",
+            "<urn:m1:C>"
+          ],
+          "orderedDirectInputs": ["l0", "l1"],
+          "depth": 1,
+          "leafBasis": ["l0", "l1"]
+        }
+      ]
+    }
+  ],
+  "expectedCatalogObservations": {
+    "M1-complete-heads": {
+      "classes": ["urn:m1:Matched"],
+      "object_properties": [],
+      "data_properties": ["urn:m1:label", "urn:m1:score"]
+    },
+    "M1-false-then-error": {
+      "classes": ["urn:m1:Matched"],
+      "object_properties": [],
+      "data_properties": ["urn:m1:label", "urn:m1:v", "urn:m1:w"]
+    }
+  }
+}
