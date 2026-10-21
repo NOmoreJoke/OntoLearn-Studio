@@ -1,0 +1,2447 @@
+{
+  "method": "stdlib AST only; no product import/execution",
+  "functions": {
+    "packages/engine/src/ontolearn_engine/storage.py": [
+      {
+        "name": "canonical",
+        "line": 24,
+        "end": 27,
+        "calls": ["json.dumps"]
+      },
+      {
+        "name": "digest",
+        "line": 30,
+        "end": 31,
+        "calls": [
+          "canonical",
+          "canonical(value).encode",
+          "hashlib.sha256",
+          "hashlib.sha256(canonical(value).encode()).hexdigest"
+        ]
+      },
+      {
+        "name": "_close_resources",
+        "line": 38,
+        "end": 47,
+        "calls": ["failures.append", "resource.close"]
+      },
+      {
+        "name": "__init__",
+        "line": 53,
+        "end": 64,
+        "calls": [
+          "super",
+          "super().__init__",
+          "{'identity': 'IDENTITY_CONFLICT', 'revision': 'REVISION_CONFLICT', 'state': 'INVALID_STATE', 'rounds': 'RESOURCE_LIMIT', 'dependency': 'INVALID_REQUEST', 'input': 'INVALID_REQUEST'}.get"
+        ]
+      },
+      {
+        "name": "__init__",
+        "line": 68,
+        "end": 106,
+        "calls": [
+          "Path",
+          "ValueError",
+          "_close_resources",
+          "acquire_lease",
+          "getattr",
+          "self._db.execute",
+          "self._db.execute(\"SELECT 1 FROM results WHERE typeof(kind) != 'text' OR trim(kind) = '' UNION ALL SELECT 1 FROM current_results WHERE typeof(kind) != 'text' OR trim(kind) = '' LIMIT 1\").fetchone",
+          "self._migrate",
+          "self.path.exists",
+          "self.path.stat",
+          "sqlite3.connect",
+          "type"
+        ]
+      },
+      {
+        "name": "actual_format",
+        "line": 109,
+        "end": 110,
+        "calls": ["self._db.execute", "self._db.execute('PRAGMA user_version').fetchone"]
+      },
+      {
+        "name": "close",
+        "line": 112,
+        "end": 117,
+        "calls": ["_close_resources"]
+      },
+      {
+        "name": "_transaction",
+        "line": 120,
+        "end": 146,
+        "calls": ["hook", "self._db.execute", "uuid4"]
+      },
+      {
+        "name": "_migrate",
+        "line": 148,
+        "end": 257,
+        "calls": [
+          "Format3Fault",
+          "UnsupportedProjectFormat",
+          "ValueError",
+          "enumerate",
+          "hook",
+          "install",
+          "logical_hash",
+          "migration_backup",
+          "self._db.execute",
+          "self._db.execute('PRAGMA user_version').fetchone",
+          "self._db.execute('SELECT 1 FROM sqlite_master LIMIT 1').fetchone",
+          "self._read",
+          "self._transaction",
+          "validate"
+        ]
+      },
+      {
+        "name": "create_project",
+        "line": 259,
+        "end": 267,
+        "calls": [
+          "ValueError",
+          "isinstance",
+          "seed_project",
+          "self._db.execute",
+          "self._transaction"
+        ]
+      },
+      {
+        "name": "project_checkpoint",
+        "line": 269,
+        "end": 281,
+        "calls": [
+          "ValueError",
+          "load_checkpoint",
+          "self._db.execute",
+          "self._db.execute('SELECT checkpoint FROM app_projects WHERE project=?', (project,)).fetchone",
+          "self._read",
+          "self.revision"
+        ]
+      },
+      {
+        "name": "project_receipt",
+        "line": 283,
+        "end": 303,
+        "calls": [
+          "KeyError",
+          "ValueError",
+          "receipt_for",
+          "self._db.execute",
+          "self._db.execute('SELECT kind FROM app_operations WHERE project=? AND operation=?', (project, operation)).fetchone",
+          "self._read",
+          "self.revision"
+        ]
+      },
+      {
+        "name": "project_operations",
+        "line": 305,
+        "end": 350,
+        "calls": [
+          "ValueError",
+          "_history",
+          "_integer",
+          "len",
+          "receipts.get",
+          "self._db.execute",
+          "self._db.execute('SELECT * FROM app_operations WHERE project=? AND sequence>? AND sequence<=? ORDER BY sequence LIMIT ?', (project, after_sequence, through, limit + 1)).fetchall",
+          "self._read",
+          "type"
+        ]
+      },
+      {
+        "name": "revision",
+        "line": 352,
+        "end": 356,
+        "calls": [
+          "KeyError",
+          "self._db.execute",
+          "self._db.execute('SELECT revision FROM projects WHERE id=?', (project,)).fetchone"
+        ]
+      },
+      {
+        "name": "vector",
+        "line": 358,
+        "end": 391,
+        "calls": [
+          "dict",
+          "key.partition",
+          "members.update",
+          "self._db.execute",
+          "self._has_retirements",
+          "self.revision",
+          "tuple",
+          "vector.pop"
+        ]
+      },
+      {
+        "name": "_has_retirements",
+        "line": 393,
+        "end": 399,
+        "calls": [
+          "self._db.execute",
+          "self._db.execute(\"SELECT 1 FROM sqlite_master WHERE type='table' AND name='definition_retirements'\").fetchone"
+        ]
+      },
+      {
+        "name": "_read",
+        "line": 402,
+        "end": 410,
+        "calls": ["self._db.execute"]
+      },
+      {
+        "name": "state",
+        "line": 412,
+        "end": 414,
+        "calls": ["self._read", "self._state"]
+      },
+      {
+        "name": "_state",
+        "line": 416,
+        "end": 440,
+        "calls": ["dict", "self._db.execute", "self.mapping_status", "self.revision"]
+      },
+      {
+        "name": "_fact",
+        "line": 443,
+        "end": 454,
+        "calls": [
+          "ValueError",
+          "any",
+          "digest",
+          "fact.values",
+          "iri",
+          "isinstance",
+          "set",
+          "term",
+          "term(fact['object']).n3"
+        ]
+      },
+      {
+        "name": "commit",
+        "line": 456,
+        "end": 860,
+        "calls": [
+          "(edits or {}).items",
+          "Conflict",
+          "ValueError",
+          "after_definitions.get",
+          "allow_domain_marker",
+          "any",
+          "before_definitions.get",
+          "canonical",
+          "changed.add",
+          "changed.discard",
+          "changed.update",
+          "commit_application",
+          "commit_creation",
+          "d.get",
+          "digest",
+          "family",
+          "hook",
+          "isinstance",
+          "key.split",
+          "len",
+          "mapping.get",
+          "preview_control.values",
+          "rebound.items",
+          "record_domain_commit",
+          "resolve",
+          "seen_removals.add",
+          "self._apply_compensation",
+          "self._check_slot",
+          "self._db.execute",
+          "self._db.execute(\"SELECT 1 FROM definition_retirements WHERE project=? AND layer='mapping' AND id=?\", (project, mapping['id'])).fetchone",
+          "self._db.execute('SELECT * FROM facts WHERE project=? AND id=?', (project, fact['id'])).fetchone",
+          "self._db.execute('SELECT * FROM facts WHERE project=? AND id=?', (project, identity)).fetchone",
+          "self._db.execute('SELECT 1 FROM definitions WHERE project=? AND layer=? AND id=?', (project, layer, identity)).fetchone",
+          "self._db.execute('SELECT payload FROM definitions WHERE project=? AND layer=? AND id=?', (project, layer, identity)).fetchone",
+          "self._db.execute('SELECT version FROM versions WHERE project=? AND key=?', (project, f\"mapping:{mapping['id']}\")).fetchone",
+          "self._definition",
+          "self._fact",
+          "self._has_retirements",
+          "self._invalidate",
+          "self._replace_mapping",
+          "self._snapshot",
+          "self._transaction",
+          "self._validate_references",
+          "self._validate_single_slots",
+          "self.marker",
+          "self.retirement_control",
+          "self.revision",
+          "self.state",
+          "self.vector",
+          "self.vector(project).get",
+          "set",
+          "sorted",
+          "term",
+          "term(value).n3",
+          "tuple",
+          "type",
+          "validate_selector"
+        ]
+      },
+      {
+        "name": "retirement_control",
+        "line": 862,
+        "end": 873,
+        "calls": ["list", "self._db.execute", "self._has_retirements", "self.revision"]
+      },
+      {
+        "name": "_apply_compensation",
+        "line": 875,
+        "end": 968,
+        "calls": [
+          "bool",
+          "changed.add",
+          "changed.update",
+          "hook",
+          "new_defs.get",
+          "new_defs.keys",
+          "new_mappings.get",
+          "new_mappings.items",
+          "old_defs.get",
+          "old_defs.keys",
+          "old_mappings.get",
+          "owners.update",
+          "self._check_slot",
+          "self._db.execute",
+          "self._db.executemany",
+          "self._single_predicates",
+          "self._snapshot_state",
+          "set",
+          "sorted"
+        ]
+      },
+      {
+        "name": "operation_list",
+        "line": 970,
+        "end": 1001,
+        "calls": [
+          "ValueError",
+          "len",
+          "self._db.execute",
+          "self._db.execute('SELECT operation FROM commits WHERE project=? AND revision>? AND revision<=? ORDER BY revision LIMIT ?', (project, after_revision, upper, limit + 1)).fetchall",
+          "self._read",
+          "self.marker",
+          "self.revision",
+          "type"
+        ]
+      },
+      {
+        "name": "mapping_status",
+        "line": 1003,
+        "end": 1011,
+        "calls": [
+          "reasons",
+          "self._db.execute",
+          "self._db.execute('SELECT generated_version FROM mapping_state WHERE project=? AND owner=?', (project, owner)).fetchone",
+          "self.vector"
+        ]
+      },
+      {
+        "name": "_definition",
+        "line": 1014,
+        "end": 1039,
+        "calls": ["ValueError", "iri", "isinstance", "set", "term", "term(obj).n3"]
+      },
+      {
+        "name": "_single_predicates",
+        "line": 1041,
+        "end": 1049,
+        "calls": [
+          "isinstance",
+          "json.loads",
+          "predicates.update",
+          "self._db.execute",
+          "set",
+          "value.get"
+        ]
+      },
+      {
+        "name": "_validate_single_slots",
+        "line": 1051,
+        "end": 1060,
+        "calls": [
+          "Conflict",
+          "self._db.execute",
+          "self._db.execute('SELECT subject FROM facts WHERE project=? AND predicate=? AND object IS NOT NULL GROUP BY subject HAVING COUNT(*)>1 LIMIT 1', (project, predicate)).fetchone",
+          "self._single_predicates"
+        ]
+      },
+      {
+        "name": "_validate_references",
+        "line": 1062,
+        "end": 1079,
+        "calls": [
+          "Conflict",
+          "ValueError",
+          "isinstance",
+          "json.loads",
+          "self._db.execute",
+          "self._db.execute('SELECT 1 FROM definitions WHERE project=? AND layer=? AND id=?', (project, reference['layer'], reference['id'])).fetchone",
+          "self._definition",
+          "set",
+          "value.get"
+        ]
+      },
+      {
+        "name": "_check_slot",
+        "line": 1081,
+        "end": 1106,
+        "calls": ["Conflict", "digest", "self._db.execute", "self._single_predicates"]
+      },
+      {
+        "name": "_replace_mapping",
+        "line": 1108,
+        "end": 1197,
+        "calls": [
+          "Conflict",
+          "ValueError",
+          "identities.add",
+          "isinstance",
+          "rows.add",
+          "self._check_slot",
+          "self._db.execute",
+          "self._db.executemany",
+          "self._fact",
+          "self._single_predicates",
+          "set",
+          "sorted",
+          "staged.append",
+          "staged_slots.add",
+          "tuple"
+        ]
+      },
+      {
+        "name": "marker",
+        "line": 1199,
+        "end": 1206,
+        "calls": [
+          "dict",
+          "self._db.execute",
+          "self._db.execute('SELECT c.*,e.before_snapshot,e.after_snapshot FROM commits c LEFT JOIN commit_evidence e ON e.project=c.project AND e.operation=c.operation WHERE c.project=? AND c.operation=?', (project, operation)).fetchone"
+        ]
+      },
+      {
+        "name": "snapshot",
+        "line": 1208,
+        "end": 1216,
+        "calls": [
+          "self._snapshot",
+          "self._transaction",
+          "self.revision",
+          "self.state",
+          "self.vector"
+        ]
+      },
+      {
+        "name": "_snapshot",
+        "line": 1218,
+        "end": 1223,
+        "calls": ["canonical", "digest", "self._db.execute"]
+      },
+      {
+        "name": "load_snapshot",
+        "line": 1225,
+        "end": 1232,
+        "calls": [
+          "KeyError",
+          "ValueError",
+          "digest",
+          "json.loads",
+          "self._db.execute",
+          "self._db.execute('SELECT payload FROM snapshots WHERE id=?', (identity,)).fetchone"
+        ]
+      },
+      {
+        "name": "_project_snapshot",
+        "line": 1234,
+        "end": 1259,
+        "calls": [
+          "Conflict",
+          "ValueError",
+          "family",
+          "isinstance",
+          "self._snapshot_state",
+          "self.load_snapshot",
+          "snap.get",
+          "state.get",
+          "type",
+          "vector.items"
+        ]
+      },
+      {
+        "name": "_snapshot_state",
+        "line": 1262,
+        "end": 1348,
+        "calls": [
+          "ValueError",
+          "all",
+          "any",
+          "canonical",
+          "cls._definition",
+          "definitions.append",
+          "identities.add",
+          "iri",
+          "isinstance",
+          "json.loads",
+          "set",
+          "state['mappingState'].items",
+          "term",
+          "term(value).n3",
+          "type",
+          "value.get",
+          "values.append"
+        ]
+      },
+      {
+        "name": "_result_identity",
+        "line": 1351,
+        "end": 1360,
+        "calls": ["ValueError", "all", "implementation.values", "isinstance", "kind.strip", "set"]
+      },
+      {
+        "name": "publish",
+        "line": 1362,
+        "end": 1426,
+        "calls": [
+          "ValueError",
+          "any",
+          "can_publish_current",
+          "canonical",
+          "digest",
+          "family",
+          "isinstance",
+          "key.split",
+          "reasons",
+          "self._db.execute",
+          "self._project_snapshot",
+          "self._result_identity",
+          "self._transaction",
+          "self.revision",
+          "self.vector",
+          "snap['dependencyVector'].get",
+          "str",
+          "uuid4"
+        ]
+      },
+      {
+        "name": "_invalidate",
+        "line": 1428,
+        "end": 1438,
+        "calls": ["canonical", "json.loads", "reasons", "self._db.execute", "self.vector"]
+      },
+      {
+        "name": "result",
+        "line": 1440,
+        "end": 1442,
+        "calls": ["self._read", "self._result"]
+      },
+      {
+        "name": "_result",
+        "line": 1444,
+        "end": 1460,
+        "calls": [
+          "KeyError",
+          "dict",
+          "json.loads",
+          "self._db.execute",
+          "self._db.execute('SELECT 1 FROM current_results WHERE result=?', (identity,)).fetchone",
+          "self._db.execute('SELECT r.*,s.stale FROM results r JOIN result_state s ON s.result=r.id WHERE r.id=?', (identity,)).fetchone"
+        ]
+      },
+      {
+        "name": "current",
+        "line": 1462,
+        "end": 1465,
+        "calls": ["self._current", "self._read", "self._result_identity"]
+      },
+      {
+        "name": "_current",
+        "line": 1467,
+        "end": 1482,
+        "calls": [
+          "canonical",
+          "self._db.execute",
+          "self._db.execute('SELECT result FROM current_results WHERE project=? AND kind=? AND implementation=?', (project, kind, canonical(implementation))).fetchone",
+          "self.result"
+        ]
+      },
+      {
+        "name": "pin_result",
+        "line": 1484,
+        "end": 1489,
+        "calls": ["ValueError", "self._db.execute", "self._transaction", "self.result"]
+      },
+      {
+        "name": "collect_cache",
+        "line": 1491,
+        "end": 1503,
+        "calls": ["self._db.execute", "self._transaction"]
+      },
+      {
+        "name": "start_run",
+        "line": 1505,
+        "end": 1515,
+        "calls": [
+          "ValueError",
+          "canonical",
+          "isinstance",
+          "self._db.execute",
+          "self._project_snapshot",
+          "self._transaction",
+          "str",
+          "uuid4"
+        ]
+      },
+      {
+        "name": "commit_round",
+        "line": 1517,
+        "end": 1579,
+        "calls": [
+          "Conflict",
+          "ValueError",
+          "config.get",
+          "digest",
+          "hook",
+          "isinstance",
+          "json.loads",
+          "self._db.execute",
+          "self._db.execute('SELECT * FROM rounds WHERE operation=?', (operation,)).fetchone",
+          "self._db.execute('SELECT 1 FROM run_terminal WHERE run=?', (run,)).fetchone",
+          "self._run",
+          "self._snapshot",
+          "self._transaction",
+          "self.progress",
+          "type"
+        ]
+      },
+      {
+        "name": "_run",
+        "line": 1581,
+        "end": 1585,
+        "calls": [
+          "KeyError",
+          "self._db.execute",
+          "self._db.execute('SELECT * FROM runs WHERE id=?', (identity,)).fetchone"
+        ]
+      },
+      {
+        "name": "progress",
+        "line": 1587,
+        "end": 1592,
+        "calls": [
+          "self._db.execute",
+          "self._db.execute('SELECT number,snapshot FROM rounds WHERE run=? ORDER BY number DESC LIMIT 1', (run,)).fetchone",
+          "self._run"
+        ]
+      },
+      {
+        "name": "finish_run",
+        "line": 1594,
+        "end": 1601,
+        "calls": ["ValueError", "canonical", "self._db.execute", "self._run", "self._transaction"]
+      },
+      {
+        "name": "history",
+        "line": 1603,
+        "end": 1605,
+        "calls": ["self._history", "self._read"]
+      },
+      {
+        "name": "_history",
+        "line": 1607,
+        "end": 1652,
+        "calls": [
+          "ValueError",
+          "all",
+          "config.get",
+          "dict",
+          "impl.get",
+          "isinstance",
+          "json.loads",
+          "saved.get",
+          "self._db.execute",
+          "self._db.execute('SELECT status,evidence FROM run_terminal WHERE run=?', (run,)).fetchone",
+          "self._project_snapshot",
+          "self._run",
+          "self.load_snapshot",
+          "self.progress",
+          "type"
+        ]
+      },
+      {
+        "name": "backup",
+        "line": 1654,
+        "end": 1661,
+        "calls": [
+          "Path",
+          "Path(destination).exists",
+          "ValueError",
+          "self._db.backup",
+          "sqlite3.connect",
+          "target.close"
+        ]
+      }
+    ],
+    "packages/engine/src/ontolearn_engine/job_store.py": [
+      {
+        "name": "fault",
+        "line": 41,
+        "end": 42,
+        "calls": ["JobFault"]
+      },
+      {
+        "name": "_job_object_name",
+        "line": 2050,
+        "end": 2056,
+        "calls": [
+          "normalized.partition",
+          "normalized.partition('(')[0].split",
+          "normalized.split",
+          "normalized.startswith",
+          "sql.replace"
+        ]
+      },
+      {
+        "name": "__init__",
+        "line": 35,
+        "end": 38,
+        "calls": ["super", "super().__init__"]
+      },
+      {
+        "name": "__init__",
+        "line": 46,
+        "end": 97,
+        "calls": [
+          "ValueError",
+          "_close_resources",
+          "getattr",
+          "int",
+          "open",
+          "self._db.execute",
+          "self._lock",
+          "self._migrate_job3",
+          "self._transaction",
+          "str",
+          "super",
+          "super().__init__",
+          "time.time",
+          "type"
+        ]
+      },
+      {
+        "name": "_lock",
+        "line": 99,
+        "end": 115,
+        "calls": [
+          "fault",
+          "fcntl.flock",
+          "msvcrt.locking",
+          "self._lease.fileno",
+          "self._lease.flush",
+          "self._lease.read",
+          "self._lease.seek",
+          "self._lease.write"
+        ]
+      },
+      {
+        "name": "close",
+        "line": 117,
+        "end": 126,
+        "calls": ["_close_resources"]
+      },
+      {
+        "name": "_migrate_job3",
+        "line": 128,
+        "end": 186,
+        "calls": [
+          "','.join",
+          "Format3Fault",
+          "_job_object_name",
+          "_job_object_name(sql).startswith",
+          "_schema",
+          "any",
+          "hook",
+          "old_objects.items",
+          "self._db.execute",
+          "self._db.execute(\"SELECT 1 FROM sqlite_master WHERE name='job_format'\").fetchone",
+          "self._db.execute('SELECT id FROM projects ORDER BY id').fetchall",
+          "self._read",
+          "self._transaction",
+          "self._validate_job3",
+          "self.public_project",
+          "set",
+          "tuple"
+        ]
+      },
+      {
+        "name": "_validate_job3",
+        "line": 188,
+        "end": 264,
+        "calls": [
+          "Format3Fault",
+          "UUID.fullmatch",
+          "_job_object_name",
+          "_json",
+          "_schema",
+          "any",
+          "claim_context",
+          "claimed.add",
+          "creation_context",
+          "isinstance",
+          "len",
+          "receipt_for",
+          "self._accepted_job",
+          "self._db.execute",
+          "self._db.execute('PRAGMA foreign_key_check').fetchone",
+          "self._db.execute('SELECT * FROM job_format').fetchall",
+          "self._db.execute('SELECT * FROM jobs WHERE id=?', (claim['job'],)).fetchone",
+          "self._db.execute('SELECT * FROM public_projects').fetchall",
+          "self._db.execute('SELECT sql FROM sqlite_master WHERE name=?', (_job_object_name(sql),)).fetchone",
+          "self._project",
+          "self.contract.validate",
+          "set"
+        ]
+      },
+      {
+        "name": "_application_input",
+        "line": 266,
+        "end": 278,
+        "calls": [
+          "UUID.fullmatch",
+          "canonical",
+          "canonical(change).encode",
+          "check_change",
+          "fault",
+          "isinstance",
+          "len",
+          "self._project",
+          "stable"
+        ]
+      },
+      {
+        "name": "_occupied_operation_evidence",
+        "line": 280,
+        "end": 288,
+        "calls": [
+          "any",
+          "self._db.execute",
+          "self._db.execute(f'SELECT 1 FROM {table} WHERE operation=? LIMIT 1', (operation,)).fetchone"
+        ]
+      },
+      {
+        "name": "prepare_application",
+        "line": 290,
+        "end": 321,
+        "calls": [
+          "canonical",
+          "construct_plan",
+          "digest",
+          "prepared_payload",
+          "self._application",
+          "self._application_input",
+          "self._db.execute",
+          "str",
+          "uuid4"
+        ]
+      },
+      {
+        "name": "apply_application",
+        "line": 323,
+        "end": 420,
+        "calls": [
+          "UUID.fullmatch",
+          "canonical",
+          "check_confirmation",
+          "claim_context",
+          "construct_plan",
+          "creation_context",
+          "digest",
+          "fault",
+          "hash_ref",
+          "hook",
+          "isinstance",
+          "json.loads",
+          "receipt_for",
+          "require",
+          "self._application",
+          "self._application_input",
+          "self._db.execute",
+          "self._db.execute('SELECT * FROM operation_claims WHERE operation=?', (operation,)).fetchone",
+          "self._db.execute('SELECT payload FROM job_plans WHERE ref=? AND project=?', (prepared_plan_ref, project)).fetchone",
+          "self._occupied_operation_evidence",
+          "set",
+          "stable",
+          "super",
+          "super().commit",
+          "type",
+          "uuid_ref"
+        ]
+      },
+      {
+        "name": "_valid",
+        "line": 422,
+        "end": 424,
+        "calls": ["fault", "self.contract.validate"]
+      },
+      {
+        "name": "_application",
+        "line": 427,
+        "end": 442,
+        "calls": ["canonical", "fault", "self._db.execute", "self._transaction", "str", "uuid4"]
+      },
+      {
+        "name": "detail_get",
+        "line": 444,
+        "end": 451,
+        "calls": [
+          "fault",
+          "json.loads",
+          "self._db.execute",
+          "self._db.execute('SELECT payload FROM job_details WHERE id=? AND project=?', (identity, project)).fetchone",
+          "self._project"
+        ]
+      },
+      {
+        "name": "has_operation_claim",
+        "line": 453,
+        "end": 459,
+        "calls": [
+          "self._db.execute",
+          "self._db.execute('SELECT 1 FROM operation_claims WHERE operation=?', (operation,)).fetchone"
+        ]
+      },
+      {
+        "name": "_test_parameters",
+        "line": 461,
+        "end": 496,
+        "calls": [
+          "any",
+          "bounds.items",
+          "bounds.keys",
+          "fault",
+          "isinstance",
+          "len",
+          "parameters.get",
+          "re.fullmatch",
+          "self._valid",
+          "set",
+          "type"
+        ]
+      },
+      {
+        "name": "create_project",
+        "line": 498,
+        "end": 504,
+        "calls": ["self._transaction", "self.public_project", "super", "super().create_project"]
+      },
+      {
+        "name": "public_project",
+        "line": 506,
+        "end": 516,
+        "calls": [
+          "UUID.fullmatch",
+          "self._db.execute",
+          "self._db.execute('SELECT public FROM public_projects WHERE internal=?', (internal,)).fetchone",
+          "self._transaction",
+          "self.revision",
+          "str",
+          "uuid4"
+        ]
+      },
+      {
+        "name": "_project",
+        "line": 518,
+        "end": 526,
+        "calls": [
+          "UUID.fullmatch",
+          "fault",
+          "isinstance",
+          "self._db.execute",
+          "self._db.execute('SELECT internal FROM public_projects WHERE public=?', (public,)).fetchone"
+        ]
+      },
+      {
+        "name": "project_get",
+        "line": 528,
+        "end": 537,
+        "calls": [
+          "self._project",
+          "self._transaction",
+          "self.revision",
+          "self.snapshot",
+          "self.vector"
+        ]
+      },
+      {
+        "name": "put_blob",
+        "line": 539,
+        "end": 549,
+        "calls": [
+          "canonical",
+          "digest",
+          "encoded.encode",
+          "fault",
+          "len",
+          "self._db.execute",
+          "self._project",
+          "self._transaction"
+        ]
+      },
+      {
+        "name": "blob",
+        "line": 551,
+        "end": 561,
+        "calls": [
+          "digest",
+          "fault",
+          "json.loads",
+          "self._db.execute",
+          "self._db.execute('SELECT payload FROM job_blobs WHERE project=? AND ref=?', (project, ref)).fetchone",
+          "self._project"
+        ]
+      },
+      {
+        "name": "_plan",
+        "line": 564,
+        "end": 580,
+        "calls": ["fault", "isinstance", "plan.get", "set"]
+      },
+      {
+        "name": "prepare_plan",
+        "line": 582,
+        "end": 626,
+        "calls": [
+          "UUID.fullmatch",
+          "canonical",
+          "complete.items",
+          "digest",
+          "fault",
+          "isinstance",
+          "self._application",
+          "self._db.execute",
+          "self._plan",
+          "self._project",
+          "self.load_snapshot",
+          "self.revision",
+          "self.snapshot",
+          "self.state",
+          "str",
+          "super",
+          "super().commit",
+          "uuid4"
+        ]
+      },
+      {
+        "name": "preview_changeset",
+        "line": 628,
+        "end": 650,
+        "calls": ["preview_changeset"]
+      },
+      {
+        "name": "changeset_diff_page",
+        "line": 652,
+        "end": 676,
+        "calls": ["diff_page"]
+      },
+      {
+        "name": "confirm_changeset",
+        "line": 678,
+        "end": 698,
+        "calls": ["confirm"]
+      },
+      {
+        "name": "create_changeset_job",
+        "line": 700,
+        "end": 723,
+        "calls": ["self.create_job"]
+      },
+      {
+        "name": "_definitions",
+        "line": 725,
+        "end": 740,
+        "calls": [
+          "isinstance",
+          "json.loads",
+          "output.append",
+          "snap['dependencyVector'].get",
+          "value.get"
+        ]
+      },
+      {
+        "name": "_dependencies",
+        "line": 742,
+        "end": 774,
+        "calls": [
+          "capability.startswith",
+          "fault",
+          "json.loads",
+          "json.loads(saved[0]).items",
+          "selected['sets'].items",
+          "self._db.execute",
+          "self._db.execute('SELECT manifests FROM job_results WHERE id=?', (identity,)).fetchone",
+          "self._definitions",
+          "self.contract.derive_dependencies",
+          "self.public_project",
+          "self.result_get",
+          "snap['dependencyVector'].get",
+          "vector.update"
+        ]
+      },
+      {
+        "name": "_job_prepared_plan",
+        "line": 776,
+        "end": 852,
+        "calls": [
+          "UUID.fullmatch",
+          "accepted_plan",
+          "canonical",
+          "digest",
+          "fault",
+          "isinstance",
+          "json.loads",
+          "plan.items",
+          "re.fullmatch",
+          "self._db.execute",
+          "self._db.execute('SELECT * FROM job_confirmations WHERE project=? AND id=?', (project, confirmation_ref)).fetchone",
+          "self._db.execute('SELECT * FROM job_plans WHERE project=? AND ref=?', (project, input_['preparedPlanRef'])).fetchone",
+          "self._plan",
+          "set"
+        ]
+      },
+      {
+        "name": "create_job",
+        "line": 854,
+        "end": 1013,
+        "calls": [
+          "_acceptance_hook",
+          "canonical",
+          "capability.startswith",
+          "digest",
+          "fault",
+          "k.startswith",
+          "manifests.items",
+          "parameters.get",
+          "progress.update",
+          "self._accepted_job",
+          "self._db.execute",
+          "self._db.execute('SELECT * FROM operation_claims WHERE operation=?', (operation,)).fetchone",
+          "self._dependencies",
+          "self._job_prepared_plan",
+          "self._occupied_operation_evidence",
+          "self._project",
+          "self._project_snapshot",
+          "self._test_parameters",
+          "self._transaction",
+          "self._valid",
+          "self.blob",
+          "self.now_ms",
+          "self.put_blob",
+          "self.result_get",
+          "str",
+          "uuid4",
+          "vector.items"
+        ]
+      },
+      {
+        "name": "_accepted_job",
+        "line": 1015,
+        "end": 1078,
+        "calls": [
+          "any",
+          "canonical",
+          "context.get",
+          "digest",
+          "fault",
+          "json.loads",
+          "self._db.execute",
+          "self._db.execute('SELECT * FROM jobs WHERE id=?', (claim['job'],)).fetchone",
+          "self._job_prepared_plan",
+          "self._project",
+          "self._project_snapshot",
+          "self.blob",
+          "self.get_job",
+          "supplied.items"
+        ]
+      },
+      {
+        "name": "get_job",
+        "line": 1080,
+        "end": 1106,
+        "calls": [
+          "any",
+          "digest",
+          "fault",
+          "json.loads",
+          "self._db.execute",
+          "self._db.execute('SELECT * FROM jobs WHERE id=?', (identity,)).fetchone",
+          "self._project",
+          "self._valid"
+        ]
+      },
+      {
+        "name": "job_context",
+        "line": 1108,
+        "end": 1118,
+        "calls": ["digest", "fault", "json.loads", "row.fetchone", "self._db.execute", "self._job"]
+      },
+      {
+        "name": "_job",
+        "line": 1120,
+        "end": 1124,
+        "calls": [
+          "fault",
+          "self._db.execute",
+          "self._db.execute('SELECT project FROM jobs WHERE id=?', (identity,)).fetchone",
+          "self.get_job"
+        ]
+      },
+      {
+        "name": "_save",
+        "line": 1126,
+        "end": 1129,
+        "calls": ["canonical", "self._db.execute", "self._valid"]
+      },
+      {
+        "name": "_transition",
+        "line": 1131,
+        "end": 1145,
+        "calls": [
+          "fault",
+          "job.update",
+          "max",
+          "self._save",
+          "self.contract.permits_transition",
+          "self.now_ms"
+        ]
+      },
+      {
+        "name": "start_job",
+        "line": 1147,
+        "end": 1149,
+        "calls": ["self._job", "self._transaction", "self._transition"]
+      },
+      {
+        "name": "cancel_job",
+        "line": 1151,
+        "end": 1172,
+        "calls": ["self._transaction", "self._transition", "self.get_job"]
+      },
+      {
+        "name": "fail_job",
+        "line": 1174,
+        "end": 1180,
+        "calls": ["self._finish_unsuccessful", "self._job", "self._transaction", "self._valid"]
+      },
+      {
+        "name": "cancelled_job",
+        "line": 1182,
+        "end": 1187,
+        "calls": ["self._finish_unsuccessful", "self._job", "self._transaction"]
+      },
+      {
+        "name": "_finish_unsuccessful",
+        "line": 1189,
+        "end": 1199,
+        "calls": [
+          "self._db.execute",
+          "self._db.execute('SELECT run FROM jobs WHERE id=?', (job['jobId'],)).fetchone",
+          "self._finish_run_once",
+          "self._marker_dto",
+          "self._project",
+          "self._transition",
+          "self.marker",
+          "self.progress"
+        ]
+      },
+      {
+        "name": "_marker_dto",
+        "line": 1202,
+        "end": 1208,
+        "calls": []
+      },
+      {
+        "name": "operation_get",
+        "line": 1210,
+        "end": 1225,
+        "calls": [
+          "fault",
+          "self._db.execute",
+          "self._db.execute('SELECT project FROM operation_claims WHERE operation=?', (operation,)).fetchone",
+          "self._marker_dto",
+          "self._project",
+          "self.marker"
+        ]
+      },
+      {
+        "name": "commit_job",
+        "line": 1227,
+        "end": 1272,
+        "calls": [
+          "commit",
+          "fault",
+          "hook",
+          "plan.items",
+          "self._application",
+          "self._job",
+          "self._marker_dto",
+          "self._project",
+          "self._publish_job",
+          "self._transition",
+          "self.job_context",
+          "self.revision",
+          "str",
+          "super",
+          "super().commit",
+          "uuid4"
+        ]
+      },
+      {
+        "name": "finish_read_job",
+        "line": 1274,
+        "end": 1284,
+        "calls": [
+          "fault",
+          "hook",
+          "self._job",
+          "self._publish_job",
+          "self._transaction",
+          "self._transition"
+        ]
+      },
+      {
+        "name": "start_job_run",
+        "line": 1286,
+        "end": 1315,
+        "calls": [
+          "config.get",
+          "fault",
+          "isinstance",
+          "json.loads",
+          "self._db.execute",
+          "self._db.execute('SELECT run FROM jobs WHERE id=?', (identity,)).fetchone",
+          "self._job",
+          "self._project",
+          "self._run",
+          "self._transaction",
+          "self.job_context",
+          "self.put_blob",
+          "super",
+          "super().start_run",
+          "type"
+        ]
+      },
+      {
+        "name": "commit_job_round",
+        "line": 1317,
+        "end": 1358,
+        "calls": [
+          "fault",
+          "hook",
+          "len",
+          "max",
+          "min",
+          "parameters.get",
+          "range",
+          "self._db.execute",
+          "self._db.execute('SELECT run FROM jobs WHERE id=?', (identity,)).fetchone",
+          "self._job",
+          "self._save",
+          "self._transaction",
+          "self.job_context",
+          "self.load_snapshot",
+          "self.now_ms",
+          "self.progress",
+          "str",
+          "super",
+          "super().commit_round",
+          "uuid4"
+        ]
+      },
+      {
+        "name": "_finish_run_once",
+        "line": 1360,
+        "end": 1366,
+        "calls": [
+          "canonical",
+          "fault",
+          "self._db.execute",
+          "self._db.execute('SELECT * FROM run_terminal WHERE run=?', (run,)).fetchone",
+          "super",
+          "super().finish_run"
+        ]
+      },
+      {
+        "name": "finish_job_run",
+        "line": 1368,
+        "end": 1442,
+        "calls": [
+          "bool",
+          "fault",
+          "hook",
+          "isinstance",
+          "json.loads",
+          "len",
+          "rows.append",
+          "self._db.execute",
+          "self._db.execute('SELECT run FROM jobs WHERE id=?', (identity,)).fetchone",
+          "self._finish_run_once",
+          "self._job",
+          "self._publish_job",
+          "self._round_audit_cells",
+          "self._run",
+          "self._transaction",
+          "self._transition",
+          "self.history",
+          "self.load_snapshot",
+          "self.progress",
+          "self.put_blob",
+          "state.get",
+          "str",
+          "uuid4"
+        ]
+      },
+      {
+        "name": "reconcile_jobs",
+        "line": 1444,
+        "end": 1471,
+        "calls": [
+          "recovered.append",
+          "self._db.execute",
+          "self._db.execute('SELECT id FROM jobs').fetchall",
+          "self._finish_unsuccessful",
+          "self._job",
+          "self._transaction"
+        ]
+      },
+      {
+        "name": "_set_reasons",
+        "line": 1473,
+        "end": 1488,
+        "calls": [
+          "dict",
+          "expanded.setdefault",
+          "manifests.items",
+          "new.get",
+          "new.keys",
+          "now.get",
+          "old.get",
+          "old.keys",
+          "reasons",
+          "self.state",
+          "self.vector"
+        ]
+      },
+      {
+        "name": "_invalidate",
+        "line": 1490,
+        "end": 1514,
+        "calls": [
+          "canonical",
+          "json.loads",
+          "self._db.execute",
+          "self._db.execute(\"SELECT 1 FROM sqlite_master WHERE type='table' AND name='job_results'\").fetchone",
+          "self._db.execute('SELECT jr.id,jr.manifests,r.dependencies,r.kind FROM job_results jr JOIN results r ON r.id=jr.id WHERE r.project=?', (project,)).fetchall",
+          "self._set_reasons",
+          "super",
+          "super()._invalidate"
+        ]
+      },
+      {
+        "name": "_publish_job",
+        "line": 1516,
+        "end": 1604,
+        "calls": [
+          "canonical",
+          "canonical(rows).encode",
+          "fault",
+          "ids.add",
+          "isinstance",
+          "keys.add",
+          "len",
+          "self._current_key",
+          "self._db.execute",
+          "self._project",
+          "self._set_reasons",
+          "self._valid",
+          "self.job_context",
+          "self.now_ms",
+          "self.revision",
+          "set",
+          "sorted",
+          "super",
+          "super().publish",
+          "{'test.read': 'test', 'test.atomic': 'receipt', 'test.rounds': 'scenario', 'query.execute': 'query', 'reasoning.execute': 'reasoning', 'validation.execute': 'validation', 'behavior.test': 'behavior', 'scenario.run': 'scenario', 'mapping.commit': 'receipt', 'changeset.commit': 'receipt'}.get"
+        ]
+      },
+      {
+        "name": "_current_key",
+        "line": 1607,
+        "end": 1608,
+        "calls": ["canonical"]
+      },
+      {
+        "name": "result_get",
+        "line": 1610,
+        "end": 1645,
+        "calls": [
+          "digest",
+          "fault",
+          "json.loads",
+          "json.loads(row['manifests']).items",
+          "self._db.execute",
+          "self._db.execute('SELECT * FROM job_results WHERE id=?', (identity,)).fetchone",
+          "self._db.execute('SELECT 1 FROM job_current WHERE result=?', (identity,)).fetchone",
+          "self._project",
+          "self._project_snapshot",
+          "self._valid",
+          "self.get_job",
+          "self.result"
+        ]
+      },
+      {
+        "name": "result_current",
+        "line": 1647,
+        "end": 1670,
+        "calls": [
+          "fault",
+          "self._current_key",
+          "self._db.execute",
+          "self._db.execute('SELECT result FROM job_current WHERE key=?', (self._current_key(project, kind, definition, scope, parameters, implementation),)).fetchone",
+          "self._project",
+          "self._valid",
+          "self.result_get"
+        ]
+      },
+      {
+        "name": "_projection_room",
+        "line": 1672,
+        "end": 1683,
+        "calls": [
+          "fault",
+          "self._db.execute",
+          "self._db.execute('SELECT count(*) FROM job_cursors').fetchone",
+          "self.now_ms"
+        ]
+      },
+      {
+        "name": "_cursor",
+        "line": 1685,
+        "end": 1693,
+        "calls": [
+          "canonical",
+          "fault",
+          "json.loads",
+          "self._db.execute",
+          "self._db.execute('SELECT * FROM job_cursors WHERE id=?', (token,)).fetchone",
+          "self.now_ms"
+        ]
+      },
+      {
+        "name": "_new_cursor",
+        "line": 1695,
+        "end": 1718,
+        "calls": [
+          "canonical",
+          "self._db.execute",
+          "self._db.execute('SELECT id FROM job_cursors WHERE kind=? AND binding=? AND size=? AND position=? AND expires>? ORDER BY created,id LIMIT 1', (kind, canonical(binding), size, canonical(position), self.now_ms())).fetchone",
+          "self._projection_room",
+          "self.now_ms",
+          "str",
+          "uuid4"
+        ]
+      },
+      {
+        "name": "_result_rows",
+        "line": 1720,
+        "end": 1729,
+        "calls": ["fault", "isinstance", "self._check_summary", "self.result", "self.result_get"]
+      },
+      {
+        "name": "_check_summary",
+        "line": 1731,
+        "end": 1796,
+        "calls": [
+          "any",
+          "consumption.get",
+          "evidence.get",
+          "fault",
+          "json.loads",
+          "len",
+          "payload[0].get",
+          "r.get",
+          "row.get",
+          "self._project",
+          "self._round_audit_cells",
+          "self.blob",
+          "self.contract.validate",
+          "self.get_job",
+          "self.history",
+          "self.load_snapshot",
+          "state.get",
+          "sum",
+          "type",
+          "zip"
+        ]
+      },
+      {
+        "name": "_round_audit_cells",
+        "line": 1798,
+        "end": 1819,
+        "calls": ["UUID.fullmatch", "fault", "self._run", "self.load_snapshot", "snapshot.get"]
+      },
+      {
+        "name": "result_page",
+        "line": 1821,
+        "end": 1854,
+        "calls": [
+          "fault",
+          "len",
+          "rows.append",
+          "self._cursor",
+          "self._new_cursor",
+          "self._result_rows",
+          "self._transaction",
+          "self._valid",
+          "self.contract.encoded_size"
+        ]
+      },
+      {
+        "name": "job_list",
+        "line": 1856,
+        "end": 1951,
+        "calls": [
+          "canonical",
+          "canonical(jobs).encode",
+          "fault",
+          "jobs.sort",
+          "json.loads",
+          "len",
+          "selected.append",
+          "self._cursor",
+          "self._db.execute",
+          "self._db.execute('SELECT * FROM job_lists WHERE id=?', (list_snapshot_id,)).fetchone",
+          "self._db.execute('SELECT count(*) FROM job_lists').fetchone",
+          "self._new_cursor",
+          "self._project",
+          "self._projection_room",
+          "self._transaction",
+          "self._valid",
+          "self.contract.encoded_size",
+          "self.now_ms",
+          "str",
+          "uuid4"
+        ]
+      },
+      {
+        "name": "pin_result",
+        "line": 1953,
+        "end": 1958,
+        "calls": ["fault", "self._db.execute", "self._transaction", "self.result"]
+      },
+      {
+        "name": "pin_report",
+        "line": 1960,
+        "end": 1976,
+        "calls": [
+          "canonical",
+          "fault",
+          "isinstance",
+          "len",
+          "old.fetchone",
+          "self._db.execute",
+          "self._project",
+          "self._transaction",
+          "self.pin_result",
+          "self.result_get",
+          "set",
+          "sorted"
+        ]
+      },
+      {
+        "name": "collect_cache",
+        "line": 1978,
+        "end": 1990,
+        "calls": ["self._db.execute", "self._transaction"]
+      }
+    ],
+    "packages/engine/src/ontolearn_engine/project/domain_changesets.py": [
+      {
+        "name": "fail",
+        "line": 31,
+        "end": 35,
+        "calls": ["fault"]
+      },
+      {
+        "name": "_host",
+        "line": 38,
+        "end": 42,
+        "calls": ["UUID.fullmatch", "any", "fail", "isinstance"]
+      },
+      {
+        "name": "pack",
+        "line": 45,
+        "end": 57,
+        "calls": ["json.loads", "list"]
+      },
+      {
+        "name": "unpack",
+        "line": 60,
+        "end": 85,
+        "calls": ["ChangePreview", "canonical", "fail", "isinstance", "set", "tuple"]
+      },
+      {
+        "name": "_definition",
+        "line": 88,
+        "end": 107,
+        "calls": ["ValueError", "isinstance", "json.loads", "set", "store._definition", "value.get"]
+      },
+      {
+        "name": "supported",
+        "line": 110,
+        "end": 127,
+        "calls": ["ValueError", "_definition", "json.loads", "state_diff"]
+      },
+      {
+        "name": "_document",
+        "line": 130,
+        "end": 152,
+        "calls": [
+          "base64.b64encode",
+          "base64.b64encode(data).decode",
+          "canonical",
+          "canonical(items).encode",
+          "enumerate",
+          "fail",
+          "hashlib.sha256",
+          "hashlib.sha256(data).hexdigest",
+          "hashlib.sha256(raw).hexdigest",
+          "len",
+          "range",
+          "segments.append",
+          "values.append"
+        ]
+      },
+      {
+        "name": "_wire_room",
+        "line": 155,
+        "end": 159,
+        "calls": ["canonical", "canonical(result).encode", "fail", "len", "min"]
+      },
+      {
+        "name": "_page_room",
+        "line": 162,
+        "end": 178,
+        "calls": ["canonical", "canonical(sample).encode", "fail", "len", "min"]
+      },
+      {
+        "name": "_persist_segments",
+        "line": 181,
+        "end": 186,
+        "calls": ["_intern_blob", "hook", "refs.append"]
+      },
+      {
+        "name": "_intern_blob",
+        "line": 189,
+        "end": 194,
+        "calls": ["digest", "fail", "store.blob", "store.put_blob"]
+      },
+      {
+        "name": "_snapshot_id",
+        "line": 197,
+        "end": 204,
+        "calls": ["digest", "json.loads", "store.vector"]
+      },
+      {
+        "name": "_ready",
+        "line": 207,
+        "end": 221,
+        "calls": ["unpack"]
+      },
+      {
+        "name": "_evidence_state",
+        "line": 224,
+        "end": 229,
+        "calls": ["compensation.retirement_at", "compensation.trusted_snapshot", "sorted"]
+      },
+      {
+        "name": "_unsupported_item",
+        "line": 232,
+        "end": 233,
+        "calls": []
+      },
+      {
+        "name": "impact",
+        "line": 236,
+        "end": 375,
+        "calls": [
+          "ProjectTransactions",
+          "ProjectTransactions(store).reconcile",
+          "ValueError",
+          "_evidence_state",
+          "_unsupported_item",
+          "any",
+          "candidate.items",
+          "candidate.pop",
+          "compensation._changes",
+          "context['plan'].get",
+          "deepcopy",
+          "definitions.items",
+          "digest",
+          "entries.append",
+          "fail",
+          "isinstance",
+          "json.loads",
+          "left_records.get",
+          "len",
+          "list",
+          "map",
+          "new.get",
+          "now.get",
+          "old.get",
+          "right_records.get",
+          "set",
+          "singles.update",
+          "slots.items",
+          "slots.setdefault",
+          "slots.setdefault((fact['subject'], fact['predicate']), []).append",
+          "sorted",
+          "store._accepted_job",
+          "store._db.execute",
+          "store._db.execute('SELECT * FROM operation_claims WHERE operation=?', (target,)).fetchone",
+          "store._db.execute('SELECT context FROM jobs WHERE id=?', (marker['job'],)).fetchone",
+          "store._db.execute('SELECT operation,revision FROM commits WHERE project=? AND revision>? AND revision<=? ORDER BY revision', (internal, marker['revision'], base)).fetchall",
+          "store.marker",
+          "store.retirement_control",
+          "store.state",
+          "supported",
+          "unpack",
+          "value.get"
+        ]
+      },
+      {
+        "name": "preview_changeset",
+        "line": 378,
+        "end": 498,
+        "calls": [
+          "ProjectTransactions",
+          "_document",
+          "_host",
+          "_intern_blob",
+          "_page_room",
+          "_persist_segments",
+          "_ready",
+          "_snapshot_id",
+          "_unsupported_item",
+          "_verify_document",
+          "_verify_plan",
+          "_wire_room",
+          "canonical",
+          "digest",
+          "fail",
+          "hook",
+          "impact",
+          "json.loads",
+          "len",
+          "pack",
+          "store._application",
+          "store._db.execute",
+          "store._db.execute('SELECT * FROM job_plans WHERE ref=?', (ref,)).fetchone",
+          "store._db.execute('SELECT project,payload FROM job_details WHERE id=?', (identity,)).fetchone",
+          "store._project",
+          "store._valid",
+          "store.revision",
+          "store.snapshot",
+          "supported",
+          "transactions._fingerprint",
+          "transactions.preview",
+          "transactions.preview_undo",
+          "tuple"
+        ]
+      },
+      {
+        "name": "_envelope",
+        "line": 501,
+        "end": 521,
+        "calls": [
+          "_host",
+          "_verify_document",
+          "_verify_plan",
+          "digest",
+          "fail",
+          "json.loads",
+          "store._db.execute",
+          "unpack",
+          "value.get"
+        ]
+      },
+      {
+        "name": "_verify_document",
+        "line": 524,
+        "end": 533,
+        "calls": ["_document", "digest", "fail", "store.blob", "zip"]
+      },
+      {
+        "name": "_verify_plan",
+        "line": 536,
+        "end": 581,
+        "calls": [
+          "ProjectTransactions._fingerprint",
+          "_host",
+          "_verify_document",
+          "canonical",
+          "digest",
+          "fail",
+          "set",
+          "store._project",
+          "store._project_snapshot",
+          "store.blob",
+          "supported",
+          "unpack"
+        ]
+      },
+      {
+        "name": "_binding",
+        "line": 584,
+        "end": 594,
+        "calls": ["envelope.get", "envelope.get('preview', {}).get"]
+      },
+      {
+        "name": "diff_page",
+        "line": 597,
+        "end": 675,
+        "calls": [
+          "_binding",
+          "_envelope",
+          "canonical",
+          "canonical(candidate).encode",
+          "chosen.append",
+          "fail",
+          "len",
+          "min",
+          "store._cursor",
+          "store._new_cursor",
+          "store._transaction",
+          "store._valid",
+          "store.blob"
+        ]
+      },
+      {
+        "name": "_receipt",
+        "line": 678,
+        "end": 724,
+        "calls": [
+          "ProjectTransactions._fingerprint",
+          "digest",
+          "fail",
+          "json.loads",
+          "set",
+          "store._db.execute",
+          "store._db.execute('SELECT * FROM job_confirmations WHERE project=? AND id=?', (project, confirmation)).fetchone",
+          "store._db.execute('SELECT * FROM job_details WHERE project=? AND id=?', (project, confirmation)).fetchone",
+          "store._valid",
+          "unpack"
+        ]
+      },
+      {
+        "name": "confirm",
+        "line": 727,
+        "end": 839,
+        "calls": [
+          "ProjectTransactions",
+          "ProjectTransactions(store).preview",
+          "ProjectTransactions._fingerprint",
+          "_binding",
+          "_envelope",
+          "_receipt",
+          "canonical",
+          "digest",
+          "fail",
+          "hook",
+          "isinstance",
+          "json.loads",
+          "len",
+          "receipt_ids.append",
+          "seen.add",
+          "set",
+          "store._application",
+          "store._cursor",
+          "store._db.execute",
+          "store._db.execute('SELECT id FROM job_confirmations WHERE project=? AND plan_ref=?', (project, ref)).fetchall",
+          "store._db.execute('SELECT size FROM job_cursors WHERE id=?', (token,)).fetchone",
+          "store._valid",
+          "store.revision",
+          "str",
+          "unpack",
+          "uuid4",
+          "value.get",
+          "value.get('result', {}).get"
+        ]
+      },
+      {
+        "name": "accepted_plan",
+        "line": 842,
+        "end": 872,
+        "calls": [
+          "_receipt",
+          "_verify_plan",
+          "canonical",
+          "envelope.get",
+          "fail",
+          "json.loads",
+          "store._db.execute",
+          "store._db.execute('SELECT * FROM job_plans WHERE project=? AND ref=?', (project, input_['preparedPlanRef'])).fetchone",
+          "store.retirement_control",
+          "store.revision",
+          "store.state"
+        ]
+      },
+      {
+        "name": "commit",
+        "line": 875,
+        "end": 888,
+        "calls": [
+          "ProjectTransactions",
+          "ProjectTransactions(store).commit",
+          "accepted_plan",
+          "fail",
+          "unpack"
+        ]
+      }
+    ],
+    "packages/engine/src/ontolearn_engine/project/transactions.py": [
+      {
+        "name": "_records",
+        "line": 90,
+        "end": 95,
+        "calls": ["state['mappingState'].items"]
+      },
+      {
+        "name": "state_diff",
+        "line": 98,
+        "end": 104,
+        "calls": ["_records", "list", "new.get", "new.keys", "old.get", "old.keys", "sorted"]
+      },
+      {
+        "name": "__init__",
+        "line": 29,
+        "end": 32,
+        "calls": ["super", "super().__init__"]
+      },
+      {
+        "name": "identity",
+        "line": 51,
+        "end": 65,
+        "calls": ["digest", "json.loads"]
+      },
+      {
+        "name": "diff",
+        "line": 68,
+        "end": 80,
+        "calls": ["changes.extend", "json.loads", "sorted", "state_diff", "tuple"]
+      },
+      {
+        "name": "summary",
+        "line": 83,
+        "end": 87,
+        "calls": ["len", "sum"]
+      },
+      {
+        "name": "__init__",
+        "line": 112,
+        "end": 113,
+        "calls": []
+      },
+      {
+        "name": "_control",
+        "line": 115,
+        "end": 116,
+        "calls": ["canonical", "self.store.retirement_control"]
+      },
+      {
+        "name": "_plan",
+        "line": 119,
+        "end": 123,
+        "calls": ["ValueError", "canonical", "isinstance", "json.loads", "set"]
+      },
+      {
+        "name": "_fingerprint",
+        "line": 126,
+        "end": 144,
+        "calls": ["digest", "json.loads", "plan.get"]
+      },
+      {
+        "name": "preview",
+        "line": 146,
+        "end": 178,
+        "calls": [
+          "ChangePreview",
+          "canonical",
+          "self._control",
+          "self._plan",
+          "self.store._transaction",
+          "self.store.commit",
+          "self.store.state",
+          "str",
+          "uuid4"
+        ]
+      },
+      {
+        "name": "reconcile",
+        "line": 180,
+        "end": 199,
+        "calls": [
+          "Conflict",
+          "canonical",
+          "json.loads",
+          "json.loads(marker['plan']).get",
+          "self._fingerprint",
+          "self._snapshot",
+          "self.store.marker"
+        ]
+      },
+      {
+        "name": "commit",
+        "line": 201,
+        "end": 240,
+        "calls": [
+          "Conflict",
+          "ProjectFault",
+          "canonical",
+          "json.loads",
+          "self._control",
+          "self.reconcile",
+          "self.store._transaction",
+          "self.store.commit",
+          "self.store.state"
+        ]
+      },
+      {
+        "name": "checkpoint",
+        "line": 242,
+        "end": 247,
+        "calls": ["ValueError", "self.store.load_snapshot", "self.store.snapshot"]
+      },
+      {
+        "name": "_snapshot",
+        "line": 249,
+        "end": 251,
+        "calls": ["self.store._project_snapshot"]
+      },
+      {
+        "name": "preview_undo",
+        "line": 253,
+        "end": 283,
+        "calls": [
+          "':'.join",
+          "KeyError",
+          "ProjectFault",
+          "_records",
+          "current_records.get",
+          "self._snapshot",
+          "self.preview",
+          "self.store._transaction",
+          "self.store.marker",
+          "self.store.revision",
+          "self.store.state",
+          "state_diff",
+          "tuple"
+        ]
+      },
+      {
+        "name": "preview_restore",
+        "line": 285,
+        "end": 308,
+        "calls": [
+          "ProjectFault",
+          "later.extend",
+          "self._snapshot",
+          "self.preview",
+          "self.store._transaction",
+          "self.store.operation_list",
+          "self.store.revision",
+          "tuple"
+        ]
+      }
+    ],
+    "packages/engine/src/ontolearn_engine/project/compensation.py": [
+      {
+        "name": "_records",
+        "line": 13,
+        "end": 22,
+        "calls": ["state.get", "state['mappingState'].items"]
+      },
+      {
+        "name": "_changes",
+        "line": 25,
+        "end": 27,
+        "calls": ["_records", "new.get", "new.keys", "old.get", "old.keys"]
+      },
+      {
+        "name": "validate_selector",
+        "line": 30,
+        "end": 42,
+        "calls": ["ValueError", "isinstance", "selector.get", "set"]
+      },
+      {
+        "name": "trusted_snapshot",
+        "line": 45,
+        "end": 70,
+        "calls": [
+          "Conflict",
+          "digest",
+          "reasons",
+          "snap['state']['mappingState'].items",
+          "store._db.execute",
+          "store._db.execute('SELECT 1 FROM commits c JOIN commit_evidence e ON e.project=c.project AND e.operation=c.operation WHERE c.project=? AND ((e.after_snapshot=? AND c.revision=?) OR (e.before_snapshot=? AND c.revision=?)) LIMIT 1', (project, identity, snap['projectRevision'], identity, snap['projectRevision'] + 1)).fetchone",
+          "store._project_snapshot",
+          "store.revision",
+          "store.state",
+          "store.vector"
+        ]
+      },
+      {
+        "name": "retirement_at",
+        "line": 73,
+        "end": 133,
+        "calls": [
+          "Conflict",
+          "digest",
+          "history.get",
+          "json.loads",
+          "plan.get",
+          "set",
+          "store._db.execute",
+          "store._db.execute('SELECT c.*,e.before_snapshot,e.after_snapshot FROM commits c LEFT JOIN commit_evidence e ON c.project=e.project AND c.operation=e.operation WHERE c.project=? AND c.revision<=? ORDER BY c.revision', (project, revision + 1)).fetchall",
+          "store._project_snapshot",
+          "store.marker",
+          "tuple"
+        ]
+      },
+      {
+        "name": "_with_retirements",
+        "line": 136,
+        "end": 140,
+        "calls": ["retirement_at", "sorted"]
+      },
+      {
+        "name": "resolve",
+        "line": 143,
+        "end": 201,
+        "calls": [
+          "Conflict",
+          "KeyError",
+          "_changes",
+          "_records",
+          "_with_retirements",
+          "conflicts.update",
+          "deepcopy",
+          "new.get",
+          "now.get",
+          "now.items",
+          "now.pop",
+          "retirement_at",
+          "sorted",
+          "store._db.execute",
+          "store._db.execute('SELECT c.operation,e.before_snapshot,e.after_snapshot FROM commits c LEFT JOIN commit_evidence e ON c.project=e.project AND c.operation=e.operation WHERE c.project=? AND c.revision>? ORDER BY c.revision', (project, marker['revision'])).fetchall",
+          "store.marker",
+          "store.revision",
+          "trusted_snapshot",
+          "validate_selector"
+        ]
+      }
+    ],
+    "T02:packages/engine/src/ontolearn_engine/ontology/__init__.py": [],
+    "T02:packages/engine/src/ontolearn_engine/ontology/model.py": [
+      {
+        "name": "_unique_tuple",
+        "line": 88,
+        "end": 95,
+        "calls": ["OntologyError", "isinstance", "len", "set"]
+      },
+      {
+        "name": "validate",
+        "line": 98,
+        "end": 190,
+        "calls": [
+          "OntologyError",
+          "_unique_tuple",
+          "any",
+          "entities.get",
+          "fact.triple",
+          "getattr",
+          "iri",
+          "isinstance",
+          "len",
+          "re.fullmatch",
+          "str",
+          "term",
+          "text.strip",
+          "type",
+          "v.strip"
+        ]
+      },
+      {
+        "name": "__init__",
+        "line": 23,
+        "end": 26,
+        "calls": ["super", "super().__init__"]
+      },
+      {
+        "name": "__post_init__",
+        "line": 35,
+        "end": 42,
+        "calls": ["OntologyError", "ValueError", "iri", "term", "term(self.object).n3"]
+      },
+      {
+        "name": "triple",
+        "line": 69,
+        "end": 70,
+        "calls": ["Triple"]
+      }
+    ],
+    "T02:packages/engine/src/ontolearn_engine/ontology/service.py": [
+      {
+        "name": "references",
+        "line": 38,
+        "end": 63,
+        "calls": [
+          "Reference",
+          "getattr",
+          "result.add",
+          "set",
+          "sorted",
+          "target.startswith",
+          "tuple"
+        ]
+      },
+      {
+        "name": "deletion_impact",
+        "line": 66,
+        "end": 70,
+        "calls": ["OntologyError", "references", "tuple", "validate"]
+      },
+      {
+        "name": "rdf_triples",
+        "line": 73,
+        "end": 100,
+        "calls": [
+          "Literal",
+          "Literal(text, lang=language or None).n3",
+          "Triple",
+          "fact.triple",
+          "getattr",
+          "sorted",
+          "str",
+          "triples.add",
+          "tuple",
+          "validate"
+        ]
+      },
+      {
+        "name": "snapshot_digest",
+        "line": 103,
+        "end": 110,
+        "calls": [
+          "asdict",
+          "hashlib.sha256",
+          "hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest",
+          "json.dumps",
+          "json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode",
+          "sorted"
+        ]
+      },
+      {
+        "name": "change_preview",
+        "line": 143,
+        "end": 216,
+        "calls": [
+          "EntityChange",
+          "OntologyError",
+          "Preview",
+          "all",
+          "deletion_impact",
+          "entities.copy",
+          "entities.get",
+          "entities.values",
+          "impact.update",
+          "isinstance",
+          "len",
+          "original.get",
+          "rdf_triples",
+          "replace",
+          "set",
+          "snapshot_digest",
+          "sorted",
+          "touched.add",
+          "tuple",
+          "validate"
+        ]
+      },
+      {
+        "name": "require_current",
+        "line": 132,
+        "end": 140,
+        "calls": ["OntologyError", "snapshot_digest", "validate"]
+      }
+    ],
+    "T02:packages/engine/src/ontolearn_engine/ontology/source_projection.py": [
+      {
+        "name": "_validated_source",
+        "line": 77,
+        "end": 113,
+        "calls": [
+          "OntologyError",
+          "Store._snapshot_state",
+          "digest",
+          "family",
+          "isinstance",
+          "set",
+          "source['dependencyVector'].items",
+          "type"
+        ]
+      },
+      {
+        "name": "bind_rdf_projection",
+        "line": 116,
+        "end": 188,
+        "calls": [
+          "BoundRdfProjection",
+          "DefinitionReference",
+          "DefinitionSource",
+          "FactSource",
+          "OntologyError",
+          "StatementSource",
+          "Triple",
+          "_validated_source",
+          "definitions.append",
+          "digest",
+          "edges.add",
+          "enumerate",
+          "facts.append",
+          "isinstance",
+          "json.loads",
+          "rdf_triples",
+          "set",
+          "sorted",
+          "statements.append",
+          "tuple",
+          "value.get"
+        ]
+      },
+      {
+        "name": "require_source",
+        "line": 62,
+        "end": 65,
+        "calls": ["OntologyError", "_validated_source"]
+      },
+      {
+        "name": "removed_sources",
+        "line": 67,
+        "end": 74,
+        "calls": ["OntologyError", "preview.require_current", "set", "tuple"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "kind": "static proposed fixture only; no Store/T02 construction or execution",
+  "source": {
+    "project": "00000000-0000-4000-8000-000000000001",
+    "projectRevision": 1,
+    "dependencyVector": {
+      "ontology:demo": 1,
+      "facts:asserted": 1
+    },
+    "state": {
+      "definitions": [
+        {
+          "layer": "ontology",
+          "id": "demo",
+          "payload": "{\"entityMetadata\":{\"entities\":{\"urn:example:Thing\":{\"definitions\":[[\"真实业务定义\",\"zh\"]],\"examples\":[\"业务示例\"],\"identifier\":\"Thing\",\"labels\":[[\"事项\",\"zh\"]],\"synonyms\":[\"别名\"]},\"urn:example:item\":{\"definitions\":[[\"真实业务定义\",\"zh\"]],\"examples\":[\"业务示例\"],\"identifier\":\"item\",\"labels\":[[\"事项甲\",\"zh\"]],\"synonyms\":[\"别名\"]},\"urn:example:name\":{\"definitions\":[[\"真实业务定义\",\"zh\"]],\"examples\":[\"业务示例\"],\"identifier\":\"name\",\"labels\":[[\"名称\",\"zh\"]],\"synonyms\":[\"别名\"]}},\"entityMetadataVersion\":1},\"triples\":[{\"object\":\"<http://www.w3.org/2000/01/rdf-schema#Class>\",\"predicate\":\"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\",\"subject\":\"urn:example:Thing\"},{\"object\":\"<http://www.w3.org/2002/07/owl#DatatypeProperty>\",\"predicate\":\"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\",\"subject\":\"urn:example:name\"},{\"object\":\"<urn:example:Thing>\",\"predicate\":\"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\",\"subject\":\"urn:example:item\"},{\"object\":\"\\\"事项\\\"@zh\",\"predicate\":\"http://www.w3.org/2000/01/rdf-schema#label\",\"subject\":\"urn:example:Thing\"},{\"object\":\"\\\"真实业务定义\\\"@zh\",\"predicate\":\"http://www.w3.org/2000/01/rdf-schema#comment\",\"subject\":\"urn:example:Thing\"},{\"object\":\"\\\"名称\\\"@zh\",\"predicate\":\"http://www.w3.org/2000/01/rdf-schema#label\",\"subject\":\"urn:example:name\"},{\"object\":\"\\\"真实业务定义\\\"@zh\",\"predicate\":\"http://www.w3.org/2000/01/rdf-schema#comment\",\"subject\":\"urn:example:name\"},{\"object\":\"\\\"事项甲\\\"@zh\",\"predicate\":\"http://www.w3.org/2000/01/rdf-schema#label\",\"subject\":\"urn:example:item\"},{\"object\":\"\\\"真实业务定义\\\"@zh\",\"predicate\":\"http://www.w3.org/2000/01/rdf-schema#comment\",\"subject\":\"urn:example:item\"}]}"
+        }
+      ],
+      "facts": [
+        {
+          "id": "1111111111111111111111111111111111111111111111111111111111111111",
+          "subject": "urn:example:item",
+          "predicate": "urn:example:name",
+          "object": "\"甲\"",
+          "owner": null,
+          "source_row": null,
+          "managed_value": null
+        }
+      ],
+      "mappingState": {}
+    }
+  },
+  "sourceCanonicalBytes": 2365,
+  "newObject": "\"乙\"",
+  "allFiveFieldsReal": true,
+  "rdfsValuePolicy": "all values and all supports preserved; no first value selection",
+  "stage": "after explicitly approved metadata profile upgrade; establish by actual original Store in future tests",
+  "budgetVariables": {
+    "B": 4096,
+    "HplusP": 24576,
+    "Q": 8,
+    "N": 8,
+    "S": 12,
+    "helperGroups": 20,
+    "t02Groups": 8,
+    "perHelperIriBytes": 8192,
+    "perHelperIriCount": 128,
+    "sampleTailReservationWork": 4194304
+  },
+  "limit": 67108864,
+  "notProvenByThisJSON": [
+    "actual DB chain/H/P/phase counts",
+    "actual parser calls and memory residency",
+    "real current_scope/human/physical binding",
+    "SnapshotShape/SourceBind exact actual counts",
+    "tail candidate/probe/control sufficiency",
+    "profile1 historical namespace activation preflight"
+  ],
+  "arithmetic": {
+    "helper": 2745088,
+    "validate": 280320,
+    "rdf": 537088,
+    "snapshotShape": 200576,
+    "sourceBindExtraExcludingAlreadyCountedRdf": 99136,
+    "tailReservationExample": 4194304,
+    "scalarStructureReserve": 32768,
+    "formula": "20*helper + 8*rdf + snapshotShape + sourceBindExtra + sampleTail + 32768",
+    "staticAccountedSubtotal": 63725248,
+    "limit": 67108864,
+    "semantics": "accounting target only; not proved whole actual callgraph or runtime upper bound"
+  }
+}
