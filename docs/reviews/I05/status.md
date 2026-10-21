@@ -1,5 +1,13 @@
 # I05 / B1 状态
 
+最新进度（C4 本地验收与独立实现审查完成，2026-10-21）：C3字符串身份缺陷 I05-C3-STRING-1 已在固定产品 `1a79731`／完整测试 `40c18ea` 修复，执行身份 `i05-finite-6`。主完整check672TS／1847Python（80.09秒）、sources12通过；独立73新增测试、522相关上下游、38新真实前门＋12旧反例及完整implementation历史隔离通过，独立实现审查范围Pass。新Mac/Linux各完整源包suite、7stdio＋17C4、B1各12原＋12fresh/28拒绝通过；Linux源码360项及新源码/包各2项真实native通过。专用同seed v2两旧包各19任务真实语义红（5结论5trace、max1错/min2假通过），独立新源码及两平台新包／Linux源码各19全绿（7结论8trace）。完整payload/rows/hash逐项核验。详见 [C4验收](integrated-c4-verification.md) 与 [原始证据](evidence/integrated-c4/manifest.json)。
+
+当前门禁：正在封存C4全范围执行输入与原件，并准备新完整候选／指定双方新审输入；实际新外审任务0，没有终态／全文报告，不push/PR/CI/合并。安全应用环境／总控租约尚未取得且无明确桌面时段，T06先排；不操作当前Mac GUI，不以内部Pass代指定双审，原Goal未完成。最新fetch实查develop仍 `5f910b5`。205执行输入主机／容器验收后未变、原64保护源不变；旧C1/C2/C3及首失败原件保留。Linux旧源码/pytest缓存失败与首包实际代码的区别已更正并保全，首包七模块与新源码相等，不误称首包运行finite5。
+
+当前有效责任：T01原Store／任务／canonical等路径及worker.py（2026-10-21T10:21:19.636646+08:00唯一交接，63c194ef…）；T03依赖/打包4；I06桌面6。I05本次只改授权七语义源及三直接测试，旧worker冻结只读构建。T05语义4文件尚未有效移交，Q6及其他产品决定仍待负责人。AGENTS78df保持dirty/未stage；当前共用指南SHA `ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff`，旧b24c4c全文是其前缀；§9及当前桌面限制不变。
+
+以下为历史进度，旧通过数/责任/等待描述不覆盖以上现状。
+
 最新进度（C3，2026-10-21）：确定性 witness 修复产品 `69598f3`、完整测试 `b045690`，语义身份 `i05-finite-5`。完整check 672 TS / 1774 Python、sources12；新Mac/Linux包各7真实stdio＋17 C4，完整B1各12原＋12fresh/28拒绝；隔离Linux新源码2项23.6秒、新包2项25.0秒真实bridge/native均通过。独立旧红新绿、6seed完整结果、212项上下游及8新worker/stdio＋1旧producer验证通过，独立审查在C3变化范围Pass。全部204执行输入主机/容器零漂移、原64保护源未变。见 [C3验收](integrated-c3-verification.md) 与 [原始证据](evidence/integrated-c3/manifest.json)。
 
 当前门禁：C3证据独立审计通过，221成员、完整原生载荷、源码恢复及204/64绑定逐项实核一致；candidate-3.json记录全范围冻结head。两指定模型的新全范围C3任务实际仍为0，无终态/全文报告、无push/PR/CI/合并。安全应用环境未核验且无明确桌面时段，总控先排T06；权限full access不放宽桌面限制，不以CLI替代指定应用审查。原Goal未完成。刚fetch实际develop仍 `5f910b5`；后续若基线/执行/验收变化须重新确认候选与对应门禁。C2封口后新basis反例是真实开发阻断，不伪造C2第三方NotPass；原清单和输入字节保留。

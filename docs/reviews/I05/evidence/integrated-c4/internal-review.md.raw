@@ -1,0 +1,141 @@
+# I05 C4 字符串身份修复独立实现审查
+
+2026-10-21，semantic_bridge。
+
+**结论：本次固定 C4 字符串修复范围 Pass；I05-C3-STRING-1 已由独立旧红/新绿、真实 worker/stdio 与历史隔离重新验证关闭。未发现本次变更的新增阻断反例。** 本报告绑定最终产品源 `1a79731091e671c497824c94e12dae34a4e8609b`。它不替代指定双模型全范围外审、主任务全check、源码/包/B1/native或发布门，不宣布父I05通过。
+
+## 1. 授权、固定源与执行环境
+
+主线只读：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation`。独立写入与执行根：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-bridge/build/c4-independent/`。
+
+实际全文读回主线 `docs/reviews/I05/c4-string-repair-authorization/I05-string-term-repair-authorization.md.raw`，3763字节，SHA256 `88f9116c8a10216b053b6235da28cf82c0eb30fe9e5a17c146474afa35667fa1`，以及receipt。授权只覆盖七个I05语义源路径及直接相关回归，不含worker、Store、coordinator、协议、契约、依赖、build或CI。本审查没有改动任何主线/共享源、测试、环境、候选、旧报告或原件，没有GUI/Electron/native/HMR/CUA，没有操作他线容器或重建Goal。
+
+旧C3冻结完整head `3289d67dbfb19545c7a3b3b26753cdd0065741bb`。最初收到C4产品 `83868b4a279fe9f2a00c4eedc97cf9bc54bf0177`，后按主任务通知改以1a79731固定执行。实际读完整产品diff及新增389行string regression；核对838→1a仅 `_term` 的loadBuf折行格式差异，没有行为变化，838原git archive保留未覆盖。
+
+实际 `git archive` 1a79731导出，完整tar 46,233,600字节，SHA256 `b53b066fdb52806129024ef1adf6100ea7e74768befd1e6cbded348c9ce5fdb1`。导出树内实际 `uv sync --frozen` 建全新独立 `.venv`，没有symlink/借用主线环境；CPython3.12.12，RDFLib7.6.0、pyparsing3.3.3、pySHACL0.30.1、owlrl7.6.2按原锁。执行后对tar的1238个原文件逐项读回，全部字节不变。
+
+真实旧finite5 producer用本人既有固定695导出/其独立venv生成；另逐一比较该导出23个engine Python文件与冻结3289 Git blob，全部一致，故不是用旧版本标签伪造当前结果。没有改旧数据或降低身份门。
+
+## 2. 全部产品差异与实现判断
+
+3289→1a的engine source改动恰为下列七文件，均在root授权内；worker/Store/canonical/协议/锁等未改。
+
+| 路径（`packages/engine/src/ontolearn_engine/`） | 实际行为与审查判断 |
+| --- | --- |
+| `semantic_turtle.py` | 新 `canonical_string` 仅将无lang且datatype=xsd:string的Literal转换成同lexical的plain表示；仍normalize=False，numeric/date/lang不变。LexicalSink默认调用，保留仅供严格原文校验使用的canonical_strings=False入口。没有global Literal/parser设置修改。 |
+| `semantic.py` | `_copy`在私有图副本规范化所有term；Graph frontdoor、query、reason和SHACL data/shape因此使用同身份，原Graph不变。`_canonical_rule`先对原shape调用 `_rule`，再规范化when/head，reason仍检查rules tuple/数量/唯一id。RDFS稳定witness、冻结规则、全部匹配trace和原限额未改。 |
+| `semantic_query.py` | 在每次私有translated algebra上遍历Literal、CompValue、dict、list、tuple，VALUES普通dict得到覆盖；每个本地Expr包装其原bound callback的返回值，处理运行时string构造。Expr.eval类本身未改，ctx生命周期、SPARQLError处理仍归原方法。全局TrueFilter singleton先复制为私有Expr，再包装；拓扑/callback适配失败在语法捕获之外，仍为内部错误而非INVALID_QUERY。 |
+| `semantic_execution.py` | `_term`先用canonical_strings=False解析，校验唯一三元组、固定s/p与**原value.n3()==原text**，成功后才canonical_string。合法显式xsd:string常量不因归一化误拒；原严格N3/注入防护不以“统一字符串”放宽。fact/ontology与Rule常量/head沿原路径共享结果。 |
+| `semantic_scopes.py` | `_source`、prepare与project路径都规范化规则；图仍由 `_inputs`/`_copy`规范化。新版本规则source digest、selected内部重建及proof/输入键一致；给定payload仍原对象，不调用reason补造selected。Store仍另认证raw定义/版本/依赖/完整payload与rows。 |
+| `resources.py` | implementation声明finite6，engineVersion和dependencyLockHash保持原精确值；不改canonical资源。 |
+| `semantic_samples.py` | 共享suite新增完整stringIdentity：手工7结论8trace、lexical双形式、6个运行时构造、VALUES DISTINCT/COUNT、selected来源与SHACL完整报告oracle。不是只断言数量。 |
+
+两个既有测试仅更新显式string的内部表示预期与finite6版本；新增string测试覆盖独立Graph bypass、原图/Rule不变、typed/raw常量、shape/list、strictN3正反、运行时构造、多个firing同output以及numeric/lang负控。没有删除旧numeric词法或query支持。
+
+### query包装与TrueFilter的具体边界
+
+本地visit使用seen避免同一CompValue重复包装，dict遍历覆盖VALUES的value；variable键本身不需改写。原bound callback仍绑定同一私有Expr，Expr.eval先设置该Expr.ctx，finally清空，因此没有通过包一层重写上下文或吞错误。canonical_string只处理Literal中的限定string等价类，URIRef、numeric/lang、bool、SPARQLError等返回对象不变。
+
+translateQuery可能放入module级 `operators.TrueFilter`。代码先核原callback确实绑定该对象，再以原函数构造新Expr；没有给全局singleton安装 `_evalfn` wrapper或ctx。本审查额外实测冷态、外部原parser warm、并发及四次OPTIONAL私有副本，下面记录具体结果；不能仅从注释推断隔离。
+
+本修复只统一抽象string身份，没有引入D3/D4比较器、多head、语言政策、新依赖或全SPARQL承诺。source hash可能因原别名统一而改变，但raw保存定义/definitionSetDigests仍由原Store绑定；新finite6与旧finite5严格分区，不能仅改单个展示N3后重签旧结果。
+
+## 3. 独立真实前门：旧12红，新38完成
+
+本人独立编写 `frontdoor.py` / `run-frontdoor.py`，使用原测试的DirectWorker、Session、completed/parameters作为真实transport/paging harness，fixture与完整oracle由本人构造。Store.commit仅输入9个canonical事实（数字只canonical1，语言en）；规则/shape/query保留合法typed string定义。没有复用主任务的运行DB，没有fake finish或以pure结果代worker。
+
+| 运行 | 实际任务数 | 结果/意义 |
+| --- | ---: | --- |
+| 旧finite5 real worker | 12 | 独立重现旧12类型的string错误，完整job/metadata/请求/rows/payload保留。 |
+| 新finite6 real worker | 18 | 对应原12项及6个运行时构造query，全部符合完整oracle。 |
+| 新finite6 stdio Session | 18 | 同18项经实际stdio/session、coordinator/isolated worker与持久发布通过。 |
+| 新finite6 historical selected补充 | 2 | 明确历史snapshot、真实新reasoning result的query和validation成功；metadata/payload历史标识与所选result一致。 |
+
+本人的实际新completed共38个，旧completed12个。没有重新声称主任务全check或包运行。三组主运行exit均0、stderr空，elapsed分别3.8544/8.2852/8.1062秒；这些是有界测试耗时，不是性能指标或容量承诺。
+
+新版本完整业务结果为：
+
+- reasoning严格等于手建完整对象：RDFS为空、rules集合7项、evidence按规则/匹配稳定顺序8条；两个emit各自成功trace都保留，但同一个p/x图结论只一份。潜在链warning仍为两个matched消费者，未新增规则反馈。
+- plain/typed两种Rule when均匹配三个实际canonical事实；typed ASK为true，plain ASK为true，typed VALUES join精确返回both/plain/typed三个subject。
+- projection三行均plain内部N3，DATATYPE为xsd:string，sameTerm(typed)全true。本独立projection取s/o/datatype/same四列，不冒称与主任务旧五列（含LANG）字节相同。
+- asserted datatype/inPlain/inTyped/max1均通过；min2仅Both的一条完整MinCount violation，focus/path/sourceShape/component/value/severity全部严格相等。
+- asserted+selected-derived的max1通过、min2正确失败，原假通过关闭；图仍一value node，多个rule/asserted来源保留。
+- 六种实际runtime query（STRDT/STR/CONCAT/SUBSTR/REPLACE/LCASE）绑定、join与sameTerm精确返回三个subject。
+
+各completed helper真实重复读取result.page验证绑定、游标与稳定页；本probe回读semantic_result和Store.result，metadata/implementation/原snapshot及rows完全一致。项目权威state与执行前相同。本人另对四份complete JSON中全部50个records逐个做独立JSON-pointer分片解码：旧1343行、新worker1802行、新stdio1802行、historical382行，共5329聚合行（含header）全部重建完整payload一致。不是只比较summary/count。
+
+## 4. finite5历史及完整implementation身份
+
+真实旧producer先在finite5执行完成，完整receipt保存后才由新finite6 DirectWorker/JobStore打开同一份本人临时数据库：
+
+1. `result.get`与semantic_result继续按原finite5身份鉴权读取，metadata/payload/rows与旧receipt相等，没有重算或重签。
+2. 对current和明确historical snapshot的新semantic.start，使用旧result作为selected输入，两者均准确四字段 `IDENTITY_CONFLICT {}`、retryable=false。
+3. 对真实finite6所选result，另分别只改consumer engineVersion、executionSemanticsVersion、dependencyLockHash，三种create_job均IDENTITY_CONFLICT；不是只比语义版本。
+4. 新finite6的current selected及另两个historical selected任务均真实成功，完整结果/来源/metadata/分页通过。
+5. 只读核旧semantic_payloads实际canonical UTF8 payload等于旧receipt对应canonical bytes，payload_hash与rows_hash分别仍等于旧完整payload/rows的digest。旧producer标签、resultRef与内容均未改。没有把DB整体文件hash不变冒称为历史保证（失败请求可写辅助blob），比较的是原结果内容/身份。
+
+身份原件 `history-identity.json` SHA256 `687b6dd96437d5c034280be5e4180da556036c7f276ea5b83493e74fe1cab4ae`；历史成功/旧bytes核查完整原件 `history-success.json` SHA256 `f55d0cb7df5755c280e49573cc2328d7cc909211434947c24ce2788b51a9ca1d`。
+
+selected的source hash/new规则键归一化、raw定义身份与完整implementation三字段同时保持原权威绑定。单纯pure helper提供的source digest没有被当成认证；实际Store/producer/hash鉴权仍执行。
+
+## 5. 独立pure probe：cold/warm、运行时构造、全局隔离、strictN3
+
+`pure-query-probe.py` 实际通过两阶段（cold、外部原Graph.query warm后）的34个完整预期case，另12次并发query与4次TrueFilter私有副本核查：
+
+- 原18个runtime worker项之外，pure表达式还覆盖UCASE、STRBEFORE、STRAFTER、ENCODE_FOR_URI、IF未选错误分支、COALESCE首错误/未绑定回退，以及OPTIONAL无过滤器、FILTER除零、BIND错误和VALUES DISTINCT。
+- 每阶段比较原parser Query子图的节点/child/action identity、raw customName、TrueFilter vars、NORMALIZE_LITERALS，均保持；每个prepare的TrueFilter不是module singleton。外部warm本身对原parser的正常惰性处理不混作C4变化。
+- 8类字符串lexical（空串、引号/反斜线、换行、中文、预组/组合Unicode和补充平面）在Turtle合为一个term，原lexical不被trim/casefold/NFC；strict `_term`接受合法显式xsd:string，4个非canonical/injection输入仍RDF_TERM_INVALID。
+- numeric01/1与语言en/en-US仍独立，en/EN保持旧身份，合计控制图5项；不按值eq合并其他term。
+- 输入Graph/Rule常量未被改写；pure selected验证期间将scopes.reason换成明确失败回调，仍成功返回原payload对象且内容不变，证实该路径不以重算替代既存结果（回调随后恢复）。
+
+完整pure原件SHA256 `ad40c70bc406a2f80c810f0b251720742f0906bd9a31cb7b80e1047ec2bd09b4`，16331字节。函数包装、TrueFilter和全局隔离的结论对应这些实际case，不宣称所有AST/函数已被穷举。
+
+## 6. 相关上下游实际测试
+
+在本人固定1a导出的新venv执行：
+
+```text
+python -B -m pytest -q -p no:cacheprovider
+  test_semantic.py test_semantic_string_identity.py test_semantic_scopes.py
+  test_semantic_selected_projection.py test_semantic_execution.py
+  test_semantic_lexical.py test_semantic_query_tokens.py
+  test_semantic_runtime.py test_semantic_lexical_runtime.py
+```
+
+命令中的文件均以导出内 `packages/engine/tests/` 绝对路径传入；完整command/cwd/exit保存在selected-tests-command.json。**522 passed in33.31s，exit0**。测试涵盖新shared suite、string身份、旧numeric/sign lexical、strict term、Graph/shape/Rule、selected、真实worker/stdio及版本身份；没有运行GUI或全仓check。日志SHA256 `a40ebc857e4bfbf96de2f0979a12b8721f815e091627f5cbf11c0799855014f3`。
+
+测试通过后没有继续复跑相同套件。pure probe因下节的自身观察错误而修正，并只执行对应独立probe；没有为探针改动产品。
+
+## 7. 首次错误与观察器修正的原件
+
+全部原始脚本/stdout/stderr保留，不覆写不利记录：
+
+- 导出准备时一次相对路径误指本人树、系统Python tarfile不支持filter参数，在任何产品执行前失败。838完整archive仍保留，随后用明确Python3.12及绝对路径读取授权、按新1a导出。该工具错误有会话输出与setup-first-attempt说明，未冒称单独重定向的原stderr文件。
+- pure首版期望 `BIND(1/0)` 全unbound结果有一行None；实际为[]。另用真实旧finite5执行同query也为[]，旧stdout/stderr保留。因此这是错误的回归oracle/继承的pinned输出，不是C4新增回归。最终仅断言旧行为保持；**不把该旧行为说成完整SPARQL标准符合性已证**，也不借string修复扩大处理它。
+- 中间版grammar snapshot读取计算型ParserElement.name，观察器的惰性名称求值扰动了拓扑，出现假“global mutation”告警。独立无计算名称的cold诊断分别验证旧5/新6的prepare/query前后节点1340、拓扑均不变；最终snapshot使用raw customName及child/action IDs后冷/热/并发全部通过。先前脚本、两次相关stderr及global-state-difference JSON保留，不删除此观察器错误。
+
+这些都不是被修复后抹掉的产品反例。实际旧C3 string红例仍在old5-complete.json，新green在独立worker/stdio文件，不能用探针修正覆盖旧产品失败。
+
+## 8. 原件与可复核绑定
+
+关键完整receipt SHA256：
+
+| 原件 | SHA256 |
+| --- | --- |
+| `old5-complete.json`（12） | `b0fcdd1e16e3d4f69e8bc0358b237d69bf273e3c52843e5c39b582f57e8284b5` |
+| `worker6-complete.json`（18） | `d5b132edc71949ddd358c03b6366f4e3c10ec9d94b8462879d334516dfe358db` |
+| `stdio6-complete.json`（18） | `2d3d6139b53824f97754347cea793f96f9baa717cc0ea5f08d2ec6674e1a1cf8` |
+| `post-readback.json` | `8bac9d3b41868597fc4a55d1897fe6efcf77845d1b94cf52806523514d268aed` |
+| `source-manifest.json` | `f171dd4ba4f1424abb5cf2742f27a02361aeb1cbb2220f4213e66477aefae34d` |
+
+证据根artifact-manifest.json索引44文件，SHA256 `e5ad8a42d05e5403df089d653571f851cfeabb77d3a7fb841c68efafa22811cf`。包含完整固定Git archive、scripts/全部full receipts/命令/首失败日志；排除venv、展开源码和所有runtime SQLite/WAL/SHM/writer-lock。临时DB只留本人ignored环境，不复制入库。manifest和本报告分别保存，不自引用。
+
+本人实际执行的git diff/archive、uv sync、pytest、frontdoor/pure/history脚本均在自有导出或ignored build；原主线只读。post-readback再次核1238源文件不变、旧23Python文件与3289一致，50records所有rows和payload一致。没有更新旧C2/C3审查和反例报告字节。
+
+## 9. 明确结论和未验边界
+
+**范围内没有未关闭阻断意见；I05-C3-STRING-1旧反例关闭，固定1a实现review Pass。** 该结论包括真实原12类型新正确输出7结论8trace、in/count/runtime构造、whole implementation历史与新消费门，及522项相关上下游证据。
+
+未独立执行新包、跨平台、B1测量、native/GUI、全仓check或指定模型外审；主任务有关结果只能由其自己的原件另行归属。没有确认全Q6、全部SPARQL/RDF/SHACL构造、完整BCP47或未来D3/D4比较政策。上节继承的全unbound BIND输出限度保留，不把旧库/应用行为扩大为本次修复的标准承诺。
+
+若实际source/测试/依赖再变化，按真实delta决定补审；不要用本报告跨版本背书，也不要将它替代新候选完整冻结、指定双方全新审查与CI/正常合并门。当前没有需要总控额外返还worker/Store等共享路径的修复建议。
