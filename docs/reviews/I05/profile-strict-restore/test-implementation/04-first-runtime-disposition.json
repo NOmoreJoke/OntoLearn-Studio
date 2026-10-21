@@ -1,0 +1,40 @@
+{
+  "kind": "static-correction-after-parent-first-failure-not-runtime-Pass",
+  "priorTestRef": "90346bd2d0dd438761aecc84f86b73d2f617533e",
+  "parentFirstRun": {
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-restore",
+    "stdout": "docs/reviews/I05/profile-strict-restore/runs/04-first-restore-tests.stdout.txt",
+    "result": "134 passed, 5 failed",
+    "exit": 1,
+    "timedOut": false
+  },
+  "changes": [
+    "False-tail permutation now keeps original producer payload hash; deliberately rebinding the trusted wire hashes would discard the producer-order premise and 16c may accept a mechanism-equivalent permutation with only one true firing.",
+    "Cumulative/live tight-cap fixtures use actual production with the same repeated SourceRecord and two different complete operand keys, so cache_split must be actual observed work.",
+    "Two standalone term-key/trie units finish(False): they did not complete all original child/API slots and cannot assert whole restore success."
+  ],
+  "unmodifiedImplementationDefectsHandledByParent": [
+    "B above 8 MiB resource classification",
+    "A16 API failure stage and active-slot attribution"
+  ],
+  "files": [
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "bytes": 33681,
+      "sha256": "d3726f6170d126f7a6b495f53b951093faf0b3caa935b3d87a06c18c25619aac"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "bytes": 17572,
+      "sha256": "a2129530dac6ab9ac4a24c7f02490c565502a3614c8f4407935fbff1a5b6eeb2"
+    }
+  ],
+  "fixed68Unchanged": 68,
+  "AGENTSUnstaged": true,
+  "checks": {
+    "AST": "both parsed",
+    "ruff": "exit0",
+    "ruffFormat": "exit0"
+  },
+  "runtime": "No own pytest execution: frozen implementation modules are not yet adopted. Parent must rerun after adoption; prior failure evidence is retained."
+}

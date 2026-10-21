@@ -479,7 +479,7 @@ def test_source40000_first_succeeds_in_actual_i05_then_saved_exec(field):
     exec_restore(capture, "source40000-" + field)
 
 
-def repeated_source_capture():
+def repeated_source_capture(*, different_values=False):
     source = SourceRecord("", "", "rev:raw", "same source" * 8)
     property_type = iri(OWL + "DatatypeProperty")
     rdf_type = iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
@@ -488,7 +488,11 @@ def repeated_source_capture():
         (iri("urn:value"), rdf_type, property_type),
         (iri("urn:out"), rdf_type, property_type),
         (iri("urn:s1"), iri("urn:value"), shared),
-        (iri("urn:s2"), iri("urn:value"), shared),
+        (
+            iri("urn:s2"),
+            iri("urn:value"),
+            literal("3", source=source) if different_values else shared,
+        ),
     )
     spec = rule(comparisons=(Comparison(Variable("?v"), "eq", Variable("?v")),))
     return capture_case(records=records, rules=(spec,), label="repeated-source")
@@ -720,6 +724,12 @@ def test_duplicate_projection_and_complete_false_tail_are_not_ignored(captured, 
     else:
         matches = reasoning["mechanismBatches"][0]["originalMatches"]
         matches.reverse()
+        # The original payload binding proves producer order. Rebinding that
+        # trusted hash would discard this premise: with only one true firing,
+        # 16c can accept a mechanism-equivalent false/true input permutation.
+        wire, _enemy_expected = rebound_wire(captured, payload)
+        assert_rejected(captured, wire=wire)
+        return
     assert_rejected(captured, payload=payload)
 
 

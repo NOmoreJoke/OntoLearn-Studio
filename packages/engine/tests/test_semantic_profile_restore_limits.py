@@ -41,7 +41,8 @@ LIVE = ("scalar", "objects", "trie_nodes", "trie_slots", "opaque_scalar", "opaqu
 
 @pytest.fixture(scope="module")
 def captured():
-    return support.repeated_source_capture()
+    # Same repeated SourceRecord, two real operand keys: an actual branch/split.
+    return support.repeated_source_capture(different_values=True)
 
 
 @pytest.mark.parametrize("domain", CUMULATIVE)
@@ -393,7 +394,8 @@ def test_full_keys_distinguish_none_empty_language_datatype_and_all_source_field
             resources.release_key(key, ledger)
             del key
         ledger.cleanup()
-        ledger.finish(True)
+        # This tests a private subdomain, not all original child/API slots.
+        ledger.finish(False)
 
 
 def test_radix_cache_all256_branches_and_long_common_prefix_ignore_audit_collision(monkeypatch):
@@ -462,5 +464,6 @@ def test_radix_cache_all256_branches_and_long_common_prefix_ignore_audit_collisi
         values.clear()
         cache.clear()
         ledger.cleanup()
-        ledger.finish(True)
+        # This tests a private subdomain, not all original child/API slots.
+        ledger.finish(False)
     assert not any(value for _, value in ledger.live)
