@@ -1,0 +1,34 @@
+{
+  "testLintFailures": [
+    "first-lint",
+    "formatted-lint",
+    "candidate-lint"
+  ],
+  "cause": "New appended helper formatting/long lines and unused or ambiguous local variable names; no original prefix changed",
+  "resolution": "final-test-format/final-test-lint0; d494 candidate",
+  "firstActual": {
+    "run": "direct-first",
+    "candidate": "d5360ac3d5f17f99f93a4037f039b4484715a7f9",
+    "exit": 0,
+    "result": "3passed/16deselected",
+    "archive": "direct-first-originals.zip"
+  },
+  "selfReviewStrengthening": "Only appended helper: bind all actual termSources occurrences, receipt version/default caps/state and candidate/insertion counters",
+  "processLintFailure": {
+    "run": "process-lint",
+    "cause": "Archive scope string line length",
+    "resolution": "Only new process script wrapped string; final-process-lint0"
+  },
+  "firstArchiveScopeErratum": "archive-scope-correction.json; originals unchanged",
+  "finalNormal": {
+    "run": "direct-normal",
+    "candidate": "d494153de742da2bf6bbff9c857b97e110ecf3dd",
+    "exit": 0
+  },
+  "productRuntimeFailures": [],
+  "pendingCases": [
+    "C-inclusive-date-entry",
+    "C-illtyped-entry"
+  ],
+  "allHistoricalRawStreamsPreserved": true
+}

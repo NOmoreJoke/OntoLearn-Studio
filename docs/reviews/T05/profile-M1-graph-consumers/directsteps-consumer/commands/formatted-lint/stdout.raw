@@ -1,0 +1,43 @@
+E501 Line too long (107 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:895:101
+    |
+893 |                     "payloadDigest": expectation.payload_digest,
+894 |                     "rowsDigest": expectation.rows_digest,
+895 |                     "origin": "this operation's returned strict fullview only; full fixture view in scope",
+    |                                                                                                     ^^^^^^^
+896 |                     "formalJobOrStoreAuthority": False,
+897 |                 },
+    |
+
+B007 Loop control variable `row` not used within loop body
+    --> packages/engine/tests/test_profile_M1_graph_consumers.py:999:24
+     |
+ 997 |     assert not rules
+ 998 |     for section in ("asserted", "ontology"):
+ 999 |         for row_index, row in enumerate(case[section]):
+     |                        ^^^
+1000 |             offset = row_index + (len(case["asserted"]) if section == "ontology" else 0)
+1001 |             for side in range(3):
+     |
+help: Rename unused `row` to `_row`
+     |
+998  |     for section in ("asserted", "ontology"):
+     -         for row_index, row in enumerate(case[section]):
+999  +         for row_index, _row in enumerate(case[section]):
+1000 |             offset = row_index + (len(case["asserted"]) if section == "ontology" else 0)
+     |
+note: This is an unsafe fix and may change runtime behavior
+
+E741 Ambiguous variable name: `l`
+    --> packages/engine/tests/test_profile_M1_graph_consumers.py:1039:17
+     |
+1037 |         basis_keys = {
+1038 |             tuple(leaf_by_key[tuple(l["triple"])]["triple"])
+1039 |             for l in expected["leaves"]
+     |                 ^
+1040 |             if l["id"] in golden["leafBasis"]
+1041 |         }
+     |
+
+Found 3 errors.
+1 unsafe fix available with `--fix --unsafe-fixes`.

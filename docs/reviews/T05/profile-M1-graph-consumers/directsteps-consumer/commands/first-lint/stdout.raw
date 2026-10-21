@@ -1,0 +1,131 @@
+E501 Line too long (101 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:805:101
+    |
+803 |             stack.enter_context(patch.object(_DirectStepsCapture, "insert", insert))
+804 |             stack.enter_context(patch.object(_DirectStepsCapture, "candidate", candidate))
+805 |             material = prepare_profile_material(records=records, rules=rules, ledger=CaptureLedger())
+    |                                                                                                     ^
+806 |             phase[0] = actual["stage"] = "production"
+807 |             produced, operation = run_direct_operation(
+    |
+
+E501 Line too long (107 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:854:101
+    |
+852 |                     "payloadDigest": expectation.payload_digest,
+853 |                     "rowsDigest": expectation.rows_digest,
+854 |                     "origin": "this operation's returned strict fullview only; full fixture view in scope",
+    |                                                                                                     ^^^^^^^
+855 |                     "formalJobOrStoreAuthority": False,
+856 |                 },
+    |
+
+E501 Line too long (102 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:891:101
+    |
+889 |                         failure = record["failure"]
+890 |                         assert failure["reason"] == "DIRECT_STEPS_LIMIT", record
+891 |                         assert failure["classification"] == "resource" and failure["domain"] == domain
+    |                                                                                                     ^^
+892 |                         assert d.state == "failed"
+893 |                         before = direct_ledger_snapshot(d)
+    |
+
+E501 Line too long (101 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:898:101
+    |
+896 |                         )
+897 |                         record["reuse"] = retry
+898 |                         assert reused is None and retry["failure"]["reason"] == "DIRECT_STEPS_REUSED"
+    |                                                                                                     ^
+899 |                         assert direct_ledger_snapshot(d) == before
+900 |     except Exception as error:
+    |
+
+E501 Line too long (102 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:903:101
+    |
+901 |         import traceback
+902 |
+903 |         actual.update(status="error", failure=direct_failure(error), traceback=traceback.format_exc())
+    |                                                                                                     ^^
+904 |     finally:
+905 |         if material is not None:
+    |
+
+E501 Line too long (104 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:913:101
+    |
+911 |                          "definitions_encoded"):
+912 |                 (directory / (name + ".bin")).write_bytes(getattr(produced, name))
+913 |         actual["retentionMeaning"] = "Actual logical holdings/receipts, not physical release or H lease"
+    |                                                                                                     ^^^^
+914 |         (directory / "legacy-fee-events.json").write_bytes(canonical(events))
+915 |         (directory / "direct-operations.json").write_bytes(canonical(actual["operations"]))
+    |
+
+B007 Loop control variable `row` not used within loop body
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:936:24
+    |
+934 |     assert not rules
+935 |     for section in ("asserted", "ontology"):
+936 |         for row_index, row in enumerate(case[section]):
+    |                        ^^^
+937 |             offset = row_index + (len(case["asserted"]) if section == "ontology" else 0)
+938 |             for side in range(3):
+    |
+help: Rename unused `row` to `_row`
+    |
+935 |     for section in ("asserted", "ontology"):
+    -         for row_index, row in enumerate(case[section]):
+936 +         for row_index, _row in enumerate(case[section]):
+937 |             offset = row_index + (len(case["asserted"]) if section == "ontology" else 0)
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+E501 Line too long (107 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:939:101
+    |
+937 |             offset = row_index + (len(case["asserted"]) if section == "ontology" else 0)
+938 |             for side in range(3):
+939 |                 assert_source(records[offset][side].source, f"/cases/{index}/{section}/{row_index}/{side}")
+    |                                                                                                     ^^^^^^^
+940 |     leaves = native["proofLeaves"]
+941 |     assert len(leaves) == len(expected["leaves"])
+    |
+
+E501 Line too long (107 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:953:101
+    |
+951 |     assert len(native["rdfs"]) == len(native["rdfsEvidence"]) == len(steps)
+952 |     assert {tuple(t) for t in native["rdfs"]} == {tuple(s["result"]) for s in expected["steps"]}
+953 |     for ordinal, (step, golden, call) in enumerate(zip(steps, expected["steps"], insertions, strict=True)):
+    |                                                                                                     ^^^^^^^
+954 |         assert type(step["ordinal"]) is int and step["ordinal"] == ordinal
+955 |         assert step["rule"] == golden["rule"] and list(step["result"]) == golden["result"]
+    |
+
+E501 Line too long (104 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:966:101
+    |
+964 |         evidence = next(r for r in native["rdfsEvidence"] if r["result"] == step["result"])
+965 |         basis = [aliases[a]["reference"] for a in golden["leafBasis"]]
+966 |         assert len(evidence["proofLeaves"]) == len(basis) and set(evidence["proofLeaves"]) == set(basis)
+    |                                                                                                     ^^^^
+967 |         basis_keys = {tuple(leaf_by_key[tuple(l["triple"])]["triple"])
+968 |                       for l in expected["leaves"] if l["id"] in golden["leafBasis"]}
+    |
+
+E741 Ambiguous variable name: `l`
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:968:27
+    |
+966 |         assert len(evidence["proofLeaves"]) == len(basis) and set(evidence["proofLeaves"]) == set(basis)
+967 |         basis_keys = {tuple(leaf_by_key[tuple(l["triple"])]["triple"])
+968 |                       for l in expected["leaves"] if l["id"] in golden["leafBasis"]}
+    |                           ^
+969 |         assert len(evidence["basis"]) == len(basis_keys)
+970 |         assert {tuple(t) for t in evidence["basis"]} == basis_keys
+    |
+
+Found 11 errors.
+1 unsafe fix available with `--fix --unsafe-fixes`.

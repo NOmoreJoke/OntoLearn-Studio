@@ -1,0 +1,64 @@
+{
+  "storage": {
+    "tag": "direct-first",
+    "fullIndexOriginalBytes": {
+      "bytes": 226145369,
+      "sha256": "1f7ee60902e2fddcda26952b14cecb5d5901b2fea9e42ed77efc61d65862f3c1"
+    },
+    "fullIndexLosslessGzip": {
+      "path": "direct-first-actual-index.full.json.gz",
+      "bytes": 4711729,
+      "sha256": "92ad5ada37d7ceeee61e5162ae429b1c4679569bb8e75af47815d30bb979f10b"
+    },
+    "uncompressedLocalOriginal": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/directsteps-index-originals/direct-first-actual-index.json",
+    "decodedBytesSha256Verified": true,
+    "noOriginalZipOrObservationOrCommandChange": true
+  },
+  "summary": {
+    "tag": "direct-first",
+    "candidate": "d5360ac3d5f17f99f93a4037f039b4484715a7f9",
+    "actualDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/graph-actual/direct-first",
+    "archive": "direct-first-originals.zip",
+    "archiveBytes": 5104774,
+    "archiveSha256": "0fef3420745b789dc6475202d6113ba066b0fd572ea65b53180de7c9e2fe0845",
+    "memberCount": 43,
+    "caseCount": 3,
+    "allMemberBytesSha256AndCrcVerified": true,
+    "scope": "No formal Job/Store/worker/selected, no directsteps, no original83 coverage claim"
+  },
+  "cases": [
+    {
+      "id": "M1-direct-step",
+      "kind": "direct-graph-consumer",
+      "assertion": "pass",
+      "completeObservation": {
+        "member": "observations/6a93a9fbc4f9b1844bb23c4cd33628e1f3438f411c977050bac70789fc429cf1/observation.json",
+        "bytes": 25787261,
+        "sha256": "5f38e62ac37b5858c8a830f043005590d1604434e443dbe46407844aa03d18e3"
+      },
+      "actualStatus": "success"
+    },
+    {
+      "id": "M1-direct-range",
+      "kind": "direct-graph-consumer",
+      "assertion": "pass",
+      "completeObservation": {
+        "member": "observations/c4c6ffab0f5a3ebe7ba669eba2e4a7ab9b1af655d674d00f72c6a23a8bd4abae/observation.json",
+        "bytes": 16961190,
+        "sha256": "7a89a1eea564c7f6e4405c32b1a0ec04184969c556f2da30c0b80396e02089f4"
+      },
+      "actualStatus": "success"
+    },
+    {
+      "id": "M1-direct-subclass-transitive",
+      "kind": "direct-graph-consumer",
+      "assertion": "pass",
+      "completeObservation": {
+        "member": "observations/e6ab76285a718d90ddfc76ed05bb6faab1d099853f34d32ba1b0fd1158b1a071/observation.json",
+        "bytes": 16935535,
+        "sha256": "c6290bb023338c010b8a2e11054e206742798bc3edbe40261645edb8b22a443d"
+      },
+      "actualStatus": "success"
+    }
+  ]
+}

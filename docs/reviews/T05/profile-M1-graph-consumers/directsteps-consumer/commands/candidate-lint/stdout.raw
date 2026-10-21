@@ -1,0 +1,12 @@
+E741 Ambiguous variable name: `l`
+    --> packages/engine/tests/test_profile_M1_graph_consumers.py:1039:17
+     |
+1037 |         basis_keys = {
+1038 |             tuple(leaf_by_key[tuple(l["triple"])]["triple"])
+1039 |             for l in expected["leaves"]
+     |                 ^
+1040 |             if l["id"] in golden["leafBasis"]
+1041 |         }
+     |
+
+Found 1 error.
