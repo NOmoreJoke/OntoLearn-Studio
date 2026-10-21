@@ -51,6 +51,8 @@ Linux第一次受影响测试359通过/1失败：源码文件已6，但mtime0和
 
 独立原型v1漏检并修改了其临时进程的TrueFilter，首件和fresh负证据保留；v2额外复制单例。独立实现审查的首pure oracle错误（全unbound BIND原旧版同为[]）及读取计算型parser.name造成的观察器干扰，均保留脚本、失败、旧版对照和修正后raw，未为探针改产品。上述旧行为限度不算完整SPARQL标准符合性。
 
-完整raw及脚本见 [证据清单](evidence/integrated-c4/manifest.json)。大raw入库用于本线尚无实际CI artifact时完整可复核，排除SQLite/WAL/SHM/locks、环境/缓存、app二进制和可恢复的源码transport；完整输入spec、原始失败、结果和恢复recipe保留，不承诺从raw压缩包恢复原SQLite文件/签名app。205执行输入、64原保护源、全部源码transport成员与实际包绑定另列，旧C1/C2/C3原件未覆盖。
+205是跟踪执行输入；ignored验收driver、输入spec与输出另由1254成员清单及archive hash完整固定，并非未绑定的可变补充。完整raw及脚本见 [证据清单](evidence/integrated-c4/manifest.json)。大raw入库用于本线尚无实际CI artifact时完整可复核，排除SQLite/WAL/SHM/locks、环境/缓存、app二进制和可恢复的源码transport；完整输入spec、原始失败、结果和恢复recipe保留，不承诺从raw压缩包恢复原SQLite文件/签名app。205执行输入、64原保护源、全部源码transport成员与实际包绑定另列，旧C1/C2/C3原件未覆盖。
 
 当前是固定库有限范围修复；私有Expr适配依赖锁定RDFLib7.6.0及明确guard，没有全RDF/SPARQL/SHACL、完整BCP47、未来aggregate或D3/D4比较政策承诺。所有旧C1意见处置/Q6十二项及其他产品待决、签名/干净设备、Mac/Windows本版native和生产证据保持原边界。指定同版双审、真实CI/正常合并/远端核验依原门禁执行。
+
+独立封存审计 [全文](evidence/integrated-c4/seal-audit/report.md) SHA `fe76a48e8fe0fe8a9cd0351eee1c3642e94d8e51c38afd46dd30fc310753bf68`，在证据真伪/完整/归属范围 Full Pass。逐1254成员/1287原文件差集、1238源码恢复、三实际binary七模块、190完整stdio结果及180资源角色hash、114份v2原存储行、独立50结果5329行、B1和两套native完整body/Nodehash均实核，未发现缺件、误述或新增阻断。六份审计脚本/日志/初始观察器错误及报告另存，不回塞原archive；raw eae749d0…未改。未重跑产品/容器/GUI，仍不替代指定双审。
