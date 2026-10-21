@@ -26,3 +26,7 @@
 ## 当前Goal：blocked
 
 已通过Goal工具实际标记blocked，完整原目标不变。相同外部条件连续三轮仍未满足：总控已全文读本次审计，但 `approvedForConsumption=false`，T01/I06唯一来源运输/确认/Job正式接口及接线依赖未就绪；指定双审仍无合规隔离入口/可用桌面时段与真实任务句柄。独立审计已终态，不再把它当运行中等待。现有授权内准备、代码、必要检查、内审和可恢复原件均已完成；需要实际依赖/资源状态变化才能继续。两树仅保护AGENTS未暂存；未push/PR/CI/merge，保留所有父功能/目标平台验收。待总控提供精确获批接线条件或合规外审资源后续接，不重复提出已pending的桌面问题。
+
+## T01 r1设计交接（不恢复Goal）
+
+按总控新消息全文核对T01固定f51dd38的§2及原件SHA0f3ab7…，保存 [精确设计答复](../../../iterations/T03/source-selection/t01-interface-response-r1.md) 与 [独立复核](t01-interface-response-r1-review.md)。接受唯一有界JSONL的64KiB原字节分块/seal方向；六个待冻结合同是完整帧/小帧预算、configure新代次引用、完整表及选项摘要、typed来源与总预算/pin回收、worker所有权及确认前只读执行/大结果、复验到最终确认提交的生命周期。复核的一项P3确认语义已关闭；seal完整性不等于人类写确认。仅文档/静态来源读回/格式检查，未运行新runtime测试或采用未批准代码，broker/source测试字节未改。原Goal仍blocked，公共schema/消费/接线尚未生效。

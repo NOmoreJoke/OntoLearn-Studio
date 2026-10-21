@@ -1,0 +1,45 @@
+{
+  "task": "controller-requested fixed T01 §2 design response only",
+  "goalStatus": "blocked unchanged; no update_goal/resume",
+  "t01Input": {
+    "commit": "f51dd38dbdfd2fbb1b9923efee666a19d5b415cc",
+    "path": "docs/iterations/T01/owner-interface-responses-r1.md",
+    "section": "2",
+    "wholeFileSha256": "0f3ab7e539b9b69c6a602f4eabd089936a37afd9d842fa836748793031df6768"
+  },
+  "outputs": [
+    {
+      "path": "docs/iterations/T03/source-selection/t01-interface-response-r1.md",
+      "sha256": "7376353f6230d35a1fc931e096dab8310eae38de015f75a333e3998ec6df761b"
+    },
+    {
+      "path": "docs/reviews/T03/source-selection/t01-interface-response-r1-review.md",
+      "sha256": "144dbbbcf8d7e8934216899afa9db54b903483943d605b072239d271d5e54e5a"
+    }
+  ],
+  "independentReview": {
+    "result": "passed design response; no open finding",
+    "findingDisposition": "clarified only final write Job needs human write confirmation; inspection/preview readonly execution contract and seal integrity separated"
+  },
+  "accepted": "same bounded JSONL chunk/seal direction and existing broker/parser invariants, design only",
+  "unfrozenContracts": [
+    "complete frame budgets and small-frame profile",
+    "new source context/ref after configure",
+    "versioned full table/options digest",
+    "typed source ownership, transfer budgets, pin and cleanup state machine",
+    "worker ownership and readonly inspection/preview execution plus large results",
+    "source revalidation to final acceptance, confirmation and Store/receipt composition"
+  ],
+  "checks": [
+    "fixed Git source/text and SHA reads",
+    "documentation formatting",
+    "independent design review"
+  ],
+  "runtimeTestsRun": false,
+  "implementationAdopted": false,
+  "sharedFilesChanged": false,
+  "brokerAndTestHashesUnchanged": {
+    "apps/desktop/src/main/mapping/source-selection.ts": "700337e055974708fe848edf58187fe161c2af2a0feb908bd41241abfea9e989",
+    "tests/unit/t03-source-selection.test.ts": "734ec4fb10ac617a5c5659b40f9366ae35838eacd820539d759bc432a6ef247e"
+  }
+}
