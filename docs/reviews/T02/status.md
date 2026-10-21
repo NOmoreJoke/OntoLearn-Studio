@@ -6,7 +6,7 @@
 - 已实查 base/head：`5f910b52c69d86a1076b2032e5d3c63e715947f3`；启动时仅 ` M AGENTS.md`，无其他争写。指南 SHA256 `db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786`，保持未暂存。
 - 已建立本功能独立 Goal；全文读取启动/共同指令、controller-handoff、plan、T02任务、requirements/acceptance、decisions/review、原 FR-200–204/C–G/10–12 和仓库指南。指南引用的 m0 更新计划在本 base 不存在，以主 checkout 同名源补读；不复制产品内容。
 - 唯一写入边界：启动提示列出的 ontology Python 包、`test_ontology_*.py`、renderer ontology 目录、`t02-*.test.ts`、ontology fixtures、本线 reviews/iterations。未改 root tasks/state 或共享文件。
-- 下一交付：不可变输入的定义/事实编辑与引用影响、精确 Diff、表格/类树/局部图模型、独立页面与正反例，运行 `npm run check` 和独立只读 agent 内审，形成本地恢复提交。
+- 当前推进：独立服务/页面 C2 已有恢复提交；C3 补真实批准 Store2 只读 RDF 来源绑定，正式接线/指定外审门仍待。最新证据见末段，原阶段记录保留。
 - 正式接线缺口：T00 公共严格 schema/命名桥；T01 同库版本化预览/人类确认/commit/undo；批准 I05 Turtle 支持检查与无损往返；T08 草稿来源。私有模型只服务本线，非第二公共契约、Store 或网关。
 - 所有 FR-200–204 及父功能跨模块验收保留。当前未正式集成、未双指定模型审查、未 push/PR/CI/merge、未上线。完整导入/往返及最终 Store 提交尚待联验。
 - 仅无窗口 CLI/unit/Python/build；不运行本机 Electron/e2e/native/HMR、凭据提示、付费、密钥读取、对外消息或审查应用；指定外审资源由总控预约。
@@ -57,3 +57,14 @@ C2 全仓 `check-c2-final.log` 实际 exit 0：633 TS、1078 Python；本线26 P
 独立 agent 已对固定 `5ef86a1da88d86f2de7b55a7e3be38b1e0f986b4` 实际返回**通过**，全部历史问题关闭、无新阻断。逐项证据及未验边界见 `independent-review-c2.md`。这是私有服务/页面的内审通过，不替代指定双外审。当前恢复以该实现 SHA 与 `verification-c2.json` 为准；`438c6ad`/`verification.json` 是旧C1历史。
 
 具体可执行交接已整理在 `docs/iterations/T02/delivery.md`。本条与内审报告/交付文件仅追加流程证据，无产品/测试/配置/依赖/验收或基线变化；不触发无变化复测。待T00/T01/批准I05/T08具体接口及外审预约，Goal保持active，尚未push/PR/CI/merge/上线。工作树剩余受保护AGENTS未暂存，以及本地未入库截图；未修改总控状态或其他文件责任。
+
+
+## C3 续跑进展
+
+上一 Goal turn 分类为 progress：实际源/页面/样例/测试、C2内审和恢复提交已经完成。本次实查当前分支/head为 `feature/weekly-t02-ontology` / `ca7f25366cb9e11533004938b86d5b80a75fe4b4`，指南仍为78df；远端develop仍5f；总控最新记录中T01内部格式3/公共接线尚未批准给本线，外审资源仍预约T06后I05。本次没有把其他聊天意图/状态文件当成活跃进程等待证明，也未操作外审应用。
+
+在独占路径新增 `source_projection.py` 和专属真实Store2测试；逐条核对不可变源与编辑器完整RDF，保留原fact ID/owner/source_row/managed_value、墓碑、多处支持、定义payload hash及显式引用边。复用批准Store记录校验，不创建Store实例或SQL writer；不生成提交计划/确认凭据，不推测metadata权限或definition→IRI引用。该新增使读取来源证明前进，仍不是正式T01写入或公共格式批准。
+
+新13专项已实际通过（`source-projection-second.log`）；全仓check运行中，独立agent设计检查未发现实质阻断，最终固定C3 SHA关闭复核待完成。UI/依赖/共享实现未变化，不重复headless/包内/native探针。源/来源边界详见 `docs/iterations/T02/source-projection.md`。
+
+C3全仓`source-projection-check-first.log`已实际exit0：633 TS/1091 Python，包含本线39 Python；新增13专项一次通过。既有C2实现/样例/探针源hash逐项复核未变，未重复无变化UI运行。原始日志保留本地，当前源码/批准owning source与日志hash见`verification-c3.json`；待固定提交独立内审终态。

@@ -1,0 +1,46 @@
+{
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "priorHead": "ca7f25366cb9e11533004938b86d5b80a75fe4b4",
+  "scope": "C3 private read-only Store2 RDF/source proof. No formal public adapter, commit authority, Turtle parser or metadata authorization.",
+  "commands": [
+    {
+      "command": "uv run --frozen pytest packages/engine/tests/test_ontology_source_projection.py -q",
+      "log": "source-projection-second.log",
+      "exit": 0,
+      "cases": 13
+    },
+    {
+      "command": "npm run check",
+      "log": "source-projection-check-first.log",
+      "exit": 0,
+      "vitest": 633,
+      "pytest": 1091,
+      "ontologyPython": 39
+    }
+  ],
+  "implementation_hashes": {
+    "packages/engine/src/ontolearn_engine/ontology/source_projection.py": "919e6f055c84ddb55de985c66093d585b53ea9f78e167c2aa85dabb224c0c8e2",
+    "packages/engine/tests/test_ontology_source_projection.py": "000a489696ad29ff88e0f422a67b0a4de168c7d681fe61961979a5c7eb94d2cd"
+  },
+  "unchangedC2ImplementationHashesRechecked": true,
+  "approvedOwningSourceHashes": {
+    "packages/engine/src/ontolearn_engine/storage.py": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+    "packages/engine/src/ontolearn_engine/invalidation.py": "a5e8165f4e8814da387558c89b8b175ac4bcc0e57223b9278f44a8c5120e1ca3",
+    "packages/engine/src/ontolearn_engine/rdf_snapshot.py": "7cca115fa77e0926a632ba58d404ed39071f7dcfb8d52af2d212e89d36b2309a"
+  },
+  "log_hashes": {
+    "source-projection-check-first.log": "44557cf2fc5d93ea1860786fedd41d6bf7972ddec0b22984a7eeb0fecf109d88",
+    "source-projection-first.log": "53be7140f900ef6e183370cb444be05ef41f3eae4a7fb98efb93ba1d06e4e405",
+    "source-projection-second.log": "b94c4fc9491fb942e308345ad71f21165b85236fa60db7a0af78fa746bc64a50"
+  },
+  "notRun": [
+    "formal T01/T00 integration/commit/undo",
+    "approved Turtle/SHACL import and full roundtrip",
+    "T08 real model draft",
+    "specified dual external reviews",
+    "push/PR/CI/merge",
+    "Electron/e2e/native/HMR/packaged runtime/production"
+  ],
+  "unchangedUiProbe": "C2 actual 11 headless presentation checks retained; UI source unchanged, not rerun",
+  "protectedAGENTSSHA256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+}
