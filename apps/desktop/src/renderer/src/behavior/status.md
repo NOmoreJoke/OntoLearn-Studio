@@ -1,6 +1,6 @@
 # T06 行为 UI 子任务回执
 
-2026-10-21，独立子任务，沿用父 T06 Goal。没有建立第二个 Goal。
+2026-10-21，独立子任务，沿用父 T06 Goal。没有建立第二个 Goal。以下启动与首次验证保留为 `571b4d6` 历史；最新修复另见末段。
 
 - 工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui`。
 - 分支：`feature/T06-behavior-ui`；实际启动 HEAD/base：`5f910b52c69d86a1076b2032e5d3c63e715947f3`。
@@ -18,3 +18,15 @@ Headless 已实际通过：未接入服务禁用、键盘 Tab、事件/事实变
 首败保留：初始 Vite 虚拟 entry 解析与缺少 Headless Shell 的工具原输出在本会话；后续嵌套 select 精确 label 定位超时有 `test-results/t06-ui-headless.log`、`t06-ui-headless-2.log` 原始日志，并实际读可访问树后修正为 role 定位。首次全 check 在开发中脚本格式未定时失败，保留 `test-results/t06-ui-check.log`。修复后的完整通过与最终通过分别保留 `t06-ui-check-2.log`、`t06-ui-check-final.log`，最终 headless 日志为 `t06-ui-headless-final.log`。均为本树忽略产物，不混入源码。精确源哈希、日志/截图哈希与验收边界见 [verification.json](./verification.json)。
 
 下一可验交付：本地可恢复提交交父 agent 完整独立内审；抽查反馈不作为独立通过。未作指定外审、推送、PR 或合并。正式 App 接线、真实引擎/事务/Agent 联验、原生窗口和首发平台验收仍由父模块按原门禁完成。
+
+## 独立复核修复（571b4d6 之后）
+
+完整独立复核终态不通过，3 项 P2；原报告 `/tmp/T06-UI-571b4d6-independent-review.md` 与负例 `/tmp/T06-UI-571b4d6-negative-probes.mjs` 保留。原候选提交、首败工具原输出、原始日志和 `test-results/t06-behavior-ui/` 截图均保留；新 headless 输出改用 `test-results/t06-behavior-ui-r2/`，不覆盖原件。
+
+本轮只修三项：显式 always 且空/缺条件仍拒绝；单轮运行/动作/通知状态矩阵拒绝矛盾；JSON 解析后、record 归一化前显式拒绝三类保留键，普通内容无损。没有将保留键丢值描述成原型污染利用。新增真实反例覆盖全部 60 个状态组合、controller 的拒绝/刷新保留、无条件草稿与 callback、同事件两个不同保留键内容均不送达。初次新增单测 34 项通过；最终完整 `npm run check` 通过 664 项 TS（本线34）、1052 项 Python及 lint/格式/strict 类型/构建/ruff。新 headless 完整反例与正常链路通过，已实际 view_image 检查新宽屏/手机截图。新 source manifest 的7项源哈希与最终验证一致；此前11项原始日志/截图/artifact逐项复核未变。
+
+已在安全边界全文读最新共同指令 SHA256 `b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39`，保留原 `df090...` 历史输入；三份已生效 handoff 的 SHA256 分别为 `18485767098d448a4fcce2fc7e59b5a325433826894b98111cab96926fdc2097`（I05→T01 Python4）、`add9884ab9a0cda3a8a562f26a3b7c515255919d65eb0487d6c254681ed4991d`（I06→T01 canonical/main8）、`88057b59e173453d197bfeae183dc99b8c09c71e30d518781bf774ebc037e95b`（I05→T03 build4）。AGENTS 仍 `78df...a759`；T01 共享13、T03 build4、I06 剩余6各自维护，本线只改原10独占路径，不采用未批准实现。本轮重验来自实际 UI 改动，不来自纯政策更新。
+
+r2 首败是验证脚本用精确 label 匹配已有内容的 textarea 超时，保留 `test-results/t06-ui-r2-headless-first.log`，修正为 textbox 可访问角色后，最终 headless 在 `t06-ui-r2-headless-final.log` 完整通过。原始完整 check、脚本定位修正后的最终完整 check 分别保留 `t06-ui-r2-check-first.log`、`t06-ui-r2-check-final.log`。新 JSON 明确保留原571版本的 verification Git对象/hash，并分别记录历史与当前证据。
+
+本地修复与验证完成，下一步为新固定提交的完整独立复核；没有自行将原不通过改为独立通过。尚未推送/PR/合并，正式接线及父模块/发布验收边界不变。

@@ -1,40 +1,67 @@
 {
   "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
   "branch": "feature/T06-behavior-ui",
+  "previous_candidate": "571b4d64120c8420d527f9fda2a3cb81bbd47d3f",
   "scope": "private independent UI; not mounted or connected to an engine",
   "product_and_test_sha256": {
-    "apps/desktop/src/renderer/src/behavior/BehaviorWorkspace.tsx": "39d258fdfd4cd61058c24d21bd73a798bcca477cd9a5dde776a93f84ab96d128",
+    "apps/desktop/src/renderer/src/behavior/BehaviorWorkspace.tsx": "0e7012e1a5d2791fda1aafd5eea0a8248d78d7329e8513ea7ad2062ae39f671b",
     "apps/desktop/src/renderer/src/behavior/controller.ts": "36d59ea11907fe44e73bb84849b20839944a02b8d538f602dc88ef82657217d3",
-    "apps/desktop/src/renderer/src/behavior/model.ts": "016161c19c5c9fd81db7b41bfb6cc29746fe3035635902185188d569743fa77d",
+    "apps/desktop/src/renderer/src/behavior/model.ts": "b246491a46387f4b33079266c10d2a41f36648875e240330191ff3ba8a09f90f",
     "apps/desktop/src/renderer/src/behavior/presentation.ts": "5966010c9a052cc2bbd7524e759fe06d9806c698259e84039aae54fcb28fa1d2",
     "apps/desktop/src/renderer/src/behavior/behavior.css": "869ebea1be9dcbfb839814c5c610bd7bc698420edc5f4c05e315ad37347c1465",
-    "apps/desktop/src/renderer/src/behavior/verify-headless.mjs": "d27417f91ce390d62fee4a836e2da977d3c5dc85e422358e3a551f616886952b",
-    "tests/unit/t06-behavior-ui.test.ts": "ff2ece457a45e40c9f80d990871a81fc8de8b5b9340e8e427dec4057205304c8"
+    "apps/desktop/src/renderer/src/behavior/verify-headless.mjs": "a4573ccca0725aa1db18c4953ae213213493423927ca435401a7f9c152eba742",
+    "tests/unit/t06-behavior-ui.test.ts": "cad7082f2c0da281fd0256b09834dda2857e99da5bba47866c1619bc4480440c"
   },
   "generated_evidence_sha256": {
-    "test-results/t06-ui-check.log": "18dbd6e48a4c6077a6bc04dc8a8eb26a04c01201c10f577fe2f98246c30798d3",
-    "test-results/t06-ui-check-2.log": "2eb59b68ab54953f055f4913f06d6cff4a26b270f9bf1d22b0d6340038412340",
-    "test-results/t06-ui-check-final.log": "a3752ddc8bb1aedeb86043c135bd63b4b95caf6b451c60c453b33b221997b554",
-    "test-results/t06-ui-headless.log": "bbf658e2319e7b251db10fa9b5170c81b9bc403f966fc42514c562e066b2a841",
-    "test-results/t06-ui-headless-2.log": "9a9f6e4ea4b14b6af3261acd3c8b9515d2bcc90640c4710fd9732394d1d5bb17",
-    "test-results/t06-ui-headless-3.log": "b46d018f41923d7c81fbb1b7565e370f8fb71c04ed361bc4f1ee087b3b058331",
-    "test-results/t06-ui-headless-final.log": "dc88493ebd4a4843957340c757227902fa17a6fa6a6c1606add3f73ab77d7e8b",
-    "test-results/t06-behavior-ui/evidence.json": "3b1bffd5dab1f12c7a7fdd83bd375c4eabd948f94476d3176a6c406578500ee1",
-    "test-results/t06-behavior-ui/width-1440.png": "445458d44db5ec46a10af3fff488ef44d77954338d25807a36dbbe24e1ae65a9",
-    "test-results/t06-behavior-ui/width-390.png": "070df1ace76abdf8f89a1e38bd53ec7a7552dcc094d5243e68bca2015cc083f6",
-    "test-results/t06-behavior-ui/viewport-390.png": "24a1167ac513a4f6447038dbe10302dc42af03161ac9f2fca5e4a0b640e750d9"
+    "test-results/t06-ui-r2-unit-first.log": "53377a0c25b4b1ed04b694f03c86c3aa15031d8171054ed265a6f96555510bde",
+    "test-results/t06-ui-r2-headless-first.log": "aaf1df2e53ad439c13a1d1107e366f427ecb240893fe42d2ee1133c62202978c",
+    "test-results/t06-ui-r2-headless-final.log": "7a39f6a19e023f86c8662601bab8e26ae70fae5d7d531bc96d4e7bed7dad56fe",
+    "test-results/t06-ui-r2-check-first.log": "98218de282b2ba58fc334aaca3071a187b8bcb4a569100e39537bc7aa4314a3b",
+    "test-results/t06-ui-r2-check-final.log": "d2edb183dedd37abdfe59c877d5e6101361ea1a5b5713063d4c05e46de8b9fe1",
+    "test-results/t06-behavior-ui-r2/evidence.json": "d7397917d1446c5901f10d92481666c477e7bc6ae529fa919b82241bc5ee0b56",
+    "test-results/t06-behavior-ui-r2/width-1440.png": "2a2ea63a3bad3aaf0eebb8e98a6e931469d2793f19b31c5a2d12832fa414efc1",
+    "test-results/t06-behavior-ui-r2/width-390.png": "a0d4a800d9008ca485a28361491b0bae1764ac5501e636afa5a4e3edd2e6d635",
+    "test-results/t06-behavior-ui-r2/viewport-390.png": "d1d42788e64416585133f023a26aeaf54a460268a853fe807eaae484a6ba902f"
+  },
+  "previous_verification": {
+    "git_source": "571b4d64120c8420d527f9fda2a3cb81bbd47d3f:apps/desktop/src/renderer/src/behavior/verification.json",
+    "sha256": "ddd1bc99026c51d444755ad2363423f428d84a57f2a7092b4bd42e20a3d18bc9",
+    "all_original_generated_artifact_hashes_rechecked_unchanged": true
+  },
+  "independent_review": {
+    "head": "571b4d64120c8420d527f9fda2a3cb81bbd47d3f",
+    "outcome": "not passed: 3 P2",
+    "report": {
+      "path": "/tmp/T06-UI-571b4d6-independent-review.md",
+      "sha256": "628f2370edb030f636fa671188b8e344f953b693918a404db70ae85734ec0292"
+    },
+    "negative_probes": {
+      "path": "/tmp/T06-UI-571b4d6-negative-probes.mjs",
+      "sha256": "dc8b54956bbfda1f0b2d0548ca7a8eecaa6fdbbf07c54306d0ef4c65b69562ab"
+    },
+    "new_candidate_review": "pending new full independent review"
+  },
+  "repairs": {
+    "P2-1": "explicit always author/validate/onDraftChange/runSample callback, with no fake object condition; empty/missing condition still rejected",
+    "P2-2": "single-round action/notification matrix checks all 60 combinations; contradictory controller responses rejected, invalid refresh preserves last verified result",
+    "P2-3": "reserved own JSON keys rejected before z.record can normalize them, including escaped keys; both differing same-ID __proto__ payloads rejected and no callback; ordinary fields preserved"
   },
   "verification": {
-    "full_check": "passed: lint/format/strict typecheck/651 TS/desktop build/ruff/1052 Python",
-    "ui_unit_tests": 21,
-    "headless": "passed: component fixtures only; actual Chrome Headless Shell, keyboard/disabled/edits/refresh/trace/cancel/project switch/1440+390 overflow checks and screenshots",
-    "visual_inspection": "view_image: width-1440.png, width-390.png, viewport-390.png",
-    "first_failures": [
-      "Vite virtual lib entry absolute-path resolution: original tool output retained in conversation; corrected in script",
-      "Playwright Headless Shell initially absent: original tool output retained in conversation; installed only worktree test-results cache",
-      "Nested select getByLabel exact timeout: original raw tee logs retained; corrected role selector after reading actual accessibility snapshot",
-      "First full check failed only verify-headless.mjs formatting while script was being edited; raw t06-ui-check.log retained"
-    ]
+    "full_check": "passed: lint/format/strict typecheck/664 TS/desktop build/ruff/1052 Python",
+    "ui_unit_tests": 34,
+    "headless": "passed: actual Chrome Headless Shell, explicit always editing/empty-condition rejection/host+execution callback; contradictory run+refresh rejection; two reserved-key payloads no callback; normal states/cancellation/keyboard/1440+390",
+    "visual_inspection": "view_image: r2 width-1440.png and viewport-390.png",
+    "first_failure": "r2 headless textarea getByLabel exact timeout, raw first log preserved; corrected textbox role locator; final headless and complete check passed"
+  },
+  "policy_receipt": {
+    "agents_sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+    "common_instructions_sha256": "b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39",
+    "handoff_sha256": {
+      "I05-T01-format3": "18485767098d448a4fcce2fc7e59b5a325433826894b98111cab96926fdc2097",
+      "I06-T01-format3": "add9884ab9a0cda3a8a562f26a3b7c515255919d65eb0487d6c254681ed4991d",
+      "I05-T03-build": "88057b59e173453d197bfeae183dc99b8c09c71e30d518781bf774ebc037e95b"
+    },
+    "scope_unchanged": true
   },
   "not_verified": [
     "formal App/bridge/engine/Store/reasoning/Agent integration",

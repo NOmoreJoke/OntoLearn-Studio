@@ -9,15 +9,31 @@ import react from '@vitejs/plugin-react'
 import { chromium } from '@playwright/test'
 
 const component = fileURLToPath(new URL('./BehaviorWorkspace.tsx', import.meta.url))
-const output = path.resolve('test-results/t06-behavior-ui')
+const output = path.resolve('test-results/t06-behavior-ui-r2')
 const fixture = `
-import React, {useMemo, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {BehaviorWorkspace} from ${JSON.stringify(component)};
 const draft={id:'B',name:'风险巡检',description:'设备出现高危告警时在隔离副本建单',trigger:'alarm',conditions:[{kind:'equals',object:'T1',property:'P',value:{kind:'boolean',value:false}}],actions:[{kind:'update',object:'T1',property:'P',value:{kind:'boolean',value:true}},{kind:'notify',message:'巡检通知'}],effect:'创建内部通知',enabled:true,priority:0,version:1};
 const catalog={objects:['T1','W-test'],classes:['TestObject','Notification'],properties:[{id:'P',kind:'single'},{id:'links',kind:'multi'}],behaviorIds:[]};
-function value(binding,mode){return {binding,runId:'fixture-run',state:mode==='failed'?'failed':mode==='cancelled'?'cancelled':mode==='history'?'completed':'candidate',committed:mode==='history',freshness:mode==='history'?'historical':'current',freshnessDetail:mode==='history'?'历史输入快照，仅供查看':'',assertionVersion:'fixture-A1',inferenceVersion:'fixture-I1',semanticsVersion:'fixture-E1',conditions:[{eventId:'E1',behaviorId:'B',triggered:true,reason:'冻结快照 T1.P=false'},{eventId:'E2',behaviorId:'B',triggered:false,reason:'条件不满足'}],actions:[{eventId:'E1',behaviorId:'B',index:0,kind:'update',state:['failed','cancelled'].includes(mode)?'rolled_back':'planned',detail:'T1.P=true'},{eventId:'E1',behaviorId:'B',index:1,kind:'notify',state:['failed','cancelled'].includes(mode)?'skipped':'planned',detail:'关联 E1'}],diff:{added:[{object:'T1',property:'P',value:{kind:'boolean',value:true}}],removed:[{object:'T1',property:'P',value:{kind:'boolean',value:false}}]},notifications:[{eventId:'E1',behaviorId:'B',message:'<img src=x onerror=alert(1)>',state:['failed','cancelled'].includes(mode)?'discarded':'candidate'}],error:mode==='failed'?'conflict':null};}
-function Fixture(){const [mode,setMode]=useState('none');const [lastDraft,setLastDraft]=useState('');const [project,setProject]=useState('fixture-project');const services=useMemo(()=>mode==='none'?{}:{runSample:async(request)=>{if(mode==='pending')await new Promise(r=>setTimeout(r,300));return value(request.binding,mode);},refreshResult:async(binding)=>({...value(binding,mode),freshness:'stale',freshnessDetail:'夹具：上游行为版本已改变'}),cancelSample:async(binding)=>value(binding,'cancelled')},[mode]);return <><aside style={{padding:16,background:'#fff8e8'}}>开发验证夹具 · 非引擎结果 · 不接入产品<nav style={{display:'flex',gap:8,flexWrap:'wrap'}}>{['none','candidate','failed','cancelled','history','pending'].map(x=><button key={x} onClick={()=>setMode(x)}>{'夹具 '+x}</button>)}<button onClick={()=>setProject('fixture-project-2')}>切换夹具项目</button></nav><output aria-label='宿主草稿'>{lastDraft}</output></aside><BehaviorWorkspace context={{projectId:project,inputVersion:'fixture-V1',behaviorVersion:'fixture-B1',scopeId:'fixture-isolated'}} catalog={catalog} initialDraft={draft} services={services} onDraftChange={value=>setLastDraft(value.name)}/></>};
+function value(binding,mode,conditionKind='equals'){
+  const state=['failed','cancelled'].includes(mode)?mode:mode==='history'?'completed':'candidate';
+  const actionState=state==='completed'?'applied':['failed','cancelled'].includes(state)?'rolled_back':mode==='invalid'?'applied':'planned';
+  const notificationState=state==='completed'?'recorded':['failed','cancelled'].includes(state)?'discarded':mode==='invalid'?'recorded':'candidate';
+  return {binding,runId:'fixture-run',state,committed:state==='completed',freshness:mode==='history'?'historical':'current',freshnessDetail:mode==='history'?'历史输入快照，仅供查看':'',assertionVersion:'fixture-A1',inferenceVersion:'fixture-I1',semanticsVersion:'fixture-E1',
+    conditions:[{eventId:'E1',behaviorId:'B',triggered:true,reason:conditionKind==='always'?'显式恒真，未附加对象条件':'冻结快照 T1.P=false'},{eventId:'E2',behaviorId:'B',triggered:false,reason:'条件不满足'}],
+    actions:[{eventId:'E1',behaviorId:'B',index:0,kind:'update',state:actionState,detail:'T1.P=true'},{eventId:'E1',behaviorId:'B',index:1,kind:'notify',state:['failed','cancelled'].includes(state)?'skipped':actionState,detail:'关联 E1'}],
+    diff:{added:[{object:'T1',property:'P',value:{kind:'boolean',value:true}}],removed:[{object:'T1',property:'P',value:{kind:'boolean',value:false}}]},
+    notifications:[{eventId:'E1',behaviorId:'B',message:'<img src=x onerror=alert(1)>',state:notificationState}],error:state==='failed'?'conflict':null};
+}
+function Fixture(){
+  const [mode,setMode]=useState('none');const [lastDraft,setLastDraft]=useState('');const [lastConditions,setLastConditions]=useState([]);const [receivedConditions,setReceivedConditions]=useState([]);const [runCount,setRunCount]=useState(0);const [project,setProject]=useState('fixture-project');const sampleRef=useRef(null);
+  const services=useMemo(()=>mode==='none'?{}:{
+    runSample:async(request)=>{sampleRef.current=request;setRunCount(count=>count+1);setReceivedConditions(request.draft.conditions);if(mode==='pending')await new Promise(r=>setTimeout(r,300));return value(request.binding,mode,request.draft.conditions[0].kind);},
+    refreshResult:async(binding)=>({...value(binding,mode,sampleRef.current?.draft.conditions[0].kind),freshness:'stale',freshnessDetail:'夹具：上游行为版本已改变'}),
+    cancelSample:async(binding)=>value(binding,'cancelled',sampleRef.current?.draft.conditions[0].kind)
+  },[mode]);
+  return <><aside style={{padding:16,background:'#fff8e8'}}>开发验证夹具 · 非引擎结果 · 不接入产品<nav style={{display:'flex',gap:8,flexWrap:'wrap'}}>{['none','candidate','failed','cancelled','history','pending','invalid'].map(x=><button key={x} onClick={()=>setMode(x)}>{'夹具 '+x}</button>)}<button onClick={()=>setProject('fixture-project-2')}>切换夹具项目</button></nav><output aria-label='宿主草稿'>{lastDraft}</output><output aria-label='宿主条件'>{JSON.stringify(lastConditions)}</output><output aria-label='送达条件'>{JSON.stringify(receivedConditions)}</output><output aria-label='测试调用次数'>{runCount}</output></aside><BehaviorWorkspace context={{projectId:project,inputVersion:'fixture-V1',behaviorVersion:'fixture-B1',scopeId:'fixture-isolated'}} catalog={catalog} initialDraft={draft} services={services} onDraftChange={value=>{setLastDraft(value.name);setLastConditions(value.conditions);}}/></>};
 createRoot(document.getElementById('root')).render(<Fixture/>);
 `
 await build({
@@ -106,6 +122,29 @@ try {
   await page.getByRole('button', { name: '检查本地结构', exact: true }).click()
   await page.getByRole('status').filter({ hasText: '本地结构检查通过' }).waitFor()
   evidence.checks.push('未接入服务禁用执行；本地检查有独立边界')
+  const conditionType = () =>
+    page
+      .getByRole('group', { name: '条件 1', exact: true })
+      .getByRole('combobox', { name: '条件类型', exact: true })
+  await conditionType().selectOption('always')
+  assert.equal(await page.getByLabel('条件对象 ID', { exact: true }).count(), 0)
+  assert.equal(await page.getByLabel('条件属性 ID', { exact: true }).count(), 0)
+  assert.equal(
+    await page.getByLabel('宿主条件', { exact: true }).textContent(),
+    '[{"kind":"always"}]',
+  )
+  await page.getByRole('button', { name: '移除条件 1', exact: true }).click()
+  await page.getByRole('button', { name: '检查本地结构', exact: true }).click()
+  await page
+    .getByRole('list', { name: '本地结构问题', exact: true })
+    .filter({ hasText: 'conditions' })
+    .waitFor()
+  await page.getByRole('button', { name: '＋ 添加条件', exact: true }).click()
+  await conditionType().selectOption('always')
+  await page.getByRole('button', { name: '检查本地结构', exact: true }).click()
+  await page.getByRole('status').filter({ hasText: '本地结构检查通过' }).waitFor()
+  evidence.checks.push('显式always无伪造对象字段且回调保真；空条件仍拒绝，重新选择always可验证')
+
   await page.getByRole('button', { name: '＋ 添加事实变更', exact: true }).click()
   await page.getByLabel('事实对象 ID', { exact: true }).fill('T1')
   await page.getByLabel('事实属性 ID', { exact: true }).fill('P')
@@ -121,7 +160,7 @@ try {
   await page.getByRole('button', { name: '在隔离副本中测试', exact: true }).click()
   await page.getByText('候选计划 · 尚未提交 / 当前输入', { exact: true }).waitFor()
   assert.ok(
-    await page.getByText('E1 / B · 触发 · 冻结快照 T1.P=false', { exact: true }).isVisible(),
+    await page.getByText('E1 / B · 触发 · 显式恒真，未附加对象条件', { exact: true }).isVisible(),
   )
   assert.ok(await page.getByText('E2 / B · 未触发 · 条件不满足', { exact: true }).isVisible())
   const actions = page
@@ -133,6 +172,10 @@ try {
     'E1 / B · 动作 2 · 通知记录 · 计划 · 关联 E1',
   ])
   assert.equal(await page.locator('img').count(), 0)
+  assert.equal(
+    await page.getByLabel('送达条件', { exact: true }).textContent(),
+    '[{"kind":"always"}]',
+  )
   await page.getByLabel('行为名称', { exact: true }).fill('刷新必须保留的草稿')
   await page.getByRole('button', { name: '刷新此运行', exact: true }).click()
   await page.getByText('夹具：上游行为版本已改变', { exact: true }).waitFor()
@@ -148,6 +191,36 @@ try {
   evidence.checks.push(
     '事件事实变更可编辑；候选不冒充提交；完整触发/动作/通知文本安全；刷新保留草稿并标记旧依据',
   )
+
+  await page.getByRole('button', { name: '夹具 invalid', exact: true }).click()
+  await page.getByRole('button', { name: '刷新此运行', exact: true }).click()
+  await page.getByRole('status').filter({ hasText: '已拒绝显示' }).waitFor()
+  assert.ok(await page.getByText('候选计划 · 尚未提交 / 已过期', { exact: true }).isVisible())
+  assert.deepEqual(await actions.allTextContents(), [
+    'E1 / B · 动作 1 · 更新属性 · 计划 · T1.P=true',
+    'E1 / B · 动作 2 · 通知记录 · 计划 · 关联 E1',
+  ])
+  await page.getByRole('button', { name: '在隔离副本中测试', exact: true }).click()
+  await page.getByRole('status').filter({ hasText: '已拒绝显示' }).waitFor()
+  await page.getByText('尚无可核验的运行结果', { exact: true }).waitFor()
+  evidence.checks.push(
+    '矛盾candidate+applied/recorded被拒；刷新保留上次有效结果，新请求不显示矛盾证据',
+  )
+  const countBeforeReserved = await page.getByLabel('测试调用次数', { exact: true }).textContent()
+  for (const payload of ['{"__proto__":"first"}', '{"__proto__":"second"}']) {
+    await page.getByRole('textbox', { name: '事件内容（JSON 对象）', exact: true }).fill(payload)
+    await page.getByRole('button', { name: '在隔离副本中测试', exact: true }).click()
+    await page
+      .getByRole('list', { name: '本地结构问题', exact: true })
+      .filter({ hasText: '保留键' })
+      .waitFor()
+    assert.equal(
+      await page.getByLabel('测试调用次数', { exact: true }).textContent(),
+      countBeforeReserved,
+    )
+  }
+  await page.getByRole('textbox', { name: '事件内容（JSON 对象）', exact: true }).fill('{}')
+  evidence.checks.push('同事件两份不同__proto__载荷均显示问题且不调用执行，未静默丢值')
   for (const [mode, expected] of [
     ['failed', '运行失败 · 本轮未提交 / 当前输入'],
     ['cancelled', '运行已取消 · 本轮未提交 / 当前输入'],

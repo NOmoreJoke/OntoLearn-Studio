@@ -10,6 +10,7 @@ export const valueSchema = z.discriminatedUnion('kind', [
 ])
 export type Value = z.infer<typeof valueSchema>
 const conditionSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('always') }).strict(),
   z
     .object({
       kind: z.literal('equals'),
@@ -154,6 +155,35 @@ export const resultSchema = z
       ctx.addIssue({ code: 'custom', message: '结果提交状态不一致' })
     if ((result.state === 'failed') !== (result.error !== null))
       ctx.addIssue({ code: 'custom', message: '结果错误状态不一致' })
+    // A sample is one isolated round. No earlier committed-round evidence is mixed in.
+    const allowedActions = {
+      candidate: ['planned', 'deduplicated', 'skipped'],
+      completed: ['applied', 'deduplicated', 'skipped'],
+      failed: ['rolled_back', 'skipped'],
+      cancelled: ['rolled_back', 'skipped'],
+    } as const
+    const allowedNotification = {
+      candidate: 'candidate',
+      completed: 'recorded',
+      failed: 'discarded',
+      cancelled: 'discarded',
+    } as const
+    result.actions.forEach((action, index) => {
+      if (!(allowedActions[result.state] as readonly string[]).includes(action.state))
+        ctx.addIssue({
+          code: 'custom',
+          path: ['actions', index, 'state'],
+          message: '动作状态与本次样本运行不一致',
+        })
+    })
+    result.notifications.forEach((notification, index) => {
+      if (notification.state !== allowedNotification[result.state])
+        ctx.addIssue({
+          code: 'custom',
+          path: ['notifications', index, 'state'],
+          message: '通知状态与本次样本运行不一致',
+        })
+    })
     if (result.freshness === 'stale' && !result.freshnessDetail.trim())
       ctx.addIssue({ code: 'custom', message: '过期结果缺少说明' })
   })
@@ -214,6 +244,7 @@ export function validateDraft(draft: BehaviorDraft, catalog: Catalog): Issue[] {
   const known = new Set(catalog.objects)
   const properties = new Map(catalog.properties.map((property) => [property.id, property.kind]))
   for (const [index, condition] of draft.conditions.entries()) {
+    if (condition.kind === 'always') continue
     if (!known.has(condition.object))
       issues.push({ path: `conditions.${index}`, message: '条件引用了未知对象' })
     if (condition.kind !== 'type' && !properties.has(condition.property))
@@ -250,6 +281,7 @@ export function validateDraft(draft: BehaviorDraft, catalog: Catalog): Issue[] {
   }
   return issues
 }
+const reservedPayloadKeys = new Set(['__proto__', 'constructor', 'prototype'])
 const payloadSchema = z.record(
   z.string().min(1).max(200),
   z.union([z.string().max(2000), z.number().finite(), z.boolean(), z.null()]),
@@ -272,7 +304,20 @@ export function parseEvents(events: SampleEvent[]): {
     seen.add(event.id.trim())
     try {
       if (event.payload.length > 20000) throw new Error('size')
-      const payload = payloadSchema.parse(JSON.parse(event.payload))
+      const rawPayload: unknown = JSON.parse(event.payload)
+      // Check own JSON keys before z.record can normalize them; never silently drop content.
+      if (
+        rawPayload !== null &&
+        typeof rawPayload === 'object' &&
+        Object.keys(rawPayload).some((key) => reservedPayloadKeys.has(key))
+      ) {
+        issues.push({
+          path,
+          message: '事件内容包含保留键（__proto__、constructor 或 prototype），请改用普通业务字段',
+        })
+        return
+      }
+      const payload = payloadSchema.parse(rawPayload)
       if (Object.keys(payload).length > 100) throw new Error('size')
       const changes = z
         .array(

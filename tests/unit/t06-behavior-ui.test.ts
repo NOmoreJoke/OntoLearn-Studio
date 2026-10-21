@@ -61,6 +61,19 @@ const events: SampleEvent[] = [
   },
 ]
 function result(binding: Binding, patch: Partial<BehaviorResult> = {}): BehaviorResult {
+  const state = patch.state ?? 'candidate'
+  const actionState =
+    state === 'completed'
+      ? 'applied'
+      : ['failed', 'cancelled'].includes(state)
+        ? 'rolled_back'
+        : 'planned'
+  const notificationState =
+    state === 'completed'
+      ? 'recorded'
+      : ['failed', 'cancelled'].includes(state)
+        ? 'discarded'
+        : 'candidate'
   return {
     binding,
     runId: 'R1',
@@ -81,7 +94,7 @@ function result(binding: Binding, patch: Partial<BehaviorResult> = {}): Behavior
         behaviorId: 'B',
         index: 0,
         kind: 'update',
-        state: 'planned',
+        state: actionState,
         detail: 'T1.P=true',
       },
       {
@@ -89,7 +102,7 @@ function result(binding: Binding, patch: Partial<BehaviorResult> = {}): Behavior
         behaviorId: 'B',
         index: 1,
         kind: 'notify',
-        state: 'planned',
+        state: actionState,
         detail: '事件关联通知',
       },
     ],
@@ -97,7 +110,7 @@ function result(binding: Binding, patch: Partial<BehaviorResult> = {}): Behavior
       added: [{ object: 'T1', property: 'P', value: { kind: 'boolean', value: true } }],
       removed: [{ object: 'T1', property: 'P', value: { kind: 'boolean', value: false } }],
     },
-    notifications: [{ eventId: 'E-1', behaviorId: 'B', message: '通知', state: 'candidate' }],
+    notifications: [{ eventId: 'E-1', behaviorId: 'B', message: '通知', state: notificationState }],
     error: null,
     ...patch,
   }
@@ -137,6 +150,25 @@ describe('T06 private editor structure', () => {
     ).toBe(false)
     expect(draftSchema.safeParse({ ...draft, preconditions: [] }).success).toBe(false)
     expect(draftSchema.safeParse({ ...draft, version: 0, priority: NaN }).success).toBe(false)
+  })
+  it('authors explicit always for X/B-a/B-b without inventing object conditions, and keeps missing conditions invalid', async () => {
+    const run = vi.fn(async (request: SampleRequest) => result(request.binding))
+    const controller = setup(run)
+    for (const id of ['X', 'B-a', 'B-b']) {
+      const always: BehaviorDraft = { ...draft, id, conditions: [{ kind: 'always' }] }
+      expect(validateDraft(always, catalog)).toEqual([])
+      controller.editDraft(always)
+      await controller.run()
+      expect(run.mock.calls.at(-1)?.[0].draft.conditions).toEqual([{ kind: 'always' }])
+    }
+    expect(draftSchema.safeParse({ ...draft, conditions: [] }).success).toBe(false)
+    const missing: Record<string, unknown> = { ...draft }
+    delete missing.conditions
+    expect(draftSchema.safeParse(missing).success).toBe(false)
+    expect(
+      draftSchema.safeParse({ ...draft, conditions: [{ kind: 'always', object: 'dummy' }] })
+        .success,
+    ).toBe(false)
   })
   it('validates references and action sequence without pretending to run conflict detection', () => {
     expect(
@@ -229,6 +261,138 @@ describe('T06 private editor structure', () => {
         .path,
     ).toBe('events.0')
     expect(parseEvents([]).issues[0].path).toBe('events')
+  })
+})
+
+describe('T06 single sample result consistency', () => {
+  const binding: Binding = { ...context, requestId: 'matrix' }
+  const allowedActions = {
+    candidate: ['planned', 'deduplicated', 'skipped'],
+    completed: ['applied', 'deduplicated', 'skipped'],
+    failed: ['rolled_back', 'skipped'],
+    cancelled: ['rolled_back', 'skipped'],
+  }
+  const allowedNotifications = {
+    candidate: 'candidate',
+    completed: 'recorded',
+    failed: 'discarded',
+    cancelled: 'discarded',
+  }
+  it.each(['candidate', 'completed', 'failed', 'cancelled'] as const)(
+    '%s accepts exactly its action/notification combinations',
+    (state) => {
+      for (const actionState of [
+        'planned',
+        'applied',
+        'deduplicated',
+        'rolled_back',
+        'skipped',
+      ] as const) {
+        for (const notificationState of ['candidate', 'recorded', 'discarded'] as const) {
+          const value = result(binding, {
+            state,
+            committed: state === 'completed',
+            error: state === 'failed' ? 'execution_failed' : null,
+          })
+          value.actions = value.actions.map((action) => ({ ...action, state: actionState }))
+          value.notifications = value.notifications.map((notification) => ({
+            ...notification,
+            state: notificationState,
+          }))
+          expect(
+            resultSchema.safeParse(value).success,
+            `${state}/${actionState}/${notificationState}`,
+          ).toBe(
+            allowedActions[state].includes(actionState) &&
+              notificationState === allowedNotifications[state],
+          )
+        }
+      }
+      const noActions = result(binding, {
+        state,
+        committed: state === 'completed',
+        error: state === 'failed' ? 'execution_failed' : null,
+        actions: [],
+        notifications: [],
+      })
+      expect(resultSchema.safeParse(noActions).success).toBe(true)
+    },
+  )
+  it.each(['candidate', 'completed', 'failed', 'cancelled'] as const)(
+    'controller rejects contradictory %s evidence without presenting success',
+    async (state) => {
+      const controller = setup(async (request) => {
+        const value = result(request.binding, {
+          state,
+          committed: state === 'completed',
+          error: state === 'failed' ? 'conflict' : null,
+        })
+        value.actions[0].state = state === 'completed' ? 'planned' : 'applied'
+        return value
+      })
+      await controller.run()
+      expect(controller.getSnapshot().result).toBeUndefined()
+      expect(controller.getSnapshot().notice).toContain('已拒绝显示')
+    },
+  )
+  it('invalid refreshed applied/recorded candidate retains the last verified result and editor', async () => {
+    const run = async (request: SampleRequest) => result(request.binding)
+    const refresh = async (request: Binding) => {
+      const value = result(request)
+      value.actions[0].state = 'applied'
+      value.notifications[0].state = 'recorded'
+      return value
+    }
+    const controller = setup(run)
+    controller.configure(context, catalog, { runSample: run, refreshResult: refresh })
+    await controller.run()
+    const last = controller.getSnapshot().result
+    controller.editDraft({ ...draft, name: '仍保留草稿' })
+    await controller.refresh()
+    expect(controller.getSnapshot().result).toBe(last)
+    expect(controller.getSnapshot().draft.name).toBe('仍保留草稿')
+    expect(controller.getSnapshot().notice).toContain('已拒绝显示')
+  })
+})
+
+describe('T06 event content fidelity', () => {
+  it('rejects both different same-ID __proto__ payloads instead of silently folding either into an empty object', () => {
+    const inputs = ['{"__proto__":"first"}', '{"__proto__":"second"}']
+    for (const payload of inputs) {
+      const parsed = parseEvents([{ ...events[0], payload }])
+      expect(parsed.events).toEqual([])
+      expect(parsed.issues).toEqual([
+        {
+          path: 'events.0',
+          message: '事件内容包含保留键（__proto__、constructor 或 prototype），请改用普通业务字段',
+        },
+      ])
+    }
+  })
+  it('checks reserved own keys before schema normalization, including escaped keys, and preserves ordinary fields', () => {
+    for (const key of ['__proto__', 'constructor', 'prototype']) {
+      const payload = JSON.stringify(Object.fromEntries([[key, 'retained or rejected']]))
+      expect(parseEvents([{ ...events[0], payload }]).issues[0]?.message).toContain('保留键')
+    }
+    expect(
+      parseEvents([{ ...events[0], payload: String.raw`{"\u005f_proto__":"escaped"}` }]).issues[0]
+        ?.message,
+    ).toContain('保留键')
+    const value = { __proto_value: 'first', Constructor: 'second', normal: null }
+    expect(parseEvents([{ ...events[0], payload: JSON.stringify(value) }])).toEqual({
+      events: [{ ...events[0], payload: value }],
+      issues: [],
+    })
+  })
+  it('never calls the execution callback with rejected reserved-key content', async () => {
+    const run = vi.fn(async (request: SampleRequest) => result(request.binding))
+    const controller = setup(run)
+    for (const payload of ['{"__proto__":"first"}', '{"__proto__":"second"}']) {
+      controller.editEvents([{ ...events[0], payload }])
+      await controller.run()
+      expect(run).not.toHaveBeenCalled()
+      expect(controller.getSnapshot().issues[0]?.message).toContain('保留键')
+    }
   })
 })
 

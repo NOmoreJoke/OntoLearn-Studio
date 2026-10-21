@@ -602,45 +602,55 @@ function ConditionEditor({
           value={condition.kind}
           onChange={(e) => {
             const kind = e.target.value as Condition['kind']
+            const object = condition.kind === 'always' ? '' : condition.object
             onChange(
-              kind === 'type'
-                ? { kind, object: condition.object, classId: '' }
-                : kind === 'exists'
-                  ? { kind, object: condition.object, property: '' }
-                  : {
-                      kind,
-                      object: condition.object,
-                      property: '',
-                      value: { kind: 'string', value: '' },
-                    },
+              kind === 'always'
+                ? { kind }
+                : kind === 'type'
+                  ? { kind, object, classId: '' }
+                  : kind === 'exists'
+                    ? { kind, object, property: '' }
+                    : {
+                        kind,
+                        object,
+                        property: '',
+                        value: { kind: 'string', value: '' },
+                      },
             )
           }}
         >
+          <option value="always">无额外条件（恒真）</option>
           <option value="equals">属性值等于</option>
           <option value="exists">已记录属性</option>
           <option value="type">属于类型（含行为前推导）</option>
         </select>
       </Field>
-      <Field label="条件对象 ID">
-        <input
-          value={condition.object}
-          onChange={(e) => onChange({ ...condition, object: e.target.value })}
-        />
-      </Field>
-      {condition.kind === 'type' ? (
-        <Field label="条件类 ID">
-          <input
-            value={condition.classId}
-            onChange={(e) => onChange({ ...condition, classId: e.target.value })}
-          />
-        </Field>
+      {condition.kind === 'always' ? (
+        <p className="behavior-help">显式恒真；此项不附加对象或属性限制，同组其他条件仍须满足。</p>
       ) : (
-        <Field label="条件属性 ID">
-          <input
-            value={condition.property}
-            onChange={(e) => onChange({ ...condition, property: e.target.value })}
-          />
-        </Field>
+        <>
+          <Field label="条件对象 ID">
+            <input
+              value={condition.object}
+              onChange={(e) => onChange({ ...condition, object: e.target.value })}
+            />
+          </Field>
+          {condition.kind === 'type' ? (
+            <Field label="条件类 ID">
+              <input
+                value={condition.classId}
+                onChange={(e) => onChange({ ...condition, classId: e.target.value })}
+              />
+            </Field>
+          ) : (
+            <Field label="条件属性 ID">
+              <input
+                value={condition.property}
+                onChange={(e) => onChange({ ...condition, property: e.target.value })}
+              />
+            </Field>
+          )}
+        </>
       )}
       {condition.kind === 'equals' && (
         <ValueEditor
