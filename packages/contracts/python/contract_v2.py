@@ -260,6 +260,78 @@ def validate(name, value):
         return False
 
 
+def validate_business3(name, value):
+    """Foundation validator; no runtime/session or Store readiness is enabled."""
+    profiles = {
+        "request": "request3",
+        "response": "response3",
+        "notification": "notification3",
+        "envelope": "envelope3",
+        "error": "error3",
+        "bootstrapError": "error_bootstrap3",
+        "project": "project3",
+        "result_project.get": "result_project.get3",
+        "result_hello": "result_hello3",
+    }
+    return validate(profiles.get(name, name), value)
+
+
+def matches_business3_response(request, response, expected_registry_hash):
+    """Pending-request binding only; actual ready gates remain runtime-owned."""
+    from copy import deepcopy
+
+    if not (
+        validate("hash", expected_registry_hash)
+        and validate_business3("request", request)
+        and validate_business3("response", response)
+    ):
+        return False
+    if any(request[k] != response[k] for k in ("id", "method")):
+        return False
+    if request["method"] == "hello" and response["ok"]:
+        result = response["result"]
+        if (
+            3 not in request["params"]["supportedVersions"]
+            or result["registryHash"] != expected_registry_hash
+            or any(
+                c not in REGISTRY["foundationProfiles"]["business3"]["methods"]
+                for c in result["capabilities"]
+            )
+        ):
+            return False
+    # Validate v3 first; projecting only known literals reuses the existing
+    # strict resource/operation/page bindings without any runtime downgrade.
+    q, r = deepcopy(request), deepcopy(response)
+    q["protocolVersion"] = r["protocolVersion"] = 2
+    if q["method"] == "hello":
+        q["params"]["supportedVersions"] = [2]
+        if r["ok"]:
+            r["result"]["selectedVersion"] = 2
+    if q["method"] == "project.get" and r["ok"]:
+        r["result"]["formatVersion"] = 2
+    if not r["ok"] and r["error"]["code"] == "VERSION_INCOMPATIBLE":
+        r["error"]["params"] = {"supportedVersions": [2]}
+    return matches_response(q, r)
+
+
+def business3_hello_outcome(request, response, expected_registry_hash):
+    if not matches_business3_response(request, response, expected_registry_hash):
+        return "invalid-close"
+    if request["method"] != "hello":
+        return "invalid-close"
+    if response["ok"]:
+        return "success"
+    if response["error"]["code"] == "VERSION_INCOMPATIBLE":
+        return "incompatible-close"
+    return "rejected-close"
+
+
+def accepts_business3_job_event(value, binding):
+    if not validate_business3("notification", value):
+        return False
+    return accepts_job_event({**value, "protocolVersion": 2}, binding)
+
+
 def accepts_job_event(value, binding):
     # The binding is a trusted-side projection, but never assume its shape. Reject
     # corruption before arithmetic/indexing; never silently default sequence/state.

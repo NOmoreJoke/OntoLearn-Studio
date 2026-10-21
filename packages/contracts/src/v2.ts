@@ -318,6 +318,95 @@ export function validateV2(name: string, value: unknown): boolean {
   return true
 }
 
+/** Foundation validation only. The production supervisor still negotiates v2. */
+export function validateBusiness3(name: string, value: unknown): boolean {
+  const profiles: Record<string, string> = {
+    request: 'request3',
+    response: 'response3',
+    notification: 'notification3',
+    envelope: 'envelope3',
+    error: 'error3',
+    bootstrapError: 'error_bootstrap3',
+    project: 'project3',
+    'result_project.get': 'result_project.get3',
+    result_hello: 'result_hello3',
+  }
+  try {
+    return validateV2(profiles[name] ?? name, value)
+  } catch {
+    return false
+  }
+}
+
+/** Correlate a pending request; this does not attest Store/Job readiness. */
+export function matchesBusiness3Response(
+  request: unknown,
+  response: unknown,
+  expectedRegistryHash: string,
+): boolean {
+  if (
+    !validateV2('hash', expectedRegistryHash) ||
+    !validateBusiness3('request', request) ||
+    !validateBusiness3('response', response)
+  )
+    return false
+  const q = request as Record<string, unknown>
+  const r = response as Record<string, unknown>
+  if (q.id !== r.id || q.method !== r.method) return false
+  if (q.method === 'hello' && r.ok) {
+    const offered = (q.params as Record<string, unknown>).supportedVersions as number[]
+    const result = r.result as Record<string, unknown>
+    if (
+      !offered.includes(3) ||
+      result.registryHash !== expectedRegistryHash ||
+      !(result.capabilities as string[]).every((c) =>
+        (registry.foundationProfiles.business3.methods as string[]).includes(c),
+      )
+    )
+      return false
+  }
+  // Strict v3 validation precedes this binding-only projection. It never sends
+  // a v2 fallback, drops unknown fields or changes the caller's actual objects.
+  const projectedRequest = structuredClone(q)
+  const projectedResponse = structuredClone(r)
+  projectedRequest.protocolVersion = projectedResponse.protocolVersion = 2
+  if (q.method === 'hello') {
+    ;(projectedRequest.params as Record<string, unknown>).supportedVersions = [2]
+    if (r.ok) (projectedResponse.result as Record<string, unknown>).selectedVersion = 2
+  }
+  if (q.method === 'project.get' && r.ok)
+    (projectedResponse.result as Record<string, unknown>).formatVersion = 2
+  if (!r.ok) {
+    const error = projectedResponse.error as Record<string, unknown>
+    if (error.code === 'VERSION_INCOMPATIBLE') error.params = { supportedVersions: [2] }
+  }
+  return matchesResponse(projectedRequest, projectedResponse)
+}
+
+export function business3HelloOutcome(
+  request: unknown,
+  response: unknown,
+  expectedRegistryHash: string,
+): 'success' | 'incompatible-close' | 'rejected-close' | 'invalid-close' {
+  if (
+    !matchesBusiness3Response(request, response, expectedRegistryHash) ||
+    (request as Record<string, unknown>).method !== 'hello'
+  )
+    return 'invalid-close'
+  const r = response as Record<string, unknown>
+  if (r.ok) return 'success'
+  return (r.error as Record<string, unknown>).code === 'VERSION_INCOMPATIBLE'
+    ? 'incompatible-close'
+    : 'rejected-close'
+}
+
+export function acceptsBusiness3JobEvent(value: unknown, binding: EventBinding): boolean {
+  if (!validateBusiness3('notification', value)) return false
+  const projected = structuredClone(value) as Record<string, unknown>
+  projected.protocolVersion = 2
+  return acceptsJobEvent(projected, binding)
+}
+
 export interface EventBinding {
   engineSessionId: string
   projectId: string

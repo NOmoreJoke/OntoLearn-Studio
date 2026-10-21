@@ -163,3 +163,13 @@ worker.py唯一未来维护已于2026-10-21T10:21:19.636646+08:00由总控effect
 总控source固定证据审计d77f902…c3108已全文读：同版2301/87/独立6确认；E1只是87专项完成poll漏封。现仅补封原session2693/2697两完整工具行及索引，补包SHA370a055ad1ab23ba037d2efb297b78300f1389de163782fac9e538c97ef23a52，旧62633B包身份不变；无测试/产品变化。
 
 收到I06固定b1283bc/68dfd71来源对齐回应并全文读，形成source-lifecycle-decisions-r3：选择精确同块append幂等、不重写/不推进/不延寿；接受1pending begin、2leases/16MiB及30/120/600秒候选技术预算，另提256attempt tombstone/256MiB逻辑encoded持久预算待总控接受/实测。main未dispatch guard与已dispatch同coordinator权威排序区分，unknown保留原operation及资源并对账。独立设计发现稳定计划/临时lease指纹门未明确后，已补§3与对应fixture条件：未接纳lease失效同bytes也需新preview/proof/人类确认；已有claim原请求跨session对账不要求临时lease活跃。该设计意见已独立关闭；wire/schema/预算/运行仍未批准或实现。准备纯过程恢复提交，不重复无变化check。
+
+## business3唯一canonical校验层与接口设计补充
+
+新增严格3分支、完整跨端corpus、实际registry hash绑定及原Job/资源/页/事件身份复用，生产仍2且coordinator拒3守卫未变；没有真实3握手/ready接线。专项196TS/195Python通过；新全check实际exit0：826TS/2496Python/44原不适用skip，静态/格式/类型/构建/ruff通过。独立只读83额外探针通过，无新增阻断，旧defs/资源旧值机器对比不变；详情见business3-validator-review.md及独立报告，不把内审当指定双审。
+
+新原始证据包SHA4f012bb90358ee3f5d963f9ee4706d8666828033c971d513b95c1eed8c6a3594，9对原工具记录/3完整logs与实际专项、全check终态poll已逐成员回读。旧f51/ff原件保留；总控E1补封独立结论115ddd…已读，原证据缺口有界关闭。
+
+source r4设计关闭总控P2R1（sealed/终态、accepted pin/迟到ack/满额与barrier/重建计账），独立复核无新增设计阻断，尚未实现。完整表摘要r1设计据T03实际str与canonical原implementation形状关闭两个空项，受限CSV utf-8-sig不冒称S1唯一编码，实际parser三身份仍待owner，golden只能synthetic；独立定点复核通过。T05 r2仅我方context/DTO/身份与未来诊断责任接受，Q6/新路由/新语义未批准；I05字符串term现存缺陷由原owner新候选修复，本线不消费未批准C3或新候选、不改已交worker。
+
+本地恢复提交后继续纯表摘要助手和同版ready的真实前置，Goal仍active。无push/指定双审/PR/CI/合并/发布新证据，父功能未完成。

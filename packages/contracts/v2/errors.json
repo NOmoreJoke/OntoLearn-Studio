@@ -446,5 +446,14 @@
       "semanticResult": "Total semantic result rows/triples/evidence payload budget, never just one page.",
       "semanticWork": "Cumulative closure/matching work or intermediate match-set budget, never behavior actions/rounds."
     }
+  },
+  "foundationProfiles": {
+    "business3": {
+      "supportedVersions": [3],
+      "legacyIncompatibleDiagnosis": [2],
+      "nullSessionHelloCodes": ["VERSION_INCOMPATIBLE", "INVALID_REQUEST", "SESSION_MISMATCH"],
+      "invalidRequestField": "params",
+      "startupFailure": "no successful hello; bounded local startup diagnosis required before runtime activation"
+    }
   }
 }

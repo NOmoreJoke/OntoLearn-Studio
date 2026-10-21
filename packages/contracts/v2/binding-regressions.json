@@ -3227,5 +3227,3232 @@
       },
       "valid": false
     }
+  ],
+  "business3": [
+    {
+      "name": "routing:valid job event|drop:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:valid job event|str:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": "0",
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:valid job event|drop:stateVersion",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:valid job event|str:stateVersion",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": "3",
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:valid job event|drop:state",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": 3
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:old lastSeq1|drop:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:old lastSeq1|str:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": "1",
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:old lastSeq2|drop:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:old lastSeq2|str:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": "2",
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:old stateVersion5|drop:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "stateVersion": 5,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:old stateVersion5|str:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": "0",
+        "stateVersion": 5,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:old stateVersion5|drop:stateVersion",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:old stateVersion5|str:stateVersion",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": "5",
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:old stateVersion5|drop:state",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": 5
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:terminal state cannot regress|drop:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 2,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "running",
+          "stateVersion": 5,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": null,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "stateVersion": 4,
+        "state": "cancelled"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:terminal state cannot regress|str:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 2,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "running",
+          "stateVersion": 5,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": null,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": "1",
+        "stateVersion": 4,
+        "state": "cancelled"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:terminal state cannot regress|drop:state",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 2,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "running",
+          "stateVersion": 5,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": null,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 1,
+        "stateVersion": 4
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:sequence gap requires get|drop:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 2,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:sequence gap requires get|str:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 2,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": "0",
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:same version contradictory event rejected|drop:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "stateVersion": 4,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:same version contradictory event rejected|str:lastSeq",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": "0",
+        "stateVersion": 4,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:same version contradictory event rejected|drop:stateVersion",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:same version contradictory event rejected|str:stateVersion",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": "4",
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "routing:same version contradictory event rejected|drop:state",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": 4
+      },
+      "valid": false
+    },
+    {
+      "name": "valid job event",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": true
+    },
+    {
+      "name": "malformed lastSeq 0",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": -1,
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed lastSeq 1",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": false,
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed lastSeq 2",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": null,
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed lastSeq 3",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": {},
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed lastSeq 4",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 1.5,
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed stateVersion 0",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": 0,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed stateVersion 1",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": true,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed stateVersion 2",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": null,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed stateVersion 3",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": [],
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed stateVersion 4",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": 1.5,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed state 0",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": 3,
+        "state": "bogus"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed state 1",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": 3,
+        "state": []
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed state 2",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": 3,
+        "state": null
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed projectId 0",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": null,
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed projectId 1",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": 42,
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    },
+    {
+      "name": "malformed projectId 2",
+      "value": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "projectId": "00000000-0000-4000-8000-000000000001",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "seq": 1,
+        "event": "job.state",
+        "data": {
+          "jobId": "00000000-0000-4000-8000-000000000003",
+          "projectId": "00000000-0000-4000-8000-000000000001",
+          "operationId": "00000000-0000-4000-8000-000000000004",
+          "capability": "test.rounds",
+          "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "definitionSetDigests": {},
+          "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scope": "scenario",
+          "implementation": {
+            "executionSemanticsVersion": "E1",
+            "engineVersion": "0.1.0",
+            "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "state": "cancelled",
+          "stateVersion": 4,
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 100,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "commitProgress": {
+            "mode": "rounds",
+            "committedProgress": {
+              "runId": "00000000-0000-4000-8000-000000000005",
+              "lastCommittedRound": 2,
+              "snapshotRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          "resultRef": null,
+          "error": null,
+          "createdAtMs": 1,
+          "updatedAtMs": 9,
+          "finishedAtMs": 9,
+          "input": {
+            "inputSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope": "scenario",
+            "definitionId": "test",
+            "parametersHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "derivedResultIds": [],
+            "preparedPlanRef": null
+          },
+          "confirmationRef": null
+        }
+      },
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "bad",
+        "jobId": "00000000-0000-4000-8000-000000000003",
+        "subscriptionId": "00000000-0000-4000-8000-000000000010",
+        "lastSeq": 0,
+        "stateVersion": 3,
+        "state": "cancelling"
+      },
+      "valid": false
+    }
   ]
 }

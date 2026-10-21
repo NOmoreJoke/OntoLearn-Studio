@@ -402,5 +402,30 @@
       "dependencyPolicy": "scenario.run",
       "dataScopes": ["scenario"]
     }
+  },
+  "foundationProfiles": {
+    "business3": {
+      "bootstrapVersion": 2,
+      "businessVersion": 3,
+      "databaseFormatVersion": 3,
+      "state": "validator-only-runtime-disabled",
+      "methods": [
+        "hello",
+        "health",
+        "session.ping",
+        "project.get",
+        "job.create",
+        "job.get",
+        "job.cancel",
+        "job.list",
+        "job.subscribe",
+        "job.unsubscribe",
+        "result.get",
+        "result.current",
+        "result.page",
+        "operation.get"
+      ],
+      "newSourceOrLearningMethods": []
+    }
   }
 }
