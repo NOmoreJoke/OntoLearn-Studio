@@ -4,7 +4,7 @@
 
 - 会话：01a15bc2-4551-7b51-8453-add1943f3b6e；仅负责 T11。
 - 工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-release`。
-- 分支：`feature/weekly-t11-release`；base/head：`5f910b52c69d86a1076b2032e5d3c63e715947f3`。
+- 分支：`feature/weekly-t11-release`；启动base/head：`5f910b52c69d86a1076b2032e5d3c63e715947f3`。
 - 启动实际 git 状态：仅 ` M AGENTS.md`；这是总控同步规则，保持未暂存，不进入产品提交。
 - 指南 SHA256：`db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786`，与共同指令一致。
 - 远端 develop 实查为同一 base。分支保护 API 返回 HTTP403（private repo 计划限制）；未证明服务端保护启用，不绕过原流程门禁。
@@ -18,5 +18,7 @@
 独立agent内审首轮及残留复核发现的预期自证、空壳快照、冻结时间回填、当前包冒充旧版及真人完成矛盾均已修复，最终复核通过，见 `internal-review.md`。该结果不替代正式指定双模型审查。失败原件与重跑日志保留本树ignored的 `*.log`；提交摘要和哈希见 `verification.json`，未把失败覆盖为通过。
 
 下一交付：按 `docs/iterations/T11/shared-file-handoff.md` 由总控完成唯一owner交接；待完整批准候选、真实资源后接线与联验，重新冻结base/head、双方指定新审、门禁push/PR/实际CI/正常合并/远端核验和最终下载实装。当前只作可恢复本地阶段提交，无推送。
+
+本地实现提交：`ffa0972800d6cb14910c43c185bfdd4dcf96d629`，19个授权新增文件。提交后仅AGENTS为总控同步的未暂存修改；源实现与最终内审核验器哈希一致。后续仅追加本回执，无实现/测试/配置/依赖/验收基线变化。远端develop本轮末次实查仍为启动base，未push/创建PR/申请GUI资源或发布。Goal保持active，不能将本阶段提交标为T11完整完成。
 
 仍缺完整 P0 同候选、目标干净设备、有效签名/公证、最终下载渠道、真实模型/API资源及真人预约；总控已集中询问，T11 不重复询问。不运行本机 Electron/native/e2e/HMR，不触发凭据提示，不签名/公证提交/发API/外发/购买；正式接线、双指定模型新同候选审查、push/PR/实际CI/合并及发布另按原门禁继续。
