@@ -1,0 +1,398 @@
+{
+  "candidate": "9fcba6634d5c16983c36ef671d4ec8e79694b6d6",
+  "packagedSpecializedResult": "passed",
+  "existingE2ERegressionResult": "failed",
+  "overallAcceptance": "not-final-candidate-acceptance",
+  "package": {
+    "imageId": "sha256:f12a19171b47705b3834e146690785e01c626a17c06a066ba59001db022c1d6d",
+    "containerId": "f364c1f1d585d48c195e91d83288d9cd034f54817e87c51e31ab7b0921f05297",
+    "bindingSha256": "04b0394230a0a20c8fd8692266a03fb64a871c2ca9f95a4e84d5f5e4aea67271",
+    "sameProductSourcesAsNormalRun": true,
+    "gates": {
+      "probePassed": true,
+      "containerExitedZero": true,
+      "runtimeUnchanged": true,
+      "leakageScanPassed": true,
+      "receiverBodiesBound": true
+    },
+    "result": {
+      "result": "passed",
+      "receiverRequests": 1,
+      "actualNativeCrashRecovery": true,
+      "packagedExecutable": true,
+      "selectionKind": "whole-result",
+      "inspectorClosedBeforeFault": true,
+      "rendererCDPEverAttached": false,
+      "windows": 2,
+      "recoveryReadOnly": true,
+      "noAutomaticResend": true,
+      "scope": "Incremental actual crash and visible recovery prompt; no unresponsive/hang matrix claim."
+    },
+    "packageFilesReadBack": 243,
+    "packageSymlinks": 0,
+    "mainPid": 243,
+    "engineProcesses": [
+      {
+        "pid": 295,
+        "executable": "/workspace/release/linux-arm64-unpacked/resources/engine/ontolearn-engine",
+        "argv": [
+          "/workspace/release/linux-arm64-unpacked/resources/engine/ontolearn-engine"
+        ],
+        "ancestors": [
+          {
+            "pid": 295,
+            "ppid": 243
+          },
+          {
+            "pid": 243,
+            "ppid": 71
+          }
+        ],
+        "currentMainPid": 243
+      }
+    ],
+    "binaries": {
+      "@ontolearndesktop": {
+        "sha256": "cfd2c48484ba71d8be4276a51ecbe67092a0624d7be712e8a6e7a43ba3698b35",
+        "bytes": 221515144,
+        "mode": 493,
+        "uid": 1106,
+        "gid": 1106
+      },
+      "resources/app.asar": {
+        "sha256": "50f26d4eaa2fa30b72d3d92e36eb5bf256d685ee4e8c0a2e6813e440891d3920",
+        "bytes": 17058058,
+        "mode": 420,
+        "uid": 1106,
+        "gid": 1106
+      },
+      "resources/engine/ontolearn-engine": {
+        "sha256": "24323e359fdaeaf7d97e5e60e79d9e69586dc7d3dfd69ae2298e8f11e7db356a",
+        "bytes": 3689536,
+        "mode": 493,
+        "uid": 1106,
+        "gid": 1106
+      }
+    },
+    "receiver": [
+      {
+        "index": 0,
+        "byteCount": 2327,
+        "sha256": "d0d7cb8d4ceda7bec0f8a3daac53707cbcd8cb05c016843339c0ce4f3a3c5b37"
+      }
+    ],
+    "finiteDenial": {
+      "result": "passed",
+      "executable": "/workspace/release/linux-arm64-unpacked/@ontolearndesktop",
+      "args": [
+        "--inspect=0",
+        "--password-store=gnome-libsecret",
+        "--user-data-dir=/probe-data/profiles/package-finite-denial",
+        "--i04-test-fixture=/probe-data/fixtures/package-finite-denial/fixture.json"
+      ],
+      "appIsPackaged": true,
+      "modelUnavailable": true,
+      "credentialFiles": 0,
+      "credentialRecorded": false,
+      "receiverObservation": "Measured by active parent receiver, see package-finite-receiver.json",
+      "rejections": [
+        {
+          "method": "configureModel",
+          "reply": {
+            "ok": false,
+            "error": {
+              "code": "GATEWAY_MODEL_UNAVAILABLE",
+              "messageKey": "gateway.modelUnavailable",
+              "params": {},
+              "retryable": false
+            }
+          }
+        },
+        {
+          "method": "storeModelCredential",
+          "reply": {
+            "ok": false,
+            "error": {
+              "code": "GATEWAY_MODEL_UNAVAILABLE",
+              "messageKey": "gateway.modelUnavailable",
+              "params": {},
+              "retryable": false
+            }
+          }
+        },
+        {
+          "method": "startModelExplanation",
+          "reply": {
+            "ok": false,
+            "error": {
+              "code": "GATEWAY_MODEL_UNAVAILABLE",
+              "messageKey": "gateway.modelUnavailable",
+              "params": {},
+              "retryable": false
+            }
+          }
+        }
+      ],
+      "profile": "package-finite-denial"
+    },
+    "finiteReceiver": {
+      "result": "passed",
+      "receiverActiveDuringDeniedBridgeCalls": true,
+      "requestsBefore": 0,
+      "requestsAfter": 0,
+      "actualRequestDelta": 0
+    },
+    "leakScan": {
+      "result": "passed",
+      "ordinaryLogFiles": 14,
+      "privateGatewayFiles": 4,
+      "databases": [
+        {
+          "path": "/probe-data/fixtures/package/engine.sqlite",
+          "result": "passed",
+          "tables": 29,
+          "rows": 23,
+          "expectedSourceRowsPresent": true,
+          "credentialModelResponseOrExactOutboundPayloadPresent": false
+        },
+        {
+          "path": "/probe-data/fixtures/package-finite-denial/engine.sqlite",
+          "result": "passed",
+          "tables": 29,
+          "rows": 23,
+          "expectedSourceRowsPresent": true,
+          "credentialModelResponseOrExactOutboundPayloadPresent": false
+        }
+      ],
+      "rawDatabaseFiles": [
+        {
+          "path": "/probe-data/fixtures/package/engine.sqlite",
+          "bytes": 278528
+        },
+        {
+          "path": "/probe-data/fixtures/package-finite-denial/engine.sqlite",
+          "bytes": 278528
+        }
+      ],
+      "exportEntry": "No project export entry exists in this candidate; actual export artifact scan unavailable."
+    },
+    "storageReadbackSha256": "e694939297e81b7e82eee838e409b3b0279dd1c6aa3542a91dd378e5a2371558"
+  },
+  "regression": {
+    "imageId": "sha256:d92276e2df90fbd2157fa6ec0e67c742f6da5c6930833f19f5fdd494b3225f61",
+    "containerId": "cad28f89f93d9751365147268cff32330d3e409cef962c07a4fa5a10541f11ca",
+    "receiptSha256": "edf9c616811a36ad714542b55bd24241d59f6e267eade26f8403fa5bd8d5ac10",
+    "modes": {
+      "source": {
+        "exit": 1,
+        "stats": {
+          "startTime": "2026-10-21T00:07:35.364Z",
+          "duration": 2610.922,
+          "expected": 1,
+          "skipped": 3,
+          "unexpected": 2,
+          "flaky": 0
+        },
+        "cases": [
+          {
+            "file": "csp-lifecycle.spec.ts",
+            "line": 9,
+            "title": "C1 real CSP, normal functionality and renderer recovery",
+            "expectedStatus": "passed",
+            "status": "unexpected",
+            "results": [
+              {
+                "status": "failed",
+                "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('status')\nExpected substring: \u001b[32m\"本地引擎已连接\"\u001b[39m\nError: strict mode violation: getByRole('status') resolved to 2 elements:\n    1) <div role=\"status\" aria-live=\"polite\" class=\"health-result\">尚未检查 · 当前仅开放连接检查能力。</div> aka getByText('尚未检查 · 当前仅开放连接检查能力。')\n    2) <p role=\"status\">模型服务暂不可用或尚未选择本地项目。可以继续使用本地任务。</p> aka getByText('模型服务暂不可用或尚未选择本地项目。可以继续使用本地任务。')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('status') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status')\u001b[22m\n"
+              }
+            ]
+          },
+          {
+            "file": "desktop.spec.ts",
+            "line": 6,
+            "title": "desktop calls real engine, keeps isolation and fits minimum window",
+            "expectedStatus": "passed",
+            "status": "unexpected",
+            "results": [
+              {
+                "status": "failed",
+                "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('status')\nExpected substring: \u001b[32m\"尚未检查\"\u001b[39m\nError: strict mode violation: getByRole('status') resolved to 2 elements:\n    1) <div role=\"status\" aria-live=\"polite\" class=\"health-result\">尚未检查 · 当前仅开放连接检查能力。</div> aka getByText('尚未检查 · 当前仅开放连接检查能力。')\n    2) <p role=\"status\">模型服务暂不可用或尚未选择本地项目。可以继续使用本地任务。</p> aka getByText('模型服务暂不可用或尚未选择本地项目。可以继续使用本地任务。')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('status') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status')\u001b[22m\n"
+              }
+            ]
+          },
+          {
+            "file": "desktop.spec.ts",
+            "line": 56,
+            "title": "a health reply from before connection loss cannot replace the current status",
+            "expectedStatus": "passed",
+            "status": "expected",
+            "results": [
+              {
+                "status": "passed",
+                "error": null
+              }
+            ]
+          },
+          {
+            "file": "i04-jobs.spec.ts",
+            "line": 21,
+            "title": "I04 reload re-queries the same durable jobs without creating or cancelling them",
+            "expectedStatus": "skipped",
+            "status": "skipped",
+            "results": [
+              {
+                "status": "skipped",
+                "error": null
+              }
+            ]
+          },
+          {
+            "file": "i04-jobs.spec.ts",
+            "line": 97,
+            "title": "I04 coordinator exit reconciles the open view without replaying jobs",
+            "expectedStatus": "skipped",
+            "status": "skipped",
+            "results": [
+              {
+                "status": "skipped",
+                "error": null
+              }
+            ]
+          },
+          {
+            "file": "i04-jobs.spec.ts",
+            "line": 316,
+            "title": "I04 native renderer crash and real unresponsive dialog retain durable jobs",
+            "expectedStatus": "skipped",
+            "status": "skipped",
+            "results": [
+              {
+                "status": "skipped",
+                "error": null
+              }
+            ]
+          }
+        ]
+      },
+      "packaged": {
+        "exit": 1,
+        "stats": {
+          "startTime": "2026-10-21T00:07:38.398Z",
+          "duration": 2276.343,
+          "expected": 1,
+          "skipped": 3,
+          "unexpected": 2,
+          "flaky": 0
+        },
+        "cases": [
+          {
+            "file": "csp-lifecycle.spec.ts",
+            "line": 9,
+            "title": "C1 real CSP, normal functionality and renderer recovery",
+            "expectedStatus": "passed",
+            "status": "unexpected",
+            "results": [
+              {
+                "status": "failed",
+                "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('status')\nExpected substring: \u001b[32m\"本地引擎已连接\"\u001b[39m\nError: strict mode violation: getByRole('status') resolved to 2 elements:\n    1) <div role=\"status\" aria-live=\"polite\" class=\"health-result\">尚未检查 · 当前仅开放连接检查能力。</div> aka getByText('尚未检查 · 当前仅开放连接检查能力。')\n    2) <p role=\"status\">模型服务暂不可用或尚未选择本地项目。可以继续使用本地任务。</p> aka getByText('模型服务暂不可用或尚未选择本地项目。可以继续使用本地任务。')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('status') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status')\u001b[22m\n"
+              }
+            ]
+          },
+          {
+            "file": "desktop.spec.ts",
+            "line": 6,
+            "title": "desktop calls real engine, keeps isolation and fits minimum window",
+            "expectedStatus": "passed",
+            "status": "unexpected",
+            "results": [
+              {
+                "status": "failed",
+                "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('status')\nExpected substring: \u001b[32m\"尚未检查\"\u001b[39m\nError: strict mode violation: getByRole('status') resolved to 2 elements:\n    1) <div role=\"status\" aria-live=\"polite\" class=\"health-result\">尚未检查 · 当前仅开放连接检查能力。</div> aka getByText('尚未检查 · 当前仅开放连接检查能力。')\n    2) <p role=\"status\">模型服务暂不可用或尚未选择本地项目。可以继续使用本地任务。</p> aka getByText('模型服务暂不可用或尚未选择本地项目。可以继续使用本地任务。')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('status') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status')\u001b[22m\n"
+              }
+            ]
+          },
+          {
+            "file": "desktop.spec.ts",
+            "line": 56,
+            "title": "a health reply from before connection loss cannot replace the current status",
+            "expectedStatus": "passed",
+            "status": "expected",
+            "results": [
+              {
+                "status": "passed",
+                "error": null
+              }
+            ]
+          },
+          {
+            "file": "i04-jobs.spec.ts",
+            "line": 21,
+            "title": "I04 reload re-queries the same durable jobs without creating or cancelling them",
+            "expectedStatus": "skipped",
+            "status": "skipped",
+            "results": [
+              {
+                "status": "skipped",
+                "error": null
+              }
+            ]
+          },
+          {
+            "file": "i04-jobs.spec.ts",
+            "line": 97,
+            "title": "I04 coordinator exit reconciles the open view without replaying jobs",
+            "expectedStatus": "skipped",
+            "status": "skipped",
+            "results": [
+              {
+                "status": "skipped",
+                "error": null
+              }
+            ]
+          },
+          {
+            "file": "i04-jobs.spec.ts",
+            "line": 316,
+            "title": "I04 native renderer crash and real unresponsive dialog retain durable jobs",
+            "expectedStatus": "skipped",
+            "status": "skipped",
+            "results": [
+              {
+                "status": "skipped",
+                "error": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "failure": "Global getByRole(status) became ambiguous between health-result and added unavailable model paragraph at App.tsx:542; source and packaged failed C1 and desktop smoke before later checks. Root owns correction."
+  },
+  "rawArchive": {
+    "archive": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/i06-main-packaged-9fc-pkg2-regression1-raw.tar.gz",
+    "sha256": "006f0bb374c659077c6433df3bdaeede900bb90bddd7fe7d4bc2d1dd6f26f7fd",
+    "bytes": 142457921,
+    "indexSha256": "2cefe86501f88d79b8ca5c986be4e544bf04449e637f2ef490c8276c4d624332",
+    "files": 591
+  },
+  "static": {
+    "eslintPrettier": "package-static-build.log passed",
+    "ruff": "6 Python files check and format pass",
+    "syntax": {
+      "result": "passed",
+      "nodeSyntaxFiles": 18,
+      "pythonASTFiles": 6,
+      "bashSyntaxFiles": 4
+    },
+    "fullUnitSuiteRepeated": false
+  },
+  "limitations": [
+    "Linux arm64 unsigned unpacked package and I04 synthetic runtime only.",
+    "Whole-result payload intentionally contains all synthetic selected columns; not A03 public-field-only proof.",
+    "No Mac/Windows/signing/upgrade/Q9 real-service claim.",
+    "Real crash prompt only, no unresponsive/hang matrix. CJK fonts missing in GTK screenshot.",
+    "Existing repository e2e failed; the successful specialized probe does not supersede it.",
+    "Three trusted-fixture-gated cases skipped in each default CI full-suite command; targeted CI fixture steps not executed before resolving this known first-stage regression.",
+    "pkg1 execution preserved but source-match collector assertion and finite-count/engine-ancestry evidence gaps superseded by new pkg2, never retroactively relabelled."
+  ]
+}
