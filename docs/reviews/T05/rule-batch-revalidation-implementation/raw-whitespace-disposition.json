@@ -1,0 +1,15 @@
+{
+  "fullStagedCheckActualExit": 2,
+  "rawFilesOriginallyFlagged": [
+    "docs/reviews/T05/rule-batch-revalidation-implementation/adopted-import-baseline.stdout.txt",
+    "docs/reviews/T05/rule-batch-revalidation-implementation/candidate-new-and-adapted.patch",
+    "docs/reviews/T05/rule-batch-revalidation-implementation/new-tests-attempt-2.stdout.txt"
+  ],
+  "scopedCheckExactExclusions": [
+    "docs/reviews/T05/rule-batch-revalidation-implementation/adopted-import-baseline.stdout.txt",
+    "docs/reviews/T05/rule-batch-revalidation-implementation/candidate-new-and-adapted.patch",
+    "docs/reviews/T05/rule-batch-revalidation-implementation/new-tests-attempt-2.stdout.txt",
+    "docs/reviews/T05/rule-batch-revalidation-implementation/staged-diff-check.stdout.txt"
+  ],
+  "reason": "Native pytest context/trailing whitespace and git patch blank-line context are retained byte-exact, as is this original diagnostic which repeats them. Not product style failures; full raw check is not claimed green."
+}

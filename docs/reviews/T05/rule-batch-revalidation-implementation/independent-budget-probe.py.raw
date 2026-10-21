@@ -1,0 +1,176 @@
+"""Reviewer probe: debit correspondence only, supplied bindings, no graph matcher."""
+
+import json
+from dataclasses import replace
+
+from ontolearn_engine.quality import rule_comparator, rule_revalidation
+from ontolearn_engine.quality.rule_firing import (
+    BindingMatch,
+    Catalog,
+    Comparison,
+    RuleSpec,
+    Triple,
+    Variable,
+    compile_rules,
+    evaluate_bound_batch,
+)
+from ontolearn_engine.quality.rule_profile import (
+    XSD,
+    Budget,
+    ProfileLimits,
+    SourceRecord,
+    TermInput,
+)
+
+
+def iri(value):
+    return TermInput("iri", value)
+
+
+def delta(after, before):
+    return {name: after[name] - before[name] for name in before}
+
+
+def usage(pool):
+    return dict(pool.usage)
+
+
+def main():
+    source = SourceRecord("memory:operand", None, "v1", "shared operand source" * 20)
+    rule_source = SourceRecord("memory:rule", None, "r1", "shared rule source" * 20)
+    x, v = Variable("?x"), Variable("?v")
+    prop, output = iri("urn:p"), iri("urn:q")
+    two = TermInput("literal", "2", XSD + "integer", source=source)
+    three = TermInput("literal", "3", XSD + "integer", source=source)
+    spec = RuleSpec(
+        "r",
+        (Triple(x, prop, v),),
+        (Comparison(v, "ge", two), Comparison(v, "le", three)),
+        (Triple(x, output, v), Triple(iri("urn:fixed"), output, v)),
+        rule_source,
+    )
+    catalog = Catalog(data_properties=("urn:p", "urn:q"))
+    matches = []
+    for lexical in ("1", "2", "3", "4"):
+        term = TermInput("literal", lexical, XSD + "integer", source=source)
+        subject = iri("urn:s" + lexical)
+        matches.append(
+            BindingMatch(
+                "r",
+                (("?v", term), ("?x", subject)),
+                (Triple(subject, prop, term),),
+                (("f" + lexical, "f" + lexical, "shared"),),
+            )
+        )
+    definitions, matches = (spec,), tuple(matches)
+    baseline = Budget()
+    evaluate_bound_batch(compile_rules(definitions, catalog, baseline), matches, baseline)
+    original_usage = usage(baseline)
+    limits = replace(
+        ProfileLimits(),
+        work=original_usage["work"],
+        input_bytes=original_usage["input_bytes"],
+        output_bytes=original_usage["output_bytes"],
+        trace_items=original_usage["trace_items"],
+        firings=2,
+        head_occurrences=4,
+        rules=1,
+        when=1,
+        comparisons=2,
+        heads=2,
+        variables=2,
+        bindings=4,
+    )
+    original_check = rule_comparator.check_value
+    original_resources = rule_revalidation._Resources
+    original_issuance = rule_revalidation.check_value
+    production = Budget(limits)
+    charges, observed, issuance_charges = [], [], []
+
+    def observe_compare(value, budget):
+        before = usage(budget)
+        result = original_check(value, budget)
+        if budget is production:
+            charges.append(delta(usage(budget), before))
+        return result
+
+    def observe_resources(copied, control):
+        pools = original_resources(copied, control)
+        observed.append(pools)
+        return pools
+
+    def observe_issuance(value, budget):
+        before = usage(budget)
+        result = original_issuance(value, budget)
+        issuance_charges.append(delta(usage(budget), before))
+        return result
+
+    rule_comparator.check_value = observe_compare
+    rule_revalidation._Resources = observe_resources
+    rule_revalidation.check_value = observe_issuance
+    try:
+        saved = evaluate_bound_batch(
+            compile_rules(definitions, catalog, production), matches, production
+        )
+        expected_facts = (
+            Triple(iri("urn:fixed"), output, two),
+            Triple(iri("urn:fixed"), output, three),
+            Triple(iri("urn:s2"), output, two),
+            Triple(iri("urn:s3"), output, three),
+        )
+        assert saved.facts == expected_facts
+        assert len(charges) == 16  # Four inputs, two comparisons, two operands.
+        status = rule_revalidation.check_firing_batch(
+            definitions, catalog, matches, saved, limits=limits, disabled=False
+        )
+        assert status == "batch-consistent" and len(observed) == 1
+        pools = observed[0]
+        assert pools.replay.usage == production.usage
+        assert len(issuance_charges) == 8
+        assert issuance_charges == charges[4:12]  # Only original true matches 2 and 3.
+        subset = {
+            key: sum(item[key] for item in charges[4:12]) for key in original_usage
+        }
+        assert usage(pools.saved_issuance) == subset
+        assert pools.replay.limits == limits and pools.replay.limits is not limits
+        assert (
+            pools.replay.limits is pools.saved_encoding.limits
+            and pools.saved_encoding.limits is pools.saved_issuance.limits
+        )
+        assert len({id(pools.replay), id(pools.saved_encoding), id(pools.saved_issuance)}) == 3
+        aggregate = {
+            key: sum(usage(p)[key] for p in (
+                pools.replay, pools.saved_encoding, pools.saved_issuance
+            ))
+            for key in original_usage
+        }
+        assert aggregate["work"] + pools.control.used <= 3 * limits.work + pools.control.limit
+        assert aggregate["input_bytes"] <= 2 * limits.input_bytes
+        assert aggregate["output_bytes"] <= 2 * limits.output_bytes
+        print(json.dumps({
+            "scope": "real single-child debit probe; no graph/allocator/restore/selected",
+            "status": status,
+            "manualExpected": "matches 2,3; 2 firings/4 heads/4 complete facts",
+            "production": usage(production),
+            "replay": usage(pools.replay),
+            "savedEncoding": usage(pools.saved_encoding),
+            "savedIssuance": usage(pools.saved_issuance),
+            "originalComparisonCheckCharges": charges,
+            "savedComparisonCheckCharges": issuance_charges,
+            "control": {"used": pools.control.used, "limit": pools.control.limit},
+            "aggregate": aggregate,
+            "tightOriginalLimits": {
+                key: getattr(limits, key) for key in (
+                    "work", "input_bytes", "output_bytes", "firings", "head_occurrences"
+                )
+            },
+            "issuanceExactlyEqualsOriginalTrueOperandSubset": True,
+        }, ensure_ascii=False, indent=2))
+    finally:
+        rule_comparator.check_value = original_check
+        rule_revalidation._Resources = original_resources
+        rule_revalidation.check_value = original_issuance
+
+
+if __name__ == "__main__":
+    main()

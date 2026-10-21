@@ -1,0 +1,12 @@
+E501 Line too long (101 > 100)
+   --> packages/engine/tests/test_quality_profile_revalidation.py:210:101
+    |
+208 |         assert tuple(c.index for c in firing.comparisons) == (0, 1)
+209 |         assert all(c.result is True for c in firing.comparisons)
+210 |         assert tuple(h.index for h in firing.heads) == ((0, 1, 2) if firing.rule_id == "r" else (0,))
+    |                                                                                                     ^
+211 |     seen = capture_pools(monkeypatch)
+212 |     assert recheck(inputs, batch, limits) == "batch-consistent"
+    |
+
+Found 2 errors (1 fixed, 1 remaining).

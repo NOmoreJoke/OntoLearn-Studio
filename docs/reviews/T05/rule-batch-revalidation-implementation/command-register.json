@@ -1,0 +1,235 @@
+{
+  "implementationRef": "16c58c6d0ca56491c7134c4866f9bed5e0f722c5",
+  "actualCheckRecords": [
+    {
+      "name": "adopted-import-baseline",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "packages/engine/tests/test_quality_profile_imports.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation",
+      "sourceState": "5f plus21 adopted working bytes, before cf93 adoption commit",
+      "result": "1 failed / 1 passed; unapproved legacy modules absent",
+      "actualExit": 1,
+      "stdout": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/adopted-import-baseline.stdout.txt",
+        "bytes": 3034,
+        "sha256": "2ad139eef1749e7f571e556b5885f5557c084e0e61df131f2c4f03b686b25b8d"
+      },
+      "streamNote": "original shell 2>&1 combined stdout/stderr; no separate stderr artifact"
+    },
+    {
+      "name": "adapted-import-check",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "packages/engine/tests/test_quality_profile_imports.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation",
+      "sourceState": "unfrozen authoring; exact adaptation authorized by d8d9",
+      "result": "2 passed",
+      "actualExit": 0,
+      "stdout": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/adapted-import-check.stdout.txt",
+        "bytes": 439,
+        "sha256": "6f64670cd7fd794e9bda14862095fd9a62751ebc37ca5073c14c9d9e444d51ec"
+      },
+      "streamNote": "original shell 2>&1 combined stdout/stderr; no separate stderr artifact"
+    },
+    {
+      "name": "new-tests-attempt-1",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "packages/engine/tests/test_quality_profile_revalidation.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation",
+      "sourceState": "unfrozen preliminary authoring, not fixed16c",
+      "result": "132 passed",
+      "actualExit": 0,
+      "stdout": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/new-tests-attempt-1.stdout.txt",
+        "bytes": 601,
+        "sha256": "c23974603dff27f22c1a5ea7dc0830b988794b639577d5a6253e0f6d41094055"
+      },
+      "streamNote": "original shell 2>&1 combined stdout/stderr; no separate stderr artifact"
+    },
+    {
+      "name": "new-tests-attempt-2",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "packages/engine/tests/test_quality_profile_revalidation.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation",
+      "sourceState": "unfrozen preliminary authoring, not fixed16c",
+      "result": "1 failed /145 passed; test expectation of alias issuance incorrect; canonical encoder correctly rejected alias",
+      "actualExit": 1,
+      "stdout": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/new-tests-attempt-2.stdout.txt",
+        "bytes": 3057,
+        "sha256": "7142a9354d7f61ebd2d3ce28067e24f34b3e27d14633815ab93f0f5492b1eb80"
+      },
+      "streamNote": "original shell 2>&1 combined stdout/stderr; no separate stderr artifact"
+    },
+    {
+      "name": "new-tests-attempt-3",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "packages/engine/tests/test_quality_profile_revalidation.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation",
+      "sourceState": "finalcode/test before only fixture whitespace formatting and commit",
+      "result": "146 passed",
+      "actualExit": 0,
+      "stdout": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/new-tests-attempt-3.stdout.txt",
+        "bytes": 601,
+        "sha256": "5953f95c9e12204b85716c6c3b5c0859e1fb64ed1bc4a4a4129ff94fb1cd01f0"
+      },
+      "streamNote": "original shell 2>&1 combined stdout/stderr; no separate stderr artifact"
+    },
+    {
+      "name": "npm-check-attempt-1",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation",
+      "sourceState": "fixed16c",
+      "result": "630 TS /2737 Python, lint/format/typecheck/build/ruff all passed",
+      "actualExit": 0,
+      "stdout": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/npm-check-attempt-1.stdout.txt",
+        "bytes": 7947,
+        "sha256": "0b139c548b05e1107a9d12a44b1a7e4ecb3d5757990227758a329cb284d079bf"
+      },
+      "stderr": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/npm-check-attempt-1.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "verify-sources",
+      "argv": [
+        "npm",
+        "run",
+        "verify:sources"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation",
+      "sourceState": "fixed16c",
+      "result": "12 archived source files verified",
+      "actualExit": 0,
+      "stdout": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/verify-sources.stdout.txt",
+        "bytes": 111,
+        "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+      },
+      "stderr": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/verify-sources.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "source40000-run",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "docs/reviews/T05/rule-batch-revalidation-implementation/run-witness.py.raw"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation",
+      "sourceState": "fixed16c; recording resource factory only returns original real pools",
+      "result": "production success→oldgroup resource rejection→newpublic API success",
+      "actualExit": 0,
+      "stdout": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/source40000-run.stdout.txt",
+        "bytes": 1956,
+        "sha256": "045526554a817bb1cfe09d9a26e853730773a84753bac27384c009ecc0d56b39"
+      },
+      "stderr": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/source40000-run.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "document-format-check",
+      "argv": [
+        "npx",
+        "prettier",
+        "--check",
+        "docs/iterations/T05/rule-batch-revalidation.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation",
+      "sourceState": "docs added after fixed product fullcheck",
+      "result": "pass",
+      "actualExit": 0,
+      "stdout": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/document-format-check.stdout.txt",
+        "bytes": 66,
+        "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+      },
+      "stderr": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/document-format-check.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "affected-regression",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "packages/engine/tests/test_quality_profile_calendar.py",
+        "packages/engine/tests/test_quality_profile_comparator.py",
+        "packages/engine/tests/test_quality_profile_firing.py",
+        "packages/engine/tests/test_quality_profile_imports.py",
+        "packages/engine/tests/test_quality_profile_limits.py",
+        "packages/engine/tests/test_quality_profile_numbers.py",
+        "packages/engine/tests/test_quality_profile_terms.py",
+        "packages/engine/tests/test_quality_profile_iri_boundary.py",
+        "packages/engine/tests/test_quality_profile_revalidation.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation",
+      "sourceState": "fixed16c",
+      "actualExit": 0,
+      "result": "1685 passed",
+      "stdout": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/affected-regression.stdout.txt",
+        "bytes": 3242,
+        "sha256": "246fde3a2e75428816ef81595182aa77c3fd218c84ee7d47348c7cd68054896d"
+      },
+      "stderr": {
+        "path": "docs/reviews/T05/rule-batch-revalidation-implementation/affected-regression.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "runtime": {
+    "node": "v24.15.0",
+    "npm": "11.12.1",
+    "uv": "uv 0.11.12 (63c5f57d3 2026-05-08 aarch64-apple-darwin)",
+    "python": "Python 3.12.12"
+  },
+  "preliminaryHistory": "Preliminary authoring failures are preserved in original output; no frozen source hash is claimed for those runs. Final fixed16c is separately bound and actually fully checked."
+}

@@ -1,0 +1,249 @@
+{
+  "schema": "T05-pure-batch-revalidation-final-receipt/1",
+  "stage": "implemented, fixed and independently code/budget reviewed; root verification pending",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation",
+  "branch": "feature/weekly-t05-profile-revalidation",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "adoptionCommit": "cf93fe88258cda11308c627ee7f47c1c9e0ffae3",
+  "implementationRef": "16c58c6d0ca56491c7134c4866f9bed5e0f722c5",
+  "scope": "20 exact inherited +1 explicitly adapted test +3 new product paths =24 relative to approved develop; no whole-private-commit adoption",
+  "protectedGuides": {
+    "AGENTS": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759 unstaged",
+    "common": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0"
+  },
+  "versions": {
+    "profile": "OntoLearn-rule-comparison-profile/1",
+    "oldBudget": "mechanism-budget/1",
+    "revalidationBudget": "mechanism-revalidation-budget/2"
+  },
+  "checks": {
+    "commandRegister": {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/command-register.json",
+      "bytes": 9370,
+      "sha256": "5ffda8bbe3b6ae9c9e63a337461b3f05b33d8e33f36a756abe61e5a4bee81a47"
+    },
+    "newSpecialized": "146 passed",
+    "affectedRegression": "1685 passed; actualexit0",
+    "normalCheck": "630 TS and2737 Python, actualexit0; lint/format/typecheck/build/ruff completed",
+    "sourceArchive": "12 files verified, actualexit0",
+    "independentCode": "passed; actual148specialized+adapted imports and independent source40000/inert callback/copy probe exit0",
+    "independentBudget": "passed; actual tight original L replay six usage counters identical; saved8true operands each work2807/input740 match original subset, exit0"
+  },
+  "independentReports": [
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/independent-code-review.md",
+      "bytes": 9627,
+      "sha256": "650db412602e2da1d4151b5be1e0ad173088a791c571b7d71ce59bde72143985"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/independent-budget-review.md",
+      "bytes": 11562,
+      "sha256": "a2bc5c2b8687f0d8697be79c1952870882bcc07a1e15e31eb8bbbef7708276d2"
+    }
+  ],
+  "coreArtifacts": [
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/candidate-input-manifest.json",
+      "bytes": 8417,
+      "sha256": "ee0fc2a7069f45857891f0750737decf25f8dc7bbc66fd5468942337f8f56ed4"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/candidate-inputs.zip",
+      "bytes": 59431,
+      "sha256": "87b81fc599b88acc16051c5a1e6eceaf955867ec0312d6c8c7349f46a0263f4d"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/candidate-new-and-adapted.patch",
+      "bytes": 34995,
+      "sha256": "c51a1f1c7484b677d3d68c5471f6c72096693b7b51ee059503387bed00737c8a"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/adopted-import-adaptation.json",
+      "bytes": 479,
+      "sha256": "344d132c2bac3e2cec036c5004f757f7226307f4f96ec6228bbcacebaea1f4a5"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/adopted-import-test.original.py.raw",
+      "bytes": 2078,
+      "sha256": "05b28ee714c19397a349fc4d38aba5bde0986c235dd1ed7d26ae9d73072d981c"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/source40000-input.json",
+      "bytes": 44062,
+      "sha256": "69de4e05ef893ea627dd2e9cdbc6207fdfde5eb5d6742df1e74ff9e3602a1463"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/source40000-produced-payload.bin",
+      "bytes": 82902,
+      "sha256": "7ffa12aa5eeb4574ad689f6cd26148823635afcd7e84d350bd6957d4c7ad15e0"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/source40000-results.json",
+      "bytes": 1956,
+      "sha256": "045526554a817bb1cfe09d9a26e853730773a84753bac27384c009ecc0d56b39"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/run-witness.py.raw",
+      "bytes": 4252,
+      "sha256": "d17a041b6d02bc946c02ba47e50d2f459240d1b8eb622874781dfd37d61639e9"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/independent-code-input-binding.json",
+      "bytes": 7850,
+      "sha256": "ceac96fe929faeac62e8a5a4fceff79aa39967231db976ce5c435d653c7b4072"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/independent-code-tests.receipt.json",
+      "bytes": 680,
+      "sha256": "095022a800f55cb62fb444f0116266254e8d4a9b2b90be9fbfd7ff7ae17fec7a"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/independent-code-probe.receipt.json",
+      "bytes": 637,
+      "sha256": "26fc998d8aa1a8825ef9ebc05853de491b13cd9f7ebc81102cf852298d375490"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/independent-budget-probe-binding.json",
+      "bytes": 5133,
+      "sha256": "34f6c283f9f7fb68674bac8fc5b178567ef8fd32bd3a92de220bc1fc7c0c4cf7"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/independent-budget-probe.py.raw",
+      "bytes": 6511,
+      "sha256": "1dbc0636d6c37b51764ac120d6c449bf98aaeb1a8d24d3ec7ff5aa5ca0036e53"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/independent-budget-probe.stdout.txt",
+      "bytes": 5084,
+      "sha256": "18c4be34bf3b53f03c5880107f20b331a42aaefa1449007c83373ad0a2ffc4b7"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/independent-budget-probe.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/T05/rule-batch-revalidation-implementation/independent-budget-probe.exit.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  ],
+  "source40000": {
+    "production": {
+      "result": "success",
+      "usage": {
+        "work": 1085586,
+        "input_bytes": 182041,
+        "output_bytes": 82902,
+        "trace_items": 26,
+        "firings": 2,
+        "head_occurrences": 2
+      }
+    },
+    "oldFreshCompileThenGroupRecheck": {
+      "reason": "RULE_INPUT_BUDGET",
+      "classification": "resource",
+      "usage": {
+        "work": 1342828,
+        "input_bytes": 262144,
+        "output_bytes": 82214,
+        "trace_items": 13,
+        "firings": 1,
+        "head_occurrences": 1
+      }
+    },
+    "newPublicAPI": {
+      "result": "batch-consistent",
+      "budgetVersion": "mechanism-revalidation-budget/2",
+      "replay": {
+        "work": 1085586,
+        "input_bytes": 182041,
+        "output_bytes": 82902,
+        "trace_items": 26,
+        "firings": 2,
+        "head_occurrences": 2
+      },
+      "savedEncoding": {
+        "work": 247147,
+        "input_bytes": 0,
+        "output_bytes": 82902,
+        "trace_items": 0,
+        "firings": 0,
+        "head_occurrences": 0
+      },
+      "savedIssuance": {
+        "work": 0,
+        "input_bytes": 0,
+        "output_bytes": 0,
+        "trace_items": 0,
+        "firings": 0,
+        "head_occurrences": 0
+      },
+      "control": {
+        "used": 331813,
+        "limit": 1082571
+      }
+    },
+    "producedPayload": {
+      "bytes": 82902,
+      "sha256": "7ffa12aa5eeb4574ad689f6cd26148823635afcd7e84d350bd6957d4c7ad15e0"
+    },
+    "expected": "Hand-selected two complete RDF facts, both original sources and proofs asserted",
+    "limits": {
+      "input_bytes": 262144,
+      "term_bytes": 16384,
+      "source_bytes": 65536,
+      "digits": 4096,
+      "integer_bits": 16384,
+      "temporary_bits": 32768,
+      "rules": 100,
+      "when": 16,
+      "comparisons": 32,
+      "heads": 16,
+      "variables": 64,
+      "bindings": 1024,
+      "firings": 1024,
+      "head_occurrences": 16384,
+      "trace_items": 8192,
+      "output_bytes": 262144,
+      "work": 16777216
+    },
+    "measurement": "Actual debit/encoding counters; no CPU/memory/throughput or restore proof"
+  },
+  "history": {
+    "baselineImport": "actual1failed1passed; absent unapproved legacy modules; root2178B/d8d9 authorizes one-test adaptation only; original source and failure retained",
+    "newAuthoring": "preliminary132passed then alias-parser expectation1failed145passed retained; final146and fixed16c separate; no frozen input hash claimed for unfrozen authoring runs",
+    "lint": "first import/E501 authoring output retained, final lint/fullcheck passed",
+    "rawEvidenceRetention": "Explicit5884B authority requires complete first failures, args, stdout/stderr, actualexit, source40000 actual input/output/counters and independent probes. Original raw artifacts retained byte-exact, not format-cleaned. No secret/business data."
+  },
+  "notClosed": [
+    "I05 consumption not authorized",
+    "I05 actual originaltuple capture and trusted global allocation/retry ledger",
+    "strict restore/reparse/cache/hash/projection/retention independent total R and cross-child readback",
+    "T01 immutable successful producer/source/project/permissions/window/retract/GC",
+    "T03 D2 package inclusion and target/native/package matrix",
+    "parent T05 FR/selected, specified external dualreview, CI/normal merge/remote acceptance"
+  ],
+  "operations": "no GUI/native/e2e/HMR, push/PR/merge, paid/model/credential operation or Goal mutation; original Goal remains blocked; oldtwo T05 trees untouched in this phase",
+  "whitespaceChecks": {
+    "fullRawStagedActualExit": 2,
+    "scopedStagedActualExit": 0,
+    "product24PathsActualExit": 0,
+    "disposition": {
+      "fullStagedCheckActualExit": 2,
+      "rawFilesOriginallyFlagged": [
+        "docs/reviews/T05/rule-batch-revalidation-implementation/adopted-import-baseline.stdout.txt",
+        "docs/reviews/T05/rule-batch-revalidation-implementation/candidate-new-and-adapted.patch",
+        "docs/reviews/T05/rule-batch-revalidation-implementation/new-tests-attempt-2.stdout.txt"
+      ],
+      "scopedCheckExactExclusions": [
+        "docs/reviews/T05/rule-batch-revalidation-implementation/adopted-import-baseline.stdout.txt",
+        "docs/reviews/T05/rule-batch-revalidation-implementation/candidate-new-and-adapted.patch",
+        "docs/reviews/T05/rule-batch-revalidation-implementation/new-tests-attempt-2.stdout.txt",
+        "docs/reviews/T05/rule-batch-revalidation-implementation/staged-diff-check.stdout.txt"
+      ],
+      "reason": "Native pytest context/trailing whitespace and git patch blank-line context are retained byte-exact, as is this original diagnostic which repeats them. Not product style failures; full raw check is not claimed green."
+    }
+  },
+  "independentReportReadback": "Owner full-read both final reports and actual probe/check bindings; budget report complete after interrupted wait, product24 unchanged. No active child agent or verification session remains."
+}

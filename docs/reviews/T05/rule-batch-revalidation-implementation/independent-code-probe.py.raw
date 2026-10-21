@@ -1,0 +1,97 @@
+"""Independent bounded inputs; no graph, restores, persistent data or external I/O."""
+import json
+import sys
+from pathlib import Path
+from dataclasses import replace
+sys.path.insert(0, str(Path.cwd() / "packages/engine/src"))
+from ontolearn_engine.quality.rule_profile import Budget, ProfileLimits, ProfileFailure, SourceRecord, TermInput
+from ontolearn_engine.quality.rule_firing import RuleSpec, Variable, Triple, BindingMatch, Catalog, compile_rules, evaluate_bound_batch, check_firing_group
+from ontolearn_engine.quality import rule_revalidation as r
+
+def iri(s): return TermInput("iri", s)
+def lit(s): return TermInput("literal", s)
+def produce(defs, cat, matches):
+    b = Budget()
+    result = evaluate_bound_batch(compile_rules(defs, cat, b), matches, b)
+    return result, b
+
+def outcome(args, limits=None, disabled=False):
+    try: return {"return": r.check_firing_batch(*args, limits=limits if limits is not None else ProfileLimits(), disabled=disabled)}
+    except ProfileFailure as e: return {"reason": e.reason, "classification": e.classification, "safeText": str(e), "location": e.location}
+
+spec = RuleSpec("r", (Triple(Variable("?s"), iri("urn:p"), lit("v")),), (), (Triple(Variable("?s"), iri("urn:q"), lit("ok")),), SourceRecord(text="a" * 40000))
+cat = Catalog(data_properties=("urn:p", "urn:q"))
+matches = tuple(BindingMatch("r", (("?s", iri(s)),), (Triple(iri(s), iri("urn:p"), lit("v")),), ((proof,),)) for s, proof in (("urn:s2", "f2"), ("urn:s1", "f1")))
+inputs = ((spec,), cat, matches)
+saved, original = produce(*inputs)
+assert saved.facts == (Triple(iri("urn:s1"), iri("urn:q"), lit("ok")), Triple(iri("urn:s2"), iri("urn:q"), lit("ok")))
+old = Budget()
+plan = compile_rules(inputs[0], cat, old)
+try:
+    for firing in saved.firings: check_firing_group(plan, firing, old)
+except ProfileFailure as e:
+    old_failure = {"reason": e.reason, "classification": e.classification}
+else: raise AssertionError("old same-pool loop unexpectedly succeeded")
+assert old_failure == {"reason": "RULE_INPUT_BUDGET", "classification": "resource"}
+real_resources = r._Resources
+seen = []
+def capture(limits, control):
+    pools = real_resources(limits, control)
+    seen.append(pools)
+    return pools
+r._Resources = capture
+assert outcome((*inputs, saved)) == {"return": "batch-consistent"}
+pools = seen[-1]
+assert pools.replay.usage == original.usage
+long_source = {"inputRecipe": {"sourceRepeat": ["a", 40000], "rule": "(?s urn:p literal(v)) -> (?s urn:q literal(ok))", "orderedSubjectsAndProofs": [["urn:s2", "f2"], ["urn:s1", "f1"]]}, "oldFailure": old_failure, "oldUsage": dict(old.usage), "productionUsage": dict(original.usage), "pools": {name: dict(getattr(pools, name).usage) for name in ("replay", "saved_encoding", "saved_issuance")}, "control": {"used": pools.control.used, "limit": pools.control.limit}, "return": "batch-consistent"}
+r._Resources = real_resources
+
+# Only append hooks; thrown exceptions cannot hide an invocation in the wrapper.
+calls = []
+class Probe:
+    def __getattribute__(self, name): calls.append("get:" + name); return None
+    def __len__(self): calls.append("len"); return 0
+    def __iter__(self): calls.append("iter"); return iter(())
+    def __bool__(self): calls.append("bool"); return False
+    def __eq__(self, other): calls.append("eq"); return False
+    def __str__(self): calls.append("str"); return "probe"
+probe = Probe()
+forged_limits = ProfileLimits()
+object.__setattr__(forged_limits, "work", probe)
+malformed = [
+    ("limits", (*inputs, saved), forged_limits, False, "resource"),
+    ("disabled", (*inputs, saved), ProfileLimits(), probe, "internal"),
+    ("definitions", (probe, cat, matches, saved), ProfileLimits(), False, "internal"),
+    ("catalog", (inputs[0], probe, matches, saved), ProfileLimits(), False, "internal"),
+    ("matches", (inputs[0], cat, probe, saved), ProfileLimits(), False, "internal"),
+    ("saved", (*inputs, probe), ProfileLimits(), False, "internal"),
+]
+for field in ("firings", "facts", "payload", "digest", "profile"):
+    malformed.append(("saved." + field, (*inputs, replace(saved, **{field: probe})), ProfileLimits(), False, "internal"))
+malformed.extend([
+    ("catalog.classes", (inputs[0], replace(cat, classes=probe), matches, saved), ProfileLimits(), False, "internal"),
+    ("definition.source", ((replace(spec, source=probe),), cat, matches, saved), ProfileLimits(), False, "internal"),
+    ("when.object.kind", ((replace(spec, when=(Triple(Variable("?s"), iri("urn:p"), TermInput(probe, "v")),)),), cat, matches, saved), ProfileLimits(), False, "internal"),
+    ("saved.source.text", (*inputs, replace(saved, firings=(replace(saved.firings[0], source=SourceRecord(text=probe)),) + saved.firings[1:])), ProfileLimits(), False, "internal"),
+    ("saved.comparisons", (*inputs, replace(saved, firings=(replace(saved.firings[0], comparisons=probe),) + saved.firings[1:])), ProfileLimits(), False, "internal"),
+])
+results = []
+for name, args, limits, disabled, classification in malformed:
+    result = outcome(args, limits, disabled)
+    assert result["classification"] == classification, name
+    assert calls == [], (name, calls)
+    results.append({"case": name, **result, "hooks": list(calls)})
+
+# Exact native limits are snapshotted before the original object could be changed.
+original_limits = ProfileLimits()
+real_resources = r._Resources
+copied = []
+def mutate_after_copy(limits, control):
+    copied.append(limits)
+    object.__setattr__(original_limits, "work", 0)
+    return real_resources(limits, control)
+r._Resources = mutate_after_copy
+assert outcome((*inputs, saved), original_limits) == {"return": "batch-consistent"}
+assert copied[0] is not original_limits and copied[0].work == ProfileLimits().work
+r._Resources = real_resources
+print(json.dumps({"reviewRef": "16c58c6d0ca56491c7134c4866f9bed5e0f722c5", "longSource": long_source, "appendHookCases": results, "limitCopyAfterMutation": "passed", "boundaries": "given tuples only; no graph matcher/restore/outer allocator/authorization"}, ensure_ascii=False, indent=2))

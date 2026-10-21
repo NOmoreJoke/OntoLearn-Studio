@@ -1,0 +1,53 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation
+configfile: pyproject.toml
+collected 2 items
+
+packages/engine/tests/test_quality_profile_imports.py F.                 [100%]
+
+=================================== FAILURES ===================================
+____________________ test_pure_import_and_lazy_api_identity ____________________
+
+    def test_pure_import_and_lazy_api_identity():
+        script = """
+    import logging, sys, decimal
+    before_filters=tuple(logging.getLogger("rdflib.term").filters)
+    before_limit=sys.get_int_max_str_digits()
+    before_context=decimal.getcontext().copy()
+    import ontolearn_engine.quality as quality
+    from ontolearn_engine.quality import rule_firing
+    assert "rdflib" not in sys.modules
+    assert "ontolearn_engine.quality.rdf_terms" not in sys.modules
+    assert tuple(logging.getLogger("rdflib.term").filters)==before_filters
+    assert sys.get_int_max_str_digits()==before_limit
+    assert str(decimal.getcontext())==str(before_context)
+    assert quality.__all__==[
+        "DefinitionError", "ValidatedDefinition", "build_plan", "validate_definition"
+    ]
+    from ontolearn_engine.quality import definitions, planning
+    assert quality.DefinitionError is definitions.DefinitionError
+    assert quality.ValidatedDefinition is definitions.ValidatedDefinition
+    assert quality.validate_definition is definitions.validate_definition
+    assert quality.build_plan is planning.build_plan
+    assert quality.build_plan is quality.build_plan
+    try: quality.unknown
+    except AttributeError: pass
+    else: raise AssertionError("unknown export")
+    print("pure import and lazy identities passed")
+    """
+        result = subprocess.run(
+            [sys.executable, "-c", script], capture_output=True, text=True, timeout=15
+        )
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 16, in <module>
+E         ImportError: cannot import name 'definitions' from 'ontolearn_engine.quality' (/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation/packages/engine/src/ontolearn_engine/quality/__init__.py)
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation/.venv/bin/python', '-c', '\...le/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation/packages/engine/src/ontolearn_engine/quality/__init__.py)\n').returncode
+
+packages/engine/tests/test_quality_profile_imports.py:41: AssertionError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_quality_profile_imports.py::test_pure_import_and_lazy_api_identity
+========================= 1 failed, 1 passed in 0.06s ==========================

@@ -1,0 +1,82 @@
+{
+  "production": {
+    "result": "success",
+    "usage": {
+      "work": 1085586,
+      "input_bytes": 182041,
+      "output_bytes": 82902,
+      "trace_items": 26,
+      "firings": 2,
+      "head_occurrences": 2
+    }
+  },
+  "oldFreshCompileThenGroupRecheck": {
+    "reason": "RULE_INPUT_BUDGET",
+    "classification": "resource",
+    "usage": {
+      "work": 1342828,
+      "input_bytes": 262144,
+      "output_bytes": 82214,
+      "trace_items": 13,
+      "firings": 1,
+      "head_occurrences": 1
+    }
+  },
+  "newPublicAPI": {
+    "result": "batch-consistent",
+    "budgetVersion": "mechanism-revalidation-budget/2",
+    "replay": {
+      "work": 1085586,
+      "input_bytes": 182041,
+      "output_bytes": 82902,
+      "trace_items": 26,
+      "firings": 2,
+      "head_occurrences": 2
+    },
+    "savedEncoding": {
+      "work": 247147,
+      "input_bytes": 0,
+      "output_bytes": 82902,
+      "trace_items": 0,
+      "firings": 0,
+      "head_occurrences": 0
+    },
+    "savedIssuance": {
+      "work": 0,
+      "input_bytes": 0,
+      "output_bytes": 0,
+      "trace_items": 0,
+      "firings": 0,
+      "head_occurrences": 0
+    },
+    "control": {
+      "used": 331813,
+      "limit": 1082571
+    }
+  },
+  "producedPayload": {
+    "bytes": 82902,
+    "sha256": "7ffa12aa5eeb4574ad689f6cd26148823635afcd7e84d350bd6957d4c7ad15e0"
+  },
+  "expected": "Hand-selected two complete RDF facts, both original sources and proofs asserted",
+  "limits": {
+    "input_bytes": 262144,
+    "term_bytes": 16384,
+    "source_bytes": 65536,
+    "digits": 4096,
+    "integer_bits": 16384,
+    "temporary_bits": 32768,
+    "rules": 100,
+    "when": 16,
+    "comparisons": 32,
+    "heads": 16,
+    "variables": 64,
+    "bindings": 1024,
+    "firings": 1024,
+    "head_occurrences": 16384,
+    "trace_items": 8192,
+    "output_bytes": 262144,
+    "work": 16777216
+  },
+  "measurement": "Actual debit/encoding counters; no CPU/memory/throughput or restore proof"
+}

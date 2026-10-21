@@ -1,0 +1,53 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-revalidation
+configfile: pyproject.toml
+collected 146 items
+
+packages/engine/tests/test_quality_profile_revalidation.py ............. [  8%]
+........................................................................ [ 58%]
+.............................................F...............            [100%]
+
+=================================== FAILURES ===================================
+____ test_cross_module_and_deserialized_profile_values_are_not_issued_here _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1097d5580>
+
+    def test_cross_module_and_deserialized_profile_values_are_not_issued_here(monkeypatch):
+        from ontolearn_engine.quality import rule_terms
+    
+        inputs = program(comparison=True)
+        batch, _ = produce(*inputs)
+        comparison = batch.firings[0].comparisons[0]
+        name = "ontolearn_engine.quality.revalidation_test_alias_terms"
+        spec = importlib.util.spec_from_file_location(name, rule_terms.__file__)
+        module = importlib.util.module_from_spec(spec)
+        monkeypatch.setitem(sys.modules, name, module)
+        spec.loader.exec_module(module)
+>       foreign = module.parse_value(comparison.left.term, None, Budget())
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_revalidation.py:485: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:160: in parse_value
+    return _signed_value(term, "N", parse_number(text, datatype, budget, location), "", budget)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:59: in _signed_value
+    digest = fingerprint(encode_input(result, budget), budget)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:363: in encode_input
+    _walk(value, budget, False, sink)
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:346: in _walk
+    fail()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_quality_profile_revalidation.py::test_cross_module_and_deserialized_profile_values_are_not_issued_here
+======================== 1 failed, 145 passed in 1.53s =========================

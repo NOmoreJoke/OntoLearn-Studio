@@ -1,0 +1,205 @@
+{
+  "reviewRef": "16c58c6d0ca56491c7134c4866f9bed5e0f722c5",
+  "longSource": {
+    "inputRecipe": {
+      "sourceRepeat": [
+        "a",
+        40000
+      ],
+      "rule": "(?s urn:p literal(v)) -> (?s urn:q literal(ok))",
+      "orderedSubjectsAndProofs": [
+        [
+          "urn:s2",
+          "f2"
+        ],
+        [
+          "urn:s1",
+          "f1"
+        ]
+      ]
+    },
+    "oldFailure": {
+      "reason": "RULE_INPUT_BUDGET",
+      "classification": "resource"
+    },
+    "oldUsage": {
+      "work": 1342828,
+      "input_bytes": 262144,
+      "output_bytes": 82214,
+      "trace_items": 13,
+      "firings": 1,
+      "head_occurrences": 1
+    },
+    "productionUsage": {
+      "work": 1085586,
+      "input_bytes": 182041,
+      "output_bytes": 82902,
+      "trace_items": 26,
+      "firings": 2,
+      "head_occurrences": 2
+    },
+    "pools": {
+      "replay": {
+        "work": 1085586,
+        "input_bytes": 182041,
+        "output_bytes": 82902,
+        "trace_items": 26,
+        "firings": 2,
+        "head_occurrences": 2
+      },
+      "saved_encoding": {
+        "work": 247147,
+        "input_bytes": 0,
+        "output_bytes": 82902,
+        "trace_items": 0,
+        "firings": 0,
+        "head_occurrences": 0
+      },
+      "saved_issuance": {
+        "work": 0,
+        "input_bytes": 0,
+        "output_bytes": 0,
+        "trace_items": 0,
+        "firings": 0,
+        "head_occurrences": 0
+      }
+    },
+    "control": {
+      "used": 331813,
+      "limit": 1082571
+    },
+    "return": "batch-consistent"
+  },
+  "appendHookCases": [
+    {
+      "case": "limits",
+      "reason": "RULE_INPUT_BUDGET",
+      "classification": "resource",
+      "safeText": "RULE_INPUT_BUDGET",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "disabled",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "definitions",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "catalog",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "matches",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "saved",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "saved.firings",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "saved.facts",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "saved.payload",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "saved.digest",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "saved.profile",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "catalog.classes",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "definition.source",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "when.object.kind",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "saved.source.text",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    },
+    {
+      "case": "saved.comparisons",
+      "reason": "INTERNAL_ERROR",
+      "classification": "internal",
+      "safeText": "INTERNAL_ERROR",
+      "location": null,
+      "hooks": []
+    }
+  ],
+  "limitCopyAfterMutation": "passed",
+  "boundaries": "given tuples only; no graph matcher/restore/outer allocator/authorization"
+}

@@ -1,0 +1,122 @@
+"""Actual source40000 witness; hand-selected input/semantic expected terms."""
+
+import hashlib
+import json
+from dataclasses import asdict
+from pathlib import Path
+
+from ontolearn_engine.quality import rule_revalidation as revalidation
+from ontolearn_engine.quality.rule_firing import (
+    BindingMatch,
+    Catalog,
+    RuleSpec,
+    Triple,
+    Variable,
+    check_firing_group,
+    compile_rules,
+    evaluate_bound_batch,
+)
+from ontolearn_engine.quality.rule_profile import (
+    Budget,
+    ProfileFailure,
+    ProfileLimits,
+    SourceRecord,
+    TermInput,
+)
+
+EVIDENCE = Path(__file__).resolve().parent
+
+
+def iri(text):
+    return TermInput("iri", text)
+
+
+source = SourceRecord(text="a" * 40000)
+spec = RuleSpec(
+    "r",
+    (Triple(Variable("?x"), iri("urn:p"), TermInput("literal", "v")),),
+    (),
+    (Triple(Variable("?x"), iri("urn:q"), TermInput("literal", "ok")),),
+    source,
+)
+definitions = (spec,)
+catalog = Catalog(data_properties=("urn:p", "urn:q"))
+matches = tuple(
+    BindingMatch(
+        "r",
+        (("?x", iri("urn:s" + str(i))),),
+        (Triple(iri("urn:s" + str(i)), iri("urn:p"), TermInput("literal", "v")),),
+        (("f" + str(i),),),
+    )
+    for i in (1, 2)
+)
+limits = ProfileLimits()
+raw_input = {
+    "note": "Complete diagnostic input, not an approved restore/JSON carrier",
+    "definitions": [asdict(spec)],
+    "catalog": asdict(catalog),
+    "originalMatches": [asdict(m) for m in matches],
+    "limits": asdict(limits),
+    "expectedFacts": [["urn:s1", "urn:q", "ok"], ["urn:s2", "urn:q", "ok"]],
+}
+(EVIDENCE / "source40000-input.json").write_text(json.dumps(raw_input, indent=2) + "\n")
+production = Budget(limits)
+batch = evaluate_bound_batch(compile_rules(definitions, catalog, production), matches, production)
+assert batch.facts == tuple(
+    Triple(iri(s), iri(p), TermInput("literal", o)) for s, p, o in raw_input["expectedFacts"]
+)
+assert tuple(f.source for f in batch.firings) == (source, source)
+assert tuple(f.proof_leaves for f in batch.firings) == ((("f1",),), (("f2",),))
+(EVIDENCE / "source40000-produced-payload.bin").write_bytes(batch.payload)
+
+group_budget = Budget(limits)
+plan = compile_rules(definitions, catalog, group_budget)
+try:
+    for group in batch.firings:
+        check_firing_group(plan, group, group_budget)
+except ProfileFailure as error:
+    assert error.reason == "RULE_INPUT_BUDGET" and error.classification == "resource"
+    old_failure = {"reason": error.reason, "classification": error.classification}
+else:
+    raise AssertionError("fresh compile plus old group loop unexpectedly passed")
+
+captured = []
+original_resources = revalidation._Resources
+
+
+def observe(limits, control):
+    pools = original_resources(limits, control)
+    captured.append(pools)
+    return pools
+
+
+# Observation only: returns the original resources and actual canonical Budget.
+# No source/function/encoding/budget semantics are replaced.
+revalidation._Resources = observe
+try:
+    result = revalidation.check_firing_batch(
+        definitions, catalog, matches, batch, limits=limits, disabled=False
+    )
+finally:
+    revalidation._Resources = original_resources
+assert result == "batch-consistent" and len(captured) == 1
+pools = captured[0]
+assert pools.replay.usage == production.usage
+record = {
+    "production": {"result": "success", "usage": dict(production.usage)},
+    "oldFreshCompileThenGroupRecheck": {**old_failure, "usage": dict(group_budget.usage)},
+    "newPublicAPI": {
+        "result": result,
+        "budgetVersion": revalidation.REVALIDATION_BUDGET_VERSION,
+        "replay": dict(pools.replay.usage),
+        "savedEncoding": dict(pools.saved_encoding.usage),
+        "savedIssuance": dict(pools.saved_issuance.usage),
+        "control": {"used": pools.control.used, "limit": pools.control.limit},
+    },
+    "producedPayload": {"bytes": len(batch.payload), "sha256": hashlib.sha256(batch.payload).hexdigest()},
+    "expected": "Hand-selected two complete RDF facts, both original sources and proofs asserted",
+    "limits": asdict(limits),
+    "measurement": "Actual debit/encoding counters; no CPU/memory/throughput or restore proof",
+}
+(EVIDENCE / "source40000-results.json").write_text(json.dumps(record, indent=2) + "\n")
+print(json.dumps(record, indent=2))
