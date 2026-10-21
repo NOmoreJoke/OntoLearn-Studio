@@ -16,3 +16,9 @@
 - IRI 是身份；不同 IRI 的英文显示标识允许相同，不能因命名空间局部名相同拒绝合法 RDF。
 - 多语言 labels/definitions 全集合在页面中逐项保留，服务 Diff 同时包含每个对象的 before/after 元数据与完整增删 RDF 集合。typed label/comment、其他合法 basic RDF 的最终导入投影需同 I05/T01 验证；当前不声称私有编辑模型覆盖完整交换模型。
 - 草稿有独立 project/revision 基准；同项目版本变化保留输入并禁用旧草稿预览，不自动套用最新版本。重新载入当前对象/新建表单是明确动作。旧影响清单、旧回复和切项目不能驱动当前预览。
+
+## 获批案例输入与类声明保留
+
+总控允许只读消费 T09 固定 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 的 manifest 输入；本线逐项重算17文件及原PRD hash后只复制 manifest/G-base 原字节，证据在 `t09-input-verification.json`。不使用该提交的任何服务/Store helper，不跟随变化 HEAD，不向正式 Store 预填 expected。测试内显式投影核对10条本体定义及18条断言的全部具体三元组（不以数量判断）；不执行规则/推理/行为。
+
+`owl:Class` 与 `rdfs:Class` 均属 C 原支持范围，不能为便于编辑将导入声明改写。私有 `Entity.class_type` 和页面 `ObjectRow.classType` 保留该原声明；最终 T00/T01 adapter 需有明确映射、严格校验及全量 RDF 回归。中英文名称/定义均使用可保留换行的输入控件。此处不扩大为 OWL 表达式支持，也未批准公共 schema。

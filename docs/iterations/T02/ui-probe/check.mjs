@@ -38,7 +38,24 @@ try {
   await open()
   await load()
   await expect(page.getByRole('textbox', { name: '名称 1', exact: true })).toHaveValue('设备')
-  await expect(page.getByRole('textbox', { name: '名称 2', exact: true })).toHaveValue('Equipment')
+  await expect(page.getByRole('textbox', { name: '名称 2', exact: true })).toHaveValue(
+    'Equipment\nAsset',
+  )
+  await page.getByRole('textbox', { name: '名称 2', exact: true }).focus()
+  await page
+    .getByRole('textbox', { name: '名称 2', exact: true })
+    .evaluate((input) => input.setSelectionRange(input.value.length, input.value.length))
+  await page.getByRole('textbox', { name: '名称 2', exact: true }).pressSequentially('s')
+  await expect(page.getByRole('textbox', { name: '定义 1', exact: true })).toHaveValue(
+    '第一行\n第二行',
+  )
+  // Position only the caret; Enter and text insertion remain real keyboard input.
+  await page.getByRole('textbox', { name: '定义 1', exact: true }).focus()
+  await page
+    .getByRole('textbox', { name: '定义 1', exact: true })
+    .evaluate((input) => input.setSelectionRange(input.value.length, input.value.length))
+  await page.getByRole('textbox', { name: '定义 1', exact: true }).press('Enter')
+  await page.getByRole('textbox', { name: '定义 1', exact: true }).pressSequentially('第三行')
   await page.getByRole('textbox', { name: '同义词（每行一项）', exact: true }).fill('机器')
   await page.getByRole('textbox', { name: '同义词（每行一项）', exact: true }).press('End')
   await page.getByRole('textbox', { name: '同义词（每行一项）', exact: true }).press('Enter')
@@ -49,9 +66,11 @@ try {
   const received = JSON.parse(await page.getByLabel('探针收到的意图').textContent())
   expect(received.object.labels).toEqual([
     ['设备', 'zh'],
-    ['Equipment', 'en'],
+    ['Equipment\nAssets', 'en'],
   ])
   expect(received.object.synonyms).toEqual(['机器', '备件'])
+  expect(received.object.definitions).toEqual([['第一行\n第二行\n第三行', 'zh']])
+  evidence.push('multiline_definition_loaded_and_edited_without_loss')
   await expect(page.getByRole('heading', { name: '修改预览 · 尚未提交' })).toBeVisible()
   evidence.push('multi_language_metadata_preserved')
   await page.getByRole('button', { name: '探针：推进版本', exact: true }).click()

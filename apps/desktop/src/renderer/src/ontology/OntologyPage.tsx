@@ -364,7 +364,14 @@ function Editor({ view, previewEdit, requestDeleteImpact }: OntologyPageProps) {
                 disabled={editing}
                 onChange={(event) => {
                   update('kind', event.target.value as ObjectKind)
-                  setDraft((old) => ({ ...old, parents: [], domain: [], range: [], types: [] }))
+                  setDraft((old) => ({
+                    ...old,
+                    parents: [],
+                    domain: [],
+                    range: [],
+                    types: [],
+                    classType: undefined,
+                  }))
                 }}
               >
                 {Object.entries(kindLabels).map(([value, label]) => (
@@ -374,6 +381,18 @@ function Editor({ view, previewEdit, requestDeleteImpact }: OntologyPageProps) {
                 ))}
               </select>
             </label>
+            {draft.kind === 'class' && (
+              <label>
+                类声明
+                <select
+                  value={draft.classType ?? 'rdfs'}
+                  onChange={(event) => update('classType', event.target.value)}
+                >
+                  <option value="rdfs">rdfs:Class</option>
+                  <option value="owl">owl:Class</option>
+                </select>
+              </label>
+            )}
             <label>
               稳定 IRI
               <input
@@ -542,8 +561,9 @@ function LocalizedFields({
         <div key={index}>
           <label>
             {title} {index + 1}
-            <input
+            <textarea
               required
+              rows={title === '定义' ? 3 : 1}
               maxLength={16000}
               value={text}
               onChange={(event) => {

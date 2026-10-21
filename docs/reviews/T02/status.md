@@ -39,3 +39,15 @@ T02 专属 Python 23 条、TS 3 条；headless 10 项呈现/异常核验通过�
 ## 最新完整检查
 
 `check-fourth.log` 已真实完成（exit 0）：633 vitest、1075 pytest、lint/format/typecheck/build/ruff 通过。此前首失败保留；本次之后仅更正 UI probe 的多行预期并追加流程证据，probe 实际重跑通过，最后 lint/format 再核验通过。`verify:sources` exit 0，核对12源。关键摘要/源与原件哈希见 `verification.json`；截图和原始日志留本地，未提交大幅原件。
+
+## C2 新候选
+
+C1 `438c6ade34795cb3b0111f0bca463d4fd091b393` 内审不通过原结论保留于 `independent-review-c1.md`；新增多行定义问题已修复，名称/定义均用 textarea，实际加载多行并按键编辑后全值保留。
+
+已按总控通知核对 T09 固定 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 的17 manifest输入及原PRD hash，只复制 manifest/G-base 原字节至本线 fixtures。新增3条测试核对完整原本体/断言集合、原 owl:Class 声明、多行元数据及行为引用阻止删除。不读取T09变化HEAD实现、不消费其服务或Store helper、不预填正式推导。原声明由私有 class_type/classType 保留，公共 adapter 尚待 owner。
+
+C2 全仓 `check-c2-final.log` 实际 exit 0：633 TS、1078 Python；本线26 Python/3 TS；`ui-probe-c2-final.log` 11项 headless 呈现检查 exit 0，截图已查看，lint/format 后核验通过。首次 C2 测试将事实误按原数组顺序比较、UI 键盘快捷键未正确置尾的失败原件保留；修正测试预期/光标选择后通过，未冒充产品错误修复。详情/输入及原件 hash 见 `verification-c2.json`。
+
+本地截图路径保存最新 C2 呈现，旧 C1 图片原路径已被新探针覆盖，旧哈希保留在 C1 提交中；原运行日志和固定代码/输入仍完整保留。截图不作为产品验收或不可变源资料。
+
+下一步：固定新 SHA 完成独立关闭复核，交付总控精确服务/页面接口需求；T00/T01/批准I05/T08联验及指定双外审预约仍待。父功能未关闭，Goal 保持 active；未 push/PR/CI/merge/上线。

@@ -23,3 +23,7 @@
 - UI probe 仅通过 route.fulfill 提供本地静态产物，无 HTTP server/端口/外联；合成 callback 仅用于 React 状态负例，fixture 来自本线纯领域样本。严禁计为 IPC、Store、e2e、真实模型、平台或生产验收。截图与原始日志保留本地，关键 JSON 和哈希入库。
 
 当前无依赖/打包配置改动，未执行新包内探针。未启动 Electron、e2e、native、HMR、审查应用或凭据提示。平台安装、生产与父功能验收均见本线状态和总控后续正式证据。
+
+## C2 追加验收
+
+C1 固定内审不通过原件保留于 `independent-review-c1.md`。名称/定义均改 textarea，headless 验证载入多行定义与多行英文名称、实际 Enter/追加文本后完整意图保留。新增批准 T09 G-base 原字节完整集合回归：保留 owl:Class、所有原断言、不预填推导、删除未实例化但被行为引用的类仍拒绝。该测试显式投影只供本线测试，不是正式导入 parser 或 Store adapter。

@@ -55,6 +55,7 @@ class Entity:
     domain: tuple[str, ...] = ()
     range: tuple[str, ...] = ()
     types: tuple[str, ...] = ()
+    class_type: Literal["rdfs", "owl"] | None = None
 
 
 @dataclass(frozen=True, order=True)
@@ -111,6 +112,10 @@ def validate(snapshot: Snapshot) -> None:
             raise OntologyError("invalid_iri") from None
         if item.kind not in KINDS:
             raise OntologyError("unsupported_kind")
+        if item.class_type not in {None, "rdfs", "owl"} or (
+            item.kind != "class" and item.class_type is not None
+        ):
+            raise OntologyError("invalid_class_type")
         if not isinstance(item.identifier, str) or not re.fullmatch(
             r"[A-Za-z0-9_][A-Za-z0-9_-]*", item.identifier
         ):

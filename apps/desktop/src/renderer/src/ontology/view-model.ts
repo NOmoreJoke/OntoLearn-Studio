@@ -4,6 +4,7 @@ export type LocalizedText = readonly [text: string, language: string]
 export type ObjectRow = Readonly<{
   iri: string
   kind: ObjectKind
+  classType?: 'rdfs' | 'owl'
   identifier: string
   labels: readonly LocalizedText[]
   definitions: readonly LocalizedText[]

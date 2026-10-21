@@ -1,0 +1,100 @@
+{
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "previousCandidate": "438c6ade34795cb3b0111f0bca463d4fd091b393",
+  "scope": "C2: preserve multiline literals and original class declarations; approved fixed G-base input regression. Formal integration remains pending.",
+  "commands": [
+    {
+      "command": "npm run check",
+      "log": "check-c2-final.log",
+      "exit": 0,
+      "vitest": 633,
+      "pytest": 1078,
+      "t02PythonCases": 26,
+      "t02TsCases": 3
+    },
+    {
+      "command": "uv run --frozen pytest packages/engine/tests/test_ontology_*.py -q",
+      "log": "pytest-c2-second.log",
+      "exit": 0,
+      "cases": 26
+    },
+    {
+      "command": "T02_HEADLESS_EXECUTABLE=<existing Chromium headless shell 1234> node docs/iterations/T02/ui-probe/check.mjs",
+      "log": "ui-probe-c2-final.log",
+      "exit": 0,
+      "browser": "151.0.7922.34",
+      "checks": 11,
+      "scope": "Synthetic callback component states only, no Store/IPC/model/product/e2e"
+    },
+    {
+      "command": "npm run lint",
+      "log": "lint-c2-final.log",
+      "exit": 0
+    },
+    {
+      "command": "npx prettier --check <T02 code/docs/approved fixtures>",
+      "log": "format-c2-final.log",
+      "exit": 0
+    }
+  ],
+  "approvedInput": {
+    "commit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+    "manifestSHA256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+    "receipt": "t09-input-verification.json",
+    "all17Rehashed": true,
+    "servicesConsumed": false
+  },
+  "firstC2Failures": [
+    "pytest-c2-first.log: test compared fact order although RDF input is a set; corrected to complete sorted set",
+    "ui-probe-c2-first.log: platform shortcut failed to position caret; explicit caret selection plus real Enter/type then passed"
+  ],
+  "implementation_hashes": {
+    "apps/desktop/src/renderer/src/ontology/OntologyPage.tsx": "127e0f5b746f7c7140f4e92b4d423b920ee9422df3cc87f8945ad799a1626ef1",
+    "apps/desktop/src/renderer/src/ontology/ontology.css": "000a16875e2155c0ec7bd0b704dde4103af4754e41550bf88c4756a27c366a62",
+    "apps/desktop/src/renderer/src/ontology/view-model.ts": "5a3c6c3bf95bc2cc6219f7cf24e5d337c8381ae6fc392b460895b002e0c2e405",
+    "docs/iterations/T02/ui-probe/build.mjs": "0f953b219d1e1306d372727f8ade16cbe5786e4efb3edb4ddeaaf4eecf4dbf08",
+    "docs/iterations/T02/ui-probe/check.mjs": "b0b199ea01cf900bd8cd07a224c1f14f43ec3b233f53275783975415b6cc2d06",
+    "docs/iterations/T02/ui-probe/fixture.json": "55f1b9c9b74149c34efc238f2c9772dc39c20434439aa283fa6870a7b2adc331",
+    "docs/iterations/T02/ui-probe/harness.tsx": "f12984e000d411609ac11abc79d462ca54b89f36757ca55669d09a20c314bc32",
+    "docs/iterations/T02/ui-probe/index.html": "b8262fcd67ddb5e429f095e29086f6de2ed621c1a3779892f0ec9e1827b7490a",
+    "packages/engine/src/ontolearn_engine/ontology/__init__.py": "dd89c5685444fdca5a3fd37acb3d0cc05be3dbb77a935a39feb298503b7e7a7d",
+    "packages/engine/src/ontolearn_engine/ontology/model.py": "26cb5c55c10e0611b5610b53ca3ca129ad4e371e6186b026d74c791a15573c23",
+    "packages/engine/src/ontolearn_engine/ontology/service.py": "fa49220fbc812f6e94f6c0c19b6ceff82cb00fa9843f1e7238f6c196f7c839cf",
+    "packages/engine/tests/test_ontology_editor.py": "75e7a810b6d3dd1049b621072d7c858146136b4bb77560f2942d54936478343b",
+    "packages/engine/tests/test_ontology_fixed_inputs.py": "09ad1826425a4e0f1b68347ffe407a069b8fb7bf7c08a3d9fbfa62b97bf72739",
+    "tests/fixtures/ontology/invalid-turtle.ttl": "8f003454f79b131b82853cb763685fab447e5cd02018b69eb56ba1d2636851ed",
+    "tests/fixtures/ontology/manifest.json": "bdd9bb6d5d318ac76fb1c674dc3b916c17d56ecc010ee6cfacdcf24dc1096d03",
+    "tests/fixtures/ontology/manual-supported.ttl": "fea927fa9393e82ba0a6d0b71c6387d4892b8599384edba26db8ad8d49e3d49b",
+    "tests/fixtures/ontology/supported-shacl-template.ttl": "44684f7d49e33cc4c9b7a28b11549715df0f4f73843bc69455702134cf2202c2",
+    "tests/fixtures/ontology/t09-fixed-inputs/G-base.json": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+    "tests/fixtures/ontology/t09-fixed-inputs/manifest.json": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+    "tests/fixtures/ontology/unsupported-owl.ttl": "7fb25d98e1968e444675f783d6128562fb8f082725d6202136bdeecd9e8a8006",
+    "tests/fixtures/ontology/unsupported-shacl-path.ttl": "d864d43a223baaf3762816a1ba591da157e973058ec7987fbce4a0b3088de8de",
+    "tests/unit/t02-ontology-views.test.ts": "11f021b7a6e8a9a7c1f13288c7153d78f7cb931fd13c37ab5100c7af90a99a2d"
+  },
+  "log_hashes": {
+    "check-c2-final.log": "921b4726cb5fb3f2be8645c189f101d1d1a3810393da81b5a8f6140c8b687929",
+    "check-c2-first.log": "a17999460d230eb2e5ea049fbe4b4973238b12686cc74851044e1993ed47c332",
+    "format-c2-final.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+    "lint-c2-final.log": "971d100f2564ba4c3ebd0516d23344f8a1a27b23e5e199fd0f82dfffe4eb21ec",
+    "pytest-c2-first.log": "bc15d040f5ede856dd2094149c4dd0e165b9ad2cb201a634d113c02e67d32b27",
+    "pytest-c2-second.log": "3fcf49d3872f052b607ddbfc35248db9dfd6da920eec332efe87505d4b17ea25",
+    "ui-probe-c2-final.log": "6e7afc9c44124a24334a23a83f282279467b7e5ba6929a3cd4d008339c62d8e7",
+    "ui-probe-c2-first.log": "ad7de92dbfd62c5ba71853b7f761654463be0f6ab1d99d67442a8d05ac4d53c2",
+    "ui-probe-c2-second.log": "db8de32651557ca1d03b0ba80e85e00683851894c87e1e2259c86d8fbaf110e4",
+    "ui-probe-c2-third.log": "bb5fb3d120b21f50b6dc9be5577c854e78bfebc6832679be7eb14387d36cb33f"
+  },
+  "currentScreenshots": {
+    "ui-desktop.png": "4dd1d54148ed9e8dd8ce7dfc1b02e329ec92cb42898fb7b2ae9045c12b4076f6",
+    "ui-mobile.png": "87944618da1596ff957f36aa422fcdb77a7c74e14ec2e4b1eb2f251ded6bc417"
+  },
+  "sourceManifestVerification": "sources-first.log still applies: no archived source or source-manifest bytes changed",
+  "protectedAgentsSHA256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+  "notRun": [
+    "formal Store/bridge/parser/model integration",
+    "specified dual model reviews",
+    "push/PR/CI/merge",
+    "Electron/e2e/native/HMR/package-internal",
+    "Windows/macOS install/production"
+  ]
+}

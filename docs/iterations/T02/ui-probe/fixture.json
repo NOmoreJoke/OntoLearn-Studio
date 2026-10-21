@@ -8,9 +8,9 @@
       "identifier": "Equipment",
       "labels": [
         ["设备", "zh"],
-        ["Equipment", "en"]
+        ["Equipment\nAsset", "en"]
       ],
-      "definitions": [],
+      "definitions": [["第一行\n第二行", "zh"]],
       "synonyms": [],
       "examples": [],
       "parents": [],
@@ -107,8 +107,13 @@
     },
     {
       "subject": "urn:t02:Equipment",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#comment",
+      "object": "\"\"\"第一行\n第二行\"\"\"@zh"
+    },
+    {
+      "subject": "urn:t02:Equipment",
       "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
-      "object": "\"Equipment\"@en"
+      "object": "\"\"\"Equipment\nAsset\"\"\"@en"
     },
     {
       "subject": "urn:t02:Equipment",

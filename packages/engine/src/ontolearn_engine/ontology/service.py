@@ -80,7 +80,10 @@ def rdf_triples(snapshot: Snapshot) -> tuple[Triple, ...]:
     }
     for item in snapshot.entities:
         if item.kind in kinds:
-            triples.add(Triple(item.iri, str(RDF.type), f"<{kinds[item.kind]}>"))
+            rdf_type = (
+                OWL.Class if item.kind == "class" and item.class_type == "owl" else kinds[item.kind]
+            )
+            triples.add(Triple(item.iri, str(RDF.type), f"<{rdf_type}>"))
         for field, predicate in (("labels", RDFS.label), ("definitions", RDFS.comment)):
             for text, language in getattr(item, field):
                 triples.add(
