@@ -1,0 +1,44 @@
+"""Actual original inputs only; goldens enter assertions after computation."""
+import json
+from pathlib import Path
+from unittest.mock import patch
+from ontolearn_engine import semantic
+from ontolearn_engine.semantic_offline import SemanticError
+
+root=Path.cwd();fixtures=root/'docs/reviews/T05/profile-M1-math-explanation-input-contract'
+inputs=json.loads((fixtures/'consumer-C-inputs.json').read_bytes())['cases']
+results=[];original_run=semantic.Validator.run
+for case in inputs:
+    calls=[]
+    def observe(self,*args,**kwargs):
+        calls.append(1)
+        return original_run(self,*args,**kwargs)
+    record={'id':case['id'],'validatorCalls':0,'report':None,'query':None,'error':None}
+    try:
+        with patch.object(semantic.Validator,'run',observe):
+            data=semantic.parse_turtle(case['dataTurtle'])
+            if 'query' in case:record['query']=semantic.query(data,case['query'])
+            else:
+                shapes=semantic.parse_turtle(case['shapesTurtle'],shapes=True)
+                record['report']=semantic.check_shapes(data,shapes)
+    except SemanticError as exc:record['error']=exc.code
+    record['validatorCalls']=len(calls)
+    # Read the frozen expected document after the actual original execution.
+    expected=next(row['expected'] for row in json.loads((fixtures/'consumer-C-goldens.json').read_bytes())['cases'] if row['id']==case['id'])
+    if 'conforms' in expected:
+        assert record['error'] is None and len(calls)==1,record
+        assert record['report']['conforms'] is expected['conforms'],record
+        actual=[{'focusNode':v['focus'],'resultPath':v['path'],'sourceShape':v['sourceShape'],'sourceConstraintComponent':v['constraint'],'resultSeverity':v['severity'],'value':v['value']} for v in record['report']['violations']]
+        wanted=[{k:v for k,v in row.items() if k!='valueExpectation'} for row in expected.get('requiredResultRows',[])]
+        assert actual==wanted,(record,actual,wanted)
+    elif 'query' in case:
+        query=record['query'];assert record['error'] is None and not calls
+        actual=[dict(zip(query['variables'],values,strict=True)) for values in query['rows']]
+        assert actual==expected['rows'],record
+    elif case['id']=='C-inclusive-date-entry':
+        assert record['error']=='INVALID_SHAPE' and not calls,record
+    elif case['id']=='C-illtyped-entry':
+        assert record['error']=='INVALID_LITERAL_LEXICAL' and not calls,record
+    else:raise AssertionError(case['id'])
+    results.append(record)
+print(json.dumps({'product':'3bd19e347051627242197f15fce712c9c9dd6b8f','allConsumerCases':results,'checksPassed':len(results)},sort_keys=True))

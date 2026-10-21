@@ -1,0 +1,16 @@
+import pathlib,json,hashlib,subprocess,datetime,os,uuid,time
+r=pathlib.Path.cwd();p=r/'docs/reviews/I05/profile-shape-entry/independent-review';candidate=json.loads((r/'docs/reviews/I05/profile-shape-entry/candidate.json').read_bytes())
+def sources():
+ return [{'path':x['path'],'bytes':len((r/x['path']).read_bytes()),'sha256':hashlib.sha256((r/x['path']).read_bytes()).hexdigest()} for x in candidate['files']]
+env=dict(os.environ);env['PYTHONDONTWRITEBYTECODE']='1';env['PYTEST_ADDOPTS']='';env['PYTHONPATH']='packages/engine/src';env['I05_SHAPE_EVIDENCE_DIR']=str(p/'02-pytest-reports');basetemp=str(p/('basetemp-'+uuid.uuid4().hex))
+runs=[('02-pytest',['.venv/bin/python','-m','pytest','-q','-p','no:cacheprovider','--basetemp',basetemp,'packages/engine/tests/test_semantic_profile_shape_entry.py']),('03-consumer-c',['.venv/bin/python',str((p/'consumer-c-probe.py.raw').relative_to(r))])]
+for name,argv in runs:
+ before=sources();start=datetime.datetime.now(datetime.timezone.utc).isoformat();t=time.monotonic();timeout=False
+ try:
+  proc=subprocess.run(argv,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=env,timeout=60);code=proc.returncode;stdout=proc.stdout;stderr=proc.stderr
+ except subprocess.TimeoutExpired as exc:timeout=True;code=None;stdout=exc.stdout or b'';stderr=exc.stderr or b''
+ after=sources();assert before==after
+ (p/(name+'.stdout.txt')).write_bytes(stdout);(p/(name+'.stderr.txt')).write_bytes(stderr)
+ meta={'argv':argv,'cwd':str(r),'gitHead':subprocess.check_output(['git','rev-parse','HEAD']).decode().strip(),'product':candidate['product'],'start':start,'end':datetime.datetime.now(datetime.timezone.utc).isoformat(),'durationSeconds':time.monotonic()-t,'exitCode':code,'timeout':timeout,'environmentOverrides':{k:env[k] for k in ('PYTHONDONTWRITEBYTECODE','PYTEST_ADDOPTS','PYTHONPATH','I05_SHAPE_EVIDENCE_DIR')},'sourcesBefore':before,'sourcesAfter':after,'sourcesUnchanged':before==after}
+ (p/(name+'.json')).write_text(json.dumps(meta,ensure_ascii=False,indent=2)+'\n');print(name,code,'timeout',timeout);print(stdout.decode());print(stderr.decode())
+ if code!=0:raise SystemExit(code)

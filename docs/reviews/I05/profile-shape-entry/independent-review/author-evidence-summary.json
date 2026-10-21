@@ -1,0 +1,72 @@
+[
+  {
+    "run": "01-original-four-red",
+    "argv": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "packages/engine/tests/test_semantic_profile_shape_entry.py",
+      "-k",
+      "original_four_inputs"
+    ],
+    "gitHead": "6e64311957a43b725bfb3e5da88c8df29c000b87",
+    "exitCode": 1,
+    "timeout": false,
+    "sourcesUnchanged": true,
+    "sourceCountBefore": 142,
+    "sourceCountAfter": 142,
+    "stdoutBytes": 19758,
+    "stderrBytes": 0,
+    "commandBytes": 55334,
+    "commandSha256": "d95cb4fa95ce41e3b7dd61044e8077a8765be535636ddd2608349d865aefcf7e"
+  },
+  {
+    "run": "02-shape-special",
+    "argv": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "packages/engine/tests/test_semantic_profile_shape_entry.py"
+    ],
+    "gitHead": "6e64311957a43b725bfb3e5da88c8df29c000b87",
+    "exitCode": 0,
+    "timeout": false,
+    "sourcesUnchanged": true,
+    "sourceCountBefore": 142,
+    "sourceCountAfter": 142,
+    "stdoutBytes": 99,
+    "stderrBytes": 0,
+    "commandBytes": 55288,
+    "commandSha256": "7c664b85afee80e4f49c177121d1cf389d90221966d3567c0677c0f12a77be7f"
+  },
+  {
+    "run": "04-normal-check",
+    "argv": ["npm", "run", "check"],
+    "gitHead": "3bd19e347051627242197f15fce712c9c9dd6b8f",
+    "exitCode": 0,
+    "timeout": false,
+    "sourcesUnchanged": true,
+    "sourceCountBefore": 142,
+    "sourceCountAfter": 142,
+    "stdoutBytes": 12987,
+    "stderrBytes": 0,
+    "commandBytes": 55197,
+    "commandSha256": "ee6bdac927b176f29fba1adf3c2a56abf01a4e47e626199bc8770c38392557e3"
+  },
+  {
+    "run": "05-verify-sources",
+    "argv": ["npm", "run", "verify:sources"],
+    "gitHead": "3bd19e347051627242197f15fce712c9c9dd6b8f",
+    "exitCode": 0,
+    "timeout": false,
+    "sourcesUnchanged": true,
+    "sourceCountBefore": 142,
+    "sourceCountAfter": 142,
+    "stdoutBytes": 111,
+    "stderrBytes": 0,
+    "commandBytes": 55210,
+    "commandSha256": "4ed1f863faf37e27475b42589cc78ec4a86803fd433d41b400d53e1956449404"
+  }
+]

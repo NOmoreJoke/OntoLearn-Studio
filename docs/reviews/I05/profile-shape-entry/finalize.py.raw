@@ -1,0 +1,36 @@
+import hashlib,json,subprocess
+from pathlib import Path
+root=Path.cwd();prefix=Path('docs/reviews/I05/profile-shape-entry');main=Path('docs/iterations/I05/profile-shape-entry.md')
+product='3bd19e347051627242197f15fce712c9c9dd6b8f';base='5f910b52c69d86a1076b2032e5d3c63e715947f3'
+def sha(b):return hashlib.sha256(b).hexdigest()
+candidate=json.loads((prefix/'candidate.json').read_bytes())
+controlled=[]
+for row in candidate['files']:
+ p=Path(row['path']);b=p.read_bytes();assert len(b)==row['bytes'] and sha(b)==row['sha256']
+ assert b==subprocess.check_output(['git','show',product+':'+str(p)])
+ controlled.append(dict(row,currentEqualsProductGit=True))
+v=json.loads((prefix/'validation.json').read_bytes());v['runs']=[]
+for c in sorted((prefix/'runs').glob('*/command.json')):
+ x=json.loads(c.read_bytes());assert x['sourcesUnchanged'] and len(x['sourcesBefore'])==142
+ for m in json.loads(c.with_name('members.json').read_bytes()):
+  b=(c.parent/m['path']).read_bytes();assert len(b)==m['bytes'] and sha(b)==m['sha256']
+ v['runs'].append(dict(path=str(c),bytes=c.stat().st_size,sha256=sha(c.read_bytes()),exitCode=x['exitCode'],timeout=x['timeout'],sourceCount=142,sourcesUnchanged=True))
+v['whitespaceCheck']={'fullExit':2,'preserveRawExit':0,'exclusions':['docs/reviews/I05/profile-shape-entry/runs/01-original-four-red/stdout.txt','docs/reviews/I05/profile-shape-entry/runs/06-staged-full-diff/stdout.txt'],'reason':'preserve original pytest first failure and its exact diagnostic; not product failure'}
+(prefix/'validation.json').write_text(json.dumps(v,ensure_ascii=False,indent=2)+'\n')
+process=sorted([main]+[p for p in prefix.rglob('*') if p.is_file()])
+manifest_path=prefix/'final-manifest.json'
+rows=[]
+for p in process:
+ if p==manifest_path:continue
+ b=p.read_bytes();rows.append(dict(path=str(p),bytes=len(b),sha256=sha(b)))
+rows.append(dict(path=str(manifest_path),bytes=None,sha256=None,selfDigest='external receipt avoids self reference'))
+allpaths={r['path'] for r in controlled}|{r['path'] for r in rows}
+basepaths=set(subprocess.check_output(['git','ls-tree','-r','--name-only',base],text=True).splitlines())
+actual=[];same=[]
+for path in sorted(allpaths):
+ if path==str(manifest_path) or path not in basepaths:actual.append(path);continue
+ b=Path(path).read_bytes();old=subprocess.check_output(['git','show',base+':'+path])
+ (same if b==old else actual).append(path)
+manifest=dict(base=base,adoption=candidate['adoption'],product=product,controlledCount=142,readonlyCount=140,processCount=len(rows),totalCount=len(allpaths),actualBaseDiffCount=len(actual),sameAsBaseCount=len(same),sameAsBase=same,actualBaseDiff=actual,controlled=controlled,process=rows)
+manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({k:v for k,v in manifest.items() if k.endswith('Count')},ensure_ascii=False))

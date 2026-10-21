@@ -1,0 +1,375 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_original_four_inputs_reach_actual_validator_and_full_normative_report[C-langString] _
+
+identity = 'C-langString'
+
+    @pytest.mark.parametrize("identity", FIXED_IDS)
+    def test_original_four_inputs_reach_actual_validator_and_full_normative_report(identity):
+        case = fixture_case(identity)
+        # Only pure input reaches production. Golden is read after the real call.
+>       report, calls = observe(case["dataTurtle"], case["shapesTurtle"], identity)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_profile_shape_entry.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_shape_entry.py:44: in observe
+    result = semantic.check_shapes(actual_data, actual_shapes)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:1293: in check_shapes
+    _shapes(constraints)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+graph = <Graph identifier=N5c51e77e4bab4499943c8f6d415ed4f4 (<class 'rdflib.graph.Graph'>)>
+
+    def _shapes(graph):
+        _terms(graph, shapes=True)
+        nodes = set(graph.subjects(RDF.type, SH.NodeShape))
+        properties = set(graph.objects(None, SH.property))
+        if any(not isinstance(n, URIRef) for n in nodes | properties) or nodes & properties:
+            raise SemanticError("UNSUPPORTED_BLANK_NODE")
+        # Diagnose the actual template field before the generic whole-graph whitelist.
+        # A non-IRI target/datatype is not a complex path. Only the structurally proven
+        # inverse form is classified here; unclassified anonymous paths fail safely.
+        for value in graph.objects(None, SH.targetClass):
+            if not isinstance(value, URIRef):
+                raise SemanticError("SHAPE_TARGET_CLASS_INVALID")
+        for value in graph.objects(None, SH.datatype):
+            if not isinstance(value, URIRef):
+                raise SemanticError("SHAPE_DATATYPE_INVALID")
+        for value in graph.objects(None, SH.path):
+            if isinstance(value, URIRef):
+                continue
+            if isinstance(value, Literal):
+                raise SemanticError("SHAPE_PATH_INVALID")
+            triples = list(graph.triples((value, None, None)))
+            if (
+                len(triples) == 1
+                and triples[0][1] == SH.inversePath
+                and isinstance(triples[0][2], URIRef)
+            ):
+                raise SemanticError("UNSUPPORTED_SHACL_PATH")
+            raise SemanticError("SHAPE_PATH_UNCLASSIFIED")
+        lists = set()
+        for head in graph.objects(None, SH["in"]):
+            visited = set()
+            while head != RDF.nil:
+                if not isinstance(head, BNode) or head in visited:
+                    raise SemanticError("INVALID_SHAPE_LIST")
+                visited.add(head)
+                lists.add(head)
+                first = list(graph.objects(head, RDF.first))
+                rest = list(graph.objects(head, RDF.rest))
+                if len(first) != 1 or len(rest) != 1 or not isinstance(first[0], URIRef | Literal):
+                    raise SemanticError("INVALID_SHAPE_LIST")
+                head = rest[0]
+        for s, p, o in graph:
+            if s in lists and p in {RDF.first, RDF.rest}:
+                continue
+            if p == RDF.type and (
+                (s in nodes and o == SH.NodeShape) or (s in properties and o == SH.PropertyShape)
+            ):
+                continue
+            if p not in _SH_PREDICATES:
+                raise SemanticError("UNSUPPORTED_SHACL")
+            if p in {SH.targetClass, SH.property}:
+                if s not in nodes or not isinstance(o, URIRef | BNode):
+                    raise SemanticError("INVALID_SHAPE")
+            elif s not in properties:
+                raise SemanticError("INVALID_SHAPE")
+            if p == SH.datatype and o not in _DATATYPES:
+>               raise SemanticError("UNSUPPORTED_DATATYPE")
+E               ontolearn_engine.semantic_offline.SemanticError: UNSUPPORTED_DATATYPE
+
+packages/engine/src/ontolearn_engine/semantic.py:1261: SemanticError
+_ test_original_four_inputs_reach_actual_validator_and_full_normative_report[C-inclusive-nni] _
+
+identity = 'C-inclusive-nni'
+
+    @pytest.mark.parametrize("identity", FIXED_IDS)
+    def test_original_four_inputs_reach_actual_validator_and_full_normative_report(identity):
+        case = fixture_case(identity)
+        # Only pure input reaches production. Golden is read after the real call.
+>       report, calls = observe(case["dataTurtle"], case["shapesTurtle"], identity)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_profile_shape_entry.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_shape_entry.py:44: in observe
+    result = semantic.check_shapes(actual_data, actual_shapes)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:1293: in check_shapes
+    _shapes(constraints)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+graph = <Graph identifier=N7a5e4444fba74557a628ee98bf99401e (<class 'rdflib.graph.Graph'>)>
+
+    def _shapes(graph):
+        _terms(graph, shapes=True)
+        nodes = set(graph.subjects(RDF.type, SH.NodeShape))
+        properties = set(graph.objects(None, SH.property))
+        if any(not isinstance(n, URIRef) for n in nodes | properties) or nodes & properties:
+            raise SemanticError("UNSUPPORTED_BLANK_NODE")
+        # Diagnose the actual template field before the generic whole-graph whitelist.
+        # A non-IRI target/datatype is not a complex path. Only the structurally proven
+        # inverse form is classified here; unclassified anonymous paths fail safely.
+        for value in graph.objects(None, SH.targetClass):
+            if not isinstance(value, URIRef):
+                raise SemanticError("SHAPE_TARGET_CLASS_INVALID")
+        for value in graph.objects(None, SH.datatype):
+            if not isinstance(value, URIRef):
+                raise SemanticError("SHAPE_DATATYPE_INVALID")
+        for value in graph.objects(None, SH.path):
+            if isinstance(value, URIRef):
+                continue
+            if isinstance(value, Literal):
+                raise SemanticError("SHAPE_PATH_INVALID")
+            triples = list(graph.triples((value, None, None)))
+            if (
+                len(triples) == 1
+                and triples[0][1] == SH.inversePath
+                and isinstance(triples[0][2], URIRef)
+            ):
+                raise SemanticError("UNSUPPORTED_SHACL_PATH")
+            raise SemanticError("SHAPE_PATH_UNCLASSIFIED")
+        lists = set()
+        for head in graph.objects(None, SH["in"]):
+            visited = set()
+            while head != RDF.nil:
+                if not isinstance(head, BNode) or head in visited:
+                    raise SemanticError("INVALID_SHAPE_LIST")
+                visited.add(head)
+                lists.add(head)
+                first = list(graph.objects(head, RDF.first))
+                rest = list(graph.objects(head, RDF.rest))
+                if len(first) != 1 or len(rest) != 1 or not isinstance(first[0], URIRef | Literal):
+                    raise SemanticError("INVALID_SHAPE_LIST")
+                head = rest[0]
+        for s, p, o in graph:
+            if s in lists and p in {RDF.first, RDF.rest}:
+                continue
+            if p == RDF.type and (
+                (s in nodes and o == SH.NodeShape) or (s in properties and o == SH.PropertyShape)
+            ):
+                continue
+            if p not in _SH_PREDICATES:
+                raise SemanticError("UNSUPPORTED_SHACL")
+            if p in {SH.targetClass, SH.property}:
+                if s not in nodes or not isinstance(o, URIRef | BNode):
+                    raise SemanticError("INVALID_SHAPE")
+            elif s not in properties:
+                raise SemanticError("INVALID_SHAPE")
+            if p == SH.datatype and o not in _DATATYPES:
+                raise SemanticError("UNSUPPORTED_DATATYPE")
+            if p in {SH.minCount, SH.maxCount} and (
+                not isinstance(o, Literal)
+                or o.datatype not in {XSD.integer, XSD.int}
+                or type(o.toPython()) is not int
+                or o.toPython() < 0
+            ):
+                raise SemanticError("INVALID_SHAPE")
+            if p in {SH.minInclusive, SH.maxInclusive} and (
+                not isinstance(o, Literal)
+                or o.datatype not in {XSD.integer, XSD.int, XSD.decimal, XSD.float, XSD.double}
+                or o.ill_typed
+            ):
+>               raise SemanticError("INVALID_SHAPE")
+E               ontolearn_engine.semantic_offline.SemanticError: INVALID_SHAPE
+
+packages/engine/src/ontolearn_engine/semantic.py:1274: SemanticError
+_ test_original_four_inputs_reach_actual_validator_and_full_normative_report[C-inclusive-dateTime-equal] _
+
+identity = 'C-inclusive-dateTime-equal'
+
+    @pytest.mark.parametrize("identity", FIXED_IDS)
+    def test_original_four_inputs_reach_actual_validator_and_full_normative_report(identity):
+        case = fixture_case(identity)
+        # Only pure input reaches production. Golden is read after the real call.
+>       report, calls = observe(case["dataTurtle"], case["shapesTurtle"], identity)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_profile_shape_entry.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_shape_entry.py:44: in observe
+    result = semantic.check_shapes(actual_data, actual_shapes)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:1293: in check_shapes
+    _shapes(constraints)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+graph = <Graph identifier=Nf204b57087b44fe09d5fa2329ac412f2 (<class 'rdflib.graph.Graph'>)>
+
+    def _shapes(graph):
+        _terms(graph, shapes=True)
+        nodes = set(graph.subjects(RDF.type, SH.NodeShape))
+        properties = set(graph.objects(None, SH.property))
+        if any(not isinstance(n, URIRef) for n in nodes | properties) or nodes & properties:
+            raise SemanticError("UNSUPPORTED_BLANK_NODE")
+        # Diagnose the actual template field before the generic whole-graph whitelist.
+        # A non-IRI target/datatype is not a complex path. Only the structurally proven
+        # inverse form is classified here; unclassified anonymous paths fail safely.
+        for value in graph.objects(None, SH.targetClass):
+            if not isinstance(value, URIRef):
+                raise SemanticError("SHAPE_TARGET_CLASS_INVALID")
+        for value in graph.objects(None, SH.datatype):
+            if not isinstance(value, URIRef):
+                raise SemanticError("SHAPE_DATATYPE_INVALID")
+        for value in graph.objects(None, SH.path):
+            if isinstance(value, URIRef):
+                continue
+            if isinstance(value, Literal):
+                raise SemanticError("SHAPE_PATH_INVALID")
+            triples = list(graph.triples((value, None, None)))
+            if (
+                len(triples) == 1
+                and triples[0][1] == SH.inversePath
+                and isinstance(triples[0][2], URIRef)
+            ):
+                raise SemanticError("UNSUPPORTED_SHACL_PATH")
+            raise SemanticError("SHAPE_PATH_UNCLASSIFIED")
+        lists = set()
+        for head in graph.objects(None, SH["in"]):
+            visited = set()
+            while head != RDF.nil:
+                if not isinstance(head, BNode) or head in visited:
+                    raise SemanticError("INVALID_SHAPE_LIST")
+                visited.add(head)
+                lists.add(head)
+                first = list(graph.objects(head, RDF.first))
+                rest = list(graph.objects(head, RDF.rest))
+                if len(first) != 1 or len(rest) != 1 or not isinstance(first[0], URIRef | Literal):
+                    raise SemanticError("INVALID_SHAPE_LIST")
+                head = rest[0]
+        for s, p, o in graph:
+            if s in lists and p in {RDF.first, RDF.rest}:
+                continue
+            if p == RDF.type and (
+                (s in nodes and o == SH.NodeShape) or (s in properties and o == SH.PropertyShape)
+            ):
+                continue
+            if p not in _SH_PREDICATES:
+                raise SemanticError("UNSUPPORTED_SHACL")
+            if p in {SH.targetClass, SH.property}:
+                if s not in nodes or not isinstance(o, URIRef | BNode):
+                    raise SemanticError("INVALID_SHAPE")
+            elif s not in properties:
+                raise SemanticError("INVALID_SHAPE")
+            if p == SH.datatype and o not in _DATATYPES:
+                raise SemanticError("UNSUPPORTED_DATATYPE")
+            if p in {SH.minCount, SH.maxCount} and (
+                not isinstance(o, Literal)
+                or o.datatype not in {XSD.integer, XSD.int}
+                or type(o.toPython()) is not int
+                or o.toPython() < 0
+            ):
+                raise SemanticError("INVALID_SHAPE")
+            if p in {SH.minInclusive, SH.maxInclusive} and (
+                not isinstance(o, Literal)
+                or o.datatype not in {XSD.integer, XSD.int, XSD.decimal, XSD.float, XSD.double}
+                or o.ill_typed
+            ):
+>               raise SemanticError("INVALID_SHAPE")
+E               ontolearn_engine.semantic_offline.SemanticError: INVALID_SHAPE
+
+packages/engine/src/ontolearn_engine/semantic.py:1274: SemanticError
+_ test_original_four_inputs_reach_actual_validator_and_full_normative_report[C-inclusive-dateTime-before] _
+
+identity = 'C-inclusive-dateTime-before'
+
+    @pytest.mark.parametrize("identity", FIXED_IDS)
+    def test_original_four_inputs_reach_actual_validator_and_full_normative_report(identity):
+        case = fixture_case(identity)
+        # Only pure input reaches production. Golden is read after the real call.
+>       report, calls = observe(case["dataTurtle"], case["shapesTurtle"], identity)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_profile_shape_entry.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_shape_entry.py:44: in observe
+    result = semantic.check_shapes(actual_data, actual_shapes)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:1293: in check_shapes
+    _shapes(constraints)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+graph = <Graph identifier=N8afe518e376d4f32a19e5fd5759b114b (<class 'rdflib.graph.Graph'>)>
+
+    def _shapes(graph):
+        _terms(graph, shapes=True)
+        nodes = set(graph.subjects(RDF.type, SH.NodeShape))
+        properties = set(graph.objects(None, SH.property))
+        if any(not isinstance(n, URIRef) for n in nodes | properties) or nodes & properties:
+            raise SemanticError("UNSUPPORTED_BLANK_NODE")
+        # Diagnose the actual template field before the generic whole-graph whitelist.
+        # A non-IRI target/datatype is not a complex path. Only the structurally proven
+        # inverse form is classified here; unclassified anonymous paths fail safely.
+        for value in graph.objects(None, SH.targetClass):
+            if not isinstance(value, URIRef):
+                raise SemanticError("SHAPE_TARGET_CLASS_INVALID")
+        for value in graph.objects(None, SH.datatype):
+            if not isinstance(value, URIRef):
+                raise SemanticError("SHAPE_DATATYPE_INVALID")
+        for value in graph.objects(None, SH.path):
+            if isinstance(value, URIRef):
+                continue
+            if isinstance(value, Literal):
+                raise SemanticError("SHAPE_PATH_INVALID")
+            triples = list(graph.triples((value, None, None)))
+            if (
+                len(triples) == 1
+                and triples[0][1] == SH.inversePath
+                and isinstance(triples[0][2], URIRef)
+            ):
+                raise SemanticError("UNSUPPORTED_SHACL_PATH")
+            raise SemanticError("SHAPE_PATH_UNCLASSIFIED")
+        lists = set()
+        for head in graph.objects(None, SH["in"]):
+            visited = set()
+            while head != RDF.nil:
+                if not isinstance(head, BNode) or head in visited:
+                    raise SemanticError("INVALID_SHAPE_LIST")
+                visited.add(head)
+                lists.add(head)
+                first = list(graph.objects(head, RDF.first))
+                rest = list(graph.objects(head, RDF.rest))
+                if len(first) != 1 or len(rest) != 1 or not isinstance(first[0], URIRef | Literal):
+                    raise SemanticError("INVALID_SHAPE_LIST")
+                head = rest[0]
+        for s, p, o in graph:
+            if s in lists and p in {RDF.first, RDF.rest}:
+                continue
+            if p == RDF.type and (
+                (s in nodes and o == SH.NodeShape) or (s in properties and o == SH.PropertyShape)
+            ):
+                continue
+            if p not in _SH_PREDICATES:
+                raise SemanticError("UNSUPPORTED_SHACL")
+            if p in {SH.targetClass, SH.property}:
+                if s not in nodes or not isinstance(o, URIRef | BNode):
+                    raise SemanticError("INVALID_SHAPE")
+            elif s not in properties:
+                raise SemanticError("INVALID_SHAPE")
+            if p == SH.datatype and o not in _DATATYPES:
+                raise SemanticError("UNSUPPORTED_DATATYPE")
+            if p in {SH.minCount, SH.maxCount} and (
+                not isinstance(o, Literal)
+                or o.datatype not in {XSD.integer, XSD.int}
+                or type(o.toPython()) is not int
+                or o.toPython() < 0
+            ):
+                raise SemanticError("INVALID_SHAPE")
+            if p in {SH.minInclusive, SH.maxInclusive} and (
+                not isinstance(o, Literal)
+                or o.datatype not in {XSD.integer, XSD.int, XSD.decimal, XSD.float, XSD.double}
+                or o.ill_typed
+            ):
+>               raise SemanticError("INVALID_SHAPE")
+E               ontolearn_engine.semantic_offline.SemanticError: INVALID_SHAPE
+
+packages/engine/src/ontolearn_engine/semantic.py:1274: SemanticError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_profile_shape_entry.py::test_original_four_inputs_reach_actual_validator_and_full_normative_report[C-langString]
+FAILED packages/engine/tests/test_semantic_profile_shape_entry.py::test_original_four_inputs_reach_actual_validator_and_full_normative_report[C-inclusive-nni]
+FAILED packages/engine/tests/test_semantic_profile_shape_entry.py::test_original_four_inputs_reach_actual_validator_and_full_normative_report[C-inclusive-dateTime-equal]
+FAILED packages/engine/tests/test_semantic_profile_shape_entry.py::test_original_four_inputs_reach_actual_validator_and_full_normative_report[C-inclusive-dateTime-before]
+4 failed, 22 deselected in 0.34s

@@ -1,0 +1,90 @@
+{
+  "product": "3bd19e347051627242197f15fce712c9c9dd6b8f",
+  "runs": [
+    {
+      "path": "docs/reviews/I05/profile-shape-entry/runs/01-original-four-red/command.json",
+      "bytes": 55334,
+      "sha256": "d95cb4fa95ce41e3b7dd61044e8077a8765be535636ddd2608349d865aefcf7e",
+      "exitCode": 1,
+      "timeout": false,
+      "sourceCount": 142,
+      "sourcesUnchanged": true
+    },
+    {
+      "path": "docs/reviews/I05/profile-shape-entry/runs/02-shape-special/command.json",
+      "bytes": 55288,
+      "sha256": "7c664b85afee80e4f49c177121d1cf389d90221966d3567c0677c0f12a77be7f",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 142,
+      "sourcesUnchanged": true
+    },
+    {
+      "path": "docs/reviews/I05/profile-shape-entry/runs/03-shape-ruff/command.json",
+      "bytes": 55315,
+      "sha256": "26a45425f5de1022af589c2a782d3a948f1e2a5758b7a24a1b877b171b524b7c",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 142,
+      "sourcesUnchanged": true
+    },
+    {
+      "path": "docs/reviews/I05/profile-shape-entry/runs/04-normal-check/command.json",
+      "bytes": 55197,
+      "sha256": "ee6bdac927b176f29fba1adf3c2a56abf01a4e47e626199bc8770c38392557e3",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 142,
+      "sourcesUnchanged": true
+    },
+    {
+      "path": "docs/reviews/I05/profile-shape-entry/runs/05-verify-sources/command.json",
+      "bytes": 55210,
+      "sha256": "4ed1f863faf37e27475b42589cc78ec4a86803fd433d41b400d53e1956449404",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 142,
+      "sourcesUnchanged": true
+    },
+    {
+      "path": "docs/reviews/I05/profile-shape-entry/runs/06-staged-full-diff/command.json",
+      "bytes": 55224,
+      "sha256": "ca3e00c45b082dae20cb4ca3a9507ff7ba9663f65a1cef8900e8b8e702233393",
+      "exitCode": 2,
+      "timeout": false,
+      "sourceCount": 142,
+      "sourcesUnchanged": true
+    },
+    {
+      "path": "docs/reviews/I05/profile-shape-entry/runs/07-staged-preserve-raw-diff/command.json",
+      "bytes": 55424,
+      "sha256": "4231b31ecc0913024eb8bf278bbdbef075ff431ca7a732bd489bc2b49a07d923",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 142,
+      "sourcesUnchanged": true
+    }
+  ],
+  "independentReview": {
+    "path": "docs/reviews/I05/profile-shape-entry/independent-review/report.md",
+    "bytes": 11127,
+    "sha256": "3915d61ad0129749e3967793c51bd8181571595d9b0d9c5c3ec1e1fa08d74c8f",
+    "decision": "bounded pass"
+  },
+  "newBudgetDomains": false,
+  "normalCheck": {
+    "vitestPassed": 1125,
+    "pythonPassed": 4913,
+    "pythonSkipped": 44
+  },
+  "sourceVerificationCount": 12,
+  "whitespaceCheck": {
+    "fullExit": 2,
+    "preserveRawExit": 0,
+    "exclusions": [
+      "docs/reviews/I05/profile-shape-entry/runs/01-original-four-red/stdout.txt",
+      "docs/reviews/I05/profile-shape-entry/runs/06-staged-full-diff/stdout.txt"
+    ],
+    "reason": "preserve original pytest first failure and its exact diagnostic; not product failure"
+  }
+}

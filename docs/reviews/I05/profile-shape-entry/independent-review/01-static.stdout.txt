@@ -1,0 +1,56 @@
+{
+  "counts": [
+    142,
+    140,
+    141,
+    133
+  ],
+  "astChanges": [
+    "datatype-rdf-langString",
+    "inclusive-nni-datetime"
+  ],
+  "writers": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "access": "write-existing",
+      "bytes": 54174,
+      "sha256": "24f3c57f7995a7f4b901599e6f7837eb328355459f151e811dce01f6b38a173d",
+      "currentEqualsGit": true,
+      "verified": true
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_shape_entry.py",
+      "access": "new-writer",
+      "bytes": 7211,
+      "sha256": "38bc7a4074e183205f55fdb0a74e6933a505f9ff021fe24f5895d296ab725324",
+      "currentEqualsGit": true,
+      "verified": true
+    }
+  ],
+  "authority": [
+    {
+      "path": "docs/reviews/I05/profile-shape-entry/inputs/I05-profile-shape-entry-fixed-inputs.json.raw",
+      "bytes": 58397,
+      "sha256": "c7b28fc8257ce1e31ba8ffdd4900d6f0c8dc48529a7b9e137e182d2d758cad59"
+    },
+    {
+      "path": "docs/reviews/I05/profile-shape-entry/inputs/I05-profile-shape-entry-source-window.md.raw",
+      "bytes": 3205,
+      "sha256": "721735d16c406b2b34b3192348bf5721c7a6d7c1c47a7629e25c7696bd36c3a9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-shape-entry/inputs/developer-common-instructions.md.raw",
+      "bytes": 17891,
+      "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0"
+    },
+    {
+      "path": "docs/reviews/I05/profile-shape-entry/inputs/latest-AGENTS.md.raw",
+      "bytes": 15852,
+      "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+    }
+  ]
+}
+01-original-four-red {'argv': ['.venv/bin/python', '-m', 'pytest', '-q', 'packages/engine/tests/test_semantic_profile_shape_entry.py', '-k', 'original_four_inputs'], 'gitHead': '6e64311957a43b725bfb3e5da88c8df29c000b87', 'exitCode': 1, 'timeout': False, 'sourcesUnchanged': True}
+stdout bytes 19758
+02-shape-special {'argv': ['.venv/bin/python', '-m', 'pytest', '-q', 'packages/engine/tests/test_semantic_profile_shape_entry.py'], 'gitHead': '6e64311957a43b725bfb3e5da88c8df29c000b87', 'exitCode': 0, 'timeout': False, 'sourcesUnchanged': True}
+stdout bytes 99

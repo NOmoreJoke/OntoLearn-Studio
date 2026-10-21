@@ -1,0 +1,15 @@
+# I05 四个 SHACL shape 入口缺陷源码窗口
+
+2026-10-22。T05固定2ce39真实观察保留四个规范红：langString在datatype名单拒绝，nni及两个dateTime在inclusive数值门拒绝，四格Validator实际0次。现授原I05唯一owner修复四个已证入口，不重问Q6、不改golden求绿。
+
+新树 `.worktrees/I05-profile-shape-entry`、branch `feature/weekly-i05-profile-shape-entry`，base已核develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`。逐 `I05-profile-shape-entry-fixed-inputs.json` 58397B/SHA256 `c7b28fc8257ce1e31ba8ffdd4900d6f0c8dc48529a7b9e137e182d2d758cad59` 采用141项：6c139加9333 consumer-C输入/预期两原件。逐Git原bytes独立adoption后直接实现，不wholecommit、不采用WIP；其它现有路径仍base。
+
+唯一旧writer `packages/engine/src/ontolearn_engine/semantic.py`（53978B/`5d7413e6ed09f3b62958c6840db499722f2ef7cf0ede1a22415bdce64572f68e`），仅 `_shapes` 与必要局部参数校验；唯一新test `packages/engine/tests/test_semantic_profile_shape_entry.py`。140只读，最终142受控。文档仅新 `docs/iterations/I05/profile-shape-entry.md`、`docs/reviews/I05/profile-shape-entry/`。旧tests、通用_terms、query/rule比较器、resources/material/scopes、Store/worker、公共契约/依赖/锁/build/CI均不授写。
+
+让合法sh:datatype rdf:langString及合法inclusive nonNegativeInteger/dateTime参数进入原真实Validator，保NodeShape→PropertyShape、严格词法/类型/结构与原外联拒绝。integer派生类型按实际已支持XSD词法门处理，不放任意datatype。日期时间交给获批SHACL/SPARQL关系，不用rule Calendar比较器替代。核四原输入完整conforms/report focus/path/value/sourceShape/component/severity；两显式offset等值及早1秒关系仍按原golden。非法参数、错shape、未知datatype、结构错误和外联拒绝必须回归。不能绕_shhapes直喂Validator、伪report或加公共错误码。
+
+date扩展政策和illtyped数据前门保持原状态，本窗不选择date分支、不放宽_terms。若四例确需其它路径，给原hash/真实反例另授，继续不依赖工作。旧test若有相反断言，报具体行/规范冲突，不改140只读消失败。新test内可增加明确标记的独立边界输入，不冒原9333输入。
+
+允许本树无窗口专项pytest、完整npm check及12源核验，沿固定锁独立环境。原四红/首次失败保持；每run独占basetemp、原argv cwd env exit、双流与完整报告/费用原件及时冻结，防轮转覆盖。由未参与实现agent审实际固定候选和四正常/非法边界，交完整142及过程manifest、base/adoption/product/process和真实终态，根核后才向T05回供，不跨树偷用新semantic.py。
+
+与directsteps独立树并行，同一I05主writer串行维护semantic.py；纯新directsteps模块/test可agent并行，不争写同checkout。shape不自动采用进DAG/T01；后续按真实新ref精确组合复核。原数学不重跑凑数，新候选必要回归照验。无GUI/Electron/native/凭据/模型/付费/网络服务，不新建或改变Goal，不push/PR/merge；原同版双外审、CI、OS/真人与父验收保持。

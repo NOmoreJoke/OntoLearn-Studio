@@ -1,0 +1,31 @@
+import pathlib,json,subprocess,hashlib,ast
+r=pathlib.Path.cwd();out=r/'docs/reviews/I05/profile-shape-entry/independent-review';out.mkdir(exist_ok=True);cpath=r/'docs/reviews/I05/profile-shape-entry/candidate.json';c=json.loads(cpath.read_bytes());ref=c['product'];ad=c['adoption'];base=c['base'];rows=[]
+for f in c['files']:
+ b=subprocess.check_output(['git','show',ref+':'+f['path']]);assert b==(r/f['path']).read_bytes() and len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'],f['path']
+ if f['access']=='read-only':assert b==subprocess.check_output(['git','show',ad+':'+f['path']]),f['path']
+ rows.append({**f,'verified':True})
+assert len(rows)==142 and sum(x['access']=='read-only' for x in rows)==140
+fp=r/'docs/reviews/I05/profile-shape-entry/inputs/I05-profile-shape-entry-fixed-inputs.json.raw';fixed=json.loads(fp.read_bytes());assert len(fixed['files'])==141
+for f in fixed['files']:
+ b=subprocess.check_output(['git','show',f['sourceRef']+':'+f['path']]);ab=subprocess.check_output(['git','show',ad+':'+f['path']]);assert b==ab and len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'],f['path']
+diff=subprocess.check_output(['git','diff','--name-only',ad,ref]).decode().splitlines();assert diff==['packages/engine/src/ontolearn_engine/semantic.py','packages/engine/tests/test_semantic_profile_shape_entry.py']
+baseDiff=subprocess.check_output(['git','diff','--name-only',base,ref]).decode().splitlines();assert sorted(baseDiff)==sorted(c['actualDiff']) and len(baseDiff)==133
+path='packages/engine/src/ontolearn_engine/semantic.py';old=subprocess.check_output(['git','show',ad+':'+path]);new=subprocess.check_output(['git','show',ref+':'+path]);ta,tb=ast.parse(old),ast.parse(new);a=next(n for n in ta.body if isinstance(n,ast.FunctionDef) and n.name=='_shapes');b=next(n for n in tb.body if isinstance(n,ast.FunctionDef) and n.name=='_shapes');names=[]
+for x,y in zip(ta.body,tb.body,strict=True):
+ if ast.dump(x,include_attributes=False)!=ast.dump(y,include_attributes=False):names.append(getattr(x,'name',None))
+assert names==['_shapes']
+changes=[]
+for n in ast.walk(a):
+ if isinstance(n,ast.Compare) and len(n.comparators)==1:
+  v=n.comparators[0]
+  if isinstance(v,ast.Name) and v.id=='_DATATYPES':n.comparators[0]=ast.parse('_DATATYPES | {RDF.langString}',mode='eval').body;changes.append('datatype-rdf-langString')
+  if isinstance(v,ast.Set) and ast.dump(v,include_attributes=False)==ast.dump(ast.parse('{XSD.integer, XSD.int, XSD.decimal, XSD.float, XSD.double}',mode='eval').body,include_attributes=False):n.comparators[0]=ast.parse('{XSD.integer, XSD.int, XSD.nonNegativeInteger, XSD.decimal, XSD.float, XSD.double, XSD.dateTime}',mode='eval').body;changes.append('inclusive-nni-datetime')
+assert changes==['datatype-rdf-langString','inclusive-nni-datetime'] and ast.dump(a,include_attributes=False)==ast.dump(b,include_attributes=False)
+inputs=[]
+for q in sorted((r/'docs/reviews/I05/profile-shape-entry/inputs').iterdir()):
+ z=q.read_bytes();inputs.append({'path':str(q.relative_to(r)),'bytes':len(z),'sha256':hashlib.sha256(z).hexdigest()})
+j={'base':base,'adoption':ad,'product':ref,'branch':subprocess.check_output(['git','branch','--show-current']).decode().strip(),'candidate':{'path':str(cpath.relative_to(r)),'bytes':len(cpath.read_bytes()),'sha256':hashlib.sha256(cpath.read_bytes()).hexdigest()},'authorityInputs':inputs,'controlledCountVerified':142,'readonlyCountVerified':140,'original141AdoptionVerified':True,'actualDiffFromAdoption':diff,'actualDiffBaseCountVerified':133,'files':rows,'astProof':{'onlyChangedTopLevelNode':'_shapes','exactTwoAdditions':changes,'globalDatatypeTermsQueryRulesUnchanged':True}}
+(out/'static-input-manifest.json').write_text(json.dumps(j,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({'counts':[len(rows),140,141,133],'astChanges':changes,'writers':[x for x in rows if x['access']!='read-only'],'authority':inputs},indent=2))
+for run in ('01-original-four-red','02-shape-special'):
+ q=r/'docs/reviews/I05/profile-shape-entry/runs'/run/'command.json';v=json.loads(q.read_bytes());print(run,{k:v.get(k) for k in ('argv','gitHead','exitCode','timeout','sourcesUnchanged')});print('stdout bytes',len(q.with_name('stdout.txt').read_bytes()))
