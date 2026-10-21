@@ -304,22 +304,32 @@ def prepare_events(request: dict) -> PreparedRound:
             _fail("invalid_consumption", "consumed_instances")
         instances.add(key)
     events = _list(request["events"], "events")
-    for event in events:
-        _shape(event, ("id", "type", "sequence", "version", "payload", "edits"))
-        for name in ("id", "type", "version"):
-            _text(event[name], "event." + name)
-        _integer(event["sequence"], "event.sequence", 0)
-        if type(event["payload"]) is not dict:
-            _fail("invalid_shape", "event.payload")
-        for name, value in event["payload"].items():
-            _text(name, "event.payload.key")
-            _scalar(value, "event.payload.value")
-        _list(event["edits"], "event.edits")
-    events.sort(key=lambda e: (e["sequence"], e["id"]))
+    indexed_events = list(enumerate(events))
+    for source_index, event in indexed_events:
+        # Source array position and execution sequence have distinct meanings.
+        # Do not attach malformed identities as if they had passed validation.
+        identity = {"event_index": source_index}
+        if type(event) is dict:
+            if type(event.get("id")) is str and event["id"].strip():
+                identity["event_id"] = event["id"]
+            if type(event.get("sequence")) is int and event["sequence"] >= 0:
+                identity["event_sequence"] = event["sequence"]
+        with _explain(stage="event_validation", committed=False, **identity):
+            _shape(event, ("id", "type", "sequence", "version", "payload", "edits"))
+            for name in ("id", "type", "version"):
+                _text(event[name], "event." + name)
+            _integer(event["sequence"], "event.sequence", 0)
+            if type(event["payload"]) is not dict:
+                _fail("invalid_shape", "event.payload")
+            for name, value in event["payload"].items():
+                _text(name, "event.payload.key")
+                _scalar(value, "event.payload.value")
+            _list(event["edits"], "event.edits")
+    indexed_events.sort(key=lambda pair: (pair[1]["sequence"], pair[1]["id"]))
     state = json.loads(_json(request["state"]))
     seen = dict(consumed)
     accepted, event_trace, discarded_edits = [], [], []
-    for event in events:
+    for source_index, event in indexed_events:
         fingerprint = _hash({k: v for k, v in event.items() if k != "sequence"})
         if event["id"] in seen:
             if seen[event["id"]] != fingerprint:
@@ -328,6 +338,8 @@ def prepare_events(request: dict) -> PreparedRound:
                     "event.id",
                     {
                         "stage": "event_preparation",
+                        "event_index": source_index,
+                        "event_sequence": event["sequence"],
                         "event_id": event["id"],
                         "event_trace": event_trace,
                         "discarded_event_edits": discarded_edits,
@@ -340,6 +352,8 @@ def prepare_events(request: dict) -> PreparedRound:
         for index, edit in enumerate(event["edits"]):
             with _explain(
                 stage="event_preparation",
+                event_index=source_index,
+                event_sequence=event["sequence"],
                 event_id=event["id"],
                 edit_index=index,
                 event_trace=event_trace,

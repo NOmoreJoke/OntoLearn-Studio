@@ -86,6 +86,8 @@ def test_event_edit_failure_retains_discarded_prefix_and_source_position():
     evidence = failed(req, "invalid_object")
     assert evidence == {
         "stage": "event_preparation",
+        "event_index": 1,
+        "event_sequence": 1,
         "event_id": "E2",
         "edit_index": 1,
         "event_trace": [{"event_id": "E1", "reason": "event_applied"}],
@@ -103,6 +105,8 @@ def test_event_identity_conflict_retains_prefix_without_returning_state():
     req["events"].append({**copy.deepcopy(req["events"][0]), "sequence": 1, "version": "2"})
     assert failed(req, "event_identity_conflict") == {
         "stage": "event_preparation",
+        "event_index": 1,
+        "event_sequence": 1,
         "event_id": "E1",
         "event_trace": [{"event_id": "E1", "reason": "event_applied"}],
         "discarded_event_edits": [{"event_id": "E1", "edit_index": 0}],
@@ -244,5 +248,80 @@ def test_invalid_template_retains_definition_and_template_positions(target):
         "behavior_index": 0,
         "behavior_id": "A",
         target + "_index": 1,
+        "committed": False,
+    }
+
+
+@pytest.mark.parametrize(
+    "field,value,reason,include_sequence",
+    [
+        ("sequence", True, "invalid_integer", False),
+        ("payload", [], "invalid_shape", True),
+        ("payload", {"value": None}, "invalid_scalar", True),
+        ("extra", "private-value", "invalid_shape", True),
+        ("type", "", "invalid_text", True),
+        ("edits", {}, "invalid_list", True),
+    ],
+)
+def test_event_header_or_payload_error_has_original_source_position(
+    field, value, reason, include_sequence
+):
+    req = request()
+    second = {**copy.deepcopy(req["events"][0]), "id": "E2", "sequence": 5}
+    second[field] = value
+    req["events"].append(second)
+    expected = {"stage": "event_validation", "committed": False, "event_index": 1, "event_id": "E2"}
+    if include_sequence:
+        expected["event_sequence"] = 5
+    assert failed(req, reason) == expected
+
+
+def test_edit_failure_source_position_is_not_sorted_execution_position():
+    req = request()
+    req["events"] = [
+        {
+            **copy.deepcopy(req["events"][0]),
+            "id": "E2",
+            "sequence": 10,
+            "edits": [write("bad", "unknown")],
+        },
+        {**copy.deepcopy(req["events"][0]), "sequence": 0, "edits": [write("good")]},
+    ]
+    assert failed(req, "invalid_object") == {
+        "stage": "event_preparation",
+        "event_id": "E2",
+        "event_index": 0,
+        "event_sequence": 10,
+        "edit_index": 0,
+        "event_trace": [{"event_id": "E1", "reason": "event_applied"}],
+        "discarded_event_edits": [{"event_id": "E1", "edit_index": 0}],
+        "committed": False,
+    }
+
+
+def test_duplicate_conflict_points_to_original_source_position_after_sort():
+    req = request()
+    req["events"] = [
+        {**copy.deepcopy(req["events"][0]), "sequence": 10, "version": "2"},
+        {**copy.deepcopy(req["events"][0]), "sequence": 0},
+    ]
+    assert failed(req, "event_identity_conflict") == {
+        "stage": "event_preparation",
+        "event_id": "E1",
+        "event_index": 0,
+        "event_sequence": 10,
+        "event_trace": [{"event_id": "E1", "reason": "event_applied"}],
+        "discarded_event_edits": [],
+        "committed": False,
+    }
+
+
+def test_invalid_event_identity_is_not_in_failure_metadata_as_validated():
+    req = request()
+    req["events"][0]["id"] = []
+    assert failed(req, "invalid_text") == {
+        "stage": "event_validation",
+        "event_index": 0,
+        "event_sequence": 0,
         "committed": False,
     }

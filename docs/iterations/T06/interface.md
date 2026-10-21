@@ -48,3 +48,5 @@ npm run check
 条件或动作解析失败时保留已经完成的决定/意图前缀；未完成的条件只列 partial_decision，不伪造其他未评估实例的结果。局部候选模拟失败的先前动作标为 discarded_actions，事件准备失败的先前编辑标为 discarded_event_edits；始终 committed=false，无 candidate 或新 consumption。executed_actions 表示正式执行，行为计划失败时始终为空，不能将本地已丢弃模拟当成正式动作成功。绑定、输入/推导版本和 scope 附在已有合法运行身份的计划阶段错误中。
 
 新增失败反例见 `packages/engine/tests/test_behavior_failures.py`，包括前序编辑后失败、事件身份冲突、部分条件、动态动作失效、跨实例创建碰撞、同值动作超限、静态/模板定位和不可编码 Unicode。成功计划结构与 E.1 排序/冻结/竞争规则保持既有定义。
+
+事件头/载荷错误另记 event_validation。事件预校验、身份冲突和编辑失败均保留排序前的 event_index（请求数组下标），合法时附 event_id 和 event_sequence。执行顺序仍按 sequence/id，源位置不改变排序或事件内容身份；request 中原始 events 顺序保留，准备时只排序带源位置的视图。由此错误可定位到同 ID 重复投递中的具体一项。

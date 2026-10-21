@@ -45,3 +45,7 @@
 实质补强 FR-602/603 异常解释：原非竞争动作错误只有通用位置，无法定位具体事件/行为/动作。本线新增分阶段私有错误证据、完成前缀与部分条件、丢弃编辑/动作轨迹、输入身份，并明确无 committed candidate/consumption。修复不可编码 Unicode 输入泄漏原生编码异常的问题。没有改公共错误码或跨端契约。
 
 `uv run --frozen pytest packages/engine/tests/test_behavior_*.py -q` 新增后 74 passed（原 61 + 13 项失败解释回归）；首跑 72 项和最终 74 项原件分别本地保留。该实现变更使旧本地完整复核仅适用于旧候选；新候选须重新全仓 check 和完整独立复核，指定双审/真实依赖/全模块验收仍未关闭。
+
+失败解释候选 `f3f652352a5814bee95a453f608f1dd2f2fc815a` 新全仓 check exit 0（630 TS / 1126 Python）但独立完整内审不通过：P2 事件头/载荷错误缺源位置、重复 ID 冲突无法区别投递项。原报告见 `local-review-3.md`。
+
+已补 event_validation、原始 event_index 与合法 event_sequence；事件排序采用带源位置视图，不改变 E.1 执行顺序和消费身份。新增 9 项回归，当前 83 项行为测试通过。首跑 2 failed / 81 passed 的实现漏挂字段已修复，原件 `evidence/pytest-event-source-first.log` 和修后原件 `pytest-event-source-final.log` 均保留，未改预期掩盖失败。新实现/验收须新 check 与全范围复核；本线共享责任与未验集成边界不变。
