@@ -1,0 +1,1203 @@
+{
+  "method": "static full fixed-ref Python source/test lexical inventory only; no import/product runtime; aliases/dynamic calls require implementation review",
+  "pattern": "\\b(reason|_profile_reason|_execute_profile|execute_profile|execute_profile_records|restore_profile_batches)\\b",
+  "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+  "files": [
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "bytes": 7372,
+      "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+      "lexicalHits": [
+        {
+          "line": 219,
+          "text": "            fail(exc.reason, location, exc.classification)"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "bytes": 11987,
+      "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "lexicalHits": [
+        {
+          "line": 86,
+          "text": "    def __init__(self, reason, location=None, classification=\"input\"):"
+        },
+        {
+          "line": 88,
+          "text": "            type(reason) is not str"
+        },
+        {
+          "line": 92,
+          "text": "            reason, location, classification = \"INTERNAL_ERROR\", None, \"internal\""
+        },
+        {
+          "line": 93,
+          "text": "        super().__init__(reason)"
+        },
+        {
+          "line": 94,
+          "text": "        self._safe = (reason, location, classification)"
+        },
+        {
+          "line": 97,
+          "text": "    def reason(self):"
+        },
+        {
+          "line": 109,
+          "text": "def fail(reason=\"INVALID_RULE\", location=None, classification=\"input\"):"
+        },
+        {
+          "line": 110,
+          "text": "    raise ProfileFailure(reason, location, classification)"
+        },
+        {
+          "line": 182,
+          "text": "            reason = {\"work\": \"WORK_LIMIT\", \"input_bytes\": \"RULE_INPUT_BUDGET\"}.get("
+        },
+        {
+          "line": 185,
+          "text": "            fail(reason, location, \"resource\")"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+      "bytes": 6288,
+      "sha256": "9e9258cfefdef56f369dad6bb7838afd22478ea6714e4322b2d872d12616200e",
+      "lexicalHits": [
+        {
+          "line": 99,
+          "text": "def _tuple_bound(value, cap, reason=\"RULE_INPUT_BUDGET\"):"
+        },
+        {
+          "line": 103,
+          "text": "        fail(reason, classification=\"resource\")"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "bytes": 6176,
+      "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+      "lexicalHits": [
+        {
+          "line": 111,
+          "text": "        fail(exc.reason, location, exc.classification)"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "bytes": 52609,
+      "sha256": "5a3a53fc79928a7aa7de280a8477541db4053ec9b2bec489bf28a2ad4e935549",
+      "lexicalHits": [
+        {
+          "line": 302,
+          "text": "        self, reason, *, classification=\"input\", location=None, rule_id=None, context=\"graph\""
+        },
+        {
+          "line": 304,
+          "text": "        super().__init__(reason)"
+        },
+        {
+          "line": 305,
+          "text": "        self.reason = reason"
+        },
+        {
+          "line": 548,
+          "text": "        error.reason,"
+        },
+        {
+          "line": 746,
+          "text": "            if error.reason == \"INVALID_RULE\" and error.classification == \"input\":"
+        },
+        {
+          "line": 869,
+          "text": "def _profile_reason(graph, rules, catalog, term_context):"
+        },
+        {
+          "line": 887,
+          "text": "        if error.reason != \"WORK_LIMIT\":"
+        },
+        {
+          "line": 1122,
+          "text": "def reason(graph: Graph, rules=(), *, profile=None, catalog=None, term_context=None) -> dict:"
+        },
+        {
+          "line": 1134,
+          "text": "            return _profile_reason(graph, rules, catalog, term_context)"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+      "bytes": 15426,
+      "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+      "lexicalHits": [
+        {
+          "line": 1,
+          "text": "\"\"\"Pure I05 reason classification using the I03 canonical error documents."
+        },
+        {
+          "line": 17,
+          "text": "    REASON = \"reason\""
+        },
+        {
+          "line": 324,
+          "text": "    def adapt(self, *, producer: Producer, reason: str, context: ErrorContext) -> dict:"
+        },
+        {
+          "line": 327,
+          "text": "            or type(reason) is not str"
+        },
+        {
+          "line": 328,
+          "text": "            or not 1 <= len(reason) <= 64"
+        },
+        {
+          "line": 337,
+          "text": "            if reason in _PARAMS_REASONS and context.origin is Origin.VERIFIED_USER_INPUT:"
+        },
+        {
+          "line": 340,
+          "text": "        if reason in _RESOURCES:"
+        },
+        {
+          "line": 341,
+          "text": "            resource, branches = _RESOURCES[reason]"
+        },
+        {
+          "line": 344,
+          "text": "        if reason == \"EXTERNAL_ACCESS_DENIED\" and producer in _ENGINE_PRODUCERS:"
+        },
+        {
+          "line": 349,
+          "text": "            if reason == \"RULE_INPUT_BUDGET\":"
+        },
+        {
+          "line": 351,
+          "text": "            if reason == \"RULE_POLICY_UNSUPPORTED\":"
+        },
+        {
+          "line": 353,
+          "text": "        if reason in _UNSUPPORTED:"
+        },
+        {
+          "line": 354,
+          "text": "            construct, branches = _UNSUPPORTED[reason]"
+        },
+        {
+          "line": 358,
+          "text": "            reason == \"INVALID_UNICODE\""
+        },
+        {
+          "line": 363,
+          "text": "        if reason in _FIELD_REASONS and (producer, context.stage) in _GRAPH_INPUTS:"
+        },
+        {
+          "line": 365,
+          "text": "        if reason in _FIXED_FIELDS:"
+        },
+        {
+          "line": 366,
+          "text": "            producers, phases = _FIXED_FIELDS[reason]"
+        },
+        {
+          "line": 368,
+          "text": "                field = \"syntax\" if reason == \"INVALID_TURTLE\" else context.stage.value"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "bytes": 32917,
+      "sha256": "cc701dba39cdeb7f2ae281dfd4a9580b879b9e85f34d3c87a09a3414e7c32731",
+      "lexicalHits": [
+        {
+          "line": 29,
+          "text": "    def __init__(self, reason, producer, stage, origin):"
+        },
+        {
+          "line": 30,
+          "text": "        self.reason = reason"
+        },
+        {
+          "line": 50,
+          "text": "def _fail(reason=\"REQUEST_INVALID\", *, public=False):"
+        },
+        {
+          "line": 52,
+          "text": "        \"SCOPE_SELECTION_TYPE_INVALID\" if public else reason,"
+        },
+        {
+          "line": 198,
+          "text": "            adapter.adapt(producer=error.producer, reason=error.reason, context=error.context)"
+        },
+        {
+          "line": 206,
+          "text": "                reason=\"REQUEST_INVALID\","
+        },
+        {
+          "line": 409,
+          "text": "                result = semantic.reason(facts + ontology, rules)"
+        },
+        {
+          "line": 482,
+          "text": "                reason=error.reason,"
+        },
+        {
+          "line": 490,
+          "text": "                reason=error.code,"
+        },
+        {
+          "line": 498,
+          "text": "                reason=\"EXECUTION_FAILED\","
+        },
+        {
+          "line": 609,
+          "text": "def _profile_diagnostic(reason, classification, location=None, rule_id=None):"
+        },
+        {
+          "line": 612,
+          "text": "        \"reason\": reason,"
+        },
+        {
+          "line": 626,
+          "text": "def _execute_profile("
+        },
+        {
+          "line": 703,
+          "text": "            result = semantic.reason(graph, rules, profile=PROFILE, term_context=context)"
+        },
+        {
+          "line": 746,
+          "text": "        reason = error.code"
+        },
+        {
+          "line": 747,
+          "text": "        if actual_stage is Stage.SYNTAX and reason == \"RULE_INPUT_BUDGET\":"
+        },
+        {
+          "line": 748,
+          "text": "            reason = \"GRAPH_INPUT_LIMIT\""
+        },
+        {
+          "line": 752,
+          "text": "                reason=reason,"
+        },
+        {
+          "line": 760,
+          "text": "        reason = error.reason"
+        },
+        {
+          "line": 761,
+          "text": "        if stage is Stage.SYNTAX and reason == \"RULE_INPUT_BUDGET\":"
+        },
+        {
+          "line": 762,
+          "text": "            reason = \"GRAPH_INPUT_LIMIT\""
+        },
+        {
+          "line": 766,
+          "text": "                reason=reason,"
+        },
+        {
+          "line": 769,
+          "text": "            _profile_diagnostic(error.reason, error.classification, error.location),"
+        },
+        {
+          "line": 774,
+          "text": "                producer=producer, reason=error.code, context=ErrorContext(stage, origin)"
+        },
+        {
+          "line": 790,
+          "text": "                reason=\"PROFILE_EXECUTION_FAILED\","
+        },
+        {
+          "line": 797,
+          "text": "def execute_profile("
+        },
+        {
+          "line": 808,
+          "text": "    return _execute_profile("
+        },
+        {
+          "line": 819,
+          "text": "def execute_profile_records("
+        },
+        {
+          "line": 825,
+          "text": "    The one lexical adapter issues the graph context, and the same reason then"
+        },
+        {
+          "line": 828,
+          "text": "    return _execute_profile("
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_probe.py",
+      "bytes": 13391,
+      "sha256": "2b2dabd91745b4b4c2a3fad39b6386e4edd985189336bf029d9b07a638fc7bf6",
+      "lexicalHits": [
+        {
+          "line": 272,
+          "text": "            execute_profile_records,"
+        },
+        {
+          "line": 291,
+          "text": "                item.update(status=\"not-executed\", reason=\"ORIGINAL_INPUT_CONTEXT_INCOMPLETE\")"
+        },
+        {
+          "line": 295,
+          "text": "                    result = execute_profile_records("
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "bytes": 50276,
+      "sha256": "aa3d51c1ccc487ce21a78560ad6cdf7a6485cc86f746c29ee329e6a0bc4c4d09",
+      "lexicalHits": [
+        {
+          "line": 216,
+          "text": "def _invalid(stage=\"A2\", slot=None, reason=\"RESTORE_INPUT_INVALID\"):"
+        },
+        {
+          "line": 217,
+          "text": "    raise RestoreFailure(reason, stage=stage, slot=slot)"
+        },
+        {
+          "line": 220,
+          "text": "def _require(condition, stage=\"A2\", slot=None, reason=\"RESTORE_INPUT_INVALID\"):"
+        },
+        {
+          "line": 222,
+          "text": "        _invalid(stage, slot, reason)"
+        },
+        {
+          "line": 955,
+          "text": "        reason=\"RESTORE_EXPECTATION_MISSING\","
+        },
+        {
+          "line": 957,
+          "text": "    _require(bool(e.source_preimage), \"entry\", reason=\"RESTORE_EXPECTATION_MISSING\")"
+        },
+        {
+          "line": 1171,
+          "text": "def restore_profile_batches("
+        },
+        {
+          "line": 1198,
+          "text": "            reason=\"RESTORE_EXPECTATION_MISSING\","
+        },
+        {
+          "line": 1203,
+          "text": "            reason=\"RESTORE_EXPECTATION_MISSING\","
+        },
+        {
+          "line": 1235,
+          "text": "            exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "bytes": 37478,
+      "sha256": "593b2a832dd510063bb60d7b3d5526fbd6cf4dcba53ad9c513e82dbfdd77ef7f",
+      "lexicalHits": [
+        {
+          "line": 174,
+          "text": "        reason=\"RESTORE_INPUT_INVALID\","
+        },
+        {
+          "line": 182,
+          "text": "            type(reason) is not str"
+        },
+        {
+          "line": 183,
+          "text": "            or reason not in _REASONS"
+        },
+        {
+          "line": 191,
+          "text": "            reason, classification, stage, slot, domain = ("
+        },
+        {
+          "line": 198,
+          "text": "        self.reason = reason"
+        },
+        {
+          "line": 203,
+          "text": "        super().__init__(reason)"
+        },
+        {
+          "line": 207,
+          "text": "    reason=\"RESTORE_INPUT_INVALID\", classification=\"input\", *, stage=\"entry\", slot=None, domain=None"
+        },
+        {
+          "line": 209,
+          "text": "    raise RestoreFailure(reason, classification, stage=stage, slot=slot, domain=domain)"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+      "bytes": 33858,
+      "sha256": "387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9",
+      "lexicalHits": [
+        {
+          "line": 12,
+          "text": "from ontolearn_engine.semantic import Rule, check_shapes, parse_turtle, query, reason"
+        },
+        {
+          "line": 90,
+          "text": "    r1 = reason(graph, (RISK,))"
+        },
+        {
+          "line": 115,
+          "text": "    assert reason(graph, (RISK,))[\"rules\"] == []"
+        },
+        {
+          "line": 123,
+          "text": "    r3 = reason(graph, (RISK,))"
+        },
+        {
+          "line": 138,
+          "text": "    r4 = reason(graph, (RISK,))"
+        },
+        {
+          "line": 142,
+          "text": "    r5 = reason(graph, (RISK, NEXT))"
+        },
+        {
+          "line": 143,
+          "text": "    assert r5 == reason(graph, (NEXT, RISK))"
+        },
+        {
+          "line": 214,
+          "text": "    reasoning = reason(graph, rules)"
+        },
+        {
+          "line": 368,
+          "text": "        derived = reason(graph, (exact, unequal))"
+        },
+        {
+          "line": 395,
+          "text": "            rejected.append({\"text\": text, \"reason\": error.code})"
+        },
+        {
+          "line": 438,
+          "text": "        result = reason(graph, (rule,))"
+        },
+        {
+          "line": 444,
+          "text": "        assert reason(reverse, (rule,)) == expected"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "bytes": 13051,
+      "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+      "lexicalHits": [
+        {
+          "line": 26,
+          "text": "    reason,"
+        },
+        {
+          "line": 248,
+          "text": "    Missing/inconsistent selections stop; no reason() invocation occurs here."
+        },
+        {
+          "line": 318,
+          "text": "            result = reason(combined, rules)"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/src/ontolearn_engine/storage.py",
+      "bytes": 55364,
+      "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+      "lexicalHits": [
+        {
+          "line": 864,
+          "text": "            for reason in status[\"stale\"]:"
+        },
+        {
+          "line": 866,
+          "text": "                    not isinstance(reason, dict)"
+        },
+        {
+          "line": 867,
+          "text": "                    or set(reason) != {\"code\", \"dependency\", \"before\", \"after\"}"
+        },
+        {
+          "line": 868,
+          "text": "                    or reason[\"code\"] != CODES[\"mapping\"]"
+        },
+        {
+          "line": 869,
+          "text": "                    or reason[\"dependency\"] != f\"mapping:{owner}\""
+        },
+        {
+          "line": 870,
+          "text": "                    or type(reason[\"before\"]) is not int"
+        },
+        {
+          "line": 871,
+          "text": "                    or reason[\"before\"] < -1"
+        },
+        {
+          "line": 872,
+          "text": "                    or type(reason[\"after\"]) is not int"
+        },
+        {
+          "line": 873,
+          "text": "                    or reason[\"after\"] < 0"
+        },
+        {
+          "line": 875,
+          "text": "                    raise ValueError(\"Invalid snapshot mapping stale reason\")"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_i04_lifecycle_boundaries.py",
+      "bytes": 17211,
+      "sha256": "7b39173b5d49fd3ec3dcb86808e6b7896cc70ec41414a7a400ce3c9bdcb81884",
+      "lexicalHits": [
+        {
+          "line": 235,
+          "text": "@pytest.mark.skipif(sys.platform != \"darwin\", reason=\"Darwin libproc RSS sampling evidence\")"
+        },
+        {
+          "line": 295,
+          "text": "@pytest.mark.skipif(sys.platform != \"darwin\", reason=\"Darwin parent RSS sampler failure\")"
+        },
+        {
+          "line": 343,
+          "text": "@pytest.mark.skipif(sys.platform != \"darwin\", reason=\"Actual libproc/child-watcher exit race\")"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_quality_profile_revalidation.py",
+      "bytes": 23773,
+      "sha256": "8876220e84e6124d327c39d6335957a8d5625afcdcd057b962a80da9be5c4676",
+      "lexicalHits": [
+        {
+          "line": 111,
+          "text": "    assert (old.value.reason, old.value.classification) == (\"RULE_INPUT_BUDGET\", \"resource\")"
+        },
+        {
+          "line": 317,
+          "text": "    assert caught.value.reason == \"RULE_INPUT_BUDGET\""
+        },
+        {
+          "line": 327,
+          "text": "    assert caught.value.reason == \"RULE_INPUT_BUDGET\""
+        },
+        {
+          "line": 387,
+          "text": "    assert (caught.value.reason, caught.value.classification) == (\"WORK_LIMIT\", \"resource\")"
+        },
+        {
+          "line": 401,
+          "text": "    assert caught.value.reason == \"WORK_LIMIT\""
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic.py",
+      "bytes": 13779,
+      "sha256": "5f021d7f81b1e754589bd43927c22d567a32b8b8abe16191a0d5420c4cc52297",
+      "lexicalHits": [
+        {
+          "line": 7,
+          "text": "from ontolearn_engine.semantic import Rule, check_shapes, parse_turtle, query, reason"
+        },
+        {
+          "line": 110,
+          "text": "    result = reason(graph)"
+        },
+        {
+          "line": 129,
+          "text": "    result = reason(graph, (RISK, NEXT))"
+        },
+        {
+          "line": 135,
+          "text": "    assert (\"<urn:case:0:equipment/002>\", RDF.type.n3(), EX.NeedsInspection.n3()) in reason("
+        },
+        {
+          "line": 150,
+          "text": "    result = reason(graph, (RISK,))"
+        },
+        {
+          "line": 163,
+          "text": "    assert reason(graph, (rule,))[\"rules\"] == [(\"<urn:c>\", RDF.type.n3(), EX.Self.n3())]"
+        },
+        {
+          "line": 165,
+          "text": "        reason(graph, (Rule(\"bad\", ((s, EX.p, s),), (o, RDF.type, EX.Self)),))"
+        },
+        {
+          "line": 238,
+          "text": "        reason(graph)"
+        },
+        {
+          "line": 290,
+          "text": "        reason(Graph(), (rule,))"
+        },
+        {
+          "line": 303,
+          "text": "    result = reason(graph, (rule,))"
+        },
+        {
+          "line": 320,
+          "text": "        reason(Graph(), (rule,))"
+        },
+        {
+          "line": 375,
+          "text": "        reason(graph)"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic_error_adapter.py",
+      "bytes": 23172,
+      "sha256": "aeff14c189b814cc89e5684cc31ce2d569b67fe47f72af5c6f4ca702250409a2",
+      "lexicalHits": [
+        {
+          "line": 211,
+          "text": "    \"reason,producer,stage,expected\", APPROVED_25, ids=[r[0] for r in APPROVED_25]"
+        },
+        {
+          "line": 214,
+          "text": "def test_approved_mapping_by_verified_origin(adapter, reason, producer, stage, expected, origin):"
+        },
+        {
+          "line": 215,
+          "text": "    dto = adapter.adapt(producer=producer, reason=reason, context=ErrorContext(stage, origin))"
+        },
+        {
+          "line": 225,
+          "text": "    \"producer,stage,reason,expected\","
+        },
+        {
+          "line": 362,
+          "text": "    adapter, producer, stage, reason, expected"
+        },
+        {
+          "line": 365,
+          "text": "        producer=producer, reason=reason, context=ErrorContext(stage, Origin.VERIFIED_USER_INPUT)"
+        },
+        {
+          "line": 386,
+          "text": "        producer=producer, reason=\"EXTERNAL_ACCESS_DENIED\", context=ErrorContext(stage, origin)"
+        },
+        {
+          "line": 393,
+          "text": "    \"producer,stage,reason\","
+        },
+        {
+          "line": 415,
+          "text": "    adapter, producer, stage, reason"
+        },
+        {
+          "line": 420,
+          "text": "            reason=reason,"
+        },
+        {
+          "line": 428,
+          "text": "    \"reason\","
+        },
+        {
+          "line": 444,
+          "text": "        \"new-internal-reason\","
+        },
+        {
+          "line": 447,
+          "text": "def test_ambiguous_unknown_and_private_reasons_never_escape(adapter, reason):"
+        },
+        {
+          "line": 450,
+          "text": "        reason=reason,"
+        },
+        {
+          "line": 478,
+          "text": "            reason=\"INVALID_TURTLE\","
+        },
+        {
+          "line": 502,
+          "text": "            reason=bad,"
+        },
+        {
+          "line": 524,
+          "text": "        adapter.adapt(producer=Producer.TURTLE, reason=\"INVALID_TURTLE\", context=context)"
+        },
+        {
+          "line": 533,
+          "text": "        reason=canary,"
+        },
+        {
+          "line": 545,
+          "text": "    result = adapter.adapt(producer=None, reason=None, context=None)"
+        },
+        {
+          "line": 548,
+          "text": "    assert adapter.adapt(producer=None, reason=None, context=None) == INTERNAL"
+        },
+        {
+          "line": 564,
+          "text": "    assert adapter.adapt(producer=None, reason=None, context=None) == {"
+        },
+        {
+          "line": 657,
+          "text": "            reason=\"INVALID_UNICODE\","
+        },
+        {
+          "line": 671,
+          "text": "            reason=\"QUERY_RESULT_LIMIT\","
+        },
+        {
+          "line": 679,
+          "text": "    \"reason\","
+        },
+        {
+          "line": 691,
+          "text": "def test_internal_reason_bounds_and_exact_match_are_fail_closed(adapter, reason):"
+        },
+        {
+          "line": 695,
+          "text": "            reason=reason,"
+        },
+        {
+          "line": 715,
+          "text": "    dto = adapter.adapt(producer=None, reason=None, context=None)"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic_error_reasons.py",
+      "bytes": 4662,
+      "sha256": "3b0c4cbad1c5b18986da429398d28490929cda2d2fb200d03f105f9aafa1ae9b",
+      "lexicalHits": [
+        {
+          "line": 5,
+          "text": "from ontolearn_engine.semantic import Rule, parse_turtle, query, reason"
+        },
+        {
+          "line": 28,
+          "text": "        reason(graph)"
+        },
+        {
+          "line": 59,
+          "text": "        reason(graph, (rule,))"
+        },
+        {
+          "line": 67,
+          "text": "        reason(graph, (rule,))"
+        },
+        {
+          "line": 85,
+          "text": "        reason(graph)"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic_execution.py",
+      "bytes": 18450,
+      "sha256": "8eab07aace07d4abdd9f8a1db8f9c3860aa0bfaa3dacdecde015ba34b7b6774d",
+      "lexicalHits": [
+        {
+          "line": 166,
+          "text": "    monkeypatch.setattr(semantic, \"reason\", forbidden)"
+        },
+        {
+          "line": 225,
+          "text": "    monkeypatch.setattr(semantic, \"reason\", forbidden)"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic_lexical.py",
+      "bytes": 21918,
+      "sha256": "f298e085fd54538822d9e55109e10f94033f16ab8e0381ed357c9fff6c6cbfca",
+      "lexicalHits": [
+        {
+          "line": 13,
+          "text": "from ontolearn_engine.semantic import Rule, check_shapes, parse_turtle, query, reason"
+        },
+        {
+          "line": 273,
+          "text": "    result = reason(graph, (rule,))"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic_profile_errors.py",
+      "bytes": 9996,
+      "sha256": "5e56ba118b35f333852759079dee87a79353331924c0f295c45fd9fa221466ec",
+      "lexicalHits": [
+        {
+          "line": 16,
+          "text": "from ontolearn_engine.semantic_execution import ProfileExecutionFault, execute_profile"
+        },
+        {
+          "line": 31,
+          "text": "    (\"reason\", \"code\", \"params\"),"
+        },
+        {
+          "line": 38,
+          "text": "def test_precise_new_adapter_routes_and_negative_contexts(errors, reason, code, params):"
+        },
+        {
+          "line": 42,
+          "text": "        reason=reason,"
+        },
+        {
+          "line": 50,
+          "text": "                producer=Producer.REASON, reason=reason, context=ErrorContext(Stage.RULE, origin)"
+        },
+        {
+          "line": 57,
+          "text": "            reason=reason,"
+        },
+        {
+          "line": 70,
+          "text": "        execute_profile(text, (spec,), **errors)"
+        },
+        {
+          "line": 74,
+          "text": "    assert error.diagnostic[\"reason\"] == \"RULE_COMPARISON_TYPE_MISMATCH\""
+        },
+        {
+          "line": 87,
+          "text": "        reason=canary,"
+        },
+        {
+          "line": 100,
+          "text": "        execute_profile(text, rules, **errors)"
+        },
+        {
+          "line": 120,
+          "text": "        execute_profile(text, rules, **errors)"
+        },
+        {
+          "line": 124,
+          "text": "    assert caught.value.diagnostic[\"reason\"] == \"WORK_LIMIT\""
+        },
+        {
+          "line": 131,
+          "text": "        execute_profile(text, rules, **{field: \"\\ud800\"}, **errors)"
+        },
+        {
+          "line": 132,
+          "text": "    assert caught.value.diagnostic[\"reason\"] == \"INVALID_UNICODE\""
+        },
+        {
+          "line": 139,
+          "text": "    \"text,reason\","
+        },
+        {
+          "line": 152,
+          "text": "def test_real_graph_input_errors_never_claim_a_rule(errors, text, reason):"
+        },
+        {
+          "line": 154,
+          "text": "        execute_profile(text, **errors)"
+        },
+        {
+          "line": 159,
+          "text": "    assert caught.value.diagnostic[\"reason\"] == reason"
+        },
+        {
+          "line": 171,
+          "text": "        execute_profile(text, **errors)"
+        },
+        {
+          "line": 173,
+          "text": "    assert caught.value.diagnostic[\"reason\"] == \"RDFS_RESULT_LIMIT\""
+        },
+        {
+          "line": 179,
+          "text": "    from ontolearn_engine.semantic_execution import execute_profile_records"
+        },
+        {
+          "line": 191,
+          "text": "        execute_profile_records(records, **errors)"
+        },
+        {
+          "line": 194,
+          "text": "    assert caught.value.diagnostic[\"reason\"] == \"GRAPH_INPUT_LIMIT\""
+        },
+        {
+          "line": 200,
+          "text": "    from ontolearn_engine.semantic_execution import execute_profile_records"
+        },
+        {
+          "line": 203,
+          "text": "        execute_profile_records("
+        },
+        {
+          "line": 207,
+          "text": "    assert caught.value.diagnostic[\"reason\"] == \"RDF_TERM_INVALID\""
+        },
+        {
+          "line": 213,
+          "text": "    from ontolearn_engine.semantic_execution import execute_profile_records"
+        },
+        {
+          "line": 216,
+          "text": "    for invoke, data in ((execute_profile, \"\"), (execute_profile_records, ())):"
+        },
+        {
+          "line": 229,
+          "text": "    from ontolearn_engine.semantic_execution import execute_profile_records"
+        },
+        {
+          "line": 237,
+          "text": "        execute_profile_records("
+        },
+        {
+          "line": 241,
+          "text": "    assert caught.value.diagnostic[\"reason\"] == \"RDF_TERM_INVALID\""
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic_profile_integration.py",
+      "bytes": 48284,
+      "sha256": "69d7afd9d5b836f61591cfebffeca5ddbebba607bad0a0c1e8ff6a5becf8e562",
+      "lexicalHits": [
+        {
+          "line": 17,
+          "text": "from ontolearn_engine.semantic import reason"
+        },
+        {
+          "line": 33,
+          "text": "    return reason(graph, rules, profile=PROFILE, term_context=context)"
+        },
+        {
+          "line": 420,
+          "text": "            record[\"reason\"] = ("
+        },
+        {
+          "line": 886,
+          "text": "                    reason=\"original definitions unavailable; intentional non-execution checked\","
+        },
+        {
+          "line": 891,
+          "text": "                    reason=\"ACTUAL_COMPUTATION_NOT_SUCCESS\","
+        },
+        {
+          "line": 898,
+          "text": "                    status=\"not-comparable\", actualStatus=record[\"status\"], reason=mapping[\"reason\"]"
+        },
+        {
+          "line": 916,
+          "text": "            out.update(status=\"failure\", reason=str(error)[:160], schemaOrComparisonFailure=True)"
+        },
+        {
+          "line": 1013,
+          "text": "        execute_profile_records as execute_profile_records,"
+        },
+        {
+          "line": 1039,
+          "text": "            record.update(status=\"not-executed\", reason=\"ORIGINAL_INPUT_CONTEXT_INCOMPLETE\")"
+        },
+        {
+          "line": 1043,
+          "text": "                result = execute_profile_records("
+        },
+        {
+          "line": 1059,
+          "text": "        \"collectionOrigin\": \"pytest actual execute_profile_records, not probe subprocess\","
+        },
+        {
+          "line": 1130,
+          "text": "            \"reason\": failure_reason,"
+        },
+        {
+          "line": 1145,
+          "text": "        \"reason\": \"ORIGINAL_INPUT_CONTEXT_INCOMPLETE\","
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "bytes": 33681,
+      "sha256": "d3726f6170d126f7a6b495f53b951093faf0b3caa935b3d87a06c18c25619aac",
+      "lexicalHits": [
+        {
+          "line": 39,
+          "text": "    restore_profile_batches,"
+        },
+        {
+          "line": 174,
+          "text": "    original_reason = semantic.reason"
+        },
+        {
+          "line": 181,
+          "text": "    with patch.object(semantic, \"reason\", observe):"
+        },
+        {
+          "line": 183,
+          "text": "            result = semantic_execution.execute_profile("
+        },
+        {
+          "line": 193,
+          "text": "            result = semantic_execution.execute_profile_records("
+        },
+        {
+          "line": 239,
+          "text": "    result = restore_profile_batches("
+        },
+        {
+          "line": 265,
+          "text": "    assert type(caught.value.reason) is str"
+        },
+        {
+          "line": 347,
+          "text": "        raise AssertionError(\"restore must not reason or match\")"
+        },
+        {
+          "line": 351,
+          "text": "        patch.object(semantic, \"reason\", forbidden),"
+        },
+        {
+          "line": 355,
+          "text": "        restored = restore_profile_batches("
+        },
+        {
+          "line": 603,
+          "text": "    assert caught.value.diagnostic[\"reason\"] == \"RULE_COMPARISON_TYPE_MISMATCH\""
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "bytes": 21089,
+      "sha256": "4eed5e316f0033080b3f2761b83ddcd53f093f18a6e2aa48706619d109872a8c",
+      "lexicalHits": [
+        {
+          "line": 228,
+          "text": "        restore.restore_profile_batches("
+        },
+        {
+          "line": 315,
+          "text": "    assert caught.value.reason == \"RESTORE_INTERNAL\""
+        },
+        {
+          "line": 321,
+          "text": "        if traceback.tb_frame.f_code.co_name == \"restore_profile_batches\":"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic_rdfs_basis_determinism.py",
+      "bytes": 9390,
+      "sha256": "0d2c33dcd5e76d7d6d745c99805399da6f3002ba7a42449899c07a82b053ef39",
+      "lexicalHits": [
+        {
+          "line": 191,
+          "text": "            outputs[name][str(noise)+':'+order]=semantic.reason(graph,rules)"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic_scopes.py",
+      "bytes": 6772,
+      "sha256": "015b1966693bd92bb318431d606401e644354b722689dc80b7f8a1f6dbcacd83",
+      "lexicalHits": [
+        {
+          "line": 4,
+          "text": "from ontolearn_engine.semantic import check_shapes, parse_turtle, reason"
+        },
+        {
+          "line": 146,
+          "text": "    expected = reason(combined, (RISK, NEXT))"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic_selected_projection.py",
+      "bytes": 15237,
+      "sha256": "34ff730532e71d247d1389439fbd8745db97ae5839afc6ec75f95ada0d84f283",
+      "lexicalHits": [
+        {
+          "line": 53,
+          "text": "    monkeypatch.setattr(semantic_scopes, \"reason\", forbidden)"
+        },
+        {
+          "line": 75,
+          "text": "        semantic_scopes, \"reason\", lambda *a, **kw: pytest.fail(\"recomputed selection\")"
+        },
+        {
+          "line": 273,
+          "text": "        semantic_scopes, \"reason\", lambda *a, **kw: pytest.fail(\"recomputed empty selection\")"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_semantic_string_identity.py",
+      "bytes": 18211,
+      "sha256": "0992663e427649870c3fb07047a415dd95b2bd93a8a754babb190972fdbe5240",
+      "lexicalHits": [
+        {
+          "line": 11,
+          "text": "from ontolearn_engine.semantic import Rule, check_shapes, parse_turtle, query, reason"
+        },
+        {
+          "line": 158,
+          "text": "    actual = wire(reason(graph, rules))"
+        }
+      ]
+    },
+    {
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "path": "packages/engine/tests/test_storage.py",
+      "bytes": 49233,
+      "sha256": "f405fb231fb7838410f96964d063c6b9378a3c05a2ec21aceb003c9f688d0e5e",
+      "lexicalHits": [
+        {
+          "line": 279,
+          "text": "    db.finish_run(run, \"cancelled\", {\"reason\": \"user\"})"
+        },
+        {
+          "line": 377,
+          "text": "    store.finish_run(run, \"failed\", {\"reason\": \"input_missing\"})"
+        }
+      ]
+    }
+  ]
+}

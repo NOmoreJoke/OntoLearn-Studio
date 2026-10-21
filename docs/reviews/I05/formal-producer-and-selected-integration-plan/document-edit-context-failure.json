@@ -1,0 +1,9 @@
+{
+  "scope": "docs-only apply_patch; no product import/run",
+  "attempt": "Update J02/J03/J06 acceptance rows after candidate-1 Prettier alignment",
+  "failure": "apply_patch verification failed: Failed to find expected lines",
+  "cause": "Expected Markdown row omitted Prettier padding before its final pipe",
+  "mutationOnFailure": false,
+  "correction": "Read exact current rows with rg, applied exact padded context, then formatted the main document",
+  "oldCandidatePreservedAt": "651c4c2d2dd498ebc572543d116f2cdddb678045"
+}
