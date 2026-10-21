@@ -1,8 +1,8 @@
 # T06 UI 与行为服务接线交接
 
-当前两个独立候选：S1产品61396a598b2dffc1d3d2fd4660f9af1d5c93d266；UI产品571b4d64120c8420d527f9fda2a3cb81bbd47d3f。均以批准5f910b5为base。UI树为 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui，feature/T06-behavior-ui。它没有装配App或调用公共bridge。UI独立复核进行中，不以此交接签收组件或真实集成。
+当前两个独立候选：S1 产品 61396a598b2dffc1d3d2fd4660f9af1d5c93d266；UI 修复产品 da37709dcf09e04ded767ab2d08c26bbd8df24f3。均以批准 5f910b5 为 base。UI 树为 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui，feature/T06-behavior-ui。它没有装配 App 或调用公共 bridge。旧 UI 571b4d6 独立复核不通过的三项 P2 及原件保留，修复候选新完整独立复核进行中，不以此交接签收组件或真实集成。
 
-父开发线实际读回UI源码/verification：7源/测试/验证脚本SHA及11份本地证据SHA全部匹配；git只有保护AGENTS dirty。开发线完整check为651TS（本线21）/1052Python；真实headless交互/1440与390截图已生成，父线另查看390viewport。夹具不是实际引擎结果。
+父开发线实际读回 UI 修复候选源码/verification：7 源/测试/验证脚本 SHA、9 份当前证据 SHA 全部匹配，571 原 11 份本地证据 hash 均保持不变；git 只有保护 AGENTS dirty。新完整 check 为 664 TS（本线 34）/1052 Python；真实 headless 包含三项反例修复和正常交互、1440/390 截图。夹具不是实际引擎结果。显式 always 已加入；exists/type 和正式语义映射仍按下表接线。
 
 给T00/T01/T05/T07的具体接线条件（私有类型不是已批准公共合同）：
 

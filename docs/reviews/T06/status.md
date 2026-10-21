@@ -92,6 +92,10 @@ UI 已在独立树固定 **571b4d64120c8420d527f9fda2a3cb81bbd47d3f**（base5f�
 
 独立复核已实际终态：**不通过，3 项 P2**。完整原文 ui-local-review-1.md，负例工具 evidence/ui-571b4d6-negative-probes.mjs。实际运行 21 vitest 通过，并在 /tmp 重定位 headless 验证，未覆盖旧证据；内存负例复现：conditions 必填一项且无 always，不能表达批准 G-behavior 的 X/B-a/B-b 无额外条件；candidate 可夹带 applied 动作/recorded 通知并被显示；payload 的自有 **proto** 键被静默丢弃，不同内容被折叠。开发 agent 已全文读报告并实际确认三项，完整终态后才在自身独立树修复。修后新候选须必要验证和完整独立复核，571 原结论保留。
 
+UI 修复候选已固定 **da37709dcf09e04ded767ab2d08c26bbd8df24f3**，同独立树/分支/base，仅保护 AGENTS dirty。新全 check 实际 664 TS（本线 34）/1052 Python 通过；状态组合 60 项正负断言、always 编辑/缺条件拒绝/宿主和执行回调、保留键两不同内容拒绝且不送服务均有单测和真实 r2 headless 链路。定位器首败与最终日志分别保留，新截图另目录，未覆盖 571 原件。父线逐项核验 7 源/测试/脚本、9 当前证据 hash 全匹配，旧 11 产物 hash 全未变。已对全部 10 文件和完整 base→da37709 重新派发 /root/behavior_independent_review 完整只读复核；当前待终态，尚未据开发线通过关闭三项问题。
+
+总控已正式确认实际桌面条件缺口，不再按一般“待预约”催派发；全局指定双审资源登记为条件待满足、T06 首顺位，维持已提问题 pending、不重复询问。当前没有明确时段或隔离入口，仍无两任务句柄。原 S1、UI 和完整 FR 验收范围分别保留。
+
 ## 指定审查实际派发入口核验
 
 总控已实际完成新候选派发门（T06-S1-controller-review-preflight.json，12source/完整diff/20raw一致、远端5f），并明确准许本聊天在预约入口派发。两独立完整输入及SHA已先提交 **11c7a9bb0288fab87e6cecefcbfccbd36d550684**，只追加流程；产品613零漂移。
