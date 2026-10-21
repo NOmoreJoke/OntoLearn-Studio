@@ -140,3 +140,9 @@ format3-stage-a-review.md原“26反例均拒绝”现已更正：原session第3
 修后全仓实际退出0：630 TS、2214 Python、44上述不适用skip，静态/类型/构建/ruff通过；详情与冻结源码hash见application-cas-review.md。新归档原件SHA `1f35a12250819bb74b8eda325e753815e2fdad38337c51ff23d1425924fe0fe9`，逐成员原字节回读。当前准备本地恢复提交，不push。
 
 已全文读取T05固定412、T03 process b868、T10 b39、T09 e651的接口原件并核对hash；形成 [owner-interface-responses-r1](../../iterations/T01/owner-interface-responses-r1.md)，独立设计审查无阻断。D7严格三字段、失败定位专用资源、同协议来源分块、业务白名单/闭包/单writer新项目receipt为明确设计；worker.py未交接、真实source/学习账本/transfer投影和import receipt仍是实际缺口，未消费未批准实现。下一步继续真实学习/辅助账本与完成边界、正式canonical/ready和已授权窄接线，Goal保持active。父功能、指定双审、PR/CI/合并/发布仍未完成。
+
+## 固定CAS候选与下一阶段设计
+
+应用CAS恢复提交为`f51dd38dbdfd2fbb1b9923efee666a19d5b415cc`，总控正在固定候选独立原件审计，本线产品/测试保持不变。新增来源分块和学习账本设计已独立挑战并关闭两处文档缺口，详见follow-up-design-review.md。设计明确source内容不等于授权、远端受理/撤销排序、worker实际首帧缺口，以及activation CAS/完整attempt辅助覆盖/真实publisher事务；尚无对应新实现。
+
+I05 worker唯一未来维护offer已实际接受并保存双身份回执：本方approved5f 9314B/SHA2fa848…06f2f0，对方C3 13638B/SHA3d934e…4f99d；各实际path clean。等待独立/root生效，不写worker、不采用C3、不扩protocol/resources/旧tests/build。拟新增专属test_project_source_transport.py、test_project_source_worker.py、t01-source-transport.test.ts仅为原独占prefix下计划，尚未创建。此次仅文档和接收回执，不重跑无变化产品，不push。

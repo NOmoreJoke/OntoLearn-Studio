@@ -1,0 +1,11 @@
+# 后续来源/学习机制设计审查
+
+只审文档与范围；固定产品候选仍是f51dd38，未改变其实现/测试或复用其通过去证明新能力。
+
+独立`recovery_design_review`已读PRD FR-100–105/804、固定T09 UI/stage文档及当前私有应用机制，给出activation/CAS、跨input辅助单调、完整attempt覆盖、当时current completion与producer缺口的最小设计边界。真实检查、stage completion和独立迁移成功在来源齐全前仍须拒绝。
+
+独立`store_interface_audit`核实当前coordinator一帧后关闭stdin、worker只读首帧的实际缺口，审查两份新设计，提出两处需明确：main发受理后切项目的远端受理/撤销排序；attempt早期缺producer覆盖不能由后来齐全洗白。已分别补coordinator权威scope/确认序号及两种先后验收、持久producer集合/版本/完整起止区间和早期缺口保留。定点复核明确两项关闭。
+
+冻结文档SHA256：source-transport-design.md `82c3348972f8c3e38b6b9fe37c2668f991fe4bac3f8e534ad38f59eb099b8a74`；learning-ledger-design.md `6834d3c13c664ef29ecd9df3455e6a9a3a4e5dc7ffe39692228f2cae6fb8c0fd`。未测试、无GUI，不批准任何未实现接口。
+
+worker单文件未来offer已全文读并实际核双身份/clean，接收回执worker-ownership-handoff-acceptance.json SHA `019117b58f6883ac37fdf0a2007df3ad29e7cf68423ed35a3380606ea1d58581`。本方仅接受从批准5f施工，当前等待独立/root登记，不写worker，不读/消费C3实现，不扩大其余文件责任。新文档只跑Prettier/diff检查，不对无变化产品重复check。
