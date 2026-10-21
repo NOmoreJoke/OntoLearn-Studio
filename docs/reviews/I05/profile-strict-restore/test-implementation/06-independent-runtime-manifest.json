@@ -1,0 +1,496 @@
+{
+  "result": "139 passed in 14.10s",
+  "scope": "two restore test files only; no full regression or GUI/e2e/model execution",
+  "coreRef": "bbd79c3cff88e8fef348a9c4dcb6981ab5e3cb47",
+  "testRef": "b301c3cdb348c08c6d10f1ac4e11666ec9bbd39b",
+  "fixed68Unchanged": 68,
+  "modules": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "bytes": 47127,
+      "sha256": "8a09474ee3f5c71b9b4205df8ee590106bad34ac6ad01c06ee9f310c84487889",
+      "owner": "root",
+      "adoptedReadonlyOriginalBytes": true,
+      "notStaged": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "bytes": 37212,
+      "sha256": "95b170ab99220d8d602d87a321bae481774806dc2bc11b760b4933e866f51c16",
+      "owner": "root",
+      "adoptedReadonlyOriginalBytes": true,
+      "notStaged": true
+    }
+  ],
+  "AGENTSUnstaged": true,
+  "evidenceFiles": 93,
+  "evidenceBytes": 11328060,
+  "evidenceManifest": [
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/allocator-1/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/allocator-1/stdin.json",
+      "bytes": 32667,
+      "sha256": "a021c84835258ff7a0da53c678a8cc024eb724d4931463328ed03d78701834fd"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/allocator-1/stdout.json",
+      "bytes": 4878,
+      "sha256": "681e662b408d54c66630148389b37884f642ef88345a23cd9cd926cf56700f18"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/allocator-1/supervisor.json",
+      "bytes": 750,
+      "sha256": "0afdea77032196664b318c67b8efcce58fde97068df73ee4145c2e45122ab51a"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/allocator-100-original-failure.json",
+      "bytes": 119370,
+      "sha256": "7b431638075251684397ef6d81cc99f3f9039dae652d995cf841e3aed63e1105"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/allocator-2/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/allocator-2/stdin.json",
+      "bytes": 48016,
+      "sha256": "c613d97e8cc8b19696dd4347d16853c11efe377dc6154e4d478f9bb70531bdf7"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/allocator-2/stdout.json",
+      "bytes": 8979,
+      "sha256": "4c26b8bf24c748531fbb0d48b12265a0fa808e6a14f621d43bd9c9bf681182f6"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/allocator-2/supervisor.json",
+      "bytes": 751,
+      "sha256": "0c4428a9d6681511c51d3e97edeee9e5af6f34e61aae6dd552d457d8e8c84b20"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/complete-false-true/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/complete-false-true/stdin.json",
+      "bytes": 198833,
+      "sha256": "36e0382749f6234f0e4cf9c1958764005122201548006a72f01d4c66df580a08"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/complete-false-true/stdout.json",
+      "bytes": 42753,
+      "sha256": "96fcb21fb7ef220470b588154560261515ef28ad07829a34a0704bacc1954b35"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/complete-false-true/supervisor.json",
+      "bytes": 760,
+      "sha256": "92282728970b87d3cfcd52f6c9ba2ae3aa2c89b932c1e557a5c840d450009e15"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/disabled/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/disabled/stdin.json",
+      "bytes": 72070,
+      "sha256": "c878511a9a8f6cdd8ed3ceadfca973b4931ec68dce83459fa7d86e966886a3b9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/disabled/stdout.json",
+      "bytes": 5696,
+      "sha256": "89e347abfadd00d02205958a84f8d3314ac4328c7496da1c521e419de4a6d289"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/disabled/supervisor.json",
+      "bytes": 747,
+      "sha256": "fde663c20f528d293759b428e4bf46f8d90e9933f246e64a285981ca663c2264"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/disabled-slot/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/disabled-slot/stdin.json",
+      "bytes": 217309,
+      "sha256": "58f970209cb9340b516c4ef6eba14632a8609abe3c4abc095bbbf314b147329e"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/disabled-slot/stdout.json",
+      "bytes": 47934,
+      "sha256": "9f0b90c4b78bc6d4d1851ae33a3f4567ce70f8f7ed5270b3edc18282c3324b91"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/disabled-slot/supervisor.json",
+      "bytes": 755,
+      "sha256": "31217b60fa8d41c69cad0333b0b775dd25c00672fd035881439b32be0bdda8c5"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-B/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-B/stdin.json",
+      "bytes": 93259,
+      "sha256": "9d70b799b43f1d2b9554ad1311a662278da250d895599fd8d9407626533e5291"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-B/stdout.json",
+      "bytes": 19222,
+      "sha256": "1e398c4c54dafbc402b2cb86547c3477462c4071126a4872997d3920567ff42c"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-B/supervisor.json",
+      "bytes": 748,
+      "sha256": "ac11e18a72ebe902c0d6bf7f3393dfae33bbb62df4340a8c6d6016483ac8a931"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Dl/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Dl/stdin.json",
+      "bytes": 99481,
+      "sha256": "778c9d8a2fb31174b758114f485263ca43000a4b6bd4a20abedd56e01fa121d8"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Dl/stdout.json",
+      "bytes": 20418,
+      "sha256": "227c7d11796bb274ff49a5b43441fa4b1f0c52346813f684e32cf9cdd8760416"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Dl/supervisor.json",
+      "bytes": 750,
+      "sha256": "801e6dbb2e9ade77f1e05c3b4e6b6f26af48e14cd57969d71ef314b72cd9fe50"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Dz/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Dz/stdin.json",
+      "bytes": 99539,
+      "sha256": "751a9efe08fde2b9ad82d0f5d8134f14864542eef8b7d8e413aa578f7aad0f42"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Dz/stdout.json",
+      "bytes": 20428,
+      "sha256": "9a3aea9a7860262ab15e87c8e0302dc1b327ee7a3042292d9f2c41d7745ddc19"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Dz/supervisor.json",
+      "bytes": 750,
+      "sha256": "8378715b345e36e66b3cbbd03397ab89e6f41070c0e6032e284df4f3c95eb569"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-I/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-I/stdin.json",
+      "bytes": 90135,
+      "sha256": "d3c24e892e8f6ba725532139fd99ea5c60de69516b04122469fe8e13280fbfed"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-I/stdout.json",
+      "bytes": 18658,
+      "sha256": "903f0cd1ed05fb279c8057b1e86504c217f4e531f501a248992d6f4841b74113"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-I/supervisor.json",
+      "bytes": 749,
+      "sha256": "7c56a78cd0c6601c26d15bec6415fada67beb62d78bc7297915b8baa850d9876"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-L/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-L/stdin.json",
+      "bytes": 90309,
+      "sha256": "720bed30712d90c1654d4ce3514b335f526cf16044fa67f7e37dff8efbf5b788"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-L/stdout.json",
+      "bytes": 18702,
+      "sha256": "f348898cdd0ff3e6c649ee32feac18fa469226c75de6a5f912dd34c0498761b7"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-L/supervisor.json",
+      "bytes": 749,
+      "sha256": "a428dc85941436b90304795f92d04fb95ebe7aecee2f502639cf7743a76cb656"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-N/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-N/stdin.json",
+      "bytes": 95985,
+      "sha256": "ebf01cbffdb85d6421ea628a24fb9c659ea79074e8c5c8d5ac30d08222b69b72"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-N/stdout.json",
+      "bytes": 19714,
+      "sha256": "9ed1e181b1bb1a21f3c6c8fd6ec8a3d0e894dc281065195bcb4273e4c4306bd2"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-N/supervisor.json",
+      "bytes": 748,
+      "sha256": "a89c5b65ea2a50a7937dc9c6cbd1cf971900dc4aba0b4fef550b2c4dfa4a68cc"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-S/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-S/stdin.json",
+      "bytes": 89799,
+      "sha256": "0fe197e65b9faaffad7cfc66a000ff77fd8e335ce89294c68fefd36502d6b9da"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-S/stdout.json",
+      "bytes": 18592,
+      "sha256": "612aac78f519edf95677fd479e33a3bf0c5cb02c1ad0001154137a59d7ed1e4d"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-S/supervisor.json",
+      "bytes": 748,
+      "sha256": "3a625dce33d1510c7d559ef33e3f7a166fc65dfd49d1a10966d892dd65a327dd"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Tl/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Tl/stdin.json",
+      "bytes": 100619,
+      "sha256": "1eb476fbcccc2871311cd3982dfbbdce198a0b6dc9972019cb742cd63ee69faa"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Tl/stdout.json",
+      "bytes": 20620,
+      "sha256": "704bb00a5728054d5a173582fbbea94ee712d155ef000c25e9ff0ebe93dfcee3"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Tl/supervisor.json",
+      "bytes": 751,
+      "sha256": "8fec8425aa00c9941ff31e43f7925c4176bf81d1e043d7df01f5ddf642d4934e"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Tz/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Tz/stdin.json",
+      "bytes": 100677,
+      "sha256": "363cae0d2f08d98e0ba52da31ad6997e9bca9563cd841b5c26e922419cfd4a0a"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Tz/stdout.json",
+      "bytes": 20630,
+      "sha256": "667e466400760016455646912e8ea10cdcdebe296f9cdd59adc06ccad0f0226a"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/domain-Tz/supervisor.json",
+      "bytes": 751,
+      "sha256": "de88b4debc19ebda8ccff815491958305f4c8d312673da66579ba44e3e00832c"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/empty-source-witness/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/empty-source-witness/stdin.json",
+      "bytes": 19538,
+      "sha256": "aff4319282376dde8119f8b8e78f2d05d943f215b9c840d239965a23799c169f"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/empty-source-witness/stdout.json",
+      "bytes": 2465,
+      "sha256": "1a4b6f1b938cce59d78713221c01d2509bf3618b864e3aa5b92ff1c74dc37752"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/empty-source-witness/supervisor.json",
+      "bytes": 760,
+      "sha256": "f40b23af38d3419a0e29fe1edfdf2ea6aac35051766cf6b6632c3da6a6aa6a00"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/large-turtle/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/large-turtle/stdin.json",
+      "bytes": 172518,
+      "sha256": "454eb21d4348c01c0a3de1cfcea999cab37ed085b47df6eb3676f50a8056b0eb"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/large-turtle/stdout.json",
+      "bytes": 2545,
+      "sha256": "470a18f1eda4e445472ec04df1260f9057ef8f2138ad23f10dc52e1332840326"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/large-turtle/supervisor.json",
+      "bytes": 753,
+      "sha256": "685f2b97085e5d34fc998e83340c76234b9d572d2b560de3d1aa98e79e7c3b55"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/no-definitions/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/no-definitions/stdin.json",
+      "bytes": 64700,
+      "sha256": "d18d3647d548add842fd307b5f1909f0b107f6a0d3e6fa3bfa982d8bf1adb045"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/no-definitions/stdout.json",
+      "bytes": 2544,
+      "sha256": "afa5d7b3e673b555656dab2be1d395edf01930f862699118b68fd467ece7a7d5"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/no-definitions/supervisor.json",
+      "bytes": 754,
+      "sha256": "feb79acf0d03bab4f40f242e9403c84f0ec12ce616c9b1ccdb165bb922114726"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/no-matches/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/no-matches/stdin.json",
+      "bytes": 44923,
+      "sha256": "489e1e24733cae26ce256e43a0dbbc3ebf82d0db05abc8d1dd0f162921746dfd"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/no-matches/stdout.json",
+      "bytes": 6074,
+      "sha256": "8786f99f5546e5fe4254f3016f53a1e85c290b1fd62fdd298401c6fd3c71c84d"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/no-matches/supervisor.json",
+      "bytes": 750,
+      "sha256": "b4e5b33ecfdac2a9607617d73db8c164d09a11aa3ffc52997ebe11b179b3d8f9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/repeated-source/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/repeated-source/stdin.json",
+      "bytes": 164173,
+      "sha256": "960395e186429a2ecc983a2402dc7359a01e3c790354f995da4a3155ab7ab7b9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/repeated-source/stdout.json",
+      "bytes": 35612,
+      "sha256": "db23bffa252bea0fb3204fc6ec3fa0ebdb707f155c1cfe2f444f6c42f6ebe1a4"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/repeated-source/supervisor.json",
+      "bytes": 757,
+      "sha256": "34a38c7107aa3577fb4a1a5348c54bd03963600399770693095905e4ef0adf68"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-digest/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-digest/stdin.json",
+      "bytes": 1863807,
+      "sha256": "390fa80aef9303a2d9a28e09524b7b45b191a91e4820478eb4f043e258937750"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-digest/stdout.json",
+      "bytes": 375994,
+      "sha256": "70104917f8a9854d74866baf5799c3a2bd2f8e314370db774b733e46390b8678"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-digest/supervisor.json",
+      "bytes": 761,
+      "sha256": "3ecfe2496a2ec05a4e2a061853605052a72f2dadfd094a74ad32edefb1b3cd13"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-reference/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-reference/stdin.json",
+      "bytes": 1863687,
+      "sha256": "1770573bef8b975c2646a696c57f3fea64975b0973df4e79ae2e65cb22cc8de3"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-reference/stdout.json",
+      "bytes": 375970,
+      "sha256": "709b864f756bf2e5a4d18734468c35e0b985348c8a141a8c5bd43445620dbdf9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-reference/supervisor.json",
+      "bytes": 764,
+      "sha256": "5abe3eb7dc4eefa8017207bbfaef22e346dd8503beadb778a935b577b567edf2"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-revision/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-revision/stdin.json",
+      "bytes": 1864327,
+      "sha256": "2b6ab97522c424f3f6c1c555e0e9650701a4856089670621363cd96a933f2393"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-revision/stdout.json",
+      "bytes": 376098,
+      "sha256": "060247edae8aada19315685216c441547fe23df4ac6867888825780596cee213"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-revision/supervisor.json",
+      "bytes": 763,
+      "sha256": "adee54d54eb914ef5d23786c5b3f7951db38d85828d8109ac6091038fbc58da8"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-text/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-text/stdin.json",
+      "bytes": 1864351,
+      "sha256": "58a9ec5afb71d87e23c53fb4002b28425134a998ba2200a178c37b86c1206d46"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-text/stdout.json",
+      "bytes": 376114,
+      "sha256": "fc557cfdc47cb960dffd97a22be20eee910890e91bb9a4cba12be1b42d22f130"
+    },
+    {
+      "path": "docs/reviews/I05/profile-strict-restore/test-implementation/05-child-execs/source40000-text/supervisor.json",
+      "bytes": 759,
+      "sha256": "3d815cf731d66ce9ec4838018be9346f2a899470c672a825e67d90be47129698"
+    }
+  ],
+  "firstFailurePreserved": "04-first-runtime-disposition.json links the parent original 134passed/5failed run; original N100 production resource failure is retained separately in 05-child-execs/allocator-100-original-failure.json, not claimed as a successful N100 restore."
+}
