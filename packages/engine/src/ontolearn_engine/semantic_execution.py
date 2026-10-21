@@ -207,14 +207,14 @@ def _term(text):
 
     from ontolearn_engine import semantic
     from ontolearn_engine.semantic_offline import SemanticError
-    from ontolearn_engine.semantic_scopes import _LexicalSink
+    from ontolearn_engine.semantic_turtle import LexicalSink
 
     if type(text) is not str or not (text.startswith("<") or text.startswith('"')):
         raise SemanticError("RDF_TERM_INVALID")
     semantic._text(text)
     graph = Graph()
     try:
-        SinkParser(_LexicalSink(graph), baseURI="urn:ontolearn:term:", turtle=True).loadBuf(
+        SinkParser(LexicalSink(graph), baseURI="urn:ontolearn:term:", turtle=True).loadBuf(
             "<urn:ontolearn:subject> <urn:ontolearn:predicate> " + text + " ."
         )
         if len(graph) != 1:

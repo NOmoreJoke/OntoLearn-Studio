@@ -145,7 +145,7 @@ def test_capabilities_and_real_rdfs_one_pass_rule_complete_output(errors):
     assert SEMANTIC_CAPABILITIES == {"query.execute", "reasoning.execute", "validation.execute"}
     output = run(request(), errors)
     payload = output["payload"]
-    assert payload["executionSemanticsVersion"] == semantic.SEMANTICS_VERSION == "i05-finite-3"
+    assert payload["executionSemanticsVersion"] == semantic.SEMANTICS_VERSION == "i05-finite-4"
     assert payload["reasoning"]["rdfs"] == [["<urn:s>", RDF.type.n3(), "<urn:Parent>"]]
     assert payload["reasoning"]["rules"] == [["<urn:s>", RDF.type.n3(), "<urn:Risk>"]]
     assert payload["reasoning"]["warnings"] == ["RULE_CHAIN_UNSUPPORTED:R2"]
@@ -352,6 +352,69 @@ def test_historical_selection_is_explicit_and_input_immutable(errors):
     before = copy.deepcopy(req)
     assert run(req, errors)["payload"]["inputSelection"] == "historical"
     assert req == before
+
+
+@pytest.mark.parametrize(
+    "text,code,message,params",
+    [
+        (
+            "ASK { GRAPH <urn:g> { ?s ?p ?o } }",
+            "UNSUPPORTED_CONSTRUCT",
+            "semantics.unsupportedConstruct",
+            {"construct": "sparqlForm"},
+        ),
+        (
+            "SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o } }",
+            "UNSUPPORTED_CONSTRUCT",
+            "semantics.unsupportedConstruct",
+            {"construct": "sparqlForm"},
+        ),
+        (
+            "ASK { GRAPH <urn:g> { SERVICE <https://private.invalid/> { ?s ?p ?o } } }",
+            "NETWORK_FORBIDDEN",
+            "semantics.networkForbidden",
+            {},
+        ),
+        (
+            "ASK FROM <https://private.invalid/> { GRAPH ?g { ?s ?p ?o } }",
+            "NETWORK_FORBIDDEN",
+            "semantics.networkForbidden",
+            {},
+        ),
+    ],
+)
+def test_actual_named_graph_reason_and_nested_external_priority(
+    errors, text, code, message, params
+):
+    snapshot = fixture()
+    next(d for d in snapshot["state"]["definitions"] if d["layer"] == "query")["payload"] = (
+        json.dumps({"text": text})
+    )
+    with pytest.raises(SemanticExecutionFault) as failure:
+        run(request(snapshot, "query.execute"), errors)
+    assert failure.value.error == {
+        "code": code,
+        "messageKey": message,
+        "params": params,
+        "retryable": False,
+    }
+
+
+def test_local_query_grammar_failure_is_internal_not_bad_user_syntax(errors, monkeypatch):
+    from ontolearn_engine import semantic_query
+
+    def incompatible_grammar():
+        raise RuntimeError("private implementation details must not escape")
+
+    monkeypatch.setattr(semantic_query, "_clone_grammar", incompatible_grammar)
+    with pytest.raises(SemanticExecutionFault) as failure:
+        run(request(capability="query.execute"), errors)
+    assert failure.value.error == {
+        "code": "INTERNAL_ERROR",
+        "messageKey": "engine.internal",
+        "params": {},
+        "retryable": False,
+    }
 
 
 def test_unrelated_opaque_definitions_do_not_expand_asserted_query_dependencies(errors):

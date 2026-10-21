@@ -61,12 +61,14 @@ name = "ontolearn-engine"
 version = "0.1.0"
 source = { editable = "packages/engine" }
 dependencies = [
+    { name = "pyparsing" },
     { name = "pyshacl" },
     { name = "rdflib" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "pyparsing", specifier = "==3.3.3" },
     { name = "pyshacl", specifier = "==0.30.1" },
     { name = "rdflib", specifier = "==7.6.0" },
 ]

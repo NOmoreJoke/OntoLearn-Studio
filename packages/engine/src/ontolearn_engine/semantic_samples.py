@@ -162,8 +162,103 @@ def suite() -> dict:
         "O-01": "no recorded alarm; no closed-world negative assertion",
         "finiteTemplates": template_suite(),
         "validationScopes": scope_suite(),
+        "literalIdentity": lexical_suite(),
         "scope": "pure G.2 semantics; no storage/task/UI integration",
     }
+
+
+def lexical_suite():
+    """C1 counterexamples: exact RDF terms, never numeric-value equality."""
+    cases = [
+        ("01", "1", XSD.integer),
+        ("+01", "+1", XSD.integer),
+        ("-01", "-1", XSD.integer),
+        ("-00", "0", XSD.integer),
+        ("01.00", "1.0", XSD.decimal),
+        ("+01.00", "+1.0", XSD.decimal),
+        ("-01.00", "-1.0", XSD.decimal),
+        ("01e+00", "1e+00", XSD.double),
+        ("+01e+00", "+1e+00", XSD.double),
+        ("-01e+00", "-1e+00", XSD.double),
+    ]
+    observations = []
+    for token, other, datatype in cases:
+        term = Literal(token, datatype=datatype, normalize=False)
+        different = Literal(other, datatype=datatype, normalize=False)
+        assert term != different and term.eq(different)
+        graph = Graph()
+        graph.add((EX.unit, RDF.type, EX.Equipment))
+        graph.add((EX.unit, EX.value, term))
+        assert set(parse_turtle(f"<{EX.unit}> <{EX.value}> {token} .")) == {
+            (EX.unit, EX.value, term)
+        }
+        shapes = parse_turtle(
+            PREFIX
+            + f"""
+            :LexicalShape a sh:NodeShape; sh:targetClass :Equipment;
+                sh:property :LexicalProperty .
+            :LexicalProperty sh:path :value; sh:in ({term.n3()}) .
+            """,
+            shapes=True,
+        )
+        good = check_shapes(graph, shapes)
+        assert good == {"conforms": True, "violations": []}
+        graph.set((EX.unit, EX.value, different))
+        bad = check_shapes(graph, shapes)
+        assert bad == {
+            "conforms": False,
+            "violations": [
+                {
+                    "focus": EX.unit.n3(),
+                    "path": EX.value.n3(),
+                    "constraint": "<http://www.w3.org/ns/shacl#InConstraintComponent>",
+                    "sourceShape": EX.LexicalProperty.n3(),
+                    "value": different.n3(),
+                    "severity": "<http://www.w3.org/ns/shacl#Violation>",
+                }
+            ],
+        }
+        ask = f"ASK {{ <{EX.unit}> <{EX.value}> {token} }}"
+        assert query(graph, ask) == {"type": "ASK", "value": False}
+        graph.set((EX.unit, EX.value, term))
+        matched = query(graph, ask)
+        assert matched == {"type": "ASK", "value": True}
+        values = query(Graph(), f"SELECT ?v WHERE {{ VALUES ?v {{ {token} }} }}")
+        assert values == {"type": "SELECT", "variables": ["v"], "rows": [[term.n3()]]}
+        variable = Variable("s")
+        exact = Rule("lexical", ((variable, EX.value, term),), (variable, RDF.type, EX.Exact))
+        unequal = Rule(
+            "different", ((variable, EX.value, different),), (variable, RDF.type, EX.Different)
+        )
+        derived = reason(graph, (exact, unequal))
+        assert derived["rules"] == [(EX.unit.n3(), RDF.type.n3(), EX.Exact.n3())]
+        observations.append(
+            {
+                "token": token,
+                "term": term.n3(),
+                "differentTerm": different.n3(),
+                "same": good,
+                "different": bad,
+                "query": matched,
+                "values": values,
+                "rules": derived,
+            }
+        )
+    rejected = []
+    for text in (
+        "<urn:s> <urn:p> 1.2.3 .",
+        "<urn:orphan> .",
+        "([<urn:p> <urn:o>]) .",
+        "<urn:s> <urn:p> 01 . true .",
+    ):
+        try:
+            parse_turtle(text, shapes=True)
+        except SemanticError as error:
+            assert error.code == "INVALID_TURTLE"
+            rejected.append({"text": text, "reason": error.code})
+        else:
+            raise AssertionError("orphan Turtle term was silently discarded")
+    return {"numbers": observations, "rejectedSyntax": rejected}
 
 
 def scope_suite():

@@ -333,6 +333,12 @@ def test_approved_mapping_by_verified_origin(adapter, reason, producer, stage, e
             golden("UNSUPPORTED_CONSTRUCT", construct="querySlice"),
         ),
         (
+            Producer.QUERY,
+            Stage.QUERY,
+            "QUERY_GRAPH_UNSUPPORTED",
+            golden("UNSUPPORTED_CONSTRUCT", construct="sparqlForm"),
+        ),
+        (
             Producer.REASON,
             Stage.RULE,
             "UNSUPPORTED_RULE_OUTPUT",

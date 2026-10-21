@@ -48,6 +48,7 @@ def main():
             "pytest",
             "-q",
             "packages/engine/tests/test_semantic_runtime.py::test_actual_stdio_source_or_packaged_jobs_persist_all_three_semantic_outputs",
+            "packages/engine/tests/test_semantic_lexical_runtime.py::test_actual_stdio_source_or_packaged_lexical_identity",
         ],
         env=os.environ | {"ONTOLEARN_TEST_ENGINE": str(executable)},
         capture_output=True,

@@ -11,18 +11,19 @@ from math import isfinite
 
 from pyshacl.validator import Validator
 from rdflib import OWL, RDF, RDFS, SH, XSD, BNode, Graph, Literal, URIRef, Variable
-from rdflib.plugins.sparql import prepareQuery
 from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.plugins.stores.memory import Memory
 from rdflib.term import Identifier
 
 from ontolearn_engine.semantic_offline import SemanticError, offline
+from ontolearn_engine.semantic_query import prepare_lexical_query
+from ontolearn_engine.semantic_turtle import parse_graph
 
 MAX_TEXT_BYTES = 1_048_576
 MAX_TRIPLES = 100_000
 MAX_RULE_MATCHES = 100_000
 MAX_WORK = 1_000_000
-SEMANTICS_VERSION = "i05-finite-3"
+SEMANTICS_VERSION = "i05-finite-4"
 Triple = tuple[Identifier, Identifier, Identifier]
 
 
@@ -102,7 +103,7 @@ def parse_turtle(text: str, *, format: str = "turtle", shapes: bool = False) -> 
         raise SemanticError("UNSUPPORTED_FORMAT")
     with offline():
         try:
-            graph = Graph().parse(data=text, format="turtle", publicID="urn:ontolearn:i05:")
+            graph = parse_graph(text, base_uri="urn:ontolearn:i05:")
         except Exception as error:
             raise SemanticError("INVALID_TURTLE") from error
         if len(graph) > MAX_TRIPLES:
@@ -129,16 +130,16 @@ def query(graph: Graph, text: str) -> dict:
     with offline():
         local = _copy(graph)
         _terms(local)
-        try:
-            prepared = prepareQuery(text)
-        except Exception as error:
-            raise SemanticError("INVALID_QUERY") from error
+        prepared = prepare_lexical_query(text)
         if prepared.algebra.name not in {"SelectQuery", "AskQuery"}:
             raise SemanticError("READ_ONLY_QUERY_REQUIRED")
         orderings = []
+        named_graph = False
         for node in _walk(prepared.algebra):
             if node.name in {"ServiceGraphPattern", "DatasetClause"}:
                 raise SemanticError("EXTERNAL_ACCESS_DENIED")
+            if node.name == "Graph":
+                named_graph = True
             if node.name.startswith("Aggregate_") and node.name != "Aggregate_Count":
                 # Floating reductions and equal-valued MIN/MAX terms depend on the
                 # library's hash iteration order. Candidate only promises COUNT.
@@ -158,6 +159,8 @@ def query(graph: Graph, text: str) -> dict:
                 raise SemanticError("QUERY_SLICE_UNSUPPORTED")
             if node.name == "OrderBy":
                 orderings.append(node)
+        if named_graph:
+            raise SemanticError("QUERY_GRAPH_UNSUPPORTED")
         if len(orderings) > 1 or any(
             not isinstance(c.expr, Variable) or c.expr not in prepared.algebra.PV
             for order in orderings

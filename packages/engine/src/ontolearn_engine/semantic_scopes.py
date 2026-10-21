@@ -10,8 +10,8 @@ import hashlib
 import json
 from dataclasses import dataclass
 
-from rdflib import OWL, RDF, RDFS, Graph, Literal, URIRef, Variable
-from rdflib.plugins.parsers.notation3 import RDFSink, SinkParser
+from rdflib import OWL, RDF, RDFS, Graph, URIRef, Variable
+from rdflib.plugins.parsers.notation3 import SinkParser
 
 from ontolearn_engine.semantic import (
     MAX_TRIPLES,
@@ -25,6 +25,7 @@ from ontolearn_engine.semantic import (
     reason,
 )
 from ontolearn_engine.semantic_offline import SemanticError, offline
+from ontolearn_engine.semantic_turtle import LexicalSink
 
 MAX_PROJECTION_ITEMS = 1_000_000
 
@@ -82,11 +83,6 @@ def _source(facts, axioms, rules):
     }
 
 
-class _LexicalSink(RDFSink):
-    def newLiteral(self, text, datatype, language):
-        return Literal(text, datatype=datatype, lang=language, normalize=False)
-
-
 def _selected_output(result, original, rules):
     """Validate internal consistency, not authenticity or global completeness."""
     invalid = "REASONING_RESULT_INVALID"
@@ -128,7 +124,7 @@ def _selected_output(result, original, rules):
                 text.encode("utf-8")
                 graph = Graph()
                 SinkParser(
-                    _LexicalSink(graph), baseURI="urn:ontolearn:projection:", turtle=True
+                    LexicalSink(graph), baseURI="urn:ontolearn:projection:", turtle=True
                 ).loadBuf(text)
                 if len(graph) != 1:
                     raise SemanticError(invalid)

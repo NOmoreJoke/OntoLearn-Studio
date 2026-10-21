@@ -121,6 +121,7 @@ _UNSUPPORTED = {
     "UNSUPPORTED_SHACL_PATH": ("shaclPath", frozenset({(Producer.SHACL, Stage.CONSTRAINT)})),
     "UNSUPPORTED_BLANK_NODE": ("rdfBlankNode", _GRAPH_INPUTS),
     "READ_ONLY_QUERY_REQUIRED": ("sparqlForm", frozenset({(Producer.QUERY, Stage.QUERY)})),
+    "QUERY_GRAPH_UNSUPPORTED": ("sparqlForm", frozenset({(Producer.QUERY, Stage.QUERY)})),
     "UNSUPPORTED_OWL": ("owlExpression", _GRAPH_INPUTS),
     "UNSUPPORTED_SHACL": ("shaclAdvanced", _GRAPH_INPUTS),
     "UNSUPPORTED_FORMAT": (
