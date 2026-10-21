@@ -12,3 +12,7 @@ T10 的私有解析器只检查候选信封，不复制 Store、公共协议或�
 | I06     | 只允许业务投影，排除 vault/audit/凭据/发送授权的唯一边界                                                                                                                   | 自由文本可能含用户粘贴的凭据，投影及最终导出须沿批准脱敏/拒绝策略验收；T10 不读取密钥用于扫描                |
 
 公共接线由 T00/I06 执行：受限命名方法完成可信来源、项目和代次校验；renderer 不读文件路径、不暴露通用 invoke。文件选择和写盘也由主进程 owner 协调。待正式 schema 后补精确成功/失败公共样例，此文件不构成第二公共契约。
+
+T10 现有私有文件发布服务可供 owner 后续接入：固定报告 artifact → `save(mainOwnedPicker)` → published/cancelled/failed/publication-unconfirmed，含耐久性/清理状态及 hash/字节数，无路径或原始异常。这只是内部服务形状，不授权直接新增 preload 方法；mainOwnedPicker 必须对应真实用户选择，可信投影、项目/窗口/代次与调用权仍在正式接线验收。详见 report-file-publication.md。
+
+最新责任依据共同指令 `b24c4c…fec39`：格式基础的 canonical/engine 和 Python 相关路径由 T01 唯一维护，T00 保留设计协调；其余公共 App/preload/main 接线仍依 I06 精确责任。上述请求经总控协调，不在 T10 抢改任何共享路径，也不把 owner 交接等同于接口已批准或产品可用。

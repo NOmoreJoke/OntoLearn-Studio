@@ -162,7 +162,8 @@ export function escapeReportText(value: string): string {
   })
 }
 
-const pre = (value: string) => `<pre>${escapeReportText(value)}</pre>`
+// A child span avoids HTML's special removal of the first LF immediately after <pre>.
+const pre = (value: string) => `<pre><span>${escapeReportText(value)}</span></pre>`
 const section = (title: string, values: string[]) =>
   `<section><h2>${title}</h2>${values.length ? values.map(pre).join('') : '<p>未记录</p>'}</section>`
 const statusLabels = {

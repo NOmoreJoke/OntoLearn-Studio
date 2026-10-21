@@ -1,0 +1,13 @@
+{
+  "encoding": "utf-8",
+  "firstLint": {
+    "sha256": "a6a1d01073c98455a7f96204de3487e0d4982f302255fe2c1d4e59f8c1c8bb1e",
+    "content": "\n> ontolearn-studio@0.1.0 check\n> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check\n\n\n> ontolearn-studio@0.1.0 lint\n> eslint . --max-warnings 0\n\n\n/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-transfer-export/apps/desktop/src/main/project-transfer/prepared-report-file.ts\n  68:5  error  Unexpected control character(s) in regular expression: \\x00, \\x1f  no-control-regex\n\n✖ 1 problem (1 error, 0 warnings)\n\n"
+  },
+  "firstFsyncTest": {
+    "sha256": "a14a317da77ec218e4060400003619b382b052933a8ddb2ac99c13285235666d",
+    "content": "\n RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-transfer-export\n\n ❯ tests/unit/t10-report-file.test.ts (43 tests | 1 failed) 211ms\n   ❯ T10 real filesystem publication of one immutable prepared report (43)\n     × preserves a published result when directory durability cannot be confirmed 13ms\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  tests/unit/t10-report-file.test.ts > T10 real filesystem publication of one immutable prepared report > preserves a published result when directory durability cannot be confirmed\nAssertionError: expected { state: 'published', …(5) } to match object { state: 'published', …(3) }\n(2 matching properties omitted from actual)\n\n- Expected\n+ Received\n\n  {\n    \"cleanup\": \"complete\",\n-   \"durability\": \"unconfirmed\",\n-   \"postPublicationError\": true,\n+   \"durability\": \"confirmed\",\n+   \"postPublicationError\": false,\n    \"state\": \"published\",\n  }\n\n ❯ tests/unit/t10-report-file.test.ts:312:20\n    310|     })\n    311|     const result = await new PreparedHtmlReportFile(input()).save(sele…\n    312|     expect(result).toMatchObject({\n       |                    ^\n    313|       state: 'published',\n    314|       durability: 'unconfirmed',\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\n\n\n Test Files  1 failed | 1 passed (2)\n      Tests  1 failed | 60 passed (61)\n   Start at  09:05:21\n   Duration  360ms (tests 61%, import 21%, transform 17%, worker 1%)\n\n"
+  },
+  "resolution": "filename control-char check avoids no-control-regex; fsync fault uses canonical parent with injected=1; stable current check exit 0",
+  "rawOriginals": "local evidence/out; no original failure log overwritten"
+}

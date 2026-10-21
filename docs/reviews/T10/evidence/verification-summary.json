@@ -1,37 +1,62 @@
 {
   "stage": "private_preparation_validated",
   "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "implementationParent": "a1c76d8a136519455267c00d08f63c68ecea0806",
+  "remoteDevelopObserved": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "remoteSource": "read-only gh api git/ref/heads/develop",
   "node": "v24.15.0",
   "python": "3.12.12",
   "check": {
     "passed": true,
-    "typescriptTests": 647,
+    "processExitCode": 0,
+    "typescriptFiles": 17,
+    "typescriptTests": 691,
     "pythonTests": 1112,
     "build": "passed"
   },
   "t10Tests": {
     "python": 60,
-    "typescript": 17
+    "reportTypescript": 18,
+    "reportFileTypescript": 43
   },
   "browser": {
     "passed": true,
     "browser": "155.0.8059.85",
-    "literalText": true,
-    "maliciousCases": 11,
-    "resourceNodes": 0,
+    "artifact": "real-file-service-output",
+    "maliciousCases": 12,
+    "exactText": true,
+    "leadingLF": true,
+    "dangerousNodes": 0,
     "executed": null,
-    "externalRequests": [],
-    "panel": {
-      "checkboxes": 4,
-      "checked": 0,
-      "disabledButtons": 2,
-      "resourceNodes": 0
-    },
-    "invalidAlert": 1
+    "externalRequests": []
   },
-  "internalReview": "passed_after_two_P2_and_extensions_fixed",
+  "fileProbe": {
+    "receipt": {
+      "state": "published",
+      "sha256": "26af12303d80436e470fe30c5f1cffa57b424da0401ce1320e6bc5499ad676b6",
+      "byteLength": 3900,
+      "durability": "confirmed",
+      "postPublicationError": false,
+      "cleanup": "complete"
+    },
+    "actualSha256": "26af12303d80436e470fe30c5f1cffa57b424da0401ce1320e6bc5499ad676b6",
+    "actualBytes": 3900,
+    "maliciousCases": 12,
+    "nativePicker": false,
+    "approvedProjection": false
+  },
+  "contentHashes": {
+    "apps/desktop/src/main/project-transfer/prepared-report-file.ts": "71e7359ed62f53d9b9c9ac0e3559f5993431e99a7f2527afe1916735824a0219",
+    "tests/unit/t10-report-file.test.ts": "7d0f42531fc7b8e512b075e2062c10c13161dd4059bbe7fe0996b60560f814e5",
+    "apps/desktop/src/renderer/src/transfer/report.ts": "b5e508106bf6072f8b72f9c77cce9ab77d9e06bc91a926840ea2eaac379b8c05",
+    "tests/fixtures/transfer/malicious-texts.json": "b1b41d908b66559e4a3ee66e86d2065411613353765a27a1eec6cafe248d4e0f"
+  },
+  "internalReview": "complete_current_private_candidate_passed_after_3_P2_fixes; prior_2_P2_history_preserved",
   "formalIntegration": false,
   "approvedFormat": false,
+  "nativePicker": false,
+  "desktopE2E": false,
+  "dualPlatform": false,
   "crossDeviceAcceptance": false,
   "credentialExclusionEndToEnd": false,
   "dualSpecifiedReview": false,
@@ -40,9 +65,12 @@
   "ci": null,
   "merged": false,
   "rawEvidenceLocalHashes": {
-    "check-third.txt": "7db74f8da593fe7e5248d88a5babbc7a83fbc933826ab464597e8353ca9cbc8a",
-    "browser-final.txt": "eea026f32d1a5cbb291ec802c43dfb141b1500430fb0daeff1b513b98ca22f8c",
-    "pytest-review-fixes.txt": "42057ad096dfbb6919101f15f8b6dc95d7671d91d0c21d76cfb99e16b367863b",
-    "vitest-review-fixes.txt": "caafcf5040735afad9dd48dd839ffe1c4e30af942c7bb4896db532493023e3b1"
+    "check-report-file-stable.txt": "956e5bf86a29dba6fa2c0e9c5ef7eb2cd7c96c684fef5af532aa6e244c7fcb58",
+    "report-file-final-unit.txt": "3f518499b3bc32910d10c8758095a7258fe146de367d7385453501dd872c106f",
+    "report-file-first.txt": "5ef249e238886ce683078199e3cd51c007668da22a5279aec3f1bd38df0311b6",
+    "check-report-file-first.txt": "a6a1d01073c98455a7f96204de3487e0d4982f302255fe2c1d4e59f8c1c8bb1e",
+    "report-file-fsync-first-failure.txt": "a14a317da77ec218e4060400003619b382b052933a8ddb2ac99c13285235666d",
+    "check-report-file-fsync-failure.txt": "37c60dde4e2ac9cd4036c8d721dc245d5756246fe12f5c64b0131e339d12cef8",
+    "browser-report-file.txt": "0001a93c101c54e60f390e4327a5de8e57f04275654061da6d4a4c06213b1842"
   }
 }
