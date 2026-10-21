@@ -42,7 +42,7 @@ root为本树唯一产品writer；独立agents只做静态预审/源码审查及
 
 每次原生调用链（包括clock、dup、metadata、close、wait）先取得固定reservation，再尝试gate；未dispatch的BUSY/BUDGET不留排队操作。slot/字节/child记录在实际调用前reserve。revoke以静态不复用owner record上的atomic epoch2生效，能在另一个线程持gate/同步syscall时封后续接纳；不复活。已经进入OS的晚返回仍属于原owner；parent metadata或child adoption返回后，在下一次新member open/pipe dup前也重核active epoch/TTL，最终再核后才可能发行cap；owner create在metadata返回后同样重核，过期则保原cleanup；已返回的旧cap也不能绕过下次native gate。
 
-snapshot/release/poll/close/revoke保原owner有限cleanup；observe不是revoke后的新读入口。snapshot的inflight是process-wide调用/未终态native work计账，包含本次snapshot自己；它不是“其他资源已经0”的release事实。owner.close只在其自身全部对象/pipe/child实际终态、无unknown时OK，另owner的持有不混成此owner释放。
+snapshot/release/poll/close/revoke保原owner有限cleanup；observe不是revoke后的新读入口。snapshot的inflight是process-wide调用及未结算native-open责任reservation计账，不表示全部仍在running，包含本次snapshot自己；它不是“其他资源已经0”的release事实。owner.close只在其自身全部对象/pipe/child实际终态、无unknown时OK，另owner的持有不混成此owner释放。
 
 ## 4. 平台对象与普通namespace边界
 
@@ -60,9 +60,9 @@ Windows同步open显式FILE_SYNCHRONOUS_IO_NONALERT。如异常返回STATUS_PEND
 
 native C fixture入口只接受已创建的真实自有child/借用handle，Node不暴露adopt。harness先在其固定test记录reserve再spawn；receipt明示sole-reaper交接。POSIX exact own waitpid校验、实际exited/signaled才terminal；0、ECHILD/外部reaper/未知错误都不判释放。Windows持实际hProcess并排同kernel object重复adopt，拒current-process，复制仅SYNCHRONIZE/QUERY_LIMITED_INFORMATION；signaled后还需关闭native自己的hProcess。
 
-borrowed pipe metadata先核真实pipe（mac只接受FIFO，不扩为socket）（Win FILE_TYPE_PIPE还包括socket，另GetNamedPipeInfo），再受限dup；后续不会读pipe正文。获取pipe metadata权限不足即拒绝，不能给它扩大读权限。receipt.wait_owned=1后即使pipe复制失败，caller也不再wait/reap；native保原child/已发生pipe，caller仍只关自己的borrowed原handle。失败status不是“没资源”。duplicate child尝试拒第二reaper，不以同PID/hash建立关系。
+mac先dup并立刻交原owner登记，再fstat只接受FIFO；失败分类的副本仍由原owner cleanup，不扩为socket。Windows在稳定borrowed pipe上先以GetFileType/GetNamedPipeInfo核真实pipe（FILE_TYPE_PIPE单独还包括socket），再仅SYNCHRONIZE受限dup；两平台后续都不读pipe正文。获取pipe metadata权限不足即拒绝，不能给它扩大读权限。receipt.wait_owned=1后即使pipe复制失败，caller也不再wait/reap；native保原child/已发生pipe，caller仍只关自己的borrowed原handle。失败status不是“没资源”。duplicate child尝试拒第二reaper，不以同PID/hash建立关系。
 
-close先封新接纳，再逐原对象实际close/pipe close、实际child poll/reap及process handle close。失败close编号立即退役，unknown记录永不再碰该数值；下一close只能处理其他未关资源或继续原child wait。失败/晚返回/cancel/GC/env teardown不清unknown、不减实际槽。没有kill/terminate生产入口；test harness只对它尚未转移wait的确切自有child做有界失败清理，不kill已移交且可能已reap的PID。
+close先封新接纳，再逐原对象实际close/pipe close、实际child poll/reap及process handle close。metadata/ACL附属释放unknown不阻尚未尝试close的已知FD首次close，但原unknown仍保留；失败close编号立即退役，unknown记录永不再碰该数值；下一close只能处理其他未关资源或继续原child wait。失败/晚返回/cancel/GC/env teardown不清unknown、不减实际槽。没有kill/terminate生产入口；test harness只对它尚未转移wait的确切自有child做有界失败清理，不kill已移交且可能已reap的PID。
 
 同步Node env hook只尝试一次真实revoke/close，retained owner留native静态registry，不认证所有资源已终态；有retained时不得卸载library。未来trusted native host必须提供独立的依赖image存活/pin闭包，这是绑定装配前置；本源码未实现动态库self-pin，不能将static registry或env hook说成自动保库证据。测试env还保自己的fixture清理hook，LIFO让owner先close；fixture hook保同一node_owner，连bind在snapshot/BUSY/容量前早退也不丢fallback cleanup责任；原owner close仍非OK则测试进程abort，不继续删除fixture或假装卸载安全。fixture清理失败会明确使测试进程失败，不能绿色忽略。无SQLite/SHM/map或完整跨main恢复认证。
 
@@ -99,4 +99,4 @@ TS真实组仅从显式绝对`I06_NATIVE_LOCATION_TEST_ADDON`编译测试.node�
 
 ## 8. 首审与源码修订
 
-完整首候选4cffd2d保留三份独立原文。首审确认4项P2（其中一项归接口审查）及FIFO P3，另列signal.h编译声明风险；作者已在R2按source-review-disposition-r2.md处置，九件新hash见source-text-check-r2.json，须新ref独立复核后才关闭源码审查。header和两个TS字节未变，不因修订重测既有无变化产品。即便静态问题关闭，仍只交待构建候选，不能称N0技术通过。
+完整首候选4cffd2d保留三份独立原文。首审确认4项P2（其中一项归接口审查）及FIFO P3，另列signal.h编译声明风险；作者已在R2按source-review-disposition-r2.md处置。修订源码固定为 `fa1a7e4155f3afee4a1b3409f9ab8804cc620186`，九件新hash见source-text-check-r2.json；完整独审、平台、接口三份followup-r2原文均静态关闭相应问题，未发现新增产品阻断。header和两个TS字节未变，不因修订重测既有无变化产品。独审另提管道分类顺序的说明精度已按实际Mac先dup再fstat、Win先核再dup更正。最终交接见review目录final-source-handoff.md及manifest.json；仍只交待构建源码，不能称N0技术通过。
