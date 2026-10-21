@@ -1,0 +1,16 @@
+# 首轮configure超时后的有限修复提案（未实施）
+
+实际候选c80cbcd193f8cb64a98c97378bbdf61756701e27的CMake为13648B/SHA `9455d850157fc8dc2480bd50206f83d2b648e8ae690aecc5fd5410c0af3a0444`；driver27325B/SHA `14e15fdf74f5ec57688fb15ff4218f856737bd4d15ff9ac7b10dd3c629c369ae`；lock9189B/SHA `e9e18a7748d8f555a65a836b44ee505496035050a400a814f68c48186ef792e7`。
+
+实际反例：原全部供应身份通过driver前门，11 configure仍在原600000ms触发ETIMEDOUT（status=null/SIGTERM），双流0B，12未派发，没有两个目标。此结果不证明具体CMake行或唯一根因。源码静态风险在CMake的nl_inventory：每条pin经nl_get反复解析整份大JSON，随后逐root继续解析整份JSON；另在不断增长的seen列表线性查重。不能通过延长timeout、删供方条目、只信driver前门或降低哈希校验绕过。
+
+提请精确授权的实现范围仅三writer必要变更及本过程目录的新metadata：
+
+1. 从当前固定两份JSON metadata逐条派生版本化逐行小JSON sidecar：小header固定schema/roots/count，随后每行一个完整四pin对象。原两份JSON、所有旧pin及原行追溯完整保留；离线逐项/顺序/集合/0B/roots核同。不扫描、不重hash物理工具/SDK，不新增供方或运行依赖。
+2. lock分别固定sidecar绝对path/realpath/bytes/SHA与格式；driver仅增加严格精确schema及sidecar与原JSON逐项一致检查，保原逐供应物校验与现有前门。CMake先验证sidecar pin及大小/记录cap，roots只解析一次，再逐行解析当前小对象并沿用realpath/bytes/SHA全检，保project()之前的独立前门。禁止正则盲拆JSON；应有完整行数、字段、重复/遗漏与原集合的封闭验证。重复path采用摘要命名已见集合并保存原path，摘要碰撞fail-closed。
+3. 保每个工具/SDK/source身份、DEVELOPER_DIR、CLI、source readonly、Node/Windows/其它执行false/null、R5日志/首失败、600000ms和parallel2；不改compiler flags、输出两目标或引入helper执行/网络/新runtime。
+4. 新逻辑需独立定点实审与有限静态校验，固定完整12候选、新manifest/ref，才允许在新inputDigest独占目录精确再执行一次原13命令。旧失败目录与85原日志保留；产物若成功仍built-unverified/NOT_RUN。
+
+读取额度需显式处理，不能清零原账：第一次两前门声明pin+manifest上界17,678,194,976B，Node全pass、CMake中断具体进度未知；下一次同规模完整前门再预留约17.7GB会超过原32GiB累计guard（但实际IO未知）。建议仅将本构建阶段累计guard精确扩至40GiB=42,949,672,960B，记录上限仍200000（两尝试manifest记录上界171088，另有限metadata），原供应阶段9,745,727,085B账不动。批准前不重复大校验或再次构建。最终sidecar长度确定后先更新声明上界再运行，若仍越guard先报精确delta。
+
+本提案尚未授权、未改产品、未benchmark/trace/运行测试；并未量化性能改善。根可精确缩减或修订后再授权。

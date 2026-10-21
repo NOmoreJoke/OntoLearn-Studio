@@ -1,5 +1,7 @@
 # T03 N0 三构建源码与官方工具材料交付
 
+2026-10-22 首轮真实结果：c80cbcd固定输入的唯一core构建尝试driver exit1；0–10 Git命令全0，11 configure在600000ms ETIMEDOUT/status=null/SIGTERM，12 build未派发。没有两个目标产物/编译命令，tests NOT_RUN。85原日志与首次失败详host-core-build/first-build-summary.json；静态复杂度嫌疑与未实施修复提案另列，不认定唯一根因、不原样重试。
+
 2026-10-22 构建窗口追加：f6e9f42完整12候选与实际环境/直接GNU make独审已固定；仅Darwin工具链和core执行按真实归档授权ref开启。批准后完整输入见host-core-build/approved-input-manifest.json，下一条仅原13命令的一次core构建；尚未记构建成功，所有产物执行及Node/Windows门仍关闭。
 
 2026-10-22 源采用追加：九原件独立采用a026322，授权/回执ac37，源与静态合同锁产品6614837；完整产品/tests为12，实际12API最高门3仅获静态接受，详source-adoption/summary.md。后续7961/1879另授固定DEVELOPER_DIR和精确GNU make后薄宿主core，当前实际环境/供方复审及构建证据另见host-core-build；下文旧阶段原件保留，不混阶段结论。
