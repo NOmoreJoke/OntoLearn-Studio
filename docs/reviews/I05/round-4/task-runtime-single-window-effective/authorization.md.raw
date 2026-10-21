@@ -1,0 +1,15 @@
+# T01 旧恢复测试：唯一临时写窗口与精确实施授权
+
+状态：自 2026-10-21T13:16:20.685365+08:00 起生效。供方I05已同意且root已全文读取2524B/5730778a意见、4994B/cb482bea收据；root再次实核双方该文件均clean、26406B/SHA `2f8f8c1fd34cc449b2cca6ff2a05dcbed43b47560f97fcc039810233f2dfee50`，对应批准5f/供方C4/接收79d相同Git blob `8bc5fe2141d409f1157d7153efd13a342f71fae1`。I05冻结C4原字节保持，未采用其未批准实现。
+
+唯一临时writer为原T01会话 `01a15bba-0884-7401-b24f-f50c1fcf60aa`，仅在 `.worktrees/T01-project-transactions/tests/unit/task-runtime.test.ts` 修改。I05自生效起只读该逻辑路径；其他所有原共享测试写权不变。此为一次临时窗口，非永久转移。
+
+root现明确授权应用已经全文核验及独立审过的 **r2**：`docs/iterations/T01/startup-runtime-test-migration-r2.patch`，6659B/SHA `ef49df07c0798a9946cc17e38e9018b29d8d49cfdb351baa4f36d034637b68bc`。r1/cba8仅历史，不应用。根独立报告9613B/SHA `ba0367b36742fb41efb4563b8efafe6fad4cee843917adfb93bd4c91ad56ed3a`已全文读取；r2内存重建28774B/SHA `5a190b3ccde080b3e5b1059e2da944d56397d04e53b1a659c1bbdbeb4ae5ec99`仅静态预计，尚未实际应用/运行。
+
+用途只限测试自持真实OS child、只读实际wire观察与原故障编排。真实request须validateV2且matchesResponse完整匹配才删除，杀进程前两reader.bufferedBytes之和0、framingFailed=false、wire未配对Map0；不得声称直接读取或证明ES私有pending Map本体。此8测试仍为默认2；不能将v2观察器推广成显式3验证。
+
+原8测试正文、8个20秒期限、其余5用例、原15秒总期限/800ms观察、真实SIGKILL/close/PID/session换代、真实三次失败exit73命令/offline/显式第五次恢复、2/4/5真实spawn、Job/claim唯一、round/receipt/operation/不重放等断言均保留。允许同文件无语义格式化；不增skip、不减断言、不延时限、不公开生产test hook、不回退#private。若需要其他实质补丁，先给精确delta供root核；不能从本窗口外推其他旧test或产品新权利。
+
+立即按原活动turn应用r2，运行真实该8项与必要同候选完整check；保留首失败及修后原件。类型检查不等运行通过。现有17产品/7专属测试授权外只新增这一临时旧测试，最终执行输入应明确17产品/8测试，新候选/逐hash及必要独审和检查身份须相应刷新。root另报TaskService嵌套guard P2仍需在原已授路径复现修复，旧包/旧源码检查不替代修后版。
+
+窗口从本文件/JSON生效并实际通知两原会话开始，直到T01提交冻结候选、回交实际HEAD/文件SHA/完整diff/8项及必要全check终态，root独立核对并明确登记关闭与后续唯一owner。关闭前T01为本路径唯一writer，I05只读；关闭时默认不自动回收，root将显式决定返还I05后续维护或进一步精确安排。新实质变化需新输入/必要验证和原指定双方全新完整同候选审查。所有无GUI、父FR、平台/真人、指定双审、CI/PR/正常develop合并及远端门不变。本授权无需人类再次审批。
