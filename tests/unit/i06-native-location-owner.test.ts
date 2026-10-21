@@ -186,13 +186,12 @@ describe('I06 N0 synthetic TS projection only', () => {
   })
   it('does not publish a late wrapper after reentrant revocation', () => {
     const data = table()
-    let current: ReturnType<typeof owner>
     const original = data.binding.file
     data.binding.file = () => {
       expect(current.revoke().status).toBe('busy')
       return original()
     }
-    current = owner(data.binding)
+    const current = owner(data.binding)
     const value = root(current)
     expect(current.file(value.cap, 'member').status).toBe('stale')
     expect(current.localState().accepting).toBe(false)

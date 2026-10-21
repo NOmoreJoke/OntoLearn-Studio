@@ -376,16 +376,19 @@ struct probe {
 #endif
 
 #if defined(__APPLE__) || defined(_WIN32)
-nl_owner_ref make_owner(fixture& tree) {
+nl_owner_ref make_owner(fixture& tree, const char* case_label = nullptr) {
   const auto anchor = tree.input(); nl_owner_ref owner{};
   const auto status = nl_fixture_owner_create(&anchor, &owner);
+  if ((status != NL_OK || owner.value == 0) && case_label != nullptr)
+    std::fprintf(stderr, "N0 owner-create case=%.18s status=%d owner_nonzero=%u\n",
+      case_label, static_cast<int>(status), owner.value != 0 ? 1u : 0u);
   if (status != NL_OK && owner.value && nl_owner_close(owner) != NL_OK) {
     std::fputs("N0 failed adoption cleanup retained\n", stderr); std::abort();
   }
   require(status == NL_OK && owner.value != 0, "owner-create"); return owner;
 }
 [[maybe_unused]] void metadata_cases(fixture& tree) {
-  const auto owner = make_owner(tree);
+  const auto owner = make_owner(tree, "metadata");
   nl_cap_ref root{}, old{}; nl_metadata root_metadata{}, old_metadata{};
   require(nl_owner_root(owner, &root, &root_metadata) == NL_OK, "root");
   require(nl_owner_acquire(owner, 1, root, "member", 6, NL_REGULAR_FILE, nullptr, &old, &old_metadata) == NL_OK, "member");
@@ -421,7 +424,7 @@ nl_owner_ref make_owner(fixture& tree) {
     after.pending_children == 0 && after.production_admission == 0, "metadata-final");
 }
 [[maybe_unused]] void child_cases(fixture& tree, const char* executable) {
-  const auto owner = make_owner(tree); probe child(executable);
+  const auto owner = make_owner(tree, "child"); probe child(executable);
   auto input = child.input_record(); nl_child_receipt receipt{};
   const auto status = nl_fixture_child_adopt(owner, &input, &receipt);
   child.native_wait = receipt.wait_owned != 0;
@@ -444,7 +447,7 @@ nl_owner_ref make_owner(fixture& tree) {
   require(child.cleanup(), "child-fixture-cleanup");
 }
 [[maybe_unused]] void partial_child_case(fixture& tree, const char* executable) {
-  const auto owner = make_owner(tree); probe child(executable);
+  const auto owner = make_owner(tree, "partial-child"); probe child(executable);
   auto input = child.input_record();
   input.borrowed_pipes[0] = tree.input().borrowed_directory; // Real non-pipe negative.
   input.borrowed_pipes[1] = -1;
@@ -466,7 +469,7 @@ nl_owner_ref make_owner(fixture& tree) {
   require(child.cleanup(), "partial-child-fixture-cleanup");
 }
 [[maybe_unused]] void revoke_and_budget_cases(fixture& tree) {
-  const auto owner = make_owner(tree); nl_cap_ref root{}; nl_metadata metadata{};
+  const auto owner = make_owner(tree, "revoke-concurrency"); nl_cap_ref root{}; nl_metadata metadata{};
   require(nl_owner_root(owner, &root, &metadata) == NL_OK, "concurrency-root");
   std::atomic<bool> start{false}, failure{false};
   std::thread observer([&] {
@@ -485,7 +488,7 @@ nl_owner_ref make_owner(fixture& tree) {
   require(nl_owner_close(owner) == NL_OK, "concurrent-close");
   // This is real concurrent characterization, not a deterministic proof that an
   // OS call was blocked during revoke; later target trace must identify coverage.
-  const auto limited = make_owner(tree);
+  const auto limited = make_owner(tree, "budget");
   require(nl_owner_root(limited, &root, &metadata) == NL_OK, "budget-root");
   for (unsigned i = 1; i < NL_MAX_CAPS; ++i) {
     nl_cap_ref next{};
