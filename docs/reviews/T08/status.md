@@ -24,7 +24,7 @@
 - 已实现：严格文字/非流式DeepSeek Chat Completions codec、完整thinking工具多轮字段和ID关联、白名单和参数整批预验、获批领域端口缺省不可用、可信上下文/迟到隔离、版本化待确认草稿、完整真实工具收据展示、有限教育提示、结构化/工具/评估与漂移分开的能力判定，以及每页最多4个动作/离线策略纯函数。
 - 版本化合成基线：manifest.v1 + 13份完整输入/预期，T08共49项定向回归。它只验证协议/调度/证据忠实性，未实际执行查询/推理/沙盘；真实11.3/12.2/A系列仍待接线验收。
 - `npm run check` 最终exit0：18个TS测试文件、679项测试，Python1052项，lint/format/typecheck/build/ruff通过。`npm run verify:sources` exit0，12份归档一致。摘要及固定候选文件哈希见 evidence/verification.json。
-- 首次check因新工作树缺少`.venv/bin/python`，8项既有task-runtime测试ENOENT；已用`uv sync --frozen`建立本树独立环境。原失败全文保留evidence/check-first-failure.txt（入库理由：保留首次失败环境审计证据，仅合成数据，23KB），不将首跑改记为通过。`npm ci --ignore-scripts`未改依赖锁。
+- 首次check因新工作树缺少`.venv/bin/python`，8项既有task-runtime测试ENOENT；已用`uv sync --frozen`建立本树独立环境。原失败全文保留evidence/check-first-failure.txt.gz（入库理由：保留首次失败环境审计证据，仅合成数据，原始23KB，gzip保留逐字节内容），不将首跑改记为通过。`npm ci --ignore-scripts`未改依赖锁。
 - 内审1明确不通过：发现自由回答隐藏失败、工具ID校验不一致；已修复并新增回归，原意见见internal-review-1.md。固定候选的独立修复复核已明确通过（原P1/P2关闭、3文件49项独立测试通过），见internal-review-2.md；这不是指定双模型外审。
 - I06/T01/T00精确接口、版本/取消/预算/字段溯源需求见 [design-and-integration](../../iterations/T08/design-and-integration.md)。当前不消费未批准代码，未新建网关/项目权威。
 

@@ -25,10 +25,12 @@
     }
   ],
   "firstFailure": {
-    "file": "check-first-failure.txt",
-    "sha256": "6f8e8f3d58638d867319457853547a8af6fd19eefa10a597cb8dde0c100d985a",
+    "file": "check-first-failure.txt.gz",
+    "sha256": "872d85a4ba9c2e5425a802913eb55a0ef142a0ba6320fbb7f0c3608a36a78f94",
     "reason": "worktree .venv/bin/python did not exist; eight baseline task-runtime cases ENOENT",
-    "preservationReason": "Original first failure retained verbatim for environment audit; synthetic task payloads only."
+    "preservationReason": "Original first failure retained verbatim for environment audit; synthetic task payloads only.",
+    "originalSha256": "6f8e8f3d58638d867319457853547a8af6fd19eefa10a597cb8dde0c100d985a",
+    "compression": "gzip; decompressed bytes equal exact original first log"
   },
   "files": {
     "apps/desktop/src/main/agent/agent-service.ts": "61a7a327c54425bd73ad88d461e7112028fb4b4de0a57c4227fb5638623d71a7",
