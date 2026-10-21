@@ -50,4 +50,4 @@ T01 如只读引用本线输入可继续固定 `51cdc0e` 的manifest；如引用
 
 T01 请提供持久化的同 project/task/attempt 最高提示/辅助记录（跨 input、重开、窗口恢复），受信 context 和每个 context 单调 recordVersion；T00 批准业务命名桥与实际阶段证据。UI 只接受真实结果反馈，真实尝试先保存提示再展示；冲突或缺能力不计完成。T08/T10 分别提供实际完整辅助来源和导出回执，domain owner 提供实际检查。
 
-T11 请在隔离 CI 准备锁定版本 Playwright 对应 Chromium headless runtime，并显式启用 `T09_HEADLESS_UI=1`；本次本地完整check已实际执行18纯+16headless学习测试，无HTTP服务、零页面网络请求、启用sandbox。普通默认check未配置运行时时会明确skip浏览器套件，不能算该验收已跑。未抢改共享CI或安装依赖。最终摘要、全check日志和独立内审位于 docs/reviews/T09；固定manifest仍为aaaef2c…，17输入/50计划不变。
+T11 请在隔离 CI 准备锁定版本 Playwright 对应 Chromium headless runtime，并显式启用 `T09_HEADLESS_UI=1`；本次本地完整check已实际执行18纯+16headless学习测试，无HTTP服务、零页面网络请求，配置chromiumSandbox:true并成功运行；未采当次argv/OS sandbox状态和浏览器二进制hash，不外推原生隔离保证。未设T09_HEADLESS_UI=1时，无论runtime是否存在，浏览器套件都会skip；设1但缺匹配runtime则launch失败。默认skip不能算该验收已跑。未抢改共享CI或安装依赖。最终摘要、全check日志和独立内审位于 docs/reviews/T09；固定manifest仍为aaaef2c…，17输入/50计划不变。

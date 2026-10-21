@@ -58,4 +58,6 @@
 
 最终UI候选完整检查与独立内审结果见 evidence/learning-ui-verification.json 及 learning-ui-independent-review.md。截图为私有组件headless结果，不能代替正式Electron、实际领域/持久化、包内资源或真人验收。正式接线、指定双审、CI/远端及发布门仍未关闭。
 
-最终冻结实现 `76596656908ed84e577e8202a602e3256d5febcc`：显式启用独立headless运行时的完整 `npm run check` exit 0，664项Vitest（18学习纯逻辑+16学习headless组件）、1094项Python及lint/格式/类型/构建/ruff均通过。1440与390px截图已实际查看，窄屏无页面横向溢出；输入与反馈均以React文本渲染，测试观察网络请求0。此前失败/中间结果均无损gzip保存并绑定原始字节SHA，不能替代最终候选。
+最终冻结实现 `76596656908ed84e577e8202a602e3256d5febcc`：显式启用独立headless运行时的完整 `npm run check` exit 0，664项Vitest（18学习纯逻辑+16学习headless组件）、1094项Python及lint/格式/类型/构建/ruff均通过。1440与390px截图已实际查看，窄屏无页面横向溢出；输入与反馈均以React文本渲染，测试观察网络请求0。浏览器证据仅支持chromiumSandbox:true配置和成功运行，未采当次argv/OS sandbox状态和二进制hash，不当作原生平台隔离证明。此前失败/中间结果均无损gzip保存并绑定原始字节SHA，不能替代最终候选。
+
+总控固定765/74审计的文档口径已修：T09_HEADLESS_UI未设1始终skip，与runtime是否安装无关；设1缺匹配runtime是启动失败。手机截图文件390×1932，采样viewport390×844，两者分别记录。历史74提交和原始交付回执原样保留，本次仅文档澄清，不触发无变化产品重测。
