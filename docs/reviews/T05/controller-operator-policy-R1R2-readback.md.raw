@@ -1,0 +1,63 @@
+# T05 R1/R2 文档修订独立闭环读回
+
+结论：**原 709 报告的 R1、R2 均可按文档歧义关闭；本轮有界范围未发现剩余阻断。** 固定 `157963e369c9909cd79194fc5ea0641506a5fd48` 已把 SHACL K/D/R 各消费者自身语义与规则政策分开，明确正常违规与真正能力/执行失败；也已明确 RDF 1.1 simple/xsd:string 同抽象 term，以及语言标签合法性、表示、source 与规则比较的层次。
+
+该结论只关闭两项设计文档问题，不把新增 Q6 决定单视为采纳，不把 I05 已有 D3/D4 技术接受清零，不认定当前产品修复通过，不替代指定双审。现存 I05 term 反例由另线独立审计；本轮没有进入产品代码或运行。
+
+## 1. 固定证据与实际范围
+
+读取点：`.worktrees/T05-quality-reasoning`；候选固定 `157963e369c9909cd79194fc5ea0641506a5fd48`；对照原文档提交 `383b96cdaa73c8cc22dca0db8f3db2b5285e611b`。
+
+| 固定文档 | 字节 | 独立计算 SHA-256 |
+| --- | ---: | --- |
+| `docs/iterations/T05/comparison-operator-consumer-matrix-r1.md`，内容标题为 r2，全文 | 23811 | `46a7435b471f420bb9a787b6577300f3e328295594afe3dfff90434029a7c5db` |
+| `docs/iterations/T05/q6-policy-decision-request-r1.md`，全文 | 15553 | `a0baa0fef56de1100596b2c1a7892c8fbd85f606f6247d7954cbe3d01d9a2c09` |
+| `docs/reviews/T05/operator-consumer-r1-r2-disposition.json`，全文 | 5521 | `5ab91bba3ffa1fea4d4707b71404162ab993d696731cae7351bbb49f93f84f20` |
+
+原总控 `T05-controller-operator-consumer-policy-review.md` 本轮全文读回并重核 17603B / SHA-256 `70909867a8786f181639810c3c40d188f92c2849311dd148f6bf55fce044705a`，与处置记录所指原件一致。
+
+相关 `owner-decisions-after-interface-facts.md`、`single-executor-extension-contract.md` 仅读取 `383...157` 的指定两路径 diff；合并 diff 原字节为 21529B / SHA-256 `9441e8d65f8317efc25d7d0b9b210e43bbbf6aeff2da8759e3b6aeeaee26833d`。没有追读其余产品、runtime、测试或后续 dirty。规范依据沿用原 709 报告已核对的固定 W3C REC，本轮不重开完整规范/产品审查。
+
+## 2. R1 闭环：K/D/R 自身合同与失败边界已清楚
+
+| 原问题 | 固定修订的具体证据 | 判断 |
+| --- | --- | --- |
+| datatype / numericRange 混列，没有唯一目标 | 矩阵 §4 第 72–83 行说明消费者以自己的合同为保真目标，并独立定义 K 数量/in、D datatype、R 范围；第 85–91 行为三个分列 | 已关闭 |
+| 可能把 D3 精确值 eq 或类型提升当 datatype 正确 | D 明确 Literal、精确 datatype IRI、适用的非 ill-typed；第 99 行 integer shape / int 数据见证必须给 datatype 违规，不因 N 域值相等放行 | 已关闭 |
+| 可能把规则 E3/D3/D4 替换 SHACL 范围语义 | R 明确自身 SPARQL min/maxInclusive 关系，false/type-error 等非 true 产生真实 validation result；第 101–103 行含普通 false、成功边界、关系 error 和 shape/data 两侧见证 | 已关闭 |
+| 正常违规被写成能力失败，或通过拒绝难值缩原范围 | §4 明确普通违规是验证产物，真正能力/资源/执行不足另行有界失败；第 93 行要求逐 C 格列真实支持/缺口与责任，保留五模板、双范围及实际定位/复验，不以安全拒绝登记完成 | 已关闭 |
+| in / 数量误按数值同值归并，或源写法重复计数 | K 明确 RDF term 成员与 value-node 集合；第 104–106 行分别给 01/1、int/integer 与 simple/显式 xsd:string 见证 | 已关闭 |
+
+固定 Q6 单 TA-C、Q-CONS 与 owner/contract diff 均同步这一拆分：不是要求不同消费者碰巧与规则同值，也不是授权统一替换 comparator。未知类型、入口先拒、shape 定义不合法、实际执行故障与正常 range 关系 error 亦有区分，没有把“所有未知 IRI 必非法”写成 blanket 规则。
+
+这些是可评审的文档合同/手工期望，仍需实际 owner 接受具体入口、规范 profile、能力格与 context→DTO；不是本轮已执行 SHACL 或已有实现已满足该语义。
+
+## 3. R2 闭环：抽象 term 身份与可选规则政策已分离
+
+矩阵第 14、21、34、52、59、106、108、112 行及 Q6 单 N1/TA-S/Q-SLIBX 已反复明确：相同解码 lexical form 的无语言 simple literal 与显式 xsd:string 是同一 RDF 1.1 抽象 term，省写 datatype、引号/转义来源拼写不制造第二个 term。待接受的是 S 六算子/排序等规则政策，已删除“是否合域”的可选含义。integer 01/1 等不同词法 term 仍保留，不借此合并。
+
+L 的层次也已落实在文档中：
+
+- 入口先验 BCP47 well-formed；非法标签不是“合法但不同域”。
+- 标签 value 小写、建议的内部小写表示、source 原拼写分别说明，实际表示由 owner 落实；未用 value 比较结果反推 join/集合/SHACL 已正确。
+- 同合法标签文本比较、en 与 en-US 不做语言回退、合法异标签六操作 E3 仍标为待审应用政策。
+
+第 106 行同 focus/path 的 simple 与显式字符串集合大小 1 / in 同成员，以及第 108 行 trace 的抽象 term / source 分层，直接覆盖原 R2 对消费者和持久化表述的担忧。**R2 文档歧义关闭，入口或 selected 当前实现是否修复并未由本轮验证。**
+
+## 4. Q6、技术接受、原范围与唯一 owner 未被替代
+
+1. Q6 单首段及 §3 明确未采纳/未实施、有权负责人记录决定、无答复无默认；建议 policy 名只是文档标识，非公共字段或 executionSemanticsVersion 已生效。TA 请求也没有预填 owner 接受。
+2. TA-D3/D4、Q-NUM、矩阵第 112 行和相关 diff 保留 I05 原技术答复；仍待的是 Q6、规范正文/勘误选择、新身份、真实矩阵和实施，没有清零原接受。D3/D4 具体类型/精度/日期要求未因 R1/R2 消歧缩减。
+3. 五 SHACL 模板、asserted / asserted+derived 双范围、真实 focusNode/path/value/shape/component 及修复后复验，FR-500–505、附录 C/D/G.2、原 22 例/完整类型矩阵、解释、取消/迟到/历史/原子发布、源包、指定双审/CI/正常合并与父验收仍保留。手工见证和分类槽没有被登记为运行通过数。
+4. 四语义路径仍 future；P2/P3/P5/P6 仍 I05 代改；query 未扩大写权；T01 的 Store/canonical/worker、T03 和 I06 等原责任不变。新增 helper/公共包装/错误或消费者改动仍需精确 owner 接受，不因 Q6 单自动生效。
+5. 后续 I05 term/selected 反例通知被独立列为 owner 报告、待固定原件读回；旧 C3 条件派发撤回与冻结输入保留，不把旧 precheck ready 当当前可派发批准候选。该记录没有把原 709 文档审查改写成当时已证明运行 bug。本轮不核验该产品反例或修复，也不否认其另线处置。
+
+处置 JSON 的 R1/R2 closed 表述与正文相符；其中 internal-review passed 是其自身过程记录，本结论来自上述固定文档实际读回，未借该 passed 代替复核。
+
+## 5. 本轮结论边界
+
+可登记：**固定 157963e 的 R1/R2 文档修订闭环，未见本次有界范围剩余阻断。** 可将具体 TA/Q6 请求交真实 owner / 有权负责人处理，无需为这两项文档问题重开未变产品的审查。
+
+不可登记：Q6 采纳、新格技术接受、公共格式/文件交接、产品缺陷已修、运行/性能/容量、当前 I05 真前门反例核验、源码/包内或指定双模型通过。原 709 其他仍待决定/运行事项没有被本次文档闭环取消。
+
+本轮仅新增本报告，实际核验为固定 Git 文档全文/指定 diff、原报告读回和 SHA-256；没有执行产品、测试、GUI、容器或探针，没有变更 product/state/common 或其他审计报告。

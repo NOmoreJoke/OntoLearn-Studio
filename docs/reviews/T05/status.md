@@ -135,3 +135,11 @@ R1将矩阵SHACL分列：K数量/value-node集合及sh:in term成员、D精确da
 Goal工具实际读回仍blocked，完整objective未变；本轮只改自有文档，无产品/测试/路径责任/公共协议变化，未重跑不变测试/GUI。原产品2f、既有635 TS/1200 Python/18个synthetic DOM证据保持历史范围；R1/R2文档修正和Q6请求独立审查/格式/hash封存另记录，不替代指定双审、真实集成/CI/合并及完整父验收。
 
 R1/R2修订及Q6决定单已获独立reviewer明确文档范围通过，无新增实质问题；仅文档歧义关闭，TA新增格/Q6/真实消费者合同仍待。最终四doc/hash、处置与来源原件见disposition/checkpoint/internal-review；Prettier、差异与hash/原件核对通过，未跑产品测试。未push/PR/CI/合并；完整Goal仍blocked，实际依赖/正式接口/全部原验收门保留。
+
+## 总控独立文档闭环与实际路由回执（纯过程记录）
+
+已实际全文读总控独立读回报告7787B/SHA `cd93618c7a4bbc7afda1ffee019ed7ace470b55c220367fea9ca96b7edaf33ee`，固定157963e的R1/R2均按文档歧义关闭，本次有界范围无剩余阻断；原字节存`controller-operator-policy-R1R2-readback.md.raw`，范围收据为`controller-r1-r2-closure-receipt.json`。总控直接通知TA-S/L/I-B/X/C及T01 context/DTO请求已实际路由I05/T01；本线没有另读接收聊天，尚无本线收到的新owner答复或Q6采用，D3/D4原技术接受不清零。
+
+状态较前次推进到：总控通知I05反例已固定c11d6b4，finding/outcome已由root全文读并核Git字节/hash，根独立archive/payload审计进行中；不再笼统写“root尚未读finding/outcome”。这不是T05已读候选/复现、归档独立审计通过、修复通过或获准修代码。原I05修复授权仍未给，C3/语义依赖未采用；文档政策及全部原验收保持。
+
+仅追加来源与过程状态，未更改四份已审设计文档/产品/测试/责任/公共协议，未复跑无变化测试或审查。原Goal保持blocked，不恢复/重建；后续仅据实际owner答复推进文档合同，真实集成及原完成门仍开放。
