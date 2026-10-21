@@ -37,3 +37,7 @@ T01 需提供保存后权威查询读取及同项目/旧基线拒绝、原子失
 ## 原父验收保留
 
 FR-400–404、C/D、G Q-01/02/O-01、11–12、全部 P0 与跨模块端到端门继续待验。独立服务/页面、Python RDFLib 标准互操作探针和静态编译不是正式接线、平台验收、指定双模型审查、CI、合并或上线证据。
+
+## 已补齐的客户端读路径
+
+后续本线已实现 `renderer/src/query/reader.ts`，直接适配现有批准 getResult/getResultPage/getJob/cancelJob、TaskView/TaskUpdate；generation/项目/输入与迟到读取、单页 cursor/排序、取消 ACK/真实 job 终态隔离均有故障测试。只读客户端没有新 IPC 或可变源。接线及真实查询 presentation 来源缺口见 [reader-integration.md](reader-integration.md)；该新增代码不激活 design-only query.execute，不消费未批准执行器。

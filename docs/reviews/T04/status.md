@@ -36,3 +36,7 @@
 已实际全文读取第九节与无桌面段，并透传独立 agent：第九节 SHA `1f57a08e909e9d49a6e2c2d6e7012beec3e22b8e3c9e8eacad22c84dfb2d4b54`，无桌面段 `5215df2ead4745e7d74f137c4fa6ac837a54114590b5dee2d83cd16bb728551d`；补发共同指令 `9717f699e14b5941e15d90269f33cbebc32ef9bec6e7439739be848753419880`。后续权限政策共同指令 SHA `df09014af4d6cf757ca0977a995497f3646cd330e8921710876663a40a8cbcb4` 及 external-review-permissions.md 亦已全文读取/透传，agent 实际回执核验。
 
 ZCode 默认 yolo、MiniMax 默认 bypassPermissions，仍需每个实际任务读回；只读审查、指定模型与无桌面限制不变。不重建 Goal/历史输入，不因纯操作政策重测。本线未遇额度告警、未消费重置/新增付费、未读取输出 secret、未调用模型/外发业务数据、未运行 GUI/Electron/e2e/native/HMR/凭据提示。Codex 每次兑换仍须本人该次确认/阈值/幂等/读回；审查资源由总控预约，平台证据不能由 CLI 代替。
+
+## 后续推进：客户端读取接入
+
+Goal 续跑已实查工作树及总控现态：批准基线/共享责任未变化；官方 wait_threads 确认总控当前 inProgress（cursor a6fb72bc-870a-442e-8c5f-cb4caa4b7ecb:38），这不代表批准接口已可消费。已在独占 query/ 路径新增真实命名读取 bridge 的客户端适配，补齐切项目/迟到页/游标/取消 ACK 等边界；不改共享文件，不增加执行或保存权限。当前新代码正在验证与独立内审前收口；此前 c4aa5f9/99b8ab9 通过仅对应原候选，不能沿用为新增 reader 已通过。详情见 reader-integration.md，日志保留 reader-* / check-reader-*。

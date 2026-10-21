@@ -63,7 +63,14 @@ try {
       assert(matchingJob.includes('取消查询') && matchingJob.includes('运行中'))
       const previousResult = renderToStaticMarkup(<QueryPage projectId={id(1)} catalog={catalog} job={{...queryJob,jobId:id(10)}} result={result} />)
       assert(previousResult.includes('此前查询结果；与上方当前任务属于不同运行'))
-      console.log(JSON.stringify({probe:'T04 static SSR',checks:['offline-disabled','scope-visible','text-escaped','historical-identity','executed-query','empty-directions','project-rejection','evicted-identity','non-query-job-rejection','query-job-accepted','previous-result-labeled'],passed:true,boundary:'No browser interaction, CSP, real executor or persistence tested'}))
+      const acknowledged = renderToStaticMarkup(<QueryPage projectId={id(1)} catalog={catalog} job={queryJob} cancellationRequest={{jobId:queryJob.jobId}} onCancelJob={async()=>{}} resultLoading />)
+      assert(acknowledged.includes('取消请求已受理，等待真实任务终态。'))
+      assert(acknowledged.includes('<button disabled="">取消查询</button>'))
+      assert(acknowledged.includes('aria-busy="true"') && acknowledged.includes('正在读取固定结果页'))
+      const unrelatedAck = renderToStaticMarkup(<QueryPage projectId={id(1)} catalog={catalog} job={queryJob} cancellationRequest={{jobId:id(20)}} onCancelJob={async()=>{}} />)
+      assert(!unrelatedAck.includes('取消请求已受理，等待真实任务终态。'))
+      assert(unrelatedAck.includes('<button>取消查询</button>'))
+      console.log(JSON.stringify({probe:'T04 static SSR',checks:['offline-disabled','scope-visible','text-escaped','historical-identity','executed-query','empty-directions','project-rejection','evicted-identity','non-query-job-rejection','query-job-accepted','previous-result-labeled','cancel-ack-separate','cancel-ack-bound-to-job','result-loading-visible'],passed:true,boundary:'No browser interaction, CSP, real executor or persistence tested'}))
 `
   const mod = { exports: {} }
   new Function(

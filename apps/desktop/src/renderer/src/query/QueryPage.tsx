@@ -35,6 +35,8 @@ export interface QueryPageProps {
   alarmVocabulary?: { alarmClass: string; severity: string; status: string }
   savedQueries?: SavedQuery[]
   job?: JobView
+  cancellationRequest?: { jobId: string }
+  resultLoading?: boolean
   result?: { metadata: unknown; page: unknown; columns: string[]; executedSparql: string }
   onExecuteDraft?: (
     draft: QueryDraft,
@@ -142,6 +144,7 @@ export function QueryPage(props: QueryPageProps) {
   }
   const job = queryJob(props.job, props.projectId)
   const jobError = job?.error ? explainError(job.error, 'task') : undefined
+  const cancellationRequested = job && props.cancellationRequest?.jobId === job.jobId
   const activeJob = job && ['queued', 'running', 'cancelling'].includes(job.state)
   const download = () => {
     if (!result?.page) return
@@ -570,6 +573,7 @@ export function QueryPage(props: QueryPageProps) {
               }[job.state]
             }
           </p>
+          {cancellationRequested && <p>取消请求已受理，等待真实任务终态。</p>}
           {jobError && (
             <div role="alert">
               <p>{jobError.what}</p>
@@ -580,7 +584,9 @@ export function QueryPage(props: QueryPageProps) {
           )}
           {activeJob && (
             <button
-              disabled={!props.onCancelJob || job.state === 'cancelling' || busy}
+              disabled={
+                !props.onCancelJob || job.state === 'cancelling' || !!cancellationRequested || busy
+              }
               onClick={() => {
                 const selectedJob = job
                 if (selectedJob)
@@ -595,8 +601,9 @@ export function QueryPage(props: QueryPageProps) {
           )}
         </div>
       )}
-      <section aria-label="查询结果">
+      <section aria-label="查询结果" aria-busy={props.resultLoading || false}>
         <h2>结果</h2>
+        {props.resultLoading && <p role="status">正在读取固定结果页…</p>}
         {resultError && (
           <p role="alert">结果身份、范围或分页不匹配，未显示该载荷。请重新获取项目结果。</p>
         )}
