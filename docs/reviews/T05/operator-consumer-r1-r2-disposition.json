@@ -1,0 +1,103 @@
+{
+  "task": "T05",
+  "scope": "Document-only R1/R2 corrections and technical acceptance/Q6 decision request",
+  "controllerThread": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+  "baselineCommit": "383b96cdaa73c8cc22dca0db8f3db2b5285e611b",
+  "controllerReport": {
+    "sourcePath": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/iteration-control/2026-10-21-weekly-release/T05-controller-operator-consumer-policy-review.md",
+    "archivedPath": "docs/reviews/T05/controller-operator-consumer-policy-review.md.raw",
+    "bytes": 17603,
+    "sha256": "70909867a8786f181639810c3c40d188f92c2849311dd148f6bf55fce044705a",
+    "fullRead": true,
+    "bytePreserved": true
+  },
+  "dispositions": {
+    "R1": {
+      "status": "document-ambiguity-closed-independent-review-passed-not-product-or-Q6-acceptance",
+      "changes": [
+        "Split SHACL K counts/in, D exact datatype IRI and applicable lexical validity, R own SPARQL min/maxInclusive true vs false/type-error validation outcomes",
+        "Consumer correctness targets its own contract, not equality to rule D3/D4; real capability failure is separate",
+        "Keep FR504 five templates, both scopes and actual violation localization; include shape/data witnesses; no blanket hard-value refusal as completion"
+      ],
+      "locations": [
+        "docs/iterations/T05/comparison-operator-consumer-matrix-r1.md#4",
+        "docs/iterations/T05/q6-policy-decision-request-r1.md#2"
+      ]
+    },
+    "R2": {
+      "status": "document-ambiguity-closed-independent-review-passed-not-product-or-Q6-acceptance",
+      "changes": [
+        "RDF1.1 simple no-language literal and same-lexical xsd:string are one abstract term; no optional merge decision",
+        "Separate BCP47 well-formedness, lowercase language value/proposed internal representation, retained source spelling and rule L comparison",
+        "Keep numeric lexical distinctness, abstract term vs source spelling, and requested S/L/I/B operators separate"
+      ],
+      "locations": [
+        "docs/iterations/T05/comparison-operator-consumer-matrix-r1.md#2",
+        "docs/iterations/T05/comparison-operator-consumer-matrix-r1.md#3",
+        "docs/iterations/T05/q6-policy-decision-request-r1.md#1"
+      ]
+    }
+  },
+  "officialSources": [
+    {
+      "url": "https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#section-Graph-Literal",
+      "scope": "section3.3 targeted online read; simple literal, language tags, term equality"
+    },
+    {
+      "url": "https://www.w3.org/TR/2017/REC-shacl-20170720/",
+      "scope": "targeted sections4.1.2,4.2.1/2,4.3.2/4 and4.8.3 online read/find; no complete spec audit"
+    },
+    {
+      "url": "https://www.w3.org/TR/2012/REC-xmlschema11-2-20120405/",
+      "scope": "dated REC opened and +INF/year0000/floatingPointRound targeted finds; detailed pin/errata candidates also from controller report; not full conformance proof"
+    },
+    {
+      "url": "https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping",
+      "scope": "dated REC opened and operator table incl boolean ordering targeted find; not full query support proof"
+    }
+  ],
+  "webAccess": "Initial and one later open failed due connection; successful follow-up official reads retained; not product failures",
+  "newDecisionRequest": "docs/iterations/T05/q6-policy-decision-request-r1.md",
+  "d3d4PriorI05TechnicalAcceptanceRetained": true,
+  "q6Adopted": false,
+  "newOperatorConsumerTechnicalAcceptanceReceived": false,
+  "currentI05ProductDefectEstablished": false,
+  "goalStatus": "blocked",
+  "goalAutoResumed": false,
+  "unapprovedC3CodeLibraryOrTestsReadOrConsumed": false,
+  "productTestsRerun": false,
+  "productPublicProtocolOwnershipChanged": false,
+  "designatedDualReviewPassClaimed": false,
+  "independentReview": {
+    "agent": "/root/t05_internal_review",
+    "decision": "passed-document-only-no-remaining-substantive-findings",
+    "reviewedReceiptSha256BeforeDispositionOnlyUpdate": "9dc816d8c511105c7b7044a30f775e780528c4efcb841b8cf93155537ea05035",
+    "record": "docs/reviews/T05/internal-review.md",
+    "productOrDesignatedReviewPass": false
+  },
+  "documentHashes": {
+    "docs/iterations/T05/comparison-operator-consumer-matrix-r1.md": "46a7435b471f420bb9a787b6577300f3e328295594afe3dfff90434029a7c5db",
+    "docs/iterations/T05/owner-decisions-after-interface-facts.md": "2da94a1e9c2383e1996d79f609262002d64e45604151fa7a3514766367c00a14",
+    "docs/iterations/T05/single-executor-extension-contract.md": "0c3d7ecf872ff5bfe82c2669b396e5c6c601244b01cc5dcf03d29bbcf8dca0dd",
+    "docs/iterations/T05/q6-policy-decision-request-r1.md": "a0baa0fef56de1100596b2c1a7892c8fbd85f606f6247d7954cbe3d01d9a2c09"
+  },
+  "laterControllerNotice": {
+    "sourceThread": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+    "ownerReportedCounterexamples": [
+      "plain/xsd:string query and rule-constant and sh:in missed matches",
+      "selected duplicate counting of dual representations"
+    ],
+    "ownerReportedDatatypeCorrect": true,
+    "fixedCounterexampleControllerOrIndependentReadback": "pending",
+    "T05ReproducedOrReadUnapprovedCode": false,
+    "controllerVerifiedOrRepairPassedClaimed": false,
+    "C3ConditionalReviewDispatch": "withdrawn; frozen inputs retained",
+    "nextOwner": "I05 fixes actual existing bugs in new candidate; not all future D3/D4 implementation"
+  },
+  "documentValidation": {
+    "prettier": "passed",
+    "gitDiffCheck": "passed",
+    "documentHashAndArchiveMatch": "passed",
+    "productTestsRerun": false
+  }
+}

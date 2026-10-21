@@ -1,6 +1,6 @@
 # T05 同一执行器扩展与真实 trace 适配合同草案
 
-状态：**完整交接提案，部分技术方向已获I05/T01回复，Q6、公共格式及实际交接仍未生效，原Goal仍blocked**。依据原 FR-500–505、附录 C/D/G.2；父完整 P0、完整类型/取值支持矩阵、解释、生命周期和指定双审保持。现行接受项/缺口以第11节r2决策表为准；旧来源/提案保留历史，不将回复等同实现。
+状态：**完整交接提案，部分技术方向已获I05/T01回复，Q6、公共格式及实际交接仍未生效，原Goal仍blocked**。依据原 FR-500–505、附录 C/D/G.2；父完整 P0、完整类型/取值支持矩阵、解释、生命周期和指定双审保持。现行接受项/缺口以第11节当前决策表为准；旧来源/提案保留历史，不将回复等同实现。
 
 ## 1. 已实际读回的来源与生效门
 
@@ -45,13 +45,13 @@ T05 **有条件接受未来维护范围**：同一个执行器的 FR505 比较/�
 
 ## 4. 完整类型、六算子与消费者矩阵
 
-现行具体表为[比较算子、跨域及消费者矩阵r1](comparison-operator-consumer-matrix-r1.md)，取代本节早期宽泛建议；旧412版本仍在Git。尤其早期“不同非numeric eq=false/ne=true”**已被I05明确否决**：除D3明确numeric混型，未定义跨域/操作在eq/ne/lt/le/gt/ge全部整任务M3失败，不当false/true或合法无匹配。
+现行具体表为[比较算子、跨域及消费者矩阵r2](comparison-operator-consumer-matrix-r1.md)，取代本节早期宽泛建议；旧412版本仍在Git。尤其早期“不同非numeric eq=false/ne=true”**已被I05明确否决**：除D3明确numeric混型，未定义跨域/操作在eq/ne/lt/le/gt/ge全部整任务M3失败，不当false/true或合法无匹配。
 
 I05技术选择同一执行器内独立operand validator/comparator，不复用FILTER bool/Literal排序，不改变query/FILTER/cast。D3推荐严格词法精确有理数→直接binary32/64 nearest/ties-even→精确表示值比较；D4推荐独立Gregorian日序＋完整秒精度、显式offset/无TZ分域、date起点、date/dateTime不互cast。定义常量与闭合先验，每个完整binding的全部comparisons校验，不因先false隐藏后错。
 
-上述是**技术答复，不是Q6采纳、规范pin或真实执行证据**。新矩阵补齐同域S/L/I/B六operator、全部有序跨域格及graph/query/SHACL用途；S合域、语言标签分域、IRI/boolean仅eq/ne和消费者允许/拒绝均为T05新提案，待具体审定。图门先于comparator且可能受宿主值范围限制，须同版reason/selected入口与消费者保真政策，不能全局关闭ill_typed/normalize，也不能靠窄拒绝关闭原FR505/SHACL范围。
+上述是**技术答复，不是Q6采纳、规范pin或真实执行证据**。新矩阵补齐同域S/L/I/B六operator、全部有序跨域格及graph/query/SHACL用途；S/L算子、合法语言标签间的可比域、IRI/boolean仅eq/ne及具体消费者支持为T05待审政策；simple与显式xsd:string同一RDF1.1抽象term不是可选合域。SHACL须分别保留K数量/in、D精确datatype及适用词法、R自身SPARQL范围关系非true含type-error的违规结果，不能套D3/D4/E3，待具体审定。图门先于comparator且可能受宿主值范围限制，须同版reason/selected入口与消费者保真政策，不能全局关闭ill_typed/normalize，也不能靠窄拒绝关闭原FR505/SHACL范围。
 
-真实验收须覆盖六numeric全部有序混型、2^24/2^53、0.1、巨大整数、ties奇偶、normal/subnormal、±0/溢出下溢，及年零/负年/大年份、闰日、24:00、完整秒/offset/有无TZ、原term与持久/selected一致性。每格提供真实结果或获批受限错误及成本证据；原22例只作输入oracle，不代表完整矩阵已通过。D8计费点已技术接受，阈值仍待测量，见r2决策表。
+真实验收须覆盖六numeric全部有序混型、2^24/2^53、0.1、巨大整数、ties奇偶、normal/subnormal、±0/溢出下溢，及年零/负年/大年份、闰日、24:00、完整秒/offset/有无TZ、原term与持久/selected一致性。每格提供真实结果或获批受限错误及成本证据；原22例只作输入oracle，不代表完整矩阵已通过。D8计费点已技术接受，阈值仍待测量，见当前决策表。
 
 ## 5. 真实 trace 与22例 oracle的适配
 
@@ -115,8 +115,14 @@ C2通知时I05正准备C3最小确定性witness修复；后续已报告冻结C3�
 
 固定26事实及独立审计来源仍见`docs/reviews/T05/owner-interface-facts-receipt.json`。新固定I05 ffc462b与T01 f51dd38文档已全文读回/验hash，当前来源与有限范围见`docs/reviews/T05/owner-design-responses-r2-receipt.json`；只用T01§1，不采用其余模块建议。本线没有读取文档指向的未批准C3实现/库/测试或运行候选。
 
-[当前r2决策表](owner-decisions-after-interface-facts.md)逐项登记D1–D9、M1–M16及P1–P10：I05接受独立比较器、未定义跨域六操作失败、完整firing/单阶段、精确数值/日历技术方向及预算计费点；T01接受全组认证职责和严格三字段，澄清当前IDENTITY_CONFLICT、result_get/rows逐出与Coordinator授权边界。M4–7/M8b/c复用准确现有reason；M3/M8a/M9是未接线新reason，M10保留UNKNOWN优先及既有资源/network分支，不能用目录存在代替真实路由。
+[当前决策表](owner-decisions-after-interface-facts.md)逐项登记D1–D9、M1–M16及P1–P10：I05接受独立比较器、未定义跨域六操作失败、完整firing/单阶段、精确数值/日历技术方向及预算计费点；T01接受全组认证职责和严格三字段，澄清当前IDENTITY_CONFLICT、result_get/rows逐出与Coordinator授权边界。M4–7/M8b/c复用准确现有reason；M3/M8a/M9是未接线新reason，M10保留UNKNOWN优先及既有资源/network分支，不能用目录存在代替真实路由。
 
 仍待：Q6采用及规范pin、矩阵新增S/L/I/B和graph/query/SHACL消费者格、真实全类型/精度/时区矩阵、D8阈值、新多head持久/public包装与M9分类。T01独立受限诊断`semantic.diagnostic.get`/`diagnosticRef`仅技术提案，未批准未实施，不加到现protocol2 params或成功rows，也不存在由此获批的protocol3。定位缺口保持明确。
 
-四语义路径仍future/not-effective，P2/P3/P5/P6为I05未来代改、不移交，query不因D2扩大；P7/P8归T01，P9归T03，P10归I06。I05报告冻结C3 head3289d67（产品69598f3/测试b045）；总控报precheck ready，指定双审0/未合并，不能作为批准依赖。未来比较/多head要新于C3 finite5身份，并重新核对真正批准候选hash/selected认证。原Goal仍blocked，本轮是明确授权的有限设计更新；原产品、输入、证据及全部实际验收门不变。
+四语义路径仍future/not-effective，P2/P3/P5/P6为I05未来代改、不移交，query不因D2扩大；P7/P8归T01，P9归T03，P10归I06。I05报告冻结C3 head3289d67（产品69598f3/测试b045）；总控此前报precheck ready，后续因I05报告term/selected反例已撤回条件外审派发，冻结输入保留；固定反例待总控/独立读回，未合并，不能作为批准依赖。未来比较/多head要新于C3 finite5身份，并重新核对真正批准候选hash/selected认证。原Goal仍blocked，本轮是明确授权的有限设计更新；原产品、输入、证据及全部实际验收门不变。
+
+## 12. R1/R2修正与具体决定请求
+
+总控独立设计复核17603B/SHA70909867a8786f181639810c3c40d188f92c2849311dd148f6bf55fce044705a指出旧383b96c矩阵的SHACL datatype/range混列及simple/xsd:string可选合域歧义。现矩阵§4分别给K/D/R合同与shape/data双侧手工见证，§2/3明确RDF1.1抽象term和source拼写分层；query/SHACL以自身合同正确为目标，不要求等同规则值政策，不以拒绝全部难值关闭FR504五模板/双范围/真实违规定位。
+
+[技术接受请求与Q6决定单](q6-policy-decision-request-r1.md)给出TA-S/L/I/B/X/C及保留D3/D4接受项，Q-SLIBX/NUM/CAL/REC/CONS/LIFE逐项可采用/改写的具体组合、候选有日期REC及勘误登记、政策见证和真实未验门。仍待owner技术答复/Q6采用/实际公共包装与运行；这是有限文档修正，不是当前I05缺陷认定或指定双审Pass。原Goal仍blocked，不读取未批C3或重复产品测试。

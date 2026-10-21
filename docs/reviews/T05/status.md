@@ -121,3 +121,17 @@ D/M/P现明确区分技术接受、真实现有路由和缺口：D2选择规则�
 独立审查随后发现交接协议/current execution-state的hash已更新；本线再次全文读回当前2885B/SHA `63c194efc64dae0b7e5b36911027cf69be04df709e9c5152d107baed265450da`并匹配生效项。旧bdacff仅保留为先前观察，不冒称持有其完整冻结字节或精确diff。当前明确三个T01既有私有prefix内的测试计划路径，不赋旧worker测试写权，也不是测试已创建/执行/通过；T05权限未扩大，其他边界不变。
 
 本轮独立文档审查明确通过，M6措辞、worker责任/C2时间表述及来源指纹问题均已关闭；完整记录与最终文档hash见internal-review/checkpoint。Prettier和git diff --check通过；仅文档，未重跑产品测试。Goal工具实际仍blocked、objective完整不变；本次设计交付不解除批准依赖/生效四路径/唯一公共接口或原验收门。
+
+## 总控独立设计复核R1/R2修正与Q6决定单（有限文档）
+
+已全文读总控独立复核17603B/SHA `70909867a8786f181639810c3c40d188f92c2849311dd148f6bf55fce044705a`，原字节保存`controller-operator-consumer-policy-review.md.raw`；新逐项处置见`operator-consumer-r1-r2-disposition.json`。承认旧383b96c本线内审未发现的两处设计歧义，不把旧通过改写为已关闭它们。
+
+R1将矩阵SHACL分列：K数量/value-node集合及sh:in term成员、D精确datatype IRI及适用词法、R自身SPARQL min/maxInclusive非true含type-error产生validation result。消费者目标为自身合同正确，不要求与规则D3/D4同值；普通违规、真正能力不足与执行失败分开，不以宽泛拒绝难值关闭FR504五模板/双范围/真实定位。R2明确RDF1.1 simple无lang与相同lexical的xsd:string同一抽象term，省写datatype/source转义不制造第二term；语言标签合法性、小写value/建议入口表示、保留source原拼写与规则L比较分层。
+
+新增`q6-policy-decision-request-r1.md`，给TA-S/L/I/B/X/C技术接受请求、D3/D4既有答复保留、Q-SLIBX/NUM/CAL/REC/CONS/LIFE具体决定组合、固定日期REC/逐项勘误候选、独立手工政策见证和未验门。只是供总控转原owner与有权Q6负责人审定，尚未采纳/实施/注册公共身份。官方RDF1.1 §3.3、SHACL对应章节及XSD/SPARQL相关关键词在线核对，不是标准全符合性或产品证据；两次网页连接失败后成功读取，未记为产品失败。
+
+后续总控转告I05有界前门probe报告simple/xsd:string query/规则常量/sh:in漏匹配、selected双表示重复计数、datatype正确；固定反例待总控/独立读回，不能写总控已核验/修复通过。C3条件外审派发已撤回，冻结输入保持；T05未读候选/复现/改产品，原I05负责实际现存bug修复与新候选，不扩大为所有未来D3/D4。
+
+Goal工具实际读回仍blocked，完整objective未变；本轮只改自有文档，无产品/测试/路径责任/公共协议变化，未重跑不变测试/GUI。原产品2f、既有635 TS/1200 Python/18个synthetic DOM证据保持历史范围；R1/R2文档修正和Q6请求独立审查/格式/hash封存另记录，不替代指定双审、真实集成/CI/合并及完整父验收。
+
+R1/R2修订及Q6决定单已获独立reviewer明确文档范围通过，无新增实质问题；仅文档歧义关闭，TA新增格/Q6/真实消费者合同仍待。最终四doc/hash、处置与来源原件见disposition/checkpoint/internal-review；Prettier、差异与hash/原件核对通过，未跑产品测试。未push/PR/CI/合并；完整Goal仍blocked，实际依赖/正式接口/全部原验收门保留。

@@ -85,7 +85,7 @@
     "controllerReadbackSha256": "a09694b55e7ba7c8f1f99d71fdd1af77f5d30431a00b8628123d11c3e72278f0",
     "recoveryIndex": "docs/reviews/T05/fr505-r1-r2-recovery.json"
   },
-  "lastContinuationClassification": "limited document-only incorporation of new I05/T01 technical responses and next-decision operator/consumer matrix; original Goal remains officially blocked",
+  "lastContinuationClassification": "limited document-only R1/R2 correction from controller independent policy review, concrete owner acceptance request and Q6 decision sheet; original Goal remains blocked",
   "storeParameterProbe": {
     "approvedStoreGitRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
     "sourceSha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
@@ -110,8 +110,8 @@
     "implementationReadOrConsumed": false,
     "ownerResponses": "I05/T01 technical acceptances and current error facts incorporated; Q6/norm pin/full real matrix/public payload/budgets and effective handoff pending",
     "commonInstructionsSha256": "ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff",
-    "sha256": "889d879c33d7ab0b13f0d1473e42df28957c19328a48a469ec068b05e3128318",
-    "internalReview": "passed-r2-limited-document-only-scope",
+    "sha256": "0c3d7ecf872ff5bfe82c2669b396e5c6c601244b01cc5dcf03d29bbcf8dca0dd",
+    "internalReview": "passed-current-R1-R2-document-only-correction-and-Q6-request",
     "resourceBaselineCorrection": "resources.py exists in approved5f; only three semantic files new; unapproved candidate deltas still not consumed",
     "latestDependencyReceipt": "docs/reviews/T05/semantic-dependency-c2-receipt.json",
     "offerIdentityStatus": "historical-source-only; approved-C3-source-and-semantics-identity-must-be-rechecked",
@@ -185,19 +185,20 @@
     "sourceReceipt": "docs/reviews/T05/owner-design-responses-r2-receipt.json",
     "allDecisionsAndExtraPathsAccepted": false,
     "implementationOrPublicProtocolChanged": false,
-    "decisionDocumentSha256": "e2c148d409d881ebab97c497b4d2647d85fdc9f514690b9e5f9109f7dc3d43f1",
+    "decisionDocumentSha256": "2da94a1e9c2383e1996d79f609262002d64e45604151fa7a3514766367c00a14",
     "sourceReceiptSha256": "ba7f93175933d51c305d940e6e78c10c7a7d20ffd41c836e3b9569a7d575fd08",
     "independentReview": {
       "agent": "/root/t05_internal_review",
-      "decision": "passed-limited-document-scope-after-M6-worker-responsibility-C2-time-and-source-fingerprint-fixes",
+      "decision": "historical383b96c-r2 pass only; current R1/R2 review recorded separately in limitedPolicyCorrection",
       "actualOwnerAcceptance": "technical responses only; Q6/public schema/consumer policies and effective semantic handoff pending",
       "testsRerun": false,
       "candidateCodeRead": false,
-      "reviewedReceiptSha256BeforeDispositionOnlyUpdate": "5b1a50daaf4dae3205ce1952f57d64e09cb91e655c8ee4b3ba2f03d224aab3a2"
+      "reviewedReceiptSha256BeforeDispositionOnlyUpdate": "5b1a50daaf4dae3205ce1952f57d64e09cb91e655c8ee4b3ba2f03d224aab3a2",
+      "currentPolicyCorrectionReview": "passed separately in limitedPolicyCorrection; prior383b96c omission preserved"
     },
     "priorDecisionCommit": "41210534972d50965a2a4ce259660658e3bbdd81",
     "operatorConsumerMatrix": "docs/iterations/T05/comparison-operator-consumer-matrix-r1.md",
-    "operatorConsumerMatrixSha256": "0d88c843e77da2f05acd6fd3e439e8c573dcb31024aee0f99cf7d49e657bbc6e",
+    "operatorConsumerMatrixSha256": "46a7435b471f420bb9a787b6577300f3e328295594afe3dfff90434029a7c5db",
     "technicalAcceptance": "I05 D1-D9 directions with explicit gaps; T01 full firing, strict identity and actual error-layer boundaries",
     "q6AndNormativePinAccepted": false,
     "newOperatorAndConsumerCellsAccepted": false,
@@ -235,6 +236,33 @@
       "prettier": "passed",
       "gitDiffCheck": "passed",
       "productTestsRerun": false
+    }
+  },
+  "limitedPolicyCorrection": {
+    "controllerReportSha256": "70909867a8786f181639810c3c40d188f92c2849311dd148f6bf55fce044705a",
+    "receipt": "docs/reviews/T05/operator-consumer-r1-r2-disposition.json",
+    "receiptSha256": "5ab91bba3ffa1fea4d4707b71404162ab993d696731cae7351bbb49f93f84f20",
+    "decisionRequest": "docs/iterations/T05/q6-policy-decision-request-r1.md",
+    "decisionRequestSha256": "a0baa0fef56de1100596b2c1a7892c8fbd85f606f6247d7954cbe3d01d9a2c09",
+    "goalStillBlocked": true,
+    "q6Adopted": false,
+    "newTechnicalAcceptanceReceived": false,
+    "d3d4TechnicalAcceptanceRetained": true,
+    "independentReview": {
+      "agent": "/root/t05_internal_review",
+      "decision": "passed-document-only-R1-R2-closed-no-new-substantive-findings",
+      "reviewedReceiptSha256BeforeDispositionOnlyUpdate": "9dc816d8c511105c7b7044a30f775e780528c4efcb841b8cf93155537ea05035",
+      "newQ6OrOwnerAcceptance": false,
+      "candidateCodeReadOrTestsRun": false
+    },
+    "productOrTestsChangedOrRerun": false,
+    "unapprovedCodeReadOrConsumed": false,
+    "originalFullAcceptanceRetained": true,
+    "latestC3Status": "Controller relays I05 owner counterexamples; fixed evidence readback pending; conditional review dispatch withdrawn; frozen inputs retained; no approved dependency",
+    "documentValidation": {
+      "prettier": "passed",
+      "gitDiffCheck": "passed",
+      "documentHashesAndArchivedSource": "matched"
     }
   }
 }

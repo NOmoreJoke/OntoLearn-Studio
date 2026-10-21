@@ -91,3 +91,17 @@ reviewer实际核对两个差异、上下文、批准5f registry及FR-500/D后�
 仅文档格式/差异检查，不读候选实现/库/测试、不运行产品/GUI，不改代码或指定外审。Goal工具再次实际读回blocked且完整objective未变；此通过不替代指定双审、原运行/集成/CI/合并或Goal完成。
 
 封存元数据定点复核另明确通过：三md字节未变；receipt最终 `ba7f93175933d51c305d940e6e78c10c7a7d20ffd41c836e3b9569a7d575fd08` 仅将independentReview还原pending即可逐字恢复5b1a50受审快照，来源字段未变。checkpoint/status/本记录与有限范围一致；无新增问题，无产品复测或C3读取。
+
+## 总控设计挑战R1/R2修正与Q6单独立审查
+
+独立reviewer `/root/t05_internal_review` 全文读总控原报告17603B/SHA `70909867a8786f181639810c3c40d188f92c2849311dd148f6bf55fce044705a`、本轮四份设计文档与disposition，核固定383b96c指纹并查必要官方REC条文。此前383b96c本线内审没有发现SHACL datatype/range目标混列及simple/xsd:string可选合域歧义，保留该遗漏及旧报告，不回写旧通过为已关闭。
+
+本轮明确通过：“无新增实质问题；R1/R2文档歧义已关闭”。R1 K/D/R分别为value-node集合计数/term成员、精确datatype IRI/适用词法、SHACL自身SPARQL范围关系；正常false/type-error产生违规，能力失败另列，不以规则D3/D4/E3覆盖，不宽泛拒绝难值关闭五模板/双范围/定位。R2 simple无lang与同lexical xsd:string同一抽象term固定，标签well-formed/小写value/建议内部表示/source拼写/L算子分层，不造第二term或借数值eq归一词法。Q6单具体可裁决；D3/D4既有技术接受保留，规范pin/勘误、消费者实际合同与运行证据仍待。
+
+后续I05反例仅记owner经总控转告，固定反例尚待总控/独立读回；未冒称T05复现/独立核验/修复通过。C3条件派发撤回，冻结输入保留；不扩大到所有新D3/D4、不读取候选或改变文件权。
+
+受审四doc SHA：矩阵 `46a7435b471f420bb9a787b6577300f3e328295594afe3dfff90434029a7c5db`；Q6单 `a0baa0fef56de1100596b2c1a7892c8fbd85f606f6247d7954cbe3d01d9a2c09`；决策表 `2da94a1e9c2383e1996d79f609262002d64e45604151fa7a3514766367c00a14`；主合同 `0c3d7ecf872ff5bfe82c2669b396e5c6c601244b01cc5dcf03d29bbcf8dca0dd`。disposition受审快照SHA `9dc816d8c511105c7b7044a30f775e780528c4efcb841b8cf93155537ea05035`，其后仅更新R1/R2处置、独立通过及文档检查元数据，最终hash见checkpoint。
+
+仅文档/必要官方规范核对，未读未批准实现/库/测试、运行产品/测试/GUI或修改公共协议。Prettier、diff check及hash/原始报告字节核对通过；不构成标准全符合性、Q6采用、指定双审或产品验收通过。Goal实际仍blocked且完整objective保持。
+
+封存元数据定点复核通过：四doc未变；disposition最终 `5ab91bba3ffa1fea4d4707b71404162ab993d696731cae7351bbb49f93f84f20` 仅还原本次处置元数据即可精确恢复受审9dc816…快照。raw报告仍17603B/709098…705a，checkpoint/status/本记录对应，无新问题或不实采纳/运行/指定双审声明；仅只读核对，未测试/读候选/开GUI。
