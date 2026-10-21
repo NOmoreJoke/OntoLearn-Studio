@@ -1,0 +1,663 @@
+{
+  "schemaVersion": 1,
+  "observation": {
+    "startedUTC": "2026-10-21T01:19:47.227608+00:00",
+    "finishedUTC": "2026-10-21T01:23:07.699116+00:00",
+    "mode": "Read-only termination/status/log/source-receipt observation; two new documentation files only.",
+    "newTestsContainersGUIBuildsStarted": false,
+    "existingRuntimeStoppedOrResumed": false,
+    "conclusion": "All three requested own containers are currently queryable and exited; all original execution sessions returned final completion; no matching active host runtime clients found.",
+    "scope": "Original e2c aria1 preparation, aria2 source/actual package regression and unique source-native retry. No global process claim.",
+    "documentationCaptureStartedUTC": "2026-10-21T01:23:07.282172+00:00"
+  },
+  "worktree": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform",
+    "branch": "feature/I06-main-platform",
+    "headBeforeDocumentation": "1edee922264fae99f29dd7cdd90b81fa75be5bf3"
+  },
+  "policy": {
+    "developerCommonInstructions": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+      "sha256": "b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39",
+      "readInFull": true,
+      "matchedRequestedSha": true
+    },
+    "latestAppliedRootAGENTS": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-model-gateway/AGENTS.md",
+      "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+    },
+    "localProtectedSnapshot": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/AGENTS.md",
+      "sha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+      "staleDb1PreservedUnstaged": true,
+      "latestRootRulesAndGuideApplied": true
+    },
+    "handoffReadback": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/I06-T01-format3-ownership-handoff.md",
+      "currentSha256": "eea3eefe86555d585236f603b2ebb01ecac49c1350193c6d83c262b6209f1030",
+      "earlierMessageShaWas": "add9884ab9a0cda3a8a562f26a3b7c515255919d65eb0487d6c254681ed4991d",
+      "currentContentReadInFull": true
+    },
+    "futureEditingStopped": "T01 storage/Python4/canonical7/main-engine; T03 build4. No implementation/test/dependency/config edits in this task."
+  },
+  "runs": [
+    {
+      "run": "aria1",
+      "outputDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1",
+      "containerName": "i06-main-regression-e2c269ad-a1",
+      "observedUTC": "2026-10-21T01:23:07.365474+00:00",
+      "inspectQueryExit": 0,
+      "originalToolSession": {
+        "id": 96217,
+        "readback": "Original write_stdin empty-input query returned final completion; not an active yielded session.",
+        "actualExitCode": 1,
+        "completionChunkId": "7ad9cb",
+        "queriedUTC": "2026-10-21T01:20:06Z"
+      },
+      "currentlyQueryable": true,
+      "containerId": "469b6fae55437be19832cf5c4e471af8fe3abac7a015f8964fd34ebf8c97885c",
+      "dockerInspectImageIdentity": "sha256:ee701a3455d8c56c0022642be5c391f3734040d9efe9520cfe38a810ece4c346",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 1,
+        "Error": "",
+        "StartedAt": "2026-10-21T00:13:19.324151097Z",
+        "FinishedAt": "2026-10-21T00:13:42.716048552Z"
+      },
+      "originalArchivedIdMatched": true,
+      "originalArchivedImageMatched": true,
+      "originalArchivedExitCode": 1,
+      "originalArchivedFinishedAt": "2026-10-21T00:13:42.716048552Z",
+      "configuredUser": "i06",
+      "network": "none",
+      "mountCount": 0,
+      "privileged": false,
+      "restartCount": 0,
+      "entrypoint": ["bash", "/workspace/tests/i06-main-platform/aria-regression-run.sh"],
+      "currentProcessQuery": {
+        "command": "docker top i06-main-regression-e2c269ad-a1 -eo pid,ppid,stat,args",
+        "exitCode": 1,
+        "stdout": "",
+        "stderr": "Error response from daemon: container 469b6fae55437be19832cf5c4e471af8fe3abac7a015f8964fd34ebf8c97885c is not running",
+        "meaning": "Daemon explicitly says not running; this is not a test exit code."
+      },
+      "currentDockerLogsReadback": {
+        "queryExit": 0,
+        "stdoutBytes": 0,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrBytes": 727,
+        "stderrSha256": "c4689879e21be8592f9c9f2cb4acdf4b5dd4056cdbf9489e6922dfcffa6d1793",
+        "readOnly": true
+      },
+      "currentCmdSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "originalArtifacts": {
+        "run.log": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1/run.log",
+          "sha256": "c4689879e21be8592f9c9f2cb4acdf4b5dd4056cdbf9489e6922dfcffa6d1793",
+          "bytes": 727
+        },
+        "evidence/container-inspect.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1/evidence/container-inspect.json",
+          "sha256": "7de169bdcdd9eede624edd9f956d402575f114dd4663ca2b84a6bf490f980e97",
+          "bytes": 5094
+        },
+        "evidence/binding-evidence.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1/evidence/binding-evidence.json",
+          "sha256": "7c701f5b4c5bf24fdc4d75cb6b76889c9f4b2ec1cd4a1a5eb546a83af2ef071c",
+          "bytes": 122345
+        },
+        "evidence/results/identity.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1/evidence/results/identity.json",
+          "sha256": "8c28904053975153c994126184e61deb4dc48141379f1dfbea90f0d7891e295f",
+          "bytes": 117502
+        },
+        "evidence/results/runtime-before.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1/evidence/results/runtime-before.json",
+          "sha256": "4d0203644539ad7a2f6b711bef03714224011eba1b92cb1d1f65aab8d71e5bac",
+          "bytes": 119578
+        },
+        "evidence/results/runtime-after.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1/evidence/results/runtime-after.json",
+          "exists": false,
+          "meaning": "Not produced/preserved; no success inferred."
+        }
+      },
+      "historicalPidRecords": [
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1/evidence/results/regression/source-aria.log",
+          "sha256": "41b2f68e4901b5b79b64f322fac04b4543fbd8f5bd512345a2f8a9b6917deb22",
+          "recordedElectronMainPIDs": [655],
+          "namespace": "Historical Linux-container PID namespace, not host PIDs and not liveness now."
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1/evidence/results/regression/source.log",
+          "sha256": "e693ee1b53dd6da254e9b5f551715a7f41e3cdceef980ba61067ee1000a8f63a",
+          "recordedElectronMainPIDs": [121, 418, 531],
+          "namespace": "Historical Linux-container PID namespace, not host PIDs and not liveness now."
+        }
+      ],
+      "nativeCaseHistoricalMainPid": "Original I04 native observer did not persist a main PID field; none guessed or recovered by starting a container. Current container State.Pid is independently observed."
+    },
+    {
+      "run": "aria2",
+      "outputDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2",
+      "containerName": "i06-main-regression-e2c269ad-a2",
+      "observedUTC": "2026-10-21T01:23:07.435736+00:00",
+      "inspectQueryExit": 0,
+      "originalToolSession": {
+        "id": 62110,
+        "readback": "Original write_stdin empty-input query returned final completion; not an active yielded session.",
+        "actualExitCode": 0,
+        "completionChunkId": "4b0dce",
+        "queriedUTC": "2026-10-21T01:20:06Z"
+      },
+      "currentlyQueryable": true,
+      "containerId": "0d3a9bb534db31ec2390739b5b4e14cff47b8108bee0a80e0b3af672d73b69b4",
+      "dockerInspectImageIdentity": "sha256:948721a324bcfa8a219271f5b886830bf8c41ab6d4d0f209c55d1dc8581c0e9a",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-10-21T00:15:39.489875634Z",
+        "FinishedAt": "2026-10-21T00:40:08.175443377Z"
+      },
+      "originalArchivedIdMatched": true,
+      "originalArchivedImageMatched": true,
+      "originalArchivedExitCode": 0,
+      "originalArchivedFinishedAt": "2026-10-21T00:40:08.175443377Z",
+      "configuredUser": "i06",
+      "network": "none",
+      "mountCount": 0,
+      "privileged": false,
+      "restartCount": 0,
+      "entrypoint": ["bash", "/workspace/tests/i06-main-platform/aria-regression-run.sh"],
+      "currentProcessQuery": {
+        "command": "docker top i06-main-regression-e2c269ad-a2 -eo pid,ppid,stat,args",
+        "exitCode": 1,
+        "stdout": "",
+        "stderr": "Error response from daemon: container 0d3a9bb534db31ec2390739b5b4e14cff47b8108bee0a80e0b3af672d73b69b4 is not running",
+        "meaning": "Daemon explicitly says not running; this is not a test exit code."
+      },
+      "currentDockerLogsReadback": {
+        "queryExit": 0,
+        "stdoutBytes": 446,
+        "stdoutSha256": "658589e90ba7ee66c003582c1204e65a1c5f4ff465d55fc3bb2c896b729df74c",
+        "stderrBytes": 189,
+        "stderrSha256": "706d562ed5ab3aae6fc2e26c72104f65b2d9e8c97862a6537b81f3516de3ea20",
+        "readOnly": true
+      },
+      "currentCmdSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "originalArtifacts": {
+        "run.log": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/run.log",
+          "sha256": "063f8c45c3d60b573825b2b6e8994997e00c60146e127ec994c3cead7084e9da",
+          "bytes": 635
+        },
+        "evidence/container-inspect.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/container-inspect.json",
+          "sha256": "6a7f1fece0d0cae000ff502ded4523b0197aacfbdc039db27d8e7c337a5d3c10",
+          "bytes": 5094
+        },
+        "evidence/binding-evidence.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/binding-evidence.json",
+          "sha256": "84047821404512ed85f09f2b66b8b8cc0ade1225793af84fe49442af2affbe85",
+          "bytes": 122470
+        },
+        "evidence/results/identity.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/identity.json",
+          "sha256": "7387cf35a56f7441509d56fe188c9fe9cc3d95d63bef3b164441cee907da04c8",
+          "bytes": 117603
+        },
+        "evidence/results/runtime-before.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/runtime-before.json",
+          "sha256": "a507b8215ee633951a6a51757e8575e97ca813eecd89b4696ea3eb9cc05ae142",
+          "bytes": 119703
+        },
+        "evidence/results/runtime-after.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/runtime-after.json",
+          "sha256": "a507b8215ee633951a6a51757e8575e97ca813eecd89b4696ea3eb9cc05ae142",
+          "bytes": 119703
+        }
+      },
+      "historicalPidRecords": [
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-aria.log",
+          "sha256": "aefb68a6c9a0b936dbfee3c9d629f69ff8c359664337e9ccb79d5b46281cc1d3",
+          "recordedElectronMainPIDs": [1973],
+          "namespace": "Historical Linux-container PID namespace, not host PIDs and not liveness now."
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-disconnect.log",
+          "sha256": "ac62b639ecdb0e1818319d82bbdd2db0f177398f7a0eb2736ff8ded0b8c29c32",
+          "recordedElectronMainPIDs": [2650],
+          "namespace": "Historical Linux-container PID namespace, not host PIDs and not liveness now."
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-reload.log",
+          "sha256": "eafa87251dd6daab4bf501d1bc89e996dddf51479239e170abdce74d1d208bb3",
+          "recordedElectronMainPIDs": [2488],
+          "namespace": "Historical Linux-container PID namespace, not host PIDs and not liveness now."
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged.log",
+          "sha256": "61cdd7e4b80207062303cf1fb03d556c7f21b0368ac61a96c7d8d27ac906e1b0",
+          "recordedElectronMainPIDs": [1455, 1737, 1847],
+          "namespace": "Historical Linux-container PID namespace, not host PIDs and not liveness now."
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-aria.log",
+          "sha256": "079f922b288513d5e4d4607daf6e4a778a5f5547a22d63f8fcc22545e9451946",
+          "recordedElectronMainPIDs": [647],
+          "namespace": "Historical Linux-container PID namespace, not host PIDs and not liveness now."
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-disconnect.log",
+          "sha256": "d285118621e72b865c528aeb85e9b2863dc79a476a28fb8bd1b48d376734118c",
+          "recordedElectronMainPIDs": [1288],
+          "namespace": "Historical Linux-container PID namespace, not host PIDs and not liveness now."
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-reload.log",
+          "sha256": "c21fff64237a7ba95c652e275f20582ba1030f13526a1a4fdf0a2b14a3bdafa1",
+          "recordedElectronMainPIDs": [1124],
+          "namespace": "Historical Linux-container PID namespace, not host PIDs and not liveness now."
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source.log",
+          "sha256": "47a8c0b4b9678c5cce2f6b235d63babf6cc52f2d7cc37b851aed69e74a7c2a34",
+          "recordedElectronMainPIDs": [121, 406, 520],
+          "namespace": "Historical Linux-container PID namespace, not host PIDs and not liveness now."
+        }
+      ],
+      "nativeCaseHistoricalMainPid": "Original I04 native observer did not persist a main PID field; none guessed or recovered by starting a container. Current container State.Pid is independently observed."
+    },
+    {
+      "run": "native-retry1",
+      "outputDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-native-retry1",
+      "containerName": "i06-main-regression-e2c269ad-native-r1",
+      "observedUTC": "2026-10-21T01:23:07.501849+00:00",
+      "inspectQueryExit": 0,
+      "originalToolSession": {
+        "id": 5804,
+        "readback": "Original write_stdin empty-input query returned final completion; not an active yielded session.",
+        "actualExitCode": 0,
+        "completionChunkId": "d0b7ad",
+        "queriedUTC": "2026-10-21T01:20:06Z"
+      },
+      "currentlyQueryable": true,
+      "containerId": "ecc6a6287606655422343400a08b4c86ace69bb463a6f92666f952966d4e70a1",
+      "dockerInspectImageIdentity": "sha256:948721a324bcfa8a219271f5b886830bf8c41ab6d4d0f209c55d1dc8581c0e9a",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-10-21T00:44:35.360988167Z",
+        "FinishedAt": "2026-10-21T00:44:56.902532594Z"
+      },
+      "originalArchivedIdMatched": true,
+      "originalArchivedImageMatched": true,
+      "originalArchivedExitCode": 0,
+      "originalArchivedFinishedAt": "2026-10-21T00:44:56.902532594Z",
+      "configuredUser": "i06",
+      "network": "none",
+      "mountCount": 0,
+      "privileged": false,
+      "restartCount": 0,
+      "entrypoint": ["bash"],
+      "currentProcessQuery": {
+        "command": "docker top i06-main-regression-e2c269ad-native-r1 -eo pid,ppid,stat,args",
+        "exitCode": 1,
+        "stdout": "",
+        "stderr": "Error response from daemon: container ecc6a6287606655422343400a08b4c86ace69bb463a6f92666f952966d4e70a1 is not running",
+        "meaning": "Daemon explicitly says not running; this is not a test exit code."
+      },
+      "currentDockerLogsReadback": {
+        "queryExit": 0,
+        "stdoutBytes": 78,
+        "stdoutSha256": "504bbd4d91879eadb0d0dd7e6a4ebbf7b3783c5441dab671ef308e95ef88f996",
+        "stderrBytes": 186,
+        "stderrSha256": "fad5e2173ef6b94b93ac8779afe211ce0e199fa11b5637cf7972f58f9d5de891",
+        "readOnly": true
+      },
+      "currentCmdSha256": "0733af4771fbc583aeb35dacdf05680ed25a99e9a21a9c6503c6b9ff9b7feb0c",
+      "originalArtifacts": {
+        "run.log": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-native-retry1/run.log",
+          "sha256": "2128edf9326a2db572e7a0045c3c823f63757a2e2635fccc8219bc9d387f13ff",
+          "bytes": 264
+        },
+        "evidence/container-inspect.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-native-retry1/evidence/container-inspect.json",
+          "sha256": "300b47ece6128241ca584ea8b06c4deec4fe646a0be5fc9ffcfc551a84793839",
+          "bytes": 9017
+        },
+        "evidence/binding-evidence.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-native-retry1/evidence/binding-evidence.json",
+          "sha256": "66d530fae5b1546142c9534036f282b24a8262c2f4e3d93e1c2cb74f1351176d",
+          "bytes": 122470
+        },
+        "evidence/results/identity.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-native-retry1/evidence/results/identity.json",
+          "sha256": "7387cf35a56f7441509d56fe188c9fe9cc3d95d63bef3b164441cee907da04c8",
+          "bytes": 117603
+        },
+        "evidence/results/runtime-before.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-native-retry1/evidence/results/runtime-before.json",
+          "sha256": "a507b8215ee633951a6a51757e8575e97ca813eecd89b4696ea3eb9cc05ae142",
+          "bytes": 119703
+        },
+        "evidence/results/runtime-after.json": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-native-retry1/evidence/results/runtime-after.json",
+          "sha256": "a507b8215ee633951a6a51757e8575e97ca813eecd89b4696ea3eb9cc05ae142",
+          "bytes": 119703
+        }
+      },
+      "historicalPidRecords": [],
+      "nativeCaseHistoricalMainPid": "Original I04 native observer did not persist a main PID field; none guessed or recovered by starting a container. Current container State.Pid is independently observed."
+    }
+  ],
+  "hostProcessOwnershipReadback": {
+    "observedUTC": "2026-10-21T01:23:07.627464+00:00",
+    "probe": "ps -axo pid=,ppid=,stat=,command=; exact three own container names plus docker start/attach/wait/exec, excluding current readback ancestry",
+    "matchingRuntimeClients": [],
+    "environmentRead": false,
+    "scope": "These requested original handles only; not a claim about unrelated tasks or all host/VM processes."
+  },
+  "frozenSource": {
+    "candidate": "e2c269ad78a78e1a042cadc93b1c81a874707153",
+    "appSha256": "d66e74cd77b4ef1e5b0e97f3ddefe10481dccd8466bbc40c1f403eaee1b22716",
+    "originalI04TestSha256": "babc479a2ff80ead80b3659ddbda6dbe0ce4013ba1b9acfac2aaddf1c575dae5",
+    "sourceRecordCount": 860,
+    "receiptPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/aria-regression-receipt.json",
+    "receiptSha256": "974ee6e93e0f027a96abe76a0dca13ddf62648e0d86bae6023015eb16d3b7757"
+  },
+  "originalTenGates": [
+    {
+      "gate": "source",
+      "actualTestOrHelperExitCode": 0,
+      "exitRecordPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-exit.txt",
+      "exitRecordSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stats": {
+        "startTime": "2026-10-21T00:15:40.916Z",
+        "duration": 24699.82,
+        "expected": 3,
+        "skipped": 3,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "logPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source.log",
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-playwright.json",
+      "reportSha256": "8d98908b07e80da48d47268c2b10d794b897d5885b88b6feedfe3b64861f7086",
+      "logSha256": "47a8c0b4b9678c5cce2f6b235d63babf6cc52f2d7cc37b851aed69e74a7c2a34"
+    },
+    {
+      "gate": "source-aria",
+      "actualTestOrHelperExitCode": 0,
+      "exitRecordPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-aria-exit.txt",
+      "exitRecordSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "result": "passed",
+      "logPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-aria.log",
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-aria-live.json",
+      "reportSha256": "cc27bb9e49fc1ef6d647e49da27481318b0e92a3ef6f6b3f8af43d16e5ea483b",
+      "logSha256": "079f922b288513d5e4d4607daf6e4a778a5f5547a22d63f8fcc22545e9451946"
+    },
+    {
+      "gate": "source-native",
+      "actualTestOrHelperExitCode": 1,
+      "exitRecordPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-native-exit.txt",
+      "exitRecordSha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "stats": {
+        "startTime": "2026-10-21T00:17:10.065Z",
+        "duration": 13315.552000000001,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "logPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-native.log",
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-native-playwright.json",
+      "reportSha256": "d7b6e9eb05eeec76509fa97b3753aa810a8fdf13f3bd5f2cf0da1852af71af3d",
+      "logSha256": "fd8e4cc195ab17ca15d3d34eac4cfdcf29e1bd473d9ffcd98b7a7b947a401c43"
+    },
+    {
+      "gate": "source-reload",
+      "actualTestOrHelperExitCode": 0,
+      "exitRecordPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-reload-exit.txt",
+      "exitRecordSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stats": {
+        "startTime": "2026-10-21T00:38:18.692Z",
+        "duration": 13037.096,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "logPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-reload.log",
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-reload-playwright.json",
+      "reportSha256": "9762c57226d7e3cb562bb1dceae82113aab5033ea4516efa696a4ddb1fbaa321",
+      "logSha256": "c21fff64237a7ba95c652e275f20582ba1030f13526a1a4fdf0a2b14a3bdafa1"
+    },
+    {
+      "gate": "source-disconnect",
+      "actualTestOrHelperExitCode": 0,
+      "exitRecordPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-disconnect-exit.txt",
+      "exitRecordSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stats": {
+        "startTime": "2026-10-21T00:38:32.388Z",
+        "duration": 1800.234,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "logPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-disconnect.log",
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-disconnect-playwright.json",
+      "reportSha256": "76938980054731ed7b16189d6d641cd1a53b829db0fcb9a79df0da0b51c78dbe",
+      "logSha256": "d285118621e72b865c528aeb85e9b2863dc79a476a28fb8bd1b48d376734118c"
+    },
+    {
+      "gate": "packaged",
+      "actualTestOrHelperExitCode": 0,
+      "exitRecordPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-exit.txt",
+      "exitRecordSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stats": {
+        "startTime": "2026-10-21T00:38:34.588Z",
+        "duration": 20148.842999999997,
+        "expected": 3,
+        "skipped": 3,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "logPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged.log",
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-playwright.json",
+      "reportSha256": "6c092ea71b2143bb027f68bde536324ab29abbd63605d824d06593c3b63dd258",
+      "logSha256": "61cdd7e4b80207062303cf1fb03d556c7f21b0368ac61a96c7d8d27ac906e1b0"
+    },
+    {
+      "gate": "packaged-aria",
+      "actualTestOrHelperExitCode": 0,
+      "exitRecordPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-aria-exit.txt",
+      "exitRecordSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "result": "passed",
+      "logPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-aria.log",
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-aria-live.json",
+      "reportSha256": "3f4969369ad6a3d0110d92c3ab48055421d88be48ad5316deb946a4315789e12",
+      "logSha256": "aefb68a6c9a0b936dbfee3c9d629f69ff8c359664337e9ccb79d5b46281cc1d3"
+    },
+    {
+      "gate": "packaged-native",
+      "actualTestOrHelperExitCode": 0,
+      "exitRecordPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-native-exit.txt",
+      "exitRecordSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stats": {
+        "startTime": "2026-10-21T00:39:40.486Z",
+        "duration": 17728.14,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "logPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-native.log",
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-native-playwright.json",
+      "reportSha256": "3afaa7d98c43ee6ac04382b229e0352b8de345201479102887b85da28446f0fd",
+      "logSha256": "9e91ab288696e0fec369bcac7687cc2d7a9aeab4584ce0a940b1fd99d3ff3507"
+    },
+    {
+      "gate": "packaged-reload",
+      "actualTestOrHelperExitCode": 0,
+      "exitRecordPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-reload-exit.txt",
+      "exitRecordSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stats": {
+        "startTime": "2026-10-21T00:39:58.577Z",
+        "duration": 6940.29,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "logPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-reload.log",
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-reload-playwright.json",
+      "reportSha256": "089879528c27c0bfea8d17752f02f6881e1a872db9d760fcfe97efec1931dd97",
+      "logSha256": "eafa87251dd6daab4bf501d1bc89e996dddf51479239e170abdce74d1d208bb3"
+    },
+    {
+      "gate": "packaged-disconnect",
+      "actualTestOrHelperExitCode": 0,
+      "exitRecordPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-disconnect-exit.txt",
+      "exitRecordSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stats": {
+        "startTime": "2026-10-21T00:40:05.897Z",
+        "duration": 1481.955,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "logPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-disconnect.log",
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/packaged-disconnect-playwright.json",
+      "reportSha256": "2bde27227b1205e098450218a82477c3aa35e8a946832b88b28654f4c78e0eb3",
+      "logSha256": "ac62b639ecdb0e1818319d82bbdd2db0f177398f7a0eb2736ff8ded0b8c29c32"
+    }
+  ],
+  "uniqueTargetRetry": {
+    "actualTestExitCode": 0,
+    "exitRecordPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-native-retry1/evidence/results/regression/source-native-retry-exit.txt",
+    "exitRecordSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-native-retry1/evidence/results/regression/source-native-retry-playwright.json",
+    "reportSha256": "c0234f905fae3a11859031addbd38571a45fa9e10a739de708b557bd3ad11e90",
+    "stats": {
+      "startTime": "2026-10-21T00:44:37.643Z",
+      "duration": 18637.725000000002,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "verifiedPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-native-retry1/evidence/results/regression/source-native-retry-traces/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/i04-native-verified-evidence.json",
+    "verifiedSha256": "8e363e4aeefd86f0cedbad91ce381bdeb959683554c596b70ea2ea2d9448efde",
+    "result": "PASS",
+    "events": ["crashed", "unresponsive"],
+    "windows": 3,
+    "nativeDialogs": [
+      {
+        "phase": "crash",
+        "windowId": "6291458",
+        "title": "OntoLearn Studio 窗口恢复",
+        "visible": true
+      },
+      {
+        "phase": "hang",
+        "windowId": "6291613",
+        "title": "OntoLearn Studio 窗口恢复",
+        "visible": true
+      }
+    ],
+    "inspectorClosed": true,
+    "hangMonitorEnabled": true,
+    "originalInlineScriptPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-native-retry1/run-script.sh",
+    "originalInlineScriptSha256": "79d4dab5df069db98fce757c6ddaae0f8e1d9b0fae62214a910fc899ea58ce2a",
+    "sameInspectImageIdentityAsAria2": true
+  },
+  "initialFailuresPreserved": [
+    {
+      "attempt": "9fc regression1 predecessor",
+      "result": "Source and packaged each 1pass/3skip/2fail due added status role ambiguity. Not re-executed now.",
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/docs/reviews/I06/main-platform/packaged-and-regression-review.md",
+      "reportSha256": "b53d1507c2a090c453cbb9fefabe03e8a46c24e47c8d6e6c5809908f1821a3a7"
+    },
+    {
+      "attempt": "e2c aria1",
+      "sourceDefaultSuite": "3passed/3fixture skips, actual source-exit.txt=0",
+      "helperFailure": "New aria helper omitted strict {} params; actual source-aria-exit.txt=1.",
+      "dependencyPreparationFailure": "Runtime fresh UV cache lacked offline hatchling editable-build requirement; run.log preserves error; container/session exit1. Later gates were not run, not assigned inferred test exits.",
+      "sourceExitPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1/evidence/results/regression/source-exit.txt",
+      "helperExitPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1/evidence/results/regression/source-aria-exit.txt",
+      "helperLogPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1/evidence/results/regression/source-aria.log",
+      "runLogPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria1/run.log"
+    },
+    {
+      "attempt": "e2c aria2 source-native first execution",
+      "actualTestExitCode": 1,
+      "failedAssertion": "tests/e2e/i04-jobs.spec.ts:446 actual hang native recovery dialog",
+      "observation": "Only crashed event, two windows, second visible/focused with X11 focus; no unresponsive/hang native prompt observed before assertion.",
+      "originalPerPhaseDeadline": "Date.now()+30000 (30s)",
+      "totalReportDurationMs": 13315.552000000001,
+      "traceMonotonicElapsedMsApprox": 12250,
+      "cause": "Unknown; no clock/environment/flake root cause inferred.",
+      "logPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-native.log",
+      "traceDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/e2c269ad78a7-aria2/evidence/results/regression/source-native-traces",
+      "retainedAfterRetry": true
+    }
+  ],
+  "earlierFrozenFailureIndexes": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/docs/reviews/I06/main-platform/source-and-native-review.md",
+      "sha256": "19b829bac66352caaf09293baf820be01033ad112dd4cec80300c16183ee0d65",
+      "boundary": "Historical raw and first-failure summaries unchanged; no rerun or new result inferred."
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/docs/reviews/I06/main-platform/packaged-and-regression-review.md",
+      "sha256": "b53d1507c2a090c453cbb9fefabe03e8a46c24e47c8d6e6c5809908f1821a3a7",
+      "boundary": "Historical raw and first-failure summaries unchanged; no rerun or new result inferred."
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/docs/reviews/I06/main-platform/aria-regression-review.md",
+      "sha256": "5a86c8d136f2d35e4308baef59287820d0353189cc46c33e94aec9bfb8b68a48",
+      "boundary": "Historical raw and first-failure summaries unchanged; no rerun or new result inferred."
+    }
+  ],
+  "archive": {
+    "archive": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/i06-main-e2c-aria2-native-retry1-raw.tar.gz",
+    "sha256": "f13d9a6f0cb06b39703a91bfd76e85266c87583c0123f5c31a92ee8ccb1afa34",
+    "bytes": 154270058,
+    "indexSha256": "f29eecfe97648e650f5c896095f4a9695d64d101b873212e4408b5cb86356205",
+    "files": 598,
+    "currentBytesSha256Matched": true
+  },
+  "interpretation": {
+    "testResult": "Initial 9 pass / 1 source-native failure; unique same-image original-test fresh-fixture retry passed; not a single all-green run.",
+    "wrapperExitCodesAreNotTestPass": "Aria2 container/session exit0 only shows wrapper completed; original source-native-exit.txt remains1.",
+    "genericS3Binding": "Generic binding.result=failed for aria2/retry because their dedicated S3 probe/receiver/leak-scan were not run; not the e2e verdict and not a complete S3 pass.",
+    "imageIdentity": "Docker inspect image identity only; not proof of a separately captured OCI config blob.",
+    "missingHandles": "No requested container/session missing in this observation; missing original historical native main PID or aria1 later-gate files are stated without inference.",
+    "persistedFixtureJobs": "No persisted job rows were resumed, changed, cancelled or reclassified. Container/session/process termination does not assert every stored fixture job row is terminal."
+  }
+}
