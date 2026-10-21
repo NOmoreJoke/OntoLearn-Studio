@@ -113,3 +113,10 @@ Goal工具实际回执：已调用 `update_goal(status="blocked")` 并返回bloc
 已全文读回共同指南（SHA256 `b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39`）及三份生效交接，AGENTS仍`78df2825…`。当前T01拥有storage、Python4及canonical/main8；T03拥有构建依赖4文件；I06保留其余6文件及私有网关；I05保留未交路径。上段“format8交接待完成”仅描述当时快照，本段记录其现已生效。完整清单和实际独立agent政策回执见[policy-receipt-2026-10-21](policy-receipt-2026-10-21.md)。
 
 本次只补记责任政策；测试/CI/resources不自动转移，冻结树与未批准代码限制保持。未改产品、未重测或重审、未重开Goal。实现候选93516fa、既有check与内审8证据保持；Goal仍blocked，正式接线/真实API与领域验收/隔离指定外审及后续PR/CI/合并仍按原恢复条件推进。
+
+
+## worker责任通知接收（2026-10-21 10:21+08）
+
+已读回新共同指南ff5f9fd0…及worker交接63c194ef…，核对execution-state已生效，并实际验证旧b24指南全部15574字节仍为新文件前缀。仅worker.py未来维护交T01，从批准5f实施；I05 C3冻结，不消费其未批准语义实现。其他路径及原操作限制保持，wire/限额/格式3/ready/运行未获批。独立agent已接收确认，详见[政策回执](policy-receipt-2026-10-21.md)。
+
+此次仅文档记录，未重测或重审，未恢复或重建Goal；实现候选93516fa与blocked状态保持，原接线/真实验收/指定外审恢复条件继续有效。
