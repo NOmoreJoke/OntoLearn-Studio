@@ -45,4 +45,4 @@
 
 本轮继续完成T00建议的第一条基础设施联验：四套固定输入经JobStore真实回滚预览、实际stdio coordinator/worker、test.atomic提交、operation/result.page及重开完整读回。首跑4失败/3通过，实际暴露seed包装ID冒号导致Project协议不合法；已只修私有helper为协议允许名称，并核对完整Project/依赖向量。修后7项通过；当前42专项和完整check（630/1094）通过，独立agent重建复核通过。失败原文无损归档和当前SHA见 `evidence/jobstore-verification.json`，不以原先35项Store测试掩盖这个新发现。
 
-当前基础设施通道通过不等于正式业务接线。旧包装ID的导入器不得被T01引用；原始固定输入/manifest可继续固定只读使用。已从规划聊天实际read_thread核对人类“发送并落实到现有总控”授权，精确来源见 coordination-authorization.json；将向现有总控发送本线交付与资源需求，不向其他人或其他聊天扩张发送。
+当前基础设施通道通过不等于正式业务接线。旧包装ID的导入器不得被T01引用；原始固定输入/manifest可继续固定只读使用。已从规划聊天实际read_thread核对人类“发送并落实到现有总控”授权，精确来源见 coordination-authorization.json；已通过 send_message_to_thread 实际发送本线修后873c8c0交付与精确资源需求，工具成功，见 controller-delivery.json；实际接收、页面路径授权和审查预约仍待回执，不将发送成功当批准。
