@@ -1,0 +1,47 @@
+# T03 N0：固定宿主环境与首轮 core 配置、构建
+
+2026-10-22。继续原T03聊天/Goal/树和branch。根已全文读34738B/SHA256 `767ead700d290ec7b87de08e0a871928bf0bbf0de2f91056a7363b5141e26398`控制审、13923B原供应独审和33160B I06源审。原R5固定fe98静态关闭，fb40的109材料docs受限接收；a026九源码采用已根逐source/adoption/current核同，初始十二产品/test来源成立。以下是实际首构建授权，不把准备完成写成构建已通过。
+
+## 固定输入与唯一 writer
+
+沿既有树 `.worktrees/T03-native-location-N0-build` / `feature/T03-native-location-N0-build`，base5f，三构建writer仍只有CMakeLists.txt、toolchain-lock.json、scripts/build-native-location.mjs。I06九原件严格只读，按5965B/a783158授权及3048B/d48ea0清单，product b1c54c3 / process0534；不得修I06源码消编译错、wholecommit或借环境。保护c7/fe98/fb40/a026/ac37、全部旧raw/许可原字节、AGENTS及原型/原64资料。
+
+供方只采用fb40实际材料及原记录明确列出的合法宿主对象：完整官方CMake4.4.4分布与CMAKE_ROOT/许可、AppleClang21/Xcode27.1/27A9275、SDK27.0/settings/适用条款、已列make/git/linker/工具与compiler include/resource/runtime、所列系统loader身份及81固定arm64e cache。源清单保原物理pin/realpath/bytes/hash，派生regular manifests从固定metadata逐条转换并保原行追溯，不新扫描其它SDK/架构或用未批准工具下载/安装。SDK33464 regular须完整且小于16MiB/50000旧界，目录/链接原记录保留；不得提高产品cap或用一个root摘要代全供应。
+
+本次仅在已合法安装宿主内部开发构建，不复制SDK/cache/系统工具到产品、不分发CMake/GNU工具。系统image全部独立notices或未发生的分发动作不是无限前置；实际产物若带入第三方代码/运行库，其依赖和notices据产物另核，不能以总Xcode协议替换。整体cache身份不是内部image传递穷尽或实际used证明，后者由本次构建输出补证。
+
+## 先修精确环境支持并固定独审
+
+原Mac environment schema为exact空对象、build env硬编码，根已实际收到此源码事实。现批准**只为固定DEVELOPER_DIR与已核真实工具选路**的最小delta：
+
+- lock的darwin-arm64.environment只接受精确`DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`；driver严格字段/值/路径验证并在显式构建环境传入，不继承用户任意env/flags。
+- CMake在project()之前核同该固定目录与实际环境/输入，继续所有原source/toolchain/pin/SDK/许可/执行前门，不放宽unknown字段或其它平台环境。
+- 优先采用fb40已列selected-tools-real中的实际绝对make/git/linker/compiler pin。必须经过Apple dispatcher时，记录shim→固定developer backend映射及所依赖环境；不能只因`/usr/bin/make`与git同hash就宣称backend固定，不借用户后续xcode-select/PATH变化。
+
+不新增任意env、参数、toolchain-file或source覆盖入口，不改CLI、全局PATH/选择器/系统配置，不扩Node/Win/运行权限。若实际最小delta超出上述具体逻辑，先给原path/hash/反例/minimal diff，不顺带重构R5/资源语义。
+
+在执行构建前，本最小delta和实际派生供应pins必须经独立agent定点实质复核，语法/目标格式/JSON/精确source与toolchain字段验证通过，并固定新的完整12产品/test候选及过程映射。原R5/原I06九源无变化不重开全审。保新固定ref、三writer hashes/完整diff和独审原文；存在阻断即先修复复审，不执行构建。不需为每条常规成功回执重复停等根确认。
+
+## 精确采用和允许执行
+
+上述前置成立后，本授权允许将**仅darwin-arm64 toolchain**按实际固定pin设approved，并将**仅darwin-arm64/core execution**设approved；source/API3/testAssembly按既有5965授权。reference沿真实归档本授权原字节的40hex过程ref与path/SHA映射，不能用假ref。Node、WindowsAddon、win32-x64全部执行、darwin addon/fixture-addon执行仍false/null。根接收的是有限已安装宿主供方和本轮工程构建，不签完整可复现/发布闭包。
+
+允许在本树固定HEAD、严格同一输入下执行原driver精确命令：
+
+`node scripts/build-native-location.mjs --target darwin-arm64 --component core --build`
+
+Node沿本树已有固定合法runtime；其余工具必须全为已核绝对pin，shell:false、原最多parallel2和独占inputDigest构建目录。此命令内只允许原13条：git status、HEAD、九source blob校验、CMake configure与CMake build。configure明确包含编译器识别/try_compile编译和链接；不得加try_run或执行生成的compiler probe/test程序。只构建`location_core_test`、`location_child_probe`两目标，不构建addon或其它产品，不运行CTest、测试exe、child_probe、TS真实addon组、Electron或产物自动启动。
+
+按原R5先保存planned argv/cwd/环境/双流路径、dispatch意图和所有后续结果，逐阶段独立status/signal/error/PID/timeout/首失败；日志写失败不继续dispatch，unknown不签已启动/已释放。原每command600000ms及并行2保持，失败立即停止后续build步骤；只在本任务对象归属明确时有界收尾，不泛kill进程或删除已有失败目录。必要静态源码/锁修复后新inputDigest新目录再试，保首次失败，避免无变化重复构建。
+
+本轮pin验证读量另作为**构建阶段**真实计账，最多32GiB累计读取/200000供应记录，包含driver与CMake独立前门可能重复读取的实际工作；不清零或改写前供应阶段9745727085B末账。用固定metadata确定上界、操作前计再读；已有命令源码若无法观测细粒度实际bytes，至少分别记录每次完整manifest校验的声明bytes及成功/中断事实，不冒完整实测字节。达到guard先停报精确delta，不自动扩额。无需无变化重跑全部六verify-only造成重复大实物校验；执行build本身的只读前门与CMake独立入口门保留。
+
+## 成功或失败均交真实证据
+
+构建成功只记built-unverified/NOT_RUN；固定两个实际artifact path/bytes/SHA、目标架构/部署参数、编译命令和真实产物，不叫N0通过。收集已生成compile_commands、depfiles、link命令/输入，以及实际Mach-O导入/导出/未定义符号与系统/第三方依赖：可用已列宿主只读`/usr/bin/file`、`/usr/bin/otool -L/-l`、`/usr/bin/nm`读取本次两个artifact与原实际工具静态元信息，先保存工具身份和真实argv/出口；不加载或启动artifact，不自动签名/strip/改产物。
+
+前置供应物与后验used闭包分开：实际新headers/stubs/libs/工具若不在批准供应内，停止签闭包，保路径/来源/真实错误并经根补供，不悄悄扩大。toolchain min15只能作构建参数和产物load-command证据，不代macOS15实机；宿主27不代Win11。若I06源有具体错误，交原ref/path/完整编译诊断给根路由I06唯一owner，T03不越九readonly。
+
+过程只新 `docs/reviews/T03/native-location-N0-build/host-core-build/` 及原source-adoption必要候选/独审/manifest，可追加主说明并保原版。交base/adoption/product/process ref、完整12及过程差异manifest、精确lock/派生manifest与source/ref绑定、原命令完整双流/首fail/每个实际exit、独审、构建产物及后验依赖/未验证项。正常check/verify:sources按实际改动另记，不能以旧c7/fe98静态数字代本轮构建。
+
+本授权不含本机或远端测试产物执行/native/child/FS实验、Node/Electron加载、GUI/HMR/凭据/模型/付费、N1/SQLite/VFS、生产位置或用户目录、push/PR/merge/CI变更或Goal状态改变。真正受控运行、两目标OS/真人、完整父57P0/C–G/PRD10–12、指定同版双新审/CI/develop与远端门保持。
