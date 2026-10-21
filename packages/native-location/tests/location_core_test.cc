@@ -69,6 +69,23 @@ constexpr bool windows_probe_artifact_path(const wchar_t* path) noexcept {
     if (unc && i < length && path[i] != L'\\') return false;
     const auto count = i - start;
     if (count == 0 || path[i - 1] == L'.' || path[i - 1] == L' ') return false;
+    // Conservative ordinary-component policy also applies to UNC server/share.
+    // DOS device basenames stay reserved with extensions and in directories.
+    size_t base_length = 0;
+    while (base_length < count && path[start + base_length] != L'.') ++base_length;
+    wchar_t base[4]{};
+    for (size_t j = 0; j < base_length && j < 4; ++j) {
+      const auto c = path[start + j];
+      base[j] = c >= L'a' && c <= L'z' ? static_cast<wchar_t>(c - L'a' + L'A') : c;
+    }
+    if (base_length == 3 && ((base[0] == L'C' && base[1] == L'O' && base[2] == L'N') ||
+        (base[0] == L'P' && base[1] == L'R' && base[2] == L'N') ||
+        (base[0] == L'A' && base[1] == L'U' && base[2] == L'X') ||
+        (base[0] == L'N' && base[1] == L'U' && base[2] == L'L'))) return false;
+    const bool port = (base[0] == L'C' && base[1] == L'O' && base[2] == L'M') ||
+        (base[0] == L'L' && base[1] == L'P' && base[2] == L'T');
+    if (base_length == 4 && port && ((base[3] >= L'1' && base[3] <= L'9') ||
+        base[3] == L'\u00b9' || base[3] == L'\u00b2' || base[3] == L'\u00b3')) return false;
     ++components;
     start = i + 1;
   }
@@ -89,6 +106,19 @@ static_assert(!windows_probe_artifact_path(L"\\\\.\\pipe\\probe.exe"), "reject d
 static_assert(!windows_probe_artifact_path(L"C:\\artifacts\\..\\probe.exe"), "reject parent segment");
 static_assert(!windows_probe_artifact_path(L"C:\\artifacts\\probe.exe:stream"), "reject alternate stream");
 static_assert(!windows_probe_artifact_path(L"C:\\artifacts\\probe.exe."), "reject trailing dot");
+static_assert(windows_probe_artifact_path(L"C:\\artifacts\\COM10.exe"), "ordinary non-reserved port-like name");
+static_assert(windows_probe_artifact_path(L"C:\\artifacts\\NUL-data.exe"), "ordinary non-reserved prefix");
+static_assert(!windows_probe_artifact_path(L"C:\\NUL.exe"), "reject device basename with extension");
+static_assert(!windows_probe_artifact_path(L"C:\\Con\\probe.exe"), "reject device directory case-insensitively");
+static_assert(!windows_probe_artifact_path(L"C:\\prn.tar.exe"), "reject device basename with multiple extensions");
+static_assert(!windows_probe_artifact_path(L"C:\\aux.exe"), "reject auxiliary device basename");
+static_assert(!windows_probe_artifact_path(L"C:\\com1.exe"), "reject serial device basename");
+static_assert(!windows_probe_artifact_path(L"C:\\LPT9.exe"), "reject parallel device basename");
+static_assert(!windows_probe_artifact_path(L"C:\\COM\u00b9.exe"), "reject superscript-one device basename");
+static_assert(!windows_probe_artifact_path(L"C:\\LPT\u00b2.exe"), "reject superscript-two device basename");
+static_assert(!windows_probe_artifact_path(L"C:\\COM\u00b3.exe"), "reject superscript-three device basename");
+static_assert(!windows_probe_artifact_path(L"\\\\server\\share\\NUL.exe"), "reject UNC device artifact basename");
+static_assert(!windows_probe_artifact_path(L"\\\\CON\\share\\probe.exe"), "conservative UNC server component policy");
 #if defined(__APPLE__)
 struct fixture {
   nl_owner_ref node_owner{}; // Test-addon fallback retains the exact native owner.
