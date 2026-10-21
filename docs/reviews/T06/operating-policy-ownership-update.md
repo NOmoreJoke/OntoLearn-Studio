@@ -1,5 +1,13 @@
 # 当前责任更新读回
 
+## 最新单文件补充：worker.py
+
+2026-10-21 10:21+08 生效通知已在安全边界实际全文读取 I05-T01-worker-ownership-handoff.md，并读回共同指南追加段。当前共同指南 SHA 为 ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff；已核验原 b24 全部字节仍为其精确前缀，AGENTS仍78df2825…a759。旧指南/冻结输入不改写。
+
+worker.py 未来唯一维护者为 T01，只从批准5f的9314字节/2fa848aa3a2148e59a24f01c9333701f0f03eed95cffe55a0a78b74f1d06f2f0施工；不得消费未批准C3的13638字节/3d934e79aff65288e1f249e2763f46b4eb86f50bd05ccc7628643951f4d4f99d语义worker。C3原字节继续冻结；需修先由总控精确返还，T01停写并保存身份/差异。protocol/resources/语义/旧tests/build/CI不随转，semantic4 futureoffer未生效，wire/限额/公共3/ready或运行能力均未因此获批。T06不改共享路径；所有本线agent已终态，后续实际任务再传最新政策，不为本通知重启agent、复测或恢复blocked Goal。
+
+## 前次 b24 责任快照
+
 2026-10-21，实际全文读取共同指令及三份生效 handoff，SHA-256：
 
 - developer-common-instructions.md：b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39。
