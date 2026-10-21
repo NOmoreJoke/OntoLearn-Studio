@@ -758,7 +758,11 @@ def canonical_bytes(value, ledger, *, stage, bound=MAX_WIRE_BYTES):
         reject("RESTORE_INTERNAL", "internal")
     bound = min(bound, ledger.B + ledger.Q)
     ledger.prepay(stage)
-    ledger.reserve("scalar", 2 * bound, stage=stage)
+    # The unchanged writer holds chunk(str), data(bytes), sink(bytearray) and
+    # final bytes.  Four bytes/codepoint for chunk plus three byte buffers and
+    # constants fit this block; it is separate from the opaque small temporaries.
+    retained = 8 * bound + 64
+    ledger.reserve("scalar", retained, stage=stage)
     ledger.reserve("objects", 4, stage=stage)
     try:
         from ontolearn_engine.semantic_execution import _profile_json_bytes
@@ -769,11 +773,11 @@ def canonical_bytes(value, ledger, *, stage, bound=MAX_WIRE_BYTES):
             reject("RESTORE_LIMIT", "resource", stage=stage, domain="copy")
         # Transfer just the returned buffer; its caller drops it or cleanup owns
         # its logical ticket. The temporary full bound is no longer live.
-        ledger.release("scalar", 2 * bound - len(result))
+        ledger.release("scalar", retained - len(result))
         ledger.release("objects", 3)
         return result
     except BaseException:
-        ledger.release("scalar", 2 * bound)
+        ledger.release("scalar", retained)
         ledger.release("objects", 4)
         raise
 

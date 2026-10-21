@@ -668,6 +668,8 @@ class _Decoder:
     def graph_budget(self, value):
         self.object(value, ("version", "limits", "entryLimits", "entryUsage", "usage"))
         _require(value["version"] == semantic.PROFILE_GRAPH_BUDGET_VERSION)
+        # Fixed maps, the temporary limits record and kwargs precede their use.
+        self.ledger.reserve("objects", 128, stage="A3")
         maxima = (
             ("work", semantic.MAX_WORK),
             ("triples", semantic.MAX_TRIPLES),
@@ -694,7 +696,6 @@ class _Decoder:
                 value["usage"]["inputTermBytes"], minimum=0, maximum=semantic.MAX_TEXT_BYTES
             ),
         }
-        self.ledger.reserve("objects", 19)
         return {
             "version": value["version"],
             "limits": limits,
@@ -764,9 +765,10 @@ class _Decoder:
                     else (total_pool // len(ordered) + (slot < total_pool % len(ordered)))
                 )
                 _require(actual == expected, "A3")
+            # Includes values/kwargs, ProfileLimits, Budget and its six counters.
+            self.ledger.reserve("objects", 128, stage="A3")
             values = {field: getattr(child.limits, field) for field, _ in _LIMITS}
             values["output_bytes"] = 0
-            self.ledger.reserve("objects", 42)
             self.parse_pools.append(Budget(ProfileLimits(**values)))
             self.caches.append(TermCache(self.ledger))
         return ordered, flags
@@ -898,6 +900,27 @@ class _Decoder:
 
 def _check_expectation(decoder):
     e, allocation = decoder.expected, decoder.allocation
+    # Exact outer dataclasses do not enforce their field annotations.  Reject
+    # nested foreign protocols before reasoning first measures or iterates IDs.
+    _require(type(allocation.rule_ids) is tuple and len(allocation.rule_ids) <= 100, "entry")
+    _require(
+        type(allocation.disabled_rule_ids) is tuple
+        and len(allocation.disabled_rule_ids) <= len(allocation.rule_ids),
+        "entry",
+    )
+    _require(len(allocation.children) == max(1, len(allocation.rule_ids)), "entry")
+    for names in (allocation.rule_ids, allocation.disabled_rule_ids):
+        for name in names:
+            decoder.string(name, 16384)
+            _require(bool(name), "entry")
+    for child in allocation.children:
+        _require(type(child) is ChildAllocation and type(child.limits) is ProfileLimits, "entry")
+        decoder.optional_string(child.rule_id, 16384)
+        _require(
+            child.definition_ordinal is None
+            or (type(child.definition_ordinal) is int and 0 <= child.definition_ordinal < 100),
+            "entry",
+        )
     _require(
         type(e.schema_version) is str
         and type(e.budget_version) is str
@@ -941,9 +964,17 @@ def _project(decoder, projection, value, stage):
     ledger.prepay(stage)
     ledger.reserve("objects", 2 * ledger.J)
     try:
+        # Exact wire-derived hex strings plus one str.encode temporary fit 4J.
+        # Keep this ordinary ticket after opaque returns, until the safe tree dies.
+        ledger.reserve("scalar", 4 * ledger.J, stage=stage)
+    except BaseException:
+        ledger.release("objects", 2 * ledger.J)
+        raise
+    try:
         with ledger.opaque():
             return projection.value(value)
-    except Exception:
+    except BaseException:
+        ledger.release("scalar", 4 * ledger.J)
         ledger.release("objects", 2 * ledger.J)
         raise
 
@@ -1024,6 +1055,7 @@ def _restore(decoder, payload_json, rows_json):
     _bytes_same(source_encoded, expected.source_preimage, ledger, "A13", wire=True)
     release_bytes(source_encoded, ledger)
     del safe_source, source_encoded
+    ledger.release("scalar", 4 * ledger.J)
     ledger.release("objects", 2 * ledger.J)
     safe_defs = _project(decoder, projection, native["definitions"], "A8")
     encoded_defs = canonical_bytes(safe_defs, ledger, stage="A13", bound=_MAX_BYTES)
@@ -1032,6 +1064,7 @@ def _restore(decoder, payload_json, rows_json):
     )
     release_bytes(encoded_defs, ledger)
     del safe_defs, encoded_defs
+    ledger.release("scalar", 4 * ledger.J)
     ledger.release("objects", 2 * ledger.J)
     if reconstructed is not None:
         safe_records = _project(decoder, _ProfileProjection(), reconstructed, "A10")
@@ -1039,6 +1072,7 @@ def _restore(decoder, payload_json, rows_json):
         _bytes_same(encoded_input, expected.input_preimage, ledger, "A15", wire=True)
         release_bytes(encoded_input, ledger)
         del safe_records, encoded_input
+        ledger.release("scalar", 4 * ledger.J)
         ledger.release("objects", 2 * ledger.J)
     encoded_catalog = canonical_bytes(safe_reason["catalog"], ledger, stage="A14", bound=_MAX_BYTES)
     _same(
@@ -1053,10 +1087,18 @@ def _restore(decoder, payload_json, rows_json):
     _check_rows(decoder, rows, encoded_payload)
     release_bytes(encoded_payload, ledger)
     del safe_reason, safe_payload, encoded_payload
+    ledger.release("scalar", 4 * ledger.J)
     ledger.release("objects", 2 * ledger.J)
+    # Prepay receipt work and all simultaneous fixed records/slots before their
+    # construction, including final usage/peaks snapshots and the public record.
+    ledger.prepay("A16")
+    slots = len(decoder.children)
+    ledger.charge("traversal", 128 * slots + 128, stage="A16")
+    ledger.charge("copy", 1024 * slots + 1024, stage="A16")
+    ledger.reserve("objects", 256 * slots + 256, stage="A16")
+    ledger.reserve("scalar", 1024 * slots + 1024, stage="A16")
     parse_usage = tuple(pool.usage for pool in decoder.parse_pools)
     children, caps = [], []
-    ledger.reserve("objects", 8 * len(decoder.children) + 2)
     ledger.charge("traversal", len(decoder.children), stage="A16")
     for slot, child in enumerate(decoder.children):
         decoder.slot, decoder.stage = slot, "A16"
@@ -1167,9 +1209,26 @@ def restore_profile_batches(
         if size > _MAX_BYTES or preimage > _MAX_PREIMAGE:
             raise RestoreFailure("RESTORE_LIMIT", "resource", stage="entry")
         ledger.begin(size, preimage, len(allocation.children))
+        # Caller-held exact context is also live: three bounded ID copies per
+        # slot, implementation/digest strings, limits, records and decoder state.
+        # These are reservations inside the existing caps, not new capacity.
+        count = len(allocation.children)
+        ledger.reserve("objects", 128 * count + 128, stage="entry")
+        ledger.reserve("scalar", 524288 * count + 4096, stage="entry")
+        ledger.charge("traversal", 128 * count + 128, stage="entry")
         decoder = _Decoder(ledger, expected, allocation)
         decoder.rows_json = rows_json
-        outcome = _restore(decoder, payload_json, rows_json)
+        children, parse_usage, caps = _restore(decoder, payload_json, rows_json)
+        outcome = RestoredBatchSet(
+            children,
+            expected.implementation,
+            expected.payload_digest,
+            expected.rows_digest,
+            ledger.usage,
+            ledger.peaks,
+            parse_usage,
+            caps,
+        )
     except RestoreFailure as exc:
         error = RestoreFailure(
             exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain
@@ -1200,14 +1259,4 @@ def restore_profile_batches(
         ledger.finish(error is None and outcome is not None)
     if error is not None:
         raise error
-    children, parse_usage, caps = outcome
-    return RestoredBatchSet(
-        children,
-        expected.implementation,
-        expected.payload_digest,
-        expected.rows_digest,
-        ledger.usage,
-        ledger.peaks,
-        parse_usage,
-        caps,
-    )
+    return outcome
