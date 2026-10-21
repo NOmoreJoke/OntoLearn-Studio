@@ -7,7 +7,6 @@ upstream complete IRI parser or graph matcher. Expected spellings stay literal.
 from dataclasses import replace
 
 import pytest
-
 from ontolearn_engine.quality.rule_comparator import compare_values
 from ontolearn_engine.quality.rule_firing import (
     BindingMatch,
