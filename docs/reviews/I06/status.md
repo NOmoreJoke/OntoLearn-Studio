@@ -1,10 +1,10 @@
 # I06 / S3 状态
 
-2026-10-21 当前接续：正式 main / 命名 bridge / 最小 UI 已在本线实现并固定代码提交 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6`，其前契约子线 `69dd44d` 已正常合入为 `0ce0258`。批准依赖仍为远端实际核验的 develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`；不采用 I05 未批准 C1/C2 或其语义常量。14文件移交已生效，其他 Python/入口 build/锁/CI/安全恢复未改。
+2026-10-21 当前接续：正式 main / 命名 bridge / 最小 UI 检查点 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6` 已完成固定Linux正常链/native/包内专项；随后原e2e发现模型提示新增role=status干扰唯一health status，已仅改为aria-live=polite并独立复核，产品新内容固定 `e2c269ad78a78e1a042cadc93b1c81a874707153`。旧平台事实保持原9fc绑定，不整体套给新候选。其前契约子线 `69dd44d` 已正常合入为 `0ce0258`。批准依赖仍为本次现场 `ls-remote` 核验的 develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`；不采用 I05/T01/T00 未批准实现或语义常量。14文件责任不变，其他 Python/入口 build/锁/CI/安全恢复未改。
 
-当前代码完整 `npm run check` r9 exit0：998TS、1052Python、lint/format/typecheck/build/ruff 全过；`verify:sources` 12项及diff检查通过，两处protected AGENTS仍db1fb184，未stage。该完整检查已覆盖最终UI表单key、终态缓存、精确读取状态copy和严格UTF8修正，不沿用此前copy前的r7作为当前完整检查。
+新App源码内容完整 `npm run check` exit0：998TS、1052Python、lint/format/typecheck/build/ruff 全过；`verify:sources` 12项及diff通过，两处protected AGENTS仍db1fb184，未stage。命令启动时App工作树修订已固定，随后以相同bytes提交e2c；检查期间无产品内容更改。[本次证据](evidence/aria-status-fix-20261021.json) SHA `a411e552e19390e37861f5f67066184d9e4f833c8686c4abdcf847c77b96f4da`，10文件原件archive SHA `60e3bdb6e91e764237f9e48aaf2ae2adc2fdd60d5ad613009b68e95e1f80b619`，位于tests/i06-stored-material/out。旧完整check r9日志保留，不以它替代ARIA改动后完整检查；新源码/包内原e2e及CI fresh-fixture用例正在单独重验。
 
-[正式接线计划](../../iterations/I06/main-wiring-plan.md)记录唯一main服务、strict12方法/10G错误、独立取消、实际项目context与单profile锁、私有配置原子journal/安全录入版本边界、独立启动与有界退出、只读恢复/纯文本结果。头部无实际项目默认local；无通用转发/secret读回/worker模型入口。配置journal两实例竞争/不确定发布后失败、password随版本清空及新建草稿保留已修，独立只读复核关闭；最新Linux正常main/preload/UI链platform-r11已22项通过，独立证据复核通过，真实native恢复与完整候选验收仍待后续事实。
+[正式接线计划](../../iterations/I06/main-wiring-plan.md)记录唯一main服务、strict12方法/10G错误、独立取消、实际项目context与单profile锁、私有配置原子journal/安全录入版本边界、独立启动与有界退出、只读恢复/纯文本结果。头部无实际项目默认local；无通用转发/secret读回/worker模型入口。配置journal两实例竞争/不确定发布后失败、password随版本清空及新建草稿保留已修，独立只读复核关闭；旧9fc的Linux正常22项/native4/pkg2均限定通过，源码变化对应的UI/原e2e/新包实际身份另验，不复跑未变化私有核心矩阵，不宣称新候选完整S3通过。
 
 专属真实链46项含37来源/字段、6配置、3named-service HTTPS。凭据加解密在这一headless服务测试中是明确double，密文/配置/审计实际私有文件、实际批准Store/coordinator/test.read worker与经证书校验HTTPS receiver均运行；已保存合成完整body原件，不记录headers。正常生产字段模型仍为空、runtime-only；固定finite policy仅既有可信launchfixture/test-runtime且非packaged可启用，不外推生产业务provenance。I05实际新语义批准merge后再刷新/绑定/冲突处理和全新联验。
 
@@ -27,6 +27,14 @@
 平台专属24文件提交 `3124b7df4497df6c57954106982cd83cc8d16673` 已正常合入根，仅新增tests/docs，不改产品。定向ESLint/Prettier/Ruff/语法/diff通过，未重跑未变998/1052。953文件原件归档已复制本worktree `tests/i06-main-platform/out/i06-main-platform-9fc-r11-native4-raw.tar.gz`，SHA `9dac44b0cd0a588c902b85b35079f691a52ef13a0e51dce5c9b9e5f9dd99f0fe`；root逐项验证952索引文件bytes/SHA及3份passed绑定，见[根读回](evidence/main-platform-archive-readback-20261021.json)。实际执行冻结harness与最终格式化/采集脚本分开记录，旧失败run保持。原计划要求真正打包executable，source app不能代替：本线正在独立正式 `npm run package:dir` +实际package executable/GNOME/sandbox/包内engine/具名whole-result HTTPS和恢复最小增量，包内有限fixture字段policy必须按现有门拒绝，不为测试放宽。
 
 总控独立检查点核验（`iteration-control/2026-10-19/I06-controller-main-wiring-checkpoint-evidence-audit.md`，总控回执SHA `1d5888302a3b63d34ba8393ae9ae36c0c52aa63f518af7153b23db56956c462f`）未提出新增实现修复请求。117source/5compiled/19logs/18raw及998TS/1052Python/source12/46专属/validator43支持其各自边界；18raw是6组同case历史重复正文，非6项新用例。headless safeStorage为double，CAS为同进程两repository实例，postpublish旧context失效和零POST不等于已归档旧pending精确cancelled对象；当时singleprofile仅静态，后续平台事实按新run单列，不倒贴旧证据。
+
+旧9fc包内pkg2专项已通过并独立复核：正式PyInstaller/electron-builder产物，isPackaged/243实际包文件/asar五编译文件、当前main后代engine父链均原件核对；显式历史whole-result经具名桥授权一次2327B POST，真实crash/prompt恢复无重发。该整份请求有意含合成私列，不能当A03 public-only字段证明。独立finite profile有效格式configure/store/start实际MODEL_UNAVAILABLE，活跃共享receiver delta0/凭据目录空；旧pkg1弱绑定/无父链/硬编码计数原件保留不倒改。提交 `424d80716e2434aec921a647d716e6be15fc0c24` 已正常合入；591文件原件归档SHA `006f0bb374c659077c6433df3bdaeede900bb90bddd7fe7d4bc2d1dd6f26f7fd` 已复制根out，root复验590索引文件，见[包原件读回](evidence/packaged-archive-readback-20261021.json)。
+
+同旧9fc的原仓库regression1 source与package各1passed/3fixture-gated skipped/2failed、测试exit1；collector采集exit0不记测试通过。具体为新增模型段role=status使desktop/CSP normal全局status定位出现两个元素，CSP后续断言尚未执行。e2c仅改该段aria-live=polite，提示/条件与旧测试断言不变，独立复核关闭；新构建source+package及原CI独立fresh-fixture三个用例分别在验，不以基础3skip代替具名bridge回归，不重复无变化S1/S2或凭据全矩阵。
+
+总控对r11/native4独立审计回执SHA `ea9f5cc64f62df53cbcc56bbe7c845ffac8faf05963ab31b34b202983717c7ef` 支持固定9fc阶段，无新增否决矛盾：完整未选catalog两轮未独存、部分cancel/reload/singleton中间DTO未全存；binary为runtime realpath/hash记录而非本体；扫描的普通日志未全部归档，不能把原件子集当重扫所有扫描对象。新增停止后6DB/26private原件另按readback核对，native crash不等于hang矩阵/中文排版。以上边界保留，不补造旧材料、不将旧9fc整体贴到e2c。
+
+T00版本提案SHA c4f32d已全文读回，本线[I06兼容影响回执](../../iterations/I06/T00-format-version-impact.md)完成独立只读复核，仅建议DB/协议/私有格式分离、受控升级撤销context、应用CAS不污染领域输入及逐路径维护，没有实现或批准协议3。storage.py后续已交T01，I06仍独占原14文件，T00仅提案；当前源码/平台不采未批代码，最终指定审查等实际批准依赖和确定基线后预约。
 
 文档子线从同9fc完成四份接口/交接文档与专属记录，对齐提交 `11666cfcfcc15c8f5f8b164bfeaa3fad2acc464e`；原35例和5场景ID保留，新增6例，实际校验43/43通过，原raw SHA `458ddca166bb568532944741a37216996c92e9c82925ddeca1d940564534cd01`，根已复核21快照及41行receipt。独立只读发现终态淘汰文案顺序偏差，在追加 `302f1a440aed47b13e42fee37e3bb9c9286d9440` 纠正并同步ADR/验收旧阶段事实；复核关闭、无新增问题，未改实现/样例或重跑无关检查。新文案raw SHA `22bc2a57dff0cd185250aadca10d2d12d93390b7d7d228dc0541e328ca124bc3`，根已核对6快照，旧raw不变；两提交均已正常合入。原Goal不重建、不标完成；完整S3/平台/适用I05、同候选指定双方全新全范围审查、push/PR/实际CI/远端合并核验仍未完成。未push，不改总控state。
 

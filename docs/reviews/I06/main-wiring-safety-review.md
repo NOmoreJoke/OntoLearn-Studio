@@ -34,3 +34,9 @@ platform-r11完整22case、3次合成HTTPS POST与collector五gates通过。产�
 native4在相同compiled app/binary上完成真实crash→X11可见原生提示→外部实际shift+Tab/Return→第二窗口。独立只读review核对未替换dialog/恢复函数；故障前inspectorURL=null、无rendererCDP，main身份保持而renderer/window实际更换。整个project/Store/job/result/stateVersion/operation marker及I06 context/selections/invocations/completed outcome前后严格相等，只4个具名只读恢复调用，receiver始终1。native binding SHA `9bade372085b53c7e95e9fe0c2d337ec648e6767d63b4b14ab0baf166af35637`，与r11 normal binding关联准确，未拼接22case。CJK字体缺失，仅确认X11中文标题与可见提示/真实动作，不认可中文排版；未测hang全矩阵。
 
 停止后新增5份原DB/vault的readback独立核对hash、23行与raw pages，配置序列/digest链、credential/config binding、唯一metadata audit关联一致，无secret/response正文；新readback SHA `a765852442015d7c599c7e05a2312243a091f7ae8ef48a60af1ec28c10a93e50`，旧native binding不变。root复制完整953文件archive并复验952项bytes/SHA，见[readback](evidence/main-platform-archive-readback-20261021.json)。普通源码app和native范围均限定固定9fc/Linux；真正包内executable、批准I05后必要联验及同候选指定双审仍后续独立完成。
+
+## 包内专项与ARIA回归修正
+
+旧9fc pkg2限定复核通过：candidate/851source与normal严格同版、31harness绑定、243实际包文件及asar内五编译文件回读吻合；当前mainPID243的enginePID295父链明确，不借前一profile遗留进程。实际whole-result经具名桥授权、一次2327B请求含明确整份合成列，真实提示恢复前后project/job/result/marker与I06状态严格相等，receiver1。finite profile三项有效格式调用真实拒绝，活跃receiver delta0、零凭据文件，先前collector/父链/计数意见关闭。package binding SHA `04b0394230a0a20c8fd8692266a03fb64a871c2ca9f95a4e84d5f5e4aea67271`；不能称为A03public-only或新App源码通过。
+
+原仓库source/package e2e实际各有两个status strict-selector失败，根仅将模型不可用提示role=status改aria-live=polite，保留通知文本/条件和原健康status语义。独立静态复核关闭，内容固定e2c269ad，新完整check998TS/1052Python/source12通过；[验证manifest](evidence/aria-status-fix-20261021.json)明确旧平台与新源码边界。相关新e2e/包内运行另验，不拿旧pkg2或collector退出成功掩盖回归。原完整fixture-gated用例按CI准备真实fixture，不用skip冒充运行；未要求复跑无变化领域故障全矩阵。

@@ -1,6 +1,6 @@
 # I06 对 T00 格式版本提案的兼容性回执
 
-2026-10-21。仅设计反馈，不是方案批准、路径移交或已实现接口。已全文读回 `iteration-control/2026-10-21-weekly-release/T00-project-format-version-proposal.md`，SHA-256 `c4f32d24367929d137ac49be7c3a8610135116cb70e26340a41864145a1610a4`。本线产品仍固定 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6`，批准依赖仍为 `5f910b52`，没有采用 T01/T00 或 I05 未批准实现；当前包内验证不因本文重开。
+2026-10-21。仅设计反馈，不是方案批准、路径移交或已实现接口。已全文读回 `iteration-control/2026-10-21-weekly-release/T00-project-format-version-proposal.md`，SHA-256 `c4f32d24367929d137ac49be7c3a8610135116cb70e26340a41864145a1610a4`。版本兼容事实据固定 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6` 核对；其后 `e2c269ad` 仅修App状态提示ARIA，不触协议/项目格式。批准依赖仍为 `5f910b52`，没有采用 T01/T00 或 I05 未批准实现；平台/包内各run保持原来源，验证不因本文重开。
 
 ## 判断
 
