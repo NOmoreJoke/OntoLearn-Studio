@@ -1,0 +1,139 @@
+{
+  "product": "2c4257b1df2c2e1c6d636d3c4ce7ecc4755071c1",
+  "sameCandidateByteIdentity": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/project/operation_evidence.py",
+      "bytes": 59749,
+      "sha256": "e174bcee70661db53b387145870f615dfd0a1549e59787ce64a63af68dd1f409"
+    },
+    {
+      "path": "packages/engine/tests/test_project_operation_evidence.py",
+      "bytes": 64589,
+      "sha256": "90b9c54921fe125fe59fc2ae4fc274508509823df49b7c6cac9a8bfad1654406"
+    }
+  ],
+  "normalCheck": {
+    "command": "UV_OFFLINE=1 UV_CACHE_DIR=/tmp/t01-operation-evidence-core-runtime-cache/uv PYTEST_ADDOPTS=--basetemp=/tmp/t01-c2-preprobe-repair-20261022-01/check-01-tmp npm run check",
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-operation-evidence-core",
+    "startTool": "f5f048",
+    "session": 87879,
+    "terminalTool": "99543e",
+    "exitCode": 0,
+    "log": "/tmp/t01-c2-preprobe-repair-20261022-01/check-01.log",
+    "typescriptPassed": 1125,
+    "pythonPassed": 3110,
+    "pythonSkipped": 44,
+    "specializedTests": 141,
+    "newRegressionCases": 12
+  },
+  "sources": {
+    "command": "npm run verify:sources",
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-operation-evidence-core",
+    "tool": "1a87af",
+    "exitCode": 0,
+    "log": "/tmp/t01-c2-preprobe-repair-20261022-01/source-01.log",
+    "sources": 12
+  },
+  "productCommit": {
+    "tool": "43c604",
+    "exitCode": 0,
+    "parent": "5b118759e0c355a11c5b0e7577b8a8765728b19a",
+    "only2Writers": true
+  },
+  "earlierActualExits": [
+    {
+      "tool": "bac5e4",
+      "exitCode": 1,
+      "meaning": "Original product low-probe counterexample; original ledger captured immediately"
+    },
+    {
+      "tool": "49d2fa",
+      "exitCode": 1,
+      "meaning": "focused01 first interim unsupported-profile failures;11 ledger originals lost to pytest rotation; full log retained"
+    },
+    {
+      "tool": "190356",
+      "exitCode": 1,
+      "meaning": "focused02 interim source/profile issue;11 ledgers preserved"
+    },
+    {
+      "tool": "e1072c",
+      "exitCode": 1,
+      "meaning": "focused03 fixed template tail issue;11 ledgers preserved"
+    },
+    {
+      "tool": "e24eeb",
+      "exitCode": 1,
+      "meaning": "focused04 genuine conservative cost rejection; all11 ledgers preserved"
+    },
+    {
+      "tool": "3b2c91",
+      "exitCode": 1,
+      "meaning": "focused05 expected DTO passed; old accounting oracle lacked new scan work"
+    },
+    {
+      "tool": "7612d8",
+      "exitCode": 1,
+      "meaning": "all01 125pass/5fail; retained"
+    },
+    {
+      "tool": "cb9be9",
+      "exitCode": 0,
+      "meaning": "all02 130pass"
+    },
+    {
+      "tool": "5374e9",
+      "exitCode": 1,
+      "meaning": "all03 129pass/1 legitimate two-history cost refusal"
+    },
+    {
+      "tool": "758a61",
+      "exitCode": 1,
+      "meaning": "new01 8pass/1 empty-VALUES plan assertion error; retained"
+    },
+    {
+      "tool": "e1632d",
+      "exitCode": 0,
+      "meaning": "all04 138pass"
+    },
+    {
+      "tool": "eab66e",
+      "exitCode": 0,
+      "meaning": "all05 138pass"
+    },
+    {
+      "tool": "a02bce",
+      "exitCode": 0,
+      "meaning": "new02 all12 preprobe cases pass"
+    },
+    {
+      "tool": "b8640d",
+      "exitCode": 1,
+      "meaning": "interim targeted ruff3 E501; corrected"
+    },
+    {
+      "tool": "bd4f26",
+      "exitCode": 1,
+      "meaning": "new targeted ruff B023 loop-lambda bindings; corrected"
+    },
+    {
+      "tool": "e0bbd6",
+      "exitCode": 0,
+      "meaning": "final targeted ruff"
+    }
+  ],
+  "limitsUnchanged": {
+    "query": 65536,
+    "probe": 536870912,
+    "read": 536870912,
+    "evidenceMax": 67108864,
+    "selectorMax": 262144,
+    "returnMax": 131072
+  },
+  "missingEvidence": "11 focused01 intermediate ledgers rotated before capture; exact missing paths enumerated in evidence01 index; never reconstructed",
+  "notRun": [
+    "GUI/native/e2e/model/network/paid/packaging",
+    "production issuer/permission/formal resolution",
+    "appointed dual external review/CI/push/PR/merge"
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "scope": "Exact offline upstream source and actual EXPLAIN provenance, source algorithm facts not adoption of S1 implementation/policy.",
+  "sources": [
+    {
+      "path": "/tmp/t01-primary-s1-sqlite-3500400-source/sqlite3.c",
+      "bytes": 9282866,
+      "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+      "snippets": [
+        {
+          "firstLine1": 76966,
+          "lastLine1": 76999,
+          "sourceByteOffset0": 2906653,
+          "bytes": 1083,
+          "sha256": "604ca83f4ce091f03b3d24008e48caf776b4c0fce561720efd94889334028df3"
+        },
+        {
+          "firstLine1": 77066,
+          "lastLine1": 77164,
+          "sourceByteOffset0": 2910244,
+          "bytes": 3128,
+          "sha256": "a3288f3ad6e37368824d50e73bd2ffb58c5877500c2e64bcec68b14ee517a2de"
+        },
+        {
+          "firstLine1": 77200,
+          "lastLine1": 77216,
+          "sourceByteOffset0": 2914497,
+          "bytes": 465,
+          "sha256": "5ca5aab06464e3963a087f19edfb0eeb5701dd1e94be3c6e4c21ad985726ad98"
+        },
+        {
+          "firstLine1": 77346,
+          "lastLine1": 77447,
+          "sourceByteOffset0": 2919335,
+          "bytes": 3251,
+          "sha256": "15174ea902cdb97f0b602c86ead3672b921a2bd709c9430942644d051dde6209"
+        },
+        {
+          "firstLine1": 77816,
+          "lastLine1": 77895,
+          "sourceByteOffset0": 2935539,
+          "bytes": 2023,
+          "sha256": "87981e660125d1d897190c0f2f667d609c63bcde435be83400494a6c4b4d5454"
+        },
+        {
+          "firstLine1": 97359,
+          "lastLine1": 97416,
+          "sourceByteOffset0": 3591118,
+          "bytes": 2737,
+          "sha256": "858ca273ffc32fd4fa8e645da9754ce3f134b273fa80ddc86b0d93b086c7e3d2"
+        },
+        {
+          "firstLine1": 97435,
+          "lastLine1": 97482,
+          "sourceByteOffset0": 3594398,
+          "bytes": 1500,
+          "sha256": "dbb3d40f9e504150c1408bdf6b8144c39f59963da48b3f117bf9e097fbbe0439"
+        },
+        {
+          "firstLine1": 97505,
+          "lastLine1": 97548,
+          "sourceByteOffset0": 3596760,
+          "bytes": 1664,
+          "sha256": "725e298390c1f5ce8f9518f34e4af04eaf5153c31a1875f635f0dae1fdff67ee"
+        },
+        {
+          "firstLine1": 115504,
+          "lastLine1": 115522,
+          "sourceByteOffset0": 4220029,
+          "bytes": 1116,
+          "sha256": "f23b96e130ee8602f4196a5f4be2e52fa109e935f764236ee3f97a1ee4e57b82"
+        },
+        {
+          "firstLine1": 130532,
+          "lastLine1": 130567,
+          "sourceByteOffset0": 4733099,
+          "bytes": 894,
+          "sha256": "a2f2ecc18d9cfa2263e492e5d9e06fd6f9e2406446630d05935c2af17a89c9b8"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/t01-primary-s1-cpython-31212-source/cursor.c",
+      "bytes": 40992,
+      "sha256": "3a9121e178dc3e9ae76a818a560fcc09d92d0f842c0a711c70c169dd77d30748",
+      "snippets": [
+        {
+          "firstLine1": 1096,
+          "lastLine1": 1144,
+          "sourceByteOffset0": 33791,
+          "bytes": 1386,
+          "sha256": "9b6946578d28a7f3bbd323f1ce1c3cdcadca7efdb68e6c68091d7566705fd642"
+        },
+        {
+          "firstLine1": 852,
+          "lastLine1": 887,
+          "sourceByteOffset0": 26654,
+          "bytes": 1122,
+          "sha256": "ef0e9ed4b9eedd81c5a4f518400f97a816de423fbff67957c14ece0daf977076"
+        }
+      ]
+    }
+  ],
+  "sqliteSourceId": "2025-07-30 19:33:53 4d8adfb30e03f9cf27f800a2c1ba3c48fb4ca1b08b0f5ed59a4d5ecbf45e20a3",
+  "runtime": "own tree CPython3.12.12 / SQLite3.50.4; version/sourceID and actual local plans tested, not binary reproduction or cross-platform acceptance",
+  "actualExplanations": [
+    {
+      "path": "/tmp/t01-c2-preprobe-repair-20261022-01/check-01-tmp/test_preprobe_actual_plans_use0/native-point-explain.json",
+      "bytes": 942913,
+      "sha256": "c05021579a1f38a0e9853a6466f0491485a3cb75be55acbc6e9f2133ab9f0dc9"
+    }
+  ],
+  "normalLedgerStatistics": {
+    "testLedgerFiles": 141,
+    "normalRollbackSummaries": 133,
+    "maxReadWork": 524194150,
+    "maxProbePeak": 204940688,
+    "note": "Summary counts exclude expected direct-gate tests/cancellations/cleanup-failure; not all runs represent release."
+  },
+  "firstFailureLedger": {
+    "path": "/tmp/t01-c2-preprobe-repair-20261022-01/first-counterexample-ledger.json",
+    "bytes": 11043,
+    "sha256": "729fe1fcfdf165e494e0af73c06cd2077c450d7c88e25b669d283112c73801e2"
+  },
+  "rawPairCount": 57,
+  "actualRawExitCount": 120,
+  "gateLimitPolicy": "Original caps unchanged; physical header/local/seek/statement and scan/cache work added before actual execution. Rowids stream with per-step prepayment and strict monotonicity; subsequent source access by bounded rowid point sets; no BtreeCount/page_count assumption/serialize/raw parser in product.",
+  "originalEvidenceLoss": "11 focused-01 intermediate unsupported-profile ledgers already rotated before capture; logs/tool exits preserved; no reconstruction claimed. Original C2 archived430 records/129 ledgers untouched."
+}

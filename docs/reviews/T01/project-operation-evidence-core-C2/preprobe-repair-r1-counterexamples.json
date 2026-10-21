@@ -1,0 +1,70 @@
+{
+  "product": "2c4257b1df2c2e1c6d636d3c4ce7ecc4755071c1",
+  "sourceBytes": 59749,
+  "sourceSHA256": "e174bcee70661db53b387145870f615dfd0a1549e59787ce64a63af68dd1f409",
+  "status": "blocked by2 actual counterexamples despite original141/check success",
+  "issues": [
+    {
+      "id": "rowid-shadow",
+      "tool": "549a43",
+      "exitCode": 1,
+      "result": "Real1MiB TEXT returned before u/probe; formal entry also materialized before incomplete"
+    },
+    {
+      "id": "whole-row-rewind",
+      "tool": "f3969e",
+      "exitCode": 0,
+      "author": "independent reviewer",
+      "result": "Real300-row cost SELECT* Rewind/Next; reserved263503 undercounts300KiB local copies"
+    }
+  ],
+  "archive": {
+    "path": "docs/reviews/T01/project-operation-evidence-core-C2/preprobe-repair-r1-counterexamples.zip",
+    "bytes": 38158,
+    "sha256": "75e64f75b462ffd022e92b73d6848c94437ebf313284313710a853bf46b99b5b"
+  },
+  "rows": [
+    {
+      "source": "/tmp/t01-c2-preprobe-repair-20261022-01/rowid-shadow-counterexample.py",
+      "member": "01-rowid-shadow-counterexample.py",
+      "bytes": 2001,
+      "sha256": "027f328425c0310fe8a1919c73935f07501b825129d48b0d79ebdefd32b50d5b"
+    },
+    {
+      "source": "/tmp/t01-c2-preprobe-repair-20261022-01/rowid-shadow-counterexample.json",
+      "member": "02-rowid-shadow-counterexample.json",
+      "bytes": 1730,
+      "sha256": "b98ae1a60c00d3fed525d87c4ef7aab6032b43f0b871b8527785ed4922b1fd32"
+    },
+    {
+      "source": "/tmp/t01-c2-preprobe-repair-20261022-01/rowid-shadow-counterexample.log",
+      "member": "03-rowid-shadow-counterexample.log",
+      "bytes": 1343,
+      "sha256": "f04e31461f278e5231720bd94d5faafacb2bd47ff7b8c574e7df389c0b186d59"
+    },
+    {
+      "source": "/tmp/t01-c2-independent-preprobe-20261022-01/scan_probe.py",
+      "member": "04-scan_probe.py",
+      "bytes": 2045,
+      "sha256": "3155cb37c4ba7b5f236ed81035f28319d6f5e5690ec415a6ad927e4a56b6ce36"
+    },
+    {
+      "source": "/tmp/t01-c2-independent-preprobe-20261022-01/scan-evidence.json",
+      "member": "05-scan-evidence.json",
+      "bytes": 4309,
+      "sha256": "ef0c5b3c456e05f27f8fe58c30f735bf4434170a40346fa130a81211c9b8d3c4"
+    },
+    {
+      "source": "/tmp/t01-c2-independent-preprobe-20261022-01/scan-ledger.json",
+      "member": "06-scan-ledger.json",
+      "bytes": 1241394,
+      "sha256": "3f5d51a2a5383b03691e2d8ebf8c4a80573fb1ebe6d171f454464f01cba52fe4"
+    },
+    {
+      "source": "/tmp/t01-c2-independent-preprobe-20261022-01/scan-run-01.log",
+      "member": "07-scan-run-01.log",
+      "bytes": 770,
+      "sha256": "6568ae908f5eafc5d2ff634bc4bedd98708db339b9af5313a00259753592771f"
+    }
+  ]
+}
