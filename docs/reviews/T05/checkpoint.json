@@ -1,7 +1,7 @@
 {
   "task": "T05",
   "ownerThreadId": "01a15bce-021c-74e0-a7ac-a899380b424a",
-  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning",
+  "worktree": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T05-quality-reasoning",
   "branch": "feature/weekly-t05-quality-reasoning",
   "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
   "implementationCommit": "2fcd36b915b190963a1d89d608e896da1a15284e",
@@ -12,7 +12,7 @@
   "humanAuthorizationReadback": {
     "threadId": "01a15bad-ceeb-7103-b611-fff95e1f31ee",
     "turnId": "01a15bb7-8a4b-7e41-9bee-f86a13bfdc36",
-    "scope": "发送并落实到现有总控；按原流程派发后续功能"
+    "scope": "\u53d1\u9001\u5e76\u843d\u5b9e\u5230\u73b0\u6709\u603b\u63a7\uff1b\u6309\u539f\u6d41\u7a0b\u6d3e\u53d1\u540e\u7eed\u529f\u80fd"
   },
   "protectedAgentsSha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
   "protectedAgentsStaged": false,
@@ -85,7 +85,7 @@
     "controllerReadbackSha256": "a09694b55e7ba7c8f1f99d71fdd1af77f5d30431a00b8628123d11c3e72278f0",
     "recoveryIndex": "docs/reviews/T05/fr505-r1-r2-recovery.json"
   },
-  "lastContinuationClassification": "limited interface design progress from new owner facts; original integration Goal remains officially blocked; no unapproved dependency adoption",
+  "lastContinuationClassification": "limited document-only incorporation of new I05/T01 technical responses and next-decision operator/consumer matrix; original Goal remains officially blocked",
   "storeParameterProbe": {
     "approvedStoreGitRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
     "sourceSha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
@@ -108,10 +108,10 @@
     "offerReportSha256": "eb9ee33a7588dc902189c5a13a02741f40cab3b3611c1e5b393108ad84618229",
     "offerHead": "3c0b3bafcdab86159962ff3331bb161c40d349bc",
     "implementationReadOrConsumed": false,
-    "ownerResponses": "fixed26 facts clarified; new value policy/multihead/version/error/path decisions still pending acceptance",
-    "commonInstructionsSha256": "b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39",
-    "sha256": "454cb390040f1511ed20b8bab7e969a427eda48a4ece242dcf32de3e773a2ca5",
-    "internalReview": "passed-proposal-only-original-P2-closed",
+    "ownerResponses": "I05/T01 technical acceptances and current error facts incorporated; Q6/norm pin/full real matrix/public payload/budgets and effective handoff pending",
+    "commonInstructionsSha256": "ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff",
+    "sha256": "889d879c33d7ab0b13f0d1473e42df28957c19328a48a469ec068b05e3128318",
+    "internalReview": "passed-r2-limited-document-only-scope",
     "resourceBaselineCorrection": "resources.py exists in approved5f; only three semantic files new; unapproved candidate deltas still not consumed",
     "latestDependencyReceipt": "docs/reviews/T05/semantic-dependency-c2-receipt.json",
     "offerIdentityStatus": "historical-source-only; approved-C3-source-and-semantics-identity-must-be-rechecked",
@@ -120,7 +120,8 @@
       "decision": "passed-three-owner-reports-and-documentation-diff-only",
       "contractSha256": "f1393622622d69c4c60f334a20a0385d45310ae795c4e3cb96e3c59669cf0485",
       "testsRerun": false
-    }
+    },
+    "effectiveWorkerOwner": "T01; approved5f maintenance only; no unapproved C3 adoption"
   },
   "initialPrivateCoreCommit": "dcc5ec82f5ec6b78997b51436bcc2ca78869abf3",
   "browserEvidence": {
@@ -178,20 +179,62 @@
   },
   "limitedOwnerFactsDesign": {
     "requestFromControllerThread": "01a154de-843b-7a00-8a80-51ba1c0aebce",
-    "scope": "minimal per-owner decision table from newly delivered fixed interface facts only",
+    "scope": "new fixed I05/T01 technical replies incorporated per D/M/P; explicit next-decision operator and consumer matrix",
     "goalAutomaticallyResumed": false,
     "decisionDocument": "docs/iterations/T05/owner-decisions-after-interface-facts.md",
-    "sourceReceipt": "docs/reviews/T05/owner-interface-facts-receipt.json",
+    "sourceReceipt": "docs/reviews/T05/owner-design-responses-r2-receipt.json",
     "allDecisionsAndExtraPathsAccepted": false,
     "implementationOrPublicProtocolChanged": false,
-    "decisionDocumentSha256": "6650363f0195f1a2cb21e2eee2dfe5a072d698275ca3a2f5ef389615fe92a17f",
-    "sourceReceiptSha256": "e1a83ec955f8c0923ef87dc9a21b334e64b87d8c8eb7bed73210a80826f9961c",
+    "decisionDocumentSha256": "e2c148d409d881ebab97c497b4d2647d85fdc9f514690b9e5f9109f7dc3d43f1",
+    "sourceReceiptSha256": "ba7f93175933d51c305d940e6e78c10c7a7d20ffd41c836e3b9569a7d575fd08",
     "independentReview": {
       "agent": "/root/t05_internal_review",
-      "decision": "passed-proposal-only-after-P2-rule-projection-wording-fixed",
-      "actualOwnerAcceptance": false,
+      "decision": "passed-limited-document-scope-after-M6-worker-responsibility-C2-time-and-source-fingerprint-fixes",
+      "actualOwnerAcceptance": "technical responses only; Q6/public schema/consumer policies and effective semantic handoff pending",
       "testsRerun": false,
-      "candidateCodeRead": false
+      "candidateCodeRead": false,
+      "reviewedReceiptSha256BeforeDispositionOnlyUpdate": "5b1a50daaf4dae3205ce1952f57d64e09cb91e655c8ee4b3ba2f03d224aab3a2"
+    },
+    "priorDecisionCommit": "41210534972d50965a2a4ce259660658e3bbdd81",
+    "operatorConsumerMatrix": "docs/iterations/T05/comparison-operator-consumer-matrix-r1.md",
+    "operatorConsumerMatrixSha256": "0d88c843e77da2f05acd6fd3e439e8c573dcb31024aee0f99cf7d49e657bbc6e",
+    "technicalAcceptance": "I05 D1-D9 directions with explicit gaps; T01 full firing, strict identity and actual error-layer boundaries",
+    "q6AndNormativePinAccepted": false,
+    "newOperatorAndConsumerCellsAccepted": false,
+    "diagnosticPublicResourceApprovedOrImplemented": false,
+    "budgetThresholdsMeasured": false,
+    "operatingPolicyUpdate": {
+      "commonPath": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+      "currentCommonSha256": "ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff",
+      "priorB24PrefixBytes": 15574,
+      "priorCommonPrefixByteExact": true,
+      "commonAndAgreementFullRead": true,
+      "executionStateReadScope": "I05T01WorkerOwnershipRequest and current common hash only",
+      "agreementPath": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/iteration-control/2026-10-21-weekly-release/I05-T01-worker-ownership-handoff.md",
+      "agreementSha256": "63c194efc64dae0b7e5b36911027cf69be04df709e9c5152d107baed265450da",
+      "effectiveAt": "2026-10-21T10:21:19.636646+08:00",
+      "onlyNewEffectivePath": "packages/engine/src/ontolearn_engine/worker.py",
+      "uniqueFutureOwner": "T01",
+      "approved5fBytes": 9314,
+      "approved5fSha256": "2fa848aa3a2148e59a24f01c9333701f0f03eed95cffe55a0a78b74f1d06f2f0",
+      "unapprovedC3WorkerReadOrConsumed": false,
+      "otherPathsProtocolAndSemanticFourHandoffChanged": false,
+      "operationOnlyNoRetestOrGoalResume": true,
+      "previousAgreementSha256Observation": "bdacff8a75adc3805b34e284e2d19c10750090e272439e8013f8a51fb7faf782",
+      "agreementBytes": 2885,
+      "currentAgreementAndEffectiveStateReread": true,
+      "currentAgreementPrivateTestPlans": [
+        "packages/engine/tests/test_project_source_transport.py",
+        "packages/engine/tests/test_project_source_worker.py",
+        "tests/unit/t01-source-transport.test.ts"
+      ],
+      "testPlansScope": "T01 existing private prefixes only; no old worker test write authority or test-pass evidence; no T05 path expansion",
+      "oldAgreementBytesArchivedOrExactDiffClaimed": false
+    },
+    "documentValidation": {
+      "prettier": "passed",
+      "gitDiffCheck": "passed",
+      "productTestsRerun": false
     }
   }
 }

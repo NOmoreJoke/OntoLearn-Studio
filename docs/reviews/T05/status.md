@@ -105,3 +105,19 @@
 这是总控明确限定的新设计工作，不代表批准依赖、C3或四文件交接生效，也不将原Goal自动恢复active。Goal仍实际blocked；原2f代码、69dUI/恢复归档及所有未验门保持。此次只改本线文档/来源索引，未读取或运行未批准C3、改公共协议、重测不变UI/产品。M表的现有code/params只作目录结构核对，实际adapter/Store映射仍待接受和实现。
 
 上述有限设计已独立复核通过并关闭一处_source规则投影措辞P2；固定表/receipt/合同SHA见checkpoint和internal-review。D1–D9、M1–M16及P1–P10均保持逐项待接受；当前只提供明确决策与现有DTO建议，不是实际接口已接通。文档格式及差异检查通过，没有改动受测产品，原blocked集成条件继续保持。
+
+## 新负责人回复后的有限设计更新 r2（Goal仍blocked）
+
+本轮实际全文读取并验hash：I05固定ffc462b的23281B设计回复（SHA723368…fc4e），T01固定f51dd38的14185B跨owner回复（SHA0f3ab7…6768，仅采用§1 T05）。新`owner-design-responses-r2-receipt.json`记录来源/范围；旧412提案与旧receipt不改成当时已经接受。
+
+D/M/P现明确区分技术接受、真实现有路由和缺口：D2选择规则独立operand/comparator，未定义跨域六operator均整任务失败；D3直接binary32/64舍入再精确表示值比较、D4独立日历/完整秒/显式时区分域仅技术接受，Q6/规范pin/真实矩阵仍待。D6完整firing和D7严格三字段获I05/T01接受；当前跨实现新消费为IDENTITY_CONFLICT，未来UNSUPPORTED适配未实施。M表复用准确已有token，UNKNOWN origin优先且保留原resource/network分支；不声称所有新caller已接线。T01诊断资源/diagnosticRef仅提案，未批准protocol3，不向旧params或成功rows塞定位。
+
+新增`comparison-operator-consumer-matrix-r1.md`：S/L/I/B各六operator、9域全部有序格及graph/query/SHACL用途，逐格区分I05方向和T05待审政策。消费者允许/拒绝建议不自动改query/FILTER或缩减完整FR505/SHACL。D8已给计费点、阈值未测；P2/P3/P5/P6由I05未来代改、不移交，四路径仍future/not-effective。主合同§4删除被否决的跨非numeric eq=false/ne=true旧建议，§9/§11改为当前回应和待决格。
+
+总控报C3 precheck ready但指定双审0/未合并，本线未重测；未来比较/多head需新于finite5身份。原Goal保持官方blocked，无自动恢复、push/PR/CI/合并。本轮仅文档，无未批实现/库/测试读取或运行，无公共/共享文件改动；原产品2f、635 TS/1200 Python与18个synthetic DOM证据范围不变，不重复测试。独立文档审查和格式/差异结果另见internal-review及checkpoint。
+
+同轮安全边界收到总控10:21单文件生效通知：已全文读worker交接协议（SHA bdacff8…f782）/新版common及execution-state对应生效项。common SHA ff5f9fd…caff，实际验证原b24的15574B为新16317B文件逐字前缀；原§9/桌面限制不变，AGENTS仍78df。worker.py未来唯一owner为T01，仅从批准5f维护，不消费未批C3；D8取消回调的owner表述及主合同责任清单已同步。protocol/resources/语义四路径/旧tests/build/CI等不随转，wire/限额/公共3/ready未获批；纯操作责任记录未触发产品复测或恢复Goal。
+
+独立审查随后发现交接协议/current execution-state的hash已更新；本线再次全文读回当前2885B/SHA `63c194efc64dae0b7e5b36911027cf69be04df709e9c5152d107baed265450da`并匹配生效项。旧bdacff仅保留为先前观察，不冒称持有其完整冻结字节或精确diff。当前明确三个T01既有私有prefix内的测试计划路径，不赋旧worker测试写权，也不是测试已创建/执行/通过；T05权限未扩大，其他边界不变。
+
+本轮独立文档审查明确通过，M6措辞、worker责任/C2时间表述及来源指纹问题均已关闭；完整记录与最终文档hash见internal-review/checkpoint。Prettier和git diff --check通过；仅文档，未重跑产品测试。Goal工具实际仍blocked、objective完整不变；本次设计交付不解除批准依赖/生效四路径/唯一公共接口或原验收门。

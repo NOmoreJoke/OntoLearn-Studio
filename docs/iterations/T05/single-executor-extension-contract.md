@@ -1,6 +1,6 @@
 # T05 同一执行器扩展与真实 trace 适配合同草案
 
-状态：**完整交接提案，待 I05/T01/T00 逐项接受；不是实施、公共格式或文件责任已生效**。依据原 FR-500–505、附录 C/D/G.2；父完整 P0、完整类型/取值支持矩阵、解释、生命周期和指定双审保持。
+状态：**完整交接提案，部分技术方向已获I05/T01回复，Q6、公共格式及实际交接仍未生效，原Goal仍blocked**。依据原 FR-500–505、附录 C/D/G.2；父完整 P0、完整类型/取值支持矩阵、解释、生命周期和指定双审保持。现行接受项/缺口以第11节r2决策表为准；旧来源/提案保留历史，不将回复等同实现。
 
 ## 1. 已实际读回的来源与生效门
 
@@ -39,35 +39,19 @@ T05 **有条件接受未来维护范围**：同一个执行器的 FR505 比较/�
 3. 同一次绑定评估全部比较；满足后一次实例化所有结论。类型结论和受控对象/数据属性结论保留同一规则/版本/绑定，不拆成多条规则。定义与实例化均校验变量闭合、IRI/字面量位置、引用和控制属性。
 4. 任一结论或比较发生错误，整次任务失败且不发布部分current。输出仅推导图，不写断言/场景状态。重复事实集合去重，但全部独立有效触发依据保留。
 5. 全部规则共享冻结闭包，输出不反馈到任何规则或RDFS。保存顺序、集合枚举顺序和hash seed不能改变完整事实/依据集合；展示排序另按获批规范。
-6. 新定义/执行语义版本与旧finite4严格区分。不得靠列表长度猜测旧单triple/new多triple，不把未知字段忽略成旧规则。不支持版本明确拒绝，不伪造协议版本错误。
+6. 新定义/执行语义版本与旧finite4及C3 finite5严格区分；比较/多head需更新身份，不能沿用C3。不得靠列表长度猜测旧单triple/new多triple，不把未知字段忽略成旧规则。不支持版本按实际入口明确拒绝，不伪造协议版本错误；当前跨implementation新消费为IDENTITY_CONFLICT，未来语义adapter仍待批准。
 
 当前本线草稿上限128/文本4096不是I05实际when16/rules100/id128的能力声明；正式适配须消费唯一获批limits并在预览/任务入口一致校验。新comparisons/额外结论的实际预算需要测量后确定，不能默把旧caps当新业务容量通过线。
 
-## 4. 完整类型支持矩阵提案
+## 4. 完整类型、六算子与消费者矩阵
 
-下表是**待采用的比较语义建议**，不是3c0b执行结果或Q6采用。原Q6-01历史报告列出常见类型，但本offer没有逐datatype实测；批准版本到位后要逐行读回真实支持/拒绝及精度/词法边界。不得以只跑小整数缩窄实际支持。
+现行具体表为[比较算子、跨域及消费者矩阵r1](comparison-operator-consumer-matrix-r1.md)，取代本节早期宽泛建议；旧412版本仍在Git。尤其早期“不同非numeric eq=false/ne=true”**已被I05明确否决**：除D3明确numeric混型，未定义跨域/操作在eq/ne/lt/le/gt/ge全部整任务M3失败，不当false/true或合法无匹配。
 
-后续固定26事实响应明确：graph term门不等于FILTER政策；float/double都转Pythonfloat、date值转换剥时区，FILTER错误可False丢行。下表的精度/时区/失败建议因此更不能按现库已支持理解；须逐项接受第11节链接的D表。
+I05技术选择同一执行器内独立operand validator/comparator，不复用FILTER bool/Literal排序，不改变query/FILTER/cast。D3推荐严格词法精确有理数→直接binary32/64 nearest/ties-even→精确表示值比较；D4推荐独立Gregorian日序＋完整秒精度、显式offset/无TZ分域、date起点、date/dateTime不互cast。定义常量与闭合先验，每个完整binding的全部comparisons校验，不因先false隐藏后错。
 
-| RDF值类别                        | eq/ne建议                                                                                       | lt/le/gt/ge建议                                                                  | 必测正反例/边界                                                                     |
-| -------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| IRI                              | 完整IRI同一性；不隐式解引用/大小写折叠                                                          | 不提供语义大小顺序；明确类型不兼容                                               | 相同IRI、仅大小写/尾斜线差异、IRI与字符串不同                                       |
-| plain / xsd:string               | 原始Unicode码点序列，区分大小写/空格，不trim或自动NFC                                           | 确定的Unicode码点词法序，绝不转数值或用locale                                    | 空串、中文、组合字符、字符串10与2不按数值比                                         |
-| rdf:langString                   | 字面值加规范化语言标签；不同语言不相等                                                          | 同标签按码点词法序；不同标签需明确不兼容                                         | zh/zh-CN、标签大小写、同词不同语言                                                  |
-| xsd:boolean                      | 仅布尔值域，true不隐式等于整数1                                                                 | 不提供业务大小顺序                                                               | true/false及合法词法、与数字1/0不串型                                               |
-| xsd:integer                      | 精确整数值                                                                                      | 精确整数序                                                                       | 本22例中的18格、大整数/负数/0/资源上限                                              |
-| xsd:int                          | 值语义；越界词法无效                                                                            | 值语义                                                                           | 32位边界及越界、负值                                                                |
-| xsd:nonNegativeInteger           | 值语义；负词法无效                                                                              | 值语义                                                                           | 0、正值、负值拒绝                                                                   |
-| xsd:decimal                      | 精确十进制值，避免二进制float中转                                                               | 精确十进制序                                                                     | 0.1、负小数、相同数值不同有效位、极大/极小指数或合法词法边界                        |
-| xsd:float                        | 必须先明确按声明值域解释，不能默认Python double等于float32                                      | 有限值序                                                                         | 32位舍入、相邻值、±0、溢出/下溢、NaN/INF策略                                        |
-| xsd:double                       | 按声明有限值语义                                                                                | 有限值序                                                                         | 相邻64位值、±0、大整数跨精度、NaN/INF策略                                           |
-| xsd:date                         | 同型可确定日期值；时区语义明确                                                                  | 双方均有时区时比较规范化值，均无时区时比较同一局部日历域；混合时区信息不全不猜测 | 跨日时区、闰日、无时区/带时区混合、非法日期                                         |
-| xsd:dateTime                     | 同型可确定时刻；不默认本机时区                                                                  | 均有时区规范化比较；均无时区用同一局部域；混合信息不全明确不兼容                 | 相同时刻不同offset、微秒/精度、夏令时文本不引入系统时区                             |
-| 不同numeric datatype             | **待单一政策采用**：推荐比较各声明datatype实际表示的精确值，不隐式丢精度；integer/decimal须精确 | 同左，float/double的实际表示与跨型提升需owner明确                                | integer1/decimal1相等；decimal0.1与binary double0.1的政策；2^53附近；float32/64差异 |
-| 不同非numeric值域                | 建议eq=false/ne=true，禁止字符串数字/布尔数字互转；时间可比域需单独判定                         | 明确不兼容，不默转字符串或跳过                                                   | 字符串1对整数1、boolean true对整数1、IRI对同文本字面量                              |
-| 未支持datatype/无效词法/非有限数 | 区分合法但不支持与非法输入；不编造false通过                                                     | 同左                                                                             | 未知datatype、非法integer/date、NaN/INF/非有限转换                                  |
+上述是**技术答复，不是Q6采纳、规范pin或真实执行证据**。新矩阵补齐同域S/L/I/B六operator、全部有序跨域格及graph/query/SHACL用途；S合域、语言标签分域、IRI/boolean仅eq/ne和消费者允许/拒绝均为T05新提案，待具体审定。图门先于comparator且可能受宿主值范围限制，须同版reason/selected入口与消费者保真政策，不能全局关闭ill_typed/normalize，也不能靠窄拒绝关闭原FR505/SHACL范围。
 
-跨numeric精度是待采用的具体技术决定：若改选标准数值提升策略，必须列出精度丢失例的实际可观察含义并通过Q6，不能一面称精确一面悄悄舍入。上表的建议没有在本线执行或变成隐式默认。完整支持矩阵必须包括每格真实结果或明确受限错误及成本/范围处置，不得用“22例通过”关闭。
+真实验收须覆盖六numeric全部有序混型、2^24/2^53、0.1、巨大整数、ties奇偶、normal/subnormal、±0/溢出下溢，及年零/负年/大年份、闰日、24:00、完整秒/offset/有无TZ、原term与持久/selected一致性。每格提供真实结果或获批受限错误及成本证据；原22例只作输入oracle，不代表完整矩阵已通过。D8计费点已技术接受，阈值仍待测量，见r2决策表。
 
 ## 5. 真实 trace 与22例 oracle的适配
 
@@ -98,9 +82,9 @@ T05 **有条件接受未来维护范围**：同一个执行器的 FR505 比较/�
 
 ## 8. 当前已生效责任补记（操作政策）
 
-已在安全边界全文读取总控新版 developer-common-instructions.md（SHA `b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39`）；AGENTS仍 `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`。第2节T00指接口设计/集成协调角色，**实际当前canonical与接线文件owner按下列生效清单，不据角色抢写**：
+已在安全边界全文读取总控新版 developer-common-instructions.md（最新SHA `ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff`，原b24的15574B逐字保留为前缀）；AGENTS仍 `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`。第2节T00指接口设计/集成协调角色，**实际当前canonical与接线文件owner按下列生效清单，不据角色抢写**：
 
-- T01：storage.py；job_store.py、coordinator.py、`packages/engine/src/ontolearn_engine/__main__.py`、packages/contracts/python/contract_v2.py；contracts/src/index.ts、v2.ts及v2/schema、registry、errors、fixtures、binding-regressions.json；desktop/main/engine.ts。
+- T01：storage.py、worker.py；job_store.py、coordinator.py、`packages/engine/src/ontolearn_engine/__main__.py`、packages/contracts/python/contract_v2.py；contracts/src/index.ts、v2.ts及v2/schema、registry、errors、fixtures、binding-regressions.json；desktop/main/engine.ts。
 - T03：packages/engine/pyproject.toml、uv.lock、scripts/build-engine.mjs、packages/engine/entrypoint.py。
 - I06：main/index.ts、task-service.ts、preload/index.ts、renderer/env.d.ts、App.tsx、style.css。
 - I05：其余未交路径；本合同四语义文件仍只是未来offer，未对T05生效。
@@ -113,7 +97,7 @@ T05 **有条件接受未来维护范围**：同一个执行器的 FR505 比较/�
 
 RDF term equality与值相等不同，因此即使比较判定两值相等，也不能据此合并原RDF term、重写snapshot事实/身份或改变输出三元组去重语义。[RDF 1.1 Literals](https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal)
 
-SPARQL有自己的数值提升、操作数匹配和字符串码点比较规范。本合同的受控规则比较尚未采用该整套政策；IRI/布尔排序和跨numeric精度建议可能与SPARQL不同。owner需明确是否要求规则与查询FILTER同语义；如采用SPARQL路径，应同步精度/类型错误和跨入口正反例，不允许声称“标准兼容”却混用另一值比较政策。[SPARQL 1.1 Operator Mapping](https://www.w3.org/TR/sparql11-query/#OperatorMapping)
+SPARQL有自己的数值提升、操作数匹配和字符串码点比较规范。I05本轮已明确选择规则独立operand/comparator，不采用FILTER bool或Literal通用排序，也不改query/FILTER/cast。本规则方案不宣称整套SPARQL同义，精确数值和日历仍待Q6/norm pin；未来若要求统一，须另接受消费者政策/路径及跨入口证据。[SPARQL 1.1 Operator Mapping](https://www.w3.org/TR/sparql11-query/#OperatorMapping)
 
 负责人后续已确认：rules未扣除断言/RDFS，图去重仍保留不同匹配evidence；同term可有asserted+rule或rdfs+rule来源，RDFS本身与原始输入不重叠。正式显示须分开完整规则输出、新知识差集和trace，不把同事实写回断言或改称全新知识；具体投影/字段仍待采用。
 
@@ -123,12 +107,16 @@ SPARQL有自己的数值提升、操作数匹配和字符串码点比较规范�
 
 证据来源为I05 `docs/reviews/I05/evidence/c2-basis-counterexample/{manifest.json,finding.json.raw}` 及 `round-2/observed-outcome.json`；T05实际只读这三份报告，未读/解包/导入/执行其中列出的产品或probe脚本。报告源和哈希、有限验证范围见本线 `docs/reviews/T05/semantic-dependency-c2-receipt.json`。这是I05独立probe的事实，不是T05重跑证明，也不是新类型/trace政策已采用。
 
-I05正准备C3最小确定性witness修复及新语义身份，当前尚无可由T05采用的批准C3。第1节offer及四个hash仅保留为历史固定来源，**未来交接须重新核对真正批准候选的源码hash、语义身份和selected认证**；不得将旧首次witness行为或旧hash固定成最新不变约束。四路径仍未生效，责任不因本记录转移；原C2、报告和本线既有UI输入保留。
+C2通知时I05正准备C3最小确定性witness修复；后续已报告冻结C3及新语义身份，但当前仍无可由T05采用的批准C3（最新答复见第11节）。第1节offer及四个hash仅保留为历史固定来源，**未来交接须重新核对真正批准候选的源码hash、语义身份和selected认证**；不得将旧首次witness行为或旧hash固定成最新不变约束。四路径仍未生效，责任不因本记录转移；原C2、报告和本线既有UI输入保留。
 
 确定性修复必须保留原解释范围，不自动等于枚举全部RDFS可能证明。RDFS代表依据如何稳定选择须由owner按新候选精确回应，与同规则独立匹配/多结论的真实依据要求分别处理。T05不能通过只比较结论集合、忽略依据差异或补写依据来隐藏该缺陷；正式联验应核对同版完整输出/真实依据稳定性、历史producer语义隔离及源变后的真实变化，不把跨进程选证差异误记成上游数据变更。当前不因依赖消息重跑未变化的UI/输入测试。
 
-## 11. 收到固定接口事实后的最小待决表
+## 11. 负责人新回复后的接受项与缺口
 
-总控已实际转交固定26负责人响应及独立事实审计，本线全文核对三份报告及其hash；此前basis、规则输出和selected/Store职责的事实疑问按第2/5/9节更正，不等于采用新方案。完整来源收据见`docs/reviews/T05/owner-interface-facts-receipt.json`。
+固定26事实及独立审计来源仍见`docs/reviews/T05/owner-interface-facts-receipt.json`。新固定I05 ffc462b与T01 f51dd38文档已全文读回/验hash，当前来源与有限范围见`docs/reviews/T05/owner-design-responses-r2-receipt.json`；只用T01§1，不采用其余模块建议。本线没有读取文档指向的未批准C3实现/库/测试或运行候选。
 
-后续只接受[负责人逐项决策表](owner-decisions-after-interface-facts.md)的D1–D9、M1–M16和P1–P10明确答复：精度/时区/非有限/失败、同binding完整heads与比较trace、producer/consumer版本分区、现有DTO及精确额外路径。所有提案仍待接受，未变更公共协议/代码/责任，未读或运行未批准C3，原Goal仍blocked，旧固定609及原报告不改。
+[当前r2决策表](owner-decisions-after-interface-facts.md)逐项登记D1–D9、M1–M16及P1–P10：I05接受独立比较器、未定义跨域六操作失败、完整firing/单阶段、精确数值/日历技术方向及预算计费点；T01接受全组认证职责和严格三字段，澄清当前IDENTITY_CONFLICT、result_get/rows逐出与Coordinator授权边界。M4–7/M8b/c复用准确现有reason；M3/M8a/M9是未接线新reason，M10保留UNKNOWN优先及既有资源/network分支，不能用目录存在代替真实路由。
+
+仍待：Q6采用及规范pin、矩阵新增S/L/I/B和graph/query/SHACL消费者格、真实全类型/精度/时区矩阵、D8阈值、新多head持久/public包装与M9分类。T01独立受限诊断`semantic.diagnostic.get`/`diagnosticRef`仅技术提案，未批准未实施，不加到现protocol2 params或成功rows，也不存在由此获批的protocol3。定位缺口保持明确。
+
+四语义路径仍future/not-effective，P2/P3/P5/P6为I05未来代改、不移交，query不因D2扩大；P7/P8归T01，P9归T03，P10归I06。I05报告冻结C3 head3289d67（产品69598f3/测试b045）；总控报precheck ready，指定双审0/未合并，不能作为批准依赖。未来比较/多head要新于C3 finite5身份，并重新核对真正批准候选hash/selected认证。原Goal仍blocked，本轮是明确授权的有限设计更新；原产品、输入、证据及全部实际验收门不变。

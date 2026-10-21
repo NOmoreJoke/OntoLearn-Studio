@@ -79,3 +79,15 @@ reviewer实际核对两个差异、上下文、批准5f registry及FR-500/D后�
 首轮发现P2：D6“旧_source仅hash id/when/then”误将规则投影概括成整个摘要。已修18/29行，明确规则投影限制，原图/计划及语义身份绑定保留；独立复核后明确通过，P2关闭。新错误定位段保留真实诊断载体缺口，没有擅加错误参数、借用其他detailRef或把失败伪装成功。
 
 最终决策表SHA `6650363f0195f1a2cb21e2eee2dfe5a072d698275ca3a2f5ef389615fe92a17f`；receipt SHA `e1a83ec955f8c0923ef87dc9a21b334e64b87d8c8eb7bed73210a80826f9961c`；主合同SHA `454cb390040f1511ed20b8bab7e969a427eda48a4ece242dcf32de3e773a2ca5`。12组code/required params/enum仅静态目录核对；未运行adapter/Store校验器、产品/UI测试，未读候选代码/库/归档或改变公共协议。此结论是提案可交负责人回应，不是采纳/实施/解锁或指定双审通过。
+
+## 新I05/T01回复、operator/消费者矩阵及worker责任 r2
+
+独立reviewer `/root/t05_internal_review` 全文只读两份固定owner报告（I05 ffc462b/23281B/723368…fc4e；T01 f51dd38/14185B/0f3ab7…6768，使用仅§1），审查本线r2 D/M/P、operator/consumer矩阵、主合同与来源receipt。确认技术接受和Q6/规范pin/真实运行/阈值/公共包装缺口分开；D2跨域六算子失败、D3直接舍入、D4calendar和graph/消费者门、完整firing/身份/错误origin优先及诊断提案边界准确。矩阵新S/L/I/B和消费者格仍待审，未缩减完整任务或批准新协议。
+
+发现并关闭：M6“非合法subnormal/零”歧义改为“不用于合法”；worker新归T01后D8/合同责任清单同步；C2准备C3句加历史标签；交接协议先前bdacff观察与当前生效指纹不一致，实际重读当前2885B/63c194…50da并更新receipt，旧hash保留历史、不声称持有旧完整字节或精确diff。reviewer亦全文读common/交接协议并核execution-state限定生效项；原b24的15574B逐字前缀、ff5f新common、worker唯T01/从批准5f维护/不消费C3/其他路径不扩权准确。三个T01私有测试仅计划，不授旧tests写权/不算通过。
+
+最终明确“本轮有限文档范围通过，无剩余实质问题”。三个受审文档SHA：决策表 `e2c148d409d881ebab97c497b4d2647d85fdc9f514690b9e5f9109f7dc3d43f1`；矩阵 `0d88c843e77da2f05acd6fd3e439e8c573dcb31024aee0f99cf7d49e657bbc6e`；合同 `889d879c33d7ab0b13f0d1473e42df28957c19328a48a469ec068b05e3128318`。reviewer最终receipt快照SHA `5b1a50daaf4dae3205ce1952f57d64e09cb91e655c8ee4b3ba2f03d224aab3a2`；其后仅在receipt追加本次通过处置，原报告/操作来源字段未变，最终hash见checkpoint。
+
+仅文档格式/差异检查，不读候选实现/库/测试、不运行产品/GUI，不改代码或指定外审。Goal工具再次实际读回blocked且完整objective未变；此通过不替代指定双审、原运行/集成/CI/合并或Goal完成。
+
+封存元数据定点复核另明确通过：三md字节未变；receipt最终 `ba7f93175933d51c305d940e6e78c10c7a7d20ffd41c836e3b9569a7d575fd08` 仅将independentReview还原pending即可逐字恢复5b1a50受审快照，来源字段未变。checkpoint/status/本记录与有限范围一致；无新增问题，无产品复测或C3读取。
