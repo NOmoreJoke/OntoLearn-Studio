@@ -1,0 +1,70 @@
+{
+  "status": "proposed_single_worker_future_maintenance_offer_not_effective",
+  "recordedAt": "2026-10-21T10:11:10.889493+08:00",
+  "sourceControllerChat": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+  "currentOwner": "original I05 semantic-validation",
+  "proposedReceiver": "original T01, in its own worktree based on approved5f; exact receiver checkout independently verified before effectiveness",
+  "offeredFiles": [
+    "packages/engine/src/ontolearn_engine/worker.py"
+  ],
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation",
+  "branch": "feature/I05-semantic-validation",
+  "observedHead": "4c1a571b7077fa98f6537dd364e8ea82ae45426d",
+  "frozenCandidateHead": "3289d67dbfb19545c7a3b3b26753cdd0065741bb",
+  "frozenCandidateManifestSha256": "edfc7a50a0f6fe2edd4038d0328cd47e4f4427a604412acbfbe18442d63b41e4",
+  "fileIdentities": {
+    "fixedC3": {
+      "commit": "3289d67dbfb19545c7a3b3b26753cdd0065741bb",
+      "gitBlob": "ff55d2adc039f82a3e2344c58da6669726dd9935",
+      "bytes": 13638,
+      "sha256": "3d934e79aff65288e1f249e2763f46b4eb86f50bd05ccc7628643951f4d4f99d",
+      "verbatimSnapshot": "docs/reviews/I05/worker-owner-release/c3-worker.py.raw"
+    },
+    "actualWorkingTree": {
+      "observedHead": "4c1a571b7077fa98f6537dd364e8ea82ae45426d",
+      "bytes": 13638,
+      "sha256": "3d934e79aff65288e1f249e2763f46b4eb86f50bd05ccc7628643951f4d4f99d",
+      "equalsFixedC3": true,
+      "equalsObservedHead": true,
+      "trackedDirty": false
+    },
+    "approved5f": {
+      "commit": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "gitBlob": "abc2f8a925eed514d767e3ed3084eaaf523b7a2c",
+      "bytes": 9314,
+      "sha256": "2fa848aa3a2148e59a24f01c9333701f0f03eed95cffe55a0a78b74f1d06f2f0",
+      "verbatimSnapshot": "docs/reviews/I05/worker-owner-release/approved5f-worker.py.raw",
+      "equalsC3": false,
+      "implementationSourceForReceiver": "Only this approved base worker, not unapproved C3 semantic worker additions."
+    }
+  },
+  "futureMaintenanceScope": "Only worker.py adaptations needed for the T01/T03 agreed64KiB chunked source seal/source transport and worker first-frame semantics, with format3 work based on approved5f. This is a maintenance offer, not implementation acceptance or a protocol/source-transport design approval.",
+  "notOffered": [
+    "protocol.py or any protocol/public contract ownership",
+    "resources.py or semantic modules",
+    "any existing or new tests",
+    "coordinator.py and job_store.py ownership already governed by separate T01 agreement",
+    "build scripts/locks/entrypoint/CI or T03 responsibilities",
+    "other desktop or engine paths"
+  ],
+  "noUnapprovedConsumption": "Receiver must not copy, cherry-pick, import, merge or consume C3 semantic worker code or unapproved C3 semantic dependencies. The C3 snapshot is identity evidence and the frozen review subject only. T01 starts from approved5f bytes after this offer becomes effective. No separate combined experimental adoption is authorized.",
+  "effectivenessRequirements": [
+    "T01 actual explicit acceptance of this exact one-file offer and both fixed/base identities",
+    "Independent verification of source identities, approved5f receiver provenance and exact one-file scope",
+    "Root registers the unique maintenance owner and effective time; until then I05 remains sole owner"
+  ],
+  "frozenC3Handling": "Original C3 worker bytes stay unchanged in I05 for full designated review, packaging provenance and audit. Maintenance transfer on approved5f does not alter or rebase the C3 review subject and does not approve C3.",
+  "returnForC3ReviewFix": "If C3 actual review requires worker.py repair after transfer, I05 must first obtain an exact root temporary return/ownership arrangement for this path; no concurrent editing or silent unilateral fix. Any changed C3 execution input requires a new candidate and corresponding full verification/both fresh reviews under the original gates.",
+  "separateFromOtherOffers": "This worker-only offer is independent of the semantic4 C3 future offer and does not make that offer effective. It does not require or confer C3 approval for receiver-only approved5f maintenance; root effectiveness gates above still apply.",
+  "verification": {
+    "frozenTrackedFiles": 1197,
+    "executionInputs": 204,
+    "allFrozenFileBytesUnchanged": true,
+    "actualWorkerUnchanged": true,
+    "guidanceSha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+    "productExecutionOrRetest": false,
+    "currentC3ActualDesignatedTaskCount": 0,
+    "currentUiLease": null,
+    "pushPrCiMerge": false
+  }
+}
