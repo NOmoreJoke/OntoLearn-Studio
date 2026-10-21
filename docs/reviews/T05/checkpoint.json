@@ -4,7 +4,7 @@
   "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning",
   "branch": "feature/weekly-t05-quality-reasoning",
   "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
-  "implementationCommit": "dcc5ec82f5ec6b78997b51436bcc2ca78869abf3",
+  "implementationCommit": "7c94a8834eff8539144dfb90e05c0123ed19bb31",
   "approvedInputTestCommit": "383bc6a2ef77f7610b43a1a1f0cfafa5319f385a",
   "remoteDevelopObserved": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
   "goalStatus": "active",
@@ -20,7 +20,8 @@
     "npmRunCheck": {
       "exitCode": 0,
       "tsTests": 635,
-      "pythonTests": 1200
+      "pythonTests": 1200,
+      "rawLog": "docs/reviews/T05/check-scope-selection.log"
     },
     "qualityPytest": 148,
     "qualityVitest": 5,
@@ -30,7 +31,16 @@
     "agent": "/root/t05_internal_review",
     "decision": "passed-private-preparation-approved-Store-probe-and-controller-R1-R2-input-fixes-only",
     "reviewedFiles": 38,
-    "reportedCombinedSha256": "71021645ca1af60e652a6c6064b59ab10601faed79fb5b06eae77fb1085ebe5b"
+    "reportedCombinedSha256": "71021645ca1af60e652a6c6064b59ab10601faed79fb5b06eae77fb1085ebe5b",
+    "combinedHashScope": "historical-full-38-files-at-fff89f6-before-later-scoped-UI-diff",
+    "latestDiff": {
+      "decision": "passed-two-file-scope-selection-diff-only",
+      "commit": "7c94a8834eff8539144dfb90e05c0123ed19bb31",
+      "sourceHashes": {
+        "apps/desktop/src/renderer/src/quality/QualityWorkspace.tsx": "e6e266244a2b04e7b06104b205b7ff0c13f3e85509db3130aa9315249e6b55e7",
+        "docs/iterations/T05/interface-proposal.md": "5f8d0208ac449a112aad4716a44bad48e47204daa10e5e0eeae3cef16c6c24da"
+      }
+    }
   },
   "approvedInput": {
     "gitRef": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
@@ -39,7 +49,7 @@
     "serviceConsumed": false
   },
   "formalIntegration": false,
-  "designatedDualReview": "pending-controller-resource-queue",
+  "designatedDualReview": "pending-controller-safe-desktop-or-isolated-entry-and-resource-queue",
   "pushed": false,
   "pr": null,
   "ci": null,
@@ -68,7 +78,7 @@
     "controllerAuditDisposition": "docs/reviews/T05/controller-audit-r1-r2.md",
     "controllerNewVersionReadback": "pending"
   },
-  "lastContinuationClassification": "progress: fixed controller R1/R2 with distinguishable 18 comparison cells; same-executor ownership/type/trace/atomicity handoff proposal; no unapproved implementation consumed",
+  "lastContinuationClassification": "progress: corrected unbound derived-validation scope in private UI; independent diff review and full check passed; approved dependency/ownership still unchanged",
   "storeParameterProbe": {
     "approvedStoreGitRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
     "sourceSha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
@@ -95,5 +105,6 @@
     "commonInstructionsSha256": "b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39",
     "sha256": "1a87a035a6a5da54ce78c19ba107855ab19f080b37c28888e0a7a87a71f470c6",
     "internalReview": "passed-proposal-only-original-P2-closed"
-  }
+  },
+  "initialPrivateCoreCommit": "dcc5ec82f5ec6b78997b51436bcc2ca78869abf3"
 }

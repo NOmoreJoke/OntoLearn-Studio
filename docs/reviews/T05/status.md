@@ -65,3 +65,9 @@
 新增 `single-executor-extension-contract.md` 完整交接草案：核对I05未来四路径offer报告及固定SHA，列明同一执行器的比较/多输出、类型矩阵、真实trace、失败原子性及新旧语义身份。T05有条件接受未来责任，但四路径尚未生效；没有读取/复制/导入/运行未批准实现。类型/跨numeric政策、basis精确语义、预算、结果来源及错误映射仍需owner逐项确认。当前canonical/schema由T01、余下bridge由I06维护，T00协调，精确清单见契约第8节。
 
 契约不代替批准依赖、真实联验或指定双审。最新状态为私有准备、输入审计修复及交接提案；完整Goal active，未push/PR/CI/合并。未因责任政策/文档变化重跑未变化的实现测试。
+
+## 未接线 SHACL 范围纠正
+
+本轮核验总控生效记录与远端develop仍为批准5f，四路径offer未生效。自有页面原先可选择“本次推导”，现固定 `7c94a8834eff8539144dfb90e05c0123ed19bb31`：改用批准范围名 `asserted+derived`，缺真实保存结果选择时禁用该选项，说明真实result/输入快照/版本/current-history绑定要求。完整双范围接线与验收继续开放；没有提供第二执行器/接口或把计划结果当实际输入。
+
+独立只读复核两个差异与PRD/批准registry通过；最新完整 `npm run check` 退出0，635 TS / 1200 Python（`check-scope-selection.log`）。此为私有未挂载UI边界修复，无真实双范围/GUI证据。指定双审资源当前总控已实查只有本机桌面入口、暂无获准时段/隔离入口，未启动T05外审；契约owner回应、批准依赖/公共接线/全验收仍待取得。保护AGENTS未暂存，完整Goal继续active。

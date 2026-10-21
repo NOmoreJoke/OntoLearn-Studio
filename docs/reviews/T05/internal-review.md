@@ -53,3 +53,9 @@
 独立reviewer全文读取offer报告及契约，未读四个未批实现。首轮发现P2：`__main__.py`被Markdown解释成强调，责任路径含混；已改完整代码路径，并将T00协调与T01/I06当前维护清晰分开。复核最新全文及第9节标准参考后明确通过，可交owner逐项回应，无剩余明确问题。
 
 受审契约SHA256 `1a87a035a6a5da54ce78c19ba107855ab19f080b37c28888e0a7a87a71f470c6`。该结论只审提案，不代表类型政策采用、四路径交接生效、代码实测或指定双模型审查；未改文件或重复运行代码测试。
+
+## SHACL 范围差异独立审查
+
+reviewer实际核对两个差异、上下文、批准5f registry及FR-500/D后通过：范围名一致，未绑定真实已有result时禁用，无计划推导冒充可用输入，完整双范围验收保留。QualityWorkspace.tsx SHA256 `e6e266244a2b04e7b06104b205b7ff0c13f3e85509db3130aa9315249e6b55e7`，interface-proposal.md SHA256 `5f8d0208ac449a112aad4716a44bad48e47204daa10e5e0eeae3cef16c6c24da`，提交`7c94a88`。
+
+本次只读差异审查未重跑代码测试；开发线最新全check退出0（635 TS / 1200 Python，Python 41.55s）。未运行真实双范围或GUI，不替代指定双审和父验收。
