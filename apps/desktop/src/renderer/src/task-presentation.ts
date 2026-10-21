@@ -1,4 +1,4 @@
-import { safeError, type SafeError, type JobView } from '@ontolearn/contracts'
+import { safeDisplayError, type SafeError, type JobView } from '@ontolearn/contracts'
 
 export interface ErrorExplanation {
   what: string
@@ -12,7 +12,7 @@ export function explainError(
   value: SafeError,
   context: 'health' | 'task' | 'result',
 ): ErrorExplanation {
-  const error = safeError(value)
+  const error = safeDisplayError(value)
   const base = {
     what: context === 'health' ? '本地引擎检查未完成。' : '本次操作未完成。',
     why: '系统无法确认本次操作的有效结果。',
@@ -20,6 +20,13 @@ export function explainError(
     detail: `错误代码：${error.code}。重试提示不代表允许自动重放写入。`,
   }
   switch (error.messageKey) {
+    case 'project.formatUnsupported':
+      return {
+        ...base,
+        what: '项目格式暂不受支持。',
+        why: '当前内部引擎不能打开此项目格式。',
+        fix: '保留项目文件并使用兼容版本后重新检查。',
+      }
     case 'permission.denied':
       return { ...base, why: '当前窗口没有该项目的访问授权。', fix: '返回已打开的项目后重新查询。' }
     case 'protocol.versionIncompatible':
@@ -53,7 +60,7 @@ export function explainError(
     case 'engine.exited':
       return {
         ...base,
-        what: '本地引擎连接已中断。',
+        what: '本地引擎当前不可用。',
         why: '协调器进程已退出，最终状态需要对账。',
         fix: '重新检查连接并刷新任务状态，确认提交点后再操作。',
       }
