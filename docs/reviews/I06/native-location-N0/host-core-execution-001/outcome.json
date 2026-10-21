@@ -1,0 +1,44 @@
+{
+  "kind": "observed single authorized host case failure, no retry or product fix",
+  "fixedCallRef": "b942e12cd122873109f4bd16d51e06e05ad7005d",
+  "sourceRef": "b59239f9c1ec2774c7922f95dfc67db4dc8754e8",
+  "pairInputRef": "15163b380035a3b402d5dbb485ab6d3d05e4e559",
+  "pairProcessRef": "113e324d7420ec06c885ca2d8a634e68f2d85c9e",
+  "dispatchCount": 1,
+  "sessionId": 57976,
+  "toolExitCode": 1,
+  "coreReturncode": 1,
+  "coreWaitStatus": 256,
+  "status": "FAILED_CORE_NONZERO_OR_SIGNAL",
+  "waitOutcome": "terminal",
+  "leaderState": "reaped",
+  "cancelSignal": 0,
+  "processApiRefusedOrWaitUnknown": false,
+  "events": [],
+  "waitAndCleanupElapsedSeconds": 2.54215675,
+  "scopeOfElapsed": "recorded controller wait/post-receipt phase only; not complete command wall time or performance claim",
+  "prePostPairIdentical": true,
+  "streams": [
+    {
+      "bytes": 0,
+      "name": "core.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stable": true
+    },
+    {
+      "bytes": 33,
+      "name": "core.stderr",
+      "sha256": "515e1cd5e4acaeaf8ac081ce18268aa2e7a007720811dbf06063d6f845866708",
+      "stable": true
+    }
+  ],
+  "stderrLiteral": "N0 fixture failure: owner-create\n",
+  "failureAttribution": "generic owner-create fixture label only; record does not identify owner instance or underlying native status; no root cause inferred",
+  "nativeDrainCertified": false,
+  "fixtureOrDescendantResidual": "unknown; no process census or /tmp scan/delete",
+  "timeoutOrGroupSignalsRecorded": false,
+  "retry": false,
+  "furtherExecutionAuthorized": false,
+  "productSourceChanged": false,
+  "hostAcceptance": "FAILED; limited host component case only, not full N0 or cross-OS"
+}
