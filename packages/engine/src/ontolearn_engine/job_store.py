@@ -43,24 +43,42 @@ class JobStore(Store):
         now_ms=None,
         cursor_ttl_ms: int = 60000,
         max_cursor_records: int = 256,
+        target_format: int = FORMAT_VERSION,
+        backup_path: str | Path | None = None,
+        migration_hook: Hook = lambda _: None,
+        job_migration_hook: Hook = lambda _: None,
     ):
+        if type(target_format) is not int or target_format not in {2, 3}:
+            raise ValueError("Unsupported target project format")
         if not 1 <= cursor_ttl_ms <= 60000 or not 1 <= max_cursor_records <= 4096:
             raise ValueError("Invalid projection bounds")
         self.contract = contract
         self.now_ms = now_ms or (lambda: int(time.time() * 1000))
         self.cursor_ttl_ms = cursor_ttl_ms
         self.max_cursor_records = max_cursor_records
-        self._lease = open(str(path) + ".writer-lock", "a+b")
+        self._lease = None
         try:
-            self._lock()
-            super().__init__(path)
-            with self._transaction():
-                for sql in JOB_SCHEMA:
-                    self._db.execute(sql)
+            # Default2 keeps the approved lease path. Explicit3 delegates its one
+            # lifetime lease to Store; never acquire that same inode a second time.
+            if target_format == 2:
+                self._lease = open(str(path) + ".writer-lock", "a+b")
+                self._lock()
+            super().__init__(
+                path, migration_hook, target_format=target_format, backup_path=backup_path
+            )
+            if target_format == 3:
+                self._migrate_job3(job_migration_hook)
+            else:
+                with self._transaction():
+                    for sql in JOB_SCHEMA:
+                        self._db.execute(sql)
         except BaseException:
             if hasattr(self, "_db"):
                 self._db.close()
-            self._lease.close()
+            if getattr(self, "_format3_lease", None) is not None:
+                self._format3_lease.close()
+            if self._lease is not None:
+                self._lease.close()
             raise
 
     def _lock(self):
@@ -85,7 +103,133 @@ class JobStore(Store):
         try:
             super().close()
         finally:
-            self._lease.close()  # OS lock releases on close/crash; never unlink a leased inode.
+            if self._lease is not None:
+                self._lease.close()  # OS release on close/crash; never unlink a leased inode.
+
+    def _migrate_job3(self, hook):
+        from ontolearn_engine.project.format3 import Format3Fault, _schema
+
+        # A durable layer marker is schema evidence, never session/hello authority.
+        catalog = self._db.execute("SELECT 1 FROM sqlite_master WHERE name='job_format'").fetchone()
+        if catalog:
+            with self._read():
+                self._validate_job3()
+            return
+        old_objects = {_job_object_name(sql): sql for sql in JOB_SCHEMA}
+        present = {
+            r[0]: r[1]
+            for r in self._db.execute(
+                "SELECT name,sql FROM sqlite_master WHERE name IN ("
+                + ",".join("?" for _ in old_objects)
+                + ")",
+                tuple(old_objects),
+            )
+        }
+        if present and (
+            set(present) != set(old_objects)
+            or any(_schema(present[name]) != _schema(sql) for name, sql in old_objects.items())
+        ):
+            raise Format3Fault("structure")
+        source = "v2" if present else "new"
+        with self._transaction(lambda phase: hook("job3_" + phase)):
+            if source == "new":
+                for sql in JOB3_SCHEMA:
+                    self._db.execute(sql)
+                    hook("job3_ddl:" + _job_object_name(sql))
+            else:
+                # Only the actual global claim table is evolved. Original identity,
+                # context fingerprint and job references remain byte-for-byte.
+                self._db.execute("ALTER TABLE operation_claims RENAME TO operation_claims_v2")
+                hook("job3_claims_renamed")
+                self._db.execute(JOB3_CLAIMS)
+                self._db.execute(
+                    "INSERT INTO operation_claims(operation,project,job,fingerprint,kind,context) "
+                    "SELECT operation,project,job,fingerprint,'job',NULL FROM operation_claims_v2"
+                )
+                hook("job3_claims_copied")
+                self._db.execute("DROP TABLE operation_claims_v2")
+                for sql in JOB3_SCHEMA:
+                    if _job_object_name(sql).startswith("immutable_operation_claims_"):
+                        self._db.execute(sql)
+                hook("job3_claims_swapped")
+            for sql in JOB3_CATALOG:
+                self._db.execute(sql)
+                hook("job3_ddl:" + _job_object_name(sql))
+            for row in self._db.execute("SELECT id FROM projects ORDER BY id").fetchall():
+                self.public_project(row[0])
+                hook("job3_identity")
+            self._db.execute("INSERT INTO job_format VALUES(1,3,?,?)", (JOB3_HASH, source))
+            hook("job3_catalog")
+            self._validate_job3()
+            hook("job3_validated")
+
+    def _validate_job3(self):
+        from ontolearn_engine.project.format3 import Format3Fault, _json, _schema
+
+        try:
+            for sql in JOB3_SCHEMA + JOB3_CATALOG:
+                row = self._db.execute(
+                    "SELECT sql FROM sqlite_master WHERE name=?", (_job_object_name(sql),)
+                ).fetchone()
+                if row is None or _schema(row[0]) != _schema(sql):
+                    raise Format3Fault("structure")
+            catalog = self._db.execute("SELECT * FROM job_format").fetchall()
+            if (
+                len(catalog) != 1
+                or catalog[0]["schema_version"] != 3
+                or catalog[0]["schema_hash"] != JOB3_HASH
+                or catalog[0]["source_kind"] not in {"new", "v2"}
+            ):
+                raise Format3Fault("structure")
+            if self._db.execute("PRAGMA foreign_key_check").fetchone() is not None:
+                raise Format3Fault("structure")
+            projects = {r[0] for r in self._db.execute("SELECT id FROM projects")}
+            public = self._db.execute("SELECT * FROM public_projects").fetchall()
+            if projects != {r["internal"] for r in public} or any(
+                not isinstance(r["public"], str) or not UUID.fullmatch(r["public"]) for r in public
+            ):
+                raise Format3Fault("structure")
+            jobs = {r[0] for r in self._db.execute("SELECT id FROM jobs")}
+            claimed = set()
+            for claim in self._db.execute("SELECT * FROM operation_claims"):
+                if (
+                    not isinstance(claim["operation"], str)
+                    or not UUID.fullmatch(claim["operation"])
+                    or claim["kind"] != "job"
+                    or claim["context"] is not None
+                ):
+                    # Non-Job rows require the forthcoming trusted app adapter and
+                    # receipt validator, not merely a permissive kind column.
+                    raise Format3Fault("structure")
+                row = self._db.execute("SELECT * FROM jobs WHERE id=?", (claim["job"],)).fetchone()
+                if row is None:
+                    raise Format3Fault("structure")
+                context = _json(row["context"])
+                dto = _json(row["dto"])
+                if not self.contract.validate("job", dto):
+                    raise Format3Fault("structure")
+                if (
+                    dto["jobId"] != row["id"]
+                    or dto["projectId"] != claim["project"]
+                    or dto["operationId"] != claim["operation"]
+                ):
+                    raise Format3Fault("structure")
+                self._accepted_job(
+                    claim,
+                    claim["project"],
+                    context["capability"],
+                    context["input"],
+                    context["confirmationRef"],
+                    context["implementation"],
+                    context["limits"],
+                )
+                claimed.add(claim["job"])
+            if claimed != jobs:
+                raise Format3Fault("structure")
+        except Format3Fault:
+            raise
+        except (ValueError, KeyError, TypeError, OverflowError):
+            raise Format3Fault("structure") from None
 
     def _valid(self, schema, value, field="params"):
         if not self.contract.validate(schema, value):
@@ -163,6 +307,14 @@ class JobStore(Store):
         for row in rows:
             self._valid("row", row, "config")
 
+    def create_project(self, project: str) -> None:
+        if self._target_format != 3:
+            return super().create_project(project)
+        # Format3 publishes domain/app genesis and its public identity atomically.
+        with self._transaction():
+            super().create_project(project)
+            self.public_project(project)
+
     def public_project(self, internal: str) -> str:
         self.revision(internal)
         with self._transaction():
@@ -193,7 +345,7 @@ class JobStore(Store):
                 "projectRevision": self.revision(internal),
                 "inputSnapshotId": self.snapshot(internal),
                 "dependencyVector": self.vector(internal),
-                "formatVersion": FORMAT_VERSION,
+                "formatVersion": self.actual_format,
             }
 
     def put_blob(self, project, value):
@@ -476,10 +628,18 @@ class JobStore(Store):
                     fingerprint,
                 ),
             )
-            self._db.execute(
-                "INSERT INTO operation_claims VALUES(?,?,?,?)",
-                (operation, project, identity, fingerprint),
-            )
+            if self._target_format == 3:
+                self._db.execute(
+                    "INSERT INTO operation_claims(operation,project,job,fingerprint,kind,context) "
+                    "VALUES(?,?,?,?,'job',NULL)",
+                    (operation, project, identity, fingerprint),
+                )
+            else:
+                self._db.execute(
+                    "INSERT INTO operation_claims(operation,project,job,fingerprint) "
+                    "VALUES(?,?,?,?)",
+                    (operation, project, identity, fingerprint),
+                )
             return job
 
     def _accepted_job(
@@ -491,7 +651,7 @@ class JobStore(Store):
         accepted source's present payload availability/currentness is irrelevant.
         New operations still use all normal live-reference validation above.
         """
-        if claim["project"] != project:
+        if claim["project"] != project or (self._target_format == 3 and claim["kind"] != "job"):
             fault("IDENTITY_CONFLICT")
         row = self._db.execute("SELECT * FROM jobs WHERE id=?", (claim["job"],)).fetchone()
         if row is None:
@@ -1526,3 +1686,39 @@ JOB_SCHEMA.append(
     "CREATE TRIGGER IF NOT EXISTS immutable_jobs_DELETE BEFORE DELETE ON jobs "
     "BEGIN SELECT RAISE(ABORT,'immutable job history'); END"
 )
+
+
+# Explicit3 evolves the one approved schema; default2 retains JOB_SCHEMA unchanged.
+def _job_object_name(sql):
+    normalized = sql.replace("IF NOT EXISTS ", "")
+    return (
+        normalized.split()[2]
+        if normalized.startswith("CREATE TRIGGER")
+        else normalized.partition("(")[0].split()[-1]
+    )
+
+
+JOB3_CLAIMS = (
+    "CREATE TABLE operation_claims(operation TEXT PRIMARY KEY NOT NULL,"
+    "project TEXT NOT NULL REFERENCES public_projects(public),"
+    "job TEXT UNIQUE REFERENCES jobs(id),fingerprint TEXT NOT NULL,"
+    "kind TEXT NOT NULL CHECK(kind IN ('job','application')),context TEXT,"
+    "CHECK((kind='job' AND job IS NOT NULL AND context IS NULL) OR "
+    "(kind='application' AND job IS NULL AND context IS NOT NULL)))"
+)
+JOB3_SCHEMA = [
+    JOB3_CLAIMS
+    if _job_object_name(sql) == "operation_claims"
+    else sql.replace("IF NOT EXISTS ", "")
+    for sql in JOB_SCHEMA
+]
+JOB3_CATALOG = [
+    "CREATE TABLE job_format(singleton INTEGER PRIMARY KEY CHECK(singleton=1),"
+    "schema_version INTEGER NOT NULL CHECK(schema_version=3),schema_hash TEXT NOT NULL,"
+    "source_kind TEXT NOT NULL CHECK(source_kind IN ('new','v2')))"
+] + [
+    f"CREATE TRIGGER immutable_job_format_{action} BEFORE {action} ON job_format "
+    "BEGIN SELECT RAISE(ABORT,'immutable job schema evidence'); END"
+    for action in ("UPDATE", "DELETE")
+]
+JOB3_HASH = digest(JOB3_SCHEMA + JOB3_CATALOG)

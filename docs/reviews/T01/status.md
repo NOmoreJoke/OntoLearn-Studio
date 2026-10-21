@@ -114,3 +114,11 @@ Goal保持 active：父功能FR-001–006/804全部完成、持久项目/草稿/
 12共享基础文件（I05四Python+I06 canonical/main八）现已逐路径双实体核验、接受、独立复核并由总控登记生效；本阶段未修改这12文件。全文读最新common SHA `b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39`，AGENTS仍78df...97a759；两agent实际透传，主内审已全文核验回执，设计agent待下个正常边界。纯责任政策不重启Goal、不改变旧冻结输入。T03构建四/原I06余六、既有tests/worker/protocol/resources/CI仍不扩权。
 
 已实际读T03/T04/T05/T07/T09/T10精确接点材料，T07三固定f9原件hash全部匹配总控；未采用其未批准实现。后续先在已生效JobStore唯一责任内统一实际job/application claim与同连接CAS/receipt/checkpoint/两层ready，再依次正式adapter。StageA只是Store-ready内部层，不是Job-ready/持久应用CAS/协议3或FR-001–006/804完成，无指定外审/push/PR/CI/合并/上线证据。Goal保持active。
+
+## 总控逐DDL覆盖审计处置与Job schema3内部推进
+
+4858cf178113697c1312e06cfc0ec469db31f363为StageA恢复提交。总控发现“每DDL”措辞大于原实际覆盖后，本线保留原承诺，补充显式3旧domain逐语句即时hook/四类故障和可选retirement四类；新定向172 passed526deselected、实际trace 53/29/21/30条一一对应，独立同样172通过，详见format3-ddl-coverage-review.md。不用缩小验收措辞代替实现，不重跑无变化旧矩阵。原26/16/33/2与WIP失败工具原字节另归档并给原session行/offset/hash；原8tar未改，不伪称曾包含。
+
+Job层已实际完成有界schema3阶段：同一个Store lifetime lease、严格第二层迁移/原claim kind与context唯一演进、保留旧Job指纹和重试、公有身份原子、旧Coordinator拒3。212专项+独立含旧JobStore377通过；新增入口6及独立默认Coordinator/分页22通过，静态/格式/diff通过。尚未做新完整全仓，不沿用1699覆盖新源码；详细边界job3-schema-review.md。
+
+本阶段恢复提交后继续真实非Job同连接Store.commit应用CAS/混合receipt/checkpoint/稳定操作sequence及reconcile/公共同版ready。不能把schema层或kind列存在算应用CAS、Job-ready或公共3完成。全文新共同指令已由两独立agent核验回执；Goal保持active，不push。

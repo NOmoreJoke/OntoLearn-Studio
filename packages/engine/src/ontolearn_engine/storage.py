@@ -170,8 +170,10 @@ class Store:
             if version not in {0, 1, 2}:
                 raise ValueError("Unsupported project format")
             if version == 0:
-                for statement in SCHEMA:
+                for index, statement in enumerate(SCHEMA):
                     self._db.execute(statement)
+                    if target == 3:
+                        hook(f"format3_v1_ddl:{index}")
                 self._db.execute("PRAGMA user_version=1")
                 hook("v1_created")
             if version < 2:
@@ -179,6 +181,8 @@ class Store:
                     "CREATE TABLE mapping_state(project TEXT REFERENCES projects(id),owner TEXT,"
                     "generated_version INTEGER,PRIMARY KEY(project,owner))"
                 )
+                if target == 3:
+                    hook("format3_v2_ddl:mapping_state")
                 hook("mapping_state_created")
                 self._db.execute(
                     "INSERT INTO mapping_state SELECT DISTINCT project,owner,-1 "
@@ -191,21 +195,31 @@ class Store:
                     "after_snapshot TEXT REFERENCES snapshots(id),PRIMARY KEY(project,operation),"
                     "FOREIGN KEY(project,operation) REFERENCES commits(project,operation))"
                 )
+                if target == 3:
+                    hook("format3_v2_ddl:commit_evidence")
                 hook("commit_evidence_created")
                 for action in ("UPDATE", "DELETE"):
                     self._db.execute(
                         f"CREATE TRIGGER immutable_commit_evidence_{action} BEFORE {action} "
                         "ON commit_evidence BEGIN SELECT RAISE(ABORT,'immutable evidence'); END"
                     )
+                    if target == 3:
+                        hook(f"format3_v2_ddl:immutable_commit_evidence_{action}")
                 hook("immutable_triggers_created")
                 self._db.execute("CREATE TABLE migration_log(version INTEGER PRIMARY KEY)")
+                if target == 3:
+                    hook("format3_v2_ddl:migration_log")
                 self._db.execute("INSERT INTO migration_log VALUES(2)")
+                if target == 3:
+                    hook("format3_v2_backfill:migration_log")
                 self._db.execute(
                     "CREATE TABLE current_results_v2(project TEXT REFERENCES projects(id),"
                     "kind TEXT,"
                     "implementation TEXT,result TEXT REFERENCES results(id),"
                     "PRIMARY KEY(project,kind,implementation))"
                 )
+                if target == 3:
+                    hook("format3_v2_ddl:current_results_v2")
                 self._db.execute(
                     "INSERT INTO current_results_v2 "
                     "SELECT c.project,c.kind,r.implementation,c.result "
@@ -213,7 +227,11 @@ class Store:
                 )
                 hook("current_results_copied")
                 self._db.execute("DROP TABLE current_results")
+                if target == 3:
+                    hook("format3_v2_ddl:drop_current_results")
                 self._db.execute("ALTER TABLE current_results_v2 RENAME TO current_results")
+                if target == 3:
+                    hook("format3_v2_ddl:rename_current_results")
                 hook("current_results_replaced")
                 hook("migration_mid")
                 self._db.execute("PRAGMA user_version=2")

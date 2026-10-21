@@ -67,6 +67,10 @@ class Coordinator:
         limits: dict | None = None,
         emit=None,
     ):
+        # Explicit Store3/Job schema experiments cannot acquire a v2 public
+        # session. Replace this gate only with the full same-version ready path.
+        if getattr(store, "actual_format", 2) != 2:
+            raise ServiceFault("INVALID_STATE")
         self.store = store
         self.test_mode = test_mode
         self.allowed_projects = allowed_projects or set()

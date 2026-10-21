@@ -9,7 +9,7 @@ import sys
 import pytest
 from ontolearn_engine.project import format3
 from ontolearn_engine.project.format3 import Format3Fault, logical_hash
-from ontolearn_engine.storage import FORMAT_VERSION, Conflict, Store, canonical, digest
+from ontolearn_engine.storage import FORMAT_VERSION, SCHEMA, Conflict, Store, canonical, digest
 from test_storage import make_legacy
 
 IMPL = {
@@ -479,21 +479,36 @@ def test_forged_receipt_cannot_prove_checkpoint_source(tmp_path, kind):
     store.close()
 
 
-def test_older_v1_without_optional_retirement_table_migrates_atomically(tmp_path):
+@pytest.mark.parametrize("failure", ["exception", "cancel", "disk", "exit"])
+def test_older_v1_without_optional_retirement_table_migrates_atomically(tmp_path, failure):
     path = tmp_path / "old.db"
     make_legacy(path)
     con = sqlite3.connect(path)
     con.execute("DROP TABLE definition_retirements")
     con.close()
     original = frozen(path)
+    backup = tmp_path / "first-backup.db"
+    if failure == "exit":
+        script = """import os,sys
+from ontolearn_engine.storage import Store
+def hook(p):
+    if p=='format3_domain_retirements': os._exit(79)
+Store(sys.argv[1],hook,target_format=3,backup_path=sys.argv[2])
+"""
+        result = subprocess.run(
+            [sys.executable, "-c", script, str(path), str(backup)], capture_output=True, timeout=15
+        )
+        assert result.returncode == 79, result.stderr.decode()
+    else:
+        error = {"exception": RuntimeError, "cancel": KeyboardInterrupt, "disk": OSError}[failure]
 
-    def hook(phase):
-        if phase == "format3_domain_retirements":
-            raise OSError("injected")
+        def hook(phase):
+            if phase == "format3_domain_retirements":
+                raise error("injected")
 
-    with pytest.raises(OSError):
-        Store(path, hook, target_format=3, backup_path=tmp_path / "first-backup.db")
-    assert frozen(path) == original
+        with pytest.raises(error):
+            Store(path, hook, target_format=3, backup_path=backup)
+    assert frozen(path) == original and frozen(backup) == original
     store = Store(path, target_format=3, backup_path=tmp_path / "second-backup.db")
     assert store._has_retirements() and store.actual_format == 3
     store.close()
@@ -524,3 +539,56 @@ def test_domain_revision_limit_never_publishes_unreadable_store(tmp_path, start)
     assert reopened.project_checkpoint("p")["domainRevision"] == format3.MAX_VERSION
     assert frozen(path) == before
     reopened.close()
+
+
+DOMAIN_V2_PHASES = [
+    "format3_v2_ddl:" + name
+    for name in (
+        "mapping_state",
+        "commit_evidence",
+        "immutable_commit_evidence_UPDATE",
+        "immutable_commit_evidence_DELETE",
+        "migration_log",
+        "current_results_v2",
+        "drop_current_results",
+        "rename_current_results",
+    )
+] + ["format3_v2_backfill:migration_log"]
+DOMAIN_DDL_CASES = [(0, "format3_v1_ddl:" + str(i)) for i in range(len(SCHEMA))] + [
+    (version, phase) for version in (0, 1) for phase in DOMAIN_V2_PHASES
+]
+
+
+@pytest.mark.parametrize("version,phase", DOMAIN_DDL_CASES)
+@pytest.mark.parametrize("failure", ["exception", "cancel", "disk", "exit"])
+def test_migration_individual_domain_ddl(tmp_path, version, phase, failure):
+    path, backup = tmp_path / "p.db", tmp_path / "backup.db"
+    synthetic(path, version)
+    before = frozen(path)
+    if failure == "exit":
+        script = """import os,sys
+from ontolearn_engine.storage import Store
+def hook(p):
+    if p==sys.argv[3]: os._exit(79)
+Store(sys.argv[1],hook,target_format=3,backup_path=sys.argv[2])
+"""
+        result = subprocess.run(
+            [sys.executable, "-c", script, str(path), str(backup), phase],
+            capture_output=True,
+            timeout=15,
+        )
+        assert result.returncode == 79, result.stderr.decode()
+    else:
+        error = {"exception": RuntimeError, "cancel": KeyboardInterrupt, "disk": OSError}[failure]
+
+        def hook(p):
+            if p == phase:
+                raise error("injected")
+
+        with pytest.raises(error):
+            Store(path, hook, target_format=3, backup_path=backup)
+    assert frozen(path) == before and frozen(backup) == before
+    # No partial2/3 or lost immutable history, including real process death.
+    assert frozen(path)["format"] == version
+    lease = format3.acquire_lease(path)
+    lease.close()
