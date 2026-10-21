@@ -31,6 +31,22 @@ def digest(value: object) -> str:
     return hashlib.sha256(canonical(value).encode()).hexdigest()
 
 
+class UnsupportedProjectFormat(ValueError):
+    """Only raised by actual database-version checks, never configuration parsing."""
+
+
+def _close_resources(resources):
+    """Attempt each owned close once; callers retain the primary failure."""
+    failures = []
+    for name, resource in resources:
+        if resource is not None:
+            try:
+                resource.close()
+            except BaseException as error:
+                failures.append((name, error))
+    return failures
+
+
 class Conflict(ValueError):
     """A plan must be previewed again or its ownership conflict resolved."""
 
@@ -84,10 +100,9 @@ class Store:
             if invalid_kind:
                 raise ValueError("Invalid legacy result kind; explicit repair required")
         except BaseException:
-            if hasattr(self, "_db"):
-                self._db.close()
-            if self._format3_lease is not None:
-                self._format3_lease.close()
+            self._cleanup_failures = _close_resources(
+                [("database", getattr(self, "_db", None)), ("format3Lease", self._format3_lease)]
+            )
             raise
 
     @property
@@ -95,11 +110,11 @@ class Store:
         return self._db.execute("PRAGMA user_version").fetchone()[0]
 
     def close(self) -> None:
-        try:
-            self._db.close()
-        finally:
-            if self._format3_lease is not None:
-                self._format3_lease.close()
+        self._cleanup_failures = _close_resources(
+            [("database", self._db), ("format3Lease", self._format3_lease)]
+        )
+        if self._cleanup_failures:
+            raise self._cleanup_failures[0][1]
 
     @contextmanager
     def _transaction(self, hook: Hook = lambda _: None) -> Iterator[None]:
@@ -134,7 +149,7 @@ class Store:
         version = self.actual_format
         target = self._target_format
         if version > target:
-            raise ValueError("Unsupported future project format")
+            raise UnsupportedProjectFormat("Unsupported future project format")
         if version == target:
             if target == 3:
                 from ontolearn_engine.project.format3 import validate
@@ -155,7 +170,7 @@ class Store:
         with self._transaction(hook):
             version = self._db.execute("PRAGMA user_version").fetchone()[0]
             if version > target:
-                raise ValueError("Unsupported future project format")
+                raise UnsupportedProjectFormat("Unsupported future project format")
             if version == target:
                 if target == 3:
                     from ontolearn_engine.project.format3 import validate

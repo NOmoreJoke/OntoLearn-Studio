@@ -318,7 +318,34 @@ export function validateV2(name: string, value: unknown): boolean {
   return true
 }
 
-/** Foundation validation only. The production supervisor still negotiates v2. */
+/** A value check only: provenance, pre-hello, profile and once belong to the supervisor. */
+export function validateStartupError(value: unknown): boolean {
+  try {
+    return validateV2('error_startup', value)
+  } catch {
+    return false
+  }
+}
+
+/** payloadByteLength must come from the transport's original bytes, never re-encoding. */
+export function validateStartupFailure(
+  value: unknown,
+  payloadByteLength: number,
+  expectedRegistryHash: string,
+): boolean {
+  return (
+    Number.isSafeInteger(payloadByteLength) &&
+    payloadByteLength > 0 &&
+    payloadByteLength <= errorCatalog.startup.maxPayloadBytes &&
+    typeof expectedRegistryHash === 'string' &&
+    /^[0-9a-f]{64}$/.test(expectedRegistryHash) &&
+    validateV2('startupFailure', value) &&
+    (value as Record<string, unknown>).registryHash === expectedRegistryHash
+  )
+}
+
+/** Strict explicit profile validation. It never selects runtime or attests readiness. */
+
 export function validateBusiness3(name: string, value: unknown): boolean {
   const profiles: Record<string, string> = {
     request: 'request3',

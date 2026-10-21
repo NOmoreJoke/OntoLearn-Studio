@@ -261,8 +261,55 @@ def validate(name, value):
         return False
 
 
+def validate_startup_failure(value, payload_byte_length, expected_registry_hash):
+    """Original-byte budget only; attempt/profile/provenance are runtime-owned."""
+    return (
+        type(payload_byte_length) in {int, float}
+        and 0 < payload_byte_length <= ERROR_CATALOG["startup"]["maxPayloadBytes"]
+        and payload_byte_length == int(payload_byte_length)
+        and isinstance(expected_registry_hash, str)
+        and re.fullmatch(r"[0-9a-f]{64}", expected_registry_hash) is not None
+        and validate("startupFailure", value)
+        and value["registryHash"] == expected_registry_hash
+    )
+
+
+def startup_error(code, params=None):
+    """Construct only the canonical finite startup projection, or safe internal error."""
+    from copy import deepcopy
+
+    spec = ERROR_CATALOG["startup"]["codes"].get(code)
+    if spec is not None:
+        candidate = {
+            "code": code,
+            "messageKey": spec["messageKey"],
+            "retryable": spec["retryable"],
+            "params": {} if params is None else deepcopy(params),
+        }
+        if validate("error_startup", candidate):
+            return candidate
+    return startup_error("INTERNAL_ERROR", {})
+
+
+def business3_error(code, params=None):
+    """Normal business3 errors stay in error3; startup-only codes cannot enter it."""
+    from copy import deepcopy
+
+    spec = ERROR_CATALOG["codes"].get(code)
+    if spec is not None:
+        candidate = {
+            "code": code,
+            "messageKey": spec["messageKey"],
+            "retryable": spec["retryable"],
+            "params": {} if params is None else deepcopy(params),
+        }
+        if validate_business3("error", candidate):
+            return candidate
+    return business3_error("INTERNAL_ERROR", {})
+
+
 def validate_business3(name, value):
-    """Foundation validator; no runtime/session or Store readiness is enabled."""
+    """Strict explicit profile validation, not runtime/session or Store readiness."""
     profiles = {
         "request": "request3",
         "response": "response3",

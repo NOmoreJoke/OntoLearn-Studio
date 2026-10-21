@@ -408,7 +408,7 @@
       "bootstrapVersion": 2,
       "businessVersion": 3,
       "databaseFormatVersion": 3,
-      "state": "validator-only-runtime-disabled",
+      "state": "explicit-internal-opt-in-default2",
       "methods": [
         "hello",
         "health",
@@ -427,5 +427,15 @@
       ],
       "newSourceOrLearningMethods": []
     }
+  },
+  "startupDiagnostic": {
+    "diagnosticVersion": 1,
+    "profile": "business3",
+    "phase": "pre-hello-only",
+    "schema": "#/$defs/startupFailure",
+    "errorSchema": "#/$defs/error_startup",
+    "maxPayloadBytes": 1024,
+    "payloadLength": "raw-before-CR-removal-excluding-LF",
+    "singlePerAttempt": true
   }
 }

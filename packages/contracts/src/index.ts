@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { validateV2 } from './v2'
+import { validateBusiness3, validateStartupError, validateV2 } from './v2'
 
 export const PROTOCOL_VERSION = 2 as const
 export const healthSchema = z
@@ -10,7 +10,12 @@ export const healthSchema = z
     capabilities: z.array(z.literal('health')).max(1),
   })
   .strict()
-export type EngineHealth = z.infer<typeof healthSchema>
+// Display DTO only. Runtime protocol selection remains supervisor-owned.
+export const displayHealthSchema = z.union([
+  healthSchema,
+  healthSchema.extend({ protocolVersion: z.literal(3) }).strict(),
+])
+export type EngineHealth = z.infer<typeof displayHealthSchema>
 export interface SafeError {
   code: string
   messageKey: string
@@ -28,6 +33,24 @@ export function safeError(value: unknown): SafeError {
     ? structuredClone(value as SafeError)
     : structuredClone(internalError)
 }
+export function safeBusiness3Error(value: unknown): SafeError {
+  return validateBusiness3('error', value)
+    ? structuredClone(value as SafeError)
+    : structuredClone(internalError)
+}
+export function safeStartupError(value: unknown): SafeError {
+  return validateStartupError(value)
+    ? structuredClone(value as SafeError)
+    : structuredClone(internalError)
+}
+// For already-authorized display DTOs only. This does not authenticate provenance.
+export function safeDisplayError(value: unknown): SafeError {
+  return validateV2('error', value) ||
+    validateBusiness3('error', value) ||
+    validateStartupError(value)
+    ? structuredClone(value as SafeError)
+    : structuredClone(internalError)
+}
 export type BridgeResult<T> = { ok: true; data: T } | { ok: false; error: SafeError }
 export type HealthResult = BridgeResult<EngineHealth>
 export interface ProjectView {
@@ -35,7 +58,7 @@ export interface ProjectView {
   projectRevision: number
   inputSnapshotId: string
   dependencyVector: Record<string, number>
-  formatVersion: 2
+  formatVersion: 2 | 3
 }
 export interface JobView extends Record<string, unknown> {
   inputSnapshotId: string
@@ -70,7 +93,10 @@ export type TaskUpdate =
     }
 const generationSchema = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER)
 const jobViewSchema = z.custom<JobView>((value) => validateV2('job', value))
-const projectViewSchema = z.custom<ProjectView>((value) => validateV2('result_project.get', value))
+const projectViewSchema = z.custom<ProjectView>(
+  (value) =>
+    validateV2('result_project.get', value) || validateBusiness3('result_project.get', value),
+)
 const taskViewSchema = z
   .object({
     generation: generationSchema,
@@ -103,7 +129,12 @@ const taskUpdateSchema = z.union([
       projectId: z.string().uuid(),
       state: z.enum(['reconnecting', 'offline']),
       attempt: z.number().int().min(0).max(3),
-      error: z.custom<SafeError>((value) => validateV2('error', value)),
+      error: z.custom<SafeError>(
+        (value) =>
+          validateV2('error', value) ||
+          validateBusiness3('error', value) ||
+          validateStartupError(value),
+      ),
     })
     .strict()
     .refine((update) => update.state !== 'offline' || update.attempt === 3),

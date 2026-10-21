@@ -6454,5 +6454,73 @@
       },
       "valid": false
     }
+  ],
+  "startupBindings": [
+    {
+      "name": "matching prehello internal3",
+      "profile": "business3",
+      "generation": 2,
+      "currentGeneration": 2,
+      "preHello": true,
+      "alreadyReported": false,
+      "expectedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "receivedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "eligible": true
+    },
+    {
+      "name": "legacy2 cannot upgrade",
+      "profile": "legacy2",
+      "generation": 2,
+      "currentGeneration": 2,
+      "preHello": true,
+      "alreadyReported": false,
+      "expectedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "receivedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "eligible": false
+    },
+    {
+      "name": "old generation",
+      "profile": "business3",
+      "generation": 1,
+      "currentGeneration": 2,
+      "preHello": true,
+      "alreadyReported": false,
+      "expectedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "receivedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "eligible": false
+    },
+    {
+      "name": "posthello",
+      "profile": "business3",
+      "generation": 2,
+      "currentGeneration": 2,
+      "preHello": false,
+      "alreadyReported": false,
+      "expectedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "receivedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "eligible": false
+    },
+    {
+      "name": "duplicate startup",
+      "profile": "business3",
+      "generation": 2,
+      "currentGeneration": 2,
+      "preHello": true,
+      "alreadyReported": true,
+      "expectedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "receivedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "eligible": false
+    },
+    {
+      "name": "wrong hash",
+      "profile": "business3",
+      "generation": 2,
+      "currentGeneration": 2,
+      "preHello": true,
+      "alreadyReported": false,
+      "expectedRegistryHash": "271800b8f3ca3946b71d9ca07da24c251a0842f66bf6f806b96ac1b1767ff9fa",
+      "receivedRegistryHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "eligible": false
+    }
   ]
 }

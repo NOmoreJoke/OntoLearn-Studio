@@ -455,5 +455,65 @@
       "invalidRequestField": "params",
       "startupFailure": "no successful hello; bounded local startup diagnosis required before runtime activation"
     }
+  },
+  "startup": {
+    "diagnosticVersion": 1,
+    "profile": "business3",
+    "maxPayloadBytes": 1024,
+    "codes": {
+      "PROJECT_FORMAT_UNSUPPORTED": {
+        "messageKey": "project.formatUnsupported",
+        "retryable": false,
+        "paramsSchema": {
+          "type": "object",
+          "properties": {
+            "supportedFormats": {
+              "type": "array",
+              "items": {
+                "const": 3
+              },
+              "minItems": 1,
+              "maxItems": 1
+            }
+          },
+          "required": ["supportedFormats"],
+          "additionalProperties": false
+        }
+      },
+      "STORAGE_BUSY": {
+        "messageKey": "storage.busy",
+        "retryable": true,
+        "paramsSchema": {
+          "type": "object",
+          "properties": {
+            "retryAfterMs": {
+              "const": 250
+            }
+          },
+          "required": ["retryAfterMs"],
+          "additionalProperties": false
+        }
+      },
+      "STORAGE_FAILURE": {
+        "messageKey": "storage.failure",
+        "retryable": false,
+        "paramsSchema": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "INTERNAL_ERROR": {
+        "messageKey": "engine.internal",
+        "retryable": false,
+        "paramsSchema": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      }
+    }
   }
 }

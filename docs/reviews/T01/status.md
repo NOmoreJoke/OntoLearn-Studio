@@ -204,3 +204,13 @@ bf04169、原包e558…ec2c/原索引95f…0fcb、独立报告及五产品hash�
 总控source-table-material读回16336B/SHA c88aa1252e8c9b2f5b0ab835762bfbaa1e1a748f96979322b917c9a12a0428d4已实际全文读完并核hash：bf04169固定产品与27a0d17补封相符，E1由总控实际逐原字节核验关闭，纯材料阶段可收口，全部parser/producer/wire/ready/父功能/双审及发布边界不变。未重跑材料。
 
 总控启动阶段精确预审8741B/SHA cb52ba37111d778c696a534cf34d4dda092eac98071bcc75930f42ad5904c5b8亦已实际全文读。新business3-startup-implementation-plan.md在原闭合r1–r3之上固定17产品路径及7测试路径，补Store/JobStore构造失败逐资源首因与父子移交，以及原Session/promise不可伪WeakMap提取、真实listener交付clone凭据；作者处置不代总控关闭。当前仅提交计划与独立文档，不实施startup、不启动桌面、不把未来维护生效当阶段授权。精确产品范围/有限新码/内部profile与root一次阶段授权仍待实际流程。Goal active。
+
+## startup 实施阶段完成（固定17产品/8测试）
+
+已依最终授权3054a5…f334实施严格五字段启动通道、四有限错误、真实两层ready/reconcile后内部显式协议3、首因清理与保守reader状态、ES私有Session/原promise/listener来源认证及跨层有限展示。默认生产2保持；原sourceTable/worker/protocol/resources/I06余四不改。旧task-runtime仅在单文件临时授权6764ab…9eb14内迁移，8项原测试语义保留，窗口待总控显式关闭。
+
+修前错Session通知P2、根嵌套guard吞[3]P2均已修复并独立定点关闭；转义1024/1025完整原bytes同decoded pair已补齐。固定source manifest6ef218…c5b4、ZIPd39278…e86a共25源码/测试与独立回读一致，保护AGENTS78df未暂存。详见[startup实施阶段报告](startup-implementation-review.md)及[startup独立审查](startup-implementation-independent-review.md)。
+
+最终全仓check真实exit0：1030TS、2706Python、44原不适用skip，静态/格式/类型/build/ruff全过。未签名package:dir真实exit0；新包引擎5session/9资源与实际worker原子事务、重开幂等通过，asar/main AST同源绑定通过。新main46e6b7…b9f3；完整raw stdin/stdout/stderr和所有首失败/被替代输入保留。旧main/包成功不冒充最新候选，普通wire观测不冒称私有pending Map本体。
+
+本阶段准备本地恢复提交；不push，无指定双审/真实Electron IPC或UI/native/e2e/远端PR/CI/合并或发布新证据。原完整Goal仍active，接续剩余父功能与正式跨功能验收。

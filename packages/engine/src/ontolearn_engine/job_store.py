@@ -13,7 +13,15 @@ from pathlib import Path
 from uuid import uuid4
 
 from ontolearn_engine.invalidation import reasons
-from ontolearn_engine.storage import FORMAT_VERSION, Conflict, Hook, Store, canonical, digest
+from ontolearn_engine.storage import (
+    FORMAT_VERSION,
+    Conflict,
+    Hook,
+    Store,
+    _close_resources,
+    canonical,
+    digest,
+)
 
 TERMINAL = {"succeeded", "failed", "cancelled"}
 PUBLIC_KINDS = {"query", "reasoning", "validation", "behavior", "scenario", "test", "receipt"}
@@ -57,6 +65,7 @@ class JobStore(Store):
         self.cursor_ttl_ms = cursor_ttl_ms
         self.max_cursor_records = max_cursor_records
         self._lease = None
+        parent_ready = False
         try:
             # Default2 keeps the approved lease path. Explicit3 delegates its one
             # lifetime lease to Store; never acquire that same inode a second time.
@@ -66,6 +75,7 @@ class JobStore(Store):
             super().__init__(
                 path, migration_hook, target_format=target_format, backup_path=backup_path
             )
+            parent_ready = True  # Store transfers its resources only after a successful return.
             if target_format == 3:
                 self._migrate_job3(job_migration_hook)
             else:
@@ -73,12 +83,17 @@ class JobStore(Store):
                     for sql in JOB_SCHEMA:
                         self._db.execute(sql)
         except BaseException:
-            if hasattr(self, "_db"):
-                self._db.close()
-            if getattr(self, "_format3_lease", None) is not None:
-                self._format3_lease.close()
-            if self._lease is not None:
-                self._lease.close()
+            # A failed parent already attempted its own closes. Its leftover
+            # attributes are not a second transfer of resource ownership.
+            owned = [("legacyLease", self._lease)]
+            if parent_ready:
+                owned = [
+                    ("database", self._db),
+                    ("format3Lease", self._format3_lease),
+                    *owned,
+                ]
+            failures = _close_resources(owned)
+            self._cleanup_failures = getattr(self, "_cleanup_failures", []) + failures
             raise
 
     def _lock(self):
@@ -100,11 +115,15 @@ class JobStore(Store):
             fault("STORAGE_BUSY", retryAfterMs=250)
 
     def close(self):
-        try:
-            super().close()
-        finally:
-            if self._lease is not None:
-                self._lease.close()  # OS release on close/crash; never unlink a leased inode.
+        self._cleanup_failures = _close_resources(
+            [
+                ("database", self._db),
+                ("format3Lease", self._format3_lease),
+                ("legacyLease", self._lease),
+            ]
+        )
+        if self._cleanup_failures:
+            raise self._cleanup_failures[0][1]
 
     def _migrate_job3(self, hook):
         from ontolearn_engine.project.format3 import Format3Fault, _schema

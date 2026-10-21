@@ -17,10 +17,10 @@ const actualHash = createHash('sha256')
   .update(readFileSync(new URL('../../packages/contracts/v2/registry.json', import.meta.url)))
   .digest('hex')
 
-describe('T01 business3 canonical foundation (runtime disabled)', () => {
+describe('T01 business3 canonical (explicit internal opt-in, default2)', () => {
   it('binds the complete hello fixture to the actual same-build registry bytes', () => {
     expect(profile.registryHash).toBe(actualHash)
-    expect(profile.profile).toBe('validator-only-runtime-disabled')
+    expect(profile.profile).toBe('explicit-internal-opt-in-default2')
   })
   for (const c of profile.cases)
     it(`schema: ${c.name}`, () => {

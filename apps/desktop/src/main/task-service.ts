@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import {
   safeError,
+  safeDisplayError,
   type BridgeResult,
   type JobListOptions,
   type JobView,
@@ -13,10 +14,12 @@ import {
 } from '@ontolearn/contracts'
 import {
   acceptsJobEvent,
+  acceptsBusiness3JobEvent,
+  validateBusiness3,
   validateV2,
   type EventBinding,
 } from '../../../../packages/contracts/src/v2'
-import type { EngineConnectionState } from './engine'
+import { EngineSupervisor, type EngineConnectionState } from './engine'
 
 interface TaskEngine {
   request(method: string, params: Record<string, unknown>): Promise<unknown>
@@ -52,7 +55,23 @@ interface Watch {
 }
 
 // This disposable cache holds view context only. All state and commit evidence is re-read from SQLite.
+interface AuthenticatedFailure {
+  value: SafeError
+  generation: number
+  projectId: string | null
+}
 export class TaskService {
+  #supervisor?: EngineSupervisor
+  #caught = new WeakMap<object, AuthenticatedFailure>()
+  #outcomes = new WeakMap<
+    object,
+    { context: AuthenticatedFailure; promises: WeakSet<Promise<unknown>> }
+  >()
+  private validate(name: string, value: unknown): boolean {
+    return this.#supervisor?.profile === 'business3'
+      ? validateBusiness3(name, value)
+      : validateV2(name, value)
+  }
   private projectId: string | null = null
   private generation = 0
   private projectRevision: number | undefined
@@ -84,6 +103,7 @@ export class TaskService {
   private disposed = false
   private sink: ((value: TaskUpdate) => void) | undefined
   constructor(private engine: TaskEngine) {
+    this.#supervisor = EngineSupervisor.owns(engine) ? engine : undefined
     this.lastReadySession = engine.engineSessionId
     this.release = engine.onNotification((value) => this.receive(value))
     this.releaseConnection = engine.onConnectionState((value) => this.connectionChanged(value))
@@ -145,6 +165,11 @@ export class TaskService {
     this.releaseConnection()
   }
   private connectionChanged(event: EngineConnectionState): void {
+    if (this.#supervisor && event.state === 'disconnected') {
+      const issued = this.#supervisor.projectConnectionFailure(event)
+      if (!issued) return
+      event = issued
+    }
     if (
       this.disposed ||
       !Number.isSafeInteger(event.generation) ||
@@ -174,17 +199,17 @@ export class TaskService {
     if (
       event.engineSessionId !== this.lastReadySession ||
       this.disconnectedSession === event.engineSessionId ||
-      !validateV2('error', event.error)
+      !this.validate('error', event.error)
     )
       return
     this.disconnectedSession = event.engineSessionId
     this.connection = 'reconnecting'
     this.fenceConnection()
     if (this.recovery) {
-      this.recovery.error = safeError(event.error)
+      this.recovery.error = safeDisplayError(event.error)
       return
     }
-    if (this.projectId && this.sink) void this.beginRecovery(safeError(event.error))
+    if (this.projectId && this.sink) void this.beginRecovery(safeDisplayError(event.error))
   }
   private alive(recovery: Recovery): boolean {
     return (
@@ -203,7 +228,7 @@ export class TaskService {
         projectId: recovery.projectId,
         state,
         attempt: recovery.attempt,
-        error: safeError(recovery.error),
+        error: safeDisplayError(recovery.error),
       })
   }
   private beginRecovery(error: SafeError): Promise<BridgeResult<TaskView>> {
@@ -280,16 +305,32 @@ export class TaskService {
     return { ok: false, error: safeError(denied) }
   }
   private async call<T>(method: string, params: Record<string, unknown>): Promise<T> {
-    if (!validateV2(`params_${method}`, params)) throw { error: invalid }
+    if (!this.validate(`params_${method}`, params)) throw { error: invalid }
     const generation = this.generation
     const requestedSession = this.engine.engineSessionId
-    const result = await this.engine.request(method, params)
+    const operation = this.engine.request(method, params)
+    let result: unknown
+    try {
+      result = await operation
+    } catch (cause) {
+      if (generation !== this.generation) throw { error: denied }
+      if (this.#supervisor) {
+        const token = Object.freeze({})
+        this.#caught.set(token, {
+          value: this.#supervisor.projectFailure(cause, operation),
+          generation,
+          projectId: this.projectId,
+        })
+        throw token
+      }
+      throw cause
+    }
     if (generation !== this.generation) {
       if (
         method === 'job.subscribe' &&
         this.engine.engineSessionId &&
         (!requestedSession || requestedSession === this.engine.engineSessionId) &&
-        validateV2('result_job.subscribe', result)
+        this.validate('result_job.subscribe', result)
       ) {
         const sub = result as { subscriptionId: string }
         void this.engine
@@ -298,7 +339,7 @@ export class TaskService {
       }
       throw { error: denied }
     }
-    if (!validateV2(`result_${method}`, result)) throw new Error('INVALID_RESPONSE')
+    if (!this.validate(`result_${method}`, result)) throw new Error('INVALID_RESPONSE')
     if (result && typeof result === 'object') {
       const record = result as Record<string, unknown>
       for (const key of ['projectId', 'jobId', 'resultId', 'operationId']) {
@@ -312,12 +353,50 @@ export class TaskService {
     if (!this.projectId) throw { error: denied }
     return this.projectId
   }
-  private async guard<T>(action: () => Promise<T>): Promise<BridgeResult<T>> {
+  private guard<T>(action: () => Promise<T>): Promise<BridgeResult<T>> {
+    let source: Promise<T>
     try {
-      return { ok: true, data: await action() }
-    } catch (error) {
-      return { ok: false, error: safeError((error as { error?: unknown } | null)?.error) }
+      source = action()
+    } catch (cause) {
+      source = Promise.reject(cause)
     }
+    const promise: Promise<BridgeResult<T>> = source.then(
+      (data) => ({ ok: true, data }),
+      (cause) => {
+        const context = cause && typeof cause === 'object' ? this.#caught.get(cause) : undefined
+        const current =
+          context && context.generation === this.generation && context.projectId === this.projectId
+        const result = {
+          ok: false as const,
+          error: current
+            ? safeDisplayError(context.value)
+            : context
+              ? safeError(denied)
+              : safeError((cause as { error?: unknown } | null)?.error),
+        }
+        if (current) this.#outcomes.set(result, { context, promises: new WeakSet([promise]) })
+        return result
+      },
+    )
+    return promise
+  }
+  private forwardFailure(
+    result: Extract<BridgeResult<unknown>, { ok: false }>,
+    originatingPromise: Promise<unknown>,
+  ): never {
+    const issued = this.#outcomes.get(result)
+    if (issued && issued.promises.has(originatingPromise)) {
+      if (
+        issued.context.generation !== this.generation ||
+        issued.context.projectId !== this.projectId
+      )
+        throw { error: denied }
+      const token = Object.freeze({})
+      this.#caught.set(token, issued.context)
+      throw token
+    }
+    // A DTO/clone alone carries no startup/business3 authority.
+    throw { error: safeError(result.error) }
   }
   private observeProject(project: ProjectView, alreadyFenced = false): boolean {
     if (this.projectRevision !== undefined && project.projectRevision < this.projectRevision)
@@ -347,8 +426,9 @@ export class TaskService {
   private async restoreJobs(): Promise<JobView[]> {
     const jobs: JobView[] = []
     for (const jobId of this.remembered) {
-      const response = await this.subscribeJob(jobId)
-      if (!response.ok) throw { error: response.error }
+      const operation = this.subscribeJob(jobId)
+      const response = await operation
+      if (!response.ok) this.forwardFailure(response, operation)
       jobs.push(response.data)
     }
     return jobs.map((job) => this.watches.get(job.jobId)?.job ?? job)
@@ -405,15 +485,24 @@ export class TaskService {
           retryable: false,
         }),
       })
-    const request = this.doSubscribe(jobId, key).finally(() => {
+    const operation = this.doSubscribe(jobId, key)
+    const request = operation.finally(() => {
       this.pendingSubscriptions.delete(key)
       this.cancelledSubscriptions.delete(key)
       this.dropEarly(key)
     })
+    // Register only this internally linked wrapper promise, never a caller-supplied DTO.
+    void request.then(
+      (result) => {
+        const issued = this.#outcomes.get(result)
+        if (issued?.promises.has(operation)) issued.promises.add(request)
+      },
+      () => {},
+    )
     this.pendingSubscriptions.set(key, request)
     return request
   }
-  private async doSubscribe(jobId: string, key: string): Promise<BridgeResult<JobView>> {
+  private doSubscribe(jobId: string, key: string): Promise<BridgeResult<JobView>> {
     return this.guard(async () => {
       const projectId = this.project()
       if (!id.safeParse(jobId).success) throw { error: invalid }
@@ -812,7 +901,7 @@ export class TaskService {
     this.reconciliations.set(key, recovery)
   }
   private receive(value: unknown): void {
-    if (!validateV2('notification', value)) return
+    if (!this.validate('notification', value)) return
     const event = value as {
       event: string
       projectId: string
@@ -861,7 +950,11 @@ export class TaskService {
       this.refreshProject(watch)
       return
     }
-    if (!acceptsJobEvent(value, watch.binding)) {
+    if (
+      !(this.#supervisor?.profile === 'business3'
+        ? acceptsBusiness3JobEvent(value, watch.binding)
+        : acceptsJobEvent(value, watch.binding))
+    ) {
       // Old/repeated notifications have no authority. A forward sequence gap or
       // contradictory next state requires a fresh durable snapshot, not guesses.
       if (event.seq > watch.binding.lastSeq || event.data.stateVersion > watch.binding.stateVersion)

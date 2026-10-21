@@ -15,7 +15,7 @@ ACTUAL_HASH = hashlib.sha256((ROOT / "registry.json").read_bytes()).hexdigest()
 
 def test_same_build_registry_and_default_v2_remains_strict():
     assert PROFILE["registryHash"] == ACTUAL_HASH
-    assert PROFILE["profile"] == "validator-only-runtime-disabled"
+    assert PROFILE["profile"] == "explicit-internal-opt-in-default2"
     for c in PROFILE["cases"]:
         if c["valid"] and c["value"].get("protocolVersion") == 3:
             assert not CONTRACT.validate("envelope", c["value"])

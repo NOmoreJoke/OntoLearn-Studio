@@ -7046,6 +7046,133 @@
           "$ref": "#/$defs/notification3"
         }
       ]
+    },
+    "error_startup": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "PROJECT_FORMAT_UNSUPPORTED"
+            },
+            "messageKey": {
+              "const": "project.formatUnsupported"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "supportedFormats": {
+                  "type": "array",
+                  "items": {
+                    "const": 3
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": ["supportedFormats"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "STORAGE_BUSY"
+            },
+            "messageKey": {
+              "const": "storage.busy"
+            },
+            "retryable": {
+              "const": true
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "retryAfterMs": {
+                  "const": 250
+                }
+              },
+              "required": ["retryAfterMs"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "STORAGE_FAILURE"
+            },
+            "messageKey": {
+              "const": "storage.failure"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "INTERNAL_ERROR"
+            },
+            "messageKey": {
+              "const": "engine.internal"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "startupFailure": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "startupFailure"
+        },
+        "diagnosticVersion": {
+          "const": 1
+        },
+        "engineSessionId": {
+          "const": null
+        },
+        "registryHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "error": {
+          "$ref": "#/$defs/error_startup"
+        }
+      },
+      "required": ["kind", "diagnosticVersion", "engineSessionId", "registryHash", "error"],
+      "additionalProperties": false
     }
   },
   "$ref": "#/$defs/envelope"
