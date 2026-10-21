@@ -505,144 +505,22 @@ def _validate(store):
             == [r[0] for r in store._db.execute(f"SELECT project FROM {table} ORDER BY project")]
         )
     for project in projects:
-        revision = store.revision(project)
-        _require(_text(project) and _integer(revision))
-        store._snapshot_state(store.state(project))
-        head = store._db.execute(
-            "SELECT * FROM app_projects WHERE project=?", (project,)
-        ).fetchone()
-        origin = store._db.execute(
-            "SELECT * FROM app_origins WHERE project=?", (project,)
-        ).fetchone()
-        _require(_integer(head["metadata_version"]) and _integer(head["operation_sequence"]))
-        _require(origin["origin"] in {"created", "migration-default"})
-        _require(_integer(origin["domain_revision"]) and origin["domain_revision"] <= revision)
-        operations = [
-            dict(r)
-            for r in store._db.execute(
-                "SELECT * FROM app_operations WHERE project=? ORDER BY sequence", (project,)
-            )
-        ]
-        _require(all(op["sequence"] == i for i, op in enumerate(operations, 1)))
-        _require(head["operation_sequence"] == len(operations))
-        legacy = history_coverage(store, project)["legacyDomainOperations"]
-        _require(legacy == origin["legacy_operations"] and legacy <= len(operations))
-        _require(all(op["kind"] == "legacy-domain" for op in operations[:legacy]))
-        for op in operations:
-            marker = store.marker(project, op["operation"])
-            # Stage A only emits actual domain operations. Application/combined adapters
-            # must expand this evidence validator before they can be activated.
-            _require(op["kind"] in {"legacy-domain", "domain"} and marker is not None)
-            _require(op["plan_hash"] == marker["fingerprint"] == digest(_json(marker["plan"])))
-            _require(op["domain_revision"] == marker["revision"])
-            _require(_integer(op["domain_revision"], 1) and _text(marker["job"]))
-            if op["kind"] == "domain":
-                receipt = receipt_for(store, project, op["operation"])
-                before = load_checkpoint(store, project, receipt["beforeCheckpointRef"])
-                after = load_checkpoint(store, project, receipt["afterCheckpointRef"])
-                _require(
-                    receipt
-                    == _domain_receipt(
-                        project,
-                        marker,
-                        op["sequence"],
-                        receipt["beforeCheckpointRef"],
-                        receipt["afterCheckpointRef"],
-                    )
-                )
-                _require(
-                    before["operationSequence"] == op["sequence"] - 1
-                    and after["operationSequence"] == op["sequence"]
-                )
-                _require(
-                    before["domainSnapshotRef"] == marker["before_snapshot"]
-                    and after["domainSnapshotRef"] == marker["after_snapshot"]
-                )
-                _require(before["application"] == after["application"])
-        old_revisions = [op["domain_revision"] for op in operations[:legacy]]
-        _require(
-            old_revisions == sorted(set(old_revisions))
-            and all(r <= origin["domain_revision"] for r in old_revisions)
-        )
-        _require(
-            all(
-                op["domain_revision"] == origin["domain_revision"] + i
-                for i, op in enumerate(operations[legacy:], 1)
-            )
-        )
-        _require(revision == origin["domain_revision"] + len(operations) - legacy)
-        _require(
-            store._db.execute(
-                "SELECT count(*) FROM app_receipts WHERE project=?", (project,)
-            ).fetchone()[0]
-            == len(operations) - legacy
-        )
-        genesis = load_checkpoint(store, project, origin["checkpoint"])
-        _require(
-            genesis["operationSequence"] == legacy
-            and genesis["domainRevision"] == origin["domain_revision"]
-        )
-        _require(
-            genesis["application"]
-            == {
-                "metadataVersion": 0,
-                "metadata": metadata(origin["origin"]),
-                "drafts": [],
-                "learningCurrent": [],
-                "assistanceAudit": [],
-            }
-        )
-        live = load_checkpoint(store, project, head["checkpoint"])
-        _require(live["operationSequence"] == head["operation_sequence"])
-        _require(live["application"] == application_state(store, project))
-        _require(
-            live["domainSnapshotRef"]
-            == digest(
-                {
-                    "project": project,
-                    "projectRevision": revision,
-                    "dependencyVector": store.vector(project),
-                    "state": store.state(project),
-                }
-            )
-        )
-        expected_head = operations[-1]["operation"] if len(operations) > legacy else None
-        _require(
-            head["checkpoint"]
-            == (
-                receipt_for(store, project, expected_head)["afterCheckpointRef"]
-                if expected_head
-                else origin["checkpoint"]
-            )
-        )
-        # Every stored checkpoint must have actual migration/operation provenance.
-        references = {origin["checkpoint"]}
-        for row in store._db.execute(
-            "SELECT payload FROM app_receipts WHERE project=?", (project,)
-        ):
-            payload = _json(row[0])
-            references.update((payload["beforeCheckpointRef"], payload["afterCheckpointRef"]))
-        _require(
-            references
-            == {
-                r[0]
-                for r in store._db.execute(
-                    "SELECT id FROM app_checkpoints WHERE project=?", (project,)
-                )
-            }
-        )
+        _history(store, project)
 
 
 def load_checkpoint(store, project: str, identity: str) -> dict:
     try:
-        return _load_checkpoint(store, project, identity)
+        _, checkpoints, _ = _history(store, project)
+        _require(identity in checkpoints)
+        return checkpoints[identity]
     except Format3Fault:
         raise
-    except (ValueError, KeyError, TypeError, OverflowError):
+    except (ValueError, KeyError, TypeError, OverflowError, sqlite3.DatabaseError):
         raise Format3Fault("structure") from None
 
 
-def _load_checkpoint(store, project, identity):
+def _raw_checkpoint(store, project, identity):
+    """Structural read only. Authority is established by _history, never by this alone."""
     row = store._db.execute(
         "SELECT * FROM app_checkpoints WHERE id=? AND project=?", (identity, project)
     ).fetchone()
@@ -682,34 +560,60 @@ def _load_checkpoint(store, project, identity):
     domain = store._project_snapshot(value["domainSnapshotRef"], project)
     _require(domain["projectRevision"] == value["domainRevision"])
     _application(value["application"], project, value["domainRevision"])
+    return value
+
+
+def _history(store, project):
+    """Verify one immutable mixed ledger from genesis through the actual current head."""
+    revision = store.revision(project)
+    _require(_text(project) and _integer(revision))
+    store._snapshot_state(store.state(project))
+    head = store._db.execute("SELECT * FROM app_projects WHERE project=?", (project,)).fetchone()
     origin = store._db.execute("SELECT * FROM app_origins WHERE project=?", (project,)).fetchone()
-    sourced = (
-        origin is not None
-        and identity == origin["checkpoint"]
-        and value["operationSequence"] == origin["legacy_operations"]
-        and value["domainRevision"] == origin["domain_revision"]
-    )
-    for operation in store._db.execute(
-        "SELECT operation FROM app_operations WHERE project=? AND kind='domain'", (project,)
-    ):
-        proof, op, marker = _checked_domain_receipt(store, project, operation[0])
-        sourced = sourced or (
-            (
-                identity == proof["beforeCheckpointRef"]
-                and value["operationSequence"] == op["sequence"] - 1
-                and value["domainSnapshotRef"] == marker["before_snapshot"]
-            )
-            or (
-                identity == proof["afterCheckpointRef"]
-                and value["operationSequence"] == op["sequence"]
-                and value["domainSnapshotRef"] == marker["after_snapshot"]
-            )
-        )
-    # No application mutator is activated in Stage A; all app state must derive
-    # from the immutable genesis. Future CAS adapters must extend this validator.
+    _require(head is not None and origin is not None)
+    _require(_integer(head["metadata_version"]) and _integer(head["operation_sequence"]))
     _require(
-        origin is not None
-        and value["application"]
+        origin["origin"] in {"created", "migration-default"}
+        and _integer(origin["domain_revision"])
+        and _integer(origin["legacy_operations"])
+    )
+    operations = [
+        dict(r)
+        for r in store._db.execute(
+            "SELECT * FROM app_operations WHERE project=? ORDER BY sequence", (project,)
+        )
+    ]
+    _require(
+        all(
+            _integer(op["sequence"], 1) and op["sequence"] == i
+            for i, op in enumerate(operations, 1)
+        )
+    )
+    _require(head["operation_sequence"] == len(operations))
+    legacy = history_coverage(store, project)["legacyDomainOperations"]
+    _require(legacy == origin["legacy_operations"] and legacy <= len(operations))
+    _require(all(op["kind"] == "legacy-domain" for op in operations[:legacy]))
+    old_revisions, domain_operations = [], set()
+    for op in operations[:legacy]:
+        marker = store.marker(project, op["operation"])
+        _require(marker is not None and _integer(marker["revision"], 1) and _text(marker["job"]))
+        _require(
+            op["domain_revision"] == marker["revision"]
+            and op["plan_hash"] == marker["fingerprint"] == digest(_json(marker["plan"]))
+        )
+        old_revisions.append(marker["revision"])
+        domain_operations.add(op["operation"])
+    _require(
+        old_revisions == sorted(set(old_revisions))
+        and all(r <= origin["domain_revision"] for r in old_revisions)
+    )
+    genesis = _raw_checkpoint(store, project, origin["checkpoint"])
+    _require(
+        genesis["operationSequence"] == legacy
+        and genesis["domainRevision"] == origin["domain_revision"]
+    )
+    _require(
+        genesis["application"]
         == {
             "metadataVersion": 0,
             "metadata": metadata(origin["origin"]),
@@ -718,52 +622,138 @@ def _load_checkpoint(store, project, identity):
             "assistanceAudit": [],
         }
     )
-    _require(sourced)
-    return value
+    checkpoints = {origin["checkpoint"]: genesis}
+    receipts = {}
+    current_ref, current = origin["checkpoint"], genesis
+    for op in operations[legacy:]:
+        _require(op["kind"] in {"domain", "application", "combined"})
+        raw = store._db.execute(
+            "SELECT payload FROM app_receipts WHERE project=? AND operation=?",
+            (project, op["operation"]),
+        ).fetchone()
+        _require(raw is not None)
+        proof = _json(raw[0])
+        _require(isinstance(proof, dict) and proof.get("beforeCheckpointRef") == current_ref)
+        after_ref = proof.get("afterCheckpointRef")
+        _require(_text(after_ref))
+        after = _raw_checkpoint(store, project, after_ref)
+        _require(
+            after["operationSequence"] == op["sequence"]
+            and current["operationSequence"] == op["sequence"] - 1
+        )
+        _require(op["domain_revision"] == after["domainRevision"])
+        marker = store.marker(project, op["operation"])
+        if op["kind"] == "domain":
+            _require(marker is not None and _text(marker["job"]))
+            _require(op["plan_hash"] == marker["fingerprint"] == digest(_json(marker["plan"])))
+            expected = _domain_receipt(project, marker, op["sequence"], current_ref, after_ref)
+            _require(current["application"] == after["application"])
+        else:
+            from ontolearn_engine.project.applications import (
+                claim_context,
+                validate_plan,
+            )
+            from ontolearn_engine.project.applications import (
+                receipt as app_receipt,
+            )
 
-
-def _checked_domain_receipt(store, project, operation):
-    op = store._db.execute(
-        "SELECT * FROM app_operations WHERE project=? AND operation=?", (project, operation)
-    ).fetchone()
-    marker = store.marker(project, operation)
-    _require(op is not None and op["kind"] == "domain" and marker is not None)
-    _require(_integer(op["sequence"], 1) and _integer(op["domain_revision"], 1))
-    _require(op["domain_revision"] == marker["revision"] and _text(marker["job"]))
-    _require(op["plan_hash"] == marker["fingerprint"] == digest(_json(marker["plan"])))
-    row = store._db.execute(
-        "SELECT payload FROM app_receipts WHERE project=? AND operation=?", (project, operation)
-    ).fetchone()
-    _require(row is not None)
-    proof = _json(row[0])
-    _require(isinstance(proof, dict))
-    before, after = proof.get("beforeCheckpointRef"), proof.get("afterCheckpointRef")
+            context = claim_context(store, project, op["operation"])
+            plan = context["plan"]
+            _require(op["plan_hash"] == digest(plan))
+            _require(canonical(plan["before"]) == canonical(current["application"]))
+            _require(canonical(plan["after"]) == canonical(after["application"]))
+            change = plan["change"]
+            target = None
+            if change["type"] == "draft.restore":
+                _require(change["checkpointRef"] in checkpoints)
+                target = checkpoints[change["checkpointRef"]]
+            validate_plan(store, project, plan, current["domainRevision"], target)
+            _require((plan["domain"] is not None) == (op["kind"] == "combined"))
+            expected = app_receipt(
+                project,
+                op["operation"],
+                op["kind"],
+                op["sequence"],
+                plan,
+                current_ref,
+                after_ref,
+                current["domainRevision"],
+                after["domainRevision"],
+            )
+            if op["kind"] == "application":
+                _require(
+                    marker is None
+                    and current["domainSnapshotRef"] == after["domainSnapshotRef"]
+                    and current["domainRevision"] == after["domainRevision"]
+                )
+            else:
+                domain = plan["domain"]
+                _require(marker is not None and marker["job"] is None)
+                _require(
+                    marker["fingerprint"] == domain["fingerprint"] == digest(_json(marker["plan"]))
+                )
+                _require(
+                    store._project_snapshot(marker["before_snapshot"], project)["state"]
+                    == domain["beforeState"]
+                    and store._project_snapshot(marker["after_snapshot"], project)["state"]
+                    == domain["afterState"]
+                )
+        if op["kind"] in {"domain", "combined"}:
+            _require(marker["revision"] == after["domainRevision"] == current["domainRevision"] + 1)
+            _require(
+                marker["before_snapshot"] == current["domainSnapshotRef"]
+                and marker["after_snapshot"] == after["domainSnapshotRef"]
+            )
+            domain_operations.add(op["operation"])
+        _require(canonical(proof) == canonical(expected))
+        receipts[op["operation"]] = proof
+        checkpoints[after_ref] = after
+        current_ref, current = after_ref, after
     _require(
-        all(
-            isinstance(v, str) and len(v) == 64 and all(c in "0123456789abcdef" for c in v)
-            for v in (before, after)
+        {
+            r[0]
+            for r in store._db.execute("SELECT operation FROM commits WHERE project=?", (project,))
+        }
+        == domain_operations
+    )
+    _require(
+        store._db.execute(
+            "SELECT count(*) FROM app_receipts WHERE project=?", (project,)
+        ).fetchone()[0]
+        == len(receipts)
+    )
+    _require(
+        {
+            r[0]
+            for r in store._db.execute("SELECT id FROM app_checkpoints WHERE project=?", (project,))
+        }
+        == set(checkpoints)
+    )
+    _require(head["checkpoint"] == current_ref and current["domainRevision"] == revision)
+    _require(canonical(application_state(store, project)) == canonical(current["application"]))
+    _require(
+        current["domainSnapshotRef"]
+        == digest(
+            {
+                "project": project,
+                "projectRevision": revision,
+                "dependencyVector": store.vector(project),
+                "state": store.state(project),
+            }
         )
     )
-    _require(
-        canonical(proof)
-        == canonical(_domain_receipt(project, marker, op["sequence"], before, after))
-    )
-    for key, revision in (
-        ("before_snapshot", marker["revision"] - 1),
-        ("after_snapshot", marker["revision"]),
-    ):
-        _require(store._project_snapshot(marker[key], project)["projectRevision"] == revision)
-    origin = store._db.execute("SELECT * FROM app_origins WHERE project=?", (project,)).fetchone()
-    _require(origin is not None and op["sequence"] > origin["legacy_operations"])
-    _require(
-        op["domain_revision"]
-        == origin["domain_revision"] + op["sequence"] - origin["legacy_operations"]
-    )
-    return proof, op, marker
+    return receipts, checkpoints, current
 
 
 def receipt_for(store, project: str, operation: str) -> dict:
-    return _checked_domain_receipt(store, project, operation)[0]
+    try:
+        receipts, _, _ = _history(store, project)
+        _require(operation in receipts)
+        return receipts[operation]
+    except Format3Fault:
+        raise
+    except (ValueError, KeyError, TypeError, OverflowError, sqlite3.DatabaseError):
+        raise Format3Fault("structure") from None
 
 
 def _domain_receipt(project, marker, sequence, before, after):

@@ -24,7 +24,16 @@ NEW_PHASES = (
     + ["job3_identity", "job3_catalog", "job3_validated", "job3_before_commit", "job3_after_commit"]
 )
 OLD_PHASES = (
-    ["job3_before", "job3_claims_renamed", "job3_claims_copied", "job3_claims_swapped"]
+    [
+        "job3_before",
+        "job3_claims_renamed",
+        "job3_claims_created",
+        "job3_claims_copied",
+        "job3_claims_dropped",
+        "job3_claims_trigger:immutable_operation_claims_UPDATE",
+        "job3_claims_trigger:immutable_operation_claims_DELETE",
+        "job3_claims_swapped",
+    ]
     + ["job3_ddl:" + _job_object_name(sql) for sql in JOB3_CATALOG]
     + ["job3_identity", "job3_catalog", "job3_validated", "job3_before_commit", "job3_after_commit"]
 )

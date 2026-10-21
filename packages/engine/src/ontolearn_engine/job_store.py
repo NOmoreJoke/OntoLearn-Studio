@@ -142,15 +142,18 @@ class JobStore(Store):
                 self._db.execute("ALTER TABLE operation_claims RENAME TO operation_claims_v2")
                 hook("job3_claims_renamed")
                 self._db.execute(JOB3_CLAIMS)
+                hook("job3_claims_created")
                 self._db.execute(
                     "INSERT INTO operation_claims(operation,project,job,fingerprint,kind,context) "
                     "SELECT operation,project,job,fingerprint,'job',NULL FROM operation_claims_v2"
                 )
                 hook("job3_claims_copied")
                 self._db.execute("DROP TABLE operation_claims_v2")
+                hook("job3_claims_dropped")
                 for sql in JOB3_SCHEMA:
                     if _job_object_name(sql).startswith("immutable_operation_claims_"):
                         self._db.execute(sql)
+                        hook("job3_claims_trigger:" + _job_object_name(sql))
                 hook("job3_claims_swapped")
             for sql in JOB3_CATALOG:
                 self._db.execute(sql)
@@ -192,14 +195,19 @@ class JobStore(Store):
             jobs = {r[0] for r in self._db.execute("SELECT id FROM jobs")}
             claimed = set()
             for claim in self._db.execute("SELECT * FROM operation_claims"):
-                if (
-                    not isinstance(claim["operation"], str)
-                    or not UUID.fullmatch(claim["operation"])
-                    or claim["kind"] != "job"
-                    or claim["context"] is not None
+                if not isinstance(claim["operation"], str) or not UUID.fullmatch(
+                    claim["operation"]
                 ):
-                    # Non-Job rows require the forthcoming trusted app adapter and
-                    # receipt validator, not merely a permissive kind column.
+                    raise Format3Fault("structure")
+                if claim["kind"] == "application":
+                    from ontolearn_engine.project.applications import claim_context
+                    from ontolearn_engine.project.format3 import receipt_for
+
+                    internal = self._project(claim["project"])
+                    claim_context(self, internal, claim["operation"])
+                    receipt_for(self, internal, claim["operation"])
+                    continue
+                if claim["kind"] != "job" or claim["context"] is not None:
                     raise Format3Fault("structure")
                 row = self._db.execute("SELECT * FROM jobs WHERE id=?", (claim["job"],)).fetchone()
                 if row is None:
@@ -230,6 +238,158 @@ class JobStore(Store):
             raise
         except (ValueError, KeyError, TypeError, OverflowError):
             raise Format3Fault("structure") from None
+
+    def _application_input(self, project, change, actor, permission):
+        from ontolearn_engine.project.applications import check_change, stable
+
+        if self._target_format != 3:
+            fault("INVALID_STATE")
+        internal = self._project(project)
+        if not isinstance(actor, str) or not UUID.fullmatch(actor) or permission != "write":
+            fault("PERMISSION_DENIED")
+        change = stable(change)
+        check_change(change)
+        if len(canonical(change).encode()) > 262144:
+            fault("RESOURCE_LIMIT", resource="frame")
+        return internal, change
+
+    def _occupied_operation_evidence(self, operation):
+        # Claims are global. Never adopt a legacy/unclaimed marker from this or
+        # another project, or a round suboperation, into a fresh application/job.
+        return any(
+            self._db.execute(
+                f"SELECT 1 FROM {table} WHERE operation=? LIMIT 1", (operation,)
+            ).fetchone()
+            for table in ("commits", "rounds", "app_operations", "app_receipts")
+        )
+
+    def prepare_application(self, project, change, *, actor, permission):
+        """Trusted confirmation service; refs stay in the main application's custody."""
+        from ontolearn_engine.project.applications import construct_plan, prepared_payload
+
+        internal, change = self._application_input(project, change, actor, permission)
+        with self._application(project, "plan"):
+            plan = construct_plan(self, internal, change)
+            payload = prepared_payload(project, actor, plan)
+            ref = digest(payload)
+            base = plan["domain"]["base"] if plan["domain"] else None
+            diff = digest(
+                {"before": plan["before"], "after": plan["after"], "domain": plan["domain"]}
+            )
+            self._db.execute(
+                "INSERT OR IGNORE INTO job_plans VALUES(?,?,?,?,?,?)",
+                (ref, project, base, digest(plan), diff, canonical(payload)),
+            )
+            confirmation = str(uuid4())
+            self._db.execute(
+                "INSERT INTO job_confirmations VALUES(?,?,?,?,?,?,?)",
+                (confirmation, project, ref, base, digest(plan), actor, permission),
+            )
+            return {
+                "preparedPlanRef": ref,
+                "confirmationRef": confirmation,
+                "planHash": digest(plan),
+                "beforeCAS": plan["beforeCAS"],
+                "afterCAS": plan["afterCAS"],
+                "applicationBefore": plan["before"],
+                "applicationAfter": plan["after"],
+                "domain": plan["domain"],
+            }
+
+    def apply_application(
+        self,
+        project,
+        operation,
+        change,
+        *,
+        actor,
+        permission,
+        prepared_plan_ref=None,
+        confirmation_ref=None,
+        hook: Hook = lambda _: None,
+    ):
+        """One coordinator-owned non-Job transaction. Never a worker or renderer entry."""
+        from ontolearn_engine.project.applications import (
+            check_confirmation,
+            claim_context,
+            construct_plan,
+            require,
+            stable,
+        )
+        from ontolearn_engine.project.format3 import receipt_for
+
+        internal, change = self._application_input(project, change, actor, permission)
+        if not isinstance(operation, str) or not UUID.fullmatch(operation):
+            fault("INVALID_REQUEST", field="identity")
+        request = {
+            "change": change,
+            "authorization": {
+                "actor": actor,
+                "permission": permission,
+                "preparedPlanRef": prepared_plan_ref,
+                "confirmationRef": confirmation_ref,
+            },
+        }
+        request = stable(request)
+        with self._application(project, "application", hook):
+            claim = self._db.execute(
+                "SELECT * FROM operation_claims WHERE operation=?", (operation,)
+            ).fetchone()
+            if claim:
+                if claim["kind"] != "application" or claim["project"] != project:
+                    fault("IDENTITY_CONFLICT")
+                context = claim_context(self, internal, operation)
+                if canonical(context["request"]) != canonical(request):
+                    fault("IDENTITY_CONFLICT")
+                # Original request/CAS succeeds again only by validated immutable
+                # evidence. No plan reconstruction or current CAS check on retry.
+                return receipt_for(self, internal, operation)
+            if self._occupied_operation_evidence(operation):
+                fault("IDENTITY_CONFLICT")
+            require((prepared_plan_ref is None) == (confirmation_ref is None))
+            if prepared_plan_ref is not None:
+                from ontolearn_engine.project.applications import hash_ref, uuid_ref
+
+                require(hash_ref(prepared_plan_ref) and uuid_ref(confirmation_ref))
+            if prepared_plan_ref is None:
+                require("domain" not in change and change["type"] != "draft.restore")
+                plan = construct_plan(self, internal, change)
+            else:
+                row = self._db.execute(
+                    "SELECT payload FROM job_plans WHERE ref=? AND project=?",
+                    (prepared_plan_ref, project),
+                ).fetchone()
+                require(row is not None)
+                payload = json.loads(row[0])
+                require(
+                    isinstance(payload, dict)
+                    and set(payload) == {"preparedApplicationVersion", "projectId", "actor", "plan"}
+                )
+                require(
+                    type(payload["preparedApplicationVersion"]) is int
+                    and payload["preparedApplicationVersion"] == 1
+                    and payload["projectId"] == project
+                    and payload["actor"] == actor
+                )
+                plan = payload["plan"]
+                require(canonical(plan["change"]) == canonical(change))
+            context = {
+                "applicationContextVersion": 1,
+                "projectId": project,
+                "project": internal,
+                "operationId": operation,
+                "request": request,
+                "plan": plan,
+            }
+            check_confirmation(self, context)
+            self._db.execute(
+                "INSERT INTO operation_claims(operation,project,job,fingerprint,kind,context) "
+                "VALUES(?,?,NULL,?,'application',?)",
+                (operation, project, digest(context), canonical(context)),
+            )
+            hook("application_claim")
+            base = plan["domain"]["base"] if plan["domain"] else None
+            return super().commit(internal, base, operation, None, application=context, hook=hook)
 
     def _valid(self, schema, value, field="params"):
         if not self.contract.validate(schema, value):
@@ -488,6 +648,65 @@ class JobStore(Store):
                 manifests[key] = members
         return vector, manifests
 
+    def _job_prepared_plan(
+        self, project, input_, confirmation_ref, snapshot, *, error="IDENTITY_CONFLICT"
+    ):
+        """Validate the ordinary domain-plan namespace before accepting a Job.
+
+        Application previews share immutable tables, but have a distinct envelope
+        and reference derivation. A row's existence is not proof of its type.
+        The actor is supplied only by the trusted prepare service; create_job
+        has no renderer-issued actor or authority to replace that binding.
+        """
+        row = self._db.execute(
+            "SELECT * FROM job_plans WHERE project=? AND ref=?",
+            (project, input_["preparedPlanRef"]),
+        ).fetchone()
+        confirmation = self._db.execute(
+            "SELECT * FROM job_confirmations WHERE project=? AND id=?",
+            (project, confirmation_ref),
+        ).fetchone()
+        if row is None or confirmation is None:
+            fault(error)
+        try:
+            plan = json.loads(row["payload"])
+            fields = {"base", "definitions", "manual", "edits", "remove", "mapping"}
+            if not isinstance(plan, dict) or set(plan) not in (
+                fields,
+                fields | {"remove_definitions"},
+            ):
+                fault(error)
+            expected = self._plan(
+                snapshot["projectRevision"], {k: v for k, v in plan.items() if k != "base"}
+            )
+            valid = (
+                canonical(plan) == canonical(expected)
+                and row["plan_hash"] == digest(plan)
+                and row["base"] == snapshot["projectRevision"]
+                and isinstance(row["diff_hash"], str)
+                and re.fullmatch(r"[0-9a-f]{64}", row["diff_hash"]) is not None
+                and digest(
+                    {
+                        "projectId": project,
+                        "plan": plan,
+                        "before": input_["inputSnapshotId"],
+                        "diffHash": row["diff_hash"],
+                    }
+                )
+                == input_["preparedPlanRef"]
+                and confirmation["plan_ref"] == row["ref"]
+                and confirmation["plan_hash"] == row["plan_hash"]
+                and confirmation["base"] == row["base"]
+                and isinstance(confirmation["actor"], str)
+                and UUID.fullmatch(confirmation["actor"]) is not None
+                and confirmation["permission"] == "write"
+            )
+        except (ValueError, TypeError, KeyError):
+            fault(error)
+        if not valid:
+            fault(error)
+        return plan
+
     def create_job(
         self, project, operation, capability, input_, confirmation_ref, implementation, limits
     ):
@@ -512,6 +731,8 @@ class JobStore(Store):
                 return self._accepted_job(
                     claim, project, capability, input_, confirmation_ref, implementation, limits
                 )
+            if self._target_format == 3 and self._occupied_operation_evidence(operation):
+                fault("IDENTITY_CONFLICT")
             snap = self._project_snapshot(input_["inputSnapshotId"], internal)
             parameters = self.blob(project, input_["parametersHash"])
             if capability.startswith("test."):
@@ -523,25 +744,7 @@ class JobStore(Store):
                     fault("IDENTITY_CONFLICT")
             writing = capability in {"test.atomic", "changeset.commit", "mapping.commit"}
             if writing:
-                plan_row = self._db.execute(
-                    "SELECT * FROM job_plans WHERE ref=? AND project=?",
-                    (input_["preparedPlanRef"], project),
-                ).fetchone()
-                confirmation = self._db.execute(
-                    "SELECT * FROM job_confirmations WHERE id=? AND project=?",
-                    (confirmation_ref, project),
-                ).fetchone()
-                if (
-                    not plan_row
-                    or not confirmation
-                    or confirmation["plan_ref"] != plan_row["ref"]
-                    or confirmation["plan_hash"] != plan_row["plan_hash"]
-                    or confirmation["base"] != snap["projectRevision"]
-                    or plan_row["base"] != snap["projectRevision"]
-                    or confirmation["permission"] != "write"
-                ):
-                    fault("IDENTITY_CONFLICT")
-                plan = json.loads(plan_row["payload"])
+                plan = self._job_prepared_plan(project, input_, confirmation_ref, snap)
             else:
                 if input_["preparedPlanRef"] is not None or confirmation_ref is not None:
                     fault("INVALID_REQUEST", field="identity")
@@ -693,34 +896,10 @@ class JobStore(Store):
             ):
                 fault("INVALID_STATE")
         if input_["preparedPlanRef"] is not None:
-            plan = self._db.execute(
-                "SELECT * FROM job_plans WHERE project=? AND ref=?",
-                (project, input_["preparedPlanRef"]),
-            ).fetchone()
-            confirmation = self._db.execute(
-                "SELECT * FROM job_confirmations WHERE project=? AND id=?",
-                (project, confirmation_ref),
-            ).fetchone()
-            if (
-                not plan
-                or not confirmation
-                or json.loads(plan["payload"]) != context["plan"]
-                or plan["plan_hash"] != digest(context["plan"])
-                or plan["base"] != snapshot["projectRevision"]
-                or digest(
-                    {
-                        "projectId": project,
-                        "plan": context["plan"],
-                        "before": input_["inputSnapshotId"],
-                        "diffHash": plan["diff_hash"],
-                    }
-                )
-                != input_["preparedPlanRef"]
-                or confirmation["plan_ref"] != plan["ref"]
-                or confirmation["plan_hash"] != plan["plan_hash"]
-                or confirmation["base"] != plan["base"]
-                or confirmation["permission"] != "write"
-            ):
+            plan = self._job_prepared_plan(
+                project, input_, confirmation_ref, snapshot, error="INVALID_STATE"
+            )
+            if canonical(plan) != canonical(context["plan"]):
                 fault("INVALID_STATE")
         elif context["plan"] is not None or confirmation_ref is not None:
             fault("INVALID_STATE")

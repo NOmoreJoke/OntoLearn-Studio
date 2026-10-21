@@ -14,7 +14,7 @@
 | 单独load接受legacy/phantom伪receipt来源（P2） | 非递归精确receipt/真实marker/plan hash/域快照/序号核验；legacy不能提供完整应用receipt，StageA app只能源自真实genesis；两独立反例关闭 |
 | MAX域revision新提交成功后库不可重开（P2） | 已提交精确幂等返回优先，新操作在旧base检查后/修改前拒超限；MAX-1→MAX成功、精确重试、下一提交整库不变/CP/重开均独立通过 |
 
-全范围审查最终明确支持保存本内部阶段候选，未发现新增阻断。其独立新边界测试2 passed、525 deselected；此前33定点和三文件ruff/格式/diff通过。定点设计审查独立16 passed且原形状/结构26反例均拒绝。各轮源码匹配实际给定SHA，不用修前结果替代修后。
+全范围审查最终明确支持保存本内部阶段候选，未发现新增阻断。其独立新边界测试2 passed、525 deselected；此前33定点和三文件ruff/格式/diff通过。定点设计审查后续独立16 passed；更正原表述：修前26项pytest通过旁边的附加探针曾输出ACCEPTED_FAKE_RECEIPT forged，不能称“26反例均拒绝”。伪receipt加载缺口其后修复，16定点及最终2项MAX边界复核分属后续源码，不能倒改修前历史。各轮源码匹配实际给定SHA，不用修前结果替代修后。
 
 ## 实际验证与原件
 

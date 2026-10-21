@@ -287,6 +287,53 @@ class Store:
                 }
             return receipt_for(self, project, operation)
 
+    def project_operations(
+        self,
+        project: str,
+        *,
+        after_sequence: int = 0,
+        through_sequence: int | None = None,
+        limit: int = 100,
+    ) -> dict:
+        """Private fixed-upper-bound mixed ledger; public cursors remain owner-controlled."""
+        if self._target_format != 3:
+            raise ValueError("Explicit Store3 required")
+        from ontolearn_engine.project.format3 import _history, _integer
+
+        with self._read():
+            receipts, _, current = _history(self, project)
+            through = current["operationSequence"] if through_sequence is None else through_sequence
+            if (
+                not _integer(after_sequence)
+                or not _integer(through)
+                or not after_sequence <= through <= current["operationSequence"]
+                or type(limit) is not int
+                or not 1 <= limit <= 100
+            ):
+                raise ValueError("Invalid operation sequence page")
+            rows = self._db.execute(
+                "SELECT * FROM app_operations WHERE project=? AND sequence>? AND sequence<=? "
+                "ORDER BY sequence LIMIT ?",
+                (project, after_sequence, through, limit + 1),
+            ).fetchall()
+            items = [
+                {
+                    "sequence": row["sequence"],
+                    "operationId": row["operation"],
+                    "operationKind": row["kind"],
+                    "planHash": row["plan_hash"],
+                    "domainRevision": row["domain_revision"],
+                    "receipt": receipts.get(row["operation"], {"status": "legacy-not-recorded"}),
+                }
+                for row in rows[:limit]
+            ]
+            return {
+                "project": project,
+                "throughSequence": through,
+                "items": items,
+                "nextSequence": items[-1]["sequence"] if len(rows) > limit else None,
+            }
+
     def revision(self, project: str) -> int:
         row = self._db.execute("SELECT revision FROM projects WHERE id=?", (project,)).fetchone()
         if row is None:
@@ -394,9 +441,9 @@ class Store:
     def commit(
         self,
         project: str,
-        base: int,
+        base: int | None,
         operation: str,
-        job: str,
+        job: str | None,
         *,
         definitions: list[dict] | None = None,
         remove_definitions: list[dict] | None = None,
@@ -407,6 +454,7 @@ class Store:
         preview_identity: str | None = None,
         preview_control: dict | None = None,
         compensate: dict | None = None,
+        application: dict | None = None,
         hook: Hook = lambda _: None,
     ) -> dict:
         """Atomic ChangeSet or whole managed-range replacement.
@@ -414,9 +462,34 @@ class Store:
         mapping = {id, rows:[{row, facts:[...]}]}; a prepared storage plan,
         NOT a CSV parser or complete mapping executor. No silent takeover exists.
         """
+        if application is not None:
+            from ontolearn_engine.project.applications import commit as commit_application
+
+            if any(
+                value is not None
+                for value in (
+                    definitions,
+                    remove_definitions,
+                    manual,
+                    edits,
+                    remove,
+                    mapping,
+                    preview_identity,
+                    preview_control,
+                    compensate,
+                )
+            ):
+                raise ValueError("Application plan contains its complete domain branch")
+            return commit_application(self, project, base, operation, job, application, hook)
         if type(base) is not int or base < 0:
             raise ValueError("Nonnegative integer projectRevision required")
-        if not isinstance(operation, str) or not operation or not isinstance(job, str) or not job:
+        application_marker = self._target_format == 3 and job is None
+        if (
+            not isinstance(operation, str)
+            or not operation
+            or not application_marker
+            and (not isinstance(job, str) or not job)
+        ):
             raise ValueError("String operationId and jobId required")
         plan = {
             "base": base,
@@ -492,6 +565,10 @@ class Store:
                     raise ValueError("Canonical preview control records required")
             plan["preview_control"] = preview_control
         fingerprint = digest(plan)
+        if application_marker:
+            from ontolearn_engine.project.applications import allow_domain_marker
+
+            allow_domain_marker(self, project, operation, fingerprint)
         with self._transaction(hook):
             previous = self.marker(project, operation)
             if previous:
@@ -740,7 +817,7 @@ class Store:
                 (project, operation, before_snapshot, after_snapshot),
             )
             hook("mid_marker")
-            if self._target_format == 3:
+            if self._target_format == 3 and not application_marker:
                 from ontolearn_engine.project.format3 import record_domain_commit
 
                 record_domain_commit(self, project, self.marker(project, operation), hook)

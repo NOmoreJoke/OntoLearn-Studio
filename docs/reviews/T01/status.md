@@ -122,3 +122,21 @@ Goal保持 active：父功能FR-001–006/804全部完成、持久项目/草稿/
 Job层已实际完成有界schema3阶段：同一个Store lifetime lease、严格第二层迁移/原claim kind与context唯一演进、保留旧Job指纹和重试、公有身份原子、旧Coordinator拒3。212专项+独立含旧JobStore377通过；新增入口6及独立默认Coordinator/分页22通过，静态/格式/diff通过。尚未做新完整全仓，不沿用1699覆盖新源码；详细边界job3-schema-review.md。
 
 本阶段恢复提交后继续真实非Job同连接Store.commit应用CAS/混合receipt/checkpoint/稳定操作sequence及reconcile/公共同版ready。不能把schema层或kind列存在算应用CAS、Job-ready或公共3完成。全文新共同指令已由两独立agent核验回执；Goal保持active，不push。
+
+## 总控第二阶段逐DDL与原26探针归因更正
+
+已实际读取T01-controller-ddl-coverage-and-tool-records-readback.md，确认StageA旧缺口已关闭，但Job旧claim演进的CREATE/DROP/各trigger当时仍成组hook；这属于验收粒度未全覆盖，不是已证实部分提交缺陷。现补4处即时hook及16个精确四类故障用例，保留原F3-02承诺。验证结果另记，不把212/377或旧1699当新增通过。
+
+format3-stage-a-review.md原“26反例均拒绝”现已更正：原session第331行的26是修前pytest子集通过，旁边附加探针曾接受伪receipt；后续单独load修复及16/2等复核才关闭该缺口。原归档/原件不改，当前代码不据旧修前输出冒称仍有该漏洞。新持久应用CAS代码正在实现，尚未测试或登记ready。
+
+
+## 真实持久应用 CAS 与混合历史链
+
+私有 JobStore3 的元数据与草稿save/delete/restore、同连接combined、真实全局application claim、单次sequence/receipt/checkpoint及固定throughSequence列表已实现；详细行为与内审见 [application-cas-review](application-cas-review.md)。学习/audit/完整apprestore及公共3未开放。Job旧claim逐DDL新增16项实际与独立通过。
+
+修前应用108项和全仓630TS/2212Python/44不适用skip虽通过，但内审发现共享prepared凭据跨类型P2，因此仅作被替代候选。已严格分开普通Job计划类型/hash/ref/确认，在claim前拒绝，补双向误用零影响可重开反例；修后本线275通过、独立2＋3定点及Job2/3探针通过，P2关闭。第二位八边界20项定点无新增阻断。修后全仓仍待实际终态；原件保留，不沿用旧通过。
+
+
+修后全仓实际退出0：630 TS、2214 Python、44上述不适用skip，静态/类型/构建/ruff通过；详情与冻结源码hash见application-cas-review.md。新归档原件SHA `1f35a12250819bb74b8eda325e753815e2fdad38337c51ff23d1425924fe0fe9`，逐成员原字节回读。当前准备本地恢复提交，不push。
+
+已全文读取T05固定412、T03 process b868、T10 b39、T09 e651的接口原件并核对hash；形成 [owner-interface-responses-r1](../../iterations/T01/owner-interface-responses-r1.md)，独立设计审查无阻断。D7严格三字段、失败定位专用资源、同协议来源分块、业务白名单/闭包/单writer新项目receipt为明确设计；worker.py未交接、真实source/学习账本/transfer投影和import receipt仍是实际缺口，未消费未批准实现。下一步继续真实学习/辅助账本与完成边界、正式canonical/ready和已授权窄接线，Goal保持active。父功能、指定双审、PR/CI/合并/发布仍未完成。
