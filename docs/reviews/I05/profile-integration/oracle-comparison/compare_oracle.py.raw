@@ -1,0 +1,364 @@
+"""External, stdlib-only comparison. NEVER imported by the production probe.
+
+Reads immutable expected and an input-only projection AFTER execution. No graph
+matching, closure, numeric/date comparison, or expected-to-actual input route.
+"""
+import argparse
+import collections
+import hashlib
+import importlib.util
+import json
+import re
+from pathlib import Path
+
+ORACLE_SHA='87220503f9983146c974fe3e35025d520cad70e54fdd994aebfa86fb1ff7259f'
+INPUT_SHA='7c24323ece02667aa53b3363b5e6b88adbd785fa6410aca868026c9bef9c61f6'
+PROJECTION_CODE_SHA='c93d284c1b5744eaf671623f386fa0812602a54946fcafc8d0f0e8dccb21ee7b'
+DOC_SHA='82d8c3976c2f5e47388e44fd44462c5ceddb58c26919b8cf58d22f3e90468f7b'
+XSD='http://www.w3.org/2001/XMLSchema#'
+LANG='http://www.w3.org/1999/02/22-rdf-syntax-ns#langString'
+PROFILE='OntoLearn-rule-comparison-profile/1'
+
+
+def sha(raw):return hashlib.sha256(raw).hexdigest()
+def canonical(v):return json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
+def unique_object(pairs):
+    result={}
+    for key,value in pairs:
+        if key in result:raise ValueError('DUPLICATE_JSON_KEY')
+        result[key]=value
+    return result
+
+def load(path,expected=None):
+    raw=Path(path).read_bytes()
+    if len(raw)>268435456:raise ValueError('EXTERNAL_ARTIFACT_SIZE_LIMIT')
+    if expected is not None and sha(raw)!=expected:raise ValueError('FIXED_ARTIFACT_BYTES_CHANGED')
+    return json.loads(raw,object_pairs_hook=unique_object,parse_constant=lambda _:(_ for _ in ()).throw(ValueError('NONFINITE_JSON')))
+
+
+def integer(value):
+    if type(value) is not dict or set(value)!={'integerHex'}:raise ValueError('INTEGER_REPRESENTATION')
+    text=value['integerHex']
+    if type(text) is not str or len(text)>8196 or not re.fullmatch(r'-?0x[0-9a-f]+',text):raise ValueError('INTEGER_HEX')
+    number=int(text,16)
+    if hex(number)!=text:raise ValueError('NONCANONICAL_INTEGER_HEX')
+    return number
+
+
+def n3key(text):
+    """Syntax identity only, never literal value coercion or comparison.
+
+    The complete approved 248-triple dictionary is checked to use this subset.
+    Unknown syntax fails explicitly; numeric lexical strings stay unchanged.
+    """
+    if type(text) is not str:raise ValueError('N3_STRING_REQUIRED')
+    if text.startswith('<') and text.endswith('>'):return ('iri',text[1:-1],'','')
+    lexical,end=json.JSONDecoder().raw_decode(text)
+    if type(lexical) is not str:raise ValueError('LITERAL_STRING_REQUIRED')
+    suffix=text[end:]
+    if not suffix:return ('literal',lexical,XSD+'string','')
+    if suffix.startswith('^^<') and suffix.endswith('>'):return ('literal',lexical,suffix[3:-1],'')
+    if suffix.startswith('@'):return ('literal',lexical,LANG,suffix[1:].lower())
+    raise ValueError('N3_SYNTAX_OUTSIDE_FIXED_DICTIONARY')
+
+
+def input_triple(t):return (n3key('<'+t['subject']+'>'),n3key('<'+t['predicate']+'>'),n3key(t['object']))
+def n3triple(t):
+    if type(t) is not list or len(t)!=3:raise ValueError('N3_TRIPLE_SHAPE')
+    return tuple(n3key(value) for value in t)
+
+def term(t):
+    if t.get('recordType')!='TermInput':raise ValueError('TERM_RECORD_TYPE')
+    if t['kind']=='iri':return ('iri',t['lexical_form'],'','')
+    if t['kind']!='literal':raise ValueError('TERM_KIND')
+    lang=t['language_raw'] or ''
+    datatype=t['datatype_iri'] or (LANG if lang else XSD+'string')
+    return ('literal',t['lexical_form'],datatype,lang.lower())
+
+def record_triple(t):
+    if t.get('recordType')!='Triple':raise ValueError('TRIPLE_RECORD_TYPE')
+    return tuple(term(t[k]) for k in ('subject','predicate','object'))
+
+def rule_key(d):
+    return (d['rule_id'],d['enabled'],d['revision'],
+            tuple(tuple(row[k] for k in ('subject','predicate','object'))for row in d['when']),
+            tuple(tuple(row[k]for k in ('left','operator','right'))for row in d['comparisons']),
+            tuple(tuple(row[k]for k in ('subject','predicate','object'))for row in d['heads']))
+
+
+def model(oracle,projection,project_module):
+    triples={key:n3triple(value['n3']) for key,value in oracle['triples'].items()}
+    rules={key:project_module.definition(value['definition'],value['inputRef']) for key,value in oracle['ruleDefinitions'].items()}
+    def graph_signature(g):
+        return (frozenset(triples[k]for k in g['assertedTripleIds']),
+                frozenset(triples[k]for k in g['ontologyTripleIds']),
+                tuple(rule_key(rules[k])for k in g['ruleDefinitionRefs']))
+    def input_signature(sample):
+        v=sample['input']
+        return (frozenset(input_triple(r['triple'])for r in v['asserted']),
+                frozenset(input_triple(r['triple'])for r in v['ontology']),
+                tuple(rule_key(r)for r in v['definitions']))
+    by_signature=collections.defaultdict(list)
+    for key,g in oracle['graphs'].items():by_signature[graph_signature(g)].append(key)
+    records=[]
+    for sample in projection['mathInputs']:
+        graphs=by_signature.get(input_signature(sample),[])
+        accepted={ref for graph in graphs for ref in oracle['graphs'][graph]['matchRefs'] if oracle['matches'][ref]['accepted']}
+        rejected={ref for graph in graphs for ref in oracle['graphs'][graph]['matchRefs'] if not oracle['matches'][ref]['accepted']}
+        record={'mathInputId':sample['id'],'eligibleStandaloneMathInput':sample['eligibleStandaloneMathInput'],
+                'fullOriginalInputContext':sample['input']['fullOriginalInputContext'],
+                'exactInputValueGraphs':graphs,'acceptedExpectedMatchRefs':sorted(accepted),
+                'falseExpectedMatchRefs':sorted(rejected),'lifecycleCoverage':False,
+                'producerOrSourceAuthorityEquivalent':False}
+        if graphs:
+            record['comparisonScope']='exact mathematical input values/definition order only; no lifecycle or producer equivalence'
+            record['observableFields']=['complete rdfs/custom/derived sets','accepted firing bindings and ordered when',
+                                       'all accepted comparison operand terms/operator/boolean','all original true/false match bindings/when/proof','all head indices/occurrences',
+                                       'all firing basis and ordered per-when proof leaves','available RDFS leaf witness basis',
+                                       'warnings','full actual rows/payload hashes and batch bytes hash integrity']
+            record['notObservable']=['false ComparisonEvidence is absent; originalMatches carries actual false binding/when/proof only',
+                                     'numeric rational internal value semantics (oracle gives operand terms/truth only)',
+                                     'RDFS direct-step/derivation-level objects absent from current result',
+                                     'current/history/reset/behavior/Store/producer authorization']
+        else:
+            record['comparisonScope']='not comparable to a full approved expected graph'
+            record['reason']=('Partial event-only fragment omits prior behavior/resource RDF; no expected full graph has this input.'
+                              if not sample['input']['fullOriginalInputContext'] else
+                              'No full graph with exactly this asserted/ontology/ordered-definition input; no nearest/subset comparison.')
+        if not sample['eligibleStandaloneMathInput']:
+            record['executionExpectation']='must remain not-executed; absence of original rule definitions is not an inferred empty-rule success'
+        records.append(record)
+    covered={g for r in records if r['eligibleStandaloneMathInput'] for g in r['exactInputValueGraphs']}
+    unexecuted={g for r in records if not r['eligibleStandaloneMathInput'] for g in r['exactInputValueGraphs']}
+    return triples,records,{'format':'external-i05-oracle-coverage/1','oracleSha256':ORACLE_SHA,'inputSha256':INPUT_SHA,
+                           'actualResultsSupplied':False,'actualMathCompared':False,
+                           'mathInputs':records,'coveredValueGraphIds':sorted(covered),
+                           'inputPresentButNotEligibleGraphIds':sorted(unexecuted-covered),
+                           'uncoveredGraphIds':sorted(set(oracle['graphs'])-covered),
+                           'counts':{'mathInputs':len(records),'valueMappedInputs':sum(bool(r['exactInputValueGraphs'])for r in records),
+                                     'eligibleMappedInputs':sum(bool(r['exactInputValueGraphs'])and r['eligibleStandaloneMathInput']for r in records),
+                                     'eligibleCoveredValueGraphs':len(covered),'oracleGraphs':len(oracle['graphs'])}}
+
+
+def exact_set(rows):
+    value=list(rows)
+    if len(value)!=len(set(value)):raise ValueError('DUPLICATE_SET_MEMBER')
+    return set(value)
+
+def expected_firing(m,graph,oracle,triples):
+    witnesses={oracle['rdfsWitnesses'][k]['resultTripleId']:oracle['rdfsWitnesses'][k] for k in graph['rdfsWitnessRefs']}
+    leaves=[]
+    input_ids=set(graph['assertedTripleIds']+graph['ontologyTripleIds'])
+    for key in m['whenTripleIdsInDefinitionOrder']:
+        ids=[key] if key in input_ids else witnesses[key]['leafBasisTripleIds']
+        leaves.append(frozenset(triples[k]for k in ids))
+    return {'ruleId':m['ruleId'],'bindings':tuple(sorted((k,n3key(v))for k,v in m['bindings'].items())),
+            'when':tuple(triples[k]for k in m['whenTripleIdsInDefinitionOrder']),
+            'proof':tuple(leaves),'basis':frozenset(triples[k]for k in m['leafBasisTripleIds']),
+            'comparisons':tuple((v['comparisonIndex'],n3key(v['left']),v['operator'],n3key(v['right']),v['independentResult'])for v in m['comparisons']),
+            'heads':tuple((v['headIndex'],triples[v['tripleId']])for v in m['heads'])}
+
+def leaf_refs(refs,leaves):
+    if type(refs)is not list or any(type(ref)is not str for ref in refs)or refs!=sorted(set(refs)):
+        raise ValueError('PROOF_REFS_SORTED_UNIQUE')
+    return frozenset(leaves[ref]for ref in refs)
+
+
+def actual_firing(f,leaves):
+    if f.get('recordType')!='PreparedFiring' or f['policy']!=PROFILE:raise ValueError('FIRING_RECORD')
+    bindings=tuple((name,term(value))for name,value in f['bindings'])
+    if bindings!=tuple(sorted(bindings)):raise ValueError('BINDING_ORDER')
+    comparisons=[]
+    for c in f['comparisons']:
+        if c.get('recordType')!='ComparisonEvidence' or type(c['result'])is not bool:raise ValueError('COMPARISON_RECORD')
+        if c['left'].get('recordType')!='ProfileValue' or c['right'].get('recordType')!='ProfileValue':raise ValueError('OPERAND_RECORD')
+        comparisons.append((integer(c['index']),term(c['left']['term']),c['operator'],term(c['right']['term']),c['result']))
+    heads=[]
+    for h in f['heads']:
+        if h.get('recordType')!='HeadEvidence':raise ValueError('HEAD_RECORD')
+        heads.append((integer(h['index']),record_triple(h['triple'])))
+    return {'ruleId':f['rule_id'],'bindings':bindings,'when':tuple(record_triple(t)for t in f['when']),
+            'proof':tuple(leaf_refs(refs,leaves)for refs in f['proof_leaves']),
+            'basis':leaf_refs(f['basis'],leaves),'comparisons':tuple(comparisons),'heads':tuple(heads)}
+
+
+def firing_sort_key(f):return f['ruleId'],f['bindings'],f['when']
+
+def check_result(result,sample,index,graph,oracle,triples,config):
+    payload=result['payload'];rows=result['rows'];r=payload['reasoning']
+    if payload['format']!='i05-reasoning-result/2' or r['profile']!=PROFILE or r['semanticsVersion']!='i05-finite-7':raise ValueError('RESULT_VERSION')
+    encoded=canonical(payload);row_bytes=canonical(rows)
+    if len(rows)>10000 or any(type(row)is not list or len(row)!=1 or type(row[0])is not str or len(row[0])>8192 for row in rows):raise ValueError('ROWS_SHAPE')
+    if ''.join(row[0]for row in rows).encode()!=encoded:raise ValueError('ROWS_INCOMPLETE')
+    if len(encoded)+len(row_bytes)>8388608:raise ValueError('RESULT_SIZE')
+    if sha(encoded)!=result['jsonPayloadDigest'] or sha(row_bytes)!=result['rowsDigest']:raise ValueError('PAYLOAD_ROWS_HASH')
+    if sha(canonical(r['definitions']))!=payload['definitionsDigest']:raise ValueError('DEFINITION_JSON_DIGEST')
+    expected_rdfs={triples[k]for k in graph['rdfsAddedTripleIds']}
+    expected_custom={triples[k]for k in graph['customOutputTripleIds']}
+    if exact_set(n3triple(t)for t in r['rdfs'])!=expected_rdfs:raise ValueError('RDFS_SET')
+    if exact_set(n3triple(t)for t in r['rules'])!=expected_custom:raise ValueError('CUSTOM_SET')
+    if expected_rdfs|expected_custom!={triples[k]for k in graph['derivedUnionTripleIds']}:raise ValueError('ORACLE_DERIVED_UNION')
+    warnings=['RULE_CHAIN_UNSUPPORTED:'+w['ruleId']for w in graph['expectedSemanticWarnings']]
+    if r['warnings']!=warnings:raise ValueError('WARNINGS')
+    leaves={}
+    for leaf in r['proofLeaves']:
+        ref=leaf['reference']
+        if ref in leaves:raise ValueError('DUPLICATE_PROOF_REF')
+        raw=('i05-profile-proof-leaf/1\0'+'\0'.join(leaf['triple'])).encode()
+        if ref!='i05-proof:'+sha(raw):raise ValueError('PROOF_REF_HASH')
+        leaves[ref]=n3triple(leaf['triple'])
+    expected_input={triples[k]for k in graph['assertedTripleIds']+graph['ontologyTripleIds']}
+    if exact_set(leaves.values())!=expected_input:raise ValueError('COMPLETE_INPUT_LEAF_TABLE')
+    expected=sorted([expected_firing(oracle['matches'][k],graph,oracle,triples)for k in graph['matchRefs']if oracle['matches'][k]['accepted']],key=firing_sort_key)
+    actual=[actual_firing(f,leaves)for f in r['firingGroups']]
+    if actual!=expected:raise ValueError('COMPLETE_ACCEPTED_FIRINGS_HEADS_COMPARISONS_BASIS')
+    expected_evidence=[]
+    for i,firing in enumerate(expected):
+        for head_index,value in firing['heads']:
+            expected_evidence.append((firing['ruleId'],i,head_index,value,firing['when'],firing['basis']))
+    actual_evidence=[(e['rule'],integer(e['firingIndex']),integer(e['headIndex']),n3triple(e['result']),
+                      tuple(n3triple(t)for t in e['inputs']),leaf_refs(e['basis'],leaves))for e in r['evidence']]
+    if actual_evidence!=expected_evidence:raise ValueError('ALL_HEAD_EVIDENCE_OCCURRENCES')
+    by_rule={v['rule_id']:v for v in sample['input']['definitions']}
+    if len(r['definitions'])!=len(by_rule):raise ValueError('DEFINITION_RECORD_COUNT')
+    def op(value):
+        return ('var',value['name'])if value.get('recordType')=='Variable'else term(value)
+    def expected_op(value,iri=False):
+        if value.startswith('?'):return ('var',value)
+        return ('iri',value,'','')if iri else n3key(value)
+    for actual_def,definition in zip(r['definitions'],sample['input']['definitions']):
+        if actual_def.get('recordType')!='RuleSpec' or actual_def['rule_id']!=definition['rule_id'] or actual_def['revision']!=definition['revision'] or actual_def['definition_digest']!=definition['definitionJsonValueSha256'] or actual_def['policy']!=PROFILE:raise ValueError('ACTUAL_ORIGINAL_DEFINITION_IDENTITY')
+        for field in ('when','heads'):
+            expected_rows=[tuple(expected_op(row[k],iri=k!='object')for k in ('subject','predicate','object'))for row in definition[field]]
+            actual_rows=[tuple(op(row[k])for k in ('subject','predicate','object'))for row in actual_def[field]]
+            if actual_rows!=expected_rows:raise ValueError('DEFINITION_ORDERED_ROWS')
+        expected_comps=[(expected_op(c['left']),c['operator'],expected_op(c['right']))for c in definition['comparisons']]
+        actual_comps=[(op(c['left']),c['operator'],op(c['right']))for c in actual_def['comparisons']]
+        if actual_comps!=expected_comps:raise ValueError('DEFINITION_ORDERED_COMPARISONS')
+    actual_rule_ids=[];retained=[]
+    for item in r['mechanismBatches']:
+        rule_id=item['ruleId'];actual_rule_ids.append(rule_id)
+        expected_disabled=rule_id in sample['input']['disabled_rule_ids']
+        if rule_id is None:
+            if by_rule or item['definitionOrdinal']is not None or item['definitions']!=[]:
+                raise ValueError('EMPTY_DEFINITION_CARRIER')
+        else:
+            ordinal=next(i for i,d in enumerate(sample['input']['definitions'])if d['rule_id']==rule_id)
+            if integer(item['definitionOrdinal'])!=ordinal or item['definitions']!=[r['definitions'][ordinal]]:
+                raise ValueError('ORIGINAL_DEFINITION_CARRIER')
+        if item['catalog']!=r['catalog']or item['limits'].get('recordType')!='ProfileLimits'or {k:v for k,v in item['limits'].items()if k!='recordType'}!=item['budgetLimits']:
+            raise ValueError('MATCH_CARRIER_CATALOG_LIMITS')
+        if item['disabled']is not expected_disabled:raise ValueError('DISABLED_FLAG')
+        batch=item['batch']
+        originals=item['originalMatches']
+        if expected_disabled:
+            if originals is not None:raise ValueError('DISABLED_ORIGINAL_MATCHES')
+            if batch is not None:raise ValueError('DISABLED_EVALUATED_BATCH')
+            continue
+        expected_originals=[]
+        for ref in graph['matchRefs']:
+            match=oracle['matches'][ref]
+            if match['ruleId']==rule_id:
+                f=expected_firing(match,graph,oracle,triples)
+                expected_originals.append({k:f[k]for k in ('ruleId','bindings','when','proof')})
+        if rule_id is None and originals!=[]:raise ValueError('EMPTY_DEFINITION_MATCHES')
+        actual_originals=[]
+        for m in originals:
+            if m.get('recordType')!='BindingMatch':raise ValueError('ORIGINAL_MATCH_RECORD')
+            actual_originals.append({'ruleId':m['rule_id'],'bindings':tuple((k,term(v))for k,v in m['bindings']),
+                                     'when':tuple(record_triple(t)for t in m['when']),
+                                     'proof':tuple(leaf_refs(refs,leaves)for refs in m['proof_leaves'])})
+        if sorted(actual_originals,key=firing_sort_key)!=sorted(expected_originals,key=firing_sort_key):raise ValueError('ALL_TRUE_FALSE_ORIGINAL_MATCHES')
+        if batch.get('recordType')!='PreparedFiringBatch'  or batch['profile']!=PROFILE:raise ValueError('BATCH_RECORD')
+        raw=batch['payload']
+        if raw.get('encoding')!='hex' or type(raw['bytes'])is not str or len(raw['bytes'])%2 or not re.fullmatch('[0-9a-f]*',raw['bytes']):raise ValueError('BATCH_BYTES_HEX')
+        if sha(bytes.fromhex(raw['bytes']))!=batch['digest']:raise ValueError('BATCH_BYTES_DIGEST')
+        firings=[actual_firing(f,leaves)for f in batch['firings']]
+        if firings!=[f for f in expected if f['ruleId']==rule_id]:raise ValueError('BATCH_FIRING_COMPLETENESS')
+        if exact_set(record_triple(t)for t in batch['facts'])!={t for f in firings for _,t in f['heads']}:raise ValueError('BATCH_FACT_SET')
+        retained.extend(batch['firings'])
+    if actual_rule_ids!=(sorted(by_rule)or[None]) or retained!=r['firingGroups']:raise ValueError('PER_RULE_BATCH_COMPLETENESS')
+    expected_witness={triples[oracle['rdfsWitnesses'][key]['resultTripleId']]:frozenset(triples[k]for k in oracle['rdfsWitnesses'][key]['leafBasisTripleIds'])for key in graph['rdfsWitnessRefs']}
+    actual_witness={n3triple(v['result']):frozenset(n3triple(t)for t in v['basis'])for v in r['rdfsEvidence']}
+    if len(actual_witness)!=len(r['rdfsEvidence']) or actual_witness!=expected_witness:raise ValueError('RDFS_LEAF_WITNESS')
+    for v in r['rdfsEvidence']:
+        if leaf_refs(v['proofLeaves'],leaves)!=actual_witness[n3triple(v['result'])]:raise ValueError('RDFS_PROOF_REFS')
+    expected_terms=collections.Counter()
+    for section in ('asserted','ontology'):
+        for position,record in enumerate(sample['input'][section]):
+            for field in ('subject','predicate','object'):
+                text=record['triple'][field]
+                key=n3key(text)if field=='object'else('iri',text,'','')
+                pointer=(''if config['sourceStyle']=='short-no-revision'else'asset:i05/profile-probe-inputs.json')+'#/mathInputs/'+str(index)+'/input/'+section+'/'+str(position)+'/triple/'+field
+                expected_terms[(pointer,key,text)]+=1
+    actual_terms=collections.Counter()
+    for item in r['termSources']:
+        source=item['value']['source']
+        if source.get('recordType')!='SourceRecord' or source['digest']!=config['executionInputSha256'] or source['revision']!=(None if config['sourceStyle']=='short-no-revision'else sample['inputProjectionJsonSha256']) or item['span']is not None:raise ValueError('INPUT_TERM_SOURCE_FIELDS')
+        actual_terms[(source['reference'],term(item['value']),source['text'])]+=1
+    if actual_terms!=expected_terms:raise ValueError('ALL_INPUT_TERM_OCCURRENCES_AND_SOURCE_REFS')
+    return {'acceptedFirings':len(actual),'heads':sum(len(f['heads'])for f in actual),'rdfsTriples':len(expected_rdfs),
+            'customTriples':len(expected_custom),'falseOriginalMatchesCompared':sum(not oracle['matches'][k]['accepted']for k in graph['matchRefs']),
+            'falseComparisonEvidenceAvailable':False,
+            'fullSourcePointerOccurrenceComparison':True,'completeRowsHashes':True,'batchBytesHashIntegrity':True,
+            'privateTypedEncodingSemanticsIndependentlyDecoded':False,'lifecycleChecked':False}
+
+
+def compare_actual(actual,projection,oracle,triples,mappings,config):
+    if actual.get('inputSha256')!=config['executionInputSha256'] or actual.get('format')!='i05-profile-probe/2' or actual.get('inputBytes',config['executionInputBytes'])!=config['executionInputBytes']:raise ValueError('ACTUAL_INPUT_BINDING')
+    records=actual['cases']
+    if len(records)!=len(projection['mathInputs'])or len({r['caseId']for r in records})!=len(records):raise ValueError('ACTUAL_CASE_COMPLETENESS')
+    if [r['caseId']for r in records]!=[s['id']for s in projection['mathInputs']]:raise ValueError('ACTUAL_CASE_ORDER')
+    outputs=[]
+    for index,(sample,record,mapping)in enumerate(zip(projection['mathInputs'],records,mappings)):
+        out={'mathInputId':sample['id'],'exactInputValueGraphs':mapping['exactInputValueGraphs']}
+        try:
+            if record['inputProjectionJsonSha256']!=sample['inputProjectionJsonSha256']:raise ValueError('CASE_INPUT_DIGEST')
+            if not sample['eligibleStandaloneMathInput']:
+                if record['status']!='not-executed':raise ValueError('INELIGIBLE_INPUT_EXECUTED')
+                out.update(status='not-executed',reason='original definitions unavailable; intentional non-execution checked')
+            elif record['status']!='success':
+                out.update(status='failure',reason='ACTUAL_COMPUTATION_NOT_SUCCESS',actualStatus=record['status'],publicError=record.get('error'),diagnostic=record.get('diagnostic'))
+            elif not mapping['exactInputValueGraphs']:
+                out.update(status='not-comparable',actualStatus=record['status'],reason=mapping['reason'])
+            else:
+                checks=[]
+                for graph_id in mapping['exactInputValueGraphs']:
+                    checks.append(check_result(record['result'],sample,index,oracle['graphs'][graph_id],oracle,triples,config))
+                out.update(status='math-observable-fields-pass',checks=checks)
+        except (KeyError,TypeError,ValueError,IndexError)as error:
+            out.update(status='failure',reason=str(error)[:160],schemaOrComparisonFailure=True)
+        outputs.append(out)
+    return {'format':'external-i05-oracle-comparison/1','actualResultsSupplied':True,'oracleSha256':ORACLE_SHA,
+            'inputSha256':INPUT_SHA,'executionInput':config,'cases':outputs,'statusCounts':dict(collections.Counter(x['status']for x in outputs)),
+            'lifecycleChecked':False,'completeAll40MatchTraceClaim':False,'originalTrueFalseMatchCarrierCompared':True,'falseComparisonEvidenceClaim':False,'fullI05OrE1OrP2Passed':False}
+
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--oracle',required=True);parser.add_argument('--inputs',required=True)
+    parser.add_argument('--projection-code',required=True);parser.add_argument('--coverage-out',required=True)
+    parser.add_argument('--actual');parser.add_argument('--comparison-out');parser.add_argument('--executed-input-asset');parser.add_argument('--source-style',choices=('short-no-revision','asset-revision'),default='short-no-revision');args=parser.parse_args()
+    oracle=load(args.oracle,ORACLE_SHA);projection=load(args.inputs,INPUT_SHA)
+    code=Path(args.projection_code)
+    if sha(code.read_bytes())!=PROJECTION_CODE_SHA:raise ValueError('INPUT_TRANSLATION_BYTES_CHANGED')
+    spec=importlib.util.spec_from_file_location('i05_input_only_projection',code);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    triples,mappings,coverage=model(oracle,projection,module)
+    Path(args.coverage_out).write_text(json.dumps(coverage,ensure_ascii=False,indent=2)+'\n')
+    if args.actual:
+        config={'executionInputSha256':INPUT_SHA,'executionInputBytes':Path(args.inputs).stat().st_size,
+                'sourceStyle':args.source_style,'sameInputJsonValuesVerified':True}
+        if args.executed_input_asset:
+            if load(args.executed_input_asset)!=projection:raise ValueError('EXECUTED_INPUT_JSON_VALUES_DIFFER')
+            config['executionInputSha256']=sha(Path(args.executed_input_asset).read_bytes())
+            config['executionInputBytes']=Path(args.executed_input_asset).stat().st_size
+        if not args.comparison_out:raise ValueError('COMPARISON_OUTPUT_REQUIRED')
+        result=compare_actual(load(args.actual),projection,oracle,triples,mappings,config)
+        result['actualArtifactSha256']=sha(Path(args.actual).read_bytes())
+        result['actualArtifactBytes']=Path(args.actual).stat().st_size
+        result['actualArtifactExecution']='provided by root; checker does not run product'
+        Path(args.comparison_out).write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+        print(json.dumps(result['statusCounts'],ensure_ascii=False));return int(any(c['status']=='failure'for c in result['cases']))
+    print(json.dumps(coverage['counts'],ensure_ascii=False));return 0
+
+
+if __name__=='__main__':raise SystemExit(main())

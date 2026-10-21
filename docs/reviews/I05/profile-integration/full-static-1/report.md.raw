@@ -1,0 +1,41 @@
+# P1 core / lexical 全范围独立静态审查（首版）
+
+结论：发现两个需修的具体类别。尚未执行项目 import/pytest/完整 oracle；本报告不作运行或 P1/P2 Pass。当前依赖尚未交付，未借用 C4 环境或锁。
+
+## 1. 已发行 context 只核对象身份，允许旧图制造新绑定
+
+状态：已向主开发报告，当前封存源码尚未修。
+
+semantic_turtle.ProfileTermContext.validate_graph 只检查发行注册表的 context/graph/terms/occurrences 容器对象身份、disabled ids、原 graph frozenset。TermInput 和 SourceRecord 是 frozen dataclass，但 object.__setattr__ 仍可改变字段；原容器与 graph 均不变。
+
+最小路径：原 Turtle 声明 p/q 为真实 DatatypeProperty，事实 `<urn:u> <urn:p> "1"^^xsd:integer`；规则 when(u,p,?v)，head(u,q,?v)。取得 ctx.terms[原 literal1][0] 的 TermInput，将 lexical_form 改为 "2"。同一对象也被 occurrence.value 引用。_profile_graph 只对变后的 occurrence.value 调 parse_value，合法整数2通过；_finite_matches 从原图得到 literal1，但构造 BindingMatch 的 binding 和 actual_when 均经 context.term_input 替换为2。T05 _one 对两者核一致，因而可以发出 q 2，proofLeaves 却仍引用原图 p 1。这不是 ctx 已验证图成员的证明。
+
+最低修复建议：在发行时保留独立固定的 RDF term-key 与所有 occurrence 的 value 标量、SourceRecord 四字段、ordinal/span、terms→value关系指纹。reason 入口有界核验一次，并以本次核验后的可信 term-view 供 join 使用；不要每次 term_input 全量重hash，也不要简单 str/n3 一致门误拒 plain/explicit string 或语言标签大小写的合法同term多来源。按原 graph 工作池预扣指纹扫描/复制；不借新默认预算。此仅保证本地对象一致性，不证明 producer/source 授权。
+
+## 2. 已确认用户 graph/Catalog 的 INVALID_RULE 被映射 Internal
+
+状态：已报告两条精确路径，当前封存字节未修；尚未项目运行。
+
+(a) 合法 Turtle `<urn:p> a owl:ObjectProperty, owl:DatatypeProperty .`，rules=()。_profile_graph 通过；_profile_catalog 发现 object/data 分类交集，抛 INVALID_RULE，包装 context=catalog。execute_profile 将 catalog 映射 REASON/SYNTAX/User；adapter 的 INVALID_RULE 只允许 REASON/RULE，因此返回 Internal。真正失败的是用户图中有限 Catalog 声明约束，不能当未知内部损坏或最后一条规则错误。
+
+(b) `<urn:s> <urn:p> "x"^^rdf:langString .` 生成 datatype=rdf:langString、language=None 的 TermInput；固定 rule_terms.parse_value 的该明确分支使用 fail()，其安全reason为 INVALID_RULE/classification=input。core 包装 context=graph，公开 adapter 同样无 REASON/SYNTAX 的精确输入路由。建议在真实图输入边界将已确认的机制含糊 INVALID_RULE 转成具体图输入码/精确来源；不改固定 T05 模块，不将任意 INVALID_RULE 宽配为用户错误，不读异常正文。可信 context 损坏仍 Internal。
+
+## 前轮关闭读回
+
+- source_reference/source_revision 现在先 exact str/字符长度门，再显式捕获 UTF8 UnicodeEncodeError→INVALID_UNICODE；两字段实际 caller 测试已加入。静态关闭，运行待验。
+- ruleId/location 专门 ProfileReasonError 捕获、统一无位置 None，及 REASON/SYNTAX 的真实 WORK_LIMIT/RDFS_RESULT_LIMIT adapter 精确对已在前轮读回。均未冒充运行验证。
+- root已预告无context Graph fallback排序预扣修复，属于已知进行中项，本轮未重复列为新发现。
+
+## 已审实际路径
+
+完整阅读 semantic.py 的 ProfileReasonError、图预算、共享 closure/join、legacy 抽取、profile definitions/catalog/graph/patterns/IRI/chain warnings/reason 分支；完整阅读 semantic_turtle.py 新 profile 输入、IRI 扫描、真实sink/裸数字、source/context/Graph fallback/单term decoder；五新测试全文及真实 T05 公开 compile/evaluate/parse_value 输入门。root caller/有界无损 JSON、adapter、身份与probe已续前轮审查。
+
+closure 只用 asserted 的有限RDFS结果，稳定(output,ordered direct inputs)首有效witness；所有启用规则读取同一closure，不将head回流或再RDFS。规则按全id Unicode排序稳定divmod预留，含disabled的全部定义先编译；每rule同一个Budget compile/evaluate，匹配扩展有先计数门。来源记录原TermInput/SourceRecord/未知span，不把n3猜作原文；leaf引用由真实 asserted triple 域分离hash生成，全部成功head occurrence/evidence保留。Catalog来自实际声明，不从常量自动补齐。上述是静态路径核对，非穷尽性oracle运行证明。
+
+旧 semantic 的 reason 之外13函数/类，与固定C4逐AST比较相等；旧 turtle 的 canonical_string/LexicalSink/LexicalSinkParser/parse_graph 四项AST相等。reason 共享抽取人工对照原始有限closure/join/结果五键，未见另改旧政策。旧10测试未改。
+
+采用清单23项（七机制/六fixture/十旧测试）逐字节长度和SHA均一致。批准22份oracle/input原件亦逐长度/SHA一致，fixedRef=f9af899fad31ea19c7540e9624c437a189b8b5bf；本轮只核其固定来源，未称已运行全oracle。新测试已覆盖实际九域/六numeric类型表、真实calendar/IEEE固定预期以及来源、失败位置，但预算±1、完整T09闭包/全部匹配/依据与最终运行仍待实际批准环境。
+
+## 证据
+
+本目录 source 保存本次审读11个实际源码/测试原字节；audit.json 保存实际SHA/bytes、固定23与oracle22核对结果、旧AST比较，runtimeVerified=false/fullPass=false。原中期report.md和first-static-snapshot未覆盖。语义core 50945B/SHA56680259d2f8dc7494efc773b7932ed8ed0bc2f65d6bbc13db023f8976acae5f，lexical 22830B/SHA54994f1a1e84996161c987a71f0efc2d70b6eb33c20527cba117f8c605fe6919。主HEAD仍5f910b52...，这些是未提交实际字节，后续修复须另记新SHA/运行证据。

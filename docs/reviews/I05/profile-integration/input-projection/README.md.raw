@@ -1,0 +1,54 @@
+# 固定 T05 输入审读与纯输入投影建议
+
+本交付只有输入数据准备和标准库引用检查，未运行产品、matcher、RDFS、比较器、SHACL、Store、worker或probe。未改任何产品/测试/配置/集成树；只写 I05-profile-calculation/build/profile-input-projection。root须审读后决定是否采用到唯一 semantic_profile_probe.py，不是已批准新接口或第二probe。完整oracle采用只解除独立预期输入缺口，不是E1/P2或任何生命周期通过。
+
+## 已核来源与结构
+
+- 根收口全文4829B，SHA256 `9ae309db4a7cd392ba0b5e764c95d7635664be3d5a3237312fea359659c6474b`。
+- 批准清单全文，SHA256 `d21914c0a41c224f261862202bfe44b732a2b189ef1e98cb614797fa0acb5f9e`，固定 `f9af899fad31ea19c7540e9624c437a189b8b5bf`；22文件全部实际bytes/hash验证。
+- T05说明全文17382B，SHA256 `82d8c3976c2f5e47388e44fd44462c5ceddb58c26919b8cf58d22f3e90468f7b`。
+- 原T09是17个文件，不是17次运行。50主case在 `approved-T09-873c8c0/tests/fixtures/product-baselines/cases.json#/cases`，其setup和steps合计106个原操作。54 checks在 `approved-T09-873c8c0/content/learning/checks.json#/checks`，50个仅用case字段引用主case，另外ontology-model/transfer-repair/transfer-classify/learning-report四项。课程9任务只引用15 checks，不是全集替代。
+- 22扩展来自 `fr505-extension-cases.json#/cases`；原共享ontology在 `/ontologyTriples`，每案独立 `/inputTriples` 和 `/rules`。18整数比较格及JOIN/MULTI/DISABLED/MISSING四项输入可直接投影；不继承R-risk或前案输出。
+- T05 oracle自身的89 graphs、248 triple dictionary、40 matches、每head/basis、R04 witness是独立expected。它们不能充当actual输入。project_inputs.py 的输入JSON loader拒绝oracle路径；唯一fixture仅按批准清单作为opaque bytes核hash，绝不JSON解码。对原case/check源的expected字段也无取值路径。架构审读只观察oracle顶层及条目key，不从graph集合内容生成本投影。
+
+## 交付数据与口径
+
+采用建议为 `input-manifest-v2.json`，1840687B。83份输入记录 = 4原baseline + 51原操作后/规则顺序的数学输入 + 22扩展 + 2迁移输入 + 4个E.5事件片段。82项eligibleStandaloneMathInput=true；transfer-repair因未提供规则保留输入数据但不擅自调用规则推理。79项保留完整原图输入上下文；4个E.5片段刻意标fullOriginalInputContext=false。
+
+这是83份输入投影，不等于oracle89图的完整实际覆盖，不等于83次运行/50产品case/54 checks通过。完整50/54/106清单分别在productCases/learningChecks/originalOperations，未投影项均有原pointer及具体原因。当前48条原操作直接链接数学输入，另R05/R06的3个原顺序变体独立提供。
+
+v1脚本/manifest/第一次stdout均保留。v2只补原CSV/template transformRefs、准确的未知revision=None及“原操作未执行”标记；不覆盖v1或声称其字节相同。两次仅运行标准库输入投影，均成功，无产品首跑绿。`input-reference-audit.json`是输入审读原件：5288次源引用校核、所有pointer可定位、直接三元组与原输入字段相同；不是第二expected或产品测试。
+
+## 唯一probe的建议解码
+
+事实/ontology继续分层保存。asserted与ontology每条记录的triple为原subject/predicate绝对IRI和原object N3；source附完整文件SHA/pointer，CSV另附physicalLine和映射定义transformRefs。不要把ontology塞成SHACL断言数据。
+
+定义只投影原conditions/conclusions：旧三元组条件原样；kind=type转rdf:type/尖括号class；kind=property转path/object；kind=compare仅保left/operator/right；heads按原序全部保留。变量原名不变。when/head subject/predicate的普通字符串是IRI，object和比较常量的N3由唯一真实decode_profile_term解码；不要用标准库猜numeric/date或把N3中的01规范化。decode出的TermInput/Variable由root唯一construct函数构造真实RuleSpec，enabled=false只进入disabled_rule_ids，仍提供完整定义供预编译。revision来自原version/revision的显式十进制字符串表示；无字段就是None。definitionJsonValueSha256是原定义JSON值域摘要，不冒充原文件bytes、原Turtle或真实producer身份。
+
+不把本文件中的source/ref当任意文件locator交给运行时打开；probe仍只读一个固定资产locator并按冻结bytes/hash校验。源文件引用用于审计和payload元数据。可只把纯输入资产打包，独立expected放在外部验收比较路径；不得把T05 checker/assembly放进产品。当前probe固定输入cap为1MiB，本资产1.84MiB超过旧cap；若采用须由root明确改为本固定bytes/hash及有限资产读取上限，不能临时绕旧guard或改成用户任意路径。
+
+## 确定投影规则与未验责任
+
+1. add/manual-add/add-alarm/add-ontology只折入原字段；replace/manual-update只按原subject/predicate替换；remove只删原确切SPO；remove-alarm删除原命名alarm的subject或IRI-object引用，不生成否定事实。这是拟议数学输入变换，不验证事务保存/权限/撤回/当前。
+2. R02保初输入、删除后输入及同输入的stale观察引用；R03保A04添加中间与删除A01后输入；R04真实新增公理和实例取原steps，绝不输入预期Equipment RDFS结论；R05/R06保全部定义及原保存顺序变体，绝不回填NeedsInspection或given-binding。
+3. run-round只折入显式event.payload.addFacts/removeAlarm，形成行为动作前输入；没有执行条件冻结/行为动作/工单/资源/轮末发布，之后原状态标未知，不继续假造完整后图。B01重提/去重、B05/B09冲突回滚、B06冻结条件、B10/B11动作顺序都须真实生命周期执行，不因规则风险分类相同判通过。worker/Store已T01，不能沿历史I05责任接线。
+4. CSV投影只用实际字节、原key字符串、原template/type/columns；物理行含表头。独立G-map-empty的首映射与原显式删除行可准备数学候选；手工note不属于投影生成的managed集合。manual-update后再map的真实ownership/conflict决策不模拟，标待原领域owner/T01实际执行。这里的临时managed集合只是输入折叠记录，不是Store认证或公共ownership实现。
+5. E.5只额外提供每round已调度events的显式事实片段。没有从oracle e5Rounds提工单或capacity结果。round2及后真实行为前图可能已有前轮工单，片段不能冒称完整原snapshot，也不能拿其hash对齐完整oracle graph。capacity3/4、独立reset/replay、显式round2 resume、consumed events/round commit仍须原行为/场景/Store负责人提供实际执行输入/结果，不能在P1加第二行为调度器补齐。
+6. query/validate/observe-stale/inspect的输入可投影为“若对该输入做数学reason”的样本；这不表示原查询、SHACL、stale/history、未记录/unknown义务已经执行。原操作名保留在originalOperations，不应以推理成功替代其父验收。
+
+## 真实来源缺口，不能用expected填补
+
+- ontology-model：课程tasks/0给四条增量的符号说明（namespace另有conventions）。此前完整项目和规则未给，需T02/原owner绑定完整上下文；不要默认继承G-base，不能按某个expected新增图当原项目。
+- transfer-repair：facts/ontology/constraint/referenceCatalogue存在，rules未给；ruleVersion不授权继承R-risk。可交实际SHACL消费者；规则推理身份/输入需原owner另交，而非造成功空规则产品结果。
+- learning-report：无固定RDF项目，需T10真实报告输入/导出，不把空图当全项目成功。
+- G-list-13 edit-and-undo：未给selected subject，不能选001/002或造完整中间缓冲图；整体undo的实际完整集合门保留。
+- G-list-05晚V1：未给V1实际完成轮数/载荷，不能由当前V2或oracle重算历史。其版本选择义务仍需真实Store/worker执行。
+- 其他50案的隐私/HTML/授权、mapping conflict、场景生命周期等多数并非“输入缺失”；原输入已在相应pointer，缺的是授权执行器/实际运行，不能请求T05重新提供expected伪作输入。
+
+## 实际命令与退出
+
+```
+python3 -I build/profile-input-projection/project_inputs.py --root /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-integration --approval /Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T05-independent-oracle-approved-inputs.json --output build/profile-input-projection/input-manifest-v2.json
+```
+
+实际路径含中文无空格可直接复用。只用了系统Python3.9.6标准库；JSON/CSV输入投影、批准bytes/hash核同、AST/compile-only与源pointer解析通过。未运行任何产品测试或项目import。root审读后如采用需生成自身新ref/hash，再供T03 D2；本ignored原件不触发采用或验收通过。

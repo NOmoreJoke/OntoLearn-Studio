@@ -1,0 +1,56 @@
+# P1 集成成本 / records-source 有界静态复核
+
+结论：在下述实际源码与已批准七机制组合中，没有发现新的字段变异绕过或 records 来源丢弃路径；P+V、L+实际 term 字符费用已真实接线，profile→RDF 构造均经预扣包装。有限静态复核可通过，保留两个已由 root 接受的执行粒度边界，不能外推整个流水线逐操作抢占、运行验收或性能结论。
+
+本轮只读 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-integration`，仅在审查者自有 lexical 树 ignored build 写报告。未改任何产品，未 import/执行产品、pytest、环境/锁/GUI/容器。没有采用 API/restore/selected 新提案。
+
+## 实际绑定
+
+集成树为 `feature/I05-profile-integration`，有授权 WIP，不当作已固定产品 commit。实际前后读回不变：
+
+- `packages/engine/src/ontolearn_engine/semantic.py`，52421B，SHA256 `a0cb3d358b0d08d99ae29f6d432a64de9457b5f9f26c231a421f1f9d6337f719`。
+- `packages/engine/src/ontolearn_engine/semantic_turtle.py`，32824B，SHA256 `c4a943df443e5379ab38d00d0fc588a8097c68dd9ca60a4f1b1bd0da381a1534`。stdlib AST 逐项与自树 c05ddd 交接源相同；差异为格式，没有假定字节相同。
+- 实际全文读 `T05-profile-iri-fix-root-closure-and-I05-consumption.md.raw`、`T05-profile-iri-approved-seven-inputs.json.raw`，并逐项读取七源码 bytes/hash，与批准组合全部相同。六个模块仍旧固定1e3；唯一新 terms 来自 `dbb6b36e9259aa79a1fd908b5cfede3064f0c074`，6176B，SHA256 `218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1`。不采用未授权330f/API。
+
+我最初按旧本树1e3机制指出 NBSP minimum-IRI 拒绝，与实际集成组合不符；经 root 提醒后已实际核新 terms:87–102，仅 ord<0xA0 的 whitespace 被拒。该观察撤回，不列当前缺陷，也不要求重复 consumer-gap 门。root 随后新增的端到端 NBSP 测试可静态读到，但未由我运行。
+
+## 成本真实接线
+
+`semantic.py:656–748`：先核真实 Graph/Memory 与实际 term 输入长度；无 context 时为 fallback 的3N排序按最大真实字段宽预扣。随后 exact context 类型检查，调用 O(1) `work_costs`，先扣 P+V，再执行完整 `validate_graph`。没有每个 term 调整默认机制池；唯一 entry Budget 在同函数中创建一次。
+
+`semantic.py:885–889`：唯一实际取值包装 `actual_term` 在调用 context.term_input 前扣 `lookup_work + 32 + 8*_term_characters(term)`。所有 BindingMatch 的 actual_when 和实际 binding 都经这个包装；没有遗留未计费的 context.term_input 调用。L 只由实际发行值求最大，不以规范16k常量罚所有短项。
+
+`semantic_turtle.py:323–325` 的 work_costs 只 `_require_context` 和 registry 固定 tuple 索引；该检查为常数次引用比较，没有遍历 terms/source/occurrences。costs 不来自可填 context 字段或 caller 自报数值。
+
+词法 issuer 的实际计数与交接公式一致：每 occurrence 对应一个 map value 列表项，重复 TermInput 对象仍按 occurrence 计。w、q、P、V、L 的整数系数由源码确定；binder 在真实完整验证后重新发行，并把旧 P+旧 V 加入新 P，没有清掉准备链。SourceRecord byte 早门每个实际唯一 source 对象一次，不是每次 lookup 重扫其长 text；其 q_s 仅进入 P，完整验证/lookup 仍四字段逐 is 固定成本。
+
+`semantic.py:769–781` 将实际 profile TermInput/Variable 构造前字符费用放在 `_profile_as_term`，唯一底层 `_profile_term` 调用在该包装内。实际 when patterns、成功head、evidence when 重建和 advisory chain warnings 都经此包装；没有找到绕过它的 profile→RDF 构造。字符串源 metadata 不参与 RDF node 构造，仍由 T05 自己验证/编码计费。
+
+保守过收边界：L 是整个发行 context 中最大真实记录的成本，所以一个很长但未匹配的真实 term 也可抬高全部短 term lookup 费用；这比逐项真实费用更保守，但符合本次明确最大值合同，未发现16k无条件罚所有项的实现。不得据此宣称所有合法规模/性能通过。
+
+## records/N3/source 与 mutation
+
+`semantic_turtle.py:760–813`：records 外层/每三元组为 exact tuple；每项经 canonical exact TermInput/SourceRecord 与原生字段检查，IRI 强门、literal normalize=False 构造后捕获原 TermInput，再核真实 RDF 位置/有限词表，加入同一真实 Graph。literal 调用方合同仍是唯一严格 `decode_profile_term`；该入口不是 source/producer 认证，不声称能识别任意 Python 调用者伪造的真实世界来源。
+
+每项原 TermInput 都进入 capture，所以 graph 对重复事实去重不删除 source occurrences。plain/xsd:string 的实际 node 可归同 term，raw lexical/datatype/lang/source 仍在其 original value；没有合成 Turtle、猜 span 或删 source 来过限。严格 N3 decoder 的固定单三元组和 n3 字节相等前提保持；此轮只静态复核，未独立跑注入矩阵。
+
+`semantic.py:726–745` 对实际相关 graph term 的全部 occurrence 调 T05 parse_value；parser-only prefix 不是 graph fact，明确过滤。`semantic.py:1072–1083` 又逐条输出完整 termSources（原 value、ordinal、span）。实际 BindingMatch 的 `context.term_input` 只选首个原值/来源，全部来源保存在 termSources；这不等于每条 provenance 都成为所有匹配的 proof 路径，不应把完整 source occurrence 保全说成穷尽证明。
+
+完整 validate_graph 扫 map 和全部 occurrence；value 当前四个原生字段及 source 四字段分别对发行快照逐 is，不能以等内容新字符串替换通过。SourceRecord 引用也锁定，metadata ordinal/span/term/value 指向均核原记录。按需 term_input 只核匹配 value 的 id 索引与实际 node 身份；原1→2路径会在完整校验或按需校验拒绝。未命中 literal 不被构造为新可信值；只有实际闭包 URIRef 可 source=None 构造。没有发现无需修改私有 registry 即可绕过这些检查的新静态路径。
+
+这不是 Python 进程内恶意代码隔离沙箱；任意改模块私有 registry、并发改变对象/全局代码的能力不由该 dataclass 一致性合同隔离。本轮没有证明任意并发TOCTOU安全，也不将其视作已支持消费模型。
+
+## 两项真实执行粒度边界（root 已接受保留）
+
+1. P 是 issuer 做完快照和 source 唯一UTF8早门之后登记、在 reason 开始阶段记账。发行准备由显式输入/分配上限约束，但不能声称 P 已先于整个 issuer 动作预扣。work_costs 的 O(1) 不是整个载体准备 O(1)。
+2. `_profile_graph:693,737–745` 的唯一 entry Budget 自身按 T05 每操作先扣，graph meter 却在每次 parse_value 的 finally 合并实际 delta。若单 call 需要的费用大于 graph 当前余额，call 可先完成/失败再由 graph WORK_LIMIT 拒绝；最终不会返回超 graph1M 的成功结果，但实际执行可跨一个 call 粒度，不能当逐操作共享池或 CPU 抢占。
+
+不改固定T05的最小严格合同建议仅作后续设计：先完成/预扣 entry 阶段全部 graph额外工作，再一次以真实剩余 graph额度创建 entry Budget，连续 parse_value 期间不交错其他 graph debit，finally 只合并 helper delta。这样每call前 helper/graph剩余额度可保持一致，无每term重置或改helper；如果无法保证相位不交错，继续明确现有 call 粒度合同更准确。没有实施此建议，也不作为当前已满足能力。
+
+## 实际证据与限制
+
+实际命令均为 git/status、sed/rg 只读、stdlib Path/hashlib/json/AST 解析与源码AST等价比较；没有产品 import/测试运行。静态读到 root 的 mutation（lexical/source 两项）和 NBSP 图测试定义，不当作运行证据。只读过08/09/10执行记录，均真实exit1且未timeout；未把这些过程记录归为当前全部正确/错误的独立验收，也未重新解释旧输出为新产品通过。
+
+root 另告知最新 fullinput 78完整上下文 success、4个E5不完整fragment资源拒绝、1缺失输入 not-executed；本轮不重审其完整 oracle，也不将该口头/消息结果写成我的亲跑。完整运行记录/source绑定、oracle期望独立性和未覆盖项由其实际执行owner另封存。
+
+本报告仅确认当前有界成本/records/source/mutation接线；不是父P1、正式I05、selected、source真实性、source/包、目标平台或完整资源验收的批准。

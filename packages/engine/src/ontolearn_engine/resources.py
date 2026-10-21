@@ -30,6 +30,22 @@ IMPLEMENTATION = {
     "engineVersion": "0.1.0",
     "dependencyLockHash": hashlib.sha256(LOCK_FILE.read_bytes()).hexdigest(),
 }
+
+
+def semantic_identity(*, profile=False) -> dict:
+    """Private computation identity; the unwired runtime keeps its own identity.
+
+    Only an actual execution branch chooses this mode. This does not register a
+    public capability or authenticate a producer, snapshot or saved result.
+    """
+    if type(profile) is not bool:
+        raise ValueError("SEMANTIC_MODE_INVALID")
+    return {
+        **IMPLEMENTATION,
+        "executionSemanticsVersion": "i05-finite-7" if profile else "i05-finite-6",
+    }
+
+
 LIMITS = {
     "startupMs": 10000,
     "handshakeMs": 5000,

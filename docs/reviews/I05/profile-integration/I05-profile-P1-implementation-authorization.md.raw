@@ -1,0 +1,57 @@
+# I05：新隔离候选的真实图计算 P1 实施授权
+
+2026-10-21，总控批准原I05会话 `01a15744-136d-7000-abad-46de101eadaf` 在新隔离树开展真实图计算P1。原C4保持冻结，原Goal不重建、不标完成；新候选不自动替代C4或占用外审租约。
+
+## 依据与明确决定
+
+固定方案提交 `de37ff64fab7f40b69fbf900e4657137ca18ce74`，计划36922B，SHA256 `990555ae61b086d40c33212115728bd1914063af25e34b3815345decc85ed66d`。根已读取28295全文及全部实际增量/新增§6.1，核Git=current=根快照；相对亲代6c2d9f仅17份指定docs/审查原件，当前仅保护AGENTS脏。
+
+根独立报告 `I05-controller-profile-new-candidate-plan-review.md` 20817B、SHA `6187857fb7fb5e7931ae2714d4ac950a57a1b99dab988e5c1181f8e71b901dc5`，原前缀与全部新增关闭段已根全文读回。原版本歧义在计划层关闭；selected重复计费问题已准确转为T05真实批量接口/独立有界成本证明硬依赖，并非该运行缺口已通过。供方最终定点独审5985B、SHA `20f667651d69c3099a326c77b458d3707578c8d9a19e3bef748b2755a70064b3`也已根全文读取，结论范围一致。
+
+**现在直接开始可独立实现的P1生产计算，不等待完整T03/T05/T01合并。** 缺固定新lock/环境、唯一oracle、probe包入口的对应运行与验收仍待交，不借C4环境/锁/包补绿。selected新分支不启用、不放空测试或skip，批量API/预算待T05真正固定实现和root另批；父selected与正式领域要求不删除。
+
+## 新树、来源与唯一写权
+
+在实际核不存在且无他人占用后，从批准 `5f910b52c69d86a1076b2032e5d3c63e715947f3` 建 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-integration`、分支 `feature/I05-profile-integration`。记录实际worktree/branch/HEAD/干净基线；存在未知内容则不重置或覆盖。所有实现/新测试在新树；旧 `.worktrees/I05-semantic-validation` 的C4原1284路径/205执行输入及受审实现保留，只续本线必要控制文档。新树带入实际当前AGENTS 78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759及共同指南e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0，操作政策不混作产品提交。
+
+根已逐Git blob/bytes/hash生成 `I05-profile-P1-fixed-inputs.json`，共32项：8个C4语义来源、10个旧测试、7个T05机制、6个固定机制fixture及5f resources起点。原负责人采用时逐项复核该清单；它是允许的选择性来源，不授权整树/整commit cherry-pick。
+
+I05可修改的10产品路径，前缀 `packages/engine/src/ontolearn_engine/`：
+
+1. `semantic.py`
+2. `semantic_scopes.py`
+3. `semantic_execution.py`
+4. `semantic_turtle.py`
+5. `semantic_error_adapter.py`
+6. `semantic_offline.py`
+7. `semantic_query.py`
+8. `semantic_samples.py`
+9. `resources.py`
+10. `semantic_profile_probe.py`（新增）
+
+前八个从固定C4 `523c478d5f39671c4ac7c1ea6997e51d3047d58e`选择性采用；offline/query/samples按原字节保留，不更改其合同。resources从批准5f最小适配，不能复制C4全runtime身份。新probe仅调用同一真实reason、不写Store/造Job/填expected；其实际CLI分派和输入合同先与T03固定，不猜另一套入口。
+
+T05固定 `1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb` 的七路径允许**原相对位置同字节私有消费**：`quality/__init__.py`、`quality/rule_profile.py`、`quality/rule_terms.py`、`quality/rule_numbers.py`、`quality/rule_calendar.py`、`quality/rule_comparator.py`、`quality/rule_firing.py`。未来唯一维护者仍T05，I05不改、不重命名/别名装载。只导入明确rule子模块；根包四旧懒导出及缺失definitions/planning不是本采用面，不加stub或整包采用。新批量API未获采用，不能假装1e3已有。
+
+六个固定fixture可按清单原相对路径原字节采用用于有据测试：`tests/fixtures/quality/profile-v1/{calendar-oracles,comparison-matrix,firing-cases,lexical,manifest,numeric-oracles}.json`。维护者T05，I05不改golden。T09/22及完整新oracle只读固定引用、等待root批准最终消费ref；当前candidate2已有待修，不能按ready使用或从actual补expected。
+
+十旧测试按清单原字节采用、不可迁移或删断言。P1现在只新增 `packages/engine/tests/test_semantic_profile_integration.py`、`test_semantic_profile_limits.py`、`test_semantic_profile_source.py`、`test_semantic_profile_imports.py`、`test_semantic_profile_errors.py`。第六 `test_semantic_profile_selected.py`须待真实批量依赖另批后才创建/运行。可写新树 `docs/iterations/I05/` 和 `docs/reviews/I05/profile-integration/` 必要设计/原始探针/首失败/独审/收据，不覆盖C4历史；原tree只续当前方案证据记录。
+
+T03四个依赖/build路径仍由T03唯一维护；当前只有offer文档准备，不授I05改pyproject/lock/build/entrypoint或采用C4版本。T01的Store、Job、worker/coordinator、schema/errors/registry及source/producer/正式定义/结果；I06和T01的desktop路径均不在本授权中。不得复制C4 runtime、contracts、其他测试/CI/桌面或建立第二writer/执行器。真实必要新增路径先保具体反例、最小delta与原owner协调，不靠skip或伪接口绕过。
+
+## P1 必须实现和验证的合同
+
+- legacy与显式profile两种IR明确分派，复用唯一有限闭包/真实join，不以SPARQL或手填BindingMatch代替。全部定义含停用先全局数/类型/id唯一性检查和预检，按完整rule_id码点稳定分额度，全部编译成功才匹配。同一冻结asserted+有限RDFS供全部规则，不反馈custom、不末轮RDFS；全部成功才返回完整批。
+- 采用固定T05唯一比较/多head机制。生产每rule compile/evaluate同Budget，整次预留池/稳定余数分配与图侧预算按990方案，不每rule默认池乘100；昂贵复制/排序/union/匹配追加前计费。保存全部成功匹配/每head/比较/完整basis及同term多来源，失败无部分返回或current发布；预算保护不是Q5容量/性能通过线。
+- profile原lexical/IRI/语言/raw/source真实进入机制，不受宿主ill_typed/toPython提前裁掉合法profile值域，不改全局解析或旧query/SHACL。真实裸数字恢复路径也须sidecar覆盖；上游丢失原文明确unavailable/null，不从n3/排序猜位置。Catalog来自实际声明，不从规则常量自补。Catalog/原图失败不能因编译循环乱贴rule的用户位置。
+- RDF IRI按RDF1.1验证绝对、允许fragment、完整字符串身份且不额外规范化；别机械套RFC3987无fragment的absolute-IRI产生式误拒 `https://example.test/ns#Class`。有界语法扫描，不网络/DNS检查。其他合法但旧消费者未支持的值准确标unsupported，不报坏词法。
+- 默认批准runtime保i04身份；legacy算法保finite6；显式profile才finite7/private format2，选择器绑定实际engine/新锁三字段。十旧测试含finite6硬断言保原字节；新专项验三实际分支和lock。新私有完整typed bytes/digest与JSON/rows/Store摘要分开，不改旧历史、不自报producer。新公共定位/载体仍待T01，四字段error不夹原值/路径或私有字段。
+- 错误专项经真实caller/adapter核reason/context、来源、unknown/canary和真实位置；纯helper不能授VERIFIED_USER_INPUT。零匹配坏常量、false后错误、后rule/match/head及序列化失败、预算±1、乱IR/非法词表/多来源等按原方案真实覆盖。
+
+可先编码、静态/有界验证；缺真实T03固定依赖的运行明确待验，不用错误环境造绿。依赖及最终独立oracle交付后补真实完整closure/custom/所有匹配/head/依据比较、正常完整check/source、独立实现审查和全部原件/终态/Git绑定。源包与实际probe P2在T03准确入口/锁/收集批准后执行新同候选验证，不以旧包或打印版本/数量代替。不要因当前未交依赖削掉这些出口。
+
+## 后续门
+
+原I05完整范围、C/D/G.2、57 P0、正式保存/引用/Catalog/source权限/快照/公共结果诊断、Store整批替换、取消/晚到、current/history/撤回/GC、selected新批量复核、B1及目标平台/真人继续。P1或私有机制不等于正式能力/完整I05；实际组合候选与C4替代点由root按真实已批准依赖另登记。
+
+不在用户当前桌面运行GUI/Electron/e2e/native/HMR或审查应用。原T06首/I05第二条件队列未变、指定新任务仍0；实际安全入口、两个指定模型同候选全新任务及完成报告、意见关闭、双Pass后才push/PR、实际CI、正常develop合并/远端核验全部保留。仅本地提交，不提前push，不重建Goal。

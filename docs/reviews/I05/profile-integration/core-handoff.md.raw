@@ -1,0 +1,30 @@
+# P1 calculation implementation handoff (static only)
+
+唯一产品写入：packages/engine/src/ontolearn_engine/semantic.py。
+独立树：/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-calculation。
+branch feature/I05-profile-calculation，base 5f910b52c69d86a1076b2032e5d3c63e715947f3；不提交、不修改主线。
+AGENTS SHA256 78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759，保持原受保护dirty。共同指南实际重读为 e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0。P1授权 ae99f6f95666737939d2b701f962c1854864db447ba0d8c7663757615f460c6d。
+
+## 已实现的私有核心
+
+reason(graph,rules=(),*,profile=None,catalog=None,term_context=None)显式分派。legacy有限6原有Rule与结果形状保留；新增固定PROFILE显式模式有限7/private format2。唯一有限闭包及真实join由两分支复用。比较/多head只调用原相对路径同字节T05 compile_rules/evaluate_bound_batch，不使用SPARQL或手造期望bindings，不修改T05模块。
+
+全部定义（含停用）确切类型/至多100/id有界唯一先校，按完整id码点排序稳定分divmod池；每条先compile，所有compile成功才闭包/match。启用plan由同一Budget evaluate一次；停用仅预编译。零定义用一个真实空plan/空matches验证Catalog。Catalog来自图中实际类/对象属性/数据属性声明，额外传入的Catalog必须一致，不从rule常量补声明。
+
+按bridge确认API使用issued ProfileTermContext，校真实原图一致性；未传context时从实际直接Graph建立source unavailable sidecar。保留每个实际occurrence原TermInput/raw/source，profile不执行legacy ill_typed/toPython门。每个实际图term occurrence在单一graph entry Budget经T05 parse_value；其work增量同步计入同一个graph1M。parser-only namespace metadata不作为事实送机制。绝对IRI强门成功后，对固定T05 iri_minimum的isspace范围差异明确UNSUPPORTED_PROFILE_IRI；真正语法错误仍强IRI门原码。
+
+proof只保稳定首witness；leaf引用来自真实原输入triple的域分离sha256，不能称全部证明/最小证明。真实when/variable bindings/proof refs进入BindingMatch，原机制负责全部comparison和heads。规则输出不反馈，输出不减asserted/RDFS，全部head occurrence/evidence和完整firing保留；潜在链warning只看启用定义全部heads。没有假的false trace。
+
+返回原始PreparedFiring和PreparedFiringBatch（含原bytes/digest），根execution唯一投影为bounded JSON/rows。termSources仅将真实occurrence的RDF节点身份转n3元数据，原写法仍在原TermInput，不从n3逆推原文。全部来源、definitions、Catalog、proof表、每rule actual limits/usage及graph entry actual limits/usage保留。后规则/匹配/head/核心封装失败均不返回局部结果；caller最终序列化原子性归唯一execution实现。
+
+ProfileReasonError仅安全reason/code/classification/location/rule_id/context。图/Catalog无rule。实际单rule compile/eval语义错误持真实rule；combined compile account_input资源异常且无location时rule_id=None。context让root以真实graph/catalog→SYNTAX、rule→RULE路由；纯helper不授用户来源权限。
+
+## 防护政策与待验边界
+
+机制整次预留池固定work16777216/input262144/output262144/trace8192/firings1024/heads16384/bindings1024，按含停用定义数稳定分配、不回流；其余ProfileLimits不抬高。graph侧work1M/triples100k/入口UTF8合计1MiB；昂贵排序、copy、union、binding扩展、proof/hash/封装前扣费，完整匹配上限先查再append。entry独立共享机制验证子门input262144/output0/work<=graph1M，可能更早资源拒绝，不称1MiB图一定可通过。bridge另有每scalar16384/所有occurrence termbytes262144 allocation guard。
+
+graphBudget.inputTermBytes实际计数包含图三位置各term及datatype/lang，也包括前置rule id、强IRI常量门与显式Catalog文本；因此是保守的输入文本累计，不能解读为独立原Turtle文件大小或去重term大小。该防护不是Q5容量或性能验收。
+
+尚未获取批准的新P1依赖lock/environment，因此没有项目import、pytest、helper实际计算、旧10test、预算±1、golden完整oracle或source/packaged证明。系统Python3.9.6仅AST/compile(tree,filename,'exec')，不执行模块。static-evidence.json记录真实输出。原source前件保存在semantic-before.py。
+
+selected新profile没有建立或启用；需T05批量复核新固定实现及独立预算证明。原Store/worker/T01公共定位/真实producer认证/当前历史保存仍不在本实现写权内。用户原FR505与Q6要求不缩减，private core不冒称正式产品入口或整个I05完成。

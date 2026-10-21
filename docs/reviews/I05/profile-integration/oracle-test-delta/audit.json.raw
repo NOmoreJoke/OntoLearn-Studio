@@ -1,0 +1,53 @@
+{
+  "reviewScope": "readonly test delta; no product import or execution",
+  "sources": [
+    {
+      "path": "packages/engine/tests/test_semantic_profile_integration.py",
+      "bytes": 48284,
+      "sha256": "69d7afd9d5b836f61591cfebffeca5ddbebba607bad0a0c1e8ff6a5becf8e562"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_probe.py",
+      "bytes": 13391,
+      "sha256": "2b2dabd91745b4b4c2a3fad39b6386e4edd985189336bf029d9b07a638fc7bf6"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/oracle-comparison/pytest_append_fragment.py.raw",
+      "bytes": 33774,
+      "sha256": "9edda391a9163d3a27adb403cfc9a44abda36cdc885146695df002f76173d595"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/oracle-comparison/compare_oracle.py.raw",
+      "bytes": 26097,
+      "sha256": "32067f2aec88d3b58a225f05495110b8b6eaa1aef414f919f11ebcedf1c18f03"
+    }
+  ],
+  "staticAstCompilePass": true,
+  "producerConstructArgs": [
+    "sample",
+    "index"
+  ],
+  "actualExecuteArgs": [
+    "actual_records",
+    "rules"
+  ],
+  "expectedPassedToProducer": false,
+  "newTests": [
+    "test_fixed_oracle_all_78_complete_mathematical_outputs",
+    "test_fixed_oracle_four_resource_failures_and_unavailable_context_are_not_skipped"
+  ],
+  "skipAdded": false,
+  "fixedAsset": {
+    "bytes": 1839011,
+    "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de",
+    "mathInputs": 83,
+    "unexpectedExpectedKeys": []
+  },
+  "oracle": {
+    "bytes": 767826,
+    "sha256": "87220503f9983146c974fe3e35025d520cad70e54fdd994aebfa86fb1ff7259f",
+    "graphs": 89,
+    "matches": 40
+  },
+  "runtimeVerifiedByThisAgent": false
+}

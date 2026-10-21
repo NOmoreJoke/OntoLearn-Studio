@@ -1,0 +1,33 @@
+# P1 受控词法载体 mutable-field 缺口修复交接
+
+本次仅修改独立树 `I05-profile-lexical/packages/engine/src/ontolearn_engine/semantic_turtle.py`。root 报告真实独审反例：`"1"^^xsd:integer` 原图不变，调用者以 `object.__setattr__` 将共享 TermInput.lexical_form 改为 `"2"`；旧发行记录只保留容器与图引用，因而可能把匹配/输出依据静默换成 2。此反例是 root/独审的运行证据，本轮未独立运行或冒称重现。
+
+原07ca版本和旧交接/静态工件已按原字节保留于 `build/profile-lexical/pre-mutation-repair/`，其中 `semantic_turtle.py.raw` SHA256 为 `07ca1d36ec995d8ae6b9362403618a86b5131ad1a1b4a7d0ea3a171d5cc60bf9`。没有改 root/integration 树、固定七机制或其它源文件，没有提交。新文件 28443B，SHA256 `950767981c8fe6036478959e270c2b3a87e2853ae1ed0e20c78b629fbda86806`。
+
+## 修复机制
+
+发行 registry 为每个实际 TermInput 按 id 建索引，记录原对象、四个原生 str/None 字段的不可变 tuple、原 SourceRecord 引用及其四个原生字段快照、与真实 RDF node 对齐的身份。没有使用 TermInput hash/equality，也不以 SourceRecord 对象引用代替内容快照。str 只接受精确原生类型；字符串自身不可变，快照不随 dataclass 字段赋值或 source 字段赋值穿透变化。
+
+`validate_graph` 先完整核验所有 map 值与所有 occurrence（真实对象、term/value 引用、ordinal/span、原生字段、source 字段与 canonical RDF term 身份），再核原 Graph 对象与三元组集合。容器引用仍须与 issuer 原记录相同。缺字段/错误类型等已知载体篡改均转固定 `PROFILE_CONTEXT_INVALID`。
+
+`term_input` 在命中时只按 id 核该一条值记录，并将当前实际 node 的身份与发行身份核对；它不遍历整个 context。plain 与显式 xsd:string 允许同 term，language tag 大小写按 RDF term 身份处理，但保存的 raw TermInput/source 字段自身不能被改写。未命中只允许从真实闭包 URIRef 构造 source=None 的新 TermInput；未命中 Literal 拒绝，不能用任意新 literal 绕过原图绑定。没有通过 n3/排序捏造 source/span。
+
+该机制是本地一致性核验，不是恶意 Python 代码执行沙箱，也不授 producer/source 真实性。能任意改私有模块 registry 的代码仍拥有整个 Python 进程权限，本合同未声称隔离该权限。
+
+## 新增成本和接线约定
+
+没有新机制 Budget 或 parse_value 调用。root/core 必须将新增合法核验计入其原 graph 共享池：
+
+- 发行：每个 terms value 一次字段快照/身份计算；每个 occurrence 一次记录核验，加 O(N) 原生元数据分配。
+- 完整 validate_graph：terms value 与 occurrences 各一遍，正常 N+N=2N 次单值检查，再做原图集合核验；不是每次取值重扫。
+- 单次 term_input：一次固定字段 node 预核；命中再一次 indexed 单值检查。单值检查至多四个 TermInput 和四个 SourceRecord 原生字段、source引用与两个 term identity；按字段长度保守计字符比较和语言 lower 成本，不能仅按 lexical 或字段数量计。
+- SourceRecord 的 reference/digest/revision/text 四字段都在快照/比较面；大 source 的重复检查也须计入原池。不能把共享 SourceRecord 的可变对象身份视作零成本认证。
+- bind_profile_disabled_rules 明确完整核验后重新发行，累计相应成本；此前的直接 Graph fallback 稳定排序仍需同池预扣。没有为此放宽池或每次重置。
+
+所有字段均保持已有 term/source 分配上限。按需检查是 O(固定字段与它们的字符数)，不是 O(全 context)；未测性能，不给吞吐承诺。core 的真实预扣由 root 唯一负责，本次没有改其文件或冒称已联验。
+
+## 实际检查与未验边界
+
+实际命令：`python3 build/profile-lexical/static-check.py`，exit0。仅 stdlib AST/compile（编译但不 exec/eval/import 产品）。四个 legacy 原定义 AST 仍与固定 C4 完全相同；每行≤100；固定七机制及本树其它存在的授权输入 12 项仍逐 SHA 不变；quality import 仍仅 canonical rule_profile 的函数内导入；没有新增 Budget/parse_value 调用。
+
+T03 固定依赖仍未就绪，未运行项目/pytest/GUI、未借 C4 环境。待 root 真实测试：原 1→2 反例、datatype/language/kind/source 的每字段替换及 source 对象替换/删除、occurrence 指向/ordinal/span 篡改、context 重建/Graph 变化、原合法 plain/xsd:string/language raw、未存在 literal 拒绝与真实闭包 IRI source=None、预算临界和 legacy 回归。本轮仅完成代码和静态检查，未将独审阻断标作实际运行关闭。

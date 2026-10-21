@@ -1,0 +1,18 @@
+{
+  "scope": "Static-only early private caller/probe implementation, before core/lexical integration and approved dependency delivery",
+  "sources": {
+    "packages/engine/src/ontolearn_engine/semantic_execution.py": "09b5c7b92d753fbd6eaea19cb7ba2a38c3dae90bf1f08eeba43bea674f539c0b",
+    "packages/engine/src/ontolearn_engine/resources.py": "2361c55da7983e46fbdd08e50fc3ec48b281d2c76d0021f82fd94ab50ca54274",
+    "packages/engine/src/ontolearn_engine/semantic_error_adapter.py": "6a482eea72c19e0cacc8db006f269ada01ef5f1db1799f8c780dec5d71a7697d",
+    "packages/engine/src/ontolearn_engine/semantic_profile_probe.py": "72b38617b2f2b1cd39c63bff679ba0585dc9cac05fdb55a0140ff1e871230c68"
+  },
+  "ASTParse": "pass",
+  "productImportsOrTestsRun": false,
+  "fullOracleOrPackagePass": false,
+  "parallelOwners": {
+    "semantic.py": "semantic_execution agent, independent I05-profile-calculation tree",
+    "semantic_turtle.py": "semantic_bridge agent, independent I05-profile-lexical tree",
+    "otherAuthorizedPathsAndTests": "root, I05-profile-integration tree"
+  },
+  "reviewer": "semantic_boundary_review; independent read-only review, no designated review substitute"
+}

@@ -1,0 +1,49 @@
+# P1 当前候选独立 delta 审查
+
+结论：首版 full-static-1 的两类核心问题已由本轮真实定向运行关闭。本轮新复现 structured records 的三处输入/错误阶段差异，主开发已修，独立 after export 复跑确认公开DTO关闭；仍有一项私有资源 classification 尾项，已即时报告。未运行 pytest/全check/全语义oracle/包，不给整个P1/P2 Pass，也不代替指定模型门。
+
+## 固定审读输入与环境
+
+最初审读字节见 review-inputs.json，主HEAD仍5f910b52c69d86a1076b2032e5d3c63e715947f3，实际未提交文件按SHA绑定。主要初始输入：core a0cb3d358b0d08d99ae29f6d432a64de9457b5f9f26c231a421f1f9d6337f719，lexical c4a943df443e5379ab38d00d0fc588a8097c68dd9ca60a4f1b1bd0da381a1534，caller e4512ebc55c5e0025055ac9d5a7729ca9adacc1ee8319493b4c2c4c7b3f6f9c1，probe 2b2dabd91745b4b4c2a3fad39b6386e4edd985189336bf029d9b07a638fc7bf6。
+
+实际小探针只运行自树 ignored build 的固定 source export，使用新批准安装环境的 Python3.12.12 -B（只读依赖，无项目或环境写入）：RDFLib7.6.0、pySHACL0.30.1、pyparsing3.3.3；锁SHA86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73。没有借用C4环境/锁。根的新环境已交付，因此前轮“依赖未交、未运行”只描述历史快照，不沿用为本轮结论。
+
+修复后独立复制字节另存 after/source：core 5a3a53fc79928a7aa7de280a8477541db4053ec9b2bec489bf28a2ad4e935549，lexical4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214，caller5b174dda685b9ae6a110ccff6b714787ed1d69a7a89ff626c9aac89b6806281d；adapter0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014。after-inputs.json有实际长度/SHA。
+
+## 已关闭原发现
+
+1. 对真实 parse_profile_graph 的原literal1修改嵌套TermInput.lexical_form→2，以及修改嵌套SourceRecord.digest：两者实际抛ProfileReasonError(PROFILE_CONTEXT_INVALID, classification=internal)，不出伪绑定。native snapshot保独立确切str/None字段身份、来源对象/字段身份和RDF term identity，完整入口validate后单次lookup只核当前value，不每次重扫全部context。plain/explicit string和语言case仍通过规范term identity分开保raw来源；没有把context自tag当producer授权。
+2. 实际用户Catalog ObjectProperty/DatatypeProperty冲突返回SemanticInput(syntax)/INVALID_ONTOLOGY_CATALOG；实际rdf:langString缺语言返回SemanticInput(syntax)/RDF_TERM_INVALID；ruleId/location均None。
+3. 两个source metadata的surrogate实际返回安全INVALID_UNICODE/SemanticInput(syntax)，无原值泄漏。
+
+## 本轮实际反例、修复与尾项
+
+A. 9条短records，三term共享合法SourceRecord(text='x'*65536)。其graph及sidecar合法；caller为inputDigest做有界JSON投影先触发PROJECTION_RESULT_LIMIT，最初仍处TURTLE/SYNTAX而公开报Internal。修复只在该input投影callsite将此资源reason转GRAPH_INPUT_LIMIT；after真实返回Resource(semanticInput)，不宽放adapter或修改输出投影分类。
+
+B. raw records含TermInput('wrong','x')或非TermInput项，最初从_value_fields抛PROFILE_CONTEXT_INVALID公开Internal；但它们尚不是已签发context。新增raw exact TermInput/kind/native scalar/SourceRecord结构门后，after真实返回SemanticInput(syntax)/RDF_TERM_INVALID；已签发对象篡改仍Internal。IRI附带datatype亦安全拒绝。
+
+C. disabled_rule_ids=42、重复('r','r')和surrogate，最初records调用与text调用的完整DTO/阶段不同：前两者records为Internal而text为SemanticInput(rule)，surrogate records为syntax/text为rule。新caller在实际REASON/RULE入口统一_disabled_ids预检后再进入图阶段。after三种输入两caller完整DTO与私有诊断均相等，均SemanticInput(rule)，ruleId/location无虚构。
+
+未关闭尾项：A的公开资源分类已正确，但after私有diagnostic仍classification='input'（reason GRAPH_INPUT_LIMIT）。SemanticError handler按origin决定input/internal，最终输出投影资源同样会被标internal。如果该字段承诺实际错误类型，需按固定资源codes精确识别resource（不是靠异常文本或授予来源）。这是同一资源反例的诊断尾项，不影响当前公开Resource DTO已关闭结论。已向主开发即时报告；后续改动须另绑定字节/原日志，不覆盖本报告。
+
+## 实现 delta 审读
+
+全文核core新增/改变的闭包限额context、Catalog与图错误转换、native context P+V/lookup扣费、fallback 3N raw tuple-key排序预扣、_profile_as_term收费、originalMatches保留；全文核lexical profile context/records入口，caller、probe与五新profile测试。七机制按dbb6b36e9259aa79a1fd908b5cfede3064f0c074批准manifest，只有rule_terms的IRI门变化，六机制保持原字节。NBSP不再被旧minimum gate误拒，强IRI门仍在上游。
+
+最新graph entry先完成graph/IRI/entry_values准备扣费，然后唯一Budget(work=MAX_WORK-meter.work)连续parse_value；阶段内不夹其它graph debit，finally只并入实际使用增量，因此remaining计数对齐。issuer preparation实际在上游准备后记账，仍不是准备前硬截断；其allocation上限与该已知边界须保留真实说明，不把P+V计数称作时间/容量证明。
+
+originalMatches直接保留送evaluate_bound_batch的同一tuple，false不丢；同child保存真实definitions/catalog/limits/disabled。停用为batch=None/matches=None，零定义为真实空plan+空tuple；未见恢复/selected/API接入。所有规则仍读取同一冻结RDFS closure，结果不回流规则/RDFS；完整head与原source来源保留，失败不返回局部成功。
+
+## 新真实完整性探针
+
+独立显式输入1、2、3的三组真实图匹配，比较>2：originalMatches完整保1/2/3与三个proof leaf，机制只输出3的一组firing。execute_profile完整JSON payload/rows重组等值、payload digest一致；false-match-probe.log保完整payload。不是从actual生成语义expected，也不是全oracle。
+
+## 83资产与根原始运行输出核验
+
+固定input资产1,839,011B/SHA6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de：83份inputProjectionJsonSha256全部重算相符；22原源文件SHA、JSON pointer或CSV physicalLine引用核对，87处definitionJsonValueSha256对应真实原source pointer目标；未发现expected类键（expectedIncluded除外）。所有折叠/transform与原sourceRefs保在资产，source.text只称decoded scalar，graph revision明确None，不冒充原Turtle/span或授权。
+
+另逐原始13-full-input-probe.json（14,006,950B/SHAa16699f47c5fc8de6658d1dc5a1c422796daf0f3bb4dbed520ffce0577ed74e0）核83项：78success/1not-executed/4resource failure，四E5不完整fragment为两个RULE_INPUT_BUDGET、两个WORK_LIMIT；transfer:repair明确缺规则未执行，未被改为通过。78份成功的完整payload/rows摘要和重组均相符（844行），10,755处SourceRecord的资产digest/相对pointer/可用scalar text相符，成功输出保61条originalMatches。此为原件、来源与投影完整性，不是oracle语义比较；原件仅自报七机制hash，整个当前WIP源码和最终运行绑定仍待根统一封存，不能将13输出移称后续全部字节的运行通过。
+
+## 证据文件
+
+初次实际失败日志directed-probe.log和disabled-probe.log原样保留；after/同名日志是修复后独立固定export重跑。asset_audit.py/output_audit.py及各JSON/log保全；其中两个审计脚本自己的CSV支持/系统Python3.9 strict zip调整的初失败日志亦留存，不混为产品失败。旧report/full-static-1及所有原probe未覆盖。实际检查范围没有GUI/容器、Store/worker/canonical写入、包或全库测试；根后续完整check/source与独立语义oracle结果尚不在本报告结论内。

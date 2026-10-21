@@ -1,0 +1,103 @@
+{
+  "format": "i05-profile-probe-inputs/1",
+  "source": {
+    "path": "tests/fixtures/quality/profile-v1/firing-cases.json",
+    "sha256": "c001a6462b7f3ae54563b99c699bf6281c09020f2695f62f7bd2a92a715e6599",
+    "bytes": 9298,
+    "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+    "projection": [
+      "catalog",
+      "definition",
+      "input_when"
+    ],
+    "expectedIncluded": false
+  },
+  "cases": [
+    {
+      "caseId": "fixed-profile-firing-input",
+      "catalog": {
+        "classes": [
+          "urn:C"
+        ],
+        "object_properties": [
+          "urn:related"
+        ],
+        "data_properties": [
+          "urn:value",
+          "urn:out"
+        ]
+      },
+      "definition": {
+        "rule_id": "r1",
+        "when": [
+          [
+            "?s",
+            "urn:value",
+            "?v"
+          ]
+        ],
+        "comparisons": [
+          [
+            "?v",
+            "gt",
+            {
+              "type": "integer",
+              "lexical": "1"
+            }
+          ]
+        ],
+        "heads": [
+          [
+            "?s",
+            "urn:out",
+            "?v"
+          ],
+          [
+            "?s",
+            "urn:out",
+            "?v"
+          ]
+        ],
+        "source": {
+          "reference": "fixture:firing-cases",
+          "digest": null,
+          "revision": "1",
+          "text": "actual fixture"
+        },
+        "revision": "1",
+        "definition_digest": "given-definition-digest",
+        "policy": "OntoLearn-rule-comparison-profile/1"
+      },
+      "input_when": [
+        {
+          "subject": {
+            "kind": "iri",
+            "lexical_form": "urn:a",
+            "datatype_iri": null,
+            "language_raw": null,
+            "source": null
+          },
+          "predicate": {
+            "kind": "iri",
+            "lexical_form": "urn:value",
+            "datatype_iri": null,
+            "language_raw": null,
+            "source": null
+          },
+          "object": {
+            "kind": "literal",
+            "lexical_form": "2",
+            "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
+            "language_raw": null,
+            "source": {
+              "reference": "fixture:value-2",
+              "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
+              "revision": "fact-v1",
+              "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

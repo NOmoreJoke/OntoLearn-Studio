@@ -1,0 +1,397 @@
+"""Input-only preparation, NOT an executor, oracle, or product probe.
+
+The only JSON payload sources read by project() are the approved original T09
+inputs and original 22 extensions. The expected/oracle asset is hash-checked as
+an opaque approved file, never decoded or dereferenced. Literal operations below
+prepare proposed mathematical inputs; they do not publish or certify Store,
+behavior, transaction, source ownership, current/history or reset behavior.
+"""
+import copy
+import csv
+import hashlib
+import io
+import json
+from pathlib import Path
+
+FIXED = 'f9af899fad31ea19c7540e9624c437a189b8b5bf'
+APPROVAL_SHA = 'd21914c0a41c224f261862202bfe44b732a2b189ef1e98cb614797fa0acb5f9e'
+T09 = 'tests/fixtures/quality/approved-T09-873c8c0/'
+BASE = T09 + 'tests/fixtures/product-baselines/'
+CHECKS = T09 + 'content/learning/checks.json'
+COURSE = T09 + 'content/learning/course.json'
+TRANSFER = T09 + 'content/learning/transfer-inputs.json'
+EXT = 'tests/fixtures/quality/fr505-extension-cases.json'
+RDF = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+NS = 'urn:ontolearn:learning:'
+
+
+def digest(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def canonical(value):
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
+
+
+class Inputs:
+    def __init__(self, root, approval):
+        self.root = Path(root)
+        raw = Path(approval).read_bytes()
+        if digest(raw) != APPROVAL_SHA:
+            raise ValueError('APPROVAL_BYTES_CHANGED')
+        approved = json.loads(raw)
+        if approved['fixedRef'] != FIXED or len(approved['files']) != 22:
+            raise ValueError('APPROVAL_SCOPE_CHANGED')
+        self.approved = {x['path']: x for x in approved['files']}
+        # Hash verification is separate from consumption. No expected decoding.
+        for path, item in self.approved.items():
+            data = (self.root / path).read_bytes()
+            if len(data) != item['bytes'] or digest(data) != item['sha256']:
+                raise ValueError('APPROVED_FILE_BYTES_CHANGED:' + path)
+        self.cache = {}
+
+    def load(self, path):
+        # No oracle/assembly/checker/expected source can become an input loader.
+        if not (path.startswith(T09) or path == EXT):
+            raise ValueError('NON_INPUT_SOURCE_FORBIDDEN')
+        if path not in self.approved or not path.endswith('.json'):
+            raise ValueError('NON_APPROVED_JSON_INPUT')
+        if path not in self.cache:
+            self.cache[path] = json.loads((self.root / path).read_bytes())
+        return self.cache[path]
+
+    def ref(self, path, pointer='', **extra):
+        return {'path': path, 'ref': FIXED, 'sha256': self.approved[path]['sha256'],
+                'pointer': pointer, **extra}
+
+    def csv_records(self, path):
+        if path not in self.approved or not path.endswith('.csv'):
+            raise ValueError('NON_APPROVED_CSV_INPUT')
+        return list(csv.DictReader(io.StringIO((self.root / path).read_text())) )
+
+
+def triple(value):
+    if isinstance(value, dict):
+        return {k: value[k] for k in ('subject', 'predicate', 'object')}
+    if isinstance(value, list) and len(value) == 3:
+        return dict(zip(('subject', 'predicate', 'object'), value))
+    raise ValueError('EXPLICIT_TRIPLE_REQUIRED')
+
+
+def tkey(value):
+    return tuple(value[k] for k in ('subject', 'predicate', 'object'))
+
+
+def literal(text):
+    # CSV cells are given source values, not reconstructed output literals.
+    return json.dumps(text, ensure_ascii=False)
+
+
+def definition(value, source):
+    """Only original conditions/conclusions. No expectedBinding is consulted."""
+    when, comparisons, heads = [], [], []
+    for condition in value['conditions']:
+        kind = condition.get('kind')
+        if kind is None:
+            when.append(triple(condition))
+        elif kind == 'type':
+            when.append({'subject': condition['subject'], 'predicate': RDF,
+                         'object': '<' + condition['class'] + '>'})
+        elif kind == 'property':
+            when.append({'subject': condition['subject'], 'predicate': condition['path'],
+                         'object': condition['object']})
+        elif kind == 'compare':
+            comparisons.append({k: condition[k] for k in ('left', 'operator', 'right')})
+        else:
+            raise ValueError('UNSUPPORTED_SOURCE_CONDITION')
+    for head in value['conclusions']:
+        if head.get('kind') is None:
+            heads.append(triple(head))
+        elif head['kind'] == 'type':
+            heads.append({'subject': head['subject'], 'predicate': RDF,
+                          'object': '<' + head['class'] + '>'})
+        elif head['kind'] == 'property':
+            heads.append({'subject': head['subject'], 'predicate': head['path'],
+                          'object': head['object']})
+        else:
+            raise ValueError('UNSUPPORTED_SOURCE_HEAD')
+    return {'rule_id': value['id'], 'enabled': value.get('enabled', True), 'when': when,
+            'comparisons': comparisons, 'heads': heads,
+            'revision': (str(value.get('revision', value.get('version')))
+                         if 'revision' in value or 'version' in value else None),
+            'definitionJsonValueSha256': digest(canonical(value)), 'source': source,
+            'rawTurtle': None, 'rawTurtleSpan': None}
+
+
+def sourced(values, path, pointer, inputs):
+    return [{'triple': triple(value), 'source': inputs.ref(path, pointer + '/' + str(i))}
+            for i, value in enumerate(values)]
+
+
+def put(facts, records, replace=False):
+    for record in records:
+        value = record['triple']
+        if replace:
+            facts[:] = [r for r in facts if tkey(r['triple'])[:2] != tkey(value)[:2]]
+        if not any(tkey(r['triple']) == tkey(value) for r in facts):
+            facts.append(record)
+
+
+def remove_alarm(facts, alarm):
+    iri = NS + 'alarm/' + alarm
+    facts[:] = [r for r in facts if r['triple']['subject'] != iri
+                and r['triple']['object'] != '<' + iri + '>']
+
+
+def snapshot(state):
+    return {'asserted': copy.deepcopy(state['facts']), 'ontology': copy.deepcopy(state['ontology']),
+            'definitions': copy.deepcopy(state['rules']),
+            'disabled_rule_ids': [r['rule_id'] for r in state['rules'] if not r['enabled']],
+            'fullOriginalInputContext': state['full'],
+            'lifecycleExecuted': False, 'sourceAuthorityAuthenticated': False,
+            'originalRequestedOperationPassed': False}
+
+
+def base_state(inputs, name):
+    path = BASE + name + '.json'
+    raw = inputs.load(path)
+    field = 'initialFacts' if name == 'E.5' else 'facts'
+    return {'facts': sourced(raw[field], path, '/' + field, inputs),
+            'ontology': sourced(raw['ontology'], path, '/ontology', inputs),
+            'rules': [definition(r, inputs.ref(path, '/rules/' + str(i)))
+                      for i, r in enumerate(raw['rules'])], 'full': True,
+            'mapping': copy.deepcopy(raw.get('mappings', [None])[0]), 'managed': set(),
+            'manualTouched': set(), 'baseline': name}
+
+
+def project(root, approval):
+    inputs = Inputs(root, approval)
+    cases_path = BASE + 'cases.json'
+    cases = inputs.load(cases_path)['cases']
+    extensions = inputs.load(EXT)
+    checks = inputs.load(CHECKS)['checks']
+    states, operations, case_views = [], [], []
+    baselines = {name: base_state(inputs, name) for name in ('G-base','G-behavior','G-map-empty','E.5')}
+
+    def save(identifier, state, refs, purpose, eligible=True, notes=()):
+        item = {'id': identifier, 'sourceRefs': refs, 'purpose': purpose, 'claimScope':'mathematical input projection only',
+                'eligibleStandaloneMathInput': eligible,
+                'scopeNotes': list(notes), 'input': snapshot(state)}
+        # This digest is of this INPUT projection domain, never an oracle result.
+        item['inputProjectionJsonSha256'] = digest(canonical(item['input']))
+        states.append(item)
+        return identifier
+
+    for name, state in baselines.items():
+        save('baseline:' + name, state, [inputs.ref(BASE + name + '.json')],
+             'original independent baseline')
+
+    for ci, case in enumerate(cases):
+        state = copy.deepcopy(baselines[case['baseline']])
+        prefix = '/cases/' + str(ci)
+        view = {'caseId': case['id'], 'source': inputs.ref(cases_path,prefix),
+                'independentBaseline': case['baseline'], 'operationRefs': [], 'mathInputs': [],
+                'originalLifecycleAndNonGraphAcceptance': 'not-executed'}
+        for group in ('setup','steps'):
+            for oi, op in enumerate(case[group]):
+                pointer = prefix + '/' + group + '/' + str(oi)
+                ref = inputs.ref(cases_path,pointer)
+                identifier = case['id'] + ':' + group + ':' + str(oi)
+                kind = op['op']
+                decision, notes, eligible = 'non-mathematical operation reference only', [], False
+                if kind in ('manual-add','add-alarm'):
+                    put(state['facts'], sourced(op['facts'],cases_path,pointer+'/facts',inputs))
+                    decision, eligible = 'literal add operation input fold', state['full']
+                elif kind in ('manual-update','replace'):
+                    rec = {'triple':triple(op), 'source':ref}
+                    put(state['facts'],[rec],replace=True)
+                    state['manualTouched'].add(tkey(rec['triple'])[:2])
+                    decision, eligible = 'literal subject/predicate replacement input fold', state['full']
+                elif kind == 'remove':
+                    removed = {tkey(triple(v)) for v in op['facts']}
+                    state['facts'][:] = [r for r in state['facts'] if tkey(r['triple']) not in removed]
+                    decision, eligible = 'literal exact-triple deletion input fold', state['full']
+                elif kind == 'remove-alarm':
+                    remove_alarm(state['facts'],op['id'])
+                    decision, eligible = 'explicit alarm identity deletion projection', state['full']
+                    notes.append('Delete triples with explicit alarm subject or IRI object; no negative fact is added.')
+                elif kind == 'add-ontology':
+                    put(state['ontology'], sourced(op['triples'],cases_path,pointer+'/triples',inputs))
+                    decision, eligible = 'literal ontology addition input fold', state['full']
+                elif kind == 'save-enabled-rule':
+                    spec = definition(op['rule'],inputs.ref(cases_path,pointer+'/rule'))
+                    state['rules'][:] = [r for r in state['rules'] if r['rule_id'] != spec['rule_id']]
+                    state['rules'].append(spec)
+                    decision, eligible = 'literal definition addition input fold', state['full']
+                elif kind == 'run-save-orders':
+                    for vi, order in enumerate(op['orders']):
+                        variant = copy.deepcopy(state)
+                        by_id = {r['rule_id']:r for r in state['rules']}
+                        variant['rules'] = [by_id[rule_id] for rule_id in order]
+                        input_id = save(identifier+':order:'+str(vi),variant,[ref],
+                                        'explicit original rule order variant', state['full'])
+                        view['mathInputs'].append(input_id)
+                    decision = 'independent literal rule-order input variants; no saved-state executor'
+                elif kind == 'run-round':
+                    for ei,event in enumerate(op['events']):
+                        payload = event.get('payload',{})
+                        ep = pointer+'/events/'+str(ei)+'/payload'
+                        if 'removeAlarm' in payload:
+                            remove_alarm(state['facts'],payload['removeAlarm'])
+                        if 'addFacts' in payload:
+                            put(state['facts'],sourced(payload['addFacts'],cases_path,ep+'/addFacts',inputs))
+                    decision, eligible = 'explicit event payloads before behavior input projection', state['full']
+                    notes.append('No behavior firing, freezing, action, resource, round commit or consumption was executed.')
+                elif kind in ('map','map-rerun'):
+                    if not state['mapping']:
+                        notes.append('No explicit original mapping definition available.')
+                    elif state['manualTouched']:
+                        notes.append('Requires real mapping ownership/conflict decision; do not infer acceptance from expected.')
+                        state['full'] = False
+                    elif not state['full']:
+                        notes.append('Prior lifecycle result unavailable; no reconstructed full graph.')
+                    else:
+                        if 'file' in op:
+                            csv_path = BASE + op['file']
+                            rows = inputs.csv_records(csv_path)
+                            row_refs = [inputs.ref(csv_path,'',physicalLine=i+2) for i in range(len(rows))]
+                        elif 'csv' in op:
+                            rows = list(csv.DictReader(io.StringIO(op['csv'])))
+                            row_refs = [inputs.ref(cases_path,pointer+'/csv',physicalLine=i+2) for i in range(len(rows))]
+                        else:
+                            rows, row_refs = [], []
+                            notes.append('map-rerun needs actual relinked file/source state; not guessed.')
+                        if rows:
+                            mapping = state['mapping']
+                            records, keys = [], []
+                            for row, row_ref in zip(rows,row_refs):
+                                key = row[mapping['keyColumn']]
+                                if not key or key in keys:
+                                    raise ValueError('INVALID_CSV_NOT_A_COMMITTED_GRAPH')
+                                keys.append(key)
+                                subject = mapping['subjectTemplate'].replace('{'+mapping['keyColumn']+'}',key)
+                                records.append({'triple':{'subject':subject,'predicate':RDF,
+                                                        'object':'<'+mapping['type']+'>'},'source':row_ref, 'transformRefs':[inputs.ref(
+                                                            BASE+state['baseline']+'.json','/mappings/0')]})
+                                for column,predicate in mapping['columns'].items():
+                                    records.append({'triple':{'subject':subject,'predicate':predicate,
+                                                            'object':literal(row[column])},'source':row_ref, 'transformRefs':[inputs.ref(
+                                                            BASE+state['baseline']+'.json','/mappings/0')]})
+                            state['facts'][:] = [r for r in state['facts'] if tkey(r['triple']) not in state['managed']]
+                            put(state['facts'],records)
+                            state['managed'] = {tkey(r['triple']) for r in records}
+                            decision,eligible = 'literal CSV/template mathematical candidate input fold', True
+                            notes.append('No mapping tool/Store/ownership authentication executed; row provenance is original physical CSV line.')
+                elif kind in ('infer','prime-current-inference','query','validate','observe-stale','inspect-alarm-records'):
+                    decision, eligible = 'same explicit input; actual operation and publication remain unexecuted', state['full']
+                elif kind == 'replace-behavior':
+                    notes.append('Explicit behavior definition retained by source ref; reason input rules are unchanged.')
+                elif kind in ('run-case','run-scenario','run-scenarios','independent-replay','resume-explicit',
+                              'on-imported-device','independent-variants','independent-crash-injection'):
+                    notes.append('Needs nested/branch/scenario lifecycle execution; original referenced inputs retained, no expected graph substitution.')
+                    state['full'] = False
+                elif kind in ('confirm','confirm-batch','submit-preview','commit','reopen','import','map-rerun',
+                              'deliver-late','edit-and-undo','attempt-rerun','resubmit-event'):
+                    notes.append('Actual version/transaction/history/reset decision required; no committed graph claim.')
+                    state['full'] = False
+                if eligible:
+                    input_id = save(identifier,state,[ref],decision,True,notes)
+                    view['mathInputs'].append(input_id)
+                operations.append({'id':identifier,'caseId':case['id'],'group':group,'ordinal':oi,
+                                   'op':kind,'source':ref,'decision':decision,
+                                   'originalOperationExecuted':False,
+                                   'mathInputId':identifier if eligible else None,'notes':notes,
+                                   'lifecycleExecuted':False})
+                view['operationRefs'].append(identifier)
+                if kind == 'run-round':
+                    # The event-only pre-behavior input is known, post-actions are not.
+                    state['full'] = False
+        case_views.append(view)
+
+    for i,case in enumerate(extensions['cases']):
+        state={'facts':sourced(case['inputTriples'],EXT,'/cases/'+str(i)+'/inputTriples',inputs),
+               'ontology':sourced(extensions['ontologyTriples'],EXT,'/ontologyTriples',inputs),
+               'rules':[definition(r,inputs.ref(EXT,'/cases/'+str(i)+'/rules/'+str(j)))
+                        for j,r in enumerate(case['rules'])], 'full':True}
+        save('extension:'+case['id'],state,[inputs.ref(EXT,'/cases/'+str(i))],
+             'independent original extension input; no R-risk or prior result inheritance')
+
+    transfer=inputs.load(TRANSFER)
+    for key in ('repair','classification'):
+        original=transfer[key]
+        state={'facts':sourced(original['facts'],TRANSFER,'/'+key+'/facts',inputs),
+               'ontology':sourced(original['ontology'],TRANSFER,'/'+key+'/ontology',inputs),
+               'rules':[definition(r,inputs.ref(TRANSFER,'/'+key+'/rules/'+str(j)))
+                        for j,r in enumerate(original.get('rules',[]))], 'full':True}
+        save('transfer:'+key,state,[inputs.ref(TRANSFER,'/'+key)],
+             'original transfer input',key=='classification',
+             ('Repair defines no rules: ruleVersion never authorizes inherited R-risk.',) if key=='repair' else ())
+
+    # E.5 only explicit initial facts + scheduled event payload fragments. Missing
+    # behavior/resource-generated RDF is not manufactured from the oracle.
+    e5=inputs.load(BASE+'E.5.json')
+    for round_number in range(1,e5['maxRounds']+1):
+        state=copy.deepcopy(baselines['E.5'])
+        refs=[inputs.ref(BASE+'E.5.json','/initialFacts')]
+        for i,event in enumerate(e5['events']):
+            if event['round']<=round_number:
+                pointer='/events/'+str(i)+'/payload/addFacts'
+                put(state['facts'],sourced(event['payload']['addFacts'],BASE+'E.5.json',pointer,inputs))
+                refs.append(inputs.ref(BASE+'E.5.json',pointer))
+        state['full']=False
+        save('E.5:event-fragment:round:'+str(round_number),state,refs,
+             'standalone explicit event fragment for mathematical reasoning',True,
+             ('Not a full original scenario snapshot: previous behavior/resource order RDF is absent.',
+              'Cannot compare this input hash to any full oracle graph or certify capacity/replay/resume/reset.'))
+
+    case_ids={case['id'] for case in cases}
+    learning=[]
+    course=inputs.load(COURSE)
+    for check_id,check in checks.items():
+        task_refs=[inputs.ref(COURSE,'/tasks/'+str(i)) for i,t in enumerate(course['tasks'])
+                   if check_id in t['checks']]
+        learning.append({'id':check_id,'source':inputs.ref(CHECKS,'/checks/'+check_id),
+                         'caseRef':check.get('case'),'courseInputRefs':task_refs,
+                         'linkedProductCase':check_id if check_id in case_ids else None,
+                         'toolOwner':check['toolOwner'],'checkExecuted':False,
+                         'extraInputStatus':('partial four-triple course delta, prior full project unspecified'
+                             if check_id=='ontology-model' else 'original transfer graph supplied, rules absent'
+                             if check_id=='transfer-repair' else 'original independent graph and rules supplied'
+                             if check_id=='transfer-classify' else 'no fixed RDF graph; actual T10 export required'
+                             if check_id=='learning-report' else 'original product case reference')})
+    return {'format':'i05-profile-input-projection/1','fixedOriginalRef':FIXED,
+            'expectedIncluded':False,'approvalSha256':APPROVAL_SHA,
+            'sourceFiles':list(inputs.approved.values()),
+            'decodedInputJsonFiles':sorted(inputs.cache),
+            'counts':{'productCases':len(case_views),'learningChecks':len(learning),
+                      'extensions':len(extensions['cases']),'originalSetupAndSteps':len(operations),
+                      'mathInputRecords':len(states)},
+            'mathInputs':states,'productCases':case_views,'originalOperations':operations,
+            'learningChecks':learning,'lifecycleExecuted':False,
+            'unresolvedInputContexts':[
+                {'id':'ontology-model','source':inputs.ref(COURSE,'/tasks/0'),
+                 'gap':'Only added four triples in course prose; prior complete project unspecified. Need T02/original owner to bind complete context for full-project inference.'},
+                {'id':'transfer-repair','source':inputs.ref(TRANSFER,'/repair'),
+                 'gap':'No rule definitions. Use actual SHACL consumer; do not inherit R-risk from ruleVersion.'},
+                {'id':'learning-report','source':inputs.ref(CHECKS,'/checks/learning-report'),
+                 'gap':'No fixed RDF input project; actual T10 output/lifecycle input needed.'},
+                {'id':'G-list-13:edit-and-undo','source':inputs.ref(cases_path,'/cases/33/steps/3'),
+                 'gap':'Selected subject is absent; intermediate full edited graph cannot be constructed. Overall reset/undo is lifecycle acceptance.'},
+                {'id':'G-list-05:late-V1','source':inputs.ref(cases_path,'/cases/25'),
+                 'gap':'V1 completion round/payload absent. Do not derive historical payload from V2/current or oracle.'}],
+            'nonClaims':['No closure/matches/heads/basis/expected read to construct inputs.',
+                         'Literal folds are mathematical proposed input views, not actual committed Store snapshots.',
+                         'No behavior, capacity, event consumption, source ownership, stale/history, reset or cancellation executor.']}
+
+
+if __name__=='__main__':
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--root',required=True)
+    parser.add_argument('--approval',required=True)
+    parser.add_argument('--output',required=True)
+    args=parser.parse_args()
+    result=project(args.root,args.approval)
+    Path(args.output).write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+    print(json.dumps({'counts':result['counts'],'sha256':digest(Path(args.output).read_bytes()),
+                      'decodedInputJsonFiles':result['decodedInputJsonFiles']},ensure_ascii=False,indent=2))

@@ -1,0 +1,63 @@
+# 外部 oracle 对照器与自包含 pytest 片段
+
+这是测试/外部验收消费者，未加入产品或主树。producer只接固定纯输入；oracle expected从不传入构造records、matcher、reason或比较器。没有第二matcher、RDFS闭包或数值/日期比较实现；N3解码仅核固定字典的字面项身份，不把01等词法变为值。完整JSON/说明已读回核hash；全部2546对象、2198数组、14578 scalar完成结构遍历。
+
+## 冻结交付
+
+- `compare_oracle.py`：独立外部CLI/比较函数。
+- `pytest_append_fragment.py`：建议加入现有 `test_semantic_profile_integration.py` 的自包含片段，所有helper/常量/import alias为 `_i05_oracle_` 私有前缀。仅AST/compile通过，未由本agent运行pytest。root合并时将这些私有别名imports放现有文件顶部的import区并按ruff格式化，其余可追加。不需要ignored文件、旧raw、动态exec文档或额外第六测试文件。
+- `coverage-final.json`：83份输入的全部精确同值expectedGraphs映射，不能当运行通过。
+- `probe10-comparison-final.json`：对root真实提供的probe10输出实际执行外部标准库比较的结果；原产品并非本agent运行。
+- `readback-and-static-audit.json`、`artifact-manifest.json`保留读取/静态/哈希证据。
+
+## 实测结果与口径
+
+root提供的probe10原件14006950B，SHA256 `606c108cdbcb44aa916b29b7c4879ccd22221c24c3379513e35259ec6fe8afbe`。外部checker最终exit1：78 `math-observable-fields-pass`、4 `failure`、1 `not-executed`。没有把失败资源结果改成全probe通过。probe13原件仅另读了结构和失败诊断/来源样式，root将用同一冻结checker完成实际对照，不能用本probe10的外部结果替代新raw证明。
+
+83输入中80有精确asserted集合、ontology集合、完整有序定义同值的expectedGraphs；transfer-repair禁止执行，余79份eligible可潜在映射51/89图。实际成功78覆盖49个图值、24个唯一match ref（15 accepted、9 false）、16个head引用和R04唯一RDFS叶witness。未成功覆盖的match恰e001..e016。E5 round1虽原投影保守fullContext=false，其给定数学集合恰等c3/c4 r1-event；当前真实计算资源失败，仍不算覆盖这两图。round2–4事件片段没有对应的完整expected图，不允许subset/nearest凑对照。
+
+同值映射保留所有别名：例如base-plus-A04/B01-event/B07-event，B02-event/B02-commit。这里只表示数学输入值相同，不能证明来源、行为执行、阶段转换或真实producer身份相同。完整列表见coverage-final每个mathInputId，未覆盖38图包括输入存在但禁止执行的repair-before；成功运行最终仍有40/89图未覆盖。
+
+## 实际核对项
+
+每个成功案例，对每个精确同值expected图分别核：
+
+- 全量RDFS、自定义输出、派生并集、warning；不只数量或包含。
+- 每child实际originalMatches的全部true/false变量绑定、有序when和每输入proof leaves。disabled必须originalMatches=None且batch=None；零匹配必须真实空数组。原定义/Catalog/limits/definition ordinal的完整carrier门放在disabled continue之前。
+- 全部accepted firing、binding/when顺序、每个comparison operand term/operator/boolean、每head index与出现、完整basis、每when proof。实际proof组/basis refs必须sorted unique，不能由frozenset吞掉额外重复或乱序。
+- 独立RDFS leaf witness和proof refs。当前API没有直接步骤/derivation-level对象，不冒称这些对象已被核对。
+- 全部head evidence，完整原定义IR/顺序/版本/definition摘要，全部input term source occurrence及实际asset pointer/digest/text；这些是投影资产来源，不是丢失的导入前Turtle、原始span或Store授权。
+- rows无截断、完整payload/rows摘要、每batch完整bytes的SHA一致、batch facts/firings与总体一致。
+
+False的原完整binding/when/proof现有actual carrier可核。False ComparisonEvidence仍没有载体：只核该原匹配没有accepted firing/head，不能宣称独立核到了不存在的false比较trace。独立oracle给出operand词法和真值，不给所有内部Number有理表示；本对照不冒称重新验证数值实现或解码T05私有typed bytes语义，只核完整保留bytes及其hash、真实结构输出与oracle一致。无数值重算、无expected.binding送matcher。
+
+空定义分支的None ordinal、[]definitions、[]originalMatches/真实空batch已设比较门，但当前83中的repair不应执行，因此该空定义路径没有本批实际覆盖。不能把静态分支称实测绿。
+
+## 失败/未覆盖的精确处理
+
+- E5片段round1/2实际RESOURCE_LIMIT/semanticInput，私有reason=RULE_INPUT_BUDGET、ruleId=R-risk；round3/4实际RESOURCE_LIMIT/semanticWork，reason=WORK_LIMIT、ruleId=None。四者都是失败，无result，不是skip，也不是业务推理成功。
+- transfer-repair输入规则未指定，显式not-executed，不把空rules成功补为该案例结果。
+- 行为后图、资源/工单、E5后轮完整图、imported、cancel分支、undo和历史均不靠expected填回输入。本对照没有生命周期、Store/worker/selected或E1/P2声明。
+- ontology-model全上下文/repair规则/report RDF/G13中间subject/G5 V1完成载荷的原缺口继续保留。
+
+## 可复用调用
+
+```
+python3 -I /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-calculation/build/profile-input-projection/oracle-comparison/compare_oracle.py \
+  --oracle /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-integration/tests/fixtures/quality/real-executor-acceptance-inputs.json \
+  --inputs /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-calculation/build/profile-input-projection/input-manifest-v2.json \
+  --projection-code /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-calculation/build/profile-input-projection/project_inputs.py \
+  --executed-input-asset /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-integration/docs/iterations/I05/profile-probe-inputs.json \
+  --actual /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-integration/build/profile-evidence/13-full-input-probe.json \
+  --source-style short-no-revision \
+  --coverage-out /ROOT_OWN_OUTPUT/coverage.json \
+  --comparison-out /ROOT_OWN_OUTPUT/probe13-comparison.json
+```
+
+ROOT_OWN_OUTPUT由root指定其自有输出目录。当前source-style按实际probe10/13的短pointer、revision=None严格验证；另支持显式asset-revision样式，不能任意放宽来源字段。origin projection raw SHA7c2432…与root格式化后实际资产SHA6c6ffc…不同，但JSON值逐项全等；两个字节域和执行资产inputBytes/hash分别校验，不把它们写成同一原字节。
+
+函数层：`model(oracle,projection,project_module)`只做已有明确输入值的精确关联；`compare_actual(actual,projection,oracle,triples,mappings,config)`返回逐83项结果和statusCounts。配置明确绑定实际资产SHA/bytes/source-style，不能从actual输出自报值盲信。fixture把最小原conditions/conclusions格式映射函数内置在测试，生产侧完全不读oracle。两个test共享一次session collection，每个eligible原输入实际调用同一producer._construct_records + execute_profile_records，1个缺上下文直接断言不执行；第二test核四项真实资源错误完整四字段及私有诊断。pytest通过仅表示“78数学一致+4资源失败合同+1不可执行”被严格核准，原probe overall exit1不改成allpass。
+
+## 首失败保全
+
+coverage首版成功。第一轮外部对照77项误报MATCH_CARRIER_FULL_CONTEXT，是checker把typed ProfileLimits.recordType同原dict直接比造成；不是产品错误。原v2脚本/首输出保留。修为精确去recordType后77项通过；另补all originalMatches、head evidence/定义全量及sorted unique、disabled/空定义carrier门，最终仍78/4/1。旧版本只作历史证据，不用于root最终验收。没有运行产品或重新造83 actual来迎合oracle。

@@ -1,0 +1,32 @@
+# 最后 oracle 测试 delta 独立只读审查
+
+结论：本次窄范围静态审查未发现阻断。新增测试没有把 expected 送入生产输入，没有第二 matcher/闭包/数值比较实现；78份成功、4份资源失败、1份缺上下文未执行与49图值/24match引用口径保持区分。此结论不等于全部P1、89图/40match、CLI/包、生命周期或正式业务通过。
+
+## 实际绑定
+
+- 当前 `test_semantic_profile_integration.py`：48284B，SHA256 `69d7afd9d5b836f61591cfebffeca5ddbebba607bad0a0c1e8ff6a5becf8e562`。
+- 当前 `semantic_profile_probe.py`：13391B，SHA256 `2b2dabd91745b4b4c2a3fad39b6386e4edd985189336bf029d9b07a638fc7bf6`。
+- 交接片段原件33774B/SHA `9edda391a9163d3a27adb403cfc9a44abda36cdc885146695df002f76173d595`，外部checker原件26097B/SHA `32067f2aec88d3b58a225f05495110b8b6eaa1aef414f919f11ebcedf1c18f03`。
+- 输入资产实际1839011B/SHA `6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de`；独立oracle767826B/SHA `87220503f9983146c974fe3e35025d520cad70e54fdd994aebfa86fb1ff7259f`，含89 graphs/40 matches。
+
+源快照和完整hash清单在source/、audit.json。实际用标准库AST parse/compile，不执行编译结果，不import产品，不运行pytest/完整check，不改任何产品、原件、expected或集成树。
+
+## 输入与对照边界
+
+fixture读固定资产和oracle后建立数学输入值的精确关联；expected仅供测试消费者。实际producer调用只有 `_construct_records(sample,index)`，sample来自固定资产的mathInputs，随后 `execute_profile_records(actual_records,rules,disabled_rule_ids=disabled,error_catalog=CONTRACT.ERROR_CATALOG,error_schema=schema)`；oracle、triples、mappings没有作为构造或执行参数。关联函数只读取projection，不用expected asserted/heads/bindings补写sample。资产完整JSON遍历未发现expected类键，除明确false的expectedIncluded。
+
+生产probe只读取唯一固定资产、其input/asserted/ontology/definitions字段；通过实际N3解码/records图入口与同一reason计算。生产module无oracle文件读取或测试helper导入。外部N3键函数只解固定字典的项身份（原lexical不数值转换），integerHex解码只核私有JSON整数表示；结果检查只逐集合/顺序/字段与独立预期比较，不生成闭包、匹配绑定或比较真值。
+
+root补的RDF_TYPE常量实际绑定rdf:type；两处定义投影引用该常量。新增zip均有strict，失败reason局部变量改名，当前完整源AST compile通过。未发现这些适配把expected回灌生产的路径。
+
+## 范围与失败保真
+
+第一新测试必须得到78 math-observable-fields-pass、4 failure、1 not-executed，成功ID精确等于原eligible且非E5片段的输入；再断言49个同值expectedGraphs、24个唯一match refs（15 true/9 false）及R04唯一witness。这没有把78误写成78独立图，也没有声称覆盖全部89/40。
+
+对每个映射图，核完整RDFS/custom集合、全部accepted firing/比较term/operator/boolean、每head出现与索引、按定义顺序when、basis、逐when proof、全部原true/false BindingMatch、真实disabled/空定义carrier、rows全量重组及JSON/batch bytes hash。proof/basis refs有sorted unique门，不能由集合转换吞掉多余重复。false ComparisonEvidence、内部精确数值语义和私有typed bytes语义独立解码明确不作声明；源项检查是投影资产pointer/digest/text，不是原Turtle/span或producer授权。
+
+第二测试没有skip：四E5输入必须真实返回RESOURCE_LIMIT完整四字段和准确reason/ruleId/resource，且无result；transfer:repair必须明确not-executed，不以空rules计算填成功。83条记录完整保留。测试fixture自身的overallProbeSuccess=false是范围声明，不是对CLI退出码的独立运行验证；生产main另将任一failure/not-executed置failed并返回1。pytest只验证现阶段这组明确的成功/失败合同，不能将四资源失败升级为原数学或业务通过。
+
+## 运行结论限制
+
+父agent告知 `-k fixed_oracle` 3 passed、完整630TS/2582Python通过；本agent没有重跑，不能冒称亲测。CLI完整83输出、外部checker退出1、source/包同候选以及正式业务门由其各自原始运行证据承担。本轮也未采用API/恢复器/selected或改变额度。范围内无待修阻断，仍须保留以上未覆盖项及原资源失败。

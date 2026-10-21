@@ -1,0 +1,757 @@
+{
+  "candidate": "I05-private-profile-P1-implementation-1",
+  "status": "local fixed implementation candidate; NOT full P1/I05/P2 Pass",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "headBeforeCommit": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "branch": "feature/I05-profile-integration",
+  "gitCommitBinding": "the enclosing commit; this manifest excluded from its own hash list",
+  "changedFilesExcludingThisManifestAndProtectedAGENTS": [
+    {
+      "path": "docs/iterations/I05/profile-integration-status.md",
+      "bytes": 5356,
+      "sha256": "77b4f5cf7946f2b50e288a46494822b9f11522e015b84646629fd706269c130e",
+      "gitBlob": "f6028ed72bd2d5fbe0584b5161dbf31a8314a2d6"
+    },
+    {
+      "path": "docs/iterations/I05/profile-probe-contract.md",
+      "bytes": 6295,
+      "sha256": "471ce2922e301322b33791d953fd86e05864db180921cdbcf607e2d2b80fb7d3",
+      "gitBlob": "dcf7326f51da3cef083a01c8d5de8741c81596a6"
+    },
+    {
+      "path": "docs/iterations/I05/profile-probe-inputs.json",
+      "bytes": 1839011,
+      "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de",
+      "gitBlob": "faeede78361a24afa02b6af21ee4223c558636fb"
+    },
+    {
+      "path": "docs/iterations/I05/profile-selected-carrier-facts.md",
+      "bytes": 7610,
+      "sha256": "de5ee2f1a25a54dfd7b1d6bc2fcf4b82afa9472c422262ff48f1d3947f79ff94",
+      "gitBlob": "27c4ba0a91b682021b7b5f982fdc2d94e7b89325"
+    },
+    {
+      "path": "docs/iterations/T05/real-executor-independent-oracle.md",
+      "bytes": 17382,
+      "sha256": "82d8c3976c2f5e47388e44fd44462c5ceddb58c26919b8cf58d22f3e90468f7b",
+      "gitBlob": "4897b35afe93f1e24e9f683fb059248130a1df70"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/I05-profile-P1-fixed-inputs.json.raw",
+      "bytes": 13431,
+      "sha256": "b90106230f1d3e0f251a3daa1693260fea30555d02d4d6dbc85ceda71f11f40b",
+      "gitBlob": "899f147c5cc254e479e99509887beaa2458f8df3"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/I05-profile-P1-implementation-authorization.md.raw",
+      "bytes": 8756,
+      "sha256": "ae99f6f95666737939d2b701f962c1854864db447ba0d8c7663757615f460c6d",
+      "gitBlob": "a484cd282e1885f63226f8b42c9b3e14d9e8f07d"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/I05-profile-original-match-carrier-increment.md.raw",
+      "bytes": 3143,
+      "sha256": "15d5be0d20533f72d9e73add03167900981d657c4982b240380fb780bb6e14e7",
+      "gitBlob": "c41600aa432d2a33170e886b2132f63b62ea49d9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/T03-profile-dependency-A-root-closure-and-I05-consumption.md.raw",
+      "bytes": 2819,
+      "sha256": "082be57ac600f360d265cb94fa3ed77e20f9f11adb01bb6a58825a0b90053369",
+      "gitBlob": "5104842c997d408d0168e76e82555829a42bf5d9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/T05-330f-batch-proposal.md.raw",
+      "bytes": 32769,
+      "sha256": "e5fefefd78f62b4b5c989acd02aba6dc227042a3517fe3d90dc23bc0e3bae750",
+      "gitBlob": "3c8e9c24f08659a97e00a5e610d32fc924787154"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/T05-c1a-batch-proposal.md.raw",
+      "bytes": 24357,
+      "sha256": "578032f78cd8571496c5709f18c7f5c02292db89cf316a52e3d2f49c61234bea",
+      "gitBlob": "e3d1d83915eb2468533e7b3a04baadeb141c8e48"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/T05-independent-oracle-approved-inputs.json.raw",
+      "bytes": 8770,
+      "sha256": "d21914c0a41c224f261862202bfe44b732a2b189ef1e98cb614797fa0acb5f9e",
+      "gitBlob": "2c7ff9225cff181019131d25321e882326d9e0dd"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/T05-independent-oracle-stage-root-closure.md.raw",
+      "bytes": 4829,
+      "sha256": "9ae309db4a7cd392ba0b5e764c95d7635664be3d5a3237312fea359659c6474b",
+      "gitBlob": "9838ac27aa3cdfce80139d57bb3b9490a11d2d59"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/T05-profile-iri-approved-seven-inputs.json.raw",
+      "bytes": 2435,
+      "sha256": "a90d1ebbd7856f3f95668fc9eec9f5eac484798cd710190132b8439f45a65672",
+      "gitBlob": "af567ad150e570d346ea23253168acd1e2e6f422"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/T05-profile-iri-fix-root-closure-and-I05-consumption.md.raw",
+      "bytes": 3034,
+      "sha256": "7b1fe973faff7e314b21de64739e6fe65deab1191639bedaec8b993a92a99cc2",
+      "gitBlob": "8ee7fedcf37e114a2c6c297468aa0be91e073d31"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/core-handoff.md.raw",
+      "bytes": 4801,
+      "sha256": "f5ec74a3aac7ba9900e31dd9b630df0b5058ca8ec1439f6c67f610fbd18cff6c",
+      "gitBlob": "7542bfc148fbb8ee1c3f8a3a58a919f8af61927b"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/core-static-evidence.json.raw",
+      "bytes": 1542,
+      "sha256": "37dfbbe356cbe773c1e47f0aca868c050d4228333021194da230d5cb82a0309c",
+      "gitBlob": "5773800f2616537a84c016a3738295f1c4d0bb30"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/developer-common-instructions.md.raw",
+      "bytes": 17891,
+      "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0",
+      "gitBlob": "c047abc3cf6d12067dd1ad5e8db2337a92170d1b"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/early-independent-review.md.raw",
+      "bytes": 4106,
+      "sha256": "1b6790633426368466a2453e670e7c829786bc15c70dc216133102e12a9c6518",
+      "gitBlob": "2d1f22bfbd47d8821305553583b5d4516eddf772"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/early-static.json",
+      "bytes": 1169,
+      "sha256": "c7f79b8ad598dcce8c215b0c1544c23834ea3ba658bdb278bd78b39a800b7e8d",
+      "gitBlob": "54fa193eaefe63e6170a447815a829af93e556c4"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/full-static-1/audit.json.raw",
+      "bytes": 3526,
+      "sha256": "4a73d1c283fccfbfb09638d53be67fb0fa39206b8304fcf03a9ae5cc912f4e8e",
+      "gitBlob": "3f2ca8aac401dd7ac9c6b1c356c04804d26fb17e"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/full-static-1/original-evidence.zip",
+      "bytes": 57013,
+      "sha256": "0838c479d50fbbf286a2adeea04b406b9e62de3d3562b20ca2f2394206cfbc97",
+      "gitBlob": "5270b21a80065f81fce111db8f6c9eff72c404e9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/full-static-1/report.md.raw",
+      "bytes": 6014,
+      "sha256": "3a203a8467e07c257d4b7cf0e286f984aa32c0f3fe3406f135ce2f620f6ae2e8",
+      "gitBlob": "c6e3431f60ecf80d74f61cc589b4b927ddfada55"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/independent-delta/classification-close.md.raw",
+      "bytes": 1744,
+      "sha256": "369f7ad6442b98ef4d2a2a9592c3e17aae79086bd273b2834171fa979655a886",
+      "gitBlob": "95118328698ccbcffd254c61b2da0a4cc61167d1"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/independent-delta/delivery-manifest.json.raw",
+      "bytes": 24331,
+      "sha256": "c4412cd349fba12edebef5332aaef1fe5f519c29f1205387fd5b7760aad001b5",
+      "gitBlob": "ae0ec8ab7c9ffc8a455ddf0559d15a51156b1da0"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/independent-delta/final-readback-drift.json.raw",
+      "bytes": 1180,
+      "sha256": "fd2e245a26892b01fefb439f463ffc061a142f5097feca3b3472277bccdf769a",
+      "gitBlob": "7f124793f49f24525459855657fce641cd4009db"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/independent-delta/original-evidence.zip",
+      "bytes": 531798,
+      "sha256": "f96f07bda38bcc9688924330e0e28ad5eb30c33ec598d2d9bd576386b36d9d82",
+      "gitBlob": "540268f0bf383d078bcf348c49a7244e48920165"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/independent-delta/report.md.raw",
+      "bytes": 7883,
+      "sha256": "8fd09d18f6a994fc89437cf16a2a402f1e53ebd63252f952d7f245eba8dae16e",
+      "gitBlob": "c09be24aaec4305a23d5f0a421e97869a20c0b8c"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/input-projection/README.md.raw",
+      "bytes": 8985,
+      "sha256": "5b84f4526fd1dc5b0166e4ddc09d8aed4fafe44ed1e9bd7c8c767961845536cb",
+      "gitBlob": "fcca15aec7ccff32b4798b3f1ec96b64bad4ee7a"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/input-projection/artifact-manifest.json.raw",
+      "bytes": 1415,
+      "sha256": "c5b7452f5c57ee4d225da0b8bb58654cfc6ee3589a99b54a8422a7c235ef0d3d",
+      "gitBlob": "d34385c5707dc1988ac2de8d3384e8021eb13946"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/input-projection/input-reference-audit.json.raw",
+      "bytes": 795,
+      "sha256": "5d57a7e9eb9ad811568cd59d15bacf409177a0c0dbd46101bb4e5a762b3cff39",
+      "gitBlob": "db3b331da7819e340972ed0a513a233fede724f4"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/input-projection/preparation-profile-probe-inputs.json.raw",
+      "bytes": 2492,
+      "sha256": "17f0e06989a67d8603d55b7437594297b6572e8cb9b859952f61304f9e79387c",
+      "gitBlob": "62e7daca2cd951479a7707c16204763cebaf6858"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/input-projection/preparation-profile-probe.py.raw",
+      "bytes": 8103,
+      "sha256": "0492144af8d5ca258b970d694e1c9a4f66aec89a9ac6d077c498aab1b2b18322",
+      "gitBlob": "dd308a09b313c0091ea779bd68a656e8a7f5f6df"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/input-projection/project_inputs.py.raw",
+      "bytes": 23730,
+      "sha256": "c93d284c1b5744eaf671623f386fa0812602a54946fcafc8d0f0e8dccb21ee7b",
+      "gitBlob": "88b440600d2ca5d4803cae3c1c4cd68d78752388"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/lexical-delta/artifact-manifest.json.raw",
+      "bytes": 755,
+      "sha256": "0803f57a5fa4be8c184a7e870d6fff2c4c9dc089f99cb695f1e7b446ffce0b83",
+      "gitBlob": "53f53bae9e6e1c3fe9496b2dede5315dbe2b37a5"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/lexical-delta/first-source-readback-assertion.txt.raw",
+      "bytes": 243,
+      "sha256": "1330f2826ed5f222237740df300f20a9e60bceaebca4605fa48840391200b4b3",
+      "gitBlob": "edfe998b5e99c661ca7b13126786f7e6bb827c79"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/lexical-delta/original-history.zip",
+      "bytes": 58938,
+      "sha256": "cc96052d06feee2f56dfed541740264c4768d1331a95015245246a8c5c0b46c2",
+      "gitBlob": "4cbd27332ed43246f15e803089fa31f9f5852753"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/lexical-delta/report-before-entry-delta.md.raw.raw",
+      "bytes": 8635,
+      "sha256": "cef31d4e7b4e97a205913cdf3f4a9b7d3c34ed41f98dd0e76304a6291925eab6",
+      "gitBlob": "2f8b8f73f55643171a91b24e560720ffdbcf3b39"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/lexical-delta/report.md.raw",
+      "bytes": 10147,
+      "sha256": "c2fcddd0bf291cbdd96e8d65816b46e9226cd9d5cbb4ba8ad37c96f10ba2976d",
+      "gitBlob": "3f8b77d32da0efa338db763377ae8b44bbbf74a8"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/lexical-delta/source-readback.json.raw",
+      "bytes": 2593,
+      "sha256": "f37c3f2ed64a5867b3f4bba0e1148fc73ae36c3143e9aba64fcad94e485c1ab6",
+      "gitBlob": "c84c1bc2a83df4ac8815f68b680bbfd788f089d0"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/mutation-repair.md.raw",
+      "bytes": 4787,
+      "sha256": "1533fea81eb9753ac340f6f322443180cb10446e57dbeef9baed91fbeaad9291",
+      "gitBlob": "729611175cd7270a60f6d3b6cab144e0df1fd1a2"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/oracle-comparison/README.md.raw",
+      "bytes": 8125,
+      "sha256": "98ab1f39a0fbe464e180fa5d6d18e08c3cc507ffbf79d71bbc820df6deae8ecb",
+      "gitBlob": "49088f1d23009e1d51081a6609670c61a4d3dd27"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/oracle-comparison/artifact-manifest.json.raw",
+      "bytes": 3330,
+      "sha256": "10799a20c63d4750b662825afc58379e54e751d3d9035829ae2a0bbad3474571",
+      "gitBlob": "829570b0050637444667b9579ea52e9b710f220f"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/oracle-comparison/compare_oracle.py.raw",
+      "bytes": 26097,
+      "sha256": "32067f2aec88d3b58a225f05495110b8b6eaa1aef414f919f11ebcedf1c18f03",
+      "gitBlob": "45b985b8e8b4fa54e4ade2b27e830b7eed0ad018"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/oracle-comparison/coverage-final.json.raw",
+      "bytes": 116154,
+      "sha256": "a78190e9d2c0be82ed03a1bc7c42f3bdcbc1b1ae1d240155163f75106a031d69",
+      "gitBlob": "16c8ee5e3af14bd68f72157230a796ad6e8057cf"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/oracle-comparison/original-evidence.zip",
+      "bytes": 117272,
+      "sha256": "f0f2a4f00da8d2ddd35584a3b6d39f350190f2a6302238242f289225c3d94bf9",
+      "gitBlob": "41ed3b768fb55bafa0c7a0bf5e924ccb0acce25e"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/oracle-comparison/probe10-comparison-final.json.raw",
+      "bytes": 59318,
+      "sha256": "96815cb15df0ecc3cdd381174adadf79d0dc2f255c274980a196a88dff9df72c",
+      "gitBlob": "a2670622fc5481468d0260084de62494c75997d5"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/oracle-comparison/pytest_append_fragment.py.raw",
+      "bytes": 33774,
+      "sha256": "9edda391a9163d3a27adb403cfc9a44abda36cdc885146695df002f76173d595",
+      "gitBlob": "8bc217dc64d08a5d01d3550a4ea6702ea6490c51"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/oracle-test-delta/audit.json.raw",
+      "bytes": 1682,
+      "sha256": "2a10ef870c7c327854848c1e664049c17308814cf100ebee7f273415c48aab13",
+      "gitBlob": "52fb562dba82b51b2808a671422b21bfe0634094"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/oracle-test-delta/original-evidence.zip",
+      "bytes": 39635,
+      "sha256": "30dcdf2efb7a4be97c6ac5e52ba71c7fc44e57f1e38691de79a5f557dc11ae4c",
+      "gitBlob": "d98a58ccf16324e7976343950da2bbde82dfd0f4"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/oracle-test-delta/report.md.raw",
+      "bytes": 4455,
+      "sha256": "845e3162b70491595ace4cedafeeb74c7d485652b05a24a83e3ceaa492cd2038",
+      "gitBlob": "ca113f8ac95f9f32f0ffa7158ca9f9797fc66d4a"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/runtime-evidence-manifest.json",
+      "bytes": 10381,
+      "sha256": "14cd93fdcb801021286a9465f72ed8abadee450377de3e56c9643b58774f70d6",
+      "gitBlob": "ff1b7703e33052417a41245ec9e17b71bd85f12f"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/runtime-evidence.zip",
+      "bytes": 5021774,
+      "sha256": "f08d3e31284f41ff3095087a9fa19e2d559e260aff7ec4298cea5f524b8aeadb",
+      "gitBlob": "df4148f31c55f2671f3f27ddc0212cae4d9db122"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/startup.json",
+      "bytes": 346,
+      "sha256": "787a2228b233b36b2e8ddff1927fc71015059de0856c89ae589f22334f782fa6",
+      "gitBlob": "93171cefe4de7cadf681a5b45cfa3c7b82f8e5eb"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/work-cost-records-delivery.md.raw",
+      "bytes": 5734,
+      "sha256": "5aeba730695549b5b054d94ff06958c4ec016bfe6f30cd7dc18264f282d22629",
+      "gitBlob": "551542d1391f7ccb29f6cebe7d74aaa259612bf9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-integration/work-cost-records-manifest.json.raw",
+      "bytes": 1997,
+      "sha256": "978e58254f9a8b3eeb85a81c6379d2bf73cf09e8fece87a09db06340b535f1db",
+      "gitBlob": "41aeb3bb66136754570aa6779e7e41035353396d"
+    },
+    {
+      "path": "docs/reviews/T05/real-executor-oracle/inputs.json",
+      "bytes": 9879,
+      "sha256": "d743a3aedc08f67d42b6365e338fa95b8d8d11c1aa4559c591210ccce22ed0ec",
+      "gitBlob": "8b11b360921d87fec2d06b68f8be625ed93730ec"
+    },
+    {
+      "path": "packages/engine/pyproject.toml",
+      "bytes": 398,
+      "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365",
+      "gitBlob": "a5739f6eb194a4d674c14dd2bc678f562400d82c"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+      "bytes": 548,
+      "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+      "gitBlob": "1405a985b4220dc18576a4c02c8df57646b6ad02"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "bytes": 4047,
+      "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+      "gitBlob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+      "bytes": 1750,
+      "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+      "gitBlob": "1148fbd40c12c6138a689ee64580e08afa6c349c"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "bytes": 19149,
+      "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "gitBlob": "4fc50930c20b8184b3bae5df34d691111351e6bd"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "bytes": 7372,
+      "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+      "gitBlob": "31a0d150ae82d48e03fee2b9051273c99997b415"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "bytes": 11987,
+      "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "gitBlob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "bytes": 6176,
+      "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+      "gitBlob": "148313c849a706008e909d2c199c0c0d20e9fc33"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "bytes": 2927,
+      "sha256": "2361c55da7983e46fbdd08e50fc3ec48b281d2c76d0021f82fd94ab50ca54274",
+      "gitBlob": "091057b03a8a4fca0fa94f9346af725ab1f9f4f8"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "bytes": 52609,
+      "sha256": "5a3a53fc79928a7aa7de280a8477541db4053ec9b2bec489bf28a2ad4e935549",
+      "gitBlob": "4d8bc5574086b3072837f9b841b75349fdb633fe"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+      "bytes": 15426,
+      "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+      "gitBlob": "64356928fe56697af4992c08e209f85a6a178e79"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "bytes": 32917,
+      "sha256": "cc701dba39cdeb7f2ae281dfd4a9580b879b9e85f34d3c87a09a3414e7c32731",
+      "gitBlob": "5dd9ba65f2b148b0644a90caec30ce13ddcee1a8"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "bytes": 1351,
+      "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+      "gitBlob": "0013805b49a8842383fd38afde3ffbfbd54e1e40"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_probe.py",
+      "bytes": 13391,
+      "sha256": "2b2dabd91745b4b4c2a3fad39b6386e4edd985189336bf029d9b07a638fc7bf6",
+      "gitBlob": "a7887b679458cb3ccd7e76f7cd1de40ba6a1dffd"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+      "bytes": 6448,
+      "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+      "gitBlob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+      "bytes": 33858,
+      "sha256": "387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9",
+      "gitBlob": "1498ec46fcce718d26c0858448f8bcdeeb30fb76"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "bytes": 13051,
+      "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+      "gitBlob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "bytes": 33916,
+      "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+      "gitBlob": "37247efd459e32e914c29c4cf0da2c99751690b2"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic.py",
+      "bytes": 13779,
+      "sha256": "5f021d7f81b1e754589bd43927c22d567a32b8b8abe16191a0d5420c4cc52297",
+      "gitBlob": "5c771567708f9eb7baba9e8d79164ddf1ea7be9f"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_error_adapter.py",
+      "bytes": 23172,
+      "sha256": "aeff14c189b814cc89e5684cc31ce2d569b67fe47f72af5c6f4ca702250409a2",
+      "gitBlob": "ee19fe32f2f5c897b4efbc23c222f9aa0c3cc5f9"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_error_reasons.py",
+      "bytes": 4662,
+      "sha256": "3b0c4cbad1c5b18986da429398d28490929cda2d2fb200d03f105f9aafa1ae9b",
+      "gitBlob": "2d6c6e036cd4adbf693c6b8f39623b6769ea32c6"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_execution.py",
+      "bytes": 18450,
+      "sha256": "8eab07aace07d4abdd9f8a1db8f9c3860aa0bfaa3dacdecde015ba34b7b6774d",
+      "gitBlob": "3b78e131f4fb767530dd3b66b039d7c5063e46f9"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_lexical.py",
+      "bytes": 21918,
+      "sha256": "f298e085fd54538822d9e55109e10f94033f16ab8e0381ed357c9fff6c6cbfca",
+      "gitBlob": "0b1b5a111feca3a8139fbe126a9b075fee498365"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_errors.py",
+      "bytes": 9996,
+      "sha256": "5e56ba118b35f333852759079dee87a79353331924c0f295c45fd9fa221466ec",
+      "gitBlob": "43e18d5b8e2d4902a6adc74de5b395b7c03c0b3e"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_imports.py",
+      "bytes": 2838,
+      "sha256": "91d14b616838b59b6d7b5ac3900bf8d990fe26e520b2e1716107ee5d95acc8df",
+      "gitBlob": "2a87082c4189761d245d04e8adcbd1bf14e57aad"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_integration.py",
+      "bytes": 48284,
+      "sha256": "69d7afd9d5b836f61591cfebffeca5ddbebba607bad0a0c1e8ff6a5becf8e562",
+      "gitBlob": "d22938653db98112a808b93f10bc08384c90f2d2"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_limits.py",
+      "bytes": 3420,
+      "sha256": "244ee83bad8ee398ded092b109194ff08318660b6e1301683c1e92f5e7c82e51",
+      "gitBlob": "d1acd03b278680e2d2aa00357ca5fabb1038f51c"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_source.py",
+      "bytes": 5867,
+      "sha256": "4a5775e10027ee1ba8060c30aecc95687bd3cb6ecdfffff152f50d6b59d4bf9a",
+      "gitBlob": "57bd143ea2264c6c627c83db4036289fe08d5623"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_query_tokens.py",
+      "bytes": 2678,
+      "sha256": "b14f20298ab3172207ff3e863a06835664c3d4738802f3fe2a21d6c645ea50ef",
+      "gitBlob": "c602cb80d8e8d2fa0c57a7478e87b1ff4526a805"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_rdfs_basis_determinism.py",
+      "bytes": 9390,
+      "sha256": "0d2c33dcd5e76d7d6d745c99805399da6f3002ba7a42449899c07a82b053ef39",
+      "gitBlob": "a85fbe52ce81cbff2866f5590d6ad5194ae8b6b6"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_scopes.py",
+      "bytes": 6772,
+      "sha256": "015b1966693bd92bb318431d606401e644354b722689dc80b7f8a1f6dbcacd83",
+      "gitBlob": "5d147c8143a26e7c3dd8bf79cefb4bcfdebbf524"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_selected_projection.py",
+      "bytes": 15237,
+      "sha256": "34ff730532e71d247d1389439fbd8745db97ae5839afc6ec75f95ada0d84f283",
+      "gitBlob": "d7db4c05ee32337ab303811731f9ae9c3cdc2a56"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_string_identity.py",
+      "bytes": 18211,
+      "sha256": "0992663e427649870c3fb07047a415dd95b2bd93a8a754babb190972fdbe5240",
+      "gitBlob": "40099fe22af7ec1d109cc9efbf5f51d024fa3076"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/content/learning/checks.json",
+      "bytes": 881942,
+      "sha256": "c32159000cdad9e63081379564dc710f824823ca3fa3626fa135aec3daf63d90",
+      "gitBlob": "6c3b03a95a4f441a863250a1a9e0d90c327304d6"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/content/learning/course.json",
+      "bytes": 15178,
+      "sha256": "c1f3cf080d6192ad528d4fa9318d18fd7baeef3beb6fd9a217dfe0080b2a439b",
+      "gitBlob": "b7b027f76cfcdff03ec396bfae523ec769df166e"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/content/learning/glossary.json",
+      "bytes": 5173,
+      "sha256": "a1a588683e11ad84940e2bb9a558f8c6684c712ada44d160ecb541df2fd0d0c1",
+      "gitBlob": "416ab1c860428713f52e68a70fc1fe502cf0ad3e"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/content/learning/transfer-inputs.json",
+      "bytes": 9091,
+      "sha256": "3ae8b7fd952680283b9e2b2573afee94ba88357efa4849da4e4b3e0d7e681aa6",
+      "gitBlob": "e5c710f26399b12ff4958d44ad137fe98281d86c"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/manifest.json",
+      "bytes": 2268,
+      "sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+      "gitBlob": "c8188d8fad0e49308310a558b2eeb7fbd3a68081"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+      "bytes": 169895,
+      "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5",
+      "gitBlob": "925f772b6831d6951eb395b961119f59e372ecbe"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/G-base.json",
+      "bytes": 8219,
+      "sha256": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+      "gitBlob": "31c11c833ccb5e2a54f48c2d1fbe1459a60302f3"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/G-behavior.json",
+      "bytes": 12868,
+      "sha256": "d5e7645cfaa1c4e0de527a7c7c121644e4f78e24af94292deab26eee478d0780",
+      "gitBlob": "e9a0f87adbd5950a6bb1660a20281b3ba1ea4715"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/G-map-empty.json",
+      "bytes": 4404,
+      "sha256": "e80076ae445dbe88ba36fa4f4ef26809c6d12253d018e5661a0a6f7e8efb0864",
+      "gitBlob": "f055bd388aa1920f8185bf7fa830a2c204edf2a7"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/alarms.csv",
+      "bytes": 90,
+      "sha256": "7967e4520493261e764035a2387450f1df1c0c8433be2519fdebeabe40197aa3",
+      "gitBlob": "8ae7ecdf0507dbdfd76ea17ed609c6a0a357d684"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/cases.json",
+      "bytes": 188023,
+      "sha256": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa",
+      "gitBlob": "2bad92dc2cf146c729e06bb58b341b9dde2ab848"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/conventions.json",
+      "bytes": 1165,
+      "sha256": "26c03d12be2ea4f0e09c15f8bc1ade161233487f254da0c947f680ae9f533b47",
+      "gitBlob": "01c0c501f2bd7dab6c2330e40d95d857e116a541"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/coverage.json",
+      "bytes": 10824,
+      "sha256": "c8bb5ab210be5f1b6f3e6413adce3ad7749393f8d978098185facf58709aaeea",
+      "gitBlob": "366d92faa07f9ed7ad891349684853e295429020"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/equipment-duplicate-key.csv",
+      "bytes": 69,
+      "sha256": "e1017dfdcd6396f41b9b54d786caff712d733cf6a461da218dbdfa4be56dae86",
+      "gitBlob": "cf5d171834151630c1bc65ce9e69ae86dba10d2c"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/equipment-missing-key.csv",
+      "bytes": 69,
+      "sha256": "c02d6e9b85b91d8431e37269aa68e535997583555b6874d2f6d7015070dee42b",
+      "gitBlob": "8cd63ecc645b481e782c539172404c69fdb2ecbe"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/equipment-updated.csv",
+      "bytes": 60,
+      "sha256": "f513469aa39a37603bf367d4e94d2de680f5303eb1a8e1163eadfc83487ce171",
+      "gitBlob": "3dee0fa2c2477af7f4e0487578d66c6f93f0c28e"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/equipment.csv",
+      "bytes": 52,
+      "sha256": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+      "gitBlob": "68b3cb85e60337946db1d1bf81eef90f8015cdb5"
+    },
+    {
+      "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/unclosed-high.rq",
+      "bytes": 162,
+      "sha256": "8efbacd589c42ac40abbb55475cdd088e407a88a23e0db61dc8375e04e4dd386",
+      "gitBlob": "dcc33df303f8c4be6fc58e8d34bca6aa66706b4e"
+    },
+    {
+      "path": "tests/fixtures/quality/fr505-extension-cases.json",
+      "bytes": 101695,
+      "sha256": "323fd00dffa4a1a1c72663e3fcea2ae50fea255591d5e62f6c8e6eda3ebecc39",
+      "gitBlob": "70d14e55a251ed08068ca656e6b2c5be79c69ae7"
+    },
+    {
+      "path": "tests/fixtures/quality/profile-v1/calendar-oracles.json",
+      "bytes": 1004,
+      "sha256": "616fd0c5d4bc052f5abfc14b02bba095f849bd672b2beda63933e79186ab2016",
+      "gitBlob": "f3602fa286418b0d0047ada34c2615e0383d187a"
+    },
+    {
+      "path": "tests/fixtures/quality/profile-v1/comparison-matrix.json",
+      "bytes": 5512,
+      "sha256": "9bbbb0c8351999bb1cf7152fa2ecacc1b24b36f6f23772c395ba90b27978fb72",
+      "gitBlob": "71f08eaf13fe624e178443eb3358fbd613fa0697"
+    },
+    {
+      "path": "tests/fixtures/quality/profile-v1/firing-cases.json",
+      "bytes": 9298,
+      "sha256": "c001a6462b7f3ae54563b99c699bf6281c09020f2695f62f7bd2a92a715e6599",
+      "gitBlob": "fad5330b596170bef4632eb35016a2cab9a02c65"
+    },
+    {
+      "path": "tests/fixtures/quality/profile-v1/lexical.json",
+      "bytes": 3294,
+      "sha256": "2d893831f1c4ecbee88e93f75a03c302e92cef1999eadfad68ca1d4abcf5bf79",
+      "gitBlob": "abc0cc3bb306f7adb41025e0ba534a33b89e454f"
+    },
+    {
+      "path": "tests/fixtures/quality/profile-v1/manifest.json",
+      "bytes": 1057,
+      "sha256": "1bfb51fabf7c8eb60bc63c469a56315f4a2b4bad17a959472de6fb2a2e78323b",
+      "gitBlob": "5d4328dc689f0bd3942bae24280cb85391d8505f"
+    },
+    {
+      "path": "tests/fixtures/quality/profile-v1/numeric-oracles.json",
+      "bytes": 9898,
+      "sha256": "554882960460ba2416e0d4dcc5cbf72d43525e3838decee8bc72215e3dae26c3",
+      "gitBlob": "a10b4c3236f2637f1eec2d302fc122bc158e9f67"
+    },
+    {
+      "path": "tests/fixtures/quality/real-executor-acceptance-inputs.json",
+      "bytes": 767826,
+      "sha256": "87220503f9983146c974fe3e35025d520cad70e54fdd994aebfa86fb1ff7259f",
+      "gitBlob": "df45f74c89d6cccbed38a4c16118fe76430d8691"
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 28440,
+      "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+      "gitBlob": "337a34ec442b0fabbb9c28fe4599ba7b6cc8b148"
+    }
+  ],
+  "changedFileCountExcludingThisManifest": 117,
+  "protectedGuidanceSha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+  "checks": {
+    "fullCheckExit": 0,
+    "typescriptPassed": 630,
+    "pythonPassed": 2582,
+    "verifySourcesExit": 0,
+    "sourceArchivesVerified": 12,
+    "probeExit": 1,
+    "probeCounts": {
+      "success": 78,
+      "resourceFailure": 4,
+      "notExecuted": 1
+    },
+    "externalOracleComparisonExit": 1,
+    "successfulValueGraphs": 49,
+    "totalOracleGraphs": 89,
+    "successfulUniqueMatchRefs": 24,
+    "totalOracleMatchRefs": 40,
+    "falseComparisonEvidenceAvailable": false,
+    "lifecyclePassed": false,
+    "P2Passed": false
+  },
+  "oldC4Preservation": {
+    "head": "de37ff64fab7f40b69fbf900e4657137ca18ce74",
+    "paths": 1284,
+    "executionInputs": 205,
+    "sha256Mismatches": 0
+  },
+  "adoptionRefs": {
+    "T03DependencyPair": "fd87fd148dc9e26d2c041ccb9fb61e3a80c51821",
+    "T05SevenModules": "dbb6b36e9259aa79a1fd908b5cfede3064f0c074",
+    "T05OriginalOracleAndInputs": "f9af899fad31ea19c7540e9624c437a189b8b5bf"
+  },
+  "noGUIOrPackageOrPush": true,
+  "noRestoreOrSelectedOrNewBatchAPI": true,
+  "runtimeEvidenceManifest": "runtime-evidence-manifest.json",
+  "independentReviews": [
+    "full-static-1/report.md.raw",
+    "independent-delta/report.md.raw",
+    "independent-delta/classification-close.md.raw",
+    "lexical-delta/report.md.raw",
+    "oracle-test-delta/report.md.raw"
+  ],
+  "limitsAndRemaining": "See profile-probe-contract.md, profile-selected-carrier-facts.md and profile-integration-status.md; existing parent Goal unchanged."
+}

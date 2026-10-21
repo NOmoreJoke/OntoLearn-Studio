@@ -1,0 +1,18 @@
+# T03 D1：总控收口与I05精确两配置消费
+
+2026-10-21。固定 `fd87fd148dc9e26d2c041ccb9fb61e3a80c51821` 的D1 A面内部依赖阶段核验收口；允许I05新P1树消费下列两份固定Git原字节。此为候选组合，不是产品包、指定双审、CI/远端或父功能通过。
+
+实际供方树 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build`，批准基线仍 `5f910b52c69d86a1076b2032e5d3c63e715947f3`。根全文读9101B交付、8347B供方独审及独立根报告 `T03-controller-profile-dependency-A-readback.md` 12982B/SHA `1f6f3ae7528447cb152ae38f29789daac48fb32a19bfa72f707edd935cfb7933`。62路径为两配置和60授权docs；59收据索引、完整10446B patch、原件和固定Git相符。跨平台锁18→23，仅增五项、两既有声明/extra更新，其余16记录及顶层原样；无B/XLSX。
+
+独审实际静态核八个下载wheel、391成员与安装字节、417 RECORD hash/size及实际metadata/许可，未运行产品。根实际读官方原会话 `01a15d34-ce16-74d0-99b5-198d248fa4cd` 的完整命令回执：resolver `exec-9d9dc398-0a75-4bc7-8340-5e96cffe0272`、source `exec-476b2c6f-ee5b-4bf8-a7c3-adeb2ca0dfba`、完整check `exec-18605213-1def-463a-97b3-f9414d7be799` 均completed/exit0。check实际630TS/1052Py零skip，source12。回执存根接收目录official-selected-executions.json；04烟测/05E501首失败及08修后有限依赖烟测、frozen/lock/pip原件均保留。根没有重新运行测试、安装或包。
+
+I05只允许在 `.worktrees/I05-profile-integration` 核现有WIP后从该固定Git逐字接收：
+
+| 相对路径 | bytes | SHA256 |
+| --- | ---: | --- |
+| `packages/engine/pyproject.toml` | 398 | `bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365` |
+| `uv.lock` | 28440 | `86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73` |
+
+这两路径维护权仍唯一T03；I05为原字节消费者，不手改/解析重写锁、不whole-commit/cherry-pick、不复制D1脚本、其他docs、C4锁/可变环境或未批准代码。若目标有不符未提交修改，保留原字节并给具体差异，不能覆盖未知WIP。按现有P1许可建本树独立frozen依赖环境/cache/build/log，安装后核实际版本/模块源与两hash，可继续同一P1真实计算、oracle及原check；D1绿不代I05组合绿。
+
+T03原D2两条 `scripts/build-engine.mjs`、`packages/engine/entrypoint.py` 仍只读，须待固定真实I05 probe合同/纯inputs/assets再精确授权；当前不得宣称包内采用或把expected当计算输入。真实组合源码/包完整矩阵、七canonical质量身份、PyInstaller模块/data/metadata/license、B1/目标平台/native、指定同版双模型新审及正常develop合并门保留。无GUI、push、PR或merge；原Goal状态不伪改。
