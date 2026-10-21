@@ -1,0 +1,120 @@
+{
+  "scope": "static authorized source delta only; no C++ compile/run",
+  "baseRef": "70704ed7b5226c86c5cb06e7e9dbd6689f62b403",
+  "onlyAuthorizedBlocksReverseToBaseExact": true,
+  "eightOtherSourcesUnchanged": true,
+  "nineSourcePins": [
+    {
+      "path": "packages/native-location/include/location_abi.h",
+      "bytes": 13296,
+      "sha256": "fc3f7983d62b0ef4f5a3a056198c00a0b971d2ae722acc33bc6f61937ec8e172",
+      "sameAsBefore": true
+    },
+    {
+      "path": "packages/native-location/src/capability_core.cc",
+      "bytes": 17304,
+      "sha256": "eae2d2dcf4ccf1f648dbec5fdd0424c0a2dac31a94a45d493e819948f2309319",
+      "sameAsBefore": true
+    },
+    {
+      "path": "packages/native-location/src/platform_macos.cc",
+      "bytes": 8670,
+      "sha256": "e1fbbcd9c9b73916bd9a030da8bc237dd46230fdd8d0366f0e2424168d4cd71a",
+      "sameAsBefore": false
+    },
+    {
+      "path": "packages/native-location/src/platform_windows.cc",
+      "bytes": 12506,
+      "sha256": "bcf474ca9d9e5ce4efdf06284dd71b9504c5e69027d3a53c96fa7df56bc2b4c4",
+      "sameAsBefore": true
+    },
+    {
+      "path": "packages/native-location/src/node_binding.cc",
+      "bytes": 13163,
+      "sha256": "e10e59bdb200460310489bb4fc5b8c64ab79c1b8e2cfc9e7353a10a0c8667383",
+      "sameAsBefore": true
+    },
+    {
+      "path": "apps/desktop/src/main/security/native-location-owner.ts",
+      "bytes": 12496,
+      "sha256": "e354b0830469647d70690f3e1d6e567c816f70cbbbe5c211dabba817fa7cc8d0",
+      "sameAsBefore": true
+    },
+    {
+      "path": "packages/native-location/tests/location_core_test.cc",
+      "bytes": 30037,
+      "sha256": "4cec7d67ba66fdf47d0ae26ba056372dc437e67ac076e768a548c334bd260319",
+      "sameAsBefore": true
+    },
+    {
+      "path": "packages/native-location/tests/location_child_probe.cc",
+      "bytes": 380,
+      "sha256": "041e60f57b34ec1b04157e73e2161b332acc3bc8f804d7f7fcd6baf575d34b9c",
+      "sameAsBefore": true
+    },
+    {
+      "path": "tests/unit/i06-native-location-owner.test.ts",
+      "bytes": 8424,
+      "sha256": "4552db106b86a8a8a80b9fcb7b55292a1696f69b72a20bd97bdfaae2bdc104ce",
+      "sameAsBefore": true
+    }
+  ],
+  "osCallTextCounts": {
+    "clock_gettime": {
+      "before": 1,
+      "after": 1
+    },
+    "fcntl": {
+      "before": 2,
+      "after": 2
+    },
+    "fstat": {
+      "before": 2,
+      "after": 2
+    },
+    "acl_get_fd_np": {
+      "before": 1,
+      "after": 1
+    },
+    "acl_valid": {
+      "before": 1,
+      "after": 1
+    },
+    "acl_get_entry": {
+      "before": 1,
+      "after": 1
+    },
+    "acl_free": {
+      "before": 1,
+      "after": 1
+    },
+    "close": {
+      "before": 1,
+      "after": 1
+    },
+    "openat": {
+      "before": 1,
+      "after": 1
+    },
+    "waitpid": {
+      "before": 2,
+      "after": 2
+    }
+  },
+  "errnoDecimalBoundBasis": "Darwin signed int32 max 11 ASCII characters incl sign; fixed literals only",
+  "diagnosticLineByteBoundsIncludingLF": {
+    "clock": 45,
+    "duplicate": 49,
+    "fstat": 45,
+    "acl-null": 48,
+    "clock/negative-sec": 47,
+    "clock/range": 40
+  },
+  "maxLineBytes": 49,
+  "lineCap": 96,
+  "clockCallCountAndShortCircuitPreserved": true,
+  "errorStatusInputsCapturedBeforeLog": true,
+  "errnoRestoredAfterDiagnosticWrite": true,
+  "noCxxBuildNativeRunOrProbe": true,
+  "sourceRef": "fc9853f3521faced3a3b88ab8254310c9748a6a6"
+}

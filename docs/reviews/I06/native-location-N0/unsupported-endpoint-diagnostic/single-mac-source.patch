@@ -1,0 +1,91 @@
+diff --git a/packages/native-location/src/platform_macos.cc b/packages/native-location/src/platform_macos.cc
+index 0213b57..74a95a5 100644
+--- a/packages/native-location/src/platform_macos.cc
++++ b/packages/native-location/src/platform_macos.cc
+@@ -3,6 +3,7 @@
+ #if defined(__APPLE__)
+ #include <cerrno>
+ #include <climits>
++#include <cstdio>
+ #include <cstring>
+ #include <fcntl.h>
+ #include <sys/acl.h>
+@@ -19,6 +20,15 @@ nl_status error_status(int error) noexcept {
+   if (error == ENOSYS || error == ENOTSUP) return NL_UNSUPPORTED;
+   return NL_DENIED;
+ }
++void unsupported_error(const char* stage, int error) noexcept {
++  std::fprintf(stderr, "N0 unsupported stage=%s errno=%d\n", stage, error);
++  errno = error;
++}
++void unsupported_clock_reason(const char* reason) noexcept {
++  const int saved_errno = errno;
++  std::fprintf(stderr, "N0 unsupported stage=clock reason=%s\n", reason);
++  errno = saved_errno;
++}
+ void put64(uint8_t* out, uint64_t value) noexcept {
+   for (unsigned i = 0; i < 8; ++i) { out[i] = static_cast<uint8_t>(value); value >>= 8; }
+ }
+@@ -28,15 +38,31 @@ bool valid_fd(intptr_t value) noexcept { return value >= 0 && value <= INT_MAX;
+ uint32_t platform_id() noexcept { return NL_PLATFORM_MACOS; }
+ uint64_t platform_monotonic_ms() noexcept {
+   timespec now{};
+-  if (clock_gettime(CLOCK_MONOTONIC, &now) != 0 || now.tv_sec < 0 ||
+-      static_cast<uint64_t>(now.tv_sec) > (UINT64_MAX - 999) / 1000) return UINT64_MAX;
++  if (clock_gettime(CLOCK_MONOTONIC, &now) != 0) {
++    const int error = errno;
++    unsupported_error("clock", error);
++    return UINT64_MAX;
++  }
++  if (now.tv_sec < 0) {
++    unsupported_clock_reason("negative-sec");
++    return UINT64_MAX;
++  }
++  if (static_cast<uint64_t>(now.tv_sec) > (UINT64_MAX - 999) / 1000) {
++    unsupported_clock_reason("range");
++    return UINT64_MAX;
++  }
+   return static_cast<uint64_t>(now.tv_sec) * 1000 + static_cast<uint64_t>(now.tv_nsec / 1000000);
+ }
+ nl_status platform_duplicate_anchor(const nl_fixture_anchor& value, handle& out) noexcept {
+   out.value = -1;
+   if (value.platform != NL_PLATFORM_MACOS || !valid_fd(value.borrowed_directory)) return NL_INVALID;
+   const int duplicate = fcntl(static_cast<int>(value.borrowed_directory), F_DUPFD_CLOEXEC, 0);
+-  if (duplicate < 0) return error_status(errno);
++  if (duplicate < 0) {
++    const int error = errno;
++    const auto status = error_status(error);
++    if (status == NL_UNSUPPORTED) unsupported_error("duplicate", error);
++    return status;
++  }
+   out.value = duplicate; // Caller owns this even if later metadata rejects it.
+   return NL_OK;
+ }
+@@ -59,7 +85,12 @@ nl_status platform_metadata(handle object, uint32_t kind, nl_metadata& out) noex
+   out = {};
+   if (!valid_fd(object.value)) return NL_INVALID;
+   struct stat value{};
+-  if (fstat(fd(object), &value) != 0) return error_status(errno);
++  if (fstat(fd(object), &value) != 0) {
++    const int error = errno;
++    const auto status = error_status(error);
++    if (status == NL_UNSUPPORTED) unsupported_error("fstat", error);
++    return status;
++  }
+   if ((kind == NL_DIRECTORY && !S_ISDIR(value.st_mode)) ||
+       (kind == NL_REGULAR_FILE && !S_ISREG(value.st_mode))) return NL_DENIED;
+   if (kind != NL_DIRECTORY && kind != NL_REGULAR_FILE) return NL_INVALID;
+@@ -68,7 +99,12 @@ nl_status platform_metadata(handle object, uint32_t kind, nl_metadata& out) noex
+   // Deliberately conservative fixture ACL policy: no extended ACE accepted.
+   // Snapshot is not a continuing namespace/ACL grant. Failed query is unknown.
+   acl_t acl = acl_get_fd_np(fd(object), ACL_TYPE_EXTENDED);
+-  if (acl == nullptr) return NL_UNSUPPORTED;
++  if (acl == nullptr) {
++    const int error = errno;
++    const nl_status status = NL_UNSUPPORTED;
++    unsupported_error("acl-null", error);
++    return status;
++  }
+   acl_entry_t entry{};
+   const int valid = acl_valid(acl);
+   errno = 0;
