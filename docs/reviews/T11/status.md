@@ -38,3 +38,5 @@
 格式基础责任回执：已全文读回I05→T01 Python四文件生效协议并核对execution-state，协议与登记SHA一致。JobStore/coordinator/Python入口/合同及既有storage基础由T01负责，T11恢复/迁移证据的接口需求按此协调；公共canonical/main八文件未自动转交。详见format-python-ownership-receipt.json及共享接线请求。此次仅责任路由文档更新，核验器/测试/验收基线未变，不重跑无变化测试、不重开产品内审；完整候选、真实设备/签名/模型/真人及正式门禁仍待具备。
 
 当前阻断审计：前两轮为官方活跃总控句柄的50秒有界等待，本轮再次核实相同T11依赖/资源缺口，连续第三轮无可推进的授权工作；Goal工具已实际返回blocked。总控仍为active/inProgress，不把观察超时当终止。私有候选/检查/内审保留，未重跑无变化测试；最新阻断依据与恢复条件见blocked-audit.json。等待批准的正式接口/配置或真实验收资源变化后续接原完整目标，不将局部工具完成当发布完成。前文active均为历史阶段记录。
+
+新交接通知接收：I06→T01 canonical七文件/main engine八文件已实际生效，协议全文与登记hash核对一致；恢复接口责任路由已更新，见format-public-ownership-receipt.json。此前“尚待八文件交接”为历史记录。此次只转未来维护权，不证明精确SQL/JSON已批准、格式3 ready或T11依赖具备；Goal工具当前仍blocked，私有实现与既有验证不变。
