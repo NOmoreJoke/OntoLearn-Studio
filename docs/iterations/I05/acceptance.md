@@ -94,3 +94,7 @@ C1 原报告和所有历史版本保留在 `docs/reviews/I05/round-1/`。MiniMax
 语义版本与实施身份同步升至 `i05-finite-4`。本节记录本次修复和验证要求，实际完整源码/包/stdio/native 结果以本候选证据为准，不能沿用 C1 的旧通过。Q6 十二行采用/修订/淘汰仍待逐项决定。
 
 本次26eb632的完整检查、Mac/Linux新包/完整B1/各7stdio与17C4、Linux源/包各2真实native，以及独立IB-1发现与修复的原始来源见 [C2验收](../../reviews/I05/integrated-c2-verification.md)。本段记录实际验证归属；最终指定双新审/CI/合并状态仍只见status.md。
+
+## C3 完整结果确定性修复记录
+
+C2完整结果basis的跨hashseed反例在原B1验收内，未改验收阈值。C3按每轮output与ordered direct-input完整键选择首个有效witness，保持单proof、完整规则匹配、单阶段、原始事实/公理依据。身份更新为i05-finite-5。独立旧红新绿、真实worker/stdio旧producer隔离，以及新完整check672TS/1774Python、两平台包/全部B1和隔离Linux源码/包各2项native均通过，具体原件与限制见 [C3验收](../../reviews/I05/integrated-c3-verification.md)。原C1/C2证据按原版本保留，Q6及指定新双审/CI/正常合并门禁未获豁免。

@@ -1,0 +1,56 @@
+# I05 C3 封存独立只读审计
+
+结论：本次 C3 证据归档及验收叙述核验通过，未发现可证实的遗漏、计数错误、源绑定错误或新增阻断。结论限于已归档证据的完整性与叙述一致性，不替代指定两模型全范围审查、CI、正常合并、远端核验或产品负责人决定。
+
+## 固定对象与操作边界
+
+- 产品提交：`69598f30c9052a0a07f3d8e7fc4277626385678b`；完整测试提交：`b04569032e94c093e42b7fdc9fcd890df0e832e4`。
+- 实际读取主树 `docs/reviews/I05/integrated-c3-verification.md`、`evidence/integrated-c3/manifest.json`、`raw-evidence.tar.gz`，并核对 acceptance/status/internal-review/Q6 的当前 C3 叙述。本报告的文档及清单 SHA 单独保存在 `audit-bindings.json`。
+- 最新 AGENTS SHA 为 `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`；共同指南为 b24c4c…；所有权及当前桌面禁用约束保持。
+- 没有修改主树任何实现、测试、依赖、配置、文档或原始证据，没有运行产品、测试、构建、Docker、Electron、GUI/CUA。只执行只读文件/Git/JSON/哈希核对，并在本人 ignored build 输出审计副本、JSON和本报告。未建立或修改 Goal。
+
+## 归档逐成员核验
+
+实际打开 gzip/tar 并读取每个原始成员，非仅对压缩文件计算哈希。归档为 1,363,464 bytes，SHA `921393e6a3e0e624518aa544540e6bc6e995115bf91f408d4307d90486ab9d71`；221 个唯一普通文件，共 15,522,827 原始 bytes。逐项长度和 SHA 与 manifest 相符，全部与原始路径当前字节完全一致；没有重复成员、符号链接、绝对路径或父目录逃逸。读回结果逐成员保存在 `readback-audit.json`，实际字节副本在 `readback/`。
+
+原 `build/i05-integrated/c3` 目录实际233份文件逐项集合核对：220份入档，13份排除，无未解释差集；另外加入封存脚本1份，故最终221份。13项是11份合成可变SQLite/空writer-lock和2个源码传输文件。每个排除项的原始长度和SHA也逐一实际核对。封存脚本实际字节在归档中保留，其扫描、排除、成员读回及计数逻辑与当前清单一致。没有递归把本次审计报告塞回原归档。
+
+## 源码恢复及执行输入
+
+对完整1182项源码清单逐项使用固定 `b045690` Git blob恢复并计算SHA：1181项跟踪成员一致，AGENTS使用同提交 `docs/reviews/I05/inputs-c2/AGENTS-current.txt` 恢复后也一致。原15MB source-export.tar.gz 的gzip容器字节没有纳入归档，文档明确只承诺每个成员原字节恢复；这一边界正确。
+
+另实际执行只读 `git archive --format=tar 69598f30c9052a0a07f3d8e7fc4277626385678b`，得到43,837,440 bytes，SHA `96269d0dbb3e89fc288b38e2468d9c40bd15c4458251a98efdded9a2a0c672e6`，与被排除的独立原tar逐字相等。恢复配方在当前Git环境真实适用；不外推所有Git版本生成相同tar容器。
+
+204执行输入的源清单、postcheck清单一致，且本人再次对当前主机字节逐项核对全部一致。容器postcheck原记录为204/零漂移，本人未重启容器复测。原checkout64个保护源再次逐项核对当前字节与expected/actual全相等。695→b045的唯一差异确为新增249行回归文件；它与本人原提交f107458字节相同，SHA `0d2c33dcd5e76d7d6d745c99805399da6f3002ba7a42449899c07a82b053ef39`。
+
+## 独立回归与上下游原件
+
+独立71项原索引的长度/SHA全部核对。67项在raw成员中，剩余是可精确恢复的43MB源码tar和3个明确排除的空writer-lock；完整索引本身保留，没有丢失运行输出。独立审查全文原文SHA `4d4e4d011dd8a37a6cdb2a5851665dae1371985bf538b807ee621852949e4930` 与叙述一致。
+
+直接从12份最终完整seed JSON重算summary：C2 domain/range/multi-round各有2种完整输出；C3八场景均为1种，六seed与三输入变化完整输出一致；三类手写oracle标志为真。初始错误探针脚本、noise冲突输出、旧C2误加绿断言、缺pytest日志、tar解包记录、选择superseded结果的首次runtime失败及后续修正原件均在。
+
+原新增10测试的C1/C2日志为7失败/3通过，固定695为10通过1.70秒，前后source/test摘要一致；不是版本断言制造红。212项上下游13.06秒、8个真实成功新worker/stdio任务及1个旧finite4 producer完整JSON确实保留；8个新job身份各异、state succeeded、finite5、resultRef有效，权威state不变记录齐全。旧producer鉴权读取保留与新任务selected拒绝IDENTITY_CONFLICT、两种错误版本声明REASONING_SOURCE_MISMATCH均与文案一致。本次不重新运行这些原任务。
+
+## check、包、B1与许可证
+
+完整check原日志记录672 TS/1774 Python（76.85秒），lint/format/type/build/Ruff完整阶段存在；sources日志12份；Linux受影响133项11.18秒，不被写成Linux全仓check。
+
+两平台包构建原日志、引擎清单、CLI/stdio及C4原日志齐全；各7真实stdio、17 C4与326/11/30/9/7/41/51公共例计数一致。两平台源包suite完整原字节相等，实际包内包含literalIdentity和rdfsWitness结果。引擎清单400/409文件及37,641,909/43,877,727 bytes的逐文件求和相符；Mac app 561,711,817 bytes。Linux旧脚本raw appBytes=0仍被保留，独立校正记录363,176,938 bytes、原因和平台限制明确，没有拿0当实测体积。
+
+每个平台的12原S1口径及12 fresh-process JSON均逐项读取。对两个规模、三trial、源与包直接比较完整结果均相等；18/180断言及4条ontology口径保持。fresh首事件、warm事件顺序正确，spawnToFirstCompleteResultNs等于首JSONL到达时间，早于warm到达及进程退出；原S1预热口径与真正fresh口径没有混称。此处没有重测性能、控制OS缓存或给出容量阈值。
+
+每运行时28外联拒绝用例原结果源包相等：27个入口样例actual/expected一致且socket/DNS/urllib事件为空；另1个库级JSON-LD backstop到达urllib.Request后真实阻断。受控接收校准1、拒绝命中0，文案与原值相符。nativeLicenseProvenanceMatched及精确平台/解释器身份在原inventory与runtime摘要中一致：Mac PBS3.12.12与Linux aarch64 3.12.15 BUILD20261013；不外推其他发行版。
+
+## 完整原生证据
+
+分别读取Linux源与包首次list,json完整report。各2 tests passed、0 skipped/unexpected/flaky、retry0，实际耗时23.631335秒/25.032836秒，与23.6/25.0文案一致。两套各7个report附件均可定位；driver base64 body实际解码后与单独driver原JSON逐字节相等。
+
+用真正Node JSON.stringify重算三时点完整results，分别得到源 `319f6d7867ebf9da5609fa827b087a63be2d49fcb94dabfec2951a3bc8dbefc1`、包 `e7d3091b631b34665da380e35fd95ee8fbb7f4c2e7f660f0fc09d71c684cdf84`。每套三个时点results全值相等，reasoning/query/validation完整行分别158/194/279；project/snapshot/revision以及job/operation身份一致。不是只比数量或摘要。
+
+各套3个窗口visible，重建窗口外部xdotool/XGetInputFocus可见且focused；crash/hang两真实提示的可见window记录、crashed/unresponsive事件、inspectorClosed=true、hangMonitorEnabled=true、noSandboxSwitch=false均齐全。慢COUNT三个时点仍running/null resultRef，最终同job显式cancelled/null resultRef。bridge reload项目身份、失败任务和取消状态也一致。源包sandbox root:root4755的原log存在。本人未启动窗口，只审既有原始字节；没有把日志等同对任意平台现场复现。
+
+## 限制与结论使用
+
+本次没有发现需修改候选的实际问题。Q6十二项依然逐项待负责人，没有因有限witness修复默认采用；FR505比较/单规则多结论等未覆盖项明确保留。当前文档正确区分产品695、测试b045和待冻结完整候选；未声称指定全范围双审、CI、发布、签名/干净设备、Mac/Windows本版native或全部M1完成。
+
+审计辅助脚本最初有对JSON字段形状的假设错误（例如把metadata当有operationId、计数当list、入口与库backstop字段混为同形）；均按实际结构更正后完成核验，没有据此报产品缺陷或更改原件。最终JSON记录包含完成的断言结果。原运行的成功/失败及归属以sealed raw为准，本报告仅证明上述只读审计范围。
