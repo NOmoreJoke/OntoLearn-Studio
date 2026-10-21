@@ -1,0 +1,685 @@
+import { Buffer } from 'node:buffer'
+import { types } from 'node:util'
+
+/** Pure bookkeeping only. None of these objects authenticates an OS object or permits I/O. */
+export const inventoryOwnerRoles = Object.freeze([
+  'profile',
+  'private-root',
+  'credentials',
+  'configurations',
+  'audit',
+  'database',
+  'tasks',
+  'retirement',
+] as const)
+export type InventoryOwnerRole = (typeof inventoryOwnerRoles)[number]
+export type InventoryReason =
+  | 'invalid'
+  | 'busy'
+  | 'stale'
+  | 'budget'
+  | 'closed'
+  | 'failed'
+  | 'expired'
+  | 'conflict'
+  | 'incomplete'
+  | 'unknown'
+type Boundary = { readonly mechanismOnly: true; readonly productionAdmission: 'unsupported' }
+type Result<T> = Boundary &
+  (
+    | { readonly ok: true; readonly value: T }
+    | { readonly ok: false; readonly reason: InventoryReason }
+  )
+export type InventoryOwner = Readonly<{ kind: 'inventory-owner' }>
+export type InventoryObservation = Readonly<{ kind: 'inventory-observation' }>
+export type InventorySnapshotToken = Readonly<{ kind: 'inventory-snapshot' }>
+export type MetadataIdentity = Readonly<{
+  kind: 'posix' | 'windows'
+  volume: string
+  fileId: string
+  type: 'file' | 'directory'
+  links: number
+}>
+export type ProtectedResource = Readonly<{
+  id: string
+  category: 'private-deny' | 'profile-container' | 'database-managed'
+  kind: 'root' | 'member'
+  parent: MetadataIdentity
+  components: readonly string[]
+  identity: MetadataIdentity | null
+  presence: 'present' | 'absent'
+  state: 'active' | 'retired' | 'released-retained'
+}>
+type OwnerState = { role: InventoryOwnerRole; epoch: number; status: string; observed: number }
+type ObservationState = {
+  owner: OwnerState
+  revision: number
+  epoch: number
+  deadline: number
+  live: boolean
+}
+type RecordState = { owner: OwnerState; resource: ProtectedResource }
+type SnapshotState = { revision: number; epoch: number; deadline: number }
+export type InventoryView = Boundary &
+  Readonly<{
+    state: 'reserved' | 'observing' | 'complete' | 'incomplete' | 'unknown' | 'failed' | 'closed'
+    processEpoch: string
+    profileEpoch: string
+    revision: number
+    owners: readonly Readonly<{ role: InventoryOwnerRole; status: string }>[]
+    protected: readonly ProtectedResource[]
+    actualUnsettledReleases: number
+  }>
+const boundary = { mechanismOnly: true, productionAdmission: 'unsupported' } as const
+const ok = <T>(value: T): Result<T> => Object.freeze({ ...boundary, ok: true, value })
+const no = (reason: InventoryReason): Result<never> =>
+  Object.freeze({ ...boundary, ok: false, reason })
+const id = (v: unknown): v is string => typeof v === 'string' && /^[A-Za-z0-9._-]{1,128}$/.test(v)
+const exact = (v: Record<string, unknown>, keys: string[]) =>
+  Object.keys(v).length === keys.length && keys.every((k) => Object.hasOwn(v, k))
+const object = (v: unknown): v is Record<string, unknown> =>
+  !!v && typeof v === 'object' && !Array.isArray(v)
+
+/** Bounded own-data capture, not a claim that Proxy traps themselves cannot execute. */
+function capture(raw: unknown): unknown {
+  let nodes = 0
+  let bytes = 0
+  const seen = new Set<object>()
+  const copy = (value: unknown, depth: number): unknown => {
+    if (++nodes > 700000 || depth > 12) throw 0
+    if (value === null || typeof value === 'boolean') return value
+    if (typeof value === 'number' && Number.isFinite(value)) return value
+    if (typeof value === 'string') {
+      bytes += Buffer.byteLength(value)
+      if (bytes > 16 * 1024 * 1024 || value.length > 16384) throw 0
+      return value
+    }
+    if (!value || typeof value !== 'object' || seen.has(value)) throw 0
+    seen.add(value)
+    const array = Array.isArray(value)
+    const proto = Object.getPrototypeOf(value)
+    if (proto !== (array ? Array.prototype : Object.prototype) && !(proto === null && !array))
+      throw 0
+    const descriptors = Object.getOwnPropertyDescriptors(value)
+    if (Reflect.ownKeys(descriptors).some((k) => typeof k !== 'string')) throw 0
+    if (array) {
+      const length = descriptors.length?.value
+      if (
+        !Number.isInteger(length) ||
+        length < 0 ||
+        length > 32768 ||
+        Object.keys(descriptors).length !== length + 1
+      )
+        throw 0
+      const output: unknown[] = []
+      for (let i = 0; i < length; i++) {
+        const d = descriptors[String(i)]
+        if (!d || !('value' in d)) throw 0
+        output.push(copy(d.value, depth + 1))
+      }
+      return output
+    }
+    if (Object.keys(descriptors).length > 16) throw 0
+    const output: Record<string, unknown> = Object.create(null)
+    for (const [key, descriptor] of Object.entries(descriptors)) {
+      if (!('value' in descriptor) || key.length > 128) throw 0
+      output[key] = copy(descriptor.value, depth + 1)
+    }
+    return output
+  }
+  return copy(raw, 0)
+}
+function identity(raw: unknown): MetadataIdentity {
+  if (
+    !object(raw) ||
+    !exact(raw, ['kind', 'volume', 'fileId', 'type', 'links']) ||
+    !['posix', 'windows'].includes(String(raw.kind)) ||
+    !id(raw.volume) ||
+    !id(raw.fileId) ||
+    !['file', 'directory'].includes(String(raw.type)) ||
+    !Number.isSafeInteger(raw.links) ||
+    (raw.links as number) < 1 ||
+    (raw.links as number) > 32768
+  )
+    throw 0
+  return Object.freeze({ ...raw }) as MetadataIdentity
+}
+const identityKey = (v: MetadataIdentity) => `${v.kind}/${v.volume}/${v.fileId}`
+const locationKey = (r: ProtectedResource) =>
+  `${identityKey(r.parent)}/${JSON.stringify(r.components)}`
+function resource(raw: unknown): ProtectedResource {
+  if (
+    !object(raw) ||
+    !exact(raw, [
+      'id',
+      'category',
+      'kind',
+      'parent',
+      'components',
+      'identity',
+      'presence',
+      'state',
+    ]) ||
+    !id(raw.id) ||
+    !['private-deny', 'profile-container', 'database-managed'].includes(String(raw.category)) ||
+    !['root', 'member'].includes(String(raw.kind)) ||
+    !['present', 'absent'].includes(String(raw.presence)) ||
+    !['active', 'retired'].includes(String(raw.state)) ||
+    !Array.isArray(raw.components) ||
+    raw.components.length < 1 ||
+    raw.components.length > 128
+  )
+    throw 0
+  const parts = raw.components as unknown[]
+  let size = 0
+  for (const p of parts) {
+    if (
+      typeof p !== 'string' ||
+      !p ||
+      p.length > 255 ||
+      p === '.' ||
+      p === '..' ||
+      /[\\/:]/.test(p) ||
+      [...p].some((character) => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127)
+    )
+      throw 0
+    size += Buffer.byteLength(p) + 1
+  }
+  if (size > 16384) throw 0
+  const parent = identity(raw.parent),
+    held = raw.identity === null ? null : identity(raw.identity)
+  if (
+    parent.type !== 'directory' ||
+    (held && (held.kind !== parent.kind || held.volume !== parent.volume))
+  )
+    throw 0
+  if (
+    (raw.presence === 'present' && !held) ||
+    (raw.presence === 'absent' && held && raw.state !== 'retired')
+  )
+    throw 0
+  if (raw.kind === 'root' && raw.category !== 'database-managed' && held?.type === 'file') throw 0
+  return Object.freeze({
+    id: raw.id,
+    category: raw.category,
+    kind: raw.kind,
+    parent,
+    components: Object.freeze([...parts]) as readonly string[],
+    identity: held,
+    presence: raw.presence,
+    state: raw.state,
+  }) as ProtectedResource
+}
+function resources(raw: unknown): ProtectedResource[] {
+  if (!Array.isArray(raw) || raw.length > 32768) throw 0
+  const list = raw.map(resource)
+  if (
+    new Set(list.map((r) => r.id)).size !== list.length ||
+    new Set(list.map(locationKey)).size !== list.length
+  )
+    throw 0
+  return list
+}
+
+export function createPrivateResourceInventory(
+  rawContext: unknown,
+  options: { now?: () => number; revisionLimit?: number; sequenceLimit?: number } = {},
+) {
+  const now = options.now ?? (() => performance.now())
+  const revisionLimit = options.revisionLimit ?? Number.MAX_SAFE_INTEGER
+  const sequenceLimit = options.sequenceLimit ?? Number.MAX_SAFE_INTEGER
+  let processEpoch = '',
+    profileEpoch = '',
+    epoch = 0,
+    revision = 0,
+    sequence = 0
+  let closed = false,
+    terminal = false,
+    busy = false,
+    unknownRetirement = false
+  let lastTime = -Infinity
+  const owners = new Map<InventoryOwnerRole, OwnerState>()
+  const ownerTokens = new WeakMap<object, OwnerState>()
+  const observations = new WeakMap<object, ObservationState>()
+  const liveObservations = new Set<ObservationState>()
+  const snapshots = new WeakMap<object, SnapshotState>()
+  const liveSnapshots = new Set<SnapshotState>()
+  const records = new Map<string, RecordState>()
+  const releases = new Set<object>()
+  const usedReleasePromises = new WeakSet<object>()
+  const invalidate = () => {
+    for (const token of liveObservations) token.live = false
+    liveObservations.clear()
+    liveSnapshots.clear()
+  }
+  const time = (): number => {
+    let value: number
+    try {
+      value = now()
+    } catch {
+      terminal = true
+      invalidate()
+      throw 0
+    }
+    if (
+      !Number.isFinite(value) ||
+      value < 0 ||
+      value > Number.MAX_SAFE_INTEGER - 30000 ||
+      value < lastTime
+    ) {
+      terminal = true
+      invalidate()
+      throw 0
+    }
+    lastTime = value
+    return value
+  }
+  const bump = () => {
+    invalidate()
+    if (revision >= revisionLimit) {
+      terminal = true
+      throw 0
+    }
+    revision++
+  }
+  const next = () => {
+    if (sequence >= sequenceLimit) {
+      terminal = true
+      invalidate()
+      throw 0
+    }
+    sequence++
+  }
+  const ownerOf = (token: unknown): OwnerState | undefined => {
+    const state = token && typeof token === 'object' ? ownerTokens.get(token) : undefined
+    return state && state.epoch === epoch && owners.get(state.role) === state ? state : undefined
+  }
+  const operate = <T>(action: () => Result<T>): Result<T> => {
+    if (busy) return no('busy')
+    if (closed) return no('closed')
+    if (terminal) return no('failed')
+    busy = true
+    try {
+      time()
+      return action()
+    } catch {
+      return no(terminal ? 'failed' : 'invalid')
+    } finally {
+      busy = false
+    }
+  }
+  try {
+    const context = capture(rawContext)
+    if (
+      !object(context) ||
+      !exact(context, ['processEpoch', 'profileEpoch']) ||
+      !id(context.processEpoch) ||
+      !id(context.profileEpoch) ||
+      !Number.isSafeInteger(revisionLimit) ||
+      revisionLimit < 1 ||
+      !Number.isSafeInteger(sequenceLimit) ||
+      sequenceLimit < 1
+    )
+      throw 0
+    processEpoch = context.processEpoch
+    profileEpoch = context.profileEpoch
+  } catch {
+    terminal = true
+  }
+
+  const structuralState = (): InventoryView['state'] => {
+    if (closed) return 'closed'
+    if (terminal) return 'failed'
+    if (unknownRetirement) return 'unknown'
+    if (liveObservations.size) return 'observing'
+    if (owners.size !== inventoryOwnerRoles.length) return 'incomplete'
+    const states = [...owners.values()]
+    if (states.some((v) => v.status === 'failed')) return 'failed'
+    if (states.some((v) => v.status === 'unknown')) return 'unknown'
+    if (states.some((v) => v.status === 'incomplete')) return 'incomplete'
+    if (states.some((v) => v.observed !== revision)) return 'reserved'
+    if (releases.size) return 'incomplete'
+    const all = [...records.values()].map((r) => r.resource)
+    if (
+      !all.some((r) => r.category === 'profile-container' && r.kind === 'root') ||
+      !all.some((r) => r.category === 'private-deny' && r.kind === 'root')
+    )
+      return 'incomplete'
+    const groups = new Map<string, ProtectedResource[]>()
+    for (const r of all) {
+      if (r.presence !== 'present' || !r.identity || r.identity.type !== 'file') continue
+      if (r.category === 'database-managed' && r.identity.links > 1) return 'unknown'
+      const key = identityKey(r.identity)
+      const group = groups.get(key) ?? []
+      group.push(r)
+      groups.set(key, group)
+    }
+    for (const group of groups.values()) {
+      const linkCount = group[0].identity!.links
+      if (
+        group.some((r) => r.identity!.links !== linkCount) ||
+        new Set(group.map(locationKey)).size !== linkCount
+      )
+        return 'unknown'
+    }
+    return 'complete'
+  }
+  const view = (): InventoryView =>
+    Object.freeze({
+      ...boundary,
+      state: structuralState(),
+      processEpoch,
+      profileEpoch,
+      revision,
+      owners: Object.freeze(
+        inventoryOwnerRoles.map((role) =>
+          Object.freeze({ role, status: owners.get(role)?.status ?? 'missing' }),
+        ),
+      ),
+      protected: Object.freeze([...records.values()].map((v) => v.resource)),
+      actualUnsettledReleases: releases.size,
+    })
+  const merge = (owner: OwnerState, list: ProtectedResource[], complete: boolean) => {
+    const keyFor = (id: string) => `${owner.role}:${id}`
+    const provided = new Set(list.map((r) => keyFor(r.id)))
+    if (complete)
+      for (const [key, old] of records) {
+        if (old.owner.role === owner.role && !provided.has(key)) throw 0
+      }
+    let newCount = records.size,
+      rootCount = [...records.values()].filter((v) => v.resource.kind === 'root').length
+    for (const r of list) {
+      const old = records.get(keyFor(r.id))
+      if (
+        old &&
+        (locationKey(old.resource) !== locationKey(r) ||
+          (old.resource.identity &&
+            (!r.identity || identityKey(old.resource.identity) !== identityKey(r.identity))) ||
+          old.resource.category !== r.category ||
+          old.resource.kind !== r.kind ||
+          (old.resource.state !== 'active' && r.state === 'active'))
+      )
+        throw 0
+      if (!old) {
+        newCount++
+        if (r.kind === 'root') rootCount++
+      }
+      if (newCount > 32768 || rootCount > 32) throw 0
+    }
+    for (const r of list) {
+      const key = keyFor(r.id),
+        old = records.get(key)
+      const current =
+        old?.resource.state === 'released-retained'
+          ? Object.freeze({ ...r, state: 'released-retained' as const })
+          : r
+      // Birth owner and record object stay stable across observations/profile epochs.
+      // An old release closure must retire this record, never a replacement cohort.
+      if (old) old.resource = current
+      else records.set(key, { owner, resource: current })
+    }
+  }
+  return Object.freeze({
+    registerOwner(role: unknown): Result<InventoryOwner> {
+      return operate(() => {
+        if (!inventoryOwnerRoles.includes(role as InventoryOwnerRole)) return no('invalid')
+        if (owners.has(role as InventoryOwnerRole)) return no('conflict')
+        next()
+        bump()
+        const state: OwnerState = {
+          role: role as InventoryOwnerRole,
+          epoch,
+          status: 'reserved',
+          observed: -1,
+        }
+        const token = Object.freeze({ kind: 'inventory-owner' as const })
+        owners.set(state.role, state)
+        ownerTokens.set(token, state)
+        return ok(token)
+      })
+    },
+    reserve(token: unknown, raw: unknown): Result<number> {
+      return operate(() => {
+        const owner = ownerOf(token)
+        if (!owner) return no('stale')
+        const list = resources(capture(raw))
+        time()
+        bump()
+        owner.status = 'reserved'
+        try {
+          merge(owner, list, false)
+        } catch {
+          owner.status = 'unknown'
+          return no('conflict')
+        }
+        return ok(revision)
+      })
+    },
+    beginMutation(token: unknown): Result<number> {
+      return operate(() => {
+        const owner = ownerOf(token)
+        if (!owner) return no('stale')
+        bump()
+        owner.status = 'reserved'
+        return ok(revision)
+      })
+    },
+    beginObservation(token: unknown): Result<InventoryObservation> {
+      return operate(() => {
+        const owner = ownerOf(token)
+        if (!owner) return no('stale')
+        if (owner.observed === revision || [...liveObservations].some((r) => r.owner === owner))
+          return no('conflict')
+        if (liveObservations.size >= 2) return no('budget')
+        next()
+        const state = { owner, revision, epoch, deadline: time() + 5000, live: true }
+        const result = Object.freeze({ kind: 'inventory-observation' as const })
+        observations.set(result, state)
+        liveObservations.add(state)
+        owner.status = 'observing'
+        return ok(result)
+      })
+    },
+    observe(token: unknown, raw: unknown): Result<InventoryView> {
+      return operate(() => {
+        const state = token && typeof token === 'object' ? observations.get(token) : undefined
+        if (!state?.live || state.epoch !== epoch || state.revision !== revision) return no('stale')
+        state.live = false
+        liveObservations.delete(state)
+        const owner = state.owner
+        if (time() >= state.deadline) {
+          owner.status = 'unknown'
+          return no('expired')
+        }
+        let payload: Record<string, unknown>
+        let list: ProtectedResource[]
+        try {
+          const value = capture(raw)
+          if (
+            !object(value) ||
+            !exact(value, [
+              'processEpoch',
+              'profileEpoch',
+              'revision',
+              'status',
+              'coverage',
+              'retirementSource',
+              'resources',
+            ]) ||
+            value.processEpoch !== processEpoch ||
+            value.profileEpoch !== profileEpoch ||
+            value.revision !== revision ||
+            !['complete', 'incomplete', 'unknown', 'failed'].includes(String(value.status)) ||
+            !['present', 'confirmed-absent'].includes(String(value.coverage))
+          )
+            throw 0
+          if (
+            owner.role === 'retirement'
+              ? !['mechanism-restored', 'unavailable'].includes(String(value.retirementSource))
+              : value.retirementSource !== 'not-owner'
+          )
+            throw 0
+          payload = value
+          list = resources(value.resources)
+          if (
+            (value.coverage === 'confirmed-absent' && list.length) ||
+            (value.coverage === 'present' && !list.length && owner.role !== 'retirement')
+          )
+            throw 0
+          if (
+            (owner.role === 'profile' &&
+              !list.some((r) => r.category === 'profile-container' && r.kind === 'root')) ||
+            (owner.role === 'private-root' &&
+              !list.some((r) => r.category === 'private-deny' && r.kind === 'root')) ||
+            (owner.role === 'database' && list.some((r) => r.category !== 'database-managed')) ||
+            (['credentials', 'configurations', 'audit'].includes(owner.role) &&
+              list.some((r) => r.category !== 'private-deny'))
+          )
+            throw 0
+          if (time() >= state.deadline) {
+            owner.status = 'unknown'
+            return no('expired')
+          }
+          merge(owner, list, payload.status === 'complete')
+          if (time() >= state.deadline) {
+            owner.status = 'unknown'
+            return no('expired')
+          }
+        } catch {
+          owner.status = 'unknown'
+          return no('invalid')
+        }
+        owner.observed = revision
+        owner.status =
+          owner.role === 'retirement' && payload.retirementSource !== 'mechanism-restored'
+            ? 'unknown'
+            : String(payload.status)
+        return ok(view())
+      })
+    },
+    issueSnapshot(): Result<{ token: InventorySnapshotToken; view: InventoryView }> {
+      return operate(() => {
+        const at = time()
+        for (const s of liveSnapshots) if (at >= s.deadline) liveSnapshots.delete(s)
+        if (structuralState() !== 'complete') return no('incomplete')
+        if (liveSnapshots.size >= 16) return no('budget')
+        next()
+        const state = { revision, epoch, deadline: at + 30000 }
+        const token = Object.freeze({ kind: 'inventory-snapshot' as const })
+        const captured = view()
+        if (time() >= state.deadline) return no('expired')
+        snapshots.set(token, state)
+        liveSnapshots.add(state)
+        return ok(Object.freeze({ token, view: captured }))
+      })
+    },
+    checkSnapshot(token: unknown): Result<InventoryView> {
+      return operate(() => {
+        const state = token && typeof token === 'object' ? snapshots.get(token) : undefined
+        if (
+          !state ||
+          !liveSnapshots.has(state) ||
+          state.epoch !== epoch ||
+          state.revision !== revision
+        )
+          return no('stale')
+        if (time() >= state.deadline) {
+          liveSnapshots.delete(state)
+          return no('expired')
+        }
+        return structuralState() === 'complete' ? ok(view()) : no('incomplete')
+      })
+    },
+    trackDatabaseRelease(
+      token: unknown,
+      rawIds: unknown,
+      completion: unknown,
+    ): Result<Promise<void>> {
+      return operate(() => {
+        const owner = ownerOf(token),
+          ids = capture(rawIds)
+        if (!owner || owner.role !== 'database') return no('stale')
+        if (
+          !Array.isArray(ids) ||
+          !ids.length ||
+          ids.length > 16 ||
+          ids.some((v) => !id(v)) ||
+          new Set(ids).size !== ids.length
+        )
+          return no('invalid')
+        if (releases.size >= 2) return no('budget')
+        if (
+          !types.isPromise(completion) ||
+          Object.getPrototypeOf(completion) !== Promise.prototype ||
+          Reflect.ownKeys(completion).length
+        )
+          return no('invalid')
+        if (usedReleasePromises.has(completion)) return no('invalid')
+        const selected = ids.map((name) => records.get(`database:${name}`))
+        if (
+          selected.some(
+            (r) =>
+              !r ||
+              r.owner !== owner ||
+              r.resource.category !== 'database-managed' ||
+              r.resource.state === 'released-retained',
+          )
+        )
+          return no('stale')
+        if (selected.some((r) => r!.resource.state === 'retired')) return no('conflict')
+        bump()
+        for (const r of selected) r!.resource = Object.freeze({ ...r!.resource, state: 'retired' })
+        const operation = Object.freeze({})
+        releases.add(operation)
+        usedReleasePromises.add(completion)
+        // No cancellation API: logical timeout/abort never releases this actual Promise slot.
+        const tracked = Promise.prototype.then.call(
+          completion,
+          () => {
+            releases.delete(operation)
+            for (const r of selected)
+              r!.resource = Object.freeze({ ...r!.resource, state: 'released-retained' })
+            try {
+              bump()
+            } catch {
+              terminal = true
+            }
+          },
+          () => {
+            releases.delete(operation)
+            unknownRetirement = true
+            try {
+              bump()
+            } catch {
+              terminal = true
+            }
+          },
+        ) as Promise<void>
+        return ok(tracked)
+      })
+    },
+    startProfile(raw: unknown): Result<number> {
+      return operate(() => {
+        if (!id(raw) || epoch >= Number.MAX_SAFE_INTEGER) return no('invalid')
+        bump()
+        epoch++
+        profileEpoch = raw
+        owners.clear()
+        for (const r of records.values())
+          if (r.resource.state === 'active')
+            r.resource = Object.freeze({ ...r.resource, state: 'retired' })
+        return ok(revision)
+      })
+    },
+    inspect(): InventoryView {
+      operate(() => ok(undefined))
+      return view()
+    },
+    close(): Result<InventoryView> {
+      if (busy) return no('busy')
+      closed = true
+      invalidate()
+      return ok(view())
+    },
+  })
+}
