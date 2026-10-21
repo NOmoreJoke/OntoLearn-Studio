@@ -1,5 +1,37 @@
 # I06 / S3 状态
 
+2026-10-21 当前接续：正式 main / 命名 bridge / 最小 UI 已在本线实现并固定代码提交 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6`，其前契约子线 `69dd44d` 已正常合入为 `0ce0258`。批准依赖仍为远端实际核验的 develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`；不采用 I05 未批准 C1/C2 或其语义常量。14文件移交已生效，其他 Python/入口 build/锁/CI/安全恢复未改。
+
+当前代码完整 `npm run check` r9 exit0：998TS、1052Python、lint/format/typecheck/build/ruff 全过；`verify:sources` 12项及diff检查通过，两处protected AGENTS仍db1fb184，未stage。该完整检查已覆盖最终UI表单key、终态缓存、精确读取状态copy和严格UTF8修正，不沿用此前copy前的r7作为当前完整检查。
+
+[正式接线计划](../../iterations/I06/main-wiring-plan.md)记录唯一main服务、strict12方法/10G错误、独立取消、实际项目context与单profile锁、私有配置原子journal/安全录入版本边界、独立启动与有界退出、只读恢复/纯文本结果。头部无实际项目默认local；无通用转发/secret读回/worker模型入口。配置journal两实例竞争/不确定发布后失败、password随版本清空及新建草稿保留已修，独立只读复核关闭；最新Linux正常main/preload/UI链platform-r11已22项通过，独立证据复核通过，真实native恢复与完整候选验收仍待后续事实。
+
+专属真实链46项含37来源/字段、6配置、3named-service HTTPS。凭据加解密在这一headless服务测试中是明确double，密文/配置/审计实际私有文件、实际批准Store/coordinator/test.read worker与经证书校验HTTPS receiver均运行；已保存合成完整body原件，不记录headers。正常生产字段模型仍为空、runtime-only；固定finite policy仅既有可信launchfixture/test-runtime且非packaged可启用，不外推生产业务provenance。I05实际新语义批准merge后再刷新/绑定/冲突处理和全新联验。
+
+字段阶段 `a930e11` 的旧manifest/源码/raw保持；追加独立v2是新运行，4份实际receiver原正文和100工件hash根已逐项复核，归档SHA `588cd43c6851352ab36e74526b59d5ef666c30996c10679d98bc0213cf2dd180`，不倒贴到旧run。原v2专属证据含明确synthetic header，不含真实凭据；后续正式集成raw只收正文。根读回见[evidence](evidence/finite-fields-v2-raw-readback.json)。
+
+本轮[源码与验证 manifest](evidence/main-wiring-20261021.json) SHA-256 `718198c2797ab03a64ddec5b644bf1ff10ca1f18fe3246725ea07bf255acb1d4`；归档 `tests/i06-stored-material/out/main-wiring-raw-20261021.tar.gz` SHA-256 `536f80923ec23b44e7caeed54b95ae93fce6357e67fddcfbc26990a5cfb45ba6`。归档保留117项固定源码/测试输入、5项构建输出、19份日志及18份合成服务原件，当前实现意见与验证边界见[内审记录](main-wiring-safety-review.md)。
+
+平台agent只写 `tests/i06-main-platform/` / `docs/reviews/I06/main-platform/`，已正常合入9fc固定源；独立Docker构建完成，首轮实际运行r4无项目禁用通过，但 secure backend 前置检查得到 basic_text，未写密钥、零POST。已确认 Playwright Electron loader 强制追加 password-store=basic 等参数，该次不能作为产品原生凭据失败或通过证据；保留失败原件，改为直接启动正常 Electron 后用容器内 loopback CDP/inspector 驱动。runtime network none、无host mounts/端口映射、非privileged，不运行当前Mac窗口/native/Keychain/CUA。
+
+直接正常启动的r5实际确认Electron44.9.0/browser/app-ready、gnome_libsecret/encryptionAvailable=true，无mock-keychain/readiness补丁；随后项目恢复使表单重挂，驱动填写超时，尚未录入key、零POST，原件保留。r6仍用固定9fc源码，在本线 `tests/i06-main-platform/out/9fcba6634d5c-r6` 独立容器完成：真实libsecret录入无回显/首字段授权/实际worker环境等4项通过；之后新catalog异步返回前误用旧checkbox，驱动等待失败，`result=failed/receiverRequests=0`，不记作HTTPS发送通过。根已直接读回result/cases/runtime核对一致。r5/r6命令带 `--no-sandbox`：只能保留实际已走到的有界凭据链事实，不能计作最终C1/C4一致的完整窗口/native门通过。总控要求另准备实际可启用Chromium sandbox的本线隔离容器，正常启动不带该switch，实证 `noSandboxSwitch=false` 后重做受环境影响的main/bridge/存储/恢复；不更改产品sandbox/CSP/window-recovery，也不把能力准备或配置文本当实际安全运行通过。r6原raw独立保留。
+
+本线default Docker/nonroot userns探针实际 `unshare --user --map-root-user /bin/true` 返回EPERM（kernel userns配置已开）；未据此宣称产品缺陷。只读I05成功记录确认其方案使用CAP_SYS_ADMIN、root:root/4755 helper和非root进程。按总控已授权环境准备范围，下一独立I06镜像仅修容器内helper owner/mode，测试容器仅增加CAP_SYS_ADMIN并保留Docker默认seccomp、network none/无host mounts或端口、非privileged；不使用seccomp=unconfined，不借其他线可变环境。能力扩展须明确披露，不称default Docker无额外能力；实际无no-sandbox运行仍待证据。
+
+后续平台运行（与根完整check r9分开编号）：platform-r7仅有界userns/helper预检通过，未运行app。platform-r8正常app无no-sandbox，实际UID1106、main Seccomp2/filter1、renderer NoNewPrivs1/Seccomp2/filter2与嵌套NSpid均有原件，GNOME后端可用；之后刷新了模型而未刷新实际任务UI，驱动找不到第二结果，4case/0POST/总体failed。platform-r9修驱动后实际14case通过、3次合成HTTPS POST，覆盖实际两worker授权复用、独立cancel/complete、reload、同profile第二实例、隐私/审计/配置失效和表单刷新；随后全页alert定位器撞到既有多个错误卡，未到最终scan，collector全部总体gates仍false。根实际读回cases/result和3份693bytes正文并计算hash，但该失败run尚未写receiver-manifest，不能称为最终绑定通过。platform-r10另冻harness运行，修直属alert定位并追加两轮实际source/catalog/selection/preview/grant合成原件；旧run不改。当前仍无完整平台pass。下一项为断开调试器后的真实crash→真实原生提示→窗口恢复，核对I06 ledger/Store和receiver不重放；避开会stub dialog的旧helper，不能只以reload代替native联验。
+
+最新platform-r11：固定9fc产品、22项实际case/3次合成HTTPS POST/collector五gates均通过，root直接读回并逐项核对正文长度/SHA。独立只读复核核对851份源码、19个实际compiled+harness产物、14份harness原件、before/build/after与5个binary记录；image `sha256:f7fc7b481eb6270fc169a173970846ce998e1b59b4a42fffdb9b36295730dff1`，正常sandbox/GNOME、namespace/seccomp、isolated container事实均吻合。binding SHA `058a61825c78816b1ba586585edb32c7ec66341f61475361ce5815b33d05068c`。A03两轮实际raw同旧grant、不同result/job/catalog/selection，三行实际source含私列/派生值；3份693bytes完整body均SHA `4bea2fec09859fae6a3f5f685630b22bd3c3595f486edde3df2b5cedaedda2f0`，逐项无原rowUUID/ordinal/私列/派生值/secret/header。scope一致由冻结projector映射和同grant复用验证，不能称直接读取未公开scope UUID；取消/重载等依赖本run执行断言与case记录，不宣称每次outcome完整DTO均归档。22私有文件/5DB扫描由本run冻结scanner与receipt支持，独立复核没有重扫未归档vault/DB原件。native/C4、其他平台、适用I05与完整S3仍待验；真实crash→原生prompt→恢复单独准备，不倒贴r11为native通过。
+
+最新native4独立增量亦已通过并独立只读复核关闭：相同compiled app/5binary，真实crash→可见X11标题 `OntoLearn Studio 窗口恢复` →实际shift+Tab/Return→第二窗口，main PID不变、renderer/window身份更换，非dialog stub。故障前inspectorURL=null、从未rendererCDP，noSandboxSwitch=false/hangMonitor开启；整个project DTO/job/result/stateVersion/operation marker/context/selections/invocations/completed outcome前后严格相等，receiver始终1份695B，不重发。native-binding SHA `9bade372085b53c7e95e9fe0c2d337ec648e6767d63b4b14ab0baf166af35637`。截图缺CJK字体，仅证明提示存在，中文标题由X11原文确认；不称中文排版或unresponsive全矩阵通过。停止后另回收5个DB/vault原件并新增readback SHA `a765852442015d7c599c7e05a2312243a091f7ae8ef48a60af1ec28c10a93e50`，独立只读核对hash、23行/raw pages、配置digest链与audit一条metadata关联，无secret/response正文；不改或倒贴旧runtime scan。
+
+平台专属24文件提交 `3124b7df4497df6c57954106982cd83cc8d16673` 已正常合入根，仅新增tests/docs，不改产品。定向ESLint/Prettier/Ruff/语法/diff通过，未重跑未变998/1052。953文件原件归档已复制本worktree `tests/i06-main-platform/out/i06-main-platform-9fc-r11-native4-raw.tar.gz`，SHA `9dac44b0cd0a588c902b85b35079f691a52ef13a0e51dce5c9b9e5f9dd99f0fe`；root逐项验证952索引文件bytes/SHA及3份passed绑定，见[根读回](evidence/main-platform-archive-readback-20261021.json)。实际执行冻结harness与最终格式化/采集脚本分开记录，旧失败run保持。原计划要求真正打包executable，source app不能代替：本线正在独立正式 `npm run package:dir` +实际package executable/GNOME/sandbox/包内engine/具名whole-result HTTPS和恢复最小增量，包内有限fixture字段policy必须按现有门拒绝，不为测试放宽。
+
+总控独立检查点核验（`iteration-control/2026-10-19/I06-controller-main-wiring-checkpoint-evidence-audit.md`，总控回执SHA `1d5888302a3b63d34ba8393ae9ae36c0c52aa63f518af7153b23db56956c462f`）未提出新增实现修复请求。117source/5compiled/19logs/18raw及998TS/1052Python/source12/46专属/validator43支持其各自边界；18raw是6组同case历史重复正文，非6项新用例。headless safeStorage为double，CAS为同进程两repository实例，postpublish旧context失效和零POST不等于已归档旧pending精确cancelled对象；当时singleprofile仅静态，后续平台事实按新run单列，不倒贴旧证据。
+
+文档子线从同9fc完成四份接口/交接文档与专属记录，对齐提交 `11666cfcfcc15c8f5f8b164bfeaa3fad2acc464e`；原35例和5场景ID保留，新增6例，实际校验43/43通过，原raw SHA `458ddca166bb568532944741a37216996c92e9c82925ddeca1d940564534cd01`，根已复核21快照及41行receipt。独立只读发现终态淘汰文案顺序偏差，在追加 `302f1a440aed47b13e42fee37e3bb9c9286d9440` 纠正并同步ADR/验收旧阶段事实；复核关闭、无新增问题，未改实现/样例或重跑无关检查。新文案raw SHA `22bc2a57dff0cd185250aadca10d2d12d93390b7d7d228dc0541e328ca124bc3`，根已核对6快照，旧raw不变；两提交均已正常合入。原Goal不重建、不标完成；完整S3/平台/适用I05、同候选指定双方全新全范围审查、push/PR/实际CI/远端合并核验仍未完成。未push，不改总控state。
+
+## 先前阶段记录（历史，当前以上文为准）
+
 日期：2026-10-21（Asia/Shanghai）。阶段：I02/I03/I04 真实依赖已合并，原会话继续私有凭据/持久审计/隔离平台验证实施；完整 I06 未完成。启动 get_goal 仍返回原 Goal blocked；此为工具实态，原依赖阻断已由实际合并消除，按总控接续授权推进，不重建 Goal、不宣称有 resume API、不标为 paused/complete。
 
 最新阶段：已实现 `StoredResultSource` 与 `GatewayApplication` 私有整份既存结果读取/应用服务，使用批准 I04 的实际 Store/coordinator/worker，只读来源、用户确认、完整内容复核、来源并集、定向取消和持久审计贯通合成 receiver。23项新测试通过，完整 `npm run check` exit0（793TS、1052Python、构建/静态检查）；之后预览集合硬界的一行修正完成必要lint/typecheck/23项复验。独立复核无新增阻断。首轮夹具违反单写者租约的6项失败及修正原件保留，真实保存改走同 coordinator 的 test.atomic，不绕过 Store 所有权。

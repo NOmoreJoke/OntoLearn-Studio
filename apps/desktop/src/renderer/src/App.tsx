@@ -539,7 +539,9 @@ function ModelPanel({ jobs }: { jobs: import('@ontolearn/contracts').JobView[] }
       <p>
         默认完全本地。选择结果、预览外发范围并明确授权后，才可发送解释请求。本地任务不依赖模型成功。
       </p>
-      {!enabled && <p role="status">模型服务暂不可用或尚未选择本地项目。可以继续使用本地任务。</p>}
+      {!enabled && (
+        <p aria-live="polite">模型服务暂不可用或尚未选择本地项目。可以继续使用本地任务。</p>
+      )}
       <fieldset disabled={!enabled || busy}>
         <legend>隐私模式</legend>
         <select
