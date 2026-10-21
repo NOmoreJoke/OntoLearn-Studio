@@ -1,0 +1,49 @@
+{
+  "kind": "precise root-routed owner input request, no WIP adoption",
+  "observedAt": "2026-10-21T14:30:54.686968+00:00",
+  "sourceTreePlanned": ".worktrees/I06-native-location-N0",
+  "sourceBranchPlanned": "feature/I06-native-location-N0",
+  "sourceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "approvedFrozenSourceRef": null,
+  "readonlySourceFilesNeeded": [
+    "packages/native-location/include/location_abi.h",
+    "packages/native-location/src/capability_core.cc",
+    "packages/native-location/src/platform_macos.cc",
+    "packages/native-location/src/platform_windows.cc",
+    "packages/native-location/src/node_binding.cc",
+    "apps/desktop/src/main/security/native-location-owner.ts",
+    "packages/native-location/tests/location_core_test.cc",
+    "packages/native-location/tests/location_child_probe.cc",
+    "tests/unit/i06-native-location-owner.test.ts"
+  ],
+  "ABIHeader": "actual symbols/typedefs/calling convention/export macro/fixed widths/sizeof-align-offset/ABI version/allocator-free/finite status/thread/ownership/cleanup contracts; unknown names are not invented here",
+  "binding": "all called Node-API symbols with version requirements and exact init/export/opaque owner/async+env cleanup contract",
+  "tests": "real main/argv/exit/child path/fixture+timeout and TS actual-addon injection/expected-export contract",
+  "nodeApiVersionProposal": 8,
+  "nodeApiVersionFinal": null,
+  "standardRegistrationExportsIfNAPI_MODULEUsed": [
+    "napi_register_module_v1",
+    "node_api_module_get_api_version_v1"
+  ],
+  "externalNodeApiHeaders": [
+    "node_api.h",
+    "node_api_types.h",
+    "js_native_api.h",
+    "js_native_api_types.h"
+  ],
+  "externalSourceCandidates": [
+    "existing node-gyp12.2.0 src/win_delay_load_hook.cc with original MIT license"
+  ],
+  "windowsInputsNotDelivered": [
+    "actual MSVC/link/SDK x64 tuple",
+    "matching Electron node.lib",
+    "delayimp.lib+MSVC CRT provenance",
+    "actual backend include/import/dynamic-symbol list"
+  ],
+  "doesNotRequireN1SQLiteOrCPythonForN0": true,
+  "nextT03WriterScope": [
+    "packages/native-location/CMakeLists.txt",
+    "packages/native-location/toolchain-lock.json",
+    "scripts/build-native-location.mjs"
+  ]
+}

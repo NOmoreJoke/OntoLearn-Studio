@@ -1,0 +1,25 @@
+{
+  "observedDate": "2026-10-21",
+  "retrieval": "successful official-domain web search after one failed multi-open request",
+  "sourceResultsDigest": "1b05874bbf46c13342b540b154bd0e4ef83bbfce8f62039f6cc157ed3f43359d",
+  "records": [
+    {
+      "url": "https://cmake.org/cmake/help/v3.25/variable/CMAKE_OSX_DEPLOYMENT_TARGET.html",
+      "designObservation": "Explicit deployment target is a configure input set before project; it is not target-system runtime evidence."
+    },
+    {
+      "url": "https://cmake.org/cmake/help/v3.29/variable/CMAKE_OSX_SYSROOT.html",
+      "designObservation": "Use an explicit SDK path before compiler initialization, without relying on the host default."
+    },
+    {
+      "url": "https://cmake.org/cmake/help/latest/prop_tgt/LANG_STANDARD_REQUIRED.html",
+      "designObservation": "Require the requested C++ standard instead of accepting a lower fallback."
+    },
+    {
+      "url": "https://cmake.org/cmake/help/latest/variable/CMAKE_MSVC_RUNTIME_LIBRARY.html",
+      "designObservation": "Choose the CRT policy explicitly; MultiThreadedDLL requests the dynamic release runtime, and CMP0091 governs initialization."
+    }
+  ],
+  "rawWebPageBodiesNotRepublished": true,
+  "documentationVersionIsNotAnInstalledToolPin": true
+}

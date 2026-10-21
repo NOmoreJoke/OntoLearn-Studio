@@ -1,0 +1,99 @@
+# I06 native location supplier：总控独立静态审查
+
+2026-10-21。结论：固定 `9ff1c92e78cc0bed1e37b71ea7f00a57ad231f7c` 的文档方案没有新增阻止受控 N0 对象/元数据/真实资源终态底座的 P1/P2。可以供根决定精确实施窗口；本报告本身不批准 writer、实验或生产用途。不能因完整 SQLite/两目标 OS 尚未到位而拒绝一切独立源码工作，也不能据此批准 LocationLease、首 SQLite/header/catalog/backup 内容 IO。现有 native、控制根来源、跨崩溃 holder、namespace、耐久及 T01/T03 消费/构建缺口仍真实存在。
+
+本审仅 Git 固定 blob、文件、Python stdlib JSON/hash/diff/AST 与数学核验；未 import 产品或 sqlite3，未运行产品、测试、构建、数据库/native/进程/FS 实验、网络、GUI、凭据、模型；未改 owner 产品/docs/状态或共享 state，只写本报告。官方网页是作者提供的具名来源记录，本审未重新联网认证动态页面或取得完整 SQLite OS 后端，不将引用存在当目标 OS 或二进制证据。此前 BM 运行数字不在本次 native 验收中复用。
+
+## 1. 授权、候选与只文档范围
+
+已读原目标、当前适用工作偏好、树中最新 AGENTS 与 developer-common-instructions 及根准备授权。AGENTS 为 15852B/SHA256 `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`；共同指令 17891B/`e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0`。共同指令的旧身份/责任快照不覆盖其后生效交接和本轮精确授权。根授权 `I06-native-location-supplier-plan-preparation.md` 实际 5447B/`15d40bf0046f68f6a1d757bc0e05ea6f38c16be16dc0e20739827c2e7a19a18f`，仅授新主稿和专属证据文档。
+
+实际工作树 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-real-private-metadata`，branch `feature/I06-real-private-metadata`，HEAD 为上述 9ff1，实际 parent 为 `6240748d83d2251664b3fe1e9808f5f67adeec41`。开始及末次 status 均只有 ` M AGENTS.md`。相对 parent 实际 18 条全为 A：一件 `docs/iterations/I06/native-location-supplier-plan.md` 与十七件 `docs/reviews/I06/native-location-supplier-plan/`。没有产品/测试/依赖/锁/入口/构建变更；当前 `packages/native-location` 不存在。
+
+专属目录十七件准确集合：`authorization.txt`、`disposition.md`、`format-first.json`、`independent-review-followup.md`、`independent-review-r1.md`、`independent-review-r1.original.txt`、`inputs-review-input.json`、`inputs.json`、`main-plan-review-input.md`、`manifest.json`、`platform-static.md`、`platform-static.original.txt`、`root-integration-audit.txt`、`sqlite-cpython-static.md`、`t01-source-static.md`、`t01-source-static.original.txt`、`verification.json`。没有 native ZIP；不将 BM 原 ZIP 说成本次新增证据。
+
+| 关键对象 | 实际 bytes | SHA256 |
+| --- | ---: | --- |
+| 最终主稿，220 行 | 49472 | `34c4307e42c349b5d4fc40d0960655454727570eb565c4fc1c3d521663c57624` |
+| 首审主稿 snapshot，218 行 | 48256 | `ff21c9f0c10d2f40e48d5f93dbccdd880523ec03327bd687eb3c997545afb518` |
+| inputs.json | 19875 | `54a32efe8d54ef2b0b2b0418f2abc6b63a6f3f5fd9dba86d698645d3e1538955` |
+| manifest.json | 3907 | `80a93d3bb6edb5c4b29f0e5a35e94d53df3138ce558c5b53ac3882ec0b203834` |
+| verification.json | 8862 | `a050122c3557ed0794bebeea4db782472a0aab77a0dd3af5f9c13c5dcb2401b8` |
+| 独审 r1 canonical | 13599 | `668640d8c9a6d302e80f4849496765bb610518a1a08abc6800280e34c5ecbf64` |
+| 独审 r1 原文 | 12009 | `a6d67cb636a3183eced3cfb64383823bd49d038832252fc75cb8e0a19135092c` |
+| 最终独立 followup | 5527 | `66a865f47a87f35575fdbdcc521bac8db5839242a3fd2351b8e5211f7d8ec526` |
+
+## 2. 原件与固定来源闭环
+
+逐项读取并实算 manifest 的 17 个记录，全部满足 current bytes = 9ff1 Git blob，bytes/SHA256 与记录一致；manifest 自身也 current=Git，实际 diff 路径集合恰为 records 加 selfExcluded，无遗漏或额外采用。manifest 不自指 ref，准确 ref 由实际 Git 给出，不能拿其自身完整性哈希充来源认证。
+
+inputs 的 24 项固定 Git 输入全部实核 ref/path/blob bytes/SHA：ffb B 主稿、379916 T01 创建/resolution 合同、1f3 位置 offer 三件，加 423b 的十二件业务源码与九件构建/依赖/入口。四件规则输入逐当前文件 bytes/SHA 相同。B-M64 集合实际等于批准 5f→fa8 的完整 diff 集合，每件 current=fa8 Git=9ff1 Git，bytes/hash 匹配；包括四产品测试及原60 docs，未混入新 native docs。3077B B-M root-closure 也 current=6240748 Git=9ff1 Git，SHA `ab10ea451b362cb9f655aacd52e692ad8c23dd3b3086f45239267af5e119e443`。624 是独立 closure 后继，不回写 fa8 manifest/ZIP。
+
+全文分段读主稿、platform-static、t01-source-static、sqlite-cpython-static、独审 r1/followup、处置、授权与根审计。另以固定 423b Git 对实际 engine.ts、storage.py、job_store.py、format3.py、coordinator.py、process_environment.py 的关键调用点逐行回读；Python 静态 AST 仅解析、不执行。读取固定构建脚本、entrypoint、builder、package/pyproject 原文，未拿后续 T01 可变源码补充批准来源。
+
+首审 inputs 19602B/`0d31621bbde2fbf716fb06950ec842f3d554d529cb53ae1c16e83d463dd2b5eb` 与最终结构比较，旧键值均相同，只有 bmRootClosureDocsRef/bmRootClosureReceipt 两个新增键。首审 snapshot→最终主稿实际 diff 只有：补全根 audit SHA、修复 flags 表格错列、增加 held ACL 快照与限制、精列 N0 路径；没有暗改路线或增加运行通过项。
+
+platform 原文45555B/fd09…与 canonical44109B/65a4…，T01 原文19310B/b281…与 canonical24521B/c8a1…，r1 原文12009B/a6d6…与 canonical13599B/6686…均单独保全。逐行归一空白/表格横线/代码反引号及已转义 pipe 后实际相同；不是把意见改成同意。平台偏好“自有 CPython 连接适配”和主稿选择“重建同库 _sqlite3”仍有真实路线差异，处置解释其取舍，没有编辑原报告消除分歧。
+
+首个显式六文件 prettier 检查 `format-first.json` 实际 exit1，仅 T01 来源报告格式告警，argv/cwd/stdout/stderr 原文保留。verification 的最终显式十一件 canonical/JSON/snapshot check 为 exit0；原文 txt 不重排。其十六条 no-index whitespace 检查 exit1 且双流为空，正确分类为 added-file difference，不充产品失败或成功；staged diff --check 原件记录 exit0/18 docs。manifest 记录自己排除预 manifest check，不能说该次 prettier 已检查它。上述是读回作者记录，本审没有执行 prettier、Git diff check 或产品检查来冒充重新验证。
+
+D1 独立确认关闭：原 snapshot 第52行把 bitwise pipe 拆错列，最终已重建正确四列；本审对最终主稿95个表格行、平台65行逐连续表扫描，列数零错配。D2 独立确认关闭：N0 准确六产品/三测试/三T03构建，排除 Python/VFS/patch 与 T01 共享路径，不再用“前三类”计数。未发现需为这两项追加第三轮文档流程的问题。
+
+## 3. 同库 SQLite 路线：方案可成立，完整实现尚未供给
+
+固定源码确实显示：main engine 仅 dataPath/env 与三 stdio pipe；coordinator:837–839 在任何新能力消费前 mkdir/JobStore；storage:90 path connect；format3:164 xb→168 connect→177 rb/fsync→185 read_bytes；storage:1657 还有普通 backup 目标 connect。不能仅修 migration_backup 或 main 做一次检查。writer-lock 在 DB connect 前已有路径 open/read/write/lock；SQLite 内部附属 IO 则须 C VFS/OS 后端介入。
+
+优先“同一私有 SQLite image + 重建 _sqlite3 + 私有注册扩展”在静态上与现有 stdlib DB-API 消费相容：可信 adapter 构造内部 opaque URI 指定 cap VFS/mode，mode=rw 不创建；候选只消耗已独占对象，VFS 仍按实际用途约束 CREATE flags。它不要求窥探 CPython Connection 内存，不以另一 SQLite registry 充 Python registry，不把 Node-API 稳定性外推给 Python/SQLite。保留 DB-API 可以减少业务替换面，但未实测或证明总体成本优于其他路线。
+
+真正 N1 前置是 T03 固定完整 CPython/SQLite 原始源、包 SHA256、完整 patch/编译flags、私有 install-name/DLL 和实际二进制依赖图；I06 用同build C层替换全部必要 OS 调用，T01 只从这一连接用途消费。相同 sourceID/version、同名 VFS、uv.lock、PyInstaller collect 或默认 DLL 搜索均不够。controlled_sqlite3 的意义必须是受控分发与明确 cap 连接，不是悄悄 monkey-patch 任意 stdlib connect 或再造第二套 DB-API/Store。
+
+主稿已正确列出 xOpen/xAccess/xDelete/xFullPathname、journal/WAL、OS 内部 SHM open、锁/map/unmap、temp/subjournal/super-journal、file-control/mmap/extension 与所有备份/hash/sync 重开；不是“套 stock xOpen”。当前没有完整 os_unix/os_win 原文，更没有可审 patch/同库产物/真实 trace，这足以阻止 N1 实现完成或生产首 IO，但不阻止 N0。未知必需temp模式应明确 unsupported，不能暗改 journal_mode/EXCLUSIVE/heap SHM 绕过既有库兼容要求。SQLite3.51.3 是作者具名可行性源码候选，不是已采用/最新/完整安全通过；T03正式pin及维护更新仍缺。
+
+close_v2 zombie、未finalize statement/BLOB/backup、failed-open 后 xClose、SHM 与 OS close 均纳实际资源集合。固定 Store/JobStore helper即使 DB close失败仍尝试关writer lease，因此 T01 实际消费必须使“仲裁可重用”取决于真实聚合终态，不能仅保留一个异常文本。原版未修改不是本次 docs 缺陷，但生产接线前确须修。
+
+## 4. 物理能力、namespace 与跨进程恢复
+
+held parent/member + returned handle 在首read前核身份，再交同一对象给 VFS，是正确对象绑定方向。metadata acquire 也必须从可信原始锚点逐组件进行；只返回 dev/ino/fileId JSON不产生真实能力。所有派生 WAL/SHM/journal/writer-lock/backup/候选都要独立用途与实际身份，不能 DB 一件准入后任意同目录 open。
+
+必须保留的反例是普通祖先/根更名、member替换、静态 symlink/reparse/hardlink、同址新inode、应用自身并发和源publish名字竞态。mac held FD不原子保持整条namespace，renameatx_np源仍是名字；仅发布前后fstat不足以阻止换源名已执行错误发布。Windows RootDirectory/实际 HANDLE/no-replace与不共享DELETE有用，但必须逐角色处理已有DELETE handle、sidecar删除、ACL和共享冲突，不外推全局保证。第一阶段可以得到实际对象/受控临时fixture证据，尚未围住的用途继续 unsupported，不得先对用户目标IO再补证。
+
+威胁边界需准确继承：固定1f3 offer第39/123行明确范围为应用误选、静态别名、生命周期/普通路径竞态，不扩张为阻止任意恶意同UID、全盘DLP或沙箱。主稿§3“严格要求任意外部同UID并发时”的表述应按更强条件的能力限制理解，不能据此新增“必须解决任意同UID敌对篡改才可继续”这一产品要求；平台报告§7也明确排除此扩张。根可以在实施任务中直接沿原边界注明，无须为条件性说明重开新需求或制造额外文档轮次。反过来，不能利用排除恶意对手来跳过普通rename/reparse/自身并发的既有反例或静默放开unsafe publish。
+
+main→child须绑定真实 spawn/endpoint/实际进程对象，mac SCM_RIGHTS/受控endpoint与Windows实际hProcess/明确HANDLE_LIST只是候选原语。PID/nonce/JSON数值不能传权，Node私有_handle不应使用，不能另起未被T01追踪的代理Python。VFS页IO可在已核child本地执行；SHM映射指针不跨进程，复制FD/HANDLE/map/所有child都保留原所有者与容量。消息/ancillary上限、拒绝时关闭额外句柄、queued/running计槽、同步接纳与实际completion需在具体ABI收敛，当前尚无无限公开入口可据此制造现成实现漏洞。
+
+main崩溃旧child还持DB/SHM时，新main取得控制锁不证明旧holder终态；内存registry、abandoned mutex、PID缺席和持久released标记都不够。主稿已具名保留该生产硬阻断，并未选定长期holder/恢复仲裁。N0真实child probe能验证自有传递/终态边界，但不能自动关闭这个跨main恢复要求。逻辑cancel/超时只停新接纳，不能早放真实在途syscall/native work/map/OS锁；允许原用途有限cleanup而不恢复业务grant。
+
+## 5. 两 OS、fresh 与耐久：哪些属于真实生产前置
+
+macOS15 arm64、Win11x64 尚无本轮SDK/runtime/FS/包内证据。引用Apple固定xnu/归档API与Microsoft文档可用于源码设计，宏存在、API名或Node运行版本不等于目标行为；macOS27 unsigned目录包不能替mac15，Linux不能替两目标。APFS/NTFS仅实验提案，未获批为产品永久支持集合；其他卷未知须有限拒绝，后续若需求需要另供真实实现。
+
+N0对象元数据可按真实heldFD/HANDLE取 dev/ino或完整volume serial+128-bit fileId/nlink/ACL；bigint/原生整数不经JS浮点截断，ACL从对象读取而非path重开。ACL快照不能锁住权限变更，其允许策略还需OS principal/安装来源；不凭mode或用户名判断Windows ACL。
+
+B-R的稳定appData/产品与安装identity、多安装channel、可信fresh与迁移历史来源仍由T01/安装供方交真实实件。固定423b只userData/engine.sqlite，builder appId/目录包不能证明fresh；ENOENT/新进程不是真首次安装，不全盘扫或让用户删历史。bootstrap/self-append只允许原固定header/intents/seals有限metadata协议，intent+seal达到真实所需耐久前不做其他目标mutation；不建立第二项目/Job/main账本。
+
+文件fsync/F_FULLFSYNC/FlushFileBuffers、rename或close成功不自动认证父目录项掉电耐久。Windows非admin目录持久发布缺口仍具名保留；mac文件fullsync亦不替目录顺序。不能通过kill模拟掉电来签durable。真实恢复必须验证完整有限链与全部旧根，未知/孤儿/超额/未seal保deny/retained，不超时GC。上述缺口阻塞生产B-R/目标准入，但不阻塞无用户目录的N0底座。
+
+## 6. 准确下一实施建议，仍由根决定
+
+建议下一具体工作保持主稿§9的 N0，不另造功能Goal、不全量抢做native/VFS，也不再只加inventory DTO。根登记后，I06新私有产品准确六件：
+
+- `packages/native-location/include/location_abi.h`
+- `packages/native-location/src/capability_core.cc`
+- `packages/native-location/src/platform_macos.cc`
+- `packages/native-location/src/platform_windows.cc`
+- `packages/native-location/src/node_binding.cc`
+- `apps/desktop/src/main/security/native-location-owner.ts`
+
+其新测试准确三件：`packages/native-location/tests/location_core_test.cc`、`packages/native-location/tests/location_child_probe.cc`、`tests/unit/i06-native-location-owner.test.ts`。T03只先接受三件新构建申请：`packages/native-location/CMakeLists.txt`、`packages/native-location/toolchain-lock.json`、`scripts/build-native-location.mjs`；任何现有配置/锁/入口delta另给准确路径由T03维护，不能把新namespace当旧全仓构建泛权。
+
+最小实际切片先落版本化有限ABI、reserve-before-native-dispatch、受信临时parent逐单组件获取与无损身份/ACL、旧epoch/取消/late结果归原owner、真实FD/HANDLE及自有child完成后才释放。新增资源容量/IPC字节与句柄数量、谁负责close、失败保留哪些事实必须在实现/测试中具体化；不暴露通用path opener/callback或裸句柄给renderer。fixture只在受控独占临时目录，不读取用户目录/正文/secret，也不把fixture complete/native-brand签成全局private inventory或生产lease。
+
+源码设计不需等全部目标平台齐备。实际编译/临时实验仍须根随后授权与T03可核工具链；可以先在获准单平台取得具名局部证据并保另一平台未验，而不是无限等待两台设备才写源码。N0完整两目标验收仍须各实际目标OS/架构/FS的同候选正反例；开发宿主较新OS的结果只能记开发证据。no-replace/publish仅在fixture具有明确真实保证的用途测，未围住的分支直接unsupported；不以修饰后的双检充保证。无SQLite的这一切片可提供有用底座，但没有“成功N0即自动进入N1”。
+
+N0明确排除 `python_binding.cc`、`sqlite_capability_vfs.cc`、SQLite patch、VFS Python测试、capability-Python构建、持久B-R、任何生产bootstrap、公共协议及T01共享现存路径。其TS薄owner也不得接管Supervisor或把新native许可塞进旧engine。
+
+后续T01请求准确是main/index bootstrap、engine真实child transport/dispatch前同步gate与永久drain、task-service current scope/原归因、Python __main__/coordinator JobStore前能力消费、storage/job_store/format3连接/backup/锁真实聚合以及未来host/lifecycle薄消费。现worker无DB路径，不能给它新增位置权来“补完整”。这些路径仍T01唯一writer；相同UUID重开/复制库/新session不重建原dispatch binding，普通view刷新不误清永久owner。
+
+后续T03请求准确是上述N0三构建和N1才含第四新构建 `scripts/build-capability-python.mjs`；再按实际必要修改其package/locks/pyproject/build-engine/entrypoint/desktop builder等批准路径，冻结source/patch/headers/SDK/runtime/许可证与可重现构建、包内实际load graph。没有这些实件，I06不得先编译另一SQLite充同库或自行改锁/打包。两次干净构建/签名差异如需验收按方案原记录，不能删原件伪造逐字一致。
+
+本次无新增需修文档才能申请N0的阻断；具体缺口不通过追加流程文档来消除，应由根按上述唯一owner与真实物件推进。仍未交付的生产条件是：原生全量可信inventory及历史、持续所需普通namespace/源名围栏、实际同库VFS/全部附属IO、跨崩溃旧holder仲裁、fresh与控制根耐久、T01真实消费及完整生命周期/dispatch、目标双OS/包内/真人验收。指定GLM-5.3最高与M3.1-Flash xhigh同版完整外审、57P0、CI、正常develop合并/远端门及父I06完成均不由本审代pass。

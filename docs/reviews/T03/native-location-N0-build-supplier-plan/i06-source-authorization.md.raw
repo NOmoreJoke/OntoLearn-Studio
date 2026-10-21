@@ -1,0 +1,40 @@
+# I06 N0：私有原生对象底座源码窗口
+
+2026-10-21。根已全文读固定9ff1c92e78cc0bed1e37b71ea7f00a57ad231f7c主方案49472B/SHA34c4307e42c349b5d4fc40d0960655454727570eb565c4fc1c3d521663c57624、首审13599B及最终5527B复核/处置。控制独审18419B/SHA1f26965e9ef6f3f6dac02210afbb6f24b85be9dc4ac237290183799bf64ae558已全文读，18新增docs/固定来源/BM64核验闭合，无新增阻止受控N0的P1/P2。本件批准原I06继续N0真实源码实现与独立源码审查；编译、运行/native/FS/child实验仍需固定T03构建供方及随后精确运行窗口，不凭源码阶段通过启动实验。
+
+## 新树、精确路径与所有权
+
+从批准5f910b52c69d86a1076b2032e5d3c63e715947f3新建 .worktrees/I06-native-location-N0，branch feature/I06-native-location-N0。无其他产品采用：9ff1/1f3/B方案仅固定只读设计依据，不复制e2c/961/A/BM或T01/T03产品。原BM64、624收口、9ff1的18docs/首失败及全部历史保持原字节，不重测不变BM；AGENTS/common及64原保护文件/原型不stage。
+
+I06只新增六产品：
+
+- packages/native-location/include/location_abi.h
+- packages/native-location/src/capability_core.cc
+- packages/native-location/src/platform_macos.cc
+- packages/native-location/src/platform_windows.cc
+- packages/native-location/src/node_binding.cc
+- apps/desktop/src/main/security/native-location-owner.ts
+
+I06只新增三测试：packages/native-location/tests/location_core_test.cc、packages/native-location/tests/location_child_probe.cc、tests/unit/i06-native-location-owner.test.ts。新过程仅 docs/iterations/I06/native-location-N0.md 与 docs/reviews/I06/native-location-N0/。所有其他产品/配置/依赖/锁/构建/公开协议只读。不得临时多建common头/helper或编译脚本规避范围；真需要时给最小路径/接口/diff申请。
+
+三拟构建路径CMakeLists.txt、toolchain-lock.json、scripts/build-native-location.mjs仍唯一T03，仅另行精确任务接受后生效；I06不写、不绕锁手工编译。T01所有共享main/Supervisor/Store/worker/canonical消费权不变。Python binding/VFS/SQLite patch/SQLite测试/capability-Python脚本、B-R持久控制协议、任何生产bootstrap/新位置正文IO均不在N0。
+
+## 源码实现的完整最小切片
+
+按固定主方案§2/3/9实现私有版本化C ABI、有限registry/用途/安全错误、native gate、真实OS对象metadata与实际终态。先以头文件与专属说明固定ABI/布局/容量/调用线程/同步接纳点/关闭责任，源码随其实现；不是再写一份inventory DTO或用JS品牌伪造能力。确需T03输入的ABI工具链字段列精确请求交根，不私自向其他聊天派任务。
+
+受信锚点只用于后续受控独占临时fixture，从held parent单组件逐级acquire，拒分隔/点点/ADS/未知alias；首metadata取得的实际FD/HANDLE保有，无损身份/links/ACL从对象读，不path reopen。不对用户目录、业务正文或任意absolute path提供opener。Node薄owner只消费可信装配的private binding与opaque owner；无renderer入口/任意callback/fd数值导出/第二Supervisor。
+
+全部native syscall/异步work/等待/child/FD/HANDLE/map/ancillary和消息bytes先reserve后dispatch，同步gate重新核epoch/purpose；固定数量与字节guard写明工程拒绝政策，不无限默认或自动提高原既有offer限额。原候选TTL/逻辑超时只能停接纳，原在途/晚返回归原owner；取消/失联/失败不得超时清槽。实际close/unmap/child与管道终态才释放对应资源，错误保retained/unknown并允许原有限cleanup。不以Promise完成、kill返回、PID缺席或close请求当终态。
+
+mac/Win分别写真实实现，unsupported分支显式有限拒绝，不用空函数/true stub宣称平台支持；新OS宏/SDK/ACL策略未知如实列缺。自有child probe仅是后续受控测试目标，不在源码阶段运行，不另起未被真实owner登记的代理业务Python。N0没有SQLite/SHM/VFS或完整跨main恢复认证。
+
+沿原1f3:39/123已批准边界：防应用误选、静态别名、生命周期/普通路径竞态及自有并发；不新增任意恶意同UID/全盘DLP要求。仍须保普通祖先/根rename、member替换、symlink/reparse/hardlink、同址新inode、源publish名字竞态。held对象不等于持续namespace；不能靠双stat/C++双检称原子安全。N0未有可证明no-replace/源对象围栏的publish用途保持unsupported，不为凑测试扩大写文件。身份或ACL快照不签持续许可/历史完整性，不把受控fixture成功签成生产LocationLease。
+
+## 当前验证及后续门
+
+本窗口允许源码编辑、必要文件/Git/hash/stdlib静态检查、已有工具的纯格式/静态类型检查和独立agent源码对抗审查；不产品import/测试/native编译/动态加载/FS或child实验、安装新编译工具/headers、GUI/Keychain/模型网络/付费。待T03给固定构建闭包后，根再授精确采用与运行。可先完成源码和三测试设计，不因缺完整两OS而停所有源码；当前开发宿主不充mac15/Win11运行证据。
+
+初始提交保9产品/测试完整差异+新过程docs、ABI版本/原始固定设计来源、独立源码审查/处置；交当前树/branch/base/head、bytes/SHA、实际未运行项目与准确T03输入需求。若已有类型/格式失败保首失败，不以未编译source-ready称N0技术通过。受审源码冻结，修复后给新同版复审，不改历史报告。
+
+N0下一真实运行需固定T03三构建/工具链来源、清楚的受控临时资源/编译产物/OS/架构/FS、正向与替换/alias/取消/晚返/真实close反例和实际日志；先可按批准单平台取开发证据，完整两目标OS验收另保。当前未给运行权，不自动晋级N1。真实SQLite同库/VFS/全附属IO、跨崩溃旧holder、fresh/历史/控制根耐久、T01消费/dispatch/scope/永久排空、公开首IO/完整父I06/57P0、指定双模型同版/CI/正常develop合并仍未通过。不重建原Goal，不push/PR/merge。

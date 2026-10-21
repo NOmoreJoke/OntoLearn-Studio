@@ -1,0 +1,22 @@
+{
+  "observedDate": "2026-10-21",
+  "firstAttempt": {
+    "operation": "web open four official CMake pages",
+    "result": "Fatal error: connection failed: error sending request",
+    "usedAsSuccessfulSource": false
+  },
+  "retry": {
+    "operation": "official cmake.org search",
+    "result": "success",
+    "raw": "official-cmake-source-observations.json",
+    "rulesUsed": [
+      "deployment target/sysroot before project",
+      "MSVC runtime policy and MD mapping",
+      "CXX_STANDARD_REQUIRED prevents decay"
+    ],
+    "doesNotPinInstalledCMakeVersion": true,
+    "preservation": "source URLs, observations and result digest; no full page reproduction"
+  },
+  "independentAgentSources": "official Node24 Node-API, Electron native/environment/fuse, CMake, Microsoft devnotes/API pages; final independent report records what was actually read",
+  "noSourceArchiveOrHeaderDownload": true
+}

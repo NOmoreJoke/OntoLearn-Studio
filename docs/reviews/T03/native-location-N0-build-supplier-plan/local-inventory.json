@@ -1,0 +1,118 @@
+{
+  "scope": "bounded readonly inventory, not compile/run/load/platform acceptance",
+  "pathLookup": {
+    "node": "/usr/local/bin/node",
+    "npm": "/usr/local/bin/npm",
+    "cmake": null,
+    "ninja": null,
+    "make": "/usr/bin/make",
+    "clang": "/usr/bin/clang",
+    "clang++": "/usr/bin/clang++",
+    "xcodebuild": "/usr/bin/xcodebuild",
+    "xcrun": "/usr/bin/xcrun",
+    "cl.exe": null
+  },
+  "boundedCandidates": [
+    {
+      "path": "/usr/local/bin/cmake",
+      "exists": false
+    },
+    {
+      "path": "/opt/homebrew/bin/cmake",
+      "exists": false
+    },
+    {
+      "path": "/Applications/CMake.app/Contents/bin/cmake",
+      "exists": false
+    },
+    {
+      "path": "/usr/local/bin/ninja",
+      "exists": false
+    },
+    {
+      "path": "/opt/homebrew/bin/ninja",
+      "exists": false
+    },
+    {
+      "path": "/usr/bin/ninja",
+      "exists": false
+    },
+    {
+      "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ninja",
+      "exists": false
+    }
+  ],
+  "localHeadersAndHook": [
+    {
+      "path": "/usr/local/include/node/node_api.h",
+      "bytes": 10370,
+      "sha256": "2d4560831e525b47b060ec8a0864ab73993df9e20215ce9f0fe7b24cd31af32a"
+    },
+    {
+      "path": "/usr/local/include/node/node_api_types.h",
+      "bytes": 1930,
+      "sha256": "a25356630d3058f0a0c8937d9f297e9471e037fda58c2696d8a505c2bd99cb00"
+    },
+    {
+      "path": "/usr/local/include/node/js_native_api.h",
+      "bytes": 32609,
+      "sha256": "eb03b6c850a1cfb593fd03e9e4251db8c82e9a6d9705bca91ac8d1a01fd7037c"
+    },
+    {
+      "path": "/usr/local/include/node/js_native_api_types.h",
+      "bytes": 7660,
+      "sha256": "7dd3663630849ada3a30d39abf42a192c9b6e7de63017cd32c41f5371a475b34"
+    },
+    {
+      "path": "/usr/local/include/node/node_version.h",
+      "bytes": 4247,
+      "sha256": "f956e28e9d4f73f60e5a3e7b65ae199d49728dfdec19e5a2cb31d7a79db3de1e"
+    },
+    {
+      "path": "/usr/local/include/node/common.gypi",
+      "bytes": 26856,
+      "sha256": "8210ca0b4f9697e5695c7bfc3eebc1961eec7855a11f3c9efdb873e20c941e6d"
+    },
+    {
+      "path": "/usr/local/include/node/config.gypi",
+      "bytes": 19147,
+      "sha256": "2f70fa55097ccf8711497bd44cc169cbc677238a835bec60a596f109a54cb2bd"
+    },
+    {
+      "path": "/usr/local/lib/node_modules/npm/node_modules/node-gyp/package.json",
+      "bytes": 1272,
+      "sha256": "96a55d17a07a82b4aa65e371593e57ea56da479ac60f0b1bd38d46e737d12530"
+    },
+    {
+      "path": "/usr/local/lib/node_modules/npm/node_modules/node-gyp/src/win_delay_load_hook.cc",
+      "bytes": 1003,
+      "sha256": "ec2357ffdf512151c21a52326ad3396aaa650b83e5c4a31153d216a155f68ecc"
+    },
+    {
+      "path": "/usr/local/lib/node_modules/npm/node_modules/node-gyp/LICENSE",
+      "bytes": 1102,
+      "sha256": "662a1b0115251cfb29c6aed0f221f8847bc49c6365d1c53a62c9f4bccc2489c3"
+    }
+  ],
+  "electronPackageMetadata": [
+    {
+      "path": "node_modules/electron/package.json",
+      "bytes": 744,
+      "sha256": "14ad7d5a4985e49d533d069289be4b6f97ad8afe36a93d146785bd82d184f295",
+      "version": "44.9.0"
+    },
+    {
+      "path": "node_modules/electron/LICENSE",
+      "bytes": 1096,
+      "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d"
+    },
+    {
+      "path": "node_modules/electron/abi_version",
+      "bytes": 3,
+      "sha256": "05ada863a4cf9660fd8c68e2295f1d35b2264815f5b605003d6625bd9e0492cf",
+      "text": "149"
+    }
+  ],
+  "electronRuntimeNodeNapiNotExecutedOrInferred": true,
+  "nodeHeaderUpstreamArchiveAndLicenseProvenanceNotYetPinned": true
+}
