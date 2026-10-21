@@ -1,0 +1,31 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+tests/unit/t10-report.test.ts(11,31): error TS6142: Module '../../apps/desktop/src/renderer/src/transfer/TransferPanel' was resolved to '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-transfer-export/apps/desktop/src/renderer/src/transfer/TransferPanel.tsx', but '--jsx' is not set.
