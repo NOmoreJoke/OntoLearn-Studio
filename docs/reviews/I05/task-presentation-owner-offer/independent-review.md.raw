@@ -1,0 +1,53 @@
+# task-presentation.ts 单文件未来责任 offer 独立审查
+
+结论：**有限静态文档 Pass，无阻断项。** 本报告独立核对这个 path，不沿用 jsonl offer 的核查、receiver 接收或生效结论。它可作为交接前独立意见，尚不授予 T01 写权，也不批准 formatUnsupported 方案或产品实现。
+
+## 本次实际读取与现场
+
+2026-10-21，只读主树 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation`，现场分支 `feature/I05-semantic-validation`、HEAD `aa9eb037fe65dea1d2bbf1ca529e14ad27a74b9e`。全文读取目录 `docs/reviews/I05/task-presentation-owner-offer/` 的三件输入：
+
+| 输入 | bytes | SHA-256 |
+| --- | ---: | --- |
+| `offer.md` | 2660 | `aa23b9d7e1cb8284cf460a3168557cece566dc83b86d04de42a564e698fd215a` |
+| `source-binding.json` | 630 | `a85e3f1c46cc17f392e9fbc6b9c69b6c633314370719598162a35b866b27f9b6` |
+| `approved-task-presentation.ts.raw` | 8446 | `5ddcd33a9e00e367597d20d8d2449062df577a1f3cdb53dfae2318a173858751` |
+
+本次重新读取指南字节并核 SHA：主树 AGENTS `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`；本体根共同指令 `ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff`；外审操作指令 `3630cc78ad87d1833ad33102f437d9027814cb688b319c4cd3ae9a2d0fbde4f7`，与刚完成 jsonl 审查时全文读取的版本一致。另实际读回共同指令的责任条款：I06 桌面余六文件为 main/index、task-service、preload/index、env.d.ts、App.tsx、style.css；本 path 不在其中，I05 保留其他未交路径，与根本次明确归属一致。
+
+自有写入仅 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-bridge/build/task-presentation-owner-offer-review.md`。自有分支 `feature/I05-semantic-bridge`，状态仅受保护 AGENTS 未暂存；未改写或 stage 指南。
+
+## 单文件字节绑定：通过
+
+对 `apps/desktop/src/renderer/src/task-presentation.ts` 实际执行 `git show <ref>:<path>` 读取完整字节、`git rev-parse <ref>:<path>` 核 Git blob，并用 Python 标准库独立计算长度/SHA及逐字比较。固定来源：
+
+- 批准 develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`；
+- C4 产品源 `1a79731091e671c497824c94e12dae34a4e8609b`；
+- C4 完整回归源 `40c18ea1b9ce4fef9a5235718fd7e622e2d06cc4`；
+- 现场 HEAD `aa9eb037fe65dea1d2bbf1ca529e14ad27a74b9e`。
+
+四份 Git 内容均为 **8446 B**、blob `e6ab7bda420b7207ccb7c566eefb0d248b0d3194`、SHA-256 `5ddcd33a9e00e367597d20d8d2449062df577a1f3cdb53dfae2318a173858751`；与现场工作文件及批准 raw 共六份完整 bytes 相等。收据声明与独立读回一致。
+
+以下限定路径命令输出均为空：
+
+```text
+git status --porcelain=v1 -- apps/desktop/src/renderer/src/task-presentation.ts
+git diff -- apps/desktop/src/renderer/src/task-presentation.ts
+git diff --cached -- apps/desktop/src/renderer/src/task-presentation.ts
+```
+
+因此该路径核验时无 staged/unstaged 变化。未据此声称整个主树 clean 或 C4 整体已批准。
+
+## 生效、实施范围及返还：通过
+
+1. 首段明确只涉及本文件，当前 I05 归属与 I06 六文件分开；提出 I05 停未来写入、未来唯一 T01，尚未生效或授权 receiver 写入。生效前继续服从现行责任表，例外交根协调，避免双写。
+2. 生效条件同时保留根完整登记、receiver 对本文件明确接收、独立核查，最后由根宣布生效点。末段明确两个 offer 分别核对，jsonl 的 receiver 答复不构成本文件接收。本文不代替这些实际动作。
+3. T01 从自身已批准 5f 同一 blob 实施；不能一并采用未批准 I05 树、语义代码、worker 或其他 renderer 路径。未来唯一维护者与本轮具体实施授权分开，实施仅限 root 批准的 foundation 固定文案/安全 error 门；广泛产品改动仍需单独范围。
+4. offer 未采纳或批准 formatUnsupported 的具体接口/文案，也未允许绕过 safeError、错误 catalog、JSON.stringify 或产品 UI 边界；具体设计及独立审查仍由 T01 与根走原门。本审查没有补该设计、修改固定文案或评价未提交实现。
+5. I05 继续保有旧 C4 冻结字节的只读构建、验证、全范围审查权。T01 新实现和测试不自动进入 C4，不继承旧验收；当前 offer 不改变 C4 执行输入。
+6. 若指定审查需要修复：先提交精确路径、理由、目标基线、验收；T01 先停写并保全 HEAD、当前 SHA、WIP diff 和测试状态，再由 root 书面返还单 path 与明确窗口，receiver 确认并记录实际生效点后，I05 才能独立树写入。再次交接/回收同样要求双方确认、实 SHA、根登记，不能推定自动收回。
+
+## 未验边界
+
+本次仅做文档与字节/限定 git 状态核查，没有产品、单测、构建、打包、GUI 或验收重跑；不从 offer 中列举既有执行证据推导亲测通过。未修改主树任何文档、源码、测试或配置；未操作 root state、其他聊天、应用或容器。
+
+有限结论为可用的独立责任设计核查意见，未发现应修改的实质问题。receiver 接收与 root 最终登记/生效应另行发生；本报告不能被解释为这两项已经完成。之后若输入或责任发生实质变化，应按实际 delta 核对。
