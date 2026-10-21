@@ -44,7 +44,7 @@
 
 独立不可变 checkpoint envelope：类型/版本1、databaseFormat3、项目身份、domainSnapshotRef/domainRevision、operationSequence、metadata/draft/学习当前视图及其CAS、完整coverage和内容摘要。它不是旧domain snapshot或round evidence；加载先校验类型/精确形状/coverage/同项目/真实操作来源，再验hash。checkpoint载荷仍在同SQLite，不是第二权威。
 
-完整恢复预览同时绑定域base、应用CAS、throughSequence、详细Diff及覆盖操作清单。确认后任何一侧变化均重新预览；当前脏稿generation也复验，不能让旧restore回调隐式覆盖用户新输入。恢复是新operationSequence，所有CAS向前，不把历史CAS回拨成可重用的旧代次；domain只有实际内容变化才推进。旧域快照缺应用coverage不能称完整恢复，可保留另一明确有限域恢复入口和单独范围确认。
+完整恢复预览同时绑定域base、应用CAS、throughSequence、详细Diff及覆盖操作清单。确认后任何一侧变化均重新预览；当前脏稿generation也复验，不能让旧restore回调隐式覆盖用户新输入。恢复是新operationSequence，所有CAS向前，不把历史CAS回拨成可重用的旧代次；域分支继续保留现有语义：每次成功域operation（含no-op）推进domain revision，向量仅按实际内容变化推进；应用-only恢复不调用一次域提交。旧域快照缺应用coverage不能称完整恢复，可保留另一明确有限域恢复入口和单独范围确认。
 
 学习当前视图可以恢复，但不可删除/修改真实attempt及辅助事件；重新评估原attempt必须读取其全部辅助记录，不能恢复前进度洗掉完整代做。真正新attempt使用新身份和自己的输入/辅助证据，不能因过去另一次看过示范永久判失败。模型密钥、私有vault/网关审计、端点凭据及发送授权不进入项目checkpoint/包。
 
@@ -78,3 +78,60 @@
 | F3-10 | 同一真实打包引擎运行迁移/CAS/checkpoint/握手样例与源码一致；不自动启动本机Electron。Windows/macOS和最终项目包/真人验收仍各有发布门                             |
 
 本地仅无窗口单测/静态/构建；真实桌面/凭据和指定审查应用由总控预约。基础候选全体最终同版双新审、CI、正常PR/合并和远端核验不减少。
+
+## 7. 独立挑战后的精确收窄
+
+独立设计复核 `/root/recovery_design_review` 支持四语义及真实依赖边界，提出以下5点；本节补齐前述原则，不表示canonical已批准或迁移已实现。
+
+### 7.1 备份与两层ready清单
+
+迁移前由受信入口使用SQLite一致backup到新私有目标，校验可读/结构/历史摘要；备份失败不开始迁移。回退只恢复受保护副本到明确新位置或受控替换，不能降user_version、丢新表、覆盖唯一副本或自动合并升级后新提交。
+
+Store3必需逻辑结构固定为：既有域表/约束/历史 + 项目metadata及版本头、draft头/载荷/代次墓碑、学习attempt当前视图/版本头、不可变辅助事件、同项目操作序列索引、不可变应用receipt、不可变完整checkpoint、迁移来源/ready标记。SQL精确列/索引/触发器由Store owner统一设计测试，不额外复制公共schema。
+
+Job-ready必需为：同一writer lease、原JOB_SCHEMA/全局claim及原持久job/evidence、产品公开身份映射、受信本地应用CAS适配/确认与receipt绑定、未终态对账、同版canonical与hello可选3。只有全部有效才成功hello/ready。裸Store3不因缺Job表被误判损坏，Job实例也不能凭user_version3就宣称ready。
+
+### 7.2 CAS、claim、receipt及删除重建
+
+| 操作                   | 必验输入/前置                                                                                                                             |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 域-only                | 当前domain base、原领域结构/来源/确认；不强制未触及的应用CAS                                                                              |
+| 应用-only改名/模式     | 目标metadataVersion CAS；不锁无关域输入                                                                                                   |
+| 本地自动草稿           | editor身份、expectedGeneration、contentHash/内容；boundDomainRevision是来源记录，不要求等于当前域版本，过时稿仍可安全保存但明确待重新预览 |
+| 学习当前视图           | attempt的expectedRecordVersion、课程/任务/输入引用与真实检查依据；不能由客户端提交独立成功布尔值                                          |
+| 域+应用组合            | 同时满足domain base和所有实际触及的应用CAS；一批全成或全回滚                                                                              |
+| 完整checkpoint restore | domain base、全部覆盖对象CAS、throughSequence、当前脏稿generation和独立确认；任一变化重新预览                                             |
+
+首次header generation=0；创建写成功后增1。删除只清当前载荷并保留header/墓碑，generation增1；同身份重建、restore重新出现也沿同header增1，不回到0。attempt为不可复用UUID，新真实尝试新UUID；旧attempt/辅助事件不可删除，新尝试不继承旧完整代做标记。
+
+非Job应用和Job任务使用**同一全局operation身份空间及claim**。由现有claim owner在同库扩展严格kind=job/application分支，保留旧claim指纹和记录；不新建可独立复用的第二套全局身份。每次请求先匹配已有同operation的完整项目/kind/plan/CAS/确认指纹：相同且已提交先返回原receipt，之后才对新请求校验旧CAS；不得把丢响应后的原CAS重试误判成新冲突。跨项目、Job→application或反向同UUID复用均拒绝。
+
+新receipt最小形状为：`receiptVersion=1, projectId, operationId, operationKind, operationSequence, planHash, domainBeforeRevision, domainAfterRevision, domainMarkerRef|null, applicationBeforeCAS[], applicationAfterCAS[], beforeCheckpointRef, afterCheckpointRef, committed=true`。每项CAS为`{scope:metadata|draft|learning, identity, version}`，顺序canonical；应用-only无域marker且域前后revision相同，域-only保留原marker。receipt、claim、checkpoint、序号及状态在同事务发布；无Job的应用操作不能伪造Job状态。
+
+### 7.3 保留原域no-op语义
+
+格式3不隐含改变批准Store的域revision语义：每次成功域operation，包括内容no-op，仍推进一次revision；领域向量只按真实内容/成员变化推进。应用-only提交和仅应用恢复不制造域operation，因此不改变domain snapshot/hash。组合/完整恢复是否含域分支由预览内容和明确操作类型决定，不在提交后临时换类型改变确认含义。
+
+### 7.4 checkpoint版本、coverage与辅助审计
+
+envelope明确含`checkpointVersion=1, databaseFormatVersion=3, applicationStateSchemaVersion=1`；DB3唯一固定该子形状，没有插件扩展框架。必需coverage集合为metadata、drafts、learningCurrent、assistanceAudit（域内容由domainSnapshotRef完整覆盖）。每项必须为present；空集合有实际空载荷/引用，不能用null冒充not-recorded。旧域快照缺这些字段不是完整checkpoint。
+
+迁移genesis的应用初值必须有migration-default来源，它证明迁移时新建的当前状态，不宣称过去从未有草稿/辅助记录。旧历史缺项另标not-recorded，不能倒填旧时间点checkpoint。
+
+assistanceAudit通过不可变事件截至序号/内容摘要纳入checkpoint证据，恢复不删除它之后的事件。读取原attempt独立性时使用该attempt真实全部辅助历史，而非仅旧checkpoint截止内容；恢复当前学习视图不洗掉事件。真新attempt继续用自己的新身份和证据独立评价。
+
+### 7.5 hello有限错误分支与fixture责任
+
+建议null-session只接受匹配未完成bootstrap hello的三个固定码：
+
+- `VERSION_INCOMPATIBLE / protocol.versionIncompatible / retryable=false / params={supportedVersions:[3]}`。
+- `INVALID_REQUEST / protocol.invalidRequest / retryable=false / params={field:"params"}`，仅已识别合法hello信封的参数错误。
+- `SESSION_MISMATCH / protocol.sessionMismatch / retryable=false / params={}`，初次hello错误携带非null session。
+
+无合法信封、未知method/id、无pending响应或其他null-session业务错误均关闭连接，不授予session。重复hello在既有session下拒绝并结束该会话，假registryHash也关闭/失效session并清pending，不仅清掉当前请求后继续业务。
+
+Store/Job未ready、迁移/不支持数据库格式导致构造失败时，选择**启动失败、关闭进程/连接且无成功hello**；主进程沿受限本地启动/存储失败显示和对账，不将其塞入上述null-session通配。准确“不支持项目格式”说明所需启动诊断通道由canonical/main owner一并冻结，不能靠原始异常或stderr文本解析。
+
+完整成功/三类失败JSON应直接由唯一canonical owner基于本节固定UUID/限额/实际registryHash生成，含`kind/id/method/protocolVersion/engineSessionId/ok/result|error`全部字段；在公共fixtures批准前，本设计不手写另一可漂移schema或声称已可执行。必须补新端识别旧[2]拒绝、错误retryable/额外params、成功外层/selectedVersion不符、双session不等、ready前伪成功、假hash后继续业务以及Job/application复用operation的完整反例。现有fixture常量a*64仅合成预期，不冒充真实构建hash。
+
+旧引擎 `[2]` 另为同一canonical中的有限bootstrap兼容诊断分支：只接受匹配未完成hello的完整旧 `VERSION_INCOMPATIBLE/protocol.versionIncompatible/retryable=false/params={supportedVersions:[2]}`，外层2、同id/method、null session且无额外字段。此分支仅终止启动并显示版本不兼容，不授予session、不进入业务3成功验证；不能被新端`[3]`错误分支过早当作未知帧丢掉，也不能用它放宽其他null-session或业务错误。完整旧/新两类JSON仍由唯一canonical owner统一生成测试。

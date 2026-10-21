@@ -74,3 +74,9 @@
 - 后续为同一T01会话下有界“格式3基础”候选实际集成人。已全文读 T00格式提案和独立review（含按真实依赖而非I05/I06整项等待的第8节），形成 [format3-foundation-contract](../../iterations/T01/format3-foundation-contract.md) 的最小内部状态/ready/hello/CAS/sequence/checkpoint及fixture设计。它是待T00统一/独立挑战的设计，未启用metadata/未迁移数据库。storage外的所需路径仍待双方精确交接，未自行修改。
 
 Goal保持 active：父功能FR-001–006/804全部完成、持久项目/草稿/学习、正式确认/窄桥/UI、T08/T09/T10跨功能、指定双审及最终合并仍有工作，不将内部阶段完成当作父功能或上线完成。
+
+## 可恢复提交与格式3合同准备
+
+第二阶段实际本地提交：`d9d7138f8838474038bd856e3cd2460af25d9eaf`。提交后产品源码/测试未再修改，工作树原只保留受保护 AGENTS 未暂存。指定双审前不push。
+
+格式3设计首轮独立挑战提出5处具体缺失，已在合同第7节逐项补齐：迁移backup/两层ready清单、CAS/claim/receipt/代次防ABA、保留原域no-op语义、checkpoint版本coverage/不可洗白辅助审计、hello有限错误和关闭边界。完整公共JSON及受限格式启动诊断留唯一canonical/main owner统一，未手抄第二schema或假称可执行。该文档修订仅为后续设计；独立复核已确认5项处置准确、可交T00统一，补充旧端[2]仅终止诊断分支。详见format3-contract-review.md；不触发无变化产品复测。
