@@ -1,0 +1,65 @@
+{
+  "status": "reproduced",
+  "productCommit": "26eb632f0e1210b03ac3aef4cfd71fdc4a0c5222",
+  "scope": "Existing B1 complete reasoning-output determinism only; not adoption of T05 policy.",
+  "sourceBindingToGit": {
+    "uv.lock": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+    "packages/engine/pyproject.toml": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365",
+    "packages/engine/src/ontolearn_engine/semantic.py": "7a83a1236c5262578256cc01ac6c57318a3688ab2df76fefaa61fb60a6b93033",
+    "packages/engine/src/ontolearn_engine/semantic_turtle.py": "3bfffbd74c9de1d7aec59c07ff95072339d2f6d7bf07054c49327a5e3429c6fa",
+    "packages/engine/src/ontolearn_engine/semantic_query.py": "5fbe2e8a08f81d7230e2c69c3380d1234df4ed7d14f8c3eef3669a935bf59d8a",
+    "packages/engine/src/ontolearn_engine/semantic_offline.py": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488"
+  },
+  "sameInputLockSourceAcrossAllSeeds": true,
+  "minimalDomainInput": "<urn:u> <urn:p> <urn:a> .\n<urn:u> <urn:p> <urn:b> .\n<urn:p> <http://www.w3.org/2000/01/rdf-schema#domain> <urn:C> .\n",
+  "minimalDomainInputSha256": "902a9ab4283c41e9ea6247691336776b8524b026a4eedd83d9e1100d871d5347",
+  "minimalDomainSeed1Vs2Diff": [
+    {
+      "path": "/withRule/evidence/0/basis/1/2",
+      "left": "<urn:b>",
+      "right": "<urn:a>"
+    },
+    {
+      "path": "/withRule/rdfsEvidence/0/basis/1/2",
+      "left": "<urn:b>",
+      "right": "<urn:a>"
+    },
+    {
+      "path": "/withoutRule/rdfsEvidence/0/basis/1/2",
+      "left": "<urn:b>",
+      "right": "<urn:a>"
+    }
+  ],
+  "rangeSeed1Vs5Diff": [
+    {
+      "path": "/withRule/evidence/0/basis/0/0",
+      "left": "<urn:a>",
+      "right": "<urn:b>"
+    },
+    {
+      "path": "/withRule/rdfsEvidence/0/basis/0/0",
+      "left": "<urn:a>",
+      "right": "<urn:b>"
+    },
+    {
+      "path": "/withoutRule/rdfsEvidence/0/basis/0/0",
+      "left": "<urn:a>",
+      "right": "<urn:b>"
+    }
+  ],
+  "conclusionsEqualAcrossSeeds": true,
+  "sourceLocations": {
+    "domainRangeIteration": 333,
+    "additionTieSort": 344,
+    "firstProofOnly": [
+      345,
+      347
+    ],
+    "ruleBasisProjection": [
+      391,
+      392,
+      393
+    ]
+  },
+  "limits": "Six short fresh-process seeds; complete raw outputs retained. No source/test/config changes, full check, package, GUI or frozen candidate mutation."
+}

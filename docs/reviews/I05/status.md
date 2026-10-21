@@ -1,5 +1,7 @@
 # I05 / B1 状态
 
+最新进度（C2封口后新发现）：固定C2 `2e337854838191fab09c7a584f5aa73d0939557a` / manifest31bd…保留，但不得派发或推送。独立6个新进程hashseed在相同26源码/输入/锁下真实复现domain/range的RDFS依据及下游rule basis不一致，结论集合相同；这违反原B1完整结果确定性要求。原件见 [新反例](evidence/c2-basis-counterexample/manifest.json)，C2无外部任务/报告的真实状态见 [轮次终态](round-2/observed-outcome.json)。正在准备新C3最小确定性witness修复及新语义身份、独立回归和原完整验收；不在冻结C2上偷改，不将T05设计建议当采用，也不以C2旧绿抵新版本。
+
 最新进度（2026-10-21）：C1 两指定任务已真实终态、全文读回并保全；MiniMax NotPass，ZCode 条件 Pass，不能推送 C1。C2 产品与测试头 `26eb632f0e1210b03ac3aef4cfd71fdc4a0c5222` 已完成词法修复、孤立语句拒绝、有限 GRAPH 分类及 finite-4 身份更新。当前完整检查 672 TS / 1764 Python、归档源12；Mac/Linux 新包、各7实际 stdio＋17 C4、完整 B1 各12原口径＋12 fresh测量均通过。隔离 Linux 新源码2项24.8秒、打包2项24.3秒的真实语义/原生崩溃与无响应恢复通过。203份执行输入主机/容器零漂移，原 checkout64保护源未变；独立内审发现的 IB-1 签号词法缺陷已修复，并以独立488回归、134矩阵和10真实执行链核验；最终独立原件审计7c8b…核对258归档成员/1159嵌套源码及新driver补件通过。完整证据见 [C2 验收](integrated-c2-verification.md)，逐项意见与延期理由见 [C1 处置](c1-disposition.md)。
 
 当前门禁：C2 本地验收与证据封口已完成，固定候选 head/全文件清单见 [candidate-2.json](candidate-2.json)；尚无 C2 指定两模型新全范围审查、未 push/PR/CI/合并，原 Goal 未完成。审查应用已释放总控排 T06，本线没有操作它们；待实际新预约与最新 develop 集成基线确定后，提交同候选完整新双审。最近 fetch 实查 develop 仍 `5f910b5`，不是后续冻结时永远不变的保证。Q6 十二项及原产品待决项保持开放。
