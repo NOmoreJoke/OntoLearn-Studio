@@ -1,6 +1,8 @@
 """Validate FR505 extension inputs; these tests deliberately never run inference."""
 
 import json
+import operator
+import re
 from pathlib import Path
 
 import pytest
@@ -44,14 +46,60 @@ def test_extension_input_and_plan_are_well_formed_without_filling_actual(case):
     assert "expectedRuleOutputs" not in forward
 
 
-def test_comparison_inputs_cover_true_false_and_equality_boundaries_for_each_operator():
+def integer_operands(case):
+    pattern = re.compile(r'"([123])"\^\^<http://www.w3.org/2001/XMLSchema#integer>')
+    scores = [t[2] for t in case["inputTriples"] if t[1].endswith("comparison-test:score")]
+    assert len(scores) == 1
+    left = pattern.fullmatch(scores[0])
+    right = pattern.fullmatch(case["rules"][0]["conditions"][-1]["right"])
+    assert left is not None and right is not None
+    return int(left[1]), int(right[1])
+
+
+def test_comparison_cells_distinguish_all_six_operators_without_running_rules():
     cases = [case for case in FIXTURE["cases"] if case["category"] == "integer-comparison"]
-    assert {(case["operator"], case["expectedCondition"]) for case in cases} == {
-        (operator, truth)
-        for operator in ("eq", "ne", "lt", "le", "gt", "ge")
-        for truth in (False, True)
+    signatures = {}
+    for op in ("eq", "ne", "lt", "le", "gt", "ge"):
+        values = [case for case in cases if case["operator"] == op]
+        assert sorted(integer_operands(case) for case in values) == [(1, 2), (2, 2), (3, 2)]
+        signatures[op] = tuple(
+            case["expectedCondition"] for case in sorted(values, key=integer_operands)
+        )
+    assert signatures == {
+        "eq": (False, True, False),
+        "ne": (True, False, True),
+        "lt": (True, False, False),
+        "le": (True, True, False),
+        "gt": (False, False, True),
+        "ge": (False, True, True),
     }
-    # This checks coverage, not whether an executor actually evaluates these relations.
+    assert len(set(signatures.values())) == 6
+    # Every replacement by a different operator has at least one distinguishing
+    # input cell. This is input coverage, not an execution test of a product operator.
+    for name, signature in signatures.items():
+        for other, other_signature in signatures.items():
+            if name != other:
+                assert any(a != b for a, b in zip(signature, other_signature, strict=True))
+
+
+@pytest.mark.parametrize(
+    "case",
+    [c for c in FIXTURE["cases"] if c["category"] == "integer-comparison"],
+    ids=lambda case: case["id"],
+)
+def test_scalar_expectation_math_is_correct_not_engine_execution(case):
+    # Reference arithmetic only checks the fixture oracle; it does not bind graph
+    # variables, evaluate rules, construct actual outputs, or certify a runtime.
+    reference = {
+        "eq": operator.eq,
+        "ne": operator.ne,
+        "lt": operator.lt,
+        "le": operator.le,
+        "gt": operator.gt,
+        "ge": operator.ge,
+    }
+    left, right = integer_operands(case)
+    assert reference[case["operator"]](left, right) is case["expectedCondition"]
 
 
 def test_join_counterexample_keeps_both_alarms_bound_to_one_rule_variable():
