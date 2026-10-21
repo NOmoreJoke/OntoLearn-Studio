@@ -49,3 +49,13 @@
 失败解释候选 `f3f652352a5814bee95a453f608f1dd2f2fc815a` 新全仓 check exit 0（630 TS / 1126 Python）但独立完整内审不通过：P2 事件头/载荷错误缺源位置、重复 ID 冲突无法区别投递项。原报告见 `local-review-3.md`。
 
 已补 event_validation、原始 event_index 与合法 event_sequence；事件排序采用带源位置视图，不改变 E.1 执行顺序和消费身份。新增 9 项回归，当前 83 项行为测试通过。首跑 2 failed / 81 passed 的实现漏挂字段已修复，原件 `evidence/pytest-event-source-first.log` 和修后原件 `pytest-event-source-final.log` 均保留，未改预期掩盖失败。新实现/验收须新 check 与全范围复核；本线共享责任与未验集成边界不变。
+
+## 最新固定候选与真实下一步
+
+当前产品/测试/fixture/接口候选 **`e81cfc973d251b76d8b9537adae150e8d2f930af`** 已通过新的完整独立 agent 复核，见 `local-review-4.md`；此前全部 P1/P2 均关闭，不覆盖或改写旧不通过结论。
+
+新全仓 `npm run check` 实际 exit 0：15 个 TS 文件、630 TS 测试、1135 Python 测试（内含 83 行为测试），以及 lint/格式/类型/构建/ruff。受审产品路径在完整检查和审查后与固定候选 diff 为空。新证据/源码及本地首败原件哈希见 `evidence/validation-e81cfc9.json`；原 `validation.json` 仅为历史候选记录。
+
+已形成具体 T06-S1 外审和接线请求：`review-readiness.md`，列出精确工作树/base/head、完整自有范围、指定双方新完整任务的模型和报告路径、每个依赖拥有者需交付的具体接口。该文件是请求，尚无实际预约或外审任务句柄，未操作应用或推送。
+
+本轮通过官方 `wait_threads(timeoutMs=0)` 核验总控原线程 `01a154de-843b-7a00-8a80-51ba1c0aebce` 的真实当前 turn `01a15bc8-732c-76f0-824b-dc2ae935c08b` 为 inProgress，cursor `a6fb72bc-870a-442e-8c5f-cb4caa4b7ecb:22`。这是活跃协调句柄证据，不是依赖批准或外审预约。下一步接收总控批准交接/时段，在本聊天完成真实集成、行为页、原验收、指定双审、CI/合并；完整 Goal 保持 active，未缩小成功定义。
