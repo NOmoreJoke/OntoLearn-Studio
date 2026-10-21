@@ -32,17 +32,19 @@ IMPLEMENTATION = {
 }
 
 
-def semantic_identity(*, profile=False) -> dict:
+def semantic_identity(*, profile=False, explanation=False) -> dict:
     """Private computation identity; the unwired runtime keeps its own identity.
 
     Only an actual execution branch chooses this mode. This does not register a
     public capability or authenticate a producer, snapshot or saved result.
     """
-    if type(profile) is not bool:
+    if type(profile) is not bool or type(explanation) is not bool or (explanation and not profile):
         raise ValueError("SEMANTIC_MODE_INVALID")
     return {
         **IMPLEMENTATION,
-        "executionSemanticsVersion": "i05-finite-7" if profile else "i05-finite-6",
+        "executionSemanticsVersion": ("i05-finite-8" if explanation else "i05-finite-7")
+        if profile
+        else "i05-finite-6",
     }
 
 

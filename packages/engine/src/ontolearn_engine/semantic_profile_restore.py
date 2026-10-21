@@ -125,6 +125,25 @@ class RestoreExpectation:
 
 
 @dataclass(frozen=True, slots=True)
+class ExplanationRestoreExpectation:
+    payload_digest: str
+    rows_digest: str
+    input_digest: str
+    input_domain: str
+    source_digest: str
+    definitions_digest: str
+    catalog_digest: str
+    implementation: tuple[tuple[str, str], ...]
+    input_preimage: bytes
+    source_preimage: bytes
+    schema_version: str = "i05-profile-restore-schema/2"
+    budget_version: str = RESTORE_BUDGET_VERSION
+    cache_version: str = CACHE_VERSION
+
+    direct_budget_version: str = "i05-direct-steps-budget/1"
+
+
+@dataclass(frozen=True, slots=True)
 class ChildAllocation:
     rule_id: str | None
     definition_ordinal: int | None
@@ -209,6 +228,22 @@ class RestoredProfileResult:
     rows_json: bytes
     retention: tuple
     version: str = FULL_RESULT_VERSION
+
+
+@dataclass(frozen=True, slots=True)
+class RestoredExplanationProjection:
+    payload: ReadonlyObject
+    version: str = "i05-profile-explanation-projection/1"
+
+
+@dataclass(frozen=True, slots=True)
+class RestoredExplanationResult:
+    batches: RestoredBatchSet
+    projection: RestoredExplanationProjection
+    rows_json: bytes
+    retention: tuple
+    direct_receipt: object
+    version: str = "i05-profile-explanation-restored/1"
 
 
 # Fixed canonical classes only. No saved tag selects an import or arbitrary class.
@@ -307,8 +342,10 @@ def _same(left, right, ledger, *, domain="copy", stage="A3"):
 
 
 class _Decoder:
-    def __init__(self, ledger, expected, allocation):
+    def __init__(self, ledger, expected, allocation, direct_ledger=None):
         self.ledger = ledger
+        self.direct_ledger = direct_ledger
+        self.explanation = direct_ledger is not None
         self.expected = expected
         self.allocation = allocation
         self.caches = []
@@ -874,11 +911,42 @@ class _Decoder:
             "budgetUsage": usage,
         }
 
+    def direct_steps(self, value):
+        self.object(value, ("format", "steps"))
+        _require(value["format"] == "i05-direct-rdfs-steps/1")
+
+        def premise(raw):
+            _require(type(raw) is dict and "kind" in raw)
+            kind = self.string(raw["kind"], 4)
+            self.object(raw, ("kind", "reference" if kind == "leaf" else "ordinal"))
+            _require(kind in ("leaf", "step"))
+            reference = None
+            if kind == "leaf":
+                reference = self.string(raw["reference"], 74)
+            else:
+                reference = self.integer(raw["ordinal"], minimum=0, maximum=99999)
+            return {"kind": kind, "reference" if kind == "leaf" else "ordinal": reference}
+
+        def step(raw):
+            self.object(raw, ("ordinal", "rule", "result", "premises", "depth"))
+            return {
+                "ordinal": self.integer(raw["ordinal"], minimum=0, maximum=99999),
+                "rule": self.string(raw["rule"], 64),
+                "result": self.triple_key(raw["result"]),
+                "premises": self.collect(raw["premises"], premise, maximum=2),
+                "depth": self.integer(raw["depth"], minimum=1, maximum=100000),
+            }
+
+        return {
+            "format": value["format"],
+            "steps": self.collect(value["steps"], step, maximum=100000),
+        }
+
     def reasoning(self, value):
-        self.object(value, _REASONING)
+        self.object(value, _REASONING + (("directSteps",) if self.explanation else ()))
         _require(
-            value["formatVersion"] == _FORMAT
-            and value["semanticsVersion"] == _SEMANTICS
+            value["formatVersion"] == ("i05-reasoning-result/3" if self.explanation else _FORMAT)
+            and value["semanticsVersion"] == ("i05-finite-8" if self.explanation else _SEMANTICS)
             and value["profile"] == PROFILE
         )
         definitions = self.collect(value["definitions"], self.definition, maximum=100)
@@ -934,6 +1002,9 @@ class _Decoder:
             "proofLeaves": self.collect(value["proofLeaves"], self.leaf),
             "termSources": occurrences,
             "graphBudget": self.graph_budget(value["graphBudget"]),
+            **(
+                {"directSteps": self.direct_steps(value["directSteps"])} if self.explanation else {}
+            ),
         }
 
     def drop(self):
@@ -971,11 +1042,22 @@ def _check_expectation(decoder):
         type(e.schema_version) is str
         and type(e.budget_version) is str
         and type(e.cache_version) is str
-        and e.schema_version == SCHEMA_VERSION
+        and e.schema_version
+        == ("i05-profile-restore-schema/2" if decoder.explanation else SCHEMA_VERSION)
         and e.budget_version == RESTORE_BUDGET_VERSION
         and e.cache_version == CACHE_VERSION,
         "entry",
     )
+    if decoder.explanation:
+        _require(
+            type(e.direct_budget_version) is str
+            and e.direct_budget_version == "i05-direct-steps-budget/1",
+            "entry",
+        )
+        _require(
+            type(e.input_domain) is str and e.input_domain == "profile-structured-records-json/1",
+            "entry",
+        )
     _require(type(e.input_domain) is str and e.input_domain in _DOMAINS, "entry")
     for value in (
         e.payload_digest,
@@ -993,7 +1075,9 @@ def _check_expectation(decoder):
             "entry",
         )
         decoder.string(pair[1], 16384)
-    _require(e.implementation[2][1] == _SEMANTICS, "entry")
+    _require(
+        e.implementation[2][1] == ("i05-finite-8" if decoder.explanation else _SEMANTICS), "entry"
+    )
     decoder.sha(e.implementation[0][1])
     _require(
         type(e.input_preimage) is bytes and type(e.source_preimage) is bytes,
@@ -1080,7 +1164,7 @@ def _freeze_native(value, ledger, depth=0):
         builder = frozen = item = key = None
 
 
-def _freeze_projection(raw, native, ledger):
+def _freeze_projection(raw, native, ledger, *, explanation=False):
     # The earlier safe projection has actually died before these reservations.
     # 2J: <=5m+4 refs/objects per fixed m-field object, <=2n+5 per
     # sequence builder/tuple/wrapper, plus eight bounded frames. Fixed JSON
@@ -1093,7 +1177,11 @@ def _freeze_projection(raw, native, ledger):
     try:
         payload = {key: native if key == "reasoning" else raw[key] for key in _PAYLOAD}
         frozen = _freeze_native(payload, ledger)
-        return RestoredProfileProjection(frozen)
+        return (
+            RestoredExplanationProjection(frozen)
+            if explanation
+            else RestoredProfileProjection(frozen)
+        )
     finally:
         payload = frozen = None
 
@@ -1105,7 +1193,7 @@ def _restore(decoder, payload_json, rows_json, *, fullview=False):
     _same(digest(rows_json, ledger), expected.rows_digest, ledger, stage="A1")
     _same(digest(expected.input_preimage, ledger), expected.input_digest, ledger, stage="A1")
     _same(digest(expected.source_preimage, ledger), expected.source_digest, ledger, stage="A1")
-    raw = read_json(payload_json, ledger, label="payload")
+    raw = read_json(payload_json, ledger, label="payload", schema_version=expected.schema_version)
     rows = read_json(rows_json, ledger, label="rows")
     source_raw = read_json(expected.source_preimage, ledger, label="source")
     if expected.input_domain == "utf8-turtle":
@@ -1133,7 +1221,10 @@ def _restore(decoder, payload_json, rows_json, *, fullview=False):
         original_records = decoder.collect(records_raw, lambda row: _input_triple(decoder, row))
         source = decoder.collect(source_raw, decoder.source)
     decoder.object(raw, _PAYLOAD)
-    _require(raw["format"] == _FORMAT and raw["inputDigestDomain"] == expected.input_domain)
+    _require(
+        raw["format"] == ("i05-reasoning-result/3" if decoder.explanation else _FORMAT)
+        and raw["inputDigestDomain"] == expected.input_domain
+    )
     decoder.object(raw["implementation"], _IDENTITY)
     for key, value in expected.implementation:
         _same(raw["implementation"][key], value, ledger, stage="A3")
@@ -1161,6 +1252,13 @@ def _restore(decoder, payload_json, rows_json, *, fullview=False):
         source_values = tuple(item["value"].source for item in occurrences)
         _same(source_values, source, ledger, stage="A9")
         del source_values
+    if decoder.explanation:
+        from .semantic_profile_production import _direct_json_size
+
+        decoder.direct_ledger.note_carrier(
+            _direct_json_size(raw["reasoning"]["directSteps"], decoder.direct_ledger)
+        )
+        _validate_explanation(decoder, native, original_records)
     projection = _ProfileProjection()
     safe_reason = _project(decoder, projection, native, "A7")
     safe_source = _project(decoder, projection, source, "A8")
@@ -1210,7 +1308,11 @@ def _restore(decoder, payload_json, rows_json, *, fullview=False):
     ledger.charge("copy", 1024 * slots + 1024, stage="A16")
     ledger.reserve("objects", 256 * slots + 256, stage="A16")
     ledger.reserve("scalar", 1024 * slots + 1024, stage="A16")
-    projection = _freeze_projection(raw, native, ledger) if fullview else None
+    projection = (
+        _freeze_projection(raw, native, ledger, explanation=decoder.explanation)
+        if fullview
+        else None
+    )
     parse_usage = tuple(pool.usage for pool in decoder.parse_pools)
     children, caps = [], []
     ledger.charge("traversal", len(decoder.children), stage="A16")
@@ -1290,12 +1392,21 @@ def _restore_operation(
     allocation: OriginalAllocation,
     ledger: RestoreLedger,
     fullview: bool,
+    direct_ledger=None,
 ):
     """Restore once, then publish all child facts or raise a safe finite failure.
 
     No native batch/value is accepted as a substitute for wire. A fresh ledger
     is a fresh pure operation, not a persisted retry or producer capability.
     """
+    from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+    from .semantic_profile_production import _direct_stream
+
+    if direct_ledger is not None:
+        if type(direct_ledger) is not DirectStepsLedger:
+            raise DirectStepsFailure()
+        if direct_ledger.state != "new":
+            raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
     if type(ledger) is not RestoreLedger:
         _invalid("entry")
     if ledger.state != "new":
@@ -1303,12 +1414,16 @@ def _restore_operation(
         _invalid("entry")
     decoder = None
     children = parse_usage = caps = projection = inner_batches = retention = None
-    outcome = None
+    outcome = direct_receipt = None
     error = None
     try:
+        if direct_ledger is not None:
+            direct_ledger.begin(stage="restore")
         _require(type(payload_json) is bytes and type(rows_json) is bytes, "entry")
         _require(
-            type(expected) is RestoreExpectation and type(allocation) is OriginalAllocation,
+            type(expected)
+            is (RestoreExpectation if direct_ledger is None else ExplanationRestoreExpectation)
+            and type(allocation) is OriginalAllocation,
             "entry",
             reason="RESTORE_EXPECTATION_MISSING",
         )
@@ -1324,6 +1439,24 @@ def _restore_operation(
         preimage = len(expected.input_preimage) + len(expected.source_preimage)
         if size > _MAX_BYTES or preimage > _MAX_PREIMAGE:
             raise RestoreFailure("RESTORE_LIMIT", "resource", stage="entry")
+        if direct_ledger is not None:
+            # Covers complete supplied J, all ordinary parse/project/hash/freeze
+            # buffers. Original R opaque child reservations remain in R only.
+            _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
+            from .semantic_profile_restore_budget import JSON_KEYS
+
+            # Both lexical passes: each key scans <=n fixed strings and <=32
+            # prior keys. Sum key lengths <=J, key count <=J/3, fixed length
+            # <=maxlen. This deliberately loose expression covers both passes,
+            # all fixed-key/prior-key byte comparisons and 256J other dispatch.
+            # It is one D prepayment, not new R capacity or a refundable pool.
+            factor = (
+                256
+                + 4 * (len(JSON_KEYS) + 4)
+                + sum(map(len, JSON_KEYS))
+                + 64 * max(map(len, JSON_KEYS))
+            )
+            direct_ledger.debit("scan_copy", factor * (size + preimage))
         ledger.begin(size, preimage, len(allocation.children))
         # Caller-held exact context is also live: three bounded ID copies per
         # slot, implementation/digest strings, limits, records and decoder state.
@@ -1332,7 +1465,7 @@ def _restore_operation(
         ledger.reserve("objects", 128 * count + 128, stage="entry")
         ledger.reserve("scalar", 524288 * count + 4096, stage="entry")
         ledger.charge("traversal", 128 * count + 128, stage="entry")
-        decoder = _Decoder(ledger, expected, allocation)
+        decoder = _Decoder(ledger, expected, allocation, direct_ledger)
         decoder.rows_json = rows_json
         children, parse_usage, caps, projection = _restore(
             decoder, payload_json, rows_json, fullview=fullview
@@ -1354,11 +1487,20 @@ def _restore_operation(
             parse_usage,
             caps,
         )
-        outcome = (
-            RestoredProfileResult(inner_batches, projection, rows_json, retention)
-            if fullview
-            else inner_batches
-        )
+        if direct_ledger is None:
+            outcome = (
+                RestoredProfileResult(inner_batches, projection, rows_json, retention)
+                if fullview
+                else inner_batches
+            )
+        else:
+            direct_receipt = direct_ledger.receipt()
+            outcome = RestoredExplanationResult(
+                inner_batches, projection, rows_json, retention, direct_receipt
+            )
+            direct_ledger.transferred()
+    except DirectStepsFailure as exc:
+        error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
     except RestoreFailure as exc:
         error = RestoreFailure(
             exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain
@@ -1383,9 +1525,13 @@ def _restore_operation(
     finally:
         # The public error traceback keeps this frame.  Drop every separate
         # native result reference, including receipt-construction failure paths.
-        children = parse_usage = caps = projection = inner_batches = retention = None
+        children = parse_usage = caps = projection = inner_batches = retention = direct_receipt = (
+            None
+        )
         if error is not None:
             outcome = None
+            if direct_ledger is not None:
+                direct_ledger.failed()
         try:
             if decoder is not None:
                 decoder.drop()
@@ -1441,3 +1587,181 @@ def restore_profile_result(
         ledger=ledger,
         fullview=True,
     )
+
+
+def _explanation_key(record, ledger):
+    chars = sum(
+        len(v)
+        for term in record
+        for v in (term.lexical_form, term.datatype_iri, term.language_raw)
+        if v is not None
+    )
+    ledger.debit("work", 128 + 64 * chars)
+    ledger.debit("scan_copy", 32 * chars + 128)
+    ledger.reserve("scalar", 32 * chars + 128)
+    ledger.reserve("objects", 64)
+    return semantic._key(tuple(semantic._profile_term(term) for term in record))
+
+
+def _validate_explanation(decoder, native, original_records):
+    from .semantic_profile_directsteps import encode_identity_key, validate_direct_steps
+
+    ledger = decoder.direct_ledger
+    entries = key = identity = record = actual_evidence = inputs = firing = head = leaf = (
+        raw_leaf
+    ) = expected_id = None
+    held = 8 * len(original_records) + 32
+    ledger.reserve("objects", held)
+    try:
+        entries = []
+        for record in original_records:
+            key = _explanation_key(record, ledger)
+            identity = encode_identity_key(record, ledger)
+            entries.append((identity, key))
+        from hashlib import sha256
+
+        from .semantic_profile_directsteps import DirectStepsFailure
+
+        for leaf in native["proofLeaves"]:
+            chars = sum(map(len, leaf["triple"])) + 32
+            ledger.debit("work", 32 * chars + 128)
+            ledger.debit("scan_copy", 32 * chars + 128)
+            ledger.reserve("scalar", 32 * chars + 128)
+            ledger.reserve("objects", 32)
+            raw_leaf = ("i05-profile-proof-leaf/1\0" + "\0".join(leaf["triple"])).encode("utf-8")
+            expected_id = "i05-proof:" + sha256(raw_leaf).hexdigest()
+            if leaf["reference"] != expected_id:
+                raise DirectStepsFailure(stage="restore")
+        # Saved evidence must describe the actual decoded typed head occurrences,
+        # not manufacture unrelated roots through range-valid indices.
+        ledger.reserve("objects", 64 + 64 * len(native["evidence"]))
+        actual_evidence = []
+        for firing_index, firing in enumerate(native["firingGroups"]):
+            inputs = [
+                _explanation_key((t.subject, t.predicate, t.object), ledger) for t in firing.when
+            ]
+            for head in firing.heads:
+                actual_evidence.append(
+                    {
+                        "rule": firing.rule_id,
+                        "firingIndex": firing_index,
+                        "headIndex": head.index,
+                        "result": _explanation_key(
+                            (head.triple.subject, head.triple.predicate, head.triple.object), ledger
+                        ),
+                        "inputs": inputs,
+                        "basis": firing.basis,
+                    }
+                )
+        _require(len(actual_evidence) == len(native["evidence"]), "A5")
+        for actual_row, saved_row in zip(actual_evidence, native["evidence"], strict=True):
+            for name in ("rule", "firingIndex", "headIndex", "result", "inputs", "basis"):
+                _same(actual_row[name], saved_row[name], decoder.ledger, stage="A5")
+        actual_row = saved_row = None
+        actual_evidence = inputs = firing = head = leaf = raw_leaf = expected_id = None
+        validate_direct_steps(
+            native["directSteps"],
+            proof_leaves=native["proofLeaves"],
+            rdfs=native["rdfs"],
+            rdfs_evidence=native["rdfsEvidence"],
+            seed_entries=tuple(entries),
+            ledger=ledger,
+        )
+    finally:
+        entries = key = identity = record = actual_evidence = inputs = firing = head = leaf = (
+            raw_leaf
+        ) = expected_id = actual_row = saved_row = native = original_records = None
+        ledger.discard(objects=held)
+
+
+def restore_profile_explanation_result(
+    payload_json, rows_json, *, expected, allocation, ledger, direct_ledger
+):
+    """Explicit schema2 full result; local DAG checks never rerun inference."""
+    from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+
+    if type(direct_ledger) is not DirectStepsLedger:
+        raise DirectStepsFailure()
+    return _restore_operation(
+        payload_json,
+        rows_json,
+        expected=expected,
+        allocation=allocation,
+        ledger=ledger,
+        fullview=True,
+        direct_ledger=direct_ledger,
+    )
+
+
+def explanation_roots(view, target_keys, *, direct_ledger):
+    """All matching occurrences within an already granted complete fullview."""
+    from .semantic_profile_directsteps import (
+        DirectStepsFailure,
+        DirectStepsLedger,
+        RootRef,
+        locate_roots,
+    )
+
+    if type(direct_ledger) is not DirectStepsLedger:
+        raise DirectStepsFailure()
+    if direct_ledger.state != "new":
+        raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+    entries = result = reason = row = key = error = refs = leaves = steps = heads = None
+    try:
+        direct_ledger.begin(stage="roots")
+        if type(view) is not RestoredExplanationResult or type(target_keys) is not tuple:
+            raise DirectStepsFailure(stage="roots")
+        reason = view.projection.payload["reasoning"]
+        leaves, steps, heads = (
+            reason["proofLeaves"].items,
+            reason["directSteps"]["steps"].items,
+            reason["evidence"].items,
+        )
+        count = len(leaves) + len(steps) + len(heads)
+        direct_ledger.debit("work", 64 * count + 128)
+        direct_ledger.reserve("objects", 16 * count + 128)
+        entries = []
+        for row in leaves:
+            key = tuple(row["triple"].items)
+            entries.append((key, RootRef("leaf", reference=row["reference"])))
+        for row in steps:
+            key = tuple(row["result"].items)
+            entries.append((key, RootRef("step", ordinal=row["ordinal"])))
+        for row in heads:
+            key = tuple(row["result"].items)
+            entries.append(
+                (
+                    key,
+                    RootRef(
+                        "ruleHead", firing_index=row["firingIndex"], head_index=row["headIndex"]
+                    ),
+                )
+            )
+        refs = locate_roots(tuple(entries), target_keys, direct_ledger)
+        direct_ledger.debit("work", 16 * len(refs) + 16)
+        direct_ledger.reserve("objects", 16 * len(refs) + 16)
+        result = tuple(
+            {"kind": ref.kind, "reference": ref.reference}
+            if ref.kind == "leaf"
+            else {"kind": ref.kind, "ordinal": ref.ordinal}
+            if ref.kind == "step"
+            else {"kind": ref.kind, "firingIndex": ref.firing_index, "headIndex": ref.head_index}
+            for ref in refs
+        )
+        refs = None
+        # RootRef objects in result remain covered by the retained block.
+        entries = reason = row = key = leaves = steps = heads = None
+        direct_ledger.receipt()
+        direct_ledger.completed()
+    except DirectStepsFailure as exc:
+        error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+    except Exception:
+        error = DirectStepsFailure("DIRECT_STEPS_INTERNAL", stage="roots")
+    finally:
+        entries = reason = row = key = view = target_keys = refs = leaves = steps = heads = None
+        if error is not None:
+            result = None
+            direct_ledger.failed()
+    if error is not None:
+        raise error
+    return result

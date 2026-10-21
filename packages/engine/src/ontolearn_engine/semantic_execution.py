@@ -645,6 +645,7 @@ def _execute_profile(
     from ontolearn_engine.quality.rule_profile import PROFILE, ProfileFailure, SourceRecord
     from ontolearn_engine.resources import semantic_identity
     from ontolearn_engine.semantic_offline import SemanticError, offline
+    from ontolearn_engine.semantic_profile_directsteps import DirectStepsFailure
     from ontolearn_engine.semantic_profile_input import MaterialFailure
     from ontolearn_engine.semantic_turtle import (
         _disabled_ids,
@@ -715,14 +716,19 @@ def _execute_profile(
                 )
         producer, stage, origin = Producer.PROJECTION, Stage.PROJECTION, Origin.TRUSTED_INTERNAL
         if _capture is not None:
+            if _capture.direct_ledger is not None:
+                _capture.before_explanation_projection(result, source, tuple(rules))
             _capture.before_projection()
         projection = _ProfileProjection()
         safe_result = projection.value(result)
+        if _capture is not None:
+            _capture.projected(safe_result)
         source_encoded = _profile_json_bytes(projection.value(source))
         defs_encoded = _profile_json_bytes(projection.value(tuple(rules)))
+        explanation = _capture is not None and _capture.direct_ledger is not None
         payload = {
-            "format": "i05-reasoning-result/2",
-            "implementation": semantic_identity(profile=True),
+            "format": "i05-reasoning-result/3" if explanation else "i05-reasoning-result/2",
+            "implementation": semantic_identity(profile=True, explanation=explanation),
             "reasoning": safe_result,
             "inputDigest": hashlib.sha256(original_bytes).hexdigest(),
             "inputDigestDomain": input_domain,
@@ -753,7 +759,7 @@ def _execute_profile(
         if _capture is not None:
             _capture.completed(result, encoded, rows_encoded, source_encoded, defs_encoded, wire)
         return wire
-    except MaterialFailure:
+    except (MaterialFailure, DirectStepsFailure):
         raise
     except semantic.ProfileReasonError as error:
         actual_stage = Stage.RULE if error.context in {"rule", "closure"} else Stage.SYNTAX
