@@ -1,0 +1,2368 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-iri-fix
+configfile: pyproject.toml
+collected 131 items
+
+packages/engine/tests/test_quality_profile_iri_boundary.py FFFFFFFFFFFFF [  9%]
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF....FFFFFFFFFFFFFFFFFF...F..... [ 64%]
+............................................F.                           [100%]
+
+=================================== FAILURES ===================================
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+00A0] _______
+
+char = '\xa0', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+1680] _______
+
+char = '\u1680', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2000] _______
+
+char = '\u2000', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2001] _______
+
+char = '\u2001', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2002] _______
+
+char = '\u2002', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2003] _______
+
+char = '\u2003', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2004] _______
+
+char = '\u2004', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2005] _______
+
+char = '\u2005', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2006] _______
+
+char = '\u2006', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2007] _______
+
+char = '\u2007', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2008] _______
+
+char = '\u2008', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2009] _______
+
+char = '\u2009', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+200A] _______
+
+char = '\u200a', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2028] _______
+
+char = '\u2028', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2029] _______
+
+char = '\u2029', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+202F] _______
+
+char = '\u202f', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+205F] _______
+
+char = '\u205f', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+3000] _______
+
+char = '\u3000', template = 'urn:iri:a{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+00A0] _
+
+char = '\xa0', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+1680] _
+
+char = '\u1680', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2000] _
+
+char = '\u2000', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2001] _
+
+char = '\u2001', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2002] _
+
+char = '\u2002', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2003] _
+
+char = '\u2003', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2004] _
+
+char = '\u2004', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2005] _
+
+char = '\u2005', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2006] _
+
+char = '\u2006', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2007] _
+
+char = '\u2007', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2008] _
+
+char = '\u2008', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2009] _
+
+char = '\u2009', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+200A] _
+
+char = '\u200a', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2028] _
+
+char = '\u2028', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2029] _
+
+char = '\u2029', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+202F] _
+
+char = '\u202f', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+205F] _
+
+char = '\u205f', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+3000] _
+
+char = '\u3000', template = 'https://example.org/?a={}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+00A0] ______
+
+char = '\xa0', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+1680] ______
+
+char = '\u1680', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2000] ______
+
+char = '\u2000', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2001] ______
+
+char = '\u2001', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2002] ______
+
+char = '\u2002', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2003] ______
+
+char = '\u2003', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2004] ______
+
+char = '\u2004', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2005] ______
+
+char = '\u2005', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2006] ______
+
+char = '\u2006', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2007] ______
+
+char = '\u2007', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2008] ______
+
+char = '\u2008', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2009] ______
+
+char = '\u2009', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+200A] ______
+
+char = '\u200a', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2028] ______
+
+char = '\u2028', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2029] ______
+
+char = '\u2029', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+202F] ______
+
+char = '\u202f', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+205F] ______
+
+char = '\u205f', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+______ test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+3000] ______
+
+char = '\u3000', template = 'urn:iri:a#{}b'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    @pytest.mark.parametrize(
+        "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
+    )
+    def test_ucschar_whitespace_public_parse_and_key(char, template):
+        text = template.format(char)
+        budget = Budget()
+>       value = parse_value(iri(text), LOC, budget)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+00A0] _____________
+
+char = '\xa0'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+1680] _____________
+
+char = '\u1680'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+2000] _____________
+
+char = '\u2000'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+2001] _____________
+
+char = '\u2001'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+2002] _____________
+
+char = '\u2002'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+2003] _____________
+
+char = '\u2003'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+2004] _____________
+
+char = '\u2004'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+2005] _____________
+
+char = '\u2005'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+2006] _____________
+
+char = '\u2006'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+2007] _____________
+
+char = '\u2007'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+2008] _____________
+
+char = '\u2008'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+2009] _____________
+
+char = '\u2009'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+200A] _____________
+
+char = '\u200a'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+2028] _____________
+
+char = '\u2028'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+2029] _____________
+
+char = '\u2029'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+202F] _____________
+
+char = '\u202f'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+205F] _____________
+
+char = '\u205f'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_____________ test_ucschar_whitespace_compile_and_evaluate[U+3000] _____________
+
+char = '\u3000'
+
+    @pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
+    def test_ucschar_whitespace_compile_and_evaluate(char):
+        text = "urn:iri:a" + char + "b#part"
+        spec, catalog, match = program(text)
+        budget = Budget()
+>       batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:245: in compile_rules
+    iri_minimum(iri, budget)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE', location = None, classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+_ test_iri_identity_is_exact_without_normalization[urn:iri:%C2%A0-urn:iri:\xa0] _
+
+left = 'urn:iri:%C2%A0', right = 'urn:iri:\xa0'
+
+    @pytest.mark.parametrize(
+        ("left", "right"),
+        (
+            ("urn:iri:é", "urn:iri:e\u0301"),
+            ("HTTP://example.org/a", "http://example.org/a"),
+            ("http://EXAMPLE.org/a", "http://example.org/a"),
+            ("urn:iri:%C2%A0", "urn:iri:\u00a0"),
+            ("urn:iri:%2f", "urn:iri:%2F"),
+            ("urn:iri:a#one", "urn:iri:a#two"),
+        ),
+    )
+    def test_iri_identity_is_exact_without_normalization(left, right):
+        budget = Budget()
+>       a, b = parse_value(iri(left), LOC, budget), parse_value(iri(right), LOC, budget)
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:120: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+___________________ test_multibyte_term_cap_uses_utf8_bytes ____________________
+
+    def test_multibyte_term_cap_uses_utf8_bytes():
+        text = "urn:" + "\u00a0" * 3  # 7 code points, 10 UTF-8 bytes.
+        with pytest.raises(ProfileFailure) as caught:
+            parse_value(iri(text), LOC, Budget(replace(ProfileLimits(), term_bytes=9)))
+        assert caught.value.reason == "RULE_INPUT_BUDGET"
+        budget = Budget(replace(ProfileLimits(), term_bytes=10))
+>       assert parse_value(iri(text), LOC, budget).value == text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_iri_boundary.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:124: in parse_value
+    term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:94: in iri_minimum
+    fail(location=location)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INVALID_RULE'
+location = InputLocation(section='comparison', index=0, side='left', span=(3, 7))
+classification = 'input'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INVALID_RULE
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:110: ProfileFailure
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+00A0]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+1680]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2000]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2001]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2002]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2003]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2004]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2005]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2006]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2007]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2008]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2009]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+200A]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2028]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+2029]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+202F]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+205F]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a{}b-U+3000]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+00A0]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+1680]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2000]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2001]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2002]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2003]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2004]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2005]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2006]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2007]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2008]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2009]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+200A]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2028]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+2029]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+202F]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+205F]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[https://example.org/?a={}b-U+3000]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+00A0]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+1680]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2000]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2001]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2002]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2003]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2004]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2005]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2006]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2007]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2008]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2009]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+200A]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2028]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+2029]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+202F]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+205F]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_public_parse_and_key[urn:iri:a#{}b-U+3000]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+00A0]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+1680]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+2000]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+2001]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+2002]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+2003]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+2004]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+2005]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+2006]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+2007]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+2008]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+2009]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+200A]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+2028]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+2029]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+202F]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+205F]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_ucschar_whitespace_compile_and_evaluate[U+3000]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_iri_identity_is_exact_without_normalization[urn:iri:%C2%A0-urn:iri:\xa0]
+FAILED packages/engine/tests/test_quality_profile_iri_boundary.py::test_multibyte_term_cap_uses_utf8_bytes
+======================== 74 failed, 57 passed in 0.66s =========================

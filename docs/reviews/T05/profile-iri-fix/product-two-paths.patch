@@ -1,0 +1,227 @@
+diff --git a/packages/engine/src/ontolearn_engine/quality/rule_terms.py b/packages/engine/src/ontolearn_engine/quality/rule_terms.py
+index bcea7c7..148313c 100644
+--- a/packages/engine/src/ontolearn_engine/quality/rule_terms.py
++++ b/packages/engine/src/ontolearn_engine/quality/rule_terms.py
+@@ -90,7 +90,12 @@ def iri_minimum(text, budget, location=None, lexical=False):
+         internal(location)
+     utf8_size(text, budget, budget.limits.term_bytes if lexical else 16384, location)
+     budget.debit(len(text), location=location)
+-    if not SCHEME.match(text) or any(c.isspace() or c in '<>"{}|^`\\' for c in text):
++    # RFC 3987 ucschar includes Unicode whitespace from U+00A0 upward.
++    # Keep the existing lower-code-point and delimiter guards; full IRI grammar
++    # validation belongs upstream, and RDF IRI identity keeps the exact spelling.
++    if not SCHEME.match(text) or any(
++        (ord(c) < 0xA0 and c.isspace()) or c in '<>"{}|^`\\' for c in text
++    ):
+         fail(location=location)
+     return text
+ 
+diff --git a/packages/engine/tests/test_quality_profile_iri_boundary.py b/packages/engine/tests/test_quality_profile_iri_boundary.py
+new file mode 100644
+index 0000000..99e4262
+--- /dev/null
++++ b/packages/engine/tests/test_quality_profile_iri_boundary.py
+@@ -0,0 +1,203 @@
++"""IRI minimum regression: RFC 3987 §2.2 and RDF 1.1 Concepts §3.2.
++
++These public-entry tests exercise the private given-binding mechanism, not an
++upstream complete IRI parser or graph matcher. Expected spellings stay literal.
++"""
++
++from dataclasses import replace
++
++import pytest
++from ontolearn_engine.quality.rule_comparator import compare_values
++from ontolearn_engine.quality.rule_firing import (
++    BindingMatch,
++    Catalog,
++    Comparison,
++    RuleSpec,
++    Triple,
++    Variable,
++    compile_rules,
++    evaluate_bound_batch,
++)
++from ontolearn_engine.quality.rule_profile import (
++    Budget,
++    InputLocation,
++    ProfileFailure,
++    ProfileLimits,
++    TermInput,
++)
++from ontolearn_engine.quality.rule_terms import parse_value, term_key
++
++# Every Python 3.12 whitespace code point in RFC 3987's ucschar ranges.
++UCS_WHITESPACE = (
++    "\u00a0",
++    "\u1680",
++    *(chr(n) for n in range(0x2000, 0x200B)),
++    "\u2028",
++    "\u2029",
++    "\u202f",
++    "\u205f",
++    "\u3000",
++)
++LEGACY_REJECTED = tuple(' \t\n\r\v\f\x1c\x1d\x1e\x1f\x85<>"{}|^`\\')
++LOC = InputLocation("comparison", 0, "left", (3, 7))
++
++
++def iri(text):
++    return TermInput("iri", text)
++
++
++def program(text, actual=None):
++    """Unicode is used in catalog, constants, binding and emitted triple."""
++    predicate, output = iri(text + "/input"), iri(text + "/output")
++    subject, obj = Variable("?s"), Variable("?o")
++    spec = RuleSpec(
++        "iri-boundary",
++        (Triple(subject, predicate, obj),),
++        (Comparison(obj, "eq", iri(text)),),
++        (Triple(subject, output, iri(text)),),
++    )
++    bound = iri(text if actual is None else actual)
++    when = (Triple(bound, predicate, bound),)
++    match = BindingMatch(spec.rule_id, (("?s", bound), ("?o", bound)), when, (("fact:1",),))
++    return spec, Catalog(object_properties=(predicate.lexical_form, output.lexical_form)), match
++
++
++@pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
++@pytest.mark.parametrize(
++    "template", ("urn:iri:a{}b", "https://example.org/?a={}b", "urn:iri:a#{}b")
++)
++def test_ucschar_whitespace_public_parse_and_key(char, template):
++    text = template.format(char)
++    budget = Budget()
++    value = parse_value(iri(text), LOC, budget)
++    assert value.domain == "I"
++    assert value.value == text
++    assert value.term == iri(text)
++    assert term_key(value, budget) == ("iri", text, "", "")
++
++
++@pytest.mark.parametrize(
++    "text", ("urn:例子:中文", "urn:iri:😀", "urn:iri:a#fragment", "urn:iri:a#")
++)
++def test_ordinary_unicode_and_fragment(text):
++    budget = Budget()
++    assert term_key(parse_value(iri(text), LOC, budget), budget) == ("iri", text, "", "")
++
++
++@pytest.mark.parametrize("char", UCS_WHITESPACE, ids=lambda c: f"U+{ord(c):04X}")
++def test_ucschar_whitespace_compile_and_evaluate(char):
++    text = "urn:iri:a" + char + "b#part"
++    spec, catalog, match = program(text)
++    budget = Budget()
++    batch = evaluate_bound_batch(compile_rules((spec,), catalog, budget), (match,), budget)
++    expected = Triple(iri(text), iri(text + "/output"), iri(text))
++    assert batch.facts == (expected,)
++    assert len(batch.firings) == 1
++    firing = batch.firings[0]
++    assert firing.bindings == (("?o", iri(text)), ("?s", iri(text)))
++    assert firing.when == match.when
++    assert firing.proof_leaves == (("fact:1",),)
++    assert tuple(h.triple for h in firing.heads) == (expected,)
++    assert firing.comparisons[0].left.value == text
++    assert firing.comparisons[0].right.value == text
++    assert firing.comparisons[0].result is True
++
++
++@pytest.mark.parametrize(
++    ("left", "right"),
++    (
++        ("urn:iri:é", "urn:iri:e\u0301"),
++        ("HTTP://example.org/a", "http://example.org/a"),
++        ("http://EXAMPLE.org/a", "http://example.org/a"),
++        ("urn:iri:%C2%A0", "urn:iri:\u00a0"),
++        ("urn:iri:%2f", "urn:iri:%2F"),
++        ("urn:iri:a#one", "urn:iri:a#two"),
++    ),
++)
++def test_iri_identity_is_exact_without_normalization(left, right):
++    budget = Budget()
++    a, b = parse_value(iri(left), LOC, budget), parse_value(iri(right), LOC, budget)
++    assert term_key(a, budget) == ("iri", left, "", "")
++    assert term_key(b, budget) == ("iri", right, "", "")
++    assert compare_values(a, "eq", b, budget) is False
++    assert compare_values(a, "ne", b, budget) is True
++    spec, catalog, match = program(left, right)
++    run_budget = Budget()
++    batch = evaluate_bound_batch(compile_rules((spec,), catalog, run_budget), (match,), run_budget)
++    assert batch.firings == ()
++    assert batch.facts == ()
++
++
++@pytest.mark.parametrize("char", LEGACY_REJECTED, ids=lambda c: f"U+{ord(c):04X}")
++def test_legacy_forbidden_characters_keep_safe_public_error(char):
++    text = "urn:secret:" + char + "private-input"
++    with pytest.raises(ProfileFailure) as caught:
++        parse_value(iri(text), LOC, Budget())
++    assert caught.value.reason == "INVALID_RULE"
++    assert caught.value.classification == "input"
++    assert caught.value.location == LOC
++    assert str(caught.value) == "INVALID_RULE"
++    assert text not in repr(caught.value)
++
++
++@pytest.mark.parametrize("char", LEGACY_REJECTED, ids=lambda c: f"U+{ord(c):04X}")
++def test_legacy_forbidden_characters_compile_and_evaluate(char):
++    bad = "urn:secret:" + char + "private-input"
++    spec, catalog, _ = program(bad)
++    with pytest.raises(ProfileFailure) as compiled:
++        compile_rules((spec,), catalog, Budget())
++    assert compiled.value.reason == "INVALID_RULE"
++    assert compiled.value.classification == "input"
++    spec, catalog, match = program("urn:valid", bad)
++    budget = Budget()
++    plan = compile_rules((spec,), catalog, budget)
++    with pytest.raises(ProfileFailure) as evaluated:
++        evaluate_bound_batch(plan, (match,), budget)
++    assert evaluated.value.reason == "INTERNAL_ERROR"
++    assert evaluated.value.classification == "internal"
++    assert str(evaluated.value) == "INTERNAL_ERROR"
++    assert bad not in repr(evaluated.value)
++
++
++@pytest.mark.parametrize("text", ("relative", "#fragment", "1urn:value", "urn:bad\ud800"))
++def test_scheme_and_surrogate_rejection_unchanged(text):
++    with pytest.raises(ProfileFailure) as caught:
++        parse_value(iri(text), LOC, Budget())
++    assert caught.value.reason == "INVALID_RULE"
++    assert caught.value.location == LOC
++
++
++@pytest.mark.parametrize(
++    ("limits", "reason"),
++    (
++        (replace(ProfileLimits(), term_bytes=8), "RULE_INPUT_BUDGET"),
++        (replace(ProfileLimits(), input_bytes=1), "RULE_INPUT_BUDGET"),
++        (replace(ProfileLimits(), work=1), "WORK_LIMIT"),
++    ),
++)
++def test_valid_unicode_still_obeys_tightened_budgets(limits, reason):
++    with pytest.raises(ProfileFailure) as caught:
++        parse_value(iri("urn:iri:\u00a0"), LOC, Budget(limits))
++    assert caught.value.reason == reason
++    assert caught.value.classification == "resource"
++    assert str(caught.value) == reason
++
++
++def test_multibyte_term_cap_uses_utf8_bytes():
++    text = "urn:" + "\u00a0" * 3  # 7 code points, 10 UTF-8 bytes.
++    with pytest.raises(ProfileFailure) as caught:
++        parse_value(iri(text), LOC, Budget(replace(ProfileLimits(), term_bytes=9)))
++    assert caught.value.reason == "RULE_INPUT_BUDGET"
++    budget = Budget(replace(ProfileLimits(), term_bytes=10))
++    assert parse_value(iri(text), LOC, budget).value == text
++
++
++def test_exact_term_type_guard_still_inert():
++    class Foreign:
++        def __getattribute__(self, name):
++            raise AssertionError("foreign callback invoked")
++
++    with pytest.raises(ProfileFailure) as caught:
++        parse_value(Foreign(), LOC, Budget())
++    assert caught.value.reason == "INVALID_RULE"
++    assert caught.value.location == LOC

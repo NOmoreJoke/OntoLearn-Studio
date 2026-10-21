@@ -1,0 +1,167 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-iri-fix
+
+
+ Test Files  16 passed (16)
+      Tests  635 passed (635)
+   Start at  15:11:48
+   Duration  6.76s (tests 79%, transform 14%, import 6%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  339.29 kB
+
+✓ built in 28ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  276.26 kB
+
+✓ built in 22ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-DaDpMxpv.js   865.34 kB
+
+✓ built in 64ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+211 files already formatted
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-iri-fix
+configfile: pyproject.toml
+testpaths: packages/engine/tests
+collected 2739 items
+
+packages/engine/tests/test_binding_regressions.py ...................... [  0%]
+...................                                                      [  1%]
+packages/engine/tests/test_contract_v2.py .............................. [  2%]
+........................................................................ [  5%]
+........................................................................ [  7%]
+........................................................................ [ 10%]
+........................................................................ [ 13%]
+........................................................................ [ 15%]
+...........................................                              [ 17%]
+packages/engine/tests/test_coordinator_control.py ...................    [ 17%]
+packages/engine/tests/test_frame_corpus.py ............................. [ 19%]
+........................                                                 [ 19%]
+packages/engine/tests/test_handshake_deadline.py ...                     [ 20%]
+packages/engine/tests/test_i04_lifecycle_boundaries.py .............     [ 20%]
+packages/engine/tests/test_i04_progress.py ......                        [ 20%]
+packages/engine/tests/test_i04_round_faults.py ......................... [ 21%]
+.................................                                        [ 22%]
+packages/engine/tests/test_job_store.py ................................ [ 24%]
+........................................................................ [ 26%]
+.............................................................            [ 28%]
+packages/engine/tests/test_memory_guard_exit.py ........                 [ 29%]
+packages/engine/tests/test_protocol.py .............                     [ 29%]
+packages/engine/tests/test_quality_approved_inputs.py .................. [ 30%]
+....                                                                     [ 30%]
+packages/engine/tests/test_quality_comparison.py ...........             [ 30%]
+packages/engine/tests/test_quality_definitions.py ...................... [ 31%]
+....................                                                     [ 32%]
+packages/engine/tests/test_quality_fr505_inputs.py ..................... [ 33%]
+.............................................                            [ 34%]
+packages/engine/tests/test_quality_profile_calendar.py ................. [ 35%]
+............                                                             [ 35%]
+packages/engine/tests/test_quality_profile_comparator.py ............... [ 36%]
+........................................................................ [ 39%]
+........................................................................ [ 41%]
+........................................................................ [ 44%]
+........................................................................ [ 46%]
+........................................................................ [ 49%]
+........................................................................ [ 52%]
+........................................................................ [ 54%]
+........................................................................ [ 57%]
+........................................................................ [ 60%]
+........................................................................ [ 62%]
+........................................................................ [ 65%]
+........................................................................ [ 67%]
+........................................................................ [ 70%]
+........................................................................ [ 73%]
+........................................................................ [ 75%]
+........................................................................ [ 78%]
+....                                                                     [ 78%]
+packages/engine/tests/test_quality_profile_firing.py ................... [ 79%]
+............                                                             [ 79%]
+packages/engine/tests/test_quality_profile_imports.py ..                 [ 79%]
+packages/engine/tests/test_quality_profile_iri_boundary.py ............. [ 80%]
+........................................................................ [ 82%]
+..............................................                           [ 84%]
+packages/engine/tests/test_quality_profile_limits.py ................... [ 85%]
+....................                                                     [ 86%]
+packages/engine/tests/test_quality_profile_numbers.py .................. [ 86%]
+..........................                                               [ 87%]
+packages/engine/tests/test_quality_profile_terms.py .................... [ 88%]
+........................................................................ [ 90%]
+                                                                         [ 90%]
+packages/engine/tests/test_quality_store_probe.py .......                [ 91%]
+packages/engine/tests/test_resident_runtime.py .............             [ 91%]
+packages/engine/tests/test_runtime_bounds.py .                           [ 91%]
+packages/engine/tests/test_session_page_limits.py ...                    [ 91%]
+packages/engine/tests/test_stdio_session_shutdown.py .....               [ 92%]
+packages/engine/tests/test_storage.py .................................. [ 93%]
+........................................................................ [ 95%]
+........................................................................ [ 98%]
+.........                                                                [ 98%]
+packages/engine/tests/test_worker_owner_bootstrap.py ................... [ 99%]
+...........                                                              [ 99%]
+packages/engine/tests/test_worker_parent.py .                            [100%]
+
+============================ 2739 passed in 43.13s =============================

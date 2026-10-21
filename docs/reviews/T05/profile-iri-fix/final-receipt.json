@@ -1,0 +1,204 @@
+{
+  "stage": "private IRI fix complete; exact-byte adoption pending root",
+  "base": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+  "implementationRef": "dbb6b36e9259aa79a1fd908b5cfede3064f0c074",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-iri-fix",
+  "branch": "feature/weekly-t05-profile-iri-fix",
+  "checks": [
+    {
+      "name": "old-red",
+      "command": "uv run --frozen pytest packages/engine/tests/test_quality_profile_iri_boundary.py",
+      "actualExit": 1,
+      "result": "74 failed / 57 passed; original unmodified 1e3 mechanism",
+      "stdout": {
+        "path": "docs/reviews/T05/profile-iri-fix/old-red.stdout.txt",
+        "bytes": 122277,
+        "sha256": "9676048b1f1439e619daf4dabcd9db16bd1bfc5b855d25983f4e44d0ee2cd90b"
+      }
+    },
+    {
+      "name": "new-green",
+      "command": "uv run --frozen pytest packages/engine/tests/test_quality_profile_iri_boundary.py",
+      "actualExit": 0,
+      "result": "131 passed; before import blank-line-only cleanup",
+      "stdout": {
+        "path": "docs/reviews/T05/profile-iri-fix/new-green.stdout.txt",
+        "bytes": 596,
+        "sha256": "976a72849242e5694e2c25541d2e7bad597136b528840219151e90b405772633"
+      }
+    },
+    {
+      "name": "affected-regression",
+      "command": "uv run --frozen pytest [seven original profile test modules] packages/engine/tests/test_quality_profile_iri_boundary.py",
+      "actualExit": 0,
+      "result": "1539 passed; final dbb implementation",
+      "stdout": {
+        "path": "docs/reviews/T05/profile-iri-fix/affected-regression.stdout.txt",
+        "bytes": 2997,
+        "sha256": "dc7fefefb67bec68471c08323d118bf6b5483c3699158285246c546d65dec6fe"
+      }
+    },
+    {
+      "name": "npm-check-attempt-1",
+      "command": "npm run check",
+      "actualExit": 0,
+      "result": "635 TypeScript / 2739 Python passed; lint/format/typecheck/build/engine check all passed",
+      "stdout": {
+        "path": "docs/reviews/T05/profile-iri-fix/npm-check-attempt-1.stdout.txt",
+        "bytes": 8337,
+        "sha256": "9b8f854bbe80845e9279bfc2b6944a9e5aa26a50ab7350957eb7482c00562c74"
+      }
+    },
+    {
+      "name": "verify-sources",
+      "command": "npm run verify:sources",
+      "actualExit": 0,
+      "result": "12 archived files verified",
+      "stdout": {
+        "path": "docs/reviews/T05/profile-iri-fix/verify-sources.stdout.txt",
+        "bytes": 111,
+        "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+      }
+    },
+    {
+      "name": "candidate-lint",
+      "command": "uv run --frozen ruff check [new test and rule_terms]",
+      "actualExit": 1,
+      "result": "initial I001 import blank line; preserved and repaired",
+      "stdout": {
+        "path": "docs/reviews/T05/profile-iri-fix/candidate-lint.stdout.txt",
+        "bytes": 1150,
+        "sha256": "aff8784fd04fccad99a5927bb56c1e612fa712d3b7b753877fb4ce4a8092e9c9"
+      }
+    },
+    {
+      "name": "candidate-lint-repair",
+      "command": "uv run --frozen ruff check --fix packages/engine/tests/test_quality_profile_iri_boundary.py",
+      "actualExit": 0,
+      "result": "removed one import blank line; no semantic change",
+      "stdout": {
+        "path": "docs/reviews/T05/profile-iri-fix/candidate-lint-repair.stdout.txt",
+        "bytes": 38,
+        "sha256": "aac3a0503d8b95052cc85fb9f1717dc82b74aa55853a5aa9749b41e30275d472"
+      }
+    },
+    {
+      "name": "document-format-check",
+      "command": "npx prettier --check docs/iterations/T05/profile-iri-fix.md",
+      "actualExit": 0,
+      "result": "pass",
+      "stdout": {
+        "path": "docs/reviews/T05/profile-iri-fix/document-format-check.stdout.txt",
+        "bytes": 66,
+        "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+      }
+    },
+    {
+      "name": "product-diff-check",
+      "command": "git diff --check 1e3..dbb -- [two product/test paths]",
+      "actualExit": 0,
+      "result": "pass",
+      "stdout": {
+        "path": "docs/reviews/T05/profile-iri-fix/product-diff-check.stdout.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "staged-diff-check",
+      "command": "git diff --cached --check",
+      "actualExit": 2,
+      "result": "exit2 from original pytest whitespace and raw patch context; retained byte-exact",
+      "stdout": {
+        "path": "docs/reviews/T05/profile-iri-fix/staged-diff-check.stdout.txt",
+        "bytes": 34469,
+        "sha256": "b972b66b54246389d98f41de17cc6fb4b5d175456f59c713774807d46027d1e6"
+      }
+    }
+  ],
+  "independent": {
+    "verdict": "passed, no remaining P0-P3 substantive finding",
+    "report": {
+      "path": "docs/reviews/T05/profile-iri-fix/independent-review.md",
+      "bytes": 5851,
+      "sha256": "7b6be8a365dd77db56dfa67aacf29aa4cacad0aff5de57ab8c68e143dd70992c"
+    },
+    "actualTests": "131 passed, exit0; independent byte-bound final test",
+    "codepointAudit": "exit0; 18 newly allowed whitespace codepoints all in RFC3987 ucschar",
+    "testReceipt": {
+      "path": "docs/reviews/T05/profile-iri-fix/independent-tests.receipt.json",
+      "bytes": 658,
+      "sha256": "0988c61df64bdd0894a1c0dfad8005861eaa32b7bfa40664fd0c32afd56add16"
+    },
+    "codepointReceipt": {
+      "path": "docs/reviews/T05/profile-iri-fix/independent-ucschar-audit.receipt.json",
+      "bytes": 461,
+      "sha256": "c792e3a37de2f1bbd7edd5badbcac8d3a6acb6d9f2762ada7c7efe9f1a9f370a"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "docs/reviews/T05/profile-iri-fix/candidate-input-manifest.json",
+      "bytes": 3268,
+      "sha256": "3bb2fd949483d0df5e0ceec960179807b6a50f3ddcde06ecde555d7ead6934b1"
+    },
+    {
+      "path": "docs/reviews/T05/profile-iri-fix/candidate-inputs.zip",
+      "bytes": 22647,
+      "sha256": "0d6f4b9342c96f9f2f6540f2ebce110f09a507dca2b314b4ce266036413f497c"
+    },
+    {
+      "path": "docs/reviews/T05/profile-iri-fix/product-two-paths.patch",
+      "bytes": 9132,
+      "sha256": "4fd89e8815425eec1500624b60250bda66262d1d0e4f1232124bca05d7f3056d"
+    },
+    {
+      "path": "docs/reviews/T05/profile-iri-fix/old-red-inputs.json",
+      "bytes": 1759,
+      "sha256": "aab35341060ebedac4358459646842474792353d94e68c19e61a8e5b4cf5fbd1"
+    },
+    {
+      "path": "docs/reviews/T05/profile-iri-fix/old-red-inputs.zip",
+      "bytes": 19267,
+      "sha256": "c470f345e966994722b3d2395df1744a805b769138af9e0bb44cff833bb929a8"
+    },
+    {
+      "path": "docs/reviews/T05/profile-iri-fix/scope-verification.json",
+      "bytes": 6533,
+      "sha256": "7de362a990628a8033cf22a654695a80bbbb958334fc8efe34ada88e9270184c"
+    },
+    {
+      "path": "docs/reviews/T05/profile-iri-fix/normative-verification.json",
+      "bytes": 687,
+      "sha256": "ec733db9df49aef7cc9f7ab9474f7feb1f3c84258c5f6df289ddb6ee236a5c32"
+    },
+    {
+      "path": "docs/reviews/T05/profile-iri-fix/authorization.raw.md",
+      "bytes": 4286,
+      "sha256": "60e0b72f6e15ad9a853f26bc30b187d61771a3d467614eb571ae31dbb506d097"
+    },
+    {
+      "path": "docs/reviews/T05/profile-iri-fix/common-instructions.raw.md",
+      "bytes": 17891,
+      "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0"
+    }
+  ],
+  "history": "892be13 implementation and pre-cleanup test; dbb6b36 import blank-line cleanup; no history rewrite",
+  "rawEvidenceReason": "Authorization explicitly requires actual old-red, raw verification and old/new hash evidence; full 132KiB failure transcript retained because summary alone would not bind the negative witness. Native trailing whitespace and patch context retained; not source/style failures. Full staged diff-check is not claimed green. Scoped final check excludes exactly the three raw files named in disposition.",
+  "boundaries": [
+    "profile/1 and mechanism-budget/1 unchanged",
+    "only iri_minimum and new test are product delta; other original19 byte-identical",
+    "no full IRI parser/graph matcher/producer/Store/selected/native/package/CI proof",
+    "no push PR merge GUI paid runtime network or Goal change",
+    "old batch proposal docs may separately change only by later root authorization; old frozen mechanism/oracle unchanged"
+  ],
+  "scopedFinalDiffCheck": {
+    "actualExit": 0,
+    "exclusions": [
+      "docs/reviews/T05/profile-iri-fix/old-red.stdout.txt",
+      "docs/reviews/T05/profile-iri-fix/product-two-paths.patch",
+      "docs/reviews/T05/profile-iri-fix/staged-diff-check.stdout.txt"
+    ],
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

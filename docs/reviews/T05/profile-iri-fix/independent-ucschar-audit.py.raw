@@ -1,0 +1,9 @@
+import json,sys,unicodedata
+ranges=((0xA0,0xD7FF),(0xF900,0xFDCF),(0xFDF0,0xFFEF),*((n*0x10000,n*0x10000+0xFFFD) for n in range(1,14)),(0xE1000,0xEFFFD))
+points=[n for n in range(0x110000) if chr(n).isspace()]
+newly_allowed=[n for n in points if n>=0xA0]
+expected=[0xA0,0x1680,*range(0x2000,0x200B),0x2028,0x2029,0x202F,0x205F,0x3000]
+assert newly_allowed==expected
+assert all(any(lo<=n<=hi for lo,hi in ranges) for n in newly_allowed)
+assert 0x85 in points and 0x85<0xA0
+print(json.dumps({'python':sys.version.split()[0],'unicodeVersion':unicodedata.unidata_version,'standardLibraryOnly':True,'allWhitespaceCodepoints':[f'U+{n:04X}' for n in points],'newlyAllowedWhitespaceCodepoints':[f'U+{n:04X}' for n in newly_allowed],'allNewlyAllowedInRFC3987Ucschar':True,'U0085RemainsBelowCutoff':True},indent=2))

@@ -1,0 +1,41 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/engine/tests/test_quality_profile_iri_boundary.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from dataclasses import replace
+ 8 | |
+ 9 | | import pytest
+10 | |
+11 | | from ontolearn_engine.quality.rule_comparator import compare_values
+12 | | from ontolearn_engine.quality.rule_firing import (
+13 | |     BindingMatch,
+14 | |     Catalog,
+15 | |     Comparison,
+16 | |     RuleSpec,
+17 | |     Triple,
+18 | |     Variable,
+19 | |     compile_rules,
+20 | |     evaluate_bound_batch,
+21 | | )
+22 | | from ontolearn_engine.quality.rule_profile import (
+23 | |     Budget,
+24 | |     InputLocation,
+25 | |     ProfileFailure,
+26 | |     ProfileLimits,
+27 | |     TermInput,
+28 | | )
+29 | | from ontolearn_engine.quality.rule_terms import parse_value, term_key
+   | |_____________________________________________________________________^
+30 |
+31 |   # Every Python 3.12 whitespace code point in RFC 3987's ucschar ranges.
+   |
+help: Organize imports
+   |
+9  | import pytest
+   -
+10 | from ontolearn_engine.quality.rule_comparator import compare_values
+   |
+
+Found 1 error.
+[*] 1 fixable with `--fix`.
