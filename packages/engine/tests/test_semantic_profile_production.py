@@ -260,3 +260,34 @@ def test_each_c_domain_exact_boundary_and_one_less(domain):
                 )
             )
         frame = frame.tb_next
+
+
+def test_original_projection_hash_ticket_precedes_all_three_digest_delegates(monkeypatch):
+    from ontolearn_engine.semantic_profile_production import _ProductionCapture
+
+    material = prepare_profile_material(turtle(), (rule(),))
+    boundary = []
+    original_before = _ProductionCapture.before_projection
+
+    def before(capture):
+        boundary.append(capture.ledger.used["hash"])
+        return original_before(capture)
+
+    monkeypatch.setattr(_ProductionCapture, "before_projection", before)
+    execute(material)
+    assert len(boundary) == 1
+    ledger = CaptureLedger(overrides=(("hash", boundary[0]),))
+    original_hash = hashlib.sha256
+    projection_calls = []
+
+    def observe_hash(data=b"", *args, **kwargs):
+        if ledger.stage == 6:
+            projection_calls.append(len(data))
+        return original_hash(data, *args, **kwargs)
+
+    monkeypatch.setattr(hashlib, "sha256", observe_hash)
+    with pytest.raises(MaterialFailure) as caught:
+        execute(material, ledger)
+    assert caught.value.domain == "hash" and caught.value.stage == 6
+    assert not projection_calls
+    assert ledger.state == "failed"

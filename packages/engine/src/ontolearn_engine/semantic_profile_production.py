@@ -56,11 +56,11 @@ class _ProductionCapture:
         self.material, self.ledger = material, ledger
         self.actual_definitions = self.actual_catalog = self.raw_rules = None
         self.disabled = None
+        ledger.reserve("objects", 4)
         self.slots = []
         self.native = self.encoded = self.rows_encoded = None
         self.source_encoded = self.definitions_encoded = None
         self.wire = None
-        ledger.reserve("objects", 4)
 
     def definitions(self, ordered_specs, rules):
         _require(self.actual_definitions is None and type(ordered_specs) is tuple)
@@ -97,6 +97,9 @@ class _ProductionCapture:
 
     def before_projection(self):
         self.ledger.enter(6, 3 * MAX_BYTES)
+        # Prepay all five original digests before the first (input/source/defs)
+        # in the projection stage. Q<=2M, defs<=M, payload+rows<=M.
+        self.ledger.debit("hash", 4 * MAX_BYTES)
         # Ordinary temporary projected trees and all concurrent encoder buffers
         # are prepaid before invoking the unchanged bounded serializer. Its own
         # depth/node/output gates still run in the same original order.
@@ -109,7 +112,6 @@ class _ProductionCapture:
         self.ledger.enter(7, 3 * MAX_BYTES)
         self.ledger.debit("traversal", 16 * MAX_BYTES)
         self.ledger.debit("scan_copy", 24 * MAX_BYTES)
-        self.ledger.debit("hash", 4 * MAX_BYTES)
         self.ledger.reserve("scalar", 8 * MAX_BYTES)
         self.ledger.reserve("objects", 2 * MAX_BYTES)
 

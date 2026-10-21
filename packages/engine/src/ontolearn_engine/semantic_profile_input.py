@@ -74,17 +74,20 @@ class CaptureLedger:
     def __init__(self, *, overrides=()):
         if type(overrides) is not tuple or len(overrides) > 5:
             raise MaterialFailure()
-        checked = []
-        for pair in overrides:
+        # Keep the caller-owned exact tuple: bounded constructor validation
+        # needs no new checked-list/tuple before the control budget opens.
+        for position, pair in enumerate(overrides):
             if type(pair) is not tuple or len(pair) != 2:
                 raise MaterialFailure()
             name, value = pair
             if type(name) is not str or name not in _WORK + _LIVE or type(value) is not int:
                 raise MaterialFailure()
-            if value < 0 or any(name == old for old, _ in checked):
+            if value < 0:
                 raise MaterialFailure()
-            checked.append(pair)
-        self.overrides = tuple(checked)
+            for previous in range(position):
+                if name == overrides[previous][0]:
+                    raise MaterialFailure()
+        self.overrides = overrides
         self.state = "new"
         self.caps = self.used = self.live = self.peaks = None
         self.stage = 0
@@ -94,11 +97,21 @@ class CaptureLedger:
         if self.state != "new":
             raise MaterialFailure("MATERIAL_LEDGER_REUSED")
         self.state = "running"
-        if not all(type(v) is int for v in (Q, D, N)):
+        if type(Q) is not int or type(D) is not int or type(N) is not int:
             raise MaterialFailure()
         if not (0 <= Q <= 2 * MAX_BYTES and 0 <= D <= MAX_BYTES and 0 <= N <= 100):
             raise MaterialFailure("MATERIAL_LIMIT")
         A = Q + D + _BASE
+        # Admit the fixed 64-unit control block BEFORE allocating any counters
+        # or stage arrays. The already-validated <=5 override tuple is caller
+        # owned. This opens the control ticket directly; initializing live/peak
+        # at 64 below records that prior reservation, not a later reimbursement.
+        control_limit = 8 * A + 2048 * N + 4096
+        for name, value in self.overrides:
+            if name == "objects":
+                control_limit = min(value, control_limit)
+        if control_limit < 64:
+            raise MaterialFailure("MATERIAL_LIMIT", domain="objects", stage=0)
         self.caps = {
             "traversal": 128 * A + 65536 * N,
             "scan_copy": 64 * A + 65536 * N,
@@ -109,11 +122,10 @@ class CaptureLedger:
         for name, value in self.overrides:
             self.caps[name] = min(value, self.caps[name])
         self.used = dict.fromkeys(_WORK, 0)
-        self.live = dict.fromkeys(_LIVE, 0)
-        self.peaks = dict.fromkeys(_LIVE, 0)
+        self.live = {"scalar": 0, "objects": 64}
+        self.peaks = {"scalar": 0, "objects": 64}
         self.stage_visits = [0] * 8
         self.stage_bounds = [0] * 8
-        self.reserve("objects", 64)
 
     def enter(self, stage, J):
         if self.state != "running" or type(stage) is not int or not 1 <= stage <= 8:
@@ -454,8 +466,8 @@ def _identity(identity, ledger):
 def _definitions(rules, disabled, ledger):
     _require(type(rules) is tuple and len(rules) <= 100)
     _require(type(disabled) is tuple and len(disabled) <= len(rules))
-    ids = []
     ledger.reserve("objects", 4 * len(rules) + len(disabled) + 4)
+    ids = []
     for spec in rules:
         ledger.debit("traversal", len(ids) + 3)
         _require(type(spec) is RuleSpec and type(spec.rule_id) is str)

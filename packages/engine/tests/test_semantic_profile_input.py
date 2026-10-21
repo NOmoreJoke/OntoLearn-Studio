@@ -279,3 +279,28 @@ def test_escaped_wide_string_rejected_before_encoder_delegate():
         with pytest.raises(MaterialFailure):
             _encode(value, ledger)
     assert encode.call_count == 0
+
+
+@pytest.mark.parametrize("limit", [0, 63])
+def test_control_budget_rejects_before_allocating_counter_containers(limit):
+    overrides = (("objects", limit),)
+    ledger = CaptureLedger(overrides=overrides)
+    assert ledger.overrides is overrides
+    with pytest.raises(MaterialFailure) as caught:
+        prepare_profile_material(turtle(), ledger=ledger)
+    assert caught.value.domain == "objects" and caught.value.stage == 0
+    assert ledger.caps is ledger.used is ledger.live is ledger.peaks is None
+    assert ledger.stage_visits is ledger.stage_bounds is None
+    assert ledger.state == "failed"
+    with pytest.raises(MaterialFailure) as reused:
+        ledger.begin()
+    assert reused.value.reason == "MATERIAL_LEDGER_REUSED"
+
+
+def test_control_budget_exact_64_opens_ticket_without_extra_capacity():
+    ledger = CaptureLedger(overrides=(("objects", 64),))
+    ledger.begin()
+    assert ledger.caps["objects"] == ledger.live["objects"] == ledger.peaks["objects"] == 64
+    with pytest.raises(MaterialFailure):
+        ledger.reserve("objects", 1)
+    assert ledger.live["objects"] == 64
