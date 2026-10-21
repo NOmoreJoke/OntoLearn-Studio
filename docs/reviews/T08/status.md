@@ -89,3 +89,18 @@
 ### 审计后的外部变化：T09固定输入获准
 
 在调用Goal blocked之前收到总控新授权：仅可引用固定873c8c051b9870aa12fc7e1dbbd3e0c358e7c380的17项输入manifest，不读取T09变化中HEAD或未批准服务/旧helper。已用git show逐项重算17项全部匹配，manifest SHA aaaef2c0…、PRD源SHA7586b2c4…一致。此变化提供新的实际可执行输入，Goal保持active；接下来以本线独立只读真实库探针加强固定查询/样本一致性评估，不把T09输入/预期或test.*计为真实产品运行。共享接线、真实API及外审门禁仍未放行。
+
+## 第四批：获准固定数据的真实库评估（2026-10-21）
+
+- 固定实现候选 `93516fa8455cf4b195cbfb699aa7a6652d428b6f`，仅本线独占路径；T09源全部通过固定git show读取，不写原件、不导入其服务/helper或变化中HEAD。17项origin hash及PRD源已由开发线和独立agent分别重算，三份保留输入原字节不变，详见evidence/t09-input-verification.json。
+- 新manifest.v2继承v1全部真实验收门，加入真实锁定RDFLib查询和标准库CSV观测：Q-01=A01、独立Q-02阶段为空、同数量语义错查询=A02、明确非法语法、字符串001/002及名称交换/前导零损失反例。完整输出而非数量参与评估。CLI只从实际断言建新图，没有Store/expected预填；有限case入口和手工协议不注册为产品能力。
+- 真实输入暴露SPARQL末尾换行被instruction.trim裁掉，已修query_execute为只验证不改字节，保留执行/展示/hash一致；全空白仍拒绝。原首跑9过/1失败及原因、修后反例见evidence/fixed-input-first-failure.*。
+- 固定93516fa的独立内审8明确通过，6文件87项定向通过。完整check exit0：21个TS文件717项、Python1052项，lint/format/typecheck/build/ruff通过；见evidence/verification-93516fa.json。直接本地CLI实际结果另存evidence/fixed-input-actual-observations.json，明确手工候选/非真实模型/非正式领域验收。
+- 直接观测导出辅助命令曾错误resolve了venv解释器符号链接，导致基础解释器缺rdflib；已保留venv入口修正辅助命令并成功导出。没有改安装/锁或据此改写已通过的产品check。原失败为工具回执中的ModuleNotFoundError，不伪记为观测成功。
+- 4a2abba中拟写的blocked措辞发生在工具调用前；收到T09新授权即取消该拟定结论并继续真实评估，期间没有调用update_goal(blocked)，Goal实际保持active。本段澄清审计文案与工具状态，不改写原提交或原失败。
+
+本批完成后，全部当前可独立推进的协议/编排/侧栏/版本化合成及固定数据真实库评估已有候选、直接证据和独立审查。T09输入获准仅解决基线输入缺口，未解除此前连续多个目标回合的I06唯一网关、T00公共接线、T01/实际领域服务、真实API权限/消费上限及隔离指定外审资源缺口。不能把真实RDFLib探针等同T04运行、把固定oracle当推理/沙盘结果、或复制他线服务继续绕过门禁。
+
+下一动作仍须上述“恢复所需最小外部变化”。当前本线check/定向/独立内审均已实际终态，无live验证/外审句柄可继续等待；本地实现/测试/输入冻结保存，原Goal与完整目标不缩减，父P0不关闭。若最终阻塞审计再次确认这些条件无变化，按重复阻塞规则标记blocked，并在得到具体批准接口/资源变化后于本聊天恢复。
+
+最终资源复核：总控execution-state更新至2026-10-21 09:02:26北京时间，批准develop仍5f910b5；后续共享归属已变更为T01 storage+formatPython4、T03 build/dependency4，I06十四文件未变且format8交接待单独完成。这些变更没有给T08正式共享接线或未批准实现消费权。外审预约已从早前I05调整至T06-S1，**不是T08资源预约**；不能按旧记录声称仍归I05。真实DeepSeek主体/消费上限仍未建立。故本线正式接线/真实验收/指定外审的同一阻塞条件未解除；新T09输入已充分用于本批独立进展，现无能合法推进剩余门禁的独立动作。
