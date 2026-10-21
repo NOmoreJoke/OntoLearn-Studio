@@ -920,3 +920,176 @@ def test_exact_explanation_expectation_does_not_upgrade_other_versions(produced,
     with pytest.raises((direct.DirectStepsFailure, RestoreFailure)) as caught:
         receive(produced, expected=replace(expectation(produced), **{field: value}))
     assert_finite(caught.value)
+
+
+@pytest.mark.parametrize(
+    "where",
+    [
+        "input_preimage",
+        "definition_material",
+        "source_preimage",
+        "definitions_preimage",
+        "bytes-input_preimage",
+        "bytes-definition_material",
+        "nested-source",
+        "nested-term-source",
+    ],
+)
+def test_exact_material_rejects_nested_foreign_protocols_before_len_eq_or_reason(where):
+    callbacks = []
+
+    class ForeignMeta(type):
+        def __eq__(cls, other):
+            callbacks.append("class-eq")
+            raise AssertionError("foreign metaclass equality must not run")
+
+    class Foreign(metaclass=ForeignMeta):
+        def __len__(self):
+            callbacks.append("len")
+            raise AssertionError("foreign length must not run")
+
+        def __eq__(self, other):
+            callbacks.append("eq")
+            raise AssertionError("foreign equality must not run")
+
+    class ForeignBytes(bytes):
+        def __len__(self):
+            callbacks.append("bytes-len")
+            raise AssertionError("bytes subclass length must not run")
+
+        def __eq__(self, other):
+            callbacks.append("bytes-eq")
+            raise AssertionError("bytes subclass equality must not run")
+
+    material = prepare_profile_material(records=four_branch_case("type")[0])
+    if where.startswith("bytes-"):
+        changed = replace(material, **{where.removeprefix("bytes-"): ForeignBytes(b"foreign")})
+    elif where == "nested-source":
+        changed = replace(material, source=(Foreign(),))
+    elif where == "nested-term-source":
+        first = material.records[0]
+        changed_row = (replace(first[0], source=Foreign()), first[1], first[2])
+        changed = replace(material, records=(changed_row,) + material.records[1:])
+    else:
+        changed = replace(material, **{where: Foreign()})
+    assert type(changed) is type(material)
+    ledger = direct.DirectStepsLedger()
+    with patch.object(semantic, "_profile_reason", wraps=semantic._profile_reason) as reason:
+        with pytest.raises((direct.DirectStepsFailure, MaterialFailure)) as caught:
+            production.execute_profile_explanation(
+                changed,
+                error_catalog=CONTRACT.ERROR_CATALOG,
+                error_schema=SCHEMA,
+                ledger=CaptureLedger(),
+                direct_ledger=ledger,
+            )
+    assert callbacks == []
+    assert reason.call_count == 0 and ledger.state == "failed"
+    assert_finite(caught.value)
+
+
+def test_exact_explanation_expectation_rejects_foreign_domain_without_len_or_eq(produced):
+    callbacks = []
+
+    class ForeignDomain:
+        def __len__(self):
+            callbacks.append("len")
+            raise AssertionError("foreign domain length must not run")
+
+        def __eq__(self, other):
+            callbacks.append("eq")
+            raise AssertionError("foreign domain equality must not run")
+
+    expected = replace(expectation(produced), input_domain=ForeignDomain())
+    assert type(expected) is restore.ExplanationRestoreExpectation
+    ledger = direct.DirectStepsLedger()
+    with pytest.raises((direct.DirectStepsFailure, RestoreFailure)) as caught:
+        receive(produced, expected=expected, direct_ledger=ledger)
+    assert callbacks == [] and ledger.state == "failed"
+    assert_finite(caught.value)
+
+
+def test_uniform_leaf_rename_with_rebound_envelope_cannot_replace_original_triple_hash(produced):
+    payload = copy.deepcopy(produced.wire["payload"])
+    first_leaf = payload["reasoning"]["proofLeaves"][0]
+    original_id = first_leaf["reference"]
+    original_triple = tuple(first_leaf["triple"])
+    forged_id = "i05-proof:" + "0" * 64
+    assert original_id == leaf_reference(original_triple)
+    assert forged_id != leaf_reference(original_triple)
+    replacements = []
+
+    def rename(value):
+        if type(value) is str:
+            if value == original_id:
+                replacements.append(1)
+                return forged_id
+            return value
+        if type(value) is list:
+            return [rename(item) for item in value]
+        if type(value) is dict:
+            return {name: rename(item) for name, item in value.items()}
+        return value
+
+    payload = rename(payload)
+    assert len(replacements) >= 3  # Original leaf, direct premise and RDFS leaf-union refs.
+    assert tuple(payload["reasoning"]["proofLeaves"][0]["triple"]) == original_triple
+    assert original_id not in canonical(payload).decode()
+    wire, expected = rebound(produced, payload)
+    assert expected.input_preimage is produced.material.input_preimage
+    assert expected.source_preimage is produced.material.source_preimage
+    ledger = direct.DirectStepsLedger()
+    with pytest.raises((direct.DirectStepsFailure, RestoreFailure)) as caught:
+        receive(produced, wire=wire, expected=expected, direct_ledger=ledger)
+    assert caught.value.reason in ("DIRECT_STEPS_INVALID", "RESTORE_INPUT_INVALID")
+    assert ledger.state == "failed"
+    assert_finite(caught.value)
+
+
+def test_rebound_evidence_cannot_invent_firing_1023_head_15_from_two_typed_heads():
+    raw = records(
+        (
+            ("urn:p", TYPE, OWL + "ObjectProperty"),
+            ("urn:out", TYPE, OWL + "ObjectProperty"),
+            ("urn:x", "urn:p", "urn:y"),
+        )
+    )
+    when = Triple(Variable("?s"), iri("urn:p"), Variable("?o"))
+    head = Triple(Variable("?s"), iri("urn:out"), Variable("?o"))
+    rule = RuleSpec("fixture:r", (when,), (), (head, head))
+    computed, _ = produce(raw, (rule,))
+    assert len(computed.native_result["firingGroups"]) == 1
+    assert tuple(item.index for item in computed.native_result["firingGroups"][0].heads) == (0, 1)
+    assert len(computed.native_result["evidence"]) == 2
+    payload = copy.deepcopy(computed.wire["payload"])
+    original_groups = canonical(payload["reasoning"]["firingGroups"])
+    payload["reasoning"]["evidence"][0]["firingIndex"] = {"integerHex": "0x3ff"}
+    payload["reasoning"]["evidence"][0]["headIndex"] = {"integerHex": "0xf"}
+    assert canonical(payload["reasoning"]["firingGroups"]) == original_groups
+    wire, expected = rebound(computed, payload)
+    ledger = direct.DirectStepsLedger()
+    with patch.object(semantic, "_profile_reason", side_effect=AssertionError("no restore reason")):
+        with pytest.raises((direct.DirectStepsFailure, RestoreFailure)) as caught:
+            receive(computed, wire=wire, expected=expected, direct_ledger=ledger)
+    # Reject the complete view, before roots can publish the nonexistent occurrence.
+    assert caught.value.reason in ("DIRECT_STEPS_INVALID", "RESTORE_INPUT_INVALID")
+    assert ledger.state == "failed"
+    assert_finite(caught.value)
+
+
+def test_private_finite_closure_rejects_foreign_capture_without_candidate_callback():
+    callbacks = []
+
+    class ForeignCapture:
+        def candidate(self, rule):
+            callbacks.append(rule)
+            raise AssertionError("foreign capture callback must not run")
+
+    graph = semantic.parse_turtle(
+        "<urn:x> <" + TYPE + "> <urn:A> . <urn:A> <" + SUB + "> <urn:B> ."
+    )
+    with pytest.raises(semantic.ProfileReasonError) as caught:
+        semantic._finite_closure(graph, lambda: None, _direct_capture=ForeignCapture())
+    assert callbacks == []
+    assert caught.value.reason == "INTERNAL_ERROR"
+    assert_finite(caught.value)
