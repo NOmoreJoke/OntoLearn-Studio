@@ -47,3 +47,24 @@ T08实现候选仍`93516fa8455cf4b195cbfb699aa7a6652d428b6f`，本次开始时�
 - 已透传既有独立agent，其明确回执已读协议/新增指南、哈希匹配及上述边界；未改文件、重审或重测。
 
 本次仅政策记录。实现候选93516fa、既有验证证据、Goal blocked及原恢复条件保持；未恢复或重建Goal，未运行产品测试、GUI、真实API或外审任务。
+
+
+## 四文件基础层未来维护交接
+
+已在安全边界全文读取新版共同指南与`foundation-four-file-handoff-effective.json`，生效时间为`2026-10-21T11:40:05.102755+08:00`。共同指南实际17891字节，SHA256 `e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0`；已实际重算其前16317字节为旧`ff5f9fd0…`，确认旧全文逐字保留。生效登记实际SHA256 `20193544da7d1f3677f394b72bcec792e4f73bf780c1f0592630c43fbb8678f8`。受保护AGENTS仍`78df2825…`，未暂存。
+
+仅以下四路径未来唯一维护交T01：
+
+- `apps/desktop/src/main/jsonl.ts`
+- `apps/desktop/src/renderer/src/task-presentation.ts`
+- `apps/desktop/src/main/task-service.ts`
+- `apps/desktop/src/main/index.ts`
+
+T01仅沿自己的批准5f基线，不复制未批准gateway/语义实现；I06保留`apps/desktop/src/preload/index.ts`及renderer的`env.d.ts`、`App.tsx`、`style.css`四路径与私有模块。协议、resources、旧tests、依赖、build、CI、语义路径等未转移。固定C4/e2c/961字节只读，返还须T01先停写并保存HEAD/文件SHA/WIP diff/测试状态，再由总控精确登记唯一owner；旧owner不得自动回收。T08只读取生效登记，没有重新读取或消费上述他线实现。
+
+原协议bad9716a…待门文本与冻结旧输入保留历史；本次仅追加政策接收记录，当前责任以生效登记为准。当前阶段不因此取得startup/schema/新代码/runtime3/ready实施授权，原完整第九节、无桌面、实际租约与双审/推送/PR/CI/合并门保持。既有独立agent已全文读取新增段及生效登记，确认四路径和限制；未修改文件、重审或重测。
+
+T08实现候选仍93516fa，Goal仍blocked；未恢复或重建Goal、未改产品或冻结执行输入、未重测或启动GUI。本次只核验政策字节与本线文档差异。
+
+
+登记版本补记：首次实际全文读回为20193544…，当时`noticesActuallySent=[]`。独立agent随后提示当前哈希已变，主线再次全文读取，实际SHA256为`0df87b7cbb34bdf24ffeac57d3b8e30e4f2c97165c861cc6df3d621612f03a32`。新版本填入已通知T01–T11/I05/I06并新增`actualCommonFullTransmission`；生效状态、四路径、接收与独审哈希、startup=false及保留边界均相同。两次记录均为各读取时的实际字节，不将旧哈希假称当前版本；已向独立agent说明版本差异，无须重审或重测。

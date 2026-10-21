@@ -120,3 +120,13 @@ Goal工具实际回执：已调用 `update_goal(status="blocked")` 并返回bloc
 已读回新共同指南ff5f9fd0…及worker交接63c194ef…，核对execution-state已生效，并实际验证旧b24指南全部15574字节仍为新文件前缀。仅worker.py未来维护交T01，从批准5f实施；I05 C3冻结，不消费其未批准语义实现。其他路径及原操作限制保持，wire/限额/格式3/ready/运行未获批。独立agent已接收确认，详见[政策回执](policy-receipt-2026-10-21.md)。
 
 此次仅文档记录，未重测或重审，未恢复或重建Goal；实现候选93516fa与blocked状态保持，原接线/真实验收/指定外审恢复条件继续有效。
+
+
+## 四文件责任通知接收（2026-10-21 11:40+08）
+
+已全文读取新版共同指南e437121a…（17891字节）及四文件生效登记20193544…，实际验证旧ff5f全16317字节前缀保留。T01取得main/jsonl.ts、renderer/task-presentation.ts、main/task-service.ts与main/index.ts的唯一未来维护；I06保留preload/index.ts、renderer env/App/style四路径及私有模块。原待门协议保留历史，当前以新生效登记为准；startup/schema/新码/runtime3/ready未因维护交接获批，其他归属和冻结返还门不变。详见[政策回执](policy-receipt-2026-10-21.md)。
+
+本次仅操作收据，不改产品/冻结输入，不重测或重审、不恢复或重建Goal；候选93516fa与blocked状态及原恢复条件保持。
+
+
+生效登记随后补写通知发送元数据，当前复读SHA为0df87b7c…；首次20193544…保留为读取时版本。仅通知名单/透传指针新增，四路径与授权边界不变，独立agent已确认接收。
