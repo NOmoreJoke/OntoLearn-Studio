@@ -98,3 +98,9 @@ Goal保持 active：父功能FR-001–006/804全部完成、持久项目/草稿/
 纯draft计划器修复孤立Unicode编码P2后，最终20专用和独立复核通过；完整 `npm run check` 退出0，630 TS、1216 Python，lint/格式/typecheck/构建/ruff全过。此证据只证明纯计划器及既有回归，不是Store3持久并发。准备本地恢复提交。
 
 总控刚明确允许在已有storage.py/project/专属测试内实施私有Store3 foundation，默认协议2与公开metadata capability保持不变，原Store唯一权威与lease不绕过；未移交文件/既有17测试不写。下一步将做显式私有格式门、Store层迁移/备份/结构验证/异常回滚，不复制JOB_SCHEMA或反向导入JobStore。T09固定873输入亦获只读引用授权，已读固定manifest和根审计；未调用其未批准helper或把expected预填Store。
+
+## Store3 Stage A 放行与原始证据封存
+
+纯 CAS 阶段本地恢复提交为 `c5ba35b64e17cd34feb85068e8bc03a27b95ec39`，未 push。总控正式批准现有独占文件内显式 `target_format=3` 的内部 Store-ready 基础；默认2/旧格式常量不翻转，Job-ready、公共协议和正式 capability 仍未启用。I05→T03 的四个构建文件交接已收到，T01不写这四文件；格式3所需四/八个共享路径仍单独申请中。
+
+第二阶段12份原始日志现已完整封存于 `evidence/stage-two-raw-logs.tar.gz`，SHA256 `bcac38671240c9bd1960f7ff1076c3c9ac02a20e531ab3199d00cfa0ff9e9d01`。清单 `stage-two-raw-archive.json` 记录每份字节/hash，归档后逐成员重新读取核验，保留失败和被替代候选；不修改旧原件。更正精确失败归因：`pytest-compensation-control-evidence.log` 的 1 failed/495 passed 中，对账及精确重试已经通过，失败发生在后续 undo 的 retirement_at 只查截至目标 revision、漏掉下一提交 before capture。早期其他恢复历史缺失问题仍保留各自历史记录，不能用它们替换此原件的实际失败位置。修正后的496专用及1196 Python全仓证据不变。
