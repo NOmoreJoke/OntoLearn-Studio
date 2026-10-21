@@ -1,0 +1,17 @@
+# T03 N0：清单 metadata 处理修复窗口
+
+2026-10-22。首构建使用c80cbcd193f8cb64a98c97378bbdf61756701e27，原17:46:19Z至17:56:35Z，configure真实ETIMEDOUT/status=null/SIGTERM、build未派发，两个目标未生成。该失败原件必须先完整固定归档；不延长原600000ms，不无变化重试，不修改I06九源。
+
+根已实际读取CMakeLists.txt的nl_inventory/nl_pin/nl_get：每个pin多次从完整大JSON取字段，根循环内又反复解析roots，seen使用线性list。9308/33464项输入令此结构有明显重复解析/查重成本。当前没有trace或性能实验定位，不能称超时原因已经测定，也不量化优化收益。
+
+现批准原三构建writer内的最小metadata访问修复，以及同一host-core-build过程前缀下必要的新供方metadata。目标是有界单次根解析、有限小记录访问，并避免线性列表逐项查重形成平方规模，不再每个字段重新解析完整大JSON；真实文件的realpath/size/SHA核对及每条pin都保留，不能跳过CMake独立前门或以Node已验证代替。
+
+优先提出严格固定的逐条小记录供方格式/sidecar，保原JSON清单与哈希和28来源；从原固定集合派生，完整33464/9308逐条同path/realpath/bytes/SHA和roots，先独立核对后在锁中精确pin。不能引入可执行CMake代码供方、include不可信脚本、任意PATH/env/source覆盖或不完整used-only清单。若采用不同内部表示，须同样交完整对应关系与最小diff，避免用手写不完整JSON解码改变路径/转义语义。
+
+保原manifest每份16MiB/50000、根覆盖/合法0B/重复路径拒绝、source/审批/平台/SDK/工具pin、R5全部历史与未知处理。只在本次metadata问题所需的CMake/driver/lock三writer修改；不顺手重构timeout/并行/原13命令/真实工件/源编译或放宽任何门。小记录有独立大小/字段/行数总界，重复检测的键碰撞亦须有限拒绝，不静默漏重复。
+
+允许本次源码修复、语法/格式/严格解析与有限metadata负例静态验证；这些不运行compiler/native/产物。实现、两manifest的完整映射、资源读取/解析预算和固定完整12候选由未参与实现的独立agent定点审查；旧供应无需重读9.7GB实物，只核既有固定metadata和必要delta。旧首失败必须保真实终态、85日志原件/未知字段/声明与实际读取区别，不能用新成功洗掉。
+
+本窗口尚不授权第二次configure/build。先交固定首失败包与新最小delta/新锁和供方metadata、独审结论，根据这些具体对象确认下一次精确构建及累计读取界；这不是重新询问用户。原32GiB构建阶段与9745727085B供应账保留、不重置，超时未逐字节观测不能写成实际17.6GB全读。后续若需扩大工程账，由根根据新计划明确累计上限，不自行重开额度或扩大目录。
+
+两目标产物执行、CTest、try_run/native/child/FS/addon/Electron/GUI/凭据/模型/付费/推送合并等原门保持。修复后正常check/sources按真实改动另记；静态优化通过不是构建成功，也不代表N0/目标OS/父功能完成。

@@ -268,11 +268,12 @@ function validateSchema(l) {
     )
     object(tc.executables, ['cmake', 'c', 'cxx', 'buildTool', 'git'], 'executables')
     for (const [k, p] of Object.entries(tc.executables)) pinSchema(p, `${t}.${k}`)
-    pinSchema(tc.resourceInventory, 'resourceInventory')
+    inventorySchema(tc.resourceInventory, 'resourceInventory')
     object(tc.sdk, ['root', 'version', 'settings', 'terms', 'inventory'], 'sdk')
     need(tc.sdk.root === null || absolute(tc.sdk.root), 'invalid SDK root')
     need(tc.sdk.version === null || text(tc.sdk.version), 'invalid SDK version')
-    for (const k of ['settings', 'terms', 'inventory']) pinSchema(tc.sdk[k], `sdk.${k}`)
+    for (const k of ['settings', 'terms']) pinSchema(tc.sdk[k], `sdk.${k}`)
+    inventorySchema(tc.sdk.inventory, 'sdk.inventory')
     object(
       tc.environment,
       t === 'darwin-arm64'
@@ -348,13 +349,39 @@ function checkPin(p, where, gaps, allowEmpty = false) {
   const b = readBounded(p.path, p.bytes)
   need(b.length === p.bytes && hash(b) === p.sha256, `${where}: bytes/hash drift`)
 }
-function inventory(p, where, gaps, requiredRoot = null) {
-  checkPin(p, where, gaps)
+function inventorySchema(p, where) {
   if (p === null) return
-  const v = jsonStrict(readBounded(p.path, 16 * 1024 * 1024).toString('utf8'))
+  object(p, ['source', 'records'], where)
+  for (const k of ['source', 'records']) {
+    pinSchema(p[k], `${where}.${k}`)
+    need(
+      p[k] !== null && p[k].bytes > 0 && p[k].bytes <= 16 * 1024 * 1024,
+      'inventory metadata cap',
+    )
+  }
+}
+// A restricted flat JSON-lines grammar; JSON.parse still handles all string escapes.
+const jsonStringToken = '"(?:[^"\\\\]|\\\\.)*"'
+const recordLine = new RegExp(
+  `^\\{"path":${jsonStringToken},"realpath":${jsonStringToken},"bytes":(?:0|[1-9][0-9]*),"sha256":"[a-f0-9]{64}"\\}$`,
+)
+const headerLine = new RegExp(
+  `^\\{"format":"n0-inventory-records-v1","count":[1-9][0-9]*,"roots":\\[${jsonStringToken}(?:,${jsonStringToken})*\\],"prefix":${jsonStringToken},"suffix":${jsonStringToken}\\}$`,
+)
+function parseInventory(sourceRaw, recordsRaw, where, requiredRoot = null) {
+  need(
+    sourceRaw.length <= 16 * 1024 * 1024 && recordsRaw.length <= 16 * 1024 * 1024,
+    'inventory metadata cap',
+  )
+  need(
+    Buffer.from(sourceRaw.toString('utf8')).equals(sourceRaw) &&
+      Buffer.from(recordsRaw.toString('utf8')).equals(recordsRaw),
+    'inventory UTF-8 encoding',
+  )
+  const v = jsonStrict(sourceRaw.toString('utf8'))
   object(v, ['roots', 'files'], where)
   need(
-    Array.isArray(v.roots) && v.roots.length > 0 && v.roots.every(absolute),
+    Array.isArray(v.roots) && v.roots.length > 0 && v.roots.length <= 64 && v.roots.every(absolute),
     'inventory roots invalid',
   )
   need(
@@ -363,9 +390,34 @@ function inventory(p, where, gaps, requiredRoot = null) {
   )
   if (requiredRoot !== null)
     need(v.roots.includes(requiredRoot), 'SDK inventory does not cover selected supply root')
+  const lines = recordsRaw.toString('utf8').split('\n', v.files.length + 2)
+  need(
+    lines.pop() === '' && !lines.some((line) => line.includes('\r') || line.includes('\0')),
+    'inventory line endings',
+  )
+  const headerRaw = lines.shift()
+  need(
+    Buffer.from([headerRaw, ...lines, ''].join('\n')).equals(recordsRaw),
+    'inventory record encoding/line endings differ',
+  )
+  need(
+    Buffer.byteLength(headerRaw ?? '') <= 8192 && headerLine.test(headerRaw),
+    'inventory header grammar',
+  )
+  const h = jsonStrict(headerRaw)
+  object(h, ['format', 'count', 'roots', 'prefix', 'suffix'], 'inventory header')
+  need(h.count === v.files.length && lines.length === h.count, 'inventory record count')
+  need(JSON.stringify(h.roots) === JSON.stringify(v.roots), 'inventory roots differ')
+  need(
+    Buffer.from(h.prefix + lines.join(',') + h.suffix).equals(sourceRaw),
+    'inventory source reconstruction differs',
+  )
   const seen = new Set()
-  for (const f of v.files) {
+  for (const [i, line] of lines.entries()) {
+    need(Buffer.byteLength(line) <= 4096 && recordLine.test(line), 'inventory record grammar')
+    const f = jsonStrict(line)
     pinSchema(f, 'inventory file')
+    need(JSON.stringify(f) === JSON.stringify(v.files[i]), 'inventory record differs from source')
     need(f !== null && !seen.has(f.path), 'duplicate/null inventory path')
     seen.add(f.path)
     need(
@@ -374,8 +426,23 @@ function inventory(p, where, gaps, requiredRoot = null) {
       ),
       'inventory path escapes approved root',
     )
-    checkPin(f, where, gaps, true)
   }
+  return v
+}
+function inventory(p, where, gaps, requiredRoot = null) {
+  if (p === null) {
+    gaps.push(`${where}: pending pin`)
+    return
+  }
+  inventorySchema(p, where)
+  for (const k of ['source', 'records']) checkPin(p[k], `${where}.${k}`, gaps)
+  const v = parseInventory(
+    readBounded(p.source.path, 16 * 1024 * 1024),
+    readBounded(p.records.path, 16 * 1024 * 1024),
+    where,
+    requiredRoot,
+  )
+  for (const f of v.files) checkPin(f, where, gaps, true)
 }
 function verify(l, opts, lockBytes) {
   const gaps = []
