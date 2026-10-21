@@ -27,3 +27,9 @@
 
 
 最终补齐常见 datatype IRI 后，独立 reviewer 再次全文复核通过；53 Python/5 Vitest，13 文件组合 SHA256 `079d7c74aa463f800f669de156d2291f16daaba22253ecc5dcdf15e2bc0140b2`。本地完整 check 同版本实际 635 TS/1105 Python通过，非reviewer代为声称。
+
+## 获批 T09 输入适配审查
+
+独立 reviewer 再次检查完整本线与新增固定输入：实际用 `git show 873c8c0…` 核对 manifest/17文件/PRD源原字节一致，未消费未批准服务或Store helper；既有实现与 `dcc5ec8` 无差异。同一告警join、字符串001、R-05/06稳定未执行计划保持；50案例均runtime-pending，无actual字段，expected未当作运行结果/存储。独立复跑75 Python通过，明确通过仅限准备与输入适配范围。
+
+32受审文件组合SHA256：`ce69de6c0a52c117807e67033a0e5e6e3ac2f132e9ff7441b6cf472af5e4cbba`。未修改文件、未开GUI，不能替代指定外审和真实执行验收。

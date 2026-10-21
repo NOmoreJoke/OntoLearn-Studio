@@ -19,3 +19,8 @@
 没有本机 GUI/Electron/e2e/native/HMR、凭据/真实安全存储/模型调用/费用/外发。未改 main/preload/bridge/依赖/归档源，故未新增本机 e2e、包内或 source 验证。页面经过 TypeScript 静态检查，尚未挂到 App；未作浏览器/原生实际交互验收。
 
 执行器/Store/公共协议接线缺失，G.2 仅有私有输入和领域预期，尚无真实 actual/trace 或全 RDFS 闭包输出基线。双平台/包内/发布证据、指定双审/PR/CI/合并均未取得。
+
+
+## 获批固定输入后的最终检查
+
+固定873的manifest/17输入/PRD源全字节核对后，新增22项纯输入/plan适配测试。完整 `npm run check` 退出0：16个TS文件/635 tests，1127 Python tests，lint/格式/类型/构建/ruff均通过；原始完整日志 `check-approved-inputs.log` 本地保留。独立内审75项Python通过，完整实现与dcc5ec8无变化。无GUI/包内/实际推理/持久化/生产证据。

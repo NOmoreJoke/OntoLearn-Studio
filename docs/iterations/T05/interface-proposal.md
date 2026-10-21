@@ -62,3 +62,7 @@ Q6 的值比较具体 datatype 兼容、真实 pySHACL/RDFS 输出投影/trace �
 - **Q6-02/03/12**：命名 Shape 与仅 sh:in 列表、有限子类/domain/range 闭包、完整导入/编辑/解释/导出各列均须承接原边界；探针/有限闭包不证明产品全部能力。
 
 上述均为候选报告的事实与待补差距，未将其引用为正式执行通过。完整原需求与最终正反例/同版外审仍保持。
+
+## 批准固定输入更新
+
+总控随后批准 T09 固定873输入，本线manifest/17文件/PRD源已逐项核验，记录见 `approved-inputs.md`。正式后续G.2使用固定bundle的 `urn:ontolearn:learning:` 与 `name-required`/`alarm`，不再把私有样例命名空间作为待确认公共身份。完整真实执行/trace及原FR505语义补齐仍然开放；没有消费未批准服务/Store helper。
