@@ -1,0 +1,102 @@
+{
+  "productRef": "256b7f1f1abd51b7cabfdfe9fd2e5013f4e8cd8c",
+  "files": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/project/operation_evidence.py",
+      "bytes": 39943,
+      "sha256": "d6554289f8263a09216b76ff9d18e7b38aef81730f2c029669f816a7c6a5b2ae",
+      "role": "new-writer",
+      "productRef": "256b7f1f1abd51b7cabfdfe9fd2e5013f4e8cd8c"
+    },
+    {
+      "path": "packages/engine/tests/test_project_operation_evidence.py",
+      "bytes": 50985,
+      "sha256": "9097ccb758c4f05786923277b34c33960e716c63bd8f5eea464d850dbcf09a76",
+      "role": "new-writer",
+      "productRef": "256b7f1f1abd51b7cabfdfe9fd2e5013f4e8cd8c"
+    }
+  ],
+  "logs": [
+    {
+      "path": "/tmp/t01-operation-evidence-core-check-01.log",
+      "bytes": 8915,
+      "sha256": "e735f6dd57c6a768ed27cac99883d6e3fca95f02fbe57aed0a2c574963d7eecf",
+      "startTool": "8d7614/session18773",
+      "terminalTool": "7e15e9",
+      "exitCode": 0,
+      "scope": "superseded 1c5d/127 candidate; does not cover final d655",
+      "observedCounts": {
+        "pythonPassed": 3096,
+        "pythonSkipped": 44
+      },
+      "capture": "original argv redirected both complete streams with 2>&1; merged stream labels cannot be reconstructed"
+    },
+    {
+      "path": "/tmp/t01-operation-evidence-core-target-129.log",
+      "bytes": 180,
+      "sha256": "6ec81bdc944b582175ae255fc5def2a293e87ff645c8309ecf0dfa98d439f8a9",
+      "startTool": "dbfefa",
+      "terminalTool": "dbfefa",
+      "exitCode": 0,
+      "scope": "final d655/9097",
+      "observedCounts": {
+        "pythonPassed": 129
+      },
+      "capture": "original argv redirected both complete streams with 2>&1; merged stream labels cannot be reconstructed"
+    },
+    {
+      "path": "/tmp/t01-operation-evidence-core-check-02.log",
+      "bytes": 8914,
+      "sha256": "e00da643e9a58de34a097eb88e18da9d3ee0791d3778b891e42ad2c5fc7f5f0c",
+      "startTool": "526574/session75525",
+      "terminalTool": "31c3d7",
+      "exitCode": 0,
+      "scope": "final d655/9097",
+      "observedCounts": {
+        "typescriptPassed": 1125,
+        "pythonPassed": 3098,
+        "pythonSkipped": 44
+      },
+      "capture": "original argv redirected both complete streams with 2>&1; merged stream labels cannot be reconstructed"
+    },
+    {
+      "path": "/tmp/t01-operation-evidence-core-source-01.log",
+      "bytes": 111,
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
+      "startTool": "0b58a2",
+      "terminalTool": "0b58a2",
+      "exitCode": 0,
+      "scope": "final d655/9097",
+      "observedCounts": {
+        "originalSources": 12
+      },
+      "capture": "original argv redirected both complete streams with 2>&1; merged stream labels cannot be reconstructed"
+    }
+  ],
+  "lintTarget": {
+    "call": "62d1e1",
+    "exitCode": 0
+  },
+  "skipBoundary": "44 inherited skips; new dedicated test file has no skip marker. No skipped platform/native group was executed or claimed tested. Same C1 inherited source and test inputs retained.",
+  "independentReview": {
+    "path": "docs/reviews/T01/project-operation-evidence-core-C2/independent-implementation-review.md",
+    "bytes": 19044,
+    "sha256": "ac72d0d44192299ede4a735d84300c961dc66a71de52fd1aebfe51ca024f276a",
+    "finding": "five original P2 and cancellation/guard issues closed in actual fixed candidate; internal code review only, not designated external dual review"
+  },
+  "notRun": [
+    "GUI",
+    "Electron",
+    "e2e",
+    "native",
+    "Keychain",
+    "models",
+    "paid calls",
+    "packaging",
+    "push",
+    "PR",
+    "merge"
+  ],
+  "sourceIntegrity": "12 original archive files; not proof of complete deployed/PYZ closure",
+  "environment": "own tree .venv/node_modules, own official runtime-cache; lock frozen offline; no other worktree environment borrowed"
+}
