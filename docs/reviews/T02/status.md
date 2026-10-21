@@ -109,3 +109,9 @@ C3全仓`source-projection-check-first.log`已实际exit0：633 TS/1091 Python�
 本人已明确答复“授权发送”。发送前实际核验流程HEAD `44e6e927fb0a073c1cdf1573a751a698a7579dae`、产品实现4932122及远端/批准develop5f；root09:19:52最新资源限定为无活动UI审查任务、T06在真实桌面/时段后优先，I05条件后续。已依本人授权调用一次正式send_message_to_thread投递候选/验证/登记与接口/外审预约请求，工具无错误返回目标root threadId。记录见`controller-message-receipt.json`，原草稿正文保留；没有GUI、密钥、付费或扩大外发。
 
 root此前另已主动read_thread读取本线blocked终态，并指示后续直接读取本线现有status/checkpoint。此次投递依据本人新授权，不是把root消息当发送授权；后续不重复回传/创建候选材料。消息发送权限等待已解除，但正式接口/依赖消费与T02实际外审条件仍未放行，Goal保持原blocked，不重建/重测、不将投递当产品门通过。
+
+## 总控实际登记回执
+
+已收到root消息并实际读回 `service-stage-register.md` 的T02-S1新增登记（文件SHA `bfeaa73be3bfbfa4bdd80ae71d79e42e60acdadc96cfdbdc23eaea4dc33b2e17`）：拆分方向已接受，状态为“待独立范围与完整证据核验”，固定产品4932122、批准base5f，全部原父缺口及同候选指定双审/CI/合并门保留。root已确认读到本人授权发送的回执，后续直接文件/聊天读回，本线不再重复发送。尚无实际审计终态/外审桌面或正式接口批准，不把“将审计”记为正在等待的活跃审计进程。
+
+本线当前流程head6c74124，实际核验4932122后apps/packages/tests/锁无差异，只有本线流程证据。原候选保持冻结，Goal仍为blocked；不因登记重建或恢复、不重做未变化验证，不操作GUI。实际依赖/资源变化后仍在原聊天按原Goal继续；若另做父功能未冻结工作，须先独立树/明确授权路径，不能混入冻结候选。
