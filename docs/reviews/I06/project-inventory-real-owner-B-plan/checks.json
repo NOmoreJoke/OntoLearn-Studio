@@ -1,0 +1,57 @@
+{
+  "scope": "docs-only B plan, no implementation authorization",
+  "docsBase": "6a38fcb8135343ba5e62a8a8effe57b18c3de00c",
+  "approvedProductBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "staticFinal": {
+    "receipt": "raw/static-final.json",
+    "exit": 0,
+    "observed": {
+      "sourceOriginalsVerified": 52,
+      "r1Inputs": 4,
+      "followupInputs": 1,
+      "independentReportHashesVerified": 2,
+      "frozenADeliveryPathsUnchanged": 68,
+      "oldTreesUnchanged": 2,
+      "allowedNewPathsOnly": true,
+      "productExecution": false
+    }
+  },
+  "formatFirst": {
+    "receipt": "raw/format-first.json",
+    "exit": 0,
+    "candidate": "41058B/d6bf; original candidate retained"
+  },
+  "formatFinalReceipt": "raw/format-final.json",
+  "independentReview": {
+    "r1": "two P2 and owner wording pending in original report",
+    "followup": "both P2 and wording closed; static plan passes",
+    "reports": "Original full reports retained separately; no substitute for designated model gates"
+  },
+  "notRun": [
+    "product imports",
+    "unit/integration/product checks",
+    "real metadata or persistent IO probes",
+    "network",
+    "native/GUI/e2e/HMR",
+    "Keychain/models/paid calls"
+  ],
+  "unchanged": [
+    "A products/tests and all 68 delivery paths",
+    "e2c and 961 frozen trees",
+    "AGENTS unstaged protected",
+    "original Goal"
+  ],
+  "gitDiffCheck": {
+    "allNewOriginalBytes": {
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "mainAndOwnedSummaries": {
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  "archive": "No new ZIP; original documents plus fixed Git ref/manifest form this delivery"
+}

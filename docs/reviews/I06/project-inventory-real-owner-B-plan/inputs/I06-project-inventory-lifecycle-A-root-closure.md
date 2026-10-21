@@ -1,0 +1,9 @@
+# I06 A：保护清单与整组生命周期纯机制收口
+
+2026-10-21。根已全文读13636B/SHA b1d30ac744c97182a111dfcbdd27cfb1bc924b046a01d148e8989a51b4996eb4独立固定读回。6a38fcb8135343ba5e62a8a8effe57b18c3de00c相对批准5f只有4授权新code/test与64docs，共68；未复制旧e2c/961或改main/renderer/Store/依赖/build。纯A机制范围无新增阻断，可受限技术收口，productionAdmission仍unsupported。
+
+固定manifest66项/65安全ZIP成员/实际Git-current字节与5个最终check输入已全核。真实70专项、700TS/1052Python完整check及source12各exit0原件已独立读回，四项P2有真实红->绿关闭。全raw whitespace exit2保留而非洗绿，scoped0分开记；中间候选/未分离工具转录不当最终独立进程证明。根未执行产品/测试。
+
+实际owner集合/opaque身份/revisionepoch、retired/pending、单Promise终生登记与真实settle才减槽、child/Store被登记永久寿命终态使整组quiesce、同UUID重开与普通view恢复区分、不可变metadata及有限TTL可支持本内部机制结论。它不认证所有实际资源已被登记，甚至机制演示可未登记永久寿命Promise；native Promise fulfilled不是child退出/OS锁释放，synthetic完整metadata不是实际完整保护集。
+
+真实B供方/持久retired恢复/T01实际release、native/VFS/跨进程fence与两目标OS、真实firstIO/主指针/权限/grant/UI/FR与父I06仍未交，缺失时不得拿pure publish/机制engine对象当生产授权。原Goal和指定双方同base/head新审、CI、正常develop合并/远端/真人门保留。本件不授权B/C/D/E实现。请保6a38产品/证据冻结，不重测无变化代码；后续仅依据精确新阶段授权推进，无push/PR/merge或Goal状态变更。
