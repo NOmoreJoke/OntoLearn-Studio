@@ -1102,3 +1102,236 @@ def test_real_direct_graph_consumer(index, case, tmp_path, goldens):
         observation.update(assertion="pass", normativeStatus="matched")
     finally:
         (directory / "observation.json").write_bytes(canonical(observation))
+
+
+def observe_integer_text_stage(case, directory, policy):
+    import rdflib
+    from rdflib import XSD, Literal
+    from rdflib import term as rdf_term
+
+    directory.mkdir()
+    actual = {"status": "error", "stage": "entry", "validatorRuns": 0, "parseTrace": []}
+    normalize_before = rdflib.NORMALIZE_LITERALS
+    converters_before = dict(rdf_term._toPythonMapping)
+    original_parse, original_run = semantic._parse_turtle, semantic.Validator.run
+
+    def parse(*args, **kwargs):
+        stage = "parse-shapes" if kwargs.get("shapes", False) else "parse-data"
+        actual["stage"] = stage
+        trace = {"stage": stage, "kwargs": kwargs, "returned": False}
+        actual["parseTrace"].append(trace)
+        graph = original_parse(*args, **kwargs)
+        trace.update(returned=True, tripleCount=len(graph))
+        (directory / (stage + ".nt")).write_bytes(graph.serialize(format="nt", encoding="utf-8"))
+        return graph
+
+    def run(instance, *args, **kwargs):
+        actual["stage"] = "validator"
+        actual["validatorRuns"] += 1
+        data = instance.data_graph
+        before = sorted(semantic._key(row) for row in data)
+        (directory / "validator-data-before.nt").write_bytes(
+            data.serialize(format="nt", encoding="utf-8")
+        )
+        actual["dataBefore"] = before
+        actual["literalObjects"] = [
+            {
+                "lexical": str(value),
+                "datatype": str(value.datatype),
+                "language": value.language,
+                "illTyped": value.ill_typed,
+                "isIntegerDatatype": value.datatype == XSD.integer,
+            }
+            for value in data.objects()
+            if isinstance(value, Literal)
+        ]
+        result = original_run(instance, *args, **kwargs)
+        conforms, report, text_report = result
+        (directory / "report.nt").write_bytes(report.serialize(format="nt", encoding="utf-8"))
+        (directory / "report-text.txt").write_text(text_report)
+        (directory / "validator-data-after.nt").write_bytes(
+            data.serialize(format="nt", encoding="utf-8")
+        )
+        actual["dataAfter"] = sorted(semantic._key(row) for row in data)
+        names = (
+            "focusNode",
+            "resultPath",
+            "value",
+            "sourceShape",
+            "sourceConstraintComponent",
+            "resultSeverity",
+        )
+        rows = []
+        for node in report.subjects(RDF.type, SH.ValidationResult):
+            rows.append(
+                {
+                    "actualResultNode": node.n3(),
+                    **{
+                        name: [value.n3() for value in report.objects(node, SH[name])]
+                        for name in names
+                    },
+                }
+            )
+        actual["realValidatorReport"] = {
+            "conforms": conforms,
+            "conformsTerms": [v.n3() for v in report.objects(None, SH.conforms)],
+            "rows": rows,
+        }
+        return result
+
+    try:
+        with (
+            patch.object(semantic, "_parse_turtle", parse),
+            patch.object(semantic.Validator, "run", run),
+        ):
+            if policy is None:
+                data = semantic.parse_turtle(case["dataTurtle"])
+                shapes = semantic.parse_turtle(case["shapesTurtle"], shapes=True)
+                actual["result"] = semantic.check_shapes(data, shapes)
+            else:
+                actual["result"] = semantic.validate_shacl_text(
+                    case["dataTurtle"],
+                    case["shapesTurtle"],
+                    data_policy=policy,
+                    range_policy="legacy",
+                )
+        actual.update(status="success", stage="returned")
+    except Exception as error:
+        actual.update(error_record(error))
+    finally:
+        actual["globalState"] = {
+            "normalizeBefore": normalize_before,
+            "normalizeAfter": rdflib.NORMALIZE_LITERALS,
+            "normalizationUnchanged": rdflib.NORMALIZE_LITERALS is normalize_before,
+            "converterKeysUnchanged": rdf_term._toPythonMapping.keys() == converters_before.keys(),
+            "converterIdentitiesUnchanged": all(
+                key in rdf_term._toPythonMapping and rdf_term._toPythonMapping[key] is value
+                for key, value in converters_before.items()
+            ),
+        }
+        (directory / "stage.json").write_bytes(canonical(actual))
+    return actual
+
+
+def assert_integer_text_report(actual, expected):
+    assert actual["status"] == "success" and actual["stage"] == "returned", actual
+    assert actual["validatorRuns"] == 1
+    result = actual["result"]
+    assert set(result) == {"entryVersion", "dataPolicy", "rangePolicy", "report"}
+    assert result["entryVersion"] == "i05-shacl-text-1"
+    assert result["dataPolicy"] == "integer-illtyped-report-v1"
+    assert result["rangePolicy"] == "legacy"
+    report = result["report"]
+    assert set(report) == {"conforms", "violations"}
+    assert type(report["conforms"]) is bool and report["conforms"] is expected["conforms"] is False
+    value = '"not-an-int"^^<http://www.w3.org/2001/XMLSchema#integer>'
+    row = {
+        "focus": "<urn:m1:s>",
+        "path": "<urn:m1:p>",
+        "value": value,
+        "sourceShape": "<urn:m1:shape>",
+        "constraint": "<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>",
+        "severity": "<http://www.w3.org/ns/shacl#Violation>",
+    }
+    assert report["violations"] == [row]
+    assert expected["components"] == ["DatatypeConstraintComponent"]
+    raw = actual["realValidatorReport"]
+    assert type(raw["conforms"]) is bool and raw["conforms"] is False
+    assert raw["conformsTerms"] == ['"false"^^<http://www.w3.org/2001/XMLSchema#boolean>']
+    (raw_row,) = raw["rows"]
+    assert raw_row["actualResultNode"].startswith("_:")
+    mapping = {
+        "focusNode": "focus",
+        "resultPath": "path",
+        "value": "value",
+        "sourceShape": "sourceShape",
+        "sourceConstraintComponent": "constraint",
+        "resultSeverity": "severity",
+    }
+    assert set(raw_row) == {"actualResultNode", *mapping}
+    for name, key in mapping.items():
+        assert raw_row[name] == [row[key]]
+    facts = [
+        ("<urn:m1:s>", "<urn:m1:p>", value),
+        ("<urn:m1:s>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "<urn:m1:Focus>"),
+    ]
+    assert actual["dataBefore"] == actual["dataAfter"] == sorted(facts)
+    assert actual["literalObjects"] == [
+        {
+            "lexical": "not-an-int",
+            "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+            "language": None,
+            "illTyped": True,
+            "isIntegerDatatype": True,
+        }
+    ]
+    assert [r["stage"] for r in actual["parseTrace"]] == ["parse-data", "parse-shapes"]
+    assert [r["tripleCount"] for r in actual["parseTrace"]] == [2, 6]
+    assert actual["parseTrace"][0]["kwargs"]["_allow_illtyped_integer"] is True
+    assert actual["parseTrace"][1]["kwargs"].get("_allow_illtyped_integer", False) is False
+
+
+def test_explicit_illtyped_integer_text_consumer(tmp_path, goldens):
+    case_index, case = next(
+        (i, c) for i, c in enumerate(CONSUMER_INPUT["cases"]) if c["id"] == "C-illtyped-entry"
+    )
+    case_id = "C-illtyped-entry-explicit-integer-report"
+    root = Path(os.environ.get("M1_ILLTYPED_OBSERVATION_DIR", str(tmp_path)))
+    directory = root / sha(case_id.encode())
+    directory.mkdir(parents=True, exist_ok=False)
+    (directory / "input.json").write_bytes(canonical(case))
+    (directory / "data.turtle").write_text(case["dataTurtle"])
+    (directory / "shapes.turtle").write_text(case["shapesTurtle"])
+    stages = []
+    for name, policy in (
+        ("strict-before", "strict"),
+        ("wide", "integer-illtyped-report-v1"),
+        ("strict-after", "strict"),
+        ("legacy-after", None),
+    ):
+        stages.append(
+            {
+                "name": name,
+                "dataPolicyArgument": policy,
+                "actual": observe_integer_text_stage(case, directory / name, policy),
+            }
+        )
+    # Golden is selected after all four real operations, never passed to the entry.
+    expected = goldens["consumers"]["C-illtyped-entry"]["directSHACLNormativeResult"]
+    observation = {
+        "id": case_id,
+        "kind": "explicit-integer-text-consumer",
+        "baseCaseId": case["id"],
+        "testSourceSha256": sha(Path(__file__).read_bytes()),
+        "semanticSourceSha256": sha(
+            (REPO / "packages/engine/src/ontolearn_engine/semantic.py").read_bytes()
+        ),
+        "inputSourceSha256": sha((READONLY / "consumer-C-inputs.json").read_bytes()),
+        "sourceBinding": {
+            "pointer": f"/cases/{case_index}",
+            "dataUtf8Sha256": sha(case["dataTurtle"].encode()),
+            "shapesUtf8Sha256": sha(case["shapesTurtle"].encode()),
+            "meaning": "content/fixture pointer only; no Job or actor authority",
+        },
+        "input": case,
+        "actual": {"stages": stages},
+        "expected": expected,
+        "assertion": "fail",
+        "history": "Explicit component supplement; original pending observation unchanged",
+    }
+    try:
+        for stage in stages:
+            state = stage["actual"]["globalState"]
+            assert state["normalizationUnchanged"] and state["converterKeysUnchanged"]
+            assert state["converterIdentitiesUnchanged"]
+        assert_integer_text_report(stages[1]["actual"], expected)
+        for stage in (stages[0], stages[2], stages[3]):
+            actual = stage["actual"]
+            assert actual["status"] == "error" and actual["stage"] == "parse-data"
+            assert actual["exceptionType"] == "SemanticError"
+            assert actual["reason"] == "INVALID_LITERAL_LEXICAL"
+            assert actual["validatorRuns"] == 0 and "realValidatorReport" not in actual
+            assert "result" not in actual
+        observation.update(assertion="pass", normativeStatus="explicit-policy-component-matched")
+    finally:
+        (directory / "observation.json").write_bytes(canonical(observation))
