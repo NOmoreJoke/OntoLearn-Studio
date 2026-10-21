@@ -75,3 +75,11 @@
 收到并实际读回新 ZCode/MiniMax 默认权限政策及外审权限证据，当前 AGENTS SHA **78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759**，共同指令 SHA **df09014af4d6cf757ca0977a995497f3646cd330e8921710876663a40a8cbcb4**。历史db/971快照保留。默认完全访问/始终授权不改变只读/指定模型/无桌面/逐次确认边界；实际审查会话模式仍须读回。本线未改配置或操作应用；已向UI子agent透传新全文文件及政策。
 
 UI已实际独立启动：agent /root/behavior_ui，树 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui，feature/T06-behavior-ui，base5f910b5；仅behavior/组件与tests/unit/t06-*路径。正式managed worktree工具因本聊天根非git返回Not a git repository后，用批准repo git worktree add创建，未切换主树或影响S1。子agent已实际回执身份/公共政策/技能全文，尚未报实现/验证通过，不把创建目录当作完成。
+
+## 当前冻结交付 61396a5
+
+必要 T09 适配两项 P2 已修复；产品/测试/fixture/接口固定为 **61396a598b2dffc1d3d2fd4660f9af1d5c93d266**。当前新全仓 check exit 0：630 TS / 1174 Python（内含122行为），lint/格式/类型/构建/ruff均通过。完整独立复核通过，报告 local-review-6.md，全部历史问题关闭，旧失败证据不改写。批准873固定输入九例全量比较再次通过；人工gold、not-executed/formal_acceptance=false保留。
+
+新来源/验证/完整diff清单及日志哈希为 evidence/validation-61396a5.json；review-readiness.md已重写为当前完整12项产品来源和实际门禁。两份新成功probe输出与已跟踪完整payload语义一致，记录原始字节与规范化hash后清理重复输出；原完整payload及本地运行日志保留。
+
+指定应用独占资源已由总控转交，但须总控实查新产品/流程HEAD与dirty/source manifest后派发；未启动指定任务、未操作应用、未push/PR/CI/合并。AGENTS仍保护未暂存。UI在独立child树实质实现，desktop typecheck首跑通过，其他验证与交付尚未收齐；不在本冻结范围。完整FR父Goal保持active，真实依赖/集成与最终门禁持续开放。

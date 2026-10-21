@@ -1,0 +1,166 @@
+{
+  "date": "2026-10-21",
+  "timezone": "Asia/Shanghai",
+  "stage": "private_implementation_validated_pending_controller_gate",
+  "goal_status": "active",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+  "branch": "feature/weekly-t06-behavior",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "product_candidate": "61396a598b2dffc1d3d2fd4660f9af1d5c93d266",
+  "procedure_head": "Resolve actual HEAD after evidence-only commit; source paths must equal product_candidate.",
+  "source_sha256": {
+    "docs/iterations/T06/interface.md": "e733c03db0b9af5946f55bdcefaccdb31e394aa61c855a283dd1763fb7330871",
+    "docs/iterations/T06/probe_t09_baselines.py": "d960d1c95e34d40398bb9a280745bdf690020e47b6730d8f59d45e6efba16565",
+    "docs/iterations/T06/t09-adaptation.md": "5ca08046134b422c3427d136e06e6a6054c8d06c214f0ae5728d1f1a81a4b548",
+    "packages/engine/src/ontolearn_engine/behavior/__init__.py": "0519496083ecaf23ad3a606c8be5f461b21bfb1507f313678083d212cec676d9",
+    "packages/engine/src/ontolearn_engine/behavior/baseline_adapter.py": "18f6eb0133b12db950d07dfffe881fb38192af4b14d0b67003c47b67af5a32af",
+    "packages/engine/src/ontolearn_engine/behavior/planner.py": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+    "packages/engine/tests/test_behavior_baseline_adapter.py": "59a07e8b8d7f0caba8cca1d4f31f684fefafc295473f10ee0dd165439ed50859",
+    "packages/engine/tests/test_behavior_creation.py": "96e99469d2057e56fd702d43bc3c0373e90809e6f624e49a5a19f675222d999c",
+    "packages/engine/tests/test_behavior_failures.py": "02f9698299f224019e9aed01617d108a06cd4a16a591c5ec08624b2c9c96839e",
+    "packages/engine/tests/test_behavior_planner.py": "940e54c1a94ec1b0ac9a8baec0bf7d98270fcaff2a476818033571a78db3285d",
+    "tests/fixtures/behavior/build_corpus.py": "9bbe4db97895c5ead7588acf22a25fa21e5358743b83755a9549141f5b66c5b4",
+    "tests/fixtures/behavior/counterexamples.json": "17de133b6a13efd14197b4d7dc09a51c7df097db5161b9acb6f7b92e5f9796f9"
+  },
+  "complete_product_commit_diff": {
+    "command": "git diff --binary 5f910b52c69d86a1076b2032e5d3c63e715947f3 61396a598b2dffc1d3d2fd4660f9af1d5c93d266",
+    "sha256": "e1b08e5c89b72f4d8a0a7e1ca57feadd91ced235301d1096fdfd07d8e5d507dc",
+    "files": [
+      "docs/iterations/T06/interface.md",
+      "docs/iterations/T06/probe_t09_baselines.py",
+      "docs/iterations/T06/t09-adaptation.md",
+      "docs/reviews/T06/baseline-compatibility-audit.md",
+      "docs/reviews/T06/evidence/t09-candidate-probe.json",
+      "docs/reviews/T06/evidence/validation-e81cfc9.json",
+      "docs/reviews/T06/evidence/validation.json",
+      "docs/reviews/T06/local-review-1.md",
+      "docs/reviews/T06/local-review-2.md",
+      "docs/reviews/T06/local-review-3.md",
+      "docs/reviews/T06/local-review-4.md",
+      "docs/reviews/T06/local-review-5.md",
+      "docs/reviews/T06/review-readiness.md",
+      "docs/reviews/T06/status.md",
+      "packages/engine/src/ontolearn_engine/behavior/__init__.py",
+      "packages/engine/src/ontolearn_engine/behavior/baseline_adapter.py",
+      "packages/engine/src/ontolearn_engine/behavior/planner.py",
+      "packages/engine/tests/test_behavior_baseline_adapter.py",
+      "packages/engine/tests/test_behavior_creation.py",
+      "packages/engine/tests/test_behavior_failures.py",
+      "packages/engine/tests/test_behavior_planner.py",
+      "tests/fixtures/behavior/build_corpus.py",
+      "tests/fixtures/behavior/counterexamples.json"
+    ],
+    "note": "Includes all accumulated workflow docs at product commit; separately inspect base to final procedure HEAD. No generated patch is recursively embedded."
+  },
+  "protected_guide_sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+  "common_instructions_sha256": "df09014af4d6cf757ca0977a995497f3646cd330e8921710876663a40a8cbcb4",
+  "commands": [
+    {
+      "command": "npm run check",
+      "exit_code": 0,
+      "typescript_files": 15,
+      "typescript_tests": 630,
+      "python_tests": 1174,
+      "behavior_tests_included": 122,
+      "other_checks": "lint/format/typecheck/build/ruff passed; headless only"
+    },
+    {
+      "command": "uv run --frozen pytest packages/engine/tests/test_behavior_*.py -q",
+      "result": "122 passed",
+      "source": "Developer and independent reviewer actual runs"
+    },
+    {
+      "command": "uv run --frozen python docs/iterations/T06/probe_t09_baselines.py --source-root out/t09-approved-873c8c0 --manifest-sha aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e --output docs/reviews/T06/evidence/t09-probe-61396a5.json",
+      "exit_code": 0,
+      "case_count": 9,
+      "checks": "complete facts/orders/notifications/ordered actions/consumption/conflict identities; B01 repeat/B04 stale reject/B06 frozen false",
+      "product_runtime": "not-executed",
+      "formal_acceptance": false,
+      "reasoning_source": "manual gold; no reasoner executed"
+    }
+  ],
+  "approved_input": {
+    "git": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+    "manifest": "tests/fixtures/product-baselines/manifest.json",
+    "manifest_sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+    "version": "prd-v0.6-learning-1",
+    "prd_sha256": "7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb",
+    "verified_files": 17,
+    "cache": "out/t09-approved-873c8c0; read-only fixed Git bytes, no T09 Python imported"
+  },
+  "independent_review": {
+    "agent": "/root/behavior_independent_review",
+    "head": "61396a598b2dffc1d3d2fd4660f9af1d5c93d266",
+    "result": "pass_private_scope",
+    "report": "../local-review-6.md",
+    "historical_reports": [
+      "../local-review-1.md",
+      "../local-review-2.md",
+      "../local-review-3.md",
+      "../local-review-4.md",
+      "../local-review-5.md"
+    ],
+    "all_historical_findings_closed": true,
+    "independent_probe": "/tmp/T06-61396a5-independent-review-probe.json"
+  },
+  "successful_probe_payloads": {
+    "t09-candidate-probe.json": {
+      "raw_sha256": "7a868b4d50b0713c6e218b72d0f92df5a479f990fa8d5c1d73e08e584fb08595",
+      "canonical_json_sha256": "0e6d1a210b593c9689612eb56b58ae3ff98a1d4a84ee83dec97fb42c451dbd66",
+      "retained_full_payload": "t09-candidate-probe.json",
+      "duplicate_cleaned": false
+    },
+    "t09-probe-567ab48.json": {
+      "raw_sha256": "d18e5059394b11f6f783d4247c8e4f074a102a58d5ef3d48c3272fc248339c9e",
+      "canonical_json_sha256": "0e6d1a210b593c9689612eb56b58ae3ff98a1d4a84ee83dec97fb42c451dbd66",
+      "retained_full_payload": "t09-candidate-probe.json",
+      "duplicate_cleaned": true
+    },
+    "t09-probe-61396a5.json": {
+      "raw_sha256": "d18e5059394b11f6f783d4247c8e4f074a102a58d5ef3d48c3272fc248339c9e",
+      "canonical_json_sha256": "0e6d1a210b593c9689612eb56b58ae3ff98a1d4a84ee83dec97fb42c451dbd66",
+      "retained_full_payload": "t09-candidate-probe.json",
+      "duplicate_cleaned": true
+    }
+  },
+  "local_log_sha256": {
+    "check-candidate-4542c55.log": "9d40a13f311b2a08442c3add45f0162036b4e4ff10dac4559193cdb9295273ea",
+    "check-candidate-567ab48.log": "2171ef6d9b40db474034aec53b3ba3b5e0b024bfded191daca7e3f3981205e15",
+    "check-candidate-61396a5.log": "33ab417e17c4769cf44ed6a833e7225c96da51e272fb2b39a85e1db62a93d4aa",
+    "check-candidate-e81cfc9.log": "04ffb42460b749de624a251748d78b99e1cc1cb43456d6e61cfa69e29eb7650b",
+    "check-candidate-f3f6523.log": "4ad1abbdf31f933376c8d6b68f84fbc36ef6b501b82d28e87a4ede41683f3b9d",
+    "check-first.log": "13c3ad10c5d38bbef068d130a2655b96ff312b953f984d93c843621efa44f068",
+    "private-after-review-1.log": "cc69fbd34edf34391895eeb083a27a8b5789fff2d36f8a77f6c72aa27da70ca8",
+    "private-after-review-2.log": "7b81edfd990165a3fa9e6623ebce2701ebde0292370c49c04acc71d98ade66ad",
+    "pytest-adapter-review-fix-first.log": "8e9288f614e40bfd4cc689123e630f7dc8ebdbc9bbf16e678d2a034c251a118f",
+    "pytest-create-native.log": "329aec59db91b492214800ca468cd50e5330966b53d0f9ca1cf86f0930c2a3b0",
+    "pytest-event-source-final.log": "b21ede6bffd7becd9273bcba4601e67a08329d4421575f3ada45af36d91875ac",
+    "pytest-event-source-first.log": "b2ce75a331ef061b3bc529b703baef18d75f143e29af1d04d5bd47f855823bbf",
+    "pytest-failure-evidence-final.log": "4c6c807f0df38f3cd04427e3526f39be2169497ed94d278caa016441b38dd5f8",
+    "pytest-failure-evidence-first.log": "676f5a9586338044ec571d4cb11109c144713c0ce11aae02b2db87154d23413b",
+    "pytest-initial-create-first.log": "7c018b33fe5fa91f8fc702e0dbec177fbd7d7b28556cce5aafd150ee6c021f5f",
+    "pytest-t09-adapter-first.log": "7b49a4bac63ee35db0ad09e6eada81637b28bf4fc9e345e636ded22608625fa5",
+    "t09-candidate-probe-first.log": "87dba2496c28c701e4e3df2edfaea363d1ea05bd1b8b206dc2e4d19619e1a955",
+    "t09-probe-567ab48.log": "87dba2496c28c701e4e3df2edfaea363d1ea05bd1b8b206dc2e4d19619e1a955",
+    "t09-probe-61396a5.log": "87dba2496c28c701e4e3df2edfaea363d1ea05bd1b8b206dc2e4d19619e1a955",
+    "verify-sources-4542c55.log": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+  },
+  "logs": "Original local ignored logs retained; not remote CI. Historical failed regression logs retained.",
+  "specified_external_review": {
+    "resource_transferred": true,
+    "controller_new_candidate_gate": "pending",
+    "tasks_started": false,
+    "passes": false
+  },
+  "ui": "Separate running agent /root/behavior_ui and T06-behavior-ui tree; excluded from this candidate",
+  "not_verified": [
+    "real inference/general RDF",
+    "Store atomic round/rollback/cancellation/late delivery",
+    "resource B07/full G3",
+    "Agent B08/UI integration",
+    "full original FR600-604/B acceptance",
+    "specified ZCode/MiniMax complete reviews",
+    "push/PR/remote CI/merge",
+    "native packaging/production"
+  ]
+}
