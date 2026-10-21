@@ -134,3 +134,11 @@ root此前另已主动read_thread读取本线blocked终态，并指示后续直�
 `packages/engine/src/ontolearn_engine/worker.py` 未来唯一维护者现为T01，只从批准5f的9314字节/2fa848aa版本施工；不得采用I05未批准C3语义worker。I05固定C3继续冻结，需修先由root精确返还、T01停存；protocol/resources/语义/旧测试/build/CI及其他责任未随转，语义四路径futureoffer仍未生效。source wire/限额/公共3/ready/运行能力没有因此获批。
 
 本线只记录责任路由变化；未改候选或共享文件、未重跑验证/操作GUI、未重复跨聊回执，原Goal保持blocked。
+
+## 四文件基础层维护生效通知读回
+
+已全文读取最新共同指令17891字节，SHA `e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0`；实际核验前16317字节SHA仍ff5f，完整旧指令前缀保留。已全文读取 `foundation-four-file-handoff-effective.json`，其状态为effective_future_maintenance_only、生效时间2026-10-21T11:40:05.102755+08:00。
+
+T01现在唯一维护 `apps/desktop/src/main/jsonl.ts`、`apps/desktop/src/renderer/src/task-presentation.ts`、`apps/desktop/src/main/task-service.ts`、`apps/desktop/src/main/index.ts`，仅沿批准5f。I06保留 `apps/desktop/src/preload/index.ts` 与renderer的env.d.ts/App.tsx/style.css四路径及私有模块；其他责任不扩。原协议待门文本保留为历史，本生效登记控制当前责任；固定C4/e2c/961原字节只读，精确返还前须T01停写、保全SHA/WIP及root唯一owner登记。
+
+此通知仅转维护责任，未授权startup/schema/新代码/runtime3/ready；原第九节、无桌面、指定双审及发布门不变。AGENTS仍78df未暂存。本线未改产品候选或共享文件、不复测/操作GUI、不重建或恢复原blocked Goal；未重复跨聊发送，供总控直接文件读回。
