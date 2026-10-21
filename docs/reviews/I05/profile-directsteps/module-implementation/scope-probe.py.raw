@@ -1,0 +1,27 @@
+import ast,hashlib,json,subprocess,sys
+from pathlib import Path
+root=Path.cwd();prefix=root/'docs/reviews/I05/profile-directsteps/module-implementation'
+fixed=Path('/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/docs/reviews/I05/profile-directsteps/inputs/I05-profile-directsteps-first-fixed-inputs.json.raw')
+label='' if len(sys.argv)==1 else sys.argv[1]+'-'
+members=json.loads(fixed.read_text())['files'];checks=[]
+for item in members:
+ if 'bytes' not in item or item['bytes'] is None:continue
+ path=root/item['path'];raw=path.read_bytes();digest=hashlib.sha256(raw).hexdigest()
+ checks.append({'path':item['path'],'bytes':len(raw),'sha256':digest,'matches':len(raw)==item['bytes'] and digest==item['sha256']})
+assert len(checks)==139 and all(item['matches'] for item in checks)
+(prefix/(label+'adopted-139-members.json')).write_text(json.dumps(checks,ensure_ascii=False,indent=2)+'\n')
+source=root/'packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py';text=source.read_text();tree=ast.parse(text);rows=[];functions=[]
+class Inventory(ast.NodeVisitor):
+ def __init__(self):self.scope=[]
+ def visit_ClassDef(self,node):
+  self.scope.append(node.name);self.generic_visit(node);self.scope.pop()
+ def visit_FunctionDef(self,node):
+  functions.append({'name':'.'.join(self.scope+[node.name]),'line':node.lineno,'endLine':node.end_lineno});self.scope.append(node.name);self.generic_visit(node);self.scope.pop()
+ def generic_visit(self,node):
+  if isinstance(node,(ast.For,ast.While,ast.ListComp,ast.SetComp,ast.DictComp,ast.GeneratorExp)):
+   rows.append({'scope':'.'.join(self.scope),'kind':type(node).__name__,'line':node.lineno,'source':ast.get_source_segment(text,node)})
+  super().generic_visit(node)
+Inventory().visit(tree)
+(prefix/(label+'source-loop-inventory.json')).write_text(json.dumps(rows,ensure_ascii=False,indent=2)+'\n')
+(prefix/(label+'source-method-inventory.json')).write_text(json.dumps(functions,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({'helperOnly':True,'head':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'adopted139Equal':True,'sourceBytes':source.stat().st_size,'sourceSha256':hashlib.sha256(source.read_bytes()).hexdigest(),'methods':len(functions),'loopsAndComprehensions':len(rows)}))

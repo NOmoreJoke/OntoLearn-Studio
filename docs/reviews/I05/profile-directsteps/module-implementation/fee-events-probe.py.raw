@@ -1,0 +1,3 @@
+exec(compile(open('docs/reviews/I05/profile-directsteps/module-implementation/helper-probe.py.raw').read(),'<retained helper probe>','exec'))
+for name,ledger in (('capture',L),('validator',V),('roots',R),('identity',I)):
+ print(json.dumps({'helperOnly':True,'ledger':name,'state':ledger.state,'usage':ledger.used,'live':ledger.live,'peaks':ledger.peaks,'caps':ledger.caps,'events':ledger.events}))
