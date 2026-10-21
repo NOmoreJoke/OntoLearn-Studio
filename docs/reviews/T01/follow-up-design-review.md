@@ -9,3 +9,8 @@
 冻结文档SHA256：source-transport-design.md `82c3348972f8c3e38b6b9fe37c2668f991fe4bac3f8e534ad38f59eb099b8a74`；learning-ledger-design.md `6834d3c13c664ef29ecd9df3455e6a9a3a4e5dc7ffe39692228f2cae6fb8c0fd`。未测试、无GUI，不批准任何未实现接口。
 
 worker单文件未来offer已全文读并实际核双身份/clean，接收回执worker-ownership-handoff-acceptance.json SHA `019117b58f6883ac37fdf0a2007df3ad29e7cf68423ed35a3380606ea1d58581`。本方仅接受从批准5f施工，当前等待独立/root登记，不写worker，不读/消费C3实现，不扩大其余文件责任。新文档只跑Prettier/diff检查，不对无变化产品重复check。
+
+
+## r3来源生命周期设计收口
+
+source-lifecycle-decisions-r3初稿SHA9fb2058a…928f经主内审对照I06固定b1283bc/68dfd71及eabaf4d第2节，重复/预算分层/权威排序无新增阻断；指出稳定确认计划与临时attempt/upload/lease指纹仍缺统一。现§3明确两种身份、首次真实接纳context、未接纳失效重传须新预览/新确认、unknown原operation对账及已存在claim在旧lease过期后仍按原请求授权只读返回receipt。新SHA46c422c2b928d68aa4758601e6972979f424f3503524631f6beee03517cdcbc9已定点复核关闭该设计意见。仅文档、不测试、不批准精确schema/跨session fixture或运行实现。

@@ -158,3 +158,8 @@ worker.py唯一未来维护已于2026-10-21T10:21:19.636646+08:00由总控effect
 
 
 来源内容阶段最终完整check实际退出0：630TS/2301Python/44原不适用skip，lint/格式/typecheck/build/ruff均通过；主内审6项独立探针无新阻断，第二位T03 r2设计复核通过。原始证据包source-cache-raw-evidence.tar.gz SHA9ef1078784b6a7c32a28a138aa44a2667c338f162190608ffc895fca5e199405逐成员回读，21对工具call/output及两完整logs可恢复。准备本地恢复提交；未push，worker仍原5f。该阶段只是严格完整性/同库不可变缓存事务，不是公共wire/source授权、真实parser、项目学习/完整restore/ready或父功能完成。
+
+
+总控source固定证据审计d77f902…c3108已全文读：同版2301/87/独立6确认；E1只是87专项完成poll漏封。现仅补封原session2693/2697两完整工具行及索引，补包SHA370a055ad1ab23ba037d2efb297b78300f1389de163782fac9e538c97ef23a52，旧62633B包身份不变；无测试/产品变化。
+
+收到I06固定b1283bc/68dfd71来源对齐回应并全文读，形成source-lifecycle-decisions-r3：选择精确同块append幂等、不重写/不推进/不延寿；接受1pending begin、2leases/16MiB及30/120/600秒候选技术预算，另提256attempt tombstone/256MiB逻辑encoded持久预算待总控接受/实测。main未dispatch guard与已dispatch同coordinator权威排序区分，unknown保留原operation及资源并对账。独立设计发现稳定计划/临时lease指纹门未明确后，已补§3与对应fixture条件：未接纳lease失效同bytes也需新preview/proof/人类确认；已有claim原请求跨session对账不要求临时lease活跃。该设计意见已独立关闭；wire/schema/预算/运行仍未批准或实现。准备纯过程恢复提交，不重复无变化check。
