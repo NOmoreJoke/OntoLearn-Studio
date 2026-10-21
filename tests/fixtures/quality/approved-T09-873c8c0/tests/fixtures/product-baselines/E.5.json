@@ -1,0 +1,4963 @@
+{
+  "id": "E.5",
+  "fixtureVersion": "prd-v0.6-learning-1",
+  "inputVersion": "e5-1",
+  "ruleVersion": "rules-1",
+  "behaviorVersion": "e5-behaviors-1",
+  "semanticsVersion": "PRD-V0.6-E",
+  "initialFacts": [
+    {
+      "subject": "urn:ontolearn:learning:equipment/001",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:ontolearn:learning:Equipment>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:equipment/001",
+      "predicate": "urn:ontolearn:learning:name",
+      "object": "\"泵站A\""
+    }
+  ],
+  "initialBacklog": [],
+  "maxRounds": 4,
+  "capacityMode": "direct",
+  "events": [
+    {
+      "id": "E001",
+      "round": 1,
+      "inputSequence": 0,
+      "type": "alarm-added",
+      "alarmId": "AE001",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W001",
+      "payload": {
+        "alarmId": "AE001",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W001",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE001>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E002",
+      "round": 1,
+      "inputSequence": 1,
+      "type": "alarm-added",
+      "alarmId": "AE002",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W002",
+      "payload": {
+        "alarmId": "AE002",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W002",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE002>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E003",
+      "round": 1,
+      "inputSequence": 2,
+      "type": "alarm-added",
+      "alarmId": "AE003",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W003",
+      "payload": {
+        "alarmId": "AE003",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W003",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE003>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E004",
+      "round": 1,
+      "inputSequence": 3,
+      "type": "alarm-added",
+      "alarmId": "AE004",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W004",
+      "payload": {
+        "alarmId": "AE004",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W004",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE004>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E005",
+      "round": 2,
+      "inputSequence": 0,
+      "type": "alarm-added",
+      "alarmId": "AE005",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W005",
+      "payload": {
+        "alarmId": "AE005",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W005",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE005>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E006",
+      "round": 2,
+      "inputSequence": 1,
+      "type": "alarm-added",
+      "alarmId": "AE006",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W006",
+      "payload": {
+        "alarmId": "AE006",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W006",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE006>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E007",
+      "round": 2,
+      "inputSequence": 2,
+      "type": "alarm-added",
+      "alarmId": "AE007",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W007",
+      "payload": {
+        "alarmId": "AE007",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W007",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE007>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E008",
+      "round": 2,
+      "inputSequence": 3,
+      "type": "alarm-added",
+      "alarmId": "AE008",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W008",
+      "payload": {
+        "alarmId": "AE008",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W008",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE008>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E009",
+      "round": 3,
+      "inputSequence": 0,
+      "type": "alarm-added",
+      "alarmId": "AE009",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W009",
+      "payload": {
+        "alarmId": "AE009",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W009",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE009>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E010",
+      "round": 3,
+      "inputSequence": 1,
+      "type": "alarm-added",
+      "alarmId": "AE010",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W010",
+      "payload": {
+        "alarmId": "AE010",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W010",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE010>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E011",
+      "round": 3,
+      "inputSequence": 2,
+      "type": "alarm-added",
+      "alarmId": "AE011",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W011",
+      "payload": {
+        "alarmId": "AE011",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W011",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE011>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E012",
+      "round": 3,
+      "inputSequence": 3,
+      "type": "alarm-added",
+      "alarmId": "AE012",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W012",
+      "payload": {
+        "alarmId": "AE012",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W012",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE012>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E013",
+      "round": 4,
+      "inputSequence": 0,
+      "type": "alarm-added",
+      "alarmId": "AE013",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W013",
+      "payload": {
+        "alarmId": "AE013",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W013",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE013",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE013",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE013",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE013>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E014",
+      "round": 4,
+      "inputSequence": 1,
+      "type": "alarm-added",
+      "alarmId": "AE014",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W014",
+      "payload": {
+        "alarmId": "AE014",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W014",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE014",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE014",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE014",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE014>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E015",
+      "round": 4,
+      "inputSequence": 2,
+      "type": "alarm-added",
+      "alarmId": "AE015",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W015",
+      "payload": {
+        "alarmId": "AE015",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W015",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE015",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE015",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE015",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE015>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E016",
+      "round": 4,
+      "inputSequence": 3,
+      "type": "alarm-added",
+      "alarmId": "AE016",
+      "equipmentId": "001",
+      "level": "High",
+      "status": "Open",
+      "orderId": "W016",
+      "payload": {
+        "alarmId": "AE016",
+        "equipmentId": "001",
+        "level": "High",
+        "status": "Open",
+        "orderId": "W016",
+        "addFacts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE016",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE016",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE016",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE016>"
+          }
+        ]
+      }
+    }
+  ],
+  "orderIdPolicy": "explicit-event-payload-orderId",
+  "queueOrder": ["createdRound", "createdSequence", "id"],
+  "initialConsumedEvents": [],
+  "initialTriggeredInstances": [],
+  "alarmClosurePolicy": "no-auto-close",
+  "expected": {
+    "3": [
+      {
+        "round": 1,
+        "created": ["W001", "W002", "W003", "W004"],
+        "completed": ["W001", "W002", "W003"],
+        "backlog": ["W004"],
+        "backlogCount": 1,
+        "completedCount": 3,
+        "orders": [
+          {
+            "id": "W001",
+            "eventId": "E001",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 0
+          },
+          {
+            "id": "W002",
+            "eventId": "E002",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 1
+          },
+          {
+            "id": "W003",
+            "eventId": "E003",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 2
+          },
+          {
+            "id": "W004",
+            "eventId": "E004",
+            "status": "待处理",
+            "createdRound": 1,
+            "createdSequence": 3
+          }
+        ],
+        "consumedEvents": ["E001", "E002", "E003", "E004"],
+        "triggeredInstances": [
+          ["E001", "B-risk"],
+          ["E002", "B-risk"],
+          ["E003", "B-risk"],
+          ["E004", "B-risk"]
+        ],
+        "unclosedHighAlarmCount": 4,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E001",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E002",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E003",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E004",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W004>"
+          }
+        ],
+        "inferred": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+          }
+        ],
+        "pendingEvents": [],
+        "actionTrace": [
+          {
+            "eventId": "E001",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E001",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E002",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E002",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E003",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E003",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E004",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E004",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          }
+        ],
+        "scheduledFutureEvents": [
+          "E005",
+          "E006",
+          "E007",
+          "E008",
+          "E009",
+          "E010",
+          "E011",
+          "E012",
+          "E013",
+          "E014",
+          "E015",
+          "E016"
+        ]
+      },
+      {
+        "round": 2,
+        "created": ["W005", "W006", "W007", "W008"],
+        "completed": ["W004", "W005", "W006"],
+        "backlog": ["W007", "W008"],
+        "backlogCount": 2,
+        "completedCount": 6,
+        "orders": [
+          {
+            "id": "W001",
+            "eventId": "E001",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 0
+          },
+          {
+            "id": "W002",
+            "eventId": "E002",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 1
+          },
+          {
+            "id": "W003",
+            "eventId": "E003",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 2
+          },
+          {
+            "id": "W004",
+            "eventId": "E004",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 3
+          },
+          {
+            "id": "W005",
+            "eventId": "E005",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 0
+          },
+          {
+            "id": "W006",
+            "eventId": "E006",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 1
+          },
+          {
+            "id": "W007",
+            "eventId": "E007",
+            "status": "待处理",
+            "createdRound": 2,
+            "createdSequence": 2
+          },
+          {
+            "id": "W008",
+            "eventId": "E008",
+            "status": "待处理",
+            "createdRound": 2,
+            "createdSequence": 3
+          }
+        ],
+        "consumedEvents": ["E001", "E002", "E003", "E004", "E005", "E006", "E007", "E008"],
+        "triggeredInstances": [
+          ["E001", "B-risk"],
+          ["E002", "B-risk"],
+          ["E003", "B-risk"],
+          ["E004", "B-risk"],
+          ["E005", "B-risk"],
+          ["E006", "B-risk"],
+          ["E007", "B-risk"],
+          ["E008", "B-risk"]
+        ],
+        "unclosedHighAlarmCount": 8,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE005>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE006>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE007>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE008>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E001",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E002",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E003",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E004",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W005",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E005",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W005>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W006",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E006",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W006>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W007",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E007",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W007>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W008",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E008",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W008>"
+          }
+        ],
+        "inferred": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+          }
+        ],
+        "pendingEvents": [],
+        "actionTrace": [
+          {
+            "eventId": "E005",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E005",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E006",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E006",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E007",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E007",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E008",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E008",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          }
+        ],
+        "scheduledFutureEvents": ["E009", "E010", "E011", "E012", "E013", "E014", "E015", "E016"]
+      },
+      {
+        "round": 3,
+        "created": ["W009", "W010", "W011", "W012"],
+        "completed": ["W007", "W008", "W009"],
+        "backlog": ["W010", "W011", "W012"],
+        "backlogCount": 3,
+        "completedCount": 9,
+        "orders": [
+          {
+            "id": "W001",
+            "eventId": "E001",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 0
+          },
+          {
+            "id": "W002",
+            "eventId": "E002",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 1
+          },
+          {
+            "id": "W003",
+            "eventId": "E003",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 2
+          },
+          {
+            "id": "W004",
+            "eventId": "E004",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 3
+          },
+          {
+            "id": "W005",
+            "eventId": "E005",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 0
+          },
+          {
+            "id": "W006",
+            "eventId": "E006",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 1
+          },
+          {
+            "id": "W007",
+            "eventId": "E007",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 2
+          },
+          {
+            "id": "W008",
+            "eventId": "E008",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 3
+          },
+          {
+            "id": "W009",
+            "eventId": "E009",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 0
+          },
+          {
+            "id": "W010",
+            "eventId": "E010",
+            "status": "待处理",
+            "createdRound": 3,
+            "createdSequence": 1
+          },
+          {
+            "id": "W011",
+            "eventId": "E011",
+            "status": "待处理",
+            "createdRound": 3,
+            "createdSequence": 2
+          },
+          {
+            "id": "W012",
+            "eventId": "E012",
+            "status": "待处理",
+            "createdRound": 3,
+            "createdSequence": 3
+          }
+        ],
+        "consumedEvents": [
+          "E001",
+          "E002",
+          "E003",
+          "E004",
+          "E005",
+          "E006",
+          "E007",
+          "E008",
+          "E009",
+          "E010",
+          "E011",
+          "E012"
+        ],
+        "triggeredInstances": [
+          ["E001", "B-risk"],
+          ["E002", "B-risk"],
+          ["E003", "B-risk"],
+          ["E004", "B-risk"],
+          ["E005", "B-risk"],
+          ["E006", "B-risk"],
+          ["E007", "B-risk"],
+          ["E008", "B-risk"],
+          ["E009", "B-risk"],
+          ["E010", "B-risk"],
+          ["E011", "B-risk"],
+          ["E012", "B-risk"]
+        ],
+        "unclosedHighAlarmCount": 12,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE005>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE006>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE007>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE008>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE009>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE010>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE011>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE012>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E001",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E002",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E003",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E004",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W005",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E005",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W005>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W006",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E006",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W006>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W007",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E007",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W007>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W008",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E008",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W008>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W009",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W009",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E009",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W009>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W010",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W010",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E010",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W010>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W011",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W011",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E011",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W011>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W012",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W012",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E012",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W012>"
+          }
+        ],
+        "inferred": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+          }
+        ],
+        "pendingEvents": [],
+        "actionTrace": [
+          {
+            "eventId": "E009",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E009",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E010",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E010",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E011",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E011",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E012",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E012",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          }
+        ],
+        "scheduledFutureEvents": ["E013", "E014", "E015", "E016"]
+      },
+      {
+        "round": 4,
+        "created": ["W013", "W014", "W015", "W016"],
+        "completed": ["W010", "W011", "W012"],
+        "backlog": ["W013", "W014", "W015", "W016"],
+        "backlogCount": 4,
+        "completedCount": 12,
+        "orders": [
+          {
+            "id": "W001",
+            "eventId": "E001",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 0
+          },
+          {
+            "id": "W002",
+            "eventId": "E002",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 1
+          },
+          {
+            "id": "W003",
+            "eventId": "E003",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 2
+          },
+          {
+            "id": "W004",
+            "eventId": "E004",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 3
+          },
+          {
+            "id": "W005",
+            "eventId": "E005",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 0
+          },
+          {
+            "id": "W006",
+            "eventId": "E006",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 1
+          },
+          {
+            "id": "W007",
+            "eventId": "E007",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 2
+          },
+          {
+            "id": "W008",
+            "eventId": "E008",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 3
+          },
+          {
+            "id": "W009",
+            "eventId": "E009",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 0
+          },
+          {
+            "id": "W010",
+            "eventId": "E010",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 1
+          },
+          {
+            "id": "W011",
+            "eventId": "E011",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 2
+          },
+          {
+            "id": "W012",
+            "eventId": "E012",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 3
+          },
+          {
+            "id": "W013",
+            "eventId": "E013",
+            "status": "待处理",
+            "createdRound": 4,
+            "createdSequence": 0
+          },
+          {
+            "id": "W014",
+            "eventId": "E014",
+            "status": "待处理",
+            "createdRound": 4,
+            "createdSequence": 1
+          },
+          {
+            "id": "W015",
+            "eventId": "E015",
+            "status": "待处理",
+            "createdRound": 4,
+            "createdSequence": 2
+          },
+          {
+            "id": "W016",
+            "eventId": "E016",
+            "status": "待处理",
+            "createdRound": 4,
+            "createdSequence": 3
+          }
+        ],
+        "consumedEvents": [
+          "E001",
+          "E002",
+          "E003",
+          "E004",
+          "E005",
+          "E006",
+          "E007",
+          "E008",
+          "E009",
+          "E010",
+          "E011",
+          "E012",
+          "E013",
+          "E014",
+          "E015",
+          "E016"
+        ],
+        "triggeredInstances": [
+          ["E001", "B-risk"],
+          ["E002", "B-risk"],
+          ["E003", "B-risk"],
+          ["E004", "B-risk"],
+          ["E005", "B-risk"],
+          ["E006", "B-risk"],
+          ["E007", "B-risk"],
+          ["E008", "B-risk"],
+          ["E009", "B-risk"],
+          ["E010", "B-risk"],
+          ["E011", "B-risk"],
+          ["E012", "B-risk"],
+          ["E013", "B-risk"],
+          ["E014", "B-risk"],
+          ["E015", "B-risk"],
+          ["E016", "B-risk"]
+        ],
+        "unclosedHighAlarmCount": 16,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE005>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE006>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE007>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE008>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE009>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE010>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE011>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE012>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE013",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE013",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE013",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE013>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE014",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE014",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE014",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE014>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE015",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE015",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE015",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE015>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE016",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE016",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE016",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE016>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E001",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E002",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E003",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E004",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W005",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E005",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W005>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W006",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E006",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W006>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W007",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E007",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W007>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W008",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E008",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W008>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W009",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W009",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E009",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W009>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W010",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W010",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E010",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W010>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W011",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W011",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E011",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W011>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W012",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W012",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E012",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W012>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W013",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W013",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E013",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W013>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W014",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W014",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E014",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W014>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W015",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W015",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E015",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W015>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W016",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W016",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E016",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W016>"
+          }
+        ],
+        "inferred": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+          }
+        ],
+        "pendingEvents": [],
+        "actionTrace": [
+          {
+            "eventId": "E013",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E013",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E014",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E014",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E015",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E015",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E016",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E016",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          }
+        ],
+        "scheduledFutureEvents": []
+      }
+    ],
+    "4": [
+      {
+        "round": 1,
+        "created": ["W001", "W002", "W003", "W004"],
+        "completed": ["W001", "W002", "W003", "W004"],
+        "backlog": [],
+        "backlogCount": 0,
+        "completedCount": 4,
+        "orders": [
+          {
+            "id": "W001",
+            "eventId": "E001",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 0
+          },
+          {
+            "id": "W002",
+            "eventId": "E002",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 1
+          },
+          {
+            "id": "W003",
+            "eventId": "E003",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 2
+          },
+          {
+            "id": "W004",
+            "eventId": "E004",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 3
+          }
+        ],
+        "consumedEvents": ["E001", "E002", "E003", "E004"],
+        "triggeredInstances": [
+          ["E001", "B-risk"],
+          ["E002", "B-risk"],
+          ["E003", "B-risk"],
+          ["E004", "B-risk"]
+        ],
+        "unclosedHighAlarmCount": 4,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E001",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E002",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E003",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E004",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W004>"
+          }
+        ],
+        "inferred": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+          }
+        ],
+        "pendingEvents": [],
+        "actionTrace": [
+          {
+            "eventId": "E001",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E001",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E002",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E002",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E003",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E003",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E004",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E004",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          }
+        ],
+        "scheduledFutureEvents": [
+          "E005",
+          "E006",
+          "E007",
+          "E008",
+          "E009",
+          "E010",
+          "E011",
+          "E012",
+          "E013",
+          "E014",
+          "E015",
+          "E016"
+        ]
+      },
+      {
+        "round": 2,
+        "created": ["W005", "W006", "W007", "W008"],
+        "completed": ["W005", "W006", "W007", "W008"],
+        "backlog": [],
+        "backlogCount": 0,
+        "completedCount": 8,
+        "orders": [
+          {
+            "id": "W001",
+            "eventId": "E001",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 0
+          },
+          {
+            "id": "W002",
+            "eventId": "E002",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 1
+          },
+          {
+            "id": "W003",
+            "eventId": "E003",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 2
+          },
+          {
+            "id": "W004",
+            "eventId": "E004",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 3
+          },
+          {
+            "id": "W005",
+            "eventId": "E005",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 0
+          },
+          {
+            "id": "W006",
+            "eventId": "E006",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 1
+          },
+          {
+            "id": "W007",
+            "eventId": "E007",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 2
+          },
+          {
+            "id": "W008",
+            "eventId": "E008",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 3
+          }
+        ],
+        "consumedEvents": ["E001", "E002", "E003", "E004", "E005", "E006", "E007", "E008"],
+        "triggeredInstances": [
+          ["E001", "B-risk"],
+          ["E002", "B-risk"],
+          ["E003", "B-risk"],
+          ["E004", "B-risk"],
+          ["E005", "B-risk"],
+          ["E006", "B-risk"],
+          ["E007", "B-risk"],
+          ["E008", "B-risk"]
+        ],
+        "unclosedHighAlarmCount": 8,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE005>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE006>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE007>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE008>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E001",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E002",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E003",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E004",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W005",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E005",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W005>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W006",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E006",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W006>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W007",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E007",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W007>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W008",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E008",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W008>"
+          }
+        ],
+        "inferred": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+          }
+        ],
+        "pendingEvents": [],
+        "actionTrace": [
+          {
+            "eventId": "E005",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E005",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E006",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E006",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E007",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E007",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E008",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E008",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          }
+        ],
+        "scheduledFutureEvents": ["E009", "E010", "E011", "E012", "E013", "E014", "E015", "E016"]
+      },
+      {
+        "round": 3,
+        "created": ["W009", "W010", "W011", "W012"],
+        "completed": ["W009", "W010", "W011", "W012"],
+        "backlog": [],
+        "backlogCount": 0,
+        "completedCount": 12,
+        "orders": [
+          {
+            "id": "W001",
+            "eventId": "E001",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 0
+          },
+          {
+            "id": "W002",
+            "eventId": "E002",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 1
+          },
+          {
+            "id": "W003",
+            "eventId": "E003",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 2
+          },
+          {
+            "id": "W004",
+            "eventId": "E004",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 3
+          },
+          {
+            "id": "W005",
+            "eventId": "E005",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 0
+          },
+          {
+            "id": "W006",
+            "eventId": "E006",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 1
+          },
+          {
+            "id": "W007",
+            "eventId": "E007",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 2
+          },
+          {
+            "id": "W008",
+            "eventId": "E008",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 3
+          },
+          {
+            "id": "W009",
+            "eventId": "E009",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 0
+          },
+          {
+            "id": "W010",
+            "eventId": "E010",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 1
+          },
+          {
+            "id": "W011",
+            "eventId": "E011",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 2
+          },
+          {
+            "id": "W012",
+            "eventId": "E012",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 3
+          }
+        ],
+        "consumedEvents": [
+          "E001",
+          "E002",
+          "E003",
+          "E004",
+          "E005",
+          "E006",
+          "E007",
+          "E008",
+          "E009",
+          "E010",
+          "E011",
+          "E012"
+        ],
+        "triggeredInstances": [
+          ["E001", "B-risk"],
+          ["E002", "B-risk"],
+          ["E003", "B-risk"],
+          ["E004", "B-risk"],
+          ["E005", "B-risk"],
+          ["E006", "B-risk"],
+          ["E007", "B-risk"],
+          ["E008", "B-risk"],
+          ["E009", "B-risk"],
+          ["E010", "B-risk"],
+          ["E011", "B-risk"],
+          ["E012", "B-risk"]
+        ],
+        "unclosedHighAlarmCount": 12,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE005>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE006>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE007>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE008>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE009>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE010>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE011>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE012>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E001",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E002",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E003",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E004",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W005",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E005",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W005>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W006",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E006",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W006>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W007",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E007",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W007>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W008",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E008",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W008>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W009",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W009",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E009",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W009>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W010",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W010",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E010",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W010>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W011",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W011",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E011",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W011>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W012",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W012",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E012",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W012>"
+          }
+        ],
+        "inferred": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+          }
+        ],
+        "pendingEvents": [],
+        "actionTrace": [
+          {
+            "eventId": "E009",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E009",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E010",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E010",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E011",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E011",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E012",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E012",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          }
+        ],
+        "scheduledFutureEvents": ["E013", "E014", "E015", "E016"]
+      },
+      {
+        "round": 4,
+        "created": ["W013", "W014", "W015", "W016"],
+        "completed": ["W013", "W014", "W015", "W016"],
+        "backlog": [],
+        "backlogCount": 0,
+        "completedCount": 16,
+        "orders": [
+          {
+            "id": "W001",
+            "eventId": "E001",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 0
+          },
+          {
+            "id": "W002",
+            "eventId": "E002",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 1
+          },
+          {
+            "id": "W003",
+            "eventId": "E003",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 2
+          },
+          {
+            "id": "W004",
+            "eventId": "E004",
+            "status": "已完成",
+            "createdRound": 1,
+            "createdSequence": 3
+          },
+          {
+            "id": "W005",
+            "eventId": "E005",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 0
+          },
+          {
+            "id": "W006",
+            "eventId": "E006",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 1
+          },
+          {
+            "id": "W007",
+            "eventId": "E007",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 2
+          },
+          {
+            "id": "W008",
+            "eventId": "E008",
+            "status": "已完成",
+            "createdRound": 2,
+            "createdSequence": 3
+          },
+          {
+            "id": "W009",
+            "eventId": "E009",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 0
+          },
+          {
+            "id": "W010",
+            "eventId": "E010",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 1
+          },
+          {
+            "id": "W011",
+            "eventId": "E011",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 2
+          },
+          {
+            "id": "W012",
+            "eventId": "E012",
+            "status": "已完成",
+            "createdRound": 3,
+            "createdSequence": 3
+          },
+          {
+            "id": "W013",
+            "eventId": "E013",
+            "status": "已完成",
+            "createdRound": 4,
+            "createdSequence": 0
+          },
+          {
+            "id": "W014",
+            "eventId": "E014",
+            "status": "已完成",
+            "createdRound": 4,
+            "createdSequence": 1
+          },
+          {
+            "id": "W015",
+            "eventId": "E015",
+            "status": "已完成",
+            "createdRound": 4,
+            "createdSequence": 2
+          },
+          {
+            "id": "W016",
+            "eventId": "E016",
+            "status": "已完成",
+            "createdRound": 4,
+            "createdSequence": 3
+          }
+        ],
+        "consumedEvents": [
+          "E001",
+          "E002",
+          "E003",
+          "E004",
+          "E005",
+          "E006",
+          "E007",
+          "E008",
+          "E009",
+          "E010",
+          "E011",
+          "E012",
+          "E013",
+          "E014",
+          "E015",
+          "E016"
+        ],
+        "triggeredInstances": [
+          ["E001", "B-risk"],
+          ["E002", "B-risk"],
+          ["E003", "B-risk"],
+          ["E004", "B-risk"],
+          ["E005", "B-risk"],
+          ["E006", "B-risk"],
+          ["E007", "B-risk"],
+          ["E008", "B-risk"],
+          ["E009", "B-risk"],
+          ["E010", "B-risk"],
+          ["E011", "B-risk"],
+          ["E012", "B-risk"],
+          ["E013", "B-risk"],
+          ["E014", "B-risk"],
+          ["E015", "B-risk"],
+          ["E016", "B-risk"]
+        ],
+        "unclosedHighAlarmCount": 16,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE001",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE002",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE003",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE004",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE005",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE005>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE006",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE006>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE007",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE007>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE008",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE008>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE009",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE009>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE010",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE010>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE011",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE011>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE012",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE012>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE013",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE013",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE013",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE013>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE014",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE014",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE014",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE014>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE015",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE015",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE015",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE015>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE016",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE016",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/AE016",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/AE016>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W001",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E001",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W001>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W002",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E002",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W002>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W003",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E003",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W003>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W004",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E004",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W004>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W005",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W005",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E005",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W005>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W006",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W006",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E006",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W006>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W007",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W007",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E007",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W007>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W008",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W008",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E008",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W008>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W009",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W009",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E009",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W009>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W010",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W010",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E010",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W010>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W011",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W011",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E011",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W011>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W012",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W012",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E012",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W012>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W013",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W013",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E013",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W013>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W014",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W014",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E014",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W014>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W015",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W015",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E015",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W015>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W016",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W016",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"已完成\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:E016",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W016>"
+          }
+        ],
+        "inferred": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+          }
+        ],
+        "pendingEvents": [],
+        "actionTrace": [
+          {
+            "eventId": "E013",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E013",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E014",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E014",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E015",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E015",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E016",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E016",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          }
+        ],
+        "scheduledFutureEvents": []
+      }
+    ]
+  },
+  "replay": {
+    "independentRunsPerCapacity": 2,
+    "resetConsumedEvents": true,
+    "compare": "complete-round-state-and-order"
+  },
+  "ontology": [
+    {
+      "subject": "urn:ontolearn:learning:Equipment",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:Alarm",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:WorkOrder",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:HighRiskEquipment",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:name",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:level",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:status",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:alarm",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:workOrderStatus",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:eventOrder",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "name-required",
+      "targetClass": "urn:ontolearn:learning:Equipment",
+      "path": "urn:ontolearn:learning:name",
+      "minCount": 1,
+      "scope": "current-asserted",
+      "includeInferred": false
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-risk",
+      "version": 1,
+      "enabled": true,
+      "conditions": [
+        {
+          "subject": "?equipment",
+          "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "object": "<urn:ontolearn:learning:Equipment>"
+        },
+        {
+          "subject": "?equipment",
+          "predicate": "urn:ontolearn:learning:alarm",
+          "object": "?alarm"
+        },
+        {
+          "subject": "?alarm",
+          "predicate": "urn:ontolearn:learning:level",
+          "object": "\"High\""
+        },
+        {
+          "subject": "?alarm",
+          "predicate": "urn:ontolearn:learning:status",
+          "object": "\"Open\""
+        }
+      ],
+      "conclusions": [
+        {
+          "subject": "?equipment",
+          "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+        }
+      ],
+      "inputScope": "asserted-plus-rdfs",
+      "outputReentry": false
+    }
+  ],
+  "behaviors": [
+    {
+      "id": "B-risk",
+      "version": 1,
+      "enabled": true,
+      "priority": 0,
+      "trigger": {
+        "eventType": "alarm-added"
+      },
+      "conditions": [
+        {
+          "eventAlarmLevel": "High"
+        },
+        {
+          "eventAlarmStatus": "Open"
+        },
+        {
+          "eventEquipmentType": "urn:ontolearn:learning:HighRiskEquipment"
+        }
+      ],
+      "actions": [
+        {
+          "kind": "create-individual",
+          "class": "urn:ontolearn:learning:WorkOrder",
+          "id": "{payload.orderId}",
+          "properties": {
+            "workOrderStatus": "待处理"
+          }
+        },
+        {
+          "kind": "add-relation",
+          "subject": "{eventId}",
+          "predicate": "urn:ontolearn:learning:eventOrder",
+          "object": "{payload.orderId}"
+        }
+      ]
+    }
+  ],
+  "singleValuedPredicates": ["urn:ontolearn:learning:workOrderStatus"],
+  "eventInjectionPolicy": "inject-only-events-scheduled-for-current-round"
+}

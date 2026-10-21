@@ -1,0 +1,2 @@
+PREFIX l: <urn:ontolearn:learning:>
+SELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level "High" ; l:status "Open" . } ORDER BY ?alarm

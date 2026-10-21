@@ -1,0 +1,431 @@
+{
+  "status": "expected only; reasons private, not new public wire codes",
+  "semantics": [
+    {
+      "id": "codepoint-order",
+      "left": {
+        "kind": "literal",
+        "lexical_form": "𐀀",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "right": {
+        "kind": "literal",
+        "lexical_form": "",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "relation": "greater",
+      "proof": "65536 > 57344, not UTF16 unit order",
+      "sixBooleans": [false, true, false, false, true, true]
+    },
+    {
+      "id": "no-nfc",
+      "left": {
+        "kind": "literal",
+        "lexical_form": "é",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "right": {
+        "kind": "literal",
+        "lexical_form": "é",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "relation": "greater",
+      "proof": "First codepoint233 >101; no normalization",
+      "sixBooleans": [false, true, false, false, true, true]
+    },
+    {
+      "id": "language-ascii-lower",
+      "left": {
+        "kind": "literal",
+        "lexical_form": "a",
+        "datatype_iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
+        "language_raw": "EN-us"
+      },
+      "right": {
+        "kind": "literal",
+        "lexical_form": "a",
+        "datatype_iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
+        "language_raw": "en-US"
+      },
+      "relation": "equal",
+      "language": "en-us",
+      "sixBooleans": [true, false, false, true, false, true]
+    },
+    {
+      "id": "language-no-fallback",
+      "left": {
+        "kind": "literal",
+        "lexical_form": "a",
+        "datatype_iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
+        "language_raw": "en-US"
+      },
+      "right": {
+        "kind": "literal",
+        "lexical_form": "a",
+        "datatype_iri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
+        "language_raw": "en"
+      },
+      "allReasons": "RULE_COMPARISON_TYPE_MISMATCH"
+    },
+    {
+      "id": "iri-spelling",
+      "left": {
+        "kind": "iri",
+        "lexical_form": "HTTP://EXAMPLE/a"
+      },
+      "right": {
+        "kind": "iri",
+        "lexical_form": "http://example/a"
+      },
+      "eq": false,
+      "ne": true,
+      "orderedReasons": "RULE_COMPARISON_TYPE_MISMATCH"
+    },
+    {
+      "id": "iri-unicode-nbsp",
+      "left": {
+        "kind": "iri",
+        "lexical_form": "urn:m1:a b"
+      },
+      "right": {
+        "kind": "iri",
+        "lexical_form": "urn:m1:ab"
+      },
+      "eq": false,
+      "ne": true,
+      "orderedReasons": "RULE_COMPARISON_TYPE_MISMATCH"
+    },
+    {
+      "id": "boolean-alias",
+      "left": {
+        "kind": "literal",
+        "lexical_form": "true",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "right": {
+        "kind": "literal",
+        "lexical_form": "1",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "eq": true,
+      "ne": false,
+      "orderedReasons": "RULE_COMPARISON_TYPE_MISMATCH",
+      "sameRdfTerm": false
+    },
+    {
+      "id": "integer-term-vs-value",
+      "left": {
+        "kind": "literal",
+        "lexical_form": "01",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "right": {
+        "kind": "literal",
+        "lexical_form": "1",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "relation": "equal",
+      "sameRdfTerm": false,
+      "sixBooleans": [true, false, false, true, false, true]
+    },
+    {
+      "id": "simple-explicit-string",
+      "left": {
+        "kind": "literal",
+        "lexical_form": "a"
+      },
+      "right": {
+        "kind": "literal",
+        "lexical_form": "a",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "relation": "equal",
+      "sameRdfTerm": true,
+      "sixBooleans": [true, false, false, true, false, true]
+    }
+  ],
+  "lexicalAndSupportErrors": [
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": " 1",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/0"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "١",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/1"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "1_0",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/2"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "2147483648",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#int"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/3"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "-1",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/4"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "1e0",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#decimal"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/5"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "True",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/6"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "+1",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/7"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "01",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/8"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "+NaN",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/9"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "inf",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/10"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0100-02-29",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#date"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/11"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-03-01+14:01",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#date"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/12"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-03-01T24:00:00.1Z",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/13"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-03-01T00:00:60Z",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/14"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "\u0000",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/15"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "￾",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/16"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "￿",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#string"
+      },
+      "reason": "INVALID_LITERAL_LEXICAL",
+      "id": "error/17"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "NaN",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "reason": "UNSUPPORTED_NONFINITE_LITERAL",
+      "id": "error/18"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "INF",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "reason": "UNSUPPORTED_NONFINITE_LITERAL",
+      "id": "error/19"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "+INF",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "reason": "UNSUPPORTED_NONFINITE_LITERAL",
+      "id": "error/20"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "-INF",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "reason": "UNSUPPORTED_NONFINITE_LITERAL",
+      "id": "error/21"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "NaN",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "reason": "UNSUPPORTED_NONFINITE_LITERAL",
+      "id": "error/22"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "INF",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "reason": "UNSUPPORTED_NONFINITE_LITERAL",
+      "id": "error/23"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "+INF",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "reason": "UNSUPPORTED_NONFINITE_LITERAL",
+      "id": "error/24"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "-INF",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "reason": "UNSUPPORTED_NONFINITE_LITERAL",
+      "id": "error/25"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "x",
+        "datatype_iri": "urn:m1:unknown"
+      },
+      "reason": "UNSUPPORTED_LITERAL_DATATYPE",
+      "id": "error/26"
+    },
+    {
+      "input": {
+        "kind": "literal",
+        "lexical_form": "a",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#string",
+        "language_raw": "en"
+      },
+      "reason": "INVALID_RULE",
+      "id": "error/27"
+    },
+    {
+      "input": {
+        "kind": "iri",
+        "lexical_form": "relative"
+      },
+      "reason": "INVALID_RULE",
+      "id": "error/28"
+    },
+    {
+      "operator": "=",
+      "reason": "INVALID_RULE",
+      "id": "error/29"
+    },
+    {
+      "operator": "EQ",
+      "reason": "INVALID_RULE",
+      "id": "error/30"
+    },
+    {
+      "operator": 1,
+      "reason": "INTERNAL_ERROR",
+      "id": "error/31"
+    }
+  ],
+  "precedence": "Validate lexical/support/resource before type classification. Nonfinite is not false. Resource maps existing adapter only.",
+  "languageBoundary": {
+    "acceptedAbnfOnly": ["x-private", "i-klingon", "en-1901-1901", "en-a-foo-a-bar"],
+    "notRegistryValidated": true
+  },
+  "stringVsLanguage": "S XML1.1 Char; L Unicode scalars, do not add S XML Char restriction to L"
+}
