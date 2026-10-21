@@ -1,0 +1,15 @@
+# I06 B-M 受控私有元数据子阶段收口
+
+2026-10-21。根已全文读取最终17592B/SHA3d7007c279ce7e39ca6838cb43d28228f70fb6099e575bda0f3671d0bd92f8ab独立读回（原9462B/9f4ba955前缀逐字保持，追加8130B另全文读），8657B实施、8612B独审、6573B处置及完整正常check/source原件。固定fa8f977d888712cb7127cb0095fa56dafabb37ed在7201B授权的受控临时目录metadata子集范围技术收口。
+
+树 .worktrees/I06-real-private-metadata，branch feature/I06-real-private-metadata；base5f910b52c69d86a1076b2032e5d3c63e715947f3，精确两只读采用f63fe6fa0ba9eff944b11b9e4bbd7e6235e43dbc。完整相对base4产品测试+60docs共64，根逐64current/Git相同另核；独审逐62manifest项、61个安全ZIP成员及两采用原ref/current/Git/bytes/SHA闭合。新两件f966/6334与已全文预读字节完全相同，未用早期漂移候选替最终身份。无A修改、e2c整包/共享/构建或公共注册。
+
+真实四角色private-root/credentials/configurations/audit、未知/pending/孤儿/硬链接及当前进程历史完整有限观察，实际lstat/opendir/read/close启动前占槽、目录至真实close持续持槽、cancel不清实际未终态、mutation保屏障及同址新旧identity在原A上unknown保历史，均有具体源码/真实临时fixture证据。全应用缺席owner不合成，Node观察不充真实权限。
+
+实际专项47pass/2明确平台skip；完整check713TS pass/2skip、1052Python pass、lint/format/types/build/ruff通过，source核12份，独立分离receipt均exit0。首type exit2、首专项38pass/7fail/1skip与后定向2fail、共享parent投影修复及注入故障的真实口径保留。两skip是当前Mac不能验证的Linux非法byte名与Windows分支，不计目标平台已验；close-receipt-once是实际close后收据注入，不当OS close故障。根未运行产品、FS实验、测试、构建或桌面。
+
+明确保留：lstat→按路径opendir可被外部替换成symlink并枚举目标metadata，双检查不能撤回或排除ABA。本收口只认可静态已见symlink拒递归及独占受控fixture的metadata子集；绝不认可竞态下原子nofollow、真实用户目录运行、首内容IO或LocationLease。所有结果仍mechanismOnly、node-observed-unfenced、productionAdmission unsupported，不能签全应用complete/生产snapshot。
+
+B-R持久retired/fresh/安装级writer、B-L仓库/网络/所有underlying寿命、T01实际profile/DB/worker/dispatch/永久排空、原生同build VFS/两OS、生产首IO/真实主指针/公开消费、父I06/57P0及指定同版双模型审查/CI/push/PR/develop合并和远端仍未关闭。native方案已另授onlydocs，不包含在fa8及本证据中，不由本收口变成实施权。
+
+保持fa8及64原件固定，无变化不复测；可把本件原字节另存BM新过程证据并回执纯docs ref。后续native方案在其指定新docs区域继续，产品writer窗口须按实际精确合同另批。不得以子阶段接收重建原Goal、推送合并、接入用户目录或补造全量来源。
