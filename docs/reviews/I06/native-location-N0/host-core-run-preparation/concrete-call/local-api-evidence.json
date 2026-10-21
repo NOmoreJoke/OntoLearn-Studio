@@ -1,0 +1,128 @@
+{
+  "kind": "read-only file metadata/wrapper/config/source; no interpreter candidate/signal/process/FS probe",
+  "invokedPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+  "versionSource": "current Headers/patchlevel.h PY_VERSION 3.9.6; not a new runtime version probe",
+  "files": [
+    {
+      "path": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3",
+      "realpath": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+      "bytes": 102352,
+      "sha256": "b971331ab9beb1dac075006955f035a97332eca21187c4de615ae58346713e2f",
+      "purpose": "binary metadata only"
+    },
+    {
+      "path": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Headers/patchlevel.h",
+      "realpath": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Headers/patchlevel.h",
+      "bytes": 1297,
+      "sha256": "0514484aa8e9460723bad55dd2b3b8b01feee0dc79e88866840c3851bd79a1d5",
+      "purpose": "version",
+      "selectedLines": [
+        {
+          "line": 20,
+          "text": "#define PY_MINOR_VERSION        9"
+        },
+        {
+          "line": 26,
+          "text": "#define PY_VERSION              \"3.9.6\""
+        }
+      ]
+    },
+    {
+      "path": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Headers/pyconfig.h",
+      "realpath": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Headers/pyconfig.h",
+      "bytes": 48125,
+      "sha256": "b7151baaa719352b5184cb459083e0e4cd7eb263f9c2b716c729dda28e0e45c2",
+      "purpose": "config",
+      "selectedLines": [
+        {
+          "line": 107,
+          "text": "/* Define if pthread_sigmask() does not work on your system. */"
+        },
+        {
+          "line": 108,
+          "text": "/* #undef HAVE_BROKEN_PTHREAD_SIGMASK */"
+        },
+        {
+          "line": 813,
+          "text": "/* Define to 1 if you have the `pthread_sigmask' function. */"
+        },
+        {
+          "line": 814,
+          "text": "#define HAVE_PTHREAD_SIGMASK 1"
+        },
+        {
+          "line": 966,
+          "text": "/* Define to 1 if you have the `sigaction' function. */"
+        },
+        {
+          "line": 967,
+          "text": "#define HAVE_SIGACTION 1"
+        }
+      ]
+    },
+    {
+      "path": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py",
+      "realpath": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py",
+      "bytes": 82644,
+      "sha256": "d2f73c7128a3931f74411b46352146ba85322a8dc8f12a721d4801dc43d9766e",
+      "purpose": "local concrete process implementation",
+      "selectedLines": [
+        {
+          "line": 1045,
+          "text": "    def __del__(self, _maxsize=sys.maxsize, _warn=warnings.warn):"
+        },
+        {
+          "line": 1060,
+          "text": "    def _get_devnull(self):"
+        },
+        {
+          "line": 1718,
+          "text": "            # Data format: \"exception name:hex errno:description\""
+        },
+        {
+          "line": 1809,
+          "text": "                        SubprocessError)"
+        },
+        {
+          "line": 1872,
+          "text": "        def _try_wait(self, wait_flags):"
+        },
+        {
+          "line": 1921,
+          "text": "                        if pid == self.pid:"
+        }
+      ]
+    },
+    {
+      "path": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/signal.py",
+      "realpath": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/signal.py",
+      "bytes": 2273,
+      "sha256": "4ebf461c99cf469e2ac22f6076040c6d16eeef0130a42a13a6ff7fe6cbe4ae6a",
+      "purpose": "local API wrappers",
+      "selectedLines": [
+        {
+          "line": 56,
+          "text": ""
+        },
+        {
+          "line": 73,
+          "text": "    def sigwait(sigset):"
+        }
+      ]
+    }
+  ],
+  "officialSourceVersion": "CPython v3.9.6; not vendor binary disassembly or observed kernel flags",
+  "officialURLs": [
+    "https://github.com/python/cpython/blob/v3.9.6/Modules/signalmodule.c#L452-L473",
+    "https://github.com/python/cpython/blob/v3.9.6/Python/pylifecycle.c#L2361-L2375",
+    "https://docs.python.org/3.9/library/subprocess.html#subprocess.Popen",
+    "https://docs.python.org/3.9/library/signal.html#signal.pthread_sigmask",
+    "https://docs.python.org/3.9/library/resource.html#resource.setrlimit"
+  ],
+  "readFailure": {
+    "url": "https://pubs.opengroup.org/onlinepubs/9699919799/functions/sigaction.html",
+    "http": 403,
+    "retry": false,
+    "usedAsEvidence": false
+  }
+}
