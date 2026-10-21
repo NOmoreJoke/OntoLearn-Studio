@@ -151,3 +151,15 @@ R1/R2修订及Q6决定单已获独立reviewer明确文档范围通过，无新�
 总控另以直接通知授权原I05在自身语义路径做必要string身份修复、新语义版本及新完整候选；报告本身不授写权。旧finite5历史按原身份/可用性/schema/授权可读并保留原字节，新current/historical selected严格三字段拒旧不变。授权不包含T05新comparator、多head、D3/D4，不生效T05 future四路径，不触T01 worker。修复尚未完成或通过，C3条件派发撤回、指定外审0及冻结输入保持；不能沿用旧通过。
 
 TA请求已由原owner收件独立准备是总控状态通知，本线尚无实际新技术答复，Q6未采用、D3/D4原技术接受保留。本轮仅追加过程事实；四份157已审设计文档/产品/测试/公共协议/责任不变，未重复测试或重开不变审查。原Goal仍blocked不恢复/重建；批准依赖、真实接口与全部原完成门继续开放。
+
+## T01 TA-C/Q-LIFE具体回复的必要合同增量
+
+全文只读固定b35cb4e21d375386775e5fc0431a8089a47195da的T01设计答复3906B/SHA `3d300cf1070adf54f97fec45d060273f78d0e29fba9bbef502403466084b8d09`；原字节与逐项收据见`t01-context-wrapper-response-r2.md.raw`/`t01-context-wrapper-r2-receipt.json`。保留原f51 D6/D7/M12–16/P8接受，四份本线设计文档只增必要接受/缺口说明，未改规则政策。
+
+T01接受各consumer自身获批profile、SHACL正常false/type-error违规不变规则E3整Job失败、真正能力/执行失败不伪装空成功；真实Job/result/project/snapshot/revision、kind/原projection、依赖/definition digests、完整implementation、current/stale/history、payload availability/historicalSelectionRequired、分页绑定/hash与当前可信授权。完整三字段只分区不证明消费者同义；本线只据T01报告记录，未读取其未批准实现或运行验证。
+
+Q-LIFE接受D5/D8真实执行器受信证据、原唯一Store/operation claim、完整context幂等/成功原子发布、取消/迟到/故障不半提交/重签历史，阈值未测不填。M12当前IDENTITY_CONFLICT不变；未来UNSUPPORTED适配、M9、独立诊断及公共schema/方法/保留预算/错误分支/main呈现未批准未实现，位置只能真实source有限section/index/reason，不含operand原值/path/stack。
+
+I05仍须逐C格给真实输入/definition source、入口/输出、新producer三字段身份、有限预算、实际异常类型/安全reason、完整成功validation与失败诊断golden；T01不猜通用异常或替执行器裁Q6，按这些精确context接持久身份/hash。I06业务入口/UI及全部原验收仍待，未生效新路径交接或修复通过。Q6未采用、D3/D4原技术接受保留；原Goal继续blocked。本轮仅文档增量，未读未批实现/测试或重复产品/GUI验证；独立文档核对与封存另记。
+
+T01回复增量已获独立reviewer明确文档范围通过，无新增实质问题；四doc及source/receipt指纹对应，Prettier与差异检查通过。仅技术包装接受及待补合同记录，无Q6采用/新路由/公共格式/路径交接/修复或实际接线通过；未重复产品测试。原Goal仍blocked，本次本地文档提交不推送。

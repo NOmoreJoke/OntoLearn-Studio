@@ -126,3 +126,9 @@ C2通知时I05正准备C3最小确定性witness修复；后续已报告冻结C3�
 总控独立设计复核17603B/SHA70909867a8786f181639810c3c40d188f92c2849311dd148f6bf55fce044705a指出旧383b96c矩阵的SHACL datatype/range混列及simple/xsd:string可选合域歧义。现矩阵§4分别给K/D/R合同与shape/data双侧手工见证，§2/3明确RDF1.1抽象term和source拼写分层；query/SHACL以自身合同正确为目标，不要求等同规则值政策，不以拒绝全部难值关闭FR504五模板/双范围/真实违规定位。
 
 [技术接受请求与Q6决定单](q6-policy-decision-request-r1.md)给出TA-S/L/I/B/X/C及保留D3/D4接受项，Q-SLIBX/NUM/CAL/REC/CONS/LIFE逐项可采用/改写的具体组合、候选有日期REC及勘误登记、政策见证和真实未验门。仍待owner技术答复/Q6采用/实际公共包装与运行；这是有限文档修正，不是当前I05缺陷认定或指定双审Pass。原Goal仍blocked，不读取未批C3或重复产品测试。
+
+## 13. T01已接受包装合同，仍缺I05逐格真实契约
+
+固定b35cb4e T01回复（SHA3d300cf1070adf54f97fec45d060273f78d0e29fba9bbef502403466084b8d09）已全文读回，保留f51原接受，详见当前决策表§8/矩阵§6及Q6单补记。T01接受各consumer自己的profile、SHACL正常违规不改整Job E3、真实Job/result上下文/分页/hash/当前授权；完整implementation只分区不证明同义。D5/D8执行证据、唯一Store/原operation claim、全context幂等与原子性方向接受，阈值未测。M12当前IDENTITY_CONFLICT、未来UNSUPPORTED和诊断资源未批准未实施的界限不变。
+
+I05须逐C格给实际入口、原输入/definition source、输出形状/新producer身份、有限预算/实际异常安全reason和完整成功失败golden，T01才按真实context接持久绑定；T01不猜通用异常、不决定执行器Q6。定位仅真实source有限section/index/reason，原值/路径不外泄；main呈现/公共诊断尚待共同冻结和真实接线。未改变公共协议/路由/路径所有权，未读未批实现或重测，原Goal仍blocked；FR504/505及全部原完成门继续保留。

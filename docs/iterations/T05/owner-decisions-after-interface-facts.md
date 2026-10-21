@@ -92,3 +92,11 @@ T01技术接受独立受限诊断资源方向：在**经批准的规则输入错
 已全文读总控17603B/SHA `70909867a8786f181639810c3c40d188f92c2849311dd148f6bf55fce044705a`。R1：矩阵SHACL分列K数量/in、D精确datatype IRI及适用词法、R自身SPARQL min/maxInclusive非true含type-error产生违规；不以规则E3/D3/D4替换，不因正常违规发能力错误。R2：采用RDF1.1时same lexical form的无lang simple与显式xsd:string同抽象term，source省写/转义不是第二term；语言标签合法性、小写value/建议内部表示、source原拼写与L规则算子分层。两项不宣布当前I05存在产品缺陷；旧383b96c的通过与遗漏保留历史，修订仍需独立文档审查及负责人/Q6具体决定。来源与官方REC核对范围见`docs/reviews/T05/operator-consumer-r1-r2-disposition.json`。D3/D4原技术答复、完整原验收和现有责任不变。
 
 后续状态单列：总控实际转告I05有界前门probe报告simple/xsd:string在query/规则常量/sh:in漏匹配及selected双表示重复计数，sh:datatype正确；固定反例尚待总控/独立读回。本线不读取候选或复现，不称总控已核验/修复通过；原I05负责现存bug修复与新候选，不扩为全部新D3/D4。该后续报告不回填为先前独立设计复核已证明运行缺陷。
+
+## 8. T01 TA-C/Q-LIFE固定回复补记（包装技术接受）
+
+已全文读固定b35cb4e的`t05-context-wrapper-response-r2.md`，SHA `3d300cf1070adf54f97fec45d060273f78d0e29fba9bbef502403466084b8d09`；来源/逐项接受与缺口见`docs/reviews/T05/t01-context-wrapper-r2-receipt.json`。T01原f51 D6/D7/M12–16/P8接受不重置；新增接受各consumer获批profile、SHACL普通违规与整Job失败分开、真实持久Job/result上下文及分页/hash/当前授权。result_get投影还包括kind/原projection、真实snapshot/revision、依赖/definition digests、完整implementation、current/stale/historical、payload availability/historicalSelectionRequired；这些现有边界是T01报告事实，非T05运行验证，也不是opaque rows能认证语义。
+
+Q-LIFE接受D5全comparison预检/全heads原子及D8真实执行器计费证据；仍走唯一Store.commit/全局operation claim、完整原context指纹幂等、取消/迟到/故障不半提交或替换历史。计费阈值未测不填。M12当前IDENTITY_CONFLICT保持；未来UNSUPPORTED适配、M9/diagnosticRef及新诊断schema/方法/保留预算/错误分支/main呈现未实施未批准，定位只来自真实source有限section/index/reason且不含原值/路径/堆栈。
+
+剩余分工不是全部待答：I05须逐C格提供真实入口/输入与definition source/输出、新producer三字段身份、有限预算/实际异常安全reason与完整成功失败golden；T01按这些精确context连接真实Job/result/快照/依赖/完整payload/rows hash，不能猜异常或裁执行器Q6；I06实际业务入口/UI接线仍其owner。新增helper/字段/路径无交接，string修复仍原I05，不代改T01 worker。TA新算子/Q6/完整语义oracles、FR504五模板双范围定位复验及全部原完成门保持；本次技术接受不是当前修复或集成通过。

@@ -109,6 +109,14 @@ FR504五模板、asserted与asserted+derived双范围、实际focusNode/path/val
 
 ## 5. 下一次技术接受与Q6决定
 
-具体请求及可填写决定单见[技术接受请求与Q6决定单r1](q6-policy-decision-request-r1.md)。I05应分别接受S/L/I/B算子、L域及跨域X6、修订消费者合同并回应每个C格；T01接受真实错误/定位/身份/public包装边界。D3/D4已有I05技术答复保留，不重置成无人回答。Q6逐项采用或改写应用profile及固定REC/勘误集；**RDF1.1 simple/xsd:string的抽象term同一性不是可选合域**。
+具体请求及可填写决定单见[技术接受请求与Q6决定单r1](q6-policy-decision-request-r1.md)。I05应分别接受S/L/I/B算子、L域及跨域X6、修订消费者合同并回应每个C格；T01包装技术边界已答复（见§6），实际context接线与新公共诊断仍待。D3/D4已有I05技术答复保留，不重置成无人回答。Q6逐项采用或改写应用profile及固定REC/勘误集；**RDF1.1 simple/xsd:string的抽象term同一性不是可选合域**。
 
 D8 input/work/result阈值仍待真实测量，新增helper/原consumer/公共诊断均先精确路径接受。四语义路径仍future，P2/P3/P5/P6仍I05代改，worker未来唯一T01；本轮不实施、不复测。R1/R2这里只关闭文档歧义，未获Q6/当前实现验证/指定双审Pass，原完整验收保持。
+
+## 6. T01 TA-C/Q-LIFE回复：已接受包装边界，C格待I05落实
+
+固定T01 `b35cb4e21d375386775e5fc0431a8089a47195da:docs/iterations/T01/t05-context-wrapper-response-r2.md`（SHA `3d300cf1070adf54f97fec45d060273f78d0e29fba9bbef502403466084b8d09`）已全文读回，原f51 D6/D7/M12–16/P8接受保留。T01明确接受graph、query term/表达式、SHACL K/D/R各自获批profile；正常SHACL false/type-error违规不转规则E3整Job失败，真正能力/执行失败不包装成空成功rows。T01负责真实Job/result、project/snapshot/revision、依赖/definition digests、完整implementation、current/stale/historical、payload可用性、historicalSelectionRequired、分页绑定/hash及当前可信授权先于存在性。三字段仅分区，不证明同义；不新增第二comparator。
+
+**仍需I05逐C格给出**真实输入/definition source、实际入口/输出形状、三字段新producer身份、有限预算/实际异常类型与安全reason、完整成功validation及失败诊断分别的golden；不能由T01猜通用异常或替执行器决定Q6。上述包装技术接受不等于当前每格实现已接通，也不批准SHACL/query支持面、公共payload或错误路由。T01只在精确context上连接真实持久身份/hash，I06负责实际main/UI入口，原owner路径保持。
+
+M12当前仍IDENTITY_CONFLICT，未来UNSUPPORTED适配及独立诊断资源未实现未批准；定位须真实source有限section/index/reason，绑定当前授权/请求/快照/实际定义或prepared plan，不泄露operand原值/路径/stack。TA-S/L/I-B/X和Q6决定、D8阈值及实际golden/联验仍待，D3/D4原技术答复不清零。本轮无新实现、重测或修复通过证据。
