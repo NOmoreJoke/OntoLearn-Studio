@@ -40,3 +40,5 @@
 当前阻断审计：前两轮为官方活跃总控句柄的50秒有界等待，本轮再次核实相同T11依赖/资源缺口，连续第三轮无可推进的授权工作；Goal工具已实际返回blocked。总控仍为active/inProgress，不把观察超时当终止。私有候选/检查/内审保留，未重跑无变化测试；最新阻断依据与恢复条件见blocked-audit.json。等待批准的正式接口/配置或真实验收资源变化后续接原完整目标，不将局部工具完成当发布完成。前文active均为历史阶段记录。
 
 新交接通知接收：I06→T01 canonical七文件/main engine八文件已实际生效，协议全文与登记hash核对一致；恢复接口责任路由已更新，见format-public-ownership-receipt.json。此前“尚待八文件交接”为历史记录。此次只转未来维护权，不证明精确SQL/JSON已批准、格式3 ready或T11依赖具备；Goal工具当前仍blocked，私有实现与既有验证不变。
+
+共同指南责任同步：已在安全边界全文读回b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39，实际计算原第九节及无桌面段hash仍分别为1f57a08e…d4b54、5215df2e…551d，AGENTS仍78df2825…a759。旧9717/df090快照保留。已将责任追加通过send_message发给完成状态的独立agent，未触发新任务、不声称其读回；详见operating-policy-receipt.json追加记录。仅责任政策变化，无实现/测试/依赖/验收/资源变化，Goal保持blocked，未重测/重启/重开外审。
