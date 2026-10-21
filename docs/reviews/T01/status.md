@@ -190,3 +190,10 @@ helper未完成准备已存私有patch，产品全部恢复b35；patch含旧两�
 原始包39000B、SHA e558203ff2ac79fe8948549054ab80fc1d04353d7c53238a608f6fdb1b13ec2c，14成员和五最终产品hash已逐项回读；索引SHA95f314f4821f6c716985f9b6918ca8c548a91a7f6584ade3267a0a3958020fcb。旧阶段原件均不改。本阶段未启用parser/producer/source wire/worker或runtime3-ready，内部审查不替代指定双审，不push。
 
 四路径未来维护已由总控effective JSON 0df87b7c…03a32生效；092dfbe所留原pending接收回执作为历史保留。主线与两独立agent均已实际全文读取17891B common e437121a…971b0并核旧16317B前缀ff5f9fd0…cfaff。所有权生效不是startup实现授权；I06余四路径不转、无GUI等门不变。Q6用户采纳回执已全文读取，只确认规范已采纳，不算对应实现或验收。本线接着准备精确启动实施计划，实际实施仍须总控明确新阶段。父功能/指定双审/PR/CI/合并/发布尚未完成，Goal active。
+
+
+## 纯表预算 P2 原始反例 E1 最小补封
+
+总控独立原件审计发现，固定39000B原包的7对独立工具记录没有收入最初预算P2反例call_3c61a14c633944ed8ba46cae5eb0a099；报告叙述及source prefix hash不能替代可恢复原call/output。现另增evidence/source-table-budget-p2-supplement.tar.gz（1802B，SHA9c325c4ef0e93b43d4a09159618505daff0b6abe592698b215e519155268ab95）及json索引（2109B，SHA1fe1f9509093547a18a44eadbda040ff92904f42129f3c8ffa576edaad5b3b9d）。按原已固定prefix逐字提取1532/1535两行，保留原offset/length/hash，解包后与原字节回读相同。原wrapper仅显示stdout的边界继续保留，不补造旧exit对象；未重跑反例或产品测试。
+
+bf04169、原包e558…ec2c/原索引95f…0fcb、独立报告及五产品hash均不改；此次只是缺原件的补证，不是新产品候选。待总控补绑核验，不提前代其登记E1关闭。
