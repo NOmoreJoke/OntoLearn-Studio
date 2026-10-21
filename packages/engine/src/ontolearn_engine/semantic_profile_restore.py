@@ -56,6 +56,8 @@ SCHEMA_VERSION = "i05-profile-restore-schema/1"
 RESTORE_BUDGET_VERSION = "i05-profile-restore-budget/1"
 CACHE_VERSION = "i05-profile-restore-term-key/1"
 RESULT_VERSION = "i05-profile-batches-restored/1"
+PROJECTION_VERSION = "i05-profile-projection/1"
+FULL_RESULT_VERSION = "i05-profile-result-restored/1"
 _FORMAT = "i05-reasoning-result/2"
 _SEMANTICS = "i05-finite-7"
 _MAX_BYTES = 8_388_608
@@ -163,6 +165,50 @@ class RestoredBatchSet:
     profile: str = PROFILE
     formal_authority: bool = False
     aggregate_recomputed: bool = False
+
+
+@dataclass(frozen=True, slots=True)
+class ReadonlyObject:
+    """Fixed native object fields; no mutable mapping survives publication."""
+
+    entries: tuple[tuple[str, object], ...]
+
+    def __getitem__(self, name):
+        if type(name) is not str:
+            raise KeyError(None)
+        for key, value in self.entries:
+            if key == name:
+                return value
+        raise KeyError(None)
+
+
+@dataclass(frozen=True, slots=True)
+class ReadonlySequence:
+    """A tuple view with an explicit, fixed original container identity."""
+
+    native_kind: str
+    items: tuple
+
+
+@dataclass(frozen=True, slots=True)
+class RestoredProfileProjection:
+    payload: ReadonlyObject
+    version: str = PROJECTION_VERSION
+
+
+@dataclass(frozen=True, slots=True)
+class RestoredProfileResult:
+    """Receiver owns the actual references after the R operation transfers them.
+
+    Retention describes logical holdings, never an H lease or source authority.
+    Ledger cleanup ends this operation; it does not free this returned graph.
+    """
+
+    batches: RestoredBatchSet
+    projection: RestoredProfileProjection
+    rows_json: bytes
+    retention: tuple
+    version: str = FULL_RESULT_VERSION
 
 
 # Fixed canonical classes only. No saved tag selects an import or arbitrary class.
@@ -985,7 +1031,74 @@ def _bytes_same(left, right, ledger, stage, *, wire=False):
     _same(left, right, ledger, stage=stage)
 
 
-def _restore(decoder, payload_json, rows_json):
+def _freeze_native(value, ledger, depth=0):
+    """One native walk; construction is prepaid before any container allocation.
+
+    Native schema has at most six container edges; eight frames are reserved
+    inside A16's fixed block. Immutable canonical leaves retain their issuance.
+    The 2J ordinary block includes builders, final tuples, pairs and wrappers.
+    """
+    if depth > 8:
+        raise RestoreFailure("RESTORE_INTERNAL", "internal", stage="A16")
+    ledger.charge("traversal", 1, stage="A16")
+    kind = type(value)
+    if value is None or kind is bool or kind is int or kind is str or kind is bytes:
+        return value
+    builder = frozen = item = key = None
+    try:
+        if kind is dict:
+            size = len(value)
+            # Zero-fill, item/pair references, tuple copy and frozen wrapper.
+            # Exact fixed keys need no new hash, text scan or scalar copy.
+            ledger.charge("copy", 16 * size + 32, stage="A16")
+            ledger.charge("traversal", size, stage="A16")
+            builder = [None] * size
+            for index, (key, item) in enumerate(value.items()):
+                if type(key) is not str:
+                    raise RestoreFailure("RESTORE_INTERNAL", "internal", stage="A16")
+                builder[index] = (key, _freeze_native(item, ledger, depth + 1))
+            frozen = tuple(builder)
+            builder = None
+            return ReadonlyObject(frozen)
+        if kind is tuple or kind is list:
+            size = len(value)
+            ledger.charge("copy", 12 * size + 32, stage="A16")
+            builder = [None] * size
+            for index in range(size):
+                builder[index] = _freeze_native(value[index], ledger, depth + 1)
+            frozen = tuple(builder)
+            builder = None
+            return ReadonlySequence("tuple" if kind is tuple else "list", frozen)
+        # Only the exact canonical classes already validated by this decoder.
+        # Their nested values are immutable; never copy or reissue a PV.
+        ledger.charge("traversal", len(_EQUAL_FIELDS), stage="A16")
+        for cls, _names in _EQUAL_FIELDS:
+            if kind is cls:
+                return value
+        raise RestoreFailure("RESTORE_INTERNAL", "internal", stage="A16")
+    finally:
+        builder = frozen = item = key = None
+
+
+def _freeze_projection(raw, native, ledger):
+    # The earlier safe projection has actually died before these reservations.
+    # 2J: <=5m+4 refs/objects per fixed m-field object, <=2n+5 per
+    # sequence builder/tuple/wrapper, plus eight bounded frames. Fixed JSON
+    # keys (>=4 chars) and schema array positions pay these from original J.
+    # 4J: conservative retained scalar/issuer payload; no scalar is copied.
+    ledger.reserve("objects", 2 * ledger.J, stage="A16")
+    ledger.reserve("scalar", 4 * ledger.J, stage="A16")
+    ledger.charge("copy", 64, stage="A16")
+    payload = frozen = None
+    try:
+        payload = {key: native if key == "reasoning" else raw[key] for key in _PAYLOAD}
+        frozen = _freeze_native(payload, ledger)
+        return RestoredProfileProjection(frozen)
+    finally:
+        payload = frozen = None
+
+
+def _restore(decoder, payload_json, rows_json, *, fullview=False):
     ledger, expected = decoder.ledger, decoder.expected
     _check_expectation(decoder)
     _same(digest(payload_json, ledger), expected.payload_digest, ledger, stage="A1")
@@ -1097,6 +1210,7 @@ def _restore(decoder, payload_json, rows_json):
     ledger.charge("copy", 1024 * slots + 1024, stage="A16")
     ledger.reserve("objects", 256 * slots + 256, stage="A16")
     ledger.reserve("scalar", 1024 * slots + 1024, stage="A16")
+    projection = _freeze_projection(raw, native, ledger) if fullview else None
     parse_usage = tuple(pool.usage for pool in decoder.parse_pools)
     children, caps = [], []
     ledger.charge("traversal", len(decoder.children), stage="A16")
@@ -1135,7 +1249,7 @@ def _restore(decoder, payload_json, rows_json):
                 ("control", control),
             )
         )
-    return tuple(children), parse_usage, tuple(caps)
+    return tuple(children), parse_usage, tuple(caps), projection
 
 
 def _input_triple(decoder, value):
@@ -1168,14 +1282,15 @@ def _check_rows(decoder, rows, encoded_payload):
     release_bytes(encoded, ledger)
 
 
-def restore_profile_batches(
+def _restore_operation(
     payload_json: bytes,
     rows_json: bytes,
     *,
     expected: RestoreExpectation,
     allocation: OriginalAllocation,
     ledger: RestoreLedger,
-) -> RestoredBatchSet:
+    fullview: bool,
+):
     """Restore once, then publish all child facts or raise a safe finite failure.
 
     No native batch/value is accepted as a substitute for wire. A fresh ledger
@@ -1187,7 +1302,7 @@ def restore_profile_batches(
         # Reject reuse before touching the prior operation's usage or terminal state.
         _invalid("entry")
     decoder = None
-    children = parse_usage = caps = None
+    children = parse_usage = caps = projection = inner_batches = retention = None
     outcome = None
     error = None
     try:
@@ -1219,8 +1334,17 @@ def restore_profile_batches(
         ledger.charge("traversal", 128 * count + 128, stage="entry")
         decoder = _Decoder(ledger, expected, allocation)
         decoder.rows_json = rows_json
-        children, parse_usage, caps = _restore(decoder, payload_json, rows_json)
-        outcome = RestoredBatchSet(
+        children, parse_usage, caps, projection = _restore(
+            decoder, payload_json, rows_json, fullview=fullview
+        )
+        # All wrapper/retention/snapshot construction is inside A16's existing
+        # prepaid fixed receipt block; no work is charged after snapshots.
+        # Transfer a conservative upper bound of ALL still-reserved holdings,
+        # including native records/issuer payload and caller-owned context, not
+        # just the new view's containers. Some parse temporaries die on return;
+        # keeping their tickets makes this an upper bound, never an H lease.
+        retention = ledger.live if fullview else None
+        inner_batches = RestoredBatchSet(
             children,
             expected.implementation,
             expected.payload_digest,
@@ -1229,6 +1353,11 @@ def restore_profile_batches(
             ledger.peaks,
             parse_usage,
             caps,
+        )
+        outcome = (
+            RestoredProfileResult(inner_batches, projection, rows_json, retention)
+            if fullview
+            else inner_batches
         )
     except RestoreFailure as exc:
         error = RestoreFailure(
@@ -1254,7 +1383,7 @@ def restore_profile_batches(
     finally:
         # The public error traceback keeps this frame.  Drop every separate
         # native result reference, including receipt-construction failure paths.
-        children = parse_usage = caps = None
+        children = parse_usage = caps = projection = inner_batches = retention = None
         if error is not None:
             outcome = None
         try:
@@ -1270,3 +1399,45 @@ def restore_profile_batches(
     if error is not None:
         raise error
     return outcome
+
+
+def restore_profile_batches(
+    payload_json: bytes,
+    rows_json: bytes,
+    *,
+    expected: RestoreExpectation,
+    allocation: OriginalAllocation,
+    ledger: RestoreLedger,
+) -> RestoredBatchSet:
+    """Original single-artifact API and exact receipt remain compatible."""
+    return _restore_operation(
+        payload_json,
+        rows_json,
+        expected=expected,
+        allocation=allocation,
+        ledger=ledger,
+        fullview=False,
+    )
+
+
+def restore_profile_result(
+    payload_json: bytes,
+    rows_json: bytes,
+    *,
+    expected: RestoreExpectation,
+    allocation: OriginalAllocation,
+    ledger: RestoreLedger,
+) -> RestoredProfileResult:
+    """Publish the full immutable 7/15/11 projection after every original slot.
+
+    A receiver must pre-reserve its own H/lease before taking these references.
+    This pure operation neither authenticates a producer nor supplies that lease.
+    """
+    return _restore_operation(
+        payload_json,
+        rows_json,
+        expected=expected,
+        allocation=allocation,
+        ledger=ledger,
+        fullview=True,
+    )

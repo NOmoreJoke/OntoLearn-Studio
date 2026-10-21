@@ -633,6 +633,7 @@ def _execute_profile(
     error_catalog,
     error_schema,
     records=None,
+    _capture=None,
 ):
     """Private P1 text caller; no public snapshot DTO, producer or Store authority.
 
@@ -644,6 +645,7 @@ def _execute_profile(
     from ontolearn_engine.quality.rule_profile import PROFILE, ProfileFailure, SourceRecord
     from ontolearn_engine.resources import semantic_identity
     from ontolearn_engine.semantic_offline import SemanticError, offline
+    from ontolearn_engine.semantic_profile_input import MaterialFailure
     from ontolearn_engine.semantic_turtle import (
         _disabled_ids,
         bind_profile_disabled_rules,
@@ -700,24 +702,36 @@ def _execute_profile(
             producer, stage = Producer.REASON, Stage.RULE
             if records is None and disabled_rule_ids:
                 context = bind_profile_disabled_rules(context, disabled_rule_ids)
-            result = semantic.reason(graph, rules, profile=PROFILE, term_context=context)
+            if _capture is None:
+                result = semantic.reason(graph, rules, profile=PROFILE, term_context=context)
+            else:
+                from ontolearn_engine.semantic_profile_production import _ProductionCapture
+
+                if type(_capture) is not _ProductionCapture:
+                    raise MaterialFailure()
+                _capture.before_input(original_bytes, source, input_domain)
+                result = semantic._reason_profile_production(
+                    graph, rules, term_context=context, capture=_capture
+                )
         producer, stage, origin = Producer.PROJECTION, Stage.PROJECTION, Origin.TRUSTED_INTERNAL
+        if _capture is not None:
+            _capture.before_projection()
         projection = _ProfileProjection()
         safe_result = projection.value(result)
+        source_encoded = _profile_json_bytes(projection.value(source))
+        defs_encoded = _profile_json_bytes(projection.value(tuple(rules)))
         payload = {
             "format": "i05-reasoning-result/2",
             "implementation": semantic_identity(profile=True),
             "reasoning": safe_result,
             "inputDigest": hashlib.sha256(original_bytes).hexdigest(),
             "inputDigestDomain": input_domain,
-            "sourceDigest": hashlib.sha256(
-                _profile_json_bytes(projection.value(source))
-            ).hexdigest(),
-            "definitionsDigest": hashlib.sha256(
-                _profile_json_bytes(projection.value(tuple(rules)))
-            ).hexdigest(),
+            "sourceDigest": hashlib.sha256(source_encoded).hexdigest(),
+            "definitionsDigest": hashlib.sha256(defs_encoded).hexdigest(),
         }
         encoded = _profile_json_bytes(payload)
+        if _capture is not None:
+            _capture.before_rows()
         # A single payload stream sliced by characters, with no missing tail.
         # Rows are a private transport projection, never T05 proof/basis IDs.
         serialized = encoded.decode("utf-8")
@@ -730,12 +744,17 @@ def _execute_profile(
         rows_encoded = _profile_json_bytes(rows)
         if len(encoded) + len(rows_encoded) > MAX_OUTPUT_BYTES:
             raise SemanticError("PROJECTION_RESULT_LIMIT")
-        return {
+        wire = {
             "payload": payload,
             "rows": rows,
             "jsonPayloadDigest": hashlib.sha256(encoded).hexdigest(),
             "rowsDigest": hashlib.sha256(rows_encoded).hexdigest(),
         }
+        if _capture is not None:
+            _capture.completed(result, encoded, rows_encoded, source_encoded, defs_encoded, wire)
+        return wire
+    except MaterialFailure:
+        raise
     except semantic.ProfileReasonError as error:
         actual_stage = Stage.RULE if error.context in {"rule", "closure"} else Stage.SYNTAX
         actual_origin = (
@@ -832,4 +851,24 @@ def execute_profile_records(
         disabled_rule_ids=disabled_rule_ids,
         error_catalog=error_catalog,
         error_schema=error_schema,
+    )
+
+
+def _execute_profile_production(material, capture, *, error_catalog, error_schema):
+    """Same original execution body; no second parser, matcher or projection."""
+    from ontolearn_engine.semantic_profile_input import ProfileMaterial
+    from ontolearn_engine.semantic_profile_production import _ProductionCapture
+
+    if type(material) is not ProfileMaterial or type(capture) is not _ProductionCapture:
+        raise ValueError("PROFILE_PRODUCTION_INTERNAL")
+    return _execute_profile(
+        material.text,
+        material.rules,
+        records=material.records,
+        disabled_rule_ids=material.disabled_rule_ids,
+        source_reference=material.source.reference if material.records is None else None,
+        source_revision=material.source.revision if material.records is None else None,
+        error_catalog=error_catalog,
+        error_schema=error_schema,
+        _capture=capture,
     )

@@ -1,6 +1,7 @@
 """Independent boundary inputs for whole restore costs and atomic failure."""
 
 import copy
+import gc
 import os
 from dataclasses import fields, replace
 from pathlib import Path
@@ -11,6 +12,7 @@ import test_semantic_profile_restore as support
 from ontolearn_engine import semantic, semantic_execution
 from ontolearn_engine import semantic_profile_restore as restore
 from ontolearn_engine import semantic_profile_restore_budget as resources
+from ontolearn_engine.quality import rule_terms
 from ontolearn_engine.quality.rule_firing import RuleSpec, Triple, Variable
 from ontolearn_engine.quality.rule_profile import (
     Budget,
@@ -318,11 +320,22 @@ def test_receipt_failure_drops_native_locals_from_public_traceback(captured, mon
     public_frames = []
     traceback = caught.value.__traceback__
     while traceback is not None:
-        if traceback.tb_frame.f_code.co_name == "restore_profile_batches":
+        # Both public APIs now share this exact operation frame. Checking only
+        # the thin compatibility wrapper would miss retained decoded values.
+        if traceback.tb_frame.f_code.co_name == "_restore_operation":
             public_frames.append(traceback.tb_frame)
         traceback = traceback.tb_next
     assert len(public_frames) == 1
-    for name in ("children", "parse_usage", "caps", "outcome", "decoder"):
+    for name in (
+        "children",
+        "parse_usage",
+        "caps",
+        "outcome",
+        "decoder",
+        "projection",
+        "inner_batches",
+        "retention",
+    ):
         assert public_frames[0].f_locals[name] is None, (fault, name)
 
 
@@ -559,3 +572,136 @@ def test_radix_cache_all256_branches_and_long_common_prefix_ignore_audit_collisi
         # This tests a private subdomain, not all original child/API slots.
         ledger.finish(False)
     assert not any(value for _, value in ledger.live)
+
+
+@pytest.mark.parametrize("domain", CUMULATIVE + LIVE)
+def test_fullview_actual_cap_exact_and_one_short(captured, domain):
+    _, baseline = support.restore_capture(captured, fullview=True)
+    required = dict(baseline.peaks if domain in LIVE else baseline.usage)[domain]
+    assert required > 0
+    exact = RestoreLedger(overrides=((domain, required),))
+    support.restore_capture(captured, ledger=exact, fullview=True)
+    short = RestoreLedger(overrides=((domain, required - 1),))
+    with pytest.raises(RestoreFailure) as caught:
+        support.restore_capture(captured, ledger=short, fullview=True)
+    assert caught.value.classification == "resource"
+    assert short.state == "failed" and not any(v for _, v in short.live)
+
+
+@pytest.mark.parametrize(
+    "fault", ["freeze", "last-child", "projection", "batch", "result", "usage", "peaks", "live"]
+)
+def test_fullview_atomic_failures_drop_all_native_and_traceback_locals(
+    captured, monkeypatch, fault
+):
+    gc.collect()
+    original_ids = set(rule_terms._ISSUED_VALUES)
+    calls = []
+    if fault in ("usage", "peaks", "live"):
+
+        def fail(*args):
+            calls.append(fault)
+            raise MemoryError("injected fullview receipt failure")
+
+        monkeypatch.setattr(RestoreLedger, fault, property(fail))
+    elif fault == "last-child":
+        captured = support.capture_case(rules=(support.rule("a"), support.rule("z")))
+        original_ids = set(rule_terms._ISSUED_VALUES)
+        original = restore.check_firing_batch
+
+        def fail(*args, **kwargs):
+            calls.append(fault)
+            if len(calls) == 2:
+                raise ProfileFailure("WORK_LIMIT", classification="resource")
+            return original(*args, **kwargs)
+
+        monkeypatch.setattr(restore, "check_firing_batch", fail)
+    elif fault == "freeze":
+        original = restore._freeze_native
+
+        def fail(*args, **kwargs):
+            calls.append(fault)
+            if len(calls) == 8:
+                raise MemoryError("mid-freeze")
+            return original(*args, **kwargs)
+
+        monkeypatch.setattr(restore, "_freeze_native", fail)
+    else:
+        name = {
+            "projection": "RestoredProfileProjection",
+            "batch": "RestoredBatchSet",
+            "result": "RestoredProfileResult",
+        }[fault]
+
+        def fail(*args, **kwargs):
+            calls.append(fault)
+            raise MemoryError("injected fullview constructor")
+
+        monkeypatch.setattr(restore, name, fail)
+    ledger = RestoreLedger()
+    with pytest.raises(RestoreFailure) as caught:
+        support.restore_capture(captured, ledger=ledger, fullview=True)
+    assert calls
+    assert caught.value.__cause__ is None and caught.value.__context__ is None
+    assert ledger.state == "failed"
+    if fault != "live":
+        assert not any(v for _, v in ledger.live)
+    tb = caught.value.__traceback__
+    frames = []
+    while tb:
+        if tb.tb_frame.f_code.co_name == "_restore_operation":
+            frames.append(tb.tb_frame)
+        tb = tb.tb_next
+    assert len(frames) == 1
+    for name in (
+        "children",
+        "parse_usage",
+        "caps",
+        "projection",
+        "inner_batches",
+        "retention",
+        "outcome",
+        "decoder",
+    ):
+        assert frames[0].f_locals[name] is None, (fault, name)
+    gc.collect()
+    assert not (set(rule_terms._ISSUED_VALUES) - original_ids)
+
+
+def test_fullview_success_transfers_pv_holding_instead_of_claiming_cleanup_frees_it(captured):
+    gc.collect()
+    original_ids = set(rule_terms._ISSUED_VALUES)
+    result, ledger = support.restore_capture(captured, fullview=True)
+    assert not any(v for _, v in ledger.live)
+    gc.collect()
+    new_ids = set(rule_terms._ISSUED_VALUES) - original_ids
+    assert new_ids
+    assert dict(result.retention)["scalar"] > 0
+    assert dict(result.retention)["objects"] > 2 * ledger.J
+    del result
+    gc.collect()
+    assert not (set(rule_terms._ISSUED_VALUES) - original_ids)
+
+
+def test_fullview_object_reservation_precedes_freeze_delegate(captured, monkeypatch):
+    calls = []
+    original_reserve = RestoreLedger.reserve
+    original_freeze = restore._freeze_native
+
+    def reserve(self, domain, amount=1, *, stage="entry"):
+        if domain == "objects" and stage == "A16" and amount == 2 * self.J:
+            raise RestoreFailure("RESTORE_LIMIT", "resource", stage=stage, domain=domain)
+        return original_reserve(self, domain, amount, stage=stage)
+
+    def freeze(*args, **kwargs):
+        calls.append(1)
+        return original_freeze(*args, **kwargs)
+
+    monkeypatch.setattr(RestoreLedger, "reserve", reserve)
+    monkeypatch.setattr(restore, "_freeze_native", freeze)
+    ledger = RestoreLedger()
+    with pytest.raises(RestoreFailure) as caught:
+        support.restore_capture(captured, ledger=ledger, fullview=True)
+    assert caught.value.classification == "resource"
+    assert not calls
+    assert ledger.state == "failed" and not any(v for _, v in ledger.live)

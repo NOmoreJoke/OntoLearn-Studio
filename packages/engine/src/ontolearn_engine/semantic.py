@@ -866,7 +866,7 @@ def _profile_chain_warnings(plans, meter):
     return meter.ordered(warnings, key=lambda value: value)
 
 
-def _profile_reason(graph, rules, catalog, term_context):
+def _profile_reason(graph, rules, catalog, term_context, *, _capture=None):
     from dataclasses import asdict
     from hashlib import sha256
 
@@ -880,6 +880,12 @@ def _profile_reason(graph, rules, catalog, term_context):
     )
     from ontolearn_engine.quality.rule_profile import PROFILE, Budget, ProfileFailure, ProfileLimits
 
+    if _capture is not None:
+        from ontolearn_engine.semantic_profile_production import _ProductionCapture
+
+        if type(_capture) is not _ProductionCapture:
+            raise ProfileReasonError("INTERNAL_ERROR", classification="internal")
+
     meter = _GraphBudget()
     try:
         ordered_specs, ids = _profile_definitions(rules, meter)
@@ -887,6 +893,8 @@ def _profile_reason(graph, rules, catalog, term_context):
         if error.reason != "WORK_LIMIT":
             error.context = "rule"
         raise
+    if _capture is not None:
+        _capture.definitions(ordered_specs, rules)
     asserted, context, entry, lookup_work = _profile_graph(graph, term_context, meter)
 
     def actual_term(term):
@@ -902,6 +910,8 @@ def _profile_reason(graph, rules, catalog, term_context):
             raise ProfileReasonError("INVALID_RULE", context="rule")
         meter.debit(1 + len(rule_id))
         disabled_set.add(rule_id)
+    if _capture is not None:
+        _capture.context(disabled)
     try:
         actual_catalog = _profile_catalog(asserted, catalog, meter)
     except ProfileReasonError as error:
@@ -911,6 +921,8 @@ def _profile_reason(graph, rules, catalog, term_context):
         raise _profile_failure(error, context="catalog") from None
     except SemanticError as error:
         raise _profile_semantic_failure(error, context="catalog") from None
+    if _capture is not None:
+        _capture.catalog(actual_catalog)
     plans = []
     count = max(1, len(ordered_specs))
     for position, (ordinal, spec) in enumerate(ordered_specs or ((None, None),)):
@@ -920,6 +932,8 @@ def _profile_reason(graph, rules, catalog, term_context):
                 for name, total in _PROFILE_POOLS.items()
             }
         )
+        if _capture is not None:
+            _capture.allocation(spec, ordinal, limits)
         budget = Budget(limits)
         meter.debit(2)
         child_definitions = () if spec is None else (spec,)
@@ -1119,6 +1133,36 @@ def _profile_reason(graph, rules, catalog, term_context):
     return result
 
 
+def _reason_profile_core(graph, rules, catalog, term_context, capture):
+    from ontolearn_engine.quality.rule_profile import ProfileFailure
+    from ontolearn_engine.semantic_profile_input import MaterialFailure
+
+    try:
+        return _profile_reason(graph, rules, catalog, term_context, _capture=capture)
+    except ProfileReasonError:
+        raise
+    except ProfileFailure as error:
+        raise _profile_failure(error) from None
+    except SemanticError as error:
+        raise _profile_semantic_failure(error) from None
+    except MaterialFailure:
+        if capture is not None:
+            raise
+        raise ProfileReasonError("INTERNAL_ERROR", classification="internal") from None
+    except Exception:
+        # Unknown exception strings are never evidence for an error code.
+        raise ProfileReasonError("INTERNAL_ERROR", classification="internal") from None
+
+
+def _reason_profile_production(graph, rules, *, term_context, capture):
+    from ontolearn_engine.semantic_profile_production import _ProductionCapture
+
+    if type(capture) is not _ProductionCapture:
+        raise ProfileReasonError("INTERNAL_ERROR", classification="internal")
+    with offline():
+        return _reason_profile_core(graph, rules, None, term_context, capture)
+
+
 def reason(graph: Graph, rules=(), *, profile=None, catalog=None, term_context=None) -> dict:
     """Explicit legacy or fixed-profile reasoning over one frozen finite closure."""
     with offline():
@@ -1126,21 +1170,11 @@ def reason(graph: Graph, rules=(), *, profile=None, catalog=None, term_context=N
             if catalog is not None or term_context is not None:
                 raise SemanticError("INVALID_RULE")
             return _legacy_reason(graph, rules)
-        from ontolearn_engine.quality.rule_profile import PROFILE, ProfileFailure
+        from ontolearn_engine.quality.rule_profile import PROFILE
 
         if type(profile) is not str or profile != PROFILE:
             raise ProfileReasonError("RULE_POLICY_UNSUPPORTED", context="rule")
-        try:
-            return _profile_reason(graph, rules, catalog, term_context)
-        except ProfileReasonError:
-            raise
-        except ProfileFailure as error:
-            raise _profile_failure(error) from None
-        except SemanticError as error:
-            raise _profile_semantic_failure(error) from None
-        except Exception:
-            # Unknown exception strings are never evidence for an error code.
-            raise ProfileReasonError("INTERNAL_ERROR", classification="internal") from None
+        return _reason_profile_core(graph, rules, catalog, term_context, None)
 
 
 _SH_PREDICATES = {

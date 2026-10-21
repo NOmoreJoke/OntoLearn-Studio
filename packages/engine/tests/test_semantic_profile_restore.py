@@ -32,6 +32,8 @@ from ontolearn_engine.quality.rule_profile import (
     TermInput,
 )
 from ontolearn_engine.resources import CONTRACT, ROOT, semantic_identity
+from ontolearn_engine.semantic_profile_input import prepare_profile_material
+from ontolearn_engine.semantic_profile_production import execute_admitted_profile_job
 from ontolearn_engine.semantic_profile_restore import (
     ChildAllocation,
     OriginalAllocation,
@@ -170,35 +172,38 @@ def capture_case(*, text=None, rules=None, records=None, disabled=(), label="fix
     source_preimage = canonical(project(source))
     definitions_digest = sha(canonical(project(rules)))
     implementation = tuple(sorted(semantic_identity(profile=True).items()))
-    native_results = []
-    original_reason = semantic.reason
+    actual_calls = []
+    original_reason = semantic._profile_reason
 
     def observe(*args, **kwargs):
-        result = original_reason(*args, **kwargs)
-        native_results.append(result)
-        return result
+        actual_calls.append(1)
+        return original_reason(*args, **kwargs)
 
-    with patch.object(semantic, "reason", observe):
+    with patch.object(semantic, "_profile_reason", observe):
         if records is None:
-            result = semantic_execution.execute_profile(
+            material = prepare_profile_material(
                 text,
                 rules,
                 disabled_rule_ids=disabled,
                 source_reference=source.reference,
                 source_revision=source.revision,
-                error_catalog=CONTRACT.ERROR_CATALOG,
-                error_schema=SCHEMA,
             )
         else:
-            result = semantic_execution.execute_profile_records(
-                records,
-                rules,
+            material = prepare_profile_material(
+                rules=rules,
+                records=records,
                 disabled_rule_ids=disabled,
-                error_catalog=CONTRACT.ERROR_CATALOG,
-                error_schema=SCHEMA,
             )
-    assert len(native_results) == 1
-    native = native_results[0]
+        computation = execute_admitted_profile_job(
+            material, error_catalog=CONTRACT.ERROR_CATALOG, error_schema=SCHEMA
+        )
+    assert actual_calls == [1]
+    # The observer counts the actual core; it never supplies capture or L.
+    native, result = computation.native_result, computation.wire
+    assert material.input_preimage == input_preimage
+    assert material.source_preimage == source_preimage
+    assert computation.source_encoded == source_preimage
+    assert computation.definitions_encoded == canonical(project(rules))
     payload_json, rows_json = canonical(result["payload"]), canonical(result["rows"])
     assert result["jsonPayloadDigest"] == sha(payload_json)
     assert result["rowsDigest"] == sha(rows_json)
@@ -217,13 +222,14 @@ def capture_case(*, text=None, rules=None, records=None, disabled=(), label="fix
         input_preimage=input_preimage,
         source_preimage=source_preimage,
     )
-    allocation = OriginalAllocation(
-        tuple(spec.rule_id for spec in rules),
-        tuple(disabled),
-        tuple(
-            ChildAllocation(item["ruleId"], item["definitionOrdinal"], item["limits"])
-            for item in native["mechanismBatches"]
-        ),
+    allocation = computation.original_allocation
+    assert allocation.rule_ids == tuple(spec.rule_id for spec in rules)
+    assert allocation.disabled_rule_ids == tuple(disabled)
+    assert tuple(
+        (child.rule_id, child.definition_ordinal, child.limits) for child in allocation.children
+    ) == tuple(
+        (item["ruleId"], item["definitionOrdinal"], item["limits"])
+        for item in native["mechanismBatches"]
     )
     return Capture(result["payload"], payload_json, rows_json, expected, allocation, native, 1)
 
@@ -233,10 +239,13 @@ def captured():
     return capture_case()
 
 
-def restore_capture(capture, *, expected=None, allocation=None, ledger=None, wire=None):
+def restore_capture(
+    capture, *, expected=None, allocation=None, ledger=None, wire=None, fullview=False
+):
     ledger = RestoreLedger() if ledger is None else ledger
     payload, rows = (capture.payload_json, capture.rows_json) if wire is None else wire
-    result = restore_profile_batches(
+    api = restore.restore_profile_result if fullview else restore_profile_batches
+    result = api(
         payload,
         rows,
         expected=capture.expected if expected is None else expected,
@@ -352,9 +361,11 @@ def _child_main():
         patch.object(semantic, "_finite_matches", forbidden),
         patch.object(restore, "check_firing_batch", observe_check),
     ):
-        restored = restore_profile_batches(
-            payload, rows, expected=expected, allocation=allocation, ledger=ledger
+        api = (
+            restore.restore_profile_result if envelope.get("fullview") else restore_profile_batches
         )
+        result = api(payload, rows, expected=expected, allocation=allocation, ledger=ledger)
+    restored = result.batches if envelope.get("fullview") else result
     for child in restored.children:
         if child.batch is not None:
             for firing in child.batch.firings:
@@ -376,12 +387,19 @@ def _child_main():
         "formal_authority": restored.formal_authority,
         "aggregate_recomputed": restored.aggregate_recomputed,
     }
+    if envelope.get("fullview"):
+        response["projection"] = signature(thaw_view(result.projection.payload))
+        response["rows_hex"] = result.rows_json.hex()
+        response["retention"] = result.retention
     sys.stdout.buffer.write(canonical(response))
 
 
-def exec_restore(capture, label):
+def exec_restore(capture, label, *, fullview=False):
     argv = [sys.executable, str(Path(__file__).resolve()), "--restore-child"]
-    raw = canonical(pack_capture(capture))
+    envelope = pack_capture(capture)
+    if fullview:
+        envelope["fullview"] = True
+    raw = canonical(envelope)
     started = time.monotonic()
     process = subprocess.Popen(
         argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
@@ -447,6 +465,11 @@ def exec_restore(capture, label):
         )
         assert call["disabled"] is child["disabled"]
         assert call["saved_none"] is (child["batch"] is None)
+    if fullview:
+        original = {**capture.payload, "reasoning": capture.native}
+        assert response["projection"] == signature(original)
+        assert response["rows_hex"] == capture.rows_json.hex()
+        assert dict(response["retention"])["objects"] > 0
     return response
 
 
@@ -896,6 +919,83 @@ def test_direct_pickle_and_alias_values_do_not_restore_issuance(captured):
         pickle.dumps(original),
     ):
         assert_rejected(captured, wire=(blob, captured.rows_json))
+
+
+def thaw_view(value):
+    """Test-only independent signature adapter; product exposes no thaw API."""
+    if type(value) is restore.ReadonlyObject:
+        return {key: thaw_view(item) for key, item in value.entries}
+    if type(value) is restore.ReadonlySequence:
+        values = tuple(thaw_view(item) for item in value.items)
+        return list(values) if value.native_kind == "list" else values
+    return value
+
+
+@pytest.mark.parametrize("domain", ["I", "S", "L", "B", "N", "Dl", "Dz", "Tl", "Tz"])
+def test_fullview_all_fields_and_domains_in_fresh_process(domain):
+    exec_restore(domain_capture(domain), "fullview-domain-" + domain, fullview=True)
+
+
+@pytest.mark.parametrize(
+    "mode", ["false-true", "disabled", "no-matches", "no-definitions", "multiple", "multihead"]
+)
+def test_fullview_original_complete_schema_and_slots(mode):
+    rules, disabled, text = (rule(),), (), turtle()
+    if mode == "disabled":
+        disabled = ("r",)
+    elif mode == "no-matches":
+        text = turtle(values=())
+    elif mode == "no-definitions":
+        rules = ()
+    elif mode == "multiple":
+        rules = (rule("z"), rule("a"))
+    elif mode == "multihead":
+        spec = rule()
+        rules = (
+            replace(
+                spec,
+                heads=spec.heads
+                + (Triple(Variable("?s"), iri("urn:out"), TermInput("literal", "second")),),
+            ),
+        )
+    capture = capture_case(text=text, rules=rules, disabled=disabled, label="full-" + mode)
+    result, ledger = restore_capture(capture, fullview=True)
+    outer = result.projection.payload
+    reasoning = outer["reasoning"]
+    assert len(outer.entries) == 7 and len(reasoning.entries) == 15
+    for child in reasoning["mechanismBatches"].items:
+        assert len(child.entries) == 11
+    assert signature(thaw_view(outer)) == signature(
+        {**capture.payload, "reasoning": capture.native}
+    )
+    assert result.rows_json is capture.rows_json
+    assert ledger.state == "success" and not any(v for _, v in ledger.live)
+    assert dict(result.retention)["scalar"] > 0
+    exec_restore(capture, "fullview-" + mode, fullview=True)
+
+
+def test_fullview_is_deeply_readonly_and_retains_canonical_values(captured):
+    from dataclasses import FrozenInstanceError
+
+    result, _ = restore_capture(captured, fullview=True)
+    outer = result.projection.payload
+    reasoning = outer["reasoning"]
+    child = reasoning["mechanismBatches"].items[0]
+    with pytest.raises(FrozenInstanceError):
+        outer.entries = ()
+    with pytest.raises(TypeError):
+        reasoning["evidence"].items[0]["inputs"] = ()
+    with pytest.raises(TypeError):
+        child["budgetUsage"].entries[0] = ("work", 0)
+    with pytest.raises(FrozenInstanceError):
+        child["originalMatches"].items = ()
+    batch = result.batches.children[0].batch
+    pv = batch.firings[0].comparisons[0].left
+    rule_terms.check_value(pv, Budget())
+    with pytest.raises(FrozenInstanceError):
+        pv.domain = "N"
+    with pytest.raises(KeyError):
+        outer["unknown"]
 
 
 if __name__ == "__main__":
