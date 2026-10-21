@@ -5,7 +5,7 @@ import json
 import subprocess
 from pathlib import Path
 
-base = Path(__file__).parent
+base = Path(__file__).resolve().parent.relative_to(Path.cwd())
 contract = Path('docs/iterations/T05/profile-M1-directsteps-consumer-contract.md')
 text = contract.read_text()
 manifest = json.loads((base / 'fixed-inputs.json').read_text())
@@ -66,7 +66,7 @@ assert (frozen / 'process-manifest.json').read_bytes() == subprocess.check_outpu
 assert Path('AGENTS.md').read_bytes() == subprocess.check_output([
     'git', 'show', '5f910b52c69d86a1076b2032e5d3c63e715947f3:AGENTS.md'
 ])
-changed = subprocess.check_output(['git', 'diff', '--name-only', 'e0ee604ae5e63b4dfdda5db984c0eec8b59a65f5']).decode().splitlines()
+changed = [p for p in subprocess.check_output(['git', 'diff', '--name-only', '-z', 'e0ee604ae5e63b4dfdda5db984c0eec8b59a65f5']).decode().split('\0') if p]
 assert all(p == str(contract) or p.startswith(str(base) + '/') for p in changed)
 assert text.count('```') % 2 == 0
 assert not any(line.endswith(' ') or line.endswith('\t') for line in text.splitlines())

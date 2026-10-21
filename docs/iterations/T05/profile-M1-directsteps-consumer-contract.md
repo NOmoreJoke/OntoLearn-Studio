@@ -34,7 +34,7 @@
 | `rdfs2-domain` | domain branch | `[(p rdfs:domain A),(x p y)] → (x rdf:type A)` |
 | `rdfs3-range` | range branch | `[(p rdfs:range A),(x p y)] → (y rdf:type A)`；实际代码已有 URIRef subject 门 |
 
-每次 `append` 的新增 tag/额外 tuple slot 均先计新池；**重复/已存在结果、最终未入选的候选也计费**。在原 `if triple not in closure` 内，先通过旧 MAX_TRIPLES、旧 debit/union，再在任何新增容器构造前预留新池；保存当前两个输入的真实 leaf/前序 step 引用、tag、result、`ordinal=len(steps)`、`depth=1+max(d0,d1)`，然后随该次实际成功插入一起确立。发生任意后续错误，整次生产不返回 carrier，不发布 partial steps。不得把失败后短暂留存的数组当成功观察。
+每次 `append` 的新增 tag/额外 tuple slot 均先计新池；**重复/已存在结果、最终未入选的候选也计费**。在原 `if triple not in closure` 内，先通过旧 MAX_TRIPLES、旧 debit/union，再在任何新增容器构造前预留新池；保存当前两个输入的临时`SeedKey(真实canonical TripleKey)`或`StepOrdinal`引用、tag、result、`ordinal=len(steps)`、`depth=1+max(d0,d1)`，然后随该次实际成功插入一起确立。此时leaf ID尚不存在：6c的leaf_ids/leaf_records在闭包返回后的958–973才创建。新sink不得提前再hash leaf、从expected拿ID或增加另一来源表。由该唯一既有leaf发生点在原ID确立时执行`link_seed(actual_key, existing_leaf_id)`；wire编码前必须全量resolve为§3的最终DirectRef，悬空即整任务失败，native公开结果与wire都不得残留SeedKey。link的每次索引查找/键扫描/引用或字符串复制/临时释放都先计D池；临时SeedKey/索引与最终carrier并持峰值不相互抵扣，resolve完成再释放临时票。发生任意后续错误，整次生产不返回 carrier，不发布 partial steps。不得把失败后短暂留存的数组当成功观察。
 
 seed leaf depth=0；每个 result 只登记一次。引用前件来自生成该批候选时已经存在的 closure，故只能是 seed leaf 或此前实际 step；保存全局首插入序号，不按最终 result 排序重编号。即使某条后续更短 witness 被发现，保第一次选择及实际 depth，不覆写。原 `proofs[result]` 的叶 union 仍由原代码产生。
 
@@ -42,7 +42,7 @@ seed leaf depth=0；每个 result 只登记一次。引用前件来自生成该�
 
 ## 3. 最小完整新 wire 合同
 
-申请在新的 reasoning 对象只增加 `directSteps` 一个字段；旧15字段原值原形保留。外 payload 仍七字段，mechanismBatches 每 child 仍十一字段。`directSteps` 的 exact key set：
+申请在新的 reasoning 对象只增加 `directSteps` 一个字段；除§4明确升级的formatVersion/semanticsVersion，其余13字段原值原形保留。外 payload 仍七字段，mechanismBatches 每 child 仍十一字段。`directSteps` 的 exact key set：
 
 ```text
 DirectSteps = { format: "i05-direct-rdfs-steps/1", steps: tuple[DirectStep,...] }
@@ -63,7 +63,21 @@ TripleKey   = tuple[str,str,str]  # 与原 rdfs/rdfsEvidence 同一真实 N3 key
 4. 对每一步实际展开直接DAG叶引用，与该 result 的原 `rdfsEvidence.proofLeaves` 逐集合核对、无重复；并核原basis三元组一一对应。展开实际访问及 union/比较全部计新池，允许 DAG 多次重复访问但不得不收费；不用“每边一次”假装指数路径免费。使用逐step去重叶集合的有界动态规划，按每个实际引用拷贝/并集收费，超限整体拒绝，不递归展开路径。
 5. 所有原 typed批次/definitions/source/原L及 check_firing_batch仍走现有同版完整校验；新增directsteps不替代原流程。最后一个step/最后一个premise/depth/source尾字段失败同样无成功prefix或部分selected。
 
-第2项“seed相等”须依真实输入已生成的 seed key/来源核验，不能仅信payload自述。结构化源用已验证input_preimage三元组；Turtle fullview当前只验证occurrence与source，未提供“已验证seed三元组表”。因此最小解释入口先限定 **records非None 的真实 structured material**；Turtle 原入口继续旧格式。新restorer已校验的TermInput三元组，逐项复用`semantic._profile_term`与`_key`作相同lexical-preserving N3格式化（不是Graph闭包/parse_value）；调用前按各field UTF8最坏4倍、N3转义最坏6倍加32固定字节预扣新池scalar/copy/work，原/新临时同时保票，累计进入K门。formatter由现有restorer调用，directsteps纯模块只接收已核canonical key，不import reasoner、不造Graph或伪GraphBudget。然后逐键核seed/proofLeaves exact集合与原leaf ID算法。新增Turtle解释要由I05另供实际parser三元组绑定、分配与预算，不用termSources拼接推断。这样不把一项缺源隐含扩大为新parser权限。
+第2项“seed相等”须依真实输入核验，不能仅信payload自述。首入口限定 **records非None 的真实structured material**。
+Turtle fullview当前只校验occurrence/source，没有已验证seed三元组表；Turtle继续旧格式，新增解释须另供实际parser三元组绑定、分配与预算，不从termSources拼图。
+
+新restorer从已校验的全部TermInput三元组，以6c `semantic_turtle._identity_fields`相同规则建立有界RDF identity组：
+IRI为精确字符串；literal保lexical，effective datatype为显式datatype或按language是否存在取rdf:langString/xsd:string，language身份lower。
+None/explicit xsd:string同身份，EN-us/en-US同身份；integer01/integer1仍是两身份，不能按Number值去重。
+逐record复用`semantic._profile_term`→`semantic_turtle.canonical_string`→`_key`，只形成该identity组的允许N3代表集合，并关联该组三项原occurrence/SourceRecord。
+canonical_string只合并plain/explicit xsd:string，不改language literal；不能预言图必选第一个raw拼写。
+实际proofLeaf.triple必须命中同identity组的一项允许代表，其leaf ID仍按这个实际保存TripleKey的原算法核验。
+proofLeaves按RDF identity核唯一/完整，与真实input identity组集合相等，不把每条raw N3当独立seed。
+全部input/termSources的raw、None、language_raw、source及occurrence顺序原样保留，不能为匹配代表改写；一个leaf可关联全部原alias occurrences。
+该关联仅为接收临时索引，不增carrier或来源认证，不重reason、不调用parse_value、不造Graph或伪GraphBudget。
+身份/alias索引、逐record格式化、link、键扫描/比较/复制/释放及临时代表表与最终carrier并持均计D。
+调用formatter前按各field UTF8最坏4倍、N3转义最坏6倍加32固定字节预扣scalar/copy/work，实际重复键累计进K门。
+formatter由现有restorer调用；directsteps纯模块只接收已核key/identity，不import reasoner。Turtle解释仍须另授真实供源，不隐含扩大parser权限。
 
 这些检查证明给定DAG局部一致与覆盖，不在接收端证明“没有未枚举的更早 witness”或全闭包全局完备。首次选择来自真实发生点和绑定该次实际输出的来源链；hash本身不是认证，正式来源仍由T01未来真实Job/Store供给。
 
@@ -122,7 +136,7 @@ roots仅返回已有节点的引用：leaf、finite-step，或 `{kind:"ruleHead"
 
 | 发生阶段 | 每次实际新增工作的计费规则（逻辑单位，不是CPU/RSS） | 同时持有内容 |
 | --- | --- | --- |
-| 候选产生/首插入 C_D | 每候选8 traversal、4 objects峰值票；每step32 traversal、12 objects；每索引字节16 traversal、2 scan/copy；每新byte复制1 scan/copy | 本批候选A_live、全steps、索引和原closure/proofs同持；原closure由旧池保留，不因新池重复claim已释放 |
+| 候选产生/首插入 C_D | 每候选8 traversal、4 objects峰值票；每step32 traversal、12 objects；每索引字节16 traversal、2 scan/copy；每新byte复制1 scan/copy | 本批候选A_live、临时SeedKey、全steps、索引、原closure/proofs和既有key同持；借用新增引用也预留D票，原物料实际保留责任另列，不能由旧L推断物理字节已收费或释放 |
 | leaf linkage/全result coverage | 每实际表项/边/字段访问1 traversal，str比较按访问字节，union每输入leaf occurrence与每输出leaf引用各1 traversal并各预留slot | 原proofLeaves/evidence仍活；新DAG临时与其核对表同持，完成核对才释放临时票 |
 | 新 JSON 投影/冻结 | 遍历字段/数组槽每项1，复制str/bytes每byte1；新carrier B字节编码/解码buffer各先预留；int仍走原bounded codec | native carrier、projected tree、encoding buffer、payload/rows buffers与原字节同时计峰；不得仅保最后一份B |
 | R_D 每次接收 | schema/type/ref/template/depth逐项计；leaf-union DP逐实际输入/输出收费；canonical key索引创建/查找逐byte计；完整冻结/receipt计 | incoming payload/rows/preimages、raw解析树、typed view、索引、leaf-DP暂存、原恢复batch、opaque revalidation同时保票；每R_j新池，不能缓存跳过最后字段 |

@@ -11,5 +11,24 @@
     "effect": "Two rg name-discovery commands returned exit1 when no profile-selected or identity definition match; no product execution or file mutation",
     "evidence": "Original tool responses in this chat; not presented as captured external stderr or product failures"
   },
-  "prettier": "Not run: current task explicitly restricts execution to Git/stdlib; no false format-pass claim"
+  "prettier": "Not run: current task explicitly restricts execution to Git/stdlib; no false format-pass claim",
+  "staticAfterP2FirstFailure": {
+    "command": "commands/static-after-P2",
+    "exit": 1,
+    "cause": "Absolute __file__ parent versus relative Git path mismatch; quoted Chinese paths were an additional unsafe assumption",
+    "resolution": "Repository-relative base plus NUL-delimited Git paths; no product/input/contract change for verifier repair",
+    "firstStderrPreserved": true,
+    "alsoPreserved": [
+      "static-after-P2-fixed exit1",
+      "static-final exit1"
+    ]
+  },
+  "authoringSyntaxFailure": {
+    "kind": "One inline document-editing heredoc failed source decoding before execution",
+    "output": "SyntaxError: Non-UTF-8 code starting with byte e7 in file stdin on line6; no encoding declared",
+    "evidence": "Original tool response in this chat; not represented as captured process-runner stderr",
+    "effect": "No mutation from failed script; used bounded-line apply_patch and verified former33872B hash before correction"
+  },
+  "finalStatic": "commands/static-final-fixed exit0, current34958B/c9474308 contract",
+  "independentReviewHelperFailure": "Reviewer reports one quoted-Chinese-path AssertionError then NUL-delimited fix passed, no writes; original responses belong to its chat, not forged into root commands"
 }
