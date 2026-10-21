@@ -1,0 +1,10 @@
+{
+  "argv": [
+    ".venv/bin/python",
+    "-c",
+    "import hashlib,json\nfrom ontolearn_engine import semantic\nfrom ontolearn_engine.resources import CONTRACT, ROOT\nfrom ontolearn_engine.semantic_execution import execute_profile,_profile_json_bytes,_ProfileProjection\nfrom ontolearn_engine.quality.rule_profile import SourceRecord\nfrom ontolearn_engine.semantic_profile_restore import RestoreExpectation,OriginalAllocation,ChildAllocation,restore_profile_batches\nfrom ontolearn_engine.semantic_profile_restore_budget import RestoreLedger\ncalls=[]; original=semantic.reason\ndef capture(*args,**kwargs):\n r=original(*args,**kwargs);calls.append(r);return r\nsemantic.reason=capture\nresult=execute_profile('',error_catalog=CONTRACT.ERROR_CATALOG,error_schema=json.loads((ROOT/'v2/schema.json').read_bytes()))\nsemantic.reason=original\nnative=calls[0];payload=_profile_json_bytes(result['payload']);rows=_profile_json_bytes(result['rows'])\nproject=lambda value:_profile_json_bytes(_ProfileProjection().value(value))\nsha=lambda b:hashlib.sha256(b).hexdigest()\nexpected=RestoreExpectation(sha(payload),sha(rows),result['payload']['inputDigest'],'utf8-turtle',result['payload']['sourceDigest'],result['payload']['definitionsDigest'],sha(project(native['catalog'])),tuple(sorted(result['payload']['implementation'].items())),b'',project(SourceRecord(None,sha(b''),None,'')))\nallocation=OriginalAllocation((),(),tuple(ChildAllocation(c['ruleId'],c['definitionOrdinal'],c['limits']) for c in native['mechanismBatches']))\nledger=RestoreLedger();restored=restore_profile_batches(payload,rows,expected=expected,allocation=allocation,ledger=ledger)\nprint(json.dumps({'sourceCalls':len(calls),'fact':restored.children[0].fact,'usage':restored.usage,'peaks':restored.peaks,'live':ledger.live,'state':ledger.state,'parseUsage':restored.parse_usage}))\n"
+  ],
+  "exit": 0,
+  "seconds": 0.3803730010986328,
+  "scope": "actual empty production and in-process restore smoke only; not cross-exec acceptance"
+}

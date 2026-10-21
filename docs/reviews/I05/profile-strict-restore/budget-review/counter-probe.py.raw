@@ -1,0 +1,78 @@
+"""Stdlib-only isolated execution of the exact frozen budget module.
+
+Synthetic trie bytes/factories exercise index bookkeeping, not ProfileValue
+issuance or full restore. No product import, shared virtualenv or product edit.
+"""
+import hashlib
+import json
+import subprocess
+import sys
+
+REF = 'bbd79c3cff88e8fef348a9c4dcb6981ab5e3cb47'
+PATH = 'packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py'
+raw = subprocess.check_output(['git', 'show', REF + ':' + PATH])
+scope = {'__name__': 'independent_frozen_budget'}
+exec(compile(raw, PATH, 'exec'), scope)
+Ledger, Failure, read_json, Cache = (scope[n] for n in ('RestoreLedger', 'RestoreFailure', 'read_json', 'TermCache'))
+checks = []
+def done(ledger):
+    ledger.cleanup()
+    ledger.finish(False)
+    assert all(v == 0 for _, v in ledger.live)
+
+wire = b'{"format":[true,null]}'
+ledger = Ledger(); ledger.begin(len(wire), 0, 1)
+value = read_json(wire, ledger)
+assert value == {'format': [True, None]}
+assert ledger.json_nodes == 5
+assert dict(ledger.usage)['wire'] == 3 * len(wire)
+assert dict(ledger.usage)['traversal'] == 17 + 8
+checks.append({'case': 'two_pass_wire_and_nodes', 'json_nodes': ledger.json_nodes, 'usage': dict(ledger.usage)})
+done(ledger)
+try:
+    ledger.begin(len(wire), 0, 1)
+except Failure as e:
+    assert e.reason == 'RESTORE_LEDGER_REUSED'
+else:
+    raise AssertionError('reuse accepted')
+checks.append({'case': 'cleanup_no_refund_terminal_no_reuse', 'state': ledger.state, 'usage_retained': dict(ledger.usage), 'live': dict(ledger.live)})
+
+wire = b'{"format":null,"format":"' + b'a' * 70000 + b'"}'
+ledger = Ledger(); ledger.begin(len(wire), 0, 1)
+try:
+    read_json(wire, ledger)
+except Failure as e:
+    assert e.classification == 'input'
+    assert ledger.json_nodes == 4
+else:
+    raise AssertionError('duplicate accepted')
+checks.append({'case': 'duplicate_rejected_before_large_second_value', 'json_nodes': ledger.json_nodes, 'usage': dict(ledger.usage)})
+done(ledger)
+
+ledger = Ledger(); ledger.begin(100000, 0, 1); cache = Cache(ledger)
+created = [0]
+def factory():
+    created[0] += 1
+    return object()
+for i in range(256):
+    cache.get_or_insert(b'long-common-prefix/' + bytes([i]), factory)
+for i in range(256):
+    cache.get_or_insert(b'long-common-prefix/' + bytes([i]), factory)
+assert created[0] == 256 and cache.misses == 256 and cache.hits == 256
+assert cache._nodes <= 2 * cache.misses + 1
+checks.append({'case': '256_branches_full_key_hits', 'misses': cache.misses, 'hits': cache.hits, 'nodes': cache._nodes, 'usage': dict(ledger.usage), 'peaks': dict(ledger.peaks)})
+cache.clear(); assert dict(ledger.live)['trie_nodes'] == 0 and dict(ledger.live)['trie_slots'] == 0
+done(ledger)
+
+ledger = Ledger(overrides=(('trie_nodes', 3),)); ledger.begin(100000, 0, 1); cache = Cache(ledger)
+cache.get_or_insert(b'ab', object)
+try:
+    cache.get_or_insert(b'ac', object)
+except Failure as e:
+    assert e.classification == 'resource' and e.domain == 'trie_nodes'
+else:
+    raise AssertionError('exhaustion accepted')
+cache.clear(); assert dict(ledger.live)['trie_nodes'] == 0 and dict(ledger.live)['trie_slots'] == 0
+done(ledger)
+checks.append({'case': 'split_failure_clear_without_new_work', 'state': ledger.state, 'live': dict(ledger.live), 'usage': dict(ledger.usage)})
+print(json.dumps({'ref': REF, 'source': PATH, 'source_sha256': hashlib.sha256(raw).hexdigest(), 'runtime': sys.version, 'scope': 'exact budget module only, synthetic byte-key index; not canonical issuance/full restoration evidence', 'checks': checks}, ensure_ascii=False, indent=2))

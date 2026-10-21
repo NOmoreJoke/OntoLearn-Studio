@@ -1,0 +1,120 @@
+{
+  "ref": "bbd79c3cff88e8fef348a9c4dcb6981ab5e3cb47",
+  "source": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+  "source_sha256": "95b170ab99220d8d602d87a321bae481774806dc2bc11b760b4933e866f51c16",
+  "runtime": "3.9.6 (default, Aug 17 2026, 12:07:42) \n[Clang 21.0.0 (clang-2100.3.34.1)]",
+  "scope": "exact budget module only, synthetic byte-key index; not canonical issuance/full restoration evidence",
+  "checks": [
+    {
+      "case": "two_pass_wire_and_nodes",
+      "json_nodes": 5,
+      "usage": {
+        "wire": 66,
+        "schema": 26,
+        "traversal": 25,
+        "integer": 0,
+        "copy": 22,
+        "cache_query": 0,
+        "cache_split": 0,
+        "cache_alloc": 0,
+        "rule": 0,
+        "pv_compare": 0,
+        "hash": 0
+      }
+    },
+    {
+      "case": "cleanup_no_refund_terminal_no_reuse",
+      "state": "failed",
+      "usage_retained": {
+        "wire": 66,
+        "schema": 26,
+        "traversal": 25,
+        "integer": 0,
+        "copy": 22,
+        "cache_query": 0,
+        "cache_split": 0,
+        "cache_alloc": 0,
+        "rule": 0,
+        "pv_compare": 0,
+        "hash": 0
+      },
+      "live": {
+        "scalar": 0,
+        "objects": 0,
+        "trie_nodes": 0,
+        "trie_slots": 0,
+        "opaque_scalar": 0,
+        "opaque_objects": 0
+      }
+    },
+    {
+      "case": "duplicate_rejected_before_large_second_value",
+      "json_nodes": 4,
+      "usage": {
+        "wire": 140054,
+        "schema": 39,
+        "traversal": 17,
+        "integer": 0,
+        "copy": 70027,
+        "cache_query": 0,
+        "cache_split": 0,
+        "cache_alloc": 0,
+        "rule": 0,
+        "pv_compare": 0,
+        "hash": 0
+      }
+    },
+    {
+      "case": "256_branches_full_key_hits",
+      "misses": 256,
+      "hits": 256,
+      "nodes": 258,
+      "usage": {
+        "wire": 0,
+        "schema": 0,
+        "traversal": 17,
+        "integer": 0,
+        "copy": 0,
+        "cache_query": 76524,
+        "cache_split": 32640,
+        "cache_alloc": 107136,
+        "rule": 0,
+        "pv_compare": 0,
+        "hash": 26624
+      },
+      "peaks": {
+        "scalar": 16882464,
+        "objects": 4115,
+        "trie_nodes": 258,
+        "trie_slots": 66048,
+        "opaque_scalar": 0,
+        "opaque_objects": 0
+      }
+    },
+    {
+      "case": "split_failure_clear_without_new_work",
+      "state": "failed",
+      "live": {
+        "scalar": 0,
+        "objects": 0,
+        "trie_nodes": 0,
+        "trie_slots": 0,
+        "opaque_scalar": 0,
+        "opaque_objects": 0
+      },
+      "usage": {
+        "wire": 0,
+        "schema": 0,
+        "traversal": 17,
+        "integer": 0,
+        "copy": 0,
+        "cache_query": 5,
+        "cache_split": 0,
+        "cache_alloc": 1440,
+        "rule": 0,
+        "pv_compare": 0,
+        "hash": 68
+      }
+    }
+  ]
+}

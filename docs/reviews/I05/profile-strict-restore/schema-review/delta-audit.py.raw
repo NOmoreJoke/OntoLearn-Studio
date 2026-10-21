@@ -1,0 +1,182 @@
+"""Fixed delta audit; stdlib only, probes are explicitly isolated AST branches."""
+
+import ast
+import dataclasses
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import sys
+import types
+
+ROOT = Path(__file__).resolve().parents[5]
+OUT = Path(__file__).resolve().parent
+REF = "1316050a895a787b7b94bbe18e99efcb3cd141d2"
+OLD = "bbd79c3cff88e8fef348a9c4dcb6981ab5e3cb47"
+MAIN = "packages/engine/src/ontolearn_engine/semantic_profile_restore.py"
+BUDGET = "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py"
+
+
+def blob(ref, path):
+    return subprocess.check_output(["git", "show", ref + ":" + path], cwd=ROOT)
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def pick(tree, names):
+    result = []
+    for node in tree.body:
+        name = getattr(node, "name", None)
+        if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name):
+            name = node.targets[0].id
+        if name in names:
+            result.append(node)
+    return result
+
+
+def compile_nodes(nodes, namespace, filename):
+    prefix = ast.ImportFrom(module="__future__", names=[ast.alias(name="annotations")], level=0)
+    tree = ast.fix_missing_locations(ast.Module(body=[prefix, *nodes], type_ignores=[]))
+    exec(compile(tree, filename, "exec"), namespace)
+
+
+def isolated_branch_probes():
+    budget = {"__name__": "_delta_fixed_budget"}
+    exec(compile(blob(REF, BUDGET), BUDGET + "@" + REF, "exec"), budget)
+    module = types.ModuleType("_delta_fixed_restore")
+    sys.modules[module.__name__] = module
+    ns = module.__dict__
+    ns.update(dataclass=dataclasses.dataclass, fields=dataclasses.fields, RestoreFailure=budget["RestoreFailure"],
+              RestoreLedger=budget["RestoreLedger"])
+    profile = ast.parse(blob(REF, "packages/engine/src/ontolearn_engine/quality/rule_profile.py"))
+    compile_nodes(pick(profile, {"PROFILE", "BUDGET_VERSION", "ProfileLimits"}), ns, "fixed-profile")
+    firing = ast.parse(blob(REF, "packages/engine/src/ontolearn_engine/quality/rule_firing.py"))
+    compile_nodes(pick(firing, {"Catalog"}), ns, "fixed-firing")
+    tree = ast.parse(blob(REF, MAIN))
+    compile_nodes(pick(tree, {
+        "SCHEMA_VERSION", "RESTORE_BUDGET_VERSION", "CACHE_VERSION", "RESULT_VERSION",
+        "_MAX_BYTES", "_MAX_PREIMAGE", "RestoreExpectation", "ChildAllocation",
+        "OriginalAllocation", "RestoredChild", "RestoredBatchSet", "_invalid", "_require",
+        "_Decoder", "_check_expectation", "restore_profile_batches",
+    }), ns, MAIN + "@" + REF)
+
+    class StubProfileFailure(Exception):
+        pass
+
+    class StubSemanticError(Exception):
+        pass
+
+    ns.update(ProfileFailure=StubProfileFailure, SemanticError=StubSemanticError)
+    expected = ns["RestoreExpectation"](
+        "0" * 64, "0" * 64, "0" * 64, "utf8-turtle", "0" * 64,
+        "0" * 64, "0" * 64, (), b"", b"null",
+    )
+    calls = []
+
+    class Foreign:
+        def __len__(self):
+            calls.append("len")
+            return 1
+
+        def __iter__(self):
+            calls.append("iter")
+            return iter(("r",))
+
+    child = ns["ChildAllocation"]("r", 0, ns["ProfileLimits"]())
+    allocation = ns["OriginalAllocation"](Foreign(), (), (child,))
+    ns["_restore"] = lambda decoder, *_: ns["_check_expectation"](decoder)
+    first = ns["RestoreLedger"]()
+    try:
+        ns["restore_profile_batches"](b"{}", b"[]", expected=expected,
+                                      allocation=allocation, ledger=first)
+    except ns["RestoreFailure"] as error:
+        first_reason = error.reason
+    else:
+        raise AssertionError("foreign rule_ids accepted")
+    assert calls == []
+    assert first.state == "failed" and not any(v for _, v in first.live)
+
+    sentinel = object()
+    allocation = ns["OriginalAllocation"](("r",), (), (child,))
+    ns["_restore"] = lambda *_: ((sentinel,), (), ())
+
+    def receipt_failure(*_args):
+        raise MemoryError("injected receipt allocation failure")
+
+    ns["RestoredBatchSet"] = receipt_failure
+    second = ns["RestoreLedger"]()
+    try:
+        ns["restore_profile_batches"](b"{}", b"[]", expected=expected,
+                                      allocation=allocation, ledger=second)
+    except ns["RestoreFailure"] as error:
+        tb = error.__traceback__
+        while tb and tb.tb_frame.f_code.co_name != "restore_profile_batches":
+            tb = tb.tb_next
+        frame = tb.tb_frame.f_locals
+        retained = frame.get("children") == (sentinel,)
+        second_reason = error.reason
+        decoder_dropped = frame.get("decoder") is None
+    else:
+        raise AssertionError("receipt fault accepted")
+    assert retained
+    return {
+        "kind": "fixed original entry/check AST; canonical ledger; dependency stubs; not engine run",
+        "S1": {"foreign_callbacks": calls, "reason": first_reason, "ledger_state": first.state},
+        "receipt_failure": {
+            "injection": "MemoryError from final RestoredBatchSet constructor",
+            "reason": second_reason,
+            "ledger_state": second.state,
+            "logical_live_zero": not any(v for _, v in second.live),
+            "decoder_dropped": decoder_dropped,
+            "error_public_frame_retains_children": retained,
+        },
+    }
+
+
+def main():
+    candidate = json.loads((OUT.parent / "candidate.json").read_bytes())
+    runs = json.loads((OUT.parent / "runs/06-fixed-restore-tests.json").read_bytes())
+    before = {x["path"]: x for x in runs["sourcesBefore"]}
+    after = {x["path"]: x for x in runs["sourcesAfter"]}
+    items = []
+    for item in candidate["files"]:
+        path = item["path"]
+        fixed = blob(REF, path)
+        current = (ROOT / path).read_bytes()
+        expected = {"path": path, "bytes": len(fixed), "sha256": sha(fixed)}
+        items.append({
+            **expected,
+            "manifest_matches": expected == item,
+            "current_matches": current == fixed,
+            "run_before_matches": before[path] == expected,
+            "run_after_matches": after[path] == expected,
+        })
+        if path.endswith(".py") and ("semantic_profile_restore" in path):
+            ast.parse(fixed)
+    report = {
+        "kind": "independent targeted delta review, no full test rerun",
+        "old_ref": OLD, "ref": REF, "candidate_files": len(items), "files": items,
+        "all_72_bindings_match": len(items) == 72 and all(
+            all(x[k] for k in ("manifest_matches", "current_matches", "run_before_matches", "run_after_matches"))
+            for x in items
+        ),
+        "run06": {
+            "historical_head": runs["head"], "exit": runs["exit"],
+            "timed_out": runs["timedOut"],
+            "stdout": (OUT.parent / "runs/06-fixed-restore-tests.stdout.txt").read_text(),
+            "source_bound_to_fixed_candidate_by_all_72_hashes": True,
+        },
+        "probes": isolated_branch_probes(),
+        "original_report_sha256": sha((OUT / "report.md").read_bytes()),
+        "original_probe_raw_sha256": sha((OUT / "audit.py.raw").read_bytes()),
+        "shared_runtime_used": False,
+    }
+    (OUT / "delta-audit.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
+    print(json.dumps({k: report[k] for k in ("ref", "all_72_bindings_match", "run06", "probes")},
+                     ensure_ascii=False, indent=2))
+
+
+if __name__ == "__main__":
+    main()

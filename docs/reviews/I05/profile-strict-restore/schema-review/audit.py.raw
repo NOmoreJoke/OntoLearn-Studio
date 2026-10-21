@@ -1,0 +1,181 @@
+"""Read fixed Git blobs; write only this independent schema-review directory.
+
+The branch probe executes original AST methods using a counter-only ledger. It
+does not claim a full engine/production run or a new independent 139-test run.
+"""
+
+import ast
+import dataclasses
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import sys
+import types
+
+
+ROOT = Path(__file__).resolve().parents[5]
+OUT = Path(__file__).resolve().parent
+REF = "bbd79c3cff88e8fef348a9c4dcb6981ab5e3cb47"
+TEST_REF = "b301c3cdb348c08c6d10f1ac4e11666ec9bbd39b"
+MAIN = "packages/engine/src/ontolearn_engine/semantic_profile_restore.py"
+BUDGET = "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py"
+
+
+def blob(ref, path):
+    return subprocess.check_output(["git", "show", ref + ":" + path], cwd=ROOT)
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def metadata(ref, path):
+    data = blob(ref, path)
+    ast.parse(data)
+    current = (ROOT / path).read_bytes()
+    return {
+        "ref": ref,
+        "path": path,
+        "bytes": len(data),
+        "sha256": sha(data),
+        "current_matches_fixed": current == data,
+        "ast_parse": "passed",
+    }
+
+
+def choose(tree, names):
+    picked = []
+    for node in tree.body:
+        name = getattr(node, "name", None)
+        if isinstance(node, ast.Assign):
+            name = node.targets[0].id if isinstance(node.targets[0], ast.Name) else None
+        if name in names:
+            picked.append(node)
+    return picked
+
+
+def compile_nodes(nodes, namespace, filename):
+    prefix = ast.ImportFrom(module="__future__", names=[ast.alias(name="annotations")], level=0)
+    tree = ast.fix_missing_locations(ast.Module(body=[prefix, *nodes], type_ignores=[]))
+    exec(compile(tree, filename, "exec"), namespace)
+
+
+def branch_probe():
+    # Budget is pure stdlib at import time. No mutable project runtime is loaded.
+    budget_ns = {"__name__": "_schema_review_fixed_budget"}
+    exec(compile(blob(REF, BUDGET), BUDGET + "@" + REF, "exec"), budget_ns)
+    name = "_schema_review_fixed_decoder"
+    module = types.ModuleType(name)
+    sys.modules[name] = module
+    ns = module.__dict__
+    ns.update(dataclass=dataclasses.dataclass, RestoreFailure=budget_ns["RestoreFailure"])
+    profile_tree = ast.parse(blob(REF, "packages/engine/src/ontolearn_engine/quality/rule_profile.py"))
+    compile_nodes(choose(profile_tree, {"PROFILE", "BUDGET_VERSION"}), ns, "fixed-rule-profile")
+    firing_tree = ast.parse(blob(REF, "packages/engine/src/ontolearn_engine/quality/rule_firing.py"))
+    compile_nodes(choose(firing_tree, {"Catalog"}), ns, "fixed-rule-firing")
+    main_tree = ast.parse(blob(REF, MAIN))
+    picked = choose(main_tree, {
+        "_MAX_BYTES", "_FORMAT", "_SEMANTICS", "_REASONING", "OriginalAllocation",
+        "_invalid", "_require", "_Decoder",
+    })
+    compile_nodes(picked, ns, MAIN + "@" + REF)
+    calls = []
+
+    class ForeignRuleIds:
+        def __len__(self):
+            calls.append("__len__")
+            return 0
+
+        def __iter__(self):
+            calls.append("__iter__")
+            return iter(())
+
+    class CounterOnlyLedger:
+        def __init__(self):
+            self.operations = []
+
+        def charge(self, *args, **kwargs):
+            self.operations.append(("charge", args))
+
+        def reserve(self, *args, **kwargs):
+            self.operations.append(("reserve", args))
+
+        def release(self, *args, **kwargs):
+            self.operations.append(("release", args))
+
+    allocation = ns["OriginalAllocation"](ForeignRuleIds(), (), (None,))
+    ledger = CounterOnlyLedger()
+    decoder = ns["_Decoder"](ledger, None, allocation)
+    raw = dict.fromkeys(ns["_REASONING"])
+    raw.update(formatVersion=ns["_FORMAT"], semanticsVersion=ns["_SEMANTICS"], profile=ns["PROFILE"])
+    raw["definitions"] = []
+    raw["catalog"] = {
+        "recordType": "Catalog", "classes": [], "object_properties": [], "data_properties": []
+    }
+    try:
+        decoder.reasoning(raw)
+    except ns["RestoreFailure"] as exc:
+        failure = {k: getattr(exc, k) for k in ("reason", "classification", "stage", "slot")}
+    else:
+        raise AssertionError("foreign container must eventually be rejected")
+    assert calls == ["__len__", "__iter__"], calls
+    assert failure["reason"] == "RESTORE_INPUT_INVALID"
+    return {
+        "kind": "fixed original AST branch probe; counter-only ledger; not full engine run",
+        "python": sys.version,
+        "original_allocation_exact_class": type(allocation) is ns["OriginalAllocation"],
+        "callbacks_before_rejection": calls,
+        "eventual_rejection": failure,
+        "source_lines": [837, 838, 841, 716],
+    }
+
+
+def main():
+    bindings = [metadata(REF, MAIN), metadata(REF, BUDGET)]
+    tests = [metadata(TEST_REF, "packages/engine/tests/" + filename) for filename in (
+        "test_semantic_profile_restore.py", "test_semantic_profile_restore_limits.py"
+    )]
+    manifest = json.loads((OUT.parent / "I05-profile-restore-fixed-inputs.json.raw").read_bytes())
+    readonly = []
+    for item in manifest["readonlyInputs"]:
+        current = (ROOT / item["path"]).read_bytes()
+        fixed = blob(REF, item["path"])
+        readonly.append({
+            "path": item["path"],
+            "fixed_ref_matches_manifest": len(fixed) == item["bytes"] and sha(fixed) == item["sha256"],
+            "current_matches_manifest": len(current) == item["bytes"] and sha(current) == item["sha256"],
+        })
+    result = {
+        "kind": "independent read-only schema, issuance and atomicity audit",
+        "root": str(ROOT),
+        "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "code_ref": REF,
+        "test_ref": TEST_REF,
+        "bindings": bindings,
+        "test_bindings": tests,
+        "protected_inputs": readonly,
+        "protected_input_count": len(readonly),
+        "protected_inputs_all_match": all(x["fixed_ref_matches_manifest"] and x["current_matches_manifest"] for x in readonly),
+        "rules": {"AGENTS.md": sha((ROOT / "AGENTS.md").read_bytes())},
+        "foreign_rule_ids_probe": branch_probe(),
+        "parent_full_entry_probe": {
+            "path": "docs/reviews/I05/profile-strict-restore/runs/05-schema-callback-probe.json",
+            "sha256": sha((OUT.parent / "runs/05-schema-callback-probe.json").read_bytes()),
+            "content": json.loads((OUT.parent / "runs/05-schema-callback-probe.json").read_bytes()),
+            "executed_by": "parent root; read back by independent schema reviewer",
+        },
+        "independent_full_test_run": False,
+        "source_or_test_mutations": False,
+    }
+    (OUT / "audit.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+    print(json.dumps({
+        "bindings": bindings,
+        "protected_input_count": len(readonly),
+        "protected_inputs_all_match": result["protected_inputs_all_match"],
+        "probe": result["foreign_rule_ids_probe"],
+    }, ensure_ascii=False, indent=2))
+
+
+if __name__ == "__main__":
+    main()

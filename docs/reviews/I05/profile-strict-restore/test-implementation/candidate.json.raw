@@ -1,0 +1,29 @@
+{
+  "kind": "static-test-candidate-not-runtime-Pass",
+  "base": "ddcf5edfb9609874251882090693384b97073e9f",
+  "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-restore-tests",
+  "branch": "feature/I05-profile-restore-tests",
+  "files": [
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore.py",
+      "bytes": 33199,
+      "sha256": "a6cc3b8f03379a6d3e78c9ab723e9db48e31d794b475eb90a59045d40bf83160"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_profile_restore_limits.py",
+      "bytes": 17316,
+      "sha256": "dc8fd84375a25d98c9118c5971376360c9f3820052c654042c17474c1e6fd31d"
+    }
+  ],
+  "fixed68Unchanged": 68,
+  "AGENTSUnstaged": true,
+  "venv": "independent .venv; UV cache moved under ignored .venv/.uv-cache",
+  "python": "Python 3.12.12",
+  "staticChecks": {
+    "ruff": "exit0",
+    "ruffFormat": "exit0",
+    "AST": "parsed"
+  },
+  "runtimeTests": "not run; root main and budget modules not yet adopted in this subtree",
+  "limits": "Original N100 source may resource-fail; tests preserve that failure rather than manufacture restore success. All source40000 properties and nine value domains must first succeed in actual original production."
+}

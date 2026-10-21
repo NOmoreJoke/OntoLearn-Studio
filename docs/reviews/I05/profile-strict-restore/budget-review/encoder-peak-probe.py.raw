@@ -1,0 +1,43 @@
+"""Stdlib-only execution of the frozen existing primitive canonical encoder.
+
+This is a delegate branch probe, not full engine/restore execution. No fake
+Budget or product source edits. A local SemanticError class only satisfies the
+existing function's import; its failure branch is not entered in these probes.
+"""
+import ast
+import hashlib
+import json
+import pathlib
+import subprocess
+import sys
+import types
+
+REF = 'bbd79c3cff88e8fef348a9c4dcb6981ab5e3cb47'
+PATH = 'packages/engine/src/ontolearn_engine/semantic_execution.py'
+raw = subprocess.check_output(['git', 'show', REF + ':' + PATH])
+tree = ast.parse(raw)
+node = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == '_profile_json_bytes')
+module = types.ModuleType('ontolearn_engine.semantic_offline')
+module.SemanticError = type('SemanticError', (Exception,), {})
+sys.modules[module.__name__] = module
+scope = {'json': json, 'MAX_OUTPUT_BYTES': 8_388_608}
+exec(compile(ast.Module(body=[node], type_ignores=[]), PATH, 'exec'), scope)
+fn = scope['_profile_json_bytes']
+reports = []
+for text in ('a' * 200000, '\x00' * 40000):
+    peak = [0, None]
+    def trace(frame, event, arg):
+        if frame.f_code is fn.__code__ and event == 'line':
+            local = frame.f_locals
+            sizes = {name: len(local[name].encode('utf-8')) if isinstance(local.get(name), str) else len(local[name]) if isinstance(local.get(name), (bytes, bytearray)) else 0 for name in ('chunk', 'data', 'output')}
+            total = sum(sizes.values())
+            if total > peak[0]:
+                peak[:] = [total, {'line': frame.f_lineno, 'utf8_payload_sizes': sizes}]
+        return trace
+    sys.settrace(trace)
+    try:
+        result = fn(text)
+    finally:
+        sys.settrace(None)
+    reports.append({'input_characters': len(text), 'result_bytes': len(result), 'three_local_peak': peak[0], 'peak_detail': peak[1], 'two_result_bounds': 2 * len(result), 'exceeds_two_result_bounds': peak[0] > 2 * len(result)})
+print(json.dumps({'ref': REF, 'source': PATH, 'source_sha256': hashlib.sha256(raw).hexdigest(), 'runtime': sys.version, 'scope': 'real frozen primitive encoder branch only; logical UTF8 payload lengths, excludes original value and Python/RSS; no full restore cap-overrun claim', 'cases': reports}, ensure_ascii=False, indent=2))

@@ -1,0 +1,58 @@
+import datetime
+import hashlib
+import json
+import os
+from pathlib import Path
+import signal
+import subprocess
+import sys
+import time
+
+root = Path.cwd()
+evidence = root / 'docs/reviews/I05/profile-strict-restore/runs'
+label, timeout, *argv = sys.argv[1:]
+timeout = int(timeout)
+fixed = json.loads((evidence.parent / 'adoption-receipt.json').read_text())['readonlyInputs']
+new = [
+    'packages/engine/src/ontolearn_engine/semantic_profile_restore.py',
+    'packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py',
+    'packages/engine/tests/test_semantic_profile_restore.py',
+    'packages/engine/tests/test_semantic_profile_restore_limits.py',
+]
+
+def snapshot():
+    rows = []
+    for path in [row['path'] for row in fixed] + new + ['AGENTS.md']:
+        data = (root / path).read_bytes()
+        rows.append({'path': path, 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()})
+    for expected, actual in zip(fixed, rows):
+        assert expected['bytes'] == actual['bytes'] and expected['sha256'] == actual['sha256'], actual['path']
+    return rows
+
+before = snapshot()
+record = {
+    'argv': argv, 'cwd': str(root), 'timeoutSeconds': timeout,
+    'startedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    'head': subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip(),
+    'supervisorPid': os.getpid(), 'sourcesBefore': before,
+    'environment': {key: os.environ[key] for key in ('I05_RESTORE_EVIDENCE_DIR', 'UV_CACHE_DIR', 'ELECTRON_SKIP_BINARY_DOWNLOAD') if key in os.environ},
+}
+start = time.monotonic()
+process = subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
+record['pid'] = process.pid
+record['timedOut'] = False
+try:
+    stdout, stderr = process.communicate(timeout=timeout)
+except subprocess.TimeoutExpired:
+    record['timedOut'] = True
+    os.killpg(process.pid, signal.SIGKILL)
+    stdout, stderr = process.communicate()
+record.update({'exit': process.returncode, 'seconds': time.monotonic() - start, 'sourcesAfter': snapshot()})
+assert before == record['sourcesAfter'], 'source bytes changed during command'
+for name, data in [('stdout', stdout), ('stderr', stderr)]:
+    target = evidence / (label + '.' + name + '.txt')
+    target.write_bytes(data)
+    record[name] = {'path': str(target.relative_to(root)), 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
+(evidence / (label + '.json')).write_text(json.dumps(record, indent=2, ensure_ascii=False) + '\n')
+print(json.dumps({key: record[key] for key in ('argv', 'pid', 'exit', 'timedOut', 'seconds', 'stdout', 'stderr')}, ensure_ascii=False, indent=2))
+raise SystemExit(process.returncode)

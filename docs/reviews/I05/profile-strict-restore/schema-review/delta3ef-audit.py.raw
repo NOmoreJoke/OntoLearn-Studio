@@ -1,0 +1,177 @@
+"""Minimal S2 fixed-entry delta probes. Stdlib only; no full engine test claim."""
+
+import ast
+import dataclasses
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import sys
+import types
+
+ROOT = Path(__file__).resolve().parents[5]
+OUT = Path(__file__).resolve().parent
+REF = "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5"
+OLD = "1316050a895a787b7b94bbe18e99efcb3cd141d2"
+MAIN = "packages/engine/src/ontolearn_engine/semantic_profile_restore.py"
+BUDGET = "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py"
+
+
+def blob(ref, path):
+    return subprocess.check_output(["git", "show", ref + ":" + path], cwd=ROOT)
+
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def pick(tree, names):
+    picked = []
+    for node in tree.body:
+        name = getattr(node, "name", None)
+        if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name):
+            name = node.targets[0].id
+        if name in names:
+            picked.append(node)
+    return picked
+
+
+def compile_nodes(nodes, ns, name):
+    prefix = ast.ImportFrom(module="__future__", names=[ast.alias(name="annotations")], level=0)
+    tree = ast.fix_missing_locations(ast.Module(body=[prefix, *nodes], type_ignores=[]))
+    exec(compile(tree, name, "exec"), ns)
+
+
+def entry_probes():
+    budget = {"__name__": "_delta3ef_budget"}
+    exec(compile(blob(REF, BUDGET), BUDGET + "@" + REF, "exec"), budget)
+    module = types.ModuleType("_delta3ef_restore")
+    sys.modules[module.__name__] = module
+    ns = module.__dict__
+    ns.update(dataclass=dataclasses.dataclass, fields=dataclasses.fields,
+              RestoreFailure=budget["RestoreFailure"], RestoreLedger=budget["RestoreLedger"])
+    profile = ast.parse(blob(REF, "packages/engine/src/ontolearn_engine/quality/rule_profile.py"))
+    compile_nodes(pick(profile, {"PROFILE", "BUDGET_VERSION", "ProfileLimits"}), ns, "fixed-profile")
+    firing = ast.parse(blob(REF, "packages/engine/src/ontolearn_engine/quality/rule_firing.py"))
+    compile_nodes(pick(firing, {"Catalog"}), ns, "fixed-firing")
+    source = ast.parse(blob(REF, MAIN))
+    compile_nodes(pick(source, {
+        "SCHEMA_VERSION", "RESTORE_BUDGET_VERSION", "CACHE_VERSION", "RESULT_VERSION",
+        "_MAX_BYTES", "_MAX_PREIMAGE", "RestoreExpectation", "ChildAllocation",
+        "OriginalAllocation", "RestoredChild", "RestoredBatchSet", "_invalid", "_require",
+        "_Decoder", "restore_profile_batches",
+    }), ns, MAIN + "@" + REF)
+
+    class StubProfileFailure(Exception):
+        pass
+
+    class StubSemanticError(Exception):
+        pass
+
+    ns.update(ProfileFailure=StubProfileFailure, SemanticError=StubSemanticError)
+    expected = ns["RestoreExpectation"](
+        "0" * 64, "0" * 64, "0" * 64, "utf8-turtle", "0" * 64,
+        "0" * 64, "0" * 64, (), b"", b"null",
+    )
+    allocation = ns["OriginalAllocation"](
+        ("r",), (), (ns["ChildAllocation"]("r", 0, ns["ProfileLimits"]()),)
+    )
+    child = ns["RestoredChild"]("r", 0, False, (), ns["Catalog"](), (), None, "batch-consistent")
+    children = (child,)
+
+    def restored(decoder, *_):
+        decoder.ledger.start_slot(0)
+        decoder.ledger.complete_slot(0)
+        return children, (), ()
+
+    ns["_restore"] = restored
+    normal_constructor = ns["RestoredBatchSet"]
+    ledger_cls = ns["RestoreLedger"]
+    saved_properties = {name: ledger_cls.__dict__[name] for name in ("usage", "peaks")}
+    results = []
+    for fault in ("constructor", "usage", "peaks"):
+        calls = []
+
+        def fail(*_):
+            calls.append(fault)
+            raise MemoryError("injected final receipt failure")
+
+        if fault == "constructor":
+            ns["RestoredBatchSet"] = fail
+        else:
+            setattr(ledger_cls, fault, property(fail))
+        ledger = ledger_cls()
+        try:
+            ns["restore_profile_batches"](b"{}", b"[]", expected=expected,
+                                          allocation=allocation, ledger=ledger)
+        except ns["RestoreFailure"] as error:
+            tb = error.__traceback__
+            while tb and tb.tb_frame.f_code.co_name != "restore_profile_batches":
+                tb = tb.tb_next
+            local_names = ("children", "parse_usage", "caps", "outcome", "decoder")
+            cleared = {name: tb.tb_frame.f_locals[name] is None for name in local_names}
+            result = {
+                "fault": fault, "calls": calls, "reason": error.reason,
+                "context_none": error.__context__ is None,
+                "cause_none": error.__cause__ is None,
+                "ledger_failed": ledger.state == "failed",
+                "live_zero": not any(v for _, v in ledger.live),
+                "public_locals_cleared": cleared,
+            }
+            assert all(cleared.values()) and result["live_zero"] and result["ledger_failed"]
+            assert result["context_none"] and result["cause_none"]
+            results.append(result)
+        else:
+            raise AssertionError("receipt failure was accepted")
+        finally:
+            ns["RestoredBatchSet"] = normal_constructor
+            for name, descriptor in saved_properties.items():
+                setattr(ledger_cls, name, descriptor)
+    ledger = ledger_cls()
+    outcome = ns["restore_profile_batches"](b"{}", b"[]", expected=expected,
+                                           allocation=allocation, ledger=ledger)
+    success = {
+        "ledger_success": ledger.state == "success",
+        "live_zero": not any(v for _, v in ledger.live),
+        "outcome_preserves_children_tuple_identity": outcome.children is children,
+        "outcome_preserves_child_identity": outcome.children[0] is child,
+        "formal_authority_false": outcome.formal_authority is False,
+    }
+    assert all(success.values())
+    return {
+        "kind": "original fixed public-entry AST with canonical ledger; private restore simulated",
+        "full_engine_runtime": False, "faults": results, "success_transfer": success,
+    }
+
+
+def main():
+    candidate = json.loads((OUT.parent / "candidate-3ef2f69.json").read_bytes())
+    checks = []
+    for item in candidate["files"]:
+        path = item["path"]
+        fixed = blob(REF, path)
+        checks.append({
+            "path": path, "bytes": len(fixed), "sha256": sha(fixed),
+            "manifest_matches": len(fixed) == item["bytes"] and sha(fixed) == item["sha256"],
+            "current_matches": (ROOT / path).read_bytes() == fixed,
+        })
+        if "semantic_profile_restore" in path and path.endswith(".py"):
+            ast.parse(fixed)
+    result = {
+        "old_ref": OLD, "ref": REF, "checks": checks,
+        "all_72_bindings_match": len(checks) == 72 and all(
+            x["manifest_matches"] and x["current_matches"] for x in checks
+        ),
+        "unchanged_budget": blob(OLD, BUDGET) == blob(REF, BUDGET),
+        "unchanged_main_tests": blob(OLD, "packages/engine/tests/test_semantic_profile_restore.py")
+        == blob(REF, "packages/engine/tests/test_semantic_profile_restore.py"),
+        "unchanged_S1_check": ast.dump(pick(ast.parse(blob(OLD, MAIN)), {"_check_expectation"})[0])
+        == ast.dump(pick(ast.parse(blob(REF, MAIN)), {"_check_expectation"})[0]),
+        "entry_probes": entry_probes(),
+    }
+    (OUT / "delta3ef-audit.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+    print(json.dumps({k: v for k, v in result.items() if k != "checks"}, ensure_ascii=False, indent=2))
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,35 @@
+{
+  "runs": [
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit": 2,
+      "stdout": "docs/reviews/I05/profile-strict-restore/runs/04-first-restore-tests.stdout.txt:20: trailing whitespace.\n+E     \n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        ".",
+        ":!docs/reviews/I05/profile-strict-restore/runs/04-first-restore-tests.stdout.txt"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "disposition": "Only the original failed pytest output contains a trailing-space diagnostic line. Preserve original output bytes; do not normalize historical evidence. All other staged paths pass diff --check.",
+  "protectedRaw": {
+    "path": "docs/reviews/I05/profile-strict-restore/runs/04-first-restore-tests.stdout.txt",
+    "bytes": 3565,
+    "sha256": "18dab0583dc4144605420e5e99a4895a9d32b2d745cea69ec6303678079e1c12"
+  }
+}

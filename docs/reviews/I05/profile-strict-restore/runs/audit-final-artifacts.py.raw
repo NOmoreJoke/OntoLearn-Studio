@@ -1,0 +1,80 @@
+"""Read-only final source/run/exec artifact audit. Run from the restore tree."""
+from pathlib import Path
+import hashlib
+import json
+import subprocess
+import zipfile
+
+root = Path.cwd()
+evidence = root / 'docs/reviews/I05/profile-strict-restore'
+candidate = json.loads((evidence / 'candidate-3ef2f69.json').read_bytes())
+source_ref = candidate['ref']
+sources = candidate['files'] + [candidate['AGENTS']]
+for row in sources:
+    data = (root / row['path']).read_bytes()
+    assert len(data) == row['bytes'] and hashlib.sha256(data).hexdigest() == row['sha256'], row['path']
+for row in candidate['files']:
+    data = subprocess.check_output(['git', 'show', source_ref + ':' + row['path']])
+    assert len(data) == row['bytes'] and hashlib.sha256(data).hexdigest() == row['sha256']
+for label in ('08-final-npm-check', '09-final-verify-sources'):
+    run = json.loads((evidence / 'runs' / (label + '.json')).read_bytes())
+    assert run['head'] == source_ref and run['exit'] == 0 and run['timedOut'] is False
+    assert run['sourcesBefore'] == sources == run['sourcesAfter']
+    for stream in ('stdout', 'stderr'):
+        row = run[stream]
+        data = (root / row['path']).read_bytes()
+        assert len(data) == row['bytes'] and hashlib.sha256(data).hexdigest() == row['sha256']
+
+archives = []
+with zipfile.ZipFile(evidence / 'test-implementation/05-child-execs.zip') as original:
+    for label in ('06-candidate', '08-final'):
+        manifest = json.loads((evidence / 'runs' / (label + '-child-execs-manifest.json')).read_bytes())
+        data = (root / manifest['archive']).read_bytes()
+        assert len(data) == manifest['bytes'] and hashlib.sha256(data).hexdigest() == manifest['sha256']
+        pids, slots, positives = set(), 0, 0
+        with zipfile.ZipFile(root / manifest['archive']) as archive:
+            names = archive.namelist()
+            assert len(names) == len(set(names)) == manifest['memberCount'] == 93
+            assert set(names) == {row['path'] for row in manifest['members']}
+            for row in manifest['members']:
+                assert not Path(row['path']).is_absolute() and '..' not in Path(row['path']).parts
+                item = archive.getinfo(row['path'])
+                assert item.external_attr >> 16 & 0o170000 != 0o120000
+                data = archive.read(row['path'])
+                assert len(data) == row['bytes'] and hashlib.sha256(data).hexdigest() == row['sha256']
+            for name in names:
+                if not name.endswith('/supervisor.json'):
+                    continue
+                prefix = name.rsplit('/', 1)[0] + '/'
+                supervisor = json.loads(archive.read(name))
+                output = json.loads(archive.read(prefix + 'stdout.json'))
+                assert supervisor['exit'] == 0 and supervisor['timed_out'] is False
+                for stream, extension in (('stdin', 'json'), ('stdout', 'json'), ('stderr', 'txt')):
+                    data = archive.read(prefix + stream + '.' + extension)
+                    assert len(data) == supervisor[stream + '_bytes']
+                    assert hashlib.sha256(data).hexdigest() == supervisor[stream + '_sha256']
+                assert output['pid'] == supervisor['pid'] != supervisor['parent_pid']
+                assert output['initial_issued'] == 0 and output['ledger_state'] == 'success'
+                assert output['formal_authority'] is False and output['aggregate_recomputed'] is False
+                assert not any(amount for _, amount in output['live'])
+                old = json.loads(original.read('05-child-execs/' + prefix + 'stdout.json'))
+                assert archive.read(prefix + 'stdin.json') == original.read('05-child-execs/' + prefix + 'stdin.json')
+                for field in ('children', 'calls', 'facts', 'parse_usage'):
+                    assert output[field] == old[field], (prefix, field)
+                pids.add(output['pid'])
+                slots += len(output['calls'])
+                positives += 1
+            negative = json.loads(archive.read('allocator-100-original-failure.json'))
+            assert negative['originalProductionSuccess'] is False and negative['restorationAttempted'] is False
+        assert positives == len(pids) == 23 and slots == 25
+        archives.append({'label': label, 'members': len(names), 'execs': positives, 'slots': slots, 'sha256': manifest['sha256']})
+nodeids = json.loads((evidence / 'runs/08-pytest-nodeids.json.raw').read_bytes())
+restore_ids = [value for value in nodeids if value.split('::')[0] in (
+    'packages/engine/tests/test_semantic_profile_restore.py',
+    'packages/engine/tests/test_semantic_profile_restore_limits.py',
+)]
+assert len(nodeids) == 2873 and len(restore_ids) == 145
+assert 'AGENTS.md' not in subprocess.check_output(['git', 'diff', '--cached', '--name-only']).decode().splitlines()
+print(json.dumps({'sourceRef': source_ref, 'fixedSources': 72, 'readonlySources': 68, 'protectedAGENTS': True,
+                  'finalRunSourcesBeforeAfterMatched': 73, 'pytestNodeids': len(nodeids),
+                  'restoreNodeids': len(restore_ids), 'archives': archives, 'N100': 'original production failure, no restoration'}, indent=2))

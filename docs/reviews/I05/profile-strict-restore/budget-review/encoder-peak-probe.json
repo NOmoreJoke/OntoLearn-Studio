@@ -1,0 +1,39 @@
+{
+  "ref": "bbd79c3cff88e8fef348a9c4dcb6981ab5e3cb47",
+  "source": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+  "source_sha256": "cc701dba39cdeb7f2ae281dfd4a9580b879b9e85f34d3c87a09a3414e7c32731",
+  "runtime": "3.9.6 (default, Aug 17 2026, 12:07:42) \n[Clang 21.0.0 (clang-2100.3.34.1)]",
+  "scope": "real frozen primitive encoder branch only; logical UTF8 payload lengths, excludes original value and Python/RSS; no full restore cap-overrun claim",
+  "cases": [
+    {
+      "input_characters": 200000,
+      "result_bytes": 200002,
+      "three_local_peak": 600006,
+      "peak_detail": {
+        "line": 601,
+        "utf8_payload_sizes": {
+          "chunk": 200002,
+          "data": 200002,
+          "output": 200002
+        }
+      },
+      "two_result_bounds": 400004,
+      "exceeds_two_result_bounds": true
+    },
+    {
+      "input_characters": 40000,
+      "result_bytes": 240002,
+      "three_local_peak": 720006,
+      "peak_detail": {
+        "line": 601,
+        "utf8_payload_sizes": {
+          "chunk": 240002,
+          "data": 240002,
+          "output": 240002
+        }
+      },
+      "two_result_bounds": 480004,
+      "exceeds_two_result_bounds": true
+    }
+  ]
+}

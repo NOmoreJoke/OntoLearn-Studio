@@ -1,0 +1,160 @@
+"""Budget/parser/index harness; not the full production restore matrix."""
+import json
+from ontolearn_engine import semantic_profile_restore_budget as b
+from ontolearn_engine.quality.rule_profile import SourceRecord, TermInput
+
+
+def ledger(size=8_388_608, **kw):
+    result = b.RestoreLedger(**kw)
+    result.begin(size, 0, 1)
+    return result
+
+
+def fails(raw, *, label="payload"):
+    meter = ledger()
+    try:
+        b.read_json(raw, meter, label=label)
+    except b.RestoreFailure as exc:
+        meter.cleanup()
+        meter.finish(False)
+        assert all(v == 0 for _, v in meter.live)
+        return exc.reason
+    raise AssertionError("bad wire accepted")
+
+
+valid = [b'null', b'true', b'[]', b'{"integerHex":"0x0"}',
+         b'{"text":"\\uD83D\\uDE00"}', b'{"text":"\\n\\u0000"}']
+for raw in valid:
+    meter = ledger()
+    assert b.read_json(raw, meter) == json.loads(raw)
+    meter.cleanup()
+    meter.finish(False)
+invalid = [b'0', b'-0', b'1e3', b'NaN', b'Infinity', b'"\\uD800"', b'"\\uDC00"',
+           b'{"unknown":null}', b'{"text":null,"text":null}',
+           b'{"text":null,"\\u0074ext":null}', b'[true,]', b'{"text":}',
+           b'"\x01"', b'"\xff"', b'null false', b'[' * 36 + b'null' + b']' * 36]
+for raw in invalid:
+    fails(raw)
+fails(b'{"text":"' + b'a' * 65537 + b'"}')
+fails(b'[["' + b'a' * 8193 + b'"]]', label="rows")
+
+meter = ledger()
+for text, value in [("0x0", 0), ("-0x1", -1), ("0xabcdef", 11259375),
+                    ("0x" + "f" * 8192, (1 << 32768) - 1)]:
+    assert b.hex_integer(text, meter) == value
+for text in ["0X1", "0x01", "-0x0", "+0x1", "0xG", "0x", "0x" + "f" * 8193]:
+    try:
+        b.hex_integer(text, meter)
+    except b.RestoreFailure:
+        pass
+    else:
+        raise AssertionError(text[:20])
+assert b.hex_bytes("00ff", meter, maximum=2) == b"\x00\xff"
+for text in ["a", "FF", "00 11"]:
+    try:
+        b.hex_bytes(text, meter, maximum=10)
+    except b.RestoreFailure:
+        pass
+    else:
+        raise AssertionError(text)
+meter.cleanup()
+meter.finish(False)
+
+meter = ledger()
+terms = [TermInput("literal", "v"), TermInput("literal", "v", source=SourceRecord()),
+         TermInput("literal", "v", source=SourceRecord(text="")),
+         TermInput("literal", "v", language_raw="EN"),
+         TermInput("literal", "v", language_raw="en")]
+keys = [b.term_key(t, meter) for t in terms]
+assert len(set(keys)) == len(terms)
+assert keys[0][:8] == b.KEY_HEADER and len(b.KEY_SEPARATOR) == 32
+for key in keys:
+    b.release_key(key, meter)
+meter.cleanup()
+meter.finish(False)
+
+meter = ledger()
+cache = b.TermCache(meter)
+for number in range(256):
+    key = bytes([number])
+    assert cache.get_or_insert(key, lambda n=number: n) == number
+for number in range(256):
+    assert cache.get_or_insert(bytes([number]), lambda: (_ for _ in ()).throw(AssertionError())) == number
+assert (cache.hits, cache.misses) == (256, 256)
+branch_peaks = dict(meter.peaks)
+cache.clear()
+assert dict(meter.live)["trie_nodes"] == dict(meter.live)["trie_slots"] == 0
+meter.cleanup()
+meter.finish(False)
+
+meter = ledger()
+cache = b.TermCache(meter)
+prefix = b'a' * 30000
+long_keys = [prefix + bytes([n]) for n in range(80)] + [prefix, prefix[:29000]]
+for n, key in enumerate(long_keys):
+    assert cache.get_or_insert(key, lambda n=n: n) == n
+for n, key in enumerate(long_keys):
+    assert cache.get_or_insert(key, lambda: None) == n
+assert cache.misses == len(long_keys)
+cache_usage = dict(meter.usage)
+cache.clear()
+meter.cleanup()
+meter.finish(False)
+
+real_hash = b.sha256
+class Collision:
+    def __init__(self, data=b""):
+        pass
+    def update(self, data):
+        pass
+    def hexdigest(self):
+        return "0" * 64
+try:
+    b.sha256 = Collision
+    meter = ledger()
+    cache = b.TermCache(meter)
+    first, second = object(), object()
+    assert cache.get_or_insert(b"first", lambda: first) is first
+    assert cache.get_or_insert(b"second", lambda: second) is second
+    assert cache.get_or_insert(b"first", lambda: None) is first
+    assert cache.last_digest == "0" * 64
+    cache.clear()
+    meter.cleanup()
+    meter.finish(False)
+finally:
+    b.sha256 = real_hash
+
+raw = b'{"text":"ok"}'
+meter = b.RestoreLedger(overrides=(("wire", 3 * len(raw) - 1),))
+meter.begin(len(raw), 0, 1)
+try:
+    b.read_json(raw, meter)
+except b.RestoreFailure as exc:
+    assert exc.classification == "resource" and exc.domain == "wire"
+else:
+    raise AssertionError("tight wire accepted")
+meter.cleanup()
+meter.finish(False)
+try:
+    meter.begin(len(raw), 0, 1)
+except b.RestoreFailure as exc:
+    assert exc.reason == "RESTORE_LEDGER_REUSED"
+else:
+    raise AssertionError("ledger reused")
+
+meter = b.RestoreLedger(overrides=(("opaque_scalar", 8 * 524288 + 2**29 - 1),))
+meter.begin(1, 0, 1)
+try:
+    with meter.opaque():
+        raise AssertionError("delegate invoked after tight opaque cap")
+except b.RestoreFailure as exc:
+    assert exc.domain == "opaque_scalar"
+meter.cleanup()
+meter.finish(False)
+
+print(json.dumps({"kind": "standalone-not-production-chain", "validWireCases": len(valid),
+                  "invalidWireCases": len(invalid) + 2, "fullByteBranches": 256,
+                  "longPrefixKeys": len(long_keys), "auditCollisionSeparated": True,
+                  "keyShapeDistinct": len(keys), "branchPeaks": branch_peaks,
+                  "longPrefixUsage": cache_usage, "tightWireAndOpaqueFailedBeforeOperation": True},
+                 sort_keys=True))

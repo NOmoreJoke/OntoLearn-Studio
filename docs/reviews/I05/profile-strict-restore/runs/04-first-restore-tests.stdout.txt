@@ -1,0 +1,45 @@
+...........................................F............................ [ 51%]
+.....F..........................................................FFF      [100%]
+=================================== FAILURES ===================================
+_ test_duplicate_projection_and_complete_false_tail_are_not_ignored[false-tail] _
+packages/engine/tests/test_semantic_profile_restore.py:723: in test_duplicate_projection_and_complete_false_tail_are_not_ignored
+    assert_rejected(captured, payload=payload)
+packages/engine/tests/test_semantic_profile_restore.py:261: in assert_rejected
+    with pytest.raises(RestoreFailure) as caught:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE RestoreFailure
+_____ test_each_actual_cumulative_domain_exact_and_one_short[cache_split] ______
+packages/engine/tests/test_semantic_profile_restore_limits.py:51: in test_each_actual_cumulative_domain_exact_and_one_short
+    assert required > 0, (domain, baseline.usage)
+E   AssertionError: ('cache_split', (('wire', 325528), ('schema', 85881406), ('traversal', 20842202), ('integer', 4254), ('copy', 273984539), ('cache_query', 1359), ...))
+E   assert 0 > 0
+___________________ test_entire_B_gate_precedes_wire_decode ____________________
+packages/engine/tests/test_semantic_profile_restore_limits.py:366: in test_entire_B_gate_precedes_wire_decode
+    assert error.classification == "resource"
+E   AssertionError: assert 'input' == 'resource'
+E     
+E     - resource
+E     + input
+_ test_full_keys_distinguish_none_empty_language_datatype_and_all_source_fields _
+packages/engine/tests/test_semantic_profile_restore_limits.py:396: in test_full_keys_distinguish_none_empty_language_datatype_and_all_source_fields
+    ledger.finish(True)
+packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py:394: in finish
+    reject("RESTORE_INTERNAL", "internal")
+packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py:209: in reject
+    raise RestoreFailure(reason, classification, stage=stage, slot=slot, domain=domain)
+E   ontolearn_engine.semantic_profile_restore_budget.RestoreFailure: RESTORE_INTERNAL
+_ test_radix_cache_all256_branches_and_long_common_prefix_ignore_audit_collision _
+packages/engine/tests/test_semantic_profile_restore_limits.py:465: in test_radix_cache_all256_branches_and_long_common_prefix_ignore_audit_collision
+    ledger.finish(True)
+packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py:394: in finish
+    reject("RESTORE_INTERNAL", "internal")
+packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py:209: in reject
+    raise RestoreFailure(reason, classification, stage=stage, slot=slot, domain=domain)
+E   ontolearn_engine.semantic_profile_restore_budget.RestoreFailure: RESTORE_INTERNAL
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_profile_restore.py::test_duplicate_projection_and_complete_false_tail_are_not_ignored[false-tail]
+FAILED packages/engine/tests/test_semantic_profile_restore_limits.py::test_each_actual_cumulative_domain_exact_and_one_short[cache_split]
+FAILED packages/engine/tests/test_semantic_profile_restore_limits.py::test_entire_B_gate_precedes_wire_decode
+FAILED packages/engine/tests/test_semantic_profile_restore_limits.py::test_full_keys_distinguish_none_empty_language_datatype_and_all_source_fields
+FAILED packages/engine/tests/test_semantic_profile_restore_limits.py::test_radix_cache_all256_branches_and_long_common_prefix_ignore_audit_collision
+5 failed, 134 passed in 12.65s

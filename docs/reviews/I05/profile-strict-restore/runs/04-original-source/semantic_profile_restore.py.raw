@@ -1,0 +1,1199 @@
+"""Private, supplied-byte restore; no producer, Store, graph matcher or public route.
+
+The expectation and allocation are caller-held premises captured independently
+from the same successful production call.  They are not authenticated tokens.
+The only published fact is supplied-batch consistency, after an atomic restore.
+"""
+
+from dataclasses import dataclass, fields
+
+from . import semantic
+from .quality.rule_calendar import Calendar
+from .quality.rule_firing import (
+    BindingMatch,
+    Catalog,
+    Comparison,
+    ComparisonEvidence,
+    HeadEvidence,
+    PreparedFiring,
+    PreparedFiringBatch,
+    RuleSpec,
+    Triple,
+    Variable,
+)
+from .quality.rule_numbers import Number
+from .quality.rule_profile import (
+    BUDGET_VERSION,
+    OPS,
+    PROFILE,
+    Budget,
+    ProfileFailure,
+    ProfileLimits,
+    SourceRecord,
+    TermInput,
+)
+from .quality.rule_revalidation import check_firing_batch
+from .quality.rule_terms import ProfileValue, parse_value
+from .semantic_execution import _ProfileProjection
+from .semantic_profile_restore_budget import (
+    RestoreFailure,
+    RestoreLedger,
+    TermCache,
+    canonical_bytes,
+    digest,
+    hex_bytes,
+    hex_integer,
+    read_json,
+    release_bytes,
+    release_key,
+    term_key,
+)
+
+SCHEMA_VERSION = "i05-profile-restore-schema/1"
+RESTORE_BUDGET_VERSION = "i05-profile-restore-budget/1"
+CACHE_VERSION = "i05-profile-restore-term-key/1"
+RESULT_VERSION = "i05-profile-batches-restored/1"
+_FORMAT = "i05-reasoning-result/2"
+_SEMANTICS = "i05-finite-7"
+_MAX_BYTES = 8_388_608
+_MAX_PREIMAGE = 16_777_216
+_LIMITS = tuple((f.name, f.default) for f in fields(ProfileLimits))
+_COUNTERS = ("work", "input_bytes", "output_bytes", "trace_items", "firings", "head_occurrences")
+_IDENTITY = ("dependencyLockHash", "engineVersion", "executionSemanticsVersion")
+_DOMAINS = ("utf8-turtle", "profile-structured-records-json/1")
+_PAYLOAD = (
+    "format",
+    "implementation",
+    "reasoning",
+    "inputDigest",
+    "inputDigestDomain",
+    "sourceDigest",
+    "definitionsDigest",
+)
+_REASONING = (
+    "formatVersion",
+    "semanticsVersion",
+    "profile",
+    "rdfs",
+    "rules",
+    "warnings",
+    "evidence",
+    "rdfsEvidence",
+    "firingGroups",
+    "mechanismBatches",
+    "definitions",
+    "catalog",
+    "proofLeaves",
+    "termSources",
+    "graphBudget",
+)
+_CHILD = (
+    "ruleId",
+    "definitionOrdinal",
+    "disabled",
+    "planDigest",
+    "batch",
+    "originalMatches",
+    "definitions",
+    "catalog",
+    "limits",
+    "budgetLimits",
+    "budgetUsage",
+)
+
+
+@dataclass(frozen=True, slots=True)
+class RestoreExpectation:
+    payload_digest: str
+    rows_digest: str
+    input_digest: str
+    input_domain: str
+    source_digest: str
+    definitions_digest: str
+    catalog_digest: str
+    implementation: tuple[tuple[str, str], ...]
+    input_preimage: bytes
+    source_preimage: bytes
+    schema_version: str = SCHEMA_VERSION
+    budget_version: str = RESTORE_BUDGET_VERSION
+    cache_version: str = CACHE_VERSION
+
+
+@dataclass(frozen=True, slots=True)
+class ChildAllocation:
+    rule_id: str | None
+    definition_ordinal: int | None
+    limits: ProfileLimits
+
+
+@dataclass(frozen=True, slots=True)
+class OriginalAllocation:
+    rule_ids: tuple[str, ...]
+    disabled_rule_ids: tuple[str, ...]
+    children: tuple[ChildAllocation, ...]
+    budget_version: str = BUDGET_VERSION
+
+
+@dataclass(frozen=True, slots=True)
+class RestoredChild:
+    rule_id: str | None
+    definition_ordinal: int | None
+    disabled: bool
+    definitions: tuple[RuleSpec, ...]
+    catalog: Catalog
+    original_matches: tuple[BindingMatch, ...] | None
+    batch: PreparedFiringBatch | None
+    fact: str
+
+
+@dataclass(frozen=True, slots=True)
+class RestoredBatchSet:
+    children: tuple[RestoredChild, ...]
+    implementation: tuple[tuple[str, str], ...]
+    payload_digest: str
+    rows_digest: str
+    usage: tuple
+    peaks: tuple
+    parse_usage: tuple
+    revalidation_caps: tuple
+    format: str = RESULT_VERSION
+    profile: str = PROFILE
+    formal_authority: bool = False
+    aggregate_recomputed: bool = False
+
+
+# Fixed canonical classes only. No saved tag selects an import or arbitrary class.
+_EQUAL_FIELDS = (
+    (SourceRecord, ("reference", "digest", "revision", "text")),
+    (TermInput, ("kind", "lexical_form", "datatype_iri", "language_raw", "source")),
+    (Variable, ("name",)),
+    (Triple, ("subject", "predicate", "object")),
+    (Comparison, ("left", "operator", "right")),
+    (
+        RuleSpec,
+        (
+            "rule_id",
+            "when",
+            "comparisons",
+            "heads",
+            "source",
+            "revision",
+            "definition_digest",
+            "policy",
+        ),
+    ),
+    (Catalog, ("classes", "object_properties", "data_properties")),
+    (BindingMatch, ("rule_id", "bindings", "when", "proof_leaves")),
+    (ComparisonEvidence, ("index", "left", "operator", "right", "result")),
+    (HeadEvidence, ("index", "triple")),
+    (
+        PreparedFiring,
+        (
+            "rule_id",
+            "bindings",
+            "when",
+            "proof_leaves",
+            "comparisons",
+            "heads",
+            "basis",
+            "source",
+            "revision",
+            "definition_digest",
+            "policy",
+        ),
+    ),
+    (PreparedFiringBatch, ("firings", "facts", "payload", "digest", "profile")),
+    (ProfileValue, ("term", "domain", "value", "language")),
+    (Number, ("numerator", "denominator", "negative_zero")),
+    (Calendar, ("day", "second", "explicit_offset", "is_datetime")),
+    (ProfileLimits, tuple(name for name, _ in _LIMITS)),
+)
+
+
+def _invalid(stage="A2", slot=None, reason="RESTORE_INPUT_INVALID"):
+    raise RestoreFailure(reason, stage=stage, slot=slot)
+
+
+def _require(condition, stage="A2", slot=None, reason="RESTORE_INPUT_INVALID"):
+    if not condition:
+        _invalid(stage, slot, reason)
+
+
+def _same(left, right, ledger, *, domain="copy", stage="A3"):
+    """Exact typed equality; each occurrence pays, including identical aliases."""
+    ledger.charge("traversal", 1, stage=stage)
+    if type(left) is not type(right):
+        _invalid(stage)
+    kind = type(left)
+    if left is None or kind is bool:
+        ledger.charge(domain, 1, stage=stage)
+        _require(left is right, stage)
+    elif kind in (str, bytes):
+        ledger.charge(domain, len(left) + len(right) + 1, stage=stage)
+        _require(left == right, stage)
+    elif kind is int:
+        ledger.charge(domain, 2 + (left.bit_length() + right.bit_length() + 31) // 32, stage=stage)
+        _require(left == right, stage)
+    elif kind in (tuple, list):
+        ledger.charge("traversal", len(left) + len(right), stage=stage)
+        _require(len(left) == len(right), stage)
+        for a, b in zip(left, right, strict=True):
+            _same(a, b, ledger, domain=domain, stage=stage)
+    else:
+        # No reflection of attacker-owned types or dataclass fields.
+        ledger.charge("traversal", len(_EQUAL_FIELDS), stage=stage)
+        for cls, names in _EQUAL_FIELDS:
+            if kind is cls:
+                ledger.charge("traversal", len(names), stage=stage)
+                for name in names:
+                    _same(
+                        getattr(left, name),
+                        getattr(right, name),
+                        ledger,
+                        domain=domain,
+                        stage=stage,
+                    )
+                return
+        _invalid(stage)
+
+
+class _Decoder:
+    def __init__(self, ledger, expected, allocation):
+        self.ledger = ledger
+        self.expected = expected
+        self.allocation = allocation
+        self.caches = []
+        self.parse_pools = []
+        self.slot = None
+        self.pv_count = 0
+        self.firing_count = 0
+        self.children = []
+
+    def object(self, value, keys, *, tag=None):
+        _require(type(value) is dict)
+        self.ledger.charge("schema", 64 * (len(keys) + len(value) + 1), stage="A2")
+        _require(len(value) == len(keys) + (tag is not None))
+        for key in keys:
+            _require(key in value)
+        if tag is not None:
+            _require("recordType" in value)
+            actual = value["recordType"]
+            _require(type(actual) is str and len(actual) <= 32)
+            _require(actual == tag)
+        return value
+
+    def sequence(self, value, maximum=None):
+        _require(type(value) is list)
+        if maximum is not None:
+            _require(len(value) <= maximum)
+        self.ledger.charge("traversal", 1 + len(value), stage="A2")
+        return value
+
+    def collect(self, value, decode, *, maximum=None, native_list=False):
+        value = self.sequence(value, maximum)
+        self.ledger.reserve("objects", (1 if native_list else 2) * (len(value) + 1))
+        items = [decode(item) for item in value]
+        if native_list:
+            return items
+        self.ledger.charge("traversal", len(items), stage="A2")
+        # The list is only a construction temporary; tuple owns its references.
+        result = tuple(items)
+        self.ledger.release("objects", len(items) + 1)
+        return result
+
+    def make(self, cls, *args, **kwargs):
+        self.ledger.reserve("objects", 1 + len(args) + len(kwargs))
+        self.ledger.charge("traversal", 1 + len(args) + len(kwargs), stage="A2")
+        return cls(*args, **kwargs)
+
+    def string(self, value, maximum=_MAX_BYTES // 6):
+        _require(type(value) is str and len(value) <= min(maximum, _MAX_BYTES // 6))
+        self.ledger.charge("copy", len(value), stage="A2")
+        size = 0
+        for char in value:
+            number = ord(char)
+            _require(not 0xD800 <= number <= 0xDFFF)
+            size += 1 if number < 128 else 2 if number < 2048 else 3 if number < 65536 else 4
+        _require(size <= maximum)
+        return value
+
+    def optional_string(self, value, maximum=16384):
+        return None if value is None else self.string(value, maximum)
+
+    def boolean(self, value):
+        _require(type(value) is bool)
+        self.ledger.charge("traversal", 1, stage="A2")
+        return value
+
+    def integer(self, value, *, minimum=None, maximum=None, bits=32768):
+        self.object(value, ("integerHex",))
+        result = hex_integer(value["integerHex"], self.ledger, stage="A2")
+        _require(result.bit_length() <= bits)
+        _require(minimum is None or result >= minimum)
+        _require(maximum is None or result <= maximum)
+        return result
+
+    def sha(self, value):
+        value = self.string(value, 64)
+        self.ledger.charge("schema", 64, stage="A2")
+        _require(len(value) == 64 and all(c in "0123456789abcdef" for c in value))
+        return value
+
+    def source(self, value):
+        if value is None:
+            return None
+        keys = ("reference", "digest", "revision", "text")
+        self.object(value, keys, tag="SourceRecord")
+        return self.make(SourceRecord, *(self.optional_string(value[k], 65536) for k in keys))
+
+    def term(self, value):
+        self.object(
+            value,
+            ("kind", "lexical_form", "datatype_iri", "language_raw", "source"),
+            tag="TermInput",
+        )
+        kind = self.string(value["kind"], 7)
+        _require(kind in ("iri", "literal"))
+        return self.make(
+            TermInput,
+            kind,
+            self.string(value["lexical_form"], 16384),
+            self.optional_string(value["datatype_iri"]),
+            self.optional_string(value["language_raw"]),
+            self.source(value["source"]),
+        )
+
+    def operand(self, value):
+        _require(type(value) is dict)
+        if value.get("recordType") == "Variable":
+            self.object(value, ("name",), tag="Variable")
+            return self.make(Variable, self.string(value["name"], 65))
+        return self.term(value)
+
+    def triple(self, value, template=False):
+        self.object(value, ("subject", "predicate", "object"), tag="Triple")
+        decode = self.operand if template else self.term
+        return self.make(
+            Triple, decode(value["subject"]), self.term(value["predicate"]), decode(value["object"])
+        )
+
+    def comparison(self, value):
+        self.object(value, ("left", "operator", "right"), tag="Comparison")
+        operator = self.string(value["operator"], 2)
+        _require(operator in OPS)
+        return self.make(
+            Comparison, self.operand(value["left"]), operator, self.operand(value["right"])
+        )
+
+    def definition(self, value):
+        self.object(
+            value,
+            (
+                "rule_id",
+                "when",
+                "comparisons",
+                "heads",
+                "source",
+                "revision",
+                "definition_digest",
+                "policy",
+            ),
+            tag="RuleSpec",
+        )
+        policy = self.string(value["policy"], len(PROFILE))
+        _require(policy == PROFILE)
+        return self.make(
+            RuleSpec,
+            self.string(value["rule_id"], 16384),
+            self.collect(value["when"], lambda item: self.triple(item, True), maximum=16),
+            self.collect(value["comparisons"], self.comparison, maximum=32),
+            self.collect(value["heads"], lambda item: self.triple(item, True), maximum=16),
+            self.source(value["source"]),
+            self.optional_string(value["revision"]),
+            self.optional_string(value["definition_digest"]),
+            policy,
+        )
+
+    def catalog(self, value):
+        names = ("classes", "object_properties", "data_properties")
+        self.object(value, names, tag="Catalog")
+        return self.make(
+            Catalog, *(self.collect(value[name], lambda s: self.string(s, 16384)) for name in names)
+        )
+
+    def binding_pair(self, value):
+        self.sequence(value, 2)
+        _require(len(value) == 2)
+        self.ledger.reserve("objects", 3)
+        return (self.string(value[0], 65), self.term(value[1]))
+
+    def bindings(self, value):
+        return self.collect(value, self.binding_pair, maximum=64)
+
+    def proof(self, value):
+        return self.collect(
+            value, lambda row: self.collect(row, lambda s: self.string(s, 16384)), maximum=16
+        )
+
+    def match(self, value):
+        self.object(value, ("rule_id", "bindings", "when", "proof_leaves"), tag="BindingMatch")
+        return self.make(
+            BindingMatch,
+            self.string(value["rule_id"], 16384),
+            self.bindings(value["bindings"]),
+            self.collect(value["when"], self.triple, maximum=16),
+            self.proof(value["proof_leaves"]),
+        )
+
+    def number(self, value):
+        self.object(value, ("numerator", "denominator", "negative_zero"), tag="Number")
+        return self.make(
+            Number,
+            self.integer(value["numerator"], bits=16384),
+            self.integer(value["denominator"], minimum=1, bits=16384),
+            self.boolean(value["negative_zero"]),
+        )
+
+    def calendar(self, value):
+        self.object(value, ("day", "second", "explicit_offset", "is_datetime"), tag="Calendar")
+        return self.make(
+            Calendar,
+            self.integer(value["day"], bits=16384),
+            self.number(value["second"]),
+            self.boolean(value["explicit_offset"]),
+            self.boolean(value["is_datetime"]),
+        )
+
+    def profile_value(self, value):
+        self.pv_count += 1
+        _require(self.pv_count <= 131072, "A4")
+        self.object(value, ("term", "domain", "value", "language"), tag="ProfileValue")
+        term = self.term(value["term"])
+        domain = self.string(value["domain"], 2)
+        language = self.string(value["language"], 16384)
+        if domain in ("I", "S", "L"):
+            saved = self.string(value["value"], 16384)
+        elif domain == "B":
+            saved = self.boolean(value["value"])
+        elif domain == "N":
+            saved = self.number(value["value"])
+        elif domain in ("Dz", "Dl", "Tz", "Tl"):
+            saved = self.calendar(value["value"])
+        else:
+            _invalid("A4", self.slot)
+        _require(type(self.slot) is int and 0 <= self.slot < len(self.caches), "A4")
+        key = term_key(term, self.ledger)
+
+        def issue():
+            # Cache prepays preserved issuer data before invoking this closure.
+            with self.ledger.opaque():
+                return parse_value(term, None, self.parse_pools[self.slot])
+
+        try:
+            fresh = self.caches[self.slot].get_or_insert(key, issue)
+        finally:
+            release_key(key, self.ledger)
+        _same(term, fresh.term, self.ledger, domain="pv_compare", stage="A4")
+        _same(domain, fresh.domain, self.ledger, domain="pv_compare", stage="A4")
+        _same(saved, fresh.value, self.ledger, domain="pv_compare", stage="A4")
+        _same(language, fresh.language, self.ledger, domain="pv_compare", stage="A4")
+        return fresh
+
+    def comparison_evidence(self, value):
+        self.object(
+            value, ("index", "left", "operator", "right", "result"), tag="ComparisonEvidence"
+        )
+        operator = self.string(value["operator"], 2)
+        _require(operator in OPS)
+        return self.make(
+            ComparisonEvidence,
+            self.integer(value["index"], minimum=0, maximum=31),
+            self.profile_value(value["left"]),
+            operator,
+            self.profile_value(value["right"]),
+            self.boolean(value["result"]),
+        )
+
+    def head(self, value):
+        self.object(value, ("index", "triple"), tag="HeadEvidence")
+        return self.make(
+            HeadEvidence,
+            self.integer(value["index"], minimum=0, maximum=15),
+            self.triple(value["triple"]),
+        )
+
+    def firing(self, value):
+        self.object(
+            value,
+            (
+                "rule_id",
+                "bindings",
+                "when",
+                "proof_leaves",
+                "comparisons",
+                "heads",
+                "basis",
+                "source",
+                "revision",
+                "definition_digest",
+                "policy",
+            ),
+            tag="PreparedFiring",
+        )
+        comparisons = self.collect(value["comparisons"], self.comparison_evidence, maximum=32)
+        heads = self.collect(value["heads"], self.head, maximum=16)
+        self.ledger.charge("traversal", len(comparisons) + len(heads), stage="A2")
+        for index, comparison in enumerate(comparisons):
+            _require(comparison.index == index)
+        for index, head in enumerate(heads):
+            _require(head.index == index)
+        policy = self.string(value["policy"], len(PROFILE))
+        _require(policy == PROFILE)
+        return self.make(
+            PreparedFiring,
+            self.string(value["rule_id"], 16384),
+            self.bindings(value["bindings"]),
+            self.collect(value["when"], self.triple, maximum=16),
+            self.proof(value["proof_leaves"]),
+            comparisons,
+            heads,
+            self.collect(value["basis"], lambda s: self.string(s, 16384)),
+            self.source(value["source"]),
+            self.optional_string(value["revision"]),
+            self.optional_string(value["definition_digest"]),
+            policy,
+        )
+
+    def batch(self, value, limits):
+        self.object(
+            value, ("firings", "facts", "payload", "digest", "profile"), tag="PreparedFiringBatch"
+        )
+        raw = self.object(value["payload"], ("encoding", "bytes"))
+        _require(raw["encoding"] == "hex")
+        payload = hex_bytes(raw["bytes"], self.ledger, maximum=limits.output_bytes, stage="A2")
+        saved_digest = self.sha(value["digest"])
+        _same(digest(payload, self.ledger, stage="A2"), saved_digest, self.ledger, stage="A2")
+        profile = self.string(value["profile"], len(PROFILE))
+        _require(profile == PROFILE)
+        firings = self.collect(value["firings"], self.firing, maximum=limits.firings)
+        self.firing_count += len(firings)
+        _require(self.firing_count <= 1024)
+        return self.make(
+            PreparedFiringBatch,
+            firings,
+            self.collect(value["facts"], self.triple, maximum=limits.head_occurrences),
+            payload,
+            saved_digest,
+            profile,
+        )
+
+    def limit_values(self, value, *, record=False):
+        self.object(value, tuple(n for n, _ in _LIMITS), tag="ProfileLimits" if record else None)
+        self.ledger.reserve("objects", 18)
+        return {
+            name: self.integer(value[name], minimum=0, maximum=maximum) for name, maximum in _LIMITS
+        }
+
+    def limits(self, value):
+        return self.make(ProfileLimits, **self.limit_values(value, record=True))
+
+    def usage_values(self, value, limits):
+        self.object(value, _COUNTERS)
+        self.ledger.reserve("objects", 7)
+        return {
+            name: self.integer(value[name], minimum=0, maximum=getattr(limits, name))
+            for name in _COUNTERS
+        }
+
+    def span(self, value):
+        if value is None:
+            return None
+        self.sequence(value, 2)
+        _require(len(value) == 2)
+        start = self.integer(value[0], minimum=0)
+        end = self.integer(value[1], minimum=start)
+        self.ledger.reserve("objects", 3)
+        return (start, end)
+
+    def triple_key(self, value):
+        self.sequence(value, 3)
+        _require(len(value) == 3)
+        return self.collect(value, self.string, maximum=3)
+
+    def evidence(self, value):
+        keys = ("rule", "firingIndex", "headIndex", "result", "inputs", "basis")
+        self.object(value, keys)
+        self.ledger.reserve("objects", 7)
+        return {
+            "rule": self.string(value["rule"], 16384),
+            "firingIndex": self.integer(value["firingIndex"], minimum=0, maximum=1023),
+            "headIndex": self.integer(value["headIndex"], minimum=0, maximum=15),
+            "result": self.triple_key(value["result"]),
+            "inputs": self.collect(value["inputs"], self.triple_key, native_list=True),
+            "basis": self.collect(value["basis"], self.string),
+        }
+
+    def rdfs_evidence(self, value):
+        self.object(value, ("result", "basis", "proofLeaves"))
+        self.ledger.reserve("objects", 4)
+        return {
+            "result": self.triple_key(value["result"]),
+            "basis": self.collect(value["basis"], self.triple_key, native_list=True),
+            "proofLeaves": self.collect(value["proofLeaves"], self.string),
+        }
+
+    def leaf(self, value):
+        self.object(value, ("reference", "triple"))
+        self.ledger.reserve("objects", 3)
+        return {
+            "reference": self.string(value["reference"]),
+            "triple": self.triple_key(value["triple"]),
+        }
+
+    def occurrence(self, value):
+        self.object(value, ("term", "value", "ordinal", "span"))
+        self.ledger.reserve("objects", 5)
+        return {
+            "term": self.string(value["term"]),
+            "value": self.term(value["value"]),
+            "ordinal": self.integer(value["ordinal"], minimum=0),
+            "span": self.span(value["span"]),
+        }
+
+    def graph_budget(self, value):
+        self.object(value, ("version", "limits", "entryLimits", "entryUsage", "usage"))
+        _require(value["version"] == semantic.PROFILE_GRAPH_BUDGET_VERSION)
+        maxima = (
+            ("work", semantic.MAX_WORK),
+            ("triples", semantic.MAX_TRIPLES),
+            ("inputTermBytes", semantic.MAX_TEXT_BYTES),
+            ("sidecarScalarBytes", 16384),
+            ("sidecarTermBytes", 262144),
+        )
+        self.object(value["limits"], tuple(name for name, _ in maxima))
+        limits = {
+            name: self.integer(value["limits"][name], minimum=maximum, maximum=maximum)
+            for name, maximum in maxima
+        }
+        entry = self.limit_values(value["entryLimits"])
+        _require(entry["work"] <= semantic.MAX_WORK and entry["output_bytes"] == 0)
+        for name, maximum in _LIMITS:
+            if name not in ("work", "output_bytes"):
+                _require(entry[name] == maximum)
+        entry_limits = ProfileLimits(**entry)
+        entry_usage = self.usage_values(value["entryUsage"], entry_limits)
+        self.object(value["usage"], ("work", "inputTermBytes"))
+        usage = {
+            "work": self.integer(value["usage"]["work"], minimum=0, maximum=semantic.MAX_WORK),
+            "inputTermBytes": self.integer(
+                value["usage"]["inputTermBytes"], minimum=0, maximum=semantic.MAX_TEXT_BYTES
+            ),
+        }
+        self.ledger.reserve("objects", 19)
+        return {
+            "version": value["version"],
+            "limits": limits,
+            "entryLimits": entry,
+            "entryUsage": entry_usage,
+            "usage": usage,
+        }
+
+    def id_compare(self, left, right):
+        self.ledger.charge("rule", len(left) + len(right) + 1, stage="A3")
+        return (left > right) - (left < right)
+
+    def allocation_order(self):
+        allocation = self.allocation
+        _require(
+            type(allocation.budget_version) is str and allocation.budget_version == BUDGET_VERSION,
+            "A3",
+        )
+        _require(type(allocation.rule_ids) is tuple and len(allocation.rule_ids) <= 100, "A3")
+        self.ledger.reserve("objects", 4 * len(allocation.rule_ids) + 4)
+        ordered = []
+        total = 0
+        for ordinal, name in enumerate(allocation.rule_ids):
+            self.string(name, 16384)
+            _require(bool(name), "A3")
+            total += len(name)
+            _require(total <= self.ledger.B, "A3")
+            position = len(ordered)
+            while position:
+                compared = self.id_compare(name, ordered[position - 1][1])
+                _require(compared != 0, "A3")
+                if compared > 0:
+                    break
+                position -= 1
+            self.ledger.charge("rule", len(ordered) - position + 1, stage="A3")
+            ordered.insert(position, (ordinal, name))
+        if not ordered:
+            ordered = [(None, None)]
+        _require(
+            type(allocation.children) is tuple and len(allocation.children) == len(ordered), "A3"
+        )
+        _require(
+            type(allocation.disabled_rule_ids) is tuple
+            and len(allocation.disabled_rule_ids) <= len(allocation.rule_ids),
+            "A3",
+        )
+        flags = [False] * len(ordered)
+        for name in allocation.disabled_rule_ids:
+            self.string(name, 16384)
+            slot = self.find_slot(name, ordered)
+            _require(not flags[slot], "A3")
+            flags[slot] = True
+        for slot, ((ordinal, name), child) in enumerate(
+            zip(ordered, allocation.children, strict=True)
+        ):
+            _require(type(child) is ChildAllocation and type(child.limits) is ProfileLimits, "A3")
+            _same(child.rule_id, name, self.ledger, domain="rule", stage="A3")
+            _same(child.definition_ordinal, ordinal, self.ledger, domain="rule", stage="A3")
+            self.ledger.charge("rule", 17, stage="A3")
+            for field, default in _LIMITS:
+                actual = getattr(child.limits, field)
+                _require(type(actual) is int, "A3")
+                total_pool = semantic._PROFILE_POOLS.get(field)
+                expected = (
+                    default
+                    if total_pool is None
+                    else (total_pool // len(ordered) + (slot < total_pool % len(ordered)))
+                )
+                _require(actual == expected, "A3")
+            values = {field: getattr(child.limits, field) for field, _ in _LIMITS}
+            values["output_bytes"] = 0
+            self.ledger.reserve("objects", 42)
+            self.parse_pools.append(Budget(ProfileLimits(**values)))
+            self.caches.append(TermCache(self.ledger))
+        return ordered, flags
+
+    def find_slot(self, name, ordered):
+        self.ledger.charge("rule", 1, stage="A3")
+        for slot, (_, candidate) in enumerate(ordered):
+            if candidate is not None and self.id_compare(name, candidate) == 0:
+                return slot
+        _invalid("A3")
+
+    def child(self, value, slot, ordered, flags, definitions, catalog):
+        self.object(value, _CHILD)
+        self.slot = slot
+        ordinal, name = ordered[slot]
+        rule_id = self.optional_string(value["ruleId"])
+        _same(rule_id, name, self.ledger, stage="A3")
+        saved_ordinal = (
+            None
+            if value["definitionOrdinal"] is None
+            else self.integer(value["definitionOrdinal"], minimum=0, maximum=len(definitions) - 1)
+        )
+        _same(saved_ordinal, ordinal, self.ledger, stage="A3")
+        disabled = self.boolean(value["disabled"])
+        _require(disabled is flags[slot], "A3")
+        child_defs = self.collect(value["definitions"], self.definition, maximum=1)
+        wanted = () if ordinal is None else (definitions[ordinal],)
+        _same(child_defs, wanted, self.ledger, stage="A3")
+        child_catalog = self.catalog(value["catalog"])
+        _same(child_catalog, catalog, self.ledger, stage="A3")
+        limits = self.limits(value["limits"])
+        _same(limits, self.allocation.children[slot].limits, self.ledger, stage="A3")
+        limit_values = self.limit_values(value["budgetLimits"])
+        for field, _ in _LIMITS:
+            _require(limit_values[field] == getattr(limits, field), "A3")
+        usage = self.usage_values(value["budgetUsage"], limits)
+        plan_digest = self.sha(value["planDigest"])
+        if disabled:
+            _require(value["batch"] is None and value["originalMatches"] is None)
+            batch = originals = None
+        else:
+            _require(value["batch"] is not None and value["originalMatches"] is not None)
+            originals = self.collect(value["originalMatches"], self.match, maximum=limits.bindings)
+            batch = self.batch(value["batch"], limits)
+        self.ledger.reserve("objects", 13)
+        return {
+            "ruleId": rule_id,
+            "definitionOrdinal": saved_ordinal,
+            "disabled": disabled,
+            "planDigest": plan_digest,
+            "batch": batch,
+            "originalMatches": originals,
+            "definitions": child_defs,
+            "catalog": child_catalog,
+            "limits": limits,
+            "budgetLimits": limit_values,
+            "budgetUsage": usage,
+        }
+
+    def reasoning(self, value):
+        self.object(value, _REASONING)
+        _require(
+            value["formatVersion"] == _FORMAT
+            and value["semanticsVersion"] == _SEMANTICS
+            and value["profile"] == PROFILE
+        )
+        definitions = self.collect(value["definitions"], self.definition, maximum=100)
+        _require(len(definitions) == len(self.allocation.rule_ids), "A3")
+        for spec, name in zip(definitions, self.allocation.rule_ids, strict=True):
+            _same(spec.rule_id, name, self.ledger, stage="A3")
+        catalog = self.catalog(value["catalog"])
+        ordered, flags = self.allocation_order()
+        children = self.sequence(value["mechanismBatches"], len(ordered))
+        _require(len(children) == len(ordered))
+        self.ledger.reserve("objects", len(children) + 1)
+        native_children = tuple(
+            self.child(raw, i, ordered, flags, definitions, catalog)
+            for i, raw in enumerate(children)
+        )
+        self.children = native_children
+        groups = self.sequence(value["firingGroups"], 1024)
+        _require(len(groups) == self.firing_count)
+        self.ledger.reserve("objects", len(groups) + 1)
+        native_groups = []
+        for raw in groups:
+            _require(type(raw) is dict and "rule_id" in raw)
+            name = self.string(raw["rule_id"], 16384)
+            self.slot = self.find_slot(name, ordered)
+            native_groups.append(self.firing(raw))
+        cursor = 0
+        for child in native_children:
+            batch = child["batch"]
+            if batch is not None:
+                for firing in batch.firings:
+                    _same(native_groups[cursor], firing, self.ledger, stage="A5")
+                    cursor += 1
+        occurrences = self.collect(value["termSources"], self.occurrence)
+        self.ledger.charge("traversal", len(occurrences), stage="A3")
+        for ordinal, occurrence in enumerate(occurrences):
+            _require(occurrence["ordinal"] == ordinal)
+        self.ledger.reserve("objects", 19)
+        return {
+            "formatVersion": value["formatVersion"],
+            "semanticsVersion": value["semanticsVersion"],
+            "profile": value["profile"],
+            "rdfs": self.collect(value["rdfs"], self.triple_key, native_list=True),
+            "rules": self.collect(value["rules"], self.triple_key, native_list=True),
+            "warnings": self.collect(value["warnings"], self.string, native_list=True),
+            "evidence": self.collect(value["evidence"], self.evidence, native_list=True),
+            "rdfsEvidence": self.collect(
+                value["rdfsEvidence"], self.rdfs_evidence, native_list=True
+            ),
+            "firingGroups": tuple(native_groups),
+            "mechanismBatches": native_children,
+            "definitions": definitions,
+            "catalog": catalog,
+            "proofLeaves": self.collect(value["proofLeaves"], self.leaf),
+            "termSources": occurrences,
+            "graphBudget": self.graph_budget(value["graphBudget"]),
+        }
+
+    def drop(self):
+        for cache in self.caches:
+            cache.clear()
+        self.caches.clear()
+        self.parse_pools.clear()
+        self.children = ()
+
+
+def _check_expectation(decoder):
+    e, allocation = decoder.expected, decoder.allocation
+    _require(
+        type(e.schema_version) is str
+        and type(e.budget_version) is str
+        and type(e.cache_version) is str
+        and e.schema_version == SCHEMA_VERSION
+        and e.budget_version == RESTORE_BUDGET_VERSION
+        and e.cache_version == CACHE_VERSION,
+        "entry",
+    )
+    _require(type(e.input_domain) is str and e.input_domain in _DOMAINS, "entry")
+    for value in (
+        e.payload_digest,
+        e.rows_digest,
+        e.input_digest,
+        e.source_digest,
+        e.definitions_digest,
+        e.catalog_digest,
+    ):
+        decoder.sha(value)
+    _require(type(e.implementation) is tuple and len(e.implementation) == 3, "entry")
+    for pair, key in zip(e.implementation, _IDENTITY, strict=True):
+        _require(
+            type(pair) is tuple and len(pair) == 2 and type(pair[0]) is str and pair[0] == key,
+            "entry",
+        )
+        decoder.string(pair[1], 16384)
+    _require(e.implementation[2][1] == _SEMANTICS, "entry")
+    decoder.sha(e.implementation[0][1])
+    _require(
+        type(e.input_preimage) is bytes and type(e.source_preimage) is bytes,
+        "entry",
+        reason="RESTORE_EXPECTATION_MISSING",
+    )
+    _require(bool(e.source_preimage), "entry", reason="RESTORE_EXPECTATION_MISSING")
+    _require(type(allocation.children) is tuple and 1 <= len(allocation.children) <= 100, "entry")
+
+
+def _project(decoder, projection, value, stage):
+    ledger = decoder.ledger
+    ledger.prepay(stage)
+    ledger.reserve("objects", 2 * ledger.J)
+    try:
+        with ledger.opaque():
+            return projection.value(value)
+    except Exception:
+        ledger.release("objects", 2 * ledger.J)
+        raise
+
+
+def _bytes_same(left, right, ledger, stage, *, wire=False):
+    if wire:
+        ledger.charge("wire", len(right), stage=stage)
+    _same(left, right, ledger, stage=stage)
+
+
+def _restore(decoder, payload_json, rows_json):
+    ledger, expected = decoder.ledger, decoder.expected
+    _check_expectation(decoder)
+    _same(digest(payload_json, ledger), expected.payload_digest, ledger, stage="A1")
+    _same(digest(rows_json, ledger), expected.rows_digest, ledger, stage="A1")
+    _same(digest(expected.input_preimage, ledger), expected.input_digest, ledger, stage="A1")
+    _same(digest(expected.source_preimage, ledger), expected.source_digest, ledger, stage="A1")
+    raw = read_json(payload_json, ledger, label="payload")
+    rows = read_json(rows_json, ledger, label="rows")
+    source_raw = read_json(expected.source_preimage, ledger, label="source")
+    if expected.input_domain == "utf8-turtle":
+        _require(len(expected.input_preimage) <= semantic.MAX_TEXT_BYTES, "A1")
+        ledger.charge("wire", len(expected.input_preimage), stage="A1")
+        ledger.reserve("scalar", 4 * len(expected.input_preimage))
+        try:
+            text = expected.input_preimage.decode("utf-8", errors="strict")
+            source = decoder.source(source_raw)
+            _require(type(source) is SourceRecord, "A9")
+            decoder.optional_string(source.reference, 16384)
+            decoder.optional_string(source.revision, 16384)
+            _same(source.digest, expected.input_digest, ledger, stage="A9")
+            _same(
+                source.text,
+                text if len(expected.input_preimage) <= 65536 else None,
+                ledger,
+                stage="A9",
+            )
+            del text
+        finally:
+            ledger.release("scalar", 4 * len(expected.input_preimage))
+        original_records = None
+    else:
+        _require(len(expected.input_preimage) <= _MAX_BYTES, "A1")
+        records_raw = read_json(expected.input_preimage, ledger, label="input")
+        original_records = decoder.collect(records_raw, lambda row: _input_triple(decoder, row))
+        source = decoder.collect(source_raw, decoder.source)
+    decoder.object(raw, _PAYLOAD)
+    _require(raw["format"] == _FORMAT and raw["inputDigestDomain"] == expected.input_domain)
+    decoder.object(raw["implementation"], _IDENTITY)
+    for key, value in expected.implementation:
+        _same(raw["implementation"][key], value, ledger, stage="A3")
+    for key, value in (
+        ("inputDigest", expected.input_digest),
+        ("sourceDigest", expected.source_digest),
+        ("definitionsDigest", expected.definitions_digest),
+    ):
+        _same(decoder.sha(raw[key]), value, ledger, stage="A3")
+    native = decoder.reasoning(raw["reasoning"])
+    occurrences = native["termSources"]
+    if original_records is None:
+        for occurrence in occurrences:
+            _same(occurrence["value"].source, source, ledger, stage="A9")
+        reconstructed = None
+    else:
+        _require(len(occurrences) % 3 == 0, "A9")
+        ledger.reserve("objects", 2 * len(occurrences) + 2)
+        ledger.charge("traversal", len(occurrences), stage="A9")
+        reconstructed = tuple(
+            tuple(occurrences[i + j]["value"] for j in range(3))
+            for i in range(0, len(occurrences), 3)
+        )
+        _same(reconstructed, original_records, ledger, stage="A9")
+        source_values = tuple(item["value"].source for item in occurrences)
+        _same(source_values, source, ledger, stage="A9")
+        del source_values
+    projection = _ProfileProjection()
+    safe_reason = _project(decoder, projection, native, "A7")
+    safe_source = _project(decoder, projection, source, "A8")
+    source_encoded = canonical_bytes(safe_source, ledger, stage="A13", bound=_MAX_BYTES)
+    _bytes_same(source_encoded, expected.source_preimage, ledger, "A13", wire=True)
+    release_bytes(source_encoded, ledger)
+    del safe_source, source_encoded
+    ledger.release("objects", 2 * ledger.J)
+    safe_defs = _project(decoder, projection, native["definitions"], "A8")
+    encoded_defs = canonical_bytes(safe_defs, ledger, stage="A13", bound=_MAX_BYTES)
+    _same(
+        digest(encoded_defs, ledger, stage="A13"), expected.definitions_digest, ledger, stage="A13"
+    )
+    release_bytes(encoded_defs, ledger)
+    del safe_defs, encoded_defs
+    ledger.release("objects", 2 * ledger.J)
+    if reconstructed is not None:
+        safe_records = _project(decoder, _ProfileProjection(), reconstructed, "A10")
+        encoded_input = canonical_bytes(safe_records, ledger, stage="A15", bound=_MAX_BYTES)
+        _bytes_same(encoded_input, expected.input_preimage, ledger, "A15", wire=True)
+        release_bytes(encoded_input, ledger)
+        del safe_records, encoded_input
+        ledger.release("objects", 2 * ledger.J)
+    encoded_catalog = canonical_bytes(safe_reason["catalog"], ledger, stage="A14", bound=_MAX_BYTES)
+    _same(
+        digest(encoded_catalog, ledger, stage="A14"), expected.catalog_digest, ledger, stage="A14"
+    )
+    release_bytes(encoded_catalog, ledger)
+    del encoded_catalog
+    ledger.reserve("objects", 9)
+    safe_payload = {key: safe_reason if key == "reasoning" else raw[key] for key in _PAYLOAD}
+    encoded_payload = canonical_bytes(safe_payload, ledger, stage="A11", bound=_MAX_BYTES)
+    _bytes_same(encoded_payload, payload_json, ledger, "A11", wire=True)
+    _check_rows(decoder, rows, encoded_payload)
+    release_bytes(encoded_payload, ledger)
+    del safe_reason, safe_payload, encoded_payload
+    ledger.release("objects", 2 * ledger.J)
+    parse_usage = tuple(pool.usage for pool in decoder.parse_pools)
+    children, caps = [], []
+    ledger.reserve("objects", 8 * len(decoder.children) + 2)
+    ledger.charge("traversal", len(decoder.children), stage="A16")
+    for slot, child in enumerate(decoder.children):
+        ledger.start_slot(slot)
+        with ledger.opaque():
+            fact = check_firing_batch(
+                child["definitions"],
+                child["catalog"],
+                () if child["disabled"] else child["originalMatches"],
+                child["batch"],
+                limits=decoder.allocation.children[slot].limits,
+                disabled=child["disabled"],
+            )
+        ledger.complete_slot(slot)
+        children.append(
+            RestoredChild(
+                child["ruleId"],
+                child["definitionOrdinal"],
+                child["disabled"],
+                child["definitions"],
+                child["catalog"],
+                child["originalMatches"],
+                child["batch"],
+                fact,
+            )
+        )
+        limits = decoder.allocation.children[slot].limits
+        control = 1 + 33 * limits.firings + 4 * limits.output_bytes + 128 + 70 + 4
+        caps.append(
+            (
+                ("work", 3 * limits.work + control),
+                ("input_bytes", 2 * limits.input_bytes),
+                ("output_bytes", 2 * limits.output_bytes),
+                ("control", control),
+            )
+        )
+    return tuple(children), parse_usage, tuple(caps)
+
+
+def _input_triple(decoder, value):
+    decoder.sequence(value, 3)
+    _require(len(value) == 3)
+    return decoder.collect(value, decoder.term, maximum=3)
+
+
+def _check_rows(decoder, rows, encoded_payload):
+    ledger = decoder.ledger
+    decoder.sequence(rows, 10000)
+    ledger.prepay("A12")
+    ledger.reserve("scalar", 4 * len(encoded_payload))
+    try:
+        text = encoded_payload.decode("utf-8", errors="strict")
+        _require(len(rows) == (len(text) + 8191) // 8192, "A12")
+        offset = 0
+        for row in rows:
+            decoder.sequence(row, 1)
+            _require(len(row) == 1 and type(row[0]) is str and len(row[0]) <= 8192, "A12")
+            ledger.charge("traversal", 1, stage="A12")
+            chunk = text[offset : offset + 8192]
+            _same(row[0], chunk, ledger, stage="A12")
+            offset += len(chunk)
+        del text
+    finally:
+        ledger.release("scalar", 4 * len(encoded_payload))
+    encoded = canonical_bytes(rows, ledger, stage="A12", bound=_MAX_BYTES)
+    _bytes_same(encoded, decoder.rows_json, ledger, "A12", wire=True)
+    release_bytes(encoded, ledger)
+
+
+def restore_profile_batches(
+    payload_json: bytes,
+    rows_json: bytes,
+    *,
+    expected: RestoreExpectation,
+    allocation: OriginalAllocation,
+    ledger: RestoreLedger,
+) -> RestoredBatchSet:
+    """Restore once, then publish all child facts or raise a safe finite failure.
+
+    No native batch/value is accepted as a substitute for wire. A fresh ledger
+    is a fresh pure operation, not a persisted retry or producer capability.
+    """
+    if type(ledger) is not RestoreLedger:
+        _invalid("entry")
+    if ledger.state != "new":
+        # Reject reuse before touching the prior operation's usage or terminal state.
+        _invalid("entry")
+    decoder = None
+    outcome = None
+    error = None
+    try:
+        _require(type(payload_json) is bytes and type(rows_json) is bytes, "entry")
+        _require(
+            type(expected) is RestoreExpectation and type(allocation) is OriginalAllocation,
+            "entry",
+            reason="RESTORE_EXPECTATION_MISSING",
+        )
+        _require(
+            type(expected.input_preimage) is bytes and type(expected.source_preimage) is bytes,
+            "entry",
+            reason="RESTORE_EXPECTATION_MISSING",
+        )
+        _require(
+            type(allocation.children) is tuple and 1 <= len(allocation.children) <= 100, "entry"
+        )
+        size = len(payload_json) + len(rows_json)
+        preimage = len(expected.input_preimage) + len(expected.source_preimage)
+        _require(size <= _MAX_BYTES and preimage <= _MAX_PREIMAGE, "entry")
+        ledger.begin(size, preimage, len(allocation.children))
+        decoder = _Decoder(ledger, expected, allocation)
+        decoder.rows_json = rows_json
+        outcome = _restore(decoder, payload_json, rows_json)
+    except RestoreFailure as exc:
+        error = RestoreFailure(
+            exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain
+        )
+    except ProfileFailure as exc:
+        error = RestoreFailure(
+            "RESTORE_LIMIT" if exc.classification == "resource" else "RESTORE_INPUT_INVALID",
+            "resource" if exc.classification == "resource" else "input",
+            stage="A4" if decoder is not None else "entry",
+            slot=None if decoder is None else decoder.slot,
+        )
+    except Exception:
+        error = RestoreFailure("RESTORE_INTERNAL", "internal", stage="entry")
+    finally:
+        if decoder is not None:
+            decoder.drop()
+            decoder.rows_json = None
+        decoder = None
+        ledger.cleanup()
+        ledger.finish(error is None and outcome is not None)
+    if error is not None:
+        raise error
+    children, parse_usage, caps = outcome
+    return RestoredBatchSet(
+        children,
+        expected.implementation,
+        expected.payload_digest,
+        expected.rows_digest,
+        ledger.usage,
+        ledger.peaks,
+        parse_usage,
+        caps,
+    )

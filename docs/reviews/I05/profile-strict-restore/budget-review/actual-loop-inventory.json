@@ -1,0 +1,570 @@
+[
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 63,
+    "end": 63,
+    "kind": "GeneratorExp",
+    "function": "<module>",
+    "source": "((f.name, f.default) for f in fields(ProfileLimits))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 212,
+    "end": 212,
+    "kind": "GeneratorExp",
+    "function": "<module>",
+    "source": "(name for name, _ in _LIMITS)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 243,
+    "end": 244,
+    "kind": "For",
+    "function": "_same",
+    "source": "for a, b in zip(left, right, strict=True):\n            _same(a, b, ledger, domain=domain, stage=stage)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 248,
+    "end": 259,
+    "kind": "For",
+    "function": "_same",
+    "source": "for cls, names in _EQUAL_FIELDS:\n            if kind is cls:\n                ledger.charge(\"traversal\", len(names), stage=stage)\n                for name in names:\n                    _same(\n                        getattr(left, name),\n                        getattr(right, name),\n                        ledger,\n                        domain=domain,\n                        stage=stage,\n                    )\n                return"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 251,
+    "end": 258,
+    "kind": "For",
+    "function": "_same",
+    "source": "for name in names:\n                    _same(\n                        getattr(left, name),\n                        getattr(right, name),\n                        ledger,\n                        domain=domain,\n                        stage=stage,\n                    )"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 280,
+    "end": 281,
+    "kind": "For",
+    "function": "object",
+    "source": "for key in keys:\n            _require(key in value)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 299,
+    "end": 299,
+    "kind": "ListComp",
+    "function": "collect",
+    "source": "[decode(item) for item in value]"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 317,
+    "end": 320,
+    "kind": "For",
+    "function": "string",
+    "source": "for char in value:\n            number = ord(char)\n            _require(not 0xD800 <= number <= 0xDFFF)\n            size += 1 if number < 128 else 2 if number < 2048 else 3 if number < 65536 else 4"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 343,
+    "end": 343,
+    "kind": "GeneratorExp",
+    "function": "sha",
+    "source": "(c in \"0123456789abcdef\" for c in value)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 351,
+    "end": 351,
+    "kind": "GeneratorExp",
+    "function": "source",
+    "source": "(self.optional_string(value[k], 65536) for k in keys)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 425,
+    "end": 425,
+    "kind": "GeneratorExp",
+    "function": "catalog",
+    "source": "(self.collect(value[name], lambda s: self.string(s, 16384)) for name in names)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 551,
+    "end": 552,
+    "kind": "For",
+    "function": "firing",
+    "source": "for index, comparison in enumerate(comparisons):\n            _require(comparison.index == index)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 553,
+    "end": 554,
+    "kind": "For",
+    "function": "firing",
+    "source": "for index, head in enumerate(heads):\n            _require(head.index == index)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 596,
+    "end": 596,
+    "kind": "GeneratorExp",
+    "function": "limit_values",
+    "source": "(n for n, _ in _LIMITS)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 598,
+    "end": 600,
+    "kind": "DictComp",
+    "function": "limit_values",
+    "source": "{\n            name: self.integer(value[name], minimum=0, maximum=maximum) for name, maximum in _LIMITS\n        }"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 608,
+    "end": 611,
+    "kind": "DictComp",
+    "function": "usage_values",
+    "source": "{\n            name: self.integer(value[name], minimum=0, maximum=getattr(limits, name))\n            for name in _COUNTERS\n        }"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 678,
+    "end": 678,
+    "kind": "GeneratorExp",
+    "function": "graph_budget",
+    "source": "(name for name, _ in maxima)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 679,
+    "end": 682,
+    "kind": "DictComp",
+    "function": "graph_budget",
+    "source": "{\n            name: self.integer(value[\"limits\"][name], minimum=maximum, maximum=maximum)\n            for name, maximum in maxima\n        }"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 685,
+    "end": 687,
+    "kind": "For",
+    "function": "graph_budget",
+    "source": "for name, maximum in _LIMITS:\n            if name not in (\"work\", \"output_bytes\"):\n                _require(entry[name] == maximum)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 720,
+    "end": 733,
+    "kind": "For",
+    "function": "allocation_order",
+    "source": "for ordinal, name in enumerate(allocation.rule_ids):\n            self.string(name, 16384)\n            _require(bool(name), \"A3\")\n            total += len(name)\n            _require(total <= self.ledger.B, \"A3\")\n            position = len(ordered)\n            while position:\n                compared = self.id_compare(name, ordered[position - 1][1])\n                _require(compared != 0, \"A3\")\n                if compared > 0:\n                    break\n                position -= 1\n            self.ledger.charge(\"rule\", len(ordered) - position + 1, stage=\"A3\")\n            ordered.insert(position, (ordinal, name))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 726,
+    "end": 731,
+    "kind": "While",
+    "function": "allocation_order",
+    "source": "while position:\n                compared = self.id_compare(name, ordered[position - 1][1])\n                _require(compared != 0, \"A3\")\n                if compared > 0:\n                    break\n                position -= 1"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 745,
+    "end": 749,
+    "kind": "For",
+    "function": "allocation_order",
+    "source": "for name in allocation.disabled_rule_ids:\n            self.string(name, 16384)\n            slot = self.find_slot(name, ordered)\n            _require(not flags[slot], \"A3\")\n            flags[slot] = True"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 750,
+    "end": 771,
+    "kind": "For",
+    "function": "allocation_order",
+    "source": "for slot, ((ordinal, name), child) in enumerate(\n            zip(ordered, allocation.children, strict=True)\n        ):\n            _require(type(child) is ChildAllocation and type(child.limits) is ProfileLimits, \"A3\")\n            _same(child.rule_id, name, self.ledger, domain=\"rule\", stage=\"A3\")\n            _same(child.definition_ordinal, ordinal, self.ledger, domain=\"rule\", stage=\"A3\")\n            self.ledger.charge(\"rule\", 17, stage=\"A3\")\n            for field, default in _LIMITS:\n                actual = getattr(child.limits, field)\n                _require(type(actual) is int, \"A3\")\n                total_pool = semantic._PROFILE_POOLS.get(field)\n                expected = (\n                    default\n                    if total_pool is None\n                    else (total_pool // len(ordered) + (slot < total_pool % len(ordered)))\n                )\n                _require(actual == expected, \"A3\")\n            values = {field: getattr(child.limits, field) for field, _ in _LIMITS}\n            values[\"output_bytes\"] = 0\n            self.ledger.reserve(\"objects\", 42)\n            self.parse_pools.append(Budget(ProfileLimits(**values)))\n            self.caches.append(TermCache(self.ledger))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 757,
+    "end": 766,
+    "kind": "For",
+    "function": "allocation_order",
+    "source": "for field, default in _LIMITS:\n                actual = getattr(child.limits, field)\n                _require(type(actual) is int, \"A3\")\n                total_pool = semantic._PROFILE_POOLS.get(field)\n                expected = (\n                    default\n                    if total_pool is None\n                    else (total_pool // len(ordered) + (slot < total_pool % len(ordered)))\n                )\n                _require(actual == expected, \"A3\")"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 767,
+    "end": 767,
+    "kind": "DictComp",
+    "function": "allocation_order",
+    "source": "{field: getattr(child.limits, field) for field, _ in _LIMITS}"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 776,
+    "end": 778,
+    "kind": "For",
+    "function": "find_slot",
+    "source": "for slot, (_, candidate) in enumerate(ordered):\n            if candidate is not None and self.id_compare(name, candidate) == 0:\n                return slot"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 803,
+    "end": 804,
+    "kind": "For",
+    "function": "child",
+    "source": "for field, _ in _LIMITS:\n            _require(limit_values[field] == getattr(limits, field), \"A3\")"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 838,
+    "end": 839,
+    "kind": "For",
+    "function": "reasoning",
+    "source": "for spec, name in zip(definitions, self.allocation.rule_ids, strict=True):\n            _same(spec.rule_id, name, self.ledger, stage=\"A3\")"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 845,
+    "end": 848,
+    "kind": "GeneratorExp",
+    "function": "reasoning",
+    "source": "(\n            self.child(raw, i, ordered, flags, definitions, catalog)\n            for i, raw in enumerate(children)\n        )"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 854,
+    "end": 858,
+    "kind": "For",
+    "function": "reasoning",
+    "source": "for raw in groups:\n            _require(type(raw) is dict and \"rule_id\" in raw)\n            name = self.string(raw[\"rule_id\"], 16384)\n            self.slot = self.find_slot(name, ordered)\n            native_groups.append(self.firing(raw))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 860,
+    "end": 865,
+    "kind": "For",
+    "function": "reasoning",
+    "source": "for child in native_children:\n            batch = child[\"batch\"]\n            if batch is not None:\n                for firing in batch.firings:\n                    _same(native_groups[cursor], firing, self.ledger, stage=\"A5\")\n                    cursor += 1"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 863,
+    "end": 865,
+    "kind": "For",
+    "function": "reasoning",
+    "source": "for firing in batch.firings:\n                    _same(native_groups[cursor], firing, self.ledger, stage=\"A5\")\n                    cursor += 1"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 868,
+    "end": 869,
+    "kind": "For",
+    "function": "reasoning",
+    "source": "for ordinal, occurrence in enumerate(occurrences):\n            _require(occurrence[\"ordinal\"] == ordinal)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 892,
+    "end": 893,
+    "kind": "For",
+    "function": "drop",
+    "source": "for cache in self.caches:\n            cache.clear()"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 911,
+    "end": 919,
+    "kind": "For",
+    "function": "_check_expectation",
+    "source": "for value in (\n        e.payload_digest,\n        e.rows_digest,\n        e.input_digest,\n        e.source_digest,\n        e.definitions_digest,\n        e.catalog_digest,\n    ):\n        decoder.sha(value)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 921,
+    "end": 926,
+    "kind": "For",
+    "function": "_check_expectation",
+    "source": "for pair, key in zip(e.implementation, _IDENTITY, strict=True):\n        _require(\n            type(pair) is tuple and len(pair) == 2 and type(pair[0]) is str and pair[0] == key,\n            \"entry\",\n        )\n        decoder.string(pair[1], 16384)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 994,
+    "end": 995,
+    "kind": "For",
+    "function": "_restore",
+    "source": "for key, value in expected.implementation:\n        _same(raw[\"implementation\"][key], value, ledger, stage=\"A3\")"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 996,
+    "end": 1001,
+    "kind": "For",
+    "function": "_restore",
+    "source": "for key, value in (\n        (\"inputDigest\", expected.input_digest),\n        (\"sourceDigest\", expected.source_digest),\n        (\"definitionsDigest\", expected.definitions_digest),\n    ):\n        _same(decoder.sha(raw[key]), value, ledger, stage=\"A3\")"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 1005,
+    "end": 1006,
+    "kind": "For",
+    "function": "_restore",
+    "source": "for occurrence in occurrences:\n            _same(occurrence[\"value\"].source, source, ledger, stage=\"A9\")"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 1012,
+    "end": 1015,
+    "kind": "GeneratorExp",
+    "function": "_restore",
+    "source": "(\n            tuple(occurrences[i + j][\"value\"] for j in range(3))\n            for i in range(0, len(occurrences), 3)\n        )"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 1013,
+    "end": 1013,
+    "kind": "GeneratorExp",
+    "function": "_restore",
+    "source": "(occurrences[i + j][\"value\"] for j in range(3))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 1017,
+    "end": 1017,
+    "kind": "GeneratorExp",
+    "function": "_restore",
+    "source": "(item[\"value\"].source for item in occurrences)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 1050,
+    "end": 1050,
+    "kind": "DictComp",
+    "function": "_restore",
+    "source": "{key: safe_reason if key == \"reasoning\" else raw[key] for key in _PAYLOAD}"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 1057,
+    "end": 1057,
+    "kind": "GeneratorExp",
+    "function": "_restore",
+    "source": "(pool.usage for pool in decoder.parse_pools)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 1061,
+    "end": 1095,
+    "kind": "For",
+    "function": "_restore",
+    "source": "for slot, child in enumerate(decoder.children):\n        decoder.slot, decoder.stage = slot, \"A16\"\n        ledger.start_slot(slot)\n        with ledger.opaque():\n            fact = check_firing_batch(\n                child[\"definitions\"],\n                child[\"catalog\"],\n                () if child[\"disabled\"] else child[\"originalMatches\"],\n                child[\"batch\"],\n                limits=decoder.allocation.children[slot].limits,\n                disabled=child[\"disabled\"],\n            )\n        ledger.complete_slot(slot)\n        children.append(\n            RestoredChild(\n                child[\"ruleId\"],\n                child[\"definitionOrdinal\"],\n                child[\"disabled\"],\n                child[\"definitions\"],\n                child[\"catalog\"],\n                child[\"originalMatches\"],\n                child[\"batch\"],\n                fact,\n            )\n        )\n        limits = decoder.allocation.children[slot].limits\n        control = 1 + 33 * limits.firings + 4 * limits.output_bytes + 128 + 70 + 4\n        caps.append(\n            (\n                (\"work\", 3 * limits.work + control),\n                (\"input_bytes\", 2 * limits.input_bytes),\n                (\"output_bytes\", 2 * limits.output_bytes),\n                (\"control\", control),\n            )\n        )"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "line": 1114,
+    "end": 1120,
+    "kind": "For",
+    "function": "_check_rows",
+    "source": "for row in rows:\n            decoder.sequence(row, 1)\n            _require(len(row) == 1 and type(row[0]) is str and len(row[0]) <= 8192, \"A12\")\n            ledger.charge(\"traversal\", 1, stage=\"A12\")\n            chunk = text[offset : offset + 8192]\n            _same(row[0], chunk, ledger, stage=\"A12\")\n            offset += len(chunk)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 135,
+    "end": 135,
+    "kind": "GeneratorExp",
+    "function": "<module>",
+    "source": "(\"A\" + str(i) for i in range(1, 17))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 223,
+    "end": 234,
+    "kind": "For",
+    "function": "__init__",
+    "source": "for pair in overrides:\n            if (\n                type(pair) is not tuple\n                or len(pair) != 2\n                or type(pair[0]) is not str\n                or pair[0] not in _DOMAINS\n                or not _integer(pair[1])\n            ):\n                reject()\n            if any(pair[0] == name for name, _ in checked):\n                reject()\n            checked.append(pair)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 232,
+    "end": 232,
+    "kind": "GeneratorExp",
+    "function": "__init__",
+    "source": "(pair[0] == name for name, _ in checked)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 284,
+    "end": 287,
+    "kind": "For",
+    "function": "begin",
+    "source": "for name, limit in self._overrides:\n            if limit > caps[name]:\n                reject(\"RESTORE_EXPECTATION_MISMATCH\", \"expectation\", domain=name)\n            caps[name] = limit"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 393,
+    "end": 393,
+    "kind": "GeneratorExp",
+    "function": "finish",
+    "source": "(s != \"success\" for s in self._slots)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 403,
+    "end": 404,
+    "kind": "For",
+    "function": "cleanup",
+    "source": "for name in _LIVE_DOMAINS:\n            self._live[name] = 0"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 447,
+    "end": 447,
+    "kind": "GeneratorExp",
+    "function": "caps",
+    "source": "((name, self._caps[name]) for name in _DOMAINS if name in self._caps)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 509,
+    "end": 510,
+    "kind": "While",
+    "function": "space",
+    "source": "while self.pos < self.length and self.text[self.pos] in \" \\t\\r\\n\":\n            self.pos += 1"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 554,
+    "end": 612,
+    "kind": "While",
+    "function": "string",
+    "source": "while self.pos < self.length:\n            c = self.text[self.pos]\n            if c == '\"':\n                end = self.pos\n                self.pos += 1\n                if (\n                    maximum is not None and decoded_bytes > maximum\n                ) or decoded_chars > character_limit:\n                    reject(\"RESTORE_LIMIT\", \"resource\", stage=\"A1\", domain=\"copy\")\n                if not self.build and not key:\n                    return None\n                if self.build and not key:\n                    # scanstring may allocate now, after the token-length and\n                    # Unicode gates completed. UTF8 escape output <= token bytes.\n                    self.ledger.charge(\"copy\", end - start, stage=\"A1\")\n                    self.ledger.reserve(\"scalar\", 4 * (end - start), stage=\"A1\")\n                try:\n                    value, stop = scanstring(self.text, start, True)\n                except (ValueError, OverflowError):\n                    self.bad()\n                if stop != self.pos:\n                    self.bad()\n                return value\n            if ord(c) < 32:\n                self.bad()\n            if c == \"\\\\\":\n                self.pos += 1\n                if self.pos >= self.length:\n                    self.bad()\n                escape = self.text[self.pos]\n                if escape in '\"\\\\/bfnrt':\n                    decoded_bytes += 1\n                    decoded_chars += 1\n                    self.pos += 1\n                    continue\n                if escape != \"u\":\n                    self.bad()\n                code = self.hex4(self.pos + 1)\n                self.pos += 5\n                if 0xD800 <= code <= 0xDBFF:\n                    if self.text[self.pos : self.pos + 2] != \"\\\\u\":\n                        self.bad()\n                    low = self.hex4(self.pos + 2)\n                    if not 0xDC00 <= low <= 0xDFFF:\n                        self.bad()\n                    self.pos += 6\n                    code = 0x10000 + ((code - 0xD800) << 10) + low - 0xDC00\n                elif 0xDC00 <= code <= 0xDFFF:\n                    self.bad()\n                decoded_bytes += _width(code)\n            else:\n                code = ord(c)\n                if 0xD800 <= code <= 0xDFFF:\n                    self.bad()\n                decoded_bytes += _width(code)\n                self.pos += 1\n            decoded_chars += 1\n            if (maximum is not None and decoded_bytes > maximum) or decoded_chars > character_limit:\n                reject(\"RESTORE_LIMIT\", \"resource\", stage=\"A1\", domain=\"copy\")"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 620,
+    "end": 630,
+    "kind": "For",
+    "function": "hex4",
+    "source": "for i in range(start, start + 4):\n            c = self.text[i]\n            if \"0\" <= c <= \"9\":\n                digit = ord(c) - 48\n            elif \"a\" <= c <= \"f\":\n                digit = ord(c) - 87\n            elif \"A\" <= c <= \"F\":\n                digit = ord(c) - 55\n            else:\n                self.bad()\n            value = value * 16 + digit"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 634,
+    "end": 637,
+    "kind": "For",
+    "function": "fixed_key",
+    "source": "for known in JSON_KEYS:\n            self.ledger.charge(\"schema\", len(value) + len(known) + 1, stage=\"A1\")\n            if value == known:\n                return known"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 652,
+    "end": 655,
+    "kind": "For",
+    "function": "value",
+    "source": "for token, result in ((\"null\", None), (\"true\", True), (\"false\", False)):\n            if self.text.startswith(token, self.pos):\n                self.pos += len(token)\n                return result"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 667,
+    "end": 695,
+    "kind": "While",
+    "function": "object",
+    "source": "while True:\n            self.space()\n            if self.pos >= self.length or self.text[self.pos] != '\"' or len(keys) >= 32:\n                self.bad()\n            self.node(depth + 1)\n            key = self.fixed_key(self.string(key=True))\n            for prior in keys:\n                self.ledger.charge(\"schema\", len(key) + len(prior) + 1, stage=\"A1\")\n                if key == prior:\n                    self.bad()\n            keys.append(key)\n            self.space()\n            if self.pos >= self.length or self.text[self.pos] != \":\":\n                self.bad()\n            self.pos += 1\n            item = self.value(depth + 1, field=key)\n            if self.build:\n                self.ledger.visit(1, stage=\"A1\")\n                self.ledger.reserve(\"objects\", 1, stage=\"A1\")\n                result[key] = item\n            self.space()\n            if self.pos >= self.length:\n                self.bad()\n            delimiter = self.text[self.pos]\n            self.pos += 1\n            if delimiter == \"}\":\n                return result\n            if delimiter != \",\":\n                self.bad()"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 673,
+    "end": 676,
+    "kind": "For",
+    "function": "object",
+    "source": "for prior in keys:\n                self.ledger.charge(\"schema\", len(key) + len(prior) + 1, stage=\"A1\")\n                if key == prior:\n                    self.bad()"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 704,
+    "end": 718,
+    "kind": "While",
+    "function": "array",
+    "source": "while True:\n            item = self.value(depth + 1)\n            if self.build:\n                self.ledger.visit(stage=\"A1\")\n                self.ledger.reserve(\"objects\", 1, stage=\"A1\")\n                result.append(item)\n            self.space()\n            if self.pos >= self.length:\n                self.bad()\n            delimiter = self.text[self.pos]\n            self.pos += 1\n            if delimiter == \"]\":\n                return result\n            if delimiter != \",\":\n                self.bad()"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 804,
+    "end": 806,
+    "kind": "For",
+    "function": "hex_integer",
+    "source": "for position in range(start, len(text)):\n        if text[position] not in \"0123456789abcdef\":\n            reject(stage=stage)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 813,
+    "end": 815,
+    "kind": "For",
+    "function": "hex_integer",
+    "source": "for position in range(start, len(text), 8):\n            piece = text[position : position + 8]\n            value = (value << (4 * len(piece))) | int(piece, 16)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 840,
+    "end": 842,
+    "kind": "For",
+    "function": "hex_bytes",
+    "source": "for c in text:\n        if c not in \"0123456789abcdef\":\n            reject(stage=stage)"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 854,
+    "end": 860,
+    "kind": "For",
+    "function": "_text_size",
+    "source": "for c in text:\n        code = ord(c)\n        if 0xD800 <= code <= 0xDFFF:\n            reject(stage=\"A4\")\n        size += _width(code)\n        if size > maximum:\n            reject(\"RESTORE_LIMIT\", \"resource\", stage=\"A4\", domain=\"copy\")"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 896,
+    "end": 898,
+    "kind": "For",
+    "function": "term_key",
+    "source": "for i, value in enumerate(fields):\n            maximum = 16384 if i < 4 else 65536\n            sizes.append(0 if value is None else _text_size(value, ledger, maximum))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 906,
+    "end": 910,
+    "kind": "For",
+    "function": "term_key",
+    "source": "for value, size in zip(fields, sizes, strict=True):\n                sink.append(0 if value is None else 1)\n                sink.extend(size.to_bytes(4, \"big\"))\n                if value is not None:\n                    sink.extend(value.encode(\"utf-8\", errors=\"strict\"))"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 1046,
+    "end": 1088,
+    "kind": "While",
+    "function": "get_or_insert",
+    "source": "while True:\n            if position == len(key):\n                if node.value is not _EMPTY:\n                    self.hits += 1\n                    return node.value\n                value = self._new_value(key, factory)\n                node.value = value\n                return value\n            child_index, child = -1, None\n            for index, candidate in enumerate(node.children):\n                ledger.charge(\"cache_query\", 1, stage=\"A4\")\n                if candidate.key[candidate.start] == key[position]:\n                    child_index, child = index, candidate\n                    break\n            if child is None:\n                value = self._new_value(key, factory)\n                leaf = self._node(key, position, len(key))\n                leaf.value = value\n                self._append(node, leaf)\n                return value\n            span = min(len(key) - position, child.end - child.start)\n            ledger.charge(\"cache_query\", span, stage=\"A4\")\n            matched = 0\n            while matched < span and key[position + matched] == child.key[child.start + matched]:\n                matched += 1\n            if matched == child.end - child.start:\n                position += matched\n                node = child\n                continue\n            if not matched:\n                reject(\"RESTORE_INTERNAL\", \"internal\", stage=\"A4\")\n            value = self._new_value(key, factory)\n            middle = self._node(key, position, position + matched)\n            child.start += matched\n            self._append(middle, child)\n            if position + matched == len(key):\n                middle.value = value\n            else:\n                leaf = self._node(key, position + matched, len(key))\n                leaf.value = value\n                self._append(middle, leaf)\n            node.children[child_index] = middle\n            return value"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 1055,
+    "end": 1059,
+    "kind": "For",
+    "function": "get_or_insert",
+    "source": "for index, candidate in enumerate(node.children):\n                ledger.charge(\"cache_query\", 1, stage=\"A4\")\n                if candidate.key[candidate.start] == key[position]:\n                    child_index, child = index, candidate\n                    break"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 1069,
+    "end": 1070,
+    "kind": "While",
+    "function": "get_or_insert",
+    "source": "while matched < span and key[position + matched] == child.key[child.start + matched]:\n                matched += 1"
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "line": 1102,
+    "end": 1108,
+    "kind": "While",
+    "function": "clear",
+    "source": "while current is not None:\n            following = current.next\n            current.next = None\n            current.children.clear()\n            current.value = _EMPTY\n            current.key = b\"\"\n            current = following"
+  }
+]
