@@ -44,3 +44,9 @@ T07_HEADLESS_EXECUTABLE=/path/to/existing/headless-chromium node docs/reviews/T0
 3. 现有Store的runs/rounds/terminal有不可变触发器；FR-705明确删除需T01提供显式生命周期API及引用影响说明，本线不绕过SQL触发器。
 4. T00唯一公共schema必须严格验证所有业务边界；本地表单只做格式检查，不冒充规则/本体的语义校验。不新增通用IPC、第二公共schema或存储权威。
 5. 正式接入后刷新批准develop，同版必要联验、指定双方新完整审查、实际CI及远端核验全部保留；Windows/macOS完整产品和发布门另验。
+
+## 真实 Store 提交边界补充
+
+新增 `packages/engine/tests/test_scenario_persistence.py` 直接使用批准base5f的Store及临时数据库，将runner实际生成的完整Round写入；推理/行为仍为明确合成测试端口。44个专属用例覆盖：两产能真实保存/重开/缓存不删轮次；0或1个已提交前轮×5个事务阶段×异常/取消/真实SQLite READONLY；同样边界的真实子进程退出，以及READONLY负对照和完整交接样例一致性。正式哨兵事实和revision始终保持，提交后投递失败按公开history及完整operation/job/round/payload核对确认效果。
+
+这新增了实际SQLite与进程恢复证据，未新增产品Store写入入口。未完成I04真实业务任务注册/取消协调/终态持久化或T05/T06领域执行；`test.rounds`的严格toy载荷不能被称为正式scenario。前轮保留和after_commit效果可从真实数据库核查，仍不推断整个G.6/FR-705完成。

@@ -22,3 +22,9 @@ agent实际终态：“普通内审通过。此前共4项P2已关闭，本次未
 最终自查补齐projectId、engineVersion、dependencyLockHash后，由同一独立agent重新完整只读复核，实际终态：“当前新增候选普通内审通过，未发现新的P1/P2；此前4项P2保持关闭。” 实跑Python42项、TS27项；身份字段均参与摘要、续跑拒绝和当前结果判定。源码精确哈希见 `evidence/candidate-files.json`。
 
 接线前补充Context和逐动作完整轨迹后再次由该独立agent完整复核，明确“当前候选普通内审通过，未发现新增P1/P2；此前4项问题保持关闭。” 实跑46项Python通过。此前批准T09输入投影也经独立核验manifest/PRD/全部17项及原字节副本一致；不计facts/inferred/actionTrace/triggeredInstances正式领域通过。
+
+## Goal续跑的真实Store边界审查
+
+新增持久化测试首跑42项通过，但独立agent实际用负对照发现P2：READONLY未触发时Assertion也可被runner当普通失败，不能证明真实SQLite故障。开发者增加runner外的OperationalError/SQLITE_READONLY码名强断言与禁用注入负对照，agent独立复核关闭。旧通过不追认真实READONLY证据，首跑和失败日志保留。
+
+随后完整Round/Checkpoint投影与T01交接样例增加一致性测试。独立agent最终明确“当前新增投影交接子集普通内审通过，未发现P1/P2或假通过路径”，实际44项持久化测试通过；此前已实跑原46+修复43共89项。最终专属合计90项。语义/任务生命周期/完整G.6/跨设备仍不据此通过；没有产品或共享代码变更。

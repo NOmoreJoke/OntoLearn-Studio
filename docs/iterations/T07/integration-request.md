@@ -18,3 +18,13 @@
 补充：内部Definition与view身份现显式保留projectId/projectVersion、engineVersion/dependencyLockHash、scenario/input/rule/behavior/config/semantics；正式adapter必须完整带入、项目绑定并复验，不能只凭场景ID或页面当前选中项路由。FR-705删除运行需T01显式生命周期方法，当前不可变SQL触发器不得由本线绕过。
 
 私有编排口现显式传`Context(round, phase)`：initial/events/before/behavior/end，推理返回context须一致；不依赖适配器临时轮次计数。行为计划提供每个实际动作的`(eventId, behaviorId, actionIndex)`完整轨迹、动作数与冻结计划内容，Round保留该内容；这仍只是本线私有适配提案，公共契约由T00唯一确定。
+
+## 续跑实查的 I04 精确接线点
+
+批准base `5f910b5` 的 `packages/engine/src/ontolearn_engine/job_store.py`：
+
+- `start_job_run` 对 `test.rounds` 强制config等于测试runConfig；`commit_job_round` 对它强制状态恰好等于`pendingEvents/consumedEvents/inputEvents`的toy消费结果，传完整业务Round会得到`IDENTITY_CONFLICT`。本线不使用该能力冒充正式沙盘。
+- 正式业务接入需唯一owner提供真实scenario任务的参数、输入身份/规则行为/语义完整验证与执行器绑定；worker只计算不可变Round，不得持Store。
+- `commit_job_round` 必须通过coordinator同事务更新轮次与job进度。现有方法内部生成operation、按当前进度推断下一轮；响应丢失后若盲重发会推进下一轮，调用方必须按operation/job/期望round/完整载荷读回核对，不能把异常当零效果。
+- `finish_job_run` / `_check_summary` 用状态顶层`consumedEvents`、`pendingEvents`生成和校对证据。T07内部Checkpoint字段与之不同；该投影必须由唯一适配owner明确映射并保留完整Round，不能只交摘要指针。后续公开schema仍T00独占，本段不是新公共契约。
+- 已新增测试专用`test_scenario_persistence.py`，用真实批准Store落盘runner生成Round，验证事务、取消、真实READONLY及进程退出。它只证明Store提交边界，不注册正式任务、不绕过I04校验、不等于实际T01/I04业务联验。

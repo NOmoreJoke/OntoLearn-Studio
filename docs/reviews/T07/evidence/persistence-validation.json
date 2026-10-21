@@ -1,0 +1,82 @@
+{
+  "date": "2026-10-21",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "previousHead": "833c6a1d836f76b6714d11e6a7ad2fd94049749d",
+  "scope": "additional tests and fixed T01 adapter handoff; no production/shared source changes",
+  "check": {
+    "exitCode": 0,
+    "typescriptTests": 657,
+    "pythonTests": 1142,
+    "t07RoundTests": 46,
+    "t07PersistenceTests": 44,
+    "t07TypeScriptTests": 27
+  },
+  "approvedSources": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage.py",
+      "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+      "matchesApprovedBase": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/job_store.py",
+      "sha256": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2",
+      "matchesApprovedBase": true
+    }
+  ],
+  "independentReview": {
+    "agent": "/root/t07_internal_review",
+    "verdict": "passed current new persistence/projection subset",
+    "newP2": "READONLY assertion swallowing false-positive, fixed with external error-code assertion and negative control",
+    "earliestReadonlyClaim": "invalidated for original 42-test run; do not cite it as true READONLY evidence"
+  },
+  "localEvidenceHashes": [
+    {
+      "path": "persistence-ruff-first.log",
+      "sha256": "3fccbfb7edd96aab74a239ed01cfd6291258c4043fe4a6a7225daac1544fc648"
+    },
+    {
+      "path": "persistence-pytest-first.log",
+      "sha256": "266e2bec3afd4dd8c33878b40af13a6615e5f89a5831f73aa48f39e2eeed885d"
+    },
+    {
+      "path": "persistence-pytest-readonly-fix.log",
+      "sha256": "926c6bf18271ee65d550417e46fc0a695624bdc7d1d2bbada4e96419e3343160"
+    },
+    {
+      "path": "persistence-pytest-confirmed.log",
+      "sha256": "417c00aeed3374c4383a236f899ad937732edbcfc7654fb4e1cd65443b7c464c"
+    },
+    {
+      "path": "persistence-pytest-handoff.log",
+      "sha256": "ef7d7809f87d6b0998ab8f67107caa5386f640abcff4a5f96c6e5444360d81b5"
+    },
+    {
+      "path": "check-persistence-confirmed.log",
+      "sha256": "5f2b13a550b3d391dae557700372bd2bd4cdeebaff96555eb82cd3af6dde95d6"
+    }
+  ],
+  "handoff": [
+    {
+      "path": "docs/iterations/T07/integration-request.md",
+      "sha256": "9cfa95c4a464b58db35b1ed902be56494e69ed8a502e993151213ed8682afa3b"
+    },
+    {
+      "path": "docs/iterations/T07/round-projection-handoff.md",
+      "sha256": "74af4b1c298b7d0b39ffded90a1067229c5f057d1914fdf6765d44707cf8199d"
+    },
+    {
+      "path": "tests/fixtures/scenario/round-projection-handoff.json",
+      "sha256": "924a5f2f8f3cc5d5777acea8f0e5da98937a7c466644303e1623e1b1ab34328e"
+    },
+    {
+      "path": "packages/engine/tests/test_scenario_persistence.py",
+      "sha256": "0180923002708bad9d5e1806cfefc41616ae587d66fa34c9f44ec2ab75baf3e3"
+    }
+  ],
+  "limits": [
+    "synthetic inference/behavior ports",
+    "only approved Store temporary SQLite transaction/isolation/process recovery",
+    "no formal JobStore lifecycle or domain E5 acceptance",
+    "no designated external dual reviews/push/PR/CI/merge"
+  ]
+}

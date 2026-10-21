@@ -39,3 +39,13 @@
 - 当前仍未push/建PR/执行CI/合并，未操作ZCode/MiniMax应用；父功能Goal保持active。普通内审不替代原指定双审。
 - 下一步按总控批准的精确依赖逐个接入，不等待整个M0：T05推理快照、T06事件/冻结计划/动作、T01/I04原子轮次/取消/恢复/用户删除生命周期，T00契约与页面挂载；每个实际版本联验后刷新批准develop和最终候选。
 - 本恢复点可供独立服务子集预约审查；完整T07验收继续包含真实E.5事实/推导/轨迹、跨设备重放及FR-700–705原父功能所有跨模块验收，不以服务子集合并关闭父任务。
+
+## Goal续跑：真实Store边界与T01固定交接
+
+- 上一轮为实际进展：独立实现/验证/内审及本地恢复提交完成；本轮开始重新核验worktree、批准develop、owner与官方总控live句柄。无新批准T05/T06实现，未消费其变化候选。
+- 新增`test_scenario_persistence.py`：runner实际生成完整Round，在临时真实SQLite落盘并重开；两产能完整载荷，0/1前轮×5阶段×取消/异常/真实READONLY，10个真实子进程os._exit，以及负对照与交接JSON一致性，专属44项通过。与原轮次46项合计90。未新增产品Store写入通道。
+- 独立agent发现新P2：READONLY注入失效后的Assertion可能被runner吞掉。已在runner外逐例断言真实OperationalError和SQLITE_READONLY错误码/名称；禁用注入的负对照拒绝假证据。独立复核关闭，首失败及旧证据日志本地保留。
+- T01四Python交接已由总控正式生效并全文读取agreement；本线不改共享。固定`integration-request.md`与`round-projection-handoff.md`及完整JSON样例，明确test.rounds toy限制、唯一owner、完整Round/Checkpoint、事件范围、固定operation/expectedRound和响应丢失原marker核对；已实际发总控按T01路由。
+- 独立只读普通内审确认当前新增持久化/投影子集通过；生产Store/JobStore与批准5f字节匹配，没有采用新owner未批准代码。正式I04/领域/终态/跨设备和指定双新审/CI/合并仍未通过。
+
+- 本轮修复后最终`npm run check`实际退出0：657项TS、1142项Python（本线46轮次＋44持久化＝90 Python；另27 TS）。当前新增测试与完整交接样例已普通独立内审通过，生产/共享源码未变。摘要、源字节和固定交接哈希见`evidence/persistence-validation.json`；旧READONLY首跑通过不再作为真实故障证据。
