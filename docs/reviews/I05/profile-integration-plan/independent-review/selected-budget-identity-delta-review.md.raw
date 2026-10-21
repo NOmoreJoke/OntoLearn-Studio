@@ -1,0 +1,37 @@
+# selected预算与实际身份分支：定点方案补核
+
+结论：**最新文档有限设计材料Pass；selected实际复核仍明确依赖T05新批量API、独立有界复核预算及逐项上界证明，未提供前不可启用或宣称可消费。** 原81270静态Pass及bbe675补审不能覆盖已撤回的“执行同池自然足够selected”组合充分性，不能用纯生产计算通过关闭该缺口。
+
+## 固定对象及保全
+
+本次只读主树 `docs/iterations/I05/profile-integration-new-candidate-plan.md`：36558 B，SHA `fdb598ce5432499df59f78ea46365e1b12e76e71cbe61b9358de80dfe5ea6cbd`。定点读取§4.1/6/6.1、相关旧测试和阶段出口，以及T03依赖段。收束时仅追加测试阶段门的最终稿为**36922 B / SHA `990555ae61b086d40c33212115728bd1914063af25e34b3815345decc85ed66d`**，实际重新读回完整字节/hash及新增第138行。本结论最终绑定990555；本次fdb稿初始补审5135 B/SHA `f683ba8c94d2abe3672c6ffbd7c1845f80e082627cbeb71cd2370bfcf0aa8f4c`另存 `.fdb.md`，不覆盖该时点。上一中间稿raw为31795 B/SHA `8a605c87daec40fd75c5671a09f40413d502c9dd64b8fd81ee83e9b550a62522`，实际重读供方 `plan-before-selected-budget-correction.md.raw` 核对一致。
+
+本人原 `report.md` 12486 B/SHA `81270db3846bd040235551a71814741d58b8deb629ff3665e350fcf31a714147` 与 `delta-review.md` 3452 B/SHA `bbe675a2fbfbadd4a37fd1f41ea2d2f0873ce16d0c32095eb22ce6cb201aca21` 均再次读回hash，原字节未改。本补件单独记载新发现后的范围收口，不反向把旧报告改成已证明预算保证。
+
+## 1. selected复核结构缺口与新接口前置
+
+固定1e3的实际调用结构支持该反例依据：`rule_firing.py:526–563` 的每次check_firing_group都重新_check_plan、account_input(group)，末尾分别encode_output(expected)和encode_output(group)；_check_plan自身重新编码计划。生产batch的路径在470–523只检查计划一次、最终整批编码一次。因此不能仅从producer调用成功推出逐组复核在同额生产Budget成功。这是静态结构判断，本轮没有运行成本反例或计算具体极限。
+
+最新第74、106、110行明确撤回该推断、暂停旧逐组selected链，并在P1出口把生产计算与selected复核分开，正确。
+
+§6.1选择向唯一owner T05请求最小批量复核接口，拟 `verify_firing_batch(plan,matches,saved_payload,saved_digest,verification_budget)` 仅是需求名与拟形状，没有伪称1e3已有符号/真实类型/固定hash。方案要求原定义/profile/Catalog、完整保存成功组和全部head/source/typed bytes核对、不删原文/组来过限；matches由认证保存结果重建，仍不证明图匹配穷尽、不做RDFS/新current发布。未知/重复/损坏字段与身份边界保留。
+
+独立复核预算用途/版本、fresh compile关系、整次池/稳定子池、计划重复编码、解码签发、比较/大整数、proof/排序/编码/原bytes/hash逐项worst-cost映射都成为**外部offer和独审前置**。不每group重置、不改固定type门、不在I05私改helper；先限T05的rule_firing.py，实际必要时再精确列rule_profile.py及专属测试。哪些合法producer批保证可复核必须由证明明确，未预设现有ProfileLimits自然可满足。这是可提交T05审批/设计的请求材料，不是该API实现或预算证明已通过。
+
+## 2. 三种实际身份与旧测试断言
+
+本人只读批准5f `resources.py:28–31`，默认IMPLEMENTATION语义确为 `i04-infrastructure-v1`，engineVersion0.1.0、实际lock hash。最新第98–100行保留默认基础runtime的真实身份，另由私有模式选择器为实际legacy/profile计算返回finite6/finite7和本候选engine/新锁，不把未接线health/hello基础runtime暗贴7，静态设计分支清楚。
+
+legacy的SEMANTICS_VERSION保留finite6、新显式PROFILE_SEMANTICS_VERSION拟finite7，并非将旧完整implementation沿用到新锁；受理/producer最终使用精确模式仍留T01正式接线。旧结果原身份展示与新任务三字段严格消费分区没有被放宽。
+
+第138行撤回上个中间稿改 `test_semantic_execution.py:148` 为7的提案，恢复原硬finite6与真实SEMANTICS_VERSION连等断言/十文件原字节计划；六新增profile测试另验7/6/i04与实际新锁。与已静态核的旧断言相符，不删或放宽检查。此前bbe675对“改7”方案的条件接受不再适用于这一已撤回选择；新的选择才是当前拟实施分支。本轮未改测试或证明新模式选择器已有代码。
+
+## 3. 最后测试阶段门、T03及最终边界
+
+最终稿第138行明确profile_selected测试待§6.1真实新依赖批准后才创建/运行，不放空测试/skip占位；P1先生产计算时不开放未接入selected分支，不误归用户坏词法，P1/P2/后续selected分别登记且保留父要求。该追加与已关闭的依赖门一致，未预支测试绿或删除验收。T05/T03仅docs准备的派发原件由供方保全，本次未扩审其真实性/完整文本或记为实际依赖完成。
+
+方案继续将pin/锁、entrypoint/collect/probe固定交付留T03；root本次通知仍仅docs准备offer，不能按已交付依赖消费C4锁/环境或包。本补核没有读取T03实现或重新核其offer，未将该外部状态写成亲验runtime事实。
+
+结论仅限此次delta设计材料：可单独请求批准纯生产计算阶段，selected批量复核保持实际依赖缺失，P3不得绕过。批量API本身的正确性、全部合法产出可复核范围、具体预算参数与资源分类、三身份实际路由及包/runtime都须后续真实固定实现/证明/验证，本文不替其通过。C4/Goal/冻结输入与原指定双审/发布门不变。
+
+本次无产品import/执行、测试、GUI、容器、新产品树或第二oracle；未追其他模块，未改主线文档。只新增本人ignored build内本补件并更新manifest，原两报告保留。

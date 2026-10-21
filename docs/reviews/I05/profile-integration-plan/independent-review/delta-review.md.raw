@@ -1,0 +1,13 @@
+# profile接入方案：三项文档delta定点补核
+
+结论：**三项delta有限静态Pass，原方案审查结论保留。** 本次不重开主干审查，不将方案准备或T01实施授权当产品完成。
+
+原独审 `report.md` 保持12486 B / SHA `81270db3846bd040235551a71814741d58b8deb629ff3665e350fcf31a714147`，原字节未改。原审稿30339 B / SHA `28295b0efd79c68ab5fe9ba1dd5c335b72a2be0e9d044698cdbc3a00a4bf32b9`；本次被审主树 `docs/iterations/I05/profile-integration-new-candidate-plan.md` 为**31795 B / SHA `8a605c87daec40fd75c5671a09f40413d502c9dd64b8fd81ee83e9b550a62522`**，实际完整读入算hash，定点读回§3/5/8及相关上下文。本次不声称重新比较全主干或复核1284/205。
+
+1. **T01在建依赖表述：通过。** 实际核 `T01-fixed-changeset-plan.md.raw` 27888 B / SHA `39ebbf378386004eb9e8654bf9dbd7465e50d5215a87c55fde01cffc258d71e1`，与固定 `f51a9e10647d75cd07fe28007ab73c0e65451f63:docs/iterations/T01/changeset-business-service-implementation-plan.md` 完整bytes相等；根授权raw 8818 B / SHA `421f974c43975886d280386316b34b5f1e284712d68d38f338d8083beb217467` 与根实际授权文件完整bytes相等。定点读其状态、支持集合、10产品/4新测试和非目标/后续门。方案第53行准确将39ebbf列文档SHA、f51列固定提交，并用后发授权更新计划旧“待审”时态；typed人工RDF/ontology triples/single/reference子集及commit/undo在建，不等于Catalog/source/producer/worker、host/UI或完整领域依赖ready。没有读取T01 WIP实现或继承其测试结果。
+
+2. **旧版本断言与第六新错误测试：通过。** 实际只读固定C4 `523c478d5f39671c4ac7c1ea6997e51d3047d58e` 的 `packages/engine/tests/test_semantic_execution.py:148`，确为 `payload["executionSemanticsVersion"] == semantic.SEMANTICS_VERSION == "i05-finite-6"`。新版第120行只为未来候选将明确预期改finite7，保留与真实SEMANTICS_VERSION相等、不删除/弱化断言、C4原件不动，并明确另九旧测试原bytes，消除了“十份全部原字节”与版本升级的矛盾。第118/120行新增第六 `test_semantic_profile_errors.py`，针对真实caller/context、错误来源/unknown/canary和定位；不是只核token存在。没有实际改或运行任何测试，也不由此声称该单项修改足以令新候选测试通过。
+
+3. **真实IRI入口前置门：通过。** 固定1e3 `rule_terms.py:43/87–95` 仅scheme起始、空白/禁字符及字节门，不是完整RDF IRI语法验证。新版第90行把包含Unicode/控制字符/百分号/结构的有界实际绝对IRI语法门列为P1必需新增实现与正反测试，位置仍在既有semantic_turtle.py；无validated自报、解引用或URL规范化，不改IRI身份eq或legacy/query/SHACL合同。这准确保留尚未实现的precondition，未把Turtle parser、最小scheme门或新文档当规范符合性证据。具体实现及语法正确性留P1实际代码/测试审查，本次不评估不存在的实现。
+
+本补核仅文件、只读Git和Python标准库hash/字符串读取；没有产品import/执行、pytest、GUI、容器、新树或新oracle，没有改主线文档/源码/测试/冻结材料。T05七源码与原已审主干没有重跑；所有新增文件只在本人ignored `build/i05-profile-plan-review/`。原指定双审、实施采用授权、依赖、source/package、实际平台/CI/合并门继续有效。

@@ -1,0 +1,1358 @@
+{
+  "observedAt": "2026-10-21T14:24:20.847504+08:00",
+  "scope": "Authorized static-only integration plan; no product tree or implementation",
+  "HEADBeforeDocs": "6c2d9faf265fb27e08c1f8bf4fbfef35de2b9e51",
+  "authorization": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/real-executor-next-preparation-authorization.md",
+    "bytes": 6389,
+    "sha256": "6346b48f7d69219f2e5b574732d7a6198a11746732d69b70aa7cdc5e876c9682",
+    "fullRead": true
+  },
+  "proposedProductBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "proposedTree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-integration",
+  "proposedBranch": "feature/I05-profile-integration",
+  "proposedTreeExists": false,
+  "proposedBranchExists": false,
+  "T05SevenStaticInputs": [
+    {
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+      "bytes": 548,
+      "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+      "blob": "1405a985b4220dc18576a4c02c8df57646b6ad02",
+      "fullStaticTextRead": true,
+      "symbols": [
+        {
+          "kind": "function",
+          "name": "__getattr__",
+          "line": 6,
+          "args": "name"
+        }
+      ],
+      "fromImports": [
+        {
+          "line": 8,
+          "module": null,
+          "relativeLevel": 1,
+          "names": [
+            "definitions"
+          ]
+        },
+        {
+          "line": 12,
+          "module": "planning",
+          "relativeLevel": 1,
+          "names": [
+            "build_plan"
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "bytes": 11987,
+      "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "blob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402",
+      "fullStaticTextRead": true,
+      "symbols": [
+        {
+          "kind": "class",
+          "name": "InputLocation",
+          "line": 19,
+          "fields": [
+            {
+              "name": "section",
+              "annotation": "str | None"
+            },
+            {
+              "name": "index",
+              "annotation": "int | None"
+            },
+            {
+              "name": "side",
+              "annotation": "str | None"
+            },
+            {
+              "name": "span",
+              "annotation": "tuple[int, int] | None"
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "_location_shape",
+          "line": 26,
+          "args": "location"
+        },
+        {
+          "kind": "function",
+          "name": "check_location",
+          "line": 50,
+          "args": "location, budget"
+        },
+        {
+          "kind": "class",
+          "name": "SourceRecord",
+          "line": 67,
+          "fields": [
+            {
+              "name": "reference",
+              "annotation": "str | None"
+            },
+            {
+              "name": "digest",
+              "annotation": "str | None"
+            },
+            {
+              "name": "revision",
+              "annotation": "str | None"
+            },
+            {
+              "name": "text",
+              "annotation": "str | None"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "TermInput",
+          "line": 75,
+          "fields": [
+            {
+              "name": "kind",
+              "annotation": "str"
+            },
+            {
+              "name": "lexical_form",
+              "annotation": "str"
+            },
+            {
+              "name": "datatype_iri",
+              "annotation": "str | None"
+            },
+            {
+              "name": "language_raw",
+              "annotation": "str | None"
+            },
+            {
+              "name": "source",
+              "annotation": "SourceRecord | None"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "ProfileFailure",
+          "line": 83,
+          "fields": []
+        },
+        {
+          "kind": "function",
+          "name": "fail",
+          "line": 109,
+          "args": "reason='INVALID_RULE', location=None, classification='input'"
+        },
+        {
+          "kind": "function",
+          "name": "internal",
+          "line": 113,
+          "args": "location=None"
+        },
+        {
+          "kind": "class",
+          "name": "ProfileLimits",
+          "line": 118,
+          "fields": [
+            {
+              "name": "input_bytes",
+              "annotation": "int"
+            },
+            {
+              "name": "term_bytes",
+              "annotation": "int"
+            },
+            {
+              "name": "source_bytes",
+              "annotation": "int"
+            },
+            {
+              "name": "digits",
+              "annotation": "int"
+            },
+            {
+              "name": "integer_bits",
+              "annotation": "int"
+            },
+            {
+              "name": "temporary_bits",
+              "annotation": "int"
+            },
+            {
+              "name": "rules",
+              "annotation": "int"
+            },
+            {
+              "name": "when",
+              "annotation": "int"
+            },
+            {
+              "name": "comparisons",
+              "annotation": "int"
+            },
+            {
+              "name": "heads",
+              "annotation": "int"
+            },
+            {
+              "name": "variables",
+              "annotation": "int"
+            },
+            {
+              "name": "bindings",
+              "annotation": "int"
+            },
+            {
+              "name": "firings",
+              "annotation": "int"
+            },
+            {
+              "name": "head_occurrences",
+              "annotation": "int"
+            },
+            {
+              "name": "trace_items",
+              "annotation": "int"
+            },
+            {
+              "name": "output_bytes",
+              "annotation": "int"
+            },
+            {
+              "name": "work",
+              "annotation": "int"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "Budget",
+          "line": 144,
+          "fields": []
+        },
+        {
+          "kind": "function",
+          "name": "require_budget",
+          "line": 212,
+          "args": "budget"
+        },
+        {
+          "kind": "function",
+          "name": "utf8_size",
+          "line": 217,
+          "args": "text, budget, cap=None, location=None"
+        },
+        {
+          "kind": "function",
+          "name": "text_compare",
+          "line": 238,
+          "args": "a, b, budget"
+        },
+        {
+          "kind": "function",
+          "name": "tuple_compare",
+          "line": 246,
+          "args": "a, b, budget"
+        },
+        {
+          "kind": "function",
+          "name": "_walk",
+          "line": 270,
+          "args": "value, budget, output, sink, depth=0"
+        },
+        {
+          "kind": "function",
+          "name": "account_input",
+          "line": 355,
+          "args": "value, budget"
+        },
+        {
+          "kind": "function",
+          "name": "encode_input",
+          "line": 360,
+          "args": "value, budget"
+        },
+        {
+          "kind": "function",
+          "name": "encode_output",
+          "line": 367,
+          "args": "value, budget"
+        },
+        {
+          "kind": "function",
+          "name": "fingerprint",
+          "line": 374,
+          "args": "data, budget=None"
+        }
+      ],
+      "fromImports": [
+        {
+          "line": 4,
+          "module": "dataclasses",
+          "relativeLevel": 0,
+          "names": [
+            "dataclass",
+            "fields"
+          ]
+        },
+        {
+          "line": 5,
+          "module": "hashlib",
+          "relativeLevel": 0,
+          "names": [
+            "sha256"
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "bytes": 5909,
+      "sha256": "8f58a68b896a62443ab3681c29802905d5ff1e010a944d32eb07f988319cc19a",
+      "blob": "bcea7c7fa2b98a816e05bf0f785962986506627c",
+      "fullStaticTextRead": true,
+      "symbols": [
+        {
+          "kind": "class",
+          "name": "ProfileValue",
+          "line": 47,
+          "fields": [
+            {
+              "name": "term",
+              "annotation": "TermInput"
+            },
+            {
+              "name": "domain",
+              "annotation": "str"
+            },
+            {
+              "name": "value",
+              "annotation": "object"
+            },
+            {
+              "name": "language",
+              "annotation": "str"
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "_signed_value",
+          "line": 57,
+          "args": "term, domain, value, language, budget"
+        },
+        {
+          "kind": "function",
+          "name": "check_value",
+          "line": 70,
+          "args": "value, budget"
+        },
+        {
+          "kind": "function",
+          "name": "iri_minimum",
+          "line": 87,
+          "args": "text, budget, location=None, lexical=False"
+        },
+        {
+          "kind": "function",
+          "name": "parse_value",
+          "line": 98,
+          "args": "term, location, budget"
+        },
+        {
+          "kind": "function",
+          "name": "term_key",
+          "line": 168,
+          "args": "value, budget"
+        }
+      ],
+      "fromImports": [
+        {
+          "line": 4,
+          "module": "dataclasses",
+          "relativeLevel": 0,
+          "names": [
+            "dataclass"
+          ]
+        },
+        {
+          "line": 5,
+          "module": "weakref",
+          "relativeLevel": 0,
+          "names": [
+            "ref"
+          ]
+        },
+        {
+          "line": 7,
+          "module": "rule_calendar",
+          "relativeLevel": 1,
+          "names": [
+            "parse_calendar"
+          ]
+        },
+        {
+          "line": 8,
+          "module": "rule_numbers",
+          "relativeLevel": 1,
+          "names": [
+            "parse_number"
+          ]
+        },
+        {
+          "line": 9,
+          "module": "rule_profile",
+          "relativeLevel": 1,
+          "names": [
+            "NUMERIC",
+            "RDF",
+            "XSD",
+            "ProfileFailure",
+            "SourceRecord",
+            "TermInput",
+            "account_input",
+            "check_location",
+            "encode_input",
+            "fail",
+            "fingerprint",
+            "internal",
+            "require_budget",
+            "utf8_size"
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "bytes": 7372,
+      "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+      "blob": "31a0d150ae82d48e03fee2b9051273c99997b415",
+      "fullStaticTextRead": true,
+      "symbols": [
+        {
+          "kind": "class",
+          "name": "Number",
+          "line": 14,
+          "fields": [
+            {
+              "name": "numerator",
+              "annotation": "int"
+            },
+            {
+              "name": "denominator",
+              "annotation": "int"
+            },
+            {
+              "name": "negative_zero",
+              "annotation": "bool"
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "check_ints",
+          "line": 20,
+          "args": "budget, *values"
+        },
+        {
+          "kind": "function",
+          "name": "check_number",
+          "line": 28,
+          "args": "value, budget"
+        },
+        {
+          "kind": "function",
+          "name": "limbs",
+          "line": 38,
+          "args": "n"
+        },
+        {
+          "kind": "function",
+          "name": "mul",
+          "line": 44,
+          "args": "a, b, budget"
+        },
+        {
+          "kind": "function",
+          "name": "shift",
+          "line": 51,
+          "args": "a, n, budget"
+        },
+        {
+          "kind": "function",
+          "name": "add",
+          "line": 60,
+          "args": "a, b, budget"
+        },
+        {
+          "kind": "function",
+          "name": "divide",
+          "line": 67,
+          "args": "a, b, budget"
+        },
+        {
+          "kind": "function",
+          "name": "rational",
+          "line": 75,
+          "args": "n, d, budget, negative_zero=False"
+        },
+        {
+          "kind": "function",
+          "name": "digits",
+          "line": 92,
+          "args": "text, budget, location=None"
+        },
+        {
+          "kind": "function",
+          "name": "power10",
+          "line": 109,
+          "args": "n, budget"
+        },
+        {
+          "kind": "function",
+          "name": "compare_numbers",
+          "line": 126,
+          "args": "a, b, budget"
+        },
+        {
+          "kind": "function",
+          "name": "_quantize",
+          "line": 135,
+          "args": "n, d, negative, width, budget"
+        },
+        {
+          "kind": "function",
+          "name": "parse_number",
+          "line": 155,
+          "args": "text, datatype, budget, location=None"
+        }
+      ],
+      "fromImports": [
+        {
+          "line": 4,
+          "module": "dataclasses",
+          "relativeLevel": 0,
+          "names": [
+            "dataclass"
+          ]
+        },
+        {
+          "line": 6,
+          "module": "rule_profile",
+          "relativeLevel": 1,
+          "names": [
+            "NUMERIC",
+            "XSD",
+            "check_location",
+            "fail",
+            "internal",
+            "require_budget"
+          ]
+        },
+        {
+          "line": 216,
+          "module": "rule_profile",
+          "relativeLevel": 1,
+          "names": [
+            "ProfileFailure"
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "bytes": 4047,
+      "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+      "blob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1",
+      "fullStaticTextRead": true,
+      "symbols": [
+        {
+          "kind": "class",
+          "name": "Calendar",
+          "line": 28,
+          "fields": [
+            {
+              "name": "day",
+              "annotation": "int"
+            },
+            {
+              "name": "second",
+              "annotation": "Number"
+            },
+            {
+              "name": "explicit_offset",
+              "annotation": "bool"
+            },
+            {
+              "name": "is_datetime",
+              "annotation": "bool"
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "day_serial",
+          "line": 35,
+          "args": "year, month, day, budget"
+        },
+        {
+          "kind": "function",
+          "name": "parse_calendar",
+          "line": 46,
+          "args": "text, datatype, budget, location=None"
+        },
+        {
+          "kind": "function",
+          "name": "compare_calendar",
+          "line": 96,
+          "args": "a, b, budget"
+        }
+      ],
+      "fromImports": [
+        {
+          "line": 4,
+          "module": "dataclasses",
+          "relativeLevel": 0,
+          "names": [
+            "dataclass"
+          ]
+        },
+        {
+          "line": 6,
+          "module": "rule_numbers",
+          "relativeLevel": 1,
+          "names": [
+            "Number",
+            "add",
+            "check_ints",
+            "check_number",
+            "compare_numbers",
+            "digits",
+            "divide",
+            "mul",
+            "power10",
+            "rational"
+          ]
+        },
+        {
+          "line": 18,
+          "module": "rule_profile",
+          "relativeLevel": 1,
+          "names": [
+            "XSD",
+            "check_location",
+            "fail",
+            "internal",
+            "require_budget"
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+      "bytes": 1750,
+      "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+      "blob": "1148fbd40c12c6138a689ee64580e08afa6c349c",
+      "fullStaticTextRead": true,
+      "symbols": [
+        {
+          "kind": "function",
+          "name": "compare_values",
+          "line": 17,
+          "args": "left, op, right, budget, location=None"
+        },
+        {
+          "kind": "function",
+          "name": "_compare_values",
+          "line": 26,
+          "args": "left, op, right, budget, location=None"
+        }
+      ],
+      "fromImports": [
+        {
+          "line": 3,
+          "module": "rule_calendar",
+          "relativeLevel": 1,
+          "names": [
+            "compare_calendar"
+          ]
+        },
+        {
+          "line": 4,
+          "module": "rule_numbers",
+          "relativeLevel": 1,
+          "names": [
+            "compare_numbers"
+          ]
+        },
+        {
+          "line": 5,
+          "module": "rule_profile",
+          "relativeLevel": 1,
+          "names": [
+            "OPS",
+            "ProfileFailure",
+            "check_location",
+            "fail",
+            "internal",
+            "require_budget",
+            "text_compare"
+          ]
+        },
+        {
+          "line": 14,
+          "module": "rule_terms",
+          "relativeLevel": 1,
+          "names": [
+            "check_value"
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "bytes": 19149,
+      "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "blob": "4fc50930c20b8184b3bae5df34d691111351e6bd",
+      "fullStaticTextRead": true,
+      "symbols": [
+        {
+          "kind": "class",
+          "name": "Variable",
+          "line": 42,
+          "fields": [
+            {
+              "name": "name",
+              "annotation": "str"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "Triple",
+          "line": 47,
+          "fields": [
+            {
+              "name": "subject",
+              "annotation": "TermInput | Variable"
+            },
+            {
+              "name": "predicate",
+              "annotation": "TermInput"
+            },
+            {
+              "name": "object",
+              "annotation": "TermInput | Variable"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "Comparison",
+          "line": 54,
+          "fields": [
+            {
+              "name": "left",
+              "annotation": "TermInput | Variable"
+            },
+            {
+              "name": "operator",
+              "annotation": "str"
+            },
+            {
+              "name": "right",
+              "annotation": "TermInput | Variable"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "RuleSpec",
+          "line": 61,
+          "fields": [
+            {
+              "name": "rule_id",
+              "annotation": "str"
+            },
+            {
+              "name": "when",
+              "annotation": "tuple[Triple, ...]"
+            },
+            {
+              "name": "comparisons",
+              "annotation": "tuple[Comparison, ...]"
+            },
+            {
+              "name": "heads",
+              "annotation": "tuple[Triple, ...]"
+            },
+            {
+              "name": "source",
+              "annotation": "SourceRecord | None"
+            },
+            {
+              "name": "revision",
+              "annotation": "str | None"
+            },
+            {
+              "name": "definition_digest",
+              "annotation": "str | None"
+            },
+            {
+              "name": "policy",
+              "annotation": "str"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "Catalog",
+          "line": 73,
+          "fields": [
+            {
+              "name": "classes",
+              "annotation": "tuple[str, ...]"
+            },
+            {
+              "name": "object_properties",
+              "annotation": "tuple[str, ...]"
+            },
+            {
+              "name": "data_properties",
+              "annotation": "tuple[str, ...]"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "BindingMatch",
+          "line": 80,
+          "fields": [
+            {
+              "name": "rule_id",
+              "annotation": "str"
+            },
+            {
+              "name": "bindings",
+              "annotation": "tuple[tuple[str, TermInput], ...]"
+            },
+            {
+              "name": "when",
+              "annotation": "tuple[Triple, ...]"
+            },
+            {
+              "name": "proof_leaves",
+              "annotation": "tuple[tuple[str, ...], ...]"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "_CompiledRule",
+          "line": 88,
+          "fields": [
+            {
+              "name": "spec",
+              "annotation": "RuleSpec"
+            },
+            {
+              "name": "constants",
+              "annotation": "tuple[tuple[TermInput, ProfileValue], ...]"
+            },
+            {
+              "name": "variables",
+              "annotation": "tuple[str, ...]"
+            },
+            {
+              "name": "prepared_digest",
+              "annotation": "str"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "CompiledPlan",
+          "line": 96,
+          "fields": [
+            {
+              "name": "rules",
+              "annotation": "tuple[_CompiledRule, ...]"
+            },
+            {
+              "name": "catalog",
+              "annotation": "Catalog"
+            },
+            {
+              "name": "digest",
+              "annotation": "str"
+            },
+            {
+              "name": "_budget",
+              "annotation": "Budget"
+            },
+            {
+              "name": "_seal",
+              "annotation": "object"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "ComparisonEvidence",
+          "line": 117,
+          "fields": [
+            {
+              "name": "index",
+              "annotation": "int"
+            },
+            {
+              "name": "left",
+              "annotation": "ProfileValue"
+            },
+            {
+              "name": "operator",
+              "annotation": "str"
+            },
+            {
+              "name": "right",
+              "annotation": "ProfileValue"
+            },
+            {
+              "name": "result",
+              "annotation": "bool"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "HeadEvidence",
+          "line": 126,
+          "fields": [
+            {
+              "name": "index",
+              "annotation": "int"
+            },
+            {
+              "name": "triple",
+              "annotation": "Triple"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "PreparedFiring",
+          "line": 132,
+          "fields": [
+            {
+              "name": "rule_id",
+              "annotation": "str"
+            },
+            {
+              "name": "bindings",
+              "annotation": "tuple[tuple[str, TermInput], ...]"
+            },
+            {
+              "name": "when",
+              "annotation": "tuple[Triple, ...]"
+            },
+            {
+              "name": "proof_leaves",
+              "annotation": "tuple[tuple[str, ...], ...]"
+            },
+            {
+              "name": "comparisons",
+              "annotation": "tuple[ComparisonEvidence, ...]"
+            },
+            {
+              "name": "heads",
+              "annotation": "tuple[HeadEvidence, ...]"
+            },
+            {
+              "name": "basis",
+              "annotation": "tuple[str, ...]"
+            },
+            {
+              "name": "source",
+              "annotation": "SourceRecord | None"
+            },
+            {
+              "name": "revision",
+              "annotation": "str | None"
+            },
+            {
+              "name": "definition_digest",
+              "annotation": "str | None"
+            },
+            {
+              "name": "policy",
+              "annotation": "str"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "name": "PreparedFiringBatch",
+          "line": 147,
+          "fields": [
+            {
+              "name": "firings",
+              "annotation": "tuple[PreparedFiring, ...]"
+            },
+            {
+              "name": "facts",
+              "annotation": "tuple[Triple, ...]"
+            },
+            {
+              "name": "payload",
+              "annotation": "bytes"
+            },
+            {
+              "name": "digest",
+              "annotation": "str"
+            },
+            {
+              "name": "profile",
+              "annotation": "str"
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "_sequence",
+          "line": 155,
+          "args": "value, limit, budget, location=None, nonempty=False"
+        },
+        {
+          "kind": "function",
+          "name": "_contains",
+          "line": 163,
+          "args": "text, values, budget"
+        },
+        {
+          "kind": "function",
+          "name": "_sort_unique",
+          "line": 167,
+          "args": "values, budget"
+        },
+        {
+          "kind": "function",
+          "name": "_variable",
+          "line": 176,
+          "args": "value, budget, location"
+        },
+        {
+          "kind": "function",
+          "name": "_check_triple",
+          "line": 186,
+          "args": "t, catalog, budget, location, allow_variables=True, output=False"
+        },
+        {
+          "kind": "function",
+          "name": "compile_rules",
+          "line": 232,
+          "args": "definitions, catalog, budget"
+        },
+        {
+          "kind": "function",
+          "name": "_check_plan",
+          "line": 334,
+          "args": "plan, budget"
+        },
+        {
+          "kind": "function",
+          "name": "_resolve",
+          "line": 352,
+          "args": "operand, rule, bindings, budget"
+        },
+        {
+          "kind": "function",
+          "name": "_triple_key",
+          "line": 365,
+          "args": "t, budget"
+        },
+        {
+          "kind": "function",
+          "name": "_triple_equal",
+          "line": 371,
+          "args": "a, b, budget"
+        },
+        {
+          "kind": "function",
+          "name": "_instantiate",
+          "line": 375,
+          "args": "t, rule, bindings, budget"
+        },
+        {
+          "kind": "function",
+          "name": "_one",
+          "line": 381,
+          "args": "rule, match, catalog, budget"
+        },
+        {
+          "kind": "function",
+          "name": "evaluate_bound_batch",
+          "line": 461,
+          "args": "plan, matches, budget"
+        },
+        {
+          "kind": "function",
+          "name": "_evaluate_bound_batch",
+          "line": 470,
+          "args": "plan, matches, budget"
+        },
+        {
+          "kind": "function",
+          "name": "check_firing_group",
+          "line": 526,
+          "args": "plan, group, budget"
+        },
+        {
+          "kind": "function",
+          "name": "_check_firing_group",
+          "line": 537,
+          "args": "plan, group, budget"
+        }
+      ],
+      "fromImports": [
+        {
+          "line": 4,
+          "module": "dataclasses",
+          "relativeLevel": 0,
+          "names": [
+            "dataclass",
+            "field"
+          ]
+        },
+        {
+          "line": 5,
+          "module": "functools",
+          "relativeLevel": 0,
+          "names": [
+            "cmp_to_key"
+          ]
+        },
+        {
+          "line": 6,
+          "module": "weakref",
+          "relativeLevel": 0,
+          "names": [
+            "ref"
+          ]
+        },
+        {
+          "line": 8,
+          "module": "rule_comparator",
+          "relativeLevel": 1,
+          "names": [
+            "compare_values"
+          ]
+        },
+        {
+          "line": 9,
+          "module": "rule_profile",
+          "relativeLevel": 1,
+          "names": [
+            "OPS",
+            "PROFILE",
+            "RDF",
+            "Budget",
+            "InputLocation",
+            "ProfileFailure",
+            "SourceRecord",
+            "TermInput",
+            "account_input",
+            "encode_input",
+            "encode_output",
+            "fail",
+            "fingerprint",
+            "internal",
+            "text_compare",
+            "tuple_compare",
+            "utf8_size"
+          ]
+        },
+        {
+          "line": 28,
+          "module": "rule_terms",
+          "relativeLevel": 1,
+          "names": [
+            "ProfileValue",
+            "iri_minimum",
+            "parse_value",
+            "term_key"
+          ]
+        }
+      ]
+    }
+  ],
+  "I05ExplicitInputs": [
+    {
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "bytes": 23890,
+      "sha256": "b8c4ed3c3e8aa4e527858d0fd9589ebc7581118af990a0e977f80111ee35e017",
+      "blob": "acd9cd103d4370e5cc105eaf430643ab3df826bf",
+      "proposedMode": "explicit own-source adoption and listed adaptation; offline/query/samples remain byte-identical"
+    },
+    {
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "bytes": 13051,
+      "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+      "blob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2",
+      "proposedMode": "explicit own-source adoption and listed adaptation; offline/query/samples remain byte-identical"
+    },
+    {
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "bytes": 19390,
+      "sha256": "69f453be13734a02bf92ce468de146198ad9bd2b10595b892b1217f1643e4a27",
+      "blob": "479019cc448d39360dc271ea16dfdec5f6f776b4",
+      "proposedMode": "explicit own-source adoption and listed adaptation; offline/query/samples remain byte-identical"
+    },
+    {
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "bytes": 3951,
+      "sha256": "9513e064634952ac68b13d3f41526407d7ec37860b56638a0c3dfd4aae1dc0e2",
+      "blob": "8331670731a989b976569c2af8ca0eefaa5d5b7d",
+      "proposedMode": "explicit own-source adoption and listed adaptation; offline/query/samples remain byte-identical"
+    },
+    {
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+      "bytes": 14773,
+      "sha256": "5a05e93b4588577b97bcbe7f6b4ffda1fe2b27f917c25375e444b260ae3443f7",
+      "blob": "eea395248233d88372a63bd8c0be4b6210d7b72c",
+      "proposedMode": "explicit own-source adoption and listed adaptation; offline/query/samples remain byte-identical"
+    },
+    {
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "bytes": 1351,
+      "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+      "blob": "0013805b49a8842383fd38afde3ffbfbd54e1e40",
+      "proposedMode": "explicit own-source adoption and listed adaptation; offline/query/samples remain byte-identical"
+    },
+    {
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+      "bytes": 6448,
+      "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+      "blob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb",
+      "proposedMode": "explicit own-source adoption and listed adaptation; offline/query/samples remain byte-identical"
+    },
+    {
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+      "bytes": 33858,
+      "sha256": "387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9",
+      "blob": "1498ec46fcce718d26c0858448f8bcdeeb30fb76",
+      "proposedMode": "explicit own-source adoption and listed adaptation; offline/query/samples remain byte-identical"
+    },
+    {
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "bytes": 2415,
+      "sha256": "8bba36a3f97eedf972b4d9165e71b8046b225948b0864542a1fc3f1095c6f188",
+      "blob": "db107e7404b29f8bd81730f30666e173cf0276cd",
+      "proposedMode": "adapt approved5f; not copy C4 resource/runtime"
+    }
+  ],
+  "oldSharedRuntimeAdopted": false,
+  "qualityLegacyExportsOrExtraModulesAdopted": false,
+  "fixedMechanismProductSourcesCopiedImportedOrExecuted": false,
+  "staticSignatureExtractionUsesStdlibASTOnly": true,
+  "sourceCodeRawCopiesWritten": false,
+  "uniqueSemanticOracleOwner": "T05; root authorized oracle preparation; no second expected/engine generated here",
+  "originalC4Head": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+  "all1284FrozenHashesMatch": true,
+  "all205ExecutionInputHashesMatch": true,
+  "testsRun": false,
+  "GUIOrDesignatedReviewStarted": false,
+  "newDesignatedTasks": 0,
+  "conditionalQueueRank": 2,
+  "taskRuntimeFutureOwner": "I05 explicitly returned by root; old C4 bytes remain frozen",
+  "guidanceSha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+  "reviewHistory": [
+    {
+      "copy": "plan-before-budget-review.md.raw",
+      "bytes": 29587,
+      "sha256": "62b82c9dd00ffba6a691cbae14a0aab2343a1e949941740f94ec5735a91fbbd1",
+      "findings": [
+        "Make divmod remainder allocation stable by unique rule_id rather than source order.",
+        "Enforce whole-call <=100 definitions and unique IDs before per-rule compilation.",
+        "Selected verification uses whole-call pool and one child Budget per rule for all groups, not a fresh default per group."
+      ]
+    },
+    {
+      "copy": "plan-budget-reviewed-before-controller-update.md.raw",
+      "bytes": 30339,
+      "sha256": "28295b0efd79c68ab5fe9ba1dd5c335b72a2be0e9d044698cdbc3a00a4bf32b9",
+      "preservation": "Reconstructed exact reviewed bytes from retained first and later drafts by reversing only four identified document lines; checked equal to earlier tool-recorded hash, not represented as an earlier live snapshot."
+    },
+    {
+      "copy": "plan-before-selected-budget-correction.md.raw",
+      "bytes": 31795,
+      "sha256": "8a605c87daec40fd75c5671a09f40413d502c9dd64b8fd81ee83e9b550a62522",
+      "laterFinding": "Root identified repeated plan/input/output accounting in per-group revalidation; prior same-budget guarantee withdrawn. Explicit batch API and independent verification budget proof now pending T05. Version selection changed to runtime i04 / legacy finite6 / profile finite7, without old test assertion migration."
+    },
+    {
+      "finding": "Controller static finding: check_firing_group repeats plan/input and double-output accounting for every group; production success does not guarantee same-budget selected verification.",
+      "resolution": "Withdraw same-budget guarantee; require precise T05 batch verifier and independent bounded verification budget/cost proof, fixed implementation and root consumption approval. Selected stage remains dependency-missing; no reset/drop evidence/second validator.",
+      "identityResolution": "Keep default approved runtime i04 infrastructure; preserve legacy finite6 constant and all ten old tests including test_execution:148; only explicit profile uses finite7 and private format2, each bound to actual engine/lock. Intermediate finite7 old-test migration proposal withdrawn."
+    }
+  ],
+  "T01InProgressDependencyDocuments": [
+    {
+      "ref": "f51a9e10647d75cd07fe28007ab73c0e65451f63",
+      "path": "docs/iterations/T01/changeset-business-service-implementation-plan.md",
+      "bytes": 27888,
+      "sha256": "39ebbf378386004eb9e8654bf9dbd7465e50d5215a87c55fde01cffc258d71e1",
+      "copy": "T01-fixed-changeset-plan.md.raw",
+      "fullRead": true
+    },
+    {
+      "path": "iteration-control/2026-10-21-weekly-release/T01-changeset-business-service-implementation-authorization.md",
+      "bytes": 8818,
+      "sha256": "421f974c43975886d280386316b34b5f1e284712d68d38f338d8083beb217467",
+      "copy": "T01-changeset-authorization.md.raw",
+      "fullRead": true
+    }
+  ],
+  "T01WIPOrNewRuleAuthorityAdopted": false,
+  "ActualPendingDependencyPreparationAuthorizations": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T03-I05-profile-build-offer-preparation.md",
+      "bytes": 2878,
+      "sha256": "288350b2cf49586df962544d47fd76eb3b2f4b005cb1909828b42f7cc00b83da",
+      "copy": "T03-I05-profile-build-offer-preparation.md.raw",
+      "fullRead": true,
+      "state": "Actual controller document-preparation authorization only; no code/API/build dependency delivered or consumed."
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T05-batch-revalidation-proposal-preparation.md",
+      "bytes": 2854,
+      "sha256": "1945dc6b79d696aafead283a43cac6fb09090c320cf8113d91aa7a051678ea54",
+      "copy": "T05-batch-revalidation-proposal-preparation.md.raw",
+      "fullRead": true,
+      "state": "Actual controller document-preparation authorization only; no code/API/build dependency delivered or consumed."
+    }
+  ],
+  "finalPlanSha256": "990555ae61b086d40c33212115728bd1914063af25e34b3815345decc85ed66d"
+}

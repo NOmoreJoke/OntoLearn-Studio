@@ -1,0 +1,93 @@
+# I05 profile 新候选方案：独立有界静态审查
+
+结论：**有限静态方案 Pass。** 本次发现的三项预算组合问题已经在修订稿准确补齐；未发现剩余阻断最小方案审批的实质接口矛盾。批准七文件采用、新树创建、产品实施、依赖与域入口仍须root另作精确决定；本文不授予任何一项写权，不替代新实现审查、指定双审或产品验收。
+
+## 1. 固定输入与本人实际范围
+
+全文读取根授权 `/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/real-executor-next-preparation-authorization.md`：6389 B，SHA `6346b48f7d69219f2e5b574732d7a6198a11746732d69b70aa7cdc5e876c9682`。本次允许静态读七quality源码，不允许复制到产品、import/执行/测试、改C4或创建新产品树；T05为唯一新oracle作者。
+
+被审文档为主供方树 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/docs/iterations/I05/profile-integration-new-candidate-plan.md`：
+
+- 初稿完整读回：29587 B，SHA `62b82c9dd00ffba6a691cbae14a0aab2343a1e949941740f94ec5735a91fbbd1`。
+- 修订稿：**30339 B，SHA `28295b0efd79c68ab5fe9ba1dd5c335b72a2be0e9d044698cdbc3a00a4bf32b9`**。实际重新读回§4/4.1/6的全部修订及相关上下文，原稿在供方 `docs/reviews/I05/profile-integration-plan/plan-before-budget-review.md.raw` 的bytes/SHA确等于上述初稿，未覆盖原意见来源。
+
+固定T05实现 `1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb` 七文件均通过 `git show <ref>:<path>` **全文静态读取**，标准库AST只提取签名、字段及导入位置，未运行其代码：
+
+| quality文件 | bytes | SHA-256 |
+| --- | ---: | --- |
+| __init__.py | 548 | `9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c` |
+| rule_profile.py | 11987 | `b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c` |
+| rule_terms.py | 5909 | `8f58a68b896a62443ab3681c29802905d5ff1e010a944d32eb07f988319cc19a` |
+| rule_numbers.py | 7372 | `6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9` |
+| rule_calendar.py | 4047 | `6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec` |
+| rule_comparator.py | 1750 | `9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2` |
+| rule_firing.py | 19149 | `5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c` |
+
+完整静态符号、导入和输入收据在本人 `static-seven-inputs.json`，21664 B，SHA `e06bae45a3a9f6374a0f1824b00d9796f3a76f7f638eff6f2b9403ad86748116`。C4对照仍绑定523固定源及上一接口事实审查实际读回的签名/门；没有以T01的新代码补C4。
+
+本轮仅文件/Git/标准库hash与AST静态读取。没有product import、pytest、机制/数值矩阵运行、GUI、容器、指定模型、包/构建、新tree或第二份expected。只在本人 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-bridge/build/i05-profile-plan-review/` 新增报告/绑定，未改主源、测试、冻结材料或根state。当前AGENTS78df、共同责任e437及原无桌面约束继续适用；task-runtime临时窗已关闭不授权改冻结原件。
+
+## 2. 三项静态发现与关闭
+
+### PP-1：预算余数依赖原定义顺序，破坏顺序无关边界（已关闭）
+
+初稿§4.1按原definition ordinal给divmod余数。对同一rule集合重排保存/数组顺序时，额外一个单位会给另一child；在预算±1边界，可能改变成功/资源失败，不能同时承诺规则顺序不影响可观察结果。问题来自方案组合，不是固定helper算法缺陷，也未运行反例。
+
+修订第72、76行把编译及余数分配统一按已校验唯一完整rule_id的Unicode码点稳定序。原definition ordinal另存仅用于真实位置，不参与预算；顺序变化不能交换额度。此方案在静态上关闭上述分配矛盾，实际边界与排序/错误归属须由新增预算测试证明。
+
+### PP-2：拆成单rule计划后缺少整次100定义门（已关闭）
+
+固定helper `compile_rules` 在rule_firing:232–239只对本次definitions长度执行rules上限；单条调用永远len=1，无法代替整个新图执行调用的规则数量门。初稿只说其余结构上限不高于默认，不能保证所有child合计定义数<=100。
+
+修订第63行明确拆分前检查整次含停用定义至多100、确切RuleSpec类型、有界rule_id与唯一性；坏结构/重复id在排序与分配前拒绝。此为真实外层前置，未改变helper默认或借per-child门扩大规则数。
+
+### PP-3：selected复核必须共用整次池，不能每group新预算（已关闭）
+
+初稿selected段只说fresh compile/重建组，未把它与整次池及每rule所有group的共享生命周期明确连接；若实现逐group新建默认预算，会把总工作/trace等上限随组数放大。
+
+修订第104行明确：先核完整已保存定义数/唯一id，按执行同一稳定规则顺序分总池；每rule一个fresh plan及child Budget，该rule所有group连续共用，不逐group重置、不回收余额。与固定helper的plan/budget同对象门一致，未另造未驱动cancel或修改私有phase。
+
+## 3. 七文件私有布局与实际消费：可行的最小申请
+
+固定__init__:3–18的四旧导出会懒import范围外definitions/planning，不能把七文件当完整quality服务。方案第27–31行已精确划私有子模块采用面：原位置同字节七文件、仅direct rule_* imports，不探测根懒属性、不通配import、不复制旧四导出兼容测试、不用空stub。C4/5f无旧quality API，因此该采用面不会承诺原本不存在的服务兼容。需要额外旧服务时另向唯一owner申请精确递归依赖。
+
+rule_firing的相对依赖递归闭合于这六rule模块和标准库，direct imports的实际符号与§2相符。rule_profile:310–352依__package__和sys.modules识别实际record class；rule_terms的ProfileValue签发表、rule_firing的CompiledPlan签发表/原budget身份都不允许别名重复装载或从JSON伪装已验证实例。方案明确canonical模块名、同进程fresh compile/parse、不复制seal或私改机制，符合这些真实接口前提。这里只作静态可行性判断，尚无import测试或package证据。
+
+固定API关键约束正确：
+
+- compile_rules(definitions,catalog,budget)先推进compile阶段，constants/引用/闭合均先验；比较常量对也在零匹配前检查。
+- evaluate_bound_batch(plan,matches,budget)必须同一Budget对象，evaluate阶段仅一次；matches只接有界list/tuple，按bindings门限。所有比较先执行，再判断all true；false组不返回PreparedFiring，未凭空承诺false组trace。
+- check_firing_group只内部复核，没有图成员、全局匹配完备或producer认证能力；proof_leaves只是每when一组非空字符串引用，需I05实际图/稳定叶表与T01权威输入映射，不能从“通过helper”推断真实来源。
+- batch.payload/digest属于固定私有typed编码域；不等于Store canonical JSON、payloadHash或rowsHash。方案§6已分开。
+
+## 4. 新base、legacy与依赖范围：边界清楚
+
+从批准5f新建隔离后端候选，按八份I05自有C4源逐项采用/适配，resources从5f适配、另新增probe；合计十个I05产品路径，并非整树继承523。source八项明确含samples，避免旧私有测试的真实依赖被遗漏。旧C4保持原冻结，无自动替代、无旧worker/coordinator/JobStore/protocol/contracts/锁/build/桌面字节混入。
+
+方案将pySHACL/pyparsing pin、新锁/入口/收集及源包probe留T03精确阶段；正式定义/引用/Catalog/source/producer、Store/Job/worker/公共载体留T01，页面桥接仍按owner。依赖未有就明确缺失，5f design-only/test-runtime不冒充领域运行。这比从523整树起步后声称“不采用旧runtime”更符合本次授权。本人没有为此读取T01未授权实现，也没有重做供方10旧测试导入链/5f依赖完整审计；这些静态收据及最终新环境实际运行由供方负责。
+
+新profile与legacy显式分派且不混IR，保留旧默认Rule接口/五键结果。固定helper的predicate必须TermInput、rdf:type对象必须已声明类TermInput、变量名以字母起且有64字符总长上限；与C4允许变量predicate/type对象及?_等差异均写清。共同闭包/join不能把旧Rule盲转RuleSpec而静默减旧能力。后续新实现必须用原legacy回归检验实际保留，本文没有提前判为已实现兼容。
+
+## 5. 定位、预算与整批原子：方案可批准，实际仍待证
+
+ProfileFailure的安全字段不含rule_id，按每RuleSpec单独计划并在I05调用边界持有真实规则身份是可行的组合；无需重试猜错规则或改helper私有接口。所有计划先编译完成，再闭包/匹配；每个启用计划evaluate一次，全部成功后才组装整次结果，故方案没有要求固定API返回部分批来发布。
+
+将整次七类池按稳定id预留并固定child ProfileLimits，未用额度不回流，数学上各child分配之和不超过总池；term/source/digits/bits/结构不抬高。Catalog重复编码计费以及更早资源失败作为新工程防护政策显式披露，未称原机制单次全rules默认容量，也未冒称100条重规则能满负荷。零规则一个空plan/空matches仍验证Catalog，接口上有合法明确路径。
+
+图侧工作和机制池分开、先计数/扣费再追加匹配列表，未先分配旧100000项再截成1024。新图侧1M成本、池划分、资源先后与±1行为均是待冻结实施/测试的政策，不是本轮测得性能或完整容量。producer计算与selected复核的实际计费轨迹不同；复核重建、check_firing_group重算/序列化也会收费，需selected/limits专项验证真实上界与错误分类，不能由静态总池算术推导每份成功producer载荷都在任意剩余额度下可读。预算失败不应伪装载荷损坏或截断成功。
+
+future P3仍须真实Store整批/取消/晚到验证，纯局部return不是current原子发布；无pure取消token与新权威writer假象。
+
+## 6. 词法、source、版本与oracle：关键缺口未被隐藏
+
+profile入口在canonical_string前保真实decoded lexical/datatype/language及多个实际occurrence；没有真实token/span即None，不从N3或Graph逆造。新profile值门调用唯一parse_value，不能让legacy的ill_typed/toPython先截掉新profile合法值，也不能全局关闭旧门。年0/超宿主年份/秒精度等是静态必要性对照，不被写成亲跑反例。旧query/SHACL仍保持合同，消费者无法接受的profile合法term必须明确兼容/unsupported/未验，不冒充坏词法。
+
+Catalog来自真实声明/批准映射，不按rule常量自动补齐；source字节摘要/引用/原revision与prepared摘要分域，caller声明不能获得权限。新schema/diagnostic/public版本由T01提供，私有source和错误位置不塞进旧四字段error.params。新finite7/结果v2是提案值，真正三字段implementation须按实际engine/新lock冻结；旧finite6原载荷/rows/hash按原身份读取，新current/historical消费不能因历史标志豁免跨实现分区。
+
+共同closure保持完整有限新增集合与稳定单witness；所有规则读同一冻结closure，不反馈；全部真实规则匹配/heads/依据仍保留。FR502只要求相关公理和直接输入反查，不追加全形式证明穷尽。T05为唯一T09/22独立oracle作者，I05只消费固定交付、不生成第二份expected；17明确为原输入文件数。无actual回填golden、无第二matcher、无局部绿缩父验收。
+
+## 7. 最终限制与使用
+
+此有限方案Pass只表示精确路径、固定接口与组合政策在已读静态范围没有未关闭的审批阻断。没有验新profile实际图执行、数据规模/资源上界、词法/数值矩阵、selected序列化、包/平台、取消事务或正式公共接口。根授权/固定采用/依赖/newtree实施许可、T05 oracle独审与实际新实现/源包/完整check，仍是各阶段必要前提；指定双方同候选全新双审、push/PR/CI/正常合并/远端门不变。
+
+无需因本次文档修订重复C4旧测试或1254证据审计；原C4/Goal/实际队列状态没有由本人改动。本轮只做一次有界静态审查及其发现的定点关闭，不强行追加固定轮次。

@@ -1,0 +1,753 @@
+{
+  "scope": "Static Git bytes and stdlib AST only; product modules never imported or executed; no second oracle",
+  "fixedT05": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+  "fixedC4": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+  "authorization": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/real-executor-next-preparation-authorization.md",
+    "bytes": 6389,
+    "sha256": "6346b48f7d69219f2e5b574732d7a6198a11746732d69b70aa7cdc5e876c9682"
+  },
+  "files": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+      "bytes": 548,
+      "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+      "symbols": [
+        {
+          "name": "__getattr__",
+          "line": 6,
+          "header": "def __getattr__(name):",
+          "fields": []
+        }
+      ],
+      "imports": [
+        {
+          "line": 8,
+          "text": "from . import definitions"
+        },
+        {
+          "line": 12,
+          "text": "from .planning import build_plan"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "bytes": 11987,
+      "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "symbols": [
+        {
+          "name": "InputLocation",
+          "line": 19,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "section: str | None = None",
+            "index: int | None = None",
+            "side: str | None = None",
+            "span: tuple[int, int] | None = None"
+          ]
+        },
+        {
+          "name": "_location_shape",
+          "line": 26,
+          "header": "def _location_shape(location):",
+          "fields": []
+        },
+        {
+          "name": "check_location",
+          "line": 50,
+          "header": "def check_location(location, budget):",
+          "fields": []
+        },
+        {
+          "name": "SourceRecord",
+          "line": 67,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "reference: str | None = None",
+            "digest: str | None = None",
+            "revision: str | None = None",
+            "text: str | None = None"
+          ]
+        },
+        {
+          "name": "TermInput",
+          "line": 75,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "kind: str",
+            "lexical_form: str",
+            "datatype_iri: str | None = None",
+            "language_raw: str | None = None",
+            "source: SourceRecord | None = None"
+          ]
+        },
+        {
+          "name": "ProfileFailure",
+          "line": 83,
+          "header": "class ProfileFailure(Exception):",
+          "fields": []
+        },
+        {
+          "name": "fail",
+          "line": 109,
+          "header": "def fail(reason='INVALID_RULE', location=None, classification='input'):",
+          "fields": []
+        },
+        {
+          "name": "internal",
+          "line": 113,
+          "header": "def internal(location=None):",
+          "fields": []
+        },
+        {
+          "name": "ProfileLimits",
+          "line": 118,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "input_bytes: int = 262144",
+            "term_bytes: int = 16384",
+            "source_bytes: int = 65536",
+            "digits: int = 4096",
+            "integer_bits: int = 16384",
+            "temporary_bits: int = 32768",
+            "rules: int = 100",
+            "when: int = 16",
+            "comparisons: int = 32",
+            "heads: int = 16",
+            "variables: int = 64",
+            "bindings: int = 1024",
+            "firings: int = 1024",
+            "head_occurrences: int = 16384",
+            "trace_items: int = 8192",
+            "output_bytes: int = 262144",
+            "work: int = 16777216"
+          ]
+        },
+        {
+          "name": "Budget",
+          "line": 144,
+          "header": "class Budget:",
+          "fields": []
+        },
+        {
+          "name": "require_budget",
+          "line": 212,
+          "header": "def require_budget(budget):",
+          "fields": []
+        },
+        {
+          "name": "utf8_size",
+          "line": 217,
+          "header": "def utf8_size(text, budget, cap=None, location=None):",
+          "fields": []
+        },
+        {
+          "name": "text_compare",
+          "line": 238,
+          "header": "def text_compare(a, b, budget):",
+          "fields": []
+        },
+        {
+          "name": "tuple_compare",
+          "line": 246,
+          "header": "def tuple_compare(a, b, budget):",
+          "fields": []
+        },
+        {
+          "name": "_walk",
+          "line": 270,
+          "header": "def _walk(value, budget, output, sink, depth=0):",
+          "fields": []
+        },
+        {
+          "name": "account_input",
+          "line": 355,
+          "header": "def account_input(value, budget):",
+          "fields": []
+        },
+        {
+          "name": "encode_input",
+          "line": 360,
+          "header": "def encode_input(value, budget):",
+          "fields": []
+        },
+        {
+          "name": "encode_output",
+          "line": 367,
+          "header": "def encode_output(value, budget):",
+          "fields": []
+        },
+        {
+          "name": "fingerprint",
+          "line": 374,
+          "header": "def fingerprint(data, budget=None):",
+          "fields": []
+        }
+      ],
+      "imports": [
+        {
+          "line": 3,
+          "text": "import sys"
+        },
+        {
+          "line": 4,
+          "text": "from dataclasses import dataclass, fields"
+        },
+        {
+          "line": 5,
+          "text": "from hashlib import sha256"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "bytes": 5909,
+      "sha256": "8f58a68b896a62443ab3681c29802905d5ff1e010a944d32eb07f988319cc19a",
+      "symbols": [
+        {
+          "name": "ProfileValue",
+          "line": 47,
+          "header": "@dataclass(frozen=True, slots=True, weakref_slot=True)",
+          "fields": [
+            "term: TermInput",
+            "domain: str",
+            "value: object",
+            "language: str = ''"
+          ]
+        },
+        {
+          "name": "_signed_value",
+          "line": 57,
+          "header": "def _signed_value(term, domain, value, language, budget):",
+          "fields": []
+        },
+        {
+          "name": "check_value",
+          "line": 70,
+          "header": "def check_value(value, budget):",
+          "fields": []
+        },
+        {
+          "name": "iri_minimum",
+          "line": 87,
+          "header": "def iri_minimum(text, budget, location=None, lexical=False):",
+          "fields": []
+        },
+        {
+          "name": "parse_value",
+          "line": 98,
+          "header": "def parse_value(term, location, budget):",
+          "fields": []
+        },
+        {
+          "name": "term_key",
+          "line": 168,
+          "header": "def term_key(value, budget):",
+          "fields": []
+        }
+      ],
+      "imports": [
+        {
+          "line": 3,
+          "text": "import re"
+        },
+        {
+          "line": 4,
+          "text": "from dataclasses import dataclass"
+        },
+        {
+          "line": 5,
+          "text": "from weakref import ref"
+        },
+        {
+          "line": 7,
+          "text": "from .rule_calendar import parse_calendar"
+        },
+        {
+          "line": 8,
+          "text": "from .rule_numbers import parse_number"
+        },
+        {
+          "line": 9,
+          "text": "from .rule_profile import NUMERIC, RDF, XSD, ProfileFailure, SourceRecord, TermInput, account_input, check_location, encode_input, fail, fingerprint, internal, require_budget, utf8_size"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "bytes": 7372,
+      "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+      "symbols": [
+        {
+          "name": "Number",
+          "line": 14,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "numerator: int",
+            "denominator: int = 1",
+            "negative_zero: bool = False"
+          ]
+        },
+        {
+          "name": "check_ints",
+          "line": 20,
+          "header": "def check_ints(budget, *values):",
+          "fields": []
+        },
+        {
+          "name": "check_number",
+          "line": 28,
+          "header": "def check_number(value, budget):",
+          "fields": []
+        },
+        {
+          "name": "limbs",
+          "line": 38,
+          "header": "def limbs(n):",
+          "fields": []
+        },
+        {
+          "name": "mul",
+          "line": 44,
+          "header": "def mul(a, b, budget):",
+          "fields": []
+        },
+        {
+          "name": "shift",
+          "line": 51,
+          "header": "def shift(a, n, budget):",
+          "fields": []
+        },
+        {
+          "name": "add",
+          "line": 60,
+          "header": "def add(a, b, budget):",
+          "fields": []
+        },
+        {
+          "name": "divide",
+          "line": 67,
+          "header": "def divide(a, b, budget):",
+          "fields": []
+        },
+        {
+          "name": "rational",
+          "line": 75,
+          "header": "def rational(n, d, budget, negative_zero=False):",
+          "fields": []
+        },
+        {
+          "name": "digits",
+          "line": 92,
+          "header": "def digits(text, budget, location=None):",
+          "fields": []
+        },
+        {
+          "name": "power10",
+          "line": 109,
+          "header": "def power10(n, budget):",
+          "fields": []
+        },
+        {
+          "name": "compare_numbers",
+          "line": 126,
+          "header": "def compare_numbers(a, b, budget):",
+          "fields": []
+        },
+        {
+          "name": "_quantize",
+          "line": 135,
+          "header": "def _quantize(n, d, negative, width, budget):",
+          "fields": []
+        },
+        {
+          "name": "parse_number",
+          "line": 155,
+          "header": "def parse_number(text, datatype, budget, location=None):",
+          "fields": []
+        }
+      ],
+      "imports": [
+        {
+          "line": 3,
+          "text": "import re"
+        },
+        {
+          "line": 4,
+          "text": "from dataclasses import dataclass"
+        },
+        {
+          "line": 6,
+          "text": "from .rule_profile import NUMERIC, XSD, check_location, fail, internal, require_budget"
+        },
+        {
+          "line": 216,
+          "text": "from .rule_profile import ProfileFailure"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "bytes": 4047,
+      "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+      "symbols": [
+        {
+          "name": "Calendar",
+          "line": 28,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "day: int",
+            "second: Number",
+            "explicit_offset: bool",
+            "is_datetime: bool"
+          ]
+        },
+        {
+          "name": "day_serial",
+          "line": 35,
+          "header": "def day_serial(year, month, day, budget):",
+          "fields": []
+        },
+        {
+          "name": "parse_calendar",
+          "line": 46,
+          "header": "def parse_calendar(text, datatype, budget, location=None):",
+          "fields": []
+        },
+        {
+          "name": "compare_calendar",
+          "line": 96,
+          "header": "def compare_calendar(a, b, budget):",
+          "fields": []
+        }
+      ],
+      "imports": [
+        {
+          "line": 3,
+          "text": "import re"
+        },
+        {
+          "line": 4,
+          "text": "from dataclasses import dataclass"
+        },
+        {
+          "line": 6,
+          "text": "from .rule_numbers import Number, add, check_ints, check_number, compare_numbers, digits, divide, mul, power10, rational"
+        },
+        {
+          "line": 18,
+          "text": "from .rule_profile import XSD, check_location, fail, internal, require_budget"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+      "bytes": 1750,
+      "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+      "symbols": [
+        {
+          "name": "compare_values",
+          "line": 17,
+          "header": "def compare_values(left, op, right, budget, location=None):",
+          "fields": []
+        },
+        {
+          "name": "_compare_values",
+          "line": 26,
+          "header": "def _compare_values(left, op, right, budget, location=None):",
+          "fields": []
+        }
+      ],
+      "imports": [
+        {
+          "line": 3,
+          "text": "from .rule_calendar import compare_calendar"
+        },
+        {
+          "line": 4,
+          "text": "from .rule_numbers import compare_numbers"
+        },
+        {
+          "line": 5,
+          "text": "from .rule_profile import OPS, ProfileFailure, check_location, fail, internal, require_budget, text_compare"
+        },
+        {
+          "line": 14,
+          "text": "from .rule_terms import check_value"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "bytes": 19149,
+      "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "symbols": [
+        {
+          "name": "Variable",
+          "line": 42,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "name: str"
+          ]
+        },
+        {
+          "name": "Triple",
+          "line": 47,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "subject: TermInput | Variable",
+            "predicate: TermInput",
+            "object: TermInput | Variable"
+          ]
+        },
+        {
+          "name": "Comparison",
+          "line": 54,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "left: TermInput | Variable",
+            "operator: str",
+            "right: TermInput | Variable"
+          ]
+        },
+        {
+          "name": "RuleSpec",
+          "line": 61,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "rule_id: str",
+            "when: tuple[Triple, ...]",
+            "comparisons: tuple[Comparison, ...]",
+            "heads: tuple[Triple, ...]",
+            "source: SourceRecord | None = None",
+            "revision: str | None = None",
+            "definition_digest: str | None = None",
+            "policy: str = PROFILE"
+          ]
+        },
+        {
+          "name": "Catalog",
+          "line": 73,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "classes: tuple[str, ...] = ()",
+            "object_properties: tuple[str, ...] = ()",
+            "data_properties: tuple[str, ...] = ()"
+          ]
+        },
+        {
+          "name": "BindingMatch",
+          "line": 80,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "rule_id: str",
+            "bindings: tuple[tuple[str, TermInput], ...]",
+            "when: tuple[Triple, ...]",
+            "proof_leaves: tuple[tuple[str, ...], ...]"
+          ]
+        },
+        {
+          "name": "_CompiledRule",
+          "line": 88,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "spec: RuleSpec",
+            "constants: tuple[tuple[TermInput, ProfileValue], ...]",
+            "variables: tuple[str, ...]",
+            "prepared_digest: str"
+          ]
+        },
+        {
+          "name": "CompiledPlan",
+          "line": 96,
+          "header": "@dataclass(frozen=True, slots=True, init=False, weakref_slot=True)",
+          "fields": [
+            "rules: tuple[_CompiledRule, ...]",
+            "catalog: Catalog",
+            "digest: str",
+            "_budget: Budget = field(repr=False, compare=False)",
+            "_seal: object = field(repr=False, compare=False)"
+          ]
+        },
+        {
+          "name": "ComparisonEvidence",
+          "line": 117,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "index: int",
+            "left: ProfileValue",
+            "operator: str",
+            "right: ProfileValue",
+            "result: bool"
+          ]
+        },
+        {
+          "name": "HeadEvidence",
+          "line": 126,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "index: int",
+            "triple: Triple"
+          ]
+        },
+        {
+          "name": "PreparedFiring",
+          "line": 132,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "rule_id: str",
+            "bindings: tuple[tuple[str, TermInput], ...]",
+            "when: tuple[Triple, ...]",
+            "proof_leaves: tuple[tuple[str, ...], ...]",
+            "comparisons: tuple[ComparisonEvidence, ...]",
+            "heads: tuple[HeadEvidence, ...]",
+            "basis: tuple[str, ...]",
+            "source: SourceRecord | None",
+            "revision: str | None",
+            "definition_digest: str | None",
+            "policy: str = PROFILE"
+          ]
+        },
+        {
+          "name": "PreparedFiringBatch",
+          "line": 147,
+          "header": "@dataclass(frozen=True, slots=True)",
+          "fields": [
+            "firings: tuple[PreparedFiring, ...]",
+            "facts: tuple[Triple, ...]",
+            "payload: bytes",
+            "digest: str",
+            "profile: str = PROFILE"
+          ]
+        },
+        {
+          "name": "_sequence",
+          "line": 155,
+          "header": "def _sequence(value, limit, budget, location=None, nonempty=False):",
+          "fields": []
+        },
+        {
+          "name": "_contains",
+          "line": 163,
+          "header": "def _contains(text, values, budget):",
+          "fields": []
+        },
+        {
+          "name": "_sort_unique",
+          "line": 167,
+          "header": "def _sort_unique(values, budget):",
+          "fields": []
+        },
+        {
+          "name": "_variable",
+          "line": 176,
+          "header": "def _variable(value, budget, location):",
+          "fields": []
+        },
+        {
+          "name": "_check_triple",
+          "line": 186,
+          "header": "def _check_triple(t, catalog, budget, location, allow_variables=True, output=False):",
+          "fields": []
+        },
+        {
+          "name": "compile_rules",
+          "line": 232,
+          "header": "def compile_rules(definitions, catalog, budget):",
+          "fields": []
+        },
+        {
+          "name": "_check_plan",
+          "line": 334,
+          "header": "def _check_plan(plan, budget):",
+          "fields": []
+        },
+        {
+          "name": "_resolve",
+          "line": 352,
+          "header": "def _resolve(operand, rule, bindings, budget):",
+          "fields": []
+        },
+        {
+          "name": "_triple_key",
+          "line": 365,
+          "header": "def _triple_key(t, budget):",
+          "fields": []
+        },
+        {
+          "name": "_triple_equal",
+          "line": 371,
+          "header": "def _triple_equal(a, b, budget):",
+          "fields": []
+        },
+        {
+          "name": "_instantiate",
+          "line": 375,
+          "header": "def _instantiate(t, rule, bindings, budget):",
+          "fields": []
+        },
+        {
+          "name": "_one",
+          "line": 381,
+          "header": "def _one(rule, match, catalog, budget):",
+          "fields": []
+        },
+        {
+          "name": "evaluate_bound_batch",
+          "line": 461,
+          "header": "def evaluate_bound_batch(plan, matches, budget):",
+          "fields": []
+        },
+        {
+          "name": "_evaluate_bound_batch",
+          "line": 470,
+          "header": "def _evaluate_bound_batch(plan, matches, budget):",
+          "fields": []
+        },
+        {
+          "name": "check_firing_group",
+          "line": 526,
+          "header": "def check_firing_group(plan, group, budget):",
+          "fields": []
+        },
+        {
+          "name": "_check_firing_group",
+          "line": 537,
+          "header": "def _check_firing_group(plan, group, budget):",
+          "fields": []
+        }
+      ],
+      "imports": [
+        {
+          "line": 3,
+          "text": "import re"
+        },
+        {
+          "line": 4,
+          "text": "from dataclasses import dataclass, field"
+        },
+        {
+          "line": 5,
+          "text": "from functools import cmp_to_key"
+        },
+        {
+          "line": 6,
+          "text": "from weakref import ref"
+        },
+        {
+          "line": 8,
+          "text": "from .rule_comparator import compare_values"
+        },
+        {
+          "line": 9,
+          "text": "from .rule_profile import OPS, PROFILE, RDF, Budget, InputLocation, ProfileFailure, SourceRecord, TermInput, account_input, encode_input, encode_output, fail, fingerprint, internal, text_compare, tuple_compare, utf8_size"
+        },
+        {
+          "line": 28,
+          "text": "from .rule_terms import ProfileValue, iri_minimum, parse_value, term_key"
+        }
+      ]
+    }
+  ]
+}

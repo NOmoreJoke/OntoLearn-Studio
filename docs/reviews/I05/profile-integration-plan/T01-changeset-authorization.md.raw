@@ -1,0 +1,54 @@
+# T01 正式 ChangeSet 业务服务实施授权
+
+2026-10-21，总控在原 T01 功能/原 Goal 内批准下一限定实施阶段。继续原会话 `01a15bba-0884-7401-b24f-f50c1fcf60aa`、原 `.worktrees/T01-project-transactions` 与 `feature/weekly-t01-project-transactions`；不重建功能或 Goal。本授权不是实施完成、默认产品模式开放或父验收通过。
+
+## 固定依据与阶段决定
+
+批准固定文档提交 `f51a9e10647d75cd07fe28007ab73c0e65451f63` 的计划：`docs/iterations/T01/changeset-business-service-implementation-plan.md`，27888B，SHA256 `39ebbf378386004eb9e8654bf9dbd7465e50d5215a87c55fde01cffc258d71e1`。根已读取原5eb全文、f1实际完整delta和最终39两项澄清，Git原文与当前/根快照逐字相等；fd→f51仅4条本线docs/证据，产品仍为已收口 `fd3944a35aed05c279d7d0c2f9a077c84d99aaf2`。批准集成基线仍为远端develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`，14:14实际ls-remote核验相同；f51不是新的已批准远端基线。
+
+本线最终独审19255B，SHA256 `d4869249d713abd168a352e5ac0fe5996bcbe972ddad6ab99725f3b255aeb6a0`，根已读原报告和全部新增关闭段。根独立技术报告 `T01-controller-changeset-business-plan-review.md` 20637B，SHA256 `c33915bcc39c17032ea600d01759f3d5adaf09fa527a8ebc40a497b8972d83b7`，根已全文读回原前缀及新增delta关闭/提醒。两项P2在计划层关闭：确认持久原回执优先于过期临时cursor、撤销冲突的真实完整影响返回。最终39仅把首次签发限定和业务请求不含传输id写得更明白，与独立关闭结论一致；不增加实现路径或新验收轮次。
+
+现在按固定计划C01–C08实施真实 `changeset.commit`：typed人工asserted RDF和现Store已验证ontology triples/singleValuedPredicates/references子集的预览、完整Diff、独立受信host确认机制、真实Job原子提交、选择性undo、receipt/operation对账及异常重开。复用唯一Store/Job/既有数据库与canonical，不把test.atomic改名或创建第二writer/执行器。
+
+## 精确施工路径
+
+仅下列10条产品路径可写；每条由原T01负责，内部agent可按不重叠责任拆分：
+
+1. `packages/engine/src/ontolearn_engine/project/domain_changesets.py`（新增）
+2. `packages/engine/src/ontolearn_engine/job_store.py`
+3. `packages/engine/src/ontolearn_engine/coordinator.py`
+4. `packages/contracts/v2/schema.json`
+5. `packages/contracts/v2/registry.json`
+6. `packages/contracts/v2/fixtures.json`
+7. `packages/contracts/v2/binding-regressions.json`
+8. `packages/contracts/src/v2.ts`
+9. `packages/contracts/src/index.ts`
+10. `packages/contracts/python/contract_v2.py`
+
+仅四条新增测试：`packages/engine/tests/test_project_changeset_service.py`、`packages/engine/tests/test_project_changeset_stdio.py`、`tests/unit/t01-changeset-canonical.test.ts`、`tests/unit/t01-changeset-runtime.test.ts`。本线 `docs/iterations/T01/`、`docs/reviews/T01/`可写必要阶段文档、探针原件、失败、独审及输入/交付索引，不覆盖历史。临时构建输出/自己的隔离验证产物按原约定保留；不能借证据目录引入第二产品服务。
+
+现 `transactions.py/storage.py/project/format3.py/applications.py/worker.py/protocol.py/resources.py`、dependencies/errors、全部desktop main/preload/renderer、build/锁/CI及现有测试不在此阶段可改范围。`tests/unit/task-runtime.test.ts`窗口已关闭、未来唯一维护者I05，T01只读。真实必要额外改动先保反例/首失败，给最小路径与原owner协调；不通过删验收、扩大skip或复制他线实现绕过。
+
+## 已批准的具体合同
+
+- 仅显式内部strict3增加 `changeset.preview`、`changeset.diff.page`、`changeset.confirm`，提交复用原job.create的changeset.commit；默认2旧defs、health/error、原test/application路径及原hash保持。新3专属pending/result匹配直接严格校验同一canonical，不放宽旧2。registry仅声明该内部profile的真实状态。
+- typed输入的触及before/after都必须在可逆支持集合；未触及opaque定义保留。preview不签确认、回滚预演不改变正式域状态/marker/历史。四类hash按其原定义各自核验，不互换。
+- 完整Diff canonical UTF-8原bytes上限16777216、单段32768、最多512段，wire base64；完整manifest、每blob现262144上限、实际encoded page/frame预算均先计算再原子保存，超限整体拒绝，不留半准备/签发。批准的是本阶段工程guard，不是Q5产品容量、内存/耗时实测或永久能力承诺；原有完整预演分配的资源风险须如实保留。实际共享重组helper核全部顺序/offset/长度/hash及整值解码，真实Node验收调用它。
+- 首次confirm核活的完整Diff分页链、当前base/前态/control/引用/ownership；成功hello的真实clientId仅作host归因、allowedProjects作现项目许可。host/Session/clientId不是人类确认；renderer/Agent不得自报actor/write/confirmed。真实人类展示/点击仍待I06/main/UI接线与隔离实测，不由CLI代替。
+- 同一确认事务中复用job_details严格version1原签发回执，与真实confirmation UUID/行/原完整业务params/hash/响应互证，命名空间与ownership detail分开。精确同host/Session业务重试先读原回执，TTL/GC/base推进不重签；传输request id/timeout/retry计数不混作幂等身份。新Session、新operation、已claim原operation分别按固定计划拒绝/重验/原完整context对账；缺失或不一致fail-closed，不补造。
+- undo预览ready/conflict有限union；conflict无可提交凭据，同一page方法用diff/undo-impact严格分文档。真实目标前后/控制、后续完整证据、当前references/owner/slot投影完整影响；ABA不只看当前值。缺证据显式impactComplete=false并暂停，预算不足整体拒绝，不解析异常文本、不用错误类别冒充完整清单。原Store预演仍是唯一可提交判断。
+- create受理事务为唯一claim+queued；后续提交事务为domain/marker/Store3 sequence/checkpoint/receipt+Job result+succeeded。正式分支不启test worker，running后commit闸前真实让dispatcher受理控制；以已dispatch并持久接受cancel定顺序，stdin字节到达不是已取消。同步SQLite中不承诺响应新cancel，提交后不倒写失败。原operation失响应对账，域失败与真实已受理Job终态分别记录。
+
+## 必须实际交付的验证与证据
+
+固定计划C01–C08全量保留：真实定义/事实预览及零域写入；大值完整多页/UTF-8/全部预算边界与重组；确认来源、A-01/retirement/版本竞态、丢响应后TTL/GC精确回执；testMode=false实际Python CLI严格3的正式Job全链/默认2拒绝；逐相关持久边界异常/存储失败/取消/实际子进程退出和重开；A-02无半批；选择性undo保留不相交B、ABA/后续引用完整影响、原历史不改与版本前向；真实Store发布结果的失效机制及无关结果保留。
+
+机制注入/真实OS进程、源码/包内、静态/运行/真人UI、当前宿主/目标平台分别标明。queued取消不能充running取消；控制fixture明确其调度范围，并另核正常生产路径。存储失败和异常退出各边界逐项记录实际故障注入/终态，不能靠一份成功日志或数量断言代替完整状态/结果。
+
+完成受影响专项、独立实现审查、正常完整 `npm run check`、`npm run verify:sources`，新同候选unsigned目录包与实际包内CLI正式提交/undo/重开、canonical资源同源核验。先失败原件不覆盖；保留完整输入/输出/执行session与终态、源码/包/资源hash与Git冻结对应。旧fd启动绿不能当新业务绿，不重测无变化项目仅为刷新日期。
+
+## 完整父范围与后续门
+
+原44项地图、FR-001–006/804、完整57 P0与附录C–G/第10–12节仍保留：项目生命周期、真实完整领域producer、四触发快照与包含metadata/draft/learning/不可洗白辅助历史的完整项目恢复、source/学习账本、正式main项目选择/Diff展示/人类确认、真实Agent/consumer/平台/真人等尚未闭环。本阶段domain undo/CLI机制不得关闭这些项。
+
+当前用户桌面不运行GUI/Electron/native/e2e/HMR或审查应用；必要桌面验证保留到真实隔离入口。父原Goal保持，完成内部阶段后交总控核验，不自行标父完成或默认生产3开放。最终实际集成基线与内容变化仍须验证；原GLM-5.3最高、MiniMax M3.1-Flash/xhigh全新同版本双审、所有意见处理、双Pass后才push/PR、实际CI、正常develop合并及远端核验继续执行。总控后续按实际冻结DTO协调I06命名接线，本授权不提前授UI实现。

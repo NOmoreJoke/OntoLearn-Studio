@@ -1,0 +1,14 @@
+# T03：I05 新计算候选的依赖与包入口准备
+
+2026-10-21，总控授权原T03会话 `01a15bcd-f838-75a2-b2c3-692915cc91c3` 在原树/分支内继续精确文档准备。T03仍为 `packages/engine/pyproject.toml`、`uv.lock`、`scripts/build-engine.mjs`、`packages/engine/entrypoint.py` 的唯一维护者；本次不改变四文件、不运行产品或构建、不复制未批准依赖，只交可直接决定的具体offer。
+
+依据是I05新隔离后端候选方案根快照 `.private/next-business-plans-received/I05-profile-new-candidate-plan-28295b0e.md.raw`，30339B，SHA256 `28295b0efd79c68ab5fe9ba1dd5c335b72a2be0e9d044698cdbc3a00a4bf32b9`。它仍在独立审查、没有产品施工许可。新树拟从批准5f起，不继承C4 runtime/lock/旧包；I05只申请自有语义八模块、resources最小适配、新 `semantic_profile_probe.py` 及固定T05七个quality子模块，实际Turtle/RDFS/SHACL依赖和源包探针须由你配套。
+
+请只新增 `docs/iterations/T03/I05-profile-build-dependency-offer.md` 与 `docs/reviews/T03/I05-profile-build-dependency-offer/` 下的输入绑定/必要静态独审/收据：
+
+1. 静态核实际批准5f依赖/锁/构建/入口，固定C4 `523c478d5f39671c4ac7c1ea6997e51d3047d58e` 的pyshacl0.30.1、pyparsing3.3.3及真实传递依赖，和本线现有XLSX工作已有版本关系。指出最小需要的具体四文件delta、原有依赖保留规则和唯一lock来源，不把C4 lock整份采用当批准。
+2. 给实际新探针入口和输入/输出限制的建议合同：源/包走同一canonical模块/真实 `reason`，完整输入/结果与安全失败，不写Store、不注册领域capability、不模拟Job、不混期望。I05的probe仍未实施，未知字段明确提需其冻结，不先造一份第二probe或执行器。
+3. 静态核七quality相对路径及明确子模块符号的PyInstaller收集；根包四旧懒导出不属本私有采用面，不能为凑旧API收集整个quality/未批准definitions/planning。说明实际identity/lock/resource/输入文件与包内验证方式、需要原owner提供哪些固定字节。
+4. 给不会争写本线已冻结候选的实施隔离/提交与向I05交付方式建议，固定ref/路径/hash及原owner写入/接收边界。当前只提案，不在I05拟树创建/写入、不改其他树。正式实施后必须源包同输入、完整check/source/新包/真实probe终态等原门，本次不伪造运行。
+
+可用git/文件/标准库AST和hash只读，不import产品、不跑测试/包/GUI，不重测原绿；完成必要独立只读复核和本地docs提交后交完整材料。无需等待新领域runtime/公共接口整体合并才做这项准备，也不因准备授权自启新代码。Q6已采用；全部现有无桌面打扰、冻结候选、指定同版双审/CI/合并门及原T03父范围保留，不重建Goal。
