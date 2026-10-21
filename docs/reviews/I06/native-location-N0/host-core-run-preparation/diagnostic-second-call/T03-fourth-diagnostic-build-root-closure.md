@@ -1,0 +1,11 @@
+# 第四诊断新输入构建：受限收件
+
+2026-10-22。总控已全文读主文5690B、作者结果独审9440B及根独审12252B/SHA256 `e7fbbfb98eaeba6255471fce8a2e8a5845ec08e9c3bb29a908c768ee283ff95d`，受限接收输入 `d98b503ebe9c477d30d0f36d831cffbeeaf2a988` / 纯过程 `d51a0555e6feb062fc935173222cc142687901a5`，状态仅built-unverified/NOT_RUN。
+
+两源精确fc采用、其余七源、lock八叶与CMake/driver保持原授权。最终204项current/Git/hash闭包成立，174实际过程差分=173A+1M精确属性，固定输入后产品0；144原位3022047B、109副本和真实13构建/10静态调用已核。四dep1798tokens/877paths无增删，既有witness复用；未重扫旧供应或三轮历史。
+
+新digest `a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77`；T03独占core/artifacts中的core343920B/SHA `d4f5ca322146d9696860a74de4bee2ad27866a2223340669898fb82cbbfeb817`，child34120B/SHA `21928ca2b5570055fad4bebcd81fcb658016ca9a738294397a83056b662b87e8`。均冻结，不再构建/替换。
+
+metadata保守1556431/1800000含根12500审查+2500收口，未装入作者独审票或释放旧预留；build声明72958464344/85899345920、旧供应9745727085独账。不是OS IO或性能实测。原prebuild whitespace2与后验62处/7文件full2、过滤0、首ETIMEDOUT/drainunknown和旧255超cap均保留。
+
+静态链接不关闭首次owner-create根因、实际新诊断输出、EXCL、目标OS、父N0、指定同版双外审、CI/PR/develop。T03不执行产物，不增加第五构建或纯ack提交。仅向原I06另发具体调用准备窗口，准备不等于运行许可。
