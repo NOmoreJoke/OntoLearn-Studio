@@ -1,0 +1,180 @@
+# T05 TA-S/L/I-B/X/C 技术答复建议稿
+
+**仅供 I05 owner／总控复核形成正式答复。不是本稿作者代 owner 的接受回执，不是 Q6/REC/profile 产品采用、公共格式批准、文件释放、实现或运行通过。** 本轮只读固定文档；仅写此 ignored build 报告，不读新候选实现/库/测试，不执行产品、探针、测试或 GUI，不提交。当前 C3 字符串缺陷的真实修复与重新冻结/验收独立进行，不由 TA 文档改变 C3，也不夹带新规则比较/多 heads。
+
+## 1. 输入身份、阅读范围与最新责任
+
+T05 固定 commit：`157963e369c9909cd79194fc5ea0641506a5fd48`。均用 `git show <固定SHA>:<path>` 读取并按原 bytes 独立 hash：
+
+| 文档 | bytes | SHA-256 |
+| --- | ---: | --- |
+| docs/iterations/T05/q6-policy-decision-request-r1.md（全文） | 15553 | `a0baa0fef56de1100596b2c1a7892c8fbd85f606f6247d7954cbe3d01d9a2c09` |
+| docs/iterations/T05/comparison-operator-consumer-matrix-r1.md（标题 r2，全文） | 23811 | `46a7435b471f420bb9a787b6577300f3e328295594afe3dfff90434029a7c5db` |
+| docs/reviews/T05/operator-consumer-r1-r2-disposition.json（全文） | 5521 | `5ab91bba3ffa1fea4d4707b71404162ab993d696731cae7351bbb49f93f84f20` |
+| docs/reviews/T05/controller-operator-consumer-policy-review.md.raw（全文） | 17603 | `70909867a8786f181639810c3c40d188f92c2849311dd148f6bf55fce044705a` |
+| docs/reviews/T05/owner-design-responses-r2-receipt.json（全文） | 4081 | `ba7f93175933d51c305d940e6e78c10c7a7d20ffd41c836e3b9569a7d575fd08` |
+| docs/reviews/T05/controller-audit-r1-r2.md（全文；此为更早 fixture R1/R2，勿与本次规范消歧混淆） | 2954 | `c755b177bc7b21d54fcac7217f665ba6f522ff26b338dd49b4ace90aa3e7581a` |
+
+I05 已有正式技术回复：固定 `ffc462b2332dfb8af7c15c91adb3ac1f7ac1b24d` 的 `docs/reviews/I05/t05-design-response-c3/owner-response.md`，全文 23281 bytes，SHA **`723368ccc8902c70dcd28939f7b4a21f7dc6d8488d39c7b981b1952caf33fc4e`**。其明确选择优先于更早独立草稿：包括所有未定义跨域的 eq/ne 也整任务失败，不能沿旧草稿的跨域 false/true 建议回退。D3/D4 技术接受保留，不重置为无人回答。
+
+本次沿用此前已经固定的接口事实文档 [t05-interface-facts-26.md](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-execution/build/t05-interface-facts-26.md)（SHA `08bd865a9eed4ca7ae32552acb9c0070a7fb437335e6a9ac026ed5b28257b3ab`）定位既有入口和 adapter；并未重新读取这些链接的未批准源码。它只证明当时静态事实，不证明之后修复或完整规范符合。本报告引用的标准含义来自上述固定文档中的官方 REC 核验，不是本轮新增网络规范审计；未穷查勘误。
+
+最新指南实际读取：本树 AGENTS SHA `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`，共同指南现为 **`ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff`**，权限 SHA `3630cc78ad87d1833ad33102f437d9027814cb688b319c4cd3ae9a2d0fbde4f7`。共用指南新增 worker.py 未来唯一 T01：旧 ffc 取消说明中的“I05 worker owner”是当时责任，**本稿以后续 T01 为准**；不回写旧文。四语义 future offer 仍未生效；P2/P3/P5/P6 仍 I05 原 owner 代改。T01 唯一 Store/coordinator/worker/canonical/checker/main-engine，T03 锁/构建/entrypoint，其他精确责任保持。
+
+当前 C3 状态依据本次总控直接通报：plain/显式 xsd:string 匹配、selected 去重/计数缺陷已由 12 个真实 worker 见证确认，正独立封存/修复。**本稿没有运行或全文核验该新证据，引用为 owner 已确认事实，不能报本稿复现或修复通过。** datatype 的当前已核例正确也不能扩写成全部 datatype/date/range 已符合。
+
+本轮总控另给的 frozen 静态入口事实（本稿未追读源码/未复测）：execute_request:375–378 的初始 facts/ontology `_terms` 不论后来 query/validation，均为 **REASON/SYNTAX/VERIFIED_USER_INPUT**；仅新增规则 operand 才 R/R/U。`semantic._shapes`:503–513 当前 min/maxInclusive 的 shape 参数只收 **integer/int/decimal/float/double，且 not ill_typed**，不是任意 Literal；`sh:datatype` 的 langString 不在现10类白名单。这些是当前有限入口/Q6缺口的精确事实，下面不得把规范目标误写成当前支持，也不以静态差异新增运行bug结论。
+
+## 2. 逐 TA 的 owner 答复建议
+
+### TA-S：建议技术接受；RDF 1.1 身份义务与新增六算子分开
+
+建议答复：“接受 S 为 RDF 1.1 xsd:string 同一抽象域，simple 无语言与显式 xsd:string 的同解码 lexical form 是同一 term；这不是 Q6 可选的合域。新增规则同域 eq/ne/lt/le/gt/ge 建议接受按**解码后的合法 Unicode 码点序列字典序**；不 trim/casefold/NFC/locale/数值化。规则政策仍待 Q6 采用，当前没有该比较执行器。”
+
+具体可实施定义：从真实 RDF literal 取原 decoded lexical form；eq 为序列相等，序操作从首个不同码点比较，前缀较短者小。不能比较 source 的引号、转义序列、N3 字符串或 JS UTF-16 code units。U+10000 对 U+E000 应按码点顺序，é 对 e＋combining accent 不做 NFC，因此不同；转义写法若解码成相同文本不制造新 term。非 Unicode 合法输入按真实词法入口拒绝，不把未配对 surrogate 混入排序。
+
+term/source 分层：省写 datatype、双/长引号、escape 原文可作为来源信息，不能参与 RDF 1.1 term 身份。**不是所有入口现有快照都保存了所有 source bytes**；只持有 canonical N3 时，不能事后假造原始引号/escape。源文本可用则保留并认证其真实来源；若要求持久往返原写法而现 authority 无载体，由 T01 决定唯一包装/引用，不在私有 trace 编造源记录，不改历史 hash。当前 C3 的身份 bug 由 I05 单独修复过门；新增 A6 算子不随此自动实现。
+
+补齐责任/见证：I05 term/图/selected/query/SHACL 各入口与既有回归由原 owner 在获准修复候选维护；保存表示及 source 容器涉及公共/存储时 T01；未来 comparator 在四路径真正交接后由有效 owner。需空串/前缀/补充平面/组合文本/不同 escape 同文及 simple/显式 datatype 的 fact、rule constant、query、SHACL in/count、selected 真实全链正反例。12 worker 缺陷证据不得变成通过证据。
+
+### TA-L：建议技术接受候选表示与严格标签域；BCP47 校验/来源保存为待补入口责任
+
+建议答复：“接受 well-formed language tag 与内部表示/source/值比较分层；推荐合法标签在内部抽象 term 统一 ASCII 小写，保留实际可得 source 原拼写。接受同标签 L[t] 六算子按 S 的文本码点序列比较；合法不同标签（包括 en/en-US）六操作一律 E3，无语言回退。非法标签是入口错误，不是另一个合法域。”
+
+不要把整个 literal 文本小写；只规范化标签。BCP47 well-formed 检查应覆盖被选规范允许的 private-use、grandfathered、extensions 等语法，大小写不是有效/无效分界；不要用只接受两位/五位语言代码的窄正则冒充完整 well-formed，也不做实时语言注册表/网络查验。具体 BCP47 规范版本/合规 fixtures 与 RDF REC 的引用链需负责人 pin；本轮不宣称现 parser 已完整验证。标签值/term 的小写等价不授权改原数值 lexical form，更不由 comparator 的 en/EN 结果证明 graph join/count 正确。
+
+需要明确的入口方案：literal 文本解码后先验标签，成功才生成规范化语言 term；source 单独记录原文及可信资源身份。term 构造/严格 N3 roundtrip/selected 重建须一致，旧身份历史不重新签名。如果内部规范化影响现有严格 payload/hash，必须由唯一 authority 设计新保存/读写边界，不在读取历史时静默改对象。新规则 en 与 EN 同域、en 与 en-US 异域是不同于源码字符串大小写的两个层次。
+
+补齐责任：I05 原 owner 精确接受 term parser/严格重建所需路径；P5 不因这一建议默认扩大、T05 不能改 parser。T01 处理持久包装/来源/版本与 worker 接线。非法标签可建议最终走既有非法语义输入类别，但**具体 reason×实际 producer/stage/origin 尚须该入口 owner 接受**；现 M 表没有独立 language-tag reason，不虚称已有 route。E3 则沿已接受但未实施的 M3。需 en/EN 同 term 往返、en/en-US、同标签文本排序、合法特殊标签与非法标签双侧、持久/selected/source 认证完整见证。
+
+### TA-I/B：建议技术接受 Q2，所有顺序操作包括同值 le/ge 失败
+
+建议答复：“接受 IRI 同域仅 eq/ne，按完整解码 IRI 身份，不解引用、percent decode、URL 规范化、host/path 大小写折叠或尾斜线修补；IRI 源写法的 escape 若解码为同一 IRI 按相同 term。lt/le/gt/ge 全 E3，即使两边相同。接受 boolean 同域仅 eq/ne，true/1 映射 true、false/0 映射 false；原 literal lexical form 及 term 保留，不把 boolean 当 Python numeric。boolean true 对 integer 1 是跨域，六操作全 E3。”
+
+按 operator 先查可用矩阵，不能先做 equality 再让同值 le/ge 偷渡为 true；布尔 lexical 先按 pin 的 XSD 规则校验，不能用任意非空字符串/`bool()`。IRI 不作为字符串 S 处理。不给 IRI/boolean 顺序是规则应用政策；不声称 SPARQL/SHACL 同样禁止这些顺序，也不改其消费者。P0 普通 IRI 位置/controlled head 门保留。
+
+补齐责任：未来同一 comparator owner；非法 term/boolean lexical 用现可信入口和 M1/M4，受限类型/非有限不伪归 boolean/type-error；错误定位仍 T01。需同/异 IRI、大小写/尾斜线/percent 拼写差异、相同 IRI le、false/true、true/1 的值真但 term 异、false/0、所有顺序失败及 B×N 双向六算子。当前仅 term join，无上述 value Q2 实现，不报已支持。
+
+### TA-X：建议技术接受九域有序矩阵全部格；计数只是覆盖分类
+
+建议答复：“接受固定 r2 九域表具体 A6/Q2/X6：N/S/L[t]/Dz/Dl/Tz/Tl 同域 A6；I/B 同域 Q2；除 N 内明确六型混合外，其余有序跨域全部 X6；L[t]×L[u] 在 t≠u 时 X6，包括 ne 也失败。不能将类型不同自动解释为不等。”
+
+该接受是对新格的技术推荐，Q6 仍须采纳这些可见限制。尤其 date/dateTime、带/不带 timezone 即使在别的规范可确定关系，也因本应用域划分失败；这不是所有 RDF/SPARQL/XSD 的规定。486=9×9×6 是域分类槽，216=6×6×6 是 N×N 的细化，不能相加成已通过数量；L 标签参数族和每格多种真实值/错误边界还需展开。对称结果不等于可以只测一方向：混型转换/operand 取得/source 绑定应双向核验。
+
+保留 ffc D5：全部定义常量/变量闭合先检，合法 join 无解为空；每完成 when 的 binding 稳定顺序校验全部 comparisons，前 false 不隐藏后错误；全真才实例化同绑定全部 heads。任何 E3/E4/E6/E8 无 partial current，不用成功 job 传错误定位。M3 未实施，不能因矩阵写 E3 就说 adapter 已有路由。
+
+补齐责任：T05 负责完整政策 oracles/原 22 例补充设计；有效语义 owner 负责同一执行器实现和实际原因触发；I05 负责 adapter/既有回归代改；T01 负责终态/定位/权威持久和版本绑定。公开 DTO、policy 字段、implementation 冻结不得由矩阵自行创建。
+
+### TA-D3/D4：保留已接受技术方向；规范 pin/产品采用和实现仍分记
+
+不撤销、不重做为“待技术答复”：精确整数/decimal；原词法精确有理直接一次舍入到 binary32/64 nearest/ties-even，再按实际有限表示值精确跨型比较；boolean 独立；±0 值等、term 异；合法非有限/+INF/舍入溢出 E6，非法词法 E4、实际预算 E8、subnormal/下溢零不一概拒绝。nearest/ties-even 是应用固定可重现选择，不误称规范只容许唯一映射。
+
+独立 proleptic Gregorian、完整精确秒/offset、date 取日00:00起点 key、dateTime 取瞬时 key；双方无 TZ 用同一本地域，双方有 TZ 用显式 UTC 域，混合及 date/dateTime 全六操作 E3；不补本机时区/DST、不复用丢 offset 的 Literal.value。年零/负年、24点全零进位、非法60秒、±14端点、超过宿主范围/微秒及预算仍需完整固定 fixture 与入口可达性。date 是区间而应用选择起点 key；跨 TZ 拒绝比 XSD 部分序保守，是要向产品明示的政策。不能以 Q6 文档代替 comparator、图门、持久/selected 及消费者正确性证据。
+
+N1–N5 的有日期 REC pin 和明确勘误集合可建议提交有权人选择，但本稿不签为已采纳；`OntoLearn-rule-comparison-profile/1` 仅文档标识，不能当已注册 public field、finite5 或任何已批准 implementation。未来新比较/多 heads 需新身份、唯一 source/policy/定义绑定、严格三字段新消费；旧历史原身份读回不等于新任务可混用。
+
+## 3. TA-C：接受修订合同目标；逐格确认缺口和补齐责任
+
+建议 owner 答复：“技术接受 §4 G/N/C 与 K/D/R 的分工。消费者分别遵守自己的批准合同，不统一使用规则 comparator，不因与 D3/D4 不同而拒绝本来正确的消费者行为。下面标明当前未支持/未证的格；不是把全部 C 改成已支持，也不以安全拒绝关闭原验收。”
+
+为每格给出的状态含义：**待 N**＝未来规则/selected profile 当前未实现；**缺陷待修**＝总控已确认 C3 身份反例，修复独立过门；**有限＋待证**＝有原候选能力/入口事实，但此完整值域无本轮/完整运行证明；**入口拒绝／缺口保留**＝现图门先拒，不能报 SHACL 已产生违规或某 consumer 已验证。这里的“接受目标”不直接批准新增路径/能力。
+
+### C-G：图入口→新 reason／新 selected（矩阵第86–91行首数据列）
+
+| 值行 | 逐格建议/真实边界 | 未支持补齐责任 |
+| --- | --- | --- |
+| S/L/I/B 普通 term | 接受 G＋N 与抽象 term/source 分离。S 身份当前缺陷待修；L合法性/内部标签表示/source尚需入口证据；I/B 不因此获得比较或顺序。 | I05 独立修 C3 字符串；未来有效语义 owner 补新 N；parser 修改仍原owner精确授权，持久表示T01。 |
+| integer/int/非负/decimal | 接受精确值域、原词法 term；当前整数 lexical/range 图门不等于新数值比较，N 待实现。非法词法与真正预算失败区分。 | D3 有效 owner，I05 实际 reason/context；T01 producer/selected authority。 |
+| float/double 边界/混型 | 接受直接声明精度舍入并保留 term。当前库 float/double 同 Python float，不证明 float32；新 N 未支持，不允许双重舍入过门。 | D3 owner/完整独立精确 oracle/位长预算；旧图门/新验证路径配套。 |
+| 日期 offset/秒/年份/24点 | 接受独立 validator＋原门。当前 ill_typed/宿主范围预门可能先挡，N不可达是明确缺口，不能只增末端比较器或全局关闭门。 | 四语义有效 owner 协同原 parser owner；T01 保存和新旧版本；query/SHACL另按各自合同补。 |
+| NaN/±INF/+INF/新舍入溢出 | 新规则 E6 已接受方向；原图门若先拒，按真实入口失败，不算 comparator 已验；query表达式另论。合法特殊词法不冒充非法。 | I05 入口/adapter，D3 owner 新精度后校验；T01终态。有限下溢零不能混入此行。 |
+| 非法词法/未知dtype/shape/预算 | 坏结构、非法词法、合法不支持dtype、资源必须分开；shape定义不是规则定义。selected可信内容损坏为Internal，不转成用户错误。 | 原各入口 owner 补准确分支；T01持久/鉴权；未被原白名单支持的dtype保留能力缺口，不宣称RDF本身不能表达。 |
+
+### C-QT：query term 匹配/投影（矩阵第二数据列）
+
+| 值行 | 逐格建议/真实边界 | 未支持补齐责任 |
+| --- | --- | --- |
+| S/L/I/B | 接受按抽象 term，不按新规则值相等合并。S 的 simple/显式string 实际漏匹配是独立缺陷待修；L原source/大小写入口证据不由value比较替代。 | I05原 query/term/scopes owner；source公共容器T01；本单不扩大为新FILTER政策。 |
+| integer/int/非负/decimal | 接受不同数值 lexical/datatype 仍不同term；沿既有 lexical term匹配/SELECT原结果能力，完整矩阵待证。不能把01/1因numeric eq合并。 | 原query/词法/scopes回归owner；选定结果权威T01。 |
+| float/double | 接受原 term 保真目标；查询 basic triple patterns/绑定变量投影等真实 term 用途应单独给可判定白名单和见证，不能以其证明所有表达式不值化。现完整边界待证。 | I05原query owner界定具体algebra路径并证保真；若真实需helper改动逐路径再授权。 |
+| 日期完整域 | 理论term用途不应以datetime值截断比同一性，但当前图门拒大年份等仍导致入口缺口；不得伪报空匹配成功来代替未支持。 | 原图门/query/scopes owner给入口可达/保真；不把D4 validator自动装进query。 |
+| 合法非有限 | 现query数据图门限制保留，若先拒则此消费格未执行；不因语法投影无需算值就假称全入口可接纳。 | I05明确图输入候选限制及Q6未完成格；如要求扩入口另批准，不为TA默扩。 |
+| 非法词法/未知dtype/预算 | 实际入口拒绝按其context，不作成功空结果；表达式产物不属于本term格的graph-only保证。未知dtype本身不是RDF语法必非法。 | 原入口/query owner；T01承接合法选定源/版本，保留所有未支持条件。 |
+
+### C-QV：query 表达式/FILTER（矩阵第三数据列）
+
+| 值行 | 逐格建议/真实边界 | 未支持补齐责任 |
+| --- | --- | --- |
+| S/L/I/B | 接受既有有限只读 SELECT/ASK 的 query 自身合同。不能由规则 I/B 顺序 E3 或跨L域 E3推断query也错；S身份修复不等于新增全表达式规范实现。 | I05原query owner给原有限能力/支持函数/排序和各操作运行见证，任何升级另授权；不改规则profile。 |
+| 整数/decimal | 接受 query 自己的数值运算/提升目标，不能强制 D3 精确混型结果。此前库值比较静态事实不证明完整SPARQL规范符合；目前完整混型政策证据待补。 | 原query owner逐op/型给合同和真实case；能力不足不得因为与D3不同就拒，需按本消费者目标修。 |
+| float/double | 同意 C 必须核 query 实际有限规范、精度/混型/常量和中间值。当前未有本轮完整证据，不承诺 binary32 或整套标准提升已正确，也不默切D3。 | I05原query owner逐格评估/修复；新增依赖T03、新路径原owner；Q6范围独立决定。 |
+| 日期完整域 | 不继承D4日期起点/混合TZ一律失败；现date丢offset、宿主datetime范围/精度是已知接口事实，完整域暂不声称支持。 | 原query owner给该有限日期合同及正确/受限边界；未完成格保持，不为T05重写整个query。 |
+| 非有限 | 图门拒绝不覆盖全部query AST/表达式中间值。保留合法FILTER error语义，不能为新规则E6一律终止所有表达式，也不能将未知执行异常全false。 | 原query owner逐常量/中间值/结果检查现合同、资源与异常传播；本轮未运行新case，不新增reason。 |
+| 非法/未知dtype/shape/预算 | parser/form/function等原受限路径保持；正常SPARQL表达式type-error如何影响FILTER按query合同，真正构造/能力/执行故障才走其真实安全错误。shape不属于query定义。 | 原query owner＋adapter owner接受新token如需要；未接路由一律不伪造已映射，T01诊断。 |
+
+### C-K：SHACL required/maxCount／sh:in（矩阵第四数据列）
+
+| 值行 | 逐格建议/真实边界 | 未支持补齐责任 |
+| --- | --- | --- |
+| S/L/I/B | 接受path value-node集合计数、RDF term membership；IRI也是value，可计数/成员，不强迫Literal。当前S双表示计数/in缺陷待修；L统一标签证明独立补。 | I05当前identity/selected/validator修复，T01源保存；不是比较/多head新政策。 |
+| 整数/decimal | 接受01/1、int/integer数值同值仍可不同term，count保留两个node，in不由numeric eq通过；原有限模板有能力但全格待真验。 | I05原SHACL/graph/scopes回归owner；依据真实selected双范围，T01权威payload。 |
+| float/double | 接受不量化重写lexical后计数/in；K不需要采用D3值解释。图入口可接纳才可验证，不能给新finite值parser错误地合并term。 | 原term/SHACL owner保真与shape/data对照；完整precision界未证。 |
+| 日期完整域 | K目标仅term和值节点，不能按TZ域丢对象或做日期值折叠；但现图门先拒的超范围term仍是消费入口缺口，不能说K已处理。 | 原图门/SHACL owner给正确term可达范围，日期新规则owner不替改K语义。 |
+| 非有限 | 若现图门先拒，记入口失败和K未完成；若未来合法接纳则按K，无需因规则E6自行终止或丢node。 | 原入口/SHACL owner在明确Q6范围补，不伪造空图成功。 |
+| 非法/未知dtype/shape/预算 | 能进入验证的对象按K，不以坏值为由丢对象。allowed-values list自身格式非法与数据不在列表不同；真正资源/执行失败不造validation report。 | 原shape parser/validator/adapter owner；未知dtype能否过应用图门具体记录；T01诊断/状态。 |
+
+### C-D：SHACL sh:datatype（矩阵第五数据列）
+
+| 值行 | 逐格建议/真实边界 | 未支持补齐责任 |
+| --- | --- | --- |
+| S/L/I/B | 接受Literal＋精确datatype IRI＋适用词法有效性合同；IRI data面对datatype约束为违规。simple/显式string是同datatype抽象term；langString不与string因同文合并。**当前sh:datatype shape指定langString不在10类白名单，未支持**；owner已核其他datatype例正确不外推此格。 | I05原SHACL/term owner按双侧fixture补；langString参数入口与真实reason/报告明确补齐，不依规则A6/Q2。 |
+| integer/int/非负/decimal | 接受要求integer而data为int必须违规；数值eq或子类型不是datatype IRI相同。非法词法若入口先拒，不能写成validator已给datatype违规。 | 原图门/SHACL owner补真实数据/shape参数/报告值；T01保留源identity。 |
+| float/double | 接受精确IRI/合法词法，不要求等于D3量化值；合法边界不能仅因库值不同就报datatype违规。当前所有precision边界的适用lexical识别待证。 | 原validator/词法owner，必要独立词法判断要具体授权；不替换D为数值比较。 |
+| 日期完整域 | 接受消费者自己的pin规范词法，不用宿主年份/微秒不足将合法值误报ill-typed；当前门可能先拒，所以该完整域能力未完成。 | 原图门/SHACL owner补规范validator和可达边界；D4 owner仅新规则不自动扩D。 |
+| 非有限 | 合法特殊词法不能仅因新规则E6变成D词法违规；D不查有限性，datatype仍须精确匹配。当前入口非有限拒绝则此D格未执行。 | 原入口/SHACL owner明确范围，不能“安全拒绝”声称datatype全部验过。 |
+| 非法/未知dtype/shape/预算 | 接受已进入validator且适用的非法data词法/非Literal/IRI不符产生真实违规；未知IRI不一概是非法RDF datatype，具体支持合同需补；shape datatype参数要求IRI，坏参数是定义问题。 | I05原shape/data入口给适用datatype集及shape-syntax错误；T01诊断。资源/执行故障另走原权威失败。 |
+
+### C-R：SHACL sh:minInclusive/maxInclusive（矩阵第六数据列）
+
+| 值行 | 逐格建议/真实边界 | 未支持补齐责任 |
+| --- | --- | --- |
+| S/L/I/B | 接受组件自己的SPARQL关系合同，不套规则Q2/X6。数据与合法Literal boundary关系不为true（含type-error）即有真实validation result；不要将IRI data统一变任务Internal。**当前S/L/B shape边界不在五类数值白名单，未支持；IRI边界本身违反Literal参数语法**。数字boundary对这些data的关系与报告另验，不能混为shape非法。 | I05原SHACL owner逐数据/边界/关系给正确实现；当前不仅UI、而是实际shape入口仅收五numeric类型，补齐或保留明确Q6缺口，FR504保持。 |
+| 整数/decimal | 接受 min `$bound <= v`、max `$bound >= v`，false/type-error违规而不是规则E3。普通边界相等/两侧见证必须保留，混型按SHACL自己的SPARQL政策而非D3。**当前五类shape白名单不含nonNegativeInteger边界**，其data与其他允许boundary的行为另验。 | 原SHACL owner，普通原样例承接原证据；非负边界入口及完整混型仍待补，不因数值等同就私cast成integer规避，T01报告定位/真实value载体。 |
+| float/double | 接受自身关系/提升及词法值域正确性目标；D3精确值不同不是拒绝理由。当前binary32/混型完整正确性尚无该文档可证明，列明确待补能力。 | I05原SHACL owner核真实库策略/shape和data双侧，必要修复按精确路径；不把D3输出当R oracle。 |
+| 日期完整域 | 接受R自己的SPARQL日期关系/错误语义，不自动D4起点或混合TZ E3。**当前date/dateTime shape边界不在五类白名单，未支持**；合法日期data对数值boundary的关系错误应与参数入口分开。超宿主范围、offset、长秒入口/关系也未证，不能伪报通过。 | 原图门/SHACL owner界定并补符合该消费者的行为；日期boundary及完整域若暂缓明确Q6原验收缺口。 |
+| 非有限 | 合法NaN/INF/+INF若能进入，关系是否true按R，不为true违规；不自动抛规则E6。当前图门先拒、或shape参数门拒的格是入口受限，不是R运行结果；五类numeric dtype不证明该dtype所有值已可达。 | 原入口/SHACL owner补完整边界关系见证；不把所有NaN/INF简单当非法词法或能力异常。 |
+| 非法/未知dtype/shape/预算 | **语法允许的Literal边界**或data使关系type-error，按R违规；boundary非Literal违反组件参数语法，是shape定义错误；真正资源/执行故障不伪成违规或空报告。 | 原shape/validator/adapter owner精确区分入口及固定token；T01权威任务/诊断。未知dtype有何关系支持需C合同，不能泛判全非法。 |
+
+特别注意 shape 侧门：某个 ill-typed Literal 仍可能满足范围组件“参数必须为 Literal”的语法要求，此时规范目标是关系非true产生违规。若现通用 shape `_terms` 在调用关系之前以词法错误先拒，那是**该消费者支持/入口缺口**，不是可以据此宣称组件语法非法。须由原 owner 逐参数侧修复或明确未支持，不能只给数据侧正常数字case就关闭 R1。
+
+## 4. 实际入口、context→DTO 与正常报告边界（沿已有固定事实，未重新验实现）
+
+下表精确列已有事实与未来接受项，避免把E3等文档缩写直接当adapter reason。所有跨边界错误 exact `{code,messageKey,params,retryable}` 从完整 canonical catalog/schema 注入；无ruleId/index/原值/路径/异常文本。**本轮不新增任何公开错误、诊断字段或payload schema。**
+
+| 真实入口／情形 | 已有固定context/输出或需新增的边界 | 对TA-C的意义 |
+| --- | --- | --- |
+| immutable快照/request结构、选定payload结构损坏 | build/PROJECTION/TRUSTED_INTERNAL；未知/损坏→INTERNAL_ERROR | 不能为满足C格改成用户坏规则或成功空集合；T01原authority与pure consistency分工不变。 |
+| 图记录term字节/解码 | execution中真实TURTLE/SYNTAX；TEXT_INPUT_LIMIT→RESOURCE_LIMIT semanticInput。可信已存形状损坏保持Internal。 | input预算与后续dtype能力拒绝分开；不是统一规则RULE stage。 |
+| 已重建facts/ontology内容门 | 已有REASON/SYNTAX/VERIFIED_USER_INPUT；INVALID_LITERAL_LEXICAL→SEMANTIC_INPUT_INVALID field=syntax；UNSUPPORTED_LITERAL_DATATYPE→UNSUPPORTED_CONSTRUCT datatype；UNSUPPORTED_NONFINITE_LITERAL→UNSUPPORTED_CONSTRUCT literalValue。 | 现图门在query/validation前也会先拒；不能声称validator已处理这些data。合法值被宿主错误拒绝是要补的入口能力缺口，不靠措辞改成规范非法。 |
+| 规则真实定义/求值 | REASON/RULE/VERIFIED_USER_INPUT；M1/M2/M4–M7已有精确token/pair；M3 RULE_COMPARISON_TYPE_MISMATCH尚无路由，技术已接受未来→SEMANTIC_INPUT_INVALID field=rule。 | TA-S/L/I/B/X新增比较未实现，不能拿现M1替代全部类型政策；非法lang标签新原因尚待原owner逐入口接受。 |
+| 新规则policy/input预算 | M9 RULE_POLICY_UNSUPPORTED→UNSUPPORTED_CAPABILITY {}尚缺adapter spec/路由，待T01分类确认；M8a RULE_INPUT_BUDGET R/R/U→semanticInput也尚缺。已有WORK_LIMIT R/R→semanticWork、RULE_EVIDENCE_RESULT_LIMIT R/R→semanticResult保持。 | 合法不支持policy≠protocolVERSION；不能只因canonical有枚举就报已接线。source/版本不能由T05自报。 |
+| selected投影及最终rows/payload | PROJECTION/PROJECTION/TRUSTED_INTERNAL；内部一致性/来源不符→Internal；已有WORK_LIMIT/PROJECTION_RESULT_LIMIT按精确pair→semanticWork/semanticResult。 | 认证给定firing完整一致，不等于全局所有firing已枚举；总图、完整trace和rows计总量，不截断成功。 |
+| query真实解析/执行入口 | QUERY/QUERY/VERIFIED_USER_INPUT；INVALID_QUERY→SEMANTIC_INPUT_INVALID query；已识别form/function/order/slice等按原受限construct，EXTERNAL_ACCESS_DENIED按真实引擎producer→NETWORK_FORBIDDEN；未知SemanticError/意外异常仍Internal。 | 正常FILTER type-error按query语义处理，不能把所有运行异常都false；也不能用规则E3/E6覆盖。此表未承诺每一种表达式已正确支持。 |
+| SHACL shape Turtle语法/内容 | TURTLE/CONSTRAINT/VERIFIED_USER_INPUT的INVALID_TURTLE→SEMANTIC_INPUT_INVALID constraint；SHACL/CONSTRAINT/VERIFIED_USER_INPUT的INVALID_SHAPE/已识别shape原因同field，UNSUPPORTED_DATATYPE在该pair→UNSUPPORTED_CONSTRUCT datatype。 | shape参数语法错误/能力不足与data验证结果分开；坏边界是否词法允许须按该组件语法，不从宿主cast失败推断。 |
+| SHACL K/D/R正常不满足 | **validation成功产物中的真实validation result**，含focus/path/value/shape/component；不是adapter错误。R false/type-error属于此列。 | 不把正常违规升级规则E3，也不丢对象后返回空报告。完整report与总输出超限/未知引擎失败分别处理。 |
+| 权威Job取消/deadline/memory/transport | 原T01 Job/worker边界；不是pure comparator自带cancel token，不将一切改semanticWork。 | 具体预算需测，未填新数值。worker/coordinator未来唯一T01；合作回调/信号另精确授权。 |
+
+上表recognized resource/network在原adapter origin检查顺序上有已有trusted-internal特例，UNKNOWN/无效组合仍Internal；不要为新U分类 blanket 改旧golden。未来若为消费者补新reason，须给真实producer/stage/origin与具体token，保持旧25/75规范；没有准确token就明确待owner接受，不能臆造“generic consumer unsupported”。
+
+## 5. 未支持格如何补齐而不降低FR-504/505
+
+1. **先保持正确目标，再独立实施。** C3的simple/xsd:string身份修复是既有RDF语义缺陷；新规则的S/L/I/B六算子、N精确值、calendar、多heads另有policy/新身份与四路径门，不能为赶文档一次混入。当前关键修复封存优先，此报告不要求重开/修改候选。
+2. **保真与可达分别验。** term用途不能仅看comparator；入口若先拒正确term，记确切入口/安全错误和仍未完成的consumer格。形状/data双侧、两个scope、源与包内，真实focusNode/path/value/shape/component、修复后复验均保留。首发/容量等原验收也不因安全错误合法而完成。
+3. **每C格给独立证据。** query term/表达式分测；K/D/R分别；先继承原已核样例的准确范围，再补所有新边界。R的正常type-error是report，未知执行异常是任务失败；有界资源失败不是规范不支持证明。不能因为D3/D4与SPARQL不同拒绝原本可正确处理的value。
+4. **定位与原子任务。** 失败job关联原规则版本/condition或head位置的受限诊断仍T01缺口；不塞四字段error、不借detailRef、不用成功rows传失败。全comparisons校验、全heads原子、无partial current、迟到/取消/历史及重算失效仍全部真实联验。
+5. **责任精确。** 四语义路径生效后才由有效owner改；P2/P3/P5/P6由I05原owner代改、query不随本单扩权。若必须新helper，优先既有semantic.py内唯一私有validator；新文件给绝对/逻辑精确路径、owner和影响先批准。T01唯一公共schema/Store/coordinator/worker/诊断；T03依赖/包收集。T05私有fixture/expected不可作为真实producer/认证替身。
+6. **REC与产品选择。** 可建议采用请求的有日期N1–N5正文、明确应用profile与无自动勘误漂移；实际pin/勘误清单/决定人仍Q6有权负责人。RDF1.1字符串抽象身份不是选项；S/L/I/B操作、X6、timezone分域等是明确应用选择。更改规范或政策需列变化格、oracle和身份影响，不声称“沿RDFLib”即可决定。
+
+推荐总控最终逐项答复：TA-S、TA-L、TA-I/B、TA-X按上述具体方案技术接受；TA-C接受消费者各自合同及逐格补齐责任、**不接受将未证C格整表写成当前已支持**；TA-D3/D4保留已有技术接受。Q-SLIBX/Q-NUM/Q-CAL/Q-REC/Q-CONS/Q-LIFE仍由相应有权负责人按固定文档与明确证据决定，技术答复不单方批准公共身份/路径。原Goal和父验收状态不由本稿更改。
+
+本稿唯一新增文件：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-execution/build/t05-ta-policy-owner-draft-157963e.md`。源文档全部只读；无产品/测试/GUI/网络/模型运行，无提交。实际SHA由读回后单独报告。

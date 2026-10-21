@@ -1,0 +1,15 @@
+# I05 字符串 term 缺陷：原线修复登记
+
+根总控已全文读取固定 c11d6b414bdaaba0eac5402931881e338bc9bbd9 的 finding.md（12086B，SHA f6c31a20d21399979658962aa9daac4a34edcae3c99e7b3099ed9f5be631e5ed）及 observed-outcome，并核对三件 Git hash。独立 root/i04_reports_audit 已确认 45 成员/544414 原字节、12 真实任务完整 metadata/payload 及 1347 leaf rows、9 事实/14 定义、bf2 的 204 及 1197 Git blob 对应，支持 P1 I05-C3-STRING-1。书面报告为 I05-controller-C3-string-term-counterexample-readback.md，16181B，SHA b6296791adbeac8e9cff21483a4ae8fc19a9ef1f0d1c9cab06f9e353879f7e44。C3 条件派发撤回，实际新指定任务 0。
+
+授权原 I05 聊天 01a15744-136d-7000-abad-46de101eadaf 在原独立 I05-semantic-validation 树/原 feature 分支结束 C3 待审阶段并开始必要修复。旧 3289d67dbfb19545c7a3b3b26753cdd0065741bb、bf2f0038042a2044d0af7e8fd498e0eff094d5b1 及旧报告、归档和输入 Git 原件不得重写；新变化另形成新完整候选。此时没有 C3 外审任务。批准 develop 基线仍 5f910b52c69d86a1076b2032e5d3c63e715947f3，最终候选仍重核真实远端。
+
+精确产品范围限 packages/engine/src/ontolearn_engine 下原 owner 的 semantic_turtle.py、semantic_query.py、semantic.py、semantic_execution.py、semantic_scopes.py、resources.py 身份和 semantic_samples.py。优先共用既有模块内单一转换；新 helper 先报具体路径和理由再登记，不扩大目录写权。允许与本缺陷直接相关的既有 test_semantic*.py 回归更新、新增 test_semantic_string_identity.py 及本线 I05 证据、状态、候选输入文档。其他共享测试、协议、契约资源、worker、Store、coordinator、main/preload/App、锁、依赖、build、CI 不在此新增授权内。resources.py 仍 I05，canonical 资源仍 T01，不可混同。
+
+修复限定同 lexical、无 lang 且 datatype None/XSD.string 的同一抽象 term，沿 S1 plain 内部约定可减少持久输入改动。保持 normalize=False、numeric/date 原词法身份和既有 lang 行为，不合并 numeric 01/1、en/en-US 或把 lang 当 plain。不得因规范化让 _term 严格 n3==raw 门误拒原合法 typed 常量。覆盖 data/Graph、Rule 常量和 head、shape/list、静态 query 及原已允许运行时 string 构造和消费，不能只改单一 token/when。不夹带 T05 comparator、多 head、D3/D4 或 Q6 政策。
+
+必须新语义版本及完整 implementation 同步，严格源/规则/完整 payload、rows、来源 hash 与 selected 重建；现有 payload 结构优先不变。旧 finite5 producer、原 payload/rows 字节和按原身份鉴权读回保留；新版本 selected 按完整三字段严格拒旧结果，不重签旧证据或删除错误历史。确需 T01 路径时先交总控精确代改/安全返还，不自行修改。
+
+必要验证含本反例旧红新绿、完整集合与 trace/重复依据、合法 typed 常量/转义/空串/运行时构造、SHACL in/count/datatype 对照、numeric/lang 负控、新旧历史/身份边界、正常 check、变更影响的真实 worker/stdio、源码和包内同样例及原 C4/B1 完整范围。原生验证继续使用批准隔离环境，当前 Mac 不得 GUI/e2e/native/HMR。独立实现审查、冻结全部执行输入并保留原始失败后，新候选需两个指定模型的全新完整任务；实际安全入口/root lease、终态全文/意见处置、同版双方明确 Pass 后才 push/PR/实际 CI/正常合并/远端核验。修复授权不等于缺陷关闭或父 I05 通过。
+
+登记文件首次写入因 stdin 编码错误失败，无产品/测试影响；随后通过补丁实际落盘，原授权消息有效，记录该过程差异。

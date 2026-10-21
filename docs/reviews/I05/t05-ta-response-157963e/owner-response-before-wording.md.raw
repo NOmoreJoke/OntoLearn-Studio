@@ -1,0 +1,52 @@
+# I05：TA-S/L/I-B/X/C 技术答复
+
+本回复对应T05固定 `157963e369c9909cd79194fc5ea0641506a5fd48` 的请求r1（SHA a0baa0fe…1d9a2c09）及矩阵r2，二者均全文读回并保留 [原件索引](inputs.json)。仅文档技术选择，不是Q6产品采用、REC/勘误正式pin、公共字段/身份批准、路径交接或实现/测试通过。原ffc462b的D3/D4技术接受继续有效，未重置成无人答复。
+
+当前真实C3字符串term反例 [I05-C3-STRING-1](../c3-string-counterexample/finding.md) 已独立封存；外审派发撤回、0新任务。它由原owner另走修复门，不能借本回复实施新比较/多head/D3/D4。原3289/bf2和1197/204输入保持，worker未来唯一T01，semantic4 future offer未生效。
+
+## 逐请求决定
+
+| 请求     | I05技术答复                                                                                                                                                                   | 证据与未完成项                                                                                                                                                                                                                         |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TA-S     | 接受RDF1.1同一xsd:string抽象term；这不是可选合域。技术接受新规则同域六算子按解码Unicode码点字典序，不trim/casefold/NFC/locale/数值化。                                        | 原始引号/转义/是否显式datatype是source信息，不得制造第二term。码点顺序不能按UTF16 code unit；空串/前缀/U+10000与U+E000/组合与预组字符等独立oracle待新规则实施验收。本轮没有执行这些未来算子。当前C3同term缺陷不能因接受S政策算已修复。 |
+| TA-L     | 技术接受合法标签先验、内部小写表示和来源原拼写分层；新规则同一合法标签域按文本码点六算子，不同合法标签（含en/en-US）六操作均E3，无语言回退。                                  | 完整BCP47 well-formed校验、canonical内部与source保存需真正实现/证据。现en/EN有界对照只证明该对去重/匹配正确，不能作全部标签或来源往返通过。非法标签必须先归词法/输入错误，不借E3；当前没有据本回复新增reason/公共source字段。          |
+| TA-I/B   | 技术接受IRI仅eq/ne、按完整IRI身份不解引用/URL规范化；boolean仅eq/ne，true/1及false/0同值但原term不合并。IRI/boolean的lt/le/gt/ge均E3，包含相同IRI/相同布尔值的le/ge。B不入N。 | 这是该规则语言的应用选择，不声称SPARQL不给boolean顺序。IRI拼写、布尔词法、跨B/N全部六算子等完整正反oracle待真跑。                                                                                                                      |
+| TA-X     | 技术接受九域有序表与N内六型全部有序数值混型；非N跨域全部X6，ne也失败；L标签参数族的不同标签亦X6。                                                                             | 486分类槽/216数值细化槽是覆盖定义，不是测试通过数；L是标签参数族，不能以一个en/en证明全域。全常量预检、false后仍查所有comparison、全部head原子及真实定位/生命周期门保持。                                                              |
+| TA-C     | 接受按消费者自己的合同分别正确，不统一成D3/D4比较器；接受K/D/R拆列。支持目标、当前有限入口和C格补齐责任分列如下，当前不能把整表视为已完成实施合同。                           | 不以“与新规则不同”拒绝合法query/SHACL；也不以安全拒绝或成功空报告填已完成。当前实际string反例单独阻断；其他未验证格不借此伪造成运行bug。                                                                                               |
+| TA-D3/D4 | 保留已有技术接受：D3原词法直接目标精度舍入后按实际表示值精确混型；D4独立calendar/完整精确秒/显式offset四域及跨域失败。                                                        | 本次不重新选政策，不采用新profile或REC pin/勘误集，不实施。原全精度/日历/预算/入口→持久载荷→selected证据、源包及新语义身份门仍待。                                                                                                     |
+
+source保存的技术接受只规定“原文与抽象term分层且可追溯”，不证明当前Store已保存每个导入前原写法；S1 canonical事实输入有自己的既有合同。规则/shape/query原定义文本可作为受控来源，其他原文缺口须由实际source owner/T01给授权、大小、生命周期和公共投影设计，不能在现DTO私加字段或反向改历史。若实际接口还缺此能力，明确保留未完成，而不是取消source要求。
+
+## TA-C：独立消费者合同与每类C格责任
+
+既有语义入口的10个datatype白名单、图位置/离线/预算门仍是当前有限候选事实；规范目标不等于已经实现全域。未来新reason/selected的原词法值解释只在获批入口使用，原query与SHACL继续各自合同。下表“补齐”是后续责任意向，须批准依赖与精确授权后执行，不是现在修改冻结实现的指令。
+
+| C格/消费者                              | 接受的合同与目前边界                                                                                                                                                       | 未支持/未证项、补齐责任                                                                                                                                                                                                                                                          |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 新reason/selected图入口 G+N             | RDF位置、外联、资源与定义校验保留；D3/D4在同一执行器/选定原结果验证路径共享唯一validator。不能为大年份或精度问题全局关闭ill_typed，也不改事实term身份去满足值比较。        | 新operand/heads/原子发布尚未实现，宿主转换先挡合法值及source/selected认证需补。未来四路径责任按root登记生效，I05/T05协作；T01管真实producer/版本/hash，不由pure validator自称认证。                                                                                              |
+| float/double：query term/匹配/投影      | 接受保原lexical/datatype的term路径；不量化重写lexical，不用D3值eq折叠term。既有样例/词法证据不能替代完整声明精度边界。                                                     | 完整C格仍未闭合；I05负责补原有限query入口、query常量/变量/投影/绑定构造及term保真oracle。未证明前不填全支持，也不先宣布整型/浮点全不可用。                                                                                                                                       |
+| float/double：query值运算/FILTER        | 接受原有限query自己的数值提升和error语义，不改成D3精确有理比较；graph门不覆盖所有query常量/中间值。                                                                        | 精度/边界/有损路径需I05按query合同独立核查；真正不支持的格给准确入口及失败分类、保留验收缺口。不得仅因与D3结果不同就报能力错误，也不扩大完整SPARQL承诺。                                                                                                                         |
+| float/double：SHACL R                   | 接受min/maxInclusive按自身SPARQL关系评价；false/type-error出带真实value的违规，非规则E3。D3浮点精度政策不覆盖现标准谓词。                                                  | 全声明精度/边界的正确性未证，I05须补shape参数与data双侧见证、定位有损点并修复或精确标出受限格。普通违规不能被当Internal/能力失败；不以pySHACL库名宣称全范围合规。                                                                                                                |
+| date/dateTime：query term               | term用途不应因日期值解释截断而丢原词法/offset/精度；term支持与日期运算支持分开。                                                                                           | 年零/负年/大年份/高精度等当前图门/宿主范围不能冒称全支持；I05补明确可达子集、合法但暂不支持的识别、精确保真与边界。不能把宿主无法表示一律等同标准非法。                                                                                                                          |
+| date/dateTime：query值运算/FILTER       | 接受其自己的有限query日期合同，不继承D4 date起点或跨TZ全拒绝，不补机器时区来迎合D4。                                                                                       | 完整年份/小数秒/offset及中间值矩阵未证，I05单独补，不在字符串修复中改此政策。若无法正确算某格，应明确受限并保留未完成，不能用截断后的值返回成功。                                                                                                                                |
+| date/dateTime：SHACL K/D/R              | K依抽象term集合，D依精确datatype及该消费者词法合同；R依自己的关系而非D4。date和dateTime不因源写法或规则TZ域划分丢对象。                                                    | 当前min/max shape参数只接integer/int/decimal/float/double且not ill_typed，**不是任意Literal**，尚不支持日期边界。若新合同要求支持日期边界，须单列扩展/规范/真实双侧证据及授权；不把现有数值范围模板直接称完整日期范围。原FR504/新合同未支持格保留，I05补，T01承载实际失败/定位。 |
+| 合法非有限/溢出：graph/query/K/D/R      | 新规则E6是自己的政策。现图入口先拒非有限时，消费者没有运行；query表达式中间值不能据此说全部被图门校验。能进入validator的合法值按该组件合同，不能把合法INF当D词法违规。     | 当前全路径支持矩阵未闭合；I05补入口先拒/操作支持/真实错误及未完成格。K/D/R不得伪报空成功；R不能被新规则E6自动终止。未来输入合法但能力不足的分类必须和词法坏值区分。                                                                                                              |
+| 未知datatype/非法lexical/shape参数/预算 | 未知IRI不天然非法；非法词法若已进入validator应按D/R自身合同处理，入口明确限制则另记。shape参数语法与data违规也分开；资源错误仍真实input/work/result/worker/transport边界。 | 当前10类型之外不承诺一般datatype。`sh:datatype rdf:langString`也不在当前10白名单，属明确未支持格，不能把语言值合同写成该shape已支持。其扩展/测试由I05后续精确处理；公共码/schema或资源载体变化归T01。                                                                            |
+
+普通S/L/I/B与整数/decimal的接受目标同样分别为：query term按RDF抽象身份；query表达式保原支持/提升/error；K按value-node集合和in成员；D精确datatype IRI与适用词法；R按组件关系，数据不可比较时给违规。IRI本身可被计数/in，面对datatype约束应是违规；boolean的规则无顺序不能覆盖query/SHACL。当前C3 string问题已证明K/query/Rule局部不符，须单独修复；不能由此泛称所有格失败或已经补齐。
+
+## 当前入口与错误的准确边界
+
+目前worker执行初始facts/ontology `_terms` 使用 `REASON / SYNTAX / VERIFIED_USER_INPUT`，不管后续业务是query还是validation；新增规则operand才是未来R/R/U。原text/结构解码、trusted projection和consumer具体阶段另有上下文，不能统一贴rule。
+
+现有图term的 `UNSUPPORTED_LITERAL_DATATYPE` / `UNSUPPORTED_NONFINITE_LITERAL` 在上述已核上下文可映射UNSUPPORTED_CONSTRUCT的datatype/literalValue；`INVALID_LITERAL_LEXICAL`映射SEMANTIC_INPUT_INVALID的syntax。它们是固定已识别reason/context的路由，不能据此把合法但宿主无法表示的值正当化成非法词法。当前字符串反例却是**任务成功发布了错误语义**，没有一个待复用的“能力错误DTO”可替它掩盖。
+
+shape白名单拒绝、shape结构、资源限制、query执行错误仍走各自准确reason/context；普通SHACL违规根本不进入adapter。每个未来C格新增拒绝点须由I05 adapter owner与真实caller成对给出token×producer×stage×origin的正反表，涉及权威Store/公开schema须T01接受；未核实的组合明确待补，不编造枚举、params或先写caller再等adapter。原M3/M8a/M9等新增proposal不因本单自动接线；UNKNOWN/未接受组合/可信损坏继续Internal，旧resource/network例外保留。
+
+## 交付门与责任
+
+本回复技术接受新增S/L/I/B/X格及消费者K/D/R独立目标；具体C格如上保留未支持或未证责任，不能把它们合并成“整表采用/实现完成”。所有新规范pin、勘误集合、profile名/版本和Q6-SLIBX/NUM/CAL/REC/CONS/LIFE仍由有权负责人决定；D3/D4既有技术接受不重置，需完成的证据不减少。
+
+I05保留query/turtle/adapter/samples/既有测试的当前责任及未来按具体影响代改意向；四语义路径future未生效，T01独占Store/canonical/worker，T03锁/build等，I06桌面，不能以本答复释放别人的路径。新增helper或公共source/诊断字段先给具体路径/唯一owner。当前字符串修复只围绕原RDF term一致性，不夹带新的比较/多head、日期、float32、FILTER或SHACL范围政策。
+
+本次仅固定文档读取、既有已核frozen事实复核与设计答复，无产品/测试/基准/GUI运行、无源码修改，不改变原Goal阻塞/门禁。实施后仍须原完整矩阵/样例/定位/生命周期/预算/selected与历史隔离/源包、指定双审、CI/正常合并及父验收，技术选择不替代任何一门。
