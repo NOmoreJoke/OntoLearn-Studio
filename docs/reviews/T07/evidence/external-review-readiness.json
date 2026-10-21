@@ -1,0 +1,161 @@
+{
+  "date": "2026-10-21",
+  "kind": "controller-review-readiness-evidence-only",
+  "candidateBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "candidateHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+  "branch": "feature/weekly-t07-scenario",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario",
+  "scope": "entire current T07-owned diff; bounded private implementation, UI and tests. Full FR-700..705 remains incomplete until actual domain/Store/Job/public wiring/replay acceptance.",
+  "allCandidateFiles": [
+    {
+      "path": "apps/desktop/src/renderer/src/scenario/ScenarioPage.tsx",
+      "sha256": "65ac6a8efd6a9f395088403be8e0133cd1f32f3f70f34334e1f5a135f65c30ac"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/scenario/presentation.ts",
+      "sha256": "3474e356ffc7dd9f3c5bddaea4ba9a1e6e6259020e9ee22dd2e9769d15a5e463"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/scenario/scenario.css",
+      "sha256": "d3889694abc93c3bc3973f20a01c176187b927c5ce4a53cf84d21108d74807b3"
+    },
+    {
+      "path": "docs/iterations/T07/acceptance.md",
+      "sha256": "d5f816cbd21bcfaefa91eee6a2a4d4e2398d4e517b7229c121c2d46cc0666d04"
+    },
+    {
+      "path": "docs/iterations/T07/integration-request.md",
+      "sha256": "9cfa95c4a464b58db35b1ed902be56494e69ed8a502e993151213ed8682afa3b"
+    },
+    {
+      "path": "docs/iterations/T07/round-projection-handoff.md",
+      "sha256": "74af4b1c298b7d0b39ffded90a1067229c5f057d1914fdf6765d44707cf8199d"
+    },
+    {
+      "path": "docs/reviews/T07/.gitignore",
+      "sha256": "a7daf91a4dea0bb886a9f42aad2760a97ae638454e36dbc6a34e89107652f568"
+    },
+    {
+      "path": "docs/reviews/T07/evidence/candidate-files.json",
+      "sha256": "9457e18ec32ea7ac4b2629c9cbcaf25f8bd5a98db5d2157b37238d4d34cf6baa"
+    },
+    {
+      "path": "docs/reviews/T07/evidence/persistence-validation.json",
+      "sha256": "da0ec490d4600cab18ba0fbd1a056512b7f6bc7e8ed07852f61f48ff33ecd4f0"
+    },
+    {
+      "path": "docs/reviews/T07/evidence/render-probe.mjs",
+      "sha256": "259c46a35de4f0edcf3be260c24d9df8a9554e991a91ba02df8c781333cdc308"
+    },
+    {
+      "path": "docs/reviews/T07/evidence/t09-input-receipt.json",
+      "sha256": "31c2a5c2a34f688788be3e65a343f94d2abc22b15ac228e51e7c15f35e968808"
+    },
+    {
+      "path": "docs/reviews/T07/evidence/ui-probe.json",
+      "sha256": "6e5edcec50ee0bffcb0e63c3f2e39023ab5379297cbe1cb64688f204f8361ba8"
+    },
+    {
+      "path": "docs/reviews/T07/evidence/validation.json",
+      "sha256": "35262b4383ace959d69d7b6f8f4f806d8902805138febaa3c04729599397c1e8"
+    },
+    {
+      "path": "docs/reviews/T07/internal-review.md",
+      "sha256": "d36ae15a4f8510004c1b3de5230b45d103dc3ee417be5cdcac49cd5605594692"
+    },
+    {
+      "path": "docs/reviews/T07/status.md",
+      "sha256": "9a0d5668a79f122d83e1e1b4315d44754c047c4bd65845027cf8abf2c4fe47f2"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/scenario/__init__.py",
+      "sha256": "6643227cd723fd3a1de0e41da31e634389d91ab7869863ef3736862cb7a31773"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/scenario/model.py",
+      "sha256": "f30ce8d84b117805379933ce93025d9b0bcf61a3e8b0400feb0ad7ca4aa8f632"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/scenario/runner.py",
+      "sha256": "69600dc9c9222b5102a75c261165bee309b4db0a72195b45de6915ff2104c702"
+    },
+    {
+      "path": "packages/engine/tests/test_scenario_persistence.py",
+      "sha256": "0180923002708bad9d5e1806cfefc41616ae587d66fa34c9f44ec2ab75baf3e3"
+    },
+    {
+      "path": "packages/engine/tests/test_scenario_rounds.py",
+      "sha256": "6038e0cd2d64c002dd9e6ec232afdeadb673663e6629f6e117a269d77785cc5c"
+    },
+    {
+      "path": "tests/fixtures/scenario/e5.json",
+      "sha256": "84c299fa61de136965699a2b02c7b0c9cc7cde949abd86e8e68343c8a264e53b"
+    },
+    {
+      "path": "tests/fixtures/scenario/round-projection-handoff.json",
+      "sha256": "924a5f2f8f3cc5d5777acea8f0e5da98937a7c466644303e1623e1b1ab34328e"
+    },
+    {
+      "path": "tests/fixtures/scenario/t09-e5.json",
+      "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+    },
+    {
+      "path": "tests/fixtures/scenario/t09-manifest.json",
+      "sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e"
+    },
+    {
+      "path": "tests/unit/t07-scenario.test.ts",
+      "sha256": "ce1ca32e272825fcf33bd5b38d78f371264c4e50ebba502cf3c13e1bf493a099"
+    }
+  ],
+  "protectedGuide": {
+    "path": "AGENTS.md",
+    "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+    "unstaged": true,
+    "excludedFromCandidate": true
+  },
+  "verified": {
+    "allPathsAuthorized": true,
+    "committedWorkingBytesMatch": true,
+    "candidateManifestMatches": true,
+    "validationLocalLogHashesMatch": true,
+    "noUnexpectedWorkingChanges": true,
+    "latestFullCheck": "evidence/persistence-validation.json",
+    "uiEvidenceStillApplicable": "UI production bytes unchanged since validated headless fixture probe",
+    "independentInternalReview": "internal-review.md"
+  },
+  "designatedReviews": {
+    "started": false,
+    "reservation": "T06-S1 current queue, then I05-C2; T07 has no resource lease",
+    "required": [
+      {
+        "app": "ZCode",
+        "model": "GLM-5.3",
+        "thinking": "最高",
+        "defaultPermission": "yolo/full access"
+      },
+      {
+        "app": "MiniMax Code",
+        "model": "M3.1-Flash",
+        "thinking": "xhigh",
+        "defaultPermission": "bypassPermissions/full access"
+      }
+    ],
+    "taskRequirements": "Both new independent read-only full-current-scope tasks on same candidate; actual per-task model/thinking/permission readback, terminal reports and full report disposition. Refresh approved develop/dependencies and revalidate after changes. No task is created by this packet."
+  },
+  "fullParentAcceptance": "not passed",
+  "pushPrCiMergeRemote": "not performed",
+  "runtimeCapability": "not registered",
+  "sourceUpdatesAfterThisPacket": "only process evidence append is allowed without candidate-source changes; actual code/test/config/dependency/base/acceptance changes require new validation and designated reviews",
+  "nextActionOwner": "controller schedules this bounded candidate only after confirming accepted scope and resource lease; T01 routes exact adapter proposal; actual dependency baseline still pending",
+  "currentOwnershipPolicy": {
+    "commonInstructionsSha256": "b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39",
+    "guideSha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+    "T01": "storage.py plus Python4 and canonical/main8, effective; implementations still unapproved",
+    "I06": "remaining6 main/index/task-service, preload, env/App/style",
+    "T03": "pyproject/uv.lock/build-engine/entrypoint4, effective",
+    "I05": "other untransferred paths",
+    "T07": "private authorized paths only; no new shared ownership",
+    "policyOnly": "No product restart/retest/new review for this update; historic frozen inputs retain prior hashes"
+  }
+}
