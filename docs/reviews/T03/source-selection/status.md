@@ -46,3 +46,9 @@
 未admit的lease失效、撤销或换engine session后，即使同bytes/planHash也需新preview、新来源proof绑定和新人类确认；不能因旧WeakMap proof在broker内尚可复验就当远端lease有效。unknown使用原operation/原完整请求加同writer barrier或旧进程fence对账，不改operation重放。已存在claim按当前项目读权限与原context/完整请求核对返回旧Job/receipt，不再次要求原临时lease今天有效、不重传来源或重算当前CAS；这不复活活授权，也不把source_content/缓存或seal当权限。首次写受理仍需真实proof复验/确认/权威scope排序与durable pin。
 
 r3中“仍等待Table投影”是其固定历史输入状态；本线0b74的完整数据已由总控全文读取并实际路由T01，仅供冻结canonical摘要/fixture，不授代码消费。此轮只读r3/本线固定broker及追加记录，没有产品、测试、GUI或Goal状态变化；原六缺口与正式联验/外审/CI/merge门继续保留，Goal仍blocked。
+
+## r3独立复核与预算采用补充
+
+已全文读总控 `source-lifecycle-r3-design-review.md` 并核SHA `e95cadb6c655749e36b64b196e0aa71185dff5213be403f80b33a3f737c51846`。R1要求已传达T01：精确重复append成功ack只能在原字节仍可逐字核验且状态允许时返回；expired/released/cancelled或已清理仅存tombstone时，返回稳定权威终态或拒绝，不以同hash伪称逐bytes核验、不复活upload。accepted Job/pin按原claim/receipt对账，不被冲突append/旧release/传输TTL撤销；客户端丢弃旧context/进度的迟到ack。此处记录设计要求，不声称其runtime已修复或验收。
+
+总控现已技术采用256attempt/256MiB logical-encoded为保守工程保护预算，替代上一时点“待采用提案”的状态；不是Q5、运行、SQLite文件/WAL或物理disk/RSS通过。1pending/2lease16MiB、30/120/600及完整字符串/计费/账本、barrier/fence、已有claim分流、清理settled和跨session原请求仍须唯一canonical及实际实现；source编码预算不兼作Table/plan/展开/RSS预算。已交完整Table数据不再索取。本轮只追加设计/操作记录与格式检查，不改冻结broker或消费实现，不复测/GUI/恢复Goal，原Goal仍blocked。
