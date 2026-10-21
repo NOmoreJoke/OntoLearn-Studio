@@ -32,3 +32,5 @@
 最新权限政策接收：已完整阅读external-review-permissions.md与新增AGENTS段，共同指令SHA `df09014af4d6cf757ca0977a995497f3646cd330e8921710876663a40a8cbcb4`、当前AGENTS `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`匹配总控。已实际向独立agent透传全文；记录见external-review-permissions-receipt.json。ZCode yolo/MiniMax bypassPermissions默认获准，实际任务进入时仍读回模式；当前未启动两应用或改其配置，未扩大桌面/付费/密钥权限，不因政策本身重测。
 
 构建责任回执：已全文读回I05→T03四文件生效协议并核对execution-state。pyproject/uv.lock/build-engine/entrypoint后续仅T03维护；T11共享需求文档已注明按此路由，未修改/接管四文件，未采用未批源码/锁/包验。CI/resources等不随四文件转交，完整平台签名/配置和T01/T10接口仍待具体交接。
+
+当前恢复入口：`recovery.json` 固定最新私有实现/测试/验收提交 `7d28fdb27c0aac39ed7df1f9fd5fa0f127b5d9f4` 及65/695/1052验证和最新内审报告哈希；前述ffa0972/50a3212为历史阶段，不用于恢复当前候选。后续仅追加本恢复回执，无实现或验收变化。AGENTS保持未暂存，尚未推送；完整目标和原门禁继续。
