@@ -181,3 +181,12 @@ source r4设计关闭总控P2R1（sealed/终态、accepted pin/迟到ack/满额�
 总控source r4/digest独立设计9da317…8c39已全文读，r4原R1设计关闭；D1/P2现由digest r2一次有界capture/owner数据树/私有编码与Proxy/隔离边界补齐，内部独立355259…70463设计闭合。startup r1/r2及独立报告保留R1–4处置和旧SHA，内部设计项关闭，schema/有限新码/I06多层错误门/真实子进程仍待合同接受和实施。T03真实parser三身份缺失及五encoding/sheet新事实已全文接收，纯机制与正式身份/Job D7提案分开。
 
 helper未完成准备已存私有patch，产品全部恢复b35；patch含旧两遍caller读取方案，不能直接采用，不计45拟定golden或初步静态为实现通过。下一代码须root先读回闭合具体合同、明确新phase。当前只保存纯过程提交；Goal active，无push/指定双审/PR/CI/合并/父功能完成。
+
+
+## 纯表材料阶段收口与四路径维护生效
+
+纯材料授权562be7…71a02内的三产品路径、两专属测试已经实现；完整表/精确选项/三字段身份/expected source hash/编码前总预算核定，保留owner data-only和Proxy隔离边界。独立审查P2-M1（JSON整数值预算两端接受不一致）已修复、独立定点关闭。修后126 TS/132 Python专项，最终fullcheck实际session67934 exit0：952 TS/2628 Python/44原不适用skip，lint/格式/类型/build/ruff通过。旧938/2612为被替代修前候选，原失败及修前/修后工具证据均保留。详情见[source-table-material-review](source-table-material-review.md)及独立报告。
+
+原始包39000B、SHA e558203ff2ac79fe8948549054ab80fc1d04353d7c53238a608f6fdb1b13ec2c，14成员和五最终产品hash已逐项回读；索引SHA95f314f4821f6c716985f9b6918ca8c548a91a7f6584ade3267a0a3958020fcb。旧阶段原件均不改。本阶段未启用parser/producer/source wire/worker或runtime3-ready，内部审查不替代指定双审，不push。
+
+四路径未来维护已由总控effective JSON 0df87b7c…03a32生效；092dfbe所留原pending接收回执作为历史保留。主线与两独立agent均已实际全文读取17891B common e437121a…971b0并核旧16317B前缀ff5f9fd0…cfaff。所有权生效不是startup实现授权；I06余四路径不转、无GUI等门不变。Q6用户采纳回执已全文读取，只确认规范已采纳，不算对应实现或验收。本线接着准备精确启动实施计划，实际实施仍须总控明确新阶段。父功能/指定双审/PR/CI/合并/发布尚未完成，Goal active。

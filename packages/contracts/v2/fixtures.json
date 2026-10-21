@@ -19191,5 +19191,2972 @@
         "valid": false
       }
     ]
+  },
+  "sourceTable": {
+    "scope": "Pure complete material mechanism; six T03 interface projections; every parser identity synthetic; no real decoder or authorization execution.",
+    "sourceSHA256": "dd249c93dd23bbfa5dd47293f578251a375bb144da5b25f3e8683f878829106d",
+    "cases": [
+      {
+        "name": "equipment",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8\",[\"csv\",\"utf-8-sig\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"equipment_id\",\"equipment_name\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[3,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 355,
+        "sha256": "189445b8ae115dbd3890594a55cf7a056f59526963f20216a10c760a08f9e68e"
+      },
+      {
+        "name": "multiline-bom",
+        "table": {
+          "source_hash": "6667ee77ad3211d96aed4480ba77051fda74f5349833d96f1502d392bb9b1fa8",
+          "sheet": "CSV",
+          "fields": ["id", "name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "第一行\n第二行",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 4,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "6667ee77ad3211d96aed4480ba77051fda74f5349833d96f1502d392bb9b1fa8",
+        "maxEncodedBytes": 348,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"6667ee77ad3211d96aed4480ba77051fda74f5349833d96f1502d392bb9b1fa8\",[\"csv\",\"utf-8-sig\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"id\",\"name\"],[[2,[[\"001\",\"string\"],[\"第一行\\n第二行\",\"string\"]]],[4,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 348,
+        "sha256": "0eef0defdbdc9a1e669b551a7d095bef5728dbc2b5792f843a6064194d66e32c"
+      },
+      {
+        "name": "sparse",
+        "table": {
+          "source_hash": "1d448bb72afd17ef5ea24f2d5f0bec86a50b44862a89c41cdf5c5f4f4d07518f",
+          "sheet": "设备",
+          "fields": ["id", "name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "",
+                  "kind": "empty"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "",
+                  "kind": "empty"
+                },
+                {
+                  "text": "",
+                  "kind": "empty"
+                }
+              ]
+            },
+            {
+              "number": 4,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "设备"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "1d448bb72afd17ef5ea24f2d5f0bec86a50b44862a89c41cdf5c5f4f4d07518f",
+        "maxEncodedBytes": 354,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"1d448bb72afd17ef5ea24f2d5f0bec86a50b44862a89c41cdf5c5f4f4d07518f\",[\"xlsx\",null,\"设备\"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"设备\",[\"id\",\"name\"],[[2,[[\"001\",\"string\"],[\"\",\"empty\"]]],[3,[[\"\",\"empty\"],[\"\",\"empty\"]]],[4,[[\"002\",\"string\"],[\"B\",\"string\"]]]]]",
+        "encodedBytes": 354,
+        "sha256": "0e7b079655fba899d47163f976475335ca87f145db7652780af23c68aaefc61d"
+      },
+      {
+        "name": "formula-empty",
+        "table": {
+          "source_hash": "763d8d9b8a38dba58af1ad39d7f30f047fc098c934a9290df5a7f1103f912973",
+          "sheet": "设备",
+          "fields": ["id", "name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "设备"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "763d8d9b8a38dba58af1ad39d7f30f047fc098c934a9290df5a7f1103f912973",
+        "maxEncodedBytes": 285,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"763d8d9b8a38dba58af1ad39d7f30f047fc098c934a9290df5a7f1103f912973\",[\"xlsx\",null,\"设备\"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"设备\",[\"id\",\"name\"],[[2,[[\"001\",\"string\"],[\"\",\"string\"]]]]]",
+        "encodedBytes": 285,
+        "sha256": "90e51e780e342689ca8b6e0486405bb6770b9a73700d85d9de252ba403f68dcb"
+      },
+      {
+        "name": "header-only",
+        "table": {
+          "source_hash": "40d6bfdc74eae2ed68a97137ce414fa4ca6de1b3831cfd9a73c4622d8a8942c1",
+          "sheet": "CSV",
+          "fields": ["id", "name"],
+          "rows": []
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "40d6bfdc74eae2ed68a97137ce414fa4ca6de1b3831cfd9a73c4622d8a8942c1",
+        "maxEncodedBytes": 248,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"40d6bfdc74eae2ed68a97137ce414fa4ca6de1b3831cfd9a73c4622d8a8942c1\",[\"csv\",\"utf-8-sig\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"id\",\"name\"],[]]",
+        "encodedBytes": 248,
+        "sha256": "54a99d294db2c56e5658251d53d47addf1729281f6093184eafd9904b3180aa3"
+      },
+      {
+        "name": "empty-value",
+        "table": {
+          "source_hash": "af80ef0ddc06c78b7bb636581249767d2cd01b32545f3f4f35c08de621c36461",
+          "sheet": "CSV",
+          "fields": ["id", "name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "af80ef0ddc06c78b7bb636581249767d2cd01b32545f3f4f35c08de621c36461",
+        "maxEncodedBytes": 284,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"af80ef0ddc06c78b7bb636581249767d2cd01b32545f3f4f35c08de621c36461\",[\"csv\",\"utf-8-sig\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"id\",\"name\"],[[2,[[\"001\",\"string\"],[\"\",\"string\"]]]]]",
+        "encodedBytes": 284,
+        "sha256": "13a1a22df8f20f7953c684d588ad3b889901168bda8ad2464d5709115d99fe36"
+      },
+      {
+        "name": "explicit encoding utf-8",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 351,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8\",[\"csv\",\"utf-8\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"equipment_id\",\"equipment_name\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[3,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 351,
+        "sha256": "c7e4a5c4b6d0248fefd21fd1cd7623b3388155e8586bf758185b4972fa38566f"
+      },
+      {
+        "name": "explicit encoding utf-8-sig",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8\",[\"csv\",\"utf-8-sig\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"equipment_id\",\"equipment_name\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[3,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 355,
+        "sha256": "189445b8ae115dbd3890594a55cf7a056f59526963f20216a10c760a08f9e68e"
+      },
+      {
+        "name": "explicit encoding gb18030",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "gb18030",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 353,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8\",[\"csv\",\"gb18030\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"equipment_id\",\"equipment_name\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[3,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 353,
+        "sha256": "bacc3e4e652d37b6aeb1773f0c5fc99d653b5ff22499a538a95ed79636d1777c"
+      },
+      {
+        "name": "explicit encoding big5",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "big5",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 350,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8\",[\"csv\",\"big5\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"equipment_id\",\"equipment_name\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[3,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 350,
+        "sha256": "d9b9d7785340263b8a9a72595f17e171a68b7d94a358e7830e26e2cc77037020"
+      },
+      {
+        "name": "explicit encoding utf-16",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-16",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 352,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8\",[\"csv\",\"utf-16\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"equipment_id\",\"equipment_name\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[3,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 352,
+        "sha256": "fa990999b98714ecbdd5ea3d7037bd0bcd9fc01f2dec82e52bf2d179f040713f"
+      },
+      {
+        "name": "unicode exact scalar escapes",
+        "table": {
+          "source_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "sheet": "\u0000  𐀀",
+          "fields": ["﻿", "é", "𐀀"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "  /\"\\\b\f\n\r\t\u001c",
+                  "kind": "string"
+                },
+                {
+                  "text": "é é",
+                  "kind": "string"
+                },
+                {
+                  "text": "𐀀",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "\u0000  𐀀"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "maxEncodedBytes": 363,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",[\"xlsx\",null,\"\\u0000  𐀀\"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"\\u0000  𐀀\",[\"﻿\",\"é\",\"𐀀\"],[[2,[[\"  /\\\"\\\\\\b\\f\\n\\r\\t\\u001c\",\"string\"],[\"é é\",\"string\"],[\"𐀀\",\"string\"]]]]]",
+        "encodedBytes": 363,
+        "sha256": "d4a729776e4a6874ec06b1593bd312fd67f1ca3be6c554d0f2317f260ffaf51c"
+      },
+      {
+        "name": "direct cell mechanism empty",
+        "table": {
+          "source_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "sheet": "types",
+          "fields": ["value"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "",
+                  "kind": "empty"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "types"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "maxEncodedBytes": 261,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",[\"xlsx\",null,\"types\"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"types\",[\"value\"],[[2,[[\"\",\"empty\"]]]]]",
+        "encodedBytes": 261,
+        "sha256": "abc5ec49d2de51db6df3bfd6804a09cb98d472b2bc9eb2e68013c96d2c77fd6e"
+      },
+      {
+        "name": "direct cell mechanism boolean",
+        "table": {
+          "source_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "sheet": "types",
+          "fields": ["value"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "true",
+                  "kind": "boolean"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "types"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "maxEncodedBytes": 267,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",[\"xlsx\",null,\"types\"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"types\",[\"value\"],[[2,[[\"true\",\"boolean\"]]]]]",
+        "encodedBytes": 267,
+        "sha256": "5d7823007da27974d20b1b2c9467ea7f45f8509d28a9b14bbd716b552e4fd56b"
+      },
+      {
+        "name": "direct cell mechanism datetime",
+        "table": {
+          "source_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "sheet": "types",
+          "fields": ["value"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "2026-10-21T12:34:56",
+                  "kind": "datetime"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "types"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "maxEncodedBytes": 283,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",[\"xlsx\",null,\"types\"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"types\",[\"value\"],[[2,[[\"2026-10-21T12:34:56\",\"datetime\"]]]]]",
+        "encodedBytes": 283,
+        "sha256": "578a811953bffd7a8a4b503150cbfeffede7217d57006979c4ab59d4753c072e"
+      },
+      {
+        "name": "direct cell mechanism date",
+        "table": {
+          "source_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "sheet": "types",
+          "fields": ["value"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "2026-10-21",
+                  "kind": "date"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "types"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "maxEncodedBytes": 270,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",[\"xlsx\",null,\"types\"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"types\",[\"value\"],[[2,[[\"2026-10-21\",\"date\"]]]]]",
+        "encodedBytes": 270,
+        "sha256": "bb57204cd64e2d197a7e12cfc546ec9fa49741feb9a75e9a83c42c731e1be778"
+      },
+      {
+        "name": "direct cell mechanism number",
+        "table": {
+          "source_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "sheet": "types",
+          "fields": ["value"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "2.5",
+                  "kind": "number"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "types"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "maxEncodedBytes": 265,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",[\"xlsx\",null,\"types\"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"types\",[\"value\"],[[2,[[\"2.5\",\"number\"]]]]]",
+        "encodedBytes": 265,
+        "sha256": "23a0ee5dbe6b326932a6ee467dbd517b5a07987b87f7389b0d3b6ac9c384ca10"
+      },
+      {
+        "name": "direct cell mechanism string",
+        "table": {
+          "source_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "sheet": "types",
+          "fields": ["value"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "types"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "maxEncodedBytes": 265,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",[\"xlsx\",null,\"types\"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"types\",[\"value\"],[[2,[[\"001\",\"string\"]]]]]",
+        "encodedBytes": 265,
+        "sha256": "13138096a081195c0eb7870ae793a69a6307333b49cd1adeeaba75667de2ea0f"
+      },
+      {
+        "name": "opaque nonempty selected sheet ' '",
+        "table": {
+          "source_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "sheet": " ",
+          "fields": ["f"],
+          "rows": []
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": " "
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "maxEncodedBytes": 231,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",[\"xlsx\",null,\" \"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\" \",[\"f\"],[]]",
+        "encodedBytes": 231,
+        "sha256": "735709c340b55e88c545d07e9daad7fc50a78d7ffff1aa9c7294e9253b07a05f"
+      },
+      {
+        "name": "opaque nonempty selected sheet '\\ufeff'",
+        "table": {
+          "source_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "sheet": "﻿",
+          "fields": ["f"],
+          "rows": []
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "﻿"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "maxEncodedBytes": 235,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",[\"xlsx\",null,\"﻿\"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"﻿\",[\"f\"],[]]",
+        "encodedBytes": 235,
+        "sha256": "d759729f507688a731e4a435e54d22e0e72246d3295f6381c58e683e68ee31f6"
+      },
+      {
+        "name": "all tail cells retained",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "末尾不同",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 360,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8\",[\"csv\",\"utf-8-sig\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"equipment_id\",\"equipment_name\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[3,[[\"002\",\"string\"],[\"末尾不同\",\"string\"]]]]]",
+        "encodedBytes": 360,
+        "sha256": "d41e6992e2b1653f61fc50d988b3833145deb17e4052ccf4b74c408b7a2d0d98"
+      },
+      {
+        "name": "source identity changes",
+        "table": {
+          "source_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "maxEncodedBytes": 355,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"0000000000000000000000000000000000000000000000000000000000000000\",[\"csv\",\"utf-8-sig\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"equipment_id\",\"equipment_name\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[3,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 355,
+        "sha256": "d6d98b5a76e5d1120242bd5dfcb8b67d703292298dee9a3947c718b5c901e6ad"
+      },
+      {
+        "name": "execution semantics changes",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v2",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8\",[\"csv\",\"utf-8-sig\",null],[\"synthetic-table-v2\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"equipment_id\",\"equipment_name\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[3,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 355,
+        "sha256": "ae38e606977f351c57bcff03e373cc413c55713ff155a14d4c196d7429a33e9d"
+      },
+      {
+        "name": "engine version changes",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only-v2",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 358,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8\",[\"csv\",\"utf-8-sig\",null],[\"synthetic-table-v1\",\"fixture-only-v2\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"equipment_id\",\"equipment_name\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[3,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 358,
+        "sha256": "fad75f6c2b927c5b010a245dc25718b9446b017b1f524274a0298963f7289337"
+      },
+      {
+        "name": "whole lock changes",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8\",[\"csv\",\"utf-8-sig\",null],[\"synthetic-table-v1\",\"fixture-only\",\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\"],\"CSV\",[\"equipment_id\",\"equipment_name\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[3,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 355,
+        "sha256": "da7af3778c16aefadd355fe25e59457440b6a9f3b900b38d45d5b5fb27f47013"
+      },
+      {
+        "name": "physical row gaps retained",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 4,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8\",[\"csv\",\"utf-8-sig\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"equipment_id\",\"equipment_name\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[4,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 355,
+        "sha256": "22d4b93449e41ce5b8a5ed386b3ce519cee39cc6f9a0b329035af48e1a94e782"
+      },
+      {
+        "name": "field order exact",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_name", "equipment_id"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8\",[\"csv\",\"utf-8-sig\",null],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"CSV\",[\"equipment_name\",\"equipment_id\"],[[2,[[\"001\",\"string\"],[\"泵站A\",\"string\"]]],[3,[[\"002\",\"string\"],[\"泵站B\",\"string\"]]]]]",
+        "encodedBytes": 355,
+        "sha256": "bf1d0ed9c18fd56179a7c830077adf29512350b86142078efcfda1d41aa4c995"
+      },
+      {
+        "name": "empty text distinct kind empty",
+        "table": {
+          "source_hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "sheet": "types",
+          "fields": ["v"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "",
+                  "kind": "empty"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "types"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "maxEncodedBytes": 257,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",[\"xlsx\",null,\"types\"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"types\",[\"v\"],[[2,[[\"\",\"empty\"]]]]]",
+        "encodedBytes": 257,
+        "sha256": "11d01d89e17d815427ca3f4e455535f21adbe490d5bf645a42b5542273b78d12"
+      },
+      {
+        "name": "empty text distinct kind string",
+        "table": {
+          "source_hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "sheet": "types",
+          "fields": ["v"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "types"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "maxEncodedBytes": 258,
+        "valid": true,
+        "material": "[\"ontolearn.source-table\",1,\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",[\"xlsx\",null,\"types\"],[\"synthetic-table-v1\",\"fixture-only\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"types\",[\"v\"],[[2,[[\"\",\"string\"]]]]]",
+        "encodedBytes": 258,
+        "sha256": "ddc990ce19ad73c3f080b05e8b51e217e67abc7007dc9b05c6adeb2f0a817ac2"
+      },
+      {
+        "name": "wrong source",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "sheet null",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": null,
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "wrong options sheet",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": "other"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "encoding alias",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "UTF-8",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "encoding utf16-le outside vocabulary",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-16-le",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "missing fields",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": [],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "duplicate fields",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["id", "id"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "nul field",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["x\u0000", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "empty field",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "python0085 whitespace field",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "python001c whitespace field",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["\u001c", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "short row",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": []
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "row boolean",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": true,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "row zero",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 0,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "row noninteger",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2.5,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "row too large",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 50002,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "row duplicate order",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "unknown kind",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "unknown"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "csv empty kind",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "empty"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "nul text",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "\u0000",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "text null",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": null,
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "extra table",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ],
+          "extra": true
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "extra cell",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string",
+                  "extra": true
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "extra implementation",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "extra": true
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "bad identity name",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "not allowed",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "uppercase lock",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 355,
+        "valid": false
+      },
+      {
+        "name": "budget below exact",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 354,
+        "valid": false
+      },
+      {
+        "name": "budget bool",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": true,
+        "valid": false
+      },
+      {
+        "name": "budget zero",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 0,
+        "valid": false
+      },
+      {
+        "name": "budget fractional",
+        "table": {
+          "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+          "sheet": "CSV",
+          "fields": ["equipment_id", "equipment_name"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "001",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站A",
+                  "kind": "string"
+                }
+              ]
+            },
+            {
+              "number": 3,
+              "cells": [
+                {
+                  "text": "002",
+                  "kind": "string"
+                },
+                {
+                  "text": "泵站B",
+                  "kind": "string"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "csv",
+          "encoding": "utf-8-sig",
+          "sheet": null
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "maxEncodedBytes": 1.5,
+        "valid": false
+      },
+      {
+        "name": "invalid empty text",
+        "table": {
+          "source_hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "sheet": "types",
+          "fields": ["v"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "not-empty",
+                  "kind": "empty"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "types"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "maxEncodedBytes": 4096,
+        "valid": false
+      },
+      {
+        "name": "invalid boolean text",
+        "table": {
+          "source_hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "sheet": "types",
+          "fields": ["v"],
+          "rows": [
+            {
+              "number": 2,
+              "cells": [
+                {
+                  "text": "TRUE",
+                  "kind": "boolean"
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": "types"
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "maxEncodedBytes": 4096,
+        "valid": false
+      },
+      {
+        "name": "xlsx empty sheet",
+        "table": {
+          "source_hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "sheet": "",
+          "fields": ["v"],
+          "rows": []
+        },
+        "options": {
+          "format": "xlsx",
+          "encoding": null,
+          "sheet": ""
+        },
+        "implementation": {
+          "executionSemanticsVersion": "synthetic-table-v1",
+          "engineVersion": "fixture-only",
+          "dependencyLockHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "expectedSourceHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "maxEncodedBytes": 355,
+        "valid": false
+      }
+    ],
+    "large": {
+      "encodedBytes": 295207,
+      "sha256": "025476b44a9104685596c4ba21934ea832ca2c2a09d256f56ca529f3c45f0d3f"
+    },
+    "locatedParserRejectionsNotDigests": [
+      {
+        "name": "empty-source",
+        "inputUtf8": "",
+        "inputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "issue": {
+          "code": "EMPTY_SOURCE",
+          "sheet": "CSV",
+          "row": 0,
+          "column": 0,
+          "field": ""
+        }
+      },
+      {
+        "name": "duplicate-header",
+        "inputUtf8": "id,id\n1,2\n",
+        "inputSha256": "9a2503934ed1b17fb1f3da3a3c84720c13268d57d602e8c24251aee32c4e806b",
+        "issue": {
+          "code": "INVALID_HEADER",
+          "sheet": "CSV",
+          "row": 1,
+          "column": 1,
+          "field": "id"
+        }
+      },
+      {
+        "name": "short-row",
+        "inputUtf8": "id,name\n1\n",
+        "inputSha256": "18b12e50e3d87a9901efa50e286a7f3173e1578588234ff4e274d6a4056cc545",
+        "issue": {
+          "code": "ROW_WIDTH",
+          "sheet": "CSV",
+          "row": 2,
+          "column": 2,
+          "field": ""
+        }
+      },
+      {
+        "name": "blank-record",
+        "inputUtf8": "id,name\n\n",
+        "inputSha256": "fa56df87ab9e2f6d3ca95af902aa7f4cf8f1a6a1f22cb56997da95990f4fc290",
+        "issue": {
+          "code": "ROW_WIDTH",
+          "sheet": "CSV",
+          "row": 2,
+          "column": 1,
+          "field": ""
+        }
+      },
+      {
+        "name": "blank-header-field",
+        "inputUtf8": "id,\n1,2\n",
+        "inputSha256": "d6b9a0a391af7cda18834fdb03054f7abe88aa249504526fa537316c69eb0977",
+        "issue": {
+          "code": "INVALID_HEADER",
+          "sheet": "CSV",
+          "row": 1,
+          "column": 2,
+          "field": ""
+        }
+      }
+    ],
+    "generated": {
+      "fields-256": {
+        "encodedBytes": 1918,
+        "sha256": "22ce7a176815037d7b0b712720e242391669bdead47d2f2db30b7799944437ed"
+      },
+      "rows-50000": {
+        "encodedBytes": 1428027,
+        "sha256": "f6807c43eea751de772e023acaf708f057b1dae2eceb3b9109adf45b2961eb8b"
+      },
+      "nonbmp-32768": {
+        "encodedBytes": 131331,
+        "sha256": "dad77264c7f8083c435f1d956a2d448d7d74447129b6b72392b1574025efb815"
+      }
+    },
+    "blankFieldCodePoints": [
+      9, 10, 11, 12, 13, 28, 29, 30, 31, 32, 133, 160, 5760, 8192, 8193, 8194, 8195, 8196, 8197,
+      8198, 8199, 8200, 8201, 8202, 8232, 8233, 8239, 8287, 12288
+    ],
+    "budgetJsonTokens": [
+      {
+        "token": "10000",
+        "valid": true
+      },
+      {
+        "token": "10000.0",
+        "valid": true
+      },
+      {
+        "token": "1e4",
+        "valid": true
+      },
+      {
+        "token": "9007199254740991",
+        "valid": true
+      },
+      {
+        "token": "9007199254740991.0",
+        "valid": true
+      },
+      {
+        "token": "10000.5",
+        "valid": false
+      },
+      {
+        "token": "true",
+        "valid": false
+      },
+      {
+        "token": "0",
+        "valid": false
+      },
+      {
+        "token": "-1",
+        "valid": false
+      },
+      {
+        "token": "1e400",
+        "valid": false
+      },
+      {
+        "token": "1e-400",
+        "valid": false
+      },
+      {
+        "token": "9007199254740992",
+        "valid": false
+      },
+      {
+        "token": "null",
+        "valid": false
+      },
+      {
+        "token": "\"10000\"",
+        "valid": false
+      }
+    ]
   }
 }

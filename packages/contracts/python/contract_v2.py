@@ -3,6 +3,7 @@
 Same deliberately small JSON Schema vocabulary as the TS/zod adapter.
 """
 
+import hashlib
 import json
 import math
 import re
@@ -330,6 +331,207 @@ def accepts_business3_job_event(value, binding):
     if not validate_business3("notification", value):
         return False
     return accepts_job_event({**value, "protocolVersion": 2}, binding)
+
+
+def source_table_material(table, options, implementation, expected_source_hash, max_encoded_bytes):
+    """Owner-internal bounded data-only capture, not a host-object sandbox."""
+    try:
+        return _capture_source_table(
+            table, options, implementation, expected_source_hash, max_encoded_bytes
+        )
+    except Exception:
+        raise ValueError("INVALID_REQUEST") from None
+
+
+def _capture_source_table(table, options, implementation, expected_source_hash, max_encoded_bytes):
+    def invalid():
+        raise ValueError("INVALID_REQUEST")
+
+    if (
+        type(max_encoded_bytes) not in {int, float}
+        or not 1 <= max_encoded_bytes <= 2**53 - 1
+        or max_encoded_bytes != int(max_encoded_bytes)
+        or type(expected_source_hash) is not str
+        or not validate("hash", expected_source_hash)
+    ):
+        invalid()
+    max_encoded_bytes = int(max_encoded_bytes)
+
+    def record(value, names):
+        if type(value) is not dict or len(value) != len(names):
+            invalid()
+        for key in value:
+            if type(key) is not str or key not in names:
+                invalid()
+        return {key: dict.__getitem__(value, key) for key in names}
+
+    def array(value, maximum):
+        if type(value) is not list or len(value) > min(maximum, max_encoded_bytes):
+            invalid()
+        return value
+
+    t = record(table, ("source_hash", "sheet", "fields", "rows"))
+    o = record(options, ("format", "encoding", "sheet"))
+    impl = record(
+        implementation, ("executionSemanticsVersion", "engineVersion", "dependencyLockHash")
+    )
+    if (
+        type(t["source_hash"]) is not str
+        or t["source_hash"] != expected_source_hash
+        or type(t["sheet"]) is not str
+        or type(o["format"]) is not str
+        or (o["encoding"] is not None and type(o["encoding"]) is not str)
+        or (o["sheet"] is not None and type(o["sheet"]) is not str)
+        or any(type(value) is not str for value in impl.values())
+        or not validate("implementation", impl)
+    ):
+        invalid()
+    if o["format"] == "csv":
+        if (
+            o["encoding"] not in {"utf-8", "utf-8-sig", "gb18030", "big5", "utf-16"}
+            or o["sheet"] is not None
+            or t["sheet"] != "CSV"
+        ):
+            invalid()
+    elif (
+        o["format"] != "xlsx"
+        or o["encoding"] is not None
+        or not t["sheet"]
+        or o["sheet"] != t["sheet"]
+    ):
+        invalid()
+    fields, rows = array(t["fields"], 256), array(t["rows"], 50000)
+    if not fields:
+        invalid()
+    chunks = []
+    total = 0
+
+    def reserve(size):
+        nonlocal total
+        if size > max_encoded_bytes - total:
+            invalid()
+        total += size
+
+    def token(text):
+        reserve(len(text))
+        chunks.append(text.encode("ascii"))
+
+    def string(value, maximum=None, field=False, no_nul=False):
+        if type(value) is not str:
+            invalid()
+        size = 2
+        if size > max_encoded_bytes - total:
+            invalid()
+        for count, char in enumerate(value, 1):
+            cp = ord(char)
+            if 0xD800 <= cp <= 0xDFFF or (no_nul and cp == 0):
+                invalid()
+            if maximum is not None and count > maximum:
+                invalid()
+            size += (
+                2
+                if char in '\\"\b\f\n\r\t'
+                else 6
+                if cp < 32
+                else 1
+                if cp < 128
+                else 2
+                if cp < 2048
+                else 3
+                if cp < 65536
+                else 4
+            )
+            if size > max_encoded_bytes - total:
+                invalid()
+        if field and (not value or value.isspace()):
+            invalid()
+        reserve(size)
+        # Only the captured immutable primitive reaches json.dumps. Charge first;
+        # never deepcopy/stringify caller objects or return a partial material.
+        encoded = json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        if len(encoded) != size:
+            invalid()
+        chunks.append(encoded)
+
+    token("[")
+    string("ontolearn.source-table")
+    token(",1,")
+    string(t["source_hash"])
+    token(",[")
+    string(o["format"])
+    token(",")
+    token("null") if o["encoding"] is None else string(o["encoding"])
+    token(",")
+    token("null") if o["sheet"] is None else string(o["sheet"])
+    token("],[")
+    for i, key in enumerate(("executionSemanticsVersion", "engineVersion", "dependencyLockHash")):
+        if i:
+            token(",")
+        string(impl[key])
+    token("],")
+    string(t["sheet"])
+    token(",[")
+    seen = set()
+    for i in range(len(fields)):
+        value = list.__getitem__(fields, i)
+        if i:
+            token(",")
+        string(value, 32768, True, True)
+        if value in seen:
+            invalid()
+        seen.add(value)
+    token("],[")
+    previous = 1
+    kinds = {"string", "empty", "boolean", "datetime", "date", "number"}
+    for i in range(len(rows)):
+        row = record(list.__getitem__(rows, i), ("number", "cells"))
+        number = row["number"]
+        if (
+            type(number) not in {int, float}
+            or not 2 <= number <= 50001
+            or number != int(number)
+            or number <= previous
+        ):
+            invalid()
+        previous = number
+        cells = array(row["cells"], 256)
+        if len(cells) != len(fields):
+            invalid()
+        if i:
+            token(",")
+        token(f"[{int(number)},[")
+        for j in range(len(cells)):
+            cell = record(list.__getitem__(cells, j), ("text", "kind"))
+            text, kind = cell["text"], cell["kind"]
+            if (
+                type(text) is not str
+                or type(kind) is not str
+                or kind not in kinds
+                or (o["format"] == "csv" and kind != "string")
+                or (kind == "empty" and text != "")
+                or (kind == "boolean" and text not in ("true", "false"))
+            ):
+                invalid()
+            if j:
+                token(",")
+            token("[")
+            string(text, 32768, False, True)
+            token(",")
+            string(kind)
+            token("]")
+        token("]]")
+    token("]]")
+    output = b"".join(chunks)
+    if len(output) != total:
+        invalid()
+    return output
+
+
+def source_table_digest(table, options, implementation, expected_source_hash, max_encoded_bytes):
+    material = source_table_material(
+        table, options, implementation, expected_source_hash, max_encoded_bytes
+    )
+    return {"sha256": hashlib.sha256(material).hexdigest(), "encodedBytes": len(material)}
 
 
 def accepts_job_event(value, binding):
