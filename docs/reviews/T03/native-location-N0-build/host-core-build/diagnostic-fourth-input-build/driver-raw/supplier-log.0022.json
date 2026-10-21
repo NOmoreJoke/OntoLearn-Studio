@@ -1,0 +1,493 @@
+{
+  "preflight": {
+    "status": "complete-readonly",
+    "mode": "build-preflight",
+    "target": "darwin-arm64",
+    "component": "core",
+    "processExecution": false,
+    "inputWrites": false,
+    "lockSha256": "8f3045ebf9b2e8b61757669aee9564319ce6a1f5fc5e92f4047aa8036732693f",
+    "inputDigest": "a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77",
+    "writers": [
+      {
+        "path": "packages/native-location/CMakeLists.txt",
+        "bytes": 19815,
+        "sha256": "f2b5522b92c5dfc9724b95c35b876ce5015a4955385f614a6da20fb9bce57645"
+      },
+      {
+        "path": "packages/native-location/toolchain-lock.json",
+        "bytes": 10474,
+        "sha256": "8f3045ebf9b2e8b61757669aee9564319ce6a1f5fc5e92f4047aa8036732693f"
+      },
+      {
+        "path": "scripts/build-native-location.mjs",
+        "bytes": 30056,
+        "sha256": "ca4ef93024762ae5dfd3dc95133f8ab28ae2e63048af0b3a658bfeb98f62045c"
+      }
+    ],
+    "gaps": []
+  },
+  "environment": {
+    "PATH": "/usr/bin:/bin",
+    "HOME": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core",
+    "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+  },
+  "commands": [
+    {
+      "index": 0,
+      "executable": "/Applications/Xcode.app/Contents/Developer/usr/bin/git",
+      "argv": [
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all",
+        "--",
+        "packages/native-location/CMakeLists.txt",
+        "packages/native-location/toolchain-lock.json",
+        "scripts/build-native-location.mjs",
+        "packages/native-location/include/location_abi.h",
+        "packages/native-location/src/capability_core.cc",
+        "packages/native-location/src/platform_macos.cc",
+        "packages/native-location/src/platform_windows.cc",
+        "packages/native-location/src/node_binding.cc",
+        "apps/desktop/src/main/security/native-location-owner.ts",
+        "packages/native-location/tests/location_core_test.cc",
+        "packages/native-location/tests/location_child_probe.cc",
+        "tests/unit/i06-native-location-owner.test.ts"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/0.stdout",
+          "state": "closed"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/0.stderr",
+          "state": "closed"
+        }
+      },
+      "phase": "completed",
+      "dispatch": {
+        "state": "call-returned",
+        "attempted": true,
+        "startEvidence": "child-pid-reported",
+        "pid": 75474
+      },
+      "run": {
+        "pid": 75474,
+        "status": 0,
+        "signal": null,
+        "error": null
+      },
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "matched"
+    },
+    {
+      "index": 1,
+      "executable": "/Applications/Xcode.app/Contents/Developer/usr/bin/git",
+      "argv": [
+        "rev-parse",
+        "--verify",
+        "HEAD"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/1.stdout",
+          "state": "closed"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/1.stderr",
+          "state": "closed"
+        }
+      },
+      "phase": "completed",
+      "dispatch": {
+        "state": "call-returned",
+        "attempted": true,
+        "startEvidence": "child-pid-reported",
+        "pid": 75475
+      },
+      "run": {
+        "pid": 75475,
+        "status": 0,
+        "signal": null,
+        "error": null
+      },
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "matched"
+    },
+    {
+      "index": 2,
+      "executable": "/Applications/Xcode.app/Contents/Developer/usr/bin/git",
+      "argv": [
+        "show",
+        "fc6237e8cad1a4043d46a1c7198439f1da06ad67:packages/native-location/include/location_abi.h"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/2.stdout",
+          "state": "closed"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/2.stderr",
+          "state": "closed"
+        }
+      },
+      "phase": "completed",
+      "dispatch": {
+        "state": "call-returned",
+        "attempted": true,
+        "startEvidence": "child-pid-reported",
+        "pid": 75476
+      },
+      "run": {
+        "pid": 75476,
+        "status": 0,
+        "signal": null,
+        "error": null
+      },
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "matched"
+    },
+    {
+      "index": 3,
+      "executable": "/Applications/Xcode.app/Contents/Developer/usr/bin/git",
+      "argv": [
+        "show",
+        "fc6237e8cad1a4043d46a1c7198439f1da06ad67:packages/native-location/src/capability_core.cc"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/3.stdout",
+          "state": "closed"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/3.stderr",
+          "state": "closed"
+        }
+      },
+      "phase": "completed",
+      "dispatch": {
+        "state": "call-returned",
+        "attempted": true,
+        "startEvidence": "child-pid-reported",
+        "pid": 75477
+      },
+      "run": {
+        "pid": 75477,
+        "status": 0,
+        "signal": null,
+        "error": null
+      },
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "matched"
+    },
+    {
+      "index": 4,
+      "executable": "/Applications/Xcode.app/Contents/Developer/usr/bin/git",
+      "argv": [
+        "show",
+        "fc6237e8cad1a4043d46a1c7198439f1da06ad67:packages/native-location/src/platform_macos.cc"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/4.stdout",
+          "state": "opened"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/4.stderr",
+          "state": "open-intent-outcome-unknown"
+        }
+      },
+      "phase": "preparing-output",
+      "dispatch": {
+        "state": "not-attempted",
+        "attempted": false,
+        "startEvidence": "none",
+        "pid": null
+      },
+      "run": null,
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "not-attempted"
+    },
+    {
+      "index": 5,
+      "executable": "/Applications/Xcode.app/Contents/Developer/usr/bin/git",
+      "argv": [
+        "show",
+        "fc6237e8cad1a4043d46a1c7198439f1da06ad67:packages/native-location/src/platform_windows.cc"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/5.stdout",
+          "state": "not-opened"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/5.stderr",
+          "state": "not-opened"
+        }
+      },
+      "phase": "planned",
+      "dispatch": {
+        "state": "not-attempted",
+        "attempted": false,
+        "startEvidence": "none",
+        "pid": null
+      },
+      "run": null,
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "not-attempted"
+    },
+    {
+      "index": 6,
+      "executable": "/Applications/Xcode.app/Contents/Developer/usr/bin/git",
+      "argv": [
+        "show",
+        "fc6237e8cad1a4043d46a1c7198439f1da06ad67:packages/native-location/src/node_binding.cc"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/6.stdout",
+          "state": "not-opened"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/6.stderr",
+          "state": "not-opened"
+        }
+      },
+      "phase": "planned",
+      "dispatch": {
+        "state": "not-attempted",
+        "attempted": false,
+        "startEvidence": "none",
+        "pid": null
+      },
+      "run": null,
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "not-attempted"
+    },
+    {
+      "index": 7,
+      "executable": "/Applications/Xcode.app/Contents/Developer/usr/bin/git",
+      "argv": [
+        "show",
+        "fc6237e8cad1a4043d46a1c7198439f1da06ad67:apps/desktop/src/main/security/native-location-owner.ts"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/7.stdout",
+          "state": "not-opened"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/7.stderr",
+          "state": "not-opened"
+        }
+      },
+      "phase": "planned",
+      "dispatch": {
+        "state": "not-attempted",
+        "attempted": false,
+        "startEvidence": "none",
+        "pid": null
+      },
+      "run": null,
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "not-attempted"
+    },
+    {
+      "index": 8,
+      "executable": "/Applications/Xcode.app/Contents/Developer/usr/bin/git",
+      "argv": [
+        "show",
+        "fc6237e8cad1a4043d46a1c7198439f1da06ad67:packages/native-location/tests/location_core_test.cc"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/8.stdout",
+          "state": "not-opened"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/8.stderr",
+          "state": "not-opened"
+        }
+      },
+      "phase": "planned",
+      "dispatch": {
+        "state": "not-attempted",
+        "attempted": false,
+        "startEvidence": "none",
+        "pid": null
+      },
+      "run": null,
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "not-attempted"
+    },
+    {
+      "index": 9,
+      "executable": "/Applications/Xcode.app/Contents/Developer/usr/bin/git",
+      "argv": [
+        "show",
+        "fc6237e8cad1a4043d46a1c7198439f1da06ad67:packages/native-location/tests/location_child_probe.cc"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/9.stdout",
+          "state": "not-opened"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/9.stderr",
+          "state": "not-opened"
+        }
+      },
+      "phase": "planned",
+      "dispatch": {
+        "state": "not-attempted",
+        "attempted": false,
+        "startEvidence": "none",
+        "pid": null
+      },
+      "run": null,
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "not-attempted"
+    },
+    {
+      "index": 10,
+      "executable": "/Applications/Xcode.app/Contents/Developer/usr/bin/git",
+      "argv": [
+        "show",
+        "fc6237e8cad1a4043d46a1c7198439f1da06ad67:tests/unit/i06-native-location-owner.test.ts"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/10.stdout",
+          "state": "not-opened"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/10.stderr",
+          "state": "not-opened"
+        }
+      },
+      "phase": "planned",
+      "dispatch": {
+        "state": "not-attempted",
+        "attempted": false,
+        "startEvidence": "none",
+        "pid": null
+      },
+      "run": null,
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "not-attempted"
+    },
+    {
+      "index": 11,
+      "executable": "/tmp/T03-native-location-N0-tool-supply/run-20261021T163000Z-75ffc442/cmake-distribution-v2/cmake-4.4.4-macos-universal/CMake.app/Contents/bin/cmake",
+      "argv": [
+        "-S",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/packages/native-location",
+        "-B",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core",
+        "-G",
+        "Unix Makefiles",
+        "-DNL_TARGET=darwin-arm64",
+        "-DNL_COMPONENT=core",
+        "-DNL_LOCK_SHA256=8f3045ebf9b2e8b61757669aee9564319ce6a1f5fc5e92f4047aa8036732693f",
+        "-DCMAKE_MAKE_PROGRAM=/Applications/Xcode.app/Contents/Developer/usr/bin/gnumake",
+        "-DCMAKE_C_COMPILER=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+        "-DCMAKE_CXX_COMPILER=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++",
+        "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        "-DCMAKE_OSX_ARCHITECTURES=arm64",
+        "-DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+        "-DCMAKE_OSX_DEPLOYMENT_TARGET=15.0"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/11.stdout",
+          "state": "not-opened"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/11.stderr",
+          "state": "not-opened"
+        }
+      },
+      "phase": "planned",
+      "dispatch": {
+        "state": "not-attempted",
+        "attempted": false,
+        "startEvidence": "none",
+        "pid": null
+      },
+      "run": null,
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "not-attempted"
+    },
+    {
+      "index": 12,
+      "executable": "/tmp/T03-native-location-N0-tool-supply/run-20261021T163000Z-75ffc442/cmake-distribution-v2/cmake-4.4.4-macos-universal/CMake.app/Contents/bin/cmake",
+      "argv": [
+        "--build",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core",
+        "--config",
+        "RelWithDebInfo",
+        "--target",
+        "location_core_test",
+        "location_child_probe",
+        "--parallel",
+        "2"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "outputs": {
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/12.stdout",
+          "state": "not-opened"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/12.stderr",
+          "state": "not-opened"
+        }
+      },
+      "phase": "planned",
+      "dispatch": {
+        "state": "not-attempted",
+        "attempted": false,
+        "startEvidence": "none",
+        "pid": null
+      },
+      "run": null,
+      "failures": [],
+      "cleanupErrors": [],
+      "outputValidation": "not-attempted"
+    }
+  ],
+  "firstFailure": null,
+  "persistenceFailures": [],
+  "tests": "NOT_RUN",
+  "dependencyClosure": "PENDING_POST_BUILD_AUDIT",
+  "supplierCommit": "d98b503ebe9c477d30d0f36d831cffbeeaf2a988",
+  "snapshotPhase": "before-open-stderr"
+}
