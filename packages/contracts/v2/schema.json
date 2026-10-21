@@ -4746,6 +4746,3248 @@
       },
       "minItems": 3,
       "maxItems": 5
+    },
+    "project3": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "projectRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "inputSnapshotId": {
+          "$ref": "#/$defs/hash"
+        },
+        "dependencyVector": {
+          "$ref": "#/$defs/vector"
+        },
+        "formatVersion": {
+          "const": 3
+        }
+      },
+      "required": [
+        "projectId",
+        "projectRevision",
+        "inputSnapshotId",
+        "dependencyVector",
+        "formatVersion"
+      ],
+      "additionalProperties": false
+    },
+    "result_project.get3": {
+      "$ref": "#/$defs/project3"
+    },
+    "result_hello3": {
+      "type": "object",
+      "properties": {
+        "selectedVersion": {
+          "const": 3
+        },
+        "engineVersion": {
+          "$ref": "#/$defs/name"
+        },
+        "engineSessionId": {
+          "$ref": "#/$defs/id"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/name"
+          },
+          "minItems": 0,
+          "maxItems": 32
+        },
+        "limits": {
+          "$ref": "#/$defs/limits"
+        },
+        "registryHash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": [
+        "selectedVersion",
+        "engineVersion",
+        "engineSessionId",
+        "capabilities",
+        "limits",
+        "registryHash"
+      ],
+      "additionalProperties": false
+    },
+    "error3": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "INVALID_REQUEST"
+            },
+            "messageKey": {
+              "const": "protocol.invalidRequest"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "enum": [
+                    "envelope",
+                    "params",
+                    "identity",
+                    "config",
+                    "cursor",
+                    "dependency",
+                    "kind"
+                  ]
+                }
+              },
+              "required": ["field"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "METHOD_NOT_ALLOWED"
+            },
+            "messageKey": {
+              "const": "protocol.methodNotAllowed"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "VERSION_INCOMPATIBLE"
+            },
+            "messageKey": {
+              "const": "protocol.versionIncompatible"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "supportedVersions": {
+                  "type": "array",
+                  "items": {
+                    "const": 3
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": ["supportedVersions"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "HANDSHAKE_REQUIRED"
+            },
+            "messageKey": {
+              "const": "protocol.handshakeRequired"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "SESSION_MISMATCH"
+            },
+            "messageKey": {
+              "const": "protocol.sessionMismatch"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "NOT_FOUND"
+            },
+            "messageKey": {
+              "const": "resource.notFound"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "resource": {
+                  "enum": [
+                    "project",
+                    "job",
+                    "result",
+                    "snapshot",
+                    "operation",
+                    "subscription",
+                    "cursor"
+                  ]
+                }
+              },
+              "required": ["resource"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "PERMISSION_DENIED"
+            },
+            "messageKey": {
+              "const": "permission.denied"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "UNSUPPORTED_CAPABILITY"
+            },
+            "messageKey": {
+              "const": "capability.unsupported"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "QUEUE_FULL"
+            },
+            "messageKey": {
+              "const": "job.queueFull"
+            },
+            "retryable": {
+              "const": true
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "retryAfterMs": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 60000
+                }
+              },
+              "required": ["retryAfterMs"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "TIMEOUT"
+            },
+            "messageKey": {
+              "const": "job.timeout"
+            },
+            "retryable": {
+              "const": true
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "phase": {
+                  "enum": ["startup", "handshake", "request", "total", "heartbeat", "cancel"]
+                }
+              },
+              "required": ["phase"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "ENGINE_EXITED"
+            },
+            "messageKey": {
+              "const": "engine.exited"
+            },
+            "retryable": {
+              "const": true
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "REVISION_CONFLICT"
+            },
+            "messageKey": {
+              "const": "project.revisionConflict"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "expected": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "actual": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": ["expected", "actual"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "OWNERSHIP_CONFLICT"
+            },
+            "messageKey": {
+              "const": "project.ownershipConflict"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "detailRef": {
+                  "$ref": "#/$defs/id"
+                }
+              },
+              "required": ["detailRef"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "IDENTITY_CONFLICT"
+            },
+            "messageKey": {
+              "const": "operation.identityConflict"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "STORAGE_BUSY"
+            },
+            "messageKey": {
+              "const": "storage.busy"
+            },
+            "retryable": {
+              "const": true
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "retryAfterMs": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 60000
+                }
+              },
+              "required": ["retryAfterMs"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "STORAGE_FAILURE"
+            },
+            "messageKey": {
+              "const": "storage.failure"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "operationId": {
+                  "$ref": "#/$defs/id"
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "CURSOR_MISMATCH"
+            },
+            "messageKey": {
+              "const": "result.cursorMismatch"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "CURSOR_EXPIRED"
+            },
+            "messageKey": {
+              "const": "result.cursorExpired"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "PAYLOAD_EVICTED"
+            },
+            "messageKey": {
+              "const": "result.payloadEvicted"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "resultId": {
+                  "$ref": "#/$defs/id"
+                }
+              },
+              "required": ["resultId"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "INVALID_STATE"
+            },
+            "messageKey": {
+              "const": "protocol.invalidState"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "MAPPING_VALUE_INVALID"
+            },
+            "messageKey": {
+              "const": "mapping.valueInvalid"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "worksheetId": {
+                  "$ref": "#/$defs/id"
+                },
+                "row": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1048576
+                },
+                "column": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 16384
+                },
+                "field": {
+                  "enum": ["key", "value", "type", "reference"]
+                },
+                "detailRef": {
+                  "$ref": "#/$defs/id"
+                }
+              },
+              "required": ["worksheetId", "row", "column", "field"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "INTERNAL_ERROR"
+            },
+            "messageKey": {
+              "const": "engine.internal"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "SEMANTIC_INPUT_INVALID"
+            },
+            "messageKey": {
+              "const": "semantics.inputInvalid"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "enum": ["syntax", "query", "rule", "constraint"]
+                }
+              },
+              "required": ["field"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "NETWORK_FORBIDDEN"
+            },
+            "messageKey": {
+              "const": "semantics.networkForbidden"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "UNSUPPORTED_CONSTRUCT"
+            },
+            "messageKey": {
+              "const": "semantics.unsupportedConstruct"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "construct": {
+                  "enum": [
+                    "rdfBlankNode",
+                    "sparqlForm",
+                    "ruleChain",
+                    "ruleRecursion",
+                    "shaclPath",
+                    "shaclAdvanced",
+                    "owlExpression",
+                    "rdfFormat",
+                    "rdfConstruct",
+                    "rdfsConstruct",
+                    "datatype",
+                    "literalValue",
+                    "queryFunction",
+                    "queryOrder",
+                    "querySlice",
+                    "ruleOutput",
+                    "validationScope"
+                  ]
+                }
+              },
+              "required": ["construct"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "RESOURCE_LIMIT"
+            },
+            "messageKey": {
+              "const": "resource.limitExceeded"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "resource": {
+                  "enum": [
+                    "memory",
+                    "actions",
+                    "rounds",
+                    "frame",
+                    "page",
+                    "semanticInput",
+                    "semanticResult",
+                    "semanticWork"
+                  ]
+                }
+              },
+              "required": ["resource"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "error_bootstrap3": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "VERSION_INCOMPATIBLE"
+            },
+            "messageKey": {
+              "const": "protocol.versionIncompatible"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "supportedVersions": {
+                  "type": "array",
+                  "items": {
+                    "const": 3
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": ["supportedVersions"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "VERSION_INCOMPATIBLE"
+            },
+            "messageKey": {
+              "const": "protocol.versionIncompatible"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "supportedVersions": {
+                  "type": "array",
+                  "items": {
+                    "const": 2
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": ["supportedVersions"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "INVALID_REQUEST"
+            },
+            "messageKey": {
+              "const": "protocol.invalidRequest"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "const": "params"
+                }
+              },
+              "required": ["field"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "SESSION_MISMATCH"
+            },
+            "messageKey": {
+              "const": "protocol.sessionMismatch"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "request3": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 2
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "const": null
+            },
+            "method": {
+              "const": "hello"
+            },
+            "params": {
+              "$ref": "#/$defs/params_hello"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "health"
+            },
+            "params": {
+              "$ref": "#/$defs/params_health"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "session.ping"
+            },
+            "params": {
+              "$ref": "#/$defs/params_session.ping"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.get"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.get"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.create"
+            },
+            "params": {
+              "$ref": "#/$defs/params_job.create"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.get"
+            },
+            "params": {
+              "$ref": "#/$defs/params_job.get"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.cancel"
+            },
+            "params": {
+              "$ref": "#/$defs/params_job.cancel"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.list"
+            },
+            "params": {
+              "$ref": "#/$defs/params_job.list"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.subscribe"
+            },
+            "params": {
+              "$ref": "#/$defs/params_job.subscribe"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.unsubscribe"
+            },
+            "params": {
+              "$ref": "#/$defs/params_job.unsubscribe"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "result.get"
+            },
+            "params": {
+              "$ref": "#/$defs/params_result.get"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "result.current"
+            },
+            "params": {
+              "$ref": "#/$defs/params_result.current"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "result.page"
+            },
+            "params": {
+              "$ref": "#/$defs/params_result.page"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "operation.get"
+            },
+            "params": {
+              "$ref": "#/$defs/params_operation.get"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.preview"
+            },
+            "params": {
+              "$ref": "#/$defs/params_changeset.preview"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.diff.page"
+            },
+            "params": {
+              "$ref": "#/$defs/params_changeset.diff.page"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.confirm"
+            },
+            "params": {
+              "$ref": "#/$defs/params_changeset.confirm"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "response3": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 2
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "hello"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_hello3"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 2
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "const": null
+            },
+            "method": {
+              "const": "hello"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error_bootstrap3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "health"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_health"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "health"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "session.ping"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_session.ping"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "session.ping"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.get"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.get3"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.get"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.create"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_job.create"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.create"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.get"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_job.get"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.get"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.cancel"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_job.cancel"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.cancel"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.list"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_job.list"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.list"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.subscribe"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_job.subscribe"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.subscribe"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.unsubscribe"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_job.unsubscribe"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "job.unsubscribe"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "result.get"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_result.get"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "result.get"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "result.current"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_result.current"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "result.current"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "result.page"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_result.page"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "result.page"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "operation.get"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_operation.get"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "operation.get"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.preview"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_changeset.preview"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.preview"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.diff.page"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_changeset.diff.page"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.diff.page"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.confirm"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_changeset.confirm"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "changeset.confirm"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "notification3": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "notification"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "subscriptionId": {
+              "$ref": "#/$defs/id"
+            },
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "jobId": {
+              "$ref": "#/$defs/id"
+            },
+            "seq": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "event": {
+              "const": "job.progress"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "stateVersion": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "progress": {
+                  "$ref": "#/$defs/progress"
+                }
+              },
+              "required": ["stateVersion", "progress"],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "engineSessionId",
+            "subscriptionId",
+            "projectId",
+            "jobId",
+            "seq",
+            "event",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "notification"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "subscriptionId": {
+              "$ref": "#/$defs/id"
+            },
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "jobId": {
+              "$ref": "#/$defs/id"
+            },
+            "seq": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "event": {
+              "const": "job.state"
+            },
+            "data": {
+              "$ref": "#/$defs/job"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "engineSessionId",
+            "subscriptionId",
+            "projectId",
+            "jobId",
+            "seq",
+            "event",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "notification"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "seq": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "event": {
+              "const": "session.status"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": ["ready", "stopping"]
+                }
+              },
+              "required": ["status"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["kind", "protocolVersion", "engineSessionId", "seq", "event", "data"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "envelope3": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/request3"
+        },
+        {
+          "$ref": "#/$defs/response3"
+        },
+        {
+          "$ref": "#/$defs/notification3"
+        }
+      ]
+    },
+    "error_startup": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "PROJECT_FORMAT_UNSUPPORTED"
+            },
+            "messageKey": {
+              "const": "project.formatUnsupported"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "supportedFormats": {
+                  "type": "array",
+                  "items": {
+                    "const": 3
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": ["supportedFormats"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "STORAGE_BUSY"
+            },
+            "messageKey": {
+              "const": "storage.busy"
+            },
+            "retryable": {
+              "const": true
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "retryAfterMs": {
+                  "const": 250
+                }
+              },
+              "required": ["retryAfterMs"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "STORAGE_FAILURE"
+            },
+            "messageKey": {
+              "const": "storage.failure"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "const": "INTERNAL_ERROR"
+            },
+            "messageKey": {
+              "const": "engine.internal"
+            },
+            "retryable": {
+              "const": false
+            },
+            "params": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": ["code", "messageKey", "retryable", "params"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "startupFailure": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "startupFailure"
+        },
+        "diagnosticVersion": {
+          "const": 1
+        },
+        "engineSessionId": {
+          "const": null
+        },
+        "registryHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "error": {
+          "$ref": "#/$defs/error_startup"
+        }
+      },
+      "required": ["kind", "diagnosticVersion", "engineSessionId", "registryHash", "error"],
+      "additionalProperties": false
+    },
+    "changeSetDefinitionReference": {
+      "type": "object",
+      "properties": {
+        "layer": {
+          "enum": [
+            "ontology",
+            "mapping",
+            "constraint",
+            "rule",
+            "behavior",
+            "scenario",
+            "query",
+            "model"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/name"
+        }
+      },
+      "required": ["layer", "id"],
+      "additionalProperties": false
+    },
+    "changeSetTriple": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        },
+        "predicate": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        },
+        "object": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        }
+      },
+      "required": ["subject", "predicate", "object"],
+      "additionalProperties": false
+    },
+    "changeSetOntologyValue": {
+      "type": "object",
+      "properties": {
+        "triples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetTriple"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "singleValuedPredicates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 262144
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetDefinitionReference"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "changeSetDefinition": {
+      "type": "object",
+      "properties": {
+        "layer": {
+          "const": "ontology"
+        },
+        "id": {
+          "$ref": "#/$defs/name"
+        },
+        "value": {
+          "$ref": "#/$defs/changeSetOntologyValue"
+        }
+      },
+      "required": ["layer", "id", "value"],
+      "additionalProperties": false
+    },
+    "changeSetDefinitionRemoval": {
+      "type": "object",
+      "properties": {
+        "layer": {
+          "const": "ontology"
+        },
+        "id": {
+          "$ref": "#/$defs/name"
+        }
+      },
+      "required": ["layer", "id"],
+      "additionalProperties": false
+    },
+    "changeSetFact": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/hash"
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        },
+        "predicate": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        },
+        "object": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 262144
+        }
+      },
+      "required": ["id", "subject", "predicate", "object"],
+      "additionalProperties": false
+    },
+    "changeSetPlan": {
+      "type": "object",
+      "properties": {
+        "definitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetDefinition"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "remove_definitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetDefinitionRemoval"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "manual": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetFact"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "edits": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/hash"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 262144
+          },
+          "maxProperties": 4096
+        },
+        "remove": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/hash"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "changeSetSegmentDescriptor": {
+      "type": "object",
+      "properties": {
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 511
+        },
+        "byteOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16777215
+        },
+        "rawByteLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32768
+        },
+        "sha256": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": ["ordinal", "byteOffset", "rawByteLength", "sha256"],
+      "additionalProperties": false
+    },
+    "changeSetSegment": {
+      "type": "object",
+      "properties": {
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 511
+        },
+        "byteOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16777215
+        },
+        "rawByteLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32768
+        },
+        "sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "dataBase64": {
+          "type": "string",
+          "maxLength": 43692,
+          "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+        }
+      },
+      "required": ["ordinal", "byteOffset", "rawByteLength", "sha256", "dataBase64"],
+      "additionalProperties": false
+    },
+    "changeSetManifest": {
+      "type": "object",
+      "properties": {
+        "documentKind": {
+          "enum": ["diff", "undo-impact"]
+        },
+        "documentHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "totalBytes": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 16777216
+        },
+        "segmentCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 512
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetSegmentDescriptor"
+          },
+          "minItems": 1,
+          "maxItems": 512
+        }
+      },
+      "required": ["documentKind", "documentHash", "totalBytes", "segmentCount", "segments"],
+      "additionalProperties": false
+    },
+    "params_changeset.preview": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "intent": {
+              "const": "change"
+            },
+            "plan": {
+              "$ref": "#/$defs/changeSetPlan"
+            }
+          },
+          "required": ["projectId", "baseRevision", "intent", "plan"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "intent": {
+              "const": "undo"
+            },
+            "targetOperationId": {
+              "$ref": "#/$defs/id"
+            }
+          },
+          "required": ["projectId", "baseRevision", "intent", "targetOperationId"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "result_changeset.preview": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "ready"
+            },
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "previewHash": {
+              "$ref": "#/$defs/hash"
+            },
+            "preparedPlanRef": {
+              "$ref": "#/$defs/hash"
+            },
+            "inputSnapshotId": {
+              "$ref": "#/$defs/hash"
+            },
+            "parametersHash": {
+              "$ref": "#/$defs/hash"
+            },
+            "intent": {
+              "enum": ["change", "undo"]
+            },
+            "targetOperationId": {
+              "oneOf": [
+                {
+                  "const": null
+                },
+                {
+                  "$ref": "#/$defs/id"
+                }
+              ]
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "manifest": {
+              "$ref": "#/$defs/changeSetManifest"
+            }
+          },
+          "required": [
+            "status",
+            "projectId",
+            "baseRevision",
+            "previewHash",
+            "preparedPlanRef",
+            "inputSnapshotId",
+            "parametersHash",
+            "intent",
+            "targetOperationId",
+            "summary",
+            "manifest"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "conflict"
+            },
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "previewHash": {
+              "$ref": "#/$defs/hash"
+            },
+            "targetOperationId": {
+              "$ref": "#/$defs/id"
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "impactComplete": {
+              "type": "boolean"
+            },
+            "manifest": {
+              "$ref": "#/$defs/changeSetManifest"
+            }
+          },
+          "required": [
+            "status",
+            "projectId",
+            "baseRevision",
+            "previewHash",
+            "targetOperationId",
+            "summary",
+            "impactComplete",
+            "manifest"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "params_changeset.diff.page": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "documentKind": {
+          "enum": ["diff", "undo-impact"]
+        },
+        "pageSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "cursor": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "$ref": "#/$defs/id"
+            }
+          ]
+        }
+      },
+      "required": ["projectId", "previewHash", "documentKind", "pageSize", "cursor"],
+      "additionalProperties": false
+    },
+    "changeSetPage": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "documentKind": {
+          "enum": ["diff", "undo-impact"]
+        },
+        "documentHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetSegment"
+          },
+          "minItems": 0,
+          "maxItems": 200
+        },
+        "nextCursor": {
+          "$ref": "#/$defs/id"
+        },
+        "complete": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "projectId",
+        "previewHash",
+        "documentKind",
+        "documentHash",
+        "segments",
+        "nextCursor",
+        "complete"
+      ],
+      "additionalProperties": false
+    },
+    "result_changeset.diff.page": {
+      "$ref": "#/$defs/changeSetPage"
+    },
+    "params_changeset.confirm": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "completionCursor": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": ["projectId", "previewHash", "completionCursor"],
+      "additionalProperties": false
+    },
+    "result_changeset.confirm": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "preparedPlanRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "confirmationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "inputSnapshotId": {
+          "$ref": "#/$defs/hash"
+        },
+        "parametersHash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": [
+        "projectId",
+        "previewHash",
+        "preparedPlanRef",
+        "confirmationRef",
+        "inputSnapshotId",
+        "parametersHash"
+      ],
+      "additionalProperties": false
     }
   },
   "$ref": "#/$defs/envelope"

@@ -401,6 +401,95 @@
       "cancelBoundary": "uncommitted-round",
       "dependencyPolicy": "scenario.run",
       "dataScopes": ["scenario"]
+    },
+    "changeset.preview": {
+      "owner": "coordinator",
+      "paramsSchema": "#/$defs/params_changeset.preview",
+      "resultSchema": "#/$defs/result_changeset.preview",
+      "scope": "project",
+      "effect": "read",
+      "requiresChangeSet": false,
+      "requiresConfirmation": false,
+      "agentEligible": false,
+      "exposure": "internal-business3-trusted-host-only",
+      "implementation": "explicit-internal-business3-runtime",
+      "limitProfile": "control",
+      "cancelBoundary": "discard-unpublished-result",
+      "dependencyPolicy": null,
+      "dataScopes": ["asserted"]
+    },
+    "changeset.diff.page": {
+      "owner": "coordinator",
+      "paramsSchema": "#/$defs/params_changeset.diff.page",
+      "resultSchema": "#/$defs/result_changeset.diff.page",
+      "scope": "project",
+      "effect": "read",
+      "requiresChangeSet": false,
+      "requiresConfirmation": false,
+      "agentEligible": false,
+      "exposure": "internal-business3-trusted-host-only",
+      "implementation": "explicit-internal-business3-runtime",
+      "limitProfile": "control",
+      "cancelBoundary": "discard-unpublished-result",
+      "dependencyPolicy": null,
+      "dataScopes": ["asserted"]
+    },
+    "changeset.confirm": {
+      "owner": "coordinator",
+      "paramsSchema": "#/$defs/params_changeset.confirm",
+      "resultSchema": "#/$defs/result_changeset.confirm",
+      "scope": "project",
+      "effect": "confirmation",
+      "requiresChangeSet": false,
+      "requiresConfirmation": false,
+      "agentEligible": false,
+      "exposure": "internal-business3-trusted-host-only",
+      "implementation": "explicit-internal-business3-runtime",
+      "limitProfile": "control",
+      "cancelBoundary": "discard-unpublished-result",
+      "dependencyPolicy": null,
+      "dataScopes": ["asserted"]
     }
+  },
+  "foundationProfiles": {
+    "business3": {
+      "bootstrapVersion": 2,
+      "businessVersion": 3,
+      "databaseFormatVersion": 3,
+      "state": "explicit-internal-opt-in-default2",
+      "methods": [
+        "hello",
+        "health",
+        "session.ping",
+        "project.get",
+        "job.create",
+        "job.get",
+        "job.cancel",
+        "job.list",
+        "job.subscribe",
+        "job.unsubscribe",
+        "result.get",
+        "result.current",
+        "result.page",
+        "operation.get",
+        "changeset.preview",
+        "changeset.diff.page",
+        "changeset.confirm"
+      ],
+      "newSourceOrLearningMethods": [],
+      "capabilityImplementations": {
+        "changeset.commit": "explicit-internal-business3-runtime"
+      }
+    }
+  },
+  "startupDiagnostic": {
+    "diagnosticVersion": 1,
+    "profile": "business3",
+    "phase": "pre-hello-only",
+    "schema": "#/$defs/startupFailure",
+    "errorSchema": "#/$defs/error_startup",
+    "maxPayloadBytes": 1024,
+    "payloadLength": "raw-before-CR-removal-excluding-LF",
+    "singlePerAttempt": true
   }
 }
