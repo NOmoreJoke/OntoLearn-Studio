@@ -1,0 +1,35 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> packages/engine/src/ontolearn_engine/quality/rule_profile.py:3:1
+  |
+1 |   """Private, bounded profile data and accounting; no execution/transport capability."""
+2 |
+3 | / from dataclasses import dataclass, fields
+4 | | from hashlib import sha256
+5 | | import sys
+  | |__________^
+6 |
+7 |   PROFILE = "OntoLearn-rule-comparison-profile/1"
+  |
+help: Organize imports
+  |
+2 |
+3 + import sys
+4 | from dataclasses import dataclass, fields
+5 | from hashlib import sha256
+  - import sys
+6 |
+  |
+
+E501 Line too long (103 > 100)
+  --> packages/engine/tests/test_quality_profile_imports.py:24:101
+   |
+22 | assert sys.get_int_max_str_digits()==before_limit
+23 | assert str(decimal.getcontext())==str(before_context)
+24 | assert quality.__all__==["DefinitionError", "ValidatedDefinition", "build_plan", "validate_definition"]
+   |                                                                                                     ^^^
+25 | from ontolearn_engine.quality import definitions, planning
+26 | assert quality.DefinitionError is definitions.DefinitionError
+   |
+
+Found 2 errors.
+[*] 1 fixable with `--fix`.

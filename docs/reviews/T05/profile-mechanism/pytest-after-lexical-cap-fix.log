@@ -1,0 +1,222 @@
+
+==================================== ERRORS ====================================
+___ ERROR collecting packages/engine/tests/test_quality_profile_calendar.py ____
+.venv/lib/python3.12/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+packages/engine/tests/test_quality_profile_calendar.py:6: in <module>
+    from ontolearn_engine.quality.rule_comparator import compare_values
+packages/engine/src/ontolearn_engine/quality/rule_comparator.py:3: in <module>
+    from .rule_calendar import compare_calendar
+packages/engine/src/ontolearn_engine/quality/rule_calendar.py:6: in <module>
+    from .rule_numbers import Number, add, compare_numbers, digits, divide, mul, power10, rational
+packages/engine/src/ontolearn_engine/quality/rule_numbers.py:6: in <module>
+    from .rule_profile import XSD, fail
+E     File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning/packages/engine/src/ontolearn_engine/quality/rule_profile.py", line 230
+E       ) and sys.modules[t.__module__].__dict__.get(t.__name__) is t
+E                                                                    ^
+E   SyntaxError: expected ':'
+__ ERROR collecting packages/engine/tests/test_quality_profile_comparator.py ___
+.venv/lib/python3.12/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+packages/engine/tests/test_quality_profile_comparator.py:4: in <module>
+    from ontolearn_engine.quality.rule_comparator import compare_values
+packages/engine/src/ontolearn_engine/quality/rule_comparator.py:3: in <module>
+    from .rule_calendar import compare_calendar
+packages/engine/src/ontolearn_engine/quality/rule_calendar.py:6: in <module>
+    from .rule_numbers import Number, add, compare_numbers, digits, divide, mul, power10, rational
+packages/engine/src/ontolearn_engine/quality/rule_numbers.py:6: in <module>
+    from .rule_profile import XSD, fail
+E     File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning/packages/engine/src/ontolearn_engine/quality/rule_profile.py", line 230
+E       ) and sys.modules[t.__module__].__dict__.get(t.__name__) is t
+E                                                                    ^
+E   SyntaxError: expected ':'
+____ ERROR collecting packages/engine/tests/test_quality_profile_firing.py _____
+.venv/lib/python3.12/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+packages/engine/tests/test_quality_profile_firing.py:6: in <module>
+    from ontolearn_engine.quality.rule_firing import (
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:7: in <module>
+    from .rule_comparator import compare_values
+packages/engine/src/ontolearn_engine/quality/rule_comparator.py:3: in <module>
+    from .rule_calendar import compare_calendar
+packages/engine/src/ontolearn_engine/quality/rule_calendar.py:6: in <module>
+    from .rule_numbers import Number, add, compare_numbers, digits, divide, mul, power10, rational
+packages/engine/src/ontolearn_engine/quality/rule_numbers.py:6: in <module>
+    from .rule_profile import XSD, fail
+E     File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning/packages/engine/src/ontolearn_engine/quality/rule_profile.py", line 230
+E       ) and sys.modules[t.__module__].__dict__.get(t.__name__) is t
+E                                                                    ^
+E   SyntaxError: expected ':'
+____ ERROR collecting packages/engine/tests/test_quality_profile_imports.py ____
+.venv/lib/python3.12/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+packages/engine/tests/test_quality_profile_imports.py:8: in <module>
+    from test_quality_profile_terms import FIXTURES
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+packages/engine/tests/test_quality_profile_terms.py:8: in <module>
+    from ontolearn_engine.quality.rule_profile import (
+E     File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning/packages/engine/src/ontolearn_engine/quality/rule_profile.py", line 230
+E       ) and sys.modules[t.__module__].__dict__.get(t.__name__) is t
+E                                                                    ^
+E   SyntaxError: expected ':'
+____ ERROR collecting packages/engine/tests/test_quality_profile_limits.py _____
+.venv/lib/python3.12/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+packages/engine/tests/test_quality_profile_limits.py:6: in <module>
+    from ontolearn_engine.quality.rule_comparator import compare_values
+packages/engine/src/ontolearn_engine/quality/rule_comparator.py:3: in <module>
+    from .rule_calendar import compare_calendar
+packages/engine/src/ontolearn_engine/quality/rule_calendar.py:6: in <module>
+    from .rule_numbers import Number, add, compare_numbers, digits, divide, mul, power10, rational
+packages/engine/src/ontolearn_engine/quality/rule_numbers.py:6: in <module>
+    from .rule_profile import XSD, fail
+E     File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning/packages/engine/src/ontolearn_engine/quality/rule_profile.py", line 230
+E       ) and sys.modules[t.__module__].__dict__.get(t.__name__) is t
+E                                                                    ^
+E   SyntaxError: expected ':'
+____ ERROR collecting packages/engine/tests/test_quality_profile_numbers.py ____
+.venv/lib/python3.12/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+packages/engine/tests/test_quality_profile_numbers.py:6: in <module>
+    from ontolearn_engine.quality.rule_comparator import compare_values
+packages/engine/src/ontolearn_engine/quality/rule_comparator.py:3: in <module>
+    from .rule_calendar import compare_calendar
+packages/engine/src/ontolearn_engine/quality/rule_calendar.py:6: in <module>
+    from .rule_numbers import Number, add, compare_numbers, digits, divide, mul, power10, rational
+packages/engine/src/ontolearn_engine/quality/rule_numbers.py:6: in <module>
+    from .rule_profile import XSD, fail
+E     File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning/packages/engine/src/ontolearn_engine/quality/rule_profile.py", line 230
+E       ) and sys.modules[t.__module__].__dict__.get(t.__name__) is t
+E                                                                    ^
+E   SyntaxError: expected ':'
+_____ ERROR collecting packages/engine/tests/test_quality_profile_terms.py _____
+.venv/lib/python3.12/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+packages/engine/tests/test_quality_profile_terms.py:8: in <module>
+    from ontolearn_engine.quality.rule_profile import (
+E     File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning/packages/engine/src/ontolearn_engine/quality/rule_profile.py", line 230
+E       ) and sys.modules[t.__module__].__dict__.get(t.__name__) is t
+E                                                                    ^
+E   SyntaxError: expected ':'
+=========================== short test summary info ============================
+ERROR packages/engine/tests/test_quality_profile_calendar.py
+ERROR packages/engine/tests/test_quality_profile_comparator.py
+ERROR packages/engine/tests/test_quality_profile_firing.py
+ERROR packages/engine/tests/test_quality_profile_imports.py
+ERROR packages/engine/tests/test_quality_profile_limits.py
+ERROR packages/engine/tests/test_quality_profile_numbers.py
+ERROR packages/engine/tests/test_quality_profile_terms.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 7 errors during collection !!!!!!!!!!!!!!!!!!!!
+7 errors in 0.27s

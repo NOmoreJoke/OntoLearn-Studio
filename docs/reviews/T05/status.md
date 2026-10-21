@@ -191,3 +191,15 @@ I05/T01联合范围已获独立reviewer明确文档通过、无新增实质问�
 总控实际对比023e441最终字节与预读快照，独立确认numeric矩阵decimal行被本线先前整行替换误改为词法说明、丢失六A6格；此前本线内部通过漏检此问题，不作为最终字节正确的替代证据。仅恢复该行六个A6，保留前面decimal词法表/fenced正则；Prettier只重排该矩阵列宽。原023错误字节和既有通过记录留在Git。
 
 本轮只同步profile新hash、receipt/checkpoint与P2处置；总控尚未授实现，不改Q6/算法/预算/路径/产品/测试，也不重做不变规范审查或产品验证。阶段授权仍待总控对固定修正提交的精确delta补绑。
+
+## 正式授权的私有profile机制阶段：本地实现与验证完成
+
+实际全文读6228B正式阶段授权，SHA `210f31b1406fb13fb616e1f94b026feea2f3437c270f709185d890715512d1f0`；先前“待一次授实施”是授权前历史。完整执行原7代码/7测试/6fixture路径，无新依赖或共享/renderer/future4改动。实现精确词法、直接binary32/64舍入、独立日历、九域六算子、给定binding完整比较与原子多head/batch、真实私有位置和冻结预算；未挂载真实执行入口。
+
+最终candidate4专项1408通过，原session7748完整`npm run check`真实exit0：635 TS、2608 Python，以及lint/格式/类型/构建/ruff通过。独立agent累计完整实现/实际delta审查明确通过，最终报告在`profile-mechanism/internal-review-candidate-4.zip`中，report SHA `ab6b37bd4af5d4b7f5ee5ad57a6ec9bd04e9767bac6adca84996107e183cdd44`。20输入与树/manifest/ZIP逐bytes/hash闭环；首候选已绿检查仍被独审发现问题，原不通过及修前反例不改写为通过。
+
+已关闭：双常量编译预检、所有实际直接入口callback门、schema catalog重分类、复制seal/自报digest伪计划及typed等码、facts原始代表不稳定、混型三点签名/完整夹具预期、catalog输入护栏过晚、整数tuple/哈希和空hash免计费。648混型格、30替换和raw/source完整结果有独立预期/定点证据。Budget为工程防护上限，不是测得容量；本地签发不是producer授权。各轮原ZIP、失败日志、完整payload、探针命令/退出码及执行范围更正均保全，见`profile-mechanism/implementation-receipt.json`。probe的六rule模块与合成namespace、原树init子进程兼容验证分开，不混称七模块均执行。
+
+本阶段只建立值/给定绑定机制。原FR500–505/C/D/G.2、真实图成员/所有匹配/producer与source授权、单一I05执行器接线、T01 Store/Job/worker/错误公共路由、I06业务入口、生命周期/跨模块、包内/目标平台/真人、指定同候选双审/CI/PR/正常合并/远端仍未证；原Goal实际blocked不重建或标完成。未push、未GUI/native/HMR/外发或新增付费；最终本地Git及总控原件读回另绑定。
+
+最终实现固定本地commit `1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb`，恰20条已授代码/测试/fixture路径；candidate4 manifest `ef5bb61f32248c05ccfe3364e0a56e2bbe34cd09d92b841a4faafcb8685fa967`、ZIP `4df1cb3ea85d096ae007497d0639173f9ef5f78b273475df6c47ea9953181894`与Git逐字节绑定。其后只封存本线过程文档/日志，不改受测实现；总控最终原件读回待核，未push或创建PR。

@@ -1,0 +1,89 @@
+{
+  "base": "e6ea0f77411d71ac3b226b2d7e00280628848bca",
+  "commands": [
+    "uv run --frozen pytest packages/engine/tests/test_quality_profile_*.py -q",
+    "npm run check"
+  ],
+  "files": {
+    "packages/engine/src/ontolearn_engine/quality/rule_calendar.py": {
+      "bytes": 3232,
+      "sha256": "a13ba43d6fea0daf9c85d9de152890f3f3d33f709ad3787efed5707ee5fad3cb"
+    },
+    "packages/engine/src/ontolearn_engine/quality/rule_comparator.py": {
+      "bytes": 1633,
+      "sha256": "d1c7ca72698db35dddf0098b508d521d231474113e8a666f93d0882ed85765e9"
+    },
+    "packages/engine/src/ontolearn_engine/quality/rule_firing.py": {
+      "bytes": 17496,
+      "sha256": "08effb39bf2b180b241f4ca39fd236738f35dc3c8eaada1c8c17db6930a6b871"
+    },
+    "packages/engine/src/ontolearn_engine/quality/rule_numbers.py": {
+      "bytes": 5858,
+      "sha256": "7d8bd7dea448b048cbe80a476a0c30a1e3ede3ebe9db80a8e3f8ca289f85da23"
+    },
+    "packages/engine/src/ontolearn_engine/quality/rule_profile.py": {
+      "bytes": 8064,
+      "sha256": "db1e3cb88127d9cbbbbea93dd45f1bbe450873affab78c7babded688eaae3079"
+    },
+    "packages/engine/src/ontolearn_engine/quality/rule_terms.py": {
+      "bytes": 5281,
+      "sha256": "3d9c06c387ac6de3e6b63ff47438fe775043e265c05f90cc2171242e7b3a2379"
+    },
+    "packages/engine/src/ontolearn_engine/quality/__init__.py": {
+      "bytes": 548,
+      "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c"
+    },
+    "packages/engine/tests/test_quality_profile_calendar.py": {
+      "bytes": 2161,
+      "sha256": "f6e92592186e309a251cbbab592b851f866c943de8904b9a1b0fa281f6185e1c"
+    },
+    "packages/engine/tests/test_quality_profile_comparator.py": {
+      "bytes": 2439,
+      "sha256": "f17fa78f3ce517ea4b637e815702243eb3b1208e8bd6e9e7f2040de68cd367b4"
+    },
+    "packages/engine/tests/test_quality_profile_firing.py": {
+      "bytes": 8354,
+      "sha256": "332f9150907ec9795e8bc696c5d6b40892948df5e6177107c369424e9987e9b8"
+    },
+    "packages/engine/tests/test_quality_profile_imports.py": {
+      "bytes": 2078,
+      "sha256": "05b28ee714c19397a349fc4d38aba5bde0986c235dd1ed7d26ae9d73072d981c"
+    },
+    "packages/engine/tests/test_quality_profile_limits.py": {
+      "bytes": 7595,
+      "sha256": "265db1514cd09121a92a0df45dde111b6afb43eebc081c8fbfbcda56d19375b8"
+    },
+    "packages/engine/tests/test_quality_profile_numbers.py": {
+      "bytes": 2370,
+      "sha256": "40c15c6003b38affb79b499b104ea866bec6f51cfd4f2127aeb5e9516aed992e"
+    },
+    "packages/engine/tests/test_quality_profile_terms.py": {
+      "bytes": 3616,
+      "sha256": "6ba891e7cceec1c3ebfee2697caec8acef01b4f35c82c73f8c3cc48d8eb248f7"
+    },
+    "tests/fixtures/quality/profile-v1/calendar-oracles.json": {
+      "bytes": 1004,
+      "sha256": "616fd0c5d4bc052f5abfc14b02bba095f849bd672b2beda63933e79186ab2016"
+    },
+    "tests/fixtures/quality/profile-v1/comparison-matrix.json": {
+      "bytes": 5277,
+      "sha256": "d6e22d86a1dcab5468ea8aa0acfad8ab17aee2db263650c76f7b21f32eefb18c"
+    },
+    "tests/fixtures/quality/profile-v1/firing-cases.json": {
+      "bytes": 998,
+      "sha256": "6c1489db47a9402a3dcc88ffe86bce8a990216d3fb00373e3a138178302cd945"
+    },
+    "tests/fixtures/quality/profile-v1/lexical.json": {
+      "bytes": 3294,
+      "sha256": "2d893831f1c4ecbee88e93f75a03c302e92cef1999eadfad68ca1d4abcf5bf79"
+    },
+    "tests/fixtures/quality/profile-v1/manifest.json": {
+      "bytes": 1056,
+      "sha256": "363144f3cc0e89cfc0413a936190921f1c686bd0e88861bef490776af5b03d3c"
+    },
+    "tests/fixtures/quality/profile-v1/numeric-oracles.json": {
+      "bytes": 9898,
+      "sha256": "554882960460ba2416e0d4dcc5cbf72d43525e3838decee8bc72215e3dae26c3"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+........................................................................ [  7%]
+........................................................................ [ 15%]
+........................................................................ [ 23%]
+........................................................................ [ 31%]
+........................................................................ [ 39%]
+........................................................................ [ 47%]
+........................................................................ [ 55%]
+........................................................................ [ 63%]
+........................................................................ [ 71%]
+........................................................................ [ 79%]
+......................................................F................. [ 87%]
+........................................................................ [ 95%]
+...........................................                              [100%]
+=================================== FAILURES ===================================
+_____________ test_source_term_digit_boundaries_and_no_global_lift _____________
+
+    def test_source_term_digit_boundaries_and_no_global_lift():
+        for caps, source in [
+            (ProfileLimits(term_bytes=3), TermInput("literal", "abcd")),
+            (
+                ProfileLimits(source_bytes=3),
+                TermInput("literal", "a", source=SourceRecord(text="abcd")),
+            ),
+            (ProfileLimits(digits=3), term("integer", "1234")),
+        ]:
+            with pytest.raises(ProfileFailure, match="RULE_INPUT_BUDGET"):
+                parse_value(source, None, Budget(caps))
+        assert (
+>           parse_value(TermInput("literal", "abc"), None, Budget(ProfileLimits(term_bytes=3))).value
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            == "abc"
+        )
+
+packages/engine/tests/test_quality_profile_limits.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:108: in parse_value
+    iri_minimum(datatype, budget, location)
+packages/engine/src/ontolearn_engine/quality/rule_terms.py:72: in iri_minimum
+    utf8_size(text, budget, budget.limits.term_bytes, location)
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:162: in utf8_size
+    fail("RULE_INPUT_BUDGET", location, "resource")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'RULE_INPUT_BUDGET', location = None, classification = 'resource'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: RULE_INPUT_BUDGET
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:63: ProfileFailure
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_quality_profile_limits.py::test_source_term_digit_boundaries_and_no_global_lift
+1 failed, 906 passed in 0.78s

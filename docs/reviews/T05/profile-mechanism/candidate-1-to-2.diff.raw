@@ -1,0 +1,1363 @@
+--- candidate-1/packages/engine/src/ontolearn_engine/quality/rule_calendar.py
++++ candidate-2/packages/engine/src/ontolearn_engine/quality/rule_calendar.py
+@@ -3,8 +3,19 @@
+ import re
+ from dataclasses import dataclass
+ 
+-from .rule_numbers import Number, add, compare_numbers, digits, divide, mul, power10, rational
+-from .rule_profile import XSD, fail
++from .rule_numbers import (
++    Number,
++    add,
++    check_ints,
++    check_number,
++    compare_numbers,
++    digits,
++    divide,
++    mul,
++    power10,
++    rational,
++)
++from .rule_profile import XSD, fail, internal, require_budget
+ 
+ YEAR = r"(-?(?:[1-9][0-9]{3,}|0[0-9]{3}))"
+ DATE = YEAR + r"-([0-9]{2})-([0-9]{2})"
+@@ -22,6 +33,7 @@
+ 
+ 
+ def day_serial(year, month, day, budget):
++    check_ints(budget, year, month, day)
+     ya = add(year, -int(month <= 2), budget)
+     era, yoe = divide(ya, 400, budget)
+     mp = month + (-3 if month > 2 else 9)
+@@ -32,7 +44,13 @@
+ 
+ 
+ def parse_calendar(text, datatype, budget, location=None):
+-    budget.debit(len(text), location=location)
++    require_budget(budget)
++    if type(text) is not str or type(datatype) is not str:
++        internal(location)
++    if datatype not in (XSD + "date", XSD + "dateTime"):
++        fail("UNSUPPORTED_LITERAL_DATATYPE", location)
++    # Regex and bounded field/slice scans/copies are prepaid, separately from bigint work.
++    budget.debit(8 * len(text), location=location)
+     is_time = datatype == XSD + "dateTime"
+     match = (TIME_RE if is_time else DATE_RE).fullmatch(text)
+     if not match:
+@@ -75,6 +93,14 @@
+ 
+ 
+ def compare_calendar(a, b, budget):
++    require_budget(budget)
++    for item in (a, b):
++        if type(item) is not Calendar:
++            internal()
++        check_ints(budget, item.day)
++        check_number(item.second, budget)
++        if type(item.explicit_offset) is not bool or type(item.is_datetime) is not bool:
++            internal()
+     if a.explicit_offset != b.explicit_offset or a.is_datetime != b.is_datetime:
+         fail("RULE_COMPARISON_TYPE_MISMATCH")
+     budget.debit(max(1, (a.day.bit_length() + b.day.bit_length() + 31) // 32))
+--- candidate-1/packages/engine/src/ontolearn_engine/quality/rule_comparator.py
++++ candidate-2/packages/engine/src/ontolearn_engine/quality/rule_comparator.py
+@@ -3,7 +3,7 @@
+ from .rule_calendar import compare_calendar
+ from .rule_numbers import compare_numbers
+ from .rule_profile import OPS, ProfileFailure, fail, internal, text_compare
+-from .rule_terms import ProfileValue
++from .rule_terms import check_value
+ 
+ 
+ def compare_values(left, op, right, budget, location=None):
+@@ -16,8 +16,8 @@
+ 
+ 
+ def _compare_values(left, op, right, budget, location=None):
+-    if type(left) is not ProfileValue or type(right) is not ProfileValue:
+-        fail("INTERNAL_ERROR", location, "internal")
++    check_value(left, budget)
++    check_value(right, budget)
+     budget.debit(location=location)
+     domain = left.domain
+     if op not in OPS:
+--- candidate-1/packages/engine/src/ontolearn_engine/quality/rule_firing.py
++++ candidate-2/packages/engine/src/ontolearn_engine/quality/rule_firing.py
+@@ -3,6 +3,7 @@
+ import re
+ from dataclasses import dataclass, field
+ from functools import cmp_to_key
++from weakref import ref
+ 
+ from .rule_comparator import compare_values
+ from .rule_profile import (
+@@ -28,6 +29,13 @@
+ 
+ VAR = re.compile(r"\?[A-Za-z][A-Za-z0-9_]{0,63}", re.ASCII)
+ _SEAL = object()
++_ISSUED_PLANS = {}
++SCHEMA_NAMESPACES = (
++    RDF,
++    "http://www.w3.org/2000/01/rdf-schema#",
++    "http://www.w3.org/2002/07/owl#",
++    "http://www.w3.org/ns/shacl#",
++)
+ 
+ 
+ @dataclass(frozen=True, slots=True)
+@@ -84,7 +92,7 @@
+     prepared_digest: str
+ 
+ 
+-@dataclass(frozen=True, slots=True, init=False)
++@dataclass(frozen=True, slots=True, init=False, weakref_slot=True)
+ class CompiledPlan:
+     rules: tuple[_CompiledRule, ...]
+     catalog: Catalog
+@@ -194,10 +202,18 @@
+     if predicate.domain != "I":
+         fail(location=location)
+     path = predicate.value
++    if output:
++        budget.debit(len(path) + sum(map(len, SCHEMA_NAMESPACES)))
++        if path != RDF + "type" and path.startswith(SCHEMA_NAMESPACES):
++            fail("UNSUPPORTED_RULE_OUTPUT", location)
+     if path == RDF + "type":
+         obj = parse_value(t.object, location, budget)
+         if obj.domain != "I" or not _contains(obj.value, catalog.classes, budget):
+             fail(location=location)
++        if output:
++            budget.debit(len(obj.value) + sum(map(len, SCHEMA_NAMESPACES)))
++            if obj.value.startswith(SCHEMA_NAMESPACES):
++                fail("UNSUPPORTED_RULE_OUTPUT", location)
+     else:
+         is_object = _contains(path, catalog.object_properties, budget)
+         is_data = _contains(path, catalog.data_properties, budget)
+@@ -220,6 +236,7 @@
+     if type(definitions) not in (tuple, list) or type(catalog) is not Catalog:
+         fail()
+     budget.bound(len(definitions), "rules")
++    account_input((tuple(definitions), catalog), budget)
+     for group in (catalog.classes, catalog.object_properties, catalog.data_properties):
+         if type(group) is not tuple:
+             fail()
+@@ -230,7 +247,6 @@
+             fail()
+     if any(_contains(p, catalog.data_properties, budget) for p in catalog.object_properties):
+         fail()
+-    account_input((tuple(definitions), catalog), budget)
+     result, seen_ids = [], []
+     for spec in definitions:
+         budget.debit()
+@@ -282,6 +298,16 @@
+                         bound.append(var) if section == "when" else used.append((var, pos))
+                     else:
+                         constants.append((operand, parse_value(operand, pos, budget)))
++        for index, comp in enumerate(spec.comparisons):
++            if type(comp.left) is TermInput and type(comp.right) is TermInput:
++                local = _CompiledRule(spec, tuple(constants), (), "")
++                compare_values(
++                    _resolve(comp.left, local, (), budget),
++                    comp.operator,
++                    _resolve(comp.right, local, (), budget),
++                    budget,
++                    InputLocation("comparison", index),
++                )
+         variables = _sort_unique(bound, budget)
+         budget.bound(len(variables), "variables")
+         for var, pos in used:
+@@ -289,24 +315,37 @@
+                 fail("UNBOUND_RULE_VARIABLE", pos)
+         result.append(
+             _CompiledRule(
+-                spec, tuple(constants), variables, fingerprint(encode_input(spec, budget))
++                spec, tuple(constants), variables, fingerprint(encode_input(spec, budget), budget)
+             )
+         )
+     data = (tuple(result), catalog)
+-    digest = fingerprint(encode_input(data, budget))
+-    return CompiledPlan(tuple(result), catalog, digest, budget, _SEAL)
++    digest = fingerprint(encode_input(data, budget), budget)
++    plan = CompiledPlan(tuple(result), catalog, digest, budget, _SEAL)
++    key = id(plan)
++
++    def expire(reference):
++        if _ISSUED_PLANS.get(key, (None,))[0] is reference:
++            _ISSUED_PLANS.pop(key, None)
++
++    _ISSUED_PLANS[key] = (ref(plan, expire), digest, budget)
++    return plan
+ 
+ 
+ def _check_plan(plan, budget):
+-    if type(plan) is not CompiledPlan or plan._seal is not _SEAL or plan._budget is not budget:
++    if type(plan) is not CompiledPlan or type(budget) is not Budget:
++        internal()
++    issued = _ISSUED_PLANS.get(id(plan))
++    if issued is None or issued[0]() is not plan or issued[2] is not budget:
++        internal()
++    if type(plan.digest) is not str or plan._seal is not _SEAL or plan._budget is not budget:
+         internal()
+     try:
+-        actual = fingerprint(encode_input((plan.rules, plan.catalog), budget))
++        actual = fingerprint(encode_input((plan.rules, plan.catalog), budget), budget)
+     except ProfileFailure as exc:
+         if exc.classification == "resource":
+             raise
+         internal()
+-    if actual != plan.digest:
++    if actual != issued[1] or plan.digest != issued[1]:
+         internal()
+ 
+ 
+@@ -470,9 +509,10 @@
+         seen.append(key)
+         if firing is not None:
+             output.append((key, firing))
+-            for head in firing.heads:
+-                facts.append((_triple_key(head.triple, budget), head.triple))
+     output.sort(key=cmp_to_key(lambda a, b: tuple_compare(a[0], b[0], budget)))
++    for _, firing in output:
++        for head in firing.heads:
++            facts.append((_triple_key(head.triple, budget), head.triple))
+     facts.sort(key=cmp_to_key(lambda a, b: tuple_compare(a[0], b[0], budget)))
+     unique = []
+     for key, triple in facts:
+@@ -480,7 +520,7 @@
+             unique.append((key, triple))
+     firings, triples = tuple(f for _, f in output), tuple(t for _, t in unique)
+     payload = encode_output((PROFILE, firings, triples), budget)
+-    return PreparedFiringBatch(firings, triples, payload, fingerprint(payload))
++    return PreparedFiringBatch(firings, triples, payload, fingerprint(payload, budget))
+ 
+ 
+ def check_firing_group(plan, group, budget):
+--- candidate-1/packages/engine/src/ontolearn_engine/quality/rule_numbers.py
++++ candidate-2/packages/engine/src/ontolearn_engine/quality/rule_numbers.py
+@@ -3,7 +3,7 @@
+ import re
+ from dataclasses import dataclass
+ 
+-from .rule_profile import XSD, fail
++from .rule_profile import NUMERIC, XSD, fail, internal, require_budget
+ 
+ INTEGER = re.compile(r"[+-]?[0-9]+", re.ASCII)
+ DECIMAL = re.compile(r"[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)", re.ASCII)
+@@ -17,34 +17,65 @@
+     negative_zero: bool = False
+ 
+ 
++def check_ints(budget, *values):
++    require_budget(budget)
++    for value in values:
++        if type(value) is not int:
++            internal()
++        budget.bits(value, temporary=True)
++
++
++def check_number(value, budget):
++    if type(value) is not Number:
++        internal()
++    check_ints(budget, value.numerator, value.denominator)
++    if type(value.negative_zero) is not bool or value.denominator <= 0:
++        internal()
++    budget.bits(value.numerator)
++    budget.bits(value.denominator)
++
++
+ def limbs(n):
++    if type(n) is not int:
++        internal()
+     return max(1, (n.bit_length() + 31) // 32)
+ 
+ 
+ def mul(a, b, budget):
++    check_ints(budget, a, b)
+     budget.bound(a.bit_length() + b.bit_length(), "temporary_bits")
+     budget.debit(limbs(a) * limbs(b))
+     return a * b
+ 
+ 
+ def shift(a, n, budget):
++    check_ints(budget, a, n)
++    if n < 0:
++        internal()
+     budget.bound(a.bit_length() + n, "temporary_bits")
+     budget.debit(max(1, (a.bit_length() + n + 31) // 32))
+     return a << n
+ 
+ 
+ def add(a, b, budget):
++    check_ints(budget, a, b)
+     budget.bound(max(a.bit_length(), b.bit_length()) + 1, "temporary_bits")
+     budget.debit(limbs(a) + limbs(b))
+     return a + b
+ 
+ 
+ def divide(a, b, budget):
++    check_ints(budget, a, b)
++    if b <= 0:
++        internal()
+     budget.debit(limbs(a) * limbs(b))
+     return divmod(a, b)
+ 
+ 
+ def rational(n, d, budget, negative_zero=False):
++    check_ints(budget, n, d)
++    if type(negative_zero) is not bool:
++        internal()
+     if d <= 0:
+         fail("INTERNAL_ERROR", classification="internal")
+     a, b = abs(n), d
+@@ -59,8 +90,13 @@
+ 
+ 
+ def digits(text, budget, location=None):
++    require_budget(budget)
++    if type(text) is not str:
++        internal(location)
+     budget.bound(len(text), "digits", location)
+-    budget.debit(len(text), location=location)
++    budget.debit(4 * len(text), location=location)
++    if text and (not text.isascii() or not text.isdigit()):
++        internal(location)
+     n = 0
+     for start in range(0, len(text), 9):
+         piece = text[start : start + 9]
+@@ -70,6 +106,9 @@
+ 
+ 
+ def power10(n, budget):
++    check_ints(budget, n)
++    if n < 0:
++        internal()
+     # 3322/1000 is a strict upper bound on log2(10).
+     budget.bound((n * 3322 + 999) // 1000 + 1, "temporary_bits")
+     result, base = 1, 10
+@@ -84,6 +123,8 @@
+ 
+ 
+ def compare_numbers(a, b, budget):
++    check_number(a, budget)
++    check_number(b, budget)
+     left = mul(a.numerator, b.denominator, budget)
+     right = mul(b.numerator, a.denominator, budget)
+     budget.debit(limbs(left) + limbs(right))
+@@ -111,7 +152,13 @@
+ 
+ 
+ def parse_number(text, datatype, budget, location=None):
+-    budget.debit(len(text), location=location)
++    require_budget(budget)
++    if type(text) is not str or type(datatype) is not str:
++        internal(location)
++    if datatype not in NUMERIC:
++        fail("UNSUPPORTED_LITERAL_DATATYPE", location)
++    # Conservative precharge for regex, sign/parts copies and zero/exponent scans.
++    budget.debit(12 * len(text), location=location)
+     name = datatype.removeprefix(XSD)
+     if name in ("integer", "int", "nonNegativeInteger"):
+         if not INTEGER.fullmatch(text):
+--- candidate-1/packages/engine/src/ontolearn_engine/quality/rule_profile.py
++++ candidate-2/packages/engine/src/ontolearn_engine/quality/rule_profile.py
+@@ -124,7 +124,12 @@
+         return tuple(self._used.items())
+ 
+     def debit(self, amount=1, counter="work", location=None):
+-        if type(amount) is not int or amount < 0 or counter not in self._used:
++        if (
++            type(amount) is not int
++            or amount < 0
++            or type(counter) is not str
++            or counter not in self._used
++        ):
+             internal(location)
+         value = self._used[counter] + amount
+         if value > getattr(self.limits, counter):
+@@ -135,20 +140,38 @@
+         self._used[counter] = value
+ 
+     def bound(self, value, name, location=None):
++        if (
++            type(value) is not int
++            or type(name) is not str
++            or name not in ProfileLimits.__dataclass_fields__
++        ):
++            internal(location)
+         if value > getattr(self.limits, name):
+             fail("RULE_INPUT_BUDGET", location, "resource")
+ 
+     def bits(self, value, temporary=False, location=None):
++        if type(value) is not int or type(temporary) is not bool:
++            internal(location)
+         self.bound(value.bit_length(), "temporary_bits" if temporary else "integer_bits", location)
+ 
+     def start(self, phase):
++        if type(phase) is not str or phase not in ("compile", "evaluate"):
++            internal()
+         expected = "new" if phase == "compile" else "compile"
+         if self._phase != expected:
+             internal()
+         self._phase = phase
+ 
+ 
++def require_budget(budget):
++    if type(budget) is not Budget:
++        internal()
++
++
+ def utf8_size(text, budget, cap=None, location=None):
++    require_budget(budget)
++    if cap is not None and type(cap) is not int:
++        internal(location)
+     if type(text) is not str:
+         fail(location=location)
+     # Precharge before scanning, including long common-prefix strings.
+@@ -166,19 +189,27 @@
+ 
+ 
+ def text_compare(a, b, budget):
++    require_budget(budget)
++    if type(a) is not str or type(b) is not str:
++        internal()
+     budget.debit(len(a) + len(b) + 1)
+     return (a > b) - (a < b)
+ 
+ 
+ def tuple_compare(a, b, budget):
++    require_budget(budget)
++    if type(a) is not tuple or type(b) is not tuple:
++        internal()
+     for x, y in zip(a, b, strict=False):
+         if type(x) is str and type(y) is str:
+             c = text_compare(x, y, budget)
+         elif type(x) is tuple and type(y) is tuple:
+             c = tuple_compare(x, y, budget)
+-        else:
++        elif type(x) is type(y) and type(x) in (int, bool):
+             budget.debit()
+             c = (x > y) - (x < y)
++        else:
++            internal()
+         if c:
+             return c
+     return (len(a) > len(b)) - (len(a) < len(b))
+@@ -216,14 +247,14 @@
+     elif t is int:
+         budget.bits(value)
+         budget.debit(max(1, value.bit_length() // 4 + 2))
+-        emit(('"' + hex(value) + '"').encode())
++        emit(("i" + hex(value) + ";").encode())
+     elif t in (tuple, list):
+         budget.debit(len(value))
+-        emit(b"[")
++        emit(b"(" if t is tuple else b"[")
+         for item in value:
+             _walk(item, budget, output, sink, depth + 1)
+             emit(b",")
+-        emit(b"]")
++        emit(b")" if t is tuple else b"]")
+     elif (
+         t.__module__
+         in tuple(
+@@ -233,31 +264,39 @@
+         and sys.modules[t.__module__].__dict__.get(t.__name__) is t
+         and hasattr(t, "__dataclass_fields__")
+     ):
+-        emit(b"[")
++        emit(b"{")
+         _walk(t.__name__, budget, output, sink, depth + 1)
+         for f in fields(value):
+             _walk(f.name, budget, output, sink, depth + 1)
+             _walk(getattr(value, f.name), budget, output, sink, depth + 1)
+-        emit(b"]")
++        emit(b"}")
+     else:
+         fail()
+ 
+ 
+ def account_input(value, budget):
++    require_budget(budget)
+     _walk(value, budget, False, None)
+ 
+ 
+ def encode_input(value, budget):
++    require_budget(budget)
+     sink = bytearray()
+     _walk(value, budget, False, sink)
+     return bytes(sink)
+ 
+ 
+ def encode_output(value, budget):
++    require_budget(budget)
+     sink = bytearray()
+     _walk(value, budget, True, sink)
+     return bytes(sink)
+ 
+ 
+-def fingerprint(data):
++def fingerprint(data, budget=None):
++    if type(data) is not bytes:
++        internal()
++    if budget is not None:
++        require_budget(budget)
++        budget.debit(len(data))
+     return sha256(data).hexdigest()
+--- candidate-1/packages/engine/src/ontolearn_engine/quality/rule_terms.py
++++ candidate-2/packages/engine/src/ontolearn_engine/quality/rule_terms.py
+@@ -2,6 +2,7 @@
+ 
+ import re
+ from dataclasses import dataclass
++from weakref import ref
+ 
+ from .rule_calendar import parse_calendar
+ from .rule_numbers import parse_number
+@@ -14,7 +15,11 @@
+     SourceRecord,
+     TermInput,
+     account_input,
++    encode_input,
+     fail,
++    fingerprint,
++    internal,
++    require_budget,
+     utf8_size,
+ )
+ 
+@@ -38,7 +43,7 @@
+ SCHEME = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*:", re.ASCII)
+ 
+ 
+-@dataclass(frozen=True, slots=True)
++@dataclass(frozen=True, slots=True, weakref_slot=True)
+ class ProfileValue:
+     term: TermInput
+     domain: str
+@@ -46,10 +51,49 @@
+     language: str = ""
+ 
+ 
++_ISSUED_VALUES = {}
++
++
++def _signed_value(term, domain, value, language, budget):
++    result = ProfileValue(term, domain, value, language)
++    digest = fingerprint(encode_input(result, budget), budget)
++    key = id(result)
++
++    def expire(reference):
++        if _ISSUED_VALUES.get(key, (None,))[0] is reference:
++            _ISSUED_VALUES.pop(key, None)
++
++    _ISSUED_VALUES[key] = (ref(result, expire), digest)
++    return result
++
++
++def check_value(value, budget):
++    require_budget(budget)
++    if type(value) is not ProfileValue:
++        internal()
++    issued = _ISSUED_VALUES.get(id(value))
++    if issued is None or issued[0]() is not value:
++        internal()
++    try:
++        digest = fingerprint(encode_input(value, budget), budget)
++    except ProfileFailure as exc:
++        if exc.classification == "resource":
++            raise
++        internal()
++    if digest != issued[1]:
++        internal()
++
++
+ def check_location(location):
+     if location is None:
+         return
+-    if type(location) is not InputLocation or location.section not in (
++    if type(location) is not InputLocation:
++        fail()
++    if location.section is not None and type(location.section) is not str:
++        fail()
++    if location.side is not None and type(location.side) is not str:
++        fail()
++    if location.section not in (
+         None,
+         "when",
+         "comparison",
+@@ -70,6 +114,9 @@
+ 
+ 
+ def iri_minimum(text, budget, location=None, lexical=False):
++    require_budget(budget)
++    if type(lexical) is not bool:
++        internal(location)
+     utf8_size(text, budget, budget.limits.term_bytes if lexical else 16384, location)
+     budget.debit(len(text), location=location)
+     if not SCHEME.match(text) or any(c.isspace() or c in '<>"{}|^`\\' for c in text):
+@@ -78,6 +125,7 @@
+ 
+ 
+ def parse_value(term, location, budget):
++    require_budget(budget)
+     check_location(location)
+     if type(term) is not TermInput:
+         fail(location=location)
+@@ -101,7 +149,9 @@
+     if term.kind == "iri":
+         if term.datatype_iri is not None or term.language_raw is not None:
+             fail(location=location)
+-        return ProfileValue(term, "I", iri_minimum(text, budget, location, lexical=True))
++        return _signed_value(
++            term, "I", iri_minimum(text, budget, location, lexical=True), "", budget
++        )
+     if term.kind != "literal":
+         fail(location=location)
+     datatype = (
+@@ -113,36 +163,39 @@
+     lang = term.language_raw
+     if lang is not None:
+         utf8_size(lang, budget, budget.limits.term_bytes, location)
+-        budget.debit(len(lang), location=location)
++        budget.debit(4 * len(lang), location=location)
+         if datatype != RDF + "langString":
+             fail(location=location)
+         if lang.lower() not in GRANDFATHERED and not LANGTAG.fullmatch(lang):
+             fail("INVALID_LITERAL_LEXICAL", location)
+-        return ProfileValue(term, "L", text, lang.lower())
++        return _signed_value(term, "L", text, lang.lower(), budget)
+     if datatype == RDF + "langString":
+         fail(location=location)
+     if datatype == XSD + "string":
+         budget.debit(len(text), location=location)
+         if any(ord(c) == 0 or ord(c) in (0xFFFE, 0xFFFF) for c in text):
+             fail("INVALID_LITERAL_LEXICAL", location)
+-        return ProfileValue(term, "S", text)
++        return _signed_value(term, "S", text, "", budget)
+     if datatype == XSD + "boolean":
+         if text not in ("true", "false", "1", "0"):
+             fail("INVALID_LITERAL_LEXICAL", location)
+-        return ProfileValue(term, "B", text in ("true", "1"))
++        return _signed_value(term, "B", text in ("true", "1"), "", budget)
+     if datatype in NUMERIC:
+-        return ProfileValue(term, "N", parse_number(text, datatype, budget, location))
++        return _signed_value(term, "N", parse_number(text, datatype, budget, location), "", budget)
+     if datatype in (XSD + "date", XSD + "dateTime"):
+         value = parse_calendar(text, datatype, budget, location)
+-        return ProfileValue(
++        return _signed_value(
+             term,
+             ("T" if value.is_datetime else "D") + ("z" if value.explicit_offset else "l"),
+             value,
++            "",
++            budget,
+         )
+     fail("UNSUPPORTED_LITERAL_DATATYPE", location)
+ 
+ 
+ def term_key(value, budget):
++    check_value(value, budget)
+     term = value.term
+     lang = value.language
+     datatype = term.datatype_iri or (RDF + "langString" if lang else XSD + "string")
+--- candidate-1/packages/engine/tests/test_quality_profile_comparator.py
++++ candidate-2/packages/engine/tests/test_quality_profile_comparator.py
+@@ -43,14 +43,32 @@
+ 
+ 
+ @pytest.mark.parametrize(
+-    "left,right,k",
+-    [(a, b, k) for a in MATRIX["numeric_types"] for b in MATRIX["numeric_types"] for k in range(6)],
++    "left,right,n,k",
++    [
++        (a, b, n, k)
++        for a in MATRIX["numeric_types"]
++        for b in MATRIX["numeric_types"]
++        for n in (1, 2, 3)
++        for k in range(6)
++    ],
+ )
+-def test_all_216_mixed_numeric_true_false_cells(left, right, k):
++def test_all_648_numeric_three_point_signatures(left, right, n, k):
+     assert (
+-        compare_values(value(left, "1"), OPS[k], value(right, "2"), Budget())
+-        == MATRIX["one_vs_two"][k]
++        compare_values(value(left, str(n)), OPS[k], value(right, "2"), Budget())
++        == MATRIX["threshold_two_signatures"][n - 1][k]
+     )
++
++
++@pytest.mark.parametrize("original,replacement", [(a, b) for a in OPS for b in OPS if a != b])
++def test_all_30_directed_operator_replacements_are_killed(original, replacement):
++    # Execute the mutated operator dispatch, including NE->LT, on all three inputs.
++    expected = [row[OPS.index(original)] for row in MATRIX["threshold_two_signatures"]]
++    mutant = [
++        compare_values(value("integer", str(n)), replacement, value("decimal", "2"), Budget())
++        for n in (1, 2, 3)
++    ]
++    with pytest.raises(AssertionError):
++        assert mutant == expected
+ 
+ 
+ @pytest.mark.parametrize("op", OPS)
+--- candidate-1/packages/engine/tests/test_quality_profile_firing.py
++++ candidate-2/packages/engine/tests/test_quality_profile_firing.py
+@@ -33,24 +33,52 @@
+ def example(comparisons=None, heads=None, when=None):
+     data = fixture("firing-cases.json")
+     cat = Catalog(**{k: tuple(v) for k, v in data["catalog"].items()})
+-    s, v = Variable("?s"), Variable("?v")
+-    w = Triple(s, iri("urn:value"), v)
+-    head = Triple(s, iri("urn:out"), v)
++    definition = data["definition"]
++
++    def raw(item):
++        payload = dict(item)
++        if payload.get("source") is not None:
++            payload["source"] = SourceRecord(**payload["source"])
++        return TermInput(**payload)
++
++    def operand(item):
++        if type(item) is str:
++            return Variable(item) if item.startswith("?") else iri(item)
++        return term(item["type"], item["lexical"])
++
++    def pattern(row):
++        return Triple(*(operand(item) for item in row))
++
+     spec = RuleSpec(
+-        "r1",
+-        when or (w,),
+-        comparisons if comparisons is not None else (Comparison(v, "gt", term("integer", "1")),),
+-        heads or (head, head),
+-        SourceRecord("fixture:firing-cases", None, "1", "actual fixture"),
+-        "1",
+-        "given-definition-digest",
+-    )
+-    actual = Triple(iri("urn:a"), iri("urn:value"), term("integer", "2"))
++        definition["rule_id"],
++        tuple(pattern(row) for row in definition["when"]) if when is None else when,
++        tuple(
++            Comparison(operand(row[0]), row[1], operand(row[2]))
++            for row in definition["comparisons"]
++        )
++        if comparisons is None
++        else comparisons,
++        tuple(pattern(row) for row in definition["heads"]) if heads is None else heads,
++        SourceRecord(**definition["source"]),
++        definition["revision"],
++        definition["definition_digest"],
++        definition["policy"],
++    )
+     match = BindingMatch(
+-        "r1",
+-        (("?s", iri("urn:a")), ("?v", term("integer", "2"))),
+-        tuple(actual for _ in spec.when),
+-        tuple(("fact:1",) for _ in spec.when),
++        definition["rule_id"],
++        tuple((name, raw(item)) for name, item in data["input_binding"]),
++        tuple(
++            Triple(raw(row["subject"]), raw(row["predicate"]), raw(row["object"]))
++            for row in (data["input_when"] if when is None else data["input_when"] * len(when))
++        ),
++        tuple(
++            tuple(row)
++            for row in (
++                data["input_proof_leaves"]
++                if when is None
++                else data["input_proof_leaves"] * len(when)
++            )
++        ),
+     )
+     return spec, cat, match
+ 
+@@ -74,6 +102,14 @@
+     assert group.comparisons[0].left.value.numerator == 2
+     assert group.comparisons[0].right.value.numerator == 1
+     assert group.source.reference == "fixture:firing-cases"
++    import json
++    from dataclasses import asdict
++    from hashlib import sha256
++
++    assert json.loads(json.dumps(asdict(group))) == expected["firing"]
++    assert json.loads(json.dumps([asdict(t) for t in batch.facts])) == expected["facts"]
++    assert batch.profile == expected["profile"]
++    assert batch.digest == sha256(batch.payload).hexdigest()
+     assert check_firing_group(p, group, b)
+ 
+ 
+@@ -228,3 +264,105 @@
+     g = evaluate_bound_batch(p, (m,), b).firings[0]
+     assert g.revision is None and g.source is None
+     assert len(g.definition_digest) == 64 and g.definition_digest == p.rules[0].prepared_digest
++
++
++@pytest.mark.parametrize(
++    "left,op,right",
++    [
++        (iri("urn:a"), "lt", iri("urn:b")),
++        (term("boolean", "true"), "le", term("boolean", "false")),
++        (term("string", "x"), "ne", term("integer", "1")),
++    ],
++)
++def test_static_constant_pair_invalid_even_with_zero_matches(left, op, right):
++    r, c, _ = example(comparisons=(Comparison(left, op, right),))
++    with pytest.raises(ProfileFailure) as e:
++        compile_rules((r,), c, Budget())
++    assert e.value.reason == "RULE_COMPARISON_TYPE_MISMATCH"
++    assert e.value.location == InputLocation("comparison", 0)
++
++
++def test_static_constant_false_is_valid_and_produces_no_firing():
++    r, c, m = example(comparisons=(Comparison(term("integer", "1"), "gt", term("integer", "2")),))
++    b = Budget()
++    p = compile_rules((r,), c, b)
++    assert evaluate_bound_batch(p, (m,), b).firings == ()
++
++
++@pytest.mark.parametrize(
++    "predicate",
++    [
++        "http://www.w3.org/2000/01/rdf-schema#subClassOf",
++        "http://www.w3.org/2002/07/owl#equivalentClass",
++        "http://www.w3.org/ns/shacl#path",
++        RDF + "Property",
++    ],
++)
++def test_catalog_cannot_reclassify_schema_predicate(predicate):
++    r, c, _ = example(heads=(Triple(Variable("?s"), iri(predicate), iri("urn:C")),))
++    c = replace(c, object_properties=c.object_properties + (predicate,))
++    with pytest.raises(ProfileFailure, match="UNSUPPORTED_RULE_OUTPUT"):
++        compile_rules((r,), c, Budget())
++
++
++def test_catalog_cannot_reclassify_schema_type_declaration():
++    schema = "http://www.w3.org/2000/01/rdf-schema#Class"
++    r, c, _ = example(heads=(Triple(Variable("?s"), iri(RDF + "type"), iri(schema)),))
++    c = replace(c, classes=c.classes + (schema,))
++    with pytest.raises(ProfileFailure, match="UNSUPPORTED_RULE_OUTPUT"):
++        compile_rules((r,), c, Budget())
++
++
++def test_copied_seal_and_public_digest_do_not_issue_a_plan():
++    from ontolearn_engine.quality.rule_profile import encode_input, fingerprint
++
++    r, c, _ = example()
++    b = Budget()
++    p = compile_rules((r,), c, b)
++    broken = replace(
++        p.rules[0].spec,
++        comparisons=(Comparison(term("integer", "broken"), "eq", term("integer", "1")),),
++    )
++    rules = (replace(p.rules[0], spec=broken),)
++    digest = fingerprint(encode_input((rules, c), b))
++    forged = CompiledPlan(rules, c, digest, b, p._seal)
++    with pytest.raises(ProfileFailure, match="INTERNAL_ERROR"):
++        evaluate_bound_batch(forged, (), b)
++
++
++@pytest.mark.parametrize("alias", ["simple-string", "source"])
++def test_full_payload_stable_for_alias_and_source_representatives(alias):
++    r, c, m = example(
++        heads=(Triple(iri("urn:fixed"), iri("urn:out"), Variable("?v")),), comparisons=()
++    )
++    simple = TermInput("literal", "x", source=SourceRecord(text='"x"'))
++    explicit = (
++        TermInput(
++            "literal",
++            "x",
++            "http://www.w3.org/2001/XMLSchema#string",
++            source=SourceRecord(text='"x"^^xsd:string'),
++        )
++        if alias == "simple-string"
++        else replace(simple, source=SourceRecord(text="alternate actual example source"))
++    )
++
++    def supplied(subject, t, leaf):
++        return replace(
++            m,
++            bindings=(("?s", iri(subject)), ("?v", t)),
++            when=(Triple(iri(subject), iri("urn:value"), t),),
++            proof_leaves=((leaf,),),
++        )
++
++    a, z = supplied("urn:a", simple, "fact:a"), supplied("urn:z", explicit, "fact:z")
++    outputs = []
++    for matches in [(a, z), (z, a)]:
++        b = Budget()
++        p = compile_rules((r,), c, b)
++        outputs.append(evaluate_bound_batch(p, matches, b))
++    assert outputs[0] == outputs[1]
++    assert outputs[0].payload == outputs[1].payload and outputs[0].digest == outputs[1].digest
++    assert outputs[0].facts[0].object == simple
++    assert [g.heads[0].triple.object for g in outputs[0].firings] == [simple, explicit]
++    assert [g.basis for g in outputs[0].firings] == [("fact:a",), ("fact:z",)]
+--- candidate-1/packages/engine/tests/test_quality_profile_limits.py
++++ candidate-2/packages/engine/tests/test_quality_profile_limits.py
+@@ -195,3 +195,63 @@
+     with pytest.raises(ProfileFailure, match="RULE_EVIDENCE_RESULT_LIMIT"):
+         evaluate_bound_batch(p, (m,), b)
+     assert dict(b.usage)["output_bytes"] <= size - 1
++
++
++def test_catalog_total_input_precedes_iri_scan_and_sort(monkeypatch):
++    from ontolearn_engine.quality import rule_firing
++    from ontolearn_engine.quality.rule_firing import Catalog
++
++    def forbidden(*a, **k):
++        pytest.fail("catalog scan before total-input gate")
++
++    monkeypatch.setattr(rule_firing, "iri_minimum", forbidden)
++    cat = Catalog(classes=("urn:same",) * 1000)
++    with pytest.raises(ProfileFailure, match="RULE_INPUT_BUDGET"):
++        compile_rules((), cat, Budget(ProfileLimits(input_bytes=128)))
++
++
++def test_direct_helpers_reject_foreign_primitives_and_budget_without_hooks():
++    from ontolearn_engine.quality.rule_calendar import parse_calendar
++    from ontolearn_engine.quality.rule_numbers import parse_number, rational
++    from ontolearn_engine.quality.rule_profile import encode_input, fingerprint, tuple_compare
++
++    calls = []
++
++    class Probe:
++        def __getattr__(self, name):
++            calls.append(name)
++            return lambda *a, **k: 1
++
++        def __eq__(self, other):
++            calls.append("eq")
++            return False
++
++        def __lt__(self, other):
++            calls.append("lt")
++            return False
++
++        def __gt__(self, other):
++            calls.append("gt")
++            return False
++
++    probe = Probe()
++    b = Budget()
++    operations = [
++        lambda: mul(probe, 1, b),
++        lambda: rational(1, probe, b),
++        lambda: shift(probe, 1, b),
++        lambda: power10(probe, b),
++        lambda: parse_number(probe, "x", b),
++        lambda: parse_calendar(probe, "x", b),
++        lambda: text_compare(probe, "a", b),
++        lambda: tuple_compare((probe,), (probe,), b),
++        lambda: parse_value(term("integer", "1"), None, probe),
++        lambda: encode_input("x", probe),
++        lambda: fingerprint(probe),
++        lambda: b.debit(1, probe),
++        lambda: b.bound(1, probe),
++    ]
++    for operation in operations:
++        with pytest.raises(ProfileFailure, match="INTERNAL_ERROR"):
++            operation()
++    assert calls == []
+--- candidate-1/packages/engine/tests/test_quality_profile_terms.py
++++ candidate-2/packages/engine/tests/test_quality_profile_terms.py
+@@ -98,3 +98,54 @@
+     assert caught.value.location is None
+     with pytest.raises(AttributeError):
+         caught.value.reason = "other"
++
++
++@pytest.mark.parametrize("field", ["section", "side"])
++def test_location_exact_type_gate_never_calls_equality_hook(field):
++    calls = []
++
++    class Probe:
++        def __eq__(self, other):
++            calls.append("eq")
++            return False
++
++    loc = InputLocation(**{field: Probe()})
++    with pytest.raises(ProfileFailure, match="INVALID_RULE"):
++        parse_value(term("integer", "1"), loc, Budget())
++    assert calls == []
++
++
++def test_unissued_and_corrupt_value_cannot_execute_boolean_hooks():
++    from ontolearn_engine.quality.rule_comparator import compare_values
++    from ontolearn_engine.quality.rule_terms import ProfileValue
++
++    calls = []
++
++    class Probe:
++        def __gt__(self, other):
++            calls.append("gt")
++            return True
++
++        def __lt__(self, other):
++            calls.append("lt")
++            return False
++
++    bad = ProfileValue(term("boolean", "true"), "B", Probe())
++    good = value("boolean", "true")
++    with pytest.raises(ProfileFailure, match="INTERNAL_ERROR"):
++        compare_values(bad, "eq", good, Budget())
++    object.__setattr__(good, "value", Probe())
++    with pytest.raises(ProfileFailure, match="INTERNAL_ERROR"):
++        compare_values(good, "eq", good, Budget())
++    assert calls == []
++
++
++def test_typed_fingerprints_separate_integer_string_and_record_tuple():
++    from ontolearn_engine.quality.rule_profile import encode_input
++
++    b = Budget()
++    assert encode_input(1, b) != encode_input("0x1", b)
++    assert encode_input((1,), b) != encode_input([1], b)
++    source = SourceRecord()
++    as_tuple = ("SourceRecord", "reference", None, "digest", None, "revision", None, "text", None)
++    assert encode_input(source, b) != encode_input(as_tuple, b)
+--- candidate-1/tests/fixtures/quality/profile-v1/comparison-matrix.json
++++ candidate-2/tests/fixtures/quality/profile-v1/comparison-matrix.json
+@@ -1,5 +1,5 @@
+ {
+-  "oracle": "Human-adopted nine-domain table; each cell gives eq ne lt le gt ge classifications",
++  "oracle": "Human-adopted nine-domain table; each cell gives eq ne lt le gt ge classifications; threshold 2 left values 1,2,3 give six unique operator columns",
+   "domains": ["N", "S", "L", "I", "B", "Dz", "Dl", "Tz", "Tl"],
+   "cells": [
+     [
+@@ -141,5 +141,10 @@
+     ["V", "V", "V", "V", "V", "V"],
+     ["V", "V", "V", "V", "V", "V"]
+   ],
+-  "one_vs_two": [false, true, true, true, false, false]
++  "one_vs_two": [false, true, true, true, false, false],
++  "threshold_two_signatures": [
++    [false, true, true, true, false, false],
++    [true, false, false, true, false, true],
++    [false, true, false, false, true, true]
++  ]
+ }
+--- candidate-1/tests/fixtures/quality/profile-v1/firing-cases.json
++++ candidate-2/tests/fixtures/quality/profile-v1/firing-cases.json
+@@ -1,5 +1,5 @@
+ {
+-  "oracle": "Hand-authored controlled catalog and one concrete given binding; no graph membership claim",
++  "oracle": "Hand-authored controlled catalog and one concrete given binding; no graph membership claim; full expected firing/facts manually assembled from this exact input, no tested mechanism imports or outputs",
+   "catalog": {
+     "classes": ["urn:C"],
+     "object_properties": ["urn:related"],
+@@ -23,7 +23,16 @@
+     "heads": [
+       ["?s", "urn:out", "?v"],
+       ["?s", "urn:out", "?v"]
+-    ]
++    ],
++    "source": {
++      "reference": "fixture:firing-cases",
++      "digest": null,
++      "revision": "1",
++      "text": "actual fixture"
++    },
++    "revision": "1",
++    "definition_digest": "given-definition-digest",
++    "policy": "OntoLearn-rule-comparison-profile/1"
+   },
+   "expected": {
+     "heads": [
+@@ -47,6 +56,274 @@
+     "basis": ["fact:1"],
+     "head_indices": [0, 1],
+     "comparison_indices": [0],
+-    "unique_facts": 1
+-  }
++    "unique_facts": 1,
++    "firing": {
++      "rule_id": "r1",
++      "bindings": [
++        [
++          "?s",
++          {
++            "kind": "iri",
++            "lexical_form": "urn:a",
++            "datatype_iri": null,
++            "language_raw": null,
++            "source": null
++          }
++        ],
++        [
++          "?v",
++          {
++            "kind": "literal",
++            "lexical_form": "2",
++            "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
++            "language_raw": null,
++            "source": {
++              "reference": "fixture:value-2",
++              "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
++              "revision": "fact-v1",
++              "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
++            }
++          }
++        ]
++      ],
++      "when": [
++        {
++          "subject": {
++            "kind": "iri",
++            "lexical_form": "urn:a",
++            "datatype_iri": null,
++            "language_raw": null,
++            "source": null
++          },
++          "predicate": {
++            "kind": "iri",
++            "lexical_form": "urn:value",
++            "datatype_iri": null,
++            "language_raw": null,
++            "source": null
++          },
++          "object": {
++            "kind": "literal",
++            "lexical_form": "2",
++            "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
++            "language_raw": null,
++            "source": {
++              "reference": "fixture:value-2",
++              "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
++              "revision": "fact-v1",
++              "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
++            }
++          }
++        }
++      ],
++      "proof_leaves": [["fact:1"]],
++      "comparisons": [
++        {
++          "index": 0,
++          "left": {
++            "term": {
++              "kind": "literal",
++              "lexical_form": "2",
++              "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
++              "language_raw": null,
++              "source": {
++                "reference": "fixture:value-2",
++                "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
++                "revision": "fact-v1",
++                "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
++              }
++            },
++            "domain": "N",
++            "value": {
++              "numerator": 2,
++              "denominator": 1,
++              "negative_zero": false
++            },
++            "language": ""
++          },
++          "operator": "gt",
++          "right": {
++            "term": {
++              "kind": "literal",
++              "lexical_form": "1",
++              "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
++              "language_raw": null,
++              "source": null
++            },
++            "domain": "N",
++            "value": {
++              "numerator": 1,
++              "denominator": 1,
++              "negative_zero": false
++            },
++            "language": ""
++          },
++          "result": true
++        }
++      ],
++      "heads": [
++        {
++          "index": 0,
++          "triple": {
++            "subject": {
++              "kind": "iri",
++              "lexical_form": "urn:a",
++              "datatype_iri": null,
++              "language_raw": null,
++              "source": null
++            },
++            "predicate": {
++              "kind": "iri",
++              "lexical_form": "urn:out",
++              "datatype_iri": null,
++              "language_raw": null,
++              "source": null
++            },
++            "object": {
++              "kind": "literal",
++              "lexical_form": "2",
++              "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
++              "language_raw": null,
++              "source": {
++                "reference": "fixture:value-2",
++                "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
++                "revision": "fact-v1",
++                "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
++              }
++            }
++          }
++        },
++        {
++          "index": 1,
++          "triple": {
++            "subject": {
++              "kind": "iri",
++              "lexical_form": "urn:a",
++              "datatype_iri": null,
++              "language_raw": null,
++              "source": null
++            },
++            "predicate": {
++              "kind": "iri",
++              "lexical_form": "urn:out",
++              "datatype_iri": null,
++              "language_raw": null,
++              "source": null
++            },
++            "object": {
++              "kind": "literal",
++              "lexical_form": "2",
++              "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
++              "language_raw": null,
++              "source": {
++                "reference": "fixture:value-2",
++                "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
++                "revision": "fact-v1",
++                "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
++              }
++            }
++          }
++        }
++      ],
++      "basis": ["fact:1"],
++      "source": {
++        "reference": "fixture:firing-cases",
++        "digest": null,
++        "revision": "1",
++        "text": "actual fixture"
++      },
++      "revision": "1",
++      "definition_digest": "given-definition-digest",
++      "policy": "OntoLearn-rule-comparison-profile/1"
++    },
++    "facts": [
++      {
++        "subject": {
++          "kind": "iri",
++          "lexical_form": "urn:a",
++          "datatype_iri": null,
++          "language_raw": null,
++          "source": null
++        },
++        "predicate": {
++          "kind": "iri",
++          "lexical_form": "urn:out",
++          "datatype_iri": null,
++          "language_raw": null,
++          "source": null
++        },
++        "object": {
++          "kind": "literal",
++          "lexical_form": "2",
++          "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
++          "language_raw": null,
++          "source": {
++            "reference": "fixture:value-2",
++            "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
++            "revision": "fact-v1",
++            "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
++          }
++        }
++      }
++    ],
++    "profile": "OntoLearn-rule-comparison-profile/1"
++  },
++  "input_binding": [
++    [
++      "?s",
++      {
++        "kind": "iri",
++        "lexical_form": "urn:a",
++        "datatype_iri": null,
++        "language_raw": null,
++        "source": null
++      }
++    ],
++    [
++      "?v",
++      {
++        "kind": "literal",
++        "lexical_form": "2",
++        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
++        "language_raw": null,
++        "source": {
++          "reference": "fixture:value-2",
++          "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
++          "revision": "fact-v1",
++          "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
++        }
++      }
++    ]
++  ],
++  "input_when": [
++    {
++      "subject": {
++        "kind": "iri",
++        "lexical_form": "urn:a",
++        "datatype_iri": null,
++        "language_raw": null,
++        "source": null
++      },
++      "predicate": {
++        "kind": "iri",
++        "lexical_form": "urn:value",
++        "datatype_iri": null,
++        "language_raw": null,
++        "source": null
++      },
++      "object": {
++        "kind": "literal",
++        "lexical_form": "2",
++        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
++        "language_raw": null,
++        "source": {
++          "reference": "fixture:value-2",
++          "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
++          "revision": "fact-v1",
++          "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
++        }
++      }
++    }
++  ],
++  "input_proof_leaves": [["fact:1"]]
+ }
+--- candidate-1/tests/fixtures/quality/profile-v1/manifest.json
++++ candidate-2/tests/fixtures/quality/profile-v1/manifest.json
+@@ -10,13 +10,13 @@
+     },
+     {
+       "path": "comparison-matrix.json",
+-      "bytes": 5277,
+-      "sha256": "d6e22d86a1dcab5468ea8aa0acfad8ab17aee2db263650c76f7b21f32eefb18c"
++      "bytes": 5512,
++      "sha256": "9bbbb0c8351999bb1cf7152fa2ecacc1b24b36f6f23772c395ba90b27978fb72"
+     },
+     {
+       "path": "firing-cases.json",
+-      "bytes": 998,
+-      "sha256": "6c1489db47a9402a3dcc88ffe86bce8a990216d3fb00373e3a138178302cd945"
++      "bytes": 9298,
++      "sha256": "c001a6462b7f3ae54563b99c699bf6281c09020f2695f62f7bd2a92a715e6599"
+     },
+     {
+       "path": "lexical.json",

@@ -1,0 +1,37 @@
+--- candidate-3/packages/engine/src/ontolearn_engine/quality/rule_profile.py
++++ candidate-4/packages/engine/src/ontolearn_engine/quality/rule_profile.py
+@@ -376,5 +376,5 @@
+         internal()
+     require_budget(budget)
+     budget.bound(len(data), "input_bytes")
+-    budget.debit(len(data))
++    budget.debit(max(1, len(data)))
+     return sha256(data).hexdigest()
+--- candidate-3/packages/engine/tests/test_quality_profile_limits.py
++++ candidate-4/packages/engine/tests/test_quality_profile_limits.py
+@@ -307,3 +307,25 @@
+     loc = InputLocation("comparison", 1 << 96)
+     with pytest.raises(ProfileFailure, match="RULE_INPUT_BUDGET"):
+         parse_value(term("integer", "1"), loc, Budget(ProfileLimits(integer_bits=96)))
++
++
++def test_empty_fingerprint_has_fixed_minimum_work_before_hash(monkeypatch):
++    from ontolearn_engine.quality import rule_profile
++
++    calls = []
++    actual = rule_profile.sha256
++
++    def watched(data):
++        calls.append(data)
++        return actual(data)
++
++    monkeypatch.setattr(rule_profile, "sha256", watched)
++    with pytest.raises(ProfileFailure, match="WORK_LIMIT"):
++        rule_profile.fingerprint(b"", Budget(ProfileLimits(work=0)))
++    assert calls == []
++    b = Budget(ProfileLimits(work=1))
++    assert rule_profile.fingerprint(b"", b) == actual(b"").hexdigest()
++    assert calls == [b""] and dict(b.usage)["work"] == 1
++    with pytest.raises(ProfileFailure, match="WORK_LIMIT"):
++        rule_profile.fingerprint(b"", b)
++    assert calls == [b""]

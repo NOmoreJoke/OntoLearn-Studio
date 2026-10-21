@@ -1,0 +1,63 @@
+# T05 profile机制：candidate-1封存输入的内部静态预读
+
+结论：**尚不通过本阶段验收。** 完整20份输入的封存绑定正确，数值、calendar及矩阵的已列oracle数学依据吻合，主要纯机制路径与授权一致；但存在R1输出代表选择不稳定、R2指定真值签名/完整结果覆盖不足及R3位置输入未先严判类型三项P2，须原线复现、修复并绑定新输入。本报告不声称已经运行这些反例；不以919专项数量或仍运行的全check替代结论，也不提前给最终Git/外审候选Pass。
+
+审查者：总控独立agent `i04_reports_audit`；2026-10-21。只新增本报告，未改产品、功能树、state、授权或测试；未执行pytest、import产品、产品/探针/归档脚本、构建、GUI、容器、真实业务IO。只用固定文本、JSON/ZIP成员读取、哈希，以及独立标准库Fraction/整数数学核oracle。问题已先报root，未向原开发聊天发消息。
+
+## 固定输入与恢复边界
+
+输入仅根保全 `.private/T05-profile-candidate1-received/`，不追随T05工作树WIP；base为 `e6ea0f77411d71ac3b226b2d7e00280628848bca`，**此base不是这20份实现的最终Git**。已复用上一份完整规格独审与e6矩阵关闭事实，实际全文读授权6228B/SHA `210f31b1406fb13fb616e1f94b026feea2f3437c270f709185d890715512d1f0`，profile16428B/`9259f4ac6622857182570509378afb6c96ab5c4dc19d2e887db559c27a282427`及stage26782B/`8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424`仍为本次合同。
+
+实际校验manifest3712B/SHA `9e9e5ff5b1414dfa173d6915e831769e5320f32156442a0c61b816d9ae3cc66a`、ZIP30298B/SHA `3a8b35c792e42b12cdaa59b2c660b8f4741b1268980c35e212efa462fbc95978`；ZIP成员集合恰等manifest20路径，解码前实际原bytes共92252B，每成员bytes/hash均匹配根保全副本与ZIP内容。不是仅据文件存在或成员数。六fixture中的manifest还将另外五份原件逐bytes/SHA绑定，已独立校验相等。
+
+| 7代码（前缀 packages/engine/src/ontolearn_engine/quality/） | bytes | SHA-256 |
+| --- | ---: | --- |
+| __init__.py | 548 | `9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c` |
+| rule_profile.py | 8064 | `db1e3cb88127d9cbbbbea93dd45f1bbe450873affab78c7babded688eaae3079` |
+| rule_terms.py | 5281 | `3d9c06c387ac6de3e6b63ff47438fe775043e265c05f90cc2171242e7b3a2379` |
+| rule_numbers.py | 5858 | `7d8bd7dea448b048cbe80a476a0c30a1e3ede3ebe9db80a8e3f8ca289f85da23` |
+| rule_calendar.py | 3232 | `a13ba43d6fea0daf9c85d9de152890f3f3d33f709ad3787efed5707ee5fad3cb` |
+| rule_comparator.py | 1633 | `d1c7ca72698db35dddf0098b508d521d231474113e8a666f93d0882ed85765e9` |
+| rule_firing.py | 17496 | `08effb39bf2b180b241f4ca39fd236738f35dc3c8eaada1c8c17db6930a6b871` |
+
+7测试均实际全文读回：terms3616B、numbers2370B、calendar2161B、comparator2439B、firing8354B、limits7595B、imports2078B；文件名为授权的 `test_quality_profile_{terms,numbers,calendar,comparator,firing,limits,imports}.py`。其SHA均按上述原manifest逐项验证；没有以测试文件内容推断运行终态。六fixture为授权的lexical3294B、numeric-oracles9898B、calendar-oracles1004B、comparison-matrix5277B、firing-cases998B、manifest1056B；全部语义内容及引用关系已读，未执行其脚本或被测函数。
+
+## 三项待原线关闭的问题
+
+**R1 / P2：独立事实集合的原始代表由matches先后决定，完整payload/digest不稳定。** 固定 `rule_firing.py:471–482` 在输入遍历中先把head的完整原始Triple加入facts；其后仅按抽象triple key稳定排序，相同key保留先出现者。最终编码包含原TermInput datatype/source，而非仅抽象key。具体静态反例：一条when为 `(?s, urn:value, ?v)`、head为 `(urn:fixed, urn:out, ?v)` 的规则，两个不同binding分别 `?s=urn:a, ?v=simple "x"` 和 `?s=urn:b, ?v=显式xsd:string "x"`，各给对应合法when/proof。两组不是重复match，按已采用政策其head是同一抽象term；反转matches，firings仍按key排序，但facts保留的datatype分别None或xsd:string，payload/digest因而可能变化。相同抽象term且不同SourceRecord也有此路径。
+
+这不是要求按value eq去重、删除来源或更改simple/string等价政策。应确定独立facts代表的稳定选取/表示规则，同时在每个firing完整保留各自原term/source、重复head和原index；反序matches及别名/source差异的完整payload应有定点回归。现有“同输出两firing”用完全相同raw term，未覆盖此情形。该反例为逐行静态推导，需原owner实际复现确认；本审未执行。
+
+**R2 / P2：未完成规格明确列出的混型1/2/3对阈值2签名，完整firing expected也未逐字段对照。** `test_quality_profile_comparator.py:45–53` 的216格仅六类型有序对的1对2；486九域格是相同代表值，其中N只用integer。这样每个混型对的lt/le及gt/ge在现有216格不能区分，也未给每对完整等值/反向真值；中央算子分派静态正确，故此项不声称实现算子有错。应补原规格的三点完整签名和有意义的定点边缘，而非用919总数自证。`firing-cases.json`列有完整expected heads，当前测试只检查indices、basis、unique数量、重复相等、少数operand及source.reference，未把expected heads全文实际对照；fixture.definition的输入也主要由example硬编码重建。应核完整结构/原term/source/位置/双operand、when/proof、heads与facts，不把check_firing_group复用同一实现当独立oracle。修复保持原7测试/6fixture范围，不另造公共schema或完整图执行验收。
+
+**R3 / P2：InputLocation的section/side在拒绝未知类型前可调用外来相等运算。** `rule_terms.py:52–61` 对冻结InputLocation直接执行 `section not in (None, "when", ...)` 与 `side not in (...)`，没有先限定其确切str/None类型；冻结dataclass本身不约束字段实际值。含自定义 `__eq__` 的section/side会在校验期间被调用，异常也未由parse_value安全封装。此处可先作确切类型门再做枚举检查，并在现有专属测试证明该hook不被调用且返回有限安全失败；不是要求防御任意恶意Python能改模块私有字段的通用攻击模型。本审未构造或运行该对象。
+
+## N2预算、编译来源与实际实现边界
+
+Budget没有公开reset或limits setter，Limits为frozen且每项只能不超过默认cap，bool/负数上限被拒；compile/evaluate阶段只能new→compile→evaluate，同一个plan绑定原Budget，失败后不能用新Budget直接接旧plan。实现没有因缓存恢复余额；constants在compile完整解析，零matches也不能跳过。测试有一次调用/重复evaluate拒绝、上下界、alias occurrence及输出最后一字节失败等定点，实际运行仍待原件绑定。
+
+trace单位在Budget文档具体定义，并在 `_one` 对每proof-leaf出现计1，成功组另收firing、binding pair及引用、when/comparison/head及term引用、basis引用；默认例预期22项。重复proof/when/head不按对象身份免费。input walker逐出现遍历，不用visited集合豁免alias；字符串先按长度和UTF8扫描扣work，按流式字段/字节在sink追加前扣input/output，深度有界，整数走有界hex而非全局decimal限制，不先json.dumps整包。排序、字符串前缀比较、term key及basis去重调用预收费比较；同一抽象term不等于source相同，仍须修R1稳定代表。
+
+bigint乘/移位/加法先估temporary bit上界并预扣limb费用；除法/GCD逐步扣limb乘积，digits九位小段避免全局int策略，power10先估位宽再平方乘。有限float远指数先扫描组件和系数，非零远界才短路到非有限/带符号零；零系数不因巨大正指数误拒。Calendar保持日序和秒分数分离。以上是静态路径支持，不能称每个失败边界已实测；现测试直接debit/bound覆盖各字段，不能替代所有实际组合路径。后续若改收费/排序/序列化，要同版更新预算证据，不能仅沿用旧余额断言。
+
+CompiledPlan要求模块私有_SEAL，保留原Budget，并在使用前重算完整规则/常量/目录digest；冻结记录与exact-type结构门阻止普通“compiled=true”或类型替身。现有测试直接构造无seal、换Budget、改单digest均拒绝。这是私有模块边界下的防误用/损坏检查，**不是抵御能取得_SEAL、任改私有字段并重算摘要的恶意Python调用者的对象发行认证**；本审不把摘要当producer认证，不要求为此新增第二权威或跨模块权限系统。若未来caller要求比此更强的实际编译发行身份，须在唯一机制内按确切合同补核，不能宣称现阶段已有。
+
+## 数值、calendar与全部比较的静态/独立oracle核验
+
+源码只用标准库，未读旧rdf_terms/definitions/parser做新值转换。数字原词法用ASCII fullmatch，integer/int/nonNegativeInteger域限与负零、decimal无指数、合法NaN/±INF/+INF与坏词法分开；六numeric值转换为精确有理后比较，未混同布尔或把integer/decimal先变float。binary32/64分别用24/53有效位和对应emin/emax直接商余取偶；subnormal、目标进位溢出、signed zero与远界有专门路径，没有binary64中转32。Gregorian使用floor除法及400年周期，24点进日、offset回退、任意预算内fraction保留；显式/无TZ及date/dateTime分域按已采用应用政策，未借宿主datetime/TZ。
+
+实际用独立stdlib Fraction检查fixture：26份有限近界/整数/decimal expected逐项核对。对IEEE hex先独立解码上下相邻值，验证原十进精确数落在该位模式的ties-even区间，而非执行或复制被测_quantize；覆盖双重舍入见证、最小subnormal/半值、min normal、最大有限和溢出下侧。4份巨大指数zero样例只核静态远界/零系数条件与预期符号，不把极长指数转换成大幂。12份nonfinite样例保留原内容，显式特殊值/远界/最大有限溢出中点均有数学依据；未执行其异常终态。
+
+7份calendar expected用独立“年首累计365y+闰年数量+月表−epoch60”核日序，再用Fraction计算offset与跨日秒，与fixture全部相等；未运行被测March公式。486域/算子分类逐格按采用矩阵另算全部吻合，六numeric类型清单与one-vs-two真值一致。这些是输入oracle核验，不能记作新增产品测试通过；R2仍要求真实三点签名和完整结果回归。
+
+S按XML1.1 Char，拒NUL/FFFE/FFFF及surrogate，L允许Unicode lexical并独立校验RFC5646 ABNF/privateuse/26 grandfathered；大小写只作用标签，不规范化原source，well-formed不擅加registry-valid/重复valid层限制。S码点序不trim/NFC/casefold。九域分派拒跨域/不同标签的所有操作，IRI/boolean仅eq/ne，ne不偷偷true；中央六算子表静态吻合。IRI只是批准的scheme/禁用字符最小门，未证明RFC3987完整语法。
+
+## 全组、源码范围及证据终态限制
+
+compile在任何binding前预检全部常量、when/comparison/head与闭合引用，未知变量带原位置；运行每binding先核当时全部when实例化和proof结构，坏可信binding统一Internal。comparison循环保留所有合法项，前false不跳后错误；全true才局部构造全部head，后head/后binding/最终序列化失败只抛异常，不返回部分batch。重复when/head原index、不同firing的同结论与basis叶并集保留，阈值不进basis。check_firing_group复算完整组并编码相等，但不证明图成员、全匹配、真实source/producer身份。错误没有在本模块发公开DTO/日志/原traceback；R3尚需安全类型门。
+
+lazy init保留四导出与__all__，访问时才加载原definitions/planning；新模块不导入rdflib或设置全局int/decimal/logger策略。imports测试含fresh subprocess身份/副作用检查及fixture哈希；本审只读脚本文本，没有运行。20输入范围恰为已授7代码/7测试/6fixture；它不是全工作树范围证明，最终Git仍须另核既有文件/共享路径零越界。
+
+目前919专项通过及session21130全check到Python94%仅来自root转述，本审尚未收最终固定日志/工具call-output/失败原件及Git，**不登记全check通过**。四历史输入ZIP/失败据称在原树docs保留，本轮未将其存在当恢复性核验；收到最终原件后要逐绑定候选、原命令、实际exit、历史失败/修后变化与最终全check身份。不得把后续WIP日志倒贴当前封存输入，也不得要求无变化重复旧全矩阵。
+
+本预读不关闭父FR500–505、C/D/G.2、生命周期、真实I05图/producer/Store/worker/public错误路由、query/SHACL各自消费者、真实source/包内、目标平台/真人、指定双模型完整同候选审查、CI/PR/正常合并与远端门。后续先处理三项P2、固定新版输入并审实际delta，再结合实际检查终态决定本私有阶段是否可验收；当前既不最终Pass，也不扩大已授范围。

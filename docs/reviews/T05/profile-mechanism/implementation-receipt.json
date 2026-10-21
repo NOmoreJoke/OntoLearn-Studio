@@ -1,0 +1,205 @@
+{
+  "task": "T05",
+  "phase": "authorized private profile mechanism implementation",
+  "authorization": {
+    "path": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/iteration-control/2026-10-21-weekly-release/T05-profile-mechanism-phase-authorization.md",
+    "bytes": 6228,
+    "sha256": "210f31b1406fb13fb616e1f94b026feea2f3437c270f709185d890715512d1f0",
+    "fullRead": true,
+    "profileSha256": "9259f4ac6622857182570509378afb6c96ab5c4dc19d2e887db559c27a282427",
+    "stageSha256": "8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424"
+  },
+  "base": "e6ea0f77411d71ac3b226b2d7e00280628848bca",
+  "candidate": "candidate-4-inputs.json",
+  "candidateStatus": "authorized local private mechanism implemented, checked and independently reviewed; fixed implementation Git; controller raw readback pending",
+  "inputScope": "7 code, 7 tests, 6 fixtures; no public integration entry",
+  "budgetVersion": "mechanism-budget/1",
+  "traceUnits": "one per firing, binding pair, when/comparison/head occurrence, each retained term/operand reference, proof-leaf occurrence and retained basis reference; the single fixture with two bindings, one when, one comparison, two heads, one proof and one basis uses 22 units",
+  "syntheticGivenBindingOnly": true,
+  "graphMembershipProducerAuthOrGlobalCompletenessProven": false,
+  "realJobStorePublicRouteUIPlatformOrParentAcceptanceComplete": false,
+  "independentCodeReview": {
+    "agent": "/root/t05_internal_review",
+    "decision": "passed-authorized-private-mechanism-stage-only",
+    "reportArchive": "internal-review-candidate-4.zip",
+    "reportMember": "report.md",
+    "reportSha256": "ab6b37bd4af5d4b7f5ee5ad57a6ec9bd04e9767bac6adca84996107e183cdd44",
+    "sourceValidationMember": "source-validation.json",
+    "sourceValidationSha256": "672cb3bdaa5ff05925e2ff2933a01e256c52bc30b200c342fcf3746e5401cc39",
+    "allActual20InputHashesVerified": true,
+    "designatedExternalReview": false
+  },
+  "designatedDualReview": "not started; original resource and same-candidate gates retained",
+  "goal": "same complete original objective; official status blocked; phase authorization does not rebuild or complete it",
+  "pushed": false,
+  "pr": null,
+  "ci": null,
+  "merged": false,
+  "guiE2ENativeHMRSecretsModelsPaidAPIs": false,
+  "failureHistory": [
+    {
+      "step": "initial source ruff",
+      "exitCode": 1,
+      "result": "33 formatting/style errors",
+      "log": "ruff-initial.log",
+      "inputs": "initial-lint-inputs.zip"
+    },
+    {
+      "step": "initial specialized pytest",
+      "exitCode": 1,
+      "result": "906 passed, 1 failed; small lexical limit incorrectly applied to built-in datatype IRI",
+      "log": "pytest-initial.log",
+      "inputs": "pytest-initial-inputs.zip"
+    },
+    {
+      "step": "lexical cap fix plus defensive walker edit",
+      "exitCode": 2,
+      "result": "7 collection errors due to missing parentheses in edited elif; not a product execution pass",
+      "log": "pytest-after-lexical-cap-fix.log",
+      "inputs": "collection-syntax-inputs.zip"
+    },
+    {
+      "step": "ruff before precheck",
+      "exitCode": 1,
+      "result": "2 style errors; pytest not invoked by set -e",
+      "log": "ruff-precheck.log"
+    },
+    {
+      "step": "corrected specialized pytest",
+      "exitCode": 0,
+      "result": "907 passed",
+      "log": "pytest-clean.log"
+    },
+    {
+      "step": "expanded candidate-1 specialized pytest",
+      "exitCode": 0,
+      "result": "919 passed",
+      "log": "pytest-candidate-1.log",
+      "inputs": "candidate-1-inputs.zip"
+    },
+    {
+      "step": "candidate-2 initial specialized pytest",
+      "exitCode": 1,
+      "sessionId": 32545,
+      "result": "1398 passed, 1 failed; fixture helper override duplicated when definition but not fixture supplied when/proof; corrected helper only",
+      "log": "pytest-candidate-2-initial.log",
+      "inputs": "candidate-2-initial-inputs.zip"
+    }
+  ],
+  "rawEvidenceReason": "Local raw logs and compact exact source/fixture ZIPs retained here for failed-attempt recovery and final candidate audit, as explicitly required by phase authorization. No business data, DB or secrets. Original tool call/output also remains in this chat.",
+  "candidate1Checks": {
+    "specialized": {
+      "exitCode": 0,
+      "passed": 919,
+      "log": "pytest-candidate-1.log"
+    },
+    "npmRunCheck": {
+      "sessionId": 21130,
+      "exitCode": 0,
+      "tsPassed": 635,
+      "pythonPassed": 2119,
+      "pythonSeconds": 42.82,
+      "log": "npm-check-candidate-1.log",
+      "scope": "headless static/type/build/unit/engine; no GUI/platform/runtime acceptance"
+    }
+  },
+  "rootParallelReadback": "controller actually preserved candidate1 manifest 3712B and ZIP 30298B, matched all 20 member bytes; root static pre-read ongoing, not final candidate acceptance",
+  "rootStaticFinding": "facts raw/source representative depends on matches order; own independent reviewer also reproduced; exact original full payloads being retained before correction",
+  "selfAuditPending": "account total input before catalog scan/sort; exact Budget/primitive gates at direct helpers; typed fingerprint and actual issuance identity",
+  "candidate2Checks": {
+    "specialized": {
+      "exitCode": 0,
+      "passed": 1399,
+      "seconds": 2.85,
+      "log": "pytest-candidate-2.log"
+    },
+    "npmRunCheck": {
+      "sessionId": 25547,
+      "exitCode": 0,
+      "tsPassed": 635,
+      "pythonPassed": 2599,
+      "pythonSeconds": 62.72,
+      "log": "npm-check-candidate-2.log"
+    }
+  },
+  "rootFullReportActuallyRead": {
+    "bytes": 13163,
+    "sha256": "1c8d150e5ca96d751f9abbd011f84150a2e440da40e60257528bade104a662cd",
+    "raw": "controller-candidate-1-readback.md.raw",
+    "later22277ByteUpdate": "controller status notice only, not claimed read by T05"
+  },
+  "candidate1IndependentReadback": {
+    "decision": "not passed; six groups and related N2 gap",
+    "reportMember": "report.md",
+    "reportSha256": "a715e98f8c49cdae2d48b9098ea8ce7b1deb67e782c12b1fa54b8459f7325e12",
+    "archive": "internal-review-candidate-1.zip",
+    "archiveSha256": "9216441ddf15e7a6169b94658ba7ec7b1b48a79196c27580bbc28d732148ea3d",
+    "eachOriginalMemberByteVerifiedBeforeArchiving": true
+  },
+  "candidate1DefectFixes": [
+    "compile validates both-constant domain/operator via same comparator; false valid",
+    "direct APIs exact Budget/builtin gates; parser-issued value identity/original digest",
+    "schema vocabulary/declared class output cannot be reclassified by catalog",
+    "actual compiled object issuance identity/original digest; typed fingerprints for int/string/tuple/list/dataclass",
+    "facts representatives follow stable firing/head order, retain every raw source in firings",
+    "648 mixed numeric three-point signatures; 30 directed operator swaps; fixture-driven full expected fields",
+    "total input accounting before catalog scan/sort; hash and parser transform fees prepaid"
+  ],
+  "candidate3Checks": {
+    "specializedPassed": 1407,
+    "normalSessionId": 76797,
+    "exitCode": 0,
+    "tsPassed": 635,
+    "pythonPassed": 2607,
+    "pythonSeconds": 54.56,
+    "receipt": "candidate-3-terminal.json",
+    "scope": "historical only; empty-hash fee defect remained"
+  },
+  "candidate4Checks": {
+    "specializedPassed": 1408,
+    "normalSessionId": 7748,
+    "exitCode": 0,
+    "tsPassed": 635,
+    "pythonPassed": 2608,
+    "pythonSeconds": 53.8,
+    "receipt": "candidate-4-terminal.json",
+    "codeInputManifest": "candidate-4-inputs.json",
+    "inputGitCommit": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb"
+  },
+  "finalDocumentedCostRules": {
+    "hash": "max(1, encoded-byte length) work before SHA; bounded by per-call input-bytes cap; already encoded bytes do not debit input again",
+    "strings": "length/UTF8 per occurrence; comparisons and sorting charged before scanning; numeric parser conservative12n/calendar8n/digit chunks4n/language4n transformations",
+    "integers": "temporary-bit bounds and limb costs before arithmetic, division/GCD/powers/shifts/conversions and tuple integer comparison; persistent inputs also checked",
+    "locations": "exact safe shape; integer bit/limb gate before numeric ordering; no foreign location in safe error",
+    "recordTypes": "actual allowed class identity lookup, prepaid and no input type metadata reflection",
+    "issuance": "weak identity + original bounded typed digest; misuse/corruption guard only, no producer authorization",
+    "trace": "original 22-unit fixture accounting retained; aliases and duplicate occurrences charged"
+  },
+  "candidate2And3ProbeExecutionCorrection": {
+    "correctionArchive": "internal-review-candidate-4.zip",
+    "member": "prior-execution-scope-correction.md",
+    "sha256": "1771a61a4e4590808d4c6fe296a8daa862b0f98276cde9d55bea6020b1a9e4f5",
+    "actualExecuted": "six rule modules plus two synthetic namespaces; __init__.py not executed; candidate4 probe only one ZIP rule_profile",
+    "legacyInitEvidence": "actual original-tree fresh-subprocess tests, not ZIP probes",
+    "oldReportsUnchanged": true
+  },
+  "finalInputs": {
+    "candidate-4-inputs.json": {
+      "bytes": 3754,
+      "sha256": "ef5bb61f32248c05ccfe3364e0a56e2bbe34cd09d92b841a4faafcb8685fa967"
+    },
+    "candidate-4-inputs.zip": {
+      "bytes": 36379,
+      "sha256": "4df1cb3ea85d096ae007497d0639173f9ef5f78b273475df6c47ea9953181894"
+    },
+    "candidate-3-to-4.diff.raw": {
+      "bytes": 1517,
+      "sha256": "c7ebbbd1f0e183847fc69540c8bb195e76aeb15f077a937c4cf3492b472bbd13"
+    }
+  },
+  "sameCompleteGoalOfficialStatus": "blocked; no update_goal complete/resume/rebuild",
+  "controllerFinalReadback": "pending fixed Git and actual raw input/terminal receipt binding",
+  "implementationCommit": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+  "evidenceIndex": "evidence-index.json",
+  "allFinalInputAndGitAndArchiveChecks": "passed after implementation commit; every archive member CRC/bytes/hash and final 20 Git/tree/ZIP/manifest bytes matched"
+}

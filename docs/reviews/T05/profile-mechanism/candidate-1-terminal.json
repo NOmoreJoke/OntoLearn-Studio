@@ -1,0 +1,38 @@
+{
+  "candidate": 1,
+  "actualTool": "exec_command / write_stdin original session",
+  "sessionId": 21130,
+  "exitCode": 0,
+  "closed": true,
+  "specializedPassed": 919,
+  "tsPassed": 635,
+  "pythonPassed": 2119,
+  "pythonSeconds": 42.82,
+  "command": "set -o pipefail; npm run check 2>&1 | tee docs/reviews/T05/profile-mechanism/npm-check-candidate-1.log",
+  "rawBindings": {
+    "candidate-1-inputs.json": {
+      "bytes": 3712,
+      "sha256": "9e9e5ff5b1414dfa173d6915e831769e5320f32156442a0c61b816d9ae3cc66a"
+    },
+    "candidate-1-inputs.zip": {
+      "bytes": 30298,
+      "sha256": "3a8b35c792e42b12cdaa59b2c660b8f4741b1268980c35e212efa462fbc95978"
+    },
+    "npm-check-candidate-1.log": {
+      "bytes": 7460,
+      "sha256": "bd790259bbf89505def4ac859fb8a453a3d7c9249811f79bd486d86056552a0a"
+    },
+    "pytest-candidate-1.log": {
+      "bytes": 1060,
+      "sha256": "17a62e9f2043593533961d3c26faafedd8f0b4dcccb1c99164019e7ec20da187"
+    }
+  },
+  "noGUI": true,
+  "notParentOrDesignatedReviewEvidence": true,
+  "specializedExecution": {
+    "originalExecToolChunk": "523198",
+    "exitCode": 0,
+    "passed": 919,
+    "sameSessionAsNormalCheck": false
+  }
+}

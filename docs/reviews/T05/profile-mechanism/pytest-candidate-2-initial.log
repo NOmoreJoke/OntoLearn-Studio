@@ -1,0 +1,59 @@
+........................................................................ [  5%]
+........................................................................ [ 10%]
+........................................................................ [ 15%]
+........................................................................ [ 20%]
+........................................................................ [ 25%]
+........................................................................ [ 30%]
+........................................................................ [ 36%]
+........................................................................ [ 41%]
+........................................................................ [ 46%]
+........................................................................ [ 51%]
+........................................................................ [ 56%]
+........................................................................ [ 61%]
+........................................................................ [ 66%]
+........................................................................ [ 72%]
+........................................................................ [ 77%]
+........................................................................ [ 82%]
+.................................................F...................... [ 87%]
+........................................................................ [ 92%]
+........................................................................ [ 97%]
+...............................                                          [100%]
+=================================== FAILURES ===================================
+__________ test_duplicate_when_positions_and_distinct_firings_survive __________
+
+    def test_duplicate_when_positions_and_distinct_firings_survive():
+        r, c, m = example(when=(Triple(Variable("?s"), iri("urn:value"), Variable("?v")),) * 2)
+        other = replace(
+            m,
+            bindings=(("?s", iri("urn:b")), ("?v", term("integer", "2"))),
+            when=(Triple(iri("urn:b"), iri("urn:value"), term("integer", "2")),) * 2,
+        )
+        b = Budget()
+        p = compile_rules((r,), c, b)
+>       result = evaluate_bound_batch(p, (other, m), b)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_quality_profile_firing.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:463: in evaluate_bound_batch
+    return _evaluate_bound_batch(plan, matches, budget)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:492: in _evaluate_bound_batch
+    firing = _one(rule, match, plan.catalog, budget)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/quality/rule_firing.py:394: in _one
+    internal()
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:68: in internal
+    fail("INTERNAL_ERROR", location, "internal")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'INTERNAL_ERROR', location = None, classification = 'internal'
+
+    def fail(reason="INVALID_RULE", location=None, classification="input"):
+>       raise ProfileFailure(reason, location, classification)
+E       ontolearn_engine.quality.rule_profile.ProfileFailure: INTERNAL_ERROR
+
+packages/engine/src/ontolearn_engine/quality/rule_profile.py:64: ProfileFailure
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_quality_profile_firing.py::test_duplicate_when_positions_and_distinct_firings_survive
+1 failed, 1398 passed in 1.43s

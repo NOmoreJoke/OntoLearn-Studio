@@ -139,3 +139,11 @@ Root reported a new P2 independently confirmed in its final-byte diff: the numer
 The correction restores only that matrix row to six A6 cells; Prettier consequently narrows the matrix alignment. The earlier decimal lexical row, fenced regex and all remaining specification text stay byte-identical. No Q6, algorithm, budget, scope, code or test change. Fixed-delta independent readback is recorded below; root implementation grant remains pending.
 
 Independent reviewer `/root/t05_internal_review` passed the exact correction: every numeric row has six A6 cells; before/after matrix bytes and stage bytes equal 023e441. Final profile 16428 bytes, SHA256 `9259f4ac6622857182570509378afb6c96ab5c4dc19d2e887db559c27a282427`. No normative re-review or product test. This closes the local document defect; root final-byte acceptance and phase authorization remain pending.
+
+## 正式私有机制阶段实现审查：candidate1–4
+
+独立reviewer `/root/t05_internal_review` 完整审查candidate1的7代码/7测试/6fixture，并以仅本地append Probe和冻结ZIP命令实证不通过；其后按全部实质delta、三组剩余入口/预算、空hash最小费用递次复核。各轮原report/原件不可变保存在`profile-mechanism/internal-review-candidate-{1,2,3,4}.zip`及对应archive索引，来源和每成员byte/hash已逐项核验；最后candidate4明确本阶段独立实现审查通过、无剩余已证问题。
+
+首轮双常量、callback、schema重分类、可复制seal/typed撞码、facts代表顺序和真值签名缺口，以及catalog前置budget逐项修复；第二轮漏掉operator/反射元数据/位置、无Budget hash、整数tuple位长/费用，第三轮只剩空hash零费用；最终仅`max(1,len)`两文件定点关闭。旧绿测试/旧内部Pass均不代替新字节审查，code与fixture原件留存。更正candidate2/3探针报告曾误写“七模块执行”：实际六rule模块加两个namespace，init另由原树fresh subprocess专项验证；更正只追加，旧report不改。
+
+最终报告SHA `ab6b37bd4af5d4b7f5ee5ad57a6ec9bd04e9767bac6adca84996107e183cdd44`，source-validation SHA `672cb3bdaa5ff05925e2ff2933a01e256c52bc30b200c342fcf3746e5401cc39`；candidate4独立小探针实际exit0，仅验证空hash0/1/耗尽，不冒称复跑全部旧矩阵。原开发树专项1408与原完整check635TS/2608Python/session7748/exit0由本线真实工具终态另在candidate-4-terminal.json绑定；属于测试门，不冒称reviewer执行。此结论不替指定双外审、真实领域集成或父FR完成。

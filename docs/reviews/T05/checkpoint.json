@@ -4,11 +4,11 @@
   "worktree": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T05-quality-reasoning",
   "branch": "feature/weekly-t05-quality-reasoning",
   "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
-  "implementationCommit": "2fcd36b915b190963a1d89d608e896da1a15284e",
+  "implementationCommit": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
   "approvedInputTestCommit": "383bc6a2ef77f7610b43a1a1f0cfafa5319f385a",
   "remoteDevelopObserved": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
   "goalStatus": "blocked",
-  "stage": "private_implementation_validated",
+  "stage": "authorized_private_profile_mechanism_locally_validated",
   "humanAuthorizationReadback": {
     "threadId": "01a15bad-ceeb-7103-b611-fff95e1f31ee",
     "turnId": "01a15bb7-8a4b-7e41-9bee-f86a13bfdc36",
@@ -20,32 +20,28 @@
     "npmRunCheck": {
       "exitCode": 0,
       "tsTests": 635,
-      "pythonTests": 1200,
-      "rawLog": "docs/reviews/T05/check-ui-draft.log"
+      "pythonTests": 2608,
+      "rawLog": "docs/reviews/T05/profile-mechanism/npm-check-candidate-4.log",
+      "originalSessionId": 7748,
+      "implementationCommit": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb"
     },
-    "qualityPytest": 148,
-    "qualityVitest": 5,
-    "gitDiffCheck": "passed",
-    "explicitHarnessTypecheck": {
+    "profilePytest": {
+      "passed": 1408,
       "exitCode": 0,
-      "mode": "strict-manual-tsc-no-browser"
-    }
+      "rawLog": "docs/reviews/T05/profile-mechanism/pytest-candidate-4.log"
+    },
+    "gitDiffCheck": "passed",
+    "guiOrPlatformEvidence": false
   },
   "internalReview": {
     "agent": "/root/t05_internal_review",
-    "decision": "passed-private-preparation-approved-Store-probe-and-controller-R1-R2-input-fixes-only",
-    "reviewedFiles": 38,
-    "reportedCombinedSha256": "71021645ca1af60e652a6c6064b59ab10601faed79fb5b06eae77fb1085ebe5b",
-    "combinedHashScope": "historical-full-38-files-at-fff89f6-before-later-scoped-UI-diff",
-    "latestDiff": {
-      "decision": "passed-input-bound-draft-and-private-browser-harness-three-source-files",
-      "commit": "2fcd36b915b190963a1d89d608e896da1a15284e",
-      "sourceHashes": {
-        "apps/desktop/src/renderer/src/quality/QualityWorkspace.tsx": "f4120ffddffcb37e6f56909c7ba48cbc88b15e36187533fc044fbedd6b01d05a",
-        "tests/fixtures/quality/browser-harness.tsx": "b590ced2e7aaf53dc2f06503c6ba116dbc24cc6d91809a6ee26b5c40438824b0",
-        "tests/fixtures/quality/build-browser-harness.mjs": "2a257f40a9b7c9fb8662f0ed08aaa4e647919d32ea5848c9bc5387eb946c3f9c"
-      }
-    }
+    "decision": "passed-authorized-private-mechanism-only",
+    "reviewedPaths": 20,
+    "manifest": "docs/reviews/T05/profile-mechanism/candidate-4-inputs.json",
+    "reportArchive": "docs/reviews/T05/profile-mechanism/internal-review-candidate-4.zip",
+    "reportMember": "report.md",
+    "reportSha256": "ab6b37bd4af5d4b7f5ee5ad57a6ec9bd04e9767bac6adca84996107e183cdd44",
+    "notDesignatedExternalReview": true
   },
   "approvedInput": {
     "gitRef": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
@@ -85,7 +81,7 @@
     "controllerReadbackSha256": "a09694b55e7ba7c8f1f99d71fdd1af77f5d30431a00b8628123d11c3e72278f0",
     "recoveryIndex": "docs/reviews/T05/fr505-r1-r2-recovery.json"
   },
-  "lastContinuationClassification": "explicit human Q6 policy/norm adoption; document-only directly implementable pure mechanism stage plan; root one-time implementation grant pending, original full Goal remains blocked on actual dependencies/integration/platform/release gates",
+  "lastContinuationClassification": "completed explicitly authorized 7-code/7-test/6-fixture private profile mechanism, independent code review and actual final normal-check; original full Goal remains blocked on approved real integration and original acceptance",
   "storeParameterProbe": {
     "approvedStoreGitRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
     "sourceSha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
@@ -366,14 +362,14 @@
       "productTestsRerun": false
     }
   },
-  "currentPhase": "q6-adopted-private-mechanism-plan-pending-root-stage-grant",
+  "currentPhase": "private-phase-checks-independent-review-complete; controller-readback-and-real-parent-integration-pending",
   "q6AdoptionStage": {
     "receipt": "docs/reviews/T05/q6-adoption-stage-receipt.json",
     "profile": "docs/iterations/T05/q6-adopted-profile-v1.md",
     "plan": "docs/iterations/T05/q6-profile-mechanism-stage-plan.md",
     "q6RulesAndNormativePinsAdopted": true,
     "policyBlocked": false,
-    "implementationGrant": "pending-root-on-fixed-commit-and-hashes",
+    "implementationGrant": "formally authorized 6228B/SHA210f31b1406fb13fb616e1f94b026feea2f3437c270f709185d890715512d1f0; prior receipt pending state historical",
     "productCodeOrTestsChanged": false,
     "productTestsRerun": false,
     "goalStatusActuallyRead": "blocked",
@@ -423,5 +419,54 @@
         "productTestsRun": false
       }
     }
+  },
+  "historicalUiImplementationCommit": "2fcd36b915b190963a1d89d608e896da1a15284e",
+  "historicalChecksBeforeProfileMechanism": {
+    "npmRunCheck": {
+      "exitCode": 0,
+      "tsTests": 635,
+      "pythonTests": 1200,
+      "rawLog": "docs/reviews/T05/check-ui-draft.log"
+    },
+    "qualityPytest": 148,
+    "qualityVitest": 5,
+    "gitDiffCheck": "passed",
+    "explicitHarnessTypecheck": {
+      "exitCode": 0,
+      "mode": "strict-manual-tsc-no-browser"
+    }
+  },
+  "historicalPrivatePreparationInternalReview": {
+    "agent": "/root/t05_internal_review",
+    "decision": "passed-private-preparation-approved-Store-probe-and-controller-R1-R2-input-fixes-only",
+    "reviewedFiles": 38,
+    "reportedCombinedSha256": "71021645ca1af60e652a6c6064b59ab10601faed79fb5b06eae77fb1085ebe5b",
+    "combinedHashScope": "historical-full-38-files-at-fff89f6-before-later-scoped-UI-diff",
+    "latestDiff": {
+      "decision": "passed-input-bound-draft-and-private-browser-harness-three-source-files",
+      "commit": "2fcd36b915b190963a1d89d608e896da1a15284e",
+      "sourceHashes": {
+        "apps/desktop/src/renderer/src/quality/QualityWorkspace.tsx": "f4120ffddffcb37e6f56909c7ba48cbc88b15e36187533fc044fbedd6b01d05a",
+        "tests/fixtures/quality/browser-harness.tsx": "b590ced2e7aaf53dc2f06503c6ba116dbc24cc6d91809a6ee26b5c40438824b0",
+        "tests/fixtures/quality/build-browser-harness.mjs": "2a257f40a9b7c9fb8662f0ed08aaa4e647919d32ea5848c9bc5387eb946c3f9c"
+      }
+    }
+  },
+  "privateProfileMechanism": {
+    "implementationCommit": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+    "receipt": "docs/reviews/T05/profile-mechanism/implementation-receipt.json",
+    "finalInputs": "docs/reviews/T05/profile-mechanism/candidate-4-inputs.json",
+    "finalInputsSha256": "ef5bb61f32248c05ccfe3364e0a56e2bbe34cd09d92b841a4faafcb8685fa967",
+    "finalZipSha256": "4df1cb3ea85d096ae007497d0639173f9ef5f78b273475df6c47ea9953181894",
+    "sameFullGoalRetained": true,
+    "goalToolStatus": "blocked",
+    "fullParentAcceptance": false,
+    "newRealIntegrationOrPublicInterfaces": false,
+    "implementationScopeExactlyAuthorized20": true,
+    "defensiveCapsNotMeasuredCapacity": true,
+    "historicalFailedInputsAndReportsPreserved": true,
+    "sameCandidateNormalCheckAndIndependentInternalReviewPassed": true,
+    "controllerFinalReadback": "pending",
+    "receiptSha256": "fa6a542890de38530ec4616cd63f85f274c99a081e5e5a0fea53d9d80b38fbd7"
   }
 }

@@ -1,0 +1,353 @@
+E501 Line too long (101 > 100)
+  --> packages/engine/src/ontolearn_engine/quality/rule_calendar.py:42:101
+   |
+40 |     parts = match.groups()
+41 |     year_text, mo, dy = parts[:3]
+42 |     year = digits(year_text.lstrip("-"), budget, location) * (-1 if year_text.startswith("-") else 1)
+   |                                                                                                     ^
+43 |     month, day = int(mo), int(dy)
+44 |     leap = divide(year, 4, budget)[1] == 0 and (divide(year, 100, budget)[1] != 0 or divide(year, 400, budget)[1] == 0)
+   |
+
+E501 Line too long (119 > 100)
+  --> packages/engine/src/ontolearn_engine/quality/rule_calendar.py:44:101
+   |
+42 |     year = digits(year_text.lstrip("-"), budget, location) * (-1 if year_text.startswith("-") else 1)
+43 |     month, day = int(mo), int(dy)
+44 |     leap = divide(year, 4, budget)[1] == 0 and (divide(year, 100, budget)[1] != 0 or divide(year, 400, budget)[1] == 0)
+   |                                                                                                     ^^^^^^^^^^^^^^^^^^^
+45 |     days = (31, 29 if leap else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+46 |     if not 1 <= month <= 12 or not 1 <= day <= days[month - 1]:
+   |
+
+E501 Line too long (105 > 100)
+  --> packages/engine/src/ontolearn_engine/quality/rule_comparator.py:16:101
+   |
+14 |     if op not in OPS:
+15 |         fail(location=location)
+16 |     if domain != right.domain or (domain == "L" and text_compare(left.language, right.language, budget)):
+   |                                                                                                     ^^^^^
+17 |         fail("RULE_COMPARISON_TYPE_MISMATCH", location)
+18 |     if domain in ("I", "B") and op not in ("eq", "ne"):
+   |
+
+E501 Line too long (126 > 100)
+  --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:96:101
+   |
+94 |         if seal is not _SEAL:
+95 |             internal()
+96 |         for name, value in (("rules", rules), ("catalog", catalog), ("digest", digest), ("_budget", budget), ("_seal", seal)):
+   |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+97 |             object.__setattr__(self, name, value)
+   |
+
+E501 Line too long (126 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:177:101
+    |
+175 |         if subject.domain != "I":
+176 |             fail(location=location)
+177 |         if output and _contains(subject.value, catalog.classes + catalog.object_properties + catalog.data_properties, budget):
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+178 |             fail("UNSUPPORTED_RULE_OUTPUT", location)
+179 |     elif not allow_variables or not _variable(t.subject, budget, location):
+    |
+
+E501 Line too long (108 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:237:101
+    |
+235 |         _sequence(spec.heads, "heads", budget, nonempty=True)
+236 |         constants, bound, used = [], [], []
+237 |         for section, items in (("when", spec.when), ("comparison", spec.comparisons), ("head", spec.heads)):
+    |                                                                                                     ^^^^^^^^
+238 |             for index, item in enumerate(items):
+239 |                 loc = InputLocation(section, index)
+    |
+
+E501 Line too long (108 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:287:101
+    |
+286 | def _triple_key(t, budget):
+287 |     return tuple(term_key(parse_value(v, None, budget), budget) for v in (t.subject, t.predicate, t.object))
+    |                                                                                                     ^^^^^^^^
+
+E501 Line too long (106 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:295:101
+    |
+294 | def _instantiate(t, rule, bindings, budget):
+295 |     return Triple(*(_resolve(v, rule, bindings, budget).term for v in (t.subject, t.predicate, t.object)))
+    |                                                                                                     ^^^^^^
+
+E501 Line too long (115 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:300:101
+    |
+298 | def _one(rule, match, catalog, budget):
+299 |     spec = rule.spec
+300 |     if type(match.bindings) is not tuple or type(match.when) is not tuple or type(match.proof_leaves) is not tuple:
+    |                                                                                                     ^^^^^^^^^^^^^^^
+301 |         internal()
+302 |     if len(match.bindings) != len(rule.variables) or len(match.when) != len(spec.when) or len(match.proof_leaves) != len(spec.when):
+    |
+
+E501 Line too long (132 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:302:101
+    |
+300 |     if type(match.bindings) is not tuple or type(match.when) is not tuple or type(match.proof_leaves) is not tuple:
+301 |         internal()
+302 |     if len(match.bindings) != len(rule.variables) or len(match.when) != len(spec.when) or len(match.proof_leaves) != len(spec.when):
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+303 |         internal()
+304 |     pairs, names = [], []
+    |
+
+E501 Line too long (118 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:310:101
+    |
+308 |                 internal()
+309 |             name, term = pair
+310 |             if type(name) is not str or not _contains(name, rule.variables, budget) or _contains(name, names, budget):
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^
+311 |                 internal()
+312 |             names.append(name)
+    |
+
+E501 Line too long (107 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:349:101
+    |
+347 |     basis = _sort_unique([leaf for leaves in match.proof_leaves for leaf in leaves], budget)
+348 |     budget.debit(1, "firings")
+349 |     budget.debit(1 + len(pairs) + len(match.when) + len(evidence) + len(heads) + len(basis), "trace_items")
+    |                                                                                                     ^^^^^^^
+350 |     ordered_pairs = sorted(pairs, key=cmp_to_key(lambda a, b: text_compare(a[0], b[0], budget)))
+351 |     return PreparedFiring(spec.rule_id, tuple((k, v.term) for k, v in ordered_pairs), match.when, match.proof_leaves, tuple(evidence)…
+    |
+
+E501 Line too long (207 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:351:101
+    |
+349 | …is), "trace_items")
+350 | …udget)))
+351 | …tch.when, match.proof_leaves, tuple(evidence), tuple(heads), basis, spec.source, spec.revision, spec.definition_digest)
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+E501 Line too long (109 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:366:101
+    |
+364 |         if type(match) is not BindingMatch:
+365 |             internal()
+366 |         rule = next((r for r in plan.rules if not text_compare(r.spec.rule_id, match.rule_id, budget)), None)
+    |                                                                                                     ^^^^^^^^^
+367 |         if rule is None:
+368 |             internal()
+    |
+
+E501 Line too long (256 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:371:101
+    |
+369 | …
+370 | …
+371 | …ue(t, None, budget)) for k, t in match.bindings)), key=cmp_to_key(lambda a, b: tuple_compare(a, b, budget)))), tuple(_triple_key(t, budget) for t in match.when))
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+372 | …
+373 | …
+    |
+
+E501 Line too long (105 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:396:101
+    |
+394 |         internal()
+395 |     account_input(group, budget)
+396 |     rule = next((r for r in plan.rules if not text_compare(r.spec.rule_id, group.rule_id, budget)), None)
+    |                                                                                                     ^^^^^
+397 |     if rule is None:
+398 |         internal()
+    |
+
+E501 Line too long (124 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_firing.py:399:101
+    |
+397 |     if rule is None:
+398 |         internal()
+399 |     expected = _one(rule, BindingMatch(group.rule_id, group.bindings, group.when, group.proof_leaves), plan.catalog, budget)
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+400 |     if expected is None or encode_output(expected, budget) != encode_output(group, budget):
+401 |         internal()
+    |
+
+E501 Line too long (110 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_numbers.py:122:101
+    |
+120 |         if text.startswith("-"):
+121 |             n = -n
+122 |         if (name == "int" and not -2147483648 <= n <= 2147483647) or (name == "nonNegativeInteger" and n < 0):
+    |                                                                                                     ^^^^^^^^^^
+123 |             fail("INVALID_LITERAL_LEXICAL", location)
+124 |         return Number(n)
+    |
+
+E501 Line too long (109 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_numbers.py:141:101
+    |
+139 |     budget.debit(len(exp_digits), location=location)
+140 |     trimmed = exp_digits.lstrip("0") or "0"
+141 |     exponent = (1000000 if len(trimmed) > 6 else int(trimmed)) * (-1 if exponent_text.startswith("-") else 1)
+    |                                                                                                     ^^^^^^^^^
+142 |     coefficient = digits(coefficient_text, budget, location)
+143 |     if name in ("float", "double"):
+    |
+
+E501 Line too long (122 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_numbers.py:153:101
+    |
+151 |             return Number(0, 1, negative)
+152 |     power = exponent - len(fraction)
+153 |     n, d = (mul(coefficient, power10(power, budget), budget), 1) if power >= 0 else (coefficient, power10(-power, budget))
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^
+154 |     if name == "decimal":
+155 |         return rational(-n if negative else n, d, budget)
+    |
+
+E501 Line too long (104 > 100)
+  --> packages/engine/src/ontolearn_engine/quality/rule_profile.py:11:101
+   |
+ 9 | XSD = "http://www.w3.org/2001/XMLSchema#"
+10 | RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+11 | NUMERIC = tuple(XSD + s for s in ("integer", "int", "nonNegativeInteger", "decimal", "float", "double"))
+   |                                                                                                     ^^^^
+12 | OPS = ("eq", "ne", "lt", "le", "gt", "ge")
+   |
+
+E501 Line too long (124 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_profile.py:109:101
+    |
+107 |             fail("RULE_INPUT_BUDGET", classification="resource")
+108 |         self._limits = limits or ProfileLimits()
+109 |         self._used = dict.fromkeys(("work", "input_bytes", "output_bytes", "trace_items", "firings", "head_occurrences"), 0)
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+110 |         self._phase = "new"
+    |
+
+E501 Line too long (122 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_profile.py:125:101
+    |
+123 |         value = self._used[counter] + amount
+124 |         if value > getattr(self.limits, counter):
+125 |             reason = {"work": "WORK_LIMIT", "input_bytes": "RULE_INPUT_BUDGET"}.get(counter, "RULE_EVIDENCE_RESULT_LIMIT")
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^
+126 |             fail(reason, location, "resource")
+127 |         self._used[counter] = value
+    |
+
+E501 Line too long (104 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_profile.py:134:101
+    |
+133 |     def bits(self, value, temporary=False, location=None):
+134 |         self.bound(abs(value).bit_length(), "temporary_bits" if temporary else "integer_bits", location)
+    |                                                                                                     ^^^^
+135 |
+136 |     def start(self, phase):
+    |
+
+UP031 Use format specifiers instead of percent format
+   --> packages/engine/src/ontolearn_engine/quality/rule_profile.py:201:21
+    |
+199 |         for c in value:
+200 |             k = ord(c)
+201 |             data = ("\\u%04x" % k).encode() if k < 32 or c in '\\"' else c.encode("utf-8")
+    |                     ^^^^^^^^^^^^^
+202 |             emit(data)
+203 |         emit(b'"')
+    |
+help: Replace with format specifiers
+    |
+200 |             k = ord(c)
+    -             data = ("\\u%04x" % k).encode() if k < 32 or c in '\\"' else c.encode("utf-8")
+201 +             data = ("\\u{:04x}".format(k)).encode() if k < 32 or c in '\\"' else c.encode("utf-8")
+202 |             emit(data)
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+E501 Line too long (181 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_profile.py:217:101
+    |
+215 | …
+216 | …
+217 | …e", "rule_firing", "rule_numbers", "rule_calendar", "rule_terms")) and hasattr(t, "__dataclass_fields__"):
+    |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+218 | …
+219 | …
+    |
+
+E501 Line too long (262 > 100)
+  --> packages/engine/src/ontolearn_engine/quality/rule_terms.py:20:101
+   |
+18 | …
+19 | …
+20 | …ingo i-navajo i-pwn i-tao i-tay i-tsu sgn-BE-FR sgn-BE-NL sgn-CH-DE art-lojban cel-gaulish no-bok no-nyn zh-guoyu zh-hakka zh-min zh-min-nan zh-xiang".lower().split())
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+21 | …
+22 | …
+   |
+
+E501 Line too long (107 > 100)
+  --> packages/engine/src/ontolearn_engine/quality/rule_terms.py:43:101
+   |
+41 |     if location is None:
+42 |         return
+43 |     if type(location) is not InputLocation or location.section not in (None, "when", "comparison", "head"):
+   |                                                                                                     ^^^^^^^
+44 |         fail()
+45 |     if location.index is not None and (type(location.index) is not int or location.index < 0):
+   |
+
+E501 Line too long (197 > 100)
+  --> packages/engine/src/ontolearn_engine/quality/rule_terms.py:49:101
+   |
+47 | …
+48 | …
+49 | …tion.span) != 2 or any(type(x) is not int or x < 0 for x in location.span) or location.span[0] > location.span[1]):
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+50 | …
+   |
+
+E501 Line too long (101 > 100)
+  --> packages/engine/src/ontolearn_engine/quality/rule_terms.py:71:101
+   |
+69 |         if type(term.source) is not SourceRecord:
+70 |             fail(location=location)
+71 |         for s in (term.source.reference, term.source.digest, term.source.revision, term.source.text):
+   |                                                                                                     ^
+72 |             if s is not None:
+73 |                 utf8_size(s, budget, budget.limits.source_bytes, location)
+   |
+
+E501 Line too long (144 > 100)
+  --> packages/engine/src/ontolearn_engine/quality/rule_terms.py:80:101
+   |
+78 | …
+79 | …
+80 | … not None else (RDF + "langString" if term.language_raw is not None else XSD + "string")
+   |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+81 | …
+82 | …
+   |
+
+E501 Line too long (119 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_terms.py:106:101
+    |
+104 |     if datatype in (XSD + "date", XSD + "dateTime"):
+105 |         value = parse_calendar(text, datatype, budget, location)
+106 |         return ProfileValue(term, ("T" if value.is_datetime else "D") + ("z" if value.explicit_offset else "l"), value)
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^
+107 |     fail("UNSUPPORTED_LITERAL_DATATYPE", location)
+    |
+
+E501 Line too long (119 > 100)
+   --> packages/engine/src/ontolearn_engine/quality/rule_terms.py:116:101
+    |
+114 |     for s in (term.lexical_form, datatype, lang):
+115 |         utf8_size(s, budget)
+116 |     return ("iri", term.lexical_form, "", "") if term.kind == "iri" else ("literal", term.lexical_form, datatype, lang)
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^
+
+Found 33 errors.
+1 unsafe fix available with `--fix --unsafe-fixes`.
