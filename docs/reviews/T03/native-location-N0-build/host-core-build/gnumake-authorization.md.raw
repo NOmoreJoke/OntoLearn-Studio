@@ -1,0 +1,9 @@
+# T03 N0：精确 gnumake 供方补项
+
+2026-10-22。续原 T03、原树与 7961B/SHA256 `697ed52b2aab00ba737cb85b61228f65770a16692d44105627db0e47b21dea00` 首轮 core 构建授权。已收到原实施者的实际静态发现：Developer/usr/bin/make 的固定对象仍导入 xcselect，不能仅凭其哈希认定 GNU make backend 已固定。
+
+批准只补 `/Applications/Xcode.app/Contents/Developer/usr/bin/gnumake`：该路径来自已固定 wrapper 的 `usr/bin/gnumake` 字面值。允许对这一对象执行 lstat、realpath、长度、SHA256，以及原已允许、已记录身份的 file/otool/nm 静态元信息读取；不执行 gnumake 版本探针或其它命令。实际 realpath 必须在原批准 Xcode developer/toolchain 根内，否则停下报真实来源。不得读取、使用或更改 `/var/select/make`，不得猜测更多 backend 或扫描新工具目录。
+
+将真实对象有限 metadata、文件 pin 和原行来源追加到新供方记录/resource manifest，原 fb40 与全部旧供应账保持。采用该实际 gnumake 的固定绝对路径作为 buildTool，保固定 DEVELOPER_DIR 和显式环境；不借 PATH、xcode-select 或用户 selector 状态。仅三个既有构建 writer 的必要 pin/环境匹配变化，独立 reviewer 定点核实实际 delta、来源与完整新十二文件候选后，可直接继续原授权的 darwin-arm64/core 配置和构建，不需再次等待根逐项确认。
+
+本补项无下载、安装、全局配置、版本切换、测试或产物执行权限。只生成原两目标；try_run、CTest、native/child/FS 实验、addon/Electron、GUI、凭据、模型及推送合并等边界完全沿原授权。若构建暴露下一条真实未批准供应依赖，保存完整路径/诊断并精确报告，不用未核来源填充通过。root 只负责控制与证据核验，不运行产品或构建。
