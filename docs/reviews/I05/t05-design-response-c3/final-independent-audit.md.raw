@@ -1,0 +1,97 @@
+# I05→T05 C3 后独立设计答复审查
+
+2026-10-21，semantic_bridge，只读文档审查。
+
+**结论：有限文档 Pass；未发现需要阻断或更正文档答复的实际问题。** D1–D6、D8/D9、M1–M11（含 M8a/b/c）、P1–P6 均有明确 owner 选择、现有事实与未来前置条件；D7 也已核对。此结论只确认该答复可作为后续设计协作的输入，不是实现通过、值政策/Q6批准、FR-505完成、维护权移交或 C3 指定双审通过。文档已明示的待办仍必须逐项完成。
+
+## 1. 实际读取与版本范围
+
+只读主线：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation`，分支 `feature/I05-semantic-validation`，读取时 HEAD 为过程提交 `bf2f0038042a2044d0af7e8fd498e0eff094d5b1`。C3 固定完整 head 为 `3289d67dbfb19545c7a3b3b26753cdd0065741bb`；本轮未跟进或修改候选。本次审查目录当时是独立新增过程目录，工作区中未跟踪，不把它倒灌为原候选输入。
+
+已全文读取、实际复算以下三个文件：
+
+| 文件（均在 `docs/reviews/I05/t05-design-response-c3/`） | 字节 | SHA256 |
+| --- | ---: | --- |
+| `owner-response.md` | 23281 | `723368ccc8902c70dcd28939f7b4a21f7dc6d8488d39c7b981b1952caf33fc4e` |
+| `t05-fixed-4121053.md.raw` | 28953 | `6650363f0195f1a2cb21e2eee2dfe5a072d698275ca3a2f5ef389615fe92a17f` |
+| `independent-design-review.md.raw` | 38866 | `e4682667ce5cb8f0882779db5e54e103e14c8fd7cca1ffe2725f66da77d66bfb` |
+
+另外读取当前 C3 future offer，确认其状态仍为 proposed / not effective，四路径 hash 指向 695 / b045 的 finite5 产品；读取必要的 adapter、Store 新选择门和 coordinator 取消路径，与前轮已完整审查的固定 b045 源码对照。实际 `git diff` 确认 b045→3289、3289→bf2f 在 engine source/tests 没有差异；逐字节核对 semantic / scopes / execution / resources / adapter / query / turtle / job_store 八个文件仍等于固定 b045 blob。
+
+本轮只用了文件读取、git 元数据/diff/show、哈希和官方标准页面读取。没有运行产品、单测、探针、构建、打包或 GUI，没有改主线文件、环境、候选、Goal、授权或所有权。唯一新写入是本人独立 worktree 的 ignored 本报告。
+
+## 2. D 项逐项判定
+
+| 项 | 审查结论 | 后续实际负责人/条件与可执行性 |
+| --- | --- | --- |
+| D1 | 完整 rules、`rules − closure(B)` 的新知识差集与来源视图分开；不因 head 已存在而删权威输出。成功 firing 不因图去重丢失，basis 只来自匹配输入已有 proof。与 C3 首轮稳定 witness、一旦加入不覆写的实际语义一致。没有把有限 witness 说成全路径或最短证明。 | I05 执行/来源方案清楚；T05/I06 仍需展示映射。支持变化、多匹配同结论和各层来源的正反例有明确方向，不扩成新证明算法。 |
+| D2 | 明确选择独立规则 operand validator/comparator；不复用 FILTER bool、Literal 通用排序或 Python bool 数字继承，不改 query。join/head/集合仍按 term 身份；值 eq 与 term join 的差异已说清。 | **owner 正文优先于草稿**。除 D3 明确允许的数值混型，其余未定义跨域/操作一律 M3 整任务失败，eq/ne 同样适用；boolean↔integer、date↔dateTime 不能按草稿退为 false/true。完整同域 operator 矩阵仍须 T05 给出具体行；正文没有把尚缺矩阵冒称完成。 |
+| D3 | 技术方案足以继续算法设计：从原词法与 datatype 得精确值；整数检查值域，decimal 不经 float、不依赖默认 Decimal 运算精度；float/double **直接**向 binary32/binary64 ties-even 舍入，随后精确有理数跨型比较。明确禁止 binary64→binary32 的二次舍入替代。 | Q6/产品采用与新语义身份在前；helper 由获准原执行器与 selected 共用，若拆新路径需另登记。已有明确 oracle 类别和预算前置，没有用22个小整数或宿主 float 假装完整证据。 |
+| D4 | 日期起点、offset、完整小数秒、显式/缺失时区分域、date/dateTime 不互 cast 均有明示政策。没有读机器时区或偷偷补 Z，也没有把它说成完整 XSD 部分序。 | XSD1.1 仍是推荐 pin，须 Q6接受和 fixtures；reason / selected 的原图门必须先与新 validator 协调，query/SHACL 消费者矩阵仍是实施前缺口。该缺口被明确保留，不要求本轮越权实现。 |
+| D5 | 定义常量及变量闭合先验，合法 join 无解成功空结果；实际 binding 按稳定 comparison 位置检查全部条件，不因前一个 false 吞掉后续错误。非法/受限/非有限/不可比/内部错误分开，失败无部分 current。 | 与 D2 跨域 eq/ne 全失败选择一致。实施必须在真实入口建立 origin，不能从用户字段或异常文本自报。完整原子性仍须新候选真验。 |
+| D6 | 接受固定 T05 第2节的全 firing 认证职责，保留全部 ordered inputs、comparison、heads、source 与 warning；不拆多规则，不直灌旧 exact-key payload。纯 selected 内部一致性与 Store producer/hash/授权认证、执行器全局完备性分开。 | 唯一定义包装/revision/references/公共投影仍由 T01决定。必须整组重建核对后投影，缺头、重复 index、跨 binding 拼接及伪造比较均不可只验一个 result。没有以 reason 重算替换历史。 |
+| D7 | whole implementation 三字段严格相等，current/historical 新消费均适用；旧身份历史可读是另操作，受原 schema/hash/payload 门。`IDENTITY_CONFLICT {}` 是当前实际新消费拒绝，T05 M12 建议不能改写此事实。 | T01唯一 owner；未来兼容需双身份/验证器分派设计。没有删 Store if、改 canonical equality 或重签旧历史。 |
+| D8 | input/work/result 的计费范围和检查点明确：大分配前查成本、计位长/指数、binding、每 head、proof/source/trace/selected复核和总 rows/bytes；不以图输出去重掩盖大量 firing。 | 新阈值、测量和临界±1仍待完成。当前权威取消是父进程 terminate/grace/kill，正文明确未有 comparator token；合作取消若要做，先经 T01/I05 对 coordinator/worker 的精确接受。没有假借纯模块 token 或 frame/page 表示新语义容量。 |
+| D9 | 四字段安全错误不塞 ruleId/index/detailRef，不让失败任务伪装成功载诊断；明确 `field=rule` 不能满足错误定位。 | T01须给失败 job、原 snapshot、规则 revision、condition/head位置绑定的受限授权诊断载体。此项保持精确接口缺口，没有缩减或关闭完整 FR-505。 |
+
+### D3/D4 的特别核对
+
+D3 提案内部是一套可实现的值政策，不是现库事实：binary32 的直接舍入可以由整数商余数/指数算法实现，转为精确有理数后做混型比较，也无需把 decimal/integer 提升到浮点。±0 值相等但原 term/符号保留；有限 subnormal/下溢零不一概拒绝；有限词法舍入 overflow 与合法特殊非有限按受限类别处理，非法词法另分。需验证的 ties、奇偶、normal/subnormal、最大有限、2^24/2^53、0.1混型与巨大指数等已明确，不能据本文件宣告算法正确或已实现。
+
+D4 关于标准的有限对照与其限定相符：XSD1.1 将 date 表示为一天的半开区间；XPath 的 date 比较以该日 00:00:00 的起点为依据。正文明确采用应用自己的显式起点政策，并拒绝 mixed-TZ 隐含时区处理，没有将两套规范混称。[XSD1.1 date](https://www.w3.org/TR/xmlschema11-2/#date)、[XPath date-less-than](https://www.w3.org/TR/xpath-functions-31/#op-date-less-than)。这些官方页面在本轮实际读回；本轮没有运行日期探针。
+
+原 RDFLib graph/term 门早于新 comparator，是实施风险的关键。正文已明确不能只加末端比较器，不可全局关闭 ill_typed/normalize，不偷改 query/turtle；还要求 reason 新值域进入 query/SHACL 的支持或明确拒绝矩阵。年零/负年、合法 24:00、offset边界与完整秒精度的真实词法/日历验收仍待实施，不能由“推荐XSD1.1”替代。
+
+## 3. M 项逐项核对：已有分支和提案没有混淆
+
+以下 R/R/U 按正文为 `Producer.REASON / Stage.RULE / Origin.VERIFIED_USER_INPUT`。实际 adapter 先拒 UNKNOWN/非法 context；已识别 resource/network 分支在 non-U兜底前，unsupported/field分支要求U。正文保留这一顺序，不接受 caller 自报 enum 作为来源证明。
+
+| 项 | 对照当前固定 adapter 的判定 | 实施条件 |
+| --- | --- | --- |
+| M1 | `INVALID_RULE` + R/R/U → `SEMANTIC_INPUT_INVALID {field:rule}` 已有。 | 仅真正坏定义；可信包装损坏不借用户分类。 |
+| M2 | `UNBOUND_RULE_VARIABLE` 同 context/DTO 已有。 | 扩展所有比较/heads闭合待做；合法无匹配不报错，意外内部丢 binding走M10。 |
+| M3 | `RULE_COMPARISON_TYPE_MISMATCH` 未有；正文明确新增提案。 | 同步固定 token、准确 caller/context、映射和正反例；含 eq/ne，不借FILTER吞错。 |
+| M4 | `INVALID_LITERAL_LEXICAL` 在 `_GRAPH_INPUTS` 的 R/R/U 真有输入分类，坏结构复用 M1。 | 不另造未接线别名；内部损坏/预算不是词法错。 |
+| M5 | `UNSUPPORTED_LITERAL_DATATYPE` + R/R/U 真有 `construct:datatype`。 | owner明确接受扩展 operand 支持域的 token含义；新执行点需触发，不能据此删D3/D4所需类型。 |
+| M6 | `UNSUPPORTED_NONFINITE_LITERAL` + R/R/U 真有 `construct:literalValue`。 | 新 operand均需实际检查，不能由原 graph门外推；非法拼写M4，有限subnormal/零非此错。 |
+| M7 | `UNSUPPORTED_RULE_OUTPUT` + R/R/U 真有 `construct:ruleOutput`。 | 所有heads定义及实例化均检；坏结构/未绑定不是此分类。 |
+| M8a | 现 `TEXT_INPUT_LIMIT` / `GRAPH_INPUT_LIMIT` **无 REASON/RULE 输入预算 pair**；正文明确 `RULE_INPUT_BUDGET` 是新增。 | 初次仅接受 R/R/U，保留原真实文本/图入口；需要准确新增和负例。 |
+| M8b | `WORK_LIMIT` / `RULE_MATCH_WORK_LIMIT` 的 R/R → semanticWork 已有。 | 沿真实resource pair可接受trusted-internal；UNKNOWN仍拒。新增实际成本计费不是已有容量证据。 |
+| M8c | `RULE_EVIDENCE_RESULT_LIMIT` R/R → semanticResult、`PROJECTION_RESULT_LIMIT` projection/projection已有。 | 完整result预算必须真实触发，不截断假成功、不代替frame/page。 |
+| M9 | `RULE_POLICY_UNSUPPORTED` 无路由，`_REQUIRED` 也无 UNSUPPORTED_CAPABILITY spec；正文准确保留双重缺口。 | 语义分类仍待T01，adapter需spec/catalog-schema验证/映射/负例。未知字段/坏形状先严格拒绝，非protocol版本错。 |
+| M10 | unknown reason/未接受context/UNKNOWN/可信内部损坏/意外异常→Internal与现兜底吻合。 | 不 blanket 覆盖已有resource/network及其他recognized分支。 |
+| M11 | `RULE_CHAIN_UNSUPPORTED:<id>` 当前是 warning，送adapter不是已接错误DTO。 | 扩展潜在链检测到所有heads，保留单阶段和保存提示，不因目录enum存在就虚构路由。 |
+
+M12–16未被本回复擅自接管：当前跨实现新消费真实是 IDENTITY_CONFLICT，payload回收有 PAYLOAD_EVICTED，producer/hash损坏为Internal；其余资源、授权入口仍须T01逐项确认。该旁注没有把建议码、资源层说明或能构造DTO当成当前映射。
+
+## 4. P 项逐项核对：维护意向与生效授权分开
+
+| 项 | 明确 owner 回执及边界 | 判定 |
+| --- | --- | --- |
+| P1 | 未来 `packages/engine/src/ontolearn_engine/{semantic.py,semantic_scopes.py,semantic_execution.py,resources.py}` 四路径须实际批准C3、root/receiver接受、独立核验与登记；比较/多head另用新语义身份，不能冒用finite5。scopes/execution未变不自动移交。 | 可执行且未生效，与当前future offer吻合。 |
+| P2 | `semantic_error_adapter.py` 由I05原owner未来组合代改，不释放T05写权；M9还需spec，保留注入和旧golden。 | 责任明确。 |
+| P3 | 既有两个错误测试文件仍I05原owner；覆盖新/复用reason、wrong context/UNKNOWN、catalog/schema及实际caller，不仅测code。 | 不自动随P2移交，验收清楚。 |
+| P4 | query/helper及原query token测试留原owner；选择独立规则政策不需要扩大query。将来统一需具体路径与支持面新批准。 | 未偷改query，也未删旧query回归。 |
+| P5 | turtle/lexical/lexical-runtime留I05，不默认改parser；D4图门先在四路径评估，必要parser修改另逐项申请。 | 保留term身份与外联/global隔离门。 |
+| P6 | samples及列出的四个既有语义测试由原owner按影响代改；T05 quality仅补充。新basis regression不在原P6清单，仍I05，不默扩释放。 | 路径、测试责任与新增文件边界明确。 |
+
+P7/P8为T01权威包装/schema/Store/诊断；P9为T03锁和构建；P10为I06桌面六路径，main/engine.ts仍T01。该答复没有代替他们接受文件，不建立第二契约、第二Store或私有绕行载体。新增helper若拆文件需另列准确路径，也未借四路径offer扩权。
+
+## 5. 尚未完成但已如实登记的前置项
+
+以下是正文已经明确保留的落地条件，不是本轮发现后被掩盖的缺陷，也不因文档Pass而关闭：
+
+1. T05将 owner 的具体选择回写设计表，尤其移除草稿不兼容 eq/ne 返回false/true的建议；完整同域/跨域六operator矩阵仍须给出。
+2. Q6/产品采纳 D3/D4，pin具体日历规范和完整合法/非法词法fixture；新语义版本与旧版本身份严格分区。
+3. T01决定唯一规则持久包装、revision/references、全firing/heads投影和授权诊断定位载体；纯selected不冒充producer认证或全局匹配完备性。
+4. D4完成原graph门与reason/selected同一validator、下游query/SHACL消费者矩阵，不能只做comparator或暗改原query。
+5. D8给具体预算、计费、临界±1/复杂度与源包测量，并保留父进程取消、超时、memory/transport权威分类；合作取消另有准确owner接受。
+6. 所有实际更改在后续候选运行完整原FR-505正反例、错误原子性、历史读取/新消费隔离、包/B1及指定同版双审/CI/正常合并门。当前过程答复不批准依赖、不改变冻结候选。
+
+没有发现正文遗漏必答编号、把新reason说成已有、把D3/D4困难默默降成小整数/微秒子集、把字段错误当定位完成，或把未生效offer写成维护授权。无需因此修改 C3 产品或复测；本报告也不提出额外未授权实现。
+
+## 6. 可复核命令与本次限制
+
+实际命令包括：`git rev-parse HEAD`、`git status --short`；`rg --files`定位上述三文件；`cat`及分段`sed`全文读回；Python标准库读取bytes、SHA256；`git diff --name-status`核对 b045→3289 与3289→bf2f 的engine source/tests；`git show b045:<file>` 与八个当前必要源码文件逐字节比较。另只读官方XSD/XPath页面核实D4标准关系。
+
+没有运行任何 product/tests/probe，没有对新数值或时间算法给出实测正确性结论；没有对未来额度、取消延迟、浮点正确舍入实现、完整语法覆盖、性能或跨平台作通过承诺。报告仅对应本节表中三份文件的精确快照；将来正文/政策/责任或实现变化需按实际影响审查，不把此文档Pass沿用成实现Pass。

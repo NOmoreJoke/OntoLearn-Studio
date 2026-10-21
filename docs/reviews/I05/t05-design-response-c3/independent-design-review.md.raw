@@ -1,0 +1,174 @@
+# T05 owner 决策逐项答复草稿：固定 4121053，对照 I05 C3
+
+状态：**只读设计答复草稿，供总控复核后形成实际 owner 回复。未实施、未批准值政策、未生效移交、未采用 T05 实验实现、未关闭 FR-505/Q6 或父模块验收。** 下文“建议接受”是技术建议，不是代替总控、T01、Q6 负责人的接受回执。本次不改产品、测试、配置、共享文档，不提交、不运行测试/探针/应用。
+
+## 1. 固定输入与证据范围
+
+- T05 完整原文：commit `41210534972d50965a2a4ce259660658e3bbdd81`，`docs/iterations/T05/owner-decisions-after-interface-facts.md`，全文 28,953 bytes，SHA-256 **`6650363f0195f1a2cb21e2eee2dfe5a072d698275ca3a2f5ef389615fe92a17f`**，与任务给定值相同。读取方式为该树 `git show <固定SHA>:<path>`；没有采用其当前工作区或实现。
+- I05 固定事实基线：`26eb632f0e1210b03ac3aef4cfd71fdc4a0c5222`；此前完整事实报告 [t05-interface-facts-26.md](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-execution/build/t05-interface-facts-26.md)，SHA `08bd865a9eed4ca7ae32552acb9c0070a7fb437335e6a9ac026ed5b28257b3ab`。本次不覆写该历史报告。
+- 当前 C3 固定阅读点：产品提交 `69598f30c9052a0a07f3d8e7fc4277626385678b`，测试提交/组合 HEAD `b04569032e94c093e42b7fdc9fcd890df0e832e4`。下文代码行号默认指 **b045 固定 blob**；链接指向对应只读主 worktree 以便定位，不能以未来工作区变化替代固定 blob。没有把 C3 的存在/测试文本视为指定双审和批准依赖已完成。
+- 最新操作规则已读取并实测文件 hash：本树 AGENTS `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`；共同指南 `b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39`；权限文档 `3630cc78ad87d1833ad33102f437d9027814cb688b319c4cd3ae9a2d0fbde4f7`。本树分支 `feature/I05-semantic-execution`，HEAD `19101c8b606652064eb853efadf2721bdb3c95f1`，受保护 AGENTS 保持 dirty 未暂存。
+- 原 FR-505 仍要求类型/存在/值比较/合取、同规则一个或多个结论、输入/预期/实际/错误定位，以及 RDFS 触发、链不支持、顺序无关。现有单头 term join 不等于覆盖。未获批准的“只做小整数”“只支持微秒/正年份”“拆成多个规则”不能替代原要求。
+- 本轮证据仅为固定源码/文档全文或定点静态读取、hash、diff、Git 元数据；没有新增运行结果、性能数据或平台容量结论。
+
+### 1.1 C3 blob 身份（SHA-256）
+
+所有路径在 `packages/engine/src/ontolearn_engine/` 下：
+
+| 文件 | b045 固定 blob SHA-256 |
+| --- | --- |
+| semantic.py | `ac1a29fe1ecc6f9d3ae89c7db24f17f23d7488244c5de113b6b423190d203862` |
+| semantic_scopes.py | `5bec13ea42db3a9fbc04df3895fceb6945508b31e74e07b96fa98b56ac47fb5a` |
+| semantic_execution.py | `db9729f9f87ddb8fb7b6747d5ee3b1f371d041fdf6df28d78cd7b7268b246913` |
+| resources.py | `66ca9f77fc664f7ccf0037d84890a2de7892481d7e8e3401ec5b51af12fb7aca` |
+| semantic_error_adapter.py | `5a05e93b4588577b97bcbe7f6b4ffda1fe2b27f917c25375e444b260ae3443f7` |
+| semantic_query.py | `5fbe2e8a08f81d7230e2c69c3380d1234df4ed7d14f8c3eef3669a935bf59d8a` |
+| semantic_turtle.py | `3bfffbd74c9de1d7aec59c07ff95072339d2f6d7bf07054c49327a5e3429c6fa` |
+| semantic_samples.py | `af807d22e7da934c97c89c58934cbeadc9daa6c42b8087917031cc41175d7404` |
+| job_store.py（T01） | `09d39d6c1dba20e939224ca000460d766e0903440beb8bdee75323d117a5bcc4` |
+
+26→b045 的 engine source diff 仅 semantic.py、resources.py、semantic_samples.py。前两者声明 `i05-finite-5`；semantic.py 给 RDFS 首次 witness 增加稳定 tie-break；samples 增加对应场景。scopes/execution/adapter/query/turtle/Store 相关事实仍与固定 26 相同。b045 新增 [test_semantic_rdfs_basis_determinism.py](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/tests/test_semantic_rdfs_basis_determinism.py:1) 静态列有 domain/range、diamond、多跳、已断言、自定义规则冻结和多依据场景；本轮未执行。
+
+## 2. D1–D9：逐项建议
+
+### D1：建议接受完整输出、差集、来源三者分开；采用 C3 的单条确定 witness 事实
+
+真实执行输入是 `B=A∪O`：execution.py:397 的 `reason(facts + ontology, rules)`。semantic.py:296–352 为 B 每个原始 triple 设置自身 proof；RDFS 按轮建立闭包。C3 在 :347–349 按 `(输出 triple N3 全键, 有序直接 inputs 的 N3 全键)` 排序；仅 :350 的 `triple not in closure` 分支在首次加入时写 `proofs[triple]`，后来的可用路径不会合并。因而政策是**首次可加入轮内的稳定有效 witness**；不保证所有路径，也不保证全局最短/最小 basis，不应描述成“在所有最终证明中选字典序最小”。
+
+规则匹配冻结 closure（:356–381）；每个匹配的 basis 是 :396–399 对该匹配各 when input 的已有 proofs 求并集并排序，绝不是整 producer B。C3 保留这一点，只使先前枚举依赖的 witness 选择确定。原始已断言结果仍自证，不被另一条 RDFS 路径覆盖。basis 同时可能包含 A 事实、O 公理；它不是“最少业务事实”。
+
+建议输出/展示约定：`rules` 是所有成功 firing 的完整输出 term 集合；另计算 `rules − closure(B)` 作为规则新知识视图，不能改写权威 rules。semantic.py:388 并未排除 B/RDFS 已有输出；:402 明确 `rdfs=closure−B`。scopes.py:252/262–274 允许 asserted+rule 或 rdfs+rule 同一事实来源共存。RDFS 与 B 不重叠，不能声称同一事实必然有 asserted+rdfs+rule 三层。
+
+“全部匹配 trace”建议在正式格式中明确为全部**成功 firing**，不因输出去重而丢依据。若还要求展示比较为 false 的候选绑定尝试，要另定义受限的测试诊断、预算和覆盖含义，不能把其省略偷称“全部尝试”，也不能让 trace 预算溢出后截断假通过。当前已有 evidence 只记录实际规则输出；尚无比较尝试结构。
+
+验收待据：已有 B/RDFS 的 head、不同匹配同 head、同 head 不同 basis、无关输入不进入 basis、witness 支持变化、跨 hash seed/输入顺序及 selected 来源分层。当前 C3 已有测试文本不替代最终获批组合的运行/双审。
+
+定位：[semantic.py:284](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/src/ontolearn_engine/semantic.py:284)、[semantic.py:343](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/src/ontolearn_engine/semantic.py:343)、[semantic_scopes.py:252](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/src/ontolearn_engine/semantic_scopes.py:252)。
+
+### D2：建议选择独立规则比较，不修改 query/FILTER
+
+当前 `Rule` 只有 id、when、单 then（semantic.py:208–212）；:372–375 用 RDF term `!=` 保持 join 身份；没有规则值比较。建议增加同一 reason 执行器内的受控比较步骤：全部变量先由冻结图模式绑定；比较不绑定新变量；六个 operator 只调用版本化的私有 operand validator/value comparator；比较输出与原 term 分开，不改事实、join、head 或集合去重身份。优先在获准的 semantic.py 内写唯一 helper，让执行与 selected 一致性复核调用同一政策，不在 T05 复制第二套引擎。若最终需要新文件，先给具体路径申请，不以“相关 helper”扩权。
+
+**不复用 FILTER 最终 bool 或 RDFLib Literal 的一般排序。** 静态库中 FILTER 对部分 SPARQLError 变 False 丢行，异型排序可能使用 datatype URI，dateTime 排序有 aware/naive 分区。当前 query AST 的词法修复保持相邻 signed numeric token（26eb632），不代表已采用未来规则的值政策；不要再引用旧 ignored 探针“BIND(-01) 总是 Unary 运算”的过时解释。
+
+类型矩阵须明确：允许的 eq/ne 跨非数值域比较可定义 false/true（如 boolean true 对 integer 1），这类**已定义的不等**不是 M3。对缺失时区的混合时间域、不能排序的 IRI/boolean、不同语言标签的排序等未定义操作，M3 整任务失败。不同非数值 datatype 的大小比较不得退成字符串/URI 排序。采用规则政策不声称与 SPARQL 完全一致，不改变现有查询支持面和错误传播。P4 本方案不启用。
+
+证据待据：规则 term 01 与 1 join 仍不同，而显式数值 eq 可真；同/跨 datatype 六 operator；合法未匹配不报错；不兼容失败不变无结果成功；原 query token/词法/ORDER/FILTER 回归保持。这里没有新增测试结果。
+
+### D3：建议选“声明值域＋跨数值精确表示值比较”，给出可实现完整算法，拒绝 double 中转假 float32
+
+这是**候选规则值政策**，须 Q6/owner 明确采用和版本化；不是当前库已提供。支持 integer/int/nonNegativeInteger/decimal/float/double，boolean 独立，六 operator 共用以下单一可比域：
+
+1. 从保留的 Literal **原词法＋datatype** 严格解析，不从 `.toPython()` 猜原值或有效性。整数用精确有符号整数，int 检查 32 位范围，nonNegativeInteger 检查数值≥0；允许同值不同合法词法，但不改原 term。decimal 按声明语法解析为精确十进有理数，不经 float，也不受默认 Decimal context 的运算舍入影响。
+2. float/double 从十进词法得到精确有理数后，**直接**按各自 binary32/binary64 的尾数/指数、subnormal 和 round-to-nearest ties-to-even 舍入。可用 Python 任意精度整数、除法商余数、指数比较实现，不需新增依赖；不能把 `float(text)`→`struct.pack('f')` 当完整正确的 binary32 parser，十进→binary64→binary32 有 double-rounding 风险。binary64 也以同一经验证的直接舍入算法为政策，避免把宿主 converter 的容错语法当 XSD 语法。
+3. 舍入后的有限 binary32/64 用精确二进有理数表示；integer/decimal 与它们跨型通过有理数交叉乘比较，或等价的去公因子整数比较。不先提升整数/decimal 为 float。因此 decimal 0.1 与 binary64 表示的 0.1 按此政策通常不相等；这不是 SPARQL 提升政策。±0 数值相等，原 term/符号拼写仍保留。需直接验 2^24/2^53 两侧和每种混型，而非只测 22 个小整数。
+4. 输入 NaN/±INF 的合法特殊词法属于明确受限非有限（M6），无效特殊拼写为 M4；有限词法舍入溢出到 infinity 也必须显式受限，不能假称非法词法。合法 subnormal/舍入下溢到有符号零按声明有限值保留，不因过小静默当语法错误。巨大指数先做词法长度/指数大小工作预检，不能先分配 `10**巨大指数` 再检查预算。
+5. 例如精确十进数 `1 + 2^-24 + 2^-80` 接近 binary32 中点，可作为 double-rounding 的**未来 oracle 构造**；本轮没有执行或生成该样例，不将数学设计例写成已测证据。应验 ties 两侧、奇偶尾数、normal/subnormal 边界、最大有限值、零符号与非法词法。
+
+成本计入 D8；在已有文本/总输入预算内仍需逐位/指数工作限额，资源拒绝不等于移除该 datatype。不能因“算法实现麻烦”改成只支持小数值、只用 Python float 或略去某个矩阵行。若负责人改选有损数值提升，应作为 D3 的明确替代政策重新给可观察差异和完整证据，而不是本草稿默认接受。
+
+当前事实限定：RDFLib 7.6.0 `term.py:679–689` 的字符串构造 checker 对 int/nonNegativeInteger 真有范围/非负检查，I05 `_terms` 读取 ill_typed 拒绝；不是仅凭 datatype 名称推断。但其 `Literal(existingLiteral, datatype=...)` 分支 :668–677 不走相同 checker，不能泛化为所有入口。float/double converter :2194–2195 都是 Python float；本轮没有运行新探针。定位：[semantic.py:83](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/src/ontolearn_engine/semantic.py:83)、[RDFLib term.py:679](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-execution/.venv/lib/python3.12/site-packages/rdflib/term.py:679)。
+
+### D4：建议独立解析日期词法，保留时区/任意有限秒精度；可实现政策而非隐性 datetime 子集
+
+建议明确采用一个固定版本的规则 calendar-value 政策，词法和日历有效性参考 XSD 1.1 date/dateTime（T05 原合同已引用该版标准），**应用比较规则如下**，不宣称复用 RDFLib/XPath 全部部分序：
+
+- 从原词法解析 year/month/day、dateTime 的 hour/minute/second/全部小数位、timezone 标记和有符号分钟 offset。采用公历的整数日序换算＋精确有理秒；不以 Python date/datetime 容器限制年份或截到微秒。XSD 1.1 的年零/负年、闰日、合法的 24:00 日进位、±14:00 offset 边界、秒词法等要按同一明确规范实现并验，不能借宿主 ISO parser 的接受范围定义产品支持。任意长词法仍受明示资源预算，不声称无限容量。
+- 同 datatype、双方有 timezone：date 取该声明本地日期起点 00:00:00，dateTime 取完整本地时刻，减去原 offset 后按整数日＋精确秒比较。**这是明确的规则“日期起点”比较政策**，不是把所有 date 当同一无时区日期，也不声称等价于任意日期区间关系。`2026-10-21+14:00` 与 `2026-10-21-14:00` 应有可观察差异；跨日 offset 归一必须真实验。
+- 同 datatype、双方没有 timezone：在同一本地日历域按日序/精确秒比较；不读取系统时区、locale、DST 或机器时钟。带 timezone 与不带 timezone 混合，对 eq/ne/序均明确不可比→M3 整任务失败，不悄悄 false、补 Z 或照 URI 排序。
+- date 与 dateTime 是不同域：建议 eq=false/ne=true、大小操作不兼容；若要 date 隐式升为午夜 dateTime，须另选明确政策，不能实现时临时强转。原 term、原 offset 和小数秒在 trace/head/身份中均保留，数值归一只作比较。
+
+标准关系须精确表述：总控补充已核的 [XSD 1.1 §3.3.9 date](https://www.w3.org/TR/xmlschema11-2/#date) 将 date 描述为一天的 top-open interval；[XPath 3.1 §9.4.5 date-less-than](https://www.w3.org/TR/xpath-functions-31/#op-date-less-than) 使用该日 00:00 起点比较。这里推荐的是显式 offset 的起点排序政策，**不是完整 XSD interval/partial-order，也不是照搬 XPath implicit timezone**；没有时区的一方绝不从机器/会话环境补时区。若 FR/Q6 最终要求另一种部分序关系，应另行明确，不能混用两种语义。上述官方参考为本任务收到的已核依据，本轮未另发网络请求；XSD 1.0/1.1（尤其年零/负年）差异仍须负责人明确 pin 规范版本与 fixtures，本稿仅推荐 1.1，不宣称已经 approved。
+
+**必须联动处理当前图门，不能只写 comparator 就宣称完成。** 当前 `_terms` :84 在比较前以 RDFLib ill_typed 拒绝；RDFLib date parser 会剥 offset，dateTime 走 Python `datetime.fromisoformat`，大年份可能被标 ill_typed，小数秒可能先失真。execution.py:376–378、semantic.py:287/246 和 scopes.py 的重建验证都会触发图/term 检查。完整 D4 需要同一规则值 validator 在 reasoning/扩展规则的 selected 验证路径验证原词法，而保留 RDF 位置、外联、schema 白名单等门。不能只更改终端 comparator，也不能全局关闭 ill_typed 或 normalize。
+
+D2“不改 query”意味着新值政策需在规则执行/扩展 selected 一致性复核中**显式传入或调用**，原 query/FILTER 与旧版本验证路径保持原政策；这是设计待实现点，不是现有开关。若规则新声明值域超出当前 query/SHACL 图门，合法 reasoning term 能否再作为 query/validation selected 输入，以及这些消费者应如何明确拒绝，必须形成跨入口支持矩阵和 T01 身份/诊断边界；不能把未接上的下游消费说成通过，也不能为绕过此项偷偷改变 query。较窄日期范围只能作为待 Q6 选择的受限候选，不能作为本草稿默认完成 FR-505 的方案。
+
+需证据：offset 保留/跨日/同瞬时异 offset，aware-aware/naive-naive/混合失败，>6 位小数秒相邻值，正负/超 9999 年与历法边界，解析失败和资源失败区分，graph→reason→持久 payload→selected 的原词法和政策一致。未具备前不宣称“date/dateTime 已完整支持”。定位：[xsd_datetime.py:555](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-execution/.venv/lib/python3.12/site-packages/rdflib/xsd_datetime.py:555)、[execution.py:376](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/src/ontolearn_engine/semantic_execution.py:376)。
+
+### D5：建议接受逐 operand 校验与整任务显式失败，细化确定的求值次序
+
+先验证定义形状、变量闭合及全部常量，无匹配不能掩盖坏定义。图模式无解是合法无结果，不是未绑定变量。每个完成 when 的 binding，按原 comparison index 检查两 operand 的 datatype/词法/有限性/可比性，并评估全部比较；不得因前一个 false 而把同一 binding 后续类型错误藏掉。定义常量校验与实际匹配值校验分别有真实可信入口，不能从 caller 自报 origin。不同 binding 的错误先后也应按稳定规则/匹配顺序，取消/资源终态按权威 Job 边界处理。
+
+所有比较真才产生完整 firing/全部 heads；合法 false 是未触发；M3–M7 是整任务失败，未知内部异常仍 Internal。跨域 eq/ne 已明确定义的不等不属于类型错误，见 D2。合法非有限 M6、非法词法 M4、可信持久图/trace 损坏 M10 不能混用。失败诊断定位缺口交 T01（D9），不能返回成功结果来携带错误。上述新增比较语义当前均未实现。
+
+### D6：建议接受完整 firing 认证职责；不批准 T05 私有格式直灌旧 payload
+
+旧 Rule/when/then、`_source`、evidence 的 exact-key 校验都不容扩展字段，见 semantic.py:208–212、execution.py:137–145/264–283、scopes.py:72–95/178–179。仅往旧 payload 塞 conditions/conclusions/policy 字段会触发结构拒绝；不能靠列表长度或缺字段猜版本。
+
+建议同一版本化规则定义明确 original rule id＋revision/digest、policy 版本、ordered when/comparisons/heads。T01 决定唯一保存包装、references 派生及公共投影；I05/T05 仅在生效的内部入口适配，不建立第二 schema 或 Store。完整 firing 必须由权威定义重建：同一 binding 的 ordered inputs（重复条件保留位置）、每比较的原 condition index/operator/左右原 term/datatype/政策与判定、按 head index 的**全组**实例化输出，以及 D1 的 proof 并集。阈值是规则常量，不进入图事实 basis；policy、定义身份、全部 heads 和比较投影纳入 `_source`，仍保留原 A/O/语义身份绑定。
+
+先验证全 firing 再做 result 视图；少一 head、重复 index、跨 binding 拼接、伪造比较/阈值、替换原 rule revision 必须整组拒绝。图层同 term 可去重，head 位置和不同 firing 来源不能去重丢失。warnings 检查每一个 head 对每个消费者模式的潜在链，规则共享冻结 RDFS 闭包、不反馈任何新 head。多头不是多规则拆分替代。
+
+`_selected_output` :87 的职责明确是 internal consistency，**既不是 Store authenticity，也不证明全图所有应触发 firing 均已枚举**；扩展后仍需如实描述。纯模块认证给定 firing 的完整一致性；Store 认证成功 producer/resultRef/原快照/三字段身份/定义与依赖/hash；执行器及完整验收负责全局输出。历史选定必须重建 producer 对应规则/政策，不用当前改过的规则或 reason() 重算替代。严格 D7 可避免跨版本新消费，但不等于旧历史自动具有新版认证器。
+
+定位：[scopes.py:86](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/src/ontolearn_engine/semantic_scopes.py:86)、[scopes.py:176](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/src/ontolearn_engine/semantic_scopes.py:176)、[execution.py:137](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/src/ontolearn_engine/semantic_execution.py:137)。
+
+### D7：明确支持严格三字段分区；当前失败类型须纠正为 IDENTITY_CONFLICT
+
+作为 D6/D8 的前置，建议保留 T05 D7 最小严格方案：producer/consumer 整个 implementation（三字段 executionSemanticsVersion/engineVersion/dependencyLockHash）相等，current/historical 新任务均不豁免；不新增自动跨版本兼容。现有 [job_store.py:838](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/src/ontolearn_engine/job_store.py:838) :842 比整个 dict；:846 的实际错误是 **`IDENTITY_CONFLICT {}`**。T05 M12 只能保留为替代建议，不能称当前 UNSUPPORTED_CAPABILITY。不是 protocol VERSION_INCOMPATIBLE。
+
+`semantic_result()` :861–898 是原身份历史读取和 producer/hash 认证，不简单要求其实现等于当前全局实现；它仍要求可用 payload、succeeded producer、元数据/输入/原实现一致，不保证未来所有旧 schema 可读。当前 C3 代码声明 finite5；finite4 历史若原认证结构仍兼容可按旧标签读，但不能直接作为 finite5 新任务 selected，即使 inputSelection=historical。canonical validation projection 与 derived resource 的 implementation equality 仍归 T01，四语义文件无权放宽。只改 lock、engine 或 semantics 任一字段都应分别拒绝新消费；历史读回另验，不重签身份、不自行调度旧执行器。
+
+### D8：建议接受预算分类与事务不变量；具体新增容量必须先定义、计费、测量
+
+保留现有 graph/text/rules/when/投影总输出门，不能直接称其已量化新增 comparisons/heads 容量。当前 semantic.py:22–25 的 text=1MiB、graph=100000、match=100000、work=1000000，:301–305 charge、:379–390 matching/evidence 门，以及 execution.py:287–315 的 10000 rows、cell 分片、总 payload+rows 8MiB，是现有有限实现边界，不是 FR-505 新容量验收。
+
+建议先发布精确内部计费表：输入定义/term/比较/head 总量的预检；每次 triple 候选、完成 binding、operand 解析/大数位数与指数、比较、head 实例化、source/firing 序列化及 selected 全组复核的累计 work；graph＋全部 trace＋rows 共同 result bytes/count。每项预算必须在大分配/长算前检查，比较/多 head/每个长输入分块处有取消检查，非仅每成功 head 检查。整数/有理数不能不计位长只计“比较一次”，也不能先分配指数巨数再计费。
+
+取消实现边界不能虚构：当前 `execute_request()` 没有 cancel token/callback。固定 [coordinator.py:533](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/src/ontolearn_engine/coordinator.py:533) 在父进程独立监视 cancelling/deadline，:690–698 通过 terminate、grace、kill 停止 worker；不是 comparator 每循环已合作检查。最小方案保持这一原权威取消边界，比较/每 head/长输入分块都作预算 charge，并让单次操作大小有界，父进程能终止而不受 worker 长算阻塞。若 D8 还要求 worker 内合作 cancel 检查，须 T01 单独接受 `packages/engine/src/ontolearn_engine/coordinator.py` 与 I05 原 owner 的 `packages/engine/src/ontolearn_engine/worker.py` 的准确信号/回调改动，再把同一只读取消检查传入 pure helper；不能往四路径私加一个无人驱动的 token 就称满足，也不能在 pure module 查询 Store。上述分块点是**建议检查点**，当前未实现合作取消。
+
+未测量前不在本稿指定新 business capacity 数字，也不擅自取消既有 caps。选定具体阈值后验 input/work/result 临界±1、零匹配、相同 graph 输出但大量 firing、部分 heads 已算后错误/超限/取消、迟到发布和 historical 保留。所有工作先在 worker 临时集合，完整成功后交 T01 原发布事务；任何错误无 partial current，不删断言/历史、不恢复旧 stale 为 current。deadline/取消/worker memory/frame/page 仍原 Job/transport 权威边界，不能一律改标 semanticWork。M8 分支须实际新增并正反校验，不能仅有 catalog 枚举就算接线。
+
+### D9：建议接受逐 reason×context 和逐文件回执；错误定位是明确待 T01 的接口缺口
+
+以下 M/P 是本草稿逐项方案，原 owner/总控复核后才能形成生效清单。canonical 错误仍 exact 四字段 `{code,messageKey,params,retryable}`，只能由注入的批准 catalog/schema 生成；不追加 ruleId/index/operator/term/value/路径/异常/trace，不借 detailRef，不发第二协议。
+
+FR-505 错误定位不能因安全 DTO 已有 field=rule 就算满足。需 T01 提供**与失败 job、原快照、rule revision、condition/head 位置绑定**的受限诊断载体、授权/大小/生命周期规则及 canonical 投影；T05/I06 消费获准结果，不伪造 succeeded job 传诊断。未决定时明确阻塞“错误定位”这项，不将整份 FR-505 宣布完成。P7/P8 涉公共 authority，超出四路径未来 offer。
+
+## 3. M1–M11：现有真实分支、建议映射及未接线部分
+
+固定 adapter 路径：[semantic_error_adapter.py](/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation/packages/engine/src/ontolearn_engine/semantic_error_adapter.py:14)。以下缩写 R/R/U 表示 **Producer.REASON / Stage.RULE / Origin.VERIFIED_USER_INPUT**；是由实际调用边界决定，不是用户 payload 可填写的证明。execution.py:381 的真实规则构建/执行边界目前设置该三元组；projection :407–410/:463 是 PROJECTION/PROJECTION/TRUSTED_INTERNAL；:474–480 从固定 SemanticError.code 送 adapter；未知异常 :482–488 固定 Internal。新增 comparator 必须仍位于可信规则入口，不能通过异常文本猜 reason。
+
+当前 adapter :315–326 先拒 unknown origin/无效 producer-stage。资源 :331–334、外联 :335–336 在“非 U→Internal” :337 之前，故**已识别且真实对应的 resource/network 原分支可处理 TRUSTED_INTERNAL**；不能用 M10 blanket 覆盖其 golden。unsupported :339–342、field :349–355 要求 U；未知 reason/警告最后 Internal。
+
+| ID | 本草稿逐项建议 | 当前 C3 事实/实施前差距 |
+| --- | --- | --- |
+| M1 | 接受 `INVALID_RULE`＋R/R/U→`SEMANTIC_INPUT_INVALID {field:rule}`。用于真实坏定义/形状/闭合规则，持久包装损坏不冒充它。 | 已有 `_FIXED_FIELDS` :149 和 :351–355。换 stage、origin、producer 等要按实际 branch验；不是允许所有上下文。 |
+| M2 | 接受 `UNBOUND_RULE_VARIABLE`＋R/R/U 同 DTO，仅定义比较/head 引用无 when 绑定变量；合法 join 无结果仍成功空输出。 | 已有 :150；当前 `_rule` :249 仅单 then 的变量闭合，扩展比较/全部 heads 尚无实现。运行中理论已闭合却丢 binding 属内部不变量失败→M10。 |
+| M3 | 建议新增 `RULE_COMPARISON_TYPE_MISMATCH`＋R/R/U→`SEMANTIC_INPUT_INVALID {field:rule}`，只用于已采用矩阵内不可比操作，整任务失败。 | **未有此 reason/路由**，当前送它会 Internal。需精确添加固定 token/branch，不追加 public enum。已定义 eq=false 不是该错误。 |
+| M4 | 优先复用确切含义已有 token：合法 term 容器中的非法 literal 词法用 `INVALID_LITERAL_LEXICAL`＋R/R/U→input-invalid rule；坏规则/operand 结构用 `INVALID_RULE`。若保留新 `RULE_OPERAND_INVALID`，须另加精确固定映射。 | `_FIELD_REASONS` :138 和 `_GRAPH_INPUTS` :68 已容 R/R，:349–350 真有路由；新名字尚无路由。可信持久图/trace 损坏与未知内部失败走 M10，不能因词法最终来自用户就归 U。 |
+| M5 | datatype 合法但比较政策未支持，建议优先复用 `UNSUPPORTED_LITERAL_DATATYPE`＋R/R/U→`UNSUPPORTED_CONSTRUCT {construct:datatype}`；须 owner 确认此 token 覆盖规则 operand 支持域的含义。若保留 `RULE_DATATYPE_UNSUPPORTED` 则显式新增 alias/路由。 | 旧 token :117＋:68/339–342 已支持该上下文；**新 token 目前 Internal**。即使有受限错误，不能因此删掉 D3/D4 要求的矩阵 datatype 或静默缩 FR-505。非法词法先 M4。 |
+| M6 | 合法特殊非有限及按声明精度转换后的非有限建议复用 `UNSUPPORTED_NONFINITE_LITERAL`＋R/R/U→`UNSUPPORTED_CONSTRUCT {construct:literalValue}`；新 `RULE_NONFINITE_UNSUPPORTED` 可不增加。 | 旧 token :118 已有。每个新 operand 仍要实际产生校验；graph 原门不能证明 query 常量/中间值全受同限。异常拼写是 M4，有限 subnormal/零不是一概不支持。 |
+| M7 | 建议复用 `UNSUPPORTED_RULE_OUTPUT`＋R/R/U→`UNSUPPORTED_CONSTRUCT {construct:ruleOutput}`，对每个有效但越受控 schema 的 head；坏 triple/未绑定分 M1/M2。 | 旧 token :134 真有；新 `RULE_HEAD_UNSUPPORTED` 未有。当前 `_rule` :251–266 只对单 head，需全部 head 的定义/实例化两次校验。 |
+| M8a | 新比较/head 聚合输入预算建议 `RULE_INPUT_BUDGET`＋R/R/U→`RESOURCE_LIMIT {resource:semanticInput}`，须原 owner **新增**精确 pair。原字节 term 输入超限仍用其真实 TURTLE/SYNTAX `TEXT_INPUT_LIMIT` 入口，不能伪装 R/R。 | 当前 `TEXT_INPUT_LIMIT` 只 TURTLE/SYNTAX、TURTLE/CONSTRAINT、QUERY/QUERY（:79–87）；`GRAPH_INPUT_LIMIT` 也**不含 REASON/RULE**（:89–102）。不能直接声称 R/R input route 已存在；新 token目前 Internal。 |
+| M8b | 累计比较/匹配/实例化 work 优先复用 `WORK_LIMIT`＋R/R，或为 `RULE_WORK_BUDGET` 新增等价固定路由；计费含复杂度。 | `WORK_LIMIT`→semanticWork 已含 R/R 和 PROJECTION/PROJECTION（:107–110）。`RULE_MATCH_WORK_LIMIT`→semanticWork 含 R/R。新 token目前 Internal。保留非 U 的既有真实资源分支。 |
+| M8c | trace/全部 heads/graph 的真实总输出超限优先复用 `RULE_EVIDENCE_RESULT_LIMIT`＋R/R→semanticResult；最终 rows+payload 超限保留 PROJECTION/PROJECTION 的 `PROJECTION_RESULT_LIMIT`。若新 `RULE_RESULT_BUDGET` 则显式加固定 pair。 | `RDFS_RESULT_LIMIT`、`RULE_EVIDENCE_RESULT_LIMIT`、`PROJECTION_RESULT_LIMIT` :104/106/111–114 分别已有。新 token目前 Internal。不得截断结果并回成功；不是 frame/page 错误别名。 |
+| M9 | 对“已合法解析的明示政策版本但无实现”，设计上可接受 `RULE_POLICY_UNSUPPORTED`＋R/R/U→canonical `UNSUPPORTED_CAPABILITY {}`，与坏版本形状/未知字段严格区分；最终语义分类需 T01确认。 | **当前 `_REQUIRED` :157–164 没有 UNSUPPORTED_CAPABILITY**，adapter既未构造其 spec，也无该 token。仅 errors目录有此码不能直接 `_emit`；需要 adapter catalog/schema 合法性校验/spec/映射/正反测试。不是 protocol VERSION_INCOMPATIBLE，不影响 D7 当前 IDENTITY_CONFLICT。 |
+| M10 | 接受未知、未接受组合、UNKNOWN origin、可信 trace/绑定/政策损坏、比较器意外异常→`INTERNAL_ERROR {}`；严格保护来源。 | :315–326/:337/:356–358 已实现的 fallback；但保留所有旧真实 resource/network 特例和其他 recognized route，不 blanket 改它们。Enum 不证明来源；不接受 caller 自称 R/R/U。 |
+| M11 | 保留 `RULE_CHAIN_UNSUPPORTED:<id>` 原 advisory warning 路径，针对全部 heads 扩大检测覆盖；不默认变成 DTO错误。 | semantic.py:269–280/:404 原 warning。adapter送该字符串最终 Internal；catalog ruleChain/ruleRecursion 枚举不等于已接路由。现有“冻结单阶段、保存并提示”不改成链执行或仅因潜在链禁止保存。 |
+
+以上 DTO 的 messageKey/retryable/受限 params 都从完整 canonical 注入获取，不硬编码推断；本稿所列目标码在现有 catalog 的 retryable=false，不另登记 ruleComparison enum。新 token 不得先上线 caller 再等 adapter 跟上；需要 token×producer×stage×origin 的成对提交与新候选完整回归。
+
+对 T05 M12–M16 的必要旁注（不扩本次请求范围）：跨 implementation 新消费当前真实 `IDENTITY_CONFLICT`，payload 不在是 job_store.py:864–865 的 `PAYLOAD_EVICTED(resultId)`，producer/hash等不一致 :897 为 Internal。missing result、授权、结构损坏分别须按 T01 真实资源入口核实，不把 Store 调用层名称伪装成新 adapter enum，也不因建议码可构造就宣称已接线。T01 仍唯一决定公共诊断与 authoritative identity。
+
+## 4. P1–P6：逐路径责任建议（全部未生效）
+
+| ID | owner 答复草稿建议 | 准确路径及边界 |
+| --- | --- | --- |
+| P1 | **有条件支持未来四路径范围，当前不得视为释放。** 等 I05 实际批准 C3、总控登记批准依赖、双方逐文件核 hash/接受和独立复核后，再生效。新比较/多头必有新语义身份，不能冒用 finite5 witness 身份。 | `packages/engine/src/ontolearn_engine/semantic.py`、`semantic_scopes.py`、`semantic_execution.py`、`resources.py`。本稿给的是 b045 固定 hash，非可消费批准。旧 26 offer hash 的 semantic/resources 已不同；scopes/execution 字节未变也不自动转交。T01 保存包装、canonical 与 Store不在四路径内。 |
+| P2 | **建议由 I05 原 owner 实施 adapter 差异**，先接受 M3/M8a/M9 的新增规则及 M4–M8 的复用选择，明确所有 pair；不把“支持映射”当 T05 写权限。若决定移交须逐文件另登记。 | `packages/engine/src/ontolearn_engine/semantic_error_adapter.py`。保持纯模块/完整 canonical 注入/不推断异常文本；保留现有分支、旧 golden、unknown→Internal。M9 除映射还需 spec支持，不能漏。 |
+| P3 | **建议原 owner 同步维护这两文件并接受新增测试责任**；具体文件若释放需单独记录，不自动随 P2。 | `packages/engine/tests/test_semantic_error_adapter.py`、`packages/engine/tests/test_semantic_error_reasons.py`。每新增或复用 token真实producer/stage/origin 的 positive与wrong pair/UNKNOWN/internal负例；canonical缺失/错schema/预算、旧25/75约束、来源防伪保持，不只检查code存在。新增比较生产路径实触发也需测试，不以直接调用adapter替代。 |
+| P4 | **本稿选择 D2 独立比较，不接受扩大 query 路径作为本次必要范围。** 不是删除既有 query 回归；将来若统一值政策需另列新 helper准确路径/原支持面变化/新验收后申请。 | `packages/engine/src/ontolearn_engine/semantic_query.py`、`packages/engine/tests/test_semantic_query_tokens.py` 留原 owner；不修改 FILTER、token grammar、query AST policy或原错误传播。不要为规则便利再克隆一套 query执行器。 |
+| P5 | **当前不默认改变 term 词法 parser；有条件接受原 owner 对新增值域入口的精确配套评估。** D3/D4 值解释不等于改 term身份；D4 graph gate问题主要在semantic.py/execution.py/scopes.py，不能仅凭它扩整个turtle。若确需改 parser逐项再授权。 | `packages/engine/src/ontolearn_engine/semantic_turtle.py`、`packages/engine/tests/test_semantic_lexical.py`、`packages/engine/tests/test_semantic_lexical_runtime.py`。保持独立 LexicalSink、无 global normalize/parser monkeypatch、外联拒绝；真实Store/worker/stdio原lexical正反例保留。规则eq值真不能令term01/1合并或使SHACL同term允许集改变。 |
+| P6 | **建议 I05 原 owner 维护 samples与这些既有回归，先列改动清单；未来可逐文件移交但不概括为“相关tests全交”。** T05独占quality测试可补充完整FR505，不能替换旧真实引擎/selected回归。 | `packages/engine/src/ontolearn_engine/semantic_samples.py`；`packages/engine/tests/test_semantic.py`、`test_semantic_scopes.py`、`test_semantic_selected_projection.py`、`test_semantic_execution.py`。构造兼容性、启停/顺序、全部heads、RDFS触发、warnings、真实selected/历史/严格新版本门、basis完整性、失败无部分发布均须覆盖。C3新增的 `test_semantic_rdfs_basis_determinism.py` 不在T05原P6清单，仍原owner、不可静默扩移交；有新增schema/执行路径改动应由其owner按实际影响维护该证据。 |
+
+P7/P8 的 T01唯一公共schema/JobStore/checker责任不能通过上述接受转移；P9 T03锁/构建/entrypoint不得随语义helper修改；P10桌面映射I06须等获准公共响应，main/engine.ts仍T01。不存在“私有payload”可绕过这些owner的特例。所有授权实施都在后续新候选中验证与同版双审，本轮不消费当前候选为正式依赖、不改批准5f边界。
+
+## 5. 总控可据此形成的逐项回执与未闭合项
+
+推荐回执：D1 接受上述精确定义；D2 选独立规则比较且不改 query；D3 推荐直接舍入声明浮点后精确跨型有理值政策；D4 推荐保留时区/精确秒的规则 calendar政策并先解决图入口/消费者矩阵；D5 接受显式失败与定义/运行校验次序；D6 接受全 firing职责但格式/持久化待T01；D7 保持严格三字段新消费；D8 接受预算/原子性，具体额度待测；D9 接受逐reason/逐路径回执且错误定位保持明确缺口。M/P逐行意见见上文，不可简化为“全部已支持”。
+
+仍需真实owner/总控决定及实施证据：D3/D4/Q6采用；完整合法词法与值域oracle；新增reason/spec/caller同步；唯一规则持久包装与references/诊断定位；源hash/多头firing的全组认证；新旧身份/历史读与消费隔离；精确预算和取消/事务联验；样例/类型全矩阵/所有原回归；批准依赖、同版指定双审、CI/远端及原父模块验收。设计可实现不等于已运行正确，不以静态文档关闭任一项。
+
+本轮实际修改仅此 ignored `build/t05-owner-decisions-c3-draft.md`。没有启动进程执行引擎/测试/GUI，没有网络/模型调用，没有修改/暂存 AGENTS、源码、测试、配置、锁或共享文档，没有提交/push。报告 SHA 由写入后独立 read/hash 回传，不自包含以避免循环。
