@@ -90,7 +90,12 @@ def iri_minimum(text, budget, location=None, lexical=False):
         internal(location)
     utf8_size(text, budget, budget.limits.term_bytes if lexical else 16384, location)
     budget.debit(len(text), location=location)
-    if not SCHEME.match(text) or any(c.isspace() or c in '<>"{}|^`\\' for c in text):
+    # RFC 3987 ucschar includes Unicode whitespace from U+00A0 upward.
+    # Keep the existing lower-code-point and delimiter guards; full IRI grammar
+    # validation belongs upstream, and RDF IRI identity keeps the exact spelling.
+    if not SCHEME.match(text) or any(
+        (ord(c) < 0xA0 and c.isspace()) or c in '<>"{}|^`\\' for c in text
+    ):
         fail(location=location)
     return text
 
