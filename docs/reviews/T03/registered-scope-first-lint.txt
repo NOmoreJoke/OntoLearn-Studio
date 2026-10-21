@@ -1,0 +1,10 @@
+E501 Line too long (103 > 100)
+   --> packages/engine/tests/test_mapping_source.py:199:101
+    |
+198 | @pytest.mark.parametrize("reference", ["cached-external-formula", "external-hyperlink"])
+199 | def test_xlsx_external_references_do_not_open_connections_or_evaluate_formulas(monkeypatch, reference):
+    |                                                                                                     ^^^
+200 |     import socket
+    |
+
+Found 1 error.

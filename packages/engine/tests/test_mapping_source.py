@@ -193,3 +193,70 @@ def test_encoding_location_respects_csv_records_and_quoted_commas(data, row, col
     with pytest.raises(SourceError) as error:
         parse_csv(data)
     assert (error.value.issue.row, error.value.issue.column) == (row, column)
+
+
+@pytest.mark.parametrize("reference", ["cached-external-formula", "external-hyperlink"])
+def test_xlsx_external_references_do_not_open_connections_or_evaluate_formulas(
+    monkeypatch, reference
+):
+    import socket
+
+    pytest.importorskip("openpyxl", reason="project XLSX dependency required")
+    calls = []
+
+    def forbidden(*_args, **_kwargs):
+        calls.append("network-attempt")
+        raise AssertionError("External reference must never initiate networking")
+
+    for name in ("socket", "create_connection", "getaddrinfo"):
+        monkeypatch.setattr(socket, name, forbidden)
+    ns = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    formula = (
+        '<c r="B2" t="str"><f>WEBSERVICE("https://example.invalid/ref")</f><v>只读已保存值</v></c>'
+    )
+    value = formula if reference == "cached-external-formula" else string_cell("B2", "显示文本")
+    extra = {
+        "xl/worksheets/_rels/sheet1.xml.rels": '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        f'<Relationship Id="rId1" Type="{ns}/hyperlink" '
+        'Target="https://example.invalid/ref" TargetMode="External"/></Relationships>'
+    }
+    data = workbook(
+        header() + '<row r="2">' + string_cell("A2", "001") + value + "</row>",
+        extra=extra if reference == "external-hyperlink" else None,
+    )
+    if reference == "external-hyperlink":
+        out = io.BytesIO()
+        with zipfile.ZipFile(io.BytesIO(data)) as original, zipfile.ZipFile(out, "w") as archive:
+            for item in original.infolist():
+                content = original.read(item)
+                if item.filename == "xl/worksheets/sheet1.xml":
+                    links = (
+                        f'<hyperlinks><hyperlink xmlns:r="{ns}" ref="B2" r:id="rId1"/>'
+                        "</hyperlinks></worksheet>"
+                    ).encode()
+                    content = content.replace(b"</worksheet>", links)
+                archive.writestr(item, content)
+        data = out.getvalue()
+    table = parse_xlsx(data, sheet="设备")
+    expected = "只读已保存值" if reference == "cached-external-formula" else "显示文本"
+    assert tuple(cell.text for cell in table.rows[0].cells) == ("001", expected)
+    assert calls == []
+
+
+def test_csv_file_column_cell_and_row_limits_are_enforced_with_locations():
+    from ontolearn_engine.mapping.source import MAX_BYTES, MAX_CELL, MAX_COLUMNS, MAX_ROWS
+
+    cases = (
+        (b"x" * (MAX_BYTES + 1), "SOURCE_LIMIT", 0, 0),
+        ((",".join(f"c{i}" for i in range(MAX_COLUMNS + 1)) + "\n").encode(), "SOURCE_LIMIT", 1, 0),
+        (("id\n" + "x" * (MAX_CELL + 1) + "\n").encode(), "INVALID_CELL", 2, 1),
+        (("id\n" + "x\n" * (MAX_ROWS + 1)).encode(), "SOURCE_LIMIT", MAX_ROWS + 2, 0),
+    )
+    for data, code, row, column in cases:
+        with pytest.raises(SourceError) as error:
+            parse_csv(data)
+        assert (error.value.issue.code, error.value.issue.row, error.value.issue.column) == (
+            code,
+            row,
+            column,
+        )
