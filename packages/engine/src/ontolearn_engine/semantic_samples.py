@@ -225,6 +225,10 @@ def lexical_suite():
         assert matched == {"type": "ASK", "value": True}
         values = query(Graph(), f"SELECT ?v WHERE {{ VALUES ?v {{ {token} }} }}")
         assert values == {"type": "SELECT", "variables": ["v"], "rows": [[term.n3()]]}
+        expression = query(Graph(), f"SELECT ?v WHERE {{ BIND({token} AS ?v) }}")
+        assert expression == values
+        spelling = query(Graph(), f"SELECT (STR({token}) AS ?v) WHERE {{}}")
+        assert spelling == {"type": "SELECT", "variables": ["v"], "rows": [[f'"{token}"']]}
         variable = Variable("s")
         exact = Rule("lexical", ((variable, EX.value, term),), (variable, RDF.type, EX.Exact))
         unequal = Rule(
@@ -241,6 +245,8 @@ def lexical_suite():
                 "different": bad,
                 "query": matched,
                 "values": values,
+                "expression": expression,
+                "spelling": spelling,
                 "rules": derived,
             }
         )

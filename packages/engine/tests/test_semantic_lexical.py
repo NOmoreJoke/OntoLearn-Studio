@@ -361,6 +361,7 @@ def grammar_state():
             parser.keepTabs,
             parser.callPreparse,
             tuple(map(id, parser.ignoreExprs)),
+            tuple(id(child) for child in parser.recurse()),
         )
         pending.extend(parser.recurse())
     return visited, (
