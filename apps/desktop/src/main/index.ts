@@ -120,6 +120,10 @@ void app.whenReady().then(async () => {
   supervisor = new EngineSupervisor(
     { packaged: app.isPackaged, appPath: app.getAppPath(), resourcesPath: process.resourcesPath },
     {
+      profile:
+        !app.isPackaged && process.argv.includes('--t01-internal-business3')
+          ? 'business3'
+          : 'legacy2',
       dataPath: fixture?.databasePath ?? join(app.getPath('userData'), 'engine.sqlite'),
       ...(fixture ? { allowedProjects: [fixture.projectId], testMode: true } : {}),
     },
@@ -153,10 +157,11 @@ void app.whenReady().then(async () => {
   })
   ipcMain.handle('engine:health', async (event): Promise<HealthResult> => {
     if (!trusted(event)) return permission()
+    const operation = supervisor.health()
     try {
-      return { ok: true, data: await supervisor.health() }
+      return { ok: true, data: await operation }
     } catch (error) {
-      return { ok: false, error: safeError((error as { error?: unknown } | null)?.error) }
+      return { ok: false, error: supervisor.projectFailure(error, operation) }
     }
   })
   // This routing table is main-only and finite. No generic method crosses preload.
