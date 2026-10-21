@@ -1,0 +1,98 @@
+# I06 N0：私有原生对象底座源码候选
+
+2026-10-21。已按6089B授权在批准5f新树实现六件产品与三件测试源码；本阶段交付的是**待构建、待运行的源码候选**。未编译、未运行测试、未动态加载addon、未执行native/FS/child实验，不称N0技术通过。所有输出保 `held-object-only`，productionAdmission固定unsupported；没有SQLite/Python/VFS/B-R/T01生产消费或用户目录入口。
+
+## 1. 新树与固定来源
+
+- worktree：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0`；branch：`feature/I06-native-location-N0`；base：`5f910b52c69d86a1076b2032e5d3c63e715947f3`。起始仅AGENTS既有dirty，15852B/SHA256 `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`，保持不stage。
+- 根授权原件存 `docs/reviews/I06/native-location-N0/authorization.txt`：6089B/SHA256 `fc4a74b81530197a3aa38d0bcc5027d952d83c64d7f0a6cd5be2abdd3c9ce4ee`。
+- 只读设计：9ff1c92e78cc0bed1e37b71ea7f00a57ad231f7c主方案49472B/34c4307e…；1f3b053d8a69d1f7ddb1e29c143f648d910fe689位置offer46365B/561ec272…，尤其39/123的普通误选、静态alias、生命周期/路径竞态边界。完整SHA在startup.json。没有新增任意恶意同UID/全盘DLP要求。
+- 首个ABI过程ref：`6a7789bf0c1e5e7b0f25f37c86e0c9d64c6dc20d`，只含header及5件过程证据，供T03 onlydocs固定契约；不是九件采用或N0收口。header13296B/SHA256 `fc3f7983d62b0ef4f5a3a056198c00a0b971d2ae722acc33bc6f61937ec8e172`。完整源码ref另由最终回执冻结。
+- 原BM64、624收口、9ff1的18docs及A/e2c/961保持原件，不采用任何其产品；没有共享/构建/锁/原型/保护源改动，没有重测无变化产品。
+
+## 2. 精确实现与单一职责
+
+| 新路径                                                    | 实际职责                                                                                                                                                       |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/native-location/include/location_abi.h`         | ABI1、11core C符号+条件native-host第12入口、八public struct/全部field预期布局assert、有限错误/预算/关闭责任，detail接口不公开                                  |
+| `packages/native-location/src/capability_core.cc`         | 固定native registry、同步pre-admission gate、held-object/cap/epoch/TTL、partial child责任、实际close/wait及unknown保留；不保存第二业务账本                     |
+| `packages/native-location/src/platform_macos.cc`          | held parent单组件openat、真实fstat/extended ACL/dev+ino/nlink、FD close、确切自有child waitpid；未知OS明确unsupported                                          |
+| `packages/native-location/src/platform_windows.cc`        | RootDirectory NtCreateFile、完整VolumeSerial/FileId128/type/reparse/links/ACL、降权duplicate、实际hProcess比较/wait/close；无通用路径opener                    |
+| `packages/native-location/src/node_binding.cc`            | 私有native owner closure与exact-membership external cap、八同步方法；无JS构造owner/任意fd/PID/child API/路径装载；测试宏可调用同image native fixture bootstrap |
+| `apps/desktop/src/main/security/native-location-owner.ts` | 主进程私有投影、own-data捕获+zod strict、有界结果/无损ID、局部新接纳闸门与保留原native cleanup；不制造OS事实或LocationLease                                    |
+| `packages/native-location/tests/location_core_test.cc`    | 两OS受控fixture/普通替换/alias/撤销/容量/真实child及partial adoption；另有test-only addon bootstrap模式，复用同源而不新增host路径                              |
+| `packages/native-location/tests/location_child_probe.cc`  | 唯一参数`--hold-until-eof`，stdin EOF后exit0；参数错64、stdin错误1；不读项目/路径/模型，不是业务代理                                                           |
+| `tests/unit/i06-native-location-owner.test.ts`            | synthetic表仅测TS投影；真实addon用显式绝对artifact独立分组，缺输入skip不补mock                                                                                 |
+
+root为本树唯一产品writer；独立agents只做静态预审/源码审查及各自新文档。T01 main/Supervisor/Store/worker/canonical和T03构建/锁/入口/打包仍只读。上述九件之外无helper头、构建脚本或其他产品文件。
+
+## 3. ABI、容量与同步接纳
+
+完整符号/每field size-align-offset预期见 `abi-build-handoff.md` 及header。Windows cdecl；C++ extern C/noexcept，C消费同一自然布局；无pack、无跨边界异常/heap输出。caller分配输出struct；borrowed FD/HANDLE仍归harness，native duplicate归原owner。header的布局assert是编译约束，当前没有实际sizeof/导出/链接证明。
+
+| 计账范围     | 固定工程拒绝上界                                                                                                                                                  |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| process-wide | owner永久历史32、同时nonclosed owner2；原生inflight2，gate try-lock不排队；最多一条同步OS调用链执行                                                               |
+| 每owner      | lifetime cap128含root/失败/unknown，slot不reuse；累计所有尝试component UTF8名字16384B（不含终止符），单组件255B；root depth0、后代depth<=128                      |
+| child        | 每owner两个adopt尝试，失败/重复也计；每child最多两pipe；process handle/pipe/close未知均有固定记录，不按超时回补                                                   |
+| 未实施种类   | async worker queue0、maps0、messages bytes0、ancillary0；没有暗中worker/TSFN/跨进程协议                                                                           |
+| 时间         | prepare TTL30000ms；仅epoch1且TTL有效可root/acquire/observe/child-adopt；logical wait5000ms是未来调用者等待界，本同步API不承诺syscall五秒返回，不创建Promise.race |
+
+两active owner理论最多256个cap对象、4child/8pipe；所有32永久历史最多4096个cap尝试和512KiB累计组件名，仍低于既有inventory/字符串上界。它们不是单路径限额被加倍：每owner全部组件和单条parent链都受16384B约束。目录与file role固定metadata一种，不生成DB sidecar角色。
+
+每次原生调用链（包括clock、dup、metadata、close、wait）先取得固定reservation，再尝试gate；未dispatch的BUSY/BUDGET不留排队操作。slot/字节/child记录在实际调用前reserve。revoke以静态不复用owner record上的atomic epoch2生效，能在另一个线程持gate/同步syscall时封后续接纳；不复活。已经进入OS的晚返回仍属于原owner，重新核epoch/TTL后不再发行可用cap；已返回的旧cap也不能绕过下次native gate。
+
+snapshot/release/poll/close/revoke保原owner有限cleanup；observe不是revoke后的新读入口。snapshot的inflight是process-wide调用/未终态native work计账，包含本次snapshot自己；它不是“其他资源已经0”的release事实。owner.close只在其自身全部对象/pipe/child实际终态、无unknown时OK，另owner的持有不混成此owner释放。
+
+## 4. 平台对象与普通namespace边界
+
+macOS：fixture anchor由可信native harness借用后dup，目录逐组件openat(O_DIRECTORY/O_NOFOLLOW/CLOEXEC)，普通file用O_EVTONLY取得metadata对象；无read/pread/write/truncate正文调用。实际fstat UID、group/other写位、regular nlink=1、目录类型及extended ACL都独立检查，mode不代替ACL。Darwin ACL仅接受真实fd-getter取得的独占working copy、已valid且FIRST无entry；Apple返回0是存在entry，-1/EINVAL在该有效ACL前提下表示empty。非空/未知/不支持拒绝。固定官方Libc来源及前提见platform-preflight，不把其tag当mac15二进制证明。
+
+Windows：NtCreateFile仅FILE_OPEN、RootDirectory持有parent、单组件UTF8→UTF16无替换/截断；READ_ATTRIBUTES/READ_CONTROL/SYNCHRONIZE，目录加TRAVERSE，不请求正文GENERIC_READ。返回实际HANDLE再验disk/type/reparse/offline/DeletePending/links/完整FileId；ACL用1024B有界SD、256B TokenUser，严查范围/ACE/SID，only当前process principal、非继承owner-only已知allow ACE。process/thread pseudo token不产生需close的辅助token HANDLE；线程impersonation明确拒绝。常见继承ACL可能被保守拒，测试harness显式建立owner-only私有SD，不将默认Temp ACL当必过正例。
+
+单组件先拒NUL/分隔/点点/ADS/尾点空格/无效UTF8与Windows设备名。expected identity只作旧身份过滤；普通member被换后若开到新对象便拒旧expected，保原held对象及新失败尝试。hardlink检查只能认证当次已观察nlink，不能证明所有历史/别名完整，不能自动开放生产用途。ancestor/root普通rename可被OS sharing拒绝，或仍保旧held对象；metadata结果始终held-object-only，不把双stat/原生双检说成持续namespace围栏。
+
+**publish始终unsupported且不dispatch任何OS操作。**N0不做exclusive文件create/no-replace发布，测试fixture自己的建立/替换不变成产品权限。缺源对象围栏/普通rename保证时保持该拒绝，不用普通rename、hash或clone替代。
+
+Windows同步open显式FILE_SYNCHRONOUS_IO_NONALERT。如异常返回STATUS_PENDING，输出HANDLE/IO_STATUS_BLOCK保在固定静态平台记录，原inflight reservation及owner unknown保留，不把NT_SUCCESS/promise返回当实际完成。N0未提供该异常pending的恢复认证；可能永久耗尽两槽而拒后续工作，不能释放或unload。后续若需真实completion轮询须准确实现并复审，不以timeout假收口。这是明确可用性限制，不是正常同步open已验证的性能/兼容结论。
+
+## 5. child、pipe与真实关闭
+
+native C fixture入口只接受已创建的真实自有child/借用handle，Node不暴露adopt。harness先在其固定test记录reserve再spawn；receipt明示sole-reaper交接。POSIX exact own waitpid校验、实际exited/signaled才terminal；0、ECHILD/外部reaper/未知错误都不判释放。Windows持实际hProcess并排同kernel object重复adopt，拒current-process，复制仅SYNCHRONIZE/QUERY_LIMITED_INFORMATION；signaled后还需关闭native自己的hProcess。
+
+borrowed pipe metadata先核真实pipe（Win FILE_TYPE_PIPE还包括socket，另GetNamedPipeInfo），再受限dup；后续不会读pipe正文。获取pipe metadata权限不足即拒绝，不能给它扩大读权限。receipt.wait_owned=1后即使pipe复制失败，caller也不再wait/reap；native保原child/已发生pipe，caller仍只关自己的borrowed原handle。失败status不是“没资源”。duplicate child尝试拒第二reaper，不以同PID/hash建立关系。
+
+close先封新接纳，再逐原对象实际close/pipe close、实际child poll/reap及process handle close。失败close编号立即退役，unknown记录永不再碰该数值；下一close只能处理其他未关资源或继续原child wait。失败/晚返回/cancel/GC/env teardown不清unknown、不减实际槽。没有kill/terminate生产入口；test harness只对它尚未转移wait的确切自有child做有界失败清理，不kill已移交且可能已reap的PID。
+
+同步Node env hook只尝试一次真实revoke/close，retained owner留native静态registry，不认证所有资源已终态；有retained时不得卸载library。未来host须保持依赖image生命周期。测试env还保自己的fixture清理hook，LIFO让owner先close；fixture清理失败会明确使测试进程失败，不能绿色忽略。无SQLite/SHM/map或完整跨main恢复认证。
+
+## 6. Node/TS与T03准确交接
+
+普通addon只有abiVersion1/fixtureBound0/productionAdmission0；trusted native host调用第12 C入口后，才装八个有原owner callback data的同步方法。external cap先比较其地址是否属于该binding固定token集合，之后才解引用；不凭JS shape/整数/自造external作能力。TS本地WeakMap只防wrapper混用，zod/JS字段也不认证native来源；测试fake表只证明投影机制，所有结果production unsupported。无renderer/preload/main接线、任意callback或第二Supervisor。
+
+当前完整源码Node-API调用集合相比首个过程handoff新增**napi_get_value_string_utf16**，先以UTF16长度guard约束255units并拒绝未配对surrogate，再求UTF8字节界，避免先扫描任意长组件；它不提高最低N-API3。完整集合为：
+
+```text
+napi_set_named_property, napi_create_uint32, napi_create_object,
+napi_create_string_utf8, napi_create_external, napi_get_value_external,
+napi_get_cb_info, napi_typeof, napi_get_value_string_utf8,
+napi_get_value_string_utf16, napi_add_env_cleanup_hook, napi_define_properties
+```
+
+注册仍NAPI_MODULE(i06_native_location,init)。无async_work/async_cleanup_hook/TSFN，不要求N-API8。首handoff对当时Node707190…快照的11API枚举原样保留，不能用于最终源码未经重核的构建采用；header13296/fc3f和全部public ABI未因此变。
+
+T03仍唯一三新构建路径：`packages/native-location/CMakeLists.txt`、`packages/native-location/toolchain-lock.json`、`scripts/build-native-location.mjs`。具体请求：固定两目标架构/编译器/SDK/CRT/C++17、NAPI_VERSION3与实际Electron/Node headers/runtime来源；导出11core/第12nativehost及注册符号，隐藏detail；Win目标需要NtCreateFile/Ntdll、ACL/Advapi32、CompareObjectHandles/Kernelbase及普通Kernel32等实际依赖核验；mac目标验证O_EVTONLY/ACL组合和libc/系统调用声明。当前宿主PATH无cmake/ninja的根信息不代替工具链锁，也不阻源码。
+
+core可执行main要求唯一argv[1]=CMake TARGET_FILE的child_probe绝对路径；usage64，真实fixture失败1，未支持host77（不能算两目标通过），成功0。CTest可将77标skip，目标mac/Win不因缺fixturesymlink/ACL等变绿；Windows创建测试symlink/reparse失败明确测试失败。CTest外层15s仅是失控有界结束，不是drain证明。
+
+test-only addon定义NL_NODE_FIXTURE_HOST+NL_WITH_NODE，同目标链接core+目标platform+node_binding+core_test四TU；core_test此模式无main，只提供private fixture_node_bootstrap，从OS temp独占fixture→heldanchor→owner→bind，所有调用同一份registry。不可host/.node各静态复制core再传相同uint64当真；无第十个helper路径。普通addon无测试宏，没有路径/FD/PID bootstrap。
+
+TS真实组仅从显式绝对`I06_NATIVE_LOCATION_TEST_ADDON`编译测试.node输入createRequire；缺输入明确skip，不用fake补绿。源码中有将来测试装载调用不代表本轮已加载。实际build/运行采用须最终九件同版refs/bytesSHA交根后另授，不能仅沿首ABI过程ref启动。
+
+## 7. 验证与剩余门
+
+当前允许范围仅必要Git/hash/stdlib文本、已有纯formatter/TS静态语法工具、独立agent源码审查。新树没有安装依赖或工具、未借其他worktree node_modules。若使用既有全局npm cache中的工具，记录确切路径/版本/实际argv/exit；仅formatter/静态parser，不加载产品或addon。TS语法parse不是完整类型检查；C++预期layout/源级审查不是编译实证。
+
+实际检查/首失败、九件源码SHA、受审ref、独审原文与处置在专属review目录冻结。没有运行任何测试/编译/真实临时目录、child、GUI、Keychain或模型请求；没有push/PR/merge/重建Goal。并发revoke源码测试仅做真实调用竞争表征，未保证确定触发在途syscall；实际late/close失败、未终态native工作及全部平台反例仍须获批运行窗真实trace/故障证据，不能拿mock/注入收据/源码分支当OS事实。
+
+后续必须补T03固定构建、实际两OS/普通权限FS/close/child/alias/晚返验证；N1同库SQLite/VFS/全附属IO、跨崩溃oldholder、fresh/历史/B-R耐久、T01消费/dispatch/scope/永久排空与公开首IO仍未通过。完整父I06/57P0、指定双模型同版外审、CI/正常develop合并和远端门保留。

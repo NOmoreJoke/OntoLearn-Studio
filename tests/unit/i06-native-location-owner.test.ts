@@ -1,0 +1,240 @@
+import { createRequire } from 'node:module'
+import { isAbsolute } from 'node:path'
+import { describe, expect, it } from 'vitest'
+import { createNativeLocationOwner } from '../../apps/desktop/src/main/security/native-location-owner'
+
+// These tables are SYNTHETIC. They prove TS projection/capture/error mechanics,
+// never real OS identity, native cancellation, FD close or target-platform safety.
+const observed = () => ({
+  kind: 2,
+  volume: '0100000000000000',
+  file: '02000000000000000000000000000000',
+  links: '1',
+  aclChecked: 1,
+  heldObjectOnly: 1,
+  productionAdmission: 0,
+})
+function table() {
+  const nativeCap: unknown = Object.freeze({ synthetic: true })
+  const calls: string[] = []
+  return {
+    calls,
+    binding: {
+      abiVersion: 1,
+      fixtureBound: 1,
+      productionAdmission: 0,
+      root: () => {
+        calls.push('root')
+        return { status: 0, cap: nativeCap, metadata: { ...observed(), kind: 1 } }
+      },
+      directory: () => {
+        calls.push('directory')
+        return { status: 0, cap: nativeCap, metadata: { ...observed(), kind: 1 } }
+      },
+      file: () => {
+        calls.push('file')
+        return { status: 0, cap: nativeCap, metadata: observed() }
+      },
+      observe: () => {
+        calls.push('observe')
+        return { status: 0, metadata: observed() }
+      },
+      release: () => {
+        calls.push('release')
+        return { status: 0 }
+      },
+      snapshot: () => ({
+        status: 0,
+        abiVersion: 1,
+        epoch: 1,
+        accepting: 1,
+        closed: 0,
+        heldObjects: 1,
+        unknownObjects: 0,
+        pendingChildren: 0,
+        heldPipes: 0,
+        inflight: 1,
+        everCaps: 1,
+        nameBytes: 0,
+        productionAdmission: 0,
+      }),
+      revoke: () => {
+        calls.push('revoke')
+        return { status: 0 }
+      },
+      close: () => {
+        calls.push('close')
+        return { status: 0 }
+      },
+    },
+  }
+}
+function owner(input: unknown) {
+  const result = createNativeLocationOwner(input)
+  expect(result).toBeDefined()
+  if (!result) throw new Error('fixture-owner-unavailable')
+  return result
+}
+function root(input: ReturnType<typeof owner>) {
+  const result = input.root()
+  expect(result.status).toBe('ok')
+  if (!result.value) throw new Error('fixture-root-unavailable')
+  return result.value
+}
+
+describe('I06 N0 synthetic TS projection only', () => {
+  it('keeps opaque wrappers local and never upgrades metadata to production admission', () => {
+    const a = table()
+    const b = table()
+    const first = owner(a.binding)
+    const second = owner(b.binding)
+    const value = root(first)
+    expect(value.metadata.file).toBe('02000000000000000000000000000000')
+    expect(first.productionAdmission).toBe('unsupported')
+    expect(second.file(value.cap, 'member').status).toBe('invalid')
+    expect(second.file(Object.freeze({ ...value.cap }), 'member').status).toBe('invalid')
+    expect(b.calls).toEqual([])
+    expect(first.file(value.cap, 'member').status).toBe('ok')
+    expect(first.close().status).toBe('ok')
+    expect(first.root().status).toBe('stale')
+    expect(first.close().status).toBe('ok')
+    expect(a.calls.filter((call) => call === 'close')).toHaveLength(1)
+  })
+  it('captures only own data properties without invoking getters or accepting extra methods', () => {
+    const data = table()
+    let reads = 0
+    Object.defineProperty(data.binding, 'root', {
+      get() {
+        reads += 1
+        throw new Error('not-called')
+      },
+    })
+    expect(createNativeLocationOwner(data.binding)).toBeUndefined()
+    expect(reads).toBe(0)
+    expect(data.calls).toEqual([])
+    const next = table()
+    expect(createNativeLocationOwner({ ...next.binding, arbitraryIo: () => 1 })).toBeUndefined()
+    expect(
+      createNativeLocationOwner(
+        new Proxy(
+          {},
+          {
+            ownKeys() {
+              throw null
+            },
+          },
+        ),
+      ),
+    ).toBeUndefined()
+  })
+  it('does not retry a failed release number and keeps the owner retained', () => {
+    const data = table()
+    data.binding.release = () => {
+      data.calls.push('release')
+      return { status: 7 }
+    }
+    data.binding.close = () => {
+      data.calls.push('close')
+      return { status: 7 }
+    }
+    const current = owner(data.binding)
+    const value = root(current)
+    expect(current.release(value.cap).status).toBe('retained')
+    expect(current.release(value.cap).status).toBe('retained')
+    expect(data.calls.filter((call) => call === 'release')).toHaveLength(1)
+    expect(current.close().status).toBe('retained')
+    expect(current.localState()).toEqual({
+      accepting: false,
+      closed: false,
+      retained: true,
+      productionAdmission: 'unsupported',
+    })
+  })
+  it('retains unknown throws, uses a finite error, and seals local new admission', () => {
+    const data = table()
+    data.binding.file = () => {
+      throw Object.create(null)
+    }
+    const current = owner(data.binding)
+    const value = root(current)
+    expect(current.file(value.cap, 'member').status).toBe('internal')
+    expect(current.root().status).toBe('stale')
+    expect(current.localState().retained).toBe(true)
+    expect(data.calls).toEqual(['root', 'revoke'])
+  })
+  it('rejects accessor metadata without reading it or losing its native cleanup owner', () => {
+    const data = table()
+    let reads = 0
+    const invalid = Object.defineProperty({}, 'kind', {
+      get() {
+        reads += 1
+        return 2
+      },
+      enumerable: true,
+    })
+    data.binding.file = () => ({
+      status: 0,
+      cap: {},
+      metadata: invalid as ReturnType<typeof observed>,
+    })
+    const current = owner(data.binding)
+    const value = root(current)
+    expect(current.file(value.cap, 'member').status).toBe('internal')
+    expect(reads).toBe(0)
+    expect(current.localState().retained).toBe(true)
+    expect(current.close().status).toBe('ok')
+  })
+  it('does not publish a late wrapper after reentrant revocation', () => {
+    const data = table()
+    let current: ReturnType<typeof owner>
+    const original = data.binding.file
+    data.binding.file = () => {
+      expect(current.revoke().status).toBe('busy')
+      return original()
+    }
+    current = owner(data.binding)
+    const value = root(current)
+    expect(current.file(value.cap, 'member').status).toBe('stale')
+    expect(current.localState().accepting).toBe(false)
+    expect(current.close().status).toBe('ok')
+  })
+  it('bounds component bytes before crossing the native method table', () => {
+    const data = table()
+    const current = owner(data.binding)
+    const value = root(current)
+    expect(current.file(value.cap, '中'.repeat(86)).status).toBe('invalid')
+    expect(data.calls).toEqual(['root'])
+    current.close()
+  })
+})
+
+// Executable only in a later authorized target-platform run. No fallback mock.
+// Build NL_NODE_FIXTURE_HOST + NL_WITH_NODE into one test-only .node with the
+// authorized core_test.cc native bootstrap and SAME core registry instance.
+const addonPath = process.env['I06_NATIVE_LOCATION_TEST_ADDON']
+describe.skipIf(!addonPath)('I06 N0 real test-only addon, explicit artifact required', () => {
+  it('consumes actual native opaque capabilities and drains its real held objects', () => {
+    if (!addonPath || !isAbsolute(addonPath)) throw new Error('explicit-absolute-addon-required')
+    const require = createRequire(import.meta.url)
+    const binding: unknown = require(addonPath)
+    const current = owner(binding)
+    try {
+      const parent = root(current)
+      expect(parent.metadata.heldObjectOnly).toBe(1)
+      const file = current.file(parent.cap, 'member')
+      expect(file.status).toBe('ok')
+      if (!file.value) throw new Error('native-member-unavailable')
+      expect(current.observe(file.value.cap).status).toBe('ok')
+      expect(current.file(Object.freeze({ heldObjectOnly: true }), 'member').status).toBe('invalid')
+      expect(current.file(parent.cap, '\ud800').status).toBe('invalid')
+      expect(current.revoke().status).toBe('ok')
+      expect(current.file(parent.cap, 'member').status).toBe('stale')
+      expect(current.close().status).toBe('ok')
+      expect(current.localState().closed).toBe(true)
+      expect(current.productionAdmission).toBe('unsupported')
+    } finally {
+      // Failure to obtain a real close receipt is a test failure, never a skip.
+      expect(current.close().status).toBe('ok')
+    }
+  })
+})

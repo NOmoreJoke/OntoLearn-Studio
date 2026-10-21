@@ -1,0 +1,97 @@
+{
+  "kind": "text-only checks, not C++ syntax compilation or TS full typecheck",
+  "files": [
+    {
+      "path": "packages/native-location/include/location_abi.h",
+      "bytes": 13296,
+      "sha256": "fc3f7983d62b0ef4f5a3a056198c00a0b971d2ae722acc33bc6f61937ec8e172",
+      "utf8": true,
+      "newline": true,
+      "textIssues": []
+    },
+    {
+      "path": "packages/native-location/src/capability_core.cc",
+      "bytes": 16734,
+      "sha256": "f90a45b5a8e50237191139a9f1e80709fe5a4e5c1eef4cf4c28dad1c9ab2e4b4",
+      "utf8": true,
+      "newline": true,
+      "textIssues": []
+    },
+    {
+      "path": "packages/native-location/src/platform_macos.cc",
+      "bytes": 7702,
+      "sha256": "d1e8029714a336ce7614fe1aab52069a72f504b3b6c3c8cd128e59896d4e2b29",
+      "utf8": true,
+      "newline": true,
+      "textIssues": []
+    },
+    {
+      "path": "packages/native-location/src/platform_windows.cc",
+      "bytes": 12382,
+      "sha256": "2a1c9d8ef75c81ccfaa965e3e4f9e31f5a12c590b59d9399e094407bbe09af02",
+      "utf8": true,
+      "newline": true,
+      "textIssues": []
+    },
+    {
+      "path": "packages/native-location/src/node_binding.cc",
+      "bytes": 13163,
+      "sha256": "e10e59bdb200460310489bb4fc5b8c64ab79c1b8e2cfc9e7353a10a0c8667383",
+      "utf8": true,
+      "newline": true,
+      "textIssues": []
+    },
+    {
+      "path": "apps/desktop/src/main/security/native-location-owner.ts",
+      "bytes": 12496,
+      "sha256": "e354b0830469647d70690f3e1d6e567c816f70cbbbe5c211dabba817fa7cc8d0",
+      "utf8": true,
+      "newline": true,
+      "textIssues": []
+    },
+    {
+      "path": "packages/native-location/tests/location_core_test.cc",
+      "bytes": 23353,
+      "sha256": "07e86432553ed0f0fe52b3d06ea656de9d55fd460dbe883a995d58a41ee906e8",
+      "utf8": true,
+      "newline": true,
+      "textIssues": []
+    },
+    {
+      "path": "packages/native-location/tests/location_child_probe.cc",
+      "bytes": 380,
+      "sha256": "041e60f57b34ec1b04157e73e2161b332acc3bc8f804d7f7fcd6baf575d34b9c",
+      "utf8": true,
+      "newline": true,
+      "textIssues": []
+    },
+    {
+      "path": "tests/unit/i06-native-location-owner.test.ts",
+      "bytes": 8460,
+      "sha256": "e0946f7daf1236045d0198d989cf718ea40227d63b76e5a1407eaa1b0d501b04",
+      "utf8": true,
+      "newline": true,
+      "textIssues": []
+    }
+  ],
+  "gitDiffCheck": {
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "nodeApiCalls": [
+    "napi_add_env_cleanup_hook",
+    "napi_create_external",
+    "napi_create_object",
+    "napi_create_string_utf8",
+    "napi_create_uint32",
+    "napi_define_properties",
+    "napi_get_cb_info",
+    "napi_get_value_external",
+    "napi_get_value_string_utf16",
+    "napi_get_value_string_utf8",
+    "napi_set_named_property",
+    "napi_typeof"
+  ],
+  "exit": 0
+}
