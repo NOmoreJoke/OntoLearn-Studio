@@ -1,0 +1,122 @@
+{
+  "stage": "T04-S1",
+  "implementationCandidate": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "sourceManifest": "docs/reviews/T04/evidence/service-candidate-554ec89.json",
+  "sourceManifestSha256": "87136a08763e4bc59322ac04a6a8ef400c39994ba159df6d65c0eebccc6cdbc3",
+  "verification": {
+    "command": "npm run check",
+    "log": "docs/reviews/T04/evidence/check-reader-service-final.log",
+    "exitCode": 0,
+    "typescriptFiles": 18,
+    "typescriptTests": 666,
+    "pythonTests": 1083,
+    "pythonSeconds": 47.76,
+    "addedTypeScriptTests": 36,
+    "addedPythonTests": 31,
+    "readerUnitTests": 24,
+    "staticSsrChecks": 14,
+    "staticSsrApplicability": "QueryPage.tsx and ssr-probe.mjs unchanged from c3f771b; exact git diff inspected; no browser/CSP/download/native evidence"
+  },
+  "independentReview": {
+    "agent": "/root/t04_private_review",
+    "candidate": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+    "result": "passed",
+    "report": "docs/reviews/T04/internal-review-8.md",
+    "priorFindingsAndDispositions": [
+      "internal-review-1.md",
+      "internal-review-2.md",
+      "internal-review-3.md",
+      "internal-review-4.md",
+      "internal-review-5.md",
+      "internal-review-6.md",
+      "internal-review-7.md"
+    ]
+  },
+  "rawLogsLocalIgnored": {
+    "check-reader-final.log": {
+      "sha256": "edeec77d7ef2e2cf2797a0c9abfc62d6811687605192198bcc340aabe16d4afa",
+      "bytes": 5276
+    },
+    "check-reader-first.log": {
+      "sha256": "a3c254c71092991b597c2e6892c3026dada3cdc20e63d8d9333e30b58b08d326",
+      "bytes": 5276
+    },
+    "check-reader-review-fixes.log": {
+      "sha256": "029751a7499233f09ff796cf8c8dd07621e66e3354991fac3ee887017f7f22dd",
+      "bytes": 5276
+    },
+    "check-reader-service-final.log": {
+      "sha256": "e65b5f2e5781b172a927d6161a25fd0ec301f5b45a7857108fa0a6d5cf13f772",
+      "bytes": 5276
+    },
+    "reader-equal-count-semantic.log": {
+      "sha256": "28f94f35a697eb110a559cd36372f2edb63dbb960fb282482e1dcc485cb9a73e",
+      "bytes": 98
+    },
+    "reader-lint-first.log": {
+      "sha256": "5415ea9a957dd22ca84ee3719359f3220a948fd275a58d79947840f2f5569950",
+      "bytes": 235
+    },
+    "reader-lint-review-fixes.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "reader-ssr-first.log": {
+      "sha256": "f730e85970c4fff87784f8d377da18f50da85de9487a4a0080fedc38a0f80874",
+      "bytes": 423
+    },
+    "reader-typecheck-first.log": {
+      "sha256": "710441616f3d2bf721647452ec5dc19826065cbd1f1959cde944c7b1d8d761ec",
+      "bytes": 1974
+    },
+    "reader-typecheck-review-fixes.log": {
+      "sha256": "ef35be543aff1f7e82be979906158f1f2f1448dfaa41256cfc157c03071e55d2",
+      "bytes": 468
+    },
+    "reader-typecheck-second.log": {
+      "sha256": "68dd57effbe2a6620e93ed064b4e8e9a8072377a23c10bba822ac744ca9ceee4",
+      "bytes": 1126
+    },
+    "reader-vitest-complete-fixes.log": {
+      "sha256": "d2183be78def694b8e06163a06c03c08a3eca71a18558df17e39f9c655949869",
+      "bytes": 226
+    },
+    "reader-vitest-error-shape-final.log": {
+      "sha256": "19d4aecc0dfea31af3fcb19dc00c3d45d52fe0960ecf85f8dbee21e753a86871",
+      "bytes": 226
+    },
+    "reader-vitest-error-shape.log": {
+      "sha256": "58814d60b969b59ccff7a6c0bf1594c64753fd5a60aa0dcde6ba197d0b912319",
+      "bytes": 1515
+    },
+    "reader-vitest-first.log": {
+      "sha256": "cf68169942cecc9f9e3fa1400160208e6d8229fbcd7d0db302c025cec8ad1a18",
+      "bytes": 226
+    },
+    "reader-vitest-review-fixes.log": {
+      "sha256": "ac0fdfd0fff3f67c1b65a9960ac5a134f4ea8625aa80a2bcc66a8704b4197479",
+      "bytes": 226
+    },
+    "reader-vitest-second-fixes.log": {
+      "sha256": "a63c9c395725bcf5f00e3f1ff5dd9b3980c42c81fd93f03676bc8c8dbaf8ff09",
+      "bytes": 226
+    },
+    "reader-vitest-second.log": {
+      "sha256": "71d463c0d0db9e30efef70bf3d3fb7736a5ab92422182134eabc777a7dfde1e2",
+      "bytes": 226
+    }
+  },
+  "remoteDevelopObserved": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "queue": "controller registered T04-S1; readiness evidence review pending; no actual external review lease",
+  "unverified": [
+    "T00 actual query presentation and App integration",
+    "I05 query.execute real results/readonly/network/cursor/cancel/history",
+    "T01 durable saved query transaction and restoration",
+    "T08 actual natural-language draft/tool closure",
+    "ASK/RDF term metadata/local graph",
+    "T10 cross-device/project export",
+    "platform and parent FR/full product acceptance",
+    "specified dual external review/push/PR/CI/merge/remote/release"
+  ]
+}

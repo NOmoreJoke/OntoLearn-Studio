@@ -1,42 +1,44 @@
 # T04 查询状态
 
-2026-10-21；owner/chat `01a15bcd-fcba-7583-a307-56497cdde347`。**原独立实现已验证；新增客户端读取适配修复版正在验证与内审。正式集成与原父功能尚未完成，Goal 保持 active。**
+2026-10-21；owner/chat `01a15bcd-fcba-7583-a307-56497cdde347`。**T04-S1 独立实现、完整检查与独立内审通过；总控已登记服务阶段，实际外审时段尚未授予。完整 T04/父功能未完成，Goal 保持 active。**
 
-## 身份与恢复
+## 当前身份与候选
 
 - worktree：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query`
 - branch：`feature/weekly-t04-query`
-- base：`5f910b52c69d86a1076b2032e5d3c63e715947f3`
-- 通过内审/验证的实现候选：`c4aa5f9c7508d8f439b547ff13f9334906e74744`；之后仅追加流程证据。
-- 启动时 HEAD=base，仅保护 AGENTS.md 未暂存，初始指南 SHA `db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786`。总控追加权限政策后实际 SHA `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`；仍不暂存/提交 AGENTS。
-- 实际独立 agent `/root/t04_private_review` 已完成固定候选审查。首两次不通过、逐项处置及最终通过见 internal-review-1/2/3/4.md，不替代指定外审。
+- base：`5f910b52c69d86a1076b2032e5d3c63e715947f3`；无凭据提示的只读 ls-remote 实查远端 develop 同值。
+- 当前产品/验收候选：`554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6`。生产实现与 `070b1fa` 相同，新增显式同数量错义反例。其后仅追加 manifest/流程证据。
+- 精确候选 33 文件及 SHA/大小：[service-candidate-554ec89.json](evidence/service-candidate-554ec89.json)；完整终态/原始日志哈希：[reader-service-verification.json](evidence/reader-service-verification.json)。旧 `c4aa5f9/99b8ab9` 及其 verification-summary/final-verification 原记录保留，不混称新候选证据。
+- 仅保护 AGENTS.md 由总控更新后保持未暂存，实际 SHA `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`；启动旧 SHA `db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786`，不混入产品提交。
 
-独占新增仅 query_service/、test_query_service_*.py、renderer/src/query/、t04-*.test.ts、fixtures/query/、docs/{reviews,iterations}/T04/。未改共享契约、App/main/preload、Store/worker、锁/CI、总控 tasks/state；未消费未批准实现。
+全部产品变更只在授权 query_service/、test_query_service_*.py、renderer/src/query/、t04-*.test.ts、fixtures/query/、docs/{reviews,iterations}/T04/。未改共享契约/App/main/preload/Store/worker/锁/CI或总控 tasks/state；未消费未批准实现。
 
-## 实现与验证
+## 已实现与验证
 
-离线模板、对象/字段/条件构建、SPARQL 草稿与严格 RDF 项序列化；独立查询页面、显式当前/历史输入、范围/快照/实际查询显示、分页身份/表格/空结果方向/当前页 CSV；私有保存意图及真实保存 ID 回填，异步切换隔离。无真实执行器或第二存储，未接线时执行/保存禁用，无假结果。
+离线模板、对象/字段/条件构建、SPARQL 草稿和严格 RDF 项序列化；私有保存意图、新旧定义 ID 与异步文档隔离；独立页面安全表格、当前页 CSV、空结果方向、范围/历史/实际查询显示。未接线执行/保存保持禁用，不生成假结果。
 
-- `npm run check` 最终 exit 0：TS 17 文件/642 项、Python 1082 项（新增 30 项），lint/format/typecheck/build/ruff 全部通过；原日志 `evidence/check-fixed-baseline.log`（本地 ignored）。
-- 定向 TS 12 项通过；无窗口静态 SSR 11 项通过。独立 agent 的事件/状态探针另 6 项通过；这些不表示浏览器交互/CSP/下载/原生运行通过。
-- 总控批准 T09 固定 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 输入。manifest `aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e`；17 项与 PRD 来源哈希全核验，选择的原字节保留。原始/生成查询各自独立还原 G-base，完整结果仅 A01；Closed 后均空。仅 RDFLib 编写互操作，未用 expected 预填 Store，不计 I05 联验。
-- 原始首失败/后续修复日志保留；摘要与哈希见 evidence/verification-summary.json 和 final-verification.json。`git diff --check` 通过。
+新增客户端 reader 直接使用批准 getResult/getResultPage/getJob/cancelJob、TaskView/TaskUpdate：切项目/输入/generation 后废弃迟到读取，始终一页载荷、空页保留两字段排序锚，query-only 取消且 ACK/真实终态分开，已知 ACK 版本下限跨读取/通知/取消前查保留，错误按批准分类。无新 IPC、持久缓存、执行器或 writer。
 
-## 准确待验与下一交付
+- `npm run check` 对最终候选真实 exit 0：TS 18 文件/666 项、Python 1083 项；lint/format/typecheck/build/ruff 通过。新增 TS 36 项、Python 31 项。原日志 `evidence/check-reader-service-final.log` 本地 ignored，完整哈希已入证据。
+- reader 合成 transport 故障测试 24 项；静态 SSR 14 项通过（组件/探针原字节与本次修复前一致已核对），不算真实 IPC/浏览器互动/CSP/下载/原生通过。
+- 总控批准 T09 固定 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 输入；manifest `aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e`，17 项/PRD 来源哈希核验。原始/生成查询各独立还原完整 G-base 仅 A01，Closed 后空；显式错义查询返回 A02，与 A01 同数量但完整答案不同。仅标准 RDFLib 编写互操作，未以 expected 预填 Store，不计 I05 联验。
+- 独立 agent `/root/t04_private_review` 实际全范围复核最终固定 SHA 通过，报告 internal-review-8.md；旧不通过、全部意见处置与再复核在 internal-review-1..7.md 真实保留。新 reader 三项竞态/分页 P2、原文 P3和 canonical 错误参数 P2均关闭。不替代指定两模型外审。
+- 首次 lint/type/SSR依赖/新增错误断言失败原件均保留；无变化不重复全套。`git diff --check` 通过。
 
-精确路径、字段、成功/失败和责任交接见 [integration-handoff.md](../../iterations/T04/integration-handoff.md)，逐 FR 命令/边界见 [acceptance.md](../../iterations/T04/acceptance.md)。
+## 实际调度与下一门
 
-1. T00/I05：批准业务命名 draft→query.execute 接线，列/RDF term/ASK/实际执行文本元数据；真实项目/快照/推导身份、分页 cursor/任务时限/取消/只读与外联拒绝。当前 approved base 中 query.execute 仍 design-only。
-2. T01：唯一 preview/confirm/commit、保存/读取/撤销/恢复与过期；保存成功返回真实 definitionId。无 renderer 发行 ID 或本地第二源真相。
-3. T08 自然语言真实草稿/工具闭环、T09 真实完整案例、T10 保存查询迁移、适用局部关系图仍待共同接口；原 FR-400–404、C/D/G、11–12 和全部父 P0/跨模块验收保留。
-4. 正式同版集成后刷新实际 develop 并重验；预约 ZCode GLM-5.3/最高与 MiniMax M3.1-Flash/xhigh 各新完整任务、读回/全部处置/双方明确通过后才 push/PR（attach）；实际 CI 通过后正常合并/远端核验。**当前未指定双外审、未 push/PR/CI/合并、未上线。**
+总控已在仓库外 service-stage-register.md 正式登记 T04-S1，已明确通知认可拆分方向，但未授实际外审时段/推送门。官方 wait_threads 当前核实总控 inProgress，已协调前方 T06-S1 和 I05/格式基础；这不是本线已开始外审或批准依赖的新证据。新增 T01/T03 共享交接不扩张本线责任或允许消费未批代码。
 
-## 已接收操作政策
+本线交付：[服务阶段](../../iterations/T04/service-stage.md)、[接线缺口](../../iterations/T04/integration-handoff.md)、[已批准读取适配](../../iterations/T04/reader-integration.md)、[验收对应](../../iterations/T04/acceptance.md)。正常回执固定 candidate、过程 HEAD、manifest/raw，等待总控全文核验后按真实 ready 安排；不抢资源或提前改变前方候选基线。
 
-已实际全文读取第九节与无桌面段，并透传独立 agent：第九节 SHA `1f57a08e909e9d49a6e2c2d6e7012beec3e22b8e3c9e8eacad22c84dfb2d4b54`，无桌面段 `5215df2ead4745e7d74f137c4fa6ac837a54114590b5dee2d83cd16bb728551d`；补发共同指令 `9717f699e14b5941e15d90269f33cbebc32ef9bec6e7439739be848753419880`。后续权限政策共同指令 SHA `df09014af4d6cf757ca0977a995497f3646cd330e8921710876663a40a8cbcb4` 及 external-review-permissions.md 亦已全文读取/透传，agent 实际回执核验。
+正式审查前刷新实际批准 develop/依赖并必要验证；ZCode GLM-5.3/最高、MiniMax M3.1-Flash/xhigh各全新完整独立任务，实际路径/模式/模型读回、真实终态全文报告/全部处置/同候选双方明确通过后才 push/PR（attach），实际 CI 通过后正常合并/远端核验。**当前未指定双外审、未 push/PR/CI/合并、未上线。**
 
-ZCode 默认 yolo、MiniMax 默认 bypassPermissions，仍需每个实际任务读回；只读审查、指定模型与无桌面限制不变。不重建 Goal/历史输入，不因纯操作政策重测。本线未遇额度告警、未消费重置/新增付费、未读取输出 secret、未调用模型/外发业务数据、未运行 GUI/Electron/e2e/native/HMR/凭据提示。Codex 每次兑换仍须本人该次确认/阈值/幂等/读回；审查资源由总控预约，平台证据不能由 CLI 代替。
+## 原父功能完整缺口保留
 
-## 后续推进：客户端读取接入
+真实 query.execute、只读与禁止外联、业务 Q-01/02完整结果及分页/取消/游标/历史身份；T01 唯一保存/预览/确认/原子提交/恢复/撤销/过期；T08 真实模型草稿与工具闭环；实际 ASK/RDF项/执行文本元数据和适用局部图；App、T10 跨设备、目标平台和原 FR-400–404/C/D/G/11–12/全部父 P0跨模块门。S1 合并后仍不关闭这些缺口或整个 Goal。
 
-Goal 续跑已实查工作树及总控现态：批准基线/共享责任未变化；官方 wait_threads 确认总控当前 inProgress（cursor a6fb72bc-870a-442e-8c5f-cb4caa4b7ecb:38），这不代表批准接口已可消费。已在独占 query/ 路径新增真实命名读取 bridge 的客户端适配，补齐切项目/迟到页/游标/取消 ACK 等边界；不改共享文件，不增加执行或保存权限。当前新代码正在验证与独立内审前收口；此前 c4aa5f9/99b8ab9 通过仅对应原候选，不能沿用为新增 reader 已通过。详情见 reader-integration.md，日志保留 reader-* / check-reader-*。
+## 操作政策接收
+
+第九节与无桌面段全文已读/透传独立 agent：第九节 SHA `1f57a08e909e9d49a6e2c2d6e7012beec3e22b8e3c9e8eacad22c84dfb2d4b54`，无桌面 `5215df2ead4745e7d74f137c4fa6ac837a54114590b5dee2d83cd16bb728551d`，早期补发共同指令 `9717f699e14b5941e15d90269f33cbebc32ef9bec6e7439739be848753419880`；后续共同指令 `df09014af4d6cf757ca0977a995497f3646cd330e8921710876663a40a8cbcb4` 和 external-review-permissions.md 亦已全文读/透传并实际回执。
+
+ZCode 默认 yolo、MiniMax 默认 bypassPermissions，实际任务仍须读回；只读审查、指定模型和无桌面限制不变。本线未重建 Goal，未 GUI/Electron/e2e/native/HMR/凭据提示，未 secret/模型外发/新增付费/额度兑换。Codex 兑换仍须本人该次确认/阈值/幂等/读回，账号唯一负责人处理真实告警；无政策变化重测或放宽验收。
