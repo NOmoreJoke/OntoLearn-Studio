@@ -19,13 +19,13 @@ T05 **有条件接受未来维护范围**：同一个执行器的 FR505 比较/�
 
 ## 2. 当前真实接口与本线差距
 
-以下是offer报告事实，不是本线已消费/实测该代码：
+以下是offer及后续固定26负责人事实响应（见第11节），不是本线已消费/实测该代码：
 
 - Rule(id, when[1..16 triples], then单triple)，id长1..128，scoped execution至多100条规则。Triple是三个URIRef/Literal/Variable项；精确位置限制与字面量白名单仍需批准源码/实测读回。
 - reason(Graph, tuple[Rule,...])先有限RDFS，全部自定义规则读取同一个冻结闭包，输出不反馈规则/RDFS。
-- evidence每项精确rule/result/inputs/basis；inputs保持when顺序，basis是执行器的完整断言/公理依据排序；rdfsEvidence单列。
+- evidence每项精确rule/result/inputs/basis；inputs保持when顺序，basis是该匹配inputs已记录proof的原始断言/公理并集再排序，不是全producer输入、全部路径或最小证明；rdfsEvidence单列。rules保留全部实例化输出，不等于新增知识差集。
 - 保存定义严格enabled/when/then，references可选；未知compare/multi字段拒绝，不跳过。disabled不执行。
-- semantic_scopes._selected_output按原始规则和冻结事实/公理认证已有selected evidence，不重算替换历史。
+- semantic_scopes._selected_output按原规则和冻结输入检查已有selected evidence的内部一致性；它不单独认证授权/producer或全局完备性，权威Store另验证成功producer及payload/rows/身份。不重算替换历史。
 - finite4载荷的implementation/version/snapshot hash及Store认证producer绑定必须准确；扩展须新语义版本和完整current/history/失败原子发布回归。
 
 本线的schemaVersion/kind/id/revision/label/conditions/conclusions只是私有编辑payload，**不能直接喂当前严格when/then解析器**。T01须确定唯一持久化包装与references派生；T05后续仅在同一semantic_execution入口适配。T00协调接口设计；canonical/schema/注册表当前由T01唯一维护，剩余bridge由I06按第8节生效清单维护；不注册第二协议、Python入口或公共schema副本。
@@ -46,6 +46,8 @@ T05 **有条件接受未来维护范围**：同一个执行器的 FR505 比较/�
 ## 4. 完整类型支持矩阵提案
 
 下表是**待采用的比较语义建议**，不是3c0b执行结果或Q6采用。原Q6-01历史报告列出常见类型，但本offer没有逐datatype实测；批准版本到位后要逐行读回真实支持/拒绝及精度/词法边界。不得以只跑小整数缩窄实际支持。
+
+后续固定26事实响应明确：graph term门不等于FILTER政策；float/double都转Pythonfloat、date值转换剥时区，FILTER错误可False丢行。下表的精度/时区/失败建议因此更不能按现库已支持理解；须逐项接受第11节链接的D表。
 
 | RDF值类别                        | eq/ne建议                                                                                       | lt/le/gt/ge建议                                                                  | 必测正反例/边界                                                                     |
 | -------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
@@ -70,10 +72,10 @@ T05 **有条件接受未来维护范围**：同一个执行器的 FR505 比较/�
 ## 5. 真实 trace 与22例 oracle的适配
 
 - 所有真实输入只来自批准Store认证的不可变producer快照、原始规则/版本、ontology和facts；不得从调用方自报context或T05 expected构建“真实依据”。
-- 保留现有trace的rule/result/inputs/basis和rdfsEvidence来源含义，inputs的when顺序及完整basis内容/排序原样承接；展示不能把basis擅自简化为“只用到的事实”。完整basis究竟是生产者全输入还是每结果归约依据，须owner按批准代码给精确语义，本线不猜测或另造basis。
+- 保留现有trace的rule/result/inputs/basis和rdfsEvidence来源含义，inputs的when顺序及匹配inputs既有proof并集的basis/排序原样承接；不能补无关producer事实，也不能改称全部可能证明或最小证明。固定26的该疑问已由负责人响应关闭；C3稳定witness和新trace仍须真正批准版本及逐项接受。
 - 比较依据必须额外可见：实际绑定值、operator、阈值/右值、比较类型/语义版本、对应原规则条件位置。它们与when三元组输入区分，不能伪称阈值是输入图事实；公开形状由唯一owner确定。
 - 多结论每条结果都关联同一个完整匹配和比较依据，不能把两个不同告警/两条规则拼成一次触发。相同输出多次触发必须完整保留各依据。可采用一个firing记录含全部结论、再按原result字段投影；也可每结果记录共同firing引用，但必须认证同一绑定及全部应有结果，不能只验其中一条。
-- selected_output必须验证**原producer的原规则/语义**，确认所有when实例、比较判定、同绑定多输出、完整basis及RDFS证据；不能调用reason重算替换历史，也不能拿当前修订规则“证明”旧结果。旧finite4保持其原身份/原认证路径，未知旧语义显示不可验证/不可重放，不重签成新版本。
+- 新selected一致性检查须绑定**原producer的原规则/语义**，核对所给firing的全部when实例、比较判定、同binding全部heads及对应basis；不得据此冒称授权或全局匹配完备性。Store另认证真实producer及成功终态/原快照/完整implementation/依赖/定义与内容hash。不能调用reason重算替换历史或拿当前修订规则证明旧结果。原身份历史读取有schema/payload条件；新任务消费historical仍要求整个implementation相等（含lock），不等于读回后可自动跨版本消费，也不重签旧结果。
 - 新22例只对照**全部自定义规则输出**。若执行器载荷包含断言/RDFS/规则组合图，需用真实来源分层明确抽取rule部分并核对trace覆盖，不能直接把expectedRuleOutputs说成全部闭包。RDFS单列另外核对原R-04等用例。
 - 18比较格保持每次完整两条when输入及实际operator判定；多结论例两输出共享原四条when依据；JOIN例不允许跨alarm绑定；禁用与缺属性仍不能产生实际trace。没有结果时显示未记录，不能把合法join无解误作定义变量未绑定错误。
 - T05显示模型只适配获批公共响应，T08只引用真正可验证的trace；没有凭据/模型外发权限因trace存在而扩大。
@@ -84,7 +86,7 @@ T05 **有条件接受未来维护范围**：同一个执行器的 FR505 比较/�
 
 发布前复验项目/快照/规则/约束依赖和执行身份，迟到只保历史；成功结果与持久终态/真实resultId经现有Store/Job边界。响应丢失先按实际持久marker/result/job对账，不自动重跑正式写入。T01保存规则/启停/修订即失效，重算只替换当前推导；唯一依据删除撤回，多依据仍在保留。
 
-现有批准错误目录可承载部分边界：SEMANTIC_INPUT_INVALID(field=rule)、UNSUPPORTED_CAPABILITY、UNSUPPORTED_CONSTRUCT(datatype/literalValue/ruleChain/ruleRecursion/ruleOutput)、RESOURCE_LIMIT(semanticInput/semanticWork/semanticResult)。具体分类须I05原error_adapter owner与T00接受；不滥用protocol VERSION_INCOMPATIBLE表达执行语义，不发明未登记ruleComparison枚举。新内部细码若需映射，先精确交接未提供的semantic_error_adapter.py；不向错误参数加原值/路径/堆栈。
+现有批准错误目录可承载部分边界：SEMANTIC_INPUT_INVALID(field=rule)、UNSUPPORTED_CAPABILITY、UNSUPPORTED_CONSTRUCT(datatype/literalValue/ruleOutput)、RESOURCE_LIMIT(semanticInput/semanticWork/semanticResult)。目录另有ruleChain/ruleRecursion枚举，但固定26的adapter没有对应reason映射，链当前是warning；不得据枚举存在声称已接通。新增比较/多head的精确reason×producer×stage×origin→现有DTO建议与额外路径见第11节M/P表，须原adapter owner与T01 canonical接受。不借protocol VERSION_INCOMPATIBLE表达语义版本，不发明ruleComparison；未知/不可信故障维持Internal，不向错误参数加原值/路径/堆栈。
 
 ## 7. 实施与同候选验收顺序
 
@@ -113,7 +115,7 @@ RDF term equality与值相等不同，因此即使比较判定两值相等，也
 
 SPARQL有自己的数值提升、操作数匹配和字符串码点比较规范。本合同的受控规则比较尚未采用该整套政策；IRI/布尔排序和跨numeric精度建议可能与SPARQL不同。owner需明确是否要求规则与查询FILTER同语义；如采用SPARQL路径，应同步精度/类型错误和跨入口正反例，不允许声称“标准兼容”却混用另一值比较政策。[SPARQL 1.1 Operator Mapping](https://www.w3.org/TR/sparql11-query/#OperatorMapping)
 
-规则结论若已存在于断言或RDFS图，实际rule输出投影、新知识差异和trace去重的含义也须由owner按批准实现明确：保持原断言及其来源，不凭本合同擅自把同一事实写入断言或改称全新知识。
+负责人后续已确认：rules未扣除断言/RDFS，图去重仍保留不同匹配evidence；同term可有asserted+rule或rdfs+rule来源，RDFS本身与原始输入不重叠。正式显示须分开完整规则输出、新知识差集和trace，不把同事实写回断言或改称全新知识；具体投影/字段仍待采用。
 
 ## 10. C2 依据不确定性的新依赖事实
 
@@ -124,3 +126,9 @@ SPARQL有自己的数值提升、操作数匹配和字符串码点比较规范�
 I05正准备C3最小确定性witness修复及新语义身份，当前尚无可由T05采用的批准C3。第1节offer及四个hash仅保留为历史固定来源，**未来交接须重新核对真正批准候选的源码hash、语义身份和selected认证**；不得将旧首次witness行为或旧hash固定成最新不变约束。四路径仍未生效，责任不因本记录转移；原C2、报告和本线既有UI输入保留。
 
 确定性修复必须保留原解释范围，不自动等于枚举全部RDFS可能证明。RDFS代表依据如何稳定选择须由owner按新候选精确回应，与同规则独立匹配/多结论的真实依据要求分别处理。T05不能通过只比较结论集合、忽略依据差异或补写依据来隐藏该缺陷；正式联验应核对同版完整输出/真实依据稳定性、历史producer语义隔离及源变后的真实变化，不把跨进程选证差异误记成上游数据变更。当前不因依赖消息重跑未变化的UI/输入测试。
+
+## 11. 收到固定接口事实后的最小待决表
+
+总控已实际转交固定26负责人响应及独立事实审计，本线全文核对三份报告及其hash；此前basis、规则输出和selected/Store职责的事实疑问按第2/5/9节更正，不等于采用新方案。完整来源收据见`docs/reviews/T05/owner-interface-facts-receipt.json`。
+
+后续只接受[负责人逐项决策表](owner-decisions-after-interface-facts.md)的D1–D9、M1–M16和P1–P10明确答复：精度/时区/非有限/失败、同binding完整heads与比较trace、producer/consumer版本分区、现有DTO及精确额外路径。所有提案仍待接受，未变更公共协议/代码/责任，未读或运行未批准C3，原Goal仍blocked，旧固定609及原报告不改。

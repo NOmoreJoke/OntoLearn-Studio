@@ -97,3 +97,11 @@
 第三轮实查仍无批准C3、正式接口和生效语义handoff；remote5f/common b24/AGENTS78df未变，controller cursor75与I05 cursor428没有给出可采用依赖，仍没有本线确认的live执行句柄。已知接口下独立工作完成，未发现可绕开真实依赖且仍满足原目标的下一实施项。同一条件已连续三轮无进展，`update_goal(status=blocked)`实际返回blocked（updatedAt1792546832），完整原目标保留，非完成或用户暂停。
 
 最新有效实现仍2fcd36b，635 TS/1200 Python及18个synthetic headless DOM断言/独立审查保持原范围；未重跑不变检查，未push/PR/CI/合并。恢复需实际批准语义候选、精确责任交接及唯一正式接口后从本树续接真实集成；后续指定双审安全入口/CI/完整父验收仍须各自取得。恢复时不重建Goal，也不将当前准备缩作完整交付。
+
+## blocked后的有限接口设计请求（不自动恢复Goal）
+
+总控新转交固定26负责人响应4504B/SHA6768c8…60e1f、独立事实27634B/SHA08bd865…7b3ab与总控核验11024B/SHA53ca8…a2c07；本线已实际全文核对及哈希确认。只据这些新事实修订接口决策表`owner-decisions-after-interface-facts.md`，更正basis/proof并集、rules与新增差集、selected一致性与Store认证、历史读取/新消费版本分区；D/M/P表逐项待负责人接受，不将FILTER或报告直接当实现。
+
+这是总控明确限定的新设计工作，不代表批准依赖、C3或四文件交接生效，也不将原Goal自动恢复active。Goal仍实际blocked；原2f代码、69dUI/恢复归档及所有未验门保持。此次只改本线文档/来源索引，未读取或运行未批准C3、改公共协议、重测不变UI/产品。M表的现有code/params只作目录结构核对，实际adapter/Store映射仍待接受和实现。
+
+上述有限设计已独立复核通过并关闭一处_source规则投影措辞P2；固定表/receipt/合同SHA见checkpoint和internal-review。D1–D9、M1–M16及P1–P10均保持逐项待接受；当前只提供明确决策与现有DTO建议，不是实际接口已接通。文档格式及差异检查通过，没有改动受测产品，原blocked集成条件继续保持。

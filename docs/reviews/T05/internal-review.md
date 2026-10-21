@@ -71,3 +71,11 @@ reviewer实际核对两个差异、上下文、批准5f registry及FR-500/D后�
 ## C2 确定性依赖事实复核
 
 独立reviewer只读三份报告及本线四文档差异后通过：字节/hash和26实现/2e冻结身份一致；候选manifest31bd、原probe manifest03150、报告manifest57338、findingaa96未混淆。合同不把owner报告当T05重跑，不声称C3获批/四路径生效，旧offer仅历史来源、未来核真正批准身份；不固化旧witness或擅自采用全RDFS证明枚举/类型政策。新增后合同SHA `f1393622622d69c4c60f334a20a0385d45310ae795c4e3cb96e3c59669cf0485`。没有读取未批实现/归档、改代码或重跑测试。
+
+## 固定接口事实后的有限决策表复核
+
+总控明确只要求新事实驱动的最小接口设计，Goal保持blocked。本线全文读4504B owner响应、27634B独立事实及11024B总控读回，哈希均匹配。独立reviewer只读三报告、D/M/P表、主合同和receipt；认可basis/rules分层、graph/FILTER边界、完整多head、纯一致性与Store认证、历史读回/完整implementation新消费分区、现有DTO与待接受候选reason/路径的区别，未发现不必要范围扩大。
+
+首轮发现P2：D6“旧_source仅hash id/when/then”误将规则投影概括成整个摘要。已修18/29行，明确规则投影限制，原图/计划及语义身份绑定保留；独立复核后明确通过，P2关闭。新错误定位段保留真实诊断载体缺口，没有擅加错误参数、借用其他detailRef或把失败伪装成功。
+
+最终决策表SHA `6650363f0195f1a2cb21e2eee2dfe5a072d698275ca3a2f5ef389615fe92a17f`；receipt SHA `e1a83ec955f8c0923ef87dc9a21b334e64b87d8c8eb7bed73210a80826f9961c`；主合同SHA `454cb390040f1511ed20b8bab7e969a427eda48a4ece242dcf32de3e773a2ca5`。12组code/required params/enum仅静态目录核对；未运行adapter/Store校验器、产品/UI测试，未读候选代码/库/归档或改变公共协议。此结论是提案可交负责人回应，不是采纳/实施/解锁或指定双审通过。
