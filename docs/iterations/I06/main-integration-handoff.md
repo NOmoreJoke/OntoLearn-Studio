@@ -1,6 +1,6 @@
 # I06 主进程接线交接约束
 
-2026-10-21；对齐开发实现 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6`，批准依赖 develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`。本文件取代此前“公共方法尚未注册”的提案口径；当前 12 个专名方法已经在本开发分支 main/preload/UI 接线，精确参数见 [命名接口](narrow-interface-draft.md)。完成度与验收待办只由 [status](../../reviews/I06/status.md) 维护，不采用 I05 未批准 C1/C2。
+2026-10-21；接口基线 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6`；当前产品 `e2c269ad78a78e1a042cadc93b1c81a874707153` 仅修改模型提示 ARIA，验证按版本分列。批准依赖 develop `5f910b52c69d86a1076b2032e5d3c63e715947f3`。本文件取代此前“公共方法尚未注册”的提案口径；当前 12 个专名方法已经在本开发分支 main/preload/UI 接线，精确参数见 [命名接口](narrow-interface-draft.md)。完成度与验收待办只由 [status](../../reviews/I06/status.md) 维护，不采用 I05 未批准 C1/C2。
 
 ## 运行 owner 与责任
 
@@ -41,6 +41,6 @@ main 的 `ModelGatewayService` 为 app 唯一配置、授权与调用 owner。ap
 
 当前策略是固定 main 合成 policy + 批准 test.read echo worker。static dependsOn 不是 worker 计算出的生产溯源；未批准 I05 的 `i05-finite-3` 不作为最终常量。真正 I05 特定业务模型仅在其新语义实际批准合并后绑定、刷新冲突并重验。A-03 有限证明不要求全 M1 CSV、恰好两个 API 或 I05 编号前置。
 
-旧私有字段实际请求完整字节已有执行断言，独立 probe 未保存成功 HTTP 原 body，不能声称独立重扫归档正文。新正式平台证据须在忽略目录保存仅合成 receiver 完整 body 和 hash，排除 headers/凭据/业务数据；产品日志/导出仍不记录 payload。当前批准基线无导出入口，不能用不存在的导出器或 mock 计通过。Q9 真实 provider 未决不阻止既定合成 S3 验证，也不使 `{model,parts}` 自动成为公开 provider 协议。
+旧私有字段实际请求完整字节已有执行断言，独立 probe 未保存成功 HTTP 原 body，不能声称独立重扫归档正文。后续9fc正式平台已在忽略原件保存合成 receiver 完整 body 和 hash，见下列分版回执；排除 headers/凭据/业务数据，不能倒称旧私有 probe 归档已有正文；产品日志/导出仍不记录 payload。当前批准基线无导出入口，不能用不存在的导出器或 mock 计通过。Q9 真实 provider 未决不阻止既定合成 S3 验证，也不使 `{model,parts}` 自动成为公开 provider 协议。
 
-本次文档对齐仅执行四个同版 validator、ID 保全和格式检查；已有 998 TS/1052 Python/check/source12 是根线固定实现验证回执，本子任务不重复或扩写为平台通过。新 main/preload/UI/safeStorage/Linux 实际运行及其他平台、完整指定 GLM-5.3/最高 + M3.1-Flash/xhigh 同版全范围双方审查、PR/实际 CI/远端合并均以 status 追踪；旧私有 Linux 结果不继承为当前全候选通过。
+文档子线仅静态/格式对齐，不重跑测试。固定9fc已完成 [source normal22/native4](../../reviews/I06/main-platform/source-and-native-review.md) 与 [真正包内pkg2](../../reviews/I06/main-platform/packaged-and-regression-review.md) 限定验证，包括实际safeStorage/字段授权与复用、single-profile、Store失败隔离及crash原生恢复；包内whole-result有意含合成私列，不作A03 public-only证明，finite策略在包内实际拒绝，正常生产models=[]保留。旧9fc原e2e发现role=status冲突，e2c仅修ARIA后完整check998TS/1052Python、sources12通过；新构建source+actual package原e2e与六项fresh-fixture覆盖见 [ARIA回执](../../reviews/I06/main-platform/aria-regression-review.md)。aria2首次10门9过/source native首次超时失败，仅该原用例以完全同image、新容器/新fixture唯一复验通过；原phase30秒而trace间隔约12.25秒，原因未知，原失败保留，不称一次全绿或e2c模型/凭据完整平台通过。I05实际批准/新语义绑定、其他平台、完整S3指定 GLM-5.3/最高 + M3.1-Flash/xhigh 同版全范围双方新审、PR/实际 CI/远端合并仍待完成；旧证据按旧source hash保留。
