@@ -21,18 +21,18 @@
 
 ## 已接线边界与完整验收待办
 
-以下对齐开发实现 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6`；批准依赖仍为 develop `5f910b52`，不采用未批准 I05 候选。已实现/静态检查与真实运行验收分别记录，不能把开发接线当平台通过。
+以下接口以 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6` 为基线；当前产品 `e2c269ad78a78e1a042cadc93b1c81a874707153` 仅修改模型提示 ARIA。批准依赖仍为 develop `5f910b52`，不采用未批准 I05 候选；已实现、静态检查及分版运行证据分别记录。
 
 - 当前共享契约已注册 12 个 main-only 专名方法、严格 params/result/reply 和请求响应身份绑定，owner=main、agentEligible=false，不进入 Python 方法表。scope 由 main 的实际整结果或有限字段模型建立；私有 zod 不充当第三份公共协议。有限模型为固定合成 policy + 批准 test.read echo worker，static dependsOn 不是生产溯源，普通生产 models=[]/runtime-only，未知 shape 拒绝。
 - 早期 11 类需求见 [公共错误映射交接](public-error-requirements.md)，保留其历史；当前开发契约已落为 10 个固定 GATEWAY_* 错误和独立 cancelled 结果。公开 configurationVersion 为持久配置/UI/录入 CAS 版本，内部 core configVersion 为 grant/preview/audit 绑定版本，两者独立生成，不能写成同一 UUID。
-- 已基于批准 I04 真实只读接口实现 StoredResultSource/GatewayApplication 与有限字段投影：材料来源必须从实际项目/结果/版本和完整重读派生。工具隐式读取、跨项目缓存、历史/摘要完整上下文不能自报降权；任意 text 无法证明字段来源即拒绝，失败/过期/缺失依据传安全事实。公共能力注册表不把凭据/发送塞入 Python。A-03 私有链按原 source hash 保全，正式 main 平台链另验。
-- main 已复用 I02/I04 可信 sender/mainFrame/document 与固定命名桥接，持有项目 context/有限调用 ledger，UI 重建只查询结果，不自动确认或重放。精确 14 文件责任已交接并完成开发接线；新完整运行联验、实际依赖批准合并后的刷新/冲突处理和指定双方新审仍需完成。
-- 已完成私有 POSIX 密文仓库、持久 metadata-only 审计、实际 Electron factory 和隔离 Linux 组合；开发分支已接入产品 main 初始化/退出和设置/录入 UI。项目/会话与普通日志真实排除凭据并保留配置身份关联，仍需新完整运行链证据；当前无导出入口，不能虚构导出测试。Linux 受测 backend/失败边界以组合证据为准；其他平台/Windows ACL/锁定/签名升级/干净设备不扩大通过。
-- FR-806：私有链已有同 coordinator 的真实 Store 保存证据；模型初始化失败隔离、单 profile owner 和 5 秒退出等待已接线，但模型失败/取消/窗口重建下的数据保留仍须正式平台链联验，不能用无 Store 接口或 mock 保存代替。
+- 已基于批准 I04 真实只读接口实现 StoredResultSource/GatewayApplication 与有限字段投影：材料来源必须从实际项目/结果/版本和完整重读派生。工具隐式读取、跨项目缓存、历史/摘要完整上下文不能自报降权；任意 text 无法证明字段来源即拒绝，失败/过期/缺失依据传安全事实。公共能力注册表不把凭据/发送塞入 Python。A-03 私有链按原 source hash 保全，9fc 正式 main source normal22 的实际字段授权/复用/完整 public-only body 已在 [source 回执](../../reviews/I06/main-platform/source-and-native-review.md) 核验；不外推 e2c 的模型完整平台链。
+- main 已复用 I02/I04 可信 sender/mainFrame/document 与固定命名桥接，持有项目 context/有限调用 ledger，UI 重建只查询结果，不自动确认或重放。精确 14 文件责任已交接并完成开发接线；9fc normal22/native4/pkg2 各自限定范围通过；实际依赖批准合并后的刷新/冲突处理与完整同候选指定双方新审仍需完成。
+- 已完成私有 POSIX 密文仓库、持久 metadata-only 审计、实际 Electron factory 和隔离 Linux 组合；开发分支已接入产品 main 初始化/退出和设置/录入 UI。9fc 正式 source/包内的项目与普通日志扫描、停止后存储原件读回按对应 receipt 范围验证，不把原件子集称为重扫全部对象或贴给 e2c；当前无导出入口，不能虚构导出测试。Linux 受测 backend/失败边界以组合证据为准；其他平台/Windows ACL/锁定/签名升级/干净设备不扩大通过。
+- FR-806：私有链已有同 coordinator 的真实 Store 保存证据；模型初始化失败隔离、单 profile owner 和 5 秒退出等待已接线，9fc normal22 已实际验证 audit/初始化失败不阻断真实 Store 提交，native4/pkg2 的 crash 恢复核对 Store/ledger/outcome 不变且不重发；各自限定回执不替代 e2c 全矩阵，也不用 mock 保存代替。
 - FR-006/304/703/705/804、附录 C/D/E/G：不改领域失效、原子 ChangeSet、历史和场景语义；正式接入核对模型配置只撤销外发授权，不产生领域 staleReason。显式历史选择已被 PRD 允许，current 不静默降级；完整重读到 socket 仍有跨 Store 观察窗口，原 S3 不要求全写者/socket 原子 live-current lease。只有真实语义特定材料依赖 I05 新语义实际批准合并，不因其编号阻塞无关模块；有限 A-03 不要求全 M1 CSV 溯源或恰好两个公共 API。
 - 当前合成 `{model,parts}` 与响应经过严格 UTF-8/实际字节上限检查，再以纯文本向 UI 展示，不声明真实 provider、结构化输出或工具调用成功。Q9 真实 provider 协议选择另验，不作为既定合成 S3 的自动前置。
-- 当前桌面禁用 GUI/native/HMR/外部审查应用自动点击。已用独立 Linux Docker/Xvfb/Keyring 实测组合；完整 e2e、其他平台和 ZCode/MiniMax 双审仍按总控隔离环境/预约门禁安排；不以 stub、隐藏窗口或替换模型绕过。
+- 当前桌面禁用 GUI/native/HMR/外部审查应用自动点击。9fc [normal22/native4](../../reviews/I06/main-platform/source-and-native-review.md) 和 [真正包内 pkg2](../../reviews/I06/main-platform/packaged-and-regression-review.md) 在独立 Linux 容器完成，唯一额外 SYS_ADMIN/default seccomp 环境不称默认 Docker。e2c 全量 check 为 998 TS/1052 Python、sources12 通过；新构建 source/package 原 e2e 各 3pass/3默认 fixture skip，六项独立 fresh-fixture 定向原用例实际执行。aria2 首次 10 门 9 过，source native 首次超时失败后仅一次同 image/新容器/新 fixture 原用例复验通过；原 phase=30 秒、trace≈12.25 秒差异原因未知，不称一次全绿。详见 [ARIA 回执](../../reviews/I06/main-platform/aria-regression-review.md)。旧9fc模型/凭据专项不贴新代码；其他平台、I05实际批准/新语义绑定、完整指定双审、PR/CI/远端合并仍待完成。
 
 ## 内审意见处置
 
-独立 agent `/root/i06_design_review` 第一轮设计审查（只读）提出八类边界：材料可信来源、冻结字节、socket竞态、审计持久失败、凭据身份、派生来源、重试/撤销、平台验证。采纳前七类形成代码/专属测试与上述集成条件；第八类在该早期记录中仅完成适配器和反例测试；之后已有按当时 source hash 固定的私有 Linux 平台证据，新接线完整候选平台仍待实际验证。实现复核发现无关配置全局取消与旧审计目标丢失，均采纳修复；最终只读复核明确两项关闭、未发现新增阻断，实际重跑网关 50/50。详细来源与边界见 [内审记录](../../reviews/I06/internal-review.md)，不替代指定双审。
+独立 agent `/root/i06_design_review` 第一轮设计审查（只读）提出八类边界：材料可信来源、冻结字节、socket竞态、审计持久失败、凭据身份、派生来源、重试/撤销、平台验证。采纳前七类形成代码/专属测试与上述集成条件；第八类在该早期记录中仅完成适配器和反例测试；之后已有按各自 source hash 固定的私有 Linux、9fc 正式 normal/native/包内专项及 e2c ARIA 回归证据；上述限定结果不等于完整 S3 或指定双审通过。实现复核发现无关配置全局取消与旧审计目标丢失，均采纳修复；最终只读复核明确两项关闭、未发现新增阻断，实际重跑网关 50/50。详细来源与边界见 [内审记录](../../reviews/I06/internal-review.md)，不替代指定双审。

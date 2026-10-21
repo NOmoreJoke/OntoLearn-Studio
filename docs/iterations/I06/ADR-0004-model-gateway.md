@@ -1,13 +1,13 @@
 # ADR-0004：唯一模型网关与凭据归属
 
-日期：2026-10-21。对齐开发实现 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6`，批准依赖仍为 develop `5f910b52`，不采用 I05 未批准候选。决定草案；最终采用须经过 [I06 完整验收](../../reviews/I06/status.md)。当前文件责任限迭代目录，采用后协调迁入 architecture，不能提前改其他开发线。
+日期：2026-10-21。接口实现基线 `9fcba6634d5c16983c36ef671d4ec8e79694b6d6`；当前产品 `e2c269ad78a78e1a042cadc93b1c81a874707153` 仅修正模型提示 ARIA，平台证据按版本分列。批准依赖仍为 develop `5f910b52`，不采用 I05 未批准候选。决定草案；最终采用须经过 [I06 完整验收](../../reviews/I06/status.md)。当前文件责任限迭代目录，采用后协调迁入 architecture，不能提前改其他开发线。
 
 ## 决定与理由
 
 主进程是唯一凭据持有者和模型发送边界。可信应用服务读取已获本地读取权限的资源，创建主进程内部材料 handle；模型、导入文本、Python 和 renderer 不能自行登记材料、伪造来源范围或确认授权。编排初期使用异步主进程服务；尚无编排长循环，也没有不阻塞的性能结论。必要时编排迁入隔离执行单元，仍只提交材料 handle，不获得密钥、URL、任意 headers 或通用发送能力。
 
 ```text
-受限业务 bridge（12 个专名方法已在开发分支接线；新完整运行联验待验）
+受限业务 bridge（12 个专名方法已接线；9fc Linux 专项与 e2c ARIA 回归分版验证）
   → 可信应用服务/工具适配器：本地读取权限、完整来源、快照身份
   → 主进程材料 handle → 不可变预览 → 用户确认的 grant
   → 网关检查全部最终正文 → 凭据适配器 → 持久最小 attempt intent
@@ -16,7 +16,7 @@
 
 材料正文被复制成内部字符串，调用不接受自由消息或 headers。工具、历史、摘要、错误均是材料；派生材料保守继承全部实际输入 scope 的并集。可信适配器必须把隐式读取、跨项目缓存和模型完整上下文也计入来源；纯模块无法验证调用它的主进程代码是否诚实，正式适配器需要独立集成反例。文字中的“忽略隐私”不会触发配置或授权操作。当前载荷 `{model, parts}` 只用于合成探针，Q9 未决，不能称为受测真实模型协议。
 
-现有私有应用服务从批准 I04 接口读取显式选择的整份既存结果，核对真实项目/producer/版本、完整分页、历史/回收及实际复制字节，预览/调用前重读；不接 renderer 正文或 scope 标签。真实合成 Store/worker 链和同写者保存已测；之后已实现有限 main 字段模型/目录/投影及 A-03 私有实际链，whole-result 本身仍不能替代字段授权。当前来源为固定合成 policy + 批准 test.read echo worker，static dependsOn 不是通用生产溯源；普通生产 models=[]/runtime-only，未知 shape 拒绝。12 个公共专名方法、main owner/preload/UI 已在开发分支实现，见 [命名接口](narrow-interface-draft.md)；这不表示新完整平台链已通过。读取后至 socket 仍有跨 Store 观察窗口，发送的是已核验所选版本及其读取时状态。PRD 已允许明确历史选择，不静默从 current 降级；原 S3 不以跨全部写者/socket 的 live-current lease 为前置。
+现有私有应用服务从批准 I04 接口读取显式选择的整份既存结果，核对真实项目/producer/版本、完整分页、历史/回收及实际复制字节，预览/调用前重读；不接 renderer 正文或 scope 标签。真实合成 Store/worker 链和同写者保存已测；之后已实现有限 main 字段模型/目录/投影及 A-03 私有实际链，whole-result 本身仍不能替代字段授权。当前来源为固定合成 policy + 批准 test.read echo worker，static dependsOn 不是通用生产溯源；普通生产 models=[]/runtime-only，未知 shape 拒绝。12 个公共专名方法、main owner/preload/UI 已在开发分支实现，见 [命名接口](narrow-interface-draft.md)；9fc 正式 Linux source app 的有限字段链已有实际证据，仍不代表 e2c 完整 S3 通过。读取后至 socket 仍有跨 Store 观察窗口，发送的是已核验所选版本及其读取时状态。PRD 已允许明确历史选择，不静默从 current 降级；原 S3 不以跨全部写者/socket 的 live-current lease 为前置。
 
 ## 授权与失效
 
@@ -38,7 +38,7 @@ Node http(s) 固定 POST、自建新 socket、无 cookies/代理环境/自定义
 
 ## 凭据、审计与错误
 
-凭据适配器按本仓库锁定 Electron 44.9.0 的类型接口编译。`safeStorage` 不可用、Linux `basic_text`/`unknown`、加解密或仓库失败均拒绝，无持久明文回退；密文仓库只能位于应用私有设置。现已实现实际 Electron browser/app-ready factory 和 POSIX 私有文件仓库，隔离 Linux arm64 上曾按当时固定源码用真实 safeStorage 与仓库组合验证加密落盘、第二进程恢复及失败拒绝。开发分支现已在产品 main 生命周期注入 factory/仓库/持久审计，并有模型设置与专名凭据录入 UI；新完整 main/preload/UI 平台验证另记，不继承旧私有组合通过。业务 renderer 不接收存量解密密钥；录入控件仅短暂提交新 secret，响应不回显、不进入 client store，不预设独立设置窗口。
+凭据适配器按本仓库锁定 Electron 44.9.0 的类型接口编译。`safeStorage` 不可用、Linux `basic_text`/`unknown`、加解密或仓库失败均拒绝，无持久明文回退；密文仓库只能位于应用私有设置。现已实现实际 Electron browser/app-ready factory 和 POSIX 私有文件仓库，隔离 Linux arm64 上曾按当时固定源码用真实 safeStorage 与仓库组合验证加密落盘、第二进程恢复及失败拒绝。开发分支现已在产品 main 生命周期注入 factory/仓库/持久审计，并有模型设置与专名凭据录入 UI；9fc 正式 source/native 与实际包内专项已分别验证，见下文；不将旧私有组合或 9fc 结果整体贴给 e2c。业务 renderer 不接收存量解密密钥；录入控件仅短暂提交新 secret，响应不回显、不进入 client store，不预设独立设置窗口。
 
 加密对象同时封装内部格式标识、凭据 ref、主体、版本与 secret。解密后严格校验完整对象，并与请求 ref 和仓库 metadata 逐项匹配；禁止把另一条有效密文重标为当前主体/版本。返回值只来自已校验的密文内容，不透传仓库额外字段。该内部信封尚无发布兼容承诺，旧 raw-key 结构、未知格式或未知字段均拒绝，不回退读取；它不属于 I03 公共协议。
 
@@ -46,6 +46,6 @@ Node http(s) 固定 POST、自建新 socket、无 cookies/代理环境/自定义
 
 ## 待验证与取舍
 
-I02/I03/I04 已真实合并，精确 14 文件责任已由总控交接；开发分支 main/命名 bridge/UI 接线及静态/单测/构建检查已完成，新完整 main/preload/UI/safeStorage/窗口/任务恢复运行联验仍待相应实际证据。私有链已通过同 coordinator 的真实 Store 保存验证，不能以此代替正式窗口故障/保存联验。仅 I05 特定实际业务材料待其新执行语义批准合并后另绑定重验，不因编号阻塞无关 S3 工作，也不要求全 M1 CSV 溯源或恰好两个字段 API。Linux gnome_libsecret 加解密、basic/不可用、坏密文/新 Keyring 拒绝已有实际隔离证据；不扩称全部 Linux 后端或所有锁定行为通过。macOS Keychain、Windows DPAPI/ACL、签名升级/干净设备仍须实际补验。mock、类型检查或 `ELECTRON_RUN_AS_NODE` 不能替代平台证据。跨平台和真实模型协议尚不在已验证范围。具体接口/失败边界见 [main 交接](main-integration-handoff.md)，实际来源链见 [组合证据](../../reviews/I06/platform/combination-linux-evidence.json)。
+I02/I03/I04 已真实合并，精确 14 文件责任已由总控交接；开发分支 main/命名 bridge/UI 已接线；固定 9fc 的 [normal22/native4](../../reviews/I06/main-platform/source-and-native-review.md) 与 [真正包内 pkg2](../../reviews/I06/main-platform/packaged-and-regression-review.md) 专项限定通过，包含真实 safeStorage、Store 保存及 crash 原生提示恢复；不代表全平台或完整 S3。新 e2c 仅改 ARIA，完整 check 为 998 TS/1052 Python、sources12 通过；[source+实际 package 原 e2e 与六项 fresh-fixture 回归](../../reviews/I06/main-platform/aria-regression-review.md) 首次 10 门 9 过、source native 一项超时失败，仅该原用例以同镜像/新容器/新 fixture 唯一复验通过。原 phase 时限 30 秒、trace 间隔约 12.25 秒的差异原因未知，首次失败保留，不称一次全绿或重新完成凭据/模型全矩阵。仅 I05 特定实际业务材料待其新执行语义批准合并后另绑定重验，不因编号阻塞无关 S3 工作，也不要求全 M1 CSV 溯源或恰好两个字段 API。Linux gnome_libsecret 加解密、basic/不可用、坏密文/新 Keyring 拒绝已有实际隔离证据；不扩称全部 Linux 后端或所有锁定行为通过。macOS Keychain、Windows DPAPI/ACL、签名升级/干净设备仍须实际补验。mock、类型检查或 `ELECTRON_RUN_AS_NODE` 不能替代平台证据。跨平台和真实模型协议尚不在已验证范围；I05 实际批准/新语义绑定、同候选指定双方新审、PR/CI/远端合并仍待完成。具体接口/失败边界见 [main 交接](main-integration-handoff.md)，实际来源链见 [组合证据](../../reviews/I06/platform/combination-linux-evidence.json)。
 
 依据：PRD V0.6 FR-006/304/703/705/803–806/901–904，附录 C–G；I01 归档 M0 更新计划 S3 全文与 S1/S2/C1 边界。完整用例和依赖需求见 [验收映射](acceptance.md)。
