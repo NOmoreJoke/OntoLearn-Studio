@@ -320,6 +320,8 @@ print(json.dumps({'python':sys.version,'pyinstaller':importlib.metadata.version(
     '--noconfirm',
     '--clean',
     '--onedir',
+    '--optimize',
+    '0',
     '--collect-all',
     'rdflib',
     '--collect-data',
