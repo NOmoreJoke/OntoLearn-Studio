@@ -1,0 +1,10 @@
+{
+  "event": "first docs-freeze preflight assertion failed",
+  "exactCause": "git diff --name-only was expected to return only AGENTS while final-receipt.json had just been updated after staging; legitimate receipt update was also listed",
+  "effect": "Python index creation stopped at assertion; shell lacked fail-fast and proceeded to authorized-docs scope check/commit7024452. No product alteration, unauthorized staging or source mismatch occurred.",
+  "originalToolObservation": "Traceback (most recent call last):\n  File \"<stdin>\", line 8, in <module>\nAssertionError\nauthorized staged evidence/docs: 80",
+  "wrapperOverallExit": 0,
+  "innerReturncode": "not separately captured; traceback recorded, do not call this preflight passed",
+  "recovery": "after actualcommit7024452, all24 product bytes checked equal16c and manifest; unstaged only protectedAGENTS, index empty; add this record and complete missing evidence index",
+  "tests": "no product changes or rerun required"
+}
