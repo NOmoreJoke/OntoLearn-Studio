@@ -1,0 +1,97 @@
+# I05 C3 string-term反例独立读回与最小修复边界
+
+2026-10-21，Asia/Shanghai；总控独立审计 `/root/i04_reports_audit`。
+
+**独立判断：支持P1 `I05-C3-STRING-1`，固定C3存在阻断缺陷，不能继续指定外审派发。**同词法、无语言的plain与显式xsd:string在当前语义管线分裂为不同内部term；真实Store/coordinator/isolated-worker的12份完整结果支持Rule/query漏匹配、SHACL in误报，以及选定真实reasoning producer后maxCount1假失败/minCount2假通过。不是T05新比较政策，也不是两次noncanonical Store准备失败。最小修复可由原I05在自身语义路径形成新版本候选，不需等待其他Q6决定；本报告不授写权、不修改冻结候选。
+
+反例原件Git恢复门已核关闭：c11固定包45成员/544414字节与现存原件全字节匹配；不含6份合成数据库/锁，不能宣称能离线恢复当时整个DB。C3条件派发撤回、0新任务来自总控/owner流程说明；本审计未操作审查应用或向其他模型发消息，也未把内部读回当指定外审。
+
+## 固定对象与Git恢复
+
+受审C3=`3289d67dbfb19545c7a3b3b26753cdd0065741bb`，产品69598f30c9052a0a07f3d8e7fc4277626385678b、产品/测试b04569032e94c093e42b7fdc9fcd890df0e832e4。清单是流程`bf2f0038042a2044d0af7e8fd498e0eff094d5b1:docs/reviews/I05/candidate-3.json`，258638字节/SHA `edfc7a50a0f6fe2edd4038d0328cd47e4f4427a604412acbfbe18442d63b41e4`；引用C3但不在C3自身Git，不能误判成不可恢复。运行时过程head49af70de79a373ce7b3c77c06180309c779b11d4；本次封存c11d6b414bdaaba0eac5402931881e338bc9bbd9，tree1f0da240d8b6481e56a6ac1478c1aa3fae9d31b5。
+
+清单204 executionInputs逐C3 Git blob及现存字节零差异；1197跟踪项逐Git blob零差异，用`git ls-tree -rz`核其集合精确等于C3的1198项除AGENTS（中文路径避免普通ls-tree转义假差异）。c11对C3的packages/apps/tests/scripts/锁无diff。真实implementation为finite5/engine0.1.0/lock `86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73`。环境Python3.12.12、RDFLib7.6.0、pySHACL0.30.1、pyparsing3.3.3及10模块实际字节hash匹配；AGENTS78df/common ff5按现权适用。
+
+固定`docs/reviews/I05/c3-string-counterexample/`：
+
+| 文件 | 字节 / 实算SHA-256 |
+| --- | --- |
+| finding.md | 12086 / `f6c31a20d21399979658962aa9daac4a34edcae3c99e7b3099ed9f5be631e5ed` |
+| manifest.json | 13105 / `af3d89cc3ef24df295dfaed0a8418214e7833ce87b8d0b89b95990135a996fd6` |
+| raw-counterexample.tar.gz | 81904 / `8119057c2a8c798920e67641b01b5b40b5d2c61b2ac49eb87fc582960f03b307` |
+
+实际Git blob279fd06504363f5177df881b95d1b961a2403f7f，45唯一regular成员/544414原字节，名称集合、长度、SHA及各原路径字节全部相等，无绝对路径/`..`/链接。必须配套同commit外manifest；包不内嵌它。包括全部12任务、输入/parse/state/binding/environment/脚本/raw/exit、两次失败原件及语言对照，非只存摘要。3合成SQLite及3锁仅excluded列hash，未封存，不能离线恢复整个DB。每page单独RPC/cursor envelope未保存，保存的是helper读回的完整聚合rows；证据整理时系统Python缺rdflib异常也无独立raw stderr，finding已如实说明。
+
+实际只读固定C3必要源码、上述全部45原件；标准库解析JSON/tar/hash，独立逐叶比较payload/rows，不调用产品序列化器。没有import产品/依赖、测试/探针/GUI/容器、SQLite连接、候选修改或新外审；未依赖后来07c内部报告。唯一写本报告。summary=stdout SHA `d2e3879527b0fad73a368882bf897e83332454abbf3f7f2c6be1902a7a9a63b2`，binding SHA `e907abd558749282ce0d890e456c1a77c4ae8baa25a15d0818c38981e7429c99`，driver SHA `f9f0b6b78202d61af5ebde2c3e83dc5dbc6a2cdc32173b11efc84d9b2b8ebf34`。最终exit原文件0、stderr空；本审计未重跑或另读原工具exec终态，不冒称包/native/stdio Session通过。
+
+## 输入与Store准备失败不得混淆
+
+纯parse输入661字节/SHA `66653c83d91974e82899ce2afac4fbb60398a88f7ac0e6d6dc04a1db00024b71`，共11 statement：4条All/Both类型、plain/typed/both的p/x（both两种写法）、en语言控制、integer01和integer1。parse原件实际11 graph triples，plain/typed `==false`、value-eq=true，numeric01/1 term不等。RDF1.1该string重复应去重1条，故10 triples；不能为修string而把两numeric词法也折叠。
+
+真实Store输入是**另外明列的9条canonical事实**：显式string由现有S1 `rdf_snapshot.term(...).n3()`变为plain，同s/p/o去重；numeric01不入持久手工事实、仅保留canonical1。stored-project-state的9条完整subject/predicate/object逐条等于inputs.storeFacts，14份持久定义的payload解码后与inputs.definitions全等。`urn:typed`只是主体名，数据库的p对象实际也是plain，不能说该ASK从typed事实得到正确匹配。
+
+第一次driver把原11写法直接交Store.commit，第二次仅去掉numeric01仍留typed string；两次都在`Store._fact`的canonical N3门抛ValueError，分别exit1、stderr1374/1392字节，DirectWorker构造在失败行之后，因此**各0 worker job**。第二轮将原因仅猜成numeric01不完整，第三轮明确修正准备输入。两次原脚本/输入/错误/exit均保留，不能拿它们当产品string缺陷、Store被绕过或把未跑的任务计入12。
+
+最终driver用已有Store.commit建真实只读语义输入，然后DirectWorker经现有Coordinator的allowed_projects/session→semantic.start→正常隔离Python worker→succeeded→result.get/result.page→Store.semantic_result读取，不是pure result直接填入Job。固定helper源码实际等待coordinator.tick及其任务完结，逐页17项、同一page请求重复读相等、ordinal连续/UUID rowId唯一；driver没有fake finish。state前后相等是原driver对完整Store.state的实际断言，另保存了与seed相同的完整state；本审计不因未归档DB自行推定所有可变表都没变化。新增的是12份Job/结果，未声称整个DB字节不变。
+
+## 12份完整结果的实质核对
+
+共同project=`19444248-a292-4073-90ad-50fe9ef1c9c6`，inputSnapshot=`411270e8a455aa727b6a2c9e5dd175a256b9bb95c78615c1400687a7eb49df12`、projectRevision1。逐份核metadata.resultId/jobId/project/implementation/definitionId/scope/parametersHash/snapshot与job/request/payload相等；job均succeeded、error=null、commitProgress={mode:none}；result均current/available、staleReason=[]；producer/resultRef和selected ID完整对应。全部payload展开与原rows的**1347行（各含一个表头）**逐cell相同、ordinal连续、rowId唯一，不是只看summary计数。
+
+| 完整原件 | rows | 实际结果 |
+| --- | ---: | --- |
+| 01 reasoning | 110 | plain-matched3、typed-matched0、两emit各1，rules集合5项 |
+| 02 projection | 79 | both/plain/typed三行，DATATYPE全string、LANG空、sameTyped全false |
+| 03 / 04 ASK | 60 / 60 | plain数据遇typed常量false（错）；typed主体已是plain数据，遇plain常量true（正确） |
+| 05 VALUES join | 61 | variables=[s]、rows=[]；应有both/plain/typed |
+| 06 datatype / 07 in-plain | 110 / 110 | 都true且无违规，正确对照 |
+| 08 in-typed | 127 | false，both/plain/typed各1完整In违规，错误 |
+| 09 asserted max1 / 10 min2 | 110 / 115 | true / false，正确 |
+| 11 selected max1 / 12 min2 | 205 / 200 | false / true，假失败/假通过 |
+
+08的完整违规均为InConstraintComponent、focus分别`<urn:both/plain/typed>`、path `<urn:p>`、sourceShape `<urn:P-it>`、value plain `"x"`、severity Violation；不是泛称“3错”。10的sourceShape `<urn:P-mn>`/MinCount、11的`<urn:P-mx>`/MaxCount，focus Both、path p、value=null、severity Violation。
+
+reasoning result=`c4c614a6-dc6e-4f43-afbd-d2f71ec23880`。11/12请求和metadata均指向这一个真实result，不是重新reason后的替代输出。完整selected provenance确有：Both/p/plain来源asserted+emit-plain，Both/p/typed另行来自emit-typed，二者basis均为Both rdf:type Both；另外plain-matched三条和其各自p/x依据均保留。两任务validationBinding完整三字段implementation、producer/project/snapshot/definition及资源角色一致；derivedFactsRef=`f2a0f8a3cdf1414c5b760b009f42cf09a3151134a6355b4ea6b5a8d2372b7bc5`、assertedFactsRef=`625f6e59239d79dac5b955e273407a4ff2394a5b68dedfc987731c42a9c65fee`，不是漏选producer或Store授权绕过。新修复需把同一个抽象p/x值只计一次，同时保留emit-plain/emit-typed各自trace/basis，不能丢一条推导依据当修复。
+
+按本11输入/9事实，正确reasoning图输出应为plain-matched3＋typed-matched3＋同一Both/p/x head1=7个term输出；匹配trace为8次（两emit独立），不是7次。当前5结果/5trace是真实错误产物，不用这个期望冒充新执行结果。规则输入冻结、结论不再喂下一规则的原语义保持，warnings不是漏掉typed-matched的理由。
+
+## 规范依据和静态根因
+
+本次只查W3C原规范作判定：无语言simple literal是xsd:string的省略语法；同lexical/datatype/lang才是同term，数值01/1虽可同值仍不同term。[RDF1.1 §3.3](https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal)。sh:in按列表成员匹配，min/maxCount按value-node数量判定；同一RDF值不能因两种string写法被计两次。[SHACL sh:in](https://www.w3.org/TR/shacl/#InConstraintComponent)、[SHACL cardinality](https://www.w3.org/TR/shacl/#core-components-count)。这些标准不要求引入T05新的大小比较器/跨型值政策。
+
+固定C3源码直接对应影响链：
+
+1. `semantic_turtle.py:LexicalSink.newLiteral`直接`Literal(text, datatype=datatype, lang=language, normalize=False)`。无语言plain保留None，显式string保留XSD.string；RDFLib内部term equality/hash不同，graph保留重复，虽`.eq`值比较为true。
+2. `semantic_execution.py:_term/_graph/_rules`沿同sink反解；strict `value.n3()==text`门约束当前输入/输出写法。真实canonical事实是plain，typed Rule常量与其无法Graph.triples匹配；两个合法head作为不同term加入derived Graph。
+3. `semantic_query.py`克隆grammar只修numeric/unary词法，未统一string常量或运行时string。query在固定Graph执行，BGP/VALUES/sameTerm表现分裂。DATATYPE内建返回xsd:string不能推出对象identity正确。
+4. SHACL shapes也从同sink构造。固定pySHACL datatype方法专门兼容datatypeNone且无lang的XSD.string，因此06正确；In直接`v not in in_vals`，cardinality直接集合len，故08及11/12错误。没有证据称所有SHACL功能都错，不需换pySHACL或改依赖解题。
+5. `semantic_scopes.py`按序列化_key与实际term反解校验完整selected证据；两个字符串key/term通过内部一致性验证后均进入facts，来源hash和Store认证只证明“这些字节来自这个producer”，不证明字节的标准语义正确。
+
+en/EN另有纯真实parse/query/reason控制：term/hash相等、同图去重为1，大写模式ASK/sameTerm及Rule匹配小写数据为true；S1 canonical转en。raw内部语言拼写/evidence.inputs可保留EN而basis显示en，当前未见本见证中的lang匹配/计数错误。此控制不是Store/worker新增任务，不泛化为BCP47全部合法性、en-US等标签等价或所有序列化往返通过。
+
+## 最小原I05修复范围与必要验证
+
+建议只修**同词法、无lang、datatype为None或XSD.string**这一抽象身份等价类，优先保持S1现有plain canonical约定以减少接受/输出差异；保留normalize=False对其他datatype的词法身份。不得把`Literal.eq`值相等当全局term相等，不能合并numeric01/1、integer/decimal跨型、不同日期词法或带lang字符串，也不添加D3/D4/Q6 comparator。不要改RDFLib进程全局normalization/parser或依赖源码，不能为方便修复静默缩减原已允query支持。
+
+| 原I05自身必要评估路径 | 最小职责/风险 |
+| --- | --- |
+| packages/engine/src/ontolearn_engine/semantic_turtle.py | 统一数据/shape的string构造，保留Turtle语法拒绝、局部parser、非string词法和无全局修改 |
+| packages/engine/src/ontolearn_engine/semantic_query.py | 同一规则覆盖BGP/VALUES/表达式常量及现有允许表达式实际构造/绑定string后参与join/sameTerm的路径；只替换静态token不足。后者是修复覆盖要求，非本轮新增已运行反例 |
+| packages/engine/src/ontolearn_engine/semantic.py | 纯Graph frontdoor、Rule常量/输出、数据/shape一致表示和Graph去重；只靠sink无法覆盖调用者直接传Graph/Literal。保留全trace、冻结规则输入与既有受限RDFS/SHACL/错误边界 |
+| packages/engine/src/ontolearn_engine/semantic_execution.py | 处理raw合法词法验证与抽象identity规范化的顺序；不能只改sink后让现有`n3==raw`拒绝合法typed Rule常量/输入。不得放松为多statement/任意注入可接受 |
+| packages/engine/src/ontolearn_engine/semantic_scopes.py | 新producer/source/rules hash、完整selected证据及投影反解同版一致；不能悄悄规范化旧payload再重签，不能新增reason重算来填旧选定结果 |
+| packages/engine/src/ontolearn_engine/resources.py | 与semantic.SEMANTICS_VERSION同步新的executionSemanticsVersion；三字段implementation继续绑定，版本号由owner明确冻结，不在finite5下暗改 |
+
+专属回归可扩展原I05语义/词法/执行/selected现有测试及semantic_samples.py中确受输出影响的golden；新增专属test或共享helper路径先精确登记，避免多套转换。上表是必要检查责任，不要求无意义改动每个文件；若单一局部helper可一致覆盖，应以实际diff证明。原definition/raw source和Store事实ID保持不可变；规范化的是受控内存语义视图及新producer输出，不是迁移已有数据库或改写历史资源。现有Store/source资源可继续绑定原不可变字节，不强制把所有raw resource改写成新view表示。
+
+必须验证这些反例的完整集合/trace/违规字段及不折叠数值/语言控制；保留原12错误载荷。新版本实际同输入前门/selected/完整页、current与historical来源绑定、源/实际包按影响补验，再给新完整候选及指定双新全范围审查。按必要变化选验，不要求为纯过程字节重复旧无变化矩阵；旧C3通过不能充当修后通过。
+
+当前没有必须修改已交T01的worker.py/storage.py/job_store.py/coordinator/canonical/协议或build/锁/CI的证据：现管线已经运送和认证错误语义结果。若发现真正需要触共享处，原owner另提精确diff/交接；不得先抢写。也不改T05政策、T09输入或其他owner实现来让这个反例消失。
+
+## 新身份、历史与selected兼容门
+
+静态核C3 Store.semantic_result按原producer/resultRef/完整implementation/payload和rows hash、snapshot/依赖/定义/参数关联鉴权，并未简单与全局当前版本比较；prepare_semantic_request新selected消费则要求whole implementation全等，即使historical也不豁免。这是既有机制静态事实，不是未来版本已实测。
+
+新候选须实测：旧finite5历史metadata/payload/rows按原身份读取且原字节不变（仍受payload available/schema/权限约束）；新版本current或historical新消费都拒绝旧三字段实现；新同版producer按全source/proof/rows/hash及validationBinding通过。旧false report仍是可读历史错误结果，不改成新正确结果、不升级标签/重新reason重签、不删除隐藏。新结果semantic版本、源/规则/视图digest、derived resource/projection关联必须一致产生，不能仅改展示N3或页而不重算所属新结果证据。
+
+此门是原Store已存在机制的兼容验收，不批准新公共字段或错误码。若保留显式datatype原写法需要新的公共展示DTO，则另交T01设计；本最小修复可保留原payload结构。包、正式业务及未来Q6没有因本报告关闭；本阶段结论仅为已核真实P1反例、可恢复原件和原I05必要修复范围。
