@@ -8,12 +8,13 @@ committed, and binding checks do not establish that a reasoner actually ran.
 import hashlib
 import json
 import math
+from contextlib import contextmanager
 from dataclasses import dataclass
 from itertools import combinations
 
 
 class BehaviorError(ValueError):
-    """Private stable reason and safe structural location; no raw input in errors."""
+    """Safe structural text plus private diagnostic evidence, never a public error envelope."""
 
     def __init__(self, reason: str, location: str, evidence: dict | None = None):
         self.reason = reason
@@ -28,11 +29,27 @@ def _fail(reason, location, evidence=None):
 
 def _json(value):
     try:
-        return json.dumps(
+        encoded = json.dumps(
             value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False
         )
-    except (TypeError, ValueError, RecursionError):
+        encoded.encode("utf-8")
+        return encoded
+    except (TypeError, ValueError, RecursionError, UnicodeError):
         _fail("invalid_json", "input")
+
+
+@contextmanager
+def _explain(**context):
+    """Attach detached, private failure evidence without returning partial state.
+
+    Only reason/location are safe structural strings. Evidence is internal domain
+    data and must be mapped/paged by the approved boundary before UI/Agent use.
+    """
+    try:
+        yield
+    except BehaviorError as error:
+        evidence = json.loads(_json({**context, **error.evidence}))
+        raise BehaviorError(error.reason, error.location, evidence) from None
 
 
 def _hash(value):
@@ -301,17 +318,36 @@ def prepare_events(request: dict) -> PreparedRound:
     events.sort(key=lambda e: (e["sequence"], e["id"]))
     state = json.loads(_json(request["state"]))
     seen = dict(consumed)
-    accepted, event_trace = [], []
+    accepted, event_trace, discarded_edits = [], [], []
     for event in events:
         fingerprint = _hash({k: v for k, v in event.items() if k != "sequence"})
         if event["id"] in seen:
             if seen[event["id"]] != fingerprint:
-                _fail("event_identity_conflict", "event.id")
+                _fail(
+                    "event_identity_conflict",
+                    "event.id",
+                    {
+                        "stage": "event_preparation",
+                        "event_id": event["id"],
+                        "event_trace": event_trace,
+                        "discarded_event_edits": discarded_edits,
+                        "committed": False,
+                    },
+                )
             event_trace.append({"event_id": event["id"], "reason": "duplicate_event"})
             continue
         seen[event["id"]] = fingerprint
-        for edit in event["edits"]:
-            _edit(state, edit, request["schema"], request["classes"])
+        for index, edit in enumerate(event["edits"]):
+            with _explain(
+                stage="event_preparation",
+                event_id=event["id"],
+                edit_index=index,
+                event_trace=event_trace,
+                discarded_event_edits=discarded_edits,
+                committed=False,
+            ):
+                _edit(state, edit, request["schema"], request["classes"])
+            discarded_edits.append({"event_id": event["id"], "edit_index": index})
         accepted.append({"event": event, "fingerprint": fingerprint})
         event_trace.append({"event_id": event["id"], "reason": "event_applied"})
     _state(state, request["schema"], request["classes"])
@@ -356,67 +392,76 @@ def _resolve(value, event, behavior_id, scope):
 
 def _definitions(behaviors):
     ids = set()
-    for behavior in behaviors:
-        _shape(
-            behavior,
-            (
-                "id",
-                "name",
-                "description",
-                "effect",
-                "version",
-                "enabled",
-                "priority",
-                "trigger",
-                "conditions",
-                "actions",
-            ),
-        )
-        for name in ("id", "name", "description", "effect", "version"):
-            _text(behavior[name], "behavior." + name)
-        if behavior["id"] in ids:
-            _fail("duplicate_behavior_id", "behavior.id")
-        ids.add(behavior["id"])
-        if type(behavior["enabled"]) is not bool:
-            _fail("invalid_boolean", "behavior.enabled")
-        _integer(behavior["priority"], "behavior.priority")
-        trigger = behavior["trigger"]
-        _shape(trigger, (), ("event_type", "event_id"), "behavior.trigger")
-        if not trigger:
-            _fail("missing_trigger", "behavior.trigger")
-        for value in trigger.values():
-            _text(value, "behavior.trigger")
-        if not _list(behavior["conditions"], "behavior.conditions"):
-            _fail("missing_condition", "behavior.conditions")
-        for condition in behavior["conditions"]:
-            if condition == {"op": "always"}:
-                continue
-            _shape(condition, ("op", "subject", "property", "value"))
-            if condition["op"] != "has":
-                _fail("unavailable_condition", "condition.op")
-            _text(condition["property"], "condition.property")
-            for name in ("subject", "value"):
-                _expression(condition[name], "condition." + name)
-        if not _list(behavior["actions"], "behavior.actions"):
-            _fail("missing_action", "behavior.actions")
-        for action in behavior["actions"]:
-            if type(action) is not dict:
-                _fail("invalid_action", "behavior.action")
-            kind = action.get("kind")
-            if kind == "create":
-                fields = ("object",)
-            elif kind in ("set", "add"):
-                fields = ("subject", "property", "value")
-            elif kind == "notify":
-                fields = ("message",)
-            else:
-                _fail("unavailable_action", "behavior.action.kind")
-            _shape(action, ("kind", *fields))
-            for name in fields:
-                if name == "property":
-                    _text(action[name], "action.property")
-                else:
-                    _expression(action[name], "action." + name)
+    for behavior_index, behavior in enumerate(behaviors):
+        identity = behavior.get("id") if type(behavior) is dict else None
+        with _explain(
+            stage="definition_validation",
+            behavior_index=behavior_index,
+            behavior_id=identity,
+            committed=False,
+        ):
+            _shape(
+                behavior,
+                (
+                    "id",
+                    "name",
+                    "description",
+                    "effect",
+                    "version",
+                    "enabled",
+                    "priority",
+                    "trigger",
+                    "conditions",
+                    "actions",
+                ),
+            )
+            for name in ("id", "name", "description", "effect", "version"):
+                _text(behavior[name], "behavior." + name)
+            if behavior["id"] in ids:
+                _fail("duplicate_behavior_id", "behavior.id")
+            ids.add(behavior["id"])
+            if type(behavior["enabled"]) is not bool:
+                _fail("invalid_boolean", "behavior.enabled")
+            _integer(behavior["priority"], "behavior.priority")
+            trigger = behavior["trigger"]
+            _shape(trigger, (), ("event_type", "event_id"), "behavior.trigger")
+            if not trigger:
+                _fail("missing_trigger", "behavior.trigger")
+            for value in trigger.values():
+                _text(value, "behavior.trigger")
+            if not _list(behavior["conditions"], "behavior.conditions"):
+                _fail("missing_condition", "behavior.conditions")
+            for condition_index, condition in enumerate(behavior["conditions"]):
+                with _explain(condition_index=condition_index):
+                    if condition == {"op": "always"}:
+                        continue
+                    _shape(condition, ("op", "subject", "property", "value"))
+                    if condition["op"] != "has":
+                        _fail("unavailable_condition", "condition.op")
+                    _text(condition["property"], "condition.property")
+                    for name in ("subject", "value"):
+                        _expression(condition[name], "condition." + name)
+            if not _list(behavior["actions"], "behavior.actions"):
+                _fail("missing_action", "behavior.actions")
+            for action_index, action in enumerate(behavior["actions"]):
+                with _explain(action_index=action_index):
+                    if type(action) is not dict:
+                        _fail("invalid_action", "behavior.action")
+                    kind = action.get("kind")
+                    if kind == "create":
+                        fields = ("object",)
+                    elif kind in ("set", "add"):
+                        fields = ("subject", "property", "value")
+                    elif kind == "notify":
+                        fields = ("message",)
+                    else:
+                        _fail("unavailable_action", "behavior.action.kind")
+                    _shape(action, ("kind", *fields))
+                    for name in fields:
+                        if name == "property":
+                            _text(action[name], "action.property")
+                        else:
+                            _expression(action[name], "action." + name)
 
 
 def _static_references(behaviors, state, schema, classes):
@@ -443,25 +488,37 @@ def _static_references(behaviors, state, schema, classes):
                 _fail("invalid_class", "definition.value")
 
     for behavior in behaviors:
-        for condition in behavior["conditions"]:
-            if condition != {"op": "always"}:
-                check(condition, state["objects"])
+        for index, condition in enumerate(behavior["conditions"]):
+            with _explain(
+                stage="definition_validation",
+                behavior_id=behavior["id"],
+                condition_index=index,
+                committed=False,
+            ):
+                if condition != {"op": "always"}:
+                    check(condition, state["objects"])
         objects = list(state["objects"])
-        for action in behavior["actions"]:
-            kind = action["kind"]
-            if kind == "create" and type(action["object"]) is not dict:
-                _text(action["object"], "definition.object")
-                # Existence is an execution-time check: an already-consumed
-                # constant create must remain a no-op on duplicate delivery.
-                if action["object"] not in objects:
-                    objects.append(action["object"])
-            elif kind in ("set", "add"):
-                check(action, objects)
-                many = schema[action["property"]]["cardinality"] == "many"
-                if (kind == "add") != many:
-                    _fail("cardinality_action_mismatch", "definition.action")
-            elif kind == "notify" and type(action["message"]) is not dict:
-                _text(action["message"], "definition.message")
+        for index, action in enumerate(behavior["actions"]):
+            with _explain(
+                stage="definition_validation",
+                behavior_id=behavior["id"],
+                action_index=index,
+                committed=False,
+            ):
+                kind = action["kind"]
+                if kind == "create" and type(action["object"]) is not dict:
+                    _text(action["object"], "definition.object")
+                    # Existence is an execution-time check: an already-consumed
+                    # constant create remains a no-op on duplicate delivery.
+                    if action["object"] not in objects:
+                        objects.append(action["object"])
+                elif kind in ("set", "add"):
+                    check(action, objects)
+                    many = schema[action["property"]]["cardinality"] == "many"
+                    if (kind == "add") != many:
+                        _fail("cardinality_action_mismatch", "definition.action")
+                elif kind == "notify" and type(action["message"]) is not dict:
+                    _text(action["message"], "definition.message")
 
 
 def _difference(before, after):
@@ -519,6 +576,17 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
     _state(frozen, schema, classes)
     _definitions(request["behaviors"])
     _static_references(request["behaviors"], frozen, schema, classes)
+    failure_identity = {
+        "scope": scope,
+        "run_id": request["run_id"],
+        "round": request["round"],
+        "binding": prepared.binding,
+        "assertion_version": request["assertion_version"],
+        "reasoning_version": reasoning["version"],
+        "behavior_version": request["behavior_version"],
+        "committed": False,
+        "executed_actions": [],
+    }
     decisions, instances = [], []
     facts = {_json(fact) for fact in frozen["facts"]}
     behaviors = sorted(request["behaviors"], key=lambda b: (-b["priority"], b["id"]))
@@ -541,19 +609,29 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
                 reason = "event_mismatch"
             else:
                 for index, condition in enumerate(behavior["conditions"]):
-                    if condition == {"op": "always"}:
-                        satisfied, source = True, "explicit_always"
-                    else:
-                        fact = {
-                            k: _resolve(condition[k], event, behavior["id"], scope)
-                            for k in ("subject", "property", "value")
-                        }
-                        _fact(fact, frozen, schema, classes)
-                        satisfied = _json(fact) in facts
-                        source = "frozen_snapshot" if satisfied else "not_recorded_in_snapshot"
-                    decision["conditions"].append(
-                        {"index": index, "satisfied": satisfied, "reason": source}
-                    )
+                    with _explain(
+                        **failure_identity,
+                        stage="condition_evaluation",
+                        event_id=event["id"],
+                        behavior_id=behavior["id"],
+                        condition_index=index,
+                        event_trace=doc["event_trace"],
+                        decisions=decisions,
+                        partial_decision=decision,
+                    ):
+                        if condition == {"op": "always"}:
+                            satisfied, source = True, "explicit_always"
+                        else:
+                            fact = {
+                                k: _resolve(condition[k], event, behavior["id"], scope)
+                                for k in ("subject", "property", "value")
+                            }
+                            _fact(fact, frozen, schema, classes)
+                            satisfied = _json(fact) in facts
+                            source = "frozen_snapshot" if satisfied else "not_recorded_in_snapshot"
+                        decision["conditions"].append(
+                            {"index": index, "satisfied": satisfied, "reason": source}
+                        )
                 reason = (
                     "triggered"
                     if all(c["satisfied"] for c in decision["conditions"])
@@ -567,29 +645,51 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
     instances.sort(
         key=lambda pair: (-pair[1]["priority"], pair[1]["id"], pair[0]["sequence"], pair[0]["id"])
     )
-    if sum(len(b["actions"]) for _, b in instances) > 1000:
-        _fail("action_limit", "behavior.actions")
+    action_count = sum(len(b["actions"]) for _, b in instances)
+    if action_count > 1000:
+        _fail(
+            "action_limit",
+            "behavior.actions",
+            {
+                **failure_identity,
+                "stage": "intent_limit",
+                "event_trace": doc["event_trace"],
+                "decisions": decisions,
+                "action_count": action_count,
+                "action_limit": 1000,
+            },
+        )
     # Resolve and validate action shapes against a separate per-instance scratch
     # so creates may be referenced later in the same instance, never a peer's create.
     intents = []
     for event, behavior in instances:
         scratch = json.loads(_json(doc["after_events"]))
         for index, template in enumerate(behavior["actions"]):
-            action = {k: _resolve(v, event, behavior["id"], scope) for k, v in template.items()}
-            intent = {
-                "event_id": event["id"],
-                "behavior_id": behavior["id"],
-                "action_index": index,
-                "action": action,
-            }
-            if action["kind"] == "notify":
-                _text(action["message"], "action.message")
-                intent["notification_id"] = "notification:" + _hash(
-                    [scope, event["id"], behavior["id"], index]
-                )
-            else:
-                _edit(scratch, action, schema, classes)
-            intents.append(intent)
+            with _explain(
+                **failure_identity,
+                stage="intent_validation",
+                event_id=event["id"],
+                behavior_id=behavior["id"],
+                action_index=index,
+                event_trace=doc["event_trace"],
+                decisions=decisions,
+                intents=intents,
+            ):
+                action = {k: _resolve(v, event, behavior["id"], scope) for k, v in template.items()}
+                intent = {
+                    "event_id": event["id"],
+                    "behavior_id": behavior["id"],
+                    "action_index": index,
+                    "action": action,
+                }
+                if action["kind"] == "notify":
+                    _text(action["message"], "action.message")
+                    intent["notification_id"] = "notification:" + _hash(
+                        [scope, event["id"], behavior["id"], index]
+                    )
+                else:
+                    _edit(scratch, action, schema, classes)
+                intents.append(intent)
     writes = [i for i in intents if i["action"]["kind"] == "set"]
     for left, right in combinations(writes, 2):
         if (left["event_id"], left["behavior_id"]) == (right["event_id"], right["behavior_id"]):
@@ -602,6 +702,8 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
                 "competing_write",
                 "behavior.intents",
                 {
+                    **failure_identity,
+                    "stage": "conflict_check",
                     "event_trace": doc["event_trace"],
                     "decisions": decisions,
                     "intents": intents,
@@ -612,25 +714,38 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
     candidate = json.loads(_json(doc["after_events"]))
     trace = []
     for intent in intents:
-        action = intent["action"]
-        prior = _json(candidate)
-        if action["kind"] == "notify":
-            record = {
-                "id": intent["notification_id"],
-                "event_id": intent["event_id"],
-                "behavior_id": intent["behavior_id"],
-                "action_index": intent["action_index"],
-                "message": action["message"],
-            }
-            if record["id"] in candidate["objects"] or any(
-                n["id"] == record["id"] for n in candidate["notifications"]
-            ):
-                _fail("duplicate_identity", "notification.id")
-            candidate["notifications"].append(record)
-        else:
-            _edit(candidate, action, schema, classes)
-        _normalize(candidate)
-        trace.append({**intent, "effect": "unchanged" if prior == _json(candidate) else "changed"})
+        with _explain(
+            **failure_identity,
+            stage="candidate_simulation",
+            event_id=intent["event_id"],
+            behavior_id=intent["behavior_id"],
+            action_index=intent["action_index"],
+            event_trace=doc["event_trace"],
+            decisions=decisions,
+            intents=intents,
+            discarded_actions=trace,
+        ):
+            action = intent["action"]
+            prior = _json(candidate)
+            if action["kind"] == "notify":
+                record = {
+                    "id": intent["notification_id"],
+                    "event_id": intent["event_id"],
+                    "behavior_id": intent["behavior_id"],
+                    "action_index": intent["action_index"],
+                    "message": action["message"],
+                }
+                if record["id"] in candidate["objects"] or any(
+                    n["id"] == record["id"] for n in candidate["notifications"]
+                ):
+                    _fail("duplicate_identity", "notification.id")
+                candidate["notifications"].append(record)
+            else:
+                _edit(candidate, action, schema, classes)
+            _normalize(candidate)
+            trace.append(
+                {**intent, "effect": "unchanged" if prior == _json(candidate) else "changed"}
+            )
     _state(candidate, schema, classes)
     consumed_events = request["consumption"]["events"] + [
         {"event_id": item["event"]["id"], "fingerprint": item["fingerprint"]}

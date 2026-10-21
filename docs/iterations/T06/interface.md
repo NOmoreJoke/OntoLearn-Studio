@@ -40,3 +40,11 @@ npm run check
 - **T07**：行为计划作为 E.2 第 4 阶段输入；本线不实现资源队列。B-07/完整轮末提交及资源产能归 T07 联验，行为产生事件若由批准模型表达，只能由轮次拥有者排到下一轮，不能重入本计划。
 - **T08**：B-08 用真实失败接入 Agent；必须显示未成功，不得以本线抛异常的单测代替实际 Agent 结果。
 - **总控外审预约**：纯服务内审与本地检查成熟后，请提供本精确工作树的 ZCode GLM-5.3/最高、MiniMax M3.1-Flash/xhigh 独立新任务资源/隔离时段及集成排队位置。本线不抢用 I05 审查应用，不在用户桌面运行 Electron/native/HMR，不在指定双方明确通过之前 push。
+
+## 失败解释补充
+
+私有错误保留安全结构化的 `reason/location` 文本；`evidence` 是内部诊断数据，不能当公共错误参数或模型外发白名单。失败记录分清 `event_preparation`、`definition_validation`、`condition_evaluation`、`intent_limit`、`intent_validation`、`conflict_check`、`candidate_simulation`，包含可确定的 event/behavior/condition/action/edit 序号。
+
+条件或动作解析失败时保留已经完成的决定/意图前缀；未完成的条件只列 partial_decision，不伪造其他未评估实例的结果。局部候选模拟失败的先前动作标为 discarded_actions，事件准备失败的先前编辑标为 discarded_event_edits；始终 committed=false，无 candidate 或新 consumption。executed_actions 表示正式执行，行为计划失败时始终为空，不能将本地已丢弃模拟当成正式动作成功。绑定、输入/推导版本和 scope 附在已有合法运行身份的计划阶段错误中。
+
+新增失败反例见 `packages/engine/tests/test_behavior_failures.py`，包括前序编辑后失败、事件身份冲突、部分条件、动态动作失效、跨实例创建碰撞、同值动作超限、静态/模板定位和不可编码 Unicode。成功计划结构与 E.1 排序/冻结/竞争规则保持既有定义。
