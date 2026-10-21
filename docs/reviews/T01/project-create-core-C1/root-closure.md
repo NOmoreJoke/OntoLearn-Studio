@@ -1,0 +1,13 @@
+# T01 C1 内部创建核心受限收口
+
+2026-10-21。根已全文读22137B/SHA e641e4d0f9d0c11ebb98d81f20fe41a23f6298fffdc35f00b3d0f52c2cd1ef36独立读回（原17836B/641e2af前缀未变，追加4301B全文另读），以及10867B实施、6172B验证、14125B事务独审和24151B预算独审。固定C1产品423b7e4c799f188cf2ce6e8e7121893ce85624cd在8323B授权内部机制范围技术接收，无剩余本阶段实质问题。
+
+实际树 .worktrees/T01-project-create-core，branch feature/weekly-t01-project-create-core；base5f910b52c69d86a1076b2032e5d3c63e715947f3，50精确采用ba2c6c293f9fd9e1742c9ab352dae5e3c951f6a4。完整52产品/测试+7docs共59路径；根另逐52+6manifest的Git/current/bytes/SHA及59安全源包全成员相同核验。47项只读、AGENTS15852B/78df和64原保护文件（含原型）保持原字节。不得把最后五writer当完整功能差异。
+
+实际同连接Store.commit内部创建分支、严格创建namespace/seq1 receipt/history、真实genesis后重建context、一次外层交易10末态行，以及全库/目录全部页/editor最坏编码等写前预算成立。P2-C1-01伪创建claim借合法domain receipt已实际修前复现、修后直接validator/Job-ready/真实重开拒绝且零修复，正常后续metadata/domain与原回执重试保留。普通Store3非Job3及未知caller交易均写前拒绝。没有DDL或默认格式3启用。
+
+原件专项128通过、正常check1125TS/2969Python/44既有skip、source核12份，真实命令终态均exit0；根全文读三日志，独审逐真实call/output终态关联和12源SHA核同。29成员ZIP803376B/66028ff6全部成员/index核同；317pair/646记录含继承工具，不当317次独立验收。首target01/05和ruff失败保留，后归档旧解释器校验失败→本树3.12校验stage→commit→finalGit事件时态另核，未伪称已包含先前ZIP。根没有运行产品/测试/数据库/构建或桌面。
+
+本接收仅内部空白创建持久机制。origin/permission文字、libraryEvidenceRef/migration_id、UUID和fixture不认证原dispatch、物理库或当前scope。正式create_project_request/resolve_operation/Host、真实I06/native首IO、public注册/main/UI、目标OS/真人、指定同版双模型通过、CI、push/PR/develop合并与完整父目标仍未关闭。
+
+保持423b及59交付冻结，无变化不重测。可将本收口原字节另存本线新过程证据并回执纯docs ref，不改原交付。下一C2只读证据核心须另行精确方案及批准；报告第8节是技术建议，不是新代码窗口。不得重开/重建原Goal、借阶段收口推送或进入正式resolved。
