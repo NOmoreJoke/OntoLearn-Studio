@@ -214,3 +214,11 @@ bf04169、原包e558…ec2c/原索引95f…0fcb、独立报告及五产品hash�
 最终全仓check真实exit0：1030TS、2706Python、44原不适用skip，静态/格式/类型/build/ruff全过。未签名package:dir真实exit0；新包引擎5session/9资源与实际worker原子事务、重开幂等通过，asar/main AST同源绑定通过。新main46e6b7…b9f3；完整raw stdin/stdout/stderr和所有首失败/被替代输入保留。旧main/包成功不冒充最新候选，普通wire观测不冒称私有pending Map本体。
 
 本阶段准备本地恢复提交；不push，无指定双审/真实Electron IPC或UI/native/e2e/远端PR/CI/合并或发布新证据。原完整Goal仍active，接续剩余父功能与正式跨功能验收。
+
+## startup根收口及下一真实业务阶段计划
+
+startup实际本地恢复提交为`fd3944a35aed05c279d7d0c2f9a077c84d99aaf2`。根最终closure5669B/SHA`b423e436bf7e64b47452275cf084b132b18deb4fe00ecdac3663426697346642`已实际全文读并核hash：17+8固定Git/ZIP、完整check、新包/9资源/46原记录、61成员和301原工具对均经根核验，内部阶段无未解阻断。自2026-10-21T14:04:13.952488+08起旧task-runtime临时窗关闭，未来逻辑维护者I05、T01只读；消歧effective JSON3571B/SHA`c3d1fb55fe1d0e3d5b7a931fdcb43f32147c37f9a22b016332871ae859e9fa0f`亦实际全文读。fd的5a190b输入和I05 C4各保原件，不复制或再写该旧test。
+
+按根明确docs-only指令，准备[正式ChangeSet业务服务计划](../../iterations/T01/changeset-business-service-implementation-plan.md)：复用已有changeset.commit正式Job、实际typed定义/引用与人工事实、完整Diff、独立确认、Store原子提交、选择性undo/故障重开和版本传播。申请10产品/4新测试，当前尚未实施；不改fd已验25source/test，不把test.atomic改名或用虚假metadata操作替代领域写。真实producer/完整定义语义、全项目restore、I06项目选择/完整Diff与人类UI、T08及其余44地图/FR范围保留。
+
+独立[计划审查](changeset-business-service-plan-review.md)已关闭Diff字节/重组、确认归因与重试、两事务/取消三项初稿P2，固定最终计划SHA`5eb576f029bdf652ff2f52c82a335cf977afeb57cdf8db807d82d323832271e8`，可交根一次精确阶段决定；不是新实施授权。初稿19085B/446c4d已从原完整cat工具记录按原字节恢复为独立ZIP，保留初稿和审查历史，不重写。此次只文档/证据，不重复已通过的无变化产品检查/包；指定双审前不push，完整Goal仍active。
