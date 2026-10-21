@@ -1,0 +1,171 @@
+# Standalone stdlib arithmetic/AST specification; never imports product or constructs native L.
+import ast
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+
+ROOT = Path.cwd()
+REF = '3ef2f6952ed1a4f852da31c0bef7e8d8679752a5'
+PREFIX = 'packages/engine/src/ontolearn_engine/'
+SOURCES = {}
+for relative in ['quality/rule_profile.py', 'quality/rule_firing.py', 'quality/rule_terms.py',
+                 'quality/rule_numbers.py', 'quality/rule_calendar.py', 'semantic_execution.py',
+                 'semantic.py', 'semantic_profile_restore.py']:
+    raw = subprocess.check_output(['git', 'show', REF + ':' + PREFIX + relative])
+    SOURCES[relative] = raw
+SCHEMAS = {}
+for relative, raw in SOURCES.items():
+    tree = ast.parse(raw.decode())
+    for node in tree.body:
+        if isinstance(node, ast.ClassDef):
+            fields = [child.target.id for child in node.body
+                      if isinstance(child, ast.AnnAssign) and isinstance(child.target, ast.Name)]
+            if fields:
+                SCHEMAS[node.name] = fields
+LIMIT_FIELDS = SCHEMAS['ProfileLimits']
+assert len(LIMIT_FIELDS) == 17
+USAGE_FIELDS = ['work', 'input_bytes', 'output_bytes', 'trace_items', 'firings', 'head_occurrences']
+ENCODE = lambda x: json.dumps(x, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
+# Each node is (projected JSON byte upper, native private typed encoding upper).
+# It carries no payload value, native object, allocation, match or expected result.
+def text(value):
+    typed = 2 + sum(6 if ord(c) < 32 or c in '\\"' else len(c.encode()) for c in value)
+    return (len(ENCODE(value)), typed)
+def text_bound(length):
+    # Fixture ASCII identifiers contain no JSON escapes. This is a length, not a source value.
+    return (length + 2, length + 2)
+def integer(hex_chars=10):
+    return (len(b'{"integerHex":""}') + hex_chars, hex_chars + 2)
+def null(): return (4, 4)
+def boolean(): return (5, 5)
+def seq(items):
+    return (2 + sum(x[0] for x in items) + max(0, len(items)-1),
+            2 + sum(x[1] for x in items) + len(items))
+def obj(fields):
+    return (2 + sum(len(ENCODE(k)) + 1 + v[0] for k, v in fields.items()) + max(0, len(fields)-1), 0)
+def record(name, fields):
+    assert list(fields) == SCHEMAS[name], (name, list(fields), SCHEMAS[name])
+    j = obj({'recordType': text(name), **fields})[0]
+    t = 2 + text(name)[1] + sum(text(k)[1] + v[1] for k, v in fields.items())
+    return (j, t)
+def opaque_bytes(size):
+    return (len(b'{"encoding":"hex","bytes":""}') + 2*size, 0)
+PROFILE = text('OntoLearn-rule-comparison-profile/1')
+proof = text_bound(74)
+digest = text_bound(64)
+# Source.locator length 112 includes the actual snapshot hash and JSON pointer.
+# source.text bound is an original canonical ASCII row <=160 chars (quotes/backslashes charged).
+source = record('SourceRecord', {'reference':text_bound(112),'digest':digest,
+                               'revision':text('1'),'text':(2+2*160,2+6*160)})
+rule_source = record('SourceRecord', {'reference':text_bound(112),'digest':digest,
+                                    'revision':text('1'),'text':null()})
+def term(with_source=True):
+    return record('TermInput', {'kind':text('literal'),'lexical_form':text_bound(64),
+                  'datatype_iri':text_bound(43),'language_raw':null(),
+                  'source':source if with_source else null()})
+v = record('Variable', {'name':text('?s')})
+input_term = term(True)
+constant = term(False)
+triple_input = record('Triple', dict(zip(SCHEMAS['Triple'], [input_term]*3)))
+triple_pattern = record('Triple', {'subject':v,'predicate':constant,'object':v})
+triple_head = record('Triple', {'subject':input_term,'predicate':constant,'object':constant})
+head_pattern = record('Triple', {'subject':v,'predicate':constant,'object':constant})
+comparison = record('Comparison', {'left':v,'operator':text('ge'),'right':constant})
+spec = record('RuleSpec', {'rule_id':text_bound(10),'when':seq([triple_pattern]),
+       'comparisons':seq([comparison]),'heads':seq([head_pattern,head_pattern]),
+       'source':rule_source,'revision':text('1'),'definition_digest':digest,'policy':PROFILE})
+catalog = record('Catalog', {'classes':seq([text_bound(20)]*2),'object_properties':seq([]),
+                             'data_properties':seq([text_bound(20)]*2)})
+match = record('BindingMatch', {'rule_id':text_bound(10),
+        'bindings':seq([seq([text('?s'),input_term]),seq([text('?v'),input_term])]),
+        'when':seq([triple_input]),'proof_leaves':seq([seq([proof])])})
+number = record('Number', {'numerator':integer(),'denominator':integer(),'negative_zero':boolean()})
+pv = record('ProfileValue', {'term':input_term,'domain':text_bound(2),'value':number,'language':text('')})
+ce = record('ComparisonEvidence', {'index':integer(),'left':pv,'operator':text('ge'),
+                                  'right':pv,'result':boolean()})
+head = record('HeadEvidence', {'index':integer(),'triple':triple_head})
+firing = record('PreparedFiring', {'rule_id':text_bound(10),
+         'bindings':seq([seq([text('?s'),input_term]),seq([text('?v'),input_term])]),
+         'when':seq([triple_input]),'proof_leaves':seq([seq([proof])]),'comparisons':seq([ce]),
+         'heads':seq([head,head]),'basis':seq([proof]),'source':rule_source,'revision':text('1'),
+         'definition_digest':digest,'policy':PROFILE})
+# The true rule fires once; false rule has two original matches, zero firings; disabled has none.
+# Native encode_output((PROFILE,firings,facts)) length is algebra over the fixed _walk grammar.
+true_payload_bytes = seq([PROFILE,seq([firing]),seq([triple_head,triple_head])])[1]
+false_payload_bytes = seq([PROFILE,seq([]),seq([])])[1]
+def batch(firings,facts,size):
+    return record('PreparedFiringBatch', {'firings':seq(firings),'facts':seq(facts),
+             'payload':opaque_bytes(size),'digest':digest,'profile':PROFILE})
+true_batch=batch([firing],[triple_head,triple_head],true_payload_bytes)
+false_batch=batch([],[],false_payload_bytes)
+limits_record=record('ProfileLimits',{k:integer() for k in LIMIT_FIELDS})
+limits_dict=obj({k:integer() for k in LIMIT_FIELDS})
+usage_dict=obj({k:integer() for k in USAGE_FIELDS})
+def child(disabled,batch_node,matches):
+    return obj({'ruleId':text_bound(10),'definitionOrdinal':integer(),'disabled':boolean(),
+        'planDigest':digest,'batch':batch_node,'originalMatches':matches,'definitions':seq([spec]),
+        'catalog':catalog,'limits':limits_record,'budgetLimits':limits_dict,'budgetUsage':usage_dict})
+children=[child(False,true_batch,seq([match,match])),
+          child(False,false_batch,seq([match,match])),child(True,null(),null())]
+key_triple=seq([text_bound(96)]*3)
+evidence=obj({'rule':text_bound(10),'firingIndex':integer(),'headIndex':integer(),
+              'result':key_triple,'inputs':seq([key_triple]),'basis':seq([proof])})
+leaf=obj({'reference':proof,'triple':key_triple})
+occurrence=obj({'term':text_bound(96),'value':pv,'ordinal':integer(),'span':null()})
+graph_budget=obj({'version':text_bound(40),'limits':obj({k:integer() for k in
+ ['work','triples','inputTermBytes','sidecarScalarBytes','sidecarTermBytes']}),
+ 'entryLimits':limits_dict,'entryUsage':usage_dict,
+ 'usage':obj({'work':integer(),'inputTermBytes':integer()})})
+reasoning_fields={'formatVersion':text_bound(40),'semanticsVersion':text_bound(40),
+ 'profile':PROFILE,'rdfs':seq([]),'rules':seq([key_triple,key_triple]),'warnings':seq([]),
+ 'evidence':seq([evidence,evidence]),'rdfsEvidence':seq([]),'firingGroups':seq([firing]),
+ 'mechanismBatches':seq(children),'definitions':seq([spec,spec,spec]),'catalog':catalog,
+ 'proofLeaves':seq([leaf]*8),'termSources':seq([occurrence]*24),'graphBudget':graph_budget}
+# Validate full 7/15/11 fixed field families against readonly decoder source tuples.
+a=ast.parse(SOURCES['semantic_profile_restore.py'].decode());tuples={}
+for n in a.body:
+ if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name):
+  if n.targets[0].id in ['_PAYLOAD','_REASONING','_CHILD']:
+   tuples[n.targets[0].id]=ast.literal_eval(n.value)
+assert set(reasoning_fields)==set(tuples['_REASONING'])
+assert set(['ruleId','definitionOrdinal','disabled','planDigest','batch','originalMatches',
+            'definitions','catalog','limits','budgetLimits','budgetUsage'])==set(tuples['_CHILD'])
+payload_fields={'format':text('i05-reasoning-result/2'),
+ 'implementation':obj({'executionSemanticsVersion':text('i05-finite-7'),'engineVersion':text('0.1.0'),
+                      'dependencyLockHash':digest}),'reasoning':obj(reasoning_fields),
+ 'inputDigest':digest,'inputDigestDomain':text('profile-structured-records-json/1'),
+ 'sourceDigest':digest,'definitionsDigest':digest}
+assert set(payload_fields)==set(tuples['_PAYLOAD'])
+payload_upper=obj(payload_fields)[0]
+# ASCII fixture: all serialized chars are ASCII; exact private row slicing is <=8192 scalars.
+row_count=(payload_upper+8191)//8192
+private_rows_upper=2*payload_upper+5*row_count+1
+# Public object replaces each one-cell row, keeping the cell unchanged: per-row extra <=90.
+display_upper=private_rows_upper+90*row_count
+# Canonical generic row wrapper static smoke examples only; no product validator/API invoked.
+smoke_matrix=[['x'*8192],['\U0001f600'*8192],['last']]
+def stable_id(job, kind, rows_digest, ordinal):
+ raw=bytearray(hashlib.sha256(('t01-profile-display-row/1\0'+job+'\0'+kind+'\0'+rows_digest).encode()).digest()[:12]+ordinal.to_bytes(4,'big'))
+ raw[6]=(raw[6]&15)|64;raw[8]=(raw[8]&63)|128
+ hx=raw.hex();return '-'.join([hx[:8],hx[8:12],hx[12:16],hx[16:20],hx[20:]])
+smoke=[{'rowId':stable_id('00000000-0000-4000-8000-000000000001','reasoning','0'*64,n),
+         'ordinal':n,'cells':row} for n,row in enumerate(smoke_matrix)]
+assert len({x['rowId'] for x in smoke})==len(smoke)
+assert [len(x['cells'][0]) for x in smoke]==[8192,8192,4]
+assert all(len(ENCODE(x))-len(ENCODE(x['cells']))<=90 for x in smoke)
+result={'kind':'static complete schema length algebra; not a payload/native L/match/expected fixture or runtime proof',
+ 'fixedSources':[{'path':PREFIX+k,'ref':REF,'bytes':len(v),'sha256':hashlib.sha256(v).hexdigest()} for k,v in SOURCES.items()],
+ 'fieldFamilies':{k:list(v) for k,v in tuples.items()},'nativeRecordFields':SCHEMAS,
+ 'fixture':'eight input triples; no subClass/domain/range; two value records20/5; three rules true>=10, false==9999, disabled; two original matches per enabled rule; true one firing/two heads; 24 term occurrences',
+ 'symbolicAssumptions':{'sourceLocatorChars':112,'sourceTextASCIIChars':160,'sourceTextJSONPerCharMax':2,'sourceTextTypedPerCharMax':6,'termLexicalChars':64,'datatypeIRIChars':43,'catalogClasses':2,'catalogDataProperties':2,'intHexCharsMax':10,'sourceRevisionChars':1},
+ 'typedTrueBatchPayloadUpper':true_payload_bytes,'typedFalseBatchPayloadUpper':false_payload_bytes,
+ 'projectedComponents':{'source':source[0],'term':input_term[0],'ruleSpec':spec[0],'match':match[0],
+   'firing':firing[0],'trueBatch':true_batch[0],'falseBatch':false_batch[0],
+   'children':[x[0] for x in children], 'reasoningFields':{k:v[0] for k,v in reasoning_fields.items()}},
+ 'payloadUpper':payload_upper,'privateRowCountUpper':row_count,'privateRowsUpper':private_rows_upper,
+ 'BUpper':payload_upper+private_rows_upper,'displayRowsUpper':display_upper,
+ 'rowWrapperOverheadPerRowBound':90,'unicode8192ScalarAndStableIdSmoke':'stdlib constructed cells only; no product execution',
+ 'pendingRuntime':'actual provider source/payload/rows/17L/capture/fullview/peaks plus complete real chain still required'}
+Path('docs/reviews/T01/profile-job-artifact-selection-supplier-plan/static-size-proof.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({k:result[k] for k in ['typedTrueBatchPayloadUpper','typedFalseBatchPayloadUpper','payloadUpper','privateRowCountUpper','privateRowsUpper','BUpper','displayRowsUpper']},indent=2))

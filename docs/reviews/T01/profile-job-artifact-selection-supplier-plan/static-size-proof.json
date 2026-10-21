@@ -1,0 +1,246 @@
+{
+  "kind": "static complete schema length algebra; not a payload/native L/match/expected fixture or runtime proof",
+  "fixedSources": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "bytes": 11987,
+      "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "bytes": 19149,
+      "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "bytes": 6176,
+      "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "bytes": 7372,
+      "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "bytes": 4047,
+      "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "bytes": 32917,
+      "sha256": "cc701dba39cdeb7f2ae281dfd4a9580b879b9e85f34d3c87a09a3414e7c32731"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "bytes": 52609,
+      "sha256": "5a3a53fc79928a7aa7de280a8477541db4053ec9b2bec489bf28a2ad4e935549"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "ref": "3ef2f6952ed1a4f852da31c0bef7e8d8679752a5",
+      "bytes": 50276,
+      "sha256": "aa3d51c1ccc487ce21a78560ad6cdf7a6485cc86f746c29ee329e6a0bc4c4d09"
+    }
+  ],
+  "fieldFamilies": {
+    "_PAYLOAD": [
+      "format",
+      "implementation",
+      "reasoning",
+      "inputDigest",
+      "inputDigestDomain",
+      "sourceDigest",
+      "definitionsDigest"
+    ],
+    "_REASONING": [
+      "formatVersion",
+      "semanticsVersion",
+      "profile",
+      "rdfs",
+      "rules",
+      "warnings",
+      "evidence",
+      "rdfsEvidence",
+      "firingGroups",
+      "mechanismBatches",
+      "definitions",
+      "catalog",
+      "proofLeaves",
+      "termSources",
+      "graphBudget"
+    ],
+    "_CHILD": [
+      "ruleId",
+      "definitionOrdinal",
+      "disabled",
+      "planDigest",
+      "batch",
+      "originalMatches",
+      "definitions",
+      "catalog",
+      "limits",
+      "budgetLimits",
+      "budgetUsage"
+    ]
+  },
+  "nativeRecordFields": {
+    "InputLocation": ["section", "index", "side", "span"],
+    "SourceRecord": ["reference", "digest", "revision", "text"],
+    "TermInput": ["kind", "lexical_form", "datatype_iri", "language_raw", "source"],
+    "ProfileLimits": [
+      "input_bytes",
+      "term_bytes",
+      "source_bytes",
+      "digits",
+      "integer_bits",
+      "temporary_bits",
+      "rules",
+      "when",
+      "comparisons",
+      "heads",
+      "variables",
+      "bindings",
+      "firings",
+      "head_occurrences",
+      "trace_items",
+      "output_bytes",
+      "work"
+    ],
+    "Variable": ["name"],
+    "Triple": ["subject", "predicate", "object"],
+    "Comparison": ["left", "operator", "right"],
+    "RuleSpec": [
+      "rule_id",
+      "when",
+      "comparisons",
+      "heads",
+      "source",
+      "revision",
+      "definition_digest",
+      "policy"
+    ],
+    "Catalog": ["classes", "object_properties", "data_properties"],
+    "BindingMatch": ["rule_id", "bindings", "when", "proof_leaves"],
+    "_CompiledRule": ["spec", "constants", "variables", "prepared_digest"],
+    "CompiledPlan": ["rules", "catalog", "digest", "_budget", "_seal"],
+    "ComparisonEvidence": ["index", "left", "operator", "right", "result"],
+    "HeadEvidence": ["index", "triple"],
+    "PreparedFiring": [
+      "rule_id",
+      "bindings",
+      "when",
+      "proof_leaves",
+      "comparisons",
+      "heads",
+      "basis",
+      "source",
+      "revision",
+      "definition_digest",
+      "policy"
+    ],
+    "PreparedFiringBatch": ["firings", "facts", "payload", "digest", "profile"],
+    "ProfileValue": ["term", "domain", "value", "language"],
+    "Number": ["numerator", "denominator", "negative_zero"],
+    "Calendar": ["day", "second", "explicit_offset", "is_datetime"],
+    "Rule": ["id", "when", "then"],
+    "RestoreExpectation": [
+      "payload_digest",
+      "rows_digest",
+      "input_digest",
+      "input_domain",
+      "source_digest",
+      "definitions_digest",
+      "catalog_digest",
+      "implementation",
+      "input_preimage",
+      "source_preimage",
+      "schema_version",
+      "budget_version",
+      "cache_version"
+    ],
+    "ChildAllocation": ["rule_id", "definition_ordinal", "limits"],
+    "OriginalAllocation": ["rule_ids", "disabled_rule_ids", "children", "budget_version"],
+    "RestoredChild": [
+      "rule_id",
+      "definition_ordinal",
+      "disabled",
+      "definitions",
+      "catalog",
+      "original_matches",
+      "batch",
+      "fact"
+    ],
+    "RestoredBatchSet": [
+      "children",
+      "implementation",
+      "payload_digest",
+      "rows_digest",
+      "usage",
+      "peaks",
+      "parse_usage",
+      "revalidation_caps",
+      "format",
+      "profile",
+      "formal_authority",
+      "aggregate_recomputed"
+    ]
+  },
+  "fixture": "eight input triples; no subClass/domain/range; two value records20/5; three rules true>=10, false==9999, disabled; two original matches per enabled rule; true one firing/two heads; 24 term occurrences",
+  "symbolicAssumptions": {
+    "sourceLocatorChars": 112,
+    "sourceTextASCIIChars": 160,
+    "sourceTextJSONPerCharMax": 2,
+    "sourceTextTypedPerCharMax": 6,
+    "termLexicalChars": 64,
+    "datatypeIRIChars": 43,
+    "catalogClasses": 2,
+    "catalogDataProperties": 2,
+    "intHexCharsMax": 10,
+    "sourceRevisionChars": 1
+  },
+  "typedTrueBatchPayloadUpper": 18199,
+  "typedFalseBatchPayloadUpper": 46,
+  "projectedComponents": {
+    "source": 577,
+    "term": 793,
+    "ruleSpec": 2241,
+    "match": 4209,
+    "firing": 9582,
+    "trueBatch": 48785,
+    "falseBatch": 316,
+    "children": [61530, 13061, 4332],
+    "reasoningFields": {
+      "formatVersion": 42,
+      "semanticsVersion": 42,
+      "profile": 37,
+      "rdfs": 2,
+      "rules": 599,
+      "warnings": 2,
+      "evidence": 1619,
+      "rdfsEvidence": 2,
+      "firingGroups": 9584,
+      "mechanismBatches": 78927,
+      "definitions": 6727,
+      "catalog": 171,
+      "proofLeaves": 3193,
+      "termSources": 27865,
+      "graphBudget": 1331
+    }
+  },
+  "payloadUpper": 130884,
+  "privateRowCountUpper": 16,
+  "privateRowsUpper": 261849,
+  "BUpper": 392733,
+  "displayRowsUpper": 263289,
+  "rowWrapperOverheadPerRowBound": 90,
+  "unicode8192ScalarAndStableIdSmoke": "stdlib constructed cells only; no product execution",
+  "pendingRuntime": "actual provider source/payload/rows/17L/capture/fullview/peaks plus complete real chain still required"
+}

@@ -1,0 +1,51 @@
+# Independent stdlib integrity audit of documentation archives, not product tests.
+from pathlib import Path
+import hashlib,json,subprocess,zipfile
+R=Path.cwd();D=R/'docs/reviews/T01/profile-job-artifact-selection-supplier-plan'
+def h(b):return hashlib.sha256(b).hexdigest()
+def load(n):return json.loads((D/n).read_text())
+raw=load('tool-response-index.json');source=load('source-input-index.json')
+assert raw['completePairCount']==127 and raw['itemCount']==254
+with zipfile.ZipFile(D/'tool-response-items.zip') as z:
+ assert z.testzip() is None
+ assert z.read('TOOL-RESPONSE-INDEX.json')==(D/'tool-response-index.json').read_bytes()
+ assert len(z.namelist())==255 and len(set(z.namelist()))==255
+ byentry={}
+ for e in raw['items']:
+  b=z.read(e['entry']);assert len(b)==e['bytes'] and h(b)==e['sha256']
+  src=Path(e['sourcePath']).read_bytes();off=e['sourceByteOffset'];assert src[off:off+e['sourceByteLength']]==b
+  lines=src[:off+e['sourceByteLength']].splitlines(keepends=True);assert len(lines)==e['sourceLine']
+  ordinal=sum(json.loads(x).get('type')=='response_item' for x in lines);assert ordinal==e['sourceResponseItemOrdinal']
+  obj=json.loads(b);assert obj['timestamp']==e['timestamp'];v=obj['payload'];assert v['call_id']==e['callId'] and v['type']==e['itemType'];byentry[e['entry']]=e
+ for p in raw['pairs']:
+  c=byentry[p['callEntry']];assert c['callId']==p['callId']
+  assert len(p['outputEntries'])==1
+  for o in p['outputEntries']:
+   out=byentry[o];assert out['callId']==p['callId'] and out['sourceLine']>c['sourceLine'] and out['group']==c['group']
+ for g in raw['groups']:
+  b=Path(g['sourcePath']).read_bytes()[:g['sourcePrefixBytesThroughBoundary']];assert h(b)==g['sourcePrefixSha256ThroughBoundary']
+  assert len(b.splitlines())==g['sourceLineEndInclusive']
+ # Confirm initial failures and preliminary arithmetic are retained in full records.
+ text='\n'.join(z.read(e['entry']).decode() for e in raw['items'])
+ for marker in ['958346','39b669','04f431','bc2554','417f3e','906a21','e246af']:assert marker in text,marker
+with zipfile.ZipFile(D/'source-inputs.zip') as z:
+ assert z.testzip() is None and len(z.namelist())==171
+ assert z.read('SOURCE-INPUT-INDEX.json')==(D/'source-input-index.json').read_bytes()
+ for e in source['items']:
+  b=z.read(e['entry']);assert len(b)==e['bytes'] and h(b)==e['sha256']
+  if e['kind']=='fixed Git source, not adopted':assert b==subprocess.check_output(['git','show',e['ref']+':'+e['path']])
+  elif e.get('snapshot'):assert b==(R/e['snapshot']).read_bytes()
+  elif e.get('sourcePath'):assert b==Path(e['sourcePath']).read_bytes() if Path(e['sourcePath']).is_absolute() else b==(R/e['sourcePath']).read_bytes()
+assert source['counts']=={'fixedGit':135,'fixedReferences':15,'r1':7,'r2':11,'snapshotManifests':2}
+rep=(D/'independent-plan-review.md').read_bytes();assert len(rep)==31608 and h(rep)=='2d043a53afe2b588efc894a31e3d98b499f5b0649458f167b18a1b27424f1f27';assert h(rep[:17274])=='4d25f9ae893aadb812076dd846f4fdba2fac7fda505e8713e035c364190defe0'
+for lab,count in [('r1',7),('r2',11)]:
+ snap=load('revisions/'+lab+'/snapshot-manifest.json');assert len(snap['files'])==count
+ for f in snap['files']:
+  b=(R/f['snapshot']).read_bytes();assert len(b)==f['bytes'] and h(b)==f['sha256']
+# Read-ready intentionally points to the original report prefix: do not rewrite it.
+check=load('read-ready-checks.json')
+for f in check['mainAndSupportingFiles']:
+ b=(R/f['path']).read_bytes()
+ if f['path'].endswith('/independent-plan-review.md'):b=b[:f['bytes']]
+ assert len(b)==f['bytes'] and h(b)==f['sha256']
+print(json.dumps({'audit':'all original byte slices, response ordinals, timestamps, pair completeness, required failures, source blobs and r1/r2 snapshots verified','toolPairs':127,'toolItems':254,'sourceItems':170,'r1':7,'r2':11,'reportPrefixUntouched':True,'noProductExecution':True},indent=2))

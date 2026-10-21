@@ -1,0 +1,91 @@
+# I05 docs-only archival builder. No product imports, DB, tests, or network.
+from pathlib import Path
+import hashlib,json,subprocess,zipfile,datetime,re
+ROOT=Path.cwd()
+D=ROOT/'docs/reviews/T01/profile-job-artifact-selection-supplier-plan'
+MAIN=ROOT/'docs/iterations/T01/profile-job-artifact-selection-supplier-plan.md'
+PARENT='7753666d2cfda48c76ce59fa1ad6f34802c48eed'
+SESSION_ROOT=Path('/Users/kyle/.codex/sessions/2026/10/21')
+AUTHOR=SESSION_ROOT/'rollout-2026-10-21T16-53-41-01a15daa-8f89-7971-b5bc-e9fed0a6cc67.jsonl'
+REVIEWER=SESSION_ROOT/'rollout-2026-10-21T16-54-05-01a15daa-ef8c-7563-a2bf-10f6e91fa5be.jsonl'
+GROUPS=[('author-r1',AUTHOR,1815,2170),('author-r2',AUTHOR,2194,2512),('reviewer-r1',REVIEWER,1759,1996),('reviewer-r2',REVIEWER,2187,2374)]
+def h(b):return hashlib.sha256(b).hexdigest()
+def git(*args):return subprocess.check_output(['git',*args])
+def dump(path,value):path.write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n')
+def info(path):
+ b=path.read_bytes();return {'path':str(path.relative_to(ROOT)),'bytes':len(b),'sha256':h(b)}
+def zipped_write(z,name,raw):
+ zi=zipfile.ZipInfo(name,(1980,1,1,0,0,0));zi.compress_type=zipfile.ZIP_DEFLATED;zi.external_attr=0o100644<<16;z.writestr(zi,raw)
+assert git('rev-parse','HEAD').decode().strip()==PARENT
+assert not git('diff','--cached','--name-only').strip()
+assert git('diff','--name-only').decode().splitlines()==['AGENTS.md']
+assert len(MAIN.read_bytes())==78754 and h(MAIN.read_bytes())=='7b941380d990cf25270cc5a54b13a7f865cfd04b9bbf3af46d954fce27727eb8'
+report=D/'independent-plan-review.md';rep=report.read_bytes()
+assert len(rep)==31608 and h(rep)=='2d043a53afe2b588efc894a31e3d98b499f5b0649458f167b18a1b27424f1f27'
+assert h(rep[:17274])=='4d25f9ae893aadb812076dd846f4fdba2fac7fda505e8713e035c364190defe0'
+fixed=json.loads((D/'source-manifest.json').read_text())
+for f in fixed['inputs']:
+ b=Path(f['path']).read_bytes();assert len(b)==f['bytes'] and h(b)==f['sha256']
+for rel in git('diff','--name-only','5f910b52c69d86a1076b2032e5d3c63e715947f3..HEAD').decode().splitlines():assert (ROOT/rel).read_bytes()==git('show','HEAD:'+rel)
+r1=json.loads((D/'revisions/r1/snapshot-manifest.json').read_text())
+for f in r1['files']:
+ b=(ROOT/f['snapshot']).read_bytes();assert len(b)==f['bytes'] and h(b)==f['sha256']
+# Freeze r2's ten reviewed author inputs and independent output, not finalization docs.
+r2names=['source-manifest.json','static-call-inventory.json','budget-quanta.json','investigation.md','read-ready-checks.json','revision-disposition.md','static-size-proof.py.raw','static-size-proof.json','sql-probe-alternatives.md','independent-plan-review.md']
+r2dir=D/'revisions/r2';r2dir.mkdir(exist_ok=True)
+r2files=[]
+for p in [MAIN]+[D/n for n in r2names]:
+ target=r2dir/p.name;b=p.read_bytes()
+ if target.exists():assert target.read_bytes()==b
+ else:target.write_bytes(b)
+ r2files.append({'source':str(p.relative_to(ROOT)),'snapshot':str(target.relative_to(ROOT)),'role':'independent r2 output' if p==report else 'reviewed r2 input','bytes':len(b),'sha256':h(b)})
+dump(r2dir/'snapshot-manifest.json',{'purpose':'exact ten r2 author inputs and independent final report; original read-ready remains bound to report historical prefix','files':r2files})
+# Extract whole original response_item JSONL records; never synthesize call/outputs.
+raw_entries=[];raw_index=[];pair_index=[];group_index=[];archive_ordinal=0
+calls_types={'function_call','custom_tool_call'};output_types={'function_call_output','custom_tool_call_output'}
+for group,source,start,end in GROUPS:
+ rows=source.read_bytes().splitlines(keepends=True);offset=ordinal=0;records=[];prefix_end=0
+ for line,raw in enumerate(rows,1):
+  x=json.loads(raw);v=x.get('payload',{})
+  if x.get('type')=='response_item':ordinal+=1
+  if line<=end:prefix_end=offset+len(raw)
+  if start<=line<=end and x.get('type')=='response_item' and v.get('type') in calls_types|output_types:
+   archive_ordinal+=1;entry=f'response-items/{group}/{archive_ordinal:04d}-L{line}-{v["type"]}.jsonl'
+   record={'archiveOrdinal':archive_ordinal,'group':group,'entry':entry,'sourcePath':str(source),'sourceLine':line,'sourceByteOffset':offset,'sourceByteLength':len(raw),'sourceResponseItemOrdinal':ordinal,'timestamp':x.get('timestamp'),'itemType':v['type'],'callId':v['call_id'],'bytes':len(raw),'sha256':h(raw)}
+   raw_entries.append((entry,raw));raw_index.append(record);records.append(record)
+  offset+=len(raw)
+ calls={x['callId']:x for x in records if x['itemType'] in calls_types};outputs={}
+ for x in records:
+  if x['itemType'] in output_types:outputs.setdefault(x['callId'],[]).append(x)
+ assert set(calls)==set(outputs) and len(calls)*2==len(records)
+ for call_id,c in calls.items():
+  assert all(o['sourceLine']>c['sourceLine'] for o in outputs[call_id])
+  pair_index.append({'group':group,'callId':call_id,'callEntry':c['entry'],'outputEntries':[o['entry'] for o in outputs[call_id]],'complete':True})
+ group_index.append({'group':group,'sourcePath':str(source),'sourceLineStartInclusive':start,'sourceLineEndInclusive':end,'sourcePrefixBytesThroughBoundary':prefix_end,'sourcePrefixSha256ThroughBoundary':h(b''.join(rows[:end])),'responseItemCount':len(records),'completePairs':len(calls),'firstToolTimestamp':records[0]['timestamp'],'lastToolOutputTimestamp':records[-1]['timestamp']})
+raw_doc={'coverage':'I05 author/reviewer r1/r2 original whole call/output response_item JSONL records only. Not entire conversation or all primary tools. No event/session_meta/reasoning records. Original source encrypted message arguments remain as stored; not reconstructed.','ordinalDefinition':'archiveOrdinal is extraction order; sourceResponseItemOrdinal counts ALL response_item records in original session from line1, including messages; sourceLine is 1-based and byteOffset 0-based; byte length includes original LF. UTC timestamps copied unchanged.','excluded':'ontology author tools before1815; reviewer dispatchR1 1478–1743, dispatchR2 2014–2111 and boundary handoff2126–2169; primary81a544/8db4a3 mixed tools and primary r1/r2 reads not archived; archive/format/stage/commit/post-receipt tools occur after frozen cutoffs and remain external receipts. No complete-primary/complete-session claim.','groups':group_index,'completePairCount':len(pair_index),'itemCount':len(raw_index),'items':raw_index,'pairs':pair_index,'selfIndexEntryNotHashed':True}
+dump(D/'tool-response-index.json',raw_doc)
+with zipfile.ZipFile(D/'tool-response-items.zip','w') as z:
+ for name,b in raw_entries:zipped_write(z,name,b)
+ zipped_write(z,'TOOL-RESPONSE-INDEX.json',(D/'tool-response-index.json').read_bytes())
+# Input archive: every fixed source blob and exact controlling/reviewed document.
+entries=[];source_records=[]
+def add(entry,b,origin):
+ assert entry not in {n for n,_ in entries};entries.append((entry,b));source_records.append({'entry':entry,'bytes':len(b),'sha256':h(b),**origin})
+for f in fixed['initialReadonly135']:
+ b=git('show',f['ref']+':'+f['path']);assert len(b)==f['bytes'] and h(b)==f['sha256']
+ add('fixed-git/'+f['ref']+'/'+f['path'],b,{'kind':'fixed Git source, not adopted','ref':f['ref'],'path':f['path']})
+for i,f in enumerate(fixed['inputs'],1):
+ b=Path(f['path']).read_bytes();assert len(b)==f['bytes'] and h(b)==f['sha256']
+ if f.get('ref'):
+  rel=f.get('relativePath') or ('docs/'+f['path'].split('/docs/',1)[1]);assert b==git('show',f['ref']+':'+rel)
+ add(f'fixed-references/{i:02d}-'+Path(f['path']).name,b,{'kind':'fixed control/reference document','sourcePath':f['path'],'ref':f.get('ref')})
+for label,snapshots in [('r1',r1['files']),('r2',r2files)]:
+ for f in snapshots:add('reviewed/'+label+'/'+Path(f['snapshot']).name,(ROOT/f['snapshot']).read_bytes(),{'kind':'exact reviewed snapshot','snapshot':f['snapshot'],'source':f['source']})
+for label in ['r1','r2']:
+ p=D/'revisions'/label/'snapshot-manifest.json';add('reviewed/'+label+'/SNAPSHOT-MANIFEST.json',p.read_bytes(),{'kind':'snapshot manifest','sourcePath':str(p.relative_to(ROOT))})
+source_doc={'coverage':'135 exact fixed Git blobs +15 full original controls/references +7 r1 snapshot originals +11 r2 exact reviewed inputs/output +two snapshot manifests. No WIP/product adoption. This archive excludes its own container/index hashes to avoid self-reference.','counts':{'fixedGit':135,'fixedReferences':15,'r1':7,'r2':11,'snapshotManifests':2},'itemCount':len(source_records),'items':source_records,'selfIndexEntryNotHashed':True}
+dump(D/'source-input-index.json',source_doc)
+with zipfile.ZipFile(D/'source-inputs.zip','w') as z:
+ for name,b in entries:zipped_write(z,name,b)
+ zipped_write(z,'SOURCE-INPUT-INDEX.json',(D/'source-input-index.json').read_bytes())
+print(json.dumps({'completeRawPairs':len(pair_index),'rawItems':len(raw_index),'groups':group_index,'sourceArchiveItems':len(source_records),'r2Snapshots':len(r2files),'archiveFiles':[info(D/n) for n in ['tool-response-index.json','tool-response-items.zip','source-input-index.json','source-inputs.zip','revisions/r2/snapshot-manifest.json']]},ensure_ascii=False,indent=2))
