@@ -1,0 +1,33 @@
+{
+  "commit": "d0403efcb3a01c00d6d05edabb7a56587d0040d5",
+  "checkedManifestRecords": 305,
+  "mismatches": [
+    {
+      "path": "docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/fixtures/crlf.records.jsonl",
+      "expectedBytes": 271,
+      "expectedSHA256": "0d0adbc839c29591f7041a3b80154ca87652486bbf7698b50c06a6e6b11bea48",
+      "gitBlobBytes": 269,
+      "gitBlobSHA256": "530b2e73f5a22f6aecfb3114e751e7d34b36f7285cf902fa74b4e21fbe5f7a25",
+      "objectId": "04b9b727465f1dbb9ddc157c966b60bd70756df9"
+    },
+    {
+      "path": "docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/validation-v2/fixtures/crlf.records.jsonl",
+      "expectedBytes": 271,
+      "expectedSHA256": "0d0adbc839c29591f7041a3b80154ca87652486bbf7698b50c06a6e6b11bea48",
+      "gitBlobBytes": 269,
+      "gitBlobSHA256": "530b2e73f5a22f6aecfb3114e751e7d34b36f7285cf902fa74b4e21fbe5f7a25",
+      "objectId": "04b9b727465f1dbb9ddc157c966b60bd70756df9"
+    },
+    {
+      "path": "docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/validation-v3/fixtures/crlf.records.jsonl",
+      "expectedBytes": 271,
+      "expectedSHA256": "0d0adbc839c29591f7041a3b80154ca87652486bbf7698b50c06a6e6b11bea48",
+      "gitBlobBytes": 269,
+      "gitBlobSHA256": "530b2e73f5a22f6aecfb3114e751e7d34b36f7285cf902fa74b4e21fbe5f7a25",
+      "objectId": "04b9b727465f1dbb9ddc157c966b60bd70756df9"
+    }
+  ],
+  "workingOriginalsPreserved": true,
+  "cause": "Git text clean filter normalized CRLF negative fixtures; no product or records supplier file mismatch",
+  "plannedFix": "Exact process-local .gitattributes -text for only these3fixtures; restage raw bytes; independent Git-blob review; no test rerun"
+}

@@ -1,0 +1,16 @@
+{
+  "candidateNotCommitted": true,
+  "manifestSHA256": "335a0b0c77abff6618051b5bea5217aeadc945e6c028091e36d520490269e193",
+  "checkedRecords": 316,
+  "mismatches": [
+    {
+      "path": "docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/whitespace-preserved-full.stdout",
+      "workingManifestBytes": 6174,
+      "workingManifestSHA256": "1ed1bbf5524863aced6fe9a955c5252aa5e68d73a888170d8e3f658863b09435",
+      "indexBytes": 6168,
+      "indexSHA256": "29843c6ca816497e6e873e9277d0293328571448dc0d207763356e46c8af52b6"
+    }
+  ],
+  "cause": "Raw Git whitespace diagnostic contains the literal CRLF negative fixture lines; Git clean filter affected this newly captured stdout too. Original working bytes preserved.",
+  "nextFix": "Add this one exact raw-output filename to process-local -text; encode subsequent checker stdout as base64 to preserve raw bytes without line filtering; no test/mapping rerun"
+}

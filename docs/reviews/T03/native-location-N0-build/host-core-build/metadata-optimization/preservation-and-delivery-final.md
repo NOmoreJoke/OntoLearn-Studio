@@ -1,0 +1,13 @@
+# 最终原件保全与交付指针
+
+固定产品仍95f07d931eeffd3bdcd52cb21e9fa2d8a1db12bd，三writer及全42772映射、24/19+2静态验证均未因封存变化重跑。原10643B独审及3973B账界补充字节未改；新增3121B CRLF保全独审只查三tiny fixture/index/局部属性，未冒全量审。
+
+首次过程d0403efcb3a01c00d6d05edabb7a56587d0040d5中305条working bytes清单核同，但Git blob随后检查仅三CRLF负例被clean filter从271B/0d0adbc839c29591f7041a3b80154ca87652486bbf7698b50c06a6e6b11bea48变269B/530b2e73f5a22f6aecfb3114e751e7d34b36f7285cf902fa74b4e21fbe5f7a25，其余302匹配。原工作字节完整；该失败/旧manifest/旧ref保持。修复只在本metadata目录添加130B精确.gitattributes，恰三个相对路径-text；三份原字节重入index，根/全局属性与产品均不改。
+
+原始CMake诊断末尾空行和故意extra-blank-line反例不得trim。whitespace-scope-validation.json记录full metadata diff exit2及35个精确保留raw路径，排除这些原件后的ordinary scoped diff exit0，实际c80→95三writer diff exit0。没有全分支/全metadata whitespace通过结论。
+
+最终delivery-manifest-final.json覆盖当前完整12、主说明、本metadata目录所有过程（含旧305 snapshot、新失败/修复/独审/局部属性）与基线82144B manifest身份；不再次解析旧大source。最终stage/blob身份校验在提交前执行，逐项比较Git index实际blob与该manifest的原bytes/SHA，再固定过程ref。此处不虚造自引用commit SHA；真实最终ref在控制回报中给出。
+
+metadata账827096/1000000含预留，实体200000/32GiB/metadata1GiB/旧9745727085B保持。Node24原argv/assert/双流可追，事后重建与同期结构化child回执/时间缺口仍明示。未第二configure/build、实体pin重验或任何产物测试；下一窗口由root另授。
+
+第二阶段保全追加：原始whitespace诊断stdout自身带有CRLF样本行，暂存316条比对发现这一项也被clean过滤；提交前已停止，失败与旧manifest快照另存。局部属性最终为四个精确文件：原三CRLF fixture及whitespace-preserved-full.stdout。后者按原字节保存；最新checker完整双流以base64原样封存，避免新raw结果再次被行尾过滤。最终36个精确raw例外见whitespace-final-scope-validation.json，full exit2/filtered0，没有重跑用例或mapping。旧35个例外回执为前一阶段事实，不替代本次36项最终范围。
