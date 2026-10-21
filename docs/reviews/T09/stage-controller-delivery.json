@@ -1,0 +1,16 @@
+{
+  "args": {
+    "threadId": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+    "hostId": "local",
+    "prompt": "T09父任务的独立stage-evidence私有原型已形成固定可审查交付，原S1源/测试仍冻结不动。新树 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-stage-evidence，branch feature/weekly-t09-stage-evidence，shared批准base5f910b52c69d86a1076b2032e5d3c63e715947f3、本线local parent74b17a4；固定实现12699cc0f536f5875e8b021349b58c2c954145cc/tree813af592a58396bf0a90a7f9f22076a5e5862266。\n仅新增learning/stages.py、test_learning_stages.py及私有stage-evidence-contract.md，不修改Store/公共schema/registry/bridge/UI，也不直接接入LearningService。实核I04 result_get在事实修改后确实将前阶段返回stale；本方案保留这一实际canonical值，要求owner读取阶段真正完成时已持久保存的不可变StageCompletion（UUID、plan/version/context/epoch/root/stage/输入与完成ledger序号、原始current结果），与今天结果除三运行态字段外全部核心JSON精确相等。terminal必须仍todaycurrent，完整分页/精确查询约束与范围参数依赖实现/邻阶段祖先/当前输入及epoch复核一并拒错。receipt不产生操作完成/独立迁移/领域passed。\n实际80专项通过；新同版npmcheck exit0：648 Vitest通过/16浏览器明确skip，1174 pytest及lint/格式/类型/构建/ruff全通过。2项新增真实JobStore read→事实编辑→失效→分页→binder探针保留旧stale与原始current，test.read只回显给定rows、学习ledger仍测试内存，不能算SPARQL/SHACL或T01持久账本。根版本校验和真正validation-kind覆盖两P2已修，独立报告stage-evidence-independent-review.md明确当前范围通过。完整字段/owner信任与CAS边界见docs/iterations/T09/stage-evidence-contract.md；80正反例均可固定读取；日志与原件SHA见docs/reviews/T09/evidence/stage-evidence-verification.json。\n请按现已生效T01唯一责任协调实际completion完成时原子持久化、不可变ledger join、实际root/current输入/epoch/祖先、一致读/分页pin及消费CAS，再由T00/T01批准唯一公共接口与领域adapter。没有这些来源时本原型不授予产品通过。common b24c4…已实际全文读并获独立agent全文回执；未GUI/付费/重置、未动锁/依赖或其他未批实现。S1仍以765源+d969文档澄清按原资源预约，stage原型不混入当前S1外审/合并。Goal active，无push/PR。"
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"threadId\":\"01a154de-843b-7a00-8a80-51ba1c0aebce\"}"
+      }
+    ],
+    "isError": false
+  }
+}

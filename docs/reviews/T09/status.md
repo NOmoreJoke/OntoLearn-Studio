@@ -1,5 +1,17 @@
 # T09 实际状态
 
+当前续接工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-stage-evidence`，分支 `feature/weekly-t09-stage-evidence`。共享批准base仍5f910b5，本线续接parent74b17a4。独立私有阶段证据实现固定 `12699cc0f536f5875e8b021349b58c2c954145cc`；当前专项80项通过，最终完整检查与独立报告见本轮证据。T09原Goal保持active。
+
+总控已登记此独立父任务树；原 `T09-learning-baselines` 的S1实现7659665及流程74b17a4冻结，后续只有d96924e文档澄清，没有源/测试变化。S1仍待总控审查预约和指定双模型。此树未采用其他线未批实现，不改公共契约、Store或业务接线。
+
+阶段证据原型只验证受信owner计划/账本、实际canonical job/result/pages与版本、顺序、祖先及原始完成回执。它保留当前真实stale状态，末阶段必须仍current，且再次核实际当前计划。没有操作完成/独立迁移成功/领域passed授权。T01持久不可变完成账本与真实当前输入/epoch/CAS、T00批准接口和领域结果比较均仍缺，未注册或接入LearningService/UI。
+
+当前80项包括2项真实批准I04存储、编辑失效和分页探针；test.read只保存给定rows、学习账本为测试内存对象，不能登记SPARQL/SHACL或学习持久化完成。第一版3项错误码预期失败、完成证明加入后1项fixture绑定失败、首次真实I04探针2项marker键失败均保留；独立审查根输入版本缺失P2及validation样例覆盖不足已修，修后80项通过。说明与owner精确需求见 `docs/iterations/T09/stage-evidence-contract.md`。
+
+以下为继承的T09-S1阶段记录和完整父任务门禁，当前多阶段续接以本节及本轮stage证据为准。
+
+## T09-S1 冻结阶段记录
+
 2026-10-21（Asia/Shanghai）。阶段：独立实现/内容、I04真实基础设施联验、独立学习UI及当前范围内审已完成；尚未正式业务接线、指定双审或合并。独立 Goal 保持 active。
 
 ## 身份与文件责任
@@ -58,4 +70,10 @@
 
 最终UI候选完整检查与独立内审结果见 evidence/learning-ui-verification.json 及 learning-ui-independent-review.md。截图为私有组件headless结果，不能代替正式Electron、实际领域/持久化、包内资源或真人验收。正式接线、指定双审、CI/远端及发布门仍未关闭。
 
-最终冻结实现 `76596656908ed84e577e8202a602e3256d5febcc`：显式启用独立headless运行时的完整 `npm run check` exit 0，664项Vitest（18学习纯逻辑+16学习headless组件）、1094项Python及lint/格式/类型/构建/ruff均通过。1440与390px截图已实际查看，窄屏无页面横向溢出；输入与反馈均以React文本渲染，测试观察网络请求0。此前失败/中间结果均无损gzip保存并绑定原始字节SHA，不能替代最终候选。
+最终冻结实现 `76596656908ed84e577e8202a602e3256d5febcc`：显式启用独立headless运行时的完整 `npm run check` exit 0，664项Vitest（18学习纯逻辑+16学习headless组件）、1094项Python及lint/格式/类型/构建/ruff均通过。1440与390px截图已实际查看，窄屏无页面横向溢出；输入与反馈均以React文本渲染，测试观察网络请求0。浏览器证据仅支持chromiumSandbox:true配置和成功运行，未采当次argv/OS sandbox状态和二进制hash，不当作原生平台隔离证明。此前失败/中间结果均无损gzip保存并绑定原始字节SHA，不能替代最终候选。
+
+总控固定765/74审计的文档口径已修：T09_HEADLESS_UI未设1始终skip，与runtime是否安装无关；设1缺匹配runtime是启动失败。手机截图文件390×1932，采样viewport390×844，两者分别记录。历史74提交和原始交付回执原样保留，本次仅文档澄清，不触发无变化产品重测。
+
+本轮最终固定12699cc同版 `npm run check` exit0：648 Vitest通过、16 headless明确skip、1174 pytest通过，lint/格式/类型/构建/ruff均通过。80专项及实际I04限定探针含于完整Python运行。没有重复执行未变UI浏览器套件，不将skip算通过；旧S1的18纯+16显式headless证据仅支持其固定候选。当前源/测试三文件commit后无差异，失败及中间证据无损归档。
+
+固定12699cc私有范围独立内审明确通过，两项P2（根输入版本/文本身份校验与validation类型覆盖）已关闭，见 stage-evidence-independent-review.md；此结论不替代真实持久化/领域集成或指定双模型。

@@ -5,3 +5,5 @@
 原第九节和无桌面打扰约束已全文实际读取并透传独立 reviewer。新外审任务默认 ZCode yolo、MiniMax bypassPermissions，创建/进入时仍须读回实际任务模式；完全访问不改变只读审查职责。未擅自改应用配置、消费重置、付费、启动 GUI、抢占桌面或将默认文件核验视作在途会话切换。
 
 原恢复定位 873c8c0 快照中仍含旧 51cdc0e 摘要；6f6264bd6c090e54abf1919157e1a1127c8916ba 已将 recovery.json 正确指向 implementationCommit=873c8c051b9870aa12fc7e1dbbd3e0c358e7c380、jobstore-verification.json（42学习/630Vitest/1094Python）。历史35/1087日志保留原件，未改写旧提交。总控固定873审计的文档定位发现由此关闭；产品固定输入manifest不变。G-list02完整roundDTO比较仍待真实领域适配，50计划不等同50真实执行通过。
+
+本独立stage树续接安全边界已全文实际读新版共同指令 b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39，并透传独立reviewer实际全文回执；AGENTS仍78df282…不stage。新增生效责任为T01 storage+格式Python4+canonical/main8，T03依赖构建4；其他共享路径不自动扩权、未批代码不消费。政策变化本身未触发旧S1重测或重审，原S1输入及证据字节留在冻结原树。

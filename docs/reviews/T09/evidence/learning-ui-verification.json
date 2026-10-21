@@ -96,7 +96,8 @@
     ],
     "networkRequestsObserved": 0,
     "HTTPServer": false,
-    "explicitOptIn": "T09_HEADLESS_UI=1; ordinary default check skips headless suite if runtime is not provisioned"
+    "explicitOptIn": "T09_HEADLESS_UI=1 is required regardless of runtime presence; without it the browser suite always skips. With it and a missing matching browser binary, launch fails.",
+    "assuranceBoundary": "Evidence proves chromiumSandbox:true launch configuration and successful headless tests; per-run argv, OS sandbox state and binary hash were not captured. This is not native platform isolation proof."
   },
   "screenshots": {
     "ui/desktop-course.png": {
@@ -105,7 +106,11 @@
         "width": 1440,
         "height": 1050
       },
-      "visuallyInspected": true
+      "visuallyInspected": true,
+      "imageSize": {
+        "width": 1440,
+        "height": 1050
+      }
     },
     "ui/mobile-behavior.png": {
       "sha256": "8fb74a101351e5183670cd63d7912a739be60ec891bbdfe35cbd618b8bf8b9b8",
@@ -113,7 +118,11 @@
         "width": 390,
         "height": 844
       },
-      "visuallyInspected": true
+      "visuallyInspected": true,
+      "imageSize": {
+        "width": 390,
+        "height": 1932
+      }
     }
   },
   "artifactRetentionReason": "No CI artifact exists for this local unpublished candidate; retain small component screenshots and lossless first-failure archives for independent recovery/audit.",
@@ -127,5 +136,11 @@
     "actual domain tools and packaged resources",
     "T08/T10 and human/platform acceptance",
     "same-candidate designated dual review, push/PR/CI/merge"
-  ]
+  ],
+  "documentationCorrection": {
+    "reason": "controller fixed765/74 evidence audit clarified opt-in and sandbox scope",
+    "previousExplicitOptIn": "T09_HEADLESS_UI=1; ordinary default check skips headless suite if runtime is not provisioned",
+    "sourceAndTestsUnchanged": true,
+    "noProductRetestTriggered": true
+  }
 }

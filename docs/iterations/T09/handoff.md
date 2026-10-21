@@ -50,4 +50,10 @@ T01 如只读引用本线输入可继续固定 `51cdc0e` 的manifest；如引用
 
 T01 请提供持久化的同 project/task/attempt 最高提示/辅助记录（跨 input、重开、窗口恢复），受信 context 和每个 context 单调 recordVersion；T00 批准业务命名桥与实际阶段证据。UI 只接受真实结果反馈，真实尝试先保存提示再展示；冲突或缺能力不计完成。T08/T10 分别提供实际完整辅助来源和导出回执，domain owner 提供实际检查。
 
-T11 请在隔离 CI 准备锁定版本 Playwright 对应 Chromium headless runtime，并显式启用 `T09_HEADLESS_UI=1`；本次本地完整check已实际执行18纯+16headless学习测试，无HTTP服务、零页面网络请求、启用sandbox。普通默认check未配置运行时时会明确skip浏览器套件，不能算该验收已跑。未抢改共享CI或安装依赖。最终摘要、全check日志和独立内审位于 docs/reviews/T09；固定manifest仍为aaaef2c…，17输入/50计划不变。
+T11 请在隔离 CI 准备锁定版本 Playwright 对应 Chromium headless runtime，并显式启用 `T09_HEADLESS_UI=1`；本次本地完整check已实际执行18纯+16headless学习测试，无HTTP服务、零页面网络请求，配置chromiumSandbox:true并成功运行；未采当次argv/OS sandbox状态和浏览器二进制hash，不外推原生隔离保证。未设T09_HEADLESS_UI=1时，无论runtime是否存在，浏览器套件都会skip；设1但缺匹配runtime则launch失败。默认skip不能算该验收已跑。未抢改共享CI或安装依赖。最终摘要、全check日志和独立内审位于 docs/reviews/T09；固定manifest仍为aaaef2c…，17输入/50计划不变。
+
+## 独立父任务树的阶段证据原型
+
+S1整套源保持7659665；后续父任务私有多阶段证据在独立 `T09-stage-evidence` 树/`feature/weekly-t09-stage-evidence` 完成12699cc。它复用批准I04 canonical结果而不改公共合同或Store，具体字段、受信读接口与真正owner义务见 [stage-evidence-contract.md](stage-evidence-contract.md)。完成回执必须在阶段实际成功时由T01原子持久保存，不能事后把stale结果补成current；当前原始stale与完成时current两者都保留。输入/完成账本顺序、祖先、一致读和消费CAS须由T01提供真实来源。
+
+本轮80专项与完整check已通过，包含2项真实I04读/事实编辑失效/分页兼容探针；学习ledger仍synthetic，不是领域、持久化或正式跨模块通过。最终绑定摘要与内审在本树docs/reviews/T09，原S1树无此实现/测试变更。请总控以这份固定提案和完整正反例协调T01/T00批准实际接口；未批准前不接LearningService/bridge/UI。原S1指定双审排队与完整父模块所有门禁继续。
