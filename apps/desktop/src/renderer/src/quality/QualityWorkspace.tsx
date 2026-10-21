@@ -368,8 +368,14 @@ function QualityEditor({
           onChange={(event) => setScope(event.target.value)}
         >
           <option value="asserted">当前断言事实（不含推导）</option>
-          <option value="asserted+rdfs+rules">当前断言与本次推导</option>
+          <option value="asserted+derived" disabled>
+            断言与选定的已有推导（待接入结果选择）
+          </option>
         </select>
+        <p>
+          包含推导的验证须绑定实际保存的推导结果及其输入快照、版本和当前/历史状态。
+          结果选择尚未接入，不能用计划中的推导替代。
+        </p>
         <label htmlFor={field('sample')}>输入样本（Turtle，待真实解析）</label>
         <textarea
           id={field('sample')}
