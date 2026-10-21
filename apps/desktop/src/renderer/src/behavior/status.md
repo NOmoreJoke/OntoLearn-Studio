@@ -30,3 +30,11 @@ Headless 已实际通过：未接入服务禁用、键盘 Tab、事件/事实变
 r2 首败是验证脚本用精确 label 匹配已有内容的 textarea 超时，保留 `test-results/t06-ui-r2-headless-first.log`，修正为 textbox 可访问角色后，最终 headless 在 `t06-ui-r2-headless-final.log` 完整通过。原始完整 check、脚本定位修正后的最终完整 check 分别保留 `t06-ui-r2-check-first.log`、`t06-ui-r2-check-final.log`。新 JSON 明确保留原571版本的 verification Git对象/hash，并分别记录历史与当前证据。
 
 本地修复与验证完成，下一步为新固定提交的完整独立复核；没有自行将原不通过改为独立通过。尚未推送/PR/合并，正式接线及父模块/发布验收边界不变。
+
+## da37709 完整独立复核终态
+
+父 agent `/root` 新派发 `/root/behavior_independent_review` 对 base `5f910b52c69d86a1076b2032e5d3c63e715947f3` → 产品 HEAD `da37709dcf09e04ded767ab2d08c26bbd8df24f3` 的全部10文件只读复核，已实际终态通过，开发线已全文读回 `/tmp/T06-UI-da37709-independent-review.md`，报告 SHA256 `0ed80af74646509741dc0e7a40fb142713b0605c30dc97735b1eba8c1680c9b3`。原571完整不通过及三项问题原件继续保留。
+
+三项均经独立实际关闭：P2-1 explicit always 无伪造对象条件、空/缺条件拒绝、宿主与执行回调保真；P2-2 60种单轮状态组合、四状态 controller 负例与刷新保留；P2-3 两份不同同ID保留键载荷均拒绝且 callback 计数不增，普通内容完整保留。独立者实际运行34项专项单测及真实 headless 全链路并退出0，复验7源/9当前证据/旧manifest及11旧产物哈希、最终HEAD和仅AGENTS dirty。开发线完整check的664 TS/1052 Python日志由独立者核对对应关系，未冒称其独立重跑全仓。
+
+独立 headless 产物在 `/tmp/t06-ui-da37709-review-6R9rwE/`（`headless.log`、`output/evidence.json`、宽屏/手机截图）；独立者已实际看图，本线仅读取产物核验记录，不重跑无变化验证。本次只更新 status.md 与 verification.json 作为流程证据；7产品/测试/脚本及README相对受审产品da37709零diff，保护AGENTS仍未暂存。指定双模型外审、真实App/bridge/引擎/Store/推理/Agent/G.3、原生平台与包内验证、CI/推送/PR/合并/发布仍未验，不据此关闭父FR或正式接线门。

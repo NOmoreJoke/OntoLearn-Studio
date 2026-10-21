@@ -39,7 +39,37 @@
       "path": "/tmp/T06-UI-571b4d6-negative-probes.mjs",
       "sha256": "dc8b54956bbfda1f0b2d0548ca7a8eecaa6fdbbf07c54306d0ef4c65b69562ab"
     },
-    "new_candidate_review": "pending new full independent review"
+    "new_candidate_review": {
+      "outcome": "passed: full local independent review of the unmounted component; all 3 historical P2 closed",
+      "head": "da37709dcf09e04ded767ab2d08c26bbd8df24f3",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "source": "parent /root dispatched a new full review to /root/behavior_independent_review; actual terminal report read in full",
+      "report": {
+        "path": "/tmp/T06-UI-da37709-independent-review.md",
+        "sha256": "0ed80af74646509741dc0e7a40fb142713b0605c30dc97735b1eba8c1680c9b3"
+      },
+      "actual_independent_checks": {
+        "unit": "34 passed; exit 0",
+        "headless": "actual Headless Shell full positive/negative flow; exit 0; reviewer inspected width-1440.png and viewport-390.png",
+        "hashes": "all 7 current sources, 9 r2 evidence files, old manifest and 11 original artifacts verified",
+        "full_check": "developer 664 TS/1052 Python log and source correspondence verified; not independently rerun"
+      },
+      "headless_artifacts": {
+        "directory": "/tmp/t06-ui-da37709-review-6R9rwE/",
+        "script": "verify.mjs",
+        "log": "headless.log",
+        "log_sha256": "4fec298d4036559f5e3d98dee626dc8880266dfcd1ae6e11dc4471ed3fbd637f",
+        "evidence": "output/evidence.json",
+        "evidence_sha256": "d7397917d1446c5901f10d92481666c477e7bc6ae529fa919b82241bc5ee0b56",
+        "screenshots": ["output/width-1440.png", "output/width-390.png", "output/viewport-390.png"]
+      },
+      "closed_findings": [
+        "P2-1 explicit always author/validate/host and execution callback; empty/missing conditions still rejected",
+        "P2-2 single-round state matrix and all 60 combinations; contradictory run/refresh rejected",
+        "P2-3 reserved own keys rejected before normalization; different same-ID payloads not folded or sent"
+      ],
+      "limits": "local independent component review only; no specified external model review or real domain/App integration"
+    }
   },
   "repairs": {
     "P2-1": "explicit always author/validate/onDraftChange/runSample callback, with no fake object condition; empty/missing condition still rejected",
@@ -67,7 +97,8 @@
     "formal App/bridge/engine/Store/reasoning/Agent integration",
     "real G.3 semantic baseline execution through UI",
     "native Electron/macOS/Windows product verification",
-    "independent review and specified dual external review",
+    "specified GLM-5.3/M3.1-Flash dual external review",
     "CI/push/PR/merge/release"
-  ]
+  ],
+  "product_head": "da37709dcf09e04ded767ab2d08c26bbd8df24f3"
 }
