@@ -6,7 +6,9 @@
 
 Goal 工具已实际返回 blocked；没有标完成、缩小或重建目标。审计见 blocked-audit.md。同一正式接口/实际审查入口条件连续至少三轮存在，现有可独立实现/修复/验证/复核已完成，自有任务均终态；后续需批准真实接口/接线路径，或明确桌面时段/隔离CUA入口。
 
-S1 产品固定 61396a598b2dffc1d3d2fd4660f9af1d5c93d266，本地验证与完整独立复核已通过，指定双任务仍未创建、无句柄；总控实际确认条件待满足、T06首顺位。原已提人类时段问题保持 pending，不重复询问，不自动操作当前桌面。
+S1 产品固定 61396a598b2dffc1d3d2fd4660f9af1d5c93d266，本地验证与完整独立复核已通过，指定双任务仍未创建、无句柄。最新条件队列按总控实际通知及 externalReviewQueue.firstConditional 更新：下一真正安全审查入口优先 I05 C3，T06 S1 顺延；双方0任务、无活动UI lease，不中断任何审查。原已提人类时段/隔离入口问题保持 pending，不重复询问；若收到实际资源答复，先交总控串行协调，不自行操作当前桌面，Goal blocked不自动恢复。
+
+队列读回边界：execution-state 的旧 reviewResourceReservation 摘要仍写 T06 first，详细 externalReviewQueue 已写 I05 C3 优先及实际通知记录；本线以最新总控通知和详细队列为准，未改根状态文件。总控另已全文读回 UI 恢复审计 SHA 520e723dcb87e33ae9d7627145a9f37f85b19d1d0b51f4cf968e0460e6baf7c7，确认 fd33cbb 两包42成员、33原件和6工具原行一致，原恢复缺口关闭；不据此无变化复测或扩大验收。
 
 UI 产品固定 da37709dcf09e04ded767ab2d08c26bbd8df24f3，流程 3b3af941c73b7a5d416fda50ec6fb8102992551f。新完整独立复核已实际终态 Pass，三项 P2 全部关闭，原571不通过和首败保留。完整原文 ui-local-review-2.md，固定来源/完整diff/当前9证据/历史11原件及独立headless留存摘要 evidence/ui-validation-da37709.json。664TS/1052Python（34UI）与独立34测试/真实headless分别记账，不算真实Store/推理/Agent/UI联验或指定外审。
 
