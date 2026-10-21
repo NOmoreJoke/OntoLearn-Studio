@@ -2,7 +2,7 @@
 
 基线 `5f910b52`。以下是待 owning source 批准的需求，不是公共契约或共享写权限。
 
-1. T00/I06：仅由命名桥调用 ontology 读取/编辑预览及 T01 确认入口；请求与响应需复用 canonical strict schema、项目/会话身份、分页/限量、operation/job/快照/版本和固定错误体系。本线不注册能力，不改 contracts/main/preload/App。
+1. T00协调、T01（canonical/main engine）、I06（余下bridge/App）：仅由命名桥调用 ontology 读取/编辑预览及 T01 确认入口；请求与响应需复用 canonical strict schema、项目/会话身份、分页/限量、operation/job/快照/版本和固定错误体系。本线不注册能力，不改 contracts/main/preload/App。
 2. T01：从同一不可变快照投影出本体定义与当前断言（包含外部定义引用）；领域服务返回精确结构/事实变化及引用影响，不直接调用 Store。定义 ID 与 RDF IRI 的权威映射由单一项目格式确定。确认时重新取快照并做引用及基线复验，所有修改在一次 Store.commit 中，旧预览/取消/异常零部分写入。删除影响必须包含映射/约束/规则/行为/查询等非本体定义显式引用；本线接受只读 external references。
 3. I05/T00：批准有限 Turtle parser/支持检查入口后接入，输入为受限文本（不传 URL）；返回全部可保留三元组及模板列表，未知 OWL/SHACL/空白节点结构明确拒绝，不丢弃。本线只以基线 RDF 项处理编译手工编辑；不复制未批准语义实现。SHACL 模板编辑由 T05，导入整批与 Store 提交经 T01。兼容测试同时覆盖合法不支持、语法错误、语言/类型字面量、SHACL 值列表和往返完整集合。
 4. T08：只传草稿及指定输入版本；预览不是用户确认，草稿文本不可提升权限；确认按钮只能连接 T01 人类动作。失败/旧版本/被取消时不得声称已保存。
@@ -22,3 +22,9 @@
 总控允许只读消费 T09 固定 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 的 manifest 输入；本线逐项重算17文件及原PRD hash后只复制 manifest/G-base 原字节，证据在 `t09-input-verification.json`。不使用该提交的任何服务/Store helper，不跟随变化 HEAD，不向正式 Store 预填 expected。测试内显式投影核对10条本体定义及18条断言的全部具体三元组（不以数量判断）；不执行规则/推理/行为。
 
 `owl:Class` 与 `rdfs:Class` 均属 C 原支持范围，不能为便于编辑将导入声明改写。私有 `Entity.class_type` 和页面 `ObjectRow.classType` 保留该原声明；最终 T00/T01 adapter 需有明确映射、严格校验及全量 RDF 回归。中英文名称/定义均使用可保留换行的输入控件。此处不扩大为 OWL 表达式支持，也未批准公共 schema。
+
+## 当前生效责任路由补充
+
+总控已生效的两份格式3责任协议将Python4与canonical/main8交给T01（协议SHA分别18485767098d448a4fcce2fc7e59b5a325433826894b98111cab96926fdc2097、add9884ab9a0cda3a8a562f26a3b7c515255919d65eb0487d6c254681ed4991d）。因此正式读取/预览canonical、Job/协议/main engine需求先由T01在单一候选内落实，I06仅负责其余六个bridge/壳文件；不再把原14文件整体留给I06。具体格式3代码/公共JSON/运行证据仍未批准供本线消费；本补充不是T02共享写授权。
+
+独立子阶段的精确范围和全部父缺口见 `stage-registration-request.md`。它是待总控登记的请求，未自动取得外审时段，不替代原父Goal或指定双新审。

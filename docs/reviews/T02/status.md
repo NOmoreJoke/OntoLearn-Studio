@@ -73,3 +73,19 @@ C3全仓`source-projection-check-first.log`已实际exit0：633 TS/1091 Python�
 独立agent实际对固定 `49321221733ea927484647352e05e7d833cebc86` 返回**通过**；owning source、实现/日志hash匹配，原问题保持关闭，无新实质阻断。独立精确探针确认类型/名称原asserted身份、读取零输入改写及旧源拒绝。非阻断P3“交付入口仍指C2”已仅在delivery文档修正并读回；报告 `independent-review-c3.md` 保留原意见与处置。
 
 当前恢复实现为4932122，最新流程记录提交另附其后；仅流程文档差异，不重复无变化运行。仍无T01/T00/批准I05正式接口授权与T02外审预约，完整父功能、双指定新审、push/PR/CI/merge/远端及上线未完成。Goal继续active。本turn有实际C3代码/13真实Store专项/完整验证/独立内审与可恢复提交进展，不是只重述状态或把总控文件当活跃进程等待。
+
+## C3 后续路由核验与子阶段请求
+
+上一Goal turn分类为progress（C3真实读取来源模块、13专项、完整check及固定内审/提交）。本turn实际重新核验head75694b1、指南78df、远端develop5f。总控执行记录的新事实是T01已接收Python4与canonical/main8、I06保留六壳文件；两个已生效协议全文及hash已核对，具体格式3实现仍未获准消费。此前交付/接口文档的旧owner路由现已修正。
+
+已准备 `docs/iterations/T02/stage-registration-request.md`：请求按现有root子阶段制度登记精确T02-S1本地范围、全部有界验收与父功能缺口；root尚未登记T02或授予外审时段。请求保留完整FR200–204/导入/正式写入/模型/父发布以及同版双新审/CI正常合并门，不把私有服务或页面换成父功能完成。产品源码/测试/基线未变，未重复check/GUI。
+
+通过官方wait_threads实际核验总控thread `01a154de-843b-7a00-8a80-51ba1c0aebce` 的turn `01a15bc8-732c-76f0-824b-dc2ae935c08b` 为inProgress，status active，revision52/cursor `a6fb72bc-870a-442e-8c5f-cb4caa4b7ecb:52`；再用该cursor等待真实进度变化。此为具体活跃聊天句柄的核验，不把文件/意图视为进程等待，也不意味着总控已批准本请求或依赖。
+
+总控随后实际透传相同owner政策；已在安全边界全文读回最新共同指令，SHA `b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39`，第九节/无桌面/指定审查/逐任务权限规则继续，AGENTS仍78df。已归档输入保留原SHA，不重建Goal、不因纯责任政策更新重测产品。对子阶段请求的独立文档复核实际通过，无实质阻断；非阻断__main__路径歧义已改完整反引号路径。
+
+40秒按revision52的总控wait被新政策输入中断（工具明确Wait interrupted by new input），没有当作总控终止或重启依据；随后对同一thread/cursor只读重取即时快照。未向其他聊天发送消息，正式共享/外审缺口仍不能由本地登记请求自行批准。
+
+独立agent完成登记文档复核，通过且无实质阻断，P3路径歧义实际读回关闭，政策更新已由该agent全文读回。报告见`stage-registration-review.md`；本地请求仍待总控登记。官方同一总控thread/cursor即时复取返回revision53、turn仍inProgress/status active，最新真实commentary确认T01共享基础、T03/T04/T09独立服务登记，仍未有T02预约或批准。这是当前具体活跃句柄的verified wait；不把其协调进度等同正式接口/领域能力通过。
+
+本轮仅责任/阶段请求/流程证据文档发生变化；实现仍4932122，原全Goal不缩减不关闭。未向别的聊天发送消息、未写root控制文件、未操作外审应用或改共享实现。最新共同指令仅政策生效同步，未因此重开产品审查或复测。
