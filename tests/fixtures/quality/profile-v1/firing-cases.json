@@ -1,0 +1,329 @@
+{
+  "oracle": "Hand-authored controlled catalog and one concrete given binding; no graph membership claim; full expected firing/facts manually assembled from this exact input, no tested mechanism imports or outputs",
+  "catalog": {
+    "classes": ["urn:C"],
+    "object_properties": ["urn:related"],
+    "data_properties": ["urn:value", "urn:out"]
+  },
+  "subject": "urn:a",
+  "value": "2",
+  "definition": {
+    "rule_id": "r1",
+    "when": [["?s", "urn:value", "?v"]],
+    "comparisons": [
+      [
+        "?v",
+        "gt",
+        {
+          "type": "integer",
+          "lexical": "1"
+        }
+      ]
+    ],
+    "heads": [
+      ["?s", "urn:out", "?v"],
+      ["?s", "urn:out", "?v"]
+    ],
+    "source": {
+      "reference": "fixture:firing-cases",
+      "digest": null,
+      "revision": "1",
+      "text": "actual fixture"
+    },
+    "revision": "1",
+    "definition_digest": "given-definition-digest",
+    "policy": "OntoLearn-rule-comparison-profile/1"
+  },
+  "expected": {
+    "heads": [
+      [
+        "urn:a",
+        "urn:out",
+        {
+          "type": "integer",
+          "lexical": "2"
+        }
+      ],
+      [
+        "urn:a",
+        "urn:out",
+        {
+          "type": "integer",
+          "lexical": "2"
+        }
+      ]
+    ],
+    "basis": ["fact:1"],
+    "head_indices": [0, 1],
+    "comparison_indices": [0],
+    "unique_facts": 1,
+    "firing": {
+      "rule_id": "r1",
+      "bindings": [
+        [
+          "?s",
+          {
+            "kind": "iri",
+            "lexical_form": "urn:a",
+            "datatype_iri": null,
+            "language_raw": null,
+            "source": null
+          }
+        ],
+        [
+          "?v",
+          {
+            "kind": "literal",
+            "lexical_form": "2",
+            "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
+            "language_raw": null,
+            "source": {
+              "reference": "fixture:value-2",
+              "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
+              "revision": "fact-v1",
+              "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          }
+        ]
+      ],
+      "when": [
+        {
+          "subject": {
+            "kind": "iri",
+            "lexical_form": "urn:a",
+            "datatype_iri": null,
+            "language_raw": null,
+            "source": null
+          },
+          "predicate": {
+            "kind": "iri",
+            "lexical_form": "urn:value",
+            "datatype_iri": null,
+            "language_raw": null,
+            "source": null
+          },
+          "object": {
+            "kind": "literal",
+            "lexical_form": "2",
+            "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
+            "language_raw": null,
+            "source": {
+              "reference": "fixture:value-2",
+              "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
+              "revision": "fact-v1",
+              "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          }
+        }
+      ],
+      "proof_leaves": [["fact:1"]],
+      "comparisons": [
+        {
+          "index": 0,
+          "left": {
+            "term": {
+              "kind": "literal",
+              "lexical_form": "2",
+              "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
+              "language_raw": null,
+              "source": {
+                "reference": "fixture:value-2",
+                "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
+                "revision": "fact-v1",
+                "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+              }
+            },
+            "domain": "N",
+            "value": {
+              "numerator": 2,
+              "denominator": 1,
+              "negative_zero": false
+            },
+            "language": ""
+          },
+          "operator": "gt",
+          "right": {
+            "term": {
+              "kind": "literal",
+              "lexical_form": "1",
+              "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
+              "language_raw": null,
+              "source": null
+            },
+            "domain": "N",
+            "value": {
+              "numerator": 1,
+              "denominator": 1,
+              "negative_zero": false
+            },
+            "language": ""
+          },
+          "result": true
+        }
+      ],
+      "heads": [
+        {
+          "index": 0,
+          "triple": {
+            "subject": {
+              "kind": "iri",
+              "lexical_form": "urn:a",
+              "datatype_iri": null,
+              "language_raw": null,
+              "source": null
+            },
+            "predicate": {
+              "kind": "iri",
+              "lexical_form": "urn:out",
+              "datatype_iri": null,
+              "language_raw": null,
+              "source": null
+            },
+            "object": {
+              "kind": "literal",
+              "lexical_form": "2",
+              "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
+              "language_raw": null,
+              "source": {
+                "reference": "fixture:value-2",
+                "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
+                "revision": "fact-v1",
+                "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+              }
+            }
+          }
+        },
+        {
+          "index": 1,
+          "triple": {
+            "subject": {
+              "kind": "iri",
+              "lexical_form": "urn:a",
+              "datatype_iri": null,
+              "language_raw": null,
+              "source": null
+            },
+            "predicate": {
+              "kind": "iri",
+              "lexical_form": "urn:out",
+              "datatype_iri": null,
+              "language_raw": null,
+              "source": null
+            },
+            "object": {
+              "kind": "literal",
+              "lexical_form": "2",
+              "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
+              "language_raw": null,
+              "source": {
+                "reference": "fixture:value-2",
+                "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
+                "revision": "fact-v1",
+                "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+              }
+            }
+          }
+        }
+      ],
+      "basis": ["fact:1"],
+      "source": {
+        "reference": "fixture:firing-cases",
+        "digest": null,
+        "revision": "1",
+        "text": "actual fixture"
+      },
+      "revision": "1",
+      "definition_digest": "given-definition-digest",
+      "policy": "OntoLearn-rule-comparison-profile/1"
+    },
+    "facts": [
+      {
+        "subject": {
+          "kind": "iri",
+          "lexical_form": "urn:a",
+          "datatype_iri": null,
+          "language_raw": null,
+          "source": null
+        },
+        "predicate": {
+          "kind": "iri",
+          "lexical_form": "urn:out",
+          "datatype_iri": null,
+          "language_raw": null,
+          "source": null
+        },
+        "object": {
+          "kind": "literal",
+          "lexical_form": "2",
+          "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
+          "language_raw": null,
+          "source": {
+            "reference": "fixture:value-2",
+            "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
+            "revision": "fact-v1",
+            "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+          }
+        }
+      }
+    ],
+    "profile": "OntoLearn-rule-comparison-profile/1"
+  },
+  "input_binding": [
+    [
+      "?s",
+      {
+        "kind": "iri",
+        "lexical_form": "urn:a",
+        "datatype_iri": null,
+        "language_raw": null,
+        "source": null
+      }
+    ],
+    [
+      "?v",
+      {
+        "kind": "literal",
+        "lexical_form": "2",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
+        "language_raw": null,
+        "source": {
+          "reference": "fixture:value-2",
+          "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
+          "revision": "fact-v1",
+          "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        }
+      }
+    ]
+  ],
+  "input_when": [
+    {
+      "subject": {
+        "kind": "iri",
+        "lexical_form": "urn:a",
+        "datatype_iri": null,
+        "language_raw": null,
+        "source": null
+      },
+      "predicate": {
+        "kind": "iri",
+        "lexical_form": "urn:value",
+        "datatype_iri": null,
+        "language_raw": null,
+        "source": null
+      },
+      "object": {
+        "kind": "literal",
+        "lexical_form": "2",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer",
+        "language_raw": null,
+        "source": {
+          "reference": "fixture:value-2",
+          "digest": "2afdf73e7eb0a941880659c7abd909c19e3139833c3a7c02eb9052132068ac8e",
+          "revision": "fact-v1",
+          "text": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        }
+      }
+    }
+  ],
+  "input_proof_leaves": [["fact:1"]]
+}
