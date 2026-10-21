@@ -85,7 +85,7 @@
     "controllerReadbackSha256": "a09694b55e7ba7c8f1f99d71fdd1af77f5d30431a00b8628123d11c3e72278f0",
     "recoveryIndex": "docs/reviews/T05/fr505-r1-r2-recovery.json"
   },
-  "lastContinuationClassification": "limited document-only incorporation of fixed T01 TA-C/Q-LIFE wrapper technical response; I05 real consumer entry/goldens and Q6 still pending; original Goal remains blocked",
+  "lastContinuationClassification": "limited document-only incorporation of I05 new TA technical acceptance merged with T01 wrapper response; explicit unsupported and unproven C cells preserved; Q6 and original integration Goal remain pending/blocked",
   "storeParameterProbe": {
     "approvedStoreGitRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
     "sourceSha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
@@ -110,8 +110,8 @@
     "implementationReadOrConsumed": false,
     "ownerResponses": "I05/T01 technical acceptances and current error facts incorporated; Q6/norm pin/full real matrix/public payload/budgets and effective handoff pending",
     "commonInstructionsSha256": "ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff",
-    "sha256": "4a822aa9b45885858b013b33242455b63d647031f01a64da8caf4b80a07df1de",
-    "internalReview": "passed-T01-wrapper-document-only-increment-no-new-substantive-findings",
+    "sha256": "d14bba9a059b81096e4bc63ebd825dbeacbf92eb7a5b4b0094f26f2e4e0c3304",
+    "internalReview": "passed-limited-I05-T01-joint-acceptance-and-Q6-scope-document-review",
     "resourceBaselineCorrection": "resources.py exists in approved5f; only three semantic files new; unapproved candidate deltas still not consumed",
     "latestDependencyReceipt": "docs/reviews/T05/semantic-dependency-c2-receipt.json",
     "offerIdentityStatus": "historical-source-only; approved-C3-source-and-semantics-identity-must-be-rechecked",
@@ -185,7 +185,7 @@
     "sourceReceipt": "docs/reviews/T05/owner-design-responses-r2-receipt.json",
     "allDecisionsAndExtraPathsAccepted": false,
     "implementationOrPublicProtocolChanged": false,
-    "decisionDocumentSha256": "d983a8aed06901e871932657bac03a69672d7b3270270b346694cdf2c603edcb",
+    "decisionDocumentSha256": "88a454b0a8de58bea0f51d1d19938c916ac98c282f83d670d829e558734dd034",
     "sourceReceiptSha256": "ba7f93175933d51c305d940e6e78c10c7a7d20ffd41c836e3b9569a7d575fd08",
     "independentReview": {
       "agent": "/root/t05_internal_review",
@@ -198,10 +198,10 @@
     },
     "priorDecisionCommit": "41210534972d50965a2a4ce259660658e3bbdd81",
     "operatorConsumerMatrix": "docs/iterations/T05/comparison-operator-consumer-matrix-r1.md",
-    "operatorConsumerMatrixSha256": "c9f7752b4b69a17b1b51a4ccbd54e51b584028bdb4dd29591452e91f1aba5192",
+    "operatorConsumerMatrixSha256": "3705af23adcfc3e4f7cd153ae06f82cccb849cfb1dad7ea68ff08c02b09585e2",
     "technicalAcceptance": "I05 D1-D9 directions with explicit gaps; T01 full firing, strict identity and actual error-layer boundaries",
     "q6AndNormativePinAccepted": false,
-    "newOperatorAndConsumerCellsAccepted": false,
+    "newOperatorAndConsumerCellsAccepted": true,
     "diagnosticPublicResourceApprovedOrImplemented": false,
     "budgetThresholdsMeasured": false,
     "operatingPolicyUpdate": {
@@ -236,14 +236,16 @@
       "prettier": "passed",
       "gitDiffCheck": "passed",
       "productTestsRerun": false
-    }
+    },
+    "newTechnicalAcceptanceScope": "I05 S/L/I-B/X rule operator cells and K/D/R independent targets only; concrete full consumer capabilities not verified; no Q6",
+    "consumerRealCellsImplementedOrVerified": false
   },
   "limitedPolicyCorrection": {
     "controllerReportSha256": "70909867a8786f181639810c3c40d188f92c2849311dd148f6bf55fce044705a",
     "receipt": "docs/reviews/T05/operator-consumer-r1-r2-disposition.json",
     "receiptSha256": "5ab91bba3ffa1fea4d4707b71404162ab993d696731cae7351bbb49f93f84f20",
     "decisionRequest": "docs/iterations/T05/q6-policy-decision-request-r1.md",
-    "decisionRequestSha256": "bb405d3ccc3e3a87c1dc710a72a8d84cc57a47a7e570d988736543a0a8937faa",
+    "decisionRequestSha256": "230abb0ec802fe0af9f8944a00759043c7f3c2f8ab23fa34b74d3dd69313b61f",
     "goalStillBlocked": true,
     "q6Adopted": false,
     "newTechnicalAcceptanceReceived": true,
@@ -258,7 +260,7 @@
     "productOrTestsChangedOrRerun": false,
     "unapprovedCodeReadOrConsumed": false,
     "originalFullAcceptanceRetained": true,
-    "latestC3Status": "Controller independent audit confirms P1 I05-C3-STRING-1 and evidence recovery gate; original I05 authorized only necessary string repair/new semantics/new full candidate, repair not completed; zero withdrawn C3 external review tasks; no T05 future4 or comparator/multihead/D3D4/worker authority",
+    "latestC3Status": "C3 P1 evidence recovered and original I05 limited string repair authorized; controller reports C4 validating, not frozen or designated dual-review passed; T05 consumes no candidate",
     "documentValidation": {
       "prettier": "passed",
       "gitDiffCheck": "passed",
@@ -281,9 +283,9 @@
       "T05CandidateOrEvidenceArchiveRead": false,
       "Q6Adopted": false,
       "noNewOwnerTechnicalResponseReceivedByT05": false,
-      "laterOwnerReply": "T01 fixed b35 wrapper reply received; I05 C cells still pending"
+      "laterOwnerReply": "T01 b35 wrapper and I05 96fb597 technical TA reply received; no new approved implementation"
     },
-    "newTechnicalAcceptanceScope": "T01 TA-C/Q-LIFE wrapper responsibilities only; I05 specific new C cells and S/L/I-B/X still pending",
+    "newTechnicalAcceptanceScope": "T01 wrapper plus I05 new S/L/I-B/X and independent K/D/R targets; finite boundaries answered, full C identity/context/goldens incomplete",
     "controllerReviewedDecisionRequestSha256At157": "a0baa0fef56de1100596b2c1a7892c8fbd85f606f6247d7954cbe3d01d9a2c09"
   },
   "limitedT01WrapperResponse": {
@@ -299,7 +301,7 @@
       "docs/iterations/T05/q6-policy-decision-request-r1.md": "bb405d3ccc3e3a87c1dc710a72a8d84cc57a47a7e570d988736543a0a8937faa"
     },
     "acceptedScope": "T01 approved consumer profile separation and trusted context/result wrapper responsibilities; f51 retained",
-    "I05RealConsumerContractAndGoldens": "pending per cell",
+    "I05RealConsumerContractAndGoldens": "I05 target/finite boundaries/unsupported cells replied in 96fb597; new exact context/identity/complete goldens incomplete",
     "q6Adopted": false,
     "newImplementationRoutesOrOwnership": false,
     "currentRepairPassed": false,
@@ -316,6 +318,50 @@
       "prettier": "passed",
       "gitDiffCheck": "passed",
       "sourceRawAndDocumentHashes": "matched"
+    }
+  },
+  "limitedI05TAResponse": {
+    "receipt": "docs/reviews/T05/i05-ta-response-receipt.json",
+    "receiptSha256": "6e7e89de4205deabf83f3d51f4c7b89060343bae4d446539b0f9aa6b9c1d0bcd",
+    "sourceCommit": "96fb5977f3e0533dfc7f735a3727084824a3cb74",
+    "sourceReportSha256": "8bf9e6086da486757b2016ef95c7be3c68bce6622ce3ea5b79e4b54933a942c2",
+    "sourceInputsSha256": "dfec670ce1fb92716146469f8713e18ba3f94ebafa8bf0656d5023531a090a74",
+    "jointScopeTable": "docs/iterations/T05/accepted-policy-and-q6-scope-r1.md",
+    "documentHashes": {
+      "docs/iterations/T05/accepted-policy-and-q6-scope-r1.md": "3d768275379bd272ebea9cf0c86005a9c5cfd1f1e20cfa176fd5e6aa7de1938d",
+      "docs/iterations/T05/comparison-operator-consumer-matrix-r1.md": "3705af23adcfc3e4f7cd153ae06f82cccb849cfb1dad7ea68ff08c02b09585e2",
+      "docs/iterations/T05/owner-decisions-after-interface-facts.md": "88a454b0a8de58bea0f51d1d19938c916ac98c282f83d670d829e558734dd034",
+      "docs/iterations/T05/single-executor-extension-contract.md": "d14bba9a059b81096e4bc63ebd825dbeacbf92eb7a5b4b0094f26f2e4e0c3304",
+      "docs/iterations/T05/q6-policy-decision-request-r1.md": "230abb0ec802fe0af9f8944a00759043c7f3c2f8ab23fa34b74d3dd69313b61f"
+    },
+    "technicalAcceptances": [
+      "TA-S",
+      "TA-L",
+      "TA-I/B",
+      "TA-X",
+      "TA-C independent K/D/R consumer targets"
+    ],
+    "d3d4Retained": true,
+    "numericShapeDatatypesOnly": ["integer", "int", "decimal", "float", "double"],
+    "dateShapeAndDatatypeLangStringUnsupported": true,
+    "fullConsumerImplementationOrGoldenComplete": false,
+    "q6Adopted": false,
+    "newProtocolOrOwnership": false,
+    "goalStillBlocked": true,
+    "candidateImplementationReadOrConsumed": false,
+    "productTestsRerun": false,
+    "independentReview": {
+      "agent": "/root/t05_internal_review",
+      "decision": "passed-limited-document-scope-no-new-substantive-findings",
+      "reviewedReceiptSha256BeforeDispositionOnlyUpdate": "2974d0d90fb9ae0ce10e1fd7699f7cfc0ffdda03627425572a2c12fdf9352cf9",
+      "record": "docs/reviews/T05/internal-review.md",
+      "productOrDesignatedReviewPass": false
+    },
+    "documentValidation": {
+      "prettier": "passed-after-JSON-style-fix",
+      "gitDiffCheck": "passed",
+      "fixedSourcesInputsAndDocumentHashes": "matched",
+      "productTestsRerun": false
     }
   }
 }

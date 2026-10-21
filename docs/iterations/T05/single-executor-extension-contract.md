@@ -132,3 +132,9 @@ C2通知时I05正准备C3最小确定性witness修复；后续已报告冻结C3�
 固定b35cb4e T01回复（SHA3d300cf1070adf54f97fec45d060273f78d0e29fba9bbef502403466084b8d09）已全文读回，保留f51原接受，详见当前决策表§8/矩阵§6及Q6单补记。T01接受各consumer自己的profile、SHACL正常违规不改整Job E3、真实Job/result上下文/分页/hash/当前授权；完整implementation只分区不证明同义。D5/D8执行证据、唯一Store/原operation claim、全context幂等与原子性方向接受，阈值未测。M12当前IDENTITY_CONFLICT、未来UNSUPPORTED和诊断资源未批准未实施的界限不变。
 
 I05须逐C格给实际入口、原输入/definition source、输出形状/新producer身份、有限预算/实际异常安全reason和完整成功失败golden，T01才按真实context接持久绑定；T01不猜通用异常、不决定执行器Q6。定位仅真实source有限section/index/reason，原值/路径不外泄；main呈现/公共诊断尚待共同冻结和真实接线。未改变公共协议/路由/路径所有权，未读未批实现或重测，原Goal仍blocked；FR504/505及全部原完成门继续保留。
+
+## 14. I05/T01联合技术接受与Q6可审定范围
+
+最新[联合接受/未实现与Q6范围表](accepted-policy-and-q6-scope-r1.md)合并固定I05 96fb597设计回复/inputs及T01 b35 r2：新增S/L/I-B/X和K/D/R目标已I05技术接受，D3/D4和T01原包装接受保留；逐C格有限边界/未支持及责任已答，不再列作全无回应，但真实新入口/producer身份/异常上下文对表/完整成功失败golden、source载体仍缺。当前numeric范围shape只五类integer/int/decimal/float/double且not ill_typed，日期shape和sh:datatype rdf:langString未支持，标准任意Literal参数目标不等于当前已允。
+
+初始图_terms为REASON/SYNTAX/VERIFIED_USER_INPUT，普通SHACL违规不入adapter，新拒绝点不能借未来规则R/R/U或未注册reason拼DTO；source原文须实际owner/T01授权和有界载体，不私加字段/重签历史。Q6/REC勘误/profile/公共格式未采用或批准，未开放future4/worker；C4 string修复正在验证未冻结/未指定双审通过，本线不消费/复现/实施新比较，原完整Goal和全部完成门保持blocked/待验。

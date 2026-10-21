@@ -11,17 +11,17 @@
 - `E1/E4/E5/E6/E8`：分别为坏定义/operand结构（M1）／非法词法（M4）／合法但未支持类型（M5）／合法非有限或舍入溢出（M6）／实际资源超限（M8），按当前M表区分处理。先完成适用的定义、类型、词法与预算校验，再对合法值判断V/E3，不能拿不合法值进入关系比较后再补false；本记号不新增adapter reason或公共错误。
 - 固定技术方向：三元组join、head、graph去重仍按原term身份；值eq不能重写01/1、±0或其他原term。先验证全部定义常量与变量闭合；坏定义不因零匹配而隐藏。合法join无解成功空集合。每个完成when的binding按稳定位置校验**全部**comparisons，不因前一个false隐藏后一个错误；全真才产生全组heads。
 
-状态标记：`I`＝I05技术接受/推荐，未Q6采用、未实施；`T`＝本轮T05补充具体提案，待I05/Q6接受。规则可比域/操作是应用政策，不由Python类型或当前库排序推断；RDF1.1既有抽象term身份不是可选政策。
+状态标记：`I`＝I05技术接受/推荐，未Q6采用、不证明实施；`T`＝尚未取得技术接受的提案。固定96fb597新回复已技术接受S/L/I-B/X，现下表同步I；来源及未实现项见[联合接受表](accepted-policy-and-q6-scope-r1.md)。规则可比域/操作是应用政策，不由Python类型或当前库排序推断；RDF1.1既有抽象term身份不是可选政策。
 
 ## 2. 同域六算子逐格表
 
 | 域／适用值                                                                  | 状态 | eq  | ne  | lt  | le  | gt  | ge  | 比较定义／明确拒绝点                                                                                                                                                                                                                                       |
 | --------------------------------------------------------------------------- | ---- | --- | --- | --- | --- | --- | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | N：integer、int、nonNegativeInteger、decimal、float、double；任意这六型组合 | I    | V   | V   | V   | V   | V   | V   | 严格原词法解析。整数精确、decimal精确十进有理；float/double由精确词法有理值直接按binary32/64 normal/subnormal nearest/ties-even舍入，再取实际有限表示值的精确有理数比较。禁止先binary64再binary32、禁止将整数/decimal有损提升为float。int/非负值域检查保留 |
-| S：RDF1.1 xsd:string抽象域；输入可省写datatype                              | T    | V   | V   | V   | V   | V   | V   | 相同lexical form的simple无lang与显式xsd:string本是同一抽象term，非待选合域。待审的是六算子/Unicode码点字典序，不trim/casefold/NFC/locale/转数值；source引号/转义/显式datatype拼写另存                                                                      |
-| L[t]：rdf:langString，双方同一语言标签域t                                   | T    | V   | V   | V   | V   | V   | V   | 入口先验BCP47 well-formed；标签value为小写，建议内部/抽象表示统一小写并另保留source原拼写，待owner落实。合法同标签域文本按S比较，不同标签en/en-US不回退且六操作E3为待审规则政策，不由value比较反推join/去重已实现                                          |
-| I：IRI与IRI                                                                 | T    | V   | V   | E3  | E3  | E3  | E3  | 建议eq/ne为完整IRI身份；不解引用、URL解码、大小写折叠或拼写规范化。不给IRI业务大小顺序；即使两IRI相同也不将le/ge当true                                                                                                                                     |
-| B：boolean与boolean                                                         | T    | V   | V   | E3  | E3  | E3  | E3  | 建议合法true/1对应true、false/0对应false的值相等；原词法/term不合并。不给布尔大小顺序，不利用Python bool继承数字                                                                                                                                           |
+| S：RDF1.1 xsd:string抽象域；输入可省写datatype                              | I    | V   | V   | V   | V   | V   | V   | 相同lexical form的simple无lang与显式xsd:string本是同一抽象term，非待选合域。待审的是六算子/Unicode码点字典序，不trim/casefold/NFC/locale/转数值；source引号/转义/显式datatype拼写另存                                                                      |
+| L[t]：rdf:langString，双方同一语言标签域t                                   | I    | V   | V   | V   | V   | V   | V   | 入口先验BCP47 well-formed；标签value为小写，建议内部/抽象表示统一小写并另保留source原拼写，待owner落实。合法同标签域文本按S比较，不同标签en/en-US不回退且六操作E3为待审规则政策，不由value比较反推join/去重已实现                                          |
+| I：IRI与IRI                                                                 | I    | V   | V   | E3  | E3  | E3  | E3  | 建议eq/ne为完整IRI身份；不解引用、URL解码、大小写折叠或拼写规范化。不给IRI业务大小顺序；即使两IRI相同也不将le/ge当true                                                                                                                                     |
+| B：boolean与boolean                                                         | I    | V   | V   | E3  | E3  | E3  | E3  | 建议合法true/1对应true、false/0对应false的值相等；原词法/term不合并。不给布尔大小顺序，不利用Python bool继承数字                                                                                                                                           |
 | Dz：date，双方有显式offset                                                  | I    | V   | V   | V   | V   | V   | V   | 独立Gregorian日序＋精确秒；取原本地日期00:00:00起点减各自offset后比较，不采用隐含时区或声称完整date区间部分序                                                                                                                                              |
 | Dl：date，双方无offset                                                      | I    | V   | V   | V   | V   | V   | V   | 同一本地日历域起点比较，不补Z或读取机器时区                                                                                                                                                                                                                |
 | Tz：dateTime，双方有显式offset                                              | I    | V   | V   | V   | V   | V   | V   | 独立日序＋完整小数秒的精确有理秒，减各自offset比较；不受Python datetime微秒/年份表示截断                                                                                                                                                                   |
@@ -49,7 +49,7 @@ R2分层：RDF1.1无lang simple literal只是xsd:string的输入语法糖；相�
 | Tz     | X6  | X6  | X6   | X6  | X6  | X6  | X6  | A6  | X6  |
 | Tl     | X6  | X6  | X6   | X6  | X6  | X6  | X6  | X6  | A6  |
 
-`*` L[t]×L[t]只用于相同标签域；L[t]×L[u]（t≠u）明确为X6。S的抽象term同一性按RDF1.1固定；S六算子、L合法标签间的可比域及算子、IRI/boolean只提供eq/ne均是**T05待审提案**。I05已接受的是“矩阵明示允许数值混型；其他未定义跨域/操作统一失败”，并未提前接受本轮新定义的S/L/I/B单元格。
+`*` L[t]×L[t]只用于相同标签域；L[t]×L[u]（t≠u）明确为X6。S的抽象term同一性按RDF1.1固定；S六算子、L合法标签间的可比域及算子、IRI/boolean只提供eq/ne均已获固定96fb597的**I05技术接受，仍待Q6产品采用与真实实施证据**。D2失败原则及D3/D4原接受保留，不把技术答复变成整表运行通过。
 
 ### 下一次审定的同域／跨域见证（手工政策期望，未运行）
 
@@ -79,6 +79,8 @@ SHACL列固定以下独立目标（仅原有限模板，不承诺完整SHACL）�
 - `D` sh:datatype：value须为Literal、datatype **IRI精确相同**；对SPARQL1.1所支持的datatype还须不是ill-typed。仅数值同值或子类型关系不能代替精确IRI。非Literal、IRI不符或适用的非法词法产生validation result。
 - `R` sh:minInclusive/maxInclusive：分别以SPARQL表达式`$minInclusive <= v`／`$maxInclusive >= v`判定；不返回true，包括false及type-error，均产生带实际`sh:value`的validation result。**不转成规则E3整任务失败，不替换成D3/D4精确比较器**。shape参数仍须满足该组件自己的语法要求。
 
+当前能力补记（I05固定96fb597设计报告事实，非本线实测）：min/maxInclusive shape参数仅integer/int/decimal/float/double且not ill_typed，**不是任意Literal，日期shape边界尚未支持**；`sh:datatype rdf:langString`不在当前shape白名单，明确未支持。下列D/R为规范目标，不能反推这些shape已可运行；若扩展须单列范围/授权/真实shape-data证据，未支持格保留，不能缩减完整原验收。
+
 以上规范目标见[SHACL 2017-07-20 REC §§4.1.2、4.2.1/2、4.3.2/4、4.8.3](https://www.w3.org/TR/2017/REC-shacl-20170720/)。普通违规是验证产物，不是adapter异常。真正的能力不足、资源/执行故障按真实入口/context有界失败并保留未完成格，不能伪造空报告；**不能只因规则政策与SHACL政策不同就拒绝原本可正确验证的输入**。
 
 | 值／情形                                                      | 图入口→新reason／新selected                                       | query term匹配/投影                                                    | query值运算/FILTER                                                               | SHACL K：数量／sh:in                                              | SHACL D：sh:datatype                                                                                        | SHACL R：sh:minInclusive/maxInclusive                                                                                                |
@@ -92,24 +94,24 @@ SHACL列固定以下独立目标（仅原有限模板，不承诺完整SHACL）�
 
 FR504五模板、asserted与asserted+derived双范围、实际focusNode/path/value/shape/component及修复后复验保持。每个C格必须回应“支持并由谁补齐”或“明确受限并保留原验收未完成”，附原入口、consumer规范profile、实际context→DTO/用户状态；违规报告与能力失败分开。这里不授权任意公共码/路径，也不因安全拒绝登记首版完成。
 
-### R1/R2合同见证（手工期望，未执行）
+### R1/R2合同见证（手工期望，未执行；不表示当前shape入口全部允许）
 
-| 情形                                                                                 | 规则／RDF层期望                                        | SHACL自身期望                                                                    |
-| ------------------------------------------------------------------------------------ | ------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| datatype要求xsd:integer，数据为`"1"^^xsd:int`                                        | D3可与integer 1值相等，term仍不同                      | D产生datatype违规，sh:value保留该int；不靠数值相等通过                           |
-| datatype要求xsd:integer，数据为`"bad"^^xsd:integer`或IRI                             | RDF可表达ill-typed Literal；应用入口若先拒须如实记缺口 | 若进入validator，D分别因适用词法非法／非Literal违规；不是规则M4或Internal        |
-| minInclusive为integer 2，数据integer 1／integer 2                                    | 新规则比较是否true另验                                 | R分别违规／该组件无违规；给真实值与组件，不造整体passed                          |
-| minInclusive为integer 2，数据字符串two；或语法允许的ill-typed Literal边界使关系error | 新规则相应比较政策不决定此结果                         | R关系error产生违规；不发规则E3，不静默丢报告。边界非Literal才是组件shape语法问题 |
-| maxInclusive为integer 2，数据integer 3／integer 2                                    | 同上                                                   | R分别违规／该组件无违规，独立核shape参数侧与data侧                               |
-| sh:in列表仅integer词法1，value为integer词法01或xsd:int词法1                          | 都与列表term不同，即使D3值相等                         | K的in违规；数量保留不同term，不按值eq折叠                                        |
-| 同focus/path有integer词法01和1，maxCount 1                                           | 两个不同抽象term                                       | value-node集合大小2，数量违规                                                    |
-| 同focus/path源写`"a"`和`"a"^^xsd:string`，maxCount 1／in列表含后者                   | RDF1.1同一抽象term，两个源写法不造两节点               | 集合大小1；in成员相同，不因省写datatype违规                                      |
+| 情形                                                                                 | 规则／RDF层期望                                        | SHACL自身期望                                                                                                                                                                 |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| datatype要求xsd:integer，数据为`"1"^^xsd:int`                                        | D3可与integer 1值相等，term仍不同                      | D产生datatype违规，sh:value保留该int；不靠数值相等通过                                                                                                                        |
+| datatype要求xsd:integer，数据为`"bad"^^xsd:integer`或IRI                             | RDF可表达ill-typed Literal；应用入口若先拒须如实记缺口 | 若进入validator，D分别因适用词法非法／非Literal违规；不是规则M4或Internal                                                                                                     |
+| minInclusive为integer 2，数据integer 1／integer 2                                    | 新规则比较是否true另验                                 | R分别违规／该组件无违规；给真实值与组件，不造整体passed                                                                                                                       |
+| minInclusive为integer 2，数据字符串two；或语法允许的ill-typed Literal边界使关系error | 新规则相应比较政策不决定此结果                         | R规范关系error产生违规；不发规则E3。当前numeric shape还要求not ill_typed，故坏Literal边界会先被其入口拒绝，此格属合同见证/未支持而非当前运行结果；非Literal边界是组件语法问题 |
+| maxInclusive为integer 2，数据integer 3／integer 2                                    | 同上                                                   | R分别违规／该组件无违规，独立核shape参数侧与data侧                                                                                                                            |
+| sh:in列表仅integer词法1，value为integer词法01或xsd:int词法1                          | 都与列表term不同，即使D3值相等                         | K的in违规；数量保留不同term，不按值eq折叠                                                                                                                                     |
+| 同focus/path有integer词法01和1，maxCount 1                                           | 两个不同抽象term                                       | value-node集合大小2，数量违规                                                                                                                                                 |
+| 同focus/path源写`"a"`和`"a"^^xsd:string`，maxCount 1／in列表含后者                   | RDF1.1同一抽象term，两个源写法不造两节点               | 集合大小1；in成员相同，不因省写datatype违规                                                                                                                                   |
 
 持久化/trace区分抽象term和来源拼写：保存可恢复的lexical form/datatype/语言及原数值/日期词法；省略datatype、引号/转义/标签大小写的原文可作source信息，不以其字面串制造新term。policy/完整implementation/原规则输入身份仍须认证；严格三字段只是新消费身份门，**不证明不同消费者已具备各自正确语义**。旧历史不重签，给定firing认证不冒称全局完备。
 
 ## 5. 下一次技术接受与Q6决定
 
-具体请求及可填写决定单见[技术接受请求与Q6决定单r1](q6-policy-decision-request-r1.md)。I05应分别接受S/L/I/B算子、L域及跨域X6、修订消费者合同并回应每个C格；T01包装技术边界已答复（见§6），实际context接线与新公共诊断仍待。D3/D4已有I05技术答复保留，不重置成无人回答。Q6逐项采用或改写应用profile及固定REC/勘误集；**RDF1.1 simple/xsd:string的抽象term同一性不是可选合域**。
+具体请求及可填写决定单见[技术接受请求与Q6决定单r1](q6-policy-decision-request-r1.md)。I05已技术接受S/L/I-B/X与K/D/R独立目标（见联合接受表），仍须补具体C格的可达范围/新身份/异常对表与完整golden；T01包装技术边界已答复（见§6），实际context接线与新公共诊断仍待。D3/D4已有I05技术答复保留，不重置成无人回答。Q6逐项采用或改写应用profile及固定REC/勘误集；**RDF1.1 simple/xsd:string的抽象term同一性不是可选合域**。
 
 D8 input/work/result阈值仍待真实测量，新增helper/原consumer/公共诊断均先精确路径接受。四语义路径仍future，P2/P3/P5/P6仍I05代改，worker未来唯一T01；本轮不实施、不复测。R1/R2这里只关闭文档歧义，未获Q6/当前实现验证/指定双审Pass，原完整验收保持。
 
@@ -120,3 +122,7 @@ D8 input/work/result阈值仍待真实测量，新增helper/原consumer/公共�
 **仍需I05逐C格给出**真实输入/definition source、实际入口/输出形状、三字段新producer身份、有限预算/实际异常类型与安全reason、完整成功validation及失败诊断分别的golden；不能由T01猜通用异常或替执行器决定Q6。上述包装技术接受不等于当前每格实现已接通，也不批准SHACL/query支持面、公共payload或错误路由。T01只在精确context上连接真实持久身份/hash，I06负责实际main/UI入口，原owner路径保持。
 
 M12当前仍IDENTITY_CONFLICT，未来UNSUPPORTED适配及独立诊断资源未实现未批准；定位须真实source有限section/index/reason，绑定当前授权/请求/快照/实际定义或prepared plan，不泄露operand原值/路径/stack。TA-S/L/I-B/X和Q6决定、D8阈值及实际golden/联验仍待，D3/D4原技术答复不清零。本轮无新实现、重测或修复通过证据。
+
+## 7. I05新技术回复与联合范围
+
+固定96fb597 owner-response/inputs已全文读回，I05技术接受新增S/L/I-B/X及K/D/R独立目标，D3/D4保留；与T01 b35 r2合并的[联合接受、未实现与Q6范围表](accepted-policy-and-q6-scope-r1.md)为最新答复状态。完整C格运行/可实施合同尚未闭合，不把日期shape或rdf:langString shape写成旧候选已支持。初始facts/ontology _terms为REASON/SYNTAX/VERIFIED_USER_INPUT，即使业务为query/validation；已核三个literal错误的精确映射与新增拒绝点待补表见联合表§3，普通SHACL违规不进adapter。source原文载体/授权/大小生命周期/公共投影尚需实际owner/T01给出，不假称S1保留全部原写法或私加DTO/重签历史。C4仍未冻结/指定双审通过，Q6未采用，四路径未生效，未实施或复测。

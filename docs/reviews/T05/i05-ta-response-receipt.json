@@ -1,0 +1,85 @@
+{
+  "task": "T05",
+  "scope": "Design-only I05 TA report/inputs incorporation merged with prior T01 r2; no candidate implementation read",
+  "controllerThread": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+  "reportSources": [
+    {
+      "commit": "96fb5977f3e0533dfc7f735a3727084824a3cb74",
+      "path": "docs/reviews/I05/t05-ta-response-157963e/owner-response.md",
+      "bytes": 15368,
+      "sha256": "8bf9e6086da486757b2016ef95c7be3c68bce6622ce3ea5b79e4b54933a942c2",
+      "archivedPath": "docs/reviews/T05/i05-ta-owner-response.md.raw",
+      "fullRead": true,
+      "byteEqualToFixedGit": true
+    },
+    {
+      "commit": "96fb5977f3e0533dfc7f735a3727084824a3cb74",
+      "path": "docs/reviews/I05/t05-ta-response-157963e/inputs.json",
+      "bytes": 788,
+      "sha256": "dfec670ce1fb92716146469f8713e18ba3f94ebafa8bf0656d5023531a090a74",
+      "archivedPath": "docs/reviews/T05/i05-ta-inputs.json.raw",
+      "fullRead": true,
+      "byteEqualToFixedGit": true
+    }
+  ],
+  "originalT05InputPinsVerifiedAgainstFixedGit": true,
+  "priorT01Source": {
+    "commit": "b35cb4e21d375386775e5fc0431a8089a47195da",
+    "path": "docs/iterations/T01/t05-context-wrapper-response-r2.md",
+    "sha256": "3d300cf1070adf54f97fec45d060273f78d0e29fba9bbef502403466084b8d09",
+    "priorFullReadAndTechnicalAcceptanceRetained": true
+  },
+  "I05NewTechnicalAcceptances": [
+    "TA-S",
+    "TA-L",
+    "TA-I/B",
+    "TA-X",
+    "TA-C independent K/D/R consumer targets"
+  ],
+  "D3D4PriorTechnicalAcceptanceRetained": true,
+  "currentCandidateFactsFromOwnerReportOnly": {
+    "numericRangeShapeAllowedDatatypes": ["integer", "int", "decimal", "float", "double"],
+    "numericRangeShapeRequiresNotIllTyped": true,
+    "dateShapeRangeBoundsSupported": false,
+    "datatypeLangStringShapeSupported": false,
+    "initialFactsOntologyTermsContext": ["REASON", "SYNTAX", "VERIFIED_USER_INPUT"],
+    "ordinaryShaclViolationsEnterAdapter": false
+  },
+  "remaining": [
+    "Q6 adoption, formal REC/errata/profile identity pin",
+    "Per-C actual new entry/source/output/producer full identity/budget and precise caller-adapter reason context positive-negative tables and complete success/failure goldens",
+    "Full codepoint/BCP47/source representation retention and actual oracles, exact D3/D4 implementation/precision/calendar tests",
+    "Actual source owner/T01 authorization and bounded original-source carrier/lifecycle/public projection; no private DTO or history resigning",
+    "Public semantic adapter/M9/diagnostic resource and I06 real wiring",
+    "C4 string repair still validating, not frozen or designated dual-review passed"
+  ],
+  "q6Adopted": false,
+  "goalStatus": "blocked",
+  "goalAutoResumed": false,
+  "unapprovedImplementationOrOtherLinkedDraftsRead": false,
+  "candidateConsumedOrCounterexampleReproduced": false,
+  "newComparatorMultiheadImplemented": false,
+  "productTestsRerun": false,
+  "newRoutesPublicProtocolOrOwnershipGranted": false,
+  "originalFullAcceptanceRetained": true,
+  "independentDocumentReview": {
+    "agent": "/root/t05_internal_review",
+    "decision": "passed-limited-document-scope-no-new-substantive-findings",
+    "reviewedReceiptSha256BeforeDispositionOnlyUpdate": "2974d0d90fb9ae0ce10e1fd7699f7cfc0ffdda03627425572a2c12fdf9352cf9",
+    "record": "docs/reviews/T05/internal-review.md",
+    "productOrDesignatedReviewPass": false
+  },
+  "documentHashes": {
+    "docs/iterations/T05/accepted-policy-and-q6-scope-r1.md": "3d768275379bd272ebea9cf0c86005a9c5cfd1f1e20cfa176fd5e6aa7de1938d",
+    "docs/iterations/T05/comparison-operator-consumer-matrix-r1.md": "3705af23adcfc3e4f7cd153ae06f82cccb849cfb1dad7ea68ff08c02b09585e2",
+    "docs/iterations/T05/owner-decisions-after-interface-facts.md": "88a454b0a8de58bea0f51d1d19938c916ac98c282f83d670d829e558734dd034",
+    "docs/iterations/T05/single-executor-extension-contract.md": "d14bba9a059b81096e4bc63ebd825dbeacbf92eb7a5b4b0094f26f2e4e0c3304",
+    "docs/iterations/T05/q6-policy-decision-request-r1.md": "230abb0ec802fe0af9f8944a00759043c7f3c2f8ab23fa34b74d3dd69313b61f"
+  },
+  "documentValidation": {
+    "prettier": "passed-after-JSON-style-fix",
+    "gitDiffCheck": "passed",
+    "fixedSourcesInputsAndDocumentHashes": "matched",
+    "productTestsRerun": false
+  }
+}

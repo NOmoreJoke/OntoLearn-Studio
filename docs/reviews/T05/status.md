@@ -163,3 +163,15 @@ Q-LIFE接受D5/D8真实执行器受信证据、原唯一Store/operation claim、
 I05仍须逐C格给真实输入/definition source、入口/输出、新producer三字段身份、有限预算、实际异常类型/安全reason、完整成功validation与失败诊断golden；T01不猜通用异常或替执行器裁Q6，按这些精确context接持久身份/hash。I06业务入口/UI及全部原验收仍待，未生效新路径交接或修复通过。Q6未采用、D3/D4原技术接受保留；原Goal继续blocked。本轮仅文档增量，未读未批实现/测试或重复产品/GUI验证；独立文档核对与封存另记。
 
 T01回复增量已获独立reviewer明确文档范围通过，无新增实质问题；四doc及source/receipt指纹对应，Prettier与差异检查通过。仅技术包装接受及待补合同记录，无Q6采用/新路由/公共格式/路径交接/修复或实际接线通过；未重复产品测试。原Goal仍blocked，本次本地文档提交不推送。
+
+## I05 TA回复与T01 r2联合接受／Q6范围（有限文档）
+
+仅读固定96fb5977f3e0533dfc7f735a3727084824a3cb74的owner-response及inputs，分别15368B/SHA `8bf9e6086da486757b2016ef95c7be3c68bce6622ce3ea5b79e4b54933a942c2`、788B/SHA `dfec670ce1fb92716146469f8713e18ba3f94ebafa8bf0656d5023531a090a74`。原字节保存，inputs所列原157 T05两文档与固定Git字节/hash相符；未读链接实现、其他独立草稿/审查/反例或外部规范。收据为`i05-ta-response-receipt.json`。
+
+新增`accepted-policy-and-q6-scope-r1.md`合并既有T01 b35 r2：I05已技术接受新增S/L/I-B/X及K/D/R独立目标，D3/D4原接受保留；不再写成无人答复。五份设计文档明确技术接受、未实现/未证与明确未支持，Q6/REC勘误/profile/公共身份仍未采用。C格逐项责任已答，但真实新入口/producer身份/异常token×producer×stage×origin正反表、有限预算与完整成功失败golden仍不齐，T01包装接受不代替这些证据。
+
+当前有限边界只作I05报告事实：numeric范围shape只integer/int/decimal/float/double且not ill_typed，日期shape边界、sh:datatype rdf:langString未支持；标准Literal目标不等于当前入口已允。初始facts/ontology _terms为REASON/SYNTAX/VERIFIED_USER_INPUT，即使后续query/validation；已核datatype/nonfinite/lexical三个映射限定此context，普通SHACL违规不进adapter。其他shape/query/资源新增拒绝点仍须成对表/goldens，M3/M8a/M9及未来UNSUPPORTED/诊断未因此接线。
+
+source接受要求不证明S1保留每个导入前原写法；真实source owner/T01授权、有界载体、大小/保留生命周期及公共投影缺口保留，不私加DTO/逆推原文/重签历史。Q6可审定目标和未支持格处置，不能用拒绝缩减原FR或登记全格完成。C4正在验证未冻结/未指定双审通过来自总控通知，非本线读代码或复现；不因技术答复消费新实现或生效future4/T01 worker责任。Goal仍blocked，无产品/测试/协议/路径变更或复测。
+
+I05/T01联合范围已获独立reviewer明确文档通过、无新增实质问题。五doc与两raw固定来源、inputs原157身份相符；receipt JSON初次格式告警已修，最终Prettier/diff/hash核对通过。处置/范围见internal-review/checkpoint；只追加通过元数据，不改受审接受与缺口。未测试产品、未消费C4、未push/PR/CI/合并；Q6未采用，原Goal保持blocked。

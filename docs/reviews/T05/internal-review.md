@@ -113,3 +113,13 @@ reviewer实际核对两个差异、上下文、批准5f registry及FR-500/D后�
 受审SHA：矩阵 `c9f7752b4b69a17b1b51a4ccbd54e51b584028bdb4dd29591452e91f1aba5192`；Q6单 `bb405d3ccc3e3a87c1dc710a72a8d84cc57a47a7e570d988736543a0a8937faa`；决策表 `d983a8aed06901e871932657bac03a69672d7b3270270b346694cdf2c603edcb`；主合同 `4a822aa9b45885858b013b33242455b63d647031f01a64da8caf4b80a07df1de`。receipt受审快照 `ef9074a3e5c0b8d9e0ae7d83b9b04fc28a7bbdb2884d3cbf6dfb6f1e2763ddd8`，其后仅追加本次独立通过/格式/hash核对元数据；最终SHA见checkpoint，未改受审来源/接受项/缺口/四doc。
 
 reviewer未读报告链接实现/测试/外部规范，未运行产品/测试/GUI或改文件。本线Prettier、diff check、source固定Git/raw与文档hash核对通过；仅文档，不替代实际集成/Q6/指定双审。旧157 Q6单hash作为总控当时受审身份保留，checkpoint当前Q6单hash同步新补记，不将旧闭环报告重签为新技术回复。
+
+## I05新增TA接受与T01联合范围独立审查
+
+独立reviewer `/root/t05_internal_review` 只读指定I05固定96fb597设计报告/inputs（15368B/8bf9e608…942c2、788B/dfec670c…90a74）、自有T01 r2 raw与相对bfd5c19的文档增量。两I05 raw与固定Git逐字/长度/hash吻合；未读其他链接实现/库/测试/独立草稿或外部规范，未复现/运行产品/测试/GUI或修改文件。
+
+明确“本轮文档范围通过，无新增实质问题”。新增S/L/I-B/X与K/D/R目标的I05技术接受和T01包装接受合并准确，D3/D4原答复保留；当前numeric shape五类且not ill_typed、日期shape边界/rdf:langString datatype shape未支持，初始_terms准确R/SYNTAX/U与三个旧literal映射、普通SHACL违规不进adapter及逐C格新异常对表/完整goldens缺口均明确。source要求未冒称S1保存全部原拼写，不私加DTO或重签历史；Q6/pin/实现、C4未冻结/未双审、公共格式/路径权未误报通过或生效。
+
+五doc SHA：联合表 `3d768275379bd272ebea9cf0c86005a9c5cfd1f1e20cfa176fd5e6aa7de1938d`；矩阵 `3705af23adcfc3e4f7cd153ae06f82cccb849cfb1dad7ea68ff08c02b09585e2`；D/M/P `88a454b0a8de58bea0f51d1d19938c916ac98c282f83d670d829e558734dd034`；合同 `d14bba9a059b81096e4bc63ebd825dbeacbf92eb7a5b4b0094f26f2e4e0c3304`；Q6单 `230abb0ec802fe0af9f8944a00759043c7f3c2f8ab23fa34b74d3dd69313b61f`。receipt受审快照 `2974d0d90fb9ae0ce10e1fd7699f7cfc0ffdda03627425572a2c12fdf9352cf9`，其后仅追加审查处置/文档检查元数据，最终hash见checkpoint。
+
+初次文档check仅receipt JSON格式告警，已Prettier修正并复查通过，不是产品测试失败；diff/hash/固定输入核对通过，无重复产品验证。原Goal仍blocked，完整原验收不缩减，本结论不替代Q6采用、真实集成/消费者运行或指定双审。
