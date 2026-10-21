@@ -434,6 +434,7 @@ def assert_complete_heads(produced, restored, expected):
     matches = child["originalMatches"]
     assert len(matches) == len(expected["originalMatches"]) == 2
     for match, golden in zip(matches, expected["originalMatches"], strict=True):
+        assert tuple(name for name, _ in match.bindings) == ("?s", "?v")
         assert {k: semantic._profile_term(v).n3() for k, v in match.bindings} == golden["bindings"]
         assert [triple_key(t) for t in match.when] == golden["when"]
         assert len(match.proof_leaves) == len(match.when)
@@ -506,6 +507,7 @@ def test_real_rule_graph(case_id, tmp_path, goldens):
     observation = {
         "id": case_id,
         "kind": "rule-graph",
+        "testSourceSha256": sha(Path(__file__).read_bytes()),
         "input": case,
         "inputSha256": sha(PURE.read_bytes()),
         "actual": actual,
@@ -530,20 +532,43 @@ def test_real_rule_graph(case_id, tmp_path, goldens):
             assert actual["status"] == "error" and actual["stage"] == "production"
             assert actual["exceptionType"] == "ProfileExecutionFault"
             diag = actual["diagnostic"]
-            assert diag["reason"] == "RULE_COMPARISON_TYPE_MISMATCH"
-            assert diag["classification"] == "input" and diag["ruleId"] == expected["ruleId"]
-            assert diag["location"]["section"] == expected["expectedPrivateLocation"]["section"]
-            assert diag["location"]["index"] == expected["expectedPrivateLocation"]["index"]
-            assert actual["publicError"] == {
-                "code": "SEMANTIC_INPUT_INVALID",
-                "messageKey": "semantics.inputInvalid",
-                "params": {"field": "rule"},
-                "retryable": False,
-            }
+            assert plain(diag) == plain(
+                {
+                    "reason": "RULE_COMPARISON_TYPE_MISMATCH",
+                    "classification": "input",
+                    "ruleId": expected["ruleId"],
+                    "location": {
+                        "section": "comparison",
+                        "index": 1,
+                        "side": None,
+                        "span": None,
+                    },
+                }
+            )
+            assert plain(actual["publicError"]) == plain(
+                {
+                    "code": "SEMANTIC_INPUT_INVALID",
+                    "messageKey": "semantics.inputInvalid",
+                    "params": {"field": "rule"},
+                    "retryable": False,
+                }
+            )
             calls = actual["comparatorCalls"]
             assert len(calls) == 2 and calls[0]["returnedBoolean"] is False
             assert calls[1]["error"]["reason"] == "RULE_COMPARISON_TYPE_MISMATCH"
             assert all(c["phase"] == "production" for c in calls)
+            assert [c["operator"] for c in calls] == ["gt", "eq"]
+            assert type(calls[0]["returnedBoolean"]) is bool
+            for index, call in enumerate(calls):
+                assert plain(call["location"]) == plain(
+                    {
+                        "recordType": "InputLocation",
+                        "section": "comparison",
+                        "index": {"integerDecimal": str(index)},
+                        "side": None,
+                        "span": None,
+                    }
+                )
             assert not actual["producedResultReturned"] and not actual["restoredResultReturned"]
         observation["assertion"] = "pass"
     finally:
@@ -614,6 +639,8 @@ def test_real_consumer_cell(case, tmp_path, goldens):
     observation = {
         "id": case["id"],
         "kind": "consumer-cell",
+        "testSourceSha256": sha(Path(__file__).read_bytes()),
+        "inputSourceSha256": sha((READONLY / "consumer-C-inputs.json").read_bytes()),
         "input": case,
         "actual": actual,
         "expected": expected,
