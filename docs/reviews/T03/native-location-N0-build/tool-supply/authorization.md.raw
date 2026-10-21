@@ -1,0 +1,33 @@
+# T03 N0：固定 CMake 受控提取与宿主供应清单窗口
+
+2026-10-22。原三构建源码授权6607B/3f4c继续，R5仅driver修复仍在原writer内。本窗口只扩展官方工具提取、有限版本探针与供应对象清单准备，独立于R5修复和I06完整九源，不等待整个平台。原同一T03聊天/Goal、新树 `.worktrees/T03-native-location-N0-build` 保持；不重建Goal或换旧树。
+
+根已全文读固定c7ca9f517d3a4cffc39ce823b8f0bb16091e68a5主12201B、原独审10427B及根独立报告 `T03-controller-native-N0-build-source-and-materials-prereview.md` 15279B/SHA256 `d7a311d485d67bda0eb527978da09b3ed0bf58b9814e45973951703f263e43d3`。67路径与官方7下载/归档目录及许可只在静态范围接收；R5未来进程history缺口未关闭，尚无构建Pass。
+
+## 固定材料与唯一提取目的地
+
+仅采用已有 `/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe` 中、source-index.json固定28386B/SHA256 `e6eea559a28087bebcd965f3632e2be7c8f0a58f3e593f25c5415b067c86e2e6` 记录的官方CMake4.4.4 macOS universal原归档：89454352B/SHA256 `4b7b73704b1db9b374e5c9ab8e17ac6148b817b6396ee75cd94a852cbac9d305`。先实际重核bytes/SHA及完整官方checksum唯一basename，再操作。材料丢失或不符即停该项并交具体缺口，不自动下载或用当前latest代替。
+
+批准在 `/tmp/T03-native-location-N0-tool-supply/` 下新建唯一不复用run目录，提取该完整分发包；不stage二进制、不全局安装、不改PATH/权限政策/安全或网络设置、不运行CMake.app GUI。原下载目录只读，不覆盖原件。先读完整成员清单、拒重复/绝对/逃逸/特殊设备，校验已审9041成员、8839文件/189目录/13归档内symlink与252707197声明bytes。保持原相对结构、CMAKE_ROOT/CTest/Modules/许可/必要dylib资源，不只拷贝两个binary。按安全顺序先目录与普通文件、后已核归档内链接，拒目标已有项或任何目的地symlink穿越；不使用未经约束的通用extractall。受控新目的地不得指向原工程、用户业务目录或系统路径。
+
+提取后按实际path/type/mode/link/realpath/bytes/SHA形成全部供应inventory，与原归档逐件比；目录/链接闭包明确，合法0B资源保留。若实际数/字节/类型变化，拒采用并保失败，不截断inventory称完成。CMake26639440B/SHA80cbc0d5ee08c9e6166bcc44bf51faf5469e360346f5cefbf36e8f8e4351a4cb、CTest29114000B/SHA3c91499c53345b601504d30f84662dbaa043ecaee8915c66a769c95b7d6fcd88仅是已审归档成员预期，必须与提取实物核同。
+
+## 本窗口仅允许的进程探针
+
+提取身份全部核同后，可对新树中固定绝对 CMake executable 运行一次 `--version`、固定绝对 CTest executable 一次 `--version`，真实argv/cwd/环境/双流/status/signal/timeout各独立保存。仅精确版本探针，不运行cmake -E/-P、project/configure/try_compile/generator/--build/CTest测试、任何编译器输入、native/child fixture/addon/Electron。每条超时30秒，失败有限停止，不循环重试或宽泛kill；版本输出须实际4.4.4，静态plist不代实证。
+
+可只读复核已知合法安装Xcode供应元信息：固定 `/usr/bin/xcodebuild -version`、`/usr/bin/xcrun --sdk macosx --show-sdk-path`、`/usr/bin/xcrun --sdk macosx --show-sdk-version`、`/usr/bin/xcrun --find clang`、`/usr/bin/xcrun --find clang++`，及其实际解析固定compiler的 `--version`/`-print-resource-dir`，`/usr/bin/make --version`和已安装Git的`--version`。执行前先固定真实absolute/realpath/bytes/SHA；只运行上述无输入只读元信息，不运行xcode-select切换、license accept、安装器、编译/链接/代码签名或试验程序。缺合法安装或弹出需要用户交互的许可即记录缺口，不代接受新条款。
+
+## Apple/SDK/工具供应对象清单
+
+已知候选为 `/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/` 与 `/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk`；先lstat/realpath只读确认实际安装及版本，不沿未知外部链接扫描用户目录。不复制SDK或改其内容。固定SDKSettings、原适用许可文本/位置、Xcode/Clang/SDK版本、C/C++/linker/make/git绝对供应，以及完整SDK headers/modules/framework stubs和所选compiler resource/runtime闭包的逐文件inventory。清单覆盖说明须实质可审，不能列一个根目录摘要充全部输入。
+
+供应inventory可分片，先目录/总数/声明bytes探测，工程guard为200000项/8GiB累计读取；达到前停并报告精确尚缺范围/数量/必要delta，不自动扩大、截断或重算旧文件求绿。只读hash不执行其中代码，记录链接realpath及是否留在已列合法供应roots，外部系统库/工具引用另列实际对象和依据，不默许任意文件。0B合法源资源与非空工具/许可区分。root只会在完整清单、适用条款和实际版本核过后批准具体toolchain pin，当前不自置toolchain/execution/source/bindingMinimum/testAssembly approval=true。
+
+构建前清单代表供应对象，编译后的compile_commands/depfiles/used headers/stubs/libs/link graph/import/export是未来观测输出；不要求首编译前伪造后者，不借后置输出豁免当前完整供应。宿主Xcode/SDK27不等macOS15实测；Windows/MSVC、Node/Electron和N1无本窗口执行权。
+
+## 原件、固定与下一步
+
+仅新 `docs/reviews/T03/native-location-N0-build/tool-supply/` 过程，可将所查候选值填入原toolchain-lock.json但所有未获根实际采用的审批仍false/null；不改其它源码解决供应问题，R5修复另保原c7及独审。供应清单/探针每项保存原argv、开始结束、独立exit/timeout/完整双流与首失败、固定输入/提取前后hash；失败不冒称complete/已释放。按完整候选新ref/manifest交根，含静态审及提取/版本执行实况，二进制仍只tmp；不新做重复D2或父产品运行。
+
+本窗口未批准I06九源码采用、configure/try_compile/compile/link、CTest/child/FS实验、addon/Electron/GUI、Win/native位置使用、数据库/VFS/模型网络/付费、push/PR/merge或Goal状态变更。R5关闭、I06完整固定源/拼装、合法供方pin通过后，根才另授精确宿主core构建；完整N0/双OS/位置/57P0与指定双模型/CI/develop门保持。

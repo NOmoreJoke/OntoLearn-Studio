@@ -1,0 +1,63 @@
+{
+  "kind": "Append-only fixed dyld identity supplement; not a new toolchain adoption",
+  "authorization_sha256": "b9da09643f78d64e506e20fd4c81d8b8a058c49134124b18b46e9580b449b95c",
+  "fixed_prior_list_sha256": "a0a368c44eec7843270d9f65a517bf43fa546e3766aeeb3fceeea82b80c6f08c",
+  "fixed_81_cache_identity_hash_complete": true,
+  "source_inventory": "dyld-delta-complete-inventory.jsonl",
+  "object_count": 81,
+  "full_object_bytes_hashed": 7046515706,
+  "cumulative_actual_read_bytes": 9745727085,
+  "limit_read_bytes": 10737418240,
+  "remaining_bytes": 991691155,
+  "prior_inventory_item_count_unchanged": 62134,
+  "stat_fields_compared": [
+    "device",
+    "inode",
+    "mode",
+    "bytes",
+    "mtime_ns",
+    "ctime_ns"
+  ],
+  "identity_method": "Exact fixed path list; lstat regular type, realpath and bytes matched; O_NOFOLLOW open; fstat matched lstat; complete single streaming SHA-256; EOF then fstat/lstat compared. No other stat fields are claimed as before/after captured.",
+  "runtime_internal_transitive_image_closure_proven": false,
+  "postbuild_used_closure_proven": false,
+  "cross_file_atomic_snapshot_proven": false,
+  "component_terms_gaps_remain": true,
+  "approvals": {
+    "source": false,
+    "toolchain": false,
+    "execution": false,
+    "bindingMinimum": false,
+    "testAssembly": false
+  },
+  "prior_candidate_index_manifest_budget_pending_list_preserved": {
+    "unhashed-system-cache-objects.json": {
+      "bytes": 24420,
+      "sha256": "a0a368c44eec7843270d9f65a517bf43fa546e3766aeeb3fceeea82b80c6f08c",
+      "unchanged_against_original_fixed_identity": true
+    },
+    "read-budget.json": {
+      "bytes": 378,
+      "sha256": "32ef2836d14e348f6e5919eeade542d08322f48d109f2c01d6c88f657587bd42",
+      "unchanged_against_original_fixed_identity": true
+    },
+    "candidate-pins.json": {
+      "bytes": 12011,
+      "sha256": "d17e5ab336d71f622904adcc806adb1789b70555679768372ee2ab52e5fb6b2d",
+      "unchanged_against_original_fixed_identity": true
+    },
+    "evidence-manifest.json": {
+      "bytes": 14884,
+      "sha256": "eb36202a3da0e4f0693e800ca36e0c25a1b10dbf4003b64339249683ada22f78",
+      "unchanged_against_original_fixed_identity": true
+    },
+    "index.md": {
+      "bytes": 4986,
+      "sha256": "f98762eac7f65fb4dabc7efff5be9f8a3e152acebb5ee333c5f576b9c7f1461e",
+      "unchanged_against_original_manifest": true
+    }
+  },
+  "no_new_process_probe_or_build": true,
+  "no_scan_copy_extract_new_cache_object": true,
+  "root_adoption_required": true
+}
