@@ -90,10 +90,14 @@ UI 已在独立树固定 **571b4d64120c8420d527f9fda2a3cb81bbd47d3f**（base5f�
 
 精确双端接线差距见 ui-integration-handoff.md：完整行为集合覆盖、exists/type 与真实推理、稳定事件 version/sequence 及 RDF/对象变更、源动作粒度、scope/run/消费事务、candidate 不升级提交、受限错误及取消终态等。App/bridge/Store/真实推理/资源/Agent/UI 原验收持续开放，不擅自写公共文件。S1 产品冻结不变；指定审查仍等实际合规入口/桌面时段，没有新任务句柄。
 
-独立复核实际运行 21 vitest 通过，并在 /tmp 重定位 headless 验证，未覆盖旧证据；同时内存负例复现两项 P2，当前 UI 尚不能签收：conditions 必填一项且无 always，不能表达批准 G-behavior 的 X/B-a/B-b 无额外条件；结果仅核顶层 state，candidate 可夹带 applied 动作/recorded 通知并被显示。已通知开发 agent 只读准备显式 always（缺条件仍拒）和严格结果状态组合修复，完整复核终态前不改受审树。后续新候选按实际影响补验证并完整独立复核，原通过测试不能覆盖该负例缺陷。
+独立复核已实际终态：**不通过，3 项 P2**。完整原文 ui-local-review-1.md，负例工具 evidence/ui-571b4d6-negative-probes.mjs。实际运行 21 vitest 通过，并在 /tmp 重定位 headless 验证，未覆盖旧证据；内存负例复现：conditions 必填一项且无 always，不能表达批准 G-behavior 的 X/B-a/B-b 无额外条件；candidate 可夹带 applied 动作/recorded 通知并被显示；payload 的自有 **proto** 键被静默丢弃，不同内容被折叠。开发 agent 已全文读报告并实际确认三项，完整终态后才在自身独立树修复。修后新候选须必要验证和完整独立复核，571 原结论保留。
 
 ## 指定审查实际派发入口核验
 
 总控已实际完成新候选派发门（T06-S1-controller-review-preflight.json，12source/完整diff/20raw一致、远端5f），并明确准许本聊天在预约入口派发。两独立完整输入及SHA已先提交 **11c7a9bb0288fab87e6cecefcbfccbd36d550684**，只追加流程；产品613零漂移。
 
 实际CUA只读核验为mac target；ZCode现存I05终态显示GLM5.3最高/完全访问，但不是本线新任务设置证明。两审查应用为本机native，无隔离审查browser入口。没有click/type/Raise/任务创建；两新任务均无句柄，不能记已派发。当前AGENTS要求当前桌面操作前明确时段，已通过async向用户请求仅两审查应用短时操作，仍待实际回答；预约不等于解除桌面约束。完整入口记录 round-1/dispatch-entry-check.json。等待期间UI独立无窗口工作继续，不改冻结源或重测无变化产品。
+
+总控再次明确 S1 优先后已即时回执具体限制：不是等待 UI 或再次预约；既有独占资源已生效，实际 CUA 仍仅本机 Mac 原生入口，无已提供隔离入口/明确桌面时段，故不能合规创建。ZCode/MiniMax 两任务 created=false、handle=null、当前新任务模型与模式均未验证。未使用 CLI/私有接口绕过指定 CUA，不操作 Codex denied。两冻结输入保持 11c7a9b 原件；仅政策与流程证据继续追加。
+
+最新共同指南 b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39 与三生效 handoff 已实际全文读回并透传，UI agent 已回执；AGENTS78df不变，详见 operating-policy-ownership-update.md。旧 df090 外审输入保留，不因责任更新无变化重测或重建 Goal。
