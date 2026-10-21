@@ -270,6 +270,16 @@ export const MIGRATION_CHECKS = [
   'missing-originals-warning',
   'template-not-restorable',
   'selected-only-no-credentials',
+  'restore-current-without-history',
+  'restore-without-originals',
+  'rerun-after-relink',
+  'replay-complete-inputs',
+  'incomplete-replay-not-promised',
+  'unselected-history-excluded',
+  'unselected-derived-excluded',
+  'unselected-session-excluded',
+  'unselected-undo-excluded',
+  'replay-zero-commit-inputs',
 ]
 export const digest = (value: Uint8Array | string) =>
   createHash('sha256').update(value).digest('hex')
@@ -358,6 +368,33 @@ function canonical(value: unknown): string {
 export function compareComplete(expected: unknown, actual: unknown): boolean {
   // Object key order is irrelevant. Arrays must already be normalized by the owning domain adapter.
   return canonical(expected) === canonical(actual)
+}
+
+export function compareProductComplete(expected: unknown, actual: unknown): boolean {
+  const rdfFields = new Set(['facts', 'assertedFacts', 'inferred', 'addedTriples', 'inputs'])
+  const isTriple = (value: unknown) =>
+    value !== null &&
+    typeof value === 'object' &&
+    !Array.isArray(value) &&
+    Object.keys(value).length === 3 &&
+    ['subject', 'predicate', 'object'].every(
+      (key) => typeof (value as Record<string, unknown>)[key] === 'string',
+    )
+  const normalise = (value: unknown, field = ''): unknown => {
+    if (Array.isArray(value)) {
+      const items = value.map((item) => normalise(item))
+      // Only RDF triple collections are unordered. Preserve duplicates and every other order.
+      return rdfFields.has(field) && items.every(isTriple)
+        ? items.sort((a, b) => canonical(a).localeCompare(canonical(b)))
+        : items
+    }
+    if (value !== null && typeof value === 'object')
+      return Object.fromEntries(
+        Object.entries(value).map(([key, item]) => [key, normalise(item, key)]),
+      )
+    return value
+  }
+  return compareComplete(normalise(expected), normalise(actual))
 }
 
 /** Evidence consistency only. Provenance/identities and real operation require independent approval. */
@@ -565,7 +602,12 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
         fail(`${label}_EXPECTATION_PIN`)
       const a = json(c.expected, `${label}_EXPECTED`)
       const b = json(c.actual, `${label}_ACTUAL`)
-      if (a === undefined || b === undefined || !compareComplete(a, b)) fail(`${label}_RESULT`)
+      if (
+        a === undefined ||
+        b === undefined ||
+        !(label === 'PRODUCT' ? compareProductComplete(a, b) : compareComplete(a, b))
+      )
+        fail(`${label}_RESULT`)
     }
   }
   if (new Set(m.artifacts.map((a) => a.target)).size !== 2) fail('TARGET_MATRIX')
@@ -662,7 +704,7 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
     if (
       !c ||
       baselineValue === undefined ||
-      !compareComplete(baselineValue, json(c.expected, 'PRODUCT_FIXED_EXPECTED'))
+      !compareProductComplete(baselineValue, json(c.expected, 'PRODUCT_FIXED_EXPECTED'))
     )
       fail('PRODUCT_EXPECTATION_BASELINE')
   }
@@ -731,26 +773,82 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
     .strict()
   const rows = z
     .array(row)
-    .min(1)
     .refine((items) => new Set(items.map((item) => item.id)).size === items.length)
+  const coreRows = rows.min(1)
   const snapshotSchema = z
     .object({
-      format: z.literal('t11-comparison-v1'),
+      format: z.literal('t11-comparison-v2'),
       projectId: text,
       sourceSnapshotId: sha,
       projectRevision: z.number().int().nonnegative(),
-      facts: rows,
-      definitions: rows,
-      ownership: rows,
-      mappingState: rows,
-      queries: rows,
-      results: rows,
+      selection: z
+        .object({
+          currentDerived: z.boolean(),
+          historicalRuns: z.boolean(),
+          rawSources: z.boolean(),
+          agentSessions: z.boolean(),
+          priorUndo: z.boolean(),
+        })
+        .strict(),
+      capabilities: z
+        .object({
+          restoreCurrent: z.literal(true),
+          rerunOriginalMapping: z.boolean(),
+          replaySandbox: z.boolean(),
+        })
+        .strict(),
+      dependencies: z
+        .object({
+          mappingSources: z.enum(['embedded', 'missing']),
+          replayInputs: z.boolean(),
+          replayConfiguration: z.boolean(),
+          replaySemantics: z.enum(['supported', 'missing', 'unsupported']),
+        })
+        .strict(),
+      // The G.6 comparison scenario includes facts, mapping ownership and a real query.
+      facts: coreRows,
+      definitions: coreRows,
+      ownership: coreRows,
+      mappingState: coreRows,
+      queries: coreRows,
+      results: coreRows,
+      derivedResults: rows,
       history: rows,
       rounds: rows,
+      rawSources: rows,
+      agentSessions: rows,
       undo: rows,
       executionVersions: z.object({ semantics: text, engine: text, lock: text }).strict(),
     })
     .strict()
+    .superRefine((value, ctx) => {
+      const reject = (message: string) => ctx.addIssue({ code: 'custom', message })
+      if (
+        (!value.selection.currentDerived && value.derivedResults.length > 0) ||
+        (!value.selection.historicalRuns &&
+          (value.history.length > 0 || value.rounds.length > 0)) ||
+        (!value.selection.rawSources && value.rawSources.length > 0) ||
+        (!value.selection.agentSessions && value.agentSessions.length > 0) ||
+        (!value.selection.priorUndo && value.undo.length > 0)
+      )
+        reject('UNSELECTED_CONTENT')
+      const canRerun =
+        value.selection.rawSources &&
+        value.rawSources.length > 0 &&
+        value.dependencies.mappingSources === 'embedded'
+      if (
+        (value.dependencies.mappingSources === 'embedded' && !canRerun) ||
+        value.capabilities.rerunOriginalMapping !== canRerun
+      )
+        reject('MAPPING_CAPABILITY')
+      const canReplay =
+        value.selection.historicalRuns &&
+        value.history.length > 0 &&
+        value.dependencies.replayInputs &&
+        value.dependencies.replayConfiguration &&
+        value.dependencies.replaySemantics === 'supported'
+      if (value.capabilities.replaySandbox !== canReplay) reject('REPLAY_CAPABILITY')
+    })
   const snapshot = (r: z.infer<typeof ref>, code: string) => {
     const value = json(r, code)
     if (!snapshotSchema.safeParse(value).success) fail(`${code}_SCHEMA`)

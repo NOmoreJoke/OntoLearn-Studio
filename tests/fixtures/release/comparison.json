@@ -1,5 +1,5 @@
 {
-  "format": "t11-comparison-v1",
+  "format": "t11-comparison-v2",
   "projectRevision": 2,
   "facts": [
     {
@@ -93,5 +93,43 @@
     "lock": "synthetic-1"
   },
   "projectId": "synthetic-project",
-  "sourceSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  "sourceSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "selection": {
+    "currentDerived": true,
+    "historicalRuns": true,
+    "rawSources": true,
+    "agentSessions": false,
+    "priorUndo": true
+  },
+  "capabilities": {
+    "restoreCurrent": true,
+    "rerunOriginalMapping": true,
+    "replaySandbox": true
+  },
+  "dependencies": {
+    "mappingSources": "embedded",
+    "replayInputs": true,
+    "replayConfiguration": true,
+    "replaySemantics": "supported"
+  },
+  "derivedResults": [
+    {
+      "id": "derived-1",
+      "payload": {
+        "subject": "001",
+        "type": "SyntheticHighRiskEquipment",
+        "source": "synthetic-rule"
+      }
+    }
+  ],
+  "rawSources": [
+    {
+      "id": "source-1",
+      "payload": {
+        "relativePath": "synthetic-equipment.csv",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    }
+  ],
+  "agentSessions": []
 }

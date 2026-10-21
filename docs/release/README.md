@@ -18,9 +18,11 @@ expectedResults 键为报告 label 加冒号加 check id（如 `PRODUCT:FR-001`�
 
 清单强制同时具备 Win11 x64 NSIS 与 macOS15 arm64 DMG：版本、NSIS PE/DMG koly文件头、app/engine 架构、构建来源与两份锁/唯一配置、完整组件 inventory/许可证文件、有效签名时间戳；Mac 另有 Hardened Runtime、公证和 ticket。设备记录必须有实际 OS 补丁/构建号、CPU/RAM、干净镜像、隔离会话和无开发环境声明。下载文件与候选包逐字节哈希一致，下载受众可访问且安装启动已验证。URL 不存临时鉴权参数。
 
-每份报告绑定 candidate、T09 manifest、安装产物 SHA、操作者、设备/环境、实际时间、原始记录哈希以及具名 checks。每条 check 引用完整 expected/actual JSON，按对象字段与数组内容/顺序比较，不能只记录数量。数组应由领域唯一负责人按其规范稳定排序；不能通过排序掩盖行为轨迹顺序错误。原始失败结果保留，新结果另存。57 个 P0 从固定 PRD 提取；G 的 50 条 ID 与原条款从 T09 coverage 读取并与 PRD 校核；每个G预期须与T09 cases.json中的expected完全相同，E.5 exact/replay文件指针展开为exact/replayExact完整对象；T09 清单内每个文件都校验哈希。没有实际 T09 文件时直接失败，不生成第二份基线。
+每份报告绑定 candidate、T09 manifest、安装产物 SHA、操作者、设备/环境、实际时间、原始记录哈希以及具名 checks。每条 check 引用完整 expected/actual JSON，不能只记录数量。PRODUCT的facts/assertedFacts/inferred/addedTriples/inputs仅在内容确为完整subject/predicate/object三元组时按集合排序比较，保留重复数；事件、动作、轮次及其他数组严格保序，其余报告比较不变。领域owner仍需按其规范稳定输出，不能通过排序掩盖错误。原始失败另存。57个P0由固定PRD提取，G的50条ID/原文由T09 coverage对照PRD；每个G预期须与cases.json的完整expected一致，E.5 exact/replay指针展开成实际完整对象后比较。manifest内每个文件均校验哈希；缺文件直接失败，不生成第二份产品基线。
 
-回退资产同时记录双平台上一版版本/来源SHA/签名报告，检查文件格式与独立上一版记录，不接受任意文本或当前资产冒充上一版。恢复/迁移比较使用 `t11-comparison-v1` 只读导出：projectId/sourceSnapshotId/revision、完整事实/定义/来源所有权/映射状态/查询结果/历史/轮次/撤销依据和执行版本。各集合项是唯一稳定id与完整payload，源快照哈希须与总控独立冻结记录一致。它不是项目格式、Store 或可变权威；由 T01/T10 从真实只读快照导出，T11 不补造数据。先后完整值须相同，缺字段、空层、无身份行、模板和数量摘要拒绝。字段布局见 `tests/fixtures/release/comparison.json`；该文件内容仅为小型合成反例输入。
+总控已允许固定T09 `873c8c0` 输入只读引用，独立工具联验通过显式 `T11_FIXED_BASELINE_PROBE=1` 启用，具体固定SHA、17文件核验和默认skip边界见 `docs/iterations/T11/acceptance.md`。它仅证明本核验器能读取批准输入和拒绝错误，不消费T09未批准服务，不证明领域实际输出或50项产品通过。
+
+回退资产同时记录双平台上一版版本/来源SHA/签名报告，检查文件格式与独立上一版记录，不接受任意文本或当前资产冒充上一版。恢复/迁移比较使用 `t11-comparison-v2` 只读选择投影：projectId/sourceSnapshotId/revision、当前必需层及selection/capabilities/dependencies。源投影哈希须与总控独立freeze一致，集合项必须是唯一稳定id与完整payload；前后全部所选内容相同。未选择的推导/历史/原文件/Agent会话必须为空；当前状态可恢复、原映射可重跑、沙盘可重放三项分别依据齐全性判定，不能因历史未选而拒绝完整当前项目。仅固定G.6冲突场景的事实/定义/来源/映射/查询核对必需层不可为空，无身份行、模板冒充恢复、数量摘要和错误能力宣称仍拒绝。它不是项目格式或可变权威，T01/T10实际只读适配器仍待交接。v2取代本工具先前过度强制所有层非空的v1；旧证据保留历史，不静默升级。字段见合成 `tests/fixtures/release/comparison.json`，细则见migration-recovery.md。
 
 ## 核验的实际边界
 

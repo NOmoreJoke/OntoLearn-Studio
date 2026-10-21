@@ -10,9 +10,10 @@ import {
 } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
-import { spawnSync } from 'node:child_process'
+import { execFileSync, spawnSync } from 'node:child_process'
 import {
   compareComplete,
+  compareProductComplete,
   DEVICE_CHECKS,
   digest,
   ENGINEERING_CHECKS,
@@ -27,11 +28,25 @@ import {
 
 const profile = JSON.parse(readFileSync('tests/fixtures/release/synthetic-profile.json', 'utf8'))
 const roots: string[] = []
+const approvedT09 = {
+  commit: '873c8c051b9870aa12fc7e1dbbd3e0c358e7c380',
+  manifestSha256: 'aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e',
+  prdSha256: '7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb',
+}
+const fixedBaselineProbe = process.env.T11_FIXED_BASELINE_PROBE === '1'
 afterEach(() => {
   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true })
 })
 
-function fixture(options: { exactPointer?: string; replayPointer?: string } = {}) {
+function fixture(
+  options: {
+    exactPointer?: string
+    replayPointer?: string
+    fixedBaseline?: boolean
+    packageProfile?:
+      'current-only' | 'without-originals' | 'incomplete-replay' | 'zero-commit-replay'
+  } = {},
+) {
   const root = mkdtempSync(join(tmpdir(), 't11-release-'))
   roots.push(root)
   let n = 0
@@ -113,10 +128,47 @@ function fixture(options: { exactPointer?: string; replayPointer?: string } = {}
     'tests/fixtures/product-baselines/cases.json',
   )
   files[cases.path] = cases.sha256
-  const baseline = put(
+  let baseline = put(
     { version: 'synthetic-regression-only', source: prd, files },
     'tests/fixtures/product-baselines/manifest.json',
   )
+  const importedExpected = new Map<string, Record<string, unknown>>()
+  if (options.fixedBaseline) {
+    const show = (path: string) =>
+      execFileSync('git', ['show', `${approvedT09.commit}:${path}`], {
+        maxBuffer: 16 * 1024 * 1024,
+      })
+    const manifestPath = 'tests/fixtures/product-baselines/manifest.json'
+    const bytes = show(manifestPath)
+    expect(digest(bytes)).toBe(approvedT09.manifestSha256)
+    const fixed = JSON.parse(bytes.toString('utf8'))
+    expect(fixed.source.sha256).toBe(approvedT09.prdSha256)
+    const source = show(fixed.source.path)
+    expect(digest(source)).toBe(approvedT09.prdSha256)
+    put(source, fixed.source.path)
+    expect(Object.keys(fixed.files)).toHaveLength(17)
+    for (const [path, hash] of Object.entries(fixed.files)) {
+      expect(path.startsWith('/')).toBe(false)
+      expect(path.split('/')).not.toContain('..')
+      const content = show(path)
+      expect(digest(content)).toBe(hash)
+      put(content, path)
+    }
+    baseline = put(bytes, manifestPath)
+    const fixedCases = JSON.parse(
+      readFileSync(join(root, 'tests/fixtures/product-baselines/cases.json'), 'utf8'),
+    )
+    const fixedE5 = JSON.parse(
+      readFileSync(join(root, 'tests/fixtures/product-baselines/E.5.json'), 'utf8'),
+    )
+    for (const c of fixedCases.cases) importedExpected.set(c.id, c.expected)
+    importedExpected.set('G-list-01', { exact: fixedE5.expected, compareAllRoundFields: true })
+    importedExpected.set('G-list-02', { exact: fixedE5.expected['3'], crossPhaseConflict: false })
+    const { replayExactFile, replayExactPointer, ...resume } = importedExpected.get('G-list-06')!
+    expect(replayExactFile).toBe('E.5.json')
+    expect(replayExactPointer).toBe('/expected/3')
+    importedExpected.set('G-list-06', { ...resume, replayExact: fixedE5.expected['3'] })
+  }
   const expected: Expected = {
     candidateSha: profile.candidateSha,
     prdSha256: prd.sha256,
@@ -220,7 +272,44 @@ function fixture(options: { exactPointer?: string; replayPointer?: string } = {}
     }
   }) as Manifest['artifacts']
   const asset = artifacts[0].file.sha256
-  const snapshot = put(JSON.parse(readFileSync('tests/fixtures/release/comparison.json', 'utf8')))
+  const comparison = JSON.parse(readFileSync('tests/fixtures/release/comparison.json', 'utf8'))
+  if (options.packageProfile === 'current-only') {
+    comparison.selection = {
+      currentDerived: false,
+      historicalRuns: false,
+      rawSources: false,
+      agentSessions: false,
+      priorUndo: false,
+    }
+    comparison.derivedResults = []
+    comparison.history = []
+    comparison.rounds = []
+    comparison.rawSources = []
+    comparison.agentSessions = []
+    comparison.undo = []
+    comparison.dependencies = {
+      mappingSources: 'missing',
+      replayInputs: false,
+      replayConfiguration: false,
+      replaySemantics: 'missing',
+    }
+    comparison.capabilities = {
+      restoreCurrent: true,
+      rerunOriginalMapping: false,
+      replaySandbox: false,
+    }
+  } else if (options.packageProfile === 'without-originals') {
+    comparison.selection.rawSources = false
+    comparison.rawSources = []
+    comparison.dependencies.mappingSources = 'missing'
+    comparison.capabilities.rerunOriginalMapping = false
+  } else if (options.packageProfile === 'incomplete-replay') {
+    comparison.dependencies.replayInputs = false
+    comparison.capabilities.replaySandbox = false
+  } else if (options.packageProfile === 'zero-commit-replay') {
+    comparison.rounds = []
+  }
+  const snapshot = put(comparison)
   const m: Manifest = {
     schemaVersion: 1,
     mode: 'synthetic',
@@ -236,7 +325,8 @@ function fixture(options: { exactPointer?: string; replayPointer?: string } = {}
       ...report([...p0, ...entries.map((e) => e.id)], asset),
       checks: [...p0, ...entries.map((e) => e.id)].map((id) => {
         const value = put(
-          expandedCases[id] ??
+          importedExpected.get(id) ??
+            expandedCases[id] ??
             (entries.some((c) => c.id === id)
               ? { id, objects: ['A01'] }
               : { requirement: id, objects: ['A01'] }),
@@ -368,6 +458,57 @@ function fixture(options: { exactPointer?: string; replayPointer?: string } = {}
 }
 
 describe('T11 evidence consistency (all fixtures are synthetic)', () => {
+  it('compares RDF facts as a full multiset, preserving values and duplicate multiplicity', () => {
+    const a = { subject: 'urn:a', predicate: 'urn:p', object: '"A"' }
+    const b = { subject: 'urn:b', predicate: 'urn:p', object: '"B"' }
+    expect(compareProductComplete({ facts: [a, b] }, { facts: [b, a] })).toBe(true)
+    expect(compareProductComplete({ facts: [a, b] }, { facts: [a, a] })).toBe(false)
+    expect(compareProductComplete({ facts: [a, a] }, { facts: [a] })).toBe(false)
+  })
+  it('preserves event, action and round order even when nested beside unordered facts', () => {
+    const before = { facts: [], events: ['E1', 'E2'], trace: ['X', 'Y'], rounds: [1, 2] }
+    for (const field of ['events', 'trace', 'rounds'] as const) {
+      const after = structuredClone(before)
+      after[field].reverse()
+      expect(compareProductComplete(before, after)).toBe(false)
+    }
+  })
+  it.runIf(fixedBaselineProbe)(
+    'loads all approved fixed T09 input bytes and fully resolves their expected pointers',
+    () => {
+      const { root, m, expected } = fixture({ fixedBaseline: true })
+      expect(m.baseline.sha256).toBe(approvedT09.manifestSha256)
+      expect(verifyManifest(m, root, expected)).toEqual({
+        consistent: true,
+        releaseAuthorized: false,
+        mode: 'synthetic',
+        issues: [],
+      })
+    },
+  )
+  it.runIf(fixedBaselineProbe)(
+    'accepts reordered RDF facts in a synthetic payload shaped by the fixed E.5 oracle',
+    () => {
+      const { root, m, expected, put } = fixture({ fixedBaseline: true })
+      const result = m.product.checks.find((c) => c.id === 'G-list-02')!
+      const actual = JSON.parse(readFileSync(join(root, result.actual.path), 'utf8'))
+      expect(actual.exact).toHaveLength(4)
+      actual.exact[0].facts.reverse()
+      result.actual = put(actual)
+      expect(verifyManifest(m, root, expected).consistent).toBe(true)
+    },
+  )
+  it.runIf(fixedBaselineProbe)(
+    'rejects reversed actual round order against the approved complete E.5 output',
+    () => {
+      const { root, m, expected, put } = fixture({ fixedBaseline: true })
+      const result = m.product.checks.find((c) => c.id === 'G-list-02')!
+      const actual = JSON.parse(readFileSync(join(root, result.actual.path), 'utf8'))
+      actual.exact.reverse()
+      result.actual = put(actual)
+      expect(verifyManifest(m, root, expected).issues).toContain('PRODUCT_RESULT')
+    },
+  )
   it('checks the complete positive fixture without granting release authority', () => {
     const { root, m, expected } = fixture()
     expect(verifyManifest(m, root, expected)).toEqual({
@@ -376,6 +517,68 @@ describe('T11 evidence consistency (all fixtures are synthetic)', () => {
       mode: 'synthetic',
       issues: [],
     })
+  })
+  it.each([
+    'current-only',
+    'without-originals',
+    'incomplete-replay',
+    'zero-commit-replay',
+  ] as const)(
+    'accepts a restorable selected package independently of rerun/replay: %s',
+    (packageProfile) => {
+      const { root, m, expected } = fixture({ packageProfile })
+      expect(verifyManifest(m, root, expected)).toEqual({
+        consistent: true,
+        releaseAuthorized: false,
+        mode: 'synthetic',
+        issues: [],
+      })
+    },
+  )
+  it.each(['history', 'rounds', 'derivedResults', 'rawSources', 'agentSessions', 'undo'] as const)(
+    'rejects carrying unselected content: %s',
+    (section) => {
+      const { root, m, expected, put } = fixture({ packageProfile: 'current-only' })
+      const after = JSON.parse(readFileSync(join(root, m.migration[0].after.path), 'utf8'))
+      after[section] = [{ id: 'unselected-row', payload: { content: 'synthetic' } }]
+      m.migration[0].after = put(after)
+      expect(verifyManifest(m, root, expected).issues).toContain('MIGRATION_AFTER_SCHEMA')
+    },
+  )
+  it.each(['rerunOriginalMapping', 'replaySandbox'] as const)(
+    'rejects an unsupported migration capability: %s',
+    (capability) => {
+      const { root, m, expected, put } = fixture({ packageProfile: 'current-only' })
+      const after = JSON.parse(readFileSync(join(root, m.migration[0].after.path), 'utf8'))
+      after.capabilities[capability] = true
+      m.migration[0].after = put(after)
+      expect(verifyManifest(m, root, expected).issues).toContain('MIGRATION_AFTER_SCHEMA')
+    },
+  )
+  it('still rejects a missing mandatory source/ownership layer in a current-only package', () => {
+    const { root, m, expected, put } = fixture({ packageProfile: 'current-only' })
+    const after = JSON.parse(readFileSync(join(root, m.migration[0].after.path), 'utf8'))
+    after.ownership = []
+    m.migration[0].after = put(after)
+    const result = verifyManifest(m, root, expected)
+    expect(result.issues).toContain('MIGRATION_AFTER_SCHEMA')
+    expect(result.issues).toContain('MIGRATION_DATA')
+  })
+  it('rejects an old comparison format instead of silently upgrading its meaning', () => {
+    const { root, m, expected, put } = fixture()
+    const after = JSON.parse(readFileSync(join(root, m.recovery.restored.path), 'utf8'))
+    after.format = 't11-comparison-v1'
+    m.recovery.restored = put(after)
+    expect(verifyManifest(m, root, expected).issues).toContain('RECOVERY_RESTORED_SCHEMA')
+  })
+  it('requires the actual no-history restoration case in each migration direction', () => {
+    const { root, m, expected } = fixture()
+    m.migration[0].report.checks = m.migration[0].report.checks.filter(
+      (c) => c.id !== 'restore-current-without-history',
+    )
+    const result = verifyManifest(m, root, expected)
+    expect(result.consistent).toBe(false)
+    expect(result.issues).toContain('MIGRATION_windows11-x64_macos15-arm64_COVERAGE')
   })
   it.each([{ exactPointer: '/expected/not-present' }, { replayPointer: '/expected/3/99' }])(
     'rejects unresolved fixed-baseline references %j',

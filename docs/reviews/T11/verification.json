@@ -5,8 +5,8 @@
   "branch": "feature/weekly-t11-release",
   "scope": "T11 private verifier and acceptance preparation only",
   "passed": {
-    "t11SyntheticUnitTests": 45,
-    "allTypeScriptTests": 675,
+    "t11SyntheticUnitTests": 65,
+    "allTypeScriptTests": 695,
     "pythonTests": 1052,
     "build": true,
     "ruff": true,
@@ -57,13 +57,36 @@
       "explicit-format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
       "explicit-lint-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "explicit-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixed-baseline-explicit-format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "fixed-baseline-explicit-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixed-baseline-format.log": "c8ad4d9f2cc83a43344ac80428eba710c4fdb856d5885fe89a30be34824a2c0e",
+      "fixed-baseline-full-check.log": "cce3b1f53e57c68624697feb773ef53fc850de8ca480354e31b7cfc00717f0b4",
+      "fixed-baseline-precheck-format.log": "0dfb46a5e2571f44705bf4cc9c8a71dc752a67601ba1bda169745f0b9b0fba36",
+      "fixed-baseline-unit-first.log": "2bc1313ce63e369b31912c4161e98dc9a50f6eb02f8470bb3bff40e87b96661a",
       "format-final-repair.log": "351d50e864a0dda3d48b32cf21e6998e41e74bd1fd35b3b66e732367f8bcc8a2",
       "format-repair.log": "3f9f553ec36c8154c09d23cffc89fb648517c1733bcc830a162435ccd25e5be3",
       "format.log": "b72ae7204279a49f8ac987bb94a48fae47bb2f535b938f3658ed01e5727080a2",
+      "pointer-evidence-format.log": "42c8f8f6ba3f72edf2a1aae0b1f0047e318d77f90265d4640818faa228fbd559",
       "pointer-format.log": "d7731b7856b469625e09a898973a8ef514229ad3363eb7085aa6078ce5a63ca2",
       "pointer-full-check.log": "244963562f950bf0f8fb2b943e93a605199b7ff72edbbb7193d38153e9357744",
       "pointer-unit.log": "c41c9d6f33cb7a1be7070cdc68963b89de2e6c9407bd1d808ca34d49c4649347",
+      "policy-receipt-format.log": "8a8be650a703c48ffdd453d54c2d63ed66de624f29054bfe88b5ee6627e6492b",
       "review-format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "selection-coverage-format.log": "062ebfd60bc5d0290ae38de49ea1a8be9eac9f00321939f89b68eef66ad1b054",
+      "selection-explicit-format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "selection-explicit-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection-final-check.log": "6f76a80a7a52fabd354ba91422230b21a01edea0d1780faee21a59f506208a0a",
+      "selection-final-format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "selection-final-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection-format-second.log": "c39e64fff7f164e7e3e66843d7e5063a5038dd4d39c6b293b129cb6c683bfa34",
+      "selection-format.log": "f39ddb114a84495aab30de145096f2f715fe6a1a0a3d684cc66aac116f9140cd",
+      "selection-full-check.log": "64a6b08d928c088292860451b554b99f3d125f271e3cc5299ad22c7a72d68c47",
+      "selection-review-docs-format.log": "95c4c318c79cbe5d6c4e13737c0c53f251d96399bc2fb25519ce685347f91608",
+      "selection-review-repair-format.log": "ff5ae09300ad3aad8dba280b93fc4b956b6e3a95ef23103c8dbcdd383cdd098f",
+      "selection-unit-first.log": "07dec8bf94ce0372efb74967f9684c4645239a505a4b38712f09143b5257b4cb",
+      "selection-unit-fourth.log": "81d4b2f4fdae9713304494f9236593cdd1fcb4c6a5b0d0d3e5f87fb9a5d28709",
+      "selection-unit-second.log": "75f97d0c64ec908c1707d567dd29fcd389ed5b869ba7815a3d36a281cd48b954",
+      "selection-unit-third.log": "42d667baf9b38ac4b73a6e03d5c5f9e98f7c9ca43c54aa2198b6f1ea7a6ec3de",
       "sources.log": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
       "unit-fifth-run.log": "f93b9c135f5afa422a60ace2445e59493c3f8d47be180e981a8e081909c914ed",
       "unit-fourth-run.log": "29a68766d61b6f82a031b5c38d039aa5d01c3a1d083a8fd0095faa464cdbfc7a",
@@ -72,11 +95,12 @@
     }
   },
   "reviewedFilesSha256": {
-    "scripts/release/verify.ts": "8370444e17fee4345d8a145ad6ec7f1094c8792a09ec395ab9a08d63b3a0ff87",
+    "scripts/release/verify.ts": "8f6aac79f43167cd243cc978e1ecf50d1a5262f43fbc421b1e6472bf77ba6c06",
     "scripts/release/verify-release.mjs": "184141eb1169172789d85a875310f29d91f86493177a82b6338f58256ae1b491",
     "scripts/release/collect-macos.sh": "f273da7b4eaf8eb25fee2d4479817c0b559ef64b83567b8be04f28e48f266fb4",
     "scripts/release/collect-windows.ps1": "9194c70522154249a16fa8b7d5902416c46622b2c121307cfab9dbd73a77add8",
-    "tests/unit/t11-release.test.ts": "8ad97bf70f649d6345297299497ac9b3d0f23e89b3e87b80a2953e9b9a109c1a"
+    "tests/unit/t11-release.test.ts": "504d23c278fb9f1c09de475b62a00bca8beef7b76f4971005f9054998a9eebec",
+    "tests/fixtures/release/comparison.json": "615f14f86c6c3b1a8a50aa8e0d9fe25701202ba3573490e68da2463233fc0c65"
   },
   "initialVerifiedCounts": {
     "t11SyntheticUnitTests": 41,
@@ -84,12 +108,39 @@
     "pythonTests": 1052
   },
   "followup": {
-    "observedAt": "2026-10-21T00:45:29.795Z",
-    "change": "Only regression tests and review/evidence documentation; verifier/CLI/native scripts unchanged",
-    "specializedTests": "45/45",
-    "completeCheck": "675 TS / 1052 Python, build and ruff passed",
-    "independentReview": "t11_independent_review actual final: passed, no new findings",
-    "completionAudit": "completion-audit.md",
-    "goalStatus": "active; original full release gates remain incomplete"
-  }
+    "observedAt": "2026-10-21T00:59:24.202Z",
+    "comparisonVersion": "t11-comparison-v2",
+    "change": "Separate current restore/mapping rerun/sandbox replay; exclude unselected content and prior undo; permit zero-commit replay with complete input; fixed approved input probe and RDF triple multiset comparison",
+    "commands": [
+      "T11_FIXED_BASELINE_PROBE=1 npx vitest run tests/unit/t11-release.test.ts",
+      "T11_FIXED_BASELINE_PROBE=1 npm run check"
+    ],
+    "specializedTests": {
+      "passed": 65,
+      "skipped": 0
+    },
+    "completeCheck": {
+      "typeScriptPassed": 695,
+      "pythonPassed": 1052,
+      "build": true,
+      "ruff": true
+    },
+    "fixedInput": "approved-fixed-baseline-probe.json",
+    "independentReview": "selection-v2-review.md",
+    "defaultProbeBoundary": "Without explicit flag, 3 fixed-input tests skipped; default success is not fixed-input integration",
+    "archivedSources": "Previous actual 12-source check retained; archive bytes unchanged, no new source check claimed",
+    "operatingPolicy": "external-review-permissions-receipt.json; no GUI or application reconfiguration",
+    "goalStatus": "active; full production/target-device/review/distribution gates not complete"
+  },
+  "priorFollowups": [
+    {
+      "observedAt": "2026-10-21T00:45:29.795Z",
+      "change": "Only regression tests and review/evidence documentation; verifier/CLI/native scripts unchanged",
+      "specializedTests": "45/45",
+      "completeCheck": "675 TS / 1052 Python, build and ruff passed",
+      "independentReview": "t11_independent_review actual final: passed, no new findings",
+      "completionAudit": "completion-audit.md",
+      "goalStatus": "active; original full release gates remain incomplete"
+    }
+  ]
 }
