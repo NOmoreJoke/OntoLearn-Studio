@@ -1,0 +1,803 @@
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import {
+  createPrivateRootTransferGuard,
+  TRANSFER_GUARD_LIMITS,
+  type MetadataObservationPort,
+  type MetadataToken,
+  type RequestToken,
+} from '../../apps/desktop/src/main/security/private-root-transfer-guard'
+
+type Guard = ReturnType<typeof createPrivateRootTransferGuard>
+const guards: Guard[] = []
+const none = () => ({ kind: 'none' as const })
+function context(generation = 1) {
+  return {
+    profileEpoch: 'profile-one',
+    projectId: 'project-one',
+    checkpointId: 'checkpoint-one',
+    requestId: 'request-one',
+    generation,
+    purpose: 'export' as 'export' | 'import',
+  }
+}
+function descriptor() {
+  return {
+    version: 1,
+    sourceRead: { kind: 'files', refs: ['source'] },
+    inputPackage: none(),
+    final: { kind: 'file', ref: 'final' },
+    staging: { kind: 'members', refs: ['stage'] },
+    unpack: none(),
+    newProject: none(),
+    backup: none(),
+  }
+}
+function identity(inode: string, objectType = 'file', state = 'active') {
+  return {
+    kind: 'posix-devino',
+    volume: 'volume-one',
+    device: '1',
+    inode,
+    lifecycle: 'lifecycle-one',
+    state,
+    objectType,
+  }
+}
+function location(ref: string, suffix: string[], exists = false) {
+  return {
+    ref,
+    anchor: { segments: ['home', 'user'], identity: identity('1', 'directory') },
+    suffix,
+    identity: exists ? identity(ref === 'source' ? '2' : '3') : null,
+  }
+}
+function snapshot(revision = 1) {
+  return {
+    version: 1,
+    profileEpoch: 'profile-one',
+    revision,
+    completeness: 'complete',
+    platform: { kind: 'posix-sensitive', namespace: 'namespace-one', volume: 'volume-one' },
+    protectedRoots: [
+      {
+        role: 'private-root',
+        segments: ['home', 'user', 'private'],
+        identity: identity('9', 'directory'),
+      },
+      {
+        role: 'database',
+        segments: ['home', 'user', 'project.db'],
+        identity: identity('10'),
+      },
+      { role: 'database-wal', segments: ['home', 'user', 'project.db-wal'], identity: null },
+      { role: 'database-shm', segments: ['home', 'user', 'project.db-shm'], identity: null },
+    ],
+    protectedIdentities: [] as ReturnType<typeof identity>[],
+    locations: [
+      location('source', ['input.csv'], true),
+      location('final', ['exports', 'result.bin']),
+      location('stage', ['.staging', 'part'], true),
+    ],
+  }
+}
+function guard(observe?: MetadataObservationPort['observe']) {
+  const result = createPrivateRootTransferGuard(observe ? { observe } : undefined)
+  guards.push(result)
+  return result
+}
+function open(core: Guard, raw: unknown = context()): RequestToken {
+  const result = core.openRequest(raw)
+  expect(result.status).toBe('request-opened')
+  if (result.status !== 'request-opened') throw new Error('request failed')
+  return result.token
+}
+async function candidate(core: Guard, request: RequestToken, raw: unknown = descriptor()) {
+  const result = await core.evaluate(request, raw)
+  expect(result.status).toBe('metadata-eligible')
+  if (result.status !== 'metadata-eligible') throw new Error('candidate failed')
+  return result.token
+}
+function deferred<T>() {
+  let resolve!: (value: T) => void
+  const promise = new Promise<T>((done) => (resolve = done))
+  return { promise, resolve }
+}
+async function flush() {
+  for (let index = 0; index < 6; index++) await Promise.resolve()
+}
+function fakeTime() {
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'performance'] })
+}
+afterEach(() => {
+  for (const core of guards.splice(0)) core.close()
+  vi.restoreAllMocks()
+  vi.useRealTimers()
+})
+
+describe('I06 metadata transfer guard core', () => {
+  it('returns metadata only, freezes owner inputs, and exposes no filesystem action', async () => {
+    const observe = vi.fn(async (input) => {
+      expect(Object.isFrozen(input)).toBe(true)
+      expect(Object.isFrozen(input.context)).toBe(true)
+      expect(Object.isFrozen(input.descriptor.sourceRead.refs)).toBe(true)
+      return snapshot()
+    })
+    const core = guard(observe)
+    const request = open(core)
+    const token = await candidate(core, request)
+    expect(core.check(request, token)).toEqual({
+      status: 'metadata-eligible',
+      token,
+      contentIo: 'unsupported',
+    })
+    expect(Object.keys(core).sort()).toEqual(
+      [
+        'openRequest',
+        'evaluate',
+        'check',
+        'revalidate',
+        'release',
+        'invalidate',
+        'close',
+        'contentIo',
+      ].sort(),
+    )
+    expect(observe).toHaveBeenCalledTimes(1)
+    const consumer = vi.fn()
+    const evil = Object.defineProperty({}, 'action', { get: consumer })
+    for (const state of ['eligible', 'revalidated', 'released', 'closed']) {
+      if (state === 'revalidated')
+        expect((await core.revalidate(request, token)).status).toBe('metadata-eligible')
+      if (state === 'released') expect(core.release(request, token)).toEqual({ status: 'released' })
+      if (state === 'closed') core.close()
+      expect(Reflect.apply(core.contentIo, core, [evil, consumer])).toEqual({
+        status: 'rejected',
+        reason: 'unsupported',
+      })
+    }
+    expect(consumer).not.toHaveBeenCalled()
+  })
+
+  it('rejects absent owner and boolean approval callbacks without affecting an unrelated save', async () => {
+    const core = guard()
+    expect(await core.evaluate(open(core), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'unsupported',
+    })
+    const booleanOwner = guard(async () => true)
+    expect(await booleanOwner.evaluate(open(booleanOwner), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'invalid',
+    })
+    const save = vi.fn(() => 'saved')
+    expect(save()).toBe('saved')
+    expect(core.contentIo()).toEqual({ status: 'rejected', reason: 'unsupported' })
+  })
+
+  it('allows explicit none for raw-free exports and unpack-free imports', async () => {
+    const noRaw = { ...descriptor(), sourceRead: none(), staging: none() }
+    const exportOwner = guard(async () => ({
+      ...snapshot(),
+      locations: [location('final', ['result.bin'])],
+    }))
+    await candidate(exportOwner, open(exportOwner), noRaw)
+    const importDescriptor = {
+      version: 1,
+      sourceRead: none(),
+      inputPackage: { kind: 'file', ref: 'package' },
+      final: none(),
+      staging: none(),
+      unpack: none(),
+      newProject: { kind: 'writer-location', ref: 'project' },
+      backup: none(),
+    }
+    const importing = guard(async () => ({
+      ...snapshot(),
+      locations: [
+        { ...location('package', ['input.pkg'], true), identity: identity('7') },
+        location('project', ['projects', 'new']),
+      ],
+    }))
+    await candidate(
+      importing,
+      open(importing, { ...context(), purpose: 'import' }),
+      importDescriptor,
+    )
+  })
+
+  it.each([
+    [
+      'missing backup',
+      () => {
+        const d: Record<string, unknown> = descriptor()
+        delete d.backup
+        return d
+      },
+    ],
+    ['none with hidden ref', () => ({ ...descriptor(), backup: { kind: 'none', ref: 'x' } })],
+    ['empty refs', () => ({ ...descriptor(), sourceRead: { kind: 'files', refs: [] } })],
+    ['duplicate ref', () => ({ ...descriptor(), staging: { kind: 'members', refs: ['source'] } })],
+    ['undeclared recursive scope', () => ({ ...descriptor(), recursive: true })],
+    [
+      'wrong purpose role',
+      () => ({ ...descriptor(), unpack: { kind: 'members', refs: ['unpack'] } }),
+    ],
+  ])('rejects strict descriptor: %s before asking the owner', async (_name, make) => {
+    const observe = vi.fn(async () => snapshot())
+    const core = guard(observe)
+    expect(await core.evaluate(open(core), make())).toEqual({
+      status: 'rejected',
+      reason: 'invalid',
+    })
+    expect(observe).not.toHaveBeenCalled()
+  })
+
+  it.each(['incomplete', 'unknown', 'recovering', 'failed'])(
+    'rejects inventory %s',
+    async (completeness) => {
+      const core = guard(async () => ({ ...snapshot(), completeness }))
+      expect(await core.evaluate(open(core), descriptor())).toEqual({
+        status: 'rejected',
+        reason: 'incomplete',
+      })
+    },
+  )
+
+  it('requires whole-root, DB/WAL/SHM coverage and known platform/epoch', async () => {
+    for (const role of ['private-root', 'database', 'database-wal', 'database-shm']) {
+      const value = snapshot()
+      value.protectedRoots = value.protectedRoots.filter((root) => root.role !== role)
+      const core = guard(async () => value)
+      expect(await core.evaluate(open(core), descriptor())).toEqual({
+        status: 'rejected',
+        reason: 'incomplete',
+      })
+    }
+    const platform = guard(async () => ({
+      ...snapshot(),
+      platform: { ...snapshot().platform, kind: 'win32' },
+    }))
+    expect(await platform.evaluate(open(platform), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'unsupported',
+    })
+    const wrongEpoch = guard(async () => ({ ...snapshot(), profileEpoch: 'other' }))
+    expect(await wrongEpoch.evaluate(open(wrongEpoch), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'stale',
+    })
+  })
+
+  it.each([
+    ['equal', ['home', 'user'], ['private']],
+    ['inside prospective root', ['home', 'user'], ['private', 'future', 'item']],
+    ['ancestor of root', [], ['home']],
+    ['WAL', ['home', 'user'], ['project.db-wal']],
+  ])('rejects actual scope overlap: %s', async (_name, anchor, suffix) => {
+    const value = snapshot()
+    value.protectedRoots[0].identity = null
+    value.locations[1].anchor.segments = anchor
+    value.locations[1].suffix = suffix
+    const core = guard(async () => value)
+    expect(await core.evaluate(open(core), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'conflict',
+    })
+  })
+
+  it('does not turn an ancestor anchor into recursive authority or confuse sibling prefixes', async () => {
+    const value = snapshot()
+    value.locations[1].suffix = ['private-copy', 'file']
+    const core = guard(async () => value)
+    await candidate(core, open(core))
+  })
+
+  it.each(['active', 'retired'])(
+    'blocks protected %s inode aliases despite changed lifecycle',
+    async (state) => {
+      const value = snapshot()
+      value.protectedIdentities.push(identity('2', 'file', state))
+      value.locations[0].identity!.lifecycle = 'different-incarnation'
+      const core = guard(async () => value)
+      expect(await core.evaluate(open(core), descriptor())).toEqual({
+        status: 'rejected',
+        reason: 'conflict',
+      })
+    },
+  )
+
+  it('protects root identities and anchors, refuses unknown retirement and cross-volume observations', async () => {
+    const alias = snapshot()
+    alias.locations[1].anchor.identity = identity('9', 'directory')
+    const core = guard(async () => alias)
+    expect(await core.evaluate(open(core), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'conflict',
+    })
+    const unknown = snapshot()
+    unknown.protectedIdentities.push(identity('55', 'file', 'unknown'))
+    const incomplete = guard(async () => unknown)
+    expect(await incomplete.evaluate(open(incomplete), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'incomplete',
+    })
+    const cross = snapshot()
+    cross.locations[0].identity!.volume = 'another-volume'
+    const unsupported = guard(async () => cross)
+    expect(await unsupported.evaluate(open(unsupported), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'unsupported',
+    })
+  })
+
+  it.each(['..', '.', 'a/b', 'a\\b', 'x:y', '', 'é', 'x\n'])(
+    'rejects ambiguous segment %j',
+    async (suffix) => {
+      const value = snapshot()
+      value.locations[1].suffix = [suffix]
+      const core = guard(async () => value)
+      expect((await core.evaluate(open(core), descriptor())).status).toBe('rejected')
+    },
+  )
+
+  it('enforces existence, file kind, exact ref coverage and fixed-member separation', async () => {
+    const mutations = [
+      (s: ReturnType<typeof snapshot>) => {
+        s.locations[0].identity = null
+      },
+      (s: ReturnType<typeof snapshot>) => {
+        s.locations[1].identity = identity('22')
+      },
+      (s: ReturnType<typeof snapshot>) => {
+        s.locations[0].identity!.objectType = 'directory'
+      },
+      (s: ReturnType<typeof snapshot>) => {
+        s.locations[0].identity!.inode = '002'
+      },
+      (s: ReturnType<typeof snapshot>) => {
+        s.locations[2].identity = identity('2')
+      },
+      (s: ReturnType<typeof snapshot>) => {
+        s.locations[2].suffix = ['exports', 'result.bin', 'child']
+      },
+      (s: ReturnType<typeof snapshot>) => {
+        s.locations.pop()
+      },
+      (s: ReturnType<typeof snapshot>) => {
+        s.locations[2].ref = 'final'
+      },
+    ]
+    for (const mutate of mutations) {
+      const value = snapshot()
+      mutate(value)
+      const core = guard(async () => value)
+      expect((await core.evaluate(open(core), descriptor())).status).toBe('rejected')
+    }
+  })
+
+  it('caps combined path depth, inventory, raw arrays and descriptor nodes', async () => {
+    const depth = snapshot()
+    depth.locations[1].anchor.segments = Array(32).fill('part')
+    const core = guard(async () => depth)
+    expect(await core.evaluate(open(core), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'budget',
+    })
+    const excessive = snapshot()
+    excessive.protectedIdentities = Array.from({ length: 257 }, (_, i) => identity(String(i + 100)))
+    const inventory = guard(async () => excessive)
+    expect(await inventory.evaluate(open(inventory), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'budget',
+    })
+    const observe = vi.fn(async () => snapshot())
+    const raw = guard(observe)
+    expect(await raw.evaluate(open(raw), { ...descriptor(), extra: Array(513).fill(0) })).toEqual({
+      status: 'rejected',
+      reason: 'budget',
+    })
+    const cyclic: Record<string, unknown> = descriptor()
+    cyclic.cycle = cyclic
+    expect((await raw.evaluate(open(raw), cyclic)).status).toBe('rejected')
+    expect(observe).not.toHaveBeenCalled()
+  })
+
+  it('captures inert data once, never invokes accessors or raw get traps', async () => {
+    const getter = vi.fn(() => {
+      throw new Error('/private/key')
+    })
+    const data = descriptor()
+    Object.defineProperty(data, 'backup', { enumerable: true, get: getter })
+    const core = guard(async () => snapshot())
+    const request = open(core)
+    expect(await core.evaluate(request, data)).toEqual({ status: 'rejected', reason: 'invalid' })
+    expect(getter).not.toHaveBeenCalled()
+    const get = vi.fn(() => {
+      throw new Error('should not read raw properties')
+    })
+    const proxy = new Proxy(descriptor(), { get })
+    await candidate(core, request, proxy)
+    expect(get).not.toHaveBeenCalled()
+    const rawOwner = snapshot()
+    Object.defineProperty(rawOwner, 'locations', { enumerable: true, get: getter })
+    const owner = guard(async () => rawOwner)
+    expect(await owner.evaluate(open(owner), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'invalid',
+    })
+    expect(getter).not.toHaveBeenCalled()
+  })
+
+  it('copies observations and separates per-token locations from global protection fingerprints', async () => {
+    let current = snapshot()
+    const core = guard(async () => current)
+    const request = open(core)
+    const one = await candidate(core, request)
+    const otherDescriptor = descriptor()
+    otherDescriptor.final.ref = 'final-two'
+    current = snapshot()
+    current.locations[1].ref = 'final-two'
+    current.locations[1].suffix = ['other.bin']
+    const two = await candidate(core, request, otherDescriptor)
+    expect(core.check(request, one).status).toBe('metadata-eligible')
+    current = snapshot()
+    current.locations[0].suffix = ['changed.csv']
+    expect(await core.revalidate(request, one)).toEqual({ status: 'rejected', reason: 'stale' })
+    expect(core.check(request, two).status).toBe('metadata-eligible')
+    current = snapshot()
+    current.locations[1].ref = 'final-two'
+    current.locations[1].suffix = ['other.bin']
+    expect((await core.revalidate(request, two)).status).toBe('metadata-eligible')
+  })
+
+  it('fails closed permanently for same-revision protection changes, even after values return', async () => {
+    let current = snapshot()
+    const core = guard(async () => current)
+    const request = open(core)
+    const token = await candidate(core, request)
+    current.protectedRoots[0].segments.push('changed')
+    expect(core.check(request, token).status).toBe('metadata-eligible') // as-of copied observation only
+    expect(await core.revalidate(request, token)).toEqual({
+      status: 'rejected',
+      reason: 'conflict',
+    })
+    current = snapshot()
+    expect(await core.evaluate(request, descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'conflict',
+    })
+    expect(core.check(request, token).status).toBe('rejected')
+  })
+
+  it('never rolls back revision on out-of-order observations and does not upgrade old tokens', async () => {
+    const lower = deferred<unknown>()
+    const higher = deferred<unknown>()
+    const observe = vi
+      .fn()
+      .mockResolvedValueOnce(snapshot())
+      .mockImplementationOnce(() => lower.promise)
+      .mockImplementationOnce(() => higher.promise)
+    const core = guard(observe)
+    const request = open(core)
+    const old = await candidate(core, request)
+    const a = core.evaluate(request, descriptor())
+    const b = core.evaluate(request, descriptor())
+    await flush()
+    higher.resolve(snapshot(12))
+    const newest = await b
+    expect(newest.status).toBe('metadata-eligible')
+    lower.resolve(snapshot(11))
+    expect(await a).toEqual({ status: 'rejected', reason: 'stale' })
+    expect(core.check(request, old)).toEqual({ status: 'rejected', reason: 'stale' })
+    if (newest.status === 'metadata-eligible')
+      expect(core.check(request, newest.token).status).toBe('metadata-eligible')
+  })
+
+  it('rejects cloned, foreign-factory, wrong-request and released tokens', async () => {
+    const core = guard(async () => snapshot())
+    const request = open(core)
+    const token = await candidate(core, request)
+    expect(core.check(request, { ...token })).toEqual({ status: 'rejected', reason: 'invalid' })
+    expect(core.check({ ...request }, token)).toEqual({ status: 'rejected', reason: 'invalid' })
+    const foreign = guard(async () => snapshot())
+    const foreignRequest = open(foreign)
+    expect(foreign.check(foreignRequest, token)).toEqual({ status: 'rejected', reason: 'invalid' })
+    expect(core.release(request, token)).toEqual({ status: 'released' })
+    expect(core.release(request, token)).toEqual({ status: 'rejected', reason: 'released' })
+    expect(core.check(request, token)).toEqual({ status: 'rejected', reason: 'released' })
+    const newRequest = open(core, context(2))
+    expect(core.check(newRequest, token)).toEqual({ status: 'rejected', reason: 'invalid' })
+  })
+
+  it.each(['profileEpoch', 'projectId', 'checkpointId', 'requestId', 'generation', 'purpose'])(
+    'invalidates old context when %s changes',
+    async (field) => {
+      const core = guard(async () => snapshot())
+      const request = open(core)
+      const token = await candidate(core, request)
+      const changed = {
+        ...context(),
+        [field]: field === 'generation' ? 2 : field === 'purpose' ? 'import' : 'changed',
+      }
+      core.openRequest(changed)
+      expect(core.check(request, token).status).toBe('rejected')
+      const back = open(core, context())
+      expect(core.check(back, token).status).toBe('rejected')
+    },
+  )
+
+  it('rejects ABA late completions and never installs them into an equal reopened context', async () => {
+    const pending = deferred<unknown>()
+    const observe = vi
+      .fn()
+      .mockImplementationOnce(() => pending.promise)
+      .mockResolvedValue(snapshot())
+    const core = guard(observe)
+    const oldRequest = open(core)
+    const late = core.evaluate(oldRequest, descriptor())
+    await flush()
+    open(core, context(2))
+    const reopened = open(core, context())
+    pending.resolve(snapshot())
+    expect((await late).status).toBe('rejected')
+    const fresh = await candidate(core, reopened)
+    expect(core.check(oldRequest, fresh).status).toBe('rejected')
+  })
+
+  it('does not let synchronous abort reentry overwrite the newest request', async () => {
+    const pending = deferred<unknown>()
+    let nested: ReturnType<Guard['openRequest']> | undefined
+    let calls = 0
+    const core: Guard = guard(async (_input, signal) => {
+      if (++calls === 1) {
+        signal.addEventListener(
+          'abort',
+          () => {
+            nested = core.openRequest(context(3))
+          },
+          { once: true },
+        )
+        return pending.promise
+      }
+      return snapshot()
+    })
+    const old = core.evaluate(open(core), descriptor())
+    await flush()
+    expect(core.openRequest(context(2))).toEqual({ status: 'rejected', reason: 'cancelled' })
+    expect(nested?.status).toBe('request-opened')
+    if (nested?.status === 'request-opened') await candidate(core, nested.token)
+    pending.resolve(snapshot())
+    expect((await old).status).toBe('rejected')
+  })
+
+  it('keeps both actual observation slots after cancellation until promises really settle', async () => {
+    const a = deferred<unknown>()
+    const b = deferred<unknown>()
+    const observe = vi
+      .fn()
+      .mockImplementationOnce(() => a.promise)
+      .mockImplementationOnce(() => b.promise)
+      .mockResolvedValue(snapshot())
+    const core = guard(observe)
+    const request = open(core)
+    const first = core.evaluate(request, descriptor())
+    const second = core.evaluate(request, descriptor())
+    await flush()
+    const next = open(core, context(2))
+    expect((await first).status).toBe('rejected')
+    expect((await second).status).toBe('rejected')
+    expect(await core.evaluate(next, descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'budget',
+    })
+    expect(observe).toHaveBeenCalledTimes(2)
+    a.resolve(snapshot())
+    await flush()
+    await candidate(core, next)
+    expect(observe).toHaveBeenCalledTimes(3)
+    b.resolve(snapshot())
+    await flush()
+  })
+
+  it('timeouts do not free ignored-abort slots or install late tokens', async () => {
+    fakeTime()
+    const a = deferred<unknown>()
+    const b = deferred<unknown>()
+    const observe = vi
+      .fn()
+      .mockImplementationOnce(() => a.promise)
+      .mockImplementationOnce(() => b.promise)
+      .mockResolvedValue(snapshot())
+    const core = guard(observe)
+    const request = open(core)
+    const first = core.evaluate(request, descriptor())
+    const second = core.evaluate(request, descriptor())
+    await flush()
+    await vi.advanceTimersByTimeAsync(5000)
+    expect(await first).toEqual({ status: 'rejected', reason: 'expired' })
+    expect(await second).toEqual({ status: 'rejected', reason: 'expired' })
+    expect(await core.evaluate(request, descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'budget',
+    })
+    a.resolve(snapshot())
+    await flush()
+    await candidate(core, request)
+    b.resolve(snapshot())
+    await flush()
+    expect(observe).toHaveBeenCalledTimes(3)
+  })
+
+  it('reserves at most sixteen candidates and frees only released or expired capacity', async () => {
+    fakeTime()
+    const observe = vi.fn(async () => snapshot())
+    const core = guard(observe)
+    const request = open(core)
+    const tokens: MetadataToken[] = []
+    for (let i = 0; i < TRANSFER_GUARD_LIMITS.tokens; i++)
+      tokens.push(await candidate(core, request))
+    expect(await core.evaluate(request, descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'budget',
+    })
+    expect(observe).toHaveBeenCalledTimes(16)
+    core.release(request, tokens[0])
+    await candidate(core, request)
+    await vi.advanceTimersByTimeAsync(30000)
+    expect(core.check(request, tokens[1])).toEqual({ status: 'rejected', reason: 'expired' })
+    await candidate(core, request)
+    expect(observe).toHaveBeenCalledTimes(18)
+  })
+
+  it('revalidation never extends token lifetime or revives an async failure', async () => {
+    fakeTime()
+    let fail = false
+    const core = guard(async () => {
+      if (fail) throw new Error('/secret/path')
+      return snapshot()
+    })
+    const request = open(core)
+    const token = await candidate(core, request)
+    await vi.advanceTimersByTimeAsync(29000)
+    expect((await core.revalidate(request, token)).status).toBe('metadata-eligible')
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(core.check(request, token)).toEqual({ status: 'rejected', reason: 'expired' })
+    const next = await candidate(core, request)
+    fail = true
+    expect(await core.revalidate(request, next)).toEqual({
+      status: 'rejected',
+      reason: 'unsupported',
+    })
+    fail = false
+    expect(core.check(request, next)).toEqual({ status: 'rejected', reason: 'stale' })
+  })
+
+  it('permanently rejects backward or failed clocks and redacts thrown private data', async () => {
+    const time = vi.spyOn(performance, 'now').mockReturnValue(100)
+    const core = guard(async () => snapshot())
+    const request = open(core)
+    const token = await candidate(core, request)
+    time.mockReturnValue(99)
+    expect(core.check(request, token)).toEqual({ status: 'rejected', reason: 'stale' })
+    time.mockReturnValue(101)
+    expect(core.openRequest(context()).status).toBe('rejected')
+    const other = guard(async () => {
+      throw new Error('/private/key=secret')
+    })
+    const failed = await other.evaluate(open(other), descriptor())
+    expect(failed).toEqual({ status: 'rejected', reason: 'unsupported' })
+    expect(JSON.stringify(failed)).not.toContain('secret')
+    time.mockImplementation(() => {
+      throw new Error('clock secret')
+    })
+    expect(core.check(request, token).status).toBe('rejected')
+  })
+
+  it('invalidates across awaits when released, explicitly revoked or closed', async () => {
+    for (const action of ['release', 'invalidate', 'close'] as const) {
+      const waiting = deferred<unknown>()
+      let pause = false
+      const core = guard(async () => (pause ? waiting.promise : snapshot()))
+      const request = open(core)
+      const token = await candidate(core, request)
+      pause = true
+      const result = core.revalidate(request, token)
+      await flush()
+      if (action === 'release') core.release(request, token)
+      else core[action]()
+      waiting.resolve(snapshot())
+      expect((await result).status).toBe('rejected')
+      expect(core.check(request, token).status).toBe('rejected')
+      expect(core.contentIo()).toEqual({ status: 'rejected', reason: 'unsupported' })
+    }
+  })
+})
+
+describe('I06 review regression boundaries', () => {
+  it('does not install a candidate after owner capture synchronously replaces its request', async () => {
+    let nested: ReturnType<Guard['openRequest']> | undefined
+    let reenter = true
+    const core: Guard = guard(
+      async () =>
+        new Proxy(snapshot(), {
+          ownKeys(target) {
+            if (reenter) {
+              reenter = false
+              nested = core.openRequest(context(2))
+            }
+            return Reflect.ownKeys(target)
+          },
+        }),
+    )
+    const result = await core.evaluate(open(core), descriptor())
+    expect(result).toEqual({ status: 'rejected', reason: 'stale' })
+    expect(nested?.status).toBe('request-opened')
+    if (nested?.status === 'request-opened') await candidate(core, nested.token)
+  })
+
+  it('never inspects a thrown Proxy while sanitizing unknown exceptions', async () => {
+    const secret = new Error('/private/key=synthetic-secret')
+    const poison = new Proxy(
+      {},
+      {
+        getPrototypeOf() {
+          throw secret
+        },
+      },
+    )
+    const input = new Proxy(
+      {},
+      {
+        getPrototypeOf() {
+          throw poison
+        },
+      },
+    )
+    const core = guard(async () => snapshot())
+    await expect(core.evaluate(open(core), input)).resolves.toEqual({
+      status: 'rejected',
+      reason: 'invalid',
+    })
+    const rawOwner = guard(async () => input)
+    await expect(rawOwner.evaluate(open(rawOwner), descriptor())).resolves.toEqual({
+      status: 'rejected',
+      reason: 'invalid',
+    })
+    expect(() => core.openRequest(input)).not.toThrow()
+  })
+
+  it('checks the hard deadline again after capturing and validating owner metadata', async () => {
+    fakeTime()
+    let moved = false
+    const core = guard(
+      async () =>
+        new Proxy(snapshot(), {
+          ownKeys(target) {
+            if (!moved) {
+              moved = true
+              vi.advanceTimersByTime(30000)
+            }
+            return Reflect.ownKeys(target)
+          },
+        }),
+    )
+    expect(await core.evaluate(open(core), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'expired',
+    })
+  })
+})
+
+describe('I06 review observation hard deadline', () => {
+  it('rejects a late synchronous owner response even before its timer callback can run', async () => {
+    const time = vi.spyOn(performance, 'now').mockReturnValue(0)
+    const core = guard(async () => {
+      time.mockReturnValue(6000)
+      return snapshot()
+    })
+    expect(await core.evaluate(open(core), descriptor())).toEqual({
+      status: 'rejected',
+      reason: 'expired',
+    })
+  })
+})

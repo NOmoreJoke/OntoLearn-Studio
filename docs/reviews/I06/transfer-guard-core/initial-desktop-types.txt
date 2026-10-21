@@ -1,0 +1,14 @@
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+src/main/security/private-root-transfer-guard.ts(264,44): error TS2550: Property 'toSorted' does not exist on type '{ ref: string; anchor: { segments: string[]; identity: { kind: "posix-devino"; volume: string; device: string; inode: string; lifecycle: string; state: "active" | "unknown" | "retired"; objectType: "unknown" | ... 1 more ... | "directory"; }; }; suffix: string[]; identity: { ...; } | null; }[]'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2023' or later.
+src/main/security/private-root-transfer-guard.ts(264,54): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/main/security/private-root-transfer-guard.ts(264,57): error TS7006: Parameter 'b' implicitly has an 'any' type.
+npm error Lifecycle script `typecheck` failed with error:
+npm error code 2
+npm error path /Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-transfer-guard-core/apps/desktop
+npm error workspace @ontolearn/desktop@0.1.0
+npm error location /Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-transfer-guard-core/apps/desktop
+npm error command failed
+npm error command sh -c tsc --noEmit -p tsconfig.json

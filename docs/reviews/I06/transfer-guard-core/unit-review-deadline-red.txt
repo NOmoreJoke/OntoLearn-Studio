@@ -1,0 +1,112 @@
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-transfer-guard-core
+
+ ❯ tests/unit/i06-transfer-location-guard.test.ts (55 tests | 4 failed | 51 skipped) 14ms
+   ❯ I06 review regression boundaries (3)
+     × does not install a candidate after owner capture synchronously replaces its request 8ms
+     × never inspects a thrown Proxy while sanitizing unknown exceptions 1ms
+     × checks the hard deadline again after capturing and validating owner metadata 2ms
+   ❯ I06 review observation hard deadline (1)
+     × rejects a late synchronous owner response even before its timer callback can run 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/i06-transfer-location-guard.test.ts > I06 review regression boundaries > does not install a candidate after owner capture synchronously replaces its request
+AssertionError: expected { status: 'metadata-eligible', …(2) } to deeply equal { status: 'rejected', reason: 'stale' }
+
+- Expected
++ Received
+
+  {
+-   "reason": "stale",
+-   "status": "rejected",
++   "contentIo": "unsupported",
++   "status": "metadata-eligible",
++   "token": {
++     "kind": "transfer-metadata-candidate",
++   },
+  }
+
+ ❯ tests/unit/i06-transfer-location-guard.test.ts:733:20
+    731|     )
+    732|     const result = await core.evaluate(open(core), descriptor())
+    733|     expect(result).toEqual({ status: 'rejected', reason: 'stale' })
+       |                    ^
+    734|     expect(nested?.status).toBe('request-opened')
+    735|     if (nested?.status === 'request-opened') await candidate(core, nes…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/i06-transfer-location-guard.test.ts > I06 review regression boundaries > never inspects a thrown Proxy while sanitizing unknown exceptions
+AssertionError: promise rejected "Error: /private/key=synthetic-secret" instead of resolving
+ ❯ tests/unit/i06-transfer-location-guard.test.ts:757:51
+    755|     )
+    756|     const core = guard(async () => snapshot())
+    757|     await expect(core.evaluate(open(core), input)).resolves.toEqual({
+       |                                                   ^
+    758|       status: 'rejected',
+    759|       reason: 'invalid',
+
+Caused by: Error: /private/key=synthetic-secret
+ ❯ tests/unit/i06-transfer-location-guard.test.ts:739:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/i06-transfer-location-guard.test.ts > I06 review regression boundaries > checks the hard deadline again after capturing and validating owner metadata
+AssertionError: expected { status: 'metadata-eligible', …(2) } to deeply equal { status: 'rejected', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "reason": "expired",
+-   "status": "rejected",
++   "contentIo": "unsupported",
++   "status": "metadata-eligible",
++   "token": {
++     "kind": "transfer-metadata-candidate",
++   },
+  }
+
+ ❯ tests/unit/i06-transfer-location-guard.test.ts:784:59
+    782|         }),
+    783|     )
+    784|     expect(await core.evaluate(open(core), descriptor())).toEqual({
+       |                                                           ^
+    785|       status: 'rejected',
+    786|       reason: 'expired',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/i06-transfer-location-guard.test.ts > I06 review observation hard deadline > rejects a late synchronous owner response even before its timer callback can run
+AssertionError: expected { status: 'metadata-eligible', …(2) } to deeply equal { status: 'rejected', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "reason": "expired",
+-   "status": "rejected",
++   "contentIo": "unsupported",
++   "status": "metadata-eligible",
++   "token": {
++     "kind": "transfer-metadata-candidate",
++   },
+  }
+
+ ❯ tests/unit/i06-transfer-location-guard.test.ts:798:59
+    796|       return snapshot()
+    797|     })
+    798|     expect(await core.evaluate(open(core), descriptor())).toEqual({
+       |                                                           ^
+    799|       status: 'rejected',
+    800|       reason: 'expired',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 51 skipped (55)
+   Start at  10:53:56
+   Duration  149ms (import 54%, transform 27%, tests 17%, worker 3%)
+

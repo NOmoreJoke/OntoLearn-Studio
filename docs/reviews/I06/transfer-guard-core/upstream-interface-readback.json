@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-21",
+  "inputs": [
+    {
+      "commit": "33a55907c2f4835d79701c8d5609ed6ffabaf208",
+      "path": "docs/iterations/T01/source-lifecycle-decisions-r3.md",
+      "bytes": 7631,
+      "sha256": "46c422c2b928d68aa4758601e6972979f424f3503524631f6beee03517cdcbc9",
+      "fullRead": true,
+      "implementationConsumed": false
+    },
+    {
+      "commit": "f00e1b74213a76ba573dd38bde20191eb39d1cfa",
+      "path": "docs/iterations/T10/i06-transfer-response-acceptance-r1.md",
+      "bytes": 3692,
+      "sha256": "484bc02d9244ce64cc6bf44edea7afceb25cc74d38385c89a10b9c0f39d3c3a1",
+      "fullRead": true,
+      "implementationConsumed": false
+    }
+  ],
+  "controllerDesignReview": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/source-lifecycle-r3-design-review.md",
+    "bytes": 19000,
+    "sha256": "e95cadb6c655749e36b64b196e0aa71185dff5213be403f80b33a3f737c51846",
+    "fullRead": true
+  },
+  "decisions": {
+    "append": "Accept T01 exact-descriptor-and-bytes duplicate idempotence for explicitly allowed live states with retained verifiable bytes. No rewrite, second advance, extra pin or lifetime extension. Supersedes earlier I06 reject-all-duplicate candidate; historical fixed files unchanged.",
+    "terminalAppend": "After cleanup return authoritative terminal status/rejection, never pretend bytes can still be compared. Accepted Job/pin cannot be revoked by a late conflicting append or release. Drop stale ordinal/context ACKs; do not roll progress backwards.",
+    "budgets": "Controller technically adopts 1 pending begin, 2 unadmitted leases/16MiB raw, 30 idle/120 total/600 sealed seconds, 256 attempts and 256MiB logical encoded source. Conservative design budgets, not Q5, measured capacity, RSS or physical disk. Accounting/barrier/cleanup and finite canonical states still required.",
+    "claim": "Separate stable plan from transient AdmissionProof. No-admit expired/revoked/session-changed input requires new preview/source proof/human confirmation. Unknown original operation requires barrier/fence reconciliation before any new operation. Existing claim authenticates current project read access and original complete context, then returns original receipt without requiring old lease live or current CAS again.",
+    "table": "Controller routed fixed T03 complete projection data to T01; not a runtime parser dependency or frozen tableDigest schema.",
+    "t10": "Accepts guard boundary; PreparedHtmlReportFile still requires later real IO capability adaptation. This registered metadata core provides none."
+  },
+  "guardScopeUnchanged": true,
+  "sourceRuntimeOrWireApproved": false,
+  "goalStatusChanged": false
+}
