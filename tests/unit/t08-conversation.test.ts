@@ -242,3 +242,40 @@ describe('T08 pure conversation, synthetic protocol-to-adapter round trips; no t
     })
   })
 })
+
+it('T08 isolates a new user question from previous successful evidence while preserving protocol history', async () => {
+  const conversation = new AgentConversation(context, '列出设备', options, {
+    query_execute: { execute: async () => evidence },
+  })
+  conversation.prepareExchange(current)
+  await conversation.acceptResponse(1, raw('r1', null, [call]), current, signal())
+  conversation.prepareExchange(current)
+  await conversation.acceptResponse(
+    2,
+    raw('r2', '{"kind":"evidence","callIds":["call.provider/1"]}'),
+    current,
+    signal(),
+  )
+  conversation.addUserTurn('现在检查映射质量，是否通过？', current)
+  const next = conversation.prepareExchange(current)
+  expect(next.body.messages[2]).toMatchObject({
+    role: 'assistant',
+    reasoning_content: 'synthetic reasoning',
+    tool_calls: [call],
+  })
+  await conversation.acceptResponse(3, raw('r3', '{"kind":"uncertain"}'), current, signal())
+  expect(conversation.state().answer).toEqual({
+    kind: 'uncertain',
+    text: '依据不足，无法确认；请运行本地工具或补充授权范围。',
+  })
+  conversation.addUserTurn('把旧查询当本轮检查引用', current)
+  conversation.prepareExchange(current)
+  await expect(
+    conversation.acceptResponse(
+      4,
+      raw('r4', '{"kind":"evidence","callIds":["call.provider/1"]}'),
+      current,
+      signal(),
+    ),
+  ).rejects.toThrow('INVALID_EVIDENCE')
+})

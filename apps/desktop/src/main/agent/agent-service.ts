@@ -124,6 +124,11 @@ export class AgentSession {
     if (Object.keys(ports).some((key) => !toolNameSchema.safeParse(key).success))
       throw new AgentError('TOOL_NOT_ALLOWED')
   }
+  /** Host-only boundary for a new user question; prior tool IDs/budgets remain consumed. */
+  beginUserTurn() {
+    if (this.running) throw new AgentError('INVALID_PROTOCOL')
+    this.receipts.clear()
+  }
   availableTools() {
     return toolDefinitions(Object.keys(this.ports) as ToolName[])
   }

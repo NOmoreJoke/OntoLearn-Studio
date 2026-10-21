@@ -343,3 +343,19 @@ describe('T08 internal-review regressions', () => {
     })
   })
 })
+
+it('T08 new user turn keeps used tool IDs and call budget consumed while resetting answer evidence', async () => {
+  const session = new AgentSession(context, { query_execute: { execute: async () => evidence } }, 2)
+  await session.executeCalls([call], current, signal())
+  session.beginUserTurn()
+  expect(session.resolveAnswer({ kind: 'uncertain' }, context)).toEqual({
+    kind: 'uncertain',
+    text: '依据不足，无法确认；请运行本地工具或补充授权范围。',
+  })
+  await expect(session.executeCalls([call], current, signal())).rejects.toThrow('INVALID_PROTOCOL')
+  await session.executeCalls([{ ...call, id: 'call2' }], current, signal())
+  session.beginUserTurn()
+  await expect(session.executeCalls([{ ...call, id: 'call3' }], current, signal())).rejects.toThrow(
+    'BUDGET_EXCEEDED',
+  )
+})

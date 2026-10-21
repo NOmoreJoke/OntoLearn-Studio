@@ -207,6 +207,7 @@ export class AgentConversation {
     this.assertCurrent(readCurrent)
     const parsed = z.string().trim().min(1).max(32000).safeParse(text)
     if (!parsed.success) throw new AgentError('INVALID_PROTOCOL')
+    this.session.beginUserTurn()
     this.messages.push({ role: 'user', content: parsed.data })
     this.phase = 'ready'
     this.answer = null
