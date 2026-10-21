@@ -31,7 +31,7 @@ afterEach(() => {
   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true })
 })
 
-function fixture() {
+function fixture(options: { exactPointer?: string; replayPointer?: string } = {}) {
   const root = mkdtempSync(join(tmpdir(), 't11-release-'))
   roots.push(root)
   let n = 0
@@ -63,10 +63,52 @@ function fixture() {
     const r = put({ synthetic: true, name }, `tests/fixtures/product-baselines/${name}`)
     files[r.path] = r.sha256
   }
+  // Synthetic pointer-shaped data exercises the T09 reference contract without duplicating its baseline.
+  const exactRounds = {
+    3: [
+      {
+        round: 1,
+        created: ['SYN-W001', 'SYN-W002'],
+        completed: ['SYN-W001'],
+        backlog: ['SYN-W002'],
+      },
+    ],
+    4: [
+      {
+        round: 1,
+        created: ['SYN-W001', 'SYN-W002'],
+        completed: ['SYN-W001', 'SYN-W002'],
+        backlog: [],
+      },
+    ],
+  }
+  const roundsFile = put({ expected: exactRounds }, 'tests/fixtures/product-baselines/E.5.json')
+  files[roundsFile.path] = roundsFile.sha256
+  const pointerCases: Record<string, Record<string, unknown>> = {
+    'G-list-01': {
+      exactFile: 'E.5.json',
+      exactPointer: options.exactPointer ?? '/expected',
+      compareAllRoundFields: true,
+    },
+    'G-list-02': { exactFile: 'E.5.json', exactPointer: '/expected/3', crossPhaseConflict: false },
+    'G-list-06': {
+      replayExactFile: 'E.5.json',
+      replayExactPointer: options.replayPointer ?? '/expected/3',
+      duplicateOrders: [],
+    },
+  }
+  const expandedCases: Record<string, Record<string, unknown>> = {
+    'G-list-01': { exact: exactRounds, compareAllRoundFields: true },
+    'G-list-02': { exact: exactRounds[3], crossPhaseConflict: false },
+    'G-list-06': { replayExact: exactRounds[3], duplicateOrders: [] },
+  }
   const cases = put(
     {
       fixtureVersion: 'synthetic-regression-only',
-      cases: entries.map((c) => ({ ...c, expected: { id: c.id, objects: ['A01'] } })),
+      cases: entries.map((c) => ({
+        ...c,
+        expected: pointerCases[c.id] ?? { id: c.id, objects: ['A01'] },
+      })),
     },
     'tests/fixtures/product-baselines/cases.json',
   )
@@ -194,9 +236,10 @@ function fixture() {
       ...report([...p0, ...entries.map((e) => e.id)], asset),
       checks: [...p0, ...entries.map((e) => e.id)].map((id) => {
         const value = put(
-          entries.some((c) => c.id === id)
-            ? { id, objects: ['A01'] }
-            : { requirement: id, objects: ['A01'] },
+          expandedCases[id] ??
+            (entries.some((c) => c.id === id)
+              ? { id, objects: ['A01'] }
+              : { requirement: id, objects: ['A01'] }),
         )
         return { id, expected: value, actual: value }
       }),
@@ -333,6 +376,37 @@ describe('T11 evidence consistency (all fixtures are synthetic)', () => {
       mode: 'synthetic',
       issues: [],
     })
+  })
+  it.each([{ exactPointer: '/expected/not-present' }, { replayPointer: '/expected/3/99' }])(
+    'rejects unresolved fixed-baseline references %j',
+    (options) => {
+      const { root, m, expected } = fixture(options)
+      const result = verifyManifest(m, root, expected)
+      expect(result.consistent).toBe(false)
+      expect(result.issues).toContain('CASE_POINTER')
+      expect(result.issues).toContain('PRODUCT_EXPECTATION_BASELINE')
+    },
+  )
+  it('rejects referenced file drift even when the direct expected/actual pair is unchanged', () => {
+    const { root, m, expected } = fixture()
+    writeFileSync(
+      join(root, 'tests/fixtures/product-baselines/E.5.json'),
+      JSON.stringify({ expected: {} }),
+    )
+    const result = verifyManifest(m, root, expected)
+    expect(result.consistent).toBe(false)
+    expect(result.issues).toContain('BASELINE_CONTENT')
+    expect(result.issues).toContain('CASE_REFERENCED_FILE')
+  })
+  it('rejects a wrong completed object in an expanded replay result', () => {
+    const { root, m, expected, put } = fixture()
+    const replay = m.product.checks.find((c) => c.id === 'G-list-06')!
+    const actual = JSON.parse(readFileSync(join(root, replay.actual.path), 'utf8'))
+    actual.replayExact[0].completed = ['SYN-W002']
+    replay.actual = put(actual)
+    const result = verifyManifest(m, root, expected)
+    expect(result.consistent).toBe(false)
+    expect(result.issues).toContain('PRODUCT_RESULT')
   })
   const negatives: [string, (m: Manifest) => void, string][] = [
     [

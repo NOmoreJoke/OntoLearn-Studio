@@ -13,12 +13,14 @@
 
 已实现：严格manifest v1与离线核验器，候选/版本/锁/安装文件格式/哈希/签名公证/许可证/渠道一致性检查；T09唯一manifest及G完整预期引用；外部freeze固定时间、模型评估、全部检查预期、恢复快照和上一版资产。提供双平台只读取证脚本、设备验收流程、恢复/双向迁移规范、周六至少5真人主持脚本与空观察表。
 
-实际验证：41个T11合成正反例通过；最新 `npm run check` 通过671个TS测试、构建、ruff及1052个Python测试；sources核对12份归档；被既有release忽略规则排除的脚本另做显式lint/格式检查，Mac shell语法通过。Windows脚本仅静态审阅，未运行。T09只读对齐17文件/50用例/3指针，观察时head及manifest哈希见 `t09-readonly-alignment.json`，未采用为批准依赖。
+实际验证：45个T11合成正反例通过；最新 `npm run check` 通过675个TS测试、构建、ruff及1052个Python测试；sources核对12份归档；被既有release忽略规则排除的脚本另做显式lint/格式检查，Mac shell语法通过。Windows脚本仅静态审阅，未运行。T09只读对齐17文件/50用例/3指针，观察时head及manifest哈希见 `t09-readonly-alignment.json`，未采用为批准依赖。
 
 独立agent内审首轮及残留复核发现的预期自证、空壳快照、冻结时间回填、当前包冒充旧版及真人完成矛盾均已修复，最终复核通过，见 `internal-review.md`。该结果不替代正式指定双模型审查。失败原件与重跑日志保留本树ignored的 `*.log`；提交摘要和哈希见 `verification.json`，未把失败覆盖为通过。
 
 下一交付：按 `docs/iterations/T11/shared-file-handoff.md` 由总控完成唯一owner交接；待完整批准候选、真实资源后接线与联验，重新冻结base/head、双方指定新审、门禁push/PR/实际CI/正常合并/远端核验和最终下载实装。当前只作可恢复本地阶段提交，无推送。
 
 本地实现提交：`ffa0972800d6cb14910c43c185bfdd4dcf96d629`，19个授权新增文件。提交后仅AGENTS为总控同步的未暂存修改；源实现与最终内审核验器哈希一致。后续仅追加本回执，无实现/测试/配置/依赖/验收基线变化。远端develop本轮末次实查仍为启动base，未push/创建PR/申请GUI资源或发布。Goal保持active，不能将本阶段提交标为T11完整完成。
+
+续跑新增：专项正例现实际经过合成E.5 exact/replay引用，新增缺失对象/数组指针、引用文件漂移及同数量错误完成对象4个拒绝用例。核验器/CLI/collector字节不变；新增测试已独立只读复核通过，全仓check再验通过，原始结果在pointer-unit.log/pointer-full-check.log。完整目标逐项证据与缺口见 `completion-audit.md`；没有新的共享接管或真实资源证据。上述“后续仅追加回执”描述的是764d690当时，当前测试增量将另作本地提交，正式双审仍需最终新同候选。
 
 仍缺完整 P0 同候选、目标干净设备、有效签名/公证、最终下载渠道、真实模型/API资源及真人预约；总控已集中询问，T11 不重复询问。不运行本机 Electron/native/e2e/HMR，不触发凭据提示，不签名/公证提交/发API/外发/购买；正式接线、双指定模型新同候选审查、push/PR/实际CI/合并及发布另按原门禁继续。

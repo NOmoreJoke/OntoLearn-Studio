@@ -5,8 +5,8 @@
   "branch": "feature/weekly-t11-release",
   "scope": "T11 private verifier and acceptance preparation only",
   "passed": {
-    "t11SyntheticUnitTests": 41,
-    "allTypeScriptTests": 671,
+    "t11SyntheticUnitTests": 45,
+    "allTypeScriptTests": 675,
     "pythonTests": 1052,
     "build": true,
     "ruff": true,
@@ -45,12 +45,14 @@
     "location": "this worktree docs/reviews/T11/*.log (gitignored; not in stage commit)",
     "sha256": {
       "alignment-format.log": "690de5966f8743990bb1b4b1ed7b093c3a369f0503144ad3f886e957c1e23bda",
+      "audit-format.log": "6a2b7afb6959886c900484790541b99af2f96e7f419a8c3e7d16110872769aba",
       "check-first-run.log": "3124d8c4f641ee01b4498ac645adf334dc5d8ff04b90fd29545687481eb744e6",
       "check-fourth-run.log": "f6205af4f008d463e36ab06c21642ff0f6ebe7de07ec1e0b495bca2a314ab2bd",
       "check-second-run.log": "cafebb9b80ae0d8e1c1900953d52159cf1082c24a21065ee81d384ccbc6c4e33",
       "check-third-run.log": "380f3715f7bae16a8d1437c739849ebb965579c3157f0fdb20089380873c6cd2",
       "docs-format-final.log": "1ee02f3ad95b2575ec919a81198322e4c04aae79b24b9300f0c22bf0c1c010b1",
       "docs-format.log": "747f65d0a892b6caa0191ea25477ebfb92980fffc02c479276de3315212051e2",
+      "evidence-format.log": "7d882c9c2e216182101dc060909d20da8e5d709c1264908229ec459b641a9f4c",
       "explicit-format-final.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
       "explicit-format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
       "explicit-lint-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -58,6 +60,9 @@
       "format-final-repair.log": "351d50e864a0dda3d48b32cf21e6998e41e74bd1fd35b3b66e732367f8bcc8a2",
       "format-repair.log": "3f9f553ec36c8154c09d23cffc89fb648517c1733bcc830a162435ccd25e5be3",
       "format.log": "b72ae7204279a49f8ac987bb94a48fae47bb2f535b938f3658ed01e5727080a2",
+      "pointer-format.log": "d7731b7856b469625e09a898973a8ef514229ad3363eb7085aa6078ce5a63ca2",
+      "pointer-full-check.log": "244963562f950bf0f8fb2b943e93a605199b7ff72edbbb7193d38153e9357744",
+      "pointer-unit.log": "c41c9d6f33cb7a1be7070cdc68963b89de2e6c9407bd1d808ca34d49c4649347",
       "review-format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
       "sources.log": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
       "unit-fifth-run.log": "f93b9c135f5afa422a60ace2445e59493c3f8d47be180e981a8e081909c914ed",
@@ -71,6 +76,20 @@
     "scripts/release/verify-release.mjs": "184141eb1169172789d85a875310f29d91f86493177a82b6338f58256ae1b491",
     "scripts/release/collect-macos.sh": "f273da7b4eaf8eb25fee2d4479817c0b559ef64b83567b8be04f28e48f266fb4",
     "scripts/release/collect-windows.ps1": "9194c70522154249a16fa8b7d5902416c46622b2c121307cfab9dbd73a77add8",
-    "tests/unit/t11-release.test.ts": "0e2f373700851481b8fcb52b1a564a8a8e7ce76f24dd3d2b5c7a7eb79d503f47"
+    "tests/unit/t11-release.test.ts": "8ad97bf70f649d6345297299497ac9b3d0f23e89b3e87b80a2953e9b9a109c1a"
+  },
+  "initialVerifiedCounts": {
+    "t11SyntheticUnitTests": 41,
+    "allTypeScriptTests": 671,
+    "pythonTests": 1052
+  },
+  "followup": {
+    "observedAt": "2026-10-21T00:45:29.795Z",
+    "change": "Only regression tests and review/evidence documentation; verifier/CLI/native scripts unchanged",
+    "specializedTests": "45/45",
+    "completeCheck": "675 TS / 1052 Python, build and ruff passed",
+    "independentReview": "t11_independent_review actual final: passed, no new findings",
+    "completionAudit": "completion-audit.md",
+    "goalStatus": "active; original full release gates remain incomplete"
   }
 }
