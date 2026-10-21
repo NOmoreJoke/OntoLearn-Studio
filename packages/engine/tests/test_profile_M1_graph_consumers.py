@@ -892,7 +892,7 @@ def observe_direct_case(case, index, directory):
                 rootsBinding={
                     "payloadDigest": expectation.payload_digest,
                     "rowsDigest": expectation.rows_digest,
-                    "origin": "this operation's returned strict fullview only; full fixture view in scope",
+                    "origin": "this strict restore's full fixture view only; no saved Job grant",
                     "formalJobOrStoreAuthority": False,
                 },
             )
@@ -996,7 +996,7 @@ def assert_direct_golden(actual, produced, view, insertions, expected, case, ind
     records, rules, _ = bind_fixture(case, index)
     assert not rules
     for section in ("asserted", "ontology"):
-        for row_index, row in enumerate(case[section]):
+        for row_index, _row in enumerate(case[section]):
             offset = row_index + (len(case["asserted"]) if section == "ontology" else 0)
             for side in range(3):
                 assert_source(
