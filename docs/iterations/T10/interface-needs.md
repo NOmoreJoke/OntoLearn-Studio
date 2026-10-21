@@ -16,3 +16,5 @@ T10 的私有解析器只检查候选信封，不复制 Store、公共协议或�
 T10 现有私有文件发布服务可供 owner 后续接入：固定报告 artifact → `save(mainOwnedPicker)` → published/cancelled/failed/publication-unconfirmed，含耐久性/清理状态及 hash/字节数，无路径或原始异常。这只是内部服务形状，不授权直接新增 preload 方法；mainOwnedPicker 必须对应真实用户选择，可信投影、项目/窗口/代次与调用权仍在正式接线验收。详见 report-file-publication.md。
 
 最新责任依据共同指令 `b24c4c…fec39`：格式基础的 canonical/engine 和 Python 相关路径由 T01 唯一维护，T00 保留设计协调；其余公共 App/preload/main 接线仍依 I06 精确责任。上述请求经总控协调，不在 T10 抢改任何共享路径，也不把 owner 交接等同于接口已批准或产品可用。
+
+总控要求的 I06 固定语义/导出请求§2–3已实际读取并回应于 `i06-trusted-transfer-contract-request.md`：请求业务白名单读取、先于任何内容IO/创建的prospective guard、动态位置lease、私有密文/配置/audit/授权完整排除、新project导入生命周期和X1–X6真实入口证据。两项提案P2已独立复核关闭；仍是待批准合同，不是已有接口或实际导出排除通过。
