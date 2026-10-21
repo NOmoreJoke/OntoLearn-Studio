@@ -1,0 +1,172 @@
+{
+  "checks": [
+    {
+      "id": "unit-type01",
+      "command": "npm run typecheck:unit",
+      "tool": "269920",
+      "exitCode": 2,
+      "log": "/tmp/t01-dispatch-permanent-drain-typecheck-unit-01.log",
+      "result": "first failure: EventEmitter listener never[] incompatibility; repaired generic forwarding"
+    },
+    {
+      "id": "startup01",
+      "command": "npx vitest run tests/unit/t01-startup-supervisor.test.ts",
+      "tool": "d199df",
+      "exitCode": 1,
+      "log": "/tmp/t01-dispatch-permanent-drain-startup-01.log",
+      "result": "19 pass/1 fail: repeated internal operation create; repaired actual known-job read without second create"
+    },
+    {
+      "id": "unit-type02",
+      "command": "npm run typecheck:unit",
+      "tool": "4d5251",
+      "exitCode": 0,
+      "log": "/tmp/t01-dispatch-permanent-drain-typecheck-unit-02.log"
+    },
+    {
+      "id": "focused01",
+      "command": "npx vitest run tests/unit/t01-dispatch-permanent-drain.test.ts tests/unit/t01-startup-supervisor.test.ts",
+      "tool": "aac37d",
+      "exitCode": 0,
+      "log": "/tmp/t01-dispatch-permanent-drain-focused-01.log",
+      "vitestPassed": 46
+    },
+    {
+      "id": "unit-type03",
+      "command": "npm run typecheck:unit",
+      "tool": "ad3ccc",
+      "exitCode": 2,
+      "log": "/tmp/t01-dispatch-permanent-drain-typecheck-unit-03.log",
+      "result": "test invalidate variable inferred ()=>undefined; fixed explicit ()=>void"
+    },
+    {
+      "id": "focused02",
+      "command": "npx vitest run tests/unit/t01-dispatch-permanent-drain.test.ts tests/unit/t01-startup-supervisor.test.ts",
+      "tool": "394b77",
+      "exitCode": 0,
+      "log": "/tmp/t01-dispatch-permanent-drain-focused-02.log",
+      "vitestPassed": 54
+    },
+    {
+      "id": "check01",
+      "command": "npm run check",
+      "tool": "0f35a6",
+      "exitCode": 1,
+      "log": "/tmp/t01-dispatch-permanent-drain-check-01.log",
+      "result": "lint first failure: unused aggregate private bytes and sparse test literal; fixed without oldtest change"
+    },
+    {
+      "id": "check02",
+      "command": "npm run check",
+      "tool": "9922d2",
+      "exitCode": 2,
+      "log": "/tmp/t01-dispatch-permanent-drain-check-02.log",
+      "result": "type first failure: test helper spread return lost input index; fixed explicit helper return type"
+    },
+    {
+      "id": "check03",
+      "command": "npm run check",
+      "tool": "98b237",
+      "session": 11132,
+      "terminalTool": "2ab001",
+      "exitCode": 1,
+      "log": "/tmp/t01-dispatch-permanent-drain-check-03.log",
+      "result": "1158 pass/1 old regression expected known-late unmatched diagnostic; preserved diagnostic while authenticating and settling original underlying ticket"
+    },
+    {
+      "id": "check04",
+      "command": "npm run check",
+      "tool": "6288d8",
+      "session": 71868,
+      "terminalTool": "996531",
+      "exitCode": 0,
+      "log": "/tmp/t01-dispatch-permanent-drain-check-04.log",
+      "vitestPassed": 1163,
+      "pytestPassed": 2969,
+      "pytestSkipped": 44,
+      "candidate": "earlier source revision, superseded by final product"
+    },
+    {
+      "id": "focused03",
+      "command": "npx vitest run tests/unit/t01-dispatch-permanent-drain.test.ts tests/unit/t01-startup-supervisor.test.ts tests/unit/supervisor.test.ts",
+      "tool": "5d9a36",
+      "exitCode": 1,
+      "log": "/tmp/t01-dispatch-permanent-drain-focused-03.log",
+      "result": "77 pass/1 new test passed extra subscription DTO fields to strict unsubscribe; fixed only the new test params"
+    },
+    {
+      "id": "check05",
+      "command": "npm run check",
+      "tool": "5cc406",
+      "session": 68045,
+      "terminalTool": "f554ac",
+      "exitCode": 0,
+      "log": "/tmp/t01-dispatch-permanent-drain-check-05.log",
+      "vitestPassed": 1167,
+      "pytestPassed": 2969,
+      "pytestSkipped": 44,
+      "candidate": "superseded by final failed-source-attachment health spawn0 gate and assertion; new full check required and performed"
+    },
+    {
+      "id": "check06",
+      "command": "npm run check",
+      "environment": {
+        "UV_OFFLINE": "1",
+        "UV_CACHE_DIR": "/tmp/t01-dispatch-permanent-drain-runtime-cache/uv"
+      },
+      "product": "04ed06afca87ef8d21a71c68371bc19a849d98f8",
+      "tool": "ee810f",
+      "session": 20411,
+      "terminalTool": "c60b32",
+      "exitCode": 0,
+      "log": "/tmp/t01-dispatch-permanent-drain-check-06.log",
+      "vitestFiles": 23,
+      "vitestPassed": 1167,
+      "newSpecializedTests": 42,
+      "pytestPassed": 2969,
+      "pytestSkipped": 44,
+      "steps": [
+        "lint",
+        "format:check",
+        "contracts/unit/desktop typecheck",
+        "all Vitest",
+        "desktop build without GUI",
+        "ruff check/format",
+        "pytest"
+      ]
+    },
+    {
+      "id": "sources01",
+      "command": "npm run verify:sources",
+      "tool": "656281",
+      "exitCode": 0,
+      "log": "/tmp/t01-dispatch-permanent-drain-sources-01.log",
+      "archivedSources": 12
+    },
+    {
+      "id": "sources02",
+      "command": "npm run verify:sources",
+      "product": "04ed06afca87ef8d21a71c68371bc19a849d98f8",
+      "tool": "0eddb7",
+      "exitCode": 0,
+      "log": "/tmp/t01-dispatch-permanent-drain-sources-02.log",
+      "archivedSources": 12
+    }
+  ],
+  "readonly51AndAGENTS": {
+    "tool": "e446ee",
+    "exitCode": 0,
+    "readonly51Exact": true,
+    "new2AbsentInAdoption": true,
+    "AGENTSUnstagedExact": true
+  },
+  "notRun": [
+    "Electron/GUI/e2e",
+    "native/Keychain/VFS",
+    "production issuer/terminal producer",
+    "formal model/network/paid",
+    "packaging",
+    "push/PR/merge"
+  ],
+  "independentReview": "required; author does not self-approve"
+}
