@@ -142,6 +142,12 @@ def _sqlite_error(exc):
 
 
 class _Cursor:
+    def close(self):
+        try:
+            self._cursor.close()
+        except sqlite3.Error as exc:
+            raise _sqlite_error(exc) from None
+
     def __init__(self, cursor):
         self._cursor = cursor
 
@@ -197,15 +203,100 @@ _TABLES = (
 )
 
 
+class _CacheCursor:
+    def __init__(self, rows):
+        self.rows, self.offset = rows, 0
+
+    def fetchone(self):
+        if self.offset == len(self.rows):
+            return None
+        row = self.rows[self.offset]
+        self.offset += 1
+        return row
+
+    def fetchall(self):
+        rows = list(self.rows[self.offset :])
+        self.offset = len(self.rows)
+        return rows
+
+    def fetchmany(self, size=1):
+        rows = list(self.rows[self.offset : self.offset + size])
+        self.offset += len(rows)
+        return rows
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        row = self.fetchone()
+        if row is None:
+            raise StopIteration
+        return row
+
+
+class _RememberCursor:
+    def __init__(self, cursor, cache, key, maximum):
+        self.cursor, self.cache, self.key = cursor, cache, key
+        self.maximum, self.rows = maximum, []
+
+    def _save(self, rows, ended=False):
+        self.rows.extend(rows)
+        _limit(len(self.rows) <= self.maximum)
+        if ended or len(self.rows) == self.maximum:
+            self.cache[self.key] = tuple(self.rows)
+
+    def fetchone(self):
+        row = self.cursor.fetchone()
+        self._save([] if row is None else [row], row is None)
+        return row
+
+    def fetchall(self):
+        rows = self.cursor.fetchall()
+        self._save(rows, True)
+        return rows
+
+    def fetchmany(self, size=1):
+        rows = self.cursor.fetchmany(size)
+        self._save(rows, len(rows) < size)
+        return rows
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        row = self.fetchone()
+        if row is None:
+            raise StopIteration
+        return row
+
+
+# These are conservative control-work tickets, not RSS/timing measurements.
+# SQLite3.50.4 OP_Column bounds a physical record header at98307 and local
+# payload at65536. Grouped native metadata visits the highest column first,
+# so a corrupt long physical header is fetched at most once per row.
+_SQLITE_SOURCE = (
+    "2025-07-30 19:33:53 4d8adfb30e03f9cf27f800a2c1ba3c48fb4ca1b08b0f5ed59a4d5ecbf45e20a3"
+)
+_HEADER_WORK = 98307
+_LOCAL_WORK = 65536
+_STATEMENT_WORK = 4096
+
+
 class _MeteredGate:
     def __init__(self, connection, maximum, limits):
-        self.connection = connection
-        self.maximum = maximum
-        self.limits = limits
+        self.connection, self.maximum, self.limits = connection, maximum, limits
         self.evidence = self.probe = self.read_work = self.queries = 0
         self.seen, self.columns, self.column_kinds = {}, {}, {}
-        self.guard_phase = False
-        self.encoding = None
+        self.guard_phase, self.encoding = False, None
+        self.native, self.table_rows, self.table_info = {}, {}, {}
+        self.schema_rows, self.schema_size = None, 0
+        self.locator_cache, self.result_cache, self.plans = {}, {}, set()
+        self.profile_ready = False
+        self.verified_rows = {}
+        self.highest = {}
+        self.probe_peak = 0
+        self.page_size = None
+        self.schema_names, self.schema_tables, self.table_sizes = {}, (), {}
 
     @property
     def in_transaction(self):
@@ -214,9 +305,22 @@ class _MeteredGate:
     def _audit(self, event, **facts):
         """No retained diagnostics. Tests may observe this private no-op seam."""
 
-    def _raw(self, sql, params=(), *, numeric_columns=1, rows=1, body_cost=None):
+    def _raw(
+        self,
+        sql,
+        params=(),
+        *,
+        numeric_columns=1,
+        rows=1,
+        body_cost=None,
+        control_work=0,
+        cached=None,
+    ):
         _limit(self.queries < MAX_QUERY_COUNT - 2)
-        work = (128 + 128 * numeric_columns * rows) if body_cost is None else 128 + body_cost
+        work = 128 + (128 * numeric_columns * rows if body_cost is None else body_cost)
+        if cached is None:
+            control_work += 65536 + 32 * len(sql) + 128 * len(params)
+        work += control_work
         _limit(self.read_work + work <= MAX_READ_WORK)
         self.queries += 1
         self.read_work += work
@@ -229,86 +333,284 @@ class _MeteredGate:
             numericColumns=numeric_columns,
             rows=rows,
             bodyCost=body_cost,
+            controlWork=control_work,
+            provider="sqlite" if cached is None else "snapshot-cache",
         )
+        if cached is not None:
+            return _CacheCursor(cached)
         try:
             return _Cursor(self.connection.execute(sql, params))
         except sqlite3.Error as exc:
             raise _sqlite_error(exc) from None
 
+    def _profile(self):
+        if self.profile_ready:
+            return
+        actual = self._raw(
+            "SELECT sqlite_version(),sqlite_source_id()",
+            numeric_columns=2,
+            control_work=_STATEMENT_WORK,
+        ).fetchone()
+        if tuple(actual) != ("3.50.4", _SQLITE_SOURCE):
+            raise EvidenceFault("unsupported-profile")
+        page = self._raw("PRAGMA page_size", control_work=_STATEMENT_WORK).fetchone()[0]
+        if type(page) is not int or page < 512 or page > 65536 or page & (page - 1):
+            raise EvidenceFault("unsupported-profile")
+        self.page_size = page
+        self.profile_ready = True
+        self._audit("sqlite-profile", version=actual[0], sourceId=actual[1])
+
     def _columns(self, table):
+        if table not in _TABLES:
+            raise EvidenceFault("unsupported-profile")
+        if table == "sqlite_master" and table not in self.columns:
+            self.columns[table] = ("type", "name", "tbl_name", "rootpage", "sql")
+            self.column_kinds[table] = {
+                c: ({"integer", "null"} if c == "rootpage" else {"text", "null"})
+                for c in self.columns[table]
+            }
         if table not in self.columns:
-            if table not in _TABLES:
-                raise EvidenceFault("unsupported-profile")
-            if table == "sqlite_master":
-                # Fixed SQLite built-in metadata, not user-provided identifiers.
-                self.columns[table] = ("type", "name", "tbl_name", "rootpage", "sql")
-                self.column_kinds[table] = {
-                    key: ({"integer", "null"} if key == "rootpage" else {"text", "null"})
-                    for key in self.columns[table]
-                }
-                return self.columns[table]
-            schema_fee = self._schema_fee(table)
-            count = self._raw("SELECT count(*) FROM pragma_table_info(?)", (table,)).fetchone()[0]
-            _limit(type(count) is int and 0 < count <= 32)
-            rows = self._raw(
-                f"PRAGMA table_info({_quote(table)})",
-                body_cost=schema_fee + 128 * 6 * count,
+            self._schema()
+            fee = self._schema_fee(table)
+            info = self._raw(
+                "SELECT * FROM pragma_table_xinfo(?) LIMIT 33",
+                (table,),
+                body_cost=fee + 128 * 6 * 33,
+                control_work=_STATEMENT_WORK,
             ).fetchall()
-            _require(len(rows) == count)
-            types = {}
-            for row in rows:
+            _limit(0 < len(info) <= 32)
+            kinds = {}
+            for row in info:
+                _require(row[6] == 0 and row[1] != "_t01_rowkey")
                 kind = {"TEXT": "text", "INTEGER": "integer", "INT": "integer"}.get(row[2].upper())
                 if kind is None:
                     raise EvidenceFault("unsupported-profile")
-                types[row[1]] = {kind} if row[3] else {kind, "null"}
-            self.columns[table] = tuple(r[1] for r in rows)
-            self.column_kinds[table] = types
+                kinds[row[1]] = {kind} if row[3] else {kind, "null"}
+            self.columns[table] = tuple(r[1] for r in info)
+            self.column_kinds[table], self.table_info[table] = (
+                kinds,
+                tuple(tuple(r[:6]) for r in info),
+            )
         return self.columns[table]
 
     def _schema_fee(self, table):
-        rows = self._locators("sqlite_master", "WHERE type='table' AND name=?", (table,))
-        _require(len(rows) == 1)
-        return sum(self._cost(source, rowid) for source, rowid in rows)
+        self._schema()
+        self._raw("schema fee lookup", body_cost=128 + self._parameter_work((table,)), cached=((),))
+        rows = self.schema_names.get(table, ())
+        _require(len(rows) == 1 and rows[0]["type"] == "table")
+        return self.seen[("sqlite_master", rows[0]["rowid"])]
+
+    def _rowids(self, table, maximum):
+        self._profile()
+        # No WHERE or keyset can skip malformed duplicate rowids. LIMIT counts
+        # every emitted physical entry. Empty children/depth are rejected by
+        # moveToRoot/moveToChild; First/Next each traverse at most40 pages.
+        sql = f"SELECT rowid FROM {_quote(table)} NOT INDEXED LIMIT ?"
+        cursor = self._raw(
+            sql, (maximum + 1,), rows=1, control_work=_STATEMENT_WORK + 40 * self.page_size
+        )
+        result = []
+        first = None
+        try:
+            while True:
+                # CPython constructs this numeric row and steps to the next one
+                # before returning it. The current row was paid by the prior step;
+                # reserve this next step (including DONE/error) before fetchone.
+                self._raw(
+                    "rowid cursor advance reservation",
+                    rows=1,
+                    control_work=40 * self.page_size,
+                    cached=((),),
+                )
+                row = cursor.fetchone()
+                if row is None:
+                    return tuple(result)
+                rowid = row[0]
+                _require(type(rowid) is int and (not result or result[-1] < rowid))
+                result.append(rowid)
+                _limit(len(result) <= maximum)
+        except BaseException as exc:
+            first = exc
+            raise
+        finally:
+            try:
+                cursor.close()
+            except EvidenceFault:
+                if first is None:
+                    raise
+                first.cleanup_failed = True
+
+    def _native(self, table, rowid):
+        columns = self._columns(table)
+        key = (table, rowid)
+        if key in self.native:
+            self._raw("cached native row metadata", numeric_columns=2 * len(columns), cached=((),))
+            return self.native[key]
+        self._profile()
+        ordered = tuple(reversed(columns))
+        expressions = ",".join(f"typeof({_quote(c)}),octet_length({_quote(c)})" for c in ordered)
+        sql = f"SELECT {expressions} FROM {_quote(table)} NOT INDEXED WHERE rowid=?"
+        if sql not in self.plans:
+            plan = self._raw(
+                "EXPLAIN " + sql,
+                (rowid,),
+                rows=256,
+                numeric_columns=8,
+                control_work=_STATEMENT_WORK,
+            ).fetchall()
+            access = [r for r in plan if r[1] == "Column"]
+            if (
+                (access and access[0][3] != max(r[3] for r in access))
+                or any(r[6] not in (128, 192) for r in access)
+                or any(r[1] in {"IdxRowid", "SorterOpen", "OpenEphemeral"} for r in plan)
+            ):
+                raise EvidenceFault("unsupported-profile")
+            self.highest[table] = access[0][3] if access else None
+            self.plans.add(sql)
+            self._audit(
+                "native-plan",
+                table=table,
+                columnP5=[r[6] for r in access],
+                firstColumn=access[0][3] if access else None,
+            )
+        row = self._raw(
+            sql,
+            (rowid,),
+            numeric_columns=2 * len(columns),
+            control_work=_STATEMENT_WORK + _HEADER_WORK + 22 * self.page_size,
+        ).fetchone()
+        _require(row is not None)
+        info = {}
+        for i, column in enumerate(ordered):
+            kind, u = row[2 * i : 2 * i + 2]
+            _require(kind in self.column_kinds[table][column])
+            _require(u is None if kind == "null" else type(u) is int and u >= 0)
+            if kind == "text" and self.encoding != "UTF-8":
+                _require(u % 2 == 0)
+            info[column] = (kind, u)
+        self.native[key] = info
+        self._audit(
+            "native-metadata",
+            table=table,
+            rowid=rowid,
+            fields={c: {"kind": v[0], "nativeBytes": v[1]} for c, v in info.items()},
+        )
+        return info
+
+    def _schema(self):
+        if self.schema_rows is not None:
+            return
+        rowids = self._rowids("sqlite_master", 256)
+        self.table_rows["sqlite_master"] = rowids
+        size = 0
+        for rowid in rowids:
+            meta = self._native("sqlite_master", rowid)
+            size += meta["sql"][1] or 0
+            _limit(size <= self.limits.schema_bytes)
+        # All DDL bytes bounded before any schema body is read/parsed by gate.
+        self.schema_size = size
+        rows = []
+        for rowid in rowids:
+            self._cost("sqlite_master", rowid)
+            source = self.verified_rows[("sqlite_master", rowid)]
+            self._raw(
+                "cached schema complete row",
+                body_cost=self.seen[("sqlite_master", rowid)],
+                cached=((),),
+            )
+            rows.append({"rowid": rowid, **dict(source)})
+        self.schema_rows = tuple(rows)
+        names, tables = {}, []
+        for row in rows:
+            self._raw(
+                "schema index construction",
+                body_cost=self.seen[("sqlite_master", row["rowid"])],
+                cached=((),),
+            )
+            names.setdefault(row["name"], []).append(row)
+            if row["type"] == "table":
+                tables.append(row)
+        self.schema_names = {name: tuple(items) for name, items in names.items()}
+        self.schema_tables = tuple(tables)
+
+    def _table_metadata(self, table):
+        if table not in self.table_rows:
+            rows = self._rowids(table, self.limits.validation_rows)
+            size = 0
+            for rowid in rows:
+                meta = self._native(table, rowid)
+                size += sum(u or 0 for _, u in meta.values())
+            self.table_sizes[table] = size
+            self.table_rows[table] = rows
+        return self.table_rows[table]
+
+    def _probe_bound(self, info):
+        unit = 1 if self.encoding == "UTF-8" else 2
+        return 128 + sum(
+            256 + (160 * (u + 1) if unit == 1 else 16 * (u // 2 + 1) ** 2) if kind == "text" else 64
+            for kind, u in info.values()
+        )
 
     def _cost(self, table, rowid):
         key = (table, rowid)
         if key in self.seen:
             return self.seen[key]
         columns = self._columns(table)
-        field_meta = []
-        work = 128
-        for column in columns:
-            col, target = _quote(column), _quote(table)
-            info = self._raw(
-                f"SELECT typeof({col}),length({col}),length(CAST({col} AS BLOB)),"
-                f"instr({col},char(0)) FROM {target} WHERE rowid=?",
+        info = self._native(table, rowid)
+        bound = self._probe_bound(info)
+        _limit(self.probe + bound <= MAX_PROBE_WORK)
+        # Conservative hold is charged BEFORE length/NUL/transcoding. On any
+        # interruption it remains consumed; only a completed scan can settle.
+        self.probe += bound
+        self.probe_peak = max(self.probe_peak, self.probe)
+        self._audit("probe-held", table=table, rowid=rowid, work=bound, total=self.probe)
+        text = [c for c in columns if info[c][0] == "text"]
+        lengths = {}
+        if text:
+            sql = "SELECT " + ",".join(
+                f"length({_quote(c)}),instr({_quote(c)},char(0))" for c in text
+            )
+            sql += f" FROM {_quote(table)} WHERE rowid=?"
+            native_bytes = sum(info[c][1] for c in text)
+            values = self._raw(
+                sql,
                 (rowid,),
-                numeric_columns=4,
+                numeric_columns=2 * len(text),
+                body_cost=4 * native_bytes + 128 * 2 * len(text),
+                control_work=_STATEMENT_WORK + len(text) * (_HEADER_WORK + 21 * self.page_size),
             ).fetchone()
-            _require(info is not None)
-            kind, n, u, nul = info
-            _require(kind in self.column_kinds[table][column])
-            if kind == "text":
-                _require(type(n) is int and type(u) is int and nul == 0)
-                work += 256 + (160 * (u + 1) if self.encoding == "UTF-8" else 16 * (n + 1) ** 2)
-            elif kind in ("integer", "null"):
-                work += 64
-            else:
-                raise ValueError("Unsupported persisted scalar")
-            field_meta.append((column, kind, n, u))
-        _limit(self.probe + work <= MAX_PROBE_WORK)
-        self.probe += work
-        self._audit("probe-reserved", table=table, rowid=rowid, work=work, total=self.probe)
+            _require(values is not None)
+            for i, c in enumerate(text):
+                n, nul = values[2 * i : 2 * i + 2]
+                _require(type(n) is int and n >= 0 and nul == 0)
+                lengths[c] = n
+        actual = 128 + sum(
+            256 + (160 * (u + 1) if self.encoding == "UTF-8" else 16 * (lengths[c] + 1) ** 2)
+            if kind == "text"
+            else 64
+            for c, (kind, u) in info.items()
+        )
+        _require(actual <= bound)
+        self.probe -= bound - actual
+        self._audit("probe-settled", table=table, rowid=rowid, released=bound - actual)
+        self._audit(
+            "probe-reserved",
+            table=table,
+            rowid=rowid,
+            work=actual,
+            total=self.probe,
+            heldBound=bound,
+        )
         size = 2 + max(0, len(columns) - 1) + len(columns) + sum(_string_cost(c) for c in columns)
-        for column, kind, n, u in field_meta:
+        for column in columns:
+            kind, u = info[column]
             if kind == "null":
                 size += 4
             elif kind == "integer":
-                size += n
+                size += u if self.encoding == "UTF-8" else u // 2
             else:
-                col, target = _quote(column), _quote(table)
+                col, target, n = _quote(column), _quote(table), lengths[column]
                 if self.encoding == "UTF-8":
-                    # n is already bounded metadata: do not repeatedly scan length(t).
                     counts, params = [], [2 + u]
                     for code in (34, 92, *range(1, 32)):
                         multiplier = 1 if code in _SHORT or code in (34, 92) else 5
@@ -328,7 +630,12 @@ class _MeteredGate:
                         "WHEN c<65536 THEN 3 ELSE 4 END),0) FROM chars"
                     )
                     params = (rowid,)
-                amount = self._raw(sql, params).fetchone()[0]
+                amount = self._raw(
+                    sql,
+                    params,
+                    body_cost=128 + 64 * u,
+                    control_work=_STATEMENT_WORK + _HEADER_WORK + 21 * self.page_size,
+                ).fetchone()[0]
                 _require(type(amount) is int and amount >= 2)
                 size += amount
         _limit(self.evidence + size <= self.maximum)
@@ -336,29 +643,137 @@ class _MeteredGate:
         self.seen[key] = size
         self._audit("charged", table=table, rowid=rowid, bytes=size, total=self.evidence)
         row = self._raw(
-            f"SELECT * FROM {_quote(table)} WHERE rowid=?",
+            self._bounded_select(f"SELECT * FROM {table} WHERE rowid=?"),
             (rowid,),
             body_cost=size,
+            control_work=_STATEMENT_WORK + _HEADER_WORK + 22 * self.page_size,
         ).fetchone()
         _require(
             row is not None
             and _measure(dict(row), self.maximum, safe_int=False, max_depth=2) == size
         )
+        self.verified_rows[key] = row
         self._audit("verified-row", table=table, rowid=rowid, bytes=size)
         return size
 
+    def _scan_work(self, table):
+        rows = self._table_metadata(table)
+        self._raw("table bound lookup", cached=((),))
+        native = self.table_sizes[table]
+        return (
+            len(rows),
+            native,
+            _STATEMENT_WORK + len(rows) * (_HEADER_WORK + 22 * self.page_size),
+        )
+
+    def _bounded_select(self, sql):
+        match = re.fullmatch(r"SELECT (.+?) FROM (\w+)(.*)", sql)
+        if match is None:
+            raise EvidenceFault("unsupported-profile")
+        fields, table, tail = match.groups()
+        ordered = tail.find(" ORDER BY ")
+        predicate, order = (tail, "") if ordered < 0 else (tail[:ordered], tail[ordered:])
+        predicate = predicate.strip()
+        _require(not predicate or predicate.startswith("WHERE "))
+        predicate = predicate[6:] if predicate else "1"
+        last = self.highest.get(table)
+        first = (
+            "1"
+            if last is None
+            else f"typeof({_quote(self.columns[table][last])}) IN ('text','integer','null')"
+        )
+        return (
+            f"SELECT {fields} FROM {_quote(table)} NOT INDEXED "
+            f"WHERE CASE WHEN {first} THEN ({predicate}) ELSE 0 END{order}"
+        )
+
+    def _point_set(self, sql, params):
+        match = re.fullmatch(r"SELECT (.+?) FROM (\w+)(.*)", sql)
+        if match is None:
+            raise EvidenceFault("unsupported-profile")
+        fields, table, _ = match.groups()
+        rowids = self._table_metadata(table)
+        # Reserve the bounded numeric VALUES program before building its SQL.
+        self._raw(
+            "point-set program reservation",
+            body_cost=4096 + 512 * max(1, len(rowids)),
+            cached=((),),
+        )
+        bounded = self._bounded_select(sql)
+        if fields == "*":
+            bounded = bounded.replace("SELECT * FROM", f"SELECT {_quote(table)}.* FROM", 1)
+        elif fields == "rowid":
+            bounded = bounded.replace("SELECT rowid FROM", f"SELECT {_quote(table)}.rowid FROM", 1)
+        values = ",".join("(?)" for _ in rowids) if rowids else "(NULL)"
+        start = f"WITH _t01_wanted(_t01_rowkey) AS (VALUES {values}) "
+        bounded = bounded.replace(
+            f"FROM {_quote(table)} NOT INDEXED WHERE ",
+            f"FROM _t01_wanted CROSS JOIN {_quote(table)} NOT INDEXED "
+            f"WHERE {_quote(table)}.rowid=_t01_rowkey AND ",
+            1,
+        )
+        return start + bounded, (*rowids, *params)
+
+    @staticmethod
+    def _parameter_work(params):
+        # len(str) is O(1); reserve UTF8 worst case without encoding first.
+        _require(all(type(p) in (str, int) or p is None for p in params))
+        return sum(16 * len(p) + 128 if type(p) is str else 128 for p in params)
+
     def _locators(self, table, tail, params):
+        tail = tail.strip()
         if table not in _TABLES:
             raise EvidenceFault("unsupported-profile")
-        # Rowids are bounded integers; no uncharged potentially huge TEXT PKs.
-        query = f"SELECT rowid FROM {_quote(table)} {tail}".strip()
-        count = self._raw(f"SELECT count(*) FROM ({query})", params).fetchone()[0]
-        _limit(type(count) is int and 0 <= count <= self.limits.validation_rows)
-        if count == 0:
-            return []
-        rows = self._raw(query, params, rows=count).fetchall()
-        _limit(len(rows) <= self.limits.validation_rows)
-        return [(table, r[0]) for r in rows]
+        if table == "sqlite_master":
+            self._schema()
+            # Index was built only after exact schema body charges. Pay lookup
+            # and numeric output before traversing/copying cached references.
+            self._raw(
+                "cached schema locator lookup",
+                body_cost=1024 + self._parameter_work(params),
+                cached=((),),
+            )
+            if tail == "WHERE type='table' AND name=?":
+                selected = [r for r in self.schema_names.get(params[0], ()) if r["type"] == "table"]
+            elif tail == "WHERE type='table'":
+                selected = self.schema_tables
+            elif tail == "WHERE name=?":
+                selected = self.schema_names.get(params[0], ())
+            elif tail.startswith("WHERE type='table' AND name='"):
+                name = tail.split("name='", 1)[1].split("'", 1)[0]
+                selected = [r for r in self.schema_names.get(name, ()) if r["type"] == "table"]
+            else:
+                raise EvidenceFault("unsupported-profile")
+            self._raw("cached schema rowid output", rows=len(selected), cached=((),))
+            return [(table, r["rowid"]) for r in selected]
+        self._raw(
+            "locator cache lookup", body_cost=128 + self._parameter_work(params), cached=((),)
+        )
+        key = (table, tail, tuple(params))
+        if key not in self.locator_cache:
+            count, native, control = self._scan_work(table)
+            # Comparisons/order may read any original column. Reserve a complete
+            # linear native-body pass before evaluating the first WHERE value.
+            extra = 128 + 16 * native + 128 * count + max(1, count) * self._parameter_work(params)
+            _limit(self.probe + extra <= MAX_PROBE_WORK)
+            self.probe += extra
+            self.probe_peak = max(self.probe_peak, self.probe)
+            self._audit("scan-reserved", table=table, work=extra, total=self.probe)
+            query, actual_params = self._point_set(
+                f"SELECT rowid FROM {table} {tail}".strip(), params
+            )
+            rows = self._raw(
+                query,
+                actual_params,
+                rows=count,
+                body_cost=16 * native + 128 * count,
+                control_work=control,
+            ).fetchall()
+            _limit(len(rows) <= self.limits.validation_rows)
+            self.locator_cache[key] = tuple((table, row[0]) for row in rows)
+        result = self.locator_cache[key]
+        self._raw("cached row locators", rows=len(result), cached=((),))
+        return list(result)
 
     def execute(self, sql, params=()):
         sql = _normal(sql)
@@ -368,9 +783,72 @@ class _MeteredGate:
             raise EvidenceFault("unsupported-profile")
         sources = self._sources(sql, params)
         cost = sum(self._cost(table, rowid) for table, rowid in sources)
-        if sql.startswith("SELECT count(*)"):
-            return self._raw(sql, params)
-        return self._raw(sql, params, body_cost=cost)
+        self._raw("result cache lookup", body_cost=128 + self._parameter_work(params), cached=((),))
+        key = (sql, tuple(params))
+        if sql.startswith("SELECT * FROM "):
+            # Locator order/WHERE/LIMIT were already actually evaluated on paid
+            # point seeks. Reuse the fully priced original sqlite.Row objects,
+            # paying every returned full row again, without another SQLite read.
+            rows = tuple(self.verified_rows[(table, rowid)] for table, rowid in sources)
+            return self._raw(sql, params, body_cost=cost, cached=rows)
+        if key in self.result_cache:
+            return self._raw(sql, params, body_cost=cost, cached=self.result_cache[key])
+        if "FROM sqlite_master" in sql:
+            if not sources:
+                return self._raw(sql, body_cost=0, cached=())
+            _require(len(sources) == 1)
+            actual_sql = sql.split(" FROM ")[0] + " FROM sqlite_master WHERE rowid=?"
+            actual_params, control = (
+                (sources[0][1],),
+                _STATEMENT_WORK + _HEADER_WORK + 21 * self.page_size,
+            )
+        else:
+            tables = set(re.findall(r"(?:FROM|JOIN) (\w+)", sql))
+            if not tables:
+                match = re.search(r"FROM (\w+)", sql)
+                if match:
+                    tables.add(match[1])
+            control = sum(self._scan_work(t)[2] for t in tables)
+            native = sum(self._scan_work(t)[1] for t in tables)
+            extra = (
+                128
+                + 16 * native
+                + max(1, sum(self._scan_work(t)[0] for t in tables)) * self._parameter_work(params)
+            )
+            _limit(self.probe + extra <= MAX_PROBE_WORK)
+            self.probe += extra
+            self.probe_peak = max(self.probe_peak, self.probe)
+            self._audit(
+                "scan-reserved", table=",".join(sorted(tables)), work=extra, total=self.probe
+            )
+            cost += 16 * native
+            if " LEFT JOIN " in sql:
+                left = [r for t, r in sources if t == "commits"]
+                right = [r for t, r in sources if t == "commit_evidence"]
+                _require(len(left) <= 1 and len(right) <= 1)
+                actual_sql = sql.replace(
+                    "commits c LEFT JOIN commit_evidence e ON ",
+                    "commits c NOT INDEXED LEFT JOIN commit_evidence e NOT INDEXED "
+                    "ON e.rowid=? AND ",
+                ).replace("WHERE c.project=?", "WHERE c.rowid=? AND c.project=?")
+                actual_params = (right[0] if right else None, left[0] if left else None, *params)
+                control = _STATEMENT_WORK + sum(
+                    len(self._columns(t)) * (_HEADER_WORK + 21 * self.page_size) for t in tables
+                )
+            elif " UNION " in sql:
+                left, right = sql.split(" UNION ", 1)
+                a, ap = self._point_set(left, params[:1])
+                b, bp = self._point_set(right, params[1:])
+                actual_sql, actual_params = (
+                    f"SELECT * FROM ({a}) UNION SELECT * FROM ({b})",
+                    (*ap, *bp),
+                )
+            else:
+                actual_sql, actual_params = self._point_set(sql, params)
+
+        cursor = self._raw(actual_sql, actual_params, body_cost=cost, control_work=control)
+        expected = 1 if sql.startswith("SELECT count(*)") else max(1, len(sources))
+        return _RememberCursor(cursor, self.result_cache, key, expected)
 
     def _sources(self, sql, params):
         if sql.startswith("SELECT c.*,e.before_snapshot,e.after_snapshot FROM commits c "):
@@ -388,31 +866,47 @@ class _MeteredGate:
         return self._locators(table, tail, params)
 
     def _guard_query(self, sql, params):
-        # This phase is exclusively the frozen aggregate guard, never a payload route.
         if params:
             raise EvidenceFault("unsupported-profile")
-        simple = sql in {
-            "SELECT count(*),coalesce(sum(length(CAST(sql AS BLOB))),0) FROM sqlite_master",
-            "SELECT name FROM sqlite_master WHERE type='table'",
-        }
-        info = re.fullmatch(r'PRAGMA table_info\("(\w+)"\)', sql)
-        aggregate = re.fullmatch(r'SELECT count\(\*\),coalesce\(sum\(.+\),0\) FROM "(\w+)"', sql)
-        if not simple and not (info or aggregate):
-            raise EvidenceFault("unsupported-profile")
-        if (info or aggregate) and (info or aggregate)[1] not in _TABLES:
-            raise EvidenceFault("unsupported-profile")
+        if sql == "SELECT count(*),coalesce(sum(length(CAST(sql AS BLOB))),0) FROM sqlite_master":
+            self._schema()
+            return self._raw(
+                "cached schema aggregate",
+                numeric_columns=2,
+                cached=((len(self.schema_rows), self.schema_size),),
+            )
         if sql == "SELECT name FROM sqlite_master WHERE type='table'":
-            count = self._raw("SELECT count(*) FROM sqlite_master WHERE type='table'").fetchone()[0]
-            _limit(type(count) is int and count <= 64)
-            sources = self._locators("sqlite_master", "WHERE type='table'", ())
-            fee = sum(self._cost(table, rowid) for table, rowid in sources)
-            return self._raw(sql, body_cost=fee)
+            self._schema()
+            _limit(len(self.schema_tables) <= 64)
+            self._raw(
+                "cached table names reservation",
+                body_cost=sum(self.seen[("sqlite_master", r["rowid"])] for r in self.schema_tables),
+                cached=((),),
+            )
+            names = tuple((r["name"],) for r in self.schema_tables)
+            return self._raw(
+                sql,
+                body_cost=sum(self.seen[("sqlite_master", r["rowid"])] for r in self.schema_rows),
+                cached=names,
+            )
+        info = re.fullmatch(r'PRAGMA table_info\("(\w+)"\)', sql)
         if info:
-            table = info[1]
-            self._columns(table)  # Count and charge its complete schema before names/types.
-            count = len(self.columns[table])
-            return self._raw(sql, body_cost=self._schema_fee(table) + 128 * 6 * count)
-        return self._raw(sql, numeric_columns=2)
+            self._columns(info[1])
+            return self._raw(
+                sql,
+                body_cost=self._schema_fee(info[1]) + 128 * 6 * len(self.columns[info[1]]),
+                cached=self.table_info[info[1]],
+            )
+        aggregate = re.fullmatch(r'SELECT count\(\*\),coalesce\(sum\(.+\),0\) FROM "(\w+)"', sql)
+        if not aggregate or aggregate[1] not in _TABLES:
+            raise EvidenceFault("unsupported-profile")
+        table = aggregate[1]
+        rows = self._table_metadata(table)
+        self._raw("native aggregate cache lookup", cached=((),))
+        size = self.table_sizes[table]
+        return self._raw(
+            "cached native aggregate " + table, numeric_columns=2, cached=((len(rows), size),)
+        )
 
 
 class _EvidenceView:
@@ -898,6 +1392,7 @@ def read_operation_evidence(
                     queries=gate.queries + 2,
                     evidence=gate.evidence,
                     probe=gate.probe,
+                    probePeak=gate.probe_peak,
                     readWork=gate.read_work,
                 )
             except sqlite3.Error as exc:

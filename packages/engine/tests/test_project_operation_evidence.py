@@ -168,10 +168,12 @@ def readonly(owner):
         readonly_pragma = first in {
             "encoding",
             "table_info",
+            "table_xinfo",
+            "page_size",
             "user_version",
             "integrity_check",
             "foreign_key_check",
-        } and (first == "table_info" or second is None)
+        } and (first in {"table_info", "table_xinfo"} or second is None)
         if action in WRITE_ACTIONS or action == sqlite3.SQLITE_PRAGMA and not readonly_pragma:
             rejected.append((action, first, second))
             return sqlite3.SQLITE_DENY
@@ -233,7 +235,10 @@ def verify_ledger(owner, ledger):
     summary = ledger[-1]
     assert ledger[0]["event"] == "begin" and summary["event"] == "rollback"
     assert summary["evidence"] == total > 0
-    assert summary["probe"] == sum(x["work"] for x in ledger if x["event"] == "probe-reserved")
+    assert summary["probe"] == (
+        sum(x["work"] for x in ledger if x["event"] in {"probe-held", "scan-reserved"})
+        - sum(x["released"] for x in ledger if x["event"] == "probe-settled")
+    )
     queries = [x for x in ledger if x["event"] == "query"]
     assert [x["query"] for x in queries] == list(range(1, len(queries) + 1))
     assert summary["queries"] == len(queries) + 2
@@ -244,6 +249,7 @@ def verify_ledger(owner, ledger):
             if query["bodyCost"] is not None
             else 128 * query["numericColumns"] * query["rows"]
         )
+        expected += query.get("controlWork", 0)
         assert query["reservedWork"] == expected
         work += expected
         assert query["readWork"] == work
@@ -428,7 +434,7 @@ def test_independent_exact_budget_boundaries(owner, audit, monkeypatch, dimensio
         "evidence": summary["evidence"],
         "selector": len(encoded(selected)),
         "return": len(encoded(result)),
-        "probe": summary["probe"],
+        "probe": summary["probePeak"],
         "query": summary["queries"],
         "read": summary["readWork"],
     }[dimension]
@@ -468,6 +474,9 @@ class FaultCursor:
     def __init__(self, cursor, connection):
         self.cursor, self.connection = cursor, connection
 
+    def close(self):
+        return self.cursor.close()
+
     def _fetch(self, method, *args):
         if self.connection.stage == method:
             raise self.connection.error
@@ -490,12 +499,14 @@ class FaultConnection(sqlite3.Connection):
     stage = None
     target = None
     error = None
+    target_marker = None
 
     def execute(self, sql, parameters=()):
-        if sql == self.target and self.stage == "execute":
+        match = sql == self.target or (self.target_marker is not None and self.target_marker in sql)
+        if match and self.stage == "execute":
             raise self.error
         cursor = super().execute(sql, parameters)
-        return FaultCursor(cursor, self) if sql == self.target and self.stage else cursor
+        return FaultCursor(cursor, self) if match and self.stage else cursor
 
 
 @pytest.mark.parametrize("stage", ["execute", "fetchone", "fetchall", "fetchmany", "iterator"])
@@ -521,20 +532,20 @@ def test_controlled_real_driver_faults_cross_old_validator_boundary(
         intent, _ = create_project(owner)
         selected = create_selector(intent)
         db = owner._db
-        db.target = (
-            "SELECT * FROM app_format"
-            if stage == "fetchall"
-            else "SELECT sql FROM sqlite_master WHERE name=?"
-        )
+        db.target = "SELECT sql FROM sqlite_master WHERE rowid=?"
         db.error = sqlite3.OperationalError("secret SQL/path must not escape")
         db.error.sqlite_errorcode = code
         db.stage = "fetchone" if stage == "iterator" else stage
-        if stage in {"iterator", "fetchmany"}:
+        if stage in {"iterator", "fetchmany", "fetchall"}:
 
             def faulting_catalog(view):
-                cursor = view._db.execute(db.target, ("projects",))
+                cursor = view._db.execute(
+                    "SELECT sql FROM sqlite_master WHERE name=?", ("projects",)
+                )
                 if stage == "iterator":
                     list(cursor)
+                elif stage == "fetchall":
+                    cursor.fetchall()
                 else:
                     cursor.fetchmany(1)
 
@@ -1329,3 +1340,287 @@ def test_hash_consistent_bad_context_container_is_incomplete(owner, audit):
         result = read(owner, job_selector(job))
     assert result["finding"] == "incomplete-evidence"
     verify_ledger(owner, audit[-1])
+
+
+def test_preprobe_low_budget_never_enters_text_scanning_sql(owner, audit, monkeypatch):
+    _, project = create_project(owner)
+    ref = owner.put_blob(project["projectId"], "original")
+    with corrupt_immutable(owner, "job_blobs"):
+        owner._db.execute("UPDATE job_blobs SET payload=? WHERE ref=?", ("x" * 1048576, ref))
+    rowid = owner._db.execute("SELECT rowid FROM job_blobs WHERE ref=?", (ref,)).fetchone()[0]
+    gate = core._MeteredGate(owner._db, CAPS["maxEvidenceBytes"], ReadLimits())
+    gate.encoding = "UTF-8"
+    monkeypatch.setattr(core, "MAX_PROBE_WORK", 10000000)
+    expect_fault("resource-limit", lambda: gate._cost("job_blobs", rowid))
+    unsafe = [
+        row["sql"]
+        for row in audit[-1]
+        if row["event"] == "query"
+        and 'FROM "job_blobs"' in row["sql"]
+        and any(token in row["sql"].lower() for token in ["length(cast", "instr(", "replace("])
+    ]
+    assert unsafe == []
+
+
+def test_preprobe_actual_plans_use_native_flags_and_bounded_point_seeks(owner, audit, tmp_path):
+    job, _ = finished(owner, "test.atomic")
+    with readonly(owner) as trace:
+        assert read(owner, job_selector(job))["finding"] == "job-record"
+    plans = []
+    for sql in dict.fromkeys(trace):
+        native = sql.startswith("SELECT typeof(") and "octet_length(" in sql
+        points = sql.startswith("WITH _t01_wanted") or " LEFT JOIN " in sql
+        if not native and not points:
+            continue
+        plan = [tuple(r) for r in owner._db.execute("EXPLAIN " + sql)]
+        assert not any(r[1] in {"Count", "OpenAutoindex"} for r in plan)
+        cursors = {r[2] for r in plan if r[1] == "OpenRead"}
+        for cursor in cursors:
+            assert any(r[1] == "SeekRowid" and r[2] == cursor for r in plan)
+            assert not any(r[1] in {"Rewind", "Next"} and r[2] == cursor for r in plan)
+            columns = [r for r in plan if r[1] == "Column" and r[2] == cursor]
+            if native:
+                assert all(r[6] in {128, 192} for r in columns)
+            if columns and " LEFT JOIN " not in sql and "VALUES (NULL)" not in sql:
+                assert columns[0][3] == max(r[3] for r in columns)
+                assert columns[0][6] == 128
+        plans.append({"sql": sql, "opcodes": plan})
+    assert plans and any(" LEFT JOIN " in p["sql"] for p in plans)
+    path = tmp_path / "native-point-explain.json"
+    path.write_text(json.dumps(plans, ensure_ascii=False, indent=2) + "\n")
+    print(f"explain-original={path}")
+    verify_ledger(owner, audit[-1])
+
+
+def test_preprobe_physical_header_ticket_is_paid_before_native_execute(owner, audit, monkeypatch):
+    rowid = owner._db.execute("SELECT rowid FROM sqlite_master LIMIT 1").fetchone()[0]
+    initial = core._MeteredGate(owner._db, CAPS["maxEvidenceBytes"], ReadLimits())
+    initial.encoding = "UTF-8"
+    expected = initial._native("sqlite_master", rowid)
+    exact = initial.read_work
+    for delta in (-1, 0, 1):
+        monkeypatch.setattr(core, "MAX_READ_WORK", exact + delta)
+        gate = core._MeteredGate(owner._db, CAPS["maxEvidenceBytes"], ReadLimits())
+        gate.encoding = "UTF-8"
+        if delta < 0:
+            expect_fault(
+                "resource-limit", lambda current=gate: current._native("sqlite_master", rowid)
+            )
+            assert not any(
+                x["event"] == "query" and x["sql"].startswith("SELECT typeof(") for x in audit[-1]
+            )
+        else:
+            assert gate._native("sqlite_master", rowid) == expected
+        assert gate.read_work <= exact + delta
+
+
+@pytest.mark.parametrize("cleanup_failure", [False, True])
+def test_preprobe_cursor_lookahead_cancel_keeps_identity_and_cleanup_state(
+    tmp_path, monkeypatch, audit, cleanup_failure
+):
+    original_connect = sqlite3.connect
+
+    def connect(*args, **kwargs):
+        return original_connect(*args, **kwargs, factory=FaultConnection)
+
+    monkeypatch.setattr(storage.sqlite3, "connect", connect)
+    store = JobStore(tmp_path / "preprobe-cancel.sqlite", contract=CONTRACT, target_format=3)
+    cancellation = KeyboardInterrupt("preprobe cursor cancel")
+    collect = core._MeteredGate._audit
+    closes = []
+    close = core._Cursor.close
+
+    def observed_close(cursor):
+        closes.append(True)
+        return close(cursor)
+
+    def interrupt(gate, event, **facts):
+        collect(gate, event, **facts)
+        if event == "query" and facts["sql"] == "rowid cursor advance reservation":
+            raise cancellation
+
+    monkeypatch.setattr(core._MeteredGate, "_audit", interrupt)
+    monkeypatch.setattr(core._Cursor, "close", observed_close)
+    try:
+        intent, _ = create_project(store)
+        before = "\n".join(store._db.iterdump())
+        if cleanup_failure:
+            store._db.target, store._db.stage = "ROLLBACK", "execute"
+            store._db.error = sqlite3.OperationalError("controlled rollback failure")
+            store._db.error.sqlite_errorcode = sqlite3.SQLITE_IOERR
+        with pytest.raises(KeyboardInterrupt) as raised:
+            read(store, create_selector(intent))
+        assert raised.value is cancellation and closes == [True]
+        assert store._db.in_transaction is cleanup_failure
+        assert getattr(cancellation, "cleanup_failed", False) is cleanup_failure
+        store._db.stage = None
+        if store._db.in_transaction:
+            store._db.execute("ROLLBACK")
+        assert "\n".join(store._db.iterdump()) == before
+    finally:
+        store._db.stage = None
+        if store._db.in_transaction:
+            store._db.execute("ROLLBACK")
+        store.close()
+
+
+def test_preprobe_unknown_sqlite_source_is_finite_before_record_access(owner, audit, monkeypatch):
+    monkeypatch.setattr(core, "_SQLITE_SOURCE", "unapproved-source-id")
+    with readonly(owner) as trace:
+        expect_fault("unsupported-profile", lambda: read(owner, create_selector(create_intent())))
+    assert not any("FROM sqlite_master" in sql for sql in trace)
+    assert audit[-1][-1]["event"] == "rollback"
+
+
+@pytest.mark.parametrize("damage", ["generated", "33-columns"])
+def test_preprobe_schema_shape_refused_before_payload(owner, audit, damage):
+    _, project = create_project(owner)
+    job = create(owner, project=project["projectId"])
+    if damage == "generated":
+        owner._db.execute(
+            "ALTER TABLE job_blobs ADD COLUMN malicious TEXT GENERATED ALWAYS AS "
+            "(payload||payload) VIRTUAL"
+        )
+    else:
+        for i in range(30):
+            owner._db.execute(f"ALTER TABLE job_blobs ADD COLUMN extra_{i} TEXT")
+    with readonly(owner) as trace:
+        if damage == "generated":
+            assert read(owner, job_selector(job))["finding"] == "incomplete-evidence"
+        else:
+            expect_fault("resource-limit", lambda: read(owner, job_selector(job)))
+    assert not any(
+        'FROM "job_blobs"' in sql and ("SELECT *" in sql or "length(" in sql) for sql in trace
+    )
+
+
+def test_preprobe_damaged_overflow_is_not_read_before_native_refusal(owner, audit, monkeypatch):
+    _, project = create_project(owner)
+    ref = owner.put_blob(project["projectId"], "original")
+    with corrupt_immutable(owner, "job_blobs"):
+        owner._db.execute("UPDATE job_blobs SET payload=? WHERE ref=?", ("x" * 1048576, ref))
+    rowid = owner._db.execute("SELECT rowid FROM job_blobs WHERE ref=?", (ref,)).fetchone()[0]
+    page_size = owner._db.execute("PRAGMA page_size").fetchone()[0]
+    page = owner._db.execute(
+        "SELECT pageno FROM dbstat WHERE name='job_blobs' AND pagetype='overflow' "
+        "ORDER BY path LIMIT 1"
+    ).fetchone()[0]
+    path = owner._db.execute("PRAGMA database_list").fetchone()[2]
+    owner._db.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+    owner._db.execute("PRAGMA shrink_memory")
+    # No record/Btree parser: SQLite dbstat identifies this fixture's page.
+    # Break its next-overflow link, retain exact original bytes for finally.
+    with open(path, "r+b") as stream:
+        stream.seek((page - 1) * page_size)
+        original = stream.read(4)
+        assert original != b"\0" * 4
+        stream.seek((page - 1) * page_size)
+        stream.write(b"\0" * 4)
+    try:
+        gate = core._MeteredGate(owner._db, CAPS["maxEvidenceBytes"], ReadLimits())
+        gate.encoding = "UTF-8"
+        monkeypatch.setattr(core, "MAX_PROBE_WORK", 10000000)
+        expect_fault("resource-limit", lambda: gate._cost("job_blobs", rowid))
+        observed = [
+            x for x in audit[-1] if x["event"] == "native-metadata" and x["table"] == "job_blobs"
+        ]
+        assert observed[-1]["fields"]["payload"]["nativeBytes"] == 1048576
+        assert not any(
+            x["event"] == "query"
+            and 'FROM "job_blobs"' in x["sql"]
+            and ("instr(" in x["sql"] or "replace(" in x["sql"])
+            for x in audit[-1]
+        )
+        with pytest.raises(sqlite3.DatabaseError) as raised:
+            owner._db.execute(
+                "SELECT length(payload) FROM job_blobs WHERE rowid=?", (rowid,)
+            ).fetchone()
+        assert raised.value.sqlite_errorcode & 255 == sqlite3.SQLITE_CORRUPT
+        print(f"overflow-canary-page={page} nativeBytes=1048576 control=SQLITE_CORRUPT")
+    finally:
+        with open(path, "r+b") as stream:
+            stream.seek((page - 1) * page_size)
+            stream.write(original)
+        owner._db.execute("PRAGMA shrink_memory")
+
+
+def test_preprobe_rowid_64_boundary_pays_lookahead_and_rejects_65th(owner, audit):
+    _, project = create_project(owner)
+    for i in range(65):
+        owner.put_blob(project["projectId"], {"probeRow": i})
+    actual = tuple(r[0] for r in owner._db.execute("SELECT rowid FROM job_blobs ORDER BY rowid"))
+    assert len(actual) == 65
+    for maximum in (64, 65, 66):
+        gate = core._MeteredGate(owner._db, CAPS["maxEvidenceBytes"], ReadLimits())
+        gate.encoding = "UTF-8"
+        if maximum == 64:
+            expect_fault(
+                "resource-limit",
+                lambda current=gate, bound=maximum: current._rowids("job_blobs", bound),
+            )
+        else:
+            assert gate._rowids("job_blobs", maximum) == actual
+        advances = [
+            e
+            for e in audit[-1]
+            if e["event"] == "query" and e["sql"] == "rowid cursor advance reservation"
+        ]
+        assert len(advances) >= 65
+        assert all(e["controlWork"] == 40 * gate.page_size for e in advances)
+    plan = [
+        tuple(r)
+        for r in owner._db.execute('EXPLAIN SELECT rowid FROM "job_blobs" NOT INDEXED LIMIT 65')
+    ]
+    assert not any(r[1] in {"Column", "Count"} for r in plan)
+    decrement = next(r[0] for r in plan if r[1] == "DecrJumpZero")
+    advance = next(r[0] for r in plan if r[1] == "Next")
+    assert decrement < advance
+
+
+def test_preprobe_empty_child_is_real_sqlite_corruption_before_body(owner, audit):
+    _, project = create_project(owner)
+    for i in range(80):
+        owner.put_blob(project["projectId"], {"i": i, "text": "x" * 3000})
+    page = owner._db.execute(
+        "SELECT pageno FROM dbstat WHERE name='job_blobs' AND pagetype='leaf' "
+        "AND path<>'/' ORDER BY path LIMIT 1"
+    ).fetchone()[0]
+    size = owner._db.execute("PRAGMA page_size").fetchone()[0]
+    path = owner._db.execute("PRAGMA database_list").fetchone()[2]
+    owner._db.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+    owner._db.execute("PRAGMA shrink_memory")
+    # SQLite identifies the child; this fixture changes only its nCell bytes.
+    with open(path, "r+b") as stream:
+        stream.seek((page - 1) * size + 3)
+        original = stream.read(2)
+        assert original != b"\0\0"
+        stream.seek((page - 1) * size + 3)
+        stream.write(b"\0\0")
+    try:
+        gate = core._MeteredGate(owner._db, CAPS["maxEvidenceBytes"], ReadLimits())
+        gate.encoding = "UTF-8"
+        expect_fault("storage-failure", lambda: gate._rowids("job_blobs", 16384))
+        assert not any(e["event"] == "native-metadata" for e in audit[-1])
+        print(f"empty-child-canary-page={page} result=storage-failure")
+    finally:
+        with open(path, "r+b") as stream:
+            stream.seek((page - 1) * size + 3)
+            stream.write(original)
+        owner._db.execute("PRAGMA shrink_memory")
+
+
+def test_preprobe_cached_real_rows_pay_repeat_work_without_duplicate_evidence(owner, audit):
+    _, project = create_project(owner)
+    job = create(owner, project=project["projectId"])
+    gate = core._MeteredGate(owner._db, CAPS["maxEvidenceBytes"], ReadLimits())
+    gate.encoding = "UTF-8"
+    sql = "SELECT * FROM jobs WHERE id=?"
+    first = gate.execute(sql, (job["jobId"],)).fetchall()
+    evidence, work, queries = gate.evidence, gate.read_work, gate.queries
+    offset = len(audit[-1])
+    second = gate.execute(sql, (job["jobId"],)).fetchall()
+    assert [dict(r) for r in first] == [dict(r) for r in second]
+    assert gate.evidence == evidence and gate.read_work > work and gate.queries > queries
+    repeated = [e for e in audit[-1][offset:] if e["event"] == "query"]
+    assert repeated and all(e["provider"] == "snapshot-cache" for e in repeated)
+    assert all(e["reservedWork"] > 0 for e in repeated)
