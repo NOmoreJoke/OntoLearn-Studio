@@ -52,3 +52,9 @@ r3中“仍等待Table投影”是其固定历史输入状态；本线0b74的完
 已全文读总控 `source-lifecycle-r3-design-review.md` 并核SHA `e95cadb6c655749e36b64b196e0aa71185dff5213be403f80b33a3f737c51846`。R1要求已传达T01：精确重复append成功ack只能在原字节仍可逐字核验且状态允许时返回；expired/released/cancelled或已清理仅存tombstone时，返回稳定权威终态或拒绝，不以同hash伪称逐bytes核验、不复活upload。accepted Job/pin按原claim/receipt对账，不被冲突append/旧release/传输TTL撤销；客户端丢弃旧context/进度的迟到ack。此处记录设计要求，不声称其runtime已修复或验收。
 
 总控现已技术采用256attempt/256MiB logical-encoded为保守工程保护预算，替代上一时点“待采用提案”的状态；不是Q5、运行、SQLite文件/WAL或物理disk/RSS通过。1pending/2lease16MiB、30/120/600及完整字符串/计费/账本、barrier/fence、已有claim分流、清理settled和跨session原请求仍须唯一canonical及实际实现；source编码预算不兼作Table/plan/展开/RSS预算。已交完整Table数据不再索取。本轮只追加设计/操作记录与格式检查，不改冻结broker或消费实现，不复测/GUI/恢复Goal，原Goal仍blocked。
+
+## parser producer/options事实及r4设计答复
+
+已只读T01固定b35cb4e的digest r1/生命周期r4两文档并核精确SHA，保存 [事实与声明建议](../../../iterations/T03/source-selection/parser-producer-and-options-r3.md)、[固定来源索引](parser-producer-and-options-r3-facts.json)及 [独立复核](parser-producer-and-options-r3-review.md)。S1固定303没有独立parser语义/已接入的完整producer身份；通用I04三字段、包0.1.0、完整锁9f5b及三库版本均只按各自实际来源说明，不能拼成parser真实身份。`t03-source-parser-v1`仅待采用profile提案。真实CSV编码为utf-8/utf-8-sig/gb18030/big5/utf-16，默认sig；受限新digest profile不缩减其他4种待正式接线验收的原能力。CSV options.sheet=null与Table.sheet=CSV、XLSX parser非空/存在与broker私有256字节/NUL边界分别披露。
+
+独立复核通过，两项r4措辞P3已关闭：已有claim先鉴当前项目读权/原context，不再检查今天CAS或新人确认；unknown先原operation+barrier/fence，确认从未受理且不会迟到后才可新operation。最终主稿SHA `df94bdec2bdb66659941e36bc8ee853bc79b54765527bf4b08b342da93814a6c`、facts SHA `832a2fc6b4758293afa03976ae218d8787db9012a8e47483ef9b7cf963f5f1ee`、独审SHA `e9f7488b82135e7239ecada49b446963126e50c424de873dc34a1fb66bddd6dc`。仅Git/文本/哈希与文档格式核对，未读T01 runtime、未import/运行parser/test/GUI、未重复提取0b74数据或改冻结产品。原Goal仍blocked，六缺口/正式接线与外审发布门保留。
