@@ -220,9 +220,7 @@ def _term(text):
             LexicalSink(graph, canonical_strings=False),
             baseURI="urn:ontolearn:term:",
             turtle=True,
-        ).loadBuf(
-            "<urn:ontolearn:subject> <urn:ontolearn:predicate> " + text + " ."
-        )
+        ).loadBuf("<urn:ontolearn:subject> <urn:ontolearn:predicate> " + text + " .")
         if len(graph) != 1:
             raise ValueError
         s, p, value = next(iter(graph))
