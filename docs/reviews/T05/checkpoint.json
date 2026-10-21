@@ -1,0 +1,57 @@
+{
+  "task": "T05",
+  "ownerThreadId": "01a15bce-021c-74e0-a7ac-a899380b424a",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning",
+  "branch": "feature/weekly-t05-quality-reasoning",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "implementationCommit": "dcc5ec82f5ec6b78997b51436bcc2ca78869abf3",
+  "approvedInputTestCommit": "383bc6a2ef77f7610b43a1a1f0cfafa5319f385a",
+  "remoteDevelopObserved": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "goalStatus": "active",
+  "stage": "private_implementation_validated",
+  "humanAuthorizationReadback": {
+    "threadId": "01a15bad-ceeb-7103-b611-fff95e1f31ee",
+    "turnId": "01a15bb7-8a4b-7e41-9bee-f86a13bfdc36",
+    "scope": "发送并落实到现有总控；按原流程派发后续功能"
+  },
+  "protectedAgentsSha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+  "protectedAgentsStaged": false,
+  "checks": {
+    "npmRunCheck": {
+      "exitCode": 0,
+      "tsTests": 635,
+      "pythonTests": 1127
+    },
+    "qualityPytest": 75,
+    "qualityVitest": 5,
+    "gitDiffCheck": "passed"
+  },
+  "internalReview": {
+    "agent": "/root/t05_internal_review",
+    "decision": "passed-private-preparation-and-approved-input-adaptation-only",
+    "reviewedFiles": 32,
+    "reportedCombinedSha256": "ce69de6c0a52c117807e67033a0e5e6e3ac2f132e9ff7441b6cf472af5e4cbba"
+  },
+  "approvedInput": {
+    "gitRef": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+    "manifestSha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+    "filesVerified": 17,
+    "serviceConsumed": false
+  },
+  "formalIntegration": false,
+  "designatedDualReview": "pending-controller-resource-queue",
+  "pushed": false,
+  "pr": null,
+  "ci": null,
+  "mergedSha": null,
+  "parentAcceptanceComplete": false,
+  "remaining": [
+    "T01 formal constraint/rule persistence and ChangeSet interface",
+    "I05 approved real executor incl FR505 comparisons/multiple conclusions",
+    "T00 unique contract/job/result/bridge and navigation integration",
+    "V01/R01-R06/O01 actual full output/trace and lifecycle validation",
+    "T06/T08/T09/T10 cross-feature acceptance",
+    "same-candidate designated dual review, push/PR/CI/normal merge and remote verification"
+  ],
+  "guiOrModelOrCredentialOperations": false
+}
