@@ -24,6 +24,7 @@ MAX_TRIPLES = 100_000
 MAX_RULE_MATCHES = 100_000
 MAX_WORK = 1_000_000
 SEMANTICS_VERSION = "i05-finite-6"
+SHACL_TEXT_ENTRY_VERSION = "i05-shacl-text-1"
 Triple = tuple[Identifier, Identifier, Identifier]
 
 
@@ -50,7 +51,7 @@ def _copy(graph):
     return result
 
 
-def _terms(graph, *, shapes=False):
+def _terms(graph, *, shapes=False, _allow_illtyped_integer=False):
     allowed_owl = {OWL.Class, OWL.ObjectProperty, OWL.DatatypeProperty}
     allowed_rdfs = {
         RDFS.Class,
@@ -67,7 +68,7 @@ def _terms(graph, *, shapes=False):
             raise SemanticError("EXTERNAL_ACCESS_DENIED")
         if not isinstance(s, URIRef | BNode) or not isinstance(p, URIRef):
             raise SemanticError("RDF_TERM_INVALID")
-        for term in (s, p, o):
+        for position, term in enumerate((s, p, o)):
             if isinstance(term, BNode) and not shapes:
                 raise SemanticError("UNSUPPORTED_BLANK_NODE")
             if isinstance(term, URIRef):
@@ -81,7 +82,13 @@ def _terms(graph, *, shapes=False):
                 if value.startswith(str(SH)) and not shapes:
                     raise SemanticError("UNSUPPORTED_SHACL")
             if isinstance(term, Literal):
-                if term.ill_typed:
+                if term.ill_typed and not (
+                    _allow_illtyped_integer
+                    and not shapes
+                    and position == 2
+                    and term.datatype == XSD.integer
+                    and term.ill_typed is True
+                ):
                     raise SemanticError("INVALID_LITERAL_LEXICAL")
                 if term.datatype is not None and term.datatype not in _DATATYPES | {RDF.langString}:
                     raise SemanticError("UNSUPPORTED_LITERAL_DATATYPE")
@@ -98,6 +105,10 @@ def _terms(graph, *, shapes=False):
 
 def parse_turtle(text: str, *, format: str = "turtle", shapes: bool = False) -> Graph:
     """Text only: never pass user-controlled source/location or infer a parser."""
+    return _parse_turtle(text, format=format, shapes=shapes)
+
+
+def _parse_turtle(text, *, format="turtle", shapes=False, _allow_illtyped_integer=False):
     _text(text)
     if format != "turtle":
         raise SemanticError("UNSUPPORTED_FORMAT")
@@ -108,7 +119,7 @@ def parse_turtle(text: str, *, format: str = "turtle", shapes: bool = False) -> 
             raise SemanticError("INVALID_TURTLE") from error
         if len(graph) > MAX_TRIPLES:
             raise SemanticError("GRAPH_INPUT_LIMIT")
-        _terms(graph, shapes=shapes)
+        _terms(graph, shapes=shapes, _allow_illtyped_integer=_allow_illtyped_integer)
         return graph
 
 
@@ -1332,9 +1343,39 @@ def _shapes(graph):
 
 def check_shapes(data: Graph, shapes: Graph) -> dict:
     """Validate exactly the supplied asserted scope; return real pySHACL details."""
+    return _check_shapes(data, shapes)
+
+
+def validate_shacl_text(data_text, shapes_text, *, data_policy, range_policy) -> dict:
+    """Independent explicit-policy entry; not an execution/Store/cache interface.
+
+    Only the data object's ill-typed xsd:integer lexical gate can be relaxed.
+    Target selection and constraints still decide the real validation outcome.
+    """
+    if (
+        type(data_policy) is not str
+        or data_policy not in {"strict", "integer-illtyped-report-v1"}
+        or type(range_policy) is not str
+        or range_policy != "legacy"
+    ):
+        raise SemanticError("SCOPE_SELECTION_TYPE_INVALID")
+    allow_integer = data_policy == "integer-illtyped-report-v1"
+    with offline():
+        data = _parse_turtle(data_text, _allow_illtyped_integer=allow_integer)
+        shapes = parse_turtle(shapes_text, shapes=True)
+        report = _check_shapes(data, shapes, _allow_illtyped_integer=allow_integer)
+        return {
+            "entryVersion": SHACL_TEXT_ENTRY_VERSION,
+            "dataPolicy": data_policy,
+            "rangePolicy": range_policy,
+            "report": report,
+        }
+
+
+def _check_shapes(data, shapes, *, _allow_illtyped_integer=False):
     with offline():
         local, constraints = _copy(data), _copy(shapes)
-        _terms(local)
+        _terms(local, _allow_illtyped_integer=_allow_illtyped_integer)
         _shapes(constraints)
         if any(p in {RDFS.subClassOf, RDFS.domain, RDFS.range} for _s, p, _o in local):
             # Even without inference pySHACL follows targetClass subclass paths.
