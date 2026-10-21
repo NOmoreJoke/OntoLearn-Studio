@@ -1,0 +1,99 @@
+{
+  "phase": "completed-static-batch-revalidation-proposal-only",
+  "owner": "T05; batch subtask author, independent batch reviewer, primary final delta",
+  "baseHead": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+  "authorization": {
+    "path": "docs/reviews/T05/rule-batch-revalidation-proposal/authorization-source.md",
+    "bytes": 2854,
+    "sha256": "1945dc6b79d696aafead283a43cac6fb09090c320cf8113d91aa7a051678ea54"
+  },
+  "proposal": {
+    "path": "docs/iterations/T05/rule-batch-revalidation-proposal.md",
+    "bytes": 24357,
+    "sha256": "578032f78cd8571496c5709f18c7f5c02292db89cf316a52e3d2f49c61234bea"
+  },
+  "inputBindings": {
+    "path": "docs/reviews/T05/rule-batch-revalidation-proposal/input-bindings.json",
+    "bytes": 9971,
+    "sha256": "656bbc748509ecca87e946f3fac154ec5572cc9eb6ed14b2cbbc5966717dee15"
+  },
+  "staticByteCensus": {
+    "path": "docs/reviews/T05/rule-batch-revalidation-proposal/static-byte-census.json",
+    "bytes": 856,
+    "sha256": "fc3d7da91f5c04d0d3a7b5bc387f13286ee0a98c8a2ff8cf08e4df5434778456"
+  },
+  "initialFrozenArchive": {
+    "path": "docs/reviews/T05/rule-batch-revalidation-proposal/frozen-input.zip",
+    "bytes": 20674,
+    "sha256": "f16fbccaf98329fdb1b8a945c10dca798ad5694d70838a97418aa62cf59c3aa8"
+  },
+  "clarifiedArchive": {
+    "path": "docs/reviews/T05/rule-batch-revalidation-proposal/clarified-input.zip",
+    "bytes": 17308,
+    "sha256": "a3c2569fdaba4cbe9873193d1663757dc92af8ba03797e7063d72bb68e7fad43"
+  },
+  "finalInputManifest": {
+    "path": "docs/reviews/T05/rule-batch-revalidation-proposal/final-input-manifest.json",
+    "bytes": 892,
+    "sha256": "d7b36f0882e492e69afc365b24076ea7c78360f04a4dcf17ee75b0229d21eb6f"
+  },
+  "finalArchive": {
+    "path": "docs/reviews/T05/rule-batch-revalidation-proposal/final-input.zip",
+    "bytes": 17429,
+    "sha256": "363212b9c3ab4e80e7b46807dddf4f117c3bc4989d731579b6fa6ad063217a64"
+  },
+  "independentReview": {
+    "agent": "/root/batch_revalidation_review",
+    "decision": "static-proposal-accepted-after-paid-traversal-and-shallow-cardinality-clarifications",
+    "initialReport": {
+      "path": "docs/reviews/T05/rule-batch-revalidation-proposal/independent-review-initial.raw.md",
+      "bytes": 4238,
+      "sha256": "51b376789dc909a6a947b4da3816cbfb7a8dd6b9cc961cd8801effa096b54fc4"
+    },
+    "clarificationReport": {
+      "path": "docs/reviews/T05/rule-batch-revalidation-proposal/independent-review-clarified.raw.md",
+      "bytes": 1449,
+      "sha256": "e921ee7150b93d2e732e8c5e535bd0c6190305d53f48833ab76fe4f9fede914b"
+    },
+    "finalReport": {
+      "path": "docs/reviews/T05/rule-batch-revalidation-proposal/independent-review-final.raw.md",
+      "bytes": 1008,
+      "sha256": "592ec5201af36f3deb222558cd0cc4eb337c1fd4281e1680fb439b749d2e2b4c"
+    },
+    "notImplementationOrI05AdoptionApproval": true
+  },
+  "checks": {
+    "source20BytesUnchanged": true,
+    "final4ManifestObjectsAndArchivesMatched": true,
+    "jsonAst": "passed standard-library parse only",
+    "format": "passed exact final proposal/JSON Prettier check exit0; verbatim review/authorization excluded",
+    "productOrMechanismRun": false,
+    "staticByteWitnessIsNotActualOldSuccessOrNewPass": true
+  },
+  "closedAmbiguities": [
+    "No unpaid recursive top-level guard scan",
+    "One paid group/comparison traversal with type guards merged; no hidden second scan",
+    "Facts bound uses head_occurrences16384, not firings1024"
+  ],
+  "preconditionsPending": [
+    "I05 original ordered complete BindingMatch including false matches and bindings/proof order",
+    "I05 exact saved representation, same-process current-module ProfileValue issuance and bounded restoration",
+    "I05 true original immutable definitions/catalog/source/producer binding",
+    "Independent bounded child resources and original-input retention until readback; no implied long-term persistence"
+  ],
+  "implementationProposedOnly": [
+    "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+    "packages/engine/tests/test_quality_profile_revalidation.py",
+    "tests/fixtures/quality/profile-revalidation-v1/cases.json"
+  ],
+  "noTouch": [
+    "fixed20",
+    "oracle f9af899",
+    "AGENTS",
+    "I05 C4/future4",
+    "public/Store/Job/worker/main/UI",
+    "dependencies/locks"
+  ],
+  "goal": "original full Goal blocked; unchanged; not recreated or completed",
+  "pushPrCiMerge": false
+}

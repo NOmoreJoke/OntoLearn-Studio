@@ -1,0 +1,130 @@
+{
+  "schema": "T05-rule-batch-revalidation-proposal-preparation-receipt/1",
+  "preparedAt": "2026-10-21T06:41:39.719910+00:00",
+  "phase": "docs-only proposal; implementation not authorized",
+  "author": "T05 batch_revalidation_proposal subtask",
+  "checks": {
+    "authorizationBytesAndHash": "verified in input-bindings.json",
+    "sourceWorkingTreeEqualsFixed20": [
+      {
+        "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/tests/test_quality_profile_calendar.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/tests/test_quality_profile_comparator.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/tests/test_quality_profile_firing.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/tests/test_quality_profile_imports.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/tests/test_quality_profile_limits.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/tests/test_quality_profile_numbers.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "packages/engine/tests/test_quality_profile_terms.py",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "tests/fixtures/quality/profile-v1/calendar-oracles.json",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "tests/fixtures/quality/profile-v1/comparison-matrix.json",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "tests/fixtures/quality/profile-v1/firing-cases.json",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "tests/fixtures/quality/profile-v1/lexical.json",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "tests/fixtures/quality/profile-v1/manifest.json",
+        "workingBytesEqualFixed": true
+      },
+      {
+        "path": "tests/fixtures/quality/profile-v1/numeric-oracles.json",
+        "workingBytesEqualFixed": true
+      }
+    ],
+    "jsonStructuralParse": "2 generated JSON inputs parsed",
+    "staticCensusPythonAst": "AST parse passed; static arithmetic only, no mechanism imports",
+    "ownGeneratedFilesTrailingWhitespace": "passed",
+    "prettier": {
+      "command": [
+        "npx",
+        "prettier",
+        "--ignore-path",
+        "/dev/null",
+        "--check",
+        "docs/iterations/T05/rule-batch-revalidation-proposal.md",
+        "docs/reviews/T05/rule-batch-revalidation-proposal/input-bindings.json",
+        "docs/reviews/T05/rule-batch-revalidation-proposal/static-byte-census.json"
+      ],
+      "exitCode": 0,
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+      "stderr": ""
+    },
+    "initialFormattingAttempt": {
+      "exitCode": 1,
+      "onlyIssue": "static-byte-census.json formatting",
+      "resolution": "Formatted only generated JSON; final check exit 0"
+    }
+  },
+  "selectedDesignPrecondition": "Complete original ordered matches including false matches is an additional required input of this proposed replay design. This is not a verified existing I05 readable carrier. Retaining it until same-child readback is a proposed extra temporary responsibility; no new long-term persistence, source or limit bypass is authorized. I05 actual representation and resource ownership must be answered before implementation.",
+  "status": {
+    "independentReview": "pending parent-assigned independent reader",
+    "productImplementation": "not started",
+    "productRuntimeTests": "not run",
+    "mechanismPerformanceOrCapacity": "not measured",
+    "stagingCommitPush": "none by this subtask",
+    "goal": "original full T05 goal unchanged; no recreation or completion"
+  },
+  "noTouch": [
+    "All fixed 20 source/test/fixture paths",
+    "AGENTS.md",
+    "Main oracle documents/fixture/evidence",
+    "I05 C4/future4 and public/Store/worker/main/preload/UI",
+    "Dependencies and locks"
+  ]
+}
