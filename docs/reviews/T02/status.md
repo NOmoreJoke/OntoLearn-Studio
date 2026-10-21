@@ -126,3 +126,11 @@ root此前另已主动read_thread读取本线blocked终态，并指示后续直�
 本次为总控要求的有界证据保全，原产品C3仍4932122，完整Goal保持blocked；正式接口/外审/CI/正常合并及远端门未因封存放行。仅本地Git受控保存，不声明远端或异机备份。
 
 独立agent对封存内容只读复核通过（`evidence-archive/independent-review.md`）。已提交封存为 `c30927000bdf7fafd5f396c08b39ae3ce9829f6d`，随后实际从该Git提交读取压缩包及清单、恢复到新临时目录并逐项读取48成员，大小/哈希/原字节全部匹配；详见 `evidence-archive/git-readback.json`。核对4932122至封存提交的apps/packages/tests/锁无差异。未push或扩大授权，Goal仍blocked。
+
+## worker 单文件维护交接通知读回
+
+已在安全边界全文读取总控 `I05-T01-worker-ownership-handoff.md`（SHA `bdacff8a75adc3805b34e284e2d19c10750090e272439e8013f8a51fb7faf782`）及最新共同指令（SHA `ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff`），核验 execution-state 的交接为effective、接收/独立证据与协议相符。共同指令原b24完整字节作为前缀实际hash匹配；AGENTS仍78df未暂存。
+
+`packages/engine/src/ontolearn_engine/worker.py` 未来唯一维护者现为T01，只从批准5f的9314字节/2fa848aa版本施工；不得采用I05未批准C3语义worker。I05固定C3继续冻结，需修先由root精确返还、T01停存；protocol/resources/语义/旧测试/build/CI及其他责任未随转，语义四路径futureoffer仍未生效。source wire/限额/公共3/ready/运行能力没有因此获批。
+
+本线只记录责任路由变化；未改候选或共享文件、未重跑验证/操作GUI、未重复跨聊回执，原Goal保持blocked。
