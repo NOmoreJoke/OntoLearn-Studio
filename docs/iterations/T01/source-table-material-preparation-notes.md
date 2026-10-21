@@ -7,3 +7,5 @@
 仅初步contracts typecheck/ruff通过，未新增专属专项测试、未跑新全check/独立实现审查；不把这两个静态检查计作机制通过。已识别待实现时补齐：Python超大整数须先有限范围判断再math.isfinite/int转换，避免OverflowError泄露；完整预算边界、无稀疏数组/访问器、Unicode/整数值语义、空串与sheet控制字符、两遍输入稳定性均须实际验证。任何例外处理/编码预算结果仍以真实测试为准，不提前宣告性能或容量。
 
 root另派的digest设计审查及真实CSV编码/producer身份答复尚待；本线内部设计审查的无阻断不能替代该明确前置。解除本阶段冻结后按root精确新候选边界装入必要canonical及自有测试，先保留首跑结果再修复，不回写或重测无变化b35作为新助手证据。当前只继续设计文档，无GUI/旧tests/build/锁/CI/worker改动。
+
+原始unified patch的上下文空行包含一个真实diff前缀空格，全文diff-whitespace检查会把它报为尾空白（449a提交前实际三处提示，未记为通过）。为保全精确准备原件且避免把patch当源码格式修复，现使用 `.patch.gz` 与 `.patch.json` 保存原字节/长度/hash并实际解压逐字节核验；原未压缩版本仍可从449a05f固定Git恢复。没有修改patch内容或产品源码，也不新增运行通过结论。
