@@ -11,9 +11,12 @@ import pytest
 from ontolearn_engine.semantic import Rule, check_shapes, parse_turtle, query, reason
 from ontolearn_engine.semantic_execution import _term
 from ontolearn_engine.semantic_offline import SemanticError
+from ontolearn_engine.semantic_query import prepare_lexical_query
 from ontolearn_engine.semantic_scopes import prepare_validation_scope, project_validation_scope
 from rdflib import RDF, SH, XSD, BNode, Graph, Literal, URIRef, Variable
 from rdflib.collection import Collection
+from rdflib.plugins.sparql import operators
+from rdflib.plugins.sparql.parserutils import Expr
 
 S, P, C, SHAPE, PROPERTY = map(URIRef, ("urn:s", "urn:p", "urn:C", "urn:Shape", "urn:Property"))
 SUBJECTS = tuple(map(URIRef, ("urn:both", "urn:plain", "urn:typed")))
@@ -387,3 +390,97 @@ def test_strict_term_decoder_retains_other_accepted_term_identities(value):
         value.datatype,
         value.language,
     )
+
+
+def test_optional_without_filter_leaves_global_true_filter_callback_and_context_untouched():
+    graph = Graph()
+    graph.add((URIRef("urn:first"), P, URIRef("urn:object")))
+    graph.add((URIRef("urn:first"), URIRef("urn:optional"), Literal("present")))
+    graph.add((URIRef("urn:second"), P, URIRef("urn:object")))
+    original = set(graph)
+    singleton = operators.TrueFilter
+    attributes = dict(vars(singleton))
+    callback = singleton._evalfn
+    text = (
+        "SELECT ?s ?value WHERE { ?s <urn:p> <urn:object> OPTIONAL { ?s <urn:optional> ?value } }"
+    )
+    for _ in range(2):
+        assert query(graph, text) == {
+            "type": "SELECT",
+            "variables": ["s", "value"],
+            "rows": [["<urn:first>", '"present"'], ["<urn:second>", None]],
+        }
+        assert operators.TrueFilter is singleton and singleton._evalfn is callback
+        # Distinguish absent ctx from ctx=None: even adding an attribute mutates
+        # this RDFLib global and can expose it to another prepared query.
+        assert vars(singleton).keys() == attributes.keys()
+        assert all(vars(singleton)[key] is value for key, value in attributes.items())
+    assert set(graph) == original
+
+
+def expressions(value):
+    if isinstance(value, Expr):
+        yield value
+    if isinstance(value, dict):
+        for child in value.values():
+            yield from expressions(child)
+    elif isinstance(value, list | tuple):
+        for child in value:
+            yield from expressions(child)
+
+
+def test_two_prepared_queries_do_not_share_mutable_expressions_or_evaluation_context():
+    text = (
+        'SELECT (CONCAT("a", "b") AS ?joined) '
+        '(COALESCE(?missing, "ok") AS ?fallback) WHERE { '
+        "OPTIONAL { <urn:s> <urn:p> ?value } }"
+    )
+    first = prepare_lexical_query(text)
+    second = prepare_lexical_query(text)
+    first_expr = list(expressions(first.algebra))
+    second_expr = list(expressions(second.algebra))
+    assert first_expr and second_expr
+    assert {id(expr) for expr in first_expr}.isdisjoint(id(expr) for expr in second_expr)
+    assert all(expr is not operators.TrueFilter for expr in first_expr + second_expr)
+    before_second = [(expr, dict(vars(expr))) for expr in second_expr]
+    # Exercise the actual prepared-query API, including OPTIONAL's synthetic
+    # always-true expression, rather than replacing any evaluator callback.
+    actual = list(Graph().query(first, use_store_provided=False))
+    assert [[term.n3() for term in row] for row in actual] == [['"ab"', '"ok"']]
+    for expr, attributes in before_second:
+        assert vars(expr).keys() == attributes.keys()
+        assert all(vars(expr)[key] is value for key, value in attributes.items())
+    assert [
+        [term.n3() for term in row] for row in Graph().query(second, use_store_provided=False)
+    ] == [['"ab"', '"ok"']]
+
+
+def test_sparql_filter_expression_error_discards_binding_without_failing_query():
+    assert query(Graph(), "SELECT ?s WHERE { VALUES ?s { <urn:s> } FILTER(1/0) }") == {
+        "type": "SELECT",
+        "variables": ["s"],
+        "rows": [],
+    }
+
+
+@pytest.mark.parametrize(
+    "expression,expected",
+    [
+        ("1/0", None),
+        ('COALESCE(1/0, "ok")', '"ok"'),
+        ("COALESCE(?missing, 1/0)", None),
+        ('IF(true, "ok", 1/0)', '"ok"'),
+        ('IF(false, 1/0, "ok")', '"ok"'),
+        ('IF(true, 1/0, "ok")', None),
+        ('IF(1/0, "a", "b")', None),
+    ],
+)
+def test_sparql_bind_coalesce_and_if_preserve_expression_error_semantics(expression, expected):
+    assert query(
+        Graph(),
+        f"SELECT ?s ?value WHERE {{ VALUES ?s {{ <urn:s> }} BIND({expression} AS ?value) }}",
+    ) == {
+        "type": "SELECT",
+        "variables": ["s", "value"],
+        "rows": [["<urn:s>", expected]],
+    }
