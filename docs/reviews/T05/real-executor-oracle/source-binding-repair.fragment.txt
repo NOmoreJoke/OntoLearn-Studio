@@ -1,0 +1,47 @@
+# R1: the combined edit-and-undo endpoint is fixed; intermediate subject is not.
+for c in case_rows:
+    if c['id']=='G-list-13':
+        c['unspecifiedIntermediate']={'operationRef':ref(PD+'cases.json','/cases/'+str(case_index['G-list-13'])+'/steps/3'),'selectedSubject':None,'intermediateGraph':None,'reason':'edit-and-undo gives name only; complete intermediate buffer not specified. End-of-operation undo restores imported exactly, never an empty graph.'}
+
+# R2: same values do not establish actual baseline/source identity.
+source_triples(empty['ontology'],PD+'G-map-empty.json','/ontology')
+rules['R-risk/map']={'definition':empty['rules'][0],'inputRef':ref(PD+'G-map-empty.json','/rules/0')}
+for gid,g in graphs.items():
+    if gid.startswith(('map-','imported')):
+        g['ruleDefinitionRefs']=['R-risk/map']
+        g['effectiveBaselineRef']=ref(PD+'G-map-empty.json','')
+        g['effectiveOntologyRef']=ref(PD+'G-map-empty.json','/ontology')
+for c in case_rows:
+    c['effectiveBaselineRef']=ref(PD+cmap[c['id']]['baseline']+'.json','')
+source_triples(cmap['R-06']['steps'][0]['triples'],PD+'cases.json','/cases/'+str(case_index['R-06'])+'/steps/0/triples')
+input_aliases={
+ 'map-ontology-same-values':{'left':ref(PD+'G-base.json','/ontology'),'right':ref(PD+'G-map-empty.json','/ontology'),'scope':'ontology values equal, actual case baseline remains G-map-empty'},
+ 'map-rule-same-values':{'left':ref(PD+'G-base.json','/rules/0'),'right':ref(PD+'G-map-empty.json','/rules/0'),'scope':'definition values equal, map graphs use actual map source'},
+ 'R06-class-same-values':{'left':ref(PD+'cases.json','/cases/'+str(case_index['R-05'])+'/steps/0/triples'),'right':ref(PD+'cases.json','/cases/'+str(case_index['R-06'])+'/steps/0/triples'),'scope':'shared representation, R06 actual class input'},
+ 'R06-rule-same-values':{'left':ref(PD+'cases.json','/cases/'+str(case_index['R-05'])+'/steps/1/rule'),'right':ref(PD+'cases.json','/cases/'+str(case_index['R-06'])+'/steps/1/rule'),'scope':'shared representation, R06 actual rule input'}
+}
+for c in case_rows:
+    if c['id']=='R-06':
+        c['effectiveAdditionalInputRefs']=[input_aliases['R06-class-same-values']['right'],input_aliases['R06-rule-same-values']['right']]
+        c['inputValueAliasRefs']=['R06-class-same-values','R06-rule-same-values']
+    elif cmap[c['id']]['baseline']=='G-map-empty':
+        c['inputValueAliasRefs']=['map-ontology-same-values','map-rule-same-values']
+
+# R3: existing exact ground JSON operation encodings get exact input pointers.
+for cid,section,index in [('Q-02','setup',0),('A-01','steps',1),('M-04','steps',1),('M-06','steps',2)]:
+    row=cmap[cid][section][index]
+    T(row['subject'],row['predicate'],row['object'],source=ref(PD+'cases.json','/cases/'+str(case_index[cid])+'/'+section+'/'+str(index)))
+source_triples(cmap['M-03']['steps'][1]['facts'],PD+'cases.json','/cases/'+str(case_index['M-03'])+'/steps/1/facts')
+source_triples(cmap['G-list-09']['steps'][1]['facts'],PD+'cases.json','/cases/'+str(case_index['G-list-09'])+'/steps/1/facts')
+# Explicit authored CSV consequences: never substitute identical G-base occurrences.
+mapping_derivations={
+ 'csv-001-type':{'tripleId':B[0],'csvRef':ref(PD+'equipment.csv',''),'physicalLine':2,'key':'001','column':'equipment_id','rawCell':'001','mappingRef':ref(PD+'G-map-empty.json','/mappings/0'),'derivation':'subjectTemplate(key), declared Equipment type'},
+ 'csv-001-name':{'tripleId':B[1],'csvRef':ref(PD+'equipment.csv',''),'physicalLine':2,'key':'001','column':'equipment_name','rawCell':'泵站A','mappingRef':ref(PD+'G-map-empty.json','/mappings/0'),'derivation':'subjectTemplate(key), mapped name string'},
+ 'csv-002-type':{'tripleId':B[2],'csvRef':ref(PD+'equipment.csv',''),'physicalLine':3,'key':'002','column':'equipment_id','rawCell':'002','mappingRef':ref(PD+'G-map-empty.json','/mappings/0'),'derivation':'subjectTemplate(key), declared Equipment type'},
+ 'csv-002-name':{'tripleId':B[3],'csvRef':ref(PD+'equipment.csv',''),'physicalLine':3,'key':'002','column':'equipment_name','rawCell':'泵站B','mappingRef':ref(PD+'G-map-empty.json','/mappings/0'),'derivation':'subjectTemplate(key), mapped name string'}
+}
+for gid,g in graphs.items():
+    if gid.startswith(('map-','imported')):
+        g['mappingDerivationRefs']=[key for key,row in mapping_derivations.items() if row['tripleId'] in g['assertedTripleIds']]
+        g['provenanceMeaning']='Explicit CSV mapping consequences plus manual-operation refs; canonical value dedup does not make G-base the CSV source.'
+

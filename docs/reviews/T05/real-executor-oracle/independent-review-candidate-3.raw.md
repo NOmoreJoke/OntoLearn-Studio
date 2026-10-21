@@ -1,0 +1,21 @@
+【candidate3 独立只读 delta 复核结论】通过。R1–R3全部关闭，本轮未发现剩余实质问题；此结论在candidate2全面审查基础上仅复核实际delta，不重做旧数学或产品验证，可封存本准备阶段独审。
+
+固定原件已复核：candidate-3-inputs.json1927B/SHA0ab36587eba19e61976c2960e3e0e60af8de4fa233702656f6b3c20684d46fed；ZIP97400B/SHA6d8f3aaa85bc42dde72d37662919a28c0ca98d762826cea4ed473ef232715fb1。十个受审原件与manifest/ZIP成员实际bytes/hash一致，ZIP另含manifest共11成员，testzip无坏项；结束复核时仍相等。
+
+R1关闭：G13删除deviceB-edit中间phase及imported-deviceB-edit；selectedSubject/intermediateGraph明确None，实际operationRef指原/cases/33/steps/3，只将整体完成后的afterGraphRef及undo阶段固定为imported。不是空图替代；恢复完整集合与原非图undo门保留。base-name-agent/base-name-deviceB/base-name-manual等四个未用便利图移除、相关两个无用途term移除。M06保持原manual-same-name/imported及旧preview拒绝，不借用DeviceB名称。
+
+R2关闭：map-/imported图改用R-risk/map的G-map-empty实际/rules/0，effectiveOntologyRef及effectiveBaselineRef正确；每个主case另绑自己的原baseline。四个mappingDerivations把类型/名称结果绑定equipment.csv物理行2/3、原key/cell及G-map-empty mapping定义，明确是人工映射后果而非G-base事实来源。R06提供本例48号case的类/规则effectiveAdditionalInputRefs，并通过四个left/right alias的结构与确定性JSON值SHA核相等，不混同原格式bytes或producer授权；结构门实际验证通过。
+
+R3关闭：Q02 Closed、A01用户名称、M04/M06手工名称及M03/G9手工note已补真实JSON操作/事实pointer和源hash，checker逐term核已提供SPO；rawImportUnavailable仍仅指导入前Turtle未提供。G13未知subject没有被补造成token来源。
+
+未误改原集合：对candidate2与3作解引用后逐项比较，89个保留图的asserted/ontology/RDFS/custom/derived完整集合全部相同；全部40个match的ruleId/bindings/comparisons/accepted、按序when、headIndex+实际triple及basis保持相同；同图规则定义值不变，仅来源引用调整。RDFS唯一witness及原50/54/22/106覆盖、E5cap/replay/resume与G13子例逻辑保留。未重新求闭包或匹配，没有新生成一份预期。
+
+新增source-relations十条E5展开/续跑/consumed/duplicate关系均实际pointer对齐原输入并核确定性JSON值hash；仅核引用，不重算E5。assembler新增逻辑限来源/alias/图绑定元数据及已有token注记，未加入reasoner、matcher、比较器或行为调度。checker新增csv/io仅核固定CSV行字段与已列四条后果的结构，不生成golden或产品结果。
+
+实际独立结构运行：python3 docs/reviews/T05/real-executor-oracle/structure-check.py，工具实际exit0，passed-structural-only；248 triples/89 graphs/40 match/1 witness，50 cases/54 checks/22 extensions/106 setup+steps，17来源与旧20产品bytes保持。该结果不是产品或E1验收。
+
+历史保全核验：assembly-repair-attempt-1.zip三成员可读，SHA585b54a218fa7c8bec4b245b5b6fc46e7b3d278dc54c306a7b8a870c8144741f。原trace明确491行input_aliases NameError；原脚本唯一OUT.write_text在496行，支持“写fixture前失败”，未把该失败称产品失败。旧candidate2及原不通过报告未改写；文档已正确区分首版JSON值不变但格式bytes/文档改变。
+
+最终fixture767826B/SHA87220503f9983146c974fe3e35025d520cad70e54fdd994aebfa86fb1ff7259f；推导doc17382B/SHA82d8c3976c2f5e47388e44fd44462c5ceddb58c26919b8cf58d22f3e90468f7b。
+
+本审无文件写入/候选产品实现读取/机制或产品执行/GUI；通过仅是固定独立预期准备，不是actual/current/producer认证。真实E1、实际执行器采用与新载体、Store/Job/worker、父完整范围、指定同版双审、CI/合并/远端门保持未完成。

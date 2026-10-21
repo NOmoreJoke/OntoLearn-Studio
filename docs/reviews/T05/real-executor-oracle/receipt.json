@@ -1,0 +1,179 @@
+{
+  "task": "T05",
+  "stage": "independent-complete-oracle-preparation",
+  "status": "completed-independent-oracle-preparation-only",
+  "goalStatus": "blocked; original full objective not rebuilt or completed",
+  "authorization": {
+    "path": "docs/reviews/T05/real-executor-oracle/authorization.raw.md",
+    "bytes": 6389,
+    "sha256": "6346b48f7d69219f2e5b574732d7a6198a11746732d69b70aa7cdc5e876c9682"
+  },
+  "interfaceFacts": {
+    "path": "docs/reviews/T05/real-executor-oracle/interface-facts.raw.md",
+    "bytes": 22096,
+    "sha256": "502d7c70f670a6cc9c20e8683f0141468edaf45c1acc825fdcc6e3c71999fcae"
+  },
+  "inputs": {
+    "path": "docs/reviews/T05/real-executor-oracle/inputs.json",
+    "bytes": 9879,
+    "sha256": "d743a3aedc08f67d42b6365e338fa95b8d8d11c1aa4559c591210ccce22ed0ec"
+  },
+  "oracle": {
+    "path": "tests/fixtures/quality/real-executor-acceptance-inputs.json",
+    "bytes": 767826,
+    "sha256": "87220503f9983146c974fe3e35025d520cad70e54fdd994aebfa86fb1ff7259f"
+  },
+  "derivation": {
+    "path": "docs/iterations/T05/real-executor-independent-oracle.md",
+    "bytes": 17382,
+    "sha256": "82d8c3976c2f5e47388e44fd44462c5ceddb58c26919b8cf58d22f3e90468f7b"
+  },
+  "candidate2Manifest": {
+    "path": "docs/reviews/T05/real-executor-oracle/candidate-2-inputs.json",
+    "bytes": 1899,
+    "sha256": "cbdd5dd881bf721ccfc27d0aa8f107e11baac396d8afe7f0bd22d2858112ef50"
+  },
+  "candidate2Archive": {
+    "path": "docs/reviews/T05/real-executor-oracle/candidate-2.zip",
+    "bytes": 91439,
+    "sha256": "27e99f7e183d4c6385946eff54d605aa3c7bf67b361a2c6780954721aaa180b4"
+  },
+  "sourceScope": {
+    "approvedT09Files": 17,
+    "approvedT09Bytes": 1307284,
+    "productCases": 50,
+    "learningChecks": 54,
+    "extensions": 22,
+    "setupAndSteps": 106,
+    "graphs": 89,
+    "explicitPatternMatches": 40,
+    "rdfsStableWitnesses": 1,
+    "tripleDictionaryEntries": 248
+  },
+  "failedChecks": [
+    {
+      "command": "python3 docs/reviews/T05/real-executor-oracle/structure-check.py",
+      "exitCode": 1,
+      "raw": {
+        "path": "docs/reviews/T05/real-executor-oracle/structure-check-attempt-1.txt",
+        "bytes": 319,
+        "sha256": "5ae3c7286dcd735816d5acf84a9fd8398b6ca57c0f5dcbd67975ac2f7af361ea"
+      },
+      "reason": "Python3.9.6 zip(strict=...) unsupported in structure checker; no expected value change",
+      "recoveryArchive": {
+        "path": "docs/reviews/T05/real-executor-oracle/candidate-1-initial.zip",
+        "bytes": 69538,
+        "sha256": "4b88437d61efaa45b41037fbcdc394483cc6fa149892934dac7bf4807a533e70"
+      }
+    },
+    {
+      "command": "python3 docs/reviews/T05/real-executor-oracle/assemble-explicit-oracle.py",
+      "exitCode": 1,
+      "raw": {
+        "path": "docs/reviews/T05/real-executor-oracle/assembly-repair-attempt-1.txt",
+        "bytes": 436,
+        "sha256": "a68c2ed8533953a5525a833382184cff2245e1bf52c8bf3f2fd525f72be653bf"
+      },
+      "recoveryArchive": {
+        "path": "docs/reviews/T05/real-executor-oracle/assembly-repair-attempt-1.zip",
+        "bytes": 16170,
+        "sha256": "585b54a218fa7c8bec4b245b5b6fc46e7b3d278dc54c306a7b8a870c8144741f"
+      },
+      "reason": "authoring repair insertion anchor missed, input_aliases undefined before fixture write; original candidate2 untouched"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/reviews/T05/real-executor-oracle/structure-check.py",
+      "exitCode": 0,
+      "raw": {
+        "path": "docs/reviews/T05/real-executor-oracle/structure-check-attempt-2.txt",
+        "bytes": 538,
+        "sha256": "c39647691bcd53b753af6c736a481954658d639c4feae6d9bd370b1e060a0d5b"
+      },
+      "scope": "JSON/ref/hash and explicit set/head consistency only; no matching/closure/comparison calculated"
+    },
+    {
+      "command": "prettier --write exact new fixture/derivation/inputs/relations paths",
+      "exitCode": 0,
+      "scope": "format only; raw originals excluded"
+    },
+    {
+      "command": "python3 docs/reviews/T05/real-executor-oracle/structure-check.py",
+      "exitCode": 0,
+      "raw": {
+        "path": "docs/reviews/T05/real-executor-oracle/structure-check-candidate-3-final.txt",
+        "bytes": 538,
+        "sha256": "d15f444cab58d26fcc229f35c2222eddcd702aa3c5e9a8ddd40e4e624e81a9c1"
+      },
+      "independentAgentActuallyAlsoRan": true,
+      "scope": "structural-only; new aliases/baselines/CSV rows/operation pointers and preserved20 bytes; no product run"
+    },
+    {
+      "command": "prettier --check exact oracle fixture/derivation/JSON paths",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --cached --check",
+      "exitCode": 2,
+      "scope": "one exact source-binding fragment trailing separator retained; see whitespace-disposition.json"
+    },
+    {
+      "command": "git diff --cached --check excluding only source-binding-repair.fragment.txt",
+      "exitCode": 0,
+      "scope": "all other staged oracle paths"
+    }
+  ],
+  "independentReview": {
+    "agent": "/root/t05_internal_review",
+    "status": "passed-candidate3-delta-over-full-candidate2-audit",
+    "initialDecision": "candidate2 failed three P2 source/context errors",
+    "initialReport": {
+      "path": "docs/reviews/T05/real-executor-oracle/independent-review-candidate-2.raw.md",
+      "bytes": 7417,
+      "sha256": "23acd0808acb7e4b928a818e308376a4b67b470750093f0f13629957c1d755b0"
+    },
+    "finalReport": {
+      "path": "docs/reviews/T05/real-executor-oracle/independent-review-candidate-3.raw.md",
+      "bytes": 3990,
+      "sha256": "a3d436d97cde032350508f49c03f2ce23e791bb0b76dc8dfddd4c4ff6a9602c7"
+    },
+    "R1R2R3": "closed",
+    "notActualExecutionOrDependencyApproval": true
+  },
+  "unchangedBoundaries": {
+    "old17FilesAnd22Extension": true,
+    "closed20ProductPaths": true,
+    "publicStoreJobWorkerUiDependencies": true,
+    "noEngineImportOrExecution": true,
+    "noE1TestCreated": true,
+    "noActualOrFakeRunLog": true,
+    "noPushPrCiMerge": true
+  },
+  "limitations": [
+    "Original non-graph acceptance remains required",
+    "ontology-model prior full graph unspecified: required delta only",
+    "learning-report supplies no RDF graph",
+    "G-list05 late result completion round/payload unspecified: selection rule only",
+    "G13 imported M06 same value edit must retain original stale-preview gate; exact Store revision handling not invented",
+    "Whole nine-domain/six-numeric graph coverage is not provided by 18 integer cells",
+    "Actual approved executor and E1 integration still pending",
+    "G13 edit-and-undo lacks selected subject: intermediate complete edit buffer unspecified, only end-of-operation undo graph fixed"
+  ],
+  "finalCandidateManifest": {
+    "path": "docs/reviews/T05/real-executor-oracle/candidate-3-inputs.json",
+    "bytes": 1927,
+    "sha256": "0ab36587eba19e61976c2960e3e0e60af8de4fa233702656f6b3c20684d46fed"
+  },
+  "finalCandidateArchive": {
+    "path": "docs/reviews/T05/real-executor-oracle/candidate-3.zip",
+    "bytes": 97400,
+    "sha256": "6d8f3aaa85bc42dde72d37662919a28c0ca98d762826cea4ed473ef232715fb1"
+  },
+  "sourceRelationRecord": {
+    "path": "docs/reviews/T05/real-executor-oracle/source-relations.json",
+    "bytes": 18466,
+    "sha256": "799426c77c6b8f47b218cf5f47797ec304b6694738a523ed16b10aa1dc0396d6"
+  },
+  "controllerNotice": "I05 new isolated P1 implementation separately authorized by root; no new code consumed here, full oracle/dependency adoption and batch API still require exact later approval"
+}
