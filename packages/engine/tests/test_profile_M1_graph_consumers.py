@@ -236,7 +236,10 @@ def observe_rule(case, index, directory):
     try:
         with ExitStack() as stack:
             for cls, methods in (
-                (CaptureLedger, ("begin", "enter", "debit", "reserve", "release", "finish")),
+                (
+                    CaptureLedger,
+                    ("begin", "enter", "debit", "reserve", "release", "transferred", "failed"),
+                ),
                 (RestoreLedger, ("begin", "charge", "reserve", "release", "finish")),
                 (Budget, ("debit",)),
                 (semantic._GraphBudget, ("debit",)),
