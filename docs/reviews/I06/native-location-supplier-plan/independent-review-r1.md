@@ -1,0 +1,84 @@
+# Native 位置供方方案：独立静态审查 r1
+
+2026-10-21。结论：**本轮静态设计无新增 P1/P2 阻断；可以作为向根申请精确实施窗口的方案。** 发现两项 P3 文档精度问题，建议在最终冻结前修正。此结论不批准 native 实施、不证明 N0 已运行，也不关闭生产 LocationLease、首次 SQLite/header/catalog/backup IO 的既有阻断。
+
+## 1. 受审版本与实际动作
+
+本次审查主稿为 `docs/iterations/I06/native-location-supplier-plan.md`，48256B，SHA256 `ff21c9f0c10d2f40e48d5f93dbccdd880523ec03327bd687eb3c997545afb518`；与 `main-plan-review-input.md` 实核完全同字节。以下行号对应该版本，不追贴后续修正文。
+
+全文静态阅读：
+
+| 输入                                                        | bytes | SHA256                                                             |
+| ----------------------------------------------------------- | ----: | ------------------------------------------------------------------ |
+| 准备指令 `I06-native-location-supplier-plan-preparation.md` |  5447 | `15d40bf0046f68f6a1d757bc0e05ea6f38c16be16dc0e20739827c2e7a19a18f` |
+| 主稿与独立 snapshot（各一份）                               | 48256 | `ff21c9f0c10d2f40e48d5f93dbccdd880523ec03327bd687eb3c997545afb518` |
+| 平台静态来源报告 `platform-static.md` 的首审版本            | 45555 | `fd09ac310c543a8c85d29efb13b1155a4589e5cdf162e013a49f357e5c03d882` |
+| T01 静态来源报告首审版本                                    | 19310 | `b2810c2c166d732c7422ee6361c80a98fb35647da9e1dda137e448ce202ff34c` |
+| `inputs.json`                                               | 19602 | `0d31621bbde2fbf716fb06950ec842f3d554d529cb53ae1c16e83d463dd2b5eb` |
+| 补充 `sqlite-cpython-static.md`                             |  8294 | `f962b6fa9a598bca43097690ba6b16fc44fb911e4251f2b60b0b1681f4608f71` |
+
+审查期间 owner 另行仅格式化 T01 报告，原 19310B/b281 已保存在 `t01-source-static.original.txt`，实核其字节及 SHA 不变。新 canonical 为24521B/SHA256 `c8a131db87d27b17f6a33f02b3074ed07c59a3309ce8b9b1ce3d342087947e96`。对二者执行按行去空白、统一 Markdown 表格分隔横线后的文本比较为相等；配合 diff 所见为表格对齐变化，没有主张或代码内容变更。该静态比对不代替 owner 的格式检查，也不抹去首次格式失败原件。
+
+必要固定 Git 回读限于：379916 的 T01 创建/resolution 合同，以及423b的 `main/engine.ts`、`storage.py`、`project/format3.py`。四件实际 bytes/SHA 与 inputs 相符；抽核实际 connect、backup 多次重开和失败关闭切点。没有读取后续可变 T01 实现。其余来源报告的完整源码调查结论仍归原作者，不宣称本人重跑其全部检索或重核 B-M64。
+
+另只读官方 primary 页面：CPython v3.12.12 `connection.c`、SQLite VFS/io_methods/close/3.51.3 release、Apple固定 xnu rename 手册、Microsoft FILE_RENAME_INFO。未下载源码包或产物，未 import 产品/sqlite3，未构建、执行产品/测试/native/子进程实验，没有 GUI、用户目录、凭据或外联业务数据。命令均显式 cwd 为本 B-M 工作树。本人唯一写入为本报告；不修改主稿、来源报告、AGENTS 或 B-M64。
+
+## 2. 发现与最小修正
+
+### D1 · P3：未转义的 bitwise pipe 把原语与拒绝分支拆成错误表格列
+
+位置：主稿§3第52行；平台首审报告§3第40、43、46行。
+
+实际反例：主稿表头是四列（五个未转义分隔符），但“独占建立”行有七个未转义分隔符。`openat(O_CREAT | O_EXCL | O_NOFOLLOW)` 被分列后，Windows 列实际显示 `O_EXCL`，拒绝列显示 `O_NOFOLLOW)…`，真正 Windows `FILE_CREATE` 与冲突处理落在额外列。即使源码文字全在，常规 Markdown 表格渲染会错置或丢弃额外单元格。平台报告同类 `openat`/`flock` 行也受影响。
+
+影响：需要按表实施/分配职责的维护者无法准确读取该行；这是合同表达缺陷，不是已运行产品漏洞。正文§2/3对 exclusive/no-replace/零内容 IO 的限制仍清楚，未据此升级为 P2。
+
+建议：主稿在最终冻结前修复；将运算符转义为 `\|` 或把整段原语放到表外代码块，并确认每行实际四列。平台原首审报告应保原字节，只对 canonical 做有来源记录的格式修正，不反向改变 fd09 的受审结论。Prettier check 可以通过损坏的既有表，不能单凭格式工具 exit0 当表格语义验证。
+
+### D2 · P3：N0 测试范围应列精确文件，避免“前三类”依表项计数误读
+
+位置：主稿§9第190行，对照§8第168–175行。
+
+触发：§8顺序列出 core test、child probe、Python VFS test、TS owner test；§9写“前三类专属测试（VFS Python测试不在N0）”。若按表逐行数，第三项恰是被排除的 Python VFS test；另一位维护者可能据此遗漏 TS 测试或误纳 VFS。
+
+影响：当前仍需根精确登记，尚未授写权，所以没有立即越权。但本方案目标是冻结可执行第一切片，宜消除计数歧义。
+
+建议：将 N0 测试明确列为 `packages/native-location/tests/location_core_test.cc`、`packages/native-location/tests/location_child_probe.cc`、`tests/unit/i06-native-location-owner.test.ts`；明确不含 `test_capability_vfs.py`、`python_binding.cc`、SQLite VFS/patch 和 capability-Python 构建。其他 N0 产品/构建路径同样以最终根登记的明确名单为准，不把“前三类”解释为目录权。该修正不需要产品测试或实现扩展。
+
+## 3. 同 build 路线与来源差异
+
+主稿§5.1/§10明确选择受控重建 `_sqlite3` 与私有注册扩展共享同一个 SQLite image；平台原报告优先“扩展自有连接适配”。这是明确的路线取舍，没有把两条路线的通过记录混用，也未编辑平台意见制造一致。固定423b仍用 stdlib `sqlite3.Connection`/Row/事务/backup，保留其 DB-API 可以减少 T01 业务消费替换面；相应重建、维护、DLL/install-name及入包责任已交 T03 请求。不能据本审查宣称它比另一方案已有性能或安全实测优势。
+
+[CPython 固定源码](https://raw.githubusercontent.com/python/cpython/v3.12.12/Modules/_sqlite/connection.c) 的241–243行传 READWRITE/CREATE、可选URI且 VFS 参数NULL；这与主稿要求可信 adapter 构造内部 URI、显式 VFS和用途拦截相容。[SQLite VFS说明](https://sqlite.org/vfs.html) 支持URI显式选择，也提示URI优先级高于默认项。因此未知 URI/ATTACH/vfs/mode/immutable/nolock不得经业务输入绕过。主稿84、86、92及101–105行已覆盖这些边界，不能退回“注册同名即同库”。
+
+同库实际依赖图、加载 image/hash、真实函数实例与 Store VFS trace 仍是 N1 硬输入。报告坦言没有完整 os_unix/os_win 原文；当前不能验证所有实际系统调用替换、SHM/锁及文件控制补丁是否正确。该不足已经阻断生产，不是被本次静态通过消除的实现缺陷。[SQLite3.51.3发布记录](https://sqlite.org/releaselog/3_51_3.html) 实核与主稿列的sourceID及 sqlite3.c SHA3相符；它仍仅是首个可行性候选，不是项目已采用、最新或完整安全批准。
+
+## 4. 对关键反例的处置判断
+
+| 具体反例                                                         | 冻结主稿现有处置                                                                                        | 独立判断                                                                                                      |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| 持有parent后外界把祖先移走，或mac source名在核验和rename间被替换 | §3第57–59行明确 held对象不保持持续namespace；相关生产用途 unsupported，需要真正围栏或根正式重开威胁边界 | 没有将C++双检误报为原子保证；N0受控fixture不能扩大成用户目录许可                                              |
+| Windows用既有DELETE权、share策略或ACL变化打破简单假设            | §3逐项列限制，sidecar删除分享模式不同；unknown拒绝                                                      | 不把“不共享DELETE”泛化成所有角色的完整答案；真正目标OS仍待验                                                  |
+| 检查DB后stdlib再次按path开；backup xb后被换成另一对象            | §4/5/6要求实际held对象进同库VFS，所有backup reopen替换                                                  | 与回读423b的storage:90/1657及format3:164–185相符；只拦migration_backup会漏普通backup，本稿已同时要求          |
+| 只拦主DB xOpen，SHM内部打开/临时文件/file-control绕行            | §5.2要求OS后端全部相关调用、SHM/lock/map、未知temp/后缀拒绝、禁止默认fallback                           | 范围正确；不能仅证明 xOpen调用过，N1仍需完整源码与真实trace                                                   |
+| close_v2返回OK但statement/backup未结束                           | §5.3要求finalize、实际VFS文件/SHM/OS终态及owner聚合                                                     | 与[SQLite close语义](https://sqlite.org/c3ref/close.html)相符；Python close/Promise完成不能释放容量或冲突许可 |
+| main先死、child仍持DB或SHM；新main取得控制锁                     | §5.3第115行明确内存registry不足，需跨main寿命holder/child恢复围栏，当前尚无供方                         | 实质阻断已准确保留；不是把abandoned/PID/timeout当释放证据                                                     |
+| 撤销后已接纳事务尚在结算、旧child晚回，或短session重连           | §2/4/5保原资源槽、停新接纳并有限清理；普通短session不等于永久排空，也不以新hello复活旧lease             | 原授权/已dispatch结算/真实资源终态分离；具体跨进程协议仍需T01/I06冻结，不能用本地bool代替                     |
+| 控制根缺失或复制安装被误作fresh                                  | §7要求安装来源、可信bootstrap、稳定appData/root identity和唯一安装writer；ENOENT/appId/目录包均不足     | 与固定源码仅userData路径的实际缺口一致；没有制造第二业务意图账本                                              |
+| rename/文件flush成功，但父目录项掉电后不确定                     | §3/7明确Win普通权限目录耐久缺口，Apple fullsync亦不包办；缺证据不授外部目标mutation                     | 没把unknown写成durable；目标平台故障/掉电证明不可由kill或本轮网页替代                                         |
+
+[SQLite io_methods](https://sqlite.org/c3ref/io_methods.html)还明确 failed-open 可能仍调用xClose；主稿103行已经要求部分成功后的真实资源跟踪。实际实现需确保文件对象内存被SQLite回收时，供方registry仍持有任何未确认关闭的OS资源；本次没有实现可供验证，不将其虚构为已解决。
+
+## 5. 所有权、可实施切片与剩余门
+
+§6/8把 T01 的 main/profile/Supervisor/Store/worker/公共协议消费与 T03 构建、锁、入口、打包分开；I06仅拟新私有ABI/core/平台/backend/控制绑定。现worker没有DB消费，方案也未自动给它位置能力。Python绑定为接收peer/注册，不新增第二DB-API；不复制 e2c 网关闭包或新增另一 Job/Store/业务意图账本。各路径仍是请求，没有因本文给其他owner开写窗口。
+
+N0可作为独立对象/元数据/实际关闭的实施申请：真实临时对象、受控child、reserve-before-dispatch、有限gate/旧epoch/真实释放是可单独验证的底座，不依赖先完成SQLite。其 alias检查只能证明当次受控fixture及已登记事实，不能签全系统private历史或生产位置权。开始前尚需精确writer清单、T03接受最小构建路径和两目标OS环境；没有这些就继续源码设计，不提前实施。N1须先固定同库原始源/补丁及窄child/消费接口；N2还受fresh、耐久、持久恢复与T01全部实际资源闭包阻断。各阶段不自动晋级。
+
+实施合同冻结时还应把跨process消息/ancillary数量、连接/FD/HANDLE/map/queued-work容量及同步接纳点写进有限ABI；主稿已要求reserve/gate和不超时清槽，本次没有发现某一已批准无限入口。不能把本建议变成新增公共API或未经owner评估的磁盘quota。
+
+本审查不验证 macOS15 arm64或Win11x64的实际SDK/API/ACL/FS行为、同库产物、任何实验通过、生产fresh/安装恢复、性能或57P0完成。当前Mac27/Linux旧证据不能填这些空位。原指定双模型同base/head外审、平台/真人、CI/正常合并/远端门全部保留。
+
+## 6. 冻结结论
+
+针对48256B/ff21主稿：**无新增P1/P2，静态设计可接受；D1/D2需定点文案收口再给最终同版回读。** 这些修正不要求native实验或扩大writer范围。已明列的namespace原子围栏、crash-old-holder、完整同库后端、fresh与目标OS耐久等仍为真正生产前置，不因为“静态通过”而关闭。

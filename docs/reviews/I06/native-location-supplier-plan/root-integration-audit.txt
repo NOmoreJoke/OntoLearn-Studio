@@ -1,0 +1,81 @@
+# 下一实际集成可推进性：只读跨模块审计
+
+2026-10-21。结论：没有发现“新固定公共接口已经获批且足够，但八条正式模块线尚未消费”的现成产品接点。T02/T04/T09已经消费的批准Store2/只读bridge/test-only I04入口不应再当作新集成。当前不能因内部source阶段收口就启动八线正式接线；但也不能将I06 native/首内容IO缺口当成所有设计和实现的全局停工条件。最有贡献的下一工作是T01真实dispatch/永久child排空供方、精确生产位置/native供方决策，以及T02→T01第一个真实领域写入适配，详见第4节三项。它们是建议，均不由本报告授代码/采用/公共注册权限。
+
+本审仅Git、文件、正式compact wait/read_thread及stdlib文本/hash读取；没有运行产品、测试、GUI、native、进程/FS实验、归档reader或网络模型，没有向开发会话发送消息、创建任务/Goal或修改共享state。唯一写本报告。全57P0/C–G/PRD10–12、两个指定模型对同版完整新审、意见关闭、push/PR/真实CI/正常develop合并与远端核验全部保持。
+
+## 1. 当前事实与证据时态
+
+实际读目标文件10287B/SHA256 `1b3120bd702246cb6a9f7d776515b7093b1c202b12823be9751a399364da0527`，遵守当前已确认完整目标、沿develop作dev的用户选择及总控角色。本次读取共同指令17891B/SHA `e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0`；不因派生计划自行缩目标。
+
+本次末段读取state快照172801B/SHA `5eb36b37ada46d13753ab9533000a6cd3ddd01b778bfaa84ce51fe468eaafe27`，tasks61107B/SHA `28c0896abaff4975d3b81d90f087d3e5b3d66cfe04600dfd4b1ead3b60f2b30d`。这是读取时快照，非冻结/原子全局状态。remainingPendingCriticalActions仍含“Q6 pending”“下一puretable阶段”“I06 fixed961”等旧文本；tasks亦有旧owner/旧candidate/旧native待决句子。用户Q6采纳、根后续closure、实际固定Git和实际会话近况优先；不能把旧next_action当已完成、当前授权或真实新接口。
+
+- **T01**：C1产品423b7e4c799f188cf2ce6e8e7121893ce85624cd已受限收口。当前C1树实际HEAD `a33cc80e82475e54d74b4e48c1fd32f32979983a`，最近仅根C1收口回执；AGENTS dirty。C2只读操作证据核心仅方案已实际授权/启动，未见产品实施授权；新主方案尚未出现在本次C1树，不能先写C2完成。
+- **I05**：restore树实际HEAD `bbd79c3cff88e8fef348a9c4dcb6981ab5e3cb47`，新说明/测试/证据仍untracked，非最终candidate。原0475计算源阶段收口与当前restore WIP不混；83仍78/4/1 exit1。首次139=134/5不能写最终绿。
+- **I06**：BM树实际HEAD `f63fe6fa0ba9eff944b11b9e4bbd7e6235e43dbc`，真实metadata owner/test及证据untracked，当前没有最终通过。A6a38技术收口、B方案ffb、BM授权均不产生生产准入，productionAdmission仍unsupported。
+- **T03**：D2产品a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98及2a0cfdf完整证据已根受限收口，后续接收docs不改产品。此前本人16201B/a5f414完整读回证明固定83源包等价、最终unsigned App等，但不是正式producer/query/scenario/public注册、native位置供方或父功能通过。T03仍唯一构建/锁/来源broker owner。
+
+## 2. 八个正式模块：实际会话与具体缺口
+
+仅调用一次8目标timeout0 compact wait；工具在T02的inactiveStatus首目标返回，**没有伪称其返回了另外七项**。随后正式read_thread最近轮取得全部8项实际status/终态。为避免含大量command文本的首读输出截断，对七项再以最近1轮提取结构化status与agent消息；不轮询、不发送续接。各会话均notLoaded，最近turn completed，无当前活跃正式集成。Goal blocked是最近owner消息/文件报告，未用工具读其Goal对象，不把notLoaded等同Goal blocked。
+
+| 模块/原会话 | 本次实际Git HEAD | 已有接点、缺少的真正供方 |
+| --- | --- | --- |
+| T02本体 / 01a15bcd-f40b-7c91-81fa-7c481d2030d5 | b54bb81f431fc5a7a4b12c76952b7e15a743dbff | 4932122私有编辑和Store2只读RDF来源绑定已实现；T01可信当前完整domain/metadata投影→唯一typed ChangeSet翻译/复验/人类确认/Job提交/undo尚未接。I05完整Turtle支持/往返及App桥未到。最近turn01a15c8b-d224仅四文件责任回执。树另有两untracked截图，不能认作当前Git交付。 |
+| T04查询 / 01a15bcd-fcba-7583-a307-56497cdde347 | e761d2962aa18c83885dde4cc0dcd15fd9aba322 | reader已用5f getResult/getResultPage/getJob/cancelJob；不是遗漏可用接口。实际query.execute输入/安全执行器、实际SPARQL/columns/RDF term/ASK元数据、定义保存和当前scope尚缺。presentation明确不可由编辑器文字/fixture充当。最近turn01a15c8b-d457仅回执。 |
+| T06行为 / 01a15bba-0c8a-7dc2-b612-5b5c4ec4a4b9 | 10f1d8c33820d9a882a153590d8488f6d3fa7723 | 私有prepare_events/plan_behaviors及T09固定适配已有；仍缺事件后实际重推与完整RDF无损适配、同run/round身份和唯一原子提交、B07资源/Agent真实失败路径。最近turn01a15c92-8ed0仅用户短时许可后的串行租约等待，没有创建双审任务。 |
+| T07沙盘 / 01a15bce-0706-7360-8e99-df8fe9b15ad2 | 982e4535e864c17275e51ed67664c0b7fac367bc | 私有编排口和真实Store持久测试已有；缺三次实际推理/T06行为适配及正式scenario Job/取消/恢复。批准test.rounds强制toy状态，不能喂完整业务Round冒充产品能力。最近turn01a15c8b-d69b仅回执。 |
+| T08 Agent / 01a15bc2-40dd-7393-a1cb-1e87086e6993 | 9f1b9af6bf3ba26a21ce1a928cdb53131d1c7f2f | codec/conversation/侧栏已有，当前产品93516fa；仍缺I06最终实际字节授权的窄网关、可信字段来源/TrustedContext、各真实领域DomainPort/正式Diff入口及实际API预算/评估。工具词汇不是公共注册表。最近turn01a15c8b-d88d仅回执。 |
+| T09学习 / 01a15bba-1133-7933-9c6f-156f70f60c60 | d96924e715a1b2139a75b70aea40fc30ae1129fe | 固定17输入/reset/页面与真实I04 test.atomic准备已有；仍缺正式领域检查、逐阶段真实结果身份和T01跨attempt持久辅助账本/最高提示记录、T08/T10、五真人80%。课程与既有测试helper不等于正式创建/检查。最近turn01a15c8b-d78e仅回执。 |
+| T10迁移 / 01a15bce-0a94-7870-9694-f100e78f406a | f00e1b74213a76ba573dd38bde20191eb39d1cfa | 私有包检查/安全HTML/文件发布有界阶段已有；仍缺T01一致可信业务导出投影/完整正式包schema/原子新项目receipt、I06实际受控IO能力及source、T07重放/T09真实投影。现PreparedHtmlReportFile自己FS操作，不能套一次path检查当安全能力。最近turn01a15c8b-d979仅回执。 |
+| T11发布 / 01a15bc2-4551-7b51-8453-add1943f3b6e | 9f12f17b74f1e26f310c8298232a7fe66cb026ad | 私有发布核验器/固定输入准备已有；无同一完整产品candidate、目标Win11/macOS15干净机/签名/下载资产、真人/模型实测及指定双审/CI/正常合并。T03 D2包只是当前macOS27 arm64 unsigned目录CLI，不可输入核验器后改叫可发布。最近turn01a15c8b-da77仅回执。 |
+
+除T02额外截图外七树status均仅AGENTS dirty。本次未重审八候选全部测试/旧原件；读取与定位限各线interface/handoff/blocked或completion材料，不替换原独审。以上精确缺口来自实际文档与当前owner终态，不仅取tasks标签。
+
+## 3. Native是否全局硬前置
+
+**在当前已接受设计保证中，生产任意新位置首次SQLite/header/catalog/backup内容IO、LocationLease/physical-binding、完整公开host与跨设备transfer确实受阻。**I06固定ffb主方案§8明确要求root-relative真实metadata handle、跨进程gate、实际identity/links/ACL/reparse、同build SQLite VFS/锁/SHM/child绑定；Node stats双检、O_NOFOLLOW和事后fstat均不能自行替代。T01固定379916 create/resolution合同§2/7又要求原dispatch物理绑定与current_scope；复制A→B即使同UUID/claim也只能unknown/physical-binding-unavailable。C1内部创建origin文字及migration_id逻辑引用均不补足。
+
+这些是**当前冻结合同的保证与实现缺口**，不能从报告推成PRD直接指定某一个native技术栈，更不能由审计自行宣布唯一路径或豁免。若未来决定变更保证，必须明确重开合同、影响与验收决定，不能默认降级；本次无此决定。
+
+它不阻塞以下真实独立工作：C2在已打开真实库内读取完整原operation证据；T01源对象对其自有child/stdin/管道的准入及真实终态计账；受控临时目录BM/BR机制；T02/T01在已有真实临时Store3上的确切领域适配与事务故障联验。它们不能发布生产位置权、认证原dispatch或正式ready，但可以补真正供方，使native到位后有完整消费链，而非再次造小型示范。
+
+已读ffb§1/8/9与根16feb审查：B-M/R可先做，B-L实际仓库/网络批必须逐路径批准类型闭包，模型还缺批准canonical；没有理由把原e2c网关整体复制进来。T01 canonical7及所有已生效共享维护仍T01，不转给I06/T02/T04；T03构建仍唯一。native/VFS实现writer路径/版本/两OS证明**尚未在本次资料中找到生效登记**，不能仅因任务名称I06认定已经派发或原B方案申请自动生效。
+
+## 4. 至多三项最有贡献的下一工作
+
+### 1）T01 → I06：真实dispatch准入与永久child/资源完成供方
+
+**owner：原T01；I06是需求/消费方，不能反向改engine。**准确现存切点 `apps/desktop/src/main/engine.ts`。以固定423b当前源码26260B/SHA `6d55774068ca27a49958daeea9f4b1fa15614c95563ca28b8a768265ecd4365e`为只读事实，本审已核current=Git。#send689实际stdin.write；677 timeout删除pending后reject；#finish328–353先清pending再kill，stop366–371无等待；没有stopAndDrain。business3已有错误因果签名并不等于OS持有链或dispatch许可。
+
+已满足：唯一owner已生效；实际Supervisor、child创建、stdin写帧、session重连和来源归因实件存在；I06固定ffb§8.2/8.3给具体需求。**仍缺：同步准入的冻结输入/失败语义、原operation最终结算与长期ownership的区别、全部旧/当前/starting child与管道集合、Store/worker另属谁提供实际终态的接口。**不能将C2证据读取当物理许可，也不能把child.close一个信号叫全库锁释放。
+
+最小next step：原T01在现C2只读方案安全边界提供一份精确main-private供方合同/全采用清单和测试路径申请；根逐项批准后在独立候选实际改engine及专属测试，不争写当前C2树。先可实现真实pre-dispatch gate和Supervisor拥有的永久child排空，不必等LocationLease实件；准入缺真实生产供方时保持拒绝，测试机制与实际来源分开。完整后台operation/Store/worker的未满足部分明确后置供方，不能fixture补齐。
+
+真实验收：真实隔离child迟迟不close时stop仍不得报drained；RPC timeout/abort后后台尚活继续占槽；失效与stdin.write之间无await窗口、拒绝时未写帧；reconnect的旧child不漏、新spawn永久禁用、spawn/start失败保真实unknown/未结算；普通短session恢复与永久stop区分，故障/管道释放失败不假成功。无GUI/用户目录/Keychain/模型。它直接补I06 B-L/cohort与T01正式host供方，不新增另一个功能目标。
+
+### 2）I06协调T01/T03：冻结生产位置/native最小可实施供方，停止只等一个笼统native
+
+**精确现需求ref：I06 ffb55e0e694bde00b64fed400260e47392aa3554 的 `docs/iterations/I06/project-inventory-real-owner-B-plan.md` §5/8/9；T01 379916 的 `docs/iterations/T01/project-create-and-resolution-contract.md` §2/7/9。**I06负责私有inventory/lifecycle与用途约束；T01负责真实profile/bootstrap、DB/worker、原dispatch/Store消费；T03只负责批准build/锁依赖delta。当前没有已登记native writer，根须明确该实现owner与新路径，不能在本审擅派给任一线。
+
+已满足：要求/失败边界明确；A技术收口与BM实际实施已开始，不能再声称等“完整M0/I06”。**仍缺：安装级稳定控制根的真实fresh来源/唯一writer/恢复仲裁、原始root/parent/member能力如何跨main→child→SQLite使用、实际同build VFS和可撤销资源终态、两目标OS原语/测试环境及新产品/构建路径精确名单。**BM仅四角色metadata子集、Node unfenced、production unsupported；BM通过不会填这些洞。
+
+最小next step是**具体可实施合同及供方归属决定**：逐一画出first open/mkdir/SQLite/VFS实际调用链和受控能力消费点，选定最小真实底层实现/编译来源及两OS支持/拒绝策略，列新native/source/test路径、T03必要依赖delta、T01真实消费点和受控临时目标的首内容IO失败反例；独立审查后再精确实施。不要再仅追加inventory类型，也不能因尚缺安全设备就完全不做源代码/平台原语设计。当前本机native运行禁令和目标设备资源仍保持，实际实验须在已授权隔离环境。
+
+真实验收必须最终证明准入前内容IO0、parent/member替换/alias/同址新身份拒绝、跨process单writer/撤销与实际锁/SHM/child绑定、崩溃恢复不凭ENOENT/PID补fresh、同build正确SQLite VFS、两OS真实正反例；不是Node mock/路径双检/Promise品牌/本机mac27包替代。若这份最小供方仍无法冻结，准确回报上述哪一项由T01/root/OS供应方缺失，而非让8线逐个写“等I06”。
+
+### 3）T02 → T01：首个真正领域编辑到唯一ChangeSet的适配
+
+**owner：T02仅其ontology新适配/测试；T01唯一project/domain_changesets/canonical/提交。**现有可讨论实件是T02固定49321221733ea927484647352e05e7d833cebc86的 `ontology/service.py`7896B/SHA `fa49220fbc812f6e94f6c0c19b6ceff82cb00fa9843f1e7238f6c196f7c839cf`、`ontology/source_projection.py`7422B/SHA `919e6f055c84ddb55de985c66093d585b53ea9f78e167c2aa85dabb224c0c8e2`（均实际current=Git），和T01固定423b的 `project/domain_changesets.py`34728B/SHA `e38f9d58a31f3bb38dc7b2da58f3da26811d3a6cfcc2a5f43a5a10f9b71dfb9a`（current=Git，继承已收口5de）。
+
+已满足：T02真实完整RDF/metadata Diff、原asserted record与多重支持定位；T01真实Store preview/confirm/Job/receipt/undo机制。**仍缺：两owner批准的当前domain/非RDF metadata投影、准确T02→typed plan映射及复验、公共命名方法/真人动作与生产scope；现私有DTO不是这些合同。**特别是T01 supported88–127只支持ontology payload的triples/singleValuedPredicates/references，以及owner/source_row/managed_value均为空的人工fact；T02 synonyms/examples/identifier等无现成写入映射，映射事实/多支持删除不能按removed_sources直接删。不能把已有“内部typed子集通过”解释为T02全域可保存。
+
+最小next step：两原owner提交一个精确消费/适配合同，选取当前真实支持的类/人工事实修改，保原IDs与来源，明确不可表示metadata及映射记录的拒绝或后续扩展；逐路径/ref/hash申请采用，**不要wholecommit或修改冻结493/423b/受审候选**。批准后在真实临时JobStore3把实际T02编辑输出交T01原唯一preview→完整Diff→机制确认→正式Job commit→读回/undo；这是一条领域到存储的真实集成测试，不能用手工预填plan/expected替代T02生产输入。当前可先做合同与实际源码映射，不须先拿生产新位置权；未获精确采用/实施授权前不调用未批准接口。
+
+真实验收比较完整RDF/metadata/原factID/支持及Store前后全量，不看数量；旧源/同版本内容漂移/切项目/late/取消拒绝、失败零部分写、已提交响应丢失按原receipt对账、undo不覆盖不相交修改、mapped/多重支持/不可表达metadata必须准确拒绝。后续同一原功能继续真人确认/named桥/App、Turtle/全部FR200–204和T08联验，不将此第一条支持切片更名为完整T02通过。它比再增加一个SSR/私有plan阶段更接近完整P0。
+
+## 5. 调度判断与保留项
+
+C2方案、I05 strict restore、I06 BM已真实推进，先完成现有准确交付/独审，不另建同义任务。上述三项是有实际供方/消费价值的候选顺序：先补横向供方并冻结最薄生产位置链，同时由T02/T01形成第一条领域适配。T01一个owner不能同时争写三树；合同调查可错开，产品writer窗口由根序列化。其他线若没有新的具体批准依赖，不因本审被唤醒去重复原S1验证或仅追加回执。
+
+当前57P0没有因为本审新增任何正式完成项。源码阶段收口、临时Store集成、完整产品入口、目标平台验收、指定外审和合并必须分别证明。本审不操作审查应用、没有新双指定任务/模型替换、不推送/PR/CI/合并，不改Goal或owner。

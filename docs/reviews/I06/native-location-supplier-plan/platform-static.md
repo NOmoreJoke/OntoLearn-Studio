@@ -1,0 +1,170 @@
+# Native 位置供方：两目标 OS 与跨进程静态可行性
+
+2026-10-21。结论：建议以 **C++17 私有 broker、Node-API 控制绑定、CPython 自有连接适配及同 build SQLite capability VFS** 作为待批准实现路线。OS 可以把后续操作绑定到已打开对象；没有一个路径检查或 JS Promise 可以同时证明用途准入、持续命名空间不变、SQLite 全部附属 IO、跨进程撤销与真实释放。本文列出可实施原语、具体反例及仍须交付的来源，不声明该路线已经实现或在目标 OS 通过。
+
+本轮仅只读官方文档、Git 固定源码并写本文；未下载安装、编译、import/运行产品、启动测试/子进程实验/native/GUI/Keychain。B-M、e2c、961 的既有结果不充 macOS 15 arm64 / Windows 11 x64 的原生证据。本文不是主方案、接口批准或新的路径授权；root 主方案负责最终选择和依赖调度。
+
+## 1. 固定输入与实际缺口
+
+工作树为 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-real-private-metadata`，本轮起始 HEAD `fa8f977d888712cb7127cb0095fa56dafabb37ed`；起始只有 protected `AGENTS.md` dirty。未修改 B-M 既有路径。全文读取授权 5447B/SHA `15d40bf0046f68f6a1d757bc0e05ea6f38c16be16dc0e20739827c2e7a19a18f`、AGENTS 15852B/SHA `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`、共同指令 17891B/SHA `e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0`。继续原 Goal；T01/T03 责任不变。
+
+| 固定 ref / 路径                                                                                          | bytes / SHA256                                                             | 本文使用的准确事实                                                                                                                                                          |
+| -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ffb55e0e694bde00b64fed400260e47392aa3554:docs/iterations/I06/project-inventory-real-owner-B-plan.md`    | 44238 / `b71667de836ee2bcf8f62107f170e808200a3b4f77c264ed06d7c21e9ceed605` | §5 要求稳定控制根、fresh 来源、先 intent+seal 后目标 mutation；§8/9 的 native/T01 与目标 OS 前置不由 Node metadata 解除。                                                   |
+| `379916267e5c36eebedb44d35a6636b9915ccd70:docs/iterations/T01/project-create-and-resolution-contract.md` | 39602 / `ff725f2c0ee40cbdf61c9c4d27dfea1be3ccd2068df4399878b037976de4a5f3` | :27、:41–45、:167、:182：原 dispatch 物理绑定与当前许可、原请求分别验证；复制库和重新生成绑定不关闭 unknown。                                                               |
+| `423b7e4c799f188cf2ce6e8e7121893ce85624cd:apps/desktop/src/main/engine.ts`                               | 26260 / `6d55774068ca27a49958daeea9f4b1fa15614c95563ca28b8a768265ecd4365e` | :418 的备份参数是路径；:424–427 仅三个 stdio pipe，没有 capability channel；:329–369 的 finish/stop 会 reject+kill，不能作为全部实际 close 证明。                           |
+| `423b7e4c799f188cf2ce6e8e7121893ce85624cd:packages/engine/src/ontolearn_engine/storage.py`               | 76042 / `fbef0d0ace0a01b9ced5eaecaf83aeb9306258c0cbfa5fd98a6d79e46bc5a39a` | :81–90 先 path exists/stat 后 stdlib `sqlite3.connect(path)`；:1654–1661 的备份目标也按路径连接。既有 close 记录异常，仍无本文原生对象供方。                                |
+| `423b7e4c799f188cf2ce6e8e7121893ce85624cd:packages/engine/src/ontolearn_engine/project/format3.py`       | 32169 / `505d0beb124534b2ab2e6c1716df53ef7b8108bedb57f5300fcb79a68e955782` | :128–149 以路径追加打开 `.writer-lock`，使用 flock/msvcrt；:158–186 先 exclusive 创建备份再按路径连接、同步、`read_bytes`。这些调用均需要用途能力消费改造，不能在其后补证。 |
+| `423b7e4c799f188cf2ce6e8e7121893ce85624cd:apps/desktop/src/main/index.ts`                                | 6928 / `8578e7461d82bcde08bdaf115990630f3fae12ec1fd1bb8154c84132441e3bf1`  | 仅用于实际默认位置、打包/运行版本声明与 fresh 来源缺口，不当运行证据。                                                                                                      |
+| `423b7e4c799f188cf2ce6e8e7121893ce85624cd:apps/desktop/electron-builder.yml`                             | 389 / `95b993d58a6dc5847e103b43ba556ecee149417fe848f44ad2c6b34268e894d2`   | 仅用于实际默认位置、打包/运行版本声明与 fresh 来源缺口，不当运行证据。                                                                                                      |
+| `423b7e4c799f188cf2ce6e8e7121893ce85624cd:package.json`                                                  | 1953 / `be16490f2fcddad19fdffec0b3efc63ae3f887dc40dc2146293c86cbc93b9c32`  | 仅用于实际默认位置、打包/运行版本声明与 fresh 来源缺口，不当运行证据。                                                                                                      |
+
+额外只读定位 `423b:apps/desktop/src/main/index.ts:127` 为 `userData/engine.sqlite` 默认路径；`423b:apps/desktop/electron-builder.yml` 只有 appId `io.github.nomorejoke.ontolearnstudio`、三个 OS 的 dir target、mac identity:null、npmRebuild:false。所读启动/打包路径没有安装 fresh receipt 或稳定安装级 writer 来源；此为这些路径的缺口，不是对全系统安装历史的否定。固定 package.json 声明 Node `>=24 <25`、Electron `44.9.0`；没有由此推导实际 Electron 内嵌 Node/Node-API 或 Python SQLite 的二进制版本。
+
+## 2. 最薄职责与首 IO 边界
+
+建议 broker 是本应用真实资源的唯一原生持有/用途仲裁者，供方不运行 SQL 或第二份业务事务。SQLite 仍由 T01 唯一 Store/Job 链调用；CPython 连接适配通过 capability VFS 使用 broker 持有对象。Node 侧仅接受可信 main 装配和有限用途请求，不向 renderer 暴露 fd、HANDLE、任意路径 IO、VFS 名称、flags 或通用 callback。
+
+一次用途获得至少绑定：实际 broker incarnation、process/profile generation、parent/root 的持有对象、实际 volume+file identity、允许成员集合/用途、连接/child incarnation、当前准入 epoch。JS opaque 对象只定位 broker 内部记录，不是权威来源；从 JSON 重建同值对象、知道 UUID 或复制 DB 都不能取得记录。所有异步执行在原生 gate 内登记后才 dispatch，迟到结果发布前重新核原记录/epoch；只检查 JS continuation 不充分。
+
+首内容 IO 的精确线：允许 broker 先以无 create/truncate/read-data 的元数据用途取得对象、权限及祖先；取得 intended read/write handle 时仍禁止任何 read/write/truncate/SQLite header 读取，先在同一原生操作闭包对**该返回 handle**做类型、identity、alias 与用途检查，通过后 VFS 继续使用它。不能先让 SQLite 默认 VFS open/read，再 fstat 补证。打开权限本身不是内容读取，但 open 可能触发文件系统过滤/远端 recall；候选仅考虑受支持本地普通文件，其他类型/虚拟化状态未证即拒绝。把 syscall 放进 C++ 不自动形成 namespace 锁。
+
+私有整根/历史 alias 的拒绝源必须来自新的实际 native inventory owner 及持久恢复来源，而非 B-M unfenced 值或 caller `safe:true`。只读保护 metadata、不读密文/keys 来枚举；根目录身份、目标祖先关系、已知 private inode/FILE_ID 与所有已知名字均计入拒绝。对未知 link 数、未恢复旧根、过界枚举整体 unknown；不为找硬链接无限遍历磁盘。新目标普通 DB 建议要求 links=1；私有 final/pending 可多名闭合但仍全部拒绝作为 DB。inode/fileID 是持有对象期间的身份，不是跨删除/跨重启永久不复用凭据。
+
+## 3. macOS 15 arm64：可用原语与限制
+
+这里引用 Apple 官方固定 `xnu-11417.101.15` 公开源码/手册，作为接口依据，不声称该 tag 等于所有 macOS 15 发行 build 或本轮已核 SDK/runtime。
+
+| 用途                   | 真实候选原语                                                                                                                                        | 必须保留的拒绝/限制                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 从可信锚点逐级获取目录 | `openat(parentFD, singleComponent, O_DIRECTORY\|O_NOFOLLOW\|O_CLOEXEC\|适当访问模式)`；逐次持有返回 FD、fstat 与 ACL；禁 `..`、绝对子路径、分隔符。 | O_NOFOLLOW 主要约束本次目标；已拆成单组件仍须验证实际类型、owner/ACL、volume。持有 parent 不保证外界不能把它移到另一命名空间。依据：[Apple open 手册](https://raw.githubusercontent.com/apple-oss-distributions/xnu/xnu-11417.101.15/bsd/man/man2/open.2)。                                                                                                                                                                                  |
+| 更强路径解析约束       | 该公开 tag 还有 `O_NOFOLLOW_ANY`、`O_RESOLVE_BENEATH`，可作为实际 SDK/runtime/volume 验证后的加强。                                                 | 不是 Linux openat2；不从宏存在推断目标 OS 全组合可用，也不能约束将来的 rename。缺所要求 flag 语义则拒绝相关操作，不降级 JS reopen。依据：[Apple fcntl.h](https://raw.githubusercontent.com/apple-oss-distributions/xnu/xnu-11417.101.15/bsd/sys/fcntl.h)。                                                                                                                                                                                   |
+| 对象/alias             | 持有 FD 的 fstat dev/ino/type/nlink，按实际无损整数；权限还需 native ACL 判定。                                                                     | mode bits 不是 ACL 的完整替代；与被保护 inode 的实际比对、nlink 闭合不能由 realpath 字符串替代。ACL 精确规则及 API/SDK 列为实施前细化与目标测试项。                                                                                                                                                                                                                                                                                          |
+| 成员 exclusive 创建    | 同一受信 parent FD 内 `openat(..., O_CREAT\|O_EXCL\|O_NOFOLLOW\|O_CLOEXEC, mode)`；不带 O_TRUNC。                                                   | 只在用途已准入且 intent/seal 所需耐久已确认后执行；成功即登记新真实 identity，后续继续用该 FD。O_EXCL 不是持续单 writer 锁。依据同上 open 手册。                                                                                                                                                                                                                                                                                             |
+| 无覆盖发布             | 同卷 parent FD 上 `renameatx_np(..., RENAME_EXCL)`，按支持能力可加 `RENAME_NOFOLLOW_ANY`；发布前核候选 held identity，发布后核目标 identity。       | 必须查询/验证 volume exclusive-rename 支持；EEXIST、EXDEV、不支持/未知都拒绝，不回退普通 rename、unlink 目标或 copy+delete。该 syscall 原子拒绝已有目标，不承诺持续 namespace 不被同 UID 改名。依据：[Apple rename 手册](https://raw.githubusercontent.com/apple-oss-distributions/xnu/xnu-11417.101.15/bsd/man/man2/rename.2)、[公开声明](https://raw.githubusercontent.com/apple-oss-distributions/xnu/xnu-11417.101.15/bsd/sys/stdio.h)。 |
+| 耐久                   | 文件完整写入后必要 fsync；要求介质落盘时以实际支持的 `fcntl(F_FULLFSYNC)` 取得更强确认；目录项另有受支持文件系统同步流程。                          | rename 成功与 close 成功都不是掉电耐久。文件 fullsync 不免除目录变更顺序与错误处理；设备/目录操作不支持时保 unknown，不能写 durable=true。依据：[Apple fcntl 手册](https://raw.githubusercontent.com/apple-oss-distributions/xnu/xnu-11417.101.15/bsd/man/man2/fcntl.2)。                                                                                                                                                                    |
+| app 级唯一 writer      | 控制根内永久、不 unlink 的受信 lock inode，通过 held FD 上 `flock(LOCK_EX\|LOCK_NB)`；精确安装 identity 命名来源另见 §7。                           | flock 是合作式；dup/fork 是同一锁的引用，不能给任意 child 解锁权。控制文件 inode 被替换会产生另一把锁，必须根身份/恢复围栏一起验证。依据：[Apple flock 官方手册](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/flock.2.html)。                                                                                                                                                          |
+
+POSIX SQLite 的 `fcntl` byte-range 锁另有重要陷阱：进程关闭同 inode 的任意一个 FD，可能释放该进程的相关 record locks。不能把多个 SQLite connection 的锁直接独立映射成“每个 FD 各管各的”；broker 须按 inode/connection 聚合并保持 SQLite 同版锁协议，或采用经审核的同版 OS 层修改。上述来源 fcntl 手册 :471–474 明确此行为。控制 flock、DB pager 锁、WAL SHM 锁是三种责任，不互相替代。
+
+不能承诺抵抗无限持续同 UID namespace 修改：逐组件 FD、单原生操作及复核可拒静态 symlink、绑定实际对象并检出一部分变化，不能把 lstat→open 的循环说成原子闭合，也不能保证发布前后的所有祖先仍在原路径。若用途要求这种更强持续路径关系，当前候选仍须相应 OS/权限边界，缺失即 unsupported；不得偷偷改为同路径任意对象可读。
+
+## 4. Windows 11 x64：可用原语与限制
+
+| 用途                  | 真实候选原语                                                                                                                                                        | 必须保留的拒绝/限制                                                                                                                                                                                                                                                                                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 逐组件目录打开        | user-mode `NtCreateFile`，OBJECT_ATTRIBUTES.RootDirectory 指向实际 held directory，ObjectName 只给一个组件；目录 FILE_DIRECTORY_FILE，FILE_OPEN_REPARSE_POINT。     | 每个返回对象检查 reparse/type；该 flag 是打开 reparse 自身，不是批准穿越；不把完整字符串交 CreateFileW 然后只检最后一层。拒绝 ADS、`.`/`..`、device/UNC/remote、未知对象和未批准大小写/名称语义。依据：[Microsoft NtCreateFile](https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntcreatefile)。                                            |
+| file identity / links | `GetFileInformationByHandleEx(FileIdInfo)` 的 VolumeSerialNumber+完整128位 FileId；`FileStandardInfo` 的 NumberOfLinks/DeletePending/Directory。                    | 不用 Node dev/ino 或截成 JS number；不支持信息类/未知 volume 则 fail closed，不能换 pathname hash。DeletePending/alias 异常不恢复准入。依据：[FILE_ID_INFO](https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-file_id_info)、[FILE_STANDARD_INFO](https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-file_standard_info)。 |
+| owner / ACL           | held HANDLE 上 `GetSecurityInfo` 读取 owner SID/DACL，开 handle 时请求所需 READ_CONTROL。                                                                           | 不能把当前用户名或 POSIX mode 当 Windows ACL。该官方 API 也不包办并发 ACL 变更；不请求提权/SACL/backup privilege 来绕过。依据：[GetSecurityInfo](https://learn.microsoft.com/en-us/windows/win32/api/aclapi/nf-aclapi-getsecurityinfo)。                                                                                                                            |
+| rename/delete 抑制    | 用途所持 parent/member handle 选择不授 FILE_SHARE_DELETE 的 sharing policy，以约束相容的后续 delete/rename 打开。                                                   | 有 DELETE access 的既有 handle 会使开具此 policy 失败；share-delete 不是全部 ACL/映射/持续同 UID 安全证明。不能把同一 policy 生搬到需要 SQLite 自己清理 journal/SHM 的所有 handle。依据：[CreateFileW sharing 文档](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew)。                                                           |
+| 新建及无覆盖发布      | RootDirectory 下 FILE_CREATE；对实际候选 HANDLE 调 `SetFileInformationByHandle(FileRenameInfo)`，RootDirectory=受信目标 parent、相对单组件、ReplaceIfExists=false。 | 同卷、目标冲突/共享冲突/未知 filesystem 语义时拒绝；禁 replace、跨卷 copy-delete 或 POSIX replace flag。最终目标 identity 必须等于候选。依据：[FILE_RENAME_INFO，2026-05-15版](https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-file_rename_info)。                                                                                           |
+| 数据同步              | 正确写 handle 上 `FlushFileBuffers`，根据实际写入/flush 终态记账。                                                                                                  | 官方页没有给这里需要的“非 admin 父目录项 fsync”完整契约。无覆盖 rename+文件 flush 不能直接升级为控制树掉电耐久；不为补证调用需管理员的卷 flush。相关 Windows durable-publish 是仍需解决的实施前置，无法交付时 B-R 不授目标 mutation。依据：[FlushFileBuffers](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-flushfilebuffers)。            |
+| 锁/异步结束           | `LockFileEx` 的实际锁区间、OVERLAPPED 完成事件/结果；取消请求用 `CancelIoEx` 后仍等实际完成。                                                                       | 锁不保护 mapped view；继承 handle 不授 child 原锁区间访问。CancelIoEx 不保证已取消，也不等同 settled。OVERLAPPED/slot 在真实完成前不复用。依据：[LockFileEx](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex)、[官方取消说明](https://learn.microsoft.com/en-us/windows/desktop/FileIO/canceling-pending-i-o-operations)。        |
+
+建议第一目标文件系统分别收窄为本地 APFS / NTFS 的待验证 allowlist；这是工程支持提案，未批准为最终产品限制。FAT/exFAT/ReFS/SMB/云占位文件/远端卷、reparse 特例、大小写/短名碰撞及安全软件 filter 行为不能外推；若需求要求支持，应另给原语及目标证据，不从“API返回成功”推断一致安全/耐久。
+
+## 5. Node/main → Python child：不能靠整数/品牌传权
+
+Node v24.0.0 官方文档只把 `sendHandle` 描述为特定 server/socket 的 IPC，不支持把其 IPC fd 当任意非 Node child 通道使用。stdio 数字/stream 的继承也不是跨平台传任意原生目录 HANDLE 的统一 API。故不设计 `child.send({handle:123})`→Python open(path)，不消费 Node 私有 `_handle` 字段。依据：[固定 Node 24 child_process 文档](https://nodejs.org/download/release/v24.0.0/docs/api/child_process.html#optionsstdio)。
+
+待实现的最小传递：
+
+1. broker 先保留原根/member/连接用途记录，native 创建每个 child 专用控制 channel；stdin/stdout 既有业务协议仍单独保留。channel 的一个原生 endpoint 只给指定实际 child，绑定该次 OS spawn 持有关系和有限握手。端点名、PID、随机 nonce 或 JS Promise 单独都不是物理绑定。
+2. macOS 可以由受控 spawn 把 endpoint 映射为固定 child FD；动态确需传 FD 时，使用 AF_UNIX socket 的 SCM_RIGHTS，并限制只传已登记的用途对象/SHM映射，不传根目录通用读写权。接收端复核 fd 的 actual identity/flags，额外/截断的 ancillary handles 一律关闭并失败。CPython 3.12 官方 socket 文档说明 Unix fd ancillary 机制；Node 核心 sendHandle 不因此变成通用封装。依据：[CPython 3.12 socket](https://docs.python.org/3.12/library/socket.html#socket.socket.sendmsg)。
+3. Windows 应由受控 native launcher 创建进程，显式 STARTUPINFOEX 的 PROC_THREAD_ATTRIBUTE_HANDLE_LIST，或者在**仍持有实际 hProcess**上受限 DuplicateHandle。只向该 child 复制 channel/必要 mapping handle，非全部 inheritable handles；继承标志及时复位。DuplicateHandle 的目标整数只在目标进程有效；须通过已绑定 channel 通知并核验。依据：[UpdateProcThreadAttribute](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute)、[DuplicateHandle](https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle)。
+4. CPython extension 可原生持 HANDLE；`msvcrt.open_osfhandle` 仅用于确需 CRT 文件流的窄适配，不把 directory HANDLE 当普通 DB 文件 fd，也不让 CRT/CloseHandle 双重释放。单纯转成 CRT fd 不会使 stdlib sqlite3 接受已核句柄。依据：[CPython 3.12 msvcrt](https://docs.python.org/3.12/library/msvcrt.html#msvcrt.open_osfhandle)。
+5. Windows 现 Node spawn 抽象没有公开承诺提供上述任意 HANDLE 列表/原始 hProcess 给供方；所以“只加第四 pipe”尚不是已证明 Windows 方案。建议 T01 接收一个实际 native child transport/owner adapter（stdio与真实 spawn/exit/close 分离），I06 提供受限原生启动/通道部分，T01 仍唯一管理 engine supervisor、所有实际 child、request 与 dispatch。不得为避免该 delta 另起一个未经 T01 跟踪的代理 Python。
+
+建议 broker 保留 DB 物理句柄，Python VFS 以内部 session+connection+purpose 记录执行 page IO；这样复制 channel 不自动取得任意路径重开权。SHM 特殊：`xShmMap` 必须给 **child 地址空间内**的映射，不能把 broker 指针整数跨进程发送。若采用实际文件 mmap，则只传所需 SHM FD/mapping HANDLE并追踪每个 map/unmap、锁和 child；同 inode/同命名 WAL-index 的一致性另验。所有 mapping 无法在撤销瞬间遥控 unmap；未结束时保持 retained。若初期不支持 WAL/多连接，必须显式拒绝相应库/模式；不能偷偷改 journal_mode、locking_mode=EXCLUSIVE 或把 heap SHM 冒充兼容。依据：[SQLite WAL §7/8](https://sqlite.org/wal.html#implementation_of_shared_memory_for_the_wal_index)。
+
+## 6. 同 build SQLite / VFS 与实际终态
+
+### 6.1 可实施语言/ABI 边界
+
+C++17 可以调用上述 C OS API。Node 绑定仅依赖 `node_api.h` 的稳定 C API，建议以满足所用 API 的固定 Node-API 版本构建；不用 V8/node.h/内部 libuv ABI。Node-API 保证不延伸到 SQLite、C++ runtime、CPython 或外部库，仍须 T03 冻结目标 headers/编译器/SDK/架构/链接产物。官方依据：[Node 24 Node-API ABI 范围](https://nodejs.org/download/release/v24.0.0/docs/api/n-api.html#implications-of-abi-stability)。
+
+CPython 路线优先专用 extension 拥有 SQLite 连接，不读取 stdlib `sqlite3.Connection` 私有内存布局。它与 capability VFS 必须落在同一个受控 SQLite build/符号实例，显式选择该 VFS且无 default fallback。另一个 DLL/静态 SQLite 注册同名 VFS，不证明 stdlib sqlite3 能找到它。备选为 T03 重编 `_sqlite3` 和同库 VFS，但这是不同构建/维护方案，不能混用两者通过记录。Python DB-API 兼容面、Row/cursor/exception/transaction/backup/iterdump/authorizer 等须按 T01 实际 Store 需求逐项冻结；“能执行一条 SELECT”不证明可替代当前 Store。依据：[Python 3.12 sqlite3](https://docs.python.org/3.12/library/sqlite3.html)、[SQLite VFS registry](https://www.sqlite.org/c3ref/vfs_find.html)。
+
+SQLite 精确源码版本/下载校验/编译选项/许可证/补丁与 Python ABI 当前尚未由本轮获得可重现二进制来源，属于 T03 必须给的闭包输入。版本至少须处置官方 WAL-reset 缺陷：官方列 3.51.3+或明确 backport 3.44.6/3.50.7；这不是对任意其他安全/兼容问题的通过，也不把“Python3.12”当 SQLite 版本。依据：[SQLite WAL §11，页面2026-08-25更新](https://sqlite.org/wal.html#the_wal_reset_bug)。本轮没有下载 SQLite 源码、编译或复制 Apple/Microsoft 系统实现；T03 须分别登记 SQLite public-domain 来源、CPython/Node 许可、SDK 分发条件以及任何实际复制源码的许可证。
+
+### 6.2 VFS 覆盖不能只有主 DB 的 xOpen
+
+待实现 VFS 必须覆盖所有适用的 `xOpen/xDelete/xAccess/xFullPathname`，以及实际文件的 read/write/truncate/sync/size、锁、file-control、SHM、可选 mmap。VFS 名是连接配置，不是文件系统能力；token 的后缀只能由 broker 映射到该用途集合。即使 SQL 从业务服务进入，未知路径/URI/vfs覆盖、ATTACH、VACUUM INTO、扩展加载及 temp 落盘也不能绕出用途集合；需要的合法操作由 T01 明确列入用途，不任意缩减现有业务能力。依据：[SQLite VFS object](https://www.sqlite.org/c3ref/vfs.html)、[io_methods](https://sqlite.org/c3ref/io_methods.html)、[URI 控制](https://www.sqlite.org/uri.html)。
+
+| 资源/动作                                | capability VFS/broker 必须实际承担                                                                                                                                                          |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 主 DB及既有 header/catalog               | 首 read 前已接受 exact file handle；用途为当前真实实例，不把 opaque filename 当 OS path reopen。                                                                                            |
+| `-journal`、WAL、SHM                     | 由同 DB parent/name/purpose 派生，独立登记实际 identity/create/open/lock/map/close；遇旧未知/被替换对象拒绝，不仅主库 fstat。                                                               |
+| writer-lock                              | 应用单 writer 的独立 held 对象，不能以 SQLite pager锁代替；继承/进程死亡语义按目标 OS 分开。                                                                                                |
+| 候选/备份                                | 两个独立用途、源/目的连接均用同 build VFS；源一致性与目的完整性、同步/发布/hash均用已核对象。hash只验内容，不签新能力。                                                                     |
+| temp/subjournal/super-journal/VACUUM产物 | 受控有限位置/对象，或精确拒绝；不能假定只会出现 DB/WAL/SHM。SQLite 官方说明临时文件策略不承诺永久不变，须绑定所选build验实际调用全集。[SQLite tempfiles](https://sqlite.org/tempfiles.html) |
+| mmap与file-control                       | 建议先令可选 xFetch 无映射回退到已核 xRead；不能未经实际证明就转发打开新路径的 stock file-control；SHM 必要映射单列。                                                                       |
+
+“包一层 stock xOpen 然后继续其按路径 opens”不合要求；`/dev/fd/N`/Windows句柄字符串/SQLite URI 的 path 重开也不解决附属路径或锁。可复用同版 SQLite OS 算法的路线须做精确源码修改/许可证审计，替换其所有相关 OS 打开和 SHM路径，并证明无默认 VFS fallback；不能仅调用原 stock xOpen 后宣称闭合。
+
+### 6.3 撤销与真实 settled
+
+撤销先在 broker 同步停新接纳/失效 epoch；已进 IO 的原槽、SQLite statement/backup、连接、OS锁、映射与 duplicated handles 继续计费。允许原用途有限 rollback/close/unmap 清理，不为清理重新授业务读写；绝不把“拒绝一切包括 xClose”当安全撤销。native completion与逻辑结果必须分别维护，close失败/未知终态不出 released receipt。
+
+- Node `napi_cancel_async_work` 不终止已经开始的工作；即使取消，仍等 complete callback 再销毁其工作资源。依据：[Node-API async work](https://nodejs.org/download/release/v24.0.0/docs/api/n-api.html#napi_cancel_async_work)。
+- Windows CancelIoEx 是取消请求；实际完成可能成功或取消，必须消费 OVERLAPPED 的真实完成。等待超时只能给逻辑 unknown，不释放结构体/handle槽。macOS 同步阻塞 syscall 也不能因 Promise/线程等待超时即宣告结束。
+- `sqlite3_close` 遇未 finalize statement/BLOB/backup 可 SQLITE_BUSY；`close_v2` 可返回 OK但保留 zombie。供方必须确认实际 statement/backup finish、VFS xClose、xShmUnmap、原生关闭及全部引用，而非仅看函数返回 OK。依据：[SQLite close](https://www.sqlite.org/c3ref/close.html)。
+- macOS 对确切自有 child 使用真实 waitpid 终态；Windows 保留 hProcess并等待对象 signaled，另收自有 IO/channel 完成。Node killed/PID缺席/进程退出码不代表其他进程 duplicated handles 或其他 child 都释放。依据：[Apple waitpid](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/waitpid.2.html)、[Windows进程终止](https://learn.microsoft.com/en-us/windows/win32/procthread/terminating-a-process)、[Node killed](https://nodejs.org/download/release/v24.0.0/docs/api/child_process.html#subprocesskilled)。
+
+特别反例：main/broker崩溃但 child 仍持 SHM mapping；新 app 取得控制锁不等于旧 child 已排空。Windows LockFileEx 的锁不直接变成 child 的继承锁；named mutex 的 owner 是线程而非所有持 HANDLE 者。重启必须按持久 intent/原实际 child 绑定恢复为 unknown并完成受控回收，或由明确的唯一原生 holder 跨 main 生命周期持续承担仲裁。这个恢复围栏尚未交付；不以“句柄可复制”跳过。依据：[LockFileEx继承说明](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-lockfileex)、[Microsoft mutex](https://learn.microsoft.com/en-us/windows/win32/sync/mutex-objects)。
+
+## 7. 安装级 writer 与 B-R fresh 的真实来源请求
+
+工程上可把**逻辑控制根名**绑定固定产品 identity和当前 OS principal；实际 path 由 T01可信 main 的 OS目录解析供给，broker验证 held parent/root/ACL。产品 appId、路径字符串、executable 名、首次 new object 与 ENOENT 均不是“未有任何旧保护历史”的证据。可变 userData/便携副本不能各产生互不相知的序号链。
+
+| 必须由 root 路由的供方请求                             | 可接受候选 / 缺失时行为                                                                                                                                                                                    |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| T01 + 安装供方给稳定 appData/control root 与多安装命名 | 明确固定产品 identity、OS principal、安装/channel实例与共享/隔离政策，以及真实 OS path/根身份来源；不是 renderer路径。未定保持 unsupported。                                                               |
+| 安装/迁移供方给 fresh 来源                             | 明确可信安装/升级流程生成的安装 provenance 与无旧控制根/迁移历史的证明范围；可验证 add-only bootstrap receipt候选。仅 app 首次启动或 header缺失不够；目录包实际没有该供方时必须报告缺口，不发 fresh=true。 |
+| native 给唯一安装级 writer                             | 绑定实际控制根的 OS仲裁对象+进程/持有者身份；所有读改/新profile/迁移共用同一围栏。Windows可审查 SID+产品+安装命名、受限DACL mutex与实际控制root lock的组合；abandoned只准进入恢复，不表示fresh。           |
+| T01 + native 给旧 child/holder 终态                    | 持久记录只保资源保护与未结算事实；重启后不能持久化一个可重用HANDLE/FD或用PID不存在作释放证。旧 holder不明确就拒新目标mutation，普通时间过期不解锁。                                                        |
+| B-R bootstrap/self-append供方                          | 仅固定控制树 `header.json`、`intents/<sequence20>-<recordId32hex>.json`、`seals/<同名>.json`；受信fresh后先内存 reserve+exclusive创建+同步+实际关闭+身份确认；自追加不递归生 intent，不授任意写路径。      |
+| 真实耐久/恢复供方                                      | 完整 header、intent/seal、序号/digest/previous、pending/未知记录与全部旧根恢复；没有目标OS耐久契约则不能授权外部目标mutation。Windows目录发布耐久缺口在此实际阻塞，不能靠Node单测绕过。                    |
+
+控制记录只存有限安全 metadata，不存模型secret、密文正文、业务内容、Job意图/重放状态或 grant。此处没有新建 main 意图账本。安装receipt即使含hash，也不能抵御被排除在当前威胁边界外的任意同UID持续篡改；必须清楚说明谁可写、实际迁移来源与何时失效，不能扩大成全盘DLP/系统管理员对抗。
+
+## 8. 精确候选路径及 owner 请求
+
+以下是**供 root 登记的新路径提案**，本轮不创建目录/代码，不自动取得写权。为了避免security目录泛权，native主体独立命名空间；主方案可在审查后删减或改名。
+
+| 拟新路径                                                                 | 提案唯一writer与责任                                                                |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `packages/native-location/include/location_abi.h`                        | I06；小型版本化 C ABI/固定用途/资源终态，不能导出任意path IO/callback。             |
+| `packages/native-location/src/capability_core.cc`                        | I06；有界原生记录、pre-admission、epoch、持有对象/identity/alias/撤销和真实完成。   |
+| `packages/native-location/src/platform_macos.cc` / `platform_windows.cc` | I06；上述OS adapter及受控spawn/channel/metadata/publish/close，平台不支持明确拒绝。 |
+| `packages/native-location/src/node_binding.cc`                           | I06；Node-API控制绑定/实际cleanup；不读取Node私有child句柄或V8布局。                |
+| `packages/native-location/src/python_binding.cc`                         | I06供方；自有CPython连接适配，实际DB-API消费面须T01明确接受。                       |
+| `packages/native-location/src/sqlite_capability_vfs.cc`                  | I06供方；同build VFS、全文件用途/锁/SHM；不能默认路径VFS fallback。                 |
+| `apps/desktop/src/main/security/native-location-owner.ts`                | I06新私有薄装配提案；只接native真实owner，不复刻公共协议、Store或T01 lifecycle。    |
+| `tests/native-location/{macos,windows}/...`                              | I06专属新目标OS临时目录/进程验证申请，具体文件与CLI须另列；不改旧tests/CI。         |
+
+T01必要消费 delta：main在任何候选库header/catalog/Store/backup IO前取得受限用途；engine通过实际 native child transport绑定并在写帧前核原lease/dispatch；Store/format3/backup改用同build connection/VFS和能力对象，消除表1中的path reopen；所有 worker/child/SQLite引用由真实owner排空；原dispatch绑定以该实际Store/原generation捕获，丢失仍unknown，不创建第二持久意图账本。
+
+T03必要 delta：明确 native build描述文件的唯一writer、编译/链接脚本、Node/Electron headers、CPython版本及SQLite源码版本/源hash/编译选项、NAPI目标、macOS15 arm64 SDK与Windows11x64 SDK/MSVC/C++runtime；锁及产物入包路径、asar外native装载、Python extension收集、许可证/SBOM/可重现构建。固定423b配置的 npmRebuild:false 与 extraResources只拷engine，不能据此声称native模块将自动打包；必须实际验证签名/装载依赖与资源身份。该delta只有T03授权维护者实施，本文不改构建/锁/CI/入口。
+
+## 9. 两目标 OS 必须各自取得的最小证据
+
+所有项待精确实施与运行窗口授权；可先在无 GUI 的目标OS隔离临时进程完成，不触发 Keychain/用户目录/模型网络。真实应用/包的消费者闭包还需对应 owner 的后续授权；本轮没有任一通过项。
+
+| 验证组       | macOS15 arm64与Win11x64分别需要的实际反例/证据                                                                                                                                                                        |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 首IO与身份   | VFS在原生准入前主DB/header/catalog/backup read/write计数0；真实祖先/根/member symlink或reparse、rename替换、同址新identity、private alias/hardlink、unknown nlink、ACL/volume变化拒绝；保原对象与未知记录，不扫内容。 |
+| 跨await/发布 | 在每个真实等待边界换epoch/撤销/换parent/member；晚完成只归原holder。已有目标无覆盖、同/跨volume、sync/close失败和发布后identity错配；保首次失败原件。                                                                 |
+| 句柄传递     | 实际child继承/复制只获列明channel/SHM对象；额外handle关闭、伪造数值/nonce/旧child/PID复用拒绝；main与child实核同物理identity，业务JSON中的路径不能开库。                                                              |
+| 同build闭包  | 记录sqlite source/version/compile-options/VFS名称、NAPI/Python ABI与二进制哈希；VFS trace证明主DB、journal、WAL、SHM、备份、候选及所有实际temp打开都经用途检查；禁止默认VFS/URI覆盖/未授权ATTACH及外部扩展。          |
+| 锁与SHM      | 两真实进程争同库/别名只能一writer；两连接close不错误释放他者锁；真实SHM同对象/映射/锁区间。撤销后仍持锁/map的child不能“已释放”，另process在真实结束前不得获冲突能力。                                                 |
+| 取消/关闭    | 真实在途IO、queued/running native work、SQLite未finalize/backup、close失败、child晚退出与broker先死；只看实际完成/对象close/映射unmap/全部child终态，不按超时清记录。                                                 |
+| 控制根恢复   | 真实fresh来源缺失/已有旧根/迁移未知/多实例/abandoned，header/intent/seal每步失败、孤儿/截断/序号不连续/超额；未seal或耐久未知时外部目标IO0，不自动重建空历史。                                                        |
+| 物理归因     | 真实A库复制为B，同UUID/hash/migration_id/receipt不能关闭原A dispatch unknown；原binding丢失或旧child未排空时保持unknown；不自动重发、不迟到切换项目。                                                                 |
+| 包内闭包     | 两目标OS分别实际包内加载Node binding/Python extension/同SQLite二进制，证明实际进程架构、SDK/runtime、OSbuild/filesystem与源码/产物hash；Linux或macOS27不替目标OS。                                                    |
+
+最小第一实施阶段建议仅原生 metadata/held-parent/exclusive-create/no-replace-publish 与真实 handle/cancel/close测试，全部受控临时目录、两OS分别证据；该阶段仍不授SQLite内容IO。随后另批同build SQLite/CPython/VFS+真实child，最后T01正式消费/控制fresh与durability/原dispatch闭包。Windows durable控制发布、安装fresh来源、broker崩溃而旧child存活及准确DB-API范围是当前实质前置，不能以文档、native品牌或B-M通过宣布已准备。
+
+## 10. 本轮核验范围
+
+仅本文格式/差异检查；未运行产品、测试、native或新平台实验。官方引用于2026-10-21只读访问：Apple固定tag、Node v24.0.0固定文档、Python3.12分支文档（页面实际标3.12.15）、Microsoft API现行页（个别页面给修订日期）及SQLite现行接口文档；动态官方页不是候选二进制manifest。两条SQLite Fossil `version-3.51.3` OS源码页与一批补充资料读取失败，没有据此声称已审其完整实现；同版OS层精确复用及许可证仍待T03固定源码读回。本文件的原语组合/路径/阶段均为设计推导，不是官方对本应用整体安全性的背书。
