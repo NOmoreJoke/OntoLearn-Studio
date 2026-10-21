@@ -28,3 +28,9 @@ platform-r11完整22case、3次合成HTTPS POST与collector五gates通过。产�
 两轮实际worker/source/catalog/selected/preview/grant原件证明同旧grant、不同result/job/catalog/selection；私列与派生值确实存在于三行source，两轮输入/参数/依赖/implementation/有序rows相同。三份完整693bytes正文各自与receiver manifest匹配，均SHA `4bea2fec09859fae6a3f5f685630b22bd3c3595f486edde3df2b5cedaedda2f0`，重建projectionHash吻合且原rowUUID/ordinal/私列/派生/secret/header均未出现。scope UUID未公开，scope一致由冻结映射和同grant复用验证，不声称DTO中直接公开scope。
 
 实际GNOME跨app恢复后可发送，basic/unavailable真实录入拒绝且零credential文件；审计不安全时同一operation尚未提交，仍在故障未恢复前完成真实Store commit；坏audit初始化下本地窗口/worker保存亦完成。定向取消、singleton/reload只读及旧grant失效由本run源码绑定执行断言/22case支持，并非所有outcome原DTO均归档。22私有文件/5DB的scanner receipt支持当次扫描结论，独立review未重扫未归档vault/DB。r11范围限定Linux正常main/preload/UI/HTTPS/reload链；真实native恢复另验，不能替代其他平台或完整S3/指定双审。
+
+## Native恢复追加复核
+
+native4在相同compiled app/binary上完成真实crash→X11可见原生提示→外部实际shift+Tab/Return→第二窗口。独立只读review核对未替换dialog/恢复函数；故障前inspectorURL=null、无rendererCDP，main身份保持而renderer/window实际更换。整个project/Store/job/result/stateVersion/operation marker及I06 context/selections/invocations/completed outcome前后严格相等，只4个具名只读恢复调用，receiver始终1。native binding SHA `9bade372085b53c7e95e9fe0c2d337ec648e6767d63b4b14ab0baf166af35637`，与r11 normal binding关联准确，未拼接22case。CJK字体缺失，仅确认X11中文标题与可见提示/真实动作，不认可中文排版；未测hang全矩阵。
+
+停止后新增5份原DB/vault的readback独立核对hash、23行与raw pages，配置序列/digest链、credential/config binding、唯一metadata audit关联一致，无secret/response正文；新readback SHA `a765852442015d7c599c7e05a2312243a091f7ae8ef48a60af1ec28c10a93e50`，旧native binding不变。root复制完整953文件archive并复验952项bytes/SHA，见[readback](evidence/main-platform-archive-readback-20261021.json)。普通源码app和native范围均限定固定9fc/Linux；真正包内executable、批准I05后必要联验及同候选指定双审仍后续独立完成。
