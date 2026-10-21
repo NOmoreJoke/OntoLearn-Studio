@@ -1,0 +1,153 @@
+{
+  "candidate": "2ce39f011282b6fdce5e6870610529cff1458fdd",
+  "supplier": "6c1eec41091a997f898cb448bfc7d4000c154307",
+  "soleFixOwner": "I05 original semantic writer; T05 keeps143 read-only",
+  "expectedGoldenUnchanged": true,
+  "fixSites": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "function": "_shapes",
+      "sourceRef": "6c1eec41091a997f898cb448bfc7d4000c154307",
+      "datatypeRejectionLines": [
+        1260,
+        1261
+      ],
+      "inclusiveParameterRejectionLines": [
+        1269,
+        1274
+      ],
+      "deltaAuthority": "root must grant original I05 writer; this test tree readonly"
+    }
+  ],
+  "cases": [
+    {
+      "id": "C-inclusive-dateTime-equal",
+      "kind": "consumer-cell",
+      "assertion": "fail",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "diagnostic": null,
+        "exceptionType": "SemanticError",
+        "fixturePValueNodeCount": 1,
+        "publicError": null,
+        "reason": "INVALID_SHAPE",
+        "shapeTripleCount": 7,
+        "stage": "check-shapes",
+        "status": "error",
+        "validatorRuns": 0
+      },
+      "expected": {
+        "components": [],
+        "conforms": true,
+        "currentEntryGap": "valid dateTime shape bound rejected INVALID_SHAPE",
+        "entryAndReportAreSeparate": true
+      },
+      "member": "observations/2630fd100fa11763483ec97165673459a2a93f5d4b5152cecc1c64d7c6ddb8a3/observation.json",
+      "sha256": "d5603e56cd1a00412b985c7c2e6b68066c9b383925f6505dabf6f6b818397fb6"
+    },
+    {
+      "id": "C-inclusive-nni",
+      "kind": "consumer-cell",
+      "assertion": "fail",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "diagnostic": null,
+        "exceptionType": "SemanticError",
+        "fixturePValueNodeCount": 1,
+        "publicError": null,
+        "reason": "INVALID_SHAPE",
+        "shapeTripleCount": 6,
+        "stage": "check-shapes",
+        "status": "error",
+        "validatorRuns": 0
+      },
+      "expected": {
+        "components": [],
+        "conforms": true,
+        "currentEntryGap": "nonNegativeInteger not in inclusive parameter whitelist",
+        "entryAndReportAreSeparate": true
+      },
+      "member": "observations/2ca40a8b850ee7a157df77288cec885a0e95c8c32c8d7d1d51915feb3e6f8198/observation.json",
+      "sha256": "cdb8405dde1b7315e0ec42147a405ef8f52608fa4bf6cae17040133974efb24a"
+    },
+    {
+      "id": "C-inclusive-dateTime-before",
+      "kind": "consumer-cell",
+      "assertion": "fail",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "diagnostic": null,
+        "exceptionType": "SemanticError",
+        "fixturePValueNodeCount": 1,
+        "publicError": null,
+        "reason": "INVALID_SHAPE",
+        "shapeTripleCount": 6,
+        "stage": "check-shapes",
+        "status": "error",
+        "validatorRuns": 0
+      },
+      "expected": {
+        "components": [
+          "MinInclusiveConstraintComponent"
+        ],
+        "conforms": false,
+        "currentEntryGap": "valid dateTime shape bound rejected INVALID_SHAPE",
+        "entryAndReportAreSeparate": true,
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+            "sourceShape": "<urn:m1:shape>",
+            "value": "\"1999-12-31T23:59:59Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime>",
+            "valueExpectation": "exact RDF term"
+          }
+        ]
+      },
+      "member": "observations/423366beb4daeba6be0e49297cc4077cb724996c68454bb07e270852dc9a9c30/observation.json",
+      "sha256": "bdc32c4c157dcfb285a6e9b9955b0a422b91c6b152e249769b5ab54f421fc6cf"
+    },
+    {
+      "id": "C-langString",
+      "kind": "consumer-cell",
+      "assertion": "fail",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "diagnostic": null,
+        "exceptionType": "SemanticError",
+        "fixturePValueNodeCount": 1,
+        "publicError": null,
+        "reason": "UNSUPPORTED_DATATYPE",
+        "shapeTripleCount": 6,
+        "stage": "check-shapes",
+        "status": "error",
+        "validatorRuns": 0
+      },
+      "expected": {
+        "components": [],
+        "conforms": true,
+        "currentEntryGap": "sh:datatype rdf:langString rejected UNSUPPORTED_DATATYPE at _shapes",
+        "entryAndReportAreSeparate": true
+      },
+      "member": "observations/8a2455285e78cf18d33af29a4454a7468dd1f29d17e8ecc6e89340def183ed84/observation.json",
+      "sha256": "9862f72bbb877e0af59fc660e988ba8b139d589b610ec64d37e9201367250aeb"
+    }
+  ],
+  "actualArchive": {
+    "tag": "final-normal",
+    "candidate": "2ce39f011282b6fdce5e6870610529cff1458fdd",
+    "actualDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/graph-actual/final-normal",
+    "archive": "final-normal-originals.zip",
+    "archiveBytes": 1307902,
+    "archiveSha256": "06eb119efb8e6ec44b903723c1a4f7d6f3fc25d657b9f14b5f0b35ec51321124",
+    "memberCount": 79,
+    "caseCount": 15,
+    "allMemberBytesSha256AndCrcVerified": true,
+    "scope": "No formal Job/Store/worker/selected, no directsteps, no original83 coverage claim"
+  }
+}

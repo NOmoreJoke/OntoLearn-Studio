@@ -1,0 +1,12 @@
+E501 Line too long (103 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:439:101
+    |
+437 |             assert_source(
+438 |                 term_value.source,
+439 |                 f"/cases/0/asserted/{0 if match is matches[0] or term_index == 1 else 1}/{term_index}",
+    |                                                                                                     ^^^
+440 |             )
+441 |     (firing,) = child["batch"].firings
+    |
+
+Found 1 error.

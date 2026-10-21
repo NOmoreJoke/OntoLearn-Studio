@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/docs/reviews/T05/profile-M1-graph-consumers/final-audit.py", line 61, in <module>
+    failure = json.loads((directory / "launch-failure.json").read_bytes())
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/pathlib.py", line 1019, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/docs/reviews/T05/profile-M1-graph-consumers/commands/final-source-evidence-audit/launch-failure.json'

@@ -1,0 +1,220 @@
+.....F...FFF....                                                         [100%]
+=================================== FAILURES ===================================
+____________________ test_real_consumer_cell[C-langString] _____________________
+
+case = {'id': 'C-langString', 'dataTurtle': '@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@pr...targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:datatype rdf:langString .'}
+tmp_path = PosixPath('/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/graph-basetemp/final-full/test_real_consumer_cell_C_lang0')
+goldens = {'explanation': {'status': 'independently authored expected only; not production input', 'matchOrder': 'ordered existi...yGap': 'sh:datatype rdf:langString rejected UNSUPPORTED_DATATYPE at _shapes', 'entryAndReportAreSeparate': True}, ...}}
+
+    @pytest.mark.parametrize("case", CONSUMER_INPUT["cases"], ids=lambda c: c["id"])
+    def test_real_consumer_cell(case, tmp_path, goldens):
+        directory = artifact_directory(tmp_path, case["id"])
+        (directory / "input.json").write_bytes(canonical(case))
+        actual = observe_consumer(case, directory)
+        expected = goldens["consumers"][case["id"]]
+        observation = {
+            "id": case["id"],
+            "kind": "consumer-cell",
+            "input": case,
+            "actual": actual,
+            "expected": expected,
+            "assertion": "fail",
+        }
+        try:
+            if case["id"] in POLICY_PENDING:
+                observation["normativeStatus"] = "pending-policy-or-frontdoor-versus-report"
+                assert actual["status"] == "error" and actual["validatorRuns"] == 0
+                assert actual["reason"] == (
+                    "INVALID_SHAPE" if case["id"] == POLICY_PENDING[0] else "INVALID_LITERAL_LEXICAL"
+                )
+                observation["assertion"] = "observed-pending-not-normative-pass"
+                return
+            if "query" in case:
+                assert actual["status"] == "success", actual
+                result = actual["result"]
+                assert result["type"] == "SELECT" and result["variables"] == ["s"]
+                rows = [dict(zip(result["variables"], row, strict=True)) for row in result["rows"]]
+                assert rows == expected["rows"]
+            else:
+>               assert_consumer_report(actual, expected)
+
+packages/engine/tests/test_profile_M1_graph_consumers.py:638: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = {'status': 'error', 'stage': 'check-shapes', 'validatorRuns': 0, 'costs': 'Original query/SHACL API has no C/R receipt; none fabricated', ...}
+expected = {'conforms': True, 'components': [], 'currentEntryGap': 'sh:datatype rdf:langString rejected UNSUPPORTED_DATATYPE at _shapes', 'entryAndReportAreSeparate': True}
+
+    def assert_consumer_report(actual, expected):
+>       assert actual["status"] == "success", actual
+E       AssertionError: {'status': 'error', 'stage': 'check-shapes', 'validatorRuns': 0, 'costs': 'Original query/SHACL API has no C/R receipt; none fabricated', ...}
+E       assert 'error' == 'success'
+E         
+E         - success
+E         + error
+
+packages/engine/tests/test_profile_M1_graph_consumers.py:554: AssertionError
+___________________ test_real_consumer_cell[C-inclusive-nni] ___________________
+
+case = {'id': 'C-inclusive-nni', 'dataTurtle': '@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n...cus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive "2"^^xsd:nonNegativeInteger .'}
+tmp_path = PosixPath('/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/graph-basetemp/final-full/test_real_consumer_cell_C_incl1')
+goldens = {'explanation': {'status': 'independently authored expected only; not production input', 'matchOrder': 'ordered existi...yGap': 'sh:datatype rdf:langString rejected UNSUPPORTED_DATATYPE at _shapes', 'entryAndReportAreSeparate': True}, ...}}
+
+    @pytest.mark.parametrize("case", CONSUMER_INPUT["cases"], ids=lambda c: c["id"])
+    def test_real_consumer_cell(case, tmp_path, goldens):
+        directory = artifact_directory(tmp_path, case["id"])
+        (directory / "input.json").write_bytes(canonical(case))
+        actual = observe_consumer(case, directory)
+        expected = goldens["consumers"][case["id"]]
+        observation = {
+            "id": case["id"],
+            "kind": "consumer-cell",
+            "input": case,
+            "actual": actual,
+            "expected": expected,
+            "assertion": "fail",
+        }
+        try:
+            if case["id"] in POLICY_PENDING:
+                observation["normativeStatus"] = "pending-policy-or-frontdoor-versus-report"
+                assert actual["status"] == "error" and actual["validatorRuns"] == 0
+                assert actual["reason"] == (
+                    "INVALID_SHAPE" if case["id"] == POLICY_PENDING[0] else "INVALID_LITERAL_LEXICAL"
+                )
+                observation["assertion"] = "observed-pending-not-normative-pass"
+                return
+            if "query" in case:
+                assert actual["status"] == "success", actual
+                result = actual["result"]
+                assert result["type"] == "SELECT" and result["variables"] == ["s"]
+                rows = [dict(zip(result["variables"], row, strict=True)) for row in result["rows"]]
+                assert rows == expected["rows"]
+            else:
+>               assert_consumer_report(actual, expected)
+
+packages/engine/tests/test_profile_M1_graph_consumers.py:638: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = {'status': 'error', 'stage': 'check-shapes', 'validatorRuns': 0, 'costs': 'Original query/SHACL API has no C/R receipt; none fabricated', ...}
+expected = {'conforms': True, 'components': [], 'currentEntryGap': 'nonNegativeInteger not in inclusive parameter whitelist', 'entryAndReportAreSeparate': True}
+
+    def assert_consumer_report(actual, expected):
+>       assert actual["status"] == "success", actual
+E       AssertionError: {'status': 'error', 'stage': 'check-shapes', 'validatorRuns': 0, 'costs': 'Original query/SHACL API has no C/R receipt; none fabricated', ...}
+E       assert 'error' == 'success'
+E         
+E         - success
+E         + error
+
+packages/engine/tests/test_profile_M1_graph_consumers.py:554: AssertionError
+_____________ test_real_consumer_cell[C-inclusive-dateTime-equal] ______________
+
+case = {'id': 'C-inclusive-dateTime-equal', 'dataTurtle': '@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLS...th ex:p; sh:minInclusive "2000-01-01T00:00:00Z"^^xsd:dateTime; sh:maxInclusive "2000-01-01T00:00:00Z"^^xsd:dateTime .'}
+tmp_path = PosixPath('/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/graph-basetemp/final-full/test_real_consumer_cell_C_incl2')
+goldens = {'explanation': {'status': 'independently authored expected only; not production input', 'matchOrder': 'ordered existi...yGap': 'sh:datatype rdf:langString rejected UNSUPPORTED_DATATYPE at _shapes', 'entryAndReportAreSeparate': True}, ...}}
+
+    @pytest.mark.parametrize("case", CONSUMER_INPUT["cases"], ids=lambda c: c["id"])
+    def test_real_consumer_cell(case, tmp_path, goldens):
+        directory = artifact_directory(tmp_path, case["id"])
+        (directory / "input.json").write_bytes(canonical(case))
+        actual = observe_consumer(case, directory)
+        expected = goldens["consumers"][case["id"]]
+        observation = {
+            "id": case["id"],
+            "kind": "consumer-cell",
+            "input": case,
+            "actual": actual,
+            "expected": expected,
+            "assertion": "fail",
+        }
+        try:
+            if case["id"] in POLICY_PENDING:
+                observation["normativeStatus"] = "pending-policy-or-frontdoor-versus-report"
+                assert actual["status"] == "error" and actual["validatorRuns"] == 0
+                assert actual["reason"] == (
+                    "INVALID_SHAPE" if case["id"] == POLICY_PENDING[0] else "INVALID_LITERAL_LEXICAL"
+                )
+                observation["assertion"] = "observed-pending-not-normative-pass"
+                return
+            if "query" in case:
+                assert actual["status"] == "success", actual
+                result = actual["result"]
+                assert result["type"] == "SELECT" and result["variables"] == ["s"]
+                rows = [dict(zip(result["variables"], row, strict=True)) for row in result["rows"]]
+                assert rows == expected["rows"]
+            else:
+>               assert_consumer_report(actual, expected)
+
+packages/engine/tests/test_profile_M1_graph_consumers.py:638: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = {'status': 'error', 'stage': 'check-shapes', 'validatorRuns': 0, 'costs': 'Original query/SHACL API has no C/R receipt; none fabricated', ...}
+expected = {'conforms': True, 'components': [], 'currentEntryGap': 'valid dateTime shape bound rejected INVALID_SHAPE', 'entryAndReportAreSeparate': True}
+
+    def assert_consumer_report(actual, expected):
+>       assert actual["status"] == "success", actual
+E       AssertionError: {'status': 'error', 'stage': 'check-shapes', 'validatorRuns': 0, 'costs': 'Original query/SHACL API has no C/R receipt; none fabricated', ...}
+E       assert 'error' == 'success'
+E         
+E         - success
+E         + error
+
+packages/engine/tests/test_profile_M1_graph_consumers.py:554: AssertionError
+_____________ test_real_consumer_cell[C-inclusive-dateTime-before] _____________
+
+case = {'id': 'C-inclusive-dateTime-before', 'dataTurtle': '@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XML...roperty ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive "2000-01-01T00:00:00Z"^^xsd:dateTime .'}
+tmp_path = PosixPath('/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/graph-basetemp/final-full/test_real_consumer_cell_C_incl3')
+goldens = {'explanation': {'status': 'independently authored expected only; not production input', 'matchOrder': 'ordered existi...yGap': 'sh:datatype rdf:langString rejected UNSUPPORTED_DATATYPE at _shapes', 'entryAndReportAreSeparate': True}, ...}}
+
+    @pytest.mark.parametrize("case", CONSUMER_INPUT["cases"], ids=lambda c: c["id"])
+    def test_real_consumer_cell(case, tmp_path, goldens):
+        directory = artifact_directory(tmp_path, case["id"])
+        (directory / "input.json").write_bytes(canonical(case))
+        actual = observe_consumer(case, directory)
+        expected = goldens["consumers"][case["id"]]
+        observation = {
+            "id": case["id"],
+            "kind": "consumer-cell",
+            "input": case,
+            "actual": actual,
+            "expected": expected,
+            "assertion": "fail",
+        }
+        try:
+            if case["id"] in POLICY_PENDING:
+                observation["normativeStatus"] = "pending-policy-or-frontdoor-versus-report"
+                assert actual["status"] == "error" and actual["validatorRuns"] == 0
+                assert actual["reason"] == (
+                    "INVALID_SHAPE" if case["id"] == POLICY_PENDING[0] else "INVALID_LITERAL_LEXICAL"
+                )
+                observation["assertion"] = "observed-pending-not-normative-pass"
+                return
+            if "query" in case:
+                assert actual["status"] == "success", actual
+                result = actual["result"]
+                assert result["type"] == "SELECT" and result["variables"] == ["s"]
+                rows = [dict(zip(result["variables"], row, strict=True)) for row in result["rows"]]
+                assert rows == expected["rows"]
+            else:
+>               assert_consumer_report(actual, expected)
+
+packages/engine/tests/test_profile_M1_graph_consumers.py:638: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = {'status': 'error', 'stage': 'check-shapes', 'validatorRuns': 0, 'costs': 'Original query/SHACL API has no C/R receipt; none fabricated', ...}
+expected = {'conforms': False, 'components': ['MinInclusiveConstraintComponent'], 'currentEntryGap': 'valid dateTime shape bound ...rn:m1:shape>', 'sourceConstraintComponent': '<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>', ...}], ...}
+
+    def assert_consumer_report(actual, expected):
+>       assert actual["status"] == "success", actual
+E       AssertionError: {'status': 'error', 'stage': 'check-shapes', 'validatorRuns': 0, 'costs': 'Original query/SHACL API has no C/R receipt; none fabricated', ...}
+E       assert 'error' == 'success'
+E         
+E         - success
+E         + error
+
+packages/engine/tests/test_profile_M1_graph_consumers.py:554: AssertionError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_profile_M1_graph_consumers.py::test_real_consumer_cell[C-langString]
+FAILED packages/engine/tests/test_profile_M1_graph_consumers.py::test_real_consumer_cell[C-inclusive-nni]
+FAILED packages/engine/tests/test_profile_M1_graph_consumers.py::test_real_consumer_cell[C-inclusive-dateTime-equal]
+FAILED packages/engine/tests/test_profile_M1_graph_consumers.py::test_real_consumer_cell[C-inclusive-dateTime-before]
+4 failed, 12 passed in 3.06s

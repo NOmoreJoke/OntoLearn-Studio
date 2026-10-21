@@ -1,0 +1,816 @@
+{
+  "summary": {
+    "tag": "first-real",
+    "candidate": "5155ab047f46ab6f01803884c2b1bb30a26e1e2e",
+    "actualDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/graph-actual/first-real",
+    "archive": "first-real-originals.zip",
+    "archiveBytes": 39529,
+    "archiveSha256": "804906a6f3755406aee5bc3faa33f5d2ec00bdd6d09131d9c7c184c300191a9f",
+    "memberCount": 66,
+    "caseCount": 15,
+    "allMemberBytesSha256AndCrcVerified": true,
+    "scope": "No formal Job/Store/worker/selected, no directsteps, no original83 coverage claim"
+  },
+  "cases": [
+    {
+      "id": "C-query-type-error",
+      "kind": "consumer-cell",
+      "assertion": "pass",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 1,
+        "result": {
+          "rows": [],
+          "type": "SELECT",
+          "variables": [
+            "s"
+          ]
+        },
+        "stage": "returned",
+        "status": "success",
+        "validatorRuns": 0
+      },
+      "expected": {
+        "entryAndReportAreSeparate": true,
+        "reason": "FILTER type error excludes row; not a failed Job under query semantics",
+        "rows": []
+      },
+      "member": "observations/08f6c5a808b510f523ebc08c18e5907e99cf28de44a4c56ece42894eddd71a24/observation.json",
+      "sha256": "2fe912460d7ba4d6619ecb6238b0ca73840f0c1c601943d20f604b0efbfee7d4"
+    },
+    {
+      "id": "C-inclusive-dateTime-equal",
+      "kind": "consumer-cell",
+      "assertion": "fail",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "diagnostic": null,
+        "exceptionType": "SemanticError",
+        "publicError": null,
+        "reason": "INVALID_SHAPE",
+        "shapeTripleCount": 7,
+        "stage": "check-shapes",
+        "status": "error",
+        "validatorRuns": 0
+      },
+      "expected": {
+        "components": [],
+        "conforms": true,
+        "currentEntryGap": "valid dateTime shape bound rejected INVALID_SHAPE",
+        "entryAndReportAreSeparate": true
+      },
+      "member": "observations/2630fd100fa11763483ec97165673459a2a93f5d4b5152cecc1c64d7c6ddb8a3/observation.json",
+      "sha256": "eea44966e481662ae431601dc4860d210d12fb60e736dcbd7b59ed659e72716e"
+    },
+    {
+      "id": "C-inclusive-nni",
+      "kind": "consumer-cell",
+      "assertion": "fail",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "diagnostic": null,
+        "exceptionType": "SemanticError",
+        "publicError": null,
+        "reason": "INVALID_SHAPE",
+        "shapeTripleCount": 6,
+        "stage": "check-shapes",
+        "status": "error",
+        "validatorRuns": 0
+      },
+      "expected": {
+        "components": [],
+        "conforms": true,
+        "currentEntryGap": "nonNegativeInteger not in inclusive parameter whitelist",
+        "entryAndReportAreSeparate": true
+      },
+      "member": "observations/2ca40a8b850ee7a157df77288cec885a0e95c8c32c8d7d1d51915feb3e6f8198/observation.json",
+      "sha256": "752972ae767194e94a3a78c0445e0eb341cb0320dd66f6f3e9e877b2d14a5fd9"
+    },
+    {
+      "id": "M1-complete-heads",
+      "kind": "rule-graph",
+      "assertion": "fail",
+      "actual": {
+        "comparatorCalls": [],
+        "diagnostic": null,
+        "exceptionType": "AttributeError",
+        "ledgerStates": {
+          "preparation": "new",
+          "production": "new",
+          "restore": "new"
+        },
+        "producedResultReturned": false,
+        "publicError": null,
+        "reason": null,
+        "restoredResultReturned": false,
+        "stage": "binder",
+        "status": "error"
+      },
+      "expected": {
+        "caseId": "M1-complete-heads",
+        "definitionOrdinal": 0,
+        "headOccurrences": 3,
+        "originalMatches": [
+          {
+            "accepted": true,
+            "bindings": {
+              "?s": "<urn:m1:s1>",
+              "?v": "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            },
+            "comparison": {
+              "leftNumber": {
+                "denominator": "1",
+                "negative_zero": false,
+                "numerator": "1"
+              },
+              "leftSource": {
+                "byteSpan": null,
+                "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication",
+                "pointer": "/cases/0/asserted/0/2",
+                "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+                "sourceFile": "supplemental-graph-inputs.json"
+              },
+              "operator": "eq",
+              "result": true,
+              "rightNumber": {
+                "denominator": "1",
+                "negative_zero": false,
+                "numerator": "1"
+              },
+              "rightSource": {
+                "byteSpan": null,
+                "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication",
+                "pointer": "/cases/0/rules/0/conditions/1/right",
+                "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+                "sourceFile": "supplemental-graph-inputs.json"
+              }
+            },
+            "heads": [
+              {
+                "headIndex": 0,
+                "source": {
+                  "byteSpan": null,
+                  "pointer": "/cases/0/rules/0/conclusions/0",
+                  "rawToken": "unavailable: source is canonical structured definition JSON",
+                  "sourceFile": "supplemental-graph-inputs.json"
+                },
+                "triple": [
+                  "<urn:m1:s1>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:m1:Matched>"
+                ]
+              },
+              {
+                "headIndex": 1,
+                "source": {
+                  "byteSpan": null,
+                  "pointer": "/cases/0/rules/0/conclusions/1",
+                  "rawToken": "unavailable: source is canonical structured definition JSON",
+                  "sourceFile": "supplemental-graph-inputs.json"
+                },
+                "triple": [
+                  "<urn:m1:s1>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:m1:Matched>"
+                ]
+              },
+              {
+                "headIndex": 2,
+                "source": {
+                  "byteSpan": null,
+                  "pointer": "/cases/0/rules/0/conclusions/2",
+                  "rawToken": "unavailable: source is canonical structured definition JSON",
+                  "sourceFile": "supplemental-graph-inputs.json"
+                },
+                "triple": [
+                  "<urn:m1:s1>",
+                  "<urn:m1:label>",
+                  "\"ok\""
+                ]
+              }
+            ],
+            "leafBasis": [
+              [
+                "<urn:m1:s1>",
+                "<urn:m1:score>",
+                "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+              ]
+            ],
+            "source": {
+              "byteSpan": null,
+              "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication",
+              "pointer": "/cases/0/rules/0",
+              "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+              "sourceFile": "supplemental-graph-inputs.json"
+            },
+            "when": [
+              [
+                "<urn:m1:s1>",
+                "<urn:m1:score>",
+                "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+              ]
+            ]
+          },
+          {
+            "accepted": false,
+            "bindings": {
+              "?s": "<urn:m1:s2>",
+              "?v": "\"0\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            },
+            "expectedComparisonBoolean": false,
+            "expectedLeftNumber": {
+              "denominator": "1",
+              "negative_zero": false,
+              "numerator": "0"
+            },
+            "expectedRightNumber": {
+              "denominator": "1",
+              "negative_zero": false,
+              "numerator": "1"
+            },
+            "heads": [],
+            "leafBasis": [
+              [
+                "<urn:m1:s2>",
+                "<urn:m1:score>",
+                "\"0\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+              ]
+            ],
+            "source": {
+              "byteSpan": null,
+              "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication",
+              "pointer": "/cases/0/asserted/1",
+              "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+              "sourceFile": "supplemental-graph-inputs.json"
+            },
+            "when": [
+              [
+                "<urn:m1:s2>",
+                "<urn:m1:score>",
+                "\"0\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+              ]
+            ]
+          }
+        ],
+        "policy": "Preserve every accepted match and head index; RDF set deduplicates only output triple. False originalMatch remains. No new persisted false ComparisonEvidence contract.",
+        "ruleId": "M1-complete-heads",
+        "uniqueDerivedRdfTriples": [
+          [
+            "<urn:m1:s1>",
+            "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "<urn:m1:Matched>"
+          ],
+          [
+            "<urn:m1:s1>",
+            "<urn:m1:label>",
+            "\"ok\""
+          ]
+        ]
+      },
+      "member": "observations/42042cbd855405e4b32c13d3e865e53f9dd6060b7aec6d0e9a38c60be5208ee0/observation.json",
+      "sha256": "f1497cf7de6e0d167f943802b512f0ae53562d4f157e7d629cecb5821daf9d96"
+    },
+    {
+      "id": "C-inclusive-dateTime-before",
+      "kind": "consumer-cell",
+      "assertion": "fail",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "diagnostic": null,
+        "exceptionType": "SemanticError",
+        "publicError": null,
+        "reason": "INVALID_SHAPE",
+        "shapeTripleCount": 6,
+        "stage": "check-shapes",
+        "status": "error",
+        "validatorRuns": 0
+      },
+      "expected": {
+        "components": [
+          "MinInclusiveConstraintComponent"
+        ],
+        "conforms": false,
+        "currentEntryGap": "valid dateTime shape bound rejected INVALID_SHAPE",
+        "entryAndReportAreSeparate": true,
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+            "sourceShape": "<urn:m1:shape>",
+            "value": "\"1999-12-31T23:59:59Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime>",
+            "valueExpectation": "exact RDF term"
+          }
+        ]
+      },
+      "member": "observations/423366beb4daeba6be0e49297cc4077cb724996c68454bb07e270852dc9a9c30/observation.json",
+      "sha256": "d2cc41a1730e6aa99ba96806c3b9e16371c4164d7084e4cecc227ffd4ce21935"
+    },
+    {
+      "id": "C-datatype-exact",
+      "kind": "consumer-cell",
+      "assertion": "pass",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "realValidatorReport": {
+          "conforms": false,
+          "rows": [
+            {
+              "actualResultNode": "_:Nf963a20a14854ec382232b280b8c1286",
+              "focusNode": [
+                "<urn:m1:s>"
+              ],
+              "resultPath": [
+                "<urn:m1:p>"
+              ],
+              "resultSeverity": [
+                "<http://www.w3.org/ns/shacl#Violation>"
+              ],
+              "sourceConstraintComponent": [
+                "<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>"
+              ],
+              "sourceShape": [
+                "<urn:m1:shape>"
+              ],
+              "value": [
+                "\"1\"^^<http://www.w3.org/2001/XMLSchema#int>"
+              ]
+            }
+          ]
+        },
+        "result": {
+          "conforms": false,
+          "violations": [
+            {
+              "constraint": "<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>",
+              "focus": "<urn:m1:s>",
+              "path": "<urn:m1:p>",
+              "severity": "<http://www.w3.org/ns/shacl#Violation>",
+              "sourceShape": "<urn:m1:shape>",
+              "value": "\"1\"^^<http://www.w3.org/2001/XMLSchema#int>"
+            }
+          ]
+        },
+        "shapeTripleCount": 6,
+        "stage": "returned",
+        "status": "success",
+        "validatorRuns": 1
+      },
+      "expected": {
+        "components": [
+          "DatatypeConstraintComponent"
+        ],
+        "conforms": false,
+        "entryAndReportAreSeparate": true,
+        "reason": "Datatype IRI exact equality, int is not integer",
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>",
+            "sourceShape": "<urn:m1:shape>",
+            "value": "\"1\"^^<http://www.w3.org/2001/XMLSchema#int>",
+            "valueExpectation": "exact RDF term"
+          }
+        ]
+      },
+      "member": "observations/505cde2435074d65694737744095553b7b216d54ff7d542e747f9ef8f7acbda0/observation.json",
+      "sha256": "b26176462e49dc184eef9ab70152d541659dc247ad789da78044f8df480bd6d6"
+    },
+    {
+      "id": "C-inclusive-date-entry",
+      "kind": "consumer-cell",
+      "assertion": "observed-pending-not-normative-pass",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "diagnostic": null,
+        "exceptionType": "SemanticError",
+        "publicError": null,
+        "reason": "INVALID_SHAPE",
+        "shapeTripleCount": 6,
+        "stage": "check-shapes",
+        "status": "error",
+        "validatorRuns": 0
+      },
+      "expected": {
+        "afterEntryPolicy": "Actual I05 date extension policy must be fixed independently; below are both independently derived conditional expectations, neither is actual runtime",
+        "coreOnlyExpectedReport": {
+          "conforms": false,
+          "derivation": "SPARQL core <= mapping has no xsd:date row; error is nontrue so SHACL emits normal MinInclusive result",
+          "requiredResultRows": [
+            {
+              "focusNode": "<urn:m1:s>",
+              "resultPath": "<urn:m1:p>",
+              "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+              "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+              "sourceShape": "<urn:m1:shape>",
+              "value": "\"2000-01-01Z\"^^<http://www.w3.org/2001/XMLSchema#date>"
+            }
+          ]
+        },
+        "currentEntryGap": "valid date shape bound rejected INVALID_SHAPE",
+        "entryAndReportAreSeparate": true,
+        "ifI05ExplicitlySupportsXsdDateOperatorExtension": {
+          "conforms": true,
+          "derivation": "Same valid date, same explicit offset and lexical denotes equal value; inclusive <= true under the explicitly chosen date relation extension",
+          "requiredResultRows": []
+        },
+        "policyNotAdoptedByThisDocument": true
+      },
+      "member": "observations/54a3ba2c530964111dc58afafde0b9553af45ddcc2dc62298b6f6807d67fe766/observation.json",
+      "sha256": "56c6fa0eac6d79789c1dddc754e14c24318bbfea21f38dd618fc2d687e0e96e0"
+    },
+    {
+      "id": "C-query-numeric-promotion",
+      "kind": "consumer-cell",
+      "assertion": "pass",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 1,
+        "result": {
+          "rows": [
+            [
+              "<urn:m1:s>"
+            ]
+          ],
+          "type": "SELECT",
+          "variables": [
+            "s"
+          ]
+        },
+        "stage": "returned",
+        "status": "success",
+        "validatorRuns": 0
+      },
+      "expected": {
+        "entryAndReportAreSeparate": true,
+        "reason": "SPARQL numeric promotion rounds integer to float; rule exact rational policy compares16777217>16777216",
+        "rows": [
+          {
+            "s": "<urn:m1:s>"
+          }
+        ],
+        "ruleProfileComparison": false
+      },
+      "member": "observations/5aee68f48a59a3ab83cd36624d56808b6bc5c7834cedc8085fc4919e93eca604/observation.json",
+      "sha256": "e56ffc4fac29666d3899005f2435972251d50786e197390f0a7d3ec51b8888a7"
+    },
+    {
+      "id": "C-count-term-identity",
+      "kind": "consumer-cell",
+      "assertion": "pass",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 3,
+        "realValidatorReport": {
+          "conforms": false,
+          "rows": [
+            {
+              "actualResultNode": "_:Nae807e733ee14e38b1f151497e3c7351",
+              "focusNode": [
+                "<urn:m1:s>"
+              ],
+              "resultPath": [
+                "<urn:m1:p>"
+              ],
+              "resultSeverity": [
+                "<http://www.w3.org/ns/shacl#Violation>"
+              ],
+              "sourceConstraintComponent": [
+                "<http://www.w3.org/ns/shacl#MaxCountConstraintComponent>"
+              ],
+              "sourceShape": [
+                "<urn:m1:shape>"
+              ],
+              "value": []
+            }
+          ]
+        },
+        "result": {
+          "conforms": false,
+          "violations": [
+            {
+              "constraint": "<http://www.w3.org/ns/shacl#MaxCountConstraintComponent>",
+              "focus": "<urn:m1:s>",
+              "path": "<urn:m1:p>",
+              "severity": "<http://www.w3.org/ns/shacl#Violation>",
+              "sourceShape": "<urn:m1:shape>",
+              "value": null
+            }
+          ]
+        },
+        "shapeTripleCount": 6,
+        "stage": "returned",
+        "status": "success",
+        "validatorRuns": 1
+      },
+      "expected": {
+        "components": [
+          "MaxCountConstraintComponent"
+        ],
+        "conforms": false,
+        "entryAndReportAreSeparate": true,
+        "reason": "Different RDF lexical terms count separately despite equal integer values",
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#MaxCountConstraintComponent>",
+            "sourceShape": "<urn:m1:shape>",
+            "value": null,
+            "valueExpectation": "SHACL maxCount does not require value; observe actual optional field without inventing a node"
+          }
+        ],
+        "valueNodeCount": 2
+      },
+      "member": "observations/5de9b966d6ae2043aa4c1ec35e811375e9c50302221d91a0e54a07584c2a7c78/observation.json",
+      "sha256": "1d4a6db92242523ff1270c01852594b6aa6d80968f14f4160395832e06bd4dd4"
+    },
+    {
+      "id": "C-langString",
+      "kind": "consumer-cell",
+      "assertion": "fail",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "diagnostic": null,
+        "exceptionType": "SemanticError",
+        "publicError": null,
+        "reason": "UNSUPPORTED_DATATYPE",
+        "shapeTripleCount": 6,
+        "stage": "check-shapes",
+        "status": "error",
+        "validatorRuns": 0
+      },
+      "expected": {
+        "components": [],
+        "conforms": true,
+        "currentEntryGap": "sh:datatype rdf:langString rejected UNSUPPORTED_DATATYPE at _shapes",
+        "entryAndReportAreSeparate": true
+      },
+      "member": "observations/8a2455285e78cf18d33af29a4454a7468dd1f29d17e8ecc6e89340def183ed84/observation.json",
+      "sha256": "aca065dc0b878f5510f368f184fb0137df9f4f477c42c293c2c703d1dc9ebd0d"
+    },
+    {
+      "id": "M1-false-then-error",
+      "kind": "rule-graph",
+      "assertion": "fail",
+      "actual": {
+        "comparatorCalls": [],
+        "diagnostic": null,
+        "exceptionType": "AttributeError",
+        "ledgerStates": {
+          "preparation": "new",
+          "production": "new",
+          "restore": "new"
+        },
+        "producedResultReturned": false,
+        "publicError": null,
+        "reason": null,
+        "restoredResultReturned": false,
+        "stage": "binder",
+        "status": "error"
+      },
+      "expected": {
+        "caseId": "M1-false-then-error",
+        "comparisonsInDefinitionOrder": [
+          {
+            "mathematicalResult": false,
+            "operator": "gt"
+          },
+          {
+            "operator": "eq",
+            "reason": "RULE_COMPARISON_TYPE_MISMATCH",
+            "source": {
+              "byteSpan": null,
+              "digestBinding": "input file hash in fixed delivery manifest; no actor/source authentication",
+              "pointer": "/cases/1/rules/0/conditions/3",
+              "rawToken": "unavailable: structured JSON N3 presentation is not preimport Turtle token",
+              "sourceFile": "supplemental-graph-inputs.json"
+            }
+          }
+        ],
+        "expectedPrivateLocation": {
+          "index": 1,
+          "section": "comparison"
+        },
+        "originalConditionIndex": 3,
+        "overall": "entire operation fails, no success prefix/batch/heads published",
+        "persistentFalseTraceRequired": false,
+        "ruleId": "M1-false-then-error"
+      },
+      "member": "observations/9653f0f8d33c1104111f9b66b8cb8726a43164fd88456cf4c26e854cac1e6ea5/observation.json",
+      "sha256": "6d275801faf8a8e17f1402a3eb0baf14a3f2601149871325483830dc81922eeb"
+    },
+    {
+      "id": "C-in-term-identity",
+      "kind": "consumer-cell",
+      "assertion": "pass",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "realValidatorReport": {
+          "conforms": false,
+          "rows": [
+            {
+              "actualResultNode": "_:N1733fb8ed83a437fb48b55288da8fe93",
+              "focusNode": [
+                "<urn:m1:s>"
+              ],
+              "resultPath": [
+                "<urn:m1:p>"
+              ],
+              "resultSeverity": [
+                "<http://www.w3.org/ns/shacl#Violation>"
+              ],
+              "sourceConstraintComponent": [
+                "<http://www.w3.org/ns/shacl#InConstraintComponent>"
+              ],
+              "sourceShape": [
+                "<urn:m1:shape>"
+              ],
+              "value": [
+                "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+              ]
+            }
+          ]
+        },
+        "result": {
+          "conforms": false,
+          "violations": [
+            {
+              "constraint": "<http://www.w3.org/ns/shacl#InConstraintComponent>",
+              "focus": "<urn:m1:s>",
+              "path": "<urn:m1:p>",
+              "severity": "<http://www.w3.org/ns/shacl#Violation>",
+              "sourceShape": "<urn:m1:shape>",
+              "value": "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ]
+        },
+        "shapeTripleCount": 8,
+        "stage": "returned",
+        "status": "success",
+        "validatorRuns": 1
+      },
+      "expected": {
+        "components": [
+          "InConstraintComponent"
+        ],
+        "conforms": false,
+        "entryAndReportAreSeparate": true,
+        "reason": "sh:in term identity, not numeric equality",
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#InConstraintComponent>",
+            "sourceShape": "<urn:m1:shape>",
+            "value": "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>",
+            "valueExpectation": "exact RDF term"
+          }
+        ]
+      },
+      "member": "observations/aaef6a016b8a662911a04cb8724c1857b9d0aaa1d99329eab0ff7df48e2a11b3/observation.json",
+      "sha256": "deb4439b55d74d5e6fe8c0d418e27c21622e4a3bffe5e7df5091ff4d877bdf4b"
+    },
+    {
+      "id": "C-inclusive-type-error",
+      "kind": "consumer-cell",
+      "assertion": "pass",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "realValidatorReport": {
+          "conforms": false,
+          "rows": [
+            {
+              "actualResultNode": "_:Nae86b0c7323e4d16bee411ed4fed17ed",
+              "focusNode": [
+                "<urn:m1:s>"
+              ],
+              "resultPath": [
+                "<urn:m1:p>"
+              ],
+              "resultSeverity": [
+                "<http://www.w3.org/ns/shacl#Violation>"
+              ],
+              "sourceConstraintComponent": [
+                "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>"
+              ],
+              "sourceShape": [
+                "<urn:m1:shape>"
+              ],
+              "value": [
+                "\"a\""
+              ]
+            }
+          ]
+        },
+        "result": {
+          "conforms": false,
+          "violations": [
+            {
+              "constraint": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+              "focus": "<urn:m1:s>",
+              "path": "<urn:m1:p>",
+              "severity": "<http://www.w3.org/ns/shacl#Violation>",
+              "sourceShape": "<urn:m1:shape>",
+              "value": "\"a\""
+            }
+          ]
+        },
+        "shapeTripleCount": 6,
+        "stage": "returned",
+        "status": "success",
+        "validatorRuns": 1
+      },
+      "expected": {
+        "components": [
+          "MinInclusiveConstraintComponent"
+        ],
+        "conforms": false,
+        "entryAndReportAreSeparate": true,
+        "reason": "SHACL range nontrue including type error produces ordinary validation result",
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+            "sourceShape": "<urn:m1:shape>",
+            "value": "\"a\"",
+            "valueExpectation": "Canonical N3 string or equivalent abstract xsd:string term, not unnormalized string display comparison"
+          }
+        ]
+      },
+      "member": "observations/d3faf30929a14b1b831368da2a8bdaaab591988132da5a1b4049086cb7680027/observation.json",
+      "sha256": "2ceb9667f9bcbb97edb69fbc7610b1218c8925dc552e87c6ec5e459947452a92"
+    },
+    {
+      "id": "C-inclusive-numeric",
+      "kind": "consumer-cell",
+      "assertion": "pass",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "dataTripleCount": 2,
+        "realValidatorReport": {
+          "conforms": true,
+          "rows": []
+        },
+        "result": {
+          "conforms": true,
+          "violations": []
+        },
+        "shapeTripleCount": 7,
+        "stage": "returned",
+        "status": "success",
+        "validatorRuns": 1
+      },
+      "expected": {
+        "components": [],
+        "conforms": true,
+        "entryAndReportAreSeparate": true
+      },
+      "member": "observations/d46650e51b93617a9751c84b3bd98b04b06b4bc07dffca07c283e09576b9ef19/observation.json",
+      "sha256": "a11d575b8cbad21fbb1acef07eef02b5f996ffb3cd17e963949800d596fc4bf8"
+    },
+    {
+      "id": "C-illtyped-entry",
+      "kind": "consumer-cell",
+      "assertion": "observed-pending-not-normative-pass",
+      "actual": {
+        "costs": "Original query/SHACL API has no C/R receipt; none fabricated",
+        "diagnostic": null,
+        "exceptionType": "SemanticError",
+        "publicError": null,
+        "reason": "INVALID_LITERAL_LEXICAL",
+        "stage": "parse-data",
+        "status": "error",
+        "validatorRuns": 0
+      },
+      "expected": {
+        "currentEntryGap": "_terms rejects ill_typed before Validator",
+        "directSHACLNormativeResult": {
+          "components": [
+            "DatatypeConstraintComponent"
+          ],
+          "conforms": false
+        },
+        "entryAndReportAreSeparate": true,
+        "reason": "Record adapter input rejection separately; do not claim normal Validator report happened"
+      },
+      "member": "observations/dd4718b63ef368b40f2fb483647908c6c5ab2633ec4484fa8cfd09aae6001eda/observation.json",
+      "sha256": "8e65d7808da3068fff1f68f08250aac1792003c0c499f9d508faaf04454053fc"
+    }
+  ]
+}

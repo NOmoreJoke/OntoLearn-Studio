@@ -1,0 +1,48 @@
+{
+  "reason": "Stop this owned headless normal run before Python/new15 observations to apply explicit exclusive PYTEST_ADDOPTS basetemp; no successful check claim",
+  "ownerRunnerPid": 10873,
+  "descendantsOnly": [
+    {
+      "pid": 11722,
+      "ppid": 11596,
+      "command": "(python3.12)",
+      "result": "already exited"
+    },
+    {
+      "pid": 11596,
+      "ppid": 11595,
+      "command": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/.venv/bin/python /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/.venv/bin/pytest",
+      "result": "SIGTERM sent"
+    },
+    {
+      "pid": 11595,
+      "ppid": 11590,
+      "command": "uv run --frozen pytest",
+      "result": "SIGTERM sent"
+    },
+    {
+      "pid": 11590,
+      "ppid": 11564,
+      "command": "sh -c uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest",
+      "result": "SIGTERM sent"
+    },
+    {
+      "pid": 11564,
+      "ppid": 10896,
+      "command": "npm run engine:check",
+      "result": "SIGTERM sent"
+    },
+    {
+      "pid": 10896,
+      "ppid": 10880,
+      "command": "sh -c npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check",
+      "result": "SIGTERM sent"
+    },
+    {
+      "pid": 10880,
+      "ppid": 10873,
+      "command": "npm run check",
+      "result": "SIGTERM sent"
+    }
+  ]
+}

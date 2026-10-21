@@ -1,0 +1,68 @@
+{
+  "sourceCandidate": "2ce39f011282b6fdce5e6870610529cff1458fdd",
+  "adoption": "8fccf64c99e42e03003f90d799a58db8ecc97df6",
+  "sourceScope": "143 readonly+2 new=145; base delta136",
+  "cases": {
+    "actual": 15,
+    "normativeMatched": 9,
+    "normativeDifferences": 4,
+    "pending": 2,
+    "extraInputIntegrityTest": 1
+  },
+  "finalNormal": {
+    "run": "final-normal",
+    "candidate": "2ce39f011282b6fdce5e6870610529cff1458fdd",
+    "exit": 1,
+    "frontend": "1125 passed /22files",
+    "python": "4failed/4899passed/44existing skipped,142.51s",
+    "lintFormatTypesBuild": "passed",
+    "onlyFailures": [
+      "C-inclusive-dateTime-equal",
+      "C-inclusive-nni",
+      "C-inclusive-dateTime-before",
+      "C-langString"
+    ]
+  },
+  "finalArchive": {
+    "tag": "final-normal",
+    "candidate": "2ce39f011282b6fdce5e6870610529cff1458fdd",
+    "actualDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/graph-actual/final-normal",
+    "archive": "final-normal-originals.zip",
+    "archiveBytes": 1307902,
+    "archiveSha256": "06eb119efb8e6ec44b903723c1a4f7d6f3fc25d657b9f14b5f0b35ec51321124",
+    "memberCount": 79,
+    "caseCount": 15,
+    "allMemberBytesSha256AndCrcVerified": true,
+    "scope": "No formal Job/Store/worker/selected, no directsteps, no original83 coverage claim"
+  },
+  "independentReview": "independent-review.md; final限定接受; twoP2closed; final79members/15actuals individually verified; no new P1/P2",
+  "openProductCases": [
+    "C-inclusive-dateTime-equal",
+    "C-inclusive-nni",
+    "C-inclusive-dateTime-before",
+    "C-langString"
+  ],
+  "pendingCases": [
+    "C-inclusive-date-entry",
+    "C-illtyped-entry"
+  ],
+  "unexecutedOriginalGraphs": 3,
+  "limits": [
+    "No directsteps carrier",
+    "No formal Job/Store/worker/selected",
+    "No parent M1/83/E5/repair/CI/external dual review/target OS/manual/release acceptance",
+    "Goal unchanged; no push/PR/merge"
+  ],
+  "newSources": [
+    {
+      "path": "tests/fixtures/quality/profile-M1-graph-consumer-inputs.json",
+      "bytes": 5962,
+      "sha256": "dc57792093204d85c2e54471c271965c40b7ccd7e5cd6f4614173e1497c332f6"
+    },
+    {
+      "path": "packages/engine/tests/test_profile_M1_graph_consumers.py",
+      "bytes": 28706,
+      "sha256": "3ee46c9c633cdb611cf75a6fae3148b6abad8828ebf55327138549ad7cb8811c"
+    }
+  ]
+}

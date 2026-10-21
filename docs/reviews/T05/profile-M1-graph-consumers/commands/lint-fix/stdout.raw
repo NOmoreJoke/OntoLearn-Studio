@@ -1,0 +1,177 @@
+E501 Line too long (109 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:227:101
+    |
+225 |             ):
+226 |                 for method in methods:
+227 |                     stack.enter_context(patch.object(cls, method, _fee_observer(cls, method, events, phase)))
+    |                                                                                                     ^^^^^^^^^
+228 |             stack.enter_context(patch.object(rule_firing, "compare_values", compare))
+229 |             records, rules, mapping = bind_fixture(case, index)
+    |
+
+E501 Line too long (102 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:237:101
+    |
+235 |             phase[0] = actual["stage"] = "production"
+236 |             produced = execute_admitted_profile_job(
+237 |                 material, error_catalog=CONTRACT.ERROR_CATALOG, error_schema=SCHEMA, ledger=production
+    |                                                                                                     ^^
+238 |             )
+239 |             actual["producedResultReturned"] = True
+    |
+
+E501 Line too long (121 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:259:101
+    |
+257 |             actual["preparationReceipt"] = plain(material.capture_receipt)
+258 |             actual["productionReceipt"] = plain(produced.capture_receipt)
+259 |             actual["retentionMeaning"] = "Held returned references; logical live zero is not physical release or H lease"
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^
+260 |             actual["fullPayloadEqual"] = plain(restored.projection.payload) == plain(
+261 |                 {**payload, "reasoning": produced.native_result}
+    |
+
+E501 Line too long (102 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:267:101
+    |
+265 |                 and plain(child.original_matches) == plain(native["originalMatches"])
+266 |                 for child, native in zip(
+267 |                     restored.batches.children, produced.native_result["mechanismBatches"], strict=True
+    |                                                                                                     ^^
+268 |                 )
+269 |             )
+    |
+
+E501 Line too long (109 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:274:101
+    |
+272 |     finally:
+273 |         if material is not None:
+274 |             for name in ("input_preimage", "source_preimage", "definitions_preimage", "definition_material"):
+    |                                                                                                     ^^^^^^^^^
+275 |                 (directory / (name + ".bin")).write_bytes(getattr(material, name))
+276 |         if produced is not None:
+    |
+
+E501 Line too long (111 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:277:101
+    |
+275 |                 (directory / (name + ".bin")).write_bytes(getattr(material, name))
+276 |         if produced is not None:
+277 |             for name in ("payload_json", "rows_json", "catalog_json", "source_encoded", "definitions_encoded"):
+    |                                                                                                     ^^^^^^^^^^^
+278 |                 (directory / (name + ".bin")).write_bytes(getattr(produced, name))
+279 |         actual["ledgerStates"] = {
+    |
+
+E501 Line too long (106 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:280:101
+    |
+278 |                 (directory / (name + ".bin")).write_bytes(getattr(produced, name))
+279 |         actual["ledgerStates"] = {
+280 |             "preparation": preparation.state, "production": production.state, "restore": restoration.state
+    |                                                                                                     ^^^^^^
+281 |         }
+282 |         if restoration.state != "new":
+    |
+
+E501 Line too long (120 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:373:101
+    |
+371 |         assert [triple_key(t) for t in match.when] == golden["when"]
+372 |         assert len(match.proof_leaves) == len(match.when)
+373 |         for term_index, term_value in enumerate((match.when[0].subject, match.when[0].predicate, match.when[0].object)):
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^
+374 |             assert_source(term_value.source, f"/cases/0/asserted/{0 if match is matches[0] else 1}/{term_index}")
+375 |     firing, = child["batch"].firings
+    |
+
+E501 Line too long (113 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:374:101
+    |
+372 |         assert len(match.proof_leaves) == len(match.when)
+373 |         for term_index, term_value in enumerate((match.when[0].subject, match.when[0].predicate, match.when[0].object)):
+374 |             assert_source(term_value.source, f"/cases/0/asserted/{0 if match is matches[0] else 1}/{term_index}")
+    |                                                                                                     ^^^^^^^^^^^^^
+375 |     firing, = child["batch"].firings
+376 |     assert firing.rule_id == expected["ruleId"]
+    |
+
+E501 Line too long (105 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:387:101
+    |
+385 |         assert actual.domain == "N" and actual.language == ""
+386 |         number = true["comparison"][side + "Number"]
+387 |         assert type(actual.value.numerator) is int and str(actual.value.numerator) == number["numerator"]
+    |                                                                                                     ^^^^^
+388 |         assert type(actual.value.denominator) is int and str(actual.value.denominator) == number["denominator"]
+389 |         assert type(actual.value.negative_zero) is bool
+    |
+
+E501 Line too long (111 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:388:101
+    |
+386 |         number = true["comparison"][side + "Number"]
+387 |         assert type(actual.value.numerator) is int and str(actual.value.numerator) == number["numerator"]
+388 |         assert type(actual.value.denominator) is int and str(actual.value.denominator) == number["denominator"]
+    |                                                                                                     ^^^^^^^^^^^
+389 |         assert type(actual.value.negative_zero) is bool
+390 |         assert actual.value.negative_zero is number["negative_zero"]
+    |
+
+E501 Line too long (131 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:429:101
+    |
+427 |             for key, value in catalog.items():
+428 |                 assert list(getattr(produced.actual_catalog, key)) == value
+429 |             assert [c.get("returnedBoolean") for c in actual["comparatorCalls"] if c["phase"] == "production"][:2] == [True, False]
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+430 |         else:
+431 |             assert actual["status"] == "error" and actual["stage"] == "production"
+    |
+
+E501 Line too long (167 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:438:101
+    |
+436 | …PrivateLocation"]["section"]
+437 | …ivateLocation"]["index"]
+438 | …_INVALID", "messageKey": "semantics.inputInvalid", "params": {"field": "rule"}, "retryable": False}
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+439 | …
+440 | …s False
+    |
+
+E501 Line too long (147 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:457:101
+    |
+455 | …
+456 | …
+457 | …refix).removesuffix(">") for v in result["violations"]) == sorted(expected["components"])
+    |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+458 | …
+459 | …
+    |
+
+E501 Line too long (136 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:465:101
+    |
+463 | …
+464 | …
+465 | …focus"] == row["focusNode"] and v["constraint"] == row["sourceConstraintComponent"])
+    |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+466 | …
+467 | …rt bnode IDs are not fixtures.
+    |
+
+E501 Line too long (122 > 100)
+   --> packages/engine/tests/test_profile_M1_graph_consumers.py:489:101
+    |
+487 |             observation["normativeStatus"] = "pending-policy-or-frontdoor-versus-report"
+488 |             assert actual["status"] == "error" and actual["validatorRuns"] == 0
+489 |             assert actual["reason"] == ("INVALID_SHAPE" if case["id"] == POLICY_PENDING[0] else "INVALID_LITERAL_LEXICAL")
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^
+490 |             observation["assertion"] = "observed-pending-not-normative-pass"
+491 |             return
+    |
+
+Found 18 errors (2 fixed, 16 remaining).

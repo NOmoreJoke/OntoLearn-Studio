@@ -1,0 +1,102 @@
+{
+  "noHistoricalFailuresRewritten": true,
+  "lintFailures": {
+    "commands": [
+      "first-lint",
+      "lint-fix",
+      "lint-candidate-two"
+    ],
+    "disposition": "Only new test/process formatting/imports/long line corrected; later lint0;143 readonly"
+  },
+  "firstSetup": {
+    "candidate": "6b0d5fde2ccda3fa741f1cd9c7b2671123969c12",
+    "run": "first-full",
+    "result": "15setup errors/1passed,0actual scenes",
+    "cause": "explicit basetemp parent absent",
+    "resolution": "create parent and choose fresh run path; all first stdout/stderr/ZIP retained"
+  },
+  "selfReviewBeforeActual": {
+    "candidate": "5155ab047f46ab6f01803884c2b1bb30a26e1e2e",
+    "change": "Correct test interpretation of golden uniqueDerivedRdfTriples (list, not count); exact Number/PV type and real first-occurrence predicate source; original golden unchanged"
+  },
+  "observerBug": {
+    "candidate": "5155ab047f46ab6f01803884c2b1bb30a26e1e2e",
+    "run": "first-real",
+    "result": "6failed/10passed; all15 observations stored",
+    "cause": "two rule graphs stopped before material because observer requested nonexistent CaptureLedger.finish",
+    "resolution": "Use original transferred/failed methods; no product behavior or returned values replaced"
+  },
+  "observerFixed": {
+    "candidate": "a1b85fc56591c6b72d9a5454f468e913d627d756",
+    "run": "observer-fixed",
+    "result": "4failed/12passed; real rule chain completed as intended"
+  },
+  "fullReportsStrengthening": {
+    "candidate": "499658ca8d4f86f20a0b33cef58531333fe7840d",
+    "run": "final-full",
+    "result": "4failed/12passed;15actuals=9normative matched/4normative differences/2pending;1extra corpus test",
+    "change": "Compare actual raw Validator rows and all head sources/definition digest;2 real value nodes; exact query projection"
+  },
+  "productIssues": {
+    "cases": [
+      "C-langString",
+      "C-inclusive-nni",
+      "C-inclusive-dateTime-equal",
+      "C-inclusive-dateTime-before"
+    ],
+    "status": "open; keep normative assertions red",
+    "details": "product-counterexamples.json",
+    "fixOwner": "I05 sole semantic writer via root; T05 keeps143 readonly"
+  },
+  "policiesPending": {
+    "cases": [
+      "C-inclusive-date-entry",
+      "C-illtyped-entry"
+    ],
+    "noNormativePassClaim": true,
+    "expectedOriginalUnchanged": true
+  },
+  "normalFirstInterrupted": {
+    "run": "normal-check",
+    "exit": -15,
+    "reason": "Before Python phase, stop only verified owned npm subtree to supply explicit exclusive basetemp; no normal-check success claim",
+    "pids": "normal-check-interruption.json",
+    "originals": "normal-check-originals.zip"
+  },
+  "independentFindings": {
+    "status": "two P2 closed by independent review against2ce39 and p2-rules originals",
+    "P2": [
+      "Binding key order lost by dict comparison",
+      "Full diagnostic location side/span and exact scalar types not asserted"
+    ],
+    "actualArtifactsCorrect": true,
+    "candidate": "2ce39f011282b6fdce5e6870610529cff1458fdd"
+  },
+  "finalNormal": {
+    "run": "final-normal",
+    "candidate": "2ce39f011282b6fdce5e6870610529cff1458fdd",
+    "exit": 1,
+    "frontend": "1125 passed /22files",
+    "python": "4failed/4899passed/44existing skipped,142.51s",
+    "lintFormatTypesBuild": "passed",
+    "onlyFailures": [
+      "C-inclusive-dateTime-equal",
+      "C-inclusive-nni",
+      "C-inclusive-dateTime-before",
+      "C-langString"
+    ]
+  },
+  "processRunnerLaunch": {
+    "tag": "process-format",
+    "childStarted": false,
+    "exit": null,
+    "cause": "missing cwd argument; traceback transcribed in launch-failure.json",
+    "resolution": "process-format-corrected / process-format-audit exit0; source unchanged"
+  },
+  "processAuditSelfObservation": {
+    "run": "final-source-evidence-audit",
+    "exit": 1,
+    "cause": "Audit inspected its own still-running command before result.json existed; no product execution",
+    "resolution": "After runner finished, rerun audit directly; final-audit-result.json stores real stdout; all completed commands retained"
+  }
+}
