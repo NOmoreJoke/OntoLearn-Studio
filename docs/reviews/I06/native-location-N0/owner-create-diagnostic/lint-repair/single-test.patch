@@ -1,0 +1,9 @@
+diff --git a/tests/unit/i06-native-location-owner.test.ts b/tests/unit/i06-native-location-owner.test.ts
+index 9dac145..2eedf72 100644
+--- a/tests/unit/i06-native-location-owner.test.ts
++++ b/tests/unit/i06-native-location-owner.test.ts
+@@ -189 +188,0 @@ describe('I06 N0 synthetic TS projection only', () => {
+-    let current: ReturnType<typeof owner>
+@@ -195 +194 @@ describe('I06 N0 synthetic TS projection only', () => {
+-    current = owner(data.binding)
++    const current = owner(data.binding)
