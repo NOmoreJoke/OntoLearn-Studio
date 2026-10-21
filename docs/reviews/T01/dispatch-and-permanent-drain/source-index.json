@@ -37,7 +37,12 @@
   "runtimeFixtureEvidence": {
     "source": "tests/unit/t01-dispatch-permanent-drain.test.ts at product ref",
     "methods": "real process.execPath Node spawn; isolated mkdtemp marker records actual process.pid and full own fixture requests; tests assert marker events and drain before cleanup",
-    "retention": "fixture temporary marker files are removed after assertions; logs and frozen test/source fingerprints retained below",
-    "limits": "controlled write false/throw/callback-error and fake close/null streams are logic-only; production issuer/native/OS database-release evidence absent"
+    "retention": "Normal tests remove temporary markers after assertions. Additional unchanged42-case run8c7cef used its unique TMPDIR with read-only observer; raw actual PID/argv and marker complete-line prefixes retained per runtime-process-evidence.json.",
+    "limits": "controlled write false/throw/callback-error and fake close/null streams are logic-only; production issuer/native/OS database-release evidence absent",
+    "retainedRuntimeEvidence": {
+      "path": "/tmp/t01-dispatch-permanent-drain-pid-evidence-01.json",
+      "bytes": 395861,
+      "sha256": "ebc0babee9c447d709eb8ce9ee09413804e7babfa1a39d070ec1c6a3ff6cbc7a"
+    }
   }
 }

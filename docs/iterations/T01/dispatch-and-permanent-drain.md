@@ -69,3 +69,5 @@ I06 B-M四真实子集为private-root、credentials、configurations、audit，�
 未运行Electron／GUI／e2e／native／Keychain／正式模型／网络业务／付费／打包，也没有push／PR／merge。本文件没有把静态或fixture通过写成正式scope或全库released。
 
 最终产品固定 `04ed06afca87ef8d21a71c68371bc19a849d98f8`（parent为上述adoption）。其完整 `npm run check` 工具ee810f／session20411，终态c60b32 exit0：23个Vitest文件、1167例通过（新专项42例）；ruff／构建／全部类型等同命令通过，pytest 2969通过／44既有skip。独立 `npm run verify:sources` 工具0eddb7 exit0，12归档源核同。原首失败与修复见 [checks.json](../../reviews/T01/dispatch-and-permanent-drain/checks.json)，54项现／Git相等指纹见 [candidate-manifest.json](../../reviews/T01/dispatch-and-permanent-drain/candidate-manifest.json)。独立agent审查尚待另行形成，作者不自行判Pass。
+
+实际进程原件另以工具8c7cef exit0保全：冻结04ed产品／测试不变的42例专项全部通过，独立TMPDIR只读观察器保存29个真实Node PID、29份定向ps完整argv及28个marker文件的完整行前缀；一个marker可含多child incarnation。约386KiB原件留在独立/tmp路径，bytes／SHA与观察器源码身份见 [runtime-process-evidence.json](../../reviews/T01/dispatch-and-permanent-drain/runtime-process-evidence.json)。不把抽样前缀称全部最后写入，也不将逻辑fake计作真实进程。该证据补录不改产品或重跑无变化完整check。

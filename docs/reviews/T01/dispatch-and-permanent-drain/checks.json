@@ -151,6 +151,26 @@
       "exitCode": 0,
       "log": "/tmp/t01-dispatch-permanent-drain-sources-02.log",
       "archivedSources": 12
+    },
+    {
+      "id": "focused-pids01",
+      "product": "04ed06afca87ef8d21a71c68371bc19a849d98f8",
+      "tool": "8c7cef",
+      "exitCode": 0,
+      "command": [
+        "python3",
+        "/tmp/t01-dispatch-permanent-drain-preserve-pids.py"
+      ],
+      "log": "/tmp/t01-dispatch-permanent-drain-focused-pids-01.log",
+      "specializedTestsPassed": 42,
+      "actualNodePids": 29,
+      "psFullArgvCaptures": 29,
+      "rawEvidence": {
+        "path": "/tmp/t01-dispatch-permanent-drain-pid-evidence-01.json",
+        "bytes": 395861,
+        "sha256": "ebc0babee9c447d709eb8ce9ee09413804e7babfa1a39d070ec1c6a3ff6cbc7a"
+      },
+      "reason": "Preserve actual own runtime PID/argv/marker originals without editing product or tests; no repeat full check needed"
     }
   ],
   "readonly51AndAGENTS": {

@@ -1,0 +1,37 @@
+{
+  "product": "04ed06afca87ef8d21a71c68371bc19a849d98f8",
+  "tool": "8c7cef",
+  "exitCode": 0,
+  "command": [
+    "python3",
+    "/tmp/t01-dispatch-permanent-drain-preserve-pids.py"
+  ],
+  "testArgv": [
+    "/usr/local/bin/node",
+    "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-dispatch-permanent-drain/node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/unit/t01-dispatch-permanent-drain.test.ts"
+  ],
+  "unchangedSpecializedTestsPassed": 42,
+  "actualNodePids": 29,
+  "psFullArgvCaptures": 29,
+  "psFailures": 0,
+  "capturedCompleteLineMarkerFiles": 28,
+  "rawEvidence": {
+    "path": "/tmp/t01-dispatch-permanent-drain-pid-evidence-01.json",
+    "bytes": 395861,
+    "sha256": "ebc0babee9c447d709eb8ce9ee09413804e7babfa1a39d070ec1c6a3ff6cbc7a"
+  },
+  "observerSource": {
+    "path": "/tmp/t01-dispatch-permanent-drain-preserve-pids.py",
+    "bytes": 2772,
+    "sha256": "799b961f0a83628d7b22c7f6ca8ce89fbac333afb2bec9aa4037efd4f3e18758"
+  },
+  "stdoutStderr": {
+    "path": "/tmp/t01-dispatch-permanent-drain-focused-pids-01.log",
+    "bytes": 218,
+    "sha256": "ac01ddb5783d680ed4f3899beed32c40558dcc9423bcc9068440932ad64b0a29"
+  },
+  "scope": "Read-only observer scanned only this run unique TMPDIR. Each marker carries actual process.pid; targeted ps -ww -p captures only those owned PIDs. One marker may contain multiple real child incarnations. Stored full complete-line prefixes are observations, not a claim that every last fixture write was captured. Source fingerprint equals frozen product; OS drain assertions remain in unchanged real tests.",
+  "noProductionAuthority": "Controlled write/close fixtures remain logic-only; no issuer/native/Store release claim."
+}
