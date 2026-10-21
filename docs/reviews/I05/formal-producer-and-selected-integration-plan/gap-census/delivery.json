@@ -1,0 +1,49 @@
+{
+  "scope": "Static facts only, no product import/execution/test/probe/worker; writes confined to gap-census directory.",
+  "files": [
+    {
+      "path": "actual-83-census.json",
+      "bytes": 244280,
+      "sha256": "a2e7402b597e36458a1f59e8657150c2572cd0df8ef8e653dfc518d51de59d0f"
+    },
+    {
+      "path": "census-static.py.raw",
+      "bytes": 9800,
+      "sha256": "9758c42df25411b881865e2c7984f37f5315a143e0196b91cc0ef22b7ba0eecd"
+    },
+    {
+      "path": "readonly-inputs.json",
+      "bytes": 16606,
+      "sha256": "04bd915ec72ab7c7604cb004867b4d2c332b68730ce2a7b377e32083d8e3152a"
+    },
+    {
+      "path": "report.md",
+      "bytes": 27429,
+      "sha256": "cff01d1be2d85aaf5641f490606bc219ea2ae1f09ef5fc1e79c868afa4cd582d"
+    },
+    {
+      "path": "static-first-failure.json",
+      "bytes": 242,
+      "sha256": "b6620de2f071830ef6f65f3c9e44d249c5d1ea9cc86c1b6da823c732e07bc5d8"
+    }
+  ],
+  "old160CurrentHashesUnchanged": 160,
+  "AGENTSProtected": true,
+  "formatCheck": {
+    "argv": [
+      "node_modules/.bin/prettier",
+      "--ignore-path",
+      "/dev/null",
+      "--check",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/report.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/actual-83-census.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/readonly-inputs.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/static-first-failure.json"
+    ],
+    "exit": 0,
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-restore"
+  },
+  "censusHelperFinalExit": 0,
+  "firstHelperFailureRetained": "static-first-failure.json",
+  "noCommitOrBranchChange": true
+}

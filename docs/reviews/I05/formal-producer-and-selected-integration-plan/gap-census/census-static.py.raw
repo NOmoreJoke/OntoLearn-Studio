@@ -1,0 +1,116 @@
+"""Static JSON/Git/file census only; never imports or executes product code."""
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import zipfile
+
+root = Path.cwd()
+base = root.parent.parent
+integration = root.parent / 'I05-profile-integration'
+out = root / 'docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census'
+ref = '0475d0ec6c486a63c7e8f62f11f35181da6b2576'
+restore_ref = '4be2360aac0e6ea06211731364a14beec683310d'
+archive_path = 'docs/reviews/I05/profile-integration/runtime-evidence.zip'
+archive = zipfile.ZipFile(integration / archive_path)
+actual = json.loads(archive.read('30-final-probe.json'))
+comparison = json.loads(archive.read('31-final-oracle-comparison.json'))
+coverage = json.loads(archive.read('31-final-oracle-coverage.json'))
+asset = json.loads((root / 'docs/iterations/I05/profile-probe-inputs.json').read_bytes())
+oracle = json.loads((root / 'tests/fixtures/quality/real-executor-acceptance-inputs.json').read_bytes())
+by_comparison = {row['mathInputId']: row for row in comparison['cases']}
+by_coverage = {row['mathInputId']: row for row in coverage['mathInputs']}
+assert len(actual['cases']) == len(by_comparison) == len(by_coverage) == 83
+assert len(oracle['graphs']) == 89 and len(oracle['matches']) == 40
+success = [row for row in actual['cases'] if row['status'] == 'success']
+covered = {g for row in success for g in by_coverage[row['caseId']]['exactInputValueGraphs']}
+accepted = {m for row in success for m in by_coverage[row['caseId']]['acceptedExpectedMatchRefs']}
+false = {m for row in success for m in by_coverage[row['caseId']]['falseExpectedMatchRefs']}
+heads = {(match, head['headIndex']) for match in accepted for head in oracle['matches'][match]['heads']}
+assert len(success) == 78 and len(covered) == 49 and len(accepted) == 15 and len(false) == 9
+uncovered = sorted(set(oracle['graphs']) - covered)
+missing_matches = sorted(set(oracle['matches']) - accepted - false)
+assert len(uncovered) == 40 and missing_matches == ['e' + str(i).zfill(3) for i in range(1, 17)]
+records = []
+for row in actual['cases']:
+    ident = row['caseId']; cov = by_coverage[ident]; cmp = by_comparison[ident]
+    item = {k: row[k] for k in ('caseId', 'status', 'fullOriginalInputContext', 'inputProjectionJsonSha256', 'purpose', 'sourceRefs')}
+    item.update({k: cov[k] for k in ('eligibleStandaloneMathInput', 'exactInputValueGraphs', 'acceptedExpectedMatchRefs', 'falseExpectedMatchRefs')})
+    item['externalComparisonStatus'] = cmp['status']
+    if row['status'] != 'success':
+        for key in ('reason', 'scopeNotes', 'diagnostic', 'error'):
+            if key in row: item[key] = row[key]
+    records.append(item)
+
+def category(ident):
+    if ident.startswith('e5-'): return 'E5-real-scenario-state-and-resource-gap'
+    if ident.startswith('B'): return 'behavior-or-commit-state-not-in-83-production-inputs'
+    if ident.startswith('cancel-'): return 'cancel-committed-versus-uncommitted-lifecycle'
+    if ident.startswith('imported'): return 'actual-import-and-edit-state-not-produced'
+    if ident.startswith('transfer-repair'): return 'missing-original-rule-and-actual-repair-consumer'
+    if ident == 'ontology-model-delta-only': return 'four-additions-only-not-complete-project-context'
+    raise AssertionError(ident)
+
+result = {
+    'method': 'Read-only stdlib JSON/ZIP/Git/hash and exact-set association; no product import/execution, matcher, oracle recomputation, test or process probe.',
+    'productRef': ref,
+    'strictRestoreRef': '3ef2f6952ed1a4f852da31c0bef7e8d8679752a5',
+    'sourceArchive': archive_path,
+    'actualMember': '30-final-probe.json',
+    'comparisonMember': '31-final-oracle-comparison.json',
+    'coveragePlanMember': '31-final-oracle-coverage.json',
+    'actualStatusCounts': {s: sum(row['status'] == s for row in actual['cases']) for s in ('success', 'failure', 'not-executed')},
+    'actualSuccessfulGraphIds': sorted(covered),
+    'actualUncoveredGraphs': [{'id': ident, 'category': category(ident), 'matchRefs': oracle['graphs'][ident]['matchRefs'], 'ruleDefinitionRefs': oracle['graphs'][ident]['ruleDefinitionRefs'], 'assertedRole': oracle['graphs'][ident].get('assertedRole')} for ident in uncovered],
+    'actualSuccessfulAcceptedMatchRefs': sorted(accepted),
+    'actualSuccessfulFalseMatchRefs': sorted(false),
+    'actualMissingMatchRefs': missing_matches,
+    'actualAcceptedHeadRefs': sorted(heads),
+    'coveragePlanCountsNotRuntime': coverage['counts'],
+    'unresolvedOriginalInputContexts': actual['unresolvedInputContexts'],
+    'extensionIds': [row['id'] for row in oracle['extensions']],
+    'independentOracleBoundary': oracle['scopeBoundary'],
+    'publishedResultRules': oracle['publishedResultRules'],
+    'cases': records,
+    'originalProductCasesNotExecutedByProbe': actual['productCases'],
+    'originalOperationsNotExecutedByProbe': actual['originalOperations'],
+    'learningChecksNotExecutedByProbe': actual['learningChecks'],
+}
+(out / 'actual-83-census.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+inputs = []
+def add(tree, path, gitref=None, read_scope='full text or full JSON decoded', label=None):
+    p = tree / path; data = p.read_bytes()
+    item = {'path': str(p), 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest(), 'ref': gitref, 'readScope': read_scope}
+    if gitref is not None:
+        fixed = subprocess.check_output(['git', 'show', gitref + ':' + path], cwd=root)
+        assert fixed == data, (path, gitref)
+        item['gitBlob'] = subprocess.check_output(['git', 'rev-parse', gitref + ':' + path], cwd=root).decode().strip()
+    if label: item['label'] = label
+    inputs.append(item)
+for path in ['docs/iterations/I05/profile-probe-contract.md', 'docs/iterations/I05/profile-integration-status.md', archive_path,
+             'docs/reviews/I05/profile-integration/oracle-comparison/README.md.raw', 'docs/reviews/I05/profile-integration/oracle-comparison/coverage-final.json.raw']:
+    add(integration, path, ref, 'full text' if not path.endswith('.zip') else 'members listed below')
+for path in ['docs/prd/PRD-本体学习与落地Agent工作台.md', 'docs/iterations/I05/profile-probe-inputs.json', 'tests/fixtures/quality/real-executor-acceptance-inputs.json',
+             'packages/engine/src/ontolearn_engine/semantic.py', 'packages/engine/src/ontolearn_engine/semantic_execution.py',
+             'packages/engine/src/ontolearn_engine/semantic_scopes.py', 'packages/engine/src/ontolearn_engine/quality/rule_firing.py',
+             'packages/engine/src/ontolearn_engine/resources.py']:
+    add(root, path, restore_ref, 'PRD FR006/202/203/400-505, C/D, G2, sections10-12' if '/prd/' in path else 'full JSON decoded' if path.endswith('.json') else 'relevant complete functions and fixed field/source sections; see report line references')
+for path in ['docs/reviews/I05/profile-integration/T05-independent-oracle-stage-root-closure.md.raw', 'docs/reviews/I05/profile-saved-restore-next-plan/T05-batch-revalidation-pure-source-stage-root-closure.md.raw']:
+    add(integration, path, 'b77014cd412b211f7682f9d8c53c319243c40b30')
+for name in ['I05-formal-producer-and-selected-integration-plan-preparation.md', 'developer-common-instructions.md', 'Q6-rule-comparison-decision.md', 'T05-profile-iri-fix-root-closure-and-I05-consumption.md',
+             'I05-controller-C4-source-string-repair-readback.md', 'I05-controller-C4-frozen-evidence-and-dual-input-preflight.md',
+             'I05-profile-fixed-computation-root-readback-closure.md', 'I05-controller-profile-fixed-candidate-readback.md', 'T03-profile-D2-package-root-closure.md', 'tasks.json', 'requirements.csv', 'plan.md']:
+    add(base, 'iteration-control/2026-10-21-weekly-release/' + name, read_scope='authorization/common/Q6/IRI/C4-source/D2 full text; other control files relevant I05/T05/FR400-505/dependency/count/gate sections only, as cited in report; current unversioned control snapshot')
+add(base, 'iteration-control/2026-10-19/I05-launch-prompt.md')
+add(base / 'OntoLearn-Studio', 'docs/architecture/m0-review-and-update-plan-2026-10-19.md', read_scope='S1 and complete B1 sections; relevant global gates')
+add(root, 'AGENTS.md', read_scope='full current operational policy, including sections6/7 separately read after truncated first output')
+for path in ['packages/engine/src/ontolearn_engine/semantic.py', 'packages/engine/src/ontolearn_engine/resources.py']:
+    data = subprocess.check_output(['git', 'show', '523c478d5f39671c4ac7c1ea6997e51d3047d58e:' + path], cwd=root)
+    inputs.append({'path': path, 'ref': '523c478d5f39671c4ac7c1ea6997e51d3047d58e', 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest(), 'readScope': 'legacy Rule/reason/_rule or implementation identity section', 'currentFileNotClaimedSame': True})
+t05 = root.parent / 'T05-profile-iri-fix'
+add(t05, 'docs/iterations/T05/comparison-operator-consumer-matrix-r1.md', '1a9672a5bddcd8563f17a45acbc04a072aea0c45')
+members = []
+for name in ['30-final-probe.json', '30-final-probe-execution.json', '31-final-oracle-comparison.json', '31-final-oracle-comparison-execution.json', '31-final-oracle-coverage.json']:
+    data = archive.read(name); members.append({'archive': archive_path, 'ref': ref, 'member': name, 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()})
+(out / 'readonly-inputs.json').write_text(json.dumps({'inputs': inputs, 'archiveMembers': members, 'scope': 'Static census references only; no adoption authorized or performed.'}, ensure_ascii=False, indent=2) + '\n')
+print(json.dumps({'actual': result['actualStatusCounts'], 'graphs': len(covered), 'uncoveredGraphs': len(uncovered), 'acceptedMatches': len(accepted), 'falseMatches': len(false), 'headRefs': len(heads), 'readInputs': len(inputs)}, ensure_ascii=False))

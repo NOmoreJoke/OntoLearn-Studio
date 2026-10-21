@@ -1,0 +1,36 @@
+{
+  "scope": "documentation formatting and static Git/JSON/AST/hash only",
+  "command": [
+    "node_modules/.bin/prettier",
+    "--ignore-path",
+    "/dev/null",
+    "--check",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/report.md",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/fixed-interface-inputs.json",
+    "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/future-readonly-T01-52.json"
+  ],
+  "exit": 0,
+  "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+  "stderr": "",
+  "files": [
+    {
+      "path": "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/report.md",
+      "bytes": 26345,
+      "sha256": "46e97a3270453562bd3a763d1958b14764a58fb698547b4cc6c39984bab2c993"
+    },
+    {
+      "path": "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/fixed-interface-inputs.json",
+      "bytes": 29194,
+      "sha256": "24588818ea5445ea66e36e19f9ce10264cd2e9d9b70320232dead57c834d8504"
+    },
+    {
+      "path": "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/future-readonly-T01-52.json",
+      "bytes": 16215,
+      "sha256": "d1838e9ef9c49b563d7797eae97293c6266a0b77df651becb2d52571892597a6"
+    }
+  ],
+  "supplierClosure": "52 source/test entries individually matched fixed423b Git; no adoption, product import, SQL or runtime",
+  "runtimeExecuted": false,
+  "productMutated": false,
+  "committed": false
+}
