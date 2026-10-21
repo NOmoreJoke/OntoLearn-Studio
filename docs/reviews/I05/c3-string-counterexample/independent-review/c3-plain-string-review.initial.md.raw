@@ -1,0 +1,141 @@
+# 冻结 C3 plain / xsd:string 身份疑点独立审查
+
+2026-10-21，semantic_bridge。只读静态定位及主任务新原件读回；未独立重跑。
+
+**结论：真实缺陷，建议 P1 阻断冻结 C3 的语义接受（本单项 NotPass）。** 相同 lexical、无语言的 `"x"` 与 `"x"^^xsd:string` 在 RDF 1.1 应为同一个 RDF term。冻结实现使二者成为不同 library term，已在主任务真实 Store→coordinator→worker→结果发布入口表现为规则/查询漏匹配、SHACL `sh:in` 误报及 selected-derived cardinality 的假失败/假通过。它不是 T05 新比较政策问题，也不是首次 Store.commit 准备失败。
+
+静态源码足以确认表示和等价处理差异；现在又有 12 个实际完成 worker 任务的原件佐证，已不止“库可能如此”的风险。本人没有修改源码、冻结输入、测试、配置或包，没有启动产品/测试/探针/GUI，也没有打开或复制运行 DB；worker 唯一责任仍归 T01。本报告不提出或实施补丁。
+
+## 1. 精确输入与证据归属
+
+受审产品/测试为 69598f3 / b045，冻结完整候选：`3289d67dbfb19545c7a3b3b26753cdd0065741bb`。主线只读路径：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation`。
+
+主任务实际前门证据根：`build/i05-plain-string-c3/`。binding 记录运行时过程 HEAD `49af70de79a373ce7b3c77c06180309c779b11d4`，但冻结候选和 204 执行输入仍绑定上述 C3；报告不将过程 HEAD 当新产品版本。脚本起止检查 candidate manifest 的全部执行输入，summary 记录无漂移和项目 state 不变。本人另外独立核对本疑点的 semantic / turtle / query / execution / scopes / rdf_snapshot 六个实际源文件与 binding 哈希一致，没有全仓重扫或读取 DB 来重做状态证明。
+
+关键原件 SHA256：
+
+| 原件 | SHA256 |
+| --- | --- |
+| `probe.py` | `f9f0b6b78202d61af5ebde2c3e83dc5dbc6a2cdc32173b11efc84d9b2b8ebf34` |
+| `summary.json` | `d2e3879527b0fad73a368882bf897e83332454abbf3f7f2c6be1902a7a9a63b2` |
+| `binding.json` | `e907abd558749282ce0d890e456c1a77c4ae8baa25a15d0818c38981e7429c99` |
+| `inputs.json` | `4756bc334b995ec44b235901408b07894c0a3404091f98b84c7163aa969e7fa8` |
+| `parse-witness.json` | `957c88baea959eb21d7370680fe533d4f504fbeeb84b048f935ce2063f4cbbc3` |
+
+脚本使用真实 Store.commit、原 DirectWorker helper、coordinator tick / isolated worker、成功 producer、semantic_result 鉴权及 result.get/page，没有直接 finish、伪造成功 job 或纯函数结果替代 worker。最终 exit-code 0、stderr 空，12 个 job 均 succeeded。不是 stdio / package / native 验收，不能由此外推。
+
+## 2. 规范基准：相同 lexical 的两种字符串写法应是同 term
+
+RDF 1.1 2014 §3.3 明确：simple literal 是 datatype `xsd:string` 的语法糖；literal term equality 比较 lexical form、datatype IRI、语言标签。因此无语言、相同 lexical 的这两种写法是同一 term，不能按“值相等但 term 不同”处理。[RDF1.1 §3.3](https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#section-Graph-Literal)。
+
+这与 `"01"^^xsd:integer` / `"1"^^xsd:integer` 不同：它们 lexical 不同，RDF1.1 允许同值而不同 term。语言标签也不能丢失或与无语言 string 混成同 term。不能用本疑点为由把所有同值数字或语言字符串归并。
+
+SHACL 2017 的 `sh:in` 按列表成员的 RDF term 精确匹配；其“精确”不能把 simple-string 语法糖变成另一 term。`sh:datatype` 按 SPARQL DATATYPE 识别 datatype；count 计算 value nodes，不能把同一 RDF term 的两种语法表示数两次。[SHACL sh:in](https://www.w3.org/TR/2017/REC-shacl-20170720/#InConstraintComponent)、[sh:datatype](https://www.w3.org/TR/2017/REC-shacl-20170720/#DatatypeConstraintComponent)、[sh:maxCount](https://www.w3.org/TR/2017/REC-shacl-20170720/#MaxCountConstraintComponent)。
+
+本轮实际只读了上述官方原文。web 工具两次连接失败，改用标准库 urllib 读取相同官方 URL；没有执行受审程序。规范只用于判断该具体期望，没有采用 root 设计报告或 T05 新政策作为当前缺陷证据。
+
+## 3. 实际入口与路径/行定位
+
+以下产品路径均相对于主线。依赖源码实际读取本人固定 695 导出 `.venv` 中的锁定版本，并逐字节与主线 `.venv/lib/python3.12/site-packages/` 对应 11 个文件比较，全部一致；没有运行/import这些库来制造新结果。版本为该冻结锁中的 RDFLib 7.6.0 / pySHACL 0.30.1。
+
+### 3.1 Turtle 与基础 term 身份
+
+- `packages/engine/src/ontolearn_engine/semantic_turtle.py:15`–16：`LexicalSink.newLiteral` 原样把 datatype/language 传入 `Literal(..., normalize=False)`，没有处理 simple-string 与 xsd:string 的身份别名。
+- pinned `rdflib/plugins/parsers/notation3.py:1570`–1590：普通 string 起始 `dt=None`；只有显式 `^^` 才设置 datatype，然后调用 sink。因此两种写法到 sink 时已不同。
+- pinned `rdflib/term.py:722`–724 保存该 `_datatype`；`:1344`–1349 hash 混入显式 datatype，`:1400`–1405 的 `Literal.__eq__` 直接比较 `_datatype`。None 与 xsd:string 不等。`:1450`–1455 的 value `.eq()` 则将 None coalesce 为 xsd:string，所以 value eq 可真，不能拿它替代 RDF term equality 的证据。
+- `semantic.py:83`–95 的 `_terms` 接受 plain None 及受支持 xsd:string，没有使二者同 term；`_copy` 逐 triple add 保留对象身份。Graph 的集合/索引继承 term equality/hash，故 pure Turtle 图会把同 subject/predicate 的两种 string 表示存成两条。
+
+结论：问题不在保留同 lexical 的原字符本身；问题是 RDF1.1 同 term 没有在实际匹配、集合和结果语义上统一。既有 `normalize=False` 或“preserve spelling”描述不能改变规范 term 身份。
+
+### 3.2 Query：BGP / VALUES / project / join
+
+- `semantic_query.py:20`–86 的 private clone 只改 numeric token 和 Unary 优先级，不改 String/RDFLiteral。
+- pinned `sparql/parser.py:319`–347 将 String 构造为无 datatype 的 Literal；`:390`–398 保留可选 datatype；`sparql/algebra.py:193`–197 用 `Literal(p.string, lang=..., datatype=...)` 转译，保留 plain / typed 区别。
+- pinned `sparql/evaluate.py:88`–116 的 BGP 向 `ctx.graph.triples` 直接传 term；常量 object lookup 继承上述不等关系。
+- `evaluate.py:255`–267 的 VALUES 放入实际 term；`sparql.py:412`–416 的已经绑定检查使用 `!=`。普通 join 的 `evaluate.py:156`–165 / `FrozenDict.compatible`（`sparql.py:154`–162）同样使用原 term equality，因此 typed VALUES 无法与 plain 图值绑定。
+- `evaluate.py:571`–573 的 project 只投影原 binding；`semantic.py:174`–200 只排序并 `n3()` 输出，没有身份校正。`evaluate.py:559`–568 的 DISTINCT 使用 set，也可能把别名当两项；本次没有新增独立 DISTINCT 前门任务，故这项仅静态影响，不冒称已运行。
+- pinned `sparql/operators.py:565` 的 sameTerm 最终走 `arg1 == arg2`；而 DATATYPE 对 plain string 有 xsd:string 特例。于是投影中“DATATYPE 正确”与“sameTerm 错误”可以同时发生，不能用前者证明 join/sameTerm 正确。
+
+### 3.3 Rule 匹配与输出
+
+- `semantic_execution.py:269`–274：when/head 常量经本文件 `_term`，变量只按 `?name` 转换，没有把 typed string 常量转成 Store 的 plain 表示。
+- `semantic.py:364`–367 构造 lookup 并直接取 closure.triples；`:374` 的重复变量检查同样 `!=`。故 plain 事实与 typed 常量不能匹配。它是现有 term 模式语义，不是未来 value comparator 的 eq 选择。
+- `semantic.py:383`–388 将实例化 output 原 term 直接 add 到 derived Graph。同一 subject/predicate 的 plain / typed 两个合法 head 可形成两个 library term，影响后续 selected graph 集合基数。
+- `semantic_scopes.py:123`–134 用 LexicalSink 重建保留 payload row；`:196`–204 的 selected when/head 核对仍是 term equality，来源按 n3 key 区分。认证成功说明 payload 与原 producer 一致，不代表 producer 的 RDF term 语义正确。
+
+### 3.4 SHACL：datatype 特例与 in/count 必须分开
+
+`semantic.py:525`–550 复制已给定图后调用真实 Validator，无推理、无 SPARQL mode；没有预先统一 string 身份。
+
+- pinned `pyshacl/constraints/core/value_constraints.py:232`–233 明确将 datatype=None、lang=None 的 literal 作为 xsd:string 接受；`:247`–250 检查其 Python string 值。因此 `sh:datatype xsd:string` 可以正确通过，不能笼统声称所有 SHACL string 约束都错。
+- `constraints/core/other_constraints.py:57`–63 把 `sh:in` 成员放 set，`:89`–95 用 `v not in in_vals`。因此 typed-list / plain-data 的同 term 在 library 层被误分开，产生虚假 violation。
+- `shape.py:555`–566 的 value node 模型为 set；直接路径取实际图值。`cardinality_constraints.py:192`–195 的 maxCount 比 `len(value_nodes)`，minCount 同理。只要 selected graph 中已有两种别名 term，count 会错误为2。原 asserted canonical 图只有一项时，count 正常是对照，不是不存在问题。
+
+### 3.5 Store canonicalization 与 I05 graph 重建是两个入口
+
+这是不能混淆的关键事实：
+
+- `rdf_snapshot.py:22`–48 的 S1 `term(value)` 使用普通 Graph.parse；`:44`–45 **显式把 xsd:string 转成 plain Literal(str(result))**，语言标签另小写。`:51`–65 的 S1 graph_from_snapshot 调用此 term。因此 S1 已对 string 语法别名做 canonicalization。
+- `storage.py:253`–254 的 manual `_fact` 要求 `term(object).n3()==object`；`:256`–257 再校验 content-derived id。显式 typed string 的非canonical manual拼写被拒，不是本缺陷的失败证据。
+- I05 `semantic_execution.py:217`–229 的 `_term` 则通过 LexicalSink，要求其 `n3()==原text`；`:246`–258 的 `_graph` 用它重建 semantic worker事实，`:364`–378 从真实 snapshot facts/ontology进入图门。它没有再调用 S1 `rdf_snapshot.term` 来统一规则/query/shapes常量。
+
+所以“Store 已把事实 canonicalize”为 plain，并不能使后续 typed query/Rule/sh:in 常量自动成为同 term。反过来，pure Turtle 同时存在 plain/typed 两种 term，也不能据此宣称实际 Store manual 图一定有两份。selected-derived 则确有通过真实规则输出再引入 typed 形式的独立路径。
+
+## 4. 12 份真实前门结果的独立读回
+
+本人完整解析 12 份编号 JSON 的 job、metadata、request、payload 和全部分页聚合 rows，逐项核对 succeeded/job/result/snapshot/scope/implementation 一致；对每一页聚合后的全部 JSON-pointer leaf 和分片进行独立解码，**12/12 与各自完整 payload 完全相同**，不是只看 summary。行数为 110、79、60、60、61、110、110、127、110、115、205、200（含各自 header）。原件存的是 helper 取回的聚合 rows，不声称另外保存了每一页原始协议 frame。
+
+| 编号 / 输入范围 | 实际原结果 | RDF1.1/SHACL期望及判定 |
+| --- | --- | --- |
+| 01 reasoning | `plain-matched` 3 个成功 firing；`typed-matched` 0。emit-plain 与 emit-typed 对 `<urn:both> <urn:p>` 分别保留两种 string output。 | typed-matched 应同样匹配3个 canonical string事实；两emit可保留各自来源，但图结论应为同一 term。漏推导与重复 term 均真实。 |
+| 02 projection asserted | 三个 `?o` 都是 plain；DATATYPE 均xsd:string、LANG空；sameTerm(`?o`, typed-x) 全false。 | DATATYPE/LANG正确；sameTerm三项应全true。错误被成功任务输出。 |
+| 03 ASK plain-data / typed-pattern | false。 | 应true，错误。 |
+| 04 名称为typed-data / plain-pattern | true。 | 这是正确对照；实际 Store 已把该 subject 的 typed输入 canonicalize成plain，不能将文件名当作保留了typed内部图值的反向实验。 |
+| 05 typed VALUES join asserted | 空 rows。 | 应为 both / plain / typed 三个subject，漏匹配。 |
+| 06 datatype asserted | conforms=true。 | 正确；符合上述datatype特例。 |
+| 07 in-plain asserted | conforms=true。 | 正确对照。 |
+| 08 in-typed asserted | conforms=false，both/plain/typed 各一条 InConstraint violation。 | 应全通过；三项误报。 |
+| 09 max-one asserted | conforms=true。 | canonical事实图中 Both 只有一个p值，正确。 |
+| 10 min-two asserted | conforms=false，一条Both violation。 | 同上，应失败，正确。 |
+| 11 max-one asserted+selected-derived | conforms=false，一条Both MaxCount violation。 | two spellings 是同一个RDF value node，应通过；虚假失败。 |
+| 12 min-two asserted+selected-derived | conforms=true。 | 同一个RDF value node不满足min2，应失败；**虚假通过**。 |
+
+`01` 的 rule output 和 `11/12` 的 selected provenance 中，plain/typed 两形式都被保留，足以解释数量变化；无须假定 Store 将两份别名事实直接存入。全部请求使用真实已保存定义及 approved窄业务能力，无 T05比较器或多head改造。
+
+### Pure parse、Store facts、selected 的规模分别是什么
+
+- pure Turtle有11条输入statement；实际Graph仍11条。按RDF1.1应将 Both 的plain/typed重复合成一条，所以应10条；numeric01/1仍是两个term，language项保留独立身份。
+- 最终Store前门主动只存canonical numeric1，并将string拼写canonicalize、按完整事实dedupe，因此是9个canonical facts。不能把这个9与pure应10混作同一图。
+- selected reasoning原始output重新引入typed头，导致Both的图value node数被算成2，才有11/12中asserted→derived数量判定翻转。
+
+## 5. 两次前门准备失败应如何保全
+
+first-attempt 与 second-attempt 的 exit-code均1，stderr都是 Store._fact 的 `Canonical RDF object required`。脚本均在 `Store.commit(...)` 处失败，尚未构造 DirectWorker，也没有编号 completed job文件；两轮均0worker job。原脚本/输入/parse输出/stdout/stderr/exit及ignored DB已由主任务保留，本人没有打开DB。
+
+第一轮提交原始typed string和numeric01的manual文本；现S1要求canonical n3，因而被拒。第二轮只猜测修正numeric控制，仍有typed string非canonical文本，继续被同一前置门拒绝。两次错误不能归为“plain term产品错”，也不算完成了worker联验。最终第三轮显式按现有storage term canonicalize string/dedupe，并把numeric01只留pure控制，才完成12个真实任务。
+
+两份原stderr SHA256：
+
+- first：`6fb1589fd5ae3ef8173903fabcc8d970b2913955b0803a2f0a60f6b5de8fb1bf`。
+- second：`b810de6b4c15f37a8814d08f07ddac4cf487b3acb5a1b08ae23adcf1b4068923`。
+
+## 6. 已覆盖与未覆盖
+
+已读的既有测试静态证据：
+
+- `test_semantic_lexical.py:64`–81 分别接受 typed string（datatype xsd:string）和ordinary plain（datatype None），没有断言它们是同 RDF term。
+- 同文件`:116`–124 的SHACL term pairs为numeric/boolean；`:282`–327 的BGP/VALUES/DISTINCT/sameTerm矩阵为numeric。这些测试正确保留numeric lexical不同的term，但**没有覆盖plain↔xsd:string同lexical的身份别名**。
+- `test_storage.py:592`–601 实际已有typed string lexical alias不可绕ownership/canonicalization的正当拒绝测试；它证实Store入口规范化要求，不是本次query/rule/shapes跨入口一致性测试。
+- 既有lexical runtime测试未见plain/xsd:string的跨入口配对oracle。`test_semantic_selected_projection.py:346` 的`"x"^^xsd:string`用于未声明prefix/通用N3非法形式拒绝，不能当成此等价关系覆盖。
+
+本轮新增原件覆盖 pure parse、canonical Store、real worker Rule/query/SHACL和selected-derived cardinality，已经足以确认此具体缺陷。尚未实测 DISTINCT、所有join变体、全部字符串escape/语言大小写边界、所有数据导入形式、stdio/包/GUI或跨平台；它们不能据此被标成已通过或全部失败。静态dataflow可以指出潜在影响，但真实已证影响以第4节为限。
+
+本人先前C3 basis变更报告的固定范围证据和原字节保留；此次是后来新增、原矩阵未覆盖的当前语义反例，不能借旧报告的有限Pass为完整C3继续背书。它也不否定已经实际验证的basis tie-break关闭事实。
+
+## 7. 交付、严重度与边界
+
+建议登记 **C3-STRING-1 / P1 / NotPass**：已支持的RDF字符串term身份在不同前门处理不一致，造成合法查询和规则漏结果、合法sh:in误报，以及selected派生后minCount虚假通过。影响发生在成功任务发布内容，非仅显示格式、性能或未来Q6政策；正常canonical Store输入仍可触发，不能靠让用户只写plain常量掩盖。
+
+此报告仅核实反例、当前路径和影响，不决定修复方案、文件返还、版本升级或新候选。不得直接修改冻结代码；worker已归T01。后续是否开修复门及其精确责任由总控按现规则决定，原C3包/外审/Goal结论不能由此报告擅自改写。
+
+本人新辅助读回索引：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-bridge/build/plain-string-c3-readback.json`，15747字节，SHA256 `52754ce3a2fdb92cc64deca3f600d683390e0ce564e532d7eb071b4c571cb283`。包含12份完整结果文件哈希、row/leaf核对、原件哈希、依赖源码一致性和首两轮准备状态，未含DB/密钥。本人实际执行仅是上述静态文件读取、官方页面读取与标准库JSON/哈希/分片读回，没有import或调用受审引擎。
