@@ -1,0 +1,87 @@
+# I05 固定 profile 计算候选：总控独立读回
+
+2026-10-21。结论：固定 `0475d0ec6c486a63c7e8f62f11f35181da6b2576` 的私有计算、来源表示、临时完整匹配载体和已披露错误修复，在本次独立静态与原件读回范围内未发现新的阻断。候选、来源清单、最终完整检查及实际83项输出可以绑定；这足以交总控审定后续精确源码/包合同，不等于完整P1、I05、P2、selected、业务生命周期或发布通过。
+
+本审只使用Git、文件读取、stdlib JSON/AST/ZIP/hash和集合/整数数学；没有import或执行产品，没有运行pytest、probe、构建、安装、GUI或包。下列运行结果均来自实际读取的作者/独审原件，不能称本审重跑。唯一写入是本报告；未修改产品、owner证据、共享状态或Goal。
+
+## 固定身份、授权及范围
+
+- 实际树 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-integration`；分支 `feature/I05-profile-integration`。
+- base `5f910b52c69d86a1076b2032e5d3c63e715947f3`；本地固定产品/证据提交 `0475d0ec6c486a63c7e8f62f11f35181da6b2576`。
+- 当前实际Git状态仅受保护 `AGENTS.md` 未暂存；15852B / `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`。本审首尾均只读，没有stage。
+- 全文读当前AGENTS、common及8756B P1实施授权、3143B临时原匹配增量、T05 IRI修复消费、T03依赖两配置消费、T05完整独立预期收口。采用/实现与正式接线权限按各自授权区分。
+
+独立逐项核 `candidate-inputs.json` 的117项：当前bytes/SHA、固定Git blob内容及清单gitBlob全部相等；实际base→head diff路径集合恰为这117项加清单自身，共118，没有未登记产品路径。清单32937B / `aa22b70ce65f27c16361b04f32c74a9e2d8de105d1611d70d6e5338f2e4e7b86`，不是让自列hash认证自身。
+
+其中四份C4只读语义辅助源码（scopes亦恰未变化）、十份旧测试、六份固定机制fixture，共20份独立逐当前bytes/hash及原523/1e3 Git核同。新五profile测试在授权面内，没有创建 `test_semantic_profile_selected.py`。七机制按新批准dbb清单全部逐hash、bytes、固定Git核同；只有此前获批terms新字节，其余六仍原样。22份oracle/T09输入/推导按根批准清单及f9af固定Git逐字核同。T03 `pyproject.toml` 和 `uv.lock` 两份当前逐字等fd87固定Git；未见build/entrypoint、Store/worker、公共协议或桌面修改。
+
+| 关键固定件 | bytes | SHA256 |
+| --- | ---: | --- |
+| semantic.py | 52609 | `5a3a53fc79928a7aa7de280a8477541db4053ec9b2bec489bf28a2ad4e935549` |
+| semantic_turtle.py | 33916 | `4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214` |
+| semantic_execution.py | 32917 | `cc701dba39cdeb7f2ae281dfd4a9580b879b9e85f34d3c87a09a3414e7c32731` |
+| semantic_error_adapter.py | 15426 | `0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014` |
+| semantic_profile_probe.py | 13391 | `2b2dabd91745b4b4c2a3fad39b6386e4edd985189336bf029d9b07a638fc7bf6` |
+| profile-probe-inputs.json | 1839011 | `6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de` |
+| test_semantic_profile_integration.py | 48284 | `69d7afd9d5b836f61591cfebffeca5ddbebba607bad0a0c1e8ff6a5becf8e562` |
+
+全部118内容固定Git/当前核同覆盖上述表及其余件，不只相信owner口述。所有semantic*.py另做AST语法读取，未执行AST。
+
+## 实际计算与错误边界
+
+已直接读取core的GraphBudget、共享有限closure/join、全部profile入口、定义/Catalog/graph预检、分池/编译/匹配/多head及最终对象；读取caller的白名单无损投影、完整JSON/rows、三类实际异常适配，词法context快照/issuer/records入口/数值捕获和probe全文。adapter相对523的实际diff、resources相对5f实际diff亦已读。
+
+legacy/profile由显式入口分派；共享有限RDFS和真实join，没有SPARQL比较、第二matcher或expected回填。全定义先做exact类型、≤100、非空唯一id预检，按完整rule_id码点排序后分池，全部含disabled编译成功才进行closure/join。所有规则读取同一closure；custom head不回流规则或再做RDFS。所有规则及投影成功前不返回局部成功。
+
+Catalog来自实际图的类/对象属性/数据属性声明，不从规则常量补齐；交叠属性声明有固定 `INVALID_ONTOLOGY_CATALOG` 路由。图的RDF term失败与规则错误位置区分，图/catalog失败不贴最后一条rule。晚比较类型不兼容仍失败，false比较不能遮蔽后续坏操作数。原十旧测试保全，旧错误边界回归不是靠改测试放过。
+
+已发行context以registry存独立native字段/来源字段和RDF身份快照，不靠dataclass的frozen标签自证；完整入口校验后，每lookup只核相应原value。原literal1→2或source.digest篡改的伪绑定路径被拒为内部context损坏。raw records尚未发行，exact TermInput/SourceRecord和原生slot结构先校验，坏kind/缺slot报输入错误；没有将raw坏输入借context标签统报Internal。Python私有registry/任意进程内并发恶意代码不是此一致性合同隔离面，未声称沙箱或任意TOCTOU保障。
+
+caller的source_reference/revision Unicode早门与text/records disabled共同REASON/RULE早门均已读。安全公开错误保持四字段，不复制canary/原异常/路径。私有resource classification只对TEXT_INPUT_LIMIT/GRAPH_INPUT_LIMIT/PROJECTION_RESULT_LIMIT精确补齐，已读代码、对应21项错误测试和独立实际三callsite关闭日志；不是宽放所有reason。实际RDFS扩张限额保持REASON/RULE，旧反例要求REASON/SYNTAX仍Internal，没有借新WORK/SYNTAX规则误放RDFS错误。
+
+resources原默认IMPLEMENTATION仍 `i04-infrastructure-v1`，legacy实际finite6；显式profile才finite7/private format2。三字段中engine实际0.1.0和完整新lock hash独立列出。semantic_identity返回副本，不把显式算法身份提升为公共producer授权。源probe记录七canonical名称及源.py SHA；frozen分支明确为null，不以.pyc/PYZ当源文件SHA。
+
+## 临时原tuple、真实分池与仍缺的恢复证明
+
+`semantic.py:914–942`按 `N=max(1,完整规则数)`，池T/位置j给 `T//N + (j<T%N)`；work/input/output/trace/firings/heads/bindings总量为16777216/262144/262144/8192/1024/16384/1024。全部预留含disabled，逐池Σ恰T；同一child实际Budget先compile后evaluate，未每rule重开默认总池。N≤100，ΣF=1024。当前没有失败返额或重试再领逻辑；这不是已实现未来跨进程重试账本。
+
+`semantic.py:1002–1057`实际一次 `original_matches=tuple(controlled)`，把该对象交唯一evaluate，再将同一强引用保入对应mechanismBatches，保原definitions tuple、actual Catalog、真实不可变limits对象和disabled状态。false/true以及binding pair、when/proof/source均保；不是从true firings反造。disabled为matches/batch None且实际compile，空定义为真实空tuple/空batch，测试区分两者。独立delta真实1/2/3匹配探针保三条完整matches而仅3通过比较，原日志已读。
+
+图构造、lookup、排序、union、匹配追加与载体保留有确定性费用；issuer准备先受显式长度/occurrence/scalar门约束，完成后才登记P、reason再扣P+V。此已披露边界不能写成整个准备动作逐操作抢占。graph结构/IRI/全部entry_values准备收费结束后，唯一entry Budget获graph真实剩余work，连续parse阶段只有finally合并实际delta，两计数保持对齐；没有每term reset或夹杂其它graph费用。
+
+caller私有JSON完整保所有批准记录，整数显式hex、bytes显式hex，depth32/1M节点和8MiB完整payload+rows门；不是T05 typed编码或恢复器。跨child严格JSON解码、重新发行所有ProfileValue并逐字段核保存值、缓存键/重复出现扫描/摘要的独立整次R池仍没有逐项来源证明。T05新batch /2本候选未import/消费；当前原tuple可用不等于保存恢复/selected可用。正式T01成功producer、项目/快照/不可变定义、source/Catalog权限和保留/撤回GC仍缺。
+
+## 来源、probe与外部预期的隔离
+
+本审读了 `I05-controller-profile-input-projection-preread.md` 全文及其固定Git追加，作为独立聚焦核验依据；没有重复运行其projector。该报告实际独立核22原件、83投影摘要、2882原引用对象、2370直接triple、36CSV转换triple与87定义转换。其11必要受读件后来均绑0475 Git，不把WIP时态倒写。
+
+本审自己读probe和测试消费者路径：生产仅由固定asset的asserted/ontology/definitions/disabled原输入形成records/RuleSpec，经唯一strict N3 decoder及实际reason；oracle只进测试/外部比较。原source/transform保在固定资产，计算SourceRecord定位该资产scalar的相对JSON Pointer、digest和decoded text；图term未知revision=None，定义原revision保留。不是原Turtle/token/span或原source producer授权。
+
+唯一实际asset为1839011B/6c6…，旧v2输入1840687B/7c2432…是不同格式化字节域，聚焦报告核其JSON值全等，canonical值hash06e88e…；外部checker同时核actual执行asset身份与值，不混用raw byte hash。实际probe固定source/frozen各唯一locator、无fallback，无参数；extra参数实际exit2且空stdout/固定stderr。包入口仍是T03待实现合同，不因probe注释出现dispatcher就称已打包。
+
+单次原8MiB不变；多case聚合67,108,864B另设完整item预检、追加前总量门、完整报告再次编码门，无裁false/source/head/尾rows分支。input2MiB、恰83条和实际hash先验。120秒内部只查case/输出边界，不能打断单库调用。归档run-probe.py实际subprocess.run(timeout=120)，最终收据timedOut=false；本审没有用此次未超时运行证明任意进程树取消/worker取消能力。
+
+## 原始检查、终态与证据绑定
+
+`runtime-evidence.zip` 5021774B / `f08d3e31284f41ff3095087a9fa19e2d559e260aff7ec4298cea5f524b8aeadb`：61唯一安全相对成员，无绝对/..，全部逐长度/SHA相符，ZIP原件当前又绑候选Git。manifest10381B / `14cd93fdcb801021286a9465f72ed8abadee450377de3e56c9643b58774f70d6`。已读完整最终24 check日志与其exit、25 sources日志与exit、30/31执行回执、全部最终JSON结构和非成功项；没有把中间13或15输出移称最终。
+
+| 实际原件 | 真实终态 | 范围 |
+| --- | --- | --- |
+| 24 npm run check | exit0；630 TS、2582 Python | lint/format/types/build/ruff/pytest均完成；无GUI/e2e/native/package |
+| 25 verify:sources | exit0，12份 | 归档源码核验 |
+| 30 source probe | exit1；78 success /4 resource /1 not-executed | 83完整采集，120秒监督未超时 |
+| 31固定外部checker | exit1；78 math-observable-fields-pass /4 failure /1 not-executed | 不是完整P1/89图/40match通过 |
+
+`28-final-execution-inputs.json`的845件当前重新逐hash/bytes核验：唯一差异为probe合同docs标签，对应32明确披露；runtime/test/config/input asset无差异。32新增status为过程文档，合同最终471ce…与check时301b…不同，不谎称同字节。最终probe30 JSON14006950B / `a16699f47c5fc8de6658d1dc5a1c422796daf0f3bb4dbed520ffce0577ed74e0`，外部31报告的actualArtifactBytes/hash逐项等该原件，固定checker源32067f2亦在Git证据中；本审未执行checker。
+
+本审独立对78成功输出重组完整rows→payload、重编码核payload/rows两摘要及单次合计≤8MiB，全部相符；probe实际状态数直接数得78/4/1。再从31成功case关联独立oracle计算并集：49/89图、24/40唯一match（15true/9false），RDFS witness集合恰R04-equipment；不是用覆盖计划的51 eligible图代实际成功49图。测试内完整比较检查全RDFS/custom集合、accepted全部comparison/head/basis、所有原true/false bindings/when/proof、definition顺序、carrier和完整来源occurrence。其原matches对照使用排序集合化比较，原tuple传递/原序保留另由生产实现和同tuple路径证明；不冒称该oracle对照独立证明所有原始排序。
+
+四E.5片段：前两项RULE_INPUT_BUDGET/resource/semanticInput，后两项WORK_LIMIT/resource/semanticWork，均无result、fullOriginalInputContext=false；不能当完整场景或容量通过。transfer:repair缺原规则，明确not-executed，不继承R-risk。false ComparisonEvidence实际不存在、内部Number和typed bytes语义未独立解码、RDFS直接层次/完整业务操作不在当前可观测模型中，均保非声明。
+
+已全文读三类owner独审主报告和后续词法/错误classification关闭、最后oracle测试delta，核其最终源码hash与当前candidate相符。历史full-static-1曾报context字段变异与Catalog/RDF分类，delta真实定向关闭；records投影/坏shape/disabled阶段及私有resource尾项也有原红→新export真实运行关闭。最终21错误测试、完整check含这些断言。05旧adapter实际1failed728passed、22 oracle测试首lint9错误等原件保留，没有洗成首跑绿。旧C4保全1284/205为owner原件记录，本审未重新逐1284当前旧树核对；本审确认新候选没有对旧树写操作，原C4保全终验另由总控负责。
+
+## 后续决定的准确出口
+
+可以把本固定候选作为后续T03 D2精确源码/唯一输入/入口/收集合同审定的技术输入；仍应由root实际读取并另发具体采用范围与build/entrypoint授权，不能整commit或复制可变环境。源码与包必须同实际asset、canonical七模块/依赖/资源及完整同输入成功/失败矩阵；frozen模块真实归档/PYZ/metadata/license和目标平台证据尚待。
+
+本报告没有关闭完整P1数学范围、全部89图/40match、原C/D/E/G行为/资源/历史/撤回/学习/T10、正式Store/Job/worker/producer及selected恢复。它们不是本审新扩项，也不能用2582测试绿或78数学一致覆盖。原Goal、指定ZCode/MiniMax两新同版审查、真实安全桌面入口、双Pass后push/PR、CI正常合并develop/远端核验以及平台/真人门保持；本审不作发布放行。

@@ -1,0 +1,249 @@
+# I05：保存 JSON → 同版重新发行 → 原 child 批次一致性，下一纯阶段方案
+
+2026-10-21，方案候选；仅文档，尚未实施或运行。当前产品固定 `0475d0ec6c486a63c7e8f62f11f35181da6b2576`；基线 `5f910b52c69d86a1076b2032e5d3c63e715947f3`。本轮授权原件及全部固定引用见 `docs/reviews/I05/profile-saved-restore-next-plan/source-references.json`。新API实际交付为产品 `16c58c6d0ca56491c7134c4866f9bed5e0f722c5`、证据 `ca0990a893a6d3af106985fe5dae5ff287b79553`，不再把330f旧提案当现状。
+
+## 结论与请求的下一授权
+
+可以脱离正式T01，独立实现一个**私有、纯 bytes 恢复与批次一致性阶段**：完整真实生产成功后保存现有payload/rows，另一个进程严格读回、只经canonical parse重新发行保存比较值，再把完整原ordered matches和同原child L交给16c API。原0475 writer无需字段delta。该结论限定于拥有独立原生产捕获上下文的纯测试；任意历史JSON若没有该上下文，不能获得同样的来源结论。
+
+下一施工建议另建 `.worktrees/I05-profile-restore`、分支 `feature/I05-profile-restore`，从5f开始精确继承63项、申请原字节采用T05的3项、仅新建4个私有源码/测试路径。70项完整清单、每项来源ref/bytes/SHA在 `future-adoption-scope.json`；本轮没有建树、复制API或创建这些文件。施工、依赖环境、测试与未来证据目录均待root精确授权。本方案完成与文档提交不等于施工许可。
+
+现0475与T03 D2合同准备保持冻结，旧C4、七canonical机制、原预算与PROFILE不fork。未批准selected第六测试、公共协议、Store/worker、长期保存字段或正式消费。旧Goal状态不变。根已收口的只是固定计算候选和T05纯源码阶段；0475历史83输入仍是78成功、4项E5资源失败、1项transfer缺规则未执行，不能提升为完整P1/I05/P2 Pass。
+
+## 1. 固定事实与所验证的命题
+
+实际0475载体已经保存完整原tuple，含false/true原顺序、definitions/Catalog、child真实limits及disabled；不需要从true firing反造matches。`_ProfileProjection`保存批准record全部字段，但tuple/list同为array，alias/weakref身份不在JSON里。
+
+本阶段只接受以下成功命题：
+
+> 同版真实生产成功，可信原生产捕获给出原输入/source前像、ordered定义/disabled分池事实、实际原child L和原payload/rows摘要；保存字段完整未改；恢复R版本与本方案界相符。则严格恢复所有机制数据并重新发行比较值，16c逐child以同原L返回其有限一致性事实，整个调用一次原子发布。
+
+这里的可信来源是纯测试父进程对**同一次真实生产调用**的独立捕获，不是JSON自报标签。数值形状合格、payload摘要相同、同值输入或API成功都不认证producer、原matcher完整性或原分池出处。aggregate图结论与planDigest只保全并绑定原payload摘要，不在本阶段重算其语义。源代码引用均固定Git字节，不把工作区可变路径当版本。
+
+16c实际合同：`check_firing_batch(definitions, catalog, original_matches, saved, *, limits, disabled)`；返回 `batch-consistent` 或 `definition-only`，预算版本 `mechanism-revalidation-budget/2`。它一次compile、一次evaluate完整matches；一次完整保存typed编码；逐比较operand检查本进程发行。其三池与控制池不含恢复、缓存、外层hash、allocator或保留成本。
+
+## 2. 私有入口、可信捕获与版本隔离
+
+建议入口名 `restore_profile_batches(payload_json: bytes, rows_json: bytes, *, expected: RestoreExpectation, allocation: OriginalAllocation, ledger: RestoreLedger) -> RestoredBatchSet`。这里只是合同，不是现有API。入参blob必须exact bytes；不收Path、文件句柄、任意mapping/iterable、native ProfileValue、pickle或外来object_hook，不读网络/Store/项目。预期上下文和ledger为本私有模块定义的exact class，冻结字段，不接收用户回调。
+
+版本固定：保存format与reasoning.formatVersion均为字符串 `i05-reasoning-result/2`，reasoning.semanticsVersion及implementation.executionSemanticsVersion均 `i05-finite-7`；PROFILE为 `OntoLearn-rule-comparison-profile/1`；graph预算 `i05-profile-graph-budget/1`；恢复schema `i05-profile-restore-schema/1`、预算 `i05-profile-restore-budget/1`、cache键 `i05-profile-restore-term-key/1`、结果 `i05-profile-batches-restored/1`。implementation仅现有三字段：executionSemanticsVersion、engineVersion、dependencyLockHash，均与可信上下文逐字相同。拒legacy finite6、其他format/profile/预算版本；不给legacy隐式升级。模块源身份另由固定采用表核，JSON模块名不能选择类。
+
+`RestoreExpectation`须独立持有：原payload和rows的64小写hex SHA；原input/source/definitions摘要和input域；实际implementation三字段；原Catalog投影摘要；原ordered定义ID/ordinal和disabled清单；完整原输入前像bytes与原source投影前像bytes及其域。摘要只作固定身份核对，不把碰撞不存在写作数学公理；费用与cache正确性不依赖摘要无碰撞。原payload摘要绑定是本纯测试的完整性约定，不是对主动攻击者的数字签名认证。
+
+本入口只发**前像齐备**的纯阶段成功结果，不作静默降级：
+
+- Turtle原输入bytes上限1,048,576；source前像是实际SourceRecord四字段的原投影JSON。它可以由原text/reference/revision输入及其真实digest在生产父侧捕获；恢复子进程不得从termSources猜造。text>65536时saved source.text=None仍合法，原text前像由独立上下文给出；空图source也同理。
+- structured域为 `profile-structured-records-json/1`；前像为实际原records投影JSON bytes和按原record/term次序形成source tuple的投影JSON bytes。每份原调用都受 `_profile_json_bytes` 8MiB门，故二者合计 `Q≤16,777,216`。另从saved termSources逐ordinal三项分组重建记录、核输入与source投影；这是该域特有的可逆值路径，不能用于Turtle。
+- 预期上下文不能从收到的saved payload现算“可信原摘要”。缺原L/捕获或缺前像，返回私有 `RESTORE_EXPECTATION_MISSING`，不对任意历史成功作可恢复保证。若未来需要单文件自包含保存，最小新增域是原raw input/source前像及可信分池引用；须另由实际writer/T01批准其字节、权限与生命周期，本轮不加。
+
+纯验证父进程只调用现有execute_profile一次，可在测试中包住其调用的 `semantic.reason`：wrapper只调用原函数一次，捕获该次实际native result里的child L、定义顺序和Catalog，随后让原完整projection完成。原输入fixture在调用前固定；成功后独立形成expected捕获文件。恢复子进程必须以subprocess启动全新Python解释器（exec），仅接payload/rows bytes及该独立上下文；不能用保留父发行注册表内存的fork快照替代。绝不IPC传原batch/ProfileValue，绝不第二次reason/matcher补数据。此测试文件不是正式Job/producer token，不能流入公共入口。
+
+## 3. 严格 wire、schema 与原生记录
+
+### 3.1 前门和规范表示
+
+恢复分接canonical payload与rows两个blob，`B=len(payload_json)+len(rows_json)≤8,388,608`。不以整个execute返回四键JSON套同一8MiB门：旧返回封套另多187B，故选择分blob合同保留所有原合法成功。rows是精确list[list[str]]，每行恰一cell、cell≤8192字符、行数≤10000，按原切片原顺序拼回payload UTF8；空尾不得丢。两个原blob分别核原摘要、canonical字节及行切片，不接受重排/多余空白后的“等价JSON”。
+
+先长度/UTF8词法门，再按位置schema构建；禁止先无限制json.loads整棵树再声称分配前门。固定词法器不接数字token（包括float、exponent、-0）、NaN/Infinity、重复key、非法UTF8/孤立surrogate、深度/节点超限、未知字段/缺字段/额外字段、错位置合法tag。对象按当前schema固定key表匹配，不能由untrusted recordType做import/getattr/构造器分派。对象最多32键、key≤64 UTF8字节，实际固定表更小；只在明确JSON对象位置读key。字符串按实际UTF8与原投影len门收费。
+
+物理JSON值/键节点 `J` 与native投影计数分开。每个节点至少消费一个不同的wire byte，取新解码硬界 `J≤B+Q`；物理根depth0，每条容器→成员/字段值为一边，硬界35，key也计访问/字节。合法0475完整返回最深scalar14/container13，分blobpayload少一层；35为从native32及包装保守导出的新恢复门，不声称原native1M等于JSON1M。重建后另按原 `_ProfileProjection` 的32层/1M节点/保守字节收费重放：result→source→definitions共用一实例，structured原records按原独立实例；所有原门仍保留。不能把JSON展开数直接塞原1M而误拒合法输出。
+
+integer只用exact `{"integerHex":hex(n)}`：先检查形状、符号/前缀/lowercase/长度，再分块解码；canonical回编码逐字相同，拒前导零、`-0x0`、大写/加号等。magnitude≤8192hex digits、bit_length≤32768，按字段再紧限（索引、限额、ordinal非负且在所在tuple范围内；ProfileLimits不超过其固定默认值）。bool必须exact bool，不能当int。bytes只用exact二字段 `encoding="hex",bytes=lowercase-even-hex`；先以可信O_i核长度再分配，不能先bytes.fromhex巨量分配。不要改全局int/decimal策略。
+
+### 3.2 record白名单与容器合同
+
+下表均为**exact字段集**；没有列出的字段拒绝。除ProfileValue外仅构造当前七canonical模块的exact native class。所有机制序列恢复exact tuple；元数据按下节保留各自list/tuple，不把所有array统一改tuple。
+
+| recordType | exact字段与合法位置 |
+| --- | --- |
+| SourceRecord | reference,digest,revision,text；各为str或None；None≠空串；每字段source_bytes≤65536，不能误套caller reference/revision的16KiB门 |
+| TermInput | kind,lexical_form,datatype_iri,language_raw,source；前三/四字段按实际str/nullable，source为None或完整SourceRecord；kind仅iri/literal；term UTF8≤16384，再交canonical验证 |
+| Variable | name；仅RuleSpec模板subject/object及Comparison operand，VAR完整语法由原compiler核；不能在ground when/head/match里出现 |
+| Triple | subject,predicate,object；predicate必须TermInput；模板subject/object可Variable；其他位置三项均TermInput |
+| Comparison | left,operator,right；operand为TermInput/Variable，operator属于原OPS |
+| RuleSpec | rule_id,when,comparisons,heads,source,revision,definition_digest,policy；when/comparisons/heads为ordered tuple，全部metadata逐字保留，policy必须PROFILE |
+| Catalog | classes,object_properties,data_properties；三ordered tuple[str,...]，不由缓存/图重算替换 |
+| BindingMatch | rule_id,bindings,when,proof_leaves；bindings为tuple[tuple[str,TermInput],...]，when为ground Triple tuple，proof_leaves为tuple[tuple[str,...],...]；保存原false与true全部顺序 |
+| ComparisonEvidence | index,left,operator,right,result；exact int索引、bool结果；left/right最终仅用canonical parse新发行ProfileValue |
+| HeadEvidence | index,triple；每个head出现、顺序和完整ground triple保留，不按fact集合去重 |
+| PreparedFiring | rule_id,bindings,when,proof_leaves,comparisons,heads,basis,source,revision,definition_digest,policy；所有机制数组还原tuple，basis为ordered tuple[str,...] |
+| PreparedFiringBatch | firings,facts,payload,digest,profile；前二为tuple；payload解成exact bytes，digest为64小写hex，profile逐字核 |
+| ProfileLimits | input_bytes,term_bytes,source_bytes,digits,integer_bits,temporary_bits,rules,when,comparisons,heads,variables,bindings,firings,head_occurrences,trace_items,output_bytes,work；固定17项exact int，不从保存映射动态反射 |
+| ProfileValue | term,domain,value,language；只读待比较descriptor，**不能直接调用ProfileValue构造器**；见第4节 |
+| Number | numerator,denominator,negative_zero；精确int/int/bool、denominator>0；不得约分/忽略负零后接受保存值 |
+| Calendar | day,second,explicit_offset,is_datetime；exact int、完整Number、exact bool/bool |
+| InputLocation | section,index,side,span为原批准record的完整字段；本成功payload没有允许位置，因此任何成功载体里出现它也拒绝；若未来另批诊断schema，span才为None或二元tuple，不能在本轮扩大 |
+
+RuleSpec长度上限rules100/when16/comparisons32/heads16、variables64等由固定原limits和compiler核；original_matches/firings/head_occurrences分别服从该child可信L。先做tuple长度/全局数量门再逐项发行，不能信保存L放宽。catalog和proof字符串不随意加比原版更紧的限制；先用原投影B及对应机制检查接纳原合法值。
+
+### 3.3 外层 exact shape 与保全范围
+
+payload字段恰为format,implementation,reasoning,inputDigest,inputDigestDomain,sourceDigest,definitionsDigest。reasoning字段恰为formatVersion,semanticsVersion,profile,rdfs,rules,warnings,evidence,rdfsEvidence,firingGroups,mechanismBatches,definitions,catalog,proofLeaves,termSources,graphBudget。
+
+- rdfs/rules为exact list[tuple[str,str,str]]；warnings为exact list[str]。evidence是exact list[{rule,firingIndex,headIndex,result,inputs,basis}]：result为exact tuple[str,str,str]，inputs为exact list[tuple[str,str,str]]，basis恢复exact tuple[str,...]；rdfsEvidence为exact list[{result,basis,proofLeaves}]，result为exact tuple[str,str,str]、basis为exact list[tuple[str,str,str]]、proofLeaves为exact tuple[str,...]。整数均inthex；不把这些图metadata的自洽视为重新推理。
+- firingGroups、mechanismBatches、definitions、proofLeaves、termSources为原tuple；Catalog为native。proofLeaves每项exact {reference,triple}，triple为三str tuple；termSources每项exact {term,value,ordinal,span}，value完整TermInput，ordinal exact int，span为None或二int tuple，原顺序保留。source rawtext与parser-only prefix occurrence都不得删。
+- 每child恰有ruleId,definitionOrdinal,disabled,planDigest,batch,originalMatches,definitions,catalog,limits,budgetLimits,budgetUsage。planDigest为64hex；budgetLimits为固定17 int字段并等于limits；budgetUsage恰work,input_bytes,output_bytes,trace_items,firings,head_occurrences，逐项在实际L内、且与原payload绑定，不能拿保存usage重设池。
+- graphBudget恰version,limits,entryLimits,entryUsage,usage；limits恰work,triples,inputTermBytes,sidecarScalarBytes,sidecarTermBytes，核固定0475常数；entryLimits为17项dict，entryUsage为上述6项dict，usage恰work,inputTermBytes。保留原数值并核范围/版本，不宣称恢复器重算了图用量。
+- top firingGroups逐child按生产顺序concatenate batch.firings，逐字段完整核同；ruleId→slot查找另计费用。不得只挑一个重复位置核，也不得用一个位置覆盖另一个位置。
+
+definitionsDigest按原定义tuple的原投影canonical JSON域重算；Catalog另核可信捕获摘要；input/source按第2节前像核同，structured还核逆向分组。原planDigest、proof refs、aggregate evidence/RDFS/termSources/graphBudget通过严格schema与独立原payload摘要保全；16c不重新证明这些外层结论或完整matcher。禁止额外compile补planDigest而把成本藏进16c三池。
+
+## 4. 重新发行、完整键与同值核对
+
+所有保存PV都来自比较证据left/right两位置。每个PV.term先严格解完整TermInput；每child独立cache，完整key包含kind/lexical_form/datatype_iri/language_raw、source存在位及SourceRecord四字段。None/空串、source=None/四None source、plain/xsd:string、raw语言大小写、不同source都不同。key固定二进制header为8B `b"I05RTK1\x00"`，长版本名只在操作域metadata；接一个source存在位（None=0、SourceRecord=1），再按kind/lexical_form/datatype_iri/language_raw/reference/digest/revision/text顺序编码8字段。每字段固定1B marker（None=0、str=1）+4B无符号big-endian UTF8字节数+实际bytes；None长度必须0且无data，source=None时最后四字段必须均按None编码。最大framing=8+1+8×5=49B，严格小于所留64B；模块/profile固定在本次cache域，不能又向每key追加未计的模块SHA。缓存不跨child/操作/版本共享。
+
+miss仅调用当前 `parse_value(term, None, R_parse_i)` 一次；hit仅复用该fresh发行对象的强引用。每个occurrence无论命中与否，都完整核保存domain/value/language：I/S/L exact str；B exact bool；N为Number全部三字段；Dz/Dl/Tz/Tl为Calendar全部四字段及second的完整Number。还核term完整字段和语言；不得仅数值等价、忽略负零或自动改写损坏保存字段。不同domain/value/language任何末项不一致整次失败。缓存强引用持有到所有批次API完成，否则弱发行身份会消失。
+
+不会恢复旧alias身份或weakref/id；按完整相同值intern是新进程实现细节。重复source仍按每次wire/键/对照收费，T05之后的每occurrence typed编码和check_value也照收费。禁止直接构造PV、导入别名模块发行、反序列化pickle签发、复用父进程native PV；这些均不能获得canonical发行身份。
+
+选择确定性**字节压缩前缀索引**，不用hash平均O(1)作最坏证明。每child一root；edge label为已保留完整key上的(start,end)视图，edge长度≥1，沿key位置严格前进。分支最多256个native byte索引，线性检查最多256项；比较edge前预扣min(remaining_key,edge_len)，首字节失配也不退。split只改视图/引用，不复制长key尾。SHA256(separator+fullkey)仅审计标识，separator精确为32B `b"I05RKEY1" + b"\x00" * 24`；查找等价只用完整key，摘要碰撞不能合并source。
+
+## 5. 可信allocator、一次账本与原子发布
+
+原规则tuple先核exact RuleSpec、ID非空/唯一、字符与UTF8≤16384；按rule_id Unicode稳定排序，保存原ordinal。`N=max(1,规则数)≤100`，disabled也占槽。每个原池总额T、排序位置j的额度为 `T//N + (j<T%N)`。池来自只读原 `semantic._PROFILE_POOLS`，不复制一套可漂移常量：work16777216/input262144/output262144/trace8192/firings1024/head_occurrences16384/bindings1024；逐field的Σ恰原T，特别ΣF=1024。其他17字段沿用原固定默认结构上限，不因child数乘大。
+
+`OriginalAllocation`的原ordered ID/ordinal/disabled、N、17字段child L来自第2节同次生产捕获；恢复前从原rules/disabled复算divmod并同时核捕获与saved L/budgetLimits。仅复算数值不能证明出处；没有捕获拒绝。definitions原输入顺序和各child实际单定义关系、Catalog、matches均与独立原payload绑定；不重跑matcher。
+
+ledger为一次逻辑恢复操作建立固定N槽，状态new→running→success或failed。整次R与每槽R_parse原L、T05预留次数绑定后不能替换/重置/借池。任何失败即终止所有槽，已花费用/已用slot不退；本版本同ledger重试一律拒绝。创建新ledger代表新的独立纯操作，不能声称它延续或覆盖旧操作；跨进程/持久化重试身份和不可信调用者任意新建ledger由未来T01负责，本纯测试不得冒充全系统防刷。
+
+disabled必须保持outer originalMatches=None/batch=None；仅在给16c definition-only参数时显式映射matches=()，说明原未evaluate。不能造空saved batch。空定义dummy child须ruleId/ordinal=None、definitions=()、originalMatches=()、实际空batch存在，仍调用16c replay核该空batch。enabled非空定义缺saved一律拒绝。真实无match但非空定义的空batch也必须保留并核。
+
+恢复所有child、全PV对照、rows/原投影/摘要全部通过后，再按slot次序每个child调用16c一次，limits用同原L。最后才返回不可变RestoredBatchSet（restored child definitions/Catalog/完整matches/batch、有限child事实、各R使用量、版本与捕获摘要）。中途没有yield/callback/外部写/partial-success list；最后child坏也无前缀发布。错误只给私有有限reason/classification/阶段/slot，不泄漏source/text/文件路径/traceback：input、expectation、resource与internal分开；不改公共error catalog。receipt明示原payload绑定/前像检查/机制批次一致性，formalAuthority=false，不称完整图语义重算或selected成功。
+
+## 6. 独立整次恢复R：计量、硬界与来源
+
+旧整体 `R_work≤W / R_input≤I` **未证且不作为验收**。R为整次、多域版本化账本；抽象字符/字节/limb/结构单位与保留tickets分别报告，不把它们加总冒充CPU时间或RSS。新恢复代码的扫描/比较/复制/分配/hash在操作前扣实际长度/固定结构量；不可修改的canonical委托函数则在调用前预扣下述静态最坏块并预留临时持有tickets，其内部原Budget照常收费，不能伪称逐内部操作接入了新ledger。超限立刻安全失败；新增遍历须入账，不能先做后计。以下大界限定于本节固定算法合同，不承诺8MiB最坏输入的运行秒数、120秒或512MiB RSS。
+
+符号：B为payload+rows≤8388608；Q为独立input/source前像≤16777216；J为两类JSON的值及key节点≤B+Q（raw Turtle不当JSON）；N≤100；F为实际firing总数≤ΣF_i=1024；M为两处投影的PV occurrence数≤4×32×1024=131072；U为各child不同完整key总数≤M；K为单次key长，S=ΣK≤B+64M≤16777216。每PV.term保存子树互不重叠，decoded UTF8长度不超过各原JSON token字节，故S界涵盖重复source的每个实际出现。typed payload总D≤ΣO_i=262144。上下文ID总bytes≤B、固定17N限额/版本/摘要表另给65536N结构与字节余量；不允许任意自由字段。
+
+| R域 | 固定上限与逐操作收费合同 | 来源/边界 |
+| --- | --- | --- |
+| wire passes | `6(B+Q)` byte-pass；至多原UTF8/词法一遍、strict parse一遍、canonical读回与对照两遍、rows/source分域核验两遍；raw前像不适用的遍不花，但不回补别域 | 来自原wire/preimage长度；若实现委托json解码，其一次完整输入处理也必须预扣，不能因库调用免费 |
+| schema key checks | `4096(B+Q+J)` 字符/固定字段检查单位；每对象≤32固定键、每键≤64B，逐候选完整字节比较前扣，不走任意攻击键hash桶 | 固定位置schema的有限表界，包含重复键、recordType与未知键拒绝；不是原W/I |
+| traversal/native construction | `512J+64M+65536N` 节点/引用/小元数据单位；每list/tuple/record按项与固定字段先扣；词法/构建、恢复、原投影、rows、前像重建的完整walk均计，固定算法最多16次树访问，每次≤32单位；metadata按固定N项 | J的wire来源覆盖所有重复occurrence；16是本版本遍历上限，施工代码若多一次必须合并遍历或提交预算合同delta，不可静默增 |
+| integerHex | `2048(B+Q)` hex-char/32bit-limb步；逐8hex块移位或合并，q≤1024；各项先留`q(q+1)+8h+16`，Σh≤B+Q、Σq≤Σh，故≤1049(B+Q)，余量付canonical hex回编码/字段比特门 | 32768bit与wire字符门，含随整数增大的移位/复制，不能只付最终bit数；无decimal解析 |
+| non-index scan/encode/copy | `64(B+Q+S)+65536M+65536N` byte/char单位；包含UTF8尺寸与编码、key全部字段/framing写、rows逐片拼回、canonical再投影/编码、hex bytes检验/解码、context/摘要字段复制、PV fresh字符串对照的临时编码；每次实际处理长度先扣 | 每PV fresh输出受canonical term/source/bit门，逐值65536余量；其余数据至多固定16阶段、每阶段至多4遍；禁止无账额外复制/临时全树序列化 |
+| cache query | `257(S+M)`，最大4345430016；每key的edge预扣总≤K，分支扫描≤256(K+1) | 确定性完整键查找，首失配预扣亦不退，不假设摘要无碰撞 |
+| cache split refs | `512U`，最大67108864引用复制单位 | 只cover branch索引引用复制；不声称是所有split成本 |
+| cache allocation/update | `320(2U+N)+64U+16M` 固定slot/元数据单位；每新node最多256branch slot清零+64字段/链接单位，每miss另64固定更新、每lookup另16；node tickets≤2U+N | edge只保视图；若实际slice复制key尾必须另计byte且重新核S来源，不能藏在split常数 |
+| rule/slot/allocator lookup | `(F+2N+1)×(101B+N)+65536N` 字符/槽检查单位；固定≤N线性完整ID比较，查询≤F+2N+1；ID排序用N有界插入，lim字段逐17项 | 单query候选ID总≤B、query重复≤100B；排序/disabled/allocator校验另余量覆盖；term trie不支付此域 |
+| PV saved-vs-fresh compare | `1048576M` 字符/32bit-limb/字段单位；每occurrence按实际两边长度/limbs先扣，Number/Calendar字段全核、term/source逐字段，绝不只在不等后少计 | exact schema最多固定字段，str≤16384、source≤65536、int≤32768bit，单PV常量界保守；cache hit也付全额实际费 |
+| hash/digest | `32B+8Q+S+32M+65536N` 读取字节单位；payload/rows、前像、definition/Catalog、typed payload、每occurrence key含32B separator、固定receipt metadata分别列调用记录 | key hash不参与相等判定；typed hash、原JSON摘要和metadata hash独立于R_parse与T05，不免费 |
+| retained scalar payload | `16(B+Q+S+65536M+65536N)+4096` 逻辑byte/limb存储tickets；含raw、decoded、canonical临时buffer、cache key、fresh值/指纹和metadata，申请前留峰值，释放仅降live不退累计work | 为有界数据载荷tickets，Unicode按最多4B/code point、fresh值按单PV上限留余量；**不是Python对象RSS字节承诺** |
+| retained objects/slots | `8J+16M+2048N+4096` record/container tickets，加trie branch slots `256(2U+N)`、node `2U+N`；每次分配先reserve，PV强引用保留至最终API结束 | 原始/解码/native/reprojection/缓存各固定阶段；旧alias不作为免收费依据；实际Python对象head/allocator开销未转成RSS |
+| opaque delegate peak（另预留） | 逻辑scalar bytes `8(ΣI_i+ΣO_i)+2^29`，object/slot tickets `8(ΣI_i+ΣO_i)+4096`；仅一个canonical parse/API/encoder调用在途，调用前reserve整块，返回后解除live预留；保留结果先转上两行 | typed sink的bytearray/bytes及本地replay数据按I/O总量预留；固定栈/数字临时另留64帧×64槽，每槽≤65536+4096逻辑bytes，285212672<2^29；不是实际申请同量内存或RSS承诺 |
+
+这些域允许保守多付，但不能跨域借余额；source40000不因复用免单。wire/节点/字符串/整数字段预门必须在昂贵操作/分配前生效。字节/节点界先约束恶意输入，PV数/各slot长度在parse前核；若恶意值失败，保证费用有限和原子拒绝，不保证其成功。峰值tickets与累计费用分开，逐项报告实际使用，不用默认总限额冒充已用量。
+
+### 6.0 固定阶段 schedule：总系数从何而来
+
+本版本只允许下表算法，不把所有未来实现视为满足R。新代码按所属域逐操作扣；不可改的 `_ProfileProjection` / `_profile_json_bytes` 在调用前按对应块整体预付，不用未存在的内部hook。严格构建的native树仅含exact类和普通容器，无任意getter/iterator；固定类分派、对应字段槽访问保守摊为每wire节点≤32结构单位（最多17类、17字段；字段槽各由其wire key节点分摊），字节扫描/大整数/索引另域。typed编码、numeric/regex、fingerprint已有R_parse或16c本地Budget；不把它们假作免费普通walk，其临时持有另reserve opaque peak。
+
+一“树遍”按本阶段读取的value/key/字段槽累计。每行≤J，多子树累计，不能分别领J。source/definitions合计使用source前像Q的一部分和payload B的一部分；Catalog只编码top一次。child重复Catalog照各自wire出现核同；crosslink比较将相同前缀摊给两份保存出现，首个不等立即失败，不N次无账重扫未在wire出现的top。实现按ordinal直索引child；rule ID只用于排序N次线性插入、disabled最多N次查找、top F次查找及一个入口核对，故查询≤F+2N+1，其字符成本归rule域。
+
+| 阶段 | 固定操作 | 树访问 | scan/encode/copy上限 | live集合、委托前预留 |
+| --- | --- | ---: | --- | --- |
+| A1 | strict parser构建payload/rows/witness AST；Turtle前像只UTF8 | J | 4(B+Q) | raw B+Q、AST≤2J tickets、decoded strings≤B+Q；分配前门 |
+| A2 | schema核字段/int/hex、构建native与未发行PV descriptors | J | 4(B+Q) | AST+native≤4J；字符串复用，整数另域 |
+| A3 | exact版本、limits/usage/ordinal/span、child与定义/Catalog关系 | J | 4(B+Q) | 同上；按ordinal索引，无额外ID查询 |
+| A4 | 一次处理全部PV occurrence：key/trie/parse/保存值核同 | J | 4S，fresh字符串另65536M | 预留U强引用、S与trie；每parse先留opaque peak和原L_i parse池；其内部工作归R_parse |
+| A5 | top firingGroups对child batch逐字段核同左侧 | J | 4(B+Q) | 两份native都在wire；PV全等另域 |
+| A6 | 上步右侧访问及最后失败边 | J | 4(B+Q) | 首不等即停，无第三份全树/修复 |
+| A7 | 原result的 `_ProfileProjection.value` | J | 4(B+Q) | 委托前预付32J+4(B+Q)块；safe树≤2J；旧32/1M门照常 |
+| A8 | 同一原projection实例继续source、definitions，累计 | J | 4(B+Q) | 同A7，不重设计数；source来自独立前像，不每child重做top defs |
+| A9 | structured ordinal三项分组重建records/source；Turtle核四字段/域 | J | 4(B+Q) | 仅引用/tuple、临时≤J；不从expected补saved缺字段 |
+| A10 | structured原独立projection(records) | J | 4(B+Q) | 同A7预付；只一次，消费后释放 |
+| A11 | canonical payload流编码、逐字对照原blob | J | 4(B+Q) | encoder调用前预付本行；bytearray+bytes≤2B，chunk逐个释放 |
+| A12 | rows切片核同与canonical rows流编码 | J | 4(B+Q) | 拼回/编码buffer≤2B；先留tickets，验证后释放 |
+| A13 | source与definitions canonical编码/核前像，累计 | J | 4(B+Q) | 使用A8 safe值；encoder逐次预付，完成释放，不并持各版本 |
+| A14 | top Catalog一次canonical编码与可信摘要核 | J | 4(B+Q) | 仅一buffer≤B；child各Catalog由A3核同 |
+| A15 | structured重建records/source与前像逐字核；必要records编码 | J | 4(B+Q) | source复用A13；累计≤Q+B；摘要另域 |
+| A16 | 固定receipt、中间树/临时引用清理、最终原子发布 | J | 4(B+Q)+65536N | metadata归N余量；API另池均结束；释放live不退work |
+
+16J访问×每节点/字段槽固定摊费≤32，得512J；每行至多4倍数据处理、16行，得64(B+Q+S)，对S保守多付，fresh值字符串另65536M、固定上下文/receipt另65536N。A4的全值比较/R_parse/trie另域，不把大字符串比较藏进32单位。委托的块在调用前整块扣，不事后拿实际usage补扣；原projection计数仅核原门，不替新R付费。
+
+同时活跃集合至多AST+native+一份safe tree+一份records/witness临时，覆盖8J tickets；descriptor/native PV/strongref另16M，固定上下文2048N、栈4096，trie另列。raw/decoded/一份canonical/keys/fresh scalar由16倍载荷余量覆盖；已有canonical typed/算术内部不确定临时另外预留opaque peak。普通native重建可逐项reserve；不可改委托前整体reserve其本行全部树和buffer，成功后结果转普通live账、再释放临时块，异常finally清理，不能声称已经逐内部allocate计费。
+
+六个wire pass只数读取原blob/preimage，不是hash或native编码输出：W1 UTF8≤B+Q；W2词法深度/节点/长度/重复key前门≤B+Q；W3受限parse≤B+Q；W4 canonical原wire逐字对照≤B+Q；W5 rows拼回对原payload≤B；W6 structured/source前像最终逐字对照≤Q。合计5(B+Q)，第六整pass为余量，总cap6(B+Q)。hash另域，UTF8编码/rows复制/encoder输出归copy域；不允许未列的额外wire扫描。
+
+| hash调度（所有调用累计） | 最大输入bytes |
+| --- | ---: |
+| 原payload、rows两个摘要 | B |
+| 原input、source两前像摘要 | Q |
+| definitions、top Catalog | 2B |
+| 各child保存typed payload各一次 | D≤262144，且D≤B |
+| key审计逐occurrence一次 | S+32M |
+| 固定expected/receipt metadata，ID总量≤B | B+65536N |
+| structured重建input/source摘要，最多两次 | Q |
+| 可选canonical payload/rows复核摘要 | B |
+
+累计≤6B+2Q+S+32M+65536N，被32B+8Q+S+32M+65536N覆盖。parse内发行fingerprint归R_parse原机制work/input；16c内fingerprint/typed hash归其三池，临时保留仍用opaque peak，绝非未计hash。
+
+opaque peak只证固定源码的逻辑载荷：非递归数字链与至多32层typed walker少于64在途帧，每帧局部/参数/固定schema字段槽少于64；typed/数字处理的原生临时标量文本≤65536、整数limb≤4096。JSON encoder转义后的chunk可大于65536（65536个NUL约393216B），其chunk/sink按A11–A15的B/Q普通buffer reservation预留，不用小槽界覆盖。大typed sink、整批native数组分别由I/O项和已有树tickets负责，不假作小槽。64×64×(65536+4096)=285212672<2^29；typed sink/bytes复制/本地replay另外8(ΣI+ΣO)。不计Python header、解释器、regex/allocator/hash实现或OS RSS，不将此logical模型当512MiB/120秒容量证据。
+
+本节证明固定算法与debit合同的界，不证明尚未写出的源码已遵守。实施独审必须把实际每循环/委托/同时存活集合映回本表；额外扫描或共存数据表示实现不合本版合同，应在发布前修算法或另报预算版本方案，不能增池/删source/false/head换绿。原成功蕴含以这份实现合同得到证明并完成真实跨进程实测为前提；本轮仅静态方案，未宣称恢复运行通过。
+
+### 6.1 唯一可注入原生产费用的子域
+
+每child一个canonical `Budget`，使用原L_i的work/input/结构上限，仅把output_bytes设0；这只是R_parse池，不是改变给新API的原L_i。仅对该child保存PV的不同完整TermInput调用一次parse，不给普通TermInput/termSources全部另parse。0475保留PV只来自成功firing比较，constants由原compile parse、bound值由原_one parse；不同完整key可单射到原child至少一次不同的parse调用。同term重复位置不增加miss；原location非None时恢复None只减少位置校验，其余canonical值处理/发行成本同源。
+
+因此对未篡改、同版、可信原L的原成功：`R_parse_i.work≤W_i`、`input≤I_i`、`output=0`，整次Σwork≤16777216、Σinput≤262144。此证明不能扩大到原source前像处理、JSON/键/对照/hash/保留，也不能扩大到parser-only prefix IRI；那些归上表新域。失败不返还，N槽不各领整次默认池。
+
+### 6.2 T05三池另计
+
+16c每child三个Budget各同原L_i，及 `K_i=1+F_i+32F_i+4O_i+2×64+2×35+4` 控制单位。全机制revalidation cap为work `3ΣW_i+ΣK_i`、input `2ΣI_i`、output `2ΣO_i`；`ΣK=N(2×64+2×35+5)+33ΣF+4ΣO`。disabled/空批次也占原slot，实际费用由API发生。不能把上表R或R_parse塞进其三池，不能给每个group重开整池。原L provenance仍由外层捕获提供，API不能补证。
+
+## 7. 缺失信息与最小delta裁决
+
+| 事实 | 0475保存情况 | 本阶段处理/是否阻断 |
+| --- | --- | --- |
+| false/true matches、definition/Catalog、child真实L/disabled、所有head/comparison/basis/typed bytes | 完整投影 | strict还原即可，无writer delta；不得删false/head/source换绿 |
+| tuple/list、exact canonical class | 标签合并，但字段schema足够 | 位置schema恢复；不接受任意类/派生类 |
+| alias/weakref/issuer identity | 未保存 | 不恢复旧身份；canonical parse新发行；alias本身不阻断按值批次一致性 |
+| 原allocator来源、原ordered inputs完整性、retry身份 | JSON数值不认证 | 纯测试独立同次捕获及本次ledger；无捕获拒绝；正式来源/跨生命周期重试待T01 |
+| Turtle原raw bytes/source单对象 | 大文本text=None或空graph source未出现时缺前像 | 本入口要求独立原前像；仅saved JSON不足；必要未来最小载体delta精确为raw input/source witness+可信引用，另批 |
+| structured input/source | 可由termSources ordinal三项分组恢复值 | 与独立原前像和原摘要都核；不能把重算成功当权限认证 |
+| planDigest、RDFS/aggregate evidence/graph预算的语义 | 字段在、16c不核 | strict保全+独立原payload绑定；不额外图推理/compile，也不返回完整语义重算事实 |
+| producer/项目/快照/source/Catalog权限、保存窗口/撤回GC | 不在纯机制载体 | 正式selected前置，未关闭；不制造synthetic Job/Store成功授权 |
+
+## 8. 未来精确路径、维护权与顺序
+
+`future-adoption-scope.json`是相对5f**全部产品/测试/输入/配置70项**申请，不是只列4个新文件。63项来自0475固定字节：原P1清单32项（8 semantic、10旧测试、7质量、6fixtures、resources1）+probe模块1+五个profile测试5+T03配置2+已批oracle/input/docsmetadata22+probe输入1；某些semantic在0475已改，采用0475当前SHA，不能退回C4旧blob。此次只生成表，没有采用。
+
+| 类别 | future paths | 维护/限制 |
+| --- | --- | --- |
+| 16c原字节3项 | quality/rule_revalidation.py；tests/test_quality_profile_revalidation.py；tests/fixtures/quality/profile-revalidation-v1/cases.json | 唯一owner T05，原字节，import固定七模块；未采用旧330f/旧7个T05测试，不改API或root export |
+| I05新增1 | packages/engine/src/ontolearn_engine/semantic_profile_restore.py | strict字段schema、native构建、发行、allocator、原子编排、receipt；仅私有直接调用 |
+| I05新增2 | packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py | wire扫描/有界parse、R各域/retention、完整键trie与原生类型前门；禁止复制/改写T05 Budget或比较器 |
+| I05新增测试2 | packages/engine/tests/test_semantic_profile_restore.py；test_semantic_profile_restore_limits.py | 真实生产→跨进程JSON恢复；单字段污染与R/原子性；不是selected测试 |
+
+不得整提交cherry-pick0475的118路径；旧审查zip/raw docs不混进70项。未来计划/授权/独审/运行回执的docs精确前缀由root施工授权另定，须另出包含docs的完整relative5f清单；本70不是宣称未来最终diff只70。base现有公共/worker/selected文件均不改。
+
+建议施工顺序：(1) root核本方案与独审，再给上述独立树和精确docs/命令授权；(2) 建树逐path按hash继承，冻结配置/七机制/API并验总scope；(3) 先实现预算、scanner/schema与原子编排；(4) 独立agent按实际循环做R源证明/限额审查，逐阶段visit/copy/hash记录须落表，不能只照本方案声明；(5) 完成下面真实跨进程矩阵与适当原check/source门，保留首失败和修复回执；(6) 再独审最终源码/测试/全部delta和精确manifest，本地提交，交root决定下一步。不得在此顺序中自动进入selected或正式保存实现。
+
+## 9. 验收矩阵：将来执行，本轮均未跑
+
+| 组 | 必须构造/输入 | 要求与证据 |
+| --- | --- | --- |
+| 完整链路 | 原实际execute_profile成功→按原canonical保存payload/rows→独立子进程只收bytes/捕获→strict恢复→各child同原L的16c | 保存原始原件、输入hash、父捕获/child pid、完整ordered false/true tuples与全部metadata逐字段读回、各R实际usage；不以内存原batch即时重检替代 |
+| source40000 | 至少RuleSpec.source.text=40000的实际I05生产输入（可用两个真实图matches、无比较的规则），并另有比较值source/重复source的合法场景 | 先证明整I05原入口真实成功再列恢复成功；T05旧机制见证不替代组合；检查64KiB source门、重复出现每次收费及同原L。若某构造原生产失败，保留失败并另找合法见证，不放宽池 |
+| false与顺序 | 一条规则含false和true的完整原ordered matches；原输入还有false之后坏类型的case | 成功case恢复原false顺序，不能从true反造；坏type若原生产失败，预期无可保存成功载体；另从成功载体的后项腐化，必须拒绝，不能短路停在false、偷偷丢后项或修复 |
+| disabled/empty | disabled有定义且无batch/matches、enabled有定义无matches真空batch、无定义dummy真空batch | 三种shape分别核；disabled只definition-only适配，不伪称evaluate；实际空batch必须batch-consistent |
+| 全字段污染 | 逐source四字段/None空串、TermInput四字段、全部RuleSpec metadata/order、Catalog、原matches bindings/when/proof/false顺序、所有head/comparison/index/result/basis、payload/digest/profile、planDigest/图metadata、17L及usage、版本/domain/implementation、rows最后尾片 | 整体链路原expected不变须失败；为触达strict解码内部，测试可在明确“不声称原生产来源”的敌手单测中重绑仅wire摘要或直接调私有decoder，原allocator仍固定。保留两类证据，不能只让前端hash拒绝就声称所有schema分支已测 |
+| PV末项 | domain、language、I/S/L字符串、bool/int混淆、Number numerator/denominator/negative_zero、Calendar day/second两整数与负零/offset/datetime | 每项变化即拒绝；包括缓存hit之后改变末项、两份firing投影只坏一份；不能新parse覆盖保存值 |
+| wire前门 | unknown/extra/missing/duplicate key，错位置tag，native number/NaN，非canonical inthex/byteshex/过长整数/奇数hex，UTF8/surrogate，物理深度/节点/byte/cell/row边界 | 分配/大整数/bytes转换之前拒绝；B的payload+rows界与外封套187B分清，原合法顶边值不被误拒 |
+| issuer/alias | 直接构造PV、同代码别名模块、pickle、来自父进程对象、完整同值不同source、plain/xsd:string、raw语言大小写、source=None与空SourceRecord | 恶意身份拒绝；只canonical parse发行；旧alias身份不作要求；相同完整key才可命中，不减occurrence/T05费用 |
+| cache最坏 | 长共同前缀、全256分支、split及根空key特殊值、人工注入相同审计hash但不同完整key、同source大量重复 | 完整key区分；edge view无长尾复制；query/split/分配/保留各账本独立；hash碰撞不影响正确性。合法key不为空，trie根空只为结构，不接纳缺字段key |
+| allocator/retry | N=1/2/100、不可整除余数、原顺序不同、disabled也占槽、伪造saved L、bool限额、少slot/多slot、缺原capture、同ledger第二次调用 | 稳定divmod/ΣF=1024/Σ各池精确；不每child默认整池；失败slot不退、同ledger拒绝，不冒持久化防刷证明 |
+| 紧池与整次R | 用已知成功的实际L/实际usage阈值，测试每R域恰足/差1、R_parse miss/hit、typed字节/控制K紧边、最后child/rows/source/摘要末项失败 | 原成功且完整的全链路在所声明R下成功；恶意/紧差1安全resource失败、无部分发布、使用量不超cap，所有临时持有终止回收；不以任意调大限额换绿 |
+| legacy/父门 | finite6/format旧值、跨module/profile/依赖锁、T01字段缺失、保存窗口/撤回 | pure入口拒绝错版本/缺捕获；不调用Store/worker/selected，不假造授权或GC结果；记录未关闭前置 |
+
+未来运行证据须分静态/纯运行/生产授权三个层次。独立输入和期望必须来自原批准输入或人工独立fixture，不能将oracle expected反喂执行；本阶段也不负责解决0475剩余E5/transfer缺规则。新API已交付及其供方绿不替代本组合绿；本轮所有验证只是文本/固定Git字节、标准库静态/数学核对。
+
+## 10. 独立审查、交付与父出口
+
+本轮独立准备分工：representation-census.md核实际字段/字节门/缺前像；budget-source-preparation.md核R_parse单射、JSON展开与字节trie界。最终方案还须另一个独立agent静态/数学审查完成文本、70项表和固定引用，并逐意见处置后固定plan SHA；准备意见不自动当最终独审。
+
+交付以本轮精确manifest列出plan及新review目录每文件bytes/SHA/Git blob；manifest排除自身以免自引用，另以local docs提交ref固定整组。保护AGENTS dirty不入提交，固定0475的118路径逐字零漂移，旧逻辑文件不写。只允许新plan及本review前缀；无产品import/测试/安装/包，无GUI/native/e2e/HMR/Keychain/付费/push/PR/merge。
+
+root复核文档后才决定纯恢复施工。正式producer/Store/worker成功终态、项目/快照/source/定义/Catalog权限、保留窗口/撤回GC、selected第六测试、长期字段/公共协议/正式消费、T03 D2实际组合、B1目标平台/native、指定同版双方新审、CI与正常合并门均仍待原owner/父门。本计划与纯恢复未来通过都不能关闭这些条件，也不能把旧Goal标完成。

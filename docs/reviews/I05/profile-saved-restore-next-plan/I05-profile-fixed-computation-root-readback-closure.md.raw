@@ -1,0 +1,9 @@
+# I05 固定计算候选总控读回收口
+
+2026-10-21。总控已全文读14233B/SHA4eb0e9dac9dbddb085a4f83217713d2654c9ccac53cdbf51b5d54615352a512b最终独立报告及14050B/SHA91e8379fd91cb128bfe56ed008195b28b29c263dfaf0dddbeb4b9a400d553fec聚焦来源报告、6295B probe合同和实际probe源码；未运行产品。根亦逐117manifest当前bytes/SHA/Git核同，清单自身32937B/aa22b70ce65f27c16361b04f32c74a9e2d8de105d1611d70d6e5338f2e4e7b86；固定0475d0ec6c486a63c7e8f62f11f35181da6b2576相对5f共118路径，仅保护AGENTS未暂存。
+
+本轮私有计算与临时完整原tuple载体在已审范围内未见新增阻断，可作为T03 D2精确同输入源码/包合同的技术来源。630TS/2582Python正常check及source12 exit0原件已独立完整读回；83输入实际78成功、4资源拒绝、1缺规则未执行，probe/checker均exit1。成功数学覆盖49/89图、24/40匹配（15true/9false）、16head及R04叶witness；不把完整收集当全P1/I05/P2通过。
+
+来源以固定投影scalar的相对pointer/hash/text明确定位，原source/transform保在asset，未知term revision/span不造。七dbb机制、22f9af原件、T03两配置及20只读旧源码/测试/fixture均逐Git核同；单次8MiB不变，83集合64MiB分域。实际120秒外部监督未超时不等取消/CPU/内存界；issuer准备后记账的已知边界继续披露。最终845执行输入仅合同docs标签有32记录delta，产品未变，不因此重测。
+
+T03仅获3959B/ceb03c文档准备，不是复制/入口/build实施授权。T05新批次API仍只读，严格保存恢复/独立R/缓存/hash计费/跨child正式保留与T01成功producer/定义Catalog权限/窗口/撤回GC未交，不准selected第六测试。旧C4继续冻结；指定双方新同版审查、GUI安全入口、目标平台、CI、正常develop合并及远端核验未关闭，父Goal不因本收口改变。

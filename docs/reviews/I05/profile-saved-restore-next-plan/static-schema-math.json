@@ -1,0 +1,232 @@
+{
+  "kind": "AST-and-integer-math-only-no-product-import-no-runtime-test",
+  "fixedProductRef": "0475d0ec6c486a63c7e8f62f11f35181da6b2576",
+  "records": [
+    {
+      "recordType": "InputLocation",
+      "fields": [
+        "section",
+        "index",
+        "side",
+        "span"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "line": 19
+    },
+    {
+      "recordType": "SourceRecord",
+      "fields": [
+        "reference",
+        "digest",
+        "revision",
+        "text"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "line": 67
+    },
+    {
+      "recordType": "TermInput",
+      "fields": [
+        "kind",
+        "lexical_form",
+        "datatype_iri",
+        "language_raw",
+        "source"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "line": 75
+    },
+    {
+      "recordType": "ProfileLimits",
+      "fields": [
+        "input_bytes",
+        "term_bytes",
+        "source_bytes",
+        "digits",
+        "integer_bits",
+        "temporary_bits",
+        "rules",
+        "when",
+        "comparisons",
+        "heads",
+        "variables",
+        "bindings",
+        "firings",
+        "head_occurrences",
+        "trace_items",
+        "output_bytes",
+        "work"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "line": 118
+    },
+    {
+      "recordType": "Variable",
+      "fields": [
+        "name"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "line": 42
+    },
+    {
+      "recordType": "Triple",
+      "fields": [
+        "subject",
+        "predicate",
+        "object"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "line": 47
+    },
+    {
+      "recordType": "Comparison",
+      "fields": [
+        "left",
+        "operator",
+        "right"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "line": 54
+    },
+    {
+      "recordType": "RuleSpec",
+      "fields": [
+        "rule_id",
+        "when",
+        "comparisons",
+        "heads",
+        "source",
+        "revision",
+        "definition_digest",
+        "policy"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "line": 61
+    },
+    {
+      "recordType": "Catalog",
+      "fields": [
+        "classes",
+        "object_properties",
+        "data_properties"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "line": 73
+    },
+    {
+      "recordType": "BindingMatch",
+      "fields": [
+        "rule_id",
+        "bindings",
+        "when",
+        "proof_leaves"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "line": 80
+    },
+    {
+      "recordType": "ComparisonEvidence",
+      "fields": [
+        "index",
+        "left",
+        "operator",
+        "right",
+        "result"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "line": 117
+    },
+    {
+      "recordType": "HeadEvidence",
+      "fields": [
+        "index",
+        "triple"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "line": 126
+    },
+    {
+      "recordType": "PreparedFiring",
+      "fields": [
+        "rule_id",
+        "bindings",
+        "when",
+        "proof_leaves",
+        "comparisons",
+        "heads",
+        "basis",
+        "source",
+        "revision",
+        "definition_digest",
+        "policy"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "line": 132
+    },
+    {
+      "recordType": "PreparedFiringBatch",
+      "fields": [
+        "firings",
+        "facts",
+        "payload",
+        "digest",
+        "profile"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "line": 147
+    },
+    {
+      "recordType": "ProfileValue",
+      "fields": [
+        "term",
+        "domain",
+        "value",
+        "language"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "line": 47
+    },
+    {
+      "recordType": "Number",
+      "fields": [
+        "numerator",
+        "denominator",
+        "negative_zero"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "line": 14
+    },
+    {
+      "recordType": "Calendar",
+      "fields": [
+        "day",
+        "second",
+        "explicit_offset",
+        "is_datetime"
+      ],
+      "source": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "line": 28
+    }
+  ],
+  "calculatedUpperBoundsNotTimeOrRSS": {
+    "B": 8388608,
+    "Q": 16777216,
+    "J": 25165824,
+    "N": 100,
+    "F": 1024,
+    "M": 131072,
+    "U": 131072,
+    "S": 16777216,
+    "cacheQuery": 4345430016,
+    "cacheSplitRefs": 67108864,
+    "cacheNodes": 262244,
+    "trieBranchSlots": 67134464,
+    "integerCoefficientBound": 1049,
+    "RparseWholeWork": 16777216,
+    "RparseWholeInput": 262144,
+    "revalidationWholeWorkWithoutControl": 50331648,
+    "revalidationWholeInput": 524288,
+    "revalidationWholeOutput": 524288,
+    "revalidationControlCap": 1102668
+  }
+}
