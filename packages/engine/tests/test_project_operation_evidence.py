@@ -1369,21 +1369,26 @@ def test_preprobe_actual_plans_use_native_flags_and_bounded_point_seeks(owner, a
     plans = []
     for sql in dict.fromkeys(trace):
         native = sql.startswith("SELECT typeof(") and "octet_length(" in sql
-        points = sql.startswith("WITH _t01_wanted") or " LEFT JOIN " in sql
-        if not native and not points:
+        if not sql.startswith(("SELECT ", "WITH ", "PRAGMA ")):
             continue
         plan = [tuple(r) for r in owner._db.execute("EXPLAIN " + sql)]
         assert not any(r[1] in {"Count", "OpenAutoindex"} for r in plan)
         cursors = {r[2] for r in plan if r[1] == "OpenRead"}
+        numeric_enumeration = sql.startswith("SELECT _rowid_ FROM ") and " LIMIT " in sql
+        if numeric_enumeration:
+            assert not any(r[1] == "Column" for r in plan)
         for cursor in cursors:
+            if numeric_enumeration:
+                continue
             assert any(r[1] == "SeekRowid" and r[2] == cursor for r in plan)
             assert not any(r[1] in {"Rewind", "Next"} and r[2] == cursor for r in plan)
             columns = [r for r in plan if r[1] == "Column" and r[2] == cursor]
             if native:
                 assert all(r[6] in {128, 192} for r in columns)
-            if columns and " LEFT JOIN " not in sql and "VALUES (NULL)" not in sql:
-                assert columns[0][3] == max(r[3] for r in columns)
-                assert columns[0][6] == 128
+            fenced = native or sql.startswith(("SELECT * FROM ", "WITH _t01_wanted"))
+            if columns and fenced and " LEFT JOIN " not in sql and "VALUES (NULL)" not in sql:
+                assert columns[0][3] == max(r[3] for r in columns), sql
+                assert columns[0][6] == 128, sql
         plans.append({"sql": sql, "opcodes": plan})
     assert plans and any(" LEFT JOIN " in p["sql"] for p in plans)
     path = tmp_path / "native-point-explain.json"
@@ -1624,3 +1629,124 @@ def test_preprobe_cached_real_rows_pay_repeat_work_without_duplicate_evidence(ow
     repeated = [e for e in audit[-1][offset:] if e["event"] == "query"]
     assert repeated and all(e["provider"] == "snapshot-cache" for e in repeated)
     assert all(e["reservedWork"] > 0 for e in repeated)
+
+
+@pytest.mark.parametrize("alias", ["rowid", "_rowid_", "oid", "_t01_rowkey"])
+@pytest.mark.parametrize("upper", [False, True])
+def test_preprobe_row_number_schema_alias_is_checked_before_enumeration(owner, audit, alias, upper):
+    intent, project = create_project(owner)
+    owner.put_blob(project["projectId"], {"small": "normal"})
+    name = alias.upper() if upper else alias
+    owner._db.execute(f'ALTER TABLE job_blobs ADD COLUMN "{name}" TEXT')
+    with readonly(owner) as trace:
+        assert read(owner, create_selector(intent))["finding"] == "incomplete-evidence"
+    assert not any(
+        sql.startswith(("SELECT rowid FROM", "SELECT _rowid_ FROM")) and '"job_blobs"' in sql
+        for sql in trace
+    )
+    assert not any(e["event"] == "native-metadata" and e["table"] == "job_blobs" for e in audit[-1])
+    verify_ledger(owner, audit[-1])
+
+
+def test_preprobe_final_full_row_read_keeps_independent_seek_predicate(owner, audit):
+    _, project = create_project(owner)
+    refs = [owner.put_blob(project["projectId"], {"smallRow": i}) for i in range(3)]
+    rowid = owner._db.execute("SELECT _rowid_ FROM job_blobs WHERE ref=?", (refs[-1],)).fetchone()[
+        0
+    ]
+    gate = core._MeteredGate(owner._db, CAPS["maxEvidenceBytes"], ReadLimits())
+    gate.encoding = "UTF-8"
+    size = gate._cost("job_blobs", rowid)
+    final = next(
+        e
+        for e in audit[-1]
+        if e["event"] == "query" and e["sql"].startswith('SELECT * FROM "job_blobs"')
+    )
+    assert "WHERE _rowid_=? AND CASE" in final["sql"]
+    plan = [tuple(r) for r in owner._db.execute("EXPLAIN " + final["sql"], (rowid,))]
+    real = {r[2] for r in plan if r[1] == "OpenRead"}
+    assert real and all(any(r[1] == "SeekRowid" and r[2] == c for r in plan) for c in real)
+    assert not any(r[1] in {"Rewind", "Next"} and r[2] in real for r in plan)
+    expected = dict(
+        owner._db.execute("SELECT * FROM job_blobs WHERE _rowid_=?", (rowid,)).fetchone()
+    )
+    assert size == len(encoded(expected))
+    assert dict(gate.verified_rows[("job_blobs", rowid)]) == expected
+
+
+@pytest.mark.parametrize("first_kind", [None, "resource", "cancel"])
+@pytest.mark.parametrize("close_kind", ["memory", "interrupt", "sqlite"])
+def test_preprobe_close_failure_preserves_first_object_or_original_close(
+    owner, audit, monkeypatch, first_kind, close_kind
+):
+    first = (
+        core.EvidenceFault("resource-limit")
+        if first_kind == "resource"
+        else KeyboardInterrupt("original cancel")
+        if first_kind == "cancel"
+        else None
+    )
+    close_failure = (
+        MemoryError("close memory")
+        if close_kind == "memory"
+        else KeyboardInterrupt("close interrupt")
+        if close_kind == "interrupt"
+        else sqlite3.OperationalError("close driver failure")
+    )
+    if close_kind == "sqlite":
+        close_failure.sqlite_errorcode = sqlite3.SQLITE_IOERR
+    original = core._MeteredGate._audit
+    close = core._Cursor.close
+    closed = []
+
+    def collect(gate, event, **facts):
+        original(gate, event, **facts)
+        if (
+            first is not None
+            and event == "query"
+            and facts["sql"] == "rowid cursor advance reservation"
+        ):
+            raise first
+
+    def fail_close(cursor):
+        close(cursor)
+        closed.append(True)
+
+        # Run the actual mapping boundary on a small driver spy after closing
+        # the real private cursor. No duplicated exception mapping in the test.
+        class CloseDriver:
+            def close(self):
+                raise close_failure
+
+        return close(core._Cursor(CloseDriver()))
+
+    monkeypatch.setattr(core._MeteredGate, "_audit", collect)
+    monkeypatch.setattr(core._Cursor, "close", fail_close)
+    gate = core._MeteredGate(owner._db, CAPS["maxEvidenceBytes"], ReadLimits())
+    gate.encoding = "UTF-8"
+    with pytest.raises(BaseException) as raised:
+        gate._rowids("sqlite_master", 256)
+    assert closed == [True]
+    if first is not None:
+        assert raised.value is first and first.cleanup_failed is True
+    elif close_kind == "sqlite":
+        assert type(raised.value) is core.EvidenceFault and raised.value.reason == "storage-failure"
+    else:
+        assert raised.value is close_failure
+    assert not owner._db.in_transaction
+
+
+def test_preprobe_implicit_row_numbers_keep_signed_int64_range(owner, audit):
+    _, project = create_project(owner)
+    refs = [owner.put_blob(project["projectId"], {"small": i}) for i in range(2)]
+    with corrupt_immutable(owner, "job_blobs"):
+        for ref, number in zip(refs, (-(2**63), 2**63 - 1), strict=True):
+            owner._db.execute("UPDATE job_blobs SET _rowid_=? WHERE ref=?", (number, ref))
+    gate = core._MeteredGate(owner._db, CAPS["maxEvidenceBytes"], ReadLimits())
+    gate.encoding = "UTF-8"
+    assert gate._rowids("job_blobs", 2) == (-(2**63), 2**63 - 1)
+    for number in (-(2**63), 2**63 - 1):
+        actual = dict(
+            owner._db.execute("SELECT * FROM job_blobs WHERE _rowid_=?", (number,)).fetchone()
+        )
+        assert gate._cost("job_blobs", number) == len(encoded(actual))

@@ -381,7 +381,9 @@ class _MeteredGate:
             _limit(0 < len(info) <= 32)
             kinds = {}
             for row in info:
-                _require(row[6] == 0 and row[1] != "_t01_rowkey")
+                _require(
+                    row[6] == 0 and row[1].lower() not in {"rowid", "_rowid_", "oid", "_t01_rowkey"}
+                )
                 kind = {"TEXT": "text", "INTEGER": "integer", "INT": "integer"}.get(row[2].upper())
                 if kind is None:
                     raise EvidenceFault("unsupported-profile")
@@ -401,11 +403,16 @@ class _MeteredGate:
         return self.seen[("sqlite_master", rows[0]["rowid"])]
 
     def _rowids(self, table, maximum):
+        # sqlite_master is the fixed SQLite built-in schema. Every other table
+        # must prove its complete physical column names before a rowid opcode
+        # is assumed: rowid/_rowid_/oid are shadowable case-insensitive names.
+        if table != "sqlite_master":
+            self._columns(table)
         self._profile()
         # No WHERE or keyset can skip malformed duplicate rowids. LIMIT counts
         # every emitted physical entry. Empty children/depth are rejected by
         # moveToRoot/moveToChild; First/Next each traverse at most40 pages.
-        sql = f"SELECT rowid FROM {_quote(table)} NOT INDEXED LIMIT ?"
+        sql = f"SELECT _rowid_ FROM {_quote(table)} NOT INDEXED LIMIT ?"
         cursor = self._raw(
             sql, (maximum + 1,), rows=1, control_work=_STATEMENT_WORK + 40 * self.page_size
         )
@@ -435,7 +442,7 @@ class _MeteredGate:
         finally:
             try:
                 cursor.close()
-            except EvidenceFault:
+            except BaseException:
                 if first is None:
                     raise
                 first.cleanup_failed = True
@@ -449,7 +456,7 @@ class _MeteredGate:
         self._profile()
         ordered = tuple(reversed(columns))
         expressions = ",".join(f"typeof({_quote(c)}),octet_length({_quote(c)})" for c in ordered)
-        sql = f"SELECT {expressions} FROM {_quote(table)} NOT INDEXED WHERE rowid=?"
+        sql = f"SELECT {expressions} FROM {_quote(table)} NOT INDEXED WHERE _rowid_=?"
         if sql not in self.plans:
             plan = self._raw(
                 "EXPLAIN " + sql,
@@ -570,7 +577,7 @@ class _MeteredGate:
             sql = "SELECT " + ",".join(
                 f"length({_quote(c)}),instr({_quote(c)},char(0))" for c in text
             )
-            sql += f" FROM {_quote(table)} WHERE rowid=?"
+            sql += f" FROM {_quote(table)} WHERE _rowid_=?"
             native_bytes = sum(info[c][1] for c in text)
             values = self._raw(
                 sql,
@@ -616,12 +623,12 @@ class _MeteredGate:
                         multiplier = 1 if code in _SHORT or code in (34, 92) else 5
                         counts.append(f"{multiplier}*(?-length(replace({col},char({code}),'')))")
                         params.append(n)
-                    sql = f"SELECT ?+{'+'.join(counts)} FROM {target} WHERE rowid=?"
+                    sql = f"SELECT ?+{'+'.join(counts)} FROM {target} WHERE _rowid_=?"
                     params.append(rowid)
                 else:
                     sql = (
                         f"WITH RECURSIVE target(v,n) AS (SELECT {col},length({col}) "
-                        f"FROM {target} WHERE rowid=?),"
+                        f"FROM {target} WHERE _rowid_=?),"
                         "chars(i,c) AS (SELECT 1,unicode(substr(v,1,1)) FROM target WHERE n>0 "
                         "UNION ALL SELECT i+1,unicode(substr(v,i+1,1)) "
                         "FROM chars,target WHERE i<n) "
@@ -643,7 +650,9 @@ class _MeteredGate:
         self.seen[key] = size
         self._audit("charged", table=table, rowid=rowid, bytes=size, total=self.evidence)
         row = self._raw(
-            self._bounded_select(f"SELECT * FROM {table} WHERE rowid=?"),
+            self._bounded_select(f"SELECT * FROM {table}").replace(
+                "WHERE CASE", "WHERE _rowid_=? AND CASE", 1
+            ),
             (rowid,),
             body_cost=size,
             control_work=_STATEMENT_WORK + _HEADER_WORK + 22 * self.page_size,
@@ -703,13 +712,15 @@ class _MeteredGate:
         if fields == "*":
             bounded = bounded.replace("SELECT * FROM", f"SELECT {_quote(table)}.* FROM", 1)
         elif fields == "rowid":
-            bounded = bounded.replace("SELECT rowid FROM", f"SELECT {_quote(table)}.rowid FROM", 1)
+            bounded = bounded.replace(
+                "SELECT rowid FROM", f"SELECT {_quote(table)}._rowid_ FROM", 1
+            )
         values = ",".join("(?)" for _ in rowids) if rowids else "(NULL)"
         start = f"WITH _t01_wanted(_t01_rowkey) AS (VALUES {values}) "
         bounded = bounded.replace(
             f"FROM {_quote(table)} NOT INDEXED WHERE ",
             f"FROM _t01_wanted CROSS JOIN {_quote(table)} NOT INDEXED "
-            f"WHERE {_quote(table)}.rowid=_t01_rowkey AND ",
+            f"WHERE {_quote(table)}._rowid_=_t01_rowkey AND ",
             1,
         )
         return start + bounded, (*rowids, *params)
@@ -829,8 +840,8 @@ class _MeteredGate:
                 actual_sql = sql.replace(
                     "commits c LEFT JOIN commit_evidence e ON ",
                     "commits c NOT INDEXED LEFT JOIN commit_evidence e NOT INDEXED "
-                    "ON e.rowid=? AND ",
-                ).replace("WHERE c.project=?", "WHERE c.rowid=? AND c.project=?")
+                    "ON e._rowid_=? AND ",
+                ).replace("WHERE c.project=?", "WHERE c._rowid_=? AND c.project=?")
                 actual_params = (right[0] if right else None, left[0] if left else None, *params)
                 control = _STATEMENT_WORK + sum(
                     len(self._columns(t)) * (_HEADER_WORK + 21 * self.page_size) for t in tables
