@@ -27,7 +27,7 @@
 
 ## 实际调度与下一门
 
-总控已在仓库外 service-stage-register.md 正式登记 T04-S1，已明确通知认可拆分方向，但未授实际外审时段/推送门。官方 wait_threads 当前核实总控 inProgress，已协调前方 T06-S1 和 I05/格式基础；这不是本线已开始外审或批准依赖的新证据。新增 T01/T03 共享交接不扩张本线责任或允许消费未批代码。
+总控已在仓库外 service-stage-register.md 正式登记 T04-S1，已明确通知认可拆分方向，但未授实际外审时段/推送门。总控后续实际核实 CUA 仅本机 Mac，没有已核隔离入口或时段答复，指定外审任务实际为 0；T06-S1 是资源优先安排，不代表审查正在运行。新增 T01/T03 共享交接不扩张本线责任或允许消费未批代码。
 
 本线交付：[服务阶段](../../iterations/T04/service-stage.md)、[接线缺口](../../iterations/T04/integration-handoff.md)、[已批准读取适配](../../iterations/T04/reader-integration.md)、[验收对应](../../iterations/T04/acceptance.md)。正常回执固定 candidate、过程 HEAD、manifest/raw，等待总控全文核验后按真实 ready 安排；不抢资源或提前改变前方候选基线。
 
@@ -50,3 +50,5 @@ ZCode 默认 yolo、MiniMax 默认 bypassPermissions，实际任务仍须读回�
 [无损归档](evidence/raw-logs-554ec89.tar.gz) 6081 字节，SHA `c17c2595d79900c539e4a0aa61bc1ad012e058af9e666282aa9c1f6079064865`；[逐成员索引](evidence/raw-logs-554ec89.index.json) 记录全部 37 成员、原始 61602 字节及每项 SHA/大小，并链接旧、新三份汇总的固定提交与哈希。已重新打开归档、完整读取全部成员，与原件逐字节/大小/哈希相等；首次失败原件及空日志保留，旧汇总未改。恢复方法见[恢复说明](evidence/raw-logs-recovery.md)。未重跑不变产品测试，未改产品代码/公共契约。
 
 最新共同指令 SHA `b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39` 已全文读并透传独立审查 agent：T01 接收 storage/Python4/main8，T03 接收 engine packaging/entrypoint，其余按正文；仅更新归属，不代表批准未合并实现，也不放宽既有无桌面/指定外审资源/推送门。
+
+2026-10-21 总控聊天 `01a154de-843b-7a00-8a80-51ba1c0aebce` 直接回执：从 `ae86f294a19befc94247733ee7ea186b5fab3d6d` Git blob 读回 archive/index，实算归档 SHA 如上、索引 SHA `6d369a87a25fa5db8e88307e7032827f95778b8ba4415ee4b5371432af5dc811`，37 成员逐字节等于原件/61602 字节，3 份原 summary 固定 blob 全吻合；**R1 已由总控实际核验关闭**，无需无变化重测。该回执晚于旧审计正文的“待闭合”，不改写旧审计记录。S1 产品仍冻结 554；独立树的 `82630f50def6aac2a5ba60470757791dd39053db` 讨论材料已收到，父接口按 T01 统一基础合同回应；4 个 canonical 错误形状校验仍不是业务运行证据。
