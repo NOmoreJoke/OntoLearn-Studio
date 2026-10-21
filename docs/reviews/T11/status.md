@@ -1,6 +1,6 @@
 # T11 发布与整体验收状态
 
-2026-10-21（Asia/Shanghai）。阶段：private_implementation_validated，独立 Goal 保持 active；完整T11尚未验收。
+2026-10-21（Asia/Shanghai）。阶段：private_implementation_validated，独立 Goal 当前 blocked；完整T11尚未验收。
 
 - 会话：01a15bc2-4551-7b51-8453-add1943f3b6e；仅负责 T11。
 - 工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-release`。
@@ -36,3 +36,5 @@
 当前恢复入口：`recovery.json` 固定最新私有实现/测试/验收提交 `7d28fdb27c0aac39ed7df1f9fd5fa0f127b5d9f4` 及65/695/1052验证和最新内审报告哈希；前述ffa0972/50a3212为历史阶段，不用于恢复当前候选。后续仅追加本恢复回执，无实现或验收变化。AGENTS保持未暂存，尚未推送；完整目标和原门禁继续。
 
 格式基础责任回执：已全文读回I05→T01 Python四文件生效协议并核对execution-state，协议与登记SHA一致。JobStore/coordinator/Python入口/合同及既有storage基础由T01负责，T11恢复/迁移证据的接口需求按此协调；公共canonical/main八文件未自动转交。详见format-python-ownership-receipt.json及共享接线请求。此次仅责任路由文档更新，核验器/测试/验收基线未变，不重跑无变化测试、不重开产品内审；完整候选、真实设备/签名/模型/真人及正式门禁仍待具备。
+
+当前阻断审计：前两轮为官方活跃总控句柄的50秒有界等待，本轮再次核实相同T11依赖/资源缺口，连续第三轮无可推进的授权工作；Goal工具已实际返回blocked。总控仍为active/inProgress，不把观察超时当终止。私有候选/检查/内审保留，未重跑无变化测试；最新阻断依据与恢复条件见blocked-audit.json。等待批准的正式接口/配置或真实验收资源变化后续接原完整目标，不将局部工具完成当发布完成。前文active均为历史阶段记录。
