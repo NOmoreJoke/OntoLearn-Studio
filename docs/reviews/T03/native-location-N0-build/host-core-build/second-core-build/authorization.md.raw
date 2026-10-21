@@ -1,0 +1,29 @@
+# T03 N0：修复 metadata 后唯一第二次 core 构建窗口
+
+2026-10-22。总控批准在原T03聊天、Goal及 `.worktrees/T03-native-location-N0-build` 执行一次新的darwin-arm64/core configure/build。依据产品 `95f07d931eeffd3bdcd52cb21e9fa2d8a1db12bd`、最终过程 `5d7a143f2c100c5ca4ed6b36f7fa8fc2df611a34`，及根独立定点复核的完整12、metadata、原始双流与最终322+self清单。此前7961B首窗口的限制继续适用，本文只更新本次固定输入、执行次数及累计费用界。
+
+## 输入与窄审批更新
+
+三writer固定：CMake19815B/SHA256 `f2b5522b92c5dfc9724b95c35b876ce5015a4955385f614a6da20fb9bce57645`，driver30056B/`ca4ef93024762ae5dfd3dc95133f8ab28ae2e63048af0b3a658bfeb98f62045c`，lock10474B/`bb74f5117e2efa6e5abf2d45bfaa0788a539dc502eb028f9819b4f8de6739a1d`。完整12及四inventory元数据用最终5276B candidate清单 `944afb31868a2569cf32686eba88e157adfe6acadc5d3da28a29b777f74775a1`；最终归档清单81177B/`9958c65ac5a4245ad213e7e812c6549d3d11896c75f750198b0f13c7b570d988`。九I06源仍b1c原件只读，source/API3/static assembly批准沿ac37，不用6a冒九source。
+
+先归档本文原bytes/size/SHA到新的过程目录 `docs/reviews/T03/native-location-N0-build/host-core-build/second-core-build/` 并创建真实40hex授权过程ref。只允许lock中darwin-arm64 toolchain approval和darwin-arm64/core execution的reference改指该真实ref（approved仍true），其余字段、pins、环境、driver/CMake及九源不变。固定新的完整12候选和精确diff，原独立reviewer定点核仅这两个reference及本文映射、JSON/语法即可；不重跑不变42772全映射或六组verify-only。若仅此许可差异及静态检查成立，直接执行，不为常规成功回执再次停等总控。额外代码/环境/pin变化先回交具体反例，不能夹带。
+
+## 单次执行与证据
+
+唯一命令为 `node scripts/build-native-location.mjs --target darwin-arm64 --component core --build`，从新的固定HEAD产生新inputDigest目录。沿原shell:false、绝对工具pin、DEVELOPER_DIR固定值、parallel2、各command600000ms及原13命令（11项Git状态/HEAD/源blob，configure，build）。只构建location_core_test与location_child_probe。允许configure的compiler identification/try_compile编译链接；不加try_run，不启动任何生成程序、CTest、child/native/addon/Electron/GUI。Node/Windows/addon/fixture-addon执行继续false。
+
+沿R5在每次dispatch前保计划/环境/原始独立双流及意图，之后保真实PID/status/signal/timeout/error和首因；写日志失败先停。任何失败保完整结果，不继续后续build、不自动第三次重试、不删首失败目录。首c80/7bfd ETIMEDOUT与进程树drain未知保持历史，不从新运行推过去已释放。只按确属本任务的进程对象有界收尾，不泛kill。
+
+成功仅记built-unverified/NOT_RUN。按原首窗口允许的只读file/otool/nm及既有编译日志，保存两产物path/bytes/SHA、架构/部署load-command、compile_commands/depfiles/link输入及实际依赖；不加载、不执行、不签生产闭包。新未供应实际used对象给具体路径/来源，原工具提取/hash不重复充作新实测。
+
+## 费用增量与口径
+
+构建阶段累计guard从32GiB明确提高为40GiB=`42949672960`B；包括首尝试声明上界17678194976B、第二次两前门17755667816B、本metadata窗口1GiB及两次closing各256MiB，合声明上界 `37044475528`B，余 `5905197432`B。这里是应用层已声明pin/metadata读取界，非OS IO/RSS或compiler全部读取实测。
+
+前供应阶段原账 `9745727085`B 独立保留，不能清零或说包含它仍小于40GiB。两阶段声明合计 `46790202613`B，对应组合guard `52695400045`B。后续metadata/小回执实际新增读取也计本阶段余量，不重做SDK/7GB cache全量供应hash，build两独立前门本身的pin验证仍保留。
+
+供应实体记录guard仍200000：首attempt保守85544（首CMake未观测完成不当0），本次两前门85544，合171088；实际成功/中断另实报。metadata逻辑访问累计guard本次明确为1100000：原已核及预留827096，加本次source/sidecar两门171088，预测998184，余101816仅供有限小清单/closing。对象访问、实体pin记录与字节扫描三口径分开；不把parser内部遍历或实际loader IO未知冒称测过。原223168漏计、400000不足及修正历史保留。
+
+原d040三CRLF mismatch、316范围第四raw mismatch、最终full whitespace exit2/仅36 exact原件以外filtered0、Node24 posthoc执行回执无同期子进程时间的边界照保，不为“补全证据”无变化重跑。新输出独占路径，结束立即保完整账/双流/原件；缺任何原件如实列出。
+
+本窗口不是N0运行、目标OS、正式位置或父功能通过。指定同版双模型、CI、PR/develop门保持；不推送、不合并、不改Goal状态。原独审及总控继续核实际结果。
