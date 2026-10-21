@@ -124,3 +124,5 @@ root此前另已主动read_thread读取本线blocked终态，并指示后续直�
 `evidence-archive/` 封存全部41份现存日志（含32份原索引日志和失败记录）、当前2张C2匹配截图及4份原始索引；47个原始文件加内嵌清单共48成员。压缩包548,417字节，SHA `43d9e20533885828a03c34392e8ae42ada23663c1cc338986c795c236f2a6b86`。逐项清单与实际新目录解包读回均已生成，原文件未修改；C1旧截图仍只有旧哈希且不可恢复，不重造。具体恢复信息见 `evidence-archive/README.md` 和 `archive-index.json`。
 
 本次为总控要求的有界证据保全，原产品C3仍4932122，完整Goal保持blocked；正式接口/外审/CI/正常合并及远端门未因封存放行。仅本地Git受控保存，不声明远端或异机备份。
+
+独立agent对封存内容只读复核通过（`evidence-archive/independent-review.md`）。已提交封存为 `c30927000bdf7fafd5f396c08b39ae3ce9829f6d`，随后实际从该Git提交读取压缩包及清单、恢复到新临时目录并逐项读取48成员，大小/哈希/原字节全部匹配；详见 `evidence-archive/git-readback.json`。核对4932122至封存提交的apps/packages/tests/锁无差异。未push或扩大授权，Goal仍blocked。
