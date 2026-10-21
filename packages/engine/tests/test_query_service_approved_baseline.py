@@ -81,3 +81,15 @@ def test_approved_q01_q02_inputs_have_complete_expected_authoring_rows(closed):
             )
         actual = [[str(value) for value in row] for row in graph.query(sparql)]
         assert actual == ([] if closed else [["urn:ontolearn:learning:alarm/A01"]])
+
+
+def test_equal_count_wrong_semantics_is_not_the_expected_answer():
+    """A valid query for Closed/High yields A02, which must not pass as A01."""
+    correct = verified_input("unclosed-high.rq").decode("utf-8")
+    wrong = correct.replace('"Open"', '"Closed"')
+    correct_rows = [[str(value) for value in row] for row in new_graph().query(correct)]
+    wrong_rows = [[str(value) for value in row] for row in new_graph().query(wrong)]
+    assert correct_rows == [["urn:ontolearn:learning:alarm/A01"]]
+    assert wrong_rows == [["urn:ontolearn:learning:alarm/A02"]]
+    assert len(wrong_rows) == len(correct_rows)
+    assert wrong_rows != correct_rows  # Fixed full answer comparison, never count-only acceptance.
