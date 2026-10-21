@@ -1,0 +1,87 @@
+{
+  "status": "FAILED_CORE_NONZERO_OR_SIGNAL",
+  "executionRecord": "I06-N0-execution-002-a0e724fdf90afa98",
+  "sourceBinding": {
+    "status": "AUTHORIZED_SINGLE_DISPATCH_INTENT_NOT_RESULT",
+    "authorization": {
+      "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/I06-N0-diagnostic-002-single-host-CLI-execution-window.md",
+      "bytes": 4073,
+      "sha256": "d0739abec2a8d4d02843adeccebcaf3a7a566d9fe60ec2f38cd78f71bcc2d4c7"
+    },
+    "preparationRef": "1151b8d03cd381100bfc1b1804d3927110621f51",
+    "fixedCallSourcePath": "docs/reviews/I06/native-location-N0/host-core-run-preparation/diagnostic-second-call/exact-tool-call.preparation.json",
+    "fixedCallBytes": 19350,
+    "fixedCallSha256": "42b1f04107e3e2404ed79cdaeed4fa0ac80fea093780dafbd4b16352c3615a60",
+    "cmdBytes": 17176,
+    "cmdSha256": "be0d1fc7518e281353206ec25e43f579dba9821035b46ee3161e76aac7fc2705",
+    "record": "I06-N0-execution-002-a0e724fdf90afa98",
+    "sourceRef": "fc6237e8cad1a4043d46a1c7198439f1da06ad67",
+    "T03InputRef": "d98b503ebe9c477d30d0f36d831cffbeeaf2a988",
+    "T03ProcessRef": "d51a0555e6feb062fc935173222cc142687901a5",
+    "inputDigest": "a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77",
+    "historicalRawResultSourceRef": "b59239f9c1ec2774c7922f95dfc67db4dc8754e8; not current provenance",
+    "dispatchCountAllowed": 1,
+    "retriesAllowed": 0,
+    "extraWrapperOrTimeoutAdded": false,
+    "tool": "exec_command",
+    "protectedAGENTS": {
+      "bytes": 15852,
+      "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+    }
+  },
+  "toolTerminal": {
+    "chunk_id": "38d2d0",
+    "wall_time_seconds": 0.612136333,
+    "exit_code": 1,
+    "original_token_count": 0,
+    "output": ""
+  },
+  "sessionId": null,
+  "dispatchCount": 1,
+  "continuationCount": 0,
+  "retryCount": 0,
+  "corePid": 88567,
+  "coreReturncode": 1,
+  "coreWaitStatus": 256,
+  "leaderState": "reaped",
+  "cancelSignal": 0,
+  "events": [],
+  "processApiRefusedOrWaitUnknown": false,
+  "waitAndCleanupElapsedSeconds": 0.669060584,
+  "elapsedValueIsNotEndToEndPerformance": true,
+  "prePostArtifactsIdentical": true,
+  "prePostPair": [
+    {
+      "bytes": 343920,
+      "dev": 16777232,
+      "ino": 66596754,
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/artifacts/location_core_test",
+      "sha256": "d4f5ca322146d9696860a74de4bee2ad27866a2223340669898fb82cbbfeb817"
+    },
+    {
+      "bytes": 34120,
+      "dev": 16777232,
+      "ino": 66596825,
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/a0e724fdf90afa980f01719fc8cc4d55f158400cf5abe26665c72a2d288cac77/core/artifacts/location_child_probe",
+      "sha256": "21928ca2b5570055fad4bebcd81fcb658016ca9a738294397a83056b662b87e8"
+    }
+  ],
+  "controlRecordBytes": 3551,
+  "rawStreamBytes": 88,
+  "stdoutBytes": 0,
+  "stderrBytes": 88,
+  "stderrSha256": "1ff7f7a01d47388a0e279da95eabc49f3f1eef45091671421f62d383e970c641",
+  "stderrExactUtf8": "N0 owner-create case=metadata status=4 owner_nonzero=1\nN0 fixture failure: owner-create\n",
+  "observedDiagnostic": {
+    "case": "metadata",
+    "status": 4,
+    "statusName": "NL_UNSUPPORTED",
+    "ownerNonzero": true,
+    "definition": "packages/native-location/include/location_abi.h:67; current fixed fc source",
+    "specificUnsupportedCause": "unknown"
+  },
+  "nativeDrainCertified": false,
+  "fixtureResidual": "unknown; not scanned/deleted",
+  "oldRawSourceRef": "b59239f9c1ec2774c7922f95dfc67db4dc8754e8; historical template only",
+  "parentN0PlatformOrEXCLAcceptance": false
+}
