@@ -11,3 +11,5 @@
 另采纳来源审查的明确门：保423b实际same inputSnapshotId、reasoning kind、payload available、重叠manifests一致及完整implementation同一，不把historical当V1→当前V2豁免；未来任何放宽需canonical/root另行版本化批准。静态入口词法清单29文件241hits新增供实施定位，未将搜索当动态全调用证明。
 
 其余C/T/S逐loop/库委托/低限±1/并持、fullview新R、H全owner/retired、T01 S1–S5、T05数学/解释、T03同一真实Job包、I06原scope/physical/native、全父I05/57P0/目标OS/真人/指定双审/CI/develop门全部保留。U和1312MiB是新增角色后的方案计量，不提高原B/Q/W/I/O/262144frame/120s/512MiB或Q5容量承诺；没有产品导入/运行/采用/新worker或Goal操作。
+
+最终复核状态：两位原审者均全文重读同一f68修订稿及651→f68差异，分别在`schema-budget-review/delta-2-report.md`与`trusted-origin-lifecycle-review/delta-2-report.md`独立关闭SB-01/02/03及OL-1，未发现新增本范围阻断。上表“等待”是固定f68时的历史状态，以本段及原delta报告为当前状态。最终496仅157行将48MiB明确限定production，并重申selected累计1312MiB不等同时内存/容量；两路最终editorial核验另附，未改变接口/公式/来源/生命周期。首审失败及原hash不变，所有关闭仅限方案层，不是产品验收。

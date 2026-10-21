@@ -1,0 +1,104 @@
+{
+  "scope": "static docs only; no product import, SQL, tests, assembly, worker, GUI, native, model, adoption or Goal action",
+  "base": "4be2360aac0e6ea06211731364a14beec683310d",
+  "planRef": "496f31a1eab57e7c8abf65ea200de8e3b895d17e",
+  "plan": {
+    "path": "docs/iterations/I05/formal-producer-and-selected-integration-plan.md",
+    "bytes": 69523,
+    "sha256": "23a4ae9f7974185db61664fb1db892586140ea20995f1bb5950943717bd0ed4c",
+    "lines": 219
+  },
+  "old160ByteForByteAgainstGit": {
+    "count": 160,
+    "passed": true,
+    "manifestPath": "docs/reviews/I05/profile-strict-restore/final-full-diff-manifest.json",
+    "manifestSha256": "5076b1f7041df2f9b2b9560ddcde590625d4d749a7bd2deae96603849fa3fcf5"
+  },
+  "AGENTSProtectedUnstaged": {
+    "bytes": 15852,
+    "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+  },
+  "changedAndUntrackedScopeCheck": "only allowed new docs plus protected unstaged AGENTS",
+  "jsonSyntaxAtCheck": {
+    "count": 26,
+    "passed": true
+  },
+  "format": {
+    "command": [
+      "node_modules/.bin/prettier",
+      "--check",
+      "--ignore-path",
+      "/dev/null",
+      "docs/iterations/I05/formal-producer-and-selected-integration-plan.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/candidate-1-checks.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/candidate-2-checks.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/counterexample-dispositions.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/docs-format-first-failure.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/document-edit-context-failure.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/document-edit-first-failure.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/final-delivery.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/actual-83-census.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/delivery.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/readonly-inputs.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/report.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/gap-census/static-first-failure.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/i05-entry-and-consumer-inputs.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/i05-static-entry-consumer-inventory.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/proposed-initial-readonly-closure.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/delta-2-inputs.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/delta-2-manifest.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/delta-2-report.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/final-editorial-check.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/manifest.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/report.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/static-inputs.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/static-read-first-failure.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/checks.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/fixed-interface-inputs.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/future-readonly-T01-52.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/t01-supplier-census/report.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/delta-2-first-format.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/delta-2-format.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/delta-2-inputs.json",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/delta-2-report.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/final-editorial-check.json"
+    ],
+    "exitCode": 0,
+    "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+    "stderr": "",
+    "preservedRawEvidenceExceptions": [
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/report.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/static-input-manifest.json"
+    ],
+    "exceptionsVerifiedByPriorFailureReceipts": true
+  },
+  "diffCheck": {
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "4be2360aac0e6ea06211731364a14beec683310d",
+      "--",
+      "docs/iterations/I05/formal-producer-and-selected-integration-plan.md",
+      "docs/reviews/I05/formal-producer-and-selected-integration-plan/"
+    ],
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "independentFinalPlanChecks": {
+    "schema-budget-review": {
+      "path": "docs/reviews/I05/formal-producer-and-selected-integration-plan/schema-budget-review/final-editorial-check.json",
+      "bytes": 2204,
+      "sha256": "6001cf1cb8704d515549515a85907c063a2cf74c995b86581d0bfad228a75ffe",
+      "status": "independent bounded docs-plan pass maintained for496"
+    },
+    "trusted-origin-lifecycle-review": {
+      "path": "docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/final-editorial-check.json",
+      "bytes": 4665,
+      "sha256": "c00e56ad788cef6690c6e322ce48592ecc245a13e5b6b82a54565eb1f23859a4",
+      "status": "independent bounded docs-plan pass maintained for496"
+    }
+  },
+  "note": "This validation record and final manifest are syntax/format/hash checked after creation by the final static tool call; self-referential hashes are not invented."
+}

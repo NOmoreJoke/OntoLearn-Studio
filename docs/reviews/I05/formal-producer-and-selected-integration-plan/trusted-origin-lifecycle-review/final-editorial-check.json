@@ -1,0 +1,70 @@
+{
+  "review_kind": "Independent static editorial delta review",
+  "base_ref": "f68c7516c6ea96a2655c3aef2d89abd749f5d805",
+  "candidate_ref": "496f31a1eab57e7c8abf65ea200de8e3b895d17e",
+  "plan_path": "docs/iterations/I05/formal-producer-and-selected-integration-plan.md",
+  "base": {
+    "bytes": 69441,
+    "sha256": "0d866d896224eb82abfe3d87537f10b7671c7eff068c0e0a6015f9698b55d9e6",
+    "lines": 219
+  },
+  "candidate": {
+    "bytes": 69523,
+    "sha256": "23a4ae9f7974185db61664fb1db892586140ea20995f1bb5950943717bd0ed4c",
+    "lines": 219,
+    "working_tree_matches_fixed_git": true
+  },
+  "changed_lines": [157],
+  "old_line": "这些公式要求C/T/S supplier对最终实际代码逐loop/库委托/并持证明、低限±1和实物资源观测再接收，不假称本轮已证明不存在的实现。H只有T01真实owner能核全actor/retired与持久history累计；提出的per-job最大原物料48MiB不是全进程内存或产品Q5容量线。新artifact/history quota字段必须由root/T01冻结实际有限配置，未设置生产准入关闭，内部真实Job验收显式给有限配置；不设Q5默认答案。已闭3ef R不重测充新证据，新view不能自动沿用其R证明。原request/total/memory/concurrency不增。",
+  "new_line": "这些公式要求C/T/S supplier对最终实际代码逐loop/库委托/并持证明、低限±1和实物资源观测再接收，不假称本轮已证明不存在的实现。H只有T01真实owner能核全actor/retired与持久history累计；提出的production单次准备原物料48MiB、selected累计raw1312MiB都不是全进程内存或产品Q5容量线，不能以48MiB作为selected累计上界。新artifact/history quota字段必须由root/T01冻结实际有限配置，未设置生产准入关闭，内部真实Job验收显式给有限配置；不设Q5默认答案。已闭3ef R不重测充新证据，新view不能自动沿用其R证明。原request/total/memory/concurrency不增。",
+  "exact_replacement": {
+    "before": "per-job最大原物料48MiB不是全进程内存或产品Q5容量线",
+    "after": "production单次准备原物料48MiB、selected累计raw1312MiB都不是全进程内存或产品Q5容量线，不能以48MiB作为selected累计上界",
+    "only_this_replacement": true
+  },
+  "conclusion": "Maintain delta-2 limited plan-level pass and OL-1 closure. The sole wording change clarifies that production preparation raw 48MiB and selected cumulative raw 1312MiB are neither whole-process memory bounds nor the product Q5 capacity line. No interface, field, formula, origin or lifecycle constraint changes; no product adoption is authorized.",
+  "remaining_gates": "Existing T01/I06 supplier, implementation, resource observation and independent acceptance gates remain as documented in delta-2.",
+  "method": [
+    "Read exact blobs from both fixed Git refs; compare every line",
+    "Assert 219 lines and only line157 differs by the exact specified replacement",
+    "Verify candidate bytes/SHA and current plan equality",
+    "Verify preserved original review artifact bytes/SHA"
+  ],
+  "not_run": [
+    "Product import or execution",
+    "SQL, worker, combined probes, tests, GUI/native, model or paid calls"
+  ],
+  "preserved_artifacts": [
+    {
+      "path": "report.md",
+      "bytes": 14767,
+      "sha256": "7e35c4bf6bebea298c7c132a1a7f00af410cc553ed519eb52c515c31a5f13cf9",
+      "unchanged": true
+    },
+    {
+      "path": "static-input-manifest.json",
+      "bytes": 62034,
+      "sha256": "f312a36fc66be5f6f9ef6490641c9dfae5fe294403e16f713fba7c6b144c66f3",
+      "unchanged": true
+    },
+    {
+      "path": "delta-2-report.md",
+      "bytes": 10235,
+      "sha256": "673e3285e138bcd8719b64eb1d94919fdf5f2cf430562f919fcfea006ce23a5a",
+      "unchanged": true
+    },
+    {
+      "path": "delta-2-inputs.json",
+      "bytes": 18393,
+      "sha256": "2abe29a5e72b84260aeca0d174fc7c1f0fe1a48a29c60a4b0353d6c2e3d41b75",
+      "unchanged": true
+    }
+  ],
+  "format_validation": {
+    "command": "node_modules/.bin/prettier --check --ignore-path /dev/null docs/reviews/I05/formal-producer-and-selected-integration-plan/trusted-origin-lifecycle-review/final-editorial-check.json",
+    "status": "PASS: actual check exit0; explicit --ignore-path /dev/null; this file matched",
+    "initial_attempts": "First inline script stopped on replacement assertion before writing; its format check found no file. A second script had a stdin encoding error before execution. Neither is a passing format check; the corrected ASCII script generated this record.",
+    "exit_code": 0,
+    "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n"
+  }
+}
