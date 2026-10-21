@@ -89,13 +89,20 @@ export class AgentConversation {
     this.error = code
     this.answer = null
   }
-  /** A snapshot for local UI; excludes prompt/history/body/provider diagnostics. */
+  /** Local snapshot; tool records retain their original input identity, not a new current result. */
   state() {
     return {
       phase: this.phase,
       exchanges: this.exchanges,
       requestedTokenCeiling: this.requestedTokenCeiling,
       error: this.error,
+      inputContext: {
+        projectId: this.context.projectId,
+        projectRevision: this.context.projectRevision,
+        inputSnapshotId: this.context.inputSnapshotId,
+        scopeRef: this.context.scopeRef,
+      },
+      localReceipts: this.session.currentTurnReceipts(),
       answer: structuredClone(this.answer),
     }
   }

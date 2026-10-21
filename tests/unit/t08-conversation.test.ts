@@ -108,6 +108,13 @@ describe('T08 pure conversation, synthetic protocol-to-adapter round trips; no t
       exchanges: 2,
       requestedTokenCeiling: 2048,
       error: null,
+      inputContext: {
+        projectId: 'p1',
+        projectRevision: 1,
+        inputSnapshotId: 's1',
+        scopeRef: 'scope1',
+      },
+      localReceipts: [{ callId: call.id, tool: 'query_execute', outcome: evidence }],
       answer: {
         kind: 'evidence',
         receipts: [{ callId: call.id, tool: 'query_execute', outcome: evidence }],
@@ -196,6 +203,13 @@ describe('T08 pure conversation, synthetic protocol-to-adapter round trips; no t
       exchanges: 1,
       requestedTokenCeiling: 1024,
       error: 'TIMED_OUT',
+      inputContext: {
+        projectId: 'p1',
+        projectRevision: 1,
+        inputSnapshotId: 's1',
+        scopeRef: 'scope1',
+      },
+      localReceipts: [],
       answer: null,
     })
     expect(() => failed.prepareExchange(current)).toThrow('INVALID_PROTOCOL')
@@ -278,4 +292,104 @@ it('T08 isolates a new user question from previous successful evidence while pre
       signal(),
     ),
   ).rejects.toThrow('INVALID_EVIDENCE')
+})
+
+it('T08 retains completed local evidence after provider failure or next-request budget failure', async () => {
+  for (const budget of [false, true]) {
+    const conversation = new AgentConversation(
+      context,
+      '查询',
+      { ...options, maxExchanges: budget ? 1 : 4 },
+      { query_execute: { execute: async () => evidence } },
+    )
+    conversation.prepareExchange(current)
+    await conversation.acceptResponse(1, raw('r1', null, [call]), current, signal())
+    const expected = [{ callId: call.id, tool: 'query_execute', outcome: evidence }]
+    expect(conversation.state().localReceipts).toEqual(expected)
+    if (budget) expect(() => conversation.prepareExchange(current)).toThrow('BUDGET_EXCEEDED')
+    else {
+      conversation.prepareExchange(current)
+      conversation.providerFailed(2, 'TIMED_OUT')
+    }
+    expect(conversation.state()).toMatchObject({
+      phase: 'failed',
+      answer: null,
+      inputContext: { projectId: 'p1', inputSnapshotId: 's1' },
+      localReceipts: expected,
+    })
+    const snapshot = conversation.state()
+    snapshot.localReceipts.length = 0
+    expect(conversation.state().localReceipts).toEqual(expected)
+  }
+})
+
+it('T08 keeps a generated versioned draft available locally when final model exchange fails', async () => {
+  const draft = {
+    kind: 'draft',
+    draftType: 'ontology',
+    summary: '建议新增设备类',
+    detail: '新增urn:Equipment，待真人Diff确认',
+  }
+  const conversation = new AgentConversation(context, '建模', options, {
+    ontology_propose: { execute: async () => draft },
+  })
+  conversation.prepareExchange(current)
+  await conversation.acceptResponse(
+    1,
+    raw('r1', null, [
+      {
+        ...call,
+        function: { name: 'ontology_propose', arguments: '{"instruction":"建立设备类"}' },
+      },
+    ]),
+    current,
+    signal(),
+  )
+  conversation.prepareExchange(current)
+  conversation.providerFailed(2, 'TIMED_OUT')
+  expect(conversation.state().localReceipts).toEqual([
+    {
+      callId: call.id,
+      tool: 'ontology_propose',
+      outcome: {
+        ...draft,
+        projectId: 'p1',
+        baseRevision: 1,
+        inputSnapshotId: 's1',
+        requiresHumanDiffConfirmation: true,
+      },
+    },
+  ])
+})
+
+it('T08 preserves completed receipts when cancellation interrupts the middle of a three-tool batch', async () => {
+  let markStarted: () => void = () => undefined
+  const secondStarted = new Promise<void>((resolve) => {
+    markStarted = resolve
+  })
+  let count = 0
+  const execute = vi.fn(async () => {
+    count++
+    if (count === 1) return evidence
+    markStarted()
+    return new Promise(() => undefined)
+  })
+  const conversation = new AgentConversation(context, '查询', options, {
+    query_execute: { execute },
+  })
+  conversation.prepareExchange(current)
+  const pending = conversation.acceptResponse(
+    1,
+    raw('r1', null, [call, { ...call, id: 'call2' }, { ...call, id: 'call3' }]),
+    current,
+    signal(),
+  )
+  await secondStarted
+  conversation.cancel()
+  await expect(pending).rejects.toThrow('CANCELLED')
+  expect(execute).toHaveBeenCalledTimes(2)
+  expect(conversation.state().localReceipts).toEqual([
+    { callId: call.id, tool: 'query_execute', outcome: evidence },
+    { callId: 'call2', tool: 'query_execute', outcome: { kind: 'failure', code: 'CANCELLED' } },
+  ])
 })

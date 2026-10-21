@@ -129,6 +129,10 @@ export class AgentSession {
     if (this.running) throw new AgentError('INVALID_PROTOCOL')
     this.receipts.clear()
   }
+  /** Local read-only snapshot; never grants model egress or domain write permission. */
+  currentTurnReceipts(): ToolReceipt[] {
+    return structuredClone([...this.receipts.values()])
+  }
   availableTools() {
     return toolDefinitions(Object.keys(this.ports) as ToolName[])
   }
