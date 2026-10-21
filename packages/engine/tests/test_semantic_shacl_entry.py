@@ -228,6 +228,22 @@ def test_other_literal_iri_and_blank_node_gates_remain_strict(observe, value, co
         observe("data-gate", lambda: validate(data(value), shape()))
 
 
+@pytest.mark.parametrize("policy", ["strict", WIDE])
+@pytest.mark.parametrize("position", ["subject", "predicate", "datatype", "shape-path"])
+def test_new_text_entry_classifies_invalid_iri_before_n3_sorting(observe, policy, position):
+    text, constraints = data('"1"^^xsd:integer'), shape()
+    if position == "subject":
+        text += "\n<urn:bad|value> ex:p 1 ."
+    elif position == "predicate":
+        text += "\nex:s <urn:bad|value> 1 ."
+    elif position == "datatype":
+        text = data('"bad"^^<urn:bad|value>')
+    else:
+        constraints = shape().replace("sh:path ex:p", "sh:path <urn:bad|value>")
+    with pytest.raises(SemanticError, match="^ABSOLUTE_IRI_REQUIRED$"):
+        observe("iri-before-n3", lambda: validate(text, constraints, data_policy=policy))
+
+
 @pytest.mark.parametrize(
     "extra, code",
     [

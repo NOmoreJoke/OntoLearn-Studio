@@ -108,7 +108,9 @@ def parse_turtle(text: str, *, format: str = "turtle", shapes: bool = False) -> 
     return _parse_turtle(text, format=format, shapes=shapes)
 
 
-def _parse_turtle(text, *, format="turtle", shapes=False, _allow_illtyped_integer=False):
+def _parse_turtle(
+    text, *, format="turtle", shapes=False, _allow_illtyped_integer=False, _check_iris=False
+):
     _text(text)
     if format != "turtle":
         raise SemanticError("UNSUPPORTED_FORMAT")
@@ -119,8 +121,22 @@ def _parse_turtle(text, *, format="turtle", shapes=False, _allow_illtyped_intege
             raise SemanticError("INVALID_TURTLE") from error
         if len(graph) > MAX_TRIPLES:
             raise SemanticError("GRAPH_INPUT_LIMIT")
+        if _check_iris:
+            _shacl_text_iris(graph)
         _terms(graph, shapes=shapes, _allow_illtyped_integer=_allow_illtyped_integer)
         return graph
+
+
+def _shacl_text_iris(graph):
+    # New text entry only: reject invalid IRI spelling before RDFLib's n3()
+    # sorting key can raise an unclassified exception containing that spelling.
+    for triple in graph:
+        for term in triple:
+            iri = term.datatype if isinstance(term, Literal) else term
+            if isinstance(iri, URIRef):
+                value = str(iri)
+                if ":" not in value or any(c.isspace() or c in '<>"{}|^`\\' for c in value):
+                    raise SemanticError("ABSOLUTE_IRI_REQUIRED")
 
 
 def _walk(value):
@@ -1361,8 +1377,8 @@ def validate_shacl_text(data_text, shapes_text, *, data_policy, range_policy) ->
         raise SemanticError("SCOPE_SELECTION_TYPE_INVALID")
     allow_integer = data_policy == "integer-illtyped-report-v1"
     with offline():
-        data = _parse_turtle(data_text, _allow_illtyped_integer=allow_integer)
-        shapes = parse_turtle(shapes_text, shapes=True)
+        data = _parse_turtle(data_text, _allow_illtyped_integer=allow_integer, _check_iris=True)
+        shapes = _parse_turtle(shapes_text, shapes=True, _check_iris=True)
         report = _check_shapes(data, shapes, _allow_illtyped_integer=allow_integer)
         return {
             "entryVersion": SHACL_TEXT_ENTRY_VERSION,
