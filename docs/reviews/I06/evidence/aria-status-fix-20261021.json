@@ -1,0 +1,69 @@
+{
+  "sourceContentCommit": "e2c269ad78a78e1a042cadc93b1c81a874707153",
+  "previousProductCommit": "9fcba6634d5c16983c36ef671d4ec8e79694b6d6",
+  "checkedProductDelta": [
+    {
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "sha256": "d66e74cd77b4ef1e5b0e97f3ddefe10481dccd8466bbc40c1f403eaee1b22716",
+      "bytes": 35840
+    }
+  ],
+  "change": "Model unavailable notice role=status replaced with aria-live=polite; text and availability condition unchanged. Original e2e selectors and assertions preserved.",
+  "independentStaticReview": "Passed; role belongs to the unique existing health-result and polite model notification is retained.",
+  "fullCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "typescriptTests": 998,
+    "typescriptFiles": 23,
+    "pythonTests": 1052,
+    "log": {
+      "path": "tests/i06-stored-material/out/aria-status-fix-check-20261021-r1.log",
+      "sha256": "be8890271de410ceaf65aac851b68b8ee1bd146d703ef16ffce9193bf21b39bb",
+      "bytes": 5053
+    }
+  },
+  "protectedSources": {
+    "command": "npm run verify:sources",
+    "exitCode": 0,
+    "files": 12,
+    "log": {
+      "path": "tests/i06-stored-material/out/aria-status-fix-sources-20261021.log",
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
+      "bytes": 111
+    }
+  },
+  "patch": {
+    "path": "tests/i06-stored-material/out/aria-status-fix-20261021.patch",
+    "sha256": "05a534c882751d3a2ebe73043b735bf3eec7bb4de4b62b9269cf8d47f849c23e",
+    "bytes": 868
+  },
+  "runtimeBoundary": "Previous r11/native4/pkg2 execution remains bound to 9fc. New source and packaged repository e2e regressions recorded separately; no new full platform pass claimed here.",
+  "executionIdentity": "Full check started with the preserved App working-tree delta, subsequently committed byte-identically as sourceContentCommit; no product source changed during the check.",
+  "compiledArtifacts": [
+    {
+      "path": "apps/desktop/out/main/index.js",
+      "sha256": "8ba981ff5a29dab72bb6ba2bdd2be9bc64ed17d5d40d8a1f7ecea81cbb421485",
+      "bytes": 468071
+    },
+    {
+      "path": "apps/desktop/out/preload/index.js",
+      "sha256": "47db22b10aef8e8ef3cc94e7ab75a67a5efe340b5af61050bd5c7d65ea54278b",
+      "bytes": 308510
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/index-DfTGcxmP.css",
+      "sha256": "f6823d8b3063c15e184c4c9054e54dac843436740ae1e1303dadea6e68b82028",
+      "bytes": 7178
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/index-LGPEKjO-.js",
+      "sha256": "5f15ecbbbc4cb5c25dbf06cacb6d1f7d01037264888256bfb8f6811e5f31a2a1",
+      "bytes": 919770
+    },
+    {
+      "path": "apps/desktop/out/renderer/index.html",
+      "sha256": "5598ea4c778e1adadcb35499d823b408c48af5aac6231c2051af417165d0576b",
+      "bytes": 709
+    }
+  ]
+}

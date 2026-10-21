@@ -1,0 +1,185 @@
+{
+  "result": "passed-on-targeted-retry-with-initial-failure-retained",
+  "candidate": "e2c269ad78a78e1a042cadc93b1c81a874707153",
+  "imageId": "sha256:948721a324bcfa8a219271f5b886830bf8c41ab6d4d0f209c55d1dc8581c0e9a",
+  "initialContainerId": "0d3a9bb534db31ec2390739b5b4e14cff47b8108bee0a80e0b3af672d73b69b4",
+  "retryContainerId": "ecc6a6287606655422343400a08b4c86ace69bb463a6f92666f952966d4e70a1",
+  "initialGates": {
+    "source": {
+      "exit": 0,
+      "stats": {
+        "startTime": "2026-10-21T00:15:40.916Z",
+        "duration": 24699.82,
+        "expected": 3,
+        "skipped": 3,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "source-aria": {
+      "exit": 0,
+      "result": "passed"
+    },
+    "source-native": {
+      "exit": 1,
+      "stats": {
+        "startTime": "2026-10-21T00:17:10.065Z",
+        "duration": 13315.552000000001,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      }
+    },
+    "source-reload": {
+      "exit": 0,
+      "stats": {
+        "startTime": "2026-10-21T00:38:18.692Z",
+        "duration": 13037.096,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "source-disconnect": {
+      "exit": 0,
+      "stats": {
+        "startTime": "2026-10-21T00:38:32.388Z",
+        "duration": 1800.234,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "packaged": {
+      "exit": 0,
+      "stats": {
+        "startTime": "2026-10-21T00:38:34.588Z",
+        "duration": 20148.842999999997,
+        "expected": 3,
+        "skipped": 3,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "packaged-aria": {
+      "exit": 0,
+      "result": "passed"
+    },
+    "packaged-native": {
+      "exit": 0,
+      "stats": {
+        "startTime": "2026-10-21T00:39:40.486Z",
+        "duration": 17728.14,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "packaged-reload": {
+      "exit": 0,
+      "stats": {
+        "startTime": "2026-10-21T00:39:58.577Z",
+        "duration": 6940.29,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "packaged-disconnect": {
+      "exit": 0,
+      "stats": {
+        "startTime": "2026-10-21T00:40:05.897Z",
+        "duration": 1481.955,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    }
+  },
+  "initialGatePasses": 9,
+  "initialGateFailures": [
+    "source-native"
+  ],
+  "targetedRetry": {
+    "result": "passed",
+    "exit": 0,
+    "stats": {
+      "startTime": "2026-10-21T00:44:37.643Z",
+      "duration": 18637.725000000002,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "sameImmutableImageSourceAndRuntime": true,
+    "inlineRunnerSha256": "79d4dab5df069db98fce757c6ddaae0f8e1d9b0fae62214a910fc899ea58ce2a"
+  },
+  "firstFailure": {
+    "originalCodeDeadline": "Date.now()+30000 per crash/hang phase",
+    "totalReportDurationMs": 13315.552000000001,
+    "observation": "crashed; two windows; inspector closed; focused second window; hang native prompt not observed before original assertion. Cause not established.",
+    "traceHangPhaseMonotonicElapsedMsApprox": 12250,
+    "timingDifferenceCause": "Original per-phase Date.now()+30000 vs trace ~12.25s monotonic interval; cause unknown, no clock or flake root cause inferred."
+  },
+  "packageFilesReadBack": 243,
+  "asarCompiledOutputHashesMatched": {
+    "out/main/index.js": "6eb89ab1b11c2244849e762f47b1a304ac7bd05afcd6a01289ba04e3ee6f8188",
+    "out/preload/index.js": "47db22b10aef8e8ef3cc94e7ab75a67a5efe340b5af61050bd5c7d65ea54278b",
+    "out/renderer/assets/index-DfTGcxmP.css": "f6823d8b3063c15e184c4c9054e54dac843436740ae1e1303dadea6e68b82028",
+    "out/renderer/assets/index-LGPEKjO-.js": "5f15ecbbbc4cb5c25dbf06cacb6d1f7d01037264888256bfb8f6811e5f31a2a1",
+    "out/renderer/index.html": "5598ea4c778e1adadcb35499d823b408c48af5aac6231c2051af417165d0576b"
+  },
+  "scope": "Original unchanged repository e2e source/packaged default suites, six fresh CI fixture gates, and unavailable-model aria-live checks. This does not rerun or relabel old 9fc S3 credential/domain platform evidence.",
+  "defaultFixtureSkips": "Three per default full suite, each separately covered by a real non-skipped fresh-fixture invocation.",
+  "nativeEvidenceBoundary": "C1 original helper stubs dialog; actual I04 native targeted cases use real visible prompt and focus observers. Do not substitute one for the other.",
+  "initialCaptureSha256": "84047821404512ed85f09f2b66b8b8cc0ade1225793af84fe49442af2affbe85",
+  "retryCaptureSha256": "66d530fae5b1546142c9534036f282b24a8262c2f4e3d93e1c2cb74f1351176d",
+  "sourceAppSha256": "d66e74cd77b4ef1e5b0e97f3ddefe10481dccd8466bbc40c1f403eaee1b22716",
+  "sourceRecords": 860,
+  "receiptSha256": "974ee6e93e0f027a96abe76a0dca13ddf62648e0d86bae6023015eb16d3b7757",
+  "packageBinaries": {
+    "@ontolearndesktop": {
+      "sha256": "cfd2c48484ba71d8be4276a51ecbe67092a0624d7be712e8a6e7a43ba3698b35",
+      "bytes": 221515144,
+      "mode": 493,
+      "uid": 1106,
+      "gid": 1106
+    },
+    "resources/app.asar": {
+      "sha256": "b4dd40bd60410d4a541edc25d0a470c5bacab2d739a9be5a3c1dcb0bec1c436c",
+      "bytes": 17058065,
+      "mode": 420,
+      "uid": 1106,
+      "gid": 1106
+    },
+    "resources/engine/ontolearn-engine": {
+      "sha256": "24323e359fdaeaf7d97e5e60e79d9e69586dc7d3dfd69ae2298e8f11e7db356a",
+      "bytes": 3689536,
+      "mode": 493,
+      "uid": 1106,
+      "gid": 1106
+    }
+  },
+  "rawArchive": {
+    "archive": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-main-platform/tests/i06-main-platform/out/i06-main-e2c-aria2-native-retry1-raw.tar.gz",
+    "sha256": "f13d9a6f0cb06b39703a91bfd76e85266c87583c0123f5c31a92ee8ccb1afa34",
+    "bytes": 154270058,
+    "indexSha256": "f29eecfe97648e650f5c896095f4a9695d64d101b873212e4408b5cb86356205",
+    "files": 598
+  },
+  "static": {
+    "result": "passed",
+    "nodeFiles": 22,
+    "pythonFiles": 6,
+    "shellFiles": 6
+  },
+  "imageIdentityMeaning": "Docker inspect Id/container.Image/RepoDigest equality; no standalone OCI config blob or signature proof.",
+  "earlierPreparationFailure": "aria1 source default suite passed 3 with 3 expected skips; minimal helper lacked {} strict params and fixture uv runtime cache was empty; remaining scenarios not run. Frozen failure retained; aria2 fixes only harness/image cache and manifest candidate label.",
+  "noDomainPlatformRelabel": "9fc normal22/native4/pkg2 evidence remains bound to 9fc; e2c runs cover ARIA and original e2e/CI fixture regressions, not a rerun of domain credentials or I05."
+}

@@ -1,0 +1,12 @@
+# Own source-verified image with independent locked dependencies and X11 tooling.
+# Verified immutable ID: sha256:495979a381da8be793248a520d8ed4f75e87ea02dd69adae5cfb57ada57bc61c.
+FROM i06-main-native:9fcba663-n4
+USER root
+WORKDIR /workspace
+RUN npm run package:dir \
+    && test -x release/linux-arm64-unpacked/@ontolearndesktop \
+    && test -x release/linux-arm64-unpacked/resources/engine/ontolearn-engine \
+    && chown -R i06:i06 /workspace/release \
+    && chown root:root /workspace/release/linux-arm64-unpacked/chrome-sandbox \
+    && chmod 4755 /workspace/release/linux-arm64-unpacked/chrome-sandbox
+USER i06
