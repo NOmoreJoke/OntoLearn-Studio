@@ -1,0 +1,230 @@
+from pathlib import Path
+p=Path('packages/engine/src/ontolearn_engine/semantic_profile_restore.py');s=p.read_text()
+s=s.replace('class ChildAllocation:', '''class ExplanationRestoreExpectation(RestoreExpectation):
+    schema_version: str = "i05-profile-restore-schema/2"
+    direct_budget_version: str = "i05-direct-steps-budget/1"
+
+
+@dataclass(frozen=True, slots=True)
+class ChildAllocation:''')
+s=s.replace('# Fixed canonical classes only.', '''@dataclass(frozen=True, slots=True)
+class RestoredExplanationProjection:
+    payload: ReadonlyObject
+    version: str = "i05-profile-explanation-projection/1"
+
+
+@dataclass(frozen=True, slots=True)
+class RestoredExplanationResult:
+    batches: RestoredBatchSet
+    projection: RestoredExplanationProjection
+    rows_json: bytes
+    retention: tuple
+    direct_receipt: object
+    version: str = "i05-profile-explanation-restored/1"
+
+
+# Fixed canonical classes only.''')
+s=s.replace('def __init__(self, ledger, expected, allocation):', 'def __init__(self, ledger, expected, allocation, direct_ledger=None):').replace('''        self.ledger = ledger
+        self.expected''','''        self.ledger = ledger
+        self.direct_ledger = direct_ledger
+        self.explanation = direct_ledger is not None
+        self.expected''')
+s=s.replace('''    def reasoning(self, value):
+        self.object(value, _REASONING)''','''    def direct_steps(self, value):
+        self.object(value, ("format", "steps"))
+        _require(value["format"] == "i05-direct-rdfs-steps/1")
+        def premise(raw):
+            self.object(raw, ("kind", "reference"))
+            kind = self.string(raw["kind"], 4)
+            _require(kind in ("leaf", "step"))
+            reference = self.sha(raw["reference"][10:]) if False else None
+            if kind == "leaf":
+                reference = self.string(raw["reference"], 74)
+            else:
+                reference = self.integer(raw["reference"], minimum=0, maximum=99999)
+            return {"kind": kind, "reference": reference}
+        def step(raw):
+            self.object(raw, ("ordinal", "rule", "result", "premises", "depth"))
+            return {
+                "ordinal": self.integer(raw["ordinal"], minimum=0, maximum=99999),
+                "rule": self.string(raw["rule"], 64),
+                "result": self.triple_key(raw["result"]),
+                "premises": self.collect(raw["premises"], premise, maximum=2),
+                "depth": self.integer(raw["depth"], minimum=1, maximum=100000),
+            }
+        return {"format": value["format"], "steps": self.collect(value["steps"], step, maximum=100000)}
+
+    def reasoning(self, value):
+        self.object(value, _REASONING + (("directSteps",) if self.explanation else ()))''')
+s=s.replace('''            value["formatVersion"] == _FORMAT
+            and value["semanticsVersion"] == _SEMANTICS''','''            value["formatVersion"] == ("i05-reasoning-result/3" if self.explanation else _FORMAT)
+            and value["semanticsVersion"] == ("i05-finite-8" if self.explanation else _SEMANTICS)''')
+s=s.replace('''            "graphBudget": self.graph_budget(value["graphBudget"]),
+        }''','''            "graphBudget": self.graph_budget(value["graphBudget"]),
+            **({"directSteps": self.direct_steps(value["directSteps"])} if self.explanation else {}),
+        }''')
+s=s.replace('''        and e.schema_version == SCHEMA_VERSION''','''        and e.schema_version == ("i05-profile-restore-schema/2" if decoder.explanation else SCHEMA_VERSION)''')
+s=s.replace('''    _require(type(e.input_domain) is str and e.input_domain in _DOMAINS, "entry")''','''    if decoder.explanation:
+        _require(type(e.direct_budget_version) is str and e.direct_budget_version == "i05-direct-steps-budget/1", "entry")
+        _require(e.input_domain == "profile-structured-records-json/1", "entry")
+    _require(type(e.input_domain) is str and e.input_domain in _DOMAINS, "entry")''')
+s=s.replace('e.implementation[2][1] == _SEMANTICS', 'e.implementation[2][1] == ("i05-finite-8" if decoder.explanation else _SEMANTICS)')
+s=s.replace('def _freeze_projection(raw, native, ledger):', 'def _freeze_projection(raw, native, ledger, *, explanation=False):').replace('return RestoredProfileProjection(frozen)', 'return RestoredExplanationProjection(frozen) if explanation else RestoredProfileProjection(frozen)')
+s=s.replace('raw = read_json(payload_json, ledger, label="payload")', 'raw = read_json(payload_json, ledger, label="payload", schema_version=expected.schema_version)')
+s=s.replace('''    _require(raw["format"] == _FORMAT and raw["inputDigestDomain"] == expected.input_domain)''','''    _require(raw["format"] == ("i05-reasoning-result/3" if decoder.explanation else _FORMAT)
+             and raw["inputDigestDomain"] == expected.input_domain)''')
+s=s.replace('''    projection = _ProfileProjection()
+    safe_reason = _project''','''    if decoder.explanation:
+        _validate_explanation(decoder, native, original_records)
+    projection = _ProfileProjection()
+    safe_reason = _project''')
+s=s.replace('_freeze_projection(raw, native, ledger) if fullview else None', '_freeze_projection(raw, native, ledger, explanation=decoder.explanation) if fullview else None')
+s=s.replace('''    fullview: bool,
+):''','''    fullview: bool,
+    direct_ledger=None,
+):''')
+s=s.replace('''    if type(ledger) is not RestoreLedger:
+        _invalid("entry")''','''    from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+    from .semantic_profile_production import _direct_stream
+
+    if direct_ledger is not None:
+        if type(direct_ledger) is not DirectStepsLedger:
+            raise DirectStepsFailure()
+        if direct_ledger.state != "new":
+            raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+    if type(ledger) is not RestoreLedger:
+        _invalid("entry")''')
+s=s.replace('''    outcome = None
+    error = None
+    try:
+        _require(type(payload_json)''','''    outcome = direct_receipt = None
+    error = None
+    try:
+        if direct_ledger is not None:
+            direct_ledger.begin(stage="restore")
+        _require(type(payload_json)''')
+s=s.replace('''type(expected) is RestoreExpectation and type(allocation) is OriginalAllocation,''','''type(expected) is (RestoreExpectation if direct_ledger is None else ExplanationRestoreExpectation)
+            and type(allocation) is OriginalAllocation,''')
+s=s.replace('''        ledger.begin(size, preimage, len(allocation.children))''','''        if direct_ledger is not None:
+            # Covers complete supplied J, all ordinary parse/project/hash/freeze
+            # buffers. Original R opaque child reservations remain in R only.
+            _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
+        ledger.begin(size, preimage, len(allocation.children))''')
+s=s.replace('decoder = _Decoder(ledger, expected, allocation)', 'decoder = _Decoder(ledger, expected, allocation, direct_ledger)')
+s=s.replace('''        outcome = (
+            RestoredProfileResult(inner_batches, projection, rows_json, retention)
+            if fullview
+            else inner_batches
+        )''','''        if direct_ledger is None:
+            outcome = (RestoredProfileResult(inner_batches, projection, rows_json, retention)
+                       if fullview else inner_batches)
+        else:
+            direct_receipt = direct_ledger.receipt()
+            outcome = RestoredExplanationResult(inner_batches, projection, rows_json,
+                                               retention, direct_receipt)
+            direct_ledger.transferred()''')
+s=s.replace('''    except RestoreFailure as exc:
+        error = RestoreFailure(''','''    except DirectStepsFailure as exc:
+        error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+    except RestoreFailure as exc:
+        error = RestoreFailure(''')
+s=s.replace('''        children = parse_usage = caps = projection = inner_batches = retention = None''','''        children = parse_usage = caps = projection = inner_batches = retention = direct_receipt = None''')
+s=s.replace('''        if error is not None:
+            outcome = None
+        try:''','''        if error is not None:
+            outcome = None
+            if direct_ledger is not None:
+                direct_ledger.failed()
+        try:''')
+s += '''\n\ndef _validate_explanation(decoder, native, original_records):
+    from .semantic_profile_directsteps import encode_identity_key, validate_direct_steps
+    ledger = decoder.direct_ledger
+    entries = key = identity = triple = record = None
+    held = 8 * len(original_records) + 32
+    ledger.reserve("objects", held)
+    try:
+        entries = []
+        for record in original_records:
+            # Exact TermInput fields have passed original typed decoder. The
+            # formatter is prepaid before constructing any RDFLib term/N3.
+            chars = sum(len(v) for term in record for v in
+                        (term.lexical_form, term.datatype_iri, term.language_raw) if v is not None)
+            ledger.debit("work", 128 + 64 * chars)
+            ledger.debit("scan_copy", 32 * chars + 128)
+            ledger.reserve("scalar", 32 * chars + 128)
+            ledger.reserve("objects", 64)
+            triple = tuple(semantic._profile_term(term) for term in record)
+            key = semantic._key(triple)
+            identity = encode_identity_key(record, ledger)
+            entries.append((identity, key))
+        validate_direct_steps(native["directSteps"], proof_leaves=native["proofLeaves"],
+                              rdfs=native["rdfs"], rdfs_evidence=native["rdfsEvidence"],
+                              seed_entries=tuple(entries), ledger=ledger)
+    finally:
+        entries = key = identity = triple = record = native = original_records = None
+        ledger.discard(objects=held)
+
+
+def restore_profile_explanation_result(payload_json, rows_json, *, expected, allocation,
+                                       ledger, direct_ledger):
+    """Explicit schema2 full result; local DAG checks never rerun inference."""
+    from .semantic_profile_directsteps import DirectStepsLedger, DirectStepsFailure
+    if type(direct_ledger) is not DirectStepsLedger:
+        raise DirectStepsFailure()
+    return _restore_operation(payload_json, rows_json, expected=expected, allocation=allocation,
+                              ledger=ledger, fullview=True, direct_ledger=direct_ledger)
+
+
+def explanation_roots(view, target_keys, *, direct_ledger):
+    """All matching occurrences within an already granted complete fullview."""
+    from .semantic_profile_directsteps import DirectStepsLedger, DirectStepsFailure, RootRef, locate_roots
+    if type(direct_ledger) is not DirectStepsLedger:
+        raise DirectStepsFailure()
+    if direct_ledger.state != "new":
+        raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+    entries = result = reason = row = key = error = None
+    held = 0
+    try:
+        direct_ledger.begin(stage="roots")
+        if type(view) is not RestoredExplanationResult or type(target_keys) is not tuple:
+            raise DirectStepsFailure(stage="roots")
+        reason = view.projection.payload["reasoning"]
+        leaves, steps, heads = reason["proofLeaves"].items, reason["directSteps"]["steps"].items, reason["evidence"].items
+        count = len(leaves) + len(steps) + len(heads)
+        direct_ledger.debit("work", 64 * count + 128)
+        direct_ledger.reserve("objects", 16 * count + 128)
+        held = 16 * count + 128
+        entries = []
+        for row in leaves:
+            key = tuple(row["triple"].items)
+            entries.append((key, RootRef("leaf", reference=row["reference"])))
+        for row in steps:
+            key = tuple(row["result"].items)
+            entries.append((key, RootRef("step", ordinal=row["ordinal"])))
+        for row in heads:
+            key = tuple(row["result"].items)
+            entries.append((key, RootRef("ruleHead", firing_index=row["firingIndex"], head_index=row["headIndex"])))
+        result = locate_roots(tuple(entries), target_keys, direct_ledger)
+        # RootRef objects in result remain covered by the retained block.
+        entries = reason = row = key = leaves = steps = heads = None
+        direct_ledger.receipt()
+        direct_ledger.completed()
+    except DirectStepsFailure as exc:
+        error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+    except Exception:
+        error = DirectStepsFailure("DIRECT_STEPS_INTERNAL", stage="roots")
+    finally:
+        entries = reason = row = key = view = target_keys = None
+        if error is not None:
+            result = None
+            direct_ledger.failed()
+    if error is not None:
+        raise error
+    return result
+'''
+s=s.replace('            reference = self.sha(raw["reference"][10:]) if False else None\n', '            reference = None\n')
+p.write_text(s)
+p=Path('packages/engine/src/ontolearn_engine/semantic_profile_production.py');s=p.read_text().replace('("line", "column", "end_line", "end_column")','("section", "index", "side", "span")').replace('''        if direct_ledger is not None:
+            bound = _direct_bound(material.records''','''        if direct_ledger is not None:
+            _require(type(material.records) is tuple)
+            bound = _direct_bound(material.records''');p.write_text(s)

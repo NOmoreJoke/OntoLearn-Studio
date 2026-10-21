@@ -1,0 +1,11 @@
+import sys,runpy,json
+sys.path.insert(0,'packages/engine/tests')
+ns=runpy.run_path('packages/engine/tests/test_semantic_profile_directsteps.py')
+r=ns['restore'];old=r._same
+sig=ns['signature']
+def observe(left,right,*args,**kwargs):
+    if kwargs.get('stage')=='A5' and type(left)is list and left and type(left[0])is dict:
+        print(json.dumps({'left':sig(left),'right':sig(right)},ensure_ascii=False))
+    return old(left,right,*args,**kwargs)
+r._same=observe
+ns['test_roots_retain_every_real_rule_head_occurrence_and_do_not_feed_rule_chains']()

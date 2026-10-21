@@ -1,0 +1,28 @@
+import json,subprocess,hashlib,ast
+from pathlib import Path
+from ontolearn_engine import semantic_profile_production as p
+from ontolearn_engine import semantic_profile_directsteps as d
+from ontolearn_engine.semantic_profile_restore_budget import JSON_KEYS
+root=Path.cwd();prefix=root/'docs/reviews/I05/profile-directsteps/independent-budget';fixed=json.loads((prefix/'candidate-cb2662.json').read_bytes())
+for x in fixed['files']:
+ b=(root/x['path']).read_bytes();g=subprocess.check_output(['git','show',fixed['product']+':'+x['path']]);assert b==g and len(b)==x['bytes'] and hashlib.sha256(b).hexdigest()==x['sha256']
+ if x['access']=='read-only':assert b==subprocess.check_output(['git','show',fixed['adoption']+':'+x['path']])
+initial=json.loads((prefix/'initial-members.json').read_bytes())
+for x in initial['files']:
+ b=(prefix/x['path']).read_bytes();assert len(b)==x['bytes'] and hashlib.sha256(b).hexdigest()==x['sha256']
+oldtest=subprocess.check_output(['git','show','ff90092e39c95f0195eb175f46538a8a822dfeb2:packages/engine/tests/test_semantic_profile_directsteps.py']);newtest=(root/'packages/engine/tests/test_semantic_profile_directsteps.py').read_bytes();assert newtest.startswith(oldtest) and len(oldtest)==35520
+changed=subprocess.check_output(['git','diff','--name-only','ff90092e39c95f0195eb175f46538a8a822dfeb2',fixed['product']],text=True).splitlines();assert changed==['packages/engine/tests/test_semantic_profile_directsteps.py']
+print(json.dumps({'controlled':len(fixed['files']),'readonly':sum(x['access']=='read-only' for x in fixed['files']),'currentEqualsFixedGit':True,'initialFrozenFilesVerified':len(initial['files']),'ffToFinalDelta':changed,'oldTestExactPrefixBytes':len(oldtest),'newTestBytes':len(newtest),'newTestSHA256':hashlib.sha256(newtest).hexdigest()}))
+values=[None,True,False,'quote" slash\\ \n\r\b\f\t\x00\x1f','é中😀',{'integerHex':'-0x7ffff'},[],[{'kind':'leaf','reference':'i05-proof:'+'a'*64}],{'odd key\n':[False,None,'😀']}]
+for value in values:
+ ledger=d.DirectStepsLedger();ledger.begin(stage='encode');actual=p._direct_json_size(value,ledger);expected=len(json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode('utf-8'));assert actual==expected
+ ledger.note_carrier(actual);receipt=ledger.receipt();ledger.completed()
+ print(json.dumps({'probe':'projected exact byte counter','bytes':actual,'matchesIndependentCanonicalBytes':True,'usage':ledger.used,'peaks':ledger.peaks,'events':ledger.events},ensure_ascii=False))
+keys=JSON_KEYS+('directSteps','steps','premises','depth');n=len(keys);length=sum(map(len,keys));m=max(map(len,keys));factor=256+4*n+sum(map(len,JSON_KEYS))+64*max(map(len,JSON_KEYS));bound=(2*n+64)+(2*(length+n)+64*(m+1))/3
+assert factor==3343 and factor>bound
+print(json.dumps({'probe':'strict Reader schema proof constants','n':n,'sumKeyLength':length,'maxKeyLength':m,'logicalDoublePassSchemaCoefficientUpper':bound,'prepaidCoefficient':factor,'noRCapChanges':True}))
+for label in ('01-live-and-reader','02-budget-tests','delta-ff90092-01-probe','delta-ff90092-02-budget-tests','delta-cb2662-03-added-regressions'):
+ run=prefix/label;meta=json.loads((run/'command.json').read_bytes());assert meta['sourcesUnchanged']
+ for x in json.loads((run/'members.json').read_bytes()):
+  b=(run/x['path']).read_bytes();assert len(b)==x['bytes'] and hashlib.sha256(b).hexdigest()==x['sha256']
+ print(json.dumps({'runVerified':label,'head':meta['head'],'sourceCount':len(meta['sourcesBefore']),'sourceBeforeEqualsAfter':True,'exitCode':meta['exitCode']}))

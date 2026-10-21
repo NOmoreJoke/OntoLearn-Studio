@@ -1,0 +1,12 @@
+import sys
+sys.path.insert(0, "packages/engine/tests")
+import runpy,traceback
+from ontolearn_engine import semantic_profile_restore as r
+ns=runpy.run_path('packages/engine/tests/test_semantic_profile_directsteps.py')
+old=r._invalid
+def observe(*a,**k):
+    traceback.print_stack(limit=12)
+    return old(*a,**k)
+r._invalid=observe
+try: ns['receive'](ns['produce'](ns['four_branch_case']('domain-depth2')[0])[0])
+except Exception as e: print(type(e).__name__,vars(e))

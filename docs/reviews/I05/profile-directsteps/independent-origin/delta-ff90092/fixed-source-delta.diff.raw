@@ -1,0 +1,301 @@
+diff --git a/packages/engine/src/ontolearn_engine/semantic.py b/packages/engine/src/ontolearn_engine/semantic.py
+index 4f2c3ce..262d44f 100644
+--- a/packages/engine/src/ontolearn_engine/semantic.py
++++ b/packages/engine/src/ontolearn_engine/semantic.py
+@@ -384,6 +384,11 @@ def _term_characters(term):
+ 
+ def _finite_closure(asserted, charge, meter=None, *, _direct_capture=None):
+     """One closure implementation and one stable first-witness policy."""
++    if _direct_capture is not None:
++        from .semantic_profile_directsteps import _DirectStepsCapture
++
++        if type(_direct_capture) is not _DirectStepsCapture:
++            raise ProfileReasonError("INTERNAL_ERROR", classification="internal")
+     ordered = sorted if meter is None else meter.ordered
+     key = _key if meter is None else meter.key
+     if meter is not None:
+@@ -465,7 +470,7 @@ def _finite_closure(asserted, charge, meter=None, *, _direct_capture=None):
+                     raise SemanticError("RDFS_RESULT_LIMIT")
+         if _direct_capture is not None:
+             count = len(additions)
+-            additions = item = inputs = triple = basis = None
++            additions = item = inputs = triple = basis = append = addition_key = None
+             _direct_capture.end_candidates(count)
+             _direct_capture.ledger.release("objects", 8 * count)
+     return closure, proofs
+diff --git a/packages/engine/src/ontolearn_engine/semantic_execution.py b/packages/engine/src/ontolearn_engine/semantic_execution.py
+index 211263f..49efd39 100644
+--- a/packages/engine/src/ontolearn_engine/semantic_execution.py
++++ b/packages/engine/src/ontolearn_engine/semantic_execution.py
+@@ -719,6 +719,8 @@ def _execute_profile(
+             _capture.before_projection(result, source, tuple(rules))
+         projection = _ProfileProjection()
+         safe_result = projection.value(result)
++        if _capture is not None:
++            _capture.projected(safe_result)
+         source_encoded = _profile_json_bytes(projection.value(source))
+         defs_encoded = _profile_json_bytes(projection.value(tuple(rules)))
+         explanation = _capture is not None and _capture.direct_ledger is not None
+diff --git a/packages/engine/src/ontolearn_engine/semantic_profile_production.py b/packages/engine/src/ontolearn_engine/semantic_profile_production.py
+index cdea6e0..120a295 100644
+--- a/packages/engine/src/ontolearn_engine/semantic_profile_production.py
++++ b/packages/engine/src/ontolearn_engine/semantic_profile_production.py
+@@ -81,7 +81,7 @@ def _direct_bound(value, ledger, depth=0):
+         if kind is bytes:
+             ledger.debit("scan_copy", len(value) + 1)
+             return 2 * len(value) + 48
+-        if kind in (tuple, list):
++        if kind is tuple or kind is list:
+             ledger.debit("work", len(value) + 1)
+             return 2 * len(value) + 2 + sum(_direct_bound(v, ledger, depth + 1) for v in value)
+         if kind is dict:
+@@ -107,6 +107,56 @@ def _direct_bound(value, ledger, depth=0):
+         ledger.discard(objects=32)
+ 
+ 
++def _direct_json_size(value, ledger, depth=0):
++    """Count exact already-projected JSON bytes, without a second wire/tree."""
++    from .semantic_profile_directsteps import DirectStepsFailure
++
++    ledger.debit("work", 32)
++    ledger.reserve("objects", 16)
++    try:
++        if depth > 32:
++            raise DirectStepsFailure("DIRECT_STEPS_LIMIT", stage=ledger.stage, domain="work")
++        kind = type(value)
++        if value is None:
++            return 4
++        if kind is bool:
++            return 4 if value else 5
++        if kind is str:
++            ledger.debit("work", 8 * len(value) + 1)
++            ledger.debit("scan_copy", 6 * len(value) + 2)
++            size = 2
++            for char in value:
++                code = ord(char)
++                if char == '"' or char == "\\" or char in "\b\f\n\r\t":
++                    size += 2
++                elif code < 32:
++                    size += 6
++                else:
++                    size += 1 if code < 128 else 2 if code < 2048 else 3 if code < 65536 else 4
++            return size
++        if kind is list:
++            return (
++                2
++                + max(0, len(value) - 1)
++                + sum(_direct_json_size(v, ledger, depth + 1) for v in value)
++            )
++        if kind is dict:
++            return (
++                2
++                + max(0, len(value) - 1)
++                + sum(
++                    _direct_json_size(k, ledger, depth + 1)
++                    + 1
++                    + _direct_json_size(v, ledger, depth + 1)
++                    for k, v in value.items()
++                )
++            )
++        raise DirectStepsFailure("DIRECT_STEPS_INTERNAL", stage=ledger.stage)
++    finally:
++        value = None
++        ledger.discard(objects=16)
++
++
+ def _direct_stream(ledger, bound, *, passes):
+     # Per pass: UTF8 decoding <=4J scalars, JSON escaped buffer <=J,
+     # projected dict/list slots <=8J, plus serializer sort/row slices <=3J.
+@@ -189,6 +239,12 @@ class _ProductionCapture:
+         self.ledger.reserve("scalar", 24 * MAX_BYTES)
+         self.ledger.reserve("objects", 8 * MAX_BYTES)
+ 
++    def projected(self, safe_result):
++        if self.direct_ledger is not None:
++            self.direct_ledger.note_carrier(
++                _direct_json_size(safe_result["directSteps"], self.direct_ledger)
++            )
++
+     def before_rows(self):
+         self.ledger.enter(7, 3 * MAX_BYTES)
+         self.ledger.debit("traversal", 16 * MAX_BYTES)
+@@ -247,13 +303,6 @@ def _execute_admitted_profile_job(
+         if direct_ledger is not None:
+             direct_ledger.begin(stage="capture")
+         _require(type(material) is ProfileMaterial)
+-        if direct_ledger is not None:
+-            _require(type(material.records) is tuple)
+-            bound = _direct_bound(material.records, direct_ledger)
+-            bound += _direct_bound(material.source, direct_ledger)
+-            bound += _direct_bound(material.rules, direct_ledger)
+-            bound += len(material.input_preimage) + len(material.definition_material) + 2048
+-            _direct_stream(direct_ledger, bound, passes=2)
+         _require(type(material.version) is str and material.version == MATERIAL_VERSION)
+         for value in (
+             material.input_preimage,
+@@ -263,6 +312,13 @@ def _execute_admitted_profile_job(
+         ):
+             _require(type(value) is bytes and len(value) <= MAX_BYTES)
+         _require(type(material.rules) is tuple and len(material.rules) <= 100)
++        if direct_ledger is not None:
++            _require(type(material.records) is tuple)
++            bound = _direct_bound(material.records, direct_ledger)
++            bound += _direct_bound(material.source, direct_ledger)
++            bound += _direct_bound(material.rules, direct_ledger)
++            bound += len(material.input_preimage) + len(material.definition_material) + 2048
++            _direct_stream(direct_ledger, bound, passes=2)
+         if material.records is None:
+             _require(type(material.source) is SourceRecord)
+             reference, revision = material.source.reference, material.source.revision
+diff --git a/packages/engine/src/ontolearn_engine/semantic_profile_restore.py b/packages/engine/src/ontolearn_engine/semantic_profile_restore.py
+index 46a6749..0e5baa4 100644
+--- a/packages/engine/src/ontolearn_engine/semantic_profile_restore.py
++++ b/packages/engine/src/ontolearn_engine/semantic_profile_restore.py
+@@ -1054,7 +1054,10 @@ def _check_expectation(decoder):
+             and e.direct_budget_version == "i05-direct-steps-budget/1",
+             "entry",
+         )
+-        _require(e.input_domain == "profile-structured-records-json/1", "entry")
++        _require(
++            type(e.input_domain) is str and e.input_domain == "profile-structured-records-json/1",
++            "entry",
++        )
+     _require(type(e.input_domain) is str and e.input_domain in _DOMAINS, "entry")
+     for value in (
+         e.payload_digest,
+@@ -1250,6 +1253,11 @@ def _restore(decoder, payload_json, rows_json, *, fullview=False):
+         _same(source_values, source, ledger, stage="A9")
+         del source_values
+     if decoder.explanation:
++        from .semantic_profile_production import _direct_json_size
++
++        decoder.direct_ledger.note_carrier(
++            _direct_json_size(raw["reasoning"]["directSteps"], decoder.direct_ledger)
++        )
+         _validate_explanation(decoder, native, original_records)
+     projection = _ProfileProjection()
+     safe_reason = _project(decoder, projection, native, "A7")
+@@ -1435,6 +1443,20 @@ def _restore_operation(
+             # Covers complete supplied J, all ordinary parse/project/hash/freeze
+             # buffers. Original R opaque child reservations remain in R only.
+             _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
++            from .semantic_profile_restore_budget import JSON_KEYS
++
++            # Both lexical passes: each key scans <=n fixed strings and <=32
++            # prior keys. Sum key lengths <=J, key count <=J/3, fixed length
++            # <=maxlen. This deliberately loose expression covers both passes,
++            # all fixed-key/prior-key byte comparisons and 256J other dispatch.
++            # It is one D prepayment, not new R capacity or a refundable pool.
++            factor = (
++                256
++                + 4 * (len(JSON_KEYS) + 4)
++                + sum(map(len, JSON_KEYS))
++                + 64 * max(map(len, JSON_KEYS))
++            )
++            direct_ledger.debit("scan_copy", factor * (size + preimage))
+         ledger.begin(size, preimage, len(allocation.children))
+         # Caller-held exact context is also live: three bounded ID copies per
+         # slot, implementation/digest strings, limits, records and decoder state.
+@@ -1567,32 +1589,76 @@ def restore_profile_result(
+     )
+ 
+ 
++def _explanation_key(record, ledger):
++    chars = sum(
++        len(v)
++        for term in record
++        for v in (term.lexical_form, term.datatype_iri, term.language_raw)
++        if v is not None
++    )
++    ledger.debit("work", 128 + 64 * chars)
++    ledger.debit("scan_copy", 32 * chars + 128)
++    ledger.reserve("scalar", 32 * chars + 128)
++    ledger.reserve("objects", 64)
++    return semantic._key(tuple(semantic._profile_term(term) for term in record))
++
++
+ def _validate_explanation(decoder, native, original_records):
+     from .semantic_profile_directsteps import encode_identity_key, validate_direct_steps
+ 
+     ledger = decoder.direct_ledger
+-    entries = key = identity = triple = record = None
++    entries = key = identity = record = actual_evidence = inputs = firing = head = leaf = (
++        raw_leaf
++    ) = expected_id = None
+     held = 8 * len(original_records) + 32
+     ledger.reserve("objects", held)
+     try:
+         entries = []
+         for record in original_records:
+-            # Exact TermInput fields have passed original typed decoder. The
+-            # formatter is prepaid before constructing any RDFLib term/N3.
+-            chars = sum(
+-                len(v)
+-                for term in record
+-                for v in (term.lexical_form, term.datatype_iri, term.language_raw)
+-                if v is not None
+-            )
+-            ledger.debit("work", 128 + 64 * chars)
+-            ledger.debit("scan_copy", 32 * chars + 128)
+-            ledger.reserve("scalar", 32 * chars + 128)
+-            ledger.reserve("objects", 64)
+-            triple = tuple(semantic._profile_term(term) for term in record)
+-            key = semantic._key(triple)
++            key = _explanation_key(record, ledger)
+             identity = encode_identity_key(record, ledger)
+             entries.append((identity, key))
++        from hashlib import sha256
++
++        from .semantic_profile_directsteps import DirectStepsFailure
++
++        for leaf in native["proofLeaves"]:
++            chars = sum(map(len, leaf["triple"])) + 32
++            ledger.debit("work", 32 * chars + 128)
++            ledger.debit("scan_copy", 32 * chars + 128)
++            ledger.reserve("scalar", 32 * chars + 128)
++            ledger.reserve("objects", 32)
++            raw_leaf = ("i05-profile-proof-leaf/1\0" + "\0".join(leaf["triple"])).encode("utf-8")
++            expected_id = "i05-proof:" + sha256(raw_leaf).hexdigest()
++            if leaf["reference"] != expected_id:
++                raise DirectStepsFailure(stage="restore")
++        # Saved evidence must describe the actual decoded typed head occurrences,
++        # not manufacture unrelated roots through range-valid indices.
++        ledger.reserve("objects", 64 + 64 * len(native["evidence"]))
++        actual_evidence = []
++        for firing_index, firing in enumerate(native["firingGroups"]):
++            inputs = [
++                _explanation_key((t.subject, t.predicate, t.object), ledger) for t in firing.when
++            ]
++            for head in firing.heads:
++                actual_evidence.append(
++                    {
++                        "rule": firing.rule_id,
++                        "firingIndex": firing_index,
++                        "headIndex": head.index,
++                        "result": _explanation_key(
++                            (head.triple.subject, head.triple.predicate, head.triple.object), ledger
++                        ),
++                        "inputs": inputs,
++                        "basis": firing.basis,
++                    }
++                )
++        _require(len(actual_evidence) == len(native["evidence"]), "A5")
++        for actual_row, saved_row in zip(actual_evidence, native["evidence"], strict=True):
++            for name in ("rule", "firingIndex", "headIndex", "result", "inputs", "basis"):
++                _same(actual_row[name], saved_row[name], decoder.ledger, stage="A5")
++        actual_row = saved_row = None
++        actual_evidence = inputs = firing = head = leaf = raw_leaf = expected_id = None
+         validate_direct_steps(
+             native["directSteps"],
+             proof_leaves=native["proofLeaves"],
+@@ -1602,7 +1668,9 @@ def _validate_explanation(decoder, native, original_records):
+             ledger=ledger,
+         )
+     finally:
+-        entries = key = identity = triple = record = native = original_records = None
++        entries = key = identity = record = actual_evidence = inputs = firing = head = leaf = (
++            raw_leaf
++        ) = expected_id = actual_row = saved_row = native = original_records = None
+         ledger.discard(objects=held)
+ 
+ 

@@ -1,0 +1,348 @@
+{
+  "state": "write-locked; stop writing after final format record",
+  "product": "cb2662c2ea4014d3de06194442f462c17eabe23b",
+  "sourceFixProduct": "ff90092e39c95f0195eb175f46538a8a822dfeb2",
+  "verdict": "LIMITED PASS: O1/O2/O3 and exact sink closed; no budget signoff; component only",
+  "141CurrentEqualsFixedGit": true,
+  "original189WriteLockAllMembersUnchanged": true,
+  "independentTests": {
+    "oldCriticalPassed": 12,
+    "newAdoptedRegressionsPassed": 12,
+    "evidenceMutationsRejected": 16,
+    "allSuccessRuns141BeforeAfterCb": true
+  },
+  "preservedFirstFailures": [
+    "00-ff-preflight.json: before any product execution, test-only mismatch",
+    "03-roots: reviewer erroneous D.live==0 assertion; raw streams retained"
+  ],
+  "noProductOrTestWrites": true,
+  "rootFullCheck": "root owns final full check; no completed result claimed here",
+  "memberExclusions": [
+    "10-lock-format.json",
+    "10-lock-format.stderr.txt",
+    "10-lock-format.stdout.txt",
+    "write-lock-cb2662c.json"
+  ],
+  "files": [
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/00-ff-preflight-tool-output.txt",
+      "bytes": 612,
+      "sha256": "dc9cced3fa26cedc0cae83b2c39e83fbf6b55ccbc8e68235a3ccbdf09cbe601a"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/00-ff-preflight.json",
+      "bytes": 697,
+      "sha256": "90d9f64f3f4d5717a25adee32b35d5d230d24ffec8b82782b094ed8a3954e9de"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/01-counterexample-observations.json",
+      "bytes": 694195,
+      "sha256": "0872b81d11fae701a2aea9596afe177d99c8862cc9f6da933e518a1d66304da9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/01-counterexamples.json",
+      "bytes": 54976,
+      "sha256": "b19b1a83c35506c235c9da8e37f5f3533e329aee3ac980911b4e050d7c6bc2e8"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/01-counterexamples.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/01-counterexamples.stdout.txt",
+      "bytes": 849,
+      "sha256": "143abea140a4f482e24a5cbccaba944060c2601b3931c9bc4aa6d55450fc96d8"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/03-roots.json",
+      "bytes": 54968,
+      "sha256": "753ff211cbd4b9027ab00219d54e59ed7d86d2edba3913a9c97f60d3eeea634d"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/03-roots.stderr.txt",
+      "bytes": 1688,
+      "sha256": "6f4065751463292b1f6fe46d699f26acb644bfe5fab13cf4061b7df2ea1e6fe4"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/03-roots.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/04-counterexample-observations.json",
+      "bytes": 694195,
+      "sha256": "0872b81d11fae701a2aea9596afe177d99c8862cc9f6da933e518a1d66304da9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/04-counterexamples.json",
+      "bytes": 54941,
+      "sha256": "25d3f6f30f0cb0416e7bb26c90b839257fda4b3ba11e90761424f748434c18ca"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/04-counterexamples.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/04-counterexamples.stdout.txt",
+      "bytes": 849,
+      "sha256": "143abea140a4f482e24a5cbccaba944060c2601b3931c9bc4aa6d55450fc96d8"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/05-roots-observations.json",
+      "bytes": 1297744,
+      "sha256": "271b96ecb4592cbd22438f332b8354c2e8ed6c5b8ccc3b9b245b1019887fd446"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/05-roots.json",
+      "bytes": 54923,
+      "sha256": "8e05431ad3b59ff96529f6f8681a46c73197f6646fcc5388847db6632829b349"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/05-roots.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/05-roots.stdout.txt",
+      "bytes": 2316,
+      "sha256": "8ba5909dd34d5f41e612d22ef4973711040b67a7a791187801a8ceb297598d75"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted-fee-events/016d14d35a17fabae89523b2.jsonl",
+      "bytes": 670956,
+      "sha256": "3dd844ad945523e777deb0f5b50d3f3b76cf804e0968a496fe6230d03972dfa9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted-fee-events/0fae1a7480de1194360b703a.jsonl",
+      "bytes": 423258,
+      "sha256": "9e54b0770067d198900ba2f679cb5a5f5109a27ccad8edcaa1c8e3313a7fadd9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted-fee-events/1d70390d1e931c375806a2ed.jsonl",
+      "bytes": 850683,
+      "sha256": "4e1ed85e96f88d343711184b01787e379f0f074bacec7b5898da7e468a3754c9"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted-fee-events/2cf03a517e2623a5ae3b11b3.jsonl",
+      "bytes": 423256,
+      "sha256": "a7378bcbee28449dfb5a8e954378c665e5cfe7bf3742edfb1001292a9416ce89"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted-fee-events/30b3ec72f90681dc825b26e2.jsonl",
+      "bytes": 445810,
+      "sha256": "450fca29d5b91d3d20744e7f9841b9f1b8dd1a4509ad468015879eef1aeea525"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted-fee-events/4c3991a8e6b149ea39a7c852.jsonl",
+      "bytes": 445046,
+      "sha256": "92070902483c8cf6123cdee541af94eeebf2692d0965690b117ce87e3508f768"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted-fee-events/53786f9d8111ac486ae6c378.jsonl",
+      "bytes": 1330934,
+      "sha256": "3b8f6adb2da2db72b87bc508afe2a0bed8eabcb4931809e2baef58e6c19fc8f6"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted-fee-events/53eb9c6d95f8e0eaa88d5f65.jsonl",
+      "bytes": 1066844,
+      "sha256": "3683be77c360465ddc091619ae4bcf5fee6ad1569d95e02e2ebf62703d5c4991"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted-fee-events/bde1eb83e01536ec73ba8ad1.jsonl",
+      "bytes": 445832,
+      "sha256": "e880e160732d6c196af36a935c019dc7add85edcd86c81df2098d3f3e545e953"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted-fee-events/beac9b81d8971ddef43e66e7.jsonl",
+      "bytes": 756240,
+      "sha256": "559ea97218b454356067f413c956ff0b888263f43617b78579ed0988951f64f8"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted-fee-events/ceae61dc3516658742556ebd.jsonl",
+      "bytes": 898720,
+      "sha256": "3c9177eec1a9b5cdb4bb089c5743d48c71ce0b439e609e151ffcd107a92aed64"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted.json",
+      "bytes": 55452,
+      "sha256": "22c28a5712fc8cc8a8ff28f2b283f8bd74fd47bd079f8c40fdc7c4b9e7033977"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/06-targeted.stdout.txt",
+      "bytes": 114,
+      "sha256": "7a7cf1e2c130dcbfffb74ef782b95d345e95ed508e0ca70513cbc0bf004ff4af"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-fee-events/068b7481b5310ca9d0e8d55e.jsonl",
+      "bytes": 568,
+      "sha256": "09eef60cc809a416f6c78b34e9861b50bd6ff02d80542141ba0e5be73a49c161"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-fee-events/0826c52dd2714a99cb4418f9.jsonl",
+      "bytes": 558,
+      "sha256": "cec6db8baaa06af195db1f177f532c005b6b41851d21d3814ffca36430d0c2b8"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-fee-events/1028c409dd50e7ed3f883c56.jsonl",
+      "bytes": 557,
+      "sha256": "1b1d88a23c4e4f4830ecce0043f9bc0fc68cc20948d8c2de0a39974aa8dae7fb"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-fee-events/2b882cbc4d6f65ed77269021.jsonl",
+      "bytes": 610328,
+      "sha256": "901043b2f4cb63fd261aae352d6600b2400ba37630edb144d8db0ad9305d6b15"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-fee-events/47af7e5a709bd6452d432c67.jsonl",
+      "bytes": 2372,
+      "sha256": "35637d38b3db08ad79551528ba2beffc3ef919cd1312a8d4584e81cda9e17733"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-fee-events/4c6bf9ca4ff7642e98335083.jsonl",
+      "bytes": 563,
+      "sha256": "491fc38315274e5be12205d98d0433502968323ce916912f36d1f3daadf78b9e"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-fee-events/63fce280ee9d1d8af2b21a08.jsonl",
+      "bytes": 1001,
+      "sha256": "06c8d51f9d1391aa2f9c621e5a83cb3d013726102ca7a9098bedb827cf9dd311"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-fee-events/75edea0030c862deeab0f92c.jsonl",
+      "bytes": 10439,
+      "sha256": "f3b86eecd01da2efce4892aa32209105549adb43328ebbf143cdf64b506e4d02"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-fee-events/7b271cdb5c14875421734946.jsonl",
+      "bytes": 563,
+      "sha256": "1a0fbbd2cee85b9677950d947b5b5e8fe6d92a870fb22263dcdc836f1e4a9c9d"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-fee-events/7e01431a507f7b8f485b3eae.jsonl",
+      "bytes": 39173,
+      "sha256": "37cad28d939b72e6ccb31e882a8db33408b3f2f7dc4d70d4fbb655beef6bfc67"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-fee-events/b646a443e8ff8da0db72f01e.jsonl",
+      "bytes": 562,
+      "sha256": "5fdea06746b6de483c24fd698d55b98a12952c208e491bebadb5473031ccbe8d"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-regressions.json",
+      "bytes": 55442,
+      "sha256": "702af339bd874663787ace3e9af31626586f42b40646cc8b88aadaf948f51560"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-regressions.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/07-adopted-regressions.stdout.txt",
+      "bytes": 114,
+      "sha256": "e00136e413d24a493ebad3b2cf236d1a404a48ef327b6d753998038e23066473"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/08-document-format-write.json",
+      "bytes": 824,
+      "sha256": "2bbb93b8cefc966be1a6ba38a2633c6dfb70c99436074c9803275e8ab4137daf"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/08-document-format-write.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/08-document-format-write.stdout.txt",
+      "bytes": 207,
+      "sha256": "a06b47c6e0c5290a07c2dcc0e1861900a5199621837d5c22cce3f29254033e92"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/09-document-format-check.json",
+      "bytes": 824,
+      "sha256": "3b488e138027d9a78986529275082648655106445520959157ad6a1f55e9cc38"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/09-document-format-check.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/09-document-format-check.stdout.txt",
+      "bytes": 66,
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/counterexample-regression-first.py.raw",
+      "bytes": 4285,
+      "sha256": "9a63dc2aa8b63152d4c85c941aeab77b2735d6b3451a3b382768d5159efe82ba"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/counterexample-regression.py.raw",
+      "bytes": 4285,
+      "sha256": "d33c1a14f57307c9c4c4f36515751bb4dcd4a7e4af62cbd963e4272f8757b987"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/derived-candidate-cb.json",
+      "bytes": 35891,
+      "sha256": "b13cb95ccb6a499b51c24228267d5cc58f10a51f9284a6b95c098279f3e0b195"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/fixed-source-delta.diff.raw",
+      "bytes": 14607,
+      "sha256": "814ca5ddc483171197fa2dbd5af7290787f5e71bbeffd83900f072608cb1e1ec"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/report-cb2662c.md",
+      "bytes": 10173,
+      "sha256": "57a65458ab5045c993af58b2f7aba4c5459a4f86ca8be60cf03d5a9944d36127"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/roots-regression-first-failed.py.raw",
+      "bytes": 3687,
+      "sha256": "6e99a543973f0a0c6c32b9a241b4abfcd8d1b02fa81045b85b9effd01487e88b"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/roots-regression.py.raw",
+      "bytes": 3939,
+      "sha256": "5b8563ee2a7f293ae9f9c6df1362d5f355523b829f5680fe04fb832f09187c2a"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/run-adopted-fixed.py.raw",
+      "bytes": 2848,
+      "sha256": "09a4889c0fa239bd545956301879e88a3f7cee5283cfeb495bef432f3464204e"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/run-cb-fixed.py.raw",
+      "bytes": 3038,
+      "sha256": "ef784f5cc09896843af8102f88079670790ab57e11270726a58e0b6648f92855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/run-fixed-ff-stopped.py.raw",
+      "bytes": 3038,
+      "sha256": "cf2ba77b0dff6673160acfbc213cc6d0b15a6480e6bcf6f31524ad6c079d2a21"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/run-fixed.py.raw",
+      "bytes": 3003,
+      "sha256": "b6b0bfa1d3553b308b3a745c1102d68349e046913ac34afa547d479b86da3219"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/static-input-manifest.json",
+      "bytes": 45027,
+      "sha256": "3775b14bb611ac2c3f2751e6aceb32e33279ca39ef159d7673d137e2a72380ac"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/test-only-delta.diff.raw",
+      "bytes": 8076,
+      "sha256": "8a010682d4b67c326abfcb66de3ac79101138f00dc779b109e7f9c944790a3c7"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+import datetime
+import hashlib
+import json
+import os
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+root = Path.cwd()
+prefix = root / 'docs/reviews/I05/profile-directsteps'
+label, argv = sys.argv[1], sys.argv[2:]
+cache = Path(json.loads((prefix / 'environment/paths.json').read_bytes())['cache'])
+run = prefix / 'runs' / label
+assert not run.exists(), 'run records are append-only'
+run.mkdir(parents=True)
+base = tempfile.mkdtemp(prefix=label + '-', dir=cache)
+env = {'PATH':os.environ['PATH'], 'HOME':os.environ['HOME'], 'TMPDIR':str(cache),
+       'LANG':'en_US.UTF-8', 'LC_ALL':'en_US.UTF-8', 'TZ':'Asia/Shanghai'}
+env.update(UV_CACHE_DIR=str(cache / 'uv'), PYTEST_ADDOPTS='--basetemp=' + base,
+           I05_DIRECTSTEPS_FEE_EVIDENCE_DIR=str(run / 'reports'))
+fixed = json.loads((prefix / 'inputs/I05-profile-directsteps-first-fixed-inputs.json.raw').read_bytes())
+paths = [x['path'] for x in fixed['files']] + fixed['newPaths']
+def snapshot():
+    result = []
+    for rel in paths:
+        p = root / rel
+        if p.exists():
+            b = p.read_bytes()
+            result.append(dict(path=rel, bytes=len(b), sha256=hashlib.sha256(b).hexdigest()))
+        else:
+            result.append(dict(path=rel, absent=True))
+    return result
+record = dict(argv=argv, cwd=str(root), gitHead=subprocess.check_output(['git','rev-parse','HEAD'], text=True).strip(),
+              environment=dict(env), environmentScope='complete clean subprocess environment',
+              start=datetime.datetime.now(datetime.timezone.utc).isoformat(), timeoutSeconds=600,
+              sourcesBefore=snapshot())
+with (run / 'stdout.txt').open('wb') as stdout, (run / 'stderr.txt').open('wb') as stderr:
+    try:
+        p = subprocess.run(argv, env=env, stdout=stdout, stderr=stderr, timeout=600)
+        record.update(exitCode=p.returncode, timeout=False)
+    except subprocess.TimeoutExpired:
+        record.update(exitCode=None, timeout=True)
+record.update(end=datetime.datetime.now(datetime.timezone.utc).isoformat(), sourcesAfter=snapshot())
+record['sourcesUnchanged'] = record['sourcesBefore'] == record['sourcesAfter']
+(run / 'command.json').write_text(json.dumps(record, ensure_ascii=False, indent=2) + '\n')
+members = []
+for p in sorted(run.rglob('*')):
+    if p.is_file():
+        b = p.read_bytes()
+        members.append(dict(path=str(p.relative_to(run)), bytes=len(b), sha256=hashlib.sha256(b).hexdigest()))
+(run / 'members.json').write_text(json.dumps(members, ensure_ascii=False, indent=2) + '\n')
+print(json.dumps({k:v for k,v in record.items() if k not in ('sourcesBefore','sourcesAfter')}, ensure_ascii=False))
+print((run / 'stdout.txt').read_text(errors='replace')[-5500:])
+print((run / 'stderr.txt').read_text(errors='replace')[-1800:])
+sys.exit(record['exitCode'] if record['exitCode'] is not None else 1)

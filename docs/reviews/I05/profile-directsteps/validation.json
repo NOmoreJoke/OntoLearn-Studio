@@ -1,0 +1,355 @@
+{
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "adoption": "78e9cf7f26dc039e99ec6725d7de8a396d1298d2",
+  "firstProduct": "18908e4abca900a07a15a5d157d4022f2a11349a",
+  "fixProduct": "ff90092e39c95f0195eb175f46538a8a822dfeb2",
+  "regressionProduct": "cb2662c2ea4014d3de06194442f462c17eabe23b",
+  "product": "8e8b5126c69534c6259d37b2d3e88f75ef935aa0",
+  "controlledCount": 141,
+  "readonlyCount": 133,
+  "newPathsCount": 2,
+  "existingWritersCount": 6,
+  "normalCheck": {
+    "run": "21-final-check",
+    "exitCode": 0,
+    "vitestPassed": 1125,
+    "pythonPassed": 4964,
+    "pythonSkipped": 44,
+    "fullCleanSubprocessEnvironment": true
+  },
+  "special": {
+    "newTestCases": 77,
+    "compatibilityPlusNewPassed": 98,
+    "notCumulativeUniqueCoverage": true
+  },
+  "sourceArchiveVerification": {
+    "run": "22-final-verify-sources",
+    "count": 12,
+    "exitCode": 0
+  },
+  "reviews": [
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/report-18908e4.md",
+      "bytes": 16195,
+      "sha256": "806845d269ee1bc0c9acbf893ce5cd715539e8e11c4f5619918616518886e36d"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/report-cb2662c.md",
+      "bytes": 10173,
+      "sha256": "57a65458ab5045c993af58b2f7aba4c5459a4f86ca8be60cf03d5a9944d36127"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-8e8b512/report.md",
+      "bytes": 5078,
+      "sha256": "4b22622e433f09de201a5f04fbe8d80d873d0d8a7511dc2e7d7d28d00da10a41"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-budget/initial-18908e4-report.md",
+      "bytes": 6451,
+      "sha256": "889de60a6f22a93773771cb1963d57ca76c57eb20598e78f136e8e0f1dc9bf82"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-budget/delta-cb2662-report.md",
+      "bytes": 8292,
+      "sha256": "32d5bb8e15cb27fb0f72f3bd261dc2707db77d4f1fc5452f56ac65b37e85e0cd"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-budget/delta-8e8b512-report.md",
+      "bytes": 4290,
+      "sha256": "fc9b011957ec990b92a59ae7ec2009d925ce2a011607539294628d4a0a7488c9"
+    }
+  ],
+  "reviewSeals": [
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-budget/write-lock-8e8b512.json",
+      "bytes": 23841,
+      "sha256": "06b23c3ad09039e882266a3d9b86a6ef2f407b3c1612c50fb5443331d9556387"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-budget/write-lock-final.json",
+      "bytes": 17063,
+      "sha256": "7f85579f9b11f10d1783a4021daee26d485ef771f08608f4e6b34d89daa56861"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-budget/write-lock.json",
+      "bytes": 15977,
+      "sha256": "b3f4f7e8c413137029adb149c9ffba8f1b561cdaf048beb65d2987da57aa8f3c"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/write-lock-18908e4.json",
+      "bytes": 7899,
+      "sha256": "a046d4c537f99dd1db8885ea0ffc230c24f005ada448d5704f8fde88dbdacb99"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/write-lock-cb2662c.json",
+      "bytes": 16403,
+      "sha256": "5bfce16e0d5fe769b0ffdb626b57aaeb909e5fe16da608dadab306bb0774369e"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/independent-origin/delta-8e8b512/write-lock.json",
+      "bytes": 4741,
+      "sha256": "07c670504392260487d9af57d7374c1769a1d8dd1d8c2ad4926928c68f4c899a"
+    }
+  ],
+  "runs": [
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/02-integration-ruff/command.json",
+      "bytes": 55236,
+      "sha256": "c123f123b0b284b0346f3c80c0621c9bb2af4b2e897e682d9ccaf9bf032dba5c",
+      "exitCode": 1,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/03-direct-special/command.json",
+      "bytes": 54850,
+      "sha256": "8ab3b5bae8ef836866cf0fe7756cb254f26322892cf1482313efd17b35c7ff04",
+      "exitCode": 1,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/04-debug-restore/command.json",
+      "bytes": 54803,
+      "sha256": "c023c8151d14a0ecdd29841c8b5ae6b30572266af548adfa2c9b8fc8f5cb6330",
+      "exitCode": 1,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/05-debug-restore/command.json",
+      "bytes": 54805,
+      "sha256": "69a57965667a96e7669c8f4c3728ccc9d3fb248dcd278b49dd154e8f5aa63488",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/06-direct-special/command.json",
+      "bytes": 54850,
+      "sha256": "545ca6c6cb6daf9224df4574b4b8b32bb3181fcf08b6a339bd3fefd5f1d0669b",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/07-candidate-ruff/command.json",
+      "bytes": 55232,
+      "sha256": "67463e4d55d290fd7e2278496ddbfc47abd7ccb82146e84f5ff16533e675ea01",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/08-frozen-special/command.json",
+      "bytes": 54850,
+      "sha256": "bb2877f837bdef7b160cb356cf400e4ccd6ddbec07a94e7c76782c5445b308e2",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/09-normal-check/command.json",
+      "bytes": 54747,
+      "sha256": "fb7287eea63e3ebeefa6023ee1b843c58fa580bcca40606e772986894973bcf4",
+      "exitCode": 1,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/10-review-fixes-special/command.json",
+      "bytes": 54862,
+      "sha256": "8c3d562ff0809afaffff5cb77c6f4a8910d9c1cbfa6e72bd932a1fc8d3e48c2b",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/11-review-fixes-special/command.json",
+      "bytes": 54862,
+      "sha256": "310a2560a97badb0a771d77ccf3d993428789a68d42f873f264e739f1fe9a779",
+      "exitCode": 1,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/12-debug-evidence/command.json",
+      "bytes": 54806,
+      "sha256": "6e045d0d13c1614b87fe47b683ae044ec0b441f65186ea5982ec4c67aceea73a",
+      "exitCode": 1,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/13-review-fixes-special/command.json",
+      "bytes": 54862,
+      "sha256": "2dd4313d0fdde840ad5037fe9517397c32d98bbba07ecf7727b704ad63e1ac78",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/14-review-fixes-ruff/command.json",
+      "bytes": 55238,
+      "sha256": "5bdf3101259f5c136794ea807beee4107b3e6cdd2e689ca44399a3f3c80b54e0",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/15-origin-regressions/command.json",
+      "bytes": 54858,
+      "sha256": "230951d6ca441441069dcffb099b7ac98564dcb46e28a16328e6d1d1e22f332f",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/16-normal-check/command.json",
+      "bytes": 54747,
+      "sha256": "769a47fc8047bb28d68aa749e997b1aed92f5976b9271f03be05dde466913e2a",
+      "exitCode": 1,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/17-verify-sources/command.json",
+      "bytes": 54760,
+      "sha256": "8d552324b4912286de88012c13df928886fb212b21ccd0f4a4e64b2fa404a10c",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/18-normal-check/command.json",
+      "bytes": 54747,
+      "sha256": "49757e0b95c3bea79de2eb02998576c7fa18a3b8cc3fdcb121dc46683570dc7b",
+      "exitCode": 1,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "recorded task overlays; full inherited environment not captured"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/19-final-clean-check/command.json",
+      "bytes": 56008,
+      "sha256": "167ce4b89c079cedbbf2c6f3a48a61ee0032d348c55b7e9c1ebf53b1dd5a1684",
+      "exitCode": -15,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "complete clean subprocess environment"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/20-compatibility-special/command.json",
+      "bytes": 56178,
+      "sha256": "6121f0cf78fad163fdb8291fe0fe8956f684123304169d4b8e7a9b38090a0c1f",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "complete clean subprocess environment"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/21-final-check/command.json",
+      "bytes": 55994,
+      "sha256": "75871639ea314ccc075f5f38601394c5cb01efc9c0a221c0ccef79e12cec8a3e",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "complete clean subprocess environment"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/22-final-verify-sources/command.json",
+      "bytes": 56021,
+      "sha256": "a3dea71571bce7cd1998c50c37b7e117ad971a65376ff7abcd09f2f746c1cc1b",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "complete clean subprocess environment"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/23-product-diff-check/command.json",
+      "bytes": 56107,
+      "sha256": "f068274278d7b6ac986bb2275dfa59c9fd2e7dbeb6608651d578c292007963b3",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "complete clean subprocess environment"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/24-full-staged-diff/command.json",
+      "bytes": 56023,
+      "sha256": "c5121b74060b92fecace6bc910d81e7305e1a4d47537d4be13f1f0901d538579",
+      "exitCode": 2,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "complete clean subprocess environment"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/runs/25-staged-preserve-raw-diff/command.json",
+      "bytes": 56591,
+      "sha256": "c2f19b94ff44b58149e00555ea7e1660228d53cf623011cdb9b43f6e3425599e",
+      "exitCode": 0,
+      "timeout": false,
+      "sourceCount": 141,
+      "sourcesUnchanged": true,
+      "environmentScope": "complete clean subprocess environment"
+    }
+  ],
+  "whitespace": {
+    "fullExitCode": 2,
+    "paths": [
+      "docs/reviews/I05/profile-directsteps/independent-origin/delta-8e8b512/fixed-delta.diff.raw",
+      "docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092/fixed-source-delta.diff.raw",
+      "docs/reviews/I05/profile-directsteps/runs/03-direct-special/stdout.txt",
+      "docs/reviews/I05/profile-directsteps/runs/11-review-fixes-special/stdout.txt",
+      "docs/reviews/I05/profile-directsteps/runs/18-normal-check/stdout.txt",
+      "docs/reviews/I05/profile-directsteps/runs/24-full-staged-diff/stdout.txt"
+    ],
+    "reason": "exact raw author/test first failures and their diagnostics retained; no source/test/main-doc exemption"
+  },
+  "limitations": {
+    "path": "docs/reviews/I05/profile-directsteps/root-attempt-limitations.json",
+    "bytes": 2073,
+    "sha256": "2bb56b923f47a5ea0731c7a9b9b8f179a7d9f62b8b4389376bb4fef7d83557c1"
+  },
+  "formalAuthority": false,
+  "parentI05Complete": false
+}

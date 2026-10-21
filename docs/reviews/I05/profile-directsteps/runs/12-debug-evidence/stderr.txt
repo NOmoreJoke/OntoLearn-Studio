@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/docs/reviews/I05/profile-directsteps/debug-evidence.py.raw", line 11, in <module>
+    ns['test_roots_retain_every_real_rule_head_occurrence_and_do_not_feed_rule_chains']()
+  File "packages/engine/tests/test_semantic_profile_directsteps.py", line 727, in test_roots_retain_every_real_rule_head_occurrence_and_do_not_feed_rule_chains
+    view, _ = receive(computed)
+              ^^^^^^^^^^^^^^^^^
+  File "packages/engine/tests/test_semantic_profile_directsteps.py", line 218, in receive
+    result = restore.restore_profile_explanation_result(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 1680, in restore_profile_explanation_result
+    return _restore_operation(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 1546, in _restore_operation
+    raise error
+ontolearn_engine.semantic_profile_restore_budget.RestoreFailure: RESTORE_INPUT_INVALID

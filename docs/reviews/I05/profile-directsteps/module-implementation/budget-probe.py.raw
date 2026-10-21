@@ -1,0 +1,49 @@
+exec(compile(open('docs/reviews/I05/profile-directsteps/module-implementation/helper-probe.py.raw').read(),'<retained helper probe>','exec'))
+
+def captured(overrides=()):
+ l=DirectStepsLedger(overrides=overrides);c=None
+ try:
+  c=_DirectStepsCapture(l)
+  c.candidate(RULES[2]);c.candidate(RULES[0])
+  c.insert(x,(a,b),RULES[2]);c.insert(y,(x,c_key),RULES[0]);c.end_candidates(2)
+  for k in (a,b,c_key):c.link_seed(k,leaf(k))
+  value=c.finish();rec=l.receipt();l.completed();return value,rec,l
+ except BaseException:
+  l.failed();raise
+ finally:
+  if c is not None:c.drop()
+
+c_key=c
+base,rec,base_l=captured()
+results=[]
+for domain in ('work','scan_copy','objects','scalar'):
+ required=dict(rec.usage if domain in ('work','scan_copy') else rec.peaks)[domain]
+ value,exact,exact_l=captured(((domain,required),));assert value==base
+ try:captured(((domain,required-1),))
+ except DirectStepsFailure as exc:assert exc.classification=='resource';results.append((domain,required,exc.reason))
+ else:raise AssertionError(('short succeeded',domain))
+# Every finite local template independently, without claiming a producer run.
+RANGE='<http://www.w3.org/2000/01/rdf-schema#range>'
+for label,first,second,out in [('rdfs3-range',('<urn:p>',RANGE,'<urn:C>'),b,('<urn:y>',T,'<urn:C>')),('rdfs11-subclass-transitive',('<urn:A>',S,'<urn:B>'),('<urn:B>',S,'<urn:C>'),('<urn:A>',S,'<urn:C>'))]:
+ l=DirectStepsLedger();cap=_DirectStepsCapture(l);cap.candidate(label);cap.insert(out,(first,second),label);cap.end_candidates(1)
+ for k in (first,second):cap.link_seed(k,leaf(k))
+ v=cap.finish();cap.drop()
+ check=DirectStepsLedger();check.begin(stage='restore')
+ se=tuple((encode_identity_key(tuple(TermInput('iri',t[1:-1]) for t in k),check),k) for k in (first,second))
+ summary=validate_direct_steps(v,proof_leaves=tuple({'reference':leaf(k),'triple':k} for k in (first,second)),rdfs=[out],rdfs_evidence=[{'result':out,'basis':[first,second],'proofLeaves':tuple(sorted(leaf(k) for k in (first,second)))}],seed_entries=se,ledger=check)
+ assert summary.step_count==1 and summary.max_depth==1
+# Terminal failure cannot leak or resume an already-built prefix.
+l=DirectStepsLedger();cap=_DirectStepsCapture(l);cap.insert(x,(a,b),RULES[2])
+try:cap.insert(x,(a,b),RULES[2])
+except DirectStepsFailure as exc:assert exc.reason=='DIRECT_STEPS_INVALID' and l.state=='failed' and cap.steps is cap.index is cap.seeds is None
+else:raise AssertionError('duplicate accepted')
+for limit in (0,127):
+ l=DirectStepsLedger(overrides=(('objects',limit),))
+ try:l.begin()
+ except DirectStepsFailure as exc:assert exc.classification=='resource' and l.used is l.caps is l.live is l.peaks is None
+ else:raise AssertionError('bootstrap underpaid')
+l=DirectStepsLedger(overrides=(('objects',128),('scalar',128)));l.begin();assert l.live=={'objects':128,'scalar':128}
+try:l.reserve('objects',1)
+except DirectStepsFailure:pass
+else:raise AssertionError('control capacity grew')
+print(json.dumps({'helperBudgetExactMinusOne':results,'twoOtherTemplates':True,'duplicateFailureDrops':True,'bootstrap0_127_128':True}))

@@ -1,0 +1,35 @@
+# I05 首个 directsteps 源码窗口
+
+2026-10-22。总控受限收件T05固定057d2d96aaaac92d59f593678fc265fd13eace78解释合同，主稿34958B/SHA256 `c947430801e6b3cca113c15a856704c3d5bed418efa9083d67819830a6961fba`。全文主稿、两P2增量、source申请/预算/独审及根独审16161B/`2310fe3d57b52e9438a8cc057be66f91d1a935439dbe99878a23d910374a5c65`均已读。现批准有限源码实施，不再增加一般性方案轮次。方案收件不等产品通过。
+
+## 独立树与写权
+
+继续原I05聊天/Goal。新树 `.worktrees/I05-profile-directsteps`、branch `feature/weekly-i05-profile-directsteps`，base已核develop5f910b52c69d86a1076b2032e5d3c63e715947f3。逐 `I05-profile-directsteps-first-fixed-inputs.json` **57687B/`e5fe75cbf07436660fc475b5ac6c176c40fff35f00e1aad1250b7d967ef149d5`** 的139项采用固定6c原Git bytes，独立adoption后直接继续；不wholecommit或拿T01/C2/S1 WIP，其他现有路径保持base。原6c/2d5树、T05数学/057d及其原件冻结。
+
+仅六已有writer，统一engine源码前缀：`semantic.py`、`semantic_execution.py`、`semantic_profile_production.py`、`semantic_profile_restore.py`、`resources.py`、`semantic_profile_restore_budget.py`。旧hash均清单与5749B申请核同。根明确指定I05为这些路径唯一writer，特别新增两项窄权限：resources仅semantic_identity的exact explanation分派；restore_budget仅read_json按schema选择四fixed新key。原全局默认key表、旧R cap/TermCache/版本及基础IMPLEMENTATION/registry/锁不变。
+
+仅两新件：`packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py`、`packages/engine/tests/test_semantic_profile_directsteps.py`。133已有只读，最终141受控。文档仅新 `docs/iterations/I05/profile-directsteps.md`、`docs/reviews/I05/profile-directsteps/`。旧tests/quality七机制、material/Turtle/scopes、Store/worker、公共契约/锁/build/CI不授写。
+
+## 明确采用的合同
+
+采用057d主§2–5：唯一finite closure四append带固定tag，保持原sort key/生成顺序、旧L收费及首插入规则；不从leaf union/第二reason重建 witness。原firing字段足够规则解释，不另造rule carrier。首插入只存真实SeedKey/StepOrdinal，在原leaf发行点link原ID，wire前全部resolve；失败无carrier前缀。
+
+新解释API显式/3、finite8、schema2、directsteps1，native7/16/11；旧/2、finite7、schema1及旧入口默认保持。首入口限真实structured records，不用Turtle termSources拼seed图。fullview按真实RDF identity与允许N3 aliases核完整seed/叶ID、无前向引用、四局部模板、depth、结果集合覆盖及原叶union/basis，不能运行第二reason。原raw/None/language/source/occurrence不改写，integer01/1不因数学值相等去重。
+
+采用2180B预算模型及lower-only有限D池：work/scan_copy各581671040，objects270635588、scalar50331776，控制票128先于容器。所有候选（含未入选）、新增引用/键/临时link、别名、逐叶DP、完整新J投影/复制/hash/parse及全部同时持有逐动作先付；不借旧L/C/R、不退累计工作、不在phase/retry重发。分析子界不是第二钱包，logical live0不证明物理GC或释放caller持有。
+
+实施时直接冻结私有索引编码：TripleKey三段各8字节unsigned big-endian UTF8长度再接原UTF8内容，24B header照计。RDF term identity用不相同kind byte区分IRI/literal：IRI为tag+一段length/content；literal为tag+lexical与effectiveDatatype两段length/content，再一字节language是否存在，存在时另length+lower-language。三term身份键再用三段8字节长度包裹；所有tag/header、最坏编码预留与实际重复编码均入K/work/copy/live。K受8MiB，不接受溢出/未知kind/替换分隔符；这只用于新临时索引，不改旧hash、leaf ID或raw wire身份。实现若需更小同等无歧义编码给精确差异，不重开一般方案。
+
+roots只定位完整已获准fullview内真实leaf/step/head occurrence，不能当单目标权限裁剪、正式selected或来源权威；真实Job/Store/Σ/H/跨worker另窗。新DirectStepsFailure不增加公开错误码，正式Job边界适配未授。
+
+## 验证与协作
+
+新test覆盖四finite规则、depth2/前件序、首witness与后发现更短witness、重复候选、完整字段/尾部篡改、alias/None/raw、全部D池边界/差1/复用/异常引用释放，以及旧reader拒新字段/旧默认结果。unit自编纯输入及独立数学预期需由未参与实现的agent核验；不能冒称T05原五图已经含first-witness/late-shorter向量。T05外部新两writer正在独立观察两规则图/13C，三个direct图等你实际供方回交后再组合。
+
+允许新树无窗口专项pytest、完整npm check及12源核验，原锁独立环境/输出；不GUI/Electron/native/凭据/模型/网络服务/付费，不为绿改133只读。新API不影响原数学语义，但对本新候选的旧行为回归仍须实际检查，不能把051数学旧运行冒新候选运行。
+
+每run独占basetemp、实际argv/cwd/env/独立双流/exit/全部原始费用事件，结束即冻结完整成员/hash；保首失败与处置，不重建冒原。固定完整141及过程清单、实际base/adoption/product/process及来源映射，独立实质审查预算与正常/故障全链，根再读回。
+
+semantic.py若同时处理另授shape入口修复，由同一I05主writer在各独立树串行维护；可并行分配新directsteps纯模块/新test，不让两agent写同一文件。shape修复不会自动采用进本139，后续根按实际新ref精确组合/复核；本窗口不默授shape delta或新增版本政策。T01 producer亦继续旧6c，不能跨树偷用新identity。
+
+不新建或修改Goal状态、不推送合并。指定双外审、CI、目标OS/真人、父I05/T05/57P0和正式来源门保持，内部切片通过不替代完整功能。

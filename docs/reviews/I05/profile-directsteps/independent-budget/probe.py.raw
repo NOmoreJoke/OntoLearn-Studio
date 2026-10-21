@@ -1,0 +1,46 @@
+import sys,runpy,json,inspect,hashlib,copy
+from pathlib import Path
+sys.path.insert(0,'packages/engine/tests')
+from ontolearn_engine import semantic_profile_directsteps as d
+from ontolearn_engine import semantic_profile_restore as r
+from ontolearn_engine.semantic_profile_restore_budget import RestoreLedger,RestoreFailure
+ns=runpy.run_path('packages/engine/tests/test_semantic_profile_directsteps.py')
+observations=[]
+original=d._DirectStepsCapture.end_candidates
+def observer(self,count):
+    caller=inspect.currentframe().f_back
+    callback=caller.f_locals.get('append')
+    retained=callback.__defaults__[0] if callback is not None else None
+    event={'count':count,'caller':caller.f_code.co_name,'localAdditionsIsNone':caller.f_locals.get('additions') is None,
+           'appendDefaultType':type(retained).__name__,'retainedCandidates':len(retained) if type(retained) is list else None,
+           'before':dict(self.ledger.live)}
+    result=original(self,count)
+    event['after']=dict(self.ledger.live)
+    event['defaultStillRetainsSameList']=callback.__defaults__[0] is retained
+    observations.append(event)
+    caller=callback=retained=None
+    return result
+d._DirectStepsCapture.end_candidates=observer
+computed,ledger=ns['produce'](ns['four_branch_case']('domain-depth2')[0])
+d._DirectStepsCapture.end_candidates=original
+print(json.dumps({'probe':'actual end_candidates observation','rounds':observations,'ledgerEvents':ledger.events,'receiptCarrierBytes':computed.direct_receipt.carrier_bytes,'carrierCanonicalBytes':len(ns['canonical'](computed.wire['payload']['reasoning']['directSteps']))},ensure_ascii=False))
+# Full-stream strict Reader logical-fee observations; never supply a result.
+for count in (10,1000):
+    payload=copy.deepcopy(computed.wire['payload'])
+    payload['reasoning']['warnings']=[{'day':None} for _ in range(count)]
+    wire,expected=ns['rebound'](computed,payload)
+    dl=d.DirectStepsLedger();rl=RestoreLedger();fees={}
+    old=RestoreLedger.charge
+    def charged(self,domain,amount=1,**kw):
+        before=(dict(dl.used) if dl.used else None,dict(dl.live) if dl.live else None)
+        answer=old(self,domain,amount,**kw)
+        fees[domain]=fees.get(domain,0)+amount
+        return answer
+    RestoreLedger.charge=charged
+    try:
+        r.restore_profile_explanation_result(*wire,expected=expected,allocation=computed.original_allocation,ledger=rl,direct_ledger=dl)
+        result='unexpected success'
+    except (RestoreFailure,d.DirectStepsFailure) as exc:
+        result={'type':type(exc).__name__,'reason':exc.reason,'stage':exc.stage,'domain':exc.domain}
+    finally: RestoreLedger.charge=old
+    print(json.dumps({'probe':'actual complete restore rejecting malformed warnings','warningObjects':count,'J':len(wire[0])+len(wire[1])+len(expected.input_preimage)+len(expected.source_preimage),'outcome':result,'originalRActualFees':fees,'DActualUsage':dl.used,'DActualPeaks':dl.peaks,'DActualEvents':dl.events},ensure_ascii=False))

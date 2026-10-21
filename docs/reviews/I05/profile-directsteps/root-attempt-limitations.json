@@ -1,0 +1,55 @@
+{
+  "recordsAreAppendOnly": true,
+  "notAllEarlyRunsHaveCompleteInheritedEnv": true,
+  "earlyIntegrationRuff": {
+    "toolHistoryOnlyFirst": true,
+    "repeatWithRawStreams": "runs/02-integration-ruff",
+    "notRelabeledAsFirst": true
+  },
+  "runner01": {
+    "childExecuted": false,
+    "record": "runs/01-integration-ruff/supervisor-failure.json"
+  },
+  "firstFixScript": {
+    "script": "fix-independent-findings.py.raw",
+    "exception": "ValueError: substring not found",
+    "phase": "after three source files saved, before restore saved",
+    "rawStreams": "tool history only; no fabricated separate stream",
+    "followupScript": "fix-independent-findings-2.py.raw"
+  },
+  "normalCheckFailures": [
+    {
+      "run": "09-normal-check",
+      "cause": "adopted process verify_static.py active Ruff source; exact bytes archived with map"
+    },
+    {
+      "run": "16-normal-check",
+      "cause": "second adopted process verify_static.py active Ruff source; exact bytes archived with map-2"
+    },
+    {
+      "run": "18-normal-check",
+      "cause": "6 existing production compatibility assertions failed; no old test modified",
+      "pythonPassed": 4958,
+      "pythonFailed": 6,
+      "pythonSkipped": 44
+    }
+  ],
+  "abortedRun19": {
+    "run": "19-final-clean-check",
+    "exitCode": -15,
+    "reason": "owned repeated check terminated after completed18 demonstrated unchanged-source compatibility failures",
+    "noSuccessClaim": true,
+    "sourcesUnchanged": true
+  },
+  "finalCompleteEnvironmentRuns": [
+    "20-compatibility-special",
+    "21-final-check",
+    "22-final-verify-sources"
+  ],
+  "independentInitialFailuresArePreserved": true,
+  "protectedManifestReadAttempt": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/before-I04/original-protected-manifest.json",
+    "outcome": "not found; no write occurred; not claimed as new 64-file verification",
+    "evidenceScope": "protected checkout64 verification remains controller-provided; root verified old fullview and closed shape trees clean at fixed process refs"
+  }
+}

@@ -1,0 +1,42 @@
+import runpy,sys,json,hashlib
+from pathlib import Path
+sys.path.insert(0,'packages/engine/tests')
+from ontolearn_engine import semantic_profile_production as p
+from ontolearn_engine import semantic_execution as e
+from ontolearn_engine import semantic_profile_directsteps as d
+from ontolearn_engine.semantic_profile_input import CaptureLedger,prepare_profile_material
+ns=runpy.run_path('packages/engine/tests/test_semantic_profile_directsteps.py');records=ns['four_branch_case']('domain-depth2')[0]
+cl=CaptureLedger();dl=d.DirectStepsLedger();events=[]
+old_new=p._ProductionCapture.before_explanation_projection;old_old=p._ProductionCapture.before_projection;old_value=e._ProfileProjection.value;old_hash=hashlib.sha256
+
+def new_hook(self,*args):
+    events.append({'event':'new-before','Dwork':dl.used['work'],'Cstage':cl.stage})
+    result=old_new(self,*args)
+    events.append({'event':'new-after','Dwork':dl.used['work'],'Dscan':dl.used['scan_copy'],'Dlive':dict(dl.live),'Cstage':cl.stage})
+    return result
+
+def old_hook(self):
+    events.append({'event':'original-before','Dwork':dl.used['work'],'Cstage':cl.stage})
+    result=old_old(self)
+    events.append({'event':'original-after','Dwork':dl.used['work'],'Cstage':cl.stage,'Chash':cl.used['hash']})
+    return result
+
+def value(self,raw,*args,**kwargs):
+    if type(raw) is dict and 'mechanismBatches' in raw:
+        events.append({'event':'actual-reason-projection','Dwork':dl.used['work'],'Cstage':cl.stage,'Chash':cl.used['hash']})
+    return old_value(self,raw,*args,**kwargs)
+
+def digest(raw=b'',*args,**kwargs):
+    if cl.stage==6:
+        events.append({'event':'actual-stage6-hash','bytes':len(raw),'Dwork':dl.used['work'],'Cstage':cl.stage,'Chash':cl.used['hash']})
+    return old_hash(raw,*args,**kwargs)
+material=prepare_profile_material(records=records)
+p._ProductionCapture.before_explanation_projection=new_hook;p._ProductionCapture.before_projection=old_hook;e._ProfileProjection.value=value;hashlib.sha256=digest
+try:
+    computed=p.execute_profile_explanation(material,error_catalog=ns['CONTRACT'].ERROR_CATALOG,error_schema=ns['SCHEMA'],ledger=cl,direct_ledger=dl)
+finally:
+    p._ProductionCapture.before_explanation_projection=old_new;p._ProductionCapture.before_projection=old_old;e._ProfileProjection.value=old_value;hashlib.sha256=old_hash
+names=[x['event'] for x in events];assert names[:5]==['new-before','new-after','original-before','original-after','actual-reason-projection'];hashes=[x for x in events if x['event']=='actual-stage6-hash'];assert len(hashes)==3 and all(x['Chash']>=4*8388608 for x in hashes);assert events[1]['Dwork']==events[2]['Dwork']==events[3]['Dwork']==events[4]['Dwork']
+baseline=json.loads((Path('docs/reviews/I05/profile-directsteps/independent-budget/delta-ff90092-01-probe/stdout.txt').read_text().splitlines())[0]);assert dl.events==[tuple(x) for x in baseline['ledgerEvents']]
+assert computed.direct_receipt.carrier_bytes==779
+print(json.dumps({'probe':'compatibility hook and exact prior D event chain','events':events,'DchainExactlyEqualsFixedFFSuccessfulProducer':True,'DActualEvents':dl.events,'DActualUsage':dl.used,'DActualPeaks':dl.peaks,'carrierBytes':computed.direct_receipt.carrier_bytes},ensure_ascii=False))

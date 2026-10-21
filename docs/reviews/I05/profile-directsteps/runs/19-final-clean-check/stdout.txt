@@ -1,0 +1,181 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.5 [39m[90m/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps[39m
+
+ [32m✓[39m tests/unit/task-update-boundary.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+ [32m✓[39m tests/unit/binding-regressions.test.ts [2m([22m[2m41 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m tests/unit/t01-startup-presentation.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 57[2mms[22m[39m
+ [32m✓[39m tests/unit/engine-environment.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 64[2mms[22m[39m
+ [32m✓[39m tests/unit/native-driver.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m tests/unit/view-navigation.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 114[2mms[22m[39m
+ [32m✓[39m tests/unit/task-progress.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/window-recovery.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/contract.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/csp.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/t01-source-table-material.test.ts [2m([22m[2m126 tests[22m[2m)[22m[33m 403[2mms[22m[39m
+ [32m✓[39m tests/unit/t01-startup-canonical.test.ts [2m([22m[2m47 tests[22m[2m)[22m[33m 595[2mms[22m[39m
+   [32m✓[39m T01 independent startup canonical, original-byte budget and display boundary [2m(47)[22m
+     [33m[2m✓[22m[39m keeps startup-only errors out of normal errors, jobs and business envelopes[33m 453[2mms[22m[39m
+ [32m✓[39m tests/unit/jsonl.test.ts [2m([22m[2m75 tests[22m[2m)[22m[33m 707[2mms[22m[39m
+   [32m✓[39m strict raw JSONL reader [2m(75)[22m
+     [33m[2m✓[22m[39m consumes the canonical public positive and negative decoded fixtures[33m 698[2mms[22m[39m
+ [32m✓[39m tests/unit/contract-v2.test.ts [2m([22m[2m414 tests[22m[2m)[22m[33m 820[2mms[22m[39m
+ [32m✓[39m tests/unit/engine-connection-state.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 894[2mms[22m[39m
+ [32m✓[39m tests/unit/t01-business3-contract.test.ts [2m([22m[2m196 tests[22m[2m)[22m[33m 1013[2mms[22m[39m
+ [32m✓[39m tests/unit/supervisor.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 1295[2mms[22m[39m
+ [32m✓[39m tests/unit/t01-changeset-runtime.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 1571[2mms[22m[39m
+   [32m✓[39m formal ChangeSet through the real supervisor and Python coordinator [2m(2)[22m
+     [33m[2m✓[22m[39m assembles the complete actual Diff, commits and undoes, then reconciles the same operation in a new Session[33m 1037[2mms[22m[39m
+     [33m[2m✓[22m[39m returns a multi-frame old typed value in full and rejects reordered pages in the actual consumer helper[33m 533[2mms[22m[39m
+ [32m✓[39m tests/unit/task-service.test.ts [2m([22m[2m33 tests[22m[2m)[22m[33m 2142[2mms[22m[39m
+   [32m✓[39m trusted task bridge [2m(31)[22m
+     [33m[2m✓[22m[39m stops after three failed read attempts, retains last-known jobs, and allows one explicit retry budget[33m 1165[2mms[22m[39m
+     [33m[2m✓[22m[39m cancels old recovery backoff when the selected project changes[33m 804[2mms[22m[39m
+ [32m✓[39m tests/unit/t01-changeset-canonical.test.ts [2m([22m[2m93 tests[22m[2m)[22m[33m 2294[2mms[22m[39m
+   [32m✓[39m T01 typed ChangeSet sole canonical and complete document transport [2m(93)[22m
+     [33m[2m✓[22m[39m full raw budget 16777216[33m 1716[2mms[22m[39m
+ [32m✓[39m tests/unit/t01-startup-supervisor.test.ts [2m([22m[2m20 tests[22m[2m)[22m[33m 3059[2mms[22m[39m
+   [32m✓[39m startup actual stdio, private provenance and complete error projection [2m(20)[22m
+     [33m[2m✓[22m[39m real Python default2 and explicit3 negotiate; mismatched engines terminate without fallback[33m 342[2mms[22m[39m
+     [33m[2m✓[22m[39m runs a real3 atomic Job through TaskService events, immutable results and one receipt across restart[33m 1162[2mms[22m[39m
+ [32m✓[39m tests/unit/task-runtime.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 6603[2mms[22m[39m
+   [32m✓[39m actual Python → supervisor → task service runtime [2m(8)[22m
+     [33m[2m✓[22m[39m automatically reconciles a real coordinator exit with zero pending requests and retained rounds[33m 976[2mms[22m[39m
+     [33m[2m✓[22m[39m re-reads a real atomic marker after transport loss without changing its successful job[33m 716[2mms[22m[39m
+     [33m[2m✓[22m[39m enters explicit offline after three real failed restarts, then permits an explicit read recovery[33m 2238[2mms[22m[39m
+     [33m[2m✓[22m[39m recovers one omitted real state notification through a durable read and fresh subscription[33m 833[2mms[22m[39m
+     [33m[2m✓[22m[39m observes real atomic commit revision and sends a rebuilt historical-input view[33m 454[2mms[22m[39m
+     [33m[2m✓[22m[39m hands initial restoration over when a real atomic completion precedes subscribe response delivery[33m 471[2mms[22m[39m
+     [33m[2m✓[22m[39m re-reads project authority when an actual atomic write finishes before the first job read[33m 475[2mms[22m[39m
+     [33m[2m✓[22m[39m preserves persisted worker-failure error fields through the safe presentation boundary[33m 438[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m22 passed[39m[22m[90m (22)[39m
+[2m      Tests [22m [1m[32m1125 passed[39m[22m[90m (1125)[39m
+[2m   Start at [22m 03:54:25
+[2m   Duration [22m 7.04s[2m (tests 80%, transform 13%, import 7%)[22m
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  404.50 kB
+
+✓ built in 27ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  330.22 kB
+
+✓ built in 19ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-Bms3LrTp.js   919.74 kB
+
+✓ built in 53ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+248 files already formatted
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps
+configfile: pyproject.toml
+testpaths: packages/engine/tests
+collected 5008 items
+
+packages/engine/tests/test_binding_regressions.py ...................... [  0%]
+...................                                                      [  0%]
+packages/engine/tests/test_contract_v2.py .............................. [  1%]
+........................................................................ [  2%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+...........................................                              [  9%]
+packages/engine/tests/test_coordinator_control.py ...................    [  9%]
+packages/engine/tests/test_frame_corpus.py ............................. [ 10%]
+........................                                                 [ 10%]
+packages/engine/tests/test_handshake_deadline.py ...                     [ 10%]
+packages/engine/tests/test_i04_lifecycle_boundaries.py .............     [ 11%]
+packages/engine/tests/test_i04_progress.py ......                        [ 11%]
+packages/engine/tests/test_i04_round_faults.py ......................... [ 11%]
+.................................                                        [ 12%]
+packages/engine/tests/test_job_store.py ................................ [ 13%]
+........................................................................ [ 14%]
+.............................................................            [ 15%]
+packages/engine/tests/test_memory_guard_exit.py ........                 [ 15%]
+packages/engine/tests/test_project_applications.py ..................... [ 16%]
+........................................................................ [ 17%]
+.................                                                        [ 18%]
+packages/engine/tests/test_project_business3_contract.py ............... [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 21%]
+....................................                                     [ 22%]
+packages/engine/tests/test_project_changeset_service.py ................ [ 22%]
+..............................................................           [ 23%]
+packages/engine/tests/test_project_changeset_stdio.py .....              [ 23%]
+packages/engine/tests/test_project_compensation.py ..................... [ 24%]
+..........................................................               [ 25%]
+packages/engine/tests/test_project_create_contract.py .................. [ 25%]
+........................................................................ [ 27%]
+......................................                                   [ 27%]
+packages/engine/tests/test_project_draft_plan.py ....................    [ 28%]
+packages/engine/tests/test_project_format3.py ...................ss..s.. [ 28%]
+s..s..s..s..s..s..s..................................................... [ 30%]
+.............s........................ss..s..s..s..s..s..s..s..s........ [ 31%]
+..........................................................s............. [ 33%]
+...........ss..s..s..s..s..s..s..s..s................................... [ 34%]
+...............................s........................ss..s..s..s..s.. [ 35%]
+s..s..s..s........................................................

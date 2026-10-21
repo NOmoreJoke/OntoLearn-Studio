@@ -1,0 +1,32 @@
+exec(compile(open('docs/reviews/I05/profile-directsteps/module-implementation/helper-probe.py.raw').read(),'<retained helper probe>','exec'))
+
+def checked(overrides=()):
+ ledger=DirectStepsLedger(overrides=overrides);ledger.begin(stage='restore')
+ try:
+  answer=validate_direct_steps(carrier,proof_leaves=proof,rdfs=[x,y],rdfs_evidence=evidence,seed_entries=entries,ledger=ledger)
+  receipt=ledger.receipt();ledger.completed();return answer,receipt,ledger
+ except BaseException:
+  ledger.failed();raise
+
+summary,receipt,ledger=checked()
+checks=[]
+for domain in ('work','scan_copy','objects','scalar'):
+ required=dict(receipt.usage if domain in ('work','scan_copy') else receipt.peaks)[domain]
+ answer,exact,actual=checked(((domain,required),));assert answer==summary
+ try:checked(((domain,required-1),))
+ except DirectStepsFailure as exc:assert exc.reason=='DIRECT_STEPS_LIMIT';checks.append((domain,required,exc.reason))
+ else:raise AssertionError(('validator short succeeded',domain))
+# Exact native gates reject keys with foreign equality/hash hooks before lookup.
+class Foreign:
+ def __hash__(self):return hash('kind')
+ def __eq__(self,other):raise AssertionError('foreign equality invoked')
+bad={"format":carrier['format'],"steps":(dict(carrier['steps'][0],premises=({Foreign():'leaf','reference':leaf(a)},carrier['steps'][0]['premises'][1])),carrier['steps'][1])}
+test=DirectStepsLedger();test.begin(stage='restore')
+try:validate_direct_steps(bad,proof_leaves=proof,rdfs=[x,y],rdfs_evidence=evidence,seed_entries=entries,ledger=test)
+except DirectStepsFailure as exc:assert exc.reason=='DIRECT_STEPS_INVALID' and test.state=='failed'
+else:raise AssertionError('foreign key accepted')
+before=tuple(ledger.used.items())
+try:ledger.debit('work',1)
+except DirectStepsFailure as exc:assert exc.reason=='DIRECT_STEPS_REUSED' and tuple(ledger.used.items())==before
+else:raise AssertionError('completed ledger reused')
+print(json.dumps({'helperOnly':True,'validatorExactMinusOne':checks,'foreignKeyRejected':True,'completedReusePreservesUsage':True}))

@@ -1,0 +1,555 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/engine/tests/test_semantic_profile_directsteps.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / import copy
+ 8 | | import gc
+ 9 | | import hashlib
+10 | | import json
+11 | | import os
+12 | | from dataclasses import MISSING, FrozenInstanceError, fields, replace
+13 | | from pathlib import Path
+14 | | from unittest.mock import patch
+15 | |
+16 | | import pytest
+17 | | from ontolearn_engine import semantic, semantic_execution
+18 | | from ontolearn_engine import semantic_profile_directsteps as direct
+19 | | from ontolearn_engine import semantic_profile_production as production
+20 | | from ontolearn_engine import semantic_profile_restore as restore
+21 | | from ontolearn_engine.quality import rule_terms
+22 | | from ontolearn_engine.quality.rule_firing import RuleSpec, Triple, Variable
+23 | | from ontolearn_engine.quality.rule_profile import SourceRecord, TermInput
+24 | | from ontolearn_engine.resources import CONTRACT, IMPLEMENTATION, ROOT, semantic_identity
+25 | | from ontolearn_engine.semantic_profile_input import CaptureLedger, MaterialFailure, prepare_profile_material
+26 | | from ontolearn_engine.semantic_profile_restore_budget import RestoreFailure, RestoreLedger
+27 | | from test_semantic_profile_restore import canonical, signature, thaw_view
+   | |_________________________________________________________________________^
+28 |
+29 |   RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   |
+help: Organize imports
+   |
+24 | from ontolearn_engine.resources import CONTRACT, IMPLEMENTATION, ROOT, semantic_identity
+   - from ontolearn_engine.semantic_profile_input import CaptureLedger, MaterialFailure, prepare_profile_material
+25 + from ontolearn_engine.semantic_profile_input import (
+26 +     CaptureLedger,
+27 +     MaterialFailure,
+28 +     prepare_profile_material,
+29 + )
+30 | from ontolearn_engine.semantic_profile_restore_budget import RestoreFailure, RestoreLedger
+   |
+
+E501 Line too long (108 > 100)
+  --> packages/engine/tests/test_semantic_profile_directsteps.py:25:101
+   |
+23 | from ontolearn_engine.quality.rule_profile import SourceRecord, TermInput
+24 | from ontolearn_engine.resources import CONTRACT, IMPLEMENTATION, ROOT, semantic_identity
+25 | from ontolearn_engine.semantic_profile_input import CaptureLedger, MaterialFailure, prepare_profile_material
+   |                                                                                                     ^^^^^^^^
+26 | from ontolearn_engine.semantic_profile_restore_budget import RestoreFailure, RestoreLedger
+27 | from test_semantic_profile_restore import canonical, signature, thaw_view
+   |
+
+E501 Line too long (101 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:110:101
+    |
+109 | def step(ordinal, rule, result, premises, depth):
+110 |     return {"ordinal": ordinal, "rule": rule, "result": result, "premises": premises, "depth": depth}
+    |                                                                                                     ^
+
+E501 Line too long (134 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:120:101
+    |
+118 |     if name == "type":
+119 |         rows = (("urn:x", TYPE, "urn:A"), ("urn:A", SUB, "urn:B"))
+120 |         expected = carrier(step(0, "rdfs9-type-via-subclass", key("urn:x", TYPE, "urn:B"), tuple(leaf(key(*row)) for row in rows), 1))
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+121 |     elif name == "domain-depth2":
+122 |         rows = (("urn:p", DOMAIN, "urn:A"), ("urn:x", "urn:p", "urn:y"), ("urn:A", SUB, "urn:B"))
+    |
+
+E501 Line too long (112 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:124:101
+    |
+122 |         rows = (("urn:p", DOMAIN, "urn:A"), ("urn:x", "urn:p", "urn:y"), ("urn:A", SUB, "urn:B"))
+123 |         expected = carrier(
+124 |             step(0, "rdfs2-domain", key("urn:x", TYPE, "urn:A"), (leaf(key(*rows[0])), leaf(key(*rows[1]))), 1),
+    |                                                                                                     ^^^^^^^^^^^^
+125 |             step(1, "rdfs9-type-via-subclass", key("urn:x", TYPE, "urn:B"), ({"kind": "step", "ordinal": 0}, leaf(key(*rows[2]))), 2),
+126 |         )
+    |
+
+E501 Line too long (134 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:125:101
+    |
+123 |         expected = carrier(
+124 |             step(0, "rdfs2-domain", key("urn:x", TYPE, "urn:A"), (leaf(key(*rows[0])), leaf(key(*rows[1]))), 1),
+125 |             step(1, "rdfs9-type-via-subclass", key("urn:x", TYPE, "urn:B"), ({"kind": "step", "ordinal": 0}, leaf(key(*rows[2]))), 2),
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+126 |         )
+127 |     elif name == "range":
+    |
+
+E501 Line too long (122 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:129:101
+    |
+127 |     elif name == "range":
+128 |         rows = (("urn:p", RANGE, "urn:C"), ("urn:x", "urn:p", "urn:y"))
+129 |         expected = carrier(step(0, "rdfs3-range", key("urn:y", TYPE, "urn:C"), tuple(leaf(key(*row)) for row in rows), 1))
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^
+130 |     else:
+131 |         assert name == "subclass"
+    |
+
+E501 Line too long (136 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:133:101
+    |
+131 | …
+132 | …UB, "urn:C"))
+133 | …transitive", key("urn:A", SUB, "urn:C"), tuple(leaf(key(*row)) for row in rows), 1))
+    |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+134 | …
+    |
+
+E501 Line too long (101 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:138:101
+    |
+137 | def produce(raw_records, rules=(), *, disabled=(), direct_ledger=None):
+138 |     material = prepare_profile_material(rules=rules, records=raw_records, disabled_rule_ids=disabled)
+    |                                                                                                     ^
+139 |     ledger = direct.DirectStepsLedger() if direct_ledger is None else direct_ledger
+140 |     result = production.execute_profile_explanation(
+    |
+
+E501 Line too long (107 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:156:101
+    |
+154 |         catalog_digest=hashlib.sha256(produced.catalog_json).hexdigest(),
+155 |         implementation=tuple(sorted(payload["implementation"].items())),
+156 |         input_preimage=produced.material.input_preimage, source_preimage=produced.material.source_preimage,
+    |                                                                                                     ^^^^^^^
+157 |     )
+    |
+
+E501 Line too long (148 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:174:101
+    |
+172 | …
+173 | … in range(0, len(text), 8192)])
+174 | …load_digest=hashlib.sha256(raw).hexdigest(), rows_digest=hashlib.sha256(rows).hexdigest())
+    |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+E501 Line too long (106 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:199:101
+    |
+197 |     assert computed.native_result["formatVersion"] == "i05-reasoning-result/3"
+198 |     assert computed.native_result["semanticsVersion"] == "i05-finite-8"
+199 |     assert computed.wire["payload"]["implementation"] == semantic_identity(profile=True, explanation=True)
+    |                                                                                                     ^^^^^^
+200 |     assert len(computed.wire["payload"]) == 7 and len(computed.native_result) == 16
+201 |     assert all(len(child) == 11 for child in computed.native_result["mechanismBatches"])
+    |
+
+E501 Line too long (116 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:208:101
+    |
+206 |     def forbidden(*args, **kwargs):
+207 |         raise AssertionError("restore must not reason or match")
+208 |     with patch.object(semantic, "_profile_reason", forbidden), patch.object(semantic, "_finite_matches", forbidden):
+    |                                                                                                     ^^^^^^^^^^^^^^^^
+209 |         view, received = receive(computed)
+210 |     assert signature(thaw_view(view.projection.payload)) == signature({**computed.wire["payload"], "reasoning": computed.native_resul…
+    |
+
+E501 Line too long (136 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:210:101
+    |
+208 | …orbidden), patch.object(semantic, "_finite_matches", forbidden):
+209 | …
+210 | …ad)) == signature({**computed.wire["payload"], "reasoning": computed.native_result})
+    |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+211 | …
+212 | …xplanation-projection/1"
+    |
+
+E501 Line too long (118 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:220:101
+    |
+219 | @pytest.mark.parametrize("reverse", [False, True])
+220 | def test_same_round_first_witness_is_ordered_input_key_not_raw_order_and_duplicates_are_charged(monkeypatch, reverse):
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^
+221 |     rows = (("urn:x", TYPE, "urn:B"), ("urn:B", SUB, "urn:Z"), ("urn:x", TYPE, "urn:A"), ("urn:A", SUB, "urn:Z"))
+222 |     if reverse:
+    |
+
+E501 Line too long (113 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:221:101
+    |
+219 | @pytest.mark.parametrize("reverse", [False, True])
+220 | def test_same_round_first_witness_is_ordered_input_key_not_raw_order_and_duplicates_are_charged(monkeypatch, reverse):
+221 |     rows = (("urn:x", TYPE, "urn:B"), ("urn:B", SUB, "urn:Z"), ("urn:x", TYPE, "urn:A"), ("urn:A", SUB, "urn:Z"))
+    |                                                                                                     ^^^^^^^^^^^^^
+222 |     if reverse:
+223 |         rows = tuple(reversed(rows))
+    |
+
+E501 Line too long (161 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:231:101
+    |
+229 | …observe)
+230 | …
+231 | …n:x", TYPE, "urn:Z"), (leaf(key("urn:x", TYPE, "urn:A")), leaf(key("urn:A", SUB, "urn:Z"))), 1))
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+232 | …gnature(expected)
+233 | …erminal round.
+    |
+
+E501 Line too long (175 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:236:101
+    |
+234 | …
+235 | …
+236 | …uple(sorted((leaf_reference(key("urn:x", TYPE, "urn:A")), leaf_reference(key("urn:A", SUB, "urn:Z")))))
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+E501 Line too long (114 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:241:101
+    |
+239 | def test_no_new_rdfs_is_explicit_empty_carrier_and_raw_aliases_are_not_rewritten():
+240 |     source_a, source_b = SourceRecord("", None, "", "raw a"), SourceRecord(None, "", None, "raw b")
+241 |     raw = records((("urn:p", TYPE, OWL + "DatatypeProperty"), ("urn:q", TYPE, OWL + "DatatypeProperty"))) + tuple(
+    |                                                                                                     ^^^^^^^^^^^^^^
+242 |         (iri("urn:x"), iri(predicate), value) for predicate, value in (
+243 |             ("urn:p", TermInput("literal", "same", source=source_a)),
+    |
+
+E501 Line too long (106 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:257:101
+    |
+255 |     assert signature(values) == signature(tuple(term for row in raw for term in row))
+256 |     view, _ = receive(computed)
+257 |     assert signature(thaw_view(view.projection.payload)["reasoning"]) == signature(computed.native_result)
+    |                                                                                                     ^^^^^^
+258 |     with pytest.raises(FrozenInstanceError):
+259 |         view.projection.payload.entries = ()
+    |
+
+E501 Line too long (205 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:264:101
+    |
+264 | …al", "self-ref", "forward-ref", "last-ref", "last-result", "rule", "premise-order", "last-leaf-union", "last-source"])
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+265 | …on):
+266 | …
+    |
+
+E501 Line too long (117 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:281:101
+    |
+279 |         last["ordinal"] = {"integerHex": "0x0"}
+280 |     elif mutation in ("self-ref", "forward-ref"):
+281 |         last["premises"][0] = {"kind": "step", "ordinal": {"integerHex": "0x1" if mutation == "self-ref" else "0x2"}}
+    |                                                                                                     ^^^^^^^^^^^^^^^^^
+282 |     elif mutation == "last-ref":
+283 |         last["premises"][-1]["reference"] = "i05-proof:" + "0" * 64
+    |
+
+E501 Line too long (159 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:293:101
+    |
+291 | …
+292 | …
+293 | …rdType": "SourceRecord", "reference": "forged", "digest": None, "revision": None, "text": None}
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+294 | …
+295 | …
+    |
+
+E501 Line too long (193 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:302:101
+    |
+302 | …semanticsVersion", "i05-finite-7"), ("direct-format", "i05-direct-rdfs-steps/2"), ("identity", "i05-finite-7")])
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+303 | …
+304 | …
+    |
+
+E501 Line too long (118 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:320:101
+    |
+318 | def test_old_defaults_keep_old_bytes_and_old_reader_rejects_new_field(produced):
+319 |     material = prepare_profile_material(records=four_branch_case("domain-depth2")[0])
+320 |     old = production.execute_admitted_profile_job(material, error_catalog=CONTRACT.ERROR_CATALOG, error_schema=SCHEMA)
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^
+321 |     assert old.wire["payload"]["format"] == old.native_result["formatVersion"] == "i05-reasoning-result/2"
+322 |     assert old.native_result["semanticsVersion"] == "i05-finite-7"
+    |
+
+E501 Line too long (106 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:321:101
+    |
+319 |     material = prepare_profile_material(records=four_branch_case("domain-depth2")[0])
+320 |     old = production.execute_admitted_profile_job(material, error_catalog=CONTRACT.ERROR_CATALOG, error_schema=SCHEMA)
+321 |     assert old.wire["payload"]["format"] == old.native_result["formatVersion"] == "i05-reasoning-result/2"
+    |                                                                                                     ^^^^^^
+322 |     assert old.native_result["semanticsVersion"] == "i05-finite-7"
+323 |     assert "directSteps" not in old.native_result and len(old.native_result) == 15
+    |
+
+E501 Line too long (176 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:336:101
+    |
+334 | …
+335 | …== "i05-finite-7"
+336 | …tion(produced), f.name) for f in fields(restore.RestoreExpectation) if f.init and f.default is MISSING})
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+337 | …
+338 | …ows_json, expected=old_expected, allocation=produced.original_allocation, ledger=RestoreLedger())
+    |
+
+E501 Line too long (169 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:338:101
+    |
+336 | …ctation(produced), f.name) for f in fields(restore.RestoreExpectation) if f.init and f.default is MISSING})
+337 | …
+338 | …d.rows_json, expected=old_expected, allocation=produced.original_allocation, ledger=RestoreLedger())
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+339 | …
+340 | …-steps/1", "steps": []}
+    |
+
+E501 Line too long (390 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:346:101
+    |
+344 | …
+345 | …
+346 | …"inputDigest"], old.wire["payload"]["inputDigestD…al.input_preimage, material.source_preimage,
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+347 | …
+348 | …
+    |
+
+E501 Line too long (132 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:349:101
+    |
+347 |     )
+348 |     with pytest.raises(RestoreFailure):
+349 |         restore.restore_profile_result(raw, rows, expected=old_expected, allocation=old.original_allocation, ledger=RestoreLedger())
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+E501 Line too long (185 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:356:101
+    |
+354 | …ason) as reason:
+355 | …aught:
+356 | …NTRACT.ERROR_CATALOG, error_schema=SCHEMA, ledger=CaptureLedger(), direct_ledger=direct.DirectStepsLedger())
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+357 | …
+358 | …
+    |
+
+E501 Line too long (105 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:426:101
+    |
+424 |     def encoded(value):
+425 |         return direct.encode_identity_key((iri("urn:x"), iri("urn:p"), value), ledger)
+426 |     assert encoded(TermInput("literal", "same")) == encoded(TermInput("literal", "same", XSD + "string"))
+    |                                                                                                     ^^^^^
+427 |     assert encoded(TermInput("literal", "Word", language_raw="EN-us")) == encoded(TermInput("literal", "Word", language_raw="en-US"))
+428 |     assert encoded(TermInput("literal", "01", XSD + "integer")) != encoded(TermInput("literal", "1", XSD + "integer"))
+    |
+
+E501 Line too long (133 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:427:101
+    |
+425 |         return direct.encode_identity_key((iri("urn:x"), iri("urn:p"), value), ledger)
+426 |     assert encoded(TermInput("literal", "same")) == encoded(TermInput("literal", "same", XSD + "string"))
+427 |     assert encoded(TermInput("literal", "Word", language_raw="EN-us")) == encoded(TermInput("literal", "Word", language_raw="en-US"))
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+428 |     assert encoded(TermInput("literal", "01", XSD + "integer")) != encoded(TermInput("literal", "1", XSD + "integer"))
+429 |     assert encoded(iri("urn:same")) != encoded(TermInput("literal", "urn:same"))
+    |
+
+E501 Line too long (118 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:428:101
+    |
+426 |     assert encoded(TermInput("literal", "same")) == encoded(TermInput("literal", "same", XSD + "string"))
+427 |     assert encoded(TermInput("literal", "Word", language_raw="EN-us")) == encoded(TermInput("literal", "Word", language_raw="en-US"))
+428 |     assert encoded(TermInput("literal", "01", XSD + "integer")) != encoded(TermInput("literal", "1", XSD + "integer"))
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^
+429 |     assert encoded(iri("urn:same")) != encoded(TermInput("literal", "urn:same"))
+430 |     original = ("<urn:α>", "<urn:p>", '"a\\"b"')
+    |
+
+E501 Line too long (112 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:440:101
+    |
+438 |     rule = "rdfs9-type-via-subclass"
+439 |     capture.candidate(rule)
+440 |     capture.insert(key("urn:x", TYPE, "urn:B"), (key("urn:x", TYPE, "urn:A"), key("urn:A", SUB, "urn:B")), rule)
+    |                                                                                                     ^^^^^^^^^^^^
+441 |     capture.end_candidates(1)
+442 |     # This is a deliberately supplied helper sequence, not a closure result.
+    |
+
+E501 Line too long (116 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:446:101
+    |
+444 |     capture.candidate(rule)
+445 |     with pytest.raises(direct.DirectStepsFailure) as caught:
+446 |         capture.insert(key("urn:x", TYPE, "urn:B"), (key("urn:x", TYPE, "urn:C"), key("urn:C", SUB, "urn:B")), rule)
+    |                                                                                                     ^^^^^^^^^^^^^^^^
+447 |     assert caught.value.reason == "DIRECT_STEPS_INVALID"
+448 |     assert ledger.state == "failed"
+    |
+
+E501 Line too long (112 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:458:101
+    |
+456 |     rule = "rdfs9-type-via-subclass"
+457 |     capture.candidate(rule)
+458 |     capture.insert(key("urn:x", TYPE, "urn:B"), (key("urn:x", TYPE, "urn:A"), key("urn:A", SUB, "urn:B")), rule)
+    |                                                                                                     ^^^^^^^^^^^^
+459 |     capture.end_candidates(1)
+460 |     with pytest.raises(direct.DirectStepsFailure) as caught:
+    |
+
+E501 Line too long (132 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:467:101
+    |
+466 | def test_roots_retain_every_real_rule_head_occurrence_and_do_not_feed_rule_chains():
+467 |     raw = records((("urn:p", TYPE, OWL + "ObjectProperty"), ("urn:out", TYPE, OWL + "ObjectProperty"), ("urn:x", "urn:p", "urn:y")))
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+468 |     when = Triple(Variable("?s"), iri("urn:p"), Variable("?o"))
+469 |     head = Triple(Variable("?s"), iri("urn:out"), Variable("?o"))
+    |
+
+E501 Line too long (112 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:470:101
+    |
+468 |     when = Triple(Variable("?s"), iri("urn:p"), Variable("?o"))
+469 |     head = Triple(Variable("?s"), iri("urn:out"), Variable("?o"))
+470 |     rule = RuleSpec("fixture:r", (when,), (), (head, head), source=SourceRecord("fixture:rule", "", "v1", None))
+    |                                                                                                     ^^^^^^^^^^^^
+471 |     computed, _ = produce(raw, (rule,))
+472 |     assert len(computed.native_result["firingGroups"]) == 1
+    |
+
+E501 Line too long (122 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:476:101
+    |
+474 |     assert computed.native_result["directSteps"] == carrier()
+475 |     view, _ = receive(computed)
+476 |     roots = restore.explanation_roots(view, (key("urn:x", "urn:out", "urn:y"),), direct_ledger=direct.DirectStepsLedger())
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^
+477 |     assert signature(roots) == signature(({"kind": "ruleHead", "firingIndex": 0, "headIndex": 0}, {"kind": "ruleHead", "firingIndex":…
+478 |     assert restore.explanation_roots(view, (key("urn:absent", TYPE, "urn:none"),), direct_ledger=direct.DirectStepsLedger()) == ()
+    |
+
+E501 Line too long (154 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:477:101
+    |
+475 | …
+476 | …n:out", "urn:y"),), direct_ledger=direct.DirectStepsLedger())
+477 | …, "firingIndex": 0, "headIndex": 0}, {"kind": "ruleHead", "firingIndex": 0, "headIndex": 1}))
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+478 | … TYPE, "urn:none"),), direct_ledger=direct.DirectStepsLedger()) == ()
+479 | …permission")
+    |
+
+E501 Line too long (130 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:478:101
+    |
+476 | …"urn:x", "urn:out", "urn:y"),), direct_ledger=direct.DirectStepsLedger())
+477 | …: "ruleHead", "firingIndex": 0, "headIndex": 0}, {"kind": "ruleHead", "firingIndex": 0, "headIndex": 1}))
+478 | …urn:absent", TYPE, "urn:none"),), direct_ledger=direct.DirectStepsLedger()) == ()
+    |                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+479 | …attr(view, "permission")
+    |
+
+E501 Line too long (106 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:482:101
+    |
+482 | @pytest.mark.parametrize("where", ["producer-receipt", "producer-record", "restore-record", "last-child"])
+    |                                                                                                     ^^^^^^
+483 | def test_late_faults_keep_finite_error_and_no_new_native_values_in_public_traceback(monkeypatch, where):
+484 |     raw = records((("urn:p", TYPE, OWL + "ObjectProperty"), ("urn:out", TYPE, OWL + "ObjectProperty"), ("urn:x", "urn:p", "urn:y")))
+    |
+
+E501 Line too long (104 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:483:101
+    |
+482 | @pytest.mark.parametrize("where", ["producer-receipt", "producer-record", "restore-record", "last-child"])
+483 | def test_late_faults_keep_finite_error_and_no_new_native_values_in_public_traceback(monkeypatch, where):
+    |                                                                                                     ^^^^
+484 |     raw = records((("urn:p", TYPE, OWL + "ObjectProperty"), ("urn:out", TYPE, OWL + "ObjectProperty"), ("urn:x", "urn:p", "urn:y")))
+485 |     spec = RuleSpec("a", (Triple(Variable("?s"), iri("urn:p"), Variable("?o")),), (), (Triple(Variable("?s"), iri("urn:out"), Variabl…
+    |
+
+E501 Line too long (132 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:484:101
+    |
+482 | …pt", "producer-record", "restore-record", "last-child"])
+483 | …native_values_in_public_traceback(monkeypatch, where):
+484 | …operty"), ("urn:out", TYPE, OWL + "ObjectProperty"), ("urn:x", "urn:p", "urn:y")))
+    |                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+485 | …ri("urn:p"), Variable("?o")),), (), (Triple(Variable("?s"), iri("urn:out"), Variable("?o")),))
+486 | …ule_id="z")))[0]
+    |
+
+E501 Line too long (144 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:485:101
+    |
+483 | …_values_in_public_traceback(monkeypatch, where):
+484 | …"), ("urn:out", TYPE, OWL + "ObjectProperty"), ("urn:x", "urn:p", "urn:y")))
+485 | …n:p"), Variable("?o")),), (), (Triple(Variable("?s"), iri("urn:out"), Variable("?o")),))
+    |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+486 | …="z")))[0]
+487 | …
+    |
+
+E501 Line too long (113 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:522:101
+    |
+520 |             for value in frame.f_locals.values():
+521 |                 assert not (type(value) is dict and "mechanismBatches" in value)
+522 |                 assert type(value).__name__ not in ("ProfileExplanationComputation", "RestoredExplanationResult")
+    |                                                                                                     ^^^^^^^^^^^^^
+523 |         tb = tb.tb_next
+524 |     gc.collect()
+    |
+
+E501 Line too long (116 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:538:101
+    |
+536 |     assert new == {**old, "executionSemanticsVersion": "i05-finite-8"}
+537 |     assert IMPLEMENTATION == original
+538 |     for kwargs in ({"explanation": True}, {"profile": True, "explanation": 1}, {"profile": 1, "explanation": True}):
+    |                                                                                                     ^^^^^^^^^^^^^^^^
+539 |         with pytest.raises(ValueError):
+540 |             semantic_identity(**kwargs)
+    |
+
+E501 Line too long (122 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:543:101
+    |
+543 | @pytest.mark.parametrize("overrides", [(("unknown", 1),), (("work", True),), (("work", -1),), (("work", 1), ("work", 2))])
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^
+544 | def test_direct_overrides_do_not_accept_unknown_bool_negative_or_duplicate(overrides):
+545 |     with pytest.raises(direct.DirectStepsFailure) as caught:
+    |
+
+E501 Line too long (111 > 100)
+   --> packages/engine/tests/test_semantic_profile_directsteps.py:553:101
+    |
+551 |     ledger = direct.DirectStepsLedger()
+552 |     ledger.begin()
+553 |     assert ledger.caps == {"work": 581671040, "scan_copy": 581671040, "objects": 270635588, "scalar": 50331776}
+    |                                                                                                     ^^^^^^^^^^^
+554 |     assert ledger.usage is ledger.used
+555 |     assert set(ledger.used) == {"work", "scan_copy"}
+    |
+
+Found 50 errors.
+[*] 1 fixable with `--fix`.

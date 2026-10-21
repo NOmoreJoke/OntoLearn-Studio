@@ -1,0 +1,27 @@
+import subprocess,json,hashlib,datetime,os,tempfile,sys
+from pathlib import Path
+root=Path.cwd();prefix=root/'docs/reviews/I05/profile-directsteps/independent-budget'
+label,argv=sys.argv[1],sys.argv[2:];run=prefix/label;run.mkdir()
+fixed=json.loads((root/'docs/reviews/I05/profile-directsteps/candidate-ff90092.json').read_bytes());paths=[x['path'] for x in fixed['files']]
+def snap():
+ out=[]
+ for path in paths:
+  b=(root/path).read_bytes();out.append(dict(path=path,bytes=len(b),sha256=hashlib.sha256(b).hexdigest()))
+ return out
+base=tempfile.mkdtemp(prefix='i05-budget-review-')
+env={'PATH':str(root/'.venv/bin')+':/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin','HOME':os.environ['HOME'],'LANG':'en_US.UTF-8','LC_ALL':'en_US.UTF-8','PYTHONUTF8':'1','PYTHONNOUSERSITE':'1','TMPDIR':base,'UV_CACHE_DIR':str(Path(base)/'uv'),'PYTEST_ADDOPTS':'--basetemp='+base+' -p no:cacheprovider','I05_DIRECTSTEPS_FEE_EVIDENCE_DIR':str(run/'fees')}
+for item in fixed['files']:
+ b=(root/item['path']).read_bytes();g=subprocess.check_output(['git','show',fixed['product']+':'+item['path']]);assert b==g and len(b)==item['bytes'] and hashlib.sha256(b).hexdigest()==item['sha256']
+record=dict(argv=argv,cwd=str(root),head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),fixedProduct=fixed['product'],sourcesBefore=snap(),environment=env,start=datetime.datetime.now(datetime.timezone.utc).isoformat(),timeoutSeconds=120)
+with (run/'stdout.txt').open('wb') as out,(run/'stderr.txt').open('wb') as err:
+ try:
+  proc=subprocess.run(argv,env=env,stdout=out,stderr=err,timeout=120);record.update(exitCode=proc.returncode,timeout=False)
+ except subprocess.TimeoutExpired:record.update(exitCode=None,timeout=True)
+record.update(end=datetime.datetime.now(datetime.timezone.utc).isoformat(),sourcesAfter=snap());record['sourcesUnchanged']=record['sourcesBefore']==record['sourcesAfter']
+(run/'command.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
+rows=[]
+for p in sorted(run.rglob('*')):
+ if p.is_file():
+  b=p.read_bytes();rows.append(dict(path=str(p.relative_to(run)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest()))
+(run/'members.json').write_text(json.dumps(rows,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({k:v for k,v in record.items() if k not in ('sourcesBefore','sourcesAfter')},ensure_ascii=False));print((run/'stdout.txt').read_text()[:1600]);print((run/'stderr.txt').read_text()[-2000:])

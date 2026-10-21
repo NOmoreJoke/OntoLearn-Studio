@@ -1,0 +1,1761 @@
+.F.............................FF.FF.FF.FF......F................        [100%]
+=================================== FAILURES ===================================
+_ test_actual_four_branches_ordered_premises_depth_and_fullview[domain-depth2] _
+
+name = 'domain-depth2'
+
+    @pytest.mark.parametrize("name", ["type", "domain-depth2", "range", "subclass"])
+    def test_actual_four_branches_ordered_premises_depth_and_fullview(name):
+        raw, expected_steps = four_branch_case(name)
+        with patch.object(semantic, "_profile_reason", wraps=semantic._profile_reason) as reason:
+            computed, ledger = produce(raw)
+        assert reason.call_count == 1
+        assert signature(computed.native_result["directSteps"]) == signature(expected_steps)
+        assert computed.version == "i05-profile-explanation-computation/1"
+        assert computed.wire["payload"]["format"] == "i05-reasoning-result/3"
+        assert computed.native_result["formatVersion"] == "i05-reasoning-result/3"
+        assert computed.native_result["semanticsVersion"] == "i05-finite-8"
+        assert computed.wire["payload"]["implementation"] == semantic_identity(
+            profile=True, explanation=True
+        )
+        assert len(computed.wire["payload"]) == 7 and len(computed.native_result) == 16
+        assert all(len(child) == 11 for child in computed.native_result["mechanismBatches"])
+        assert ledger.state == "completed"
+        assert dict(computed.direct_receipt.usage) == ledger.used
+        assert dict(computed.direct_receipt.peaks) == ledger.peaks
+        assert dict(computed.direct_receipt.retained) == ledger.live
+        assert_event_chain(ledger)
+        expected_wire = computed.wire["payload"]["reasoning"]["directSteps"]
+        assert expected_wire["steps"][0]["ordinal"] == {"integerHex": "0x0"}
+        assert expected_wire["steps"][0]["depth"] == {"integerHex": "0x1"}
+    
+        def forbidden(*args, **kwargs):
+            raise AssertionError("restore must not reason or match")
+    
+        with (
+            patch.object(semantic, "_profile_reason", forbidden),
+            patch.object(semantic, "_finite_matches", forbidden),
+        ):
+>           view, received = receive(computed)
+                             ^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_profile_directsteps.py:298: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_directsteps.py:218: in receive
+    result = restore.restore_profile_explanation_result(
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1603: in restore_profile_explanation_result
+    return _restore_operation(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_json = b'{"definitionsDigest":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945","format":"i05-reasoning-resu...ut","source":null}}],"warnings":[]},"sourceDigest":"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4"}'
+rows_json = b'[["{\\"definitionsDigest\\":\\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\\",\\"format\\":\\"i...ll}}],\\"warnings\\":[]},\\"sourceDigest\\":\\"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4\\"}"]]'
+expected = ExplanationRestoreExpectation(payload_digest='685336eaace47ca7dd9a2557002a292bda9aedaf9c6c5e237afb3e3c20b41023', rows_...e-restore-budget/1', cache_version='i05-profile-restore-term-key/1', direct_budget_version='i05-direct-steps-budget/1')
+allocation = OriginalAllocation(rule_ids=(), disabled_rule_ids=(), children=(ChildAllocation(rule_id=None, definition_ordinal=None,... head_occurrences=16384, trace_items=8192, output_bytes=262144, work=16777216)),), budget_version='mechanism-budget/1')
+ledger = <ontolearn_engine.semantic_profile_restore_budget.RestoreLedger object at 0x107d3e720>
+fullview = True
+direct_ledger = <ontolearn_engine.semantic_profile_directsteps.DirectStepsLedger object at 0x107d3e8a0>
+
+    def _restore_operation(
+        payload_json: bytes,
+        rows_json: bytes,
+        *,
+        expected: RestoreExpectation,
+        allocation: OriginalAllocation,
+        ledger: RestoreLedger,
+        fullview: bool,
+        direct_ledger=None,
+    ):
+        """Restore once, then publish all child facts or raise a safe finite failure.
+    
+        No native batch/value is accepted as a substitute for wire. A fresh ledger
+        is a fresh pure operation, not a persisted retry or producer capability.
+        """
+        from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+        from .semantic_profile_production import _direct_stream
+    
+        if direct_ledger is not None:
+            if type(direct_ledger) is not DirectStepsLedger:
+                raise DirectStepsFailure()
+            if direct_ledger.state != "new":
+                raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+        if type(ledger) is not RestoreLedger:
+            _invalid("entry")
+        if ledger.state != "new":
+            # Reject reuse before touching the prior operation's usage or terminal state.
+            _invalid("entry")
+        decoder = None
+        children = parse_usage = caps = projection = inner_batches = retention = None
+        outcome = direct_receipt = None
+        error = None
+        try:
+            if direct_ledger is not None:
+                direct_ledger.begin(stage="restore")
+            _require(type(payload_json) is bytes and type(rows_json) is bytes, "entry")
+            _require(
+                type(expected)
+                is (RestoreExpectation if direct_ledger is None else ExplanationRestoreExpectation)
+                and type(allocation) is OriginalAllocation,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(expected.input_preimage) is bytes and type(expected.source_preimage) is bytes,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(allocation.children) is tuple and 1 <= len(allocation.children) <= 100, "entry"
+            )
+            size = len(payload_json) + len(rows_json)
+            preimage = len(expected.input_preimage) + len(expected.source_preimage)
+            if size > _MAX_BYTES or preimage > _MAX_PREIMAGE:
+                raise RestoreFailure("RESTORE_LIMIT", "resource", stage="entry")
+            if direct_ledger is not None:
+                # Covers complete supplied J, all ordinary parse/project/hash/freeze
+                # buffers. Original R opaque child reservations remain in R only.
+                _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
+            ledger.begin(size, preimage, len(allocation.children))
+            # Caller-held exact context is also live: three bounded ID copies per
+            # slot, implementation/digest strings, limits, records and decoder state.
+            # These are reservations inside the existing caps, not new capacity.
+            count = len(allocation.children)
+            ledger.reserve("objects", 128 * count + 128, stage="entry")
+            ledger.reserve("scalar", 524288 * count + 4096, stage="entry")
+            ledger.charge("traversal", 128 * count + 128, stage="entry")
+            decoder = _Decoder(ledger, expected, allocation, direct_ledger)
+            decoder.rows_json = rows_json
+            children, parse_usage, caps, projection = _restore(
+                decoder, payload_json, rows_json, fullview=fullview
+            )
+            # All wrapper/retention/snapshot construction is inside A16's existing
+            # prepaid fixed receipt block; no work is charged after snapshots.
+            # Transfer a conservative upper bound of ALL still-reserved holdings,
+            # including native records/issuer payload and caller-owned context, not
+            # just the new view's containers. Some parse temporaries die on return;
+            # keeping their tickets makes this an upper bound, never an H lease.
+            retention = ledger.live if fullview else None
+            inner_batches = RestoredBatchSet(
+                children,
+                expected.implementation,
+                expected.payload_digest,
+                expected.rows_digest,
+                ledger.usage,
+                ledger.peaks,
+                parse_usage,
+                caps,
+            )
+            if direct_ledger is None:
+                outcome = (
+                    RestoredProfileResult(inner_batches, projection, rows_json, retention)
+                    if fullview
+                    else inner_batches
+                )
+            else:
+                direct_receipt = direct_ledger.receipt()
+                outcome = RestoredExplanationResult(
+                    inner_batches, projection, rows_json, retention, direct_receipt
+                )
+                direct_ledger.transferred()
+        except DirectStepsFailure as exc:
+            error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+        except RestoreFailure as exc:
+            error = RestoreFailure(
+                exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain
+            )
+        except ProfileFailure as exc:
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if exc.classification == "resource" else "RESTORE_INPUT_INVALID",
+                "resource" if exc.classification == "resource" else "input",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except SemanticError as exc:
+            resource = exc.code == "PROJECTION_RESULT_LIMIT"
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if resource else "RESTORE_INTERNAL",
+                "resource" if resource else "internal",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except Exception:
+            error = RestoreFailure("RESTORE_INTERNAL", "internal", stage="entry")
+        finally:
+            # The public error traceback keeps this frame.  Drop every separate
+            # native result reference, including receipt-construction failure paths.
+            children = parse_usage = caps = projection = inner_batches = retention = direct_receipt = (
+                None
+            )
+            if error is not None:
+                outcome = None
+                if direct_ledger is not None:
+                    direct_ledger.failed()
+            try:
+                if decoder is not None:
+                    decoder.drop()
+                    decoder.rows_json = None
+                decoder = None
+                ledger.cleanup()
+                ledger.finish(error is None and outcome is not None)
+            except BaseException:
+                outcome = decoder = None
+                raise
+        if error is not None:
+>           raise error
+E           ontolearn_engine.semantic_profile_restore_budget.RestoreFailure: RESTORE_INPUT_INVALID
+
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1510: RestoreFailure
+________ test_each_actual_direct_pool_exact_and_one_short[work-restore] ________
+
+produced = ProfileExplanationComputation(material=ProfileMaterial(text=None, records=((TermInput(kind='iri', lexical_form='urn:p'...rsion='i05-direct-steps-budget/1', retention_owner='receiving caller; carrier/view/diagnostic references remain live'))
+phase = 'restore', domain = 'work'
+
+    @pytest.mark.parametrize("phase", ["produce", "restore", "roots"])
+    @pytest.mark.parametrize("domain", D_DOMAINS)
+    def test_each_actual_direct_pool_exact_and_one_short(produced, phase, domain):
+        view = None
+    
+        def operation(ledger):
+            if phase == "produce":
+                return produce(produced.material.records, direct_ledger=ledger)[0]
+            if phase == "restore":
+                return receive(produced, direct_ledger=ledger)[0]
+            return restore.explanation_roots(view, (key("urn:x", TYPE, "urn:B"),), direct_ledger=ledger)
+    
+        if phase == "roots":
+            view = receive(produced)[0]
+        baseline = direct.DirectStepsLedger()
+>       operation(baseline)
+
+packages/engine/tests/test_semantic_profile_directsteps.py:586: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_directsteps.py:580: in operation
+    return receive(produced, direct_ledger=ledger)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/tests/test_semantic_profile_directsteps.py:218: in receive
+    result = restore.restore_profile_explanation_result(
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1603: in restore_profile_explanation_result
+    return _restore_operation(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_json = b'{"definitionsDigest":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945","format":"i05-reasoning-resu...ut","source":null}}],"warnings":[]},"sourceDigest":"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4"}'
+rows_json = b'[["{\\"definitionsDigest\\":\\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\\",\\"format\\":\\"i...ll}}],\\"warnings\\":[]},\\"sourceDigest\\":\\"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4\\"}"]]'
+expected = ExplanationRestoreExpectation(payload_digest='685336eaace47ca7dd9a2557002a292bda9aedaf9c6c5e237afb3e3c20b41023', rows_...e-restore-budget/1', cache_version='i05-profile-restore-term-key/1', direct_budget_version='i05-direct-steps-budget/1')
+allocation = OriginalAllocation(rule_ids=(), disabled_rule_ids=(), children=(ChildAllocation(rule_id=None, definition_ordinal=None,... head_occurrences=16384, trace_items=8192, output_bytes=262144, work=16777216)),), budget_version='mechanism-budget/1')
+ledger = <ontolearn_engine.semantic_profile_restore_budget.RestoreLedger object at 0x10772af00>
+fullview = True
+direct_ledger = <ontolearn_engine.semantic_profile_directsteps.DirectStepsLedger object at 0x107728920>
+
+    def _restore_operation(
+        payload_json: bytes,
+        rows_json: bytes,
+        *,
+        expected: RestoreExpectation,
+        allocation: OriginalAllocation,
+        ledger: RestoreLedger,
+        fullview: bool,
+        direct_ledger=None,
+    ):
+        """Restore once, then publish all child facts or raise a safe finite failure.
+    
+        No native batch/value is accepted as a substitute for wire. A fresh ledger
+        is a fresh pure operation, not a persisted retry or producer capability.
+        """
+        from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+        from .semantic_profile_production import _direct_stream
+    
+        if direct_ledger is not None:
+            if type(direct_ledger) is not DirectStepsLedger:
+                raise DirectStepsFailure()
+            if direct_ledger.state != "new":
+                raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+        if type(ledger) is not RestoreLedger:
+            _invalid("entry")
+        if ledger.state != "new":
+            # Reject reuse before touching the prior operation's usage or terminal state.
+            _invalid("entry")
+        decoder = None
+        children = parse_usage = caps = projection = inner_batches = retention = None
+        outcome = direct_receipt = None
+        error = None
+        try:
+            if direct_ledger is not None:
+                direct_ledger.begin(stage="restore")
+            _require(type(payload_json) is bytes and type(rows_json) is bytes, "entry")
+            _require(
+                type(expected)
+                is (RestoreExpectation if direct_ledger is None else ExplanationRestoreExpectation)
+                and type(allocation) is OriginalAllocation,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(expected.input_preimage) is bytes and type(expected.source_preimage) is bytes,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(allocation.children) is tuple and 1 <= len(allocation.children) <= 100, "entry"
+            )
+            size = len(payload_json) + len(rows_json)
+            preimage = len(expected.input_preimage) + len(expected.source_preimage)
+            if size > _MAX_BYTES or preimage > _MAX_PREIMAGE:
+                raise RestoreFailure("RESTORE_LIMIT", "resource", stage="entry")
+            if direct_ledger is not None:
+                # Covers complete supplied J, all ordinary parse/project/hash/freeze
+                # buffers. Original R opaque child reservations remain in R only.
+                _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
+            ledger.begin(size, preimage, len(allocation.children))
+            # Caller-held exact context is also live: three bounded ID copies per
+            # slot, implementation/digest strings, limits, records and decoder state.
+            # These are reservations inside the existing caps, not new capacity.
+            count = len(allocation.children)
+            ledger.reserve("objects", 128 * count + 128, stage="entry")
+            ledger.reserve("scalar", 524288 * count + 4096, stage="entry")
+            ledger.charge("traversal", 128 * count + 128, stage="entry")
+            decoder = _Decoder(ledger, expected, allocation, direct_ledger)
+            decoder.rows_json = rows_json
+            children, parse_usage, caps, projection = _restore(
+                decoder, payload_json, rows_json, fullview=fullview
+            )
+            # All wrapper/retention/snapshot construction is inside A16's existing
+            # prepaid fixed receipt block; no work is charged after snapshots.
+            # Transfer a conservative upper bound of ALL still-reserved holdings,
+            # including native records/issuer payload and caller-owned context, not
+            # just the new view's containers. Some parse temporaries die on return;
+            # keeping their tickets makes this an upper bound, never an H lease.
+            retention = ledger.live if fullview else None
+            inner_batches = RestoredBatchSet(
+                children,
+                expected.implementation,
+                expected.payload_digest,
+                expected.rows_digest,
+                ledger.usage,
+                ledger.peaks,
+                parse_usage,
+                caps,
+            )
+            if direct_ledger is None:
+                outcome = (
+                    RestoredProfileResult(inner_batches, projection, rows_json, retention)
+                    if fullview
+                    else inner_batches
+                )
+            else:
+                direct_receipt = direct_ledger.receipt()
+                outcome = RestoredExplanationResult(
+                    inner_batches, projection, rows_json, retention, direct_receipt
+                )
+                direct_ledger.transferred()
+        except DirectStepsFailure as exc:
+            error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+        except RestoreFailure as exc:
+            error = RestoreFailure(
+                exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain
+            )
+        except ProfileFailure as exc:
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if exc.classification == "resource" else "RESTORE_INPUT_INVALID",
+                "resource" if exc.classification == "resource" else "input",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except SemanticError as exc:
+            resource = exc.code == "PROJECTION_RESULT_LIMIT"
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if resource else "RESTORE_INTERNAL",
+                "resource" if resource else "internal",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except Exception:
+            error = RestoreFailure("RESTORE_INTERNAL", "internal", stage="entry")
+        finally:
+            # The public error traceback keeps this frame.  Drop every separate
+            # native result reference, including receipt-construction failure paths.
+            children = parse_usage = caps = projection = inner_batches = retention = direct_receipt = (
+                None
+            )
+            if error is not None:
+                outcome = None
+                if direct_ledger is not None:
+                    direct_ledger.failed()
+            try:
+                if decoder is not None:
+                    decoder.drop()
+                    decoder.rows_json = None
+                decoder = None
+                ledger.cleanup()
+                ledger.finish(error is None and outcome is not None)
+            except BaseException:
+                outcome = decoder = None
+                raise
+        if error is not None:
+>           raise error
+E           ontolearn_engine.semantic_profile_restore_budget.RestoreFailure: RESTORE_INPUT_INVALID
+
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1510: RestoreFailure
+_________ test_each_actual_direct_pool_exact_and_one_short[work-roots] _________
+
+produced = ProfileExplanationComputation(material=ProfileMaterial(text=None, records=((TermInput(kind='iri', lexical_form='urn:p'...rsion='i05-direct-steps-budget/1', retention_owner='receiving caller; carrier/view/diagnostic references remain live'))
+phase = 'roots', domain = 'work'
+
+    @pytest.mark.parametrize("phase", ["produce", "restore", "roots"])
+    @pytest.mark.parametrize("domain", D_DOMAINS)
+    def test_each_actual_direct_pool_exact_and_one_short(produced, phase, domain):
+        view = None
+    
+        def operation(ledger):
+            if phase == "produce":
+                return produce(produced.material.records, direct_ledger=ledger)[0]
+            if phase == "restore":
+                return receive(produced, direct_ledger=ledger)[0]
+            return restore.explanation_roots(view, (key("urn:x", TYPE, "urn:B"),), direct_ledger=ledger)
+    
+        if phase == "roots":
+>           view = receive(produced)[0]
+                   ^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_profile_directsteps.py:584: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_directsteps.py:218: in receive
+    result = restore.restore_profile_explanation_result(
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1603: in restore_profile_explanation_result
+    return _restore_operation(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_json = b'{"definitionsDigest":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945","format":"i05-reasoning-resu...ut","source":null}}],"warnings":[]},"sourceDigest":"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4"}'
+rows_json = b'[["{\\"definitionsDigest\\":\\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\\",\\"format\\":\\"i...ll}}],\\"warnings\\":[]},\\"sourceDigest\\":\\"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4\\"}"]]'
+expected = ExplanationRestoreExpectation(payload_digest='685336eaace47ca7dd9a2557002a292bda9aedaf9c6c5e237afb3e3c20b41023', rows_...e-restore-budget/1', cache_version='i05-profile-restore-term-key/1', direct_budget_version='i05-direct-steps-budget/1')
+allocation = OriginalAllocation(rule_ids=(), disabled_rule_ids=(), children=(ChildAllocation(rule_id=None, definition_ordinal=None,... head_occurrences=16384, trace_items=8192, output_bytes=262144, work=16777216)),), budget_version='mechanism-budget/1')
+ledger = <ontolearn_engine.semantic_profile_restore_budget.RestoreLedger object at 0x107ce80b0>
+fullview = True
+direct_ledger = <ontolearn_engine.semantic_profile_directsteps.DirectStepsLedger object at 0x107cea210>
+
+    def _restore_operation(
+        payload_json: bytes,
+        rows_json: bytes,
+        *,
+        expected: RestoreExpectation,
+        allocation: OriginalAllocation,
+        ledger: RestoreLedger,
+        fullview: bool,
+        direct_ledger=None,
+    ):
+        """Restore once, then publish all child facts or raise a safe finite failure.
+    
+        No native batch/value is accepted as a substitute for wire. A fresh ledger
+        is a fresh pure operation, not a persisted retry or producer capability.
+        """
+        from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+        from .semantic_profile_production import _direct_stream
+    
+        if direct_ledger is not None:
+            if type(direct_ledger) is not DirectStepsLedger:
+                raise DirectStepsFailure()
+            if direct_ledger.state != "new":
+                raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+        if type(ledger) is not RestoreLedger:
+            _invalid("entry")
+        if ledger.state != "new":
+            # Reject reuse before touching the prior operation's usage or terminal state.
+            _invalid("entry")
+        decoder = None
+        children = parse_usage = caps = projection = inner_batches = retention = None
+        outcome = direct_receipt = None
+        error = None
+        try:
+            if direct_ledger is not None:
+                direct_ledger.begin(stage="restore")
+            _require(type(payload_json) is bytes and type(rows_json) is bytes, "entry")
+            _require(
+                type(expected)
+                is (RestoreExpectation if direct_ledger is None else ExplanationRestoreExpectation)
+                and type(allocation) is OriginalAllocation,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(expected.input_preimage) is bytes and type(expected.source_preimage) is bytes,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(allocation.children) is tuple and 1 <= len(allocation.children) <= 100, "entry"
+            )
+            size = len(payload_json) + len(rows_json)
+            preimage = len(expected.input_preimage) + len(expected.source_preimage)
+            if size > _MAX_BYTES or preimage > _MAX_PREIMAGE:
+                raise RestoreFailure("RESTORE_LIMIT", "resource", stage="entry")
+            if direct_ledger is not None:
+                # Covers complete supplied J, all ordinary parse/project/hash/freeze
+                # buffers. Original R opaque child reservations remain in R only.
+                _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
+            ledger.begin(size, preimage, len(allocation.children))
+            # Caller-held exact context is also live: three bounded ID copies per
+            # slot, implementation/digest strings, limits, records and decoder state.
+            # These are reservations inside the existing caps, not new capacity.
+            count = len(allocation.children)
+            ledger.reserve("objects", 128 * count + 128, stage="entry")
+            ledger.reserve("scalar", 524288 * count + 4096, stage="entry")
+            ledger.charge("traversal", 128 * count + 128, stage="entry")
+            decoder = _Decoder(ledger, expected, allocation, direct_ledger)
+            decoder.rows_json = rows_json
+            children, parse_usage, caps, projection = _restore(
+                decoder, payload_json, rows_json, fullview=fullview
+            )
+            # All wrapper/retention/snapshot construction is inside A16's existing
+            # prepaid fixed receipt block; no work is charged after snapshots.
+            # Transfer a conservative upper bound of ALL still-reserved holdings,
+            # including native records/issuer payload and caller-owned context, not
+            # just the new view's containers. Some parse temporaries die on return;
+            # keeping their tickets makes this an upper bound, never an H lease.
+            retention = ledger.live if fullview else None
+            inner_batches = RestoredBatchSet(
+                children,
+                expected.implementation,
+                expected.payload_digest,
+                expected.rows_digest,
+                ledger.usage,
+                ledger.peaks,
+                parse_usage,
+                caps,
+            )
+            if direct_ledger is None:
+                outcome = (
+                    RestoredProfileResult(inner_batches, projection, rows_json, retention)
+                    if fullview
+                    else inner_batches
+                )
+            else:
+                direct_receipt = direct_ledger.receipt()
+                outcome = RestoredExplanationResult(
+                    inner_batches, projection, rows_json, retention, direct_receipt
+                )
+                direct_ledger.transferred()
+        except DirectStepsFailure as exc:
+            error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+        except RestoreFailure as exc:
+            error = RestoreFailure(
+                exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain
+            )
+        except ProfileFailure as exc:
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if exc.classification == "resource" else "RESTORE_INPUT_INVALID",
+                "resource" if exc.classification == "resource" else "input",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except SemanticError as exc:
+            resource = exc.code == "PROJECTION_RESULT_LIMIT"
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if resource else "RESTORE_INTERNAL",
+                "resource" if resource else "internal",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except Exception:
+            error = RestoreFailure("RESTORE_INTERNAL", "internal", stage="entry")
+        finally:
+            # The public error traceback keeps this frame.  Drop every separate
+            # native result reference, including receipt-construction failure paths.
+            children = parse_usage = caps = projection = inner_batches = retention = direct_receipt = (
+                None
+            )
+            if error is not None:
+                outcome = None
+                if direct_ledger is not None:
+                    direct_ledger.failed()
+            try:
+                if decoder is not None:
+                    decoder.drop()
+                    decoder.rows_json = None
+                decoder = None
+                ledger.cleanup()
+                ledger.finish(error is None and outcome is not None)
+            except BaseException:
+                outcome = decoder = None
+                raise
+        if error is not None:
+>           raise error
+E           ontolearn_engine.semantic_profile_restore_budget.RestoreFailure: RESTORE_INPUT_INVALID
+
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1510: RestoreFailure
+_____ test_each_actual_direct_pool_exact_and_one_short[scan_copy-restore] ______
+
+produced = ProfileExplanationComputation(material=ProfileMaterial(text=None, records=((TermInput(kind='iri', lexical_form='urn:p'...rsion='i05-direct-steps-budget/1', retention_owner='receiving caller; carrier/view/diagnostic references remain live'))
+phase = 'restore', domain = 'scan_copy'
+
+    @pytest.mark.parametrize("phase", ["produce", "restore", "roots"])
+    @pytest.mark.parametrize("domain", D_DOMAINS)
+    def test_each_actual_direct_pool_exact_and_one_short(produced, phase, domain):
+        view = None
+    
+        def operation(ledger):
+            if phase == "produce":
+                return produce(produced.material.records, direct_ledger=ledger)[0]
+            if phase == "restore":
+                return receive(produced, direct_ledger=ledger)[0]
+            return restore.explanation_roots(view, (key("urn:x", TYPE, "urn:B"),), direct_ledger=ledger)
+    
+        if phase == "roots":
+            view = receive(produced)[0]
+        baseline = direct.DirectStepsLedger()
+>       operation(baseline)
+
+packages/engine/tests/test_semantic_profile_directsteps.py:586: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_directsteps.py:580: in operation
+    return receive(produced, direct_ledger=ledger)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/tests/test_semantic_profile_directsteps.py:218: in receive
+    result = restore.restore_profile_explanation_result(
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1603: in restore_profile_explanation_result
+    return _restore_operation(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_json = b'{"definitionsDigest":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945","format":"i05-reasoning-resu...ut","source":null}}],"warnings":[]},"sourceDigest":"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4"}'
+rows_json = b'[["{\\"definitionsDigest\\":\\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\\",\\"format\\":\\"i...ll}}],\\"warnings\\":[]},\\"sourceDigest\\":\\"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4\\"}"]]'
+expected = ExplanationRestoreExpectation(payload_digest='685336eaace47ca7dd9a2557002a292bda9aedaf9c6c5e237afb3e3c20b41023', rows_...e-restore-budget/1', cache_version='i05-profile-restore-term-key/1', direct_budget_version='i05-direct-steps-budget/1')
+allocation = OriginalAllocation(rule_ids=(), disabled_rule_ids=(), children=(ChildAllocation(rule_id=None, definition_ordinal=None,... head_occurrences=16384, trace_items=8192, output_bytes=262144, work=16777216)),), budget_version='mechanism-budget/1')
+ledger = <ontolearn_engine.semantic_profile_restore_budget.RestoreLedger object at 0x107ce8ef0>
+fullview = True
+direct_ledger = <ontolearn_engine.semantic_profile_directsteps.DirectStepsLedger object at 0x107ce89e0>
+
+    def _restore_operation(
+        payload_json: bytes,
+        rows_json: bytes,
+        *,
+        expected: RestoreExpectation,
+        allocation: OriginalAllocation,
+        ledger: RestoreLedger,
+        fullview: bool,
+        direct_ledger=None,
+    ):
+        """Restore once, then publish all child facts or raise a safe finite failure.
+    
+        No native batch/value is accepted as a substitute for wire. A fresh ledger
+        is a fresh pure operation, not a persisted retry or producer capability.
+        """
+        from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+        from .semantic_profile_production import _direct_stream
+    
+        if direct_ledger is not None:
+            if type(direct_ledger) is not DirectStepsLedger:
+                raise DirectStepsFailure()
+            if direct_ledger.state != "new":
+                raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+        if type(ledger) is not RestoreLedger:
+            _invalid("entry")
+        if ledger.state != "new":
+            # Reject reuse before touching the prior operation's usage or terminal state.
+            _invalid("entry")
+        decoder = None
+        children = parse_usage = caps = projection = inner_batches = retention = None
+        outcome = direct_receipt = None
+        error = None
+        try:
+            if direct_ledger is not None:
+                direct_ledger.begin(stage="restore")
+            _require(type(payload_json) is bytes and type(rows_json) is bytes, "entry")
+            _require(
+                type(expected)
+                is (RestoreExpectation if direct_ledger is None else ExplanationRestoreExpectation)
+                and type(allocation) is OriginalAllocation,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(expected.input_preimage) is bytes and type(expected.source_preimage) is bytes,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(allocation.children) is tuple and 1 <= len(allocation.children) <= 100, "entry"
+            )
+            size = len(payload_json) + len(rows_json)
+            preimage = len(expected.input_preimage) + len(expected.source_preimage)
+            if size > _MAX_BYTES or preimage > _MAX_PREIMAGE:
+                raise RestoreFailure("RESTORE_LIMIT", "resource", stage="entry")
+            if direct_ledger is not None:
+                # Covers complete supplied J, all ordinary parse/project/hash/freeze
+                # buffers. Original R opaque child reservations remain in R only.
+                _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
+            ledger.begin(size, preimage, len(allocation.children))
+            # Caller-held exact context is also live: three bounded ID copies per
+            # slot, implementation/digest strings, limits, records and decoder state.
+            # These are reservations inside the existing caps, not new capacity.
+            count = len(allocation.children)
+            ledger.reserve("objects", 128 * count + 128, stage="entry")
+            ledger.reserve("scalar", 524288 * count + 4096, stage="entry")
+            ledger.charge("traversal", 128 * count + 128, stage="entry")
+            decoder = _Decoder(ledger, expected, allocation, direct_ledger)
+            decoder.rows_json = rows_json
+            children, parse_usage, caps, projection = _restore(
+                decoder, payload_json, rows_json, fullview=fullview
+            )
+            # All wrapper/retention/snapshot construction is inside A16's existing
+            # prepaid fixed receipt block; no work is charged after snapshots.
+            # Transfer a conservative upper bound of ALL still-reserved holdings,
+            # including native records/issuer payload and caller-owned context, not
+            # just the new view's containers. Some parse temporaries die on return;
+            # keeping their tickets makes this an upper bound, never an H lease.
+            retention = ledger.live if fullview else None
+            inner_batches = RestoredBatchSet(
+                children,
+                expected.implementation,
+                expected.payload_digest,
+                expected.rows_digest,
+                ledger.usage,
+                ledger.peaks,
+                parse_usage,
+                caps,
+            )
+            if direct_ledger is None:
+                outcome = (
+                    RestoredProfileResult(inner_batches, projection, rows_json, retention)
+                    if fullview
+                    else inner_batches
+                )
+            else:
+                direct_receipt = direct_ledger.receipt()
+                outcome = RestoredExplanationResult(
+                    inner_batches, projection, rows_json, retention, direct_receipt
+                )
+                direct_ledger.transferred()
+        except DirectStepsFailure as exc:
+            error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+        except RestoreFailure as exc:
+            error = RestoreFailure(
+                exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain
+            )
+        except ProfileFailure as exc:
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if exc.classification == "resource" else "RESTORE_INPUT_INVALID",
+                "resource" if exc.classification == "resource" else "input",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except SemanticError as exc:
+            resource = exc.code == "PROJECTION_RESULT_LIMIT"
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if resource else "RESTORE_INTERNAL",
+                "resource" if resource else "internal",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except Exception:
+            error = RestoreFailure("RESTORE_INTERNAL", "internal", stage="entry")
+        finally:
+            # The public error traceback keeps this frame.  Drop every separate
+            # native result reference, including receipt-construction failure paths.
+            children = parse_usage = caps = projection = inner_batches = retention = direct_receipt = (
+                None
+            )
+            if error is not None:
+                outcome = None
+                if direct_ledger is not None:
+                    direct_ledger.failed()
+            try:
+                if decoder is not None:
+                    decoder.drop()
+                    decoder.rows_json = None
+                decoder = None
+                ledger.cleanup()
+                ledger.finish(error is None and outcome is not None)
+            except BaseException:
+                outcome = decoder = None
+                raise
+        if error is not None:
+>           raise error
+E           ontolearn_engine.semantic_profile_restore_budget.RestoreFailure: RESTORE_INPUT_INVALID
+
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1510: RestoreFailure
+______ test_each_actual_direct_pool_exact_and_one_short[scan_copy-roots] _______
+
+produced = ProfileExplanationComputation(material=ProfileMaterial(text=None, records=((TermInput(kind='iri', lexical_form='urn:p'...rsion='i05-direct-steps-budget/1', retention_owner='receiving caller; carrier/view/diagnostic references remain live'))
+phase = 'roots', domain = 'scan_copy'
+
+    @pytest.mark.parametrize("phase", ["produce", "restore", "roots"])
+    @pytest.mark.parametrize("domain", D_DOMAINS)
+    def test_each_actual_direct_pool_exact_and_one_short(produced, phase, domain):
+        view = None
+    
+        def operation(ledger):
+            if phase == "produce":
+                return produce(produced.material.records, direct_ledger=ledger)[0]
+            if phase == "restore":
+                return receive(produced, direct_ledger=ledger)[0]
+            return restore.explanation_roots(view, (key("urn:x", TYPE, "urn:B"),), direct_ledger=ledger)
+    
+        if phase == "roots":
+>           view = receive(produced)[0]
+                   ^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_profile_directsteps.py:584: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_directsteps.py:218: in receive
+    result = restore.restore_profile_explanation_result(
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1603: in restore_profile_explanation_result
+    return _restore_operation(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_json = b'{"definitionsDigest":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945","format":"i05-reasoning-resu...ut","source":null}}],"warnings":[]},"sourceDigest":"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4"}'
+rows_json = b'[["{\\"definitionsDigest\\":\\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\\",\\"format\\":\\"i...ll}}],\\"warnings\\":[]},\\"sourceDigest\\":\\"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4\\"}"]]'
+expected = ExplanationRestoreExpectation(payload_digest='685336eaace47ca7dd9a2557002a292bda9aedaf9c6c5e237afb3e3c20b41023', rows_...e-restore-budget/1', cache_version='i05-profile-restore-term-key/1', direct_budget_version='i05-direct-steps-budget/1')
+allocation = OriginalAllocation(rule_ids=(), disabled_rule_ids=(), children=(ChildAllocation(rule_id=None, definition_ordinal=None,... head_occurrences=16384, trace_items=8192, output_bytes=262144, work=16777216)),), budget_version='mechanism-budget/1')
+ledger = <ontolearn_engine.semantic_profile_restore_budget.RestoreLedger object at 0x10772ab10>
+fullview = True
+direct_ledger = <ontolearn_engine.semantic_profile_directsteps.DirectStepsLedger object at 0x1077289e0>
+
+    def _restore_operation(
+        payload_json: bytes,
+        rows_json: bytes,
+        *,
+        expected: RestoreExpectation,
+        allocation: OriginalAllocation,
+        ledger: RestoreLedger,
+        fullview: bool,
+        direct_ledger=None,
+    ):
+        """Restore once, then publish all child facts or raise a safe finite failure.
+    
+        No native batch/value is accepted as a substitute for wire. A fresh ledger
+        is a fresh pure operation, not a persisted retry or producer capability.
+        """
+        from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+        from .semantic_profile_production import _direct_stream
+    
+        if direct_ledger is not None:
+            if type(direct_ledger) is not DirectStepsLedger:
+                raise DirectStepsFailure()
+            if direct_ledger.state != "new":
+                raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+        if type(ledger) is not RestoreLedger:
+            _invalid("entry")
+        if ledger.state != "new":
+            # Reject reuse before touching the prior operation's usage or terminal state.
+            _invalid("entry")
+        decoder = None
+        children = parse_usage = caps = projection = inner_batches = retention = None
+        outcome = direct_receipt = None
+        error = None
+        try:
+            if direct_ledger is not None:
+                direct_ledger.begin(stage="restore")
+            _require(type(payload_json) is bytes and type(rows_json) is bytes, "entry")
+            _require(
+                type(expected)
+                is (RestoreExpectation if direct_ledger is None else ExplanationRestoreExpectation)
+                and type(allocation) is OriginalAllocation,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(expected.input_preimage) is bytes and type(expected.source_preimage) is bytes,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(allocation.children) is tuple and 1 <= len(allocation.children) <= 100, "entry"
+            )
+            size = len(payload_json) + len(rows_json)
+            preimage = len(expected.input_preimage) + len(expected.source_preimage)
+            if size > _MAX_BYTES or preimage > _MAX_PREIMAGE:
+                raise RestoreFailure("RESTORE_LIMIT", "resource", stage="entry")
+            if direct_ledger is not None:
+                # Covers complete supplied J, all ordinary parse/project/hash/freeze
+                # buffers. Original R opaque child reservations remain in R only.
+                _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
+            ledger.begin(size, preimage, len(allocation.children))
+            # Caller-held exact context is also live: three bounded ID copies per
+            # slot, implementation/digest strings, limits, records and decoder state.
+            # These are reservations inside the existing caps, not new capacity.
+            count = len(allocation.children)
+            ledger.reserve("objects", 128 * count + 128, stage="entry")
+            ledger.reserve("scalar", 524288 * count + 4096, stage="entry")
+            ledger.charge("traversal", 128 * count + 128, stage="entry")
+            decoder = _Decoder(ledger, expected, allocation, direct_ledger)
+            decoder.rows_json = rows_json
+            children, parse_usage, caps, projection = _restore(
+                decoder, payload_json, rows_json, fullview=fullview
+            )
+            # All wrapper/retention/snapshot construction is inside A16's existing
+            # prepaid fixed receipt block; no work is charged after snapshots.
+            # Transfer a conservative upper bound of ALL still-reserved holdings,
+            # including native records/issuer payload and caller-owned context, not
+            # just the new view's containers. Some parse temporaries die on return;
+            # keeping their tickets makes this an upper bound, never an H lease.
+            retention = ledger.live if fullview else None
+            inner_batches = RestoredBatchSet(
+                children,
+                expected.implementation,
+                expected.payload_digest,
+                expected.rows_digest,
+                ledger.usage,
+                ledger.peaks,
+                parse_usage,
+                caps,
+            )
+            if direct_ledger is None:
+                outcome = (
+                    RestoredProfileResult(inner_batches, projection, rows_json, retention)
+                    if fullview
+                    else inner_batches
+                )
+            else:
+                direct_receipt = direct_ledger.receipt()
+                outcome = RestoredExplanationResult(
+                    inner_batches, projection, rows_json, retention, direct_receipt
+                )
+                direct_ledger.transferred()
+        except DirectStepsFailure as exc:
+            error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+        except RestoreFailure as exc:
+            error = RestoreFailure(
+                exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain
+            )
+        except ProfileFailure as exc:
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if exc.classification == "resource" else "RESTORE_INPUT_INVALID",
+                "resource" if exc.classification == "resource" else "input",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except SemanticError as exc:
+            resource = exc.code == "PROJECTION_RESULT_LIMIT"
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if resource else "RESTORE_INTERNAL",
+                "resource" if resource else "internal",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except Exception:
+            error = RestoreFailure("RESTORE_INTERNAL", "internal", stage="entry")
+        finally:
+            # The public error traceback keeps this frame.  Drop every separate
+            # native result reference, including receipt-construction failure paths.
+            children = parse_usage = caps = projection = inner_batches = retention = direct_receipt = (
+                None
+            )
+            if error is not None:
+                outcome = None
+                if direct_ledger is not None:
+                    direct_ledger.failed()
+            try:
+                if decoder is not None:
+                    decoder.drop()
+                    decoder.rows_json = None
+                decoder = None
+                ledger.cleanup()
+                ledger.finish(error is None and outcome is not None)
+            except BaseException:
+                outcome = decoder = None
+                raise
+        if error is not None:
+>           raise error
+E           ontolearn_engine.semantic_profile_restore_budget.RestoreFailure: RESTORE_INPUT_INVALID
+
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1510: RestoreFailure
+______ test_each_actual_direct_pool_exact_and_one_short[objects-restore] _______
+
+produced = ProfileExplanationComputation(material=ProfileMaterial(text=None, records=((TermInput(kind='iri', lexical_form='urn:p'...rsion='i05-direct-steps-budget/1', retention_owner='receiving caller; carrier/view/diagnostic references remain live'))
+phase = 'restore', domain = 'objects'
+
+    @pytest.mark.parametrize("phase", ["produce", "restore", "roots"])
+    @pytest.mark.parametrize("domain", D_DOMAINS)
+    def test_each_actual_direct_pool_exact_and_one_short(produced, phase, domain):
+        view = None
+    
+        def operation(ledger):
+            if phase == "produce":
+                return produce(produced.material.records, direct_ledger=ledger)[0]
+            if phase == "restore":
+                return receive(produced, direct_ledger=ledger)[0]
+            return restore.explanation_roots(view, (key("urn:x", TYPE, "urn:B"),), direct_ledger=ledger)
+    
+        if phase == "roots":
+            view = receive(produced)[0]
+        baseline = direct.DirectStepsLedger()
+>       operation(baseline)
+
+packages/engine/tests/test_semantic_profile_directsteps.py:586: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_directsteps.py:580: in operation
+    return receive(produced, direct_ledger=ledger)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/tests/test_semantic_profile_directsteps.py:218: in receive
+    result = restore.restore_profile_explanation_result(
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1603: in restore_profile_explanation_result
+    return _restore_operation(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_json = b'{"definitionsDigest":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945","format":"i05-reasoning-resu...ut","source":null}}],"warnings":[]},"sourceDigest":"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4"}'
+rows_json = b'[["{\\"definitionsDigest\\":\\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\\",\\"format\\":\\"i...ll}}],\\"warnings\\":[]},\\"sourceDigest\\":\\"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4\\"}"]]'
+expected = ExplanationRestoreExpectation(payload_digest='685336eaace47ca7dd9a2557002a292bda9aedaf9c6c5e237afb3e3c20b41023', rows_...e-restore-budget/1', cache_version='i05-profile-restore-term-key/1', direct_budget_version='i05-direct-steps-budget/1')
+allocation = OriginalAllocation(rule_ids=(), disabled_rule_ids=(), children=(ChildAllocation(rule_id=None, definition_ordinal=None,... head_occurrences=16384, trace_items=8192, output_bytes=262144, work=16777216)),), budget_version='mechanism-budget/1')
+ledger = <ontolearn_engine.semantic_profile_restore_budget.RestoreLedger object at 0x107cea720>
+fullview = True
+direct_ledger = <ontolearn_engine.semantic_profile_directsteps.DirectStepsLedger object at 0x107ce8620>
+
+    def _restore_operation(
+        payload_json: bytes,
+        rows_json: bytes,
+        *,
+        expected: RestoreExpectation,
+        allocation: OriginalAllocation,
+        ledger: RestoreLedger,
+        fullview: bool,
+        direct_ledger=None,
+    ):
+        """Restore once, then publish all child facts or raise a safe finite failure.
+    
+        No native batch/value is accepted as a substitute for wire. A fresh ledger
+        is a fresh pure operation, not a persisted retry or producer capability.
+        """
+        from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+        from .semantic_profile_production import _direct_stream
+    
+        if direct_ledger is not None:
+            if type(direct_ledger) is not DirectStepsLedger:
+                raise DirectStepsFailure()
+            if direct_ledger.state != "new":
+                raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+        if type(ledger) is not RestoreLedger:
+            _invalid("entry")
+        if ledger.state != "new":
+            # Reject reuse before touching the prior operation's usage or terminal state.
+            _invalid("entry")
+        decoder = None
+        children = parse_usage = caps = projection = inner_batches = retention = None
+        outcome = direct_receipt = None
+        error = None
+        try:
+            if direct_ledger is not None:
+                direct_ledger.begin(stage="restore")
+            _require(type(payload_json) is bytes and type(rows_json) is bytes, "entry")
+            _require(
+                type(expected)
+                is (RestoreExpectation if direct_ledger is None else ExplanationRestoreExpectation)
+                and type(allocation) is OriginalAllocation,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(expected.input_preimage) is bytes and type(expected.source_preimage) is bytes,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(allocation.children) is tuple and 1 <= len(allocation.children) <= 100, "entry"
+            )
+            size = len(payload_json) + len(rows_json)
+            preimage = len(expected.input_preimage) + len(expected.source_preimage)
+            if size > _MAX_BYTES or preimage > _MAX_PREIMAGE:
+                raise RestoreFailure("RESTORE_LIMIT", "resource", stage="entry")
+            if direct_ledger is not None:
+                # Covers complete supplied J, all ordinary parse/project/hash/freeze
+                # buffers. Original R opaque child reservations remain in R only.
+                _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
+            ledger.begin(size, preimage, len(allocation.children))
+            # Caller-held exact context is also live: three bounded ID copies per
+            # slot, implementation/digest strings, limits, records and decoder state.
+            # These are reservations inside the existing caps, not new capacity.
+            count = len(allocation.children)
+            ledger.reserve("objects", 128 * count + 128, stage="entry")
+            ledger.reserve("scalar", 524288 * count + 4096, stage="entry")
+            ledger.charge("traversal", 128 * count + 128, stage="entry")
+            decoder = _Decoder(ledger, expected, allocation, direct_ledger)
+            decoder.rows_json = rows_json
+            children, parse_usage, caps, projection = _restore(
+                decoder, payload_json, rows_json, fullview=fullview
+            )
+            # All wrapper/retention/snapshot construction is inside A16's existing
+            # prepaid fixed receipt block; no work is charged after snapshots.
+            # Transfer a conservative upper bound of ALL still-reserved holdings,
+            # including native records/issuer payload and caller-owned context, not
+            # just the new view's containers. Some parse temporaries die on return;
+            # keeping their tickets makes this an upper bound, never an H lease.
+            retention = ledger.live if fullview else None
+            inner_batches = RestoredBatchSet(
+                children,
+                expected.implementation,
+                expected.payload_digest,
+                expected.rows_digest,
+                ledger.usage,
+                ledger.peaks,
+                parse_usage,
+                caps,
+            )
+            if direct_ledger is None:
+                outcome = (
+                    RestoredProfileResult(inner_batches, projection, rows_json, retention)
+                    if fullview
+                    else inner_batches
+                )
+            else:
+                direct_receipt = direct_ledger.receipt()
+                outcome = RestoredExplanationResult(
+                    inner_batches, projection, rows_json, retention, direct_receipt
+                )
+                direct_ledger.transferred()
+        except DirectStepsFailure as exc:
+            error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+        except RestoreFailure as exc:
+            error = RestoreFailure(
+                exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain
+            )
+        except ProfileFailure as exc:
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if exc.classification == "resource" else "RESTORE_INPUT_INVALID",
+                "resource" if exc.classification == "resource" else "input",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except SemanticError as exc:
+            resource = exc.code == "PROJECTION_RESULT_LIMIT"
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if resource else "RESTORE_INTERNAL",
+                "resource" if resource else "internal",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except Exception:
+            error = RestoreFailure("RESTORE_INTERNAL", "internal", stage="entry")
+        finally:
+            # The public error traceback keeps this frame.  Drop every separate
+            # native result reference, including receipt-construction failure paths.
+            children = parse_usage = caps = projection = inner_batches = retention = direct_receipt = (
+                None
+            )
+            if error is not None:
+                outcome = None
+                if direct_ledger is not None:
+                    direct_ledger.failed()
+            try:
+                if decoder is not None:
+                    decoder.drop()
+                    decoder.rows_json = None
+                decoder = None
+                ledger.cleanup()
+                ledger.finish(error is None and outcome is not None)
+            except BaseException:
+                outcome = decoder = None
+                raise
+        if error is not None:
+>           raise error
+E           ontolearn_engine.semantic_profile_restore_budget.RestoreFailure: RESTORE_INPUT_INVALID
+
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1510: RestoreFailure
+_______ test_each_actual_direct_pool_exact_and_one_short[objects-roots] ________
+
+produced = ProfileExplanationComputation(material=ProfileMaterial(text=None, records=((TermInput(kind='iri', lexical_form='urn:p'...rsion='i05-direct-steps-budget/1', retention_owner='receiving caller; carrier/view/diagnostic references remain live'))
+phase = 'roots', domain = 'objects'
+
+    @pytest.mark.parametrize("phase", ["produce", "restore", "roots"])
+    @pytest.mark.parametrize("domain", D_DOMAINS)
+    def test_each_actual_direct_pool_exact_and_one_short(produced, phase, domain):
+        view = None
+    
+        def operation(ledger):
+            if phase == "produce":
+                return produce(produced.material.records, direct_ledger=ledger)[0]
+            if phase == "restore":
+                return receive(produced, direct_ledger=ledger)[0]
+            return restore.explanation_roots(view, (key("urn:x", TYPE, "urn:B"),), direct_ledger=ledger)
+    
+        if phase == "roots":
+>           view = receive(produced)[0]
+                   ^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_profile_directsteps.py:584: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_directsteps.py:218: in receive
+    result = restore.restore_profile_explanation_result(
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1603: in restore_profile_explanation_result
+    return _restore_operation(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_json = b'{"definitionsDigest":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945","format":"i05-reasoning-resu...ut","source":null}}],"warnings":[]},"sourceDigest":"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4"}'
+rows_json = b'[["{\\"definitionsDigest\\":\\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\\",\\"format\\":\\"i...ll}}],\\"warnings\\":[]},\\"sourceDigest\\":\\"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4\\"}"]]'
+expected = ExplanationRestoreExpectation(payload_digest='685336eaace47ca7dd9a2557002a292bda9aedaf9c6c5e237afb3e3c20b41023', rows_...e-restore-budget/1', cache_version='i05-profile-restore-term-key/1', direct_budget_version='i05-direct-steps-budget/1')
+allocation = OriginalAllocation(rule_ids=(), disabled_rule_ids=(), children=(ChildAllocation(rule_id=None, definition_ordinal=None,... head_occurrences=16384, trace_items=8192, output_bytes=262144, work=16777216)),), budget_version='mechanism-budget/1')
+ledger = <ontolearn_engine.semantic_profile_restore_budget.RestoreLedger object at 0x1077292e0>
+fullview = True
+direct_ledger = <ontolearn_engine.semantic_profile_directsteps.DirectStepsLedger object at 0x1077280b0>
+
+    def _restore_operation(
+        payload_json: bytes,
+        rows_json: bytes,
+        *,
+        expected: RestoreExpectation,
+        allocation: OriginalAllocation,
+        ledger: RestoreLedger,
+        fullview: bool,
+        direct_ledger=None,
+    ):
+        """Restore once, then publish all child facts or raise a safe finite failure.
+    
+        No native batch/value is accepted as a substitute for wire. A fresh ledger
+        is a fresh pure operation, not a persisted retry or producer capability.
+        """
+        from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+        from .semantic_profile_production import _direct_stream
+    
+        if direct_ledger is not None:
+            if type(direct_ledger) is not DirectStepsLedger:
+                raise DirectStepsFailure()
+            if direct_ledger.state != "new":
+                raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+        if type(ledger) is not RestoreLedger:
+            _invalid("entry")
+        if ledger.state != "new":
+            # Reject reuse before touching the prior operation's usage or terminal state.
+            _invalid("entry")
+        decoder = None
+        children = parse_usage = caps = projection = inner_batches = retention = None
+        outcome = direct_receipt = None
+        error = None
+        try:
+            if direct_ledger is not None:
+                direct_ledger.begin(stage="restore")
+            _require(type(payload_json) is bytes and type(rows_json) is bytes, "entry")
+            _require(
+                type(expected)
+                is (RestoreExpectation if direct_ledger is None else ExplanationRestoreExpectation)
+                and type(allocation) is OriginalAllocation,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(expected.input_preimage) is bytes and type(expected.source_preimage) is bytes,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(allocation.children) is tuple and 1 <= len(allocation.children) <= 100, "entry"
+            )
+            size = len(payload_json) + len(rows_json)
+            preimage = len(expected.input_preimage) + len(expected.source_preimage)
+            if size > _MAX_BYTES or preimage > _MAX_PREIMAGE:
+                raise RestoreFailure("RESTORE_LIMIT", "resource", stage="entry")
+            if direct_ledger is not None:
+                # Covers complete supplied J, all ordinary parse/project/hash/freeze
+                # buffers. Original R opaque child reservations remain in R only.
+                _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
+            ledger.begin(size, preimage, len(allocation.children))
+            # Caller-held exact context is also live: three bounded ID copies per
+            # slot, implementation/digest strings, limits, records and decoder state.
+            # These are reservations inside the existing caps, not new capacity.
+            count = len(allocation.children)
+            ledger.reserve("objects", 128 * count + 128, stage="entry")
+            ledger.reserve("scalar", 524288 * count + 4096, stage="entry")
+            ledger.charge("traversal", 128 * count + 128, stage="entry")
+            decoder = _Decoder(ledger, expected, allocation, direct_ledger)
+            decoder.rows_json = rows_json
+            children, parse_usage, caps, projection = _restore(
+                decoder, payload_json, rows_json, fullview=fullview
+            )
+            # All wrapper/retention/snapshot construction is inside A16's existing
+            # prepaid fixed receipt block; no work is charged after snapshots.
+            # Transfer a conservative upper bound of ALL still-reserved holdings,
+            # including native records/issuer payload and caller-owned context, not
+            # just the new view's containers. Some parse temporaries die on return;
+            # keeping their tickets makes this an upper bound, never an H lease.
+            retention = ledger.live if fullview else None
+            inner_batches = RestoredBatchSet(
+                children,
+                expected.implementation,
+                expected.payload_digest,
+                expected.rows_digest,
+                ledger.usage,
+                ledger.peaks,
+                parse_usage,
+                caps,
+            )
+            if direct_ledger is None:
+                outcome = (
+                    RestoredProfileResult(inner_batches, projection, rows_json, retention)
+                    if fullview
+                    else inner_batches
+                )
+            else:
+                direct_receipt = direct_ledger.receipt()
+                outcome = RestoredExplanationResult(
+                    inner_batches, projection, rows_json, retention, direct_receipt
+                )
+                direct_ledger.transferred()
+        except DirectStepsFailure as exc:
+            error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+        except RestoreFailure as exc:
+            error = RestoreFailure(
+                exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain
+            )
+        except ProfileFailure as exc:
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if exc.classification == "resource" else "RESTORE_INPUT_INVALID",
+                "resource" if exc.classification == "resource" else "input",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except SemanticError as exc:
+            resource = exc.code == "PROJECTION_RESULT_LIMIT"
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if resource else "RESTORE_INTERNAL",
+                "resource" if resource else "internal",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except Exception:
+            error = RestoreFailure("RESTORE_INTERNAL", "internal", stage="entry")
+        finally:
+            # The public error traceback keeps this frame.  Drop every separate
+            # native result reference, including receipt-construction failure paths.
+            children = parse_usage = caps = projection = inner_batches = retention = direct_receipt = (
+                None
+            )
+            if error is not None:
+                outcome = None
+                if direct_ledger is not None:
+                    direct_ledger.failed()
+            try:
+                if decoder is not None:
+                    decoder.drop()
+                    decoder.rows_json = None
+                decoder = None
+                ledger.cleanup()
+                ledger.finish(error is None and outcome is not None)
+            except BaseException:
+                outcome = decoder = None
+                raise
+        if error is not None:
+>           raise error
+E           ontolearn_engine.semantic_profile_restore_budget.RestoreFailure: RESTORE_INPUT_INVALID
+
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1510: RestoreFailure
+_______ test_each_actual_direct_pool_exact_and_one_short[scalar-restore] _______
+
+produced = ProfileExplanationComputation(material=ProfileMaterial(text=None, records=((TermInput(kind='iri', lexical_form='urn:p'...rsion='i05-direct-steps-budget/1', retention_owner='receiving caller; carrier/view/diagnostic references remain live'))
+phase = 'restore', domain = 'scalar'
+
+    @pytest.mark.parametrize("phase", ["produce", "restore", "roots"])
+    @pytest.mark.parametrize("domain", D_DOMAINS)
+    def test_each_actual_direct_pool_exact_and_one_short(produced, phase, domain):
+        view = None
+    
+        def operation(ledger):
+            if phase == "produce":
+                return produce(produced.material.records, direct_ledger=ledger)[0]
+            if phase == "restore":
+                return receive(produced, direct_ledger=ledger)[0]
+            return restore.explanation_roots(view, (key("urn:x", TYPE, "urn:B"),), direct_ledger=ledger)
+    
+        if phase == "roots":
+            view = receive(produced)[0]
+        baseline = direct.DirectStepsLedger()
+>       operation(baseline)
+
+packages/engine/tests/test_semantic_profile_directsteps.py:586: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_directsteps.py:580: in operation
+    return receive(produced, direct_ledger=ledger)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/tests/test_semantic_profile_directsteps.py:218: in receive
+    result = restore.restore_profile_explanation_result(
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1603: in restore_profile_explanation_result
+    return _restore_operation(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_json = b'{"definitionsDigest":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945","format":"i05-reasoning-resu...ut","source":null}}],"warnings":[]},"sourceDigest":"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4"}'
+rows_json = b'[["{\\"definitionsDigest\\":\\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\\",\\"format\\":\\"i...ll}}],\\"warnings\\":[]},\\"sourceDigest\\":\\"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4\\"}"]]'
+expected = ExplanationRestoreExpectation(payload_digest='685336eaace47ca7dd9a2557002a292bda9aedaf9c6c5e237afb3e3c20b41023', rows_...e-restore-budget/1', cache_version='i05-profile-restore-term-key/1', direct_budget_version='i05-direct-steps-budget/1')
+allocation = OriginalAllocation(rule_ids=(), disabled_rule_ids=(), children=(ChildAllocation(rule_id=None, definition_ordinal=None,... head_occurrences=16384, trace_items=8192, output_bytes=262144, work=16777216)),), budget_version='mechanism-budget/1')
+ledger = <ontolearn_engine.semantic_profile_restore_budget.RestoreLedger object at 0x107ce9f70>
+fullview = True
+direct_ledger = <ontolearn_engine.semantic_profile_directsteps.DirectStepsLedger object at 0x107cea390>
+
+    def _restore_operation(
+        payload_json: bytes,
+        rows_json: bytes,
+        *,
+        expected: RestoreExpectation,
+        allocation: OriginalAllocation,
+        ledger: RestoreLedger,
+        fullview: bool,
+        direct_ledger=None,
+    ):
+        """Restore once, then publish all child facts or raise a safe finite failure.
+    
+        No native batch/value is accepted as a substitute for wire. A fresh ledger
+        is a fresh pure operation, not a persisted retry or producer capability.
+        """
+        from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+        from .semantic_profile_production import _direct_stream
+    
+        if direct_ledger is not None:
+            if type(direct_ledger) is not DirectStepsLedger:
+                raise DirectStepsFailure()
+            if direct_ledger.state != "new":
+                raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+        if type(ledger) is not RestoreLedger:
+            _invalid("entry")
+        if ledger.state != "new":
+            # Reject reuse before touching the prior operation's usage or terminal state.
+            _invalid("entry")
+        decoder = None
+        children = parse_usage = caps = projection = inner_batches = retention = None
+        outcome = direct_receipt = None
+        error = None
+        try:
+            if direct_ledger is not None:
+                direct_ledger.begin(stage="restore")
+            _require(type(payload_json) is bytes and type(rows_json) is bytes, "entry")
+            _require(
+                type(expected)
+                is (RestoreExpectation if direct_ledger is None else ExplanationRestoreExpectation)
+                and type(allocation) is OriginalAllocation,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(expected.input_preimage) is bytes and type(expected.source_preimage) is bytes,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(allocation.children) is tuple and 1 <= len(allocation.children) <= 100, "entry"
+            )
+            size = len(payload_json) + len(rows_json)
+            preimage = len(expected.input_preimage) + len(expected.source_preimage)
+            if size > _MAX_BYTES or preimage > _MAX_PREIMAGE:
+                raise RestoreFailure("RESTORE_LIMIT", "resource", stage="entry")
+            if direct_ledger is not None:
+                # Covers complete supplied J, all ordinary parse/project/hash/freeze
+                # buffers. Original R opaque child reservations remain in R only.
+                _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
+            ledger.begin(size, preimage, len(allocation.children))
+            # Caller-held exact context is also live: three bounded ID copies per
+            # slot, implementation/digest strings, limits, records and decoder state.
+            # These are reservations inside the existing caps, not new capacity.
+            count = len(allocation.children)
+            ledger.reserve("objects", 128 * count + 128, stage="entry")
+            ledger.reserve("scalar", 524288 * count + 4096, stage="entry")
+            ledger.charge("traversal", 128 * count + 128, stage="entry")
+            decoder = _Decoder(ledger, expected, allocation, direct_ledger)
+            decoder.rows_json = rows_json
+            children, parse_usage, caps, projection = _restore(
+                decoder, payload_json, rows_json, fullview=fullview
+            )
+            # All wrapper/retention/snapshot construction is inside A16's existing
+            # prepaid fixed receipt block; no work is charged after snapshots.
+            # Transfer a conservative upper bound of ALL still-reserved holdings,
+            # including native records/issuer payload and caller-owned context, not
+            # just the new view's containers. Some parse temporaries die on return;
+            # keeping their tickets makes this an upper bound, never an H lease.
+            retention = ledger.live if fullview else None
+            inner_batches = RestoredBatchSet(
+                children,
+                expected.implementation,
+                expected.payload_digest,
+                expected.rows_digest,
+                ledger.usage,
+                ledger.peaks,
+                parse_usage,
+                caps,
+            )
+            if direct_ledger is None:
+                outcome = (
+                    RestoredProfileResult(inner_batches, projection, rows_json, retention)
+                    if fullview
+                    else inner_batches
+                )
+            else:
+                direct_receipt = direct_ledger.receipt()
+                outcome = RestoredExplanationResult(
+                    inner_batches, projection, rows_json, retention, direct_receipt
+                )
+                direct_ledger.transferred()
+        except DirectStepsFailure as exc:
+            error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+        except RestoreFailure as exc:
+            error = RestoreFailure(
+                exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain
+            )
+        except ProfileFailure as exc:
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if exc.classification == "resource" else "RESTORE_INPUT_INVALID",
+                "resource" if exc.classification == "resource" else "input",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except SemanticError as exc:
+            resource = exc.code == "PROJECTION_RESULT_LIMIT"
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if resource else "RESTORE_INTERNAL",
+                "resource" if resource else "internal",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except Exception:
+            error = RestoreFailure("RESTORE_INTERNAL", "internal", stage="entry")
+        finally:
+            # The public error traceback keeps this frame.  Drop every separate
+            # native result reference, including receipt-construction failure paths.
+            children = parse_usage = caps = projection = inner_batches = retention = direct_receipt = (
+                None
+            )
+            if error is not None:
+                outcome = None
+                if direct_ledger is not None:
+                    direct_ledger.failed()
+            try:
+                if decoder is not None:
+                    decoder.drop()
+                    decoder.rows_json = None
+                decoder = None
+                ledger.cleanup()
+                ledger.finish(error is None and outcome is not None)
+            except BaseException:
+                outcome = decoder = None
+                raise
+        if error is not None:
+>           raise error
+E           ontolearn_engine.semantic_profile_restore_budget.RestoreFailure: RESTORE_INPUT_INVALID
+
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1510: RestoreFailure
+________ test_each_actual_direct_pool_exact_and_one_short[scalar-roots] ________
+
+produced = ProfileExplanationComputation(material=ProfileMaterial(text=None, records=((TermInput(kind='iri', lexical_form='urn:p'...rsion='i05-direct-steps-budget/1', retention_owner='receiving caller; carrier/view/diagnostic references remain live'))
+phase = 'roots', domain = 'scalar'
+
+    @pytest.mark.parametrize("phase", ["produce", "restore", "roots"])
+    @pytest.mark.parametrize("domain", D_DOMAINS)
+    def test_each_actual_direct_pool_exact_and_one_short(produced, phase, domain):
+        view = None
+    
+        def operation(ledger):
+            if phase == "produce":
+                return produce(produced.material.records, direct_ledger=ledger)[0]
+            if phase == "restore":
+                return receive(produced, direct_ledger=ledger)[0]
+            return restore.explanation_roots(view, (key("urn:x", TYPE, "urn:B"),), direct_ledger=ledger)
+    
+        if phase == "roots":
+>           view = receive(produced)[0]
+                   ^^^^^^^^^^^^^^^^^
+
+packages/engine/tests/test_semantic_profile_directsteps.py:584: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_directsteps.py:218: in receive
+    result = restore.restore_profile_explanation_result(
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1603: in restore_profile_explanation_result
+    return _restore_operation(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payload_json = b'{"definitionsDigest":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945","format":"i05-reasoning-resu...ut","source":null}}],"warnings":[]},"sourceDigest":"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4"}'
+rows_json = b'[["{\\"definitionsDigest\\":\\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\\",\\"format\\":\\"i...ll}}],\\"warnings\\":[]},\\"sourceDigest\\":\\"c9ac51d80592c85014fe20fdde9b6c1ab92752e2cc1366dcec394d92daf107f4\\"}"]]'
+expected = ExplanationRestoreExpectation(payload_digest='685336eaace47ca7dd9a2557002a292bda9aedaf9c6c5e237afb3e3c20b41023', rows_...e-restore-budget/1', cache_version='i05-profile-restore-term-key/1', direct_budget_version='i05-direct-steps-budget/1')
+allocation = OriginalAllocation(rule_ids=(), disabled_rule_ids=(), children=(ChildAllocation(rule_id=None, definition_ordinal=None,... head_occurrences=16384, trace_items=8192, output_bytes=262144, work=16777216)),), budget_version='mechanism-budget/1')
+ledger = <ontolearn_engine.semantic_profile_restore_budget.RestoreLedger object at 0x107729910>
+fullview = True
+direct_ledger = <ontolearn_engine.semantic_profile_directsteps.DirectStepsLedger object at 0x107728920>
+
+    def _restore_operation(
+        payload_json: bytes,
+        rows_json: bytes,
+        *,
+        expected: RestoreExpectation,
+        allocation: OriginalAllocation,
+        ledger: RestoreLedger,
+        fullview: bool,
+        direct_ledger=None,
+    ):
+        """Restore once, then publish all child facts or raise a safe finite failure.
+    
+        No native batch/value is accepted as a substitute for wire. A fresh ledger
+        is a fresh pure operation, not a persisted retry or producer capability.
+        """
+        from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+        from .semantic_profile_production import _direct_stream
+    
+        if direct_ledger is not None:
+            if type(direct_ledger) is not DirectStepsLedger:
+                raise DirectStepsFailure()
+            if direct_ledger.state != "new":
+                raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+        if type(ledger) is not RestoreLedger:
+            _invalid("entry")
+        if ledger.state != "new":
+            # Reject reuse before touching the prior operation's usage or terminal state.
+            _invalid("entry")
+        decoder = None
+        children = parse_usage = caps = projection = inner_batches = retention = None
+        outcome = direct_receipt = None
+        error = None
+        try:
+            if direct_ledger is not None:
+                direct_ledger.begin(stage="restore")
+            _require(type(payload_json) is bytes and type(rows_json) is bytes, "entry")
+            _require(
+                type(expected)
+                is (RestoreExpectation if direct_ledger is None else ExplanationRestoreExpectation)
+                and type(allocation) is OriginalAllocation,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(expected.input_preimage) is bytes and type(expected.source_preimage) is bytes,
+                "entry",
+                reason="RESTORE_EXPECTATION_MISSING",
+            )
+            _require(
+                type(allocation.children) is tuple and 1 <= len(allocation.children) <= 100, "entry"
+            )
+            size = len(payload_json) + len(rows_json)
+            preimage = len(expected.input_preimage) + len(expected.source_preimage)
+            if size > _MAX_BYTES or preimage > _MAX_PREIMAGE:
+                raise RestoreFailure("RESTORE_LIMIT", "resource", stage="entry")
+            if direct_ledger is not None:
+                # Covers complete supplied J, all ordinary parse/project/hash/freeze
+                # buffers. Original R opaque child reservations remain in R only.
+                _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
+            ledger.begin(size, preimage, len(allocation.children))
+            # Caller-held exact context is also live: three bounded ID copies per
+            # slot, implementation/digest strings, limits, records and decoder state.
+            # These are reservations inside the existing caps, not new capacity.
+            count = len(allocation.children)
+            ledger.reserve("objects", 128 * count + 128, stage="entry")
+            ledger.reserve("scalar", 524288 * count + 4096, stage="entry")
+            ledger.charge("traversal", 128 * count + 128, stage="entry")
+            decoder = _Decoder(ledger, expected, allocation, direct_ledger)
+            decoder.rows_json = rows_json
+            children, parse_usage, caps, projection = _restore(
+                decoder, payload_json, rows_json, fullview=fullview
+            )
+            # All wrapper/retention/snapshot construction is inside A16's existing
+            # prepaid fixed receipt block; no work is charged after snapshots.
+            # Transfer a conservative upper bound of ALL still-reserved holdings,
+            # including native records/issuer payload and caller-owned context, not
+            # just the new view's containers. Some parse temporaries die on return;
+            # keeping their tickets makes this an upper bound, never an H lease.
+            retention = ledger.live if fullview else None
+            inner_batches = RestoredBatchSet(
+                children,
+                expected.implementation,
+                expected.payload_digest,
+                expected.rows_digest,
+                ledger.usage,
+                ledger.peaks,
+                parse_usage,
+                caps,
+            )
+            if direct_ledger is None:
+                outcome = (
+                    RestoredProfileResult(inner_batches, projection, rows_json, retention)
+                    if fullview
+                    else inner_batches
+                )
+            else:
+                direct_receipt = direct_ledger.receipt()
+                outcome = RestoredExplanationResult(
+                    inner_batches, projection, rows_json, retention, direct_receipt
+                )
+                direct_ledger.transferred()
+        except DirectStepsFailure as exc:
+            error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+        except RestoreFailure as exc:
+            error = RestoreFailure(
+                exc.reason, exc.classification, stage=exc.stage, slot=exc.slot, domain=exc.domain
+            )
+        except ProfileFailure as exc:
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if exc.classification == "resource" else "RESTORE_INPUT_INVALID",
+                "resource" if exc.classification == "resource" else "input",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except SemanticError as exc:
+            resource = exc.code == "PROJECTION_RESULT_LIMIT"
+            error = RestoreFailure(
+                "RESTORE_LIMIT" if resource else "RESTORE_INTERNAL",
+                "resource" if resource else "internal",
+                stage=decoder.stage if decoder is not None else "entry",
+                slot=None if decoder is None else decoder.slot,
+            )
+        except Exception:
+            error = RestoreFailure("RESTORE_INTERNAL", "internal", stage="entry")
+        finally:
+            # The public error traceback keeps this frame.  Drop every separate
+            # native result reference, including receipt-construction failure paths.
+            children = parse_usage = caps = projection = inner_batches = retention = direct_receipt = (
+                None
+            )
+            if error is not None:
+                outcome = None
+                if direct_ledger is not None:
+                    direct_ledger.failed()
+            try:
+                if decoder is not None:
+                    decoder.drop()
+                    decoder.rows_json = None
+                decoder = None
+                ledger.cleanup()
+                ledger.finish(error is None and outcome is not None)
+            except BaseException:
+                outcome = decoder = None
+                raise
+        if error is not None:
+>           raise error
+E           ontolearn_engine.semantic_profile_restore_budget.RestoreFailure: RESTORE_INPUT_INVALID
+
+packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1510: RestoreFailure
+_ test_roots_retain_every_real_rule_head_occurrence_and_do_not_feed_rule_chains _
+
+    def test_roots_retain_every_real_rule_head_occurrence_and_do_not_feed_rule_chains():
+        raw = records(
+            (
+                ("urn:p", TYPE, OWL + "ObjectProperty"),
+                ("urn:out", TYPE, OWL + "ObjectProperty"),
+                ("urn:x", "urn:p", "urn:y"),
+            )
+        )
+        when = Triple(Variable("?s"), iri("urn:p"), Variable("?o"))
+        head = Triple(Variable("?s"), iri("urn:out"), Variable("?o"))
+        rule = RuleSpec(
+            "fixture:r", (when,), (), (head, head), source=SourceRecord("fixture:rule", "", "v1", None)
+        )
+        computed, _ = produce(raw, (rule,))
+        assert len(computed.wire["payload"]) == 7 and len(computed.native_result) == 16
+        assert len(computed.native_result["mechanismBatches"]) == 1
+        assert len(computed.native_result["mechanismBatches"][0]) == 11
+        assert len(computed.native_result["firingGroups"]) == 1
+        assert len(computed.native_result["firingGroups"][0].heads) == 2
+        assert computed.native_result["directSteps"] == carrier()
+        view, _ = receive(computed)
+        roots = restore.explanation_roots(
+            view, (key("urn:x", "urn:out", "urn:y"),), direct_ledger=direct.DirectStepsLedger()
+        )
+>       assert signature(roots) == signature(
+            (
+                {"kind": "ruleHead", "firingIndex": 0, "headIndex": 0},
+                {"kind": "ruleHead", "firingIndex": 0, "headIndex": 1},
+            )
+        )
+E       AssertionError: assert ['tuple', [['...', '0x1']]]]]] == ['tuple', [['...uleHead']]]]]]
+E         
+E         At index 1 diff: [['record', 'ontolearn_engine.semantic_profile_directsteps.RootRef', [['kind', ['str', 'ruleHead']], ['reference', ['none']], ['ordinal', ['none']], ['firing_index', ['int', '0x0']], ['head_index', ['int', '0x0']]]], ['record', 'ontolearn_engine.semantic_profile_directsteps.RootRef', [['kind', ['str', 'ruleHead']], ['reference', ['none']], ['ordinal', ['none']], ['firing_index', ['int', '0x0']], ['head_index', ['int', '0x1']]]]] != [['dict', [['firingIndex', ['int', '0x0']], ['headIndex', ['int', '0x0']], ['kind', ['str', 'ruleHead']]]], ['dict', [['fir...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+packages/engine/tests/test_semantic_profile_directsteps.py:731: AssertionError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_profile_directsteps.py::test_actual_four_branches_ordered_premises_depth_and_fullview[domain-depth2]
+FAILED packages/engine/tests/test_semantic_profile_directsteps.py::test_each_actual_direct_pool_exact_and_one_short[work-restore]
+FAILED packages/engine/tests/test_semantic_profile_directsteps.py::test_each_actual_direct_pool_exact_and_one_short[work-roots]
+FAILED packages/engine/tests/test_semantic_profile_directsteps.py::test_each_actual_direct_pool_exact_and_one_short[scan_copy-restore]
+FAILED packages/engine/tests/test_semantic_profile_directsteps.py::test_each_actual_direct_pool_exact_and_one_short[scan_copy-roots]
+FAILED packages/engine/tests/test_semantic_profile_directsteps.py::test_each_actual_direct_pool_exact_and_one_short[objects-restore]
+FAILED packages/engine/tests/test_semantic_profile_directsteps.py::test_each_actual_direct_pool_exact_and_one_short[objects-roots]
+FAILED packages/engine/tests/test_semantic_profile_directsteps.py::test_each_actual_direct_pool_exact_and_one_short[scalar-restore]
+FAILED packages/engine/tests/test_semantic_profile_directsteps.py::test_each_actual_direct_pool_exact_and_one_short[scalar-roots]
+FAILED packages/engine/tests/test_semantic_profile_directsteps.py::test_roots_retain_every_real_rule_head_occurrence_and_do_not_feed_rule_chains
+10 failed, 55 passed in 1.58s

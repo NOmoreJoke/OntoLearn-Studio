@@ -1,0 +1,56 @@
+"""Root refs must locate the retained actual firing/head occurrence."""
+import copy,json
+from pathlib import Path
+from unittest.mock import patch
+from ontolearn_engine import semantic
+from ontolearn_engine import semantic_profile_directsteps as direct
+from ontolearn_engine import semantic_profile_restore as restore
+from ontolearn_engine.quality.rule_firing import RuleSpec,Triple,Variable
+import test_semantic_profile_directsteps as support
+out=Path('docs/reviews/I05/profile-directsteps/independent-origin/delta-ff90092')
+def fees(d):return {'state':d.state,'used':d.used,'live':d.live,'peaks':d.peaks,'caps':d.caps,'events':d.events}
+raw=support.records((('urn:p',support.TYPE,support.OWL+'ObjectProperty'),('urn:out',support.TYPE,support.OWL+'ObjectProperty'),('urn:x','urn:p','urn:y')))
+when=Triple(Variable('?s'),support.iri('urn:p'),Variable('?o'));head=Triple(Variable('?s'),support.iri('urn:out'),Variable('?o'));rule=RuleSpec('fixture:r',(when,),(),(head,head))
+computed,pd=support.produce(raw,(rule,));observations=[]
+# Honest duplicate heads remain both present without re-reasoning.
+d=direct.DirectStepsLedger()
+with patch.object(semantic,'_profile_reason',side_effect=AssertionError('no reason during restore')):
+ view,_=support.receive(computed,direct_ledger=d)
+rd=direct.DirectStepsLedger();refs=restore.explanation_roots(view,(support.key('urn:x','urn:out','urn:y'),),direct_ledger=rd)
+assert [(r['firingIndex'],r['headIndex']) for r in refs]==[(0,0),(0,1)]
+observations.append({'case':'honest-duplicate-heads','returnedRoots':refs,'restoreFees':fees(d),'rootsFees':fees(rd),'productionFees':fees(pd)})
+mutations={
+ 'fake-occurrence':lambda e:e[0].update(firingIndex={'integerHex':'0x3ff'},headIndex={'integerHex':'0xf'}),
+ 'wrong-target':lambda e:e[0].update(result=['<urn:false>','<urn:out>','<urn:y>']),
+ 'wrong-rule':lambda e:e[0].update(rule='fixture:other'),
+ 'wrong-inputs':lambda e:e[0].update(inputs=[]),
+ 'wrong-basis':lambda e:e[0].update(basis=[]),
+ 'missing':lambda e:e.pop(),
+ 'extra':lambda e:e.append(copy.deepcopy(e[0])),
+ 'reordered':lambda e:e.reverse(),
+}
+for label,mutate in mutations.items():
+ payload=copy.deepcopy(computed.wire['payload']);mutate(payload['reasoning']['evidence']);wire,rebound=support.rebound(computed,payload)
+ for envelope,expected in [('original',support.expectation(computed)),('rebound',rebound)]:
+  d=direct.DirectStepsLedger()
+  with patch.object(semantic,'_profile_reason',side_effect=AssertionError('no reason during restore')):
+   try:support.receive(computed,expected=expected,wire=wire,direct_ledger=d)
+   except Exception as exc:
+    assert exc.__cause__ is None and exc.__context__ is None
+    assert d.state=='failed'
+    tb=exc.__traceback__
+    while tb:
+     if tb.tb_frame.f_code.co_name=='_restore_operation':
+      assert all(tb.tb_frame.f_locals.get(k) is None for k in ('decoder','children','parse_usage','caps','projection','inner_batches','retention','outcome','direct_receipt'))
+     tb=tb.tb_next
+    observations.append({'case':label,'envelope':envelope,'accepted':False,'error':type(exc).__name__,'reason':getattr(exc,'reason',None),'restoreFees':fees(d)})
+   else:raise AssertionError(label+' accepted '+envelope)
+callbacks=[]
+class ArbitraryCapture:
+ def candidate(self,rule):callbacks.append(rule);raise RuntimeError('foreign sink callback')
+data=semantic.parse_turtle('<urn:x> <'+support.TYPE+'> <urn:A> . <urn:A> <'+support.SUB+'> <urn:B> .')
+try:semantic._finite_closure(data,lambda *args:None,_direct_capture=ArbitraryCapture())
+except Exception as exc:observations.append({'case':'private-closure-foreign-sink','callbacks':callbacks,'error':type(exc).__name__})
+else:raise AssertionError('foreign sink accepted')
+assert callbacks==[]
+(out/'05-roots-observations.json').write_text(json.dumps(observations,indent=2)+'\n');print(json.dumps([{k:v for k,v in row.items() if not k.lower().endswith('fees')} for row in observations],sort_keys=True))

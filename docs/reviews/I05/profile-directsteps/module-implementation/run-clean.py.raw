@@ -1,0 +1,24 @@
+import datetime
+import hashlib
+import json
+import os
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+label=sys.argv[1];argv=sys.argv[2:];output=Path(__file__).resolve().parent
+base=Path(tempfile.mkdtemp(prefix='directsteps-clean-'+label+'-'))
+env={'HOME':'/Users/kyle','PATH':str(Path.cwd()/'.venv/bin')+':/usr/bin:/bin:/usr/sbin:/sbin','LANG':'en_US.UTF-8','LC_ALL':'en_US.UTF-8','TMPDIR':str(base),'PYTHONDONTWRITEBYTECODE':'1','PYTHONUTF8':'1'}
+source=Path('packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py')
+head=subprocess.check_output(['git','rev-parse','HEAD'],env=env,text=True).strip()
+r={'argv':argv,'cwd':os.getcwd(),'gitHead':head,'start':datetime.datetime.now(datetime.UTC).isoformat(),'timeoutSeconds':180,'basetemp':str(base),'env':env,'completeEnvironment':True,'sourceBeforeSha256':hashlib.sha256(source.read_bytes()).hexdigest()}
+try:
+ p=subprocess.run(argv,env=env,capture_output=True,timeout=180);stdout,stderr,code=p.stdout,p.stderr,p.returncode;timeout=False
+except subprocess.TimeoutExpired as e:
+ stdout,stderr,code=e.stdout or b'',e.stderr or b'',None;timeout=True
+r.update(end=datetime.datetime.now(datetime.UTC).isoformat(),exitCode=code,timeout=timeout,sourceAfterSha256=hashlib.sha256(source.read_bytes()).hexdigest())
+for name,data in [('stdout',stdout),('stderr',stderr)]:
+ path=output/(label+'.'+name+'.raw');path.write_bytes(data);r[name]={'path':path.name,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+(output/(label+'.json')).write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps(r,ensure_ascii=False));sys.exit(1 if timeout else code)

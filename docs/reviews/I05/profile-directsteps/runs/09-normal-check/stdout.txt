@@ -1,0 +1,221 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps
+
+
+ Test Files  22 passed (22)
+      Tests  1125 passed (1125)
+   Start at  03:40:51
+   Duration  7.11s (tests 81%, transform 12%, import 7%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  404.50 kB
+
+✓ built in 28ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  330.22 kB
+
+✓ built in 19ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-Bms3LrTp.js   919.74 kB
+
+✓ built in 53ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> docs/reviews/I05/profile-directsteps/test-implementation/verify_static.py:2:1
+   |
+ 1 |   """Run only local static checks; never import or execute the product/test module."""
+ 2 | / import ast
+ 3 | | import hashlib
+ 4 | | import json
+ 5 | | import os
+ 6 | | from pathlib import Path
+ 7 | | import subprocess
+ 8 | | import tempfile
+ 9 | | from datetime import datetime, timezone
+   | |_______________________________________^
+10 |
+11 |   ROOT = Path(__file__).resolve().parents[5]
+   |
+help: Organize imports
+   |
+5  | import os
+   - from pathlib import Path
+6  | import subprocess
+7  | import tempfile
+8  | from datetime import datetime, timezone
+9  + from pathlib import Path
+10 |
+   |
+
+UP017 [*] Use `datetime.UTC` alias
+  --> docs/reviews/I05/profile-directsteps/test-implementation/verify_static.py:20:25
+   |
+19 | def stamp():
+20 |     return datetime.now(timezone.utc).isoformat()
+   |                         ^^^^^^^^^^^^
+help: Convert to `datetime.UTC` alias
+   |
+8  | import tempfile
+   - from datetime import datetime, timezone
+9  + from datetime import datetime, timezone, UTC
+10 |
+--------------------------------------------------------------------------------
+19 | def stamp():
+   -     return datetime.now(timezone.utc).isoformat()
+20 +     return datetime.now(UTC).isoformat()
+21 |
+   |
+
+E501 Line too long (110 > 100)
+  --> docs/reviews/I05/profile-directsteps/test-implementation/verify_static.py:25:101
+   |
+23 | def member(path):
+24 |     raw = path.read_bytes()
+25 |     return {'path': str(path.relative_to(ROOT)), 'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+   |                                                                                                     ^^^^^^^^^^
+
+E501 Line too long (212 > 100)
+  --> docs/reviews/I05/profile-directsteps/test-implementation/verify_static.py:29:101
+   |
+28 | …
+29 | …n ENV_KEYS}, 'basetempReserved': BASE, 'basetempUsedByPytest': False, 'start': stamp(), 'membersBefore': [member(TARGET)]}
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+30 | …
+31 | …
+   |
+
+E501 Line too long (167 > 100)
+  --> docs/reviews/I05/profile-directsteps/test-implementation/verify_static.py:33:101
+   |
+31 | …
+32 | …
+33 | …'membersAfter': [member(TARGET)], 'feeEvents': 'not applicable: static check, no product imported'})
+   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+34 | …, ensure_ascii=False) + '\n')
+35 | …
+   |
+
+E501 Line too long (112 > 100)
+  --> docs/reviews/I05/profile-directsteps/test-implementation/verify_static.py:43:101
+   |
+41 | start = stamp()
+42 | tree = ast.parse(TARGET.read_text(), filename=str(TARGET))
+43 | tests = [node.name for node in tree.body if isinstance(node, ast.FunctionDef) and node.name.startswith('test_')]
+   |                                                                                                     ^^^^^^^^^^^^
+44 | assert not any(isinstance(node, ast.Attribute) and node.attr in ('skip', 'skipif', 'xfail') for node in ast.walk(tree))
+45 | fixed = json.loads((EVIDENCE / 'input-readback.json').read_text())
+   |
+
+E501 Line too long (119 > 100)
+  --> docs/reviews/I05/profile-directsteps/test-implementation/verify_static.py:44:101
+   |
+42 | tree = ast.parse(TARGET.read_text(), filename=str(TARGET))
+43 | tests = [node.name for node in tree.body if isinstance(node, ast.FunctionDef) and node.name.startswith('test_')]
+44 | assert not any(isinstance(node, ast.Attribute) and node.attr in ('skip', 'skipif', 'xfail') for node in ast.walk(tree))
+   |                                                                                                     ^^^^^^^^^^^^^^^^^^^
+45 | fixed = json.loads((EVIDENCE / 'input-readback.json').read_text())
+46 | verified = []
+   |
+
+E501 Line too long (140 > 100)
+  --> docs/reviews/I05/profile-directsteps/test-implementation/verify_static.py:49:101
+   |
+47 | …
+48 | …
+49 | …doption'] + ':' + expected['path']], cwd=ROOT, check=True, capture_output=True).stdout
+   |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+50 | …urrent['sha256'] == expected['sha256'], expected['path']
+51 | …rent['sha256'], expected['path']
+   |
+
+E501 Line too long (110 > 100)
+  --> docs/reviews/I05/profile-directsteps/test-implementation/verify_static.py:50:101
+   |
+48 |     current = member(ROOT / expected['path'])
+49 |     original = subprocess.run(['git', 'show', fixed['adoption'] + ':' + expected['path']], cwd=ROOT, check=True, capture_output=True).…
+50 |     assert current['bytes'] == expected['bytes'] and current['sha256'] == expected['sha256'], expected['path']
+   |                                                                                                     ^^^^^^^^^^
+51 |     assert hashlib.sha256(original).hexdigest() == current['sha256'], expected['path']
+52 |     verified.append(current)
+   |
+
+E501 Line too long (532 > 100)
+  --> docs/reviews/I05/profile-directsteps/test-implementation/verify_static.py:54:101
+   |
+52 | …
+53 | …
+54 | …, '139 local read_bytes + git show adoption:path']…only'}, indent=2, ensure_ascii=False) + '\n')
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+55 | …: member(TARGET)}, ensure_ascii=False))
+   |
+
+E501 Line too long (134 > 100)
+  --> docs/reviews/I05/profile-directsteps/test-implementation/verify_static.py:55:101
+   |
+53 | …
+54 | …ps({'argv': ['stdlib ast.parse (no imports)', '139 local read_bytes + git show adoption:path'], 'cwd': str(ROOT), 'environment': {k: …
+55 | … len(tests), 'all139Unchanged': True, 'test': member(TARGET)}, ensure_ascii=False))
+   |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Found 11 errors.
+[*] 2 fixable with `--fix`.

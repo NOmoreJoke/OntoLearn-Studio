@@ -1,0 +1,121 @@
+{
+  "created": "2026-10-21T19:33:49.833758+00:00",
+  "branch": "feature/weekly-i05-directsteps-tests",
+  "adoption": "78e9cf7f26dc039e99ec6725d7de8a396d1298d2",
+  "allowedWrites": [
+    "packages/engine/tests/test_semantic_profile_directsteps.py",
+    "docs/reviews/I05/profile-directsteps/test-implementation/"
+  ],
+  "productImplementationParticipated": false,
+  "expectedSource": "fixed contract + independently reasoned pure input; no actual product output used",
+  "staticChecksPassed": [
+    "Ruff check",
+    "Ruff format --check",
+    "stdlib AST parse (no imports)",
+    "139 adopted member bytes/SHA unchanged"
+  ],
+  "pytestRun": false,
+  "productImported": false,
+  "feeRunObserved": false,
+  "remaining": [
+    "Parent Git-adopts exact new test and report commit",
+    "Actual supplied implementation API adaptation if required",
+    "Actual new test runtime with isolated basetemp and fee observer directory",
+    "Old regression checks and independent candidate review belong to parent"
+  ],
+  "firstFailure": {
+    "path": "docs/reviews/I05/profile-directsteps/test-implementation/01-ruff-initial.stdout.txt",
+    "errorCount": 50,
+    "exitCode": 1,
+    "preserved": true,
+    "metadataLimit": "Initial command retained argv/cwd/start/end/exit/dual streams; environment and initial test member hash were not captured. Final static runner captures finite environment and member hash. No retrospective environment/hash is asserted."
+  },
+  "manifestExcludesSelf": true,
+  "members": [
+    {
+      "path": "packages/engine/tests/test_semantic_profile_directsteps.py",
+      "bytes": 35520,
+      "sha256": "030d29b25542d7f6f8224aa1c8a4399cb48360ba0e29209ea8abe77cff4b5ce4"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/01-ruff-initial.json",
+      "bytes": 317,
+      "sha256": "dbb20cdc2668452e2bf5bb3154a6bdcc7d914133fbf16425bed52d98bd612588"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/01-ruff-initial.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/01-ruff-initial.stdout.txt",
+      "bytes": 29302,
+      "sha256": "475fe27d73d856d1690730ce99d40c2b62d61e5c2c279bb85a080c988bc74f2e"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/environment.json",
+      "bytes": 480,
+      "sha256": "405ec2c9d0ea545156fa13b1e882ac60406a00d82305750283d5577fcad27591"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/independent-input-math-review.md",
+      "bytes": 10878,
+      "sha256": "6acab109c1d3205b749868345a005f541ca357c461cde03705472ef930fa046d"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/input-readback.json",
+      "bytes": 56812,
+      "sha256": "11bbb8cbcb3fb586d755ae81c727b3f535bc9e247683d442d25197c1c45f43fd"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/static-final-2q69tnag/ast-fixed-inputs.json",
+      "bytes": 29920,
+      "sha256": "22082c0494ca58c50272538f8aadb0a2d3c3f4b42cd796e403cadb9c6731bf02"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/static-final-2q69tnag/ruff-check.json",
+      "bytes": 2251,
+      "sha256": "f04726a7c6ff098e4a48a9bb9fe01212ce020bb2ca8c1e678853de5577b7a67f"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/static-final-2q69tnag/ruff-check.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/static-final-2q69tnag/ruff-check.stdout.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/static-final-2q69tnag/ruff-format.json",
+      "bytes": 2267,
+      "sha256": "0324292dc8c7778ce85c2c77b556d0099b9cf58b9f78b194666471411975e3cb"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/static-final-2q69tnag/ruff-format.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/static-final-2q69tnag/ruff-format.stdout.txt",
+      "bytes": 25,
+      "sha256": "fd2299c9f1c6dc869070883e281051bfe93aacf66c1a3b0069f45b4aa410ca50"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/uv-sync.stderr.txt",
+      "bytes": 1324,
+      "sha256": "8acd599f6fcce7ee2b64c2c88e28f6fce63ccb0c60fa33629c55872f9fe9468a"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/uv-sync.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/profile-directsteps/test-implementation/verify_static.py",
+      "bytes": 3312,
+      "sha256": "a4ea64ba36550dbe00ab35480f1faca2ae6024070d8468ad86aa68056f8a491c"
+    }
+  ]
+}

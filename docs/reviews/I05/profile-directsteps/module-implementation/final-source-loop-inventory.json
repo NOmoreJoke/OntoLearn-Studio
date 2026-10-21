@@ -1,0 +1,242 @@
+[
+  {
+    "scope": "DirectStepsLedger.__init__",
+    "kind": "For",
+    "line": 89,
+    "source": "for pos, pair in enumerate(overrides):\n            _require(type(pair) is tuple and len(pair) == 2)\n            name, count = pair\n            _require(type(name) is str and name in _DOMAINS)\n            _require(type(count) is int and count >= 0)\n            for previous in range(pos):\n                _require(name != overrides[previous][0])"
+  },
+  {
+    "scope": "DirectStepsLedger.__init__",
+    "kind": "For",
+    "line": 94,
+    "source": "for previous in range(pos):\n                _require(name != overrides[previous][0])"
+  },
+  {
+    "scope": "DirectStepsLedger.begin",
+    "kind": "For",
+    "line": 113,
+    "source": "for name, count in self.overrides:\n            if name == \"objects\":\n                obj = min(obj, count)\n            elif name == \"scalar\":\n                scalar = min(scalar, count)"
+  },
+  {
+    "scope": "DirectStepsLedger.begin",
+    "kind": "For",
+    "line": 130,
+    "source": "for name, count in self.overrides:\n            self.caps[name] = min(self.caps[name], count)"
+  },
+  {
+    "scope": "DirectStepsLedger._apply",
+    "kind": "For",
+    "line": 181,
+    "source": "for name, value in ((\"work\", nw), (\"scan_copy\", ns), (\"objects\", no), (\"scalar\", nl)):\n            if value > self.caps[name]:\n                raise DirectStepsFailure(\"DIRECT_STEPS_LIMIT\", stage=self.stage, domain=name)"
+  },
+  {
+    "scope": "DirectStepsLedger.discard",
+    "kind": "For",
+    "line": 249,
+    "source": "for domain, count in ((\"objects\", objects), (\"scalar\", scalar)):\n            if not count:\n                continue\n            if self._cleanup_credit < 1:\n                raise DirectStepsFailure(\"DIRECT_STEPS_INTERNAL\", stage=\"cleanup\")\n            w, scan = self.used[\"work\"], self.used[\"scan_copy\"]\n            obj, held_scalar = self.live[\"objects\"], self.live[\"scalar\"]\n            self._cleanup_credit -= 1\n            self.live[domain] -= count\n            if domain == \"objects\":\n                self._data_objects -= count\n                self._cleanup_objects += count\n            else:\n                self._data_scalar -= count\n                self._cleanup_scalar += count\n            self._events.append(\n                (\n                    action,\n                    domain,\n                    count,\n                    self.stage,\n                    w,\n                    w,\n                    scan,\n                    scan,\n                    obj,\n                    self.live[\"objects\"],\n                    held_scalar,\n                    self.live[\"scalar\"],\n                )\n            )"
+  },
+  {
+    "scope": "_triple",
+    "kind": "For",
+    "line": 323,
+    "source": "for value in key:\n        _require(type(value) is str and len(value) <= MAX_BYTES, ledger)"
+  },
+  {
+    "scope": "_parts",
+    "kind": "For",
+    "line": 334,
+    "source": "for value in parts:\n        _require(type(value) is str and len(value) <= MAX_BYTES, ledger)\n        chars += len(value)"
+  },
+  {
+    "scope": "_parts",
+    "kind": "For",
+    "line": 347,
+    "source": "for value in parts:\n            for character in value:\n                point = ord(character)\n                _require(not 0xD800 <= point <= 0xDFFF, ledger)\n                size += 1 if point < 128 else 2 if point < 2048 else 3 if point < 65536 else 4"
+  },
+  {
+    "scope": "_parts",
+    "kind": "For",
+    "line": 348,
+    "source": "for character in value:\n                point = ord(character)\n                _require(not 0xD800 <= point <= 0xDFFF, ledger)\n                size += 1 if point < 128 else 2 if point < 2048 else 3 if point < 65536 else 4"
+  },
+  {
+    "scope": "_parts",
+    "kind": "For",
+    "line": 356,
+    "source": "for value in parts:\n            data = value.encode(\"utf-8\", errors=\"strict\")\n            if len(out) + len(data) + 8 > MAX_BYTES:\n                raise DirectStepsFailure(\"DIRECT_STEPS_LIMIT\", stage=ledger.stage, domain=\"scalar\")\n            out.extend(len(data).to_bytes(8, \"big\"))\n            out.extend(data)\n            data = None"
+  },
+  {
+    "scope": "encode_identity_key",
+    "kind": "For",
+    "line": 437,
+    "source": "for term in records:\n        _require(type(term) is TermInput, ledger)"
+  },
+  {
+    "scope": "encode_identity_key",
+    "kind": "For",
+    "line": 444,
+    "source": "for term in records:\n            data = _term_identity(term, ledger)\n            held += len(data)\n            parts.append(data)"
+  },
+  {
+    "scope": "encode_identity_key",
+    "kind": "For",
+    "line": 455,
+    "source": "for data in parts:\n            out.extend(len(data).to_bytes(8, \"big\"))\n            out.extend(data)"
+  },
+  {
+    "scope": "_ByteIndex.get",
+    "kind": "For",
+    "line": 485,
+    "source": "for byte in key:\n            for shift in range(7, -1, -1):\n                node = node[(byte >> shift) & 1]\n                if node is None:\n                    return None"
+  },
+  {
+    "scope": "_ByteIndex.get",
+    "kind": "For",
+    "line": 486,
+    "source": "for shift in range(7, -1, -1):\n                node = node[(byte >> shift) & 1]\n                if node is None:\n                    return None"
+  },
+  {
+    "scope": "_ByteIndex.put",
+    "kind": "For",
+    "line": 504,
+    "source": "for byte in key:\n                for shift in range(7, -1, -1):\n                    side = (byte >> shift) & 1\n                    child = node[side]\n                    if child is None:\n                        child = [None, None, None]\n                        node[side] = child\n                        self.nodes += 1\n                        created += 1\n                    node = child"
+  },
+  {
+    "scope": "_ByteIndex.put",
+    "kind": "For",
+    "line": 505,
+    "source": "for shift in range(7, -1, -1):\n                    side = (byte >> shift) & 1\n                    child = node[side]\n                    if child is None:\n                        child = [None, None, None]\n                        node[side] = child\n                        self.nodes += 1\n                        created += 1\n                    node = child"
+  },
+  {
+    "scope": "_DirectStepsCapture.finish",
+    "kind": "For",
+    "line": 681,
+    "source": "for seed in self.seeds:\n                _require(type(seed.reference) is str, self.ledger)"
+  },
+  {
+    "scope": "_DirectStepsCapture.finish",
+    "kind": "For",
+    "line": 688,
+    "source": "for pos, item in enumerate(self.steps):\n                refs = tuple(\n                    {\"kind\": \"step\", \"ordinal\": ref.ordinal}\n                    if type(ref) is _Step\n                    else {\"kind\": \"leaf\", \"reference\": ref.reference}\n                    for ref in (item.left, item.right)\n                )\n                output[pos] = {\n                    \"ordinal\": item.ordinal,\n                    \"rule\": item.rule,\n                    \"result\": item.result,\n                    \"premises\": refs,\n                    \"depth\": item.depth,\n                }"
+  },
+  {
+    "scope": "_DirectStepsCapture.finish",
+    "kind": "GeneratorExp",
+    "line": 689,
+    "source": "(\n                    {\"kind\": \"step\", \"ordinal\": ref.ordinal}\n                    if type(ref) is _Step\n                    else {\"kind\": \"leaf\", \"reference\": ref.reference}\n                    for ref in (item.left, item.right)\n                )"
+  },
+  {
+    "scope": "_object",
+    "kind": "For",
+    "line": 760,
+    "source": "for key in value:\n        _require(type(key) is str and key in keys, ledger)"
+  },
+  {
+    "scope": "_same_key",
+    "kind": "For",
+    "line": 789,
+    "source": "for pos in range(3):\n        if not _equal_strings(left[pos], right[pos], ledger):\n            return False"
+  },
+  {
+    "scope": "_union",
+    "kind": "While",
+    "line": 844,
+    "source": "while i < len(left) or j < len(right):\n            if j == len(right) or i < len(left) and left[i] < right[j]:\n                item = left[i]\n                i += 1\n            elif i == len(left) or right[j] < left[i]:\n                item = right[j]\n                j += 1\n            else:\n                item = left[i]\n                i += 1\n                j += 1\n            builder[used] = item\n            used += 1"
+  },
+  {
+    "scope": "_leaf_id",
+    "kind": "For",
+    "line": 889,
+    "source": "for pos in range(10, 74):\n        char = reference[pos]\n        _require(\"0\" <= char <= \"9\" or \"a\" <= char <= \"f\", ledger)"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 951,
+    "source": "for item in seed_entries:\n            _require(type(item) is tuple and len(item) == 2, ledger)\n            identity_bytes, representative = item\n            _require(type(identity_bytes) is bytes and len(identity_bytes) <= MAX_BYTES, ledger)\n            _triple(representative, ledger)\n            ledger.debit(\"work\", 16)\n            group = identity.get(identity_bytes)\n            if group is None:\n                ledger.reserve(\"objects\", 8)\n                ledger.reserve(\"scalar\", len(identity_bytes))\n                owned_objects += 8\n                owned_scalar += len(identity_bytes)\n                group = _SeedGroup(identity_bytes)\n                groups.append(group)\n                identity.put(identity_bytes, group)\n            prior = _lookup(representatives, representative, ledger)\n            _require(prior is None or prior is group, ledger)\n            if prior is None:\n                _put_key(representatives, representative, group, ledger)"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 970,
+    "source": "for item in proof_leaves:\n            _object(item, (\"reference\", \"triple\"), ledger)\n            key, reference = item[\"triple\"], item[\"reference\"]\n            _triple(key, ledger)\n            _leaf_id(reference, ledger)\n            group = _lookup(representatives, key, ledger)\n            _require(type(group) is _SeedGroup and not group.seen, ledger)\n            _require(_lookup_reference(references, reference, ledger) is None, ledger)\n            ledger.reserve(\"objects\", 12)\n            ledger.reserve(\"scalar\", 4 * len(reference) + 128)\n            owned_objects += 12\n            owned_scalar += 4 * len(reference) + 128\n            ordinal = len(leaves)\n            leaf = _Leaf(reference, key, ordinal, (ordinal,))\n            leaves.append(leaf)\n            group.seen = True\n            group.leaf = leaf\n            _put_reference(references, reference, leaf, ledger)"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 989,
+    "source": "for group in groups:\n            _require(group.seen, ledger)"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 991,
+    "source": "for key in rdfs:\n            _triple(key, ledger)\n            _require(_lookup(results, key, ledger) is None, ledger)\n            _require(_lookup(representatives, key, ledger) is None, ledger)\n            _put_key(results, key, True, ledger)"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 996,
+    "source": "for item in rdfs_evidence:\n            _object(item, (\"result\", \"basis\", \"proofLeaves\"), ledger)\n            key = item[\"result\"]\n            _triple(key, ledger)\n            _require(_lookup(results, key, ledger) is True, ledger)\n            _require(_lookup(evidence, key, ledger) is None, ledger)\n            _sequence(item[\"basis\"], ledger)\n            _sequence(item[\"proofLeaves\"], ledger)\n            _put_key(evidence, key, item, ledger)"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 1006,
+    "source": "for pos, step in enumerate(steps):\n            _object(step, (\"ordinal\", \"rule\", \"result\", \"premises\", \"depth\"), ledger)\n            _require(_integer(step[\"ordinal\"], ledger) == pos, ledger)\n            depth = _integer(step[\"depth\"], ledger)\n            rule, key = step[\"rule\"], step[\"result\"]\n            _require(type(rule) is str and rule in RULES, ledger)\n            _triple(key, ledger)\n            _sequence(step[\"premises\"], ledger, bound=2, tuple_only=True)\n            _require(len(step[\"premises\"]) == 2, ledger)\n            _require(_lookup(results, key, ledger) is True, ledger)\n            _require(_lookup(steps_index, key, ledger) is None, ledger)\n            row = _lookup(evidence, key, ledger)\n            _require(type(row) is dict, ledger)\n            left = right = None\n            for side, ref in enumerate(step[\"premises\"]):\n                _require(type(ref) is dict and len(ref) == 2, ledger)\n                ledger.debit(\"work\", 16)\n                ledger.debit(\"scan_copy\", 256)\n                for name in ref:\n                    _require(type(name) is str and name in (\"kind\", \"reference\", \"ordinal\"), ledger)\n                _require(\"kind\" in ref and type(ref[\"kind\"]) is str, ledger)\n                if ref[\"kind\"] == \"leaf\":\n                    _object(ref, (\"kind\", \"reference\"), ledger)\n                    value = _lookup_reference(references, ref[\"reference\"], ledger)\n                    _require(type(value) is _Leaf, ledger)\n                else:\n                    _object(ref, (\"kind\", \"ordinal\"), ledger)\n                    _require(ref[\"kind\"] == \"step\", ledger)\n                    previous = _integer(ref[\"ordinal\"], ledger)\n                    _require(previous < pos, ledger)\n                    value = validated[previous]\n                if side == 0:\n                    left = value\n                else:\n                    right = value\n            left_depth = left.depth if type(left) is _ValidatedStep else 0\n            right_depth = right.depth if type(right) is _ValidatedStep else 0\n            _require(depth == 1 + max(left_depth, right_depth), ledger)\n            _template(\n                rule,\n                left.result if type(left) is _ValidatedStep else left.key,\n                right.result if type(right) is _ValidatedStep else right.key,\n                key,\n                ledger,\n            )\n            dp = _union(left.dp, right.dp, ledger)\n            owned_objects += len(dp) + 1\n            _require(len(row[\"proofLeaves\"]) == len(row[\"basis\"]) == len(dp), ledger)\n            # Per-step bounded ordinal masks avoid hash/set or path expansion.\n            ledger.debit(\"work\", 8 * len(leaves) + 8 * len(dp) + 16)\n            ledger.debit(\"scan_copy\", 2 * len(leaves) + 16 * len(dp))\n            ledger.reserve(\"scalar\", 2 * len(leaves))\n            ledger.reserve(\"objects\", 4)\n            owned_objects += 4\n            seen = bytearray(len(leaves))\n            for ref in row[\"proofLeaves\"]:\n                leaf = _lookup_reference(references, ref, ledger)\n                _require(type(leaf) is _Leaf and not seen[leaf.ordinal], ledger)\n                seen[leaf.ordinal] = 1\n            for index in dp:\n                _require(seen[index] == 1, ledger)\n                seen[index] = 0\n            _require(not any(seen), ledger)\n            for basis_key in row[\"basis\"]:\n                _triple(basis_key, ledger)\n                group = _lookup(representatives, basis_key, ledger)\n                _require(type(group) is _SeedGroup, ledger)\n                # The saved leaf, not an arbitrary alias, defines the basis.\n                candidate = group.leaf\n                _require(type(candidate) is _Leaf, ledger)\n                _require(_same_key(candidate.key, basis_key, ledger), ledger)\n                matched = candidate.ordinal\n                _require(not seen[matched], ledger)\n                seen[matched] = 1\n            for index in dp:\n                _require(seen[index] == 1, ledger)\n            seen = None\n            ledger.discard(scalar=2 * len(leaves))\n            ledger.discard(objects=4)\n            owned_objects -= 4\n            ledger.reserve(\"objects\", 12)\n            owned_objects += 12\n            item = _ValidatedStep(pos, key, depth, dp)\n            validated.append(item)\n            _put_key(steps_index, key, item, ledger)\n            max_depth = max(max_depth, depth)"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 1020,
+    "source": "for side, ref in enumerate(step[\"premises\"]):\n                _require(type(ref) is dict and len(ref) == 2, ledger)\n                ledger.debit(\"work\", 16)\n                ledger.debit(\"scan_copy\", 256)\n                for name in ref:\n                    _require(type(name) is str and name in (\"kind\", \"reference\", \"ordinal\"), ledger)\n                _require(\"kind\" in ref and type(ref[\"kind\"]) is str, ledger)\n                if ref[\"kind\"] == \"leaf\":\n                    _object(ref, (\"kind\", \"reference\"), ledger)\n                    value = _lookup_reference(references, ref[\"reference\"], ledger)\n                    _require(type(value) is _Leaf, ledger)\n                else:\n                    _object(ref, (\"kind\", \"ordinal\"), ledger)\n                    _require(ref[\"kind\"] == \"step\", ledger)\n                    previous = _integer(ref[\"ordinal\"], ledger)\n                    _require(previous < pos, ledger)\n                    value = validated[previous]\n                if side == 0:\n                    left = value\n                else:\n                    right = value"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 1024,
+    "source": "for name in ref:\n                    _require(type(name) is str and name in (\"kind\", \"reference\", \"ordinal\"), ledger)"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 1061,
+    "source": "for ref in row[\"proofLeaves\"]:\n                leaf = _lookup_reference(references, ref, ledger)\n                _require(type(leaf) is _Leaf and not seen[leaf.ordinal], ledger)\n                seen[leaf.ordinal] = 1"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 1065,
+    "source": "for index in dp:\n                _require(seen[index] == 1, ledger)\n                seen[index] = 0"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 1069,
+    "source": "for basis_key in row[\"basis\"]:\n                _triple(basis_key, ledger)\n                group = _lookup(representatives, basis_key, ledger)\n                _require(type(group) is _SeedGroup, ledger)\n                # The saved leaf, not an arbitrary alias, defines the basis.\n                candidate = group.leaf\n                _require(type(candidate) is _Leaf, ledger)\n                _require(_same_key(candidate.key, basis_key, ledger), ledger)\n                matched = candidate.ordinal\n                _require(not seen[matched], ledger)\n                seen[matched] = 1"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 1080,
+    "source": "for index in dp:\n                _require(seen[index] == 1, ledger)"
+  },
+  {
+    "scope": "validate_direct_steps",
+    "kind": "For",
+    "line": 1102,
+    "source": "for index in (identity, representatives, references, results, evidence, steps_index):\n            if index is not None:\n                index.drop()"
+  },
+  {
+    "scope": "locate_roots",
+    "kind": "For",
+    "line": 1142,
+    "source": "for entry in entries:\n            _require(type(entry) is tuple and len(entry) == 2, ledger)\n            key, ref = entry\n            _triple(key, ledger)\n            _require(type(ref) is RootRef and type(ref.kind) is str, ledger)\n            _require(ref.kind in (\"leaf\", \"step\", \"ruleHead\"), ledger)\n            ledger.debit(\"work\", 16)\n            if ref.kind == \"leaf\":\n                _leaf_id(ref.reference, ledger)\n                _require(ref.ordinal is ref.firing_index is ref.head_index is None, ledger)\n            elif ref.kind == \"step\":\n                _integer(ref.ordinal, ledger)\n                _require(ref.reference is ref.firing_index is ref.head_index is None, ledger)\n            else:\n                _integer(ref.firing_index, ledger)\n                _integer(ref.head_index, ledger)\n                _require(ref.reference is ref.ordinal is None, ledger)\n            refs = _lookup(index, key, ledger)\n            if refs is None:\n                refs = []\n                _put_key(index, key, refs, ledger)\n            ledger.debit(\"work\", 2)\n            refs.append(ref)"
+  },
+  {
+    "scope": "locate_roots",
+    "kind": "For",
+    "line": 1168,
+    "source": "for key in target_keys:\n            _triple(key, ledger)\n            refs = _lookup(index, key, ledger)\n            if refs is not None:\n                ledger.debit(\"work\", len(refs) + 1)\n                ledger.reserve(\"objects\", 2 * len(refs))\n                held += 2 * len(refs)\n                output.extend(refs)"
+  }
+]

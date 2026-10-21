@@ -1,0 +1,47 @@
+import hashlib
+import json
+from dataclasses import replace
+from ontolearn_engine.semantic_profile_directsteps import (
+ DirectStepsLedger,_DirectStepsCapture,RULES,encode_identity_key,
+ validate_direct_steps,DirectStepsFailure,RootRef,locate_roots)
+from ontolearn_engine.quality.rule_profile import TermInput
+D='<http://www.w3.org/2000/01/rdf-schema#domain>'
+S='<http://www.w3.org/2000/01/rdf-schema#subClassOf>'
+T='<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>'
+a=('<urn:p>',D,'<urn:A>');b=('<urn:x>','<urn:p>','<urn:y>');c=('<urn:A>',S,'<urn:B>')
+x=('<urn:x>',T,'<urn:A>');y=('<urn:x>',T,'<urn:B>')
+def leaf(key):return 'i05-proof:'+hashlib.sha256(('i05-profile-proof-leaf/1\0'+'\0'.join(key)).encode()).hexdigest()
+L=DirectStepsLedger();C=_DirectStepsCapture(L)
+for r in (RULES[2],RULES[0]):C.candidate(r)
+C.insert(x,(a,b),RULES[2]);C.insert(y,(x,c),RULES[0]);C.end_candidates(2)
+for key in (a,b,c):C.link_seed(key,leaf(key))
+carrier=C.finish();assert [s['depth'] for s in carrier['steps']]==[1,2]
+assert carrier['steps'][1]['premises'][0]=={'kind':'step','ordinal':0}
+receipt=L.receipt();L.completed();C.drop()
+V=DirectStepsLedger();V.begin(stage='restore')
+entries=tuple((encode_identity_key(tuple(TermInput('iri',term[1:-1]) for term in key),V),key) for key in (a,b,c))
+proof=tuple({'reference':leaf(key),'triple':key} for key in (a,b,c))
+evidence=[{'result':x,'basis':[a,b],'proofLeaves':tuple(sorted((leaf(a),leaf(b))))},{'result':y,'basis':[a,b,c],'proofLeaves':tuple(sorted((leaf(a),leaf(b),leaf(c))))}]
+summary=validate_direct_steps(carrier,proof_leaves=proof,rdfs=[x,y],rdfs_evidence=evidence,seed_entries=entries,ledger=V)
+assert summary.seed_count==3 and summary.max_depth==2
+vr=V.receipt();V.completed()
+R=DirectStepsLedger();R.begin(stage='roots')
+roots=locate_roots(((x,RootRef('step',ordinal=0)),(x,RootRef('ruleHead',firing_index=0,head_index=0)),(x,RootRef('ruleHead',firing_index=0,head_index=1))), (x,),R)
+assert len(roots)==3
+I=DirectStepsLedger();I.begin()
+def identity(term):return encode_identity_key((TermInput('iri','urn:s'),TermInput('iri','urn:p'),term),I)
+assert identity(TermInput('literal','a'))==identity(TermInput('literal','a','http://www.w3.org/2001/XMLSchema#string'))
+assert identity(TermInput('literal','a',language_raw='EN-us'))==identity(TermInput('literal','a',language_raw='en-US'))
+assert identity(TermInput('literal','01','http://www.w3.org/2001/XMLSchema#integer'))!=identity(TermInput('literal','1','http://www.w3.org/2001/XMLSchema#integer'))
+for ledger in (L,V,R,I):
+ events=ledger.events
+ for before,after in zip(events,events[1:]):
+  assert (before[5],before[7],before[9],before[11])==(after[4],after[6],after[8],after[10]),(before,after)
+ assert all(e[5]>=e[4] and e[7]>=e[6] for e in events)
+for key,value in [("depth",3),("ordinal",1)]:
+ bad={"format":carrier['format'],"steps":(dict(carrier['steps'][0],**{key:value}),carrier['steps'][1])}
+ v=DirectStepsLedger();v.begin(stage='restore')
+ try:validate_direct_steps(bad,proof_leaves=proof,rdfs=[x,y],rdfs_evidence=evidence,seed_entries=entries,ledger=v)
+ except DirectStepsFailure as exc:assert exc.reason=='DIRECT_STEPS_INVALID' and v.state=='failed'
+ else:raise AssertionError('bad carrier accepted')
+print(json.dumps({'helperOnly':True,'captureUsage':receipt.usage,'capturePeaks':receipt.peaks,'validationUsage':vr.usage,'validationPeaks':vr.peaks,'captureEventCount':len(L.events),'validationEventCount':len(V.events),'steps':carrier,'summary':[summary.seed_count,summary.step_count,summary.max_depth]}))

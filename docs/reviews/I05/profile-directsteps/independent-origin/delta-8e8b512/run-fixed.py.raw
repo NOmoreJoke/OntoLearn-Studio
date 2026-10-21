@@ -1,0 +1,47 @@
+"""Stdlib-only invocation recorder. Does not import product modules."""
+import datetime
+import hashlib
+import json
+import os
+import subprocess
+import time
+import uuid
+from pathlib import Path
+
+root = Path.cwd()
+out = root / 'docs/reviews/I05/profile-directsteps/independent-origin/delta-8e8b512'
+ref = '8e8b5126c69534c6259d37b2d3e88f75ef935aa0'
+candidate_path = root / 'docs/reviews/I05/profile-directsteps/candidate-final.json'
+candidate = json.loads(candidate_path.read_bytes())
+assert candidate['product'] == ref and len(candidate['files']) == 141
+
+def git(*args):
+    return subprocess.check_output(['git', *args], cwd=root)
+
+def snapshot():
+    result = []
+    for item in candidate['files']:
+        p = item['path']
+        raw = (root / p).read_bytes()
+        fixed = git('show', ref + ':' + p)
+        digest = hashlib.sha256(raw).hexdigest()
+        assert raw == fixed and len(raw) == item['bytes'] and digest == item['sha256'], p
+        result.append({'path': p, 'bytes': len(raw), 'sha256': digest})
+    return result
+
+plans = [('01-compatibility-and-late-faults', ['.venv/bin/python', '-m', 'pytest', '-q', '-p', 'no:cacheprovider', '--basetemp', str(out / ('basetemp-' + uuid.uuid4().hex)), 'packages/engine/tests/test_semantic_profile_production.py', 'packages/engine/tests/test_semantic_profile_directsteps.py', '-k', 'each_c_domain_exact_boundary_and_one_less or original_projection_hash_ticket_precedes_all_three_digest_delegates or late_faults'], {'I05_DIRECTSTEPS_FEE_EVIDENCE_DIR': str(out / '01-fee-events')})]
+for label, argv, extra in plans:
+    before = snapshot()
+    env_changes = {'PYTHONDONTWRITEBYTECODE': '1', 'PYTEST_ADDOPTS': '', 'PYTHONPATH': 'packages/engine/src:packages/engine/tests', **extra}
+    start = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    clock = time.monotonic()
+    result = subprocess.run(argv, cwd=root, env={**os.environ, **env_changes}, capture_output=True, timeout=90)
+    duration = time.monotonic() - clock
+    (out / (label + '.stdout.txt')).write_bytes(result.stdout)
+    (out / (label + '.stderr.txt')).write_bytes(result.stderr)
+    after = snapshot()
+    metadata = {'argv': argv, 'cwd': str(root), 'head': git('rev-parse', 'HEAD').decode().strip(), 'product': ref, 'start': start, 'end': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'durationSeconds': duration, 'exitCode': result.returncode, 'timeout': False, 'environmentOverrides': env_changes, 'sourcesBefore': before, 'sourcesAfter': after, 'sourcesUnchanged': before == after, 'candidate': {'path': str(candidate_path.relative_to(root)), 'bytes': candidate_path.stat().st_size, 'sha256': hashlib.sha256(candidate_path.read_bytes()).hexdigest()}}
+    (out / (label + '.json')).write_text(json.dumps(metadata, indent=2) + '\n')
+    print(label, result.returncode, duration, len(result.stderr), result.stdout.decode()[:1800])
+    if result.returncode:
+        raise SystemExit(result.returncode)

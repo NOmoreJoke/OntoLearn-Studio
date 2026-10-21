@@ -1,0 +1,51 @@
+import hashlib,json,subprocess
+from pathlib import Path
+prefix=Path('docs/reviews/I05/profile-directsteps');main=Path('docs/iterations/I05/profile-directsteps.md')
+product='8e8b5126c69534c6259d37b2d3e88f75ef935aa0';base='5f910b52c69d86a1076b2032e5d3c63e715947f3';adoption='78e9cf7f26dc039e99ec6725d7de8a396d1298d2'
+def sha(b):return hashlib.sha256(b).hexdigest()
+def member(p):
+ b=p.read_bytes();return dict(path=str(p),bytes=len(b),sha256=sha(b))
+candidate=json.loads((prefix/'candidate-final.json').read_bytes());assert candidate['product']==product
+controlled=[]
+for row in candidate['files']:
+ p=Path(row['path']);b=p.read_bytes();assert len(b)==row['bytes'] and sha(b)==row['sha256']
+ assert b==subprocess.check_output(['git','show',product+':'+str(p)])
+ if row['access']=='read-only':assert b==subprocess.check_output(['git','show',adoption+':'+str(p)])
+ controlled.append(dict(row,currentEqualsProductGit=True))
+assert len(controlled)==141
+runs=[]
+for c in sorted((prefix/'runs').glob('*/command.json')):
+ x=json.loads(c.read_bytes());assert x['sourcesUnchanged'] and len(x['sourcesBefore'])==141
+ for m in json.loads(c.with_name('members.json').read_bytes()):
+  b=(c.parent/m['path']).read_bytes();assert len(b)==m['bytes'] and sha(b)==m['sha256'],str(c.parent/m['path'])
+ runs.append(dict(**member(c),exitCode=x['exitCode'],timeout=x['timeout'],sourceCount=141,sourcesUnchanged=True,environmentScope=x.get('environmentScope','recorded task overlays; full inherited environment not captured')))
+checks={x['path'].split('/')[-2]:x for x in runs}
+assert checks['21-final-check']['exitCode']==0 and checks['22-final-verify-sources']['exitCode']==0 and checks['23-product-diff-check']['exitCode']==0
+assert checks['24-full-staged-diff']['exitCode']==2 and checks['25-staged-preserve-raw-diff']['exitCode']==0
+assert '4964 passed, 44 skipped' in (prefix/'runs/21-final-check/stdout.txt').read_text()
+reviews=[prefix/'independent-origin/report-18908e4.md',prefix/'independent-origin/delta-ff90092/report-cb2662c.md',prefix/'independent-origin/delta-8e8b512/report.md',prefix/'independent-budget/initial-18908e4-report.md',prefix/'independent-budget/delta-cb2662-report.md',prefix/'independent-budget/delta-8e8b512-report.md']
+# The reviewer seals remain independent source records, checked without editing.
+seals=[]
+for p in sorted((prefix/'independent-budget').glob('write-lock*.json')):
+ x=json.loads(p.read_bytes())
+ for row in x.get('sealedFiles',[]):
+  b=(p.parent/row['path']).read_bytes();assert len(b)==row['bytes'] and sha(b)==row['sha256']
+ seals.append(member(p))
+for sub in ['independent-origin','independent-origin/delta-ff90092','independent-origin/delta-8e8b512']:
+ for p in sorted((prefix/sub).glob('write-lock*.json')):seals.append(member(p))
+validation=dict(base=base,adoption=adoption,firstProduct='18908e4abca900a07a15a5d157d4022f2a11349a',fixProduct='ff90092e39c95f0195eb175f46538a8a822dfeb2',regressionProduct='cb2662c2ea4014d3de06194442f462c17eabe23b',product=product,controlledCount=141,readonlyCount=133,newPathsCount=2,existingWritersCount=6,normalCheck=dict(run='21-final-check',exitCode=0,vitestPassed=1125,pythonPassed=4964,pythonSkipped=44,fullCleanSubprocessEnvironment=True),special=dict(newTestCases=77,compatibilityPlusNewPassed=98,notCumulativeUniqueCoverage=True),sourceArchiveVerification=dict(run='22-final-verify-sources',count=12,exitCode=0),reviews=[member(p) for p in reviews],reviewSeals=seals,runs=runs,whitespace=json.loads((prefix/'whitespace-exceptions.json').read_bytes()),limitations=member(prefix/'root-attempt-limitations.json'),formalAuthority=False,parentI05Complete=False)
+(prefix/'validation.json').write_text(json.dumps(validation,ensure_ascii=False,indent=2)+'\n')
+manifest_path=prefix/'final-manifest.json';process=[]
+for p in sorted([main]+[p for p in prefix.rglob('*') if p.is_file()]):
+ if p==manifest_path:continue
+ process.append(member(p))
+process.append(dict(path=str(manifest_path),bytes=None,sha256=None,selfDigest='external receipt avoids circular self digest'))
+allpaths={r['path'] for r in controlled}|{r['path'] for r in process}
+basepaths=set(subprocess.check_output(['git','ls-tree','-r','--name-only',base],text=True).splitlines());actual=[];same=[]
+for path in sorted(allpaths):
+ if path not in basepaths or path==str(manifest_path):actual.append(path);continue
+ b=Path(path).read_bytes();old=subprocess.check_output(['git','show',base+':'+path]);(same if b==old else actual).append(path)
+assert len(same)==9
+manifest=dict(base=base,adoption=adoption,product=product,controlledCount=141,readonlyCount=133,processCount=len(process),totalCount=len(allpaths),actualBaseDiffCount=len(actual),sameAsBaseCount=9,sameAsBase=same,actualBaseDiff=actual,controlled=controlled,process=process)
+manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({k:v for k,v in manifest.items() if k.endswith('Count')},ensure_ascii=False))

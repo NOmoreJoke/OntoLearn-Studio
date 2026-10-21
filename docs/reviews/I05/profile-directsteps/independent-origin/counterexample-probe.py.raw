@@ -1,0 +1,62 @@
+"""Independent fixed-candidate counterexamples; actual producer and restorer."""
+import copy
+import json
+from dataclasses import replace
+from pathlib import Path
+from unittest.mock import patch
+from ontolearn_engine import semantic
+from ontolearn_engine import semantic_profile_directsteps as direct
+from ontolearn_engine import semantic_profile_input as material_api
+from ontolearn_engine import semantic_profile_production as production
+from ontolearn_engine import semantic_profile_restore as restore
+from ontolearn_engine.semantic_profile_restore_budget import RestoreLedger
+import test_semantic_profile_directsteps as support
+
+out=Path('docs/reviews/I05/profile-directsteps/independent-origin')
+records=[]
+def fees(ledger):
+ return {'state':ledger.state,'used':ledger.used,'live':ledger.live,'peaks':ledger.peaks,'caps':ledger.caps,'events':ledger.events}
+class Bomb:
+ def __len__(self):
+  callbacks.append('len');raise RuntimeError('foreign len reached')
+ def __eq__(self,other):
+  callbacks.append('eq');return False
+class Meta(type):
+ def __eq__(cls,other):
+  callbacks.append('class-eq');return False
+class ClassBomb(metaclass=Meta):pass
+base=material_api.prepare_profile_material(records=())
+for label,changed in [('input-preimage',replace(base,input_preimage=Bomb())),('definition-material',replace(base,definition_material=Bomb())),('nested-source',replace(base,source=(ClassBomb(),)))]:
+ callbacks=[];d=direct.DirectStepsLedger();c=material_api.CaptureLedger()
+ with patch.object(semantic,'_profile_reason',wraps=semantic._profile_reason) as reason:
+  try:production.execute_profile_explanation(changed,error_catalog=support.CONTRACT.ERROR_CATALOG,error_schema=support.SCHEMA,ledger=c,direct_ledger=d)
+  except Exception as exc:result={'case':label,'callbacks':callbacks,'error':type(exc).__name__,'reason':getattr(exc,'reason',None),'reasonCalls':reason.call_count,'causeNone':exc.__cause__ is None,'contextNone':exc.__context__ is None,'directFees':fees(d)}
+  else:raise AssertionError('malformed accepted')
+ records.append(result)
+computed,pd=support.produce(support.four_branch_case('domain-depth2')[0]);exp=support.expectation(computed)
+callbacks=[];d=direct.DirectStepsLedger()
+try:support.receive(computed,expected=replace(exp,input_domain=Bomb()),direct_ledger=d)
+except Exception as exc:records.append({'case':'expectation-input-domain','callbacks':callbacks,'error':type(exc).__name__,'reason':getattr(exc,'reason',None),'directFees':fees(d)})
+else:raise AssertionError('bad expectation accepted')
+# A valid-looking but incorrect original leaf digest, consistently renamed.
+payload=copy.deepcopy(computed.wire['payload']);old=payload['reasoning']['proofLeaves'][0]['reference'];fake='i05-proof:'+'0'*64
+assert fake!=old
+
+def rename(value):
+ if type(value) is str:return fake if value==old else value
+ if type(value) is list:return [rename(x) for x in value]
+ if type(value) is dict:return {k:rename(v) for k,v in value.items()}
+ return value
+payload=rename(payload);wire,rebound=support.rebound(computed,payload)
+d=direct.DirectStepsLedger()
+try:support.receive(computed,wire=wire,expected=exp,direct_ledger=d)
+except Exception as exc:records.append({'case':'incorrect-leaf-original-expectation','rejected':True,'reason':getattr(exc,'reason',None),'directFees':fees(d)})
+else:raise AssertionError('original expected was not enforced')
+d=direct.DirectStepsLedger()
+try:
+ view,_=support.receive(computed,wire=wire,expected=rebound,direct_ledger=d)
+ records.append({'case':'incorrect-leaf-rebound-envelope','accepted':True,'oldLeafId':old,'wrongLeafId':fake,'sameInputSourceWitnesses':True,'directFees':fees(d)})
+except Exception as exc:records.append({'case':'incorrect-leaf-rebound-envelope','accepted':False,'reason':getattr(exc,'reason',None),'directFees':fees(d)})
+records.append({'case':'actual-production-fees','directFees':fees(pd)})
+(out/'01-counterexample-observations.json').write_text(json.dumps(records,indent=2)+'\n')
+print(json.dumps([{k:v for k,v in row.items() if k!='directFees'} for row in records],sort_keys=True))

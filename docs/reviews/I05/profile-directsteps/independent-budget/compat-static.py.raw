@@ -1,0 +1,12 @@
+import json,subprocess,hashlib
+from pathlib import Path
+root=Path.cwd();prefix=root/'docs/reviews/I05/profile-directsteps/independent-budget';fixed=json.loads((root/'docs/reviews/I05/profile-directsteps/candidate-final.json').read_bytes());old='cb2662c2ea4014d3de06194442f462c17eabe23b'
+assert fixed['product']=='8e8b5126c69534c6259d37b2d3e88f75ef935aa0'
+for x in fixed['files']:
+ b=(root/x['path']).read_bytes();g=subprocess.check_output(['git','show',fixed['product']+':'+x['path']]);assert b==g and len(b)==x['bytes'] and hashlib.sha256(b).hexdigest()==x['sha256']
+ if x['access']=='read-only':assert b==subprocess.check_output(['git','show',fixed['adoption']+':'+x['path']])
+actual=subprocess.check_output(['git','diff','--name-only',old,fixed['product']],text=True).splitlines();assert actual==['packages/engine/src/ontolearn_engine/semantic_execution.py','packages/engine/src/ontolearn_engine/semantic_profile_production.py']
+lock=json.loads((prefix/'write-lock-final.json').read_bytes())
+for x in lock['sealedFiles']:
+ b=(prefix/x['path']).read_bytes();assert len(b)==x['bytes'] and hashlib.sha256(b).hexdigest()==x['sha256']
+print(json.dumps({'fixedProduct':fixed['product'],'controlledCount':len(fixed['files']),'readonlyCount':sum(x['access']=='read-only' for x in fixed['files']),'allCurrentEqualsGit':True,'deltaFromCB':actual,'previousSealedFilesVerified':len(lock['sealedFiles']),'oldTestsUnchanged':True},ensure_ascii=False))

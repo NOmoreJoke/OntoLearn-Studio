@@ -1,0 +1,658 @@
+{
+  "fixedProduct": "8e8b5126c69534c6259d37b2d3e88f75ef935aa0",
+  "decision": "bounded compatibility budget delta pass",
+  "status": "all necessary runs exit0; no source/test edits; stopped writing",
+  "sealedFiles": [
+    {
+      "path": "01-live-and-reader/command.json",
+      "bytes": 54782,
+      "sha256": "594ad7c5a6a4449d813024d8314ddea8274f91a5ad8aac64140b7657971b39e4"
+    },
+    {
+      "path": "01-live-and-reader/members.json",
+      "bytes": 410,
+      "sha256": "748b72206c48950f47c0644f0704a1ce1fcf35b8bec9e273a236850be7e6ef63"
+    },
+    {
+      "path": "01-live-and-reader/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "01-live-and-reader/stdout.txt",
+      "bytes": 218428,
+      "sha256": "cd6159bb1609f0e01addde260e76c37357480e5e8cc683b2d66aa5b3cc065b57"
+    },
+    {
+      "path": "01-static-manifest.json",
+      "bytes": 44679,
+      "sha256": "8f3b300b61732476f7d573f87206b471e742d60047c82b67046111e81f6e3b62"
+    },
+    {
+      "path": "02-budget-tests/command.json",
+      "bytes": 54915,
+      "sha256": "1ecc0ce0102816530ff0af41fd89f80698b6aad2647960a2819f96fdb081a0f2"
+    },
+    {
+      "path": "02-budget-tests/fees/13fa10008794f40a24c37aea.jsonl",
+      "bytes": 244336,
+      "sha256": "871660b439ac1d744ac045ddc0e5391529f1c76356d1d63160cb143783d1cf7e"
+    },
+    {
+      "path": "02-budget-tests/fees/17a0fadde5b3cc78289b4b42.jsonl",
+      "bytes": 949019,
+      "sha256": "9858e004befc9906ab37395734dd176f51dc6c7b6f95cf1c332f64742f8a95f3"
+    },
+    {
+      "path": "02-budget-tests/fees/1d70390d1e931c375806a2ed.jsonl",
+      "bytes": 838541,
+      "sha256": "45e12d473b6826982b6b6b08be16cf07f8a5795fc44a2a7705d0e4465c651a05"
+    },
+    {
+      "path": "02-budget-tests/fees/53786f9d8111ac486ae6c378.jsonl",
+      "bytes": 1322398,
+      "sha256": "01f13b05181b719743f7024218fc27b34b0c29439b2957198de794d3e4fc65a1"
+    },
+    {
+      "path": "02-budget-tests/fees/53eb9c6d95f8e0eaa88d5f65.jsonl",
+      "bytes": 1060420,
+      "sha256": "ef3f3cb6575cc666dd57aefe5ca8499cd6edcd8c885e92668be3dacea791d668"
+    },
+    {
+      "path": "02-budget-tests/fees/5e76f055d830a7a6dbc45cfe.jsonl",
+      "bytes": 244319,
+      "sha256": "a09067235671ebc1431aea2f6c815d7aaa94a660a0981358a79850543dcb9cdd"
+    },
+    {
+      "path": "02-budget-tests/fees/8196633bb489f62c97e56f6b.jsonl",
+      "bytes": 949486,
+      "sha256": "0cffdce790788474b42e6eb9963262fb74527383cddd85a7ae18dde3246e3a66"
+    },
+    {
+      "path": "02-budget-tests/fees/86e51072c5cd3dc13a04e277.jsonl",
+      "bytes": 432583,
+      "sha256": "a75b14621148ef9d024e4f1dd19e8324a9ff11d671cbe00b39b6309c4a8e3750"
+    },
+    {
+      "path": "02-budget-tests/fees/8ae779dcff08952c15e41892.jsonl",
+      "bytes": 517433,
+      "sha256": "326be7c200b8d786a45f022ddca81d3daef960d326abfcd4f9695adb18f56c50"
+    },
+    {
+      "path": "02-budget-tests/fees/ab1db17739abafbec2b9fbf3.jsonl",
+      "bytes": 1680,
+      "sha256": "f7d50075ea2311d1588a03ee1cd45a6f0da5306063896f8e15fd0b2bb04bebd2"
+    },
+    {
+      "path": "02-budget-tests/fees/cc25214cf4a45b199b631dbc.jsonl",
+      "bytes": 244189,
+      "sha256": "15ccef1da23251938eb7f02428c8b810001b813405ab65e6775037c53c8fd2f1"
+    },
+    {
+      "path": "02-budget-tests/fees/ceae61dc3516658742556ebd.jsonl",
+      "bytes": 878688,
+      "sha256": "c3f6d1a4205d0854e60f7078dba8b3e8ab71a19f90597e92310f68691bf66d03"
+    },
+    {
+      "path": "02-budget-tests/fees/d474f94222c736d854539715.jsonl",
+      "bytes": 949018,
+      "sha256": "7a9148e6ba545b2940b46861804ac9af248ba20906b10304d92deb2cff66293b"
+    },
+    {
+      "path": "02-budget-tests/fees/dffa80aa8441e532d7e8c7f4.jsonl",
+      "bytes": 254526,
+      "sha256": "6423439bba29f2e56c08a533df1b91ddf546f9aaef126cc8b2ded54b3ecf399d"
+    },
+    {
+      "path": "02-budget-tests/fees/e19e6576897d2d6f3cb8c8a2.jsonl",
+      "bytes": 949312,
+      "sha256": "66ff3fac42bbffad0c132f1547c00b7b9b69d87946de4df7f1cb95cebce0bf5a"
+    },
+    {
+      "path": "02-budget-tests/fees/e2086edc8bf22116bcc9cdfc.jsonl",
+      "bytes": 432414,
+      "sha256": "711739fe6e1d2b22349ae66fefdd637c8b8483f43deba13ac6c54cf0fb3d88f5"
+    },
+    {
+      "path": "02-budget-tests/fees/fc2034cac24485822b77c7dd.jsonl",
+      "bytes": 432593,
+      "sha256": "b0d069bacc0554863cfdcd1c234aa9b486eed3a98378cf16feffc182bbb67956"
+    },
+    {
+      "path": "02-budget-tests/members.json",
+      "bytes": 3161,
+      "sha256": "5e2ee389a969524b4e1eefabec99497bc30aa9ad9e5ddac4b9a4ab5488eed285"
+    },
+    {
+      "path": "02-budget-tests/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "02-budget-tests/stdout.txt",
+      "bytes": 114,
+      "sha256": "5d44b73c9f4d3adb3915fc325c6b31189c4c1b5355e274d8f5aafb6394e5388c"
+    },
+    {
+      "path": "candidate-cb2662.json",
+      "bytes": 35769,
+      "sha256": "1290954fd5f8fa5f5fa2b91c47068a07be0b347f14aedf808118899ee04379cd"
+    },
+    {
+      "path": "compat-probe.py.raw",
+      "bytes": 3240,
+      "sha256": "d340df6b3332215ebf2dd4d0e54d7e2daa1af18bec59475a6d3114da127f375e"
+    },
+    {
+      "path": "compat-run.py.raw",
+      "bytes": 2433,
+      "sha256": "6213ed725535d61f15a3a235372760443f95218d81027a1223eb85d0ec0329c2"
+    },
+    {
+      "path": "compat-static.py.raw",
+      "bytes": 1441,
+      "sha256": "50c78caa6af8cb7983930b463959622a79e6a6f6a51f97b1145b22421c5e8002"
+    },
+    {
+      "path": "delta-8e8b512-01-hooks-and-fees/command.json",
+      "bytes": 55283,
+      "sha256": "8a17e1f6c29ed16c03304c113eb0d6e1ebf49102db3ee7373b61ecc65698c38f"
+    },
+    {
+      "path": "delta-8e8b512-01-hooks-and-fees/members.json",
+      "bytes": 410,
+      "sha256": "20533f734431d981d529ac1fe95d9a34fe156ef8ecb5c1fd243bc51d4bbab3c1"
+    },
+    {
+      "path": "delta-8e8b512-01-hooks-and-fees/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "delta-8e8b512-01-hooks-and-fees/stdout.txt",
+      "bytes": 246518,
+      "sha256": "eed089f78db2e117b7b8fc7aa914d8317105b8305b5980bb4d24e9fe191555d4"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/command.json",
+      "bytes": 55472,
+      "sha256": "f240a3ec5ca2b11844efd7e99c5325bd1ab07c37bcf582d176519542d0eebb26"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/13fa10008794f40a24c37aea.jsonl",
+      "bytes": 309252,
+      "sha256": "cc39148f6e7b39574156635de2603ef813e34d0b4957470df601783c12dc761a"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/17a0fadde5b3cc78289b4b42.jsonl",
+      "bytes": 1081694,
+      "sha256": "053c83e9facb1c28f96ca63968abb2d83a35a15069b77ec04f64a14fcac0a04a"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/1d70390d1e931c375806a2ed.jsonl",
+      "bytes": 850683,
+      "sha256": "9e780720f5c76221b0802bf14a3044ccdf5a31027aa19f7d87382b652ca79a2f"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/53786f9d8111ac486ae6c378.jsonl",
+      "bytes": 1330934,
+      "sha256": "12c8a90613ae192a591fae6e4188dc676b754f16ef4148eb64958ba54495ca48"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/53eb9c6d95f8e0eaa88d5f65.jsonl",
+      "bytes": 1066844,
+      "sha256": "dc0645575b1b060ef2dbcd3a66dd4a039897c9d6363962231a226234820b1a9b"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/5e76f055d830a7a6dbc45cfe.jsonl",
+      "bytes": 309235,
+      "sha256": "6f607f3951e5116f5d0b11191fbd5da3016ab4a6c1cf68dc8aee1e682ae3e1b5"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/8196633bb489f62c97e56f6b.jsonl",
+      "bytes": 1082161,
+      "sha256": "e1e17337a28e9317b3556d2f791edb78700b871a3ee9d9ef41a4d387493af11a"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/86e51072c5cd3dc13a04e277.jsonl",
+      "bytes": 594872,
+      "sha256": "514594369c2471676fe82505249c5368436ec655140d21880be9217ff02224a7"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/8ae779dcff08952c15e41892.jsonl",
+      "bytes": 712103,
+      "sha256": "8132bd55f556ab97fa91b3b048333af02ea9384caaada0849b949d55b1dc31c3"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/cc25214cf4a45b199b631dbc.jsonl",
+      "bytes": 309105,
+      "sha256": "7f6242b589fbeacbbfac754e9ee6c68ddf33a5ef88068232238fced01b5f2cd4"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/ceae61dc3516658742556ebd.jsonl",
+      "bytes": 898720,
+      "sha256": "05ff5d4065990fcd41462946a8c2f93a110b92cd2990fa980d171ff291820486"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/d474f94222c736d854539715.jsonl",
+      "bytes": 1081693,
+      "sha256": "db11506f6c13c2e65d0750ec1408178a25446df3a34c748d4c4447909f03eccd"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/dffa80aa8441e532d7e8c7f4.jsonl",
+      "bytes": 319442,
+      "sha256": "23763441ee99caa36a72d915832f57f8d19dffca56bddb1e983332871c425d0e"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/e19e6576897d2d6f3cb8c8a2.jsonl",
+      "bytes": 1081987,
+      "sha256": "e4a4e1ac03c2985d1c01d168e83baaed49211801ae5641e51fd70279a373b796"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/e2086edc8bf22116bcc9cdfc.jsonl",
+      "bytes": 594695,
+      "sha256": "f1909442645ca794c12bd2039937c28622bcea127dfba564c4de2d73722cf1d2"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/fees/fc2034cac24485822b77c7dd.jsonl",
+      "bytes": 594879,
+      "sha256": "848933169951b3f184f8de6a115c95dc3cfa0d407407d1c80f8c615d08ea2046"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/members.json",
+      "bytes": 3005,
+      "sha256": "63a3ba69b78847149f4f77bc3e40cf38809df36bb2accb7b3aeeb28484ce9ee3"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "delta-8e8b512-02-boundaries/stdout.txt",
+      "bytes": 114,
+      "sha256": "4a8cb4b6f12bca7d95601f73f616664754a90088f71c0a2ebfe2ae536003bc25"
+    },
+    {
+      "path": "delta-8e8b512-03-static/command.json",
+      "bytes": 55276,
+      "sha256": "74e618c434d1bb62b6d17272aa95c08bb9e428960216d167beb17627ee04628a"
+    },
+    {
+      "path": "delta-8e8b512-03-static/members.json",
+      "bytes": 407,
+      "sha256": "b20903d6e20a2b16a565ef0d4259d11addd13a042fa0546284ba629277ad8737"
+    },
+    {
+      "path": "delta-8e8b512-03-static/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "delta-8e8b512-03-static/stdout.txt",
+      "bytes": 348,
+      "sha256": "b1312078654b2336e67ef8f7464a59ce8f5efd8910261696ff31fa29159f09b6"
+    },
+    {
+      "path": "delta-8e8b512-04-format/command.json",
+      "bytes": 55369,
+      "sha256": "90e1ec2db6b6598d2d4b7a6e3fe74c107bf802ae0d9f35833203d6bcae4f50a3"
+    },
+    {
+      "path": "delta-8e8b512-04-format/members.json",
+      "bytes": 406,
+      "sha256": "28ae8046bd40f330526e76729293021036f2a9183039d76639b9415811f9abb0"
+    },
+    {
+      "path": "delta-8e8b512-04-format/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "delta-8e8b512-04-format/stdout.txt",
+      "bytes": 66,
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "path": "delta-8e8b512-report.md",
+      "bytes": 4290,
+      "sha256": "fc9b011957ec990b92a59ae7ec2009d925ce2a011607539294628d4a0a7488c9"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/command.json",
+      "bytes": 55477,
+      "sha256": "ac28b9a0f349b9cfdb25526ddeb3b0a04accd8c9066f9f6c3bf785fb943025eb"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/fees/068b7481b5310ca9d0e8d55e.jsonl",
+      "bytes": 568,
+      "sha256": "9427fad94ea6e27e4758eb7b2fc1e70e006998d518a126172b724d232b2e7f5e"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/fees/0826c52dd2714a99cb4418f9.jsonl",
+      "bytes": 558,
+      "sha256": "b0429d13aa9bb8112099156c9080528a2b9ca167c825d30458f49cf7db1f82b6"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/fees/1028c409dd50e7ed3f883c56.jsonl",
+      "bytes": 557,
+      "sha256": "c4ab5bb2b7cb0501d844e617d7b1982c3af79a188ac80214193c4d2997e1fc89"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/fees/2b882cbc4d6f65ed77269021.jsonl",
+      "bytes": 610328,
+      "sha256": "4ab642203ed6b1ac9a870bcaa9888f34f14e3114d4a82b52ba296ffb3ecb870b"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/fees/47af7e5a709bd6452d432c67.jsonl",
+      "bytes": 2372,
+      "sha256": "512eff4a29f6f29017026438fa1a75d26ddbd487a53a67bede6a3df57992b0b2"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/fees/4c6bf9ca4ff7642e98335083.jsonl",
+      "bytes": 563,
+      "sha256": "2f1bdf38665ae00b18dcf60d0e4ef13faccd8e105dbb5ef7e08200ce848eebb7"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/fees/63fce280ee9d1d8af2b21a08.jsonl",
+      "bytes": 1001,
+      "sha256": "b2a552d2d362269302b7a0225ca731164f0e00587ad88c7b1f29bdc4a6ccecc3"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/fees/75edea0030c862deeab0f92c.jsonl",
+      "bytes": 10439,
+      "sha256": "32f837a44d8e8262f9ed80005aef89ddaa9764625b084efcb1aacc7351b75161"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/fees/7b271cdb5c14875421734946.jsonl",
+      "bytes": 563,
+      "sha256": "67f77639338eda561f4bf3e9410ef31dc0ce20195f816f99bec624393e026528"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/fees/7e01431a507f7b8f485b3eae.jsonl",
+      "bytes": 39173,
+      "sha256": "c3514f4ac60a80cd9559845f5f4e90e48d943d42d79ea1edae7c1fa5fdd7597e"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/fees/b646a443e8ff8da0db72f01e.jsonl",
+      "bytes": 562,
+      "sha256": "feef21110fc25cfc1b9d57b642c9b100f1fd28b71f7d255937121665e9c96cfe"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/members.json",
+      "bytes": 2165,
+      "sha256": "46a0747640ca839449b768c05c6da044dc938f9b594cee8f2447f0dbcb098107"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "delta-cb2662-03-added-regressions/stdout.txt",
+      "bytes": 114,
+      "sha256": "82b1523fe4222655a33e058f1ed50a6bf919e9f97f2bb9e6d8b1c77e8859ad1a"
+    },
+    {
+      "path": "delta-cb2662-04-static-and-size/command.json",
+      "bytes": 55289,
+      "sha256": "57f4091124f876b11dd4ff1741b7d567b5c1be948a0e48b507d17c95fb8a9a44"
+    },
+    {
+      "path": "delta-cb2662-04-static-and-size/members.json",
+      "bytes": 409,
+      "sha256": "d3f35c963957d10e571589d219a89c22070d310af7d865db9d0a43adf49cfa58"
+    },
+    {
+      "path": "delta-cb2662-04-static-and-size/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "delta-cb2662-04-static-and-size/stdout.txt",
+      "bytes": 13999,
+      "sha256": "ccd8c922edf016edaee65b4e7c44f523e43e4296b050119297335349b5f85623"
+    },
+    {
+      "path": "delta-cb2662-05-format/command.json",
+      "bytes": 55513,
+      "sha256": "1de73f76d8167469bd6f5c187bb43fc1a6b7b5187867d25fff95d62834674d15"
+    },
+    {
+      "path": "delta-cb2662-05-format/members.json",
+      "bytes": 406,
+      "sha256": "47c7cea84ee9ada36850f3ffcb5f89eef4e47c340f50eba354c809bafb55065c"
+    },
+    {
+      "path": "delta-cb2662-05-format/stderr.txt",
+      "bytes": 37,
+      "sha256": "058c3e7114a685e48c485c5eec7bf04ecd685fb818d18a9cf483d38fcc3eef35"
+    },
+    {
+      "path": "delta-cb2662-05-format/stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "delta-cb2662-06-format-absolute-node/command.json",
+      "bytes": 55552,
+      "sha256": "4f574f0448d655c217e849bb479fb7e9c2d9b84bc41b962f624f357586ff9c77"
+    },
+    {
+      "path": "delta-cb2662-06-format-absolute-node/members.json",
+      "bytes": 406,
+      "sha256": "355aafc189b409223c2f653274f271ac781e6359d427f30d9661fdf88e6553aa"
+    },
+    {
+      "path": "delta-cb2662-06-format-absolute-node/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "delta-cb2662-06-format-absolute-node/stdout.txt",
+      "bytes": 66,
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "path": "delta-cb2662-report.md",
+      "bytes": 8292,
+      "sha256": "32d5bb8e15cb27fb0f72f3bd261dc2707db77d4f1fc5452f56ac65b37e85e0cd"
+    },
+    {
+      "path": "delta-ff90092-01-probe/command.json",
+      "bytes": 55273,
+      "sha256": "9e942fee07945a1a2fde79824b74f8b1bc958562f681a501426054986eb6fde7"
+    },
+    {
+      "path": "delta-ff90092-01-probe/members.json",
+      "bytes": 410,
+      "sha256": "c5edcb74d2c601e0b8aa0642180e8ae7972c5714f009dadedd32f3f491e692d1"
+    },
+    {
+      "path": "delta-ff90092-01-probe/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "delta-ff90092-01-probe/stdout.txt",
+      "bytes": 249639,
+      "sha256": "92f07458a439a6b6d71aeae410f2075c7e740b2e12ca0f3dab4fae028a2afe16"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/command.json",
+      "bytes": 55410,
+      "sha256": "4087fb5070ad2ac37faacd8050bccc280e653f096bbc95be29069ff7e9a5b7ab"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/13fa10008794f40a24c37aea.jsonl",
+      "bytes": 309252,
+      "sha256": "421e81c4ac313184aca89f3c7e28b43aa6afce5bdfc57ff72f2d186f40e8bb33"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/17a0fadde5b3cc78289b4b42.jsonl",
+      "bytes": 1081694,
+      "sha256": "0d1cdf95d2021030cfbbde76f3bcef53909a662d2dc02d18728c83125cc4672c"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/1d70390d1e931c375806a2ed.jsonl",
+      "bytes": 850683,
+      "sha256": "0363a6a356b7769c1fae0c0439a0cfffaf97f74f6f66fe315937763e0b286343"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/53786f9d8111ac486ae6c378.jsonl",
+      "bytes": 1330934,
+      "sha256": "3577169e8ab8361ac100dbd5986120eaa4fa4b73269709b6cb03f71158fefda9"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/53eb9c6d95f8e0eaa88d5f65.jsonl",
+      "bytes": 1066844,
+      "sha256": "8a27d1f5b89900430713b3d4077e3e8fed46befbdda88595c21aa648032e377c"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/5e76f055d830a7a6dbc45cfe.jsonl",
+      "bytes": 309235,
+      "sha256": "0ca3e2caeb411d6a5e27b157dcabfb6b53d983fe67051e2ea993495604fb157a"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/8196633bb489f62c97e56f6b.jsonl",
+      "bytes": 1082161,
+      "sha256": "6fe539c3b58207604bde908c50f4996d1c4261dfe45b04c3df6066d7d0b914e1"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/86e51072c5cd3dc13a04e277.jsonl",
+      "bytes": 594872,
+      "sha256": "bc9a790676814d5d8324c40fb3c13191fcf24d67553fe48cecc5a926fa10b983"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/8ae779dcff08952c15e41892.jsonl",
+      "bytes": 712103,
+      "sha256": "bcaeb910d705deff7464ebd32bb0a6e7f56b31488314fd932e694a67e4e052f8"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/ab1db17739abafbec2b9fbf3.jsonl",
+      "bytes": 1680,
+      "sha256": "da445e5dd49c41380364686336aa4c36fb81f7701f8021948c4a646bf96e1c88"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/cc25214cf4a45b199b631dbc.jsonl",
+      "bytes": 309105,
+      "sha256": "3dcfb745942650408acceee0b6c1dc1d2e051fa941928b7d81c92203fdc12dc3"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/ceae61dc3516658742556ebd.jsonl",
+      "bytes": 898720,
+      "sha256": "6e4a3e78b143e69aa74327c21f5c48c11d2a3e3af68a507dfd247ceebc36d523"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/d474f94222c736d854539715.jsonl",
+      "bytes": 1081693,
+      "sha256": "a7a3e936814618ef761072648cbb43655e609f41a8760a17ec938f1478c0a4d0"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/dffa80aa8441e532d7e8c7f4.jsonl",
+      "bytes": 319442,
+      "sha256": "d3fa9f0ecaf708b0159be8a0be3f55674d78501efcfb647aa141b3eec8437018"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/e19e6576897d2d6f3cb8c8a2.jsonl",
+      "bytes": 1081987,
+      "sha256": "0276be56044e77c79d4ec383cc1d84b9df76d28872343d30b890b24b818c45c1"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/e2086edc8bf22116bcc9cdfc.jsonl",
+      "bytes": 594695,
+      "sha256": "9b646940f9b78ff7eef601334277fb424319073e005a3386ec9869bd79e1cedc"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/fees/fc2034cac24485822b77c7dd.jsonl",
+      "bytes": 594879,
+      "sha256": "c77ce3e08ddadc012fdc48b88eb88cc1229591228cecb2681cfa8d5d6e2101eb"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/members.json",
+      "bytes": 3165,
+      "sha256": "33c3f9f125db297b444ba43ecff96e2aa67c1e59bccfd30ef812de6e8658293b"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "delta-ff90092-02-budget-tests/stdout.txt",
+      "bytes": 114,
+      "sha256": "505514f4a1d95ef175fbd53a0eb784632276211c05ea5b6848d151bbddab878a"
+    },
+    {
+      "path": "delta-probe.py.raw",
+      "bytes": 3459,
+      "sha256": "40af85f3e28c3099c44ee0c46a673ace8f79ed524e1fb5c5257a51f054383504"
+    },
+    {
+      "path": "delta-run.py.raw",
+      "bytes": 2435,
+      "sha256": "4242c91a37b6f2c66e155c5de692ee97fa6dfe1c3db73295c162bb679c5a0474"
+    },
+    {
+      "path": "final-manifest.json",
+      "bytes": 15757,
+      "sha256": "a86b5b1eda801076239db1b4be21bc23431d7283b70cafcab082bca0d2a0c470"
+    },
+    {
+      "path": "final-run.py.raw",
+      "bytes": 2453,
+      "sha256": "2c2bf5757c455705a569c3e7268aad02200b82f7af98b6eb8823272d956a6b0b"
+    },
+    {
+      "path": "final-static-probe.py.raw",
+      "bytes": 3546,
+      "sha256": "56834d34961d2e6e46691cb5548f46d0499c388e642d829832a14357b02fda1f"
+    },
+    {
+      "path": "format-followup.json",
+      "bytes": 662,
+      "sha256": "1cac8cd1bd8d86e091285ff268c0d04ffc4c664b5894d4a8054febaa3e59cfb8"
+    },
+    {
+      "path": "initial-18908e4-report.md",
+      "bytes": 6451,
+      "sha256": "889de60a6f22a93773771cb1963d57ca76c57eb20598e78f136e8e0f1dc9bf82"
+    },
+    {
+      "path": "initial-members.json",
+      "bytes": 5396,
+      "sha256": "902dfa67dda0c980cf8615e8a09177bd6771d382f3c3903aef66d7dbd842d1c1"
+    },
+    {
+      "path": "method-coverage.md",
+      "bytes": 10271,
+      "sha256": "d9ac183826e4411276d30e070212452deb9b19f7573497298a922a06929110c0"
+    },
+    {
+      "path": "probe.py.raw",
+      "bytes": 2987,
+      "sha256": "99d310493a9f3a69ea1ec8d0a52274b8a8cca3aa71d25e716a194de3feb5dcf2"
+    },
+    {
+      "path": "run.py.raw",
+      "bytes": 2052,
+      "sha256": "9aa66282c4e186096af5e650b27051fc638af0c50dacc1e2b8ba7f50ceca4282"
+    },
+    {
+      "path": "write-lock-final.json",
+      "bytes": 17063,
+      "sha256": "7f85579f9b11f10d1783a4021daee26d485ef771f08608f4e6b34d89daa56861"
+    },
+    {
+      "path": "write-lock.json",
+      "bytes": 15977,
+      "sha256": "b3f4f7e8c413137029adb149c9ffba8f1b561cdaf048beb65d2987da57aa8f3c"
+    }
+  ],
+  "self": {
+    "path": "write-lock-8e8b512.json",
+    "bytes": null,
+    "sha256": null
+  },
+  "selfHashReason": "root final delivery manifest records actual hash; self preimage excluded"
+}

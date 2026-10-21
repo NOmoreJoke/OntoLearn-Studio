@@ -1,0 +1,743 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps
+
+
+ Test Files  22 passed (22)
+      Tests  1125 passed (1125)
+   Start at  03:51:53
+   Duration  7.00s (tests 89%, import 7%, transform 5%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  404.50 kB
+
+✓ built in 28ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  330.22 kB
+
+✓ built in 19ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-Bms3LrTp.js   919.74 kB
+
+✓ built in 53ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+246 files already formatted
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps
+configfile: pyproject.toml
+testpaths: packages/engine/tests
+collected 5008 items
+
+packages/engine/tests/test_binding_regressions.py ...................... [  0%]
+...................                                                      [  0%]
+packages/engine/tests/test_contract_v2.py .............................. [  1%]
+........................................................................ [  2%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+...........................................                              [  9%]
+packages/engine/tests/test_coordinator_control.py ...................    [  9%]
+packages/engine/tests/test_frame_corpus.py ............................. [ 10%]
+........................                                                 [ 10%]
+packages/engine/tests/test_handshake_deadline.py ...                     [ 10%]
+packages/engine/tests/test_i04_lifecycle_boundaries.py .............     [ 11%]
+packages/engine/tests/test_i04_progress.py ......                        [ 11%]
+packages/engine/tests/test_i04_round_faults.py ......................... [ 11%]
+.................................                                        [ 12%]
+packages/engine/tests/test_job_store.py ................................ [ 13%]
+........................................................................ [ 14%]
+.............................................................            [ 15%]
+packages/engine/tests/test_memory_guard_exit.py ........                 [ 15%]
+packages/engine/tests/test_project_applications.py ..................... [ 16%]
+........................................................................ [ 17%]
+.................                                                        [ 18%]
+packages/engine/tests/test_project_business3_contract.py ............... [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 21%]
+....................................                                     [ 22%]
+packages/engine/tests/test_project_changeset_service.py ................ [ 22%]
+..............................................................           [ 23%]
+packages/engine/tests/test_project_changeset_stdio.py .....              [ 23%]
+packages/engine/tests/test_project_compensation.py ..................... [ 24%]
+..........................................................               [ 25%]
+packages/engine/tests/test_project_create_contract.py .................. [ 25%]
+........................................................................ [ 27%]
+......................................                                   [ 27%]
+packages/engine/tests/test_project_draft_plan.py ....................    [ 28%]
+packages/engine/tests/test_project_format3.py ...................ss..s.. [ 28%]
+s..s..s..s..s..s..s..................................................... [ 30%]
+.............s........................ss..s..s..s..s..s..s..s..s........ [ 31%]
+..........................................................s............. [ 33%]
+...........ss..s..s..s..s..s..s..s..s................................... [ 34%]
+...............................s........................ss..s..s..s..s.. [ 35%]
+s..s..s..s.............................................................. [ 37%]
+....s................................................................... [ 38%]
+........................................................................ [ 40%]
+........................................................................ [ 41%]
+........................                                                 [ 42%]
+packages/engine/tests/test_project_host_read_services.py ............... [ 42%]
+.....................................                                    [ 43%]
+packages/engine/tests/test_project_job_format3.py ...................... [ 43%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+....................................................................     [ 47%]
+packages/engine/tests/test_project_source_table_material.py ............ [ 48%]
+........................................................................ [ 49%]
+................................................                         [ 50%]
+packages/engine/tests/test_project_source_transport.py ................. [ 50%]
+......................................................................   [ 52%]
+packages/engine/tests/test_project_startup_contract.py ................. [ 52%]
+...................................                                      [ 53%]
+packages/engine/tests/test_project_startup_stdio.py .................... [ 53%]
+......                                                                   [ 53%]
+packages/engine/tests/test_project_transactions.py ..................... [ 54%]
+.................................                                        [ 54%]
+packages/engine/tests/test_project_workspace.py ...........              [ 55%]
+packages/engine/tests/test_protocol.py .............                     [ 55%]
+packages/engine/tests/test_quality_profile_revalidation.py ............. [ 55%]
+........................................................................ [ 57%]
+.............................................................            [ 58%]
+packages/engine/tests/test_resident_runtime.py .............             [ 58%]
+packages/engine/tests/test_runtime_bounds.py .                           [ 58%]
+packages/engine/tests/test_semantic.py ................................. [ 59%]
+........................................................                 [ 60%]
+packages/engine/tests/test_semantic_error_adapter.py ................... [ 60%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+..............................................                           [ 64%]
+packages/engine/tests/test_semantic_error_reasons.py ................... [ 64%]
+                                                                         [ 64%]
+packages/engine/tests/test_semantic_execution.py ....................... [ 65%]
+.........                                                                [ 65%]
+packages/engine/tests/test_semantic_lexical.py ......................... [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+..............                                                           [ 69%]
+packages/engine/tests/test_semantic_profile_directsteps.py ............. [ 69%]
+................................................................         [ 70%]
+packages/engine/tests/test_semantic_profile_errors.py .................. [ 71%]
+...                                                                      [ 71%]
+packages/engine/tests/test_semantic_profile_imports.py ....              [ 71%]
+packages/engine/tests/test_semantic_profile_input.py ................... [ 71%]
+..............                                                           [ 71%]
+packages/engine/tests/test_semantic_profile_integration.py ............. [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 85%]
+......................................................                   [ 86%]
+packages/engine/tests/test_semantic_profile_limits.py ......             [ 86%]
+packages/engine/tests/test_semantic_profile_production.py .............. [ 86%]
+.FFFFFF                                                                  [ 86%]
+packages/engine/tests/test_semantic_profile_restore.py ................. [ 87%]
+......................................................................   [ 88%]
+packages/engine/tests/test_semantic_profile_restore_limits.py .......... [ 88%]
+........................................................................ [ 90%]
+...................                                                      [ 90%]
+packages/engine/tests/test_semantic_profile_source.py .................. [ 90%]
+.....................................                                    [ 91%]
+packages/engine/tests/test_semantic_query_tokens.py .................... [ 91%]
+................................                                         [ 92%]
+packages/engine/tests/test_semantic_rdfs_basis_determinism.py .......... [ 92%]
+                                                                         [ 92%]
+packages/engine/tests/test_semantic_scopes.py ..............             [ 93%]
+packages/engine/tests/test_semantic_selected_projection.py ............. [ 93%]
+...................................                                      [ 94%]
+packages/engine/tests/test_semantic_string_identity.py ................. [ 94%]
+........................................................                 [ 95%]
+packages/engine/tests/test_session_page_limits.py ...                    [ 95%]
+packages/engine/tests/test_stdio_session_shutdown.py .....               [ 95%]
+packages/engine/tests/test_storage.py .................................. [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 99%]
+.........                                                                [ 99%]
+packages/engine/tests/test_worker_owner_bootstrap.py ................... [ 99%]
+...........                                                              [ 99%]
+packages/engine/tests/test_worker_parent.py .                            [100%]
+
+=================================== FAILURES ===================================
+__________ test_each_c_domain_exact_boundary_and_one_less[traversal] ___________
+
+domain = 'traversal'
+
+    @pytest.mark.parametrize("domain", ["traversal", "scan_copy", "hash", "scalar", "objects"])
+    def test_each_c_domain_exact_boundary_and_one_less(domain):
+        material = prepare_profile_material(turtle(), (rule(),))
+        result = execute(material)
+        receipt = result.capture_receipt
+        required = dict(
+            receipt.usage if domain in ("traversal", "scan_copy", "hash") else receipt.peaks
+        )[domain]
+        assert execute(material, CaptureLedger(overrides=((domain, required),))).wire == result.wire
+        ledger = CaptureLedger(overrides=((domain, required - 1),))
+        with pytest.raises(MaterialFailure) as failure:
+            execute(material, ledger)
+        assert failure.value.reason == "MATERIAL_LIMIT"
+        assert failure.value.domain == domain
+        assert ledger.state == "failed"
+        assert failure.value.__context__ is None
+        frame = failure.value.__traceback__
+        while frame:
+            if frame.tb_frame.f_code.co_name == "execute_admitted_profile_job":
+                locals_ = frame.tb_frame.f_locals
+>               assert all(
+                    locals_[name] is None
+                    for name in (
+                        "capture",
+                        "checked",
+                        "catalog_json",
+                        "allocation",
+                        "receipt",
+                        "outcome",
+                        "encoded_source",
+                        "actual",
+                        "supplied",
+                        "value",
+                    )
+                )
+
+packages/engine/tests/test_semantic_profile_production.py:247: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x10f1abf10>
+
+    assert all(
+>       locals_[name] is None
+        ^^^^^^^^^^^^^
+        for name in (
+            "capture",
+            "checked",
+            "catalog_json",
+            "allocation",
+            "receipt",
+            "outcome",
+            "encoded_source",
+            "actual",
+            "supplied",
+            "value",
+        )
+    )
+E   KeyError: 'capture'
+
+packages/engine/tests/test_semantic_profile_production.py:248: KeyError
+__________ test_each_c_domain_exact_boundary_and_one_less[scan_copy] ___________
+
+domain = 'scan_copy'
+
+    @pytest.mark.parametrize("domain", ["traversal", "scan_copy", "hash", "scalar", "objects"])
+    def test_each_c_domain_exact_boundary_and_one_less(domain):
+        material = prepare_profile_material(turtle(), (rule(),))
+        result = execute(material)
+        receipt = result.capture_receipt
+        required = dict(
+            receipt.usage if domain in ("traversal", "scan_copy", "hash") else receipt.peaks
+        )[domain]
+        assert execute(material, CaptureLedger(overrides=((domain, required),))).wire == result.wire
+        ledger = CaptureLedger(overrides=((domain, required - 1),))
+        with pytest.raises(MaterialFailure) as failure:
+            execute(material, ledger)
+        assert failure.value.reason == "MATERIAL_LIMIT"
+        assert failure.value.domain == domain
+        assert ledger.state == "failed"
+        assert failure.value.__context__ is None
+        frame = failure.value.__traceback__
+        while frame:
+            if frame.tb_frame.f_code.co_name == "execute_admitted_profile_job":
+                locals_ = frame.tb_frame.f_locals
+>               assert all(
+                    locals_[name] is None
+                    for name in (
+                        "capture",
+                        "checked",
+                        "catalog_json",
+                        "allocation",
+                        "receipt",
+                        "outcome",
+                        "encoded_source",
+                        "actual",
+                        "supplied",
+                        "value",
+                    )
+                )
+
+packages/engine/tests/test_semantic_profile_production.py:247: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x10f1ab5e0>
+
+    assert all(
+>       locals_[name] is None
+        ^^^^^^^^^^^^^
+        for name in (
+            "capture",
+            "checked",
+            "catalog_json",
+            "allocation",
+            "receipt",
+            "outcome",
+            "encoded_source",
+            "actual",
+            "supplied",
+            "value",
+        )
+    )
+E   KeyError: 'capture'
+
+packages/engine/tests/test_semantic_profile_production.py:248: KeyError
+_____________ test_each_c_domain_exact_boundary_and_one_less[hash] _____________
+
+domain = 'hash'
+
+    @pytest.mark.parametrize("domain", ["traversal", "scan_copy", "hash", "scalar", "objects"])
+    def test_each_c_domain_exact_boundary_and_one_less(domain):
+        material = prepare_profile_material(turtle(), (rule(),))
+        result = execute(material)
+        receipt = result.capture_receipt
+        required = dict(
+            receipt.usage if domain in ("traversal", "scan_copy", "hash") else receipt.peaks
+        )[domain]
+        assert execute(material, CaptureLedger(overrides=((domain, required),))).wire == result.wire
+        ledger = CaptureLedger(overrides=((domain, required - 1),))
+        with pytest.raises(MaterialFailure) as failure:
+            execute(material, ledger)
+        assert failure.value.reason == "MATERIAL_LIMIT"
+        assert failure.value.domain == domain
+        assert ledger.state == "failed"
+        assert failure.value.__context__ is None
+        frame = failure.value.__traceback__
+        while frame:
+            if frame.tb_frame.f_code.co_name == "execute_admitted_profile_job":
+                locals_ = frame.tb_frame.f_locals
+>               assert all(
+                    locals_[name] is None
+                    for name in (
+                        "capture",
+                        "checked",
+                        "catalog_json",
+                        "allocation",
+                        "receipt",
+                        "outcome",
+                        "encoded_source",
+                        "actual",
+                        "supplied",
+                        "value",
+                    )
+                )
+
+packages/engine/tests/test_semantic_profile_production.py:247: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x10f096e00>
+
+    assert all(
+>       locals_[name] is None
+        ^^^^^^^^^^^^^
+        for name in (
+            "capture",
+            "checked",
+            "catalog_json",
+            "allocation",
+            "receipt",
+            "outcome",
+            "encoded_source",
+            "actual",
+            "supplied",
+            "value",
+        )
+    )
+E   KeyError: 'capture'
+
+packages/engine/tests/test_semantic_profile_production.py:248: KeyError
+____________ test_each_c_domain_exact_boundary_and_one_less[scalar] ____________
+
+domain = 'scalar'
+
+    @pytest.mark.parametrize("domain", ["traversal", "scan_copy", "hash", "scalar", "objects"])
+    def test_each_c_domain_exact_boundary_and_one_less(domain):
+        material = prepare_profile_material(turtle(), (rule(),))
+        result = execute(material)
+        receipt = result.capture_receipt
+        required = dict(
+            receipt.usage if domain in ("traversal", "scan_copy", "hash") else receipt.peaks
+        )[domain]
+        assert execute(material, CaptureLedger(overrides=((domain, required),))).wire == result.wire
+        ledger = CaptureLedger(overrides=((domain, required - 1),))
+        with pytest.raises(MaterialFailure) as failure:
+            execute(material, ledger)
+        assert failure.value.reason == "MATERIAL_LIMIT"
+        assert failure.value.domain == domain
+        assert ledger.state == "failed"
+        assert failure.value.__context__ is None
+        frame = failure.value.__traceback__
+        while frame:
+            if frame.tb_frame.f_code.co_name == "execute_admitted_profile_job":
+                locals_ = frame.tb_frame.f_locals
+>               assert all(
+                    locals_[name] is None
+                    for name in (
+                        "capture",
+                        "checked",
+                        "catalog_json",
+                        "allocation",
+                        "receipt",
+                        "outcome",
+                        "encoded_source",
+                        "actual",
+                        "supplied",
+                        "value",
+                    )
+                )
+
+packages/engine/tests/test_semantic_profile_production.py:247: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x10f673580>
+
+    assert all(
+>       locals_[name] is None
+        ^^^^^^^^^^^^^
+        for name in (
+            "capture",
+            "checked",
+            "catalog_json",
+            "allocation",
+            "receipt",
+            "outcome",
+            "encoded_source",
+            "actual",
+            "supplied",
+            "value",
+        )
+    )
+E   KeyError: 'capture'
+
+packages/engine/tests/test_semantic_profile_production.py:248: KeyError
+___________ test_each_c_domain_exact_boundary_and_one_less[objects] ____________
+
+domain = 'objects'
+
+    @pytest.mark.parametrize("domain", ["traversal", "scan_copy", "hash", "scalar", "objects"])
+    def test_each_c_domain_exact_boundary_and_one_less(domain):
+        material = prepare_profile_material(turtle(), (rule(),))
+        result = execute(material)
+        receipt = result.capture_receipt
+        required = dict(
+            receipt.usage if domain in ("traversal", "scan_copy", "hash") else receipt.peaks
+        )[domain]
+        assert execute(material, CaptureLedger(overrides=((domain, required),))).wire == result.wire
+        ledger = CaptureLedger(overrides=((domain, required - 1),))
+        with pytest.raises(MaterialFailure) as failure:
+            execute(material, ledger)
+        assert failure.value.reason == "MATERIAL_LIMIT"
+        assert failure.value.domain == domain
+        assert ledger.state == "failed"
+        assert failure.value.__context__ is None
+        frame = failure.value.__traceback__
+        while frame:
+            if frame.tb_frame.f_code.co_name == "execute_admitted_profile_job":
+                locals_ = frame.tb_frame.f_locals
+>               assert all(
+                    locals_[name] is None
+                    for name in (
+                        "capture",
+                        "checked",
+                        "catalog_json",
+                        "allocation",
+                        "receipt",
+                        "outcome",
+                        "encoded_source",
+                        "actual",
+                        "supplied",
+                        "value",
+                    )
+                )
+
+packages/engine/tests/test_semantic_profile_production.py:247: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x10e6e6230>
+
+    assert all(
+>       locals_[name] is None
+        ^^^^^^^^^^^^^
+        for name in (
+            "capture",
+            "checked",
+            "catalog_json",
+            "allocation",
+            "receipt",
+            "outcome",
+            "encoded_source",
+            "actual",
+            "supplied",
+            "value",
+        )
+    )
+E   KeyError: 'capture'
+
+packages/engine/tests/test_semantic_profile_production.py:248: KeyError
+___ test_original_projection_hash_ticket_precedes_all_three_digest_delegates ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10e6e5fa0>
+
+    def test_original_projection_hash_ticket_precedes_all_three_digest_delegates(monkeypatch):
+        from ontolearn_engine.semantic_profile_production import _ProductionCapture
+    
+        material = prepare_profile_material(turtle(), (rule(),))
+        boundary = []
+        original_before = _ProductionCapture.before_projection
+    
+        def before(capture):
+            boundary.append(capture.ledger.used["hash"])
+            return original_before(capture)
+    
+        monkeypatch.setattr(_ProductionCapture, "before_projection", before)
+>       execute(material)
+
+packages/engine/tests/test_semantic_profile_production.py:277: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_profile_production.py:28: in execute
+    return execute_admitted_profile_job(
+packages/engine/src/ontolearn_engine/semantic_profile_production.py:444: in execute_admitted_profile_job
+    return _execute_admitted_profile_job(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+material = ProfileMaterial(text='<urn:value> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .\n<urn:out> a <http://www.w3.org...re-budget/1', retention_owner='receiving caller; raw/native references remain live'), version='i05-profile-material/1')
+error_catalog = {'schemaVersion': 2, 'maxEncodedBytes': 2048, 'codes': {'INVALID_REQUEST': {'messageKey': 'protocol.invalidRequest', '... the selected mapping.', 'reference': 'Worksheet reference cannot be resolved under the selected mapping.'}, ...}, ...}
+error_schema = {'$schema': 'https://json-schema.org/draft/2020-12/schema', '$id': 'urn:ontolearn:contracts:2', 'title': 'I03 v2 desig...ontology|mapping|constraint|rule|behavior|scenario|query|model):[A-Za-z0-9_.-]{1,128})$', 'maxLength': 140}, ...}, ...}
+ledger = <ontolearn_engine.semantic_profile_input.CaptureLedger object at 0x10e6e6930>
+direct_ledger = None
+
+    def _execute_admitted_profile_job(
+        material, *, error_catalog, error_schema, ledger=None, direct_ledger=None
+    ):
+        """Actual component execution; its name grants no Store or Job authority."""
+        from . import semantic_execution
+        from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+    
+        if direct_ledger is not None:
+            if type(direct_ledger) is not DirectStepsLedger:
+                raise DirectStepsFailure()
+            if direct_ledger.state != "new":
+                raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
+        ledger = CaptureLedger() if ledger is None else ledger
+        _require(type(ledger) is CaptureLedger)
+        capture = checked = catalog_json = allocation = receipt = outcome = error = None
+        encoded_source = value = actual = supplied = reference = revision = None
+        direct_receipt = None
+        try:
+            if direct_ledger is not None:
+                direct_ledger.begin(stage="capture")
+            _require(type(material) is ProfileMaterial)
+            _require(type(material.version) is str and material.version == MATERIAL_VERSION)
+            for value in (
+                material.input_preimage,
+                material.source_preimage,
+                material.definitions_preimage,
+                material.definition_material,
+            ):
+                _require(type(value) is bytes and len(value) <= MAX_BYTES)
+            _require(type(material.rules) is tuple and len(material.rules) <= 100)
+            if direct_ledger is not None:
+                _require(type(material.records) is tuple)
+                bound = _direct_bound(material.records, direct_ledger)
+                bound += _direct_bound(material.source, direct_ledger)
+                bound += _direct_bound(material.rules, direct_ledger)
+                bound += len(material.input_preimage) + len(material.definition_material) + 2048
+                _direct_stream(direct_ledger, bound, passes=2)
+            if material.records is None:
+                _require(type(material.source) is SourceRecord)
+                reference, revision = material.source.reference, material.source.revision
+            else:
+                reference = revision = None
+            checked = _prepare_profile_material(
+                material.text,
+                material.rules,
+                records=material.records,
+                disabled_rule_ids=material.disabled_rule_ids,
+                source_reference=reference,
+                source_revision=revision,
+                parser_identity=material.parser_identity,
+                ledger=ledger,
+                finish=False,
+                budget_inputs=(
+                    len(material.input_preimage) + len(material.source_preimage),
+                    len(material.definition_material),
+                ),
+            )
+            ledger.enter(4, 3 * MAX_BYTES)
+            _require(
+                type(material.input_domain) is str and material.input_domain == checked.input_domain
+            )
+            for actual, supplied in (
+                (checked.input_preimage, material.input_preimage),
+                (checked.source_preimage, material.source_preimage),
+                (checked.definitions_preimage, material.definitions_preimage),
+                (checked.definition_material, material.definition_material),
+            ):
+                _same_bytes(actual, supplied, ledger)
+            # Reject an independently changed native source field before computing.
+            encoded_source = _encode(material.source, ledger)
+            _same_bytes(encoded_source, checked.source_preimage, ledger)
+            ledger.release("scalar", len(encoded_source))
+            encoded_source = None
+            ledger.enter(5, 3 * MAX_BYTES)
+            capture = _ProductionCapture(checked, ledger, direct_ledger)
+            semantic_execution._execute_profile_production(
+                checked,
+                capture,
+                error_catalog=error_catalog,
+                error_schema=error_schema,
+            )
+            _require(capture.native is not None)
+            ledger.enter(8, 3 * MAX_BYTES)
+            ledger.debit("traversal", 8 * len(capture.slots) + 4 * len(capture.raw_rules) + 8)
+            ledger.reserve("objects", 6 * len(capture.slots) + 6 * len(capture.raw_rules) + 16)
+            allocation = OriginalAllocation(
+                tuple(spec.rule_id for spec in capture.raw_rules),
+                capture.disabled,
+                tuple(
+                    ChildAllocation(slot.rule_id, slot.definition_ordinal, slot.limits)
+                    for slot in capture.slots
+                ),
+            )
+            # Catalog is actual normalized output, not recovered from saved JSON.
+            from .semantic_execution import _profile_json_bytes, _ProfileProjection
+    
+            ledger.debit("traversal", 8 * MAX_BYTES)
+            ledger.debit("scan_copy", 16 * MAX_BYTES)
+            ledger.reserve("scalar", 8 * MAX_BYTES)
+            ledger.reserve("objects", 2 * MAX_BYTES)
+            if direct_ledger is not None:
+                _direct_stream(
+                    direct_ledger, _direct_bound(capture.actual_catalog, direct_ledger), passes=1
+                )
+            catalog_json = _profile_json_bytes(_ProfileProjection().value(capture.actual_catalog))
+            _hash(catalog_json, ledger)
+            receipt = ledger.receipt()
+            if direct_ledger is not None:
+                # Drop private capture/index before receipt; carrier has its own tickets.
+                capture.direct_capture.drop()
+                capture.direct_capture = None
+                direct_receipt = direct_ledger.receipt()
+            cls = ProfileComputation if direct_ledger is None else ProfileExplanationComputation
+            outcome = cls(
+                checked,
+                capture.native,
+                allocation,
+                capture.actual_definitions,
+                capture.actual_catalog,
+                capture.encoded,
+                capture.rows_encoded,
+                capture.source_encoded,
+                capture.definitions_encoded,
+                catalog_json,
+                capture.wire,
+                receipt,
+                **({} if direct_ledger is None else {"direct_receipt": direct_receipt}),
+            )
+            ledger.transferred()
+            if direct_ledger is not None:
+                direct_ledger.transferred()
+        except DirectStepsFailure as exc:
+            error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
+        except MaterialFailure as exc:
+            error = MaterialFailure(exc.reason, domain=exc.domain, stage=exc.stage)
+        except semantic_execution.ProfileExecutionFault as exc:
+            error = semantic_execution.ProfileExecutionFault(exc.error, exc.diagnostic)
+        except Exception:
+            error = (
+                MaterialFailure("MATERIAL_INTERNAL")
+                if direct_ledger is None
+                else DirectStepsFailure("DIRECT_STEPS_INTERNAL", stage=direct_ledger.stage)
+            )
+        finally:
+            if capture is not None:
+                capture.drop()
+            capture = checked = catalog_json = allocation = receipt = direct_receipt = None
+            encoded_source = value = actual = supplied = reference = revision = None
+            if error is not None:
+                outcome = None
+                ledger.failed()
+                if direct_ledger is not None:
+                    direct_ledger.failed()
+        if error is not None:
+>           raise error
+E           ontolearn_engine.semantic_execution.ProfileExecutionFault: SEMANTIC_EXECUTION_FAILED
+
+packages/engine/src/ontolearn_engine/semantic_profile_production.py:439: ProfileExecutionFault
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_profile_production.py::test_each_c_domain_exact_boundary_and_one_less[traversal]
+FAILED packages/engine/tests/test_semantic_profile_production.py::test_each_c_domain_exact_boundary_and_one_less[scan_copy]
+FAILED packages/engine/tests/test_semantic_profile_production.py::test_each_c_domain_exact_boundary_and_one_less[hash]
+FAILED packages/engine/tests/test_semantic_profile_production.py::test_each_c_domain_exact_boundary_and_one_less[scalar]
+FAILED packages/engine/tests/test_semantic_profile_production.py::test_each_c_domain_exact_boundary_and_one_less[objects]
+FAILED packages/engine/tests/test_semantic_profile_production.py::test_original_projection_hash_ticket_precedes_all_three_digest_delegates
+============ 6 failed, 4958 passed, 44 skipped in 144.69s (0:02:24) ============

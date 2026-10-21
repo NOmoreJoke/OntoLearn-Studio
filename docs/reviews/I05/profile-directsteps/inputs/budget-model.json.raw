@@ -1,0 +1,59 @@
+{
+  "status": "proposed logical upper bounds and actual-charge schedule, not runtime usage/capacity proof",
+  "version": "i05-direct-steps-budget/1",
+  "oldFixed": {
+    "MAX_TRIPLES": 100000,
+    "MAX_WORK": 1000000,
+    "payloadPlusRowsBytes": 8388608
+  },
+  "captureCaps": {
+    "candidates": 250000,
+    "steps": 100000,
+    "cumulativeKeyBytes": 8388608,
+    "carrierBytes": 8388608,
+    "controlBeforeCounters": 128,
+    "objects": 270635588,
+    "scalar": 50331776,
+    "generalWorkAndScanCopyEach": 581671040,
+    "fixedTraversalAnalysisSubBoundNotSeparateWallet": 139417856
+  },
+  "constraints": [
+    "S <= MAX_TRIPLES - actual seed count",
+    "E = 2*S",
+    "depth <= S",
+    "A includes all successful append candidates, not just S; original profile cost >=4 per candidate",
+    "Capture traversal formula covers fixed capture/key work only; coverage/leaf-DP/copy/receipt charge common finite pool too",
+    "All reservations count simultaneous live including original producer/restorer bytes; no refund of cumulative work on failure",
+    "C0/R0 full-stream passes charge new actual J, not just carrier B; T/S/H need real receiver supplies",
+    "Lower-only overrides; fail before next allocation; no fabricated L or physical capacity claims",
+    "Fixed capture analysis subbound is included in the single work/scan_copy caps; no separate refill wallet. N3 formatting/repeat keys/full-stream scans and DP all charged.",
+    "Capture retains temporary SeedKey/StepOrdinal only. Link occurs at existing producer leaf ID issuance; all scans/copies/releases and temporary/final overlap charged, no second hash or source map; no unresolved temporary key may escape.",
+    "RDF identity/alias representative/occurrence linkage fully charged; no numeric value dedupe or raw source/language rewrite"
+  ],
+  "domains": {
+    "cumulative": [
+      "work",
+      "scan_copy"
+    ],
+    "live": [
+      "objects",
+      "scalar"
+    ],
+    "state": [
+      "new",
+      "running",
+      "completed",
+      "failed"
+    ],
+    "stages": [
+      "entry",
+      "capture",
+      "link",
+      "encode",
+      "restore",
+      "roots",
+      "receipt",
+      "cleanup"
+    ]
+  }
+}

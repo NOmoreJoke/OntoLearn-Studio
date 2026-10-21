@@ -1,0 +1,191 @@
+F841 Local variable `value` is assigned to but never used
+   --> packages/engine/src/ontolearn_engine/semantic.py:468:32
+    |
+466 |         if _direct_capture is not None:
+467 |             count = len(additions)
+468 |             additions = item = value = None
+    |                                ^^^^^
+469 |             _direct_capture.end_candidates(count)
+470 |             _direct_capture.ledger.release("objects", 8 * count)
+    |
+help: Remove assignment to unused variable `value`
+    |
+467 |             count = len(additions)
+    -             additions = item = value = None
+468 +             additions = item = None
+469 |             _direct_capture.end_candidates(count)
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+I001 [*] Import block is un-sorted or un-formatted
+    --> packages/engine/src/ontolearn_engine/semantic.py:1167:5
+     |
+1166 |   def _reason_profile_core(graph, rules, catalog, term_context, capture):
+1167 | /     from ontolearn_engine.quality.rule_profile import ProfileFailure
+1168 | |     from ontolearn_engine.semantic_profile_input import MaterialFailure
+1169 | |     from ontolearn_engine.semantic_profile_directsteps import DirectStepsFailure
+     | |________________________________________________________________________________^
+1170 |
+1171 |       try:
+     |
+help: Organize imports
+     |
+1167 |     from ontolearn_engine.quality.rule_profile import ProfileFailure
+1168 +     from ontolearn_engine.semantic_profile_directsteps import DirectStepsFailure
+1169 |     from ontolearn_engine.semantic_profile_input import MaterialFailure
+     -     from ontolearn_engine.semantic_profile_directsteps import DirectStepsFailure
+1170 |
+     |
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> packages/engine/src/ontolearn_engine/semantic_execution.py:644:5
+    |
+642 |       T01 must supply the formal domain boundary before any worker can expose it.
+643 |       """
+644 | /     from ontolearn_engine import semantic
+645 | |     from ontolearn_engine.quality.rule_profile import PROFILE, ProfileFailure, SourceRecord
+646 | |     from ontolearn_engine.resources import semantic_identity
+647 | |     from ontolearn_engine.semantic_offline import SemanticError, offline
+648 | |     from ontolearn_engine.semantic_profile_input import MaterialFailure
+649 | |     from ontolearn_engine.semantic_profile_directsteps import DirectStepsFailure
+650 | |     from ontolearn_engine.semantic_turtle import (
+651 | |         _disabled_ids,
+652 | |         bind_profile_disabled_rules,
+653 | |         parse_profile_graph,
+654 | |         profile_graph_from_records,
+655 | |     )
+    | |_____^
+656 |
+657 |       adapter = SemanticErrorAdapter(error_catalog=error_catalog, error_schema=error_schema)
+    |
+help: Organize imports
+    |
+647 |     from ontolearn_engine.semantic_offline import SemanticError, offline
+648 +     from ontolearn_engine.semantic_profile_directsteps import DirectStepsFailure
+649 |     from ontolearn_engine.semantic_profile_input import MaterialFailure
+    -     from ontolearn_engine.semantic_profile_directsteps import DirectStepsFailure
+650 |     from ontolearn_engine.semantic_turtle import (
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/engine/src/ontolearn_engine/semantic_profile_production.py:64:5
+   |
+62 |       The result counts all JSON escapes, record tags and integer/byte wrappers.
+63 |       """
+64 | /     from .semantic_profile_directsteps import DirectStepsFailure
+65 | |     from .semantic_profile_restore import _EQUAL_FIELDS
+66 | |     from .quality.rule_profile import InputLocation
+   | |___________________________________________________^
+67 |
+68 |       ledger.debit("work", 64)
+   |
+help: Organize imports
+   |
+63 |     """
+64 +     from .quality.rule_profile import InputLocation
+65 |     from .semantic_profile_directsteps import DirectStepsFailure
+66 |     from .semantic_profile_restore import _EQUAL_FIELDS
+   -     from .quality.rule_profile import InputLocation
+67 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> packages/engine/src/ontolearn_engine/semantic_profile_production.py:233:5
+    |
+231 |   ):
+232 |       """Actual component execution; its name grants no Store or Job authority."""
+233 | /     from . import semantic_execution
+234 | |
+235 | |     from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+    | |___________________________________________________________________________________^
+236 |
+237 |       if direct_ledger is not None:
+    |
+help: Organize imports
+    |
+233 |     from . import semantic_execution
+    -
+234 |     from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> packages/engine/src/ontolearn_engine/semantic_profile_production.py:396:5
+    |
+394 | def execute_profile_explanation(material, *, error_catalog, error_schema, ledger, direct_ledger):
+395 |     """Explicit internal explanation computation; no Job or source authority."""
+396 |     from .semantic_profile_directsteps import DirectStepsLedger, DirectStepsFailure
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+397 |
+398 |     if type(direct_ledger) is not DirectStepsLedger:
+    |
+help: Organize imports
+    |
+395 |     """Explicit internal explanation computation; no Job or source authority."""
+    -     from .semantic_profile_directsteps import DirectStepsLedger, DirectStepsFailure
+396 +     from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+397 |
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+    --> packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1599:5
+     |
+1597 | ):
+1598 |     """Explicit schema2 full result; local DAG checks never rerun inference."""
+1599 |     from .semantic_profile_directsteps import DirectStepsLedger, DirectStepsFailure
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1600 |
+1601 |     if type(direct_ledger) is not DirectStepsLedger:
+     |
+help: Organize imports
+     |
+1598 |     """Explicit schema2 full result; local DAG checks never rerun inference."""
+     -     from .semantic_profile_directsteps import DirectStepsLedger, DirectStepsFailure
+1599 +     from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+1600 |
+     |
+
+I001 [*] Import block is un-sorted or un-formatted
+    --> packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1616:5
+     |
+1614 |   def explanation_roots(view, target_keys, *, direct_ledger):
+1615 |       """All matching occurrences within an already granted complete fullview."""
+1616 | /     from .semantic_profile_directsteps import (
+1617 | |         DirectStepsLedger,
+1618 | |         DirectStepsFailure,
+1619 | |         RootRef,
+1620 | |         locate_roots,
+1621 | |     )
+     | |_____^
+1622 |
+1623 |       if type(direct_ledger) is not DirectStepsLedger:
+     |
+help: Organize imports
+     |
+1616 |     from .semantic_profile_directsteps import (
+1617 +         DirectStepsFailure,
+1618 |         DirectStepsLedger,
+     -         DirectStepsFailure,
+1619 |         RootRef,
+     |
+
+F841 Local variable `held` is assigned to but never used
+    --> packages/engine/src/ontolearn_engine/semantic_profile_restore.py:1642:9
+     |
+1640 |         direct_ledger.debit("work", 64 * count + 128)
+1641 |         direct_ledger.reserve("objects", 16 * count + 128)
+1642 |         held = 16 * count + 128
+     |         ^^^^
+1643 |         entries = []
+1644 |         for row in leaves:
+     |
+help: Remove assignment to unused variable `held`
+     |
+1641 |         direct_ledger.reserve("objects", 16 * count + 128)
+     -         held = 16 * count + 128
+1642 +         16 * count + 128
+1643 |         entries = []
+     |
+note: This is an unsafe fix and may change runtime behavior
+
+Found 9 errors.
+[*] 7 fixable with `--fix` (2 unsafe fixes available with `--fix --unsafe-fixes`).

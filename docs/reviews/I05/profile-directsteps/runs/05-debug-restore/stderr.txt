@@ -1,0 +1,24 @@
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 1603, in restore_profile_explanation_result
+    return _restore_operation(
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 1434, in _restore_operation
+    children, parse_usage, caps, projection = _restore(
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 1220, in _restore
+    native = decoder.reasoning(raw["reasoning"])
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 992, in reasoning
+    {"directSteps": self.direct_steps(value["directSteps"])} if self.explanation else {}
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 928, in direct_steps
+    "steps": self.collect(value["steps"], step, maximum=100000),
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 369, in collect
+    items = [decode(item) for item in value]
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 922, in step
+    "premises": self.collect(raw["premises"], premise, maximum=2),
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 369, in collect
+    items = [decode(item) for item in value]
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 906, in premise
+    self.object(raw, ("kind", "reference"))
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 351, in object
+    _require(key in value)
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/packages/engine/src/ontolearn_engine/semantic_profile_restore.py", line 290, in _require
+    _invalid(stage, slot, reason)
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps/docs/reviews/I05/profile-directsteps/debug-restore-2.py.raw", line 8, in observe
+    traceback.print_stack(limit=12)
