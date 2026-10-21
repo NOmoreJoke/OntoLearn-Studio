@@ -1,9 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
   "admission": "PREPARATION_ONLY_BLOCKED",
   "artifactExecutionAttempted": false,
   "targetEvidence": "host macOS27.0.1 arm64 only; not target macOS15/Win11 acceptance",
-  "sourceRepair": "Darwin fixture renamex_np(RENAME_EXCL), new source ref to be frozen and independently reviewed",
+  "sourceRepair": "fixed b59239f9c1ec2774c7922f95dfc67db4dc8754e8; Darwin fixture renamex_np(RENAME_EXCL); independent source review completed; new build still pending",
   "providerOldInputRef": "b65751963a8c1f0c35e6ef680e816a99c4026e24",
   "supersededArtifactPins": "superseded-artifact-pins.json; no execution",
   "resolvedCoreArgv": null,
@@ -38,7 +38,16 @@
     "logicalControlBudgetSeconds": 20,
     "timeoutGroupRule": "only original owned new PGID while exact leader remains unreaped; TERM then grace without poll/wait, KILL then bounded wait own leader",
     "earlyNonzeroReapedRule": "record failure/residual unknown; never reuse old PGID for kill",
-    "noHardSyscallOrDrainDeadlineClaim": true
+    "noHardSyscallOrDrainDeadlineClaim": true,
+    "preExecSignals": {
+      "scope": "this newly dispatched core child only; never host or global UID",
+      "SIGCHLD": "SIG_DFL; no SA_NOCLDWAIT",
+      "SIGTERM": "SIG_DFL, unblocked",
+      "signalMask": "explicit empty mask before exec; probe inherits same core conditions",
+      "restoreSignalsAloneIsInsufficient": true,
+      "noExternalReaper": true,
+      "admission": "existing executor must demonstrate these conditions before dispatch; otherwise remain BLOCKED; no new runner development"
+    }
   },
   "proposedPerProcessLimitsBeforeExec": {
     "RLIMIT_NOFILE": 64,
@@ -101,10 +110,11 @@
     "postflightHash": "same two exact artifact pins, raw stream bytes/SHA, actual return/signal/timeouts/cleanup requests and uncertainties"
   },
   "pendingFrontDoors": [
-    "new fixed source independent review",
+    "independent preparation followup on signal-state contract; source fix independent review completed",
     "root T03 adoption + needed rebuild authorization",
     "T03 rebuilt exact artifact paths/bytes/SHA and concrete actual used/terms evidence",
     "existing executor confirms explicit stdio, finite streams, owned unreaped PGID rules and limits without new wrapper development",
+    "existing executor confirms child-only SIGCHLD default/no SA_NOCLDWAIT, SIGTERM default and empty signal mask; env replace/Popen restore_signals alone are insufficient",
     "root supplies quiet/isolated CLI environment if OS automatic crash UI must also be excluded",
     "root precise single execution window; current message is not execution permission"
   ],

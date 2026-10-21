@@ -14,6 +14,8 @@
 
 使用根核准的一次性标准库进程执行控制，不开发新runner源码/包装文件。shell:false、独立session/pgroup、close_fds；启动前显式准备stdin=/dev/null和两份独立独占0600 stdout/stderr，确保0/1/2占用，不让probe pipe拿到fd0后adddup2又close stdin。最小env只列PATH/LANG/LC_ALL/TZ/HOME/TMPDIR，不继承DYLD、Node、模型密钥或代理配置。两个原始流不合并、不经tee/filter，不用工具截断文本冒原件。
 
+执行前还须由现有executor在本次core子进程的pre-exec中显式设置SIGCHLD=SIG_DFL且无SA_NOCLDWAIT、SIGTERM=SIG_DFL，并清空继承signal mask；probe继承同条件，全程无外部reaper。最小env、sole-waiter声明和Popen restore_signals=True均不能代替这些设置。若继承SIGCHLD忽略/自动回收，native waitpid可能返回ECHILD，而持有旧PID不能继续证明清理目标身份。只调整本次子进程，不改host/全UID信号配置；现有executor无法落实则保持BLOCKED，不补新runner。
+
 | 预付范围     | 本main源码上界/拟控制                                                                                                                                                                                                              |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 原生应用对象 | 总5 owner历史，成功顺序最多1 nonclosed；153 lifetime cap槽；名字累计457B；无map/消息/正文IO用途                                                                                                                                    |
