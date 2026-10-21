@@ -1,6 +1,6 @@
 # T09 实际状态
 
-当前续接工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-stage-evidence`，分支 `feature/weekly-t09-stage-evidence`。共享批准base仍5f910b5，本线续接parent74b17a4。独立私有阶段证据实现固定 `12699cc0f536f5875e8b021349b58c2c954145cc`；当前专项80项通过，最终完整检查与独立报告见本轮证据。T09原Goal保持active。
+当前续接工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-stage-evidence`，分支 `feature/weekly-t09-stage-evidence`。共享批准base仍5f910b5，本线续接parent74b17a4。独立私有阶段证据实现固定 `12699cc0f536f5875e8b021349b58c2c954145cc`；当前专项80项通过，最终完整检查与独立报告见本轮证据。T09原Goal已通过连续三轮同一阻塞审计，状态改为blocked；完整目标保留。
 
 总控已登记此独立父任务树；原 `T09-learning-baselines` 的S1实现7659665及流程74b17a4冻结，后续只有d96924e文档澄清，没有源/测试变化。S1仍待总控审查预约和指定双模型。此树未采用其他线未批实现，不改公共契约、Store或业务接线。
 
@@ -77,3 +77,9 @@
 本轮最终固定12699cc同版 `npm run check` exit0：648 Vitest通过、16 headless明确skip、1174 pytest通过，lint/格式/类型/构建/ruff均通过。80专项及实际I04限定探针含于完整Python运行。没有重复执行未变UI浏览器套件，不将skip算通过；旧S1的18纯+16显式headless证据仅支持其固定候选。当前源/测试三文件commit后无差异，失败及中间证据无损归档。
 
 固定12699cc私有范围独立内审明确通过，两项P2（根输入版本/文本身份校验与validation类型覆盖）已关闭，见 stage-evidence-independent-review.md；此结论不替代真实持久化/领域集成或指定双模型。
+
+## 当前阻塞与恢复条件
+
+完成独立交付后的连续三轮均未取得新批准接口或实际审查资源，已记录 blocked-audit.json。当前批准shared基线仍5f910b5，T01实际开发回合仍inProgress，不能因此声称已具备T09学习账本/CAS接口；指定审查实际0任务/0句柄，尚无隔离入口或用户可用桌面时段。没有可继续推进剩余门禁的独立授权实现，故将本T09 Goal标记blocked，不缩减目标、不宣称父模块或上线完成。
+
+恢复条件：相关T01/T00学习账本、原始完成回执与当前输入/attempt来源、消费CAS/唯一公共接口实际批准且允许采用；或指定双审取得合规运行环境/明确桌面时段并由总控放行。届时先核验批准依赖、基线与冻结候选，再完成对应接线/验收及同版指定双审。原S1/新stage树保持可恢复状态，未推送/PR/合并，不重启或中断仍在运行的T01回合。
