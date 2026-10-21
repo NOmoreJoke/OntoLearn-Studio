@@ -1,0 +1,112 @@
+{
+  "scope": "T03 private main-only source selection; no public IPC/transport/native or Store registration",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "branch": "feature/weekly-t03-source-selection",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection",
+  "productFiles": [
+    {
+      "path": "apps/desktop/src/main/mapping/source-selection.ts",
+      "sha256": "25a340ce7d8e0f2f3cdd4659c06c0a5ae3139cb3b44fde7812b1e782122f2fa3"
+    },
+    {
+      "path": "tests/unit/t03-source-selection.test.ts",
+      "sha256": "c992984ece21c463f9ae55245996c1a63891bfac120fcb18962b509e9fad38c5"
+    }
+  ],
+  "protectedGuidance": {
+    "path": "AGENTS.md",
+    "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+    "stage": false
+  },
+  "commonInstructions": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+    "sha256": "b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39"
+  },
+  "environment": {
+    "system": "Darwin",
+    "release": "27.0.0",
+    "machine": "arm64",
+    "node": "v24.15.0",
+    "npm": "11.12.1",
+    "uv": "uv 0.11.12 (63c5f57d3 2026-05-08 aarch64-apple-darwin)"
+  },
+  "checks": [
+    {
+      "command": "npx vitest run tests/unit/t03-source-selection.test.ts",
+      "exitCode": 0,
+      "passed": 29,
+      "log": "unit-config-concurrency.txt"
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "tsPassed": 659,
+      "pythonPassed": 1052,
+      "skipped": 0,
+      "log": "check-config-concurrency.txt"
+    }
+  ],
+  "independentReview": {
+    "first": "internal-review.md",
+    "finding": "P2 concurrent configure ordering",
+    "disposition": "fixed, five real-FS regressions added",
+    "followup": "internal-review-followup.md",
+    "result": "passed private broker scope; independent 29 tests, full check terminal read by developer"
+  },
+  "rawLogs": [
+    {
+      "path": "docs/reviews/T03/source-selection/check-config-concurrency.txt",
+      "bytes": 5058,
+      "sha256": "cf384b260a88c32447400f3279b3216bb8873f738ac4cc1432140feeab0fe06d"
+    },
+    {
+      "path": "docs/reviews/T03/source-selection/check-first.txt",
+      "bytes": 439,
+      "sha256": "95886345a025b96564e5524abd6e873a1affc825080478465b957adc368a8051"
+    },
+    {
+      "path": "docs/reviews/T03/source-selection/check-second.txt",
+      "bytes": 5059,
+      "sha256": "9240244a1a152d39f8df61ab31dc4fc6e925ea3bcaf0b5954d9760fb3e69acb0"
+    },
+    {
+      "path": "docs/reviews/T03/source-selection/npm-ci-first.txt",
+      "bytes": 748,
+      "sha256": "cccad48bb5c58ef9d6fb03930886cd49ace31a14b9ed0ba537de43f2c57853d1"
+    },
+    {
+      "path": "docs/reviews/T03/source-selection/unit-bounded.txt",
+      "bytes": 237,
+      "sha256": "ebc31d8f31edd9c40fd850c7e757cb64f801c9ea34c8cd5244cccceb460e3bdc"
+    },
+    {
+      "path": "docs/reviews/T03/source-selection/unit-config-concurrency.txt",
+      "bytes": 236,
+      "sha256": "533c5183e0d42329ad6b4e6582ebe27daaef45f0089b32b41299083818adc437"
+    },
+    {
+      "path": "docs/reviews/T03/source-selection/unit-first.txt",
+      "bytes": 237,
+      "sha256": "b3d419643d7443829184ff0d1991b043f7a5cdef30591937e7b9e8a9217286d2"
+    },
+    {
+      "path": "docs/reviews/T03/source-selection/unit-reentrancy.txt",
+      "bytes": 237,
+      "sha256": "48b3f5ab916401ad4288d04d88a1f9fa2e9bf6cd5cae744f2db3968a1e61cf88"
+    }
+  ],
+  "notVerified": [
+    "native picker",
+    "formal main/IPC/preload/App registration",
+    "canonical source byte transport",
+    "real XLSX parsing in this tree",
+    "Job authorization and Store writes",
+    "new module main-process e2e",
+    "target macOS15 and Windows11",
+    "designated same-candidate ZCode/MiniMax reviews",
+    "remote CI, merge and release"
+  ],
+  "s1Frozen": true,
+  "productCommit": "f2c7deb8139255bc11e44c5b4a958ecbdae6a373",
+  "reviewedProductHashesMatchCommittedFiles": true
+}
