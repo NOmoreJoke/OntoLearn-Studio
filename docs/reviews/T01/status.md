@@ -146,3 +146,15 @@ format3-stage-a-review.md原“26反例均拒绝”现已更正：原session第3
 应用CAS恢复提交为`f51dd38dbdfd2fbb1b9923efee666a19d5b415cc`，总控正在固定候选独立原件审计，本线产品/测试保持不变。新增来源分块和学习账本设计已独立挑战并关闭两处文档缺口，详见follow-up-design-review.md。设计明确source内容不等于授权、远端受理/撤销排序、worker实际首帧缺口，以及activation CAS/完整attempt辅助覆盖/真实publisher事务；尚无对应新实现。
 
 I05 worker唯一未来维护offer已实际接受并保存双身份回执：本方approved5f 9314B/SHA2fa848…06f2f0，对方C3 13638B/SHA3d934e…4f99d；各实际path clean。等待独立/root生效，不写worker、不采用C3、不扩protocol/resources/旧tests/build。拟新增专属test_project_source_transport.py、test_project_source_worker.py、t01-source-transport.test.ts仅为原独占prefix下计划，尚未创建。此次仅文档和接收回执，不重跑无变化产品，不push。
+
+
+## worker唯一维护生效与私有来源内容阶段
+
+已实际全文读总控固定f51证据审计，SHA23548807004be26fb1ebd338abfe832d1628a6885cd81d9d6244c23c7cd22c35；旧P2/DDL/26措辞有界关闭，明确273/20修前与后续275/2214区别，原105缺poll和封存call缺output不补造。没有新增要求修改f51产品的阻断。
+
+worker.py唯一未来维护已于2026-10-21T10:21:19.636646+08:00由总控effective=true登记，协议63c194…450da、独立最终47e564…6423、接收019117…58581均实读。common原§9/无桌面与新增尾段实际接收，新SHAff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff，AGENTS仍78df。两内审已透传，主内审全文读并核hash。只从5f维护，不复制C3，不扩protocol/resources/语义/旧tests/build/CI；不将所有权生效当source wire/限额/公有3-ready获批。当前worker字节仍未改。
+
+新source_content.py在原私有范围实现typed chunk/manifest、同JobStore连接不可变blob的原子intern及完整bytes验证。原私有source测试精确路径下87项实际通过，主内审6项独立探针无新阻断；未重复矩阵。新全仓check待终态，不沿用2214当新增代码通过。无新schema、writer、正式operation/receipt、授权、上传、parser或worker/public接线；内容ref不授予权限。T03固定1e8ef97回复全文读回并形成source-contract-t03-response-r2，六项缺口按设计答复，完整Table投影与pin/TTL/profile等仍待真正冻结。
+
+
+来源内容阶段最终完整check实际退出0：630TS/2301Python/44原不适用skip，lint/格式/typecheck/build/ruff均通过；主内审6项独立探针无新阻断，第二位T03 r2设计复核通过。原始证据包source-cache-raw-evidence.tar.gz SHA9ef1078784b6a7c32a28a138aa44a2667c338f162190608ffc895fca5e199405逐成员回读，21对工具call/output及两完整logs可恢复。准备本地恢复提交；未push，worker仍原5f。该阶段只是严格完整性/同库不可变缓存事务，不是公共wire/source授权、真实parser、项目学习/完整restore/ready或父功能完成。
