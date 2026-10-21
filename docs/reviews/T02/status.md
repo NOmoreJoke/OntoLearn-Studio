@@ -68,3 +68,9 @@ C2 全仓 `check-c2-final.log` 实际 exit 0：633 TS、1078 Python；本线26 P
 新13专项已实际通过（`source-projection-second.log`）；全仓check运行中，独立agent设计检查未发现实质阻断，最终固定C3 SHA关闭复核待完成。UI/依赖/共享实现未变化，不重复headless/包内/native探针。源/来源边界详见 `docs/iterations/T02/source-projection.md`。
 
 C3全仓`source-projection-check-first.log`已实际exit0：633 TS/1091 Python，包含本线39 Python；新增13专项一次通过。既有C2实现/样例/探针源hash逐项复核未变，未重复无变化UI运行。原始日志保留本地，当前源码/批准owning source与日志hash见`verification-c3.json`；待固定提交独立内审终态。
+
+## C3 内审终态
+
+独立agent实际对固定 `49321221733ea927484647352e05e7d833cebc86` 返回**通过**；owning source、实现/日志hash匹配，原问题保持关闭，无新实质阻断。独立精确探针确认类型/名称原asserted身份、读取零输入改写及旧源拒绝。非阻断P3“交付入口仍指C2”已仅在delivery文档修正并读回；报告 `independent-review-c3.md` 保留原意见与处置。
+
+当前恢复实现为4932122，最新流程记录提交另附其后；仅流程文档差异，不重复无变化运行。仍无T01/T00/批准I05正式接口授权与T02外审预约，完整父功能、双指定新审、push/PR/CI/merge/远端及上线未完成。Goal继续active。本turn有实际C3代码/13真实Store专项/完整验证/独立内审与可恢复提交进展，不是只重述状态或把总控文件当活跃进程等待。

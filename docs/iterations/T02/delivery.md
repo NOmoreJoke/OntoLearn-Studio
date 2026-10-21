@@ -1,6 +1,10 @@
 # T02 独立候选交付与接线缺口
 
-Owner 聊天 `01a15bcd-f40b-7c91-81fa-7c481d2030d5`；独立 Goal active。Worktree `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-ontology`，分支 `feature/weekly-t02-ontology`。批准 base `5f910b52c69d86a1076b2032e5d3c63e715947f3`；当前受内审实现固定为 `5ef86a1da88d86f2de7b55a7e3be38b1e0f986b4`。后续流程证据提交不改变该实现。
+当前实现为 C3 `49321221733ea927484647352e05e7d833cebc86`，新增批准 Store2 的只读 RDF 来源绑定与13条真实SQLite专项。全仓633 TS/1091 Python通过，本线39条Python。当前证据以 `docs/reviews/T02/status.md`、`verification-c3.json` 为准；C3不会证明正式Store提交、metadata授权或公共接口已接入。
+
+下列原C2交付记录作为历史保留；其中5ef/26专项/1078全仓仅对应C2，不能当作当前完整恢复指针。C3具体读取接口及信任边界见本目录 `source-projection.md`。
+
+Owner 聊天 `01a15bcd-f40b-7c91-81fa-7c481d2030d5`；独立 Goal active。Worktree `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-ontology`，分支 `feature/weekly-t02-ontology`。批准 base `5f910b52c69d86a1076b2032e5d3c63e715947f3`；C2历史受内审实现固定为 `5ef86a1da88d86f2de7b55a7e3be38b1e0f986b4`。C2后的纯流程证据提交不改变其实现；后续C3新增实现已另行冻结核验。
 
 ## 已实际交付
 
@@ -20,3 +24,7 @@ Owner 聊天 `01a15bcd-f40b-7c91-81fa-7c481d2030d5`；独立 Goal active。Workt
 | 总控指定外审队列                                           | 在实际批准基线上联验后预约双方各新只读完整任务；读回模型/思考/默认权限实际会话，再按原门禁push→PR→CI→正常merge→远端                         | 当前候选/完整测试及内审证据，不消费未批准依赖，不自行抢用审查应用                      |
 
 正式公共投影、导入/往返、完整Store提交与原FR-200–204父功能验收均仍待。详细限制见 interface-handoff/acceptance 与唯一 status；本地候选不表示模块验收或上线。未写任何root tasks/state或其他共享文件；保护AGENTS仍未暂存。
+
+## C3 读取接口补充
+
+`ontology/source_projection.py` 的 `bind_rdf_projection(source_ref, source, editor)` 只证明完整 RDF 与真实不可变Store2源相等并保存原身份/来源。`BoundRdfProjection.removed_sources(preview)` 返回所有支持的原fact ID或definition位置，`require_source`拒绝变更源。T01/T00仍须从可信当前项目重取源、验证非RDF metadata/引用并绑定人类动作，再通过唯一Store.commit提交；不得将来源列表直接当删除计划或将源hash当授权。该模块可供owning adapter审阅，不表示获准正式消费未批准候选。
