@@ -53,3 +53,7 @@ T09 获批只读输入版本 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 的 mani
 
 
 已为登记阶段准备离线双外审完整任务正文和固定Git输入清单：external-review-task-packet.md、external-review-input-manifest.json。清单绑定a1e7efef候选的141个delta及6个不变上下文，已逐Git blob读回hash；66之后无产品/测试/依赖变动。该文件仅准备输入，尚无本线实际审查任务/模型终态/报告，不占用GUI或触发push；实际派发前仍须核验新基线、冻结树及总控资源租约。
+
+## 当前 Goal 状态：blocked（未完成）
+
+本轮已完成连续三轮同一依赖/资源条件的阻塞审计，见blocked-audit.md。正式格式/可信投影/位置lease/导入receipt仍无批准接点；外审实际任务0且无本线可用合规入口。私有实现、验证、内审、E1及离线packet已收口，现无不越界的必要独立实现可继续。总控/T01/I06实际进程仍运行，不把它们当停止；Goal blocked仅等待实际可执行接点或外审资源变化。完整目标与父门全部保留，候选和原件不变，未push/PR/CI/merge。
