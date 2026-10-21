@@ -25,3 +25,15 @@
 首次全仓 `npm run check`：630 TS + 1105 Python 通过（含当时 53 项行为测试）。原日志 `evidence/check-first.log` 本地保留。随后本地独立审查发现 P1 常量 create 幂等问题和 P2 完整证据缺测，原不通过报告及处置见 `local-review-1.md`。已修复，61 项私有测试通过；旧全仓结果不充当修复候选最终验证。
 
 精确交接/外审预约需求见 `docs/iterations/T06/interface.md`。本 base 缺失 AGENTS 引用的架构计划文件，已只读全文读取主 checkout 对应真实源；未复制至本树、未改保护源。当前等待修复候选本地独立复核及新全仓检查；指定双方外审尚未预约、未执行；未 push/PR/合并。
+
+## 当前可恢复交付
+
+阶段：`private_implementation_validated`。产品/测试/fixture/接口冻结候选为 **`4542c5521aa96e676ab000861a65394e525b1144`**，base 与实查远端 develop 均为 `5f910b52c69d86a1076b2032e5d3c63e715947f3`。
+
+修复候选新全仓 `npm run check` exit 0：15 个 TS 文件 / 630 项 TS 测试，1113 项 Python 测试（内含 61 项行为测试），lint/格式/类型/构建/ruff 均通过。`npm run verify:sources` exit 0，12 个归档源一致。独立 agent 对同候选全部 8 个新增文件重新完整复核通过，原 P1/P2 逐项关闭，见 `local-review-2.md`。记录与源码/本地原日志 SHA-256 见 `evidence/validation.json`。日志原件本地保留，不冒充远程 CI。
+
+仅自有新增路径进入产品提交，AGENTS SHA 不变且未暂存；未改 Store、worker、协议、语义/resources、公共契约、锁、main/preload/UI，未使用其他树的未批准实现。
+
+待总控交接：T01 隔离运行与同事务消费/轨迹提交接口；T05/I05 真实事件后推理与 RDF 适配；T00 业务方法及错误/权限/取消接线；T09 批准公共基线；T07 资源与完整轮次；T08 实际 B-08。接口文档已给精确字段和边界。请按本精确工作树预约指定 ZCode/MiniMax 全新独立完整审查及集成队列；当前没有取得其时段，未操作审查应用。
+
+本聊天 Goal 保持 active。纯算法本地通过不关闭 FR-600–604 父模块，也不关闭 B-01–11 完整集成门。未推送、未创建 PR、未运行远端 CI、未合并或上线；真实依赖批准后仍在本聊天完成接线、行为页面、原验收、指定双审和后续门禁，不等待整个 M0 才做可独立推进的工作。

@@ -1,0 +1,80 @@
+{
+  "date": "2026-10-21",
+  "timezone": "Asia/Shanghai",
+  "stage": "private_implementation_validated",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+  "branch": "feature/weekly-t06-behavior",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "candidate": "4542c5521aa96e676ab000861a65394e525b1144",
+  "remote_develop_observed": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "protected_guide_sha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+  "source_sha256": {
+    "packages/engine/src/ontolearn_engine/behavior/__init__.py": "0519496083ecaf23ad3a606c8be5f461b21bfb1507f313678083d212cec676d9",
+    "packages/engine/src/ontolearn_engine/behavior/planner.py": "b9133e85c50f1cb65a8f0d004d00192cd4fd6159216673031d4e4db578db0cc1",
+    "packages/engine/tests/test_behavior_planner.py": "940e54c1a94ec1b0ac9a8baec0bf7d98270fcaff2a476818033571a78db3285d",
+    "tests/fixtures/behavior/build_corpus.py": "9bbe4db97895c5ead7588acf22a25fa21e5358743b83755a9549141f5b66c5b4",
+    "tests/fixtures/behavior/counterexamples.json": "17de133b6a13efd14197b4d7dc09a51c7df097db5161b9acb6f7b92e5f9796f9",
+    "docs/iterations/T06/interface.md": "0f82b06f5ef5a542a21fc903b701b6544993afcd75ce41cc833e641db8b6ee89"
+  },
+  "commands": [
+    {
+      "command": "npm ci --ignore-scripts",
+      "exit_code": 0,
+      "note": "Dedicated worktree node_modules; no lock change"
+    },
+    {
+      "command": "uv sync --frozen",
+      "exit_code": 0,
+      "note": "Dedicated worktree .venv; no lock change"
+    },
+    {
+      "command": "uv run --frozen pytest packages/engine/tests/test_behavior_planner.py -q",
+      "exit_code": 0,
+      "passed": 61
+    },
+    {
+      "command": "npm run check",
+      "candidate": "4542c5521aa96e676ab000861a65394e525b1144",
+      "exit_code": 0,
+      "typescript_tests": 630,
+      "typescript_files": 15,
+      "python_tests": 1113,
+      "note": "Behavior 61 included in Python total; lint/format/typecheck/build/ruff also passed"
+    },
+    {
+      "command": "npm run verify:sources",
+      "exit_code": 0,
+      "archive_files_verified": 12
+    }
+  ],
+  "local_review": {
+    "reviewer": "/root/behavior_independent_review",
+    "initial": "not_passed",
+    "final": "passed_private_scope",
+    "reports": ["../local-review-1.md", "../local-review-2.md"]
+  },
+  "local_log_sha256": {
+    "check-first.log": "13c3ad10c5d38bbef068d130a2655b96ff312b953f984d93c843621efa44f068",
+    "private-after-review-1.log": "cc69fbd34edf34391895eeb083a27a8b5789fff2d36f8a77f6c72aa27da70ca8",
+    "private-after-review-2.log": "7b81edfd990165a3fa9e6623ebce2701ebde0292370c49c04acc71d98ade66ad",
+    "check-candidate-4542c55.log": "9d40a13f311b2a08442c3add45f0162036b4e4ff10dac4559193cdb9295273ea",
+    "verify-sources-4542c55.log": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+  },
+  "log_retention": "Original logs remain locally ignored; this manifest retains immutable digests. They are not CI evidence.",
+  "bootstrap_diagnostics": [
+    "Initial fixture author-script ruff found two E501 lines (198,242); formatter fixed both before candidate. Original tool outputs retained in chat.",
+    "AGENTS architecture-plan path absent from base; owning main checkout copy read only, no source changes."
+  ],
+  "not_verified": [
+    "approved reasoning execution and full RDF literal codec",
+    "Store transaction/rollback/late delivery/cancellation integration",
+    "resource stage and complete G.3 round results",
+    "T08 real Agent B-08 and UI",
+    "T09 approved public fixture consumption",
+    "ZCode GLM-5.3/highest and MiniMax M3.1-Flash/xhigh reviews",
+    "push/PR/CI/merge",
+    "Windows/macOS/native/e2e/package/production"
+  ],
+  "goal_status": "active",
+  "next": "Controller supplies approved interfaces/public baseline and reserves exact-tree independent external reviews; continue integration in this same chat."
+}
