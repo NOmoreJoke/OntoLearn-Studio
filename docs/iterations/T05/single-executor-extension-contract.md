@@ -114,3 +114,13 @@ RDF term equality与值相等不同，因此即使比较判定两值相等，也
 SPARQL有自己的数值提升、操作数匹配和字符串码点比较规范。本合同的受控规则比较尚未采用该整套政策；IRI/布尔排序和跨numeric精度建议可能与SPARQL不同。owner需明确是否要求规则与查询FILTER同语义；如采用SPARQL路径，应同步精度/类型错误和跨入口正反例，不允许声称“标准兼容”却混用另一值比较政策。[SPARQL 1.1 Operator Mapping](https://www.w3.org/TR/sparql11-query/#OperatorMapping)
 
 规则结论若已存在于断言或RDFS图，实际rule输出投影、新知识差异和trace去重的含义也须由owner按批准实现明确：保持原断言及其来源，不凭本合同擅自把同一事实写入断言或改称全新知识。
+
+## 10. C2 依据不确定性的新依赖事实
+
+总控随后实际通知并由T05只读核对I05报告：固定实现 `26eb632f0e1210b03ac3aef4cfd71fdc4a0c5222`、冻结C2 `2e337854838191fab09c7a584f5aa73d0939557a` / 输入manifest `31bd67f0a006d3423ed3fa0494e2b36a4c9963be8d7ba6cc7ab7f124aa7e55ef` 的6个新进程seed1/2/3/5/7/11，在相同源码/锁/输入下结论集合相同，但domain/range的rdfsEvidence及下游rule basis可出现两种有效support。原B1要求完整可观察结果确定，故C2停止派发/推送；没有创建C2指定外审任务，不能把未创建说成审查通过或不通过。
+
+证据来源为I05 `docs/reviews/I05/evidence/c2-basis-counterexample/{manifest.json,finding.json.raw}` 及 `round-2/observed-outcome.json`；T05实际只读这三份报告，未读/解包/导入/执行其中列出的产品或probe脚本。报告源和哈希、有限验证范围见本线 `docs/reviews/T05/semantic-dependency-c2-receipt.json`。这是I05独立probe的事实，不是T05重跑证明，也不是新类型/trace政策已采用。
+
+I05正准备C3最小确定性witness修复及新语义身份，当前尚无可由T05采用的批准C3。第1节offer及四个hash仅保留为历史固定来源，**未来交接须重新核对真正批准候选的源码hash、语义身份和selected认证**；不得将旧首次witness行为或旧hash固定成最新不变约束。四路径仍未生效，责任不因本记录转移；原C2、报告和本线既有UI输入保留。
+
+确定性修复必须保留原解释范围，不自动等于枚举全部RDFS可能证明。RDFS代表依据如何稳定选择须由owner按新候选精确回应，与同规则独立匹配/多结论的真实依据要求分别处理。T05不能通过只比较结论集合、忽略依据差异或补写依据来隐藏该缺陷；正式联验应核对同版完整输出/真实依据稳定性、历史producer语义隔离及源变后的真实变化，不把跨进程选证差异误记成上游数据变更。当前不因依赖消息重跑未变化的UI/输入测试。

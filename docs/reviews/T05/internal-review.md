@@ -67,3 +67,7 @@ reviewer实际核对两个差异、上下文、批准5f registry及FR-500/D后�
 另独立复核R1/R2恢复归档8载荷长度/hash、四源与fff一致、两raw与原件一致、bundle校验通过；没有重复产品检查，来源明确事后绑定。也承认并纠正先前合同漏查：resources.py在批准5f中已有，只有三个semantic新增；候选增量仍未批。修正合同SHA `392d39e275cd2ccd9d3fbed5a5e4b2ead014e1654854480625a0aac1a40e3e4a`已独立树清单确认，原错误和旧review保留历史。
 
 最终UI封存由同一独立reviewer只读复核通过：715488B/54成员，53载荷内外清单全部一致，6源码与2f及当前字节相等，18个DOM断言均含实际检查代码/成功结果；真实fullcheck635/1200一致。最终关闭回执存在，reviewer另实查PID45676/45677消失；未重复浏览器或全量检查。归档SHA `e046be791bd6336d909365413382b42e10a5cf8dbe85142ea16e71647ea8de56`，仅认可synthetic组件范围。
+
+## C2 确定性依赖事实复核
+
+独立reviewer只读三份报告及本线四文档差异后通过：字节/hash和26实现/2e冻结身份一致；候选manifest31bd、原probe manifest03150、报告manifest57338、findingaa96未混淆。合同不把owner报告当T05重跑，不声称C3获批/四路径生效，旧offer仅历史来源、未来核真正批准身份；不固化旧witness或擅自采用全RDFS证明枚举/类型政策。新增后合同SHA `f1393622622d69c4c60f334a20a0385d45310ae795c4e3cb96e3c59669cf0485`。没有读取未批实现/归档、改代码或重跑测试。

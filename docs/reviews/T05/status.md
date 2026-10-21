@@ -79,3 +79,9 @@
 当前实现提交 `2fcd36b915b190963a1d89d608e896da1a15284e` 修复headless实际发现的旧草稿残留：生成输出/错误只在表单输入完全相同时显示。独立实现审查通过，新完整check退出0（635 TS / 1200 Python）；18个显式headless DOM断言和恢复原件见`browser-ui-evidence.json`/`browser-ui-verification.md`。只有synthetic组件/草稿交互证据，无真实领域/保存/App导航/原生证据。自有headless会话已关闭，实际PID消失。
 
 总控已全文读合同并实际转I05/T01逐项回应，建议未被默认采纳。合同§1原“批准5f无四文件”错误已实查纠正为3个semantic新增、resources.py已有但I05增量未批；四路径仍未生效，未消费未批候选。完整FR500–505/C/D/G.2、正式双范围/执行/生命周期/跨模块、指定双审/CI/合并和发布门保持；Goal active，未push/PR/CI/合并。
+
+## I05 C2新阻断的实际接收
+
+总控实际通知C2新增B1完整输出确定性缺陷；本线已全文只读其manifest/finding/round outcome三报告，记录见`semantic-dependency-c2-receipt.json`。固定26源码/冻结2e候选的6进程seed在结论相同情况下RDFS及下游rule basis不同，C2停止派发/推送；I05准备C3，并非T05已采用新实现。没有创建C2指定双审任务。
+
+合同第10节保留原offer为历史输入，未来四文件交接须以真正批准候选重核源码hash/语义身份/selected认证，不固定旧首次witness行为、不靠隐藏依据差异掩盖问题，也不自动扩大为枚举所有RDFS证明。原UI2f/证据69d、R1R2输入及原报告不改，未因该消息重复无变化测试。当前无批准C3、无生效语义handoff，完整Goal继续active。
