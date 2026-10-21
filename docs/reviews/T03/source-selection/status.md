@@ -30,3 +30,7 @@
 ## T01 r1设计交接（不恢复Goal）
 
 按总控新消息全文核对T01固定f51dd38的§2及原件SHA0f3ab7…，保存 [精确设计答复](../../../iterations/T03/source-selection/t01-interface-response-r1.md) 与 [独立复核](t01-interface-response-r1-review.md)。接受唯一有界JSONL的64KiB原字节分块/seal方向；六个待冻结合同是完整帧/小帧预算、configure新代次引用、完整表及选项摘要、typed来源与总预算/pin回收、worker所有权及确认前只读执行/大结果、复验到最终确认提交的生命周期。复核的一项P3确认语义已关闭；seal完整性不等于人类写确认。仅文档/静态来源读回/格式检查，未运行新runtime测试或采用未批准代码，broker/source测试字节未改。原Goal仍blocked，公共schema/消费/接线尚未生效。
+
+## worker单文件责任补充（2026-10-21 10:21+08生效）
+
+已全文读总控worker交接协议并核对execution-state的effective记录：`worker.py`未来维护唯一归T01，只从批准5f的9314B/SHA `2fa848aa3a2148e59a24f01c9333701f0f03eed95cffe55a0a78b74f1d06f2f0`施工；不得消费I05未批准C3语义worker。新版common SHA `ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff`已实际读取新增段；原b24全文的15574字节前缀逐字SHA匹配，完整§9/无桌面规则未变，AGENTS仍78df。此通知消除r1答复缺口5中的“worker未来维护者未生效”这一责任项；该r1固定输入及原审查不改写，其余worker受控合同、readonly inspection/preview、分块/限额/确认/取消/结果与正式联验仍未获批。protocol/resources/语义/旧tests/build/CI及semantic4未来offer未随转。未改产品、采用未批实现、重测、开GUI或恢复Goal；当前仍blocked。
