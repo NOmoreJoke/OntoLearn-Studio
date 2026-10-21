@@ -34,3 +34,5 @@
 构建责任回执：已全文读回I05→T03四文件生效协议并核对execution-state。pyproject/uv.lock/build-engine/entrypoint后续仅T03维护；T11共享需求文档已注明按此路由，未修改/接管四文件，未采用未批源码/锁/包验。CI/resources等不随四文件转交，完整平台签名/配置和T01/T10接口仍待具体交接。
 
 当前恢复入口：`recovery.json` 固定最新私有实现/测试/验收提交 `7d28fdb27c0aac39ed7df1f9fd5fa0f127b5d9f4` 及65/695/1052验证和最新内审报告哈希；前述ffa0972/50a3212为历史阶段，不用于恢复当前候选。后续仅追加本恢复回执，无实现或验收变化。AGENTS保持未暂存，尚未推送；完整目标和原门禁继续。
+
+格式基础责任回执：已全文读回I05→T01 Python四文件生效协议并核对execution-state，协议与登记SHA一致。JobStore/coordinator/Python入口/合同及既有storage基础由T01负责，T11恢复/迁移证据的接口需求按此协调；公共canonical/main八文件未自动转交。详见format-python-ownership-receipt.json及共享接线请求。此次仅责任路由文档更新，核验器/测试/验收基线未变，不重跑无变化测试、不重开产品内审；完整候选、真实设备/签名/模型/真人及正式门禁仍待具备。

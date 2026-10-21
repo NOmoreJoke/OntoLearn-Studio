@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-21T01:02:38.896350+00:00",
+  "source": "Controller direct effective notification plus full agreement read and execution-state read-only verification",
+  "agreement": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/I05-T01-format3-ownership-handoff.md",
+    "sha256": "18485767098d448a4fcce2fc7e59b5a325433826894b98111cab96926fdc2097",
+    "fullRead": true
+  },
+  "stateObservation": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/execution-state.json",
+    "sha256": "cf21df892cb36e8b0b58320179bc3bf34bb4d552227012add263c6ea0a860f71",
+    "updatedAt": "2026-10-21T09:02:26.555090+08:00",
+    "status": "effective",
+    "controllerStateModifiedByT11": false
+  },
+  "from": "I05",
+  "to": "T01",
+  "paths": [
+    "packages/engine/src/ontolearn_engine/job_store.py",
+    "packages/engine/src/ontolearn_engine/coordinator.py",
+    "packages/engine/src/ontolearn_engine/__main__.py",
+    "packages/contracts/python/contract_v2.py"
+  ],
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "responsibilities": [
+    "original operation_claims migration with job/application kind",
+    "same-connection non-Job application adapter and immutable receipt",
+    "separate Store-ready and Job-ready foundations"
+  ],
+  "t11Routing": "Request exact frozen DDL/API, full JSON/receipt/checkpoint, same-source errors and real failure fixtures from T01 before integration; do not guess or write Store",
+  "constraints": [
+    "default format2 and explicit internal format3 isolation",
+    "no unapproved I05 implementation adoption",
+    "I06 canonical/main8 requires separate handoff",
+    "no transfer of worker/protocol/resources, existing tests or CI",
+    "T03 build/dependency4 handoff remains separate",
+    "original independent/designated reviews, CI and normal merge gates remain"
+  ],
+  "independentReview": {
+    "path": "I05-T01-format3-ownership-handoff-review.md",
+    "sha256": "8e0bbfe0edf78df7fc7fe4f6ee61e69d9d73c14957763cbb1ac30707398f2681",
+    "scope": "Controller reported full read and acceptance; not separately re-reviewed by T11"
+  },
+  "productAcceptance": false,
+  "t11SharedFilesChanged": false,
+  "implementationCommit": "7d28fdb27c0aac39ed7df1f9fd5fa0f127b5d9f4",
+  "verificationRerun": false,
+  "reason": "Ownership routing documentation only; implementation, tests, dependencies and acceptance baseline unchanged",
+  "releaseAuthorized": false
+}
