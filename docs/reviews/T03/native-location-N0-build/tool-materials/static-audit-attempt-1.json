@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-21T15:48:56.963350+00:00",
+  "script": "static-audit.py",
+  "exit_code": 1,
+  "stage": "link target validation",
+  "error": "Direct normalized path lookup did not follow intermediate Versions/Current framework symlinks. Eight framework links were reported missing; this is an audit algorithm limitation, not yet a conclusion on archive safety.",
+  "member_list_preserved": "cmake-archive-members.json",
+  "next_step": "Resolve symlink components lexically in archive index only; reject escape/cycle/missing final targets. No filesystem extraction."
+}

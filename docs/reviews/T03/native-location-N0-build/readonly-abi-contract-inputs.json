@@ -1,0 +1,29 @@
+{
+  "inputs": [
+    {
+      "ref": "6a7789bf0c1e5e7b0f25f37c86e0c9d64c6dc20d",
+      "path": "packages/native-location/include/location_abi.h",
+      "bytes": 13296,
+      "sha256": "fc3f7983d62b0ef4f5a3a056198c00a0b971d2ae722acc33bc6f61937ec8e172",
+      "ownerFullRead": true,
+      "readOnlyContractNotCopiedOrAdopted": true
+    },
+    {
+      "ref": "6a7789bf0c1e5e7b0f25f37c86e0c9d64c6dc20d",
+      "path": "docs/reviews/I06/native-location-N0/abi-build-handoff.md",
+      "bytes": 17562,
+      "sha256": "8b3ba7c43935fac973a550944f6c2f5f69c94623162b31a75e0da26053ac7134",
+      "ownerFullRead": true,
+      "readOnlyContractNotCopiedOrAdopted": true
+    }
+  ],
+  "proposedNodeApiVersionFromHandoff": 3,
+  "actualBindingApiMinimumVerified": false,
+  "fullNineSourceAdoptionAuthorized": false,
+  "fixtureAddonSameRegistryFourTUContract": "capability_core + current platform + node_binding + location_core_test under NL_NODE_FIXTURE_HOST and NL_WITH_NODE",
+  "coreTestArgvContract": "location_core_test <absolute location_child_probe target>",
+  "childProbeArgvContract": [
+    "--hold-until-eof"
+  ],
+  "TSRealAddonEnvironmentContract": "I06_NATIVE_LOCATION_TEST_ADDON"
+}

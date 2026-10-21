@@ -1,0 +1,34 @@
+{
+  "status": "incomplete",
+  "mode": "verify-only",
+  "target": "win32-x64",
+  "component": "core",
+  "processExecution": false,
+  "inputWrites": false,
+  "lockSha256": "865c7c8ea12a2038437b81fb5718eaa3ce1ff9c3e30709f2ce03029e4456a30f",
+  "inputDigest": "9256671493b8941523de083aba812194e839e8fc8694f7c9dd3bb821974c6a1b",
+  "writers": [
+    {
+      "path": "packages/native-location/CMakeLists.txt",
+      "bytes": 13332,
+      "sha256": "81df2fbf6169cfb8d990080cf9f804adc6e275accdfc912f9c334028578d7a5d"
+    },
+    {
+      "path": "packages/native-location/toolchain-lock.json",
+      "bytes": 4624,
+      "sha256": "865c7c8ea12a2038437b81fb5718eaa3ce1ff9c3e30709f2ce03029e4456a30f"
+    },
+    {
+      "path": "scripts/build-native-location.mjs",
+      "bytes": 21117,
+      "sha256": "cf0ad744bffaa29a7c2b932fa50d55bf4936584c477bf0bb7947ee64a5d04f0b"
+    }
+  ],
+  "gaps": [
+    "source: full nine fixed inputs/adoption pending; not read",
+    "win32-x64: supplied/extracted toolchain and SDK acceptance pending; not read",
+    "fixed complete source test assembly approval pending",
+    "configure/build execution window pending: win32-x64/core",
+    "host mismatch: darwin-arm64; cross compilation unsupported"
+  ]
+}

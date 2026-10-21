@@ -1,0 +1,510 @@
+{
+  "schema": "T03-N0-static-official-material-index-v1",
+  "generated_utc": "2026-10-21T15:50:20.807927+00:00",
+  "authorization_path": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/iteration-control/2026-10-21-weekly-release/T03-native-N0-build-source-and-tool-input-authorization.md",
+  "authorization_sha256": "3f4c0aba50d613a717b4402a7d982c38aa3f017996667c0cc6ae1aa94ff21977",
+  "tmp_run_dir": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe",
+  "evidence_dir": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/tool-materials",
+  "official_source_discovery": [
+    {
+      "url": "https://cmake.org/download/",
+      "observed": "Official Latest Release 4.4.4; separate Release Candidate 4.5.0-rc1. Stable macOS universal distribution states macOS 12 or later.",
+      "archive_url": "https://github.com/Kitware/CMake/releases/download/v4.4.4/cmake-4.4.4-macos-universal.tar.gz",
+      "checksum_url": "https://github.com/Kitware/CMake/releases/download/v4.4.4/cmake-4.4.4-SHA-256.txt"
+    },
+    {
+      "url": "https://discourse.cmake.org/t/cmake-4-4-4-available-for-download/15862",
+      "observed": "Official CMake announcement of 4.4.4, dated October 8, 2026."
+    }
+  ],
+  "static_material_status": "PASS within bounded static checks",
+  "runtime_status": "NOT_RUN; no tool/native/compiler/CTest/build/OS/permission/device/IO pass",
+  "cost": "free official downloads; no credentials or paid services",
+  "mutations": "Only controlled tmp run directory and this tool-materials evidence directory; no product/import/PATH/proxy/certificate/config/commit changes",
+  "material_records": [
+    {
+      "label": "cmake-checksum",
+      "source_url": "https://github.com/Kitware/CMake/releases/download/v4.4.4/cmake-4.4.4-SHA-256.txt",
+      "started_utc": "2026-10-21T15:46:14.993724+00:00",
+      "limit_bytes": 2097152,
+      "redirect_chain": [
+        {
+          "url": "https://github.com/Kitware/CMake/releases/download/v4.4.4/cmake-4.4.4-SHA-256.txt",
+          "status": 302,
+          "location": "https://release-assets.githubusercontent.com/github-production-release-asset/537699/dd23285f-9ec1-4485-9cef-4f43260d6734?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-10-21T16%3A39%3A03Z&rscd=attachment%3B+filename%3Dcmake-4.4.4-SHA-256.txt&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-10-21T15%3A38%3A41Z&ske=2026-10-21T16%3A39%3A03Z&sks=b&skv=2018-11-09&sig=G0TR4dP62JA%2B%2F6YbAY4pCrMDxYutXBXrkvqO%2FAp0gAo%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MjU5Nzg3NywibmJmIjoxNzkyNTk3NTc3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.mh_lFM6WRbstLLG4EfWYG2hIveSKCx7qMvpNvfdpyLI&response-content-disposition=attachment%3B%20filename%3Dcmake-4.4.4-SHA-256.txt&response-content-type=application%2Foctet-stream"
+        }
+      ],
+      "final_url": "https://release-assets.githubusercontent.com/github-production-release-asset/537699/dd23285f-9ec1-4485-9cef-4f43260d6734?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-10-21T16%3A39%3A03Z&rscd=attachment%3B+filename%3Dcmake-4.4.4-SHA-256.txt&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-10-21T15%3A38%3A41Z&ske=2026-10-21T16%3A39%3A03Z&sks=b&skv=2018-11-09&sig=G0TR4dP62JA%2B%2F6YbAY4pCrMDxYutXBXrkvqO%2FAp0gAo%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MjU5Nzg3NywibmJmIjoxNzkyNTk3NTc3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.mh_lFM6WRbstLLG4EfWYG2hIveSKCx7qMvpNvfdpyLI&response-content-disposition=attachment%3B%20filename%3Dcmake-4.4.4-SHA-256.txt&response-content-type=application%2Foctet-stream",
+      "http_terminal_status": 200,
+      "headers": {
+        "Connection": "close",
+        "Content-Length": "2015",
+        "Last-Modified": "Fri, 02 Oct 2026 16:20:42 GMT",
+        "ETag": "\"0x8DF20A11AED0055\"",
+        "Server": "Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0",
+        "x-ms-request-id": "c798c95c-101e-0036-638a-526c25000000",
+        "x-ms-version": "2018-11-09",
+        "x-ms-creation-time": "Fri, 02 Oct 2026 16:20:42 GMT",
+        "x-ms-blob-content-md5": "JrH3jiE8p9GBRAXKBxCX2A==",
+        "x-ms-lease-status": "unlocked",
+        "x-ms-lease-state": "available",
+        "x-ms-blob-type": "BlockBlob",
+        "x-ms-server-encrypted": "true",
+        "x-ms-access-tier": "Hot",
+        "x-ms-access-tier-inferred": "true",
+        "Via": "1.1 varnish, 1.1 varnish",
+        "Accept-Ranges": "bytes",
+        "Age": "2595",
+        "Date": "Wed, 21 Oct 2026 15:46:22 GMT",
+        "X-Served-By": "cache-iad-khef600049-IAD, cache-pao-kpao1770050-PAO",
+        "X-Cache": "HIT, HIT",
+        "X-Cache-Hits": "3847, 0",
+        "X-Timer": "S1792597583.820322,VS0,VE65",
+        "Content-Disposition": "attachment; filename=cmake-4.4.4-SHA-256.txt",
+        "Content-Type": "application/octet-stream"
+      },
+      "outcome": "downloaded",
+      "path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/cmake-4.4.4-SHA-256.txt",
+      "bytes": 2015,
+      "sha256": "560231a0064d3f39c078d6b242dab4a93a8ed17a80e997a56851f338a91e9d65",
+      "finished_utc": "2026-10-21T15:46:23.052418+00:00"
+    },
+    {
+      "label": "cmake-archive",
+      "source_url": "https://github.com/Kitware/CMake/releases/download/v4.4.4/cmake-4.4.4-macos-universal.tar.gz",
+      "started_utc": "2026-10-21T15:46:23.052756+00:00",
+      "limit_bytes": 262144000,
+      "redirect_chain": [
+        {
+          "url": "https://github.com/Kitware/CMake/releases/download/v4.4.4/cmake-4.4.4-macos-universal.tar.gz",
+          "status": 302,
+          "location": "https://release-assets.githubusercontent.com/github-production-release-asset/537699/cf6e06f1-47bd-465c-ac7e-15e1f9cf39a1?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-10-21T16%3A36%3A01Z&rscd=attachment%3B+filename%3Dcmake-4.4.4-macos-universal.tar.gz&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-10-21T15%3A35%3A39Z&ske=2026-10-21T16%3A36%3A01Z&sks=b&skv=2018-11-09&sig=uC012g7inVzO4z5UMEthheXBuhJz2QvOdnAAV9rVWpg%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MjU5OTM4NCwibmJmIjoxNzkyNTk3NTg0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.VDD1qoIA1SlMxHTuus8g5h1n7X1F49z7MbAjTM-gtd0&response-content-disposition=attachment%3B%20filename%3Dcmake-4.4.4-macos-universal.tar.gz&response-content-type=application%2Foctet-stream"
+        }
+      ],
+      "final_url": "https://release-assets.githubusercontent.com/github-production-release-asset/537699/cf6e06f1-47bd-465c-ac7e-15e1f9cf39a1?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-10-21T16%3A36%3A01Z&rscd=attachment%3B+filename%3Dcmake-4.4.4-macos-universal.tar.gz&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-10-21T15%3A35%3A39Z&ske=2026-10-21T16%3A36%3A01Z&sks=b&skv=2018-11-09&sig=uC012g7inVzO4z5UMEthheXBuhJz2QvOdnAAV9rVWpg%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MjU5OTM4NCwibmJmIjoxNzkyNTk3NTg0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.VDD1qoIA1SlMxHTuus8g5h1n7X1F49z7MbAjTM-gtd0&response-content-disposition=attachment%3B%20filename%3Dcmake-4.4.4-macos-universal.tar.gz&response-content-type=application%2Foctet-stream",
+      "http_terminal_status": 200,
+      "headers": {
+        "Connection": "close",
+        "Content-Length": "89454352",
+        "Last-Modified": "Fri, 02 Oct 2026 16:20:01 GMT",
+        "ETag": "\"0x8DF20A102962D19\"",
+        "Server": "Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0",
+        "x-ms-request-id": "90405c57-301e-0043-117e-5b0709000000",
+        "x-ms-version": "2018-11-09",
+        "x-ms-creation-time": "Fri, 02 Oct 2026 16:20:01 GMT",
+        "x-ms-lease-status": "unlocked",
+        "x-ms-lease-state": "available",
+        "x-ms-blob-type": "BlockBlob",
+        "x-ms-server-encrypted": "true",
+        "x-ms-access-tier": "Hot",
+        "x-ms-access-tier-inferred": "true",
+        "Via": "1.1 varnish, 1.1 varnish",
+        "Accept-Ranges": "bytes",
+        "Age": "3218",
+        "Date": "Wed, 21 Oct 2026 15:46:25 GMT",
+        "X-Served-By": "cache-iad-kcgs7200078-IAD, cache-pao-kpao1770042-PAO",
+        "X-Cache": "HIT, HIT",
+        "X-Cache-Hits": "606, 0",
+        "X-Timer": "S1792597586.861809,VS0,VE70",
+        "Content-Disposition": "attachment; filename=cmake-4.4.4-macos-universal.tar.gz",
+        "Content-Type": "application/octet-stream"
+      },
+      "outcome": "downloaded",
+      "path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/cmake-4.4.4-macos-universal.tar.gz",
+      "bytes": 89454352,
+      "sha256": "4b7b73704b1db9b374e5c9ab8e17ac6148b817b6396ee75cd94a852cbac9d305",
+      "finished_utc": "2026-10-21T15:48:32.423330+00:00"
+    },
+    {
+      "label": "node-v24.15.0-LICENSE",
+      "source_url": "https://raw.githubusercontent.com/nodejs/node/v24.15.0/LICENSE",
+      "started_utc": "2026-10-21T15:48:32.423905+00:00",
+      "limit_bytes": 2097152,
+      "redirect_chain": [],
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/v24.15.0/LICENSE",
+      "http_terminal_status": 200,
+      "headers": {
+        "Connection": "close",
+        "Content-Length": "156926",
+        "Cache-Control": "max-age=300",
+        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+        "Content-Type": "text/plain; charset=utf-8",
+        "ETag": "\"667219c3b203c5cf485be755a50678b85cec8ac8cf03da7f37d3e4d73b029641\"",
+        "Strict-Transport-Security": "max-age=31536000",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "deny",
+        "X-XSS-Protection": "1; mode=block",
+        "X-GitHub-Request-Id": "0EA4:2B8A6E:86F51:BEC13:6AD8DED1",
+        "x-github-edge-region": "westus3",
+        "Accept-Ranges": "bytes",
+        "Date": "Wed, 21 Oct 2026 15:48:33 GMT",
+        "Via": "1.1 varnish",
+        "X-Served-By": "cache-pao-kpao1770024-PAO",
+        "X-Cache": "MISS",
+        "X-Cache-Hits": "0",
+        "X-Timer": "S1792597713.197060,VS0,VE131",
+        "Vary": "Authorization,Accept-Encoding",
+        "Access-Control-Allow-Origin": "*",
+        "Cross-Origin-Resource-Policy": "cross-origin",
+        "X-Fastly-Request-ID": "7b1d50ee8f32c77958dc27114e95204f49d5727a",
+        "Expires": "Wed, 21 Oct 2026 15:53:33 GMT",
+        "Source-Age": "0"
+      },
+      "outcome": "downloaded",
+      "path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/node-v24.15.0-LICENSE",
+      "bytes": 156926,
+      "sha256": "4573185d56580da2b890ba34a85a409257640f1c5632eade4300137266194d18",
+      "finished_utc": "2026-10-21T15:48:34.110200+00:00"
+    },
+    {
+      "label": "node-v24.15.0-node_api.h",
+      "source_url": "https://raw.githubusercontent.com/nodejs/node/v24.15.0/src/node_api.h",
+      "started_utc": "2026-10-21T15:48:34.110475+00:00",
+      "limit_bytes": 1048576,
+      "redirect_chain": [],
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/v24.15.0/src/node_api.h",
+      "http_terminal_status": 200,
+      "headers": {
+        "Connection": "close",
+        "Content-Length": "10370",
+        "Cache-Control": "max-age=300",
+        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+        "Content-Type": "text/plain; charset=utf-8",
+        "ETag": "\"4acc1477380a61f807ae9b2c2dda14b39c3bb9ec07fb76ed6f32a55d5ee5ed67\"",
+        "Strict-Transport-Security": "max-age=31536000",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "deny",
+        "X-XSS-Protection": "1; mode=block",
+        "X-GitHub-Request-Id": "3CB8:2BFE5A:82CAA:BAA40:6AD8DED2",
+        "x-github-edge-region": "westus3",
+        "Accept-Ranges": "bytes",
+        "Date": "Wed, 21 Oct 2026 15:48:34 GMT",
+        "Via": "1.1 varnish",
+        "X-Served-By": "cache-pao-kpao1770043-PAO",
+        "X-Cache": "MISS",
+        "X-Cache-Hits": "0",
+        "X-Timer": "S1792597715.804564,VS0,VE167",
+        "Vary": "Authorization,Accept-Encoding",
+        "Access-Control-Allow-Origin": "*",
+        "Cross-Origin-Resource-Policy": "cross-origin",
+        "X-Fastly-Request-ID": "ba4115cfec2bc95e56f6a978fec83c8003dac70b",
+        "Expires": "Wed, 21 Oct 2026 15:53:34 GMT",
+        "Source-Age": "0"
+      },
+      "outcome": "downloaded",
+      "path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/node-v24.15.0-node_api.h",
+      "bytes": 10370,
+      "sha256": "2d4560831e525b47b060ec8a0864ab73993df9e20215ce9f0fe7b24cd31af32a",
+      "finished_utc": "2026-10-21T15:48:35.118784+00:00"
+    },
+    {
+      "label": "node-v24.15.0-node_api_types.h",
+      "source_url": "https://raw.githubusercontent.com/nodejs/node/v24.15.0/src/node_api_types.h",
+      "started_utc": "2026-10-21T15:48:35.119266+00:00",
+      "limit_bytes": 1048576,
+      "redirect_chain": [],
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/v24.15.0/src/node_api_types.h",
+      "http_terminal_status": 200,
+      "headers": {
+        "Connection": "close",
+        "Content-Length": "1930",
+        "Cache-Control": "max-age=300",
+        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+        "Content-Type": "text/plain; charset=utf-8",
+        "ETag": "\"ba5cbea91a95a56d87d2a25d70fa801c0ab437f87193b188384057fd4488173f\"",
+        "Strict-Transport-Security": "max-age=31536000",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "deny",
+        "X-XSS-Protection": "1; mode=block",
+        "X-GitHub-Request-Id": "522E:2B5363:86105:BDD92:6AD8DED3",
+        "x-github-edge-region": "westus3",
+        "Accept-Ranges": "bytes",
+        "Date": "Wed, 21 Oct 2026 15:48:36 GMT",
+        "Via": "1.1 varnish",
+        "X-Served-By": "cache-pao-kpao1770059-PAO",
+        "X-Cache": "MISS",
+        "X-Cache-Hits": "0",
+        "X-Timer": "S1792597716.829386,VS0,VE212",
+        "Vary": "Authorization,Accept-Encoding",
+        "Access-Control-Allow-Origin": "*",
+        "Cross-Origin-Resource-Policy": "cross-origin",
+        "X-Fastly-Request-ID": "cd8989c33d2fbf1815698720c9c660e0b4c46154",
+        "Expires": "Wed, 21 Oct 2026 15:53:36 GMT",
+        "Source-Age": "0"
+      },
+      "outcome": "downloaded",
+      "path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/node-v24.15.0-node_api_types.h",
+      "bytes": 1930,
+      "sha256": "a25356630d3058f0a0c8937d9f297e9471e037fda58c2696d8a505c2bd99cb00",
+      "finished_utc": "2026-10-21T15:48:36.152184+00:00"
+    },
+    {
+      "label": "node-v24.15.0-js_native_api.h",
+      "source_url": "https://raw.githubusercontent.com/nodejs/node/v24.15.0/src/js_native_api.h",
+      "started_utc": "2026-10-21T15:48:36.152731+00:00",
+      "limit_bytes": 1048576,
+      "redirect_chain": [],
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/v24.15.0/src/js_native_api.h",
+      "http_terminal_status": 200,
+      "headers": {
+        "Connection": "close",
+        "Content-Length": "32609",
+        "Cache-Control": "max-age=300",
+        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+        "Content-Type": "text/plain; charset=utf-8",
+        "ETag": "\"372580694e343a1544fc1c00d023aacf96592f3eeaa5f08bf2092b7aecddee13\"",
+        "Strict-Transport-Security": "max-age=31536000",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "deny",
+        "X-XSS-Protection": "1; mode=block",
+        "X-GitHub-Request-Id": "9A18:8FE0D:85B53:BD87D:6AD8DED4",
+        "x-github-edge-region": "westus3",
+        "Accept-Ranges": "bytes",
+        "Date": "Wed, 21 Oct 2026 15:48:37 GMT",
+        "Via": "1.1 varnish",
+        "X-Served-By": "cache-pao-kpao1770070-PAO",
+        "X-Cache": "MISS",
+        "X-Cache-Hits": "0",
+        "X-Timer": "S1792597717.154047,VS0,VE183",
+        "Vary": "Authorization,Accept-Encoding",
+        "Access-Control-Allow-Origin": "*",
+        "Cross-Origin-Resource-Policy": "cross-origin",
+        "X-Fastly-Request-ID": "c1c3c95ce6f3740459dd3169c3fc62c627a43ac7",
+        "Expires": "Wed, 21 Oct 2026 15:53:37 GMT",
+        "Source-Age": "0"
+      },
+      "outcome": "downloaded",
+      "path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/node-v24.15.0-js_native_api.h",
+      "bytes": 32609,
+      "sha256": "eb03b6c850a1cfb593fd03e9e4251db8c82e9a6d9705bca91ac8d1a01fd7037c",
+      "finished_utc": "2026-10-21T15:48:37.740279+00:00"
+    },
+    {
+      "label": "node-v24.15.0-js_native_api_types.h",
+      "source_url": "https://raw.githubusercontent.com/nodejs/node/v24.15.0/src/js_native_api_types.h",
+      "started_utc": "2026-10-21T15:48:37.740649+00:00",
+      "limit_bytes": 1048576,
+      "redirect_chain": [],
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/v24.15.0/src/js_native_api_types.h",
+      "http_terminal_status": 200,
+      "headers": {
+        "Connection": "close",
+        "Content-Length": "7660",
+        "Cache-Control": "max-age=300",
+        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+        "Content-Type": "text/plain; charset=utf-8",
+        "ETag": "\"8853e9d5835d6c283ea3c7c0a88a8c885af2f49e20d68ec95665a1af699c6fdc\"",
+        "Strict-Transport-Security": "max-age=31536000",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "deny",
+        "X-XSS-Protection": "1; mode=block",
+        "X-GitHub-Request-Id": "AD66:155185:8A173:C1EAB:6AD8DED5",
+        "x-github-edge-region": "westus3",
+        "Accept-Ranges": "bytes",
+        "Date": "Wed, 21 Oct 2026 15:48:38 GMT",
+        "Via": "1.1 varnish",
+        "X-Served-By": "cache-pao-kpao1770075-PAO",
+        "X-Cache": "MISS",
+        "X-Cache-Hits": "0",
+        "X-Timer": "S1792597718.354219,VS0,VE187",
+        "Vary": "Authorization,Accept-Encoding",
+        "Access-Control-Allow-Origin": "*",
+        "Cross-Origin-Resource-Policy": "cross-origin",
+        "X-Fastly-Request-ID": "6a6dfac0c1728dd5eb12772e1ea8c27784af4866",
+        "Expires": "Wed, 21 Oct 2026 15:53:38 GMT",
+        "Source-Age": "0"
+      },
+      "outcome": "downloaded",
+      "path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/node-v24.15.0-js_native_api_types.h",
+      "bytes": 7660,
+      "sha256": "7dd3663630849ada3a30d39abf42a192c9b6e7de63017cd32c41f5371a475b34",
+      "finished_utc": "2026-10-21T15:48:38.701272+00:00"
+    }
+  ],
+  "node_local_header_comparison": [
+    {
+      "header": "node_api.h",
+      "downloaded_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/node-v24.15.0-node_api.h",
+      "downloaded_bytes": 10370,
+      "downloaded_sha256": "2d4560831e525b47b060ec8a0864ab73993df9e20215ce9f0fe7b24cd31af32a",
+      "local_path": "/usr/local/include/node/node_api.h",
+      "local_exists": true,
+      "local_bytes": 10370,
+      "local_sha256": "2d4560831e525b47b060ec8a0864ab73993df9e20215ce9f0fe7b24cd31af32a",
+      "byte_identical": true
+    },
+    {
+      "header": "node_api_types.h",
+      "downloaded_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/node-v24.15.0-node_api_types.h",
+      "downloaded_bytes": 1930,
+      "downloaded_sha256": "a25356630d3058f0a0c8937d9f297e9471e037fda58c2696d8a505c2bd99cb00",
+      "local_path": "/usr/local/include/node/node_api_types.h",
+      "local_exists": true,
+      "local_bytes": 1930,
+      "local_sha256": "a25356630d3058f0a0c8937d9f297e9471e037fda58c2696d8a505c2bd99cb00",
+      "byte_identical": true
+    },
+    {
+      "header": "js_native_api.h",
+      "downloaded_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/node-v24.15.0-js_native_api.h",
+      "downloaded_bytes": 32609,
+      "downloaded_sha256": "eb03b6c850a1cfb593fd03e9e4251db8c82e9a6d9705bca91ac8d1a01fd7037c",
+      "local_path": "/usr/local/include/node/js_native_api.h",
+      "local_exists": true,
+      "local_bytes": 32609,
+      "local_sha256": "eb03b6c850a1cfb593fd03e9e4251db8c82e9a6d9705bca91ac8d1a01fd7037c",
+      "byte_identical": true
+    },
+    {
+      "header": "js_native_api_types.h",
+      "downloaded_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/node-v24.15.0-js_native_api_types.h",
+      "downloaded_bytes": 7660,
+      "downloaded_sha256": "7dd3663630849ada3a30d39abf42a192c9b6e7de63017cd32c41f5371a475b34",
+      "local_path": "/usr/local/include/node/js_native_api_types.h",
+      "local_exists": true,
+      "local_bytes": 7660,
+      "local_sha256": "7dd3663630849ada3a30d39abf42a192c9b6e7de63017cd32c41f5371a475b34",
+      "byte_identical": true
+    }
+  ],
+  "cmake_distribution_summary": {
+    "version": "4.4.4",
+    "stable_selection_basis": "Official cmake.org download section and official release announcement; not RC 4.5.0-rc1",
+    "official_minimum_macos": "12 or later",
+    "host_compatibility_scope": "Distribution minimum and arm64 slices only; target macOS27 execution untested",
+    "checksum_unique_basename_match": {
+      "manifest_lines": 21,
+      "basename_unique_matches": 1,
+      "official_line": "4b7b73704b1db9b374e5c9ab8e17ac6148b817b6396ee75cd94a852cbac9d305  cmake-4.4.4-macos-universal.tar.gz",
+      "archive_bytes": 89454352,
+      "actual_sha256": "4b7b73704b1db9b374e5c9ab8e17ac6148b817b6396ee75cd94a852cbac9d305",
+      "matches": true
+    },
+    "archive": {
+      "member_count": 9041,
+      "declared_total_member_bytes": 252707197,
+      "type_counts": {
+        "directory": 189,
+        "regular": 8839,
+        "symlink": 13
+      },
+      "root": "cmake-4.4.4-macos-universal",
+      "path_link_type_safety": "PASS"
+    },
+    "cmake_root": {
+      "archive_member_root": "cmake-4.4.4-macos-universal/CMake.app/Contents/share/cmake-4.4",
+      "modules_regular_file_count": 1686,
+      "necessary_module_members_present": [
+        "CMake.cmake",
+        "CMakeDetermineSystem.cmake",
+        "CMakeDetermineCXXCompiler.cmake",
+        "CMakeCXXCompiler.cmake.in",
+        "CMakeTestCXXCompiler.cmake",
+        "Platform/Darwin.cmake",
+        "Platform/Darwin-Initialize.cmake"
+      ],
+      "same_distribution_version": "4.4.4",
+      "version_basis": "Official checksum verifies full 4.4.4 distribution; preserved Info.plist CFBundleShortVersionString=4.4.4; CMAKE_ROOT Modules/CMake.cmake resource present.",
+      "verified_CFBundleShortVersionString": "4.4.4"
+    },
+    "main_license": {
+      "member": "cmake-4.4.4-macos-universal/CMake.app/Contents/doc/cmake/LICENSE.rst",
+      "bytes": 1498,
+      "sha256": "4382e7c1879ac90e3f101a395d23846fa4dbcaa1eed7265b43681e348754825d",
+      "kind": "CMake BSD 3-Clause license text; full exact bytes retained in tmp"
+    }
+  },
+  "failure_history": {
+    "web_fetch": [
+      {
+        "url": "https://github.com/Kitware/CMake/releases/download/v4.4.4/cmake-4.4.4-macos-universal.tar.gz",
+        "tool": "web open/click",
+        "result": "Failed to fetch restricted URL; no HTTP terminal status or response bytes supplied"
+      },
+      {
+        "url": "https://github.com/Kitware/CMake/releases/download/v4.4.4/cmake-4.4.4-SHA-256.txt",
+        "tool": "web open/click",
+        "result": "Failed to fetch restricted URL; no HTTP terminal status or response bytes supplied"
+      }
+    ],
+    "download_failures": [],
+    "audit_attempt_1": "static-audit-attempt-1.json preserves intermediate-symlink lookup limitation; corrected in v2 with bounded lexical component resolution",
+    "failed_partials": []
+  },
+  "license_and_version_text_inventory": [
+    {
+      "archive_member": "cmake-4.4.4-macos-universal/CMake.app/Contents/Info.plist",
+      "saved_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/cmake-static-texts/000-Info.plist",
+      "bytes": 1056,
+      "sha256": "8ed18a42780cbcc51e3d899e481b2c7cf7ca19add26c28a0778e868e5583ae05"
+    },
+    {
+      "archive_member": "cmake-4.4.4-macos-universal/CMake.app/Contents/doc/cmake/cmsys/Copyright.txt",
+      "saved_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/cmake-static-texts/001-Copyright.txt",
+      "bytes": 1813,
+      "sha256": "7aa92ae0b86f73f81947d177639556fe7f8ea42a74762ecdf563e3daf7106a40"
+    },
+    {
+      "archive_member": "cmake-4.4.4-macos-universal/CMake.app/Contents/share/cmake-4.4/Licenses/LGPLv3.txt",
+      "saved_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/cmake-static-texts/002-LGPLv3.txt",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "archive_member": "cmake-4.4.4-macos-universal/CMake.app/Contents/share/cmake-4.4/Modules/CMake.cmake",
+      "saved_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/cmake-static-texts/003-CMake.cmake",
+      "bytes": 305,
+      "sha256": "3f343dcc2c578c290a6880548387fabf26690adb71f630721e7e9a68e6d51a98"
+    },
+    {
+      "archive_member": "cmake-4.4.4-macos-universal/CMake.app/Contents/doc/cmake/LICENSE.rst",
+      "saved_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/cmake-static-texts/004-LICENSE.rst",
+      "bytes": 1498,
+      "sha256": "4382e7c1879ac90e3f101a395d23846fa4dbcaa1eed7265b43681e348754825d"
+    },
+    {
+      "archive_member": "cmake-4.4.4-macos-universal/CMake.app/Contents/doc/cmake/cmzstd/LICENSE",
+      "saved_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/cmake-static-texts/005-LICENSE",
+      "bytes": 1549,
+      "sha256": "7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8"
+    },
+    {
+      "archive_member": "cmake-4.4.4-macos-universal/CMake.app/Contents/doc/cmake/cmlibuv/LICENSE",
+      "saved_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/cmake-static-texts/006-LICENSE",
+      "bytes": 1079,
+      "sha256": "16de0c32b265cb7d46a6d3bd614f259dd4d693a5e26b3407b04aae8d73041f0c"
+    },
+    {
+      "archive_member": "cmake-4.4.4-macos-universal/CMake.app/Contents/doc/cmake/cmlibrhash/COPYING",
+      "saved_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/cmake-static-texts/007-COPYING",
+      "bytes": 736,
+      "sha256": "953e55838353335148c90b5a38a4894292680b1d4c37228ffddddbf18ce54bf5"
+    },
+    {
+      "archive_member": "cmake-4.4.4-macos-universal/CMake.app/Contents/doc/cmake/cmliblzma/COPYING",
+      "saved_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/cmake-static-texts/008-COPYING",
+      "bytes": 3885,
+      "sha256": "ee3b35b82f7bb0ba5fd9f13ca34ebbe757a59c05bfde5ab9d50ff4188ed33396"
+    },
+    {
+      "archive_member": "cmake-4.4.4-macos-universal/CMake.app/Contents/doc/cmake/cmlibarchive/COPYING",
+      "saved_path": "/tmp/T03-native-location-N0-tool-inputs/run-20261021T154556Z-9de064fe/cmake-static-texts/009-COPYING",
+      "bytes": 3089,
+      "sha256": "30e556b3959e3985d66efefec5eaac51d4995053caa1d3cffe6eb916f146f229"
+    }
+  ],
+  "limits": {
+    "cmake_archive_max_bytes": 262144000,
+    "node_license_max_bytes": 2097152,
+    "node_headers_aggregate_max_bytes": 4194304,
+    "archive_static_resource_member_cap": 50000,
+    "archive_static_resource_sum_cap_bytes": 2147483648
+  },
+  "unresolved_limitations": [
+    "No CMake/CTest execution or installation",
+    "No configure/build/compiler/addon/test/native/FS/device experiment",
+    "No target OS runtime Pass",
+    "Official full SHA-256 manifest matched; no PGP verification requested/performed",
+    "Temporary materials depend on tmp retention; actual binary not copied into review tree"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "status": "incomplete",
+  "mode": "verify-only",
+  "target": "darwin-arm64",
+  "component": "fixture-addon",
+  "processExecution": false,
+  "inputWrites": false,
+  "lockSha256": "484bdd81dd0b7833ca648037658cdc5c195335100fa5450b0581a04d6a568b0c",
+  "writers": [
+    {
+      "path": "packages/native-location/CMakeLists.txt",
+      "bytes": 9567,
+      "sha256": "a33850c89dcae7dc60bf3a000bb343046050b2eacc184c800dfd7b7ce41e10ee"
+    },
+    {
+      "path": "packages/native-location/toolchain-lock.json",
+      "bytes": 4582,
+      "sha256": "484bdd81dd0b7833ca648037658cdc5c195335100fa5450b0581a04d6a568b0c"
+    },
+    {
+      "path": "scripts/build-native-location.mjs",
+      "bytes": 19124,
+      "sha256": "7c84940de800d877aa6c2db1cf103f75b1888fd52c88b3db4b82006e72399a05"
+    }
+  ],
+  "gaps": [
+    "source: full nine fixed inputs/adoption pending; not read",
+    "darwin-arm64: supplied/extracted toolchain and SDK acceptance pending; not read",
+    "fixed complete source test assembly approval pending",
+    "actual complete binding API minimum approval pending; candidate NAPI_VERSION=3 only",
+    "Node headers/license supply adoption pending; not read",
+    "configure/build execution window pending: darwin-arm64/fixture-addon"
+  ]
+}
