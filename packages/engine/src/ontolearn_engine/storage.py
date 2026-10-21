@@ -470,6 +470,7 @@ class Store:
         preview_control: dict | None = None,
         compensate: dict | None = None,
         application: dict | None = None,
+        creation: dict | None = None,
         hook: Hook = lambda _: None,
     ) -> dict:
         """Atomic ChangeSet or whole managed-range replacement.
@@ -477,6 +478,26 @@ class Store:
         mapping = {id, rows:[{row, facts:[...]}]}; a prepared storage plan,
         NOT a CSV parser or complete mapping executor. No silent takeover exists.
         """
+        if creation is not None:
+            from ontolearn_engine.project.project_lifecycle import commit as commit_creation
+
+            if any(
+                value is not None
+                for value in (
+                    definitions,
+                    remove_definitions,
+                    manual,
+                    edits,
+                    remove,
+                    mapping,
+                    preview_identity,
+                    preview_control,
+                    compensate,
+                    application,
+                )
+            ):
+                raise ValueError("Creation cannot mix with an existing mutation branch")
+            return commit_creation(self, project, base, operation, job, creation, hook)
         if application is not None:
             from ontolearn_engine.project.applications import commit as commit_application
 

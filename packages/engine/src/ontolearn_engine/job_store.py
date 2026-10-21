@@ -221,10 +221,15 @@ class JobStore(Store):
                 if claim["kind"] == "application":
                     from ontolearn_engine.project.applications import claim_context
                     from ontolearn_engine.project.format3 import receipt_for
+                    from ontolearn_engine.project.project_lifecycle import creation_context
 
                     internal = self._project(claim["project"])
-                    claim_context(self, internal, claim["operation"])
-                    receipt_for(self, internal, claim["operation"])
+                    creation = creation_context(self, internal, claim["operation"])
+                    if creation is None:
+                        claim_context(self, internal, claim["operation"])
+                    receipt = receipt_for(self, internal, claim["operation"])
+                    if creation is not None and receipt != creation["receipt"]:
+                        raise Format3Fault("structure")
                     continue
                 if claim["kind"] != "job" or claim["context"] is not None:
                     raise Format3Fault("structure")
@@ -356,6 +361,10 @@ class JobStore(Store):
             ).fetchone()
             if claim:
                 if claim["kind"] != "application" or claim["project"] != project:
+                    fault("IDENTITY_CONFLICT")
+                from ontolearn_engine.project.project_lifecycle import creation_context
+
+                if creation_context(self, internal, operation) is not None:
                     fault("IDENTITY_CONFLICT")
                 context = claim_context(self, internal, operation)
                 if canonical(context["request"]) != canonical(request):

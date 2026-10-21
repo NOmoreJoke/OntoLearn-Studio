@@ -254,7 +254,7 @@ def history_coverage(store, project: str) -> dict:
     }
 
 
-def checkpoint(store, project: str, domain_ref: str, sequence: int) -> str:
+def checkpoint(store, project: str, domain_ref: str, sequence: int, *, strict=False) -> str:
     domain = store._project_snapshot(domain_ref, project)
     payload = {
         "checkpointVersion": 1,
@@ -270,13 +270,15 @@ def checkpoint(store, project: str, domain_ref: str, sequence: int) -> str:
     }
     identity = digest(payload)
     store._db.execute(
-        "INSERT OR IGNORE INTO app_checkpoints VALUES(?,?,?,?)",
+        ("INSERT INTO" if strict else "INSERT OR IGNORE INTO") + " app_checkpoints VALUES(?,?,?,?)",
         (identity, project, domain_ref, canonical(payload)),
     )
     return identity
 
 
-def seed_project(store, project: str, *, origin="created") -> None:
+def seed_project(
+    store, project: str, *, origin="created", strict=False, hook=lambda _: None
+) -> None:
     sequence = 0
     for marker in store._db.execute(
         "SELECT operation,fingerprint,revision FROM commits WHERE project=? ORDER BY revision",
@@ -298,12 +300,31 @@ def seed_project(store, project: str, *, origin="created") -> None:
         "INSERT INTO app_projects VALUES(?,0,?,?,NULL)",
         (project, sequence, canonical(metadata(origin))),
     )
-    reference = checkpoint(store, project, store.snapshot(project), sequence)
+    if strict:
+        hook("create_app_project")
+        payload = {
+            "project": project,
+            "projectRevision": store.revision(project),
+            "dependencyVector": store.vector(project),
+            "state": store.state(project),
+        }
+        domain = digest(payload)
+        store._db.execute("INSERT INTO snapshots VALUES(?,?)", (domain, canonical(payload)))
+        hook("create_domain_snapshot")
+    else:
+        domain = store.snapshot(project)
+    reference = checkpoint(store, project, domain, sequence, strict=strict)
+    if strict:
+        hook("create_genesis_checkpoint")
     store._db.execute("UPDATE app_projects SET checkpoint=? WHERE project=?", (reference, project))
+    if strict:
+        hook("create_genesis_head")
     store._db.execute(
         "INSERT INTO app_origins VALUES(?,?,?,?,?)",
         (project, reference, store.revision(project), sequence, origin),
     )
+    if strict:
+        hook("create_origin")
 
 
 def install(store, source_format: int, backup_hash: str | None, hook) -> None:
@@ -643,7 +664,16 @@ def _history(store, project):
         )
         _require(op["domain_revision"] == after["domainRevision"])
         marker = store.marker(project, op["operation"])
-        if op["kind"] == "domain":
+        creation = None
+        if op["kind"] == "application":
+            from ontolearn_engine.project.project_lifecycle import creation_context
+
+            creation = creation_context(store, project, op["operation"])
+        if creation is not None:
+            from ontolearn_engine.project.project_lifecycle import validate_transition
+
+            expected = validate_transition(store, project, op, origin, current, after)
+        elif op["kind"] == "domain":
             _require(marker is not None and _text(marker["job"]))
             _require(op["plan_hash"] == marker["fingerprint"] == digest(_json(marker["plan"])))
             expected = _domain_receipt(project, marker, op["sequence"], current_ref, after_ref)
