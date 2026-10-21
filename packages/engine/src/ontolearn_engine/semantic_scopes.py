@@ -17,6 +17,7 @@ from ontolearn_engine.semantic import (
     MAX_TRIPLES,
     SEMANTICS_VERSION,
     Rule,
+    _canonical_rule,
     _chain_warnings,
     _copy,
     _key,
@@ -70,6 +71,7 @@ def _inputs(asserted, ontology, include_derived, rules):
 
 
 def _source(facts, axioms, rules):
+    rules = tuple(_canonical_rule(rule) for rule in rules)
     return {
         "executionSemanticsVersion": SEMANTICS_VERSION,
         "assertedInputSha256": _digest(sorted(_key(t) for t in facts)),
@@ -247,6 +249,7 @@ def project_validation_scope(
     """
     with offline():
         facts, axioms = _inputs(asserted, ontology, include_derived, rules)
+        rules = tuple(_canonical_rule(rule) for rule in rules)
         source = _source(facts, axioms, rules)
         original_facts = sorted(_key(t) for t in facts)
         sources = {key: [{"kind": "asserted"}] for key in original_facts}
@@ -305,6 +308,7 @@ def prepare_validation_scope(
     """Generate a new real result then project it; not an existing-result resolver."""
     with offline():
         facts, axioms = _inputs(asserted, ontology, include_derived, rules)
+        rules = tuple(_canonical_rule(rule) for rule in rules)
         source = _source(facts, axioms, rules) if include_derived else None
         result = None
         if include_derived:

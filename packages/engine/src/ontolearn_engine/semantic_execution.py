@@ -207,14 +207,20 @@ def _term(text):
 
     from ontolearn_engine import semantic
     from ontolearn_engine.semantic_offline import SemanticError
-    from ontolearn_engine.semantic_turtle import LexicalSink
+    from ontolearn_engine.semantic_turtle import LexicalSink, canonical_string
 
     if type(text) is not str or not (text.startswith("<") or text.startswith('"')):
         raise SemanticError("RDF_TERM_INVALID")
     semantic._text(text)
     graph = Graph()
     try:
-        SinkParser(LexicalSink(graph), baseURI="urn:ontolearn:term:", turtle=True).loadBuf(
+        # Validate the exact original N3 first. Abstract string normalization
+        # must not reject a previously legal explicit xsd:string spelling.
+        SinkParser(
+            LexicalSink(graph, canonical_strings=False),
+            baseURI="urn:ontolearn:term:",
+            turtle=True,
+        ).loadBuf(
             "<urn:ontolearn:subject> <urn:ontolearn:predicate> " + text + " ."
         )
         if len(graph) != 1:
@@ -226,7 +232,7 @@ def _term(text):
             raise ValueError
     except Exception:
         raise SemanticError("RDF_TERM_INVALID") from None
-    return value
+    return canonical_string(value)
 
 
 def _iri(text):

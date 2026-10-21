@@ -145,7 +145,7 @@ def test_capabilities_and_real_rdfs_one_pass_rule_complete_output(errors):
     assert SEMANTIC_CAPABILITIES == {"query.execute", "reasoning.execute", "validation.execute"}
     output = run(request(), errors)
     payload = output["payload"]
-    assert payload["executionSemanticsVersion"] == semantic.SEMANTICS_VERSION == "i05-finite-5"
+    assert payload["executionSemanticsVersion"] == semantic.SEMANTICS_VERSION == "i05-finite-6"
     assert payload["reasoning"]["rdfs"] == [["<urn:s>", RDF.type.n3(), "<urn:Parent>"]]
     assert payload["reasoning"]["rules"] == [["<urn:s>", RDF.type.n3(), "<urn:Risk>"]]
     assert payload["reasoning"]["warnings"] == ["RULE_CHAIN_UNSUPPORTED:R2"]

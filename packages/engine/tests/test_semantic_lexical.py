@@ -70,7 +70,7 @@ def test_turtle_preserves_numeric_term_lexical_form(token, lexical, datatype):
         (typed("0", XSD.boolean), "0", XSD.boolean, None),
         (typed("2026-10-21", XSD.date), "2026-10-21", XSD.date, None),
         (typed("2026-10-21T12:00:00Z", XSD.dateTime), "2026-10-21T12:00:00Z", XSD.dateTime, None),
-        (typed("你好", XSD.string), "你好", XSD.string, None),
+        (typed("你好", XSD.string), "你好", None, None),
         ('"你好"@zh-CN', "你好", None, "zh-CN"),
         ('"ordinary"', "ordinary", None, None),
     ],

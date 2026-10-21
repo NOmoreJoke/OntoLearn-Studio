@@ -163,8 +163,138 @@ def suite() -> dict:
         "finiteTemplates": template_suite(),
         "validationScopes": scope_suite(),
         "literalIdentity": lexical_suite(),
+        "stringIdentity": string_identity_suite(),
         "rdfsWitness": rdfs_witness_suite(),
         "scope": "pure G.2 semantics; no storage/task/UI integration",
+    }
+
+
+def string_identity_suite():
+    """One RDF string term across parsing, matching, expressions and selection."""
+    plain, explicit = Literal("x"), Literal("x", datatype=XSD.string, normalize=False)
+    subjects = (EX.bothString, EX.plainString, EX.typedString)
+    graph = Graph()
+    for subject in subjects:
+        graph.add((subject, EX.value, explicit if subject == EX.typedString else plain))
+    graph.add((subjects[0], EX.value, explicit))
+    graph.add((subjects[0], RDF.type, EX.StringThing))
+    original = set(graph)
+    variable = Variable("s")
+    rules = tuple(
+        Rule(identity, ((variable, EX.value, token),), (variable, predicate, EX.yes))
+        for identity, token, predicate in (
+            ("match-plain", plain, EX.plainMatched),
+            ("match-typed", explicit, EX.typedMatched),
+        )
+    ) + tuple(
+        Rule(identity, ((subjects[0], EX.value, plain),), (subjects[0], EX.emitted, token))
+        for identity, token in (("emit-plain", plain), ("emit-typed", explicit))
+    )
+
+    def row(*terms):
+        return tuple(term.n3() for term in terms)
+
+    evidence = []
+    for rule in sorted(rules, key=lambda rule: rule.id):
+        for subject in (subjects[0],) if rule.id.startswith("emit") else subjects:
+            fact = row(subject, EX.value, plain)
+            result = (
+                row(subject, EX.emitted, plain)
+                if rule.id.startswith("emit")
+                else row(subject, rule.then[1], EX.yes)
+            )
+            evidence.append({"rule": rule.id, "result": result, "inputs": [fact], "basis": [fact]})
+    expected = {
+        "rdfs": [],
+        "rdfsEvidence": [],
+        "warnings": [],
+        "rules": sorted({record["result"] for record in evidence}),
+        "evidence": evidence,
+    }
+    reasoning = reason(graph, rules)
+    assert reasoning == expected
+    assert len(reasoning["rules"]) == 7 and len(reasoning["evidence"]) == 8
+    lexical = []
+    for text in ("", "x", 'quote" slash\\', "line\nnext", "你好"):
+        a, b = Literal(text, normalize=False), Literal(text, datatype=XSD.string, normalize=False)
+        parsed = parse_turtle(f"<{EX.unit}> <{EX.value}> {a.n3()}, {b.n3()} .")
+        assert set(parsed) == {(EX.unit, EX.value, a)}
+        lexical.append({"lexical": text, "term": parsed.value(EX.unit, EX.value).n3()})
+    expressions = [
+        f'STRDT("x", <{XSD.string}>)',
+        f"STR({explicit.n3()})",
+        f'CONCAT("", {explicit.n3()})',
+        f'SUBSTR(STRDT("xy", <{XSD.string}>), 1, 1)',
+        f'REPLACE(STRDT("a", <{XSD.string}>), "a", "x")',
+        f'LCASE(STRDT("X", <{XSD.string}>))',
+    ]
+    queries = {}
+    for expression in expressions:
+        text = (
+            f"SELECT ?s WHERE {{ BIND({expression} AS ?v) ?s <{EX.value}> ?v "
+            'FILTER(sameTerm(?v, "x")) }'
+        )
+        actual = query(graph, text)
+        assert actual == {
+            "type": "SELECT",
+            "variables": ["s"],
+            "rows": [[subject.n3()] for subject in subjects],
+        }
+        queries[expression] = actual
+    values = f'VALUES ?v {{ "x" {explicit.n3()} }}'
+    count = query(Graph(), f"SELECT (COUNT(DISTINCT ?v) AS ?n) WHERE {{ {values} }}")
+    assert count == {"type": "SELECT", "variables": ["n"], "rows": [[Literal(1).n3()]]}
+    distinct = query(Graph(), f"SELECT DISTINCT ?v WHERE {{ {values} }}")
+    assert distinct == {"type": "SELECT", "variables": ["v"], "rows": [['"x"']]}
+    generated = prepare_validation_scope(graph, Graph(), include_derived=True, rules=rules)
+    payload = json.loads(json.dumps(generated.reasoning_result))
+    selected = project_validation_scope(
+        graph,
+        Graph(),
+        include_derived=True,
+        rules=rules,
+        reasoning_result=payload,
+        reasoning_source=generated.provenance["reasoningSource"],
+    )
+    assert selected.reasoning_result is payload
+    assert json.loads(json.dumps(reasoning)) == payload
+    validations = {}
+    for name, clause, conforms in (
+        ("inPlain", 'sh:in ("x")', True),
+        ("inTyped", f"sh:in ({explicit.n3()})", True),
+        ("datatype", f"sh:datatype <{XSD.string}>", True),
+        ("maxOne", "sh:maxCount 1", True),
+        ("minTwo", "sh:minCount 2", False),
+    ):
+        shape = parse_turtle(
+            PREFIX + ":StringShape a sh:NodeShape; sh:targetClass :StringThing; "
+            f"sh:property :StringProperty . :StringProperty sh:path :emitted; {clause} .",
+            shapes=True,
+        )
+        actual = check_shapes(selected.facts, shape)
+        expected_report = {"conforms": conforms, "violations": []}
+        if not conforms:
+            expected_report["violations"] = [
+                {
+                    "focus": subjects[0].n3(),
+                    "path": EX.emitted.n3(),
+                    "constraint": "<http://www.w3.org/ns/shacl#MinCountConstraintComponent>",
+                    "sourceShape": EX.StringProperty.n3(),
+                    "value": None,
+                    "severity": "<http://www.w3.org/ns/shacl#Violation>",
+                }
+            ]
+        assert actual == expected_report
+        validations[name] = actual
+    assert set(graph) == original
+    return {
+        "lexical": lexical,
+        "reasoning": reasoning,
+        "runtimeExpressions": queries,
+        "distinct": distinct,
+        "count": count,
+        "selectedProvenance": selected.provenance,
+        "validation": validations,
     }
 
 

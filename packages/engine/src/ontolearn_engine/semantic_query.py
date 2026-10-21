@@ -4,9 +4,11 @@ from copy import deepcopy
 
 from pyparsing import MatchFirst, Regex
 from rdflib import XSD, Literal
-from rdflib.plugins.sparql import algebra, parser
+from rdflib.plugins.sparql import algebra, operators, parser
+from rdflib.plugins.sparql.parserutils import CompValue, Expr
 
 from ontolearn_engine.semantic_offline import SemanticError
+from ontolearn_engine.semantic_turtle import canonical_string
 
 
 def _literal_action(datatype, sign=""):
@@ -86,12 +88,69 @@ def _clone_grammar():
     return grammar
 
 
+def _canonical_query_strings(prepared):
+    """Normalize only this private query, including runtime-created strings.
+
+    VALUES contains ordinary dictionaries, so RDFLib's CompValue-only traversal
+    would miss its constants. Expr.eval itself remains untouched: it owns ctx
+    lifetime and SPARQLError semantics. Each instance's original bound callback
+    retains both, while its returned string uses the graph's term identity.
+    """
+    seen = set()
+
+    def visit(value):
+        if isinstance(value, Literal):
+            return canonical_string(value)
+        # translateQuery inserts this shared module singleton for OPTIONAL
+        # without a filter. Never install callbacks or ctx on that global Expr.
+        if value is operators.TrueFilter:
+            evaluate = vars(value).get("_evalfn")
+            if getattr(evaluate, "__self__", None) is not value or not callable(
+                getattr(evaluate, "__func__", None)
+            ):
+                raise RuntimeError("UNPROVED_LOCAL_TRUE_FILTER")
+            value = Expr(value.name, evaluate.__func__, **dict(value.items()))
+        if isinstance(value, CompValue):
+            if id(value) in seen:
+                return value
+            seen.add(id(value))
+            for key, child in list(value.items()):
+                value[key] = visit(child)
+            if isinstance(value, Expr):
+                evaluate = vars(value).get("_evalfn")
+                if evaluate is not None:
+                    if (
+                        not callable(evaluate)
+                        or getattr(evaluate, "__self__", None) is not value
+                        or not callable(getattr(evaluate, "__func__", None))
+                    ):
+                        raise RuntimeError("UNPROVED_LOCAL_EXPRESSION_CALLBACK")
+
+                    def evaluate_string(ctx, original=evaluate):
+                        return canonical_string(original(ctx))
+
+                    value._evalfn = evaluate_string
+            return value
+        if isinstance(value, dict):
+            return {key: visit(child) for key, child in value.items()}
+        if isinstance(value, list):
+            return [visit(child) for child in value]
+        if isinstance(value, tuple):
+            return tuple(visit(child) for child in value)
+        return value
+
+    prepared.algebra = visit(prepared.algebra)
+    return prepared
+
+
 def prepare_lexical_query(text):
     # A topology/deepcopy failure is an internal implementation failure, never
     # a user syntax error. Do not catch it in the parse/translation adapter.
     grammar = _clone_grammar()
     try:
         tree = grammar.parse_string(parser.expandUnicodeEscapes(text), parse_all=True)
-        return algebra.translateQuery(tree)
+        prepared = algebra.translateQuery(tree)
     except Exception as error:
         raise SemanticError("INVALID_QUERY") from error
+    # A local adaptation failure is internal, never user query syntax.
+    return _canonical_query_strings(prepared)

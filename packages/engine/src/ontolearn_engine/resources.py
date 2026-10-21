@@ -26,7 +26,7 @@ LOCK_FILE = (
     else ROOT.parents[1] / "uv.lock"
 )
 IMPLEMENTATION = {
-    "executionSemanticsVersion": "i05-finite-5",
+    "executionSemanticsVersion": "i05-finite-6",
     "engineVersion": "0.1.0",
     "dependencyLockHash": hashlib.sha256(LOCK_FILE.read_bytes()).hexdigest(),
 }

@@ -11,9 +11,25 @@ from rdflib import XSD, Graph, Literal
 from rdflib.plugins.parsers.notation3 import RDFSink, SinkParser, sfloat
 
 
+def canonical_string(term):
+    """Use S1's plain representation for one RDF 1.1 string term identity.
+
+    Numeric/date spelling and language-tagged literals are deliberately untouched.
+    This is local to our semantic view, never a process-wide RDFLib setting.
+    """
+    if isinstance(term, Literal) and term.datatype == XSD.string and term.language is None:
+        return Literal(str(term), normalize=False)
+    return term
+
+
 class LexicalSink(RDFSink):
+    def __init__(self, graph, *, canonical_strings=True):
+        super().__init__(graph)
+        self.canonical_strings = canonical_strings
+
     def newLiteral(self, text, datatype, language):
-        return Literal(text, datatype=datatype, lang=language, normalize=False)
+        term = Literal(text, datatype=datatype, lang=language, normalize=False)
+        return canonical_string(term) if self.canonical_strings else term
 
 
 class LexicalSinkParser(SinkParser):

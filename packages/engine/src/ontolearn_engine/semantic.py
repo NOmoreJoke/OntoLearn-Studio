@@ -17,13 +17,13 @@ from rdflib.term import Identifier
 
 from ontolearn_engine.semantic_offline import SemanticError, offline
 from ontolearn_engine.semantic_query import prepare_lexical_query
-from ontolearn_engine.semantic_turtle import parse_graph
+from ontolearn_engine.semantic_turtle import canonical_string, parse_graph
 
 MAX_TEXT_BYTES = 1_048_576
 MAX_TRIPLES = 100_000
 MAX_RULE_MATCHES = 100_000
 MAX_WORK = 1_000_000
-SEMANTICS_VERSION = "i05-finite-5"
+SEMANTICS_VERSION = "i05-finite-6"
 Triple = tuple[Identifier, Identifier, Identifier]
 
 
@@ -46,7 +46,7 @@ def _copy(graph):
         raise SemanticError("GRAPH_INPUT_LIMIT")
     result = Graph()
     for triple in graph:
-        result.add(triple)
+        result.add(tuple(canonical_string(term) for term in triple))
     return result
 
 
@@ -281,6 +281,16 @@ def _chain_warnings(rules):
     )
 
 
+def _canonical_rule(rule):
+    # Validate the original shape before touching any user-provided sequence.
+    _rule(rule)
+    return Rule(
+        rule.id,
+        tuple(tuple(canonical_string(term) for term in pattern) for pattern in rule.when),
+        tuple(canonical_string(term) for term in rule.then),
+    )
+
+
 def reason(graph: Graph, rules: tuple[Rule, ...] = ()) -> dict:
     with offline():
         asserted = _copy(graph)
@@ -289,8 +299,7 @@ def reason(graph: Graph, rules: tuple[Rule, ...] = ()) -> dict:
             raise SemanticError("INVALID_RULE")
         if any(not isinstance(rule, Rule) for rule in rules):
             raise SemanticError("INVALID_RULE")
-        for rule in rules:
-            _rule(rule)
+        rules = tuple(_canonical_rule(rule) for rule in rules)
         if len({r.id for r in rules}) != len(rules):
             raise SemanticError("INVALID_RULE")
         closure = _copy(asserted)
