@@ -719,6 +719,8 @@ def _execute_profile(
             _capture.before_projection(result, source, tuple(rules))
         projection = _ProfileProjection()
         safe_result = projection.value(result)
+        if _capture is not None:
+            _capture.projected(safe_result)
         source_encoded = _profile_json_bytes(projection.value(source))
         defs_encoded = _profile_json_bytes(projection.value(tuple(rules)))
         explanation = _capture is not None and _capture.direct_ledger is not None

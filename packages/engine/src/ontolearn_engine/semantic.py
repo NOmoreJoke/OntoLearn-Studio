@@ -384,6 +384,11 @@ def _term_characters(term):
 
 def _finite_closure(asserted, charge, meter=None, *, _direct_capture=None):
     """One closure implementation and one stable first-witness policy."""
+    if _direct_capture is not None:
+        from .semantic_profile_directsteps import _DirectStepsCapture
+
+        if type(_direct_capture) is not _DirectStepsCapture:
+            raise ProfileReasonError("INTERNAL_ERROR", classification="internal")
     ordered = sorted if meter is None else meter.ordered
     key = _key if meter is None else meter.key
     if meter is not None:
@@ -465,7 +470,7 @@ def _finite_closure(asserted, charge, meter=None, *, _direct_capture=None):
                     raise SemanticError("RDFS_RESULT_LIMIT")
         if _direct_capture is not None:
             count = len(additions)
-            additions = item = inputs = triple = basis = None
+            additions = item = inputs = triple = basis = append = addition_key = None
             _direct_capture.end_candidates(count)
             _direct_capture.ledger.release("objects", 8 * count)
     return closure, proofs

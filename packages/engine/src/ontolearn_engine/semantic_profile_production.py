@@ -81,7 +81,7 @@ def _direct_bound(value, ledger, depth=0):
         if kind is bytes:
             ledger.debit("scan_copy", len(value) + 1)
             return 2 * len(value) + 48
-        if kind in (tuple, list):
+        if kind is tuple or kind is list:
             ledger.debit("work", len(value) + 1)
             return 2 * len(value) + 2 + sum(_direct_bound(v, ledger, depth + 1) for v in value)
         if kind is dict:
@@ -105,6 +105,56 @@ def _direct_bound(value, ledger, depth=0):
     finally:
         value = None
         ledger.discard(objects=32)
+
+
+def _direct_json_size(value, ledger, depth=0):
+    """Count exact already-projected JSON bytes, without a second wire/tree."""
+    from .semantic_profile_directsteps import DirectStepsFailure
+
+    ledger.debit("work", 32)
+    ledger.reserve("objects", 16)
+    try:
+        if depth > 32:
+            raise DirectStepsFailure("DIRECT_STEPS_LIMIT", stage=ledger.stage, domain="work")
+        kind = type(value)
+        if value is None:
+            return 4
+        if kind is bool:
+            return 4 if value else 5
+        if kind is str:
+            ledger.debit("work", 8 * len(value) + 1)
+            ledger.debit("scan_copy", 6 * len(value) + 2)
+            size = 2
+            for char in value:
+                code = ord(char)
+                if char == '"' or char == "\\" or char in "\b\f\n\r\t":
+                    size += 2
+                elif code < 32:
+                    size += 6
+                else:
+                    size += 1 if code < 128 else 2 if code < 2048 else 3 if code < 65536 else 4
+            return size
+        if kind is list:
+            return (
+                2
+                + max(0, len(value) - 1)
+                + sum(_direct_json_size(v, ledger, depth + 1) for v in value)
+            )
+        if kind is dict:
+            return (
+                2
+                + max(0, len(value) - 1)
+                + sum(
+                    _direct_json_size(k, ledger, depth + 1)
+                    + 1
+                    + _direct_json_size(v, ledger, depth + 1)
+                    for k, v in value.items()
+                )
+            )
+        raise DirectStepsFailure("DIRECT_STEPS_INTERNAL", stage=ledger.stage)
+    finally:
+        value = None
+        ledger.discard(objects=16)
 
 
 def _direct_stream(ledger, bound, *, passes):
@@ -189,6 +239,12 @@ class _ProductionCapture:
         self.ledger.reserve("scalar", 24 * MAX_BYTES)
         self.ledger.reserve("objects", 8 * MAX_BYTES)
 
+    def projected(self, safe_result):
+        if self.direct_ledger is not None:
+            self.direct_ledger.note_carrier(
+                _direct_json_size(safe_result["directSteps"], self.direct_ledger)
+            )
+
     def before_rows(self):
         self.ledger.enter(7, 3 * MAX_BYTES)
         self.ledger.debit("traversal", 16 * MAX_BYTES)
@@ -247,13 +303,6 @@ def _execute_admitted_profile_job(
         if direct_ledger is not None:
             direct_ledger.begin(stage="capture")
         _require(type(material) is ProfileMaterial)
-        if direct_ledger is not None:
-            _require(type(material.records) is tuple)
-            bound = _direct_bound(material.records, direct_ledger)
-            bound += _direct_bound(material.source, direct_ledger)
-            bound += _direct_bound(material.rules, direct_ledger)
-            bound += len(material.input_preimage) + len(material.definition_material) + 2048
-            _direct_stream(direct_ledger, bound, passes=2)
         _require(type(material.version) is str and material.version == MATERIAL_VERSION)
         for value in (
             material.input_preimage,
@@ -263,6 +312,13 @@ def _execute_admitted_profile_job(
         ):
             _require(type(value) is bytes and len(value) <= MAX_BYTES)
         _require(type(material.rules) is tuple and len(material.rules) <= 100)
+        if direct_ledger is not None:
+            _require(type(material.records) is tuple)
+            bound = _direct_bound(material.records, direct_ledger)
+            bound += _direct_bound(material.source, direct_ledger)
+            bound += _direct_bound(material.rules, direct_ledger)
+            bound += len(material.input_preimage) + len(material.definition_material) + 2048
+            _direct_stream(direct_ledger, bound, passes=2)
         if material.records is None:
             _require(type(material.source) is SourceRecord)
             reference, revision = material.source.reference, material.source.revision

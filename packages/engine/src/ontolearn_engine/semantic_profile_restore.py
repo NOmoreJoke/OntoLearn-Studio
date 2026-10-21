@@ -1054,7 +1054,10 @@ def _check_expectation(decoder):
             and e.direct_budget_version == "i05-direct-steps-budget/1",
             "entry",
         )
-        _require(e.input_domain == "profile-structured-records-json/1", "entry")
+        _require(
+            type(e.input_domain) is str and e.input_domain == "profile-structured-records-json/1",
+            "entry",
+        )
     _require(type(e.input_domain) is str and e.input_domain in _DOMAINS, "entry")
     for value in (
         e.payload_digest,
@@ -1250,6 +1253,11 @@ def _restore(decoder, payload_json, rows_json, *, fullview=False):
         _same(source_values, source, ledger, stage="A9")
         del source_values
     if decoder.explanation:
+        from .semantic_profile_production import _direct_json_size
+
+        decoder.direct_ledger.note_carrier(
+            _direct_json_size(raw["reasoning"]["directSteps"], decoder.direct_ledger)
+        )
         _validate_explanation(decoder, native, original_records)
     projection = _ProfileProjection()
     safe_reason = _project(decoder, projection, native, "A7")
@@ -1435,6 +1443,20 @@ def _restore_operation(
             # Covers complete supplied J, all ordinary parse/project/hash/freeze
             # buffers. Original R opaque child reservations remain in R only.
             _direct_stream(direct_ledger, size + preimage + 2048, passes=4)
+            from .semantic_profile_restore_budget import JSON_KEYS
+
+            # Both lexical passes: each key scans <=n fixed strings and <=32
+            # prior keys. Sum key lengths <=J, key count <=J/3, fixed length
+            # <=maxlen. This deliberately loose expression covers both passes,
+            # all fixed-key/prior-key byte comparisons and 256J other dispatch.
+            # It is one D prepayment, not new R capacity or a refundable pool.
+            factor = (
+                256
+                + 4 * (len(JSON_KEYS) + 4)
+                + sum(map(len, JSON_KEYS))
+                + 64 * max(map(len, JSON_KEYS))
+            )
+            direct_ledger.debit("scan_copy", factor * (size + preimage))
         ledger.begin(size, preimage, len(allocation.children))
         # Caller-held exact context is also live: three bounded ID copies per
         # slot, implementation/digest strings, limits, records and decoder state.
@@ -1567,32 +1589,76 @@ def restore_profile_result(
     )
 
 
+def _explanation_key(record, ledger):
+    chars = sum(
+        len(v)
+        for term in record
+        for v in (term.lexical_form, term.datatype_iri, term.language_raw)
+        if v is not None
+    )
+    ledger.debit("work", 128 + 64 * chars)
+    ledger.debit("scan_copy", 32 * chars + 128)
+    ledger.reserve("scalar", 32 * chars + 128)
+    ledger.reserve("objects", 64)
+    return semantic._key(tuple(semantic._profile_term(term) for term in record))
+
+
 def _validate_explanation(decoder, native, original_records):
     from .semantic_profile_directsteps import encode_identity_key, validate_direct_steps
 
     ledger = decoder.direct_ledger
-    entries = key = identity = triple = record = None
+    entries = key = identity = record = actual_evidence = inputs = firing = head = leaf = (
+        raw_leaf
+    ) = expected_id = None
     held = 8 * len(original_records) + 32
     ledger.reserve("objects", held)
     try:
         entries = []
         for record in original_records:
-            # Exact TermInput fields have passed original typed decoder. The
-            # formatter is prepaid before constructing any RDFLib term/N3.
-            chars = sum(
-                len(v)
-                for term in record
-                for v in (term.lexical_form, term.datatype_iri, term.language_raw)
-                if v is not None
-            )
-            ledger.debit("work", 128 + 64 * chars)
-            ledger.debit("scan_copy", 32 * chars + 128)
-            ledger.reserve("scalar", 32 * chars + 128)
-            ledger.reserve("objects", 64)
-            triple = tuple(semantic._profile_term(term) for term in record)
-            key = semantic._key(triple)
+            key = _explanation_key(record, ledger)
             identity = encode_identity_key(record, ledger)
             entries.append((identity, key))
+        from hashlib import sha256
+
+        from .semantic_profile_directsteps import DirectStepsFailure
+
+        for leaf in native["proofLeaves"]:
+            chars = sum(map(len, leaf["triple"])) + 32
+            ledger.debit("work", 32 * chars + 128)
+            ledger.debit("scan_copy", 32 * chars + 128)
+            ledger.reserve("scalar", 32 * chars + 128)
+            ledger.reserve("objects", 32)
+            raw_leaf = ("i05-profile-proof-leaf/1\0" + "\0".join(leaf["triple"])).encode("utf-8")
+            expected_id = "i05-proof:" + sha256(raw_leaf).hexdigest()
+            if leaf["reference"] != expected_id:
+                raise DirectStepsFailure(stage="restore")
+        # Saved evidence must describe the actual decoded typed head occurrences,
+        # not manufacture unrelated roots through range-valid indices.
+        ledger.reserve("objects", 64 + 64 * len(native["evidence"]))
+        actual_evidence = []
+        for firing_index, firing in enumerate(native["firingGroups"]):
+            inputs = [
+                _explanation_key((t.subject, t.predicate, t.object), ledger) for t in firing.when
+            ]
+            for head in firing.heads:
+                actual_evidence.append(
+                    {
+                        "rule": firing.rule_id,
+                        "firingIndex": firing_index,
+                        "headIndex": head.index,
+                        "result": _explanation_key(
+                            (head.triple.subject, head.triple.predicate, head.triple.object), ledger
+                        ),
+                        "inputs": inputs,
+                        "basis": firing.basis,
+                    }
+                )
+        _require(len(actual_evidence) == len(native["evidence"]), "A5")
+        for actual_row, saved_row in zip(actual_evidence, native["evidence"], strict=True):
+            for name in ("rule", "firingIndex", "headIndex", "result", "inputs", "basis"):
+                _same(actual_row[name], saved_row[name], decoder.ledger, stage="A5")
+        actual_row = saved_row = None
+        actual_evidence = inputs = firing = head = leaf = raw_leaf = expected_id = None
         validate_direct_steps(
             native["directSteps"],
             proof_leaves=native["proofLeaves"],
@@ -1602,7 +1668,9 @@ def _validate_explanation(decoder, native, original_records):
             ledger=ledger,
         )
     finally:
-        entries = key = identity = triple = record = native = original_records = None
+        entries = key = identity = record = actual_evidence = inputs = firing = head = leaf = (
+            raw_leaf
+        ) = expected_id = actual_row = saved_row = native = original_records = None
         ledger.discard(objects=held)
 
 
