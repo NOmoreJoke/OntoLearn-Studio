@@ -20,17 +20,17 @@
     "npmRunCheck": {
       "exitCode": 0,
       "tsTests": 635,
-      "pythonTests": 1170
+      "pythonTests": 1200
     },
-    "qualityPytest": 118,
+    "qualityPytest": 148,
     "qualityVitest": 5,
     "gitDiffCheck": "passed"
   },
   "internalReview": {
     "agent": "/root/t05_internal_review",
-    "decision": "passed-private-preparation-input-proposals-and-isolated-approved-real-Store-probe-only",
+    "decision": "passed-private-preparation-approved-Store-probe-and-controller-R1-R2-input-fixes-only",
     "reviewedFiles": 38,
-    "reportedCombinedSha256": "ed0a7bf930f0af73ee89489bfcdbadae6ae4a38ddf064a55f0571ee092b928a8"
+    "reportedCombinedSha256": "71021645ca1af60e652a6c6064b59ab10601faed79fb5b06eae77fb1085ebe5b"
   },
   "approvedInput": {
     "gitRef": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
@@ -48,24 +48,27 @@
   "remaining": [
     "T01 formal constraint/rule persistence and ChangeSet interface",
     "I05 approved real executor incl FR505 comparisons/multiple conclusions",
-    "T00 unique contract/job/result/bridge and navigation integration",
+    "T00 interface coordination; T01 canonical contracts/job; I06 remaining bridge and navigation integration",
     "V01/R01-R06/O01 actual full output/trace and lifecycle validation",
     "T06/T08/T09/T10 cross-feature acceptance",
     "same-candidate designated dual review, push/PR/CI/normal merge and remote verification"
   ],
   "guiOrModelOrCredentialOperations": false,
   "fr505ExtensionInputs": {
-    "fixtureVersion": "T05-FR505-extension/1",
-    "cases": 16,
+    "fixtureVersion": "T05-FR505-extension/2",
+    "cases": 22,
     "executed": false,
-    "commit": "7f4a649ea754ea56e468fecafd6da43c9efda218",
+    "commit": "fff89f64896b48cc678f97d41c45d4a7ec0dadc0",
     "proposal": "docs/iterations/T05/fr505-semantic-extension-proposal.md",
     "sourceHashes": {
-      "tests/fixtures/quality/fr505-extension-cases.json": "f95f0ca3efb498544fa0c99093980bc4cc9c5be3cd449ee0d253d7ba8e0f2b7a",
-      "packages/engine/tests/test_quality_fr505_inputs.py": "3cbd0cdcf6d2410c96fe7e4af9a1c6d846d3a98a364ff0f66f07f224bff7ffe7"
-    }
+      "tests/fixtures/quality/fr505-extension-cases.json": "323fd00dffa4a1a1c72663e3fcea2ae50fea255591d5e62f6c8e6eda3ebecc39",
+      "packages/engine/tests/test_quality_fr505_inputs.py": "d53520e063b95c4894dbebc4cd541c699e37a133bdf3d6a8e97b6cd17b289374"
+    },
+    "comparisonCells": 18,
+    "controllerAuditDisposition": "docs/reviews/T05/controller-audit-r1-r2.md",
+    "controllerNewVersionReadback": "pending"
   },
-  "lastContinuationClassification": "progress: FR505 representative inputs plus concrete save parameters verified using approved real Store in temp DB; formal domain interfaces remain unapproved",
+  "lastContinuationClassification": "progress: fixed controller R1/R2 with distinguishable 18 comparison cells; same-executor ownership/type/trace/atomicity handoff proposal; no unapproved implementation consumed",
   "storeParameterProbe": {
     "approvedStoreGitRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
     "sourceSha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
@@ -81,5 +84,16 @@
       "packages/engine/tests/test_quality_store_probe.py": "90a27e07d7c3ea5a106e70a494e3b8bf8eac506999430720bfd7a457ff242e75"
     }
   },
-  "controllerAcknowledgement": "FR505 proposal fullread and actually forwarded to I05; root separately auditing 16 cases; T01 shared foundation handoff in exact-path verification"
+  "controllerAcknowledgement": "FR505 proposal relayed to I05; original 16-case controller audit received and R1/R2 fixed; new 22-case controller readback pending",
+  "extensionContract": {
+    "path": "docs/iterations/T05/single-executor-extension-contract.md",
+    "status": "proposed-conditional-future-acceptance-not-effective",
+    "offerReportSha256": "eb9ee33a7588dc902189c5a13a02741f40cab3b3611c1e5b393108ad84618229",
+    "offerHead": "3c0b3bafcdab86159962ff3331bb161c40d349bc",
+    "implementationReadOrConsumed": false,
+    "ownerResponses": "pending",
+    "commonInstructionsSha256": "b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39",
+    "sha256": "1a87a035a6a5da54ce78c19ba107855ab19f080b37c28888e0a7a87a71f470c6",
+    "internalReview": "passed-proposal-only-original-P2-closed"
+  }
 }

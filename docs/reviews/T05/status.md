@@ -38,7 +38,6 @@
 
 本线只有无窗口 CLI/unit/build，未跑本机 Electron/e2e/native/HMR，未操作审查应用/配置、读取secret、发真实模型请求/对外消息或新增费用。没有额度告警或重置。未运行的包内/GUI/真实运行/生产验收均未记通过。
 
-
 ## 批准输入后的增量
 
 实现检查点 `dcc5ec8` 已本地提交，未push。总控随后批准T09固定873输入；本线仅新增固定bundle与显式测试适配，实际75项Python定向通过。接入记录见 `docs/iterations/T05/approved-inputs.md`；最新完整check退出0：635 TS / 1127 Python；完整独立内审明确通过本线准备与输入适配范围，原代码未变。第二提交 `383bc6a` 已保存；准确实施与输入测试SHA、验证和待验门见 `checkpoint.json`。批准输入与各expected仍不构成正式实际执行证据。
@@ -58,3 +57,11 @@
 完整 `npm run check` 退出0：635 TS / 1170 Python；独立完整内审118 Python通过，范围限私有准备和隔离真实Store探针。文档 `docs/iterations/T05/store-parameter-probe.md` 已实际交总控转T01确认。references派生/单一包装、服务端revision、预览确认undo及正式失效/撤回仍须owner接受与实际接线；opaque定义往返不等于域引用校验。异常注入不等于真实进程崩溃/IPC丢包验收。
 
 本轮保留完整目标和active Goal。FR505执行扩展已获总控实际接收并转交I05 owner；root另派独立16例输入审计，后续意见仍须处理。实际批准执行器/公共协议接线与指定双审/PR/CI/正常合并/完整父验收尚缺。
+
+## 总控 R1/R2 修复与同一执行器契约
+
+固定提交 `fff89f64896b48cc678f97d41c45d4a7ec0dadc0` 已处理总控独立审计的 R1/R2：比较输入从16例升级为22例（18个比较格，六算子在score1/2/3的真值签名两两可辨）；删除“小整数闭合P0”的歧义，保留完整类型/取值、错误、解释和生命周期验收。最新全量 `npm run check` 退出0：635 TS / 1200 Python；独立148项quality测试通过。旧16例内审遗漏已在处理记录中承认，未回写旧报告为通过；root新固定版复核仍待回执。
+
+新增 `single-executor-extension-contract.md` 完整交接草案：核对I05未来四路径offer报告及固定SHA，列明同一执行器的比较/多输出、类型矩阵、真实trace、失败原子性及新旧语义身份。T05有条件接受未来责任，但四路径尚未生效；没有读取/复制/导入/运行未批准实现。类型/跨numeric政策、basis精确语义、预算、结果来源及错误映射仍需owner逐项确认。当前canonical/schema由T01、余下bridge由I06维护，T00协调，精确清单见契约第8节。
+
+契约不代替批准依赖、真实联验或指定双审。最新状态为私有准备、输入审计修复及交接提案；完整Goal active，未push/PR/CI/合并。未因责任政策/文档变化重跑未变化的实现测试。
