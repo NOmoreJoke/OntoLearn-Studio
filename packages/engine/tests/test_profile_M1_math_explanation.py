@@ -455,6 +455,18 @@ def _assert_case(family, index, row, actual, expected):
             value["second"] = {"recordType": "Number", **value["second"]}
             assert pv["domain"] == expected.get("domain", expected.get(input_name + "Domain"))
             assert pv["value"] == {"recordType": "Calendar", **value}
+    if main.get("comparison") is not None:
+        if "input" in row:
+            assert main["comparison"]["right"] == main["comparison"]["left"]
+        else:
+            assert (
+                main["comparison"]["left"]
+                == actual["leftOperandSeparateEqSelf"]["comparison"]["left"]
+            )
+            assert (
+                main["comparison"]["right"]
+                == actual["rightOperandSeparateEqSelf"]["comparison"]["left"]
+            )
 
 
 @pytest.mark.parametrize("family,index,row", CASES, ids=[f"{f}-{r['id']}" for f, _, r in CASES])
