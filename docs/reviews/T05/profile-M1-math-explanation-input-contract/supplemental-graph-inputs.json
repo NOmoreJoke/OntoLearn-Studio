@@ -1,0 +1,180 @@
+{
+  "status": "new authored supplemental inputs; not any original case/source state; expected kept in separate file",
+  "cases": [
+    {
+      "id": "M1-complete-heads",
+      "asserted": [
+        ["<urn:m1:s1>", "<urn:m1:score>", "\"01\"^^<http://www.w3.org/2001/XMLSchema#integer>"],
+        ["<urn:m1:s2>", "<urn:m1:score>", "\"0\"^^<http://www.w3.org/2001/XMLSchema#integer>"]
+      ],
+      "ontology": [
+        [
+          "<urn:m1:Matched>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/2002/07/owl#Class>"
+        ],
+        [
+          "<urn:m1:score>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+        ],
+        [
+          "<urn:m1:label>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "M1-complete-heads",
+          "revision": 1,
+          "label": "M1 complete heads",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "property",
+              "subject": "?s",
+              "path": "urn:m1:score",
+              "object": "?v"
+            },
+            {
+              "kind": "compare",
+              "left": "?v",
+              "operator": "eq",
+              "right": "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?s",
+              "class": "urn:m1:Matched"
+            },
+            {
+              "kind": "type",
+              "subject": "?s",
+              "class": "urn:m1:Matched"
+            },
+            {
+              "kind": "property",
+              "subject": "?s",
+              "path": "urn:m1:label",
+              "object": "\"ok\""
+            }
+          ]
+        }
+      ],
+      "consumption": "These are original schemaVersion1 rule JSON/source definitions, not a direct semantic.reason RuleSpec argument. Real authorized T01/I05 binder must produce typed rules from source; derive Catalog from included actual ontology. Do not pass expected catalog as producer input or infer declarations from goldens."
+    },
+    {
+      "id": "M1-false-then-error",
+      "asserted": [
+        ["<urn:m1:s>", "<urn:m1:v>", "\"0\"^^<http://www.w3.org/2001/XMLSchema#integer>"],
+        ["<urn:m1:s>", "<urn:m1:w>", "\"1\"^^<http://www.w3.org/2001/XMLSchema#string>"]
+      ],
+      "ontology": [
+        [
+          "<urn:m1:Matched>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/2002/07/owl#Class>"
+        ],
+        [
+          "<urn:m1:v>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+        ],
+        [
+          "<urn:m1:w>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+        ],
+        [
+          "<urn:m1:label>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "M1-false-then-error",
+          "revision": 1,
+          "label": "M1 complete heads",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "property",
+              "subject": "?s",
+              "path": "urn:m1:v",
+              "object": "?v"
+            },
+            {
+              "kind": "property",
+              "subject": "?s",
+              "path": "urn:m1:w",
+              "object": "?w"
+            },
+            {
+              "kind": "compare",
+              "left": "?v",
+              "operator": "gt",
+              "right": "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            },
+            {
+              "kind": "compare",
+              "left": "?w",
+              "operator": "eq",
+              "right": "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?s",
+              "class": "urn:m1:Matched"
+            },
+            {
+              "kind": "type",
+              "subject": "?s",
+              "class": "urn:m1:Matched"
+            },
+            {
+              "kind": "property",
+              "subject": "?s",
+              "path": "urn:m1:label",
+              "object": "\"ok\""
+            }
+          ]
+        }
+      ],
+      "consumption": "These are original schemaVersion1 rule JSON/source definitions, not a direct semantic.reason RuleSpec argument. Real authorized T01/I05 binder must produce typed rules from source; derive Catalog from included actual ontology. Do not pass expected catalog as producer input or infer declarations from goldens."
+    },
+    {
+      "id": "M1-direct-step",
+      "asserted": [["<urn:m1:x>", "<urn:m1:p>", "<urn:m1:y>"]],
+      "ontology": [
+        ["<urn:m1:p>", "<http://www.w3.org/2000/01/rdf-schema#domain>", "<urn:m1:A>"],
+        ["<urn:m1:A>", "<http://www.w3.org/2000/01/rdf-schema#subClassOf>", "<urn:m1:B>"]
+      ],
+      "rules": []
+    },
+    {
+      "id": "M1-direct-range",
+      "asserted": [["<urn:m1:x>", "<urn:m1:p>", "<urn:m1:y>"]],
+      "ontology": [["<urn:m1:p>", "<http://www.w3.org/2000/01/rdf-schema#range>", "<urn:m1:C>"]],
+      "rules": []
+    },
+    {
+      "id": "M1-direct-subclass-transitive",
+      "asserted": [],
+      "ontology": [
+        ["<urn:m1:A>", "<http://www.w3.org/2000/01/rdf-schema#subClassOf>", "<urn:m1:B>"],
+        ["<urn:m1:B>", "<http://www.w3.org/2000/01/rdf-schema#subClassOf>", "<urn:m1:C>"]
+      ],
+      "rules": []
+    }
+  ]
+}

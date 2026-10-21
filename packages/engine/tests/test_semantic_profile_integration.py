@@ -1,0 +1,1149 @@
+"""Real graph matching with fixed T05 input/expected, not prefilled bindings."""
+
+import collections as _i05_oracle_collections
+import hashlib
+import hashlib as _i05_oracle_hashlib
+import json
+import json as _i05_oracle_json
+import re as _i05_oracle_re
+from dataclasses import replace
+from pathlib import Path
+from pathlib import Path as _i05_oracle_Path
+
+import pytest
+import pytest as _i05_oracle_pytest
+from ontolearn_engine.quality.rule_firing import Comparison, Triple, Variable
+from ontolearn_engine.quality.rule_profile import OPS, PROFILE, XSD, TermInput
+from ontolearn_engine.semantic import reason
+from ontolearn_engine.semantic_profile_probe import _construct_case
+from ontolearn_engine.semantic_turtle import parse_profile_graph
+
+ROOT = Path(__file__).resolve().parents[3]
+FIXTURES = ROOT / "tests/fixtures/quality/profile-v1"
+
+
+def fixed_case():
+    fixture = json.loads((FIXTURES / "firing-cases.json").read_bytes())
+    text, rules = _construct_case(fixture)
+    graph, context = parse_profile_graph(text, base_uri="urn:profile-test:")
+    return fixture, graph, context, rules
+
+
+def compute(graph, context, rules):
+    return reason(graph, rules, profile=PROFILE, term_context=context)
+
+
+def test_actual_graph_join_and_all_heads_from_fixed_oracle():
+    fixture, graph, context, rules = fixed_case()
+    result = compute(graph, context, rules)
+    assert result["semanticsVersion"] == "i05-finite-7"
+    (firing,) = result["firingGroups"]
+    assert [head.index for head in firing.heads] == fixture["expected"]["head_indices"]
+    assert [c.index for c in firing.comparisons] == fixture["expected"]["comparison_indices"]
+    for head, expected in zip(firing.heads, fixture["expected"]["heads"], strict=True):
+        assert head.triple.subject.lexical_form == expected[0]
+        assert head.triple.predicate.lexical_form == expected[1]
+        assert head.triple.object.lexical_form == expected[2]["lexical"]
+        assert head.triple.object.datatype_iri == XSD + expected[2]["type"]
+    assert len(result["rules"]) == fixture["expected"]["unique_facts"]
+    assert firing.when[0].object.lexical_form == fixture["value"]
+    assert firing.basis
+    assert len(firing.proof_leaves) == len(firing.when)
+    batch = result["mechanismBatches"][0]["batch"]
+    assert hashlib.sha256(batch.payload).hexdigest() == batch.digest
+
+
+@pytest.mark.parametrize("operator_index", range(6))
+def test_fixed_numeric_operator_columns_through_graph(operator_index):
+    matrix = json.loads((FIXTURES / "comparison-matrix.json").read_bytes())
+    _, graph, context, rules = fixed_case()
+    # Fixture graph carries 2; compare actual variable to 2, consuming the
+    # independently authored threshold-two middle row for all six operators.
+    comparison = Comparison(
+        Variable("?v"), OPS[operator_index], TermInput("literal", "2", XSD + "integer")
+    )
+    spec = replace(rules[0], comparisons=(comparison,))
+    result = compute(graph, context, (spec,))
+    assert bool(result["firingGroups"]) is matrix["threshold_two_signatures"][1][operator_index]
+
+
+def test_rule_save_order_does_not_change_allocations_or_actual_facts():
+    _, graph, context, rules = fixed_case()
+    a, b = replace(rules[0], rule_id="a"), replace(rules[0], rule_id="z")
+    first = compute(graph, context, (a, b))
+    second = compute(graph, context, (b, a))
+    assert first["rules"] == second["rules"]
+    assert first["firingGroups"] == second["firingGroups"]
+    assert {item["ruleId"]: item["budgetLimits"] for item in first["mechanismBatches"]} == {
+        item["ruleId"]: item["budgetLimits"] for item in second["mechanismBatches"]
+    }
+
+
+def test_no_custom_feedback_into_same_rule_pass():
+    _, graph, context, rules = fixed_case()
+    next_rule = replace(
+        rules[0],
+        rule_id="next",
+        when=(Triple(Variable("?s"), TermInput("iri", "urn:out"), Variable("?v")),),
+    )
+    result = compute(graph, context, (rules[0], next_rule))
+    assert [group.rule_id for group in result["firingGroups"]] == [rules[0].rule_id]
+
+
+def _comparison_graph(left, right, operator):
+    """New test-input projection; expected classifications remain T05's table."""
+    from ontolearn_engine.quality.rule_firing import RuleSpec
+    from rdflib import RDF, Literal, URIRef
+
+    predicate_kind = "ObjectProperty" if left.kind == "iri" else "DatatypeProperty"
+    obj = (
+        URIRef(left.lexical_form)
+        if left.kind == "iri"
+        else Literal(
+            left.lexical_form, datatype=left.datatype_iri, lang=left.language_raw, normalize=False
+        )
+    )
+    text = (
+        "<urn:C> a <http://www.w3.org/2000/01/rdf-schema#Class> . "
+        "<urn:value> a <http://www.w3.org/2002/07/owl#" + predicate_kind + "> . "
+        "<urn:a> <urn:value> " + obj.n3() + " ."
+    )
+    graph, context = parse_profile_graph(text, base_uri="urn:matrix-test:")
+    spec = RuleSpec(
+        "matrix-input",
+        (Triple(Variable("?s"), TermInput("iri", "urn:value"), Variable("?v")),),
+        (Comparison(Variable("?v"), operator, right),),
+        (Triple(Variable("?s"), TermInput("iri", str(RDF.type)), TermInput("iri", "urn:C")),),
+    )
+    return graph, context, (spec,)
+
+
+def _domain_input(domain, *, right=False):
+    value = "2" if right else "1"
+    if domain == "I":
+        return TermInput("iri", "urn:matrix:" + value)
+    if domain == "L":
+        return TermInput("literal", value, None, "en")
+    if domain == "B":
+        return TermInput("literal", "true" if right else "false", XSD + "boolean")
+    if domain in ("Dz", "Dl", "Tz", "Tl"):
+        lexical = "1970-01-0" + value
+        if domain.startswith("T"):
+            lexical += "T00:00:00"
+        if domain.endswith("z"):
+            lexical += "Z"
+        return TermInput(
+            "literal", lexical, XSD + ("dateTime" if domain.startswith("T") else "date")
+        )
+    return TermInput("literal", value, XSD + ("integer" if domain == "N" else "string"))
+
+
+_MATRIX = json.loads((FIXTURES / "comparison-matrix.json").read_bytes())
+
+
+@pytest.mark.parametrize(
+    "left_index,right_index,operator_index",
+    [(a, b, c) for a in range(9) for b in range(9) for c in range(6)],
+)
+def test_fixed_nine_domain_classifications_via_actual_graph(
+    left_index, right_index, operator_index
+):
+    from ontolearn_engine.semantic import ProfileReasonError
+
+    left = _domain_input(_MATRIX["domains"][left_index])
+    right = _domain_input(_MATRIX["domains"][right_index], right=True)
+    graph, context, rules = _comparison_graph(left, right, OPS[operator_index])
+    classification = _MATRIX["cells"][left_index][right_index][operator_index]
+    if classification == "E3":
+        with pytest.raises(ProfileReasonError) as caught:
+            compute(graph, context, rules)
+        assert caught.value.code == "RULE_COMPARISON_TYPE_MISMATCH"
+    else:
+        assert classification == "V"
+        result = compute(graph, context, rules)
+        assert bool(result["firingGroups"]) is _MATRIX["one_vs_two"][operator_index]
+
+
+@pytest.mark.parametrize(
+    "left_index,right_index,operator_index",
+    [(a, b, c) for a in range(6) for b in range(6) for c in range(6)],
+)
+def test_fixed_six_numeric_type_matrix_via_actual_graph(left_index, right_index, operator_index):
+    left = TermInput("literal", "1", XSD + _MATRIX["numeric_types"][left_index])
+    right = TermInput("literal", "2", XSD + _MATRIX["numeric_types"][right_index])
+    graph, context, rules = _comparison_graph(left, right, OPS[operator_index])
+    assert _MATRIX["numeric_cells"][left_index * 6 + right_index][operator_index] == "V"
+    assert (
+        bool(compute(graph, context, rules)["firingGroups"])
+        is _MATRIX["one_vs_two"][operator_index]
+    )
+
+
+def test_exact_original_false_matches_and_true_proofs_are_retained():
+    _, graph, context, rules = fixed_case()
+    true_result = compute(graph, context, rules)
+    (child,) = true_result["mechanismBatches"]
+    (original_match,) = child["originalMatches"]
+    (firing,) = child["batch"].firings
+    assert firing.when is original_match.when
+    assert firing.proof_leaves is original_match.proof_leaves
+    assert child["definitions"][0] is rules[0]
+    assert child["catalog"] is true_result["catalog"]
+    assert child["limits"].bindings == 1024
+    false_spec = replace(
+        rules[0],
+        comparisons=(Comparison(Variable("?v"), "gt", TermInput("literal", "3", XSD + "integer")),),
+    )
+    (false_child,) = compute(graph, context, (false_spec,))["mechanismBatches"]
+    assert false_child["batch"].firings == ()
+    (false_match,) = false_child["originalMatches"]
+    assert dict(false_match.bindings)["?v"].lexical_form == "2"
+    assert false_match.proof_leaves
+
+
+def test_disabled_and_empty_definition_children_have_distinct_real_state():
+    from ontolearn_engine.semantic_turtle import bind_profile_disabled_rules
+
+    _, graph, context, rules = fixed_case()
+    disabled = bind_profile_disabled_rules(context, (rules[0].rule_id,))
+    (child,) = compute(graph, disabled, rules)["mechanismBatches"]
+    assert child["disabled"] is True
+    assert child["originalMatches"] is None and child["batch"] is None
+    assert child["definitions"] == rules
+    (empty,) = compute(graph, context, ())["mechanismBatches"]
+    assert empty["disabled"] is False
+    assert empty["definitions"] == () and empty["originalMatches"] == ()
+    assert empty["batch"].firings == ()
+
+
+_i05_oracle_RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+# Suggested append-only TEST fragment; not installed or executed by this agent.
+# All expected data remains in the test consumer; producer receives fixed inputs only.
+_i05_oracle_ORACLE_SHA = "87220503f9983146c974fe3e35025d520cad70e54fdd994aebfa86fb1ff7259f"
+_i05_oracle_INPUT_SHA = "7c24323ece02667aa53b3363b5e6b88adbd785fa6410aca868026c9bef9c61f6"
+_i05_oracle_PROJECTION_CODE_SHA = "c93d284c1b5744eaf671623f386fa0812602a54946fcafc8d0f0e8dccb21ee7b"
+_i05_oracle_DOC_SHA = "82d8c3976c2f5e47388e44fd44462c5ceddb58c26919b8cf58d22f3e90468f7b"
+_i05_oracle_XSD = "http://www.w3.org/2001/XMLSchema#"
+_i05_oracle_LANG = "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+_i05_oracle_PROFILE = "OntoLearn-rule-comparison-profile/1"
+
+
+def _i05_oracle_sha(raw):
+    return _i05_oracle_hashlib.sha256(raw).hexdigest()
+
+
+def _i05_oracle_canonical(v):
+    return _i05_oracle_json.dumps(
+        v, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False
+    ).encode()
+
+
+def _i05_oracle_unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("DUPLICATE_JSON_KEY")
+        result[key] = value
+    return result
+
+
+def _i05_oracle_load(path, expected=None):
+    raw = _i05_oracle_Path(path).read_bytes()
+    if len(raw) > 268435456:
+        raise ValueError("EXTERNAL_ARTIFACT_SIZE_LIMIT")
+    if expected is not None and _i05_oracle_sha(raw) != expected:
+        raise ValueError("FIXED_ARTIFACT_BYTES_CHANGED")
+    return _i05_oracle_json.loads(
+        raw,
+        object_pairs_hook=_i05_oracle_unique_object,
+        parse_constant=lambda _: (_ for _ in ()).throw(ValueError("NONFINITE_JSON")),
+    )
+
+
+def _i05_oracle_integer(value):
+    if type(value) is not dict or set(value) != {"integerHex"}:
+        raise ValueError("INTEGER_REPRESENTATION")
+    text = value["integerHex"]
+    if (
+        type(text) is not str
+        or len(text) > 8196
+        or (not _i05_oracle_re.fullmatch("-?0x[0-9a-f]+", text))
+    ):
+        raise ValueError("INTEGER_HEX")
+    number = int(text, 16)
+    if hex(number) != text:
+        raise ValueError("NONCANONICAL_INTEGER_HEX")
+    return number
+
+
+def _i05_oracle_n3key(text):
+    """Syntax identity only, never literal value coercion or comparison.
+
+    The complete approved 248-triple dictionary is checked to use this subset.
+    Unknown syntax fails explicitly; numeric lexical strings stay unchanged.
+    """
+    if type(text) is not str:
+        raise ValueError("N3_STRING_REQUIRED")
+    if text.startswith("<") and text.endswith(">"):
+        return ("iri", text[1:-1], "", "")
+    (lexical, end) = _i05_oracle_json.JSONDecoder().raw_decode(text)
+    if type(lexical) is not str:
+        raise ValueError("LITERAL_STRING_REQUIRED")
+    suffix = text[end:]
+    if not suffix:
+        return ("literal", lexical, _i05_oracle_XSD + "string", "")
+    if suffix.startswith("^^<") and suffix.endswith(">"):
+        return ("literal", lexical, suffix[3:-1], "")
+    if suffix.startswith("@"):
+        return ("literal", lexical, _i05_oracle_LANG, suffix[1:].lower())
+    raise ValueError("N3_SYNTAX_OUTSIDE_FIXED_DICTIONARY")
+
+
+def _i05_oracle_input_triple(t):
+    return (
+        _i05_oracle_n3key("<" + t["subject"] + ">"),
+        _i05_oracle_n3key("<" + t["predicate"] + ">"),
+        _i05_oracle_n3key(t["object"]),
+    )
+
+
+def _i05_oracle_n3triple(t):
+    if type(t) is not list or len(t) != 3:
+        raise ValueError("N3_TRIPLE_SHAPE")
+    return tuple(_i05_oracle_n3key(value) for value in t)
+
+
+def _i05_oracle_term(t):
+    if t.get("recordType") != "TermInput":
+        raise ValueError("TERM_RECORD_TYPE")
+    if t["kind"] == "iri":
+        return ("iri", t["lexical_form"], "", "")
+    if t["kind"] != "literal":
+        raise ValueError("TERM_KIND")
+    lang = t["language_raw"] or ""
+    datatype = t["datatype_iri"] or (_i05_oracle_LANG if lang else _i05_oracle_XSD + "string")
+    return ("literal", t["lexical_form"], datatype, lang.lower())
+
+
+def _i05_oracle_record_triple(t):
+    if t.get("recordType") != "Triple":
+        raise ValueError("TRIPLE_RECORD_TYPE")
+    return tuple(_i05_oracle_term(t[k]) for k in ("subject", "predicate", "object"))
+
+
+def _i05_oracle_rule_key(d):
+    return (
+        d["rule_id"],
+        d["enabled"],
+        d["revision"],
+        tuple(tuple(row[k] for k in ("subject", "predicate", "object")) for row in d["when"]),
+        tuple(tuple(row[k] for k in ("left", "operator", "right")) for row in d["comparisons"]),
+        tuple(tuple(row[k] for k in ("subject", "predicate", "object")) for row in d["heads"]),
+    )
+
+
+def _i05_oracle_model(oracle, projection, project_module):
+    triples = {key: _i05_oracle_n3triple(value["n3"]) for (key, value) in oracle["triples"].items()}
+    rules = {
+        key: project_module.definition(value["definition"], value["inputRef"])
+        for (key, value) in oracle["ruleDefinitions"].items()
+    }
+
+    def graph_signature(g):
+        return (
+            frozenset(triples[k] for k in g["assertedTripleIds"]),
+            frozenset(triples[k] for k in g["ontologyTripleIds"]),
+            tuple(_i05_oracle_rule_key(rules[k]) for k in g["ruleDefinitionRefs"]),
+        )
+
+    def input_signature(sample):
+        v = sample["input"]
+        return (
+            frozenset(_i05_oracle_input_triple(r["triple"]) for r in v["asserted"]),
+            frozenset(_i05_oracle_input_triple(r["triple"]) for r in v["ontology"]),
+            tuple(_i05_oracle_rule_key(r) for r in v["definitions"]),
+        )
+
+    by_signature = _i05_oracle_collections.defaultdict(list)
+    for key, g in oracle["graphs"].items():
+        by_signature[graph_signature(g)].append(key)
+    records = []
+    for sample in projection["mathInputs"]:
+        graphs = by_signature.get(input_signature(sample), [])
+        accepted = {
+            ref
+            for graph in graphs
+            for ref in oracle["graphs"][graph]["matchRefs"]
+            if oracle["matches"][ref]["accepted"]
+        }
+        rejected = {
+            ref
+            for graph in graphs
+            for ref in oracle["graphs"][graph]["matchRefs"]
+            if not oracle["matches"][ref]["accepted"]
+        }
+        record = {
+            "mathInputId": sample["id"],
+            "eligibleStandaloneMathInput": sample["eligibleStandaloneMathInput"],
+            "fullOriginalInputContext": sample["input"]["fullOriginalInputContext"],
+            "exactInputValueGraphs": graphs,
+            "acceptedExpectedMatchRefs": sorted(accepted),
+            "falseExpectedMatchRefs": sorted(rejected),
+            "lifecycleCoverage": False,
+            "producerOrSourceAuthorityEquivalent": False,
+        }
+        if graphs:
+            record["comparisonScope"] = (
+                "exact mathematical input values/definition order only; "
+                "no lifecycle or producer equivalence"
+            )
+            record["observableFields"] = [
+                "complete rdfs/custom/derived sets",
+                "accepted firing bindings and ordered when",
+                "all accepted comparison operand terms/operator/boolean",
+                "all original true/false match bindings/when/proof",
+                "all head indices/occurrences",
+                "all firing basis and ordered per-when proof leaves",
+                "available RDFS leaf witness basis",
+                "warnings",
+                "full actual rows/payload hashes and batch bytes hash integrity",
+            ]
+            record["notObservable"] = [
+                "false ComparisonEvidence is absent; originalMatches carries "
+                "actual false binding/when/proof only",
+                "numeric rational internal value semantics (oracle gives operand terms/truth only)",
+                "RDFS direct-step/derivation-level objects absent from current result",
+                "current/history/reset/behavior/Store/producer authorization",
+            ]
+        else:
+            record["comparisonScope"] = "not comparable to a full approved expected graph"
+            record["reason"] = (
+                "Partial event-only fragment omits prior behavior/resource RDF; "
+                "no expected full graph has this input."
+                if not sample["input"]["fullOriginalInputContext"]
+                else "No full graph with exactly this asserted/ontology/ordered-definition input; "
+                "no nearest/subset comparison."
+            )
+        if not sample["eligibleStandaloneMathInput"]:
+            record["executionExpectation"] = (
+                "must remain not-executed; absence of original rule definitions "
+                "is not an inferred empty-rule success"
+            )
+        records.append(record)
+    covered = {
+        g for r in records if r["eligibleStandaloneMathInput"] for g in r["exactInputValueGraphs"]
+    }
+    unexecuted = {
+        g
+        for r in records
+        if not r["eligibleStandaloneMathInput"]
+        for g in r["exactInputValueGraphs"]
+    }
+    return (
+        triples,
+        records,
+        {
+            "format": "external-i05-oracle-coverage/1",
+            "oracleSha256": _i05_oracle_ORACLE_SHA,
+            "inputSha256": _i05_oracle_INPUT_SHA,
+            "actualResultsSupplied": False,
+            "actualMathCompared": False,
+            "mathInputs": records,
+            "coveredValueGraphIds": sorted(covered),
+            "inputPresentButNotEligibleGraphIds": sorted(unexecuted - covered),
+            "uncoveredGraphIds": sorted(set(oracle["graphs"]) - covered),
+            "counts": {
+                "mathInputs": len(records),
+                "valueMappedInputs": sum(bool(r["exactInputValueGraphs"]) for r in records),
+                "eligibleMappedInputs": sum(
+                    bool(r["exactInputValueGraphs"]) and r["eligibleStandaloneMathInput"]
+                    for r in records
+                ),
+                "eligibleCoveredValueGraphs": len(covered),
+                "oracleGraphs": len(oracle["graphs"]),
+            },
+        },
+    )
+
+
+def _i05_oracle_exact_set(rows):
+    value = list(rows)
+    if len(value) != len(set(value)):
+        raise ValueError("DUPLICATE_SET_MEMBER")
+    return set(value)
+
+
+def _i05_oracle_expected_firing(m, graph, oracle, triples):
+    witnesses = {
+        oracle["rdfsWitnesses"][k]["resultTripleId"]: oracle["rdfsWitnesses"][k]
+        for k in graph["rdfsWitnessRefs"]
+    }
+    leaves = []
+    input_ids = set(graph["assertedTripleIds"] + graph["ontologyTripleIds"])
+    for key in m["whenTripleIdsInDefinitionOrder"]:
+        ids = [key] if key in input_ids else witnesses[key]["leafBasisTripleIds"]
+        leaves.append(frozenset(triples[k] for k in ids))
+    return {
+        "ruleId": m["ruleId"],
+        "bindings": tuple(sorted((k, _i05_oracle_n3key(v)) for (k, v) in m["bindings"].items())),
+        "when": tuple(triples[k] for k in m["whenTripleIdsInDefinitionOrder"]),
+        "proof": tuple(leaves),
+        "basis": frozenset(triples[k] for k in m["leafBasisTripleIds"]),
+        "comparisons": tuple(
+            (
+                v["comparisonIndex"],
+                _i05_oracle_n3key(v["left"]),
+                v["operator"],
+                _i05_oracle_n3key(v["right"]),
+                v["independentResult"],
+            )
+            for v in m["comparisons"]
+        ),
+        "heads": tuple((v["headIndex"], triples[v["tripleId"]]) for v in m["heads"]),
+    }
+
+
+def _i05_oracle_leaf_refs(refs, leaves):
+    if (
+        type(refs) is not list
+        or any(type(ref) is not str for ref in refs)
+        or refs != sorted(set(refs))
+    ):
+        raise ValueError("PROOF_REFS_SORTED_UNIQUE")
+    return frozenset(leaves[ref] for ref in refs)
+
+
+def _i05_oracle_actual_firing(f, leaves):
+    if f.get("recordType") != "PreparedFiring" or f["policy"] != _i05_oracle_PROFILE:
+        raise ValueError("FIRING_RECORD")
+    bindings = tuple((name, _i05_oracle_term(value)) for (name, value) in f["bindings"])
+    if bindings != tuple(sorted(bindings)):
+        raise ValueError("BINDING_ORDER")
+    comparisons = []
+    for c in f["comparisons"]:
+        if c.get("recordType") != "ComparisonEvidence" or type(c["result"]) is not bool:
+            raise ValueError("COMPARISON_RECORD")
+        if (
+            c["left"].get("recordType") != "ProfileValue"
+            or c["right"].get("recordType") != "ProfileValue"
+        ):
+            raise ValueError("OPERAND_RECORD")
+        comparisons.append(
+            (
+                _i05_oracle_integer(c["index"]),
+                _i05_oracle_term(c["left"]["term"]),
+                c["operator"],
+                _i05_oracle_term(c["right"]["term"]),
+                c["result"],
+            )
+        )
+    heads = []
+    for h in f["heads"]:
+        if h.get("recordType") != "HeadEvidence":
+            raise ValueError("HEAD_RECORD")
+        heads.append((_i05_oracle_integer(h["index"]), _i05_oracle_record_triple(h["triple"])))
+    return {
+        "ruleId": f["rule_id"],
+        "bindings": bindings,
+        "when": tuple(_i05_oracle_record_triple(t) for t in f["when"]),
+        "proof": tuple(_i05_oracle_leaf_refs(refs, leaves) for refs in f["proof_leaves"]),
+        "basis": _i05_oracle_leaf_refs(f["basis"], leaves),
+        "comparisons": tuple(comparisons),
+        "heads": tuple(heads),
+    }
+
+
+def _i05_oracle_firing_sort_key(f):
+    return (f["ruleId"], f["bindings"], f["when"])
+
+
+def _i05_oracle_check_result(result, sample, index, graph, oracle, triples, config):
+    payload = result["payload"]
+    rows = result["rows"]
+    r = payload["reasoning"]
+    if (
+        payload["format"] != "i05-reasoning-result/2"
+        or r["profile"] != _i05_oracle_PROFILE
+        or r["semanticsVersion"] != "i05-finite-7"
+    ):
+        raise ValueError("RESULT_VERSION")
+    encoded = _i05_oracle_canonical(payload)
+    row_bytes = _i05_oracle_canonical(rows)
+    if len(rows) > 10000 or any(
+        type(row) is not list or len(row) != 1 or type(row[0]) is not str or (len(row[0]) > 8192)
+        for row in rows
+    ):
+        raise ValueError("ROWS_SHAPE")
+    if "".join(row[0] for row in rows).encode() != encoded:
+        raise ValueError("ROWS_INCOMPLETE")
+    if len(encoded) + len(row_bytes) > 8388608:
+        raise ValueError("RESULT_SIZE")
+    if (
+        _i05_oracle_sha(encoded) != result["jsonPayloadDigest"]
+        or _i05_oracle_sha(row_bytes) != result["rowsDigest"]
+    ):
+        raise ValueError("PAYLOAD_ROWS_HASH")
+    if _i05_oracle_sha(_i05_oracle_canonical(r["definitions"])) != payload["definitionsDigest"]:
+        raise ValueError("DEFINITION_JSON_DIGEST")
+    expected_rdfs = {triples[k] for k in graph["rdfsAddedTripleIds"]}
+    expected_custom = {triples[k] for k in graph["customOutputTripleIds"]}
+    if _i05_oracle_exact_set(_i05_oracle_n3triple(t) for t in r["rdfs"]) != expected_rdfs:
+        raise ValueError("RDFS_SET")
+    if _i05_oracle_exact_set(_i05_oracle_n3triple(t) for t in r["rules"]) != expected_custom:
+        raise ValueError("CUSTOM_SET")
+    if expected_rdfs | expected_custom != {triples[k] for k in graph["derivedUnionTripleIds"]}:
+        raise ValueError("ORACLE_DERIVED_UNION")
+    warnings = ["RULE_CHAIN_UNSUPPORTED:" + w["ruleId"] for w in graph["expectedSemanticWarnings"]]
+    if r["warnings"] != warnings:
+        raise ValueError("WARNINGS")
+    leaves = {}
+    for leaf in r["proofLeaves"]:
+        ref = leaf["reference"]
+        if ref in leaves:
+            raise ValueError("DUPLICATE_PROOF_REF")
+        raw = ("i05-profile-proof-leaf/1\x00" + "\x00".join(leaf["triple"])).encode()
+        if ref != "i05-proof:" + _i05_oracle_sha(raw):
+            raise ValueError("PROOF_REF_HASH")
+        leaves[ref] = _i05_oracle_n3triple(leaf["triple"])
+    expected_input = {triples[k] for k in graph["assertedTripleIds"] + graph["ontologyTripleIds"]}
+    if _i05_oracle_exact_set(leaves.values()) != expected_input:
+        raise ValueError("COMPLETE_INPUT_LEAF_TABLE")
+    expected = sorted(
+        [
+            _i05_oracle_expected_firing(oracle["matches"][k], graph, oracle, triples)
+            for k in graph["matchRefs"]
+            if oracle["matches"][k]["accepted"]
+        ],
+        key=_i05_oracle_firing_sort_key,
+    )
+    actual = [_i05_oracle_actual_firing(f, leaves) for f in r["firingGroups"]]
+    if actual != expected:
+        raise ValueError("COMPLETE_ACCEPTED_FIRINGS_HEADS_COMPARISONS_BASIS")
+    expected_evidence = []
+    for i, firing in enumerate(expected):
+        for head_index, value in firing["heads"]:
+            expected_evidence.append(
+                (firing["ruleId"], i, head_index, value, firing["when"], firing["basis"])
+            )
+    actual_evidence = [
+        (
+            e["rule"],
+            _i05_oracle_integer(e["firingIndex"]),
+            _i05_oracle_integer(e["headIndex"]),
+            _i05_oracle_n3triple(e["result"]),
+            tuple(_i05_oracle_n3triple(t) for t in e["inputs"]),
+            _i05_oracle_leaf_refs(e["basis"], leaves),
+        )
+        for e in r["evidence"]
+    ]
+    if actual_evidence != expected_evidence:
+        raise ValueError("ALL_HEAD_EVIDENCE_OCCURRENCES")
+    by_rule = {v["rule_id"]: v for v in sample["input"]["definitions"]}
+    if len(r["definitions"]) != len(by_rule):
+        raise ValueError("DEFINITION_RECORD_COUNT")
+
+    def op(value):
+        return (
+            ("var", value["name"])
+            if value.get("recordType") == "Variable"
+            else _i05_oracle_term(value)
+        )
+
+    def expected_op(value, iri=False):
+        if value.startswith("?"):
+            return ("var", value)
+        return ("iri", value, "", "") if iri else _i05_oracle_n3key(value)
+
+    for actual_def, _i05_oracle_definition in zip(
+        r["definitions"], sample["input"]["definitions"], strict=True
+    ):
+        if (
+            actual_def.get("recordType") != "RuleSpec"
+            or actual_def["rule_id"] != _i05_oracle_definition["rule_id"]
+            or actual_def["revision"] != _i05_oracle_definition["revision"]
+            or (
+                actual_def["definition_digest"]
+                != _i05_oracle_definition["definitionJsonValueSha256"]
+            )
+            or (actual_def["policy"] != _i05_oracle_PROFILE)
+        ):
+            raise ValueError("ACTUAL_ORIGINAL_DEFINITION_IDENTITY")
+        for field in ("when", "heads"):
+            expected_rows = [
+                tuple(
+                    expected_op(row[k], iri=k != "object")
+                    for k in ("subject", "predicate", "object")
+                )
+                for row in _i05_oracle_definition[field]
+            ]
+            actual_rows = [
+                tuple(op(row[k]) for k in ("subject", "predicate", "object"))
+                for row in actual_def[field]
+            ]
+            if actual_rows != expected_rows:
+                raise ValueError("DEFINITION_ORDERED_ROWS")
+        expected_comps = [
+            (expected_op(c["left"]), c["operator"], expected_op(c["right"]))
+            for c in _i05_oracle_definition["comparisons"]
+        ]
+        actual_comps = [
+            (op(c["left"]), c["operator"], op(c["right"])) for c in actual_def["comparisons"]
+        ]
+        if actual_comps != expected_comps:
+            raise ValueError("DEFINITION_ORDERED_COMPARISONS")
+    actual_rule_ids = []
+    retained = []
+    for item in r["mechanismBatches"]:
+        rule_id = item["ruleId"]
+        actual_rule_ids.append(rule_id)
+        expected_disabled = rule_id in sample["input"]["disabled_rule_ids"]
+        if rule_id is None:
+            if by_rule or item["definitionOrdinal"] is not None or item["definitions"] != []:
+                raise ValueError("EMPTY_DEFINITION_CARRIER")
+        else:
+            ordinal = next(
+                i for (i, d) in enumerate(sample["input"]["definitions"]) if d["rule_id"] == rule_id
+            )
+            if _i05_oracle_integer(item["definitionOrdinal"]) != ordinal or item["definitions"] != [
+                r["definitions"][ordinal]
+            ]:
+                raise ValueError("ORIGINAL_DEFINITION_CARRIER")
+        if (
+            item["catalog"] != r["catalog"]
+            or item["limits"].get("recordType") != "ProfileLimits"
+            or {k: v for (k, v) in item["limits"].items() if k != "recordType"}
+            != item["budgetLimits"]
+        ):
+            raise ValueError("MATCH_CARRIER_CATALOG_LIMITS")
+        if item["disabled"] is not expected_disabled:
+            raise ValueError("DISABLED_FLAG")
+        batch = item["batch"]
+        originals = item["originalMatches"]
+        if expected_disabled:
+            if originals is not None:
+                raise ValueError("DISABLED_ORIGINAL_MATCHES")
+            if batch is not None:
+                raise ValueError("DISABLED_EVALUATED_BATCH")
+            continue
+        expected_originals = []
+        for ref in graph["matchRefs"]:
+            match = oracle["matches"][ref]
+            if match["ruleId"] == rule_id:
+                f = _i05_oracle_expected_firing(match, graph, oracle, triples)
+                expected_originals.append(
+                    {k: f[k] for k in ("ruleId", "bindings", "when", "proof")}
+                )
+        if rule_id is None and originals != []:
+            raise ValueError("EMPTY_DEFINITION_MATCHES")
+        actual_originals = []
+        for m in originals:
+            if m.get("recordType") != "BindingMatch":
+                raise ValueError("ORIGINAL_MATCH_RECORD")
+            actual_originals.append(
+                {
+                    "ruleId": m["rule_id"],
+                    "bindings": tuple((k, _i05_oracle_term(v)) for (k, v) in m["bindings"]),
+                    "when": tuple(_i05_oracle_record_triple(t) for t in m["when"]),
+                    "proof": tuple(
+                        _i05_oracle_leaf_refs(refs, leaves) for refs in m["proof_leaves"]
+                    ),
+                }
+            )
+        if sorted(actual_originals, key=_i05_oracle_firing_sort_key) != sorted(
+            expected_originals, key=_i05_oracle_firing_sort_key
+        ):
+            raise ValueError("ALL_TRUE_FALSE_ORIGINAL_MATCHES")
+        if (
+            batch.get("recordType") != "PreparedFiringBatch"
+            or batch["profile"] != _i05_oracle_PROFILE
+        ):
+            raise ValueError("BATCH_RECORD")
+        raw = batch["payload"]
+        if (
+            raw.get("encoding") != "hex"
+            or type(raw["bytes"]) is not str
+            or len(raw["bytes"]) % 2
+            or (not _i05_oracle_re.fullmatch("[0-9a-f]*", raw["bytes"]))
+        ):
+            raise ValueError("BATCH_BYTES_HEX")
+        if _i05_oracle_sha(bytes.fromhex(raw["bytes"])) != batch["digest"]:
+            raise ValueError("BATCH_BYTES_DIGEST")
+        firings = [_i05_oracle_actual_firing(f, leaves) for f in batch["firings"]]
+        if firings != [f for f in expected if f["ruleId"] == rule_id]:
+            raise ValueError("BATCH_FIRING_COMPLETENESS")
+        if _i05_oracle_exact_set(_i05_oracle_record_triple(t) for t in batch["facts"]) != {
+            t for f in firings for (_, t) in f["heads"]
+        }:
+            raise ValueError("BATCH_FACT_SET")
+        retained.extend(batch["firings"])
+    if actual_rule_ids != (sorted(by_rule) or [None]) or retained != r["firingGroups"]:
+        raise ValueError("PER_RULE_BATCH_COMPLETENESS")
+    expected_witness = {
+        triples[oracle["rdfsWitnesses"][key]["resultTripleId"]]: frozenset(
+            triples[k] for k in oracle["rdfsWitnesses"][key]["leafBasisTripleIds"]
+        )
+        for key in graph["rdfsWitnessRefs"]
+    }
+    actual_witness = {
+        _i05_oracle_n3triple(v["result"]): frozenset(_i05_oracle_n3triple(t) for t in v["basis"])
+        for v in r["rdfsEvidence"]
+    }
+    if len(actual_witness) != len(r["rdfsEvidence"]) or actual_witness != expected_witness:
+        raise ValueError("RDFS_LEAF_WITNESS")
+    for v in r["rdfsEvidence"]:
+        if (
+            _i05_oracle_leaf_refs(v["proofLeaves"], leaves)
+            != actual_witness[_i05_oracle_n3triple(v["result"])]
+        ):
+            raise ValueError("RDFS_PROOF_REFS")
+    expected_terms = _i05_oracle_collections.Counter()
+    for section in ("asserted", "ontology"):
+        for position, record in enumerate(sample["input"][section]):
+            for field in ("subject", "predicate", "object"):
+                text = record["triple"][field]
+                key = _i05_oracle_n3key(text) if field == "object" else ("iri", text, "", "")
+                pointer = (
+                    (
+                        ""
+                        if config["sourceStyle"] == "short-no-revision"
+                        else "asset:i05/profile-probe-inputs.json"
+                    )
+                    + "#/mathInputs/"
+                    + str(index)
+                    + "/input/"
+                    + section
+                    + "/"
+                    + str(position)
+                    + "/triple/"
+                    + field
+                )
+                expected_terms[pointer, key, text] += 1
+    actual_terms = _i05_oracle_collections.Counter()
+    for item in r["termSources"]:
+        source = item["value"]["source"]
+        if (
+            source.get("recordType") != "SourceRecord"
+            or source["digest"] != config["executionInputSha256"]
+            or source["revision"]
+            != (
+                None
+                if config["sourceStyle"] == "short-no-revision"
+                else sample["inputProjectionJsonSha256"]
+            )
+            or (item["span"] is not None)
+        ):
+            raise ValueError("INPUT_TERM_SOURCE_FIELDS")
+        actual_terms[source["reference"], _i05_oracle_term(item["value"]), source["text"]] += 1
+    if actual_terms != expected_terms:
+        raise ValueError("ALL_INPUT_TERM_OCCURRENCES_AND_SOURCE_REFS")
+    return {
+        "acceptedFirings": len(actual),
+        "heads": sum(len(f["heads"]) for f in actual),
+        "rdfsTriples": len(expected_rdfs),
+        "customTriples": len(expected_custom),
+        "falseOriginalMatchesCompared": sum(
+            not oracle["matches"][k]["accepted"] for k in graph["matchRefs"]
+        ),
+        "falseComparisonEvidenceAvailable": False,
+        "fullSourcePointerOccurrenceComparison": True,
+        "completeRowsHashes": True,
+        "batchBytesHashIntegrity": True,
+        "privateTypedEncodingSemanticsIndependentlyDecoded": False,
+        "lifecycleChecked": False,
+    }
+
+
+def _i05_oracle_compare_actual(actual, projection, oracle, triples, mappings, config):
+    if (
+        actual.get("inputSha256") != config["executionInputSha256"]
+        or actual.get("format") != "i05-profile-probe/2"
+        or actual.get("inputBytes", config["executionInputBytes"]) != config["executionInputBytes"]
+    ):
+        raise ValueError("ACTUAL_INPUT_BINDING")
+    records = actual["cases"]
+    if len(records) != len(projection["mathInputs"]) or len({r["caseId"] for r in records}) != len(
+        records
+    ):
+        raise ValueError("ACTUAL_CASE_COMPLETENESS")
+    if [r["caseId"] for r in records] != [s["id"] for s in projection["mathInputs"]]:
+        raise ValueError("ACTUAL_CASE_ORDER")
+    outputs = []
+    for index, (sample, record, mapping) in enumerate(
+        zip(projection["mathInputs"], records, mappings, strict=True)
+    ):
+        out = {
+            "mathInputId": sample["id"],
+            "exactInputValueGraphs": mapping["exactInputValueGraphs"],
+        }
+        try:
+            if record["inputProjectionJsonSha256"] != sample["inputProjectionJsonSha256"]:
+                raise ValueError("CASE_INPUT_DIGEST")
+            if not sample["eligibleStandaloneMathInput"]:
+                if record["status"] != "not-executed":
+                    raise ValueError("INELIGIBLE_INPUT_EXECUTED")
+                out.update(
+                    status="not-executed",
+                    reason="original definitions unavailable; intentional non-execution checked",
+                )
+            elif record["status"] != "success":
+                out.update(
+                    status="failure",
+                    reason="ACTUAL_COMPUTATION_NOT_SUCCESS",
+                    actualStatus=record["status"],
+                    publicError=record.get("error"),
+                    diagnostic=record.get("diagnostic"),
+                )
+            elif not mapping["exactInputValueGraphs"]:
+                out.update(
+                    status="not-comparable", actualStatus=record["status"], reason=mapping["reason"]
+                )
+            else:
+                checks = []
+                for graph_id in mapping["exactInputValueGraphs"]:
+                    checks.append(
+                        _i05_oracle_check_result(
+                            record["result"],
+                            sample,
+                            index,
+                            oracle["graphs"][graph_id],
+                            oracle,
+                            triples,
+                            config,
+                        )
+                    )
+                out.update(status="math-observable-fields-pass", checks=checks)
+        except (KeyError, TypeError, ValueError, IndexError) as error:
+            out.update(status="failure", reason=str(error)[:160], schemaOrComparisonFailure=True)
+        outputs.append(out)
+    return {
+        "format": "external-i05-oracle-comparison/1",
+        "actualResultsSupplied": True,
+        "oracleSha256": _i05_oracle_ORACLE_SHA,
+        "inputSha256": _i05_oracle_INPUT_SHA,
+        "executionInput": config,
+        "cases": outputs,
+        "statusCounts": dict(_i05_oracle_collections.Counter(x["status"] for x in outputs)),
+        "lifecycleChecked": False,
+        "completeAll40MatchTraceClaim": False,
+        "originalTrueFalseMatchCarrierCompared": True,
+        "falseComparisonEvidenceClaim": False,
+        "fullI05OrE1OrP2Passed": False,
+    }
+
+
+def _i05_oracle_triple(value):
+    if isinstance(value, dict):
+        return {k: value[k] for k in ("subject", "predicate", "object")}
+    if isinstance(value, list) and len(value) == 3:
+        return dict(zip(("subject", "predicate", "object"), value, strict=True))
+    raise ValueError("EXPLICIT_TRIPLE_REQUIRED")
+
+
+def _i05_oracle_definition(value, source):
+    """Only original conditions/conclusions. No expectedBinding is consulted."""
+    (when, comparisons, heads) = ([], [], [])
+    for condition in value["conditions"]:
+        kind = condition.get("kind")
+        if kind is None:
+            when.append(_i05_oracle_triple(condition))
+        elif kind == "type":
+            when.append(
+                {
+                    "subject": condition["subject"],
+                    "predicate": _i05_oracle_RDF_TYPE,
+                    "object": "<" + condition["class"] + ">",
+                }
+            )
+        elif kind == "property":
+            when.append(
+                {
+                    "subject": condition["subject"],
+                    "predicate": condition["path"],
+                    "object": condition["object"],
+                }
+            )
+        elif kind == "compare":
+            comparisons.append({k: condition[k] for k in ("left", "operator", "right")})
+        else:
+            raise ValueError("UNSUPPORTED_SOURCE_CONDITION")
+    for head in value["conclusions"]:
+        if head.get("kind") is None:
+            heads.append(_i05_oracle_triple(head))
+        elif head["kind"] == "type":
+            heads.append(
+                {
+                    "subject": head["subject"],
+                    "predicate": _i05_oracle_RDF_TYPE,
+                    "object": "<" + head["class"] + ">",
+                }
+            )
+        elif head["kind"] == "property":
+            heads.append(
+                {"subject": head["subject"], "predicate": head["path"], "object": head["object"]}
+            )
+        else:
+            raise ValueError("UNSUPPORTED_SOURCE_HEAD")
+    return {
+        "rule_id": value["id"],
+        "enabled": value.get("enabled", True),
+        "when": when,
+        "comparisons": comparisons,
+        "heads": heads,
+        "revision": str(value.get("revision", value.get("version")))
+        if "revision" in value or "version" in value
+        else None,
+        "definitionJsonValueSha256": _i05_oracle_sha(_i05_oracle_canonical(value)),
+        "source": source,
+        "rawTurtle": None,
+        "rawTurtleSpan": None,
+    }
+
+
+class _i05_oracle_InputProjection:
+    definition = staticmethod(_i05_oracle_definition)
+
+
+@_i05_oracle_pytest.fixture(scope="session")
+def _i05_oracle_collection():
+    from ontolearn_engine import semantic_profile_probe as producer
+    from ontolearn_engine.resources import CONTRACT as CONTRACT
+    from ontolearn_engine.resources import ROOT as ROOT
+    from ontolearn_engine.semantic_execution import ProfileExecutionFault as ProfileExecutionFault
+    from ontolearn_engine.semantic_execution import (
+        execute_profile_records as execute_profile_records,
+    )
+
+    repo = _i05_oracle_Path(__file__).resolve().parents[3]
+    asset = repo / "docs/iterations/I05/profile-probe-inputs.json"
+    oracle_path = repo / "tests/fixtures/quality/real-executor-acceptance-inputs.json"
+    asset_sha = "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+    projection = _i05_oracle_load(asset, asset_sha)
+    assert (
+        _i05_oracle_sha(_i05_oracle_canonical(projection))
+        == "06e88e2df13d3fc07f781195a0c125b80a9906f5a79e13a4c58508f2ce8cec08"
+    )
+    assert producer.INPUT_SHA256 == asset_sha
+    assert len(projection["mathInputs"]) == 83
+    oracle = _i05_oracle_load(oracle_path, _i05_oracle_ORACLE_SHA)
+    (triples, mappings, coverage) = _i05_oracle_model(
+        oracle, projection, _i05_oracle_InputProjection
+    )
+    schema = _i05_oracle_load(ROOT / "v2/schema.json")
+    records = []
+    for index, sample in enumerate(projection["mathInputs"]):
+        record = {
+            "caseId": sample["id"],
+            "inputProjectionJsonSha256": sample["inputProjectionJsonSha256"],
+        }
+        if not sample["eligibleStandaloneMathInput"]:
+            record.update(status="not-executed", reason="ORIGINAL_INPUT_CONTEXT_INCOMPLETE")
+        else:
+            (actual_records, rules, disabled) = producer._construct_records(sample, index)
+            try:
+                result = execute_profile_records(
+                    actual_records,
+                    rules,
+                    disabled_rule_ids=disabled,
+                    error_catalog=CONTRACT.ERROR_CATALOG,
+                    error_schema=schema,
+                )
+                record.update(status="success", result=result)
+            except ProfileExecutionFault as error:
+                record.update(status="failure", error=error.error, diagnostic=error.diagnostic)
+        records.append(record)
+    report = {
+        "format": "i05-profile-probe/2",
+        "inputSha256": asset_sha,
+        "inputBytes": asset.stat().st_size,
+        "cases": records,
+        "collectionOrigin": "pytest actual execute_profile_records, not probe subprocess",
+        "lifecycleExecuted": False,
+        "overallProbeSuccess": False,
+    }
+    config = {
+        "executionInputSha256": asset_sha,
+        "executionInputBytes": asset.stat().st_size,
+        "sourceStyle": "short-no-revision",
+        "sameInputJsonValuesVerified": True,
+    }
+    compared = _i05_oracle_compare_actual(report, projection, oracle, triples, mappings, config)
+    return {
+        "report": report,
+        "compared": compared,
+        "coverage": coverage,
+        "oracle": oracle,
+        "projection": projection,
+    }
+
+
+def test_fixed_oracle_all_78_complete_mathematical_outputs(_i05_oracle_collection):
+    data = _i05_oracle_collection
+    compared = data["compared"]
+    assert compared["statusCounts"] == {
+        "math-observable-fields-pass": 78,
+        "not-executed": 1,
+        "failure": 4,
+    }
+    expected_ids = {
+        s["id"]
+        for s in data["projection"]["mathInputs"]
+        if s["eligibleStandaloneMathInput"] and (not s["id"].startswith("E.5:event-fragment:"))
+    }
+    successful = [c for c in compared["cases"] if c["status"] == "math-observable-fields-pass"]
+    assert {c["mathInputId"] for c in successful} == expected_ids
+    graph_ids = {g for c in successful for g in c["exactInputValueGraphs"]}
+    assert len(graph_ids) == 49
+    match_refs = {m for g in graph_ids for m in data["oracle"]["graphs"][g]["matchRefs"]}
+    assert len(match_refs) == 24
+    assert sum(data["oracle"]["matches"][m]["accepted"] for m in match_refs) == 15
+    assert sum(not data["oracle"]["matches"][m]["accepted"] for m in match_refs) == 9
+    assert {w for g in graph_ids for w in data["oracle"]["graphs"][g]["rdfsWitnessRefs"]} == {
+        "R04-equipment"
+    }
+    assert not compared["falseComparisonEvidenceClaim"]
+    assert not compared["lifecycleChecked"]
+    assert not compared["fullI05OrE1OrP2Passed"]
+
+
+def test_fixed_oracle_four_resource_failures_and_unavailable_context_are_not_skipped(
+    _i05_oracle_collection,
+):
+    records = {c["caseId"]: c for c in _i05_oracle_collection["report"]["cases"]}
+    expected = {
+        "E.5:event-fragment:round:1": ("RULE_INPUT_BUDGET", "R-risk", "semanticInput"),
+        "E.5:event-fragment:round:2": ("RULE_INPUT_BUDGET", "R-risk", "semanticInput"),
+        "E.5:event-fragment:round:3": ("WORK_LIMIT", None, "semanticWork"),
+        "E.5:event-fragment:round:4": ("WORK_LIMIT", None, "semanticWork"),
+    }
+    assert {key for (key, value) in records.items() if value["status"] == "failure"} == set(
+        expected
+    )
+    for key, (failure_reason, rule_id, resource) in expected.items():
+        record = records[key]
+        assert record["error"] == {
+            "code": "RESOURCE_LIMIT",
+            "messageKey": "resource.limitExceeded",
+            "params": {"resource": resource},
+            "retryable": False,
+        }
+        assert record["diagnostic"] == {
+            "reason": failure_reason,
+            "classification": "resource",
+            "location": None,
+            "ruleId": rule_id,
+        }
+        assert "result" not in record
+    missing = records["transfer:repair"]
+    assert missing == {
+        "caseId": "transfer:repair",
+        "inputProjectionJsonSha256": next(
+            s["inputProjectionJsonSha256"]
+            for s in _i05_oracle_collection["projection"]["mathInputs"]
+            if s["id"] == "transfer:repair"
+        ),
+        "status": "not-executed",
+        "reason": "ORIGINAL_INPUT_CONTEXT_INCOMPLETE",
+    }
+    assert len(records) == 83
+    assert sum(c["status"] == "success" for c in records.values()) == 78
+    assert _i05_oracle_collection["report"]["overallProbeSuccess"] is False

@@ -1,0 +1,145 @@
+{
+  "id": "G-map-empty",
+  "fixtureVersion": "prd-v0.6-learning-1",
+  "inputVersion": "g0-1",
+  "ruleVersion": "rules-1",
+  "behaviorVersion": "behaviors-1",
+  "semanticsVersion": "PRD-V0.6-E",
+  "ontology": [
+    {
+      "subject": "urn:ontolearn:learning:Equipment",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:Alarm",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:WorkOrder",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:HighRiskEquipment",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:name",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:level",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:status",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:alarm",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:workOrderStatus",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:ontolearn:learning:eventOrder",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "name-required",
+      "targetClass": "urn:ontolearn:learning:Equipment",
+      "path": "urn:ontolearn:learning:name",
+      "minCount": 1,
+      "scope": "current-asserted",
+      "includeInferred": false
+    }
+  ],
+  "rules": [
+    {
+      "id": "R-risk",
+      "version": 1,
+      "enabled": true,
+      "conditions": [
+        {
+          "subject": "?equipment",
+          "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "object": "<urn:ontolearn:learning:Equipment>"
+        },
+        {
+          "subject": "?equipment",
+          "predicate": "urn:ontolearn:learning:alarm",
+          "object": "?alarm"
+        },
+        {
+          "subject": "?alarm",
+          "predicate": "urn:ontolearn:learning:level",
+          "object": "\"High\""
+        },
+        {
+          "subject": "?alarm",
+          "predicate": "urn:ontolearn:learning:status",
+          "object": "\"Open\""
+        }
+      ],
+      "conclusions": [
+        {
+          "subject": "?equipment",
+          "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+        }
+      ],
+      "inputScope": "asserted-plus-rdfs",
+      "outputReentry": false
+    }
+  ],
+  "behaviors": [],
+  "facts": [],
+  "singleValuedPredicates": ["urn:ontolearn:learning:workOrderStatus"],
+  "queries": [
+    {
+      "id": "unclosed-high",
+      "file": "unclosed-high.rq",
+      "scope": "current-asserted"
+    }
+  ],
+  "mappings": [
+    {
+      "id": "equipment-csv",
+      "file": "equipment.csv",
+      "encoding": "utf-8",
+      "keyColumn": "equipment_id",
+      "keyType": "string",
+      "normalization": "none",
+      "subjectTemplate": "urn:ontolearn:learning:equipment/{equipment_id}",
+      "columns": {
+        "equipment_name": "urn:ontolearn:learning:name"
+      },
+      "type": "urn:ontolearn:learning:Equipment",
+      "sourceRowConvention": "physical-line-including-header"
+    }
+  ],
+  "initialState": {
+    "orders": [],
+    "pendingEvents": [],
+    "consumedEvents": [],
+    "triggeredInstances": []
+  },
+  "scenario": {
+    "maxRounds": 1,
+    "capacityMode": "direct",
+    "capacity": 0
+  }
+}

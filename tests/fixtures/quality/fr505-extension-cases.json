@@ -1,0 +1,2806 @@
+{
+  "fixtureVersion": "T05-FR505-extension/2",
+  "sourcePrdSha256": "7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb",
+  "approvedBaseGitRef": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+  "status": "representative-inputs-and-proposed-expectations-not-execution-evidence",
+  "scope": "expectedRuleOutputs is the complete set of custom-rule outputs for that case; not a full RDFS closure oracle",
+  "catalog": {
+    "classes": [
+      "urn:ontolearn:learning:Equipment",
+      "urn:ontolearn:learning:Alarm",
+      "urn:ontolearn:learning:WorkOrder",
+      "urn:ontolearn:learning:HighRiskEquipment",
+      "urn:ontolearn:quality:comparison-test:Matched"
+    ],
+    "properties": [
+      "urn:ontolearn:learning:name",
+      "urn:ontolearn:learning:level",
+      "urn:ontolearn:learning:status",
+      "urn:ontolearn:learning:alarm",
+      "urn:ontolearn:learning:workOrderStatus",
+      "urn:ontolearn:learning:eventOrder",
+      "urn:ontolearn:quality:comparison-test:score",
+      "urn:ontolearn:quality:comparison-test:derivedLabel"
+    ]
+  },
+  "cases": [
+    {
+      "id": "CMP-EQ-TRUE",
+      "category": "integer-comparison",
+      "operator": "eq",
+      "expectedCondition": true,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-EQ-TRUE",
+          "revision": 1,
+          "label": "CMP-EQ-TRUE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "eq",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:comparison-test:Matched>"
+        ]
+      ],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": [
+        {
+          "ruleId": "CMP-EQ-TRUE",
+          "bindings": {
+            "?e": "urn:ontolearn:learning:equipment/001",
+            "?score": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+          },
+          "inputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:learning:Equipment>"
+            ],
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "urn:ontolearn:quality:comparison-test:score",
+              "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            ]
+          ],
+          "outputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:quality:comparison-test:Matched>"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CMP-EQ-FALSE",
+      "category": "integer-comparison",
+      "operator": "eq",
+      "expectedCondition": false,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-EQ-FALSE",
+          "revision": 1,
+          "label": "CMP-EQ-FALSE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "eq",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": []
+    },
+    {
+      "id": "CMP-NE-TRUE",
+      "category": "integer-comparison",
+      "operator": "ne",
+      "expectedCondition": true,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-NE-TRUE",
+          "revision": 1,
+          "label": "CMP-NE-TRUE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "ne",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:comparison-test:Matched>"
+        ]
+      ],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": [
+        {
+          "ruleId": "CMP-NE-TRUE",
+          "bindings": {
+            "?e": "urn:ontolearn:learning:equipment/001",
+            "?score": "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+          },
+          "inputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:learning:Equipment>"
+            ],
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "urn:ontolearn:quality:comparison-test:score",
+              "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            ]
+          ],
+          "outputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:quality:comparison-test:Matched>"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CMP-NE-FALSE",
+      "category": "integer-comparison",
+      "operator": "ne",
+      "expectedCondition": false,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-NE-FALSE",
+          "revision": 1,
+          "label": "CMP-NE-FALSE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "ne",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": []
+    },
+    {
+      "id": "CMP-LT-TRUE",
+      "category": "integer-comparison",
+      "operator": "lt",
+      "expectedCondition": true,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-LT-TRUE",
+          "revision": 1,
+          "label": "CMP-LT-TRUE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "lt",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:comparison-test:Matched>"
+        ]
+      ],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": [
+        {
+          "ruleId": "CMP-LT-TRUE",
+          "bindings": {
+            "?e": "urn:ontolearn:learning:equipment/001",
+            "?score": "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+          },
+          "inputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:learning:Equipment>"
+            ],
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "urn:ontolearn:quality:comparison-test:score",
+              "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            ]
+          ],
+          "outputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:quality:comparison-test:Matched>"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CMP-LT-FALSE",
+      "category": "integer-comparison",
+      "operator": "lt",
+      "expectedCondition": false,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-LT-FALSE",
+          "revision": 1,
+          "label": "CMP-LT-FALSE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "lt",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": []
+    },
+    {
+      "id": "CMP-LE-TRUE",
+      "category": "integer-comparison",
+      "operator": "le",
+      "expectedCondition": true,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-LE-TRUE",
+          "revision": 1,
+          "label": "CMP-LE-TRUE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "le",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:comparison-test:Matched>"
+        ]
+      ],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": [
+        {
+          "ruleId": "CMP-LE-TRUE",
+          "bindings": {
+            "?e": "urn:ontolearn:learning:equipment/001",
+            "?score": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+          },
+          "inputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:learning:Equipment>"
+            ],
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "urn:ontolearn:quality:comparison-test:score",
+              "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            ]
+          ],
+          "outputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:quality:comparison-test:Matched>"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CMP-LE-FALSE",
+      "category": "integer-comparison",
+      "operator": "le",
+      "expectedCondition": false,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-LE-FALSE",
+          "revision": 1,
+          "label": "CMP-LE-FALSE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "le",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": []
+    },
+    {
+      "id": "CMP-GT-TRUE",
+      "category": "integer-comparison",
+      "operator": "gt",
+      "expectedCondition": true,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-GT-TRUE",
+          "revision": 1,
+          "label": "CMP-GT-TRUE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "gt",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:comparison-test:Matched>"
+        ]
+      ],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": [
+        {
+          "ruleId": "CMP-GT-TRUE",
+          "bindings": {
+            "?e": "urn:ontolearn:learning:equipment/001",
+            "?score": "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+          },
+          "inputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:learning:Equipment>"
+            ],
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "urn:ontolearn:quality:comparison-test:score",
+              "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            ]
+          ],
+          "outputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:quality:comparison-test:Matched>"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CMP-GT-FALSE",
+      "category": "integer-comparison",
+      "operator": "gt",
+      "expectedCondition": false,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-GT-FALSE",
+          "revision": 1,
+          "label": "CMP-GT-FALSE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "gt",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": []
+    },
+    {
+      "id": "CMP-GE-TRUE",
+      "category": "integer-comparison",
+      "operator": "ge",
+      "expectedCondition": true,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-GE-TRUE",
+          "revision": 1,
+          "label": "CMP-GE-TRUE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "ge",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:comparison-test:Matched>"
+        ]
+      ],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": [
+        {
+          "ruleId": "CMP-GE-TRUE",
+          "bindings": {
+            "?e": "urn:ontolearn:learning:equipment/001",
+            "?score": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+          },
+          "inputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:learning:Equipment>"
+            ],
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "urn:ontolearn:quality:comparison-test:score",
+              "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            ]
+          ],
+          "outputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:quality:comparison-test:Matched>"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CMP-GE-FALSE",
+      "category": "integer-comparison",
+      "operator": "ge",
+      "expectedCondition": false,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-GE-FALSE",
+          "revision": 1,
+          "label": "CMP-GE-FALSE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "ge",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": []
+    },
+    {
+      "id": "JOIN-NO-CROSS-ALARM",
+      "category": "same-variable-conjunction",
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A04",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A04", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A04", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A04>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A05",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A05", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A05", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A05>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "R-risk",
+          "revision": 1,
+          "label": "R-risk",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?equipment",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?equipment",
+              "path": "urn:ontolearn:learning:alarm",
+              "object": "?alarm"
+            },
+            {
+              "kind": "property",
+              "subject": "?alarm",
+              "path": "urn:ontolearn:learning:level",
+              "object": "\"High\""
+            },
+            {
+              "kind": "property",
+              "subject": "?alarm",
+              "path": "urn:ontolearn:learning:status",
+              "object": "\"Open\""
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?equipment",
+              "class": "urn:ontolearn:learning:HighRiskEquipment"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [],
+      "forbiddenRuleOutputs": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:HighRiskEquipment>"
+        ]
+      ],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": []
+    },
+    {
+      "id": "MULTI-OUTPUT-ONE-FIRING",
+      "category": "multiple-conclusions",
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "R-risk-multi",
+          "revision": 1,
+          "label": "风险分类与当前推导标注",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?equipment",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?equipment",
+              "path": "urn:ontolearn:learning:alarm",
+              "object": "?alarm"
+            },
+            {
+              "kind": "property",
+              "subject": "?alarm",
+              "path": "urn:ontolearn:learning:level",
+              "object": "\"High\""
+            },
+            {
+              "kind": "property",
+              "subject": "?alarm",
+              "path": "urn:ontolearn:learning:status",
+              "object": "\"Open\""
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?equipment",
+              "class": "urn:ontolearn:learning:HighRiskEquipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?equipment",
+              "path": "urn:ontolearn:quality:comparison-test:derivedLabel",
+              "object": "\"needs-review\""
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:HighRiskEquipment>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:derivedLabel",
+          "\"needs-review\""
+        ]
+      ],
+      "expectedRuleIdForEachOutput": "R-risk-multi",
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": [
+        {
+          "ruleId": "R-risk-multi",
+          "bindings": {
+            "?equipment": "urn:ontolearn:learning:equipment/001",
+            "?alarm": "<urn:ontolearn:learning:alarm/A01>"
+          },
+          "inputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:learning:Equipment>"
+            ],
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "urn:ontolearn:learning:alarm",
+              "<urn:ontolearn:learning:alarm/A01>"
+            ],
+            ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+            ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""]
+          ],
+          "outputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:learning:HighRiskEquipment>"
+            ],
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "urn:ontolearn:quality:comparison-test:derivedLabel",
+              "\"needs-review\""
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DISABLED-RULE-NO-OUTPUT",
+      "category": "enable-version",
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "R-risk-multi",
+          "revision": 2,
+          "label": "风险分类与当前推导标注",
+          "enabled": false,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?equipment",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?equipment",
+              "path": "urn:ontolearn:learning:alarm",
+              "object": "?alarm"
+            },
+            {
+              "kind": "property",
+              "subject": "?alarm",
+              "path": "urn:ontolearn:learning:level",
+              "object": "\"High\""
+            },
+            {
+              "kind": "property",
+              "subject": "?alarm",
+              "path": "urn:ontolearn:learning:status",
+              "object": "\"Open\""
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?equipment",
+              "class": "urn:ontolearn:learning:HighRiskEquipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?equipment",
+              "path": "urn:ontolearn:quality:comparison-test:derivedLabel",
+              "object": "\"needs-review\""
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": []
+    },
+    {
+      "id": "MISSING-PROPERTY-IS-NOT-A-NEGATION",
+      "category": "property-existence",
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "R-number-missing",
+          "revision": 1,
+          "label": "R-number-missing",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "gt",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [],
+      "absenceMeans": "unrecorded-not-proven-absent",
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": []
+    },
+    {
+      "id": "CMP-EQ-ABOVE-FALSE",
+      "category": "integer-comparison",
+      "operator": "eq",
+      "expectedCondition": false,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-EQ-ABOVE-FALSE",
+          "revision": 1,
+          "label": "CMP-EQ-ABOVE-FALSE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "eq",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": []
+    },
+    {
+      "id": "CMP-NE-ABOVE-TRUE",
+      "category": "integer-comparison",
+      "operator": "ne",
+      "expectedCondition": true,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-NE-ABOVE-TRUE",
+          "revision": 1,
+          "label": "CMP-NE-ABOVE-TRUE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "ne",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:comparison-test:Matched>"
+        ]
+      ],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": [
+        {
+          "ruleId": "CMP-NE-ABOVE-TRUE",
+          "bindings": {
+            "?e": "urn:ontolearn:learning:equipment/001",
+            "?score": "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+          },
+          "inputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:learning:Equipment>"
+            ],
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "urn:ontolearn:quality:comparison-test:score",
+              "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            ]
+          ],
+          "outputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:quality:comparison-test:Matched>"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CMP-LT-ABOVE-FALSE",
+      "category": "integer-comparison",
+      "operator": "lt",
+      "expectedCondition": false,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-LT-ABOVE-FALSE",
+          "revision": 1,
+          "label": "CMP-LT-ABOVE-FALSE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "lt",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": []
+    },
+    {
+      "id": "CMP-LE-BELOW-TRUE",
+      "category": "integer-comparison",
+      "operator": "le",
+      "expectedCondition": true,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-LE-BELOW-TRUE",
+          "revision": 1,
+          "label": "CMP-LE-BELOW-TRUE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "le",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:comparison-test:Matched>"
+        ]
+      ],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": [
+        {
+          "ruleId": "CMP-LE-BELOW-TRUE",
+          "bindings": {
+            "?e": "urn:ontolearn:learning:equipment/001",
+            "?score": "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+          },
+          "inputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:learning:Equipment>"
+            ],
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "urn:ontolearn:quality:comparison-test:score",
+              "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            ]
+          ],
+          "outputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:quality:comparison-test:Matched>"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CMP-GT-BELOW-FALSE",
+      "category": "integer-comparison",
+      "operator": "gt",
+      "expectedCondition": false,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-GT-BELOW-FALSE",
+          "revision": 1,
+          "label": "CMP-GT-BELOW-FALSE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "gt",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": []
+    },
+    {
+      "id": "CMP-GE-ABOVE-TRUE",
+      "category": "integer-comparison",
+      "operator": "ge",
+      "expectedCondition": true,
+      "inputTriples": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/001", "urn:ontolearn:learning:name", "\"泵站A\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/002", "urn:ontolearn:learning:name", "\"泵站B\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Equipment>"
+        ],
+        ["urn:ontolearn:learning:equipment/003", "urn:ontolearn:learning:name", "\"备用泵C\""],
+        [
+          "urn:ontolearn:learning:alarm/A01",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A01", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A01>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A02",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:level", "\"High\""],
+        ["urn:ontolearn:learning:alarm/A02", "urn:ontolearn:learning:status", "\"Closed\""],
+        [
+          "urn:ontolearn:learning:equipment/002",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A02>"
+        ],
+        [
+          "urn:ontolearn:learning:alarm/A03",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:learning:Alarm>"
+        ],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:level", "\"Low\""],
+        ["urn:ontolearn:learning:alarm/A03", "urn:ontolearn:learning:status", "\"Open\""],
+        [
+          "urn:ontolearn:learning:equipment/003",
+          "urn:ontolearn:learning:alarm",
+          "<urn:ontolearn:learning:alarm/A03>"
+        ],
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "urn:ontolearn:quality:comparison-test:score",
+          "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "rules": [
+        {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "CMP-GE-ABOVE-TRUE",
+          "revision": 1,
+          "label": "CMP-GE-ABOVE-TRUE",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?e",
+              "path": "urn:ontolearn:quality:comparison-test:score",
+              "object": "?score"
+            },
+            {
+              "kind": "compare",
+              "left": "?score",
+              "operator": "ge",
+              "right": "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?e",
+              "class": "urn:ontolearn:quality:comparison-test:Matched"
+            }
+          ]
+        }
+      ],
+      "expectedRuleOutputs": [
+        [
+          "urn:ontolearn:learning:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:comparison-test:Matched>"
+        ]
+      ],
+      "runtimeStatus": "pending-approved-executor",
+      "expectedFirings": [
+        {
+          "ruleId": "CMP-GE-ABOVE-TRUE",
+          "bindings": {
+            "?e": "urn:ontolearn:learning:equipment/001",
+            "?score": "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+          },
+          "inputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:learning:Equipment>"
+            ],
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "urn:ontolearn:quality:comparison-test:score",
+              "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+            ]
+          ],
+          "outputStatements": [
+            [
+              "urn:ontolearn:learning:equipment/001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:quality:comparison-test:Matched>"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "unresolvedComparisonDecisions": [
+    "cross numeric datatype promotion and precision",
+    "language tags and ordered string comparison",
+    "date/dateTime timezone comparison",
+    "non-finite numeric or incompatible datatype error classification"
+  ],
+  "executorAcceptance": [
+    "real runner must consume inputTriples/rules and return its actual complete rule outputs and trace",
+    "compare complete sets and every output support, not counts",
+    "do not use expectedRuleOutputs to fill any Store/actual/current-result fields",
+    "RDFS before one-stage rules; rule outputs do not reenter rules or RDFS"
+  ],
+  "ontologyTriples": [
+    [
+      "urn:ontolearn:learning:Equipment",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#Class>"
+    ],
+    [
+      "urn:ontolearn:learning:Alarm",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#Class>"
+    ],
+    [
+      "urn:ontolearn:learning:WorkOrder",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#Class>"
+    ],
+    [
+      "urn:ontolearn:learning:HighRiskEquipment",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#Class>"
+    ],
+    [
+      "urn:ontolearn:learning:name",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    ],
+    [
+      "urn:ontolearn:learning:level",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    ],
+    [
+      "urn:ontolearn:learning:status",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    ],
+    [
+      "urn:ontolearn:learning:alarm",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+    ],
+    [
+      "urn:ontolearn:learning:workOrderStatus",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    ],
+    [
+      "urn:ontolearn:learning:eventOrder",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+    ],
+    [
+      "urn:ontolearn:quality:comparison-test:Matched",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#Class>"
+    ],
+    [
+      "urn:ontolearn:quality:comparison-test:score",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    ],
+    [
+      "urn:ontolearn:quality:comparison-test:derivedLabel",
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    ]
+  ],
+  "resetPolicy": "Each case uses exactly shared ontologyTriples, its inputTriples and its rules; do not inherit G-base rules or prior cases; persist nothing from expected fields.",
+  "coverage": "For each of eq/ne/lt/le/gt/ge: same-type integer score 1,2,3 against threshold 2. Eighteen representative comparison cells plus four other cases; not complete FR505/Q6 support or runtime acceptance."
+}

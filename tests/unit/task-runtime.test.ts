@@ -1,15 +1,38 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { spawnSync, type ChildProcessWithoutNullStreams } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { EngineSupervisor, getEngineCommand } from '../../apps/desktop/src/main/engine'
+import { JsonlReader } from '../../apps/desktop/src/main/jsonl'
 import { TaskService } from '../../apps/desktop/src/main/task-service'
 import { explainError } from '../../apps/desktop/src/renderer/src/task-presentation'
-import { validateV2 } from '../../packages/contracts/src/v2'
+import { matchesResponse, validateV2 } from '../../packages/contracts/src/v2'
 import type { JobView, TaskUpdate, TaskView } from '@ontolearn/contracts'
 
+// Test-owned interception observes actual child stdio, without reflecting private engine state.
+const spawnControl = vi.hoisted(() => ({
+  observe: undefined as undefined | ((child: ChildProcessWithoutNullStreams) => void),
+  fail: false,
+}))
+vi.mock('node:child_process', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('node:child_process')>()
+  return {
+    ...actual,
+    spawn: (...args: unknown[]) => {
+      const child = Reflect.apply(
+        actual.spawn,
+        undefined,
+        spawnControl.observe && spawnControl.fail
+          ? [args[0], ['-I', '-c', 'raise SystemExit(73)'], args[2]]
+          : args,
+      ) as ChildProcessWithoutNullStreams
+      spawnControl.observe?.(child)
+      return child
+    },
+  }
+})
 const workspace = resolve('.')
 // Development-only read of another checkout's sources; dependencies, database,
 // Python process and Node runtime always belong to this test's own worktree.
@@ -313,6 +336,51 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
       capability,
     ]) as Fixture
     const command = getEngineCommand(location)
+    const observed: Array<{
+      child: ChildProcessWithoutNullStreams
+      pending: Map<string, Record<string, unknown>>
+      framingFailed: boolean
+      bufferedBytes: () => number
+    }> = []
+    spawnControl.fail = false
+    spawnControl.observe = (child) => {
+      const item: (typeof observed)[number] = {
+        child,
+        pending: new Map(),
+        framingFailed: false,
+        bufferedBytes: () => outgoing.bufferedBytes + incoming.bufferedBytes,
+      }
+      observed.push(item)
+      const outgoing = new JsonlReader(
+        (value) => {
+          const request = value as Record<string, unknown>
+          if (validateV2('request', request)) item.pending.set(String(request.id), request)
+          else item.framingFailed = true
+        },
+        () => {
+          item.framingFailed = true
+        },
+      )
+      const incoming = new JsonlReader(
+        (value) => {
+          const response = value as Record<string, unknown>
+          const request = item.pending.get(String(response.id))
+          if (request && matchesResponse(request, response))
+            item.pending.delete(String(response.id))
+        },
+        () => {
+          item.framingFailed = true
+        },
+      )
+      child.stdout.on('data', (bytes: Buffer) => incoming.push(bytes))
+      const write = child.stdin.write
+      child.stdin.write = new Proxy(write, {
+        apply(target, receiver, args: unknown[]) {
+          outgoing.push(typeof args[0] === 'string' ? Buffer.from(args[0]) : (args[0] as Buffer))
+          return Reflect.apply(target, receiver, args)
+        },
+      })
+    }
     supervisor = new EngineSupervisor(location, {
       dataPath: database,
       allowedProjects: [fixture.projectId],
@@ -396,23 +464,21 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     if (!initial.ok) throw new Error('initial real view missing')
     const before = await bounded(checkpointReady)
     await new Promise<void>((done) => setImmediate(done))
-    const internal = engine as unknown as {
-      session?: { child: ChildProcessWithoutNullStreams; pending: Map<unknown, unknown> }
-      starts: number[]
-    }
-    const old = internal.session!
+    const old = observed.at(-1)!
+    expect(old.framingFailed).toBe(false)
     expect(old.pending.size).toBe(0)
+    expect(old.bufferedBytes()).toBe(0)
     const oldPid = old.child.pid
     const oldSession = engine.engineSessionId
     const callCount = calls.length
-    if (failRestarts) command.args = ['-I', '-c', 'raise SystemExit(73)']
+    if (failRestarts) spawnControl.fail = true
     const closed = new Promise<void>((done) => old.child.once('close', () => done()))
     expect(old.child.kill('SIGKILL')).toBe(true)
     await bounded(closed)
     let firstManual: Awaited<ReturnType<TaskService['restore']>> | undefined
     if (failRestarts) {
       await bounded(offline)
-      expect(internal.starts).toHaveLength(4) // one original and exactly three real failed child starts
+      expect(observed).toHaveLength(4) // one original and exactly three real failed child starts
       expect(engine.engineSessionId).toBeUndefined()
       expect(
         updates.filter(
@@ -421,8 +487,8 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
         ),
       ).toEqual([])
       await new Promise((done) => setTimeout(done, 800))
-      expect(internal.starts).toHaveLength(4)
-      command.args = getEngineCommand(location).args
+      expect(observed).toHaveLength(4)
+      spawnControl.fail = false
       firstManual = await bounded(service.restore())
     } else {
       // A user's first read during automatic recovery shares its pending result.
@@ -432,7 +498,7 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     const view = await bounded(restored)
     expect(firstManual.ok && firstManual.data).toEqual(view)
     expect(engine.engineSessionId).not.toBe(oldSession)
-    expect(internal.session?.child.pid).not.toBe(oldPid)
+    expect(observed.at(-1)?.child.pid).not.toBe(oldPid)
     const evidence = pythonJson(evidenceScript, [database, created.jobId]) as {
       job: JobView
       rounds: number[]
@@ -449,11 +515,13 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     expect(view.jobs[0]).toEqual(evidence.job)
     expect(evidence.jobs).toBe(1)
     expect(evidence.claims).toBe(1)
-    return { before, view, evidence, marker, updates, starts: internal.starts.length, raw }
+    return { before, view, evidence, marker, updates, starts: observed.length, raw }
   } finally {
     clearTimeout(deadline)
     tasks?.dispose()
     supervisor?.stop()
+    spawnControl.observe = undefined
+    spawnControl.fail = false
     await rm(directory, { recursive: true, force: true, maxRetries: 20, retryDelay: 50 })
   }
 }
