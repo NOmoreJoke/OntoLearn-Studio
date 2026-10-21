@@ -124,7 +124,7 @@ registryHash = lowercase hex(SHA256(registryBytes))
 
 ## 6. 精确路径与 T01 最终冻结项
 
-八文件未来维护 ack 已由根单独登记（`24b224f`）；本文不修改或替代该回执及其安全生效条件。最小八文件是 canonical7（src/index.ts、src/v2.ts 及 v2/schema.json/registry.json/errors.json/fixtures.json/binding-regressions.json）+ `apps/desktop/src/main/engine.ts`；接收与集成只消费批准5f基础及明确格式3 patch，不顺带采用 I06 gateway。其余 main/task-service/preload/env/App/style 不随这八文件移交；worker/protocol reader/resources/入口build/锁/CI及旧测试也未由本文新增授权。
+I06 八文件释放回执已单独提交（`24b224f`）；本文不修改或替代该回执及其安全生效条件。最小八文件是 canonical7（src/index.ts、src/v2.ts 及 v2/schema.json/registry.json/errors.json/fixtures.json/binding-regressions.json）+ `apps/desktop/src/main/engine.ts`；接收与集成只消费批准5f基础及明确格式3 patch，不顺带采用 I06 gateway。其余 main/task-service/preload/env/App/style 不随这八文件移交；worker/protocol reader/resources/入口build/锁/CI及旧测试也未由本文新增授权。
 
 Python 四路径 `packages/contracts/python/contract_v2.py`、`packages/engine/src/ontolearn_engine/coordinator.py`、`packages/engine/src/ontolearn_engine/__main__.py`、`packages/engine/src/ontolearn_engine/job_store.py` 已按总控 `I05-T01-format3-ownership-handoff.md` 正式转原 T01 唯一维护（SHA-256 `18485767098d448a4fcce2fc7e59b5a325433826894b98111cab96926fdc2097`）。默认格式2、显式内部3隔离，只基于批准5f，不复制 I05 未批准语义；worker/protocol/resources/既有测试未随之转交。Store3内部由 T01 承接；T03构建四文件为独立交接，不混入本合同。canonical/main 八文件仍须独立总控登记与 T01 ack 才生效，不因 Python 四文件转交而自动生效。TS与Python必须合成同一个已定义候选：任一端未同步，不能对外打开数据库3。新增跨端 TS 测试路径须单独登记 owner，不能修改原测试消除失败。
 

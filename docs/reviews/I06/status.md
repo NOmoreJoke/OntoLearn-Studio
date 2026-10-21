@@ -4,6 +4,10 @@
 
 总控后续四文件生效通知已接收并全文读取：`I05-T03-build-ownership-handoff.md` SHA `88057b59e173453d197bfeae183dc99b8c09c71e30d518781bf774ebc037e95b`。`packages/engine/pyproject.toml`、`uv.lock`、`scripts/build-engine.mjs`、`packages/engine/entrypoint.py` 的未来唯一维护为原T03；I06不改这四项、不消费未批I05内容，不能将转交当作依赖/包内通过；格式3八文件仍按独立逐项ack流程。
 
+总控格式3 Python四文件转T01通知已接收并全文读取：`I05-T01-format3-ownership-handoff.md` SHA `18485767098d448a4fcce2fc7e59b5a325433826894b98111cab96926fdc2097`。`job_store.py`、`coordinator.py`、`__main__.py`、`packages/contracts/python/contract_v2.py` 的未来唯一维护为原T01（前三在engine包），含唯一全局claim迁移、非Job同连接adapter及两层ready责任；保持默认2/显式内部3隔离，不引入未批I05。I06不改这些路径；此交接不替代canonical/main八文件接收，也不是业务3通过。
+
+格式3 [wire/启动诊断小合同提案](../../iterations/I06/format3-wire-contract-proposal.md)及[完整固定JSON](../../iterations/I06/format3-wire-fixtures-proposal.json)已完成独立静态复核，两项消歧已关闭，见[审查记录](format3-wire-proposal-review.md)。28对wire/4通知/6启动分类/4兜底均为未来合同预期；测试hash明确schema-only、实际ready/dispatch=false，不冒充真实协议3catalog或运行通过。八文件释放回执已提交24b224f，仍待总控登记/T01逐项接收。其后文档正常合并与政策/权属同步未改变e2c产品内容，未重复无变化产品检查。
+
 新App源码内容完整 `npm run check` exit0：998TS、1052Python、lint/format/typecheck/build/ruff 全过；`verify:sources` 12项及diff通过，检查时两处protected AGENTS为db1fb184；随后授权政策追加后当前为78df2825，未stage，见[政策接收回执](external-permission-policy-receipt.md)。命令启动时App工作树修订已固定，随后以相同bytes提交e2c；检查期间无产品内容更改。[本次证据](evidence/aria-status-fix-20261021.json) SHA `a411e552e19390e37861f5f67066184d9e4f833c8686c4abdcf847c77b96f4da`，10文件原件archive SHA `60e3bdb6e91e764237f9e48aaf2ae2adc2fdd60d5ad613009b68e95e1f80b619`，位于tests/i06-stored-material/out。旧完整check r9日志保留，不以它替代ARIA改动后完整检查；新源码/包内原e2e及CI fresh-fixture分项已覆盖，首次十门九过一失败、唯一原用例定向复验通过，失败与未明时间差保留，不称一次全绿。
 
 [正式接线计划](../../iterations/I06/main-wiring-plan.md)记录唯一main服务、strict12方法/10G错误、独立取消、实际项目context与单profile锁、私有配置原子journal/安全录入版本边界、独立启动与有界退出、只读恢复/纯文本结果。头部无实际项目默认local；无通用转发/secret读回/worker模型入口。配置journal两实例竞争/不确定发布后失败、password随版本清空及新建草稿保留已修，独立只读复核关闭；旧9fc的Linux正常22项/native4/pkg2均限定通过，源码变化对应的UI/原e2e/新包实际身份另验，不复跑未变化私有核心矩阵，不宣称新候选完整S3通过。
