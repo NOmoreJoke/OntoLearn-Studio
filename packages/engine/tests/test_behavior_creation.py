@@ -3,7 +3,7 @@
 import copy
 
 import pytest
-from ontolearn_engine.behavior import BehaviorError
+from ontolearn_engine.behavior import BehaviorError, prepare_events
 from test_behavior_planner import bare, definition, event, execute
 
 
@@ -122,3 +122,40 @@ def test_declaration_is_idempotent_event_input_and_unavailable_as_behavior():
     req["behaviors"][0]["actions"] = [{"kind": "declare", "object": "declared"}]
     with pytest.raises(BehaviorError, match="unavailable_action"):
         execute(req)
+
+
+def test_dynamic_initial_value_failure_identifies_exact_field_and_returns_no_candidate():
+    req = bare([create(status={"event_field": "missing"})])
+    before = copy.deepcopy(req)
+    prepared = prepare_events(req)
+    with pytest.raises(BehaviorError, match="missing_event_field") as error:
+        execute(req)
+    assert req == before
+    assert error.value.evidence == {
+        "scope": req["scope"],
+        "run_id": req["run_id"],
+        "round": 1,
+        "binding": prepared.binding,
+        "assertion_version": "post-events-v1",
+        "reasoning_version": "derived-v1",
+        "behavior_version": "behaviors-v1",
+        "committed": False,
+        "executed_actions": [],
+        "stage": "intent_validation",
+        "event_id": "test-event",
+        "behavior_id": "test",
+        "action_index": 0,
+        "initial_index": 1,
+        "event_trace": [{"event_id": "test-event", "reason": "event_applied"}],
+        "decisions": [
+            {
+                "event_id": "test-event",
+                "behavior_id": "test",
+                "assertion_version": "post-events-v1",
+                "reasoning_version": "derived-v1",
+                "conditions": [{"index": 0, "satisfied": True, "reason": "explicit_always"}],
+                "reason": "triggered",
+            }
+        ],
+        "intents": [],
+    }

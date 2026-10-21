@@ -69,3 +69,9 @@
 已收到总控预约转交 T06 的两指定审查应用资源；这不是新候选已就绪或已开审。按根要求收敛到本轮必要适配，不追加其他核心功能；待新产品/流程 SHA、完整 diff、source manifest 和 dirty 状态实际核验后才开指定新任务。UI 新增授权仅 apps/desktop/src/renderer/src/behavior/ 与 tests/unit/t06-*.test.ts，若推进须独立 child worktree/feature/agent，不能让本线待审范围漂移。
 
 在安全边界全文读回共同指令新增原第九节及无桌面约束。实际共同指令 SHA `9717f699e14b5941e15d90269f33cbebc32ef9bec6e7439739be848753419880` 匹配；原第九节传达 SHA `1f57a08e909e9d49a6e2c2d6e7012beec3e22b8e3c9e8eacad22c84dfb2d4b54`、无桌面段 `5215df2ead4745e7d74f137c4fa6ac837a54114590b5dee2d83cd16bb728551d` 随总控消息全文接收。保持原 Goal/分支/归档/指定门禁；无额度告警，不调用重置/付费/API；无排队 GUI/e2e/native/HMR。操作政策补充本身不触发产品重审，本轮重验是因为实际适配实现/验收变化。
+
+567ab48 新全仓检查实际 exit 0（630 TS/1168 Python），固定九例 probe再次通过，但独立完整审查不通过，发现2项P2，见 local-review-5.md。已仅修本轮必要边界：投影复验展开后所有RDF身份；动态initial解析补字段索引。新增6项回归，122项通过；旧567全check不算修复版通过。修复后继续新固定候选/全check/完整独立审查，不扩张其他核心范围。
+
+收到并实际读回新 ZCode/MiniMax 默认权限政策及外审权限证据，当前 AGENTS SHA **78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759**，共同指令 SHA **df09014af4d6cf757ca0977a995497f3646cd330e8921710876663a40a8cbcb4**。历史db/971快照保留。默认完全访问/始终授权不改变只读/指定模型/无桌面/逐次确认边界；实际审查会话模式仍须读回。本线未改配置或操作应用；已向UI子agent透传新全文文件及政策。
+
+UI已实际独立启动：agent /root/behavior_ui，树 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui，feature/T06-behavior-ui，base5f910b5；仅behavior/组件与tests/unit/t06-*路径。正式managed worktree工具因本聊天根非git返回Not a git repository后，用批准repo git worktree add创建，未切换主树或影响S1。子agent已实际回执身份/公共政策/技能全文，尚未报实现/验证通过，不把创建目录当作完成。

@@ -300,3 +300,51 @@ def test_manifest_cannot_escape_its_readonly_root(tmp_path):
     path.write_text(json.dumps(manifest))
     with pytest.raises(BehaviorError, match="invalid_fixture_path"):
         load_bundle(root, hashlib.sha256(path.read_bytes()).hexdigest())
+
+
+@pytest.mark.parametrize("kind", ["notify", "create"])
+@pytest.mark.parametrize("identity", ["bad id", "bad>id"])
+def test_expanded_rdf_subjects_are_validated_before_projection(kind, identity):
+    source = model()
+    source["behaviors"][0]["id"] = identity
+    if kind == "notify":
+        action = {"kind": "notify", "id": "N:{eventId}:{behaviorId}", "event": "{eventId}"}
+    else:
+        action = {
+            "kind": "create-individual",
+            "id": "W:{eventId}:{behaviorId}",
+            "class": NS + "WorkOrder",
+            "properties": {"workOrderStatus": "待处理"},
+        }
+    source["behaviors"][0]["actions"] = [action]
+    adapted = adapt_case(
+        bundle(source_model=source),
+        "B-unit",
+        {"project_id": "p", "scenario_id": "s", "mode": "sample"},
+        "r",
+    )
+    prepared = prepare_events(adapted["request"])
+    plan = plan_behaviors(prepared, derive(prepared))
+    before = copy.deepcopy(plan)
+    with pytest.raises(BehaviorError, match="invalid_fixture_iri: baseline.iri"):
+        project_candidate(plan, source, NS)
+    assert plan == before
+    assert plan["committed"] is False
+
+
+def test_notification_event_iri_is_validated_in_projection():
+    source = model()
+    source["behaviors"][0]["actions"] = [
+        {"kind": "notify", "id": "N:{eventId}", "event": "{eventId}"}
+    ]
+    adapted = adapt_case(
+        bundle(source_model=source),
+        "B-unit",
+        {"project_id": "p", "scenario_id": "s", "mode": "sample"},
+        "r",
+    )
+    prepared = prepare_events(adapted["request"])
+    plan = plan_behaviors(prepared, derive(prepared))
+    plan["candidate"]["notifications"][0]["event_id"] = "bad event"
+    with pytest.raises(BehaviorError, match="invalid_fixture_iri: baseline.iri"):
+        project_candidate(plan, source, NS)

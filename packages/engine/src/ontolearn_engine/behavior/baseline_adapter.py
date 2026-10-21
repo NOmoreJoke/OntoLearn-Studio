@@ -490,29 +490,34 @@ def project_candidate(plan, model, namespace, prior_order_ids=None):
     Notify materializes its two RDF statements here as one logical action. This
     is not a second writable graph; only the transaction owner may persist it.
     """
+    _iri(namespace)
     candidate = plan["candidate"]
     _, schema, _ = model_state(model)
     facts = [
         {
-            "subject": f["subject"],
-            "predicate": f["property"],
+            "subject": _iri(f["subject"]),
+            "predicate": _iri(f["property"]),
             "object": encode_value(f["value"], schema[f["property"]]["kind"]),
         }
         for f in candidate["facts"]
     ]
     notifications = []
     for record in candidate["notifications"]:
+        notification_id = _iri(record["id"])
+        event_iri = _iri(_entity(record["event_id"], namespace))
+        notification_type = _iri(namespace + "Notification")
+        notification_event = _iri(namespace + "notificationEvent")
         facts.extend(
             [
                 {
-                    "subject": record["id"],
+                    "subject": notification_id,
                     "predicate": RDF_TYPE,
-                    "object": "<" + namespace + "Notification>",
+                    "object": "<" + notification_type + ">",
                 },
                 {
-                    "subject": record["id"],
-                    "predicate": namespace + "notificationEvent",
-                    "object": "<" + _entity(record["event_id"], namespace) + ">",
+                    "subject": notification_id,
+                    "predicate": notification_event,
+                    "object": "<" + event_iri + ">",
                 },
             ]
         )

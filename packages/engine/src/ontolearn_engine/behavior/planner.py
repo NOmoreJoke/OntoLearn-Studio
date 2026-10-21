@@ -594,13 +594,16 @@ def _resolved_action(template, event, behavior_id, scope):
     resolved = {}
     for name, value in template.items():
         if name == "initial":
-            resolved[name] = [
-                {
-                    "property": field["property"],
-                    "value": _resolve(field["value"], event, behavior_id, scope),
-                }
-                for field in value
-            ]
+            fields = []
+            for index, field in enumerate(value):
+                with _explain(initial_index=index):
+                    fields.append(
+                        {
+                            "property": field["property"],
+                            "value": _resolve(field["value"], event, behavior_id, scope),
+                        }
+                    )
+            resolved[name] = fields
         else:
             resolved[name] = _resolve(value, event, behavior_id, scope)
     return resolved
