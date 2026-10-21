@@ -1,0 +1,19 @@
+--- old-b1c/packages/native-location/tests/location_core_test.cc
++++ new-b592/packages/native-location/tests/location_core_test.cc
+@@ -23,6 +23,7 @@
+ #include <signal.h>
+ #include <sys/acl.h>
+ #include <sys/stat.h>
++#include <sys/stdio.h>
+ #include <sys/wait.h>
+ #include <unistd.h>
+ extern char** environ;
+@@ -152,7 +153,7 @@
+   void symlink_member() { require(symlinkat("member", anchor, "link") == 0, "fixture-symlink"); }
+   void rename_root() {
+     const auto moved = path + "-moved";
+-    require(rename(path.c_str(), moved.c_str()) == 0, "fixture-root-rename"); path = moved;
++    require(renamex_np(path.c_str(), moved.c_str(), RENAME_EXCL) == 0, "fixture-root-rename"); path = moved;
+   }
+   bool cleanup() noexcept {
+     if (cleaned) return cleanup_ok;
