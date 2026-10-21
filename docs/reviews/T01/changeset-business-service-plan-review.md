@@ -1,6 +1,6 @@
 # T01 正式 ChangeSet 业务服务计划独立审查
 
-最终计划审查结论：固定计划 `5eb576f029bdf652ff2f52c82a335cf977afeb57cdf8db807d82d323832271e8` 无未解决的实质阻断，可按10产品/4新增测试的精确范围交root作阶段决定。下文三项P2均为已关闭的初稿历史，修订关闭依据保留于尾段，不表示当前仍待补齐。本次未运行产品、测试或探针；计划意见不是实施授权，也不证明服务、真人UI或父FR已完成。
+最终计划审查结论：固定计划 `39ebbf378386004eb9e8654bf9dbd7465e50d5215a87c55fde01cffc258d71e1` 无未解决的实质阻断，可按10产品/4新增测试的精确范围交root作阶段决定。下文初稿三项P2、首次修订关闭及根新增两项反例均保留为历史；最终两项定点关闭与新身份见尾段，不表示当前仍待补齐。本次未运行产品、测试或探针；计划意见不是实施授权，也不证明服务、真人UI或父FR已完成。
 
 ## 固定输入与实际审查边界
 
@@ -86,3 +86,27 @@ engine前缀为 `packages/engine/src/ontolearn_engine/`，contracts前缀为 `pa
 兼容提醒亦已在§2、§3.2及§4落明：触及before/after均在typed子集完整可逆，不支持的旧opaque前态在preview阶段拒绝；JobStore按capability+prepared版本覆盖create、accepted重试、重开validator与commit，不只放宽首次create。四种hash不互换；TS/Python新严格3方法/匹配仍在现申请路径，不通过放宽旧2解决。原test/application历史hash及新旧凭据隔离、无新schema/新writer、完整44项/FR/恢复/学习等父范围保持。
 
 本轮未发现还需扩大产品路径的具体证据，也未执行任何产品或测试。计划层面可交root一次精确决定；后续真实实现仍须独立代码审查、各C01–C08实际证据、同候选原门及必要范围授权，不能将本最终计划意见写成服务已可用。
+
+## 根新增两项反例的定点复核
+
+本节保留首次计划闭合 `5eb576…271e8` 及上文初稿历史，不倒写为当时已经覆盖下列两项。根后续指出确认落盘但丢响应遇cursor过期/GC，以及撤销ABA/引用冲突无法从现异常直接取得完整影响；本轮只核这两项实际文档delta和必要当前接口，不重开其余已核设计，不执行产品/测试/探针。
+
+实际读回exec `eb0263`、`0f21d6`均exit0，对应中间计划SHA `f1f12beec4a1fee4c553d99bda60bf4189118a9a28b4b9a20760e54133945389`；当前文档HEAD为 `dafe409bcc7ef5dc71d282678871bba9e66b4dfb`，相对fd3944基线的packages/apps/tests/scripts与依赖锁实际差异为空，不能误写文档HEAD仍是fd。另只读核原compensation.resolve历史交叠路径，源码SHA `99ecf0bb4383753accdc0df75f3564d058cfe9945203bc844b9739e0c51ea4cb`；没有修改底层补偿或将其执行作为探针。
+
+### 根反例一：confirm已签发丢响应、cursor过期后的精确重试
+
+计划§3.7–9明确首次签发与原签发回执分支，先核当前项目许可/原prepared类型和完整hash/原host与Session，再查持久回执。新typed回执复用现job_details三列表，以实际confirmation UUID为id，同一确认事务保存严格命名空间version1、原完整业务请求/hash和实际原签发响应，并与job_confirmations逐值互证；不混用ownership detail、不覆盖、不随cursor GC清除、不增新表/claim/generic detail接口。现JobStore路径有此写入与验证空间，不需要改Store/format3或新增第四方法。
+
+原签发已存在且完整业务请求相同，直接只读返回原结果，cursor TTL/GC或后来base推进都不触发重签/新确认；缺失/不一致fail-closed，不能用当前cursor重建旧事实。仅首次签发检查live完成cursor、当前base/前态/control及结构约束。新Session仍先被来源绑定拒绝；新operation的当前base/来源检查与旧claim原请求重试继续独立。C03追加真实签发后丢响应、推进测试时钟并GC、同一confirmation/原库计数不变、新业务请求/新Session拒绝与旧operation跨重启对照，足以作为此机制实施验收。
+
+随后实际定点读回exec `88c852` exit0，最终计划27888B/SHA `39ebbf378386004eb9e8654bf9dbd7465e50d5215a87c55fde01cffc258d71e1`：§3.4已将live cursor限定首次签发并显式让原回执优先；§3.7把完整原请求定义为canonical全部业务params+project/prepared/host/Session（含原完成cursor），排除每次变化的RPC id/timeout/retry计数。这样新RPC id的同业务重试不误拒，原业务字段/完成cursor变化才冲突。本项计划层关闭，尚待真实实现/故障反例，不声称其持久化已经运行通过。
+
+### 根反例二：撤销冲突的完整实际影响与有限分页
+
+当前ProjectTransactions.preview_undo的ProjectFault.resources只覆盖部分当前值差异；compensation.resolve还会因后续交叠（含ABA）、缺证据等抛Conflict(state)，Store的引用/ownership/单值检查同样不能从异常类别本身推导完整清单。原classify不识别ProjectFault，现有detail_get也不是公开命名方法；根反例成立，不能只回INTERNAL_ERROR/冲突码或解析异常文本冒称已列影响。
+
+修订§3.1与§4明确preview ready/conflict有限成功union；conflict只用于真实同项目undo目标，返回冻结base/target、summary、impactComplete与完整impact manifest，没有prepared/confirmation写凭据。原diff.page以documentKind=diff|undo-impact分隔绑定和cursor；完成undo-impact分页不授confirm。实际影响从校验过的marker/目标前后快照/control、至冻结base的完整后续commit/evidence、当前references与受影响owner/slot只读构造，分别列全value-changed、later-edit含ABA、reference-block及ownership/single-value阻断；未知原因/不完整证据明确impactComplete=false并暂停，资源预算不足整体拒绝，不截尾后称complete。Store真实预演仍是唯一可提交判定，此投影不能授权绕过拒绝。
+
+C06追加实际A→B改→C改回的全部B/C历史影响、后续引用、全页重组与原证据逐项全等、混文档cursor/冲突求confirm/job.create拒绝、缺证据不装完整与零领域写入，覆盖根的具体反例。该有限DTO/投影与分页可留在原10产品/4测试路径，不需公开generic detail.get、扩大错误catalog或修改底层补偿。本项计划层关闭；分类完整性、实际数据读回和分页预算仍须在实现阶段按新反例实测，不能由本只读文档意见提前登记产品完成。
+
+最终仅更新本独立报告，既有三P2及44项父范围/双审/CI/native/真实UI等边界保持。最终当前意见以上述39ebbf固定计划为准，未发现新增需阻断root阶段决定的具体问题。

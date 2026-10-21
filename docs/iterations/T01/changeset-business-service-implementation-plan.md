@@ -32,16 +32,33 @@
 1. 新私有`project/domain_changesets.py`仅作为现单连接服务：规范化typed业务变更，经公开UUID→`JobStore._project`绑定，调用原`ProjectTransactions.preview`或`preview_undo`。同一预览冻结project/base/intent/target、完整before/after/control、原计划、summary与完整Diff；预验后正式域数据/marker/revision/历史不变。
 2. prepared envelope采用明确版本化的普通ChangeSet命名空间，复用现`job_plans`，与旧test域plan/application plan严格分支。内容固定`preparedChangeSetVersion:1`、公开projectId、原hostClientId/engineSessionId和完整ChangePreview；ref为该完整canonical envelope的digest。原`ChangePreview.identity`、Store marker fingerprint、prepared ref与Job context fingerprint分别按各自定义核对，不能互换。只记录准备数据，**preview不签confirmation**。JobStore的create_job、_accepted_job、_validate_job3/reopen与commit_job均按明确capability+prepared版本分派，旧test/application分支原样保留，不只补首次create。
 3. 不把完整Diff压成一行receipt或只回diffHash。完整Diff为一份canonical UTF-8 JSON bytes，以不可变manifest+有序分段存于既有同项目blob；manifest固定总bytes/hash/段数，每段固定ordinal、byteOffset、rawByteLength/hash。本阶段申请技术保护为完整Diff原bytes最多16777216、单段最多32768、至多512段；空Diff仍编码完整JSON空数组。**wire统一base64**，即使切在UTF-8字符内部也只按bytes重组，不得把半个字符decode成string。page实际base64+JSON全部开销同时服从maxPageItems/maxPageBytes和整个frame上限。分段/manifest各自先核既有put_blob整值262144B上限，总量/manifest/输出预算全部在保存prepared/segments前完整计算；超限明确RESOURCE_LIMIT、不留部分新准备记录、不签确认，不截断旧值。上述限额是本计划待批准的工程保护，不是Q5容量/内存/性能结论或永久产品能力承诺；不新增递归manifest/第二schema。
-4. 页复用现同项目不可变cursor基础，绑定project、hostClientId/engineSessionId、preview/plan/diff/base、完整页口径与下一byteOffset。初页从0开始，下一位置只能用上一页已签cursor取得；最后页返回position=totalBytes的完成cursor，confirm必须核同绑定、未过期、确实到总长度的该cursor。复用现cursor TTL/记录上限/清理，不建第二授权账本；它只证明该受信连接取得完整分页链，不证明人类看过内容。重复同cursor幂等，错绑定/跳页拒绝。共享`src/index.ts`内实际Diff重组helper再核全部offset/长度/hash、最后整值UTF-8与JSON，拒绝漏段/乱序/改bytes；Node真实runtime测试必须调用该helper重组后再请求confirm。未来host只能在此helper通过且用户实际确认后调用confirm。有限单页输出不伪造read Job，不借result.page绕过Diff含义。
+4. 页复用现同项目不可变cursor基础，绑定project、hostClientId/engineSessionId、preview/plan/diff/base、完整页口径与下一byteOffset。初页从0开始，下一位置只能用上一页已签cursor取得；最后页返回position=totalBytes的完成cursor，**首次confirm签发**必须核同绑定、未过期、确实到总长度的该cursor；已有签发的精确只读回执按第7–8项先查持久证据，不重验临时cursor。复用现cursor TTL/记录上限/清理，不建第二授权账本；它只证明该受信连接取得完整分页链，不证明人类看过内容。重复同cursor幂等，错绑定/跳页拒绝。共享`src/index.ts`内实际Diff重组helper再核全部offset/长度/hash、最后整值UTF-8与JSON，拒绝漏段/乱序/改bytes；Node真实runtime测试必须调用该helper重组后再请求confirm。未来host只能在此helper通过且用户实际确认后调用confirm。有限单页输出不伪造read Job，不借result.page绕过Diff含义。
 5. 确认是独立受信host动作：实际展示业务摘要和完整Diff后才可请求确认。renderer/Agent不传actor、permission、prepared/confirmation任意ref或`confirmed=true`。**当前Coordinator没有人类actor/write grant上下文，不把它说成现成接口**；本阶段只在当前专用stdio信任边界内，成功hello时保存该真实请求的clientId作为hostClientId，并以该值作为确认行的actor归因，现allowedProjects仍是项目许可来源。actor/clientId/session都不成为人类授权或外发授权证明。confirm不得接外部actor/write字段，必须与prepared内原hostClientId/engineSessionId相同，并核完整Diff完成cursor/previewHash；事务内再次校验base/前态/control及结构、引用、ownership。真正人类确认来源须由后续I06受信main/UI负责，不凭这些标识补造。
 6. 本阶段的真实CLI/Node确认调用只证明**受信确认边界机制**。当前I06保留的preload/App尚无实际Diff/确认UI，原main也只在测试fixture中选择项目，不能据Node测试声称真人确认/正式新建打开已接通。需要总控向I06申请精确命名接线与trusted项目选择接口；本阶段不自行写其四文件，不新增generic invoke或自动点击确认。
-7. confirm只有通过上述边界后才使用既有`job_confirmations`签发，绑定project/ref/base/planHash/actor/write；同原preview/host/Session的精确confirm重试返回原签发，不无限增加新凭据。新operation须重验当前host/Session/项目与原prepared确认来源，另一实例不能接管旧确认。已经claim的operation则**先**按原完整请求/context和持久凭据对账，不重新要求临时Session/cursor仍活；旧Job保持原actor归因，不能因换Session、当前版本推进而新建Job/换operation或重复写。重启后的新operation需要重新呈现/确认，不把持久ref存在当当前人类授权。
+7. confirm分为首次签发与已签回执两个明确分支。先核当前project许可、prepared类型/完整hash及原hostClientId/engineSessionId；随后**先查持久的原confirm请求/签发回执，再查临时cursor**。“完整原confirm请求”固定为canonical完整业务params加project/prepared/host/Session归属，含原完成cursor；不含每次可能变化的RPC request id、timeout或retry计数。新RPC id的同业务请求仍是精确重试，不能因此新签或误拒。现confirmation表没有原cursor/完整请求列，本阶段明确复用既有`job_details`：以真实confirmation UUID作id，在同一确认事务保存严格`changesetConfirmationReceiptVersion:1`命名空间的原project/prepared/host/Session、上述完整原业务请求及其digest、实际原签发结果；不是新表、全局operation claim或generic detail接口。其类型/hash/确认行逐值互证，禁止与原ownership detail混用、覆盖或由cursor GC清除。
+8. 同原project/preview/host/Session的**完整confirm请求相同**且存在有效签发回执时，直接只读返回原prepared/confirmation结果：即使原完成cursor已过TTL、被GC，或当前base后来变化，都不重新签发、回拨或要求临时cursor仍活；这是原签发事实，不证明旧Diff现在可提交。已有该签发却请求字段/完成cursor改变则IDENTITY_CONFLICT；确认行与新typed回执缺失/不一致则fail-closed，不补造。仅没有原签发时，才核完成cursor活性/完整链、当前base/前态/control及结构/引用/ownership，原子落确认行和回执；失败零部分签发。旧Session的confirm请求不能在新Session走此回执分支，原host/session绑定先拒绝。
+9. 新operation另须重验当前host/Session/项目与原prepared确认来源及当前base，另一实例不能接管旧确认；读取旧签发回执不自动放行新operation。已经claim的operation则**先**按原完整请求/context和持久凭据对账，不重新要求临时Session/cursor仍活；旧Job保持原actor归因，不因换Session、当前版本推进而新建Job/换operation或重复写。重启后的新operation需要重新呈现/确认，不把持久ref存在当当前人类授权。
+
+### 3.1 撤销冲突的实际影响投影
+
+`changeset.preview`的有限成功结果按`status`区分`ready`与`conflict`。conflict分支只能用于有真实同项目目标的undo，包含公开projectId、冻结baseRevision、目标operationId、有限summary、`impactComplete`和完整impact manifest；**不返回prepared/confirmation可提交凭据**。分页复用同一个`changeset.diff.page`方法，以documentKind=`diff`或`undo-impact`严格区分绑定/manifest，仍用上述完整字节/分页预算，不加第四方法、`detail.get`或新错误catalog。不能把private ProjectFault直接交现classify后只回INTERNAL，也不从异常文本提取资源。
+
+影响事实必须从实际Store marker、经过同项目hash/结构校验的目标前后快照/control、当前状态，以及目标之后至固定base的完整正式提交/evidence链读取，形成只读投影，不改Store补偿判定或建立第二writer：
+
+- `value-changed`：目标触及resource的真实target-before/after/current值和对应正式快照；列全当前值与原after不符的项。
+- `later-edit`（含ABA）：逐条验证后续commit/evidence/control，列全与目标触及集合交叠的resource，以及导致交叠的后续operation/revision/前后快照和值；即使当前值又等于原after也必须列出，不能只用ProjectFault.resources或当前Diff推断。
+- `reference-block`：从实际当前定义的完整references读取，在只读计算的目标逆向候选下，列全仍存在却会失去目标的引用者/被引用者及实际证据。`ownership-block`/`single-value-block`同理用实际受影响事实、owner/slot及候选声明投影，不能将Conflict(category=dependency/state/ownership)本身当完整影响清单。
+- 缺早期/后续证据、未支持的before或不能完整解释的拒绝，返回`impactComplete=false`及明确的`evidence-unavailable`/`unsupported-state`分支和已知实际目标/基线来源；明确无法确定完整影响并暂停，不展示成“无冲突”或声称清单完整。资源/分页预算不足则整次失败，不能丢掉清单尾部后标complete。
+
+实际`preview_undo`/Store预演仍是唯一可提交性判定。service捕获其有限ProjectFault及Conflict类别后，仅使用上述真实证据输出阻断结果；成功预演才进入ready。影响投影不单独授权绕过其拒绝，未知异常仍走原安全失败；新typed回执/impact记录不得从原ownership detail的任意payload自动晋升。提交时后来出现的新冲突仍拒绝正式写，用户重新preview获得该新基线完整影响，不用过期清单确认。
 
 ## 4. 有限正式契约与实际执行
 
 仅在显式internal business3注册`changeset.preview`（change/undo两明确分支）、`changeset.diff.page`和`changeset.confirm`三个有限方法；提交复用`job.create`的既有`changeset.commit`，结果/订阅/取消/对账复用原Job接口。新方法只扩canonical中严格3分支和business3 methods；legacy2的旧defs/v2Runtime/default health/error与原test路径不放宽。registry使用明确profile级可用状态，不全局把design-only改成默认生产可用。
 
 计划不落第二份JSON schema。实施时仅在唯一`v2/schema.json`定义精确DTO，TS/Python原helper加载同一份定义。preview参数明确project/base及typed edits或undo目标，返回公开projectId、previewHash/base/intent/target、summary、完整Diff manifest元数据；page只返回该冻结manifest的完整指定段；confirm不接客户端actor/permission，仅返回既有prepared/confirmation签发结果到可信host托管。新DTO的公共/宿主投影不得泄漏内部project字符串、DB路径或私有application receipt。
+
+本节preview返回描述中的可提交字段仅属`status=ready`；`status=conflict`严格采用§3.1影响分支，不能构造为普通ready或作为job.create输入。completed cursor也只属于ready Diff文档，undo-impact分页完成不授confirm资格。
 
 正式parameters由prepare服务对真实ChangeSet内容生成并存于同项目blob，不接受workMs/failRound/allocateBytes/rows等test控制参数；现inputSnapshot/definitionId/parametersHash/implementation按实际冻结内容与现changeset依赖policy绑定。提交采用已确认版本化prepared分支，完整保留intent/target/preview/control和允许的compensate。旧test/application两种命名空间及已保存hash精确兼容，新Job不能消费其凭据，反向亦然。
 
@@ -84,6 +101,10 @@ Coordinator在testMode=false且profile3时接受该正式capability，进入当�
 | C06 撤销与恢复         | 真正提交A后提交不相交B，再通过正式undo预览/确认/Job只补偿A并保留B；同记录后改、ABA、后续引用/所有权冲突则列影响并暂停，零域写入。undo本身为新operation/revision并保历史，不回拨计数。真实CLI重启后原Job/operation/receipt仍相符；缺早期正式证据拒绝，不补造。                                                                                   |
 | C07 版本传播           | 实际定义/事实版本、当前依赖闭包和受影响缓存stale变化与完整before/after一致，无关定义/结果保留；undo仍前向推进。用真实Store已发布结果核失效机制，但不冒称T04查询/T05推理producer已联验。                                                                                                                                                         |
 | C08 回归与包           | 受影响专项、独立代码审查、完整npm check及verify:sources；新同候选unsigned包/CLI正式ChangeSet+撤销/重开与canonical资源同源验证。当前宿主不启动Electron/native/e2e/HMR/审查应用。产品/测试/依赖变化后按实际影响重验，不沿用fd启动通过当新阶段通过。                                                                                               |
+
+C03追加确认原回执反例：首次签发已提交但响应丢失，在同host/Session人为推进测试时钟并实际执行cursor TTL/GC后，以完整原confirm请求重试仍只读返回**同一**confirmation，原签发行/回执/域revision/operationSequence不变；换请求字段/完成cursor拒绝。无原签发且cursor过期拒绝、新Session confirm拒绝、新Session使用旧确认创建新operation拒绝；已受理的原operation精确跨重启仍按原context读回，与上述新operation拒绝并列实测。只做请求丢失模拟时明确边界，不假称真实网络故障。
+
+C06追加完整影响反例：除当前值直接冲突外，实际提交A→B改同记录→C改回原值，正式undo预览必须列出B/C真实操作/引用的ABA资源，`impactComplete=true`且无ready/确认凭据；新增后续definition引用A创建对象后undo A，实际引用者/目标/冻结base与完整分页值相符。所有页重组后与真实历史/当前引用逐项全等，不能只断言“有冲突”或条目数；改base、混diff/undo-impact cursor、冲突结果求confirm及job.create全部拒绝。缺真实evidence时明示impactComplete=false且暂停，完整影响预算超限整体拒绝；原项目数据/marker/revision不变。
 
 ## 7. 审查、交接和后续
 
