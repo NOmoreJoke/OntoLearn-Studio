@@ -139,9 +139,10 @@ export const emptyDirections = [
 
 // Saved record identity is private UI state; the owning project service still
 // validates revision, authority and the formal ChangeSet at commit time.
+export const definitionIdSchema = z.string().regex(/^[A-Za-z0-9_.-]{1,128}$/)
 export const savedQuerySchema = z
   .object({
-    definitionId: z.string().regex(/^[A-Za-z0-9_.-]{1,128}$/),
+    definitionId: definitionIdSchema,
     draft: draftSchema,
   })
   .strict()

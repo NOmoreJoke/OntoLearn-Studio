@@ -24,7 +24,7 @@
 
 不改 `storage.py` 或其他存储/协调器文件。`save_intent` 只返回私有定义意图：family=query/id/expectedProjectRevision/draftDigest/value；不是写入、提交标记或公共 ChangeSet 格式。T01 应由唯一项目服务转换为正式 preview/confirm/commit，并在事务内复验 expected revision。
 
-保存内容完整含 name、description、sparql、scope、capabilityQuestion、source。页面私有 SavedQuery 为 `{definitionId,draft}`；载入后保存回调携带原 definitionId，null 表示新建，不能靠同名匹配；T01 仍复验正式项目 revision 与权限。draftDigest 仅用于编辑身份，不等于引擎 parametersHash 或执行授权。查询文本/范围、事实、相关推导/规则/本体依赖由现有规则和真实 query dependency policy 派生；不根据模型配置自行加过期原因。重新执行显式选择 current/historical；历史标识持续展示。缓存回收只影响载荷，页面仍显示结果身份并提示重跑。
+保存内容完整含 name、description、sparql、scope、capabilityQuestion、source。页面私有 SavedQuery 为 `{definitionId,draft}`；载入后保存回调携带原 definitionId，null 表示新建，保存成功的 Promise 必须返回 T01 真实已持久化 definitionId（更新时须等于原 ID）；同一项目实例/请求/文档选中仍匹配才绑定新 ID，编辑变化继续保留未保存提示，不能靠同名匹配；T01 仍复验正式项目 revision 与权限。draftDigest 仅用于编辑身份，不等于引擎 parametersHash 或执行授权。查询文本/范围、事实、相关推导/规则/本体依赖由现有规则和真实 query dependency policy 派生；不根据模型配置自行加过期原因。重新执行显式选择 current/historical；历史标识持续展示。缓存回收只影响载荷，页面仍显示结果身份并提示重跑。
 
 T01 需提供保存后权威查询读取及同项目/旧基线拒绝、原子失败/撤销、项目包迁移信息。页面保存 Promise 只可在真实保存流程成功后 resolve；未接线默认禁用。不能把本机草稿持久化另设为源真相。
 

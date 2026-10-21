@@ -6,6 +6,7 @@ import {
   compileVisual,
   draftSchema,
   savedQuerySchema,
+  definitionIdSchema,
   type SavedQuery,
   emptyDirections,
   type QueryDraft,
@@ -39,7 +40,7 @@ export interface QueryPageProps {
     draft: QueryDraft,
     input: { selection: 'current' | 'historical'; snapshotId: string | null },
   ) => Promise<void>
-  onSaveDraft?: (draft: QueryDraft, definitionId: string | null) => Promise<void>
+  onSaveDraft?: (draft: QueryDraft, definitionId: string | null) => Promise<string>
   onNextPage?: (cursor: string) => Promise<void>
   onCancelJob?: (jobId: string) => Promise<void>
 }
@@ -61,9 +62,11 @@ export function QueryPage(props: QueryPageProps) {
   const [busy, setBusy] = useState(false)
   const request = useRef(0)
   const editRevision = useRef(0)
+  const documentGeneration = useRef(0)
   useEffect(
     () => () => {
       request.current++
+      documentGeneration.current++
     },
     [],
   )
@@ -486,7 +489,20 @@ export function QueryPage(props: QueryPageProps) {
               onClick={() =>
                 withDraft(
                   props.onSaveDraft
-                    ? (value) => props.onSaveDraft!(value, definitionId)
+                    ? async (value) => {
+                        const token = request.current
+                        const selectedGeneration = documentGeneration.current
+                        const savedId = definitionIdSchema.parse(
+                          await props.onSaveDraft!(value, definitionId),
+                        )
+                        if (definitionId !== null && savedId !== definitionId)
+                          throw new Error('query.invalidIdentity')
+                        if (
+                          token === request.current &&
+                          selectedGeneration === documentGeneration.current
+                        )
+                          setDefinitionId(savedId)
+                      }
                     : undefined,
                   '此版本草稿保存流程已完成。',
                 )
@@ -511,6 +527,7 @@ export function QueryPage(props: QueryPageProps) {
           </button>
           <button
             onClick={() => {
+              documentGeneration.current++
               setDefinitionId(null)
               update(initialDraft)
             }}
@@ -524,6 +541,7 @@ export function QueryPage(props: QueryPageProps) {
               onClick={() => {
                 const parsed = savedQuerySchema.safeParse(saved)
                 if (parsed.success) {
+                  documentGeneration.current++
                   setDefinitionId(parsed.data.definitionId)
                   update(parsed.data.draft)
                 } else setNotice('保存的查询格式不兼容，请检查项目版本。')
