@@ -59,3 +59,11 @@
 reviewer实际核对两个差异、上下文、批准5f registry及FR-500/D后通过：范围名一致，未绑定真实已有result时禁用，无计划推导冒充可用输入，完整双范围验收保留。QualityWorkspace.tsx SHA256 `e6e266244a2b04e7b06104b205b7ff0c13f3e85509db3130aa9315249e6b55e7`，interface-proposal.md SHA256 `5f8d0208ac449a112aad4716a44bad48e47204daa10e5e0eeae3cef16c6c24da`，提交`7c94a88`。
 
 本次只读差异审查未重跑代码测试；开发线最新全check退出0（635 TS / 1200 Python，Python 41.55s）。未运行真实双范围或GUI，不替代指定双审和父验收。
+
+## 草稿输入绑定与headless证据
+
+独立reviewer通过固定2fcd36b的三文件实现/夹具：全部editorInput进入source，修改和增删即隐藏旧draft/error，失败替换旧准备结果，表单保留，project key隔离。源码SHA：QualityWorkspace `f4120ffddffcb37e6f56909c7ba48cbc88b15e36187533fc044fbedd6b01d05a`；browser-harness `b590ced2e7aaf53dc2f06503c6ba116dbc24cc6d91809a6ee26b5c40438824b0`；build helper `2a257f40a9b7c9fb8662f0ed08aaa4e647919d32ea5848c9bc5387eb946c3f9c`。reviewer实际读CLI前后原反例、配置及自有实际进程argv，未操作浏览器，不替代真实领域或指定双审。
+
+另独立复核R1/R2恢复归档8载荷长度/hash、四源与fff一致、两raw与原件一致、bundle校验通过；没有重复产品检查，来源明确事后绑定。也承认并纠正先前合同漏查：resources.py在批准5f中已有，只有三个semantic新增；候选增量仍未批。修正合同SHA `392d39e275cd2ccd9d3fbed5a5e4b2ead014e1654854480625a0aac1a40e3e4a`已独立树清单确认，原错误和旧review保留历史。
+
+最终UI封存由同一独立reviewer只读复核通过：715488B/54成员，53载荷内外清单全部一致，6源码与2f及当前字节相等，18个DOM断言均含实际检查代码/成功结果；真实fullcheck635/1200一致。最终关闭回执存在，reviewer另实查PID45676/45677消失；未重复浏览器或全量检查。归档SHA `e046be791bd6336d909365413382b42e10a5cf8dbe85142ea16e71647ea8de56`，仅认可synthetic组件范围。

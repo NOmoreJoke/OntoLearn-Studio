@@ -1,0 +1,317 @@
+{
+  "ownerThreadId": "01a15bce-021c-74e0-a7ac-a899380b424a",
+  "worktree": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T05-quality-reasoning",
+  "sourceCommit": "2fcd36b915b190963a1d89d608e896da1a15284e",
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "sourceSha256": {
+    "apps/desktop/src/renderer/src/quality/QualityWorkspace.tsx": "f4120ffddffcb37e6f56909c7ba48cbc88b15e36187533fc044fbedd6b01d05a",
+    "apps/desktop/src/renderer/src/quality/draft.ts": "53024c621f8c067cade9a301b36ecf87262adc4dade871dc753d75bda8fa5501",
+    "apps/desktop/src/renderer/src/quality/presentation.ts": "8bac099161eb6ab54dbe468ef2387627ec48d884caa813268c75650b3c507932",
+    "apps/desktop/src/renderer/src/quality/quality.css": "559577df368dc3923571b5fff86de022008327ed4407d3993a40f5fd20160c4c",
+    "tests/fixtures/quality/browser-harness.tsx": "b590ced2e7aaf53dc2f06503c6ba116dbc24cc6d91809a6ee26b5c40438824b0",
+    "tests/fixtures/quality/build-browser-harness.mjs": "2a257f40a9b7c9fb8662f0ed08aaa4e647919d32ea5848c9bc5387eb946c3f9c"
+  },
+  "sourceBinding": "Actual browser source bytes verified equal to this later-created commit. Not a claim that the commit existed at launch.",
+  "mode": "Explicit manual Playwright CLI. Build helper never launches browser, HTTP server or product. No automatic browser launch in npm test.",
+  "runtime": {
+    "playwrightCliVersion": "0.1.22",
+    "browserVersion": "Google Chrome for Testing 151.0.7922.34",
+    "executablePath": "/Users/kyle/Library/Caches/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-mac-arm64/chrome-headless-shell",
+    "executableSha256": "7687bff7cb2db075f250e6d5848bbc8838cac3802ac3952a899c574f8eccab45",
+    "node": "v24.15.0",
+    "npm": "11.12.1",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "headless": true,
+    "chromiumSandboxLaunchOption": true,
+    "hangMonitorDefaultRemoved": true,
+    "actualArgvReceipt": "out/t05-headless-ui/launch-process-receipt.json",
+    "osSandboxProven": false,
+    "daemonPid": 45676,
+    "browserPid": 45677,
+    "ownSessionClosedAndPidsAbsent": true
+  },
+  "verifiedBrowserAssertions": [
+    "required",
+    "datatype",
+    "maxCountZero",
+    "fractionalCountRejected",
+    "allowedValues",
+    "numericRange",
+    "oldDraftHiddenOnEdit",
+    "invalidRevisionRejectsOldDraft",
+    "conditionAdditionHidesDraft",
+    "ruleCompareAndMultiConclusionDraft",
+    "disabledDraft",
+    "syntheticDiffAndStatesOnly",
+    "resultRefreshPreservesDraft",
+    "locationCallbackOnly",
+    "lateOtherProjectObservationHidden",
+    "projectDraftIsolated",
+    "sampleAndExpectedPreservedOnRefresh",
+    "unboundDerivedAndRunDisabled"
+  ],
+  "browserConsoleErrorsFinalSession": 0,
+  "browserRemoteHttpRequestsListed": 0,
+  "boundary": "Synthetic display props and local drafts only. No actual parse/SHACL/reasoning/save/snapshot authentication/App navigation/IPC/native Electron/production proof.",
+  "npmRunCheck": {
+    "exitCode": 0,
+    "tsTests": 635,
+    "pythonTests": 1200,
+    "rawLog": "docs/reviews/T05/check-ui-draft.log",
+    "pythonDurationSeconds": 38.58
+  },
+  "harnessTypecheck": {
+    "exitCode": 0,
+    "command": "npx tsc --noEmit --strict --jsx react-jsx --module ESNext --moduleResolution bundler --target ES2022 --lib ES2022,DOM --skipLibCheck --esModuleInterop tests/fixtures/quality/browser-harness.tsx"
+  },
+  "fullPageScreenshots": [
+    "out/t05-headless-ui/rule-draft.png",
+    "out/t05-headless-ui/synthetic-result.png"
+  ],
+  "rawCliStrictUtf8": false,
+  "rawCliHandling": "Historical invalid UTF-8 bytes preserved exactly. Replacement decoding used only to read the log; archived raw bytes never rewritten.",
+  "initialSetupFailures": [
+    "Direct wrapper execution permission denied; ran bash without changing skill file.",
+    "Default CLI file URL navigation refused; own session closed, explicit per-session controlled local-file config used.",
+    "Initial IIFE left process.env.NODE_ENV unresolved; raw console preserved. Helper now defines production NODE_ENV; final new session console zero errors.",
+    "Initial launch probe included Playwright default disable-hang-monitor; own probe closed. Accepted session removes that default and actual argv has no disable-hang-monitor/no-sandbox.",
+    "Old successful draft remained visible after invalid revision; pre-fix CLI observation preserved.",
+    "Initial SHA-only git bundle refused empty advertised refs; existing own feature ref used successfully, no new ref created.",
+    "Initial evidence reader rejected historical non-UTF8 CLI log; raw kept exact, text inspection uses replacement decoding only."
+  ],
+  "noUnapprovedSemanticImplementationConsumed": true,
+  "designatedDualReview": "not-started-environment-and-resource-gate",
+  "archive": {
+    "path": "docs/reviews/T05/evidence/browser-ui-draft-recovery.tar.gz",
+    "bytes": 715488,
+    "sha256": "e046be791bd6336d909365413382b42e10a5cf8dbe85142ea16e71647ea8de56",
+    "members": {
+      "source/apps/desktop/src/renderer/src/quality/QualityWorkspace.tsx": {
+        "bytes": 18106,
+        "sha256": "f4120ffddffcb37e6f56909c7ba48cbc88b15e36187533fc044fbedd6b01d05a"
+      },
+      "source/apps/desktop/src/renderer/src/quality/draft.ts": {
+        "bytes": 2451,
+        "sha256": "53024c621f8c067cade9a301b36ecf87262adc4dade871dc753d75bda8fa5501"
+      },
+      "source/apps/desktop/src/renderer/src/quality/presentation.ts": {
+        "bytes": 2460,
+        "sha256": "8bac099161eb6ab54dbe468ef2387627ec48d884caa813268c75650b3c507932"
+      },
+      "source/apps/desktop/src/renderer/src/quality/quality.css": {
+        "bytes": 2133,
+        "sha256": "559577df368dc3923571b5fff86de022008327ed4407d3993a40f5fd20160c4c"
+      },
+      "source/tests/fixtures/quality/browser-harness.tsx": {
+        "bytes": 2522,
+        "sha256": "b590ced2e7aaf53dc2f06503c6ba116dbc24cc6d91809a6ee26b5c40438824b0"
+      },
+      "source/tests/fixtures/quality/build-browser-harness.mjs": {
+        "bytes": 1087,
+        "sha256": "2a257f40a9b7c9fb8662f0ed08aaa4e647919d32ea5848c9bc5387eb946c3f9c"
+      },
+      "out/t05-headless-ui/rule-draft.png": {
+        "bytes": 289758,
+        "sha256": "b45b572c668e2b3a9e8e137ade535c526cb3bf08cf56444ce4399a828536632e"
+      },
+      "out/t05-headless-ui/index.html": {
+        "bytes": 213,
+        "sha256": "aae2f8866928a96486f4f011bbd39f6efbfc4a090452cdc551a9e67e250b7b6c"
+      },
+      "out/t05-headless-ui/synthetic-result.png": {
+        "bytes": 402521,
+        "sha256": "e9b7aa9c3a881c1d6e39a400b49c87b77d14b87d4140105a9efe785cbb73cbe1"
+      },
+      "out/t05-headless-ui/harness.js": {
+        "bytes": 233325,
+        "sha256": "d9e46b23e9839e7272a4ec009e7bff1c80d73da27b3d2770aac4021a765ee9b6"
+      },
+      "out/t05-headless-ui/launch-process-receipt.json": {
+        "bytes": 5930,
+        "sha256": "c73fe6c237439fff3a2e611792e7b8646332fdf85197f30a0ba4e8af0875dda7"
+      },
+      "out/t05-headless-ui/ontolearn-studio.css": {
+        "bytes": 1796,
+        "sha256": "377597dae659612de1c86423faeeb11a52e8f45170a705900fa02d3fb37efba1"
+      },
+      "out/t05-headless-ui/cli.config.json": {
+        "bytes": 750,
+        "sha256": "f6a4168ec46aebcb1c6b73ba1b088ae05f216f57130a8de5f3596f99861c7e6d"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-29-25-773Z.yml": {
+        "bytes": 4044,
+        "sha256": "c6b422c5be7fd0c7a161d4f340bea69390c52f2966c8b8d9bf9d50d3582a2a6c"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-28-19-564Z.yml": {
+        "bytes": 3258,
+        "sha256": "0d000d1b79054ae6d60e3e47d6fdb49d2780df4b604ffcc124a2f96b86d1d7d7"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-31-05-401Z.yml": {
+        "bytes": 6475,
+        "sha256": "bd82a505ab16d39203a71270a9d649834cb5c9fff058dbf003f3b07256de7232"
+      },
+      "out/t05-headless-ui/evidence/console-2026-10-21T01-23-19-956Z.log": {
+        "bytes": 778,
+        "sha256": "540c459e45e2c5f1e82839eabac4a850f1330ea1e6aa8a6552dbda2d3a89eb19"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-30-44-271Z.yml": {
+        "bytes": 10612,
+        "sha256": "c5b0a2a30584b86cbdd43bfb1a9ab097f00eaaef9c5fa50eddb0daad480f28fc"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-24-32-872Z.yml": {
+        "bytes": 2965,
+        "sha256": "a89837ccf88df9b5d40c1830e4a21cd8c26040da39c4b0bf7c40581a19b3fccb"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-31-13-661Z.yml": {
+        "bytes": 7233,
+        "sha256": "88c7acb839a9da300a8ebdcef0a0c708a478d88dec089daadf74fca8dddc8518"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-29-44-991Z.yml": {
+        "bytes": 4857,
+        "sha256": "862479db92de578f60b636a79d3aec23f2774f238939e5b53d6b34faa1cecfbd"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-28-01-911Z.yml": {
+        "bytes": 2802,
+        "sha256": "7959b80764fc3bcc939e12e5a36df130a597ca7b6dcea7c3514ab3a0e62a0826"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-27-01-741Z.yml": {
+        "bytes": 2761,
+        "sha256": "80983e08a2b0f3612b10278b3c74426dc23ac6f7d5ddce5e2d2fde30b381f03e"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-27-30-965Z.yml": {
+        "bytes": 3248,
+        "sha256": "717c581dd1c7f2c94e84ff003517e0077b094f8be0c4efb9b48fda72d8bec8d4"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-30-26-566Z.yml": {
+        "bytes": 10584,
+        "sha256": "acad2b72e7fbe0629ea7be35fb7a55cc45d08388d11110685014e1ed29faa28b"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-26-53-704Z.yml": {
+        "bytes": 3047,
+        "sha256": "f9648a87bbe196f84901f0604dfde8c87e4e19a1527e49ba26328a45900a5a0b"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-27-58-598Z.yml": {
+        "bytes": 2826,
+        "sha256": "fcd5600a92f45d8629c5363188c43bec99c3622d807a810f72c3e58719660296"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-23-45-378Z.yml": {
+        "bytes": 2602,
+        "sha256": "99aea7a81e784a2cb86abd1b37f8a4a6ea63ca7aa6a236de419e8ace45f90ccf"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-23-20-005Z.yml": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-28-48-517Z.yml": {
+        "bytes": 3557,
+        "sha256": "be241b9da80309d437971d2ecc39b797ecb108ccf2d9f86aa8e3782f9b9f9e73"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-30-15-741Z.yml": {
+        "bytes": 6783,
+        "sha256": "8d7216b225af6945e73febf5e4337771be90a00abb538a07b9e53fabbc05eb52"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-30-48-456Z.yml": {
+        "bytes": 2666,
+        "sha256": "11ef4083d32b2485cded1b562f052907794b604ca0e3ce87faaeccb6dbcfeef1"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-27-06-263Z.yml": {
+        "bytes": 2764,
+        "sha256": "fa8ace9f67467cc0067dc75f8bf6b3fd495de94afc0429fccbee3e9761903c1b"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-29-46-745Z.yml": {
+        "bytes": 5396,
+        "sha256": "0f2f48e381d359a74d10401c22e7001d11d174cb6bc960cdae5006dab76a17a5"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-24-12-557Z.yml": {
+        "bytes": 2526,
+        "sha256": "1dad149fe3145da011ca8f976619051dbbf5db77a1f76454fdecb968803dfbc1"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-24-54-410Z.yml": {
+        "bytes": 3158,
+        "sha256": "0a7827ae5b046522e67c1f6fac4e7d30849195aacd63b4d4b4c959142b5e33c3"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-31-48-539Z.yml": {
+        "bytes": 3494,
+        "sha256": "34d5bb442e7592a4cafb7ca0fbd681cda1c53799485ff837ea628d5ebf6dd11d"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-30-21-543Z.yml": {
+        "bytes": 6774,
+        "sha256": "3d7654d24ff3639bec7a4664f83c0a4b0fd5c1adaa5c8c75531203642abb49ec"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-27-34-267Z.yml": {
+        "bytes": 2756,
+        "sha256": "1f4a491264991267f56d667f062f9605598c4b840aee917aa472b7765b2591e7"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-28-23-542Z.yml": {
+        "bytes": 2897,
+        "sha256": "4a94c41a9130af48ab4634cbe17b1319bbee7ee2517c2b33335f0e1267842b66"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-29-57-739Z.yml": {
+        "bytes": 5882,
+        "sha256": "5501001a2e6abab70491361e40555adb0c90f2e10f8e1bfd7da62ba40bf7639d"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-28-45-764Z.yml": {
+        "bytes": 3553,
+        "sha256": "1d8ef222e7e140418c7968430fbfb3e6c36bd3d9b7063184f9bf46d13245580a"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-29-55-618Z.yml": {
+        "bytes": 5751,
+        "sha256": "d1ae35f8d9719e7e54f3162abcd9f22f4e563a0ff011764403c33ea748cf65c1"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-29-27-509Z.yml": {
+        "bytes": 4152,
+        "sha256": "b517dc9b094a168c3b2a069a8e0b2c75821d04d157142a821790db20f0a852ca"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-25-13-070Z.yml": {
+        "bytes": 2602,
+        "sha256": "99aea7a81e784a2cb86abd1b37f8a4a6ea63ca7aa6a236de419e8ace45f90ccf"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-27-51-917Z.yml": {
+        "bytes": 3162,
+        "sha256": "d10f0b0ecb6c1e9dbad6100b80b7ef8c8861bbc0889461865e100f91c512d3f8"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-30-09-114Z.yml": {
+        "bytes": 5881,
+        "sha256": "035097de8f49b5a24a73d5565dc5da840522f2217a0a6187480b070441ca905e"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-24-51-376Z.yml": {
+        "bytes": 3061,
+        "sha256": "d089a2f51efeb177841a7142249c5430e3205792bbb9bd1e432e1b273a9f12cc"
+      },
+      "out/t05-headless-ui/evidence/page-2026-10-21T01-29-41-323Z.yml": {
+        "bytes": 4283,
+        "sha256": "4a65bf25071c6b3dedda7c01bb4aac5607fc6bfcc2f25540b80e7bba91e4c093"
+      },
+      "docs/reviews/T05/ui-cli.log": {
+        "bytes": 102312,
+        "sha256": "3d7290886999f844e71e8576750d74beaa2296a9d8b7b65a8b663146076df773"
+      },
+      "docs/reviews/T05/ui-harness-typecheck.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "docs/reviews/T05/check-ui-draft.log": {
+        "bytes": 5700,
+        "sha256": "a1eb6aad7268855c2d90147d7454b88d000da305618697d1422bf6e413e8a7c4"
+      },
+      "browser-execution-receipt.json": {
+        "bytes": 4795,
+        "sha256": "0c1aa575ab7698474f3ceebb3a0eeb5cf824e9c290504e6ceb94879087444e6d"
+      }
+    },
+    "allMembersRestoredByteEqual": true
+  },
+  "independentArchiveReview": {
+    "agent": "/root/t05_internal_review",
+    "decision": "passed-synthetic-component-evidence-only",
+    "members": 54,
+    "payloadsVerified": 53,
+    "sixSourcesEqualFixedCommit": true,
+    "eighteenNamedDomAssertionsRead": true,
+    "closedPidsIndependentlyConfirmed": true,
+    "browserOrFullCheckRerun": false
+  }
+}

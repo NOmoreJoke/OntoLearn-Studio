@@ -71,3 +71,11 @@
 本轮核验总控生效记录与远端develop仍为批准5f，四路径offer未生效。自有页面原先可选择“本次推导”，现固定 `7c94a8834eff8539144dfb90e05c0123ed19bb31`：改用批准范围名 `asserted+derived`，缺真实保存结果选择时禁用该选项，说明真实result/输入快照/版本/current-history绑定要求。完整双范围接线与验收继续开放；没有提供第二执行器/接口或把计划结果当实际输入。
 
 独立只读复核两个差异与PRD/批准registry通过；最新完整 `npm run check` 退出0，635 TS / 1200 Python（`check-scope-selection.log`）。此为私有未挂载UI边界修复，无真实双范围/GUI证据。指定双审资源当前总控已实查只有本机桌面入口、暂无获准时段/隔离入口，未启动T05外审；契约owner回应、批准依赖/公共接线/全验收仍待取得。保护AGENTS未暂存，完整Goal继续active。
+
+## 当前固定增量与总控回执
+
+总控正式关闭固定fff输入R1/R2，独立读回报告SHA `a09694b55e7ba7c8f1f99d71fdd1af77f5d30431a00b8628123d11c3e72278f0`已全文接收。原260B定向/5700B全check日志、fff源与原命令终态独立归档在`fr505-r1-r2-recovery.json`；在临时空bare恢复验证通过，不用后续同数量日志替换来源。旧raw无开跑hash的限制保持。
+
+当前实现提交 `2fcd36b915b190963a1d89d608e896da1a15284e` 修复headless实际发现的旧草稿残留：生成输出/错误只在表单输入完全相同时显示。独立实现审查通过，新完整check退出0（635 TS / 1200 Python）；18个显式headless DOM断言和恢复原件见`browser-ui-evidence.json`/`browser-ui-verification.md`。只有synthetic组件/草稿交互证据，无真实领域/保存/App导航/原生证据。自有headless会话已关闭，实际PID消失。
+
+总控已全文读合同并实际转I05/T01逐项回应，建议未被默认采纳。合同§1原“批准5f无四文件”错误已实查纠正为3个semantic新增、resources.py已有但I05增量未批；四路径仍未生效，未消费未批候选。完整FR500–505/C/D/G.2、正式双范围/执行/生命周期/跨模块、指定双审/CI/合并和发布门保持；Goal active，未push/PR/CI/合并。

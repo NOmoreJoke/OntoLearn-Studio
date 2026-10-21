@@ -1,0 +1,51 @@
+{
+  "archive": "docs/reviews/T05/evidence/fr505-r1-r2-recovery.tar.gz",
+  "bytes": 156128,
+  "sha256": "60f532a7a50ed3028acba075ad34b44ff9d678dd3e9086c797e699e395d98d33",
+  "verifiedAllMembersByteEqual": true,
+  "fixedInputCommit": "fff89f64896b48cc678f97d41c45d4a7ec0dadc0",
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "members": {
+    "docs/reviews/T05/pytest-fr505-r1-r2.log": {
+      "bytes": 260,
+      "sha256": "1e5000369398462f2cce00868a5daa4d7013da011662abee0ef85b79bc93d376"
+    },
+    "docs/reviews/T05/check-fr505-r1-r2.log": {
+      "bytes": 5700,
+      "sha256": "7e7e4ed3a0cf5a7140ace47ec71d2d52675a9c71b0e763863a2ad672786f12fa"
+    },
+    "fixed-source/tests/fixtures/quality/fr505-extension-cases.json": {
+      "bytes": 101695,
+      "sha256": "323fd00dffa4a1a1c72663e3fcea2ae50fea255591d5e62f6c8e6eda3ebecc39"
+    },
+    "fixed-source/packages/engine/tests/test_quality_fr505_inputs.py": {
+      "bytes": 7205,
+      "sha256": "d53520e063b95c4894dbebc4cd541c699e37a133bdf3d6a8e97b6cd17b289374"
+    },
+    "fixed-source/docs/reviews/T05/controller-audit-r1-r2.md": {
+      "bytes": 2028,
+      "sha256": "64cdb67176838f0662a61d818486bf67f666ca8e02601adf5649d7faeca0f1da"
+    },
+    "fixed-source/docs/iterations/T05/fr505-semantic-extension-proposal.md": {
+      "bytes": 4649,
+      "sha256": "381c6cd7c38f011b6713cc7e71ba7b76cb9d358f6dc25415bd48837f158471e9"
+    },
+    "git-recovery/t05-fr505-r1-r2.bundle": {
+      "bytes": 148280,
+      "sha256": "cf8a0bfe33e786b30736b319aa6ab5ab3e99c4db750b8cd4836d8d8600e44f13"
+    },
+    "execution-receipts.json": {
+      "bytes": 2364,
+      "sha256": "47f70a30f72f75accd32d334c02296af47adf04946ab0cab70afaa4bdcabf89e"
+    }
+  },
+  "executionReceiptMember": "execution-receipts.json",
+  "isolatedRecoveryCheck": {
+    "emptyBareRepository": true,
+    "approvedBaseFetchedFromLocalOwnerRepository": true,
+    "bundleFetchSucceeded": true,
+    "fixedCommitAndFourSourcesRestoredByteEqual": true,
+    "allArchivedMembersHashVerified": true,
+    "productTestsRerun": false
+  }
+}

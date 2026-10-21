@@ -13,7 +13,7 @@ I05 `docs/reviews/I05/t05-semantic-ownership-release-proposal.json` 已全文读
 | packages/engine/src/ontolearn_engine/semantic_execution.py | db9729f9f87ddb8fb7b6747d5ee3b1f371d041fdf6df28d78cd7b7268b246913 |
 | packages/engine/src/ontolearn_engine/resources.py          | cfba5cc0b9b8dd83bc8023d0f090bc5db253e0c105a810394d61fce8b25e0268 |
 
-T05 **有条件接受未来维护范围**：同一个执行器的 FR505 比较/多输出、选中结果认证、严格定义解析和执行身份版本。须原owner实际释放、T05实际核对、独立复核及root登记生效；目前只读报告，未读取/复制/导入/执行这四个未批准实现文件。它们在批准5f中不存在，当前不作实验组合。
+T05 **有条件接受未来维护范围**：同一个执行器的 FR505 比较/多输出、选中结果认证、严格定义解析和执行身份版本。须原owner实际释放、T05实际核对、独立复核及root登记生效；目前只读报告，未读取/复制/导入/执行这四个未批准候选文件。三个semantic执行器文件为I05新增，resources.py在批准5f中已有，但其I05候选增量未批准；当前不作实验组合。
 
 实际适配须先取得 I05 同版门禁合并，再更新批准基线并核对四文件身份；或取得root对独立实验来源隔离及完整组合新双审的明确授权。当前未有后者。I05 C2其余query/samples/tests继续原owner；任何临时回收必须逐文件协调。未提供 semantic_query/turtle/samples/error_adapter、既有tests、contracts、worker/protocol、锁/构建/入口/CI责任；遇到这些路径的新需求必须精确再交接。
 

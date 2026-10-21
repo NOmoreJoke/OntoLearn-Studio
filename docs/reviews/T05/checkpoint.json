@@ -4,7 +4,7 @@
   "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning",
   "branch": "feature/weekly-t05-quality-reasoning",
   "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
-  "implementationCommit": "7c94a8834eff8539144dfb90e05c0123ed19bb31",
+  "implementationCommit": "2fcd36b915b190963a1d89d608e896da1a15284e",
   "approvedInputTestCommit": "383bc6a2ef77f7610b43a1a1f0cfafa5319f385a",
   "remoteDevelopObserved": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
   "goalStatus": "active",
@@ -21,11 +21,15 @@
       "exitCode": 0,
       "tsTests": 635,
       "pythonTests": 1200,
-      "rawLog": "docs/reviews/T05/check-scope-selection.log"
+      "rawLog": "docs/reviews/T05/check-ui-draft.log"
     },
     "qualityPytest": 148,
     "qualityVitest": 5,
-    "gitDiffCheck": "passed"
+    "gitDiffCheck": "passed",
+    "explicitHarnessTypecheck": {
+      "exitCode": 0,
+      "mode": "strict-manual-tsc-no-browser"
+    }
   },
   "internalReview": {
     "agent": "/root/t05_internal_review",
@@ -34,11 +38,12 @@
     "reportedCombinedSha256": "71021645ca1af60e652a6c6064b59ab10601faed79fb5b06eae77fb1085ebe5b",
     "combinedHashScope": "historical-full-38-files-at-fff89f6-before-later-scoped-UI-diff",
     "latestDiff": {
-      "decision": "passed-two-file-scope-selection-diff-only",
-      "commit": "7c94a8834eff8539144dfb90e05c0123ed19bb31",
+      "decision": "passed-input-bound-draft-and-private-browser-harness-three-source-files",
+      "commit": "2fcd36b915b190963a1d89d608e896da1a15284e",
       "sourceHashes": {
-        "apps/desktop/src/renderer/src/quality/QualityWorkspace.tsx": "e6e266244a2b04e7b06104b205b7ff0c13f3e85509db3130aa9315249e6b55e7",
-        "docs/iterations/T05/interface-proposal.md": "5f8d0208ac449a112aad4716a44bad48e47204daa10e5e0eeae3cef16c6c24da"
+        "apps/desktop/src/renderer/src/quality/QualityWorkspace.tsx": "f4120ffddffcb37e6f56909c7ba48cbc88b15e36187533fc044fbedd6b01d05a",
+        "tests/fixtures/quality/browser-harness.tsx": "b590ced2e7aaf53dc2f06503c6ba116dbc24cc6d91809a6ee26b5c40438824b0",
+        "tests/fixtures/quality/build-browser-harness.mjs": "2a257f40a9b7c9fb8662f0ed08aaa4e647919d32ea5848c9bc5387eb946c3f9c"
       }
     }
   },
@@ -76,9 +81,11 @@
     },
     "comparisonCells": 18,
     "controllerAuditDisposition": "docs/reviews/T05/controller-audit-r1-r2.md",
-    "controllerNewVersionReadback": "pending"
+    "controllerNewVersionReadback": "R1-R2-closed-input-scope-only",
+    "controllerReadbackSha256": "a09694b55e7ba7c8f1f99d71fdd1af77f5d30431a00b8628123d11c3e72278f0",
+    "recoveryIndex": "docs/reviews/T05/fr505-r1-r2-recovery.json"
   },
-  "lastContinuationClassification": "progress: corrected unbound derived-validation scope in private UI; independent diff review and full check passed; approved dependency/ownership still unchanged",
+  "lastContinuationClassification": "progress: fixed browser-reproduced stale prepared draft; full check and independent review passed; actual component interactions and original R1/R2 raw/source recovery verified",
   "storeParameterProbe": {
     "approvedStoreGitRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
     "sourceSha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
@@ -94,17 +101,25 @@
       "packages/engine/tests/test_quality_store_probe.py": "90a27e07d7c3ea5a106e70a494e3b8bf8eac506999430720bfd7a457ff242e75"
     }
   },
-  "controllerAcknowledgement": "FR505 proposal relayed to I05; original 16-case controller audit received and R1/R2 fixed; new 22-case controller readback pending",
+  "controllerAcknowledgement": "Root independent fixedfff R1/R2 input audit closed; contract fullread and relayed to I05/T01; future four-path handoff remains ineffective",
   "extensionContract": {
     "path": "docs/iterations/T05/single-executor-extension-contract.md",
     "status": "proposed-conditional-future-acceptance-not-effective",
     "offerReportSha256": "eb9ee33a7588dc902189c5a13a02741f40cab3b3611c1e5b393108ad84618229",
     "offerHead": "3c0b3bafcdab86159962ff3331bb161c40d349bc",
     "implementationReadOrConsumed": false,
-    "ownerResponses": "pending",
+    "ownerResponses": "controller-fullread-and-actually-forwarded-to-I05-T01; detailed-responses-pending",
     "commonInstructionsSha256": "b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39",
-    "sha256": "1a87a035a6a5da54ce78c19ba107855ab19f080b37c28888e0a7a87a71f470c6",
-    "internalReview": "passed-proposal-only-original-P2-closed"
+    "sha256": "392d39e275cd2ccd9d3fbed5a5e4b2ead014e1654854480625a0aac1a40e3e4a",
+    "internalReview": "passed-proposal-only-original-P2-closed",
+    "resourceBaselineCorrection": "resources.py exists in approved5f; only three semantic files new; unapproved candidate deltas still not consumed"
   },
-  "initialPrivateCoreCommit": "dcc5ec82f5ec6b78997b51436bcc2ca78869abf3"
+  "initialPrivateCoreCommit": "dcc5ec82f5ec6b78997b51436bcc2ca78869abf3",
+  "browserEvidence": {
+    "index": "docs/reviews/T05/browser-ui-evidence.json",
+    "mode": "explicit-headless-CLI-synthetic-component-only",
+    "namedDomAssertions": 18,
+    "sessionClosed": true,
+    "actualDomainOrNativeEvidence": false
+  }
 }
