@@ -1,0 +1,90 @@
+{
+  "date": "2026-10-21",
+  "stage": "private_ui_validated_independently_reviewed",
+  "goal_status": "blocked",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui",
+  "branch": "feature/T06-behavior-ui",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "product_candidate": "da37709dcf09e04ded767ab2d08c26bbd8df24f3",
+  "source_sha256": {
+    "apps/desktop/src/renderer/src/behavior/BehaviorWorkspace.tsx": "0e7012e1a5d2791fda1aafd5eea0a8248d78d7329e8513ea7ad2062ae39f671b",
+    "apps/desktop/src/renderer/src/behavior/controller.ts": "36d59ea11907fe44e73bb84849b20839944a02b8d538f602dc88ef82657217d3",
+    "apps/desktop/src/renderer/src/behavior/model.ts": "b246491a46387f4b33079266c10d2a41f36648875e240330191ff3ba8a09f90f",
+    "apps/desktop/src/renderer/src/behavior/presentation.ts": "5966010c9a052cc2bbd7524e759fe06d9806c698259e84039aae54fcb28fa1d2",
+    "apps/desktop/src/renderer/src/behavior/behavior.css": "869ebea1be9dcbfb839814c5c610bd7bc698420edc5f4c05e315ad37347c1465",
+    "apps/desktop/src/renderer/src/behavior/verify-headless.mjs": "a4573ccca0725aa1db18c4953ae213213493423927ca435401a7f9c152eba742",
+    "tests/unit/t06-behavior-ui.test.ts": "cad7082f2c0da281fd0256b09834dda2857e99da5bba47866c1619bc4480440c"
+  },
+  "full_base_to_product_diff": {
+    "command": "git diff --binary 5f910b52c69d86a1076b2032e5d3c63e715947f3 da37709dcf09e04ded767ab2d08c26bbd8df24f3",
+    "sha256": "0b2ebc607543cfbc0a02a2856c1fddbf4b4a92c6204cf186f3655d0b90f8a2b4",
+    "files": [
+      "apps/desktop/src/renderer/src/behavior/BehaviorWorkspace.tsx",
+      "apps/desktop/src/renderer/src/behavior/README.md",
+      "apps/desktop/src/renderer/src/behavior/behavior.css",
+      "apps/desktop/src/renderer/src/behavior/controller.ts",
+      "apps/desktop/src/renderer/src/behavior/model.ts",
+      "apps/desktop/src/renderer/src/behavior/presentation.ts",
+      "apps/desktop/src/renderer/src/behavior/status.md",
+      "apps/desktop/src/renderer/src/behavior/verification.json",
+      "apps/desktop/src/renderer/src/behavior/verify-headless.mjs",
+      "tests/unit/t06-behavior-ui.test.ts"
+    ]
+  },
+  "local_validation": {
+    "full_check": {
+      "typescript": 664,
+      "ui_included": 34,
+      "python": 1052,
+      "exit_code": 0
+    },
+    "headless": "real shell passed; component fixtures not product runtime",
+    "artifacts_sha256": {
+      "test-results/t06-ui-r2-unit-first.log": "53377a0c25b4b1ed04b694f03c86c3aa15031d8171054ed265a6f96555510bde",
+      "test-results/t06-ui-r2-headless-first.log": "aaf1df2e53ad439c13a1d1107e366f427ecb240893fe42d2ee1133c62202978c",
+      "test-results/t06-ui-r2-headless-final.log": "7a39f6a19e023f86c8662601bab8e26ae70fae5d7d531bc96d4e7bed7dad56fe",
+      "test-results/t06-ui-r2-check-first.log": "98218de282b2ba58fc334aaca3071a187b8bcb4a569100e39537bc7aa4314a3b",
+      "test-results/t06-ui-r2-check-final.log": "d2edb183dedd37abdfe59c877d5e6101361ea1a5b5713063d4c05e46de8b9fe1",
+      "test-results/t06-behavior-ui-r2/evidence.json": "d7397917d1446c5901f10d92481666c477e7bc6ae529fa919b82241bc5ee0b56",
+      "test-results/t06-behavior-ui-r2/width-1440.png": "2a2ea63a3bad3aaf0eebb8e98a6e931469d2793f19b31c5a2d12832fa414efc1",
+      "test-results/t06-behavior-ui-r2/width-390.png": "a0d4a800d9008ca485a28361491b0bae1764ac5501e636afa5a4e3edd2e6d635",
+      "test-results/t06-behavior-ui-r2/viewport-390.png": "d1d42788e64416585133f023a26aeaf54a460268a853fe807eaae484a6ba902f"
+    },
+    "previous_artifacts_unchanged": 11
+  },
+  "independent_review": {
+    "agent": "/root/behavior_independent_review",
+    "result": "pass_private_component_scope",
+    "terminal_observed": true,
+    "report": "../ui-local-review-2.md",
+    "report_sha256": "0ed80af74646509741dc0e7a40fb142713b0605c30dc97735b1eba8c1680c9b3",
+    "all_three_historical_P2_closed": true,
+    "original_not_passed_report": "../ui-local-review-1.md",
+    "actual_commands": "34 vitest and relocated real headless; fullcheck log read, no duplicate fullcheck",
+    "independent_artifacts_root": "/tmp/t06-ui-da37709-review-6R9rwE",
+    "preserved_artifacts_root": "out/t06-ui-da37709-independent-review",
+    "preserved_artifacts_sha256": {
+      "headless.log": "4fec298d4036559f5e3d98dee626dc8880266dfcd1ae6e11dc4471ed3fbd637f",
+      "output/evidence.json": "d7397917d1446c5901f10d92481666c477e7bc6ae529fa919b82241bc5ee0b56",
+      "output/width-1440.png": "dcc98ea6bcf8deac340bb3a0098f1c8d5738fecbef30f8ddab0d432549797008",
+      "output/width-390.png": "d06b34c7041d77d37d9dbe18d3ab6526bb1cddb3096b636f45cbc6b1755ee057",
+      "output/viewport-390.png": "d1d42788e64416585133f023a26aeaf54a460268a853fe807eaae484a6ba902f"
+    }
+  },
+  "source_relationship": "UI independent branch excludes S1 implementation; do not count its Python total as testing S1; no App or public bridge wiring",
+  "not_verified": [
+    "formal App/bridge/engine/Store/reasoning/Agent integration",
+    "real G.3 semantic baseline execution through UI",
+    "native Electron/macOS/Windows product verification",
+    "CI/push/PR/merge/release",
+    "specified dual external review"
+  ],
+  "notes": "Both branches retain product source freezes and protected AGENTS unstaged; UI workflow-only receipt may follow without source changes.",
+  "procedure_head": "3b3af941c73b7a5d416fda50ec6fb8102992551f",
+  "procedure_only_changes": [
+    "apps/desktop/src/renderer/src/behavior/status.md",
+    "apps/desktop/src/renderer/src/behavior/verification.json"
+  ],
+  "procedure_source_match_verified": true,
+  "blocking_audit": "../blocked-audit.md"
+}

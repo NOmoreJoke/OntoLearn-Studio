@@ -1,5 +1,17 @@
 # T06 行为状态
 
+## 当前状态：blocked，完整目标保留
+
+Goal 工具已实际返回 blocked；没有标完成、缩小或重建目标。审计见 blocked-audit.md。同一正式接口/实际审查入口条件连续至少三轮存在，现有可独立实现/修复/验证/复核已完成，自有任务均终态；后续需批准真实接口/接线路径，或明确桌面时段/隔离CUA入口。
+
+S1 产品固定 61396a598b2dffc1d3d2fd4660f9af1d5c93d266，本地验证与完整独立复核已通过，指定双任务仍未创建、无句柄；总控实际确认条件待满足、T06首顺位。原已提人类时段问题保持 pending，不重复询问，不自动操作当前桌面。
+
+UI 产品固定 da37709dcf09e04ded767ab2d08c26bbd8df24f3，流程 3b3af941c73b7a5d416fda50ec6fb8102992551f。新完整独立复核已实际终态 Pass，三项 P2 全部关闭，原571不通过和首败保留。完整原文 ui-local-review-2.md，固定来源/完整diff/当前9证据/历史11原件及独立headless留存摘要 evidence/ui-validation-da37709.json。664TS/1052Python（34UI）与独立34测试/真实headless分别记账，不算真实Store/推理/Agent/UI联验或指定外审。
+
+当前实查远端develop仍5f910b52c69d86a1076b2032e5d3c63e715947f3；两树产品路径保持冻结、仅保护AGENTS未暂存，未push/PR/CI/merge。条件落实后从原Goal/候选继续，正式FR-600–604及全部原验收门保持开放。
+
+## 启动与过程记录
+
 2026-10-21（Asia/Shanghai）实际启动。负责聊天：T06 行为算法与完整功能。
 
 - 工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior`
