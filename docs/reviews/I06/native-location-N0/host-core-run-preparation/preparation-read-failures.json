@@ -1,0 +1,22 @@
+{
+  "readOnlyPreparationFailures": [
+    {
+      "operation": "lstat source-thread initial core-root artifact spelling",
+      "exit": 1,
+      "diagnostic": "FileNotFoundError: core/location_core_test did not exist; no artifact loaded or executed",
+      "resolution": "source thread corrected to core/artifacts/location_core_test and child_probe; both actual pins independently read"
+    },
+    {
+      "operation": "rg declarations in SDK stdio.h wrapper / rename.2 first narrow lookup",
+      "exit": 1,
+      "resolution": "read stdio.h actual include chain; found sys/stdio.h"
+    },
+    {
+      "operation": "rg including guessed _stdio directory",
+      "exit": 2,
+      "diagnostic": "SDK usr/include/_stdio directory does not exist; _stdio.h is a file",
+      "resolution": "actual sys/stdio.h constants/declarations and local man page read and matched supplied metadata"
+    }
+  ],
+  "noProductTestOrCompileFailureClaimed": true
+}

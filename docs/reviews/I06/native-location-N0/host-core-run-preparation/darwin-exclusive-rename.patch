@@ -1,0 +1,9 @@
+diff --git a/packages/native-location/tests/location_core_test.cc b/packages/native-location/tests/location_core_test.cc
+index 5e29f58..0260c9e 100644
+--- a/packages/native-location/tests/location_core_test.cc
++++ b/packages/native-location/tests/location_core_test.cc
+@@ -25,0 +26 @@
++#include <sys/stdio.h>
+@@ -155 +156 @@ struct fixture {
+-    require(rename(path.c_str(), moved.c_str()) == 0, "fixture-root-rename"); path = moved;
++    require(renamex_np(path.c_str(), moved.c_str(), RENAME_EXCL) == 0, "fixture-root-rename"); path = moved;

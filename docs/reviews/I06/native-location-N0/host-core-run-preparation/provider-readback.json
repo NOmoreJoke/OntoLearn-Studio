@@ -1,0 +1,73 @@
+{
+  "kind": "observed previous supply only, read not executed",
+  "providerHead": "b65751963a8c1f0c35e6ef680e816a99c4026e24",
+  "reportedInputRef": "b65751963a8c1f0c35e6ef680e816a99c4026e24",
+  "buildResult": "driverExitCode 0 / built-unverified / NOT_RUN, read from raw",
+  "host": {
+    "system": "Darwin",
+    "kernelRelease": "27.0.0",
+    "machine": "arm64",
+    "macVersion": "27.0.1"
+  },
+  "buildEvidenceRecords": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/host-core-build/second-core-build/build-once.result.json",
+      "bytes": 1149,
+      "sha256": "fc70fac16fdd67bce49e537819d4a8466692c9954d9627c653f89cfb7ff20e4b"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/host-core-build/second-core-build/build-once.stdout",
+      "bytes": 1160,
+      "sha256": "bba7fdcfeaf365a9281d6dcc9bf4c601fa5155267c5e8d7df63ce95fd5c401b6"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/host-core-build/second-core-build/build-once.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/host-core-build/second-core-build/artifact-pins.json",
+      "bytes": 1493,
+      "sha256": "df852c673651f54e9facbc0069bde62e0e6b24aebf58a8d0041aa766b8a5dfef"
+    }
+  ],
+  "supersededArtifactChecks": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/95ab1538f20fce33132dc179b738fec780d9e1b1d4eecc5061cb04fccddfd109/core/artifacts/location_core_test",
+      "realpath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/95ab1538f20fce33132dc179b738fec780d9e1b1d4eecc5061cb04fccddfd109/core/artifacts/location_core_test",
+      "bytes": 343888,
+      "sha256": "ce1a3a365df426d4d57e8b5cade83b2b6e82e5cd438bcccc6e4c358af7ea203a",
+      "observedBytes": 343888,
+      "observedSha256": "ce1a3a365df426d4d57e8b5cade83b2b6e82e5cd438bcccc6e4c358af7ea203a",
+      "symlink": false,
+      "dev": 16777232,
+      "ino": 65754108,
+      "match": true,
+      "executionStatus": "NOT_EXECUTED; superseded by required source repair"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/95ab1538f20fce33132dc179b738fec780d9e1b1d4eecc5061cb04fccddfd109/core/artifacts/location_child_probe",
+      "realpath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/95ab1538f20fce33132dc179b738fec780d9e1b1d4eecc5061cb04fccddfd109/core/artifacts/location_child_probe",
+      "bytes": 34120,
+      "sha256": "3900ebc3f31a8def12d8f6bd4eedf866543d94e9412dd1d37706e68e0159c15e",
+      "observedBytes": 34120,
+      "observedSha256": "3900ebc3f31a8def12d8f6bd4eedf866543d94e9412dd1d37706e68e0159c15e",
+      "symlink": false,
+      "dev": 16777232,
+      "ino": 65754115,
+      "match": true,
+      "executionStatus": "NOT_EXECUTED; superseded by required source repair"
+    }
+  ],
+  "previousLinkedNames": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/host-core-build/second-core-build/inspection-continuation/location_child_probe-linked-libraries.stdout",
+      "bytes": 389,
+      "sha256": "a87f78e60f4b0588db3dbbb2099edfcf785776295a4821ed962b129751cfa96d",
+      "text": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/95ab1538f20fce33132dc179b738fec780d9e1b1d4eecc5061cb04fccddfd109/core/artifacts/location_child_probe:\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n"
+    }
+  ],
+  "currentRunAdmission": "BLOCKED: source now requires RENAME_EXCL repair review, root T03 adoption/rebuild, new artifact hashes/used closure and precise execution window",
+  "allBinaryPinsMatch": true,
+  "artifactExecutionOccurred": false
+}

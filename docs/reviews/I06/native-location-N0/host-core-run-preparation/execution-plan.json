@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "admission": "PREPARATION_ONLY_BLOCKED",
+  "artifactExecutionAttempted": false,
+  "targetEvidence": "host macOS27.0.1 arm64 only; not target macOS15/Win11 acceptance",
+  "sourceRepair": "Darwin fixture renamex_np(RENAME_EXCL), new source ref to be frozen and independently reviewed",
+  "providerOldInputRef": "b65751963a8c1f0c35e6ef680e816a99c4026e24",
+  "supersededArtifactPins": "superseded-artifact-pins.json; no execution",
+  "resolvedCoreArgv": null,
+  "argvRoleContract": [
+    "ROOT_APPROVED_REBUILT_CORE_ABSOLUTE_PIN",
+    "ROOT_APPROVED_REBUILT_CHILD_PROBE_ABSOLUTE_PIN"
+  ],
+  "childArgvRoleContract": [
+    "SAME_PROBE_PIN",
+    "--hold-until-eof"
+  ],
+  "maximumCoreDispatches": 1,
+  "maximumProbeSpawns": 2,
+  "maximumConcurrentKnownProbe": 1,
+  "retry": false,
+  "shell": false,
+  "executor": "Root-approved one-shot standard-library process control in tool session; no new executable runner/script development",
+  "processControl": {
+    "close_fds": true,
+    "start_new_session": true,
+    "soleWaiterForCore": "runner Popen object only, no external reaper",
+    "soleWaiterForProbeAfterReceipt": "native owner; never runner",
+    "stdin": "explicit /dev/null readable, dup to0; never inherit a closed fd0",
+    "stdout": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-001/core.stdout",
+    "stderr": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-001/core.stderr",
+    "outputOpenPolicy": "both exclusive new regular files 0600; prepare before dispatch; no combine/tee/filter",
+    "stdoutGuardBytes": 1048576,
+    "stderrGuardBytes": 1048576,
+    "wallWaitSeconds": 15,
+    "termGraceSeconds": 1,
+    "killWaitSeconds": 2,
+    "logicalControlBudgetSeconds": 20,
+    "timeoutGroupRule": "only original owned new PGID while exact leader remains unreaped; TERM then grace without poll/wait, KILL then bounded wait own leader",
+    "earlyNonzeroReapedRule": "record failure/residual unknown; never reuse old PGID for kill",
+    "noHardSyscallOrDrainDeadlineClaim": true
+  },
+  "proposedPerProcessLimitsBeforeExec": {
+    "RLIMIT_NOFILE": 64,
+    "RLIMIT_CPU_seconds": 12,
+    "RLIMIT_FSIZE_bytes": 1048576,
+    "RLIMIT_CORE_bytes": 0,
+    "noGlobalUidProcessOrSystemLimits": true,
+    "RSS_or_OSLoaderMapBound": null
+  },
+  "environmentReplaceNotMerge": {
+    "PATH": "/usr/bin:/bin",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "TZ": "UTC",
+    "HOME": "/var/empty",
+    "TMPDIR": "/tmp"
+  },
+  "workingDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-001",
+  "workingDirectoryState": "reserved name only, not created in preparation; approved runner mkdir exclusive0700 or refuse",
+  "plannedRecords": [
+    "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-001/intent.json",
+    "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-001/core.stdout",
+    "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-001/core.stderr",
+    "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-001/result.json",
+    "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-001/postflight.json"
+  ],
+  "controlRecordTotalGuardBytes": 262144,
+  "preflightRebuiltArtifactsAggregateReadGuardBytes": 2097152,
+  "fixture": {
+    "creator": "stock core fixture constructor only",
+    "pattern": "/tmp/i06-n0-XXXXXX",
+    "renamedTarget": "same concrete created root plus -moved, RENAME_EXCL, no fallback",
+    "TMPDIRRedirectsFixture": false,
+    "maxRoots": 1,
+    "maxSubdirectories": 1,
+    "maxLeafNames": 4,
+    "ordinaryFileContentBytes": 0,
+    "symlinkTarget": "member",
+    "externalCreationReceiptAvailable": false,
+    "externalCleanupPolicy": "no wildcard/prefix/time/PID based delete; unknown ownership residue retained and reported; source cleans only its original fixed members/root",
+    "noClaimAllOpsFdRelative": true
+  },
+  "sourceObjectUpperBounds": {
+    "ownerHistory": 5,
+    "nonclosedOwnersOnSuccessfulSequence": 1,
+    "lifetimeCapSlots": 153,
+    "componentNameBytes": 457,
+    "childAdoptAttempts": 3,
+    "observerThreads": 1,
+    "explicitSourceParentFdPeakExcludingStdioLoaderRunner": 5,
+    "nominalCloseLoopsEachMaximum": 1000,
+    "closeLoopsCount": 2,
+    "nominalSleepSecondsEachMaximum": 2
+  },
+  "rawOutcomePolicy": {
+    "exit0": "host controlled cases only, retain native source limitations; child terminal checks do not certify each probe exit0",
+    "nonzero_signal_timeout": "failed or retained_unknown; no automatic retry, no fake cleanup/drain",
+    "outputOpenFailure": "no dispatch",
+    "pin_source_dependency_environmentDrift": "no dispatch, root concrete resupply review",
+    "postflightHash": "same two exact artifact pins, raw stream bytes/SHA, actual return/signal/timeouts/cleanup requests and uncertainties"
+  },
+  "pendingFrontDoors": [
+    "new fixed source independent review",
+    "root T03 adoption + needed rebuild authorization",
+    "T03 rebuilt exact artifact paths/bytes/SHA and concrete actual used/terms evidence",
+    "existing executor confirms explicit stdio, finite streams, owned unreaped PGID rules and limits without new wrapper development",
+    "root supplies quiet/isolated CLI environment if OS automatic crash UI must also be excluded",
+    "root precise single execution window; current message is not execution permission"
+  ],
+  "noProductImportAddonGuiCredentialsModelBusinessData": true,
+  "noFullSystemUnlimitedNoticesGate": true
+}

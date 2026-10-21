@@ -1,0 +1,32 @@
+# N0 宿主 core：执行准备与 Darwin rename 修复
+
+2026-10-22。**只读准备，当前不执行任何产物。** 供方第二次构建实际 exit0/built-unverified；两产物实际在 core/artifacts，已只读核原始记录及哈希。但根随后发现旧 b1c fixture 的普通 rename 可覆盖已有空目的目录，因此旧产物不作为待执行输入。必须先完成以下修复独审、根授权T03采用及重构建，再补新产物/used证据和精确一次运行窗口。旧构建未运行，不因其 min deployment15.0 把宿主 macOS27.0.1 当 macOS15验收。
+
+## 最小源码修复
+
+唯一变更为 location_core_test.cc：Darwin显式include sys/stdio.h，并将 root rename 改为 renamex_np(...,RENAME_EXCL)。已实际核供方 SDK27.0 的 sys/stdio.h:37/52：EXCL=0x4、函数声明及10.12+ availability；stdio→_stdio→sys/stdio链、Darwin-full namespace条件和本地rename.2的EEXIST语义均在 sdk-rename-declaration-evidence.json，五份实物哈希逐项命中既有供应inventory。旧depfile已包含sys/stdio.h；不靠猜API、exists预检或概率无冲突。新编译/链接/实际FS flag支持仍未验证。
+
+目标已存在或系统不支持时测试失败，无覆盖rename fallback；path只在成功后更新，失败cleanup仍指原fixture。Win区块、全部28条输入断言和其他八源字节不变，见source-fix-static.json及精确patch。这个fixture root操作仍使用绝对名字，并非所有操作都fd-relative，也不认证持续源对象namespace围栏；生产publish仍unsupported。只修既有测试用途，不加新fixture功能或生产ABI。
+
+## 一次执行的准备合同
+
+完整数据见execution-plan.json。实际 core argv必须恰为 `[新core绝对实物, 新child_probe绝对实物]`，child只由main两次受控spawn为 `[同一probe, --hold-until-eof]`，不单独运行probe、CTest或addon。**新inputDigest和哈希尚未供应，resolved argv当前为null，不能沿旧路径启动或自动猜新目录。** 根补固定pins后才可一次dispatch，无自动重跑。
+
+使用根核准的一次性标准库进程执行控制，不开发新runner源码/包装文件。shell:false、独立session/pgroup、close_fds；启动前显式准备stdin=/dev/null和两份独立独占0600 stdout/stderr，确保0/1/2占用，不让probe pipe拿到fd0后adddup2又close stdin。最小env只列PATH/LANG/LC_ALL/TZ/HOME/TMPDIR，不继承DYLD、Node、模型密钥或代理配置。两个原始流不合并、不经tee/filter，不用工具截断文本冒原件。
+
+| 预付范围     | 本main源码上界/拟控制                                                                                                                                                                                                              |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 原生应用对象 | 总5 owner历史，成功顺序最多1 nonclosed；153 lifetime cap槽；名字累计457B；无map/消息/正文IO用途                                                                                                                                    |
+| 进程/线程    | core启动一次，最多2次spawn、同时至多1个已知未结child；1额外observer线程；runner只wait自己的core，正常child sole-reaper仍归native owner                                                                                             |
+| FD/fixture   | 源中显式父进程FD峰值<=5，不含stdio、loader及runner；一棵临时root+sub，最多member/old/alias/link四叶；普通文件0B，symlink目标仅member。不是OS实测总资源界                                                                           |
+| 时间/输出    | 拟15s运行等待，timeout后TERM1s、KILL及自身child wait2s，控制流程总预算20s；不是阻塞syscall硬截止或drain保证。每流1MiB/两流2MiB；拟进程级NOFILE64、CPU12s、FSIZE1MiB、CORE0，须根现有executor在dispatch前落实，不能改全UID/系统限制 |
+
+## 失败与目录归属
+
+源码硬编码 `/tmp/i06-n0-XXXXXX`，TMPDIR/CWD不重定向它；root成功改为同一路径加-moved。source只清其持有anchor下固定成员及当前root。runner不创建或预选fixture目录；目录时间戳、prefix差集或PID不构成确权。缺真实创建receipt/持有对象身份时，只报至多一棵候选残留为unknown，**不glob删除、不替别人-moved清理、不做失败后路径重开签身份**。
+
+timeout时只对自己尚未reap的确切core leader所锚定的新group发有界TERM/KILL；两次信号之间不poll/wait回收leader。若已正常wait返回非零/信号并reap，不再凭旧PGID追杀可能复用的组，只保失败及未知残留。已转移的child wait不由runner冒领；kill返回、leader退出、进程或目录缺席都不替native close/wait签drain。失败即停，不自动重跑或扩大清理；只有源码全部断言和native收口完成且实际exit0才记录本宿主case通过，不能外推每probe exit0或完整N0通过。
+
+静态确认无Electron/AppKit/GUI/焦点API、Keychain、模型网络或用户业务路径入口；本轮没有运行证据。make_owner未知cleanup可能abort，CORE0不保证macOS无OS报告/可见提示；不读改用户全局崩溃设置。若验收要求连OS自动提示也零影响，根须给隔离CLI会话/环境，不能把“CLI”当这个强保证。新实际used依赖按具体实物补证（新增renamex_np实际解析仍待T03），不设置全系统无限notices收集门。
+
+当前只新增本过程目录和已精确授权的两行测试改动；不改八源/AGENTS/依赖/Goal，不运行编译、native、测试、FS/child实验，无GUI/凭据/付费或外部聊天派发。
