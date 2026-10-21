@@ -1,0 +1,65 @@
+E501 Line too long (103 > 100)
+  --> docs/iterations/T03/verify-packaged-probe.py:22:101
+   |
+20 | invalid = subprocess.run([str(engine), "--mapping-probe", "untrusted-input.xlsx"], input=b"",
+21 |                          capture_output=True, timeout=10, check=False)
+22 | if invalid.returncode != 2 or invalid.stdout or invalid.stderr != b"MAPPING_PROBE_INVALID_ARGUMENTS\n":
+   |                                                                                                     ^^^
+23 |     raise RuntimeError("PACKAGED_PROBE_ARGUMENT_REFUSAL_FAILED")
+24 | internal = engine.parent / "_internal"
+   |
+
+E501 Line too long (107 > 100)
+  --> docs/iterations/T03/verify-packaged-probe.py:25:101
+   |
+23 |     raise RuntimeError("PACKAGED_PROBE_ARGUMENT_REFUSAL_FAILED")
+24 | internal = engine.parent / "_internal"
+25 | license_evidence = json.loads((root / "docs/reviews/T03/project-dependency-verification.json").read_text())
+   |                                                                                                     ^^^^^^^
+26 | licenses = {}
+27 | for name, record in license_evidence["licenseFiles"].items():
+   |
+
+B007 Loop control variable `name` not used within loop body
+  --> docs/iterations/T03/verify-packaged-probe.py:27:5
+   |
+25 | license_evidence = json.loads((root / "docs/reviews/T03/project-dependency-verification.json").read_text())
+26 | licenses = {}
+27 | for name, record in license_evidence["licenseFiles"].items():
+   |     ^^^^
+28 |     for relative, expected_sha in record["files"].items():
+29 |         actual = hashlib.sha256((internal / relative).read_bytes()).hexdigest()
+   |
+help: Rename unused `name` to `_name`
+   |
+26 | licenses = {}
+   - for name, record in license_evidence["licenseFiles"].items():
+27 + for _name, record in license_evidence["licenseFiles"].items():
+28 |     for relative, expected_sha in record["files"].items():
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+E501 Line too long (104 > 100)
+  --> docs/iterations/T03/verify-packaged-probe.py:37:101
+   |
+35 | if source_lock != packaged_lock:
+36 |     raise RuntimeError("PACKAGED_LOCK_MISMATCH")
+37 | evidence = {"scope": "actual unsigned macOS development app resources CLI, not GUI or target platforms",
+   |                                                                                                     ^^^^
+38 |             "command": [str(engine), "--mapping-probe"], "exitCode": result.returncode,
+39 |             "expectedAndPackagedResultsEqual": True, "cases": expected["cases"],
+   |
+
+E501 Line too long (114 > 100)
+  --> docs/iterations/T03/verify-packaged-probe.py:40:101
+   |
+38 |             "command": [str(engine), "--mapping-probe"], "exitCode": result.returncode,
+39 |             "expectedAndPackagedResultsEqual": True, "cases": expected["cases"],
+40 |             "versions": expected["versions"], "executableSha256": hashlib.sha256(engine.read_bytes()).hexdigest(),
+   |                                                                                                     ^^^^^^^^^^^^^^
+41 |             "sourceAndPackagedLockSha256": source_lock, "licenseFiles": licenses,
+42 |             "extraArgumentsRefused": True, "platform": platform.platform(),
+   |
+
+Found 5 errors.
+1 unsafe fix available with `--fix --unsafe-fixes`.

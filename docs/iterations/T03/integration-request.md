@@ -1,6 +1,6 @@
 # T03 精确集成交接请求
 
-基线 `5f910b52c69d86a1076b2032e5d3c63e715947f3`。以下均为提案，不能据此发布产品能力或采用未批准候选。
+基线 `5f910b52c69d86a1076b2032e5d3c63e715947f3`。本文件最初为接口/依赖提案；当前四个依赖与构建文件已由总控正式交接给T03，并在本树实现最小项目增量。T00/T01/T02公共业务接线仍为待落实请求，不能据此发布产品能力或采用未批准候选。
 
 ## 已实现的私有服务
 
@@ -34,9 +34,9 @@
 
 T02 提供批准的类、属性、单值声明与身份引用规则，正式 handler 必须做语义校验；本线只验证绝对 IRI 和确定性转换，不宣称已验证任意本体定义。T08 只增强建议草稿；离线 `suggest` 按精确字段名返回真实样本和依据，不自动应用，不调用模型。
 
-## I05 依赖 / T11 打包
+## 已生效的 T03 四文件依赖/构建责任与 T11 平台验收
 
-拟引入 `openpyxl==3.1.5`（MIT）、`et-xmlfile==2.0.0`（MIT）、`defusedxml==0.7.1`（PSFL）。官方元数据、源码链接与全部发行文件 SHA 见 `parser-dependency-candidate.json`。defusedxml 必需，缺依赖明确 `XLSX_PARSER_UNAVAILABLE`，无不安全降级。没有另建锁、修改共享 pyproject/uv.lock/build/CI。
+拟引入 `openpyxl==3.1.5`（MIT）、`et-xmlfile==2.0.0`（MIT）、`defusedxml==0.7.1`（PSFL）。官方元数据、源码链接与全部发行文件 SHA 见 `parser-dependency-candidate.json`。defusedxml 必需，缺依赖明确 `XLSX_PARSER_UNAVAILABLE`，无不安全降级。未另建锁。总控四文件交接已生效后，T03实际修改本树 `packages/engine/pyproject.toml`、唯一 `uv.lock`、`scripts/build-engine.mjs`、`packages/engine/entrypoint.py`，仅增加三依赖、收集和受限探针；CI/resources/verify脚本/其他共享路径未改，未采用I05未批准源码或锁。
 
 独立候选探针命令：
 
@@ -44,12 +44,14 @@ T02 提供批准的类、属性、单值声明与身份引用规则，正式 han
 uv run --frozen --with openpyxl==3.1.5 --with et-xmlfile==2.0.0 --with defusedxml==0.7.1 pytest packages/engine/tests/test_mapping_*.py -q
 ```
 
-owner 批准并更新 `packages/engine/pyproject.toml`、根 `uv.lock` 后，须由唯一 owner 在构建入口保留 XLSX 惰性导入收集；`npm run package:dir` 后从包内执行同一固定 CSV/XLSX（含稀疏空值、公式缓存、宏拒绝）探针；Windows/macOS 各自的真实引擎/干净设备证据必需。隔离 overlay 通过不能证明项目依赖、包内或双平台通过。
+T03作为已交接唯一owner已更新项目声明/唯一锁与构建入口，保留原资源收集并显式collect-all三解析库（含metadata/许可证）。项目frozen环境55项mapping测试零skip通过；依赖候选尚未通过指定外审/合并。`npm run package:dir` 后从包内执行同一固定 CSV/XLSX（含稀疏空值、公式缓存、宏拒绝）探针；Windows/macOS 各自的真实引擎/干净设备证据必需。隔离 overlay 通过不能证明项目依赖、包内或双平台通过。
 
 解析限额当前是防御性候选上限（8 MiB 文件、64 MiB ZIP 展开、50,000 物理行、256 列、32,768 字符/格），不是 Q5 业务容量通过线。正式 owner 可按统一资源 profile 调整并重新验证。
 
 ## 候选探针补充与页面生命周期
 
-包内探针入口候选为 `python -m ontolearn_engine.mapping.probe`（真实 CSV、openpyxl 生成双表 XLSX、精确四事实和字符串身份）。正式产品 entrypoint 的选项由 I05 owner 统一接入；本线没有修改共享入口。独立 PyInstaller 首跑已发现需要现有 `invalidation-v2.json` 资源（plan 复用 approved Store.digest，间接导入 invalidation）；构建入口须保留现有资源收集，不能仅拷贝 Python 文件。
+包内探针入口候选为 `python -m ontolearn_engine.mapping.probe`（真实 CSV、openpyxl 生成双表 XLSX、精确四事实和字符串身份）。总控生效交接后由T03在本树正式产品entrypoint新增 `--mapping-probe`，只运行固定合成样例；拒绝任何额外路径/脚本/URL参数，错误使用固定脱敏诊断。没有扩为业务能力注册或通用脚本入口。独立 PyInstaller 首跑已发现需要现有 `invalidation-v2.json` 资源（plan 复用 approved Store.digest，间接导入 invalidation）；构建入口须保留现有资源收集，不能仅拷贝 Python 文件。
 
 页面 owner 适配时必须使用 `selectSource`、`updateDraft`、`cancelPreview` 增加本地 generation；预览事件记录当时 generation/selectionId/sheet/encoding，迟到回调不得改用到达时的新代次。公共协议仍由 T00 唯一维护；这些字段仅是 renderer 请求上下文，不是写权限。服务端继续以真实 source/table/snapshot/spec 重新校验。取消本地预览与实际 I04 job.cancel/持久标记对账分开，取消请求不证明正式事务未提交。
+
+已生效交接依据：仓库外 `I05-T03-build-ownership-handoff.md`，独立复核 SHA `072dff2749fb32eb6852109761b73087e696ae2b748a949c19e7a10c4225f0cd`；本线双树实体核验/接受与生效记录 `../../reviews/T03/build-ownership-acceptance.json`。运行结果以最新 `../../reviews/T03/status.md` 为准，不沿用初始proposal或overlay的通过范围。

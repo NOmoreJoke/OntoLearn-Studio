@@ -3,7 +3,18 @@
 import sys
 
 if __name__ == "__main__":
-    if sys.argv[1:2] == ["--storage-probe"]:
+    if sys.argv[1:2] == ["--mapping-probe"]:
+        if sys.argv[1:] != ["--mapping-probe"]:
+            sys.stderr.write("MAPPING_PROBE_INVALID_ARGUMENTS\n")
+            raise SystemExit(2)
+        try:
+            from ontolearn_engine.mapping.probe import main as mapping_probe_main
+
+            mapping_probe_main()
+        except Exception:
+            sys.stderr.write("MAPPING_PROBE_FAILED\n")
+            raise SystemExit(1) from None
+    elif sys.argv[1:2] == ["--storage-probe"]:
         from ontolearn_engine.storage_probe import main as probe_main
 
         sys.argv.pop(1)
