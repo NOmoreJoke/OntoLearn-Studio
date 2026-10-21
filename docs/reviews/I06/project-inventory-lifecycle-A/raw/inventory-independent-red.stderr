@@ -1,0 +1,19 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/i06-private-resource-inventory.test.ts > I06 mechanism-only resource inventory > release settlement updates the stable retained record after another full observation
+AssertionError: expected 'retired' to be 'released-retained' // Object.is equality
+
+Expected: "released-retained"
+Received: "retired"
+
+ ❯ tests/unit/i06-private-resource-inventory.test.ts:112:87
+    110|     d.resolve(); await tracked
+    111|     expect(s.inventory.inspect().actualUnsettledReleases).toBe(0)
+    112|     expect(s.inventory.inspect().protected.find((r) => r.id === 'datab…
+       |                                                                                       ^
+    113|   })
+    114|   it('never infers empty completeness from constructor or absent owner…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

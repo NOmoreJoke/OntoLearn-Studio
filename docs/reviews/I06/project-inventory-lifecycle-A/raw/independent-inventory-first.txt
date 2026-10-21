@@ -1,0 +1,56 @@
+I06 inventory independent first review (2026-10-21)
+Reviewer: /root/i06_design_review
+Scope: read-only inventory module and its dedicated test. This report does not substitute designated external dual review.
+CWD: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-project-inventory-lifecycle
+HEAD/base: 5f910b52c69d86a1076b2032e5d3c63e715947f3
+Branch: feature/I06-project-inventory-lifecycle
+Read authorization: 7045B SHA256 20c9c0c6006746a54e286d391e49fac728810889a8165e13838d82667779708f
+Common: 17891B SHA256 e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0
+AGENTS: 15852B SHA256 78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759
+Reviewed source: apps/desktop/src/main/security/private-resource-inventory.ts
+Source: 23089B SHA256 c885a2e474773f2684fe2318da56f1018dde1d814113c51dd4c008da5b6087d6
+Reviewed test: tests/unit/i06-private-resource-inventory.test.ts
+Test: 18650B SHA256 9a27580237a69862423e05eb05739e02eb6fa975476682a1761c3a9cbfeddf71
+
+结论：两项 P2 未关闭前，不建议冻结 inventory 候选。已全文读674行模块、454行专属测试、授权/根独审/common/AGENTS；未发现其它新增实质阻断。本次未运行已有31项测试或完整check。
+
+P2-1: merge(401-410)每次新建RecordState；trackDatabaseRelease(608,629-630)闭包捕获旧RecordState。等待真实Promise期间对该数据库的retired记录完成新revision观察，merge替换Map记录。Promise完成后只更新旧对象：actualUnsettledReleases=0，但当前DB仍为retired，不能取得本应保留的released-retained事实。必要修法：稳定原始内部record与owner/epoch身份；合并只替换其不可变resource，或按稳定key+原实例/操作身份安全定位。不得让旧完成更新不相干新cohort。测试应包含track->reobserve->resolve，及旧epoch后重新登记/观察的迟到完成。
+
+P2-2: inventoryOwnerRoles(5-14)仅as const，没有运行时freeze，且所有内部期望owner检查复用该导出数组(327,367,416)。外部splice删除六个role后，仅profile/private-root也返回complete且issueSnapshot成功，跳过其余owner与retirement证据。必要修法：运行时冻结固定列表，内部期望集合不得受导出引用修改；测试实际尝试修改导出值，并验证八owner要求不变。
+
+受限验证记录：仅新树自有typescript.transpileModule，编译字符串并以data URL import纯机制模块；未写第五产品/测试文件，未借旧依赖环境，未启动GUI/native/凭据/网络或产品。此探针只证明状态机反例，不证明真实OS/owner/FS。
+
+ARGV: ["node", "--input-type=module"]
+Shell wrapper: node --input-type=module <<'JS' ... JS
+Exit code: 0
+Tool wall_time_seconds: 0.042527709
+Tool chunk_id: 2f0d9d
+Output stream limitation: exec_command returned one combined output field; stdout/stderr were not separately captured. The text below is the exact complete returned output; do not claim independent stderr capture.
+
+--- COMPLETE TOOL OUTPUT ---
+{"case":"release-after-reobservation","actualUnsettled":0,"db":"retired","expected":"released-retained"}
+rolesInitiallyFrozen false
+{"case":"mutable-fixed-owner-list","state":"complete","owners":["profile","private-root"],"snapshotAllowed":true}
+--- END COMPLETE TOOL OUTPUT ---
+
+--- COMPLETE STDIN SCRIPT ---
+import fs from 'node:fs';
+import ts from 'typescript';
+const file='apps/desktop/src/main/security/private-resource-inventory.ts';
+const text=fs.readFileSync(file,'utf8');
+const js=ts.transpileModule(text,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;
+const {createPrivateResourceInventory,inventoryOwnerRoles}=await import('data:text/javascript;base64,'+Buffer.from(js).toString('base64'));
+const ctx={processEpoch:'process-1',profileEpoch:'profile-1'};
+const identity=(fileId,type='file',links=1)=>({kind:'posix',volume:'volume-1',fileId,type,links});
+const entry=(name,category='private-deny')=>({id:name,category,kind:'member',parent:identity('parent','directory'),components:[name],identity:identity(name),presence:'present',state:'active'});
+const initial=role=>role==='profile'||role==='private-root'?[{...entry(role,role==='profile'?'profile-container':'private-deny'),kind:'root',identity:identity(role,'directory')}]:role==='credentials'?[entry('record-1')]:role==='database'?[entry('database-1','database-managed')]:[];
+const value=r=>{if(!r.ok)throw Error('fixed failure '+r.reason);return r.value};
+const setup=()=>{const inventory=createPrivateResourceInventory(ctx),owners=Object.fromEntries(inventoryOwnerRoles.map(role=>[role,value(inventory.registerOwner(role))])); const round=override=>{for(const role of inventoryOwnerRoles){const list=override?.[role]??initial(role);value(inventory.observe(value(inventory.beginObservation(owners[role])),{...ctx,revision:inventory.inspect().revision,status:'complete',coverage:list.length||role==='retirement'?'present':'confirmed-absent',retirementSource:role==='retirement'?'mechanism-restored':'not-owner',resources:structuredClone(list)}))}return inventory.inspect()};return {inventory,owners,round}};
+const s=setup();s.round();let resolve;const completion=new Promise(r=>resolve=r);const tracked=value(s.inventory.trackDatabaseRelease(s.owners.database,['database-1'],completion));
+s.round({database:[{...entry('database-1','database-managed'),state:'retired'}]});
+resolve();await tracked;
+console.log(JSON.stringify({case:'release-after-reobservation',actualUnsettled:s.inventory.inspect().actualUnsettledReleases,db:s.inventory.inspect().protected.find(r=>r.id==='database-1')?.state,expected:'released-retained'}));
+console.log('rolesInitiallyFrozen',Object.isFrozen(inventoryOwnerRoles));
+inventoryOwnerRoles.splice(0,inventoryOwnerRoles.length,'profile','private-root');
+const reduced=setup();console.log(JSON.stringify({case:'mutable-fixed-owner-list',state:reduced.round().state,owners:reduced.inventory.inspect().owners.map(o=>o.role),snapshotAllowed:reduced.inventory.issueSnapshot().ok}));
+--- END COMPLETE STDIN SCRIPT ---

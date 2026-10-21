@@ -1,0 +1,37 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/i06-project-cohort-lifecycle.test.ts > I06 cohort bookkeeping is mechanism-only > child lifetime ending in engine holder during candidate invalidates the whole cohort
+ FAIL  tests/unit/i06-project-cohort-lifecycle.test.ts > I06 cohort bookkeeping is mechanism-only > store-connection lifetime ending in store holder during candidate invalidates the whole cohort
+AssertionError: expected 'candidate' to be 'draining' // Object.is equality
+
+Expected: "draining"
+Received: "candidate"
+
+ ❯ tests/unit/i06-project-cohort-lifecycle.test.ts:620:50
+    618|       lifetime.resolve()
+    619|       await flush()
+    620|       expect(good(l.inspect(c.candidate)).phase).toBe('draining')
+       |                                                  ^
+    621|       expect(l.publish(c.transition)).toMatchObject({ ok: false })
+    622|       // Even a sibling owner may not admit new work after the lifetim…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/i06-project-cohort-lifecycle.test.ts > I06 cohort bookkeeping is mechanism-only > child lifetime ending in engine holder during active invalidates the whole cohort
+ FAIL  tests/unit/i06-project-cohort-lifecycle.test.ts > I06 cohort bookkeeping is mechanism-only > store-connection lifetime ending in store holder during active invalidates the whole cohort
+AssertionError: expected 'active' to be 'draining' // Object.is equality
+
+Expected: "draining"
+Received: "active"
+
+ ❯ tests/unit/i06-project-cohort-lifecycle.test.ts:620:50
+    618|       lifetime.resolve()
+    619|       await flush()
+    620|       expect(good(l.inspect(c.candidate)).phase).toBe('draining')
+       |                                                  ^
+    621|       expect(l.publish(c.transition)).toMatchObject({ ok: false })
+    622|       // Even a sibling owner may not admit new work after the lifetim…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+

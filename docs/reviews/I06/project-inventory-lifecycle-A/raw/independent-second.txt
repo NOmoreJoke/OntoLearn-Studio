@@ -1,0 +1,49 @@
+I06 inventory/cohort independent second probe (2026-10-21)
+Reviewer: /root/i06_design_review
+CWD: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-project-inventory-lifecycle
+ARGV: ["node", "--input-type=module"]
+Shell wrapper: node --input-type=module <<'JS' ... JS
+Exit code: 0
+Tool chunk_id: a5fd8d
+Tool wall_time_seconds: 0.046996416
+Streams: exec_command returned one combined output field; stdout/stderr were not separately captured. Complete returned text is retained below.
+Module inventory: 23432B SHA256 1018adafa383965d07c017f85e6a938d8d2c2a3e5ea6219173b45c2d54469e1a
+Module cohort: 22553B SHA256 a9bf21f442abf2d02a036820ee757bf63f3e9864de138ffcd588c4d6b3e82d7e
+Tests then read: inventory 20897B/6508492f4453c4dfb8d3845f35991d4e78909649f0c6a545c1225a3265205b4a; cohort 24098B/e1c91a405ec38343cef89d8389eb0607ae5aef324e3afd03ea393792f6f4ac5b.
+No product/test file was edited. No old test/full check was rerun by this reviewer. Probe uses this tree's own TypeScript dependency, transpiles in memory, imports pure modules via data URLs. No GUI/native/FS action/credentials/network/model/Store operation or production admission was exercised.
+
+P2-3 (parent first raised; independently reproduced): inventory trackDatabaseRelease around592-655 has no lifetime one-shot Promise registry. A Promise already used and fulfilled for db1 can be presented for still-active db2; it is accepted and db2 becomes released-retained without a distinct actual completion. The same issue includes simultaneous and cross-epoch reuse. Fix: private WeakSet/identity registry, commit one-shot ownership at successful registration before subscription; never remove at settle/profile/close. Preserve batch-ID single-call support. Add simultaneous, settled and cross-profile/owner counterexamples.
+
+P2-4: cohort settle at341-356 treats successful child/store-connection lifetime completion like ready work: removes pending, leaves owner open/notfailed and all old ready proof. publish545-607 then accepts a candidate whose registered actual child already ended; noteViewRecovery also returns success. Exact reproduced outcome below: publish.ok=true, active phase, engine open/failedfalse after its lifetime resolved. Fix candidate publication must fail closed after recorded child/Store lifetime ends before publication. Active lifecycle end must not leave ended holder proof usable; define exact operation scope and recovery fence. Do NOT turn ordinary same-Supervisor/session disconnect into mandatory whole-cohort rebuild/grant deletion: preserve the agreed ordinary recovery policy. Either explicitly model whole-cohort lifetime promises, or freeze same-owner reconnect/readiness renewal semantics and actual new child/connection registration before usable state. Draining normal lifetime completion must still permit actual release and decrement slots only on real settle. Add candidate/active x child/store-connection scenarios, with ordinary view/same-engine recovery as a control.
+
+First two P2 fixes were statically confirmed closed at inventory1018: runtime-frozen roles; stable record plus birth owner retained through observation. The new probe does not alter first.txt or claim the new issues are fixed.
+
+--- COMPLETE TOOL OUTPUT ---
+{"case":"ended-child-before-publish","publish":{"mechanismOnly":true,"productionAdmission":"unsupported","ok":true,"cohort":{"mechanismOnly":true,"productionAdmission":"unsupported","kind":"cohort"},"epoch":3,"model":"disabled"},"phase":{"mechanismOnly":true,"productionAdmission":"unsupported","ok":true,"phase":"active","epoch":3,"unsettled":0,"owners":[{"role":"main-host","state":"open","failed":false,"unsettled":0},{"role":"task-service","state":"open","failed":false,"unsettled":0},{"role":"engine","state":"open","failed":false,"unsettled":0},{"role":"store","state":"open","failed":false,"unsettled":0},{"role":"worker","state":"open","failed":false,"unsettled":0},{"role":"model-service","state":"open","failed":false,"unsettled":0}]},"recovery":{"mechanismOnly":true,"productionAdmission":"unsupported","ok":true,"cohort":{"mechanismOnly":true,"productionAdmission":"unsupported","kind":"cohort"},"epoch":3,"revision":2}}
+{"case":"reuse-old-release-for-other-db","accepted":true,"records":[{"id":"db1","state":"released-retained"},{"id":"db2","state":"released-retained"}]}
+--- END COMPLETE TOOL OUTPUT ---
+
+--- COMPLETE STDIN SCRIPT ---
+import fs from 'node:fs';
+import ts from 'typescript';
+const load=async path=>{const source=fs.readFileSync(path,'utf8');const js=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;return import('data:text/javascript;base64,'+Buffer.from(js).toString('base64'))};
+const {createProjectCohortLifecycle}=await load('apps/desktop/src/main/security/project-cohort-lifecycle.ts');
+const good=r=>{if(!r.ok)throw Error(r.reason);return r};
+const l=createProjectCohortLifecycle(()=>0);
+const engine=good(l.createEngineIdentity()).engine;
+const c=good(l.prepareTransition({projectId:'project-1',profileEpoch:'profile-1',engine,reason:'open'}));
+const owners=new Map();
+for(const role of ['main-host','task-service','engine','store','worker','model-service']){const owner=good(l.registerOwner(c.candidate,role)).owner;owners.set(role,owner);good(l.track(owner,'initialize',Promise.resolve()));good(l.track(owner,'binding',Promise.resolve()))}
+for(const [role,kind]of [['store','store-ready'],['worker','job-ready'],['task-service','scope-ready'],['model-service','model-disabled']])good(l.track(owners.get(role),kind,Promise.resolve()));
+let closeChild;const childLifetime=new Promise(resolve=>closeChild=resolve);good(l.track(owners.get('engine'),'child',childLifetime));
+await Promise.resolve();await Promise.resolve();closeChild();await Promise.resolve();await Promise.resolve();
+console.log(JSON.stringify({case:'ended-child-before-publish',publish:l.publish(c.transition),phase:l.inspect(c.candidate),recovery:l.noteViewRecovery(c.candidate,engine,'same-engine-disconnect')}));
+const {createPrivateResourceInventory,inventoryOwnerRoles}=await load('apps/desktop/src/main/security/private-resource-inventory.ts');
+const context={processEpoch:'p',profileEpoch:'p'};const inv=createPrivateResourceInventory(context);const os=Object.fromEntries(inventoryOwnerRoles.map(role=>[role,good(inv.registerOwner(role)).value]));
+const identity=(fileId,type='file')=>({kind:'posix',volume:'v',fileId,type,links:1});
+const resource=(id,category='private-deny',kind='member')=>({id,category,kind,parent:identity('parent','directory'),components:[id],identity:identity(id,kind==='root'?'directory':'file'),presence:'present',state:'active'});
+for(const role of inventoryOwnerRoles){const resources=role==='profile'?[resource('profile','profile-container','root')]:role==='private-root'?[resource('private','private-deny','root')]:role==='database'?[resource('db1','database-managed'),resource('db2','database-managed')]:[];good(inv.observe(good(inv.beginObservation(os[role])).value,{...context,revision:inv.inspect().revision,status:'complete',coverage:resources.length||role==='retirement'?'present':'confirmed-absent',retirementSource:role==='retirement'?'mechanism-restored':'not-owner',resources}))}
+const oldRelease=Promise.resolve();await good(inv.trackDatabaseRelease(os.database,['db1'],oldRelease)).value;
+const reused=inv.trackDatabaseRelease(os.database,['db2'],oldRelease);if(reused.ok)await reused.value;
+console.log(JSON.stringify({case:'reuse-old-release-for-other-db',accepted:reused.ok,records:inv.inspect().protected.filter(r=>r.category==='database-managed').map(r=>({id:r.id,state:r.state}))}));
+--- END COMPLETE STDIN SCRIPT ---

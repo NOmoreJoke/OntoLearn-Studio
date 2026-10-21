@@ -1,0 +1,120 @@
+I06 cohort agent first-failure evidence — tool transcript
+Source: functions.exec -> exec_command/write_stdin rendered combined output in the
+/root/i06_interface_docs agent task. This is an explicit transcription of tool
+output, not a byte-for-byte original stdout/stderr artifact. The forwarded text
+combined stdout/stderr; separate streams and per-command exit codes were not
+retained by the forwarding call. Do not claim this file authenticates those
+missing fields. Root's subsequent unified run is the process/raw evidence.
+No implementation/test/source files were changed to construct this transcript.
+
+Shared cwd:
+/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-project-inventory-lifecycle
+
+[1] First lint failure
+Tool sessions: exec_command 22842 -> write_stdin 22842.
+Shell command sequence (no set -e):
+./node_modules/.bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --esModuleInterop --types node apps/desktop/src/main/security/project-cohort-lifecycle.ts tests/unit/i06-project-cohort-lifecycle.test.ts
+./node_modules/.bin/eslint apps/desktop/src/main/security/project-cohort-lifecycle.ts tests/unit/i06-project-cohort-lifecycle.test.ts --max-warnings 0
+Observed: no tsc diagnostics; ESLint returned the following two errors.
+Exit metadata: not included in the forwarded output; not reconstructed here.
+--- tool-returned output begins ---
+
+/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-project-inventory-lifecycle/apps/desktop/src/main/security/project-cohort-lifecycle.ts
+  471:13  error  'timer' is never reassigned. Use 'const' instead  prefer-const
+
+/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-project-inventory-lifecycle/tests/unit/i06-project-cohort-lifecycle.test.ts
+  391:5  error  'l' is never reassigned. Use 'const' instead  prefer-const
+
+✖ 2 problems (2 errors, 0 warnings)
+--- tool-returned output ends ---
+Disposition: use const for the timer binding and the self-referenced lifecycle
+binding. Subsequent targeted ESLint emitted no errors.
+
+[2] First MAX_VALUE clock regression failure
+Tool sessions: exec_command 39078 -> write_stdin 39078.
+Start time reported by Vitest: 16:28:30, 2026-10-21 local task date.
+Failure-producing command:
+./node_modules/.bin/vitest run tests/unit/i06-project-cohort-lifecycle.test.ts
+The enclosing shell command also ran Prettier before Vitest, then targeted tsc,
+ESLint, git diff --check and shasum after Vitest (no set -e). Therefore the final
+shell command's success must not be treated as Vitest success.
+Per-Vitest exit metadata: not included in the forwarded output; the actual
+observed oracle is the following explicit 26-pass/1-fail assertion output.
+--- tool-returned output begins ---
+apps/desktop/src/main/security/project-cohort-lifecycle.ts 51ms (unchanged)
+tests/unit/i06-project-cohort-lifecycle.test.ts 29ms
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-project-inventory-lifecycle
+
+ ❯ tests/unit/i06-project-cohort-lifecycle.test.ts (27 tests | 1 failed) 215ms
+   ❯ I06 cohort bookkeeping is mechanism-only (27)
+     × clock rollback, infinity or unknown thrown objects fail closed without inspecting the throw 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/i06-project-cohort-lifecycle.test.ts > I06 cohort bookkeeping is mechanism-only > clock rollback, infinity or unknown thrown objects fail closed without inspecting the throw
+AssertionError: expected { mechanismOnly: true, …(3) } to match object { reason: 'clock' }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "reason": "clock",
++   "engine": {
++     "kind": "engine",
++     "mechanismOnly": true,
++     "productionAdmission": "unsupported",
++   },
++   "mechanismOnly": true,
++   "ok": true,
++   "productionAdmission": "unsupported",
+  }
+
+ ❯ tests/unit/i06-project-cohort-lifecycle.test.ts:320:7
+    318|     expect(
+    319|       createProjectCohortLifecycle(() => Number.MAX_VALUE).createEngin…
+    320|     ).toMatchObject({ reason: 'clock' })
+       |       ^
+    321|     expect(createProjectCohortLifecycle(() => Infinity).createEngineId…
+    322|       reason: 'clock',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 26 passed (27)
+   Start at  16:28:30
+   Duration  298ms (tests 88%, transform 8%, import 3%, worker 1%)
+--- tool-returned output ends ---
+Disposition: central monotonic clock validation now rejects values greater than
+Number.MAX_SAFE_INTEGER - 30000 before issuing any identity/transition. Merely
+checking candidate deadline overflow was insufficient at the identity entry.
+
+[3] Subsequent same two-file targeted verification (tool transcript summary)
+Tool session: exec_command/write_stdin 12620.
+Vitest start: 16:28:46; 1 file passed, 27 tests passed, duration 274ms.
+Targeted tsc and ESLint: no diagnostic output.
+Prettier check: Checking formatting... All matched files use Prettier code style!
+git diff --check: no diagnostic output.
+These are agent targeted checks, not the root unified check/sources or an
+independent review, production inventory, native or platform verification.
+
+Fixed product SHA256 after correction (no further product edits by this agent):
+a640e1bb5125f4a008a1ef8874ffa9e514c4a7be95a3009ddfd6bf31f8967b7a  apps/desktop/src/main/security/project-cohort-lifecycle.ts
+604c2af9e4890e5a9ace07a19a2a58579ad82611e84c9c34144ce3bb27a582fd  tests/unit/i06-project-cohort-lifecycle.test.ts
+
+[4] Subsequent root static review reopened the prior fixed point
+Root requested a new Proxy-capture deadline counterexample and a final publish
+clock check. The [3] hashes remain the historical 27-test checkpoint, not the
+final candidate after this request. Its "no further product edits" statement
+applied before the later explicit root revision request.
+prepareTransition now checks captured elapsed time/revision/active identity
+before creating or quiescing any cohort; publish checks the clock and candidate
+identity/deadline again immediately before its synchronous pointer swap.
+Two traps (ownKeys/getOwnPropertyDescriptor) and final-publish expiry were added.
+Agent targeted tool session 82159: 30/30 passed, start 16:30:53, duration 285ms;
+targeted tsc/ESLint silent, Prettier check passed. Root unified raw/check remains
+separate. Revised candidate SHA256:
+a9bf21f442abf2d02a036820ee757bf63f3e9864de138ffcd588c4d6b3e82d7e  apps/desktop/src/main/security/project-cohort-lifecycle.ts
+e1c91a405ec38343cef89d8389eb0607ae5aef324e3afd03ea393792f6f4ac5b  tests/unit/i06-project-cohort-lifecycle.test.ts

@@ -1,0 +1,31 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/i06-private-resource-inventory.test.ts > I06 mechanism-only resource inventory > external mutation of exported roles cannot remove mandatory retirement or owners
+AssertionError: expected 'complete' not to be 'complete' // Object.is equality
+ ❯ tests/unit/i06-private-resource-inventory.test.ts:99:45
+     97|         }))
+     98|       }
+     99|       expect(inventory.inspect().state).not.toBe('complete')
+       |                                             ^
+    100|       expect(inventory.issueSnapshot().ok).toBe(false)
+    101|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/i06-private-resource-inventory.test.ts > I06 mechanism-only resource inventory > release settlement updates the stable retained record after another full observation
+AssertionError: expected 'retired' to be 'released-retained' // Object.is equality
+
+Expected: "released-retained"
+Received: "retired"
+
+ ❯ tests/unit/i06-private-resource-inventory.test.ts:112:87
+    110|     d.resolve(); await tracked
+    111|     expect(s.inventory.inspect().actualUnsettledReleases).toBe(0)
+    112|     expect(s.inventory.inspect().protected.find((r) => r.id === 'datab…
+       |                                                                                       ^
+    113|   })
+    114|   it('never infers empty completeness from constructor or absent owner…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

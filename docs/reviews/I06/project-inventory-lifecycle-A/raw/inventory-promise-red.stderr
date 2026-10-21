@@ -1,0 +1,49 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/i06-private-resource-inventory.test.ts > I06 mechanism-only resource inventory > cannot reuse one release Promise concurrently or after it settled for another DB
+AssertionError: expected { mechanismOnly: true, …(3) } to match object { ok: false, reason: 'invalid' }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": false,
+-   "reason": "invalid",
++   "ok": true,
+  }
+
+ ❯ tests/unit/i06-private-resource-inventory.test.ts:500:26
+    498|     const simultaneous = s.inventory.trackDatabaseRelease(s.owners.dat…
+    499|     d.resolve(); await first
+    500|     expect(simultaneous).toMatchObject({ ok: false, reason: 'invalid' …
+       |                          ^
+    501|     expect(s.inventory.trackDatabaseRelease(s.owners.database, ['db-3'…
+    502|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/i06-private-resource-inventory.test.ts > I06 mechanism-only resource inventory > old fulfilled release Promise cannot supply a new profile owner release
+AssertionError: expected { mechanismOnly: true, …(3) } to match object { ok: false, reason: 'invalid' }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": false,
+-   "reason": "invalid",
++   "ok": true,
+  }
+
+ ❯ tests/unit/i06-private-resource-inventory.test.ts:510:79
+    508|     const newOwner = value(s.inventory.registerOwner('database'))
+    509|     value(s.inventory.reserve(newOwner, [entry('new-db', 'database-man…
+    510|     expect(s.inventory.trackDatabaseRelease(newOwner, ['new-db'], d.pr…
+       |                                                                               ^
+    511|     expect(s.inventory.inspect().protected.find((r) => r.id === 'new-d…
+    512|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
