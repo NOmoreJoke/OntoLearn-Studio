@@ -1,5 +1,7 @@
 # T05 比较算子、跨域及消费者矩阵 r2（文件路径保留r1）
 
+当前状态更新（2026-10-21）：用户已明确采用Q6推荐规则及固定规范版本，采用原件SHA328a59c42ae69a5c2426c494c1c979cb629692f389cdacf591e8789738c6b4f0。下文较早“待Q6/未采用”是当时请求/答复状态，不再构成政策阻塞；实际政策与拟阶段实施以[已采用profile](q6-adopted-profile-v1.md)和[阶段规格](q6-profile-mechanism-stage-plan.md)为准。实施阶段仍待root一次授予，不改变依赖/公共格式/路径/运行验收门。
+
 **供下一次具体审定，不是实现或验收结果。** I05对D2–D5的技术答复与T05补充提案分别标记；全部值政策仍需Q6采用、规范pin及真实完整矩阵。当前规则没有值比较/多head；未批准C3不能作为T05依赖。
 
 来源：固定I05 `ffc462b2332dfb8af7c15c91adb3ac1f7ac1b24d` 的owner-response（SHA `723368ccc8902c70dcd28939f7b4a21f7dc6d8488d39c7b981b1952caf33fc4e`），状态/路径接受见[当前决策表](owner-decisions-after-interface-facts.md)。本文不改变query/FILTER/cast，不新增公共协议或错误枚举。r2按总控独立复核17603B/SHA70909867a8786f181639810c3c40d188f92c2849311dd148f6bf55fce044705a修正R1/R2；固定383b96c的r1保留Git，不回写其旧审查为已发现这些问题。

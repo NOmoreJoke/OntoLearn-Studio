@@ -123,3 +123,11 @@ reviewer未读报告链接实现/测试/外部规范，未运行产品/测试/GU
 五doc SHA：联合表 `3d768275379bd272ebea9cf0c86005a9c5cfd1f1e20cfa176fd5e6aa7de1938d`；矩阵 `3705af23adcfc3e4f7cd153ae06f82cccb849cfb1dad7ea68ff08c02b09585e2`；D/M/P `88a454b0a8de58bea0f51d1d19938c916ac98c282f83d670d829e558734dd034`；合同 `d14bba9a059b81096e4bc63ebd825dbeacbf92eb7a5b4b0094f26f2e4e0c3304`；Q6单 `230abb0ec802fe0af9f8944a00759043c7f3c2f8ab23fa34b74d3dd69313b61f`。receipt受审快照 `2974d0d90fb9ae0ce10e1fd7699f7cfc0ffdda03627425572a2c12fdf9352cf9`，其后仅追加审查处置/文档检查元数据，最终hash见checkpoint。
 
 初次文档check仅receipt JSON格式告警，已Prettier修正并复查通过，不是产品测试失败；diff/hash/固定输入核对通过，无重复产品验证。原Goal仍blocked，完整原验收不缩减，本结论不替代Q6采用、真实集成/消费者运行或指定双审。
+
+## Q6 adopted profile and private mechanism stage review
+
+Independent reviewer `/root/t05_internal_review` passed the document scope. The GFM P2 was closed by moving three regex branches into a fenced block and separating three token-to-construct rows. A final clarification makes Budget a per-call, debit-only, unshared mutable accountant; inputs and limits remain frozen, and only safe readonly failure fields are exposed. The reviewer separately passed this delta. No remaining substantive findings.
+
+Final profile SHA256 `ea6e921f0fc21c4cd18a04e835e4bdd4730d7f07821d3e9fdc646f7e5480ffcc`; final stage SHA256 `8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424`. These are document review results only, not implementation authorization, code/test results or normative full conformance. Root independent stage review remains pending.
+
+Adoption/source hashes and the new common/four-path ownership are recorded in the stage receipt. Historical raw sources and Git snapshots remain unchanged. Existing design documents add current adoption references and the T01 foundation/I06 retained-path boundary. All original FR and integration/release gaps remain open; no code/tests/candidate consumption or product retest.

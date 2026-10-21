@@ -1,5 +1,7 @@
 # T05 同一执行器扩展与真实 trace 适配合同草案
 
+当前状态更新（2026-10-21）：用户已明确采用Q6推荐规则及固定规范版本，采用原件SHA328a59c42ae69a5c2426c494c1c979cb629692f389cdacf591e8789738c6b4f0。下文较早“待Q6/未采用”是当时请求/答复状态，不再构成政策阻塞；实际政策与拟阶段实施以[已采用profile](q6-adopted-profile-v1.md)和[阶段规格](q6-profile-mechanism-stage-plan.md)为准。实施阶段仍待root一次授予，不改变依赖/公共格式/路径/运行验收门。
+
 状态：**完整交接提案，部分技术方向已获I05/T01回复，Q6、公共格式及实际交接仍未生效，原Goal仍blocked**。依据原 FR-500–505、附录 C/D/G.2；父完整 P0、完整类型/取值支持矩阵、解释、生命周期和指定双审保持。现行接受项/缺口以第11节当前决策表为准；旧来源/提案保留历史，不将回复等同实现。
 
 ## 1. 已实际读回的来源与生效门
@@ -82,11 +84,11 @@ I05技术选择同一执行器内独立operand validator/comparator，不复用F
 
 ## 8. 当前已生效责任补记（操作政策）
 
-已在安全边界全文读取总控新版 developer-common-instructions.md（最新SHA `ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff`，原b24的15574B逐字保留为前缀）；AGENTS仍 `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`。第2节T00指接口设计/集成协调角色，**实际当前canonical与接线文件owner按下列生效清单，不据角色抢写**：
+已在安全边界全文读取总控新版 developer-common-instructions.md（最新SHA `e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0`/17891B，原ff5的16317B及更早b24的15574B逐字保留为前缀）；AGENTS仍 `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`。第2节T00指接口设计/集成协调角色，**实际当前canonical与接线文件owner按下列生效清单，不据角色抢写**：
 
-- T01：storage.py、worker.py；job_store.py、coordinator.py、`packages/engine/src/ontolearn_engine/__main__.py`、packages/contracts/python/contract_v2.py；contracts/src/index.ts、v2.ts及v2/schema、registry、errors、fixtures、binding-regressions.json；desktop/main/engine.ts。
+- T01：storage.py、worker.py；job_store.py、coordinator.py、`packages/engine/src/ontolearn_engine/__main__.py`、packages/contracts/python/contract_v2.py；contracts/src/index.ts、v2.ts及v2/schema、registry、errors、fixtures、binding-regressions.json；desktop/main/engine.ts，以及新交main/jsonl.ts、renderer/src/task-presentation.ts、main/task-service.ts、main/index.ts。
 - T03：packages/engine/pyproject.toml、uv.lock、scripts/build-engine.mjs、packages/engine/entrypoint.py。
-- I06：main/index.ts、task-service.ts、preload/index.ts、renderer/env.d.ts、App.tsx、style.css。
+- I06：preload/index.ts、renderer/env.d.ts、App.tsx、style.css四路径；main/index/task-service已按新登记转T01。
 - I05：其余未交路径；本合同四语义文件仍只是未来offer，未对T05生效。
 
 这次责任政策更新不代表未批代码/格式已批准；未改产品、未重建Goal，不仅因此重跑无变化测试/重开外审。必要修改仍逐精确路径交接，旧冻结树/输入保留原字节。

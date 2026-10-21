@@ -175,3 +175,13 @@ T01回复增量已获独立reviewer明确文档范围通过，无新增实质问
 source接受要求不证明S1保留每个导入前原写法；真实source owner/T01授权、有界载体、大小/保留生命周期及公共投影缺口保留，不私加DTO/逆推原文/重签历史。Q6可审定目标和未支持格处置，不能用拒绝缩减原FR或登记全格完成。C4正在验证未冻结/未指定双审通过来自总控通知，非本线读代码或复现；不因技术答复消费新实现或生效future4/T01 worker责任。Goal仍blocked，无产品/测试/协议/路径变更或复测。
 
 I05/T01联合范围已获独立reviewer明确文档通过、无新增实质问题。五doc与两raw固定来源、inputs原157身份相符；receipt JSON初次格式告警已修，最终Prettier/diff/hash核对通过。处置/范围见internal-review/checkpoint；只追加通过元数据，不改受审接受与缺口。未测试产品、未消费C4、未push/PR/CI/合并；Q6未采用，原Goal保持blocked。
+
+## Q6明确采用与最小纯机制阶段计划（当前，尚未授实施）
+
+用户明确回复“采用决定单的推荐规则与规范版本”；本线全文读取并核验原采用对象4698B/SHA `328a59c42ae69a5c2426c494c1c979cb629692f389cdacf591e8789738c6b4f0`、状态更新单5038B/SHA `4e82174a9d5c312dce23a02320ef9e23f9a9fc62bb22bf69bdedd6a25ed10b29`及正式710B回执，见`q6-adoption-stage-receipt.json`。Q6政策与固定规范pin阻塞已解除；上述历史段落的“Q6未采用”仅记当时状态，不代表当前。私密原件不复制进仓库。
+
+新增`q6-adopted-profile-v1.md`及`q6-profile-mechanism-stage-plan.md`：完整六算子/类型矩阵、原词法/标签/source、直接binary32/64舍入、独立Gregorian和时区分域、给定binding全比较/多head整批原子、安全失败与真实位置、前置预算及精确7代码/7测试/6fixture路径。预算是拟一次冻结的防护上限，未测容量；计划仅纯机制，不接实际graph/Store/公共路由。完整FR500–505/C/D/G.2及跨模块/生命周期/平台/指定双审/CI/正常合并/父验收的未证格逐项保留。
+
+已实际全文读取新版common17891B/SHA `e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0`，原16317B前缀精确不变；四文件handoff registry SHA `31901746194db283289703fc36b7b2ecf3690c5901a715931d3565bda82c40b5`。新增main/jsonl、renderer/task-presentation、main/task-service、main/index四future路径唯T01；I06保留preload/env/App/style。仅责任变化，不授startup/schema/runtime3/ready或本线四semantic future路径。
+
+总控已预读中间快照并启动独立阶段规格复核；本线独立审查主体算法/边界未发现实质冲突，指出GFM管道隐藏列P2，已移正则至代码块并拆三个token精确construct行，定点复核结论另记internal-review。当前仅文档；待总控固定提交/hash后一次授实施，不再问Q6。未写产品/测试、未复测不变产品、未读未批候选、未push。Goal工具实际仍blocked，完整objective不变；批准依赖/真实接线与其余完成门不因此关闭。
