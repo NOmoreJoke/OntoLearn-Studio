@@ -104,3 +104,13 @@ Goal保持 active：父功能FR-001–006/804全部完成、持久项目/草稿/
 纯 CAS 阶段本地恢复提交为 `c5ba35b64e17cd34feb85068e8bc03a27b95ec39`，未 push。总控正式批准现有独占文件内显式 `target_format=3` 的内部 Store-ready 基础；默认2/旧格式常量不翻转，Job-ready、公共协议和正式 capability 仍未启用。I05→T03 的四个构建文件交接已收到，T01不写这四文件；格式3所需四/八个共享路径仍单独申请中。
 
 第二阶段12份原始日志现已完整封存于 `evidence/stage-two-raw-logs.tar.gz`，SHA256 `bcac38671240c9bd1960f7ff1076c3c9ac02a20e531ab3199d00cfa0ff9e9d01`。清单 `stage-two-raw-archive.json` 记录每份字节/hash，归档后逐成员重新读取核验，保留失败和被替代候选；不修改旧原件。更正精确失败归因：`pytest-compensation-control-evidence.log` 的 1 failed/495 passed 中，对账及精确重试已经通过，失败发生在后续 undo 的 retirement_at 只查截至目标 revision、漏掉下一提交 before capture。早期其他恢复历史缺失问题仍保留各自历史记录，不能用它们替换此原件的实际失败位置。修正后的496专用及1196 Python全仓证据不变。
+
+## Store3 Stage A 实际完成
+
+显式私有Store(target_format=3)现已实现同OS writer lifetime lease、备份持久化和源变化检测、0/1/2→3同一迁移事务、结构/不可变证据/完整checkpoint/receipt验证与旧入口拒绝。新域提交只经原Store.commit，no-op和幂等语义保留；旧缺历史如实partial，不补造。七类独立意见（包括锁前竞态、假receipt和MAX上限）均已修复并独立关闭，详见format3-stage-a-review.md。
+
+最终专用483 passed/44不适用skip；全仓check实际退出0，630 TS、1699 Python、44上述skip，静态/类型/构建/ruff通过。失败及被替代候选原件按hash归档，不用旧1697替代新源码。实际私有完整JSON样例和唯一DDL入口见../../iterations/T01/format3-stage-a-contract.md及同目录sample.json。准备本地恢复提交，不push。
+
+12共享基础文件（I05四Python+I06 canonical/main八）现已逐路径双实体核验、接受、独立复核并由总控登记生效；本阶段未修改这12文件。全文读最新common SHA `b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39`，AGENTS仍78df...97a759；两agent实际透传，主内审已全文核验回执，设计agent待下个正常边界。纯责任政策不重启Goal、不改变旧冻结输入。T03构建四/原I06余六、既有tests/worker/protocol/resources/CI仍不扩权。
+
+已实际读T03/T04/T05/T07/T09/T10精确接点材料，T07三固定f9原件hash全部匹配总控；未采用其未批准实现。后续先在已生效JobStore唯一责任内统一实际job/application claim与同连接CAS/receipt/checkpoint/两层ready，再依次正式adapter。StageA只是Store-ready内部层，不是Job-ready/持久应用CAS/协议3或FR-001–006/804完成，无指定外审/push/PR/CI/合并/上线证据。Goal保持active。

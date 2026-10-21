@@ -49,14 +49,33 @@ class Conflict(ValueError):
 
 
 class Store:
-    def __init__(self, path: str | Path, migration_hook: Hook = lambda _: None):
+    def __init__(
+        self,
+        path: str | Path,
+        migration_hook: Hook = lambda _: None,
+        *,
+        target_format: int = FORMAT_VERSION,
+        backup_path: str | Path | None = None,
+    ):
+        # Format3 is a private, explicit entry until Job/canonical integration is ready.
+        # The old constant/default remain 2; default readers reject actual format3.
+        if type(target_format) is not int or target_format not in {2, 3}:
+            raise ValueError("Unsupported target project format")
         self.path = Path(path)
-        self._db = sqlite3.connect(self.path, isolation_level=None, timeout=5)
-        self._db.row_factory = sqlite3.Row
-        self._db.execute("PRAGMA foreign_keys=ON")
-        self._db.execute("PRAGMA synchronous=FULL")
+        self._target_format = target_format
+        self._format3_lease = None
+        existed = self.path.exists() and self.path.stat().st_size > 0
         try:
-            self._migrate(migration_hook)
+            if target_format == 3:
+                from ontolearn_engine.project.format3 import acquire_lease
+
+                self._format3_lease = acquire_lease(self.path)
+                existed = self.path.exists() and self.path.stat().st_size > 0
+            self._db = sqlite3.connect(self.path, isolation_level=None, timeout=5)
+            self._db.row_factory = sqlite3.Row
+            self._db.execute("PRAGMA foreign_keys=ON")
+            self._db.execute("PRAGMA synchronous=FULL")
+            self._migrate(migration_hook, backup_path=backup_path, existed=existed)
             invalid_kind = self._db.execute(
                 "SELECT 1 FROM results WHERE typeof(kind) != 'text' OR trim(kind) = '' "
                 "UNION ALL SELECT 1 FROM current_results "
@@ -65,11 +84,22 @@ class Store:
             if invalid_kind:
                 raise ValueError("Invalid legacy result kind; explicit repair required")
         except BaseException:
-            self._db.close()
+            if hasattr(self, "_db"):
+                self._db.close()
+            if self._format3_lease is not None:
+                self._format3_lease.close()
             raise
 
+    @property
+    def actual_format(self) -> int:
+        return self._db.execute("PRAGMA user_version").fetchone()[0]
+
     def close(self) -> None:
-        self._db.close()
+        try:
+            self._db.close()
+        finally:
+            if self._format3_lease is not None:
+                self._format3_lease.close()
 
     @contextmanager
     def _transaction(self, hook: Hook = lambda _: None) -> Iterator[None]:
@@ -100,20 +130,44 @@ class Store:
         # If delivery/cancellation fails here, the persistent marker is authoritative.
         hook("after_commit")
 
-    def _migrate(self, hook: Hook) -> None:
-        version = self._db.execute("PRAGMA user_version").fetchone()[0]
-        if version > FORMAT_VERSION:
+    def _migrate(self, hook: Hook, *, backup_path=None, existed=False) -> None:
+        version = self.actual_format
+        target = self._target_format
+        if version > target:
             raise ValueError("Unsupported future project format")
-        if version == FORMAT_VERSION:
-            return  # Opening a current format must not take a writer lock.
+        if version == target:
+            if target == 3:
+                from ontolearn_engine.project.format3 import validate
+
+                with self._read():
+                    validate(self)
+            return  # Reopen is read-only; explicit3 still owns the OS writer lease.
+        backup_hash = source_hash = None
+        if target == 3 and (
+            existed
+            or version > 0
+            or self._db.execute("SELECT 1 FROM sqlite_master LIMIT 1").fetchone() is not None
+        ):
+            from ontolearn_engine.project.format3 import migration_backup
+
+            backup_hash, source_hash = migration_backup(self, backup_path, hook)
         # Re-read under the lock: another opener may have migrated while we waited.
         with self._transaction(hook):
             version = self._db.execute("PRAGMA user_version").fetchone()[0]
-            if version > FORMAT_VERSION:
+            if version > target:
                 raise ValueError("Unsupported future project format")
-            if version == FORMAT_VERSION:
+            if version == target:
+                if target == 3:
+                    from ontolearn_engine.project.format3 import validate
+
+                    validate(self)
                 return
-            if version not in {0, 1}:
+            if source_hash is not None:
+                from ontolearn_engine.project.format3 import Format3Fault, logical_hash
+
+                if logical_hash(self._db) != source_hash:
+                    raise Format3Fault("sourceChanged")
+            if version not in {0, 1, 2}:
                 raise ValueError("Unsupported project format")
             if version == 0:
                 for statement in SCHEMA:
@@ -164,12 +218,56 @@ class Store:
                 hook("migration_mid")
                 self._db.execute("PRAGMA user_version=2")
                 hook("format_version_updated")
+            if target == 3:
+                from ontolearn_engine.project.format3 import install
+
+                install(self, version, backup_hash, hook)
 
     def create_project(self, project: str) -> None:
         if not isinstance(project, str) or not project:
             raise ValueError("Nonempty project identity required")
         with self._transaction():
             self._db.execute("INSERT INTO projects VALUES(?,0)", (project,))
+            if self._target_format == 3:
+                from ontolearn_engine.project.format3 import seed_project
+
+                seed_project(self, project)
+
+    def project_checkpoint(self, project: str, identity: str | None = None) -> dict:
+        """Private complete Store3 checkpoint; not a public DTO/capability."""
+        if self._target_format != 3:
+            raise ValueError("Explicit Store3 required")
+        from ontolearn_engine.project.format3 import load_checkpoint
+
+        with self._read():
+            self.revision(project)
+            if identity is None:
+                identity = self._db.execute(
+                    "SELECT checkpoint FROM app_projects WHERE project=?", (project,)
+                ).fetchone()[0]
+            return load_checkpoint(self, project, identity)
+
+    def project_receipt(self, project: str, operation: str) -> dict:
+        """Domain receipt or honest legacy absence; no Job/global claim authority."""
+        if self._target_format != 3:
+            raise ValueError("Explicit Store3 required")
+        from ontolearn_engine.project.format3 import receipt_for
+
+        with self._read():
+            self.revision(project)
+            row = self._db.execute(
+                "SELECT kind FROM app_operations WHERE project=? AND operation=?",
+                (project, operation),
+            ).fetchone()
+            if row is None:
+                raise KeyError("Missing project operation")
+            if row[0] == "legacy-domain":
+                return {
+                    "status": "legacy-not-recorded",
+                    "project": project,
+                    "operationId": operation,
+                }
+            return receipt_for(self, project, operation)
 
     def revision(self, project: str) -> int:
         row = self._db.execute("SELECT revision FROM projects WHERE id=?", (project,)).fetchone()
@@ -390,6 +488,11 @@ class Store:
                     category="revision",
                     params={"expected": base, "actual": self.revision(project)},
                 )
+            if self._target_format == 3:
+                from ontolearn_engine.project.format3 import MAX_VERSION
+
+                if base >= MAX_VERSION:
+                    raise Conflict("Project revision limit", category="state")
             if preview_control is not None and preview_control["before"] != self.retirement_control(
                 project
             ):
@@ -619,6 +722,10 @@ class Store:
                 (project, operation, before_snapshot, after_snapshot),
             )
             hook("mid_marker")
+            if self._target_format == 3:
+                from ontolearn_engine.project.format3 import record_domain_commit
+
+                record_domain_commit(self, project, self.marker(project, operation), hook)
         return self.marker(project, operation)
 
     def retirement_control(self, project: str) -> list[list[str]]:
