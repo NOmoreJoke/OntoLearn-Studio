@@ -10,6 +10,8 @@
 
 固定设计已涵盖可信picker返回绝对路径、摘要不带路径/文件名/内容、8MiB真实字节界、CSV枚举编码、XLSX显式sheet、重读SHA及有界文件/类型/读前后指纹、失效先于abort重入、同broker最多两个实际未settled操作。记录明确未验原生picker、正式IPC/解析/Job/Store/平台；这些不是本次消费可宣布通过的证据。
 
+补充controller新事实：旧 f2c7/2f7a 的 XLSX 初次pick后sheet=null，readForPreview要求先有显式sheet，**不能用它取得首次xlsx_sheets枚举所需字节**。T03正在仅其已授权路径补main-only `readForInspection`，拟保留scope/selection/fingerprint/字节上限/abort/真实两槽，返回summary+bytes但不签发preview/commit proof；新候选尚未交付/批准。本次不读用新实现，不把旧候选称为已满足XLSX首次检查全链。
+
 ## 2. 建议的宿主权威与最小绑定账本
 
 建议由I06受信main持有一个长期broker/宿主调度器，按可信项目打开创建scope；renderer不能传路径、原始bytes、SourceScope/SourceProof、picker回调或任意方法。摘要/不透明selectionId可经最终具名契约展示，但即使renderer回传相同UUID/代次，也只用于main查当前记录，不能成为权限。main调用前仍核sender/mainFrame/可信文档，Agent/模型不取得原生选择或确认权。
@@ -25,16 +27,18 @@
 
 ## 3. 建议流程与正式Job的唯一输入
 
-| 阶段           | 当前可复用项                                                              | 尚需冻结/交付                                                                                                                                         |
-| -------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 选择/配置      | broker.openProject/pick/configure；CSV编码和XLSX显式sheet；main对象身份   | I06实际TrustedPicker、具名受信宿主/有限账本和实际原生生命周期；T01固定公开摘要/安全错误                                                               |
-| 预览取源       | readForPreview重读后给main私有bytes/proof                                 | main在交付解析/上传前固定自身字节副本并核实际SHA；只读/解析不能修改同份随后用来确认的bytes                                                            |
-| seal与解析     | broker不提供这项；原Job基础可读取不可变输入                               | 倾向T01单一canonical有界分块上传并seal实际同SHA immutable snapshot，真实parser只读该snapshot并给表/映射摘要；不另造协议                               |
-| 展示/确认      | 原可信frame/人类确认边界可复用                                            | preview绑定全部上节身份，main仅对当前preview记录接受明确确认；不把proof或snapshot seal当确认                                                          |
-| 正式启动前复验 | readForCommit(scope,实际proof)返回本次复验字节副本                        | SHA/长度/选项仍须对应预览与已seal同源snapshot，domain base/计划/确认仍有效；每个await之后再查当前main账本，最后发送前复核                             |
-| 正式Job/提交   | 已批准job.create/job.get/job.cancel/operation.get及Store唯一提交/对账原则 | mapping真实capability、源snapshot引用/实际SHA进入完整计划/幂等指纹/确认及Job输入；Job仅取该已seal快照，**不按原path重新打开**；Store仍检真实base/冲突 |
+| 阶段               | 当前可复用项                                                                      | 尚需冻结/交付                                                                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 首次选择           | broker.openProject/pick；CSV编码和main对象身份                                    | XLSX初次summary.sheet=null，仅表示已选文件，尚不能readForPreview                                                                                      |
+| XLSX受限inspection | **旧候选缺口**；T03拟补main-only readForInspection返回summary+bytes、无proof      | 新方法待T03固定；T01仅以inspection用途受限lease交真实parser枚举xlsx_sheets，不做映射preview/确认/Job admit                                            |
+| XLSX用户选sheet    | 用户从该实际来源的真实sheet列表明确选择，再configure                              | list须绑定实际source SHA/lifecycle；configure重读并换新generation/selectionId，源变或旧列表回调拒绝，不虚构sheet/空字符串绕关                         |
+| 预览取源           | 配置真实sheet后才可readForPreview重读并签main私有bytes/proof；CSV沿原显式编码路径 | main固定自身字节副本/实际SHA；必须新建当前预览权威，不能用inspection结果替代                                                                          |
+| seal与解析         | broker不提供这项；原Job基础可读取不可变输入                                       | 倾向T01单一canonical有界分块上传并seal实际同SHA immutable snapshot，真实parser只读该snapshot给表/映射摘要；inspection与正式预览用途分离，不另造协议   |
+| 展示/确认          | 原可信frame/人类确认边界可复用                                                    | preview绑定全部上节身份，main仅对当前preview记录接受明确确认；inspection/proof/seal均不等于确认                                                       |
+| 正式启动前复验     | readForCommit(scope,实际preview proof)返回本次复验字节副本                        | SHA/长度/真实sheet与编码仍对应正式预览/已seal同源snapshot，domain base/计划/确认仍有效；每个await及最终发送前复核；inspection lease不得用于admit      |
+| 正式Job/提交       | 已批准job.create/job.get/job.cancel/operation.get及Store唯一提交/对账原则         | mapping真实capability、源snapshot引用/实际SHA进入完整计划/幂等指纹/确认及Job输入；Job仅取该已seal快照，**不按原path重新打开**；Store仍检真实base/冲突 |
 
-根倾向的64KiB raw分块/每帧仍低于原上限可作为待冻结传输选择；本文不复制chunk/offset/base64/帧预算细表。8MiB不能塞单帧，原path不传engine。upload/seal引用如何跨session存活、如何项目授权/关闭/取消/过期/pin/回收，以及正式Job如何保留输入，均由T01同一canonical/Store合同给出；本提案不假定一个字符串blob hash就是可读/可提交权限。
+根倾向的64KiB raw分块/每帧仍低于原上限可作为待冻结传输选择；本文不复制chunk/offset/base64/帧预算细表。8MiB不能塞单帧，原path不传engine。upload/seal引用如何跨session存活、如何项目授权/关闭/取消/过期/pin/回收，以及正式Job如何保留输入，均由T01同一canonical/Store合同给出；本提案不假定一个字符串blob hash就是可读/可提交权限。canonical的inspection用途lease不得用于admit，也不能因原字节SHA相同升级为正式预览或Job授权；底层内容去重不合并用途/生命周期权威。必须在真实sheet配置后的readForPreview取得新proof，并在readForCommit复验和全部计划/人类确认绑定通过后，使用正式用途的授权引用；具体同源引用关系由T01/root冻结。
 
 预览可解析已seal快照A；确认后readForCommit复验磁盘字节B必须与A的实际SHA/长度及选项一致，然后正式Job消费A，无需为同字节再造一份来源权威。读取B成功后原文件仍可能再变；本流程承诺Job处理明确确认的不可变A，不承诺Job执行瞬间磁盘仍最新。若B已不同则必须撤销旧预览/确认，不能改用B悄悄沿用A的Diff。SHA相等也不能跨项目/lifecycle/选项/计划自动复用权限。
 
@@ -67,10 +71,10 @@ TrustedPicker忽略signal时可持续占用槽位；I06宿主要按Electron真�
 
 | owner / 路径                                                                              | 待交付内容与边界                                                                                                                                                                                                                                                  |
 | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| T03 source-selection：`apps/desktop/src/main/mapping/source-selection.ts`                 | 固定broker公开接口/安全failure kind、实际两槽与abort终态边界；本提案不改模块或采用其工作树后续改动。若宿主确需drain接口，另提精确变更，不猜已有方法                                                                                                               |
-| I06 main：`apps/desktop/src/main/index.ts`、`task-service.ts`                             | 可信picker/项目scope与升级回调、实际engine服务生命周期及明确Job对账交接；不因来源选择改写普通renderer恢复语义。可候选新增 `apps/desktop/src/main/mapping/source-selection-service.ts` 持有main账本，但须root登记精确owner，当前未授权实施                                          |
+| T03 source-selection：`apps/desktop/src/main/mapping/source-selection.ts`                 | 固定broker公开接口/安全failure kind、实际两槽与abort终态边界；新readForInspection候选尚未交付/批准，须明确无preview/commit proof并保留全部来源检查；本提案不改模块或采用其工作树后续改动。若宿主确需drain接口，另提精确变更，不猜已有方法                         |
+| I06 main：`apps/desktop/src/main/index.ts`、`task-service.ts`                             | 可信picker/项目scope与升级回调、实际engine服务生命周期及明确Job对账交接；不因来源选择改写普通renderer恢复语义。可候选新增 `apps/desktop/src/main/mapping/source-selection-service.ts` 持有main账本，但须root登记精确owner，当前未授权实施                         |
 | I06具名bridge/UI：`apps/desktop/src/preload/index.ts`、`renderer/src/env.d.ts`、`App.tsx` | 只接最终canonical已冻结具名选择/配置/预览/确认/状态/取消；renderer不传path/proof/bytes，不允许旧回调覆盖新选择。style.css仅实际UI布局需要时改，不默认有diff                                                                                                       |
-| T01 canonical7、`main/engine.ts`                                                          | 单一摘要/安全错误/分块上传/seal/preview确认/Job输入引用合同，真实registryHash与bootstrap/业务session；不向renderer开放通用RPC，不将SourceFailure内部字符串当已批准公共错误                                                                                        |
+| T01 canonical7、`main/engine.ts`                                                          | 单一摘要/安全错误/分块上传/seal/preview确认/Job输入引用合同，inspection用途lease仅供枚举、不得admit；真实registryHash与bootstrap/业务session；不向renderer开放通用RPC，不将SourceFailure内部字符串当已批准公共错误                                                |
 | T01 `storage.py`、`job_store.py`、`coordinator.py`及已交Python adapter/`__main__.py`      | immutable source snapshot的真实权限/寿命/pin、预览和实际确认/计划/base/全局operation绑定、跨kind/重试/取消与Job-ready；不从main另开第二Store writer                                                                                                               |
 | 真实parser/映射消费者：root协调T03及当前实际owner                                         | 本次只知需交parser版本、实际表摘要/规范映射及从sealed snapshot读取；路径/导出尚未由本任务确认，不猜SQL/API或宣称已集成。若正式worker须改 `packages/engine/src/ontolearn_engine/worker.py`，该路径仍属原owner，需精确代改/交接，不从T01十二文件或T03构建四推导写权 |
 
@@ -80,11 +84,11 @@ T03构建四是另一交接，不因本文变为source broker或worker授权；p
 
 以下均未创建、未运行、未获写权；原测试不改，不重复旧e2c回归证明新链。根先逐路径登记owner，最终只以获批同候选真实来源记录结论。
 
-| 提议精确路径                                                                          | 必验生命周期                                                                                                                                                                                                      |
-| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tests/unit/i06-source-selection-lifecycle.test.ts`（拟I06）                          | main实际scope/proof对象与当前ledger绑定；伪造同值对象/跨项目/跨broker拒绝；重选/configure/cancel/close先失效、旧成功/失败/abort重入不覆盖新代次；字节相同但encoding/sheet改变也拒绝旧preview                      |
-| `tests/unit/i06-source-selection-job-binding.test.ts`（拟I06与T01固定真实fixture）    | preview解析与Job只用同一个已seal实际SHA快照；readForCommit源变拒绝；domain base/计划/表摘要/人类确认/operation不一致拒绝；最终发送前取消、发送后丢响应对账、正式Job取消与已提交事实区分；模型仍local且无外发grant |
-| `tests/i06-main-platform/source-selection-lifecycle-probe.mjs`（拟本线隔离平台owner） | 真实可信picker与CSV/XLSX/显式编码/sheet→预览→确认→实际Job/Store；两个操作abort未settled仍busy且不能靠页面/项目重开绕过；原生dialog是否实际结束单列；同进程与冷重启只读对账，无原path重开/自动确认/自动重发        |
+| 提议精确路径                                                                          | 必验生命周期                                                                                                                                                                                                                                                           |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tests/unit/i06-source-selection-lifecycle.test.ts`（拟I06）                          | main实际scope/proof对象与当前ledger绑定；伪造同值对象/跨项目/跨broker拒绝；重选/configure/cancel/close先失效、旧成功/失败/abort重入不覆盖新代次；字节相同但encoding/sheet改变也拒绝旧preview；初次sheet=null不能readForPreview，inspection无proof且不能绕过真实选sheet |
+| `tests/unit/i06-source-selection-job-binding.test.ts`（拟I06与T01固定真实fixture）    | preview解析与Job只用同一个已seal实际SHA快照；readForCommit源变拒绝；domain base/计划/表摘要/人类确认/operation不一致拒绝；最终发送前取消、发送后丢响应对账、正式Job取消与已提交事实区分；模型仍local且无外发grant；inspection lease即使同SHA也不得admit                |
+| `tests/i06-main-platform/source-selection-lifecycle-probe.mjs`（拟本线隔离平台owner） | 真实可信picker与CSV/XLSX/显式编码/sheet→预览→确认→实际Job/Store；两个操作abort未settled仍busy且不能靠页面/项目重开绕过；原生dialog是否实际结束单列；同进程与冷重启只读对账，无原path重开/自动确认/自动重发                                                             |
 
 两槽负例必须有真实未settled的host/FS操作证据，而非仅看UI busy或Promise标签；全链需要T01受信adapter/真实parser/Job的完整输入和持久结果，不能用mock Job成功或假seal receipt替代。实际传输/帧限/坏块/seal hash等由根字节合同与T01测试负责，这里只断言它们的输出引用在正确lifecycle被消费或拒绝，不复制细表。
 
