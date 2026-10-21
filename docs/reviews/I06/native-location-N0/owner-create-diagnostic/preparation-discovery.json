@@ -1,0 +1,20 @@
+{
+  "readOnlyDiscovery": [
+    {
+      "operation": "cat assumed vitest.config.ts",
+      "exit": 1,
+      "diagnostic": "No such file; actual repository config is vitest.config.mts"
+    },
+    {
+      "operation": "ls node_modules .venv",
+      "exit": 1,
+      "diagnostic": "Neither isolated runtime exists in this worktree"
+    },
+    {
+      "operation": "ls /usr/local/bin/uv",
+      "exit": 1,
+      "diagnostic": "uv is not installed at this guessed path; resolve PATH instead"
+    }
+  ],
+  "productCompilationOrRunAttempted": false
+}

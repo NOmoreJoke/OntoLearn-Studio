@@ -1,0 +1,26 @@
+diff --git a/packages/native-location/tests/location_core_test.cc b/packages/native-location/tests/location_core_test.cc
+index 0260c9e..7406759 100644
+--- a/packages/native-location/tests/location_core_test.cc
++++ b/packages/native-location/tests/location_core_test.cc
+@@ -379 +379 @@ struct probe {
+-nl_owner_ref make_owner(fixture& tree) {
++nl_owner_ref make_owner(fixture& tree, const char* case_label = nullptr) {
+@@ -381,0 +382,3 @@ nl_owner_ref make_owner(fixture& tree) {
++  if ((status != NL_OK || owner.value == 0) && case_label != nullptr)
++    std::fprintf(stderr, "N0 owner-create case=%.18s status=%d owner_nonzero=%u\n",
++      case_label, static_cast<int>(status), owner.value != 0 ? 1u : 0u);
+@@ -388 +391 @@ nl_owner_ref make_owner(fixture& tree) {
+-  const auto owner = make_owner(tree);
++  const auto owner = make_owner(tree, "metadata");
+@@ -424 +427 @@ nl_owner_ref make_owner(fixture& tree) {
+-  const auto owner = make_owner(tree); probe child(executable);
++  const auto owner = make_owner(tree, "child"); probe child(executable);
+@@ -447 +450 @@ nl_owner_ref make_owner(fixture& tree) {
+-  const auto owner = make_owner(tree); probe child(executable);
++  const auto owner = make_owner(tree, "partial-child"); probe child(executable);
+@@ -469 +472 @@ nl_owner_ref make_owner(fixture& tree) {
+-  const auto owner = make_owner(tree); nl_cap_ref root{}; nl_metadata metadata{};
++  const auto owner = make_owner(tree, "revoke-concurrency"); nl_cap_ref root{}; nl_metadata metadata{};
+@@ -488 +491 @@ nl_owner_ref make_owner(fixture& tree) {
+-  const auto limited = make_owner(tree);
++  const auto limited = make_owner(tree, "budget");

@@ -1,0 +1,231 @@
+{
+  "kind": "actual no-window checks, no native C++ build/run",
+  "sourceRef": "2d0443c037919f8655214daf4af7f184e0613fd9",
+  "toolVersions": {
+    "node": "24.15.0",
+    "npm": "11.12.1",
+    "uv": "0.11.12 (63c5f57d3)",
+    "enginePython": "3.12.14"
+  },
+  "results": [
+    {
+      "name": "npm-ci",
+      "argv": [
+        "/usr/local/bin/npm",
+        "ci",
+        "--offline",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exit": 0,
+      "logs": [
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/npm-ci.stdout",
+          "bytes": 26,
+          "sha256": "9ac09394ed96e04e43b5dcbe175530f6c2a704442840d4f9d240fc90b9badd8a"
+        },
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/npm-ci.stderr",
+          "bytes": 605,
+          "sha256": "895c225a0b3597dbcd103bbe9dcb8e3ca26cd91b356f63280a6565d3e191e400"
+        }
+      ]
+    },
+    {
+      "name": "uv-sync",
+      "argv": [
+        "/Users/kyle/.local/bin/uv",
+        "sync",
+        "--frozen",
+        "--offline",
+        "--python",
+        "/opt/homebrew/bin/python3.12"
+      ],
+      "exit": 0,
+      "logs": [
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/uv-sync.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/uv-sync.stderr",
+          "bytes": 952,
+          "sha256": "3dd975036df28ffb72fe8ca742e5fb9acaaf73dcc8aa36bc7831522459fec800"
+        }
+      ]
+    },
+    {
+      "name": "npm-check",
+      "argv": [
+        "/usr/local/bin/npm",
+        "run",
+        "check"
+      ],
+      "exit": 1,
+      "logs": [
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/npm-check.stdout",
+          "bytes": 448,
+          "sha256": "4fbc7edf7841ba4e7d4baf952aae8320519d4e0b521129cba2e91d32b63c720c"
+        },
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/npm-check.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "verify-sources",
+      "argv": [
+        "/usr/local/bin/npm",
+        "run",
+        "verify:sources"
+      ],
+      "exit": 0,
+      "logs": [
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/verify-sources.stdout",
+          "bytes": 111,
+          "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+        },
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/verify-sources.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "remaining-format",
+      "argv": [
+        "/usr/local/bin/npm",
+        "run",
+        "format:check"
+      ],
+      "exit": 0,
+      "logs": [
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-format.stdout",
+          "bytes": 127,
+          "sha256": "64912a82a4f0bbd61d82ff45a19e5ab8c165908d1117ce6dbd5d823538cf0fe2"
+        },
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-format.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "remaining-typecheck",
+      "argv": [
+        "/usr/local/bin/npm",
+        "run",
+        "typecheck"
+      ],
+      "exit": 0,
+      "logs": [
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-typecheck.stdout",
+          "bytes": 468,
+          "sha256": "ef35be543aff1f7e82be979906158f1f2f1448dfaa41256cfc157c03071e55d2"
+        },
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-typecheck.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "remaining-unit",
+      "argv": [
+        "/usr/local/bin/npm",
+        "test"
+      ],
+      "exit": 0,
+      "logs": [
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-unit.stdout",
+          "bytes": 288,
+          "sha256": "bef34f491c3a297cc7e6d2967a9381057babba6afc71c4471a33f85d97bf7617"
+        },
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-unit.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "remaining-build",
+      "argv": [
+        "/usr/local/bin/npm",
+        "run",
+        "build"
+      ],
+      "exit": 0,
+      "logs": [
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-build.stdout",
+          "bytes": 768,
+          "sha256": "473f25159e5f82274f2f10f05d8da683a1b94a1b998e72b4b60a009be2a726c1"
+        },
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-build.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "remaining-engine",
+      "argv": [
+        "/usr/local/bin/npm",
+        "run",
+        "engine:check"
+      ],
+      "exit": 0,
+      "logs": [
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-engine.stdout",
+          "bytes": 3218,
+          "sha256": "482ee89ae4c6f703e5ad6894c09aeda013c9fc6bbcea75ce8dd57824d6cf3c80"
+        },
+        {
+          "path": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-engine.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "aggregateCheckPassed": false,
+  "aggregateFailure": {
+    "stage": "lint",
+    "path": "tests/unit/i06-native-location-owner.test.ts",
+    "line": 189,
+    "rule": "prefer-const",
+    "sameBytesAsBase7d": true,
+    "sha256": "e0946f7daf1236045d0198d989cf718ea40227d63b76e5a1407eaa1b0d501b04",
+    "reasonNotModified": "one of eight explicitly frozen source files, outside this single-test source window"
+  },
+  "separateRemainingStagesAllPassed": true,
+  "unitResult": {
+    "filesPassed": 16,
+    "passed": 637,
+    "skipped": 1,
+    "skipReason": "explicit real native addon artifact gate unset; native test not executed"
+  },
+  "engineResult": {
+    "passed": 1052,
+    "ruffCheck": "passed",
+    "ruffFormatFiles": 202
+  },
+  "archiveSourcesVerified": 12,
+  "newNativeDiagnosticActuallyObserved": false,
+  "nativeBuildOrRunOrGUIAttempted": false
+}

@@ -1,0 +1,56 @@
+{
+  "kind": "original raw log EOF whitespace only; no log bytes or persistent config changed",
+  "records": [
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit": 2,
+      "stdout": "docs/reviews/I06/native-location-N0/owner-create-diagnostic/npm-check.stdout:14: new blank line at EOF.\ndocs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-typecheck.stdout:20: new blank line at EOF.\ndocs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-unit.stdout:13: new blank line at EOF.\n",
+      "retainedFromActualToolReceipt": true
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        ".",
+        ":(exclude)docs/reviews/I06/native-location-N0/owner-create-diagnostic/npm-check.stdout",
+        ":(exclude)docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-typecheck.stdout",
+        ":(exclude)docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-unit.stdout"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.whitespace=-blank-at-eof",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        "docs/reviews/I06/native-location-N0/owner-create-diagnostic/npm-check.stdout",
+        "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-typecheck.stdout",
+        "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-unit.stdout"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "exactRawExceptionPaths": [
+    "docs/reviews/I06/native-location-N0/owner-create-diagnostic/npm-check.stdout",
+    "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-typecheck.stdout",
+    "docs/reviews/I06/native-location-N0/owner-create-diagnostic/remaining-unit.stdout"
+  ],
+  "otherWhitespaceChecksRetained": true,
+  "rawHashesRemainThoseInChecksSummary": true
+}

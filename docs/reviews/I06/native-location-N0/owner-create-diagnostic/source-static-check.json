@@ -1,0 +1,82 @@
+{
+  "kind": "static bytes/text and format-width arithmetic only; not C++ compile/run or mirrored output test",
+  "baseRef": "7d496da72d4f32bd23c7475f572496640570368b",
+  "sourceFiles": [
+    {
+      "path": "packages/native-location/include/location_abi.h",
+      "bytes": 13296,
+      "sha256": "fc3f7983d62b0ef4f5a3a056198c00a0b971d2ae722acc33bc6f61937ec8e172",
+      "sameAsPrior": true
+    },
+    {
+      "path": "packages/native-location/src/capability_core.cc",
+      "bytes": 17304,
+      "sha256": "eae2d2dcf4ccf1f648dbec5fdd0424c0a2dac31a94a45d493e819948f2309319",
+      "sameAsPrior": true
+    },
+    {
+      "path": "packages/native-location/src/platform_macos.cc",
+      "bytes": 7675,
+      "sha256": "28f9c736e59a24cb050b706628aca26283a513fa3c019fdf58dd14e7d3f8a5be",
+      "sameAsPrior": true
+    },
+    {
+      "path": "packages/native-location/src/platform_windows.cc",
+      "bytes": 12506,
+      "sha256": "bcf474ca9d9e5ce4efdf06284dd71b9504c5e69027d3a53c96fa7df56bc2b4c4",
+      "sameAsPrior": true
+    },
+    {
+      "path": "packages/native-location/src/node_binding.cc",
+      "bytes": 13163,
+      "sha256": "e10e59bdb200460310489bb4fc5b8c64ab79c1b8e2cfc9e7353a10a0c8667383",
+      "sameAsPrior": true
+    },
+    {
+      "path": "apps/desktop/src/main/security/native-location-owner.ts",
+      "bytes": 12496,
+      "sha256": "e354b0830469647d70690f3e1d6e567c816f70cbbbe5c211dabba817fa7cc8d0",
+      "sameAsPrior": true
+    },
+    {
+      "path": "packages/native-location/tests/location_core_test.cc",
+      "bytes": 30037,
+      "sha256": "4cec7d67ba66fdf47d0ae26ba056372dc437e67ac076e768a548c334bd260319",
+      "sameAsPrior": false
+    },
+    {
+      "path": "packages/native-location/tests/location_child_probe.cc",
+      "bytes": 380,
+      "sha256": "041e60f57b34ec1b04157e73e2161b332acc3bc8f804d7f7fcd6baf575d34b9c",
+      "sameAsPrior": true
+    },
+    {
+      "path": "tests/unit/i06-native-location-owner.test.ts",
+      "bytes": 8460,
+      "sha256": "e0946f7daf1236045d0198d989cf718ea40227d63b76e5a1407eaa1b0d501b04",
+      "sameAsPrior": true
+    }
+  ],
+  "changedSourcePaths": [
+    "packages/native-location/tests/location_core_test.cc"
+  ],
+  "fixedCaseLabels": [
+    "metadata",
+    "child",
+    "partial-child",
+    "revoke-concurrency",
+    "budget"
+  ],
+  "taggedCallCount": 5,
+  "untaggedNodeBootstrapUnchanged": true,
+  "nodeDefaultNullPreservesPriorNoDiagnosticOutput": true,
+  "diagnosticBlockCount": 1,
+  "normalizedWithoutOnlyAuthorizedDiagnosticEditsEqualsOld": true,
+  "all28WindowsAssertionsIdentical": true,
+  "ownerCreateCallCountUnchanged": true,
+  "diagnosticWorstCaseBytes": 75,
+  "boundDerivation": "ASCII literal bytes + tag precision18 + signed int32 decimal11 + boolean1 + LF1; static arithmetic, not actual formatted output",
+  "failureCleanupRequireTextRetained": true,
+  "pass": true,
+  "noNativeCompilationOrExecution": true
+}

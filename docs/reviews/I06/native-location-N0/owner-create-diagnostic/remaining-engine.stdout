@@ -1,0 +1,48 @@
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+202 files already formatted
+============================= test session starts ==============================
+platform darwin -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0
+configfile: pyproject.toml
+testpaths: packages/engine/tests
+collected 1052 items
+
+packages/engine/tests/test_binding_regressions.py ...................... [  2%]
+...................                                                      [  3%]
+packages/engine/tests/test_contract_v2.py .............................. [  6%]
+........................................................................ [ 13%]
+........................................................................ [ 20%]
+........................................................................ [ 27%]
+........................................................................ [ 34%]
+........................................................................ [ 40%]
+...........................................                              [ 45%]
+packages/engine/tests/test_coordinator_control.py ...................    [ 46%]
+packages/engine/tests/test_frame_corpus.py ............................. [ 49%]
+........................                                                 [ 51%]
+packages/engine/tests/test_handshake_deadline.py ...                     [ 52%]
+packages/engine/tests/test_i04_lifecycle_boundaries.py .............     [ 53%]
+packages/engine/tests/test_i04_progress.py ......                        [ 53%]
+packages/engine/tests/test_i04_round_faults.py ......................... [ 56%]
+.................................                                        [ 59%]
+packages/engine/tests/test_job_store.py ................................ [ 62%]
+........................................................................ [ 69%]
+.............................................................            [ 75%]
+packages/engine/tests/test_memory_guard_exit.py ........                 [ 75%]
+packages/engine/tests/test_protocol.py .............                     [ 77%]
+packages/engine/tests/test_resident_runtime.py .............             [ 78%]
+packages/engine/tests/test_runtime_bounds.py .                           [ 78%]
+packages/engine/tests/test_session_page_limits.py ...                    [ 78%]
+packages/engine/tests/test_stdio_session_shutdown.py .....               [ 79%]
+packages/engine/tests/test_storage.py .................................. [ 82%]
+........................................................................ [ 89%]
+........................................................................ [ 96%]
+.........                                                                [ 97%]
+packages/engine/tests/test_worker_owner_bootstrap.py ................... [ 98%]
+...........                                                              [ 99%]
+packages/engine/tests/test_worker_parent.py .                            [100%]
+
+============================ 1052 passed in 44.21s =============================
