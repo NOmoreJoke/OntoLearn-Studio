@@ -173,3 +173,11 @@ worker.py唯一未来维护已于2026-10-21T10:21:19.636646+08:00由总控effect
 source r4设计关闭总控P2R1（sealed/终态、accepted pin/迟到ack/满额与barrier/重建计账），独立复核无新增设计阻断，尚未实现。完整表摘要r1设计据T03实际str与canonical原implementation形状关闭两个空项，受限CSV utf-8-sig不冒称S1唯一编码，实际parser三身份仍待owner，golden只能synthetic；独立定点复核通过。T05 r2仅我方context/DTO/身份与未来诊断责任接受，Q6/新路由/新语义未批准；I05字符串term现存缺陷由原owner新候选修复，本线不消费未批准C3或新候选、不改已交worker。
 
 本地恢复提交后继续纯表摘要助手和同版ready的真实前置，Goal仍active。无push/指定双审/PR/CI/合并/发布新证据，父功能未完成。
+
+## b35总控审计收束与新phase合同
+
+总控固定b35全量独立读回d1ddcc…37be7已全文接收，无新增校验层阻断；43 response有13完整正例重复，83独立断言未封完整子shell exit对象的边界如实保留。旧f51/ff/b35实现和原始证据不改、不无变化复测。本阶段仍只是validator-only，真实3-ready未启用。
+
+总控source r4/digest独立设计9da317…8c39已全文读，r4原R1设计关闭；D1/P2现由digest r2一次有界capture/owner数据树/私有编码与Proxy/隔离边界补齐，内部独立355259…70463设计闭合。startup r1/r2及独立报告保留R1–4处置和旧SHA，内部设计项关闭，schema/有限新码/I06多层错误门/真实子进程仍待合同接受和实施。T03真实parser三身份缺失及五encoding/sheet新事实已全文接收，纯机制与正式身份/Job D7提案分开。
+
+helper未完成准备已存私有patch，产品全部恢复b35；patch含旧两遍caller读取方案，不能直接采用，不计45拟定golden或初步静态为实现通过。下一代码须root先读回闭合具体合同、明确新phase。当前只保存纯过程提交；Goal active，无push/指定双审/PR/CI/合并/父功能完成。

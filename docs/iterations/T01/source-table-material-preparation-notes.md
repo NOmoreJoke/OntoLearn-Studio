@@ -1,0 +1,9 @@
+# 完整表材料助手准备原件
+
+固定b35提交仍是当前受审输入；产品/共享fixture路径已恢复其Git原字节。`source-table-material-preparation.patch` SHA256 `ffdde792d12ed63705dc715e005cf7574af261dbfdc6b3cd487c2c48712c5845` 只保全在root冻结消息到达前产生的未完成代码准备，不是已装配候选、审查通过实现或可用产品。不得直接按本页应用到正在冻结审查的树。
+
+准备内容为TS/Python同步两遍有限预算材料编码及45个完整共享golden/反例草稿；六份T03真实投影只作接口数据，parser身份全部synthetic。材料大于单帧的295207字节机制预期来自独立stdlib编码，尚未运行被测助手比对。没有parser/source/runtime接线。
+
+仅初步contracts typecheck/ruff通过，未新增专属专项测试、未跑新全check/独立实现审查；不把这两个静态检查计作机制通过。已识别待实现时补齐：Python超大整数须先有限范围判断再math.isfinite/int转换，避免OverflowError泄露；完整预算边界、无稀疏数组/访问器、Unicode/整数值语义、空串与sheet控制字符、两遍输入稳定性均须实际验证。任何例外处理/编码预算结果仍以真实测试为准，不提前宣告性能或容量。
+
+root另派的digest设计审查及真实CSV编码/producer身份答复尚待；本线内部设计审查的无阻断不能替代该明确前置。解除本阶段冻结后按root精确新候选边界装入必要canonical及自有测试，先保留首跑结果再修复，不回写或重测无变化b35作为新助手证据。当前只继续设计文档，无GUI/旧tests/build/锁/CI/worker改动。
