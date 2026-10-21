@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import fixtures from '../../packages/contracts/v2/fixtures.json'
 import { validateV2 } from '../../packages/contracts/src/v2'
 import {
   acceptPage,
   exportPageCsv,
   queryMetadata,
+  queryJob,
   resultNotice,
 } from '../../apps/desktop/src/renderer/src/query/results'
 
@@ -128,5 +130,23 @@ describe('T04 result display uses approved result/page validators', () => {
     expect(exportPageCsv(accepted, columns)).toBe(
       '"告警","等级","状态"\r\n"\'=SUM(1)","""quoted""\nnext",""\r\n',
     )
+  })
+  it('accepts only strictly valid query jobs for this project', () => {
+    const frame = fixtures.cases.find((entry) => entry.name === 'response job.get')!.value as {
+      result: Record<string, unknown>
+    }
+    const base = {
+      ...frame.result,
+      capability: 'query.execute',
+      scope: 'asserted',
+      commitProgress: { mode: 'none' },
+      input: { ...(frame.result.input as Record<string, unknown>), scope: 'asserted' },
+    }
+    expect(validateV2('job', base)).toBe(true)
+    expect(queryJob(base, id(1))?.jobId).toBe(id(3))
+    expect(queryJob({ ...base, capability: 'reasoning.execute' }, id(1))).toBeUndefined()
+    expect(queryJob(base, id(20))).toBeUndefined()
+    expect(queryJob({ ...base, extra: true }, id(1))).toBeUndefined()
+    expect(queryJob(undefined, id(1))).toBeUndefined()
   })
 })

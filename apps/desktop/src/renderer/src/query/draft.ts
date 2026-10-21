@@ -136,3 +136,13 @@ export const emptyDirections = [
   '检查字段是否有记录，以及映射是否成功提交到当前项目。',
   '空结果表示本次查询未记录匹配项，不能据此证明业务事实不存在。',
 ] as const
+
+// Saved record identity is private UI state; the owning project service still
+// validates revision, authority and the formal ChangeSet at commit time.
+export const savedQuerySchema = z
+  .object({
+    definitionId: z.string().regex(/^[A-Za-z0-9_.-]{1,128}$/),
+    draft: draftSchema,
+  })
+  .strict()
+export type SavedQuery = z.infer<typeof savedQuerySchema>

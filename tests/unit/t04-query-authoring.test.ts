@@ -5,6 +5,7 @@ import {
   compileVisual,
   draftSchema,
   serializeTerm,
+  savedQuerySchema,
   visualSchema,
 } from '../../apps/desktop/src/renderer/src/query/draft'
 
@@ -82,5 +83,21 @@ describe('T04 offline query authoring', () => {
       source: 'model',
     }
     expect(draftSchema.parse(value)).toEqual(value)
+  })
+  it('retains distinct saved definition identities even when names match', () => {
+    const draft = {
+      name: '同名查询',
+      description: '',
+      sparql: 'ASK {}',
+      scope: 'asserted',
+      capabilityQuestion: '问题',
+      source: 'editor',
+    }
+    const first = savedQuerySchema.parse({ definitionId: 'Q-01', draft })
+    const second = savedQuerySchema.parse({ definitionId: 'Q-02', draft })
+    expect(first.definitionId).not.toBe(second.definitionId)
+    expect(first.draft).toEqual(second.draft)
+    expect(() => savedQuerySchema.parse({ definitionId: '../Q', draft })).toThrow()
+    expect(() => savedQuerySchema.parse({ definitionId: 'Q-01', draft, extra: true })).toThrow()
   })
 })

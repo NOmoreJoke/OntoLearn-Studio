@@ -30,6 +30,7 @@ try {
   const source = `
       import assert from 'node:assert/strict'
       import { renderToStaticMarkup } from 'react-dom/server'
+      import fixtures from './packages/contracts/v2/fixtures.json'
       import { QueryPage } from './apps/desktop/src/renderer/src/query/QueryPage'
       const id = (n) => '00000000-0000-4000-8000-' + String(n).padStart(12, '0')
       const hash = 'a'.repeat(64)
@@ -53,7 +54,16 @@ try {
       assert(!rejected.includes('alert(1)'))
       const evicted = render({...result,metadata:{...metadata,payloadStatus:'evicted'},page:null})
       assert(evicted.includes('载荷已回收') && evicted.includes(hash))
-      console.log(JSON.stringify({probe:'T04 static SSR',checks:['offline-disabled','scope-visible','text-escaped','historical-identity','executed-query','empty-directions','project-rejection','evicted-identity'],passed:true,boundary:'No browser interaction, CSP, real executor or persistence tested'}))
+      const baseJob = fixtures.cases.find(entry => entry.name === 'response job.get').value.result
+      const queryJob = { ...baseJob, capability:'query.execute',scope:'asserted',commitProgress:{mode:'none'},input:{...baseJob.input,scope:'asserted'},state:'running',finishedAtMs:null }
+      const wrongJob = renderToStaticMarkup(<QueryPage projectId={id(1)} catalog={catalog} job={{...queryJob,capability:'reasoning.execute'}} onExecuteDraft={async()=>{}} onCancelJob={async()=>{}} />)
+      assert(!wrongJob.includes('查询任务：') && !wrongJob.includes('取消查询'))
+      assert(wrongJob.includes('<button>执行查询</button>'))
+      const matchingJob = renderToStaticMarkup(<QueryPage projectId={id(1)} catalog={catalog} job={queryJob} onCancelJob={async()=>{}} />)
+      assert(matchingJob.includes('取消查询') && matchingJob.includes('运行中'))
+      const previousResult = renderToStaticMarkup(<QueryPage projectId={id(1)} catalog={catalog} job={{...queryJob,jobId:id(10)}} result={result} />)
+      assert(previousResult.includes('此前查询结果；与上方当前任务属于不同运行'))
+      console.log(JSON.stringify({probe:'T04 static SSR',checks:['offline-disabled','scope-visible','text-escaped','historical-identity','executed-query','empty-directions','project-rejection','evicted-identity','non-query-job-rejection','query-job-accepted','previous-result-labeled'],passed:true,boundary:'No browser interaction, CSP, real executor or persistence tested'}))
 `
   const mod = { exports: {} }
   new Function(

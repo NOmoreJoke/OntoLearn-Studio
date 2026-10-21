@@ -17,14 +17,14 @@
 2. `QueryPage.onExecuteDraft` 是内部 UI 事件；收到 draft 与用户选择的 current/historical snapshot，接线者用真实当前项目、快照、定义和参数版本创建任务。不能由 renderer 自报项目授权/历史有效性；历史/推导快照必须由引擎复验身份、状态、实现来源和输入版本。不自动将 stale 推导当 current。
 3. 现有 `result.page` 有 binding/rows/cursor，缺少查询列名、RDF term 类型、ASK 布尔结果约定与对应实际执行文本。需在唯一公共 schema/查询结果配置中批准这些元数据，绑定同一 resultId/snapshot/parameters/definition。页面的 result.columns/executedSparql 必须从该权威记录提取，不能把当前编辑器文字冒充实际执行文本。
 4. getResultPage/getResult/cancelJob 可复用已批准 bridge；适配器需检查 active project、generation、job/result/snapshot/scope/parameters，丢弃旧项目/旧请求迟到响应。cursor 必须使用引擎真实发行并绑定完整结果身份；不能从 LIMIT/OFFSET 自制 cursor。页面当前仅显示一页，不积累全结果。
-5. job.cancel 已受理不能显示已取消；页面展示真实 job 终态。需 I05 query.execute 的任务上限/排队/取消/失败/迟到历史、真实 cursor 续页及外联拒绝联验。指定外审前刷新实际 develop 和批准依赖。
+5. job.cancel 已受理不能显示已取消；页面复用严格 job 校验，只接收同项目 query.execute；与当前 job 不同的结果明确标为此前结果。失败解释复用现有受限 explainError。需 I05 query.execute 的任务上限/排队/取消/失败/迟到历史、真实 cursor 续页及外联拒绝联验。指定外审前刷新实际 develop 和批准依赖。
 6. 局部关系图需要真实 RDF term 元数据；当前通用 cells 只有 string/number/bool/null，无法可靠区分 IRI 与字面量。未擅自把外观像 URL 的值当关系。取得批准 term/列语义后补上适用图；FR-403 此项保持待验。
 
 ## T01：查询保存、恢复与失效
 
 不改 `storage.py` 或其他存储/协调器文件。`save_intent` 只返回私有定义意图：family=query/id/expectedProjectRevision/draftDigest/value；不是写入、提交标记或公共 ChangeSet 格式。T01 应由唯一项目服务转换为正式 preview/confirm/commit，并在事务内复验 expected revision。
 
-保存内容完整含 name、description、sparql、scope、capabilityQuestion、source。draftDigest 仅用于编辑身份，不等于引擎 parametersHash 或执行授权。查询文本/范围、事实、相关推导/规则/本体依赖由现有规则和真实 query dependency policy 派生；不根据模型配置自行加过期原因。重新执行显式选择 current/historical；历史标识持续展示。缓存回收只影响载荷，页面仍显示结果身份并提示重跑。
+保存内容完整含 name、description、sparql、scope、capabilityQuestion、source。页面私有 SavedQuery 为 `{definitionId,draft}`；载入后保存回调携带原 definitionId，null 表示新建，不能靠同名匹配；T01 仍复验正式项目 revision 与权限。draftDigest 仅用于编辑身份，不等于引擎 parametersHash 或执行授权。查询文本/范围、事实、相关推导/规则/本体依赖由现有规则和真实 query dependency policy 派生；不根据模型配置自行加过期原因。重新执行显式选择 current/historical；历史标识持续展示。缓存回收只影响载荷，页面仍显示结果身份并提示重跑。
 
 T01 需提供保存后权威查询读取及同项目/旧基线拒绝、原子失败/撤销、项目包迁移信息。页面保存 Promise 只可在真实保存流程成功后 resolve；未接线默认禁用。不能把本机草稿持久化另设为源真相。
 

@@ -15,3 +15,5 @@
 验证：专属 pytest/vitest、`npm run check`；当前尚未运行。仅无窗口 CLI，不运行本机 Electron/e2e/native/HMR/凭据提示。外审 ZCode/MiniMax 资源由总控预约；指定同候选双新审、push/PR/CI/正常合并与远端核验均待实施。
 
 已实际接收总控补发的第九节全文与无桌面段全文；未重建 Goal 或改写历史输入。第九节 SHA-256 `1f57a08e909e9d49a6e2c2d6e7012beec3e22b8e3c9e8eacad22c84dfb2d4b54`；无桌面段 `5215df2ead4745e7d74f137c4fa6ac837a54114590b5dee2d83cd16bb728551d`；共同指令补发 SHA `9717f699e14b5941e15d90269f33cbebc32ef9bec6e7439739be848753419880`。本线未出现实际额度告警、未查询凭据/消费重置/新增付费，未运行 GUI。额度告警由唯一负责人核实；Codex 每次兑换仍需本人该次确认，阈值/幂等/读回要求保留。
+
+本地恢复提交：`4c17a38195982164cf01541fd212c385e558ac7e`。对应完整 `npm run check` 已终态通过：TS 17 文件/640 项、Python 1080 项，lint/format/types/build/ruff 通过；原始失败与最终日志保留本线 ignored evidence，哈希在 verification-summary.json。内审 1 的实际终态不通过（两项 P2），已按 internal-review-1.md 修复保存定义身份、任务能力限定和旧结果标识，正在运行修复版 check 与独立复核。修复版定向 TS 12 项、静态 SSR 11 项已通过；未替代正式接线/父验收/指定双外审。

@@ -11,6 +11,7 @@ export interface QueryResultIdentity {
   parametersHash: string
 }
 export interface QueryResultMetadata extends QueryResultIdentity {
+  jobId: string
   kind: 'query'
   state: 'current' | 'stale' | 'historical'
   payloadStatus: 'available' | 'evicted'
@@ -95,4 +96,19 @@ export function exportPageCsv(page: QueryPageData, columns: readonly string[]): 
       .map((row) => row.map(escape).join(','))
       .join('\r\n') + '\r\n'
   )
+}
+
+export function queryJob(raw: unknown, projectId: string) {
+  const parsed = z
+    .custom<import('../../../../../../packages/contracts/src').JobView>((value) =>
+      validateV2('job', value),
+    )
+    .safeParse(raw)
+  if (
+    !parsed.success ||
+    parsed.data.projectId !== projectId ||
+    parsed.data.capability !== 'query.execute'
+  )
+    return undefined
+  return structuredClone(parsed.data)
 }

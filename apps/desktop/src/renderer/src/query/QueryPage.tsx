@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import type { JobView } from '../../../../../../packages/contracts/src'
+import { explainError } from '../task-presentation'
 import {
   alarmTemplate,
   compileVisual,
   draftSchema,
+  savedQuerySchema,
+  type SavedQuery,
   emptyDirections,
   type QueryDraft,
   type VisualQuery,
@@ -12,6 +15,7 @@ import {
   acceptPage,
   exportPageCsv,
   queryMetadata,
+  queryJob,
   resultNotice,
   type QueryPageData,
 } from './results'
@@ -28,14 +32,14 @@ export interface QueryPageProps {
     predicates: { iri: string; label: string }[]
   }
   alarmVocabulary?: { alarmClass: string; severity: string; status: string }
-  savedQueries?: QueryDraft[]
+  savedQueries?: SavedQuery[]
   job?: JobView
   result?: { metadata: unknown; page: unknown; columns: string[]; executedSparql: string }
   onExecuteDraft?: (
     draft: QueryDraft,
     input: { selection: 'current' | 'historical'; snapshotId: string | null },
   ) => Promise<void>
-  onSaveDraft?: (draft: QueryDraft) => Promise<void>
+  onSaveDraft?: (draft: QueryDraft, definitionId: string | null) => Promise<void>
   onNextPage?: (cursor: string) => Promise<void>
   onCancelJob?: (jobId: string) => Promise<void>
 }
@@ -51,6 +55,7 @@ const initialDraft: QueryDraft = {
 export function QueryPage(props: QueryPageProps) {
   const [draft, setDraft] = useState<QueryDraft>(initialDraft)
   const [visual, setVisual] = useState<VisualQuery>({ classIri: '', fields: [], conditions: [] })
+  const [definitionId, setDefinitionId] = useState<string | null>(null)
   const [snapshotId, setSnapshotId] = useState('')
   const [notice, setNotice] = useState('')
   const [busy, setBusy] = useState(false)
@@ -86,7 +91,10 @@ export function QueryPage(props: QueryPageProps) {
       if (token === request.current) setBusy(false)
     }
   }
-  const withDraft = (operation: QueryPageProps['onSaveDraft'], success: string) => {
+  const withDraft = (
+    operation: ((value: QueryDraft) => Promise<void>) | undefined,
+    success: string,
+  ) => {
     const parsed = draftSchema.safeParse(draft)
     if (!parsed.success) {
       setNotice('请填写查询名称和 SPARQL，并检查字段格式。')
@@ -129,7 +137,8 @@ export function QueryPage(props: QueryPageProps) {
       resultError = true
     }
   }
-  const job = props.job?.projectId === props.projectId ? props.job : undefined
+  const job = queryJob(props.job, props.projectId)
+  const jobError = job?.error ? explainError(job.error, 'task') : undefined
   const activeJob = job && ['queued', 'running', 'cancelling'].includes(job.state)
   const download = () => {
     if (!result?.page) return
@@ -158,7 +167,9 @@ export function QueryPage(props: QueryPageProps) {
             onChange={(e) => update({ scope: e.target.value as QueryDraft['scope'] })}
           >
             <option value="asserted">断言事实</option>
-            <option value="asserted+derived">断言事实＋当前推导结果</option>
+            <option value="asserted+derived">
+              {snapshotId ? '断言事实＋快照推导结果' : '断言事实＋当前推导结果'}
+            </option>
           </select>
         </label>
         <label>
@@ -472,9 +483,16 @@ export function QueryPage(props: QueryPageProps) {
             </button>
             <button
               disabled={!props.onSaveDraft || busy}
-              onClick={() => withDraft(props.onSaveDraft, '此版本草稿保存流程已完成。')}
+              onClick={() =>
+                withDraft(
+                  props.onSaveDraft
+                    ? (value) => props.onSaveDraft!(value, definitionId)
+                    : undefined,
+                  '此版本草稿保存流程已完成。',
+                )
+              }
             >
-              保存到项目
+              {definitionId ? `保存到项目（更新 ${definitionId}）` : '保存到项目（新查询）'}
             </button>
           </div>
           {!props.onExecuteDraft && <p>真实查询服务尚未接入，当前可编写草稿。</p>}
@@ -491,17 +509,27 @@ export function QueryPage(props: QueryPageProps) {
           >
             查看 T08 提供的模型草稿
           </button>
+          <button
+            onClick={() => {
+              setDefinitionId(null)
+              update(initialDraft)
+            }}
+          >
+            新建查询
+          </button>
           <h3>复用已保存查询</h3>
           {(props.savedQueries ?? []).map((saved, i) => (
             <button
               key={i}
               onClick={() => {
-                const parsed = draftSchema.safeParse(saved)
-                if (parsed.success) update(parsed.data)
-                else setNotice('保存的查询格式不兼容，请检查项目版本。')
+                const parsed = savedQuerySchema.safeParse(saved)
+                if (parsed.success) {
+                  setDefinitionId(parsed.data.definitionId)
+                  update(parsed.data.draft)
+                } else setNotice('保存的查询格式不兼容，请检查项目版本。')
               }}
             >
-              {saved.name}
+              {savedQuerySchema.safeParse(saved).success ? saved.draft.name : '格式不兼容的查询'}
             </button>
           ))}
         </section>
@@ -524,6 +552,14 @@ export function QueryPage(props: QueryPageProps) {
               }[job.state]
             }
           </p>
+          {jobError && (
+            <div role="alert">
+              <p>{jobError.what}</p>
+              <p>{jobError.why}</p>
+              <p>{jobError.fix}</p>
+              <p>{jobError.detail}</p>
+            </div>
+          )}
           {activeJob && (
             <button
               disabled={!props.onCancelJob || job.state === 'cancelling' || busy}
@@ -549,6 +585,9 @@ export function QueryPage(props: QueryPageProps) {
         {!props.result && <p>尚未取得实际执行结果。模板和草稿不会生成示例结果。</p>}
         {result && (
           <>
+            {job && result.metadata.jobId !== job.jobId && (
+              <p>此前查询结果；与上方当前任务属于不同运行。</p>
+            )}
             <p className="query-result-identity">{resultNotice(result.metadata)}</p>
             <details>
               <summary>本次实际执行的 SPARQL</summary>
