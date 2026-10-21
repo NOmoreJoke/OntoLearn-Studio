@@ -42,3 +42,11 @@
 第九节与无桌面段全文已读/透传独立 agent：第九节 SHA `1f57a08e909e9d49a6e2c2d6e7012beec3e22b8e3c9e8eacad22c84dfb2d4b54`，无桌面 `5215df2ead4745e7d74f137c4fa6ac837a54114590b5dee2d83cd16bb728551d`，早期补发共同指令 `9717f699e14b5941e15d90269f33cbebc32ef9bec6e7439739be848753419880`；后续共同指令 `df09014af4d6cf757ca0977a995497f3646cd330e8921710876663a40a8cbcb4` 和 external-review-permissions.md 亦已全文读/透传并实际回执。
 
 ZCode 默认 yolo、MiniMax 默认 bypassPermissions，实际任务仍须读回；只读审查、指定模型和无桌面限制不变。本线未重建 Goal，未 GUI/Electron/e2e/native/HMR/凭据提示，未 secret/模型外发/新增付费/额度兑换。Codex 兑换仍须本人该次确认/阈值/幂等/读回，账号唯一负责人处理真实告警；无政策变化重测或放宽验收。
+
+## 总控审计 R1：原始日志可恢复保全
+
+总控审计 `T04-controller-service-candidate-audit.md`（SHA `ac844c9c75255127df142d3a6a23111213bb3e3fb6220dd33155eb915a6150a8`）确认固定候选/汇总/37 份原日志一致；本次只补 ignored 日志的 Git 可恢复副本。候选仍为 `554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6`，审计流程 HEAD 为 `19ef25259e6304949cef4a1993b006de11fb885b`。33 文件 manifest 针对固定候选；当前 status 流程内容已更新，不能声称当前物理 33 文件全等。
+
+[无损归档](evidence/raw-logs-554ec89.tar.gz) 6081 字节，SHA `c17c2595d79900c539e4a0aa61bc1ad012e058af9e666282aa9c1f6079064865`；[逐成员索引](evidence/raw-logs-554ec89.index.json) 记录全部 37 成员、原始 61602 字节及每项 SHA/大小，并链接旧、新三份汇总的固定提交与哈希。已重新打开归档、完整读取全部成员，与原件逐字节/大小/哈希相等；首次失败原件及空日志保留，旧汇总未改。恢复方法见[恢复说明](evidence/raw-logs-recovery.md)。未重跑不变产品测试，未改产品代码/公共契约。
+
+最新共同指令 SHA `b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39` 已全文读并透传独立审查 agent：T01 接收 storage/Python4/main8，T03 接收 engine packaging/entrypoint，其余按正文；仅更新归属，不代表批准未合并实现，也不放宽既有无桌面/指定外审资源/推送门。
