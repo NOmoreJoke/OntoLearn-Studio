@@ -1,0 +1,112 @@
+# I05 C4 固定源码与字符串修复证据独立读回
+
+结论：固定产品 `1a79731091e671c497824c94e12dae34a4e8609b`、完整源码测试 `40c18ea1b9ce4fef9a5235718fd7e622e2d06cc4` 的本次字符串修复有充分有界证据关闭 **P1 I05-C3-STRING-1**，本次未发现新增阻断。此结论来自实际固定 diff、全部封存成员哈希、完整结果重组及原始调用核对，不依赖内部报告末尾的 Pass。它不宣布 C4 最终 ready、指定双审、CI、远端、whole I05 或生产验收完成。
+
+审查者：总控独立 agent `i04_reports_audit`，2026-10-21。只写本报告；未运行产品、测试、GUI、容器或原探针，未 import 产品/执行归档脚本，未改功能树、状态或共享文件。证据解析仅用 Git、Python 标准库 JSON/tar/hash；额外只读核了四份本地既有 executable 的字节哈希。已读现行 AGENTS（78df…）及 audit-verify-explain-grade-5 技能，未因技能扩大任务。
+
+## 1. 固定身份和可恢复原件
+
+审查 worktree 为 `.worktrees/I05-semantic-validation`。实现比较固定 `3289d67dbfb19545c7a3b3b26753cdd0065741bb → 40c18ea1b9ce4fef9a5235718fd7e622e2d06cc4`；证据固定过程 `d233d2915c8c3bf95e155b3ad0180cd42cb44049`。观察到 live HEAD 已是 `6e6e26e872c691eb75d058d05a3a51ca439b1dba` 且 AGENTS dirty，但未将后来源码/文档当受审对象。1a→40c 只有 `test_semantic_string_identity.py` 变化，七份产品源字节完全相同。
+
+| d233 固定原件 | 字节 | SHA-256 |
+| --- | ---: | --- |
+| `docs/reviews/I05/integrated-c4-verification.md` | 9505 | `774b306ec6b9315600aec5c58dcebc1d95e0edbd09cb02b946c2cc7b5452fccc` |
+| `…/evidence/integrated-c4/internal-review.md.raw` | 16998 | `d053c56b49f635ce6fbe3e1a6c44f0bc55c4816b5a2da3b68684336d0fd61a97` |
+| `…/manifest.json` | 386777 | `b5c4bb3a8a5cd2a5cb401da71db71aefe77a791058478cd044615e7cab6396cd` |
+| `…/raw-evidence.tar.gz` | 6516119 | `eae749d05ac61b9cc726626f008507b3484d1ba8b1980f9f7a33eb0f51871acc` |
+
+实际读出 **1254 个唯一、相对安全路径的普通文件，62,425,493 原字节**；每个成员均与 manifest 的 member/bytes/SHA 一致，没有只数数量或只读 summary。归档可从 d233 Git blob 恢复。逐份比较 source-export-manifest 的 **1238 个文件**与40c Git：除 AGENTS 按清单指定的固定 `docs/reviews/I05/inputs-c2/AGENTS-current.txt` 恢复外，全部原路径 Git 字节/hash 一致，AGENTS 为78df…；36份 stdio 产品/契约/Session 输入也逐份匹配40c。两个独立回归导出的43份旧3289/新838文件也分别逐项与所列固定 Git 相等。
+
+205执行输入主机/容器相等及64原保护源相等有原 binding/post receipt；本次没有将这两个计数直接当最终 candidate/preflight 清单。本次独立实核的更宽1238源码恢复表覆盖其固定字节，最终执行输入构成及后续 delta 仍由新候选预检记录。
+
+原 C3 finding、manifest、observed-outcome 和45成员包均与 `c11d6b414bdaaba0eac5402931881e338bc9bbd9` **逐字节不变**。原包81904B/SHA `8119057c2a8c798920e67641b01b5b40b5d2c61b2ac49eb87fc582960f03b307`；后增独立审查四文件不混作改写旧反例。
+
+## 2. 修复是否覆盖原根因
+
+3289→40c 的产品源码实际只改授权七文件；worker、Store、coordinator、rdf_snapshot/canonical、公共协议、依赖/锁、构建/CI及桌面路径无本次代码变化。测试只改两处直接预期并新增字符串专属文件。七源在1a/40c完全相同：
+
+| `packages/engine/src/ontolearn_engine/` | 字节 | SHA-256 |
+| --- | ---: | --- |
+| `resources.py` | 2406 | `29697d034d0ea7f401dced45ca6ff42c2baf85eac4757d124d9de843482e3143` |
+| `semantic.py` | 23890 | `b8c4ed3c3e8aa4e527858d0fd9589ebc7581118af990a0e977f80111ee35e017` |
+| `semantic_execution.py` | 19390 | `69f453be13734a02bf92ce468de146198ad9bd2b10595b892b1217f1643e4a27` |
+| `semantic_query.py` | 6448 | `fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f` |
+| `semantic_samples.py` | 33858 | `387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9` |
+| `semantic_scopes.py` | 13051 | `aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf` |
+| `semantic_turtle.py` | 3951 | `9513e064634952ac68b13d3f41526407d7ec37860b56638a0c3dfd4aae1dc0e2` |
+
+完整读 diff、最终 query adapter、专属486行测试、新 shared suite 以及必要已有调用后，判断如下。
+
+- `canonical_string` 仅把无语言标签、datatype=XSD.string 的 Literal 转为同 lexical 的 plain 表示，normalize=False；不 trim/casefold/NFC，不按数值相等合并 numeric/date/lang。LexicalSink 默认采用；独立 Graph 前门经 `_copy`、query/reason/SHACL data+shape 都在私有图使用同身份，原 Graph 不改。
+- `_canonical_rule` 先校验原 Rule 形状再转 when/head；规则冻结、单次匹配、限额和全部 trace 仍保留。selected prepare/project 与 `_source` 同步规范化规则和输入 hash，避免只修显示 N3 而破坏来源/依据校验。
+- `_term` 使用 `canonical_strings=False` 先解析原文，仍检查唯一三元组、固定 s/p、URIRef/Literal 与 **value.n3()==原 text**；合法显式 string 校验成功后才转语义身份。这关闭了“统一后反而拒合法 typed”的风险，空白、非canonical escape、尾注释和注入仍有反例测试。
+- query 私有 translated algebra 同时遍历 Literal、CompValue、普通 dict（覆盖 VALUES）、list/tuple；每个本地 Expr 仅包装原 bound callback 的返回 term。原 Expr.eval 的 ctx 设置/清理及 SPARQLError 语义保留；OPTIONAL 的全局 TrueFilter 在包装前复制。没有进程全局 parser/Literal/evaluator monkeypatch；适配不变量失败仍在 INVALID_QUERY 捕获外。原 numeric grammar、read-only/外联/非确定性/aggregate guard 未改。
+- semantic 与 resources 同为 `i05-finite-6`；engineVersion0.1.0、原 lock `86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73` 不变。没有引入 T05 新 comparator/D3/D4、多head或语言产品政策，也没有修改 S1 已存事实/定义和历史结果。
+
+## 3. 19任务真实 stdio：完整输出、来源与分页
+
+已实际全文读 v2 driver，另用本次标准库审计代码重建数学预期；没有执行 driver 或调用引擎。每组19不是19条纯函数断言：归档含实际 semantic.start、job.get、result.get、result.page 的完整 response，以及 public、authenticated、v2原存储行。driver 用既有 Session(test_mode=False)，正常 coordinator/isolated worker，再关闭并重开 JobStore 回读；没有 fake finish。
+
+对十组每组19份、共 **190 完整结果**，逐份检查 job/metadata/implementation、project/job/snapshot/parameters/scope/dependency/definition、operation请求、resultRef、succeeded/error/commitProgress，重算 payload/rows SHA，并按 JSON pointer 分片重组所有 payload leaves。新8组各2802行、旧2组各2288行（含header）。v2六组各19份 raw 原存储 payload、payload_hash、rows_hash、storedRows 与 authenticated/public 全相等；v1没有这些新增 raw 文件，未倒贴v2完整性声明。
+
+对 v2 四组新运行，独立核了完整7个结论、8条 trace 的每个 rule/result/inputs/basis；两次 emit 指向同一个图结论仍保留两条依据。按 fixture 原文重算 normalized rule source、asserted/ontology hash、全部 selectedFacts 及其 asserted/rule 来源；核六种 runtime构造、typed VALUES、sameTerm、DISTINCT/COUNT、空串和转义 lexical 的完整 query 对象，以及 inTyped/max1/min2/断言负控的完整 SHACL 报告。selected max1 为 true，min2 为唯一完整 MinCount violation，value=null，focus/path/sourceShape/severity 均正确。资源所有 role/ref 也等于从固定 seed/完整 payload 推得的预期内容 digest，不只比结论数。
+
+| v2实际运行 | 任务/行 | 实际结果 |
+| --- | --- | --- |
+| independent-source-v2-01 | 19 / 2802 | 完整新预期相等，521条原RPC |
+| macos-packaged-v2 | 19 / 2802 | 完整新预期相等，565条原RPC |
+| linux-source-v2 | 19 / 2802 | 完整新预期相等，536条原RPC |
+| linux-packaged-v2 | 19 / 2802 | 完整新预期相等，585条原RPC |
+| macos-old-c3-v2 | 19 / 2288 | 真实finite5，语义oracle17不符，exit1 |
+| linux-old-c3-v2 | 19 / 2288 | 真实finite5，同样17不符，exit1 |
+
+四组新运行的每个 start/terminal/get 均能与对应 public 原件匹配；每次 pageSize17 的原请求连续两次 response 相等，游标连续、binding相等、尾cursor=None，拼接页与完整 rows 相等。四组 comparison 原文相同，SHA `eb51f12c63c9ea6abac3cd745aeab887ab9b0f3310071da0fe0c2c2901f8cb2b`。去临时result标识及validationBinding包装的比较副本没有替代原完整载荷检查。
+
+旧两组不是先硬编码finite6而拒启动：实际job/metadata/payload采用完整finite5三字段，两包都完成19任务后才做语义oracle；实际5结论/5trace、inTyped违规、max1错误false、min2错误true，17不符是同一字符串缺陷的多处表现。summary硬编码7/8是oracle规模，不是旧observed结果。两组完整旧比较同为 `306d87e845f372a0b93cb078f10283defac7768b9301da9f5a7b37dfeb9f7ab0`。
+
+v1四组新运行同为 comparison `74ab416cb54767e83eeea849d87eb4daadfc67ae89e5975ed6c537e984536b1f`；v2为让旧版也实际执行两个head，把第四Rule前件从typed换为plain、head仍typed并重新固定seed。**未用v1绿替v2绿。** 首个source-01脚本无开跑时SHA，后备份不能补成当时已固定；带guard的source-02及后续运行另有launch绑定。这个历史限制已在原报告保留。
+
+资源证据边界：归档保留完整约束/事实/推导内容和资源引用，可独立重算其预期SHA；driver在实际打开的DB读取 semantic_resources 并逐内容/hash断言，原退出结果为绿。封存的 `.raw.json` 只有原 semantic_payloads 行与display rows，没有另存每个 semantic_resources SQL行，SQLite明确排除。因此本次不声称已从Git离线重开原DB或直接读取原资源表；这不影响上述完整内容地址/载荷核验，但最终说明不得把运行断言扩大为原DB全量恢复。
+
+## 4. 复用原C3类型见证与历史身份门
+
+内部独立实现审查另有原9canonical事实类fixture，区别于19任务含edge的6事实fixture。实际读其完整旧12、新worker18、新stdio18、historical2结果，并重新逐leaf解码50份：旧1343行、新1802+1802、历史382，共 **5329行**，全部与payload相等；这是该probe的四列projection，不能混成原C3五列/1347行或声称原UUID复跑。
+
+完整新worker/stdio载荷支持 plain/typed Rule均匹配三个subject、typed ASK true、VALUES完整三行、DATATYPE string/sameTerm true、inPlain/inTyped/datatype正确、asserted与selected max1/min2正确及六runtime构造正确。其7结论8trace对象保留全部依据。原18+18+2=38新任务，不与主19×4混作某次同一运行。
+
+关键原件：`internal-review/old5-complete.json` SHA `b0fcdd1e16e3d4f69e8bc0358b237d69bf273e3c52843e5c39b582f57e8284b5`；worker6 `d5b132edc71949ddd358c03b6366f4e3c10ec9d94b8462879d334516dfe358db`；stdio6 `2d3d6139b53824f97754347cea793f96f9baa717cc0ea5f08d2ec6674e1a1cf8`。
+
+`history-identity.json`1009B/SHA `687b6dd96437d5c034280be5e4180da556036c7f276ea5b83493e74fe1cab4ae`、完整frontdoor/history脚本和各运行退出原件共同支持：旧finite5真实producer先完成，新finite6打开同一临时库后旧metadata/payload/rows仍原身份可读；新current及historical选择旧结果都准确返回四字段 IDENTITY_CONFLICT；改变新consumer的engineVersion/semanticsVersion/lockHash分别拒绝。原既有JobStore代码的selected门仍比较完整implementation，semantic_result认证producer的原身份而不强制升级到当前版本，静态路径一致。
+
+`history-success.json`135660B/SHA `f55d0cb7df5755c280e49573cc2328d7cc909211434947c24ce2788b51a9ca1d` 中两个真实新historical selected的job/metadata/完整payload/rows正确；query完整三subject，validation max1通过。旧DB实际raw payload UTF8/hash检查receipt所列 payloadHash `36e78fbb9b12e2123dad2f84982a5eaea6cc0f3c98a2f7517b598a2a1e3c0329`、rowsHash `6d94752770aaded97dad16c3b6b88512a4552d375bcd4f1bb12accc8a82dba6e` 经本次从旧完整receipt独立重算一致。没有重签/改标签/重算旧历史；未把“旧结果原字节”扩大为含新任务的DB整体hash不变。历史拒绝补充以完整错误receipt+实际脚本/退出原件为证，并非另有逐RPC transcript，亦未声称本次重开原DB。
+
+## 5. 测试归属、包内身份与失败保留
+
+最终40c专属测试18211B/SHA `0992663e427649870c3fb07047a415dd95b2bd93a8a754babb190972fdbe5240`，完整73项。旧3289首63项实际40fail/23pass；新增隔离10项旧版2fail/8pass/63deselected，独立838固定导出73全绿。838→1a只有 `_term` 格式折行，产品行为相同；40c最终完整check也包括全部73。旧红没有以版本数字断言冒充语义红。
+
+Mac主线check首轮672TS后ruff格式失败，exit1，未跑成Python全绿；第二轮1837Python/672TS exit0；追加10项后最终 **1847Python、672TS exit0**，80.09秒，lint/format/types/build/Ruff均有原日志。最终check7304B/SHA `b16e34efc8fad814639dfc4443ca3be0cbc47125450f56dfeb8ad40bec502dce`。独立相关套件522项/33.31秒绑定其1a导出，不称是40c主check；Linux最终受影响360项/9.32秒，不称Linux全仓。sources12日志/exit0另存。
+
+包内七模块证据9665B/SHA `d59d80c8ff3e070ab544a13946f093f762ad4963f3776fc4b6bd2a35286220b0`：已全文读 verifier，确实读取实际 CArchive/PYZ code object，按archive co_filename以Python3.12 compile固定源、dont_inherit=True/optimize0比较完整code object；每个sourceSHA本次均独立与固定1a Git匹配，Mac/Linux/firstPreserved记录的七module marshalSHA对应一致，stdout也保存。此为原线实际code-object核验原件；本次没有再次提取或编译/执行二进制，不能说是本次重演。
+
+本次额外只读本地四份现存executable，实际bytes/SHA与原件一致：
+
+| executable | 字节 / SHA-256 |
+| --- | --- |
+| 新Mac release | 6006240 / `fd4b5ab3ca97334c81a4363bb1c9141bf1db9ebbeaf1f555e456b47510e4841f` |
+| 原封C3 Mac app | 5999888 / `18142f71595c47f4e5a4c379c13f6bd00ac7aca6418c7564fc4451b1ec208118` |
+| 新Linux拷贝 | 5968584 / `184c8542aaf8c189f980ad35984db5734b769f3a386895619cc8f5563e4cbdcc` |
+| 首Linux保留拷贝 | 5968584 / 同一 `184c8542…` |
+
+原C3 Linux executable SHA `22beae772922c06c340ad904c414e2581cb52ce783fb9c44d379791e338ee4da` 与两旧包v2 runtime/命令/结果对应；它在原容器，本次未入容器读取，区别于上表四份本地亲核。旧包、首包、失败均有各自身份，不因新包绿而覆盖。
+
+Linux首源码/test pycache问题必须准确归属：第一轮source实际resources导入finite5而文件为6；清src缓存后的第二轮仍有1failed/359passed；第二轮旧pytest rewrite code object未保存，测试缓存归因为有限推断，最终清tests缓存360全绿。**首包该轮没有执行runtime验收，事后实核其七模块是finite6，hash等于最终Linux包；不能称首包运行finite5。** 最终两个包另有真实runtime suite/stdio及本次完整v2载荷支持。
+
+还保留 suite首次targetNode超原guard错误、targetClass修正；query prototype v1全局TrueFilter负证据/修正；独立pure首oracle全unbound BIND的旧行为对照、计算parser.name观察器干扰原stdout/stderr和修正。这些都不洗成产品通过。final raw有cold/warm、34精确case、12并发、strict合法typed与非canonical/注入、8类lexical及numeric/lang负控；本次未重跑，不扩大为所有SPARQL/BCP47/类型标准符合。
+
+## 6. 允许继续与未关闭门
+
+允许以本固定七源和直接回归登记本次P1修复已闭环，推进真实新候选冻结/指定双审准备；没有需要将此修复交给T01 worker/Store或消费未批他线代码的依据。后续若源码/测试/执行输入变化，按实际delta重新绑定和补审，不把本报告跨版本沿用。
+
+raw排除SQLite/WAL/SHM/锁、解释器环境/cache、app/engine二进制和源码transport；成员/源码可从固定Git恢复，但原DB和签名app不能从此包恢复。四份本地executable hash核对不替代远端持久保全或整包签名/干净设备证据。最终发布需要的资源保全依原门继续。
+
+本次没有重新审计未变化B1全矩阵、Linux native/crash/focus等原门，不以其摘要替代原件审计；Linux容器native与Mac CLI也不能替Mac/Windows本版native。C4完整最终输入/preflight、指定同版双审、真实CI/正常合并/远端、生产/签名/干净设备及whole I05/Q6仍未由本报告关闭。量测原Linux appBytes0的Mac-only路径错误及旁附求和修正保持原边界，不当性能或容量通过。本结论限于固定库有限字符串身份修复及本次直接证据。
