@@ -1,0 +1,31 @@
+{
+  "version": "t02-boundary-corpus-1",
+  "purpose": "Future approved I05 import/roundtrip integration inputs, not executed product acceptance",
+  "files": [
+    {
+      "path": "manual-supported.ttl",
+      "sha256": "fea927fa9393e82ba0a6d0b71c6387d4892b8599384edba26db8ad8d49e3d49b",
+      "expected": "supported-basic-rdf"
+    },
+    {
+      "path": "supported-shacl-template.ttl",
+      "sha256": "44684f7d49e33cc4c9b7a28b11549715df0f4f73843bc69455702134cf2202c2",
+      "expected": "supported-template-list"
+    },
+    {
+      "path": "unsupported-owl.ttl",
+      "sha256": "7fb25d98e1968e444675f783d6128562fb8f082725d6202136bdeecd9e8a8006",
+      "expected": "reject-unsupported-construction"
+    },
+    {
+      "path": "unsupported-shacl-path.ttl",
+      "sha256": "d864d43a223baaf3762816a1ba591da157e973058ec7987fbce4a0b3088de8de",
+      "expected": "reject-unsupported-path"
+    },
+    {
+      "path": "invalid-turtle.ttl",
+      "sha256": "8f003454f79b131b82853cb763685fab447e5cd02018b69eb56ba1d2636851ed",
+      "expected": "reject-syntax"
+    }
+  ]
+}

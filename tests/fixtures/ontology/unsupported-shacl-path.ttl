@@ -1,0 +1,5 @@
+@prefix ex: <urn:t02:> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+ex:EquipmentShape a sh:NodeShape ; sh:targetClass ex:Equipment ; sh:property [
+  sh:path [ sh:inversePath ex:hasAlarm ] ; sh:minCount 1
+] .

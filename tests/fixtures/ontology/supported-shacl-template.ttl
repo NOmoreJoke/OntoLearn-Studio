@@ -1,0 +1,9 @@
+@prefix ex: <urn:t02:> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+ex:EquipmentShape a sh:NodeShape ; sh:targetClass ex:Equipment ; sh:property [
+  sh:path ex:name ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string
+] .
+ex:AlarmShape a sh:NodeShape ; sh:targetClass ex:Alarm ; sh:property [
+  sh:path ex:level ; sh:in ("High" "Low")
+] .

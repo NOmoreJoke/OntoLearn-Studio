@@ -1,0 +1,94 @@
+{
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "scope": "T02 private local-service candidate, formal interfaces and parent acceptance pending",
+  "commands": [
+    {
+      "command": "npm run check",
+      "log": "check-fourth.log",
+      "exit": 0,
+      "vitest": 633,
+      "pytest": 1075,
+      "python_domain_cases": 23,
+      "ts_view_cases": 3
+    },
+    {
+      "command": "npm run verify:sources",
+      "log": "sources-first.log",
+      "exit": 0,
+      "archived_sources": 12
+    },
+    {
+      "command": "npm run lint",
+      "log": "lint-post-probe.log",
+      "exit": 0
+    },
+    {
+      "command": "npx prettier --check docs/iterations/T02 apps/desktop/src/renderer/src/ontology tests/unit/t02-ontology-views.test.ts",
+      "log": "format-post-probe.log",
+      "exit": 0
+    },
+    {
+      "command": "T02_HEADLESS_EXECUTABLE=<existing Chromium headless shell 1234> node docs/iterations/T02/ui-probe/check.mjs",
+      "log": "ui-probe-fifth.log",
+      "exit": 0,
+      "browser": "151.0.7922.34",
+      "purpose": "synthetic callback UI state probe only; no IPC/Store/product execution"
+    }
+  ],
+  "first_failures_preserved": [
+    "check-first.log: Prettier style",
+    "pytest-first.log: expected reference sort order",
+    "ui-probe-first.log: locked Playwright browser 1248 absent",
+    "ui-probe-fourth.log: multiline assertion retained single-line expectation"
+  ],
+  "log_hashes": {
+    "check-first.log": "e2a881e6278b8ca66881826079f5e2b24bb0f2f9a081abe1e0f516def7749a05",
+    "check-fourth.log": "ea0d77a75ed70deca1a4009f4d5062980a9f56cd25522085fecd6cbce146839a",
+    "check-second.log": "34fe6cd9f3cd8c8cc31acb229ead36312a415402cd40f9a499e78a57581e4c69",
+    "check-third.log": "f5b35be8f76ce836a2b49d4db1649664df8b133b9fd595ea7853f4cadaed9d0f",
+    "format-final.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+    "format-post-probe.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+    "lint-final.log": "971d100f2564ba4c3ebd0516d23344f8a1a27b23e5e199fd0f82dfffe4eb21ec",
+    "lint-post-probe.log": "971d100f2564ba4c3ebd0516d23344f8a1a27b23e5e199fd0f82dfffe4eb21ec",
+    "npm-ci-first.log": "cccad48bb5c58ef9d6fb03930886cd49ace31a14b9ed0ba537de43f2c57853d1",
+    "pytest-first.log": "29ea892828d9e03d20a1a1449a5a187f2cf2abb310cabf9c2c3726c47dc370f2",
+    "pytest-second.log": "0e55c03a487f33a998a152dd8a38f58bb60dbf0168a447b02921567ebe6e0b36",
+    "pytest-third.log": "4180455bfd3c95077fd59776dcae69c3a9a7cef18311fb2f922a413a55372c14",
+    "sources-first.log": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
+    "ui-probe-fifth.log": "dd9d29499c3c1e56d0e073832c336f9727c09fc47028248b393243f69978eb8f",
+    "ui-probe-first.log": "032d7c4ab974d5c68aa9c61f0a78f2c7261448cba655c1862b85c041be5bf20a",
+    "ui-probe-fourth.log": "3b976a5d4bfc323ab845b3f9bc7ed9d9dde8f51706693433b9dab75d8eb65556",
+    "ui-probe-second.log": "5836a04b867744abda7c0c0bf83bdb46c23cff440bfd223ebcbbcac2d32e171b",
+    "ui-probe-third.log": "00a82547122a1b6d754e3352256cbb3a62b835e0d7555ccc6fbb061dec65600d",
+    "uv-sync-first.log": "745c582f06f776e7d50e2e877c6e6c8b8be7909e1983fa48806b7bddc4adb644"
+  },
+  "implementation_hashes": {
+    "apps/desktop/src/renderer/src/ontology/OntologyPage.tsx": "fb04867a5157d22c89274bac7d4520eb31a41c613c0ebd0d8c3a7e24f7035c3a",
+    "apps/desktop/src/renderer/src/ontology/ontology.css": "000a16875e2155c0ec7bd0b704dde4103af4754e41550bf88c4756a27c366a62",
+    "apps/desktop/src/renderer/src/ontology/view-model.ts": "893dfd831efa1c5f9292511df5b9c5808d3039771384200a69371a52da40cfbc",
+    "docs/iterations/T02/ui-probe/build.mjs": "0f953b219d1e1306d372727f8ade16cbe5786e4efb3edb4ddeaaf4eecf4dbf08",
+    "docs/iterations/T02/ui-probe/check.mjs": "4665aa1cfafd113c674a053851f6353fa114d93b6ae8dfe315e9ae3484d7b5e5",
+    "docs/iterations/T02/ui-probe/fixture.json": "b2c97d366eb9a773ebc594da21491c20349efdf654ed5e434f96be5310ed5d03",
+    "docs/iterations/T02/ui-probe/harness.tsx": "f12984e000d411609ac11abc79d462ca54b89f36757ca55669d09a20c314bc32",
+    "docs/iterations/T02/ui-probe/index.html": "b8262fcd67ddb5e429f095e29086f6de2ed621c1a3779892f0ec9e1827b7490a",
+    "packages/engine/src/ontolearn_engine/ontology/__init__.py": "dd89c5685444fdca5a3fd37acb3d0cc05be3dbb77a935a39feb298503b7e7a7d",
+    "packages/engine/src/ontolearn_engine/ontology/model.py": "037463a9a330323baf592a35d271533e38843f496a218d939687e4e424b8169b",
+    "packages/engine/src/ontolearn_engine/ontology/service.py": "62e419489577006b4b3698d9862f2e43003216e9ff102588fcf655102ceac333",
+    "packages/engine/tests/test_ontology_editor.py": "75e7a810b6d3dd1049b621072d7c858146136b4bb77560f2942d54936478343b",
+    "tests/unit/t02-ontology-views.test.ts": "11f021b7a6e8a9a7c1f13288c7153d78f7cb931fd13c37ab5100c7af90a99a2d"
+  },
+  "local_screenshots": {
+    "ui-desktop.png": "3943ae0717e4e5db7a40af679c38da74867ec64f02728e450bb2c22d78443b84",
+    "ui-mobile.png": "b8503b578e4122d641777c1641292823aadebcf7d755cf36f0ff1bd3897db48c"
+  },
+  "not_run": [
+    "Electron/e2e/native/HMR",
+    "new package-internal probe (no dependency or packaging change)",
+    "approved Turtle import and full roundtrip",
+    "formal Store/bridge/model integration",
+    "specified dual model reviews",
+    "push/PR/CI/merge",
+    "Windows/macOS install/production"
+  ],
+  "protected_agents_sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+}

@@ -1,0 +1,41 @@
+# T02 本体编辑状态
+
+2026-10-21（Asia/Shanghai）。Owner：本聊天 `01a15bcd-f40b-7c91-81fa-7c481d2030d5`。
+
+- Worktree：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-ontology`；分支 `feature/weekly-t02-ontology`。
+- 已实查 base/head：`5f910b52c69d86a1076b2032e5d3c63e715947f3`；启动时仅 ` M AGENTS.md`，无其他争写。指南 SHA256 `db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786`，保持未暂存。
+- 已建立本功能独立 Goal；全文读取启动/共同指令、controller-handoff、plan、T02任务、requirements/acceptance、decisions/review、原 FR-200–204/C–G/10–12 和仓库指南。指南引用的 m0 更新计划在本 base 不存在，以主 checkout 同名源补读；不复制产品内容。
+- 唯一写入边界：启动提示列出的 ontology Python 包、`test_ontology_*.py`、renderer ontology 目录、`t02-*.test.ts`、ontology fixtures、本线 reviews/iterations。未改 root tasks/state 或共享文件。
+- 下一交付：不可变输入的定义/事实编辑与引用影响、精确 Diff、表格/类树/局部图模型、独立页面与正反例，运行 `npm run check` 和独立只读 agent 内审，形成本地恢复提交。
+- 正式接线缺口：T00 公共严格 schema/命名桥；T01 同库版本化预览/人类确认/commit/undo；批准 I05 Turtle 支持检查与无损往返；T08 草稿来源。私有模型只服务本线，非第二公共契约、Store 或网关。
+- 所有 FR-200–204 及父功能跨模块验收保留。当前未正式集成、未双指定模型审查、未 push/PR/CI/merge、未上线。完整导入/往返及最终 Store 提交尚待联验。
+- 仅无窗口 CLI/unit/Python/build；不运行本机 Electron/e2e/native/HMR、凭据提示、付费、密钥读取、对外消息或审查应用；指定外审资源由总控预约。
+
+## 运行中操作政策回执
+
+已在安全边界全文读取共同指令新增第九节和无桌面段，实际共同指令 SHA256 `9717f699e14b5941e15d90269f33cbebc32ef9bec6e7439739be848753419880`。保持原 Goal/分支/功能，不改写历史输入，不单因此重开产品审查；未发生额度告警、重置、付款、凭据读取、GUI 或对外发送。内审 agent `/root/t02_independent_review` 已实际收到并读回同政策。
+
+远端只读核验：`git ls-remote origin refs/heads/develop` 仍为 `5f910b52c69d86a1076b2032e5d3c63e715947f3`。总控实际 `execution-state.json` 的指定外审队列当前为 T06-S1、随后 I05 C2；本线未取得预约，不自行操作审查应用。
+
+## 本地实现与内审处置
+
+已实现私有不可变 Entity/Fact/Snapshot、引用校验/完整删除影响、定义与断言分别预览、RDF 精确增删与元数据 before/after；独立 React 页面包含表格/类树/SVG 一跳图、定义/事实表单、多语言编辑与完整 Diff 呈现。无 Store 写入、能力注册或公共接线。
+
+独立内审 `/root/t02_independent_review` 首审发现四项，已实施修复，等待固定 SHA 关闭复核：
+
+1. 旧草稿被套到新 revision：绑定 draftBase/factBase，保留旧草稿并禁止预览，重新载入/新建才使用当前版本；实际 headless 覆盖 pending→新版本→旧回复、编辑后迟到回复、切项目卸载。
+2. 单值名称/定义丢多语言：完整语言 tuples 与逐语言表单；未编辑语言原样进入 intent，服务 before/after 保留。
+3. entity types 与 rdf:type facts 双入口分叉：内部投影唯一字段归属，facts 拒绝 type/label/comment；正式投影需 owner 保留 Store 来源，未私改公共格式。
+4. label/comment 字面量绕过白名单：类型检查前置，负例通过；非字段入口仍明确拒绝。
+
+自查另修复多行表单实时 trim 导致换行不能输入的问题，改为保留正在输入的空行、请求预览时规范化；headless 实际按键输入两条同义词且完整保留。引用影响额外保留完整 statement，避免不同语句按主体/field 合并。
+
+T02 专属 Python 23 条、TS 3 条；headless 10 项呈现/异常核验通过。首次浏览器运行缺少锁定 Playwright browser 1248，保留失败原件；后明确选用本机既有 headless shell 1234，实测 browser 为 `151.0.7922.34`。不下载/启动原生窗口，不将该替代浏览器版本记为产品 Electron 兼容验收。UI 多行新增测试第一次预期仍为单行而失败，修正预期后同候选通过，原件均保留。
+
+## 外审默认权限政策回执
+
+已实际读取本树 AGENTS 新增权限段与 `external-review-permissions.md`，核对本树指南 SHA256 从启动 `db1fb184...` 变为 `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`，共同指令 SHA256 为 `df09014af4d6cf757ca0977a995497f3646cd330e8921710876663a40a8cbcb4`。该追加由总控实施，本线不 stage 指南、不改配置、不重启 Goal 或计算。今后预约进入外审任务时须读回 ZCode yolo 与 MiniMax bypassPermissions 实际会话模式；只读审查、指定模型等级、同候选双审和无桌面约束均继续。
+
+## 最新完整检查
+
+`check-fourth.log` 已真实完成（exit 0）：633 vitest、1075 pytest、lint/format/typecheck/build/ruff 通过。此前首失败保留；本次之后仅更正 UI probe 的多行预期并追加流程证据，probe 实际重跑通过，最后 lint/format 再核验通过。`verify:sources` exit 0，核对12源。关键摘要/源与原件哈希见 `verification.json`；截图和原始日志留本地，未提交大幅原件。

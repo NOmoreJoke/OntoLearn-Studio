@@ -1,0 +1,149 @@
+{
+  "project": "project-a",
+  "revision": 7,
+  "objects": [
+    {
+      "iri": "urn:t02:Equipment",
+      "kind": "class",
+      "identifier": "Equipment",
+      "labels": [
+        ["设备", "zh"],
+        ["Equipment", "en"]
+      ],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": []
+    },
+    {
+      "iri": "urn:t02:Alarm",
+      "kind": "class",
+      "identifier": "Alarm",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": []
+    },
+    {
+      "iri": "urn:t02:hasAlarm",
+      "kind": "objectProperty",
+      "identifier": "hasAlarm",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": ["urn:t02:Equipment"],
+      "range": ["urn:t02:Alarm"],
+      "types": []
+    },
+    {
+      "iri": "urn:t02:name",
+      "kind": "dataProperty",
+      "identifier": "name",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": ["urn:t02:Equipment"],
+      "range": ["http://www.w3.org/2001/XMLSchema#string"],
+      "types": []
+    },
+    {
+      "iri": "urn:t02:001",
+      "kind": "individual",
+      "identifier": "001",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:A01",
+      "kind": "individual",
+      "identifier": "A01",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Alarm"]
+    }
+  ],
+  "triples": [
+    {
+      "subject": "urn:t02:001",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:A01",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Alarm>"
+    },
+    {
+      "subject": "urn:t02:Alarm",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2000/01/rdf-schema#Class>"
+    },
+    {
+      "subject": "urn:t02:Equipment",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2000/01/rdf-schema#Class>"
+    },
+    {
+      "subject": "urn:t02:Equipment",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
+      "object": "\"Equipment\"@en"
+    },
+    {
+      "subject": "urn:t02:Equipment",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
+      "object": "\"设备\"@zh"
+    },
+    {
+      "subject": "urn:t02:hasAlarm",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+    },
+    {
+      "subject": "urn:t02:hasAlarm",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#domain",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:hasAlarm",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#range",
+      "object": "<urn:t02:Alarm>"
+    },
+    {
+      "subject": "urn:t02:name",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+    },
+    {
+      "subject": "urn:t02:name",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#domain",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:name",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#range",
+      "object": "<http://www.w3.org/2001/XMLSchema#string>"
+    }
+  ]
+}
