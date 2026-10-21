@@ -296,6 +296,36 @@ def test_encoder_live_block_is_reserved_before_delegate(monkeypatch, short):
         ledger.finish(False)
 
 
+@pytest.mark.parametrize("fault", ["constructor", "usage", "peaks"])
+def test_receipt_failure_drops_native_locals_from_public_traceback(captured, monkeypatch, fault):
+    calls = []
+
+    def fail(*_args):
+        calls.append(fault)
+        raise MemoryError("injected receipt allocation failure")
+
+    if fault == "constructor":
+        monkeypatch.setattr(restore, "RestoredBatchSet", fail)
+    else:
+        monkeypatch.setattr(RestoreLedger, fault, property(fail))
+    ledger = RestoreLedger()
+    with pytest.raises(RestoreFailure) as caught:
+        support.restore_capture(captured, ledger=ledger)
+    assert calls == [fault]
+    assert caught.value.reason == "RESTORE_INTERNAL"
+    assert caught.value.__context__ is None and caught.value.__cause__ is None
+    assert ledger.state == "failed" and not any(value for _, value in ledger.live)
+    public_frames = []
+    traceback = caught.value.__traceback__
+    while traceback is not None:
+        if traceback.tb_frame.f_code.co_name == "restore_profile_batches":
+            public_frames.append(traceback.tb_frame)
+        traceback = traceback.tb_next
+    assert len(public_frames) == 1
+    for name in ("children", "parse_usage", "caps", "outcome", "decoder"):
+        assert public_frames[0].f_locals[name] is None, (fault, name)
+
+
 def test_exact_native_classes_and_exact_bytes_are_required(captured):
     class ForeignBytes(bytes):
         pass

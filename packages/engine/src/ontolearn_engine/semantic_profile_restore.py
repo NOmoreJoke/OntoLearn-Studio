@@ -1187,6 +1187,7 @@ def restore_profile_batches(
         # Reject reuse before touching the prior operation's usage or terminal state.
         _invalid("entry")
     decoder = None
+    children = parse_usage = caps = None
     outcome = None
     error = None
     try:
@@ -1251,12 +1252,21 @@ def restore_profile_batches(
     except Exception:
         error = RestoreFailure("RESTORE_INTERNAL", "internal", stage="entry")
     finally:
-        if decoder is not None:
-            decoder.drop()
-            decoder.rows_json = None
-        decoder = None
-        ledger.cleanup()
-        ledger.finish(error is None and outcome is not None)
+        # The public error traceback keeps this frame.  Drop every separate
+        # native result reference, including receipt-construction failure paths.
+        children = parse_usage = caps = None
+        if error is not None:
+            outcome = None
+        try:
+            if decoder is not None:
+                decoder.drop()
+                decoder.rows_json = None
+            decoder = None
+            ledger.cleanup()
+            ledger.finish(error is None and outcome is not None)
+        except BaseException:
+            outcome = decoder = None
+            raise
     if error is not None:
         raise error
     return outcome
