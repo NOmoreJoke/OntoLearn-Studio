@@ -1,0 +1,7 @@
+# 操作政策实际接收
+
+2026-10-21 在原 Goal 安全边界全文读取当前 worktree AGENTS、总控 developer-common-instructions.md 及 external-review-permissions.md，并向总控成功回执。AGENTS 从 db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786 更新为 78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759；共同指令当前 df09014af4d6cf757ca0977a995497f3646cd330e8921710876663a40a8cbcb4。AGENTS 保持未暂存，不入产品提交。
+
+原第九节和无桌面打扰约束已全文实际读取并透传独立 reviewer。新外审任务默认 ZCode yolo、MiniMax bypassPermissions，创建/进入时仍须读回实际任务模式；完全访问不改变只读审查职责。未擅自改应用配置、消费重置、付费、启动 GUI、抢占桌面或将默认文件核验视作在途会话切换。
+
+原恢复定位 873c8c0 快照中仍含旧 51cdc0e 摘要；6f6264bd6c090e54abf1919157e1a1127c8916ba 已将 recovery.json 正确指向 implementationCommit=873c8c051b9870aa12fc7e1dbbd3e0c358e7c380、jobstore-verification.json（42学习/630Vitest/1094Python）。历史35/1087日志保留原件，未改写旧提交。总控固定873审计的文档定位发现由此关闭；产品固定输入manifest不变。G-list02完整roundDTO比较仍待真实领域适配，50计划不等同50真实执行通过。

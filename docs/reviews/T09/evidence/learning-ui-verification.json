@@ -1,0 +1,131 @@
+{
+  "task": "T09",
+  "implementationCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+  "implementationTree": "8b646570108026a8deabe8330c548cab0280122d",
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "scope": "isolated renderer learning component and trusted view projections; synthetic component callbacks are not domain integration",
+  "manifestSha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+  "sourceHashes": {
+    "apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx": "e11e970092b2412be8e5ced8bf77aa4f7a7311a7d1197aa6298da4a5f7cdfd40",
+    "apps/desktop/src/renderer/src/learning/content.ts": "83bbf24aa27e14d721731fc108de2179be5d220f13139101dafb0ede3f7ba70a",
+    "apps/desktop/src/renderer/src/learning/learning.css": "34c48260f9819ae82eb8b30243c32fec5997065d1740443142d4acadc631a83c",
+    "apps/desktop/src/renderer/src/learning/presentation.ts": "5ff4fa501a710c4d1384ad7917feca3273bcd57b7fb783af4272894077719c3b",
+    "apps/desktop/src/renderer/src/learning/types.ts": "49526151f9a29fef3f440e55c45a080667fbf9ec3b5fbf00afa7c3fa53ffb373",
+    "tests/unit/learning-presentation.test.ts": "ccbbd501a6987511c14f1ac38e24ceae2fa69569428a7fa2030d744e8b242474",
+    "tests/unit/learning-workspace.test.ts": "bd1fdf6b770fbe985cecfeea4fa8a359904e5c16e9e85cbede247585fbf8286b"
+  },
+  "command": "T09_HEADLESS_UI=1 T09_UI_CAPTURE=1 PLAYWRIGHT_BROWSERS_PATH=<worktree>/docs/reviews/T09/.runtime/node_modules/playwright npm run check",
+  "exitCode": 0,
+  "vitestPassed": 664,
+  "learningPureTests": 18,
+  "learningHeadlessTests": 16,
+  "pytestPassed": 1094,
+  "finalLog": {
+    "path": "npm-check-ui-final.txt",
+    "sha256": "210d3d9bc7254e059f9bc031988226f946251f9d359a577b8a54470a996241e5"
+  },
+  "priorLogs": {
+    "ui-first-vitest.txt": {
+      "rawSha256": "a5323137017ed95394946d10790a81e44e02f5498b04b8d10ecf9b4fe16b401f",
+      "rawBytes": 1416,
+      "losslessArchive": "ui-first-vitest.txt.gz",
+      "archiveSha256": "9a8894c57d5d03450a5a9a9ab38bc7dc31498734fb787524d43610394fa9bc9d"
+    },
+    "ui-second-vitest.txt": {
+      "rawSha256": "86fb3e531ee18cb83309ecff3d5a68bb545b80e732ec9a6696db8e5d235169c7",
+      "rawBytes": 1794,
+      "losslessArchive": "ui-second-vitest.txt.gz",
+      "archiveSha256": "20054a73a726d68ceca55a015e7191f0e0cf40047fbd365d9fce2f2feba42392"
+    },
+    "ui-third-vitest.txt": {
+      "rawSha256": "8907d2c24a9815845daa3fa9fad0ce22d8bf77473446caaa16f961a83d487a7f",
+      "rawBytes": 13634,
+      "losslessArchive": "ui-third-vitest.txt.gz",
+      "archiveSha256": "7c5707d46f0dc7ccd64184891e01a91a66b8b71f7de63f9cca7f572e9224472d"
+    },
+    "ui-fourth-vitest.txt": {
+      "rawSha256": "8c41397cc1d80045d82bf287da55aa78e8e893e808c9fcdde649eb8bc8c19c45",
+      "rawBytes": 226,
+      "losslessArchive": "ui-fourth-vitest.txt.gz",
+      "archiveSha256": "a9e8e869581d28a5f06d40230aa8d35b59db147c1db54ab6279710a9ee4f5045"
+    },
+    "npm-check-ui-first.txt": {
+      "rawSha256": "e3936dbb60b10fe8bde26013fff68078c1d695429b8171ea8e3e1776499271c2",
+      "rawBytes": 924,
+      "losslessArchive": "npm-check-ui-first.txt.gz",
+      "archiveSha256": "e8239921844f023e938fe701bbd0d674ca4e4582cfe9ff5f9050d626291582cb"
+    },
+    "npm-check-ui-type-failure.txt": {
+      "rawSha256": "65380ebd5025fe00647df0e858296f0c1d6ce94e177301b4ac8ad293ae715877",
+      "rawBytes": 892,
+      "losslessArchive": "npm-check-ui-type-failure.txt.gz",
+      "archiveSha256": "ab953419a1b2d643eab9f26f9301443061e41bcf2159e100eac1ddb48cff93d0"
+    },
+    "npm-check-ui-intermediate-661.txt": {
+      "rawSha256": "1c59105ae8af8e2a52f1a1f2d9a44c8688c90637f5a3f6b887c0f1e6e6564301",
+      "rawBytes": 5302,
+      "losslessArchive": "npm-check-ui-intermediate-661.txt.gz",
+      "archiveSha256": "93d73c77d26db0924252db241b66b680fbfc445b88790cb35863ec4b84b2bd0b"
+    },
+    "ui-browser-install.txt": {
+      "rawSha256": "ba56399111b0ffe22b038dab944424cc6da1e3aec01839ffa96d6eb50d940347",
+      "rawBytes": 1384,
+      "losslessArchive": "ui-browser-install.txt.gz",
+      "archiveSha256": "5d1574507e91edf9c5f95cc4dbe42b0bfc40cdf8dea760f43fcd0102dcad788a"
+    },
+    "ui-typecheck.txt": {
+      "rawSha256": "ef35be543aff1f7e82be979906158f1f2f1448dfaa41256cfc157c03071e55d2",
+      "rawBytes": 468,
+      "losslessArchive": "ui-typecheck.txt.gz",
+      "archiveSha256": "78de9eb1d9ec491fda53df471321d3b859a8b52e0fd0b744260dc2e4e5b5da94"
+    },
+    "ui-eslint.txt": {
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0,
+      "losslessArchive": "ui-eslint.txt.gz",
+      "archiveSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    }
+  },
+  "browser": {
+    "version": "Playwright 1.64.1 chromium_headless_shell-1248",
+    "headless": true,
+    "chromiumSandbox": true,
+    "ignoredDefaultArgs": [
+      "--disable-hang-monitor",
+      "--use-mock-keychain"
+    ],
+    "networkRequestsObserved": 0,
+    "HTTPServer": false,
+    "explicitOptIn": "T09_HEADLESS_UI=1; ordinary default check skips headless suite if runtime is not provisioned"
+  },
+  "screenshots": {
+    "ui/desktop-course.png": {
+      "sha256": "eee450333f00bc3e060da4878a72127f1e5fbb255079f96886f4f2a34482c077",
+      "viewport": {
+        "width": 1440,
+        "height": 1050
+      },
+      "visuallyInspected": true
+    },
+    "ui/mobile-behavior.png": {
+      "sha256": "8fb74a101351e5183670cd63d7912a739be60ec891bbdfe35cbd618b8bf8b9b8",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "visuallyInspected": true
+    }
+  },
+  "artifactRetentionReason": "No CI artifact exists for this local unpublished candidate; retain small component screenshots and lossless first-failure archives for independent recovery/audit.",
+  "fixedContentChanged": false,
+  "sharedSourceChanged": false,
+  "dependencyOrLockChanged": false,
+  "ElectronOrNativeTestRun": false,
+  "pending": [
+    "approved T00 named bridge and stage evidence",
+    "T01 durable learning provenance and product baseline lifecycle",
+    "actual domain tools and packaged resources",
+    "T08/T10 and human/platform acceptance",
+    "same-candidate designated dual review, push/PR/CI/merge"
+  ]
+}

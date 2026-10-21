@@ -43,3 +43,11 @@ query 任务中的 Q-01/Q-02 分别需要 Open/Closed 输入，V-01 需要删除
 `test_learning_jobstore_integration.py` 已将固定四套输入经真实 JobStore 预览、stdio coordinator、隔离 worker、test.atomic 原子提交、operation/result.page 和重开读回。首次联验暴露包装定义 ID 含冒号，造成依赖键不合 canonical；T09 helper 已改为 `<baseline>.ontology` / `<baseline>.initial`，原始课程与固定 manifest 未变。新7项测试还覆盖旧预览、worker失败和产品模式禁用，须保留test-only边界。
 
 T01 如只读引用本线输入可继续固定 `51cdc0e` 的manifest；如引用 `store_seed_plan()` 必须使用本轮修复后实现，不使用旧导入器包装ID。实际产品create/confirm仍由T01批准服务完成，不能把prepare_plan返回的内部确认记录当作人类点击确认。
+
+## 后续独立学习页面交付
+
+总控已明确授权 renderer/src/learning 与 tests/unit/learning-*.test.ts。当前候选 `76596656908ed84e577e8202a602e3256d5febcc` 增加独立 `LearningWorkspace`，私有 props/回执与恢复约定见 [learning-ui-contract.md](learning-ui-contract.md)。共享 App/bridge/main/preload 未改，页面没有正式产品入口；纯组件能力不代替下面的 owner 接线。
+
+T01 请提供持久化的同 project/task/attempt 最高提示/辅助记录（跨 input、重开、窗口恢复），受信 context 和每个 context 单调 recordVersion；T00 批准业务命名桥与实际阶段证据。UI 只接受真实结果反馈，真实尝试先保存提示再展示；冲突或缺能力不计完成。T08/T10 分别提供实际完整辅助来源和导出回执，domain owner 提供实际检查。
+
+T11 请在隔离 CI 准备锁定版本 Playwright 对应 Chromium headless runtime，并显式启用 `T09_HEADLESS_UI=1`；本次本地完整check已实际执行18纯+16headless学习测试，无HTTP服务、零页面网络请求、启用sandbox。普通默认check未配置运行时时会明确skip浏览器套件，不能算该验收已跑。未抢改共享CI或安装依赖。最终摘要、全check日志和独立内审位于 docs/reviews/T09；固定manifest仍为aaaef2c…，17输入/50计划不变。

@@ -4,15 +4,15 @@
   "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines",
   "branch": "feature/weekly-t09-learning-baselines",
   "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
-  "implementationCommit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
-  "implementationTree": "a3b6008a56394789cb1328eb781f1ddead25a4d9",
+  "implementationCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+  "implementationTree": "8b646570108026a8deabe8330c548cab0280122d",
   "manifestPath": "tests/fixtures/product-baselines/manifest.json",
   "manifestSha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
-  "protectedAgentsSha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+  "protectedAgentsSha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
   "protectedAgentsStaged": false,
-  "scope": "private implementation, fixed content, approved I04 infrastructure integration and Store rebuild validated; product integration pending",
-  "verification": "evidence/jobstore-verification.json",
-  "independentReview": "jobstore-integration-review.md",
+  "scope": "private Python/fixed content plus isolated learning UI validated; approved I04 infrastructure verified; actual product integration pending",
+  "verification": "evidence/learning-ui-verification.json",
+  "independentReview": "learning-ui-independent-review.md",
   "handoff": "../../iterations/T09/handoff.md",
   "localCommitOnly": true,
   "pushed": false,
@@ -26,12 +26,14 @@
     "sameVersionNewCompleteTasksRequired": true
   },
   "next": [
-    "controller receipt and exact UI path/stage-evidence/review-resource handoff",
-    "T01 learning record/schema and actual lifecycle",
-    "T00 approved stage-version evidence plus named bridge",
-    "actual domain tools, resource packaging, UI, T08/T10 integration",
-    "human acceptance and same-version designated review/PR/CI/merge"
+    "controller current candidate receipt and shared integration handoffs",
+    "T01 durable provenance/product lifecycle and T00 approved stage evidence/named bridge",
+    "actual domain tools, packaged resources, T08/T10 integration",
+    "T11 isolated CI explicitly enables headless component suite",
+    "human/platform acceptance and same-candidate designated dual review/PR/CI/merge"
   ],
   "goal": "active; full T09 acceptance is not closed",
-  "previousImplementationCommit": "51cdc0e9d138c98cdd4ace865074a71883657a68"
+  "previousImplementationCommit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+  "priorInfrastructureVerification": "evidence/jobstore-verification.json",
+  "priorInfrastructureReview": "jobstore-integration-review.md"
 }
