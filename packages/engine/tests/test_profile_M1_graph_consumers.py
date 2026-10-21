@@ -764,6 +764,7 @@ def run_direct_operation(phase, material, produced, expectation, view, targets, 
         "restoreState": restore.state,
     }
     if outcome is not None:
+        assert ledger.state == "completed"
         if phase == "production":
             record.update(
                 payloadSha256=sha(outcome.payload_json),
@@ -992,9 +993,28 @@ def assert_direct_golden(actual, produced, view, insertions, expected, case, ind
     assert len(native["mechanismBatches"]) == len(view.batches.children) == 1
     assert len(native["mechanismBatches"][0]) == 11
     assert native["directSteps"]["format"] == "i05-direct-rdfs-steps/1"
+    assert actual["originalExpectation"]["schema_version"] == "i05-profile-restore-schema/2"
+    for operation in actual["operations"]:
+        assert operation["receipts"]["items"][0]["version"] == "i05-direct-steps-budget/1"
+        assert {k: int(v["integerDecimal"]) for k, v in operation["D"]["caps"].items()} == {
+            "work": 581_671_040,
+            "scan_copy": 581_671_040,
+            "objects": 270_635_588,
+            "scalar": 50_331_776,
+        }
     assert not native["rules"] and not native["firingGroups"] and not native["evidence"]
     records, rules, _ = bind_fixture(case, index)
     assert not rules
+    expected_sources = tuple(
+        {
+            "ordinal": position,
+            "span": None,
+            "term": semantic._profile_term(value).n3(),
+            "value": value,
+        }
+        for position, value in enumerate(v for record in records for v in record)
+    )
+    assert plain(native["termSources"]) == plain(expected_sources)
     for section in ("asserted", "ontology"):
         for row_index, _row in enumerate(case[section]):
             offset = row_index + (len(case["asserted"]) if section == "ontology" else 0)
@@ -1013,6 +1033,11 @@ def assert_direct_golden(actual, produced, view, insertions, expected, case, ind
         assert observed["reference"].startswith("i05-proof:")
     steps = native["directSteps"]["steps"]
     assert len(steps) == len(expected["steps"]) == len(insertions)
+    production_d = actual["operations"][0]["D"]
+    assert int(production_d["steps"]["integerDecimal"]) == len(insertions)
+    assert int(production_d["candidates"]["integerDecimal"]) == len(
+        actual["candidateCalls"]["items"]
+    )
     assert len(native["rdfs"]) == len(native["rdfsEvidence"]) == len(steps)
     assert {tuple(t) for t in native["rdfs"]} == {tuple(s["result"]) for s in expected["steps"]}
     for ordinal, (step, golden, call) in enumerate(
@@ -1035,9 +1060,9 @@ def assert_direct_golden(actual, produced, view, insertions, expected, case, ind
             basis
         )
         basis_keys = {
-            tuple(leaf_by_key[tuple(l["triple"])]["triple"])
-            for l in expected["leaves"]
-            if l["id"] in golden["leafBasis"]
+            tuple(leaf["triple"])
+            for leaf in expected["leaves"]
+            if leaf["id"] in golden["leafBasis"]
         }
         assert len(evidence["basis"]) == len(basis_keys)
         assert {tuple(t) for t in evidence["basis"]} == basis_keys
