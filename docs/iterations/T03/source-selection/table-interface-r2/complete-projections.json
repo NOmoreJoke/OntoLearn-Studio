@@ -1,0 +1,495 @@
+{
+  "scope": "data-only interface examples from fixed S1 own parser; no canonical tableDigest or wire implementation",
+  "sourceProvenance": [
+    {
+      "commit": "30319412daf8ae4745987babf7bbed93c53b6b42",
+      "path": "packages/engine/src/ontolearn_engine/mapping/source.py",
+      "sha256": "93bf09e10723c8522f1e9fbb8e170ffece596143c5e00ddcf7be950d15e1ddc8",
+      "bytes": 10399
+    },
+    {
+      "commit": "30319412daf8ae4745987babf7bbed93c53b6b42",
+      "path": "packages/engine/tests/test_mapping_source.py",
+      "sha256": "c66e1fda26ee73dc87324402c2194def0bf6b7eea6b38b18fc90b669dfa0eed7",
+      "bytes": 10361
+    },
+    {
+      "commit": "30319412daf8ae4745987babf7bbed93c53b6b42",
+      "path": "tests/fixtures/mapping/equipment.csv",
+      "sha256": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+      "bytes": 52
+    }
+  ],
+  "orderedValuesMeaning": [
+    "source_hash",
+    "sheet",
+    "ordered fields strings",
+    "ordered rows [number, ordered cells [text, kind]]"
+  ],
+  "orderedValuesIsCanonicalWire": false,
+  "examples": [
+    {
+      "name": "equipment",
+      "origin": "existing checked-in equipment.csv, exact bytes",
+      "inputFile": "equipment.csv",
+      "inputBytes": 52,
+      "inputSha256": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+      "callerOptionsNotTableFields": {
+        "format": "csv",
+        "encoding": "utf-8-sig",
+        "sheet": null
+      },
+      "table": {
+        "source_hash": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "sheet": "CSV",
+        "fields": ["equipment_id", "equipment_name"],
+        "rows": [
+          {
+            "number": 2,
+            "cells": [
+              {
+                "text": "001",
+                "kind": "string"
+              },
+              {
+                "text": "泵站A",
+                "kind": "string"
+              }
+            ]
+          },
+          {
+            "number": 3,
+            "cells": [
+              {
+                "text": "002",
+                "kind": "string"
+              },
+              {
+                "text": "泵站B",
+                "kind": "string"
+              }
+            ]
+          }
+        ]
+      },
+      "orderedValuesDataOnly": [
+        "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "CSV",
+        ["equipment_id", "equipment_name"],
+        [
+          [
+            2,
+            [
+              ["001", "string"],
+              ["泵站A", "string"]
+            ]
+          ],
+          [
+            3,
+            [
+              ["002", "string"],
+              ["泵站B", "string"]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "multiline-bom",
+      "origin": "test_csv_multiline_bom_leading_zero_and_observed_samples exact input expression",
+      "inputFile": "multiline-bom.csv",
+      "inputBytes": 49,
+      "inputSha256": "6667ee77ad3211d96aed4480ba77051fda74f5349833d96f1502d392bb9b1fa8",
+      "callerOptionsNotTableFields": {
+        "format": "csv",
+        "encoding": "utf-8-sig",
+        "sheet": null
+      },
+      "table": {
+        "source_hash": "6667ee77ad3211d96aed4480ba77051fda74f5349833d96f1502d392bb9b1fa8",
+        "sheet": "CSV",
+        "fields": ["id", "name"],
+        "rows": [
+          {
+            "number": 2,
+            "cells": [
+              {
+                "text": "001",
+                "kind": "string"
+              },
+              {
+                "text": "第一行\n第二行",
+                "kind": "string"
+              }
+            ]
+          },
+          {
+            "number": 4,
+            "cells": [
+              {
+                "text": "002",
+                "kind": "string"
+              },
+              {
+                "text": "泵站B",
+                "kind": "string"
+              }
+            ]
+          }
+        ]
+      },
+      "orderedValuesDataOnly": [
+        "6667ee77ad3211d96aed4480ba77051fda74f5349833d96f1502d392bb9b1fa8",
+        "CSV",
+        ["id", "name"],
+        [
+          [
+            2,
+            [
+              ["001", "string"],
+              ["第一行\n第二行", "string"]
+            ]
+          ],
+          [
+            4,
+            [
+              ["002", "string"],
+              ["泵站B", "string"]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "sparse",
+      "origin": "test_xlsx_sparse_empty_cells_reach_empty_policy_and_keep_row_numbers exact workbook helper and sheet XML",
+      "inputFile": "sparse.xlsx",
+      "inputBytes": 2199,
+      "inputSha256": "1d448bb72afd17ef5ea24f2d5f0bec86a50b44862a89c41cdf5c5f4f4d07518f",
+      "callerOptionsNotTableFields": {
+        "format": "xlsx",
+        "encoding": null,
+        "sheet": "设备"
+      },
+      "table": {
+        "source_hash": "1d448bb72afd17ef5ea24f2d5f0bec86a50b44862a89c41cdf5c5f4f4d07518f",
+        "sheet": "设备",
+        "fields": ["id", "name"],
+        "rows": [
+          {
+            "number": 2,
+            "cells": [
+              {
+                "text": "001",
+                "kind": "string"
+              },
+              {
+                "text": "",
+                "kind": "empty"
+              }
+            ]
+          },
+          {
+            "number": 3,
+            "cells": [
+              {
+                "text": "",
+                "kind": "empty"
+              },
+              {
+                "text": "",
+                "kind": "empty"
+              }
+            ]
+          },
+          {
+            "number": 4,
+            "cells": [
+              {
+                "text": "002",
+                "kind": "string"
+              },
+              {
+                "text": "B",
+                "kind": "string"
+              }
+            ]
+          }
+        ]
+      },
+      "orderedValuesDataOnly": [
+        "1d448bb72afd17ef5ea24f2d5f0bec86a50b44862a89c41cdf5c5f4f4d07518f",
+        "设备",
+        ["id", "name"],
+        [
+          [
+            2,
+            [
+              ["001", "string"],
+              ["", "empty"]
+            ]
+          ],
+          [
+            3,
+            [
+              ["", "empty"],
+              ["", "empty"]
+            ]
+          ],
+          [
+            4,
+            [
+              ["002", "string"],
+              ["B", "string"]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "formula-empty",
+      "origin": "test_xlsx_formula_cached_empty_string_is_valid_but_not_computed exact workbook helper and sheet XML",
+      "inputFile": "formula-empty.xlsx",
+      "inputBytes": 2140,
+      "inputSha256": "763d8d9b8a38dba58af1ad39d7f30f047fc098c934a9290df5a7f1103f912973",
+      "callerOptionsNotTableFields": {
+        "format": "xlsx",
+        "encoding": null,
+        "sheet": "设备"
+      },
+      "table": {
+        "source_hash": "763d8d9b8a38dba58af1ad39d7f30f047fc098c934a9290df5a7f1103f912973",
+        "sheet": "设备",
+        "fields": ["id", "name"],
+        "rows": [
+          {
+            "number": 2,
+            "cells": [
+              {
+                "text": "001",
+                "kind": "string"
+              },
+              {
+                "text": "",
+                "kind": "string"
+              }
+            ]
+          }
+        ]
+      },
+      "orderedValuesDataOnly": [
+        "763d8d9b8a38dba58af1ad39d7f30f047fc098c934a9290df5a7f1103f912973",
+        "设备",
+        ["id", "name"],
+        [
+          [
+            2,
+            [
+              ["001", "string"],
+              ["", "string"]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "header-only",
+      "origin": "bounded derived case: existing source-test header with no data rows",
+      "inputFile": "header-only.csv",
+      "inputBytes": 8,
+      "inputSha256": "40d6bfdc74eae2ed68a97137ce414fa4ca6de1b3831cfd9a73c4622d8a8942c1",
+      "callerOptionsNotTableFields": {
+        "format": "csv",
+        "encoding": "utf-8-sig",
+        "sheet": null
+      },
+      "table": {
+        "source_hash": "40d6bfdc74eae2ed68a97137ce414fa4ca6de1b3831cfd9a73c4622d8a8942c1",
+        "sheet": "CSV",
+        "fields": ["id", "name"],
+        "rows": []
+      },
+      "orderedValuesDataOnly": [
+        "40d6bfdc74eae2ed68a97137ce414fa4ca6de1b3831cfd9a73c4622d8a8942c1",
+        "CSV",
+        ["id", "name"],
+        []
+      ]
+    },
+    {
+      "name": "empty-value",
+      "origin": "bounded derived case: existing source-test header, an explicit empty CSV field",
+      "inputFile": "empty-value.csv",
+      "inputBytes": 13,
+      "inputSha256": "af80ef0ddc06c78b7bb636581249767d2cd01b32545f3f4f35c08de621c36461",
+      "callerOptionsNotTableFields": {
+        "format": "csv",
+        "encoding": "utf-8-sig",
+        "sheet": null
+      },
+      "table": {
+        "source_hash": "af80ef0ddc06c78b7bb636581249767d2cd01b32545f3f4f35c08de621c36461",
+        "sheet": "CSV",
+        "fields": ["id", "name"],
+        "rows": [
+          {
+            "number": 2,
+            "cells": [
+              {
+                "text": "001",
+                "kind": "string"
+              },
+              {
+                "text": "",
+                "kind": "string"
+              }
+            ]
+          }
+        ]
+      },
+      "orderedValuesDataOnly": [
+        "af80ef0ddc06c78b7bb636581249767d2cd01b32545f3f4f35c08de621c36461",
+        "CSV",
+        ["id", "name"],
+        [
+          [
+            2,
+            [
+              ["001", "string"],
+              ["", "string"]
+            ]
+          ]
+        ]
+      ]
+    }
+  ],
+  "locatedRejections": [
+    {
+      "name": "empty-source",
+      "inputUtf8": "",
+      "inputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "issue": {
+        "code": "EMPTY_SOURCE",
+        "sheet": "CSV",
+        "row": 0,
+        "column": 0,
+        "field": ""
+      }
+    },
+    {
+      "name": "duplicate-header",
+      "inputUtf8": "id,id\n1,2\n",
+      "inputSha256": "9a2503934ed1b17fb1f3da3a3c84720c13268d57d602e8c24251aee32c4e806b",
+      "issue": {
+        "code": "INVALID_HEADER",
+        "sheet": "CSV",
+        "row": 1,
+        "column": 1,
+        "field": "id"
+      }
+    },
+    {
+      "name": "short-row",
+      "inputUtf8": "id,name\n1\n",
+      "inputSha256": "18b12e50e3d87a9901efa50e286a7f3173e1578588234ff4e274d6a4056cc545",
+      "issue": {
+        "code": "ROW_WIDTH",
+        "sheet": "CSV",
+        "row": 2,
+        "column": 2,
+        "field": ""
+      }
+    },
+    {
+      "name": "blank-record",
+      "inputUtf8": "id,name\n\n",
+      "inputSha256": "fa56df87ab9e2f6d3ca95af902aa7f4cf8f1a6a1f22cb56997da95990f4fc290",
+      "issue": {
+        "code": "ROW_WIDTH",
+        "sheet": "CSV",
+        "row": 2,
+        "column": 1,
+        "field": ""
+      }
+    },
+    {
+      "name": "blank-header-field",
+      "inputUtf8": "id,\n1,2\n",
+      "inputSha256": "d6b9a0a391af7cda18834fdb03054f7abe88aa249504526fa537316c69eb0977",
+      "issue": {
+        "code": "INVALID_HEADER",
+        "sheet": "CSV",
+        "row": 1,
+        "column": 2,
+        "field": ""
+      }
+    }
+  ],
+  "finiteParserKindBranches": [
+    {
+      "pythonInputType": "NoneType",
+      "inputRepresentation": "None",
+      "cell": {
+        "text": "",
+        "kind": "empty"
+      },
+      "evidenceScope": "direct fixed _cell branch, not a workbook date/type parsing fixture"
+    },
+    {
+      "pythonInputType": "bool",
+      "inputRepresentation": "True",
+      "cell": {
+        "text": "true",
+        "kind": "boolean"
+      },
+      "evidenceScope": "direct fixed _cell branch, not a workbook date/type parsing fixture"
+    },
+    {
+      "pythonInputType": "datetime",
+      "inputRepresentation": "datetime.datetime(2026, 10, 21, 12, 34, 56)",
+      "cell": {
+        "text": "2026-10-21T12:34:56",
+        "kind": "datetime"
+      },
+      "evidenceScope": "direct fixed _cell branch, not a workbook date/type parsing fixture"
+    },
+    {
+      "pythonInputType": "date",
+      "inputRepresentation": "datetime.date(2026, 10, 21)",
+      "cell": {
+        "text": "2026-10-21",
+        "kind": "date"
+      },
+      "evidenceScope": "direct fixed _cell branch, not a workbook date/type parsing fixture"
+    },
+    {
+      "pythonInputType": "float",
+      "inputRepresentation": "2.5",
+      "cell": {
+        "text": "2.5",
+        "kind": "number"
+      },
+      "evidenceScope": "direct fixed _cell branch, not a workbook date/type parsing fixture"
+    },
+    {
+      "pythonInputType": "str",
+      "inputRepresentation": "'001'",
+      "cell": {
+        "text": "001",
+        "kind": "string"
+      },
+      "evidenceScope": "direct fixed _cell branch, not a workbook date/type parsing fixture"
+    }
+  ],
+  "execution": {
+    "python": "3.12.12",
+    "executable": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/.venv/bin/python",
+    "versions": {
+      "openpyxl": "3.1.5",
+      "et-xmlfile": "2.0.0",
+      "defusedxml": "0.7.1"
+    },
+    "fullTestSuiteRun": false,
+    "t01CodeImported": false
+  }
+}

@@ -34,3 +34,7 @@
 ## worker单文件责任补充（2026-10-21 10:21+08生效）
 
 已全文读总控worker交接协议并核对execution-state的effective记录：`worker.py`未来维护唯一归T01，只从批准5f的9314B/SHA `2fa848aa3a2148e59a24f01c9333701f0f03eed95cffe55a0a78b74f1d06f2f0`施工；不得消费I05未批准C3语义worker。新版common SHA `ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff`已实际读取新增段；原b24全文的15574字节前缀逐字SHA匹配，完整§9/无桌面规则未变，AGENTS仍78df。此通知消除r1答复缺口5中的“worker未来维护者未生效”这一责任项；该r1固定输入及原审查不改写，其余worker受控合同、readonly inspection/preview、分块/限额/确认/取消/结果与正式联验仍未获批。protocol/resources/语义/旧tests/build/CI及semantic4未来offer未随转。未改产品、采用未批实现、重测、开GUI或恢复Goal；当前仍blocked。
+
+## T01 r2：固定Table接口数据交付
+
+按总控请求核对T01固定ff98761的source-contract-t03-response-r2.md（SHA dfd39ff…），保存 [真实字段/值域与完整投影说明](../../../iterations/T03/source-selection/table-interface-r2.md)、[6组全部数据投影和原输入](../../../iterations/T03/source-selection/table-interface-r2/complete-projections.json)及逐文件manifest。全部追溯本线S1固定303源码/既有fixture；仅有界实取6个完整parser输出、5个定位拒绝、直接调用6个_cell分支，不是全测试重跑。六分支未夸大为六种真实XLSX日期/类型矩阵。fields为有序字符串，kind当前注解str而parser只产6值；Table无format/encoding/tableDigest等schema字段，caller options与数据排列不冒充canonical协议。独立静态复核逐行/逐cell与raw SHA全部通过（报告SHA 6a804be3dad0b6ca048699f9af9584aa1b6e83ff52ec49a0a233c16924d71125），没有独立重跑parser或测试。未给T01可导入实现、未消费T01代码；broker/source/tests/原S1验收未改，原Goal仍blocked。接受r2不足两段frame拒固定profile、inspection/configure新phase、先只读后写确认、权威受理/revoke排序等设计选择，source_content非活授权/wire/pin；原装配与发布门完整保留。

@@ -1,0 +1,70 @@
+{
+  "scope": "data-only fixed S1 interface delivery, not canonical wire or tableDigest",
+  "s1Commit": "30319412daf8ae4745987babf7bbed93c53b6b42",
+  "t01DesignCommit": "ff98761ad14bbcea39331f2305e4e7c56bc6ef2e",
+  "t01DesignSha256": "dfd39ff7ddb9fb861b392cf0268bd3b23e09caa0cc42248976ce9b067af8fccf",
+  "files": [
+    {
+      "path": "docs/iterations/T03/source-selection/table-interface-r2.md",
+      "bytes": 11487,
+      "sha256": "1cc78023aae09ca2d2975d21e0cd2d71542325fe9c1e9c057ddd409b95f29605"
+    },
+    {
+      "path": "docs/iterations/T03/source-selection/table-interface-r2/complete-projections.json",
+      "bytes": 13123,
+      "sha256": "dd249c93dd23bbfa5dd47293f578251a375bb144da5b25f3e8683f878829106d"
+    },
+    {
+      "path": "docs/iterations/T03/source-selection/table-interface-r2/empty-value.csv",
+      "bytes": 13,
+      "sha256": "af80ef0ddc06c78b7bb636581249767d2cd01b32545f3f4f35c08de621c36461"
+    },
+    {
+      "path": "docs/iterations/T03/source-selection/table-interface-r2/equipment.csv",
+      "bytes": 52,
+      "sha256": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8"
+    },
+    {
+      "path": "docs/iterations/T03/source-selection/table-interface-r2/formula-empty.xlsx",
+      "bytes": 2140,
+      "sha256": "763d8d9b8a38dba58af1ad39d7f30f047fc098c934a9290df5a7f1103f912973"
+    },
+    {
+      "path": "docs/iterations/T03/source-selection/table-interface-r2/header-only.csv",
+      "bytes": 8,
+      "sha256": "40d6bfdc74eae2ed68a97137ce414fa4ca6de1b3831cfd9a73c4622d8a8942c1"
+    },
+    {
+      "path": "docs/iterations/T03/source-selection/table-interface-r2/multiline-bom.csv",
+      "bytes": 49,
+      "sha256": "6667ee77ad3211d96aed4480ba77051fda74f5349833d96f1502d392bb9b1fa8"
+    },
+    {
+      "path": "docs/iterations/T03/source-selection/table-interface-r2/sparse.xlsx",
+      "bytes": 2199,
+      "sha256": "1d448bb72afd17ef5ea24f2d5f0bec86a50b44862a89c41cdf5c5f4f4d07518f"
+    }
+  ],
+  "integrityChecks": {
+    "successfulFullProjections": 6,
+    "errorInputs": 5,
+    "finiteKindsFromSourceAndDirectBranches": [
+      "string",
+      "empty",
+      "boolean",
+      "datetime",
+      "date",
+      "number"
+    ],
+    "rawSourceHashAndOrderedProjectionRoundtrip": "passed from saved data; not a canonical digest comparison",
+    "t01ImplementationReadOrImported": false,
+    "s1SourceTestsOrAcceptanceChanged": false,
+    "allExistingRuntimeTestsRerun": false,
+    "goalStatus": "blocked unchanged"
+  },
+  "independentReview": {
+    "path": "docs/reviews/T03/source-selection/table-interface-r2-review.md",
+    "sha256": "6a804be3dad0b6ca048699f9af9584aa1b6e83ff52ec49a0a233c16924d71125",
+    "result": "passed fixed interface facts, all data/source hashes and complete projections; static only, no parser or tests rerun"
+  }
+}
