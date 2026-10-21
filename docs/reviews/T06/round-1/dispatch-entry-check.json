@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-21",
+  "product": "61396a598b2dffc1d3d2fd4660f9af1d5c93d266",
+  "procedure": "11c7a9bb0288fab87e6cecefcbfccbd36d550684",
+  "controller_gate": "passed; T06-S1-controller-review-preflight.json actual read and dispatch authorization received",
+  "final_drift_check": "12 product file hashes unchanged; git only AGENTS dirty before prompts; prompts-only commit after controller procedure 11d66ea",
+  "cua_entry_observations": {
+    "target": "mac",
+    "zcode": "Read-only getApp returned existing I05 C1 terminal task; GLM-5.3 highest and full access visible only for that old task, not T06 new task",
+    "minimax": "Running native app discovered; not selected or manipulated",
+    "isolated_review_surfaces": false,
+    "browser_review_tab": false
+  },
+  "actions": "Read-only app/inventory observations; no click, typing, task creation, model change, focus/Raise, GUI tests or payment",
+  "task_receipts": {
+    "zcode": {
+      "created": false,
+      "native_handle": null,
+      "actual_new_task_permission": "not observed"
+    },
+    "minimax": {
+      "created": false,
+      "native_handle": null,
+      "actual_new_task_permission": "not observed"
+    }
+  },
+  "missing_condition": "Explicit current-desktop time or an actual isolated CUA review entry; resource lease alone does not remove AGENTS no-desktop rule",
+  "user_question": "Async question submitted for current-desktop review-app time; pending; elapsed time is not permission",
+  "continuation": "UI remains independent running agent; no S1 source changes/no push; full Goal active"
+}

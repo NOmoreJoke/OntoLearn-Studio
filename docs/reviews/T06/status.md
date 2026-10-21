@@ -83,3 +83,9 @@ UI已实际独立启动：agent /root/behavior_ui，树 /Users/kyle/Documents/�
 新来源/验证/完整diff清单及日志哈希为 evidence/validation-61396a5.json；review-readiness.md已重写为当前完整12项产品来源和实际门禁。两份新成功probe输出与已跟踪完整payload语义一致，记录原始字节与规范化hash后清理重复输出；原完整payload及本地运行日志保留。
 
 指定应用独占资源已由总控转交，但须总控实查新产品/流程HEAD与dirty/source manifest后派发；未启动指定任务、未操作应用、未push/PR/CI/合并。AGENTS仍保护未暂存。UI在独立child树实质实现，desktop typecheck首跑通过，其他验证与交付尚未收齐；不在本冻结范围。完整FR父Goal保持active，真实依赖/集成与最终门禁持续开放。
+
+## 指定审查实际派发入口核验
+
+总控已实际完成新候选派发门（T06-S1-controller-review-preflight.json，12source/完整diff/20raw一致、远端5f），并明确准许本聊天在预约入口派发。两独立完整输入及SHA已先提交 **11c7a9bb0288fab87e6cecefcbfccbd36d550684**，只追加流程；产品613零漂移。
+
+实际CUA只读核验为mac target；ZCode现存I05终态显示GLM5.3最高/完全访问，但不是本线新任务设置证明。两审查应用为本机native，无隔离审查browser入口。没有click/type/Raise/任务创建；两新任务均无句柄，不能记已派发。当前AGENTS要求当前桌面操作前明确时段，已通过async向用户请求仅两审查应用短时操作，仍待实际回答；预约不等于解除桌面约束。完整入口记录 round-1/dispatch-entry-check.json。等待期间UI独立无窗口工作继续，不改冻结源或重测无变化产品。
