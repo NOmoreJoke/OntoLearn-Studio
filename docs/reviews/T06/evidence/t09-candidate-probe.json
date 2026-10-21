@@ -1,0 +1,2128 @@
+{
+  "manifest_sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+  "case_count": 9,
+  "product_runtime": "not-executed",
+  "formal_acceptance": false,
+  "reasoning_source": "manual gold test input; no reasoner executed",
+  "not_tested": ["atomic Store round", "resource stage B-07", "Agent B-08", "UI"],
+  "cases": [
+    {
+      "case_id": "B-01",
+      "source": {
+        "manifest_sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixture_version": "prd-v0.6-learning-1",
+        "case_id": "B-01",
+        "adapter_version": "T09-fixture-to-T06-v1",
+        "product_runtime": "not-executed"
+      },
+      "status": "private-plan-comparison-passed",
+      "projected_candidate": {
+        "committed": false,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A04",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:E-B01",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W:E-B01>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W:E-B01",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A01>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A02>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A03>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A04>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Closed\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A04",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"Low\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A04",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"备用泵C\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W:E-B01",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站B\""
+          }
+        ],
+        "orders": [
+          {
+            "id": "W:E-B01",
+            "status": "待处理",
+            "eventId": "E-B01"
+          }
+        ],
+        "notifications": [],
+        "actionTrace": [
+          {
+            "eventId": "E-B01",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E-B01",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          }
+        ],
+        "consumedEvents": ["E-B01"],
+        "triggeredInstances": [["E-B01", "B-risk"]]
+      },
+      "manual_reasoning_input": {
+        "binding": "898a03447e64fb2f6b559e82f9a25aad39c3e4416ba200422a00459362f59845",
+        "assertion_digest": "ff647183ef3bbfd262a893765aaabcd8b348031bd9a212f52ac33f61415df7b5",
+        "ontology_version": "f222865e73f3f1ee0f7e4ff62aac2ebcae03018db6625e427104a380e191a6e8",
+        "rules_version": "rules-1",
+        "version": "manual-derived-test-input",
+        "status": "current",
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "value": "urn:ontolearn:learning:HighRiskEquipment"
+          }
+        ]
+      },
+      "failure": null,
+      "repeat": {
+        "committed": false,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A04",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:E-B01",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W:E-B01>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W:E-B01",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A01>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A02>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A03>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A04>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Closed\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A04",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"Low\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A04",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"备用泵C\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W:E-B01",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站B\""
+          }
+        ],
+        "orders": [
+          {
+            "id": "W:E-B01",
+            "status": "待处理",
+            "eventId": "E-B01"
+          }
+        ],
+        "notifications": [],
+        "actionTrace": [],
+        "consumedEvents": ["E-B01"],
+        "triggeredInstances": [["E-B01", "B-risk"]]
+      }
+    },
+    {
+      "case_id": "B-02",
+      "source": {
+        "manifest_sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixture_version": "prd-v0.6-learning-1",
+        "case_id": "B-02",
+        "adapter_version": "T09-fixture-to-T06-v1",
+        "product_runtime": "not-executed"
+      },
+      "status": "private-plan-comparison-passed",
+      "projected_candidate": {
+        "committed": false,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A05",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A01>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A02>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A03>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A05>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Closed\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"Low\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A05",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"Low\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A05",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"备用泵C\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站B\""
+          }
+        ],
+        "orders": [],
+        "notifications": [],
+        "actionTrace": [],
+        "consumedEvents": ["E-B02"],
+        "triggeredInstances": []
+      },
+      "manual_reasoning_input": {
+        "binding": "a11fa6c63bee124052e83e53a15f42fea24b28aaed37eacd36d62fd489cb27e4",
+        "assertion_digest": "61baab9669e8c517a440cb7223811aca4885477f445f992a083696b4c1590116",
+        "ontology_version": "f222865e73f3f1ee0f7e4ff62aac2ebcae03018db6625e427104a380e191a6e8",
+        "rules_version": "rules-1",
+        "version": "manual-derived-test-input",
+        "status": "current",
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "value": "urn:ontolearn:learning:HighRiskEquipment"
+          }
+        ]
+      },
+      "failure": null,
+      "repeat": null
+    },
+    {
+      "case_id": "B-03",
+      "source": {
+        "manifest_sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixture_version": "prd-v0.6-learning-1",
+        "case_id": "B-03",
+        "adapter_version": "T09-fixture-to-T06-v1",
+        "product_runtime": "not-executed"
+      },
+      "status": "private-plan-comparison-passed",
+      "projected_candidate": {
+        "committed": false,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A06",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:E-B03",
+            "predicate": "urn:ontolearn:learning:eventOrder",
+            "object": "<urn:ontolearn:learning:W:E-B03>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W:E-B03",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A02>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A03>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A06>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Closed\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A06",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"Low\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A06",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"备用泵C\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W:E-B03",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站B\""
+          }
+        ],
+        "orders": [
+          {
+            "id": "W:E-B03",
+            "status": "待处理",
+            "eventId": "E-B03"
+          }
+        ],
+        "notifications": [],
+        "actionTrace": [
+          {
+            "eventId": "E-B03",
+            "behaviorId": "B-risk",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E-B03",
+            "behaviorId": "B-risk",
+            "actionIndex": 2
+          }
+        ],
+        "consumedEvents": ["E-B03"],
+        "triggeredInstances": [["E-B03", "B-risk"]]
+      },
+      "manual_reasoning_input": {
+        "binding": "3539eed3e591c5d8e5ad77d7a06309761573cf0e482880323fcbfd31d1683666",
+        "assertion_digest": "2d8a31ff494a87bf8cc41747f7355a79c1bf2be4797d8daec368db7872f2d54f",
+        "ontology_version": "f222865e73f3f1ee0f7e4ff62aac2ebcae03018db6625e427104a380e191a6e8",
+        "rules_version": "rules-1",
+        "version": "manual-derived-test-input",
+        "status": "current",
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "value": "urn:ontolearn:learning:HighRiskEquipment"
+          }
+        ]
+      },
+      "failure": null,
+      "repeat": null
+    },
+    {
+      "case_id": "B-04",
+      "source": {
+        "manifest_sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixture_version": "prd-v0.6-learning-1",
+        "case_id": "B-04",
+        "adapter_version": "T09-fixture-to-T06-v1",
+        "product_runtime": "not-executed"
+      },
+      "status": "private-plan-comparison-passed",
+      "projected_candidate": {
+        "committed": false,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:T1",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:TestObject>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-other",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-test",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A02>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A03>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Closed\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"Low\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:T1",
+            "predicate": "urn:ontolearn:learning:P",
+            "object": "\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"备用泵C\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-other",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-test",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站B\""
+          }
+        ],
+        "orders": [
+          {
+            "id": "W-test",
+            "status": "待处理"
+          },
+          {
+            "id": "W-other",
+            "status": "待处理"
+          }
+        ],
+        "notifications": [],
+        "actionTrace": [],
+        "consumedEvents": ["E-del", "E-probe"],
+        "triggeredInstances": []
+      },
+      "manual_reasoning_input": {
+        "binding": "0b50fa1bfe2be5c61b55b3315536bdcbc89dc293bc5d28a3aaea7300eb42ba8c",
+        "assertion_digest": "287e80f1147f4e6c5788f0c0df1d33681ab08bade8b2b9668bb757849bb80d67",
+        "ontology_version": "687fb314a22eede94e9d6f3a4739fea898dc0b86c06d9371390d1fd40c4d40af",
+        "rules_version": "rules-1",
+        "version": "manual-derived-test-input",
+        "status": "current",
+        "facts": []
+      },
+      "failure": null,
+      "repeat": null
+    },
+    {
+      "case_id": "B-05",
+      "source": {
+        "manifest_sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixture_version": "prd-v0.6-learning-1",
+        "case_id": "B-05",
+        "adapter_version": "T09-fixture-to-T06-v1",
+        "product_runtime": "not-executed"
+      },
+      "status": "private-plan-comparison-passed",
+      "projected_candidate": {
+        "committed": false,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:T1",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:TestObject>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-other",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-test",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A01>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A02>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A03>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Closed\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"Low\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:T1",
+            "predicate": "urn:ontolearn:learning:P",
+            "object": "\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"备用泵C\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-other",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-test",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站B\""
+          }
+        ],
+        "orders": [
+          {
+            "id": "W-test",
+            "status": "待处理"
+          },
+          {
+            "id": "W-other",
+            "status": "待处理"
+          }
+        ],
+        "notifications": [],
+        "actionTrace": [],
+        "consumedEvents": [],
+        "triggeredInstances": []
+      },
+      "manual_reasoning_input": {
+        "binding": "0fe2949daa28208c2517953b7f032aa7d42917fe504f4159889afc5e2935876d",
+        "assertion_digest": "837d6d687ad44b147eedf75278070bdb077c85457912559a734ab734bdba98cd",
+        "ontology_version": "687fb314a22eede94e9d6f3a4739fea898dc0b86c06d9371390d1fd40c4d40af",
+        "rules_version": "rules-1",
+        "version": "manual-derived-test-input",
+        "status": "current",
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "value": "urn:ontolearn:learning:HighRiskEquipment"
+          }
+        ]
+      },
+      "failure": {
+        "reason": "competing_write",
+        "evidence": {
+          "scope": {
+            "mode": "sample",
+            "project_id": "T06-readonly-data-probe",
+            "scenario_id": "B-05"
+          },
+          "run_id": "probe-1",
+          "round": 1,
+          "binding": "0fe2949daa28208c2517953b7f032aa7d42917fe504f4159889afc5e2935876d",
+          "assertion_version": "B-05-1",
+          "reasoning_version": "manual-derived-test-input",
+          "behavior_version": "behaviors-1",
+          "committed": false,
+          "executed_actions": [],
+          "stage": "conflict_check",
+          "event_trace": [
+            {
+              "event_id": "E-B05",
+              "reason": "event_applied"
+            }
+          ],
+          "decisions": [
+            {
+              "event_id": "E-B05",
+              "behavior_id": "B-a",
+              "assertion_version": "B-05-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [
+                {
+                  "index": 0,
+                  "satisfied": true,
+                  "reason": "explicit_always"
+                }
+              ],
+              "reason": "triggered"
+            },
+            {
+              "event_id": "E-B05",
+              "behavior_id": "B-b",
+              "assertion_version": "B-05-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [
+                {
+                  "index": 0,
+                  "satisfied": true,
+                  "reason": "explicit_always"
+                }
+              ],
+              "reason": "triggered"
+            },
+            {
+              "event_id": "E-B05",
+              "behavior_id": "B-multi",
+              "assertion_version": "B-05-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-B05",
+              "behavior_id": "B-probe",
+              "assertion_version": "B-05-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-B05",
+              "behavior_id": "B-risk",
+              "assertion_version": "B-05-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-B05",
+              "behavior_id": "X",
+              "assertion_version": "B-05-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-B05",
+              "behavior_id": "Y",
+              "assertion_version": "B-05-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            }
+          ],
+          "intents": [
+            {
+              "event_id": "E-B05",
+              "behavior_id": "B-a",
+              "action_index": 0,
+              "action": {
+                "kind": "set",
+                "property": "urn:ontolearn:learning:workOrderStatus",
+                "subject": "urn:ontolearn:learning:W-test",
+                "value": "S-a"
+              }
+            },
+            {
+              "event_id": "E-B05",
+              "behavior_id": "B-b",
+              "action_index": 0,
+              "action": {
+                "kind": "set",
+                "property": "urn:ontolearn:learning:workOrderStatus",
+                "subject": "urn:ontolearn:learning:W-test",
+                "value": "S-b"
+              }
+            }
+          ],
+          "conflict": [
+            {
+              "event_id": "E-B05",
+              "behavior_id": "B-a",
+              "action_index": 0,
+              "action": {
+                "kind": "set",
+                "property": "urn:ontolearn:learning:workOrderStatus",
+                "subject": "urn:ontolearn:learning:W-test",
+                "value": "S-a"
+              }
+            },
+            {
+              "event_id": "E-B05",
+              "behavior_id": "B-b",
+              "action_index": 0,
+              "action": {
+                "kind": "set",
+                "property": "urn:ontolearn:learning:workOrderStatus",
+                "subject": "urn:ontolearn:learning:W-test",
+                "value": "S-b"
+              }
+            }
+          ],
+          "conflict_slot": {
+            "subject": "urn:ontolearn:learning:W-test",
+            "property": "urn:ontolearn:learning:workOrderStatus"
+          }
+        }
+      },
+      "repeat": null
+    },
+    {
+      "case_id": "B-06",
+      "source": {
+        "manifest_sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixture_version": "prd-v0.6-learning-1",
+        "case_id": "B-06",
+        "adapter_version": "T09-fixture-to-T06-v1",
+        "product_runtime": "not-executed"
+      },
+      "status": "private-plan-comparison-passed",
+      "projected_candidate": {
+        "committed": false,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:N:E-B06:Y",
+            "predicate": "urn:ontolearn:learning:notificationEvent",
+            "object": "<urn:ontolearn:learning:E-B06>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:N:E-B06:Y",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Notification>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:T1",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:TestObject>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-other",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-test",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A01>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A02>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A03>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Closed\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"Low\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:T1",
+            "predicate": "urn:ontolearn:learning:P",
+            "object": "\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"备用泵C\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-other",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-test",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站B\""
+          }
+        ],
+        "orders": [
+          {
+            "id": "W-test",
+            "status": "待处理"
+          },
+          {
+            "id": "W-other",
+            "status": "待处理"
+          }
+        ],
+        "notifications": [
+          {
+            "id": "N:E-B06:Y",
+            "eventId": "E-B06",
+            "behaviorId": "Y"
+          }
+        ],
+        "actionTrace": [
+          {
+            "eventId": "E-B06",
+            "behaviorId": "X",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E-B06",
+            "behaviorId": "Y",
+            "actionIndex": 1
+          }
+        ],
+        "consumedEvents": ["E-B06"],
+        "triggeredInstances": [
+          ["E-B06", "X"],
+          ["E-B06", "Y"]
+        ]
+      },
+      "manual_reasoning_input": {
+        "binding": "a551ac8bb1f1c2e54f1a3fc6027d96a9da635993eb9fc01ecfb90f3c59699ca0",
+        "assertion_digest": "e2d3990e42bf28c3f6f4d24544189756388d4e3481b324045eebdb10892e7f8d",
+        "ontology_version": "687fb314a22eede94e9d6f3a4739fea898dc0b86c06d9371390d1fd40c4d40af",
+        "rules_version": "rules-1",
+        "version": "manual-derived-test-input",
+        "status": "current",
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "value": "urn:ontolearn:learning:HighRiskEquipment"
+          }
+        ]
+      },
+      "failure": null,
+      "repeat": null
+    },
+    {
+      "case_id": "B-09",
+      "source": {
+        "manifest_sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixture_version": "prd-v0.6-learning-1",
+        "case_id": "B-09",
+        "adapter_version": "T09-fixture-to-T06-v1",
+        "product_runtime": "not-executed"
+      },
+      "status": "private-plan-comparison-passed",
+      "projected_candidate": {
+        "committed": false,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:T1",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:TestObject>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-other",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-test",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A01>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A02>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A03>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Closed\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"Low\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:T1",
+            "predicate": "urn:ontolearn:learning:P",
+            "object": "\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"备用泵C\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-other",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-test",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站B\""
+          }
+        ],
+        "orders": [
+          {
+            "id": "W-test",
+            "status": "待处理"
+          },
+          {
+            "id": "W-other",
+            "status": "待处理"
+          }
+        ],
+        "notifications": [],
+        "actionTrace": [],
+        "consumedEvents": [],
+        "triggeredInstances": []
+      },
+      "manual_reasoning_input": {
+        "binding": "e4a498cd28bcc9e7b2e1bf2e374aa0c6fb83eae0368c090c543b6fa31f2142c7",
+        "assertion_digest": "67416c7515b75f29743efb3adb28f7cd6a6a208d1721b51697fc3d282fd56e7d",
+        "ontology_version": "687fb314a22eede94e9d6f3a4739fea898dc0b86c06d9371390d1fd40c4d40af",
+        "rules_version": "rules-1",
+        "version": "manual-derived-test-input",
+        "status": "current",
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "value": "urn:ontolearn:learning:HighRiskEquipment"
+          }
+        ]
+      },
+      "failure": {
+        "reason": "competing_write",
+        "evidence": {
+          "scope": {
+            "mode": "sample",
+            "project_id": "T06-readonly-data-probe",
+            "scenario_id": "B-09"
+          },
+          "run_id": "probe-1",
+          "round": 1,
+          "binding": "e4a498cd28bcc9e7b2e1bf2e374aa0c6fb83eae0368c090c543b6fa31f2142c7",
+          "assertion_version": "B-09-1",
+          "reasoning_version": "manual-derived-test-input",
+          "behavior_version": "behaviors-1",
+          "committed": false,
+          "executed_actions": [],
+          "stage": "conflict_check",
+          "event_trace": [
+            {
+              "event_id": "E-M1",
+              "reason": "event_applied"
+            },
+            {
+              "event_id": "E-M2",
+              "reason": "event_applied"
+            }
+          ],
+          "decisions": [
+            {
+              "event_id": "E-M1",
+              "behavior_id": "B-a",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-M2",
+              "behavior_id": "B-a",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-M1",
+              "behavior_id": "B-b",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-M2",
+              "behavior_id": "B-b",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-M1",
+              "behavior_id": "B-multi",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [
+                {
+                  "index": 0,
+                  "satisfied": true,
+                  "reason": "explicit_always"
+                }
+              ],
+              "reason": "triggered"
+            },
+            {
+              "event_id": "E-M2",
+              "behavior_id": "B-multi",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [
+                {
+                  "index": 0,
+                  "satisfied": true,
+                  "reason": "explicit_always"
+                }
+              ],
+              "reason": "triggered"
+            },
+            {
+              "event_id": "E-M1",
+              "behavior_id": "B-probe",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-M2",
+              "behavior_id": "B-probe",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-M1",
+              "behavior_id": "B-risk",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-M2",
+              "behavior_id": "B-risk",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-M1",
+              "behavior_id": "X",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-M2",
+              "behavior_id": "X",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-M1",
+              "behavior_id": "Y",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            },
+            {
+              "event_id": "E-M2",
+              "behavior_id": "Y",
+              "assertion_version": "B-09-1",
+              "reasoning_version": "manual-derived-test-input",
+              "conditions": [],
+              "reason": "event_mismatch"
+            }
+          ],
+          "intents": [
+            {
+              "event_id": "E-M1",
+              "behavior_id": "B-multi",
+              "action_index": 0,
+              "action": {
+                "kind": "set",
+                "property": "urn:ontolearn:learning:workOrderStatus",
+                "subject": "urn:ontolearn:learning:W-test",
+                "value": "S1"
+              }
+            },
+            {
+              "event_id": "E-M1",
+              "behavior_id": "B-multi",
+              "action_index": 1,
+              "action": {
+                "id": "urn:ontolearn:learning:N:E-M1:B-multi",
+                "kind": "notify",
+                "message": "固定案例内部通知"
+              },
+              "notification_id": "urn:ontolearn:learning:N:E-M1:B-multi"
+            },
+            {
+              "event_id": "E-M2",
+              "behavior_id": "B-multi",
+              "action_index": 0,
+              "action": {
+                "kind": "set",
+                "property": "urn:ontolearn:learning:workOrderStatus",
+                "subject": "urn:ontolearn:learning:W-test",
+                "value": "S2"
+              }
+            },
+            {
+              "event_id": "E-M2",
+              "behavior_id": "B-multi",
+              "action_index": 1,
+              "action": {
+                "id": "urn:ontolearn:learning:N:E-M2:B-multi",
+                "kind": "notify",
+                "message": "固定案例内部通知"
+              },
+              "notification_id": "urn:ontolearn:learning:N:E-M2:B-multi"
+            }
+          ],
+          "conflict": [
+            {
+              "event_id": "E-M1",
+              "behavior_id": "B-multi",
+              "action_index": 0,
+              "action": {
+                "kind": "set",
+                "property": "urn:ontolearn:learning:workOrderStatus",
+                "subject": "urn:ontolearn:learning:W-test",
+                "value": "S1"
+              }
+            },
+            {
+              "event_id": "E-M2",
+              "behavior_id": "B-multi",
+              "action_index": 0,
+              "action": {
+                "kind": "set",
+                "property": "urn:ontolearn:learning:workOrderStatus",
+                "subject": "urn:ontolearn:learning:W-test",
+                "value": "S2"
+              }
+            }
+          ],
+          "conflict_slot": {
+            "subject": "urn:ontolearn:learning:W-test",
+            "property": "urn:ontolearn:learning:workOrderStatus"
+          }
+        }
+      },
+      "repeat": null
+    },
+    {
+      "case_id": "B-10",
+      "source": {
+        "manifest_sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixture_version": "prd-v0.6-learning-1",
+        "case_id": "B-10",
+        "adapter_version": "T09-fixture-to-T06-v1",
+        "product_runtime": "not-executed"
+      },
+      "status": "private-plan-comparison-passed",
+      "projected_candidate": {
+        "committed": false,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:N:E-M3:B-multi",
+            "predicate": "urn:ontolearn:learning:notificationEvent",
+            "object": "<urn:ontolearn:learning:E-M3>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:N:E-M4:B-multi",
+            "predicate": "urn:ontolearn:learning:notificationEvent",
+            "object": "<urn:ontolearn:learning:E-M4>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:N:E-M3:B-multi",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Notification>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:N:E-M4:B-multi",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Notification>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:T1",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:TestObject>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-other",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-test",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A01>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A02>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A03>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Closed\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"Low\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-test",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"S3\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-other",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"S4\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:T1",
+            "predicate": "urn:ontolearn:learning:P",
+            "object": "\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"备用泵C\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站B\""
+          }
+        ],
+        "orders": [
+          {
+            "id": "W-test",
+            "status": "S3"
+          },
+          {
+            "id": "W-other",
+            "status": "S4"
+          }
+        ],
+        "notifications": [
+          {
+            "id": "N:E-M4:B-multi",
+            "eventId": "E-M4",
+            "behaviorId": "B-multi"
+          },
+          {
+            "id": "N:E-M3:B-multi",
+            "eventId": "E-M3",
+            "behaviorId": "B-multi"
+          }
+        ],
+        "actionTrace": [
+          {
+            "eventId": "E-M4",
+            "behaviorId": "B-multi",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E-M4",
+            "behaviorId": "B-multi",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E-M3",
+            "behaviorId": "B-multi",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E-M3",
+            "behaviorId": "B-multi",
+            "actionIndex": 2
+          }
+        ],
+        "consumedEvents": ["E-M4", "E-M3"],
+        "triggeredInstances": [
+          ["E-M4", "B-multi"],
+          ["E-M3", "B-multi"]
+        ]
+      },
+      "manual_reasoning_input": {
+        "binding": "1443b1687c41851183494eefa160c82dbdfe804fb99b416069addb17a300d55b",
+        "assertion_digest": "a6e03dd72b61755c60716144f6a0197b6afe866a3f0f3d45f30b78aabd424617",
+        "ontology_version": "687fb314a22eede94e9d6f3a4739fea898dc0b86c06d9371390d1fd40c4d40af",
+        "rules_version": "rules-1",
+        "version": "manual-derived-test-input",
+        "status": "current",
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "value": "urn:ontolearn:learning:HighRiskEquipment"
+          }
+        ]
+      },
+      "failure": null,
+      "repeat": null
+    },
+    {
+      "case_id": "B-11",
+      "source": {
+        "manifest_sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixture_version": "prd-v0.6-learning-1",
+        "case_id": "B-11",
+        "adapter_version": "T09-fixture-to-T06-v1",
+        "product_runtime": "not-executed"
+      },
+      "status": "private-plan-comparison-passed",
+      "projected_candidate": {
+        "committed": false,
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Alarm>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:N:E-M5:B-multi",
+            "predicate": "urn:ontolearn:learning:notificationEvent",
+            "object": "<urn:ontolearn:learning:E-M5>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:N:E-M6:B-multi",
+            "predicate": "urn:ontolearn:learning:notificationEvent",
+            "object": "<urn:ontolearn:learning:E-M6>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:N:E-M5:B-multi",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Notification>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:N:E-M6:B-multi",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Notification>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:T1",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:TestObject>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-other",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-test",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:WorkOrder>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A01>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A02>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "<urn:ontolearn:learning:alarm/A03>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Closed\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A02",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"Low\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A01",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:alarm/A03",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-test",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"S1\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:T1",
+            "predicate": "urn:ontolearn:learning:P",
+            "object": "\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/003",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"备用泵C\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:W-other",
+            "predicate": "urn:ontolearn:learning:workOrderStatus",
+            "object": "\"待处理\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站A\""
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/002",
+            "predicate": "urn:ontolearn:learning:name",
+            "object": "\"泵站B\""
+          }
+        ],
+        "orders": [
+          {
+            "id": "W-test",
+            "status": "S1"
+          },
+          {
+            "id": "W-other",
+            "status": "待处理"
+          }
+        ],
+        "notifications": [
+          {
+            "id": "N:E-M5:B-multi",
+            "eventId": "E-M5",
+            "behaviorId": "B-multi"
+          },
+          {
+            "id": "N:E-M6:B-multi",
+            "eventId": "E-M6",
+            "behaviorId": "B-multi"
+          }
+        ],
+        "actionTrace": [
+          {
+            "eventId": "E-M5",
+            "behaviorId": "B-multi",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E-M5",
+            "behaviorId": "B-multi",
+            "actionIndex": 2
+          },
+          {
+            "eventId": "E-M6",
+            "behaviorId": "B-multi",
+            "actionIndex": 1
+          },
+          {
+            "eventId": "E-M6",
+            "behaviorId": "B-multi",
+            "actionIndex": 2
+          }
+        ],
+        "consumedEvents": ["E-M5", "E-M6"],
+        "triggeredInstances": [
+          ["E-M5", "B-multi"],
+          ["E-M6", "B-multi"]
+        ]
+      },
+      "manual_reasoning_input": {
+        "binding": "83357a8024ca894a9b5e4527159a07367213d05c728ba095421d4c04c79e1df0",
+        "assertion_digest": "74a9833018363e83384be00253be55d64a181df54219633160756e1d834e63c0",
+        "ontology_version": "687fb314a22eede94e9d6f3a4739fea898dc0b86c06d9371390d1fd40c4d40af",
+        "rules_version": "rules-1",
+        "version": "manual-derived-test-input",
+        "status": "current",
+        "facts": [
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "value": "urn:ontolearn:learning:HighRiskEquipment"
+          }
+        ]
+      },
+      "failure": null,
+      "repeat": null
+    }
+  ]
+}

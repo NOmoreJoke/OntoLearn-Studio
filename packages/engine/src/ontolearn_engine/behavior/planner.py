@@ -8,6 +8,7 @@ committed, and binding checks do not establish that a reasoner actually ran.
 import hashlib
 import json
 import math
+import re
 from contextlib import contextmanager
 from dataclasses import dataclass
 from itertools import combinations
@@ -183,11 +184,32 @@ def _edit(state, edit, schema, classes):
         _fail("invalid_action", "event.edit")
     kind = edit["kind"]
     if kind == "create":
-        _shape(edit, ("kind", "object"))
+        _shape(edit, ("kind", "object"), ("initial",))
         obj = _text(edit["object"], "edit.object")
         if obj in state["objects"] or obj in {n["id"] for n in state["notifications"]}:
             _fail("duplicate_identity", "edit.object")
         state["objects"].append(obj)
+        for index, field in enumerate(_list(edit.get("initial", []), "create.initial")):
+            with _explain(initial_index=index):
+                _shape(field, ("property", "value"), location="create.initial")
+                fact = {"subject": obj, **field}
+                _fact(fact, state, schema, classes)
+                _put(
+                    state,
+                    fact,
+                    schema,
+                    classes,
+                    append=schema[field["property"]]["cardinality"] == "many",
+                )
+    elif kind == "declare":
+        # RDF assertion input may introduce the same stable subject/reference in
+        # multiple events. Declaration is event-only and never a behavior action.
+        _shape(edit, ("kind", "object"))
+        obj = _text(edit["object"], "edit.object")
+        if obj in {n["id"] for n in state["notifications"]}:
+            _fail("duplicate_identity", "edit.object")
+        if obj not in state["objects"]:
+            state["objects"].append(obj)
     elif kind == "delete_object":
         _shape(edit, ("kind", "object"))
         if edit["object"] not in state["objects"]:
@@ -379,7 +401,12 @@ def prepare_events(request: dict) -> PreparedRound:
 
 def _expression(value, location):
     if type(value) is dict:
-        if len(value) != 1 or next(iter(value)) not in ("event_field", "event_id", "instance_id"):
+        if len(value) != 1 or next(iter(value)) not in (
+            "event_field",
+            "event_id",
+            "instance_id",
+            "event_template",
+        ):
             _fail("invalid_expression", location)
         key = next(iter(value))
         if key == "event_id":
@@ -387,6 +414,10 @@ def _expression(value, location):
                 _fail("invalid_expression", location)
         else:
             _text(value[key], location)
+            if key == "event_template":
+                residual = value[key].replace("{eventId}", "").replace("{behaviorId}", "")
+                if "{" in residual or "}" in residual:
+                    _fail("invalid_expression", location)
     else:
         _scalar(value, location)
 
@@ -399,6 +430,14 @@ def _resolve(value, event, behavior_id, scope):
         return event["id"]
     if key == "instance_id":
         return value[key] + ":" + _hash([scope, event["id"], behavior_id])
+    if key == "event_template":
+        # Single-pass substitution: placeholder-looking input IDs are data and
+        # cannot be reinterpreted as another placeholder or executable text.
+        return re.sub(
+            r"\{eventId\}|\{behaviorId\}",
+            lambda match: event["id"] if match[0] == "{eventId}" else behavior_id,
+            value[key],
+        )
     if value[key] not in event["payload"]:
         _fail("missing_event_field", "event.payload")
     return event["payload"][value[key]]
@@ -462,20 +501,33 @@ def _definitions(behaviors):
                     if type(action) is not dict:
                         _fail("invalid_action", "behavior.action")
                     kind = action.get("kind")
+                    optional = ()
                     if kind == "create":
                         fields = ("object",)
+                        optional = ("initial",)
                     elif kind in ("set", "add"):
                         fields = ("subject", "property", "value")
                     elif kind == "notify":
                         fields = ("message",)
+                        optional = ("id",)
                     else:
                         _fail("unavailable_action", "behavior.action.kind")
-                    _shape(action, ("kind", *fields))
+                    _shape(action, ("kind", *fields), optional)
                     for name in fields:
                         if name == "property":
                             _text(action[name], "action.property")
                         else:
                             _expression(action[name], "action." + name)
+                    if "id" in action:
+                        _expression(action["id"], "action.id")
+                    if "initial" in action:
+                        for initial_index, field in enumerate(
+                            _list(action["initial"], "create.initial")
+                        ):
+                            with _explain(initial_index=initial_index):
+                                _shape(field, ("property", "value"), location="create.initial")
+                                _text(field["property"], "create.initial.property")
+                                _expression(field["value"], "create.initial.value")
 
 
 def _static_references(behaviors, state, schema, classes):
@@ -520,12 +572,15 @@ def _static_references(behaviors, state, schema, classes):
                 committed=False,
             ):
                 kind = action["kind"]
-                if kind == "create" and type(action["object"]) is not dict:
-                    _text(action["object"], "definition.object")
-                    # Existence is an execution-time check: an already-consumed
-                    # constant create remains a no-op on duplicate delivery.
-                    if action["object"] not in objects:
-                        objects.append(action["object"])
+                if kind == "create":
+                    if type(action["object"]) is not dict:
+                        _text(action["object"], "definition.object")
+                        # Constant creates remain no-ops after consumed events.
+                        if action["object"] not in objects:
+                            objects.append(action["object"])
+                    for initial_index, field in enumerate(action.get("initial", [])):
+                        with _explain(initial_index=initial_index):
+                            check({"subject": action["object"], **field}, objects)
                 elif kind in ("set", "add"):
                     check(action, objects)
                     many = schema[action["property"]]["cardinality"] == "many"
@@ -533,6 +588,42 @@ def _static_references(behaviors, state, schema, classes):
                         _fail("cardinality_action_mismatch", "definition.action")
                 elif kind == "notify" and type(action["message"]) is not dict:
                     _text(action["message"], "definition.message")
+
+
+def _resolved_action(template, event, behavior_id, scope):
+    resolved = {}
+    for name, value in template.items():
+        if name == "initial":
+            resolved[name] = [
+                {
+                    "property": field["property"],
+                    "value": _resolve(field["value"], event, behavior_id, scope),
+                }
+                for field in value
+            ]
+        else:
+            resolved[name] = _resolve(value, event, behavior_id, scope)
+    return resolved
+
+
+def _single_writes(intent, schema):
+    action = intent["action"]
+    if action["kind"] == "set":
+        return [
+            {
+                "subject": action["subject"],
+                "property": action["property"],
+                "value": action["value"],
+                "intent": intent,
+            }
+        ]
+    if action["kind"] == "create":
+        return [
+            {"subject": action["object"], **field, "intent": intent}
+            for field in action.get("initial", [])
+            if schema[field["property"]]["cardinality"] == "one"
+        ]
+    return []
 
 
 def _difference(before, after):
@@ -689,7 +780,7 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
                 decisions=decisions,
                 intents=intents,
             ):
-                action = {k: _resolve(v, event, behavior["id"], scope) for k, v in template.items()}
+                action = _resolved_action(template, event, behavior["id"], scope)
                 intent = {
                     "event_id": event["id"],
                     "behavior_id": behavior["id"],
@@ -698,17 +789,19 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
                 }
                 if action["kind"] == "notify":
                     _text(action["message"], "action.message")
-                    intent["notification_id"] = "notification:" + _hash(
-                        [scope, event["id"], behavior["id"], index]
+                    intent["notification_id"] = (
+                        _text(action["id"], "notification.id")
+                        if ("id" in action)
+                        else "notification:" + _hash([scope, event["id"], behavior["id"], index])
                     )
                 else:
                     _edit(scratch, action, schema, classes)
                 intents.append(intent)
-    writes = [i for i in intents if i["action"]["kind"] == "set"]
-    for left, right in combinations(writes, 2):
+    writes = [write for intent in intents for write in _single_writes(intent, schema)]
+    for a, b in combinations(writes, 2):
+        left, right = a["intent"], b["intent"]
         if (left["event_id"], left["behavior_id"]) == (right["event_id"], right["behavior_id"]):
             continue
-        a, b = left["action"], right["action"]
         if (a["subject"], a["property"]) == (b["subject"], b["property"]) and (
             _json(a["value"]) != _json(b["value"])
         ):
@@ -723,6 +816,7 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
                     "intents": intents,
                     "conflict": [left, right],
                     "executed_actions": [],
+                    "conflict_slot": {"subject": a["subject"], "property": a["property"]},
                 },
             )
     candidate = json.loads(_json(doc["after_events"]))
@@ -770,7 +864,7 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
     ]
     return {
         "kind": "behavior_plan",
-        "semantics_version": "E.1-private-v1",
+        "semantics_version": "E.1-private-v2",
         "committed": False,
         "scope": scope,
         "run_id": request["run_id"],

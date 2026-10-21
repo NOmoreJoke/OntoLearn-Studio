@@ -1,4 +1,4 @@
-# T06 私有行为计划接口 v1
+# T06 私有行为计划接口（原 v1 与补充 v2）
 
 依据 PRD V0.6 FR-600–604、附录 C、E.1/E.2、G.3。代码位于 `packages/engine/src/ontolearn_engine/behavior/`；所有值为脱离存储的输入副本，本模块无 Store、SQLite、worker、IPC、shell、HTTP、通知发送入口，不声明公共契约已批准。
 
@@ -50,3 +50,5 @@ npm run check
 新增失败反例见 `packages/engine/tests/test_behavior_failures.py`，包括前序编辑后失败、事件身份冲突、部分条件、动态动作失效、跨实例创建碰撞、同值动作超限、静态/模板定位和不可编码 Unicode。成功计划结构与 E.1 排序/冻结/竞争规则保持既有定义。
 
 事件头/载荷错误另记 event_validation。事件预校验、身份冲突和编辑失败均保留排序前的 event_index（请求数组下标），合法时附 event_id 和 event_sequence。执行顺序仍按 sequence/id，源位置不改变排序或事件内容身份；request 中原始 events 顺序保留，准备时只排序带源位置的视图。由此错误可定位到同 ID 重复投递中的具体一项。
+
+本轮为消费 T09 已公开只读固定输入，新增 compound create.initial、封闭 event_template、可指定内部 notify.id 及 event-only declare。完整必要差距、动作计数/竞争、不做真实推理与投影边界见 `t09-adaptation.md`。当前私有输出 E.1-private-v2；上文 v1 原行为保留，不能把早期表达式/动作字段清单作为 v2 完整清单。

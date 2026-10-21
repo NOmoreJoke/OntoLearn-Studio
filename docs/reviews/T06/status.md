@@ -59,3 +59,13 @@
 已形成具体 T06-S1 外审和接线请求：`review-readiness.md`，列出精确工作树/base/head、完整自有范围、指定双方新完整任务的模型和报告路径、每个依赖拥有者需交付的具体接口。该文件是请求，尚无实际预约或外审任务句柄，未操作应用或推送。
 
 本轮通过官方 `wait_threads(timeoutMs=0)` 核验总控原线程 `01a154de-843b-7a00-8a80-51ba1c0aebce` 的真实当前 turn `01a15bc8-732c-76f0-824b-dc2ae935c08b` 为 inProgress，cursor `a6fb72bc-870a-442e-8c5f-cb4caa4b7ecb:22`。这是活跃协调句柄证据，不是依赖批准或外审预约。下一步接收总控批准交接/时段，在本聊天完成真实集成、行为页、原验收、指定双审、CI/合并；完整 Goal 保持 active，未缩小成功定义。
+
+## T09 固定输入交接后的必要适配（2026-10-21）
+
+本轮检查发现 T09 已提交并明确开放 T06/T07 只读输入：内容 `51cdc0e9d138c98cdd4ace865074a71883657a68`，manifest `aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e`。独立兼容性审计核验全部文件/来源，明确旧 e81 的动作粒度/ID/完整 RDF 投影差距，见 `baseline-compatibility-audit.md`。这是新可推进交付，不是以自动续接添加无关核心范围。
+
+本线仅完成该必要适配：native create.initial 保持一源动作，初始单值写参与竞争；封闭 ID 模板与显式通知 ID；event-only declare；固定数据只读加载/版本/哈希核验与有界 codec/DSL；完整未提交候选投影。无复制公共 fixture、无采用 T09/I05/I06 未批准 Python 执行器、无共享路径写入。九例完整集合/顺序 probe 已通过，人工推导明确 not-executed/formal_acceptance=false。当前 116 项自包含行为单测通过；仍须新完整 check/独立全范围复核后冻结。旧 e81 的就绪/Pass仅历史，不能用于当前工作区。
+
+已收到总控预约转交 T06 的两指定审查应用资源；这不是新候选已就绪或已开审。按根要求收敛到本轮必要适配，不追加其他核心功能；待新产品/流程 SHA、完整 diff、source manifest 和 dirty 状态实际核验后才开指定新任务。UI 新增授权仅 apps/desktop/src/renderer/src/behavior/ 与 tests/unit/t06-*.test.ts，若推进须独立 child worktree/feature/agent，不能让本线待审范围漂移。
+
+在安全边界全文读回共同指令新增原第九节及无桌面约束。实际共同指令 SHA `9717f699e14b5941e15d90269f33cbebc32ef9bec6e7439739be848753419880` 匹配；原第九节传达 SHA `1f57a08e909e9d49a6e2c2d6e7012beec3e22b8e3c9e8eacad22c84dfb2d4b54`、无桌面段 `5215df2ead4745e7d74f137c4fa6ac837a54114590b5dee2d83cd16bb728551d` 随总控消息全文接收。保持原 Goal/分支/归档/指定门禁；无额度告警，不调用重置/付费/API；无排队 GUI/e2e/native/HMR。操作政策补充本身不触发产品重审，本轮重验是因为实际适配实现/验收变化。
