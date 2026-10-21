@@ -1,0 +1,98 @@
+{
+  "kind": "docs-only-static-checks",
+  "date": "2026-10-21 Asia/Shanghai",
+  "records": [
+    {
+      "command": [
+        "/usr/local/bin/node",
+        "../I06-transfer-guard-core/node_modules/prettier/bin/prettier.cjs",
+        "--ignore-path",
+        "/dev/null",
+        "--check",
+        "docs/iterations/I06/project-location-capability-and-cohort-offer.md",
+        "docs/reviews/I06/project-location-capability-offer/disposition.md",
+        "docs/reviews/I06/project-location-capability-offer/inputs.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-model-gateway",
+      "exitCode": 0,
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+      "stderr": ""
+    },
+    {
+      "command": ["git", "diff", "--check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-model-gateway",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "660da44aa7ad1b3ba7dbfb3a90fef37e25763ec8",
+        "--",
+        "apps",
+        "packages",
+        "scripts",
+        ".github",
+        "tests",
+        "package.json",
+        "package-lock.json",
+        "uv.lock"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-model-gateway",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": ["git", "status", "--short"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-model-gateway",
+      "exitCode": 0,
+      "stdout": " M AGENTS.md\n?? docs/iterations/I06/project-location-capability-and-cohort-offer.md\n?? docs/reviews/I06/project-location-capability-offer/\n",
+      "stderr": ""
+    },
+    {
+      "command": ["git", "status", "--short"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-transfer-guard-core",
+      "exitCode": 0,
+      "stdout": " M AGENTS.md\n",
+      "stderr": ""
+    },
+    {
+      "command": ["git", "rev-parse", "HEAD"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-transfer-guard-core",
+      "exitCode": 0,
+      "stdout": "961ce77f26accd11bd1cd3ad4a9e560cd3565e37\n",
+      "stderr": ""
+    }
+  ],
+  "inputHashVerification": {
+    "entries": 31,
+    "status": "all matched actual fixed Git or local policy bytes"
+  },
+  "formatFirstAttempt": {
+    "exitCode": 1,
+    "source": "tool transcript",
+    "message": "initial main offer Prettier check found formatting; only new offer formatted; raw inputs and agent report originals preserved"
+  },
+  "independentReview": {
+    "initial": "two P2; original report preserved",
+    "followup": "all P2 and nlink suggestion closed on 46365B/561ec272c07f0c0f026c9aa17b717b99d3e110e31cb4ee45f0663254e9517443",
+    "capacityIncident": "first followup returned selected model at capacity; retried same existing agent/settings and obtained actual full-read final report; no model switch/reset"
+  },
+  "notRun": [
+    "product tests",
+    "runtime",
+    "build",
+    "native",
+    "GUI",
+    "Electron/e2e/HMR",
+    "Keychain",
+    "model network",
+    "paid API"
+  ],
+  "noGoalMutation": true,
+  "noPush": true
+}
