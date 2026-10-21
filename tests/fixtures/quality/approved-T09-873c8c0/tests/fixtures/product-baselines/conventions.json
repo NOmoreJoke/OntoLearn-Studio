@@ -1,0 +1,15 @@
+{
+  "namespace": "urn:ontolearn:learning:",
+  "origin": "PRD V0.6 G.0/E.5; choices fill serialization only",
+  "explicitChoices": [
+    "IRI命名空间、字段名、文件名和版本格式属于实现约定；采用标准rdf:type，不复用I01的urn:type描述谓词。",
+    "G-map-empty不含行为定义；查询和CSV映射仅为测试资源引用。",
+    "设备主键原样保留字符串；CSV行号为含表头物理行号。",
+    "普通工单ID为W:{eventId}，通知为N:{eventId}:{behaviorId}；B-07为W1。E.5按原文固定W001..W016。",
+    "E.5事件E001..E016，显式指定工单ID；初始只有equipment/001及名称，无告警；事件新增High/Open告警，完成工单不自动闭环告警。",
+    "R-04新增告警为A-P001。场景初始推理按E.1执行，不把预存推导当作引擎结果。",
+    "规则变量以?开头，在声明中保留变量，不是RDF绝对IRI。",
+    "课程、迁移题目、术语及辅助枚举是实现约定，不是PRD逐字指定。",
+    "文件是版本化只读输入，非公共IPC契约或独立可写源真相；由批准领域适配器消费，不注册产品执行能力。"
+  ]
+}
