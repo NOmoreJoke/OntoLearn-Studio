@@ -1,0 +1,2020 @@
+{
+  "documentStatus": "receiving-owner-proposal-not-approved-not-implemented",
+  "approvedSource": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "controlReviewSha256": "cfc001d99f41c080d79346413b6431218fbacd2382f62a282553c55e4b6c34e8",
+  "validationState": "json-and-document-format-only-no-product-validator-or-platform-execution",
+  "wireObjectsStrict": true,
+  "testHash": {
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "provenance": "schema-fixture-only",
+    "isActualCandidateRegistryHash": false,
+    "actualCandidateRegistryHash": null,
+    "readyExpected": false
+  },
+  "runtimeAdvertisement": "fixture subset only; final actual registry runtime and limits must be generated from approved candidate, not copied from these samples",
+  "helloOutboundPolicy": {
+    "outerVersion": 2,
+    "supportedVersions": [3],
+    "engineSessionId": null
+  },
+  "businessPolicy": {
+    "protocolVersion": 3,
+    "session": "exact-negotiated-nonnull-uuid",
+    "projectFormatVersion": 3
+  },
+  "diagnosticPolicy": {
+    "invalidParamsOrNonnullInitialSessionAreNotLegalNormalRequests": true,
+    "normalMatcherMustValidateBothFullObjectsFirst": true,
+    "separateDiagnosticClassifierCanOnlyTerminate": true,
+    "legacy2BranchOnly": "outer2 hello null-session VERSION_INCOMPATIBLE/protocol.versionIncompatible/{supportedVersions:[2]}/false; exact pending id and no extra keys; never business or ready"
+  },
+  "wireCases": [
+    {
+      "id": "H01-outer2-selected3-two-equal-sessions",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "hello",
+        "ok": true,
+        "result": {
+          "selectedVersion": 3,
+          "engineVersion": "0.1.0-schema-fixture",
+          "engineSessionId": "00000000-0000-4000-8000-000000000010",
+          "capabilities": ["hello", "health", "session.ping", "project.get"],
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 200,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "registryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": true,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": true,
+        "normalPendingAcceptance": true
+      }
+    },
+    {
+      "id": "H02-new-null-version-incompatible3",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000003",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [2],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "engineSessionId": null,
+        "method": "hello",
+        "ok": false,
+        "error": {
+          "code": "VERSION_INCOMPATIBLE",
+          "messageKey": "protocol.versionIncompatible",
+          "params": {
+            "supportedVersions": [3]
+          },
+          "retryable": false
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": "new-version-incompatible",
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": true,
+        "normalPendingAcceptance": true
+      }
+    },
+    {
+      "id": "H03-new-null-invalid-hello-params",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000004",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000004",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "not-a-uuid"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000004",
+        "engineSessionId": null,
+        "method": "hello",
+        "ok": false,
+        "error": {
+          "code": "INVALID_REQUEST",
+          "messageKey": "protocol.invalidRequest",
+          "params": {
+            "field": "params"
+          },
+          "retryable": false
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": false,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": "new-invalid-hello-params",
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "H04-new-null-nonnull-initial-session",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000005",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000005",
+        "engineSessionId": "00000000-0000-4000-8000-000000000099",
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000005",
+        "engineSessionId": null,
+        "method": "hello",
+        "ok": false,
+        "error": {
+          "code": "SESSION_MISMATCH",
+          "messageKey": "protocol.sessionMismatch",
+          "params": {},
+          "retryable": false
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": false,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": "new-initial-session-mismatch",
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "H05-old-null-version-incompatible2-terminal-only",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "ok": false,
+        "error": {
+          "code": "VERSION_INCOMPATIBLE",
+          "messageKey": "protocol.versionIncompatible",
+          "params": {
+            "supportedVersions": [2]
+          },
+          "retryable": false
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": "legacy-version2-terminal-only",
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "B01-project-format3-exact-binding",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "simulated-business-ready",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000030",
+        "simulatedSession": "00000000-0000-4000-8000-000000000010",
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000020"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000020",
+          "projectRevision": 1,
+          "inputSnapshotId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "formatVersion": 3
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": true,
+        "normalPendingAcceptance": true
+      }
+    },
+    {
+      "id": "B02-business3-error-same-session",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "simulated-business-ready",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000031",
+        "simulatedSession": "00000000-0000-4000-8000-000000000010",
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000031",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000020"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000031",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "ok": false,
+        "error": {
+          "code": "NOT_FOUND",
+          "messageKey": "resource.notFound",
+          "params": {
+            "resource": "project"
+          },
+          "retryable": false
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": true,
+        "normalPendingAcceptance": true
+      }
+    },
+    {
+      "id": "B03-business3-ping-exact-nonce",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "simulated-business-ready",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000032",
+        "simulatedSession": "00000000-0000-4000-8000-000000000010",
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000032",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "session.ping",
+        "params": {
+          "nonce": "00000000-0000-4000-8000-000000000033"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000032",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "session.ping",
+        "ok": true,
+        "result": {
+          "nonce": "00000000-0000-4000-8000-000000000033"
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": true,
+        "normalPendingAcceptance": true
+      }
+    },
+    {
+      "id": "N01-wrong-response-id",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000009",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "hello",
+        "ok": true,
+        "result": {
+          "selectedVersion": 3,
+          "engineVersion": "0.1.0-schema-fixture",
+          "engineSessionId": "00000000-0000-4000-8000-000000000010",
+          "capabilities": ["hello", "health", "session.ping", "project.get"],
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 200,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "registryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N02-hello-two-session-mismatch",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "hello",
+        "ok": true,
+        "result": {
+          "selectedVersion": 3,
+          "engineVersion": "0.1.0-schema-fixture",
+          "engineSessionId": "00000000-0000-4000-8000-000000000011",
+          "capabilities": ["hello", "health", "session.ping", "project.get"],
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 200,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "registryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N03-selected2-not-negotiated3",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "hello",
+        "ok": true,
+        "result": {
+          "selectedVersion": 2,
+          "engineVersion": "0.1.0-schema-fixture",
+          "engineSessionId": "00000000-0000-4000-8000-000000000010",
+          "capabilities": ["hello", "health", "session.ping", "project.get"],
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 200,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "registryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N04-hello-response-outer3-rejected",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "hello",
+        "ok": true,
+        "result": {
+          "selectedVersion": 3,
+          "engineVersion": "0.1.0-schema-fixture",
+          "engineSessionId": "00000000-0000-4000-8000-000000000010",
+          "capabilities": ["hello", "health", "session.ping", "project.get"],
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 200,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "registryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N05-valid-shape-false-registry-hash",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "hello",
+        "ok": true,
+        "result": {
+          "selectedVersion": 3,
+          "engineVersion": "0.1.0-schema-fixture",
+          "engineSessionId": "00000000-0000-4000-8000-000000000010",
+          "capabilities": ["hello", "health", "session.ping", "project.get"],
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 200,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "registryHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": false,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": true,
+        "normalPendingAcceptance": true
+      }
+    },
+    {
+      "id": "N06-extra-hello-param-no-success",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002",
+          "untrusted": "extra"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "hello",
+        "ok": true,
+        "result": {
+          "selectedVersion": 3,
+          "engineVersion": "0.1.0-schema-fixture",
+          "engineSessionId": "00000000-0000-4000-8000-000000000010",
+          "capabilities": ["hello", "health", "session.ping", "project.get"],
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 200,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "registryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": false,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N07-extra-response-field",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "hello",
+        "ok": true,
+        "result": {
+          "selectedVersion": 3,
+          "engineVersion": "0.1.0-schema-fixture",
+          "engineSessionId": "00000000-0000-4000-8000-000000000010",
+          "capabilities": ["hello", "health", "session.ping", "project.get"],
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 200,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "registryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "rawException": "not-permitted"
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N08-business-old-session",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "simulated-business-ready",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000030",
+        "simulatedSession": "00000000-0000-4000-8000-000000000010",
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000020"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000012",
+        "method": "project.get",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000020",
+          "projectRevision": 1,
+          "inputSnapshotId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "formatVersion": 3
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N09-business-wrong-project",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "simulated-business-ready",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000030",
+        "simulatedSession": "00000000-0000-4000-8000-000000000010",
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000020"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000021",
+          "projectRevision": 1,
+          "inputSnapshotId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "formatVersion": 3
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N10-business2-no-downgrade",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "simulated-business-ready",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000030",
+        "simulatedSession": "00000000-0000-4000-8000-000000000010",
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000020"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000020",
+          "projectRevision": 1,
+          "inputSnapshotId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "formatVersion": 3
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": false,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N11-response-method-mismatch",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "simulated-business-ready",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000030",
+        "simulatedSession": "00000000-0000-4000-8000-000000000010",
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000020"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "health",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000020",
+          "projectRevision": 1,
+          "inputSnapshotId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "formatVersion": 3
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N12-prehello-business-closed-without-execution",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000030",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": null,
+        "method": "project.get",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000020"
+        }
+      },
+      "response": null,
+      "expected": {
+        "proposedRequestSchema": false,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N13-duplicate-hello-after-negotiation",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "simulated-business-ready",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": "00000000-0000-4000-8000-000000000010",
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "hello",
+        "ok": true,
+        "result": {
+          "selectedVersion": 3,
+          "engineVersion": "0.1.0-schema-fixture",
+          "engineSessionId": "00000000-0000-4000-8000-000000000010",
+          "capabilities": ["hello", "health", "session.ping", "project.get"],
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 200,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "registryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": true,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N14-no-pending-hello-no-ready",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": null,
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "hello",
+        "ok": true,
+        "result": {
+          "selectedVersion": 3,
+          "engineVersion": "0.1.0-schema-fixture",
+          "engineSessionId": "00000000-0000-4000-8000-000000000010",
+          "capabilities": ["hello", "health", "session.ping", "project.get"],
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 200,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "registryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": true,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": true,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N15-business-error-null-session",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "simulated-business-ready",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000030",
+        "simulatedSession": "00000000-0000-4000-8000-000000000010",
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000020"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": null,
+        "method": "project.get",
+        "ok": false,
+        "error": {
+          "code": "NOT_FOUND",
+          "messageKey": "resource.notFound",
+          "params": {
+            "resource": "project"
+          },
+          "retryable": false
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N16-legacy-retryable-mismatch-no-compat",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "ok": false,
+        "error": {
+          "code": "VERSION_INCOMPATIBLE",
+          "messageKey": "protocol.versionIncompatible",
+          "params": {
+            "supportedVersions": [2]
+          },
+          "retryable": true
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N17-legacy-extra-params-no-compat",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "ok": false,
+        "error": {
+          "code": "VERSION_INCOMPATIBLE",
+          "messageKey": "protocol.versionIncompatible",
+          "params": {
+            "supportedVersions": [2],
+            "path": "forbidden"
+          },
+          "retryable": false
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N18-unregistered-method-not-auto-runtime",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "simulated-business-ready",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000030",
+        "simulatedSession": "00000000-0000-4000-8000-000000000010",
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "application.metadata.write",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000020"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "application.metadata.write",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000020"
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": false,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N19-hello-request-outer3-close-no-response",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "awaiting-hello",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000001",
+        "simulatedSession": null,
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": null,
+        "method": "hello",
+        "params": {
+          "supportedVersions": [3],
+          "clientId": "00000000-0000-4000-8000-000000000002"
+        }
+      },
+      "response": null,
+      "expected": {
+        "proposedRequestSchema": false,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    },
+    {
+      "id": "N20-project3-does-not-claim-unmigrated2",
+      "provenance": "schema-fixture-only",
+      "context": {
+        "phase": "simulated-business-ready",
+        "currentGeneration": 1,
+        "pendingId": "00000000-0000-4000-8000-000000000030",
+        "simulatedSession": "00000000-0000-4000-8000-000000000010",
+        "expectedRegistryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "actualCandidateCatalogVerified": false
+      },
+      "request": {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "params": {
+          "projectId": "00000000-0000-4000-8000-000000000020"
+        }
+      },
+      "response": {
+        "kind": "response",
+        "protocolVersion": 3,
+        "id": "00000000-0000-4000-8000-000000000030",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "project.get",
+        "ok": true,
+        "result": {
+          "projectId": "00000000-0000-4000-8000-000000000020",
+          "projectRevision": 1,
+          "inputSnapshotId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "dependencyVector": {
+            "facts:asserted": 1
+          },
+          "formatVersion": 2
+        }
+      },
+      "expected": {
+        "proposedRequestSchema": true,
+        "proposedNewResponseSchema": false,
+        "terminalDiagnosticKind": null,
+        "fixtureHashEquality": null,
+        "ready": false,
+        "businessDispatch": false,
+        "claimCreated": false,
+        "confirmationConsumed": false,
+        "pureMatchesResponse": false,
+        "normalPendingAcceptance": false
+      }
+    }
+  ],
+  "notificationCases": [
+    {
+      "id": "E01-business3-progress-exact",
+      "provenance": "schema-fixture-only",
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "subscriptionId": "00000000-0000-4000-8000-000000000041",
+        "projectId": "00000000-0000-4000-8000-000000000020",
+        "jobId": "00000000-0000-4000-8000-000000000040",
+        "lastSeq": 0,
+        "stateVersion": 1,
+        "state": "running"
+      },
+      "notification": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "subscriptionId": "00000000-0000-4000-8000-000000000041",
+        "projectId": "00000000-0000-4000-8000-000000000020",
+        "jobId": "00000000-0000-4000-8000-000000000040",
+        "seq": 1,
+        "event": "job.progress",
+        "data": {
+          "stateVersion": 1,
+          "progress": {
+            "stage": "computing",
+            "completed": 0,
+            "total": 1
+          }
+        }
+      },
+      "expected": {
+        "proposedNotificationSchema": true,
+        "eventBindingMatch": true,
+        "actualCandidateCatalogVerified": false,
+        "ready": false,
+        "dispatch": false
+      }
+    },
+    {
+      "id": "E02-notification2-rejected",
+      "provenance": "schema-fixture-only",
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "subscriptionId": "00000000-0000-4000-8000-000000000041",
+        "projectId": "00000000-0000-4000-8000-000000000020",
+        "jobId": "00000000-0000-4000-8000-000000000040",
+        "lastSeq": 0,
+        "stateVersion": 1,
+        "state": "running"
+      },
+      "notification": {
+        "kind": "notification",
+        "protocolVersion": 2,
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "subscriptionId": "00000000-0000-4000-8000-000000000041",
+        "projectId": "00000000-0000-4000-8000-000000000020",
+        "jobId": "00000000-0000-4000-8000-000000000040",
+        "seq": 1,
+        "event": "job.progress",
+        "data": {
+          "stateVersion": 1,
+          "progress": {
+            "stage": "computing",
+            "completed": 0,
+            "total": 1
+          }
+        }
+      },
+      "expected": {
+        "proposedNotificationSchema": false,
+        "eventBindingMatch": false,
+        "actualCandidateCatalogVerified": false,
+        "ready": false,
+        "dispatch": false
+      }
+    },
+    {
+      "id": "E03-old-session-notification",
+      "provenance": "schema-fixture-only",
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "subscriptionId": "00000000-0000-4000-8000-000000000041",
+        "projectId": "00000000-0000-4000-8000-000000000020",
+        "jobId": "00000000-0000-4000-8000-000000000040",
+        "lastSeq": 0,
+        "stateVersion": 1,
+        "state": "running"
+      },
+      "notification": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000012",
+        "subscriptionId": "00000000-0000-4000-8000-000000000041",
+        "projectId": "00000000-0000-4000-8000-000000000020",
+        "jobId": "00000000-0000-4000-8000-000000000040",
+        "seq": 1,
+        "event": "job.progress",
+        "data": {
+          "stateVersion": 1,
+          "progress": {
+            "stage": "computing",
+            "completed": 0,
+            "total": 1
+          }
+        }
+      },
+      "expected": {
+        "proposedNotificationSchema": true,
+        "eventBindingMatch": false,
+        "actualCandidateCatalogVerified": false,
+        "ready": false,
+        "dispatch": false
+      }
+    },
+    {
+      "id": "E04-gap-sequence",
+      "provenance": "schema-fixture-only",
+      "binding": {
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "subscriptionId": "00000000-0000-4000-8000-000000000041",
+        "projectId": "00000000-0000-4000-8000-000000000020",
+        "jobId": "00000000-0000-4000-8000-000000000040",
+        "lastSeq": 0,
+        "stateVersion": 1,
+        "state": "running"
+      },
+      "notification": {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "subscriptionId": "00000000-0000-4000-8000-000000000041",
+        "projectId": "00000000-0000-4000-8000-000000000020",
+        "jobId": "00000000-0000-4000-8000-000000000040",
+        "seq": 2,
+        "event": "job.progress",
+        "data": {
+          "stateVersion": 1,
+          "progress": {
+            "stage": "computing",
+            "completed": 0,
+            "total": 1
+          }
+        }
+      },
+      "expected": {
+        "proposedNotificationSchema": true,
+        "eventBindingMatch": false,
+        "actualCandidateCatalogVerified": false,
+        "ready": false,
+        "dispatch": false
+      }
+    }
+  ],
+  "startupExitCodesProposal": {
+    "projectFormat": 80,
+    "projectStructure": 81,
+    "storageFailure": 82,
+    "jobReadyFailure": 83,
+    "contractFailure": 84,
+    "storageBusy": 85
+  },
+  "startupLocalCases": [
+    {
+      "reason": "projectFormat",
+      "proposedExitCode": 80,
+      "originRequired": "classified-initialization-exception-before-successful-hello",
+      "stdout": [],
+      "hasSuccessfulHello": false,
+      "firstTerminalFailureAlreadySet": false,
+      "localError": {
+        "code": "ENGINE_START_FAILED",
+        "messageKey": "engine.startFailed",
+        "params": {
+          "reason": "projectFormat"
+        },
+        "retryable": false
+      },
+      "bridgeFailure": {
+        "ok": false,
+        "error": {
+          "code": "ENGINE_START_FAILED",
+          "messageKey": "engine.startFailed",
+          "params": {
+            "reason": "projectFormat"
+          },
+          "retryable": false
+        }
+      },
+      "retryAutomatically": false,
+      "ready": false
+    },
+    {
+      "reason": "projectStructure",
+      "proposedExitCode": 81,
+      "originRequired": "classified-initialization-exception-before-successful-hello",
+      "stdout": [],
+      "hasSuccessfulHello": false,
+      "firstTerminalFailureAlreadySet": false,
+      "localError": {
+        "code": "ENGINE_START_FAILED",
+        "messageKey": "engine.startFailed",
+        "params": {
+          "reason": "projectStructure"
+        },
+        "retryable": false
+      },
+      "bridgeFailure": {
+        "ok": false,
+        "error": {
+          "code": "ENGINE_START_FAILED",
+          "messageKey": "engine.startFailed",
+          "params": {
+            "reason": "projectStructure"
+          },
+          "retryable": false
+        }
+      },
+      "retryAutomatically": false,
+      "ready": false
+    },
+    {
+      "reason": "storageFailure",
+      "proposedExitCode": 82,
+      "originRequired": "classified-initialization-exception-before-successful-hello",
+      "stdout": [],
+      "hasSuccessfulHello": false,
+      "firstTerminalFailureAlreadySet": false,
+      "localError": {
+        "code": "ENGINE_START_FAILED",
+        "messageKey": "engine.startFailed",
+        "params": {
+          "reason": "storageFailure"
+        },
+        "retryable": false
+      },
+      "bridgeFailure": {
+        "ok": false,
+        "error": {
+          "code": "ENGINE_START_FAILED",
+          "messageKey": "engine.startFailed",
+          "params": {
+            "reason": "storageFailure"
+          },
+          "retryable": false
+        }
+      },
+      "retryAutomatically": false,
+      "ready": false
+    },
+    {
+      "reason": "jobReadyFailure",
+      "proposedExitCode": 83,
+      "originRequired": "classified-initialization-exception-before-successful-hello",
+      "stdout": [],
+      "hasSuccessfulHello": false,
+      "firstTerminalFailureAlreadySet": false,
+      "localError": {
+        "code": "ENGINE_START_FAILED",
+        "messageKey": "engine.startFailed",
+        "params": {
+          "reason": "jobReadyFailure"
+        },
+        "retryable": false
+      },
+      "bridgeFailure": {
+        "ok": false,
+        "error": {
+          "code": "ENGINE_START_FAILED",
+          "messageKey": "engine.startFailed",
+          "params": {
+            "reason": "jobReadyFailure"
+          },
+          "retryable": false
+        }
+      },
+      "retryAutomatically": false,
+      "ready": false
+    },
+    {
+      "reason": "contractFailure",
+      "proposedExitCode": 84,
+      "originRequired": "classified-initialization-exception-before-successful-hello",
+      "stdout": [],
+      "hasSuccessfulHello": false,
+      "firstTerminalFailureAlreadySet": false,
+      "localError": {
+        "code": "ENGINE_START_FAILED",
+        "messageKey": "engine.startFailed",
+        "params": {
+          "reason": "contractFailure"
+        },
+        "retryable": false
+      },
+      "bridgeFailure": {
+        "ok": false,
+        "error": {
+          "code": "ENGINE_START_FAILED",
+          "messageKey": "engine.startFailed",
+          "params": {
+            "reason": "contractFailure"
+          },
+          "retryable": false
+        }
+      },
+      "retryAutomatically": false,
+      "ready": false
+    },
+    {
+      "reason": "storageBusy",
+      "proposedExitCode": 85,
+      "originRequired": "typed-busy-before-successful-hello",
+      "stdout": [],
+      "hasSuccessfulHello": false,
+      "firstTerminalFailureAlreadySet": false,
+      "localError": {
+        "code": "STORAGE_BUSY",
+        "messageKey": "storage.busy",
+        "params": {
+          "retryAfterMs": 250
+        },
+        "retryable": true
+      },
+      "bridgeFailure": {
+        "ok": false,
+        "error": {
+          "code": "STORAGE_BUSY",
+          "messageKey": "storage.busy",
+          "params": {
+            "retryAfterMs": 250
+          },
+          "retryable": true
+        }
+      },
+      "retryAutomatically": false,
+      "ready": false
+    }
+  ],
+  "startupFallbackCases": [
+    {
+      "id": "S-unknown-exit",
+      "processExit": {
+        "code": 1,
+        "signal": null
+      },
+      "hasSuccessfulHello": false,
+      "localError": {
+        "code": "ENGINE_EXITED",
+        "messageKey": "engine.exited",
+        "params": {},
+        "retryable": true
+      }
+    },
+    {
+      "id": "S-signal",
+      "processExit": {
+        "code": null,
+        "signal": "SIGTERM"
+      },
+      "hasSuccessfulHello": false,
+      "localError": {
+        "code": "ENGINE_EXITED",
+        "messageKey": "engine.exited",
+        "params": {},
+        "retryable": true
+      }
+    },
+    {
+      "id": "S-posthello-code80-not-format",
+      "processExit": {
+        "code": 80,
+        "signal": null
+      },
+      "hasSuccessfulHello": true,
+      "localError": {
+        "code": "ENGINE_EXITED",
+        "messageKey": "engine.exited",
+        "params": {},
+        "retryable": true
+      }
+    },
+    {
+      "id": "S-late-close-cannot-overwrite-invalid-hash",
+      "processExit": {
+        "code": 80,
+        "signal": null
+      },
+      "hasSuccessfulHello": false,
+      "firstTerminalError": {
+        "code": "INVALID_REQUEST",
+        "messageKey": "protocol.invalidRequest",
+        "params": {
+          "field": "envelope"
+        },
+        "retryable": false
+      },
+      "localError": {
+        "code": "INVALID_REQUEST",
+        "messageKey": "protocol.invalidRequest",
+        "params": {
+          "field": "envelope"
+        },
+        "retryable": false
+      }
+    }
+  ],
+  "sameChunkProposal": {
+    "frames": [
+      {
+        "kind": "response",
+        "protocolVersion": 2,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "method": "hello",
+        "ok": true,
+        "result": {
+          "selectedVersion": 3,
+          "engineVersion": "0.1.0-schema-fixture",
+          "engineSessionId": "00000000-0000-4000-8000-000000000010",
+          "capabilities": ["hello", "health", "session.ping", "project.get"],
+          "limits": {
+            "startupMs": 10000,
+            "handshakeMs": 5000,
+            "requestMs": 5000,
+            "totalMs": 120000,
+            "heartbeatMs": 10000,
+            "cancelGraceMs": 5000,
+            "maxFrameBytes": 262144,
+            "maxQueuedJobs": 32,
+            "maxConcurrentJobs": 2,
+            "maxPageItems": 200,
+            "maxPageBytes": 131072,
+            "maxWorkerMemoryBytes": 536870912
+          },
+          "registryHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      {
+        "kind": "notification",
+        "protocolVersion": 3,
+        "engineSessionId": "00000000-0000-4000-8000-000000000010",
+        "subscriptionId": "00000000-0000-4000-8000-000000000041",
+        "projectId": "00000000-0000-4000-8000-000000000020",
+        "jobId": "00000000-0000-4000-8000-000000000040",
+        "seq": 1,
+        "event": "job.progress",
+        "data": {
+          "stateVersion": 1,
+          "progress": {
+            "stage": "computing",
+            "completed": 0,
+            "total": 1
+          }
+        }
+      }
+    ],
+    "provenance": "schema-fixture-only",
+    "expected": {
+      "ready": false,
+      "businessDispatch": false,
+      "reason": "no actual protocol3 catalog exists; in a real candidate validate hash and restrict frame budget synchronously before next frame, never in promise microtask"
+    }
+  },
+  "finalFreezeRequired": [
+    "exact canonical versions/schema id and one canonical path",
+    "new bootstrap success/error semantic schemas and diagnostic classifier boundary",
+    "same TS/Python request/response/event matcher outcomes",
+    "actual supported runtime/limits and raw registry hash from final candidate",
+    "startup classified exception types/exit codes/error catalog and sticky failure policy",
+    "complete format3 Project result backed by migrated ready Store/JobStore",
+    "source and packaged resource/engine identity plus mixed-version and same-chunk direct receipts",
+    "separate exact new test paths/owners and no authority outside acknowledged eight files"
+  ]
+}
