@@ -60,12 +60,26 @@ T02新适配器仍使用现有Snapshot/Preview/BoundRdfProjection与T01原change
 
 入选必须同时满足：完整源可投影；本次真实Preview恰一removed、一added；S/P相同且O不同；entity_changes、changed_entities、deletion_references均空；candidate其它字段与原完全相同；removed的所有支持恰一个人工fact，且同(S,P)活动事实只有该一条；没有ontology payload重叠支持；目标新三元组无其他支持；原ID满足typed形状。该收窄消除从无序Diff猜配对的问题。更多修改仍保留原P0后续，不把“只支持一值”当产品终态。
 
-1. T01可信供应构造真实原Snapshot与绑定源；T02 `bind_rdf_projection`完整核对。T02从用户草稿调用真实`change_preview(snapshot,remove_facts=(oldFact,),add_facts=(newFact,))`；不预填Preview或typed plan。
+1. 由T01 S1/S2先建立整次累计预算并完成下述执行前预扣，再构造真实原Snapshot与绑定源；T02 `bind_rdf_projection`完整核对。T02从用户草稿调用真实`change_preview(snapshot,remove_facts=(oldFact,),add_facts=(newFact,))`；不预填Preview或typed plan。不能先裸调旧函数，再把产出的Preview交给适配器补收费。
 2. 新适配器消费该实际Preview及原绑定，复验上述谓词与预算；由removed_sources定位原ID，但把全部支持先分类/核完整，不直接删除。唯一产出为T01原schema形状的`plan={edits:{record_id: added.object}}`，没有manual/remove/definitions。
 3. T01供应服务同事务重读当前源/metadata/control，复验原ref、版本、完整内容及T02候选；使用原schema验证request，调用其原`preview_changeset(publicId,base,{projectId,baseRevision,intent:'change',plan},host_client_id,engine_session_id,limits)`。原ProjectTransactions试算仍为唯一Store委托。
-4. 检查原preview的完整after：原factID/S/P/归属全不变、只O改变；其他definitions/facts/mappingState/control/metadata逐项完全相同；完整RDF恰等于T02 candidate。T02私有base_digest不能替换T01 previewHash，所有原T01哈希各自使用。
+4. 检查原preview的完整after：原factID/S/P/归属全不变、只O改变；其他definitions/facts/mappingState/control/metadata逐项完全相同；完整RDF恰等于T02 candidate。T02私有base_digest不能替换T01 previewHash，所有原T01哈希各自使用。初次比较不能代替确认、排队和提交时的来源复验，必须完成下面S2持久绑定扩展后才可实施本链。
 
 不在T02适配器里调用SQL、Store.commit、confirm或create_job。调用组织与复验留T01同一可信owner服务；供方尚未实现时不能把直接调用原typed API的fixture当正式授权链。
+
+### S2必须补齐的持久绑定与各事务复验
+
+固定423b的`ChangePreview.identity`包含plan/state/control，但不包含独立Entity metadata证明、派生投影政策版本或当前dependencyVector。原confirm重算与accepted_plan/commit的state/control复验不能替代这些来源检查。S2因此不能只新增一层初次preview包装；须由T01在原唯一plan/确认/Job机制内扩展，不能用T02内存字典、布尔或第二receipt账本补洞。
+
+拟请T01冻结以下单一版本扩展：在其原`job_plans.payload`持久envelope内纳入完整`sourceBinding`，其材料由可信S1实际读取，至少含public/internal项目关联、sourceRef、完整dependencyVector、retirement control摘要、metadata内容/缺失证明摘要、metadata schema版本和显示派生政策版本、所用固定投影/适配版本。源metadata摘要必须覆盖真实持久元数据与缺失证据，不能只hashT02客户端副本。源proof不创造当前权限；未来正式host/scope仍须真实供方。
+
+外部previewHash也必须绑定该证明，避免相同state/control而metadata不同仍共用previewHash。建议由T01在其新版本envelope中采用独立命名的绑定摘要`digest({ontologyPreviewVersion:1,storePreviewIdentity:原preview.identity,sourceBinding:完整证明})`作为原响应字段previewHash；preparedPlanRef仍是原完整envelope摘要，parametersHash及原confirmation receipt均绑定该精确previewHash/planRef。不复用或改称原storePreviewIdentity，不新建公共DTO、SQL表、提交或确认入口。具体namespace/version及原v1兼容/拒绝规则必须T01/root先冻结，未批准时不能改原字节或宣称该设计已实现。
+
+T01准确待扩展路径为`project/domain_changesets.py`（原preview/envelope/_verify_plan/_envelope/diff_page/confirm/accepted_plan/commit）及`job_store.py`的原ChangeSet接收/提交委托；必要`project/transactions.py`改动须单列，优先保其原storePreview身份。新私有`project/ontology_changesets.py`只组织真实供应和复验，不取得独立持久权威。若canonical字段不变仅内部版本变化，仍须T01负责其严格validator/fixture和旧版本拒绝验收；实际schema delta另向root精确申请。
+
+每个阶段都在原owner对应外层事务内、调用有持久效果的方法前重新取得同一当前源并与绑定证明逐项核同：preview保存前；confirm签发前；create_changeset_job接收/claim前；commit_job正式写前。不可“先在包装层检查、再跨await/事务调用原方法”；Job排队期间变化必须在最终commit再次拒绝。Diff分页也须先核plan/envelope的完整证明及绑定身份，且不能用旧页完成游标给新proof确认；已失效页面可按历史只读展示，必须明确不能确认。相同previewHash匹配多个不同plan/proof时拒绝，不沿原扫描第一项选择。
+
+原receipt/Job/context保留上述唯一planRef与绑定版本；成功后再变metadata，不应破坏原提交receipt的历史真实性。恢复查询原receipt采用历史proof校验，不把“当前源已变”误判原提交未发生；新提交或undo则各自取得新的当前proof。undo的目标旧proof用于核历史，当前新proof用于新预览/确认/提交。测试必须逐阶段注入同revision的metadata、缺失证明、派生政策、dependencyVector与control漂移，确认旧plan不能排队或写入；篡改proof/hash、重复歧义plan、重开/跨session历史查询和已提交后源变化都要各有反例。
 
 ### 后续全域翻译的最小规则申请
 
@@ -92,6 +106,8 @@ mapped覆盖/恢复/删除必须由T01扩展supported、canonical、原owner冲�
 
 原preview响应的manifest/documentHash按全部segment顺序、ordinal/offset/rawByteLength/sha256/base64严格读全；UTF-8按合并后完整bytes解码（32768字节分块可切开多字节字符），核documentHash。展示原完整record Diff及T02语义before/after，附metadata/来源和删除影响；差异或不完整不得确认。只读到末页不是人类确认。
 
+下面所有“原confirm/Job”均指T01完成上述同版绑定扩展后的唯一原机制；固定423b本身尚无该保证。当前旧fixture只作为调用顺序参考，不满足本方案的来源漂移验收。
+
 明确的人类动作绑定当前project/session、精确previewHash与末页completionCursor；T01原confirm_changeset重新校验完整cursor链、原plan、当前revision及重新试算，生成原confirmationRef/preparedPlanRef/inputSnapshotId/parametersHash。T02/Agent不得自动调用确认。临时机制测试由显式fixture步骤调用此原方法，单独报告“机制确认”，不记真人通过。
 
 原create_changeset_job输入严格取确认结果：scope=asserted、definitionId=changeset、derivedResultIds=[]，inputSnapshotId/parametersHash/preparedPlanRef逐值原样；operationId为实际请求稳定UUID，implementation与limits须获批同版，不照抄旧测试IMPL占位值当生产身份。随后原start_job→commit_job发布原commit.receipt.v1/resultRef及operation marker，当前完整域/失效/历史由原Store/Job决定。
@@ -104,29 +120,41 @@ undo走原preview_changeset(intent='undo',targetOperationId)→完整diff/undo-i
 
 下列是拟首切片工程拒绝上界，待T01/root确认；不是Q5容量、毫秒/RSS测量或Q6语义收窄。最终有效上界为此表、供应方实际更紧政策及原canonical/ReadLimits的交集。bool不作整数、非法Unicode/NUL按字段规范拒绝；不截断输入、不分批偷偷提交。
 
-| 对象/工作                | 首切片拟有限上界及计费点                                                                                                                                                                                                                                                                                           |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 原source/domain/metadata | 合计canonical UTF-8 ≤1MiB、嵌套深度≤32、总JSON节点≤65536；包括全部opaque payload、metadata、引用、墓碑，不先解析大payload再算长度。T01在SQL长度/行预检后逐项取有界bytes                                                                                                                                            |
-| records/RDF/支持         | definitions+facts≤4096；完整RDF distinct≤4096，全部支持条目≤8192、显式references≤4096；必须先收费全部支持而不是只看去重graph。完整state不可表示或超限则整体失败                                                                                                                                                    |
-| 文本/term                | 每IRI、literal及派生identifier UTF-8≤16384B；整次term解析输入总bytes≤1MiB，最多12288次受控term解析。Entity文本仍须满足原16000字符上界，bytes/JSON转义另计；不扩大现有类型/词法                                                                                                                                     |
-| edit/typed request       | 首切片恰1移除+1新增事实、0 entity change；typed plan完整canonical≤65536B、完整request≤131072B并满足原frame含1024B余量。原schema4096数组上界不等于本切片允许4096编辑                                                                                                                                                |
-| 预览与结果               | 原完整Diff/undo-impact文档≤1MiB（更紧于原16MiB/512×32768）；单segment保持原32768B，原page≤min(实际maxPageBytes,实际maxFrameBytes,262144)，frame余量1024不扣掉。metadata/前后/支持显示收费完整编码，不截页代完整确认                                                                                                |
-| 整次保留/工作            | T02所有同时保留source、投影、supports、before/after、plan、解码页和展示编码池合计≤8MiB；复制前按完整编码预扣，释放后方可回收。工作预算：逐source记录/term/support/比较计数，再保守收 sourceBytes×(1+records+allSupports)≤64MiB-work，最多4次完整RDF比较；到限整体拒绝。此为应用计费，不证明Python对象RSS或墙钟硬界 |
-| T01实际库/Job/历史       | 沿同版ReadLimits：validation_rows≤16384、validation_bytes≤33554432、validation_work≤536870912等原政策（可收紧）；原Job limits/frame/page/游标TTL和槽上限继续。需要T01写前guard把本次新plan/blob/cursor/confirmation/Job/result/历史增长计入，所有同连接完整历史扫描均先预算，不能只限入帧                          |
+| 对象/工作                | 首切片拟有限上界及计费点                                                                                                                                                                                                                                                                                                                        |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 原source/domain/metadata | 合计canonical UTF-8 ≤1MiB、嵌套深度≤32、总JSON节点≤65536；包括全部opaque payload、metadata、引用、墓碑，不先解析大payload再算长度。T01在SQL长度/行预检后逐项取有界bytes                                                                                                                                                                         |
+| records/RDF/支持         | definitions+facts≤4096；完整RDF distinct≤4096，全部支持条目≤8192、显式references≤4096；必须先收费全部支持而不是只看去重graph。完整state不可表示或超限则整体失败                                                                                                                                                                                 |
+| 文本/term                | 每IRI、literal及派生identifier UTF-8≤16384B；整次term解析输入总bytes≤1MiB，最多12288次受控term解析。Entity文本仍须满足原16000字符上界，bytes/JSON转义另计；不扩大现有类型/词法                                                                                                                                                                  |
+| edit/typed request       | 首切片恰1移除+1新增事实、0 entity change；typed plan完整canonical≤65536B、完整request≤131072B并满足原frame含1024B余量。原schema4096数组上界不等于本切片允许4096编辑                                                                                                                                                                             |
+| 预览与结果               | 原完整Diff/undo-impact文档≤1MiB（更紧于原16MiB/512×32768）；单segment保持原32768B，原page≤min(实际maxPageBytes,实际maxFrameBytes,262144)，frame余量1024不扣掉。metadata/前后/支持显示收费完整编码，不截页代完整确认                                                                                                                             |
+| 整次保留/工作            | 整链同时保留source、投影、supports、before/after、plan、解码页、旧plan读取和展示编码池合计≤8MiB；复制前按完整编码预扣，释放后方可回收。整次工作计费≤64MiB-work；sourceBytes×(1+records+allSupports)只是最低保守收费，各旧函数调用的真实最坏成本另外累计，规则见下文。新增适配显式完整RDF比较最多4次，旧函数内部比较/解析全计。不是RSS或墙钟硬界 |
+| T01实际库/Job/历史       | 沿同版ReadLimits：validation_rows≤16384、validation_bytes≤33554432、validation_work≤536870912等原政策（可收紧）；原Job limits/frame/page/游标TTL和槽上限继续。需要T01写前guard把本次新plan/blob/cursor/confirmation/Job/result/历史增长计入，所有同连接完整历史扫描均先预算，不能只限入帧                                                       |
 
 T02私有纯适配器拒绝时零持久写。原T01 preview/分页/confirm可持久化其有界plan、snapshot、blob、cursor及确认记录，不能宣传“任何预览全库不变”；domain revision/definitions/facts/mapping/control在正式Job commit前不得变。异常回滚按对应事务断点证明：单次失败事务没有部分新artifact，先前成功preview artifact可保留且须有界清理/过期；旧历史和原receipt不得删除。完整返回publish失败按原对账规则处理。
 
 跨整个请求的suppliers、原支持枚举、JSON编码/解析和图比较都要共享累计预算，不能每个helper各重置1MiB；任何适配外工作若不在所列上界中，先提交精确预算扩展请求，不默认无限。
 
+### 预算必须在冻结函数执行前落地
+
+上述表是待实现政策，当前T02 service/source_projection与T01原方法均没有可证明的共享meter接点，不能说新适配器收到Preview后检查就已限制整个生产过程。S1/S2的真实owner编排必须先于首次Snapshot构造、bind_rdf_projection或change_preview调用创建整次预算；原source raw bytes/记录/原payload长度先在T01有界SQL只读guard中取得，嵌套payload的深度/节点在受限解码前检验，不先无界json.loads再计数。
+
+优先方案是调用前保守预扣：T01供方对逐ref的实际调用图交付可审查cost profile，逐项包含旧validate/rdf_triples/term的所有重复调用、snapshot_digest/asdict/canonical的副本、原Store试算/回滚快照、_envelope/_verify_plan对全部旧plan/blob/历史的扫描、每页再次验证、confirm重算、Job接收/commit及异常分支。预扣完整最坏解析次数、编码字节与同时存活副本，再执行该固定调用；执行后只能释放真实已结束的保留池，失败不退还已消耗的工作计数。不能拿“最多4次图比较”覆盖旧函数内的隐含重复；该上限仅约束新增适配显式比较，内部次数仍全量计费。源码、调用次数或供方版本变化须重建profile并复核。
+
+页数/重试/失败累计同样有限：完整文档最多32个32768B段，单次交互最多64次读页调用，最多1次初preview、1次成功确认尝试、1次Job接收和1次commit；失败/重复调用仍消耗该交互预算，不通过重复新建预算继续同一写请求。完整一次undo是新的明确用户操作，另取当前源和新预算。原游标TTL/槽/operation幂等继续，不因预算释放自动重放。当前完整历史可以比编辑source大，故必须另查并计入原库validation_bytes/work与原plan/blob所有bytes，不能把source≤1MiB当全库扫描≤1MiB。
+
+若固定旧函数的内部解析/复制/重复验证无法在调用前由其真实输入和已验证库上界保守计算，则当前“两条新T02 writer”方案尚不足以开工：由T01/root先批准必要meter扩展。T01只改自己domain_changesets/job_store/transactions及相应新测试；若需穿过T02 model.py/service.py/source_projection.py，须root另授新隔离树这三个精确writer及新专属预算测试，原493工作树/审查输入仍不变。禁止猴补函数、借fixture计数器冒充产品计费或在旧函数返回后追补预算。供方未冻结cost profile或meter版本，实施门继续关闭。
+
+边界验收必须证明超限时相应原函数尚未进入（实际调用观察/原hook），并用真实完整链证明恰界成功、失败累计/第65页/预算耗尽后的重试仍拒绝；同时核原API读旧plan/历史与重复term次数均在原预扣内。只测新adapter输入大小或只测成功路径不满足此预算验收。
+
 ## 8. root协调的供方请求与拟实施路径
 
-| 请求                                 | 唯一owner与精确变更                                                                                                                                                      | 首切片所需交付/后置                                                                                                                                            |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| S1 当前完整domain+metadata投影       | T01；建议新增 `project/ontology_projection.py` 和 `test_project_ontology_projection.py`，复用其既有project_host/ReadLimits/Store验证；是否改已有project_host由root另批准 | 同连接原ID/全支持/引用/public-internal/retirement/metadata缺失与派生政策，完整预算和损坏拒绝。先冻结同版来源清单；T02不代写                                    |
-| S2 T02输出的独立复验及原链组织       | T01；建议新增 `project/ontology_changesets.py`、`test_project_ontology_changesets.py`，仅包住原唯一domain_changesets/Job机制                                             | 受信当前投影→原计划复验→全after一致；确认不自动，复用原DTO/receipt。若需改domain_changesets/Job预算guard，逐路径经root批准并T01独占；不在T02目录造第二服务权威 |
-| S3 完整Entity metadata与来源支持操作 | T01 canonical/schema、domain_changesets、Store及其专属新测试（具体delta由T01回报后root冻结）                                                                             | metadata唯一编码/迁移/引用/全量Diff/undo/包保留，mapped覆盖/墓碑/重跑、全支持选择。首切片不改这些，但缺少S1 metadata可信策略仍阻开工；不是永久不实现           |
-| S4 正式页面/人类动作/当前许可        | T01 canonical/named engine；I06仅余下preload/env/App/style；T08真实草稿；root串行路由                                                                                    | 新named接口/实际host当前scope及App入口另申请，不把临时库机制升级生产权限，不直接复用通用invoke                                                                 |
-| S5 Turtle/模板与可移植保留           | I05语义/Turtle、T05模板、T10包；T03锁/build仍唯一                                                                                                                        | 完整FR203/metadata包/blanknode模板及Q6同版类型供方后续，各自新候选与完整联验                                                                                   |
+| 请求                                 | 唯一owner与精确变更                                                                                                                                                                                         | 首切片所需交付/后置                                                                                                                                         |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| S1 当前完整domain+metadata投影       | T01；建议新增 `project/ontology_projection.py` 和 `test_project_ontology_projection.py`，复用其既有project_host/ReadLimits/Store验证；是否改已有project_host由root另批准                                    | 同连接原ID/全支持/引用/public-internal/retirement/metadata缺失与派生政策，完整预算和损坏拒绝。先冻结同版来源清单；T02不代写                                 |
+| S2 T02输出的独立复验及原链组织       | T01；新增 `project/ontology_changesets.py`、`test_project_ontology_changesets.py`，并申请其 `project/domain_changesets.py`、`job_store.py` 的来源绑定/事务复验/预算guard扩展；必要transactions.py delta另列 | 按§4持久绑定sourceBinding与精确previewHash/planRef，在确认/接收/commit原事务内复验；按§7执行前预扣。仅新包装不足；全部改动先root批准并T01独占，不造第二权威 |
+| S3 完整Entity metadata与来源支持操作 | T01 canonical/schema、domain_changesets、Store及其专属新测试（具体delta由T01回报后root冻结）                                                                                                                | metadata唯一编码/迁移/引用/全量Diff/undo/包保留，mapped覆盖/墓碑/重跑、全支持选择。首切片不改这些，但缺少S1 metadata可信策略仍阻开工；不是永久不实现        |
+| S4 正式页面/人类动作/当前许可        | T01 canonical/named engine；I06仅余下preload/env/App/style；T08真实草稿；root串行路由                                                                                                                       | 新named接口/实际host当前scope及App入口另申请，不把临时库机制升级生产权限，不直接复用通用invoke                                                              |
+| S5 Turtle/模板与可移植保留           | I05语义/Turtle、T05模板、T10包；T03锁/build仍唯一                                                                                                                                                           | 完整FR203/metadata包/blanknode模板及Q6同版类型供方后续，各自新候选与完整联验                                                                                |
 
 拟获批后另建 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-typed-changeset-integration`，分支 `feature/weekly-t02-typed-changeset-integration`，从再次核实的批准develop5f建立；本轮不创建。只逐ref/path/bytes/SHA采用清单中必要T02四模块与T01静态闭包/资源，保原候选；reference tests/docs不作为helper复制，不wholecommit，不借T01环境。若T01新supplier未包含在423b，须先取得其固定新ref/闭包并重新独审采用差异；不能先写假supplier。
 
@@ -136,16 +164,16 @@ T02唯一拟新代码路径 `packages/engine/src/ontolearn_engine/ontology/typed
 
 以下全部是将来必跑，当前未运行。临时库在新测试专用目录，与用户库/他树环境隔离；以实际JobStore(target_format=3)和同版canonical载入。建立案例只用原批准Store/Job机制，输入数据独立给定；被测编辑计划必须来自T02真实生产调用，不能把手工typed plan或expected送入适配器。
 
-| 场景           | 真正驱动与完整核验                                                                                                                                                                                                                                           |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 正向整链       | 实际原事实含稳定ID；从T01真实当前投影→T02 change_preview→适配→原preview/读全Diff→显式fixture确认→原Job queued/running/commit→完整读回/undo。核全部RDF、全部metadata/缺失来源、原factID/全部支持、definition payload/control/vector、Job/result/operation历史 |
-| 值修改身份     | 新O使content hash不同但原ID保持；人工fact owner等仍None；不新增新ID残留，不改变无关S/P或字段。另验证已有非content-hash原ID且符合typed形状仍保留                                                                                                              |
-| 来源/内容漂移  | 原版本变更、同revision改domain/metadata/vector/control、原快照hash不匹配、错误public/internal、同IRI不同原record、篡改Preview/candidate、原source被替换，原preview与commit各边界均拒绝且不产生部分域写                                                       |
-| 支持/不可表示  | mapped、override、墓碑、ontology重叠/重复triples、同RDF多支持、同slot多值、目标已存在、不可表示metadata、metadata-only、typed label/comment、BNode列表、未知payload缺证据全量拒绝；若它们是无关但完整可投影数据须保持，不能一概删掉                          |
-| 项目/会话/交互 | 切项目、旧/late读页与预览、session变更、过期/伪造/跳页/重放cursor、未读全Diff或没有明确确认，不能得到有效确认/Job；fixture不当真人                                                                                                                           |
-| 取消/失败      | 预览前取消不调用写；queued/running取消按原状态收尾。原preview/blob/confirm/claim/commit mid_data/receipt/result/terminal前后故障，逐事务dump+全域对照；已提交响应丢失仍只原receipt对账，不自动重放                                                           |
-| undo/历史      | 后续不相交修改保留；同资源/引用/单值冲突显示真实完整impact；缺原marker/plan/context/confirmation/receipt/历史损坏拒绝且零修复；重开同临时库读回原Job/receipt，只证明内部同库                                                                                 |
-| 预算/拒绝      | 每一bytes/records/supports/terms/plan/page/result/pool/work预算恰界与±1，Unicode/转义、跨segment多字节、同去重graph大量支持、opaque payload、深度/节点、多helper累计及库历史增长均有真实反例；超限不截断不部分发布                                           |
+| 场景           | 真正驱动与完整核验                                                                                                                                                                                                                                                                              |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 正向整链       | 实际原事实含稳定ID；从T01真实当前投影→T02 change_preview→适配→原preview/读全Diff→显式fixture确认→原Job queued/running/commit→完整读回/undo。核全部RDF、全部metadata/缺失来源、原factID/全部支持、definition payload/control/vector、Job/result/operation历史                                    |
+| 值修改身份     | 新O使content hash不同但原ID保持；人工fact owner等仍None；不新增新ID残留，不改变无关S/P或字段。另验证已有非content-hash原ID且符合typed形状仍保留                                                                                                                                                 |
+| 来源/内容漂移  | 原版本变更、同revision改domain/metadata/缺失证明/派生政策/vector/control、原快照hash不匹配、错误public/internal、同IRI不同原record、篡改Preview/candidate/sourceBinding；在初preview、确认、Job接收、排队后commit分别注入，全部拒绝且无部分域写；历史receipt仍能在当前源变化后核原提交          |
+| 支持/不可表示  | mapped、override、墓碑、ontology重叠/重复triples、同RDF多支持、同slot多值、目标已存在、不可表示metadata、metadata-only、typed label/comment、BNode列表、未知payload缺证据全量拒绝；若它们是无关但完整可投影数据须保持，不能一概删掉                                                             |
+| 项目/会话/交互 | 切项目、旧/late读页与预览、session变更、过期/伪造/跳页/重放cursor、未读全Diff或没有明确确认，不能得到有效确认/Job；fixture不当真人                                                                                                                                                              |
+| 取消/失败      | 预览前取消不调用写；queued/running取消按原状态收尾。原preview/blob/confirm/claim/commit mid_data/receipt/result/terminal前后故障，逐事务dump+全域对照；已提交响应丢失仍只原receipt对账，不自动重放                                                                                              |
+| undo/历史      | 后续不相交修改保留；同资源/引用/单值冲突显示真实完整impact；缺原marker/plan/context/confirmation/receipt/历史损坏拒绝且零修复；重开同临时库读回原Job/receipt，只证明内部同库                                                                                                                    |
+| 预算/拒绝      | 每一bytes/records/supports/terms/plan/page/result/pool/work预算恰界与±1；实际调用观察证明超限先于首次旧函数/解析/复制；Unicode/转义、跨segment、同graph大量支持、opaque payload、深度/节点、失败后重试、第65页、多helper累计/全部旧plan与历史增长均有反例；不在函数返回后补计、不截断不部分发布 |
 
 成功读回完整记录与指定正反例，而非数量即通过。正式产品/测试/采用变化后按AGENTS执行check及必要sources/构建，若依赖/打包实际变化再由T03协调；隔离原生/目标OS/App/真人另列，不在本机运行GUI/native/e2e/HMR或模型。不重测无变化旧S1。
 
