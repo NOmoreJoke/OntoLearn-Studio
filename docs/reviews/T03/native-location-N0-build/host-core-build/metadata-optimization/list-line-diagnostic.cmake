@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.25)
+file(STRINGS [==[/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/resource-records.jsonl]==] lines ENCODING UTF-8)
+list(LENGTH lines n)
+message(STATUS "resource list lines=${n}")
+file(STRINGS [==[/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/sdk-records.jsonl]==] lines ENCODING UTF-8)
+list(LENGTH lines n)
+message(STATUS "sdk list lines=${n}")

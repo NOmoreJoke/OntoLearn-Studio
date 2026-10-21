@@ -1,0 +1,24 @@
+# Archived derivation algorithm, not an additional execution receipt.
+# Only existing fixed JSON metadata is read; no SDK/tool/cache payload is opened.
+from pathlib import Path
+import json, hashlib
+
+def derive(source_bytes):
+    value = json.loads(source_bytes)
+    compact = lambda x: json.dumps(x, ensure_ascii=True, separators=(",", ":"))
+    prefix = '{"roots":' + compact(value["roots"]) + ',"files":['
+    suffix = "]}\n"
+    rows = [compact(row) for row in value["files"]]
+    assert (prefix + ",".join(rows) + suffix).encode() == source_bytes
+    header = {"format":"n0-inventory-records-v1", "count":len(rows),
+              "roots":value["roots"], "prefix":prefix, "suffix":suffix}
+    result = (compact(header) + "\n" + "\n".join(rows) + "\n").encode()
+    assert len(source_bytes) <= 16 * 1024 * 1024
+    assert len(result) <= 16 * 1024 * 1024
+    assert len(rows) <= 50000 and len(compact(header).encode()) <= 8192
+    assert all(len(row.encode()) <= 4096 for row in rows)
+    return result
+
+# source pins/records pins and derivation identities are fixed in
+# derivation-receipt.json and candidate-input-manifest.json.
+# This raw algorithm has no write path, subprocess, network or source override.

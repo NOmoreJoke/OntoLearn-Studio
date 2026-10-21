@@ -1,0 +1,15 @@
+# metadata修复静态交付
+
+产品ref `95f07d931eeffd3bdcd52cb21e9fa2d8a1db12bd`，parent为首失败过程 `7bfd7c493698107fc70913e249d164cdb6515205`。实际产品差异仅原三writer，另两JSONL/3192授权/derivation receipt精确7路径；源码九原件、source ref b1c54c3de840e657aba07906587681f6415085d6、只读采用a026322ad287bfc42cd24ac7a64e78d48046e96f及静态合同审批ac37不动。完整12候选见candidate-input-manifest.json，三writer为CMake19815B/f2b5522b…、driver30056B/ca4ef930…、lock10474B/bb74f511…。
+
+实际改动与全映射已独立接受，无剩余实现P1/P2。原JSON/28来源/全部33464 SDK+9308资源四pin、roots、顺序、合法0B均保留；新非执行小记录metadata按双hash重建与真实JSON语义校验，原Node+CMake两道逐实体pin门都保留在compiler probing前。CLI/R5/timeout600000ms/parallel2/13命令/环境/审批值与I06九原件不改。源码没有新增helper执行或可执行metadata入口。
+
+实际有限静态验证：最终Node纯metadata24例pass；CMake19有限正反例与2 guard符合预期，完整42772 metadata-only映射exit0；语法和Prettier0。CMake helper与成功harness逐字一致；metadata验证没有调用compiler/project/逐实体pin循环。初版列表反例失败、首轮configure超时和85原日志全部保留；无性能或RSS实测结论，未宣称定位原超时唯一根因。
+
+Node24有原59B stdout/0B stderr，原tool调用与assert支持exit0；未同期保存独立child structured result/起止时间。execution-reconstruction明确为据原记录事后重建的argv/exit，不冒原件，也没有为了补回执重跑。
+
+1754精确补授metadata本窗累计1000000：owner608116+独审128316+root独审85544=821976，加fixture1024/收尾4096共827096。原223168漏项和400000不足事实保留，40GiB与第二build未授。原实体200000/32GiB、其中本窗metadata1GiB预留、旧供应9745727085B均不重置；声明预算不充实际IO。未来若获一次新构建，两前门声明pin+metadata17755667816B，累计保守37044475528B>原32GiB，待root根据此具体候选给新精确累计界，不能因旧execution批准字段仍true或未来逻辑合数998184<1M自行执行。
+
+闭包manifest记录当前完整12、主说明、本metadata目录全部新过程；基线旧376件及首失败完整manifest以固定7bfd与82144B/SHA a7603d8c08522a0dbce0319959df6ab16a34252ffe5af432e56918f8cff47ed2绑定，避免再次无变化读取旧大metadata。当前清单覆盖/替代基线内三writer与主说明的历史版本，旧原件不改不删；scope-verification固定九源及first-build原件Git diff为空。元数据实体不是当前实际used闭包。
+
+正常full check含测试/产品build超本窗，未执行；原64档案未改不重复verify:sources。本次无第二configure/build、CTest/native/child/addon/Electron/GUI、产品或产物加载、凭据/模型/付费、push/PR/merge或Goal变化。下一步只由root据固定候选与账另授，不询问用户重复确认。

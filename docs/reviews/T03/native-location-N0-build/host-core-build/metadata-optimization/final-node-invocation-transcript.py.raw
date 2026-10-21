@@ -1,0 +1,7 @@
+# Relevant statements transcribed from original tool command chunk405b1d; line wrapping normalized.
+# Not an originally executed file and NOT rerun for this receipt.
+z=subprocess.run(['/usr/local/bin/node',str(d/'static-metadata-validation-v3.mjs')],cwd=r,capture_output=True,timeout=30)
+(d/'final-node-metadata.stdout').write_bytes(z.stdout)
+(d/'final-node-metadata.stderr').write_bytes(z.stderr)
+assert z.returncode==0
+print(z.stdout.decode())

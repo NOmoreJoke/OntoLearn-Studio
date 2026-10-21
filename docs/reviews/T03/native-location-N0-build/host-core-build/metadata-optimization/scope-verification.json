@@ -1,0 +1,57 @@
+{
+  "fixedProductRef": "95f07d931eeffd3bdcd52cb21e9fa2d8a1db12bd",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--name-only",
+        "c80cbcd193f8cb64a98c97378bbdf61756701e27",
+        "--",
+        "packages/native-location/include/location_abi.h",
+        "packages/native-location/src/capability_core.cc",
+        "packages/native-location/src/platform_macos.cc",
+        "packages/native-location/src/platform_windows.cc",
+        "packages/native-location/src/node_binding.cc",
+        "apps/desktop/src/main/security/native-location-owner.ts",
+        "packages/native-location/tests/location_core_test.cc",
+        "packages/native-location/tests/location_child_probe.cc",
+        "tests/unit/i06-native-location-owner.test.ts"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--name-only",
+        "7bfd7c493698107fc70913e249d164cdb6515205",
+        "--",
+        "docs/reviews/T03/native-location-N0-build/host-core-build/first-build-raw",
+        "docs/reviews/T03/native-location-N0-build/host-core-build/build-once.result.json",
+        "docs/reviews/T03/native-location-N0-build/host-core-build/first-build-summary.json"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "--format=",
+        "--name-only",
+        "95f07d931eeffd3bdcd52cb21e9fa2d8a1db12bd"
+      ],
+      "exitCode": 0,
+      "stdout": "docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/authorization.md.raw\ndocs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/derivation-receipt.json\ndocs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/resource-records.jsonl\ndocs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/sdk-records.jsonl\npackages/native-location/CMakeLists.txt\npackages/native-location/toolchain-lock.json\nscripts/build-native-location.mjs\n",
+      "stderr": ""
+    }
+  ],
+  "nineSourceDiffEmpty": true,
+  "firstBuildOriginalEvidenceDiffEmpty": true,
+  "candidateProductCommitPathCount": 7,
+  "noBuildOrEntityPinValidation": true
+}

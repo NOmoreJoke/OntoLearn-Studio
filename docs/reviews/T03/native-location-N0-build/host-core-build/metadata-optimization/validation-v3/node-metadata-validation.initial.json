@@ -1,0 +1,155 @@
+{
+  "cases": [
+    {
+      "name": "resource-full-fixed-metadata",
+      "expected": "accept",
+      "observed": "accept",
+      "files": 9308,
+      "sourceSha256": "42c30336dbcc6444222f2d2b3760fef04df7a0ec7c236ef849a0f76e7a2caa19",
+      "recordsSha256": "c7b4f3152c37a2558fd1d162b3c627b4591d247f9ee0f72256514c560ec8f480"
+    },
+    {
+      "name": "sdk-full-fixed-metadata",
+      "expected": "accept",
+      "observed": "accept",
+      "files": 33464,
+      "sourceSha256": "ba16d77b0668329b861290b3ef638818bc4c08b295944d39210323c9cda8d3ff",
+      "recordsSha256": "26831cc3c72a429f6d0c84abc34743ceeecc63fe7ae1295930f41ee4600efc19"
+    },
+    {
+      "name": "zero-byte",
+      "expected": "accept",
+      "observed": "accept",
+      "error": null
+    },
+    {
+      "name": "json-string-escapes",
+      "expected": "accept",
+      "observed": "accept",
+      "error": null
+    },
+    {
+      "name": "unmatched-bracket",
+      "expected": "accept",
+      "observed": "accept",
+      "error": null
+    },
+    {
+      "name": "transport-tokens",
+      "expected": "accept",
+      "observed": "accept",
+      "error": null
+    },
+    {
+      "name": "bracket-root",
+      "expected": "accept",
+      "observed": "accept",
+      "error": null
+    },
+    {
+      "name": "missing-final-lf",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory line endings"
+    },
+    {
+      "name": "root-cap",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory roots invalid"
+    },
+    {
+      "name": "invalid-utf8-records",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory UTF-8 encoding"
+    },
+    {
+      "name": "extra-tail-after-limit",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory record encoding/line endings differ"
+    },
+    {
+      "name": "duplicate-path",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "duplicate/null inventory path"
+    },
+    {
+      "name": "root-escape",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory path escapes approved root"
+    },
+    {
+      "name": "count-mismatch",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory record count"
+    },
+    {
+      "name": "extra-blank-line",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory record encoding/line endings differ"
+    },
+    {
+      "name": "crlf",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory line endings"
+    },
+    {
+      "name": "bom",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory header grammar"
+    },
+    {
+      "name": "duplicate-key",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "duplicate JSON key: bytes"
+    },
+    {
+      "name": "unknown-field",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory record grammar"
+    },
+    {
+      "name": "oversize-row",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory record grammar"
+    },
+    {
+      "name": "semicolon-path",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory file: absolute paths required"
+    },
+    {
+      "name": "record-drift",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory source reconstruction differs"
+    },
+    {
+      "name": "roots-object",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory roots invalid"
+    },
+    {
+      "name": "record-cap",
+      "expected": "reject",
+      "observed": "reject",
+      "error": "inventory metadata cap"
+    }
+  ],
+  "physicalSupplierReads": false,
+  "productMainOrCLIExecuted": false,
+  "functionsExtractedFromActualDriver": true
+}

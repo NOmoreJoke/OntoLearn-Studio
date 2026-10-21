@@ -1,0 +1,145 @@
+{
+  "previousSupplyReadBytesPreserved": 9745727085,
+  "buildPhaseGuardBytesPreserved": 34359738368,
+  "physicalSupplyRecordGuardPreserved": 200000,
+  "firstAttemptDeclaredPinAndMetadataUpperBoundBytes": 17678194976,
+  "firstAttemptActualIOBytes": null,
+  "firstAttemptEntityRecordUpperBound": 85544,
+  "firstAttemptCompletedEntityRecords": 42772,
+  "firstAttemptCMakeCompletedEntityRecords": null,
+  "firstFailureClosureMetadataReserveBytes": 268435456,
+  "thisMetadataWindowReadReserveBytes": 1073741824,
+  "thisWindowNewEntityPinReadBytes": 0,
+  "thisWindowNewEntityPinValidationRecords": 0,
+  "recordGuardInterpretation": "1941 separates entity200000 from metadata logical visits; 1754 raises this metadata-only window to1000000 including all corrected history and controller85544. Historical400000 shortage is retained, not rewritten. No byte guard expansion or second build.",
+  "futureAttemptNotAuthorized": {
+    "unchangedDeclaredPhysicalPinBytesTwoFrontDoors": 17600726036,
+    "originalMetadataBytes": 19367235,
+    "newRecordsMetadataBytes": 19368210,
+    "declaredMetadataReadBytesPerFrontDoor": 77470890,
+    "declaredPinAndMetadataBytesTwoFrontDoors": 17755667816,
+    "twoAttemptsPlusBothClosureReservesAndCurrentMetadataReserveUpperBoundBytes": 37044475528,
+    "exceedsOriginal32GiBByBytes": 2684737160,
+    "instruction": "Root must set exact next cumulative byte/record boundary from actual fixed candidate before any second build; no local expansion/reset.",
+    "prospectiveEntityValidationRecordsTwoFrontDoors": 85544,
+    "prospectiveSourceAndSidecarMetadataLogicalVisitsTwoFrontDoors": 171088,
+    "currentMetadataReservePlusProspectiveLogicalVisits": 998184,
+    "metadataNote": "Current 1000000 is this limited static window only; prospective visits must be explicitly covered by the root next window and do not grant a second run."
+  },
+  "parserBounds": {
+    "perSourceOrRecordsMetadataBytes": 16777216,
+    "perManifestFiles": 50000,
+    "roots": 64,
+    "headerBytes": 8192,
+    "recordBytes": 4096,
+    "transportRepresentationMaxExpansion": 2,
+    "actualIOOrRSSPerformanceMeasured": false
+  },
+  "method": "Declared input payload/read reserves and code-level parse visits, not OS IO/RSS or measured speed. Node/CMake entity loops not executed in this window. Both original source JSON hashes and full source/records reconstruction retained; no compiler/native/GUI/network.",
+  "toolRuntimeLoaderActualIOBytes": null,
+  "metadataReadReserveMethod": "1GiB application-level docs/fixtures/pin-metadata hashing/parsing reserve within existing phase guard; process loader/kernel/cache IO not instrumented or asserted zero.",
+  "reviewerDeclaredMetadataWork": {
+    "completeSourceObjects": 42772,
+    "completeSidecarObjects": 42772,
+    "earlierBracketDiagnosticRawRowScans": 42772,
+    "entityPayloadHashing": false,
+    "note": "Declared reviewer scopes, not OS IO measurement. No further unchanged full parse repeat planned."
+  },
+  "accountingClarification": {
+    "path": "accounting-clarification.md.raw",
+    "bytes": 1941,
+    "sha256": "6a977275278d7f9813769f0918cde83399b0754c78f34c99afc6ae0d46b5af4b",
+    "metadataLogicalRecordGuard": 400000,
+    "entityRecordGuard": 200000,
+    "metadataReserveAcceptedBytes": 1073741824
+  },
+  "metadataLogicalVisitReconciliation": {
+    "previousOwnerReportedFullVisits": 223168,
+    "previousReportScope": "explicit owner sidecar/row validation loops only; omitted source-object passes, initial derivation/format probe and raw diagnostic",
+    "ownerLedger": [
+      {
+        "operation": "initial source format probe",
+        "sourceObjects": 42772,
+        "sidecarObjectsOrRows": 0,
+        "visits": 42772,
+        "evidence": "tool output 0d74b6; both compact serializations matched, no rerun"
+      },
+      {
+        "operation": "source-to-records derivation",
+        "sourceObjects": 42772,
+        "sidecarObjectsOrRows": 0,
+        "visits": 42772,
+        "evidence": "derivation-receipt.json; initial derivation command"
+      },
+      {
+        "operation": "Node full metadata validation, four versions/invocations",
+        "sourceObjects": 171088,
+        "sidecarObjectsOrRows": 171088,
+        "visits": 342176,
+        "evidence": [
+          "node-metadata-validation.json",
+          "validation-v2/node-metadata-validation.json",
+          "validation-v3/node-metadata-validation.initial.json",
+          "validation-v3/node-metadata-validation.json"
+        ]
+      },
+      {
+        "operation": "CMake v1 metadata mapping",
+        "sourceObjects": 42772,
+        "sidecarObjectsOrRows": 9308,
+        "visits": 52080,
+        "evidence": "full-metadata-only-result.json; resource returned, SDK fails count before row loop"
+      },
+      {
+        "operation": "CMake v2 metadata mapping",
+        "sourceObjects": 42772,
+        "sidecarObjectsOrRows": 42772,
+        "visits": 85544,
+        "evidence": "validation-v2/full-metadata-only-result.json"
+      },
+      {
+        "operation": "list-line raw row diagnostic",
+        "sourceObjects": 0,
+        "sidecarObjectsOrRows": 42772,
+        "visits": 42772,
+        "evidence": "list-line-diagnostic.stdout and tool result 2a3889 (raw line diagnostic); no rerun"
+      }
+    ],
+    "ownerRevisedFullVisits": 608116,
+    "reviewerDeclaredVisits": 128316,
+    "knownFullLogicalVisits": 736432,
+    "finiteFixtureVisitsReserved": 1024,
+    "closingSmallManifestVisitsReserved": 4096,
+    "totalConservativeLogicalBudget": 741552,
+    "current400000GuardInsufficient": true,
+    "requestedGuardNotYetAuthorized": null,
+    "status": "Retrospective incomplete old count preserved; 1754 exact delta now authorizes metadata-only cumulative 1000000 including controller independent mapping. No further unchanged full mapping.",
+    "metric": "Logical source/sidecar record-object or raw-row visits per recorded pipeline. Does not count parser/stringifier internal traversals, byte SHA work, OS IO, or measured CPU."
+  },
+  "historicalOwnerExplicitRowLoopReport": {
+    "nodePasses": 4,
+    "nodeRowsPerPass": 42772,
+    "CMakeInitialResourceRows": 9308,
+    "CMakeV2Rows": 42772,
+    "ownerFullVisitsTotal": 223168,
+    "additionalFiniteFixturesAndReviewerVisits": "separate metadata work, not physical entity validation; final independent reviewer records its mapping scope",
+    "meaning": "Logical full row-loop visits; not the count of parser-internal object traversals. Initial failed SDK stops before the per-row metadata loop."
+  },
+  "exactMetadataRecordDelta": {
+    "path": "exact-metadata-record-delta.md.raw",
+    "bytes": 1754,
+    "sha256": "130323fc6d12a2823e6bb9591f79b13807c5695bd724b8ad902bad02abf43363",
+    "metadataLogicalRecordGuard": 1000000,
+    "previous400000InsufficientPreserved": true,
+    "ownerKnownVisits": 608116,
+    "independentReviewerKnownVisits": 128316,
+    "controllerReviewerSourceAndSidecarVisits": 85544,
+    "knownLogicalTotal": 821976,
+    "finiteFixtureReserve": 1024,
+    "closingReserve": 4096,
+    "conservativeWindowTotal": 827096,
+    "remainingAgainstGuardAfterReserve": 172904,
+    "secondBuildAuthorized": false,
+    "byteGuardOrEntityGuardChanged": false
+  }
+}

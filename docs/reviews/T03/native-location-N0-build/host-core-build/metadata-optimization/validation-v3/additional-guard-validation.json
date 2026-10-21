@@ -1,0 +1,31 @@
+{
+  "cases": [
+    {
+      "name": "metadata-byte-cap",
+      "argv": [
+        "/tmp/T03-native-location-N0-tool-supply/run-20261021T163000Z-75ffc442/cmake-distribution-v2/cmake-4.4.4-macos-universal/CMake.app/Contents/bin/cmake",
+        "-P",
+        "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/validation-v3/metadata-byte-cap.cmake"
+      ],
+      "expected": "reject",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "CMake Error at docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/validation-v3/metadata-byte-cap.cmake:53 (message):\n  Supply metadata exceeds 16MiB\nCall Stack (most recent call first):\n  docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/validation-v3/metadata-byte-cap.cmake:215 (nl_inventory_metadata)\n\n\n"
+    },
+    {
+      "name": "digest-key-collision",
+      "argv": [
+        "/tmp/T03-native-location-N0-tool-supply/run-20261021T163000Z-75ffc442/cmake-distribution-v2/cmake-4.4.4-macos-universal/CMake.app/Contents/bin/cmake",
+        "-P",
+        "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/validation-v3/digest-key-collision.cmake"
+      ],
+      "expected": "reject",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "CMake Error at docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/validation-v3/digest-key-collision.cmake:184 (message):\n  Duplicate inventory path or digest-key collision\nCall Stack (most recent call first):\n  docs/reviews/T03/native-location-N0-build/host-core-build/metadata-optimization/validation-v3/digest-key-collision.cmake:216 (nl_inventory_metadata)\n\n\n"
+    }
+  ],
+  "finalCMakeFunctionsMatchV2ExecutedFunctions": true,
+  "functionsSHA256": "403946fd393feff41af5cf58ae4c39c240abba560e6866d25c7dccd38890b6ee",
+  "compilerOrPhysicalSupplierLoopExecuted": false
+}

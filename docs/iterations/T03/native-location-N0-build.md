@@ -1,5 +1,7 @@
 # T03 N0 三构建源码与官方工具材料交付
 
+2026-10-22 metadata窗口追加：仅三writer与新非执行JSONL metadata修复候选，原JSON/28来源/33464+9308全pin保留；最终静态完整映射、有限反例及预算详host-core-build/metadata-optimization/index.md。第二次configure/build尚未授权；首轮失败7bfd原件保持，静态优化不记N0通过。
+
 2026-10-22 首轮真实结果：c80cbcd固定输入的唯一core构建尝试driver exit1；0–10 Git命令全0，11 configure在600000ms ETIMEDOUT/status=null/SIGTERM，12 build未派发。没有两个目标产物/编译命令，tests NOT_RUN。85原日志与首次失败详host-core-build/first-build-summary.json；静态复杂度嫌疑与未实施修复提案另列，不认定唯一根因、不原样重试。
 
 2026-10-22 构建窗口追加：f6e9f42完整12候选与实际环境/直接GNU make独审已固定；仅Darwin工具链和core执行按真实归档授权ref开启。批准后完整输入见host-core-build/approved-input-manifest.json，下一条仅原13命令的一次core构建；尚未记构建成功，所有产物执行及Node/Windows门仍关闭。
