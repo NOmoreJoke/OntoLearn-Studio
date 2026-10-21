@@ -1,0 +1,34 @@
+{
+  "rawByteDiffCheck": {
+    "argv": ["git", "diff", "--check", "e6ea0f7..dbf7c42", "--", "."],
+    "exitCode": 2,
+    "log": "raw-diff-whitespace-check.log",
+    "warningCount": 111,
+    "files": [
+      "docs/reviews/T05/profile-mechanism/candidate-1-to-2.diff.raw",
+      "docs/reviews/T05/profile-mechanism/candidate-2-to-3.diff.raw",
+      "docs/reviews/T05/profile-mechanism/pytest-candidate-2-initial.log",
+      "docs/reviews/T05/profile-mechanism/pytest-initial.log"
+    ]
+  },
+  "disposition": "Only verbatim unified-diff context-prefix spaces and original pytest failure-trace whitespace are flagged. Preserve exact original raw/log bytes/hashes, do not trim evidence. Not an implementation or normal-check failure.",
+  "structuredAndSourceDiffCheck": {
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "e6ea0f7..dbf7c42",
+      "--",
+      ".",
+      ":(exclude)*.raw",
+      ":(exclude)*.log"
+    ],
+    "exitCode": 0
+  },
+  "implementationCommitCheck": {
+    "argv": ["git", "show", "--format=", "--check", "1e3e0ee"],
+    "exitCode": 0
+  },
+  "productSourceChangedOrRetested": false,
+  "preparationAttemptNote": "Initial audit script assumed only raw diffs were flagged and asserted before writing; corrected to include original failure logs. No product change/test failure."
+}
