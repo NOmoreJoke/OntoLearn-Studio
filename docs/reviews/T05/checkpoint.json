@@ -388,9 +388,9 @@
     "noStartupSchemaRuntime3ReadyGrant": true,
     "originalFullAcceptanceStillUnproven": true,
     "rootIndependentStageReview": "in progress, not implementation grant",
-    "independentInternalReview": "passed-document-only-after-specific-P2-fix-and-budget-mutability-readback",
+    "independentInternalReview": "historical broad pass missed decimal-row P2; exact correction now independently passed with outside-matrix equality",
     "documentHashes": {
-      "docs/iterations/T05/q6-adopted-profile-v1.md": "ea6e921f0fc21c4cd18a04e835e4bdd4730d7f07821d3e9fdc646f7e5480ffcc",
+      "docs/iterations/T05/q6-adopted-profile-v1.md": "9259f4ac6622857182570509378afb6c96ab5c4dc19d2e887db559c27a282427",
       "docs/iterations/T05/q6-profile-mechanism-stage-plan.md": "8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424",
       "docs/iterations/T05/accepted-policy-and-q6-scope-r1.md": "c760c5b2e1ac6d03aa82c82163840403c55f0a4d8ccae6c471d9c2a2b77c690b",
       "docs/iterations/T05/comparison-operator-consumer-matrix-r1.md": "a49087221626996d760588a73d536ae999c4ad22de4f640130bbaa652e007abf",
@@ -398,12 +398,30 @@
       "docs/iterations/T05/q6-policy-decision-request-r1.md": "86bffb7bdc3a3c60956aefcd078a87a95662617c44e4b6f6305f8fcd213241cf",
       "docs/iterations/T05/single-executor-extension-contract.md": "52f53aecd27a349607d1f19eb48611ef278a329414f470e222a43fabd81c19b6"
     },
-    "receiptSha256": "4d89b2f2d822c2205e5fab7786dce3c10f4f3b1b0218a08dec173735379015c3",
+    "receiptSha256": "948cb1fa9b181fd698480608dfce04062f88495752fed5cb9b4b6853b0bcf7f3",
     "documentValidation": {
       "prettier": "passed including explicit review-files ignore override",
       "gitDiffCheck": "passed",
       "sourceHashes": "matched",
       "productTestsRerun": false
+    },
+    "rootFinalByteP2": {
+      "finding": "numeric decimal row accidentally replaced by lexical prose; all six A6 cells lost",
+      "reportedBy": "controller direct notice; root independent reviewer also confirmed",
+      "affectedCommit": "023e441c5965d615399c4f12d09e71ab272e276e",
+      "oldProfileSha256": "ea6e921f0fc21c4cd18a04e835e4bdd4730d7f07821d3e9fdc646f7e5480ffcc",
+      "correction": "restore decimal row to six A6; formatting realigns matrix only",
+      "profileBytes": 16428,
+      "profileSha256": "9259f4ac6622857182570509378afb6c96ab5c4dc19d2e887db559c27a282427",
+      "outsideNumericMatrixByteExact": true,
+      "priorInternalPassMissedThisDefect": true,
+      "q6AlgorithmsBudgetsScopeCodeTestsChanged": false,
+      "independentDeltaReadback": {
+        "agent": "/root/t05_internal_review",
+        "decision": "passed-exact-matrix-fix; 6-by-6 A6; outside-matrix and stage byte-identical to 023e441",
+        "normativeReviewRepeated": false,
+        "productTestsRun": false
+      }
     }
   }
 }

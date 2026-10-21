@@ -87,14 +87,14 @@ date取日00:00:00；dateTime取完整有理秒（先处理合法24点进日）�
 
 *L[t]×L[u]当t≠u为X6，无回退。N的每个有序datatype对都A6：
 
-| 左\右              | integer                                                                                                                                      | int | nonNegativeInteger | decimal | float | double |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | --- | ------------------ | ------- | ----- | ------ |
-| integer            | A6                                                                                                                                           | A6  | A6                 | A6      | A6    | A6     |
-| int                | A6                                                                                                                                           | A6  | A6                 | A6      | A6    | A6     |
-| nonNegativeInteger | A6                                                                                                                                           | A6  | A6                 | A6      | A6    | A6     |
-| decimal            | `DECIMAL_FINITE`，无指数；`1/1./.1/+01.00`等各自合法写法映精确十进有理；单独`.`非法。斜线仅分隔例子，非分数语法。无float/Decimal context中转 |
-| float              | A6                                                                                                                                           | A6  | A6                 | A6      | A6    | A6     |
-| double             | A6                                                                                                                                           | A6  | A6                 | A6      | A6    | A6     |
+| 左\右              | integer | int | nonNegativeInteger | decimal | float | double |
+| ------------------ | ------- | --- | ------------------ | ------- | ----- | ------ |
+| integer            | A6      | A6  | A6                 | A6      | A6    | A6     |
+| int                | A6      | A6  | A6                 | A6      | A6    | A6     |
+| nonNegativeInteger | A6      | A6  | A6                 | A6      | A6    | A6     |
+| decimal            | A6      | A6  | A6                 | A6      | A6    | A6     |
+| float              | A6      | A6  | A6                 | A6      | A6    | A6     |
+| double             | A6      | A6  | A6                 | A6      | A6    | A6     |
 
 先词法/支持域/资源校验再判V/E3，不让未知datatype、NaN或坏日期混进false。486分类槽/216数值细化不是通过数；标签是参数族，不声称有限样例穷尽无限值域。
 

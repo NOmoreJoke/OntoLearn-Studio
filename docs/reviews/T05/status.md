@@ -185,3 +185,9 @@ I05/T01联合范围已获独立reviewer明确文档通过、无新增实质问�
 已实际全文读取新版common17891B/SHA `e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0`，原16317B前缀精确不变；四文件handoff registry SHA `31901746194db283289703fc36b7b2ecf3690c5901a715931d3565bda82c40b5`。新增main/jsonl、renderer/task-presentation、main/task-service、main/index四future路径唯T01；I06保留preload/env/App/style。仅责任变化，不授startup/schema/runtime3/ready或本线四semantic future路径。
 
 总控已预读中间快照并启动独立阶段规格复核；本线独立审查主体算法/边界未发现实质冲突，指出GFM管道隐藏列P2，已移正则至代码块并拆三个token精确construct行，定点复核结论另记internal-review。当前仅文档；待总控固定提交/hash后一次授实施，不再问Q6。未写产品/测试、未复测不变产品、未读未批候选、未push。Goal工具实际仍blocked，完整objective不变；批准依赖/真实接线与其余完成门不因此关闭。
+
+## 总控最终字节复核新增P2：numeric矩阵decimal行
+
+总控实际对比023e441最终字节与预读快照，独立确认numeric矩阵decimal行被本线先前整行替换误改为词法说明、丢失六A6格；此前本线内部通过漏检此问题，不作为最终字节正确的替代证据。仅恢复该行六个A6，保留前面decimal词法表/fenced正则；Prettier只重排该矩阵列宽。原023错误字节和既有通过记录留在Git。
+
+本轮只同步profile新hash、receipt/checkpoint与P2处置；总控尚未授实现，不改Q6/算法/预算/路径/产品/测试，也不重做不变规范审查或产品验证。阶段授权仍待总控对固定修正提交的精确delta补绑。

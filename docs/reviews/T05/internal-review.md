@@ -131,3 +131,11 @@ Independent reviewer `/root/t05_internal_review` passed the document scope. The 
 Final profile SHA256 `ea6e921f0fc21c4cd18a04e835e4bdd4730d7f07821d3e9fdc646f7e5480ffcc`; final stage SHA256 `8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424`. These are document review results only, not implementation authorization, code/test results or normative full conformance. Root independent stage review remains pending.
 
 Adoption/source hashes and the new common/four-path ownership are recorded in the stage receipt. Historical raw sources and Git snapshots remain unchanged. Existing design documents add current adoption references and the T01 foundation/I06 retained-path boundary. All original FR and integration/release gaps remain open; no code/tests/candidate consumption or product retest.
+
+## Root final-byte matrix P2 after 023e441
+
+Root reported a new P2 independently confirmed in its final-byte diff: the numeric matrix decimal row had accidentally been replaced by lexical-table prose during the earlier whole-row regex edit. The six A6 cells were missing. Prior internal passes missed this final-byte defect and remain historical, not evidence of correctness for that row.
+
+The correction restores only that matrix row to six A6 cells; Prettier consequently narrows the matrix alignment. The earlier decimal lexical row, fenced regex and all remaining specification text stay byte-identical. No Q6, algorithm, budget, scope, code or test change. Fixed-delta independent readback is recorded below; root implementation grant remains pending.
+
+Independent reviewer `/root/t05_internal_review` passed the exact correction: every numeric row has six A6 cells; before/after matrix bytes and stage bytes equal 023e441. Final profile 16428 bytes, SHA256 `9259f4ac6622857182570509378afb6c96ab5c4dc19d2e887db559c27a282427`. No normative re-review or product test. This closes the local document defect; root final-byte acceptance and phase authorization remain pending.
