@@ -2,6 +2,8 @@
 
 ## 当前状态：blocked，完整目标保留
 
+最新队列通知：T06 S1仍首条件，I05 C4已完成总控固定文件/完整双审输入预检，列第二条件。两项指定新任务均0，安全独立应用入口及租约仍未核验，无新增GUI许可/时间窗口；原在途资源问题不重复询问，不在当前Mac启动应用/e2e/native。
+
 2026-10-21 11:40+08四文件未来维护生效已实际全文读回新版共同指南/生效JSON：main/jsonl.ts、renderer/task-presentation.ts、main/task-service.ts、main/index.ts仅归T01；I06保留preload/index及renderer env/App/style四路径，其余排除/精确返还保留。common 17891B/SHA e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0，原16317B/ff5前缀逐字核验，AGENTS78df不变；完整路径/边界见operating-policy-ownership-update.md。本次无startup/schema/新码/runtime3/ready授权，不复测、不造新工作、不恢复Goal。
 
 已实际读回2026-10-21 10:21+08的worker.py单文件生效协议与共同指南追加段：未来维护唯一归T01，批准5f与未批C3字节严格区分，其余排除/返还边界保留。新common SHA ff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff，原b24逐字前缀已核验，AGENTS仍78df；详见operating-policy-ownership-update.md。仅政策读回，无实现/复测/新任务/Goal恢复。
