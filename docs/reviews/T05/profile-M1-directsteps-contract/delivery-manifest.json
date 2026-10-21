@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "refBinding": "commit containing this manifest, exact ref supplied in formal controller delivery",
-  "selfExcluded": "manifest self-hash and Git ref supplied externally to avoid self-reference",
-  "fileCount": 72,
+  "refBinding": "commit containing this manifest, exact ref in formal controller delivery",
+  "selfExcluded": "Only exact current self path excluded, nested fixed9333 original manifest included; self hash bound externally",
+  "fileCount": 75,
   "files": [
     {
       "path": "docs/iterations/T05/profile-M1-directsteps-consumer-contract.md",
@@ -191,8 +191,8 @@
     },
     {
       "path": "docs/reviews/T05/profile-M1-directsteps-contract/failure-dispositions.json",
-      "bytes": 2266,
-      "sha256": "bac8ace3733eb3ed84b18b7a47270ade38e7ed0e4ccc099c7fe19cec4e0bc76d"
+      "bytes": 2920,
+      "sha256": "276b1d1d0586d983e07b719808be0e7a0b1e5193c99964c2286447c1064823fe"
     },
     {
       "path": "docs/reviews/T05/profile-M1-directsteps-contract/fixed-inputs.json",
@@ -310,6 +310,11 @@
       "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
     },
     {
+      "path": "docs/reviews/T05/profile-M1-directsteps-contract/inputs/t05/docs/reviews/T05/profile-M1-math-explanation-input-contract/delivery-manifest.json",
+      "bytes": 6965,
+      "sha256": "2df4ef7107ae57a97f5a71434083c1110afffe6223d8bda50af46b38cdf10ac7"
+    },
+    {
       "path": "docs/reviews/T05/profile-M1-directsteps-contract/inputs/t05/docs/reviews/T05/profile-M1-math-explanation-input-contract/explanation-goldens.json",
       "bytes": 11584,
       "sha256": "68bc6848ad05b7cca01f37368a15b9e961a78a6a877b841f08cafa2a2fba36d9"
@@ -345,6 +350,11 @@
       "sha256": "5ef66a3c32bbbfbf9bb6a3fdbbbf5e6f43158f386ec34f9d62433db4ee63b997"
     },
     {
+      "path": "docs/reviews/T05/profile-M1-directsteps-contract/review-before-manifest-fix.json",
+      "bytes": 16817,
+      "sha256": "487acb489eaa2fac04cc3572608a6d0c615fd47f92174c5c5d5f3890e4af94b7"
+    },
+    {
       "path": "docs/reviews/T05/profile-M1-directsteps-contract/review-between-P2-contract.md",
       "bytes": 33872,
       "sha256": "d7e6f41bd21123190b99fa869a14f387e2a93f0deb0d21f6d84812aecba79ded"
@@ -363,6 +373,11 @@
       "path": "docs/reviews/T05/profile-M1-directsteps-contract/static-verify.py",
       "bytes": 4253,
       "sha256": "d266700fdeca654623b51666a8fb978cdecbdb1e6c83d2da3aa9a8dff4a25091"
+    },
+    {
+      "path": "docs/reviews/T05/profile-M1-directsteps-contract/verify-delivery.py",
+      "bytes": 2187,
+      "sha256": "46fd453cfabd4674bec2b9d87cb9ea3edbb1696777c9f2cfc08a0d65d7f1d14c"
     }
   ]
 }

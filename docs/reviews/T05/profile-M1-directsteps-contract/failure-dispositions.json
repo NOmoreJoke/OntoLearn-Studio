@@ -30,5 +30,12 @@
     "effect": "No mutation from failed script; used bounded-line apply_patch and verified former33872B hash before correction"
   },
   "finalStatic": "commands/static-final-fixed exit0, current34958B/c9474308 contract",
-  "independentReviewHelperFailure": "Reviewer reports one quoted-Chinese-path AssertionError then NUL-delimited fix passed, no writes; original responses belong to its chat, not forged into root commands"
+  "independentReviewHelperFailure": "Reviewer reports one quoted-Chinese-path AssertionError then NUL-delimited fix passed, no writes; original responses belong to its chat, not forged into root commands",
+  "finalManifestAudit": {
+    "firstFailure": "Post-commit read-only assertion: committed74 files versus manifest73",
+    "cause": "Manifest generator excluded basename delivery-manifest.json, omitting the fixed9333 nested input with same basename as new self manifest",
+    "resolution": "Exclude only exact self path; include nested original manifest. All fixed input bytes and reviewed34958B contract unchanged.",
+    "originalManifest": "review-before-manifest-fix.json (same bytes as a3eecd2 original process manifest)",
+    "originalError": "Original AssertionError and missing-path listing in this chat tool responses, not product execution"
+  }
 }
