@@ -398,6 +398,12 @@ export class EngineSupervisor {
         })
         if (!ticket.producerReservation || typeof ticket.producerReservation !== 'object')
           throw invalid()
+        // reserveOperation may synchronously stop/reenter before returning its real token.
+        // A prior cancellation request is not an attempt to cancel that then-unknown token.
+        if (this.#stopped || ticket.cancelRequested || !ticket.request) {
+          this.#accounting.cancelUnwritten(ticket)
+          throw exited()
+        }
       } catch (error) {
         this.#accounting.cancelUnwritten(ticket)
         throw this.#lifecycleError(error)
@@ -608,6 +614,7 @@ export class EngineSupervisor {
   }
   async #start(): Promise<Session> {
     let owner: OwnedChild
+    let helloTicket: Ticket | undefined
     try {
       owner = this.#ownership.reserve()
     } catch (error) {
@@ -633,6 +640,17 @@ export class EngineSupervisor {
       const now = Date.now()
       this.#starts = this.#starts.filter((time) => now - time < 60000)
       if (this.#starts.length >= 5) throw exited()
+      const hostClientId = randomUUID()
+      const reservedHello = this.#prepare(
+        'hello',
+        {
+          supportedVersions: [this.#profile === 'business3' ? 3 : 2],
+          clientId: hostClientId,
+        },
+        undefined,
+        'hello',
+      )
+      helloTicket = reservedHello
       this.#starts.push(now)
       let registryHash: string
       try {
@@ -715,7 +733,7 @@ export class EngineSupervisor {
       const session: Session = {
         child,
         owner,
-        hostClientId: randomUUID(),
+        hostClientId,
         profile: this.profile,
         startupPromise,
         resolveStart,
@@ -789,6 +807,8 @@ export class EngineSupervisor {
             },
             this.#handshakeMs,
             'handshake',
+            false,
+            reservedHello,
           ).then((value) => {
             const hello = value as Hello
             if (!this.#current(session) || hello.registryHash !== registryHash) {
@@ -806,9 +826,10 @@ export class EngineSupervisor {
       if (this.#stopped) fail(exited())
       return await startupPromise
     } catch (error) {
+      if (helloTicket) this.#accounting.cancelUnwritten(helloTicket)
       if (!owner.spawnEntered) owner.cancelNeverCreated()
       else owner.retire()
-      throw error
+      throw this.#lifecycleError(error)
     } finally {
       owner.finishStarting()
       if (this.#startingAttempt === attempt) this.#startingAttempt = undefined

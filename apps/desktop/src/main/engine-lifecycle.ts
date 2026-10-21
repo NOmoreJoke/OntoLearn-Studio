@@ -362,7 +362,8 @@ export interface Ticket {
   producerIncarnation?: object
   producerReservation?: object
   producerReserveEntered?: boolean
-  cancelAttempted?: boolean
+  cancelRequested?: boolean
+  attemptedCancellation?: object
   observation?: object
   subscription?: OwnedObservation
   reservedRequest?: Readonly<Record<string, unknown>>
@@ -404,6 +405,7 @@ export class DispatchAccounting {
       throw new LifecycleFault('identity')
     if (
       this.#counts[pool] >= (pool === 'business' ? this.maximum : 1) ||
+      ((pool === 'hello' || pool === 'ping') && this.#counts.hello + this.#counts.ping >= 1) ||
       this.#poolBytes[pool] + bytes > (pool === 'business' ? 8388608 : 262144) ||
       (background && this.#watches.size >= 128)
     )
@@ -462,10 +464,12 @@ export class DispatchAccounting {
     this.#release(ticket)
   }
   cancelUnwritten(ticket: Ticket): void {
-    if (ticket.attempted || ticket.cancelAttempted) return
-    ticket.cancelAttempted = true
+    if (ticket.attempted) return
+    ticket.cancelRequested = true
     this.#release(ticket)
     if (ticket.producerReservation && ticket.producer) {
+      if (ticket.attemptedCancellation === ticket.producerReservation) return
+      ticket.attemptedCancellation = ticket.producerReservation
       try {
         synchronous(ticket.producer.cancelReservation(ticket.producerReservation))
         if (!ticket.observation) this.releaseWatch(ticket)
@@ -479,6 +483,7 @@ export class DispatchAccounting {
     ticket.watch = false
     ticket.subscription = undefined
     ticket.producerReservation = undefined
+    ticket.attemptedCancellation = undefined
     // Ending this connection's notification ownership does not revoke an actual
     // producer's later terminal evidence for the still-counted original operation.
     if (!this.#tickets.has(ticket)) {

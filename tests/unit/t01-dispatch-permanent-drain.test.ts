@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createHash, randomUUID } from 'node:crypto'
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { EventEmitter } from 'node:events'
@@ -18,6 +18,7 @@ import {
   type ExecutionEvidenceProducer,
   type SessionFacts,
   type TerminalJobFact,
+  type Ticket,
 } from '../../apps/desktop/src/main/engine-lifecycle'
 import { validateBusiness3, v2Registry } from '@ontolearn/contracts/v2'
 
@@ -63,13 +64,14 @@ const limits = {
 const script = String.raw`
 const {createInterface}=require('node:readline'),{randomUUID}=require('node:crypto'),fs=require('node:fs');
 const [mode,hash,rawLimits,caps,marker,template]=process.argv.slice(1),limits=JSON.parse(rawLimits),session=randomUUID(),jobs=new Map();
+const incarnation=fs.existsSync(marker)?fs.readFileSync(marker,'utf8').split('\"spawn\"').length:1;
 fs.appendFileSync(marker,JSON.stringify({spawn:process.pid})+'\n');
-if(mode==='ignore-term'||mode==='end-holder')process.on('SIGTERM',()=>fs.appendFileSync(marker,JSON.stringify({signal:'TERM'})+'\n'));
+if(mode==='ignore-term'||mode==='end-holder'||(mode.startsWith('cap-')&&incarnation===1))process.on('SIGTERM',()=>fs.appendFileSync(marker,JSON.stringify({signal:'TERM'})+'\n'));
 const response=(q,result)=>{fs.appendFileSync(marker,JSON.stringify({reply:q.method,id:q.id})+'\n');process.stdout.write(JSON.stringify({kind:'response',protocolVersion:q.method==='hello'?2:3,engineSessionId:session,id:q.id,method:q.method,ok:true,result})+'\n')};
 createInterface({input:process.stdin}).on('line',line=>{
  const q=JSON.parse(line);fs.appendFileSync(marker,JSON.stringify({request:q.method,id:q.id,params:q.params})+'\n');
- if(q.method==='hello'){const run=()=>response(q,{selectedVersion:3,engineVersion:'0.1.0',engineSessionId:session,capabilities:JSON.parse(caps),limits,registryHash:hash});if(mode==='slow-hello')setTimeout(run,120);else run();return;}
- if(q.method==='session.ping'){response(q,{nonce:q.params.nonce});return;}
+ if(q.method==='hello'){if(mode==='cap-hello'&&incarnation===1)return;const run=()=>response(q,{selectedVersion:3,engineVersion:'0.1.0',engineSessionId:session,capabilities:JSON.parse(caps),limits,registryHash:hash});if(mode==='slow-hello'||(mode==='cap-reconnect'&&incarnation>1))setTimeout(run,120);else run();return;}
+ if(q.method==='session.ping'){if(mode==='cap-reconnect'&&incarnation===1)return;response(q,{nonce:q.params.nonce});return;}
  if(q.method==='health'){
   if(mode==='hold')return;
   const run=()=>response(q,{status:'ok',engineVersion:'0.1.0'});
@@ -84,7 +86,7 @@ createInterface({input:process.stdin}).on('line',line=>{
  }
  if(q.method==='job.subscribe'){if(mode==='subscriptions-full'){process.stdout.write(JSON.stringify({kind:'response',protocolVersion:3,engineSessionId:session,id:q.id,method:q.method,ok:false,error:{code:'QUEUE_FULL',messageKey:'job.queueFull',params:{retryAfterMs:100},retryable:true}})+'\n');return;}response(q,{subscriptionId:randomUUID(),projectId:q.params.projectId,jobId:q.params.jobId,stateVersion:1,seq:0});return;}
  if(q.method==='job.unsubscribe'){response(q,{subscriptionId:q.params.subscriptionId,unsubscribed:true});return;}
- if(q.method==='job.get'){const run=()=>response(q,jobs.get(q.params.jobId));if(mode==='late-completion')setTimeout(run,120);else run();return;}
+ if(q.method==='job.get'){if(mode==='cap-reconnect'&&incarnation===1)return;const run=()=>response(q,jobs.get(q.params.jobId));if(mode==='late-completion')setTimeout(run,120);else run();return;}
 });`
 const engines: EngineSupervisor[] = []
 const directories: string[] = []
@@ -305,6 +307,84 @@ function producerFixture(cleanup = true) {
     },
     forge(r: Reservation) {
       r.callback!({})
+    },
+  }
+}
+function trackReservations() {
+  const entries: Array<{ ticket: Ticket; book: DispatchAccounting }> = []
+  const samples: Array<{
+    label: string
+    total: number
+    business: number
+    completion: number
+    control: number
+  }> = []
+  const sample = (label: string) => {
+    const active = entries.map((e) => e.ticket).filter((t) => t.bytes > 0)
+    const value = {
+      label,
+      total: active.length,
+      business: active.filter((t) => t.pool === 'business').length,
+      completion: active.filter((t) => t.pool === 'completion').length,
+      control: active.filter((t) => t.pool === 'hello' || t.pool === 'ping').length,
+    }
+    samples.push(value)
+    return value
+  }
+  const original = DispatchAccounting.prototype.reserve
+  const spy = vi.spyOn(DispatchAccounting.prototype, 'reserve').mockImplementation(function (
+    this: DispatchAccounting,
+    ...args: Parameters<DispatchAccounting['reserve']>
+  ) {
+    try {
+      const ticket = Reflect.apply(original, this, args) as Ticket
+      entries.push({ ticket, book: this })
+      sample('reserved:' + ticket.pool)
+      return ticket
+    } catch (error) {
+      sample('rejected:' + args[4])
+      throw error
+    }
+  })
+  return {
+    entries,
+    samples,
+    sample,
+    restore() {
+      spy.mockRestore()
+      sample('finally-after-drain')
+      const path = join(
+        mkdtempSync(join(tmpdir(), 't01-dispatch-budget-evidence-')),
+        'reservations.json',
+      )
+      writeFileSync(
+        path,
+        JSON.stringify(
+          {
+            test: expect.getState().currentTestName,
+            samples,
+            reservations: entries.map(({ ticket, book }) => ({
+              pool: ticket.pool,
+              bytes: ticket.bytes,
+              attempted: ticket.attempted,
+              watch: ticket.watch,
+              cancelRequested: ticket.cancelRequested,
+              attemptedKnownCancellation: !!ticket.attemptedCancellation,
+              remaining: book.snapshot(),
+            })),
+          },
+          null,
+          2,
+        ) + '\n',
+      )
+      console.info('T01_DISPATCH_BUDGET_EVIDENCE ' + path)
+    },
+    assertBounded() {
+      expect(
+        samples.every(
+          (s) => s.total <= 130 && s.business <= 128 && s.completion <= 1 && s.control <= 1,
+        ),
+      ).toBe(true)
     },
   }
 }
@@ -863,6 +943,223 @@ describe('write observation remains attempted after uncertain local outcomes (lo
       expect(op.dispatchObservation).toBe('write-attempted')
       expect(writes).toBe(1)
       expect(await pending(op.operationExecution)).toBe('pending')
+    })
+  }
+})
+
+describe('cross-session control budget and reentrant producer reservation regressions', () => {
+  for (const pool of ['hello', 'ping'] as const) {
+    it(`shares one hello/ping control slot with ${pool} occupying the 130th reservation`, () => {
+      const book = new DispatchAccounting(128),
+        tickets: Ticket[] = []
+      for (let i = 0; i < 128; i++) tickets.push(book.reserve({ method: 'health', params: {} }, 1))
+      const completion = book.reserve(
+        { method: 'job.get', params: {} },
+        1,
+        undefined,
+        undefined,
+        'completion',
+      )
+      tickets.push(completion)
+      const control = book.reserve(
+        { method: pool === 'hello' ? 'hello' : 'session.ping', params: {} },
+        1,
+        undefined,
+        undefined,
+        pool,
+      )
+      tickets.push(control)
+      expect(tickets.filter((t) => t.bytes > 0)).toHaveLength(130)
+      const other = pool === 'hello' ? 'ping' : 'hello'
+      expect(() =>
+        book.reserve({ method: other, params: {} }, 1, undefined, undefined, other),
+      ).toThrow(LifecycleFault)
+      expect(() => book.reserve({ method: 'health', params: {} }, 1)).toThrow(LifecycleFault)
+      expect(() =>
+        book.reserve({ method: 'job.get', params: {} }, 1, undefined, undefined, 'completion'),
+      ).toThrow(LifecycleFault)
+      control.attempted = true
+      book.cancelUnwritten(control)
+      expect(control.bytes).toBe(1)
+      book.foreground(tickets[0])
+      expect(tickets.filter((t) => t.bytes > 0)).toHaveLength(129)
+      expect(() =>
+        book.reserve({ method: other, params: {} }, 1, undefined, undefined, other),
+      ).toThrow(LifecycleFault)
+      book.foreground(control)
+      const next = book.reserve({ method: other, params: {} }, 1, undefined, undefined, other)
+      expect(completion.bytes).toBe(1)
+      expect(next.bytes).toBe(1)
+      expect(tickets.filter((t) => t.bytes > 0).length + 1).toBe(129)
+    })
+  }
+  it('keeps old real ping/completion unknown, rejects new hello before spawn, then reconnects after actual old owner close', async () => {
+    const { engine, events } = fixture('cap-reconnect', { requestMs: 300, heartbeatMs: 350 })
+    const p = producerFixture(false),
+      source = sourceFixture(p.producer)
+    engine.attachDispatchSource(source.source)
+    const trace = trackReservations()
+    try {
+      const op = engine.requestWithDispatch(source.mint('job.create'), 'job.create', jobParams())
+      await op.logicalOutcome
+      const r = p.first()
+      await expect(
+        r.completionPort.request(
+          r.privateTicket,
+          'job.get',
+          { projectId: r.job!.projectId, jobId: r.job!.jobId },
+          source.mint('job.get'),
+        ),
+      ).rejects.toMatchObject({ error: { code: 'TIMEOUT' } })
+      p.emit(r)
+      await op.operationExecution
+      for (let i = 0; i < 100 && engine.engineSessionId; i++) {
+        await pause(5)
+        trace.sample('waiting-old-session')
+      }
+      expect(engine.engineSessionId).toBeUndefined()
+      const oldPing = trace.entries.find((e) => e.ticket.pool === 'ping')!.ticket
+      const completion = trace.entries.find((e) => e.ticket.pool === 'completion')!.ticket
+      expect(oldPing.bytes).toBeGreaterThan(0)
+      expect(completion.bytes).toBeGreaterThan(0)
+      const requests = Array.from({ length: 128 }, () => engine.health())
+      requests.forEach((p) => void p.catch(() => undefined))
+      expect(trace.sample('128-waiting-before-ensure')).toMatchObject({
+        total: 130,
+        business: 128,
+        completion: 1,
+        control: 1,
+      })
+      await expect(engine.health()).rejects.toMatchObject({ error: { code: 'QUEUE_FULL' } })
+      const results = await Promise.allSettled(requests)
+      expect(
+        results.every(
+          (r) =>
+            r.status === 'rejected' &&
+            (r.reason as { error: { code: string } }).error.code === 'QUEUE_FULL',
+        ),
+      ).toBe(true)
+      expect(events().filter((e) => e.spawn)).toHaveLength(1)
+      expect(oldPing.bytes).toBeGreaterThan(0)
+      expect(completion.bytes).toBeGreaterThan(0)
+      for (let i = 0; i < 300 && oldPing.bytes > 0; i++) {
+        await pause(5)
+        trace.sample('waiting-real-owner-close')
+      }
+      expect(oldPing.bytes).toBe(0)
+      expect(completion.bytes).toBeGreaterThan(0)
+      const recovered = Array.from({ length: 128 }, () => engine.health())
+      expect((await Promise.all(recovered)).every((v) => v.status === 'ok')).toBe(true)
+      expect(events().filter((e) => e.spawn)).toHaveLength(2)
+      expect(trace.samples.some((s) => s.total === 130)).toBe(true)
+      expect(completion.bytes).toBeGreaterThan(0)
+      trace.assertBounded()
+      await engine.stopAndDrain().transportOwnershipLifetime
+      trace.sample('after-permanent-stop')
+      trace.assertBounded()
+    } finally {
+      await engine.stopAndDrain().transportOwnershipLifetime
+      trace.restore()
+    }
+  })
+  it('reserves hello before the real spawn and retains an old unanswered hello until its owner ends', async () => {
+    const { engine, events } = fixture('cap-hello', { handshakeMs: 40 })
+    const trace = trackReservations()
+    try {
+      await expect(engine.health()).rejects.toMatchObject({ error: { code: 'TIMEOUT' } })
+      const hello = trace.entries.find((e) => e.ticket.pool === 'hello')!.ticket
+      expect(hello.bytes).toBeGreaterThan(0)
+      await expect(engine.health()).rejects.toMatchObject({ error: { code: 'QUEUE_FULL' } })
+      expect(events().filter((e) => e.spawn)).toHaveLength(1)
+      expect(hello.bytes).toBeGreaterThan(0)
+      for (let i = 0; i < 300 && hello.bytes > 0; i++) {
+        await pause(5)
+        trace.sample('old-hello-owned')
+      }
+      expect(hello.bytes).toBe(0)
+      await expect(engine.health()).resolves.toMatchObject({ status: 'ok' })
+      expect(events().filter((e) => e.spawn)).toHaveLength(2)
+      trace.assertBounded()
+    } finally {
+      await engine.stopAndDrain().transportOwnershipLifetime
+      trace.restore()
+    }
+  })
+  it('permanent stop settles all 128 waiters while real old control still owns its slot', async () => {
+    const { engine, events } = fixture('cap-reconnect', { heartbeatMs: 30 }),
+      trace = trackReservations()
+    try {
+      await engine.health()
+      for (let i = 0; i < 100 && engine.engineSessionId; i++) {
+        await pause(5)
+        trace.sample('wait-ping-timeout')
+      }
+      const ping = trace.entries.find((e) => e.ticket.pool === 'ping')!.ticket
+      const requests = Array.from({ length: 128 }, () => engine.health())
+      requests.forEach((p) => void p.catch(() => undefined))
+      await pause(1)
+      const drain = engine.stopAndDrain()
+      const results = await Promise.allSettled(requests)
+      expect(results.every((r) => r.status === 'rejected')).toBe(true)
+      expect(ping.bytes).toBeGreaterThan(0)
+      expect((await drain.observe({ waitMs: 5 })).state).toBe('pending')
+      expect(events().filter((e) => e.spawn)).toHaveLength(1)
+      await drain.transportOwnershipLifetime
+      expect(ping.bytes).toBe(0)
+      trace.sample('drained')
+      trace.assertBounded()
+    } finally {
+      await engine.stopAndDrain().transportOwnershipLifetime
+      trace.restore()
+    }
+  })
+  for (const outcome of ['success', 'throw', 'async-looking'] as const) {
+    it(`cancels a real reservation returned after reserve synchronously stops, at most once (${outcome})`, async () => {
+      const { engine, events } = fixture(),
+        p = producerFixture(false),
+        source = sourceFixture(p.producer),
+        trace = trackReservations()
+      const reserve = p.producer.reserveOperation.bind(p.producer),
+        cancel = p.producer.cancelReservation.bind(p.producer)
+      let actual: object | undefined,
+        calls = 0
+      p.producer.reserveOperation = (facts) => {
+        actual = reserve(facts)
+        engine.stop()
+        return actual
+      }
+      p.producer.cancelReservation = (reservation) => {
+        calls++
+        expect(reservation).toBe(actual)
+        if (outcome === 'throw') throw new Error('unknown cancellation')
+        if (outcome === 'async-looking') return Promise.resolve() as unknown as void
+        cancel(reservation)
+      }
+      engine.attachDispatchSource(source.source)
+      try {
+        const op = engine.requestWithDispatch(source.mint('job.create'), 'job.create', jobParams())
+        await expect(op.logicalOutcome).rejects.toMatchObject({ error: { code: 'ENGINE_EXITED' } })
+        const entry = trace.entries.find((e) => e.ticket.background)!
+        expect(calls).toBe(1)
+        expect(entry.ticket.request).toBeUndefined()
+        expect(entry.ticket.frame).toBeUndefined()
+        expect(entry.ticket.attempted).toBe(false)
+        expect(entry.book.snapshot()).toMatchObject({
+          tickets: 0,
+          watches: outcome === 'success' ? 0 : 1,
+        })
+        await engine.stopAndDrain().transportOwnershipLifetime
+        await expect(
+          engine.requestWithDispatch(source.mint('job.create'), 'job.create', jobParams())
+            .logicalOutcome,
+        ).rejects.toBeDefined()
+        expect(calls).toBe(1)
+        expect(events()).toEqual([])
+        trace.assertBounded()
+      } finally {
+        await engine.stopAndDrain().transportOwnershipLifetime
+        trace.restore()
+      }
     })
   }
 })
