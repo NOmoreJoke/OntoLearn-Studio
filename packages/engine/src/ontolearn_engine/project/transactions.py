@@ -11,7 +11,15 @@ from uuid import uuid4
 
 from ontolearn_engine.storage import Conflict, Hook, Store, canonical, digest
 
-PLAN_KEYS = {"definitions", "remove_definitions", "manual", "edits", "remove", "mapping"}
+PLAN_KEYS = {
+    "definitions",
+    "remove_definitions",
+    "manual",
+    "edits",
+    "remove",
+    "mapping",
+    "compensate",
+}
 CHECKPOINT_REASONS = {"before-agent", "before-run", "guided-stage", "manual"}
 
 
@@ -36,6 +44,8 @@ class ChangePreview:
     intent: str = "change"
     target: str | None = None
     overwritten_operations: tuple[str, ...] = ()
+    control_before_json: str = "[]"
+    control_after_json: str = "[]"
 
     @property
     def identity(self) -> str:
@@ -49,12 +59,25 @@ class ChangePreview:
                 "intent": self.intent,
                 "target": self.target,
                 "overwrittenOperations": self.overwritten_operations,
+                "controlBefore": json.loads(self.control_before_json),
+                "controlAfter": json.loads(self.control_after_json),
             }
         )
 
     @property
     def diff(self) -> list[dict]:
-        return state_diff(json.loads(self.before_json), json.loads(self.after_json))
+        changes = state_diff(json.loads(self.before_json), json.loads(self.after_json))
+        before = {tuple(key) for key in json.loads(self.control_before_json)}
+        after = {tuple(key) for key in json.loads(self.control_after_json)}
+        changes.extend(
+            {
+                "resource": ["definition-status", *key],
+                "before": "已撤回" if key in before else None,
+                "after": "已撤回" if key in after else None,
+            }
+            for key in sorted(before ^ after)
+        )
+        return changes
 
     @property
     def summary(self) -> str:
@@ -89,6 +112,9 @@ class ProjectTransactions:
     def __init__(self, store: Store):
         self.store = store
 
+    def _control(self, project: str) -> str:
+        return canonical(self.store.retirement_control(project))
+
     @staticmethod
     def _plan(plan: dict) -> dict:
         if not isinstance(plan, dict) or set(plan) - PLAN_KEYS:
@@ -108,7 +134,13 @@ class ProjectTransactions:
         }
         if plan.get("remove_definitions") is not None:
             complete["remove_definitions"] = plan["remove_definitions"]
+        if plan.get("compensate") is not None:
+            complete["compensate"] = plan["compensate"]
         complete["preview_identity"] = preview.identity
+        complete["preview_control"] = {
+            "before": json.loads(preview.control_before_json),
+            "after": json.loads(preview.control_after_json),
+        }
         return digest(complete)
 
     def preview(
@@ -126,8 +158,10 @@ class ProjectTransactions:
         try:
             with self.store._transaction():
                 before = self.store.state(project)
+                control_before = self._control(project)
                 self.store.commit(project, base, str(uuid4()), str(uuid4()), **plan)
                 after = self.store.state(project)
+                control_after = self._control(project)
                 raise _PreviewRollback
         except _PreviewRollback:
             return ChangePreview(
@@ -139,6 +173,8 @@ class ProjectTransactions:
                 intent,
                 target,
                 overwritten_operations,
+                control_before,
+                control_after,
             )
 
     def reconcile(self, preview: ChangePreview, operation: str, job: str) -> dict:
@@ -153,6 +189,11 @@ class ProjectTransactions:
         if (
             canonical(before["state"]) != preview.before_json
             or canonical(after["state"]) != preview.after_json
+            or json.loads(marker["plan"]).get("preview_control")
+            != {
+                "before": json.loads(preview.control_before_json),
+                "after": json.loads(preview.control_after_json),
+            }
         ):
             raise Conflict("Preview evidence mismatch", category="identity")
         return {"status": "committed", "marker": marker}
@@ -173,7 +214,10 @@ class ProjectTransactions:
             existing = self.reconcile(preview, operation, job)
             if existing["status"] == "committed":
                 return existing["marker"]
-            if canonical(self.store.state(preview.project)) != preview.before_json:
+            if (
+                canonical(self.store.state(preview.project)) != preview.before_json
+                or self._control(preview.project) != preview.control_before_json
+            ):
                 raise Conflict("Preview input changed", category="revision")
             marker = self.store.commit(
                 preview.project,
@@ -182,9 +226,16 @@ class ProjectTransactions:
                 job,
                 hook=hook,
                 preview_identity=preview.identity,
+                preview_control={
+                    "before": json.loads(preview.control_before_json),
+                    "after": json.loads(preview.control_after_json),
+                },
                 **json.loads(preview.plan_json),
             )
-            if canonical(self.store.state(preview.project)) != preview.after_json:
+            if (
+                canonical(self.store.state(preview.project)) != preview.after_json
+                or self._control(preview.project) != preview.control_after_json
+            ):
                 raise ProjectFault("PREVIEW_RESULT_MISMATCH")
         return marker
 
@@ -218,27 +269,18 @@ class ProjectTransactions:
             )
             if conflicts:
                 raise ProjectFault("UNDO_CONFLICT", conflicts)
-            # Restore only this operation's changed records; unrelated later edits survive.
-            desired_records = _records(current)
-            for item in changes:
-                key = tuple(item["resource"])
-                if item["before"] is None:
-                    desired_records.pop(key, None)
-                else:
-                    desired_records[key] = item["before"]
-            desired = {
-                "definitions": [
-                    v for k, v in sorted(desired_records.items()) if k[0] == "definition"
-                ],
-                "facts": [v for k, v in sorted(desired_records.items()) if k[0] == "fact"],
-                "mappingState": {
-                    k[1]: v for k, v in sorted(desired_records.items()) if k[0] == "mappingState"
-                },
-            }
-            plan = _restore_plan(current, desired)
-            return self.preview(
-                project, self.store.revision(project), plan, intent="undo", target=operation
-            )
+            try:
+                return self.preview(
+                    project,
+                    self.store.revision(project),
+                    {"compensate": {"kind": "undo", "operation": operation}},
+                    intent="undo",
+                    target=operation,
+                )
+            except Conflict as error:
+                if error.category == "state":
+                    raise ProjectFault("UNDO_CONFLICT") from error
+                raise
 
     def preview_restore(self, project: str, snapshot: str) -> ChangePreview:
         with self.store._transaction():
@@ -246,60 +288,21 @@ class ProjectTransactions:
             base = self.store.revision(project)
             if target["projectRevision"] > base:
                 raise ProjectFault("RESTORE_FUTURE_SNAPSHOT")
-            # Read immutable existing evidence only. A public listing API is a T00 handoff.
-            later = tuple(
-                row[0]
-                for row in self.store._db.execute(
-                    "SELECT operation FROM commits WHERE project=? AND revision>? "
-                    "ORDER BY revision",
-                    (project, target["projectRevision"]),
+            later = []
+            after_revision = target["projectRevision"]
+            while True:
+                page = self.store.operation_list(
+                    project, after_revision=after_revision, through_revision=base
                 )
-            )
-            plan = _restore_plan(self.store.state(project), target["state"])
+                later.extend(item["operation"] for item in page["operations"])
+                if page["nextAfterRevision"] is None:
+                    break
+                after_revision = page["nextAfterRevision"]
             return self.preview(
-                project, base, plan, intent="restore", target=snapshot, overwritten_operations=later
+                project,
+                base,
+                {"compensate": {"kind": "restore", "snapshotRef": snapshot}},
+                intent="restore",
+                target=snapshot,
+                overwritten_operations=tuple(later),
             )
-
-
-def _restore_plan(current: dict, desired: dict) -> dict:
-    """Exact inverse if expressible in the approved commit API; otherwise stop."""
-    definitions, withdrawn, manual, edits, remove = [], [], [], {}, []
-    unsupported = []
-    for item in state_diff(current, desired):
-        key, old, new = item["resource"], item["before"], item["after"]
-        if key[0] == "definition":
-            if new is None:
-                withdrawn.append({"layer": key[1], "id": key[2]})
-            else:
-                definitions.append(
-                    {"layer": key[1], "id": key[2], "value": json.loads(new["payload"])}
-                )
-        elif key[0] == "mappingState":
-            unsupported.append(":".join(key))
-        elif old is not None and new is not None:
-            if {k: v for k, v in old.items() if k != "object"} != {
-                k: v for k, v in new.items() if k != "object"
-            } or new["object"] is None:
-                unsupported.append(":".join(key))
-            else:
-                edits[key[1]] = new["object"]
-        elif new is None:
-            if old["owner"] is not None:
-                unsupported.append(":".join(key))
-            else:
-                remove.append(key[1])
-        elif new["owner"] is not None or new["id"] != digest(
-            [new["subject"], new["predicate"], new["object"]]
-        ):
-            unsupported.append(":".join(key))
-        else:
-            manual.append({k: new[k] for k in ("id", "subject", "predicate", "object")})
-    if unsupported:
-        raise ProjectFault("RESTORE_REQUIRES_STORE_SUPPORT", tuple(unsupported))
-    return {
-        "definitions": definitions,
-        "remove_definitions": withdrawn,
-        "manual": manual,
-        "edits": edits,
-        "remove": remove,
-    }

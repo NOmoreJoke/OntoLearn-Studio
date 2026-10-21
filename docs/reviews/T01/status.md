@@ -54,3 +54,23 @@
 两项内审 P2 已修复并独立关闭，详见 [stage-one-review](stage-one-review.md)。新专用测试 64 passed；新全仓 `npm run check` 退出码 0，lint/格式/typecheck、630 TS、构建、ruff、1116 Python 均通过。两轮完整检查各自原件保留，日志 hash/大小见 `evidence/stage-one-logs.json`。运行范围为本机无窗口单元/引擎测试及构建，没有桌面/native/e2e、打包或生产证据。
 
 第一阶段准备本地恢复提交；不 push。后续继续同一 Goal 实现完整 Store 补偿和稳定操作列表，元数据/草稿格式升级等待明确版本协作，正式 JobStore/canonical/桌面接线仍待逐文件交接。
+
+## 第二阶段：完整域补偿和稳定操作列表
+
+- 第一阶段恢复提交：`03376dfb873a67260fd6ef426c603f3ffbe3feb1`（本地，未 push）。
+- 新增 `project/compensation.py`，Store.commit 的互斥 undo/restore selector，Store 内部完整行恢复和 `operation_list` 固定 throughRevision 分页。无新 schema/依赖，不改旧快照和 marker 字节。
+- 九个真实提交边界（含删旧事实后重插前、映射计数重绑后）覆盖异常、取消、模拟磁盘失败及真实子进程退出，128 项专用先通过。该候选全仓 630 TS/1180 Python 通过，但后续内审发现遗漏，因此这份通过不计修正版验收。
+- 独立全范围及定点内审发现保留 ID/墓碑占位漏检、隐藏 retirement 恢复遗漏，两项均已实施修复并新增反例；前者最终逐 active 事实复用原 `_check_slot`，后者通过完整不可变提交历史重建原退休成员（含已有补偿 selector），缺证据拒绝。版本 ledger 向前，vector 只投影真实当前成员，不显示已无成员的历史计数。恢复前已退休/未退休的映射分别实际重跑拒绝/成功对照。
+- 修正版 T01/Store/JobStore `485 passed`；新全仓检查、两位独立复核正在进行，不能先记最终通过。所有首跑/修复日志原件保留；早期三项失败是旧“明确拒绝”预期转成真实恢复成功后的待更新测试，后续退休集/投影失败原件亦保留。
+- T00 格式提案已全文读取并反馈，支持 DB3/完整 checkpoint/协议3 的明确协作。当前没有 metadata/draft/学习权威表，未伪报格式2兼容；这些仍待逐文件共同迁移/接线，不能算 FR-001–006 全部完成。
+
+下一可验交付为第二阶段实际冻结 SHA、全部内审意见处置和全仓原件；成熟后请总控继续安排批准基线刷新、JobStore/canonical/桌面窄接口接线、指定双审资源，不等待整个 M0。
+
+## 第二阶段最终内部验收
+
+- 全范围独立复核通过，累计第一/第二阶段7项历史意见全部关闭，详见 [stage-two-review](stage-two-review.md)。最终 T01/Store/JobStore 496 passed；完整 `npm run check` 实际退出0，630 TS、1196 Python 全过，静态/类型/构建/ruff通过。
+- 普通提交的控制前后证据原子存于既有 immutable plan；v1缺早期历史仍可正常提交、丢响应后重开对账和幂等返回。更早无依据目标不伪造恢复。旧参数未传仍精确兼容旧hash。
+- 第二阶段源码冻结并准备本地恢复提交；没有 push、指定外审、PR、远端CI/合并或业务UI/Agent正式验收。
+- 后续为同一T01会话下有界“格式3基础”候选实际集成人。已全文读 T00格式提案和独立review（含按真实依赖而非I05/I06整项等待的第8节），形成 [format3-foundation-contract](../../iterations/T01/format3-foundation-contract.md) 的最小内部状态/ready/hello/CAS/sequence/checkpoint及fixture设计。它是待T00统一/独立挑战的设计，未启用metadata/未迁移数据库。storage外的所需路径仍待双方精确交接，未自行修改。
+
+Goal保持 active：父功能FR-001–006/804全部完成、持久项目/草稿/学习、正式确认/窄桥/UI、T08/T09/T10跨功能、指定双审及最终合并仍有工作，不将内部阶段完成当作父功能或上线完成。

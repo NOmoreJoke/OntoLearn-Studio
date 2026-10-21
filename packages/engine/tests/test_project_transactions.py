@@ -357,38 +357,45 @@ def test_undo_added_or_removed_manual_facts_and_definitions(db):
     assert db.state("p") == before
 
 
-def test_deleted_edited_legacy_id_restore_requires_store_handoff(db):
+@pytest.mark.parametrize("action", ["restore", "undo"])
+def test_deleted_edited_legacy_id_is_restored_from_formal_evidence(db, action):
     service = ProjectTransactions(db)
     db.commit("p", 1, "edit", "j", edits={fact()["id"]: '"人工编辑"'})
     snapshot = db.snapshot("p")
+    expected = db.state("p")
     db.commit("p", 2, "delete", "j2", remove=[fact()["id"]])
     before = dump(db)
-    for preview in [
-        lambda: service.preview_restore("p", snapshot),
-        lambda: service.preview_undo("p", "delete"),
-    ]:
-        with pytest.raises(ProjectFault, match="RESTORE_REQUIRES_STORE_SUPPORT"):
-            preview()
-        assert dump(db) == before
+    preview = (
+        service.preview_restore("p", snapshot)
+        if action == "restore"
+        else service.preview_undo("p", "delete")
+    )
+    assert dump(db) == before
+    apply(service, preview, "compensate")
+    assert db.state("p") == expected
+    assert db.state("p")["facts"][0]["id"] == fact()["id"]
+    before = dump(db)
+    with pytest.raises(ValueError):
+        db.commit("p", 4, "forged", "j3", manual=[{**fact(), "object": '"人工编辑"'}])
+    assert dump(db) == before
 
 
-def test_first_mapping_undo_does_not_silently_leave_mapping_state(db):
+def test_first_mapping_undo_restores_absence_of_generation_state(db):
     service = ProjectTransactions(db)
     mapped = fact(subject="urn:mapped")
+    initial = db.state("p")
     plan = {"mapping": {"id": "M1", "rows": [{"row": "001", "facts": [mapped]}]}}
-    preview = service.preview("p", 1, plan)
-    apply(service, preview, "mapping")
-    before = dump(db)
-    with pytest.raises(ProjectFault, match="RESTORE_REQUIRES_STORE_SUPPORT") as error:
-        service.preview_undo("p", "mapping")
-    assert "mappingState:M1" in error.value.resources
-    assert dump(db) == before
-    assert db.state("p")["facts"] == sorted(
-        [
-            full_fact(fact()),
-            {**mapped, "owner": "M1", "source_row": "001", "managed_value": mapped["object"]},
-        ],
-        key=lambda f: f["id"],
+    apply(service, service.preview("p", 1, plan), "mapping")
+    preview = service.preview_undo("p", "mapping")
+    apply(service, preview, "undo-mapping")
+    assert db.state("p") == initial
+    assert db.mapping_status("p", "M1") is None
+    assert "mapping:M1" not in db.vector("p")
+    assert (
+        db._db.execute(
+            "SELECT version FROM versions WHERE project='p' AND key='mapping:M1'"
+        ).fetchone()[0]
+        == 2
     )
 
 
@@ -455,17 +462,31 @@ def test_checkpoint_node_preserves_complete_current_state(reason, db):
     assert db.revision("p") == 1
 
 
-def test_managed_tombstone_restore_explicitly_refuses_loss_of_owner_and_manual_conflict(db):
+def test_managed_tombstone_restore_preserves_all_ownership_and_stale_semantics(db):
     service = ProjectTransactions(db)
     mapped = fact(subject="urn:mapped")
     db.commit("p", 1, "map", "j", mapping={"id": "M1", "rows": [{"row": "001", "facts": [mapped]}]})
     db.commit("p", 2, "manual-delete", "j2", remove=[mapped["id"]])
     target = db.snapshot("p")
+    expected = db.state("p")
     db.commit("p", 3, "manual-restore", "j3", edits={mapped["id"]: mapped["object"]})
-    before = dump(db)
-    with pytest.raises(ProjectFault, match="RESTORE_REQUIRES_STORE_SUPPORT"):
-        service.preview_restore("p", target)
-    assert dump(db) == before
+    apply(service, service.preview_restore("p", target), "restore-tombstone")
+    restored = db.state("p")
+    assert restored["facts"] == expected["facts"]
+    assert restored["definitions"] == expected["definitions"]
+    assert restored["mappingState"] == {
+        "M1": {
+            "generatedVersion": -1,
+            "stale": [
+                {
+                    "code": "MAPPING_INPUT_CHANGED",
+                    "dependency": "mapping:M1",
+                    "before": -1,
+                    "after": 4,
+                }
+            ],
+        }
+    }
 
 
 @pytest.mark.parametrize(

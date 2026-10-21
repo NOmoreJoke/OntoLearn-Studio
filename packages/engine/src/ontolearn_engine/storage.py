@@ -182,6 +182,25 @@ class Store:
         vector = dict(
             self._db.execute("SELECT key,version FROM versions WHERE project=?", (project,))
         )
+        # Counters survive compensation, but absent resources must not appear
+        # as current members merely because they existed later in history.
+        members = {
+            f"{row[0]}:{row[1]}"
+            for row in self._db.execute(
+                "SELECT layer,id FROM definitions WHERE project=?", (project,)
+            )
+        }
+        members.update(
+            f"mapping:{row[0]}"
+            for row in self._db.execute(
+                "SELECT owner FROM mapping_state WHERE project=? UNION "
+                "SELECT owner FROM facts WHERE project=? AND owner IS NOT NULL",
+                (project, project),
+            )
+        )
+        for key in tuple(vector):
+            if key.partition(":")[0] in LAYERS and key not in members:
+                vector.pop(key)
         # Version counters are an append-forward ledger. A withdrawn definition
         # is absent from current membership, while its previous counter remains
         # available for a later re-addition. Legacy format-2 readers need no
@@ -270,6 +289,8 @@ class Store:
         remove: list[str] | None = None,
         mapping: dict | None = None,
         preview_identity: str | None = None,
+        preview_control: dict | None = None,
+        compensate: dict | None = None,
         hook: Hook = lambda _: None,
     ) -> dict:
         """Atomic ChangeSet or whole managed-range replacement.
@@ -313,6 +334,16 @@ class Store:
             ):
                 raise ValueError("Cannot add and withdraw the same definition in one plan")
             plan["remove_definitions"] = remove_definitions
+        if compensate is not None:
+            from ontolearn_engine.project.compensation import validate_selector
+
+            validate_selector(compensate)
+            if any(
+                value is not None
+                for value in (definitions, remove_definitions, manual, edits, remove, mapping)
+            ):
+                raise ValueError("Compensation cannot mix with ordinary edits")
+            plan["compensate"] = compensate
         if preview_identity is not None:
             if (
                 not isinstance(preview_identity, str)
@@ -321,6 +352,29 @@ class Store:
             ):
                 raise ValueError("Canonical preview digest required")
             plan["preview_identity"] = preview_identity
+        if preview_control is not None:
+            if (
+                not isinstance(preview_control, dict)
+                or set(preview_control) != {"before", "after"}
+                or preview_identity is None
+            ):
+                raise ValueError("Preview control evidence required")
+            for records in preview_control.values():
+                if not isinstance(records, list):
+                    raise ValueError("Preview control records required")
+                for record in records:
+                    if (
+                        not isinstance(record, list)
+                        or len(record) != 2
+                        or not isinstance(record[0], str)
+                        or record[0] not in LAYERS
+                        or not isinstance(record[1], str)
+                        or not record[1]
+                    ):
+                        raise ValueError("Preview control identity required")
+                if records != sorted(records) or len({tuple(r) for r in records}) != len(records):
+                    raise ValueError("Canonical preview control records required")
+            plan["preview_control"] = preview_control
         fingerprint = digest(plan)
         with self._transaction(hook):
             previous = self.marker(project, operation)
@@ -336,6 +390,10 @@ class Store:
                     category="revision",
                     params={"expected": base, "actual": self.revision(project)},
                 )
+            if preview_control is not None and preview_control["before"] != self.retirement_control(
+                project
+            ):
+                raise Conflict("Preview control input changed", category="state")
             before_state = self.state(project)
             before_snapshot = self._snapshot(
                 {
@@ -346,6 +404,15 @@ class Store:
                 }
             )
             changed: set[str] = set()
+            rebound: dict[str, bool | None] = {}
+            membership_changed: set[str] = set()
+            if compensate is not None:
+                from ontolearn_engine.project.compensation import resolve
+
+                desired = resolve(self, project, compensate, before_state)
+                changed, rebound, membership_changed = self._apply_compensation(
+                    project, before_state, desired, hook
+                )
             for definition in definitions or []:
                 if not isinstance(definition, dict) or set(definition) != {"layer", "id", "value"}:
                     raise ValueError("Definition requires layer/id/value")
@@ -487,13 +554,15 @@ class Store:
             }
             for key in tuple(changed):
                 category, identity_key = key.split(":", 1)
-                if category == "facts":
+                if category == "facts" or key in membership_changed:
                     continue
                 if before_definitions.get((category, identity_key)) != after_definitions.get(
                     (category, identity_key)
                 ):
                     continue
                 if category == "mapping":
+                    if identity_key in rebound:
+                        continue
                     before_owned = [f for f in before_state["facts"] if f["owner"] == identity_key]
                     after_owned = [f for f in after_state["facts"] if f["owner"] == identity_key]
                     if before_owned != after_owned:
@@ -507,14 +576,30 @@ class Store:
                     "DO UPDATE SET version=version+1",
                     (project, key),
                 )
+            for owner, was_current in rebound.items():
+                version = self.vector(project).get(f"mapping:{owner}", 0)
+                self._db.execute(
+                    "UPDATE mapping_state SET generated_version=? WHERE project=? AND owner=?",
+                    (version if was_current else -1, project, owner),
+                )
+            if compensate is not None:
+                hook("mid_generation")
             if mapping is not None:
-                version = self.vector(project).get(f"mapping:{mapping['id']}", 0)
+                counter = self._db.execute(
+                    "SELECT version FROM versions WHERE project=? AND key=?",
+                    (project, f"mapping:{mapping['id']}"),
+                ).fetchone()
+                version = counter[0] if counter is not None else 0
                 self._db.execute(
                     "INSERT OR REPLACE INTO mapping_state VALUES(?,?,?)",
                     (project, mapping["id"], version),
                 )
             self._invalidate(project)
             hook("mid_invalidation")
+            if preview_control is not None and preview_control["after"] != self.retirement_control(
+                project
+            ):
+                raise Conflict("Preview control output changed", category="state")
             new_revision = base + 1
             self._db.execute("UPDATE projects SET revision=? WHERE id=?", (new_revision, project))
             self._db.execute(
@@ -535,6 +620,147 @@ class Store:
             )
             hook("mid_marker")
         return self.marker(project, operation)
+
+    def retirement_control(self, project: str) -> list[list[str]]:
+        """Internal read projection, also captured in a preview-bound immutable plan."""
+        self.revision(project)
+        if not self._has_retirements():
+            return []
+        return [
+            list(row)
+            for row in self._db.execute(
+                "SELECT layer,id FROM definition_retirements WHERE project=? ORDER BY layer,id",
+                (project,),
+            )
+        ]
+
+    def _apply_compensation(
+        self, project: str, before: dict, desired: dict, hook: Hook
+    ) -> tuple[set, dict, set]:
+        """Store.commit's internal write phase; never a separate application writer."""
+        self._snapshot_state(desired)
+        old_defs = {(d["layer"], d["id"]): d["payload"] for d in before["definitions"]}
+        new_defs = {(d["layer"], d["id"]): d["payload"] for d in desired["definitions"]}
+        changed = {
+            f"{layer}:{identity}"
+            for layer, identity in old_defs.keys() | new_defs.keys()
+            if old_defs.get((layer, identity)) != new_defs.get((layer, identity))
+        }
+        if before["facts"] != desired["facts"]:
+            changed.add("facts:asserted")
+        self._db.execute(RETIREMENTS_SCHEMA)
+        current_retired = {
+            (row[0], row[1])
+            for row in self._db.execute(
+                "SELECT layer,id FROM definition_retirements WHERE project=?", (project,)
+            )
+        }
+        target_retired = set(desired["retirements"])
+        membership_changed = {
+            f"{layer}:{identity}" for layer, identity in current_retired ^ target_retired
+        }
+        changed.update(membership_changed)
+        self._db.execute("DELETE FROM definition_retirements WHERE project=?", (project,))
+        self._db.executemany(
+            "INSERT INTO definition_retirements VALUES(?,?,?)",
+            [(project, layer, identity) for layer, identity in sorted(target_retired)],
+        )
+        old_mappings, new_mappings = before["mappingState"], desired["mappingState"]
+        owners = set(old_mappings) | set(new_mappings)
+        owners.update(f["owner"] for f in before["facts"] + desired["facts"] if f["owner"])
+        rebound = {}
+        for owner in owners:
+            old_rows = [f for f in before["facts"] if f["owner"] == owner]
+            new_rows = [f for f in desired["facts"] if f["owner"] == owner]
+            left, right = old_mappings.get(owner), new_mappings.get(owner)
+            status_changed = (left is None) != (right is None) or (
+                left is not None
+                and right is not None
+                and bool(left["stale"]) != bool(right["stale"])
+            )
+            if old_rows != new_rows or status_changed or f"mapping:{owner}" in changed:
+                changed.add(f"mapping:{owner}")
+                rebound[owner] = None if right is None else not bool(right["stale"])
+            elif right is not None and left != right:
+                # Same data/freshness, different historical counter: rebind to
+                # today's ledger without inventing a domain content change.
+                rebound[owner] = not bool(right["stale"])
+        self._db.execute("DELETE FROM definitions WHERE project=?", (project,))
+        self._db.executemany(
+            "INSERT INTO definitions VALUES(?,?,?,?)",
+            [(project, d["layer"], d["id"], d["payload"]) for d in desired["definitions"]],
+        )
+        self._db.execute("DELETE FROM facts WHERE project=?", (project,))
+        hook("mid_restore")
+        self._db.executemany(
+            "INSERT INTO facts VALUES(?,?,?,?,?,?,?,?)",
+            [
+                (
+                    project,
+                    f["id"],
+                    f["subject"],
+                    f["predicate"],
+                    f["object"],
+                    f["owner"],
+                    f["source_row"],
+                    f["managed_value"],
+                )
+                for f in desired["facts"]
+            ],
+        )
+        self._db.execute("DELETE FROM mapping_state WHERE project=?", (project,))
+        self._db.executemany(
+            "INSERT INTO mapping_state VALUES(?,?,?)",
+            [
+                (project, owner, status["generatedVersion"])
+                for owner, status in new_mappings.items()
+            ],
+        )
+        single_predicates = self._single_predicates(project)
+        for fact in desired["facts"]:
+            if fact["object"] is not None:
+                self._check_slot(
+                    project,
+                    fact["subject"],
+                    fact["predicate"],
+                    fact["object"],
+                    {fact["id"]},
+                    single_predicates,
+                )
+        return changed, rebound, membership_changed
+
+    def operation_list(
+        self,
+        project: str,
+        *,
+        after_revision: int = 0,
+        through_revision: int | None = None,
+        limit: int = 100,
+    ) -> dict:
+        """Internal stable pagination over immutable commits, not a public wire DTO."""
+        if (
+            type(after_revision) is not int
+            or after_revision < 0
+            or type(limit) is not int
+            or not 1 <= limit <= 200
+        ):
+            raise ValueError("Invalid operation page")
+        with self._read():
+            current = self.revision(project)
+            upper = current if through_revision is None else through_revision
+            if type(upper) is not int or not after_revision <= upper <= current:
+                raise ValueError("Invalid operation revision bounds")
+            rows = self._db.execute(
+                "SELECT operation FROM commits WHERE project=? AND revision>? "
+                "AND revision<=? ORDER BY revision LIMIT ?",
+                (project, after_revision, upper, limit + 1),
+            ).fetchall()
+            page = [self.marker(project, row[0]) for row in rows[:limit]]
+            return {
+                "throughRevision": upper,
+                "operations": page,
+                "nextAfterRevision": page[-1]["revision"] if len(rows) > limit else None,
+            }
 
     def mapping_status(self, project: str, owner: str) -> dict | None:
         row = self._db.execute(
