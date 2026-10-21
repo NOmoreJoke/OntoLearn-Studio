@@ -1,0 +1,482 @@
+diff --git a/packages/engine/src/ontolearn_engine/semantic.py b/packages/engine/src/ontolearn_engine/semantic.py
+index 186a61d..ded4249 100644
+--- a/packages/engine/src/ontolearn_engine/semantic.py
++++ b/packages/engine/src/ontolearn_engine/semantic.py
+@@ -24,6 +24,7 @@ MAX_TRIPLES = 100_000
+ MAX_RULE_MATCHES = 100_000
+ MAX_WORK = 1_000_000
+ SEMANTICS_VERSION = "i05-finite-6"
++SHACL_TEXT_ENTRY_VERSION = "i05-shacl-text-1"
+ Triple = tuple[Identifier, Identifier, Identifier]
+ 
+ 
+@@ -50,7 +51,7 @@ def _copy(graph):
+     return result
+ 
+ 
+-def _terms(graph, *, shapes=False):
++def _terms(graph, *, shapes=False, _allow_illtyped_integer=False):
+     allowed_owl = {OWL.Class, OWL.ObjectProperty, OWL.DatatypeProperty}
+     allowed_rdfs = {
+         RDFS.Class,
+@@ -67,7 +68,7 @@ def _terms(graph, *, shapes=False):
+             raise SemanticError("EXTERNAL_ACCESS_DENIED")
+         if not isinstance(s, URIRef | BNode) or not isinstance(p, URIRef):
+             raise SemanticError("RDF_TERM_INVALID")
+-        for term in (s, p, o):
++        for position, term in enumerate((s, p, o)):
+             if isinstance(term, BNode) and not shapes:
+                 raise SemanticError("UNSUPPORTED_BLANK_NODE")
+             if isinstance(term, URIRef):
+@@ -81,7 +82,13 @@ def _terms(graph, *, shapes=False):
+                 if value.startswith(str(SH)) and not shapes:
+                     raise SemanticError("UNSUPPORTED_SHACL")
+             if isinstance(term, Literal):
+-                if term.ill_typed:
++                if term.ill_typed and not (
++                    _allow_illtyped_integer
++                    and not shapes
++                    and position == 2
++                    and term.datatype == XSD.integer
++                    and term.ill_typed is True
++                ):
+                     raise SemanticError("INVALID_LITERAL_LEXICAL")
+                 if term.datatype is not None and term.datatype not in _DATATYPES | {RDF.langString}:
+                     raise SemanticError("UNSUPPORTED_LITERAL_DATATYPE")
+@@ -98,6 +105,12 @@ def _terms(graph, *, shapes=False):
+ 
+ def parse_turtle(text: str, *, format: str = "turtle", shapes: bool = False) -> Graph:
+     """Text only: never pass user-controlled source/location or infer a parser."""
++    return _parse_turtle(text, format=format, shapes=shapes)
++
++
++def _parse_turtle(
++    text, *, format="turtle", shapes=False, _allow_illtyped_integer=False, _check_iris=False
++):
+     _text(text)
+     if format != "turtle":
+         raise SemanticError("UNSUPPORTED_FORMAT")
+@@ -108,10 +121,24 @@ def parse_turtle(text: str, *, format: str = "turtle", shapes: bool = False) ->
+             raise SemanticError("INVALID_TURTLE") from error
+         if len(graph) > MAX_TRIPLES:
+             raise SemanticError("GRAPH_INPUT_LIMIT")
+-        _terms(graph, shapes=shapes)
++        if _check_iris:
++            _shacl_text_iris(graph)
++        _terms(graph, shapes=shapes, _allow_illtyped_integer=_allow_illtyped_integer)
+         return graph
+ 
+ 
++def _shacl_text_iris(graph):
++    # New text entry only: reject invalid IRI spelling before RDFLib's n3()
++    # sorting key can raise an unclassified exception containing that spelling.
++    for triple in graph:
++        for term in triple:
++            iri = term.datatype if isinstance(term, Literal) else term
++            if isinstance(iri, URIRef):
++                value = str(iri)
++                if ":" not in value or any(c.isspace() or c in '<>"{}|^`\\' for c in value):
++                    raise SemanticError("ABSOLUTE_IRI_REQUIRED")
++
++
+ def _walk(value):
+     if isinstance(value, CompValue):
+         yield value
+@@ -1332,9 +1359,39 @@ def _shapes(graph):
+ 
+ def check_shapes(data: Graph, shapes: Graph) -> dict:
+     """Validate exactly the supplied asserted scope; return real pySHACL details."""
++    return _check_shapes(data, shapes)
++
++
++def validate_shacl_text(data_text, shapes_text, *, data_policy, range_policy) -> dict:
++    """Independent explicit-policy entry; not an execution/Store/cache interface.
++
++    Only the data object's ill-typed xsd:integer lexical gate can be relaxed.
++    Target selection and constraints still decide the real validation outcome.
++    """
++    if (
++        type(data_policy) is not str
++        or data_policy not in {"strict", "integer-illtyped-report-v1"}
++        or type(range_policy) is not str
++        or range_policy != "legacy"
++    ):
++        raise SemanticError("SCOPE_SELECTION_TYPE_INVALID")
++    allow_integer = data_policy == "integer-illtyped-report-v1"
++    with offline():
++        data = _parse_turtle(data_text, _allow_illtyped_integer=allow_integer, _check_iris=True)
++        shapes = _parse_turtle(shapes_text, shapes=True, _check_iris=True)
++        report = _check_shapes(data, shapes, _allow_illtyped_integer=allow_integer)
++        return {
++            "entryVersion": SHACL_TEXT_ENTRY_VERSION,
++            "dataPolicy": data_policy,
++            "rangePolicy": range_policy,
++            "report": report,
++        }
++
++
++def _check_shapes(data, shapes, *, _allow_illtyped_integer=False):
+     with offline():
+         local, constraints = _copy(data), _copy(shapes)
+-        _terms(local)
++        _terms(local, _allow_illtyped_integer=_allow_illtyped_integer)
+         _shapes(constraints)
+         if any(p in {RDFS.subClassOf, RDFS.domain, RDFS.range} for _s, p, _o in local):
+             # Even without inference pySHACL follows targetClass subclass paths.
+diff --git a/packages/engine/tests/test_semantic_shacl_entry.py b/packages/engine/tests/test_semantic_shacl_entry.py
+new file mode 100644
+index 0000000..2d44459
+--- /dev/null
++++ b/packages/engine/tests/test_semantic_shacl_entry.py
+@@ -0,0 +1,351 @@
++"""Explicit integer-only SHACL entry, through the real parser and Validator."""
++
++import hashlib
++import json
++import os
++from pathlib import Path
++from unittest.mock import patch
++
++import pytest
++from ontolearn_engine import semantic
++from ontolearn_engine.semantic_offline import SemanticError, offline
++from ontolearn_engine.semantic_turtle import parse_graph
++
++ROOT = Path(__file__).resolve().parents[3]
++FIXTURES = ROOT / "docs/reviews/T05/profile-M1-math-explanation-input-contract"
++INPUTS = json.loads((FIXTURES / "consumer-C-inputs.json").read_bytes())["cases"]
++GOLDENS = json.loads((FIXTURES / "consumer-C-goldens.json").read_bytes())["cases"]
++WIDE = "integer-illtyped-report-v1"
++PREFIX = """@prefix ex: <urn:m1:> .
++@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
++@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
++@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
++@prefix owl: <http://www.w3.org/2002/07/owl#> .
++@prefix sh: <http://www.w3.org/ns/shacl#> .
++"""
++
++
++def case(identity="C-illtyped-entry"):
++    return next(row for row in INPUTS if row["id"] == identity)
++
++
++def data(value='"not-an-int"^^xsd:integer'):
++    return PREFIX + f"ex:s a ex:Focus; ex:p {value} ."
++
++
++def shape(parameter="sh:datatype xsd:integer"):
++    extra = f"; {parameter}" if parameter else ""
++    return PREFIX + (
++        "ex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\n"
++        f"ex:shape a sh:PropertyShape; sh:path ex:p {extra} ."
++    )
++
++
++def validate(data_text, shapes_text, *, data_policy=WIDE, range_policy="legacy"):
++    # Convenience only in tests: production requires both explicit keywords.
++    return semantic.validate_shacl_text(
++        data_text, shapes_text, data_policy=data_policy, range_policy=range_policy
++    )
++
++
++@pytest.fixture
++def observe(request):
++    def invoke(suffix, operation):
++        original = semantic.Validator.run
++        record = {
++            "id": request.node.nodeid + "/" + suffix,
++            "validatorCalls": [],
++            "result": None,
++            "error": None,
++        }
++
++        def run(self, *args, **kwargs):
++            call = {"data": sorted(semantic._key(t) for t in self.data_graph)}
++            record["validatorCalls"].append(call)
++            actual = original(self, *args, **kwargs)
++            call["conforms"] = bool(actual[0])
++            call["reportTriples"] = sorted(semantic._key(t) for t in actual[1])
++            return actual
++
++        try:
++            with patch.object(semantic.Validator, "run", run):
++                result = operation()
++            record["result"] = result
++            return result, record["validatorCalls"]
++        except Exception as error:
++            record["error"] = {
++                "type": type(error).__name__,
++                "code": error.code if isinstance(error, SemanticError) else None,
++            }
++            assert not record["validatorCalls"], "front-door error followed Validator.run"
++            raise
++        finally:
++            directory = os.environ.get("I05_SHACL_INTEGER_EVIDENCE_DIR")
++            if directory:
++                dest = Path(directory)
++                dest.mkdir(parents=True, exist_ok=True)
++                name = hashlib.sha256(record["id"].encode()).hexdigest() + ".json"
++                target = dest / name
++                assert not target.exists(), "evidence identity must not be overwritten"
++                target.write_text(json.dumps(record, ensure_ascii=True, indent=2) + "\n")
++
++    return invoke
++
++
++def expected_row(value):
++    return {
++        "focus": "<urn:m1:s>",
++        "path": "<urn:m1:p>",
++        "constraint": "<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>",
++        "sourceShape": "<urn:m1:shape>",
++        "value": value,
++        "severity": "<http://www.w3.org/ns/shacl#Violation>",
++    }
++
++
++def test_original_illtyped_input_reaches_real_complete_datatype_report(observe):
++    original = case()
++    result, calls = observe(
++        "wide", lambda: validate(original["dataTurtle"], original["shapesTurtle"])
++    )
++    # Compare only after production returns; no golden/report enters the call.
++    golden = next(row["expected"] for row in GOLDENS if row["id"] == original["id"])
++    assert result == {
++        "entryVersion": "i05-shacl-text-1",
++        "dataPolicy": WIDE,
++        "rangePolicy": "legacy",
++        "report": {
++            "conforms": golden["directSHACLNormativeResult"]["conforms"],
++            "violations": [
++                expected_row('"not-an-int"^^<http://www.w3.org/2001/XMLSchema#integer>')
++            ],
++        },
++    }
++    assert golden["directSHACLNormativeResult"]["components"] == ["DatatypeConstraintComponent"]
++    assert len(calls) == 1 and calls[0]["conforms"] is False
++    assert calls[0]["data"] == [
++        ("<urn:m1:s>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "<urn:m1:Focus>"),
++        (
++            "<urn:m1:s>",
++            "<urn:m1:p>",
++            '"not-an-int"^^<http://www.w3.org/2001/XMLSchema#integer>',
++        ),
++    ]
++
++
++def test_original_illtyped_strict_entry_still_rejects_before_validator(observe):
++    original = case()
++    with pytest.raises(SemanticError, match="^INVALID_LITERAL_LEXICAL$"):
++        observe(
++            "strict",
++            lambda: validate(
++                original["dataTurtle"], original["shapesTurtle"], data_policy="strict"
++            ),
++        )
++
++
++@pytest.mark.parametrize("lexical", ["1.2", "1e2", "", "--1"])
++def test_other_illtyped_integer_spellings_are_preserved_in_real_report(observe, lexical):
++    value = json.dumps(lexical) + "^^<http://www.w3.org/2001/XMLSchema#integer>"
++    result, calls = observe("integer", lambda: validate(data(value), shape()))
++    assert len(calls) == 1
++    assert result["report"] == {"conforms": False, "violations": [expected_row(value)]}
++    assert ("<urn:m1:s>", "<urn:m1:p>", value) in calls[0]["data"]
++
++
++@pytest.mark.parametrize("policy", ["strict", WIDE])
++def test_valid_integer_keeps_lexical_and_explicit_policy_identity(observe, policy):
++    value = '"+01"^^<http://www.w3.org/2001/XMLSchema#integer>'
++    result, calls = observe("valid", lambda: validate(data(value), shape(), data_policy=policy))
++    assert result == {
++        "entryVersion": "i05-shacl-text-1",
++        "dataPolicy": policy,
++        "rangePolicy": "legacy",
++        "report": {"conforms": True, "violations": []},
++    }
++    assert len(calls) == 1 and ("<urn:m1:s>", "<urn:m1:p>", value) in calls[0]["data"]
++    assert semantic.SEMANTICS_VERSION == "i05-finite-6"
++
++
++@pytest.mark.parametrize("irrelevant", ["no-target", "no-constraint"])
++def test_illtyped_without_applicable_target_or_constraint_is_not_invented_failure(
++    observe, irrelevant
++):
++    text = data().replace("ex:Focus", "ex:Other") if irrelevant == "no-target" else data()
++    constraints = shape("") if irrelevant == "no-constraint" else shape()
++    result, calls = observe(irrelevant, lambda: validate(text, constraints))
++    assert len(calls) == 1 and calls[0]["conforms"] is True
++    assert result["report"] == {"conforms": True, "violations": []}
++    assert len(calls[0]["data"]) == 2
++
++
++def test_optional_value_is_not_manufactured_in_real_max_count_report(observe):
++    result, calls = observe(
++        "count",
++        lambda: validate(data('"not-an-int"^^xsd:integer, "other"'), shape("sh:maxCount 1")),
++    )
++    expected = expected_row(None)
++    expected["constraint"] = "<http://www.w3.org/ns/shacl#MaxCountConstraintComponent>"
++    assert len(calls) == 1
++    assert result["report"] == {"conforms": False, "violations": [expected]}
++
++
++@pytest.mark.parametrize("old_api", ["parse", "query", "reason", "check"])
++def test_wide_entry_does_not_relax_subsequent_old_api(observe, old_api):
++    original = case()
++    observe("wide-first", lambda: validate(original["dataTurtle"], original["shapesTurtle"]))
++    with offline():
++        graph = parse_graph(original["dataTurtle"], base_uri="urn:ontolearn:i05:")
++    constraints = semantic.parse_turtle(original["shapesTurtle"], shapes=True)
++    operation = {
++        "parse": lambda: semantic.parse_turtle(original["dataTurtle"]),
++        "query": lambda: semantic.query(graph, "SELECT ?s WHERE { ?s ?p ?o }"),
++        "reason": lambda: semantic.reason(graph),
++        "check": lambda: semantic.check_shapes(graph, constraints),
++    }[old_api]
++    with pytest.raises(SemanticError, match="^INVALID_LITERAL_LEXICAL$"):
++        observe(old_api, operation)
++    with pytest.raises(SemanticError, match="^INVALID_LITERAL_LEXICAL$"):
++        observe("strict-after", lambda: validate(data(), shape(), data_policy="strict"))
++
++
++@pytest.mark.parametrize(
++    "value, code",
++    [
++        ('"bad"^^xsd:int', "INVALID_LITERAL_LEXICAL"),
++        ('"-1"^^xsd:nonNegativeInteger', "INVALID_LITERAL_LEXICAL"),
++        ('"bad"^^xsd:decimal', "INVALID_LITERAL_LEXICAL"),
++        ('"bad"^^<urn:unknown>', "UNSUPPORTED_LITERAL_DATATYPE"),
++        ('"NaN"^^xsd:double', "UNSUPPORTED_NONFINITE_LITERAL"),
++        ('"INF"^^xsd:float', "UNSUPPORTED_NONFINITE_LITERAL"),
++        ('"-INF"^^xsd:double', "UNSUPPORTED_NONFINITE_LITERAL"),
++        ("_:blank", "UNSUPPORTED_BLANK_NODE"),
++        ("<urn:bad|value>", "ABSOLUTE_IRI_REQUIRED"),
++    ],
++)
++def test_other_literal_iri_and_blank_node_gates_remain_strict(observe, value, code):
++    with pytest.raises(SemanticError, match="^" + code + "$"):
++        observe("data-gate", lambda: validate(data(value), shape()))
++
++
++@pytest.mark.parametrize("policy", ["strict", WIDE])
++@pytest.mark.parametrize("position", ["subject", "predicate", "datatype", "shape-path"])
++def test_new_text_entry_classifies_invalid_iri_before_n3_sorting(observe, policy, position):
++    text, constraints = data('"1"^^xsd:integer'), shape()
++    if position == "subject":
++        text += "\n<urn:bad|value> ex:p 1 ."
++    elif position == "predicate":
++        text += "\nex:s <urn:bad|value> 1 ."
++    elif position == "datatype":
++        text = data('"bad"^^<urn:bad|value>')
++    else:
++        constraints = shape().replace("sh:path ex:p", "sh:path <urn:bad|value>")
++    with pytest.raises(SemanticError, match="^ABSOLUTE_IRI_REQUIRED$"):
++        observe("iri-before-n3", lambda: validate(text, constraints, data_policy=policy))
++
++
++@pytest.mark.parametrize(
++    "extra, code",
++    [
++        ("_:s ex:p 1 .", "UNSUPPORTED_BLANK_NODE"),
++        ("ex:s owl:imports <https://example.invalid/data> .", "EXTERNAL_ACCESS_DENIED"),
++        ("ex:s sh:targetClass ex:Focus .", "UNSUPPORTED_SHACL"),
++        ('ex:s rdf:type "bad"^^xsd:integer .', "RDF_TYPE_OBJECT_INVALID"),
++        ("ex:C rdfs:subClassOf ex:Focus .", "FACT_SCOPE_CONTAINS_AXIOMS"),
++    ],
++)
++def test_data_structure_vocabulary_and_fact_scope_gates_remain_strict(observe, extra, code):
++    with pytest.raises(SemanticError, match="^" + code + "$"):
++        observe("structure", lambda: validate(data() + "\n" + extra, shape()))
++
++
++@pytest.mark.parametrize(
++    "parameter, code",
++    [
++        ('sh:minInclusive "bad"^^xsd:integer', "INVALID_LITERAL_LEXICAL"),
++        ('sh:maxInclusive "bad"^^xsd:integer', "INVALID_LITERAL_LEXICAL"),
++        ('sh:minCount "bad"^^xsd:integer', "INVALID_LITERAL_LEXICAL"),
++        ("sh:maxCount -1", "INVALID_SHAPE"),
++        ("sh:datatype <urn:unknown>", "UNSUPPORTED_DATATYPE"),
++        ('sh:datatype "integer"', "SHAPE_DATATYPE_INVALID"),
++        ('sh:in ( "bad"^^xsd:integer )', "INVALID_LITERAL_LEXICAL"),
++        ('sh:minInclusive "NaN"^^xsd:double', "UNSUPPORTED_NONFINITE_LITERAL"),
++        ("owl:imports <https://example.invalid/shapes>", "EXTERNAL_ACCESS_DENIED"),
++    ],
++)
++def test_shape_side_is_never_widened(observe, parameter, code):
++    with pytest.raises(SemanticError, match="^" + code + "$"):
++        observe("shape-gate", lambda: validate(data(), shape(parameter)))
++
++
++@pytest.mark.parametrize("policy", ["strict", WIDE])
++def test_date_bound_remains_rejected_without_a_date_policy(observe, policy):
++    original = case("C-inclusive-date-entry")
++    with pytest.raises(SemanticError, match="^INVALID_SHAPE$"):
++        observe(
++            "date",
++            lambda: validate(original["dataTurtle"], original["shapesTurtle"], data_policy=policy),
++        )
++
++
++@pytest.mark.parametrize(
++    "options",
++    [
++        {"data_policy": "other", "range_policy": "legacy"},
++        {"data_policy": None, "range_policy": "legacy"},
++        {"data_policy": [], "range_policy": "legacy"},
++        {"data_policy": {}, "range_policy": "legacy"},
++        {"data_policy": True, "range_policy": "legacy"},
++        {"data_policy": "strict ", "range_policy": "legacy"},
++        {"data_policy": WIDE, "range_policy": "utc-date-range-v1"},
++        {"data_policy": WIDE, "range_policy": "core-no-date-operators"},
++        {"data_policy": WIDE, "range_policy": None},
++        {"data_policy": WIDE, "range_policy": []},
++    ],
++)
++def test_unknown_or_malformed_policy_is_rejected_before_parsing(observe, options):
++    with pytest.raises(SemanticError, match="^SCOPE_SELECTION_TYPE_INVALID$"):
++        observe("policy", lambda: semantic.validate_shacl_text(None, None, **options))
++
++
++@pytest.mark.parametrize("options", [{}, {"data_policy": WIDE}, {"range_policy": "legacy"}])
++def test_both_policy_keywords_are_required(observe, options):
++    with pytest.raises(TypeError):
++        observe("required", lambda: semantic.validate_shacl_text(data(), shape(), **options))
++
++
++@pytest.mark.parametrize(
++    "side, value, code",
++    [
++        ("data", None, "TEXT_TYPE_INVALID"),
++        ("shapes", None, "TEXT_TYPE_INVALID"),
++        ("data", "not Turtle", "INVALID_TURTLE"),
++        ("shapes", "not Turtle", "INVALID_TURTLE"),
++        ("data", "\ud800", "INVALID_UNICODE"),
++        ("shapes", "\ud800", "INVALID_UNICODE"),
++        ("data", "#" * (1_048_576 + 1), "TEXT_INPUT_LIMIT"),
++        ("shapes", "#" * (1_048_576 + 1), "TEXT_INPUT_LIMIT"),
++    ],
++    ids=[
++        "data-type",
++        "shape-type",
++        "data-syntax",
++        "shape-syntax",
++        "data-unicode",
++        "shape-unicode",
++        "data-bytes",
++        "shape-bytes",
++    ],
++)
++def test_text_and_format_resource_gates_are_retained(observe, side, value, code):
++    text = value if side == "data" else data()
++    constraints = value if side == "shapes" else shape()
++    with pytest.raises(SemanticError, match="^" + code + "$"):
++        observe("text", lambda: validate(text, constraints))
++
++
++def test_real_triple_limit_is_retained_without_lowering_the_limit(observe):
++    text = "@prefix : <urn:> . :s :p " + ",".join(str(i) for i in range(100_001)) + " ."
++    assert len(text.encode()) < semantic.MAX_TEXT_BYTES
++    with pytest.raises(SemanticError, match="^GRAPH_INPUT_LIMIT$"):
++        observe("triple-limit", lambda: validate(text, shape()))

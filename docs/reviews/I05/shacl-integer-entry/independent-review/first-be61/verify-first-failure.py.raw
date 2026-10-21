@@ -1,0 +1,46 @@
+"""Read fixed first-failure evidence only; no product import/run."""
+import hashlib
+import json
+from pathlib import Path
+
+root = Path.cwd()
+prefix = root / 'docs/reviews/I05/shacl-integer-entry'
+out = prefix / 'independent-review'
+candidate = json.loads((prefix / 'candidate.json').read_bytes())
+run = prefix / 'runs/01-full-check'
+meta = json.loads((run / 'run.json').read_bytes())
+assert meta['gitHead'] == candidate['product'] == 'be61c9284b88e0df1f3d58114bb2a3437a9d2005'
+assert meta['exit'] == 1 and not meta['timeout'] and meta['sourceChanged'] is False
+assert meta['sourcesBefore'] == meta['sourcesAfter'] == candidate['controlled']
+stdout = (run / 'stdout.raw').read_text()
+stderr = (run / 'stderr.raw').read_bytes()
+assert not stderr
+assert '1 failed, 5051 passed, 44 skipped, 1 warning in 141.68s' in stdout
+assert '1125 passed' in stdout
+
+def member(p):
+    raw = p.read_bytes()
+    return {'path': str(p.relative_to(root)), 'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+
+observations = []
+for p in sorted((run / 'integer-entry-reports').glob('*.json')):
+    row = json.loads(p.read_bytes())
+    if row['validatorCalls']:
+        assert len(row['validatorCalls']) == 1 and row['error'] is None
+        assert row['result']['report']['conforms'] is row['validatorCalls'][0]['conforms']
+        assert row['validatorCalls'][0]['reportTriples']
+        assert set(row['result']) == {'entryVersion','dataPolicy','rangePolicy','report'}
+        for violation in row['result']['report']['violations']:
+            assert set(violation) == {'focus','path','constraint','sourceShape','value','severity'}
+    else:
+        assert row['error'] and row['result'] is None
+    observations.append({'member':member(p),'observation':row})
+assert len(observations) == 70
+assert sum(len(x['observation']['validatorCalls']) for x in observations) == 14
+bad = [x for x in observations if '<urn:bad|value>' in x['observation']['id']]
+assert len(bad) == 1 and bad[0]['observation']['error'] == {'type':'Exception','code':None} and not bad[0]['observation']['validatorCalls']
+legacy = [{'member':member(p),'observation':json.loads(p.read_bytes())} for p in sorted((run/'legacy-shape-reports').glob('*.json'))]
+assert len(legacy) == 26 and sum(x['observation']['validatorCalls'] for x in legacy) == 9
+result={'product':candidate['product'],'verdict':'FAIL: new entry invalid IRI leaks raw library Exception; no Validator call; fixed first run retained','reviewerProductRuns':0,'rootRun':meta,'rootRunMembers':[member(run/p) for p in ('run.json','stdout.raw','stderr.raw')],'all145BeforeAfterFixed':True,'actualCounts':{'pythonFailed':1,'pythonPassed':5051,'pythonSkipped':44,'pythonWarnings':1,'pythonSeconds':'141.68','tsPassed':1125},'integerReportCount':70,'integerValidatorCalls':14,'integerObservations':observations,'legacyShapeReportCount':26,'legacyValidatorCalls':9,'legacyObservations':legacy,'failingObservation':bad[0]}
+(out/'first-failure-evidence.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({k:v for k,v in result.items() if k not in ('rootRun','rootRunMembers','integerObservations','legacyObservations','failingObservation')},ensure_ascii=False))

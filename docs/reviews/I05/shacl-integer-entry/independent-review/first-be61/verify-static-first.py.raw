@@ -1,0 +1,90 @@
+"""Stdlib-only fixed candidate audit; no product imports or execution."""
+import ast
+import datetime
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+
+root = Path.cwd()
+prefix = root / 'docs/reviews/I05/shacl-integer-entry'
+out = prefix / 'independent-review'
+ref = 'be61c9284b88e0df1f3d58114bb2a3437a9d2005'
+cont = 'a15f1478e398fb3b58fd60b1421a9cad04fdb430'
+control = Path('/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release')
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+def git(revision, path):
+    return subprocess.check_output(['git', 'show', revision + ':' + path], cwd=root)
+
+def member(path):
+    raw = path.read_bytes()
+    return {'path': str(path), 'bytes': len(raw), 'sha256': sha(raw)}
+
+start = datetime.datetime.now(datetime.timezone.utc).isoformat()
+for name in ('I05-shacl-integer-entry-source-window.md', 'I05-shacl-integer-entry-fixed-inputs.json', 'developer-common-instructions.md'):
+    assert (control / name).read_bytes() == (prefix / 'inputs' / (name + '.raw')).read_bytes()
+guide = Path('/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/AGENTS.md')
+assert guide.read_bytes() == (prefix / 'inputs/operating-AGENTS.md.raw').read_bytes()
+fixed = json.loads((control / 'I05-shacl-integer-entry-fixed-inputs.json').read_bytes())
+candidate = json.loads((prefix / 'candidate.json').read_bytes())
+assert candidate['product'] == ref and candidate['continuation'] == cont and candidate['readonlyCount'] == 143
+assert len(fixed['files']) == 144 and len(candidate['controlled']) == 145
+writer = 'packages/engine/src/ontolearn_engine/semantic.py'
+newtest = 'packages/engine/tests/test_semantic_shacl_entry.py'
+fixed_map = {row['path']: row for row in fixed['files']}
+verified = []
+for row in candidate['controlled']:
+    path = row['path']
+    current = (root / path).read_bytes()
+    assert current == git(ref, path)
+    assert len(current) == row['bytes'] and sha(current) == row['sha256']
+    if path in fixed_map:
+        original = fixed_map[path]
+        source = git(original['sourceRef'], path)
+        assert len(source) == original['bytes'] and sha(source) == original['sha256']
+        assert (Path(original['sourceTree']) / path).read_bytes() == source
+        if path != writer:
+            assert source == current
+        else:
+            assert source == git(cont, path)
+    else:
+        assert path == newtest
+    verified.append(row)
+assert subprocess.check_output(['git', 'diff', '--name-only', cont, ref], cwd=root).decode().splitlines() == candidate['onlyProductChanges'] == [writer, newtest]
+old_tree = ast.parse(git(cont, writer))
+new_tree = ast.parse(git(ref, writer))
+old_nodes = {getattr(n, 'name', None): n for n in old_tree.body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
+new_nodes = {getattr(n, 'name', None): n for n in new_tree.body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
+changed = [name for name in old_nodes if ast.dump(old_nodes[name], include_attributes=False) != ast.dump(new_nodes[name], include_attributes=False)]
+assert changed == ['_terms', 'parse_turtle', 'check_shapes']
+assert set(new_nodes) - set(old_nodes) == {'_parse_turtle', '_check_shapes', 'validate_shacl_text'}
+# Apart from the one private policy keyword, old parser/Validator runner bodies
+# are preserved as exact AST; complete report projection and options unchanged.
+def normalize(body):
+    node = ast.Module(body=body, type_ignores=[])
+    for item in ast.walk(node):
+        if isinstance(item, ast.Call):
+            item.keywords = [k for k in item.keywords if k.arg != '_allow_illtyped_integer']
+    return ast.dump(node, include_attributes=False)
+assert normalize(old_nodes['parse_turtle'].body) == normalize(new_nodes['_parse_turtle'].body)
+assert normalize(old_nodes['check_shapes'].body) == normalize(new_nodes['_check_shapes'].body)
+entry = new_nodes['validate_shacl_text']
+assert [x.arg for x in entry.args.kwonlyargs] == ['data_policy', 'range_policy'] and entry.args.kw_defaults == [None, None]
+frozen = json.loads((prefix / 'frozen-prior-process-git.json').read_bytes())
+assert frozen['ref'] == cont and frozen['count'] == len(frozen['files']) == 1238
+paths = [x['path'] for x in frozen['files']]
+def identities(revision):
+    raw = subprocess.check_output(['git', 'ls-tree', '-r', revision, '--', *paths], cwd=root).decode()
+    result = {}
+    for line in raw.splitlines():
+        header, path = line.split('\t', 1)
+        mode, kind, blob = header.split()
+        result[path] = {'path': path, 'mode': mode, 'type': kind, 'blob': blob}
+    return result
+assert identities(cont) == identities(ref) == {x['path']: x for x in frozen['files']}
+result = {'argv': ['python3', str(Path(__file__).relative_to(root))], 'cwd': str(root), 'product': ref, 'continuation': cont, 'start': start, 'end': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'productImported': False, 'testsExecuted': False, 'all145CurrentProductGitAndCandidateHashes': True, 'all143ReadonlyOriginal144Unchanged': True, 'files': verified, 'changedExistingFunctions': changed, 'newFunctions': ['_parse_turtle', '_check_shapes', 'validate_shacl_text'], 'oldParserAndValidatorRunnerAstPreservedExceptPrivatePolicyKeyword': True, 'twoPolicyKeywordsRequired': True, 'old1238GitIdentitiesPreserved': True, 'old1238ContentReaudited': False, 'inputMembers': [member(control / 'I05-shacl-integer-entry-source-window.md'), member(control / 'I05-shacl-integer-entry-fixed-inputs.json'), member(control / 'developer-common-instructions.md'), member(guide), member(prefix / 'candidate.json'), member(prefix / 'frozen-prior-process-git.json')]}
+(out / 'static-verification.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+print(json.dumps({k: v for k, v in result.items() if k not in ('files', 'inputMembers')}, ensure_ascii=False))

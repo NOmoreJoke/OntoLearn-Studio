@@ -1,0 +1,42 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_entry.py::test_illtyped_without_applicable_target_or_constraint_is_not_invented_failure[no-constraint]/no-constraint",
+  "validatorCalls": [
+    {
+      "data": [
+        [
+          "<urn:m1:s>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<urn:m1:Focus>"
+        ],
+        [
+          "<urn:m1:s>",
+          "<urn:m1:p>",
+          "\"not-an-int\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "conforms": true,
+      "reportTriples": [
+        [
+          "_:N9e401e2c2a4e41d4ada28ea6416523a5",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationReport>"
+        ],
+        [
+          "_:N9e401e2c2a4e41d4ada28ea6416523a5",
+          "<http://www.w3.org/ns/shacl#conforms>",
+          "\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+        ]
+      ]
+    }
+  ],
+  "result": {
+    "entryVersion": "i05-shacl-text-1",
+    "dataPolicy": "integer-illtyped-report-v1",
+    "rangePolicy": "legacy",
+    "report": {
+      "conforms": true,
+      "violations": []
+    }
+  },
+  "error": null
+}

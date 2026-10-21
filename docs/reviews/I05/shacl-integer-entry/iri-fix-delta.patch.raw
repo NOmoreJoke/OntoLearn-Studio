@@ -1,0 +1,78 @@
+diff --git a/packages/engine/src/ontolearn_engine/semantic.py b/packages/engine/src/ontolearn_engine/semantic.py
+index dcbe284..ded4249 100644
+--- a/packages/engine/src/ontolearn_engine/semantic.py
++++ b/packages/engine/src/ontolearn_engine/semantic.py
+@@ -108,7 +108,9 @@ def parse_turtle(text: str, *, format: str = "turtle", shapes: bool = False) ->
+     return _parse_turtle(text, format=format, shapes=shapes)
+ 
+ 
+-def _parse_turtle(text, *, format="turtle", shapes=False, _allow_illtyped_integer=False):
++def _parse_turtle(
++    text, *, format="turtle", shapes=False, _allow_illtyped_integer=False, _check_iris=False
++):
+     _text(text)
+     if format != "turtle":
+         raise SemanticError("UNSUPPORTED_FORMAT")
+@@ -119,10 +121,24 @@ def _parse_turtle(text, *, format="turtle", shapes=False, _allow_illtyped_intege
+             raise SemanticError("INVALID_TURTLE") from error
+         if len(graph) > MAX_TRIPLES:
+             raise SemanticError("GRAPH_INPUT_LIMIT")
++        if _check_iris:
++            _shacl_text_iris(graph)
+         _terms(graph, shapes=shapes, _allow_illtyped_integer=_allow_illtyped_integer)
+         return graph
+ 
+ 
++def _shacl_text_iris(graph):
++    # New text entry only: reject invalid IRI spelling before RDFLib's n3()
++    # sorting key can raise an unclassified exception containing that spelling.
++    for triple in graph:
++        for term in triple:
++            iri = term.datatype if isinstance(term, Literal) else term
++            if isinstance(iri, URIRef):
++                value = str(iri)
++                if ":" not in value or any(c.isspace() or c in '<>"{}|^`\\' for c in value):
++                    raise SemanticError("ABSOLUTE_IRI_REQUIRED")
++
++
+ def _walk(value):
+     if isinstance(value, CompValue):
+         yield value
+@@ -1361,8 +1377,8 @@ def validate_shacl_text(data_text, shapes_text, *, data_policy, range_policy) ->
+         raise SemanticError("SCOPE_SELECTION_TYPE_INVALID")
+     allow_integer = data_policy == "integer-illtyped-report-v1"
+     with offline():
+-        data = _parse_turtle(data_text, _allow_illtyped_integer=allow_integer)
+-        shapes = parse_turtle(shapes_text, shapes=True)
++        data = _parse_turtle(data_text, _allow_illtyped_integer=allow_integer, _check_iris=True)
++        shapes = _parse_turtle(shapes_text, shapes=True, _check_iris=True)
+         report = _check_shapes(data, shapes, _allow_illtyped_integer=allow_integer)
+         return {
+             "entryVersion": SHACL_TEXT_ENTRY_VERSION,
+diff --git a/packages/engine/tests/test_semantic_shacl_entry.py b/packages/engine/tests/test_semantic_shacl_entry.py
+index a8a593e..2d44459 100644
+--- a/packages/engine/tests/test_semantic_shacl_entry.py
++++ b/packages/engine/tests/test_semantic_shacl_entry.py
+@@ -228,6 +228,22 @@ def test_other_literal_iri_and_blank_node_gates_remain_strict(observe, value, co
+         observe("data-gate", lambda: validate(data(value), shape()))
+ 
+ 
++@pytest.mark.parametrize("policy", ["strict", WIDE])
++@pytest.mark.parametrize("position", ["subject", "predicate", "datatype", "shape-path"])
++def test_new_text_entry_classifies_invalid_iri_before_n3_sorting(observe, policy, position):
++    text, constraints = data('"1"^^xsd:integer'), shape()
++    if position == "subject":
++        text += "\n<urn:bad|value> ex:p 1 ."
++    elif position == "predicate":
++        text += "\nex:s <urn:bad|value> 1 ."
++    elif position == "datatype":
++        text = data('"bad"^^<urn:bad|value>')
++    else:
++        constraints = shape().replace("sh:path ex:p", "sh:path <urn:bad|value>")
++    with pytest.raises(SemanticError, match="^ABSOLUTE_IRI_REQUIRED$"):
++        observe("iri-before-n3", lambda: validate(text, constraints, data_policy=policy))
++
++
+ @pytest.mark.parametrize(
+     "extra, code",
+     [

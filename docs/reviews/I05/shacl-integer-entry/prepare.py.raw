@@ -1,0 +1,75 @@
+import datetime
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import tempfile
+
+ROOT = Path(__file__).resolve().parents[4]
+OUT = Path(__file__).resolve().parent
+CONTROL = ROOT.parents[1] / "iteration-control/2026-10-21-weekly-release"
+CONTINUATION = "a15f1478e398fb3b58fd60b1421a9cad04fdb430"
+
+def write(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+
+def git(*args):
+    return subprocess.check_output(["git", *args], cwd=ROOT)
+
+def identity(path):
+    raw = path.read_bytes()
+    return {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+
+fixed = json.loads((CONTROL / "I05-shacl-integer-entry-fixed-inputs.json").read_bytes())
+assert str(ROOT) == fixed["targetTree"]
+assert git("rev-parse", "HEAD").decode().strip() == CONTINUATION
+assert git("branch", "--show-current").decode().strip() == fixed["targetBranch"]
+assert not git("diff", "--name-only", CONTINUATION)
+checks = []
+for row in fixed["files"]:
+    actual = identity(ROOT / row["path"])
+    original = subprocess.check_output(["git", "show", row["sourceRef"] + ":" + row["path"]], cwd=ROOT)
+    assert actual == {k: row[k] for k in ("bytes", "sha256")}
+    assert hashlib.sha256(original).hexdigest() == row["sha256"]
+    assert git("show", CONTINUATION + ":" + row["path"]) == original
+    checks.append({**row, "currentEqualsSourceGitAndContinuation": True})
+
+old = json.loads((ROOT / "docs/reviews/I05/profile-directsteps/shape-combination/final-manifest.json").read_bytes())
+old_paths = sorted(r["path"] for r in old["frozenPriorProcess"] + old["newProcess"])
+assert len(old_paths) == len(set(old_paths)) == 1238
+tree = {}
+for entry in git("ls-tree", "-r", "-z", CONTINUATION).split(b"\0"):
+    if entry:
+        metadata, path = entry.split(b"\t", 1)
+        mode, kind, blob = metadata.decode().split()
+        tree[path.decode()] = {"mode": mode, "type": kind, "blob": blob}
+write(OUT / "frozen-prior-process-git.json", {"ref": CONTINUATION, "count": 1238, "files": [{"path": p, **tree[p]} for p in old_paths], "scope": "Git identity freeze only; no repeat content audit"})
+for name in ("I05-shacl-integer-entry-source-window.md", "I05-shacl-integer-entry-fixed-inputs.json", "developer-common-instructions.md"):
+    shutil.copyfile(CONTROL / name, OUT / "inputs" / (name + ".raw")) if (OUT / "inputs").exists() else None
+(OUT / "inputs").mkdir(exist_ok=True)
+for name in ("I05-shacl-integer-entry-source-window.md", "I05-shacl-integer-entry-fixed-inputs.json", "developer-common-instructions.md"):
+    shutil.copyfile(CONTROL / name, OUT / "inputs" / (name + ".raw"))
+latest = ROOT.parents[1] / "OntoLearn-Studio/AGENTS.md"
+shutil.copyfile(latest, OUT / "inputs/operating-AGENTS.md.raw")
+write(OUT / "preflight.json", {"continuation": CONTINUATION, "branch": fixed["targetBranch"], "controlled": checks, "oldProcessGitCount": 1238, "operatingGuide": {"path": str(latest), **identity(latest)}, "frozenGitGuide": identity(ROOT / "AGENTS.md"), "guideScope": "Latest operating rules read and carried under new prefix; frozen Git AGENTS retained; no product decision changed", "created": datetime.datetime.now(datetime.timezone.utc).isoformat()})
+task_tmp = Path(tempfile.mkdtemp(prefix="i05-shacl-integer-entry-"))
+env = {
+    "PATH": os.environ["PATH"], "HOME": os.environ["HOME"],
+    "TMPDIR": str(task_tmp), "LANG": "en_US.UTF-8", "LC_ALL": "en_US.UTF-8", "TZ": "UTC",
+    "UV_CACHE_DIR": str(task_tmp / "uv"), "npm_config_cache": str(task_tmp / "npm"),
+    "ELECTRON_SKIP_BINARY_DOWNLOAD": "1", "CI": "true", "UV_PYTHON": "3.12",
+}
+write(OUT / "environment.json", {"cwd": str(ROOT), "tempRoot": str(task_tmp), "env": env, "independentMutableDependencies": [str(ROOT / "node_modules"), str(ROOT / ".venv")], "commands": [["npm", "ci", "--ignore-scripts"], ["uv", "sync", "--frozen"]]})
+for index, argv in enumerate((["npm", "ci", "--ignore-scripts"], ["uv", "sync", "--frozen"]), 1):
+    dest = OUT / "environment" / f"{index:02d}"
+    dest.mkdir(parents=True, exist_ok=True)
+    started = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    with (dest / "stdout.raw").open("wb") as stdout, (dest / "stderr.raw").open("wb") as stderr:
+        result = subprocess.run(argv, cwd=ROOT, env=env, stdout=stdout, stderr=stderr)
+    write(dest / "run.json", {"argv": argv, "cwd": str(ROOT), "env": env, "started": started, "ended": datetime.datetime.now(datetime.timezone.utc).isoformat(), "exit": result.returncode, "timeout": False})
+    print(json.dumps({"argv": argv, "exit": result.returncode}), flush=True)
+    assert result.returncode == 0
+print("preflight144 and independent dependency setup complete", flush=True)

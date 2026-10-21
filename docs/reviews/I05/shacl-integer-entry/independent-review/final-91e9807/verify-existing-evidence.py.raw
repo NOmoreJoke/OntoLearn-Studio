@@ -1,0 +1,57 @@
+"""Consume completed new-ref evidence; no product imports or execution."""
+import hashlib
+import json
+import re
+from pathlib import Path
+
+root=Path.cwd();prefix=root/'docs/reviews/I05/shacl-integer-entry';out=prefix/'independent-review/final-91e9807'
+ref='91e98074a334931648e9b7c8f58a3b5e8f93a642';candidate=json.loads((prefix/'candidate.json').read_bytes())
+run=prefix/'runs/03-full-check';meta=json.loads((run/'run.json').read_bytes())
+assert meta['gitHead']==ref and meta['exit']==0 and not meta['timeout'] and meta['sourceChanged'] is False
+assert meta['sourcesBefore']==meta['sourcesAfter']==candidate['controlled']
+stdout=(run/'stdout.raw').read_text();assert not (run/'stderr.raw').read_bytes()
+summary=re.search(r'(\d+) passed, (\d+) skipped(?:, \d+ warning)? in ([\d.]+)s',stdout);assert summary
+assert '1125 passed' in stdout and 'All checks passed!' in stdout
+assert 'test_semantic_shacl_entry.py' in stdout and 'test_semantic_profile_shape_entry.py' in stdout and 'test_semantic_profile_directsteps.py' in stdout
+
+def member(p):
+ raw=p.read_bytes();return {'path':str(p.relative_to(root)),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+observations=[];tests=set();iris=[]
+for p in sorted((run/'integer-entry-reports').glob('*.json')):
+ row=json.loads(p.read_bytes());tests.add(row['id'].rsplit('/',1)[0])
+ if row['validatorCalls']:
+  assert len(row['validatorCalls'])==1 and row['error'] is None
+  result=row['result'];assert set(result)=={'entryVersion','dataPolicy','rangePolicy','report'}
+  assert result['entryVersion']=='i05-shacl-text-1' and result['rangePolicy']=='legacy'
+  assert result['dataPolicy'] in ('strict','integer-illtyped-report-v1')
+  report=result['report'];assert set(report)=={'conforms','violations'} and report['conforms'] is row['validatorCalls'][0]['conforms']
+  triples=row['validatorCalls'][0]['reportTriples'];assert triples
+  rdf_type='<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>'
+  sh='http://www.w3.org/ns/shacl#'
+  nodes={a for a,p,b in triples if p==rdf_type and b=='<'+sh+'ValidationResult>'}
+  raw_rows=[]
+  mapping={'focus':'focusNode','path':'resultPath','constraint':'sourceConstraintComponent','sourceShape':'sourceShape','value':'value','severity':'resultSeverity'}
+  for node in nodes:
+   raw_row={}
+   for name,predicate in mapping.items():
+    values=[b for a,p,b in triples if a==node and p=='<'+sh+predicate+'>']
+    assert len(values)==1 or name=='value' and len(values)==0
+    raw_row[name]=values[0] if values else None
+   raw_rows.append(raw_row)
+  raw_rows.sort(key=lambda r:tuple(str(r[k]) for k in mapping))
+  assert raw_rows==report['violations']
+  for violation in report['violations']:assert set(violation)=={'focus','path','constraint','sourceShape','value','severity'}
+  if 'without_applicable_target_or_constraint' in row['id']:assert report=={'conforms':True,'violations':[]}
+  if 'optional_value_is_not_manufactured' in row['id']:assert len(report['violations'])==1 and report['violations'][0]['value'] is None
+ else:assert row['error'] and row['result'] is None
+ if 'classifies_invalid_iri_before_n3' in row['id'] or '<urn:bad|value>' in row['id']:
+  assert not row['validatorCalls'] and row['error']=={'type':'SemanticError','code':'ABSOLUTE_IRI_REQUIRED'}
+  iris.append(row)
+ observations.append({'member':member(p),'observation':row})
+assert len(observations)==78 and len(tests)==70 and len(iris)==9
+assert sum(len(x['observation']['validatorCalls']) for x in observations)==14
+legacy=[{'member':member(p),'observation':json.loads(p.read_bytes())} for p in sorted((run/'legacy-shape-reports').glob('*.json'))]
+assert len(legacy)==26 and sum(x['observation']['validatorCalls'] for x in legacy)==9
+result={'product':ref,'reviewerProductRuns':0,'method':'all completed root metadata/streams and all78 integer/26 legacy reports read; no supplied result','rootRun':meta,'rootMembers':[member(run/p) for p in ('run.json','stdout.raw','stderr.raw')],'all145BeforeAfterFixed':True,'pythonPassed':int(summary.group(1)),'pythonSkipped':int(summary.group(2)),'pythonSeconds':summary.group(3),'newTests':70,'integerObservations':observations,'integerValidatorCalls':14,'frontDoorRejections':64,'rawReportRdfSixFieldsReconstructedAndCompared':True,'nineIriGateRejections':iris,'legacyShapeObservations':legacy,'legacyShapeValidatorCalls':9}
+(out/'existing-evidence-verification.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({k:v for k,v in result.items() if k not in ('rootRun','rootMembers','integerObservations','nineIriGateRejections','legacyShapeObservations')},ensure_ascii=False))

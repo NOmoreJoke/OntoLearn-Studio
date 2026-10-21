@@ -1,0 +1,25 @@
+# I05 非法整数 SHACL 独立入口修复窗口
+
+2026-10-22。依据原I05对真实调用链及两个pending的最小设计回复，仅批准其中B：`integer-illtyped-report-v1` 显式独立组件入口。日期core/扩展选择已单独询问用户，未获答前不实施date政策；已采Q6不重问、不更改。此为原I05原功能的既有消费者缺陷修复，不建立替代Goal或新功能聊天。
+
+## 固定施工范围
+
+由原I05 owner从 `a15f1478e398fb3b58fd60b1421a9cad04fdb430` 建独立worktree `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-shacl-integer-entry`，分支 `feature/weekly-i05-shacl-integer-entry`。旧DAG/shape组合树与旧所有原件冻结。先确认本路径未被占用，有占用则保现场回报，不覆盖。读取最新本体仓库AGENTS及总控common，并记录相对旧Git指南仅操作规则更新，不能借此改产品。
+
+同目录 `I05-shacl-integer-entry-fixed-inputs.json` 固定原144源：仅semantic.py现有writer，143源只读；新增唯一专用测试 `packages/engine/tests/test_semantic_shacl_entry.py`，最终145产品受控。原77DAG/26shape测试、输入/golden、strict parser/scopes/execution、依赖lock、公有错误表/IPC/Store/Job/selected均只读。新过程仅 `docs/reviews/I05/shacl-integer-entry/`；原1238过程用Git身份冻结，不重复全包内容审计。
+
+## 已授最小行为
+
+新增独立Python纯文本API `validate_shacl_text(data_text, shapes_text, *, data_policy, range_policy)`，两个策略关键词均必须显式传入，没有隐含扩展默认值。仅支持data_policy为strict或integer-illtyped-report-v1，range_policy仅legacy；其它策略固定拒绝，不静默fallback。返回独立入口版本/两实际policy及原真实完整report；不改变旧check_shapes报告结构或全局SEMANTICS_VERSION，不接正式执行/缓存。必要时选择已有准确固定拒绝码，不新增公共错误目录。
+
+宽数据入口直接复用既有有界文本、offline和lossless parse_graph。只允许数据object的精确xsd:integer且ill_typed is True绕过这一条lexical拒绝；保原lexical/datatype及三元组，继续全部其他门。不能调用严格parse_turtle后吞异常，不能借shapes=True放宽数据，不能修值、删数据或把不适用target预造为违规。shape文本、结构、参数仍严格。未知datatype、非有限、外联、IRI、blank-node、格式和原资源限额不放宽。
+
+可以在semantic.py抽取私有data gate/真实Validator runner及报告辅助，让旧parse/query/reason/check_shapes全部继续strict/legacy；原调用次序、预算与完整六字段规范报告不变。真实Validator产生何种结果由实际target/constraint决定；入口策略不承诺所有非法整数都产生violation。禁止全局转换表、DAWG/parser/logger/constraint-map monkeypatch，禁止收到结果后补造violation。
+
+## 验收与交付
+
+原C-illtyped输入/golden原字节：strict仍输入拒绝且Validator0，新显式策略真实Validator1、false、DatatypeConstraintComponent完整focus/path/value/sourceShape/component/severity。无相关target或constraint的非法整数可conforms=true，必须真实观察。合法integer、其他坏integer lexical、坏shape参数/unknown datatype/NaN/INF/外联/blank-node/坏Turtle/资源拒绝、未知策略均按真实调用和原门检查。宽入口之后同数据走旧parse/query/reason/check仍拒绝，证明无状态泄漏。日期bound仍拒绝且0调用；不新增或重写日期golden。
+
+新增入口版本和policy身份不同不能混用；无正式cache接线。observer仅委托真实run，完整报告结构比较不依赖随机BNode ID、不补value。执行前固定新产品与145来源；一次必要完整npm run check承载新测试及既有77DAG/26shape回归，另核12sources，不单独重复旧专项。保存新双流/argv/env/exit与145来源前后身份；失败保原件，不改预期求绿。独立agent只审新入口语义/strict回归与本轮证据，不重做旧DAG/257MB过程。
+
+新树使用独立依赖/临时数据与日志，不共享可变运行库；遇环境准备问题先给实际缺口，不自动升级依赖。只允无窗口本地检查。无GUI/native/e2e/HMR/凭据/外部模型/付费/push/PR/merge。交付固定product/process、最小diff、实际报告和独审。成功仅关闭独立组件入口的这一pending，正式execution/Store/Job/selected、date、父功能、指定同版双外审、CI/OS/真人及develop门保留。不要为纯ack另交付提交。

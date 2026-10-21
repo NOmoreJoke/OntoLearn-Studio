@@ -1,0 +1,67 @@
+"""Fixed delta identity and AST only; no product imports/tests."""
+import ast
+import datetime
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+
+root = Path.cwd()
+prefix = root / 'docs/reviews/I05/shacl-integer-entry'
+out = prefix / 'independent-review/final-91e9807'
+first = prefix / 'independent-review/first-be61'
+old = 'be61c9284b88e0df1f3d58114bb2a3437a9d2005'
+ref = '91e98074a334931648e9b7c8f58a3b5e8f93a642'
+source = 'packages/engine/src/ontolearn_engine/semantic.py'
+test = 'packages/engine/tests/test_semantic_shacl_entry.py'
+
+def git(rev, path):
+    return subprocess.check_output(['git','show',rev+':'+path],cwd=root)
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+start = datetime.datetime.now(datetime.timezone.utc).isoformat()
+candidate = json.loads((prefix/'candidate.json').read_bytes())
+assert candidate['product'] == ref and len(candidate['controlled']) == 145 and candidate['readonlyCount'] == 143
+assert subprocess.check_output(['git','diff','--name-only',old,ref],cwd=root).decode().splitlines() == [source,test]
+prior = {x['path']:x for x in json.loads((first/'static-verification.json').read_bytes())['files']}
+for row in candidate['controlled']:
+    raw = (root/row['path']).read_bytes()
+    assert len(raw)==row['bytes'] and sha(raw)==row['sha256']
+    if row['path'] not in (source,test):
+        assert row==prior[row['path']]
+    else:
+        assert raw==git(ref,row['path'])
+readonly = [row['path'] for row in candidate['controlled'] if row['path'] not in (source,test)]
+assert subprocess.check_output(['git','ls-tree','-r',old,'--',*readonly],cwd=root)==subprocess.check_output(['git','ls-tree','-r',ref,'--',*readonly],cwd=root)
+
+def nodes(raw):
+    return {n.name:n for n in ast.parse(raw).body if isinstance(n,(ast.FunctionDef,ast.ClassDef))}
+a,b = nodes(git(old,source)),nodes(git(ref,source))
+changed = [name for name in a if ast.dump(a[name],include_attributes=False)!=ast.dump(b[name],include_attributes=False)]
+assert changed==['_parse_turtle','validate_shacl_text']
+assert set(b)-set(a)=={'_shacl_text_iris'}
+assert ast.dump(a['_terms'],include_attributes=False)==ast.dump(b['_terms'],include_attributes=False)
+oldtests,newtests=nodes(git(old,test)),nodes(git(ref,test))
+assert set(newtests)-set(oldtests)=={'test_new_text_entry_classifies_invalid_iri_before_n3_sorting'}
+for name in oldtests:
+    assert ast.dump(oldtests[name],include_attributes=False)==ast.dump(newtests[name],include_attributes=False),name
+# Original public entry remains unable to pass the new private flag.
+assert ast.dump(a['parse_turtle'],include_attributes=False)==ast.dump(b['parse_turtle'],include_attributes=False)
+parser=b['_parse_turtle']
+assert parser.args.kwonlyargs[-1].arg=='_check_iris' and isinstance(parser.args.kw_defaults[-1],ast.Constant) and parser.args.kw_defaults[-1].value is False
+entry=b['validate_shacl_text']
+calls=[x for x in ast.walk(entry) if isinstance(x,ast.Call) and isinstance(x.func,ast.Name) and x.func.id=='_parse_turtle']
+assert len(calls)==2 and all(any(k.arg=='_check_iris' and isinstance(k.value,ast.Constant) and k.value.value is True for k in x.keywords) for x in calls)
+for row in json.loads((first/'write-lock.json').read_bytes())['files']:
+    raw=(root/row['path']).read_bytes();assert len(raw)==row['bytes'] and sha(raw)==row['sha256']
+frozen=json.loads((prefix/'frozen-prior-process-git.json').read_bytes())
+paths=[x['path'] for x in frozen['files']]
+raw=subprocess.check_output(['git','ls-tree','-r',ref,'--',*paths],cwd=root).decode();identities={}
+for line in raw.splitlines():
+    header,path=line.split('\t',1);mode,kind,blob=header.split();identities[path]={'path':path,'mode':mode,'type':kind,'blob':blob}
+assert identities=={x['path']:x for x in frozen['files']} and len(identities)==1238
+result={'product':ref,'previousProduct':old,'start':start,'end':datetime.datetime.now(datetime.timezone.utc).isoformat(),'argv':['python3',str(Path(__file__).relative_to(root))],'cwd':str(root),'productImported':False,'testsExecuted':False,'all145CurrentCandidateGitIdentity':True,'all143ReadonlyGitAndSHAUnchanged':True,'controlled':candidate['controlled'],'changedExistingFunctions':changed,'newHelper':'_shacl_text_iris','oldTermsAndPublicParserAstUnchanged':True,'allOldTestsAstUnchanged':True,'eightNewParameterizedCasesOnly':True,'checkIrisDefaultFalseAndOnlyNewApiExplicitTrue':True,'firstBe61LockMembersUnchanged':True,'old1238GitIdentityUnchanged':True,'old143Or1238ContentReaudited':False}
+(out/'static-delta-verification.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({k:v for k,v in result.items() if k!='controlled'},ensure_ascii=False))

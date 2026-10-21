@@ -1,0 +1,61 @@
+import hashlib
+import json
+from pathlib import Path
+import re
+
+OUT = Path(__file__).resolve().parent
+RUN = OUT / "runs/03-full-check"
+candidate = json.loads((OUT / "candidate.json").read_bytes())
+meta = json.loads((RUN / "run.json").read_bytes())
+assert meta["exit"] == 0 and not meta["timeout"] and not meta["sourceChanged"]
+assert meta["gitHead"] == candidate["product"]
+assert meta["sourcesBefore"] == meta["sourcesAfter"] == candidate["controlled"]
+assert len(meta["sourcesBefore"]) == 145
+stdout = re.sub(r"\x1b\[[0-9;]*m", "", (RUN / "stdout.raw").read_text())
+assert re.search(r"Tests\s+1125 passed", stdout)
+assert re.search(r"5060 passed, 44 skipped", stdout)
+assert (RUN / "stderr.raw").stat().st_size == 0
+
+SH = "<http://www.w3.org/ns/shacl#"
+TYPE = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
+fields = {"focus": "focusNode", "path": "resultPath", "constraint": "sourceConstraintComponent", "sourceShape": "sourceShape", "value": "value", "severity": "resultSeverity"}
+rows = []
+run_count = rejected = true_count = false_count = 0
+for path in sorted((RUN / "integer-entry-reports").glob("*.json")):
+    record = json.loads(path.read_bytes())
+    assert len(record["validatorCalls"]) in (0, 1)
+    if record["validatorCalls"]:
+        run_count += 1
+        assert record["error"] is None
+        call = record["validatorCalls"][0]
+        result = record["result"]
+        assert result["entryVersion"] == "i05-shacl-text-1" and result["rangePolicy"] == "legacy"
+        assert result["dataPolicy"] in ("strict", "integer-illtyped-report-v1")
+        report = result["report"]
+        assert call["conforms"] is report["conforms"]
+        true_count += report["conforms"] is True
+        false_count += report["conforms"] is False
+        triples = call["reportTriples"]
+        results = {s for s, p, o in triples if p == TYPE and o == SH + "ValidationResult>"}
+        actual = []
+        for subject in results:
+            row = {}
+            for name, predicate in fields.items():
+                values = [o for s, p, o in triples if s == subject and p == SH + predicate + ">"]
+                assert len(values) == 1 or (name == "value" and not values)
+                row[name] = values[0] if values else None
+            actual.append(row)
+        key = lambda row: tuple(str(row[k]) for k in fields)
+        assert sorted(actual, key=key) == sorted(report["violations"], key=key)
+    else:
+        rejected += 1
+        assert record["result"] is None and record["error"]["type"] in ("SemanticError", "TypeError")
+    rows.append({"path": str(path.relative_to(OUT)), "id": record["id"], "validatorCalls": len(record["validatorCalls"]), "bytes": path.stat().st_size, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
+assert len(rows) == 78 and len({r["id"] for r in rows}) == 78
+legacy = [json.loads(p.read_bytes()) for p in (RUN / "legacy-shape-reports").glob("*.json")]
+assert len(legacy) == 26
+assert sum(r["validatorCalls"] for r in legacy) == 9
+assert sum(r["validatorCalls"] == 0 for r in legacy) == 17
+summary = {"product": candidate["product"], "controlledBeforeAfter": 145, "typescriptPassed": 1125, "pythonPassed": 5060, "existingSkipped": 44, "newTestInstances": 70, "integerObservations": len(rows), "integerActualValidatorCalls": run_count, "integerFrontDoorRejections": rejected, "integerActualConformsTrue": true_count, "integerActualConformsFalse": false_count, "rawRdfReportSixFieldsMatchProjection": True, "legacyShapeObservations": 26, "legacyShapeActualValidatorCalls": 9, "legacyShapeFrontDoorRejections": 17, "directFeeCaptureEnabled": False, "members": rows}
+(OUT / "actual-report-audit.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n")
+print(json.dumps({k: v for k, v in summary.items() if k != "members"}))

@@ -1,0 +1,72 @@
+"""Read existing completed root records; never import product or run tests."""
+import hashlib
+import json
+import re
+from pathlib import Path
+
+root = Path.cwd()
+prefix = root / 'docs/reviews/I05/shacl-integer-entry'
+out = prefix / 'independent-review'
+candidate = json.loads((prefix / 'candidate.json').read_bytes())
+ref = candidate['product']
+
+def member(p):
+    raw = p.read_bytes()
+    return {'path': str(p.relative_to(root)), 'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+
+runs = []
+for name in ('01-full-check', '02-verify-sources'):
+    directory = prefix / 'runs' / name
+    m = json.loads((directory / 'run.json').read_bytes())
+    assert m['gitHead'] == ref and m['exit'] == 0 and not m['timeout']
+    assert m['sourcesBefore'] == m['sourcesAfter'] == candidate['controlled']
+    assert m['sourceChanged'] is False
+    stdout = (directory / 'stdout.raw').read_text()
+    assert (directory / 'stderr.raw').read_bytes() == b''
+    if name == '01-full-check':
+        python_result = re.search(r'(\d+) passed, (\d+) skipped in ([\d.]+)s', stdout)
+        assert python_result
+        assert '1125 passed' in stdout and 'All checks passed!' in stdout
+        assert 'test_semantic_shacl_entry.py' in stdout and 'test_semantic_profile_shape_entry.py' in stdout and 'test_semantic_profile_directsteps.py' in stdout
+    else:
+        assert '已核对 12 个归档源文件' in stdout
+    runs.append({'name': name, 'metadata': m, 'members': [member(directory / f) for f in ('run.json', 'stdout.raw', 'stderr.raw')]})
+shape = []
+for p in sorted((prefix / 'runs/01-full-check/legacy-shape-reports').glob('*.json')):
+    row = json.loads(p.read_bytes())
+    shape.append({'member': member(p), 'observation': row})
+assert len(shape) == 26
+assert sum(x['observation']['validatorCalls'] for x in shape) == 9
+integer = []
+tests = set()
+fields = {'focus', 'path', 'constraint', 'sourceShape', 'value', 'severity'}
+for p in sorted((prefix / 'runs/01-full-check/integer-entry-reports').glob('*.json')):
+    row = json.loads(p.read_bytes())
+    tests.add(row['id'].rsplit('/', 1)[0])
+    if row['validatorCalls']:
+        assert len(row['validatorCalls']) == 1 and row['error'] is None
+        result = row['result']
+        assert set(result) == {'entryVersion','dataPolicy','rangePolicy','report'}
+        assert result['entryVersion'] == 'i05-shacl-text-1' and result['rangePolicy'] == 'legacy'
+        assert result['dataPolicy'] in ('strict','integer-illtyped-report-v1')
+        report = result['report']
+        assert set(report) == {'conforms','violations'}
+        assert report['conforms'] is row['validatorCalls'][0]['conforms']
+        assert row['validatorCalls'][0]['reportTriples']
+        for violation in report['violations']:
+            assert set(violation) == fields
+        if 'without_applicable_target_or_constraint' in row['id']:
+            assert report == {'conforms': True, 'violations': []}
+        if 'optional_value_is_not_manufactured' in row['id']:
+            assert report['conforms'] is False and len(report['violations']) == 1
+            assert report['violations'][0]['value'] is None
+        if 'test_original_illtyped_input_reaches_real_complete_datatype_report' in row['id']:
+            assert report == {'conforms':False,'violations':[{'focus':'<urn:m1:s>','path':'<urn:m1:p>','constraint':'<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>','sourceShape':'<urn:m1:shape>','value':'"not-an-int"^^<http://www.w3.org/2001/XMLSchema#integer>','severity':'<http://www.w3.org/ns/shacl#Violation>'}]}
+    else:
+        assert row['error'] is not None and row['result'] is None
+    integer.append({'member': member(p), 'observation': row})
+assert len(integer) == 70 and len(tests) == 62
+assert sum(len(x['observation']['validatorCalls']) for x in integer) == 14
+result = {'product':ref,'reviewerProductRuns':0,'method':'full read of existing completed root streams/metadata and every actual integer/legacy shape report; no reports supplied','pythonPassed':int(python_result.group(1)),'pythonSkipped':int(python_result.group(2)),'pythonSeconds':python_result.group(3),'runs':runs,'all145BeforeAfterFixedGit':True,'integerObservationCount':len(integer),'integerDistinctTests':len(tests),'actualIntegerValidatorCalls':14,'integerFrontDoorRejections':56,'integerObservations':integer,'legacyShapeObservations':shape,'legacyShapeReportCount':26,'legacyShapeValidatorCalls':9}
+(out/'existing-evidence-verification.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({k:v for k,v in result.items() if k not in ('runs','integerObservations','legacyShapeObservations')},ensure_ascii=False))

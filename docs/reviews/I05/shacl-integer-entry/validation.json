@@ -1,0 +1,146 @@
+{
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "continuation": "a15f1478e398fb3b58fd60b1421a9cad04fdb430",
+  "product": "91e98074a334931648e9b7c8f58a3b5e8f93a642",
+  "controlled": 145,
+  "readonly": 143,
+  "newTestInstances": 70,
+  "checks": [
+    {
+      "path": "docs/reviews/I05/shacl-integer-entry/runs/03-full-check/run.json",
+      "bytes": 57952,
+      "sha256": "d0ba88a56e5ac11e52da58f79fef7056007ffd9a5d7d23f640b27da6cc08e197",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "exit": 0,
+      "timeout": false,
+      "sourcesBeforeAfter": 145
+    },
+    {
+      "path": "docs/reviews/I05/shacl-integer-entry/runs/04-verify-sources/run.json",
+      "bytes": 57973,
+      "sha256": "ff1e64d86a93477ffad61b3cace5f8ea5d4b8d437a452a7e122e9325fa540a23",
+      "argv": [
+        "npm",
+        "run",
+        "verify:sources"
+      ],
+      "exit": 0,
+      "timeout": false,
+      "sourcesBeforeAfter": 145
+    },
+    {
+      "path": "docs/reviews/I05/shacl-integer-entry/runs/05-product-diff-check/run.json",
+      "bytes": 58075,
+      "sha256": "f3fb4e5a9cf4b60e074a04ef3361d01e79580fa1ab733b2074c1c70b2b21c5e6",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "a15f1478e398fb3b58fd60b1421a9cad04fdb430",
+        "91e98074a334931648e9b7c8f58a3b5e8f93a642"
+      ],
+      "exit": 0,
+      "timeout": false,
+      "sourcesBeforeAfter": 145
+    },
+    {
+      "path": "docs/reviews/I05/shacl-integer-entry/runs/07-staged-text-check/run.json",
+      "bytes": 58341,
+      "sha256": "944a4e3ece42308204ef508b7098b5185fb4fb00b5eff6ac63e3525823d0e772",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        ".",
+        ":(exclude)docs/reviews/I05/shacl-integer-entry/iri-fix-delta.patch.raw",
+        ":(exclude)docs/reviews/I05/shacl-integer-entry/product-diff.patch.raw",
+        ":(exclude)docs/reviews/I05/shacl-integer-entry/runs/01-full-check/stdout.raw",
+        ":(exclude)docs/reviews/I05/shacl-integer-entry/runs/06-staged-diff-check/stdout.raw"
+      ],
+      "exit": 0,
+      "timeout": false,
+      "sourcesBeforeAfter": 145
+    }
+  ],
+  "reportAudit": {
+    "path": "docs/reviews/I05/shacl-integer-entry/actual-report-audit.json",
+    "bytes": 33804,
+    "sha256": "3d9eb1f3b94de1c661a01dc35e20a0fe59b8f61bba9ba968fc114734111738ee"
+  },
+  "independentReview": {
+    "path": "docs/reviews/I05/shacl-integer-entry/independent-review/final-91e9807/report.md",
+    "bytes": 5380,
+    "sha256": "9e380440689276686f891da2d8654a4d98865ba84388fe1e51b00250f6a40629",
+    "scope": "new entry/delta/new evidence only; report read back by owner"
+  },
+  "firstFailure": {
+    "product": "be61c9284b88e0df1f3d58114bb2a3437a9d2005",
+    "run": "runs/01-full-check",
+    "exit": 1,
+    "pythonFailed": 1,
+    "pythonPassed": 5051,
+    "existingSkipped": 44,
+    "report": "independent-review/first-be61/report-be61c92.md",
+    "retained": true
+  },
+  "frozenPriorProcessGitCount": 1238,
+  "notClosed": [
+    "date policy",
+    "formal execution/Store/Job/selected",
+    "parent feature",
+    "specified dual-model review",
+    "CI",
+    "OS/human acceptance",
+    "develop/remote merge"
+  ],
+  "globalSemanticsVersionUnchanged": true,
+  "guiNativeExternalModelsPaidPushPrMerge": false,
+  "stagedWhitespace": {
+    "fullStagedCheck": "runs/06-staged-diff-check",
+    "exit": 2,
+    "reportedRawFiles": [
+      "docs/reviews/I05/shacl-integer-entry/iri-fix-delta.patch.raw",
+      "docs/reviews/I05/shacl-integer-entry/product-diff.patch.raw",
+      "docs/reviews/I05/shacl-integer-entry/runs/01-full-check/stdout.raw"
+    ],
+    "exactExclusionsForRemainingTextCheck": [
+      {
+        "path": "docs/reviews/I05/shacl-integer-entry/iri-fix-delta.patch.raw",
+        "bytes": 3795,
+        "sha256": "69c4123227d5e2347d9c2b336e671e4cf1365647cc7227efc40d881bdb0ea0bb",
+        "reason": "Exact original patch/first-failure output or exact whitespace-check output; preserve original bytes"
+      },
+      {
+        "path": "docs/reviews/I05/shacl-integer-entry/product-diff.patch.raw",
+        "bytes": 20681,
+        "sha256": "cbe6eb4d660f911ebe0f4692cf095a89166342c555e8599fec8f864f28c21123",
+        "reason": "Exact original patch/first-failure output or exact whitespace-check output; preserve original bytes"
+      },
+      {
+        "path": "docs/reviews/I05/shacl-integer-entry/runs/01-full-check/stdout.raw",
+        "bytes": 23559,
+        "sha256": "71f618fa10af5d578e127562a1260a748136a5280e255f92637aab4c8275401c",
+        "reason": "Exact original patch/first-failure output or exact whitespace-check output; preserve original bytes"
+      },
+      {
+        "path": "docs/reviews/I05/shacl-integer-entry/runs/06-staged-diff-check/stdout.raw",
+        "bytes": 1935,
+        "sha256": "a1db07778668f1766af10e67891766adac7a7eb25dea4823b32c275b90033e63",
+        "reason": "Exact original patch/first-failure output or exact whitespace-check output; preserve original bytes"
+      }
+    ],
+    "productOrActiveCodeExclusions": []
+  },
+  "oldCombinedTree": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-directsteps",
+    "head": "a15f1478e398fb3b58fd60b1421a9cad04fdb430",
+    "status": "",
+    "unchanged": true
+  }
+}

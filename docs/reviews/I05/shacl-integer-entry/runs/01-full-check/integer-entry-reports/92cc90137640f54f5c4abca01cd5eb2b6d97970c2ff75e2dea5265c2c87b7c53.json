@@ -1,0 +1,96 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_entry.py::test_optional_value_is_not_manufactured_in_real_max_count_report/count",
+  "validatorCalls": [
+    {
+      "data": [
+        [
+          "<urn:m1:s>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<urn:m1:Focus>"
+        ],
+        [
+          "<urn:m1:s>",
+          "<urn:m1:p>",
+          "\"not-an-int\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ],
+        [
+          "<urn:m1:s>",
+          "<urn:m1:p>",
+          "\"other\""
+        ]
+      ],
+      "conforms": false,
+      "reportTriples": [
+        [
+          "_:N0668f3fc1571444880879c7e139b0cfa",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationReport>"
+        ],
+        [
+          "_:N0668f3fc1571444880879c7e139b0cfa",
+          "<http://www.w3.org/ns/shacl#conforms>",
+          "\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+        ],
+        [
+          "_:N0668f3fc1571444880879c7e139b0cfa",
+          "<http://www.w3.org/ns/shacl#result>",
+          "_:N81f90459b8244028a2b3ba7263dd23ea"
+        ],
+        [
+          "_:N81f90459b8244028a2b3ba7263dd23ea",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationResult>"
+        ],
+        [
+          "_:N81f90459b8244028a2b3ba7263dd23ea",
+          "<http://www.w3.org/ns/shacl#focusNode>",
+          "<urn:m1:s>"
+        ],
+        [
+          "_:N81f90459b8244028a2b3ba7263dd23ea",
+          "<http://www.w3.org/ns/shacl#resultMessage>",
+          "\"More than 1 values on <urn:m1:s>-><urn:m1:p>\""
+        ],
+        [
+          "_:N81f90459b8244028a2b3ba7263dd23ea",
+          "<http://www.w3.org/ns/shacl#resultPath>",
+          "<urn:m1:p>"
+        ],
+        [
+          "_:N81f90459b8244028a2b3ba7263dd23ea",
+          "<http://www.w3.org/ns/shacl#resultSeverity>",
+          "<http://www.w3.org/ns/shacl#Violation>"
+        ],
+        [
+          "_:N81f90459b8244028a2b3ba7263dd23ea",
+          "<http://www.w3.org/ns/shacl#sourceConstraintComponent>",
+          "<http://www.w3.org/ns/shacl#MaxCountConstraintComponent>"
+        ],
+        [
+          "_:N81f90459b8244028a2b3ba7263dd23ea",
+          "<http://www.w3.org/ns/shacl#sourceShape>",
+          "<urn:m1:shape>"
+        ]
+      ]
+    }
+  ],
+  "result": {
+    "entryVersion": "i05-shacl-text-1",
+    "dataPolicy": "integer-illtyped-report-v1",
+    "rangePolicy": "legacy",
+    "report": {
+      "conforms": false,
+      "violations": [
+        {
+          "focus": "<urn:m1:s>",
+          "path": "<urn:m1:p>",
+          "constraint": "<http://www.w3.org/ns/shacl#MaxCountConstraintComponent>",
+          "sourceShape": "<urn:m1:shape>",
+          "value": null,
+          "severity": "<http://www.w3.org/ns/shacl#Violation>"
+        }
+      ]
+    }
+  },
+  "error": null
+}

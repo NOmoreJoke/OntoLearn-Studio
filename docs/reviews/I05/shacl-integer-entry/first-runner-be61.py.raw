@@ -1,0 +1,47 @@
+import datetime
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+OUT = Path(__file__).resolve().parent
+ROOT = OUT.parents[3]
+FIXED = json.loads((OUT / "inputs/I05-shacl-integer-entry-fixed-inputs.json.raw").read_bytes())
+PATHS = sorted([row["path"] for row in FIXED["files"]] + FIXED["newPaths"])
+
+def dump(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+
+def snapshot():
+    rows = []
+    for name in PATHS:
+        raw = (ROOT / name).read_bytes()
+        rows.append({"path": name, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()})
+    return rows
+
+name, *argv = sys.argv[1:]
+dest = OUT / "runs" / name
+dest.mkdir(parents=True)
+env = json.loads((OUT / "environment.json").read_bytes())["env"]
+env["PYTEST_ADDOPTS"] = "-p no:cacheprovider --basetemp=" + str(Path(env["TMPDIR"]) / ("pytest-" + name))
+env["I05_SHACL_INTEGER_EVIDENCE_DIR"] = str(dest / "integer-entry-reports")
+env["I05_SHAPE_EVIDENCE_DIR"] = str(dest / "legacy-shape-reports")
+before = snapshot()
+candidate_path = OUT / "candidate.json"
+if candidate_path.exists():
+    assert before == json.loads(candidate_path.read_bytes())["controlled"]
+meta = {"argv": argv, "cwd": str(ROOT), "env": env, "gitHead": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT).decode().strip(), "sourcesBefore": before, "started": datetime.datetime.now(datetime.timezone.utc).isoformat(), "timeout": False, "exit": None}
+dump(dest / "run.json", meta)
+with (dest / "stdout.raw").open("wb") as stdout, (dest / "stderr.raw").open("wb") as stderr:
+    try:
+        completed = subprocess.run(argv, cwd=ROOT, env=env, stdout=stdout, stderr=stderr, timeout=2700)
+        meta["exit"] = completed.returncode
+    except subprocess.TimeoutExpired:
+        meta["timeout"] = True
+meta["ended"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+meta["sourcesAfter"] = snapshot()
+meta["sourceChanged"] = before != meta["sourcesAfter"]
+dump(dest / "run.json", meta)
+print(json.dumps({k: meta[k] for k in ("argv", "gitHead", "exit", "timeout", "sourceChanged")}), flush=True)
+sys.exit(meta["exit"] if meta["exit"] is not None else 124)
