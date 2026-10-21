@@ -38,3 +38,11 @@
 ## T01 r2：固定Table接口数据交付
 
 按总控请求核对T01固定ff98761的source-contract-t03-response-r2.md（SHA dfd39ff…），保存 [真实字段/值域与完整投影说明](../../../iterations/T03/source-selection/table-interface-r2.md)、[6组全部数据投影和原输入](../../../iterations/T03/source-selection/table-interface-r2/complete-projections.json)及逐文件manifest。全部追溯本线S1固定303源码/既有fixture；仅有界实取6个完整parser输出、5个定位拒绝、直接调用6个_cell分支，不是全测试重跑。六分支未夸大为六种真实XLSX日期/类型矩阵。fields为有序字符串，kind当前注解str而parser只产6值；Table无format/encoding/tableDigest等schema字段，caller options与数据排列不冒充canonical协议。独立静态复核逐行/逐cell与raw SHA全部通过（报告SHA 6a804be3dad0b6ca048699f9af9584aa1b6e83ff52ec49a0a233c16924d71125），没有独立重跑parser或测试。未给T01可导入实现、未消费T01代码；broker/source/tests/原S1验收未改，原Goal仍blocked。接受r2不足两段frame拒固定profile、inspection/configure新phase、先只读后写确认、权威受理/revoke排序等设计选择，source_content非活授权/wire/pin；原装配与发布门完整保留。
+
+## T01 r3生命周期设计读回（不装配）
+
+已全文读取T01固定 `33a55907c2f4835d79701c8d5609ed6ffabaf208` 的 `source-lifecycle-decisions-r3.md`，原件SHA `46c422c2b928d68aa4758601e6972979f424f3503524631f6beee03517cdcbc9`匹配。对齐精确同块的完整descriptor+bytes幂等/原ack/不延寿；1实际pending、2未接纳lease/16MiB、30秒idle/120秒传输/600秒sealed仅候选技术预算，新增256attempt与256MiB逻辑encoded预算仍为待独立复核提案，不是Q5或已执行配置。broker两FS槽与main/coordinator上传/lease/pin预算不是同一已实现机制。
+
+未admit的lease失效、撤销或换engine session后，即使同bytes/planHash也需新preview、新来源proof绑定和新人类确认；不能因旧WeakMap proof在broker内尚可复验就当远端lease有效。unknown使用原operation/原完整请求加同writer barrier或旧进程fence对账，不改operation重放。已存在claim按当前项目读权限与原context/完整请求核对返回旧Job/receipt，不再次要求原临时lease今天有效、不重传来源或重算当前CAS；这不复活活授权，也不把source_content/缓存或seal当权限。首次写受理仍需真实proof复验/确认/权威scope排序与durable pin。
+
+r3中“仍等待Table投影”是其固定历史输入状态；本线0b74的完整数据已由总控全文读取并实际路由T01，仅供冻结canonical摘要/fixture，不授代码消费。此轮只读r3/本线固定broker及追加记录，没有产品、测试、GUI或Goal状态变化；原六缺口与正式联验/外审/CI/merge门继续保留，Goal仍blocked。
