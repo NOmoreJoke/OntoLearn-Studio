@@ -23,7 +23,7 @@ MAX_TEXT_BYTES = 1_048_576
 MAX_TRIPLES = 100_000
 MAX_RULE_MATCHES = 100_000
 MAX_WORK = 1_000_000
-SEMANTICS_VERSION = "i05-finite-4"
+SEMANTICS_VERSION = "i05-finite-5"
 Triple = tuple[Identifier, Identifier, Identifier]
 
 
@@ -341,7 +341,12 @@ def reason(graph: Graph, rules: tuple[Rule, ...] = ()) -> dict:
                                 )
                             )
             changed = False
-            for triple, inputs in sorted(additions, key=lambda item: _key(item[0])):
+            # Keep one valid first witness, with a stable tie-break across all
+            # direct input paths. Graph enumeration must not choose the basis.
+            # This is neither all proofs nor a minimum-size proof search.
+            for triple, inputs in sorted(
+                additions, key=lambda item: (_key(item[0]), tuple(_key(t) for t in item[1]))
+            ):
                 if triple not in closure:
                     closure.add(triple)
                     proofs[triple] = set().union(*(proofs[i] for i in inputs))

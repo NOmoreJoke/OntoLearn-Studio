@@ -163,6 +163,7 @@ def suite() -> dict:
         "finiteTemplates": template_suite(),
         "validationScopes": scope_suite(),
         "literalIdentity": lexical_suite(),
+        "rdfsWitness": rdfs_witness_suite(),
         "scope": "pure G.2 semantics; no storage/task/UI integration",
     }
 
@@ -265,6 +266,54 @@ def lexical_suite():
         else:
             raise AssertionError("orphan Turtle term was silently discarded")
     return {"numbers": observations, "rejectedSyntax": rejected}
+
+
+def rdfs_witness_suite():
+    """Same-output RDFS paths choose a stable valid witness, not all proofs."""
+    w = Namespace("urn:i05:witness:")
+    subject = Variable("subject")
+    rule = Rule(
+        "observe-basis",
+        ((subject, RDF.type, w.C),),
+        (subject, w.observed, w.yes),
+    )
+
+    def row(*terms):
+        return tuple(term.n3() for term in terms)
+
+    inferred = row(w.u, RDF.type, w.C)
+    output = row(w.u, w.observed, w.yes)
+    cases = {
+        "domain": (
+            [(w.u, w.p, w.b), (w.u, w.p, w.a), (w.p, RDFS.domain, w.C)],
+            sorted([row(w.p, RDFS.domain, w.C), row(w.u, w.p, w.a)]),
+        ),
+        "range": (
+            [(w.b, w.p, w.u), (w.a, w.p, w.u), (w.p, RDFS.range, w.C)],
+            sorted([row(w.a, w.p, w.u), row(w.p, RDFS.range, w.C)]),
+        ),
+    }
+    observations = {}
+    for name, (triples, basis) in cases.items():
+        expected = {
+            "rdfs": [inferred],
+            "rules": [output],
+            "warnings": [],
+            "rdfsEvidence": [{"result": inferred, "basis": basis}],
+            "evidence": [{"rule": rule.id, "result": output, "inputs": [inferred], "basis": basis}],
+        }
+        graph = Graph()
+        for triple in triples:
+            graph.add(triple)
+        result = reason(graph, (rule,))
+        assert result == expected
+        # Irrelevant inputs and reverse insertion do not become evidence.
+        reverse = Graph()
+        for triple in reversed([*triples, (w.unrelated, w.q, w.other)]):
+            reverse.add(triple)
+        assert reason(reverse, (rule,)) == expected
+        observations[name] = result
+    return observations
 
 
 def scope_suite():
