@@ -1,0 +1,79 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-transfer-export
+
+ ❯ tests/unit/t10-report-file.test.ts (43 tests | 1 failed) 348ms
+   ❯ T10 real filesystem publication of one immutable prepared report (43)
+     × preserves a published result when directory durability cannot be confirmed 18ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/t10-report-file.test.ts > T10 real filesystem publication of one immutable prepared report > preserves a published result when directory durability cannot be confirmed
+AssertionError: expected { state: 'published', …(5) } to match object { state: 'published', …(3) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "cleanup": "complete",
+-   "durability": "unconfirmed",
+-   "postPublicationError": true,
++   "durability": "confirmed",
++   "postPublicationError": false,
+    "state": "published",
+  }
+
+ ❯ tests/unit/t10-report-file.test.ts:312:20
+    310|     })
+    311|     const result = await new PreparedHtmlReportFile(input()).save(sele…
+    312|     expect(result).toMatchObject({
+       |                    ^
+    313|       state: 'published',
+    314|       durability: 'unconfirmed',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 16 passed (17)
+      Tests  1 failed | 690 passed (691)
+   Start at  09:05:49
+   Duration  7.24s (tests 88%, import 7%, transform 4%)
+

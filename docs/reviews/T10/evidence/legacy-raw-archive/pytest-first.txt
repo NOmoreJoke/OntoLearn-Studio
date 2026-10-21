@@ -1,0 +1,34 @@
+.......................F..............................                   [100%]
+=================================== FAILURES ===================================
+___________________ test_unsafe_paths[data/a.json\x00secret] ___________________
+
+path = 'data/a.json\x00secret'
+
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "../outside", "/etc/passwd", "C:/private", "data/../vault.json", "data\\vault.json",
+            "data/%2e%2e.json", "data/UPPER.json", "data/a:b.json", "data/设备.json",
+            "data/.env", "data/foo.json/", "data/a.json\x00secret", "data/con.json ",
+        ],
+    )
+    def test_unsafe_paths(path):
+>       rejected(pack(entries=[(path, b"secret")]), "UNSAFE_PATH")
+
+packages/engine/tests/test_transfer_inspection.py:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+raw = b"PK\x03\x04\x14\x00\x00\x00\x08\x00\xb0EU]\x00V\xc5\xa9\xd0\x00\x00\x008\x01\x00\x00\r\x00\x00\x00manifest.jsonM\x8e\...x00\x00\x80\x012\x01\x00\x00data/a.jsonPK\x05\x06\x00\x00\x00\x00\x03\x00\x03\x00\xb7\x00\x00\x00c\x01\x00\x00\x00\x00"
+code = 'UNSAFE_PATH'
+
+    def rejected(raw, code):
+>       with pytest.raises(TransferError, match=f"^{code}$"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: 
+E       - UNLISTED_OR_MISSING_FILE
+E       + UNSAFE_PATH
+
+packages/engine/tests/test_transfer_inspection.py:62: AssertionError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_transfer_inspection.py::test_unsafe_paths[data/a.json\x00secret]
+1 failed, 53 passed in 0.21s

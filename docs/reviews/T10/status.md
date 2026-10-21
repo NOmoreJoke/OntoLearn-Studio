@@ -47,3 +47,6 @@ T09 获批只读输入版本 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 的 mani
 工具最终整仓check先遇既有engine-connection-state测试TIMEOUT（690通过/1失败），单文件8项复测通过，随后完整retry实际exit0，691TS/1112Python及lint/格式/类型/构建通过；失败和复测raw一并保留，未擅改共享测试，原因未证实。最后只读git ls-remote再次核验develop仍为5f910b52。私有阶段候选写在`private-stage-candidate.md`，待总控登记和指定外审租约；完整Goal保持未完成，未push/PR/CI/merge。
 
 原生工具/原件冻结提交：`66eeedd735370576b49eb39cd4b14cdef9c0d55b`，manifest含55个原件，已再逐hash核验。随后按总控要求完成I06 §2–3回应提案，`../../iterations/T10/i06-trusted-transfer-contract-request.md`（SHA256 `6e52cdf4230b61034366963ef39808cbdf8b7e62655a0ec168d77706b311b7bd`）；2项合同歧义P2已修复并独立复核。该提案待owner批准，没有把guard、白名单或真实X1–X6写成已实现/已验；不因此修改产品、共享方法或既有测试。
+
+
+总控已依据固定66eeedd独立读回登记待审T10-S1，未使双审/推送/正式格式或投影生效。原线按E1保全40个既有raw/browser/合成HTML（含11个历史summary逐hash原件）；旧browser3900B/26af与新native3896B/ad367是不同实物。另从已停同一attempt3容器补存三份cjs输出，明确仅为运行后读回；不改旧55项manifest或追称运行时独立输出归档。两条旧snapshot引用文件已不在，索引记录缺口。详见evidence-preservation-E1.md。没有重跑浏览器/产品或扩大包内证据。
