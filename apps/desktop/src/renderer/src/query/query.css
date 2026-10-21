@@ -1,0 +1,115 @@
+.query-workspace {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px;
+  color: var(--text-primary, #192b34);
+}
+.query-workspace h1 {
+  font-size: 28px;
+  line-height: 1.35;
+}
+.query-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+.query-range,
+.query-task {
+  padding: 16px;
+  border: 1px solid #b4c3c7;
+  background: #f4f8f8;
+  border-radius: 8px;
+}
+.query-columns {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.3fr);
+  gap: 24px;
+  margin: 24px 0;
+}
+.query-workspace label {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+}
+.query-workspace input,
+.query-workspace select,
+.query-workspace textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid #82979e;
+  border-radius: 4px;
+  padding: 8px;
+  color: #192b34;
+  background: #fff;
+}
+.query-workspace textarea {
+  resize: vertical;
+  min-height: 64px;
+}
+.query-workspace .query-code {
+  min-height: 260px;
+  font-family: ui-monospace, monospace;
+  line-height: 1.5;
+}
+.query-workspace button {
+  padding: 9px 14px;
+  margin: 4px;
+  border: 1px solid #66828d;
+  border-radius: 4px;
+  background: #eaf2f3;
+  color: #123b49;
+  cursor: pointer;
+}
+.query-workspace button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.query-workspace :focus-visible {
+  outline: 3px solid #397b9b;
+  outline-offset: 3px;
+}
+.query-workspace .query-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.query-check input {
+  width: auto;
+}
+.query-condition {
+  display: grid;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid #c9d3d6;
+}
+.query-actions {
+  display: flex;
+  flex-wrap: wrap;
+}
+.query-table {
+  overflow: auto;
+  max-height: 560px;
+}
+.query-table table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.query-table th,
+.query-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ccd7db;
+  overflow-wrap: anywhere;
+}
+.query-result-identity {
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, monospace;
+}
+@media (max-width: 760px) {
+  .query-columns {
+    grid-template-columns: 1fr;
+  }
+  .query-workspace {
+    padding: 16px;
+  }
+}

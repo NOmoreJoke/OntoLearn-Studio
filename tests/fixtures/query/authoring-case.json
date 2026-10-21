@@ -1,0 +1,32 @@
+{
+  "fixtureVersion": "t04-authoring-v1",
+  "boundary": "Synthetic query-authoring interoperability probe only; not the complete G-base or approved I05 runtime acceptance.",
+  "vocabulary": {
+    "alarmClass": "urn:t04:Alarm",
+    "severity": "urn:t04:severity",
+    "status": "urn:t04:status"
+  },
+  "visual": {
+    "classIri": "urn:t04:Alarm",
+    "fields": [
+      { "predicate": "urn:t04:severity", "label": "告警等级" },
+      { "predicate": "urn:t04:status", "label": "告警状态" }
+    ],
+    "conditions": [
+      {
+        "predicate": "urn:t04:severity",
+        "operator": "eq",
+        "value": { "kind": "literal", "value": "High", "language": null, "datatype": null }
+      },
+      {
+        "predicate": "urn:t04:status",
+        "operator": "eq",
+        "value": { "kind": "literal", "value": "Open", "language": null, "datatype": null }
+      }
+    ]
+  },
+  "sparql": "SELECT DISTINCT ?item ?field0 ?field1 WHERE {\n  ?item a <urn:t04:Alarm> .\n  ?item <urn:t04:severity> ?condition0 .\n  FILTER (?condition0 = \"High\")\n  ?item <urn:t04:status> ?condition1 .\n  FILTER (?condition1 = \"Open\")\n  OPTIONAL { ?item <urn:t04:severity> ?field0 . }\n  OPTIONAL { ?item <urn:t04:status> ?field1 . }\n}\nORDER BY ?item ?field0 ?field1",
+  "turtle": "@prefix ex: <urn:t04:> . ex:A01 a ex:Alarm ; ex:severity \"High\" ; ex:status \"Open\" . ex:A02 a ex:Alarm ; ex:severity \"High\" ; ex:status \"Closed\" . ex:A03 a ex:Alarm ; ex:severity \"Low\" ; ex:status \"Open\" .",
+  "expectedRows": [["urn:t04:A01", "High", "Open"]],
+  "closedExpectedRows": []
+}
