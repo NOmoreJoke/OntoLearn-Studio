@@ -1,0 +1,81 @@
+"""Read already completed root evidence; do not execute product or tests."""
+import hashlib
+import json
+import re
+from pathlib import Path
+
+root = Path.cwd()
+prefix = root / 'docs/reviews/I05/profile-directsteps/shape-combination'
+out = prefix / 'independent-review'
+ref = '43d56317f0bfbdfeec05efc583b306615ae54a30'
+candidate = json.loads((prefix / 'candidate.json').read_bytes())
+expected_sources = [{k: x[k] for k in ('path', 'bytes', 'sha256')} for x in candidate['files']]
+
+def member(path):
+    raw = path.read_bytes()
+    return {'path': str(path.relative_to(root)), 'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+
+runs = []
+for label in ('01-combined-check', '03-verify-sources'):
+    directory = prefix / 'runs' / label
+    record = json.loads((directory / 'command.json').read_bytes())
+    assert record['gitHead'] == ref and record['sourcesBefore'] == record['sourcesAfter'] == expected_sources
+    assert record['exitCode'] == 0 and not record['timeout']
+    assert (directory / 'stderr.txt').read_bytes() == b''
+    stdout = (directory / 'stdout.txt').read_text()
+    if label == '01-combined-check':
+        assert '1125 passed' in stdout and '4990 passed, 44 skipped' in stdout
+        assert 'test_semantic_profile_directsteps.py' in stdout and 'test_semantic_profile_shape_entry.py' in stdout
+        assert 'All checks passed!' in stdout
+    else:
+        assert '已核对 12 个归档源文件' in stdout
+    original_members = json.loads((directory / 'members.json').read_bytes())
+    for item in original_members:
+        raw = (directory / item['path']).read_bytes()
+        assert len(raw) == item['bytes'] and hashlib.sha256(raw).hexdigest() == item['sha256']
+    runs.append({'label': label, 'argv': record['argv'], 'completeCleanEnvironment': record['environment'], 'head': ref, 'start': record['start'], 'end': record['end'], 'exitCode': record['exitCode'], 'timeout': record['timeout'], 'all144BeforeAfterEqualsCandidateGit': True, 'members': [member(directory / name) for name in ('command.json', 'members.json', 'stdout.txt', 'stderr.txt')], 'rootMemberListAllHashesVerified': True})
+fixtures = root / 'docs/reviews/T05/profile-M1-math-explanation-input-contract'
+goldens = {x['id']: x['expected'] for x in json.loads((fixtures / 'consumer-C-goldens.json').read_bytes())['cases']}
+shape_rows = []
+for path in sorted((prefix / 'runs/01-combined-check/shape-reports').glob('*.json')):
+    row = json.loads(path.read_bytes())
+    if row['validatorCalls']:
+        assert row['validatorCalls'] == 1 and row['error'] is None and row['report'] is not None
+        report = row['report']
+        if row['id'] in goldens:
+            golden = goldens[row['id']]
+            assert report['conforms'] is golden['conforms']
+            actual_rows = [{'focusNode': r['focus'], 'resultPath': r['path'], 'sourceShape': r['sourceShape'], 'sourceConstraintComponent': r['constraint'], 'resultSeverity': r['severity'], 'value': r['value']} for r in report['violations']]
+            expected_rows = [{k: v for k, v in r.items() if k != 'valueExpectation'} for r in golden.get('requiredResultRows', [])]
+            assert actual_rows == expected_rows
+        else:
+            assert row['id'].startswith('nni-boundary:') and report == {'conforms': True, 'violations': []}
+    else:
+        assert row['error'] is not None and row['report'] is None
+    shape_rows.append({'member': member(path), 'observation': row})
+assert len(shape_rows) == 26
+assert sum(x['observation']['validatorCalls'] for x in shape_rows) == 9
+assert sum(x['observation']['validatorCalls'] == 0 for x in shape_rows) == 17
+assert {x['observation']['id'] for x in shape_rows if x['observation']['id'].startswith('C-')} == {'C-langString','C-inclusive-nni','C-inclusive-dateTime-equal','C-inclusive-dateTime-before','C-datatype-exact','C-inclusive-numeric','C-inclusive-type-error','C-illtyped-entry'}
+fees = []
+test_ids = set()
+packets = events = 0
+event_shapes = set()
+for path in sorted((prefix / 'runs/01-combined-check/direct-fees').glob('*.jsonl')):
+    count = 0
+    for line in path.read_text().splitlines():
+        row = json.loads(line)
+        assert row['containsNativeOrInput'] is False
+        test_ids.add(row['test'])
+        packets += 1
+        count += 1
+        if row['eventsAvailable']:
+            assert type(row['events']) is list
+            events += len(row['events'])
+            for event in row['events']:
+                event_shapes.add((type(event).__name__, len(event)))
+    fees.append({'member': member(path), 'packets': count})
+assert fees and packets and events
+result = {'product': ref, 'method': 'full read of existing root streams/metadata, 26 actual report JSON and every fee JSONL packet; no product imports, no supplied report, no rerun', 'runs': runs, 'shapeReportCount': len(shape_rows), 'actualValidatorCalls': 9, 'beforeValidatorRejections': 17, 'completeGoldenRowsCompared': True, 'shapeReports': shape_rows, 'directFeeFiles': len(fees), 'observedDirectTests': len(test_ids), 'directFeePackets': packets, 'summedRetainedEventCopies': events, 'eventShapes': sorted(event_shapes), 'directFeeMembers': fees, 'budgetSignoff': False, 'earlyLaunch': json.loads((prefix / 'early-verify-launch.json').read_bytes()), 'earlyLaunchMember': member(prefix / 'early-verify-launch.json')}
+(out / 'existing-evidence-verification.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+print(json.dumps({k: v for k, v in result.items() if k not in ('runs','shapeReports','directFeeMembers','earlyLaunch')}, ensure_ascii=False))

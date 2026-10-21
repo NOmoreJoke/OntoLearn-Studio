@@ -1,0 +1,58 @@
+import hashlib,json,subprocess
+from pathlib import Path
+prefix=Path('docs/reviews/I05/profile-directsteps/shape-combination');product='43d56317f0bfbdfeec05efc583b306615ae54a30';continuation='fb99fbdc6d2630efe0c1107b93401667a808466d';base='5f910b52c69d86a1076b2032e5d3c63e715947f3'
+def sha(b):return hashlib.sha256(b).hexdigest()
+def member(p):
+ b=p.read_bytes();return dict(path=str(p),bytes=len(b),sha256=sha(b))
+candidate=json.loads((prefix/'candidate.json').read_bytes());controlled=[]
+for r in candidate['files']:
+ p=Path(r['path']);b=p.read_bytes();assert len(b)==r['bytes'] and sha(b)==r['sha256'];assert b==subprocess.check_output(['git','show',product+':'+str(p)])
+ readonly=r['role']!='local-shapes-only-writer'
+ if readonly:assert b==subprocess.check_output(['git','show',r['sourceRef']+':'+str(p)])
+ controlled.append(dict(path=str(p),bytes=len(b),sha256=sha(b),access='read-only' if readonly else 'local-shapes-only-writer',productRef=product,inputSourceRef=r['sourceRef'],effectiveSourceRef=r['sourceRef'] if readonly else product,currentEqualsGit=True))
+assert len(controlled)==144 and sum(r['access']=='read-only' for r in controlled)==143
+old=json.loads((prefix/'frozen-process-1095.json').read_bytes());assert len(old)==1095
+for row in old:
+ b=Path(row['path']).read_bytes();assert len(b)==row['bytes'] and sha(b)==row['sha256']
+runs=[]
+for c in sorted((prefix/'runs').glob('*/command.json')):
+ x=json.loads(c.read_bytes());assert x['sourcesUnchanged'] and len(x['sourcesBefore'])==144
+ for row in json.loads(c.with_name('members.json').read_bytes()):
+  b=(c.parent/row['path']).read_bytes();assert len(b)==row['bytes'] and sha(b)==row['sha256']
+ runs.append(dict(**member(c),exitCode=x['exitCode'],timeout=x['timeout'],sourcesUnchanged=True,sourceCount=144))
+check=json.loads((prefix/'runs/01-combined-check/command.json').read_bytes());assert check['exitCode']==0 and check['gitHead']==product
+stdout=(prefix/'runs/01-combined-check/stdout.txt').read_text();assert '4990 passed, 44 skipped' in stdout and '1125 passed' in stdout
+shape=[]
+for p in sorted((prefix/'runs/01-combined-check/shape-reports').glob('*.json')):
+ x=json.loads(p.read_bytes());shape.append(dict(id=x['id'],validatorCalls=x['validatorCalls'],error=x['error'],conforms=None if x['report'] is None else x['report']['conforms'],source=member(p)))
+assert len(shape)==26
+for identity in ['C-langString','C-inclusive-nni','C-inclusive-dateTime-equal','C-inclusive-dateTime-before']:
+ row=next(r for r in shape if r['id']==identity);assert row['validatorCalls']==1 and row['error'] is None
+assert next(r for r in shape if r['id']=='C-illtyped-entry')['validatorCalls']==0
+fee_files=[];snapshots=events=0;states={}
+for p in sorted((prefix/'runs/01-combined-check/direct-fees').glob('*.jsonl')):
+ fee_files.append(member(p))
+ for line in p.read_bytes().splitlines():
+  x=json.loads(line);assert x['containsNativeOrInput'] is False;snapshots+=1;states[x['state']]=states.get(x['state'],0)+1;previous=(0,0,0,0)
+  for e in x['events']:
+   assert len(e)==12 and tuple(e[i] for i in (4,6,8,10))==previous
+   after=tuple(e[i] for i in (5,7,9,11));assert after[0]>=previous[0] and after[1]>=previous[1];previous=after;events+=1
+  if x['events']:
+   assert [x['usage'][k] for k in ('work','scan_copy')]==list(previous[:2]);assert [x['retained'][k] for k in ('objects','scalar')]==list(previous[2:])
+fee=dict(files=fee_files,snapshots=snapshots,eventEntriesAcrossSnapshots=events,states=states,notUniqueOperationCount=True)
+(prefix/'actual-fee-audit.json').write_text(json.dumps(fee,ensure_ascii=False,indent=2)+'\n')
+review=prefix/'independent-review/report.md';assert review.exists()
+validation=dict(continuation=continuation,product=product,controlledCount=144,readonlyCount=143,frozenPriorProcess=1095,normalCheck=dict(run='01-combined-check',vitestPassed=1125,pythonPassed=4990,pythonSkipped=44,originalDAGCasesIncluded=77,originalShapeCasesIncluded=26,noSeparateSpecialRerun=True),sourceVerification=dict(run='03-verify-sources',count=12,exitCode=0),runs=runs,shapeReports=shape,feeAudit=member(prefix/'actual-fee-audit.json'),review=member(review),earlyLauncherLimitation=member(prefix/'early-verify-launch.json'),formalAuthority=False,pendingPoliciesChanged=False)
+(prefix/'validation.json').write_text(json.dumps(validation,ensure_ascii=False,indent=2)+'\n')
+manifest_path=prefix/'final-manifest.json';new=[]
+for p in sorted(prefix.rglob('*')):
+ if p.is_file() and p!=manifest_path:new.append(member(p))
+new.append(dict(path=str(manifest_path),bytes=None,sha256=None,selfDigest='external receipt avoids circular self digest'))
+allpaths={r['path'] for r in controlled+old+new};basepaths=set(subprocess.check_output(['git','ls-tree','-r','--name-only',base],text=True).splitlines());actual=[];same=[]
+for path in sorted(allpaths):
+ if path not in basepaths or path==str(manifest_path):actual.append(path);continue
+ b=Path(path).read_bytes();prior=subprocess.check_output(['git','show',base+':'+path]);(same if b==prior else actual).append(path)
+assert len(same)==9
+manifest=dict(base=base,continuation=continuation,product=product,controlledCount=144,readonlyCount=143,frozenPriorProcessCount=1095,newProcessCount=len(new),totalCount=len(allpaths),actualBaseDiffCount=len(actual),sameAsBaseCount=9,sameAsBase=same,actualBaseDiff=actual,controlled=controlled,frozenPriorProcess=old,newProcess=new)
+manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({k:v for k,v in manifest.items() if k.endswith('Count')},ensure_ascii=False));print(dict(shapeReports=len(shape),feeSnapshots=snapshots,feeFiles=len(fee_files)))

@@ -1,0 +1,55 @@
+import ast,difflib,hashlib,json,subprocess,tempfile
+from pathlib import Path
+root=Path.cwd();prefix=Path('docs/reviews/I05/profile-directsteps/shape-combination');control=Path('/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release');continuation='fb99fbdc6d2630efe0c1107b93401667a808466d'
+def sha(b):return hashlib.sha256(b).hexdigest()
+def git(ref,path):return subprocess.check_output(['git','show',ref+':'+path])
+assert subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()==continuation
+assert not subprocess.check_output(['git','diff','--name-only'])
+assert not subprocess.check_output(['git','diff','--cached','--name-only'])
+(prefix/'inputs').mkdir()
+for name in ['I05-directsteps-root-closure-and-shape-combination.md','I05-directsteps-shape-combination-fixed-inputs.json']:
+ (prefix/'inputs'/ (name+'.raw')).write_bytes((control/name).read_bytes())
+fixed=json.loads((control/'I05-directsteps-shape-combination-fixed-inputs.json').read_bytes());assert len(fixed['files'])==144
+old=json.loads(Path('docs/reviews/I05/profile-directsteps/final-manifest.json').read_bytes());frozen=[]
+assert old['processCount']==1095
+for row in old['process']:
+ p=Path(row['path']);b=p.read_bytes()
+ if row['sha256'] is not None:assert len(b)==row['bytes'] and sha(b)==row['sha256']
+ assert b==git(continuation,str(p))
+ frozen.append(dict(path=str(p),bytes=len(b),sha256=sha(b)))
+(prefix/'frozen-process-1095.json').write_text(json.dumps(frozen,ensure_ascii=False,indent=2)+'\n')
+pre=[];new=[]
+for row in fixed['files']:
+ p=Path(row['path']);b=git(row['sourceRef'],str(p));assert len(b)==row['bytes'] and sha(b)==row['sha256']
+ assert (Path(row['sourceTree'])/p).read_bytes()==b
+ if 'after exact adoption' in row['role']:
+  assert not p.exists();new.append((p,b))
+ else:assert p.read_bytes()==b==git(continuation,str(p))
+ pre.append(dict(row,currentBefore='absent' if not p.exists() else 'exact source Git'))
+assert len(new)==3
+p=Path('packages/engine/src/ontolearn_engine/semantic.py');before=p.read_text();after=before
+old_datatype='if p == SH.datatype and o not in _DATATYPES:';new_datatype='if p == SH.datatype and o not in _DATATYPES | {RDF.langString}:'
+old_inclusive='or o.datatype not in {XSD.integer, XSD.int, XSD.decimal, XSD.float, XSD.double}'
+new_inclusive='''or o.datatype
+            not in {
+                XSD.integer,
+                XSD.int,
+                XSD.nonNegativeInteger,
+                XSD.decimal,
+                XSD.float,
+                XSD.double,
+                XSD.dateTime,
+            }'''
+assert after.count(old_datatype)==after.count(old_inclusive)==1
+after=after.replace(old_datatype,new_datatype).replace(old_inclusive,new_inclusive)
+a=ast.parse(before);b=ast.parse(after);changed=[getattr(n,'name',None) for n,m in zip(a.body,b.body,strict=True) if ast.dump(n)!=ast.dump(m)];assert changed==['_shapes']
+source=git(fixed['shapeHunkSource'],str(p)).decode();shapes=lambda text:next(n for n in ast.parse(text).body if getattr(n,'name',None)=='_shapes')
+assert ast.dump(shapes(after))==ast.dump(shapes(source))
+old_shape=shapes(before);expected=ast.parse(before.replace(old_datatype,new_datatype).replace(old_inclusive,new_inclusive));assert ast.dump(expected)==ast.dump(b)
+p.write_text(after)
+for dest,data in new:dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(data)
+(prefix/'exact-shape.patch.raw').write_text(''.join(difflib.unified_diff(before.splitlines(True),after.splitlines(True),fromfile=str(p)+'@fb99',tofile=str(p)+'@combined')))
+(prefix/'preflight.json').write_text(json.dumps(dict(continuation=continuation,files=pre,oldProcessFrozen=1095,changedTopLevelAST=changed,combinedShapesASTEquals3bd=True,textualReplacementsExactlyTwo=True,newSemanticBytes=len(after.encode()),newSemanticSHA256=sha(after.encode())),ensure_ascii=False,indent=2)+'\n')
+old_cache=Path(json.loads(Path('docs/reviews/I05/profile-directsteps/environment/paths.json').read_bytes())['cache']);cache=Path(tempfile.mkdtemp(prefix='shape-combination-',dir=old_cache))
+(prefix/'environment.json').write_text(json.dumps(dict(cache=str(cache),uvCache=str(old_cache/'uv'),python='existing self-owned .venv in same authorized tree',nodeModules='existing self-owned node_modules in same tree',lockUnchanged=True),indent=2)+'\n')
+print(dict(verified=144,oldFrozen=1095,changedAST=changed,newSemanticBytes=len(after.encode()),newSemanticSHA256=sha(after.encode())))

@@ -1,0 +1,87 @@
+"""Stdlib-only review: fixed Git/text/AST/hash; never import product/test."""
+import ast
+import datetime
+import difflib
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+
+root = Path.cwd()
+prefix = root / 'docs/reviews/I05/profile-directsteps/shape-combination'
+out = prefix / 'independent-review'
+ref = '43d56317f0bfbdfeec05efc583b306615ae54a30'
+cont = 'fb99fbdc6d2630efe0c1107b93401667a808466d'
+shape = '3bd19e347051627242197f15fce712c9c9dd6b8f'
+control = Path('/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release')
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+def git(revision, path):
+    return subprocess.check_output(['git', 'show', revision + ':' + path], cwd=root)
+
+def member(path):
+    raw = path.read_bytes()
+    return {'path': str(path), 'bytes': len(raw), 'sha256': sha(raw)}
+
+start = datetime.datetime.now(datetime.timezone.utc).isoformat()
+fixedraw = (control / 'I05-directsteps-shape-combination-fixed-inputs.json').read_bytes()
+assert len(fixedraw) == 55581 and sha(fixedraw) == '1084ff2fa6874b6b6d9f940dc022b067c5e1108c8eb8c803c03083aa4edae115'
+fixed = json.loads(fixedraw)
+for name in ('I05-directsteps-root-closure-and-shape-combination.md', 'I05-directsteps-shape-combination-fixed-inputs.json'):
+    assert (control / name).read_bytes() == (prefix / 'inputs' / (name + '.raw')).read_bytes()
+candidate = json.loads((prefix / 'candidate.json').read_bytes())
+preflight = json.loads((prefix / 'preflight.json').read_bytes())
+assert candidate['product'] == ref and candidate['continuation'] == cont
+assert candidate['controlledCount'] == 144 and candidate['readonlyCount'] == 143
+assert len(fixed['files']) == len(candidate['files']) == len(preflight['files']) == 144
+verified = []
+for intended, adopted in zip(fixed['files'], candidate['files']):
+    assert intended['path'] == adopted['path']
+    path = intended['path']
+    source = git(intended['sourceRef'], path)
+    assert len(source) == intended['bytes'] and sha(source) == intended['sha256']
+    assert source == (Path(intended['sourceTree']) / path).read_bytes() or intended['role'] == 'local-shapes-only-writer'
+    current = (root / path).read_bytes()
+    assert current == git(ref, path)
+    assert len(current) == adopted['bytes'] and sha(current) == adopted['sha256']
+    if intended['role'] != 'local-shapes-only-writer':
+        assert current == source
+    else:
+        assert source == git(cont, path)
+    verified.append({'path': path, 'role': intended['role'], 'sourceRef': intended['sourceRef'], 'bytes': len(current), 'sha256': sha(current), 'currentEqualsProductGit': True, 'sourceBytesShaVerified': True})
+semantic = 'packages/engine/src/ontolearn_engine/semantic.py'
+before = git(cont, semantic).decode()
+after = git(ref, semantic).decode()
+replacements = [
+    ('if p == SH.datatype and o not in _DATATYPES:', 'if p == SH.datatype and o not in _DATATYPES | {RDF.langString}:'),
+    ('or o.datatype not in {XSD.integer, XSD.int, XSD.decimal, XSD.float, XSD.double}', 'or o.datatype\n            not in {\n                XSD.integer,\n                XSD.int,\n                XSD.nonNegativeInteger,\n                XSD.decimal,\n                XSD.float,\n                XSD.double,\n                XSD.dateTime,\n            }'),
+]
+expected = before
+for old, new in replacements:
+    assert expected.count(old) == 1
+    expected = expected.replace(old, new)
+assert expected == after
+left, right = ast.parse(before), ast.parse(after)
+assert len(left.body) == len(right.body)
+changed = [getattr(a, 'name', None) for a, b in zip(left.body, right.body) if ast.dump(a, include_attributes=False) != ast.dump(b, include_attributes=False)]
+assert changed == ['_shapes']
+find = lambda text: next(n for n in ast.parse(text).body if getattr(n, 'name', None) == '_shapes')
+shape_source = git(shape, semantic).decode()
+assert ast.dump(find(after), include_attributes=False) == ast.dump(find(shape_source), include_attributes=False)
+assert ast.get_source_segment(after, find(after)) == ast.get_source_segment(shape_source, find(shape_source))
+patch = ''.join(difflib.unified_diff(before.splitlines(True), after.splitlines(True), fromfile=semantic+'@fb99', tofile=semantic+'@combined'))
+assert patch.encode() == (prefix / 'exact-shape.patch.raw').read_bytes()
+actual_diff = subprocess.check_output(['git', 'diff', '--name-status', cont, ref], cwd=root).decode().splitlines()
+assert actual_diff == candidate['productDiff'] and len(actual_diff) == 4
+assert sum(row.startswith('A\t') for row in actual_diff) == 3 and sum(row.startswith('M\t') for row in actual_diff) == 1
+frozen = json.loads((prefix / 'frozen-process-1095.json').read_bytes())
+assert len(frozen) == 1095
+for item in frozen:
+    raw = (root / item['path']).read_bytes()
+    assert len(raw) == item['bytes'] and sha(raw) == item['sha256']
+    assert raw == git(cont, item['path'])
+result = {'argv': ['python3', str(Path(__file__).relative_to(root))], 'cwd': str(root), 'product': ref, 'continuation': cont, 'shapeSource': shape, 'start': start, 'end': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'productImported': False, 'testsExecuted': False, 'fullControlManifestReadParsedAndEachRowVerified': True, 'controlledCount': 144, 'readonlyCount': 143, 'files': verified, 'changedTopLevelAST': changed, 'exactOnlyTwoTextReplacements': True, 'wholeShapesTextAndASTEquals3bd': True, 'exactPatchFileMatches': True, 'actualDiff': actual_diff, 'old1095CurrentShaAndContinuationGitVerified': True, 'frozenCount': len(frozen), 'inputMembers': [member(control / 'I05-directsteps-root-closure-and-shape-combination.md'), member(control / 'I05-directsteps-shape-combination-fixed-inputs.json'), member(prefix / 'candidate.json'), member(prefix / 'preflight.json'), member(prefix / 'frozen-process-1095.json'), member(prefix / 'exact-shape.patch.raw')]}
+(out / 'static-verification.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+print(json.dumps({k: v for k, v in result.items() if k not in ('files', 'inputMembers')}, ensure_ascii=False))
