@@ -33,3 +33,9 @@
 独立 reviewer 再次检查完整本线与新增固定输入：实际用 `git show 873c8c0…` 核对 manifest/17文件/PRD源原字节一致，未消费未批准服务或Store helper；既有实现与 `dcc5ec8` 无差异。同一告警join、字符串001、R-05/06稳定未执行计划保持；50案例均runtime-pending，无actual字段，expected未当作运行结果/存储。独立复跑75 Python通过，明确通过仅限准备与输入适配范围。
 
 32受审文件组合SHA256：`ce69de6c0a52c117807e67033a0e5e6e3ac2f132e9ff7441b6cf472af5e4cbba`。未修改文件、未开GUI，不能替代指定外审和真实执行验收。
+
+## FR-505 代表输入与语义提案复核
+
+独立reviewer全文只读复核，明确通过仅限私有准备和代表输入提案，未发现新实质问题。实际111/111定向通过；12个比较正反例手算一致；两个不同告警未误拼为一条High/Open；多输出共用R-risk-multi/A01四条输入依据；ontology/catalog/reset一致。原13核心文件未变，无第二执行器、Store写入或expected到actual路径。
+
+35受审文件组合SHA256：`06f3d269007858672a0793f7c6ae4180e8ed62d985579ea08dbd076155b021bf`。此结论不证明真实推理、正式集成/公共协议、指定外审或发布通过。

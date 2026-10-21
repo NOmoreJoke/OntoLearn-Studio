@@ -20,17 +20,17 @@
     "npmRunCheck": {
       "exitCode": 0,
       "tsTests": 635,
-      "pythonTests": 1127
+      "pythonTests": 1163
     },
-    "qualityPytest": 75,
+    "qualityPytest": 111,
     "qualityVitest": 5,
     "gitDiffCheck": "passed"
   },
   "internalReview": {
     "agent": "/root/t05_internal_review",
-    "decision": "passed-private-preparation-and-approved-input-adaptation-only",
-    "reviewedFiles": 32,
-    "reportedCombinedSha256": "ce69de6c0a52c117807e67033a0e5e6e3ac2f132e9ff7441b6cf472af5e4cbba"
+    "decision": "passed-private-preparation-approved-input-adaptation-and-fr505-representative-input-proposal-only",
+    "reviewedFiles": 35,
+    "reportedCombinedSha256": "06f3d269007858672a0793f7c6ae4180e8ed62d985579ea08dbd076155b021bf"
   },
   "approvedInput": {
     "gitRef": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
@@ -53,5 +53,17 @@
     "T06/T08/T09/T10 cross-feature acceptance",
     "same-candidate designated dual review, push/PR/CI/normal merge and remote verification"
   ],
-  "guiOrModelOrCredentialOperations": false
+  "guiOrModelOrCredentialOperations": false,
+  "fr505ExtensionInputs": {
+    "fixtureVersion": "T05-FR505-extension/1",
+    "cases": 16,
+    "executed": false,
+    "commit": "7f4a649ea754ea56e468fecafd6da43c9efda218",
+    "proposal": "docs/iterations/T05/fr505-semantic-extension-proposal.md",
+    "sourceHashes": {
+      "tests/fixtures/quality/fr505-extension-cases.json": "f95f0ca3efb498544fa0c99093980bc4cc9c5be3cd449ee0d253d7ba8e0f2b7a",
+      "packages/engine/tests/test_quality_fr505_inputs.py": "3cbd0cdcf6d2410c96fe7e4af9a1c6d846d3a98a364ff0f66f07f224bff7ffe7"
+    }
+  },
+  "lastContinuationClassification": "progress: new FR505 complete input and expected evidence proposal, actual unit/check and independent review; formal dependencies remain unapproved"
 }

@@ -66,3 +66,7 @@ Q6 的值比较具体 datatype 兼容、真实 pySHACL/RDFS 输出投影/trace �
 ## 批准固定输入更新
 
 总控随后批准 T09 固定873输入，本线manifest/17文件/PRD源已逐项核验，记录见 `approved-inputs.md`。正式后续G.2使用固定bundle的 `urn:ontolearn:learning:` 与 `name-required`/`alarm`，不再把私有样例命名空间作为待确认公共身份。完整真实执行/trace及原FR505语义补齐仍然开放；没有消费未批准服务/Store helper。
+
+## FR-505 精确扩展输入
+
+新增[语义扩展代表输入交接](fr505-semantic-extension-proposal.md)，给16个完整独立输入、预期自定义规则全部输出及每次触发依据，明确每例精确规则集合、不继承G-base其他规则。I05的比较/多结论补齐可直接逐例回应；所有执行仍pending，未把手算/结构校验当真实引擎结果。

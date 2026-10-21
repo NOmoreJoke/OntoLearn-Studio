@@ -42,3 +42,11 @@
 ## 批准输入后的增量
 
 实现检查点 `dcc5ec8` 已本地提交，未push。总控随后批准T09固定873输入；本线仅新增固定bundle与显式测试适配，实际75项Python定向通过。接入记录见 `docs/iterations/T05/approved-inputs.md`；最新完整check退出0：635 TS / 1127 Python；完整独立内审明确通过本线准备与输入适配范围，原代码未变。第二提交 `383bc6a` 已保存；准确实施与输入测试SHA、验证和待验门见 `checkpoint.json`。批准输入与各expected仍不构成正式实际执行证据。
+
+## FR-505 代表输入补强
+
+本次 Goal 续跑属于实际进展：新增16个完整独立代表输入及精确执行层扩展提案，覆盖六比较true/false、同一告警联结反例、同规则多结论、启停修订与缺属性开放世界。显式ontology与catalog一致，reset仅使用本例规则，每个预期触发列明输入依据。没有新增执行器或expected到actual/Store的通道。
+
+已保存提交 `7f4a649ea754ea56e468fecafd6da43c9efda218`。本线实际全 `npm run check` 退出0：635 TS / 1163 Python；独立内审111 Python通过，手工算术与联结/共同依据复核通过，仅限输入期望内部一致。首ruff有1处长行，经格式化关闭；随后追加状态的Python脚本编码错误已改用文本追加，不涉及受测实现，原工具错误保留。
+
+已向总控发送 `docs/iterations/T05/fr505-semantic-extension-proposal.md` 请求I05唯一语义owner对具体表达/执行接口回应。当前根执行状态实查T01格式3和T00公共接线仍未启用，I05审查仍在修复；没有获准正式消费的新依赖，父功能与指定双审/CI/合并继续开放。原实现未变，下一步继续依具体接口/路径交接推进，不等待整个M0。

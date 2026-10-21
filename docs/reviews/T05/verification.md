@@ -24,3 +24,9 @@
 ## 获批固定输入后的最终检查
 
 固定873的manifest/17输入/PRD源全字节核对后，新增22项纯输入/plan适配测试。完整 `npm run check` 退出0：16个TS文件/635 tests，1127 Python tests，lint/格式/类型/构建/ruff均通过；原始完整日志 `check-approved-inputs.log` 本地保留。独立内审75项Python通过，完整实现与dcc5ec8无变化。无GUI/包内/实际推理/持久化/生产证据。
+
+## FR-505 完整代表输入增量
+
+`test_quality_fr505_inputs.py` 新增36项结构/计划/预期依据一致性验证；16个完整输入，真实执行状态均pending。最新定向由独立reviewer实际复跑111项Python通过；全仓 `npm run check` 实际退出0：635 TS / 1163 Python，逐文件原件在本地 `check-fr505-inputs.log`。这不执行原P0比较/推理；独立手工检查不是执行器替身。新增前首ruff长行失败经格式化关闭。
+
+产品/输入已提交后的一次状态追加Python脚本发生stdin编码错误；实际没有改到这些文档，随后改用文本追加修正。无需重跑未变化产品检查；格式复核单独执行。
