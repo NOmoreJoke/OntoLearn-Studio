@@ -1,0 +1,9 @@
+--- cc1fc11:tool-call.preparation.json.arguments.cmd
++++ exact-tool-call.preparation.json.arguments.cmd
+@@ -4,3 +4,3 @@
+-AUTHORIZATION = None  # 根一次窗口的精确记录身份；目前无授权，禁止替换后运行。
+-CORE_PIN = None       # {"path": absolute, "bytes": int, "sha256": hex64}
+-PROBE_PIN = None      # 同形状，必须是新构建；不得使用 superseded 旧值。
++AUTHORIZATION = 'I06-N0-execution-001-227052c230da782c'  # 仅准备record identity；根未授最终运行窗口。
++CORE_PIN = {'path': '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/227052c230da782ca62c20600e418f52e938378bd92f2961d7543f03ac43551c/core/artifacts/location_core_test', 'bytes': 343904, 'sha256': '229faf9fcf15ccbbc9e0e8fefefb1c91c016fc2ea6fea2df92998392e14e812b'}  # 根已接受的新pair；本副本仍禁止执行。
++PROBE_PIN = {'path': '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/227052c230da782ca62c20600e418f52e938378bd92f2961d7543f03ac43551c/core/artifacts/location_child_probe', 'bytes': 34120, 'sha256': 'be916e5252b21e6671c6bd2f32301f8581c1b32ce87f78a4a7b0f8314fb2a6b2'}  # 同一artifacts的新probe；本副本仍禁止执行。
