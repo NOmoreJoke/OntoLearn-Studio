@@ -382,7 +382,7 @@ def _term_characters(term):
     )
 
 
-def _finite_closure(asserted, charge, meter=None):
+def _finite_closure(asserted, charge, meter=None, *, _direct_capture=None):
     """One closure implementation and one stable first-witness policy."""
     ordered = sorted if meter is None else meter.ordered
     key = _key if meter is None else meter.key
@@ -394,22 +394,31 @@ def _finite_closure(asserted, charge, meter=None):
     while changed:
         additions = []
 
-        def append(triple, inputs, _additions=additions):
+        def append(triple, inputs, rule, _additions=additions):
             if meter is not None:
                 meter.debit(1 + len(inputs))
-            _additions.append((triple, inputs))
+            if _direct_capture is None:
+                _additions.append((triple, inputs))
+            else:
+                _direct_capture.candidate(rule)
+                # Native candidate, borrowed original sort keys and their slots.
+                _direct_capture.ledger.reserve("objects", 8)
+                _additions.append([triple, inputs, rule, None])
 
         for child, _, parent in ordered(closure.triples((None, RDFS.subClassOf, None)), key=key):
             for s, _, _o in ordered(closure.triples((None, RDF.type, child)), key=key):
                 charge()
                 append(
-                    (s, RDF.type, parent), [(s, RDF.type, child), (child, RDFS.subClassOf, parent)]
+                    (s, RDF.type, parent),
+                    [(s, RDF.type, child), (child, RDFS.subClassOf, parent)],
+                    "rdfs9-type-via-subclass",
                 )
             for _p, _, ancestor in closure.triples((parent, RDFS.subClassOf, None)):
                 charge()
                 append(
                     (child, RDFS.subClassOf, ancestor),
                     [(child, RDFS.subClassOf, parent), (parent, RDFS.subClassOf, ancestor)],
+                    "rdfs11-subclass-transitive",
                 )
         for predicate, relation, target in ordered(closure, key=key):
             if relation in {RDFS.domain, RDFS.range} and predicate not in {
@@ -423,11 +432,18 @@ def _finite_closure(asserted, charge, meter=None):
                         append(
                             (subject, RDF.type, target),
                             [(predicate, relation, target), (s, predicate, o)],
+                            "rdfs2-domain" if relation == RDFS.domain else "rdfs3-range",
                         )
         changed = False
-        for triple, inputs in ordered(
-            additions, key=lambda item: (key(item[0]), tuple(key(t) for t in item[1]))
-        ):
+
+        def addition_key(item):
+            value = (key(item[0]), tuple(key(t) for t in item[1]))
+            if _direct_capture is not None:
+                item[3] = value
+            return value
+
+        for item in ordered(additions, key=addition_key):
+            triple, inputs = item[:2] if _direct_capture is not None else item
             if triple not in closure:
                 # Profile rejects before insertion/allocation. Legacy keeps its
                 # original post-insertion limit and error identity.
@@ -440,11 +456,18 @@ def _finite_closure(asserted, charge, meter=None):
                     basis = meter.union([proofs[i] for i in inputs])
                 else:
                     basis = set().union(*(proofs[i] for i in inputs))
+                if _direct_capture is not None:
+                    _direct_capture.insert(item[3][0], item[3][1], item[2])
                 closure.add(triple)
                 proofs[triple] = basis
                 changed = True
                 if len(closure) > MAX_TRIPLES:
                     raise SemanticError("RDFS_RESULT_LIMIT")
+        if _direct_capture is not None:
+            count = len(additions)
+            additions = item = inputs = triple = basis = None
+            _direct_capture.end_candidates(count)
+            _direct_capture.ledger.release("objects", 8 * count)
     return closure, proofs
 
 
@@ -955,7 +978,8 @@ def _profile_reason(graph, rules, catalog, term_context, *, _capture=None):
         meter.debit()
         plans.append((ordinal, spec, plan, budget, child_definitions))
     # All definitions (including disabled/zero-match) compiled before closure/join.
-    closure, proofs = _finite_closure(asserted, meter.debit, meter)
+    direct = None if _capture is None else _capture.direct_capture
+    closure, proofs = _finite_closure(asserted, meter.debit, meter, _direct_capture=direct)
     leaf_ids = {}
     leaf_records = []
     for triple in meter.ordered(asserted):
@@ -967,6 +991,8 @@ def _profile_reason(graph, rules, catalog, term_context, *, _capture=None):
         meter.debit(2)
         leaf_ids[triple] = reference
         leaf_records.append({"reference": reference, "triple": key})
+        if direct is not None:
+            direct.link_seed(key, reference)
     mechanism_batches = []
     firings = []
     derived = set()
@@ -1129,17 +1155,22 @@ def _profile_reason(graph, rules, catalog, term_context, *, _capture=None):
             "entryUsage": dict(entry.usage),
         },
     }
+    if direct is not None:
+        result["directSteps"] = direct.finish()
+        result["formatVersion"] = "i05-reasoning-result/3"
+        result["semanticsVersion"] = "i05-finite-8"
     result["graphBudget"]["usage"] = {"work": meter.work, "inputTermBytes": meter.input_bytes}
     return result
 
 
 def _reason_profile_core(graph, rules, catalog, term_context, capture):
     from ontolearn_engine.quality.rule_profile import ProfileFailure
+    from ontolearn_engine.semantic_profile_directsteps import DirectStepsFailure
     from ontolearn_engine.semantic_profile_input import MaterialFailure
 
     try:
         return _profile_reason(graph, rules, catalog, term_context, _capture=capture)
-    except ProfileReasonError:
+    except (ProfileReasonError, DirectStepsFailure):
         raise
     except ProfileFailure as error:
         raise _profile_failure(error) from None

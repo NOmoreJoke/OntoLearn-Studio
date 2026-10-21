@@ -497,9 +497,9 @@ def release_utf8(raw, ledger):
 class _Reader:
     """Two passes: no value-string/container construction before lexical gates."""
 
-    def __init__(self, text, ledger, build, label):
+    def __init__(self, text, ledger, build, label, keys=JSON_KEYS):
         self.text, self.ledger, self.build = text, ledger, build
-        self.label = label
+        self.label, self.keys = label, keys
         self.pos, self.length = 0, len(text)
 
     def bad(self):
@@ -631,7 +631,7 @@ class _Reader:
         return value
 
     def fixed_key(self, value):
-        for known in JSON_KEYS:
+        for known in self.keys:
             self.ledger.charge("schema", len(value) + len(known) + 1, stage="A1")
             if value == known:
                 return known
@@ -725,17 +725,27 @@ class _Reader:
         return result
 
 
-def read_json(raw, ledger, *, label="payload"):
+def read_json(raw, ledger, *, label="payload", schema_version="i05-profile-restore-schema/1"):
     if type(raw) is not bytes or type(ledger) is not RestoreLedger:
         reject()
+    if type(schema_version) is not str or schema_version not in (
+        "i05-profile-restore-schema/1",
+        "i05-profile-restore-schema/2",
+    ):
+        reject()
+    keys = (
+        JSON_KEYS
+        if schema_version.endswith("/1")
+        else JSON_KEYS + ("directSteps", "steps", "premises", "depth")
+    )
     text = utf8(raw, ledger, label=label)
     ledger.reserve("objects", 4096, stage="A1")
     ledger.reserve("scalar", 16384, stage="A1")
     try:
         ledger.charge("wire", len(raw), stage="A1")
-        _Reader(text, ledger, False, label).read()
+        _Reader(text, ledger, False, label, keys).read()
         ledger.charge("wire", len(raw), stage="A1")
-        return _Reader(text, ledger, True, label).read()
+        return _Reader(text, ledger, True, label, keys).read()
     finally:
         ledger.release("scalar", 16384)
         ledger.release("objects", 4096)

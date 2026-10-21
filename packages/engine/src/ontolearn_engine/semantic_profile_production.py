@@ -48,12 +48,87 @@ class ProfileComputation:
     retention_owner: str = "receiving caller; native, wire and bytes remain live"
 
 
+@dataclass(frozen=True, slots=True, kw_only=True)
+class ProfileExplanationComputation(ProfileComputation):
+    direct_receipt: object
+    version: str = "i05-profile-explanation-computation/1"
+
+
+def _direct_bound(value, ledger, depth=0):
+    """Count a canonical upper bound, without constructing a projection tree.
+
+    Only the original projector's exact approved classes are traversed. Each
+    dispatch, UTF8 scan and frame is prepaid in D before touching descendants.
+    The result counts all JSON escapes, record tags and integer/byte wrappers.
+    """
+    from .quality.rule_profile import InputLocation
+    from .semantic_profile_directsteps import DirectStepsFailure
+    from .semantic_profile_restore import _EQUAL_FIELDS
+
+    ledger.debit("work", 64)
+    ledger.reserve("objects", 32)
+    try:
+        if depth > 32:
+            raise DirectStepsFailure("DIRECT_STEPS_LIMIT", stage=ledger.stage, domain="work")
+        kind = type(value)
+        if value is None or kind is bool:
+            return 5
+        if kind is str:
+            ledger.debit("scan_copy", 4 * len(value) + 1)
+            return 6 * len(value) + 2
+        if kind is int:
+            return max(24, value.bit_length() // 4 + 32)
+        if kind is bytes:
+            ledger.debit("scan_copy", len(value) + 1)
+            return 2 * len(value) + 48
+        if kind in (tuple, list):
+            ledger.debit("work", len(value) + 1)
+            return 2 * len(value) + 2 + sum(_direct_bound(v, ledger, depth + 1) for v in value)
+        if kind is dict:
+            ledger.debit("work", 4 * len(value) + 1)
+            total = 4 * len(value) + 2
+            for key, item in value.items():
+                if type(key) is not str:
+                    raise DirectStepsFailure("DIRECT_STEPS_INTERNAL", stage=ledger.stage)
+                total += _direct_bound(key, ledger, depth + 1)
+                total += _direct_bound(item, ledger, depth + 1)
+            return total
+        approved = _EQUAL_FIELDS + ((InputLocation, ("section", "index", "side", "span")),)
+        for cls, names in approved:
+            if kind is cls:
+                total = 64 + 6 * len(cls.__name__)
+                for name in names:
+                    total += 6 * len(name) + 8
+                    total += _direct_bound(getattr(value, name), ledger, depth + 1)
+                return total
+        raise DirectStepsFailure("DIRECT_STEPS_INTERNAL", stage=ledger.stage)
+    finally:
+        value = None
+        ledger.discard(objects=32)
+
+
+def _direct_stream(ledger, bound, *, passes):
+    # Per pass: UTF8 decoding <=4J scalars, JSON escaped buffer <=J,
+    # projected dict/list slots <=8J, plus serializer sort/row slices <=3J.
+    # The entire block stays held through transfer, including temporary slack.
+    ledger.debit("work", 32 * passes * bound)
+    ledger.debit("scan_copy", 16 * passes * bound)
+    ledger.reserve("objects", 8 * passes * bound + 128)
+    ledger.reserve("scalar", 8 * passes * bound + 1024)
+
+
 class _ProductionCapture:
     """Exact private observer. No arbitrary callback or supplied allocation."""
 
-    def __init__(self, material, ledger):
+    def __init__(self, material, ledger, direct_ledger=None):
         _require(type(material) is ProfileMaterial and type(ledger) is CaptureLedger)
         self.material, self.ledger = material, ledger
+        self.direct_ledger = direct_ledger
+        self.direct_capture = None
+        if direct_ledger is not None:
+            from .semantic_profile_directsteps import _DirectStepsCapture
+
+            self.direct_capture = _DirectStepsCapture(direct_ledger)
         self.actual_definitions = self.actual_catalog = self.raw_rules = None
         self.disabled = None
         ledger.reserve("objects", 4)
@@ -95,7 +170,13 @@ class _ProductionCapture:
         # is checked after the original same-projection source gate as well.
         _require(type(source) is type(self.material.source))
 
-    def before_projection(self):
+    def before_projection(self, native=None, source=None, rules=None):
+        if self.direct_ledger is not None:
+            self.direct_ledger.enter("encode")
+            bound = _direct_bound(native, self.direct_ledger)
+            bound += _direct_bound(source, self.direct_ledger)
+            bound += _direct_bound(rules, self.direct_ledger) + 2048
+            _direct_stream(self.direct_ledger, bound, passes=3)
         self.ledger.enter(6, 3 * MAX_BYTES)
         # Prepay all five original digests before the first (input/source/defs)
         # in the projection stage. Q<=2M, defs<=M, payload+rows<=M.
@@ -129,6 +210,9 @@ class _ProductionCapture:
         )
 
     def drop(self):
+        if self.direct_capture is not None:
+            self.direct_capture.drop()
+        self.direct_capture = None
         self.material = self.actual_definitions = self.actual_catalog = self.raw_rules = None
         self.disabled = self.native = self.encoded = self.rows_encoded = None
         self.source_encoded = self.definitions_encoded = self.wire = None
@@ -142,16 +226,34 @@ def _same_bytes(actual, expected, ledger):
         raise MaterialFailure("MATERIAL_MISMATCH", stage=ledger.stage)
 
 
-def execute_admitted_profile_job(material, *, error_catalog, error_schema, ledger=None):
+def _execute_admitted_profile_job(
+    material, *, error_catalog, error_schema, ledger=None, direct_ledger=None
+):
     """Actual component execution; its name grants no Store or Job authority."""
     from . import semantic_execution
+    from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
 
+    if direct_ledger is not None:
+        if type(direct_ledger) is not DirectStepsLedger:
+            raise DirectStepsFailure()
+        if direct_ledger.state != "new":
+            raise DirectStepsFailure("DIRECT_STEPS_REUSED", stage=direct_ledger.stage)
     ledger = CaptureLedger() if ledger is None else ledger
     _require(type(ledger) is CaptureLedger)
     capture = checked = catalog_json = allocation = receipt = outcome = error = None
     encoded_source = value = actual = supplied = reference = revision = None
+    direct_receipt = None
     try:
+        if direct_ledger is not None:
+            direct_ledger.begin(stage="capture")
         _require(type(material) is ProfileMaterial)
+        if direct_ledger is not None:
+            _require(type(material.records) is tuple)
+            bound = _direct_bound(material.records, direct_ledger)
+            bound += _direct_bound(material.source, direct_ledger)
+            bound += _direct_bound(material.rules, direct_ledger)
+            bound += len(material.input_preimage) + len(material.definition_material) + 2048
+            _direct_stream(direct_ledger, bound, passes=2)
         _require(type(material.version) is str and material.version == MATERIAL_VERSION)
         for value in (
             material.input_preimage,
@@ -198,7 +300,7 @@ def execute_admitted_profile_job(material, *, error_catalog, error_schema, ledge
         ledger.release("scalar", len(encoded_source))
         encoded_source = None
         ledger.enter(5, 3 * MAX_BYTES)
-        capture = _ProductionCapture(checked, ledger)
+        capture = _ProductionCapture(checked, ledger, direct_ledger)
         semantic_execution._execute_profile_production(
             checked,
             capture,
@@ -224,10 +326,20 @@ def execute_admitted_profile_job(material, *, error_catalog, error_schema, ledge
         ledger.debit("scan_copy", 16 * MAX_BYTES)
         ledger.reserve("scalar", 8 * MAX_BYTES)
         ledger.reserve("objects", 2 * MAX_BYTES)
+        if direct_ledger is not None:
+            _direct_stream(
+                direct_ledger, _direct_bound(capture.actual_catalog, direct_ledger), passes=1
+            )
         catalog_json = _profile_json_bytes(_ProfileProjection().value(capture.actual_catalog))
         _hash(catalog_json, ledger)
         receipt = ledger.receipt()
-        outcome = ProfileComputation(
+        if direct_ledger is not None:
+            # Drop private capture/index before receipt; carrier has its own tickets.
+            capture.direct_capture.drop()
+            capture.direct_capture = None
+            direct_receipt = direct_ledger.receipt()
+        cls = ProfileComputation if direct_ledger is None else ProfileExplanationComputation
+        outcome = cls(
             checked,
             capture.native,
             allocation,
@@ -240,22 +352,54 @@ def execute_admitted_profile_job(material, *, error_catalog, error_schema, ledge
             catalog_json,
             capture.wire,
             receipt,
+            **({} if direct_ledger is None else {"direct_receipt": direct_receipt}),
         )
         ledger.transferred()
+        if direct_ledger is not None:
+            direct_ledger.transferred()
+    except DirectStepsFailure as exc:
+        error = DirectStepsFailure(exc.reason, stage=exc.stage, domain=exc.domain)
     except MaterialFailure as exc:
         error = MaterialFailure(exc.reason, domain=exc.domain, stage=exc.stage)
     except semantic_execution.ProfileExecutionFault as exc:
         error = semantic_execution.ProfileExecutionFault(exc.error, exc.diagnostic)
     except Exception:
-        error = MaterialFailure("MATERIAL_INTERNAL")
+        error = (
+            MaterialFailure("MATERIAL_INTERNAL")
+            if direct_ledger is None
+            else DirectStepsFailure("DIRECT_STEPS_INTERNAL", stage=direct_ledger.stage)
+        )
     finally:
         if capture is not None:
             capture.drop()
-        capture = checked = catalog_json = allocation = receipt = None
+        capture = checked = catalog_json = allocation = receipt = direct_receipt = None
         encoded_source = value = actual = supplied = reference = revision = None
         if error is not None:
             outcome = None
             ledger.failed()
+            if direct_ledger is not None:
+                direct_ledger.failed()
     if error is not None:
         raise error
     return outcome
+
+
+def execute_admitted_profile_job(material, *, error_catalog, error_schema, ledger=None):
+    return _execute_admitted_profile_job(
+        material, error_catalog=error_catalog, error_schema=error_schema, ledger=ledger
+    )
+
+
+def execute_profile_explanation(material, *, error_catalog, error_schema, ledger, direct_ledger):
+    """Explicit internal explanation computation; no Job or source authority."""
+    from .semantic_profile_directsteps import DirectStepsFailure, DirectStepsLedger
+
+    if type(direct_ledger) is not DirectStepsLedger:
+        raise DirectStepsFailure()
+    return _execute_admitted_profile_job(
+        material,
+        error_catalog=error_catalog,
+        error_schema=error_schema,
+        ledger=ledger,
+        direct_ledger=direct_ledger,
+    )
