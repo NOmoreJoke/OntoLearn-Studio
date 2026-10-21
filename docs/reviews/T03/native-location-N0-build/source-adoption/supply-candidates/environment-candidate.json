@@ -1,0 +1,41 @@
+{
+  "approval": {
+    "approved": false,
+    "reference": null
+  },
+  "current_driver_ref": "fe98dab02375362fcc07ca9bb309de17b558fcf2",
+  "driver_path": "scripts/build-native-location.mjs",
+  "current_darwin_lock_schema_environment": {},
+  "current_build_env_literal_values": {
+    "PATH": "/usr/bin:/bin",
+    "LANG": "C",
+    "LC_ALL": "C"
+  },
+  "current_build_env_derived_values": {
+    "HOME": "buildDir",
+    "TMPDIR": "buildDir"
+  },
+  "requested_unadopted_environment_literal_values": {
+    "PATH": "/usr/bin:/bin",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
+  },
+  "requested_derived_values": {
+    "HOME": "future exact driver buildDir",
+    "TMPDIR": "same future exact driver buildDir"
+  },
+  "current_driver_accepts_or_passes_DEVELOPER_DIR": false,
+  "minimum_future_owner_delta": [
+    {
+      "site": "validateSchema darwin environment allowed keys",
+      "change": "If approved, explicitly allow and pin DEVELOPER_DIR instead of the currently exact empty object; retain exact key validation and no ambient inherit."
+    },
+    {
+      "site": "build darwin env construction",
+      "change": "If approved, pass the exact approved DEVELOPER_DIR literal along with existing PATH/HOME/TMPDIR/LANG/LC_ALL; current driver hardcodes the object and does not consume tc.environment."
+    }
+  ],
+  "no_driver_or_lock_changed": true,
+  "reason": "Direct actual make/git backend candidates avoid treating Apple dispatchers as compiler/tool identities; developer selection still must be an explicit adopted environment decision for any xcrun/compiler module selection."
+}

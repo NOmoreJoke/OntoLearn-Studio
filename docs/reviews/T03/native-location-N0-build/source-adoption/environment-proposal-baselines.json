@@ -1,0 +1,30 @@
+{
+  "status": "PROPOSAL_ONLY_NOT_APPLIED_OR_EXECUTED",
+  "scope": "Environment three-writer delta only; no approvals/source/tool pins changed by proposal",
+  "baselines": [
+    {
+      "path": "scripts/build-native-location.mjs",
+      "bytes": 27002,
+      "sha256": "d1ddcbd699be1feccd85a39ec583bcab6563d08597f70df5ad430f9879f06714",
+      "proposedBytes": 27215,
+      "proposedSha256": "282520ada26256acb5c6d880dd7e805b0f0b430b4710c0b9181218a433b35a57"
+    },
+    {
+      "path": "packages/native-location/CMakeLists.txt",
+      "bytes": 13332,
+      "sha256": "81df2fbf6169cfb8d990080cf9f804adc6e275accdfc912f9c334028578d7a5d",
+      "proposedBytes": 13648,
+      "proposedSha256": "9455d850157fc8dc2480bd50206f83d2b648e8ae690aecc5fd5410c0af3a0444"
+    },
+    {
+      "path": "packages/native-location/toolchain-lock.json",
+      "bytes": 5336,
+      "sha256": "25bc2db37dc061b6ec736397d7d128576d1747a8954d178a4686d6d71278dc93",
+      "proposedBytes": 5413,
+      "proposedSha256": "16529c16e73a60474bbb6473ce46ecfc7de6d24c441b3bfe1f44557df1676978"
+    }
+  ],
+  "patchBytes": 1401,
+  "patchSha256": "fefe12f04574af70d2a3f34927408473447c612d085a01fe171d77610eb90a9c",
+  "constructionNote": "First metadata-only replacement assertion rejected duplicate selector before any file write; narrowed selector to validation occurrence. No product mutation or validation failure."
+}

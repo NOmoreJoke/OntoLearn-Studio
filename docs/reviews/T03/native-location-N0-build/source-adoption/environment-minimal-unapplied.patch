@@ -1,0 +1,26 @@
+--- a/scripts/build-native-location.mjs
++++ b/scripts/build-native-location.mjs
+@@ -278 +278 @@
+-      t === 'darwin-arm64' ? [] : ['INCLUDE', 'LIB', 'PATH', 'SystemRoot', 'TEMP', 'TMP'],
++      t === 'darwin-arm64' ? ['DEVELOPER_DIR'] : ['INCLUDE', 'LIB', 'PATH', 'SystemRoot', 'TEMP', 'TMP'],
+@@ -280,0 +281,2 @@
++    if (t === 'darwin-arm64')
++      need(tc.environment.DEVELOPER_DIR === '/Applications/Xcode.app/Contents/Developer', 'fixed Developer root required')
+@@ -481 +483 @@
+-      ? { PATH: '/usr/bin:/bin', HOME: buildDir, TMPDIR: buildDir, LANG: 'C', LC_ALL: 'C' }
++      ? { PATH: '/usr/bin:/bin', HOME: buildDir, TMPDIR: buildDir, LANG: 'C', LC_ALL: 'C', DEVELOPER_DIR: tc.environment.DEVELOPER_DIR }
+--- a/packages/native-location/CMakeLists.txt
++++ b/packages/native-location/CMakeLists.txt
+@@ -187,0 +188,5 @@
++  nl_get(NL_DEVELOPER_DIR toolchains ${NL_TARGET} environment DEVELOPER_DIR)
++  if(NOT NL_DEVELOPER_DIR STREQUAL "/Applications/Xcode.app/Contents/Developer" OR
++     NOT "$ENV{DEVELOPER_DIR}" STREQUAL NL_DEVELOPER_DIR)
++    message(FATAL_ERROR "Fixed Developer environment required before compiler probing")
++  endif()
+--- a/packages/native-location/toolchain-lock.json
++++ b/packages/native-location/toolchain-lock.json
+@@ -105 +105,3 @@
+-      "environment": {},
++      "environment": {
++        "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer"
++      },

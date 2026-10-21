@@ -1,0 +1,49 @@
+{
+  "candidate": "host-environment-1-pending-real-make",
+  "checks": [
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "--check",
+        "scripts/build-native-location.mjs"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 0,
+      "stdout": "environment-static-0.stdout",
+      "stderr": "environment-static-0.stderr"
+    },
+    {
+      "argv": [
+        "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-profile-build/node_modules/.bin/prettier",
+        "--check",
+        "scripts/build-native-location.mjs",
+        "packages/native-location/toolchain-lock.json"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 0,
+      "stdout": "environment-static-1.stdout",
+      "stderr": "environment-static-1.stderr"
+    }
+  ],
+  "writers": [
+    {
+      "path": "packages/native-location/CMakeLists.txt",
+      "bytes": 13648,
+      "sha256": "9455d850157fc8dc2480bd50206f83d2b648e8ae690aecc5fd5410c0af3a0444"
+    },
+    {
+      "path": "packages/native-location/toolchain-lock.json",
+      "bytes": 9140,
+      "sha256": "7b6d0f50a2ea1d480b009f2050a60e80027d61a049fbbd5f507aca862289bada"
+    },
+    {
+      "path": "scripts/build-native-location.mjs",
+      "bytes": 27325,
+      "sha256": "14e15fdf74f5ec57688fb15ff4218f856737bd4d15ff9ac7b10dd3c629c369ae"
+    }
+  ],
+  "toolchainAndExecutionApprovalsFalse": true,
+  "makeSelectorGapNotResolvedYet": true,
+  "noBuildExecuted": true,
+  "noRepeatSixVerifyOnly": true
+}

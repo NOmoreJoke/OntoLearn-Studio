@@ -1,0 +1,32 @@
+{
+  "status": "incomplete",
+  "mode": "verify-only",
+  "target": "darwin-arm64",
+  "component": "fixture-addon",
+  "processExecution": false,
+  "inputWrites": false,
+  "lockSha256": "25bc2db37dc061b6ec736397d7d128576d1747a8954d178a4686d6d71278dc93",
+  "inputDigest": "8743325f0c4f78621f2025111f524b69cf7801e2a8090cb61dd0f0ae30e30b4f",
+  "writers": [
+    {
+      "path": "packages/native-location/CMakeLists.txt",
+      "bytes": 13332,
+      "sha256": "81df2fbf6169cfb8d990080cf9f804adc6e275accdfc912f9c334028578d7a5d"
+    },
+    {
+      "path": "packages/native-location/toolchain-lock.json",
+      "bytes": 5336,
+      "sha256": "25bc2db37dc061b6ec736397d7d128576d1747a8954d178a4686d6d71278dc93"
+    },
+    {
+      "path": "scripts/build-native-location.mjs",
+      "bytes": 27002,
+      "sha256": "d1ddcbd699be1feccd85a39ec583bcab6563d08597f70df5ad430f9879f06714"
+    }
+  ],
+  "gaps": [
+    "darwin-arm64: supplied/extracted toolchain and SDK acceptance pending; not read",
+    "Node headers/license supply adoption pending; not read",
+    "configure/build execution window pending: darwin-arm64/fixture-addon"
+  ]
+}

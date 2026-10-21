@@ -1,5 +1,7 @@
 # T03 N0 三构建源码与官方工具材料交付
 
+2026-10-22 源采用追加：九原件独立采用a026322，授权/回执ac37，源与静态合同锁产品6614837；完整产品/tests为12，实际12API最高门3仅获静态接受，详source-adoption/summary.md。后续7961/1879另授固定DEVELOPER_DIR和精确GNU make后薄宿主core，当前实际环境/供方复审及构建证据另见host-core-build；下文旧阶段原件保留，不混阶段结论。
+
 2026-10-22 追加状态：控制侧在 c7 静态预审中新增 R5 日志异常路径问题，现已最小修订 driver 并另交同候选独审、静态及只读 incomplete 校验；详 review 下 `logging-fix-disposition.md`。另获准的工具提取/版本/供应清单窗口由独立材料 agent 执行，真实出口与读取 guard 缺口详 `tool-supply/index.md`。所有 source/toolchain/execution/binding/testAssembly 审批仍 false，API3 仍待完整 binding 固定源证明。以下原章节及原 manifest/报告记录 c7 首轮静态交付，保留其原始证据和阶段边界。
 
 2026-10-22（授权日期 2026-10-21）。本轮完成三份真实构建源码及官方材料静态准备，**未进入 configure、try_compile、编译、CTest、native/child/FS 测试或 addon/Electron 加载；N0 不记构建通过。**锁中九源码采用、工具链供应、实际 binding 最低 API 和执行窗口均明确 pending。没有用假头、业务 stub、猜测 exports 或临时 helper 凑出可执行闭包。

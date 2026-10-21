@@ -1,0 +1,222 @@
+{
+  "candidate": "source-lock-1",
+  "authorityRef": "ac37ebf4d0fceaa2aabd9c06e33cc4c6ede26c47",
+  "adoptionRef": "a026322ad287bfc42cd24ac7a64e78d48046e96f",
+  "productAndTestsCount": 12,
+  "productAndTestPinsBeforeAfterEqual": true,
+  "pins": [
+    {
+      "path": "packages/native-location/CMakeLists.txt",
+      "bytes": 13332,
+      "sha256": "81df2fbf6169cfb8d990080cf9f804adc6e275accdfc912f9c334028578d7a5d"
+    },
+    {
+      "path": "packages/native-location/toolchain-lock.json",
+      "bytes": 5336,
+      "sha256": "25bc2db37dc061b6ec736397d7d128576d1747a8954d178a4686d6d71278dc93"
+    },
+    {
+      "path": "scripts/build-native-location.mjs",
+      "bytes": 27002,
+      "sha256": "d1ddcbd699be1feccd85a39ec583bcab6563d08597f70df5ad430f9879f06714"
+    },
+    {
+      "path": "packages/native-location/include/location_abi.h",
+      "bytes": 13296,
+      "sha256": "fc3f7983d62b0ef4f5a3a056198c00a0b971d2ae722acc33bc6f61937ec8e172"
+    },
+    {
+      "path": "packages/native-location/src/capability_core.cc",
+      "bytes": 17304,
+      "sha256": "eae2d2dcf4ccf1f648dbec5fdd0424c0a2dac31a94a45d493e819948f2309319"
+    },
+    {
+      "path": "packages/native-location/src/platform_macos.cc",
+      "bytes": 7675,
+      "sha256": "28f9c736e59a24cb050b706628aca26283a513fa3c019fdf58dd14e7d3f8a5be"
+    },
+    {
+      "path": "packages/native-location/src/platform_windows.cc",
+      "bytes": 12506,
+      "sha256": "bcf474ca9d9e5ce4efdf06284dd71b9504c5e69027d3a53c96fa7df56bc2b4c4"
+    },
+    {
+      "path": "packages/native-location/src/node_binding.cc",
+      "bytes": 13163,
+      "sha256": "e10e59bdb200460310489bb4fc5b8c64ab79c1b8e2cfc9e7353a10a0c8667383"
+    },
+    {
+      "path": "apps/desktop/src/main/security/native-location-owner.ts",
+      "bytes": 12496,
+      "sha256": "e354b0830469647d70690f3e1d6e567c816f70cbbbe5c211dabba817fa7cc8d0"
+    },
+    {
+      "path": "packages/native-location/tests/location_core_test.cc",
+      "bytes": 29666,
+      "sha256": "7d0965cafe74fcbaa0d6c0fcf57078d2969fd3f243d7a14d1e7244329017bcdc"
+    },
+    {
+      "path": "packages/native-location/tests/location_child_probe.cc",
+      "bytes": 380,
+      "sha256": "041e60f57b34ec1b04157e73e2161b332acc3bc8f804d7f7fcd6baf575d34b9c"
+    },
+    {
+      "path": "tests/unit/i06-native-location-owner.test.ts",
+      "bytes": 8460,
+      "sha256": "e0946f7daf1236045d0198d989cf718ea40227d63b76e5a1407eaa1b0d501b04"
+    }
+  ],
+  "checks": [
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "--check",
+        "scripts/build-native-location.mjs"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 0,
+      "stdout": "static-0.stdout",
+      "stderr": "static-0.stderr"
+    },
+    {
+      "argv": [
+        "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-profile-build/node_modules/.bin/prettier",
+        "--check",
+        "packages/native-location/toolchain-lock.json"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 0,
+      "stdout": "static-1.stdout",
+      "stderr": "static-1.stderr"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "scripts/build-native-location.mjs",
+        "--target",
+        "darwin-arm64",
+        "--component",
+        "core",
+        "--verify-only"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 2,
+      "stdout": "verify-darwin-arm64-core.stdout",
+      "stderr": "verify-darwin-arm64-core.stderr",
+      "gaps": [
+        "darwin-arm64: supplied/extracted toolchain and SDK acceptance pending; not read",
+        "configure/build execution window pending: darwin-arm64/core"
+      ]
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "scripts/build-native-location.mjs",
+        "--target",
+        "darwin-arm64",
+        "--component",
+        "addon",
+        "--verify-only"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 2,
+      "stdout": "verify-darwin-arm64-addon.stdout",
+      "stderr": "verify-darwin-arm64-addon.stderr",
+      "gaps": [
+        "darwin-arm64: supplied/extracted toolchain and SDK acceptance pending; not read",
+        "Node headers/license supply adoption pending; not read",
+        "configure/build execution window pending: darwin-arm64/addon"
+      ]
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "scripts/build-native-location.mjs",
+        "--target",
+        "darwin-arm64",
+        "--component",
+        "fixture-addon",
+        "--verify-only"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 2,
+      "stdout": "verify-darwin-arm64-fixture-addon.stdout",
+      "stderr": "verify-darwin-arm64-fixture-addon.stderr",
+      "gaps": [
+        "darwin-arm64: supplied/extracted toolchain and SDK acceptance pending; not read",
+        "Node headers/license supply adoption pending; not read",
+        "configure/build execution window pending: darwin-arm64/fixture-addon"
+      ]
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "scripts/build-native-location.mjs",
+        "--target",
+        "win32-x64",
+        "--component",
+        "core",
+        "--verify-only"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 2,
+      "stdout": "verify-win32-x64-core.stdout",
+      "stderr": "verify-win32-x64-core.stderr",
+      "gaps": [
+        "win32-x64: supplied/extracted toolchain and SDK acceptance pending; not read",
+        "configure/build execution window pending: win32-x64/core",
+        "host mismatch: darwin-arm64; cross compilation unsupported"
+      ]
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "scripts/build-native-location.mjs",
+        "--target",
+        "win32-x64",
+        "--component",
+        "addon",
+        "--verify-only"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 2,
+      "stdout": "verify-win32-x64-addon.stdout",
+      "stderr": "verify-win32-x64-addon.stderr",
+      "gaps": [
+        "win32-x64: supplied/extracted toolchain and SDK acceptance pending; not read",
+        "Node headers/license supply adoption pending; not read",
+        "Windows Electron import/hook/delayimp supply pending; not read",
+        "configure/build execution window pending: win32-x64/addon",
+        "host mismatch: darwin-arm64; cross compilation unsupported"
+      ]
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "scripts/build-native-location.mjs",
+        "--target",
+        "win32-x64",
+        "--component",
+        "fixture-addon",
+        "--verify-only"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-native-location-N0-build",
+      "exit": 2,
+      "stdout": "verify-win32-x64-fixture-addon.stdout",
+      "stderr": "verify-win32-x64-fixture-addon.stderr",
+      "gaps": [
+        "win32-x64: supplied/extracted toolchain and SDK acceptance pending; not read",
+        "Node headers/license supply adoption pending; not read",
+        "Windows Electron import/hook/delayimp supply pending; not read",
+        "configure/build execution window pending: win32-x64/fixture-addon",
+        "host mismatch: darwin-arm64; cross compilation unsupported"
+      ]
+    }
+  ],
+  "sourceStaticContractsAcceptedOnly": true,
+  "toolchainNodeWindowsExecutionStillFalse": true,
+  "noNativeBuildDirectory": true,
+  "supplyLargeObjectRehashOrProbe": false,
+  "noConfigureBuildNativeTestLoad": true,
+  "noNormalProductTestExecuted": true
+}

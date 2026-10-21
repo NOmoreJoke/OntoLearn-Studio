@@ -275,9 +275,16 @@ function validateSchema(l) {
     for (const k of ['settings', 'terms', 'inventory']) pinSchema(tc.sdk[k], `sdk.${k}`)
     object(
       tc.environment,
-      t === 'darwin-arm64' ? [] : ['INCLUDE', 'LIB', 'PATH', 'SystemRoot', 'TEMP', 'TMP'],
+      t === 'darwin-arm64'
+        ? ['DEVELOPER_DIR']
+        : ['INCLUDE', 'LIB', 'PATH', 'SystemRoot', 'TEMP', 'TMP'],
       'environment',
     )
+    if (t === 'darwin-arm64')
+      need(
+        tc.environment.DEVELOPER_DIR === '/Applications/Xcode.app/Contents/Developer',
+        'fixed Developer root required',
+      )
     for (const v of Object.values(tc.environment))
       need(
         v === null || (typeof v === 'string' && v.length > 0 && !/[\0\r\n]/.test(v)),
@@ -478,7 +485,14 @@ function build(l, opts, result) {
   fs.mkdirSync(buildDir) // Existing cache/logs are never reused or overwritten.
   const env =
     opts.target === 'darwin-arm64'
-      ? { PATH: '/usr/bin:/bin', HOME: buildDir, TMPDIR: buildDir, LANG: 'C', LC_ALL: 'C' }
+      ? {
+          PATH: '/usr/bin:/bin',
+          HOME: buildDir,
+          TMPDIR: buildDir,
+          LANG: 'C',
+          LC_ALL: 'C',
+          DEVELOPER_DIR: tc.environment.DEVELOPER_DIR,
+        }
       : { ...tc.environment, USERPROFILE: buildDir }
   const configure = [
     '-S',
