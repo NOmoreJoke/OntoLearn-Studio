@@ -1,0 +1,102 @@
+# I05 → T05：冻结 C4 的真实图执行接口与下一候选缺口
+
+结论：C4 已有真实图解析、有限 RDFS 闭包和一次冻结图规则匹配入口，可以交付准确的现状接口；它还不能执行已采用 profile/1 的比较、多结论和完整定位。T05 `1e3e0ee` 的私有机制收口没有补上这些图入口缺口，也没有成为 I05 的批准依赖。本件仅作原 Goal 内的文档交付，不解冻 C4、不实施接入、不重建执行器或 Goal。
+
+## 固定来源与读取边界
+
+- C4 冻结头 `523c478d5f39671c4ac7c1ea6997e51d3047d58e`，产品 `1a79731091e671c497824c94e12dae34a4e8609b`，完整回归 `40c18ea1b9ce4fef9a5235718fd7e622e2d06cc4`。下列源码行号全部属于冻结头；本次逐文件 Git/现场字节绑定见同目录 `inputs.json`，没有用后续 T01 实现补写 C4 的能力。
+- T05 固定计划 `6e4f19bd95d6b8850879ebb770ef003ffd9d9a61` 的 `docs/iterations/T05/real-execution-next-stage-plan.md`，18158 B，SHA `79eca34c` 前缀，全文回读并保全。固定 profile 与阶段规格分别为 `9259f4ac6622857182570509378afb6c96ab5c4dc19d2e887db559c27a282427`、`8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424`。两规格中的“尚未实施”是发布时态；机制的后续实际收口以根原件为准。
+- 根收口原件 4103 B、SHA `a035a725fcb1a68deb9ecab479e19be0749f0ce53efb4a4b14ef54b9bda2b550`，已全文读回，确认根对固定 `1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb` 的精确 20 路径私有机制收口。1408 专项、635 TS/2608 Python 是该根记录核过的终态，本轮没有复跑或独立重审该实现。只作计划/规格对照，未复制、import、执行其代码。
+- Q6 与有日期 REC pin 已采用，见 [采用收据](../q6-user-adoption-328a59c4/local-readback.json)。不再要求人类重选。政策采用、技术接受、阶段实现、跨线消费批准和领域验收分别成立，不能互换。
+- 本件依据 PRD FR-500–505、附录 C/D/G.2；不重写完整消费者矩阵。既有 [TA 答复](../../t05-ta-response-157963e/owner-response.md) 的 TA-C 全表及 [D/M/P 答复](../../t05-design-response-c3/owner-response.md) 的 D1–D9、M1–M11（含 M8a/b/c）、P1–P6 表及其后 T01/T03/I06 责任段保留为精确引用；T05 `90c5c72a3ddbf0710ee20388c44b36660c514a79` 的 [联合接受/缺口表](T05-90c-accepted-scope.md.raw) §§2–4 已进一步固定 C 格、上下文、source 与历史边界。它们的“Q6 待采用/C3 字符串待修”是历史状态；当前变化是政策已采用、C4 字符串修复实证完成，其他未实现格不能由此消失。
+
+## 1. 实际 callable、编码与返回值
+
+所有路径前缀为 `packages/engine/src/ontolearn_engine/`。这是现有 Python 内部 callable，不能据此称公共方法已批准或 T05 可立即跨线运行。
+
+| 固定文件与位置 | 实际签名/职责 | 实际约束 |
+| --- | --- | --- |
+| `semantic.py:99` | `parse_turtle(text: str, *, format: str = "turtle", shapes: bool = False) -> Graph` | 仅文本 Turtle；不是 URL/file loader。内部 base 为 `urn:ontolearn:i05:`，相对 IRI 由此解析，并非保留相对拼写。离线范围、类型/词表/三元组门在本入口执行。 |
+| `semantic.py:208` | `Rule(id: str, when: tuple[Triple, ...], then: Triple)`，frozen dataclass；`Triple = tuple[Identifier, Identifier, Identifier]` | when 1–16 个合取三元组；仅 `URIRef/Literal/Variable`，subject/predicate 只 URI/Variable。没有 comparison、revision、profile、多个 head 或 source 字段。 |
+| `semantic.py:294` | `reason(graph: Graph, rules: tuple[Rule, ...] = ()) -> dict` | 接收恰为 RDFLib `Graph` 且 store 恰为内存 `Memory` 的图，内部复制。规则至多 100，id 不重复；不接 Dataset/远程 Store/plugin 子类。直接调用时图已失去“事实/本体”角色区分。 |
+| `semantic_scopes.py:301` | `prepare_validation_scope(asserted: Graph, ontology: Graph, *, include_derived: bool, rules: tuple[Rule, ...] = ()) -> ValidationScope` | 显式两层：事实不得混公理，本体不得混领域事实（label/comment 例外）；include 时实际 reason 合图，再投影。未选派生时不得偷偷传 rules。 |
+| `semantic_scopes.py:234` | `project_validation_scope(asserted, ontology, *, include_derived, reasoning_result=None, reasoning_source=None, rules=()) -> ValidationScope`（完整类型见源码） | 只验证并投影已选结果，不调用 reason 补算；核 source 与完整结果内部一致性，不证明 producer 权限、匹配穷尽或全部 RDFS 路径。 |
+| `semantic_execution.py:168` | `build_request(snapshot, capability, input_, parameters, selected=None, *, error_catalog=None, error_schema=None)` | 验结构/快照摘要并 JSON 深复制，无 RDF 计算。capability 仅 query/reasoning/validation.execute；认证由真实 Store 边界提供，不由传入 dict 自证。 |
+| `semantic_execution.py:323` | `execute_request(request, *, error_catalog, error_schema)` | 真实解码、执行、投影，返回恰 `{payload, rows}`；错误转安全 `SemanticExecutionFault.error`。不是保存/提交 API，无合作取消参数。 |
+| `semantic.py:128/:534` | `query(graph: Graph, text: str) -> dict`；`check_shapes(data: Graph, shapes: Graph) -> dict` | 原有限 SELECT/ASK、SHACL 消费者；不因新规则 profile 改变其值语义。SHACL 结果为真实 `conforms/violations`，普通违规不是执行异常。 |
+
+`build_request` 的 snapshot 实际包含 `state.facts`、`state.definitions`，后续还使用 `projectRevision/dependencyVector`。definition record 严格 `{layer,id,payload}`，payload 是 JSON 字符串，不能直接把 T05 私有 RuleSpec 当作已有编码：
+
+- 事实 record 至少有 `subject/predicate/object`；subject/predicate 是未加 N3 外壳的绝对 IRI 字符串，object 是严格 N3 的 `<IRI>` 或带引号 Literal；object=None 的受管 tombstone 跳过。额外事实元数据不进入 `_graph` 返回的 triple/source。
+- ontology payload 严格 `{triples}`，可选 `singleValuedPredicates/references`；其中 triple 严格 `{subject,predicate,object}`。`singleValuedPredicates` 在该语义执行分支未用于 head 受控目录校验。
+- rule payload 严格 `{enabled,when,then}`，可选 `references`；when 是三元素字符串数组的数组，then **恰一个**三元素数组。变量按 `\?[A-Za-z_][A-Za-z_0-9]*` 解码，其余项经 `_term`。仅 enabled=true 进入 `_rules` 的语义校验；停用规则有包装结构检查，但未保证全部停用定义的词法/引用预检。
+- query payload 为 `{text}`，可选 references；constraint 为 `{turtle,enabled}`，可选 references。reasoning 强制 scope=asserted，不能选择旧推导再推一轮。query/validation 可显式选恰一个、快照一致的 reasoning 结果；current/historical 的真实认证仍交 Store。
+- `_term`（execution:204–233）以私有 `LexicalSink(canonical_strings=False)` 解码恰一项，先要求原 N3 与 `.n3()` 完全相同，再转字符串抽象身份。它是严格 canonical N3 输入门，不接受任意等价 Turtle token；不可拿它当完整 RDF 原文往返协议。
+
+`reason` 完整返回形状为：
+
+```text
+{
+  rdfs: [N3Triple, ...],
+  rules: [N3Triple, ...],
+  warnings: ["RULE_CHAIN_UNSUPPORTED:<consumerId>", ...],
+  evidence: [{rule, result: N3Triple, inputs: [N3Triple, ...], basis: [N3Triple, ...]}, ...],
+  rdfsEvidence: [{result: N3Triple, basis: [N3Triple, ...]}, ...]
+}
+```
+
+此处 N3Triple 为三个 N3 字符串，Python 层 tuple、JSON 层数组。`rdfs` 是 closure 减原输入合图；`rules` 是所有自定义结论 term 集合，**不减 asserted 或 RDFS**，不是“新增知识差集”。同结论的不同匹配/规则保留各自 evidence；inputs 保 when 顺序，basis 为输入已记录 proof 的原事实/公理叶并集。`rdfsEvidence` 每结论只有一个稳定首 witness 的叶集合，没有直接推导边/公理步骤类型，也没有全部替代路径；不能将该载体称为全形式证明 DAG。
+
+完整 asserted 与 ontology 从 execute 的 payload 同时返回；reasoning payload 另含 `kind/reasoning/source` 及公共上下文 `inputSnapshotId/inputProjectRevision/executionSemanticsVersion/scope/definitionId/inputSelection/selectedResultIds`。`source` 恰含语义版本与 asserted/ontology/selectedRules 三个输入 SHA，不是 raw 来源或权限凭证。`rows` 是全部 payload 叶的稳定 JSON-pointer 展示，可分页重组；rowId 为随机 uuid，不能当语义稳定键。历史完整载荷及 rows 的实际认证/持久化证据见第 4 节。
+
+## 2. 真实词法、时序、词表及防护
+
+**词法与 source 分层。** `semantic_turtle.py:25–32/64–91` 用 normalize=False 构造 Literal，裸数字从原 token 恢复 lexical；数值/date lexical 不被 C4 字符串修复重写。`canonical_string` 只将无 lang 的显式 xsd:string 转为同 lexical 的 plain 内部形式，保持 RDF1.1 同一 term。语言 Literal 保留 RDFLib 对象所持标签，不具备 profile 要求的完整 ABNF 与独立 `language_raw/source` 载体。Graph 去重和 `.n3()` 重序列化无法恢复重复 token、原引号/转义、显式 string 写法、原标签大小写、字节 span 或导入前 source。原 snapshot/定义 JSON 可另被保存，但没有逐 term 原文映射；source 不得由输出逆造。上游已经规范化的 numeric/date 也不能由 `_copy` 还原。
+
+`semantic.py:53–96` 依赖 RDFLib `ill_typed/toPython` 及十 datatype 白名单（string/boolean/integer/int/nonNegativeInteger/decimal/float/double/date/dateTime），另容纳 plain/langString，拒非有限数值。这个门不是 profile 原 lexical validator：不能据白名单宣称直接 binary32 舍入、任意预算内年份、精确小数秒、完整标签/Unicode 合法性已实现。其宿主表示可能提前拒绝 profile 合法值；未知 datatype、坏 lexical、合法非有限仍是不同现有分类，不能全关 ill_typed 放行。
+
+**时序。** `reason:294–365` 校验全部传入启用 Rule/常量后，构建 asserted 副本与 proofs。有限闭包至不再新增，随后 `365–410` 所有规则只读同一 closure；每个 when 做真实逐模式 join，绑定重复变量一致才接受。规则按 id、图 triple 按 N3 排序；自定义结论只入局部 derived，不反馈其他规则或 RDFS。RDFS 每轮候选按 `(output, ordered direct inputs)` 全键排序，结论第一次进入 closure 才固定 basis；后轮其他路径不改写。闭包支持 subclass 传递、type 沿 subclass、domain/range（URI 对象才生成 range 类型），不为 label/comment 产生推理/匹配，不启用完整 RDFS 公理、subProperty、OWL-RL、SHACL-AF。
+
+**输出保护。** `_rule:219–266` 禁未绑定变量，head predicate 必须固定 IRI；仅 rdf:type 或不在 RDF/RDFS/OWL/SH namespace 的 predicate，rdf:type 固定目标亦禁上述 schema namespace。实例化后再过 `_rule/_terms`。因此 schema 直接/变量输出与未绑定已有防护；但它**没有核对 T05 Catalog 的已声明类/对象属性/数据属性及对应对象种类**，不能称完整受控引用保护。当前仅一个 head，不存在多 head 后项失败验证。定义即使零匹配仍预检，但没有可表达的比较，也没有 false 后查所有比较的运行证据。潜在链只发 warning，并非支持递归或编辑器提示已经挂载。
+
+**版本。** 语义身份和 resources implementation 均为 `i05-finite-6`；implementation 另有 engineVersion=`0.1.0`、实际 uv.lock SHA=`86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73`。它与 T05 私有 `OntoLearn-rule-comparison-profile/1`、预算 `mechanism-budget/1` 以及 PRD 标签不同。升级需新实现/语义身份及一致 source/selected 验证，不能复用 finite-6 认证新含义或重签旧结果。
+
+**错误位置。** 纯层抛 `SemanticError(code)`；parse 异常统一 INVALID_TURTLE，原 parser 位置没有作为结构化安全结果返回。execute 捕获后依据实际 producer/stage/origin 注入唯一 adapter，公开 error 只有 code/messageKey/params/retryable；初始事实/本体 `_terms` 为 REASON/SYNTAX/VERIFIED_USER_INPUT，规则为 REASON/RULE/VERIFIED_USER_INPUT，解码/持久损坏有 trusted/projection 分支。没有 ruleId/when/comparison/head index/source span 的受限诊断载体。SHACL 普通 violations 已含 focus/path/constraint/sourceShape/value/severity，不等于规则定位。新 M3/M8a/M9 路由及真实位置须 owner 成对新增，详见既有 M 表，不能把纯 helper 的用户来源自报当认证。
+
+**预算和取消。** `_text` 覆盖的 Turtle/query 文本、execute 启用规则 token 预扫和 `_term` 的 object N3 各限 1 MiB；纯 `reason(Graph, Rule)` / `check_shapes(Graph, Graph)` 的 Graph Literal 及 `_iri` 的 subject/predicate 没有这项统一单项字节门，外层另有 8 MiB 请求、worker 内存等限制。图输入/闭包 100000 triple、最多 100 规则/16 when；MAX_WORK=1000000 仅在当前 RDFS 候选/实际 join 命中计 charge，不能称每次排序、空 lookup、proof union 和解析成本均已预扣。每级 next_matches 超100000失败；`len(derived)+len(evidence)>=100000` 是当前 evidence 结果门。execute 投影另限10000 rows、8192字符 cell 分片、完整 payload+rows 8 MiB；selected 累计投影门1000000项。这些与 T05 的262144字节/1024 binding/16777216 work私有机制限额不同，均不是容量或性能声明。
+
+纯 callable 无合作 cancel token/deadline。冻结 coordinator:490–547/650–711 在父进程监视 Job cancelling/总 deadline（20ms轮询等待）、终止 worker，cancelGrace后kill，成功完整输出后才调用 finish_semantic_job；内存/transport/frame/page另有真实门。此是 C4 历史实现事实，coordinator/worker/Store未来维护现归T01；I05不恢复写权，不能为新图执行器私加无驱动token或第二提交通道。
+
+## 3. 对固定 profile/spec 的事实差额
+
+完整九域×六算子、六 numeric 有序对及消费者 K/D/R 表只引用上述 TA-C 和固定 profile §§3–7，不复制新矩阵。对本次实际接入的差额如下：
+
+| 要求 | C4 已有实现/实证边界 | 尚缺真实链 |
+| --- | --- | --- |
+| 原 lexical/term/source | normalize=False；S 同 term；numeric/lang 负控、严格 N3、源包字符串一致 | 全部 profile 合法 lexical 值域的真实入口；独立语言 raw/source/index/span；canonical 已丢信息明确 unavailable。 |
+| 真实匹配/RDFS/独立规则 | 内存真实图 join、闭包前置、规则顺序/重复变量/不同匹配 evidence、无反馈已有回归与包内样例 | 以 T09 learning namespace 的17原输入及22扩展完整执行；匹配穷尽与新 trace 的绑定；不能要求 T05 提供匹配代替引擎。 |
+| 比较六操作/全部比较 | 当前只有 RDF term 模式匹配，值 eq 不存在 | profile全部域、直接IEEE32/64、精确numeric/calendar、零匹配常量对、false后错误、真实图operand/位置；不能借 FILTER bool 实现。 |
+| 多 head/受控词表 | 单 head schema/位置/未绑定保护、局部计算成功后return | 全head/cross-binding原子组，受控Catalog和snapshot版本/引用权威，新warning/hash/selected完整组及全部比较证据。 |
+| RDFS/custom完整结果与依据 | 每个返回结果、全部实际规则匹配及单稳定RDFS witness；源包完整载荷/rows | 全部可能 RDFS 路径没有实现或承诺；现叶集合无直接步骤载体。T09/22的完整closure独立oracle仍缺，不能借现小回归替代；FR502直接输入解释与UI导航仍需实际接线核验。 |
+| 失败、预算、取消/发布 | 现局部结果return、adapter安全分类、父worker取消、旧历史/新消费分区实证 | 新profile预算与图匹配/闭包/总trace联合限额实证；新错误路由/真实定位；新结果跨Store/worker/公共载体的原子与晚到验证。 |
+| query/SHACL消费者 | 原有限 query 与真实SHACL；string Identity专项已经修复 | TA-C的float/date/非有限/SHACL日期边界/langString datatype等未支持或未证格继续开放，不以新规则profile覆盖。 |
+
+## 4. 已有实证的准确出处
+
+[C4验收记录](../../integrated-c4-verification.md) 的“实际验证”“真实包内旧红新绿”“独立实现与历史门”，以及 [完整证据manifest](../../evidence/integrated-c4/manifest.json) 和 [独立封存审计](../../evidence/integrated-c4/seal-audit/report.md) 固定原脚本、输入、失败、原载荷和归属。本轮只回读，不重跑。完整check为672 TS/1847 Python；有限字符串专项不等于 profile1 图执行验收。
+
+可逐行引用的已有回归是 `packages/engine/tests/test_semantic.py:105–169`（闭包、无反馈、真实多匹配/变量）、`test_semantic_rdfs_basis_determinism.py:77–164/237–246`（手写scenario预期、稳定首witness、6seed/插入顺序）、`test_semantic_selected_projection.py:40–235/286–310`（所选载荷不重算、多依据、拒假反馈）及 `test_semantic_string_identity.py`（C4字符串身份）、`test_semantic_lexical_runtime.py`（真实解码/任务路径）。它们是既有原件，不是本轮新运行；旧样例自称 G.2 也不能冒充 T09 `873c8c0` 产品17输入的完整生命周期。
+
+真实 stdio v2：四个新运行组各19任务、完整7结论/8trace、查询/SHACL/selected正确；旧保留C3两平台各19真实任务成功执行但17语义case失败，原失败不覆盖。10组190份完整payload与rows逐叶绑定；不声称已从归档恢复原 SQLite 文件。跨实现旧结果原身份历史可读，新任务current/historical选择旧结果均IDENTITY_CONFLICT，consumer三个implementation字段变化各自拒绝；旧绿不赋予新profile结果消费权。
+
+## 5. 最小新候选实施路径（建议，尚未授权实施）
+
+保持 I05 为唯一真实 executor owner，T05 为既有固定纯机制 owner；future4未生效，不移交执行器，不复制机制、不另建 matcher。根先登记新候选与保留C4的隔离方式，并明确固定 `1e3e0ee` 的**哪些7代码路径/相同字节**可作依赖、profile/spec/原始T09输入的读取与消费授权。实际准备须使用新隔离候选，C4原1284/205不动；候选选择、依赖批准、实施阶段由根另行精确授权。
+
+1. **I05 私有执行主链**：在现 `semantic.py` 的单一路径扩展受控定义IR、先完整编译、既有闭包及实际join产生 BindingMatch，再调用已批准的唯一机制 evaluate_bound_batch。按真实有序when/proof绑定source，不手填成功结果；所有规则共享同一冻结closure，全部成功才构建完整返回。优先不拆新增executor/helper文件。新规则值域须在入口/selected共享唯一validator，不能仅在末端加comparator，更不能全局关RDFLib ill_typed。若需改 `semantic_turtle.py`，须另给精确必要delta及支持面，保留query/SHACL原合同。
+2. **I05 载荷与验证**：`semantic_execution.py` 解码固定新定义与有界source/位置；`semantic_scopes.py` 更新source摘要及完整firing/group验证；`resources.py` 更新一致实现身份；`semantic_error_adapter.py` 只按实际已接受reason/context补路由与catalog/schema验证。以上是拟路径，不是现有新增DTO或写权。I05针对性测试拟在现 `test_semantic_execution.py/test_semantic_selected_projection.py/test_semantic_error_adapter.py/test_semantic_error_reasons.py`及新增专用 `test_semantic_profile_integration.py`；具体路径须根冻结授权，不能从本件自动扩展。
+3. **T01 唯一权威依赖**：正式定义/引用提取与受控Catalog、快照/实际source和producer授权、公共输入/结果/安全位置载体、implementation匹配/历史分区、Job/取消/worker及原子current替换均由T01在其已授或另获精确范围实现。T03若涉及依赖/打包收集仍唯一维护；I06保留桥接/页面路径。纯后端可先验计算，但不能以计算通过关闭上述保存/导航/生命周期。
+4. **独立完整预期与E1**：T05固定计划的5拟路径须另授权；先冻结原T09 17输入和22扩展及profile边界，**逐案手工/独立推导完整 asserted、有限RDFS新增、custom输出、每一匹配/全部head和依据预期**。每条RDFS预期记录输入case/ref/hash、结果、公理原三元组、直接前提、对应固定规范/应用有限规则条款和推导层次；列出预期完整集合及“没有其他产物”的覆盖理由，独立审查后冻结。不得从同一次actual、被测reason或其wrapper生成golden；不得只列“包含某项/计数相同”。现手写9个小scenario可复用为独立方法参考，**不是产品17+22案的已完成oracle**。若须返回直接步骤/更全source，列为新候选载体变化，不能由消费端猜补。
+5. **新候选验收**：真实图解码→闭包→真实匹配→全部比较→全head→完整结果/证据，逐原case比较完整集合、来源及失败位置；零匹配坏常量/false后坏项/后head后binding失败/限额±1/取消晚到均不得部分发布。source原文缺失显式unavailable，错producer/旧implementation/篡改组拒绝；原query/SHACL矩阵不缩减。必要新check/source/package与源包同输入、B1/平台受影响项及独立审查据实际变化执行；不沿用C4绿、不重跑无变化证据。原指定双模型全新同候选审查、PR/CI/正常develop合并及远端验证保留。
+
+本件交付的是接口事实与可审批的后续路径，E1尚未授权，未创建新产品候选。C4仍冻结523、1284文件/205执行输入；T06首位、I05第二条件外审、新指定任务0。`tests/unit/task-runtime.test.ts`临时窗口仍T01唯一writer，I05只读；本件不改其窗口或未来owner。未运行产品、旧测试、GUI、指定审查或跨线机制。
