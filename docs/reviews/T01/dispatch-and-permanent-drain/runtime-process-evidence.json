@@ -14,7 +14,7 @@
   ],
   "unchangedSpecializedTestsPassed": 42,
   "actualNodePids": 29,
-  "psFullArgvCaptures": 29,
+  "psFullArgvCaptures": 28,
   "psFailures": 0,
   "capturedCompleteLineMarkerFiles": 28,
   "rawEvidence": {
@@ -32,6 +32,12 @@
     "bytes": 218,
     "sha256": "ac01ddb5783d680ed4f3899beed32c40558dcc9423bcc9068440932ad64b0a29"
   },
-  "scope": "Read-only observer scanned only this run unique TMPDIR. Each marker carries actual process.pid; targeted ps -ww -p captures only those owned PIDs. One marker may contain multiple real child incarnations. Stored full complete-line prefixes are observations, not a claim that every last fixture write was captured. Source fingerprint equals frozen product; OS drain assertions remain in unchanged real tests.",
-  "noProductionAuthority": "Controlled write/close fixtures remain logic-only; no issuer/native/Store release claim."
+  "scope": "Read-only observer scanned only this run unique TMPDIR. Each marker carries actual process.pid; targeted ps -ww -p observes only those owned PIDs, with full argv available in 28 of29 observations. One marker may contain multiple real child incarnations. Stored full complete-line prefixes are observations, not a claim that every last fixture write was captured. Source fingerprint equals frozen product; OS drain assertions remain in unchanged real tests.",
+  "noProductionAuthority": "Controlled write/close fixtures remain logic-only; no issuer/native/Store release claim.",
+  "psSuccessful": 29,
+  "psNameOnlyCaptures": 1,
+  "psNameOnlyPid": 37879,
+  "markerPids": 29,
+  "markerFiles": 28,
+  "correction": "29 successful targeted ps observations contain 28 full fixture argv and one process-name-only (node) row for PID37879. Original395861B/ebc0 JSON and 4f270 history are unchanged; ps success alone is not full argv evidence."
 }

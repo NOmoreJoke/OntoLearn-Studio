@@ -54,7 +54,7 @@ completion独立1个foreground／262144B预算，原业务满128也可取得真�
 
 stopAndDrain重复返回同一永久operation。最多8个observe，waitMs正safe integer≤60000；observer超时只返回pending快照，不取消实际排空。永久transport receipt只由该本账真实终态形成，无无限历史child列表；短断线重连不结整个寿命。
 
-工程拒绝界：业务≤实际maxPending≤128、预留／未结frame≤8388608B、单frame≤262144及协商上限、heartbeat1、completion1，hello与heartbeat不同时未结，普通+heartbeat+completion≤130；两public listener集合各64；owned2；starts5/60000ms，退避100..2000ms；原可信期限上限60000ms。没有新增CPU／性能／用户容量承诺。
+工程拒绝界：业务≤实际maxPending≤128、预留／未结frame≤8388608B、单frame≤262144及协商上限、heartbeat1、completion1，hello/ping跨全部Session共用1份control额度；未知旧control未结时新hello在spawn前拒绝，普通+control+completion≤130；两public listener集合各64；owned2；starts5/60000ms，退避100..2000ms；原可信期限上限60000ms。没有新增CPU／性能／用户容量承诺。
 
 ## I06完整重建及后置生产闭环
 
@@ -68,6 +68,16 @@ I06 B-M四真实子集为private-root、credentials、configurations、audit，�
 
 未运行Electron／GUI／e2e／native／Keychain／正式模型／网络业务／付费／打包，也没有push／PR／merge。本文件没有把静态或fixture通过写成正式scope或全库released。
 
-最终产品固定 `04ed06afca87ef8d21a71c68371bc19a849d98f8`（parent为上述adoption）。其完整 `npm run check` 工具ee810f／session20411，终态c60b32 exit0：23个Vitest文件、1167例通过（新专项42例）；ruff／构建／全部类型等同命令通过，pytest 2969通过／44既有skip。独立 `npm run verify:sources` 工具0eddb7 exit0，12归档源核同。原首失败与修复见 [checks.json](../../reviews/T01/dispatch-and-permanent-drain/checks.json)，54项现／Git相等指纹见 [candidate-manifest.json](../../reviews/T01/dispatch-and-permanent-drain/candidate-manifest.json)。独立agent审查尚待另行形成，作者不自行判Pass。
+首轮产品固定 `04ed06afca87ef8d21a71c68371bc19a849d98f8`（parent为上述adoption）。其完整 `npm run check` 工具ee810f／session20411，终态c60b32 exit0：23个Vitest文件、1167例通过（新专项42例）；ruff／构建／全部类型等同命令通过，pytest 2969通过／44既有skip。独立 `npm run verify:sources` 工具0eddb7 exit0，12归档源核同。原首失败与修复见 [checks.json](../../reviews/T01/dispatch-and-permanent-drain/checks.json)，首轮54项现／Git相等指纹记录见 [candidate-manifest.json](../../reviews/T01/dispatch-and-permanent-drain/candidate-manifest.json)。该首轮后续独审实际发现P2-DI-01不通过，见下述R2处置。
 
-实际进程原件另以工具8c7cef exit0保全：冻结04ed产品／测试不变的42例专项全部通过，独立TMPDIR只读观察器保存29个真实Node PID、29份定向ps完整argv及28个marker文件的完整行前缀；一个marker可含多child incarnation。约386KiB原件留在独立/tmp路径，bytes／SHA与观察器源码身份见 [runtime-process-evidence.json](../../reviews/T01/dispatch-and-permanent-drain/runtime-process-evidence.json)。不把抽样前缀称全部最后写入，也不将逻辑fake计作真实进程。该证据补录不改产品或重跑无变化完整check。
+实际进程原件另以工具8c7cef exit0保全：冻结04ed产品／测试不变的42例专项全部通过，独立TMPDIR只读观察器保存29个marker PID的29次成功定向ps观测，其中28份为完整fixture argv，PID37879仅有(node)进程名；另有28个marker文件的完整行前缀；一个marker可含多child incarnation。约386KiB原件留在独立/tmp路径，bytes／SHA与观察器源码身份见 [runtime-process-evidence.json](../../reviews/T01/dispatch-and-permanent-drain/runtime-process-evidence.json)。不把抽样前缀称全部最后写入，也不将逻辑fake计作真实进程。该证据补录不改产品或重跑无变化完整check。
+
+## R2：跨Session控制预算与同步reserve取消
+
+首轮独审P2-DI-01实际不通过（原报告不改）。当前产品为 `7dfa9c8008727d469935181fc20beebb5ba4419a`，修复产品 `cd506d5bd978a5b0c7e4faaf0e509ee2a48a8ba2` 的parent为原过程4f270；当前产品后继只修正新预算测试的批量延迟假设。hello/ping在真实reserve处共用1份control，#start退避后、spawn前预留同一hello ticket/hostClientId；旧unknown不解槽，新hello缺额不spawn。producer取消另分cancelRequested与已尝试的原known reservation身份，reserve同步stop后返回的token只取消一次；失败保watch unknown，不进入ensure/spawn/write。
+
+最终完整check工具d5fb00/session9376→ede6da exit0：1175 Vitest（50专项，含新增8）、2969 pytest/44既有skip；独立sources e928ed exit0/12源。原真实独立反例复制修后通过，真实reserve/等待原始记录达到130且control始终≤1；旧owner真实终态后重连，全部foreground按原严格回包结算，不承诺128帧的批量延迟。冻结产品的新8例原件复验02fbd5 exit0，5个marker PID/5份完整fixture argv、3个marker文件、6份预算trace均保留，未把fixture当生产来源。
+
+原PID原件395861B/ebc0不变；早先将29次ps成功称29份完整argv的表述过度，已更正为28完整+1仅进程名，marker文件数与进程身份分别报告。原首失败、观察器失误及新旧候选差异见 [R2处置](../../reviews/T01/dispatch-and-permanent-drain/disposition-r2.md)、[R2检查](../../reviews/T01/dispatch-and-permanent-drain/checks-r2.json)、[R2实际原件](../../reviews/T01/dispatch-and-permanent-drain/runtime-process-evidence-r2.json)。作者等待原独审者定点复核，不自行判Pass；正式生产缺口保持原owner门禁。
+
+当前完整54产品／test的现件与Git指纹见 [candidate-manifest-r2.json](../../reviews/T01/dispatch-and-permanent-drain/candidate-manifest-r2.json)；51只读仍等423b，三writer之外未扩大写权。

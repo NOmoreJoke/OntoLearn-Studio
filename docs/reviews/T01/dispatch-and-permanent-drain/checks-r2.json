@@ -1,0 +1,157 @@
+{
+  "product": "7dfa9c8008727d469935181fc20beebb5ba4419a",
+  "checks": [
+    {
+      "id": "focused01",
+      "tool": "d69c23",
+      "session": 80021,
+      "terminalTool": "01c212",
+      "exitCode": 1,
+      "log": "/tmp/t01-dispatch-permanent-drain-r2-focused-01.log",
+      "result": "84 pass/2 fail; pre-spawn capacity fault lacked canonical QUEUE_FULL mapping; fixed",
+      "command": "node node_modules/vitest/vitest.mjs run tests/unit/t01-dispatch-permanent-drain.test.ts tests/unit/t01-startup-supervisor.test.ts tests/unit/supervisor.test.ts"
+    },
+    {
+      "id": "typecheck01",
+      "tool": "ceb7cb",
+      "exitCode": 0,
+      "command": "npm run typecheck:unit",
+      "log": "/tmp/t01-dispatch-permanent-drain-r2-typecheck-01.log"
+    },
+    {
+      "id": "focused02",
+      "tool": "fdd614",
+      "session": 30133,
+      "terminalTool": "2bea14",
+      "exitCode": 1,
+      "log": "/tmp/t01-dispatch-permanent-drain-r2-focused-02.log",
+      "result": "85 pass/1 batch latency assertion failed; retained",
+      "command": "node node_modules/vitest/vitest.mjs run tests/unit/t01-dispatch-permanent-drain.test.ts tests/unit/t01-startup-supervisor.test.ts tests/unit/supervisor.test.ts"
+    },
+    {
+      "id": "focused03",
+      "tool": "86e760",
+      "session": 21639,
+      "terminalTool": "3996ad",
+      "exitCode": 0,
+      "log": "/tmp/t01-dispatch-permanent-drain-r2-focused-03.log",
+      "passed": 86,
+      "command": "node node_modules/vitest/vitest.mjs run tests/unit/t01-dispatch-permanent-drain.test.ts tests/unit/t01-startup-supervisor.test.ts tests/unit/supervisor.test.ts"
+    },
+    {
+      "id": "copied-independent-probe",
+      "tool": "4d52de",
+      "exitCode": 0,
+      "command": "node node_modules/vitest/vitest.mjs run --config /tmp/t01-dispatch-author-cap-r2-vitest.config.mts",
+      "log": "/tmp/t01-dispatch-author-cap-r2-01.log",
+      "output": "/tmp/t01-dispatch-author-cap-r2-evidence-01.json",
+      "result": "Old actual PID49066 with hello/create/get/ping; original completion1/ping1 remain, hello0/business0 after rejection, new spawn0; original independent files untouched"
+    },
+    {
+      "id": "check01",
+      "tool": "21fb03",
+      "session": 33239,
+      "terminalTool": "791dfc",
+      "exitCode": 0,
+      "log": "/tmp/t01-dispatch-permanent-drain-r2-check-01.log",
+      "vitestPassed": 1175,
+      "pytestPassed": 2969,
+      "pytestSkipped": 44,
+      "candidate": "cd506 predecessor",
+      "command": "npm run check"
+    },
+    {
+      "id": "sources01",
+      "tool": "efec09",
+      "exitCode": 0,
+      "log": "/tmp/t01-dispatch-permanent-drain-r2-sources-01.log",
+      "archivedSources": 12,
+      "command": "npm run verify:sources"
+    },
+    {
+      "id": "observer01",
+      "tool": "003aef",
+      "exitCode": 1,
+      "log": "/tmp/t01-dispatch-permanent-drain-r2-focused-pids-01.log",
+      "observerSource": "/tmp/t01-dispatch-permanent-drain-r2-preserve-pids-01-before-fix.py",
+      "result": "Targeted tests7 pass/1 TIMEOUT; observer then FileNotFoundError on -t in source list. Both actual failures retained"
+    },
+    {
+      "id": "observer02",
+      "tool": "7e075a",
+      "exitCode": 0,
+      "log": "/tmp/t01-dispatch-permanent-drain-r2-focused-pids-02.log",
+      "evidence": "/tmp/t01-dispatch-permanent-drain-r2-pid-evidence-02.json",
+      "candidate": "cd506 predecessor",
+      "passed": 8
+    },
+    {
+      "id": "check02",
+      "product": "7dfa9c8008727d469935181fc20beebb5ba4419a",
+      "tool": "d5fb00",
+      "session": 9376,
+      "terminalTool": "ede6da",
+      "exitCode": 0,
+      "command": "npm run check",
+      "environment": {
+        "UV_OFFLINE": "1",
+        "UV_CACHE_DIR": "/tmp/t01-dispatch-permanent-drain-runtime-cache/uv"
+      },
+      "log": "/tmp/t01-dispatch-permanent-drain-r2-check-02.log",
+      "vitestFiles": 23,
+      "vitestPassed": 1175,
+      "specializedTests": 50,
+      "newRegressions": 8,
+      "pytestPassed": 2969,
+      "pytestSkipped": 44,
+      "steps": [
+        "lint",
+        "format",
+        "contracts/unit/desktop types",
+        "all Vitest",
+        "desktop build without GUI",
+        "ruff check/format",
+        "pytest"
+      ]
+    },
+    {
+      "id": "sources02",
+      "product": "7dfa9c8008727d469935181fc20beebb5ba4419a",
+      "tool": "e928ed",
+      "exitCode": 0,
+      "command": "npm run verify:sources",
+      "log": "/tmp/t01-dispatch-permanent-drain-r2-sources-02.log",
+      "archivedSources": 12
+    },
+    {
+      "id": "observer03",
+      "product": "7dfa9c8008727d469935181fc20beebb5ba4419a",
+      "tool": "02fbd5",
+      "exitCode": 0,
+      "command": "python3 /tmp/t01-dispatch-permanent-drain-r2-preserve-pids.py",
+      "log": "/tmp/t01-dispatch-permanent-drain-r2-focused-pids-03.log",
+      "observerLog": "/tmp/t01-dispatch-permanent-drain-r2-observer-03.log",
+      "targetedPassed": 8,
+      "maximumTotal": 130,
+      "maximumControl": 1
+    }
+  ],
+  "readonly51AGENTSAndReport": {
+    "tool": "654172",
+    "exitCode": 0,
+    "readonly51Exact": true,
+    "AGENTSExactUnstaged": true,
+    "independentR1Report": {
+      "path": "docs/reviews/T01/dispatch-and-permanent-drain/independent-implementation-review.md",
+      "bytes": 14062,
+      "sha256": "eec339c0d75b6877be39aee23918e9ca2bbe1e5068b6af93335fa3ab8ab3060d"
+    }
+  },
+  "notRun": [
+    "GUI/Electron/e2e/native/Keychain/VFS",
+    "production issuer/producer",
+    "formal model/network/paid/packaging",
+    "push/PR/merge"
+  ],
+  "independentR2Review": "required; author does not self-approve"
+}

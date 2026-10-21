@@ -1,0 +1,155 @@
+{
+  "product": "7dfa9c8008727d469935181fc20beebb5ba4419a",
+  "tool": "02fbd5",
+  "exitCode": 0,
+  "newRegressionTestsPassed": 8,
+  "previousSpecializedTestsSkippedOnlyInTargetedRun": 42,
+  "actualMarkerPids": 5,
+  "targetedPsSuccessful": 5,
+  "fullFixtureArgv": 5,
+  "markerFiles": 3,
+  "rawEvidence": {
+    "path": "/tmp/t01-dispatch-permanent-drain-r2-pid-evidence-03.json",
+    "bytes": 306559,
+    "sha256": "1c633f664cd8750415daf372a6b61d8239f1a949f2c0e33b1481a26623a132c4"
+  },
+  "observerSource": {
+    "path": "/tmp/t01-dispatch-permanent-drain-r2-preserve-pids.py",
+    "bytes": 3059,
+    "sha256": "46c44fcf35c1cba31b438ab72c7dcc1e5efea24a7c8abff139f79bdf18966500"
+  },
+  "observerStdoutStderr": {
+    "path": "/tmp/t01-dispatch-permanent-drain-r2-observer-03.log",
+    "bytes": 212,
+    "sha256": "04b20c3d14f5af9d63d3abecea124f9420b78e461a5edccec83dc936af43eed6"
+  },
+  "testStdoutStderr": {
+    "path": "/tmp/t01-dispatch-permanent-drain-r2-focused-pids-03.log",
+    "bytes": 230,
+    "sha256": "d37b6b10024cfd38fc7cb6905c2d1625c3365554182e45e7e0f394f416789399"
+  },
+  "budgetTraces": [
+    {
+      "test": "cross-session control budget and reentrant producer reservation regressions > cancels a real reservation returned after reserve synchronously stops, at most once (async-looking)",
+      "path": "/tmp/t01-dispatch-permanent-drain-r2-pid-evidence-x8cznpeg/t01-dispatch-budget-evidence-zlmQEu/reservations.json",
+      "bytes": 798,
+      "sha256": "96526971aa162e0e33026f0233be0f32e0d3ce2da6879c1c2d2e4f4e8b89987b",
+      "samples": 2,
+      "maximumTotal": 1,
+      "maximumControl": 0,
+      "finalReservations": [
+        {
+          "pool": "business",
+          "bytes": 0,
+          "attempted": false,
+          "watch": true,
+          "cancelRequested": true,
+          "attemptedKnownCancellation": true,
+          "remaining": {
+            "tickets": 0,
+            "frameBytes": 0,
+            "watches": 1,
+            "completion": 0
+          }
+        }
+      ]
+    },
+    {
+      "test": "cross-session control budget and reentrant producer reservation regressions > cancels a real reservation returned after reserve synchronously stops, at most once (success)",
+      "path": "/tmp/t01-dispatch-permanent-drain-r2-pid-evidence-x8cznpeg/t01-dispatch-budget-evidence-kRguVV/reservations.json",
+      "bytes": 794,
+      "sha256": "13838291167374833d88cb875c5eb93254452a071086985389a6eef19e7e4cd7",
+      "samples": 2,
+      "maximumTotal": 1,
+      "maximumControl": 0,
+      "finalReservations": [
+        {
+          "pool": "business",
+          "bytes": 0,
+          "attempted": false,
+          "watch": false,
+          "cancelRequested": true,
+          "attemptedKnownCancellation": false,
+          "remaining": {
+            "tickets": 0,
+            "frameBytes": 0,
+            "watches": 0,
+            "completion": 0
+          }
+        }
+      ]
+    },
+    {
+      "test": "cross-session control budget and reentrant producer reservation regressions > permanent stop settles all 128 waiters while real old control still owns its slot",
+      "path": "/tmp/t01-dispatch-permanent-drain-r2-pid-evidence-x8cznpeg/t01-dispatch-budget-evidence-qaPvo4/reservations.json",
+      "bytes": 58550,
+      "sha256": "0b7668e4d3042d9af2523675ea6e0447b50897d2e7185df0c5783aaccc03466b",
+      "samples": 144,
+      "maximumTotal": 129,
+      "maximumControl": 1,
+      "finalReservations": "Full per-ticket final states preserved in raw evidence"
+    },
+    {
+      "test": "cross-session control budget and reentrant producer reservation regressions > cancels a real reservation returned after reserve synchronously stops, at most once (throw)",
+      "path": "/tmp/t01-dispatch-permanent-drain-r2-pid-evidence-x8cznpeg/t01-dispatch-budget-evidence-1JkaMx/reservations.json",
+      "bytes": 790,
+      "sha256": "92ce8a04231da5258623ef5a4b66fc4ad3c1b898e77dcdbc6520049876dc8fe4",
+      "samples": 2,
+      "maximumTotal": 1,
+      "maximumControl": 0,
+      "finalReservations": [
+        {
+          "pool": "business",
+          "bytes": 0,
+          "attempted": false,
+          "watch": true,
+          "cancelRequested": true,
+          "attemptedKnownCancellation": true,
+          "remaining": {
+            "tickets": 0,
+            "frameBytes": 0,
+            "watches": 1,
+            "completion": 0
+          }
+        }
+      ]
+    },
+    {
+      "test": "cross-session control budget and reentrant producer reservation regressions > reserves hello before the real spawn and retains an old unanswered hello until its owner ends",
+      "path": "/tmp/t01-dispatch-permanent-drain-r2-pid-evidence-x8cznpeg/t01-dispatch-budget-evidence-T9BI0u/reservations.json",
+      "bytes": 21609,
+      "sha256": "eaf51c2a909ca4be38fbc003fa2addd5ed0b06c14f58f79566093c1af88f639f",
+      "samples": 156,
+      "maximumTotal": 2,
+      "maximumControl": 1,
+      "finalReservations": "Full per-ticket final states preserved in raw evidence"
+    },
+    {
+      "test": "cross-session control budget and reentrant producer reservation regressions > keeps old real ping/completion unknown, rejects new hello before spawn, then reconnects after actual old owner close",
+      "path": "/tmp/t01-dispatch-permanent-drain-r2-pid-evidence-x8cznpeg/t01-dispatch-budget-evidence-z8VhgS/reservations.json",
+      "bytes": 138363,
+      "sha256": "d3eb6dcac8f2eb6468ae00813b115fd8a445f2b2779be10568e4440b37b2a993",
+      "samples": 475,
+      "maximumTotal": 130,
+      "maximumControl": 1,
+      "finalReservations": "Full per-ticket final states preserved in raw evidence"
+    }
+  ],
+  "historicalCorrection": {
+    "originalRawEvidence": {
+      "path": "/tmp/t01-dispatch-permanent-drain-pid-evidence-01.json",
+      "bytes": 395861,
+      "sha256": "ebc0babee9c447d709eb8ce9ee09413804e7babfa1a39d070ec1c6a3ff6cbc7a"
+    },
+    "markerPids": 29,
+    "psSuccessful": 29,
+    "fullFixtureArgv": 28,
+    "processNameOnly": {
+      "pid": 37879,
+      "stdout": "37879 37862 Thu Oct 22 00:25:50 2026     (node)\n"
+    },
+    "markerFiles": 28,
+    "historyPreserved": "04ed/4f270 and original JSON/double-stream unchanged"
+  },
+  "limits": "Only owned unique TMPDIR and targeted actual PID observations; complete-line prefixes do not claim every last write. Mechanism fixtures are not production authority or OS database-release evidence."
+}
