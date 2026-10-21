@@ -16,7 +16,7 @@
 
 默认全量的3项 skips 严格保留，并由各自独立新 fixture 的真实定向调用覆盖，没有把 skip 算通过。每份定向 report 均核实际执行而非 skip，逐项使用原 CI 的 `scripts/prepare-i04-fixture.py` / `--background-rounds 12` / 原 grep。没有重跑S1/S2故障矩阵或998/1052全库。
 
-source native首次 raw 已完成 crash→第二窗口，inspectorClosed=true、hangMonitorEnabled=true，第二窗口可见/有焦点/X11焦点标题正确；events只有crashed，原断言未观测到 hang 原生提示。原 TS 每phase 是 **`Date.now()+30000`，30秒**；report总耗时约13.315秒，不能据此猜原因。此前工作消息误述10秒已纠正，代码/原始时限未改。
+source native首次 raw 已完成 crash→第二窗口，inspectorClosed=true、hangMonitorEnabled=true，第二窗口可见/有焦点/X11焦点标题正确；events只有crashed，原断言未观测到 hang 原生提示。原 TS 每phase 是 **`Date.now()+30000`，30秒**；report总耗时约13.315秒，trace从crash断言到hang断言的单调间隔约12.25秒；与原30秒代码时限的差异原因未知，不能据此猜测时钟、环境或flake根因。此前工作消息误述10秒已纠正，代码/原始时限未改。
 
 唯一复验使用完全同一 Docker inspect image identity `sha256:948721a324bcfa8a219271f5b886830bf8c41ab6d4d0f209c55d1dc8581c0e9a`、同 candidate/881源码记录/运行文件/原测试，只新建容器与fixture。原 verified raw 记录 `crashed` 与 `unresponsive`、3窗口、两次真实可见 GTK恢复提示、实际按键、关闭inspector和焦点实证，1passed/0skip/exit0。复验的 inline runner 与 Docker Config.Cmd 逐字相同并单独hash；不以新脚本倒贴旧运行。首次失败是否环境时序或其他原因未确立，不宣称已消除不稳定性。
 

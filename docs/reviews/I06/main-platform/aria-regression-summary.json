@@ -123,7 +123,9 @@
   "firstFailure": {
     "originalCodeDeadline": "Date.now()+30000 per crash/hang phase",
     "totalReportDurationMs": 13315.552000000001,
-    "observation": "crashed; two windows; inspector closed; focused second window; hang native prompt not observed before original assertion. Cause not established."
+    "observation": "crashed; two windows; inspector closed; focused second window; hang native prompt not observed before original assertion. Cause not established.",
+    "traceHangPhaseMonotonicElapsedMsApprox": 12250,
+    "timingDifferenceCause": "Original per-phase Date.now()+30000 vs trace ~12.25s monotonic interval; cause unknown, no clock or flake root cause inferred."
   },
   "packageFilesReadBack": 243,
   "asarCompiledOutputHashesMatched": {
