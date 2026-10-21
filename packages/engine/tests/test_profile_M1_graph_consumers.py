@@ -675,3 +675,405 @@ def test_all_pure_inputs_preserved_and_coverage_is_not_all_five_graphs():
     assert [c["id"] for c in GRAPH_INPUT["cases"][:2]] == list(GRAPH_IDS)
     assert len({c["id"] for c in CONSUMER_INPUT["cases"]}) == 13
     assert all("expected" not in c for c in GRAPH_INPUT["cases"] + CONSUMER_INPUT["cases"])
+
+
+# The original fifteen observers and assertions above remain byte-for-byte fixed.
+# New explicit /3 consumers never turn a constructed dataclass into authority.
+def direct_failure(error):
+    return {
+        **error_record(error),
+        "classification": getattr(error, "classification", None),
+        "stage": getattr(error, "stage", None),
+        "domain": getattr(error, "domain", None),
+    }
+
+
+def direct_ledger_snapshot(ledger):
+    return {
+        name: plain(getattr(ledger, name))
+        for name in (
+            "state",
+            "stage",
+            "used",
+            "live",
+            "peaks",
+            "caps",
+            "events",
+            "candidates",
+            "steps",
+            "key_bytes",
+            "carrier_bytes",
+            "last_action",
+            "last_domain",
+            "last_count",
+        )
+    }
+
+
+def run_direct_operation(phase, material, produced, expectation, view, targets, ledger):
+    from ontolearn_engine.semantic_profile_directsteps import DirectStepsLedger
+    from ontolearn_engine.semantic_profile_production import execute_profile_explanation
+    from ontolearn_engine.semantic_profile_restore import (
+        explanation_roots,
+        restore_profile_explanation_result,
+    )
+
+    capture, restore = CaptureLedger(), RestoreLedger()
+    receipts, outcome, failure = [], None, None
+    original = DirectStepsLedger.receipt
+
+    def receipt(instance):
+        result = original(instance)
+        if instance is ledger:
+            receipts.append(result)
+        return result
+
+    try:
+        with patch.object(DirectStepsLedger, "receipt", receipt):
+            if phase == "production":
+                outcome = execute_profile_explanation(
+                    material,
+                    error_catalog=CONTRACT.ERROR_CATALOG,
+                    error_schema=SCHEMA,
+                    ledger=capture,
+                    direct_ledger=ledger,
+                )
+            elif phase == "restore":
+                outcome = restore_profile_explanation_result(
+                    produced.payload_json,
+                    produced.rows_json,
+                    expected=expectation,
+                    allocation=produced.original_allocation,
+                    ledger=restore,
+                    direct_ledger=ledger,
+                )
+            else:
+                assert phase == "roots"
+                # view is only the strict restore returned by this caller below.
+                # The full fixture view is in this window; no saved Job grant is asserted.
+                outcome = explanation_roots(view, targets, direct_ledger=ledger)
+    except Exception as error:
+        failure = direct_failure(error)
+    record = {
+        "phase": phase,
+        "failure": failure,
+        "returned": outcome is not None,
+        "D": direct_ledger_snapshot(ledger),
+        "receipts": plain(tuple(receipts)),
+        "captureState": capture.state,
+        "restoreState": restore.state,
+    }
+    if outcome is not None:
+        if phase == "production":
+            record.update(
+                payloadSha256=sha(outcome.payload_json),
+                rowsSha256=sha(outcome.rows_json),
+                originalAllocation=plain(outcome.original_allocation),
+                captureReceipt=plain(outcome.capture_receipt),
+            )
+            assert len(receipts) == 1 and outcome.direct_receipt is receipts[0]
+        elif phase == "restore":
+            record.update(
+                payloadSha256=outcome.batches.payload_digest,
+                rowsSha256=sha(outcome.rows_json),
+                batches=plain(outcome.batches),
+                retention=plain(outcome.retention),
+            )
+            assert len(receipts) == 1 and outcome.direct_receipt is receipts[0]
+        else:
+            record["roots"] = plain(outcome)
+            assert len(receipts) == 1
+    return outcome, record
+
+
+def observe_direct_case(case, index, directory):
+    from ontolearn_engine.semantic_profile_directsteps import (
+        DirectStepsLedger,
+        _DirectStepsCapture,
+    )
+    from ontolearn_engine.semantic_profile_restore import ExplanationRestoreExpectation
+
+    material = produced = view = expectation = None
+    actual = {"status": "error", "stage": "material", "operations": []}
+    events, phase, insertion_calls, candidates = [], ["material"], [], []
+    original_insert, original_candidate = _DirectStepsCapture.insert, _DirectStepsCapture.candidate
+
+    def insert(instance, result_key, premise_keys, rule):
+        result = original_insert(instance, result_key, premise_keys, rule)
+        if phase[0] == "production":
+            insertion_calls.append({"result": result_key, "premises": premise_keys, "rule": rule})
+        return result
+
+    def candidate(instance, rule):
+        result = original_candidate(instance, rule)
+        if phase[0] == "production":
+            candidates.append(rule)
+        return result
+
+    try:
+        records, rules, mapping = bind_fixture(case, index)
+        actual.update(records=plain(records), rules=plain(rules), binderMapping=mapping)
+        with ExitStack() as stack:
+            for cls, methods in (
+                (
+                    CaptureLedger,
+                    ("begin", "enter", "debit", "reserve", "release", "transferred", "failed"),
+                ),
+                (RestoreLedger, ("begin", "charge", "reserve", "release", "finish")),
+                (Budget, ("debit",)),
+                (semantic._GraphBudget, ("debit",)),
+            ):
+                for method in methods:
+                    stack.enter_context(
+                        patch.object(cls, method, _fee_observer(cls, method, events, phase))
+                    )
+            stack.enter_context(patch.object(_DirectStepsCapture, "insert", insert))
+            stack.enter_context(patch.object(_DirectStepsCapture, "candidate", candidate))
+            material = prepare_profile_material(
+                records=records, rules=rules, ledger=CaptureLedger()
+            )
+            phase[0] = actual["stage"] = "production"
+            produced, operation = run_direct_operation(
+                "production", material, None, None, None, (), DirectStepsLedger()
+            )
+            actual["operations"].append(operation)
+            assert operation["failure"] is None, operation
+            payload = produced.wire["payload"]
+            expectation = ExplanationRestoreExpectation(
+                sha(produced.payload_json),
+                sha(produced.rows_json),
+                payload["inputDigest"],
+                payload["inputDigestDomain"],
+                payload["sourceDigest"],
+                payload["definitionsDigest"],
+                sha(produced.catalog_json),
+                tuple(sorted(payload["implementation"].items())),
+                material.input_preimage,
+                material.source_preimage,
+            )
+            phase[0] = actual["stage"] = "restore"
+            view, operation = run_direct_operation(
+                "restore", material, produced, expectation, None, (), DirectStepsLedger()
+            )
+            actual["operations"].append(operation)
+            assert operation["failure"] is None, operation
+            reason = produced.native_result
+            targets = tuple(row["triple"] for row in reason["proofLeaves"]) + tuple(
+                row["result"] for row in reason["directSteps"]["steps"]
+            )
+            phase[0] = actual["stage"] = "roots"
+            roots, operation = run_direct_operation(
+                "roots", material, produced, expectation, view, targets, DirectStepsLedger()
+            )
+            actual["operations"].append(operation)
+            assert operation["failure"] is None, operation
+            actual.update(
+                status="success",
+                stage="roots-returned",
+                nativeResult=plain(reason),
+                restoredResult=plain(view),
+                originalAllocation=plain(produced.original_allocation),
+                preparationReceipt=plain(material.capture_receipt),
+                productionReceipt=plain(produced.capture_receipt),
+                originalExpectation=plain(expectation),
+                roots=plain(roots),
+                targets=plain(targets),
+                insertionCalls=plain(insertion_calls),
+                candidateCalls=plain(candidates),
+                fullPayloadEqual=plain(view.projection.payload)
+                == plain({**payload, "reasoning": reason}),
+                fullChildrenEqual=all(
+                    plain(child.batch) == plain(native["batch"])
+                    and plain(child.original_matches) == plain(native["originalMatches"])
+                    for child, native in zip(
+                        view.batches.children, reason["mechanismBatches"], strict=True
+                    )
+                ),
+                rootsBinding={
+                    "payloadDigest": expectation.payload_digest,
+                    "rowsDigest": expectation.rows_digest,
+                    "origin": "this operation's returned strict fullview only; full fixture view in scope",
+                    "formalJobOrStoreAuthority": False,
+                },
+            )
+        # Actual three graphs only. Each vector keeps the same material/wire/view.
+        # Derive exact caps from the real baseline, not another mathematical budget.
+        actual["boundaries"] = []
+        for phase_name, baseline in zip(
+            ("production", "restore", "roots"), actual["operations"], strict=True
+        ):
+            usage = {k: int(v["integerDecimal"]) for k, v in baseline["D"]["used"].items()}
+            peaks = {k: int(v["integerDecimal"]) for k, v in baseline["D"]["peaks"].items()}
+            for domain in ("work", "scan_copy", "objects", "scalar"):
+                required = (usage if domain in usage else peaks)[domain]
+                for offset in (0, -1):
+                    d = DirectStepsLedger(overrides=((domain, required + offset),))
+                    outcome, record = run_direct_operation(
+                        phase_name, material, produced, expectation, view, targets, d
+                    )
+                    record.update(
+                        domain=domain,
+                        cap=required + offset,
+                        offset=offset,
+                        boundPayload=expectation.payload_digest,
+                        boundRows=expectation.rows_digest,
+                    )
+                    actual["boundaries"].append(record)
+                    if offset == 0:
+                        assert record["failure"] is None, record
+                        if phase_name == "production":
+                            assert outcome.payload_json == produced.payload_json
+                            assert outcome.rows_json == produced.rows_json
+                            assert plain(outcome.native_result) == plain(reason)
+                        elif phase_name == "restore":
+                            assert plain(outcome.projection) == plain(view.projection)
+                            assert outcome.rows_json == view.rows_json
+                        else:
+                            assert plain(outcome) == plain(roots)
+                    else:
+                        assert outcome is None and record["returned"] is False
+                        failure = record["failure"]
+                        assert failure["reason"] == "DIRECT_STEPS_LIMIT", record
+                        assert (
+                            failure["classification"] == "resource" and failure["domain"] == domain
+                        )
+                        assert d.state == "failed"
+                        before = direct_ledger_snapshot(d)
+                        reused, retry = run_direct_operation(
+                            phase_name, material, produced, expectation, view, targets, d
+                        )
+                        record["reuse"] = retry
+                        assert (
+                            reused is None and retry["failure"]["reason"] == "DIRECT_STEPS_REUSED"
+                        )
+                        assert direct_ledger_snapshot(d) == before
+    except Exception as error:
+        import traceback
+
+        actual.update(
+            status="error", failure=direct_failure(error), traceback=traceback.format_exc()
+        )
+    finally:
+        if material is not None:
+            for name in (
+                "input_preimage",
+                "source_preimage",
+                "definitions_preimage",
+                "definition_material",
+            ):
+                (directory / (name + ".bin")).write_bytes(getattr(material, name))
+        if produced is not None:
+            for name in (
+                "payload_json",
+                "rows_json",
+                "catalog_json",
+                "source_encoded",
+                "definitions_encoded",
+            ):
+                (directory / (name + ".bin")).write_bytes(getattr(produced, name))
+        actual["retentionMeaning"] = (
+            "Actual logical holdings/receipts, not physical release or H lease"
+        )
+        (directory / "legacy-fee-events.json").write_bytes(canonical(events))
+        (directory / "direct-operations.json").write_bytes(canonical(actual["operations"]))
+    return actual, produced, view, insertion_calls
+
+
+def assert_direct_golden(actual, produced, view, insertions, expected, case, index):
+    native, payload = produced.native_result, produced.wire["payload"]
+    assert actual["status"] == "success", actual
+    assert actual["fullPayloadEqual"] and actual["fullChildrenEqual"]
+    assert len(payload) == 7 and len(native) == 16
+    assert native["formatVersion"] == payload["format"] == "i05-reasoning-result/3"
+    assert native["semanticsVersion"] == "i05-finite-8"
+    assert payload["implementation"]["executionSemanticsVersion"] == "i05-finite-8"
+    assert view.rows_json == produced.rows_json
+    assert view.batches.payload_digest == sha(produced.payload_json)
+    assert len(native["mechanismBatches"]) == len(view.batches.children) == 1
+    assert len(native["mechanismBatches"][0]) == 11
+    assert native["directSteps"]["format"] == "i05-direct-rdfs-steps/1"
+    assert not native["rules"] and not native["firingGroups"] and not native["evidence"]
+    records, rules, _ = bind_fixture(case, index)
+    assert not rules
+    for section in ("asserted", "ontology"):
+        for row_index, row in enumerate(case[section]):
+            offset = row_index + (len(case["asserted"]) if section == "ontology" else 0)
+            for side in range(3):
+                assert_source(
+                    records[offset][side].source, f"/cases/{index}/{section}/{row_index}/{side}"
+                )
+    leaves = native["proofLeaves"]
+    assert len(leaves) == len(expected["leaves"])
+    leaf_by_key = {tuple(row["triple"]): row for row in leaves}
+    assert len(leaf_by_key) == len(leaves)
+    aliases = {}
+    for leaf in expected["leaves"]:
+        observed = leaf_by_key[tuple(leaf["triple"])]
+        aliases[leaf["id"]] = {"kind": "leaf", "reference": observed["reference"]}
+        assert observed["reference"].startswith("i05-proof:")
+    steps = native["directSteps"]["steps"]
+    assert len(steps) == len(expected["steps"]) == len(insertions)
+    assert len(native["rdfs"]) == len(native["rdfsEvidence"]) == len(steps)
+    assert {tuple(t) for t in native["rdfs"]} == {tuple(s["result"]) for s in expected["steps"]}
+    for ordinal, (step, golden, call) in enumerate(
+        zip(steps, expected["steps"], insertions, strict=True)
+    ):
+        assert type(step["ordinal"]) is int and step["ordinal"] == ordinal
+        assert step["rule"] == golden["rule"] and list(step["result"]) == golden["result"]
+        assert type(step["depth"]) is int and step["depth"] == golden["depth"]
+        assert step["premises"] == tuple(aliases[a] for a in golden["orderedDirectInputs"])
+        resolved = tuple(
+            next(row["triple"] for row in leaves if row["reference"] == ref["reference"])
+            if ref["kind"] == "leaf"
+            else steps[ref["ordinal"]]["result"]
+            for ref in step["premises"]
+        )
+        assert call == {"result": step["result"], "premises": resolved, "rule": step["rule"]}
+        evidence = next(r for r in native["rdfsEvidence"] if r["result"] == step["result"])
+        basis = [aliases[a]["reference"] for a in golden["leafBasis"]]
+        assert len(evidence["proofLeaves"]) == len(basis) and set(evidence["proofLeaves"]) == set(
+            basis
+        )
+        basis_keys = {
+            tuple(leaf_by_key[tuple(l["triple"])]["triple"])
+            for l in expected["leaves"]
+            if l["id"] in golden["leafBasis"]
+        }
+        assert len(evidence["basis"]) == len(basis_keys)
+        assert {tuple(t) for t in evidence["basis"]} == basis_keys
+        aliases[golden["id"]] = {"kind": "step", "ordinal": ordinal}
+    expected_roots = tuple({"kind": "leaf", "reference": leaf["reference"]} for leaf in leaves)
+    expected_roots += tuple({"kind": "step", "ordinal": i} for i in range(len(steps)))
+    assert actual["roots"] == plain(expected_roots)
+    assert len(actual["boundaries"]) == 24
+
+
+@pytest.mark.parametrize(
+    "index,case",
+    list(enumerate(GRAPH_INPUT["cases"][2:], 2)),
+    ids=[c["id"] for c in GRAPH_INPUT["cases"][2:]],
+)
+def test_real_direct_graph_consumer(index, case, tmp_path, goldens):
+    directory = artifact_directory(tmp_path, case["id"])
+    (directory / "input.json").write_bytes(canonical(case))
+    actual, produced, view, insertions = observe_direct_case(case, index, directory)
+    expected_cases = [
+        goldens["explanation"]["directSteps"],
+        *goldens["explanation"]["additionalDirectStepCases"],
+    ]
+    expected = next(row for row in expected_cases if row["caseId"] == case["id"])
+    observation = {
+        "id": case["id"],
+        "kind": "direct-graph-consumer",
+        "input": case,
+        "testSourceSha256": sha(Path(__file__).read_bytes()),
+        "inputSourceSha256": sha(PURE.read_bytes()),
+        "actual": actual,
+        "expected": expected,
+        "assertion": "fail",
+    }
+    try:
+        assert_direct_golden(actual, produced, view, insertions, expected, case, index)
+        observation.update(assertion="pass", normativeStatus="matched")
+    finally:
+        (directory / "observation.json").write_bytes(canonical(observation))
