@@ -1,0 +1,66 @@
+{
+  "scope": "T09 versioned fixed inputs through approved I04 infrastructure only",
+  "priorImplementationCommit": "51cdc0e9d138c98cdd4ace865074a71883657a68",
+  "priorHead": "1eee9efb3b4cb3752470d72af614abdbae757ac0",
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "manifestSha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+  "fixedContentDiffFromPrior": "empty",
+  "codeChanged": [
+    "packages/engine/src/ontolearn_engine/learning/baselines.py"
+  ],
+  "testAdded": "packages/engine/tests/test_learning_jobstore_integration.py",
+  "sourceCodeSha256": {
+    "packages/engine/src/ontolearn_engine/learning/baselines.py": "a2b8921903f460fa1128c45e8c92f2b14e2a493d9d1e99901bf6d9b707e04d94",
+    "packages/engine/tests/test_learning_jobstore_integration.py": "43f69686bbde294bd177ae9389d05372a2e9e0611b7b527574ce7d674b4816b0"
+  },
+  "commands": [
+    {
+      "command": "uv run --frozen pytest packages/engine/tests/test_learning_jobstore_integration.py -q",
+      "firstRun": {
+        "failed": 4,
+        "passed": 3,
+        "rawSha256": "0ca0a58e9530c0b2ac1f7015007517ff020921286077cc07ce4954a0f7da3358",
+        "losslessArchive": "jobstore-first-pytest.txt.gz",
+        "archiveSha256": "0ff5c1b8b4bbc45ed0510007aa9ee5db5c03bcf67b965ba46210a2b35631ebbb"
+      },
+      "afterFix": {
+        "exitCode": 0,
+        "passed": 7,
+        "log": "jobstore-after-id-fix-pytest.txt"
+      }
+    },
+    {
+      "command": "uv run --frozen pytest packages/engine/tests/test_learning_baselines.py packages/engine/tests/test_learning_service.py packages/engine/tests/test_learning_jobstore_integration.py -q",
+      "exitCode": 0,
+      "passed": 42,
+      "log": "learning-42-pytest.txt"
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "vitestPassed": 630,
+      "pytestPassed": 1094,
+      "log": "npm-check-jobstore-final.txt"
+    }
+  ],
+  "rootCause": "Seed wrapper definition IDs containing colon violated canonical dependency keys after Store commit; renamed within T09 helper to protocol-safe names, without weakening shared schema.",
+  "firstFailurePreserved": true,
+  "independentReview": "../jobstore-integration-review.md",
+  "rawLogs": {
+    "jobstore-after-id-fix-pytest.txt": {
+      "sha256": "ab17401158ca0ec5dd511428ed2929f0ee2c1cb2fa0cdc832ca91d50a955503e",
+      "bytes": 98
+    },
+    "jobstore-first-pytest.txt": {
+      "sha256": "0ca0a58e9530c0b2ac1f7015007517ff020921286077cc07ce4954a0f7da3358",
+      "bytes": 15311
+    },
+    "npm-check-jobstore-final.txt": {
+      "sha256": "88d2554a98db7821be1ff9a1eb6870a0e54a6870199fd94fa5422ee79eeb784c",
+      "bytes": 5302
+    }
+  },
+  "productRuntime": "not-implemented-or-accepted-by-these-probes",
+  "noGUI": true,
+  "sharedFilesChanged": false
+}

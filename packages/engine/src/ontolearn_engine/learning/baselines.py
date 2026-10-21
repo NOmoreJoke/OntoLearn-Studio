@@ -141,7 +141,7 @@ def store_seed_plan(root: Path, baseline: str) -> dict:
     definitions = [
         {
             "layer": "ontology",
-            "id": baseline + ":ontology",
+            "id": baseline + ".ontology",
             "value": {
                 "triples": data["ontology"],
                 "singleValuedPredicates": data.get("singleValuedPredicates", []),
@@ -190,7 +190,7 @@ def store_seed_plan(root: Path, baseline: str) -> dict:
         definitions.append(
             {
                 "layer": "scenario",
-                "id": baseline + ":initial",
+                "id": baseline + ".initial",
                 "value": data["scenario"]
                 | {"initialState": data["initialState"], "fixtureVersions": versions},
             }

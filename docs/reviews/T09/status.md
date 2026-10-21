@@ -1,12 +1,12 @@
 # T09 实际状态
 
-2026-10-21（Asia/Shanghai）。阶段：独立实现/内容及本地验证、独立内审已完成；尚未正式接线、指定双审或合并。独立 Goal 保持 active。
+2026-10-21（Asia/Shanghai）。阶段：独立实现/内容、I04真实基础设施联验及独立内审已完成；尚未正式业务接线、指定双审或合并。独立 Goal 保持 active。
 
 ## 身份与文件责任
 
 - 工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines`
 - 分支：`feature/weekly-t09-learning-baselines`
-- 批准 base：`5f910b52c69d86a1076b2032e5d3c63e715947f3`；实现恢复提交 `51cdc0e9d138c98cdd4ace865074a71883657a68`；后续仅证据提交，见 recovery.json。
+- 批准 base：`5f910b52c69d86a1076b2032e5d3c63e715947f3`；初次实现提交 `51cdc0e9d138c98cdd4ace865074a71883657a68`；本轮修后检查点见 recovery.json，固定manifest未变。
 - 启动实查：`pwd`、`git status --short`、`git branch --show-current`、`git rev-parse HEAD`、`shasum -a 256 AGENTS.md`；启动只有指南未暂存修改，无任务路径冲突。
 - 指南 SHA 始终为 `db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786`；保持未暂存、不入产品提交。
 - 仅新增授权的 content/learning、tests/fixtures/product-baselines、learning 私有 Python 包、test_learning_*.py、固定验证脚本与本任务 docs。未改共享 Store/worker/协议/契约/main/App/依赖锁或总控状态。读取最新总控回执确认 storage.py 后续唯一 owner 为 T01，未采用其未批准实现。
@@ -24,8 +24,8 @@
 ## 实际验证与内审
 
 - `python3 scripts/verify-product-baselines.py`：通过17文件/50案例计划完整性与来源hash，输出 `productRuntime: not-executed`。
-- `uv run --frozen pytest packages/engine/tests/test_learning_baselines.py packages/engine/tests/test_learning_service.py -q`：审查修复后35项通过，含四套真实临时SQLite完整重建与拒绝覆盖、真实RDF解析/固定查询输入探针、错误对象/顺序/版本/依据及辅助归因负例。合成adapter单测不计产品领域通过。
-- `npm run check`：最终完整通过；630项vitest、1087项pytest、lint/格式/类型/构建/ruff均通过。没有新增依赖或打包/主进程改动，未触发额外 package/e2e；未运行本机 GUI/native/HMR，未启动打包产物。
+- `uv run --frozen pytest packages/engine/tests/test_learning_baselines.py packages/engine/tests/test_learning_service.py -q`：当前42项通过（原35项加7项I04真实通道），含四套真实临时SQLite完整重建与拒绝覆盖、真实RDF解析/固定查询输入探针、错误对象/顺序/版本/依据及辅助归因负例。合成adapter单测不计产品领域通过。
+- `npm run check`：最终完整通过；630项vitest、1094项pytest、lint/格式/类型/构建/ruff均通过。没有新增依赖或打包/主进程改动，未触发额外 package/e2e；未运行本机 GUI/native/HMR，未启动打包产物。
 - 独立 agent `/root/t09_prd_audit` 实际只读内审明确通过当前范围；四项发现均修复并读回，见 independent-review.md。
 - 首次ruff格式问题原件与首次全check失败原件保留于 evidence。首次全check原文以 first-npm-check.txt.gz 无损归档，原文字节SHA在 verification-summary.json，解压可完整读回。首次全check运行中我修订了fixture，未及时刷新manifest，27项因digest mismatch失败；它不是最终候选验证。随后冻结文件、刷新manifest、重跑35项及完整check通过。无CI artifact可存放前，原件随恢复提交保留，便于复核首次失败和修复，避免覆盖失败证据。
 
@@ -38,3 +38,11 @@
 - T08实际完整代做来源及T10实际学习报告导出联验；真人至少5人/80%、Windows/macOS完整离线案例验收仍缺。
 - 请总控预约本精确工作树候选的 ZCode GLM-5.3/最高及 MiniMax M3.1-Flash/xhigh 两个全新独立只读完整审查。当前预约仍由I05占用，未抢用应用、未伪造报告。
 - 最终依赖批准后刷新实际base、集成/联验、同版指定双审通过才push/PR/CI/merge。当前未push、未建PR、未合并、未上线；T09父任务与完整产品发布门均未关闭。同一聊天继续后续修复/接线/双审/合并。
+
+## 本轮 Goal 续接与真实通道修复
+
+上一轮为实际进展：已保存独立实现与恢复提交。本轮复查总控，批准base仍5f、指定审查资源仍预约I05，未取得正式域/页面路径放行；没有据此采用未批准代码。
+
+本轮继续完成T00建议的第一条基础设施联验：四套固定输入经JobStore真实回滚预览、实际stdio coordinator/worker、test.atomic提交、operation/result.page及重开完整读回。首跑4失败/3通过，实际暴露seed包装ID冒号导致Project协议不合法；已只修私有helper为协议允许名称，并核对完整Project/依赖向量。修后7项通过；当前42专项和完整check（630/1094）通过，独立agent重建复核通过。失败原文无损归档和当前SHA见 `evidence/jobstore-verification.json`，不以原先35项Store测试掩盖这个新发现。
+
+当前基础设施通道通过不等于正式业务接线。旧包装ID的导入器不得被T01引用；原始固定输入/manifest可继续固定只读使用。已从规划聊天实际read_thread核对人类“发送并落实到现有总控”授权，精确来源见 coordination-authorization.json；将向现有总控发送本线交付与资源需求，不向其他人或其他聊天扩张发送。

@@ -37,3 +37,9 @@ reset 每次重新核验 manifest，向 stdout 导出独立原始模型；不继
 query 任务中的 Q-01/Q-02 分别需要 Open/Closed 输入，V-01 需要删除/修复前后两个阶段。适配器必须保存尝试根输入与每个阶段的真实输入版本、快照和结果引用，明确历史阶段与当前终态；不得把历史 Q-01 结果改贴成 Q-02 当前版本。T09 当前内部 `Context.input_version` 绑定聚合检查的当前终态；公共阶段证据契约仍待 T00/T01 批准，正式接线验收前必须提供逐阶段版本/结果对应并测试迟到与跨尝试混用拒绝。
 
 私有 `store_seed_plan()` / `seed_test_project()` 仅用于把 reset 模型写入全新测试项目，使用本树批准 base 的 `Store.commit`，不改 Store/schema，不接受覆盖已有项目。T01 仍负责产品创建/学习记录与正式审批/确认路径。实际临时 SQLite 测试证明版本化输入可还原到 Store，不能证明约束、规则或行为可执行。E.5 导入只保存输入与两套产能场景，预置 expected 不写入项目、推导或当前运行结果。
+
+## I04 实际基础设施联验与包装 ID 修复
+
+`test_learning_jobstore_integration.py` 已将固定四套输入经真实 JobStore 预览、stdio coordinator、隔离 worker、test.atomic 原子提交、operation/result.page 和重开读回。首次联验暴露包装定义 ID 含冒号，造成依赖键不合 canonical；T09 helper 已改为 `<baseline>.ontology` / `<baseline>.initial`，原始课程与固定 manifest 未变。新7项测试还覆盖旧预览、worker失败和产品模式禁用，须保留test-only边界。
+
+T01 如只读引用本线输入可继续固定 `51cdc0e` 的manifest；如引用 `store_seed_plan()` 必须使用本轮修复后实现，不使用旧导入器包装ID。实际产品create/confirm仍由T01批准服务完成，不能把prepare_plan返回的内部确认记录当作人类点击确认。
