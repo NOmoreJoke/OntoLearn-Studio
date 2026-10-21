@@ -20,3 +20,5 @@
 已发现并补齐选表前真实枚举所需的main-only `readForInspection`：复用同一有界FS/源指纹与生命周期规则，只返回bytes/summary，不生成preview/commit proof，不放宽XLSX显式选表要求。新增3项实际临时文件回归，专项32项通过；新候选完整check exit0（662 TS / 1052 Python，零skip；`check-inspection.txt`）；[独立完整复核](internal-review-inspection.md)通过、独立32项专项通过，旧P2仍关闭。独立报告未读取全check终态，该终态由开发线此后读取。29项版本f2c/2f7保留为历史，不把其通过沿用于新候选。原S1冻结不改，尚无正式解析/IPC/Job接线。
 
 当前检查入口产品提交 `8c904b57b7c5aac7b2b19273e679e7e36304dd1c`，源码与测试hash均与本轮独立报告及git对象逐一一致。总控已核验旧f2c/2f7历史候选（readback SHA3354ca6…）；该核验不覆盖本次新入口。现等待总控读回新候选并协调T01/I06正式契约、隔离联验和指定双审资源。原Goal持续active，未push/PR/CI/merge。
+
+总控派出的独立 inspection 增量审计已实际终态（turn `01a15c2b-0ff5-7ff0-a89f-f66f9af1b44a`），开发线全文读回报告 `T03-controller-source-inspection-delta-readback.md`，SHA `5538099b1895124bcafd9e9a5d37528b67cfc24e5809949fb2c3803f0f58a92b`。固定8c/b868字节与10raw对应，有界通过且无新增阻断；没有运行新测试。该报告不授公共接口消费/协议批准，也不替指定双审或正式联验。实际等待用同一live任务句柄续接至终态，不把一般资源排队当在跑任务。
