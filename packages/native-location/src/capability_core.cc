@@ -37,6 +37,9 @@ struct owner_record {
 std::array<owner_record, NL_MAX_OWNER_HISTORY> owners;
 std::mutex gate;
 std::atomic<uint32_t> inflight{0};
+// Under gate: one unknown native open seals all new work, preserving the other
+// existing inflight slot for original-owner close/poll instead of starving it.
+bool unresolved_native_open = false;
 
 /* Reservation precedes every OS call chain, including close, metadata, clock,
  * duplication and wait. There is no async queue or unregistered callback. */
@@ -70,7 +73,7 @@ bool equal(const nl_identity& a, const nl_identity& b) noexcept {
   return std::memcmp(&a, &b, sizeof(a)) == 0;
 }
 bool active(owner_record& owner) noexcept {
-  if (owner.closed || owner.epoch.load() != 1) return false;
+  if (unresolved_native_open || owner.closed || owner.epoch.load() != 1) return false;
   const auto now = d::platform_monotonic_ms();
   if (now == UINT64_MAX || now < owner.started_ms || now - owner.started_ms > NL_PREPARE_TTL_MS) {
     owner.epoch.store(2);
@@ -85,13 +88,14 @@ object_record* cap(owner_record& owner, nl_cap_ref ref) noexcept {
   return object.used ? &object : nullptr;
 }
 bool close_object(object_record& object) noexcept {
-  if (object.unknown) return false;
-  if (object.object.value == -1) return true;
+  // An auxiliary ACL-free failure may be unknown while this FD is still known.
+  // Close that known FD once; keep the independent unknown obligation retained.
+  if (object.object.value == -1) return !object.unknown;
   const auto result = d::platform_close(object.object);
   // Even on error the numeric handle is retired. No second close of a reused FD.
   object.object.value = -1;
-  object.unknown = !result.confirmed;
-  return result.confirmed;
+  object.unknown = object.unknown || !result.confirmed;
+  return !object.unknown;
 }
 bool poll_children(owner_record& owner) noexcept {
   bool ended = true;
@@ -191,6 +195,7 @@ nl_status NL_CALL nl_fixture_owner_create(const nl_fixture_anchor* input,
   for (auto reserved : input->reserved) if (reserved) return NL_INVALID;
   admission call;
   if (!call.locked) return call.status;
+  if (unresolved_native_open) return NL_RETAINED;
   uint32_t active_count = 0;
   owner_record* owner = nullptr;
   uint64_t id = 0;
@@ -209,7 +214,7 @@ nl_status NL_CALL nl_fixture_owner_create(const nl_fixture_anchor* input,
   auto status = owner->started_ms == UINT64_MAX ? NL_UNSUPPORTED :
       d::platform_duplicate_anchor(*input, root.object);
   if (status == NL_OK) status = d::platform_metadata(root.object, NL_DIRECTORY, root.metadata);
-  if (status != NL_OK || owner->epoch.load() != 1) {
+  if (status != NL_OK || !active(*owner)) {
     if (status == NL_RETAINED) root.unknown = true;
     owner->epoch.store(2);
     root.failed = true;
@@ -254,12 +259,15 @@ nl_status NL_CALL nl_owner_acquire(nl_owner_ref ref, uint32_t epoch,
   auto status = d::platform_metadata(parent->object, NL_DIRECTORY, current);
   if (status == NL_RETAINED) parent->unknown = true;
   if (status == NL_OK && !equal(current.identity, parent->metadata.identity)) status = NL_DENIED;
-  if (status == NL_OK && owner->epoch.load() == 1) {
+  if (status == NL_OK && active(*owner)) {
     status = d::platform_open_member(parent->object, name, bytes, kind, value.object);
     if (status == NL_RETAINED) {
-      // Unexpected pending native open keeps its original work reservation and
-      // persistent platform output storage. N0 never fabricates its completion.
+      // Pending or ambiguously failed native open keeps its original reservation
+      // and persistent output storage. This does not claim it is still running.
       value.unknown = true;
+      unresolved_native_open = true;
+      for (auto& original : owners)
+        if (original.id.load()) original.epoch.store(2);
       call.reserved = false;
     }
   } else if (status == NL_OK) status = NL_STALE;
@@ -359,6 +367,7 @@ nl_status NL_CALL nl_fixture_child_adopt(nl_owner_ref ref, const nl_fixture_chil
       if (same) return NL_DENIED;
     }
   }
+  if (!active(*owner)) return NL_STALE;
   auto status = d::platform_duplicate_child(*input, value.child);
   value.wait_owned = value.child.process != -1 || value.child.pid > 0 || value.child.terminal;
   out->wait_owned = value.wait_owned ? 1 : 0;
@@ -366,7 +375,7 @@ nl_status NL_CALL nl_fixture_child_adopt(nl_owner_ref ref, const nl_fixture_chil
   if (status != NL_OK) return status;
   for (uint32_t i = 0; i < NL_MAX_CHILD_PIPES; ++i) {
     if (input->borrowed_pipes[i] == -1) continue;
-    if (owner->epoch.load() != 1) return NL_STALE;
+    if (!active(*owner)) return NL_STALE;
     status = d::platform_duplicate_pipe(input->borrowed_pipes[i], value.pipes[i]);
     if (value.pipes[i].value != -1) ++out->owned_pipes;
     if (status != NL_OK) return status; // Partial adoption is not rolled back fiction.

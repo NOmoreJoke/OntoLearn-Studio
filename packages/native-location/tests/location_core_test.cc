@@ -20,6 +20,7 @@
 #if defined(__APPLE__)
 #include <fcntl.h>
 #include <spawn.h>
+#include <signal.h>
 #include <sys/acl.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -43,6 +44,7 @@ void require(bool condition, const char* label) {
 }
 #if defined(__APPLE__)
 struct fixture {
+  nl_owner_ref node_owner{}; // Test-addon fallback retains the exact native owner.
   std::string path;
   int anchor = -1;
   bool cleaned = false;
@@ -143,6 +145,7 @@ struct probe {
 };
 #elif defined(_WIN32)
 struct fixture {
+  nl_owner_ref node_owner{}; // Test-addon fallback retains the exact native owner.
   std::wstring path;
   HANDLE anchor = INVALID_HANDLE_VALUE;
   alignas(std::max_align_t) std::array<unsigned char, 256> user{};
@@ -298,7 +301,9 @@ struct probe {
 nl_owner_ref make_owner(fixture& tree) {
   const auto anchor = tree.input(); nl_owner_ref owner{};
   const auto status = nl_fixture_owner_create(&anchor, &owner);
-  if (status != NL_OK && owner.value) nl_owner_close(owner);
+  if (status != NL_OK && owner.value && nl_owner_close(owner) != NL_OK) {
+    std::fputs("N0 failed adoption cleanup retained\n", stderr); std::abort();
+  }
   require(status == NL_OK && owner.value != 0, "owner-create"); return owner;
 }
 [[maybe_unused]] void metadata_cases(fixture& tree) {
@@ -424,6 +429,11 @@ namespace i06_location_detail {
 namespace {
 void cleanup_fixture(void* data) noexcept {
   auto* tree = static_cast<fixture*>(data);
+  // The bind may have failed before registering its own owner hook. Always keep
+  // this exact fallback owner through teardown; repeated confirmed close is safe.
+  const auto owner_closed = !tree->node_owner.value ||
+      nl_owner_close(tree->node_owner) == NL_OK;
+  if (!owner_closed) { std::fputs("N0 test owner cleanup retained\n", stderr); std::abort(); }
   const auto cleaned = tree->cleanup(); delete tree;
   if (!cleaned) { std::fputs("N0 test fixture cleanup unknown\n", stderr); std::abort(); }
 }
@@ -436,9 +446,13 @@ nl_status fixture_node_bootstrap(napi_env env, napi_value exports) noexcept {
   try {
     tree = new fixture(); // Exactly one bounded test fixture per test-addon load.
     owner = make_owner(*tree);
+    tree->node_owner = owner;
     // LIFO hooks: register harness cleanup first, so bound owner cleanup is first.
     if (napi_add_env_cleanup_hook(env, cleanup_fixture, tree) != napi_ok) {
-      nl_owner_close(owner); delete tree; return NL_INTERNAL;
+      if (nl_owner_close(owner) != NL_OK || !tree->cleanup()) {
+        std::fputs("N0 test hook-registration cleanup retained\n", stderr); std::abort();
+      }
+      delete tree; return NL_INTERNAL;
     }
     return nl_node_bind_fixture(env, exports, owner);
   } catch (...) {

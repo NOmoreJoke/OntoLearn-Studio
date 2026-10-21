@@ -23,7 +23,11 @@ constexpr ULONG nondirectory_option = 0x00000040;
 constexpr ULONG synchronous_option = 0x00000020;
 constexpr ULONG reparse_option = 0x00200000;
 constexpr NTSTATUS pending_status = static_cast<NTSTATUS>(0x00000103L);
-struct open_record { HANDLE result = nullptr; IO_STATUS_BLOCK io{}; };
+struct open_record {
+  HANDLE result = nullptr;
+  IO_STATUS_BLOCK io{};
+  NTSTATUS returned_status = 0; // Preserve pending versus failed-output ambiguity.
+};
 // Persistent kernel output storage. Unexpected STATUS_PENDING is retained, never
 // returned as success and never allowed to write into an expired stack frame.
 std::array<open_record, NL_MAX_OWNER_HISTORY * NL_MAX_CAPS> opens{};
@@ -134,6 +138,7 @@ nl_status platform_open_member(handle parent, const char* name, uint32_t bytes,
       metadata_access | (kind == NL_DIRECTORY ? FILE_TRAVERSE : 0),
       &attributes, &attempt.io, nullptr, 0, FILE_SHARE_READ | FILE_SHARE_WRITE,
       open_existing, options, nullptr, 0);
+  attempt.returned_status = status;
   if (status == pending_status) return NL_RETAINED;
   if (status < 0) {
     // A failure does not authenticate an unexpected output number as our handle.

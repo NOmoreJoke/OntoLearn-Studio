@@ -120,7 +120,7 @@ nl_status platform_duplicate_pipe(intptr_t borrowed, handle& out) noexcept {
   out.value = duplicate;
   struct stat value{};
   if (fstat(duplicate, &value) != 0) return error_status(errno);
-  return S_ISFIFO(value.st_mode) || S_ISSOCK(value.st_mode) ? NL_OK : NL_DENIED;
+  return S_ISFIFO(value.st_mode) ? NL_OK : NL_DENIED;
 }
 nl_status platform_poll_child(child_handle& child, bool& terminal) noexcept {
   terminal = child.terminal;
