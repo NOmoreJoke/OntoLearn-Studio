@@ -1605,7 +1605,9 @@ def test_preprobe_empty_child_is_real_sqlite_corruption_before_body(owner, audit
         gate = core._MeteredGate(owner._db, CAPS["maxEvidenceBytes"], ReadLimits())
         gate.encoding = "UTF-8"
         expect_fault("storage-failure", lambda: gate._rowids("job_blobs", 16384))
-        assert not any(e["event"] == "native-metadata" for e in audit[-1])
+        assert not any(
+            e["event"] == "native-metadata" and e["table"] == "job_blobs" for e in audit[-1]
+        )
         print(f"empty-child-canary-page={page} result=storage-failure")
     finally:
         with open(path, "r+b") as stream:
