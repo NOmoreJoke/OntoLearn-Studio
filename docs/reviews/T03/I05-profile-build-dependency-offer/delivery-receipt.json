@@ -1,0 +1,126 @@
+{
+  "scope": "Documentation offer only; static review passed; not implementation or dependency adoption approval",
+  "createdAt": "2026-10-21T14:41:06.886886+08:00",
+  "preDeliveryHead": "cc84be33df18084ed8dc9e284702ba7f88c97965",
+  "authoritySha256": "288350b2cf49586df962544d47fd76eb3b2f4b005cb1909828b42f7cc00b83da",
+  "newI05PlanSha256": "28295b0efd79c68ab5fe9ba1dd5c335b72a2be0e9d044698cdbc3a00a4bf32b9",
+  "outputs": {
+    "docs/iterations/T03/I05-profile-build-dependency-offer.md": {
+      "bytes": 19386,
+      "sha256": "5bcbc99714765bd65585ac02dce4c2878af9f4e827ebebf3353940d13d7c6788"
+    },
+    "docs/reviews/T03/I05-profile-build-dependency-offer/inputs.json": {
+      "bytes": 22155,
+      "sha256": "f117425c10f85a85513f68f2689b6665580768376cdd9c47a977acf638e350c3"
+    },
+    "docs/reviews/T03/I05-profile-build-dependency-offer/static-review.md": {
+      "bytes": 7459,
+      "sha256": "160ae322f2b66233ab1e3d5d91fd7620bca3715ede89fd0a040ce507eb09f054"
+    }
+  },
+  "independentStaticReview": {
+    "agent": "/root/t03_service_review",
+    "result": "pass; P3 wording issue closed",
+    "runtimeReview": false
+  },
+  "staticChecks": {
+    "targetedPrettier": "pass",
+    "gitDiffCheck": "pass",
+    "fixedBuildFiles": [
+      {
+        "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection",
+        "path": "packages/engine/pyproject.toml",
+        "matchesFixedRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "bytes": 351,
+        "sha256": "626b8f7024e8460af3ca42076a953b2827c0d6468903065c71a7fbb819cbce20"
+      },
+      {
+        "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection",
+        "path": "uv.lock",
+        "matchesFixedRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "bytes": 20999,
+        "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+      },
+      {
+        "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection",
+        "path": "scripts/build-engine.mjs",
+        "matchesFixedRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "bytes": 1234,
+        "sha256": "2a9036fd76ed32f8df52d7ffa7afee2213c00008986269cd2d1cf66f1857aa81"
+      },
+      {
+        "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection",
+        "path": "packages/engine/entrypoint.py",
+        "matchesFixedRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "bytes": 787,
+        "sha256": "979b65e5efc3d19ad9851cc2a97255594591626fbed2efbecd8713723e9f2f60"
+      },
+      {
+        "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping",
+        "path": "packages/engine/pyproject.toml",
+        "matchesFixedRef": "30319412daf8ae4745987babf7bbed93c53b6b42",
+        "bytes": 424,
+        "sha256": "09b4f2c2dea60f0fe71ebd894b2661110ff7e746fd5e01c715e7cb50d75be75f"
+      },
+      {
+        "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping",
+        "path": "uv.lock",
+        "matchesFixedRef": "30319412daf8ae4745987babf7bbed93c53b6b42",
+        "bytes": 23393,
+        "sha256": "9f5b6d2b93d994a3e4f8a46ce5cccae99d4e024ea7531ab62dd8e85d6aa1152e"
+      },
+      {
+        "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping",
+        "path": "scripts/build-engine.mjs",
+        "matchesFixedRef": "30319412daf8ae4745987babf7bbed93c53b6b42",
+        "bytes": 1349,
+        "sha256": "c53d704b6cc6ffacde1a1a9c40717bfae32f743cc518a5e3a0729aa2e8ce7341"
+      },
+      {
+        "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping",
+        "path": "packages/engine/entrypoint.py",
+        "matchesFixedRef": "30319412daf8ae4745987babf7bbed93c53b6b42",
+        "bytes": 1232,
+        "sha256": "7653ddf2d0dda19f1a12b1ed93afa694f722f84d7ec95d979d33268d946afc47"
+      }
+    ],
+    "fixedSourceSelectionProductAndTest": [
+      {
+        "path": "apps/desktop/src/main/mapping/source-selection.ts",
+        "matchesFixedRef": "8c904b57b7c5aac7b2b19273e679e7e36304dd1c",
+        "bytes": 13355,
+        "sha256": "700337e055974708fe848edf58187fe161c2af2a0feb908bd41241abfea9e989"
+      },
+      {
+        "path": "tests/unit/t03-source-selection.test.ts",
+        "matchesFixedRef": "8c904b57b7c5aac7b2b19273e679e7e36304dd1c",
+        "bytes": 21949,
+        "sha256": "734ec4fb10ac617a5c5659b40f9366ae35838eacd820539d759bc432a6ef247e"
+      }
+    ],
+    "protectedAgents": {
+      "bytes": 15852,
+      "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+    }
+  },
+  "operations": {
+    "productImportedOrExecuted": false,
+    "dependencyResolvedOrInstalled": false,
+    "testsRun": false,
+    "packageRun": false,
+    "gui": false,
+    "fourBuildFilesModified": false,
+    "frozenCandidatesModified": false,
+    "newProductTreeCreated": false,
+    "goalRecreatedOrResumed": false,
+    "pushPrCiMerge": false
+  },
+  "goalStatus": "blocked",
+  "remainingBeforeImplementation": [
+    "Root phase and isolated tree/base authorization",
+    "I05 frozen canonical probe/main/CLI/JSON/resource identities and budgets",
+    "Approved exact quality seven-file consumption and complete fixed inputs plus independent oracle",
+    "Actual lock resolution, distribution/license/module/archive and source/package verification after authorization",
+    "Original specified dual review, platform, PR/CI/normal merge/remote and parent acceptance gates"
+  ]
+}
