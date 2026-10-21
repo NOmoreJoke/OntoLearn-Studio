@@ -30,7 +30,7 @@ from ontolearn_engine.semantic_profile_restore import (
 )
 from ontolearn_engine.semantic_profile_restore_budget import RestoreLedger
 from ontolearn_engine.semantic_turtle import decode_profile_term
-from rdflib import RDF, SH
+from rdflib import RDF, SH, URIRef
 
 REPO = Path(__file__).resolve().parents[3]
 PURE = REPO / "tests/fixtures/quality/profile-M1-graph-consumer-inputs.json"
@@ -375,6 +375,9 @@ def observe_consumer(case, directory):
     try:
         graph = semantic.parse_turtle(case["dataTurtle"])
         actual["dataTripleCount"] = len(graph)
+        actual["fixturePValueNodeCount"] = len(
+            set(graph.objects(URIRef("urn:m1:s"), URIRef("urn:m1:p")))
+        )
         (directory / "data.nt").write_bytes(graph.serialize(format="nt", encoding="utf-8"))
         if "query" in case:
             actual["stage"] = "query"
@@ -444,6 +447,16 @@ def assert_complete_heads(produced, restored, expected):
     assert firing.when == matches[0].when and firing.bindings == matches[0].bindings
     assert_source(firing.source, "/cases/0/rules/0")
     assert firing.revision == "1" and firing.policy == PROFILE
+    raw_rule = GRAPH_INPUT["cases"][0]["rules"][0]
+    assert firing.definition_digest == sha(canonical(raw_rule))
+    assert plain(child["definitions"][0]) == plain(produced.actual_definitions[0][1])
+    for head in firing.heads:
+        pointer = f"/cases/0/rules/0/conclusions/{head.index}"
+        assert_source(
+            head.triple.object.source,
+            pointer
+            + ("/class" if raw_rule["conclusions"][head.index]["kind"] == "type" else "/object"),
+        )
     true = expected["originalMatches"][0]
     (comparison,) = firing.comparisons
     assert comparison.result is true["comparison"]["result"]
@@ -542,6 +555,8 @@ def assert_consumer_report(actual, expected):
     result = actual["result"]
     assert type(result["conforms"]) is bool and result["conforms"] is expected["conforms"]
     assert actual["validatorRuns"] == 1
+    if "valueNodeCount" in expected:
+        assert actual["fixturePValueNodeCount"] == expected["valueNodeCount"]
     report = actual["realValidatorReport"]
     assert report["conforms"] is result["conforms"]
     component_prefix = "<http://www.w3.org/ns/shacl#"
@@ -573,6 +588,18 @@ def assert_consumer_report(actual, expected):
         unmatched.remove(candidate)
     assert not unmatched
     assert len(report["rows"]) == len(required)
+    raw_unmatched = list(report["rows"])
+    for row in required:
+        candidate = next(
+            item
+            for item in raw_unmatched
+            if item["focusNode"] == [row["focusNode"]]
+            and item["sourceConstraintComponent"] == [row["sourceConstraintComponent"]]
+        )
+        for name in mapping:
+            assert candidate[name] == ([] if row[name] is None else [row[name]])
+        raw_unmatched.remove(candidate)
+    assert not raw_unmatched
     for row in report["rows"]:
         assert all(len(row[name]) == 1 for name in mapping if name != "value")
         assert len(row["value"]) <= 1
@@ -604,7 +631,7 @@ def test_real_consumer_cell(case, tmp_path, goldens):
         if "query" in case:
             assert actual["status"] == "success", actual
             result = actual["result"]
-            assert result["type"] == "SELECT"
+            assert result["type"] == "SELECT" and result["variables"] == ["s"]
             rows = [dict(zip(result["variables"], row, strict=True)) for row in result["rows"]]
             assert rows == expected["rows"]
         else:
