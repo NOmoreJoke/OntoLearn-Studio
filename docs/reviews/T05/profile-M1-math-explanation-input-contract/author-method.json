@@ -1,0 +1,113 @@
+{
+  "method": "Finite authored expected tables plus stdlib Fraction arithmetic and exact decimal expansion; no product import, product comparator/parser, runtime, expected->production",
+  "mathHelper": "/root/m1_math_vectors",
+  "sourceHelper": "/root/m1_source_census",
+  "authoringFailureRetained": [
+    {
+      "agent": "/root/m1_math_vectors",
+      "action": "temporary Jan-origin arithmetic script",
+      "firstExit": 1,
+      "reason": "SyntaxError: else28 missing whitespace",
+      "correctedExit": 0,
+      "filesWritten": false,
+      "productFailure": false
+    },
+    {
+      "action": "first document static check with stdout redirected to static-check.json in scanned directory",
+      "firstExit": 1,
+      "reason": "JSONDecodeError: empty current output file included in own JSON scan",
+      "productFailure": false,
+      "correction": "Exclude own static-check.json output; final report written after scanning inputs",
+      "correctedRun": "exit0; static-check.json records documentation-only checks"
+    },
+    {
+      "agent": "/root/m1_independent_review",
+      "action": "Independent temporary Jan-origin arithmetic script",
+      "firstExit": 1,
+      "reason": "SyntaxError: else28 missing whitespace",
+      "correctedExit": 0,
+      "filesWritten": false,
+      "productFailure": false
+    },
+    {
+      "agent": "/root/m1_independent_review",
+      "action": "Localized P2 verification temporary script",
+      "firstExit": 1,
+      "reason": "Current python3 does not support zip(strict=True)",
+      "correction": "Check equal lengths then zip",
+      "correctedExit": 0,
+      "filesWritten": false,
+      "productFailure": false
+    },
+    {
+      "action": "Final document Prettier check after adding independent-review-final.md",
+      "firstExit": 1,
+      "reason": "Markdown table formatting warning in newly added independent-review-final.md",
+      "correction": "Targeted Prettier --write on that one owned document",
+      "productFailure": false,
+      "correctedCheck": "recorded in format-check.txt"
+    }
+  ],
+  "scope": "Documentation fixture specification only; no product tests executed",
+  "authoringCorrectionsBeforeIndependentReview": [
+    {
+      "issue": "Initial first two new supplemental graph fixture cases lacked actual ontology Catalog declarations",
+      "finding": "Author static read of fixed _profile_catalog/compile_rules, no product run",
+      "correction": "Added actual owl.Class/DatatypeProperty input triples; rule JSON is source definition requiring actual T01/I05 binder, not direct RuleSpec API payload",
+      "originalProductionFilesModified": false
+    }
+  ],
+  "independentReviewCorrections": [
+    {
+      "id": "IR-P1-C-entry",
+      "reviewer": "/root/m1_independent_review",
+      "priority": "P1",
+      "initialInputBytes": 7691,
+      "initialInputSha256": "d565e143f4946684449fa6946aff98ac7744713da30c80bd8667e8d89c9e1c54",
+      "preservedFirstDraft": "review-first-C-inputs.json",
+      "counterexample": "Standalone targetNode PropertyShape is unsupported fixed3ef _shapes and nodes empty; all11 SHACL cells fail INVALID_SHAPE before intended guard",
+      "correction": "Use actual supported targetClass NodeShape->PropertyShape; add ex:s rdf:type ex:Focus actual data. No product scope expansion",
+      "status": "closed by independent localized reread; no remaining documentation blocker"
+    },
+    {
+      "id": "IR-P2-canonical-string",
+      "priority": "P2",
+      "counterexample": "Explicit xsd:string head fails existing schemaVersion1 NON_CANONICAL_TERM or differs actual I05 canonical N3",
+      "correction": "Use canonical plain \"ok\" source definition and output N3; C string value canonical \"a\" or abstract term comparison",
+      "status": "closed by independent localized reread; no remaining documentation blocker"
+    },
+    {
+      "id": "IR-P2-head-source",
+      "priority": "P2",
+      "counterexample": "Match-level rule source did not explicitly name every head conclusion",
+      "correction": "Each headIndex has exact original /cases/0/rules/0/conclusions/{i} pointer",
+      "status": "closed by independent localized reread; no remaining documentation blocker"
+    },
+    {
+      "id": "IR-P2-math-input-corpus",
+      "priority": "P2",
+      "counterexample": "Mathematical operands existed only inside goldens while producer forbidden to read goldens",
+      "correction": "Assembler emits math-operand-inputs.json directly from authored operand constants, no results/reasons/typed expected; runtime must read input file only",
+      "status": "closed by independent localized reread; no remaining documentation blocker"
+    },
+    {
+      "id": "IR-date-conditional",
+      "priority": "clarification",
+      "counterexample": "Only date policy pending left derivable core-only expected unspecified",
+      "correction": "Freeze both core-only MinInclusive violation and explicit date-extension equality conforming conditional expectations; current entry still INVALID_SHAPE",
+      "status": "closed by independent localized reread; no remaining documentation blocker"
+    }
+  ],
+  "reviewBeforeP2Snapshots": [
+    {
+      "path": "review-before-P2-supplemental-graph-inputs.json",
+      "bytes": 6048,
+      "sha256": "368af3ea734f0a184e7493d877639974b37e35529197bc64a762322c65910a3d"
+    },
+    {
+      "path": "review-before-P2-explanation-goldens.json",
+      "bytes": 10886,
+      "sha256": "c53f191166975890aa344288a815ee503bd8aa289c060b04fbf3525e9133777e"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "status": "new complete Turtle/query/shape fixture specs only; no parser/Validator executed",
+  "cases": [
+    {
+      "id": "C-query-numeric-promotion",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"16777217\"^^xsd:integer .",
+      "query": "PREFIX ex: <urn:m1:> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT ?s WHERE { ?s ex:p ?v . FILTER(?v = \"16777217\"^^xsd:float) }"
+    },
+    {
+      "id": "C-query-type-error",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"a\" .",
+      "query": "PREFIX ex: <urn:m1:> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT ?s WHERE { ?s ex:p ?v . FILTER(?v < \"1\"^^xsd:integer) }"
+    },
+    {
+      "id": "C-datatype-exact",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"1\"^^xsd:int .",
+      "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:shape a sh:PropertyShape; sh:targetNode ex:s; sh:path ex:p; sh:datatype xsd:integer ."
+    },
+    {
+      "id": "C-langString",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"a\"@en .",
+      "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:shape a sh:PropertyShape; sh:targetNode ex:s; sh:path ex:p; sh:datatype rdf:langString ."
+    },
+    {
+      "id": "C-count-term-identity",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"01\"^^xsd:integer, \"1\"^^xsd:integer .",
+      "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:shape a sh:PropertyShape; sh:targetNode ex:s; sh:path ex:p; sh:maxCount 1 ."
+    },
+    {
+      "id": "C-in-term-identity",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"01\"^^xsd:integer .",
+      "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:shape a sh:PropertyShape; sh:targetNode ex:s; sh:path ex:p; sh:in (\"1\"^^xsd:integer) ."
+    },
+    {
+      "id": "C-inclusive-numeric",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"2\"^^xsd:integer .",
+      "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:shape a sh:PropertyShape; sh:targetNode ex:s; sh:path ex:p; sh:minInclusive \"2\"^^xsd:integer; sh:maxInclusive \"2\"^^xsd:integer ."
+    },
+    {
+      "id": "C-inclusive-nni",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"2\"^^xsd:nonNegativeInteger .",
+      "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:shape a sh:PropertyShape; sh:targetNode ex:s; sh:path ex:p; sh:minInclusive \"2\"^^xsd:nonNegativeInteger ."
+    },
+    {
+      "id": "C-inclusive-dateTime-equal",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"2000-01-01T01:00:00+01:00\"^^xsd:dateTime .",
+      "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:shape a sh:PropertyShape; sh:targetNode ex:s; sh:path ex:p; sh:minInclusive \"2000-01-01T00:00:00Z\"^^xsd:dateTime; sh:maxInclusive \"2000-01-01T00:00:00Z\"^^xsd:dateTime ."
+    },
+    {
+      "id": "C-inclusive-dateTime-before",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"1999-12-31T23:59:59Z\"^^xsd:dateTime .",
+      "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:shape a sh:PropertyShape; sh:targetNode ex:s; sh:path ex:p; sh:minInclusive \"2000-01-01T00:00:00Z\"^^xsd:dateTime ."
+    },
+    {
+      "id": "C-inclusive-type-error",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"a\" .",
+      "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:shape a sh:PropertyShape; sh:targetNode ex:s; sh:path ex:p; sh:minInclusive \"1\"^^xsd:integer ."
+    },
+    {
+      "id": "C-inclusive-date-entry",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"2000-01-01Z\"^^xsd:date .",
+      "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:shape a sh:PropertyShape; sh:targetNode ex:s; sh:path ex:p; sh:minInclusive \"2000-01-01Z\"^^xsd:date ."
+    },
+    {
+      "id": "C-illtyped-entry",
+      "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"not-an-int\"^^xsd:integer .",
+      "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:shape a sh:PropertyShape; sh:targetNode ex:s; sh:path ex:p; sh:datatype xsd:integer ."
+    }
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "status": "independent expected only",
+  "epoch": "0000-03-01",
+  "derivation": "Jan-origin days=365*y+(y+3)//4-(y+99)//100+(y+399)//400+priorMonthDays+d-1-60; subtract offset seconds, floor into day. Product March/era formula never called.",
+  "vectors": [
+    {
+      "id": "Dz",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-03-01Z",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#date"
+      },
+      "expectedDomain": "Dz",
+      "expectedCalendar": {
+        "day": 0,
+        "second": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": true,
+        "is_datetime": false
+      }
+    },
+    {
+      "id": "Dl",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-03-01",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#date"
+      },
+      "expectedDomain": "Dl",
+      "expectedCalendar": {
+        "day": 0,
+        "second": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": false,
+        "is_datetime": false
+      }
+    },
+    {
+      "id": "Tz",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-03-01T00:00:00Z",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "expectedDomain": "Tz",
+      "expectedCalendar": {
+        "day": 0,
+        "second": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": true,
+        "is_datetime": true
+      }
+    },
+    {
+      "id": "Tl",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-03-01T00:00:00",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "expectedDomain": "Tl",
+      "expectedCalendar": {
+        "day": 0,
+        "second": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": false,
+        "is_datetime": true
+      }
+    },
+    {
+      "id": "date-plus14",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-03-01+14:00",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#date"
+      },
+      "expectedDomain": "Dz",
+      "expectedCalendar": {
+        "day": -1,
+        "second": {
+          "numerator": "36000",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": true,
+        "is_datetime": false
+      }
+    },
+    {
+      "id": "date-minus10",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-02-29-10:00",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#date"
+      },
+      "expectedDomain": "Dz",
+      "expectedCalendar": {
+        "day": -1,
+        "second": {
+          "numerator": "36000",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": true,
+        "is_datetime": false
+      }
+    },
+    {
+      "id": "datetime-plus1",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-03-01T00:30:00+01:00",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "expectedDomain": "Tz",
+      "expectedCalendar": {
+        "day": -1,
+        "second": {
+          "numerator": "84600",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": true,
+        "is_datetime": true
+      }
+    },
+    {
+      "id": "datetime-z-equivalent",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-02-29T23:30:00Z",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "expectedDomain": "Tz",
+      "expectedCalendar": {
+        "day": -1,
+        "second": {
+          "numerator": "84600",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": true,
+        "is_datetime": true
+      }
+    },
+    {
+      "id": "24h",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-02-29T24:00:00.000Z",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "expectedDomain": "Tz",
+      "expectedCalendar": {
+        "day": 0,
+        "second": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": true,
+        "is_datetime": true
+      }
+    },
+    {
+      "id": "fraction",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-03-01T00:00:00.1234567890123456789",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "expectedDomain": "Tl",
+      "expectedCalendar": {
+        "day": 0,
+        "second": {
+          "numerator": "1234567890123456789",
+          "denominator": "10000000000000000000",
+          "negative_zero": false
+        },
+        "explicit_offset": false,
+        "is_datetime": true
+      }
+    },
+    {
+      "id": "negative-zero-year",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "-0000-03-01",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#date"
+      },
+      "expectedDomain": "Dl",
+      "expectedCalendar": {
+        "day": 0,
+        "second": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": false,
+        "is_datetime": false
+      }
+    },
+    {
+      "id": "negative-year",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "-0001-03-01Z",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#date"
+      },
+      "expectedDomain": "Dz",
+      "expectedCalendar": {
+        "day": -366,
+        "second": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": true,
+        "is_datetime": false
+      }
+    },
+    {
+      "id": "400year",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0400-03-01",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#date"
+      },
+      "expectedDomain": "Dl",
+      "expectedCalendar": {
+        "day": 146097,
+        "second": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": false,
+        "is_datetime": false
+      }
+    },
+    {
+      "id": "400leap",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0400-02-29",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#date"
+      },
+      "expectedDomain": "Dl",
+      "expectedCalendar": {
+        "day": 146096,
+        "second": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": false,
+        "is_datetime": false
+      }
+    },
+    {
+      "id": "minus-zero-offset",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0000-03-01T00:00:00-00:00",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "expectedDomain": "Tz",
+      "expectedCalendar": {
+        "day": 0,
+        "second": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        },
+        "explicit_offset": true,
+        "is_datetime": true
+      }
+    }
+  ],
+  "equalPairs": [
+    ["date-plus14", "date-minus10"],
+    ["datetime-plus1", "datetime-z-equivalent"],
+    ["Tz", "24h"],
+    ["Tz", "minus-zero-offset"],
+    ["Dl", "negative-zero-year"]
+  ],
+  "crossDomainEvenIfSameDaySecond": "All six operators fail RULE_COMPARISON_TYPE_MISMATCH; no implicit timezone/date cast"
+}

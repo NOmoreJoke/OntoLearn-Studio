@@ -1,0 +1,1060 @@
+{
+  "actualStatusCounts": {
+    "success": 78,
+    "failure": 4,
+    "not-executed": 1
+  },
+  "actualSuccessfulGraphIds": [
+    "003-no-name",
+    "A01-closed",
+    "B-01-event",
+    "B-02-commit",
+    "B-02-event",
+    "B-03-event",
+    "B-07-event",
+    "R04-complete",
+    "R04-ontology-only",
+    "base",
+    "base-A04-only",
+    "base-name-user",
+    "base-no-A01",
+    "base-no-A03",
+    "base-plus-A04",
+    "behavior-base",
+    "behavior-no-A01",
+    "chain-forward",
+    "chain-reversed",
+    "e5-initial",
+    "extension/CMP-EQ-ABOVE-FALSE",
+    "extension/CMP-EQ-FALSE",
+    "extension/CMP-EQ-TRUE",
+    "extension/CMP-GE-ABOVE-TRUE",
+    "extension/CMP-GE-FALSE",
+    "extension/CMP-GE-TRUE",
+    "extension/CMP-GT-BELOW-FALSE",
+    "extension/CMP-GT-FALSE",
+    "extension/CMP-GT-TRUE",
+    "extension/CMP-LE-BELOW-TRUE",
+    "extension/CMP-LE-FALSE",
+    "extension/CMP-LE-TRUE",
+    "extension/CMP-LT-ABOVE-FALSE",
+    "extension/CMP-LT-FALSE",
+    "extension/CMP-LT-TRUE",
+    "extension/CMP-NE-ABOVE-TRUE",
+    "extension/CMP-NE-FALSE",
+    "extension/CMP-NE-TRUE",
+    "extension/DISABLED-RULE-NO-OUTPUT",
+    "extension/JOIN-NO-CROSS-ALARM",
+    "extension/MISSING-PROPERTY-IS-NOT-A-NEGATION",
+    "extension/MULTI-OUTPUT-ONE-FIRING",
+    "map-001-note002",
+    "map-empty",
+    "map-manual",
+    "map-two",
+    "map-two-note002",
+    "next-class-only",
+    "transfer-classification"
+  ],
+  "actualUncoveredGraphs": [
+    {
+      "id": "B-01-behavior",
+      "category": "behavior-or-commit-state-not-in-83-production-inputs",
+      "matchRefs": ["a01", "a04"],
+      "ruleDefinitionRefs": ["R-risk/base"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "B-01-commit",
+      "category": "behavior-or-commit-state-not-in-83-production-inputs",
+      "matchRefs": ["a01", "a04"],
+      "ruleDefinitionRefs": ["R-risk/base"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "B-03-behavior",
+      "category": "behavior-or-commit-state-not-in-83-production-inputs",
+      "matchRefs": ["a06"],
+      "ruleDefinitionRefs": ["R-risk/base"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "B-03-commit",
+      "category": "behavior-or-commit-state-not-in-83-production-inputs",
+      "matchRefs": ["a06"],
+      "ruleDefinitionRefs": ["R-risk/base"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "B-07-behavior",
+      "category": "behavior-or-commit-state-not-in-83-production-inputs",
+      "matchRefs": ["a01", "a04"],
+      "ruleDefinitionRefs": ["R-risk/base"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "B-07-commit",
+      "category": "behavior-or-commit-state-not-in-83-production-inputs",
+      "matchRefs": ["a01", "a04"],
+      "ruleDefinitionRefs": ["R-risk/base"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "B06-commit",
+      "category": "behavior-or-commit-state-not-in-83-production-inputs",
+      "matchRefs": ["a01"],
+      "ruleDefinitionRefs": ["R-risk/behavior"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "B10-commit",
+      "category": "behavior-or-commit-state-not-in-83-production-inputs",
+      "matchRefs": ["a01"],
+      "ruleDefinitionRefs": ["R-risk/behavior"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "B11-commit",
+      "category": "behavior-or-commit-state-not-in-83-production-inputs",
+      "matchRefs": ["a01"],
+      "ruleDefinitionRefs": ["R-risk/behavior"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "cancel-committed",
+      "category": "cancel-committed-versus-uncommitted-lifecycle",
+      "matchRefs": ["a01"],
+      "ruleDefinitionRefs": ["R-risk/base"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "cancel-uncommitted",
+      "category": "cancel-committed-versus-uncommitted-lifecycle",
+      "matchRefs": ["a01"],
+      "ruleDefinitionRefs": ["R-risk/base"],
+      "assertedRole": "uncommitted-scenario-workspace"
+    },
+    {
+      "id": "e5-c3-r1-behavior",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": ["e001", "e002", "e003", "e004"],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c3-r1-commit",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": ["e001", "e002", "e003", "e004"],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c3-r1-event",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": ["e001", "e002", "e003", "e004"],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c3-r2-behavior",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": ["e001", "e002", "e003", "e004", "e005", "e006", "e007", "e008"],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c3-r2-commit",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": ["e001", "e002", "e003", "e004", "e005", "e006", "e007", "e008"],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c3-r2-event",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": ["e001", "e002", "e003", "e004", "e005", "e006", "e007", "e008"],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c3-r3-behavior",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": [
+        "e001",
+        "e002",
+        "e003",
+        "e004",
+        "e005",
+        "e006",
+        "e007",
+        "e008",
+        "e009",
+        "e010",
+        "e011",
+        "e012"
+      ],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c3-r3-commit",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": [
+        "e001",
+        "e002",
+        "e003",
+        "e004",
+        "e005",
+        "e006",
+        "e007",
+        "e008",
+        "e009",
+        "e010",
+        "e011",
+        "e012"
+      ],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c3-r3-event",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": [
+        "e001",
+        "e002",
+        "e003",
+        "e004",
+        "e005",
+        "e006",
+        "e007",
+        "e008",
+        "e009",
+        "e010",
+        "e011",
+        "e012"
+      ],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c3-r4-behavior",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": [
+        "e001",
+        "e002",
+        "e003",
+        "e004",
+        "e005",
+        "e006",
+        "e007",
+        "e008",
+        "e009",
+        "e010",
+        "e011",
+        "e012",
+        "e013",
+        "e014",
+        "e015",
+        "e016"
+      ],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c3-r4-commit",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": [
+        "e001",
+        "e002",
+        "e003",
+        "e004",
+        "e005",
+        "e006",
+        "e007",
+        "e008",
+        "e009",
+        "e010",
+        "e011",
+        "e012",
+        "e013",
+        "e014",
+        "e015",
+        "e016"
+      ],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c3-r4-event",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": [
+        "e001",
+        "e002",
+        "e003",
+        "e004",
+        "e005",
+        "e006",
+        "e007",
+        "e008",
+        "e009",
+        "e010",
+        "e011",
+        "e012",
+        "e013",
+        "e014",
+        "e015",
+        "e016"
+      ],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c4-r1-behavior",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": ["e001", "e002", "e003", "e004"],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c4-r1-commit",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": ["e001", "e002", "e003", "e004"],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c4-r1-event",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": ["e001", "e002", "e003", "e004"],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c4-r2-behavior",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": ["e001", "e002", "e003", "e004", "e005", "e006", "e007", "e008"],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c4-r2-commit",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": ["e001", "e002", "e003", "e004", "e005", "e006", "e007", "e008"],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c4-r2-event",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": ["e001", "e002", "e003", "e004", "e005", "e006", "e007", "e008"],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c4-r3-behavior",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": [
+        "e001",
+        "e002",
+        "e003",
+        "e004",
+        "e005",
+        "e006",
+        "e007",
+        "e008",
+        "e009",
+        "e010",
+        "e011",
+        "e012"
+      ],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c4-r3-commit",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": [
+        "e001",
+        "e002",
+        "e003",
+        "e004",
+        "e005",
+        "e006",
+        "e007",
+        "e008",
+        "e009",
+        "e010",
+        "e011",
+        "e012"
+      ],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c4-r3-event",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": [
+        "e001",
+        "e002",
+        "e003",
+        "e004",
+        "e005",
+        "e006",
+        "e007",
+        "e008",
+        "e009",
+        "e010",
+        "e011",
+        "e012"
+      ],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c4-r4-behavior",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": [
+        "e001",
+        "e002",
+        "e003",
+        "e004",
+        "e005",
+        "e006",
+        "e007",
+        "e008",
+        "e009",
+        "e010",
+        "e011",
+        "e012",
+        "e013",
+        "e014",
+        "e015",
+        "e016"
+      ],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c4-r4-commit",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": [
+        "e001",
+        "e002",
+        "e003",
+        "e004",
+        "e005",
+        "e006",
+        "e007",
+        "e008",
+        "e009",
+        "e010",
+        "e011",
+        "e012",
+        "e013",
+        "e014",
+        "e015",
+        "e016"
+      ],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "e5-c4-r4-event",
+      "category": "E5-real-scenario-state-and-resource-gap",
+      "matchRefs": [
+        "e001",
+        "e002",
+        "e003",
+        "e004",
+        "e005",
+        "e006",
+        "e007",
+        "e008",
+        "e009",
+        "e010",
+        "e011",
+        "e012",
+        "e013",
+        "e014",
+        "e015",
+        "e016"
+      ],
+      "ruleDefinitionRefs": ["R-risk/E5"],
+      "assertedRole": "scenario-copy"
+    },
+    {
+      "id": "imported",
+      "category": "actual-import-and-edit-state-not-produced",
+      "matchRefs": [],
+      "ruleDefinitionRefs": ["R-risk/map"],
+      "assertedRole": "project-asserted"
+    },
+    {
+      "id": "imported-user-edit",
+      "category": "actual-import-and-edit-state-not-produced",
+      "matchRefs": [],
+      "ruleDefinitionRefs": ["R-risk/map"],
+      "assertedRole": "project-asserted"
+    },
+    {
+      "id": "ontology-model-delta-only",
+      "category": "four-additions-only-not-complete-project-context",
+      "matchRefs": [],
+      "ruleDefinitionRefs": [],
+      "assertedRole": "project-asserted"
+    },
+    {
+      "id": "transfer-repair-after",
+      "category": "missing-original-rule-and-actual-repair-consumer",
+      "matchRefs": [],
+      "ruleDefinitionRefs": [],
+      "assertedRole": "project-asserted"
+    },
+    {
+      "id": "transfer-repair-before",
+      "category": "missing-original-rule-and-actual-repair-consumer",
+      "matchRefs": [],
+      "ruleDefinitionRefs": [],
+      "assertedRole": "project-asserted"
+    }
+  ],
+  "actualSuccessfulAcceptedMatchRefs": [
+    "a01",
+    "a04",
+    "a06",
+    "cmp/CMP-EQ-TRUE",
+    "cmp/CMP-GE-ABOVE-TRUE",
+    "cmp/CMP-GE-TRUE",
+    "cmp/CMP-GT-TRUE",
+    "cmp/CMP-LE-BELOW-TRUE",
+    "cmp/CMP-LE-TRUE",
+    "cmp/CMP-LT-TRUE",
+    "cmp/CMP-NE-ABOVE-TRUE",
+    "cmp/CMP-NE-TRUE",
+    "multi",
+    "pump",
+    "transfer"
+  ],
+  "actualSuccessfulFalseMatchRefs": [
+    "cmp/CMP-EQ-ABOVE-FALSE",
+    "cmp/CMP-EQ-FALSE",
+    "cmp/CMP-GE-FALSE",
+    "cmp/CMP-GT-BELOW-FALSE",
+    "cmp/CMP-GT-FALSE",
+    "cmp/CMP-LE-FALSE",
+    "cmp/CMP-LT-ABOVE-FALSE",
+    "cmp/CMP-LT-FALSE",
+    "cmp/CMP-NE-FALSE"
+  ],
+  "actualMissingMatchRefs": [
+    "e001",
+    "e002",
+    "e003",
+    "e004",
+    "e005",
+    "e006",
+    "e007",
+    "e008",
+    "e009",
+    "e010",
+    "e011",
+    "e012",
+    "e013",
+    "e014",
+    "e015",
+    "e016"
+  ],
+  "actualAcceptedHeadRefs": [
+    ["a01", 0],
+    ["a04", 0],
+    ["a06", 0],
+    ["cmp/CMP-EQ-TRUE", 0],
+    ["cmp/CMP-GE-ABOVE-TRUE", 0],
+    ["cmp/CMP-GE-TRUE", 0],
+    ["cmp/CMP-GT-TRUE", 0],
+    ["cmp/CMP-LE-BELOW-TRUE", 0],
+    ["cmp/CMP-LE-TRUE", 0],
+    ["cmp/CMP-LT-TRUE", 0],
+    ["cmp/CMP-NE-ABOVE-TRUE", 0],
+    ["cmp/CMP-NE-TRUE", 0],
+    ["multi", 0],
+    ["multi", 1],
+    ["pump", 0],
+    ["transfer", 0]
+  ],
+  "coveragePlanCountsNotRuntime": {
+    "mathInputs": 83,
+    "valueMappedInputs": 80,
+    "eligibleMappedInputs": 79,
+    "eligibleCoveredValueGraphs": 51,
+    "oracleGraphs": 89
+  },
+  "unresolvedOriginalInputContexts": [
+    {
+      "gap": "Only added four triples in course prose; prior complete project unspecified. Need T02/original owner to bind complete context for full-project inference.",
+      "id": "ontology-model",
+      "source": {
+        "path": "tests/fixtures/quality/approved-T09-873c8c0/content/learning/course.json",
+        "pointer": "/tasks/0",
+        "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+        "sha256": "c1f3cf080d6192ad528d4fa9318d18fd7baeef3beb6fd9a217dfe0080b2a439b"
+      }
+    },
+    {
+      "gap": "No rule definitions. Use actual SHACL consumer; do not inherit R-risk from ruleVersion.",
+      "id": "transfer-repair",
+      "source": {
+        "path": "tests/fixtures/quality/approved-T09-873c8c0/content/learning/transfer-inputs.json",
+        "pointer": "/repair",
+        "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+        "sha256": "3ae8b7fd952680283b9e2b2573afee94ba88357efa4849da4e4b3e0d7e681aa6"
+      }
+    },
+    {
+      "gap": "No fixed RDF input project; actual T10 output/lifecycle input needed.",
+      "id": "learning-report",
+      "source": {
+        "path": "tests/fixtures/quality/approved-T09-873c8c0/content/learning/checks.json",
+        "pointer": "/checks/learning-report",
+        "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+        "sha256": "c32159000cdad9e63081379564dc710f824823ca3fa3626fa135aec3daf63d90"
+      }
+    },
+    {
+      "gap": "Selected subject is absent; intermediate full edited graph cannot be constructed. Overall reset/undo is lifecycle acceptance.",
+      "id": "G-list-13:edit-and-undo",
+      "source": {
+        "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/cases.json",
+        "pointer": "/cases/33/steps/3",
+        "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+        "sha256": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa"
+      }
+    },
+    {
+      "gap": "V1 completion round/payload absent. Do not derive historical payload from V2/current or oracle.",
+      "id": "G-list-05:late-V1",
+      "source": {
+        "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/cases.json",
+        "pointer": "/cases/25",
+        "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+        "sha256": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa"
+      }
+    }
+  ],
+  "failedOrNotExecuted": [
+    {
+      "caseId": "transfer:repair",
+      "status": "not-executed",
+      "fullOriginalInputContext": true,
+      "inputProjectionJsonSha256": "e88bb7dd5b640cfe027732f43a5954d6f09a76fa7ac5981d03827940333780bc",
+      "purpose": "original transfer input",
+      "sourceRefs": [
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/content/learning/transfer-inputs.json",
+          "pointer": "/repair",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "3ae8b7fd952680283b9e2b2573afee94ba88357efa4849da4e4b3e0d7e681aa6"
+        }
+      ],
+      "eligibleStandaloneMathInput": false,
+      "exactInputValueGraphs": ["transfer-repair-before"],
+      "acceptedExpectedMatchRefs": [],
+      "falseExpectedMatchRefs": [],
+      "externalComparisonStatus": "not-executed",
+      "reason": "ORIGINAL_INPUT_CONTEXT_INCOMPLETE",
+      "scopeNotes": ["Repair defines no rules: ruleVersion never authorizes inherited R-risk."]
+    },
+    {
+      "caseId": "E.5:event-fragment:round:1",
+      "status": "failure",
+      "fullOriginalInputContext": false,
+      "inputProjectionJsonSha256": "381d7280a4f5a237e18c745443e461de7b16c1a35876bdf36820e3f2181c9b73",
+      "purpose": "standalone explicit event fragment for mathematical reasoning",
+      "sourceRefs": [
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/initialFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/0/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/1/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/2/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/3/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        }
+      ],
+      "eligibleStandaloneMathInput": true,
+      "exactInputValueGraphs": ["e5-c3-r1-event", "e5-c4-r1-event"],
+      "acceptedExpectedMatchRefs": ["e001", "e002", "e003", "e004"],
+      "falseExpectedMatchRefs": [],
+      "externalComparisonStatus": "failure",
+      "scopeNotes": [
+        "Not a full original scenario snapshot: previous behavior/resource order RDF is absent.",
+        "Cannot compare this input hash to any full oracle graph or certify capacity/replay/resume/reset."
+      ],
+      "diagnostic": {
+        "classification": "resource",
+        "location": null,
+        "reason": "RULE_INPUT_BUDGET",
+        "ruleId": "R-risk"
+      },
+      "error": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticInput"
+        },
+        "retryable": false
+      }
+    },
+    {
+      "caseId": "E.5:event-fragment:round:2",
+      "status": "failure",
+      "fullOriginalInputContext": false,
+      "inputProjectionJsonSha256": "b5cf1e26fd3c8b8bf4638adfd6cddaaed5f9e11bac796c973a9d6e046faa89a6",
+      "purpose": "standalone explicit event fragment for mathematical reasoning",
+      "sourceRefs": [
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/initialFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/0/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/1/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/2/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/3/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/4/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/5/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/6/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/7/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        }
+      ],
+      "eligibleStandaloneMathInput": true,
+      "exactInputValueGraphs": [],
+      "acceptedExpectedMatchRefs": [],
+      "falseExpectedMatchRefs": [],
+      "externalComparisonStatus": "failure",
+      "scopeNotes": [
+        "Not a full original scenario snapshot: previous behavior/resource order RDF is absent.",
+        "Cannot compare this input hash to any full oracle graph or certify capacity/replay/resume/reset."
+      ],
+      "diagnostic": {
+        "classification": "resource",
+        "location": null,
+        "reason": "RULE_INPUT_BUDGET",
+        "ruleId": "R-risk"
+      },
+      "error": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticInput"
+        },
+        "retryable": false
+      }
+    },
+    {
+      "caseId": "E.5:event-fragment:round:3",
+      "status": "failure",
+      "fullOriginalInputContext": false,
+      "inputProjectionJsonSha256": "741e27b80f87929abde3b5e032e087944a136241c0579d1a85bb6e22fe3b7ffd",
+      "purpose": "standalone explicit event fragment for mathematical reasoning",
+      "sourceRefs": [
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/initialFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/0/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/1/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/2/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/3/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/4/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/5/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/6/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/7/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/8/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/9/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/10/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/11/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        }
+      ],
+      "eligibleStandaloneMathInput": true,
+      "exactInputValueGraphs": [],
+      "acceptedExpectedMatchRefs": [],
+      "falseExpectedMatchRefs": [],
+      "externalComparisonStatus": "failure",
+      "scopeNotes": [
+        "Not a full original scenario snapshot: previous behavior/resource order RDF is absent.",
+        "Cannot compare this input hash to any full oracle graph or certify capacity/replay/resume/reset."
+      ],
+      "diagnostic": {
+        "classification": "resource",
+        "location": null,
+        "reason": "WORK_LIMIT",
+        "ruleId": null
+      },
+      "error": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticWork"
+        },
+        "retryable": false
+      }
+    },
+    {
+      "caseId": "E.5:event-fragment:round:4",
+      "status": "failure",
+      "fullOriginalInputContext": false,
+      "inputProjectionJsonSha256": "50e7c2383cf721b859226e2e4a2b642f2ae1821ddbd9288347106706851ad131",
+      "purpose": "standalone explicit event fragment for mathematical reasoning",
+      "sourceRefs": [
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/initialFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/0/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/1/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/2/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/3/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/4/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/5/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/6/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/7/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/8/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/9/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/10/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/11/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/12/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/13/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/14/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        },
+        {
+          "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/E.5.json",
+          "pointer": "/events/15/payload/addFacts",
+          "ref": "f9af899fad31ea19c7540e9624c437a189b8b5bf",
+          "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+        }
+      ],
+      "eligibleStandaloneMathInput": true,
+      "exactInputValueGraphs": [],
+      "acceptedExpectedMatchRefs": [],
+      "falseExpectedMatchRefs": [],
+      "externalComparisonStatus": "failure",
+      "scopeNotes": [
+        "Not a full original scenario snapshot: previous behavior/resource order RDF is absent.",
+        "Cannot compare this input hash to any full oracle graph or certify capacity/replay/resume/reset."
+      ],
+      "diagnostic": {
+        "classification": "resource",
+        "location": null,
+        "reason": "WORK_LIMIT",
+        "ruleId": null
+      },
+      "error": {
+        "code": "RESOURCE_LIMIT",
+        "messageKey": "resource.limitExceeded",
+        "params": {
+          "resource": "semanticWork"
+        },
+        "retryable": false
+      }
+    }
+  ],
+  "status": "historical actual evidence only; no new run; expected data cannot supply production"
+}

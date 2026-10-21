@@ -1,0 +1,842 @@
+{
+  "status": "independent exact values, not observed product values",
+  "record": "Number(numerator:int,denominator:int,negative_zero:bool); JSON integer strings are golden storage only, not public codec",
+  "vectors": [
+    {
+      "id": "two-integer",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "02",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "exactDecimalInput": {
+        "numerator": "2",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "All six actual values are exactly 2; original datatype/lexical remain distinct RDF terms",
+      "expected": {
+        "Number": {
+          "numerator": "2",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "two-int",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "+2",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#int"
+      },
+      "exactDecimalInput": {
+        "numerator": "2",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "All six actual values are exactly 2; original datatype/lexical remain distinct RDF terms",
+      "expected": {
+        "Number": {
+          "numerator": "2",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "two-nonNegativeInteger",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "2",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+      },
+      "exactDecimalInput": {
+        "numerator": "2",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "All six actual values are exactly 2; original datatype/lexical remain distinct RDF terms",
+      "expected": {
+        "Number": {
+          "numerator": "2",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "two-decimal",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "2.0",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#decimal"
+      },
+      "exactDecimalInput": {
+        "numerator": "2",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "All six actual values are exactly 2; original datatype/lexical remain distinct RDF terms",
+      "expected": {
+        "Number": {
+          "numerator": "2",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "two-float",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "2e0",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "2",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "All six actual values are exactly 2; original datatype/lexical remain distinct RDF terms",
+      "expected": {
+        "Number": {
+          "numerator": "2",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "two-double",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "+2E0",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "2",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "All six actual values are exactly 2; original datatype/lexical remain distinct RDF terms",
+      "expected": {
+        "Number": {
+          "numerator": "2",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "point-one-decimal",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0.1",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#decimal"
+      },
+      "exactDecimalInput": {
+        "numerator": "1",
+        "denominator": "10",
+        "negative_zero": false
+      },
+      "derivation": "decimal is 1/10; nearest binary significands independently fixed; float > double > decimal",
+      "expected": {
+        "Number": {
+          "numerator": "1",
+          "denominator": "10",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "point-one-float",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0.1",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "1",
+        "denominator": "10",
+        "negative_zero": false
+      },
+      "derivation": "decimal is 1/10; nearest binary significands independently fixed; float > double > decimal",
+      "expected": {
+        "Number": {
+          "numerator": "13421773",
+          "denominator": "134217728",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "point-one-double",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0.1",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "1",
+        "denominator": "10",
+        "negative_zero": false
+      },
+      "derivation": "decimal is 1/10; nearest binary significands independently fixed; float > double > decimal",
+      "expected": {
+        "Number": {
+          "numerator": "3602879701896397",
+          "denominator": "36028797018963968",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "large-int-32",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "16777217",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "exactDecimalInput": {
+        "numerator": "16777217",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "",
+      "expected": {
+        "Number": {
+          "numerator": "16777217",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "large-float-32",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "16777217",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "16777217",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "At 2^24 step=2; odd midpoint takes even lower significand",
+      "expected": {
+        "Number": {
+          "numerator": "16777216",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "large-int-64",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "9007199254740993",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "exactDecimalInput": {
+        "numerator": "9007199254740993",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "",
+      "expected": {
+        "Number": {
+          "numerator": "9007199254740993",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "large-double-64",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "9007199254740993",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "9007199254740993",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "At 2^53 step=2; odd midpoint takes even lower significand",
+      "expected": {
+        "Number": {
+          "numerator": "9007199254740992",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "negative-zero-integer",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "-0",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "exactDecimalInput": {
+        "numerator": "0",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "Only binary float/double retain negative_zero; comparisons still use equal zero row",
+      "expected": {
+        "Number": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "negative-zero-decimal",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "-0",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#decimal"
+      },
+      "exactDecimalInput": {
+        "numerator": "0",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "Only binary float/double retain negative_zero; comparisons still use equal zero row",
+      "expected": {
+        "Number": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "negative-zero-float",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "-0",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "0",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "Only binary float/double retain negative_zero; comparisons still use equal zero row",
+      "expected": {
+        "Number": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": true
+        }
+      }
+    },
+    {
+      "id": "negative-zero-double",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "-0",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "0",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "Only binary float/double retain negative_zero; comparisons still use equal zero row",
+      "expected": {
+        "Number": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": true
+        }
+      }
+    },
+    {
+      "id": "float-tie-low",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "1.000000059604644775390625",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "16777217",
+        "denominator": "16777216",
+        "negative_zero": false
+      },
+      "derivation": "Exact midpoint; lower significand even",
+      "expected": {
+        "Number": {
+          "numerator": "1",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "float-tie-high",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "1.000000178813934326171875",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "16777219",
+        "denominator": "16777216",
+        "negative_zero": false
+      },
+      "derivation": "Exact midpoint; upper significand even",
+      "expected": {
+        "Number": {
+          "numerator": "4194305",
+          "denominator": "4194304",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "float-half-subnormal",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0.000000000000000000000000000000000000000000000700649232162408535461864791644958065640130970938257885878534141944895541342930300743319094181060791015625",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "1",
+        "denominator": "1427247692705959881058285969449495136382746624",
+        "negative_zero": false
+      },
+      "derivation": "Tie between 0 and q, even 0",
+      "expected": {
+        "Number": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "float-negative-half-subnormal",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "-0.000000000000000000000000000000000000000000000700649232162408535461864791644958065640130970938257885878534141944895541342930300743319094181060791015625",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "-1",
+        "denominator": "1427247692705959881058285969449495136382746624",
+        "negative_zero": false
+      },
+      "derivation": "Same tie; negative sign retained at zero",
+      "expected": {
+        "Number": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": true
+        }
+      }
+    },
+    {
+      "id": "float-min-subnormal",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0.00000000000000000000000000000000000000000000140129846432481707092372958328991613128026194187651577175706828388979108268586060148663818836212158203125",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "1",
+        "denominator": "713623846352979940529142984724747568191373312",
+        "negative_zero": false
+      },
+      "derivation": "Exactly one least subnormal quantum",
+      "expected": {
+        "Number": {
+          "numerator": "1",
+          "denominator": "713623846352979940529142984724747568191373312",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "float-three-half-subnormal",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0.000000000000000000000000000000000000000000002101947696487225606385594374934874196920392912814773657635602425834686624028790902229957282543182373046875",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "3",
+        "denominator": "1427247692705959881058285969449495136382746624",
+        "negative_zero": false
+      },
+      "derivation": "Tie between 1q and 2q; even 2q",
+      "expected": {
+        "Number": {
+          "numerator": "1",
+          "denominator": "356811923176489970264571492362373784095686656",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "float-subnormal-normal-tie",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0.000000000000000000000000000000000000011754942807573642917278829910357665133228589927589904276829631184250030649651730385585324256680905818939208984375",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "16777215",
+        "denominator": "1427247692705959881058285969449495136382746624",
+        "negative_zero": false
+      },
+      "derivation": "Last subnormal odd, minimum normal even",
+      "expected": {
+        "Number": {
+          "numerator": "1",
+          "denominator": "85070591730234615865843651857942052864",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "float-max-finite",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "340282346638528859811704183484516925440",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "340282346638528859811704183484516925440",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "(2^p-1)*2^(emax-p+1)",
+      "expected": {
+        "Number": {
+          "numerator": "340282346638528859811704183484516925440",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "float-below-overflow-midpoint",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "340282356779733661637539395458142568447",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "340282356779733661637539395458142568447",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "Exactly one integer below overflow tie, rounds down to max finite",
+      "expected": {
+        "Number": {
+          "numerator": "340282346638528859811704183484516925440",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "float-overflow-midpoint",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "340282356779733661637539395458142568448",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "340282356779733661637539395458142568448",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "Tie rounds even into 2^(emax+1), unsupported infinity; legal lexical, no clamp",
+      "expected": {
+        "reason": "UNSUPPORTED_NONFINITE_LITERAL"
+      }
+    },
+    {
+      "id": "double-tie-low",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "1.00000000000000011102230246251565404236316680908203125",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "9007199254740993",
+        "denominator": "9007199254740992",
+        "negative_zero": false
+      },
+      "derivation": "Exact midpoint; lower significand even",
+      "expected": {
+        "Number": {
+          "numerator": "1",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "double-tie-high",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "1.00000000000000033306690738754696212708950042724609375",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "9007199254740995",
+        "denominator": "9007199254740992",
+        "negative_zero": false
+      },
+      "derivation": "Exact midpoint; upper significand even",
+      "expected": {
+        "Number": {
+          "numerator": "2251799813685249",
+          "denominator": "2251799813685248",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "double-half-subnormal",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024703282292062327208828439643411068618252990130716238221279284125033775363510437593264991818081799618989828234772285886546332835517796989819938739800539093906315035659515570226392290858392449105184435931802849936536152500319370457678249219365623669863658480757001585769269903706311928279558551332927834338409351978015531246597263579574622766465272827220056374006485499977096599470454020828166226237857393450736339007967761930577506740176324673600968951340535537458516661134223766678604162159680461914467291840300530057530849048765391711386591646239524912623653881879636239373280423891018672348497668235089863388587925628302755995657524455507255189313690836254779186948667994968324049705821028513185451396213837722826145437693412532098591327667236328125",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "1",
+        "denominator": "404804506614621236704990693437834614099113299528284236713802716054860679135990693783920767402874248990374155728633623822779617474771586953734026799881477019843034848553132722728933815484186432682479535356945490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568",
+        "negative_zero": false
+      },
+      "derivation": "Tie between 0 and q, even 0",
+      "expected": {
+        "Number": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "double-negative-half-subnormal",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "-0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024703282292062327208828439643411068618252990130716238221279284125033775363510437593264991818081799618989828234772285886546332835517796989819938739800539093906315035659515570226392290858392449105184435931802849936536152500319370457678249219365623669863658480757001585769269903706311928279558551332927834338409351978015531246597263579574622766465272827220056374006485499977096599470454020828166226237857393450736339007967761930577506740176324673600968951340535537458516661134223766678604162159680461914467291840300530057530849048765391711386591646239524912623653881879636239373280423891018672348497668235089863388587925628302755995657524455507255189313690836254779186948667994968324049705821028513185451396213837722826145437693412532098591327667236328125",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "-1",
+        "denominator": "404804506614621236704990693437834614099113299528284236713802716054860679135990693783920767402874248990374155728633623822779617474771586953734026799881477019843034848553132722728933815484186432682479535356945490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568",
+        "negative_zero": false
+      },
+      "derivation": "Same tie; negative sign retained at zero",
+      "expected": {
+        "Number": {
+          "numerator": "0",
+          "denominator": "1",
+          "negative_zero": true
+        }
+      }
+    },
+    {
+      "id": "double-min-subnormal",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004940656458412465441765687928682213723650598026143247644255856825006755072702087518652998363616359923797965646954457177309266567103559397963987747960107818781263007131903114045278458171678489821036887186360569987307230500063874091535649843873124733972731696151400317153853980741262385655911710266585566867681870395603106249319452715914924553293054565444011274801297099995419319894090804165633245247571478690147267801593552386115501348035264934720193790268107107491703332226844753335720832431936092382893458368060106011506169809753078342277318329247904982524730776375927247874656084778203734469699533647017972677717585125660551199131504891101451037862738167250955837389733598993664809941164205702637090279242767544565229087538682506419718265533447265625",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "1",
+        "denominator": "202402253307310618352495346718917307049556649764142118356901358027430339567995346891960383701437124495187077864316811911389808737385793476867013399940738509921517424276566361364466907742093216341239767678472745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784",
+        "negative_zero": false
+      },
+      "derivation": "Exactly one least subnormal quantum",
+      "expected": {
+        "Number": {
+          "numerator": "1",
+          "denominator": "202402253307310618352495346718917307049556649764142118356901358027430339567995346891960383701437124495187077864316811911389808737385793476867013399940738509921517424276566361364466907742093216341239767678472745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "double-three-half-subnormal",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000074109846876186981626485318930233205854758970392148714663837852375101326090531312779794975454245398856969484704316857659638998506553390969459816219401617281718945106978546710679176872575177347315553307795408549809608457500958111373034747658096871009590975442271004757307809711118935784838675653998783503015228055934046593739791790738723868299395818481660169122019456499931289798411362062484498678713572180352209017023903285791732520220528974020802906854021606612375549983402671300035812486479041385743401875520901590172592547146296175134159774938718574737870961645638908718119841271673056017045493004705269590165763776884908267986972573366521765567941072508764337560846003984904972149117463085539556354188641513168478436313080237596295773983001708984375",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "3",
+        "denominator": "404804506614621236704990693437834614099113299528284236713802716054860679135990693783920767402874248990374155728633623822779617474771586953734026799881477019843034848553132722728933815484186432682479535356945490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568",
+        "negative_zero": false
+      },
+      "derivation": "Tie between 1q and 2q; even 2q",
+      "expected": {
+        "Number": {
+          "numerator": "1",
+          "denominator": "101201126653655309176247673359458653524778324882071059178450679013715169783997673445980191850718562247593538932158405955694904368692896738433506699970369254960758712138283180682233453871046608170619883839236372534281003741712346349309051677824579778170405028256179384776166707307615251266093163754323003131653853870546747392",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "double-subnormal-normal-tie",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000222507385850720113605740979670913197593481954635164564802342610972482222202107694551652952390813508791414915891303962110687008643869459464552765720740782062174337998814106326732925355228688137214901298112245145188984905722230728525513315575501591439747639798341180199932396254828901710708185069063066665599493827577257201576306269066333264756530000924588831643303777979186961204949739037782970490505108060994073026293712895895000358379996720725430436028407889577179615094551674824347103070260914462157228988025818254518032570701886087211312807951223342628836862232150377566662250398253433597456888442390026549819838548794829220689472168983109969836584681402285424333066033985088644580400103493397042756718644338377048603786162277173854562306587467901408672332763671875",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "9007199254740991",
+        "denominator": "404804506614621236704990693437834614099113299528284236713802716054860679135990693783920767402874248990374155728633623822779617474771586953734026799881477019843034848553132722728933815484186432682479535356945490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568",
+        "negative_zero": false
+      },
+      "derivation": "Last subnormal odd, minimum normal even",
+      "expected": {
+        "Number": {
+          "numerator": "1",
+          "denominator": "44942328371557897693232629769725618340449424473557664318357520289433168951375240783177119330601884005280028469967848339414697442203604155623211857659868531094441973356216371319075554900311523529863270738021251442209537670585615720368478277635206809290837627671146574559986811484619929076208839082406056034304",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "double-max-finite",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "(2^p-1)*2^(emax-p+1)",
+      "expected": {
+        "Number": {
+          "numerator": "179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "double-below-overflow-midpoint",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "179769313486231580793728971405303415079934132710037826936173778980444968292764750946649017977587207096330286416692887910946555547851940402630657488671505820681908902000708383676273854845817711531764475730270069855571366959622842914819860834936475292719074168444365510704342711559699508093042880177904174497791",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "179769313486231580793728971405303415079934132710037826936173778980444968292764750946649017977587207096330286416692887910946555547851940402630657488671505820681908902000708383676273854845817711531764475730270069855571366959622842914819860834936475292719074168444365510704342711559699508093042880177904174497791",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "Exactly one integer below overflow tie, rounds down to max finite",
+      "expected": {
+        "Number": {
+          "numerator": "179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368",
+          "denominator": "1",
+          "negative_zero": false
+        }
+      }
+    },
+    {
+      "id": "double-overflow-midpoint",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "179769313486231580793728971405303415079934132710037826936173778980444968292764750946649017977587207096330286416692887910946555547851940402630657488671505820681908902000708383676273854845817711531764475730270069855571366959622842914819860834936475292719074168444365510704342711559699508093042880177904174497792",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#double"
+      },
+      "exactDecimalInput": {
+        "numerator": "179769313486231580793728971405303415079934132710037826936173778980444968292764750946649017977587207096330286416692887910946555547851940402630657488671505820681908902000708383676273854845817711531764475730270069855571366959622842914819860834936475292719074168444365510704342711559699508093042880177904174497792",
+        "denominator": "1",
+        "negative_zero": false
+      },
+      "derivation": "Tie rounds even into 2^(emax+1), unsupported infinity; legal lexical, no clamp",
+      "expected": {
+        "reason": "UNSUPPORTED_NONFINITE_LITERAL"
+      }
+    },
+    {
+      "id": "float-double-rounding-counterexample",
+      "input": {
+        "kind": "literal",
+        "lexical_form": "1.00000005960464477539062582718061255302767487140869206996285356581211090087890625",
+        "datatype_iri": "http://www.w3.org/2001/XMLSchema#float"
+      },
+      "exactDecimalInput": {
+        "numerator": "1208925891672223212634113",
+        "denominator": "1208925819614629174706176",
+        "negative_zero": false
+      },
+      "derivation": "2^-80 above binary32 midpoint; direct32 up. Via64 loses perturbation and incorrectly rounds32 to1",
+      "expected": {
+        "Number": {
+          "numerator": "8388609",
+          "denominator": "8388608",
+          "negative_zero": false
+        }
+      }
+    }
+  ],
+  "mixedRelations": [
+    {
+      "leftId": "point-one-float",
+      "rightId": "point-one-double",
+      "relation": "greater",
+      "sixBooleans": [false, true, false, false, true, true]
+    },
+    {
+      "leftId": "point-one-double",
+      "rightId": "point-one-decimal",
+      "relation": "greater",
+      "sixBooleans": [false, true, false, false, true, true],
+      "difference": {
+        "numerator": "1",
+        "denominator": "180143985094819840",
+        "negative_zero": false
+      }
+    },
+    {
+      "leftId": "point-one-float",
+      "rightId": "point-one-decimal",
+      "relation": "greater",
+      "sixBooleans": [false, true, false, false, true, true],
+      "difference": {
+        "numerator": "1",
+        "denominator": "671088640",
+        "negative_zero": false
+      }
+    },
+    {
+      "leftId": "large-int-32",
+      "rightId": "large-float-32",
+      "relation": "greater",
+      "sixBooleans": [false, true, false, false, true, true]
+    },
+    {
+      "leftId": "large-int-64",
+      "rightId": "large-double-64",
+      "relation": "greater",
+      "sixBooleans": [false, true, false, false, true, true]
+    }
+  ],
+  "zeroComparison": {
+    "allSignedZeros": [true, false, false, true, false, true],
+    "retainOriginalTerm": true
+  }
+}
