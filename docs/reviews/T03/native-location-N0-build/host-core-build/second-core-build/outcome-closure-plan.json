@@ -1,0 +1,25 @@
+{
+  "purpose": "Finite independent outcome review and process archive/index byte closure, no build or artifact execution",
+  "sourceMetadataMappingRepeat": false,
+  "independentReviewLogicalVisitReserve": 4050,
+  "ownerRemainingLogicalVisitReserve": 5950,
+  "priorMetadataLogicalVisitsIncludingAliasLookup": 1043668,
+  "conservativeMetadataTotalIncludingTheseReserves": 1053668,
+  "metadataGuard": 1100000,
+  "independentReviewApplicationReadReserveWithinPrior64MiB": 8388608,
+  "additionalOwnerClosureReadReserveBytes": 67108864,
+  "priorBuildPhaseDeclaredBytesIncludingPostbuildReserve": 37111584392,
+  "buildPhaseDeclaredUpperBytesIncludingClosureReserve": 37178693256,
+  "buildPhaseGuardBytes": 42949672960,
+  "remainingBuildPhaseReserveBytes": 5770979704,
+  "actualOSIOBytes": null,
+  "immutablePayloadRehashPermitted": false,
+  "artifactExecution": false,
+  "initialIndependentReviewLogicalVisitReserve": 4000,
+  "initialOwnerRemainingLogicalVisitReserve": 6000,
+  "allocationAdjustment": {
+    "transferredFromOwnerToIndependentReview": 50,
+    "reason": "Independent wide per-visit count reached known 4001 plus conservative 49 small objects; original 4000 insufficient under that count",
+    "totalGuardAndReserveUnchanged": true
+  }
+}
