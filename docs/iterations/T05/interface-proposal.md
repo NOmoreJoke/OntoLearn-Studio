@@ -70,3 +70,7 @@ Q6 的值比较具体 datatype 兼容、真实 pySHACL/RDFS 输出投影/trace �
 ## FR-505 精确扩展输入
 
 新增[语义扩展代表输入交接](fr505-semantic-extension-proposal.md)，给16个完整独立输入、预期自定义规则全部输出及每次触发依据，明确每例精确规则集合、不继承G-base其他规则。I05的比较/多结论补齐可直接逐例回应；所有执行仍pending，未把手算/结构校验当真实引擎结果。
+
+## T01 具体保存参数更新
+
+[保存参数与真实Store探针](store-parameter-probe.md)提供现有Python Store.commit的精确私有参数、五模板/多结论payload及启停修订样例，已用批准5f原字节真实临时SQLite验证。只作接口探针，T01仍须正式接受包装/引用派生/权威revision/ChangeSet预览确认undo；不消费格式3或新增产品写入口。

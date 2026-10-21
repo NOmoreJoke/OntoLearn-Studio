@@ -1,0 +1,234 @@
+{
+  "fixtureVersion": "T05-Store-parameters/1",
+  "status": "private-approved-format2-probe-not-public-contract",
+  "approvedStoreGitRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "sourcePath": "packages/engine/src/ontolearn_engine/storage.py",
+  "storeFormat": 2,
+  "projectId": "unit-quality-definitions",
+  "initialSave": {
+    "base": 0,
+    "operation": "quality-create",
+    "job": "unit-quality-create",
+    "definitions": [
+      {
+        "layer": "constraint",
+        "id": "name-required",
+        "value": {
+          "schemaVersion": 1,
+          "kind": "constraint",
+          "id": "name-required",
+          "label": "name-required",
+          "revision": 1,
+          "enabled": true,
+          "targetClass": "urn:ontolearn:learning:Equipment",
+          "path": "urn:ontolearn:learning:name",
+          "template": "required",
+          "parameters": {}
+        }
+      },
+      {
+        "layer": "constraint",
+        "id": "name-string",
+        "value": {
+          "schemaVersion": 1,
+          "kind": "constraint",
+          "id": "name-string",
+          "label": "name-string",
+          "revision": 1,
+          "enabled": true,
+          "targetClass": "urn:ontolearn:learning:Equipment",
+          "path": "urn:ontolearn:learning:name",
+          "template": "datatype",
+          "parameters": {
+            "datatype": "http://www.w3.org/2001/XMLSchema#string"
+          }
+        }
+      },
+      {
+        "layer": "constraint",
+        "id": "name-single",
+        "value": {
+          "schemaVersion": 1,
+          "kind": "constraint",
+          "id": "name-single",
+          "label": "name-single",
+          "revision": 1,
+          "enabled": true,
+          "targetClass": "urn:ontolearn:learning:Equipment",
+          "path": "urn:ontolearn:learning:name",
+          "template": "maxCount",
+          "parameters": {
+            "maxCount": 1
+          }
+        }
+      },
+      {
+        "layer": "constraint",
+        "id": "name-allowed",
+        "value": {
+          "schemaVersion": 1,
+          "kind": "constraint",
+          "id": "name-allowed",
+          "label": "name-allowed",
+          "revision": 1,
+          "enabled": true,
+          "targetClass": "urn:ontolearn:learning:Equipment",
+          "path": "urn:ontolearn:learning:name",
+          "template": "allowedValues",
+          "parameters": {
+            "values": ["\"泵站A\"", "\"泵站B\"", "\"备用泵C\""]
+          }
+        }
+      },
+      {
+        "layer": "constraint",
+        "id": "score-range",
+        "value": {
+          "schemaVersion": 1,
+          "kind": "constraint",
+          "id": "score-range",
+          "label": "score-range",
+          "revision": 1,
+          "enabled": true,
+          "targetClass": "urn:ontolearn:learning:Equipment",
+          "path": "urn:ontolearn:quality:comparison-test:score",
+          "template": "numericRange",
+          "parameters": {
+            "minInclusive": "0",
+            "maxInclusive": "100"
+          }
+        }
+      },
+      {
+        "layer": "rule",
+        "id": "R-risk-multi",
+        "value": {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "R-risk-multi",
+          "revision": 1,
+          "label": "风险分类与当前推导标注",
+          "enabled": true,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?equipment",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?equipment",
+              "path": "urn:ontolearn:learning:alarm",
+              "object": "?alarm"
+            },
+            {
+              "kind": "property",
+              "subject": "?alarm",
+              "path": "urn:ontolearn:learning:level",
+              "object": "\"High\""
+            },
+            {
+              "kind": "property",
+              "subject": "?alarm",
+              "path": "urn:ontolearn:learning:status",
+              "object": "\"Open\""
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?equipment",
+              "class": "urn:ontolearn:learning:HighRiskEquipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?equipment",
+              "path": "urn:ontolearn:quality:comparison-test:derivedLabel",
+              "object": "\"needs-review\""
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "disableSave": {
+    "base": 1,
+    "operation": "quality-disable",
+    "job": "unit-quality-disable",
+    "definitions": [
+      {
+        "layer": "constraint",
+        "id": "name-required",
+        "value": {
+          "schemaVersion": 1,
+          "kind": "constraint",
+          "id": "name-required",
+          "label": "name-required",
+          "revision": 2,
+          "enabled": false,
+          "targetClass": "urn:ontolearn:learning:Equipment",
+          "path": "urn:ontolearn:learning:name",
+          "template": "required",
+          "parameters": {}
+        }
+      },
+      {
+        "layer": "rule",
+        "id": "R-risk-multi",
+        "value": {
+          "schemaVersion": 1,
+          "kind": "rule",
+          "id": "R-risk-multi",
+          "revision": 2,
+          "label": "风险分类与当前推导标注",
+          "enabled": false,
+          "conditions": [
+            {
+              "kind": "type",
+              "subject": "?equipment",
+              "class": "urn:ontolearn:learning:Equipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?equipment",
+              "path": "urn:ontolearn:learning:alarm",
+              "object": "?alarm"
+            },
+            {
+              "kind": "property",
+              "subject": "?alarm",
+              "path": "urn:ontolearn:learning:level",
+              "object": "\"High\""
+            },
+            {
+              "kind": "property",
+              "subject": "?alarm",
+              "path": "urn:ontolearn:learning:status",
+              "object": "\"Open\""
+            }
+          ],
+          "conclusions": [
+            {
+              "kind": "type",
+              "subject": "?equipment",
+              "class": "urn:ontolearn:learning:HighRiskEquipment"
+            },
+            {
+              "kind": "property",
+              "subject": "?equipment",
+              "path": "urn:ontolearn:quality:comparison-test:derivedLabel",
+              "object": "\"needs-review\""
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "notApproved": [
+    "No T01 product ChangeSet/preview/confirmation/undo protocol is assumed",
+    "No format3 activation or new shared file is consumed",
+    "No expected inference/validation output is persisted",
+    "Store opaque payload roundtrip does not validate domain references; T01 must derive and validate references before formal save"
+  ],
+  "sourceSha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842"
+}

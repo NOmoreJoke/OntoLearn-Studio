@@ -20,17 +20,17 @@
     "npmRunCheck": {
       "exitCode": 0,
       "tsTests": 635,
-      "pythonTests": 1163
+      "pythonTests": 1170
     },
-    "qualityPytest": 111,
+    "qualityPytest": 118,
     "qualityVitest": 5,
     "gitDiffCheck": "passed"
   },
   "internalReview": {
     "agent": "/root/t05_internal_review",
-    "decision": "passed-private-preparation-approved-input-adaptation-and-fr505-representative-input-proposal-only",
-    "reviewedFiles": 35,
-    "reportedCombinedSha256": "06f3d269007858672a0793f7c6ae4180e8ed62d985579ea08dbd076155b021bf"
+    "decision": "passed-private-preparation-input-proposals-and-isolated-approved-real-Store-probe-only",
+    "reviewedFiles": 38,
+    "reportedCombinedSha256": "ed0a7bf930f0af73ee89489bfcdbadae6ae4a38ddf064a55f0571ee092b928a8"
   },
   "approvedInput": {
     "gitRef": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
@@ -65,5 +65,21 @@
       "packages/engine/tests/test_quality_fr505_inputs.py": "3cbd0cdcf6d2410c96fe7e4af9a1c6d846d3a98a364ff0f66f07f224bff7ffe7"
     }
   },
-  "lastContinuationClassification": "progress: new FR505 complete input and expected evidence proposal, actual unit/check and independent review; formal dependencies remain unapproved"
+  "lastContinuationClassification": "progress: FR505 representative inputs plus concrete save parameters verified using approved real Store in temp DB; formal domain interfaces remain unapproved",
+  "storeParameterProbe": {
+    "approvedStoreGitRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "sourceSha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+    "format": 2,
+    "realStore": true,
+    "temporarySqliteOnly": true,
+    "productionWriteChannelAdded": false,
+    "unapprovedT01OrFormat3Consumed": false,
+    "inferenceOrValidationResultsStored": false,
+    "tests": 7,
+    "artifacts": {
+      "tests/fixtures/quality/store-parameters.json": "17c24b3dbbc67a5c7b5590b4995d77b64d5880268d445864127766981a995ad4",
+      "packages/engine/tests/test_quality_store_probe.py": "90a27e07d7c3ea5a106e70a494e3b8bf8eac506999430720bfd7a457ff242e75"
+    }
+  },
+  "controllerAcknowledgement": "FR505 proposal fullread and actually forwarded to I05; root separately auditing 16 cases; T01 shared foundation handoff in exact-path verification"
 }

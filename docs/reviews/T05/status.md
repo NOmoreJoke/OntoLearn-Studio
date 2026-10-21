@@ -50,3 +50,11 @@
 已保存提交 `7f4a649ea754ea56e468fecafd6da43c9efda218`。本线实际全 `npm run check` 退出0：635 TS / 1163 Python；独立内审111 Python通过，手工算术与联结/共同依据复核通过，仅限输入期望内部一致。首ruff有1处长行，经格式化关闭；随后追加状态的Python脚本编码错误已改用文本追加，不涉及受测实现，原工具错误保留。
 
 已向总控发送 `docs/iterations/T05/fr505-semantic-extension-proposal.md` 请求I05唯一语义owner对具体表达/执行接口回应。当前根执行状态实查T01格式3和T00公共接线仍未启用，I05审查仍在修复；没有获准正式消费的新依赖，父功能与指定双审/CI/合并继续开放。原实现未变，下一步继续依具体接口/路径交接推进，不等待整个M0。
+
+## 具体保存参数与批准 Store 探针
+
+新增 `store-parameters.json` 与 `test_quality_store_probe.py`，仅使用批准5f的storage.py原字节和pytest临时SQLite；五模板及同规则多结论完整往返、启停修订/依赖版本、旧base冲突、不可变历史、3阶段整批回滚、提交后响应丢失marker对账均实际通过。没有新增生产Store写入通道、未消费未批T01服务/格式3，未存推理/SHACL预期结果。
+
+完整 `npm run check` 退出0：635 TS / 1170 Python；独立完整内审118 Python通过，范围限私有准备和隔离真实Store探针。文档 `docs/iterations/T05/store-parameter-probe.md` 已实际交总控转T01确认。references派生/单一包装、服务端revision、预览确认undo及正式失效/撤回仍须owner接受与实际接线；opaque定义往返不等于域引用校验。异常注入不等于真实进程崩溃/IPC丢包验收。
+
+本轮保留完整目标和active Goal。FR505执行扩展已获总控实际接收并转交I05 owner；root另派独立16例输入审计，后续意见仍须处理。实际批准执行器/公共协议接线与指定双审/PR/CI/正常合并/完整父验收尚缺。
