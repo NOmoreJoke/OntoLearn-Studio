@@ -298,12 +298,13 @@ describe('T04 renderer read adapter; synthetic transport tests only, no query ex
     bridge.getJob.mockResolvedValueOnce({ ok: true, data: job('cancelled') })
     expect(await reader.cancel(id(3))).toBe(true)
     expect(bridge.cancelJob).not.toHaveBeenCalled()
-    bridge.cancelJob.mockResolvedValueOnce({
+    const second = setup()
+    second.bridge.cancelJob.mockResolvedValueOnce({
       ok: true,
       data: { jobId: id(20), disposition: 'accepted', state: 'cancelling', stateVersion: 5 },
     })
-    expect(await reader.cancel(id(3))).toBe(false)
-    expect(reader.snapshot().job?.state).toBe('running')
+    expect(await second.reader.cancel(id(3))).toBe(false)
+    expect(second.reader.snapshot().job?.state).toBe('running')
   })
   it('rejects a job read that is older than the cancel acknowledgement', async () => {
     const { reader } = setup()
@@ -387,5 +388,89 @@ describe('T04 renderer read adapter; synthetic transport tests only, no query ex
     expect(await reading).toBe(false)
     expect(reader.snapshot()).toMatchObject({ phase: 'error', result: null, error: internalError })
     expect(bridge.getResultPage).not.toHaveBeenCalled()
+  })
+  it('holds the cancel single-flight guard through the post-ACK authoritative read', async () => {
+    const { reader, bridge } = setup()
+    const afterAck = deferred<Awaited<ReturnType<DesktopBridge['getJob']>>>()
+    bridge.getJob
+      .mockResolvedValueOnce({ ok: true, data: job() })
+      .mockReturnValueOnce(afterAck.promise)
+      .mockResolvedValue({ ok: true, data: job('running', 5) })
+    const first = reader.cancel(id(3))
+    await vi.waitFor(() => expect(bridge.getJob).toHaveBeenCalledTimes(2))
+    expect(await reader.cancel(id(3))).toBe(false)
+    expect(bridge.getJob).toHaveBeenCalledTimes(2)
+    expect(bridge.cancelJob).toHaveBeenCalledTimes(1)
+    afterAck.resolve({ ok: true, data: job('running', 5) })
+    expect(await first).toBe(true)
+  })
+  it('retains the last nonempty ordering anchor across empty intermediate pages', async () => {
+    for (const ordinal of [5, 11]) {
+      const { reader, bridge } = setup()
+      bridge.getResultPage
+        .mockResolvedValueOnce({ ok: true, data: page(10, id(8)) })
+        .mockResolvedValueOnce({ ok: true, data: { ...page(0, id(9)), rows: [] } })
+        .mockResolvedValueOnce({ ok: true, data: page(ordinal) })
+      expect(await reader.read(presentation())).toBe(true)
+      expect(await reader.nextPage(id(8))).toBe(true)
+      expect(await reader.nextPage(id(9))).toBe(ordinal === 11)
+    }
+  })
+  it('keeps the ACK version floor across failed reads, updates and retry preflight', async () => {
+    const { reader, bridge } = setup()
+    expect(await reader.cancel(id(3))).toBe(false) // ACK 5; first re-read is stale 4.
+    expect(await reader.refreshJob(id(3))).toBe(false)
+    expect(reader.snapshot().error).not.toBeNull()
+    expect(reader.receiveUpdate({ kind: 'job', generation: 1, job: job('running', 4) })).toBe(false)
+    expect(await reader.cancel(id(3))).toBe(false)
+    expect(bridge.cancelJob).toHaveBeenCalledTimes(1)
+    bridge.getJob.mockResolvedValueOnce({ ok: true, data: job('running', 5) })
+    expect(await reader.refreshJob(id(3))).toBe(true)
+    expect(reader.snapshot()).toMatchObject({
+      job: { stateVersion: 5 },
+      error: null,
+      cancelRequested: true,
+    })
+    reader.bind(view(2))
+    expect(await reader.refreshJob(id(3))).toBe(true) // A fresh main authority starts a new client binding.
+  })
+  it('preserves the exact actual execution text and rejects blank presentation text', async () => {
+    const { reader, bridge } = setup()
+    const original = '\n  SELECT ?alarm WHERE { ?alarm a <urn:test:Alarm> }\t\n'
+    expect(await reader.read({ ...presentation(), executedSparql: original })).toBe(true)
+    expect(reader.snapshot().result?.executedSparql).toBe(original)
+    expect(await reader.read({ ...presentation(), executedSparql: '  \n\t' })).toBe(false)
+    expect(bridge.getResult).toHaveBeenCalledTimes(1)
+  })
+  it('rejects contradictory equal-version states and reopening an observed terminal', async () => {
+    const { reader, bridge } = setup()
+    await reader.refreshJob(id(3))
+    expect(reader.receiveUpdate({ kind: 'job', generation: 1, job: job('cancelled', 4) })).toBe(
+      false,
+    )
+    expect(reader.snapshot().job?.state).toBe('running')
+    expect(reader.receiveUpdate({ kind: 'job', generation: 1, job: job('cancelled', 6) })).toBe(
+      true,
+    )
+    bridge.getJob.mockResolvedValueOnce({ ok: true, data: job('running', 7) })
+    expect(await reader.refreshJob(id(3))).toBe(false)
+    expect(reader.snapshot().job?.state).toBe('cancelled')
+  })
+  it('uses a matching restored selected job without choosing unrelated jobs', async () => {
+    const { reader } = setup()
+    await reader.refreshJob(id(3))
+    const restored = { ...view(), jobs: [job('cancelled', 6), job('running', 5, id(10))] }
+    expect(reader.receiveUpdate({ kind: 'restored', generation: 1, view: restored })).toBe(true)
+    expect(reader.snapshot().job).toMatchObject({
+      jobId: id(3),
+      state: 'cancelled',
+      stateVersion: 6,
+    })
+    expect(reader.bind({ ...view(), jobs: [job('running', 4)] })).toBe(true)
+    expect(reader.snapshot().job).toMatchObject({
+      jobId: id(3),
+      state: 'cancelled',
+      stateVersion: 6,
+    })
   })
 })

@@ -31,7 +31,11 @@ const presentationSchema = z
   .object({
     binding: z.custom<QueryPresentation['binding']>((value) => validateV2('pageBinding', value)),
     columns: z.array(z.string().min(1).max(128)).max(64),
-    executedSparql: z.string().trim().min(1).max(65536),
+    executedSparql: z
+      .string()
+      .min(1)
+      .max(65536)
+      .refine((text) => text.trim().length > 0),
   })
   .strict()
 
@@ -71,6 +75,8 @@ export class QueryResultReader {
   private authority: TaskView | null = null
   private presentation: QueryPresentation | null = null
   private pageSize = 100
+  private afterRow: Pick<QueryPageData['rows'][number], 'ordinal' | 'rowId'> | null = null
+  private cancelFloor: { jobId: string; version: number } | null = null
   private state: QueryReaderSnapshot = {
     generation: -1,
     projectId: null,
@@ -108,6 +114,8 @@ export class QueryResultReader {
       this.jobToken++
       this.cancelBusy = false
       this.presentation = null
+      this.afterRow = null
+      this.cancelFloor = null
       this.state = {
         generation: view.generation,
         projectId: view.project?.projectId ?? null,
@@ -116,6 +124,19 @@ export class QueryResultReader {
         job: null,
         cancelRequested: false,
         error: null,
+      }
+    } else if (this.state.job && this.state.projectId) {
+      const restored = queryJob(
+        view.jobs.find((job) => job.jobId === this.state.job?.jobId),
+        this.state.projectId,
+      )
+      if (
+        restored &&
+        this.compatibleJob(restored) &&
+        restored.stateVersion >= this.minimumJobVersion(restored.jobId)
+      ) {
+        this.state.job = restored
+        if (terminal(restored)) this.state.cancelRequested = false
       }
     }
     return true
@@ -142,12 +163,30 @@ export class QueryResultReader {
     if (
       !job ||
       job.jobId !== this.state.job?.jobId ||
-      job.stateVersion < this.state.job.stateVersion
+      !this.compatibleJob(job) ||
+      job.stateVersion < this.minimumJobVersion(job.jobId)
     )
       return false
     this.state.job = job
     if (terminal(job)) this.state.cancelRequested = false
     return true
+  }
+
+  // Observations may skip transitions. Do not require adjacent states, but an
+  // immutable terminal or the state at an identical version cannot change.
+  private compatibleJob(job: JobView): boolean {
+    const before = this.state.job
+    return (
+      !before ||
+      before.jobId !== job.jobId ||
+      (job.stateVersion >= before.stateVersion &&
+        (job.stateVersion !== before.stateVersion || job.state === before.state) &&
+        (!terminal(before) || job.state === before.state))
+    )
+  }
+
+  private minimumJobVersion(jobId: string): number {
+    return this.cancelFloor?.jobId === jobId ? this.cancelFloor.version : 0
   }
 
   private alive(epoch: number): boolean {
@@ -167,6 +206,7 @@ export class QueryResultReader {
   async read(raw: QueryPresentation, pageSize = 100): Promise<boolean> {
     const epoch = this.epoch
     const token = ++this.readToken
+    this.afterRow = null
     const parsed = presentationSchema.safeParse(raw)
     if (
       !this.authority?.project ||
@@ -194,7 +234,7 @@ export class QueryResultReader {
       cursor !== result.page.nextCursor
     )
       return false
-    const last = result.page.rows.at(-1) ?? null
+    const last = this.afterRow
     const epoch = this.epoch
     const token = ++this.readToken
     this.state = { ...this.state, phase: 'loading', error: null }
@@ -205,7 +245,7 @@ export class QueryResultReader {
     cursor: string | null,
     epoch: number,
     token: number,
-    after: QueryPageData['rows'][number] | null,
+    after: Pick<QueryPageData['rows'][number], 'ordinal' | 'rowId'> | null,
   ): Promise<boolean> {
     const presentation = this.presentation
     if (!presentation) return false
@@ -250,6 +290,8 @@ export class QueryResultReader {
         (cursor !== null && page.nextCursor === cursor)
       )
         return this.fail(invalid(), epoch, token)
+      const last = page.rows.at(-1)
+      if (last) this.afterRow = { ordinal: last.ordinal, rowId: last.rowId }
       this.state = {
         ...this.state,
         phase: 'ready',
@@ -267,7 +309,7 @@ export class QueryResultReader {
     }
   }
 
-  async refreshJob(jobId: string, minimumStateVersion = 0): Promise<boolean> {
+  async refreshJob(jobId: string): Promise<boolean> {
     const epoch = this.epoch
     const token = ++this.jobToken
     const projectId = this.state.projectId
@@ -283,14 +325,15 @@ export class QueryResultReader {
       if (
         !job ||
         job.jobId !== jobId ||
-        job.stateVersion < minimumStateVersion ||
-        (this.state.job?.jobId === jobId && job.stateVersion < this.state.job.stateVersion)
+        job.stateVersion < this.minimumJobVersion(jobId) ||
+        !this.compatibleJob(job)
       ) {
         this.state.error = invalid()
         return false
       }
       this.state.cancelRequested =
         this.state.job?.jobId === jobId && !terminal(job) && this.state.cancelRequested
+      if (this.state.job?.jobId !== jobId) this.cancelFloor = null
       this.state.job = job
       this.state.error = null
       return true
@@ -328,7 +371,8 @@ export class QueryResultReader {
         !job ||
         job.jobId !== jobId ||
         selection !== this.jobToken ||
-        (this.state.job?.jobId === jobId && job.stateVersion < this.state.job.stateVersion)
+        job.stateVersion < this.minimumJobVersion(jobId) ||
+        !this.compatibleJob(job)
       ) {
         this.state.error = invalid()
         return false
@@ -355,8 +399,13 @@ export class QueryResultReader {
       }
       // Acknowledgement cannot turn this job into cancelled/succeeded in the UI.
       if (selection !== this.jobToken) return false
-      this.state.cancelRequested = response.data.disposition !== 'alreadyTerminal'
-      return this.refreshJob(jobId, Number(response.data.stateVersion))
+      this.cancelFloor = {
+        jobId,
+        version: Math.max(this.minimumJobVersion(jobId), Number(response.data.stateVersion)),
+      }
+      this.state.cancelRequested =
+        response.data.disposition !== 'alreadyTerminal' && !terminal(this.state.job)
+      return await this.refreshJob(jobId)
     } catch {
       if (current()) this.state.error = structuredClone(internalError)
       return false
@@ -372,6 +421,8 @@ export class QueryResultReader {
     this.jobToken++
     this.authority = null
     this.presentation = null
+    this.afterRow = null
+    this.cancelFloor = null
     this.cancelBusy = false
     this.state = {
       generation: this.state.generation,
