@@ -1,0 +1,111 @@
+.quality-workspace {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding: 1.5rem;
+}
+.quality-workspace header p {
+  color: #557064;
+  margin-bottom: 0.25rem;
+}
+.quality-workspace h2 {
+  margin-top: 0;
+}
+.quality-workspace aside {
+  border-left: 3px solid #b48737;
+  background: #fff7df;
+  color: #533e16;
+  padding: 1rem;
+}
+.quality-workspace form,
+.quality-workspace fieldset,
+.quality-pattern {
+  display: grid;
+  gap: 0.6rem;
+}
+.quality-workspace fieldset,
+.quality-workspace details {
+  border: 1px solid #ccd4cc;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+.quality-workspace form {
+  margin-top: 1rem;
+}
+.quality-workspace input,
+.quality-workspace select,
+.quality-workspace textarea,
+.quality-workspace button {
+  font: inherit;
+  padding: 0.65rem;
+  min-height: 2.75rem;
+}
+.quality-workspace input,
+.quality-workspace select,
+.quality-workspace textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+  color: #202c26;
+  border: 1px solid #8b9d90;
+  border-radius: 0.25rem;
+}
+.quality-workspace button {
+  width: fit-content;
+  max-width: 100%;
+  cursor: pointer;
+}
+.quality-workspace button:disabled {
+  cursor: default;
+}
+.quality-workspace :focus-visible {
+  outline: 3px solid #287658;
+  outline-offset: 3px;
+}
+.quality-workspace .quality-check {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+.quality-workspace .quality-check input {
+  width: 1.25rem;
+}
+.quality-pattern {
+  padding: 1rem;
+  background: #f3f5ef;
+  border-bottom: 1px solid #ccd4cc;
+}
+.quality-workspace pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #f3f5ef;
+  padding: 1rem;
+  color: #202c26;
+}
+.quality-statements {
+  overflow-x: auto;
+}
+.quality-statements table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.quality-statements th,
+.quality-statements td {
+  padding: 0.65rem;
+  border: 1px solid #ccd4cc;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.quality-workspace dd {
+  margin-bottom: 0.75rem;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  .quality-workspace {
+    padding: 0.75rem;
+  }
+  .quality-pattern {
+    padding: 0.5rem;
+  }
+}
