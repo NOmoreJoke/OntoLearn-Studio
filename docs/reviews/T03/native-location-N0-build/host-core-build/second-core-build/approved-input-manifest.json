@@ -1,0 +1,79 @@
+{
+  "baseProductRef": "95f07d931eeffd3bdcd52cb21e9fa2d8a1db12bd",
+  "baseProcessRef": "5d7a143f2c100c5ca4ed6b36f7fa8fc2df611a34",
+  "authorizationRef": "228815f1f4f2bad005f21faffd8676c8713431c8",
+  "authorizationPath": "docs/reviews/T03/native-location-N0-build/host-core-build/second-core-build/authorization.md.raw",
+  "authorizationBytes": 5010,
+  "authorizationSHA256": "9845bfc836ea0763713f79895b66b5b7a3a8f7a103369837cd48ae932e55f3c9",
+  "sourceRef": "b1c54c3de840e657aba07906587681f6415085d6",
+  "productAndTests": [
+    {
+      "path": "packages/native-location/include/location_abi.h",
+      "bytes": 13296,
+      "sha256": "fc3f7983d62b0ef4f5a3a056198c00a0b971d2ae722acc33bc6f61937ec8e172"
+    },
+    {
+      "path": "packages/native-location/src/capability_core.cc",
+      "bytes": 17304,
+      "sha256": "eae2d2dcf4ccf1f648dbec5fdd0424c0a2dac31a94a45d493e819948f2309319"
+    },
+    {
+      "path": "packages/native-location/src/platform_macos.cc",
+      "bytes": 7675,
+      "sha256": "28f9c736e59a24cb050b706628aca26283a513fa3c019fdf58dd14e7d3f8a5be"
+    },
+    {
+      "path": "packages/native-location/src/platform_windows.cc",
+      "bytes": 12506,
+      "sha256": "bcf474ca9d9e5ce4efdf06284dd71b9504c5e69027d3a53c96fa7df56bc2b4c4"
+    },
+    {
+      "path": "packages/native-location/src/node_binding.cc",
+      "bytes": 13163,
+      "sha256": "e10e59bdb200460310489bb4fc5b8c64ab79c1b8e2cfc9e7353a10a0c8667383"
+    },
+    {
+      "path": "apps/desktop/src/main/security/native-location-owner.ts",
+      "bytes": 12496,
+      "sha256": "e354b0830469647d70690f3e1d6e567c816f70cbbbe5c211dabba817fa7cc8d0"
+    },
+    {
+      "path": "packages/native-location/tests/location_core_test.cc",
+      "bytes": 29666,
+      "sha256": "7d0965cafe74fcbaa0d6c0fcf57078d2969fd3f243d7a14d1e7244329017bcdc"
+    },
+    {
+      "path": "packages/native-location/tests/location_child_probe.cc",
+      "bytes": 380,
+      "sha256": "041e60f57b34ec1b04157e73e2161b332acc3bc8f804d7f7fcd6baf575d34b9c"
+    },
+    {
+      "path": "tests/unit/i06-native-location-owner.test.ts",
+      "bytes": 8460,
+      "sha256": "e0946f7daf1236045d0198d989cf718ea40227d63b76e5a1407eaa1b0d501b04"
+    },
+    {
+      "path": "packages/native-location/CMakeLists.txt",
+      "bytes": 19815,
+      "sha256": "f2b5522b92c5dfc9724b95c35b876ce5015a4955385f614a6da20fb9bce57645"
+    },
+    {
+      "path": "packages/native-location/toolchain-lock.json",
+      "bytes": 10474,
+      "sha256": "9be20b219a9420b49475e91a43dabb815551ad2e17815b03cd0dd376b49f15b2"
+    },
+    {
+      "path": "scripts/build-native-location.mjs",
+      "bytes": 30056,
+      "sha256": "ca4ef93024762ae5dfd3dc95133f8ab28ae2e63048af0b3a658bfeb98f62045c"
+    }
+  ],
+  "onlyAllowedDelta": [
+    "toolchains.darwin-arm64.approval.reference",
+    "execution.darwin-arm64.core.reference"
+  ],
+  "approvedBooleansUnchanged": true,
+  "allowedAttempts": 1,
+  "artifactExecutionAuthorized": false,
+  "tests": "NOT_RUN"
+}
