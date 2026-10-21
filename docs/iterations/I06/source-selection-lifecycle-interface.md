@@ -40,22 +40,24 @@
 | 正式启动前复验     | readForCommit(scope,实际preview proof)返回本次复验字节副本                        | SHA/长度/真实sheet与编码仍对应正式预览/已seal同源snapshot，domain base/计划/确认仍有效；每个await及最终发送前复核；inspection lease不得用于admit      |
 | 正式Job/提交       | 已批准job.create/job.get/job.cancel/operation.get及Store唯一提交/对账原则         | mapping真实capability、源snapshot引用/实际SHA进入完整计划/幂等指纹/确认及Job输入；Job仅取该已seal快照，**不按原path重新打开**；Store仍检真实base/冲突 |
 
-根倾向的64KiB raw分块/每帧仍低于原上限可作为待冻结传输选择；本文不复制chunk/offset/base64/帧预算细表。8MiB不能塞单帧，原path不传engine。upload/seal引用如何跨session存活、如何项目授权/关闭/取消/过期/pin/回收，以及正式Job如何保留输入，均由T01同一canonical/Store合同给出；本提案不假定一个字符串blob hash就是可读/可提交权限。canonical的inspection用途lease不得用于admit，也不能因原字节SHA相同升级为正式预览或Job授权；底层内容去重不合并用途/生命周期权威。必须在真实sheet配置后的readForPreview取得新proof，并在readForCommit复验和全部计划/人类确认绑定通过后，使用正式用途的授权引用；具体同源引用关系由T01/root冻结。
+根倾向的64KiB raw分块/每帧仍低于原上限可作为待冻结传输选择；本文不复制chunk/offset/base64/帧预算细表。8MiB不能塞单帧，原path不传engine。未admitted的upload/inspection/preview lease一律不能跨engine session复活；重新传输须在新会话下按冻结合同重建新的完整preview/proof/人类确认绑定，不能仅凭同SHA或旧handle字符串恢复。已accepted的持久输入只按原Job/operation授权读取和对账；项目授权/关闭/取消/过期/pin/回收的原子边界仍由T01同一canonical/Store合同给出，不把内容hash当权限。canonical的inspection用途lease不得用于admit，也不能因原字节SHA相同升级为正式预览或Job授权；底层内容去重不合并用途/生命周期权威。必须在真实sheet配置后的readForPreview取得新proof，并在readForCommit复验和全部计划/人类确认绑定通过后，使用正式用途的授权引用；具体同源引用关系由T01/root冻结。
 
 预览可解析已seal快照A；确认后readForCommit复验磁盘字节B必须与A的实际SHA/长度及选项一致，然后正式Job消费A，无需为同字节再造一份来源权威。读取B成功后原文件仍可能再变；本流程承诺Job处理明确确认的不可变A，不承诺Job执行瞬间磁盘仍最新。若B已不同则必须撤销旧预览/确认，不能改用B悄悄沿用A的Diff。SHA相等也不能跨项目/lifecycle/选项/计划自动复用权限。
 
 ## 4. 必须显式处理的失效与竞态
 
-| 触发点                            | 旧记录必须怎样失效                                                              | 易错边界/后续动作                                                                                                             |
-| --------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| 重选开始、configure编码/sheet开始 | **先**撤销旧preview/确认/待发送启动资格，再调用异步picker/配置；更新main代次    | 字节SHA可能没变但解释语义已变，不能按SHA恢复旧预览；配置失败/busy也不回滚为旧选项。T03后发配置生效，宿主按同代次接结果        |
-| 用户取消选择/配置/关闭项目        | 撤销当前source证明、UI预览及未发送启动资格，调用broker相应失效/abort            | 取消返回null不是“继续使用旧来源”；旧异步成功/失败/同步abort重入不能清掉或覆盖新选择                                           |
-| 复验检测源变/删/变大/读错         | 当前proof、preview、确认全部失效；要求新选择/新预览/新确认                      | 不因后来恢复原字节而复活旧证明；broker无已批准实时watch接口，不能声称外部编辑瞬间UI已感知。明确提交前复验及观测窗口           |
-| domain revision/实际依赖变化      | 原计划/preview/确认失效或按正式冲突规则拒绝                                     | 文件proof可能仍真实，但不能代替Store base。反过来，应用-only CAS不应伪造领域revision变化；真实计划用到的应用状态则按其CAS绑定 |
-| upload/parse/readForCommit晚返回  | 只允许当前scope/selection/generation与当前preview承接；旧上传结果不安装为新选择 | 已seal旧snapshot可作为孤儿资源按T01策略回收，但不是可自动提交的旧授权；未seal输入不得拿来预览或提交                           |
-| main发送Job前与取消交错           | 同一main调度边界串行查当前记录/确认并发出正式请求，已失效记录不发新请求         | 一旦请求已写入跨进程传输，不能声称取消选择保证零Job；进入创建/提交待对账，不盲重发                                            |
-| Job创建/提交响应丢失              | 保留原operation/Job/计划指纹，先按原全局身份查询真实持久记录                    | 只有相同原计划的真实对账可认定已接纳/已提交；不能重新选择后复用旧确认换新输入，也不能用broker.cancel伪造Job cancelled终态     |
-| Job已被正式接纳后重选/关页        | 撤销未来使用旧preview的资格；已接纳Job按原Job取消/提交边界处理                  | Job仍使用原被授权snapshot；若用户要取消须进入正式job.cancel/对账，已提交保留成功事实与历史，不能用文件选择取消抹掉            |
+| 触发点                            | 旧记录必须怎样失效                                                                                 | 易错边界/后续动作                                                                                                             |
+| --------------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 重选开始、configure编码/sheet开始 | **先**撤销旧preview/确认/待发送启动资格，再调用异步picker/配置；更新main代次                       | 字节SHA可能没变但解释语义已变，不能按SHA恢复旧预览；配置失败/busy也不回滚为旧选项。T03后发配置生效，宿主按同代次接结果        |
+| 用户取消选择/配置/关闭项目        | 撤销当前source证明、UI预览及未发送启动资格，调用broker相应失效/abort                               | 取消返回null不是“继续使用旧来源”；旧异步成功/失败/同步abort重入不能清掉或覆盖新选择                                           |
+| 复验检测源变/删/变大/读错         | 当前proof、preview、确认全部失效；要求新选择/新预览/新确认                                         | 不因后来恢复原字节而复活旧证明；broker无已批准实时watch接口，不能声称外部编辑瞬间UI已感知。明确提交前复验及观测窗口           |
+| domain revision/实际依赖变化      | 原计划/preview/确认失效或按正式冲突规则拒绝                                                        | 文件proof可能仍真实，但不能代替Store base。反过来，应用-only CAS不应伪造领域revision变化；真实计划用到的应用状态则按其CAS绑定 |
+| upload/parse/readForCommit晚返回  | 只允许当前scope/selection/generation与当前preview承接；旧上传结果不安装为新选择                    | 已seal旧snapshot可作为孤儿资源按T01策略回收，但不是可自动提交的旧授权；未seal输入不得拿来预览或提交                           |
+| main发送Job前与取消交错           | main先串行核验当前记录/确认，各await后复核；最终实际写帧前仍需可信guard或等价fence，接口缺口见下文 | 一旦请求已写入跨进程传输，不能声称取消选择保证零Job；进入创建/提交待对账，不盲重发                                            |
+| Job创建/提交响应丢失              | 保留原operation/Job/计划指纹，先按原全局身份查询真实持久记录                                       | 只有相同原计划的真实对账可认定已接纳/已提交；不能重新选择后复用旧确认换新输入，也不能用broker.cancel伪造Job cancelled终态     |
+| Job已被正式接纳后重选/关页        | 撤销未来使用旧preview的资格；已接纳Job按原Job取消/提交边界处理                                     | Job仍使用原被授权snapshot；若用户要取消须进入正式job.cancel/对账，已提交保留成功事实与历史，不能用文件选择取消抹掉            |
+
+实际发送切点以[根传输决定第4节](source-snapshot-transport-decision.md)为准：现有 `EngineSupervisor.request` 没有调用方guard接口，T01（`main/engine.ts`）与I06宿主须冻结并接通最终实际写帧前的同步可信guard或等价可证明fence。仅在main调用前检查一次，不能证明随后的排队/await窗口内失效不会被admit；接线和对应竞态验证完成前，不宣称已保证零admit。已dispatch而ack未知则保留原operation/计划并对账。
 
 原生picker/FS的逻辑abort不等于实际结束。**两个真实在途操作，任一个abort但未settled都继续占槽**；不能清Set、立即换broker、renderer重挂或重复cancel来释放。建议同main broker跨普通页面重建及项目scope切换存活；如确需替换broker，宿主须保留旧未settled操作的全局接纳计数或等其真实终态，T03现导出没有drain/whenIdle保证，不能伪称已经排空。source host/FS槽位只覆盖这些实际操作，已settled后正确释放；上传/解析/Job的独立预算与取消由其owner定义，不能混成同一个“2 Job”配额。
 
@@ -63,11 +65,11 @@ TrustedPicker忽略signal时可持续占用槽位；I06宿主要按Electron真�
 
 ## 5. 冷启动、普通页面恢复、同进程升级
 
-- **冷启动/真正新main**：broker scope/proof/未确认预览不能持久恢复为权限，尚未创建Job的旧预览需重新选择/读取/确认；不从旧路径自动重开。已有正式Job则按持久Job/operation与pin住的源snapshot只读恢复和对账，不需要重开原文件，也不自动重放job.create。
+- **冷启动/真正新main**：broker scope/proof/旧预览不能持久恢复为权限，旧未admitted upload/inspection/preview lease不能跨session复活；新选择/读取/传输须重建完整preview/proof/明确确认绑定，不从旧路径自动重开。已accepted的持久输入只按原Job/operation授权和pin住的源snapshot读取、恢复和对账，不重开原文件，也不自动重放job.create。
 - **普通renderer重建/刷新**：不等于新项目lifecycle。main保留单一broker/当前账本，UI只查询真实摘要/预览/Job状态；不自动pick/confirm/start，也不重建broker绕过两槽。旧frame失去受信身份；新UI若继续操作须仍是main当前记录和明确动作。
-- **同进程项目替换、明确关闭/重开或受控DB/协议迁移**：先关闭旧scope/预览/未发送确认并abort旧操作，再按T01真实lease/任务/连接边界升级。相同项目UUID也必须新scope/lifecycle；新engine session对旧upload/snapshot handle的可用性须由T01明确重新验证，不能据同SHA假定仍授权。新项目/engine/同源canonical及实际ready/项目读取通过后才允许新选择和新确认；普通engine瞬断不擅自认定为项目替换。
+- **同进程项目替换、明确关闭/重开或受控DB/协议迁移**：先关闭旧scope/预览/未发送确认并abort旧操作，再按T01真实lease/任务/连接边界升级。相同项目UUID也必须新scope/lifecycle。新engine session一律丢弃旧未admitted upload/inspection/preview lease，不能重新验证旧字符串或仅凭同SHA使其复活；重新传输以新会话及新的完整preview/proof/确认绑定合同重建。已accepted的持久输入仍只按原Job/operation授权对账读取，不重开原path、不自动replay。新项目/engine/同源canonical及实际ready/项目读取通过后才允许新选择和新确认；普通engine瞬断本身不等于新project session，若发生新engine session则另按传输层规则失效旧lease。
 
-若同进程更换EngineSupervisor对象，I06宿主及任何固定持有旧engine的服务须重建/安全重绑，不能只替换TaskService继续向旧engine上传。模型context/grant按其受控升级边界另失效；source proof、Job确认、模型grant各自处理，不拼成通用授权token。上述选择仍须T01/root确认，不将状态字段写着ready当运行通过。
+若同进程更换EngineSupervisor对象，I06宿主及任何固定持有旧engine的服务须重建/安全重绑，不能只替换TaskService继续向旧engine上传。模型context/grant按其受控升级边界另失效；普通engine瞬断或旧transport lease丢失本身不自动重置项目scope或模型grant。source proof、Job确认、模型grant各自处理，不拼成通用授权token。本文按根决定收紧跨session边界；具体接口合同仍须T01/root冻结，不将状态字段写着ready当运行通过。
 
 ## 6. 精确owner交付与路径责任
 
