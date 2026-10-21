@@ -1,0 +1,286 @@
+{
+  "observedAt": "2026-10-21T14:41:08.268091+08:00",
+  "purpose": "exact proposed P1 selective adoption; root authorization is separate; product/source not executed",
+  "fixedDocsCommit": "de37ff64fab7f40b69fbf900e4657137ca18ce74",
+  "fixedPlanHash": "990555ae61b086d40c33212115728bd1914063af25e34b3815345decc85ed66d",
+  "fixedPlanCurrentEqual": true,
+  "docsDeltaCount": 17,
+  "docsDeltaPaths": [
+    "docs/iterations/I05/profile-integration-new-candidate-plan.md",
+    "docs/reviews/I05/profile-integration-plan/T01-changeset-authorization.md.raw",
+    "docs/reviews/I05/profile-integration-plan/T01-fixed-changeset-plan.md.raw",
+    "docs/reviews/I05/profile-integration-plan/T03-I05-profile-build-offer-preparation.md.raw",
+    "docs/reviews/I05/profile-integration-plan/T05-batch-revalidation-proposal-preparation.md.raw",
+    "docs/reviews/I05/profile-integration-plan/authorization.md.raw",
+    "docs/reviews/I05/profile-integration-plan/delivery-receipt.json",
+    "docs/reviews/I05/profile-integration-plan/independent-review/artifact-manifest.json.raw",
+    "docs/reviews/I05/profile-integration-plan/independent-review/delta-review.md.raw",
+    "docs/reviews/I05/profile-integration-plan/independent-review/report.md.raw",
+    "docs/reviews/I05/profile-integration-plan/independent-review/selected-budget-identity-delta-review.fdb.md.raw",
+    "docs/reviews/I05/profile-integration-plan/independent-review/selected-budget-identity-delta-review.md.raw",
+    "docs/reviews/I05/profile-integration-plan/independent-review/static-seven-inputs.json.raw",
+    "docs/reviews/I05/profile-integration-plan/inputs.json",
+    "docs/reviews/I05/profile-integration-plan/plan-before-budget-review.md.raw",
+    "docs/reviews/I05/profile-integration-plan/plan-before-selected-budget-correction.md.raw",
+    "docs/reviews/I05/profile-integration-plan/plan-budget-reviewed-before-controller-update.md.raw"
+  ],
+  "currentStatus": " M AGENTS.md\n",
+  "inputs": [
+    {
+      "kind": "I05_owned_semantic_sources",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "bytes": 23890,
+      "sha256": "b8c4ed3c3e8aa4e527858d0fd9589ebc7581118af990a0e977f80111ee35e017",
+      "gitBlob": "acd9cd103d4370e5cc105eaf430643ab3df826bf"
+    },
+    {
+      "kind": "I05_owned_semantic_sources",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "bytes": 13051,
+      "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+      "gitBlob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2"
+    },
+    {
+      "kind": "I05_owned_semantic_sources",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "bytes": 19390,
+      "sha256": "69f453be13734a02bf92ce468de146198ad9bd2b10595b892b1217f1643e4a27",
+      "gitBlob": "479019cc448d39360dc271ea16dfdec5f6f776b4"
+    },
+    {
+      "kind": "I05_owned_semantic_sources",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "bytes": 3951,
+      "sha256": "9513e064634952ac68b13d3f41526407d7ec37860b56638a0c3dfd4aae1dc0e2",
+      "gitBlob": "8331670731a989b976569c2af8ca0eefaa5d5b7d"
+    },
+    {
+      "kind": "I05_owned_semantic_sources",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+      "bytes": 14773,
+      "sha256": "5a05e93b4588577b97bcbe7f6b4ffda1fe2b27f917c25375e444b260ae3443f7",
+      "gitBlob": "eea395248233d88372a63bd8c0be4b6210d7b72c"
+    },
+    {
+      "kind": "I05_owned_semantic_sources",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "bytes": 1351,
+      "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+      "gitBlob": "0013805b49a8842383fd38afde3ffbfbd54e1e40"
+    },
+    {
+      "kind": "I05_owned_semantic_sources",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+      "bytes": 6448,
+      "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+      "gitBlob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb"
+    },
+    {
+      "kind": "I05_owned_semantic_sources",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+      "bytes": 33858,
+      "sha256": "387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9",
+      "gitBlob": "1498ec46fcce718d26c0858448f8bcdeeb30fb76"
+    },
+    {
+      "kind": "I05_legacy_tests_immutable_adoption",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/tests/test_semantic.py",
+      "bytes": 13779,
+      "sha256": "5f021d7f81b1e754589bd43927c22d567a32b8b8abe16191a0d5420c4cc52297",
+      "gitBlob": "5c771567708f9eb7baba9e8d79164ddf1ea7be9f"
+    },
+    {
+      "kind": "I05_legacy_tests_immutable_adoption",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/tests/test_semantic_scopes.py",
+      "bytes": 6772,
+      "sha256": "015b1966693bd92bb318431d606401e644354b722689dc80b7f8a1f6dbcacd83",
+      "gitBlob": "5d147c8143a26e7c3dd8bf79cefb4bcfdebbf524"
+    },
+    {
+      "kind": "I05_legacy_tests_immutable_adoption",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/tests/test_semantic_selected_projection.py",
+      "bytes": 15237,
+      "sha256": "34ff730532e71d247d1389439fbd8745db97ae5839afc6ec75f95ada0d84f283",
+      "gitBlob": "d7db4c05ee32337ab303811731f9ae9c3cdc2a56"
+    },
+    {
+      "kind": "I05_legacy_tests_immutable_adoption",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/tests/test_semantic_execution.py",
+      "bytes": 18450,
+      "sha256": "8eab07aace07d4abdd9f8a1db8f9c3860aa0bfaa3dacdecde015ba34b7b6774d",
+      "gitBlob": "3b78e131f4fb767530dd3b66b039d7c5063e46f9"
+    },
+    {
+      "kind": "I05_legacy_tests_immutable_adoption",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/tests/test_semantic_lexical.py",
+      "bytes": 21918,
+      "sha256": "f298e085fd54538822d9e55109e10f94033f16ab8e0381ed357c9fff6c6cbfca",
+      "gitBlob": "0b1b5a111feca3a8139fbe126a9b075fee498365"
+    },
+    {
+      "kind": "I05_legacy_tests_immutable_adoption",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/tests/test_semantic_query_tokens.py",
+      "bytes": 2678,
+      "sha256": "b14f20298ab3172207ff3e863a06835664c3d4738802f3fe2a21d6c645ea50ef",
+      "gitBlob": "c602cb80d8e8d2fa0c57a7478e87b1ff4526a805"
+    },
+    {
+      "kind": "I05_legacy_tests_immutable_adoption",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/tests/test_semantic_rdfs_basis_determinism.py",
+      "bytes": 9390,
+      "sha256": "0d2c33dcd5e76d7d6d745c99805399da6f3002ba7a42449899c07a82b053ef39",
+      "gitBlob": "a85fbe52ce81cbff2866f5590d6ad5194ae8b6b6"
+    },
+    {
+      "kind": "I05_legacy_tests_immutable_adoption",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/tests/test_semantic_string_identity.py",
+      "bytes": 18211,
+      "sha256": "0992663e427649870c3fb07047a415dd95b2bd93a8a754babb190972fdbe5240",
+      "gitBlob": "40099fe22af7ec1d109cc9efbf5f51d024fa3076"
+    },
+    {
+      "kind": "I05_legacy_tests_immutable_adoption",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/tests/test_semantic_error_adapter.py",
+      "bytes": 23172,
+      "sha256": "aeff14c189b814cc89e5684cc31ce2d569b67fe47f72af5c6f4ca702250409a2",
+      "gitBlob": "ee19fe32f2f5c897b4efbc23c222f9aa0c3cc5f9"
+    },
+    {
+      "kind": "I05_legacy_tests_immutable_adoption",
+      "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+      "path": "packages/engine/tests/test_semantic_error_reasons.py",
+      "bytes": 4662,
+      "sha256": "3b0c4cbad1c5b18986da429398d28490929cda2d2fb200d03f105f9aafa1ae9b",
+      "gitBlob": "2d6c6e036cd4adbf693c6b8f39623b6769ea32c6"
+    },
+    {
+      "kind": "T05_mechanism_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+      "bytes": 548,
+      "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+      "gitBlob": "1405a985b4220dc18576a4c02c8df57646b6ad02"
+    },
+    {
+      "kind": "T05_mechanism_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "bytes": 11987,
+      "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "gitBlob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402"
+    },
+    {
+      "kind": "T05_mechanism_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "bytes": 5909,
+      "sha256": "8f58a68b896a62443ab3681c29802905d5ff1e010a944d32eb07f988319cc19a",
+      "gitBlob": "bcea7c7fa2b98a816e05bf0f785962986506627c"
+    },
+    {
+      "kind": "T05_mechanism_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "bytes": 7372,
+      "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+      "gitBlob": "31a0d150ae82d48e03fee2b9051273c99997b415"
+    },
+    {
+      "kind": "T05_mechanism_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "bytes": 4047,
+      "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+      "gitBlob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1"
+    },
+    {
+      "kind": "T05_mechanism_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+      "bytes": 1750,
+      "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+      "gitBlob": "1148fbd40c12c6138a689ee64580e08afa6c349c"
+    },
+    {
+      "kind": "T05_mechanism_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "bytes": 19149,
+      "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "gitBlob": "4fc50930c20b8184b3bae5df34d691111351e6bd"
+    },
+    {
+      "kind": "T05_fixed_profile_fixture_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "tests/fixtures/quality/profile-v1/calendar-oracles.json",
+      "bytes": 1004,
+      "sha256": "616fd0c5d4bc052f5abfc14b02bba095f849bd672b2beda63933e79186ab2016",
+      "gitBlob": "f3602fa286418b0d0047ada34c2615e0383d187a"
+    },
+    {
+      "kind": "T05_fixed_profile_fixture_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "tests/fixtures/quality/profile-v1/comparison-matrix.json",
+      "bytes": 5512,
+      "sha256": "9bbbb0c8351999bb1cf7152fa2ecacc1b24b36f6f23772c395ba90b27978fb72",
+      "gitBlob": "71f08eaf13fe624e178443eb3358fbd613fa0697"
+    },
+    {
+      "kind": "T05_fixed_profile_fixture_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "tests/fixtures/quality/profile-v1/firing-cases.json",
+      "bytes": 9298,
+      "sha256": "c001a6462b7f3ae54563b99c699bf6281c09020f2695f62f7bd2a92a715e6599",
+      "gitBlob": "fad5330b596170bef4632eb35016a2cab9a02c65"
+    },
+    {
+      "kind": "T05_fixed_profile_fixture_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "tests/fixtures/quality/profile-v1/lexical.json",
+      "bytes": 3294,
+      "sha256": "2d893831f1c4ecbee88e93f75a03c302e92cef1999eadfad68ca1d4abcf5bf79",
+      "gitBlob": "abc0cc3bb306f7adb41025e0ba534a33b89e454f"
+    },
+    {
+      "kind": "T05_fixed_profile_fixture_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "tests/fixtures/quality/profile-v1/manifest.json",
+      "bytes": 1057,
+      "sha256": "1bfb51fabf7c8eb60bc63c469a56315f4a2b4bad17a959472de6fb2a2e78323b",
+      "gitBlob": "5d4328dc689f0bd3942bae24280cb85391d8505f"
+    },
+    {
+      "kind": "T05_fixed_profile_fixture_readonly_consumer",
+      "ref": "1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb",
+      "path": "tests/fixtures/quality/profile-v1/numeric-oracles.json",
+      "bytes": 9898,
+      "sha256": "554882960460ba2416e0d4dcc5cbf72d43525e3838decee8bc72215e3dae26c3",
+      "gitBlob": "a10b4c3236f2637f1eec2d302fc122bc158e9f67"
+    },
+    {
+      "kind": "approved_base_resource_start",
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "bytes": 2415,
+      "sha256": "8bba36a3f97eedf972b4d9165e71b8046b225948b0864542a1fc3f1095c6f188",
+      "gitBlob": "db107e7404b29f8bd81730f30666e173cf0276cd"
+    }
+  ]
+}
