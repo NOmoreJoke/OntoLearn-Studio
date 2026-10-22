@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+    "-c",
+    "import json,pathlib; p=pathlib.Path('docs/reviews/I05/d2-business-carrier-design/checker-source-r2.json'); exec(compile(json.loads(p.read_text())['source'], '<i05-business-r2-finite-checker>', 'exec'))"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+  "envOverride": {
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "exit": 1,
+  "stdout": {
+    "encoding": "lossless-utf8-json",
+    "text": "",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "base64": ""
+  },
+  "stderr": {
+    "encoding": "lossless-utf8-json",
+    "text": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"<i05-business-r2-finite-checker>\", line 173, in <module>\n  File \"<i05-business-r2-finite-checker>\", line 7, in require\nAssertionError: old frozen bytes\n",
+    "bytes": 234,
+    "sha256": "256015fb63db1e1c3cd948fa8248f8b5dd01e4e8b82dd9b3333a8399c3ca6cb7",
+    "base64": "VHJhY2ViYWNrIChtb3N0IHJlY2VudCBjYWxsIGxhc3QpOgogIEZpbGUgIjxzdHJpbmc+IiwgbGluZSAxLCBpbiA8bW9kdWxlPgogIEZpbGUgIjxpMDUtYnVzaW5lc3MtcjItZmluaXRlLWNoZWNrZXI+IiwgbGluZSAxNzMsIGluIDxtb2R1bGU+CiAgRmlsZSAiPGkwNS1idXNpbmVzcy1yMi1maW5pdGUtY2hlY2tlcj4iLCBsaW5lIDcsIGluIHJlcXVpcmUKQXNzZXJ0aW9uRXJyb3I6IG9sZCBmcm96ZW4gYnl0ZXMK"
+  },
+  "sourceStaticRead": ["27799d", "40aaa1", "e9f21e"],
+  "onlyCompileDiagnosticFilenameChanged": "avoid Python linecache printing whole JSON container source string; checker source unchanged"
+}

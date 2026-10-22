@@ -1,0 +1,964 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "const": "header"
+    },
+    "format": {
+      "const": "i05-semantic-runtime-header/2"
+    },
+    "profileId": {
+      "const": "i05-source-package-parity-v3"
+    },
+    "mode": {
+      "enum": ["source", "frozen-independent", "parent"]
+    },
+    "selector": {
+      "enum": ["full-v1", "b1-semantic-1x-v1", "b1-semantic-10x-v1"]
+    },
+    "externalReceiptStatus": {
+      "const": "external-unverified"
+    },
+    "declaredCompositionRef": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "provenanceRead": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": ["bytes", "sha256"]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "declaredSupplierSources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "canonicalName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "ref": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048,
+                "pattern": "^(?!/)(?!.*[\\\\\\x00:!])(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*(?:/$|[ .](?:/|$)))[^/]+(?:/[^/]+)*$"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "gitBlob": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+          }
+        },
+        "required": ["canonicalName", "source"]
+      },
+      "minItems": 22,
+      "maxItems": 23
+    },
+    "declaredPython": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "implementation": {
+              "const": "cpython"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^3\\.12\\.\\d+.*$"
+            },
+            "hexversion": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cacheTag": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "magicHex": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}$"
+            },
+            "marshalVersion": {
+              "const": 4
+            },
+            "optimize": {
+              "const": 0
+            },
+            "dontInherit": {
+              "const": true
+            },
+            "compilerExecutable": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "root": {
+                  "const": "approved-installation"
+                },
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048,
+                  "pattern": "^(?!/)(?!.*[\\\\\\x00:!])(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*(?:/$|[ .](?:/|$)))[^/]+(?:/[^/]+)*$"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "required": ["root", "path", "bytes", "sha256"]
+            },
+            "byteorder": {
+              "enum": ["little", "big"]
+            },
+            "abiflags": {
+              "type": "string"
+            },
+            "platform": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "architecture": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "flags": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "debug": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "inspect": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "interactive": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "optimize": {
+                  "const": 0
+                },
+                "dontWriteBytecode": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "noUserSite": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "noSite": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "ignoreEnvironment": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "isolated": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "safePath": {
+                  "type": "boolean"
+                },
+                "utf8Mode": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "debug",
+                "inspect",
+                "interactive",
+                "optimize",
+                "dontWriteBytecode",
+                "noUserSite",
+                "noSite",
+                "ignoreEnvironment",
+                "isolated",
+                "safePath",
+                "utf8Mode"
+              ]
+            },
+            "buildIdentity": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "versionString": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "buildNumber": {
+                  "type": "string"
+                },
+                "buildDate": {
+                  "type": "string"
+                },
+                "compiler": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "apiVersion": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": ["versionString", "buildNumber", "buildDate", "compiler", "apiVersion"]
+            }
+          },
+          "required": [
+            "implementation",
+            "version",
+            "hexversion",
+            "cacheTag",
+            "magicHex",
+            "marshalVersion",
+            "optimize",
+            "dontInherit",
+            "compilerExecutable",
+            "byteorder",
+            "abiflags",
+            "platform",
+            "architecture",
+            "flags",
+            "buildIdentity"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "observedPython": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "implementation": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "hexversion": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cacheTag": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "magicHex": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}$"
+            },
+            "marshalVersion": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "optimize": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "byteorder": {
+              "enum": ["little", "big"]
+            },
+            "abiflags": {
+              "type": "string"
+            },
+            "platform": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "architecture": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "flags": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "debug": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "inspect": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "interactive": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "optimize": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "dontWriteBytecode": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "noUserSite": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "noSite": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "ignoreEnvironment": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "isolated": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "safePath": {
+                  "type": "boolean"
+                },
+                "utf8Mode": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "debug",
+                "inspect",
+                "interactive",
+                "optimize",
+                "dontWriteBytecode",
+                "noUserSite",
+                "noSite",
+                "ignoreEnvironment",
+                "isolated",
+                "safePath",
+                "utf8Mode"
+              ]
+            },
+            "buildIdentity": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "versionString": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "buildNumber": {
+                  "type": "string"
+                },
+                "buildDate": {
+                  "type": "string"
+                },
+                "compiler": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "apiVersion": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": ["versionString", "buildNumber", "buildDate", "compiler", "apiVersion"]
+            }
+          },
+          "required": [
+            "implementation",
+            "version",
+            "hexversion",
+            "cacheTag",
+            "magicHex",
+            "marshalVersion",
+            "optimize",
+            "byteorder",
+            "abiflags",
+            "platform",
+            "architecture",
+            "flags",
+            "buildIdentity"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "moduleLoaders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bindingId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "canonicalName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "loaderClass": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "specName": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "origin": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "exactCodeType": {
+            "type": ["boolean", "null"]
+          },
+          "singleCanonicalObject": {
+            "type": ["boolean", "null"]
+          },
+          "runtimeLoaderCode": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "algorithm": {
+                    "const": "i05-code-object-marshal-filename-normalized/1"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "pythonCacheTag": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                  },
+                  "domain": {
+                    "const": "actual-loader-code; not source bytes or a build approval"
+                  }
+                },
+                "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "actualSource": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "required": ["bytes", "sha256"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "bindingId",
+          "canonicalName",
+          "loaderClass",
+          "specName",
+          "origin",
+          "exactCodeType",
+          "singleCanonicalObject",
+          "runtimeLoaderCode",
+          "actualSource"
+        ]
+      },
+      "minItems": 0,
+      "maxItems": 23
+    },
+    "distributionModuleLoader": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bindingId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "canonicalName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "loaderClass": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "specName": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "origin": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "exactCodeType": {
+              "type": ["boolean", "null"]
+            },
+            "singleCanonicalObject": {
+              "type": ["boolean", "null"]
+            },
+            "runtimeLoaderCode": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "algorithm": {
+                      "const": "i05-code-object-marshal-filename-normalized/1"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "pythonCacheTag": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192
+                    },
+                    "domain": {
+                      "const": "actual-loader-code; not source bytes or a build approval"
+                    }
+                  },
+                  "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "actualSource": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    }
+                  },
+                  "required": ["bytes", "sha256"]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "bindingId",
+            "canonicalName",
+            "loaderClass",
+            "specName",
+            "origin",
+            "exactCodeType",
+            "singleCanonicalObject",
+            "runtimeLoaderCode",
+            "actualSource"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "functionCodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "enum": [
+              "semantic.reason",
+              "semantic.query",
+              "semantic.validate_shacl_text",
+              "Validator.run"
+            ]
+          },
+          "moduleBindingId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "runtimeFunctionCode": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "algorithm": {
+                    "const": "i05-code-object-marshal-filename-normalized/1"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "pythonCacheTag": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                  },
+                  "domain": {
+                    "const": "actual-loader-code; not source bytes or a build approval"
+                  }
+                },
+                "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "exactCodeType": {
+            "type": ["boolean", "null"]
+          },
+          "codeConstIndexPath": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minItems": 1,
+                "maxItems": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "moduleBindingId",
+          "runtimeFunctionCode",
+          "exactCodeType",
+          "codeConstIndexPath"
+        ]
+      },
+      "minItems": 0,
+      "maxItems": 4
+    },
+    "dynamicChecker": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "const": "ontolearn_contract_v2"
+            },
+            "objectAuthority": {
+              "const": "resources.CONTRACT; not an independently exec-created alias"
+            },
+            "sysModulesRegistrationRequired": {
+              "const": false
+            },
+            "loaderClass": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "specName": {
+              "anyOf": [
+                {
+                  "const": "ontolearn_contract_v2"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "origin": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "runtimeLoaderCode": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "algorithm": {
+                      "const": "i05-code-object-marshal-filename-normalized/1"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "pythonCacheTag": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192
+                    },
+                    "domain": {
+                      "const": "actual-loader-code; not source bytes or a build approval"
+                    }
+                  },
+                  "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "exactCodeType": {
+              "type": ["boolean", "null"]
+            },
+            "sameConsumerObject": {
+              "type": ["boolean", "null"]
+            }
+          },
+          "required": [
+            "name",
+            "objectAuthority",
+            "sysModulesRegistrationRequired",
+            "loaderClass",
+            "specName",
+            "origin",
+            "runtimeLoaderCode",
+            "exactCodeType",
+            "sameConsumerObject"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "observedSource23": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "actualSourceBytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "actualSourceSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "actualLoaderCode": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "algorithm": {
+                      "const": "i05-code-object-marshal-filename-normalized/1"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "pythonCacheTag": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192
+                    },
+                    "domain": {
+                      "const": "actual-loader-code; not source bytes or a build approval"
+                    }
+                  },
+                  "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": ["actualSourceBytes", "actualSourceSha256", "actualLoaderCode"]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "packageCodeBoundToSource": {
+      "enum": ["archive-loader-consistent-with-declared-source", "mismatch", "partial", null]
+    },
+    "sourceCodeBoundToSource": {
+      "enum": ["loader-consistent-with-observed-source", "mismatch", "partial", null]
+    }
+  },
+  "required": [
+    "kind",
+    "format",
+    "profileId",
+    "mode",
+    "selector",
+    "externalReceiptStatus",
+    "declaredCompositionRef",
+    "provenanceRead",
+    "declaredSupplierSources",
+    "declaredPython",
+    "observedPython",
+    "moduleLoaders",
+    "distributionModuleLoader",
+    "functionCodes",
+    "dynamicChecker",
+    "observedSource23",
+    "packageCodeBoundToSource",
+    "sourceCodeBoundToSource"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ontolearn:i05:runtime-header:2",
+  "title": "Exact runtime header payload v2 for protocol3/profile4",
+  "$comment": "Strict JSON shape with explicit actual/unobserved data. Source and frozen relations are normative in consumer-contract CR-H. No external receipt approval or witness locator is read by probe. Complete protocol3 forward design; source lock26, canonical23, supplier22, runtime8 and source33 are distinct. No execution authority."
+}

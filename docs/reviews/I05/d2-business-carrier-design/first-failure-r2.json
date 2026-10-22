@@ -1,0 +1,38 @@
+{
+  "initialToolReadFailures": [
+    {
+      "chunk": "c30796",
+      "exit": 1,
+      "reason": "inferred absent proof filename; original separate streams not captured"
+    },
+    {
+      "chunk": "57bfa2",
+      "exit": 1,
+      "reason": "read-only assumption $defs absent; original separate streams not captured"
+    }
+  ],
+  "authorCheck01": {
+    "record": "author-check-r2-01.json",
+    "actualExit": 1,
+    "reason": "new finite synthetic TreeNull omitted its required explicit value:null; original grammar correct; this was a synthetic fixture construction defect",
+    "inputSnapshot": "acceptance-r2-before-null-tree-fix.json",
+    "inputBytes": 290825,
+    "inputSha256": "896e3d942ec524195949857bccfe7e730a4d3da6a7fd1c9359499a0ba242def5",
+    "originalSource": "checker-source-r2.json",
+    "sourceNotModifiedForFix": true,
+    "originalFullStdoutStderr": "lossless UTF8 JSON + base64 bytes/SHA in check01; tool print truncated, file complete",
+    "exactExecutedSourceNow": "business-checker-source-r2.json,19751B,SHAe9ddf626425097d76a58c652a9829b6f1b0c4378588b3a65a54703ba8f2cb8ae"
+  },
+  "fix": "add exact TreeNull.value=null in synthetic tree and regenerate only its synthetic ancestor bytes/FileRefs; preserve all old113 and real received schema bytes; no product data or runtime touched",
+  "authorCheck02": {
+    "record": "author-check-r2-02.json",
+    "actualExit": 1,
+    "reason": "old113 hash guard caught temporary forbidden overwrite of old checker-source-r2.json; restored and documented as freeze write-surface violation",
+    "incident": "write-collision-incident-r2.json"
+  },
+  "authorCheck03": {
+    "record": "author-check-r2-03.json",
+    "actualExit": 0,
+    "scope": "new finite design only after actual113 restoration; does not erase two failures or frozen-write violation"
+  }
+}

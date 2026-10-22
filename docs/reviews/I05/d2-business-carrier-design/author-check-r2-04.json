@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+    "-c",
+    "import json,pathlib; p=pathlib.Path('docs/reviews/I05/d2-business-carrier-design/business-checker-source-r2.json'); exec(compile(json.loads(p.read_text())['source'], '<i05-business-r2-finite-checker>', 'exec'))"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+  "envOverride": {
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "exit": 0,
+  "stdout": {
+    "encoding": "lossless-utf8-json",
+    "text": "{\"scope\": \"R2 finite new grammar/identity/caller witnesses/31-field projection only\", \"completeSyntheticFailureExamples\": 5, \"detachedContextIdentityCases\": 4, \"executedNegativeCases\": 29, \"newRecordMissingNegatives\": 39, \"newRecordWrongTypeNegatives\": 39, \"newRecordExtraNegatives\": 6, \"definitions\": 59, \"mappedFields\": 294, \"receiptRunRequiredRows\": 31, \"old113Unchanged\": true, \"receivedV3FixedInputs\": 14, \"receivedM06PureInputs\": 6, \"strictExternalSchemaEngine\": false, \"productOrModelExecuted\": false, \"actualAuthority\": false, \"independentReview\": \"pending\"}\n",
+    "bytes": 567,
+    "sha256": "684a687f75275c0f07003d6554eba3ea925352b1c32b161545096cd7cd7dcca4",
+    "base64": "eyJzY29wZSI6ICJSMiBmaW5pdGUgbmV3IGdyYW1tYXIvaWRlbnRpdHkvY2FsbGVyIHdpdG5lc3Nlcy8zMS1maWVsZCBwcm9qZWN0aW9uIG9ubHkiLCAiY29tcGxldGVTeW50aGV0aWNGYWlsdXJlRXhhbXBsZXMiOiA1LCAiZGV0YWNoZWRDb250ZXh0SWRlbnRpdHlDYXNlcyI6IDQsICJleGVjdXRlZE5lZ2F0aXZlQ2FzZXMiOiAyOSwgIm5ld1JlY29yZE1pc3NpbmdOZWdhdGl2ZXMiOiAzOSwgIm5ld1JlY29yZFdyb25nVHlwZU5lZ2F0aXZlcyI6IDM5LCAibmV3UmVjb3JkRXh0cmFOZWdhdGl2ZXMiOiA2LCAiZGVmaW5pdGlvbnMiOiA1OSwgIm1hcHBlZEZpZWxkcyI6IDI5NCwgInJlY2VpcHRSdW5SZXF1aXJlZFJvd3MiOiAzMSwgIm9sZDExM1VuY2hhbmdlZCI6IHRydWUsICJyZWNlaXZlZFYzRml4ZWRJbnB1dHMiOiAxNCwgInJlY2VpdmVkTTA2UHVyZUlucHV0cyI6IDYsICJzdHJpY3RFeHRlcm5hbFNjaGVtYUVuZ2luZSI6IGZhbHNlLCAicHJvZHVjdE9yTW9kZWxFeGVjdXRlZCI6IGZhbHNlLCAiYWN0dWFsQXV0aG9yaXR5IjogZmFsc2UsICJpbmRlcGVuZGVudFJldmlldyI6ICJwZW5kaW5nIn0K"
+  },
+  "stderr": {
+    "encoding": "lossless-utf8-json",
+    "text": "",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "base64": ""
+  },
+  "sourceStaticRead": ["27799d", "40aaa1", "e9f21e"],
+  "reasonForRepeat": "only source-mode pre-header synthetic code-domain fixture corrected after check03; exact same R2 finite scope, no ordinary/product testing broadened",
+  "protectedWriteGuard": "output absent from frozen113, exclusive create"
+}

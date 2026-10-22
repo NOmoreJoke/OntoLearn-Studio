@@ -1,0 +1,3847 @@
+{
+  "format": "i05-business-carrier-concrete-grammar/2",
+  "status": "proposed-design-only; no approved new wire/schema/consumer/runtime",
+  "oldHeaderFrozen": true,
+  "targetProtocol": "T03 protocol/consumer3.0.0 profile4 header2 receipt3 at d9c3c151614674f2c7a6e3d7f6507aa7ba81db58 limited DESIGN accepted; actual pins null and executionAuthorization=false",
+  "syntax": "all records exact required keys, no implicit defaults, unknown keys rejected; nullable explicitly includes key; arrays full order/duplicates/tails; unions exactly one matching tag; no floating JSON numbers",
+  "stream": "PinnedHeader LF ContextFrame LF (StageFrame LF|ObservationFrame LF)* TerminalFrame LF EOF",
+  "definitions": {
+    "Text": {
+      "kind": "primitive",
+      "type": "string",
+      "unicode": "valid UTF8 scalar values; no normalization",
+      "bound": "existing full item byte cap"
+    },
+    "Id": {
+      "kind": "primitive",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$",
+      "maxLength": 2048,
+      "authority": false
+    },
+    "Sha": {
+      "kind": "primitive",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "Ref40": {
+      "kind": "primitive",
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "Nat": {
+      "kind": "primitive",
+      "type": "integer",
+      "minimum": 0,
+      "exact": true
+    },
+    "Bool": {
+      "kind": "primitive",
+      "type": "boolean",
+      "exact": true
+    },
+    "Null": {
+      "kind": "primitive",
+      "type": "null"
+    },
+    "Base64": {
+      "kind": "primitive",
+      "type": "string",
+      "canonical": "RFC4648 standard alphabet/padding, strict decode and exact re-encode; no whitespace"
+    },
+    "DecimalInt": {
+      "kind": "primitive",
+      "type": "string",
+      "pattern": "^(0|-?[1-9][0-9]*)$"
+    },
+    "SafePath": {
+      "kind": "primitive",
+      "type": "string",
+      "rule": "protocol CR-A1 relative path plus real containment/no aliases/symlink/hardlink; never probe locator"
+    },
+    "GitPin": {
+      "kind": "record",
+      "required": ["ref", "path", "bytes", "sha256", "gitBlob", "repositoryId"],
+      "additionalProperties": false,
+      "fields": {
+        "ref": {
+          "type": {
+            "ref": "Ref40"
+          },
+          "meaning": "immutable existing commit",
+          "owner": "root/owner supplies; caller verifies; no future/self pin",
+          "rule": "PINS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "path": {
+          "type": {
+            "ref": "SafePath"
+          },
+          "meaning": "repo-relative exact source/document",
+          "owner": "root/owner supplies; caller verifies; no future/self pin",
+          "rule": "PINS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "bytes": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "original bytes",
+          "owner": "root/owner supplies; caller verifies; no future/self pin",
+          "rule": "PINS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "sha256": {
+          "type": {
+            "ref": "Sha"
+          },
+          "meaning": "raw original SHA",
+          "owner": "root/owner supplies; caller verifies; no future/self pin",
+          "rule": "PINS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "gitBlob": {
+          "type": {
+            "ref": "Ref40"
+          },
+          "meaning": "exact blob",
+          "owner": "root/owner supplies; caller verifies; no future/self pin",
+          "rule": "PINS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "repositoryId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "externally approved Git source-root identifier, not arbitrary repository URL; actual mapping by root/caller",
+          "owner": "root/owner supplies",
+          "rule": "PINS",
+          "unavailable": "null whole pin until actual accepted source exists"
+        }
+      }
+    },
+    "FileRef": {
+      "kind": "record",
+      "required": ["root", "path", "bytes", "sha256"],
+      "additionalProperties": false,
+      "fields": {
+        "root": {
+          "type": {
+            "const": "approved-witness"
+          },
+          "meaning": "external approved evidence domain",
+          "owner": "caller capture/root verify; probe never opens",
+          "rule": "HASH/FILES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "path": {
+          "type": {
+            "ref": "SafePath"
+          },
+          "meaning": "fixed externally registered relative location",
+          "owner": "caller capture/root verify; probe never opens",
+          "rule": "HASH/FILES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "bytes": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "full raw bytes",
+          "owner": "caller capture/root verify; probe never opens",
+          "rule": "HASH/FILES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "sha256": {
+          "type": {
+            "ref": "Sha"
+          },
+          "meaning": "RawSHA full bytes",
+          "owner": "caller capture/root verify; probe never opens",
+          "rule": "HASH/FILES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "InlineBytes": {
+      "kind": "record",
+      "required": ["representation", "codecId", "bytes", "sha256", "base64"],
+      "additionalProperties": false,
+      "fields": {
+        "representation": {
+          "type": {
+            "enum": ["captured-original-bytes", "owner-encoded-return-tree"]
+          },
+          "meaning": "cannot call newly exported bytes original prior wire",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "PIECES/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "codecId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "null only original opaque bytes; decoded/typed requires exact adopted codec",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "PIECES/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "bytes": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "decoded bytes count",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "PIECES/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "sha256": {
+          "type": {
+            "ref": "Sha"
+          },
+          "meaning": "RawSHA decoded bytes",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "PIECES/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "base64": {
+          "type": {
+            "ref": "Base64"
+          },
+          "meaning": "complete bytes, no tail loss",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "PIECES/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "TreeNull": {
+      "kind": "record",
+      "required": ["tag", "value"],
+      "additionalProperties": false,
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "null"
+          },
+          "meaning": "exact None",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "value": {
+          "type": {
+            "ref": "Null"
+          },
+          "meaning": "explicit null",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "TreeBool": {
+      "kind": "record",
+      "required": ["tag", "value"],
+      "additionalProperties": false,
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "bool"
+          },
+          "meaning": "bool distinct int",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "value": {
+          "type": {
+            "ref": "Bool"
+          },
+          "meaning": "false retained",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "TreeInt": {
+      "kind": "record",
+      "required": ["tag", "decimal"],
+      "additionalProperties": false,
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "int"
+          },
+          "meaning": "exact built-in int only",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "decimal": {
+          "type": {
+            "ref": "DecimalInt"
+          },
+          "meaning": "full exact integer as bounded-byte decimal text",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "TreeString": {
+      "kind": "record",
+      "required": ["tag", "value"],
+      "additionalProperties": false,
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "string"
+          },
+          "meaning": "exact str only",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "value": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "all codepoints; no casefold or numeric coercion",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "TreeBytes": {
+      "kind": "record",
+      "required": ["tag", "value"],
+      "additionalProperties": false,
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "bytes"
+          },
+          "meaning": "exact bytes only",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "value": {
+          "type": {
+            "ref": "InlineBytes"
+          },
+          "meaning": "complete original byte sequence",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "TreeList": {
+      "kind": "record",
+      "required": ["tag", "items"],
+      "additionalProperties": false,
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "list"
+          },
+          "meaning": "exact list",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "items": {
+          "type": {
+            "array": {
+              "ref": "Tree"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "full original order/duplicates/null/tail",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "TreeTuple": {
+      "kind": "record",
+      "required": ["tag", "items"],
+      "additionalProperties": false,
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "tuple"
+          },
+          "meaning": "exact tuple distinct list",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "items": {
+          "type": {
+            "array": {
+              "ref": "Tree"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "full original order/duplicates/null/tail",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "TreeMember": {
+      "kind": "record",
+      "required": ["name", "value"],
+      "additionalProperties": false,
+      "fields": {
+        "name": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "exact original string key/field",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "value": {
+          "type": {
+            "ref": "Tree"
+          },
+          "meaning": "full value",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "TreeMap": {
+      "kind": "record",
+      "required": ["tag", "members"],
+      "additionalProperties": false,
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "map"
+          },
+          "meaning": "exact dict with exact str keys only",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "members": {
+          "type": {
+            "array": {
+              "ref": "TreeMember"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "insertion order, unique names; no key sorting before capture",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "TreeRecord": {
+      "kind": "record",
+      "required": ["tag", "layoutId", "fields"],
+      "additionalProperties": false,
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "record"
+          },
+          "meaning": "only exact owner-approved class adapter",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE/LAYOUT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "layoutId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "complete owner layout selected externally",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE/LAYOUT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "fields": {
+          "type": {
+            "array": {
+              "ref": "TreeMember"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all declared fields in owner order; unique; extras trigger pending not deletion",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TREE/LAYOUT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "Tree": {
+      "kind": "union",
+      "variants": [
+        {
+          "ref": "TreeNull"
+        },
+        {
+          "ref": "TreeBool"
+        },
+        {
+          "ref": "TreeInt"
+        },
+        {
+          "ref": "TreeString"
+        },
+        {
+          "ref": "TreeBytes"
+        },
+        {
+          "ref": "TreeList"
+        },
+        {
+          "ref": "TreeTuple"
+        },
+        {
+          "ref": "TreeMap"
+        },
+        {
+          "ref": "TreeRecord"
+        }
+      ],
+      "rule": "exact one tag variant; no arbitrary object introspection; unsupported value blocks compatibility"
+    },
+    "RawRange": {
+      "kind": "record",
+      "required": ["stream", "offset", "bytes", "sha256"],
+      "additionalProperties": false,
+      "fields": {
+        "stream": {
+          "type": {
+            "enum": ["stdout", "stderr"]
+          },
+          "meaning": "which full captured raw",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "RAW/RANGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "offset": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "byte offset, never character offset",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "RAW/RANGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "bytes": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "full frame/piece byte length, exclude LF for frame",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "RAW/RANGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "sha256": {
+          "type": {
+            "ref": "Sha"
+          },
+          "meaning": "RawSHA exact range",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "RAW/RANGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "EvidenceValue": {
+      "kind": "record",
+      "required": ["state", "value", "sourceRanges", "artifactIds", "reason"],
+      "additionalProperties": false,
+      "fields": {
+        "state": {
+          "type": {
+            "enum": ["declared", "observed", "unavailable", "not-applicable"]
+          },
+          "meaning": "declaration not actual observation",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "EVIDENCE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "value": {
+          "type": {
+            "nullable": {
+              "ref": "Tree"
+            }
+          },
+          "meaning": "full typed evidence value, null unavailable/not-applicable",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "EVIDENCE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "sourceRanges": {
+          "type": {
+            "array": {
+              "ref": "RawRange"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "actual complete observations or diagnostics",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "EVIDENCE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "artifactIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "complete owned raw/decoded artifact evidence",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "EVIDENCE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "reason": {
+          "type": {
+            "nullable": {
+              "enum": [
+                "not-observed",
+                "not-reached",
+                "codec-unapproved",
+                "layout-unapproved",
+                "not-applicable",
+                "identity-unbound"
+              ]
+            }
+          },
+          "meaning": "restricted unavailability, no fabricated expected",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "EVIDENCE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "NamedEvidence": {
+      "kind": "record",
+      "required": ["name", "evidence"],
+      "additionalProperties": false,
+      "fields": {
+        "name": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "exact declared identity key under approved finite owner layout",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "EVIDENCE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "evidence": {
+          "type": {
+            "ref": "EvidenceValue"
+          },
+          "meaning": "complete value/status not counts-only",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "EVIDENCE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "Inventory": {
+      "kind": "record",
+      "required": [
+        "fullIds",
+        "selectedIds",
+        "fullDigest",
+        "selectedDigest",
+        "inputAsset",
+        "sourceManifest",
+        "contextLedger"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "fullIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "full approved asset order unique IDs,417 in full specification",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "INVENTORY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "selectedIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "selected full417 or single B1 original order",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "INVENTORY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "fullDigest": {
+          "type": {
+            "ref": "Sha"
+          },
+          "meaning": "H inventory-full/1 of fullIds only",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "INVENTORY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "selectedDigest": {
+          "type": {
+            "ref": "Sha"
+          },
+          "meaning": "H inventory-selected/1 of selectedIds only",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "INVENTORY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "inputAsset": {
+          "type": {
+            "ref": "EvidenceValue"
+          },
+          "meaning": "actual asset bytes/SHA plus source pin binding",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "INVENTORY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "sourceManifest": {
+          "type": {
+            "ref": "EvidenceValue"
+          },
+          "meaning": "actual sealed descriptor/sourceRefs/inputProjection/contextStatus, independent from expected",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "INVENTORY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "contextLedger": {
+          "type": {
+            "array": {
+              "ref": "NamedEvidence"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "320datasets/83math/106operations/54checks/50product complete records or pinned original references; not actual pass counts",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "INVENTORY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "StagePlan": {
+      "kind": "record",
+      "required": [
+        "stageId",
+        "caseId",
+        "ordinal",
+        "api",
+        "parameters",
+        "previousStageIds",
+        "requiredPieceKeys",
+        "layoutId"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "stageId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "run-local unique planned stage ID",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "LAYOUT/STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "caseId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "approved selected case",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "LAYOUT/STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "ordinal": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "plan position within case",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "LAYOUT/STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "api": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "approved exact canonical API, no generic execute",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "LAYOUT/STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "parameters": {
+          "type": {
+            "ref": "TreeMap"
+          },
+          "meaning": "complete explicit keyword arguments/values, raw source camelCase mapping retained in descriptor",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "LAYOUT/STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "previousStageIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "acyclic preceding dependencies",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "LAYOUT/STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "requiredPieceKeys": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "exact complete output field layout supplied by owner pin, all raw/typed/sidecar keys, cannot guess",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "LAYOUT/STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "layoutId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "owner complete return layout; missing pin blocks run adoption",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "LAYOUT/STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "ContextFrame": {
+      "kind": "record",
+      "required": [
+        "kind",
+        "format",
+        "streamVersion",
+        "frameOrdinal",
+        "runId",
+        "legacyObservationContract",
+        "mode",
+        "selector",
+        "inventory",
+        "stagePlans",
+        "stagePlanDigest",
+        "writers",
+        "assetsResourcesLock",
+        "environment",
+        "policies",
+        "instrumentation",
+        "nonClaims"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "kind": {
+          "type": {
+            "const": "business-context"
+          },
+          "meaning": "frame kind, unknown rejected",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "format": {
+          "type": {
+            "const": "i05-business-context/1"
+          },
+          "meaning": "exact named frame version",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "streamVersion": {
+          "type": {
+            "const": "i05-business-stream/2"
+          },
+          "meaning": "external explicit negotiation, never detected by keys",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "frameOrdinal": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "context1 then contiguous actual frames",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "runId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "this actual producer attempt, no issuer authority",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "legacyObservationContract": {
+          "type": {
+            "const": "i05-source-package-observations/1"
+          },
+          "meaning": "retained old business semantics identity, not claiming old flow grammar",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "mode": {
+          "type": {
+            "enum": ["source", "frozen-independent", "parent"]
+          },
+          "meaning": "same actual mode as raw header",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "selector": {
+          "type": {
+            "enum": ["full-v1", "b1-semantic-1x-v1", "b1-semantic-10x-v1"]
+          },
+          "meaning": "one exact selector",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "inventory": {
+          "type": {
+            "ref": "Inventory"
+          },
+          "meaning": "complete original and selected inventory",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stagePlans": {
+          "type": {
+            "array": {
+              "ref": "StagePlan"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "complete static API/parameter/output plan, not executed claims",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stagePlanDigest": {
+          "type": {
+            "ref": "Sha"
+          },
+          "meaning": "H stage-plan/1 of stagePlans only",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "writers": {
+          "type": {
+            "array": {
+              "ref": "NamedEvidence"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all source/dependency/wrapper writer identity declarations and actual observation separated",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "assetsResourcesLock": {
+          "type": {
+            "array": {
+              "ref": "NamedEvidence"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all4 resources/2assets/lock actual bytes/SHA and producer origin, not source23 embedded self hash",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "environment": {
+          "type": {
+            "array": {
+              "ref": "NamedEvidence"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "full Python/build-tools/eight runtime distributions actual values and unavailable reasons",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "policies": {
+          "type": {
+            "array": {
+              "ref": "NamedEvidence"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "semantic/execution/entry/data/range/budget versions actual complete fields",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "instrumentation": {
+          "type": {
+            "ref": "EvidenceValue"
+          },
+          "meaning": "actual hook mode, B1 false independent fresh process",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "nonClaims": {
+          "type": {
+            "array": {
+              "ref": "Text"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "full required nonClaims, not dropped summary",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CONTEXT",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "Piece": {
+      "kind": "record",
+      "required": ["pieceId", "fieldPointer", "role", "content", "layoutId", "identityDomainId"],
+      "additionalProperties": false,
+      "fields": {
+        "pieceId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "unique current artifact creation occurrence",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "PIECES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "fieldPointer": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "exact original returned field/slot, RFC6901 or approved owner slot grammar",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "PIECES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "role": {
+          "type": {
+            "enum": [
+              "result",
+              "payload-json",
+              "rows-json",
+              "typed-view",
+              "wire",
+              "sidecar",
+              "source-encoded",
+              "definitions-encoded",
+              "catalog-json",
+              "original-metadata",
+              "public-error-frame",
+              "private-diagnostic"
+            ]
+          },
+          "meaning": "no hidden return field; multiple ordered pieces same role allowed",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "PIECES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "content": {
+          "type": {
+            "ref": "InlineBytes"
+          },
+          "meaning": "complete actual emitted bytes",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "PIECES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "layoutId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "full return layout or metadata byte codec identity",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "PIECES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "identityDomainId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "only actual graph/term membership, never label guess",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "PIECES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "StageFrame": {
+      "kind": "record",
+      "required": [
+        "kind",
+        "format",
+        "streamVersion",
+        "frameOrdinal",
+        "runId",
+        "stageId",
+        "event",
+        "callEvidence",
+        "pieces",
+        "safeFailurePieceId",
+        "partialReturnState"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "kind": {
+          "type": {
+            "const": "business-stage"
+          },
+          "meaning": "frame kind, unknown rejected",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES/FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "format": {
+          "type": {
+            "const": "i05-business-stage/1"
+          },
+          "meaning": "exact named frame version",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES/FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "streamVersion": {
+          "type": {
+            "const": "i05-business-stream/2"
+          },
+          "meaning": "external explicit negotiation, never detected by keys",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES/FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "frameOrdinal": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "context1 then contiguous actual frames",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES/FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "runId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "this actual producer attempt, no issuer authority",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES/FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stageId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "same StagePlan id",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES/FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "event": {
+          "type": {
+            "enum": [
+              "begin",
+              "returned-complete",
+              "rejected",
+              "unknown",
+              "return-seen-output-incomplete"
+            ]
+          },
+          "meaning": "actual event; no not-reached runtime fabrication",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES/FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "callEvidence": {
+          "type": {
+            "ref": "EvidenceValue"
+          },
+          "meaning": "actual call start/end/timing and exact function.__code__ hook counts, no guessed zero",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES/FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "pieces": {
+          "type": {
+            "array": {
+              "ref": "Piece"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all completed returned pieces in original owner order",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES/FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "safeFailurePieceId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "separate private diagnostic or public frame piece, never arbitrary exception",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES/FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "partialReturnState": {
+          "type": {
+            "enum": ["none", "complete", "output-incomplete"]
+          },
+          "meaning": "actual physical availability, not business success",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES/FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "ObservationFrame": {
+      "kind": "record",
+      "required": [
+        "kind",
+        "format",
+        "streamVersion",
+        "frameOrdinal",
+        "runId",
+        "caseId",
+        "familyId",
+        "descriptor",
+        "stageIds",
+        "outcome",
+        "projectionPieceId",
+        "errorPieceId",
+        "notReachedStageIds"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "kind": {
+          "type": {
+            "const": "business-observation"
+          },
+          "meaning": "frame kind, unknown rejected",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "format": {
+          "type": {
+            "const": "i05-business-observation/1"
+          },
+          "meaning": "exact named frame version",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "streamVersion": {
+          "type": {
+            "const": "i05-business-stream/2"
+          },
+          "meaning": "external explicit negotiation, never detected by keys",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "frameOrdinal": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "context1 then contiguous actual frames",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "runId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "this actual producer attempt, no issuer authority",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "caseId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "exact selected manifest observation ID",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "familyId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "original family",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "descriptor": {
+          "type": {
+            "ref": "EvidenceValue"
+          },
+          "meaning": "complete API/parameters/sourceRefs/input pointer/projection hash/contextStatus",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stageIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all planned/actual stages as source plan order",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "outcome": {
+          "type": {
+            "enum": [
+              "observed-return",
+              "observed-rejection",
+              "unsupported",
+              "missing-context",
+              "not-executed",
+              "unexpected-failure"
+            ]
+          },
+          "meaning": "collection versus business distinct",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "projectionPieceId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "full approved terminal projection only, not deletion of earlier stage returns",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "errorPieceId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "complete safe diagnostic typed under approved adapter",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "notReachedStageIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "derived from actual earlier first failure, not child-call evidence",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "OBSERVATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "TerminalFrame": {
+      "kind": "record",
+      "required": [
+        "kind",
+        "format",
+        "streamVersion",
+        "frameOrdinal",
+        "runId",
+        "selectedCompletedIds",
+        "notStartedIds",
+        "collectionComplete",
+        "fullSuiteCollectionComplete",
+        "firstCollectionFailureOrdinal",
+        "priorPrefixBytes",
+        "priorPrefixSha256",
+        "stopState"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "kind": {
+          "type": {
+            "const": "business-terminal"
+          },
+          "meaning": "frame kind, unknown rejected",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "format": {
+          "type": {
+            "const": "i05-business-terminal/1"
+          },
+          "meaning": "exact named frame version",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "streamVersion": {
+          "type": {
+            "const": "i05-business-stream/2"
+          },
+          "meaning": "external explicit negotiation, never detected by keys",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "frameOrdinal": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "context1 then contiguous actual frames",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "runId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "this actual producer attempt, no issuer authority",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "selectedCompletedIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "actual complete selected observations in original order",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "notStartedIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "explicit untouched planned IDs",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "collectionComplete": {
+          "type": {
+            "ref": "Bool"
+          },
+          "meaning": "selected raw+stage/identity complete only",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "fullSuiteCollectionComplete": {
+          "type": {
+            "ref": "Bool"
+          },
+          "meaning": "only full-v1 417 complete",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "priorPrefixBytes": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "byte offset at this terminal start",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "priorPrefixSha256": {
+          "type": {
+            "ref": "Sha"
+          },
+          "meaning": "RawSHA stdout[0:priorPrefixBytes], terminal excluded to avoid self cycle",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stopState": {
+          "type": {
+            "enum": ["normal", "cancel-requested", "stopping", "incomplete"]
+          },
+          "meaning": "actual stop/join/release belongs external caller; no self cancelled proof",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "firstCollectionFailureOrdinal": {
+          "type": {
+            "nullable": {
+              "ref": "Nat"
+            }
+          },
+          "meaning": "first collection-failure event ordinal, not every known business rejection",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "TERMINAL/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "BusinessFrame": {
+      "kind": "union",
+      "variants": [
+        {
+          "ref": "ContextFrame"
+        },
+        {
+          "ref": "StageFrame"
+        },
+        {
+          "ref": "ObservationFrame"
+        },
+        {
+          "ref": "TerminalFrame"
+        }
+      ]
+    },
+    "PinnedHeader": {
+      "kind": "external-strict",
+      "contract": "received complete T03 protocol3.0.0 runtime-header/2 limited design acceptance",
+      "proposedId": "urn:ontolearn:i05:runtime-header:2",
+      "actualAcceptedPin": null,
+      "baseFrozenSource": "old D0 header1 frozen only historical; runtime-header/2 received at d9c3 exact full schema",
+      "rootKeys": [
+        "kind",
+        "format",
+        "profileId",
+        "mode",
+        "selector",
+        "externalReceiptStatus",
+        "declaredCompositionRef",
+        "provenanceRead",
+        "declaredSupplierSources",
+        "declaredPython",
+        "observedPython",
+        "moduleLoaders",
+        "distributionModuleLoader",
+        "functionCodes",
+        "dynamicChecker",
+        "observedSource23",
+        "packageCodeBoundToSource",
+        "sourceCodeBoundToSource"
+      ],
+      "rule": "exact same18 root keys, all nested received schema constraints; no business fields; business stream2 and caller mapping separately pending acceptance; no launch authorization",
+      "shapeSourceIdentity": {
+        "repository": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-semantic-offer-owner-review",
+        "ref": "d9c3c151614674f2c7a6e3d7f6507aa7ba81db58",
+        "path": "docs/iterations/T03/i05-semantic-build-protocol-v3/runtime-header.schema.json",
+        "bytes": 26979,
+        "sha256": "534ff9d8527e4511e3704a7f9b8bb645f65e56bcce589ccf476ccc1a46b53c4e"
+      },
+      "proposedLiteralTransform": [
+        {
+          "schema": "runtime-header.schema.json",
+          "pointer": "#/properties/format/const",
+          "old": "i05-semantic-runtime-header/1",
+          "proposed": "i05-semantic-runtime-header/2"
+        },
+        {
+          "schema": "runtime-header.schema.json",
+          "pointer": "#/properties/profileId/const",
+          "old": "i05-source-package-parity-v2",
+          "proposed": "i05-source-package-parity-v3"
+        },
+        {
+          "schema": "runtime-header.schema.json",
+          "pointer": "#/$id",
+          "old": "urn:ontolearn:i05:runtime-header:1",
+          "proposed": "urn:ontolearn:i05:runtime-header:2"
+        }
+      ],
+      "normativeDesignPin": {
+        "repository": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-semantic-offer-owner-review",
+        "ref": "d9c3c151614674f2c7a6e3d7f6507aa7ba81db58",
+        "path": "docs/iterations/T03/i05-semantic-build-protocol-v3/runtime-header.schema.json",
+        "bytes": 26979,
+        "sha256": "534ff9d8527e4511e3704a7f9b8bb645f65e56bcce589ccf476ccc1a46b53c4e"
+      },
+      "actualRuntimeApprovalPin": null,
+      "historicalShapeSourceIdentity": {
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/06-runtime-header.schema.json",
+        "ref": "c3eb0694daad26527cc3a1eb0127ed5033f2be25",
+        "bytes": 26824,
+        "sha256": "4698e97f42f25798d19c0e4a966a502c969532e74faa9a698ba929f1288cde45"
+      },
+      "actualAcceptedPinMeaning": "actual implementation/runtime approval only, not normative design reception; remains null"
+    },
+    "HeaderCapture": {
+      "kind": "record",
+      "required": ["state", "range", "payload"],
+      "additionalProperties": false,
+      "fields": {
+        "state": {
+          "type": {
+            "enum": ["absent", "malformed", "parsed"]
+          },
+          "meaning": "actual availability",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "RAW/HEADER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "range": {
+          "type": {
+            "nullable": {
+              "ref": "RawRange"
+            }
+          },
+          "meaning": "raw original header bytes/range, malformed kept",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "RAW/HEADER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "payload": {
+          "type": {
+            "nullable": {
+              "ref": "PinnedHeader"
+            }
+          },
+          "meaning": "strict original parsed header2, null malformed/absent",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "RAW/HEADER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "FrameIndex": {
+      "kind": "record",
+      "required": ["range", "parseState", "record"],
+      "additionalProperties": false,
+      "fields": {
+        "range": {
+          "type": {
+            "ref": "RawRange"
+          },
+          "meaning": "exact raw full line excludingLF",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "RAW/FRAME",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "parseState": {
+          "type": {
+            "enum": ["malformed", "parsed"]
+          },
+          "meaning": "actual bytes available; no missing frame manufactured",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "RAW/FRAME",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "record": {
+          "type": {
+            "nullable": {
+              "ref": "BusinessFrame"
+            }
+          },
+          "meaning": "exact raw parse, null malformed",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "RAW/FRAME",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "Artifact": {
+      "kind": "record",
+      "required": [
+        "artifactId",
+        "stageId",
+        "pieceId",
+        "representation",
+        "codecId",
+        "file",
+        "originRange",
+        "fieldPointer",
+        "parentArtifactIds"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "artifactId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "unique explicit external artifact created from actual stage piece",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "ARTIFACTS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stageId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "actual owner stage",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "ARTIFACTS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "pieceId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "actual piece, not arbitrary blob",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "ARTIFACTS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "representation": {
+          "type": {
+            "enum": ["captured-original-bytes", "owner-encoded-return-tree"]
+          },
+          "meaning": "preserve original/export distinction",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "ARTIFACTS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "codecId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "exact source codec, no current unknown layout invented",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "ARTIFACTS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "file": {
+          "type": {
+            "ref": "FileRef"
+          },
+          "meaning": "full external extracted bytes, no probe dereference",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "ARTIFACTS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "originRange": {
+          "type": {
+            "ref": "RawRange"
+          },
+          "meaning": "whole source stage frame containing inline bytes",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "ARTIFACTS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "fieldPointer": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "complete original field mapping",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "ARTIFACTS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "parentArtifactIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "explicit actual derive/copy relation, not automatic identity inheritance",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "ARTIFACTS",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "SameIssue": {
+      "kind": "record",
+      "required": [
+        "state",
+        "sessionId",
+        "issueId",
+        "referenceKey",
+        "producerPin",
+        "verifierPin",
+        "witnessArtifactId",
+        "relatedStageIds"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "state": {
+          "type": {
+            "enum": ["unavailable", "pending", "observed-match", "observed-mismatch"]
+          },
+          "meaning": "string IDs not proof",
+          "owner": "owner live verifier/caller, not JSON decoder",
+          "rule": "SAME-ISSUE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "sessionId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "scope only, not authenticated issuer",
+          "owner": "owner live verifier/caller, not JSON decoder",
+          "rule": "SAME-ISSUE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "issueId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "one actual issue, never minted by decoding",
+          "owner": "owner live verifier/caller, not JSON decoder",
+          "rule": "SAME-ISSUE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "referenceKey": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "non-portable evidence alias only, no live handle serialized",
+          "owner": "owner live verifier/caller, not JSON decoder",
+          "rule": "SAME-ISSUE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "producerPin": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "owner actual immutable code/domain source",
+          "owner": "owner live verifier/caller, not JSON decoder",
+          "rule": "SAME-ISSUE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "verifierPin": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "exact approved verifier contract/function source",
+          "owner": "owner live verifier/caller, not JSON decoder",
+          "rule": "SAME-ISSUE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "witnessArtifactId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "full original actual live verifier result tied metadata/graph/material call",
+          "owner": "owner live verifier/caller, not JSON decoder",
+          "rule": "SAME-ISSUE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "relatedStageIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "prepare/project same-call chain",
+          "owner": "owner live verifier/caller, not JSON decoder",
+          "rule": "SAME-ISSUE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "MetadataBinding": {
+      "kind": "record",
+      "required": [
+        "bindingId",
+        "stageId",
+        "bytesArtifactId",
+        "originalCodecId",
+        "codecPin",
+        "layoutPin",
+        "originalDigest",
+        "digestRecipePin",
+        "digestPreimageArtifactId",
+        "parsedTreeArtifactId",
+        "conversionId",
+        "state",
+        "semanticCompatible",
+        "sameIssue"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "bindingId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "one metadata occurrence",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stageId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "actual producing stage",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "bytesArtifactId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "original bytes or explicitly labelled owner export",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "originalCodecId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "unknown stays null",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "codecPin": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "exact original codec spec/source",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "layoutPin": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "complete original field layout/schema contract",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "originalDigest": {
+          "type": {
+            "nullable": {
+              "ref": "Text"
+            }
+          },
+          "meaning": "literal original digest preserved, not replaced",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "digestRecipePin": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "exact original algorithm/preimage contract",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "digestPreimageArtifactId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "complete original preimage bytes",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "parsedTreeArtifactId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "new parsed export tree, no old-helper replacement",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "conversionId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "explicit new conversion version only",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "state": {
+          "type": {
+            "enum": [
+              "unavailable",
+              "opaque-preserved",
+              "decoded-pending-compatibility",
+              "compatible",
+              "mismatch"
+            ]
+          },
+          "meaning": "byte preservation not semantic compatibility",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "semanticCompatible": {
+          "type": {
+            "ref": "Bool"
+          },
+          "meaning": "only approved exact compatibility proof and live sameissue permit true",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "sameIssue": {
+          "type": {
+            "ref": "SameIssue"
+          },
+          "meaning": "actual handle ownership, not serialized recreation",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "METADATA",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "RdfSlot": {
+      "kind": "record",
+      "required": ["artifactId", "pointer", "mode", "graphArtifactId"],
+      "additionalProperties": false,
+      "fields": {
+        "artifactId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "actual owned artifact housing this RDF slot",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "IDENTITY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "pointer": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "explicit full RDF slot pointer, never substring scan",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "IDENTITY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "mode": {
+          "type": {
+            "enum": ["typed-graph", "n3-graph", "typed-sequence", "n3-sequence"]
+          },
+          "meaning": "graph wire and ordered occurrence different",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "IDENTITY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "graphArtifactId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "actual input graph owner, cross-artifact binding requires witness",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "IDENTITY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "IdentityDomain": {
+      "kind": "record",
+      "required": [
+        "domainId",
+        "graphArtifactId",
+        "slots",
+        "bindingState",
+        "bindingWitnessArtifactId",
+        "sourceHandle"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "domainId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "run local explicit graph-owned RDF identity scope",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "IDENTITY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "graphArtifactId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "one owned graph creation artifact",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "IDENTITY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "slots": {
+          "type": {
+            "array": {
+              "ref": "RdfSlot"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all graph/evidence/query/SHACL term slots share one mapping",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "IDENTITY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "bindingState": {
+          "type": {
+            "enum": ["pending", "observed-match", "observed-mismatch"]
+          },
+          "meaning": "same label no proof",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "IDENTITY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "bindingWitnessArtifactId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "actual approved graph→consumer handle witness",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "IDENTITY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "sourceHandle": {
+          "type": {
+            "ref": "SameIssue"
+          },
+          "meaning": "same issue owner relation",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "IDENTITY",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "StageDisposition": {
+      "kind": "record",
+      "required": [
+        "stageId",
+        "state",
+        "evidenceOrigin",
+        "frameOrdinals",
+        "artifactIds",
+        "blockedByStageId"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "stageId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "every selected StagePlan member",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "state": {
+          "type": {
+            "enum": [
+              "not-started",
+              "not-reached",
+              "started",
+              "returned-complete",
+              "rejected",
+              "unknown",
+              "return-seen-output-incomplete"
+            ]
+          },
+          "meaning": "actual event or explicit caller plan derivation",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "evidenceOrigin": {
+          "type": {
+            "enum": ["actual-frame", "derived-plan"]
+          },
+          "meaning": "derived not execution",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "frameOrdinals": {
+          "type": {
+            "array": {
+              "ref": "Nat"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all actual stage frames preserve order",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "artifactIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all actual pieces including earlier success",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "blockedByStageId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "actual earlier first failure, null if no blocker",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "STAGES",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "Failure": {
+      "kind": "record",
+      "required": ["actor", "phase", "reason", "stageId", "firstRange", "diagnosticArtifactId"],
+      "additionalProperties": false,
+      "fields": {
+        "actor": {
+          "type": {
+            "enum": ["caller", "probe", "canonical"]
+          },
+          "meaning": "first actor",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "phase": {
+          "type": {
+            "enum": [
+              "prelaunch",
+              "header",
+              "context",
+              "stage",
+              "terminal",
+              "postrun",
+              "metadata",
+              "identity"
+            ]
+          },
+          "meaning": "safe limited phase",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "reason": {
+          "type": {
+            "enum": [
+              "negotiation-unapproved",
+              "version-mismatch",
+              "strict-frame-invalid",
+              "raw-incomplete",
+              "piece-missing",
+              "layout-unapproved",
+              "metadata-codec-unapproved",
+              "same-issue-unbound",
+              "identity-domain-unbound",
+              "budget-incomplete",
+              "internal-error"
+            ]
+          },
+          "meaning": "private collection diagnostic, not new publiccode",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stageId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "actual finite stage ID",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "firstRange": {
+          "type": {
+            "nullable": {
+              "ref": "RawRange"
+            }
+          },
+          "meaning": "first original evidence",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "diagnosticArtifactId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "original approved private diagnostic/publicframe separately typed",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "FAILURE",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "Negotiation": {
+      "kind": "record",
+      "required": [
+        "expectedStreamVersion",
+        "protocolVersion",
+        "profileFormat",
+        "headerFormat",
+        "protocolPin",
+        "profilePin",
+        "businessAdoptionPin",
+        "consumerPin",
+        "buildReceipt",
+        "approvedBuildRecord",
+        "state",
+        "receiptIdentityPolicyPin"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "expectedStreamVersion": {
+          "type": {
+            "const": "i05-business-stream/2"
+          },
+          "meaning": "explicit external caller choice",
+          "owner": "root/caller only, probe cannot self approve",
+          "rule": "NEGOTIATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "protocolVersion": {
+          "type": {
+            "const": "3.0.0"
+          },
+          "meaning": "same D1 proposal, not2.2 invented",
+          "owner": "root/caller only, probe cannot self approve",
+          "rule": "NEGOTIATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "profileFormat": {
+          "type": {
+            "const": "i05-semantic-build-protocol-profile/4"
+          },
+          "meaning": "D1 complete profile still pending",
+          "owner": "root/caller only, probe cannot self approve",
+          "rule": "NEGOTIATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "headerFormat": {
+          "type": {
+            "const": "i05-semantic-runtime-header/2"
+          },
+          "meaning": "same18 keys, exact literals proposed by D1",
+          "owner": "root/caller only, probe cannot self approve",
+          "rule": "NEGOTIATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "protocolPin": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "future full T03 accepted protocol, not current plan substituted",
+          "owner": "root/caller only, probe cannot self approve",
+          "rule": "NEGOTIATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "profilePin": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "future complete descriptor",
+          "owner": "root/caller only, probe cannot self approve",
+          "rule": "NEGOTIATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "businessAdoptionPin": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "separate explicit root/owners acceptance of new flow and carrier grammar",
+          "owner": "root/caller only, probe cannot self approve",
+          "rule": "NEGOTIATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "consumerPin": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "new source23 caller-only approved self pin",
+          "owner": "root/caller only, probe cannot self approve",
+          "rule": "NEGOTIATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "buildReceipt": {
+          "type": {
+            "nullable": {
+              "ref": "FileRef"
+            }
+          },
+          "meaning": "same immutable T03 proposed build-receipt/3 approved before dispatch",
+          "owner": "root/caller only, probe cannot self approve",
+          "rule": "NEGOTIATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "approvedBuildRecord": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "trusted exact source/composition/environment approval",
+          "owner": "root/caller only, probe cannot self approve",
+          "rule": "NEGOTIATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "state": {
+          "type": {
+            "enum": ["unapproved", "refused", "matched"]
+          },
+          "meaning": "no package self-approval",
+          "owner": "root/caller only, probe cannot self approve",
+          "rule": "NEGOTIATION",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "receiptIdentityPolicyPin": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "external precise business receipt-entry mapping acceptance; current actual pin null; required before use",
+          "owner": "caller/root exact approved source; never child self-attestation",
+          "rule": "RECEIPT-PROJECTION",
+          "unavailable": "preserve actual file/value; exact pending pin guard, never fabricated evidence"
+        }
+      }
+    },
+    "Carrier": {
+      "kind": "record",
+      "required": [
+        "format",
+        "attemptId",
+        "runId",
+        "negotiation",
+        "observationState",
+        "stdout",
+        "stderr",
+        "header",
+        "frames",
+        "artifacts",
+        "stages",
+        "metadataBindings",
+        "identityDomains",
+        "actualExitCode",
+        "signal",
+        "collectionComplete",
+        "fullSuiteCollectionComplete",
+        "pendingMaterialIds",
+        "firstCollectionFailure",
+        "lifecycle",
+        "identityAvailability",
+        "callerWitnesses"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "format": {
+          "type": {
+            "const": "i05-business-carrier/2"
+          },
+          "meaning": "explicit external document, no implicit sidecar",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "attemptId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "caller dispatch attempt, separate child runId",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "runId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "null iff no accepted child ContextFrame; both not-dispatched and pre-context dispatched failure; never substitute caller attemptId",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "negotiation": {
+          "type": {
+            "ref": "Negotiation"
+          },
+          "meaning": "all required pins before launch",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "observationState": {
+          "type": {
+            "enum": ["not-started", "pre-header-rejected", "incomplete", "collected"]
+          },
+          "meaning": "actual four availability states",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stdout": {
+          "type": {
+            "nullable": {
+              "ref": "FileRef"
+            }
+          },
+          "meaning": "null only no child, dispatched includes0byte file",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stderr": {
+          "type": {
+            "nullable": {
+              "ref": "FileRef"
+            }
+          },
+          "meaning": "same full raw rules",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "header": {
+          "type": {
+            "ref": "HeaderCapture"
+          },
+          "meaning": "original raw header/payload, no rewrite",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "frames": {
+          "type": {
+            "array": {
+              "ref": "FrameIndex"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "every available complete/malformed new frame, no skipped context/unknown",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "artifacts": {
+          "type": {
+            "array": {
+              "ref": "Artifact"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "child-piece artifacts only, original stageId/pieceId/originRange unchanged; caller witness IDs are separate namespace",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stages": {
+          "type": {
+            "array": {
+              "ref": "StageDisposition"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "every planned selected stage retained",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "metadataBindings": {
+          "type": {
+            "array": {
+              "ref": "MetadataBinding"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "complete old metadata/codec/preimage/handle chains",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "identityDomains": {
+          "type": {
+            "array": {
+              "ref": "IdentityDomain"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all actual graph-consumer relationships",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "actualExitCode": {
+          "type": {
+            "nullable": {
+              "type": "integer",
+              "exact": true
+            }
+          },
+          "meaning": "actual child exit; no guessed1/2/130",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "signal": {
+          "type": {
+            "nullable": {
+              "ref": "Text"
+            }
+          },
+          "meaning": "actual signal, exit null if nonnull",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "collectionComplete": {
+          "type": {
+            "ref": "Bool"
+          },
+          "meaning": "selected full raw/stage/source completeness",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "fullSuiteCollectionComplete": {
+          "type": {
+            "ref": "Bool"
+          },
+          "meaning": "full417 only",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "pendingMaterialIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "exact missing-material guard references, cannot fill expected",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "firstCollectionFailure": {
+          "type": {
+            "nullable": {
+              "ref": "Failure"
+            }
+          },
+          "meaning": "earliest actual collection/protocol/source-binding failure only; known canonical business rejection remains observation/stage evidence and does not by itself stop next case",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "CARRIER",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "lifecycle": {
+          "type": {
+            "ref": "ProcessLifecycle"
+          },
+          "meaning": "actual dispatch/cancel/stop/join/release separate from probe terminal",
+          "owner": "caller",
+          "rule": "RAW/FAILURE",
+          "unavailable": "not-started versus dispatched failure preserved"
+        },
+        "identityAvailability": {
+          "type": {
+            "enum": ["not-dispatched", "unavailable-before-context", "observed-context"]
+          },
+          "meaning": "derived from actual dispatch and unique strict accepted context; not a caller assertion",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "callerWitnesses": {
+          "type": {
+            "array": {
+              "ref": "CallerWitness"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "complete declared caller-owned original files, distinct from child raw stage artifacts",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        }
+      }
+    },
+    "RunCoreBinding": {
+      "kind": "record",
+      "required": ["runId", "mode", "selector", "stdout", "stderr", "headerRange", "terminalRange"],
+      "additionalProperties": false,
+      "fields": {
+        "runId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "actual nonempty CHILD context runId only; same context/later child frames; receiptRunId is separate caller-produced identity linked in binding2",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "mode": {
+          "type": {
+            "enum": ["source", "frozen-independent", "parent"]
+          },
+          "meaning": "actual recorded mode",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "selector": {
+          "type": {
+            "enum": ["full-v1", "b1-semantic-1x-v1", "b1-semantic-10x-v1"]
+          },
+          "meaning": "actual selected same argv",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stdout": {
+          "type": {
+            "ref": "FileRef"
+          },
+          "meaning": "same exact raw ref",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "stderr": {
+          "type": {
+            "ref": "FileRef"
+          },
+          "meaning": "same exact raw ref",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "headerRange": {
+          "type": {
+            "nullable": {
+              "ref": "RawRange"
+            }
+          },
+          "meaning": "same original header reference",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "terminalRange": {
+          "type": {
+            "nullable": {
+              "ref": "RawRange"
+            }
+          },
+          "meaning": "same parsed/malformed/absent terminal raw",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "BusinessValidationBinding": {
+      "kind": "record",
+      "required": [
+        "format",
+        "carrier",
+        "attemptId",
+        "buildReceipt",
+        "grammarPin",
+        "state",
+        "attemptCore",
+        "receiptRunId"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "format": {
+          "type": {
+            "const": "i05-business-validation-binding/2"
+          },
+          "meaning": "explicit forward relation doc, no strict receipt added key",
+          "owner": "caller/root",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "carrier": {
+          "type": {
+            "ref": "FileRef"
+          },
+          "meaning": "final complete earlier carrier bytes",
+          "owner": "caller/root",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "attemptId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "same scheduled dispatch",
+          "owner": "caller/root",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "buildReceipt": {
+          "type": {
+            "nullable": {
+              "ref": "FileRef"
+            }
+          },
+          "meaning": "same already immutable build-receipt/3",
+          "owner": "caller/root",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "grammarPin": {
+          "type": {
+            "ref": "GitPin"
+          },
+          "meaning": "adopted exact business grammar",
+          "owner": "caller/root",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "state": {
+          "type": {
+            "enum": ["not-started", "incomplete", "collected-pending-comparison"]
+          },
+          "meaning": "not business/oracle pass",
+          "owner": "caller/root",
+          "rule": "BINDING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "attemptCore": {
+          "type": {
+            "ref": "AttemptCore"
+          },
+          "meaning": "one exact identity availability branch, including dispatched raw without child identity",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "receiptRunId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "actual caller recorded receipt-entry identity equals attemptId, NOT child context runId",
+          "owner": "caller/root exact approved source; never child self-attestation",
+          "rule": "RECEIPT-PROJECTION",
+          "unavailable": "preserve actual file/value; exact pending pin guard, never fabricated evidence"
+        }
+      }
+    },
+    "DomainPair": {
+      "kind": "record",
+      "required": [
+        "expectedDomainId",
+        "observedDomainId",
+        "expectedArtifactDigests",
+        "observedArtifactDigests",
+        "bijection",
+        "slotResults"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "expectedDomainId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "expected domain scoped to independent expected artifact",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "MAPPING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "observedDomainId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "actual domain, not label based",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "MAPPING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "expectedArtifactDigests": {
+          "type": {
+            "array": {
+              "ref": "Sha"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all original exact digests retained",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "MAPPING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "observedArtifactDigests": {
+          "type": {
+            "array": {
+              "ref": "Sha"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all actual exact digests retained",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "MAPPING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "bijection": {
+          "type": {
+            "array": {
+              "ref": "TreeMember"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "explicit label pairs typed string values; total injective/surjective across every declared slot",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "MAPPING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "slotResults": {
+          "type": {
+            "array": {
+              "ref": "NamedEvidence"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "full per-slot schema/wire/domain/exact results",
+          "owner": "I05 serializer emits actual; caller verifies original raw",
+          "rule": "MAPPING",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "MappingWitness": {
+      "kind": "record",
+      "required": [
+        "format",
+        "carrier",
+        "comparatorPin",
+        "expectedSourcePin",
+        "domainPairs",
+        "relationDigest"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "format": {
+          "type": {
+            "const": "i05-business-mapping-witness/1"
+          },
+          "meaning": "separate comparison result, never issuer",
+          "owner": "T05/independent comparator",
+          "rule": "MAPPING/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "carrier": {
+          "type": {
+            "ref": "FileRef"
+          },
+          "meaning": "earlier carrier rawSHA",
+          "owner": "T05/independent comparator",
+          "rule": "MAPPING/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "comparatorPin": {
+          "type": {
+            "ref": "GitPin"
+          },
+          "meaning": "independent complete matches-semantics consumer",
+          "owner": "T05/independent comparator",
+          "rule": "MAPPING/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "expectedSourcePin": {
+          "type": {
+            "ref": "GitPin"
+          },
+          "meaning": "independent37/full oracle source, notsource output",
+          "owner": "T05/independent comparator",
+          "rule": "MAPPING/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "domainPairs": {
+          "type": {
+            "array": {
+              "ref": "DomainPair"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all domains, no crossartifact same label merge",
+          "owner": "T05/independent comparator",
+          "rule": "MAPPING/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        },
+        "relationDigest": {
+          "type": {
+            "ref": "Sha"
+          },
+          "meaning": "H mapping-witness/1 over format/carrier/comparatorPin/expectedSourcePin/domainPairs only",
+          "owner": "T05/independent comparator",
+          "rule": "MAPPING/HASH",
+          "unavailable": "explicit nullable/state only; never omit or fill expected"
+        }
+      }
+    },
+    "ProcessLifecycle": {
+      "kind": "record",
+      "additionalProperties": false,
+      "fields": {
+        "dispatchState": {
+          "type": {
+            "enum": ["not-started", "dispatched", "execution-failed"]
+          },
+          "meaning": "actual dispatch; failure after dispatch cannot be not-started",
+          "owner": "caller/resource owner actual witness",
+          "rule": "RAW/FAILURE",
+          "unavailable": "explicit value state; no expected fill"
+        },
+        "argv": {
+          "type": {
+            "array": {
+              "ref": "Text"
+            },
+            "sequence": "exact ordered array",
+            "bound": "original contract exactflag arrays, actual refused argv retained"
+          },
+          "meaning": "actual or clearly planned argv, no added path/env hidden selector",
+          "owner": "caller/resource owner actual witness",
+          "rule": "RAW/FAILURE",
+          "unavailable": "explicit value state; no expected fill"
+        },
+        "stdin": {
+          "type": {
+            "const": "dev-null"
+          },
+          "meaning": "caller closed input source, no business stdin",
+          "owner": "caller/resource owner actual witness",
+          "rule": "RAW/FAILURE",
+          "unavailable": "explicit value state; no expected fill"
+        },
+        "commandContext": {
+          "type": {
+            "ref": "CallerEvidenceValue"
+          },
+          "meaning": "full actual command/cwd/non-sensitive environment evidence in controlled external record, not public ErrorFrame; same-attempt caller-only provenance via declared callerWitnesses",
+          "owner": "caller/resource owner actual witness",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "explicit value state; no expected fill"
+        },
+        "targetBinding": {
+          "type": {
+            "ref": "CallerEvidenceValue"
+          },
+          "meaning": "actual owned process handle association, PID string alone not authority; same-attempt caller-only provenance via declared callerWitnesses",
+          "owner": "caller/resource owner actual witness",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "explicit value state; no expected fill"
+        },
+        "cancelRequested": {
+          "type": {
+            "ref": "CallerEvidenceValue"
+          },
+          "meaning": "actual request/time evidence, not stopped; same-attempt caller-only provenance via declared callerWitnesses",
+          "owner": "caller/resource owner actual witness",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "explicit value state; no expected fill"
+        },
+        "stopping": {
+          "type": {
+            "ref": "CallerEvidenceValue"
+          },
+          "meaning": "actual safe-boundary stopping; same-attempt caller-only provenance via declared callerWitnesses",
+          "owner": "caller/resource owner actual witness",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "explicit value state; no expected fill"
+        },
+        "targetTerminated": {
+          "type": {
+            "ref": "CallerEvidenceValue"
+          },
+          "meaning": "actual own target ended/exit/signal observed; same-attempt caller-only provenance via declared callerWitnesses",
+          "owner": "caller/resource owner actual witness",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "explicit value state; no expected fill"
+        },
+        "readerJoined": {
+          "type": {
+            "ref": "CallerEvidenceValue"
+          },
+          "meaning": "actual raw reader/pipe drained or explicit failure; same-attempt caller-only provenance via declared callerWitnesses",
+          "owner": "caller/resource owner actual witness",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "explicit value state; no expected fill"
+        },
+        "referencesReleased": {
+          "type": {
+            "ref": "CallerEvidenceValue"
+          },
+          "meaning": "actual input/result/handle release or explicit pending; same-attempt caller-only provenance via declared callerWitnesses",
+          "owner": "caller/resource owner actual witness",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "explicit value state; no expected fill"
+        },
+        "timing": {
+          "type": {
+            "ref": "CallerEvidenceValue"
+          },
+          "meaning": "full actual timing/import/startup/wall and unavailable rules; same-attempt caller-only provenance via declared callerWitnesses",
+          "owner": "caller/resource owner actual witness",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "explicit value state; no expected fill"
+        },
+        "physicalTicket": {
+          "type": {
+            "ref": "CallerEvidenceValue"
+          },
+          "meaning": "external prior authorization only, no inferred ticket from logical caps; same-attempt caller-only provenance via declared callerWitnesses",
+          "owner": "caller/resource owner actual witness",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "explicit value state; no expected fill"
+        },
+        "rawComplete": {
+          "type": {
+            "ref": "Bool"
+          },
+          "meaning": "complete captured streams; even incomplete raw full observed bytes preserved",
+          "owner": "caller/resource owner actual witness",
+          "rule": "RAW/FAILURE",
+          "unavailable": "explicit value state; no expected fill"
+        }
+      },
+      "required": [
+        "dispatchState",
+        "argv",
+        "stdin",
+        "commandContext",
+        "targetBinding",
+        "cancelRequested",
+        "stopping",
+        "targetTerminated",
+        "readerJoined",
+        "referencesReleased",
+        "timing",
+        "physicalTicket",
+        "rawComplete"
+      ]
+    },
+    "NotDispatchedCore": {
+      "kind": "record",
+      "required": ["kind", "attemptId", "childRunId", "dispatchState"],
+      "additionalProperties": false,
+      "fields": {
+        "kind": {
+          "type": {
+            "const": "not-dispatched"
+          },
+          "meaning": "no actual child creation",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "attemptId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "same caller attempt retained",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "childRunId": {
+          "type": {
+            "const": null
+          },
+          "meaning": "no child identity manufactured",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "dispatchState": {
+          "type": {
+            "const": "not-started"
+          },
+          "meaning": "actual no dispatch; not a failure after dispatch",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        }
+      }
+    },
+    "PreContextFailureCore": {
+      "kind": "record",
+      "required": [
+        "kind",
+        "attemptId",
+        "childRunId",
+        "mode",
+        "selector",
+        "stdout",
+        "stderr",
+        "headerRange",
+        "rejectedTerminalRange",
+        "actualExitCode",
+        "signal",
+        "firstCollectionFailure",
+        "lifecycleWitnessIds"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "kind": {
+          "type": {
+            "const": "pre-context-failure"
+          },
+          "meaning": "actual dispatch but no accepted child context",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "attemptId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "same caller attempt, not child run",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "childRunId": {
+          "type": {
+            "const": null
+          },
+          "meaning": "strict null; no context ID exists as accepted evidence",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "mode": {
+          "type": {
+            "enum": ["source", "frozen-independent", "parent"]
+          },
+          "meaning": "recorded actual command mode; matches argv witness",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "selector": {
+          "type": {
+            "enum": ["full-v1", "b1-semantic-1x-v1", "b1-semantic-10x-v1"]
+          },
+          "meaning": "recorded actual selector; never fill expected",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "stdout": {
+          "type": {
+            "ref": "FileRef"
+          },
+          "meaning": "full actual captured stdout including zero bytes",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "stderr": {
+          "type": {
+            "ref": "FileRef"
+          },
+          "meaning": "full actual captured stderr including zero bytes",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "headerRange": {
+          "type": {
+            "nullable": {
+              "ref": "RawRange"
+            }
+          },
+          "meaning": "actual absent/malformed/parsed header range only",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "rejectedTerminalRange": {
+          "type": {
+            "nullable": {
+              "ref": "RawRange"
+            }
+          },
+          "meaning": "actual terminal-shaped bytes if present, never accepted terminal without context",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "actualExitCode": {
+          "type": {
+            "nullable": {
+              "type": "integer",
+              "exact": true
+            }
+          },
+          "meaning": "actual exit retained; null when unavailable or signal",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "signal": {
+          "type": {
+            "nullable": {
+              "ref": "Text"
+            }
+          },
+          "meaning": "actual signal; not simultaneous with exit",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "firstCollectionFailure": {
+          "type": {
+            "ref": "Failure"
+          },
+          "meaning": "same earliest actual failure as carrier",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "lifecycleWitnessIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "all caller witness IDs relevant to exit/raw closure; resolvable in carrier.callerWitnesses",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        }
+      }
+    },
+    "BoundContextCore": {
+      "kind": "record",
+      "required": ["kind", "attemptId", "core"],
+      "additionalProperties": false,
+      "fields": {
+        "kind": {
+          "type": {
+            "const": "child-context"
+          },
+          "meaning": "only after unique accepted context and original header",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "attemptId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "same caller attempt",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "core": {
+          "type": {
+            "ref": "RunCoreBinding"
+          },
+          "meaning": "same original typed child core; child runId separate from caller receiptRunId; raw/mode/selector and prior build bind through explicit binding2",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "ATTEMPT-IDENTITY",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        }
+      }
+    },
+    "AttemptCore": {
+      "kind": "union",
+      "variants": [
+        {
+          "ref": "NotDispatchedCore"
+        },
+        {
+          "ref": "PreContextFailureCore"
+        },
+        {
+          "ref": "BoundContextCore"
+        }
+      ]
+    },
+    "CallerEvidenceValue": {
+      "kind": "record",
+      "required": ["state", "value", "witnessIds", "reason"],
+      "additionalProperties": false,
+      "fields": {
+        "state": {
+          "type": {
+            "enum": ["declared", "captured-unverified", "observed", "unavailable", "not-applicable"]
+          },
+          "meaning": "captured bytes pending pin are preserved without calling them verified observed facts",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "value": {
+          "type": {
+            "nullable": {
+              "ref": "Tree"
+            }
+          },
+          "meaning": "complete actual value; null only unavailable/not-applicable or exact TreeNull value",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "witnessIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "only IDs in same carrier.callerWitnesses; never child artifactIds/rawRange",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "reason": {
+          "type": {
+            "nullable": {
+              "enum": [
+                "not-observed",
+                "not-reached",
+                "collector-pin-unapproved",
+                "layout-unapproved",
+                "not-applicable",
+                "identity-unbound"
+              ]
+            }
+          },
+          "meaning": "precise pending guard; no replacement of actual data",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-EVIDENCE",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        }
+      }
+    },
+    "CallerWitness": {
+      "kind": "record",
+      "required": [
+        "witnessId",
+        "origin",
+        "attemptId",
+        "collectorOwnerPin",
+        "verificationState",
+        "purpose",
+        "file",
+        "codecId",
+        "layoutPin",
+        "fieldPointer",
+        "parentWitnessIds"
+      ],
+      "additionalProperties": false,
+      "fields": {
+        "witnessId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "unique caller namespace, disjoint from child artifact IDs",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "origin": {
+          "type": {
+            "const": "caller-owned-file"
+          },
+          "meaning": "explicit independent caller origin, no child stageId/pieceId/raw range",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "attemptId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "same actual caller attempt; no cross-attempt reuse",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "collectorOwnerPin": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "exact external accepted collector/owner implementation/spec pin; null remains captured-unverified",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "verificationState": {
+          "type": {
+            "enum": ["captured-unverified", "verified"]
+          },
+          "meaning": "verified only external pin/layout/file/attempt/controlled-root checks passed",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "purpose": {
+          "type": {
+            "enum": [
+              "command-context",
+              "target-binding",
+              "cancel-request",
+              "stopping",
+              "target-terminated",
+              "reader-joined",
+              "references-released",
+              "timing",
+              "prior-authorization",
+              "private-diagnostic"
+            ]
+          },
+          "meaning": "role-constrained actual source event; request cannot act as termination",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "file": {
+          "type": {
+            "ref": "FileRef"
+          },
+          "meaning": "full immutable caller original, including bytes and SHA, exact manifest member",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "codecId": {
+          "type": {
+            "nullable": {
+              "ref": "Id"
+            }
+          },
+          "meaning": "new proposed i05-caller-witness-payload/1 or actual separately approved preserved codec",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "layoutPin": {
+          "type": {
+            "nullable": {
+              "ref": "GitPin"
+            }
+          },
+          "meaning": "exact decoder/layout pin for pointer/value; null forbids observed interpretation",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "fieldPointer": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "resolves exact complete fact in decoded original; no arbitrary Tree hidden ref",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "parentWitnessIds": {
+          "type": {
+            "array": {
+              "ref": "Id"
+            },
+            "sequence": "ordered; preserve repetitions and every tail",
+            "bound": "complete encoded bytes within adopted logical caps; no truncation"
+          },
+          "meaning": "only earlier same-attempt caller witness IDs; no cycles/future refs",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        }
+      }
+    },
+    "CallerWitnessPayload": {
+      "kind": "record",
+      "required": ["format", "attemptId", "purpose", "value"],
+      "additionalProperties": false,
+      "fields": {
+        "format": {
+          "type": {
+            "const": "i05-caller-witness-payload/1"
+          },
+          "meaning": "explicit NEW normative caller export codec; not claiming current old codec",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "attemptId": {
+          "type": {
+            "ref": "Id"
+          },
+          "meaning": "same outer caller witness attempt",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "purpose": {
+          "type": {
+            "enum": [
+              "command-context",
+              "target-binding",
+              "cancel-request",
+              "stopping",
+              "target-terminated",
+              "reader-joined",
+              "references-released",
+              "timing",
+              "prior-authorization",
+              "private-diagnostic"
+            ]
+          },
+          "meaning": "same exact source event role",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        },
+        "value": {
+          "type": {
+            "ref": "Tree"
+          },
+          "meaning": "full original fact using approved return-tree/1; no implicit authority from serialized value",
+          "owner": "caller/root approved collector; never child self-attests",
+          "rule": "CALLER-WITNESS",
+          "unavailable": "retain exact captured bytes; pending pin blocks verified/collected; no fabricated source"
+        }
+      }
+    }
+  },
+  "relationshipRules": {
+    "NEGOTIATION": "external trusted matched pins required before dispatch; old decoder rejects new profile/second frame, new rejects old/missing context/unknown version; no auto detection",
+    "HEADER": "exact18 unchanged names per D1 same-shape version proposal, source22/actual23 and frozen null rules; original raw retained",
+    "EVIDENCE": "declared/observed/unavailable/not-applicable distinct; observed has actual raw/artifact evidence, never expected copied; unchanged generic child EvidenceValue.artifactIds resolves only carrier.artifacts; caller provenance uses CallerEvidenceValue.witnessIds, never hidden in Tree",
+    "CONTEXT": "context ordinal1 unique, full explicit business material, all same run and selected inventory, no self pin",
+    "INVENTORY": "unique full/selected IDs original sealed order; H exact arrays; full417 B1single; actual bytes not counts only",
+    "TREE": "exact approved builtins or exact owner record adapter, no arbitrary attr/repr/str; bytes and list/tuple/map order preserved; unsupported codec blocks",
+    "LAYOUT": "all return fields per exact owner layout, original metadata unknown blocks compatibility; no tail stripping",
+    "PIECES": "base64 rawsize/hash exact, every original returned field including payload/rows/wire/sidecars/source retained; output incomplete cannot returned-complete",
+    "STAGES": "within each observation dependency chain, preserve earliest actual stage rejection and derived not-reached later stages; known business rejection can be fully collected and next observation continues. Only collection/protocol/unknown/source-binding failure blocks full run completeness; all prior returned pieces retained",
+    "RAW": "full byte streams and range identity; malformed keeps actual range/null record, no expected reconstruction",
+    "RANGES": "ranges nonnegative, bounded within same full raw, each complete frame covers original line excluding LF, no dropped bytes/hidden extra lines",
+    "FRAME": "contiguous ordinals/context-first/terminal-last, one run, unknown frame/version rejects without fallback",
+    "ARTIFACTS": "all pieces exact bytes and roles, IDs unique; derive/copy does not grant same identity",
+    "SAME-ISSUE": "actual approved verifier/source handle and original witness required for observed-match; session/issue strings no authority",
+    "METADATA": "opaque bytes preservation distinct semantic compatibility; unknown codec/layout/recipe preserves null/pending, no display source into helper",
+    "IDENTITY": "one owned graph domain, explicit all RDF slots and live graph-consumer witness; no label-based crossartifact merge",
+    "MAPPING": "schema both sides→wire each side→one bijection per owned domain→full other exact; original digest unchanged, separate relation witness",
+    "HASH": "raw SHA vs H tags separated; self/future fields excluded; terminal prefix excludes itself; caller hashes complete raw after termination",
+    "TERMINAL": "parsed selected inventory, all reached stage pieces and required source/identity guards, actualexit0; known-rejection/unsupported/missing-context/not-executed stay actual complete observation states, never original-operation pass; firstCollectionFailure distinct case canonical rejection",
+    "FAILURE": "first collection failure preserved at run level, earliest canonical rejection preserved per observation/stage; no arbitrary resource substitution; dispatcher failure not not-started; controlled lifecycle witnesses complete",
+    "CARRIER": "all mandatory original materials mapped; compatible unknown or missing witness/piece forbids collected; null availability exact; external carrier2 retains all original R1 materials plus explicit identityAvailability and separate callerWitnesses",
+    "FILES": "caller/root fixed approved witness roots and full manifest; probe does not dereference external file refs",
+    "BINDING": "full raw+prior caller originals→carrier2→binding2→comparison if reached→complete external manifest→runtime receipt3. Binding2 carries actual caller receiptRunId=attemptId and identity-availability union; never future receipt FileRef. Each attempt has exactly one receipt run entry in original order including not-started/pre-context failure; no omit/relabel dispatch. All same actual attempt/raw/prior immutable build. Receipt runId is caller ENTRY identity, child context runId is distinct. Explicit new business identity-policy acceptance pin required; complete received v3 does not automatically approve this forward mapping.",
+    "PINS": "all real repository/root/source/spec/codec/verifier/composition pin approvals external and exact; null until actually supplied/received; syntactic pin shape/version does not authenticate",
+    "OBSERVATION": "exact sealed case/family/descriptor/API/parameters/inputProjection/sourceRefs/contextStatus; one final frame per selected case in manifest order, every planned/reached stage and prior successful artifact retained; notReached derived from actual same-case blocker. Known rejection/unsupported/missing-context/not-executed are explicit collection outcomes, never operation/oracle pass. Unknown unexpected collection fault incomplete.",
+    "ATTEMPT-IDENTITY": "not-dispatched iff actual no dispatch: raw null, child runId null, not-started core. Actual dispatched always stdout+stderr FileRef even zero bytes and never not-started. No unique accepted context (absent/malformed context or rejected header): runId null, identityAvailability unavailable-before-context, PreContextFailureCore exact same attempt/raw/exit/first failure. A lexical runId in untrusted malformed bytes is preserved only as raw, never accepted identity. Unique accepted context with valid same-version header: observed-context, nonempty runId equals context and all later child frames, BoundContextCore.core exact old RunCoreBinding ; binding2 separately maps caller receiptRunId and child core; null/invented/mismatched IDs reject. Child-context cannot be inferred from header, attemptId, planned ID, or child PID. Partial later failure does not erase accepted context or prior stages.",
+    "CALLER-WITNESS": "CallerWitness is separate carrier2.callerWitnesses, unique witnessId disjoint artifactIds. Every caller value/parent/diagnostic ref resolves same-attempt correct namespace; child Artifact unchanged and must resolve actual stage/piece/rawRange. CallerWitness exact fields contain no child stage/piece/range. FileRef complete bytes/SHA and approved root manifest member. CollectorOwnerPin and layoutPin exact externally approved immutable pins, controlled source ownership, pointer and full original file verified; syntax strings/pins do not grant authority. Null/unapproved pins keep file captured-unverified and block observed/collected; no fake actual pins. Parents earlier in sequence only. Every actual original kept; fieldPointer resolves exact purpose value; purpose and payload attempt match. New caller codec1 explicit proposed spec; old codec bytes retained under actual approved layout or pending, never falsely converted.",
+    "CALLER-EVIDENCE": "All lifecycle EvidenceValues now CallerEvidenceValue only. observed requires nonnull exact actual Tree, reason null, nonempty same-attempt verified caller witnesses with matching purpose and exact decoded full fact; declared is not observed. captured-unverified requires exact original FileRef witness/value and explicit unapproved pin/layout reason, never discard existing bytes. unavailable/not-applicable have value null, empty refs and exact reason. No child ranges or artifactIds keys accepted here. targetTerminated must reference purpose target-terminated with actual owned-target exit/signal evidence; cancel-request/stopping or probe terminal are not termination. readerJoined/referencesReleased each separate owner events, false is preserved not upgraded; physicalTicket points actual prior-authorization original with external owner acceptance BEFORE dispatch, no ticket generated by this design. commandContext full exact argv/cwd/controlled non-sensitive env/source identity retained; no authority inferred from stored strings.",
+    "RECEIPT-PROJECTION": "received v3 field-responsibility propertyIndex755 explicitly producer=caller at #/properties/runs/items/properties/runId; required nonempty string stays unchanged. New business policy assigns receipt runId to actual caller attemptId from original command/dispatch registry, before child result and not invented from expected ID. Every actual scheduled attempt including not-started has a unique ordered row. Carrier runId only accepted child context identity, null before context. Binding2 receiptRunId=attemptId=receipt row runId; context childRunId linked via attemptCore, never direct forced equality. All31 run required fields projected per receipt-projection-r2.json with actual/null/partial observations preserved. This semantic mapping is NEW business forward acceptance gate, not implicitly adopted by d9c3. Without accepted policy pin, preserve raw/carrier but do not claim receipt-business compatibility. Do not make schema runId nullable, add keys or silently omit failed attempt."
+  },
+  "hashPreimages": [
+    {
+      "tag": "inventory-full/1",
+      "input": "fullIds array",
+      "exclude": ["digest itself", "future manifest", "validation receipt", "process ref"]
+    },
+    {
+      "tag": "inventory-selected/1",
+      "input": "selectedIds array",
+      "exclude": ["digest itself", "future manifest", "validation receipt", "process ref"]
+    },
+    {
+      "tag": "stage-plan/1",
+      "input": "stagePlans array",
+      "exclude": ["digest itself", "future manifest", "validation receipt", "process ref"]
+    },
+    {
+      "tag": "return-tree/1",
+      "input": "complete Tree value",
+      "exclude": ["digest itself", "future manifest", "validation receipt", "process ref"]
+    },
+    {
+      "tag": "metadata-export/1",
+      "input": "{codecId,layoutId,tree} new export only; never old raw digest",
+      "exclude": ["digest itself", "future manifest", "validation receipt", "process ref"]
+    },
+    {
+      "tag": "artifact-domain/1",
+      "input": "{runId,domainId,graphArtifactId,slots,bindingWitnessArtifactId} excludes any computed domainDigest",
+      "exclude": ["digest itself", "future manifest", "validation receipt", "process ref"]
+    },
+    {
+      "tag": "mapping-witness/1",
+      "input": "MappingWitness keys except relationDigest",
+      "exclude": ["digest itself", "future manifest", "validation receipt", "process ref"]
+    }
+  ],
+  "limits": "existing approved byte/case/time logical caps count all new encoding; no new physical authority or hidden cap increase",
+  "hashDependencyOrder": [
+    "externally-approved-specs-and-prior-immutable-build-ticket",
+    "actual-caller-attempt-registry-and-child-raw-plus-caller-originals",
+    "child-pieces-and-caller-witness-fileRefs",
+    "carrier2",
+    "binding2-no-future-receipt-ref",
+    "comparison-if-reached",
+    "complete-external-manifest-excludes-itself-and-later-receipt",
+    "runtime-validation-receipt3-all-attempts"
+  ],
+  "revision": "R2 proposed caller-side-only fix for R1-F01/F02; frozen stream/2 and child records unchanged",
+  "supersedesForNewDesign": "wire-grammar.json is frozen R1 evidence; only R2 grammar is new candidate, not adopted wire",
+  "newCallerFileHash": "RawSHA full original bytes; CallerWitnessPayload codec uses existing canonical JSON recipe and return-tree/1, no new H digest field; owner/layout pin external prior, no file self hash inside its preimage"
+}

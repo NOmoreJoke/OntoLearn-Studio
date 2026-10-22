@@ -1,0 +1,385 @@
+{
+  "format": "i05-protocol3-profile-change-index/1",
+  "changes": [
+    {
+      "pointer": "#/baseRef",
+      "old": "bba31be7384a676e54cb3b64e219f14bf2a9460e",
+      "new": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "newProperty": false
+    },
+    {
+      "pointer": "#/canonicalModuleCount",
+      "old": null,
+      "new": 23,
+      "newProperty": true
+    },
+    {
+      "pointer": "#/dedicatedSourceInputCount",
+      "old": null,
+      "new": 33,
+      "newProperty": true
+    },
+    {
+      "pointer": "#/dependencyDirectRequirements",
+      "old": null,
+      "new": [
+        "defusedxml==0.7.1",
+        "et-xmlfile==2.0.0",
+        "openpyxl==3.1.5",
+        "pyparsing==3.3.3",
+        "pyshacl==0.30.1",
+        "rdflib==7.6.0"
+      ],
+      "newProperty": true
+    },
+    {
+      "pointer": "#/dependencySpecification",
+      "old": null,
+      "new": "dependency-specification.json",
+      "newProperty": true
+    },
+    {
+      "pointer": "#/format",
+      "old": "i05-semantic-build-protocol-profile/3",
+      "new": "i05-semantic-build-protocol-profile/4",
+      "newProperty": false
+    },
+    {
+      "pointer": "#/guardAdoptionMatrix",
+      "old": null,
+      "new": "guard-adoption-matrix.json",
+      "newProperty": true
+    },
+    {
+      "pointer": "#/guardScopes",
+      "old": null,
+      "new": {
+        "historical": {
+          "scope": "historical",
+          "guardVersion": "historical-a4d-43/1",
+          "sourceGuardPaths": [
+            "docs/iterations/I05/profile-probe-inputs.json",
+            "packages/contracts/python/contract_v2.py",
+            "packages/contracts/v2/binding-regressions.json",
+            "packages/contracts/v2/dependencies.json",
+            "packages/contracts/v2/errors.json",
+            "packages/contracts/v2/fixtures.json",
+            "packages/contracts/v2/frame-fixtures.json",
+            "packages/contracts/v2/registry.json",
+            "packages/contracts/v2/schema.json",
+            "packages/contracts/v2/states.json",
+            "packages/engine/entrypoint.py",
+            "packages/engine/pyproject.toml",
+            "packages/engine/src/ontolearn_engine/__init__.py",
+            "packages/engine/src/ontolearn_engine/__main__.py",
+            "packages/engine/src/ontolearn_engine/contract_probe.py",
+            "packages/engine/src/ontolearn_engine/coordinator.py",
+            "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+            "packages/engine/src/ontolearn_engine/invalidation.py",
+            "packages/engine/src/ontolearn_engine/job_store.py",
+            "packages/engine/src/ontolearn_engine/memory_guard.py",
+            "packages/engine/src/ontolearn_engine/process_environment.py",
+            "packages/engine/src/ontolearn_engine/protocol.py",
+            "packages/engine/src/ontolearn_engine/quality/__init__.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+            "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+            "packages/engine/src/ontolearn_engine/resources.py",
+            "packages/engine/src/ontolearn_engine/semantic.py",
+            "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+            "packages/engine/src/ontolearn_engine/semantic_execution.py",
+            "packages/engine/src/ontolearn_engine/semantic_offline.py",
+            "packages/engine/src/ontolearn_engine/semantic_profile_probe.py",
+            "packages/engine/src/ontolearn_engine/semantic_query.py",
+            "packages/engine/src/ontolearn_engine/semantic_samples.py",
+            "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+            "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+            "packages/engine/src/ontolearn_engine/storage.py",
+            "packages/engine/src/ontolearn_engine/storage_probe.py",
+            "packages/engine/src/ontolearn_engine/worker.py",
+            "scripts/build-engine.mjs",
+            "uv.lock"
+          ],
+          "guardManifest": {
+            "normativeDocument": "guard-adoption-matrix.json",
+            "actualApprovedManifestPin": null
+          },
+          "entryBehavior": "HIST-83/default-original",
+          "ownerAdoptionStatus": "not-approved; exact owner actual pins and scope/root resources required",
+          "sourceRoot": null,
+          "outputRoot": null,
+          "environmentRoot": null,
+          "actualGuardSourcePin": null,
+          "executionAuthorization": false
+        },
+        "dedicatedSemantic": {
+          "scope": "dedicatedSemantic",
+          "guardVersion": "semantic-v3-33/1",
+          "sourceGuardPaths": [
+            "packages/contracts/python/contract_v2.py",
+            "packages/contracts/v2/errors.json",
+            "packages/contracts/v2/registry.json",
+            "packages/contracts/v2/schema.json",
+            "packages/engine/entrypoint.py",
+            "packages/engine/pyproject.toml",
+            "packages/engine/src/ontolearn_engine/__init__.py",
+            "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+            "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+            "packages/engine/src/ontolearn_engine/quality/__init__.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+            "packages/engine/src/ontolearn_engine/resources.py",
+            "packages/engine/src/ontolearn_engine/semantic.py",
+            "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+            "packages/engine/src/ontolearn_engine/semantic_execution.py",
+            "packages/engine/src/ontolearn_engine/semantic_offline.py",
+            "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+            "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+            "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+            "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+            "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+            "packages/engine/src/ontolearn_engine/semantic_query.py",
+            "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+            "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+            "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+            "scripts/build-engine.mjs",
+            "uv.lock"
+          ],
+          "guardManifest": {
+            "normativeDocument": "guard-adoption-matrix.json",
+            "actualApprovedManifestPin": null
+          },
+          "entryBehavior": "dedicated-exact-single-build-flag",
+          "ownerAdoptionStatus": "not-approved; exact owner actual pins and scope/root resources required",
+          "sourceRoot": null,
+          "outputRoot": null,
+          "environmentRoot": null,
+          "actualGuardSourcePin": null,
+          "executionAuthorization": false
+        },
+        "parentDefault": {
+          "scope": "parentDefault",
+          "guardVersion": "parent-default-v3-58/1",
+          "sourceGuardPaths": [
+            "docs/iterations/I05/profile-probe-inputs.json",
+            "packages/contracts/python/contract_v2.py",
+            "packages/contracts/v2/binding-regressions.json",
+            "packages/contracts/v2/dependencies.json",
+            "packages/contracts/v2/errors.json",
+            "packages/contracts/v2/fixtures.json",
+            "packages/contracts/v2/frame-fixtures.json",
+            "packages/contracts/v2/registry.json",
+            "packages/contracts/v2/schema.json",
+            "packages/contracts/v2/states.json",
+            "packages/engine/entrypoint.py",
+            "packages/engine/pyproject.toml",
+            "packages/engine/src/ontolearn_engine/__init__.py",
+            "packages/engine/src/ontolearn_engine/__main__.py",
+            "packages/engine/src/ontolearn_engine/contract_probe.py",
+            "packages/engine/src/ontolearn_engine/coordinator.py",
+            "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+            "packages/engine/src/ontolearn_engine/invalidation.py",
+            "packages/engine/src/ontolearn_engine/job_store.py",
+            "packages/engine/src/ontolearn_engine/mapping/__init__.py",
+            "packages/engine/src/ontolearn_engine/mapping/plan.py",
+            "packages/engine/src/ontolearn_engine/mapping/probe.py",
+            "packages/engine/src/ontolearn_engine/mapping/source.py",
+            "packages/engine/src/ontolearn_engine/memory_guard.py",
+            "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+            "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+            "packages/engine/src/ontolearn_engine/process_environment.py",
+            "packages/engine/src/ontolearn_engine/protocol.py",
+            "packages/engine/src/ontolearn_engine/quality/__init__.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+            "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+            "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+            "packages/engine/src/ontolearn_engine/resources.py",
+            "packages/engine/src/ontolearn_engine/semantic.py",
+            "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+            "packages/engine/src/ontolearn_engine/semantic_execution.py",
+            "packages/engine/src/ontolearn_engine/semantic_offline.py",
+            "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+            "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+            "packages/engine/src/ontolearn_engine/semantic_profile_probe.py",
+            "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+            "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+            "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+            "packages/engine/src/ontolearn_engine/semantic_query.py",
+            "packages/engine/src/ontolearn_engine/semantic_samples.py",
+            "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+            "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+            "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+            "packages/engine/src/ontolearn_engine/storage.py",
+            "packages/engine/src/ontolearn_engine/storage_probe.py",
+            "packages/engine/src/ontolearn_engine/worker.py",
+            "scripts/build-engine.mjs",
+            "uv.lock"
+          ],
+          "guardManifest": {
+            "normativeDocument": "guard-adoption-matrix.json",
+            "actualApprovedManifestPin": null
+          },
+          "entryBehavior": "default-and-preserved-exact-legacy-flags",
+          "ownerAdoptionStatus": "not-approved; exact owner actual pins and scope/root resources required",
+          "sourceRoot": null,
+          "outputRoot": null,
+          "environmentRoot": null,
+          "actualGuardSourcePin": null,
+          "executionAuthorization": false
+        }
+      },
+      "newProperty": true
+    },
+    {
+      "pointer": "#/historicalDescriptorBaseRef",
+      "old": null,
+      "new": "bba31be7384a676e54cb3b64e219f14bf2a9460e",
+      "newProperty": true
+    },
+    {
+      "pointer": "#/id",
+      "old": "i05-source-package-parity-v2",
+      "new": "i05-source-package-parity-v3",
+      "newProperty": false
+    },
+    {
+      "pointer": "#/independentParentProfile",
+      "old": null,
+      "new": null,
+      "newProperty": true
+    },
+    {
+      "pointer": "#/lockPackageCount",
+      "old": null,
+      "new": 26,
+      "newProperty": true
+    },
+    {
+      "pointer": "#/lockPackageVersions",
+      "old": null,
+      "new": {
+        "altgraph": "0.17.5",
+        "colorama": "0.4.6",
+        "defusedxml": "0.7.1",
+        "et-xmlfile": "2.0.0",
+        "html5rdf": "1.2.1",
+        "iniconfig": "2.3.1",
+        "macholib": "1.16.4",
+        "ontolearn-engine": "0.1.0",
+        "ontolearn-workspace": "0.1.0",
+        "openpyxl": "3.1.5",
+        "owlrl": "7.6.2",
+        "packaging": "26.3",
+        "pefile": "2024.8.26",
+        "pluggy": "1.7.0",
+        "prettytable": "3.18.0",
+        "pygments": "2.21.0",
+        "pyinstaller": "6.22.3",
+        "pyinstaller-hooks-contrib": "2026.8",
+        "pyparsing": "3.3.3",
+        "pyshacl": "0.30.1",
+        "pytest": "9.1.1",
+        "pywin32-ctypes": "0.2.3",
+        "rdflib": "7.6.0",
+        "ruff": "0.17.1",
+        "setuptools": "84.0.0",
+        "wcwidth": "0.9.2"
+      },
+      "newProperty": true
+    },
+    {
+      "pointer": "#/openDeltas",
+      "old": [
+        "D0 fixed candidate owner acceptance and fresh independent review",
+        "D1 dependency",
+        "D2 I05 source/frozen consumer and new source23 pin",
+        "D3 wrapper and dedicated evidence tooling",
+        "E0 actual composition/environment/build/archive/license evidence",
+        "E1 actual runtime loader/cache validation",
+        "E2 complete417 source/frozen/parent comparison",
+        "T05 current implementation limited received; allocation delta separate review; no new oracle re-review here",
+        "B1/S1/parent/formal gates remain"
+      ],
+      "new": [
+        "Complete protocol3/profile4/schema/field responsibilities fresh independent review and exact root design acceptance",
+        "D1 dependency",
+        "D2 I05 source/frozen consumer and new source23 pin",
+        "D3 wrapper and dedicated evidence tooling",
+        "E0 actual composition/environment/build/archive/license evidence",
+        "E1 actual runtime loader/cache validation",
+        "E2 complete417 source/frozen/parent comparison",
+        "T05 current implementation limited received; allocation delta separate review; no new oracle re-review here",
+        "B1/S1/parent/formal gates remain"
+      ],
+      "newProperty": false
+    },
+    {
+      "pointer": "#/protocolVersion",
+      "old": "2.1.0",
+      "new": "3.0.0",
+      "newProperty": false
+    },
+    {
+      "pointer": "#/schemaIdentitySource",
+      "old": "exact path/bytes/SHA in current externally reported delta/final manifest; historical draft-manifest remains unchanged",
+      "new": "exact current path/bytes/SHA in external protocol-v3 candidate manifest; old D0 manifests and any old Pass remain historical and do not approve this version",
+      "newProperty": false
+    },
+    {
+      "pointer": "#/schemaIds",
+      "old": [
+        "urn:ontolearn:i05:source-package-parity-build:2",
+        "urn:ontolearn:i05:build-receipt:2",
+        "urn:ontolearn:i05:runtime-validation-receipt:2",
+        "urn:ontolearn:i05:runtime-header:1"
+      ],
+      "new": [
+        "urn:ontolearn:i05:source-package-parity-build:3",
+        "urn:ontolearn:i05:build-receipt:3",
+        "urn:ontolearn:i05:runtime-validation-receipt:3",
+        "urn:ontolearn:i05:runtime-header:2"
+      ],
+      "newProperty": false
+    },
+    {
+      "pointer": "#/semanticRuntimeDistributionCount",
+      "old": null,
+      "new": 8,
+      "newProperty": true
+    },
+    {
+      "pointer": "#/sourceDeclaredSupplierCount",
+      "old": null,
+      "new": 22,
+      "newProperty": true
+    },
+    {
+      "pointer": "#/sourceNormativeDesignRef",
+      "old": null,
+      "new": "86d6297a8cac5ad780f1be4416ec9052b82f3aaf",
+      "newProperty": true
+    },
+    {
+      "pointer": "#/status",
+      "old": "D0-author-draft-owner-review-pending",
+      "new": "complete-protocol3-author-candidate-fresh-review-pending",
+      "newProperty": false
+    }
+  ],
+  "fieldResponsibilityNonLiteralMetadataChanges": ["#/format", "#/normativeCrossFieldRules"],
+  "canonicalResourceAssetFunctionPathCodeDomainsPreserved": true
+}

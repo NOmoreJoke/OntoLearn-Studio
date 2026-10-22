@@ -1,0 +1,70 @@
+{
+  "format": "i05-business-r2-author-write-collision-incident/1",
+  "incident": "New R2 checker mistakenly reused frozen first-candidate checker-source-r2.json basename and temporarily overwrote its current worktree bytes. Old Git blob intact; no staging or commit of protected path. check02 detected current != frozen bytes.",
+  "revisionBase": "aefa82e51643e0a75ecb960645d63917b046edd6",
+  "frozenPath": "docs/reviews/I05/d2-business-carrier-design/checker-source-r2.json",
+  "restoredBytes": 12013,
+  "restoredSha256": "1d71c649c72ad2e59183be3d5f902b30944c5bab5d72e881d3e119dac6006fe4",
+  "newR2SourceMovedTo": "docs/reviews/I05/d2-business-carrier-design/business-checker-source-r2.json",
+  "newR2SourceBytes": 19751,
+  "newR2SourceSha256": "e9ddf626425097d76a58c652a9829b6f1b0c4378588b3a65a54703ba8f2cb8ae",
+  "restoreCommand": {
+    "argv": [
+      "git",
+      "show",
+      "aefa82e51643e0a75ecb960645d63917b046edd6:docs/reviews/I05/d2-business-carrier-design/checker-source-r2.json"
+    ],
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+    "exit": 0,
+    "stdout": {
+      "encoding": "exact-immutable-file-reference",
+      "path": "docs/reviews/I05/d2-business-carrier-design/checker-source-r2.json",
+      "ref": "aefa82e51643e0a75ecb960645d63917b046edd6",
+      "bytes": 12013,
+      "sha256": "1d71c649c72ad2e59183be3d5f902b30944c5bab5d72e881d3e119dac6006fe4"
+    },
+    "stderr": {
+      "encoding": "lossless-utf8-json",
+      "text": "",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "currentOld113MismatchesAfterRestoration": [],
+  "check01And02ActualOldPath": "Both precise recorded argv point to temporary new source at old path before restoration. Exact executed source is now preserved byte-identical as business-checker-source-r2.json; records are not rewritten.",
+  "rootNotified": true,
+  "futureGuard": "All subsequent writes/stage paths must be absent from fixed old113 inventory before writing. Initial bad-path diagnostic failures and both checker failures retained.",
+  "classification": "Author violation of frozen write-surface restriction during this R2 turn; final restoration does not erase interim violation.",
+  "chronology": [
+    {
+      "toolChunk": "a0aaef",
+      "event": "initial new checker draft write mistakenly targeted existing frozen checker-source-r2.json; precise intermediate initial draft bytes were not separately preserved before later source edit, do not fabricate"
+    },
+    {
+      "toolChunk": "e9f21e",
+      "event": "amended source at same protected path before executing; final executed container19751B/SHA recorded and preserved under unique new filename"
+    },
+    {
+      "toolChunk": "e46f46",
+      "event": "author check01 child exit1 synthetic TreeNull missing value; actual source at protected name; complete split streams stored"
+    },
+    {
+      "toolChunk": "c8aaf9",
+      "event": "corrected only new synthetic fixture, protected checker source remained temporary overwritten"
+    },
+    {
+      "toolChunk": "233707",
+      "event": "author check02 child exit1 old113 hash guard detected protected file mismatch; source unchanged, split streams stored"
+    },
+    {
+      "toolChunk": "1fba4a",
+      "event": "preserved overwritten executed new source as business-checker-source-r2.json; git show exact revisionBase original12013B restored; actual restore exit0 and original streams recorded; all113 current hashes rechecked"
+    },
+    {
+      "toolChunk": "e1c36a",
+      "event": "after restoration author check03 from unique new source exit0; limited design only"
+    }
+  ],
+  "timestamps": "No wall-clock event timestamps were independently captured for these steps; original tool invocation sequence is evidence. No reconstructed past timestamps or split streams.",
+  "independentReviewRequirement": "Fresh independent delta report must cover interim frozen-write violation and current exact113 restoration; root/controller reception not self asserted."
+}
