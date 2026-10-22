@@ -1,0 +1,824 @@
+{"checks": 118, "failed": [], "sources": 19, "returnClasses": 15, "commands": 43}
+{
+  "dictionaryShapes": [
+    {
+      "id": "legacy-source",
+      "actualFunctionLine": 73,
+      "actualFunctionEnd": 85,
+      "dicts": [
+        {
+          "line": 75,
+          "keys": [
+            "executionSemanticsVersion",
+            "assertedInputSha256",
+            "ontologyInputSha256",
+            "selectedRulesSha256"
+          ]
+        },
+        {
+          "line": 81,
+          "keys": [
+            "id",
+            "when",
+            "then"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "legacy-provenance",
+      "actualFunctionLine": 234,
+      "actualFunctionEnd": 298,
+      "dicts": [
+        {
+          "line": 255,
+          "keys": [
+            "kind"
+          ]
+        },
+        {
+          "line": 266,
+          "keys": [
+            "kind",
+            "basis"
+          ]
+        },
+        {
+          "line": 284,
+          "keys": [
+            "scope",
+            "**source",
+            "reasoningSource",
+            "selectedRuleIds",
+            "warnings",
+            "selectedFacts",
+            "derivedAxioms",
+            "ontologyView",
+            "factViewSha256",
+            "ontologyViewSha256"
+          ]
+        },
+        {
+          "line": 276,
+          "keys": [
+            "kind",
+            "rule",
+            "inputs",
+            "basis"
+          ]
+        },
+        {
+          "line": 269,
+          "keys": [
+            "triple",
+            "source"
+          ]
+        },
+        {
+          "line": 291,
+          "keys": [
+            "triple",
+            "sources"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "legacy-reason",
+      "actualFunctionLine": 551,
+      "actualFunctionEnd": 603,
+      "dicts": [
+        {
+          "line": 594,
+          "keys": [
+            "rdfs",
+            "warnings",
+            "rules",
+            "evidence",
+            "rdfsEvidence"
+          ]
+        },
+        {
+          "line": 600,
+          "keys": [
+            "result",
+            "basis"
+          ]
+        },
+        {
+          "line": 584,
+          "keys": [
+            "rule",
+            "result",
+            "inputs",
+            "basis"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "query-ask",
+      "actualFunctionLine": 160,
+      "actualFunctionEnd": 237,
+      "dicts": [
+        {
+          "line": 233,
+          "keys": [
+            "type",
+            "variables",
+            "rows"
+          ]
+        },
+        {
+          "line": 205,
+          "keys": [
+            "type",
+            "value"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "query-select",
+      "actualFunctionLine": 160,
+      "actualFunctionEnd": 237,
+      "dicts": [
+        {
+          "line": 233,
+          "keys": [
+            "type",
+            "variables",
+            "rows"
+          ]
+        },
+        {
+          "line": 205,
+          "keys": [
+            "type",
+            "value"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shacl-api",
+      "actualFunctionLine": 1566,
+      "actualFunctionEnd": 1614,
+      "dicts": [
+        {
+          "line": 1614,
+          "keys": [
+            "conforms",
+            "violations"
+          ]
+        },
+        {
+          "line": 1600,
+          "keys": [
+            "focus",
+            "path",
+            "constraint",
+            "sourceShape",
+            "value",
+            "severity"
+          ]
+        },
+        {
+          "line": 1586,
+          "keys": [
+            "inference",
+            "advanced",
+            "use_js",
+            "iterate_rules",
+            "inplace",
+            "sparql_mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "profile-wire",
+      "actualFunctionLine": 626,
+      "actualFunctionEnd": 819,
+      "dicts": [
+        {
+          "line": 729,
+          "keys": [
+            "format",
+            "implementation",
+            "reasoning",
+            "inputDigest",
+            "inputDigestDomain",
+            "sourceDigest",
+            "definitionsDigest"
+          ]
+        },
+        {
+          "line": 753,
+          "keys": [
+            "payload",
+            "rows",
+            "jsonPayloadDigest",
+            "rowsDigest"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "public-error",
+      "actualFunctionLine": 308,
+      "actualFunctionEnd": 322,
+      "dicts": [
+        {
+          "line": 316,
+          "keys": [
+            "code",
+            "messageKey",
+            "params",
+            "retryable"
+          ]
+        },
+        {
+          "line": 311,
+          "keys": []
+        },
+        {
+          "line": 313,
+          "keys": [
+            "spec.parameter"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "profile-private-diagnostic",
+      "actualFunctionLine": 609,
+      "actualFunctionEnd": 623,
+      "dicts": [
+        {
+          "line": 611,
+          "keys": [
+            "reason",
+            "classification",
+            "ruleId",
+            "location"
+          ]
+        },
+        {
+          "line": 617,
+          "keys": [
+            "section",
+            "index",
+            "side",
+            "span"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "probe-bytes-wrapper",
+      "actualFunctionLine": 709,
+      "actualFunctionEnd": 714,
+      "dicts": [
+        {
+          "line": 710,
+          "keys": [
+            "encoding",
+            "bytes",
+            "sha256",
+            "data"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "probe-graph-wrapper",
+      "actualFunctionLine": 717,
+      "actualFunctionEnd": 719,
+      "dicts": [
+        {
+          "line": 718,
+          "keys": [
+            "triples",
+            "tripleCount"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "probe-production-observation",
+      "actualFunctionLine": 1260,
+      "actualFunctionEnd": 1343,
+      "dicts": [
+        {
+          "line": 1273,
+          "keys": [
+            "rules",
+            "disabled_rule_ids",
+            "ledger"
+          ]
+        },
+        {
+          "line": 1305,
+          "keys": [
+            "wire",
+            "payloadBytes",
+            "rowsBytes",
+            "sourceBytes",
+            "definitionBytes",
+            "catalogBytes",
+            "actualDefinitions",
+            "actualCatalog",
+            "allocation",
+            "expectedCapture",
+            "restored",
+            "roots",
+            "receipts"
+          ]
+        },
+        {
+          "line": 1317,
+          "keys": [
+            "capture",
+            "direct"
+          ]
+        },
+        {
+          "line": 1324,
+          "keys": [
+            "name",
+            "changes",
+            "payloadBytes",
+            "rowsBytes",
+            "expectedCapture",
+            "allocationReissued",
+            "expectationReissued",
+            "onlyOuterDigestsRebound",
+            "deepValidationReached"
+          ]
+        }
+      ]
+    }
+  ],
+  "selectedInterfaceExpressions": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "name": "query",
+      "line": 160,
+      "endLine": 237,
+      "returnExpressions": [
+        {
+          "line": 233,
+          "value": "{'type': 'SELECT', 'variables': variables, 'rows': rows}"
+        },
+        {
+          "line": 205,
+          "value": "{'type': 'ASK', 'value': bool(result.askAnswer)}"
+        },
+        {
+          "line": 214,
+          "value": "tuple(((v is not None, v.n3() if v is not None else '') for v in row))"
+        },
+        {
+          "line": 229,
+          "value": "-1 if a < b else 1 if a > b else 0"
+        },
+        {
+          "line": 227,
+          "value": "-delta if condition.order == 'DESC' else delta"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "name": "_key",
+      "line": 247,
+      "endLine": 248,
+      "returnExpressions": [
+        {
+          "line": 248,
+          "value": "tuple((term.n3() for term in triple))"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "name": "_canonical_rule",
+      "line": 316,
+      "endLine": 323,
+      "returnExpressions": [
+        {
+          "line": 319,
+          "value": "Rule(rule.id, tuple((tuple((canonical_string(term) for term in pattern)) for pattern in rule.when)), tuple((canonical_string(term) for term in rule.then)))"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "name": "_legacy_reason",
+      "line": 551,
+      "endLine": 603,
+      "returnExpressions": [
+        {
+          "line": 594,
+          "value": "{'rdfs': sorted((_key(t) for t in rdfs)), 'warnings': _chain_warnings(rules), 'rules': sorted((_key(t) for t in derived)), 'evidence': evidence, 'rdfsEvidence': [{'result': _key(t), 'basis': [_key(i) for i in sorted(proofs[t], key=_key)]} for t in sorted(rdfs, key=_key)]}"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "name": "_check_shapes",
+      "line": 1566,
+      "endLine": 1614,
+      "returnExpressions": [
+        {
+          "line": 1614,
+          "value": "{'conforms': bool(conforms), 'violations': violations}"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "name": "_digest",
+      "line": 42,
+      "endLine": 49,
+      "returnExpressions": [
+        {
+          "line": 49,
+          "value": "hashlib.sha256(data).hexdigest()"
+        }
+      ],
+      "jsonCalls": [
+        {
+          "line": 44,
+          "value": "json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode('utf-8')"
+        },
+        {
+          "line": 49,
+          "value": "hashlib.sha256(data)"
+        },
+        {
+          "line": 44,
+          "value": "json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'))"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "name": "_source",
+      "line": 73,
+      "endLine": 85,
+      "returnExpressions": [
+        {
+          "line": 75,
+          "value": "{'executionSemanticsVersion': SEMANTICS_VERSION, 'assertedInputSha256': _digest(sorted((_key(t) for t in facts))), 'ontologyInputSha256': _digest(sorted((_key(t) for t in axioms))), 'selectedRulesSha256': _digest([{'id': r.id, 'when': [_key(t) for t in r.when], 'then': _key(r.then)} for r in sorted(rules, key=lambda r: r.id)])}"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "name": "project_validation_scope",
+      "line": 234,
+      "endLine": 298,
+      "returnExpressions": [
+        {
+          "line": 280,
+          "value": "ValidationScope(facts=facts, ontology=axioms, reasoning_result=reasoning_result, provenance={'scope': 'asserted+selected-derived' if include_derived else 'asserted', **source, 'reasoningSource': dict(source) if include_derived else None, 'selectedRuleIds': [r.id for r in sorted(rules, key=lambda r: r.id)], 'warnings': list(reasoning_result['warnings']) if include_derived else [], 'selectedFacts': [{'triple': key, 'sources': sources[key]} for key in sorted(sources)], 'derivedAxioms': derived_axioms, 'ontologyView': sorted((_key(t) for t in axioms)), 'factViewSha256': _digest(sorted((_key(t) for t in facts))), 'ontologyViewSha256': _digest(sorted((_key(t) for t in axioms)))})"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "name": "prepare_validation_scope",
+      "line": 301,
+      "endLine": 326,
+      "returnExpressions": [
+        {
+          "line": 319,
+          "value": "project_validation_scope(facts, axioms, include_derived=include_derived, reasoning_result=result, reasoning_source=source, rules=rules)"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "name": "_json",
+      "line": 59,
+      "endLine": 62,
+      "returnExpressions": [
+        {
+          "line": 60,
+          "value": "json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False)"
+        }
+      ],
+      "jsonCalls": [
+        {
+          "line": 60,
+          "value": "json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False)"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "name": "_digest",
+      "line": 69,
+      "endLine": 70,
+      "returnExpressions": [
+        {
+          "line": 70,
+          "value": "hashlib.sha256(_json(value).encode('utf-8')).hexdigest()"
+        }
+      ],
+      "jsonCalls": [
+        {
+          "line": 70,
+          "value": "hashlib.sha256(_json(value).encode('utf-8'))"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "name": "_ProfileProjection",
+      "line": 504,
+      "endLine": 590,
+      "returnExpressions": [
+        {
+          "line": 584,
+          "value": "{'recordType': kind.__name__, **{field.name: self.value(getattr(value, field.name), depth + 1) for field in fields(value)}}"
+        },
+        {
+          "line": 535,
+          "value": "value"
+        },
+        {
+          "line": 542,
+          "value": "{'integerHex': hex(value)}"
+        },
+        {
+          "line": 548,
+          "value": "value"
+        },
+        {
+          "line": 551,
+          "value": "{'encoding': 'hex', 'bytes': value.hex()}"
+        },
+        {
+          "line": 554,
+          "value": "[self.value(item, depth + 1) for item in value]"
+        },
+        {
+          "line": 559,
+          "value": "{self.value(key, depth + 1): self.value(item, depth + 1) for key, item in value.items()}"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "name": "_profile_json_bytes",
+      "line": 593,
+      "endLine": 606,
+      "returnExpressions": [
+        {
+          "line": 606,
+          "value": "bytes(output)"
+        }
+      ],
+      "jsonCalls": [
+        {
+          "line": 598,
+          "value": "json.JSONEncoder(ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False)"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "name": "_profile_diagnostic",
+      "line": 609,
+      "endLine": 623,
+      "returnExpressions": [
+        {
+          "line": 611,
+          "value": "{'reason': reason, 'classification': classification, 'ruleId': rule_id, 'location': None if location is None else {'section': location.section, 'index': location.index, 'side': location.side, 'span': location.span}}"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "name": "_execute_profile",
+      "line": 626,
+      "endLine": 819,
+      "returnExpressions": [
+        {
+          "line": 761,
+          "value": "wire"
+        }
+      ],
+      "jsonCalls": [
+        {
+          "line": 733,
+          "value": "hashlib.sha256(original_bytes)"
+        },
+        {
+          "line": 735,
+          "value": "hashlib.sha256(source_encoded)"
+        },
+        {
+          "line": 736,
+          "value": "hashlib.sha256(defs_encoded)"
+        },
+        {
+          "line": 756,
+          "value": "hashlib.sha256(encoded)"
+        },
+        {
+          "line": 757,
+          "value": "hashlib.sha256(rows_encoded)"
+        },
+        {
+          "line": 683,
+          "value": "hashlib.sha256(original_bytes)"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "name": "_project",
+      "line": 308,
+      "endLine": 394,
+      "returnExpressions": [
+        {
+          "line": 314,
+          "value": "value"
+        },
+        {
+          "line": 316,
+          "value": "_text(value, ledger)"
+        },
+        {
+          "line": 322,
+          "value": "{'encoding': 'hex', 'bytes': value.hex()}"
+        },
+        {
+          "line": 329,
+          "value": "[_project(item, ledger, depth + 1, json_data=json_data) for item in value]"
+        },
+        {
+          "line": 349,
+          "value": "output"
+        },
+        {
+          "line": 393,
+          "value": "output"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "name": "_encode",
+      "line": 397,
+      "endLine": 436,
+      "returnExpressions": [
+        {
+          "line": 431,
+          "value": "result"
+        }
+      ],
+      "jsonCalls": [
+        {
+          "line": 410,
+          "value": "json.JSONEncoder(ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False)"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "name": "_definitions",
+      "line": 466,
+      "endLine": 510,
+      "returnExpressions": [
+        {
+          "line": 510,
+          "value": "(raw, material)"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "name": "_bytes_value",
+      "line": 709,
+      "endLine": 714,
+      "returnExpressions": [
+        {
+          "line": 710,
+          "value": "{'encoding': 'base64', 'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest(), 'data': base64.b64encode(raw).decode('ascii')}"
+        }
+      ],
+      "jsonCalls": [
+        {
+          "line": 712,
+          "value": "hashlib.sha256(raw)"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "name": "_graph_value",
+      "line": 717,
+      "endLine": 719,
+      "returnExpressions": [
+        {
+          "line": 718,
+          "value": "{'triples': sorted((tuple((term.n3() for term in triple)) for triple in graph)), 'tripleCount': len(graph)}"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "name": "_typed_value",
+      "line": 722,
+      "endLine": 765,
+      "returnExpressions": [
+        {
+          "line": 760,
+          "value": "{'recordType': kind.__module__ + '.' + kind.__qualname__, 'fields': {field.name: _typed_value(getattr(value, field.name), approved, budget=budget, depth=depth + 1) for field in fields(kind)}}"
+        },
+        {
+          "line": 730,
+          "value": "value"
+        },
+        {
+          "line": 737,
+          "value": "{'integerHex': text}"
+        },
+        {
+          "line": 742,
+          "value": "value"
+        },
+        {
+          "line": 748,
+          "value": "_bytes_value(value)"
+        },
+        {
+          "line": 752,
+          "value": "[_typed_value(item, approved, budget=budget, depth=depth + 1) for item in value]"
+        },
+        {
+          "line": 756,
+          "value": "{key: _typed_value(item, approved, budget=budget, depth=depth + 1) for key, item in value.items()}"
+        }
+      ],
+      "jsonCalls": []
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "name": "_capture_expectation",
+      "line": 1227,
+      "endLine": 1240,
+      "returnExpressions": [
+        {
+          "line": 1231,
+          "value": "cls(payload_digest=hashlib.sha256(produced.payload_json).hexdigest(), rows_digest=hashlib.sha256(produced.rows_json).hexdigest(), input_digest=payload['inputDigest'], input_domain=payload['inputDigestDomain'], source_digest=payload['sourceDigest'], definitions_digest=payload['definitionsDigest'], catalog_digest=hashlib.sha256(produced.catalog_json).hexdigest(), implementation=tuple(sorted(payload['implementation'].items())), input_preimage=produced.material.input_preimage, source_preimage=produced.material.source_preimage)"
+        }
+      ],
+      "jsonCalls": [
+        {
+          "line": 1232,
+          "value": "hashlib.sha256(produced.payload_json)"
+        },
+        {
+          "line": 1233,
+          "value": "hashlib.sha256(produced.rows_json)"
+        },
+        {
+          "line": 1236,
+          "value": "hashlib.sha256(produced.catalog_json)"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "name": "_production_observation",
+      "line": 1260,
+      "endLine": 1343,
+      "returnExpressions": [
+        {
+          "line": 1343,
+          "value": "result"
+        }
+      ],
+      "jsonCalls": []
+    }
+  ]
+}

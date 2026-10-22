@@ -1,0 +1,5512 @@
+{
+  "format": "i05-interface-independent-declaration-reconciliation/1",
+  "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "checks": [
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_text",
+      "passed": true,
+      "detail": {
+        "name": "_text",
+        "kind": "FunctionDef",
+        "line": 36,
+        "endLine": 44,
+        "signature": "text",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_copy",
+      "passed": true,
+      "detail": {
+        "name": "_copy",
+        "kind": "FunctionDef",
+        "line": 47,
+        "endLine": 56,
+        "signature": "graph",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_terms",
+      "passed": true,
+      "detail": {
+        "name": "_terms",
+        "kind": "FunctionDef",
+        "line": 59,
+        "endLine": 108,
+        "signature": "graph, *, shapes=False, _allow_illtyped_integer=False",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:parse_turtle",
+      "passed": true,
+      "detail": {
+        "name": "parse_turtle",
+        "kind": "FunctionDef",
+        "line": 111,
+        "endLine": 113,
+        "signature": "text: str, *, format: str='turtle', shapes: bool=False",
+        "returns": "Graph"
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_parse_turtle",
+      "passed": true,
+      "detail": {
+        "name": "_parse_turtle",
+        "kind": "FunctionDef",
+        "line": 116,
+        "endLine": 132,
+        "signature": "text, *, format='turtle', shapes=False, _allow_illtyped_integer=False, _check_iris=False",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_shacl_text_iris",
+      "passed": true,
+      "detail": {
+        "name": "_shacl_text_iris",
+        "kind": "FunctionDef",
+        "line": 135,
+        "endLine": 144,
+        "signature": "graph",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_walk",
+      "passed": true,
+      "detail": {
+        "name": "_walk",
+        "kind": "FunctionDef",
+        "line": 147,
+        "endLine": 157,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:query",
+      "passed": true,
+      "detail": {
+        "name": "query",
+        "kind": "FunctionDef",
+        "line": 160,
+        "endLine": 237,
+        "signature": "graph: Graph, text: str",
+        "returns": "dict"
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:Rule",
+      "passed": true,
+      "detail": {
+        "name": "Rule",
+        "kind": "ClassDef",
+        "line": 241,
+        "endLine": 244,
+        "bases": [],
+        "annotatedFields": [
+          {
+            "name": "id",
+            "annotation": "str",
+            "line": 242,
+            "hasDefault": false
+          },
+          {
+            "name": "when",
+            "annotation": "tuple[Triple, ...]",
+            "line": 243,
+            "hasDefault": false
+          },
+          {
+            "name": "then",
+            "annotation": "Triple",
+            "line": 244,
+            "hasDefault": false
+          }
+        ]
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_key",
+      "passed": true,
+      "detail": {
+        "name": "_key",
+        "kind": "FunctionDef",
+        "line": 247,
+        "endLine": 248,
+        "signature": "triple",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_rule",
+      "passed": true,
+      "detail": {
+        "name": "_rule",
+        "kind": "FunctionDef",
+        "line": 251,
+        "endLine": 298,
+        "signature": "rule",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_chain_warnings",
+      "passed": true,
+      "detail": {
+        "name": "_chain_warnings",
+        "kind": "FunctionDef",
+        "line": 301,
+        "endLine": 313,
+        "signature": "rules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_canonical_rule",
+      "passed": true,
+      "detail": {
+        "name": "_canonical_rule",
+        "kind": "FunctionDef",
+        "line": 316,
+        "endLine": 323,
+        "signature": "rule",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:ProfileReasonError",
+      "passed": true,
+      "detail": {
+        "name": "ProfileReasonError",
+        "kind": "ClassDef",
+        "line": 326,
+        "endLine": 341,
+        "bases": ["SemanticError"],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:ProfileReasonError.__init__",
+      "passed": true,
+      "detail": {
+        "name": "ProfileReasonError.__init__",
+        "kind": "FunctionDef",
+        "line": 333,
+        "endLine": 341,
+        "signature": "self, reason, *, classification='input', location=None, rule_id=None, context='graph'",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_GraphBudget",
+      "passed": true,
+      "detail": {
+        "name": "_GraphBudget",
+        "kind": "ClassDef",
+        "line": 358,
+        "endLine": 408,
+        "bases": [],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_GraphBudget.__init__",
+      "passed": true,
+      "detail": {
+        "name": "_GraphBudget.__init__",
+        "kind": "FunctionDef",
+        "line": 361,
+        "endLine": 364,
+        "signature": "self",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_GraphBudget.debit",
+      "passed": true,
+      "detail": {
+        "name": "_GraphBudget.debit",
+        "kind": "FunctionDef",
+        "line": 366,
+        "endLine": 371,
+        "signature": "self, amount=1",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_GraphBudget.input_text",
+      "passed": true,
+      "detail": {
+        "name": "_GraphBudget.input_text",
+        "kind": "FunctionDef",
+        "line": 373,
+        "endLine": 387,
+        "signature": "self, text",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_GraphBudget.key",
+      "passed": true,
+      "detail": {
+        "name": "_GraphBudget.key",
+        "kind": "FunctionDef",
+        "line": 389,
+        "endLine": 395,
+        "signature": "self, triple",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_GraphBudget.ordered",
+      "passed": true,
+      "detail": {
+        "name": "_GraphBudget.ordered",
+        "kind": "FunctionDef",
+        "line": 397,
+        "endLine": 404,
+        "signature": "self, values, *, key=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_GraphBudget.union",
+      "passed": true,
+      "detail": {
+        "name": "_GraphBudget.union",
+        "kind": "FunctionDef",
+        "line": 406,
+        "endLine": 408,
+        "signature": "self, sets",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_term_characters",
+      "passed": true,
+      "detail": {
+        "name": "_term_characters",
+        "kind": "FunctionDef",
+        "line": 411,
+        "endLine": 414,
+        "signature": "term",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_finite_closure",
+      "passed": true,
+      "detail": {
+        "name": "_finite_closure",
+        "kind": "FunctionDef",
+        "line": 417,
+        "endLine": 508,
+        "signature": "asserted, charge, meter=None, *, _direct_capture=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_finite_matches",
+      "passed": true,
+      "detail": {
+        "name": "_finite_matches",
+        "kind": "FunctionDef",
+        "line": 511,
+        "endLine": 548,
+        "signature": "closure, patterns, charge, limit, meter=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_legacy_reason",
+      "passed": true,
+      "detail": {
+        "name": "_legacy_reason",
+        "kind": "FunctionDef",
+        "line": 551,
+        "endLine": 603,
+        "signature": "graph, rules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_legacy_reason.charge",
+      "passed": true,
+      "detail": {
+        "name": "_legacy_reason.charge",
+        "kind": "FunctionDef",
+        "line": 563,
+        "endLine": 567,
+        "signature": "",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_failure",
+      "passed": true,
+      "detail": {
+        "name": "_profile_failure",
+        "kind": "FunctionDef",
+        "line": 606,
+        "endLine": 613,
+        "signature": "error, *, rule_id=None, context='graph'",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_semantic_failure",
+      "passed": true,
+      "detail": {
+        "name": "_profile_semantic_failure",
+        "kind": "FunctionDef",
+        "line": 616,
+        "endLine": 638,
+        "signature": "error, *, context='graph', location=None, rule_id=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_iri",
+      "passed": true,
+      "detail": {
+        "name": "_profile_iri",
+        "kind": "FunctionDef",
+        "line": 641,
+        "endLine": 649,
+        "signature": "text, *, context='graph', location=None, rule_id=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_definitions",
+      "passed": true,
+      "detail": {
+        "name": "_profile_definitions",
+        "kind": "FunctionDef",
+        "line": 652,
+        "endLine": 672,
+        "signature": "rules, meter",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_catalog",
+      "passed": true,
+      "detail": {
+        "name": "_profile_catalog",
+        "kind": "FunctionDef",
+        "line": 675,
+        "endLine": 713,
+        "signature": "graph, supplied, meter",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_graph",
+      "passed": true,
+      "detail": {
+        "name": "_profile_graph",
+        "kind": "FunctionDef",
+        "line": 716,
+        "endLine": 812,
+        "signature": "graph, context, meter",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_term",
+      "passed": true,
+      "detail": {
+        "name": "_profile_term",
+        "kind": "FunctionDef",
+        "line": 815,
+        "endLine": 831,
+        "signature": "term",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_as_term",
+      "passed": true,
+      "detail": {
+        "name": "_profile_as_term",
+        "kind": "FunctionDef",
+        "line": 834,
+        "endLine": 846,
+        "signature": "term, meter",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_patterns",
+      "passed": true,
+      "detail": {
+        "name": "_profile_patterns",
+        "kind": "FunctionDef",
+        "line": 849,
+        "endLine": 854,
+        "signature": "spec, meter",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_rule_iris",
+      "passed": true,
+      "detail": {
+        "name": "_profile_rule_iris",
+        "kind": "FunctionDef",
+        "line": 857,
+        "endLine": 891,
+        "signature": "spec, meter",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_chain_warnings",
+      "passed": true,
+      "detail": {
+        "name": "_profile_chain_warnings",
+        "kind": "FunctionDef",
+        "line": 894,
+        "endLine": 926,
+        "signature": "plans, meter",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_reason",
+      "passed": true,
+      "detail": {
+        "name": "_profile_reason",
+        "kind": "FunctionDef",
+        "line": 929,
+        "endLine": 1200,
+        "signature": "graph, rules, catalog, term_context, *, _capture=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_profile_reason.actual_term",
+      "passed": true,
+      "detail": {
+        "name": "_profile_reason.actual_term",
+        "kind": "FunctionDef",
+        "line": 960,
+        "endLine": 962,
+        "signature": "term",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_reason_profile_core",
+      "passed": true,
+      "detail": {
+        "name": "_reason_profile_core",
+        "kind": "FunctionDef",
+        "line": 1203,
+        "endLine": 1222,
+        "signature": "graph, rules, catalog, term_context, capture",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_reason_profile_production",
+      "passed": true,
+      "detail": {
+        "name": "_reason_profile_production",
+        "kind": "FunctionDef",
+        "line": 1225,
+        "endLine": 1231,
+        "signature": "graph, rules, *, term_context, capture",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:reason",
+      "passed": true,
+      "detail": {
+        "name": "reason",
+        "kind": "FunctionDef",
+        "line": 1234,
+        "endLine": 1245,
+        "signature": "graph: Graph, rules=(), *, profile=None, catalog=None, term_context=None",
+        "returns": "dict"
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_shapes",
+      "passed": true,
+      "detail": {
+        "name": "_shapes",
+        "kind": "FunctionDef",
+        "line": 1273,
+        "endLine": 1365,
+        "signature": "graph, *, _utc_date=False",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_UtcDateWork",
+      "passed": true,
+      "detail": {
+        "name": "_UtcDateWork",
+        "kind": "ClassDef",
+        "line": 1368,
+        "endLine": 1411,
+        "bases": [],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_UtcDateWork.__init__",
+      "passed": true,
+      "detail": {
+        "name": "_UtcDateWork.__init__",
+        "kind": "FunctionDef",
+        "line": 1377,
+        "endLine": 1380,
+        "signature": "self",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_UtcDateWork.charge",
+      "passed": true,
+      "detail": {
+        "name": "_UtcDateWork.charge",
+        "kind": "FunctionDef",
+        "line": 1382,
+        "endLine": 1386,
+        "signature": "self, amount=1",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_UtcDateWork.ordered",
+      "passed": true,
+      "detail": {
+        "name": "_UtcDateWork.ordered",
+        "kind": "FunctionDef",
+        "line": 1388,
+        "endLine": 1406,
+        "signature": "self, graph, pattern, position, key=str",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_UtcDateWork.read",
+      "passed": true,
+      "detail": {
+        "name": "_UtcDateWork.read",
+        "kind": "FunctionDef",
+        "line": 1408,
+        "endLine": 1411,
+        "signature": "self, members",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_utc_date_fields",
+      "passed": true,
+      "detail": {
+        "name": "_utc_date_fields",
+        "kind": "FunctionDef",
+        "line": 1414,
+        "endLine": 1447,
+        "signature": "term, work, error",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_utc_date_term_key",
+      "passed": true,
+      "detail": {
+        "name": "_utc_date_term_key",
+        "kind": "FunctionDef",
+        "line": 1450,
+        "endLine": 1453,
+        "signature": "term",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_UtcDatePreflight",
+      "passed": true,
+      "detail": {
+        "name": "_UtcDatePreflight",
+        "kind": "ClassDef",
+        "line": 1456,
+        "endLine": 1525,
+        "bases": [],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_UtcDatePreflight.__init__",
+      "passed": true,
+      "detail": {
+        "name": "_UtcDatePreflight.__init__",
+        "kind": "FunctionDef",
+        "line": 1459,
+        "endLine": 1492,
+        "signature": "self, shapes",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_UtcDatePreflight.values",
+      "passed": true,
+      "detail": {
+        "name": "_UtcDatePreflight.values",
+        "kind": "FunctionDef",
+        "line": 1494,
+        "endLine": 1525,
+        "signature": "self, data",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:check_shapes",
+      "passed": true,
+      "detail": {
+        "name": "check_shapes",
+        "kind": "FunctionDef",
+        "line": 1528,
+        "endLine": 1530,
+        "signature": "data: Graph, shapes: Graph",
+        "returns": "dict"
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:validate_shacl_text",
+      "passed": true,
+      "detail": {
+        "name": "validate_shacl_text",
+        "kind": "FunctionDef",
+        "line": 1533,
+        "endLine": 1563,
+        "signature": "data_text, shapes_text, *, data_policy, range_policy",
+        "returns": "dict"
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic.py:_check_shapes",
+      "passed": true,
+      "detail": {
+        "name": "_check_shapes",
+        "kind": "FunctionDef",
+        "line": 1566,
+        "endLine": 1614,
+        "signature": "data, shapes, *, _allow_illtyped_integer=False, _range_policy='legacy'",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_scopes.py:_axiom",
+      "passed": true,
+      "detail": {
+        "name": "_axiom",
+        "kind": "FunctionDef",
+        "line": 34,
+        "endLine": 39,
+        "signature": "triple",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_scopes.py:_digest",
+      "passed": true,
+      "detail": {
+        "name": "_digest",
+        "kind": "FunctionDef",
+        "line": 42,
+        "endLine": 49,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_scopes.py:_inputs",
+      "passed": true,
+      "detail": {
+        "name": "_inputs",
+        "kind": "FunctionDef",
+        "line": 52,
+        "endLine": 70,
+        "signature": "asserted, ontology, include_derived, rules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_scopes.py:_source",
+      "passed": true,
+      "detail": {
+        "name": "_source",
+        "kind": "FunctionDef",
+        "line": 73,
+        "endLine": 85,
+        "signature": "facts, axioms, rules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_scopes.py:_selected_output",
+      "passed": true,
+      "detail": {
+        "name": "_selected_output",
+        "kind": "FunctionDef",
+        "line": 88,
+        "endLine": 223,
+        "signature": "result, original, rules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_scopes.py:_selected_output.charge",
+      "passed": true,
+      "detail": {
+        "name": "_selected_output.charge",
+        "kind": "FunctionDef",
+        "line": 104,
+        "endLine": 108,
+        "signature": "count=1",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_scopes.py:_selected_output.row",
+      "passed": true,
+      "detail": {
+        "name": "_selected_output.row",
+        "kind": "FunctionDef",
+        "line": 110,
+        "endLine": 140,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_scopes.py:_selected_output.rows",
+      "passed": true,
+      "detail": {
+        "name": "_selected_output.rows",
+        "kind": "FunctionDef",
+        "line": 142,
+        "endLine": 146,
+        "signature": "value, *, nonempty=False",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_scopes.py:ValidationScope",
+      "passed": true,
+      "detail": {
+        "name": "ValidationScope",
+        "kind": "ClassDef",
+        "line": 227,
+        "endLine": 231,
+        "bases": [],
+        "annotatedFields": [
+          {
+            "name": "facts",
+            "annotation": "Graph",
+            "line": 228,
+            "hasDefault": false
+          },
+          {
+            "name": "ontology",
+            "annotation": "Graph",
+            "line": 229,
+            "hasDefault": false
+          },
+          {
+            "name": "provenance",
+            "annotation": "dict",
+            "line": 230,
+            "hasDefault": false
+          },
+          {
+            "name": "reasoning_result",
+            "annotation": "dict | None",
+            "line": 231,
+            "hasDefault": false
+          }
+        ]
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_scopes.py:project_validation_scope",
+      "passed": true,
+      "detail": {
+        "name": "project_validation_scope",
+        "kind": "FunctionDef",
+        "line": 234,
+        "endLine": 298,
+        "signature": "asserted: Graph, ontology: Graph, *, include_derived: bool, reasoning_result: dict | None=None, reasoning_source: dict | None=None, rules: tuple[Rule, ...]=()",
+        "returns": "ValidationScope"
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_scopes.py:prepare_validation_scope",
+      "passed": true,
+      "detail": {
+        "name": "prepare_validation_scope",
+        "kind": "FunctionDef",
+        "line": 301,
+        "endLine": 326,
+        "signature": "asserted: Graph, ontology: Graph, *, include_derived: bool, rules: tuple[Rule, ...]=()",
+        "returns": "ValidationScope"
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_query.py:_literal_action",
+      "passed": true,
+      "detail": {
+        "name": "_literal_action",
+        "kind": "FunctionDef",
+        "line": 14,
+        "endLine": 19,
+        "signature": "datatype, sign=''",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_query.py:_literal_action.action",
+      "passed": true,
+      "detail": {
+        "name": "_literal_action.action",
+        "kind": "FunctionDef",
+        "line": 16,
+        "endLine": 17,
+        "signature": "tokens",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_query.py:_clone_grammar",
+      "passed": true,
+      "detail": {
+        "name": "_clone_grammar",
+        "kind": "FunctionDef",
+        "line": 22,
+        "endLine": 88,
+        "signature": "",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_query.py:_clone_grammar.choices",
+      "passed": true,
+      "detail": {
+        "name": "_clone_grammar.choices",
+        "kind": "FunctionDef",
+        "line": 66,
+        "endLine": 76,
+        "signature": "node",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_query.py:_canonical_query_strings",
+      "passed": true,
+      "detail": {
+        "name": "_canonical_query_strings",
+        "kind": "FunctionDef",
+        "line": 91,
+        "endLine": 143,
+        "signature": "prepared",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_query.py:_canonical_query_strings.visit",
+      "passed": true,
+      "detail": {
+        "name": "_canonical_query_strings.visit",
+        "kind": "FunctionDef",
+        "line": 101,
+        "endLine": 140,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_query.py:prepare_lexical_query",
+      "passed": true,
+      "detail": {
+        "name": "prepare_lexical_query",
+        "kind": "FunctionDef",
+        "line": 146,
+        "endLine": 156,
+        "signature": "text",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_error_adapter.py:Producer",
+      "passed": true,
+      "detail": {
+        "name": "Producer",
+        "kind": "ClassDef",
+        "line": 14,
+        "endLine": 20,
+        "bases": ["Enum"],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_error_adapter.py:Stage",
+      "passed": true,
+      "detail": {
+        "name": "Stage",
+        "kind": "ClassDef",
+        "line": 23,
+        "endLine": 29,
+        "bases": ["Enum"],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_error_adapter.py:Origin",
+      "passed": true,
+      "detail": {
+        "name": "Origin",
+        "kind": "ClassDef",
+        "line": 32,
+        "endLine": 35,
+        "bases": ["Enum"],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_error_adapter.py:ErrorContext",
+      "passed": true,
+      "detail": {
+        "name": "ErrorContext",
+        "kind": "ClassDef",
+        "line": 39,
+        "endLine": 41,
+        "bases": [],
+        "annotatedFields": [
+          {
+            "name": "stage",
+            "annotation": "Stage",
+            "line": 40,
+            "hasDefault": false
+          },
+          {
+            "name": "origin",
+            "annotation": "Origin",
+            "line": 41,
+            "hasDefault": false
+          }
+        ]
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_error_adapter.py:_Spec",
+      "passed": true,
+      "detail": {
+        "name": "_Spec",
+        "kind": "ClassDef",
+        "line": 45,
+        "endLine": 49,
+        "bases": [],
+        "annotatedFields": [
+          {
+            "name": "message_key",
+            "annotation": "str",
+            "line": 46,
+            "hasDefault": false
+          },
+          {
+            "name": "retryable",
+            "annotation": "bool",
+            "line": 47,
+            "hasDefault": false
+          },
+          {
+            "name": "parameter",
+            "annotation": "str | None",
+            "line": 48,
+            "hasDefault": false
+          },
+          {
+            "name": "values",
+            "annotation": "frozenset[str]",
+            "line": 49,
+            "hasDefault": false
+          }
+        ]
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_error_adapter.py:_same_json",
+      "passed": true,
+      "detail": {
+        "name": "_same_json",
+        "kind": "FunctionDef",
+        "line": 176,
+        "endLine": 183,
+        "signature": "a, b",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_error_adapter.py:_encoded",
+      "passed": true,
+      "detail": {
+        "name": "_encoded",
+        "kind": "FunctionDef",
+        "line": 186,
+        "endLine": 187,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_error_adapter.py:SemanticErrorAdapter",
+      "passed": true,
+      "detail": {
+        "name": "SemanticErrorAdapter",
+        "kind": "ClassDef",
+        "line": 190,
+        "endLine": 372,
+        "bases": [],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_error_adapter.py:SemanticErrorAdapter.__init__",
+      "passed": true,
+      "detail": {
+        "name": "SemanticErrorAdapter.__init__",
+        "kind": "FunctionDef",
+        "line": 200,
+        "endLine": 204,
+        "signature": "self, *, error_catalog: dict, error_schema: dict",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_error_adapter.py:SemanticErrorAdapter._configure",
+      "passed": true,
+      "detail": {
+        "name": "SemanticErrorAdapter._configure",
+        "kind": "FunctionDef",
+        "line": 206,
+        "endLine": 306,
+        "signature": "self, catalog, schema",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_error_adapter.py:SemanticErrorAdapter._emit",
+      "passed": true,
+      "detail": {
+        "name": "SemanticErrorAdapter._emit",
+        "kind": "FunctionDef",
+        "line": 308,
+        "endLine": 322,
+        "signature": "self, code, value=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_error_adapter.py:SemanticErrorAdapter.adapt",
+      "passed": true,
+      "detail": {
+        "name": "SemanticErrorAdapter.adapt",
+        "kind": "FunctionDef",
+        "line": 324,
+        "endLine": 372,
+        "signature": "self, *, producer: Producer, reason: str, context: ErrorContext",
+        "returns": "dict"
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:SemanticRequestFault",
+      "passed": true,
+      "detail": {
+        "name": "SemanticRequestFault",
+        "kind": "ClassDef",
+        "line": 26,
+        "endLine": 33,
+        "bases": ["ValueError"],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:SemanticRequestFault.__init__",
+      "passed": true,
+      "detail": {
+        "name": "SemanticRequestFault.__init__",
+        "kind": "FunctionDef",
+        "line": 29,
+        "endLine": 33,
+        "signature": "self, reason, producer, stage, origin",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:SemanticExecutionFault",
+      "passed": true,
+      "detail": {
+        "name": "SemanticExecutionFault",
+        "kind": "ClassDef",
+        "line": 36,
+        "endLine": 39,
+        "bases": ["ValueError"],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:SemanticExecutionFault.__init__",
+      "passed": true,
+      "detail": {
+        "name": "SemanticExecutionFault.__init__",
+        "kind": "FunctionDef",
+        "line": 37,
+        "endLine": 39,
+        "signature": "self, error",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:ProfileExecutionFault",
+      "passed": true,
+      "detail": {
+        "name": "ProfileExecutionFault",
+        "kind": "ClassDef",
+        "line": 42,
+        "endLine": 47,
+        "bases": ["SemanticExecutionFault"],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:ProfileExecutionFault.__init__",
+      "passed": true,
+      "detail": {
+        "name": "ProfileExecutionFault.__init__",
+        "kind": "FunctionDef",
+        "line": 45,
+        "endLine": 47,
+        "signature": "self, error, diagnostic",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_fail",
+      "passed": true,
+      "detail": {
+        "name": "_fail",
+        "kind": "FunctionDef",
+        "line": 50,
+        "endLine": 56,
+        "signature": "reason='REQUEST_INVALID', *, public=False",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_json",
+      "passed": true,
+      "detail": {
+        "name": "_json",
+        "kind": "FunctionDef",
+        "line": 59,
+        "endLine": 62,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_copy",
+      "passed": true,
+      "detail": {
+        "name": "_copy",
+        "kind": "FunctionDef",
+        "line": 65,
+        "endLine": 66,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_digest",
+      "passed": true,
+      "detail": {
+        "name": "_digest",
+        "kind": "FunctionDef",
+        "line": 69,
+        "endLine": 70,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_definitions",
+      "passed": true,
+      "detail": {
+        "name": "_definitions",
+        "kind": "FunctionDef",
+        "line": 73,
+        "endLine": 91,
+        "signature": "snapshot",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_shape",
+      "passed": true,
+      "detail": {
+        "name": "_shape",
+        "kind": "FunctionDef",
+        "line": 94,
+        "endLine": 98,
+        "signature": "value, required, optional=()",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_request",
+      "passed": true,
+      "detail": {
+        "name": "_request",
+        "kind": "FunctionDef",
+        "line": 101,
+        "endLine": 173,
+        "signature": "snapshot, capability, input_, parameters, selected",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:build_request",
+      "passed": true,
+      "detail": {
+        "name": "build_request",
+        "kind": "FunctionDef",
+        "line": 176,
+        "endLine": 209,
+        "signature": "snapshot, capability, input_, parameters, selected=None, *, error_catalog=None, error_schema=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_term",
+      "passed": true,
+      "detail": {
+        "name": "_term",
+        "kind": "FunctionDef",
+        "line": 212,
+        "endLine": 241,
+        "signature": "text",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_iri",
+      "passed": true,
+      "detail": {
+        "name": "_iri",
+        "kind": "FunctionDef",
+        "line": 244,
+        "endLine": 255,
+        "signature": "text",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_graph",
+      "passed": true,
+      "detail": {
+        "name": "_graph",
+        "kind": "FunctionDef",
+        "line": 258,
+        "endLine": 273,
+        "signature": "records",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_rules",
+      "passed": true,
+      "detail": {
+        "name": "_rules",
+        "kind": "FunctionDef",
+        "line": 276,
+        "endLine": 296,
+        "signature": "definitions",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_rules.pattern",
+      "passed": true,
+      "detail": {
+        "name": "_rules.pattern",
+        "kind": "FunctionDef",
+        "line": 281,
+        "endLine": 287,
+        "signature": "values",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_rows",
+      "passed": true,
+      "detail": {
+        "name": "_rows",
+        "kind": "FunctionDef",
+        "line": 299,
+        "endLine": 328,
+        "signature": "payload",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_rows.add",
+      "passed": true,
+      "detail": {
+        "name": "_rows.add",
+        "kind": "FunctionDef",
+        "line": 305,
+        "endLine": 308,
+        "signature": "cells",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_rows.walk",
+      "passed": true,
+      "detail": {
+        "name": "_rows.walk",
+        "kind": "FunctionDef",
+        "line": 312,
+        "endLine": 323,
+        "signature": "value, path",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:execute_request",
+      "passed": true,
+      "detail": {
+        "name": "execute_request",
+        "kind": "FunctionDef",
+        "line": 331,
+        "endLine": 501,
+        "signature": "request, *, error_catalog, error_schema",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_ProfileProjection",
+      "passed": true,
+      "detail": {
+        "name": "_ProfileProjection",
+        "kind": "ClassDef",
+        "line": 504,
+        "endLine": 590,
+        "bases": [],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_ProfileProjection.__init__",
+      "passed": true,
+      "detail": {
+        "name": "_ProfileProjection.__init__",
+        "kind": "FunctionDef",
+        "line": 507,
+        "endLine": 509,
+        "signature": "self",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_ProfileProjection.charge",
+      "passed": true,
+      "detail": {
+        "name": "_ProfileProjection.charge",
+        "kind": "FunctionDef",
+        "line": 511,
+        "endLine": 517,
+        "signature": "self, nodes=1, size=0",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_ProfileProjection.value",
+      "passed": true,
+      "detail": {
+        "name": "_ProfileProjection.value",
+        "kind": "FunctionDef",
+        "line": 519,
+        "endLine": 590,
+        "signature": "self, value, depth=0",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_profile_json_bytes",
+      "passed": true,
+      "detail": {
+        "name": "_profile_json_bytes",
+        "kind": "FunctionDef",
+        "line": 593,
+        "endLine": 606,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_profile_diagnostic",
+      "passed": true,
+      "detail": {
+        "name": "_profile_diagnostic",
+        "kind": "FunctionDef",
+        "line": 609,
+        "endLine": 623,
+        "signature": "reason, classification, location=None, rule_id=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_execute_profile",
+      "passed": true,
+      "detail": {
+        "name": "_execute_profile",
+        "kind": "FunctionDef",
+        "line": 626,
+        "endLine": 819,
+        "signature": "text, rules=(), *, disabled_rule_ids=(), source_reference=None, source_revision=None, error_catalog, error_schema, records=None, _capture=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:execute_profile",
+      "passed": true,
+      "detail": {
+        "name": "execute_profile",
+        "kind": "FunctionDef",
+        "line": 822,
+        "endLine": 841,
+        "signature": "text, rules=(), *, disabled_rule_ids=(), source_reference=None, source_revision=None, error_catalog, error_schema",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:execute_profile_records",
+      "passed": true,
+      "detail": {
+        "name": "execute_profile_records",
+        "kind": "FunctionDef",
+        "line": 844,
+        "endLine": 860,
+        "signature": "records, rules=(), *, disabled_rule_ids=(), error_catalog, error_schema",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_execution.py:_execute_profile_production",
+      "passed": true,
+      "detail": {
+        "name": "_execute_profile_production",
+        "kind": "FunctionDef",
+        "line": 863,
+        "endLine": 880,
+        "signature": "material, capture, *, error_catalog, error_schema",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:MaterialFailure",
+      "passed": true,
+      "detail": {
+        "name": "MaterialFailure",
+        "kind": "ClassDef",
+        "line": 44,
+        "endLine": 63,
+        "bases": ["ValueError"],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:MaterialFailure.__init__",
+      "passed": true,
+      "detail": {
+        "name": "MaterialFailure.__init__",
+        "kind": "FunctionDef",
+        "line": 47,
+        "endLine": 63,
+        "signature": "self, reason='MATERIAL_INVALID', *, domain=None, stage=0",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:CaptureLedger",
+      "passed": true,
+      "detail": {
+        "name": "CaptureLedger",
+        "kind": "ClassDef",
+        "line": 66,
+        "endLine": 205,
+        "bases": [],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:CaptureLedger.__init__",
+      "passed": true,
+      "detail": {
+        "name": "CaptureLedger.__init__",
+        "kind": "FunctionDef",
+        "line": 74,
+        "endLine": 94,
+        "signature": "self, *, overrides=()",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:CaptureLedger.begin",
+      "passed": true,
+      "detail": {
+        "name": "CaptureLedger.begin",
+        "kind": "FunctionDef",
+        "line": 96,
+        "endLine": 128,
+        "signature": "self, *, Q=0, D=0, N=0",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:CaptureLedger.enter",
+      "passed": true,
+      "detail": {
+        "name": "CaptureLedger.enter",
+        "kind": "FunctionDef",
+        "line": 130,
+        "endLine": 138,
+        "signature": "self, stage, J",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:CaptureLedger.debit",
+      "passed": true,
+      "detail": {
+        "name": "CaptureLedger.debit",
+        "kind": "FunctionDef",
+        "line": 140,
+        "endLine": 156,
+        "signature": "self, domain, count",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:CaptureLedger.reserve",
+      "passed": true,
+      "detail": {
+        "name": "CaptureLedger.reserve",
+        "kind": "FunctionDef",
+        "line": 158,
+        "endLine": 170,
+        "signature": "self, domain, count",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:CaptureLedger.release",
+      "passed": true,
+      "detail": {
+        "name": "CaptureLedger.release",
+        "kind": "FunctionDef",
+        "line": 172,
+        "endLine": 181,
+        "signature": "self, domain, count",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:CaptureLedger.receipt",
+      "passed": true,
+      "detail": {
+        "name": "CaptureLedger.receipt",
+        "kind": "FunctionDef",
+        "line": 183,
+        "endLine": 194,
+        "signature": "self",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:CaptureLedger.transferred",
+      "passed": true,
+      "detail": {
+        "name": "CaptureLedger.transferred",
+        "kind": "FunctionDef",
+        "line": 196,
+        "endLine": 199,
+        "signature": "self",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:CaptureLedger.failed",
+      "passed": true,
+      "detail": {
+        "name": "CaptureLedger.failed",
+        "kind": "FunctionDef",
+        "line": 201,
+        "endLine": 205,
+        "signature": "self",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:CaptureReceipt",
+      "passed": true,
+      "detail": {
+        "name": "CaptureReceipt",
+        "kind": "ClassDef",
+        "line": 209,
+        "endLine": 217,
+        "bases": [],
+        "annotatedFields": [
+          {
+            "name": "usage",
+            "annotation": "tuple",
+            "line": 210,
+            "hasDefault": false
+          },
+          {
+            "name": "retained",
+            "annotation": "tuple",
+            "line": 211,
+            "hasDefault": false
+          },
+          {
+            "name": "peaks",
+            "annotation": "tuple",
+            "line": 212,
+            "hasDefault": false
+          },
+          {
+            "name": "caps",
+            "annotation": "tuple",
+            "line": 213,
+            "hasDefault": false
+          },
+          {
+            "name": "stage_visits",
+            "annotation": "tuple",
+            "line": 214,
+            "hasDefault": false
+          },
+          {
+            "name": "stage_bounds",
+            "annotation": "tuple",
+            "line": 215,
+            "hasDefault": false
+          },
+          {
+            "name": "version",
+            "annotation": "str",
+            "line": 216,
+            "hasDefault": true
+          },
+          {
+            "name": "retention_owner",
+            "annotation": "str",
+            "line": 217,
+            "hasDefault": true
+          }
+        ]
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:ProfileMaterial",
+      "passed": true,
+      "detail": {
+        "name": "ProfileMaterial",
+        "kind": "ClassDef",
+        "line": 221,
+        "endLine": 234,
+        "bases": [],
+        "annotatedFields": [
+          {
+            "name": "text",
+            "annotation": "str | None",
+            "line": 222,
+            "hasDefault": false
+          },
+          {
+            "name": "records",
+            "annotation": "tuple | None",
+            "line": 223,
+            "hasDefault": false
+          },
+          {
+            "name": "rules",
+            "annotation": "tuple[RuleSpec, ...]",
+            "line": 224,
+            "hasDefault": false
+          },
+          {
+            "name": "disabled_rule_ids",
+            "annotation": "tuple[str, ...]",
+            "line": 225,
+            "hasDefault": false
+          },
+          {
+            "name": "source",
+            "annotation": "SourceRecord | tuple",
+            "line": 226,
+            "hasDefault": false
+          },
+          {
+            "name": "input_domain",
+            "annotation": "str",
+            "line": 227,
+            "hasDefault": false
+          },
+          {
+            "name": "input_preimage",
+            "annotation": "bytes",
+            "line": 228,
+            "hasDefault": false
+          },
+          {
+            "name": "source_preimage",
+            "annotation": "bytes",
+            "line": 229,
+            "hasDefault": false
+          },
+          {
+            "name": "definitions_preimage",
+            "annotation": "bytes",
+            "line": 230,
+            "hasDefault": false
+          },
+          {
+            "name": "definition_material",
+            "annotation": "bytes",
+            "line": 231,
+            "hasDefault": false
+          },
+          {
+            "name": "parser_identity",
+            "annotation": "tuple[str, str]",
+            "line": 232,
+            "hasDefault": false
+          },
+          {
+            "name": "capture_receipt",
+            "annotation": "CaptureReceipt",
+            "line": 233,
+            "hasDefault": false
+          },
+          {
+            "name": "version",
+            "annotation": "str",
+            "line": 234,
+            "hasDefault": true
+          }
+        ]
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:ProfileInputLayer",
+      "passed": true,
+      "detail": {
+        "name": "ProfileInputLayer",
+        "kind": "ClassDef",
+        "line": 238,
+        "endLine": 242,
+        "bases": [],
+        "annotatedFields": [
+          {
+            "name": "input_domain",
+            "annotation": "str",
+            "line": 239,
+            "hasDefault": false
+          },
+          {
+            "name": "content",
+            "annotation": "bytes | tuple",
+            "line": 240,
+            "hasDefault": false
+          },
+          {
+            "name": "source",
+            "annotation": "SourceRecord | None",
+            "line": 241,
+            "hasDefault": false
+          },
+          {
+            "name": "parser_identity",
+            "annotation": "tuple[str, str]",
+            "line": 242,
+            "hasDefault": false
+          }
+        ]
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:SelectedMaterial",
+      "passed": true,
+      "detail": {
+        "name": "SelectedMaterial",
+        "kind": "ClassDef",
+        "line": 246,
+        "endLine": 254,
+        "bases": [],
+        "annotatedFields": [
+          {
+            "name": "asserted_records",
+            "annotation": "ProfileInputLayer",
+            "line": 247,
+            "hasDefault": false
+          },
+          {
+            "name": "ontology_records",
+            "annotation": "ProfileInputLayer",
+            "line": 248,
+            "hasDefault": false
+          },
+          {
+            "name": "input_preimage",
+            "annotation": "bytes",
+            "line": 249,
+            "hasDefault": false
+          },
+          {
+            "name": "source_preimage",
+            "annotation": "bytes",
+            "line": 250,
+            "hasDefault": false
+          },
+          {
+            "name": "definition_material",
+            "annotation": "bytes",
+            "line": 251,
+            "hasDefault": false
+          },
+          {
+            "name": "parser_identity",
+            "annotation": "tuple[str, str]",
+            "line": 252,
+            "hasDefault": false
+          },
+          {
+            "name": "capture_receipt",
+            "annotation": "CaptureReceipt",
+            "line": 253,
+            "hasDefault": false
+          },
+          {
+            "name": "version",
+            "annotation": "str",
+            "line": 254,
+            "hasDefault": true
+          }
+        ]
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_require",
+      "passed": true,
+      "detail": {
+        "name": "_require",
+        "kind": "FunctionDef",
+        "line": 257,
+        "endLine": 259,
+        "signature": "condition",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_text",
+      "passed": true,
+      "detail": {
+        "name": "_text",
+        "kind": "FunctionDef",
+        "line": 262,
+        "endLine": 305,
+        "signature": "value, ledger, maximum=MAX_BYTES, *, optional=False",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_project",
+      "passed": true,
+      "detail": {
+        "name": "_project",
+        "kind": "FunctionDef",
+        "line": 308,
+        "endLine": 394,
+        "signature": "value, ledger, depth=0, *, json_data=False",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_encode",
+      "passed": true,
+      "detail": {
+        "name": "_encode",
+        "kind": "FunctionDef",
+        "line": 397,
+        "endLine": 436,
+        "signature": "value, ledger, *, json_data=False",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_hash",
+      "passed": true,
+      "detail": {
+        "name": "_hash",
+        "kind": "FunctionDef",
+        "line": 439,
+        "endLine": 444,
+        "signature": "data, ledger",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_records",
+      "passed": true,
+      "detail": {
+        "name": "_records",
+        "kind": "FunctionDef",
+        "line": 447,
+        "endLine": 454,
+        "signature": "value, ledger",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_identity",
+      "passed": true,
+      "detail": {
+        "name": "_identity",
+        "kind": "FunctionDef",
+        "line": 457,
+        "endLine": 463,
+        "signature": "identity, ledger",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_definitions",
+      "passed": true,
+      "detail": {
+        "name": "_definitions",
+        "kind": "FunctionDef",
+        "line": 466,
+        "endLine": 510,
+        "signature": "rules, disabled, ledger",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:RuleDefinitions",
+      "passed": true,
+      "detail": {
+        "name": "RuleDefinitions",
+        "kind": "ClassDef",
+        "line": 514,
+        "endLine": 519,
+        "bases": [],
+        "annotatedFields": [
+          {
+            "name": "rules",
+            "annotation": "tuple[RuleSpec, ...]",
+            "line": 515,
+            "hasDefault": false
+          },
+          {
+            "name": "disabled_rule_ids",
+            "annotation": "tuple[str, ...]",
+            "line": 516,
+            "hasDefault": false
+          },
+          {
+            "name": "definitions_preimage",
+            "annotation": "bytes",
+            "line": 517,
+            "hasDefault": false
+          },
+          {
+            "name": "definition_material",
+            "annotation": "bytes",
+            "line": 518,
+            "hasDefault": false
+          },
+          {
+            "name": "capture_receipt",
+            "annotation": "CaptureReceipt",
+            "line": 519,
+            "hasDefault": false
+          }
+        ]
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_read_syntax_json",
+      "passed": true,
+      "detail": {
+        "name": "_read_syntax_json",
+        "kind": "FunctionDef",
+        "line": 522,
+        "endLine": 608,
+        "signature": "data, ledger",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_read_syntax_json.number",
+      "passed": true,
+      "detail": {
+        "name": "_read_syntax_json.number",
+        "kind": "FunctionDef",
+        "line": 548,
+        "endLine": 549,
+        "signature": "_",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_read_syntax_json.pairs",
+      "passed": true,
+      "detail": {
+        "name": "_read_syntax_json.pairs",
+        "kind": "FunctionDef",
+        "line": 593,
+        "endLine": 603,
+        "signature": "items",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_syntax_native",
+      "passed": true,
+      "detail": {
+        "name": "_syntax_native",
+        "kind": "FunctionDef",
+        "line": 611,
+        "endLine": 630,
+        "signature": "value, ledger",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:decode_rule_definitions",
+      "passed": true,
+      "detail": {
+        "name": "decode_rule_definitions",
+        "kind": "FunctionDef",
+        "line": 633,
+        "endLine": 683,
+        "signature": "data, *, ledger=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_prepare_profile_material",
+      "passed": true,
+      "detail": {
+        "name": "_prepare_profile_material",
+        "kind": "FunctionDef",
+        "line": 686,
+        "endLine": 783,
+        "signature": "text=None, rules=(), *, records=None, disabled_rule_ids=(), source_reference=None, source_revision=None, parser_identity=None, ledger=None, finish=True, budget_inputs=(0, 0)",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:prepare_profile_material",
+      "passed": true,
+      "detail": {
+        "name": "prepare_profile_material",
+        "kind": "FunctionDef",
+        "line": 786,
+        "endLine": 806,
+        "signature": "text=None, rules=(), *, records=None, disabled_rule_ids=(), source_reference=None, source_revision=None, parser_identity=None, ledger=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_consumer_definition",
+      "passed": true,
+      "detail": {
+        "name": "_consumer_definition",
+        "kind": "FunctionDef",
+        "line": 809,
+        "endLine": 835,
+        "signature": "value, ledger",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_selected_layer",
+      "passed": true,
+      "detail": {
+        "name": "_selected_layer",
+        "kind": "FunctionDef",
+        "line": 838,
+        "endLine": 859,
+        "signature": "value, identity, ledger",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_selected_source",
+      "passed": true,
+      "detail": {
+        "name": "_selected_source",
+        "kind": "FunctionDef",
+        "line": 862,
+        "endLine": 882,
+        "signature": "layer, ledger",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_layer_from_json",
+      "passed": true,
+      "detail": {
+        "name": "_layer_from_json",
+        "kind": "FunctionDef",
+        "line": 885,
+        "endLine": 904,
+        "signature": "value, ledger",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:_prepare_selected_material",
+      "passed": true,
+      "detail": {
+        "name": "_prepare_selected_material",
+        "kind": "FunctionDef",
+        "line": 907,
+        "endLine": 1002,
+        "signature": "asserted_records, ontology_records, definition, *, parser_identity, ledger, encoded=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:prepare_selected_material",
+      "passed": true,
+      "detail": {
+        "name": "prepare_selected_material",
+        "kind": "FunctionDef",
+        "line": 1005,
+        "endLine": 1016,
+        "signature": "asserted_records, ontology_records, definition, *, parser_identity, ledger=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_profile_input.py:decode_selected_material",
+      "passed": true,
+      "detail": {
+        "name": "decode_selected_material",
+        "kind": "FunctionDef",
+        "line": 1019,
+        "endLine": 1033,
+        "signature": "input_preimage, source_preimage, definition_material, *, parser_identity, ledger=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:ProbeFault",
+      "passed": true,
+      "detail": {
+        "name": "ProbeFault",
+        "kind": "ClassDef",
+        "line": 134,
+        "endLine": 139,
+        "bases": ["ValueError"],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:ProbeFault.__init__",
+      "passed": true,
+      "detail": {
+        "name": "ProbeFault.__init__",
+        "kind": "FunctionDef",
+        "line": 137,
+        "endLine": 139,
+        "signature": "self, code",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:BoundaryStop",
+      "passed": true,
+      "detail": {
+        "name": "BoundaryStop",
+        "kind": "ClassDef",
+        "line": 142,
+        "endLine": 145,
+        "bases": ["ProbeFault"],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:BoundaryStop.__init__",
+      "passed": true,
+      "detail": {
+        "name": "BoundaryStop.__init__",
+        "kind": "FunctionDef",
+        "line": 143,
+        "endLine": 145,
+        "signature": "self, code, exit_code, state",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:CollectionBoundary",
+      "passed": true,
+      "detail": {
+        "name": "CollectionBoundary",
+        "kind": "ClassDef",
+        "line": 151,
+        "endLine": 184,
+        "bases": [],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:CollectionBoundary.__init__",
+      "passed": true,
+      "detail": {
+        "name": "CollectionBoundary.__init__",
+        "kind": "FunctionDef",
+        "line": 154,
+        "endLine": 159,
+        "signature": "self, monotonic, started, cancel_requested",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:CollectionBoundary.check",
+      "passed": true,
+      "detail": {
+        "name": "CollectionBoundary.check",
+        "kind": "FunctionDef",
+        "line": 161,
+        "endLine": 165,
+        "signature": "self",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:CollectionBoundary.call",
+      "passed": true,
+      "detail": {
+        "name": "CollectionBoundary.call",
+        "kind": "FunctionDef",
+        "line": 167,
+        "endLine": 184,
+        "signature": "self, stage, api, function, args, kwargs, capture=True",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_checked_call",
+      "passed": true,
+      "detail": {
+        "name": "_checked_call",
+        "kind": "FunctionDef",
+        "line": 187,
+        "endLine": 191,
+        "signature": "stage, api, function, *args, **kwargs",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_checked_lexical_decode",
+      "passed": true,
+      "detail": {
+        "name": "_checked_lexical_decode",
+        "kind": "FunctionDef",
+        "line": 194,
+        "endLine": 201,
+        "signature": "function, text",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:parse_argv",
+      "passed": true,
+      "detail": {
+        "name": "parse_argv",
+        "kind": "FunctionDef",
+        "line": 204,
+        "endLine": 211,
+        "signature": "argv",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:asset_paths",
+      "passed": true,
+      "detail": {
+        "name": "asset_paths",
+        "kind": "FunctionDef",
+        "line": 214,
+        "endLine": 219,
+        "signature": "",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:read_bounded",
+      "passed": true,
+      "detail": {
+        "name": "read_bounded",
+        "kind": "FunctionDef",
+        "line": 222,
+        "endLine": 232,
+        "signature": "path, cap",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:strict_json",
+      "passed": true,
+      "detail": {
+        "name": "strict_json",
+        "kind": "FunctionDef",
+        "line": 235,
+        "endLine": 263,
+        "signature": "raw",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:strict_json.pairs",
+      "passed": true,
+      "detail": {
+        "name": "strict_json.pairs",
+        "kind": "FunctionDef",
+        "line": 236,
+        "endLine": 242,
+        "signature": "items",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:strict_json.constant",
+      "passed": true,
+      "detail": {
+        "name": "strict_json.constant",
+        "kind": "FunctionDef",
+        "line": 244,
+        "endLine": 245,
+        "signature": "_value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:strict_json.floating",
+      "passed": true,
+      "detail": {
+        "name": "strict_json.floating",
+        "kind": "FunctionDef",
+        "line": 247,
+        "endLine": 251,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:canonical_bytes",
+      "passed": true,
+      "detail": {
+        "name": "canonical_bytes",
+        "kind": "FunctionDef",
+        "line": 266,
+        "endLine": 274,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_exact",
+      "passed": true,
+      "detail": {
+        "name": "_exact",
+        "kind": "FunctionDef",
+        "line": 277,
+        "endLine": 279,
+        "signature": "value, keys",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_list",
+      "passed": true,
+      "detail": {
+        "name": "_list",
+        "kind": "FunctionDef",
+        "line": 282,
+        "endLine": 284,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_text",
+      "passed": true,
+      "detail": {
+        "name": "_text",
+        "kind": "FunctionDef",
+        "line": 287,
+        "endLine": 289,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_validate_parameters",
+      "passed": true,
+      "detail": {
+        "name": "_validate_parameters",
+        "kind": "FunctionDef",
+        "line": 292,
+        "endLine": 334,
+        "signature": "observation, dataset",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:validate_assets",
+      "passed": true,
+      "detail": {
+        "name": "validate_assets",
+        "kind": "FunctionDef",
+        "line": 337,
+        "endLine": 451,
+        "signature": "manifest, inputs",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:load_assets",
+      "passed": true,
+      "detail": {
+        "name": "load_assets",
+        "kind": "FunctionDef",
+        "line": 454,
+        "endLine": 474,
+        "signature": "",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:JSONLWriter",
+      "passed": true,
+      "detail": {
+        "name": "JSONLWriter",
+        "kind": "ClassDef",
+        "line": 477,
+        "endLine": 530,
+        "bases": [],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:JSONLWriter.__init__",
+      "passed": true,
+      "detail": {
+        "name": "JSONLWriter.__init__",
+        "kind": "FunctionDef",
+        "line": 480,
+        "endLine": 492,
+        "signature": "self, stream, *, total_cap=REPORT_CAP, item_cap=ITEM_CAP, reserve=TERMINAL_RESERVE",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:JSONLWriter.emit",
+      "passed": true,
+      "detail": {
+        "name": "JSONLWriter.emit",
+        "kind": "FunctionDef",
+        "line": 494,
+        "endLine": 530,
+        "signature": "self, value, *, terminal=False",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:CallCounter",
+      "passed": true,
+      "detail": {
+        "name": "CallCounter",
+        "kind": "ClassDef",
+        "line": 533,
+        "endLine": 562,
+        "bases": [],
+        "annotatedFields": []
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:CallCounter.__init__",
+      "passed": true,
+      "detail": {
+        "name": "CallCounter.__init__",
+        "kind": "FunctionDef",
+        "line": 536,
+        "endLine": 541,
+        "signature": "self, semantic, validator",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:CallCounter._profile",
+      "passed": true,
+      "detail": {
+        "name": "CallCounter._profile",
+        "kind": "FunctionDef",
+        "line": 543,
+        "endLine": 548,
+        "signature": "self, frame, event, _arg",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:CallCounter.__enter__",
+      "passed": true,
+      "detail": {
+        "name": "CallCounter.__enter__",
+        "kind": "FunctionDef",
+        "line": 550,
+        "endLine": 556,
+        "signature": "self",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:CallCounter.__exit__",
+      "passed": true,
+      "detail": {
+        "name": "CallCounter.__exit__",
+        "kind": "FunctionDef",
+        "line": 558,
+        "endLine": 562,
+        "signature": "self, *_exception",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_check_pin",
+      "passed": true,
+      "detail": {
+        "name": "_check_pin",
+        "kind": "FunctionDef",
+        "line": 565,
+        "endLine": 569,
+        "signature": "path, count, digest, code",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:check_runtime_preconditions",
+      "passed": true,
+      "detail": {
+        "name": "check_runtime_preconditions",
+        "kind": "FunctionDef",
+        "line": 572,
+        "endLine": 607,
+        "signature": "",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_code_fingerprint",
+      "passed": true,
+      "detail": {
+        "name": "_code_fingerprint",
+        "kind": "FunctionDef",
+        "line": 610,
+        "endLine": 623,
+        "signature": "code",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_code_fingerprint.normalized",
+      "passed": true,
+      "detail": {
+        "name": "_code_fingerprint.normalized",
+        "kind": "FunctionDef",
+        "line": 611,
+        "endLine": 617,
+        "signature": "item",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_runtime_modules",
+      "passed": true,
+      "detail": {
+        "name": "_runtime_modules",
+        "kind": "FunctionDef",
+        "line": 626,
+        "endLine": 706,
+        "signature": "identity",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_bytes_value",
+      "passed": true,
+      "detail": {
+        "name": "_bytes_value",
+        "kind": "FunctionDef",
+        "line": 709,
+        "endLine": 714,
+        "signature": "raw",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_graph_value",
+      "passed": true,
+      "detail": {
+        "name": "_graph_value",
+        "kind": "FunctionDef",
+        "line": 717,
+        "endLine": 719,
+        "signature": "graph",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_typed_value",
+      "passed": true,
+      "detail": {
+        "name": "_typed_value",
+        "kind": "FunctionDef",
+        "line": 722,
+        "endLine": 765,
+        "signature": "value, approved, *, budget=None, depth=0",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_approved_types",
+      "passed": true,
+      "detail": {
+        "name": "_approved_types",
+        "kind": "FunctionDef",
+        "line": 768,
+        "endLine": 780,
+        "signature": "modules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_validate_nested_assets",
+      "passed": true,
+      "detail": {
+        "name": "_validate_nested_assets",
+        "kind": "FunctionDef",
+        "line": 783,
+        "endLine": 1008,
+        "signature": "manifest, inputs",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_validate_nested_assets.sha",
+      "passed": true,
+      "detail": {
+        "name": "_validate_nested_assets.sha",
+        "kind": "FunctionDef",
+        "line": 785,
+        "endLine": 788,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_validate_nested_assets.reference",
+      "passed": true,
+      "detail": {
+        "name": "_validate_nested_assets.reference",
+        "kind": "FunctionDef",
+        "line": 790,
+        "endLine": 802,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_validate_nested_assets.source",
+      "passed": true,
+      "detail": {
+        "name": "_validate_nested_assets.source",
+        "kind": "FunctionDef",
+        "line": 803,
+        "endLine": 809,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_validate_nested_assets.term",
+      "passed": true,
+      "detail": {
+        "name": "_validate_nested_assets.term",
+        "kind": "FunctionDef",
+        "line": 811,
+        "endLine": 821,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_validate_nested_assets.triple",
+      "passed": true,
+      "detail": {
+        "name": "_validate_nested_assets.triple",
+        "kind": "FunctionDef",
+        "line": 823,
+        "endLine": 828,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_validate_nested_assets.structured_rule",
+      "passed": true,
+      "detail": {
+        "name": "_validate_nested_assets.structured_rule",
+        "kind": "FunctionDef",
+        "line": 830,
+        "endLine": 848,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_validate_nested_assets.raw_triple",
+      "passed": true,
+      "detail": {
+        "name": "_validate_nested_assets.raw_triple",
+        "kind": "FunctionDef",
+        "line": 850,
+        "endLine": 853,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_source_record",
+      "passed": true,
+      "detail": {
+        "name": "_source_record",
+        "kind": "FunctionDef",
+        "line": 1011,
+        "endLine": 1014,
+        "signature": "raw, modules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_term_input",
+      "passed": true,
+      "detail": {
+        "name": "_term_input",
+        "kind": "FunctionDef",
+        "line": 1017,
+        "endLine": 1025,
+        "signature": "raw, modules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_structured_inputs",
+      "passed": true,
+      "detail": {
+        "name": "_structured_inputs",
+        "kind": "FunctionDef",
+        "line": 1028,
+        "endLine": 1043,
+        "signature": "dataset, modules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_structured_inputs.triple",
+      "passed": true,
+      "detail": {
+        "name": "_structured_inputs.triple",
+        "kind": "FunctionDef",
+        "line": 1030,
+        "endLine": 1031,
+        "signature": "raw",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_original_profile_inputs",
+      "passed": true,
+      "detail": {
+        "name": "_original_profile_inputs",
+        "kind": "FunctionDef",
+        "line": 1046,
+        "endLine": 1088,
+        "signature": "dataset, dataset_id, input_sha, modules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_original_profile_inputs.source",
+      "passed": true,
+      "detail": {
+        "name": "_original_profile_inputs.source",
+        "kind": "FunctionDef",
+        "line": 1054,
+        "endLine": 1055,
+        "signature": "pointer, text=None, revision=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_original_profile_inputs.term",
+      "passed": true,
+      "detail": {
+        "name": "_original_profile_inputs.term",
+        "kind": "FunctionDef",
+        "line": 1056,
+        "endLine": 1063,
+        "signature": "value, pointer, iri=False",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_original_profile_inputs.triple",
+      "passed": true,
+      "detail": {
+        "name": "_original_profile_inputs.triple",
+        "kind": "FunctionDef",
+        "line": 1064,
+        "endLine": 1068,
+        "signature": "value, pointer, rule=False",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_legacy_rules",
+      "passed": true,
+      "detail": {
+        "name": "_legacy_rules",
+        "kind": "FunctionDef",
+        "line": 1091,
+        "endLine": 1112,
+        "signature": "dataset, modules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_legacy_rules.term",
+      "passed": true,
+      "detail": {
+        "name": "_legacy_rules.term",
+        "kind": "FunctionDef",
+        "line": 1094,
+        "endLine": 1103,
+        "signature": "raw",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_catalog",
+      "passed": true,
+      "detail": {
+        "name": "_catalog",
+        "kind": "FunctionDef",
+        "line": 1115,
+        "endLine": 1119,
+        "signature": "modules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_known_failure",
+      "passed": true,
+      "detail": {
+        "name": "_known_failure",
+        "kind": "FunctionDef",
+        "line": 1122,
+        "endLine": 1159,
+        "signature": "error, modules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_scope_observation",
+      "passed": true,
+      "detail": {
+        "name": "_scope_observation",
+        "kind": "FunctionDef",
+        "line": 1162,
+        "endLine": 1224,
+        "signature": "dataset, mode, modules, counter",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_scope_observation.stage",
+      "passed": true,
+      "detail": {
+        "name": "_scope_observation.stage",
+        "kind": "FunctionDef",
+        "line": 1176,
+        "endLine": 1194,
+        "signature": "name, call",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_capture_expectation",
+      "passed": true,
+      "detail": {
+        "name": "_capture_expectation",
+        "kind": "FunctionDef",
+        "line": 1227,
+        "endLine": 1240,
+        "signature": "produced, explanation, modules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_restore",
+      "passed": true,
+      "detail": {
+        "name": "_restore",
+        "kind": "FunctionDef",
+        "line": 1243,
+        "endLine": 1257,
+        "signature": "produced, expectation, explanation, modules, *, payload=None, rows=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_production_observation",
+      "passed": true,
+      "detail": {
+        "name": "_production_observation",
+        "kind": "FunctionDef",
+        "line": 1260,
+        "endLine": 1343,
+        "signature": "dataset, observation, manifest, modules, approved",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_mutate_current_payload",
+      "passed": true,
+      "detail": {
+        "name": "_mutate_current_payload",
+        "kind": "FunctionDef",
+        "line": 1346,
+        "endLine": 1447,
+        "signature": "payload_json, mutation",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_mutate_current_payload.change",
+      "passed": true,
+      "detail": {
+        "name": "_mutate_current_payload.change",
+        "kind": "FunctionDef",
+        "line": 1351,
+        "endLine": 1356,
+        "signature": "parent, key, value, pointer",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_mutate_current_payload.last",
+      "passed": true,
+      "detail": {
+        "name": "_mutate_current_payload.last",
+        "kind": "FunctionDef",
+        "line": 1357,
+        "endLine": 1360,
+        "signature": "value",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_install_audit_observer",
+      "passed": true,
+      "detail": {
+        "name": "_install_audit_observer",
+        "kind": "FunctionDef",
+        "line": 1455,
+        "endLine": 1472,
+        "signature": "",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_offline_observation",
+      "passed": true,
+      "detail": {
+        "name": "_offline_observation",
+        "kind": "FunctionDef",
+        "line": 1475,
+        "endLine": 1513,
+        "signature": "dataset, action, modules",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_b1_observation",
+      "passed": true,
+      "detail": {
+        "name": "_b1_observation",
+        "kind": "FunctionDef",
+        "line": 1516,
+        "endLine": 1592,
+        "signature": "dataset, modules, instrumentation",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_dispatch",
+      "passed": true,
+      "detail": {
+        "name": "_dispatch",
+        "kind": "FunctionDef",
+        "line": 1595,
+        "endLine": 1643,
+        "signature": "observation, dataset, manifest, modules, approved, counter, instrumentation",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_partial_value",
+      "passed": true,
+      "detail": {
+        "name": "_partial_value",
+        "kind": "FunctionDef",
+        "line": 1646,
+        "endLine": 1691,
+        "signature": "value, modules, approved, *, depth=0",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_partial_outputs",
+      "passed": true,
+      "detail": {
+        "name": "_partial_outputs",
+        "kind": "FunctionDef",
+        "line": 1694,
+        "endLine": 1699,
+        "signature": "boundary, modules, approved",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:_safe_stderr",
+      "passed": true,
+      "detail": {
+        "name": "_safe_stderr",
+        "kind": "FunctionDef",
+        "line": 1702,
+        "endLine": 1709,
+        "signature": "stream, code",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:run_fixed_suite",
+      "passed": true,
+      "detail": {
+        "name": "run_fixed_suite",
+        "kind": "FunctionDef",
+        "line": 1712,
+        "endLine": 1884,
+        "signature": "selector, *, stdout=None, stderr=None, monotonic=None, cancel_requested=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:main",
+      "passed": true,
+      "detail": {
+        "name": "main",
+        "kind": "FunctionDef",
+        "line": 1887,
+        "endLine": 1904,
+        "signature": "argv=None",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:main.request_stop",
+      "passed": true,
+      "detail": {
+        "name": "main.request_stop",
+        "kind": "FunctionDef",
+        "line": 1894,
+        "endLine": 1895,
+        "signature": "_number, _frame",
+        "returns": null
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/rdf_snapshot.py:iri",
+      "passed": true,
+      "detail": {
+        "name": "iri",
+        "kind": "FunctionDef",
+        "line": 12,
+        "endLine": 19,
+        "signature": "value: str",
+        "returns": "URIRef"
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/rdf_snapshot.py:term",
+      "passed": true,
+      "detail": {
+        "name": "term",
+        "kind": "FunctionDef",
+        "line": 22,
+        "endLine": 48,
+        "signature": "value: str",
+        "returns": "URIRef | Literal"
+      }
+    },
+    {
+      "check": "initialDeclaration:packages/engine/src/ontolearn_engine/rdf_snapshot.py:graph_from_snapshot",
+      "passed": true,
+      "detail": {
+        "name": "graph_from_snapshot",
+        "kind": "FunctionDef",
+        "line": 51,
+        "endLine": 66,
+        "signature": "snapshot: dict",
+        "returns": "Graph"
+      }
+    },
+    {
+      "check": "additionalNamedDeclarations:packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "passed": true,
+      "detail": [
+        {
+          "name": "canonical_string",
+          "line": 20,
+          "endLine": 28,
+          "signature": "term",
+          "returnAnnotation": null
+        },
+        {
+          "name": "parse_graph",
+          "line": 92,
+          "endLine": 99,
+          "signature": "text, *, base_uri",
+          "returnAnnotation": null
+        },
+        {
+          "name": "parse_profile_graph",
+          "line": 692,
+          "endLine": 722,
+          "signature": "text, *, base_uri, source=None",
+          "returnAnnotation": null
+        },
+        {
+          "name": "profile_graph_from_records",
+          "line": 815,
+          "endLine": 839,
+          "signature": "records, *, disabled_rule_ids=()",
+          "returnAnnotation": null
+        },
+        {
+          "name": "bind_profile_disabled_rules",
+          "line": 564,
+          "endLine": 569,
+          "signature": "context, disabled_rule_ids",
+          "returnAnnotation": null
+        }
+      ]
+    },
+    {
+      "check": "additionalMissingNames:packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "additionalNamedDeclarations:packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "passed": true,
+      "detail": [
+        {
+          "name": "SourceRecord",
+          "line": 67,
+          "endLine": 71,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "reference",
+              "annotation": "str | None",
+              "line": 68,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "digest",
+              "annotation": "str | None",
+              "line": 69,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "revision",
+              "annotation": "str | None",
+              "line": 70,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "text",
+              "annotation": "str | None",
+              "line": 71,
+              "defaultSyntax": "None"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "TermInput",
+          "line": 75,
+          "endLine": 80,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "kind",
+              "annotation": "str",
+              "line": 76,
+              "defaultSyntax": null
+            },
+            {
+              "name": "lexical_form",
+              "annotation": "str",
+              "line": 77,
+              "defaultSyntax": null
+            },
+            {
+              "name": "datatype_iri",
+              "annotation": "str | None",
+              "line": 78,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "language_raw",
+              "annotation": "str | None",
+              "line": 79,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "source",
+              "annotation": "SourceRecord | None",
+              "line": 80,
+              "defaultSyntax": "None"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "InputLocation",
+          "line": 19,
+          "endLine": 23,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "section",
+              "annotation": "str | None",
+              "line": 20,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "index",
+              "annotation": "int | None",
+              "line": 21,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "side",
+              "annotation": "str | None",
+              "line": 22,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "span",
+              "annotation": "tuple[int, int] | None",
+              "line": 23,
+              "defaultSyntax": "None"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "ProfileLimits",
+          "line": 118,
+          "endLine": 141,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "input_bytes",
+              "annotation": "int",
+              "line": 119,
+              "defaultSyntax": "262144"
+            },
+            {
+              "name": "term_bytes",
+              "annotation": "int",
+              "line": 120,
+              "defaultSyntax": "16384"
+            },
+            {
+              "name": "source_bytes",
+              "annotation": "int",
+              "line": 121,
+              "defaultSyntax": "65536"
+            },
+            {
+              "name": "digits",
+              "annotation": "int",
+              "line": 122,
+              "defaultSyntax": "4096"
+            },
+            {
+              "name": "integer_bits",
+              "annotation": "int",
+              "line": 123,
+              "defaultSyntax": "16384"
+            },
+            {
+              "name": "temporary_bits",
+              "annotation": "int",
+              "line": 124,
+              "defaultSyntax": "32768"
+            },
+            {
+              "name": "rules",
+              "annotation": "int",
+              "line": 125,
+              "defaultSyntax": "100"
+            },
+            {
+              "name": "when",
+              "annotation": "int",
+              "line": 126,
+              "defaultSyntax": "16"
+            },
+            {
+              "name": "comparisons",
+              "annotation": "int",
+              "line": 127,
+              "defaultSyntax": "32"
+            },
+            {
+              "name": "heads",
+              "annotation": "int",
+              "line": 128,
+              "defaultSyntax": "16"
+            },
+            {
+              "name": "variables",
+              "annotation": "int",
+              "line": 129,
+              "defaultSyntax": "64"
+            },
+            {
+              "name": "bindings",
+              "annotation": "int",
+              "line": 130,
+              "defaultSyntax": "1024"
+            },
+            {
+              "name": "firings",
+              "annotation": "int",
+              "line": 131,
+              "defaultSyntax": "1024"
+            },
+            {
+              "name": "head_occurrences",
+              "annotation": "int",
+              "line": 132,
+              "defaultSyntax": "16384"
+            },
+            {
+              "name": "trace_items",
+              "annotation": "int",
+              "line": 133,
+              "defaultSyntax": "8192"
+            },
+            {
+              "name": "output_bytes",
+              "annotation": "int",
+              "line": 134,
+              "defaultSyntax": "262144"
+            },
+            {
+              "name": "work",
+              "annotation": "int",
+              "line": 135,
+              "defaultSyntax": "16777216"
+            }
+          ],
+          "methodInterfacesOnly": [
+            {
+              "name": "__post_init__",
+              "line": 137,
+              "endLine": 141,
+              "signature": "self",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "ProfileFailure",
+          "line": 83,
+          "endLine": 106,
+          "bases": ["Exception"],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 86,
+              "endLine": 94,
+              "signature": "self, reason, location=None, classification='input'",
+              "returnAnnotation": null
+            },
+            {
+              "name": "reason",
+              "line": 97,
+              "endLine": 98,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "location",
+              "line": 101,
+              "endLine": 102,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "classification",
+              "line": 105,
+              "endLine": 106,
+              "signature": "self",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "_safe",
+              "line": 94
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "check": "additionalMissingNames:packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "additionalNamedDeclarations:packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "passed": true,
+      "detail": [
+        {
+          "name": "Variable",
+          "line": 42,
+          "endLine": 43,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "name",
+              "annotation": "str",
+              "line": 43,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "Triple",
+          "line": 47,
+          "endLine": 50,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "subject",
+              "annotation": "TermInput | Variable",
+              "line": 48,
+              "defaultSyntax": null
+            },
+            {
+              "name": "predicate",
+              "annotation": "TermInput",
+              "line": 49,
+              "defaultSyntax": null
+            },
+            {
+              "name": "object",
+              "annotation": "TermInput | Variable",
+              "line": 50,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "Comparison",
+          "line": 54,
+          "endLine": 57,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "left",
+              "annotation": "TermInput | Variable",
+              "line": 55,
+              "defaultSyntax": null
+            },
+            {
+              "name": "operator",
+              "annotation": "str",
+              "line": 56,
+              "defaultSyntax": null
+            },
+            {
+              "name": "right",
+              "annotation": "TermInput | Variable",
+              "line": 57,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "RuleSpec",
+          "line": 61,
+          "endLine": 69,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "rule_id",
+              "annotation": "str",
+              "line": 62,
+              "defaultSyntax": null
+            },
+            {
+              "name": "when",
+              "annotation": "tuple[Triple, ...]",
+              "line": 63,
+              "defaultSyntax": null
+            },
+            {
+              "name": "comparisons",
+              "annotation": "tuple[Comparison, ...]",
+              "line": 64,
+              "defaultSyntax": null
+            },
+            {
+              "name": "heads",
+              "annotation": "tuple[Triple, ...]",
+              "line": 65,
+              "defaultSyntax": null
+            },
+            {
+              "name": "source",
+              "annotation": "SourceRecord | None",
+              "line": 66,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "revision",
+              "annotation": "str | None",
+              "line": 67,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "definition_digest",
+              "annotation": "str | None",
+              "line": 68,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "policy",
+              "annotation": "str",
+              "line": 69,
+              "defaultSyntax": "PROFILE"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "Catalog",
+          "line": 73,
+          "endLine": 76,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "classes",
+              "annotation": "tuple[str, ...]",
+              "line": 74,
+              "defaultSyntax": "()"
+            },
+            {
+              "name": "object_properties",
+              "annotation": "tuple[str, ...]",
+              "line": 75,
+              "defaultSyntax": "()"
+            },
+            {
+              "name": "data_properties",
+              "annotation": "tuple[str, ...]",
+              "line": 76,
+              "defaultSyntax": "()"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "BindingMatch",
+          "line": 80,
+          "endLine": 84,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "rule_id",
+              "annotation": "str",
+              "line": 81,
+              "defaultSyntax": null
+            },
+            {
+              "name": "bindings",
+              "annotation": "tuple[tuple[str, TermInput], ...]",
+              "line": 82,
+              "defaultSyntax": null
+            },
+            {
+              "name": "when",
+              "annotation": "tuple[Triple, ...]",
+              "line": 83,
+              "defaultSyntax": null
+            },
+            {
+              "name": "proof_leaves",
+              "annotation": "tuple[tuple[str, ...], ...]",
+              "line": 84,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "ComparisonEvidence",
+          "line": 117,
+          "endLine": 122,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "index",
+              "annotation": "int",
+              "line": 118,
+              "defaultSyntax": null
+            },
+            {
+              "name": "left",
+              "annotation": "ProfileValue",
+              "line": 119,
+              "defaultSyntax": null
+            },
+            {
+              "name": "operator",
+              "annotation": "str",
+              "line": 120,
+              "defaultSyntax": null
+            },
+            {
+              "name": "right",
+              "annotation": "ProfileValue",
+              "line": 121,
+              "defaultSyntax": null
+            },
+            {
+              "name": "result",
+              "annotation": "bool",
+              "line": 122,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "HeadEvidence",
+          "line": 126,
+          "endLine": 128,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "index",
+              "annotation": "int",
+              "line": 127,
+              "defaultSyntax": null
+            },
+            {
+              "name": "triple",
+              "annotation": "Triple",
+              "line": 128,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "PreparedFiring",
+          "line": 132,
+          "endLine": 143,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "rule_id",
+              "annotation": "str",
+              "line": 133,
+              "defaultSyntax": null
+            },
+            {
+              "name": "bindings",
+              "annotation": "tuple[tuple[str, TermInput], ...]",
+              "line": 134,
+              "defaultSyntax": null
+            },
+            {
+              "name": "when",
+              "annotation": "tuple[Triple, ...]",
+              "line": 135,
+              "defaultSyntax": null
+            },
+            {
+              "name": "proof_leaves",
+              "annotation": "tuple[tuple[str, ...], ...]",
+              "line": 136,
+              "defaultSyntax": null
+            },
+            {
+              "name": "comparisons",
+              "annotation": "tuple[ComparisonEvidence, ...]",
+              "line": 137,
+              "defaultSyntax": null
+            },
+            {
+              "name": "heads",
+              "annotation": "tuple[HeadEvidence, ...]",
+              "line": 138,
+              "defaultSyntax": null
+            },
+            {
+              "name": "basis",
+              "annotation": "tuple[str, ...]",
+              "line": 139,
+              "defaultSyntax": null
+            },
+            {
+              "name": "source",
+              "annotation": "SourceRecord | None",
+              "line": 140,
+              "defaultSyntax": null
+            },
+            {
+              "name": "revision",
+              "annotation": "str | None",
+              "line": 141,
+              "defaultSyntax": null
+            },
+            {
+              "name": "definition_digest",
+              "annotation": "str | None",
+              "line": 142,
+              "defaultSyntax": null
+            },
+            {
+              "name": "policy",
+              "annotation": "str",
+              "line": 143,
+              "defaultSyntax": "PROFILE"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "PreparedFiringBatch",
+          "line": 147,
+          "endLine": 152,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "firings",
+              "annotation": "tuple[PreparedFiring, ...]",
+              "line": 148,
+              "defaultSyntax": null
+            },
+            {
+              "name": "facts",
+              "annotation": "tuple[Triple, ...]",
+              "line": 149,
+              "defaultSyntax": null
+            },
+            {
+              "name": "payload",
+              "annotation": "bytes",
+              "line": 150,
+              "defaultSyntax": null
+            },
+            {
+              "name": "digest",
+              "annotation": "str",
+              "line": 151,
+              "defaultSyntax": null
+            },
+            {
+              "name": "profile",
+              "annotation": "str",
+              "line": 152,
+              "defaultSyntax": "PROFILE"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        }
+      ]
+    },
+    {
+      "check": "additionalMissingNames:packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "additionalNamedDeclarations:packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "passed": true,
+      "detail": [
+        {
+          "name": "ProfileValue",
+          "line": 47,
+          "endLine": 51,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True, weakref_slot=True)"],
+          "fields": [
+            {
+              "name": "term",
+              "annotation": "TermInput",
+              "line": 48,
+              "defaultSyntax": null
+            },
+            {
+              "name": "domain",
+              "annotation": "str",
+              "line": 49,
+              "defaultSyntax": null
+            },
+            {
+              "name": "value",
+              "annotation": "object",
+              "line": 50,
+              "defaultSyntax": null
+            },
+            {
+              "name": "language",
+              "annotation": "str",
+              "line": 51,
+              "defaultSyntax": "''"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        }
+      ]
+    },
+    {
+      "check": "additionalMissingNames:packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "additionalNamedDeclarations:packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "passed": true,
+      "detail": [
+        {
+          "name": "Number",
+          "line": 14,
+          "endLine": 17,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "numerator",
+              "annotation": "int",
+              "line": 15,
+              "defaultSyntax": null
+            },
+            {
+              "name": "denominator",
+              "annotation": "int",
+              "line": 16,
+              "defaultSyntax": "1"
+            },
+            {
+              "name": "negative_zero",
+              "annotation": "bool",
+              "line": 17,
+              "defaultSyntax": "False"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        }
+      ]
+    },
+    {
+      "check": "additionalMissingNames:packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "additionalNamedDeclarations:packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "passed": true,
+      "detail": [
+        {
+          "name": "Calendar",
+          "line": 28,
+          "endLine": 32,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "day",
+              "annotation": "int",
+              "line": 29,
+              "defaultSyntax": null
+            },
+            {
+              "name": "second",
+              "annotation": "Number",
+              "line": 30,
+              "defaultSyntax": null
+            },
+            {
+              "name": "explicit_offset",
+              "annotation": "bool",
+              "line": 31,
+              "defaultSyntax": null
+            },
+            {
+              "name": "is_datetime",
+              "annotation": "bool",
+              "line": 32,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        }
+      ]
+    },
+    {
+      "check": "additionalMissingNames:packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "additionalNamedDeclarations:packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "passed": true,
+      "detail": [
+        {
+          "name": "_ProductionCapture",
+          "line": 170,
+          "endLine": 277,
+          "bases": [],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 173,
+              "endLine": 188,
+              "signature": "self, material, ledger, direct_ledger=None",
+              "returnAnnotation": null
+            },
+            {
+              "name": "definitions",
+              "line": 190,
+              "endLine": 195,
+              "signature": "self, ordered_specs, rules",
+              "returnAnnotation": null
+            },
+            {
+              "name": "context",
+              "line": 197,
+              "endLine": 201,
+              "signature": "self, disabled",
+              "returnAnnotation": null
+            },
+            {
+              "name": "catalog",
+              "line": 203,
+              "endLine": 207,
+              "signature": "self, value",
+              "returnAnnotation": null
+            },
+            {
+              "name": "allocation",
+              "line": 209,
+              "endLine": 214,
+              "signature": "self, spec, ordinal, limits",
+              "returnAnnotation": null
+            },
+            {
+              "name": "before_input",
+              "line": 216,
+              "endLine": 221,
+              "signature": "self, original_bytes, source, input_domain",
+              "returnAnnotation": null
+            },
+            {
+              "name": "before_explanation_projection",
+              "line": 223,
+              "endLine": 229,
+              "signature": "self, native, source, rules",
+              "returnAnnotation": null
+            },
+            {
+              "name": "before_projection",
+              "line": 231,
+              "endLine": 242,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "projected",
+              "line": 244,
+              "endLine": 248,
+              "signature": "self, safe_result",
+              "returnAnnotation": null
+            },
+            {
+              "name": "before_rows",
+              "line": 250,
+              "endLine": 255,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "completed",
+              "line": 257,
+              "endLine": 268,
+              "signature": "self, native, encoded, rows_encoded, source_encoded, definitions_encoded, wire",
+              "returnAnnotation": null
+            },
+            {
+              "name": "drop",
+              "line": 270,
+              "endLine": 277,
+              "signature": "self",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "direct_ledger",
+              "line": 176
+            },
+            {
+              "field": "direct_capture",
+              "line": 177
+            },
+            {
+              "field": "actual_definitions",
+              "line": 182
+            },
+            {
+              "field": "actual_catalog",
+              "line": 182
+            },
+            {
+              "field": "raw_rules",
+              "line": 182
+            },
+            {
+              "field": "disabled",
+              "line": 183
+            },
+            {
+              "field": "slots",
+              "line": 185
+            },
+            {
+              "field": "native",
+              "line": 186
+            },
+            {
+              "field": "encoded",
+              "line": 186
+            },
+            {
+              "field": "rows_encoded",
+              "line": 186
+            },
+            {
+              "field": "source_encoded",
+              "line": 187
+            },
+            {
+              "field": "definitions_encoded",
+              "line": 187
+            },
+            {
+              "field": "wire",
+              "line": 188
+            },
+            {
+              "field": "material",
+              "line": 175
+            },
+            {
+              "field": "ledger",
+              "line": 175
+            },
+            {
+              "field": "direct_capture",
+              "line": 181
+            }
+          ]
+        },
+        {
+          "name": "execute_admitted_profile_job",
+          "line": 445,
+          "endLine": 456,
+          "signature": "material, *, error_catalog, error_schema, ledger=None",
+          "returnAnnotation": null
+        },
+        {
+          "name": "execute_profile_explanation",
+          "line": 459,
+          "endLine": 471,
+          "signature": "material, *, error_catalog, error_schema, ledger, direct_ledger",
+          "returnAnnotation": null
+        }
+      ]
+    },
+    {
+      "check": "additionalMissingNames:packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "additionalNamedDeclarations:packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "passed": true,
+      "detail": [
+        {
+          "name": "RestoreExpectation",
+          "line": 111,
+          "endLine": 124,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "payload_digest",
+              "annotation": "str",
+              "line": 112,
+              "defaultSyntax": null
+            },
+            {
+              "name": "rows_digest",
+              "annotation": "str",
+              "line": 113,
+              "defaultSyntax": null
+            },
+            {
+              "name": "input_digest",
+              "annotation": "str",
+              "line": 114,
+              "defaultSyntax": null
+            },
+            {
+              "name": "input_domain",
+              "annotation": "str",
+              "line": 115,
+              "defaultSyntax": null
+            },
+            {
+              "name": "source_digest",
+              "annotation": "str",
+              "line": 116,
+              "defaultSyntax": null
+            },
+            {
+              "name": "definitions_digest",
+              "annotation": "str",
+              "line": 117,
+              "defaultSyntax": null
+            },
+            {
+              "name": "catalog_digest",
+              "annotation": "str",
+              "line": 118,
+              "defaultSyntax": null
+            },
+            {
+              "name": "implementation",
+              "annotation": "tuple[tuple[str, str], ...]",
+              "line": 119,
+              "defaultSyntax": null
+            },
+            {
+              "name": "input_preimage",
+              "annotation": "bytes",
+              "line": 120,
+              "defaultSyntax": null
+            },
+            {
+              "name": "source_preimage",
+              "annotation": "bytes",
+              "line": 121,
+              "defaultSyntax": null
+            },
+            {
+              "name": "schema_version",
+              "annotation": "str",
+              "line": 122,
+              "defaultSyntax": "SCHEMA_VERSION"
+            },
+            {
+              "name": "budget_version",
+              "annotation": "str",
+              "line": 123,
+              "defaultSyntax": "RESTORE_BUDGET_VERSION"
+            },
+            {
+              "name": "cache_version",
+              "annotation": "str",
+              "line": 124,
+              "defaultSyntax": "CACHE_VERSION"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "ExplanationRestoreExpectation",
+          "line": 128,
+          "endLine": 143,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "payload_digest",
+              "annotation": "str",
+              "line": 129,
+              "defaultSyntax": null
+            },
+            {
+              "name": "rows_digest",
+              "annotation": "str",
+              "line": 130,
+              "defaultSyntax": null
+            },
+            {
+              "name": "input_digest",
+              "annotation": "str",
+              "line": 131,
+              "defaultSyntax": null
+            },
+            {
+              "name": "input_domain",
+              "annotation": "str",
+              "line": 132,
+              "defaultSyntax": null
+            },
+            {
+              "name": "source_digest",
+              "annotation": "str",
+              "line": 133,
+              "defaultSyntax": null
+            },
+            {
+              "name": "definitions_digest",
+              "annotation": "str",
+              "line": 134,
+              "defaultSyntax": null
+            },
+            {
+              "name": "catalog_digest",
+              "annotation": "str",
+              "line": 135,
+              "defaultSyntax": null
+            },
+            {
+              "name": "implementation",
+              "annotation": "tuple[tuple[str, str], ...]",
+              "line": 136,
+              "defaultSyntax": null
+            },
+            {
+              "name": "input_preimage",
+              "annotation": "bytes",
+              "line": 137,
+              "defaultSyntax": null
+            },
+            {
+              "name": "source_preimage",
+              "annotation": "bytes",
+              "line": 138,
+              "defaultSyntax": null
+            },
+            {
+              "name": "schema_version",
+              "annotation": "str",
+              "line": 139,
+              "defaultSyntax": "'i05-profile-restore-schema/2'"
+            },
+            {
+              "name": "budget_version",
+              "annotation": "str",
+              "line": 140,
+              "defaultSyntax": "RESTORE_BUDGET_VERSION"
+            },
+            {
+              "name": "cache_version",
+              "annotation": "str",
+              "line": 141,
+              "defaultSyntax": "CACHE_VERSION"
+            },
+            {
+              "name": "direct_budget_version",
+              "annotation": "str",
+              "line": 143,
+              "defaultSyntax": "'i05-direct-steps-budget/1'"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "restore_profile_result",
+          "line": 1569,
+          "endLine": 1589,
+          "signature": "payload_json: bytes, rows_json: bytes, *, expected: RestoreExpectation, allocation: OriginalAllocation, ledger: RestoreLedger",
+          "returnAnnotation": "RestoredProfileResult"
+        },
+        {
+          "name": "restore_profile_explanation_result",
+          "line": 1677,
+          "endLine": 1693,
+          "signature": "payload_json, rows_json, *, expected, allocation, ledger, direct_ledger",
+          "returnAnnotation": null
+        },
+        {
+          "name": "explanation_roots",
+          "line": 1696,
+          "endLine": 1767,
+          "signature": "view, target_keys, *, direct_ledger",
+          "returnAnnotation": null
+        }
+      ]
+    },
+    {
+      "check": "additionalMissingNames:packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "additionalNamedDeclarations:packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "passed": true,
+      "detail": [
+        {
+          "name": "RestoreFailure",
+          "line": 169,
+          "endLine": 203,
+          "bases": ["Exception"],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 172,
+              "endLine": 203,
+              "signature": "self, reason='RESTORE_INPUT_INVALID', classification='input', *, stage='entry', slot=None, domain=None",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "reason",
+              "line": 198
+            },
+            {
+              "field": "classification",
+              "line": 199
+            },
+            {
+              "field": "stage",
+              "line": 200
+            },
+            {
+              "field": "slot",
+              "line": 201
+            },
+            {
+              "field": "domain",
+              "line": 202
+            }
+          ]
+        },
+        {
+          "name": "RestoreLedger",
+          "line": 216,
+          "endLine": 471,
+          "bases": [],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 219,
+              "endLine": 249,
+              "signature": "self, *, overrides=()",
+              "returnAnnotation": null
+            },
+            {
+              "name": "begin",
+              "line": 251,
+              "endLine": 294,
+              "signature": "self, B, Q, N",
+              "returnAnnotation": null
+            },
+            {
+              "name": "_running",
+              "line": 296,
+              "endLine": 298,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "limit",
+              "line": 300,
+              "endLine": 303,
+              "signature": "self, domain",
+              "returnAnnotation": null
+            },
+            {
+              "name": "charge",
+              "line": 305,
+              "endLine": 312,
+              "signature": "self, domain, amount=1, *, stage='entry'",
+              "returnAnnotation": null
+            },
+            {
+              "name": "visit",
+              "line": 314,
+              "endLine": 315,
+              "signature": "self, amount=1, *, stage='A2'",
+              "returnAnnotation": null
+            },
+            {
+              "name": "reserve",
+              "line": 317,
+              "endLine": 325,
+              "signature": "self, domain, amount=1, *, stage='entry'",
+              "returnAnnotation": null
+            },
+            {
+              "name": "release",
+              "line": 327,
+              "endLine": 336,
+              "signature": "self, domain, amount=1",
+              "returnAnnotation": null
+            },
+            {
+              "name": "prepay",
+              "line": 338,
+              "endLine": 349,
+              "signature": "self, stage",
+              "returnAnnotation": null
+            },
+            {
+              "name": "opaque",
+              "line": 352,
+              "endLine": 372,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "start_slot",
+              "line": 374,
+              "endLine": 379,
+              "signature": "self, slot",
+              "returnAnnotation": null
+            },
+            {
+              "name": "complete_slot",
+              "line": 381,
+              "endLine": 386,
+              "signature": "self, slot",
+              "returnAnnotation": null
+            },
+            {
+              "name": "finish",
+              "line": 388,
+              "endLine": 397,
+              "signature": "self, success",
+              "returnAnnotation": null
+            },
+            {
+              "name": "cleanup",
+              "line": 399,
+              "endLine": 404,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "record_key",
+              "line": 406,
+              "endLine": 413,
+              "signature": "self, length",
+              "returnAnnotation": null
+            },
+            {
+              "name": "new_cache",
+              "line": 415,
+              "endLine": 419,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "B",
+              "line": 422,
+              "endLine": 423,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "Q",
+              "line": 426,
+              "endLine": 427,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "N",
+              "line": 430,
+              "endLine": 431,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "J",
+              "line": 434,
+              "endLine": 435,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "S",
+              "line": 438,
+              "endLine": 439,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "state",
+              "line": 442,
+              "endLine": 443,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "caps",
+              "line": 446,
+              "endLine": 447,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "usage",
+              "line": 450,
+              "endLine": 451,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "live",
+              "line": 454,
+              "endLine": 455,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "peaks",
+              "line": 458,
+              "endLine": 459,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "slot_states",
+              "line": 462,
+              "endLine": 463,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "json_nodes",
+              "line": 466,
+              "endLine": 467,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "json_depth",
+              "line": 470,
+              "endLine": 471,
+              "signature": "self",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "_overrides",
+              "line": 235
+            },
+            {
+              "field": "_state",
+              "line": 236
+            },
+            {
+              "field": "_caps",
+              "line": 237
+            },
+            {
+              "field": "_used",
+              "line": 238
+            },
+            {
+              "field": "_live",
+              "line": 239
+            },
+            {
+              "field": "_peaks",
+              "line": 240
+            },
+            {
+              "field": "_prepaid",
+              "line": 241
+            },
+            {
+              "field": "_slots",
+              "line": 242
+            },
+            {
+              "field": "_opaque_active",
+              "line": 243
+            },
+            {
+              "field": "_json_nodes",
+              "line": 244
+            },
+            {
+              "field": "_json_depth",
+              "line": 245
+            },
+            {
+              "field": "_key_total",
+              "line": 246
+            },
+            {
+              "field": "_key_occurrences",
+              "line": 247
+            },
+            {
+              "field": "_cache_roots",
+              "line": 248
+            },
+            {
+              "field": "_B",
+              "line": 249
+            },
+            {
+              "field": "_Q",
+              "line": 249
+            },
+            {
+              "field": "_N",
+              "line": 249
+            },
+            {
+              "field": "_J",
+              "line": 249
+            },
+            {
+              "field": "_S",
+              "line": 249
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "check": "additionalMissingNames:packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "additionalNamedDeclarations:packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+      "passed": true,
+      "detail": [
+        {
+          "name": "DirectStepsFailure",
+          "line": 45,
+          "endLine": 61,
+          "bases": ["ValueError"],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 48,
+              "endLine": 61,
+              "signature": "self, reason='DIRECT_STEPS_INVALID', classification=None, *, stage='entry', domain=None",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "stage",
+              "line": 59
+            },
+            {
+              "field": "domain",
+              "line": 60
+            },
+            {
+              "field": "reason",
+              "line": 58
+            },
+            {
+              "field": "classification",
+              "line": 58
+            }
+          ]
+        },
+        {
+          "name": "DirectStepsLedger",
+          "line": 84,
+          "endLine": 312,
+          "bases": [],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 87,
+              "endLine": 105,
+              "signature": "self, *, overrides=()",
+              "returnAnnotation": null
+            },
+            {
+              "name": "begin",
+              "line": 107,
+              "endLine": 136,
+              "signature": "self, *, stage='capture'",
+              "returnAnnotation": null
+            },
+            {
+              "name": "usage",
+              "line": 139,
+              "endLine": 140,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "events",
+              "line": 143,
+              "endLine": 145,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "_running",
+              "line": 147,
+              "endLine": 149,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "_apply",
+              "line": 151,
+              "endLine": 197,
+              "signature": "self, action, domain, count",
+              "returnAnnotation": null
+            },
+            {
+              "name": "debit",
+              "line": 199,
+              "endLine": 200,
+              "signature": "self, domain, count=1",
+              "returnAnnotation": null
+            },
+            {
+              "name": "reserve",
+              "line": 204,
+              "endLine": 205,
+              "signature": "self, domain, count=1",
+              "returnAnnotation": null
+            },
+            {
+              "name": "release",
+              "line": 207,
+              "endLine": 214,
+              "signature": "self, domain, count=1",
+              "returnAnnotation": null
+            },
+            {
+              "name": "enter",
+              "line": 216,
+              "endLine": 220,
+              "signature": "self, stage",
+              "returnAnnotation": null
+            },
+            {
+              "name": "consume_key",
+              "line": 222,
+              "endLine": 228,
+              "signature": "self, count",
+              "returnAnnotation": null
+            },
+            {
+              "name": "note_carrier",
+              "line": 230,
+              "endLine": 234,
+              "signature": "self, count",
+              "returnAnnotation": null
+            },
+            {
+              "name": "discard",
+              "line": 236,
+              "endLine": 279,
+              "signature": "self, *, objects=0, scalar=0, action='discard'",
+              "returnAnnotation": null
+            },
+            {
+              "name": "receipt",
+              "line": 281,
+              "endLine": 301,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "completed",
+              "line": 303,
+              "endLine": 306,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "failed",
+              "line": 310,
+              "endLine": 312,
+              "signature": "self",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "overrides",
+              "line": 96
+            },
+            {
+              "field": "used",
+              "line": 98
+            },
+            {
+              "field": "live",
+              "line": 98
+            },
+            {
+              "field": "peaks",
+              "line": 98
+            },
+            {
+              "field": "caps",
+              "line": 98
+            },
+            {
+              "field": "_events",
+              "line": 99
+            },
+            {
+              "field": "_receipt_taken",
+              "line": 100
+            },
+            {
+              "field": "candidates",
+              "line": 101
+            },
+            {
+              "field": "steps",
+              "line": 101
+            },
+            {
+              "field": "key_bytes",
+              "line": 101
+            },
+            {
+              "field": "carrier_bytes",
+              "line": 101
+            },
+            {
+              "field": "last_action",
+              "line": 102
+            },
+            {
+              "field": "last_domain",
+              "line": 102
+            },
+            {
+              "field": "last_count",
+              "line": 103
+            },
+            {
+              "field": "_cleanup_objects",
+              "line": 104
+            },
+            {
+              "field": "_cleanup_scalar",
+              "line": 104
+            },
+            {
+              "field": "_data_objects",
+              "line": 105
+            },
+            {
+              "field": "_data_scalar",
+              "line": 105
+            },
+            {
+              "field": "_cleanup_credit",
+              "line": 105
+            },
+            {
+              "field": "state",
+              "line": 97
+            },
+            {
+              "field": "stage",
+              "line": 97
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "check": "additionalMissingNames:packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "additionalNamedDeclarations:packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "passed": true,
+      "detail": [
+        {
+          "name": "SemanticError",
+          "line": 13,
+          "endLine": 18,
+          "bases": ["ValueError"],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 16,
+              "endLine": 18,
+              "signature": "self, code: str",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "code",
+              "line": 17
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "check": "additionalMissingNames:packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "passed": true,
+      "detail": ["OfflineAccessDenied"]
+    },
+    {
+      "check": "additionalNamedDeclarations:packages/engine/src/ontolearn_engine/resources.py",
+      "passed": true,
+      "detail": [
+        {
+          "name": "semantic_identity",
+          "line": 1,
+          "endLine": 14,
+          "signature": "*, profile=False, explanation=False",
+          "returnAnnotation": "dict"
+        }
+      ]
+    },
+    {
+      "check": "additionalMissingNames:packages/engine/src/ontolearn_engine/resources.py",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "initialDefinitionCount": 241,
+  "additionalNamedDefinitionCount": 37,
+  "canonicalAllowedClassExpressions": [],
+  "selectedCodecExpressions": {
+    "MAX_CELLDeclarations": [
+      {
+        "line": 23,
+        "syntax": "MAX_CELL = 8192"
+      }
+    ],
+    "catalogCodecAssignments": [
+      {
+        "line": 301,
+        "syntax": "capture = checked = catalog_json = allocation = receipt = outcome = error = None"
+      },
+      {
+        "line": 448,
+        "syntax": "capture = checked = catalog_json = allocation = receipt = outcome = None"
+      },
+      {
+        "line": 391,
+        "syntax": "catalog_json = _profile_json_bytes(_ProfileProjection().value(capture.actual_catalog))"
+      },
+      {
+        "line": 433,
+        "syntax": "capture = checked = catalog_json = allocation = receipt = direct_receipt = None"
+      }
+    ]
+  },
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic.py",
+        "bytes": 65749,
+        "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_scopes.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "bytes": 13051,
+        "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_query.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+        "bytes": 6448,
+        "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_error_adapter.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+        "bytes": 15426,
+        "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_execution.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "bytes": 35220,
+        "sha256": "3ac496383349e3ddefea1672c27c88bacaf99f4436c22e96e1592393bac102f3"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_profile_input.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+        "bytes": 40378,
+        "sha256": "f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+        "bytes": 93848,
+        "sha256": "b3456f021afdbd53ec8677bf317a5ffdff636b55bae760eb8b7fec6e399e41b9"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/rdf_snapshot.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+        "bytes": 2530,
+        "sha256": "7cca115fa77e0926a632ba58d404ed39071f7dcfb8d52af2d212e89d36b2309a"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_turtle.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+        "bytes": 33916,
+        "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/quality/rule_profile.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+        "bytes": 11987,
+        "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/quality/rule_firing.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+        "bytes": 19149,
+        "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/quality/rule_terms.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+        "bytes": 6176,
+        "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/quality/rule_numbers.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+        "bytes": 7372,
+        "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/quality/rule_calendar.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+        "bytes": 4047,
+        "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_profile_production.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+        "bytes": 19993,
+        "sha256": "5c857470890bd810370ad877db930848ba08e80096c640037d39bea83c14a320"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_profile_restore.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+        "bytes": 70203,
+        "sha256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+        "bytes": 37889,
+        "sha256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+        "bytes": 46459,
+        "sha256": "7927769077e363b23741f6dc78b7c0ec2ad00b7d3285f8403a190c0e00169b22"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_offline.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe",
+      "exitCode": 0,
+      "stdout": {
+        "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+        "bytes": 1351,
+        "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488"
+      },
+      "stderr": {
+        "base64": "",
+        "bytes": 0
+      }
+    }
+  ],
+  "productExecuted": false,
+  "resourcesWholeSourceRead": false,
+  "ledgerArithmeticOrRatesRead": false
+}
