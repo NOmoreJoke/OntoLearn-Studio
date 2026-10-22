@@ -1,0 +1,27 @@
+## 结论
+
+**补正文已完成并真正结束。**
+
+**补正文完整路径**
+`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-minimax-review-3be0397/docs/reviews/T06/round-2/minimax-m31flash-process-addendum-20261023.md`
+（44073 B / 350 行 / SHA-256 `ac735a150b1678f4382cc76c456df7d740ab9713eb15e4a32e4003d32b3da82c`；`npx prettier --check` 通过）
+
+**核心结论**
+
+1. **产品结论不变**：本独立 S1 范围**通过（Pass），0 P1 / 0 P2 / 4 P3**。独立流程审的 6 项要求全部落在审查流程与报告表述上，**未产生任何新的产品缺陷**，因此不推翻原报告裁决。
+
+2. **6 项要求：5 项接受，1 项部分接受**。唯一不接受的，是其"在 wrapper 内再 `_state` 成本可忽略"——这是**未经测量的量化暗示**，已改述为"复杂度 O(facts)/每次 setup，未实测"。
+
+3. **原报告8 条须更正**（C-1 ~ C-8），其中 **C-1 是实质缺口**：原 turn **未**读完整 base→产品 diff。独立流程审 `evidence-audit.json` 独立记录原 turn 的 diff 类 Read 仅 2 次、路径均为 `planner-613-vs-3be0397.diff`。我**承认原 turn 未完成该要求**，本轮已补读完整76 文件 patch 全文（24034 行 / 1215620 B / `fa879b62…`，两种 diff 口径均独立重算一致），并给出 **76/76 逐文件行段闭合表**与 4 个 binary 的 blob 元数据。**该补读是后续新事实，不回填原 turn。**
+
+4. **其余更正**（均不影响结论方向）：C 段不是 23 项而是 **A4+B2+C28**；B 段输入实际为 `edits=[]`/事件 ID 唯一/trigger 恒 `event_type=test`/conditions 恒 `always`/值集合 `a,b,1,True,False,1.0`（无 0、无 "x"、无 "雪"）/无重复投递；B 段**无**请求不变性断言（该断言只在 C 段 `expect_error`）；A 段 oracle 只比 **intent 对**；"逐字节相等"实为**规范化 JSON 相等**且只覆盖该 1500 例输入族；"完整 stdout/stderr 均保存"过宽；首次 7 FAILED 的真实成员为 **A4 整体/C9a/C9b/C9c/C12/C14/C15**（原报告拆 A4 且漏 C15）。
+
+5. **首败补记 8 类**（含2 次 KeyError、口径性 diff exit 1、过早 grep 返回 1、IndexError、**主动取消且 child exit 未知**、崩溃且无结果 JSON、7 FAILED exit 1），全部按实际登记，无一条指向产品实现缺陷。
+
+6. **P2-1 维持关闭但限定为本次精确输入族的观察、不外推生产；P2-2 维持 P2 容量风险不关闭；Q5/10.2 未批准任何阈值，故不存在被违反的已批准验收线**；FR-600–604 父模块、G.3、B-07/B-08、Q5 容量门与 T06 整体验收**保持开放**。4 项 P3 按"现边界/未来风险"分栏，未实施的未来改进一律未写成已修，冻结候选未改。
+
+**写入边界**：仅本补正文 + 新目录 `out/minimax-r2-process-addendum-20261023/`（`base-to-product-full-text.diff` 1215620 B / `fa879b62…`、`large-evidence-full-parse.json` 4775 B / `42d97d44…`）。原报告（SHA `18302fc1…`）、`out/reviewer-verify/`、原 pytest/check/probe 日志、receipt/已封原件、原终答**全部原字节未动**。HEAD 仍 `3be0397faf03de6520c47bf7d86f3dc2fd004287`，受审 13 源未改，`git status` 仅 ` M AGENTS.md`（既有保护 dirty）与新增 `docs/reviews/T06/round-2/`；未提交、未推送、未 PR。
+
+**本轮未做**：未跑被拒脚本、未重跑无变化且原证据完整的 check/139/probe/helper/测量/34 对抗、未读同轮另一模型、未读别线模型意见、未执行任何归档内脚本。
+
+到此结束。

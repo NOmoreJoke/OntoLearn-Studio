@@ -2,6 +2,14 @@
 
 ## 当前状态：blocked，完整目标保留
 
+2026-10-23 04:42+08：本次两新补正的独立静态完成审均已固定并全文读取：Z21320B/f8350c67、M18202B/7ebbf7dd；owner6928B摘要另经独立短核无必要更正。两方作者私有Pass/M4P3保留，流程门仍未无保留闭合。M安全可核非遮盖diff2694行，31L项30闭合，旧Z dispatch8819–8852未捕获UNKNOWN；不得以76表当24034literal全读。两工具包及17成员独立审归档逐件bytes/SHA通过，当前完整入口round-2/process-correction-completion-receipt-20261023.json。只完成本线过程收件，待根可复核裁定；不再生产补正轮、不CUA/新prompt/source或runtime测试，原所有门继续保留。
+
+2026-10-23 04:38+08：两原SID本次各一次新补正已正式completed；新Z turn_7a31dd55-00b5-4ad1-8b1e-bfdd0346cb1e官方20:25:31.622Z，新M turn6e418fd2-061f-4df6-951c-a9fe6903a1d3四列只读终态updated1792700961720/session idle。补正文Z14233B/8a0d249d、M44073B/ac735a15及完整终答均全文读回、原字节另存，作者维持私有S1 Pass；原回合终态/原报告不回填。流程仍未无保留通过，详见round-2/process-correction-owner-disposition-20261023.md及新独立静态完成审。
+
+Z完整inline491行已精确重构受理，但显式Read至269，三dispatch共同全文/四JSON有限核验与typed措辞仍有边界；原stdin/流缺失等主要更正接受，原child UNKNOWN不补造。Z /tmp后缀写面偏离未披露；M另有/tmp/diff_coverage_table.md写入与cat、仅两处写面声明不符。只保实际调用/公开返回，不访问或清理物理tmp。M压缩前后捕获56call并集，输入实际可见到444/603，445–603仍UNKNOWN；76文件表不等于本轮24034行全文证据，成本可忽略归因错误、事件前措辞等保留。旧UI历史块12行相交性质UNKNOWN，分享包精确遮盖、私有原快照保留，待总控判定；未扩历史路线或追加prompt。
+
+Z安全包441regular/440清单、M144regular/142清单已逐件bytes/SHA读回；三树各13受审源及9保护旧文件相同，保护AGENTS未stage。本次仅过程归档，不复测产品；970UI任务仍0，GUI已释放给总控，收到旧时段异步答复不抢桌面。原4P3/P2-2/Q5/全部父门保持，无push/PR/CI/merge。
+
 2026-10-23 04:24+08：总控5818B完整预检及653b37小delta已接收后明确START；本次仅两原SID各发送一次过程补正，未新建任务/未夹带970UI。Z新query01a16542-f5ea-712d-aeaf-7337a10bb799/turn_7a31dd55-00b5-4ad1-8b1e-bfdd0346cb1e官方started20:17:29.597Z；M新turn6e418fd2-061f-4df6-951c-a9fe6903a1d3。fresh官方SID/owncwd/模型思考权限均核，两个未发ID草稿清空后只发已固定完整正文+本方cover，实际受理后立即GUI RELEASE，根交C4，本线不再CUA。
 
 Z实际请求86756B/be79正文及2944B/179939cover逐字相同，实际编号1–491剥离重建86756B含真实末LF（490physical+尾空行），未补expected；1905附录/3292v2/3063snapshot/3403更正JSON真实Read完整相同。M实际officialasset101720B/b826与owncopy真实hash/diff相等、1061B/8a573 cover相同，actual可见全文Read仍核段，hidden textFile不补缺。旧两completed/原Pass不当新终态或流程通过。新发现Z call_384ae6fccaa24dc984996cfe写/tmp后缀文件超出明确新out写面，已报根，collector仅lstat不读/删/重演；保原call/return与管道exit边界，不据此自动判产品Fail。首新回执round-2/process-correction-desktop-start-receipt-20261023.json；31次CUA/62原行292046B/66c67ea5私密保全，初始自动外线AX不共享。后继实际owned补读/正式终态/完整补正文仍收证，全部父门/4P3/P2-2容量风险保持，无owner产品复测/push/PR/CI/merge。

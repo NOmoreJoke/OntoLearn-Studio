@@ -59,15 +59,30 @@
           "processGate": "not_closed; independent process audit and author factual/full-owned-diff correction required",
           "newP3": 0,
           "processCorrection": {
-            "state": "actual_original_session_new_turn_accepted_not_terminal_verified",
+            "state": "terminal_new_addendum_received_process_findings_open",
             "queryId": "01a16542-f5ea-712d-aeaf-7337a10bb799",
             "turnId": "turn_7a31dd55-00b5-4ad1-8b1e-bfdd0346cb1e",
             "officialStarted": "2026-10-22T20:17:29.597Z",
             "actualBodyBytes": 86756,
             "actualBodySHA256": "be79cb305a4c3ed7f2056def3e9ccbf8628e8fec0fb148ec66edc78d1a92fc4a",
             "newTasksCreated": 0,
-            "verdict": null,
-            "writeDeviation": "exact /tmp suffix file outside allowed new out/addendum; original call preserved/root notified; no product inference"
+            "verdict": "Author maintains private S1 Pass; no unconditional process pass",
+            "writeDeviation": "exact /tmp suffix file outside allowed new out/addendum; original call preserved/root notified; no product inference",
+            "officialCompleted": "2026-10-22T20:25:31.622Z",
+            "report": "docs/reviews/T06/round-2/zcode-glm53-process-addendum-20261023.md",
+            "reportBytes": 14233,
+            "reportSHA256": "8a0d249da4001b984a90527fb955ca6f509de480b2b0fca23c08983b7fa09635",
+            "actualInput": "Full inline491 numbered lines reconstructed exactly; explicit Read only1-269",
+            "openItems": [
+              "three dispatch common full baseline not established",
+              "four historical JSON full parsing supports only limited returned checks",
+              "typed/location and count wording limits; receipt64digit SHA one-character typo",
+              "new /tmp suffix write outside new out, omitted from author addendum"
+            ],
+            "independentReview": "docs/reviews/T06/round-2/zcode-process-correction-independent-review-20261023.md",
+            "independentReviewBytes": 21320,
+            "independentReviewSHA256": "f8350c67ad8c4a4b93caa5ff20d31b2ab6a4401b6fa13f02b175124b462ac618",
+            "ownerFullIndependentReportRead": true
           }
         },
         "minimax": {
@@ -88,18 +103,41 @@
           "processGate": "not_closed; independent process audit and author factual/full-owned-diff correction required",
           "newP3": 4,
           "processCorrection": {
-            "state": "actual_original_session_new_turn_accepted_not_terminal_verified",
+            "state": "terminal_new_addendum_received_process_findings_open",
             "turnId": "6e418fd2-061f-4df6-951c-a9fe6903a1d3",
             "nativeUserTimestampMS": 1792700365297,
             "actualAssetBytes": 101720,
             "actualAssetSHA256": "b82693f1a5cd90d41665d5fb2f0e8180eee2a0e787c1dda2e2cfac0ecb38fa38",
-            "modelVisibleFullRead": "ongoing; no hidden metadata counted",
+            "modelVisibleFullRead": "Captured1-444/603;445-603 UNKNOWN after compaction; no hidden body or author statement filling",
             "newTasksCreated": 0,
-            "verdict": null
+            "verdict": "Author maintains private S1 Pass and4P3; no unconditional process pass",
+            "officialTerminalOutcome": "completed",
+            "officialUpdatedAtMS": 1792700961720,
+            "sessionIdle": true,
+            "report": "docs/reviews/T06/round-2/minimax-m31flash-process-addendum-20261023.md",
+            "reportBytes": 44073,
+            "reportSHA256": "ac735a150b1678f4382cc76c456df7d740ab9713eb15e4a32e4003d32b3da82c",
+            "capturedCallIDs": 56,
+            "capturedDistinctVersions": 56,
+            "currentSegmentCalls": 42,
+            "openItems": [
+              "model-visible attachment445-603 capture UNKNOWN",
+              "76-file table does not prove literal complete current-turn diff reading",
+              "cost negligible quote wrongly attributed to independent reviewer; before means pre-event",
+              "new /tmp/diff_coverage_table.md write and cat omitted from claimed two write locations",
+              "Read9340-9379 intersects old UI block9368-9379;12lines redacted; content nature UNKNOWN pending controller"
+            ],
+            "newProductTests": false,
+            "independentReview": "docs/reviews/T06/round-2/minimax-process-correction-independent-review-20261023.md",
+            "independentReviewBytes": 18202,
+            "independentReviewSHA256": "7ebbf7ddb1c7f09648d141e357d9e103c36281d0509f0dc0ef39f063e47cd33d",
+            "actualNonredactedDiffVisibleLines": 2694,
+            "completeLItems": "30of31; missing8819-8852 UNKNOWN",
+            "ownerFullIndependentReportRead": true
           }
         }
       },
-      "next": "Collect both exact new original-turn actual full input/owned Read ranges, formal terminal and complete author addenda/all findings; dispose new process deviation. Old reports/terminals remain distinct. No new GUI/model message or product Pass inference.",
+      "next": "Both new original-session turns and complete addenda/finals/independent audits safely archived; controller must review precise completion receipt and dispose open findings and deviations. No further correction round, CUA/model message/source/runtime test; UI0 and original parent gates remain.",
       "successorInProgress": {
         "newProduct": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
         "frozen": true,
@@ -161,7 +199,8 @@
         "correctionsPreparedOnly": false,
         "newFollowupTurnsCreated": 2,
         "correctionsStartReceipt": "docs/reviews/T06/round-2/process-correction-desktop-start-receipt-20261023.json"
-      }
+      },
+      "processCorrectionCompletionReceipt": "docs/reviews/T06/round-2/process-correction-completion-receipt-20261023.json"
     },
     {
       "id": "T06-UI",
@@ -475,12 +514,13 @@
     "Full parent 57P0/release and real two OS/human acceptance gates retained"
   ],
   "noSourceChangesOrUnchangedRetestsForInventory": true,
-  "updatedAt": "2026-10-22T20:24:24.648545+00:00",
+  "updatedAt": "2026-10-22T20:42:24.101603+00:00",
   "reviewResourceState": {
     "source": "root actual notification",
     "zcode": "root observed availability restored; reason unknown/no reset consumed; no account-wide hold",
-    "newMinimax": "S1 accepted; UI queued",
+    "newMinimax": "S1 correction terminal; UI queued; GUI released to total controller",
     "otherZTasks": "not inferred failed from other owners task errors",
-    "sameRoundOpinionIsolation": true
+    "sameRoundOpinionIsolation": true,
+    "newZcode": "S1 correction terminal; GUI released to total controller; no inference about current account status"
   }
 }

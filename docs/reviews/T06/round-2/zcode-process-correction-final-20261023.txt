@@ -1,0 +1,11 @@
+流程补正已完成并真正结束。
+
+## 最终结论
+
+**补正文完整路径**：[docs/reviews/T06/round-2/zcode-glm53-process-addendum-20261023.md](/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-review-3be0397/docs/reviews/T06/round-2/zcode-glm53-process-addendum-20261023.md)（14233 B / SHA-256 `8a0d249da4001b984a90527fb955ca6f509de480b2b0fca23c08983b7fa09635`，prettier 通过）；过程证据在 `out/GLM53-r2-process-addendum-20261023/`（receipt.json、ui-and-binary-metadata.json）。原报告 23001B / `764b6293…` 保原字节未动，原 out 证据未改，HEAD 仍精确等于产品 3be0397。
+
+**产品结论（私有 S1 范围，3be0397）：维持通过。**所有补正均为流程/表述精度问题；支撑结论的核心证据（139 项行为测试、npm run check、owner helper 1009 差分/800-create/百万矩阵，均具完整日志与真实 exit）不受影响。P2-1 机制修复、P2-2 风险保留且容量门开放、Q5 不代填、父 FR-600–604 门保持开放。
+
+**流程结论**：原 turn 确有 4 类缺口，我逐项确认并补记——(1) 首条 stdin 探针真实 exit 1 首败（AttributeError 笔误）漏记；(2) T09 probe 与三个自编探针的 tail 管道未保存真实 child exit/完整上游流，降回“观察输出”证据等级；(3) 510 例实为“交替值下全部实例序列”、typed 末尾比较非类型保真、5000 随机例未走 create/many、1500 差分无续轮、“仓库零接触”过宽、traced peak 必然性推论过宽——全部按实际更正；(4) 完整 owned base→product diff 逐项读取原 turn 未完成，本后续回合按原范围补完：28 个本线 owned 流程文件全文补读、613→3be diff 25–39 行 literal 闭合、UI 线 16 文件与 4 个 binary 块按 metadata/hash 登记（不读模型意见、不执行归档脚本）。支持索引更正已按 v2 索引（`03cbe9f6…`）+3063B 固定快照受理，旧 2242B 引用保留为历史时点，不将新快照当作原时点已读证明。流程完整性门的最终关闭归总控。
+
+未重跑任何有完整原件的验证（139/check/helper 三组）、未重试被拒 payload、未读同轮另一模型任何材料、无新增付费/密钥/GUI。开发者将逐字回读并核终态。
