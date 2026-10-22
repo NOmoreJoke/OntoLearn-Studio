@@ -1,0 +1,462 @@
+{
+  "format": "i05-physical-copy-spec/2",
+  "revisionBase": "1106f15629c41833be9c9604eb7bf02134fa0541",
+  "sourceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "sourceCandidate": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "sourceProcess": "61f53dbe76262f5003065900a4e97d9a6130014b",
+  "common": [
+    {
+      "source": "frozen-inputs.tar.gz",
+      "destination": "immutable/frozen-inputs.tar.gz",
+      "bytes": 84876346,
+      "sha256": "4bbbd798e6c7a67153db51e185c8795d9ac3509cc4442a81e2071bf319dfaa12"
+    },
+    {
+      "source": "input-manifest.json",
+      "destination": "immutable/input-manifest.json",
+      "bytes": 13691095,
+      "sha256": "88cf3f68b6eb4047759211844031391df7b6f7226f479660d9285c126daf8f15"
+    },
+    {
+      "source": "candidate.patch.json",
+      "destination": "immutable/candidate.patch.json",
+      "bytes": 17443835,
+      "sha256": "ea562282d6e4fb6f592cbfb32c5f08d3bcee94f0ae51ea0e608ff2a7c9cda7a3"
+    },
+    {
+      "source": "coverage-matrix.json",
+      "destination": "immutable/coverage-matrix.json",
+      "bytes": 281282,
+      "sha256": "cc651b761d6a5bfb4bb5408b9b6da1350ff3d43d7bc137383fadca0ecd73c754"
+    },
+    {
+      "source": "coverage-matrix.md",
+      "destination": "immutable/coverage-matrix.md",
+      "bytes": 29131,
+      "sha256": "c7625bc31dbe5c1083645c25d9ef45b461ee4fc7c95238cae6c8743d64b322ec"
+    },
+    {
+      "source": "retained-branch-queue.json",
+      "destination": "immutable/retained-branch-queue.json",
+      "bytes": 5428,
+      "sha256": "66646a6e4730787c294076af116287fba4e71d2c386051bd1ec70eee8485d91e"
+    },
+    {
+      "source": "author-validation.json",
+      "destination": "immutable/author-validation.json",
+      "bytes": 1759,
+      "sha256": "eb5bffa4786f672f30e2de69e0c3dade2fbd826254c6c051560e7bbecc2a1320"
+    },
+    {
+      "source": "author-finish-first-failure.json",
+      "destination": "immutable/author-finish-first-failure.json",
+      "bytes": 1294,
+      "sha256": "eabdfa70f8e3bd30ab8b963db1b998c4431a9adc81e0b78b15e2965c2fbeb277"
+    },
+    {
+      "source": "author-first-readback-interruption.json",
+      "destination": "immutable/author-first-readback-interruption.json",
+      "bytes": 2832,
+      "sha256": "b043106c3ca16e9cde84d54c173e47c685b969eab997b7655cd7f74c7176b980"
+    },
+    {
+      "source": "bootstrap-incidents.json",
+      "destination": "immutable/bootstrap-incidents.json",
+      "bytes": 787,
+      "sha256": "7fe208425270b227e3181c99b83e9074599f0d1dc17560860e620d498b2824d9"
+    },
+    {
+      "source": "text-correction-whitespace.json",
+      "destination": "immutable/text-correction-whitespace.json",
+      "bytes": 1893,
+      "sha256": "a369c54232a1922feb96fbcc3eb548c55744facf43c15557fd2213050e00306d"
+    },
+    {
+      "source": "staged-whitespace-result.json",
+      "destination": "immutable/staged-whitespace-result.json",
+      "bytes": 1375,
+      "sha256": "339137fbfbe9e40beb63f804284dc1d2d6de136e8ecd49e64381bfed52106f55"
+    },
+    {
+      "source": "final-input-audit.json",
+      "destination": "immutable/final-input-audit.json",
+      "bytes": 1083,
+      "sha256": "d02a9690e62fb90b44295932750ee62c5b5e5e442e754ee1b21831fc72bce9ad"
+    },
+    {
+      "source": "candidate-git-manifest.json",
+      "destination": "immutable/candidate-git-manifest.json",
+      "bytes": 48820,
+      "sha256": "1a7e4e7991a0993c4c656da8dcdac792b46c2179c342d2425405bbb8d429520d"
+    },
+    {
+      "source": "candidate-complete-manifest.json",
+      "destination": "immutable/candidate-complete-manifest.json",
+      "bytes": 27539,
+      "sha256": "3dfaa65ba6635a0a70aa3ef53fbcbe7c9a297ed97feff8dca3a7e05f55612557"
+    },
+    {
+      "source": "packet-file-manifest.json",
+      "destination": "immutable/packet-file-manifest.json",
+      "bytes": 26000,
+      "sha256": "1e27ac2f0e87eefd54875d3a311289942b88dddf64587edc5785caaa1407711b"
+    },
+    {
+      "source": "guidance-manifest.json",
+      "destination": "immutable/guidance-manifest.json",
+      "bytes": 3568,
+      "sha256": "0dbab26b762c28254efd8fe1e9dd3b5f00455c2585917d5b45ac9b4798fda1c3"
+    },
+    {
+      "source": "current-policy-addendum.md",
+      "destination": "immutable/current-policy-addendum.md",
+      "bytes": 1625,
+      "sha256": "4922046be8dfa2563a11d0ad7d2b522ba3c605d2248dbb16f148f1a31eee4812"
+    },
+    {
+      "source": "independent-review-r1.md",
+      "destination": "immutable/independent-review-r1.md",
+      "bytes": 11850,
+      "sha256": "a4cd549887845cb6788a3e54a48b27202046bc86200957116df13982f8a214c7"
+    },
+    {
+      "source": "independent-proof-r1.json",
+      "destination": "immutable/independent-proof-r1.json",
+      "bytes": 6380981,
+      "sha256": "7b0db500055ac3ba143e99f412f79d75aed6cd659406ebb52fe15c31b2d89586"
+    },
+    {
+      "source": "root-review-r1-receipt.json",
+      "destination": "immutable/root-review-r1-receipt.json",
+      "bytes": 3727,
+      "sha256": "dd3e52c58130ed83cbe474af0eb614aa893397e23e33a0227d8ae2ac80031337"
+    },
+    {
+      "source": "original-material-map-r2.json",
+      "destination": "immutable/original-material-map-r2.json",
+      "bytes": 9528,
+      "sha256": "f2bcf7e78512e675f6dcc7f3e66b9d2ca7453cb98977ac9b0e4099641c077283"
+    },
+    {
+      "source": "original-material-map-r2.md",
+      "destination": "immutable/original-material-map-r2.md",
+      "bytes": 4870,
+      "sha256": "7847ce292de8227875c2fa1f4cbf87a5ed0295ca2288ab85e1cf536974a767cd"
+    },
+    {
+      "source": "shape-process-map-r2.json",
+      "destination": "immutable/shape-process-map-r2.json",
+      "bytes": 402995,
+      "sha256": "d695b2680eaa0a09588898ef9b892c4ca1bc6e2771e932056c4542b596b738df"
+    },
+    {
+      "source": "guidance-manifest-r2.json",
+      "destination": "immutable/guidance-manifest-r2.json",
+      "bytes": 1291,
+      "sha256": "08e43c6832b1b0f07f25910c7cf43fdaa400de2ccf92454d58a8c780d6e1033d"
+    },
+    {
+      "source": "prior-originals-preservation-r2.json",
+      "destination": "immutable/prior-originals-preservation-r2.json",
+      "bytes": 47938,
+      "sha256": "ea5ec21d200ee90ae7114f048276ebf84ff194fc53876f9edf4b5ac147f662ed"
+    },
+    {
+      "source": "guidance/AGENTS-current.md",
+      "destination": "immutable/guidance/AGENTS-current.md",
+      "bytes": 15147,
+      "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+    },
+    {
+      "source": "guidance/I05-date-component-root-closure.md",
+      "destination": "immutable/guidance/I05-date-component-root-closure.md",
+      "bytes": 1764,
+      "sha256": "eacbbe2facdaf6ec641872b85152d6a433a17e80473f340c4aaf7de3424d80c6"
+    },
+    {
+      "source": "guidance/I05-directsteps-root-closure-and-shape-combination.md",
+      "destination": "immutable/guidance/I05-directsteps-root-closure-and-shape-combination.md",
+      "bytes": 3674,
+      "sha256": "bf610d9d2536006c1c99ee29e0d81dcad0568e6d273ce2b11cd8429e29feaf3b"
+    },
+    {
+      "source": "guidance/I05-production-fullview-root-closure.md",
+      "destination": "immutable/guidance/I05-production-fullview-root-closure.md",
+      "bytes": 2907,
+      "sha256": "e1921600bf99d439c4bc106b24a8b48cfea938ba08d2f8712052a7c8f55be90d"
+    },
+    {
+      "source": "guidance/I05-profile-fixed-computation-root-readback-closure.md",
+      "destination": "immutable/guidance/I05-profile-fixed-computation-root-readback-closure.md",
+      "bytes": 1902,
+      "sha256": "32d13ceac16d0db45222ac129c5a22f2c132004d5a17169e5386115fcaaa747d"
+    },
+    {
+      "source": "guidance/I05-profile-strict-restore-root-closure.md",
+      "destination": "immutable/guidance/I05-profile-strict-restore-root-closure.md",
+      "bytes": 3306,
+      "sha256": "c0181a158744350d88e7070655e67451a73723c3861ee7ed49588788145e963b"
+    },
+    {
+      "source": "guidance/I05-shacl-integer-entry-root-closure.md",
+      "destination": "immutable/guidance/I05-shacl-integer-entry-root-closure.md",
+      "bytes": 1454,
+      "sha256": "ae5d5ac991fcd7957378e5a53531381357ebd34d8023660ab9b3df9d9bb6a413"
+    },
+    {
+      "source": "guidance/I05-shape-combination-root-closure.md",
+      "destination": "immutable/guidance/I05-shape-combination-root-closure.md",
+      "bytes": 1163,
+      "sha256": "58f87a558830ce906113d0d05a55f5adc9ec0f6d26a579135874ab64bc0217fd"
+    },
+    {
+      "source": "guidance/I05-source-package-source-only-root-closure.md",
+      "destination": "immutable/guidance/I05-source-package-source-only-root-closure.md",
+      "bytes": 2256,
+      "sha256": "9a31dd50af4d60a61c20546ef0eddda376f95b7cb1ce531495cb89f675f24d5c"
+    },
+    {
+      "source": "guidance/desktop-operation-policy-20261022.md",
+      "destination": "immutable/guidance/desktop-operation-policy-20261022.md",
+      "bytes": 3160,
+      "sha256": "2032bd9e1cdbf398a0d505e092e1a08b80ff15df26b1d06c7d7e1c2e0a5a8ec1"
+    },
+    {
+      "source": "guidance/developer-common-instructions-current.md",
+      "destination": "immutable/guidance/developer-common-instructions-current.md",
+      "bytes": 16867,
+      "sha256": "567b6e7064bf123dac46742aefa57e06f6ed2fe87ceec5225c395049be888fc1"
+    },
+    {
+      "source": "guidance/external-review-permissions-current.md",
+      "destination": "immutable/guidance/external-review-permissions-current.md",
+      "bytes": 4462,
+      "sha256": "feea1595894b347ff1151e5526bc21e2055911f2ba744670f08ba85765f8b53a"
+    },
+    {
+      "source": "r2-guidance/AGENTS-current-r2.md",
+      "destination": "immutable/r2-guidance/AGENTS-current-r2.md",
+      "bytes": 15147,
+      "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+    },
+    {
+      "source": "r2-guidance/desktop-operation-policy-r2.md",
+      "destination": "immutable/r2-guidance/desktop-operation-policy-r2.md",
+      "bytes": 3160,
+      "sha256": "2032bd9e1cdbf398a0d505e092e1a08b80ff15df26b1d06c7d7e1c2e0a5a8ec1"
+    },
+    {
+      "source": "r2-guidance/developer-common-instructions-r2.md",
+      "destination": "immutable/r2-guidance/developer-common-instructions-r2.md",
+      "bytes": 16867,
+      "sha256": "567b6e7064bf123dac46742aefa57e06f6ed2fe87ceec5225c395049be888fc1"
+    },
+    {
+      "source": "r2-guidance/external-review-permissions-r2.md",
+      "destination": "immutable/r2-guidance/external-review-permissions-r2.md",
+      "bytes": 4462,
+      "sha256": "feea1595894b347ff1151e5526bc21e2055911f2ba744670f08ba85765f8b53a"
+    },
+    {
+      "source": "reference-diffs/queued-I05-directsteps-module.json",
+      "destination": "immutable/reference-diffs/queued-I05-directsteps-module.json",
+      "bytes": 6459108,
+      "sha256": "179d848c7b9251b8734175ca749940907dec2cc71d0270dd50cff08534583009"
+    },
+    {
+      "source": "reference-diffs/queued-I05-directsteps-tests.json",
+      "destination": "immutable/reference-diffs/queued-I05-directsteps-tests.json",
+      "bytes": 6454096,
+      "sha256": "c0e379c6af904baaa1af9bfa94ee12d925eac10179e4fb9f812fe25c98ca34bb"
+    },
+    {
+      "source": "reference-diffs/queued-I05-lexical-regressions.json",
+      "destination": "immutable/reference-diffs/queued-I05-lexical-regressions.json",
+      "bytes": 1697848,
+      "sha256": "2e3073305082ed4920ac5b3a8139d17c141336900d28b9288fef7e75cc3bd20a"
+    },
+    {
+      "source": "reference-diffs/queued-I05-native-acceptance.json",
+      "destination": "immutable/reference-diffs/queued-I05-native-acceptance.json",
+      "bytes": 861759,
+      "sha256": "b6eb7e3ad5e99a98e08c6d6223eb644d3e5aff57b86e7ab1e72818ebadd2634d"
+    },
+    {
+      "source": "reference-diffs/queued-I05-profile-restore-budget.json",
+      "destination": "immutable/reference-diffs/queued-I05-profile-restore-budget.json",
+      "bytes": 3790132,
+      "sha256": "5d335fb584ef3e0c6a81acb23b08577dc2508ddacb1e9d2f61f56d0105d01e78"
+    },
+    {
+      "source": "reference-diffs/queued-I05-profile-restore-tests.json",
+      "destination": "immutable/reference-diffs/queued-I05-profile-restore-tests.json",
+      "bytes": 3810964,
+      "sha256": "5db0c7e802172433ef9c05bfc996821682d3636932584a0312aba4087757515a"
+    },
+    {
+      "source": "reference-diffs/queued-I05-semantic-bridge.json",
+      "destination": "immutable/reference-diffs/queued-I05-semantic-bridge.json",
+      "bytes": 677375,
+      "sha256": "048f9b946e2ed8c221903ac78eed93509b8fc95616ecfa3fea9deafbdb451149"
+    },
+    {
+      "source": "reference-diffs/queued-I05-semantic-execution.json",
+      "destination": "immutable/reference-diffs/queued-I05-semantic-execution.json",
+      "bytes": 1420576,
+      "sha256": "f3123fcbb60d859980c5b5a40f57c55bb08753c369766abcfb85c5c1faa329ab"
+    },
+    {
+      "source": "reference-diffs/reference-C4.json",
+      "destination": "immutable/reference-diffs/reference-C4.json",
+      "bytes": 1760048,
+      "sha256": "d635b92af1a5b9eff0157e88da675c3b9fd5b74e9a51cab805dd624827591129"
+    },
+    {
+      "source": "reference-diffs/reference-date-product.json",
+      "destination": "immutable/reference-diffs/reference-date-product.json",
+      "bytes": 6634172,
+      "sha256": "b1cca773854654da67c842457f03ec06b68c1ee602fa0dbb7d9f9b2eff45e814"
+    },
+    {
+      "source": "reference-diffs/reference-directsteps-product.json",
+      "destination": "immutable/reference-diffs/reference-directsteps-product.json",
+      "bytes": 6552696,
+      "sha256": "d174722e065c1bb5c08074cb86f9465f390c213ccbc441c6cd924a6a1fa6acbf"
+    },
+    {
+      "source": "reference-diffs/reference-fullview-product.json",
+      "destination": "immutable/reference-diffs/reference-fullview-product.json",
+      "bytes": 6395096,
+      "sha256": "8bd175ac65638e7f886b78362b582b2b29ecca2c74a6885e72ceb8d69f4f6b00"
+    },
+    {
+      "source": "reference-diffs/reference-integer-product.json",
+      "destination": "immutable/reference-diffs/reference-integer-product.json",
+      "bytes": 6586996,
+      "sha256": "6aa9d3cce5b22f28246e731e93c03e508128a64a1a51ff6dc6f43d2b0f77afd4"
+    },
+    {
+      "source": "reference-diffs/reference-profile-P1.json",
+      "destination": "immutable/reference-diffs/reference-profile-P1.json",
+      "bytes": 3695952,
+      "sha256": "0b243dfd0e15fa06cf8e7001eda753eddfda627104d293ce67d337474939f2ae"
+    },
+    {
+      "source": "reference-diffs/reference-shape-combination.json",
+      "destination": "immutable/reference-diffs/reference-shape-combination.json",
+      "bytes": 6563280,
+      "sha256": "c4129ab2ee3f6d0b5fbea05d9ef2765616b1f8492a94faad849d75ed86faa3e6"
+    },
+    {
+      "source": "reference-diffs/reference-shape-product.json",
+      "destination": "immutable/reference-diffs/reference-shape-product.json",
+      "bytes": 6405684,
+      "sha256": "de1e5f1cf8cccc76838cdd9bddd1d6bcd8e33f95333a2d033f5d710e69bc41c4"
+    },
+    {
+      "source": "reference-diffs/reference-strict-product.json",
+      "destination": "immutable/reference-diffs/reference-strict-product.json",
+      "bytes": 3936976,
+      "sha256": "0b84bd1f96ca076cbdc04b2f68ffeb983d047d87ba72bbd65cdefc267adbfba3"
+    },
+    {
+      "source": "current-policy-addendum-r2.md",
+      "destination": "immutable/current-policy-addendum-r2.md",
+      "bytes": 1320,
+      "sha256": "af0307174967caae0ca8b34637edf35152722199f9f20e51fde135f36b5301e5"
+    }
+  ],
+  "reviewers": [
+    {
+      "key": "zcode-glm53",
+      "root": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-review-zcode",
+      "model": "GLM-5.3",
+      "thinking": "highest/最高",
+      "permission": "permission.mode=yolo",
+      "files": [
+        {
+          "source": "zcode-glm53-input-r2.md",
+          "destination": "instructions/zcode-glm53-input-r2.md",
+          "bytes": 16921,
+          "sha256": "0d40028990d060eb4b3b4b5c00499e3645cb9c0ab455156474a6c81da8fa1ba7"
+        },
+        {
+          "source": "zcode-glm53-own-contract-r2.json",
+          "destination": "instructions/own-contract-r2.json",
+          "bytes": 1010,
+          "sha256": "2ecb33aeede6e2744b745634d4183bc47dce14b5763daca01f4f913830e1c663"
+        },
+        {
+          "source": "receiver-guide-r2.md",
+          "destination": "instructions/receiver-guide-r2.md",
+          "bytes": 1386,
+          "sha256": "b024c749c672476c3ff99233fb4a7d3c08ef1fb65c8ade54a2976919796693b7"
+        },
+        {
+          "source": "r2-guidance/AGENTS-current-r2.md",
+          "destination": "AGENTS.md",
+          "bytes": 15147,
+          "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+        }
+      ],
+      "nativeTaskId": null,
+      "settingsReadback": "pending",
+      "actualApplicationGrowth": "not-tested"
+    },
+    {
+      "key": "minimax-m31flash",
+      "root": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-review-minimax",
+      "model": "M3.1-Flash",
+      "thinking": "xhigh",
+      "permission": "permissionMode=bypassPermissions",
+      "files": [
+        {
+          "source": "minimax-m31flash-input-r2.md",
+          "destination": "instructions/minimax-m31flash-input-r2.md",
+          "bytes": 16944,
+          "sha256": "a0cdd2ba9d5cb0dbeedee9e29fcad30a412c5af9d25d85dc6ae7e5ca072a1530"
+        },
+        {
+          "source": "minimax-m31flash-own-contract-r2.json",
+          "destination": "instructions/own-contract-r2.json",
+          "bytes": 1038,
+          "sha256": "58bb517e441313dc470139d4b9328a818320fe74c1d3b0c0530e06093007c47a"
+        },
+        {
+          "source": "receiver-guide-r2.md",
+          "destination": "instructions/receiver-guide-r2.md",
+          "bytes": 1386,
+          "sha256": "b024c749c672476c3ff99233fb4a7d3c08ef1fb65c8ade54a2976919796693b7"
+        },
+        {
+          "source": "r2-guidance/AGENTS-current-r2.md",
+          "destination": "AGENTS.md",
+          "bytes": 15147,
+          "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+        }
+      ],
+      "nativeTaskId": null,
+      "settingsReadback": "pending",
+      "actualApplicationGrowth": "not-tested"
+    }
+  ],
+  "materialization": {
+    "destination": "data",
+    "memberManifest": "immutable/input-manifest.json",
+    "expectedMembers": 22492,
+    "types": ["regular", "backward internal hardlink"],
+    "validation": "all paths are relative POSIX without dot/dotdot, no symlink/special type, exact manifest member order/type/size/target; hardlink target previously verified in same wrapper; full SHA256 and Git blob checked; strip execute bits",
+    "fileMode": "0444",
+    "directoryMode": "0555",
+    "noCrossWrapperLink": true
+  },
+  "mutableDirectories": [
+    "reports",
+    "scratch",
+    "review-status",
+    "review-status/application-metadata"
+  ],
+  "ordinaryPhysicalCopies": true,
+  "noSharedGit": true,
+  "safeSetupOnlyNoExecution": true
+}
