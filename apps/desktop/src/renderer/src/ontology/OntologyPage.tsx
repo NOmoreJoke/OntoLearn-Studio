@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   classTree,
   identity,
@@ -15,10 +15,12 @@ import {
 } from './view-model'
 import './ontology.css'
 
-/** Local form intent; T00 must validate its approved boundary representation separately. */
+/** Local form intent; T00 must validate its approved boundary representation separately.
+ * Copying fills an editable new form; its complete edited definition is sent as create.
+ * This form does not persist copy lineage.
+ */
 export type EditIntent =
   | { action: 'create' | 'edit'; object: ObjectRow }
-  | { action: 'copy'; source: string; iri: string; identifier: string }
   | { action: 'delete'; iri: string }
   | { action: 'assert' | 'retract'; fact: RdfRow }
 export type EditPreview = Readonly<{
@@ -99,12 +101,9 @@ function Editor({ view, previewEdit, requestDeleteImpact }: OntologyPageProps) {
     )
     .sort((a, b) => (a.iri < b.iri ? -1 : a.iri > b.iri ? 1 : 0))
   const currentPage = Math.min(page, Math.max(0, Math.ceil(rows.length / 20) - 1))
-  const tree = classTree(view.objects)
+  const tree = useMemo(() => (tab === 'tree' ? classTree(view.objects) : []), [tab, view.objects])
   const graph = localGraph(view, selected, 12)
-  const update = (
-    key: keyof ObjectRow,
-    value: string | readonly string[] | readonly LocalizedText[],
-  ) => {
+  const update = <K extends keyof ObjectRow>(key: K, value: ObjectRow[K]) => {
     request.current++
     setPending(false)
     setPreview(undefined)
@@ -329,6 +328,9 @@ function Editor({ view, previewEdit, requestDeleteImpact }: OntologyPageProps) {
               {canDelete && (
                 <div>
                   <h3>删除影响</h3>
+                  <p>
+                    基准快照（项目版本 {view.revision}）中的引用；包括本次修改计划将解除的引用。
+                  </p>
                   <ul>
                     {impact.items.map((item, index) => (
                       <li key={index}>{item}</li>
@@ -386,7 +388,10 @@ function Editor({ view, previewEdit, requestDeleteImpact }: OntologyPageProps) {
                 类声明
                 <select
                   value={draft.classType ?? 'rdfs'}
-                  onChange={(event) => update('classType', event.target.value)}
+                  onChange={(event) => {
+                    const value = event.target.value
+                    if (value === 'rdfs' || value === 'owl') update('classType', value)
+                  }}
                 >
                   <option value="rdfs">rdfs:Class</option>
                   <option value="owl">owl:Class</option>
@@ -475,7 +480,10 @@ function Editor({ view, previewEdit, requestDeleteImpact }: OntologyPageProps) {
             清空事实表单并读取当前版本
           </button>
           <p>
-            选择具体个体，记录实际发生的关系或属性值。RDF 对象使用 &lt;IRI&gt; 或带引号的字面量。
+            选择具体个体，记录实际发生的关系或属性值。RDF 对象使用规范 n3 单术语，例如
+            <code>&lt;urn:t02:A01&gt;</code>、<code>&quot;名称&quot;@zh</code> 或
+            <code>&quot;3&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;</code>
+            。预览服务检查格式和语义。
           </p>
           <form
             onSubmit={(event) => {
@@ -534,6 +542,7 @@ function Editor({ view, previewEdit, requestDeleteImpact }: OntologyPageProps) {
             ].join('\n') || '无 RDF 变化'}
           </pre>
           <h3>引用影响</h3>
+          <p>基准快照（项目版本 {preview.revision}）中的引用；包括本次修改计划将解除的引用。</p>
           <ul>
             {preview.impact.map((item, index) => (
               <li key={index}>{item}</li>

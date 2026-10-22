@@ -11,12 +11,13 @@
         ["Equipment\nAsset", "en"]
       ],
       "definitions": [["第一行\n第二行", "zh"]],
-      "synonyms": [],
-      "examples": [],
-      "parents": [],
+      "synonyms": ["机器", "资产"],
+      "examples": ["泵站 A", "备用设备"],
+      "parents": ["urn:t02:Alarm"],
       "domain": [],
       "range": [],
-      "types": []
+      "types": [],
+      "classType": "owl"
     },
     {
       "iri": "urn:t02:Alarm",
@@ -35,10 +36,16 @@
       "iri": "urn:t02:hasAlarm",
       "kind": "objectProperty",
       "identifier": "hasAlarm",
-      "labels": [],
-      "definitions": [],
-      "synonyms": [],
-      "examples": [],
+      "labels": [
+        ["hasAlarm 中文", "zh"],
+        ["hasAlarm English", "en"]
+      ],
+      "definitions": [
+        ["首行\n次行", "zh"],
+        ["Definition", "en"]
+      ],
+      "synonyms": ["别称一", "别称二"],
+      "examples": ["示例一", "示例二"],
       "parents": [],
       "domain": ["urn:t02:Equipment"],
       "range": ["urn:t02:Alarm"],
@@ -48,10 +55,16 @@
       "iri": "urn:t02:name",
       "kind": "dataProperty",
       "identifier": "name",
-      "labels": [],
-      "definitions": [],
-      "synonyms": [],
-      "examples": [],
+      "labels": [
+        ["name 中文", "zh"],
+        ["name English", "en"]
+      ],
+      "definitions": [
+        ["首行\n次行", "zh"],
+        ["Definition", "en"]
+      ],
+      "synonyms": ["别称一", "别称二"],
+      "examples": ["示例一", "示例二"],
       "parents": [],
       "domain": ["urn:t02:Equipment"],
       "range": ["http://www.w3.org/2001/XMLSchema#string"],
@@ -61,10 +74,16 @@
       "iri": "urn:t02:001",
       "kind": "individual",
       "identifier": "001",
-      "labels": [],
-      "definitions": [],
-      "synonyms": [],
-      "examples": [],
+      "labels": [
+        ["001 中文", "zh"],
+        ["001 English", "en"]
+      ],
+      "definitions": [
+        ["首行\n次行", "zh"],
+        ["Definition", "en"]
+      ],
+      "synonyms": ["别称一", "别称二"],
+      "examples": ["示例一", "示例二"],
       "parents": [],
       "domain": [],
       "range": [],
@@ -82,33 +101,265 @@
       "domain": [],
       "range": [],
       "types": ["urn:t02:Alarm"]
+    },
+    {
+      "iri": "urn:t02:zz01",
+      "kind": "individual",
+      "identifier": "zz01",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz02",
+      "kind": "individual",
+      "identifier": "zz02",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz03",
+      "kind": "individual",
+      "identifier": "zz03",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz04",
+      "kind": "individual",
+      "identifier": "zz04",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz05",
+      "kind": "individual",
+      "identifier": "zz05",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz06",
+      "kind": "individual",
+      "identifier": "zz06",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz07",
+      "kind": "individual",
+      "identifier": "zz07",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz08",
+      "kind": "individual",
+      "identifier": "zz08",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz09",
+      "kind": "individual",
+      "identifier": "zz09",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz10",
+      "kind": "individual",
+      "identifier": "zz10",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz11",
+      "kind": "individual",
+      "identifier": "zz11",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz12",
+      "kind": "individual",
+      "identifier": "zz12",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz13",
+      "kind": "individual",
+      "identifier": "zz13",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz14",
+      "kind": "individual",
+      "identifier": "zz14",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz15",
+      "kind": "individual",
+      "identifier": "zz15",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz16",
+      "kind": "individual",
+      "identifier": "zz16",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz17",
+      "kind": "individual",
+      "identifier": "zz17",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz18",
+      "kind": "individual",
+      "identifier": "zz18",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
+    },
+    {
+      "iri": "urn:t02:zz19",
+      "kind": "individual",
+      "identifier": "zz19",
+      "labels": [],
+      "definitions": [],
+      "synonyms": [],
+      "examples": [],
+      "parents": [],
+      "domain": [],
+      "range": [],
+      "types": ["urn:t02:Equipment"]
     }
   ],
   "triples": [
     {
-      "subject": "urn:t02:001",
+      "subject": "urn:t02:Equipment",
       "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-      "object": "<urn:t02:Equipment>"
-    },
-    {
-      "subject": "urn:t02:A01",
-      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-      "object": "<urn:t02:Alarm>"
-    },
-    {
-      "subject": "urn:t02:Alarm",
-      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-      "object": "<http://www.w3.org/2000/01/rdf-schema#Class>"
+      "object": "<http://www.w3.org/2002/07/owl#Class>"
     },
     {
       "subject": "urn:t02:Equipment",
-      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-      "object": "<http://www.w3.org/2000/01/rdf-schema#Class>"
-    },
-    {
-      "subject": "urn:t02:Equipment",
-      "predicate": "http://www.w3.org/2000/01/rdf-schema#comment",
-      "object": "\"\"\"第一行\n第二行\"\"\"@zh"
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
+      "object": "\"设备\"@zh"
     },
     {
       "subject": "urn:t02:Equipment",
@@ -117,13 +368,43 @@
     },
     {
       "subject": "urn:t02:Equipment",
-      "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
-      "object": "\"设备\"@zh"
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#comment",
+      "object": "\"\"\"第一行\n第二行\"\"\"@zh"
+    },
+    {
+      "subject": "urn:t02:Equipment",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#subClassOf",
+      "object": "<urn:t02:Alarm>"
+    },
+    {
+      "subject": "urn:t02:Alarm",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<http://www.w3.org/2000/01/rdf-schema#Class>"
     },
     {
       "subject": "urn:t02:hasAlarm",
       "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
       "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+    },
+    {
+      "subject": "urn:t02:hasAlarm",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
+      "object": "\"hasAlarm 中文\"@zh"
+    },
+    {
+      "subject": "urn:t02:hasAlarm",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
+      "object": "\"hasAlarm English\"@en"
+    },
+    {
+      "subject": "urn:t02:hasAlarm",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#comment",
+      "object": "\"\"\"首行\n次行\"\"\"@zh"
+    },
+    {
+      "subject": "urn:t02:hasAlarm",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#comment",
+      "object": "\"Definition\"@en"
     },
     {
       "subject": "urn:t02:hasAlarm",
@@ -142,6 +423,26 @@
     },
     {
       "subject": "urn:t02:name",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
+      "object": "\"name 中文\"@zh"
+    },
+    {
+      "subject": "urn:t02:name",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
+      "object": "\"name English\"@en"
+    },
+    {
+      "subject": "urn:t02:name",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#comment",
+      "object": "\"\"\"首行\n次行\"\"\"@zh"
+    },
+    {
+      "subject": "urn:t02:name",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#comment",
+      "object": "\"Definition\"@en"
+    },
+    {
+      "subject": "urn:t02:name",
       "predicate": "http://www.w3.org/2000/01/rdf-schema#domain",
       "object": "<urn:t02:Equipment>"
     },
@@ -149,6 +450,136 @@
       "subject": "urn:t02:name",
       "predicate": "http://www.w3.org/2000/01/rdf-schema#range",
       "object": "<http://www.w3.org/2001/XMLSchema#string>"
+    },
+    {
+      "subject": "urn:t02:001",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
+      "object": "\"001 中文\"@zh"
+    },
+    {
+      "subject": "urn:t02:001",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
+      "object": "\"001 English\"@en"
+    },
+    {
+      "subject": "urn:t02:001",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#comment",
+      "object": "\"\"\"首行\n次行\"\"\"@zh"
+    },
+    {
+      "subject": "urn:t02:001",
+      "predicate": "http://www.w3.org/2000/01/rdf-schema#comment",
+      "object": "\"Definition\"@en"
+    },
+    {
+      "subject": "urn:t02:001",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:A01",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Alarm>"
+    },
+    {
+      "subject": "urn:t02:zz01",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz02",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz03",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz04",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz05",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz06",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz07",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz08",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz09",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz10",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz11",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz12",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz13",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz14",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz15",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz16",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz17",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz18",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:zz19",
+      "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "object": "<urn:t02:Equipment>"
+    },
+    {
+      "subject": "urn:t02:001",
+      "predicate": "urn:t02:hasAlarm",
+      "object": "<urn:t02:A01>"
     }
   ]
 }

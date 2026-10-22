@@ -64,6 +64,26 @@ describe('T02 view projection', () => {
     })
     expect(() => localGraph(view, 'urn:a', 0)).toThrow('invalid_limit')
   })
+  it('keeps sorted roots and children, missing-parent roots and shared descendants', () => {
+    const rows = [
+      row('urn:z', ['urn:b', 'urn:a', 'urn:a']),
+      row('urn:b'),
+      row('urn:a', ['urn:missing']),
+      row('urn:self', ['urn:self']),
+      { ...row('urn:property', ['urn:a']), kind: 'objectProperty' as const },
+    ]
+    const expected = [
+      { iri: 'urn:a', depth: 0, repeated: false },
+      { iri: 'urn:z', depth: 1, repeated: false },
+      { iri: 'urn:b', depth: 0, repeated: false },
+      { iri: 'urn:z', depth: 1, repeated: true },
+      { iri: 'urn:self', depth: 0, repeated: false },
+      { iri: 'urn:self', depth: 1, repeated: true },
+    ]
+    expect(classTree(rows)).toEqual(expected)
+    expect(classTree([...rows].reverse())).toEqual(expected)
+    expect(classTree([])).toEqual([])
+  })
   it('refuses current status for another project or old version', () => {
     expect(isCurrentPreview({ project: 'a', revision: 7 }, { project: 'a', revision: 7 })).toBe(
       true,
