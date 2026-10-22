@@ -1,0 +1,318 @@
+{
+  "format": "i05-M08-independent-static-triage/1",
+  "sourceExecution": false,
+  "records": [
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/pyproject.toml",
+      "bytes": 351,
+      "sha256": "626b8f7024e8460af3ca42076a953b2827c0d6468903065c71a7fbb819cbce20"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "uv.lock",
+      "bytes": 20999,
+      "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+    },
+    {
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/pyproject.toml",
+      "bytes": 398,
+      "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365"
+    },
+    {
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "uv.lock",
+      "bytes": 28440,
+      "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "bytes": 65749,
+      "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+      "topLevelImportsOnly": [
+        {
+          "line": 7,
+          "module": "dataclasses",
+          "level": 0,
+          "names": ["dataclass"]
+        },
+        {
+          "line": 8,
+          "module": "datetime",
+          "level": 0,
+          "names": ["date"]
+        },
+        {
+          "line": 9,
+          "module": "decimal",
+          "level": 0,
+          "names": ["Decimal"]
+        },
+        {
+          "line": 10,
+          "module": "functools",
+          "level": 0,
+          "names": ["cmp_to_key"]
+        },
+        {
+          "line": 11,
+          "module": "math",
+          "level": 0,
+          "names": ["isfinite"]
+        },
+        {
+          "line": 13,
+          "module": "pyshacl.validator",
+          "level": 0,
+          "names": ["Validator"]
+        },
+        {
+          "line": 14,
+          "module": "rdflib",
+          "level": 0,
+          "names": [
+            "OWL",
+            "RDF",
+            "RDFS",
+            "SH",
+            "XSD",
+            "BNode",
+            "Graph",
+            "Literal",
+            "URIRef",
+            "Variable"
+          ]
+        },
+        {
+          "line": 15,
+          "module": "rdflib.plugins.sparql.parserutils",
+          "level": 0,
+          "names": ["CompValue"]
+        },
+        {
+          "line": 16,
+          "module": "rdflib.plugins.stores.memory",
+          "level": 0,
+          "names": ["Memory"]
+        },
+        {
+          "line": 17,
+          "module": "rdflib.term",
+          "level": 0,
+          "names": ["Identifier"]
+        },
+        {
+          "line": 19,
+          "module": "ontolearn_engine.semantic_offline",
+          "level": 0,
+          "names": ["SemanticError", "offline"]
+        },
+        {
+          "line": 20,
+          "module": "ontolearn_engine.semantic_query",
+          "level": 0,
+          "names": ["prepare_lexical_query"]
+        },
+        {
+          "line": 21,
+          "module": "ontolearn_engine.semantic_turtle",
+          "level": 0,
+          "names": ["canonical_string", "parse_graph"]
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+      "bytes": 6448,
+      "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+      "topLevelImportsOnly": [
+        {
+          "line": 3,
+          "module": "copy",
+          "level": 0,
+          "names": ["deepcopy"]
+        },
+        {
+          "line": 5,
+          "module": "pyparsing",
+          "level": 0,
+          "names": ["MatchFirst", "Regex"]
+        },
+        {
+          "line": 6,
+          "module": "rdflib",
+          "level": 0,
+          "names": ["XSD", "Literal"]
+        },
+        {
+          "line": 7,
+          "module": "rdflib.plugins.sparql",
+          "level": 0,
+          "names": ["algebra", "operators", "parser"]
+        },
+        {
+          "line": 8,
+          "module": "rdflib.plugins.sparql.parserutils",
+          "level": 0,
+          "names": ["CompValue", "Expr"]
+        },
+        {
+          "line": 10,
+          "module": "ontolearn_engine.semantic_offline",
+          "level": 0,
+          "names": ["SemanticError"]
+        },
+        {
+          "line": 11,
+          "module": "ontolearn_engine.semantic_turtle",
+          "level": 0,
+          "names": ["canonical_string"]
+        }
+      ]
+    }
+  ],
+  "versions": {
+    "candidate": {
+      "projectDependencies": ["rdflib==7.6.0"],
+      "requiresPython": ">=3.12,<3.13",
+      "packageCount": 18,
+      "engineLockMetadata": {
+        "requires-dist": [
+          {
+            "name": "rdflib",
+            "specifier": "==7.6.0"
+          }
+        ]
+      },
+      "engineDependencyClosure": ["ontolearn-engine", "pyparsing", "rdflib"],
+      "requiredEightPackages": {
+        "rdflib": {
+          "version": "7.6.0",
+          "inEngineClosure": true,
+          "dependencies": [
+            {
+              "name": "pyparsing"
+            }
+          ]
+        },
+        "pyparsing": {
+          "version": "3.3.3",
+          "inEngineClosure": true,
+          "dependencies": []
+        },
+        "pyshacl": null,
+        "owlrl": null,
+        "prettytable": null,
+        "wcwidth": null,
+        "html5rdf": null,
+        "packaging": {
+          "version": "26.3",
+          "inEngineClosure": false,
+          "dependencies": []
+        }
+      }
+    },
+    "supplier": {
+      "projectDependencies": ["pyparsing==3.3.3", "pyshacl==0.30.1", "rdflib==7.6.0"],
+      "requiresPython": ">=3.12,<3.13",
+      "packageCount": 23,
+      "engineLockMetadata": {
+        "requires-dist": [
+          {
+            "name": "pyparsing",
+            "specifier": "==3.3.3"
+          },
+          {
+            "name": "pyshacl",
+            "specifier": "==0.30.1"
+          },
+          {
+            "name": "rdflib",
+            "specifier": "==7.6.0"
+          }
+        ]
+      },
+      "engineDependencyClosure": [
+        "ontolearn-engine",
+        "owlrl",
+        "packaging",
+        "prettytable",
+        "pyparsing",
+        "pyshacl",
+        "rdflib",
+        "wcwidth"
+      ],
+      "requiredEightPackages": {
+        "rdflib": {
+          "version": "7.6.0",
+          "inEngineClosure": true,
+          "dependencies": [
+            {
+              "name": "pyparsing"
+            }
+          ]
+        },
+        "pyparsing": {
+          "version": "3.3.3",
+          "inEngineClosure": true,
+          "dependencies": []
+        },
+        "pyshacl": {
+          "version": "0.30.1",
+          "inEngineClosure": true,
+          "dependencies": [
+            {
+              "name": "owlrl"
+            },
+            {
+              "name": "packaging"
+            },
+            {
+              "name": "prettytable"
+            },
+            {
+              "name": "rdflib",
+              "extra": ["html"]
+            }
+          ]
+        },
+        "owlrl": {
+          "version": "7.6.2",
+          "inEngineClosure": true,
+          "dependencies": [
+            {
+              "name": "rdflib"
+            }
+          ]
+        },
+        "prettytable": {
+          "version": "3.18.0",
+          "inEngineClosure": true,
+          "dependencies": [
+            {
+              "name": "wcwidth"
+            }
+          ]
+        },
+        "wcwidth": {
+          "version": "0.9.2",
+          "inEngineClosure": true,
+          "dependencies": []
+        },
+        "html5rdf": {
+          "version": "1.2.1",
+          "inEngineClosure": false,
+          "dependencies": []
+        },
+        "packaging": {
+          "version": "26.3",
+          "inEngineClosure": true,
+          "dependencies": []
+        }
+      }
+    }
+  }
+}

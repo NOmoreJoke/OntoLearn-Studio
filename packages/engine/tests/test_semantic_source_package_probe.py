@@ -759,6 +759,14 @@ def test_call_counter_restores_hook_on_real_policy_rejection(probe, canonical):
     assert sys.getprofile() is previous
 
 
+def test_scope_without_counter_fails_before_loading_canonical_inputs(probe):
+    # Empty mappings prove admission fails before module/dataset lookup or any
+    # canonical parse/prepare call; they do not stand in for a business result.
+    with pytest.raises(probe.ProbeFault) as failure:
+        probe._scope_observation({}, "fresh", {}, None)
+    assert failure.value.code == "INTERNAL_ERROR"
+
+
 def test_scope_counts_real_prepare_and_project_as_separate_stages(probe, canonical):
     semantic, scopes = canonical["semantic"], canonical["scopes"]
     facts = semantic.parse_turtle("<urn:counter:x> a <urn:counter:A> .")

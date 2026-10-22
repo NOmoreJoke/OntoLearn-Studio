@@ -1,0 +1,327 @@
+{
+  "kind": "independent-I05-static-triage-r1-proof",
+  "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "scope": "static triage and repair plan only; no product acceptance",
+  "inputs": [
+    {
+      "path": "docs/iterations/I05/retained-source-review-triage/minimal-owned-repair-plan.md",
+      "bytes": 9616,
+      "sha256": "44f8a3b1d55e20990de787e41b3c74b7b2b6695c71dafaff712fcfbbdb115e68"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-triage/opinion-association-matrix.json",
+      "bytes": 19804,
+      "sha256": "e18a8692b5a2501f833fc5d4f608366eb0b95e817e5b0bd50aa8dc4b70d11ee0"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-triage/m08-static-facts.json",
+      "bytes": 7929,
+      "sha256": "3f8703821ab4b0583969b45e2eed14d39a8edf993013616410e1cdffb0352dfd"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-triage/m08-static-closure-correction-r2.json",
+      "bytes": 3172,
+      "sha256": "8bf094f71ea351abfc76275fac26a5f9c9548eda8e64fdbe767ee8682b6dc43f"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-triage/m09-shared-owner-routing-facts.json",
+      "bytes": 7752,
+      "sha256": "b7447b9ab437863e2416c74bc56ac78b4abb1edcbad1c283bc6c6498621f60a1"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-triage/next-full-review-coverage-inventory.json",
+      "bytes": 898602,
+      "sha256": "75b4363cbcdc65211f71f03f2ef23b7c1d1efd6b458bdd82f6d8441864f943ec"
+    }
+  ],
+  "M08": {
+    "candidate": {
+      "projectDependencies": ["rdflib==7.6.0"],
+      "requiresPython": ">=3.12,<3.13",
+      "lockPackageCount": 18,
+      "closureIncludingActivatedExtras": ["ontolearn-engine", "pyparsing", "rdflib"],
+      "activatedExtras": {},
+      "requiredMissingFromLock": ["html5rdf", "owlrl", "prettytable", "pyshacl", "wcwidth"],
+      "requiredMissingFromEngineClosure": [
+        "html5rdf",
+        "owlrl",
+        "packaging",
+        "prettytable",
+        "pyshacl",
+        "wcwidth"
+      ],
+      "originalNoExtrasClosureReproduced": true
+    },
+    "supplier": {
+      "projectDependencies": ["pyparsing==3.3.3", "pyshacl==0.30.1", "rdflib==7.6.0"],
+      "requiresPython": ">=3.12,<3.13",
+      "lockPackageCount": 23,
+      "closureIncludingActivatedExtras": [
+        "html5rdf",
+        "ontolearn-engine",
+        "owlrl",
+        "packaging",
+        "prettytable",
+        "pyparsing",
+        "pyshacl",
+        "rdflib",
+        "wcwidth"
+      ],
+      "activatedExtras": {
+        "rdflib": ["html"]
+      },
+      "requiredMissingFromLock": [],
+      "requiredMissingFromEngineClosure": [],
+      "originalNoExtrasClosureReproduced": true
+    }
+  },
+  "M09": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage.py",
+      "sameBytesAs5f": true,
+      "verifiedSnippetRanges": [
+        [30, 58],
+        [432, 443],
+        [580, 590],
+        [625, 654]
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/job_store.py",
+      "sameBytesAs5f": true,
+      "verifiedSnippetRanges": [[88, 113]]
+    },
+    {
+      "path": "packages/contracts/v2/errors.json",
+      "onlyEntryInterpreted": "/codes/OWNERSHIP_CONFLICT",
+      "detailRefRequired": true
+    }
+  ],
+  "matrix": {
+    "currentM": 9,
+    "currentZ": 4,
+    "firstAndContinuationMRecordsExactMatch": true,
+    "historicalMStatusExactMatch": true,
+    "oldReportsAndStatusesIdentityMatched": 8,
+    "allCurrentOpinionsRemainOpen": true,
+    "ZUnreadMiddleRetained": true
+  },
+  "inventory": {
+    "fullyParsedMetadataBytes": 898602,
+    "sourceManifestMetadataRowsCompared": 22492,
+    "mainRowsCompared": 856,
+    "namespaceCountsCompared": 16,
+    "exactCodeByteGroupsCompared": 251,
+    "queuedBranchesPreserved": 8,
+    "sourceBodiesReadForInventory": false,
+    "metadataDoesNotProveActualReview": true
+  },
+  "commandReceipts": [
+    {
+      "argv": ["git", "rev-parse", "HEAD"],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 41,
+        "sha256": "6ee11ff8d1932ca65f35c9d9c8ce93acc3c73cecab5558819ebac155d16c7d86"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    },
+    {
+      "argv": ["git", "branch", "--show-current"],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 38,
+        "sha256": "8ec3758501131c1574e4cc6aca67c238ac55088010e75dad457de2b15666eaa4"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/pyproject.toml"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 351,
+        "sha256": "626b8f7024e8460af3ca42076a953b2827c0d6468903065c71a7fbb819cbce20"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    },
+    {
+      "argv": ["git", "show", "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:uv.lock"],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 20999,
+        "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6891a5842302859a531cf82767c5a482417bc274:packages/engine/pyproject.toml"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 398,
+        "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    },
+    {
+      "argv": ["git", "show", "6891a5842302859a531cf82767c5a482417bc274:uv.lock"],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 28440,
+        "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic.py"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 65749,
+        "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_query.py"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 6448,
+        "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/storage.py"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 55364,
+        "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "5f910b52c69d86a1076b2032e5d3c63e715947f3:packages/engine/src/ontolearn_engine/storage.py"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 55364,
+        "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/job_store.py"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 64853,
+        "sha256": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "5f910b52c69d86a1076b2032e5d3c63e715947f3:packages/engine/src/ontolearn_engine/job_store.py"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 64853,
+        "sha256": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/contracts/v2/errors.json"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 16299,
+        "sha256": "ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "text": ""
+      }
+    }
+  ],
+  "productOrImportOrRuntimeOrTestsOrInstallOrNetworkOrDbOrNativeExecuted": false
+}

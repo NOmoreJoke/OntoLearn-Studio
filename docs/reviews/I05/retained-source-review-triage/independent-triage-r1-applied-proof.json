@@ -1,0 +1,171 @@
+{
+  "kind": "independent-I05-applied-M06-narrow-proof",
+  "fixedBase": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "files": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "beforeBytes": 93848,
+      "beforeSHA256": "b3456f021afdbd53ec8677bf317a5ffdff636b55bae760eb8b7fec6e399e41b9",
+      "actualBytes": 93915,
+      "actualSHA256": "43d083eebefbf315509d5fb6276369506dd760006264afd076d754ab3b027230",
+      "onlyAddedGuardOrTestAST": true
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_source_package_probe.py",
+      "beforeBytes": 73466,
+      "beforeSHA256": "8055c398ca4d03bb99bdec06f599db1c342b2bc6a49a0a247e2ffc54c8652da5",
+      "actualBytes": 73863,
+      "actualSHA256": "c99a6acc40ab9c612a906cc72db336c9079a41c6fa8d2aa53b7c0c5c72b80752",
+      "onlyAddedGuardOrTestAST": true
+    }
+  ],
+  "actualDiffMatchesAuthorSavedDiff": true,
+  "onlyExactNewCaseReportedBySavedReceipts": true,
+  "reviewerRanProductTests": false,
+  "verifiedSavedReceipts": [
+    {
+      "path": "m06-regression-red-01.json",
+      "exit": 1,
+      "rawStreamsMatched": true
+    },
+    {
+      "path": "m06-regression-green-01.json",
+      "exit": 0,
+      "rawStreamsMatched": true
+    },
+    {
+      "path": "m06-env-prepare-01.json",
+      "exit": 0,
+      "rawStreamsMatched": true
+    },
+    {
+      "path": "m06-two-source-ruff-check-01.json",
+      "exit": 1,
+      "rawStreamsMatched": true
+    },
+    {
+      "path": "m06-two-source-format-check-01.json",
+      "exit": 1,
+      "rawStreamsMatched": true
+    },
+    {
+      "path": "m06-final-source-diff.json",
+      "exit": 0,
+      "rawStreamsMatched": true
+    },
+    {
+      "path": "m06-final-source-whitespace.json",
+      "exit": 0,
+      "rawStreamsMatched": true
+    },
+    {
+      "path": "m06-baseline-ruff-1.json",
+      "exit": 1,
+      "rawStreamsMatched": true
+    },
+    {
+      "path": "m06-baseline-ruff-2.json",
+      "exit": 0,
+      "rawStreamsMatched": true
+    },
+    {
+      "path": "m06-baseline-format-1.json",
+      "exit": 1,
+      "rawStreamsMatched": true
+    },
+    {
+      "path": "m06-baseline-format-2.json",
+      "exit": 1,
+      "rawStreamsMatched": true
+    },
+    {
+      "path": "m06-added-guard-format.json",
+      "exit": 0,
+      "rawStreamsMatched": true
+    },
+    {
+      "path": "m06-added-test-format.json",
+      "exit": 0,
+      "rawStreamsMatched": true
+    }
+  ],
+  "lint": {
+    "currentExit": 1,
+    "baselineCount": 10,
+    "currentCount": 10,
+    "codes": {
+      "I001": 1,
+      "B023": 9
+    },
+    "exactSignaturesAfterInsertionLineMap": true,
+    "newDiagnosticSignatures": 0,
+    "overallPass": false
+  },
+  "format": {
+    "bothCurrentExit": 1,
+    "eachBaselineExit": 1,
+    "addedSnippetsExit": 0,
+    "overallPass": false
+  },
+  "oldSealedReportAndAddendumIdentityUnchanged": true,
+  "P1P2InAppliedDiff": [],
+  "scopeLimits": [
+    "no runtime/test/uv/install/fullcheck performed by reviewer",
+    "green single negative boundary case does not prove legal full-v1/B1/full417/canonical integration",
+    "environment raw and receipts checked; no environment/native/global inspection",
+    "formatted-source large raw only byte/hash checked, not used to expand algorithm reading"
+  ],
+  "commandReceipts": [
+    {
+      "argv": ["git", "rev-parse", "HEAD"],
+      "exitCode": 0,
+      "stdoutBytes": 41,
+      "stdoutSHA256": "6ee11ff8d1932ca65f35c9d9c8ce93acc3c73cecab5558819ebac155d16c7d86",
+      "stderrText": "",
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 93848,
+      "stdoutSHA256": "b3456f021afdbd53ec8677bf317a5ffdff636b55bae760eb8b7fec6e399e41b9",
+      "stderrText": "",
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64:packages/engine/tests/test_semantic_source_package_probe.py"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 73466,
+      "stdoutSHA256": "8055c398ca4d03bb99bdec06f599db1c342b2bc6a49a0a247e2ffc54c8652da5",
+      "stderrText": "",
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "--",
+        "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+        "packages/engine/tests/test_semantic_source_package_probe.py"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 1794,
+      "stdoutSHA256": "31bba48f45119c5d120e6c27cdd937678f2562768361e501f61b121379679891",
+      "stderrText": "",
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

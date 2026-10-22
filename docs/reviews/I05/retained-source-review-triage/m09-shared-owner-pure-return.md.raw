@@ -1,0 +1,35 @@
+# M09 共享错误边界：窄静态归因
+
+结论：ownership未在低层Conflict.code映射中列出是5f继承事实；当前T01包装器已负责发行安全detailRef，不能仅在storage补一个公共code。此次未证I05正式入口绕过包装器，因此不认定“I05新增公共错误路由缺陷已实锤”，也不能以Inherited代替正确性关闭。M09仍交根/T01共享storage与JobStore owner，原HOLD不撤。未改实现/测试/契约、未跑DB/fixture/产品/GUI/物理H或外联。
+
+依据：指定 m09-shared-owner-routing-facts.json（位于本体根 .worktrees/I05-retained-source-review-triage/docs/reviews/I05/retained-source-review-triage/）全文实读，7752B / SHA256 b7447b9ab437863e2416c74bc56ac78b4abb1edcbad1c283bc6c6498621f60a1。独立读取固定5f、2cf、423b、acbe的必要Git函数/契约/既有测试，不采用helper/proposal的新逻辑冒接线。
+
+## 固定证据
+
+- 2cf0c332的storage.py 55364B/4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842，job_store.py 64853B/42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2，均逐字节等5f910b52。四个ownership raise在5f storage:435、585、629、648，Conflict:34–48未映ownership，故默认INTERNAL_ERROR。
+- 423b7e4及acbe2dc的storage.py均76042B/fbef0d0ace0a01b9ced5eaecaf83aeb9306258c0cbfa5fd98a6d79e46bc5a39a，job_store.py均87227B/8896c3e30007e1dec04eaf47ae5bb5c33a1e9b3a1d016cb9165f99d8b4deeacc。Conflict类AST与5f完全相同；_application/detail_get函数文本分别SHA256 0e76f1cb18fda1729d03f309ac6444eda77aebfb6780ab82ddb0a8bf5aa1c75d、3688f6806cfd467180230143afe7433b3c3b8770f36969743a7d7f812e665dbb，四版本核同。
+- errors.json整件5f为14400B，2cf/423/acbe为16299B/ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c，不能把整件称同5f；但OWNERSHIP_CONFLICT条目四版精确相同：messageKey=project.ownershipConflict，retryable=false，params只许且必须detailRef（id schema）。acbe packages/contracts/v2/errors.json:163–176。
+
+## 真边界、发行者和既有覆盖
+
+5f/2cf job_store.py:95–110（423/acbe:427–442）先让原_application事务回滚，捕获category=ownership，另起同Store事务生成uuid4，写job_details(id,project,payload)，payload仅{category:'ownership',resource,projectId}，再抛JobFault('OWNERSHIP_CONFLICT',detailRef=id)。issuer是coordinator拥有的JobStore应用边界，不是worker、renderer、纯Conflict或无存储上下文的classify。
+
+acbe prepare_plan:592、prepare_application:295、apply_application:358、commit_job:1228及domain_changesets.preview_changeset:390等真实入口使用此包装。business3 changeset.preview经coordinator.dispatch:340–365进入该Store服务，changeset.commit Job经commit_job。undo预览另有明确impact/conflict结果分支，不能把其内部catch当裸异常越界证据。
+
+2cf coordinator.classify:34–52把JobFault/Conflict送safe_error；job.create dispatch:244起只准test_mode下固定test.*，未看到I05正式能力绕包装的接线。acbe classify:73–97同样只格式化既有code/params（按profile分账），request:314起捕获；dispatch:333–464为固定路由，未暴露detail_get通用RPC。该必要读面未发现绕包装正式调用，不将“尚未发现”扩大为全部未来入口不存在。
+
+当前T01固定测试已覆盖：acbe packages/engine/tests/test_job_store.py:897–925的test_ownership_conflict_has_persistent_safe_detail_and_global_claim_probe，真实映射漂移触发JobFault，核UUID detailRef、固定safe detail、不含private-value、领域state不变及跨项目detail读取NOT_FOUND；test_project_changeset_service.py:845起核manual多项失败无部分领域/history写入，仅job_details允许作为诊断辅助新增。test_job_store.py:928起另核结构化Conflict而不解析message。这是静态读到的现有可执行断言，本轮未重跑，也不把它们当I05新正式入口已验收。
+
+## 保密与detail生命周期
+
+原Conflict.message含slot/owner/source_row/id等内部诊断，不能解析后传wire，更不能把事实值、路径、异常文本或堆栈塞params/detail。现有payload仅固定category/resource和已授权projectId，公共error只传opaque detailRef。detail_get（acbe:444–451）先_project，再按id AND project查，不存在/跨项目均NOT_FOUND(resource='result')；未来暴露读取还须真实调用方项目权限，不能仅凭UUID授权。
+
+job_details是同SQLite持久辅助证据，不是回滚领域写的一部分、也不是临时内存cache；schema acbe job_store:2018–2035有public_projects外键，UPDATE/DELETE被immutable trigger阻止。当前所读实现没有给这类detail TTL/消费即删路径；不得伪称已有回收或operation历史marker绑定。它与changeset的其他版本化detail同表，后续不得把任意旧opaque条目冒成同种detail。上述仅描述已读生命周期，不新增GC或包/迁移写面。
+
+## 精确后置处置
+
+直接把Conflict(category=ownership).code改为OWNERSHIP_CONFLICT而params仍{}，缺required detailRef；resources.safe_error:61–76会校验失败退INTERNAL_ERROR，business3_error（packages/contracts/python/contract_v2.py:342–357）同样退安全内部错误，不能修复语义。classify无授权项目/持久事务上下文，也不能临时伪造未落库ref。
+
+仅当后续给出正式call→裸Store ownership raise→公共classify的具体可达链，才由共享owner在该真实应用服务边界复用/明确现有rollback→安全detail持久化→JobFault流程，绑定可信project/resource与受控detail字段，核原失败原子性和这笔辅助写的生命周期/费用；不在纯storage或通用formatter随意铸ref，不扩新公共码，不把仅改code当完成。当前无须据此改产品；继承性和已有包装覆盖均是归因材料，不能替根或指定外审撤HOLD/关闭M09。
+
+审查者 /root/create_core_review，2026-10-23；源码/AST/hash均为只读静态，未执行产品或新fixture。本短单不承诺未来路径/性能/跨边界运行结果。

@@ -1,0 +1,115 @@
+{
+  "format": "i05-M08-stdlib-dependency-closure-correction/1",
+  "reason": "First static facts followed dependencies but omitted optional-dependencies activated by an edge extra. Original retained; this record replaces only engineDependencyClosure/inEngineClosure fields. Not a product defect or runtime result.",
+  "runtimeOrResolverExecuted": false,
+  "versions": {
+    "candidate": {
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "lockSHA256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e",
+      "runtimeClosureIncludingActivatedExtras": ["ontolearn-engine", "pyparsing", "rdflib"],
+      "activatedExtras": {},
+      "edges": [
+        {
+          "from": "ontolearn-engine",
+          "to": "rdflib",
+          "activation": "base",
+          "requestedExtras": []
+        },
+        {
+          "from": "rdflib",
+          "to": "pyparsing",
+          "activation": "base",
+          "requestedExtras": []
+        }
+      ],
+      "allRequiredEightInClosure": false
+    },
+    "supplier": {
+      "sourceRef": "6891a5842302859a531cf82767c5a482417bc274",
+      "lockSHA256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+      "runtimeClosureIncludingActivatedExtras": [
+        "html5rdf",
+        "ontolearn-engine",
+        "owlrl",
+        "packaging",
+        "prettytable",
+        "pyparsing",
+        "pyshacl",
+        "rdflib",
+        "wcwidth"
+      ],
+      "activatedExtras": {
+        "rdflib": ["html"]
+      },
+      "edges": [
+        {
+          "from": "ontolearn-engine",
+          "to": "pyparsing",
+          "activation": "base",
+          "requestedExtras": []
+        },
+        {
+          "from": "ontolearn-engine",
+          "to": "pyshacl",
+          "activation": "base",
+          "requestedExtras": []
+        },
+        {
+          "from": "ontolearn-engine",
+          "to": "rdflib",
+          "activation": "base",
+          "requestedExtras": []
+        },
+        {
+          "from": "pyshacl",
+          "to": "owlrl",
+          "activation": "base",
+          "requestedExtras": []
+        },
+        {
+          "from": "pyshacl",
+          "to": "packaging",
+          "activation": "base",
+          "requestedExtras": []
+        },
+        {
+          "from": "pyshacl",
+          "to": "prettytable",
+          "activation": "base",
+          "requestedExtras": []
+        },
+        {
+          "from": "pyshacl",
+          "to": "rdflib",
+          "activation": "base",
+          "requestedExtras": ["html"]
+        },
+        {
+          "from": "rdflib",
+          "to": "pyparsing",
+          "activation": "base",
+          "requestedExtras": []
+        },
+        {
+          "from": "owlrl",
+          "to": "rdflib",
+          "activation": "base",
+          "requestedExtras": []
+        },
+        {
+          "from": "prettytable",
+          "to": "wcwidth",
+          "activation": "base",
+          "requestedExtras": []
+        },
+        {
+          "from": "rdflib",
+          "to": "html5rdf",
+          "activation": "optional",
+          "requestedExtras": []
+        }
+      ],
+      "allRequiredEightInClosure": true
+    }
+  }
+}

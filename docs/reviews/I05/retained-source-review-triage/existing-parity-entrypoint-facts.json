@@ -1,0 +1,72 @@
+{
+  "format": "i05-existing-parity-entrypoint-static-facts/1",
+  "fixedRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "sourcePath": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+  "bytes": 93848,
+  "sha256": "b3456f021afdbd53ec8677bf317a5ffdff636b55bae760eb8b7fec6e399e41b9",
+  "localM06ProposedSourceBytes": 93915,
+  "localM06ProposedSourceSHA256": "43d083eebefbf315509d5fb6276369506dd760006264afd076d754ab3b027230",
+  "sourceArgv": [
+    "<target-tree-own-Python3.12>",
+    "-m",
+    "ontolearn_engine.semantic_source_package_probe",
+    "--semantic-source-package-probe",
+    "<exact-selector>"
+  ],
+  "exactSelectors": ["full-v1", "b1-semantic-1x-v1", "b1-semantic-10x-v1"],
+  "cwd": "target worktree; own editable installed engine environment",
+  "requiredBusinessEnvOverrides": [],
+  "assetEnvCwdFallback": false,
+  "assets": [
+    {
+      "sourcePath": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+      "bytes": 8205267,
+      "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa"
+    },
+    {
+      "sourcePath": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+      "bytes": 21202,
+      "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a"
+    }
+  ],
+  "frozenAssetDirectory": "sys._MEIPASS/provenance/i05/source-package-parity/",
+  "frozenContractsRoot": "sys._MEIPASS/contracts/",
+  "frozenLock": "sys._MEIPASS/provenance/uv.lock",
+  "sourcePreconditions": [
+    "assets bounded bytesSHA strict schema; cap descriptor1MiB/input8MiB",
+    "4PUBLIC_RESOURCE_PINS",
+    "lock28440B/86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+    "22SUPPLIER_PINS fixed6891",
+    "8DISTRIBUTIONS exactversions",
+    "Python3.12",
+    "noexistingprofilehook"
+  ],
+  "packagedParityExecutableAvailable": false,
+  "existingParentEntrypoint": {
+    "path": "packages/engine/entrypoint.py",
+    "bytes": 787,
+    "sha256": "979b65e5efc3d19ad9851cc2a97255594591626fbed2efbecd8713723e9f2f60",
+    "semanticParityDispatch": false
+  },
+  "frozenPreflight": "alwaysFROZEN_BUILD_PROVENANCE_UNAVAILABLE until actual approved buildprovenance schema/reader integration; no sourcehash printed insidePYZ as proof",
+  "output": {
+    "format": "i05-source-package-observations/1",
+    "stdout": "header + complete observations + terminal; preflight failure returns2 before header",
+    "stderr": "safe codes only",
+    "caps": {
+      "itemBytes": 33554432,
+      "reportBytes": 67108864,
+      "terminalReserveBytes": 65536,
+      "cooperativeDeadlineSeconds": 120
+    },
+    "exits": {
+      "0": "selectedcollectioncomplete only, not oracle/parity/acceptance",
+      "1": "harness/unknown/output/deadline-boundary",
+      "2": "argv/assets/identitypreflight",
+      "130": "cooperativestopping not externalprocessstopped/readerjoined"
+    }
+  },
+  "parityArgvActuallyExecutedNow": false,
+  "currentWindowActualExecution": "onlynewM06pytestnegativecase red1/green0; neverfull417/B1/canonicalparity",
+  "sourceOrFrozenRuntimeAuthorizationGranted": false
+}

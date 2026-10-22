@@ -1,0 +1,27 @@
+{
+  "format": "i05-M06-unapplied-precise-proposal/1",
+  "status": "UNAPPLIED; root source-file boundary and independent patch review before application; runtime remains prohibited",
+  "base": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "patch": {
+    "path": "docs/reviews/I05/retained-source-review-triage/m06-unapplied-proposal.patch",
+    "bytes": 1258,
+    "sha256": "e06a73161d258f063e53aea9f1686c8ab9d5b6844c2347512e9cec8201a8b840"
+  },
+  "proposedFiles": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "beforeSHA256": "b3456f021afdbd53ec8677bf317a5ffdff636b55bae760eb8b7fec6e399e41b9",
+      "proposedSHA256": "43d083eebefbf315509d5fb6276369506dd760006264afd076d754ab3b027230"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_source_package_probe.py",
+      "beforeSHA256": "8055c398ca4d03bb99bdec06f599db1c342b2bc6a49a0a247e2ffc54c8652da5",
+      "proposedSHA256": "c99a6acc40ab9c612a906cc72db336c9079a41c6fa8d2aa53b7c0c5c72b80752"
+    }
+  ],
+  "actualVerification": "stdlib AST parsed proposed text only; no exec/import/pytest/check/product call; files remain exact original",
+  "intent": "reject missing scope instrumentation before canonical module/dataset access with existing safe INTERNAL_ERROR; legitimate instrumented scope unchanged; B1 case sets unchanged",
+  "counterExample": "without guard empty module mapping raises KeyError before expected stable ProbeFault; test checks private precondition, never fakes a successful business output",
+  "productChanged": false,
+  "testsRun": false
+}

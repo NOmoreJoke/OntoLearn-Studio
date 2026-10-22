@@ -1,0 +1,58 @@
+{
+  "format": "i05-lossless-raw-evidence-git-archive-map/1",
+  "reason": "Four original diff/pytest raw streams contain meaningful trailing whitespace. Never trim or format them. Git candidate carries lossless gzip instead; original files remain byte-identical, untracked, in this own worktree.",
+  "files": [
+    {
+      "originalPath": "docs/reviews/I05/retained-source-review-triage/m06-unapplied-proposal.patch",
+      "originalBytes": 1258,
+      "originalSHA256": "e06a73161d258f063e53aea9f1686c8ab9d5b6844c2347512e9cec8201a8b840",
+      "gitArchivePath": "docs/reviews/I05/retained-source-review-triage/m06-unapplied-proposal.patch.gz",
+      "archiveBytes": 583,
+      "archiveSHA256": "f3358045f85860a72e19d673dc243fe4d69702b4d57a3618eb8e67dc86ae31cc",
+      "decode": "gzip",
+      "roundTripExact": true,
+      "originalWorkingFileUnchanged": true
+    },
+    {
+      "originalPath": "docs/reviews/I05/retained-source-review-triage/m06-final-source-diff.stdout.raw",
+      "originalBytes": 1794,
+      "originalSHA256": "31bba48f45119c5d120e6c27cdd937678f2562768361e501f61b121379679891",
+      "gitArchivePath": "docs/reviews/I05/retained-source-review-triage/m06-final-source-diff.stdout.raw.gz",
+      "archiveBytes": 718,
+      "archiveSHA256": "fa87c8757c78fe7a2666f9c7122ae4f0ac4574121c2bc27923c6b4729080ed17",
+      "decode": "gzip",
+      "roundTripExact": true,
+      "originalWorkingFileUnchanged": true
+    },
+    {
+      "originalPath": "docs/reviews/I05/retained-source-review-triage/independent-triage-r1-applied-diff.stdout.raw",
+      "originalBytes": 1794,
+      "originalSHA256": "31bba48f45119c5d120e6c27cdd937678f2562768361e501f61b121379679891",
+      "gitArchivePath": "docs/reviews/I05/retained-source-review-triage/independent-triage-r1-applied-diff.stdout.raw.gz",
+      "archiveBytes": 718,
+      "archiveSHA256": "fa87c8757c78fe7a2666f9c7122ae4f0ac4574121c2bc27923c6b4729080ed17",
+      "decode": "gzip",
+      "roundTripExact": true,
+      "originalWorkingFileUnchanged": true
+    },
+    {
+      "originalPath": "docs/reviews/I05/retained-source-review-triage/m06-regression-red-01.stdout.raw",
+      "originalBytes": 1586,
+      "originalSHA256": "fe7d1dc5c19db98e1955c46e707b0fde7b2655c615d4e192170d58682c326b57",
+      "gitArchivePath": "docs/reviews/I05/retained-source-review-triage/m06-regression-red-01.stdout.raw.gz",
+      "archiveBytes": 603,
+      "archiveSHA256": "f281a1b094fb53d6cbd47ca33d23dfef87babb1a806f20047b224a2ebc8cc214",
+      "decode": "gzip",
+      "roundTripExact": true,
+      "originalWorkingFileUnchanged": true
+    }
+  ],
+  "originalArtifactReferences": "Existing reports/receipts refer to originalPath. At fixed Git read, decompress mapped archive to that exact relative path in an isolated review output area or inspect decoded bytes without execution. This is an evidence representation, not a modified source/test or new runtime result.",
+  "cachedDiffWhitespaceChecks": "ordinary cached git diff --check remains required; do not suppress rules globally",
+  "originalsToLeaveUntracked": [
+    "docs/reviews/I05/retained-source-review-triage/m06-unapplied-proposal.patch",
+    "docs/reviews/I05/retained-source-review-triage/m06-final-source-diff.stdout.raw",
+    "docs/reviews/I05/retained-source-review-triage/independent-triage-r1-applied-diff.stdout.raw",
+    "docs/reviews/I05/retained-source-review-triage/m06-regression-red-01.stdout.raw"
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "format": "i05-M06-author-applied-window-summary/1",
+  "at": "2026-10-22T17:21:57.628288+00:00",
+  "baseRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "actualTwoFiles": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "beforeBytes": 93848,
+      "beforeSHA256": "b3456f021afdbd53ec8677bf317a5ffdff636b55bae760eb8b7fec6e399e41b9",
+      "afterBytes": 93915,
+      "afterSHA256": "43d083eebefbf315509d5fb6276369506dd760006264afd076d754ab3b027230",
+      "remainderASTExactlyMatchesBase": true
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_source_package_probe.py",
+      "beforeBytes": 73466,
+      "beforeSHA256": "8055c398ca4d03bb99bdec06f599db1c342b2bc6a49a0a247e2ffc54c8652da5",
+      "afterBytes": 73863,
+      "afterSHA256": "c99a6acc40ab9c612a906cc72db336c9079a41c6fa8d2aa53b7c0c5c72b80752",
+      "remainderASTExactlyMatchesBase": true
+    }
+  ],
+  "trackedChangesExact": [
+    "AGENTS.md",
+    "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+    "packages/engine/tests/test_semantic_source_package_probe.py"
+  ],
+  "guidanceNotToStage": "AGENTS.md",
+  "appliedPatchMatchesPriorExactProposal": true,
+  "realRegression": {
+    "nodeId": "packages/engine/tests/test_semantic_source_package_probe.py::test_scope_without_counter_fails_before_loading_canonical_inputs",
+    "red": "m06-regression-red-01.json actualexit1 KeyError before guard",
+    "green": "m06-regression-green-01.json actualexit0 1passed",
+    "fakeBusinessSuccess": false,
+    "canonicalFull417B1Run": false
+  },
+  "environment": "own .venv; own UV cache + linkModecopy; frozen oldlock unchanged; see m06-env-prepare-01.json",
+  "lintFormat": {
+    "fullRuffExit": 1,
+    "originalAndCurrentSame10": true,
+    "newIssues": 0,
+    "fullBothSourceFormatExit": 1,
+    "eachBaselineFormatExit": 1,
+    "newGuardTestFormatExit": 0,
+    "globalChecksPassed": false,
+    "scope": "baseline comparison then stop, no wholefile reformat"
+  },
+  "syntax": "AST parse both, removing only added guard/test yields exact baseline AST",
+  "remainingGates": "all external opinions remain open for next full candidate; M08/T03 dependencies, M09/T01 boundary, fullcheck/package/wholeOracle/SQLiteHOLD/native/CI/develop not accepted",
+  "earlierFixedSixTriageInputsUnchanged": true,
+  "originalUnappliedProposalPreservedAsPriorTimeRecord": true,
+  "candidateNotYetCommitted": true,
+  "pending": "independent applied-diff/real stream narrow review, then freeze local candidate; no repeat of unchanged passing case"
+}

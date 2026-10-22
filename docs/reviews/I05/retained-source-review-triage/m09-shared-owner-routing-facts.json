@@ -1,0 +1,78 @@
+{
+  "format": "i05-M09-shared-owner-static-routing-facts/1",
+  "sourceExecution": false,
+  "records": [
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/storage.py",
+      "bytes": 55364,
+      "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+      "identicalToApprovedBase5f": true,
+      "snippets": [
+        {
+          "firstLine": 30,
+          "lastLine": 58,
+          "text": "30: def digest(value: object) -> str:\n31:     return hashlib.sha256(canonical(value).encode()).hexdigest()\n32: \n33: \n34: class Conflict(ValueError):\n35:     \"\"\"A plan must be previewed again or its ownership conflict resolved.\"\"\"\n36: \n37:     def __init__(self, message: str, *, category: str = \"unknown\", params: dict | None = None):\n38:         super().__init__(message)  # Internal diagnostics only; never parse or send this text.\n39:         self.category = category\n40:         self.params = params or {}\n41:         self.code = {\n42:             \"identity\": \"IDENTITY_CONFLICT\",\n43:             \"revision\": \"REVISION_CONFLICT\",\n44:             \"state\": \"INVALID_STATE\",\n45:             \"rounds\": \"RESOURCE_LIMIT\",\n46:             \"dependency\": \"INVALID_REQUEST\",\n47:             \"input\": \"INVALID_REQUEST\",\n48:         }.get(category, \"INTERNAL_ERROR\")\n49: \n50: \n51: class Store:\n52:     def __init__(self, path: str | Path, migration_hook: Hook = lambda _: None):\n53:         self.path = Path(path)\n54:         self._db = sqlite3.connect(self.path, isolation_level=None, timeout=5)\n55:         self._db.row_factory = sqlite3.Row\n56:         self._db.execute(\"PRAGMA foreign_keys=ON\")\n57:         self._db.execute(\"PRAGMA synchronous=FULL\")\n58:         try:"
+        },
+        {
+          "firstLine": 432,
+          "lastLine": 443,
+          "text": "432:                 ).fetchone()\n433:                 if existing:\n434:                     if existing[\"owner\"] or existing[\"object\"] != fact[\"object\"]:\n435:                         raise Conflict(\n436:                             \"Explicit fact edit required; cannot take ownership: \"\n437:                             f\"slot={existing['subject']} {existing['predicate']}, \"\n438:                             f\"other={existing['owner'] or 'manual'}, row={existing['source_row']}, \"\n439:                             f\"id={existing['id']}\",\n440:                             category=\"ownership\",\n441:                         )\n442:                     continue\n443:                 self._check_slot(project, fact[\"subject\"], fact[\"predicate\"], fact[\"object\"], set())"
+        },
+        {
+          "firstLine": 580,
+          "lastLine": 590,
+          "text": "580:             if self._db.execute(\n581:                 \"SELECT subject FROM facts WHERE project=? AND predicate=? AND object IS NOT NULL \"\n582:                 \"GROUP BY subject HAVING COUNT(*)>1 LIMIT 1\",\n583:                 (project, predicate),\n584:             ).fetchone():\n585:                 raise Conflict(\n586:                     \"Single-valued declaration conflicts with existing facts\", category=\"ownership\"\n587:                 )\n588: \n589:     def _validate_references(self, project: str) -> None:\n590:         for row in self._db.execute(\"SELECT payload FROM definitions WHERE project=?\", (project,)):"
+        },
+        {
+          "firstLine": 625,
+          "lastLine": 654,
+          "text": "625:             if row[\"id\"] not in excluded and (\n626:                 row[\"id\"] == reserved_id\n627:                 or (row[\"object\"] is not None and (single or row[\"object\"] == value))\n628:             ):\n629:                 raise Conflict(\n630:                     f\"Ownership conflict: slot={subject} {predicate}, \"\n631:                     f\"other={row['owner'] or 'manual'}, row={row['source_row']}, id={row['id']}\",\n632:                     category=\"ownership\",\n633:                 )\n634: \n635:     def _replace_mapping(self, project: str, mapping: dict) -> bool:\n636:         if (\n637:             not isinstance(mapping, dict)\n638:             or set(mapping) != {\"id\", \"rows\"}\n639:             or not isinstance(mapping[\"id\"], str)\n640:             or not mapping[\"id\"]\n641:             or not isinstance(mapping[\"rows\"], list)\n642:         ):\n643:             raise ValueError(\"Invalid mapping plan\")\n644:         owner = mapping[\"id\"]\n645:         old = self._db.execute(\"SELECT * FROM facts WHERE project=? AND owner=?\", (project, owner))\n646:         for fact in old:\n647:             if fact[\"object\"] != fact[\"managed_value\"]:\n648:                 raise Conflict(\n649:                     f\"Manual drift: mapping={owner}, row={fact['source_row']}, \"\n650:                     f\"slot={fact['subject']} {fact['predicate']}\",\n651:                     category=\"ownership\",\n652:                 )\n653:         own_ids = {\n654:             r[0]"
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/job_store.py",
+      "bytes": 64853,
+      "sha256": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2",
+      "identicalToApprovedBase5f": true,
+      "snippets": [
+        {
+          "firstLine": 88,
+          "lastLine": 113,
+          "text": "88:             self._lease.close()  # OS lock releases on close/crash; never unlink a leased inode.\n89: \n90:     def _valid(self, schema, value, field=\"params\"):\n91:         if not self.contract.validate(schema, value):\n92:             fault(\"INVALID_REQUEST\", field=field)\n93: \n94:     @contextmanager\n95:     def _application(self, project, resource, hook: Hook = lambda _: None):\n96:         try:\n97:             with self._transaction(hook):\n98:                 yield\n99:         except Conflict as error:\n100:             if error.category != \"ownership\":\n101:                 raise\n102:             # Persist only fixed categories and authorized opaque identities,\n103:             # outside the rolled-back write. No exception text/values/paths.\n104:             identity = str(uuid4())\n105:             detail = {\"category\": \"ownership\", \"resource\": resource, \"projectId\": project}\n106:             with self._transaction():\n107:                 self._db.execute(\n108:                     \"INSERT INTO job_details VALUES(?,?,?)\", (identity, project, canonical(detail))\n109:                 )\n110:             fault(\"OWNERSHIP_CONFLICT\", detailRef=identity)\n111: \n112:     def detail_get(self, project, identity):\n113:         self._project(project)"
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/contracts/v2/errors.json",
+      "bytes": 16299,
+      "sha256": "ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c",
+      "identicalToApprovedBase5f": false,
+      "snippets": [],
+      "exactOwnershipErrorEntries": [
+        [
+          "/codes/OWNERSHIP_CONFLICT",
+          {
+            "messageKey": "project.ownershipConflict",
+            "retryable": false,
+            "paramsSchema": {
+              "type": "object",
+              "properties": {
+                "detailRef": {
+                  "$ref": "#/$defs/id"
+                }
+              },
+              "required": ["detailRef"],
+              "additionalProperties": false
+            }
+          }
+        ]
+      ]
+    }
+  ],
+  "ownerRoute": "root only; T01 shared storage owner, not I05 owned change",
+  "runtimeReachabilityOrPublicContractFindingConfirmed": false
+}

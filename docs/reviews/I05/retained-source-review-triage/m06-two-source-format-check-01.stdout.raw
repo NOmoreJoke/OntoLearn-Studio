@@ -1,0 +1,2864 @@
+unformatted: File would be reformatted
+    --> packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:48:6
+     |
+47   | SUPPLIER_PINS = (
+     -     ('ontolearn_engine', '__init__.py', 101,
+     -         '4b8460a6ccc649f44188171c3d4c0c9e58e1204c711462d9ecf0aff12135684f'),
+     -     ('ontolearn_engine.quality', 'quality/__init__.py', 548,
+     -         '9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c'),
+     -     ('ontolearn_engine.quality.rule_calendar', 'quality/rule_calendar.py', 4047,
+     -         '6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec'),
+     -     ('ontolearn_engine.quality.rule_comparator', 'quality/rule_comparator.py', 1750,
+     -         '9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2'),
+     -     ('ontolearn_engine.quality.rule_firing', 'quality/rule_firing.py', 19149,
+     -         '5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c'),
+     -     ('ontolearn_engine.quality.rule_numbers', 'quality/rule_numbers.py', 7372,
+     -         '6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9'),
+     -     ('ontolearn_engine.quality.rule_profile', 'quality/rule_profile.py', 11987,
+     -         'b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c'),
+     -     ('ontolearn_engine.quality.rule_revalidation', 'quality/rule_revalidation.py', 6288,
+     -         '9e9258cfefdef56f369dad6bb7838afd22478ea6714e4322b2d872d12616200e'),
+     -     ('ontolearn_engine.quality.rule_terms', 'quality/rule_terms.py', 6176,
+     -         '218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1'),
+     -     ('ontolearn_engine.resources', 'resources.py', 3065,
+     -         '177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238'),
+     -     ('ontolearn_engine.semantic', 'semantic.py', 65749,
+     -         '60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07'),
+     -     ('ontolearn_engine.semantic_error_adapter', 'semantic_error_adapter.py', 15426,
+     -         '0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014'),
+     -     ('ontolearn_engine.semantic_execution', 'semantic_execution.py', 35220,
+     -         '3ac496383349e3ddefea1672c27c88bacaf99f4436c22e96e1592393bac102f3'),
+     -     ('ontolearn_engine.semantic_offline', 'semantic_offline.py', 1351,
+     -         '4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488'),
+     -     ('ontolearn_engine.semantic_profile_directsteps', 'semantic_profile_directsteps.py', 46459,
+     -         '7927769077e363b23741f6dc78b7c0ec2ad00b7d3285f8403a190c0e00169b22'),
+     -     ('ontolearn_engine.semantic_profile_input', 'semantic_profile_input.py', 40378,
+     -         'f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74'),
+     -     ('ontolearn_engine.semantic_profile_production', 'semantic_profile_production.py', 19993,
+     -         '5c857470890bd810370ad877db930848ba08e80096c640037d39bea83c14a320'),
+     -     ('ontolearn_engine.semantic_profile_restore', 'semantic_profile_restore.py', 70203,
+     -         '1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243'),
+     -     ('ontolearn_engine.semantic_profile_restore_budget', 'semantic_profile_restore_budget.py',
+     -         37889, 'ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0'),
+     -     ('ontolearn_engine.semantic_query', 'semantic_query.py', 6448,
+     -         'fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f'),
+     -     ('ontolearn_engine.semantic_scopes', 'semantic_scopes.py', 13051,
+     -         'aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf'),
+     -     ('ontolearn_engine.semantic_turtle', 'semantic_turtle.py', 33916,
+     -         '4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214'),
+48   +     (
+49   +         "ontolearn_engine",
+50   +         "__init__.py",
+51   +         101,
+52   +         "4b8460a6ccc649f44188171c3d4c0c9e58e1204c711462d9ecf0aff12135684f",
+53   +     ),
+54   +     (
+55   +         "ontolearn_engine.quality",
+56   +         "quality/__init__.py",
+57   +         548,
+58   +         "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+59   +     ),
+60   +     (
+61   +         "ontolearn_engine.quality.rule_calendar",
+62   +         "quality/rule_calendar.py",
+63   +         4047,
+64   +         "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+65   +     ),
+66   +     (
+67   +         "ontolearn_engine.quality.rule_comparator",
+68   +         "quality/rule_comparator.py",
+69   +         1750,
+70   +         "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+71   +     ),
+72   +     (
+73   +         "ontolearn_engine.quality.rule_firing",
+74   +         "quality/rule_firing.py",
+75   +         19149,
+76   +         "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+77   +     ),
+78   +     (
+79   +         "ontolearn_engine.quality.rule_numbers",
+80   +         "quality/rule_numbers.py",
+81   +         7372,
+82   +         "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+83   +     ),
+84   +     (
+85   +         "ontolearn_engine.quality.rule_profile",
+86   +         "quality/rule_profile.py",
+87   +         11987,
+88   +         "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+89   +     ),
+90   +     (
+91   +         "ontolearn_engine.quality.rule_revalidation",
+92   +         "quality/rule_revalidation.py",
+93   +         6288,
+94   +         "9e9258cfefdef56f369dad6bb7838afd22478ea6714e4322b2d872d12616200e",
+95   +     ),
+96   +     (
+97   +         "ontolearn_engine.quality.rule_terms",
+98   +         "quality/rule_terms.py",
+99   +         6176,
+100  +         "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+101  +     ),
+102  +     (
+103  +         "ontolearn_engine.resources",
+104  +         "resources.py",
+105  +         3065,
+106  +         "177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238",
+107  +     ),
+108  +     (
+109  +         "ontolearn_engine.semantic",
+110  +         "semantic.py",
+111  +         65749,
+112  +         "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+113  +     ),
+114  +     (
+115  +         "ontolearn_engine.semantic_error_adapter",
+116  +         "semantic_error_adapter.py",
+117  +         15426,
+118  +         "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+119  +     ),
+120  +     (
+121  +         "ontolearn_engine.semantic_execution",
+122  +         "semantic_execution.py",
+123  +         35220,
+124  +         "3ac496383349e3ddefea1672c27c88bacaf99f4436c22e96e1592393bac102f3",
+125  +     ),
+126  +     (
+127  +         "ontolearn_engine.semantic_offline",
+128  +         "semantic_offline.py",
+129  +         1351,
+130  +         "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+131  +     ),
+132  +     (
+133  +         "ontolearn_engine.semantic_profile_directsteps",
+134  +         "semantic_profile_directsteps.py",
+135  +         46459,
+136  +         "7927769077e363b23741f6dc78b7c0ec2ad00b7d3285f8403a190c0e00169b22",
+137  +     ),
+138  +     (
+139  +         "ontolearn_engine.semantic_profile_input",
+140  +         "semantic_profile_input.py",
+141  +         40378,
+142  +         "f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74",
+143  +     ),
+144  +     (
+145  +         "ontolearn_engine.semantic_profile_production",
+146  +         "semantic_profile_production.py",
+147  +         19993,
+148  +         "5c857470890bd810370ad877db930848ba08e80096c640037d39bea83c14a320",
+149  +     ),
+150  +     (
+151  +         "ontolearn_engine.semantic_profile_restore",
+152  +         "semantic_profile_restore.py",
+153  +         70203,
+154  +         "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+155  +     ),
+156  +     (
+157  +         "ontolearn_engine.semantic_profile_restore_budget",
+158  +         "semantic_profile_restore_budget.py",
+159  +         37889,
+160  +         "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+161  +     ),
+162  +     (
+163  +         "ontolearn_engine.semantic_query",
+164  +         "semantic_query.py",
+165  +         6448,
+166  +         "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+167  +     ),
+168  +     (
+169  +         "ontolearn_engine.semantic_scopes",
+170  +         "semantic_scopes.py",
+171  +         13051,
+172  +         "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+173  +     ),
+174  +     (
+175  +         "ontolearn_engine.semantic_turtle",
+176  +         "semantic_turtle.py",
+177  +         33916,
+178  +         "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+179  +     ),
+180  | )
+181  | PUBLIC_RESOURCE_PINS = (
+     -     ("python/contract_v2.py", 34608,
+     -      "17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7"),
+     -     ("v2/schema.json", 207256,
+     -      "e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf"),
+     -     ("v2/registry.json", 15962,
+     -      "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b"),
+     -     ("v2/errors.json", 16299,
+     -      "ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c"),
+182  +     (
+183  +         "python/contract_v2.py",
+184  +         34608,
+185  +         "17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7",
+186  +     ),
+187  +     ("v2/schema.json", 207256, "e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf"),
+188  +     ("v2/registry.json", 15962, "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b"),
+189  +     ("v2/errors.json", 16299, "ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c"),
+190  | )
+191  | LOCK_BYTES = 28440
+192  | LOCK_SHA256 = "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73"
+193  | DISTRIBUTIONS = {
+     -     "rdflib": "7.6.0", "pyshacl": "0.30.1", "pyparsing": "3.3.3",
+     -     "owlrl": "7.6.2", "prettytable": "3.18.0", "wcwidth": "0.9.2",
+     -     "html5rdf": "1.2.1", "packaging": "26.3",
+194  +     "rdflib": "7.6.0",
+195  +     "pyshacl": "0.30.1",
+196  +     "pyparsing": "3.3.3",
+197  +     "owlrl": "7.6.2",
+198  +     "prettytable": "3.18.0",
+199  +     "wcwidth": "0.9.2",
+200  +     "html5rdf": "1.2.1",
+201  +     "packaging": "26.3",
+202  | }
+203  | OPERATIONS = {
+     -     "parse", "query", "legacy-reason", "scope", "profile", "fullview",
+     -     "dag", "restore-negative", "shape", "shacl-text", "offline", "b1-measurement",
+204  +     "parse",
+205  +     "query",
+206  +     "legacy-reason",
+207  +     "scope",
+208  +     "profile",
+209  +     "fullview",
+210  +     "dag",
+211  +     "restore-negative",
+212  +     "shape",
+213  +     "shacl-text",
+214  +     "offline",
+215  +     "b1-measurement",
+216  | }
+217  | OBS_KEYS = {
+     -     "id", "sourceCaseId", "family", "operation", "datasetId", "parameters",
+     -     "sourceRefs", "contextStatus", "projectionSha256",
+218  +     "id",
+219  +     "sourceCaseId",
+220  +     "family",
+221  +     "operation",
+222  +     "datasetId",
+223  +     "parameters",
+224  +     "sourceRefs",
+225  +     "contextStatus",
+226  +     "projectionSha256",
+227  | }
+228  | CONTEXT_KEYS = {
+     -     "mathInputContexts", "originalOperations", "productCases", "learningChecks",
+     -     "unresolved", "nonClaims",
+229  +     "mathInputContexts",
+230  +     "originalOperations",
+231  +     "productCases",
+232  +     "learningChecks",
+233  +     "unresolved",
+234  +     "nonClaims",
+235  | }
+236  | SCOPE_MODES = {
+     -     "asserted", "fresh", "project", "missing-source", "wrong-source",
+     -     "missing-result", "nonexact-include", "unselected-rules",
+     -     "unselected-result", "facts-axioms",
+237  +     "asserted",
+238  +     "fresh",
+239  +     "project",
+240  +     "missing-source",
+241  +     "wrong-source",
+242  +     "missing-result",
+243  +     "nonexact-include",
+244  +     "unselected-rules",
+245  +     "unselected-result",
+246  +     "facts-axioms",
+247  | }
+248  | MUTATIONS = {
+     -     "payload-unknown-key", "tail-source-tamper", "tail-definition-tamper",
+     -     "tail-limits-tamper", "tail-child-tamper", "dag-depth-plus-one",
+     -     "dag-last-premise-forward", "leaf-rename-all", "head-occurrence-1023-15",
+249  +     "payload-unknown-key",
+250  +     "tail-source-tamper",
+251  +     "tail-definition-tamper",
+252  +     "tail-limits-tamper",
+253  +     "tail-child-tamper",
+254  +     "dag-depth-plus-one",
+255  +     "dag-last-premise-forward",
+256  +     "leaf-rename-all",
+257  +     "head-occurrence-1023-15",
+258  | }
+--------------------------------------------------------------------------------
+324  |         return function(text)
+     -     # Each term is original input syntax. Do not retain thousands of duplicate
+     -     # lexical adapter values; the actual prepared material is captured separately.
+     -     return boundary.call("input/decodeTerm", "semantic_turtle.decode_profile_term",
+     -                          function, (text,), {}, capture=False)
+325  +     # Each term is original input syntax. Do not retain thousands of duplicate
+326  +     # lexical adapter values; the actual prepared material is captured separately.
+327  +     return boundary.call(
+328  +         "input/decodeTerm",
+329  +         "semantic_turtle.decode_profile_term",
+330  +         function,
+331  +         (text,),
+332  +         {},
+333  +         capture=False,
+334  +     )
+335  |
+336  |
+337  | def parse_argv(argv):
+338  |     if (
+     -         type(argv) is not list or len(argv) != 2
+339  +         type(argv) is not list
+340  +         or len(argv) != 2
+341  |         or any(type(value) is not str for value in argv)
+     -         or argv[0] != FLAG or argv[1] not in SELECTORS
+342  +         or argv[0] != FLAG
+343  +         or argv[1] not in SELECTORS
+344  |     ):
+--------------------------------------------------------------------------------
+391  |         return json.loads(
+     -             raw.decode("utf-8", errors="strict"), object_pairs_hook=pairs,
+     -             parse_constant=constant, parse_float=floating,
+392  +             raw.decode("utf-8", errors="strict"),
+393  +             object_pairs_hook=pairs,
+394  +             parse_constant=constant,
+395  +             parse_float=floating,
+396  |         )
+--------------------------------------------------------------------------------
+406  |         return json.dumps(
+     -             value, ensure_ascii=True, allow_nan=False, sort_keys=True,
+407  +             value,
+408  +             ensure_ascii=True,
+409  +             allow_nan=False,
+410  +             sort_keys=True,
+411  |             separators=(",", ":"),
+--------------------------------------------------------------------------------
+436  |     kinds = {
+     -         "parse": {"turtle"}, "query": {"query"}, "legacy-reason": {"legacy"},
+     -         "scope": {"scope"}, "profile": {"profile"},
+     -         "fullview": {"records", "profile", "turtle"}, "dag": {"records", "turtle"},
+     -         "restore-negative": {"records"}, "shape": {"shape"}, "shacl-text": {"shape"},
+     -         "offline": {"query", "turtle", "shape"}, "b1-measurement": {"b1"},
+437  +         "parse": {"turtle"},
+438  +         "query": {"query"},
+439  +         "legacy-reason": {"legacy"},
+440  +         "scope": {"scope"},
+441  +         "profile": {"profile"},
+442  +         "fullview": {"records", "profile", "turtle"},
+443  +         "dag": {"records", "turtle"},
+444  +         "restore-negative": {"records"},
+445  +         "shape": {"shape"},
+446  +         "shacl-text": {"shape"},
+447  +         "offline": {"query", "turtle", "shape"},
+448  +         "b1-measurement": {"b1"},
+449  |     }
+--------------------------------------------------------------------------------
+458  |     elif operation in {"fullview", "dag"}:
+     -         _exact(parameters, ("materialMode",) if operation == "fullview"
+     -                else ("materialMode", "rootsTargets"))
+     -         if (type(parameters["materialMode"]) is not str
+     -                 or parameters["materialMode"] not in {"records", "text"}):
+459  +         _exact(
+460  +             parameters,
+461  +             ("materialMode",) if operation == "fullview" else ("materialMode", "rootsTargets"),
+462  +         )
+463  +         if type(parameters["materialMode"]) is not str or parameters["materialMode"] not in {
+464  +             "records",
+465  +             "text",
+466  +         }:
+467  |             raise ProbeFault("ASSET_SCHEMA_INVALID")
+--------------------------------------------------------------------------------
+482  |         _exact(parameters, ("action",))
+     -         if type(parameters["action"]) is not str or parameters["action"] not in {"query",
+     -             "parse", "shape", "implicit-jsonld"}:
+483  +         if type(parameters["action"]) is not str or parameters["action"] not in {
+484  +             "query",
+485  +             "parse",
+486  +             "shape",
+487  +             "implicit-jsonld",
+488  +         }:
+489  |             raise ProbeFault("ASSET_SCHEMA_INVALID")
+--------------------------------------------------------------------------------
+517  |         "shape": {"kind", "dataText", "shapesText"},
+     -         "b1": {"kind", "assertedText", "ontologyText", "shapesText", "queryText", "rules",
+     -                "replaceEquipmentTypes", "seed", "scale"},
+518  +         "b1": {
+519  +             "kind",
+520  +             "assertedText",
+521  +             "ontologyText",
+522  +             "shapesText",
+523  +             "queryText",
+524  +             "rules",
+525  +             "replaceEquipmentTypes",
+526  +             "seed",
+527  +             "scale",
+528  +         },
+529  |     }
+--------------------------------------------------------------------------------
+581  |         if selector != "full-v1" and (
+     -             len(chosen) != 1 or lookup[chosen[0]]["operation"] != "b1-measurement"
+582  +             len(chosen) != 1
+583  +             or lookup[chosen[0]]["operation"] != "b1-measurement"
+584  |             or inputs["datasets"][lookup[chosen[0]]["datasetId"]]["scale"]
+--------------------------------------------------------------------------------
+590  |     _exact(inputs["contexts"], CONTEXT_KEYS)
+     -     for key in ("mathInputContexts", "originalOperations", "productCases", "learningChecks",
+     -         "unresolved"):
+591  +     for key in (
+592  +         "mathInputContexts",
+593  +         "originalOperations",
+594  +         "productCases",
+595  +         "learningChecks",
+596  +         "unresolved",
+597  +     ):
+598  |         _list(inputs["contexts"][key])
+     -     expected = {"mathInputContexts": 83, "originalOperations": 106,
+     -                 "productCases": 50, "learningChecks": 54}
+599  +     expected = {
+600  +         "mathInputContexts": 83,
+601  +         "originalOperations": 106,
+602  +         "productCases": 50,
+603  +         "learningChecks": 54,
+604  +     }
+605  |     for key, count in expected.items():
+606  |         if len(inputs["contexts"][key]) != count:
+607  |             raise ProbeFault("ASSET_CONTEXT_INCOMPLETE")
+608  |     for context in inputs["contexts"]["mathInputContexts"]:
+     -         if (
+     -             type(context) is not dict
+     -             or any(context.get(key) is not False for key in (
+     -                 "lifecycleExecuted", "originalRequestedOperationPassed",
+609  +         if type(context) is not dict or any(
+610  +             context.get(key) is not False
+611  +             for key in (
+612  +                 "lifecycleExecuted",
+613  +                 "originalRequestedOperationPassed",
+614  |                 "sourceAuthorityAuthenticated",
+     -             ))
+615  +             )
+616  |         ):
+--------------------------------------------------------------------------------
+641  |     identity = manifest["inputAsset"]
+     -     if (
+     -         len(input_raw) != identity.get("bytes")
+     -         or hashlib.sha256(input_raw).hexdigest() != identity.get("sha256")
+     -     ):
+642  +     if len(input_raw) != identity.get("bytes") or hashlib.sha256(
+643  +         input_raw
+644  +     ).hexdigest() != identity.get("sha256"):
+645  |         raise ProbeFault("ASSET_INPUT_IDENTITY_INVALID")
+--------------------------------------------------------------------------------
+653  |
+     -     def __init__(self, stream, *, total_cap=REPORT_CAP, item_cap=ITEM_CAP,
+     -                  reserve=TERMINAL_RESERVE):
+654  +     def __init__(
+655  +         self, stream, *, total_cap=REPORT_CAP, item_cap=ITEM_CAP, reserve=TERMINAL_RESERVE
+656  +     ):
+657  |         if (
+--------------------------------------------------------------------------------
+674  |         try:
+     -             encoder = json.JSONEncoder(ensure_ascii=True, allow_nan=False, sort_keys=True,
+     -                                        separators=(",", ":"))
+675  +             encoder = json.JSONEncoder(
+676  +                 ensure_ascii=True, allow_nan=False, sort_keys=True, separators=(",", ":")
+677  +             )
+678  |             for chunk in encoder.iterencode(value):
+--------------------------------------------------------------------------------
+778  |     return {
+     -         "frozen": frozen, "resources": resource_rows, "lock": lock_row,
+     -         "sourceModules": source_rows, "distributions": versions,
+779  +         "frozen": frozen,
+780  +         "resources": resource_rows,
+781  +         "lock": lock_row,
+782  +         "sourceModules": source_rows,
+783  +         "distributions": versions,
+784  |         "packageCodeBoundToSource": "unknown" if frozen else "source-bytes-verified",
+--------------------------------------------------------------------------------
+796  |         )
+797  +
+798  |     return {
+--------------------------------------------------------------------------------
+812  |         if (
+     -             module.__name__ != name or module.__spec__ is None
+     -             or module.__spec__.name != name or sys.modules.get(name) is not module
+813  +             module.__name__ != name
+814  +             or module.__spec__ is None
+815  +             or module.__spec__.name != name
+816  +             or sys.modules.get(name) is not module
+817  |         ):
+--------------------------------------------------------------------------------
+825  |             source = read_bounded(package / relative, _count)
+     -             compiled = compile(source, str(package / relative), "exec",
+     -                                dont_inherit=True, optimize=sys.flags.optimize)
+     -             if (type(code) is not types.CodeType
+     -                     or _code_fingerprint(code) != _code_fingerprint(compiled)):
+826  +             compiled = compile(
+827  +                 source,
+828  +                 str(package / relative),
+829  +                 "exec",
+830  +                 dont_inherit=True,
+831  +                 optimize=sys.flags.optimize,
+832  +             )
+833  +             if type(code) is not types.CodeType or _code_fingerprint(code) != _code_fingerprint(
+834  +                 compiled
+835  +             ):
+836  |                 raise ProbeFault("LOADER_SOURCE_CODE_MISMATCH")
+     -         rows.append({
+     -             "module": name, "specName": module.__spec__.name,
+     -             "origin": module.__spec__.origin,
+     -             "declaredSupplierSourceSha256": declared_sha,
+     -             "actualSourceSha256": None if frozen else declared_sha,
+     -             "actualCode": _code_fingerprint(code) if type(code) is types.CodeType else "unknown",
+     -         })
+837  +         rows.append(
+838  +             {
+839  +                 "module": name,
+840  +                 "specName": module.__spec__.name,
+841  +                 "origin": module.__spec__.origin,
+842  +                 "declaredSupplierSourceSha256": declared_sha,
+843  +                 "actualSourceSha256": None if frozen else declared_sha,
+844  +                 "actualCode": _code_fingerprint(code)
+845  +                 if type(code) is types.CodeType
+846  +                 else "unknown",
+847  +             }
+848  +         )
+849  |         modules[name] = module
+850  |     semantic = modules["ontolearn_engine.semantic"]
+851  |     from pyshacl.validator import Validator
+852  |
+     -     identity.update({
+     -         "modules": rows, "python": sys.version,
+     -         "probeModule": __name__, "probeSpecName": __spec__.name if __spec__ else None,
+     -         "functionCode": {
+     -             "semantic.reason": _code_fingerprint(semantic.reason.__code__),
+     -             "semantic.query": _code_fingerprint(semantic.query.__code__),
+     -             "semantic.validate_shacl_text": _code_fingerprint(
+     -                 semantic.validate_shacl_text.__code__),
+     -             "Validator.run": _code_fingerprint(Validator.run.__code__),
+     -         },
+     -         "semanticVersions": {
+     -             "legacy": semantic.SEMANTICS_VERSION,
+     -             "profile": "i05-finite-7", "explanation": "i05-finite-8",
+     -             "shaclText": semantic.SHACL_TEXT_ENTRY_VERSION,
+     -             "utcDateText": semantic._SHACL_DATE_ENTRY_VERSION,
+     -             "utcDatePolicy": semantic._UTC_DATE_RANGE_POLICY,
+     -         },
+     -         "policyVersions": {
+     -             "comparisonProfile": modules["ontolearn_engine.quality.rule_profile"].PROFILE,
+     -             "mechanismBudget": modules["ontolearn_engine.quality.rule_profile"].BUDGET_VERSION,
+     -             "material": modules["ontolearn_engine.semantic_profile_input"].MATERIAL_VERSION,
+     -             "captureBudget": (
+     -                 modules["ontolearn_engine.semantic_profile_input"].CAPTURE_BUDGET_VERSION),
+     -             "restoreSchema": modules["ontolearn_engine.semantic_profile_restore"].SCHEMA_VERSION,
+     -             "restoreBudget": (
+     -                 modules["ontolearn_engine.semantic_profile_restore_budget"].RESTORE_BUDGET_VERSION),
+     -             "restoreCache": (
+     -                 modules["ontolearn_engine.semantic_profile_restore_budget"].RESTORE_CACHE_VERSION),
+     -             "directSteps": modules["ontolearn_engine.semantic_profile_directsteps"].VERSION,
+     -             "directBudget": modules["ontolearn_engine.semantic_profile_directsteps"].BUDGET_VERSION,
+     -         },
+     -         "probeWriter": {
+     -             "sourceSha256": None if frozen else hashlib.sha256(read_bounded(Path(__file__),
+     -                 ITEM_CAP)).hexdigest(),
+     -             "code": _code_fingerprint(sys.modules[__name__].__spec__.loader.get_code(__name__)),
+     -         },
+     -         "contractModule": {
+     -             "name": modules["ontolearn_engine.resources"].CONTRACT.__name__,
+     -             "specName": modules["ontolearn_engine.resources"].CONTRACT.__spec__.name,
+     -             "origin": modules["ontolearn_engine.resources"].CONTRACT.__spec__.origin,
+     -             "usesCanonicalResourcesObject": True,
+     -         },
+     -         "pyinstaller": "unknown; source candidate not built",
+     -         "platform": sys.platform, "architecture": "unknown", "cpu": "unknown",
+853  +     identity.update(
+854  +         {
+855  +             "modules": rows,
+856  +             "python": sys.version,
+857  +             "probeModule": __name__,
+858  +             "probeSpecName": __spec__.name if __spec__ else None,
+859  +             "functionCode": {
+860  +                 "semantic.reason": _code_fingerprint(semantic.reason.__code__),
+861  +                 "semantic.query": _code_fingerprint(semantic.query.__code__),
+862  +                 "semantic.validate_shacl_text": _code_fingerprint(
+863  +                     semantic.validate_shacl_text.__code__
+864  +                 ),
+865  +                 "Validator.run": _code_fingerprint(Validator.run.__code__),
+866  +             },
+867  +             "semanticVersions": {
+868  +                 "legacy": semantic.SEMANTICS_VERSION,
+869  +                 "profile": "i05-finite-7",
+870  +                 "explanation": "i05-finite-8",
+871  +                 "shaclText": semantic.SHACL_TEXT_ENTRY_VERSION,
+872  +                 "utcDateText": semantic._SHACL_DATE_ENTRY_VERSION,
+873  +                 "utcDatePolicy": semantic._UTC_DATE_RANGE_POLICY,
+874  +             },
+875  +             "policyVersions": {
+876  +                 "comparisonProfile": modules["ontolearn_engine.quality.rule_profile"].PROFILE,
+877  +                 "mechanismBudget": modules["ontolearn_engine.quality.rule_profile"].BUDGET_VERSION,
+878  +                 "material": modules["ontolearn_engine.semantic_profile_input"].MATERIAL_VERSION,
+879  +                 "captureBudget": (
+880  +                     modules["ontolearn_engine.semantic_profile_input"].CAPTURE_BUDGET_VERSION
+881  +                 ),
+882  +                 "restoreSchema": modules[
+883  +                     "ontolearn_engine.semantic_profile_restore"
+884  +                 ].SCHEMA_VERSION,
+885  +                 "restoreBudget": (
+886  +                     modules[
+887  +                         "ontolearn_engine.semantic_profile_restore_budget"
+888  +                     ].RESTORE_BUDGET_VERSION
+889  +                 ),
+890  +                 "restoreCache": (
+891  +                     modules[
+892  +                         "ontolearn_engine.semantic_profile_restore_budget"
+893  +                     ].RESTORE_CACHE_VERSION
+894  +                 ),
+895  +                 "directSteps": modules["ontolearn_engine.semantic_profile_directsteps"].VERSION,
+896  +                 "directBudget": modules[
+897  +                     "ontolearn_engine.semantic_profile_directsteps"
+898  +                 ].BUDGET_VERSION,
+899  +             },
+900  +             "probeWriter": {
+901  +                 "sourceSha256": None
+902  +                 if frozen
+903  +                 else hashlib.sha256(read_bounded(Path(__file__), ITEM_CAP)).hexdigest(),
+904  +                 "code": _code_fingerprint(sys.modules[__name__].__spec__.loader.get_code(__name__)),
+905  +             },
+906  +             "contractModule": {
+907  +                 "name": modules["ontolearn_engine.resources"].CONTRACT.__name__,
+908  +                 "specName": modules["ontolearn_engine.resources"].CONTRACT.__spec__.name,
+909  +                 "origin": modules["ontolearn_engine.resources"].CONTRACT.__spec__.origin,
+910  +                 "usesCanonicalResourcesObject": True,
+911  +             },
+912  +             "pyinstaller": "unknown; source candidate not built",
+913  +             "platform": sys.platform,
+914  +             "architecture": "unknown",
+915  +             "cpu": "unknown",
+916  |             "physicalMemory": "unknown",
+     -     })
+917  +         }
+918  +     )
+919  |     return modules, Validator
+--------------------------------------------------------------------------------
+923  |     return {
+     -         "encoding": "base64", "bytes": len(raw),
+924  +         "encoding": "base64",
+925  +         "bytes": len(raw),
+926  |         "sha256": hashlib.sha256(raw).hexdigest(),
+--------------------------------------------------------------------------------
+931  | def _graph_value(graph):
+     -     return {"triples": sorted(tuple(term.n3() for term in triple) for triple in graph),
+     -             "tripleCount": len(graph)}
+932  +     return {
+933  +         "triples": sorted(tuple(term.n3() for term in triple) for triple in graph),
+934  +         "tripleCount": len(graph),
+935  +     }
+936  |
+--------------------------------------------------------------------------------
+971  |             raise ProbeFault("OUTPUT_TYPE_INVALID")
+     -         return {key: _typed_value(item, approved, budget=budget, depth=depth + 1)
+     -                 for key, item in value.items()}
+972  +         return {
+973  +             key: _typed_value(item, approved, budget=budget, depth=depth + 1)
+974  +             for key, item in value.items()
+975  +         }
+976  |     if kind not in approved or not is_dataclass(value):
+977  |         raise ProbeFault("OUTPUT_TYPE_INVALID")
+978  |     return {
+979  |         "recordType": kind.__module__ + "." + kind.__qualname__,
+     -         "fields": {field.name: _typed_value(
+     -             getattr(value, field.name), approved, budget=budget, depth=depth + 1,
+     -         ) for field in fields(kind)},
+980  +         "fields": {
+981  +             field.name: _typed_value(
+982  +                 getattr(value, field.name),
+983  +                 approved,
+984  +                 budget=budget,
+985  +                 depth=depth + 1,
+986  +             )
+987  +             for field in fields(kind)
+988  +         },
+989  |     }
+--------------------------------------------------------------------------------
+998  |         for value in vars(module).values():
+     -             if (
+     -                 type(value) is type and declared_dataclass(value)
+     -                 and value.__module__ in modules
+     -             ):
+999  +             if type(value) is type and declared_dataclass(value) and value.__module__ in modules:
+1000 |                 result.add(value)
+--------------------------------------------------------------------------------
+1005 |     """Structural input whitelist, including legitimate rule definition heads."""
+1006 +
+1007 |     def sha(value):
+     -         if (type(value) is not str or len(value) != 64
+     -                 or any(c not in "0123456789abcdef" for c in value)):
+1008 +         if (
+1009 +             type(value) is not str
+1010 +             or len(value) != 64
+1011 +             or any(c not in "0123456789abcdef" for c in value)
+1012 +         ):
+1013 |             raise ProbeFault("ASSET_SCHEMA_INVALID")
+--------------------------------------------------------------------------------
+1027 |             raise ProbeFault("ASSET_SCHEMA_INVALID")
+1028 +
+1029 |     def source(value):
+--------------------------------------------------------------------------------
+1056 |     def structured_rule(value):
+     -         _exact(value, ("rule_id", "when", "comparisons", "heads", "source", "revision",
+     -                        "definition_digest", "policy"))
+1057 +         _exact(
+1058 +             value,
+1059 +             (
+1060 +                 "rule_id",
+1061 +                 "when",
+1062 +                 "comparisons",
+1063 +                 "heads",
+1064 +                 "source",
+1065 +                 "revision",
+1066 +                 "definition_digest",
+1067 +                 "policy",
+1068 +             ),
+1069 +         )
+1070 |         for key in ("rule_id", "policy"):
+--------------------------------------------------------------------------------
+1101 |         if dataset["kind"] == "b1" and (
+     -             type(dataset["scale"]) is not int or dataset["scale"] not in (1, 10)
+     -             or type(dataset["seed"]) is not int or dataset["seed"] != 20261019
+1102 +             type(dataset["scale"]) is not int
+1103 +             or dataset["scale"] not in (1, 10)
+1104 +             or type(dataset["seed"]) is not int
+1105 +             or dataset["seed"] != 20261019
+1106 |         ):
+--------------------------------------------------------------------------------
+1114 |                     if type(record) is not dict or set(record) not in (
+     -                         {"triple", "source"}, {"triple", "source", "transformRefs"}
+1115 +                         {"triple", "source"},
+1116 +                         {"triple", "source", "transformRefs"},
+1117 |                     ):
+--------------------------------------------------------------------------------
+1125 |             for definition in raw["definitions"]:
+     -                 _exact(definition, ("rule_id", "enabled", "when", "comparisons", "heads",
+     -                                    "revision", "definitionJsonValueSha256", "source",
+     -                                    "rawTurtle", "rawTurtleSpan"))
+1126 +                 _exact(
+1127 +                     definition,
+1128 +                     (
+1129 +                         "rule_id",
+1130 +                         "enabled",
+1131 +                         "when",
+1132 +                         "comparisons",
+1133 +                         "heads",
+1134 +                         "revision",
+1135 +                         "definitionJsonValueSha256",
+1136 +                         "source",
+1137 +                         "rawTurtle",
+1138 +                         "rawTurtleSpan",
+1139 +                     ),
+1140 +                 )
+1141 |                 if type(definition["enabled"]) is not bool:
+--------------------------------------------------------------------------------
+1185 |     context = inputs["contexts"]
+     -     _exact(manifest["counts"], ("observations", "datasets", "mathInputContexts",
+     -                                "originalOperations", "productCases", "learningChecks",
+     -                                "unresolved", "families"))
+     -     for key in ("mathInputContexts", "originalOperations", "productCases", "learningChecks",
+     -         "unresolved"):
+1186 +     _exact(
+1187 +         manifest["counts"],
+1188 +         (
+1189 +             "observations",
+1190 +             "datasets",
+1191 +             "mathInputContexts",
+1192 +             "originalOperations",
+1193 +             "productCases",
+1194 +             "learningChecks",
+1195 +             "unresolved",
+1196 +             "families",
+1197 +         ),
+1198 +     )
+1199 +     for key in (
+1200 +         "mathInputContexts",
+1201 +         "originalOperations",
+1202 +         "productCases",
+1203 +         "learningChecks",
+1204 +         "unresolved",
+1205 +     ):
+1206 |         if type(manifest["counts"][key]) is not int or manifest["counts"][key] != len(context[key]):
+--------------------------------------------------------------------------------
+1211 |     for index, item in enumerate(context["mathInputContexts"]):
+     -         _exact(item, ("index", "id", "sourceRefs", "inputProjectionJsonSha256",
+     -                       "eligibleStandaloneMathInput", "fullOriginalInputContext", "scopeNotes",
+     -                       "lifecycleExecuted", "originalRequestedOperationPassed",
+     -                       "sourceAuthorityAuthenticated"))
+1212 +         _exact(
+1213 +             item,
+1214 +             (
+1215 +                 "index",
+1216 +                 "id",
+1217 +                 "sourceRefs",
+1218 +                 "inputProjectionJsonSha256",
+1219 +                 "eligibleStandaloneMathInput",
+1220 +                 "fullOriginalInputContext",
+1221 +                 "scopeNotes",
+1222 +                 "lifecycleExecuted",
+1223 +                 "originalRequestedOperationPassed",
+1224 +                 "sourceAuthorityAuthenticated",
+1225 +             ),
+1226 +         )
+1227 |         if type(item["index"]) is not int or item["index"] != index:
+--------------------------------------------------------------------------------
+1247 |     for item in context["originalOperations"]:
+     -         _exact(item, ("caseId", "decision", "group", "id", "lifecycleExecuted", "mathInputId",
+     -                       "notes", "op", "ordinal", "originalOperationExecuted", "source"))
+1248 +         _exact(
+1249 +             item,
+1250 +             (
+1251 +                 "caseId",
+1252 +                 "decision",
+1253 +                 "group",
+1254 +                 "id",
+1255 +                 "lifecycleExecuted",
+1256 +                 "mathInputId",
+1257 +                 "notes",
+1258 +                 "op",
+1259 +                 "ordinal",
+1260 +                 "originalOperationExecuted",
+1261 +                 "source",
+1262 +             ),
+1263 +         )
+1264 |         reference(item["source"])
+     -         if (item.get("lifecycleExecuted") is not False
+     -                 or item.get("originalOperationExecuted") is not False):
+1265 +         if (
+1266 +             item.get("lifecycleExecuted") is not False
+1267 +             or item.get("originalOperationExecuted") is not False
+1268 +         ):
+1269 |             raise ProbeFault("ASSET_CONTEXT_INVALID")
+1270 |     for item in context["learningChecks"]:
+     -         _exact(item, ("caseRef", "checkExecuted", "courseInputRefs", "extraInputStatus", "id",
+     -                       "linkedProductCase", "source", "toolOwner"))
+1271 +         _exact(
+1272 +             item,
+1273 +             (
+1274 +                 "caseRef",
+1275 +                 "checkExecuted",
+1276 +                 "courseInputRefs",
+1277 +                 "extraInputStatus",
+1278 +                 "id",
+1279 +                 "linkedProductCase",
+1280 +                 "source",
+1281 +                 "toolOwner",
+1282 +             ),
+1283 +         )
+1284 |         reference(item["source"])
+1285 |         if item.get("checkExecuted") is not False:
+1286 |             raise ProbeFault("ASSET_CONTEXT_INVALID")
+1287 |     for item in context["productCases"]:
+     -         _exact(item, ("caseId", "independentBaseline", "mathInputs", "operationRefs",
+     -                       "originalLifecycleAndNonGraphAcceptance", "source"))
+1288 +         _exact(
+1289 +             item,
+1290 +             (
+1291 +                 "caseId",
+1292 +                 "independentBaseline",
+1293 +                 "mathInputs",
+1294 +                 "operationRefs",
+1295 +                 "originalLifecycleAndNonGraphAcceptance",
+1296 +                 "source",
+1297 +             ),
+1298 +         )
+1299 |         reference(item["source"])
+1300 |         if item.get("originalLifecycleAndNonGraphAcceptance") != "not-executed":
+1301 |             raise ProbeFault("ASSET_CONTEXT_INVALID")
+1302 |     _list(context["nonClaims"])
+     -     if (len(context["nonClaims"]) != 3
+     -             or any(type(item) is not str for item in context["nonClaims"])):
+1303 +     if len(context["nonClaims"]) != 3 or any(
+1304 +         type(item) is not str for item in context["nonClaims"]
+1305 +     ):
+1306 |         raise ProbeFault("ASSET_CONTEXT_INVALID")
+--------------------------------------------------------------------------------
+1317 |     if manifest["versions"] != {
+     -         "supplierRef": SOURCE_REF, "contractRef": "ee2b30a2dad35b2d395f9c735aff80371ab41110",
+1318 +         "supplierRef": SOURCE_REF,
+1319 +         "contractRef": "ee2b30a2dad35b2d395f9c735aff80371ab41110",
+1320 |         "b1InputMethodRef": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+1321 |         "generator": "input-only-stdlib/1",
+     -             "datasetCanonicalization": "json-ascii-sorted-compact/1",
+1322 +         "datasetCanonicalization": "json-ascii-sorted-compact/1",
+1323 |     }:
+--------------------------------------------------------------------------------
+1338 |     return profile.TermInput(
+     -         raw["kind"], raw["lexical_form"], raw["datatype_iri"], raw["language_raw"],
+1339 +         raw["kind"],
+1340 +         raw["lexical_form"],
+1341 +         raw["datatype_iri"],
+1342 +         raw["language_raw"],
+1343 |         _source_record(raw["source"], modules),
+--------------------------------------------------------------------------------
+1348 |     firing = modules["ontolearn_engine.quality.rule_firing"]
+1349 +
+1350 |     def triple(raw):
+1351 |         return firing.Triple(*(_term_input(term, modules) for term in raw))
+     -     rules = tuple(firing.RuleSpec(
+     -         raw["rule_id"], tuple(triple(item) for item in raw["when"]),
+     -         tuple(firing.Comparison(_term_input(item["left"], modules), item["operator"],
+     -                                 _term_input(item["right"],
+     -                                     modules)) for item in raw["comparisons"]),
+     -         tuple(triple(item) for item in raw["heads"]), _source_record(raw["source"], modules),
+     -         raw["revision"], raw["definition_digest"], raw["policy"],
+     -     ) for raw in dataset.get("rules", ()))
+1352 +
+1353 +     rules = tuple(
+1354 +         firing.RuleSpec(
+1355 +             raw["rule_id"],
+1356 +             tuple(triple(item) for item in raw["when"]),
+1357 +             tuple(
+1358 +                 firing.Comparison(
+1359 +                     _term_input(item["left"], modules),
+1360 +                     item["operator"],
+1361 +                     _term_input(item["right"], modules),
+1362 +                 )
+1363 +                 for item in raw["comparisons"]
+1364 +             ),
+1365 +             tuple(triple(item) for item in raw["heads"]),
+1366 +             _source_record(raw["source"], modules),
+1367 +             raw["revision"],
+1368 +             raw["definition_digest"],
+1369 +             raw["policy"],
+1370 +         )
+1371 +         for raw in dataset.get("rules", ())
+1372 +     )
+1373 |     # The producer accepts tuples of TermInput triples, not rule Triple objects.
+     -     records = tuple(tuple(_term_input(item, modules) for item in raw)
+     -                     for raw in dataset.get("records", ()))
+1374 +     records = tuple(
+1375 +         tuple(_term_input(item, modules) for item in raw) for raw in dataset.get("records", ())
+1376 +     )
+1377 |     return records, rules, ()
+--------------------------------------------------------------------------------
+1385 |     raw = dataset["input"]
+     -     prefix = INPUT_NAME + "#/datasets/" + dataset_id.replace("~", "~0").replace("/",
+     -         "~1") + "/input"
+1386 +     prefix = (
+1387 +         INPUT_NAME + "#/datasets/" + dataset_id.replace("~", "~0").replace("/", "~1") + "/input"
+1388 +     )
+1389 +
+1390 |     def source(pointer, text=None, revision=None):
+1391 |         return profile.SourceRecord(prefix + pointer, input_sha, revision, text)
+1392 +
+1393 |     def term(value, pointer, iri=False):
+1394 |         if value.startswith("?") and not iri:
+1395 |             return firing.Variable(value)
+     -         value_term = (profile.TermInput("iri", value)
+     -                       if iri else _checked_lexical_decode(decode, value))
+     -         return profile.TermInput(value_term.kind, value_term.lexical_form,
+     -                                  value_term.datatype_iri, value_term.language_raw,
+     -                                  source(pointer, value))
+1396 +         value_term = (
+1397 +             profile.TermInput("iri", value) if iri else _checked_lexical_decode(decode, value)
+1398 +         )
+1399 +         return profile.TermInput(
+1400 +             value_term.kind,
+1401 +             value_term.lexical_form,
+1402 +             value_term.datatype_iri,
+1403 +             value_term.language_raw,
+1404 +             source(pointer, value),
+1405 +         )
+1406 +
+1407 |     def triple(value, pointer, rule=False):
+     -         terms = tuple(term(value[key], pointer + "/" + key,
+     -                            iri=(key in ("subject", "predicate") and not value[key].startswith("?")))
+     -                       for key in ("subject", "predicate", "object"))
+1408 +         terms = tuple(
+1409 +             term(
+1410 +                 value[key],
+1411 +                 pointer + "/" + key,
+1412 +                 iri=(key in ("subject", "predicate") and not value[key].startswith("?")),
+1413 +             )
+1414 +             for key in ("subject", "predicate", "object")
+1415 +         )
+1416 |         return firing.Triple(*terms) if rule else terms
+     -     records = tuple(triple(item["triple"], f"/{section}/{index}/triple")
+     -                     for section in ("asserted", "ontology")
+     -                     for index, item in enumerate(raw[section]))
+1417 +
+1418 +     records = tuple(
+1419 +         triple(item["triple"], f"/{section}/{index}/triple")
+1420 +         for section in ("asserted", "ontology")
+1421 +         for index, item in enumerate(raw[section])
+1422 +     )
+1423 |     rules = []
+1424 |     for index, definition in enumerate(raw["definitions"]):
+1425 |         pointer = f"/definitions/{index}"
+     -         rules.append(firing.RuleSpec(
+     -             definition["rule_id"],
+     -             tuple(triple(item, f"{pointer}/when/{n}", True) for n,
+     -                 item in enumerate(definition["when"])),
+     -             tuple(firing.Comparison(
+     -                 term(item["left"], f"{pointer}/comparisons/{n}/left"), item["operator"],
+     -                 term(item["right"], f"{pointer}/comparisons/{n}/right"),
+     -             ) for n, item in enumerate(definition["comparisons"])),
+     -             tuple(triple(item, f"{pointer}/heads/{n}", True) for n,
+     -                 item in enumerate(definition["heads"])),
+     -             source(pointer, revision=definition["revision"]), definition["revision"],
+     -             definition["definitionJsonValueSha256"],
+     -         ))
+1426 +         rules.append(
+1427 +             firing.RuleSpec(
+1428 +                 definition["rule_id"],
+1429 +                 tuple(
+1430 +                     triple(item, f"{pointer}/when/{n}", True)
+1431 +                     for n, item in enumerate(definition["when"])
+1432 +                 ),
+1433 +                 tuple(
+1434 +                     firing.Comparison(
+1435 +                         term(item["left"], f"{pointer}/comparisons/{n}/left"),
+1436 +                         item["operator"],
+1437 +                         term(item["right"], f"{pointer}/comparisons/{n}/right"),
+1438 +                     )
+1439 +                     for n, item in enumerate(definition["comparisons"])
+1440 +                 ),
+1441 +                 tuple(
+1442 +                     triple(item, f"{pointer}/heads/{n}", True)
+1443 +                     for n, item in enumerate(definition["heads"])
+1444 +                 ),
+1445 +                 source(pointer, revision=definition["revision"]),
+1446 +                 definition["revision"],
+1447 +                 definition["definitionJsonValueSha256"],
+1448 +             )
+1449 +         )
+1450 |     return records, tuple(rules), tuple(raw["disabled_rule_ids"])
+--------------------------------------------------------------------------------
+1461 |         if raw["kind"] == "literal":
+     -             return Literal(raw["lexical_form"], lang=raw["language_raw"],
+     -                            datatype=URIRef(raw["datatype_iri"]) if raw["datatype_iri"] else None,
+     -                            normalize=False)
+1462 +             return Literal(
+1463 +                 raw["lexical_form"],
+1464 +                 lang=raw["language_raw"],
+1465 +                 datatype=URIRef(raw["datatype_iri"]) if raw["datatype_iri"] else None,
+1466 +                 normalize=False,
+1467 +             )
+1468 |         raise ProbeFault("LEGACY_INPUT_NOT_SUPPORTED")
+1469 +
+1470 |     result = []
+1471 |     for rule in dataset["rules"]:
+1472 |         if rule["comparisons"] or len(rule["heads"]) != 1:
+1473 |             raise ProbeFault("LEGACY_INPUT_NOT_SUPPORTED")
+     -         result.append(modules["ontolearn_engine.semantic"].Rule(
+     -             rule["rule_id"], tuple(tuple(term(item) for item in triple) for triple in rule["when"]),
+     -             tuple(term(item) for item in rule["heads"][0]),
+     -         ))
+1474 +         result.append(
+1475 +             modules["ontolearn_engine.semantic"].Rule(
+1476 +                 rule["rule_id"],
+1477 +                 tuple(tuple(term(item) for item in triple) for triple in rule["when"]),
+1478 +                 tuple(term(item) for item in rule["heads"][0]),
+1479 +             )
+1480 +         )
+1481 |     return tuple(result)
+--------------------------------------------------------------------------------
+1486 |     contract = resources.CONTRACT
+     -     return {"error_catalog": contract.ERROR_CATALOG,
+     -             "error_schema": strict_json(read_bounded(resources.ROOT / "v2/schema.json", 207256))}
+1487 +     return {
+1488 +         "error_catalog": contract.ERROR_CATALOG,
+1489 +         "error_schema": strict_json(read_bounded(resources.ROOT / "v2/schema.json", 207256)),
+1490 +     }
+1491 |
+--------------------------------------------------------------------------------
+1501 |         code = error.error.get("code") if type(error.error) is dict else None
+     -         if type(code) is not str or code == "INTERNAL_ERROR" or (
+     -             type(error.diagnostic) is dict and error.diagnostic.get("classification") == "internal"
+1502 +         if (
+1503 +             type(code) is not str
+1504 +             or code == "INTERNAL_ERROR"
+1505 +             or (
+1506 +                 type(error.diagnostic) is dict
+1507 +                 and error.diagnostic.get("classification") == "internal"
+1508 +             )
+1509 |         ):
+--------------------------------------------------------------------------------
+1513 |         code = error.code
+     -         if type(code) is not str or getattr(error, "classification",
+     -             None) == "internal" or code in {
+     -             "INTERNAL_ERROR", "QUERY_FAILED", "VALIDATION_FAILED", "EXECUTION_FAILED",
+     -         }:
+1514 +         if (
+1515 +             type(code) is not str
+1516 +             or getattr(error, "classification", None) == "internal"
+1517 +             or code
+1518 +             in {
+1519 +                 "INTERNAL_ERROR",
+1520 +                 "QUERY_FAILED",
+1521 +                 "VALIDATION_FAILED",
+1522 +                 "EXECUTION_FAILED",
+1523 +             }
+1524 +         ):
+1525 |             return None
+     -         diagnostic = {"classification": getattr(error, "classification",
+     -             "observed-business-rejection")}
+1526 +         diagnostic = {
+1527 +             "classification": getattr(error, "classification", "observed-business-rejection")
+1528 +         }
+1529 |         for key in ("location", "rule_id", "context"):
+--------------------------------------------------------------------------------
+1536 |         code = error.reason
+     -         if type(code) is not str or "INTERNAL" in code or getattr(error, "classification",
+     -             None) == "internal":
+1537 +         if (
+1538 +             type(code) is not str
+1539 +             or "INTERNAL" in code
+1540 +             or getattr(error, "classification", None) == "internal"
+1541 +         ):
+1542 |             return None
+--------------------------------------------------------------------------------
+1553 |     scopes = modules["ontolearn_engine.semantic_scopes"]
+     -     asserted = _checked_call("scope/assertedParse", "semantic.parse_turtle",
+     -                              semantic.parse_turtle, dataset["assertedText"])
+     -     ontology = _checked_call("scope/ontologyParse", "semantic.parse_turtle",
+     -                              semantic.parse_turtle, dataset["ontologyText"])
+     -     shapes = _checked_call("scope/shapesParse", "semantic.parse_turtle",
+     -                           semantic.parse_turtle, dataset["shapesText"], shapes=True)
+1554 +     asserted = _checked_call(
+1555 +         "scope/assertedParse",
+1556 +         "semantic.parse_turtle",
+1557 +         semantic.parse_turtle,
+1558 +         dataset["assertedText"],
+1559 +     )
+1560 +     ontology = _checked_call(
+1561 +         "scope/ontologyParse",
+1562 +         "semantic.parse_turtle",
+1563 +         semantic.parse_turtle,
+1564 +         dataset["ontologyText"],
+1565 +     )
+1566 +     shapes = _checked_call(
+1567 +         "scope/shapesParse",
+1568 +         "semantic.parse_turtle",
+1569 +         semantic.parse_turtle,
+1570 +         dataset["shapesText"],
+1571 +         shapes=True,
+1572 +     )
+1573 |     rules = _legacy_rules(dataset, modules)
+1574 |     stages = []
+     -     counter.scope_details = {"assertedInput": _graph_value(asserted),
+1575 +     counter.scope_details = {
+1576 +         "assertedInput": _graph_value(asserted),
+1577 |         "ontologyInput": _graph_value(ontology),
+     -                              "shapesInput": _graph_value(shapes), "stages": stages}
+1578 +         "shapesInput": _graph_value(shapes),
+1579 +         "stages": stages,
+1580 +     }
+1581 +
+1582 |     def stage(name, call):
+1583 |         before = dict(counter.counts)
+1584 |         try:
+     -             value = _checked_call("scope/" + name, "semantic_scopes." + (
+     -                 "prepare_validation_scope" if name == "prepare" else "project_validation_scope"),
+     -                 call)
+1585 +             value = _checked_call(
+1586 +                 "scope/" + name,
+1587 +                 "semantic_scopes."
+1588 +                 + ("prepare_validation_scope" if name == "prepare" else "project_validation_scope"),
+1589 +                 call,
+1590 +             )
+1591 |         except Exception:
+1592 |             boundary = _COLLECTION_CONTEXT.get()
+     -             returned = bool(boundary is not None and boundary.attempts
+     -                             and boundary.attempts[-1]["returned"])
+     -             stages.append({"name": name, "stageCompleted": False, "apiReturned": returned,
+     -                            "callCounts": {
+     -                 key: counter.counts[key] - before[key] for key in before}})
+1593 +             returned = bool(
+1594 +                 boundary is not None and boundary.attempts and boundary.attempts[-1]["returned"]
+1595 +             )
+1596 +             stages.append(
+1597 +                 {
+1598 +                     "name": name,
+1599 +                     "stageCompleted": False,
+1600 +                     "apiReturned": returned,
+1601 +                     "callCounts": {key: counter.counts[key] - before[key] for key in before},
+1602 +                 }
+1603 +             )
+1604 |             raise
+     -         stages.append({"name": name, "callCounts": {
+     -             key: counter.counts[key] - before[key] for key in before},
+     -             "facts": _graph_value(value.facts), "ontology": _graph_value(value.ontology),
+     -             "provenance": value.provenance, "reasoningResult": value.reasoning_result})
+1605 +         stages.append(
+1606 +             {
+1607 +                 "name": name,
+1608 +                 "callCounts": {key: counter.counts[key] - before[key] for key in before},
+1609 +                 "facts": _graph_value(value.facts),
+1610 +                 "ontology": _graph_value(value.ontology),
+1611 +                 "provenance": value.provenance,
+1612 +                 "reasoningResult": value.reasoning_result,
+1613 +             }
+1614 +         )
+1615 |         return value
+1616 +
+1617 |     if mode in ("asserted", "fresh", "project"):
+     -         prepared = stage("prepare", lambda: scopes.prepare_validation_scope(
+     -             asserted, ontology, include_derived=mode != "asserted",
+     -             rules=() if mode == "asserted" else rules))
+1618 +         prepared = stage(
+1619 +             "prepare",
+1620 +             lambda: scopes.prepare_validation_scope(
+1621 +                 asserted,
+1622 +                 ontology,
+1623 +                 include_derived=mode != "asserted",
+1624 +                 rules=() if mode == "asserted" else rules,
+1625 +             ),
+1626 +         )
+1627 |         if mode == "project":
+     -             prepared = stage("project", lambda: scopes.project_validation_scope(
+     -                 asserted, ontology, include_derived=True, rules=rules,
+     -                 reasoning_result=prepared.reasoning_result,
+     -                 reasoning_source=prepared.provenance["reasoningSource"]))
+1628 +             prepared = stage(
+1629 +                 "project",
+1630 +                 lambda: scopes.project_validation_scope(
+1631 +                     asserted,
+1632 +                     ontology,
+1633 +                     include_derived=True,
+1634 +                     rules=rules,
+1635 +                     reasoning_result=prepared.reasoning_result,
+1636 +                     reasoning_source=prepared.provenance["reasoningSource"],
+1637 +                 ),
+1638 +             )
+1639 |     elif mode in ("missing-source", "wrong-source", "missing-result", "unselected-result"):
+     -         fresh = stage("prepare", lambda: scopes.prepare_validation_scope(
+     -             asserted, ontology, include_derived=True, rules=rules))
+1640 +         fresh = stage(
+1641 +             "prepare",
+1642 +             lambda: scopes.prepare_validation_scope(
+1643 +                 asserted, ontology, include_derived=True, rules=rules
+1644 +             ),
+1645 +         )
+1646 |         source = fresh.provenance["reasoningSource"]
+1647 |         if mode == "wrong-source":
+     -             source = {**source, "assertedInputSha256": "0" * 64}
+     -         prepared = stage("project", lambda: scopes.project_validation_scope(
+     -             asserted, ontology, include_derived=mode != "unselected-result",
+     -             rules=() if mode == "unselected-result" else rules,
+     -             reasoning_result=None if mode == "missing-result" else fresh.reasoning_result,
+     -             reasoning_source=None if mode == "missing-source" else source))
+1648 +             source = {**source, "assertedInputSha256": "0" * 64}
+1649 +         prepared = stage(
+1650 +             "project",
+1651 +             lambda: scopes.project_validation_scope(
+1652 +                 asserted,
+1653 +                 ontology,
+1654 +                 include_derived=mode != "unselected-result",
+1655 +                 rules=() if mode == "unselected-result" else rules,
+1656 +                 reasoning_result=None if mode == "missing-result" else fresh.reasoning_result,
+1657 +                 reasoning_source=None if mode == "missing-source" else source,
+1658 +             ),
+1659 +         )
+1660 |     else:
+     -         prepared = stage("prepare", lambda: scopes.prepare_validation_scope(
+     -             ontology if mode == "facts-axioms" else asserted, ontology,
+     -             include_derived=1 if mode == "nonexact-include" else False,
+     -             rules=rules if mode == "unselected-rules" else ()))
+     -     query = _checked_call("scope/query", "semantic.query", semantic.query,
+     -                           prepared.facts, dataset["queryText"])
+     -     report = _checked_call("scope/shacl", "semantic.check_shapes", semantic.check_shapes,
+     -                            prepared.facts, shapes)
+1661 +         prepared = stage(
+1662 +             "prepare",
+1663 +             lambda: scopes.prepare_validation_scope(
+1664 +                 ontology if mode == "facts-axioms" else asserted,
+1665 +                 ontology,
+1666 +                 include_derived=1 if mode == "nonexact-include" else False,
+1667 +                 rules=rules if mode == "unselected-rules" else (),
+1668 +             ),
+1669 +         )
+1670 +     query = _checked_call(
+1671 +         "scope/query", "semantic.query", semantic.query, prepared.facts, dataset["queryText"]
+1672 +     )
+1673 +     report = _checked_call(
+1674 +         "scope/shacl", "semantic.check_shapes", semantic.check_shapes, prepared.facts, shapes
+1675 +     )
+1676 |     return {**counter.scope_details, "query": query, "report": report}
+--------------------------------------------------------------------------------
+1685 |         rows_digest=hashlib.sha256(produced.rows_json).hexdigest(),
+     -         input_digest=payload["inputDigest"], input_domain=payload["inputDigestDomain"],
+     -         source_digest=payload["sourceDigest"], definitions_digest=payload["definitionsDigest"],
+1686 +         input_digest=payload["inputDigest"],
+1687 +         input_domain=payload["inputDigestDomain"],
+1688 +         source_digest=payload["sourceDigest"],
+1689 +         definitions_digest=payload["definitionsDigest"],
+1690 |         catalog_digest=hashlib.sha256(produced.catalog_json).hexdigest(),
+--------------------------------------------------------------------------------
+1703 |         kwargs["direct_ledger"] = direct
+     -     function = (restore.restore_profile_explanation_result
+     -                 if explanation else restore.restore_profile_result)
+1704 +     function = (
+1705 +         restore.restore_profile_explanation_result
+1706 +         if explanation
+1707 +         else restore.restore_profile_result
+1708 +     )
+1709 |     restored = _checked_call(
+1710 |         "restore/mutation" if payload is not None else "restore/result",
+     -         "semantic_profile_restore." + function.__name__, function,
+1711 +         "semantic_profile_restore." + function.__name__,
+1712 +         function,
+1713 |         produced.payload_json if payload is None else payload,
+     -         produced.rows_json if rows is None else rows, **kwargs)
+1714 +         produced.rows_json if rows is None else rows,
+1715 +         **kwargs,
+1716 +     )
+1717 |     return restored
+--------------------------------------------------------------------------------
+1729 |         records, rules, disabled = _original_profile_inputs(
+     -             dataset, observation["datasetId"], manifest["inputAsset"]["sha256"], modules)
+1730 +             dataset, observation["datasetId"], manifest["inputAsset"]["sha256"], modules
+1731 +         )
+1732 |     else:
+1733 |         records, rules, disabled = _structured_inputs(dataset, modules)
+1734 |     kwargs = {"rules": rules, "disabled_rule_ids": disabled, "ledger": ledger}
+1735 |     if parameters.get("materialMode", "records") == "text":
+     -         kwargs.update(text=dataset["text"], source_reference=observation["datasetId"],
+     -                       source_revision=SOURCE_REF)
+1736 +         kwargs.update(
+1737 +             text=dataset["text"],
+1738 +             source_reference=observation["datasetId"],
+1739 +             source_revision=SOURCE_REF,
+1740 +         )
+1741 |     else:
+1742 |         kwargs["records"] = records
+     -     material = _checked_call("material/prepare", "semantic_profile_input.prepare_profile_material",
+     -                              material_api.prepare_profile_material, **kwargs)
+1743 +     material = _checked_call(
+1744 +         "material/prepare",
+1745 +         "semantic_profile_input.prepare_profile_material",
+1746 +         material_api.prepare_profile_material,
+1747 +         **kwargs,
+1748 +     )
+1749 |     # Preparation transfers its receipt. Production independently rechecks using a new ledger.
+1750 |     ledger = material_api.CaptureLedger()
+1751 |     if explanation:
+1752 |         produced = _checked_call(
+     -             "production/compute", "semantic_profile_production.execute_profile_explanation",
+     -             production.execute_profile_explanation, material, **_catalog(modules), ledger=ledger,
+     -             direct_ledger=direct_api.DirectStepsLedger())
+1753 +             "production/compute",
+1754 +             "semantic_profile_production.execute_profile_explanation",
+1755 +             production.execute_profile_explanation,
+1756 +             material,
+1757 +             **_catalog(modules),
+1758 +             ledger=ledger,
+1759 +             direct_ledger=direct_api.DirectStepsLedger(),
+1760 +         )
+1761 |     else:
+1762 |         produced = _checked_call(
+     -             "production/compute", "semantic_profile_production.execute_admitted_profile_job",
+     -             production.execute_admitted_profile_job, material, **_catalog(modules), ledger=ledger)
+     -     expected = _checked_call("production/expectation", "probe._capture_expectation",
+     -                              _capture_expectation, produced, explanation, modules)
+1763 +             "production/compute",
+1764 +             "semantic_profile_production.execute_admitted_profile_job",
+1765 +             production.execute_admitted_profile_job,
+1766 +             material,
+1767 +             **_catalog(modules),
+1768 +             ledger=ledger,
+1769 +         )
+1770 +     expected = _checked_call(
+1771 +         "production/expectation",
+1772 +         "probe._capture_expectation",
+1773 +         _capture_expectation,
+1774 +         produced,
+1775 +         explanation,
+1776 +         modules,
+1777 +     )
+1778 |     restored = _restore(produced, expected, explanation, modules)
+1779 |     roots = ()
+1780 |     if explanation:
+1781 |         roots = _checked_call(
+     -             "restore/roots", "semantic_profile_restore.explanation_roots",
+     -             restore_api.explanation_roots, restored,
+1782 +             "restore/roots",
+1783 +             "semantic_profile_restore.explanation_roots",
+1784 +             restore_api.explanation_roots,
+1785 +             restored,
+1786 |             tuple(tuple(item) for item in parameters.get("rootsTargets", ())),
+     -             direct_ledger=direct_api.DirectStepsLedger())
+1787 +             direct_ledger=direct_api.DirectStepsLedger(),
+1788 +         )
+1789 |     boundary = _COLLECTION_CONTEXT.get()
+--------------------------------------------------------------------------------
+1794 |         "payloadBytes": _bytes_value(produced.payload_json),
+     -             "rowsBytes": _bytes_value(produced.rows_json),
+1795 +         "rowsBytes": _bytes_value(produced.rows_json),
+1796 |         "sourceBytes": _bytes_value(produced.source_encoded),
+--------------------------------------------------------------------------------
+1802 |         "expectedCapture": _typed_value(expected, approved),
+     -         "restored": _typed_value(restored, approved), "roots": _typed_value(roots, approved),
+     -         "receipts": {"capture": _typed_value(produced.capture_receipt, approved),
+     -                      "direct": _typed_value(produced.direct_receipt,
+     -                          approved) if explanation else None},
+1803 +         "restored": _typed_value(restored, approved),
+1804 +         "roots": _typed_value(roots, approved),
+1805 +         "receipts": {
+1806 +             "capture": _typed_value(produced.capture_receipt, approved),
+1807 +             "direct": _typed_value(produced.direct_receipt, approved) if explanation else None,
+1808 +         },
+1809 |     }
+1810 |     if observation["operation"] == "restore-negative":
+1811 |         bad_payload, bad_rows, mutation_receipt = _mutate_current_payload(
+     -             produced.payload_json, parameters["mutation"])
+     -         result["mutation"] = {"name": parameters["mutation"], "changes": mutation_receipt,
+     -                               "payloadBytes": _bytes_value(bad_payload),
+     -                                   "rowsBytes": _bytes_value(bad_rows),
+     -                               "expectedCapture": _typed_value(expected, approved),
+     -                               "allocationReissued": False, "expectationReissued": False,
+     -                               "onlyOuterDigestsRebound": False,
+     -                               "deepValidationReached": "unknown; original digest gate preserved"}
+1812 +             produced.payload_json, parameters["mutation"]
+1813 +         )
+1814 +         result["mutation"] = {
+1815 +             "name": parameters["mutation"],
+1816 +             "changes": mutation_receipt,
+1817 +             "payloadBytes": _bytes_value(bad_payload),
+1818 +             "rowsBytes": _bytes_value(bad_rows),
+1819 +             "expectedCapture": _typed_value(expected, approved),
+1820 +             "allocationReissued": False,
+1821 +             "expectationReissued": False,
+1822 +             "onlyOuterDigestsRebound": False,
+1823 +             "deepValidationReached": "unknown; original digest gate preserved",
+1824 +         }
+1825 |         try:
+     -             bad_restored = _restore(produced, expected, explanation, modules,
+     -                 payload=bad_payload, rows=bad_rows)
+1826 +             bad_restored = _restore(
+1827 +                 produced, expected, explanation, modules, payload=bad_payload, rows=bad_rows
+1828 +             )
+1829 |         except Exception as error:
+1830 |             failure = _known_failure(error, modules)
+1831 |             if failure is None:
+1832 |                 raise
+     -             result["mutation"].update(status="observed-rejection", error=failure[0],
+     -                 diagnostic=failure[1])
+1833 +             result["mutation"].update(
+1834 +                 status="observed-rejection", error=failure[0], diagnostic=failure[1]
+1835 +             )
+1836 |         else:
+     -             result["mutation"].update(status="observed-return",
+     -                 restored=_typed_value(bad_restored, approved))
+1837 +             result["mutation"].update(
+1838 +                 status="observed-return", restored=_typed_value(bad_restored, approved)
+1839 +             )
+1840 |     return result
+--------------------------------------------------------------------------------
+1847 |     changes = []
+1848 +
+1849 |     def change(parent, key, value, pointer):
+--------------------------------------------------------------------------------
+1854 |         parent[key] = value
+1855 +
+1856 |     def last(value):
+1857 |         if type(value) is not list or not value:
+1858 |             raise ProbeFault("MUTATION_FIXTURE_PRECONDITION")
+1859 |         return len(value) - 1
+1860 +
+1861 |     if mutation == "payload-unknown-key":
+--------------------------------------------------------------------------------
+1871 |         if term["source"] is None:
+     -             change(term, "source", {"recordType": "SourceRecord", "reference": "urn:i05:tampered",
+     -                                     "digest": None, "revision": None, "text": None}, pointer)
+1872 +             change(
+1873 +                 term,
+1874 +                 "source",
+1875 +                 {
+1876 +                     "recordType": "SourceRecord",
+1877 +                     "reference": "urn:i05:tampered",
+1878 +                     "digest": None,
+1879 +                     "revision": None,
+1880 +                     "text": None,
+1881 +                 },
+1882 +                 pointer,
+1883 +             )
+1884 |         else:
+     -             change(term["source"], "reference", "urn:i05:tampered:" + str(index),
+     -                    pointer + "/reference")
+1885 +             change(
+1886 +                 term["source"],
+1887 +                 "reference",
+1888 +                 "urn:i05:tampered:" + str(index),
+1889 +                 pointer + "/reference",
+1890 +             )
+1891 |     elif mutation == "tail-definition-tamper":
+1892 |         values = reasoning["definitions"]
+1893 |         index = last(values)
+     -         change(values[index], "revision", "urn:i05:tampered:revision",
+     -                f"/reasoning/definitions/{index}/revision")
+1894 +         change(
+1895 +             values[index],
+1896 +             "revision",
+1897 +             "urn:i05:tampered:revision",
+1898 +             f"/reasoning/definitions/{index}/revision",
+1899 +         )
+1900 |     elif mutation in ("tail-limits-tamper", "tail-child-tamper"):
+--------------------------------------------------------------------------------
+1905 |             limits = child["limits"]["work"]
+     -             change(limits, "integerHex", "0x0" if limits["integerHex"] != "0x0" else "0x1",
+     -                    f"/reasoning/mechanismBatches/{index}/limits/work/integerHex")
+1906 +             change(
+1907 +                 limits,
+1908 +                 "integerHex",
+1909 +                 "0x0" if limits["integerHex"] != "0x0" else "0x1",
+1910 +                 f"/reasoning/mechanismBatches/{index}/limits/work/integerHex",
+1911 +             )
+1912 |         else:
+     -             change(child, "ruleId", "urn:i05:tampered:child",
+     -                    f"/reasoning/mechanismBatches/{index}/ruleId")
+1913 +             change(
+1914 +                 child,
+1915 +                 "ruleId",
+1916 +                 "urn:i05:tampered:child",
+1917 +                 f"/reasoning/mechanismBatches/{index}/ruleId",
+1918 +             )
+1919 |     elif mutation in ("dag-depth-plus-one", "dag-last-premise-forward"):
+--------------------------------------------------------------------------------
+1923 |         if mutation == "dag-depth-plus-one":
+     -             change(step["depth"], "integerHex", hex(int(step["depth"]["integerHex"], 16) + 1),
+     -                    f"/reasoning/directSteps/steps/{index}/depth/integerHex")
+1924 +             change(
+1925 +                 step["depth"],
+1926 +                 "integerHex",
+1927 +                 hex(int(step["depth"]["integerHex"], 16) + 1),
+1928 +                 f"/reasoning/directSteps/steps/{index}/depth/integerHex",
+1929 +             )
+1930 |         else:
+1931 |             if len(step["premises"]) != 2:
+1932 |                 raise ProbeFault("MUTATION_FIXTURE_PRECONDITION")
+     -             change(step["premises"], 0, {"kind": "step", "ordinal": dict(step["ordinal"])},
+     -                    f"/reasoning/directSteps/steps/{index}/premises/0")
+1933 +             change(
+1934 +                 step["premises"],
+1935 +                 0,
+1936 +                 {"kind": "step", "ordinal": dict(step["ordinal"])},
+1937 +                 f"/reasoning/directSteps/steps/{index}/premises/0",
+1938 +             )
+1939 |     elif mutation == "leaf-rename-all":
+--------------------------------------------------------------------------------
+1944 |         remaining = [1_000_000]
+1945 +
+1946 |         def rename(value, pointer="", depth=0):
+--------------------------------------------------------------------------------
+1961 |                         rename(item, pointer + "/" + str(index), depth + 1)
+1962 +
+1963 |         rename(payload)
+--------------------------------------------------------------------------------
+1967 |         item = values[0]
+     -         change(item["firingIndex"], "integerHex", "0x3ff",
+     -             "/reasoning/evidence/0/firingIndex/integerHex")
+1968 +         change(
+1969 +             item["firingIndex"],
+1970 +             "integerHex",
+1971 +             "0x3ff",
+1972 +             "/reasoning/evidence/0/firingIndex/integerHex",
+1973 +         )
+1974 |         change(item["headIndex"], "integerHex", "0xf", "/reasoning/evidence/0/headIndex/integerHex")
+--------------------------------------------------------------------------------
+1978 |         raise ProbeFault("MUTATION_WOULD_BE_NOOP")
+     -     raw = json.dumps(payload, ensure_ascii=False, sort_keys=True, allow_nan=False,
+     -                      separators=(",", ":")).encode("utf-8")
+1979 +     raw = json.dumps(
+1980 +         payload, ensure_ascii=False, sort_keys=True, allow_nan=False, separators=(",", ":")
+1981 +     ).encode("utf-8")
+1982 |     if raw == payload_json:
+1983 |         raise ProbeFault("MUTATION_WOULD_BE_NOOP")
+1984 |     text = raw.decode("utf-8")
+     -     rows = json.dumps([[text[index:index + 8192]] for index in range(0, len(text), 8192)],
+     -                       ensure_ascii=False, sort_keys=True, allow_nan=False,
+     -                       separators=(",", ":")).encode("utf-8")
+1985 +     rows = json.dumps(
+1986 +         [[text[index : index + 8192]] for index in range(0, len(text), 8192)],
+1987 +         ensure_ascii=False,
+1988 +         sort_keys=True,
+1989 +         allow_nan=False,
+1990 +         separators=(",", ":"),
+1991 +     ).encode("utf-8")
+1992 |     return raw, rows, changes
+--------------------------------------------------------------------------------
+2004 |         _AUDIT_ORDER_KNOWN = "ontolearn_engine.semantic_offline" not in sys.modules
+2005 +
+2006 |         def observe(event, _args):
+--------------------------------------------------------------------------------
+2016 |                     state["eventNamesComplete"] = False
+2017 +
+2018 |         sys.addaudithook(observe)
+--------------------------------------------------------------------------------
+2023 |     semantic = modules["ontolearn_engine.semantic"]
+     -     state = {"attemptCount": 0, "events": [], "eventNamesComplete": True,
+     -              "observerBeforeDenialHook": _AUDIT_ORDER_KNOWN,
+     -              "denialHookInstalled": True, "externalAccessSucceeded": "unknown"}
+2024 +     state = {
+2025 +         "attemptCount": 0,
+2026 +         "events": [],
+2027 +         "eventNamesComplete": True,
+2028 +         "observerBeforeDenialHook": _AUDIT_ORDER_KNOWN,
+2029 +         "denialHookInstalled": True,
+2030 +         "externalAccessSucceeded": "unknown",
+2031 +     }
+2032 |     token = _AUDIT_CONTEXT.set(state)
+2033 |     try:
+2034 |         try:
+2035 |             if action == "query":
+     -                 graph = _checked_call("offline/parse", "semantic.parse_turtle",
+     -                                       semantic.parse_turtle, dataset["dataText"])
+     -                 value = _checked_call("offline/query", "semantic.query", semantic.query,
+     -                                       graph, dataset["queryText"])
+2036 +                 graph = _checked_call(
+2037 +                     "offline/parse",
+2038 +                     "semantic.parse_turtle",
+2039 +                     semantic.parse_turtle,
+2040 +                     dataset["dataText"],
+2041 +                 )
+2042 +                 value = _checked_call(
+2043 +                     "offline/query", "semantic.query", semantic.query, graph, dataset["queryText"]
+2044 +                 )
+2045 |             elif action == "shape":
+     -                 data = _checked_call("offline/dataParse", "semantic.parse_turtle",
+     -                                      semantic.parse_turtle, dataset["dataText"])
+     -                 shapes = _checked_call("offline/shapesParse", "semantic.parse_turtle",
+     -                                        semantic.parse_turtle, dataset["shapesText"], shapes=True)
+     -                 value = _checked_call("offline/shacl", "semantic.check_shapes",
+     -                                       semantic.check_shapes, data, shapes)
+2046 +                 data = _checked_call(
+2047 +                     "offline/dataParse",
+2048 +                     "semantic.parse_turtle",
+2049 +                     semantic.parse_turtle,
+2050 +                     dataset["dataText"],
+2051 +                 )
+2052 +                 shapes = _checked_call(
+2053 +                     "offline/shapesParse",
+2054 +                     "semantic.parse_turtle",
+2055 +                     semantic.parse_turtle,
+2056 +                     dataset["shapesText"],
+2057 +                     shapes=True,
+2058 +                 )
+2059 +                 value = _checked_call(
+2060 +                     "offline/shacl", "semantic.check_shapes", semantic.check_shapes, data, shapes
+2061 +                 )
+2062 |             elif action == "implicit-jsonld":
+2063 |                 from rdflib import Graph
+2064 +
+2065 |                 with modules["ontolearn_engine.semantic_offline"].offline():
+     -                     value = _graph_value(_checked_call(
+     -                         "offline/implicitJsonld", "rdflib.Graph.parse", Graph().parse,
+     -                         data=dataset["text"], format=dataset["format"]))
+2066 +                     value = _graph_value(
+2067 +                         _checked_call(
+2068 +                             "offline/implicitJsonld",
+2069 +                             "rdflib.Graph.parse",
+2070 +                             Graph().parse,
+2071 +                             data=dataset["text"],
+2072 +                             format=dataset["format"],
+2073 +                         )
+2074 +                     )
+2075 |             else:
+     -                 value = _graph_value(_checked_call(
+     -                     "offline/parse", "semantic.parse_turtle", semantic.parse_turtle,
+     -                     dataset["text"], format=dataset["format"], shapes=dataset["shapes"]))
+2076 +                 value = _graph_value(
+2077 +                     _checked_call(
+2078 +                         "offline/parse",
+2079 +                         "semantic.parse_turtle",
+2080 +                         semantic.parse_turtle,
+2081 +                         dataset["text"],
+2082 +                         format=dataset["format"],
+2083 +                         shapes=dataset["shapes"],
+2084 +                     )
+2085 +                 )
+2086 |         except Exception as error:
+2087 |             failure = _known_failure(error, modules)
+2088 |             if failure is None:
+2089 |                 raise
+     -             return {"status": "observed-rejection", "error": failure[0],
+     -                     "diagnostic": failure[1], "audit": state}
+2090 +             return {
+2091 +                 "status": "observed-rejection",
+2092 +                 "error": failure[0],
+2093 +                 "diagnostic": failure[1],
+2094 +                 "audit": state,
+2095 +             }
+2096 |         return {"status": "observed-return", "value": value, "audit": state}
+--------------------------------------------------------------------------------
+2109 |         phases = {}
+2110 +
+2111 |         def timed(phase, api, call):
+2112 |             start = time.perf_counter_ns()
+2113 |             value = _checked_call(name + "/" + phase, api, call)
+     -             phases[phase] = {"elapsedNs": time.perf_counter_ns() - start,
+     -                              "pythonAllocation": "unknown", "processHighWaterRss": "unknown"}
+2114 +             phases[phase] = {
+2115 +                 "elapsedNs": time.perf_counter_ns() - start,
+2116 +                 "pythonAllocation": "unknown",
+2117 +                 "processHighWaterRss": "unknown",
+2118 +             }
+2119 |             return value
+     -         asserted = timed("turtleParse", "semantic.parse_turtle",
+     -                          lambda: semantic.parse_turtle(dataset["assertedText"]))
+     -         ontology = timed("ontologyParse", "semantic.parse_turtle",
+     -                          lambda: semantic.parse_turtle(dataset["ontologyText"]))
+2120 +
+2121 +         asserted = timed(
+2122 +             "turtleParse",
+2123 +             "semantic.parse_turtle",
+2124 +             lambda: semantic.parse_turtle(dataset["assertedText"]),
+2125 +         )
+2126 +         ontology = timed(
+2127 +             "ontologyParse",
+2128 +             "semantic.parse_turtle",
+2129 +             lambda: semantic.parse_turtle(dataset["ontologyText"]),
+2130 +         )
+2131 +
+2132 |         def build():
+--------------------------------------------------------------------------------
+2146 |             return facts, combined
+2147 +
+2148 |         transformed, combined = timed("graphBuild", "probe.explicitInputGraphBuild", build)
+     -         query = timed("fixedSelect", "semantic.query",
+     -                       lambda: semantic.query(combined, dataset["queryText"]))
+     -         reason = timed("rdfsRules", "semantic.reason",
+     -                        lambda: semantic.reason(combined, _legacy_rules(dataset, modules)))
+     -         shapes = timed("shapesParse", "semantic.parse_turtle",
+     -                        lambda: semantic.parse_turtle(dataset["shapesText"], shapes=True))
+     -         report = timed("shacl", "semantic.check_shapes",
+     -                        lambda: semantic.check_shapes(asserted, shapes))
+     -         outputs = {"assertedOriginal": _graph_value(asserted),
+2149 +         query = timed(
+2150 +             "fixedSelect", "semantic.query", lambda: semantic.query(combined, dataset["queryText"])
+2151 +         )
+2152 +         reason = timed(
+2153 +             "rdfsRules",
+2154 +             "semantic.reason",
+2155 +             lambda: semantic.reason(combined, _legacy_rules(dataset, modules)),
+2156 +         )
+2157 +         shapes = timed(
+2158 +             "shapesParse",
+2159 +             "semantic.parse_turtle",
+2160 +             lambda: semantic.parse_turtle(dataset["shapesText"], shapes=True),
+2161 +         )
+2162 +         report = timed(
+2163 +             "shacl", "semantic.check_shapes", lambda: semantic.check_shapes(asserted, shapes)
+2164 +         )
+2165 +         outputs = {
+2166 +             "assertedOriginal": _graph_value(asserted),
+2167 |             "transformedFacts": _graph_value(transformed),
+     -                    "ontology": _graph_value(ontology), "graph": _graph_value(combined),
+     -                    "query": query, "reason": reason, "report": report}
+2168 +             "ontology": _graph_value(ontology),
+2169 +             "graph": _graph_value(combined),
+2170 +             "query": query,
+2171 +             "reason": reason,
+2172 +             "report": report,
+2173 +         }
+2174 |         # The timer observes encoding only; JSONL transport/parent wall is a distinct domain.
+     -         encoded = timed("resultSerialization", "probe.canonical_bytes",
+     -                         lambda: canonical_bytes(outputs))
+     -         passes.append({"name": name, "phases": phases, "outputs": outputs,
+     -                        "serializationBytes": len(encoded),
+     -                            "serializationSha256": hashlib.sha256(encoded).hexdigest()})
+2175 +         encoded = timed(
+2176 +             "resultSerialization", "probe.canonical_bytes", lambda: canonical_bytes(outputs)
+2177 +         )
+2178 +         passes.append(
+2179 +             {
+2180 +                 "name": name,
+2181 +                 "phases": phases,
+2182 +                 "outputs": outputs,
+2183 +                 "serializationBytes": len(encoded),
+2184 +                 "serializationSha256": hashlib.sha256(encoded).hexdigest(),
+2185 +             }
+2186 +         )
+2187 |         if first_graphs is None:
+2188 |             first_graphs = (asserted, ontology, combined)
+2189 |     asserted, ontology, combined = first_graphs
+2190 |     return {
+     -         "scale": dataset["scale"], "seed": dataset["seed"],
+     -         "assertedInput": _graph_value(asserted), "ontology": _graph_value(ontology),
+2191 +         "scale": dataset["scale"],
+2192 +         "seed": dataset["seed"],
+2193 +         "assertedInput": _graph_value(asserted),
+2194 +         "ontology": _graph_value(ontology),
+2195 |         "semanticGraph": _graph_value(combined),
+     -         "actualCounts": {"asserted": len(asserted), "ontology": len(ontology),
+     -             "merged": len(combined)},
+2196 +         "actualCounts": {
+2197 +             "asserted": len(asserted),
+2198 +             "ontology": len(ontology),
+2199 +             "merged": len(combined),
+2200 +         },
+2201 |         "inputSha256": hashlib.sha256(dataset["assertedText"].encode("utf-8")).hexdigest(),
+2202 |         "ontologyTextSha256": hashlib.sha256(dataset["ontologyText"].encode("utf-8")).hexdigest(),
+2203 |         "querySha256": hashlib.sha256(dataset["queryText"].encode("utf-8")).hexdigest(),
+2204 |         "transformedGraphSha256": hashlib.sha256(
+     -             canonical_bytes(_graph_value(combined))).hexdigest(),
+     -         "instrumentation": instrumentation, "coldClaim": False,
+2205 +             canonical_bytes(_graph_value(combined))
+2206 +         ).hexdigest(),
+2207 +         "instrumentation": instrumentation,
+2208 +         "coldClaim": False,
+2209 |         "freshProcessRequestedBySelector": not instrumentation,
+2210 |         "freshProcessExternallyVerified": False,
+2211 |         "timer": "perf_counter_ns",
+     -             "timerResolutionSeconds": time.get_clock_info("perf_counter").resolution,
+     -         "importStartupWall": "unknown", "physicalColdRead": "unknown",
+     -         "snapshotLoad": "not-executed; Store HOLD", "capacityThreshold": "unknown",
+2212 +         "timerResolutionSeconds": time.get_clock_info("perf_counter").resolution,
+2213 +         "importStartupWall": "unknown",
+2214 +         "physicalColdRead": "unknown",
+2215 +         "snapshotLoad": "not-executed; Store HOLD",
+2216 +         "capacityThreshold": "unknown",
+2217 |         "memoryMeasurementStatus": "unknown; requires later resource/tool ticket",
+--------------------------------------------------------------------------------
+2225 |     if operation == "parse":
+     -         return _graph_value(_checked_call("parse/turtle", "semantic.parse_turtle",
+     -             semantic.parse_turtle,
+     -             dataset["text"], format=dataset["format"], shapes=dataset["shapes"]))
+2226 +         return _graph_value(
+2227 +             _checked_call(
+2228 +                 "parse/turtle",
+2229 +                 "semantic.parse_turtle",
+2230 +                 semantic.parse_turtle,
+2231 +                 dataset["text"],
+2232 +                 format=dataset["format"],
+2233 +                 shapes=dataset["shapes"],
+2234 +             )
+2235 +         )
+2236 |     if operation == "query":
+     -         graph = _checked_call("query/parse", "semantic.parse_turtle",
+     -                               semantic.parse_turtle, dataset["dataText"])
+     -         return _checked_call("query/select", "semantic.query", semantic.query,
+     -                              graph, dataset["queryText"])
+2237 +         graph = _checked_call(
+2238 +             "query/parse", "semantic.parse_turtle", semantic.parse_turtle, dataset["dataText"]
+2239 +         )
+2240 +         return _checked_call(
+2241 +             "query/select", "semantic.query", semantic.query, graph, dataset["queryText"]
+2242 +         )
+2243 |     if operation == "legacy-reason":
+     -         graph = _checked_call("legacy/parse", "semantic.parse_turtle",
+     -                               semantic.parse_turtle, dataset["dataText"])
+     -         reason = _checked_call("legacy/reason", "semantic.reason",
+     -                                semantic.reason, graph, _legacy_rules(dataset, modules))
+2244 +         graph = _checked_call(
+2245 +             "legacy/parse", "semantic.parse_turtle", semantic.parse_turtle, dataset["dataText"]
+2246 +         )
+2247 +         reason = _checked_call(
+2248 +             "legacy/reason",
+2249 +             "semantic.reason",
+2250 +             semantic.reason,
+2251 +             graph,
+2252 +             _legacy_rules(dataset, modules),
+2253 +         )
+2254 |         return {"graph": _graph_value(graph), "reason": reason}
+--------------------------------------------------------------------------------
+2258 |         records, rules, disabled = _original_profile_inputs(
+     -             dataset, observation["datasetId"], manifest["inputAsset"]["sha256"], modules)
+     -         return _checked_call("profile/execute", "semantic_execution.execute_profile_records",
+2259 +             dataset, observation["datasetId"], manifest["inputAsset"]["sha256"], modules
+2260 +         )
+2261 +         return _checked_call(
+2262 +             "profile/execute",
+2263 +             "semantic_execution.execute_profile_records",
+2264 |             modules["ontolearn_engine.semantic_execution"].execute_profile_records,
+     -             records, rules, disabled_rule_ids=disabled, **_catalog(modules))
+2265 +             records,
+2266 +             rules,
+2267 +             disabled_rule_ids=disabled,
+2268 +             **_catalog(modules),
+2269 +         )
+2270 |     if operation in ("fullview", "dag", "restore-negative"):
+2271 |         return _production_observation(dataset, observation, manifest, modules, approved)
+2272 |     if operation == "shape":
+     -         data = _checked_call("shape/dataParse", "semantic.parse_turtle",
+     -                              semantic.parse_turtle, dataset["dataText"])
+     -         shapes = _checked_call("shape/shapesParse", "semantic.parse_turtle",
+     -                                semantic.parse_turtle, dataset["shapesText"], shapes=True)
+     -         return _checked_call("shape/shacl", "semantic.check_shapes",
+     -                              semantic.check_shapes, data, shapes)
+2273 +         data = _checked_call(
+2274 +             "shape/dataParse", "semantic.parse_turtle", semantic.parse_turtle, dataset["dataText"]
+2275 +         )
+2276 +         shapes = _checked_call(
+2277 +             "shape/shapesParse",
+2278 +             "semantic.parse_turtle",
+2279 +             semantic.parse_turtle,
+2280 +             dataset["shapesText"],
+2281 +             shapes=True,
+2282 +         )
+2283 +         return _checked_call(
+2284 +             "shape/shacl", "semantic.check_shapes", semantic.check_shapes, data, shapes
+2285 +         )
+2286 |     if operation == "shacl-text":
+     -         kwargs = {}
+     -         for incoming, keyword in (("dataPolicy", "data_policy"), ("rangePolicy", "range_policy")):
+     -             if incoming in parameters:
+     -                 kwargs[keyword] = parameters[incoming]
+     -         # A missing mandatory keyword is deliberately passed to the actual callable.
+     -         return _checked_call("shacl-text/validate", "semantic.validate_shacl_text",
+     -             semantic.validate_shacl_text, dataset["dataText"], dataset["shapesText"], **kwargs)
+2287 +         kwargs = {}
+2288 +         for incoming, keyword in (("dataPolicy", "data_policy"), ("rangePolicy", "range_policy")):
+2289 +             if incoming in parameters:
+2290 +                 kwargs[keyword] = parameters[incoming]
+2291 +         # A missing mandatory keyword is deliberately passed to the actual callable.
+2292 +         return _checked_call(
+2293 +             "shacl-text/validate",
+2294 +             "semantic.validate_shacl_text",
+2295 +             semantic.validate_shacl_text,
+2296 +             dataset["dataText"],
+2297 +             dataset["shapesText"],
+2298 +             **kwargs,
+2299 +         )
+2300 |     if operation == "offline":
+     -         return _checked_call("offline/action", "probe._offline_observation",
+     -                              _offline_observation, dataset, parameters["action"], modules)
+2301 +         return _checked_call(
+2302 +             "offline/action",
+2303 +             "probe._offline_observation",
+2304 +             _offline_observation,
+2305 +             dataset,
+2306 +             parameters["action"],
+2307 +             modules,
+2308 +         )
+2309 |     if operation == "b1-measurement":
+--------------------------------------------------------------------------------
+2342 |     if type(value) is modules["ontolearn_engine.semantic_scopes"].ValidationScope:
+     -         return {"facts": _graph_value(value.facts), "ontology": _graph_value(value.ontology),
+     -                 "provenance": value.provenance, "reasoningResult": value.reasoning_result}
+2343 +         return {
+2344 +             "facts": _graph_value(value.facts),
+2345 +             "ontology": _graph_value(value.ontology),
+2346 +             "provenance": value.provenance,
+2347 +             "reasoningResult": value.reasoning_result,
+2348 +         }
+2349 |     kind = type(value)
+--------------------------------------------------------------------------------
+2360 |             raise ProbeFault("OUTPUT_TYPE_INVALID")
+     -         return {key: _partial_value(item, modules, approved, depth=depth + 1)
+     -                 for key, item in value.items()}
+2361 +         return {
+2362 +             key: _partial_value(item, modules, approved, depth=depth + 1)
+2363 +             for key, item in value.items()
+2364 +         }
+2365 |     return _typed_value(value, approved)
+--------------------------------------------------------------------------------
+2369 |     return [
+     -         {key: (_partial_value(value, modules, approved) if key == "value" else value)
+     -          for key, value in item.items()}
+2370 +         {
+2371 +             key: (_partial_value(value, modules, approved) if key == "value" else value)
+2372 +             for key, value in item.items()
+2373 +         }
+2374 |         for item in boundary.completed
+--------------------------------------------------------------------------------
+2419 |     try:
+     -         writer.emit({
+     -             "type": "header", "format": "i05-source-package-observations/1",
+     -             "runId": str(time.time_ns()), "mode": "frozen" if identity["frozen"] else "source",
+     -             "supplierRef": SOURCE_REF, "supplierProcessRef": PROCESS_REF,
+     -             "identity": identity, "selectedCaseSet": selector, "instrumentation": instrumentation,
+     -             "fullInventory": manifest["caseSets"]["full-v1"], "selectedInventory": inventory,
+     -             "manifestSha256": MANIFEST_SHA256, "inputAsset": manifest["inputAsset"],
+     -             "counts": manifest["counts"], "contexts": inputs["contexts"],
+     -             "fullInventorySha256": hashlib.sha256(
+     -                 canonical_bytes(manifest["caseSets"]["full-v1"])).hexdigest(),
+     -             "selectedInventorySha256": hashlib.sha256(canonical_bytes(inventory)).hexdigest(),
+     -             "limits": {"reportBytes": REPORT_CAP, "itemBytes": ITEM_CAP,
+     -                        "terminalReserveBytes": TERMINAL_RESERVE, "caseCount": CASE_CAP,
+     -                        "cooperativeBoundaryDeadlineSeconds": DEADLINE_SECONDS,
+     -                        "deadlineIncludesPreflight": True},
+     -             "externalOracleCompared": False, "sourcePackageEquivalent": False,
+     -             "externalOracleMatched": False, "originalOperationPassed": False,
+     -         })
+2420 +         writer.emit(
+2421 +             {
+2422 +                 "type": "header",
+2423 +                 "format": "i05-source-package-observations/1",
+2424 +                 "runId": str(time.time_ns()),
+2425 +                 "mode": "frozen" if identity["frozen"] else "source",
+2426 +                 "supplierRef": SOURCE_REF,
+2427 +                 "supplierProcessRef": PROCESS_REF,
+2428 +                 "identity": identity,
+2429 +                 "selectedCaseSet": selector,
+2430 +                 "instrumentation": instrumentation,
+2431 +                 "fullInventory": manifest["caseSets"]["full-v1"],
+2432 +                 "selectedInventory": inventory,
+2433 +                 "manifestSha256": MANIFEST_SHA256,
+2434 +                 "inputAsset": manifest["inputAsset"],
+2435 +                 "counts": manifest["counts"],
+2436 +                 "contexts": inputs["contexts"],
+2437 +                 "fullInventorySha256": hashlib.sha256(
+2438 +                     canonical_bytes(manifest["caseSets"]["full-v1"])
+2439 +                 ).hexdigest(),
+2440 +                 "selectedInventorySha256": hashlib.sha256(canonical_bytes(inventory)).hexdigest(),
+2441 +                 "limits": {
+2442 +                     "reportBytes": REPORT_CAP,
+2443 +                     "itemBytes": ITEM_CAP,
+2444 +                     "terminalReserveBytes": TERMINAL_RESERVE,
+2445 +                     "caseCount": CASE_CAP,
+2446 +                     "cooperativeBoundaryDeadlineSeconds": DEADLINE_SECONDS,
+2447 +                     "deadlineIncludesPreflight": True,
+2448 +                 },
+2449 +                 "externalOracleCompared": False,
+2450 +                 "sourcePackageEquivalent": False,
+2451 +                 "externalOracleMatched": False,
+2452 +                 "originalOperationPassed": False,
+2453 +             }
+2454 +         )
+2455 |         for case_id in inventory:
+--------------------------------------------------------------------------------
+2466 |             source_context = context.get(original["sourceCaseId"])
+     -             if (original["operation"] == "profile" and source_context is not None
+     -                     and not source_context["eligibleStandaloneMathInput"]):
+     -                 observation.update(status="not-executed", callCounts={"reason": 0, "validator": 0},
+     -                                    stage="input/not-executed", api=None, stageAttempts=[],
+     -                                    diagnostic={"code": "ORIGINAL_INPUT_CONTEXT_NOT_STANDALONE",
+     -                                                "originalOperationPassed": False})
+2467 +             if (
+2468 +                 original["operation"] == "profile"
+2469 +                 and source_context is not None
+2470 +                 and not source_context["eligibleStandaloneMathInput"]
+2471 +             ):
+2472 +                 observation.update(
+2473 +                     status="not-executed",
+2474 +                     callCounts={"reason": 0, "validator": 0},
+2475 +                     stage="input/not-executed",
+2476 +                     api=None,
+2477 +                     stageAttempts=[],
+2478 +                     diagnostic={
+2479 +                         "code": "ORIGINAL_INPUT_CONTEXT_NOT_STANDALONE",
+2480 +                         "originalOperationPassed": False,
+2481 +                     },
+2482 +                 )
+2483 |             else:
+     -                 counter = CallCounter(modules["ontolearn_engine.semantic"],
+     -                     validator) if instrumentation else None
+2484 +                 counter = (
+2485 +                     CallCounter(modules["ontolearn_engine.semantic"], validator)
+2486 +                     if instrumentation
+2487 +                     else None
+2488 +                 )
+2489 |                 boundary = CollectionBoundary(monotonic, start, cancel_requested)
+--------------------------------------------------------------------------------
+2493 |                         result = _dispatch(
+     -                             original, inputs["datasets"][original["datasetId"]], manifest,
+     -                             modules, approved, counter, instrumentation)
+2494 +                             original,
+2495 +                             inputs["datasets"][original["datasetId"]],
+2496 +                             manifest,
+2497 +                             modules,
+2498 +                             approved,
+2499 +                             counter,
+2500 +                             instrumentation,
+2501 +                         )
+2502 |                     observation.update(status="observed-return", result=result)
+     -                     if (original["operation"] == "offline"
+     -                             and result["status"] == "observed-rejection"):
+     -                         observation.update(status="observed-rejection", error=result["error"],
+     -                                            diagnostic=result["diagnostic"])
+2503 +                     if (
+2504 +                         original["operation"] == "offline"
+2505 +                         and result["status"] == "observed-rejection"
+2506 +                     ):
+2507 +                         observation.update(
+2508 +                             status="observed-rejection",
+2509 +                             error=result["error"],
+2510 +                             diagnostic=result["diagnostic"],
+2511 +                         )
+2512 |                 except Exception as error:
+2513 |                     failure = _known_failure(error, modules)
+2514 |                     missing_keywords = (
+     -                         original["operation"] == "shacl-text" and type(error) is TypeError
+2515 +                         original["operation"] == "shacl-text"
+2516 +                         and type(error) is TypeError
+2517 |                         and set(original["parameters"]) != {"dataPolicy", "rangePolicy"}
+2518 |                     )
+2519 |                     if type(error) is BoundaryStop:
+2520 |                         observation.update(
+     -                             status="unexpected-failure", error={"code": error.code},
+     -                             diagnostic={"classification": "cooperative-boundary-stop"})
+2521 +                             status="unexpected-failure",
+2522 +                             error={"code": error.code},
+2523 +                             diagnostic={"classification": "cooperative-boundary-stop"},
+2524 +                         )
+2525 |                         code, state = error.exit_code, error.state
+2526 |                         first_failure = first_failure or {
+     -                             "id": case_id, "code": error.code,
+     -                             "stage": boundary.stage, "api": boundary.api,
+2527 +                             "id": case_id,
+2528 +                             "code": error.code,
+2529 +                             "stage": boundary.stage,
+2530 +                             "api": boundary.api,
+2531 |                         }
+2532 |                     elif missing_keywords:
+     -                         observation.update(status="observed-rejection",
+     -                                            error={"kind": "call-contract",
+     -                                                "code": "CALL_ARGUMENTS_INVALID"},
+     -                                            diagnostic={
+     -                                                "classification": "mandatory-keyword-missing"})
+2533 +                         observation.update(
+2534 +                             status="observed-rejection",
+2535 +                             error={"kind": "call-contract", "code": "CALL_ARGUMENTS_INVALID"},
+2536 +                             diagnostic={"classification": "mandatory-keyword-missing"},
+2537 +                         )
+2538 |                     elif failure is not None:
+     -                         observation.update(status="observed-rejection", error=failure[0],
+     -                             diagnostic=failure[1])
+2539 +                         observation.update(
+2540 +                             status="observed-rejection", error=failure[0], diagnostic=failure[1]
+2541 +                         )
+2542 |                     else:
+2543 |                         safe_code = error.code if type(error) is ProbeFault else "INTERNAL_ERROR"
+     -                         observation.update(status="unexpected-failure", error={"code": safe_code},
+     -                                            diagnostic={"classification": "harness-or-unknown",
+     -                                                        "exceptionClass": type(error).__name__})
+2544 +                         observation.update(
+2545 +                             status="unexpected-failure",
+2546 +                             error={"code": safe_code},
+2547 +                             diagnostic={
+2548 +                                 "classification": "harness-or-unknown",
+2549 +                                 "exceptionClass": type(error).__name__,
+2550 +                             },
+2551 +                         )
+2552 |                         code, state = 1, "failed"
+2553 |                         first_failure = first_failure or {
+     -                             "id": case_id, "code": safe_code,
+     -                             "stage": boundary.stage, "api": boundary.api,
+2554 +                             "id": case_id,
+2555 +                             "code": safe_code,
+2556 +                             "stage": boundary.stage,
+2557 +                             "api": boundary.api,
+2558 |                         }
+--------------------------------------------------------------------------------
+2565 |                     observation["callCounts"] = (
+     -                         dict(counter.counts) if counter is not None else None)
+2566 +                         dict(counter.counts) if counter is not None else None
+2567 +                     )
+2568 |                     if counter is not None and hasattr(counter, "scope_details"):
+--------------------------------------------------------------------------------
+2583 |         state = "collected" if complete else state
+     -         writer.emit({
+     -             "type": "terminal", "state": state, "selectedCaseSet": selector,
+     -             "collectionComplete": complete,
+2584 +         writer.emit(
+2585 +             {
+2586 +                 "type": "terminal",
+2587 +                 "state": state,
+2588 +                 "selectedCaseSet": selector,
+2589 +                 "collectionComplete": complete,
+2590 |                 "fullSuiteCollectionComplete": complete and selector == "full-v1",
+     -             "completedIds": completed, "unstartedIds": inventory[len(completed):],
+     -             "fullInventory": manifest["caseSets"]["full-v1"], "selectedInventory": inventory,
+     -             "firstFailure": first_failure, "elapsedSeconds": monotonic() - start,
+     -             "externalOracleCompared": False, "sourcePackageEquivalent": False,
+     -             "externalOracleMatched": False, "originalOperationPassed": False,
+     -             "externalProcessStopped": "unknown", "readerJoin": "unknown",
+     -         }, terminal=True)
+2591 +                 "completedIds": completed,
+2592 +                 "unstartedIds": inventory[len(completed) :],
+2593 +                 "fullInventory": manifest["caseSets"]["full-v1"],
+2594 +                 "selectedInventory": inventory,
+2595 +                 "firstFailure": first_failure,
+2596 +                 "elapsedSeconds": monotonic() - start,
+2597 +                 "externalOracleCompared": False,
+2598 +                 "sourcePackageEquivalent": False,
+2599 +                 "externalOracleMatched": False,
+2600 +                 "originalOperationPassed": False,
+2601 +                 "externalProcessStopped": "unknown",
+2602 +                 "readerJoin": "unknown",
+2603 +             },
+2604 +             terminal=True,
+2605 +         )
+2606 |         return code
+--------------------------------------------------------------------------------
+2610 |         first_failure = first_failure or {
+     -             "code": safe_code, "id": current_observation_id,
+     -             "stage": "observation/JSONL-write", "api": "JSONLWriter.emit",
+2611 +             "code": safe_code,
+2612 +             "id": current_observation_id,
+2613 +             "stage": "observation/JSONL-write",
+2614 +             "api": "JSONLWriter.emit",
+2615 |         }
+2616 |         if not writer.broken and not writer.terminal_written:
+2617 |             try:
+     -                 writer.emit({
+     -                     "type": "terminal", "state": "failed", "selectedCaseSet": selector,
+     -                     "collectionComplete": False, "fullSuiteCollectionComplete": False,
+     -                     "completedIds": completed, "unstartedIds": inventory[len(completed):],
+     -                     "firstFailure": first_failure or {"code": safe_code},
+     -                     "externalOracleCompared": False, "originalOperationPassed": False,
+     -                     "sourcePackageEquivalent": False, "externalOracleMatched": False,
+     -                 }, terminal=True)
+2618 +                 writer.emit(
+2619 +                     {
+2620 +                         "type": "terminal",
+2621 +                         "state": "failed",
+2622 +                         "selectedCaseSet": selector,
+2623 +                         "collectionComplete": False,
+2624 +                         "fullSuiteCollectionComplete": False,
+2625 +                         "completedIds": completed,
+2626 +                         "unstartedIds": inventory[len(completed) :],
+2627 +                         "firstFailure": first_failure or {"code": safe_code},
+2628 +                         "externalOracleCompared": False,
+2629 +                         "originalOperationPassed": False,
+2630 +                         "sourcePackageEquivalent": False,
+2631 +                         "externalOracleMatched": False,
+2632 +                     },
+2633 +                     terminal=True,
+2634 +                 )
+2635 |             except Exception:
+--------------------------------------------------------------------------------
+2646 |     requested = [False]
+2647 +
+2648 |     def request_stop(_number, _frame):
+2649 |         requested[0] = True
+2650 +
+2651 |     previous = {}
+     |
+
+unformatted: File would be reformatted
+    --> packages/engine/tests/test_semantic_source_package_probe.py:23:16
+     |
+22   | REPOSITORY = Path(__file__).resolve().parents[3]
+     - PROBE_SOURCE = (
+     -     REPOSITORY / "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"
+     - )
+23   + PROBE_SOURCE = REPOSITORY / "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"
+24   | FLAG = "--semantic-source-package-probe"
+--------------------------------------------------------------------------------
+47   | SH = "http://www.w3.org/ns/shacl#"
+     - PREFIX = (
+     -     "@prefix ex: <urn:probe-test:> .\n"
+     -     f"@prefix xsd: <{XSD}> .\n"
+     -     f"@prefix sh: <{SH}> .\n"
+     - )
+48   + PREFIX = f"@prefix ex: <urn:probe-test:> .\n@prefix xsd: <{XSD}> .\n@prefix sh: <{SH}> .\n"
+49   |
+--------------------------------------------------------------------------------
+83   |     [
+     -         [], [FLAG], ["full-v1"], [FLAG, "unknown"], [FLAG, "FULL-V1"],
+     -         [FLAG + "=full-v1"], [FLAG, "full-v1", "extra"],
+     -         [FLAG, "full-v1", FLAG, "full-v1"], [FLAG, "../full-v1"],
+     -         [FLAG, "/tmp/input.json"], [FLAG, "https://example.invalid/input"],
+     -         ["--semantic-profile-probe", "full-v1"], [FLAG, "full-v1\x00"],
+     -         (FLAG, "full-v1"), FLAG + " full-v1", None, True,
+84   +         [],
+85   +         [FLAG],
+86   +         ["full-v1"],
+87   +         [FLAG, "unknown"],
+88   +         [FLAG, "FULL-V1"],
+89   +         [FLAG + "=full-v1"],
+90   +         [FLAG, "full-v1", "extra"],
+91   +         [FLAG, "full-v1", FLAG, "full-v1"],
+92   +         [FLAG, "../full-v1"],
+93   +         [FLAG, "/tmp/input.json"],
+94   +         [FLAG, "https://example.invalid/input"],
+95   +         ["--semantic-profile-probe", "full-v1"],
+96   +         [FLAG, "full-v1\x00"],
+97   +         (FLAG, "full-v1"),
+98   +         FLAG + " full-v1",
+99   +         None,
+100  +         True,
+101  |     ],
+--------------------------------------------------------------------------------
+115  |     for value in (
+     -         [ForeignText(FLAG), "full-v1"], [FLAG, ForeignText("full-v1")],
+116  +         [ForeignText(FLAG), "full-v1"],
+117  +         [FLAG, ForeignText("full-v1")],
+118  |         ForeignList([FLAG, "full-v1"]),
+--------------------------------------------------------------------------------
+249  |     [
+     -         b'{"x":1,"x":2}', b'{"x":{"y":1,"y":2}}', b'{"x":NaN}',
+     -         b'{"x":Infinity}', b'{"x":-Infinity}', b'{"x":1e999}', b'\xef\xbb\xbf{}',
+     -         b'\xff', b'{} trailing',
+250  +         b'{"x":1,"x":2}',
+251  +         b'{"x":{"y":1,"y":2}}',
+252  +         b'{"x":NaN}',
+253  +         b'{"x":Infinity}',
+254  +         b'{"x":-Infinity}',
+255  +         b'{"x":1e999}',
+256  +         b"\xef\xbb\xbf{}",
+257  +         b"\xff",
+258  +         b"{} trailing",
+259  |     ],
+--------------------------------------------------------------------------------
+267  |     assert probe.strict_json(b'{"v":"01","u":"\\u4e2d","f":false}') == {
+     -         "v": "01", "u": "中", "f": False
+268  +         "v": "01",
+269  +         "u": "中",
+270  +         "f": False,
+271  |     }
+--------------------------------------------------------------------------------
+325  |     targets = {
+     -         "input": inputs, "manifest": manifest, "observation": inputs["observations"][0],
+326  +         "input": inputs,
+327  +         "manifest": manifest,
+328  +         "observation": inputs["observations"][0],
+329  |         "inputAsset": manifest["inputAsset"],
+--------------------------------------------------------------------------------
+407  |     assignments = {
+     -         target.id: node.value for node in tree.body if isinstance(node, ast.Assign)
+     -         for target in node.targets if isinstance(target, ast.Name)
+408  +         target.id: node.value
+409  +         for node in tree.body
+410  +         if isinstance(node, ast.Assign)
+411  +         for target in node.targets
+412  +         if isinstance(target, ast.Name)
+413  |     }
+--------------------------------------------------------------------------------
+427  |     for relative, expected in RESOURCE_PINS.items():
+     -         row = next(row for row in identity["resources"]
+     -                    if Path(row["path"]) == real_resources / relative)
+428  +         row = next(
+429  +             row for row in identity["resources"] if Path(row["path"]) == real_resources / relative
+430  +         )
+431  |         assert (row["bytes"], row["sha256"]) == expected
+432  |     assert identity["distributions"] == {
+     -         "rdflib": "7.6.0", "pyshacl": "0.30.1", "pyparsing": "3.3.3", "owlrl": "7.6.2",
+     -         "prettytable": "3.18.0", "wcwidth": "0.9.2", "html5rdf": "1.2.1", "packaging": "26.3",
+433  +         "rdflib": "7.6.0",
+434  +         "pyshacl": "0.30.1",
+435  +         "pyparsing": "3.3.3",
+436  +         "owlrl": "7.6.2",
+437  +         "prettytable": "3.18.0",
+438  +         "wcwidth": "0.9.2",
+439  +         "html5rdf": "1.2.1",
+440  +         "packaging": "26.3",
+441  |     }
+--------------------------------------------------------------------------------
+468  |     writer = probe.JSONLWriter(stream, total_cap=10000, item_cap=9000, reserve=500)
+     -     value = {"type": "observation", "id": "unicode-tail", "rows": [["中文"]] * 30,
+     -              "tail": {"source": "last", "raw": "\\\"\n"}}
+469  +     value = {
+470  +         "type": "observation",
+471  +         "id": "unicode-tail",
+472  +         "rows": [["中文"]] * 30,
+473  +         "tail": {"source": "last", "raw": '\\"\n'},
+474  +     }
+475  |     writer.emit(value)
+--------------------------------------------------------------------------------
+497  |     too_small = io.BytesIO()
+     -     writer = probe.JSONLWriter(
+     -         too_small, total_cap=1000, item_cap=len(encoded) - 1, reserve=100
+     -     )
+498  +     writer = probe.JSONLWriter(too_small, total_cap=1000, item_cap=len(encoded) - 1, reserve=100)
+499  |     with pytest.raises(probe.ProbeFault) as error:
+--------------------------------------------------------------------------------
+513  |     assert stream.getvalue() == before
+     -     terminal = {"type": "terminal", "collectionComplete": False, "completedIds": ["first"],
+     -                 "unstartedIds": ["second"], "state": "failed"}
+514  +     terminal = {
+515  +         "type": "terminal",
+516  +         "collectionComplete": False,
+517  +         "completedIds": ["first"],
+518  +         "unstartedIds": ["second"],
+519  +         "state": "failed",
+520  +     }
+521  |     writer.emit(terminal, terminal=True)
+--------------------------------------------------------------------------------
+603  |     forbidden = {
+     -         "expected", "expectedReport", "expectedRows", "given_binding", "input_binding",
+     -         "matches", "originalMatches", "closure", "native_result", "native_reason",
+     -         "firingGroups", "mechanismBatches", "proofLeaves", "directSteps", "rdfsEvidence",
+     -         "payload_json", "rows_json", "allocation", "expectation",
+604  +         "expected",
+605  +         "expectedReport",
+606  +         "expectedRows",
+607  +         "given_binding",
+608  +         "input_binding",
+609  +         "matches",
+610  +         "originalMatches",
+611  +         "closure",
+612  +         "native_result",
+613  +         "native_reason",
+614  +         "firingGroups",
+615  +         "mechanismBatches",
+616  +         "proofLeaves",
+617  +         "directSteps",
+618  +         "rdfsEvidence",
+619  +         "payload_json",
+620  +         "rows_json",
+621  +         "allocation",
+622  +         "expectation",
+623  |     }
+--------------------------------------------------------------------------------
+649  |     assert set(contexts) == {
+     -         "mathInputContexts", "originalOperations", "productCases", "learningChecks",
+     -         "unresolved", "nonClaims",
+650  +         "mathInputContexts",
+651  +         "originalOperations",
+652  +         "productCases",
+653  +         "learningChecks",
+654  +         "unresolved",
+655  +         "nonClaims",
+656  |     }
+--------------------------------------------------------------------------------
+662  |     assert sum(item["fullOriginalInputContext"] for item in math) == 79
+     -     assert sum(item["eligibleStandaloneMathInput"] and item["fullOriginalInputContext"]
+     -                for item in math) == 78
+663  +     assert (
+664  +         sum(
+665  +             item["eligibleStandaloneMathInput"] and item["fullOriginalInputContext"]
+666  +             for item in math
+667  +         )
+668  +         == 78
+669  +     )
+670  |     assert math[77]["eligibleStandaloneMathInput"] is False
+--------------------------------------------------------------------------------
+674  |     assert [(item["index"], item["id"]) for item in fragments] == [
+     -         (79, "E.5:event-fragment:round:1"), (80, "E.5:event-fragment:round:2"),
+     -         (81, "E.5:event-fragment:round:3"), (82, "E.5:event-fragment:round:4"),
+675  +         (79, "E.5:event-fragment:round:1"),
+676  +         (80, "E.5:event-fragment:round:2"),
+677  +         (81, "E.5:event-fragment:round:3"),
+678  +         (82, "E.5:event-fragment:round:4"),
+679  |     ]
+--------------------------------------------------------------------------------
+690  |     assert len({item["id"] for item in contexts["originalOperations"]}) == 106
+     -     assert all(item["originalOperationExecuted"] is False and item["lifecycleExecuted"] is False
+     -                for item in contexts["originalOperations"])
+691  +     assert all(
+692  +         item["originalOperationExecuted"] is False and item["lifecycleExecuted"] is False
+693  +         for item in contexts["originalOperations"]
+694  +     )
+695  |     assert all(item["checkExecuted"] is False for item in contexts["learningChecks"])
+     -     assert all(item["originalLifecycleAndNonGraphAcceptance"] == "not-executed"
+     -                for item in contexts["productCases"])
+696  +     assert all(
+697  +         item["originalLifecycleAndNonGraphAcceptance"] == "not-executed"
+698  +         for item in contexts["productCases"]
+699  +     )
+700  |     for group in ("originalOperations", "learningChecks", "productCases"):
+--------------------------------------------------------------------------------
+707  |     ids = {
+     -         "C-query-numeric-promotion", "C-query-type-error", "C-datatype-exact", "C-langString",
+     -         "C-count-term-identity", "C-in-term-identity", "C-inclusive-numeric", "C-inclusive-nni",
+     -         "C-inclusive-dateTime-equal", "C-inclusive-dateTime-before", "C-inclusive-type-error",
+     -         "C-inclusive-date-entry", "C-illtyped-entry",
+708  +         "C-query-numeric-promotion",
+709  +         "C-query-type-error",
+710  +         "C-datatype-exact",
+711  +         "C-langString",
+712  +         "C-count-term-identity",
+713  +         "C-in-term-identity",
+714  +         "C-inclusive-numeric",
+715  +         "C-inclusive-nni",
+716  +         "C-inclusive-dateTime-equal",
+717  +         "C-inclusive-dateTime-before",
+718  +         "C-inclusive-type-error",
+719  +         "C-inclusive-date-entry",
+720  +         "C-illtyped-entry",
+721  |     }
+--------------------------------------------------------------------------------
+726  |     assert len(ids - query_ids) == 11
+     -     date_parameters = [item["parameters"] for item in observations
+     -                        if item["sourceCaseId"] == "C-inclusive-date-entry"]
+727  +     date_parameters = [
+728  +         item["parameters"]
+729  +         for item in observations
+730  +         if item["sourceCaseId"] == "C-inclusive-date-entry"
+731  +     ]
+732  |     for data_policy in ("strict", "integer-illtyped-report-v1"):
+733  |         assert {"dataPolicy": data_policy, "rangePolicy": "utc-date-range-v1"} in date_parameters
+     -     integer_parameters = [item["parameters"] for item in observations
+     -                           if item["sourceCaseId"] == "C-illtyped-entry"]
+734  +     integer_parameters = [
+735  +         item["parameters"] for item in observations if item["sourceCaseId"] == "C-illtyped-entry"
+736  +     ]
+737  |     assert {"dataPolicy": "strict", "rangePolicy": "legacy"} in integer_parameters
+738  |     assert {
+     -         "dataPolicy": "integer-illtyped-report-v1", "rangePolicy": "legacy"
+739  +         "dataPolicy": "integer-illtyped-report-v1",
+740  +         "rangePolicy": "legacy",
+741  |     } in integer_parameters
+--------------------------------------------------------------------------------
+755  |             dataset = inputs["datasets"][item["datasetId"]]
+     -             assert not any(key in {"snapshot", "snapshotLoad", "Store", "sqlite"}
+     -                            for _, record in _walk_json(dataset) for key in record)
+756  +             assert not any(
+757  +                 key in {"snapshot", "snapshotLoad", "Store", "sqlite"}
+758  +                 for _, record in _walk_json(dataset)
+759  +                 for key in record
+760  +             )
+761  |             assert dataset["seed"] == 20261019
+--------------------------------------------------------------------------------
+790  |             _shape('sh:minInclusive "2000-01-01Z"^^xsd:date'),
+     -             data_policy="strict", range_policy="utc-date-range-v1",
+791  +             data_policy="strict",
+792  +             range_policy="utc-date-range-v1",
+793  |         )
+--------------------------------------------------------------------------------
+835  |             canonical["semantic"].validate_shacl_text(
+     -                 _data("2000-01-01Z"), _shape("sh:minCount 1"),
+     -                 data_policy="not-a-policy", range_policy="legacy",
+836  +                 _data("2000-01-01Z"),
+837  +                 _shape("sh:minCount 1"),
+838  +                 data_policy="not-a-policy",
+839  +                 range_policy="legacy",
+840  |             )
+--------------------------------------------------------------------------------
+861  |         projected = scopes.project_validation_scope(
+     -             facts, axioms, include_derived=True, reasoning_result=prepared.reasoning_result,
+862  +             facts,
+863  +             axioms,
+864  +             include_derived=True,
+865  +             reasoning_result=prepared.reasoning_result,
+866  |             reasoning_source=prepared.provenance["reasoningSource"],
+--------------------------------------------------------------------------------
+873  |     tree = ast.parse(PROBE_SOURCE.read_text(encoding="utf-8"))
+     -     guards = [node for node in tree.body if isinstance(node, ast.If)
+     -               and any(isinstance(n, ast.Constant) and n.value == "__main__"
+     -                       for n in ast.walk(node.test))]
+874  +     guards = [
+875  +         node
+876  +         for node in tree.body
+877  +         if isinstance(node, ast.If)
+878  +         and any(isinstance(n, ast.Constant) and n.value == "__main__" for n in ast.walk(node.test))
+879  +     ]
+880  |     assert len(guards) == 1
+--------------------------------------------------------------------------------
+884  |     imports = [node for node in ast.walk(guard) if isinstance(node, ast.ImportFrom)]
+     -     assert any(node.module == "ontolearn_engine.semantic_source_package_probe"
+     -                and any(alias.name == "main" for alias in node.names) for node in imports)
+     -     assert any(isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+     -                and node.func.id == "SystemExit" for node in ast.walk(guard))
+885  +     assert any(
+886  +         node.module == "ontolearn_engine.semantic_source_package_probe"
+887  +         and any(alias.name == "main" for alias in node.names)
+888  +         for node in imports
+889  +     )
+890  +     assert any(
+891  +         isinstance(node, ast.Call)
+892  +         and isinstance(node.func, ast.Name)
+893  +         and node.func.id == "SystemExit"
+894  +         for node in ast.walk(guard)
+895  +     )
+896  |     assert not any(isinstance(node, (ast.ClassDef, ast.FunctionDef)) for node in ast.walk(guard))
+--------------------------------------------------------------------------------
+910  |     tree = ast.parse(PROBE_SOURCE.read_text(encoding="utf-8"))
+     -     forbidden = {"semantic_samples", "semantic_probe", "semantic_profile_probe", "storage_probe",
+     -                  "storage", "worker", "coordinator", "job_store", "__main__", "entrypoint"}
+911  +     forbidden = {
+912  +         "semantic_samples",
+913  +         "semantic_probe",
+914  +         "semantic_profile_probe",
+915  +         "storage_probe",
+916  +         "storage",
+917  +         "worker",
+918  +         "coordinator",
+919  +         "job_store",
+920  +         "__main__",
+921  +         "entrypoint",
+922  +     }
+923  |     for node in ast.walk(tree):
+--------------------------------------------------------------------------------
+930  |             assert node.func.attr not in {
+     -                 "resource_manifest", "build_request", "execute_request", "derive_dependencies",
+931  +                 "resource_manifest",
+932  +                 "build_request",
+933  +                 "execute_request",
+934  +                 "derive_dependencies",
+935  |                 "permits_transition",
+--------------------------------------------------------------------------------
+981  |     assert header["selectedInventory"] == manifest["caseSets"]["full-v1"]
+     -     assert header["fullInventorySha256"] == _sha(
+     -         _asset_canonical(manifest["caseSets"]["full-v1"])
+     -     )
+982  +     assert header["fullInventorySha256"] == _sha(_asset_canonical(manifest["caseSets"]["full-v1"]))
+983  |     assert header["selectedInventorySha256"] == header["fullInventorySha256"]
+--------------------------------------------------------------------------------
+1000 |     assert set(identity["functionCode"]) == {
+     -         "semantic.reason", "semantic.query", "semantic.validate_shacl_text", "Validator.run"
+1001 +         "semantic.reason",
+1002 +         "semantic.query",
+1003 +         "semantic.validate_shacl_text",
+1004 +         "Validator.run",
+1005 |     }
+--------------------------------------------------------------------------------
+1015 |         for field in (
+     -             "sourceCaseId", "family", "operation", "datasetId", "parameters", "sourceRefs",
+     -             "contextStatus", "projectionSha256",
+1016 +             "sourceCaseId",
+1017 +             "family",
+1018 +             "operation",
+1019 +             "datasetId",
+1020 +             "parameters",
+1021 +             "sourceRefs",
+1022 +             "contextStatus",
+1023 +             "projectionSha256",
+1024 |         ):
+--------------------------------------------------------------------------------
+1028 |         assert observed["status"] in {
+     -             "observed-return", "observed-rejection", "not-executed", "missing-context"
+1029 +             "observed-return",
+1030 +             "observed-rejection",
+1031 +             "not-executed",
+1032 +             "missing-context",
+1033 |         }
+--------------------------------------------------------------------------------
+1046 |     assert statuses & {"not-executed", "missing-context"}
+     -     repair = [item for item in records[1:-1]
+     -               if item["sourceCaseId"] == inputs["contexts"]["mathInputContexts"][77]["id"]
+     -               and item["operation"] == "profile"]
+1047 +     repair = [
+1048 +         item
+1049 +         for item in records[1:-1]
+1050 +         if item["sourceCaseId"] == inputs["contexts"]["mathInputContexts"][77]["id"]
+1051 +         and item["operation"] == "profile"
+1052 +     ]
+1053 |     assert repair and all(item["status"] in {"not-executed", "missing-context"} for item in repair)
+--------------------------------------------------------------------------------
+1075 |     inputs, _ = sealed_assets
+     -     omitted = [item for item in inputs["observations"] if item["operation"] == "shacl-text"
+     -                and set(item["parameters"]) != {"dataPolicy", "rangePolicy"}]
+1076 +     omitted = [
+1077 +         item
+1078 +         for item in inputs["observations"]
+1079 +         if item["operation"] == "shacl-text"
+1080 +         and set(item["parameters"]) != {"dataPolicy", "rangePolicy"}
+1081 +     ]
+1082 |     assert omitted
+--------------------------------------------------------------------------------
+1092 |     _, records, _, _ = full_run
+     -     produced = [item for item in records[1:-1]
+     -                 if item["operation"] in {"fullview", "dag"}
+     -                 and item["status"] == "observed-return"]
+1093 +     produced = [
+1094 +         item
+1095 +         for item in records[1:-1]
+1096 +         if item["operation"] in {"fullview", "dag"} and item["status"] == "observed-return"
+1097 +     ]
+1098 |     assert {item["operation"] for item in produced} == {"fullview", "dag"}
+1099 |     for item in produced:
+1100 |         result = item["result"]
+1101 |         for field in (
+     -             "payloadBytes", "rowsBytes", "sourceBytes", "definitionBytes", "catalogBytes"
+1102 +             "payloadBytes",
+1103 +             "rowsBytes",
+1104 +             "sourceBytes",
+1105 +             "definitionBytes",
+1106 +             "catalogBytes",
+1107 |         ):
+--------------------------------------------------------------------------------
+1116 |         assert rows == result["wire"]["rows"]
+     -         assert "".join(row[0] for row in rows) == base64.b64decode(
+     -             result["payloadBytes"]["data"]
+     -         ).decode()
+1117 +         assert (
+1118 +             "".join(row[0] for row in rows)
+1119 +             == base64.b64decode(result["payloadBytes"]["data"]).decode()
+1120 +         )
+1121 |         assert result["expectedCapture"] and result["allocation"] and result["receipts"]
+--------------------------------------------------------------------------------
+1129 |     _, records, _, _ = full_run
+     -     measurements = [item["result"] for item in records[1:-1]
+     -                     if item["operation"] == "b1-measurement"
+     -                     and item["status"] == "observed-return"]
+1130 +     measurements = [
+1131 +         item["result"]
+1132 +         for item in records[1:-1]
+1133 +         if item["operation"] == "b1-measurement" and item["status"] == "observed-return"
+1134 +     ]
+1135 |     assert {item["scale"] for item in measurements} == {1, 10}
+--------------------------------------------------------------------------------
+1139 |         assert result["actualCounts"] == {
+     -             "asserted": 18 * scale, "ontology": 4, "merged": 18 * scale + 4
+1140 +             "asserted": 18 * scale,
+1141 +             "ontology": 4,
+1142 +             "merged": 18 * scale + 4,
+1143 |         }
+1144 |         for field, count in (
+     -             ("assertedInput", 18 * scale), ("ontology", 4), ("semanticGraph", 18 * scale + 4)
+1145 +             ("assertedInput", 18 * scale),
+1146 +             ("ontology", 4),
+1147 +             ("semanticGraph", 18 * scale + 4),
+1148 |         ):
+--------------------------------------------------------------------------------
+1210 |     _, records, _, _ = full_run
+     -     negatives = [item for item in records[1:-1]
+     -                  if item["operation"] == "restore-negative"
+     -                  and item["status"] == "observed-return"]
+1211 +     negatives = [
+1212 +         item
+1213 +         for item in records[1:-1]
+1214 +         if item["operation"] == "restore-negative" and item["status"] == "observed-return"
+1215 +     ]
+1216 |     assert negatives
+--------------------------------------------------------------------------------
+1339 |     partial = _partial_by_stage(failed)
+     -     assert {"First/turtleParse", "First/ontologyParse", "First/graphBuild", "First/fixedSelect",
+     -             "First/rdfsRules", "First/shapesParse", "First/shacl",
+     -             "First/resultSerialization"} <= set(partial)
+     -     assert {"Warm/turtleParse", "Warm/ontologyParse", "Warm/graphBuild", "Warm/fixedSelect",
+     -             "Warm/rdfsRules", "Warm/shapesParse"} <= set(partial)
+1340 +     assert {
+1341 +         "First/turtleParse",
+1342 +         "First/ontologyParse",
+1343 +         "First/graphBuild",
+1344 +         "First/fixedSelect",
+1345 +         "First/rdfsRules",
+1346 +         "First/shapesParse",
+1347 +         "First/shacl",
+1348 +         "First/resultSerialization",
+1349 +     } <= set(partial)
+1350 +     assert {
+1351 +         "Warm/turtleParse",
+1352 +         "Warm/ontologyParse",
+1353 +         "Warm/graphBuild",
+1354 +         "Warm/fixedSelect",
+1355 +         "Warm/rdfsRules",
+1356 +         "Warm/shapesParse",
+1357 +     } <= set(partial)
+1358 |     assert "Warm/shacl" not in partial, "a throwing call has no returned value"
+--------------------------------------------------------------------------------
+1362 |     assert partial["First/fixedSelect"]["value"] == {
+     -         "type": "SELECT", "variables": ["alarm"], "rows": [["<urn:case:0:alarm/A01>"]]
+1363 +         "type": "SELECT",
+1364 +         "variables": ["alarm"],
+1365 +         "rows": [["<urn:case:0:alarm/A01>"]],
+1366 |     }
+--------------------------------------------------------------------------------
+1429 |     assert "restore/result" not in partial and "restore/roots" not in partial
+     -     for raw in (produced.payload_json, produced.rows_json, produced.source_encoded,
+     -                 produced.definitions_encoded, produced.catalog_json):
+1430 +     for raw in (
+1431 +         produced.payload_json,
+1432 +         produced.rows_json,
+1433 +         produced.source_encoded,
+1434 +         produced.definitions_encoded,
+1435 +         produced.catalog_json,
+1436 +     ):
+1437 |         assert _snapshot_has_exact_bytes(partial["production/compute"]["value"], raw)
+     -     assert any(record.get("payload_digest") == expected.payload_digest
+     -                and record.get("rows_digest") == expected.rows_digest
+     -                for _, record in _walk_json(partial["production/expectation"]["value"]))
+1438 +     assert any(
+1439 +         record.get("payload_digest") == expected.payload_digest
+1440 +         and record.get("rows_digest") == expected.rows_digest
+1441 +         for _, record in _walk_json(partial["production/expectation"]["value"])
+1442 +     )
+1443 |     assert "result" not in failed, "a failed restore must not publish a partial restored view"
+--------------------------------------------------------------------------------
+1470 |     code = probe.run_fixed_suite(
+     -         "b1-semantic-1x-v1", stdout=stdout, stderr=stderr,
+     -         monotonic=lambda: state["now"], cancel_requested=lambda: state["cancel"],
+1471 +         "b1-semantic-1x-v1",
+1472 +         stdout=stdout,
+1473 +         stderr=stderr,
+1474 +         monotonic=lambda: state["now"],
+1475 +         cancel_requested=lambda: state["cancel"],
+1476 |     )
+--------------------------------------------------------------------------------
+1501 |
+     - def test_r1_preflight_elapsed_time_counts_before_first_business_call(
+     -     probe, canonical, monkeypatch
+     - ):
+1502 + def test_r1_preflight_elapsed_time_counts_before_first_business_call(probe, canonical, monkeypatch):
+1503 |     original_preflight = probe.check_runtime_preconditions
+--------------------------------------------------------------------------------
+1604 |     assert result == {
+     -         "type": "SELECT", "variables": ["s", "v"],
+1605 +         "type": "SELECT",
+1606 +         "variables": ["s", "v"],
+1607 |         "rows": [
+--------------------------------------------------------------------------------
+1638 |     graph = semantic.parse_turtle('<urn:offline:s> <urn:offline:p> "SERVICE" .')
+     -     assert semantic.query(
+     -         graph, 'SELECT ?s WHERE { ?s <urn:offline:p> "SERVICE" }'
+     -     ) == {"type": "SELECT", "variables": ["s"], "rows": [["<urn:offline:s>"]]}
+1639 +     assert semantic.query(graph, 'SELECT ?s WHERE { ?s <urn:offline:p> "SERVICE" }') == {
+1640 +         "type": "SELECT",
+1641 +         "variables": ["s"],
+1642 +         "rows": [["<urn:offline:s>"]],
+1643 +     }
+1644 |
+--------------------------------------------------------------------------------
+1653 |     )
+     -     expected = [] if conforms else [
+     -         _violation(f'"{spelling}"^^<{XSD}date>', "MinInclusiveConstraintComponent")
+     -     ]
+1654 +     expected = (
+1655 +         []
+1656 +         if conforms
+1657 +         else [_violation(f'"{spelling}"^^<{XSD}date>', "MinInclusiveConstraintComponent")]
+1658 +     )
+1659 |     assert result["report"] == {"conforms": conforms, "violations": expected}
+--------------------------------------------------------------------------------
+1680 |         "conforms": False,
+     -         "violations": [
+     -             _violation(f'"not-an-int"^^<{XSD}integer>', "DatatypeConstraintComponent")
+     -         ],
+1681 +         "violations": [_violation(f'"not-an-int"^^<{XSD}integer>', "DatatypeConstraintComponent")],
+1682 |     }
+--------------------------------------------------------------------------------
+1739 |     assert semantic.check_shapes(asserted_only.facts, shapes) == {
+     -         "conforms": True, "violations": []
+1740 +         "conforms": True,
+1741 +         "violations": [],
+1742 |     }
+1743 |     assert semantic.check_shapes(projected.facts, shapes) == {
+1744 |         "conforms": False,
+     -         "violations": [{
+     -             "focus": "<urn:scope:x>",
+     -             "path": "<urn:scope:p>",
+     -             "value": None,
+     -             "sourceShape": "<urn:probe-test:shape>",
+     -             "constraint": f"<{SH}MinCountConstraintComponent>",
+     -             "severity": f"<{SH}Violation>",
+     -         }],
+1745 +         "violations": [
+1746 +             {
+1747 +                 "focus": "<urn:scope:x>",
+1748 +                 "path": "<urn:scope:p>",
+1749 +                 "value": None,
+1750 +                 "sourceShape": "<urn:probe-test:shape>",
+1751 +                 "constraint": f"<{SH}MinCountConstraintComponent>",
+1752 +                 "severity": f"<{SH}Violation>",
+1753 +             }
+1754 +         ],
+1755 |     }
+--------------------------------------------------------------------------------
+1761 |         tuple(term("iri", value) for value in row)
+     -         for row in (("urn:dag:x", RDF + "type", "urn:dag:A"),
+     -                     ("urn:dag:A", RDFS + "subClassOf", "urn:dag:B"))
+1762 +         for row in (
+1763 +             ("urn:dag:x", RDF + "type", "urn:dag:A"),
+1764 +             ("urn:dag:A", RDFS + "subClassOf", "urn:dag:B"),
+1765 +         )
+1766 |     )
+--------------------------------------------------------------------------------
+1780 |         canonical["restore"].ExplanationRestoreExpectation
+     -         if explanation else canonical["restore"].RestoreExpectation
+1781 +         if explanation
+1782 +         else canonical["restore"].RestoreExpectation
+1783 |     )
+--------------------------------------------------------------------------------
+1805 |         restore.restore_profile_explanation_result
+     -         if explanation else restore.restore_profile_result
+1806 +         if explanation
+1807 +         else restore.restore_profile_result
+1808 |     )
+1809 |
+1810 |     def receive_bytes(payload, rows):
+     -         keywords = {"expected": expected, "allocation": allocation,
+     -                     "ledger": canonical["RestoreLedger"]()}
+1811 +         keywords = {
+1812 +             "expected": expected,
+1813 +             "allocation": allocation,
+1814 +             "ledger": canonical["RestoreLedger"](),
+1815 +         }
+1816 |         if explanation:
+--------------------------------------------------------------------------------
+1852 |         expected_premises = tuple(
+     -             {"kind": "leaf", "reference": "i05-proof:" + _sha(
+     -                 ("i05-profile-proof-leaf/1\0" + "\0".join(triple)).encode()
+     -             )}
+1853 +             {
+1854 +                 "kind": "leaf",
+1855 +                 "reference": "i05-proof:"
+1856 +                 + _sha(("i05-profile-proof-leaf/1\0" + "\0".join(triple)).encode()),
+1857 +             }
+1858 |             for triple in seeds
+     |
+
+2 files would be reformatted

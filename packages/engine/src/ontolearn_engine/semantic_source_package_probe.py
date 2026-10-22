@@ -1160,6 +1160,8 @@ def _known_failure(error, modules):
 
 
 def _scope_observation(dataset, mode, modules, counter):
+    if counter is None:
+        raise ProbeFault("INTERNAL_ERROR")
     semantic = modules["ontolearn_engine.semantic"]
     scopes = modules["ontolearn_engine.semantic_scopes"]
     asserted = _checked_call("scope/assertedParse", "semantic.parse_turtle",

@@ -1,0 +1,398 @@
+{
+  "format": "i05-retained-first-and-continuation-opinion-matrix/1",
+  "at": "2026-10-22T17:04:10.475169+00:00",
+  "fixedOldProduct": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "fixedOldPacketCandidate": "92652c2db7ad600e9c4ab304812fede7943a8f01",
+  "fixedOldPacketFinal": "66f6e633e7415bb8f1b11d4ee31fb8d4c4a2bc80",
+  "sourceReportsAndStatuses": [
+    {
+      "reviewer": "zcode",
+      "phase": "first",
+      "kind": "report",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-review-zcode/review-status/owner-first-terminal-report-r2.md",
+      "bytes": 28356,
+      "sha256": "04526bdc75e4acd3833351d5713e26d89f5ae9c81a4a5fbc201f5f0033425ad1"
+    },
+    {
+      "reviewer": "zcode",
+      "phase": "first",
+      "kind": "reviewer-status",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-review-zcode/review-status/owner-first-terminal-reviewer-status-r2.json",
+      "bytes": 3512,
+      "sha256": "9ff82b72ad5ca18c48ece35dab211f4d9d77b257d4ed6596c4d6f40d39b0bdcf"
+    },
+    {
+      "reviewer": "zcode",
+      "phase": "continuation",
+      "kind": "report",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-review-zcode/review-status/owner-continuation-terminal-report-r2.md",
+      "bytes": 20927,
+      "sha256": "078112e3fdb664fd317ccfe6eea404d13dd70dd6ac85fbff0c0f0c9a22386cb7"
+    },
+    {
+      "reviewer": "zcode",
+      "phase": "continuation",
+      "kind": "reviewer-status",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-review-zcode/review-status/owner-continuation-terminal-reviewer-status-r2.json",
+      "bytes": 5331,
+      "sha256": "f0754340eeb392a74d4bcafa2c6c3ae127c77b8bfd75a2f8253717e353a28beb"
+    },
+    {
+      "reviewer": "minimax",
+      "phase": "first",
+      "kind": "report",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-review-minimax/review-status/owner-first-terminal-report-r2.md",
+      "bytes": 74531,
+      "sha256": "6b6d066a3655ddcbaee690ed8e118de107ebbba9eb982ccf68b03c3a82afefca"
+    },
+    {
+      "reviewer": "minimax",
+      "phase": "first",
+      "kind": "reviewer-status",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-review-minimax/review-status/owner-first-terminal-reviewer-status-r2.json",
+      "bytes": 14530,
+      "sha256": "15684223e1ddb61b358108a7b2e1a7e8084c2f292317a6afa0cefbbaf67281c1"
+    },
+    {
+      "reviewer": "minimax",
+      "phase": "continuation",
+      "kind": "report",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-review-minimax/review-status/owner-continuation-terminal-report-r2.md",
+      "bytes": 69882,
+      "sha256": "bc58f2dccad776bad82b8e83b72c6fa52ab892008fb7ce6ca9548d6e7a61a3a2"
+    },
+    {
+      "reviewer": "minimax",
+      "phase": "continuation",
+      "kind": "reviewer-status",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-review-minimax/review-status/owner-continuation-terminal-reviewer-status-r2.json",
+      "bytes": 26256,
+      "sha256": "cab33012ea6dfafac3023aa924d27e042dd7b1505ddc42338565a73fd0023c81"
+    }
+  ],
+  "currentOpinionRows": [
+    {
+      "id": "R2-MY-01",
+      "reviewer": "minimax",
+      "firstOpinion": {
+        "id": "R2-MY-01",
+        "severity": "P2",
+        "title": "主候选不含 I05 自身验收与 Q6 登记文档，C1 要求的登记更正无法在主候选内闭环",
+        "location": "data/snapshots/main-source-only/docs/iterations/I05/",
+        "status": "open"
+      },
+      "continuationOpinion": {
+        "id": "R2-MY-01",
+        "severity": "P2",
+        "title": "主候选不含 I05 自身验收与 Q6 登记文档，C1 要求的登记更正无法在主候选内闭环",
+        "location": "data/snapshots/main-source-only/docs/iterations/I05/",
+        "status": "open",
+        "round": 1,
+        "verifiedRound2": "已复核：I05 目录下仅 implementation.md 一个文件"
+      },
+      "owner": "I05 docs, root policy source",
+      "triageState": "plan documentation adoption",
+      "disposition": "Q6/date policy adoption is decided; product registration/representative evidence remain separate. No frozen report rewritten.",
+      "findingClosedByTriage": false
+    },
+    {
+      "id": "R2-MY-02",
+      "reviewer": "minimax",
+      "firstOpinion": {
+        "id": "R2-MY-02",
+        "severity": "P2",
+        "title": "候选自述当前组合不可运行；本人源码级独立复核为真（锁未采用 → preflight 必失败）",
+        "location": "docs/iterations/I05/source-package-probe/implementation.md:37; semantic_source_package_probe.py:103-104,582",
+        "status": "open"
+      },
+      "continuationOpinion": {
+        "id": "R2-MY-02",
+        "severity": "P2",
+        "title": "候选当前组合不可运行；本轮定位到 4 个彼此独立的静态前置阻断（锁身份 / 5-of-8 distribution 缺失 / Python 版本 / frozen build-provenance）",
+        "location": "docs/iterations/I05/source-package-probe/implementation.md:37; semantic_source_package_probe.py:103-108,582,588-601",
+        "status": "open",
+        "round": 1,
+        "verifiedRound2": "已加强"
+      },
+      "owner": "T03 dependencies/build + root runtime authority",
+      "triageState": "open prerequisite gap",
+      "disposition": "Exact lock mismatch and absent pyshacl closure confirmed. Python3.12 is a conditional gate, not evidence actual Python wrong. Frozen provenance is explicit refusal until approved build contract.",
+      "findingClosedByTriage": false
+    },
+    {
+      "id": "R2-MY-03",
+      "reviewer": "minimax",
+      "firstOpinion": {
+        "id": "R2-MY-03",
+        "severity": "P3",
+        "title": "探针运行身份版本串为硬编码副本而非读自 canonical 模块（当前实测一致）",
+        "location": "semantic_source_package_probe.py:672",
+        "status": "open"
+      },
+      "continuationOpinion": {
+        "id": "R2-MY-03",
+        "severity": "P3",
+        "title": "探针运行身份版本串为硬编码副本而非读自 canonical 模块（当前实测一致）",
+        "location": "semantic_source_package_probe.py:670-676",
+        "status": "open",
+        "round": 1,
+        "verifiedRound2": "已复核：legacy 读自 canonical，profile/explanation 为字面量"
+      },
+      "owner": "I05 probe + canonical owner",
+      "triageState": "defer with identity disposition",
+      "disposition": "Current finite7/8 match; do not invent missing canonical export. Derive approved identities when exact canonical contract received; retain actual byte/code witness.",
+      "findingClosedByTriage": false
+    },
+    {
+      "id": "R2-MY-04",
+      "reviewer": "minimax",
+      "firstOpinion": {
+        "id": "R2-MY-04",
+        "severity": "P3",
+        "title": "8 个互斥命名空间共用 SEMANTICS_VERSION=i05-finite-6 但 semantic.py 字节各不相同（7 个不同 SHA）",
+        "location": "各命名空间 packages/engine/src/ontolearn_engine/semantic.py",
+        "status": "open"
+      },
+      "continuationOpinion": {
+        "id": "R2-MY-04",
+        "severity": "P3",
+        "title": "15 个命名空间共用 SEMANTICS_VERSION=i05-finite-6，semantic.py 解析为 8 个不同字节（首轮表述已改述）",
+        "location": "各命名空间 packages/engine/src/ontolearn_engine/semantic.py",
+        "status": "open",
+        "round": 1,
+        "verifiedRound2": "已改述：首轮「8 个命名空间 / 7 个 SHA」不准确"
+      },
+      "owner": "I05 variant owners and root identity policy",
+      "triageState": "retain observation; no frozen namespace rewrite",
+      "disposition": "Version label is not sole byte identity; 8 SHA fact retained. Exact byte witnesses required, same name/date/ancestor does not prove equivalent review.",
+      "findingClosedByTriage": false
+    },
+    {
+      "id": "R2-MY-05",
+      "reviewer": "minimax",
+      "firstOpinion": {
+        "id": "R2-MY-05",
+        "severity": "P3",
+        "title": "2cf 源码树不含 I05/quality/T01 测试与 fixtures；新 70 函数不可替代",
+        "location": "main-source-only/packages/engine/tests/, main-source-only/tests/",
+        "status": "open"
+      },
+      "continuationOpinion": {
+        "id": "R2-MY-05",
+        "severity": "P3",
+        "title": "2cf 源码树不含 I05/quality/T01 测试与 fixtures；新 70 函数不可替代",
+        "location": "main-source-only/packages/engine/tests/, main-source-only/tests/",
+        "status": "open",
+        "round": 1,
+        "verifiedRound2": "已复核：80 测试路径 + 40 fixture 路径缺口"
+      },
+      "owner": "I05 regression + T01 shared test owner",
+      "triageState": "open per-path adoption mapping",
+      "disposition": "80 tests/40 fixture paths are reviewer union classification, not replaced by70functions and not all blindly copied. Exact sourceRef/path adoption or successor/disposition required.",
+      "findingClosedByTriage": false
+    },
+    {
+      "id": "R2-MY-06",
+      "reviewer": "minimax",
+      "firstOpinion": {
+        "id": "R2-MY-06",
+        "severity": "P3",
+        "title": "探针 _scope_observation 假定 counter 非 None（当前不可达的脆弱点）",
+        "location": "semantic_source_package_probe.py:1173",
+        "status": "open"
+      },
+      "continuationOpinion": {
+        "id": "R2-MY-06",
+        "severity": "P3",
+        "title": "探针 _scope_observation 假定 counter 非 None（当前不可达的脆弱点）",
+        "location": "semantic_source_package_probe.py:1162,1173,1614",
+        "status": "open",
+        "round": 1,
+        "verifiedRound2": "已复核：唯一调用点在 scope 操作分支，uninstrumented B1 集不含 scope 操作"
+      },
+      "owner": "I05 probe/tests",
+      "triageState": "owned defensive fix proposed",
+      "disposition": "Uninstrumented scope currently unreachable. Guard unexpected absent counter via existing safe failure path, without fake success/new public code. Product test requires separate runtime window.",
+      "findingClosedByTriage": false
+    },
+    {
+      "id": "R2-MY-07",
+      "reviewer": "minimax",
+      "firstOpinion": {
+        "id": "R2-MY-07",
+        "severity": "P2",
+        "title": "本 wrapper 内无绑定 R2 packet candidate 92652c2d / 66f6e633 的候选清单",
+        "location": "immutable/candidate-git-manifest.json; immutable/final-input-audit.json",
+        "status": "open"
+      },
+      "continuationOpinion": {
+        "id": "R2-MY-07",
+        "severity": "P2",
+        "title": "packet 候选 92652c2d 仅为无成员清单的标量；66f6e633 在冻结输入内零出现（首轮字面事实已更正）",
+        "location": "immutable/candidate-git-manifest.json; instructions/own-input-manifest.json",
+        "status": "open",
+        "round": 1,
+        "verifiedRound2": "已改述：92652c2d 确在冻结输入内并已全量复核；但无成员清单、66f6e633 零出现，实质缺口不变"
+      },
+      "owner": "I05 packaging metadata + root",
+      "triageState": "open, new packet lineage plan",
+      "disposition": "926 scalar is in original own manifest, all copies verified; final66 no frozen membership lineage proved. Preserve all3 fingerprint differences, do not backfill oldpacket.",
+      "findingClosedByTriage": false
+    },
+    {
+      "id": "R2-MY-08",
+      "reviewer": "minimax",
+      "firstOpinion": null,
+      "continuationOpinion": {
+        "id": "R2-MY-08",
+        "severity": "P2",
+        "title": "2cf 引擎 manifest 丢失 pyparsing/pyshacl 依赖，使已采用的 canonical 语义模块在本候选自身依赖集下不可导入",
+        "location": "packages/engine/pyproject.toml:6-8 vs reference-date-product/packages/engine/pyproject.toml:6-10; semantic.py:13; semantic_query.py:5",
+        "status": "open",
+        "round": 2
+      },
+      "owner": "T03 unique manifest/lock/build writer, via root",
+      "triageState": "static core confirmed; refine pyparsing wording",
+      "disposition": "2cf lacks pyshacl and5 required distributions; pyparsing3.3.3 already transitive via rdflib. Direct pin absent but not missing installed-closure name. No actual import/install run.",
+      "findingClosedByTriage": false
+    },
+    {
+      "id": "R2-MY-09",
+      "reviewer": "minimax",
+      "firstOpinion": null,
+      "continuationOpinion": {
+        "id": "R2-MY-09",
+        "severity": "P2",
+        "title": "Store.commit 的 ownership 冲突降级为 INTERNAL_ERROR，目录已定义的 OWNERSHIP_CONFLICT 在该路径永不发出（S1 存储层，不在 I05 探针作用域内）",
+        "location": "storage.py:41-48,440,586,632,651; job_store.py:94-110; packages/contracts/v2/errors.json",
+        "status": "open",
+        "round": 2
+      },
+      "owner": "T01 shared Store/JobStore, via root only",
+      "triageState": "inherited fact confirmed; boundary reachability pending",
+      "disposition": "storage/job_store identical5f. Mapping absent and wrapper createsdetailRef confirmed. Do not add code without required detailRef or claim formal boundary reachable without evidence.",
+      "findingClosedByTriage": false
+    },
+    {
+      "id": "Z-R2-F-1",
+      "reviewer": "zcode",
+      "severity": "P3",
+      "title": "probe requires supplierlock while candidate retains5f lock",
+      "phase": "both first and continuation retained",
+      "reportLocation": "first §4.4 or continuation §7",
+      "linkedOpinion": "R2-MY-02/R2-MY-08",
+      "owner": "T03 via root",
+      "triageState": "open observation/prerequisite",
+      "disposition": "intentional fail-closed precondition; actual dependency adoption still open",
+      "findingClosedByTriage": false
+    },
+    {
+      "id": "Z-R2-F-2",
+      "reviewer": "zcode",
+      "severity": "P3",
+      "title": "marshal/code fingerprint loader/cache stability not verified",
+      "phase": "both retained",
+      "reportLocation": "first §4.4 or continuation §7",
+      "linkedOpinion": null,
+      "owner": "I05 with runtime authorization",
+      "triageState": "open observation/prerequisite",
+      "disposition": "remain unverified; no stability assertion or new performance claim",
+      "findingClosedByTriage": false
+    },
+    {
+      "id": "Z-R2-O-1",
+      "reviewer": "zcode",
+      "severity": "P3",
+      "title": "quality lazy exports point to absent definitions/planning helpers",
+      "phase": "new continuation",
+      "reportLocation": "first §4.4 or continuation §7",
+      "linkedOpinion": null,
+      "owner": "T05 helper owner via root",
+      "triageState": "open observation/prerequisite",
+      "disposition": "consumer boundary request; no import of lazy names and no source fix assigned to I05",
+      "findingClosedByTriage": false
+    },
+    {
+      "id": "Z-R2-O-2",
+      "reviewer": "zcode",
+      "severity": "P3",
+      "title": "build-engine does not package probe_inputs",
+      "phase": "new continuation",
+      "reportLocation": "first §4.4 or continuation §7",
+      "linkedOpinion": "R2-MY-02",
+      "owner": "T03 build writer via root",
+      "triageState": "open observation/prerequisite",
+      "disposition": "explicit packaging prerequisite; do not count frozen refusal as runnable package",
+      "findingClosedByTriage": false
+    }
+  ],
+  "currentOpinionCount": 13,
+  "historicalOpinionsAsReportedByMContinuation": {
+    "C1-minimax-B-1prime": "open (源码级已见修复实现；C1 §8.1 第5项『双方对同一新候选重做完整审查』从未执行)",
+    "C1-minimax-M3": "open (同上；源码级已见 prepare_lexical_query)",
+    "C1-minimax-H1": "open (产品决定未作出；Q6 表不在主候选树)",
+    "C1-minimax-M1": "closed (源码级 QUERY_GRAPH_UNSUPPORTED)",
+    "C1-minimax-M2": "open (登记层)",
+    "C1-minimax-L2": "open (登记层)",
+    "C1-minimax-L3": "open (延期)",
+    "C1-minimax-L4": "open (观察)",
+    "C1-minimax-O1..O6": "closed (观察项)",
+    "C1-minimax-B1..B6": "open (全部未取得；B-1 阶段归属已更正为 push/PR 之后)",
+    "C1-minimax-withdrawn-4.2-4-3": "closed (审查者自行撤销)",
+    "C1-zcode-Z1": "open (同 B-1prime)",
+    "C1-zcode-Z2": "open (同 M3)",
+    "C1-zcode-Z3": "closed",
+    "C1-zcode-Z4": "open (延期；私有 _val 仍在用)",
+    "C1-zcode-Z5": "open (延期)",
+    "C1-zcode-Z6": "open (维持披露)",
+    "C1-zcode-Z7": "open (UI 边界)",
+    "C1-zcode-Z8": "open (未到期 CI 门禁)",
+    "C2-IB-1": "closed-static (81 路形状检查 fail-closed；内审非指定双审)",
+    "C3-C3-BASIS-1": "源码级已见 witness 机制；判定随 R2-MY-04 保留",
+    "packet-PKT-R1-P2-01": "closed (R2 已改为实际存在的 I01 inputs 与实际 round1/2/3；三份输入无任何 round4 表述)",
+    "packet-PKT-R1-P2-02": "closed (已补 own-contract / receiver-guide / policy addendum；application-metadata 实测为空)"
+  },
+  "historicalZReportAnchors": {
+    "first": "owner-first-terminal-report-r2.md §6 full historical table",
+    "continuation": "owner-continuation-terminal-report-r2.md §8 changed/upgraded items",
+    "ownerTreatment": "source-level evidence separated from designated complete review/runtime gate; preserve differing reviewer statuses, no automatic closure from one report"
+  },
+  "firstMArithmeticErratum": "first7actualrows=3P2+4P3 though summary2P2+5P3; continuation9rows=5P2+4P3; exact originals unchanged",
+  "currentPolicyContextAsymmetry": {
+    "Z": "4746B continuation plus authorized4policycopies read",
+    "M": "4334B continuation; common1510B policy note+4copies prepared NOT SENT",
+    "nextCandidateRequirement": "same4fullpolicycopies byte-identically included in both full inputs; no further old2cf continuation solely for symmetry per root instruction"
+  },
+  "firstFingerprintDifferencesKeptOpen": [
+    {
+      "path": "coverage-matrix.json",
+      "reportedOld": "282642B/d8986420...",
+      "reportedWrapper": "281282B/cc651b76...",
+      "state": "R2 rebuild reported; old manifest mismatch retained"
+    },
+    {
+      "path": "coverage-matrix.md",
+      "reportedOld": "18330B/9218881d...",
+      "reportedWrapper": "29131B/c7625bc3...",
+      "state": "R2 rebuild reported; old manifest mismatch retained"
+    },
+    {
+      "path": "current-policy-addendum.md",
+      "reportedOld": "1626B/3c7f0ab8...",
+      "reportedWrapper": "1625B/4922046b...",
+      "state": "one byte unresolved; never silently normalized"
+    }
+  ],
+  "fingerprintNotation": "Ellipsis values deliberately reproduce reviewer abbreviations, not full SHA claims; full source report identities above are exact.",
+  "reportInternalPrecisionNotes": [
+    "M final §0.4 heading says8 but contains9rows; final status count5P2+4P3=9.",
+    "M final §7.2 shape-product/process combined changed-count785 is internally inconsistent with row totals; no correction or new measurement claimed by root here.",
+    "M final §12 claims first status untouched while samepath now is rewritten26KB; exact firststatus owner copy retains original14KB.",
+    "Z still says C1-after taskcount0/dualreview not occurred; owner actual two fresh tasks+continuations are recorded, while no dualPass achieved.",
+    "M next-condition newtask requirement is reviewer recommendation; controller directs a newcandidate full fresh review, preserving required original scope."
+  ],
+  "overallOwnerAcceptance": "No complete engineering coverage or dualPass accepted. Old Z staticPass with unread ranges preserved, M NotPass preserved. Normal defect triage now; no more old normal continuation to perfect coverage.",
+  "productEdits": false,
+  "runtimeExecution": false,
+  "runtimeOrSharedOwnerAuthorizationGranted": false
+}
