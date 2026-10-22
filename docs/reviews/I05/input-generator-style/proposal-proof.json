@@ -1,0 +1,28 @@
+{
+  "format": "I05-input-generator-style-proposal/1",
+  "base": "513db0056f312342a6791e2d4c7842f3726581f2",
+  "productPath": "scripts/generate-i05-source-package-inputs.py",
+  "productApplied": false,
+  "old": {
+    "bytes": 60354,
+    "sha256": "e58dd4efd1c64952b6555b98c65271fc7e82d7b99b198d848d69f5a7c9dcde0b"
+  },
+  "proposal": {
+    "bytes": 75633,
+    "sha256": "c51a1a7f3085e79958022deda95d8a08792f3a95f7c4f1fb171d56196f3d2d26",
+    "file": "proposal.py.raw"
+  },
+  "wholeAstEqualsOldAfterExactReversal": true,
+  "exactReversals": [
+    "global helper iri_term->I including26 direct calls",
+    "local iri single-return def->original lambda",
+    "json_source(path) Expr->unused cases assignment, RHS retained",
+    "from pathlib import Path moved back before subprocess"
+  ],
+  "nameLoadCount": 26,
+  "commentsCount": 15,
+  "allCommentTokenStringsUnchanged": true,
+  "allUnnormalizedAstFieldsUnchanged": true,
+  "sourceRefsVersionsPoliciesInputValuesOrderingRetained": true,
+  "goldenPlan": "default generation once with exact old and new scripts in two separate detached513 copies; original live frozen JSON not written; compare runtime2 JSON to original bytes and snapshots; audit source-manifest must reflect actual generator bytes/hash"
+}

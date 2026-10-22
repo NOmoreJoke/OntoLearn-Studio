@@ -1,0 +1,62 @@
+{
+  "format": "I05-generator-golden-run-plan/1",
+  "mode": "default original script only inside controlled detached copies; no canonical imports or collector",
+  "sequentialRuns": [
+    "old",
+    "new only after static proposal approval and successful old golden"
+  ],
+  "copies": [
+    {
+      "label": "old",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-input-generator-golden-old",
+      "base": "513db0056f312342a6791e2d4c7842f3726581f2",
+      "baselineScriptBytes": 60354,
+      "baselineScriptSha256": "e58dd4efd1c64952b6555b98c65271fc7e82d7b99b198d848d69f5a7c9dcde0b",
+      "assetsBefore": [
+        {
+          "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+          "bytes": 21202,
+          "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a"
+        },
+        {
+          "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+          "bytes": 8205267,
+          "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa"
+        }
+      ],
+      "rulesSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+    },
+    {
+      "label": "new",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-input-generator-golden-new",
+      "base": "513db0056f312342a6791e2d4c7842f3726581f2",
+      "baselineScriptBytes": 60354,
+      "baselineScriptSha256": "e58dd4efd1c64952b6555b98c65271fc7e82d7b99b198d848d69f5a7c9dcde0b",
+      "assetsBefore": [
+        {
+          "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+          "bytes": 21202,
+          "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a"
+        },
+        {
+          "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+          "bytes": 8205267,
+          "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa"
+        }
+      ],
+      "rulesSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+    }
+  ],
+  "stdlibImports": [
+    "__future__",
+    "ast",
+    "copy",
+    "hashlib",
+    "json",
+    "pathlib",
+    "subprocess",
+    "sys"
+  ],
+  "subprocess": "only git show fixed ref:path; no engine/test execution",
+  "protectedLiveStyleTreeAssetsUntouched": true
+}

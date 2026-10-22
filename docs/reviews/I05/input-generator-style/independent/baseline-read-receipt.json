@@ -1,0 +1,37 @@
+{
+  "format": "I05-generator-style-independent-baseline-read/1",
+  "recordedAtUtc": "2026-10-22T18:44:22.593755+00:00",
+  "base": "513db0056f312342a6791e2d4c7842f3726581f2",
+  "inputs": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-input-generator-style/AGENTS.md",
+      "bytes": 15147,
+      "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-input-generator-style/scripts/generate-i05-source-package-inputs.py",
+      "bytes": 60354,
+      "sha256": "e58dd4efd1c64952b6555b98c65271fc7e82d7b99b198d848d69f5a7c9dcde0b"
+    }
+  ],
+  "sourceFullRenderedLines": [
+    1,
+    786
+  ],
+  "toolChunks": [
+    "a7ec60",
+    "f5d88d",
+    "9f5d82",
+    "9279db",
+    "194b3b"
+  ],
+  "checks": "stdlib AST/hash/git fixed blob byte equality only",
+  "productRuns": [],
+  "productWrites": [],
+  "preReviewStatus": "awaiting author proposal",
+  "notes": [
+    "unused cases=json_source(path) still populates source inventory and parses JSON; preserve RHS",
+    "--check verifies runtime2JSON plus self-hash audit files; legitimate self-hash changes are not runtime golden drift",
+    "engine/test source extracted only as literal/JSON by generator, not imported or called"
+  ]
+}
