@@ -1,0 +1,156 @@
+# minimax 全新完整指定审查角色封面
+
+指定模型 M3.1-Flash；思考 xhigh；权限 permissionMode=bypassPermissions / Full access，均须实际新任务读回。
+唯一物理workspace/cwd：/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-036d7172
+review HEAD：036d7172ddba8502fe81e6e7ce375ce09ef7fa1c，detached。
+仅自己的 .t11-review-runtime/input/、metadata/、raw/、report/、tmp/；最终报告路径：/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-036d7172/.t11-review-runtime/report/review.md。
+当前仅准备，尚无真实task/session/turn或实际model/permission收据；待根明确接收与GUI交接后创建全新任务，禁止续旧completed session。
+
+# T11 全新完整同版指定审查：共同正文
+
+此材料仅准备，须总控明确接收并给予实际应用创建/核验窗口后才派发。不要沿用上一轮completed session。独立完成全量工程审查，结论可为通过/不通过/无法验证，不预设Pass；旧Z工程Pass和owner109等测试均不构成本候选新审通过。
+
+## 身份与完整范围
+
+本次唯一受审HEAD为036d7172ddba8502fe81e6e7ce375ce09ef7fa1c（以下简称036）；detached真实cwd以自己的角色封面为准。原工程base5f910b52c69d86a1076b2032e5d3c63e715947f3，原产品7d28fdb27c0aac39ed7df1f9fd5fa0f127b5d9f4，修复base692077da9754a303915798789b7b0c5b4f609125，受验实现/测试33894063fcf17bc865f4c91556a8ca01845812e7。036随后仅本轮独审和流程收尾，14实现/验收路径等于338；原18项仍open、M NotPass保留。
+
+先核自己cwd、HEAD、当前AGENTS SHA、metadata/source-setup.json全部受控文件实体与Git hash；除了最新AGENTS政策差异，其余必须等于036。自己的input/handoff-manifest.json列全部原25产品路径、原8流程变化、本轮23变更以及显式历史两份完整报告/18矩阵/triage/raw。**必须完整阅读每个requiredFiles文本/源码/测试；二进制raw归档核所有成员字节/hash并阅读失败日志。** 对原25按036的现状审，同时保留7d28历史问题对照；不能只扫23个变化或18项delta，不能只审verify.ts，不能删Windows collector或改acceptance条件来取Pass。
+
+继续阅读本树PRD V0.6相关FR及第10–12节、附录C–G，工程配置/锁/被调用模块按实际依赖读取；身份/批准资料以本树固定记录为准，不访问父.worktrees、原开发树可变内容或总控队列。missing参考须准确报缺，不编造。报告的覆盖表要逐项对应全部requiredFiles；全文原意见逐条处置，不能只出摘要。清单不是新的产品基线或实际TRUSTED_FREEZE。
+
+## 全范围审查标准（两方相同）
+
+1. 严格schema及未知字段拒绝；候选/源码/受审/构建/报告/资产/基线身份、独立freeze的全部预期hash、时间/模型/旧资产/恢复迁移pin，不能从待验actual生成真实freeze或以两边相同假数据自证。
+2. CLI manifest/freeze与普通16MiB、大文件8GiB：打开后fstat普通非空及限额、先限额后Buffer/parse、同fd完整读取/hash/PE或koly；增长、短读、非regular、读错误关闭；路径/叶symlink和可信稳定祖先目录前提。不要宣称解决所有TOCTOU，工程限额不作Q5。
+3. 双目标Windows11-x64 NSIS/macOS15-arm64 DMG、版本/架构/构建输入/两锁/唯一配置、组件inventory/许可证、下载受众及同hash/实装；结构标记与真实安装器/签名链/公证区分。Mac Developer ID/HardenedRuntime/嵌入Python/公证stapler、Win Authenticode及原生工具证据都保持。metadata valid不能证明签名可信。
+4. 完整57 P0、G50原文/ID、唯一T09 manifest全17文件及完整expected/E.5 exact/replay指针，不只数目。生产evidence明确固定批准873c8c051b9870aa12fc7e1dbbd3e0c358e7c380 manifest SHA aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e、prd-v0.6-learning-1及精确路径；文件hash仍来自唯一manifest，不能复制第二baseline。
+5. RDF仅指定完整SPO集合无序、保重复数，事件/动作/轮次及其余数组保序。1000轮/每轮最多1000实际触发实例动作、已提交轮次不可变/未完成轮回滚、取消与响应丢失等原要求不变，不能用模拟输出说领域已验。
+6. v3只读投影身份/唯一id/完整payload、selection/dependencies/三能力独立。current-state可有合法空定义/映射/查询，但PRD1252缺当前事实或来源/ownership不得restoreCurrent=true，不代答F01。两正式方向freeze case固定g6-conflict、六层非空，全部22迁移check和同源重关联/相同人工冲突/继续编辑查询撤销保留。旧v2拒绝不转换；零提交运行有完整初始输入也可重放，未选历史/推导/源/会话/旧undo不可泄漏；模板只能负向验证。T11不另造Store/项目包/恢复器。
+7. 双平台上一版真实资产版本/source/hash/签名独立pin，不能当前包或任意文本冒充旧版。recovery与每个旧资产报告都要rollback-retain-new-version-copy及rollback-refuse-incompatible-format，同时保留原全部checks；具名check本身不证明真实操作。
+8. 两collector完整审。Mac全部已知系统命令绝对路径含最前OS/arch；pending/step、失败状态/有限exit、首raw和半成品保留、新目录防覆盖、成功末尾complete；Windows受控DOS长度/PE offset/机器字段及finally关闭。缺/pending/failed/malformed marker拒绝；collector-complete和installed-components-match-package与独立预期/实际包和组件hash绑定。marker不等于native、签名或同包；真实T03唯一包内成员、安装/解包来源仍须原件对照，不得仅同目录放行。
+9. Q9已有批准DeepSeek官方API+ChatCompletions+deepseek-v4-pro，Base URL https://api.deepseek.com。endpoint字段明确具体route https://api.deepseek.com/chat/completions，与独立freeze及批准2026-10-21来源hash def9817dc35c11514335fce5ecf859878e00cdfccc259659edb7925fee9d84a7 绑定；URL合法+两边同tuple不能批准任意服务。返回模型、可得服务版本、模式、评估集hash与零伪造继续原门。此选型不授API资源或消费。
+10. 至少5名合格真人/80%依靠产品引导完整八步(core && transferCompleted)，4/5与3/5及core/transfer矛盾；产品提示完成与独立迁移分记。真实帮助/示范/同次Agent完整代做不得计独立。F16辅助后跨尝试资格仍待决，不以任务版本、换输入或reset/目录新建恢复资格。record只hash不解析同意/各段/尝试/示范次数，主持人和独立验收人核原件，不添自证布尔冒充真实性。
+11. CLI语法/错误码、synthetic永不放行，始终releaseAuthorized:false；CLI覆freeze.now但不认证墙钟，时间同步来源/偏差须外部核验。M原NotPass及高1/中3/低8、Z原P4六项、原历史内部发现/失败都逐项有证据决定关闭/重开，不能owner分类自动降级。
+12. 状态/当前/历史标签、同updatedAt不同来源hash、初始raw缺口及报告真实性不能混淆。固定036 handoff内T03“当时GUI owner”是历史；本次准备最新根通知T05唯一GUI，随后helper e93及其他ready队列，未给T11创建票，不扫描队列或抢焦点。原Goal/状态不由审者改。
+
+## 已有证据与真实缺口
+
+owner在受验338显式T11_FIXED_BASELINE_PROBE=1专项109零skip、全仓739 TS/1052 Python、构建/ruff，显式release lint/format和bash-n通过；raw14成员在owned-fixes-20261023归档，全部核hash。此前105/735是中间640cf结果；新增CLI两断言首败(107过/2败)和失败fullcheck、报告首次format失败及后继记录保留。报告中的owner计数不是你亲跑或环境认证。原7d28的65/695/1052及48历史raw为历史；首跑38缺独立完整raw，仅摘录/transcript线索，不能说永久不可得或以重跑补造首败。
+
+默认无flag会skip四个固定输入探针，默认通过不证明固定输入联验；显式缺873 Git对象应失败，无live HEAD替代。所有actual仍由synthetic/oracle构造，不是50项真实产品通过。Mac collector只bash-n/静态，Windows无pwsh/目标环境，PowerShell未运行。真实双OS安装/native/凭据/签名/公证/恢复迁移/最终渠道、T03实际同包来源、真实API零伪造评估、五真人、Q5批准容量与测量、完整P0/跨模块集成、指定双审、CI/正常合并/远端和下载实装均未完成。核验器一致不授发布；无法核关键行为应明确无法验证并说明影响，不删门槛或预填Pass。
+
+## 执行、隔离与报告
+
+准备阶段仅静态与离线依赖setup，不创建任务或运行产品。实际获派后，继承既有普通工程验证边界：可按具体疑点必要性使用本树原lint/typecheck/build/check、显式固定专项/IO、原pytest/ruff/sources、release显式lint/format/bash-n；不机械重跑无变化历史。原suite允许受控Node/Python CLI、stdio、临时SQLite/worker和精确自有PID，不因关键词child/SQLite泛禁或静默skip。当前不新增运行票；如需超出既有票或准确调用落入外部HOLD，列明命令/调用及原因报root，不把全部suite泛暂停。
+
+不运行e2e/install-electron/package:dir、真实collector/平台native/窗口/凭据、签名公证提交、API/网络/新增付费/研究/新native caller/producer/压力/内存/SQLite损坏HOLD实验或用户DB。不得导出/查找密钥、关闭sandbox/hang monitor/隐藏stub原生通过、宽泛结束用户进程。此独审只读实现/测试/配置/锁/旧报告，不stage/commit/push/PR/改分支；必要修复由唯一owner另起新候选，重新走原门。
+
+每条命令只在自己的精确根，node_modules/.venv/输出/tmp/raw全独立，不采用原开发树/peer可变环境。TMPDIR/TMP/TEMP指向自己.t11-review-runtime/tmp；每次新日志名，不覆盖失败。metadata生长若影响format/lint/status，保留原失败和归属，不删/ignore/exclude求绿。报告只写自己的.t11-review-runtime/report/review.md；实际task/session/turn/model/effort/permission读回在自己metadata，不能以默认配置冒充实际设置。
+
+**本轮独立性硬边界：只读自己input/metadata/receipt；禁止读peer本轮prompt/receipt/report/state/metadata，即使路径列于本方Git或index；禁止父.worktrees/总控队列/全局应用日志搜索来发现peer。不要读取另一方提示来证明scope等价，owner已经事前核同共同正文。显式列出的上一轮两完整报告及18矩阵为历史，允许阅读全文、逐项处置；不要把历史报告误当本轮意见。** 仅在自己scope必要时读取本树相关其他固定源码。未知当前任务状态/metadata不能通过猜测路径查找。
+
+最终完整中文报告：固定身份/实际应用工作根及真实模型effort/permission/task provenance；逐项全scope覆盖表；既有证据与亲跑命令分开、cwd/结果/失败hash/未验边界；每个问题级别/准确路径行号/反例触发/影响/依据/建议；全部18历史项原严重度及关闭/重开/无法验证理由和旧内部发现；完整工程范围明确通过/不通过/无法验证，不只有修复摘要。真实终态后owner全文收件；不要把生成文件当终态完成或自行发布。
+
+## 最新工作指南全文
+
+# OntoLearn Studio Agent 指南
+
+默认中文，结论先行，简洁。先读需求依据再动手；不确定就问，不猜产品决定。
+
+## 1. 先读什么
+
+| 场景              | 必读                                                                                                                                                                                                                 |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 任何业务语义改动  | [PRD V0.6](docs/prd/PRD-本体学习与落地Agent工作台.md) 对应 FR 条款 + 附录 C/D/E/G                                                                                                                                    |
+| 工程/架构改动     | [M0 更新计划](docs/architecture/m0-review-and-update-plan-2026-10-19.md)（S1/S2/S3/C1/B1/U1 验收全文）、[ADR-0001](docs/architecture/0001-desktop-framework.md)、[ADR-0002](docs/iterations/I01/ADR-0002-storage.md) |
+| 当前状态与待办    | [M0 清单](docs/m0-checklist.md)；进行中迭代见 `docs/reviews/Ixx/status.md`                                                                                                                                           |
+| 迭代 I01–I06 执行 | 仓库外总控 `../iteration-control/2026-10-19/scope.md` 与 `state.json`                                                                                                                                                |
+
+状态快照（2026-10-20，以上述文件为准）：I01/S1 存储 spike 已合并 develop；I02/C1 CSP 与窗口恢复处于 CI 修复门禁；I03–I06 未开始。产品正式能力仍只有 health；存储是 Python 内部 API，未暴露给 IPC、UI 或 Agent。禁止把占位界面、测试替身或 spike 说成已实现的产品能力。
+
+## 2. 仓库地图
+
+```text
+apps/desktop/src/main/      Electron 主进程：窗口安全、来源校验、引擎监督、恢复
+apps/desktop/src/preload/   唯一桥接（按业务命名的方法）
+apps/desktop/src/renderer/  React UI（无 Node 能力）
+apps/desktop/src/csp.ts     CSP 唯一配置源（生产 meta / 开发 header 两个变体）
+packages/contracts/         TS 边界类型与 zod 运行时校验
+packages/engine/            Python stdio 引擎：protocol.py、storage.py、invalidation-v2.json
+tests/unit, tests/e2e       vitest 单测；Playwright 驱动真实 Electron
+docs/iterations/Ixx/        迭代设计、验收、证据；docs/reviews/Ixx/ 评审与流程记录
+```
+
+## 3. 架构不变量（违反即阻断）
+
+- **本地优先**：不自动启用模型、遥测或云服务；不开 HTTP 端口；不引入云数据库或未经测量的图数据库。
+- **渲染端隔离**：renderer 不得直接使用 Node、文件系统、shell 或通用 IPC；preload 只暴露按业务命名的方法，禁止 `invoke(method, params)` 式通道。IPC 处理器保持 sender/mainFrame/可信文档校验。
+- **CSP**：只改 `csp.ts` 一处；生产脚本不得出现 `unsafe-inline`/`unsafe-eval`；不手写第三份策略。
+- **确定性与 Agent 解耦**：确定性结果只能来自真实引擎；Agent 只产出草稿并调用白名单工具，不得自动确认自己的修改。
+- **存储**：SQLite 是唯一可变源真相，正式写入只经 `Store.commit`（版本化、可预览、原子提交、旧基线拒绝）；RDFLib 图只从不可变快照重建，不能写回。
+- **数据层次**：本体定义、断言事实、当前推导、场景副本、历史运行分层；历史与已提交轮次不可改写，缓存回收不得触及历史。
+- **失效规则**：`staleReason` 只来自 `invalidation-v2.json`；仅改模型配置不使领域结果过期；历史/失败/取消不计为过期原因。
+- **模型外发**（S3 前不得接入）：唯一网关在主进程，凭据只在主进程；Python 引擎不持有密钥，也不调用模型。
+- **错误**：跨边界只传固定错误码和受限参数，不回传原始异常、堆栈、路径、单元格原值或凭据。
+
+## 4. 改动类型 → 必跑验证
+
+| 改动                                       | 命令                                                               |
+| ------------------------------------------ | ------------------------------------------------------------------ |
+| 任意代码或配置                             | `npm run check`（lint/格式/类型/vitest/构建/ruff/pytest）          |
+| 涉及归档资料或 `docs/source-manifest.json` | `npm run verify:sources`                                           |
+| 主进程、preload、bridge、CSP、窗口         | 另跑 `npm run test:e2e`（Linux 用 `xvfb-run -a`）                  |
+| 引擎依赖、打包配置                         | 另跑 `npm run package:dir`，并在包内运行同一样例                   |
+| 仅文档                                     | `npx prettier --check <文件>`；不批量格式化归档 PRD、审查和 `.pen` |
+
+`I02_HMR=1` 的 HMR 探针会临时改写源文件，评审冻结期间禁止运行。结果须分开报告静态、运行、打包、生产四类证据，不以静态检查代替运行证据。
+
+### 桌面工具与本地验证（2026-10-22 用户更新）
+
+- 用户明确要求“直接使用 computer use 调用桌面端的工具，删除之前要求的静默桌面操作”。此前静默、不占用当前桌面、禁止聚焦或自动点击、须先取得桌面时段的偏好已撤回，不再作为现行限制。
+- 已授权任务可按需直接使用 computer use 操作 ZCode、MiniMax Code 等桌面工具，也可运行本机浏览器、Electron、原生窗口与恢复验收；不为常规桌面操作重复询问或把后台、headless、隔离桌面作为前置。
+- 多条开发线操作同一桌面应用或使用互斥测试资源时，由总控内部协调，避免互相改动任务或干扰测试；无需额外向用户预约桌面时段。清理进程仍须核对自有 PID 和任务归属，不得宽泛结束用户或其他任务的进程。
+- 验证仍须覆盖原验收条件，区分静态、运行、打包与生产证据；不得用隐藏窗口、禁用 hang monitor 或 stub 原生提示冒充真实原生验收。操作政策更新不改变冻结候选、指定双审与发布门禁。
+
+## 5. 分支、迭代与评审门禁
+
+- **并行开发为默认执行要求（2026-10-20 用户确认）**：适用于当前 M0、后续里程碑、不同功能模块，以及单个模块内可独立开发的具体子任务。先识别真实接口、数据和集成依赖；可独立验收的工作须拆分并行推进，不得仅因迭代编号或模块顺序而全量串行。强依赖保留前置条件，不为增加并行数而重复实现或提前假定未冻结契约。
+- **独立 worktree + feature 分支**：每条并行开发线使用自己的 Git worktree、feature 分支和负责 agent，禁止多个开发 agent 在同一 checkout 切分支或同时写文件。迭代使用 `feature/Ixx-<主题>`，模块子任务使用 `feature/<模块>-<子任务>`；其他改动使用 `feat/`、`fix/`、`docs/`、`chore/`。从核验过的 `develop` 提交切出并记录 base SHA，经 PR 合回；不强推共享分支。提交前缀使用 `feat:`、`fix:`、`docs:`、`test:`、`chore:`。
+- **拆分与文件责任**：启动前记录各子任务的范围、前置依赖、接口约定、文件负责人、验收和集成顺序，再分配独立 agent。共享契约、存储迁移、能力注册表、依赖清单与锁文件指定唯一维护者；其他开发线提出接口需求，由维护者统一修改。依赖尚未就绪时，可先做独立设计、纯模块、真实库探针及对应测试，后置正式接线与联验；替身通过不得计作集成完成。
+- **M0 的并行拆分**：I02 继续当前候选评审；I03 可基于已完成的 I01 并行设计；I05 可先做真实候选语义、外联拒绝、依赖与打包验证；I06 可先做网关 ADR、独立授权与凭据模块。I04 实施须等待 I03 同版本设计审查通过并合并；I05/I06 的正式接入及最终验收须等待各自实际依赖就绪，并补齐与存储、任务和窗口生命周期的联验。引入真实依赖时即做相应打包验证，不全部推迟到最终集成。
+- **运行资源隔离**：各 worktree 独立依赖环境、构建输出、临时数据、日志及测试证据，开发端口和应用测试数据目录分别配置；不得共享可变运行库。桌面焦点、原生故障恢复、系统凭据存储及外部审查应用的 UI 操作由总控内部协调串行使用，避免运行互扰，不以向用户申请桌面时段为前置；已有固定端口或未隔离资源的测试须排队。
+- **并行开发、按依赖串行集成**：每条开发线独立验证并履行现行评审门禁；合并前同步目标基线、处理冲突并验证实际集成结果。目标基线或受审内容变化时，按现行规则重新验证及独立审查，不沿用旧版本通过。保留双指定模型、CI 和远端核验要求；子任务完成不等于父模块或里程碑验收完成。
+- **冻结与调度记录**：候选冻结后不得修改受审路径，任何实现、测试、配置、依赖或验收改动都要生成新候选，并按现行门禁重新独立审查。其他工作在独立 worktree 推进，不干扰冻结候选。总控记录并行任务、worktree/分支、base/head、文件责任、依赖和资源预约；仅按实际进展更新状态，不把获准并行登记为已启动或完成。
+- **与旧计划的关系**：本节取代旧 `scope.md` 中“所有迭代必须前项合并后才启动后项”的统一串行调度要求；执行时总控须同步相关范围与调度记录，保留原需求、真实技术依赖、验收及评审门禁。后续功能模块和子任务同样执行本节，无需为常规并行拆分重复征求授权。
+- **进行中开发与 Goal 的过渡**：按最新桌面操作政策执行；并行策略在安全边界用于新任务/新开发线，不强行迁移正在冻结审查的 checkout、不改写其候选、不重建已有 Goal、不丢弃报告或重跑无变化的验证。用户授权的 AGENTS/调度文档变化单独记录前后哈希与适用范围；若未改变受审实现、测试、依赖、CI、验收或集成基线，不将其误判为受审产品变更，不单因此重开整轮审查。若实际受审内容或基线确有变化，仍执行原重新审查规则。审查代码读取固定 SHA，实际执行遵守最新操作约束。新 worktree 须携带并核对最新指南，不能只读取旧基线中的 AGENTS；总控负责同步规则，开发会话各自维护状态，避免共同改写 `state.json`。
+- 不混入其他会话的未提交改动；禁止 `git add -A` 或整体 stage。只 stage 本任务文件。
+- 复杂或高风险交付使用独立 agent 审查，避免并发修改共享契约文件；不得替换指定审查模型或降低门禁。
+
+### 效率与额度恢复（2026-10-20 用户确认）
+
+- 以正确交付和开发效率为优先，不因 token 消耗缩减实现、异常处理、上下文或必要验证。充分使用实际可用的并行 agent/worktree；避免重复探索、无变化重测和无效轮询，不擅自更换指定模型或降低审查门禁。
+- 用户说明 ZCode、Codex、MiniMax Code 均有额外重置次数；遇实际额度限制时由账号唯一负责人核实状态，优先通过经核验的官方方式使用已有权益恢复，成功后续接原任务。其他开发线保存现场并继续无关工作，不重复消费同一权益；短时限速、服务/认证/账单故障不能当作额度耗尽盲目充值。
+- 自动恢复受实际工具/平台约束：Codex `consume_usage_reset` 每次必须取得用户对该次操作的明确确认，未来批量授权不能替代；只在工具的额度条件满足时使用，同次不确定重试复用幂等 key，完成后核验额度，不因刷新失败重复消费。ZCode/MiniMax Code 的可用恢复机制尚待核实，不虚称已实现无人值守充值；禁止通过 UI 绕过工具确认。
+- 已有重置/余额与新增付费分开：本次未提供新增付款的单次金额及累计上限，实际购买前须明确这些条件及授权；不将“不考虑 token”扩大为无限付款、自动订阅升级或切换付费 API。完整执行与透传规则见仓库外 `../iteration-control/2026-10-19/goal-objective.md` 第九节；运行中 Goal 须实际同步，旧冻结输入保留。
+
+## 6. 文档与证据规范
+
+- **唯一状态来源**：完成度只在 `docs/m0-checklist.md` 和对应 `status.md` 中维护；其他文档链接过去，不重复“不代表 M0 完成”之类的声明。
+- ADR 采用后放到 `docs/architecture/000N-<主题>.md`；迭代目录只保留设计、验收和证据。
+- 证据只提交摘要、关键 JSON 和哈希；大段原始日志、截图、runtime dump 优先放 CI artifact。确需入库时写明理由。
+- 文档写决定、理由、未决项，每份 ADR 控制在 1–2 屏；不编造性能数字、容量通过线、日期或人员承诺。
+- 不提交凭据、业务数据、`.sqlite`/`.db` 运行库、`.env`、`.mimosa/`。
+
+## 7. 编码约定
+
+- TypeScript `strict`；边界数据一律经 zod `.strict()` 解析。Python 3.12 + ruff（line-length 100，E/F/I/UP/B）。
+- JS 直接依赖写精确版本；npm 与 uv 两份锁文件随改动一起提交，CI 使用 `npm ci` 和 `uv sync --frozen`。
+- 测试断言真实需求和错误边界（完整预期集合/顺序），不只断言数量或按钮可点击。
+- 不设 PRD Q2/Q3/Q5/Q6/Q7/Q8/Q9 的默认答案；遇到这些决定时停下来询问。
+
+### ZCode / MiniMax Code 默认执行权限（2026-10-21 用户确认）
+
+- 用户明确要求“更新调用zcode和minimax code的权限，默认为完全访问和始终授权”。ZCode 默认完全访问（permission.mode=yolo），MiniMax Code 默认始终授权/Full access（permissionMode=bypassPermissions）。创建或进入审查任务时读回该任务实际模式；用户级配置不能证明已有会话即时切换。已获授权，不重复询问默认模式。
+- 当前计算、Goal和冻结审查不重启；在应用支持的安全边界确认或调整权限。完全访问不改变审查只读职责：仅运行约定验证、写独立报告，不修改实现/测试/依赖/配置，不提交、推送或切分支。
+- 指定模型与思考等级、同版双审、意见处理、CI 和远端核验继续适用；桌面操作按本指南最新政策执行，不扩大为新增付费、读取密钥或绕过平台逐次确认。
+- 详见仓库外 `../iteration-control/2026-10-21-weekly-release/external-review-permissions.md`（worktree中从本体根目录定位）；新任务附上本节，旧冻结输入保留，单纯操作政策更新不触发无变化实现重审。

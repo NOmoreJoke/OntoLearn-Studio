@@ -1,0 +1,32 @@
+{
+  "scope": "Offline normal independent dependency setup only; no tests/build/product/native/API/GUI run",
+  "root": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T11-zcode-review-036d7172",
+  "head": "036d7172ddba8502fe81e6e7ce375ce09ef7fa1c",
+  "commands": [
+    {
+      "command": ["npm", "ci", "--offline", "--ignore-scripts", "--no-audit", "--no-fund"],
+      "explicitEnvironment": {},
+      "exitCode": 0,
+      "log": ".t11-review-runtime/raw/npm-setup.log",
+      "bytes": 631,
+      "sha256": "82595a73192e4c680e8debb56b364eb41f8445c84bd10dc217f52e7ddb6b21ce"
+    },
+    {
+      "command": ["uv", "sync", "--frozen"],
+      "explicitEnvironment": {
+        "UV_OFFLINE": "1"
+      },
+      "exitCode": 0,
+      "log": ".t11-review-runtime/raw/uv-setup.log",
+      "bytes": 900,
+      "sha256": "c5336a7e304038c06a8d44266c51b4335402c2dcf58cf12be768d7a18df3ae9c"
+    }
+  ],
+  "versions": {
+    "node": "v24.15.0",
+    "npm": "11.12.1",
+    "uv": "uv 0.11.12 (63c5f57d3 2026-05-08 aarch64-apple-darwin)"
+  },
+  "nodeModulesIsSymlink": false,
+  "venvIsSymlink": false
+}
