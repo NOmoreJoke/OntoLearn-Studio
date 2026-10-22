@@ -2,6 +2,10 @@
 
 ## 当前状态：blocked，完整目标保留
 
+2026-10-23 04:24+08：总控5818B完整预检及653b37小delta已接收后明确START；本次仅两原SID各发送一次过程补正，未新建任务/未夹带970UI。Z新query01a16542-f5ea-712d-aeaf-7337a10bb799/turn_7a31dd55-00b5-4ad1-8b1e-bfdd0346cb1e官方started20:17:29.597Z；M新turn6e418fd2-061f-4df6-951c-a9fe6903a1d3。fresh官方SID/owncwd/模型思考权限均核，两个未发ID草稿清空后只发已固定完整正文+本方cover，实际受理后立即GUI RELEASE，根交C4，本线不再CUA。
+
+Z实际请求86756B/be79正文及2944B/179939cover逐字相同，实际编号1–491剥离重建86756B含真实末LF（490physical+尾空行），未补expected；1905附录/3292v2/3063snapshot/3403更正JSON真实Read完整相同。M实际officialasset101720B/b826与owncopy真实hash/diff相等、1061B/8a573 cover相同，actual可见全文Read仍核段，hidden textFile不补缺。旧两completed/原Pass不当新终态或流程通过。新发现Z call_384ae6fccaa24dc984996cfe写/tmp后缀文件超出明确新out写面，已报根，collector仅lstat不读/删/重演；保原call/return与管道exit边界，不据此自动判产品Fail。首新回执round-2/process-correction-desktop-start-receipt-20261023.json；31次CUA/62原行292046B/66c67ea5私密保全，初始自动外线AX不共享。后继实际owned补读/正式终态/完整补正文仍收证，全部父门/4P3/P2-2容量风险保持，无owner产品复测/push/PR/CI/merge。
+
 2026-10-23 03:48+08：S1新版两原turn已正式completed，parent均全文读取原报告并保全原字节：Z23001B/SHA764b6293、M36822B/SHA18302fc1，作者均判3be私有S1 Pass，M新4P3保留并逐项登记当前前置/未来诊断/文档边界，无产品改动。P2-1可避免机制两方独立判修复，P2-2仍P2容量风险/本私有非阻断，Q5/父门不关。13产品源实际全覆盖可接受（12text完整实际Read+大JSON冻结允许全解析/authorcanonical）；两方真实check630TS/1191Python、139行为成立，owner未复测。
 
 两份独立流程审全文parent已读（Z19115B/ee141268，M19121B/76aa4f0a），均建议流程门未关：实际首败遗漏、探针输入/比较覆盖表述过宽、部分原流/child exit缺证，完整base→product owned/历史binary metadata读取尚未证；不得以hash/stat/613局部diff冒称完成。Z probe原child UNKNOWN，M PIPESTATUS确child0，原始不足不补造。全部可得原件/版本/首败纠正已封，Z包2599004B/b056c811、M包718135B/402085e0，独立审计包82642B/4af53292，parent逐项tar读回SHA。具体全部意见/限制见round-2/owner-completion-audit-20261023.md及completion-receipt。
