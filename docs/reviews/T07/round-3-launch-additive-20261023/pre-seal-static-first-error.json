@@ -1,0 +1,9 @@
+{
+  "scope": "Operator static whitespace expectation only, not product/ordinary/setup execution",
+  "firstToolExit": 1,
+  "exactStderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 8, in <module>\nAssertionError\n",
+  "captureProvenance": "Exact stderr transcribed from returned tool result; Git output captured directly in immediate diagnostic read",
+  "reason": "Initial expectation assumed only16 historical raw trailing spaces; inspect complete frozen-prefix whitespace separately before disposition.",
+  "actualDiagnostic": "16 inherited complete-input trailing-space warnings plus2 intentional launch-addendum EOF separator warnings; all exact raw input/prefix bytes preserved.",
+  "correction": "Account for the two fixed prefix delimiter warnings separately; metadata whitespace check excludes four declared raw input/prefix artifacts, no product/setup/ordinary rerun."
+}

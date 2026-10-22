@@ -1,0 +1,37 @@
+{
+  "scope": "Initial staged additive materials before independent report and final seal; final staged metadata check follows after seal",
+  "wholeStagedCheckExit": 2,
+  "historicalFullInputTrailingSpaceWarnings": 16,
+  "newExactAddendumSeparatorBlankEOFWarnings": 2,
+  "warningDisposition": "Preserve exact fixed raw complete inputs and addendum prefixes; each addendum intentionally ends with a blank separator before old body concatenation. No source or historical byte change.",
+  "wholeStagedOutput": {
+    "path": "docs/reviews/T07/round-3-launch-additive-20261023/whole-staged.stdout.json",
+    "encoding": "base64"
+  },
+  "authoredMetadataExcludesFourExactRawFiles": [
+    "docs/reviews/T07/round-3-launch-additive-20261023/zcode-complete-launch-input.md",
+    "docs/reviews/T07/round-3-launch-additive-20261023/zcode-launch-addendum.md",
+    "docs/reviews/T07/round-3-launch-additive-20261023/minimax-complete-launch-input.md",
+    "docs/reviews/T07/round-3-launch-additive-20261023/minimax-launch-addendum.md"
+  ],
+  "authoredMetadataCheckArgv": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    ".",
+    ":(exclude)docs/reviews/T07/round-3-launch-additive-20261023/zcode-complete-launch-input.md",
+    ":(exclude)docs/reviews/T07/round-3-launch-additive-20261023/zcode-launch-addendum.md",
+    ":(exclude)docs/reviews/T07/round-3-launch-additive-20261023/minimax-complete-launch-input.md",
+    ":(exclude)docs/reviews/T07/round-3-launch-additive-20261023/minimax-launch-addendum.md"
+  ],
+  "authoredMetadataCheckExit": 0,
+  "authoredStdoutBytes": 0,
+  "authoredStderrBytes": 0,
+  "firstExpectationAssertionPreserved": "docs/reviews/T07/round-3-launch-additive-20261023/pre-seal-static-first-error.json",
+  "ordinaryCommandsExecuted": 0,
+  "setupCommandsExecuted": 0,
+  "newExternalTasks": 0,
+  "GUIReleased": true
+}
