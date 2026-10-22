@@ -1,0 +1,32 @@
+E731 Do not assign a `lambda` expression, use a `def`
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:967:9
+    |
+965 |             after = os.fstat(stream.fileno())
+966 |         after_path = path.lstat()
+967 |         fields = lambda s: (s.st_dev, s.st_ino, s.st_size, s.st_mtime_ns, s.st_mode)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+968 |         if (
+969 |             fields(before) != fields(after)
+    |
+help: Rewrite `fields` as a `def`
+    |
+966 |         after_path = path.lstat()
+    -         fields = lambda s: (s.st_dev, s.st_ino, s.st_size, s.st_mtime_ns, s.st_mode)
+967 +         def fields(s):
+968 +             return (s.st_dev, s.st_ino, s.st_size, s.st_mtime_ns, s.st_mode)
+969 |         if (
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+E501 Line too long (118 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:579:101
+    |
+578 | def test_literal_pin_parser_never_imports_source():
+579 |     source = b"raise RuntimeError('no execution')\nSUPPLIER_PINS = (('m','x.py',1,'s'),)\nPUBLIC_RESOURCE_PINS = ()\n"
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^
+580 |     result = p._literal_pins(source)
+581 |     assert result["SUPPLIER_PINS"] == (("m", "x.py", 1, "s"),)
+    |
+
+Found 2 errors.
+1 unsafe fix available with `--fix --unsafe-fixes`.

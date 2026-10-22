@@ -1,0 +1,204 @@
+E501 Line too long (101 > 100)
+  --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:54:101
+   |
+52 |     "ontolearn_engine.quality.rule_firing", "ontolearn_engine.quality.rule_numbers",
+53 |     "ontolearn_engine.quality.rule_profile", "ontolearn_engine.quality.rule_revalidation",
+54 |     "ontolearn_engine.quality.rule_terms", "ontolearn_engine.resources", "ontolearn_engine.semantic",
+   |                                                                                                     ^
+55 |     "ontolearn_engine.semantic_error_adapter", "ontolearn_engine.semantic_execution",
+56 |     "ontolearn_engine.semantic_offline", "ontolearn_engine.semantic_profile_directsteps",
+   |
+
+E501 Line too long (101 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:311:101
+    |
+309 |             _fail("SCHEMA_INVALID")
+310 |         for row in dist["licenses"]:
+311 |             if row["bytes"] > SMALL_CAP or PurePosixPath(row["path"]).parent != info.parent and not (
+    |                                                                                                     ^
+312 |                     PurePosixPath(row["path"]).is_relative_to(info.parent / "licenses")):
+313 |                 _fail("SCHEMA_INVALID")
+    |
+
+E501 Line too long (102 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:439:101
+    |
+437 |     _check_identity(root, dist["metadata"], SMALL_CAP, "DISTRIBUTION_MISMATCH")
+438 |     metadata = email.message_from_bytes(_read(_inside(root, dist["metadata"]["path"]), SMALL_CAP))
+439 |     if metadata.get_all("Name") != [dist["name"]] or metadata.get_all("Version") != [dist["version"]]:
+    |                                                                                                     ^^
+440 |         _fail("DISTRIBUTION_MISMATCH")
+441 |     for row in dist["licenses"]:
+    |
+
+E501 Line too long (108 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:448:101
+    |
+446 |     for value in declared:
+447 |         _path(value)
+448 |         if str(parent / value) not in actual_paths and str(parent / "licenses" / value) not in actual_paths:
+    |                                                                                                     ^^^^^^^^
+449 |             _fail("DISTRIBUTION_MISMATCH")
+450 |     for row in dist["files"]:
+    |
+
+E501 Line too long (103 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:525:101
+    |
+525 | def verify_loaded_modules(evidence: FrozenBuildEvidence, modules: dict[str, types.ModuleType]) -> dict:
+    |                                                                                                     ^^^
+526 |     """Call after the observer and target imports; this function never imports them."""
+527 |     manifest, root = _evidence(evidence)
+    |
+
+E501 Line too long (103 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:608:101
+    |
+606 |             if type(item) is ast.Assign and len(item.targets) == 1:
+607 |                 target = item.targets[0]
+608 |                 if type(target) is ast.Name and target.id in ("SUPPLIER_PINS", "PUBLIC_RESOURCE_PINS"):
+    |                                                                                                     ^^^
+609 |                     if target.id in result:
+610 |                         _fail("SOURCE_MISMATCH")
+    |
+
+E501 Line too long (102 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:712:101
+    |
+710 |                            for name in PRIVATE_MODULES],
+711 |         "entrypoint": _identity(root, "packages/engine/entrypoint.py", CODE_CAP),
+712 |         "publicResources": resources, "inputs": inputs, "lock": _identity(root, "uv.lock", SMALL_CAP),
+    |                                                                                                     ^^
+713 |         "distributions": [_dist_inventory(name, version)
+714 |                           for name, version in FIXED_DISTRIBUTIONS.items()],
+    |
+
+E731 Do not assign a `lambda` expression, use a `def`
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:786:9
+    |
+784 |             after = os.fstat(stream.fileno())
+785 |         after_path = path.lstat()
+786 |         fields = lambda s: (s.st_dev, s.st_ino, s.st_size, s.st_mtime_ns, s.st_mode)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+787 |         if (fields(before) != fields(after) or fields(before_path) != fields(after_path)
+788 |                 or before_path.st_ino != before.st_ino or total != before.st_size):
+    |
+help: Rewrite `fields` as a `def`
+    |
+785 |         after_path = path.lstat()
+    -         fields = lambda s: (s.st_dev, s.st_ino, s.st_size, s.st_mtime_ns, s.st_mode)
+786 +         def fields(s):
+787 +             return (s.st_dev, s.st_ino, s.st_size, s.st_mtime_ns, s.st_mode)
+788 |         if (fields(before) != fields(after) or fields(before_path) != fields(after_path)
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+E501 Line too long (101 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:940:101
+    |
+940 | def verify_external_binding(binding_path: Path, artifact_dir: Path, *, expected_sha256: str) -> dict:
+    |                                                                                                     ^
+941 |     """External pre-spawn check against a digest obtained from root, not the package."""
+942 |     if type(expected_sha256) is not str or re.fullmatch(r"[0-9a-f]{64}", expected_sha256) is None:
+    |
+
+E501 Line too long (101 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:110:101
+    |
+108 |                                      "sha256": library["sha256"]}}
+109 |     manifest = {
+110 |         "format": "i05-private-build-provenance/1", "source": {"commit": "a" * 40, "tree": "b" * 40},
+    |                                                                                                     ^
+111 |         "contract": {"path": p.CONTRACT_SOURCE, "bytes": len(CONTRACT_RAW),
+112 |                      "sha256": p.CONTRACT_SHA256},
+    |
+
+E501 Line too long (103 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:176:101
+    |
+176 | @pytest.mark.parametrize("value", ["../a", "/a", "a//b", "a/./b", "a\\b", "C:/a", "a\x00b", "e\u0301"])
+    |                                                                                                     ^^^
+177 | def test_paths_reject_noncanonical_or_escaping_spellings(value):
+178 |     with fault("PATH_INVALID"):
+    |
+
+E501 Line too long (101 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:193:101
+    |
+192 | def test_preflight_verifies_identity_without_executing_target_or_anchor(case, monkeypatch):
+193 |     monkeypatch.setattr(p.importlib, "import_module", lambda *_a, **_k: pytest.fail("target import"))
+    |                                                                                                     ^
+194 |     evidence = case.load()
+195 |     assert type(evidence) is p.FrozenBuildEvidence
+    |
+
+E501 Line too long (120 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:205:101
+    |
+205 | @pytest.mark.parametrize("field", ["missing", "extra", "duplicateSupplier", "wrongOrder", "wrongInput", "wrongVersion"])
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^
+206 | def test_expectations_are_exact_and_complete(case, field):
+207 |     if field == "missing":
+    |
+
+E501 Line too long (106 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:229:101
+    |
+229 | @pytest.mark.parametrize("kind", ["resource", "input", "lock", "metadata", "license", "data", "contract"])
+    |                                                                                                     ^^^^^^
+230 | def test_tampered_actual_resources_are_rejected(case, kind):
+231 |     paths = {
+    |
+
+E501 Line too long (104 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:233:101
+    |
+231 |     paths = {
+232 |         "resource": p.PUBLIC_PATHS[0], "input": p.FIXED_INPUTS[0]["path"],
+233 |         "lock": "provenance/uv.lock", "metadata": case.manifest["distributions"][0]["metadata"]["path"],
+    |                                                                                                     ^^^^
+234 |         "license": case.manifest["distributions"][0]["licenses"][0]["path"],
+235 |         "data": "pyparsing/data.txt", "contract": p.CONTRACT_BUNDLED,
+    |
+
+E501 Line too long (101 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:258:101
+    |
+256 |     case.manifest["python"][field] = 1 if field == "optimize" else "different"
+257 |     case.refresh()
+258 |     with fault("SCHEMA_INVALID" if field in ("optimize", "bytecodeMagicHex") else "PYTHON_MISMATCH"):
+    |                                                                                                     ^
+259 |         case.load()
+    |
+
+E501 Line too long (104 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:292:101
+    |
+292 | @pytest.mark.parametrize("kind", ["name", "specName", "file", "origin", "sysModules", "loader", "code"])
+    |                                                                                                     ^^^^
+293 | def test_actual_loader_and_module_identity_mismatch_rejected(case, monkeypatch, kind):
+294 |     evidence = case.load()
+    |
+
+E501 Line too long (121 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:312:101
+    |
+310 |     else:
+311 |         module.__spec__.loader.code = p._compiled(b"changed = True")
+312 |     with fault("LOADER_UNAVAILABLE" if kind == "loader" else "LOADER_MISMATCH" if kind == "code" else "MODULE_MISMATCH"):
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^
+313 |         p.verify_loaded_modules(evidence, case.modules)
+    |
+
+E501 Line too long (118 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:473:101
+    |
+472 | def test_literal_pin_parser_never_imports_source():
+473 |     source = b"raise RuntimeError('no execution')\nSUPPLIER_PINS = (('m','x.py',1,'s'),)\nPUBLIC_RESOURCE_PINS = ()\n"
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^
+474 |     result = p._literal_pins(source)
+475 |     assert result["SUPPLIER_PINS"] == (("m", "x.py", 1, "s"),)
+    |
+
+Found 20 errors (1 fixed, 19 remaining).
+1 unsafe fix available with `--fix --unsafe-fixes`.
