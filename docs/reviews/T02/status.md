@@ -192,3 +192,5 @@ MiniMax实际assistant msg-k6hBoZISiyvzvO3FYM48ceXPsYEd65qrTEfUuM9uT7o/原turn�
 按总控继续原完整Goal的依赖规划请求，已产出docs/iterations/T02/next-integration-segment-20261022.md（从本status文件按仓库根定位），逐件核旧typed十件固定Git身份；复用原ID/完整Diff/确认/Job/undo及来源复验要求，停止沿用旧派生identifier提议，T02三模块重pin到C5。下一段建议为单个人工事实正式保存/撤销，列出T01新M/S1/S2/CostSession/canonical/host scope、I06四壳桥路径、T02两新适配文件及两P3路径、I05交换接口和具体验收门序。新供方pin仍缺，全部写路径均是待总控确定边界的申请，不是已授实施。
 
 当前只增加规划/静态读回文档；不改C5/两审查树、旧十件、共享schema/writer/锁或验收，不开新产品树/模型轮、不复测无变化产品。父Goal保持blocked，不重建/自行改变；正式接口采用、父验收、CI/正常develop合并/远端/发布门仍待。
+
+下一段规划初审adab发现1项P2首读计费表序歧义，已修为可信issuer在首次源读取前创建/取得同CostSession、后续仅复用且首读失败也累计；固定325264fc独立差异复核通过，仅方案层关闭，原Fail保留于next-segment-20261022。供方／实施／运行仍待，不新开模型轮或改变父Goal。
