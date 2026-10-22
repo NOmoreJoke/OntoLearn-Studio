@@ -1,0 +1,21 @@
+{
+  "check01": "author-check-01.json retained exit1 TypeError in checker ref traversal; first source immutable",
+  "check02": "author-check-02.json retained exit1 unresolved OBSERVATION rule; added explicit normative relation, fields/version unchanged",
+  "originalGrammar": {
+    "path": "grammar-before-observation-rule-fix.json",
+    "bytes": 125614,
+    "sha256": "d2e2b45b0dc147f1048dd665016e8d934d54271deb1020317080360d09304161"
+  },
+  "originalSources": ["checker-source.json", "checker-source-r2.json"],
+  "actualRuntimeOrProductFailure": false,
+  "nextCheck": "new author-check-03, never overwrite first two streams",
+  "check03": "author-check-03 retained exit1: checker accidentally traversed source-pin ref as grammar ref, fixed in new immutable checker-source-r3",
+  "check04": "author-check-04 retained exit1: new handoff omitted literal function.__code__, added explicit E1 handoff responsibility; previous handoff raw snapshot retained",
+  "readOnlyToolFailure": {
+    "toolChunk": "c91cf8",
+    "exit": 1,
+    "reason": "author diagnostic read requested source lines beyond208 and hitIndexError",
+    "splitStreams": "not separately captured, tool transcript only, not reconstructed",
+    "mutation": "none"
+  }
+}

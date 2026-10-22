@@ -1,0 +1,3838 @@
+{
+  "format": "t03-i05-D1-guard-scope-matrix/1",
+  "status": "plan-only; not a produced guard or execution authorization",
+  "repairBaseRef": "d014b925e2c9bb246a71621a919d7f9a412f6c57",
+  "reviewedCandidateRef": "ae28572c91b78933c35996f0d80e81c03b96edf0",
+  "sourceRefs": {
+    "historicalWrapperAnd43": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+    "fixedD0Protocol": "c3eb0694daad26527cc3a1eb0127ed5033f2be25",
+    "fixedSupplier": "6891a5842302859a531cf82767c5a482417bc274",
+    "mapping": "0ad7e0a75cc4583918b057885631934c0a9bd859"
+  },
+  "extraction": "stdlib re extracts exact fixedInputs literal; ast.literal_eval parses data only;43 listed bytes/SHA matched actual Git at a4d; no JS/source function executed",
+  "historicalWrapperDeclaredSourceRef": "0475d0ec6c486a63c7e8f62f11f35181da6b2576",
+  "historical43ActualMaterialOrigin": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+  "counts": {
+    "oldFixedInputs": 43,
+    "historicalGuardedPathsIncludingTwoWriters": 45,
+    "newSemanticDistinctPaths": 33,
+    "sharedPaths": 22,
+    "sameShared": 13,
+    "conflicts": 9,
+    "oldOnly": 21,
+    "newOnly": 11,
+    "oldNewUnion": 54,
+    "mappingAdditional": 4,
+    "proposedParentDefaultDistinctPaths": 58,
+    "lockPackages": 26,
+    "canonicalActualModules": 23,
+    "sourceDeclaredSuppliers": 22,
+    "semanticRuntimeDistributions": 8
+  },
+  "classificationCounts": {
+    "mapping-only": 4,
+    "new-only": 11,
+    "old-only": 21,
+    "shared-dependency-conflict": 2,
+    "shared-same-bytes": 13,
+    "shared-source-resource-conflict": 7
+  },
+  "scopePolicyDocument": "guard-migration-strategy.md",
+  "rows": [
+    {
+      "path": "docs/iterations/I05/profile-probe-inputs.json",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "old-only",
+      "oldGuardIndex": 17,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "bytes": 1839011,
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de",
+        "gitBlob": "faeede78361a24afa02b6af21ee4223c558636fb"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "docs/iterations/I05/profile-probe-inputs.json",
+          "bytes": 1839011,
+          "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de",
+          "gitBlob": "faeede78361a24afa02b6af21ee4223c558636fb"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "docs/iterations/I05/profile-probe-inputs.json",
+          "bytes": 1839011,
+          "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de",
+          "gitBlob": "faeede78361a24afa02b6af21ee4223c558636fb"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/contracts/python/contract_v2.py",
+      "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+      "classification": "shared-source-resource-conflict",
+      "oldGuardIndex": 20,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/contracts/python/contract_v2.py",
+        "bytes": 20174,
+        "sha256": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+        "gitBlob": "a00d0d0f3663ac4483eb7cc6b80cedae4e606f79"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/contracts/python/contract_v2.py",
+          "bytes": 34608,
+          "sha256": "17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7",
+          "gitBlob": "e80835e92dacec15717acfaeaedfc8e9a6611d76"
+        },
+        "role": "resources",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/python/contract_v2.py",
+          "bytes": 20174,
+          "sha256": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+          "gitBlob": "a00d0d0f3663ac4483eb7cc6b80cedae4e606f79"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/contracts/python/contract_v2.py",
+            "bytes": 34608,
+            "sha256": "17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7",
+            "gitBlob": "e80835e92dacec15717acfaeaedfc8e9a6611d76"
+          },
+          "role": "resources",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/contracts/python/contract_v2.py",
+          "bytes": 34608,
+          "sha256": "17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7",
+          "gitBlob": "e80835e92dacec15717acfaeaedfc8e9a6611d76"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/python/contract_v2.py",
+          "bytes": 20174,
+          "sha256": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+          "gitBlob": "a00d0d0f3663ac4483eb7cc6b80cedae4e606f79"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/contracts/v2/binding-regressions.json",
+      "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+      "classification": "old-only",
+      "oldGuardIndex": 21,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/contracts/v2/binding-regressions.json",
+        "bytes": 123964,
+        "sha256": "9601d6d0a31e3e71078ac2562c6b8501c1292bc2be71de742e40c2fc54512a24",
+        "gitBlob": "fa27812aaf40202c5f17971c9a9783b5dd680597"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/binding-regressions.json",
+          "bytes": 123964,
+          "sha256": "9601d6d0a31e3e71078ac2562c6b8501c1292bc2be71de742e40c2fc54512a24",
+          "gitBlob": "fa27812aaf40202c5f17971c9a9783b5dd680597"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/binding-regressions.json",
+          "bytes": 123964,
+          "sha256": "9601d6d0a31e3e71078ac2562c6b8501c1292bc2be71de742e40c2fc54512a24",
+          "gitBlob": "fa27812aaf40202c5f17971c9a9783b5dd680597"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/contracts/v2/dependencies.json",
+      "owner": "original I05/I06 path owner; exact root confirmation required, not T03",
+      "classification": "old-only",
+      "oldGuardIndex": 22,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/contracts/v2/dependencies.json",
+        "bytes": 1438,
+        "sha256": "dee118b368915df4172a77b875d31ce29ad8374cb5fce3915678f7f950cedad4",
+        "gitBlob": "af4e4f2e3813dd11b1b2d2e6ac27a792f6ddcb2e"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/dependencies.json",
+          "bytes": 1438,
+          "sha256": "dee118b368915df4172a77b875d31ce29ad8374cb5fce3915678f7f950cedad4",
+          "gitBlob": "af4e4f2e3813dd11b1b2d2e6ac27a792f6ddcb2e"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/dependencies.json",
+          "bytes": 1438,
+          "sha256": "dee118b368915df4172a77b875d31ce29ad8374cb5fce3915678f7f950cedad4",
+          "gitBlob": "af4e4f2e3813dd11b1b2d2e6ac27a792f6ddcb2e"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/I06 path owner; exact root confirmation required, not T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/contracts/v2/errors.json",
+      "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+      "classification": "shared-source-resource-conflict",
+      "oldGuardIndex": 23,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/contracts/v2/errors.json",
+        "bytes": 14400,
+        "sha256": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+        "gitBlob": "14d0bb017a8ef2248221d62c372cbcdfa4cfc28b"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/contracts/v2/errors.json",
+          "bytes": 16299,
+          "sha256": "ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c",
+          "gitBlob": "9eff779f69be0dc0a5a65bee2b3ce3744dd57b1b"
+        },
+        "role": "resources",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/errors.json",
+          "bytes": 14400,
+          "sha256": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+          "gitBlob": "14d0bb017a8ef2248221d62c372cbcdfa4cfc28b"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/contracts/v2/errors.json",
+            "bytes": 16299,
+            "sha256": "ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c",
+            "gitBlob": "9eff779f69be0dc0a5a65bee2b3ce3744dd57b1b"
+          },
+          "role": "resources",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/contracts/v2/errors.json",
+          "bytes": 16299,
+          "sha256": "ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c",
+          "gitBlob": "9eff779f69be0dc0a5a65bee2b3ce3744dd57b1b"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/errors.json",
+          "bytes": 14400,
+          "sha256": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+          "gitBlob": "14d0bb017a8ef2248221d62c372cbcdfa4cfc28b"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/contracts/v2/fixtures.json",
+      "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+      "classification": "old-only",
+      "oldGuardIndex": 24,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/contracts/v2/fixtures.json",
+        "bytes": 472098,
+        "sha256": "32031804abf3283e87f070ffbfc3f95cf627f6b71e7bc49711faaff52ec31ad6",
+        "gitBlob": "37847c27a082db388042e280db61719dbab8f61d"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/fixtures.json",
+          "bytes": 472098,
+          "sha256": "32031804abf3283e87f070ffbfc3f95cf627f6b71e7bc49711faaff52ec31ad6",
+          "gitBlob": "37847c27a082db388042e280db61719dbab8f61d"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/fixtures.json",
+          "bytes": 472098,
+          "sha256": "32031804abf3283e87f070ffbfc3f95cf627f6b71e7bc49711faaff52ec31ad6",
+          "gitBlob": "37847c27a082db388042e280db61719dbab8f61d"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/contracts/v2/frame-fixtures.json",
+      "owner": "original I05/I06 path owner; exact root confirmation required, not T03",
+      "classification": "old-only",
+      "oldGuardIndex": 25,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/contracts/v2/frame-fixtures.json",
+        "bytes": 17537,
+        "sha256": "8e9a142ff04e908cc286c15702cd18b6c2ce9453490585d0855c3f62995dd2e5",
+        "gitBlob": "21193f5d5db1685c412cf4d8e37a8b2cce78b9d2"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/frame-fixtures.json",
+          "bytes": 17537,
+          "sha256": "8e9a142ff04e908cc286c15702cd18b6c2ce9453490585d0855c3f62995dd2e5",
+          "gitBlob": "21193f5d5db1685c412cf4d8e37a8b2cce78b9d2"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/frame-fixtures.json",
+          "bytes": 17537,
+          "sha256": "8e9a142ff04e908cc286c15702cd18b6c2ce9453490585d0855c3f62995dd2e5",
+          "gitBlob": "21193f5d5db1685c412cf4d8e37a8b2cce78b9d2"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/I06 path owner; exact root confirmation required, not T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/contracts/v2/registry.json",
+      "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+      "classification": "shared-source-resource-conflict",
+      "oldGuardIndex": 26,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/contracts/v2/registry.json",
+        "bytes": 13039,
+        "sha256": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+        "gitBlob": "3a6705a00217f5e55d130bd2a231a6aad233b3fe"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/contracts/v2/registry.json",
+          "bytes": 15962,
+          "sha256": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
+          "gitBlob": "8d2195b04a193501b90bbfc432e3af2d2f6e489d"
+        },
+        "role": "resources",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/registry.json",
+          "bytes": 13039,
+          "sha256": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+          "gitBlob": "3a6705a00217f5e55d130bd2a231a6aad233b3fe"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/contracts/v2/registry.json",
+            "bytes": 15962,
+            "sha256": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
+            "gitBlob": "8d2195b04a193501b90bbfc432e3af2d2f6e489d"
+          },
+          "role": "resources",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/contracts/v2/registry.json",
+          "bytes": 15962,
+          "sha256": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
+          "gitBlob": "8d2195b04a193501b90bbfc432e3af2d2f6e489d"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/registry.json",
+          "bytes": 13039,
+          "sha256": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+          "gitBlob": "3a6705a00217f5e55d130bd2a231a6aad233b3fe"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/contracts/v2/schema.json",
+      "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+      "classification": "shared-source-resource-conflict",
+      "oldGuardIndex": 27,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/contracts/v2/schema.json",
+        "bytes": 122889,
+        "sha256": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+        "gitBlob": "3d2d79002c8176779c6b7cdefd97c58876dbfaf4"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/contracts/v2/schema.json",
+          "bytes": 207256,
+          "sha256": "e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf",
+          "gitBlob": "114d963d0967d2a9ce347195b5ee536e09a8195a"
+        },
+        "role": "resources",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/schema.json",
+          "bytes": 122889,
+          "sha256": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+          "gitBlob": "3d2d79002c8176779c6b7cdefd97c58876dbfaf4"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/contracts/v2/schema.json",
+            "bytes": 207256,
+            "sha256": "e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf",
+            "gitBlob": "114d963d0967d2a9ce347195b5ee536e09a8195a"
+          },
+          "role": "resources",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/contracts/v2/schema.json",
+          "bytes": 207256,
+          "sha256": "e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf",
+          "gitBlob": "114d963d0967d2a9ce347195b5ee536e09a8195a"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/schema.json",
+          "bytes": 122889,
+          "sha256": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+          "gitBlob": "3d2d79002c8176779c6b7cdefd97c58876dbfaf4"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/contracts/v2/states.json",
+      "owner": "original I05/I06 path owner; exact root confirmation required, not T03",
+      "classification": "old-only",
+      "oldGuardIndex": 28,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/contracts/v2/states.json",
+        "bytes": 716,
+        "sha256": "ab54cac024f0f6b31a8a229198ae1c4ab13f63ff88184cdcef78113b9e893416",
+        "gitBlob": "bb6161a5a27c317ba073efbf50599fabace903ee"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/states.json",
+          "bytes": 716,
+          "sha256": "ab54cac024f0f6b31a8a229198ae1c4ab13f63ff88184cdcef78113b9e893416",
+          "gitBlob": "bb6161a5a27c317ba073efbf50599fabace903ee"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/contracts/v2/states.json",
+          "bytes": 716,
+          "sha256": "ab54cac024f0f6b31a8a229198ae1c4ab13f63ff88184cdcef78113b9e893416",
+          "gitBlob": "bb6161a5a27c317ba073efbf50599fabace903ee"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/I06 path owner; exact root confirmation required, not T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/entrypoint.py",
+      "owner": "T03",
+      "classification": "new-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": {
+        "origin": null,
+        "role": "new-versioned-wrapper",
+        "futureActualPin": null,
+        "historicalMaterialPins": [
+          {
+            "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+            "path": "packages/engine/entrypoint.py",
+            "bytes": 1232,
+            "sha256": "9abf0c22943cfae9f6f43893586626027bf9f4fc7318100465c0179aba69fe31",
+            "gitBlob": "80e266f5ccbe0c8579fd4489642ac0bcc010dbd6"
+          },
+          {
+            "ref": "0ad7e0a75cc4583918b057885631934c0a9bd859",
+            "path": "packages/engine/entrypoint.py",
+            "bytes": 1232,
+            "sha256": "7653ddf2d0dda19f1a12b1ed93afa694f722f84d7ec95d979d33268d946afc47",
+            "gitBlob": "fd9e7f7cb77d9ff77b4d296df1b95300e60674cd"
+          }
+        ],
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/entrypoint.py",
+          "bytes": 1232,
+          "sha256": "9abf0c22943cfae9f6f43893586626027bf9f4fc7318100465c0179aba69fe31",
+          "gitBlob": "80e266f5ccbe0c8579fd4489642ac0bcc010dbd6"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": null,
+          "role": "new-versioned-wrapper",
+          "futureActualPin": null,
+          "historicalMaterialPins": [
+            {
+              "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+              "path": "packages/engine/entrypoint.py",
+              "bytes": 1232,
+              "sha256": "9abf0c22943cfae9f6f43893586626027bf9f4fc7318100465c0179aba69fe31",
+              "gitBlob": "80e266f5ccbe0c8579fd4489642ac0bcc010dbd6"
+            },
+            {
+              "ref": "0ad7e0a75cc4583918b057885631934c0a9bd859",
+              "path": "packages/engine/entrypoint.py",
+              "bytes": 1232,
+              "sha256": "7653ddf2d0dda19f1a12b1ed93afa694f722f84d7ec95d979d33268d946afc47",
+              "gitBlob": "fd9e7f7cb77d9ff77b4d296df1b95300e60674cd"
+            }
+          ],
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "new T03 actual dependency/writer pin required; no guessed future bytes",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "T03 supplies actual versioned writer or six-direct/26-package lock pin after authorized candidate; update both writer/input ledgers, never reuse old guard value",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/pyproject.toml",
+      "owner": "T03",
+      "classification": "shared-dependency-conflict",
+      "oldGuardIndex": 18,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/pyproject.toml",
+        "bytes": 398,
+        "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365",
+        "gitBlob": "a5739f6eb194a4d674c14dd2bc678f562400d82c"
+      },
+      "new33SourcePlan": {
+        "origin": null,
+        "role": "new-six-direct-26-package-dependency",
+        "futureActualPin": null,
+        "historicalMaterialPins": [
+          {
+            "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+            "path": "packages/engine/pyproject.toml",
+            "bytes": 398,
+            "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365",
+            "gitBlob": "a5739f6eb194a4d674c14dd2bc678f562400d82c"
+          },
+          {
+            "ref": "0ad7e0a75cc4583918b057885631934c0a9bd859",
+            "path": "packages/engine/pyproject.toml",
+            "bytes": 424,
+            "sha256": "09b4f2c2dea60f0fe71ebd894b2661110ff7e746fd5e01c715e7cb50d75be75f",
+            "gitBlob": "49424f0aeba2eec1a3337e6075d1d9ae3dcc6f0b"
+          }
+        ],
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/pyproject.toml",
+          "bytes": 398,
+          "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365",
+          "gitBlob": "a5739f6eb194a4d674c14dd2bc678f562400d82c"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": null,
+          "role": "new-six-direct-26-package-dependency",
+          "futureActualPin": null,
+          "historicalMaterialPins": [
+            {
+              "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+              "path": "packages/engine/pyproject.toml",
+              "bytes": 398,
+              "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365",
+              "gitBlob": "a5739f6eb194a4d674c14dd2bc678f562400d82c"
+            },
+            {
+              "ref": "0ad7e0a75cc4583918b057885631934c0a9bd859",
+              "path": "packages/engine/pyproject.toml",
+              "bytes": 424,
+              "sha256": "09b4f2c2dea60f0fe71ebd894b2661110ff7e746fd5e01c715e7cb50d75be75f",
+              "gitBlob": "49424f0aeba2eec1a3337e6075d1d9ae3dcc6f0b"
+            }
+          ],
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "new T03 actual dependency/writer pin required; no guessed future bytes",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/pyproject.toml",
+          "bytes": 398,
+          "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365",
+          "gitBlob": "a5739f6eb194a4d674c14dd2bc678f562400d82c"
+        },
+        "actualApprovedPin": null,
+        "decision": "T03 supplies actual versioned writer or six-direct/26-package lock pin after authorized candidate; update both writer/input ledgers, never reuse old guard value",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/__init__.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 29,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/__init__.py",
+        "bytes": 101,
+        "sha256": "4b8460a6ccc649f44188171c3d4c0c9e58e1204c711462d9ecf0aff12135684f",
+        "gitBlob": "aea2f9eaf2ec7427494596a52c40bb8333b8943e"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/__init__.py",
+          "bytes": 101,
+          "sha256": "4b8460a6ccc649f44188171c3d4c0c9e58e1204c711462d9ecf0aff12135684f",
+          "gitBlob": "aea2f9eaf2ec7427494596a52c40bb8333b8943e"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/__init__.py",
+          "bytes": 101,
+          "sha256": "4b8460a6ccc649f44188171c3d4c0c9e58e1204c711462d9ecf0aff12135684f",
+          "gitBlob": "aea2f9eaf2ec7427494596a52c40bb8333b8943e"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/__init__.py",
+            "bytes": 101,
+            "sha256": "4b8460a6ccc649f44188171c3d4c0c9e58e1204c711462d9ecf0aff12135684f",
+            "gitBlob": "aea2f9eaf2ec7427494596a52c40bb8333b8943e"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/__init__.py",
+          "bytes": 101,
+          "sha256": "4b8460a6ccc649f44188171c3d4c0c9e58e1204c711462d9ecf0aff12135684f",
+          "gitBlob": "aea2f9eaf2ec7427494596a52c40bb8333b8943e"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/__init__.py",
+          "bytes": 101,
+          "sha256": "4b8460a6ccc649f44188171c3d4c0c9e58e1204c711462d9ecf0aff12135684f",
+          "gitBlob": "aea2f9eaf2ec7427494596a52c40bb8333b8943e"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/__main__.py",
+      "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+      "classification": "old-only",
+      "oldGuardIndex": 30,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/__main__.py",
+        "bytes": 489,
+        "sha256": "1fa0f9711a4d90db6fe8ef6c0948aebd93c910526838d6d41fac8a00a568c1d9",
+        "gitBlob": "4ddb44e71712d3d357afe8e28eb5921e547b6e39"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/__main__.py",
+          "bytes": 489,
+          "sha256": "1fa0f9711a4d90db6fe8ef6c0948aebd93c910526838d6d41fac8a00a568c1d9",
+          "gitBlob": "4ddb44e71712d3d357afe8e28eb5921e547b6e39"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/__main__.py",
+          "bytes": 489,
+          "sha256": "1fa0f9711a4d90db6fe8ef6c0948aebd93c910526838d6d41fac8a00a568c1d9",
+          "gitBlob": "4ddb44e71712d3d357afe8e28eb5921e547b6e39"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/contract_probe.py",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "old-only",
+      "oldGuardIndex": 31,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/contract_probe.py",
+        "bytes": 2334,
+        "sha256": "2f86f43d186960ecb890ec98748857a9e8bca181ac6e7dd348db075693c686ea",
+        "gitBlob": "a6ae1a0d637d76f832250e490ff085bbda2e8352"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/contract_probe.py",
+          "bytes": 2334,
+          "sha256": "2f86f43d186960ecb890ec98748857a9e8bca181ac6e7dd348db075693c686ea",
+          "gitBlob": "a6ae1a0d637d76f832250e490ff085bbda2e8352"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/contract_probe.py",
+          "bytes": 2334,
+          "sha256": "2f86f43d186960ecb890ec98748857a9e8bca181ac6e7dd348db075693c686ea",
+          "gitBlob": "a6ae1a0d637d76f832250e490ff085bbda2e8352"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+      "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+      "classification": "old-only",
+      "oldGuardIndex": 32,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+        "bytes": 29559,
+        "sha256": "597d74e318645d0ae4e7152acc29487efc37cb23b501404e60b21f5ed87fc7cb",
+        "gitBlob": "8e62479cb0d91b44e0ecdc5b72e253e5b54539c6"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+          "bytes": 29559,
+          "sha256": "597d74e318645d0ae4e7152acc29487efc37cb23b501404e60b21f5ed87fc7cb",
+          "gitBlob": "8e62479cb0d91b44e0ecdc5b72e253e5b54539c6"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+          "bytes": 29559,
+          "sha256": "597d74e318645d0ae4e7152acc29487efc37cb23b501404e60b21f5ed87fc7cb",
+          "gitBlob": "8e62479cb0d91b44e0ecdc5b72e253e5b54539c6"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "old-only",
+      "oldGuardIndex": 33,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+        "bytes": 1745,
+        "sha256": "a4c821797f40adc68c233d3c2bd2273fcabbc449871117a86881ee2e60f13e12",
+        "gitBlob": "aa95429d8b5f99ab839a4fd286991298288e7187"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+          "bytes": 1745,
+          "sha256": "a4c821797f40adc68c233d3c2bd2273fcabbc449871117a86881ee2e60f13e12",
+          "gitBlob": "aa95429d8b5f99ab839a4fd286991298288e7187"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+          "bytes": 1745,
+          "sha256": "a4c821797f40adc68c233d3c2bd2273fcabbc449871117a86881ee2e60f13e12",
+          "gitBlob": "aa95429d8b5f99ab839a4fd286991298288e7187"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/invalidation.py",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "old-only",
+      "oldGuardIndex": 34,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/invalidation.py",
+        "bytes": 1329,
+        "sha256": "a5e8165f4e8814da387558c89b8b175ac4bcc0e57223b9278f44a8c5120e1ca3",
+        "gitBlob": "3d640f37ea26f329d5670f6b1738a309a6c8c203"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/invalidation.py",
+          "bytes": 1329,
+          "sha256": "a5e8165f4e8814da387558c89b8b175ac4bcc0e57223b9278f44a8c5120e1ca3",
+          "gitBlob": "3d640f37ea26f329d5670f6b1738a309a6c8c203"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/invalidation.py",
+          "bytes": 1329,
+          "sha256": "a5e8165f4e8814da387558c89b8b175ac4bcc0e57223b9278f44a8c5120e1ca3",
+          "gitBlob": "3d640f37ea26f329d5670f6b1738a309a6c8c203"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/job_store.py",
+      "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+      "classification": "old-only",
+      "oldGuardIndex": 35,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/job_store.py",
+        "bytes": 64853,
+        "sha256": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2",
+        "gitBlob": "fdf213b225954c1257a8a1e00eebe676a86e2398"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/job_store.py",
+          "bytes": 64853,
+          "sha256": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2",
+          "gitBlob": "fdf213b225954c1257a8a1e00eebe676a86e2398"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/job_store.py",
+          "bytes": 64853,
+          "sha256": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2",
+          "gitBlob": "fdf213b225954c1257a8a1e00eebe676a86e2398"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/__init__.py",
+      "owner": "T03",
+      "classification": "mapping-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": null,
+      "mappingOrigin": {
+        "originRef": "0ad7e0a75cc4583918b057885631934c0a9bd859",
+        "path": "packages/engine/src/ontolearn_engine/mapping/__init__.py",
+        "bytes": 81,
+        "sha256": "e9d26d4818736111740053c9fd98c420d75ca8ad1444ca9347153399118459fa",
+        "gitBlob": "c8f56196063791d09ad37e11cc762a4d9d979128",
+        "purpose": "parent combination build-input guard addition candidate only; bytes/hash read without execution; not new semantic23 canonical input"
+      },
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "path": "packages/engine/src/ontolearn_engine/mapping/__init__.py",
+          "bytes": 81,
+          "sha256": "e9d26d4818736111740053c9fd98c420d75ca8ad1444ca9347153399118459fa",
+          "gitBlob": "c8f56196063791d09ad37e11cc762a4d9d979128",
+          "ref": "0ad7e0a75cc4583918b057885631934c0a9bd859"
+        },
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "T03 S1 mapping source origin candidate; owner/root accept exact parent source and regression; never add to canonical23",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/plan.py",
+      "owner": "T03",
+      "classification": "mapping-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": null,
+      "mappingOrigin": {
+        "originRef": "0ad7e0a75cc4583918b057885631934c0a9bd859",
+        "path": "packages/engine/src/ontolearn_engine/mapping/plan.py",
+        "bytes": 14608,
+        "sha256": "cea9ca3264fcf54b1f3714057f4b085aa6d821670c37a5bf3fcc01c934af75a0",
+        "gitBlob": "d32a56ca682612e6c435b76ac965215c80551597",
+        "purpose": "parent combination build-input guard addition candidate only; bytes/hash read without execution; not new semantic23 canonical input"
+      },
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "path": "packages/engine/src/ontolearn_engine/mapping/plan.py",
+          "bytes": 14608,
+          "sha256": "cea9ca3264fcf54b1f3714057f4b085aa6d821670c37a5bf3fcc01c934af75a0",
+          "gitBlob": "d32a56ca682612e6c435b76ac965215c80551597",
+          "ref": "0ad7e0a75cc4583918b057885631934c0a9bd859"
+        },
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "T03 S1 mapping source origin candidate; owner/root accept exact parent source and regression; never add to canonical23",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/probe.py",
+      "owner": "T03",
+      "classification": "mapping-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": null,
+      "mappingOrigin": {
+        "originRef": "0ad7e0a75cc4583918b057885631934c0a9bd859",
+        "path": "packages/engine/src/ontolearn_engine/mapping/probe.py",
+        "bytes": 6878,
+        "sha256": "67a0fda763e954c52727974d8b2534252bb3efe193ca0dccc68734ac0a5a0a14",
+        "gitBlob": "a273cb2b778c768d603af7fb6cf4a4402eb66a81",
+        "purpose": "parent combination build-input guard addition candidate only; bytes/hash read without execution; not new semantic23 canonical input"
+      },
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "path": "packages/engine/src/ontolearn_engine/mapping/probe.py",
+          "bytes": 6878,
+          "sha256": "67a0fda763e954c52727974d8b2534252bb3efe193ca0dccc68734ac0a5a0a14",
+          "gitBlob": "a273cb2b778c768d603af7fb6cf4a4402eb66a81",
+          "ref": "0ad7e0a75cc4583918b057885631934c0a9bd859"
+        },
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "T03 S1 mapping source origin candidate; owner/root accept exact parent source and regression; never add to canonical23",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/source.py",
+      "owner": "T03",
+      "classification": "mapping-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": null,
+      "mappingOrigin": {
+        "originRef": "0ad7e0a75cc4583918b057885631934c0a9bd859",
+        "path": "packages/engine/src/ontolearn_engine/mapping/source.py",
+        "bytes": 10399,
+        "sha256": "93bf09e10723c8522f1e9fbb8e170ffece596143c5e00ddcf7be950d15e1ddc8",
+        "gitBlob": "cce201beecae31bbafdbe5d9dc8d9762dfa832fd",
+        "purpose": "parent combination build-input guard addition candidate only; bytes/hash read without execution; not new semantic23 canonical input"
+      },
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "path": "packages/engine/src/ontolearn_engine/mapping/source.py",
+          "bytes": 10399,
+          "sha256": "93bf09e10723c8522f1e9fbb8e170ffece596143c5e00ddcf7be950d15e1ddc8",
+          "gitBlob": "cce201beecae31bbafdbe5d9dc8d9762dfa832fd",
+          "ref": "0ad7e0a75cc4583918b057885631934c0a9bd859"
+        },
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "T03 S1 mapping source origin candidate; owner/root accept exact parent source and regression; never add to canonical23",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/memory_guard.py",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "old-only",
+      "oldGuardIndex": 36,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/memory_guard.py",
+        "bytes": 7851,
+        "sha256": "f01e1cf25211559bde24c48dceb9d20b2b48335bca19a6ec8015f328db4502ca",
+        "gitBlob": "3901e311f145590277893b4b68debb2893c35bc8"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/memory_guard.py",
+          "bytes": 7851,
+          "sha256": "f01e1cf25211559bde24c48dceb9d20b2b48335bca19a6ec8015f328db4502ca",
+          "gitBlob": "3901e311f145590277893b4b68debb2893c35bc8"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/memory_guard.py",
+          "bytes": 7851,
+          "sha256": "f01e1cf25211559bde24c48dceb9d20b2b48335bca19a6ec8015f328db4502ca",
+          "gitBlob": "3901e311f145590277893b4b68debb2893c35bc8"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "new-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+          "bytes": 8205267,
+          "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa",
+          "gitBlob": "360ac7d9ac819d50d3394a73a505fc5e3de963fd"
+        },
+        "role": "assets",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+            "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+            "bytes": 8205267,
+            "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa",
+            "gitBlob": "360ac7d9ac819d50d3394a73a505fc5e3de963fd"
+          },
+          "role": "assets",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+          "bytes": 8205267,
+          "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa",
+          "gitBlob": "360ac7d9ac819d50d3394a73a505fc5e3de963fd"
+        },
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "new-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+          "bytes": 21202,
+          "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a",
+          "gitBlob": "7d44d3856ed168c68304c89551a844c7fea16013"
+        },
+        "role": "assets",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+            "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+            "bytes": 21202,
+            "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a",
+            "gitBlob": "7d44d3856ed168c68304c89551a844c7fea16013"
+          },
+          "role": "assets",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+          "bytes": 21202,
+          "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a",
+          "gitBlob": "7d44d3856ed168c68304c89551a844c7fea16013"
+        },
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/process_environment.py",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "old-only",
+      "oldGuardIndex": 37,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/process_environment.py",
+        "bytes": 741,
+        "sha256": "9a1d305201576cc6cdefa06e89f24b308049d597fd5cb04be950a28eae2f5ef5",
+        "gitBlob": "dd8fb7c25526f157d61998b3091b0230fc68d4eb"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/process_environment.py",
+          "bytes": 741,
+          "sha256": "9a1d305201576cc6cdefa06e89f24b308049d597fd5cb04be950a28eae2f5ef5",
+          "gitBlob": "dd8fb7c25526f157d61998b3091b0230fc68d4eb"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/process_environment.py",
+          "bytes": 741,
+          "sha256": "9a1d305201576cc6cdefa06e89f24b308049d597fd5cb04be950a28eae2f5ef5",
+          "gitBlob": "dd8fb7c25526f157d61998b3091b0230fc68d4eb"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/protocol.py",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "old-only",
+      "oldGuardIndex": 38,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/protocol.py",
+        "bytes": 3770,
+        "sha256": "34f85a3572276dafcb4ef5dceda426c4b8870a89344a0992684b96ae23218ab2",
+        "gitBlob": "943cecb8a264da12f3ec0500c9d1816c431e4330"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/protocol.py",
+          "bytes": 3770,
+          "sha256": "34f85a3572276dafcb4ef5dceda426c4b8870a89344a0992684b96ae23218ab2",
+          "gitBlob": "943cecb8a264da12f3ec0500c9d1816c431e4330"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/protocol.py",
+          "bytes": 3770,
+          "sha256": "34f85a3572276dafcb4ef5dceda426c4b8870a89344a0992684b96ae23218ab2",
+          "gitBlob": "943cecb8a264da12f3ec0500c9d1816c431e4330"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 10,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+        "bytes": 548,
+        "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+        "gitBlob": "1405a985b4220dc18576a4c02c8df57646b6ad02"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+          "bytes": 548,
+          "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+          "gitBlob": "1405a985b4220dc18576a4c02c8df57646b6ad02"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+          "bytes": 548,
+          "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+          "gitBlob": "1405a985b4220dc18576a4c02c8df57646b6ad02"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+            "bytes": 548,
+            "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+            "gitBlob": "1405a985b4220dc18576a4c02c8df57646b6ad02"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+          "bytes": 548,
+          "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+          "gitBlob": "1405a985b4220dc18576a4c02c8df57646b6ad02"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+          "bytes": 548,
+          "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+          "gitBlob": "1405a985b4220dc18576a4c02c8df57646b6ad02"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 11,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+        "bytes": 4047,
+        "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+        "gitBlob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+          "bytes": 4047,
+          "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+          "gitBlob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+          "bytes": 4047,
+          "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+          "gitBlob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+            "bytes": 4047,
+            "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+            "gitBlob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+          "bytes": 4047,
+          "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+          "gitBlob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+          "bytes": 4047,
+          "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+          "gitBlob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 12,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+        "bytes": 1750,
+        "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+        "gitBlob": "1148fbd40c12c6138a689ee64580e08afa6c349c"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+          "bytes": 1750,
+          "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+          "gitBlob": "1148fbd40c12c6138a689ee64580e08afa6c349c"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+          "bytes": 1750,
+          "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+          "gitBlob": "1148fbd40c12c6138a689ee64580e08afa6c349c"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+            "bytes": 1750,
+            "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+            "gitBlob": "1148fbd40c12c6138a689ee64580e08afa6c349c"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+          "bytes": 1750,
+          "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+          "gitBlob": "1148fbd40c12c6138a689ee64580e08afa6c349c"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+          "bytes": 1750,
+          "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+          "gitBlob": "1148fbd40c12c6138a689ee64580e08afa6c349c"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 13,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+        "bytes": 19149,
+        "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+        "gitBlob": "4fc50930c20b8184b3bae5df34d691111351e6bd"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+          "bytes": 19149,
+          "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+          "gitBlob": "4fc50930c20b8184b3bae5df34d691111351e6bd"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+          "bytes": 19149,
+          "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+          "gitBlob": "4fc50930c20b8184b3bae5df34d691111351e6bd"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+            "bytes": 19149,
+            "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+            "gitBlob": "4fc50930c20b8184b3bae5df34d691111351e6bd"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+          "bytes": 19149,
+          "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+          "gitBlob": "4fc50930c20b8184b3bae5df34d691111351e6bd"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+          "bytes": 19149,
+          "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+          "gitBlob": "4fc50930c20b8184b3bae5df34d691111351e6bd"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 14,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+        "bytes": 7372,
+        "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+        "gitBlob": "31a0d150ae82d48e03fee2b9051273c99997b415"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+          "bytes": 7372,
+          "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+          "gitBlob": "31a0d150ae82d48e03fee2b9051273c99997b415"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+          "bytes": 7372,
+          "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+          "gitBlob": "31a0d150ae82d48e03fee2b9051273c99997b415"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+            "bytes": 7372,
+            "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+            "gitBlob": "31a0d150ae82d48e03fee2b9051273c99997b415"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+          "bytes": 7372,
+          "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+          "gitBlob": "31a0d150ae82d48e03fee2b9051273c99997b415"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+          "bytes": 7372,
+          "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+          "gitBlob": "31a0d150ae82d48e03fee2b9051273c99997b415"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 15,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+        "bytes": 11987,
+        "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+        "gitBlob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+          "bytes": 11987,
+          "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+          "gitBlob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+          "bytes": 11987,
+          "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+          "gitBlob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+            "bytes": 11987,
+            "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+            "gitBlob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+          "bytes": 11987,
+          "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+          "gitBlob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+          "bytes": 11987,
+          "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+          "gitBlob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "new-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+          "bytes": 6288,
+          "sha256": "9e9258cfefdef56f369dad6bb7838afd22478ea6714e4322b2d872d12616200e",
+          "gitBlob": "d4fdc2c750af383e41799ae6b0947c13479d999c"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+            "bytes": 6288,
+            "sha256": "9e9258cfefdef56f369dad6bb7838afd22478ea6714e4322b2d872d12616200e",
+            "gitBlob": "d4fdc2c750af383e41799ae6b0947c13479d999c"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+          "bytes": 6288,
+          "sha256": "9e9258cfefdef56f369dad6bb7838afd22478ea6714e4322b2d872d12616200e",
+          "gitBlob": "d4fdc2c750af383e41799ae6b0947c13479d999c"
+        },
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 16,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+        "bytes": 6176,
+        "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+        "gitBlob": "148313c849a706008e909d2c199c0c0d20e9fc33"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+          "bytes": 6176,
+          "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+          "gitBlob": "148313c849a706008e909d2c199c0c0d20e9fc33"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+          "bytes": 6176,
+          "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+          "gitBlob": "148313c849a706008e909d2c199c0c0d20e9fc33"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+            "bytes": 6176,
+            "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+            "gitBlob": "148313c849a706008e909d2c199c0c0d20e9fc33"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+          "bytes": 6176,
+          "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+          "gitBlob": "148313c849a706008e909d2c199c0c0d20e9fc33"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+          "bytes": 6176,
+          "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+          "gitBlob": "148313c849a706008e909d2c199c0c0d20e9fc33"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "old-only",
+      "oldGuardIndex": 39,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+        "bytes": 2530,
+        "sha256": "7cca115fa77e0926a632ba58d404ed39071f7dcfb8d52af2d212e89d36b2309a",
+        "gitBlob": "3bb9bab51d701c952a1d91c64c569640f7d5125e"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+          "bytes": 2530,
+          "sha256": "7cca115fa77e0926a632ba58d404ed39071f7dcfb8d52af2d212e89d36b2309a",
+          "gitBlob": "3bb9bab51d701c952a1d91c64c569640f7d5125e"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+          "bytes": 2530,
+          "sha256": "7cca115fa77e0926a632ba58d404ed39071f7dcfb8d52af2d212e89d36b2309a",
+          "gitBlob": "3bb9bab51d701c952a1d91c64c569640f7d5125e"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-source-resource-conflict",
+      "oldGuardIndex": 0,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/resources.py",
+        "bytes": 2927,
+        "sha256": "2361c55da7983e46fbdd08e50fc3ec48b281d2c76d0021f82fd94ab50ca54274",
+        "gitBlob": "091057b03a8a4fca0fa94f9346af725ab1f9f4f8"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/resources.py",
+          "bytes": 3065,
+          "sha256": "177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238",
+          "gitBlob": "6d9296633467047c0860a9b09053d577f796dad5"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/resources.py",
+          "bytes": 2927,
+          "sha256": "2361c55da7983e46fbdd08e50fc3ec48b281d2c76d0021f82fd94ab50ca54274",
+          "gitBlob": "091057b03a8a4fca0fa94f9346af725ab1f9f4f8"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/resources.py",
+            "bytes": 3065,
+            "sha256": "177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238",
+            "gitBlob": "6d9296633467047c0860a9b09053d577f796dad5"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/resources.py",
+          "bytes": 3065,
+          "sha256": "177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238",
+          "gitBlob": "6d9296633467047c0860a9b09053d577f796dad5"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/resources.py",
+          "bytes": 2927,
+          "sha256": "2361c55da7983e46fbdd08e50fc3ec48b281d2c76d0021f82fd94ab50ca54274",
+          "gitBlob": "091057b03a8a4fca0fa94f9346af725ab1f9f4f8"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-source-resource-conflict",
+      "oldGuardIndex": 1,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/semantic.py",
+        "bytes": 52609,
+        "sha256": "5a3a53fc79928a7aa7de280a8477541db4053ec9b2bec489bf28a2ad4e935549",
+        "gitBlob": "4d8bc5574086b3072837f9b841b75349fdb633fe"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic.py",
+          "bytes": 65749,
+          "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+          "gitBlob": "9310f6d6f12435f05e6efb62bf44a3afffc56929"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic.py",
+          "bytes": 52609,
+          "sha256": "5a3a53fc79928a7aa7de280a8477541db4053ec9b2bec489bf28a2ad4e935549",
+          "gitBlob": "4d8bc5574086b3072837f9b841b75349fdb633fe"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/semantic.py",
+            "bytes": 65749,
+            "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+            "gitBlob": "9310f6d6f12435f05e6efb62bf44a3afffc56929"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic.py",
+          "bytes": 65749,
+          "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+          "gitBlob": "9310f6d6f12435f05e6efb62bf44a3afffc56929"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic.py",
+          "bytes": 52609,
+          "sha256": "5a3a53fc79928a7aa7de280a8477541db4053ec9b2bec489bf28a2ad4e935549",
+          "gitBlob": "4d8bc5574086b3072837f9b841b75349fdb633fe"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 2,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+        "bytes": 15426,
+        "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+        "gitBlob": "64356928fe56697af4992c08e209f85a6a178e79"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+          "bytes": 15426,
+          "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+          "gitBlob": "64356928fe56697af4992c08e209f85a6a178e79"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+          "bytes": 15426,
+          "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+          "gitBlob": "64356928fe56697af4992c08e209f85a6a178e79"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+            "bytes": 15426,
+            "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+            "gitBlob": "64356928fe56697af4992c08e209f85a6a178e79"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+          "bytes": 15426,
+          "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+          "gitBlob": "64356928fe56697af4992c08e209f85a6a178e79"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+          "bytes": 15426,
+          "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+          "gitBlob": "64356928fe56697af4992c08e209f85a6a178e79"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-source-resource-conflict",
+      "oldGuardIndex": 3,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "bytes": 32917,
+        "sha256": "cc701dba39cdeb7f2ae281dfd4a9580b879b9e85f34d3c87a09a3414e7c32731",
+        "gitBlob": "5dd9ba65f2b148b0644a90caec30ce13ddcee1a8"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "bytes": 35220,
+          "sha256": "3ac496383349e3ddefea1672c27c88bacaf99f4436c22e96e1592393bac102f3",
+          "gitBlob": "79930f9690151eab376a8839bac2349c7d47c29c"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "bytes": 32917,
+          "sha256": "cc701dba39cdeb7f2ae281dfd4a9580b879b9e85f34d3c87a09a3414e7c32731",
+          "gitBlob": "5dd9ba65f2b148b0644a90caec30ce13ddcee1a8"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+            "bytes": 35220,
+            "sha256": "3ac496383349e3ddefea1672c27c88bacaf99f4436c22e96e1592393bac102f3",
+            "gitBlob": "79930f9690151eab376a8839bac2349c7d47c29c"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "bytes": 35220,
+          "sha256": "3ac496383349e3ddefea1672c27c88bacaf99f4436c22e96e1592393bac102f3",
+          "gitBlob": "79930f9690151eab376a8839bac2349c7d47c29c"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "bytes": 32917,
+          "sha256": "cc701dba39cdeb7f2ae281dfd4a9580b879b9e85f34d3c87a09a3414e7c32731",
+          "gitBlob": "5dd9ba65f2b148b0644a90caec30ce13ddcee1a8"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 4,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+        "bytes": 1351,
+        "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+        "gitBlob": "0013805b49a8842383fd38afde3ffbfbd54e1e40"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+          "bytes": 1351,
+          "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+          "gitBlob": "0013805b49a8842383fd38afde3ffbfbd54e1e40"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+          "bytes": 1351,
+          "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+          "gitBlob": "0013805b49a8842383fd38afde3ffbfbd54e1e40"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+            "bytes": 1351,
+            "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+            "gitBlob": "0013805b49a8842383fd38afde3ffbfbd54e1e40"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+          "bytes": 1351,
+          "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+          "gitBlob": "0013805b49a8842383fd38afde3ffbfbd54e1e40"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+          "bytes": 1351,
+          "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+          "gitBlob": "0013805b49a8842383fd38afde3ffbfbd54e1e40"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "new-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+          "bytes": 46459,
+          "sha256": "7927769077e363b23741f6dc78b7c0ec2ad00b7d3285f8403a190c0e00169b22",
+          "gitBlob": "66fcb3a9e04cf9d1ebda9c994c9f739c67288bab"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+            "bytes": 46459,
+            "sha256": "7927769077e363b23741f6dc78b7c0ec2ad00b7d3285f8403a190c0e00169b22",
+            "gitBlob": "66fcb3a9e04cf9d1ebda9c994c9f739c67288bab"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+          "bytes": 46459,
+          "sha256": "7927769077e363b23741f6dc78b7c0ec2ad00b7d3285f8403a190c0e00169b22",
+          "gitBlob": "66fcb3a9e04cf9d1ebda9c994c9f739c67288bab"
+        },
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "new-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+          "bytes": 40378,
+          "sha256": "f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74",
+          "gitBlob": "f91e3b2fb719dd18dbdffa48698db19eb4fd3934"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+            "bytes": 40378,
+            "sha256": "f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74",
+            "gitBlob": "f91e3b2fb719dd18dbdffa48698db19eb4fd3934"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+          "bytes": 40378,
+          "sha256": "f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74",
+          "gitBlob": "f91e3b2fb719dd18dbdffa48698db19eb4fd3934"
+        },
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_probe.py",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "old-only",
+      "oldGuardIndex": 5,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_probe.py",
+        "bytes": 13391,
+        "sha256": "2b2dabd91745b4b4c2a3fad39b6386e4edd985189336bf029d9b07a638fc7bf6",
+        "gitBlob": "a7887b679458cb3ccd7e76f7cd1de40ba6a1dffd"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_probe.py",
+          "bytes": 13391,
+          "sha256": "2b2dabd91745b4b4c2a3fad39b6386e4edd985189336bf029d9b07a638fc7bf6",
+          "gitBlob": "a7887b679458cb3ccd7e76f7cd1de40ba6a1dffd"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_probe.py",
+          "bytes": 13391,
+          "sha256": "2b2dabd91745b4b4c2a3fad39b6386e4edd985189336bf029d9b07a638fc7bf6",
+          "gitBlob": "a7887b679458cb3ccd7e76f7cd1de40ba6a1dffd"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "new-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+          "bytes": 19993,
+          "sha256": "5c857470890bd810370ad877db930848ba08e80096c640037d39bea83c14a320",
+          "gitBlob": "fec434ea49c8cf989afeb7b7e0f2c9a518545d1c"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+            "bytes": 19993,
+            "sha256": "5c857470890bd810370ad877db930848ba08e80096c640037d39bea83c14a320",
+            "gitBlob": "fec434ea49c8cf989afeb7b7e0f2c9a518545d1c"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+          "bytes": 19993,
+          "sha256": "5c857470890bd810370ad877db930848ba08e80096c640037d39bea83c14a320",
+          "gitBlob": "fec434ea49c8cf989afeb7b7e0f2c9a518545d1c"
+        },
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "new-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+          "bytes": 70203,
+          "sha256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+          "gitBlob": "0e5baa40641c6eaf016dd6515e1b1528f815c632"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+            "bytes": 70203,
+            "sha256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+            "gitBlob": "0e5baa40641c6eaf016dd6515e1b1528f815c632"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+          "bytes": 70203,
+          "sha256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+          "gitBlob": "0e5baa40641c6eaf016dd6515e1b1528f815c632"
+        },
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "new-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+          "bytes": 37889,
+          "sha256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+          "gitBlob": "0bf52a792873be88ac5c084aec25af173df18514"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+            "bytes": 37889,
+            "sha256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+            "gitBlob": "0bf52a792873be88ac5c084aec25af173df18514"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+          "bytes": 37889,
+          "sha256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+          "gitBlob": "0bf52a792873be88ac5c084aec25af173df18514"
+        },
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 6,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+        "bytes": 6448,
+        "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+        "gitBlob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+          "bytes": 6448,
+          "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+          "gitBlob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+          "bytes": 6448,
+          "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+          "gitBlob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+            "bytes": 6448,
+            "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+            "gitBlob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+          "bytes": 6448,
+          "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+          "gitBlob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+          "bytes": 6448,
+          "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+          "gitBlob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "old-only",
+      "oldGuardIndex": 7,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+        "bytes": 33858,
+        "sha256": "387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9",
+        "gitBlob": "1498ec46fcce718d26c0858448f8bcdeeb30fb76"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+          "bytes": 33858,
+          "sha256": "387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9",
+          "gitBlob": "1498ec46fcce718d26c0858448f8bcdeeb30fb76"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+          "bytes": 33858,
+          "sha256": "387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9",
+          "gitBlob": "1498ec46fcce718d26c0858448f8bcdeeb30fb76"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 8,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "bytes": 13051,
+        "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+        "gitBlob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+          "bytes": 13051,
+          "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+          "gitBlob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+          "bytes": 13051,
+          "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+          "gitBlob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+            "bytes": 13051,
+            "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+            "gitBlob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+          "bytes": 13051,
+          "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+          "gitBlob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+          "bytes": 13051,
+          "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+          "gitBlob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "new-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+          "bytes": 93848,
+          "sha256": "b3456f021afdbd53ec8677bf317a5ffdff636b55bae760eb8b7fec6e399e41b9",
+          "gitBlob": "d4585b555a01a1d8b862ad833504c8a1e258fd43"
+        },
+        "role": "historical-consumer-ancestor-not-actual-pin",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": false,
+        "sourcePin": null,
+        "decision": "not in historical guard or historical wrapper writers; do not inject new input",
+        "behaviorReference": "not-applicable"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+            "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+            "bytes": 93848,
+            "sha256": "b3456f021afdbd53ec8677bf317a5ffdff636b55bae760eb8b7fec6e399e41b9",
+            "gitBlob": "d4585b555a01a1d8b862ad833504c8a1e258fd43"
+          },
+          "role": "historical-consumer-ancestor-not-actual-pin",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "new actual D2 owner pin required; old2cf remains ancestor",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "D2 supplies new consumer actual pin after implementation and review; existing2cf is ancestor only",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+      "classification": "shared-same-bytes",
+      "oldGuardIndex": 9,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+        "bytes": 33916,
+        "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+        "gitBlob": "37247efd459e32e914c29c4cf0da2c99751690b2"
+      },
+      "new33SourcePlan": {
+        "origin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+          "bytes": 33916,
+          "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+          "gitBlob": "37247efd459e32e914c29c4cf0da2c99751690b2"
+        },
+        "role": "canonicalModules",
+        "futureActualPin": null,
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+          "bytes": 33916,
+          "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+          "gitBlob": "37247efd459e32e914c29c4cf0da2c99751690b2"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": {
+            "ref": "6891a5842302859a531cf82767c5a482417bc274",
+            "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+            "bytes": 33916,
+            "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+            "gitBlob": "37247efd459e32e914c29c4cf0da2c99751690b2"
+          },
+          "role": "canonicalModules",
+          "futureActualPin": null,
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "adopt exact fixed6891/2cf source origin only after owner/root scope acceptance",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+          "bytes": 33916,
+          "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+          "gitBlob": "37247efd459e32e914c29c4cf0da2c99751690b2"
+        },
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+          "bytes": 33916,
+          "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+          "gitBlob": "37247efd459e32e914c29c4cf0da2c99751690b2"
+        },
+        "actualApprovedPin": null,
+        "decision": "use fixed new source origin (including all seven shared source/resource conflicts); old a4d variant retained only in historical scope; owner/root must adopt exact composition",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "original I05/T05 supplier owner; fixed6891 supply only",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage.py",
+      "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+      "classification": "old-only",
+      "oldGuardIndex": 40,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/storage.py",
+        "bytes": 55364,
+        "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+        "gitBlob": "b77b71ddda9e5473b2fd9102a4cdef6e98f76123"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/storage.py",
+          "bytes": 55364,
+          "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+          "gitBlob": "b77b71ddda9e5473b2fd9102a4cdef6e98f76123"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/storage.py",
+          "bytes": 55364,
+          "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+          "gitBlob": "b77b71ddda9e5473b2fd9102a4cdef6e98f76123"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage_probe.py",
+      "owner": "I05 retained path owner; no transfer to T03",
+      "classification": "old-only",
+      "oldGuardIndex": 41,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/storage_probe.py",
+        "bytes": 5611,
+        "sha256": "01415c8c904ad75bf8f6e2bf48430bd04211e0899bee81c490cee9dfe42f90f2",
+        "gitBlob": "bd11499b284100b1587057a7c24cf56def7a69a6"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/storage_probe.py",
+          "bytes": 5611,
+          "sha256": "01415c8c904ad75bf8f6e2bf48430bd04211e0899bee81c490cee9dfe42f90f2",
+          "gitBlob": "bd11499b284100b1587057a7c24cf56def7a69a6"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/storage_probe.py",
+          "bytes": 5611,
+          "sha256": "01415c8c904ad75bf8f6e2bf48430bd04211e0899bee81c490cee9dfe42f90f2",
+          "gitBlob": "bd11499b284100b1587057a7c24cf56def7a69a6"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "I05 retained path owner; no transfer to T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/worker.py",
+      "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+      "classification": "old-only",
+      "oldGuardIndex": 42,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "packages/engine/src/ontolearn_engine/worker.py",
+        "bytes": 9314,
+        "sha256": "2fa848aa3a2148e59a24f01c9333701f0f03eed95cffe55a0a78b74f1d06f2f0",
+        "gitBlob": "abc2f8a925eed514d767e3ed3084eaaf523b7a2c"
+      },
+      "new33SourcePlan": null,
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/worker.py",
+          "bytes": 9314,
+          "sha256": "2fa848aa3a2148e59a24f01c9333701f0f03eed95cffe55a0a78b74f1d06f2f0",
+          "gitBlob": "abc2f8a925eed514d767e3ed3084eaaf523b7a2c"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": false,
+        "sourceSelection": null,
+        "decision": "not a dedicated semantic source input; no broad engine/contracts glob; keep responsibility in historical/parent scope",
+        "behaviorReference": "not-applicable"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "packages/engine/src/ontolearn_engine/worker.py",
+          "bytes": 9314,
+          "sha256": "2fa848aa3a2148e59a24f01c9333701f0f03eed95cffe55a0a78b74f1d06f2f0",
+          "gitBlob": "abc2f8a925eed514d767e3ed3084eaaf523b7a2c"
+        },
+        "actualApprovedPin": null,
+        "decision": "owner supplies approved compatible parent source pin; a4d is compatibility reference only, not automatic adoption; if unchanged verified may reuse exact old bytes, else owner new candidate and review required",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T01 (current sole maintainer; historical a4d bytes are not automatically adopted)",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "scripts/build-engine.mjs",
+      "owner": "T03",
+      "classification": "new-only",
+      "oldGuardIndex": null,
+      "old43Origin": null,
+      "new33SourcePlan": {
+        "origin": null,
+        "role": "new-versioned-wrapper",
+        "futureActualPin": null,
+        "historicalMaterialPins": [
+          {
+            "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+            "path": "scripts/build-engine.mjs",
+            "bytes": 13264,
+            "sha256": "5dab9850ba97e3c5e916ac45386a05f540c671f342f5ebf5c911ccc5e4772894",
+            "gitBlob": "5a3a807c165a0931c02d46de82ec572150651e16"
+          },
+          {
+            "ref": "0ad7e0a75cc4583918b057885631934c0a9bd859",
+            "path": "scripts/build-engine.mjs",
+            "bytes": 1349,
+            "sha256": "c53d704b6cc6ffacde1a1a9c40717bfae32f743cc518a5e3a0729aa2e8ce7341",
+            "gitBlob": "cf7e3d2bc68ea62b610f7b12991d3c1612731225"
+          }
+        ],
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "scripts/build-engine.mjs",
+          "bytes": 13264,
+          "sha256": "5dab9850ba97e3c5e916ac45386a05f540c671f342f5ebf5c911ccc5e4772894",
+          "gitBlob": "5a3a807c165a0931c02d46de82ec572150651e16"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": null,
+          "role": "new-versioned-wrapper",
+          "futureActualPin": null,
+          "historicalMaterialPins": [
+            {
+              "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+              "path": "scripts/build-engine.mjs",
+              "bytes": 13264,
+              "sha256": "5dab9850ba97e3c5e916ac45386a05f540c671f342f5ebf5c911ccc5e4772894",
+              "gitBlob": "5a3a807c165a0931c02d46de82ec572150651e16"
+            },
+            {
+              "ref": "0ad7e0a75cc4583918b057885631934c0a9bd859",
+              "path": "scripts/build-engine.mjs",
+              "bytes": 1349,
+              "sha256": "c53d704b6cc6ffacde1a1a9c40717bfae32f743cc518a5e3a0729aa2e8ce7341",
+              "gitBlob": "cf7e3d2bc68ea62b610f7b12991d3c1612731225"
+            }
+          ],
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "new T03 actual dependency/writer pin required; no guessed future bytes",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": null,
+        "actualApprovedPin": null,
+        "decision": "T03 supplies actual versioned writer or six-direct/26-package lock pin after authorized candidate; update both writer/input ledgers, never reuse old guard value",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    },
+    {
+      "path": "uv.lock",
+      "owner": "T03",
+      "classification": "shared-dependency-conflict",
+      "oldGuardIndex": 19,
+      "old43Origin": {
+        "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+        "path": "uv.lock",
+        "bytes": 28440,
+        "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+        "gitBlob": "337a34ec442b0fabbb9c28fe4599ba7b6cc8b148"
+      },
+      "new33SourcePlan": {
+        "origin": null,
+        "role": "new-six-direct-26-package-dependency",
+        "futureActualPin": null,
+        "historicalMaterialPins": [
+          {
+            "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+            "path": "uv.lock",
+            "bytes": 28440,
+            "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+            "gitBlob": "337a34ec442b0fabbb9c28fe4599ba7b6cc8b148"
+          },
+          {
+            "ref": "0ad7e0a75cc4583918b057885631934c0a9bd859",
+            "path": "uv.lock",
+            "bytes": 23393,
+            "sha256": "9f5b6d2b93d994a3e4f8a46ce5cccae99d4e024ea7531ab62dd8e85d6aa1152e",
+            "gitBlob": "87cb915a5c66a98832edc1756cb8a056cf5cfc4b"
+          }
+        ],
+        "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+      },
+      "mappingOrigin": null,
+      "historicalScope": {
+        "guardVersion": "historical-a4d-43/1",
+        "applicable": true,
+        "sourcePin": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "uv.lock",
+          "bytes": 28440,
+          "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+          "gitBlob": "337a34ec442b0fabbb9c28fe4599ba7b6cc8b148"
+        },
+        "decision": "preserve exact a4d path/bytes under separate historical source/output root; no v3 dependency/source overlays",
+        "behaviorReference": "HIST-83/default-original"
+      },
+      "dedicatedSemanticScope": {
+        "guardVersion": "semantic-v3-33/1",
+        "applicable": true,
+        "sourceSelection": {
+          "origin": null,
+          "role": "new-six-direct-26-package-dependency",
+          "futureActualPin": null,
+          "historicalMaterialPins": [
+            {
+              "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+              "path": "uv.lock",
+              "bytes": 28440,
+              "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+              "gitBlob": "337a34ec442b0fabbb9c28fe4599ba7b6cc8b148"
+            },
+            {
+              "ref": "0ad7e0a75cc4583918b057885631934c0a9bd859",
+              "path": "uv.lock",
+              "bytes": 23393,
+              "sha256": "9f5b6d2b93d994a3e4f8a46ce5cccae99d4e024ea7531ab62dd8e85d6aa1152e",
+              "gitBlob": "87cb915a5c66a98832edc1756cb8a056cf5cfc4b"
+            }
+          ],
+          "sourceOriginStatus": "existing immutable origin or historical ancestor only; actual future composition/guard pin remains null"
+        },
+        "decision": "new T03 actual dependency/writer pin required; no guessed future bytes",
+        "behaviorReference": "SEM-full417/B1/strict-header2"
+      },
+      "parentDefaultScope": {
+        "guardVersion": "parent-default-v3-58/1",
+        "applicable": true,
+        "selectedExistingSourceOrigin": null,
+        "historicalCompatibilityReference": {
+          "ref": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+          "path": "uv.lock",
+          "bytes": 28440,
+          "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+          "gitBlob": "337a34ec442b0fabbb9c28fe4599ba7b6cc8b148"
+        },
+        "actualApprovedPin": null,
+        "decision": "T03 supplies actual versioned writer or six-direct/26-package lock pin after authorized candidate; update both writer/input ledgers, never reuse old guard value",
+        "behaviorReference": "PARENT-profile83/default-legacy-flags-S1+SEM",
+        "owner": "T03",
+        "rootDecision": "exact owner adoption/compatibility disposition and guard pin required before parent build eligibility; no silent dropping or permanent old-flag rejection"
+      }
+    }
+  ],
+  "futureApprovedPins": {
+    "newDependency": null,
+    "newWrapper": null,
+    "newEntrypoint": null,
+    "newD2Consumer": null,
+    "newParentComposition": null,
+    "newSemanticComposition": null,
+    "historicalReplayResourceRoot": null
+  },
+  "metadataOutsideSourceCounts": "profile/schema/collector tool source and all actual environment/archive/RECORD/license evidence are separately pinned approved metadata, not silently added to33/58 canonical/source counts",
+  "executionAuthorization": false
+}

@@ -1,0 +1,32 @@
+{
+  "format": "i05-business-carrier-author-check/1",
+  "argv": [
+    "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+    "-c",
+    "import json,pathlib; p=pathlib.Path('docs/reviews/I05/d2-business-carrier-design/checker-source.json'); exec(compile(json.loads(p.read_text())['source'], str(p), 'exec'))"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+  "envDelta": {
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "sourceTextSha256": "29c733250f94bb4daf5cbac708f82825f3ef4e58f3aa1e6a2f850a0cf368a54f",
+  "staticSourceFullyReadBeforeRun": true,
+  "imports": ["base64", "copy", "hashlib", "json", "pathlib", "re"],
+  "writeScope": "none, stdout only",
+  "exit": 1,
+  "stdout": {
+    "encoding": "lossless-utf8-json",
+    "text": "",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "encoding": "lossless-utf8-json",
+    "text": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"docs/reviews/I05/d2-business-carrier-design/checker-source.json\", line 147, in <module>\nTypeError: unhashable type: 'dict'\n",
+    "bytes": 205,
+    "sha256": "8d5907ae9c437fe9d1e34e00e7697396eba6cfa35d5dd9c616df561527880746"
+  },
+  "productExecuted": false,
+  "modelFunctionsExecuted": false,
+  "schemaEngineValidation": false
+}

@@ -1,0 +1,35 @@
+{
+  "argv": [
+    "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+    "-c",
+    "import json,pathlib; p=pathlib.Path('docs/reviews/I05/d2-business-carrier-design/checker-source-r3.json'); exec(compile(json.loads(p.read_text())['source'], str(p), 'exec'))"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+  "envDelta": {
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "staticReadAndSourceSameAs": "author-check-04.json",
+  "sourceTextSha256": "d2ac619f61f5beae9f4ab54821698bdb90edfdd37c23c5156c37453af7b7f400",
+  "exit": 0,
+  "stdout": {
+    "encoding": "lossless-utf8-json",
+    "text": "{\n  \"evidenceClass\": \"finite-new-design-structure-and-detached-examples-only\",\n  \"old57Immutable\": true,\n  \"D1FixedPlanInputs\": 5,\n  \"definitions\": 52,\n  \"fields\": 251,\n  \"requiredMissingNegatives\": 251,\n  \"extraObjectNegatives\": 39,\n  \"wrongTypeNegatives\": 251,\n  \"completeSyntheticCarriers\": 2,\n  \"hashVectors\": 7,\n  \"finiteGuardCases\": 32,\n  \"normativeNegativeDesigns\": 65,\n  \"legacyMaterials\": 15,\n  \"families\": 13,\n  \"newHeaderRootKeys\": 18,\n  \"unionPackages\": 26,\n  \"ownerConflictPinsStillNull\": 30,\n  \"schemaEngineValidation\": false,\n  \"productExecuted\": false,\n  \"modelFunctionsExecuted\": false,\n  \"independentReview\": \"pending\"\n}\n",
+    "bytes": 639,
+    "sha256": "83209222f3c0a0b465952e5e5c12cf87d7ece0114dbbf764686875ae8d89d25f"
+  },
+  "stderr": {
+    "encoding": "lossless-utf8-json",
+    "text": "",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "priorFailuresPreserved": [
+    "author-check-01.json",
+    "author-check-02.json",
+    "author-check-03.json",
+    "author-check-04.json"
+  ],
+  "productExecuted": false,
+  "modelFunctionsExecuted": false,
+  "schemaEngineValidation": false
+}

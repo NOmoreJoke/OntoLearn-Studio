@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+    "-c",
+    "import json,pathlib; p=pathlib.Path('docs/reviews/I05/d2-business-carrier-design/checker-source-r2.json'); exec(compile(json.loads(p.read_text())['source'], str(p), 'exec'))"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+  "envDelta": {
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "staticReadAndSourceSameAs": "author-check-02.json",
+  "sourceTextSha256": "701a21b3a1e7b8b1aa8d1b13d6409e382ca6919ec2228dde7c44d1fc7ffb5eea",
+  "exit": 1,
+  "stdout": {
+    "encoding": "lossless-utf8-json",
+    "text": "",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "encoding": "lossless-utf8-json",
+    "text": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"docs/reviews/I05/d2-business-carrier-design/checker-source-r2.json\", line 147, in <module>\nAssertionError: c3eb0694daad26527cc3a1eb0127ed5033f2be25\n",
+    "bytes": 230,
+    "sha256": "cee7801c212a4743077a486d6d9d22c06e3f15895e532d62dae3e5bd89479449"
+  },
+  "priorFailuresPreserved": ["author-check-01.json", "author-check-02.json"],
+  "productExecuted": false,
+  "modelFunctionsExecuted": false,
+  "schemaEngineValidation": false
+}
