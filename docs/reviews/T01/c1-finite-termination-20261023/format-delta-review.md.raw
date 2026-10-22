@@ -1,0 +1,42 @@
+# StageB fixture＋格式 delta 独立静态审查
+
+结论：无已证阻断P1/P2。当前三文件相对已完整独审的冻结proposal，仅有指定fixture增加receipt.sampling={diagnosticIncomplete:false}及Prettier格式变化；driver和StageA检查脚本完整规范化AST相同，新finite检查脚本在精确单处fixture补项后完整AST相同。旧classifier6370B逐字不变。可由主方继续最终有限脚本和fullcheck；本报告没有代执行这些检查或签新native通过。
+
+## 输入与本轮方法
+
+前审原件 /tmp/t01-c1-stageB-independent-proposal-review-20261023.md.raw，10975B/1c5976de5d369157aa38f2116f8081fd8e6ec68a4ccd15486f07b78d9be1ef5e，保持不改。根8466B StageB合同f2f81fa927b2b27930abb5fe91b86ed919f2d046831638dfb009c838c9f9ab42不变。
+
+实际比较树 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-finite-termination-20261023 的三路径与 /tmp/t01-c1-finite-termination-proposal-20261023 的三冻结稿。只读本树own node_modules/acorn/dist/acorn.mjs（Acorn8.19.0），以ecmaVersion=latest/sourceType=module解析文本；没有import或执行候选/检查脚本。逐递归去loc/start/end/raw后排序对象键比较完整AST，保所有实际节点、操作符、常量、字符串、属性、函数及语句顺序；三文件无TaggedTemplateExpression，不存在删除template raw掩盖tagged-template语义变化的分支。另核检查稿字符串提取边界及旧classifier实际字节。
+
+fixture只在旧finite检查稿唯一receipt={cleanup:[]}处，于本方内存替换为receipt={cleanup:[],sampling:{diagnosticIncomplete:false}}再parse比较；没有修改树或作者工件。未跑测试/产品/GUI/DB/ps/kill/formatter/fullcheck；仅读取既有raw receipts及双流。首次误将raw目录定位到worktree内导致ENOENT，随后依据实际根outputs路径读取；该读取失败未被当作检查终态，也未改动任何原件。
+
+## 精确身份与完整AST结果
+
+1. tests/e2e/c1-native-macos-driver.mjs：旧56648B/754bd531a520ada295e418a53a9977a9070ca9587fcf3754afd5b8601b738052；当前58047B/bd6e1cdb8828eb0fa04d533e83d439a77365c948ef378fa6d673e960da80554a。完整规范化AST精确相等，AST编码SHA256 d263a82e4a5da99cbee9fd1d34d9e5d4ee33a32e9cefd8ef626ff6e82305787f。
+2. scripts/check-c1-lifecycle-snapshot.mjs：旧8803B/4b2e18a1fdd2bd1e0f0babd3f96cecae6182ebb7c2a48d7e578366caaaee5cef；当前8817B/ca486d4e1e4c5679c82c3989eacb7f211e8e89fe429963df6bedc8e004091c4b。完整规范化AST精确相等，SHA256 a6333b338fc927f4c923ddc371c8f2e426d5efdd389751b1f0a315110c72efe1。
+3. scripts/check-c1-finite-termination.mjs：旧14153B/5eaa99b4ca8277831eb8b50978f7b40d8d82ca1a92f58645a78f139ba946789e；当前17443B/5b9d7ebc63f2ddd8c13368fb459910eddc426579bf0289ee29f399894cd60895。原AST直接比较因新增指定fixture而不同；精确加入上述唯一sampling属性后完整AST相等，SHA256 0c6776a34eec25539f396d8da775c5ab75dbbd44c6a588a69e7d22fd3f191ec9。
+
+交付前重读当前三源，bytes/SHA与本轮初读相同。AGENTS仍15147B/de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4；observer仍13673B/33678a1742bcfb2ed9710ed65a7894ee33f9fb047c4fd2d1743207eabcddf22c。
+
+旧classifier标记间6370B，SHA256仍68238542607e8992a4b58f38fa1b2c82a58bb3bbbbd874fff1de435dfb104c89，和冻结稿逐字相等。A原10组check调用数量及完整断言AST保持，未删条件、改预期或弱化失败。两检查稿用到的真实source标记/函数边界仍唯一命中；driver格式变化没有把提取目标换成副本。
+
+完整driver AST等价同时覆盖本轮关注的hard冲突、historicalUnknown、reported缺74183、candidate闭包、严格后继采样、2s及时证书、firstFailure和原signal/cleanup路径，未出现额外语义delta。因此原整体静态审结论可用于此格式candidate；这不是第二次重签未知OS连续身份或真实运行成功。
+
+## 既有运行原件独立核对
+
+原件根目录 /Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-finite-termination-20261023/raw/。下列每件receipt的实际stdout/stderr bytes及SHA均直接读取核同；均记录同一StageB树cwd和明确argv。
+
+- finite-check-01：node scripts/check-c1-finite-termination.mjs tests/e2e/c1-native-macos-driver.mjs；18:53:00.189590–.246343 UTC，exit1，15passed/1failed。stdout3225B/1d99c4bef5e4197e1964117a0afb0f46e178c0257dd137e885dda0bc68b1d97c。失败为真实cleanup受控用例缺receipt.sampling，读diagnosticIncomplete时TypeError，导致预期natural product termination incomplete未命中。该首败保留，不倒写16passed。
+- finite-check-02：相同argv，18:56:31.065079–.115921 UTC，exit0，16passed。stdout2407B/21c7932f369c11874505c4a2a1cabe4bba9c98ab59b81712901478fadb767726。fixture补项提供真实cleanup读取需要的初始false状态；没有改cleanup实现、错误匹配、signal断言或首因断言。
+- snapshot-check-01：node scripts/check-c1-lifecycle-snapshot.mjs tests/e2e/c1-native-macos-driver.mjs；18:53:00.322347–.362787 UTC，exit0，10passed。stdout1391B/ab8aaddcae602b011bdab47446f0bc155b374a6810e1d8522a7d4d55c49e3f68。
+
+上述三个输出sourceSHA256均绑定原754bd531...冻结driver，而非当前格式后bd6e1cdb...。AST等价证明限定语义delta，不把这些旧运行原件冒称为当前最终格式字节已经执行；主方计划的最终两脚本重验仍需真实终态。
+
+- format-check-01：本树node node_modules/prettier/bin/prettier.cjs --check，恰三路径；18:56:31.194441–.447820 UTC，exit1。stdout23B/ebe82dad128d5e5d8936334ceac09492f3c60bd9e0b4a16cc7fd7075513b33de；stderr215B/3b68bbaf720ab3aa9f04ee5399c1d868b70805ff72d0c726a504147838354d29，列三文件格式warning，无产品运行。
+- format-write-01：同own prettier --write恰三路径；18:56:42.404059–.622188 UTC，exit0。stdout132B/4091df00f6082017688edd9df591233e291a287223926dea1e139f3433525164；stderr0B/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855。write命令成功不能替代后续check或产品结果。
+
+原raw捕获器身份均87937663b03f2a2043685dbb02e6e5213288dcdd9ef6643659ae8645e92c9572。本报告仅核产生的argv/cwd/exit/双流及其输入sourceSHA，未据receipt自报就代运行。
+
+## 最终边界
+
+无阻断项、无必修新增语义修改。允许主方依现有窗口继续final有限脚本＋完整check；这不授权额外OS研究、产品或observer改写，也不替指定双审、新native两dialog/三health/自然close与全闭包运行验收。旧650/native02/native03及首fixture/格式失败全部保持。

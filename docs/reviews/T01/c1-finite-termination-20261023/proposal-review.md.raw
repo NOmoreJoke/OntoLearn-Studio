@@ -1,0 +1,68 @@
+# Stage B 有限终止草案独立静态复核
+
+结论：对下列冻结输入的完整静态阅读，未发现需要阻止应用的已证 P1/P2。可以交主方决定是否将此精确草案应用为新 candidate，再执行获准检查；本报告不签语法、格式、受控脚本或原生运行通过。旧650/native02/native03仍为失败，第三renderer74183未绑定的旧事实仍阻断整run闭包，不能套用新证书回填。
+
+## 1. 本轮边界及实际方法
+
+根指定 StageB 合同全文：iteration-control/2026-10-21-weekly-release/.private/T01-C1-stageB-finite-termination-controller-audit-20261023.md，8466B，SHA256 f2f81fa927b2b27930abb5fe91b86ed919f2d046831638dfb009c838c9f9ab42。复核以该新合同1–6为准：允许历史displayUnknown与有限终止事实并存，未要求把所有opaque瞬态证明为合法exec。不能将旧“displayMismatch必须由原close解释”直接套为新有限helper事实的否决条件。
+
+全文读取 /tmp/t01-c1-finite-termination-proposal-20261023 下 driver、完整补丁、两份检查稿、manifest及summary。summary仅作导航，以下判断均核对实际源与联动。使用本方常驻Node工具作文件读取、字符串比较、SHA256和内存统一diff重建；未import、语法解析、求值或执行候选及检查脚本，未启动任何新进程、ps/kill、产品、DB、GUI、网络端口或OS/ABI探针。未与作者交流，未改作者工件或任何树，仅新增本报告。
+
+基线树 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-finite-termination-20261023；指定base c268408d295cdae7aecae5dc9e52438b98bad024。读后保护实核：AGENTS.md15147B/de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4；树内driver仍41805B/1aa5a89f7e6384adf71ffc7fa6e4902f40e29d4d1b4d3521e26eb6adf41a23bf；observer13673B/33678a1742bcfb2ed9710ed65a7894ee33f9fb047c4fd2d1743207eabcddf22c；StageA检查8533B/9e762783f0479308d8196c585a00e2e89c3ca50658ab0f858d7709b2de675f07。候选尚未应用。未将读取保护文件等同于全树Git状态审计。
+
+## 2. 冻结输入身份
+
+目录统一为 /tmp/t01-c1-finite-termination-proposal-20261023/。
+
+- driver-proposed.mjs：56648B / 754bd531a520ada295e418a53a9977a9070ca9587fcf3754afd5b8601b738052。
+- proposal.patch：34980B / 1cd3b1efe249f1494c30bfba1f197ea8847b687ef73c706bce3e8b8368c7397d。
+- check-c1-lifecycle-snapshot-proposed.mjs：8803B / 4b2e18a1fdd2bd1e0f0babd3f96cecae6182ebb7c2a48d7e578366caaaee5cef。
+- check-c1-finite-termination-proposed.mjs：14153B / 5eaa99b4ca8277831eb8b50978f7b40d8d82ca1a92f58645a78f139ba946789e。
+- summary.md：6040B / 92cadb1475a3f8d6c9c78fa872d48bf7919efcf4a2c642f3bdec3c2aa897b5d9。
+- manifest.json：1148B / a15cc750f0c4126879cea2117524457b16aac6d7ddb1df2504faa1f2af3e7495。
+
+内存重建逐条检查旧行、上下文、hunk行数和输出字节；9个driver hunk、2个StageA检查hunk、1个新检查hunk全部精确重建上述冻结文件。补丁恰好三路径：tests/e2e/c1-native-macos-driver.mjs、scripts/check-c1-lifecycle-snapshot.mjs、scripts/check-c1-finite-termination.mjs。无observer、产品、旧spec、锁文件或超时参数改动。
+
+## 3. 合同1–3：身份、不可变快照及后继absence
+
+候选driver89–284旧classifier块完整SHA256仍68238542607e8992a4b58f38fa1b2c82a58bb3bbbbd874fff1de435dfb104c89。原resolvedTerminal/unexplainedDisplay/displayMismatch、原signal规则和原始行不被改写为“已解释”；新增块286–376另记historicalUnknown、originalClosedNaturally、absentAtValidSample、finiteTerminationEstablished及证书。helper的originalClosedNaturally是null，证书文字明确未观察其独立退出码，未借main close伪造helper close。
+
+updateEntry852–893保持StageA单次Date.now和单次structuredClone生命周期，再把同一快照传给旧classifier和新有限投影并记录transition。没有恢复可变lifecycle引用或把消费时刻当行采集时刻。finiteObservation296–325取最后任何present样本ended与原close接收的最大值；full-table started必须严格更晚，跨close或started等于close/last-present均不满足。targeted present也由recordSampling776–781计入finiteLastPresentEndedMs；空targeted结果不伪装为全表absence。
+
+birthMismatch、argvBirthConflict、完整绝对comm从一绝对路径变另一绝对路径、生命周期error/非0/signal/乱序close、诊断不全及有限终止后重现均进入sticky finiteHardConflict；后继缺行不能消除。原consumeEvent562–607仍将本方原ChildProcess file/完整argv变化、重复或close后事件记error并立即fail。target command=只作为原始诊断记录，不被当作新的ownership或连续exec认证；本轮没有凭字符串拆分制造OS身份结论。
+
+原adopt及原signal分支本身保持字节未改；finiteObservation只进一步压低signalEligible。旧quarantine/close/exit/birth不合格条目仍不能充当新可信亲缘根；有限投影也未把historicalUnknown条目重新加入ownedNow。post-certificate row或birth冲突仍fail且无signal。
+
+## 4. 合同4：整run闭包及采样绑定
+
+processTable379–440保/bin/ps、原argv、LC_ALL=C、2s及4MiB限制，新增原stdout/stderr Buffer长度和SHA256、UTF8 fatal校验、parse、exit/signal/timeout/truncation、scope/queriedPids、序号及起止。全表必须有runner锚点；目标exit1只有未被杀、无signal、有效UTF8、stdout空且stderr空才作原合法absence分支。错误/parse失败/缺锚点进入原tableFor失败及diagnosticIncomplete，不转换为absence。
+
+receipt533–535以已实际计算的inputs逐件fingerprint数组编码生成inputSourceHash。采样record和失败metadata携带同hash；证书复制fullTable和独立knownPidCheck的完整metadata。证书要求后者started不早于前者ended、序号更大、精确查询同一排序known集合、合法空结果，未以端口或ownExecutableRows空数组替代已知PID核算。输入源hash仍在最终原fingerprint门复核；这些哈希是来源绑定，不声称完整ps原stdout逐字另存了一个文件。
+
+finiteScope682–698只由已建立direct-spawn原raw comm减固定ASCII同树Electron suffix，保存原行、衍生方法、raw边界前缀与预期exe fingerprint，未拿Unicode路径直接includes比较。无法派生就fail。finiteClosureRows700–710每次处理全表，发现未知PID且ppid为known，或原raw同树路径命中，记永久unbound-candidate并不加入known；因此模糊父项下的新row不会被“已知集合后来都消失”洗掉。新未知候选的后代若无结构关联不被虚构归属，有限结论也不扩为任意逃逸子孙保证。
+
+tryFiniteClosure732–773在main已原自然关闭后列出所有reported与未绑定项；reported未入known立即永久fail。当前known有行、ownExecutableRows有行、scope缺失、hardFailure、diagnosticIncomplete都会阻断生成。随后才作独立精确knownPID查询和原inspector endpoint辅助settled观察。端口限定原记录localhost endpoint，200ms结果不代替PID。全闭包certificate克隆不可变输入；有限投影每个条目均成立才发布全局certificate。
+
+已特别核旧03的reported7/known6语义：finiteRunClosed368–376既比较当前known集合与证书known集合，也逐核当前reported均被覆盖；多出74183即false。tryFiniteClosure同时将reported-unbound永久写硬账，不会因主进程close、三个unknown条目有后继absence或后来target查空自动补认该renderer归属。
+
+finite证据容量门661–680、sampling容量门775–817、closure容量门744–751均将截断/超限记diagnosticIncomplete或hard failure；不能为了记录为空就视闭包成功。有限结论只限这些明确采样区间与已建立owned集合，不证明模糊期间从未exec、所有时刻连续身份或未来永不重现。
+
+## 5. 合同5–6：2s免报、首因及原恢复/收尾
+
+projectFiniteTermination342–366首次证书必须在既有quarantine起点后且严格小于2000ms；direct/main-child还核本方自然close和更晚full-table开始。已有及时证书可保留历史有限事实，不能用迟到的新证书替无证超时条目通过。updateEntry875–879仅对旧reason恰为quarantine-unresolved且当前整run仍finiteRunClosed时免生成新的错误；未删除旧classifier reason，不免birth/生命周期/诊断等错误。
+
+fail546–554只保首因；finally1347仍有firstFailure即machineOutcome=failed，未新增清除分支。先前timeout/observer失败/hard冲突不能被晚到证书洗绿。cleanup1052/1100仍有初始和最终完整sample，任何本方cleanup signal先记testCleanupSignalled并fail；最终需要自然tracked absence且无testsignal。有限证书未赋quarantined/unknown新signal资格。
+
+原4CLI、120000ms运行、300000ms cleanup、2s quarantine、真实inspector注入与关闭、两次dialog/三代窗口/health原observer路径未改。未附rendererCDP，未改hang monitor/sandbox，未stub对话框或产品清理。finally1316以后仍独立收observer文件并保recoveryOutcome，即使driver首因已失败；main和原engine close门及外部真实CUA证据要求均保留。旧run文件或650没有补丁写入路径。
+
+## 6. 两份专属检查稿的真实覆盖与限制
+
+StageA适配稿只增加有限块提取并交同一VM；从首条check到最终输出/exit的整段与原8533B脚本逐字相同。10组原检查数量与所有断言保留，没有删掉run02/run03旧resolvedTerminal仍false等断言。
+
+新稿16组读取调用者明确指定的真实source，按边界截取旧classifier、新有限块、updateEntry、fail、scope、processTable、cleanup、finiteFailure；没有复制一份另外的classifier冒充候选。它们计划覆盖full/target完整性、close交叉、原close与helper事实分账、硬冲突、reported74183缺口、candidate和raw前缀、容量、firstFailure与signal等。execFile/process.kill在未来受控提取用例中是显式替身，不会通过import启动CLI。
+
+这些是已写断言，不是已通过证据；提取函数用例也不等于完整driver调度/真实系统联动。尤其实际tryFiniteClosure/sample整体的异步顺序、实际ps表示、端口settled结果、真实reported是否完整及原两dialog/三health，仍需主方应用精确candidate后按获准窗口核。检查不能给旧03缺失74183补造ownership，也不能仅依summary列出的覆盖名就宣布原生成功。
+
+## 7. 处置及交付边界
+
+本轮无已证必修P1/P2；不要求为静态审查另添OS门或扩大writer。建议主方继续精确应用审批、语法/格式与受控专属检查，保留首次失败和实际终态，再依根安排新native窗口。若应用、格式或修订改变上述driver/检查身份，当前静态结论需按实际delta复核。指定独立双审及实际新native验收均不由本报告替代。

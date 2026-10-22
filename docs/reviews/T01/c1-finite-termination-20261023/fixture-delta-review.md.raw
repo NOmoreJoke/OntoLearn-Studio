@@ -1,0 +1,57 @@
+# C1 Stage B cleanup fixture单行delta独立静态复核
+
+结论：**拟议唯一fixture修正静态无阻断，符合真实receipt契约，未改驱动语义或弱化原断言。** 当前已读真实运行仍是首跑15/16、exit1；本审没有执行/import/解析JavaScript，也没有修改任何tree，修后通过须由主线实际运行记录。整体B算法/GUI/native/真实signal授权不是本次局部复核范围。
+
+## 1. 固定读取输入
+
+- `/tmp/t01-c1-finite-termination-proposal-20261023/check-c1-finite-termination-proposed.mjs`：14153B/SHA `5eaa99b4ca8277831eb8b50978f7b40d8d82ca1a92f58645a78f139ba946789e`，重点134–152组。
+- 已应用driver `tests/e2e/c1-native-macos-driver.mjs`：56648B/SHA `754bd531a520ada295e418a53a9977a9070ca9587fcf3754afd5b8601b738052`，实际读取487–535初始化和1049–1113 cleanup。
+- proposal.patch：34980B/SHA `1cd3b1efe249f1494c30bfba1f197ea8847b687ef73c706bce3e8b8368c7397d`；manifest.json1148B/SHA `a15cc750f0c4126879cea2117524457b16aac6d7ddb1df2504faa1f2af3e7495`。
+
+上述读取/静态核验工具e2eb63、0a7ae4、b683d0；无Node/VM/产品调用。三件应用文件与各自提案源均逐字节一致，见第4节。
+
+## 2. 真实receipt契约及唯一修正
+
+真实run先在487行构造receipt（含cleanup:[]），然后525–532行同步初始化receipt.sampling，内含byteLimit、tailLimit、transitionLimit、tail、transitions，且531行明确`diagnosticIncomplete: false`；此初始化在cleanup运行前完成。
+
+cleanup1068与1073行直接读取`receipt.sampling.diagnosticIncomplete`。134组fixture原137行仅给`receipt={cleanup:[]}`，其sample/recordSampling均为noop，不会补该结构。因此在1068信号资格门处先抛TypeError，而不是到达预期的“测试清理仍不是自然产品成功”末端断言。
+
+拟议单一修正严格为：
+
+```js
+receipt={cleanup:[]}
+// →
+receipt={cleanup:[],sampling:{diagnosticIncomplete:false}}
+```
+
+这是抽取cleanup所需的最小合法sampling投影，值与真实初始化一致；并未给真实运行的未知/不全采样降级，也未修改production gate为optional chaining或默认false。该synthetic case专测诊断完整、identity允许时的测试signal失败后果；它不冒充真实ps/kill/native证据。
+
+仅做普通文本单次替换后，第134组其它文本完全一致；五个assert调用保留：`assert.rejects(.../natural product termination incomplete/)`、signals===1、testCleanupSignalled===true、failures[0]仍匹配test cleanup signal attempted、firstFailure.message仍为original first。没有把期望改为TypeError、删除断言或将signal清理判为成功。
+
+静态路径推导：补字段后sampling门允许此已设signalEligible的synthetic条目进入原fresh-identity/recordSampling段，stub kill只增加计数并改变absent；原naturalTrackedProcessesAbsent在signal之前已为false，最终1110行的自然成功条件仍拒绝。原firstFailure对象不会因后续terminal事实清零。此为源码可达性推导，**不是本审实际运行结果**。
+
+若主线严格实施上述单次文本替换且不混入其它修改，检查脚本的纯文本预测身份为 **14191B/SHA `94c494ce3d4bffc8e50f258896ff212d61760634e3412d05459cc690f0f97cc4`**。本审未将该预测内容写入任何tree、未解析或执行，不能把预测hash当修后测试通过。
+
+## 3. 首失败原件已实际读取
+
+主线原件目录：`/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-finite-termination-20261023/`。
+
+`raw/finite-check-01/receipt.json`882B/SHA `8e5ae6b001006730b08947cdb69bbebbe1c4e29ad076469132cfb2475e3a3f05`记录实际argv为node scripts/check-c1-finite-termination.mjs tests/e2e/c1-native-macos-driver.mjs、原tree cwd、UTC起止与exitCode1。stdout.raw3225B/SHA `1d99c4bef5e4197e1964117a0afb0f46e178c0257dd137e885dda0bc68b1d97c`实记16项中15passed，唯134组failed，原因是期望natural product termination incomplete，却收到`TypeError: Cannot read properties of undefined (reading 'diagnosticIncomplete')`。stderr.raw为0B/空SHA。三件实际字节与receipt所列hash核同；原始首失败不改写、不用未来修后结果覆盖。
+
+原A10通过是主线给定背景；本审未另读其运行raw或重跑，只核其8803B冻结源与应用副本一致。此处不把该背景扩大为本审运行验证或B最终接收。
+
+## 4. patch载体问题与精确采用
+
+已实际读取`patch-transport-first-failure.json`1076B/SHA `256023f78212a2c0816c48e5b07bc63273174456dc8c45d61ec288540bd11f58`。原记录argv为git apply --check原proposal.patch，exitCode1，stderr逐字为`error: dev/null: No such file or directory\n`；随后方法记为copy三件已独审冻结源，原patch未改。
+
+静态核原patch374行起的新文件段：diff --git的a/b名字是scripts/check-c1-finite-termination.mjs，旧文件头为`--- /dev/null`，但无`new file mode`元数据。与原记录按dev/null查找失败相符，属于新增文件patch头传输/识别问题，不是JavaScript语义检查失败。本审未重跑git apply，也未验证“仅加mode头”是所有Git版本上的唯一修复；不将这点外推成通用Git规范断言。
+
+更直接的采用身份核验：从该新文件hunk纯文本重构payload，恰等于原14153B提案脚本；三件实际采用副本亦逐字节匹配：
+
+| 提案源 → 应用路径 | bytes | SHA256 |
+| --- | ---: | --- |
+| driver-proposed.mjs → tests/e2e/c1-native-macos-driver.mjs | 56648 | 754bd531a520ada295e418a53a9977a9070ca9587fcf3754afd5b8601b738052 |
+| check-c1-lifecycle-snapshot-proposed.mjs → scripts/check-c1-lifecycle-snapshot.mjs | 8803 | 4b2e18a1fdd2bd1e0f0babd3f96cecae6182ebb7c2a48d7e578366caaaee5cef |
+| check-c1-finite-termination-proposed.mjs → scripts/check-c1-finite-termination.mjs | 14153 | 5eaa99b4ca8277831eb8b50978f7b40d8d82ca1a92f58645a78f139ba946789e |
+
+因此该次copy采用没有改变三件受审源码；不能把patch transport失败称为源码改动，也不把copy成功称为检查成功。本次仅认可后续唯一fixture字段补齐，保留原15/16与transport失败原件，等主线修后实际验证。
