@@ -1,0 +1,34 @@
+{
+  "format": "T03-independent-review-own-tool-recovery/1",
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+  "source": "recovered from this independent agent own tool-call input and own tool output; newly written recovery files, not original on-disk scripts/logs, no backdated timestamps",
+  "validation": "script copies statically compile; no extra execution in recovery step; original controlled mock invocations returned exit0",
+  "records": [
+    {
+      "script": "00-initial-alias-miss.py.raw",
+      "stdout": "00-initial-alias-miss.stdout.raw",
+      "toolOutputChunk": "b19d26",
+      "pythonArgv": ["/Users/kyle/.local/bin/python3.12", "-"],
+      "exitCode": 0,
+      "meaning": "observer compared unresolved target to resolved site root, so /var alias missed; no positive F2 reproduction claim"
+    },
+    {
+      "script": "01-32d943-confirmation.py.raw",
+      "stdout": "01-32d943-confirmation.stdout.raw",
+      "toolOutputChunk": "eafcfb",
+      "pythonArgv": ["/Users/kyle/.local/bin/python3.12", "-B", "-"],
+      "exitCode": 0,
+      "meaning": "resolved temp root, frozen32d943; proves broad first read and split source/code snapshot"
+    },
+    {
+      "script": "02-830cdd-confirmation.py.raw",
+      "stdout": "02-830cdd-confirmation.stdout.raw",
+      "toolOutputChunk": "260283",
+      "pythonArgv": ["/Users/kyle/.local/bin/python3.12", "-B", "-"],
+      "exitCode": 0,
+      "meaning": "frozen830cdd; oversized source rejects before returning bytes; successful row derived from one bounded snapshot"
+    }
+  ],
+  "stderr": "tool outputs contain no separate stderr for these successful invocations; no synthetic original stderr file created",
+  "limits": "only stdlib reader execution and fake distribution in temporary directory; no prepare/finalize/PyInstaller/semantic/native/GUI/parity"
+}

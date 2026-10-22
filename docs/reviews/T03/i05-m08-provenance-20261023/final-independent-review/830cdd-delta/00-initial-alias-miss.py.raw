@@ -1,0 +1,36 @@
+import importlib.util, sys, tempfile, pathlib, hashlib, json
+path=pathlib.Path('packages/engine/src/ontolearn_engine/semantic_build_provenance.py')
+spec=importlib.util.spec_from_file_location('review_private_reader',path)
+p=importlib.util.module_from_spec(spec);sys.modules[spec.name]=p;spec.loader.exec_module(p)
+with tempfile.TemporaryDirectory(prefix='t03-review-mock-') as directory:
+    env=pathlib.Path(directory)/'env';site=env/'site';info='html5rdf-1.2.1.dist-info'
+    (site/info).mkdir(parents=True);(site/'html5rdf').mkdir()
+    (site/info/'METADATA').write_bytes(b'Name: html5rdf\nVersion: 1.2.1\n')
+    (site/info/'LICENSE').write_bytes(b'license')
+    target=site/'html5rdf/__init__.py'
+    class Dist:
+        version='1.2.1';files=[info+'/METADATA',info+'/LICENSE','html5rdf/__init__.py']
+        def locate_file(self,x):return site/x
+    p.importlib.metadata.distribution=lambda _:Dist()
+    p.sysconfig.get_path=lambda _:str(site)
+    sys.prefix=str(env)
+    original_read=p._read
+    reads=[]
+    def observed(path,cap):
+        raw=original_read(path,cap)
+        if path==target:reads.append({'cap':cap,'returnedBytes':len(raw)})
+        return raw
+    p._read=observed
+    target.write_bytes(b'#'+b'x'*p.CODE_CAP)
+    try:p._dist_inventory('html5rdf','1.2.1')
+    except p.BuildProvenanceFault as error:print(json.dumps({'case':'source-cap','reads':reads,'eventualRejection':str(error)}))
+    old=b'VALUE = 1\n';new=b'VALUE = 2\n';target.write_bytes(old);reads.clear()
+    def changed(path,cap):
+        raw=original_read(path,cap)
+        if path==target:
+            reads.append({'cap':cap,'returnedBytes':len(raw)})
+            if len(reads)==1:target.write_bytes(new)
+        return raw
+    p._read=changed
+    row=p._dist_inventory('html5rdf','1.2.1')['files'][0]
+    print(json.dumps({'case':'split-source-code','reads':reads,'sourceHashIsOld':row['sha256']==hashlib.sha256(old).hexdigest(),'codeHashIsNew':row['codeSha256']==p._code_sha(p._compiled(new)),'codeHashMatchesRecordedSource':row['codeSha256']==p._code_sha(p._compiled(old))}))
