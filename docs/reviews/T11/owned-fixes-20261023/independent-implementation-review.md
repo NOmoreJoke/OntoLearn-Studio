@@ -30,14 +30,14 @@
 
 ## W1–W6 静态核对
 
-| 工作包 | 本候选依据与判断 | 仍保留的边界 |
-| --- | --- | --- |
-| W1 比较与真人口径 | `verify.ts:218–245,911–1011,1056–1078`：v3/case、外部源 hash、两迁移 case literal g6-conflict；六层非空仅限 G.6，facts/ownership 模板边界保留；全部 22 MIGRATION_CHECKS 未删。`verify.ts:885–905` 与 user-study 第 25–29 行：八步 core 与 transferCompleted、独立迁移和实际辅助分记。 | 领域 payload 完整性和真实尝试先后仍须正式 adapter/原件；不自动裁决 F01/F16，不将新目录或换输入恢复独立资格。 |
-| W2 服务与基线 | `verify.ts:14–45,562–579,843–860`：批准 Q9 tuple/source SHA 与独立 freeze 同时匹配；evidence 固定唯一 manifest SHA、PRD SHA、版本和精确 17 路径。实际读取 decisions 第 21–29 行，原件 hash 为 `def9817d…d84a7`；固定 873 Git manifest hash 为 `aaaef2c0…ac39e`，与常量一致。 | 静态来源约束不证明服务可用或 API 评估；内容 hash 仍来自 T09 唯一 manifest，没有复制第二权威基线。 |
-| W3 IO 与分支 | `verify.ts:345–450`：打开后 fstat、限额后分配、readExact 有界循环、同 fd hash/结构、结束额外字节和元数据检查、finally close；CLI 第 12–16 行先 readJsonFile 再 parse/schema。`:1067–1077` 显式缺目的资产 fail/continue；第二次 schema parse 已删，finite(now) 保留。 | O_NOFOLLOW/O_NONBLOCK 依平台能力；祖先目录稳定条件明确，未声称消除全部竞争。工程 16MiB/8GiB 不当 Q5。 |
-| W4 collector | Mac 全部外部系统命令使用绝对路径，pending/step、EXIT/信号失败标记及最终 complete；Windows 状态/步骤和首次 raw 分开保留，PE helper 在读取前核 64 字节 DOS 和 offset 范围，异常固定为 PE_INVALID。 | 本审者未运行 bash-n、PowerShell 或目标 collector；Windows、Mac 成功/失败/防覆盖仍须获批目标运行。marker 不等于签名或原生通过。 |
-| W5 来源与回退 | `verify.ts:777–804`：严格 collectorStatus 和 check 绑定，同包声明引用字节均读/核 hash，包 hash 必须等于候选；恢复及每上一版资产报告新增两项具名回退 check。 | 工具不解析 T03 清单成员或认证安装/解包原件；真实同包关系仍待独立原件对照，不能仅此关闭 M-F-H②。不实现第二恢复器。 |
-| W6 信任/流程 | README 明确结构与签名链、墙钟、祖先竞争/同包来源边界；user-study 明确原件核验责任；acceptance 区分默认四 skip/显式固定探针、oracle actual、fresh 双指定门。 | 当前 status 未同步，见 R1；旧报告/JSON 原样保留。所有原 57 P0、1000轮/每轮1000动作、双目标、模型、真人、CI/合并/渠道门仍有效。 |
+| 工作包            | 本候选依据与判断                                                                                                                                                                                                                                                                      | 仍保留的边界                                                                                                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| W1 比较与真人口径 | `verify.ts:218–245,911–1011,1056–1078`：v3/case、外部源 hash、两迁移 case literal g6-conflict；六层非空仅限 G.6，facts/ownership 模板边界保留；全部 22 MIGRATION_CHECKS 未删。`verify.ts:885–905` 与 user-study 第 25–29 行：八步 core 与 transferCompleted、独立迁移和实际辅助分记。 | 领域 payload 完整性和真实尝试先后仍须正式 adapter/原件；不自动裁决 F01/F16，不将新目录或换输入恢复独立资格。                   |
+| W2 服务与基线     | `verify.ts:14–45,562–579,843–860`：批准 Q9 tuple/source SHA 与独立 freeze 同时匹配；evidence 固定唯一 manifest SHA、PRD SHA、版本和精确 17 路径。实际读取 decisions 第 21–29 行，原件 hash 为 `def9817d…d84a7`；固定 873 Git manifest hash 为 `aaaef2c0…ac39e`，与常量一致。          | 静态来源约束不证明服务可用或 API 评估；内容 hash 仍来自 T09 唯一 manifest，没有复制第二权威基线。                              |
+| W3 IO 与分支      | `verify.ts:345–450`：打开后 fstat、限额后分配、readExact 有界循环、同 fd hash/结构、结束额外字节和元数据检查、finally close；CLI 第 12–16 行先 readJsonFile 再 parse/schema。`:1067–1077` 显式缺目的资产 fail/continue；第二次 schema parse 已删，finite(now) 保留。                  | O_NOFOLLOW/O_NONBLOCK 依平台能力；祖先目录稳定条件明确，未声称消除全部竞争。工程 16MiB/8GiB 不当 Q5。                          |
+| W4 collector      | Mac 全部外部系统命令使用绝对路径，pending/step、EXIT/信号失败标记及最终 complete；Windows 状态/步骤和首次 raw 分开保留，PE helper 在读取前核 64 字节 DOS 和 offset 范围，异常固定为 PE_INVALID。                                                                                      | 本审者未运行 bash-n、PowerShell 或目标 collector；Windows、Mac 成功/失败/防覆盖仍须获批目标运行。marker 不等于签名或原生通过。 |
+| W5 来源与回退     | `verify.ts:777–804`：严格 collectorStatus 和 check 绑定，同包声明引用字节均读/核 hash，包 hash 必须等于候选；恢复及每上一版资产报告新增两项具名回退 check。                                                                                                                           | 工具不解析 T03 清单成员或认证安装/解包原件；真实同包关系仍待独立原件对照，不能仅此关闭 M-F-H②。不实现第二恢复器。              |
+| W6 信任/流程      | README 明确结构与签名链、墙钟、祖先竞争/同包来源边界；user-study 明确原件核验责任；acceptance 区分默认四 skip/显式固定探针、oracle actual、fresh 双指定门。                                                                                                                           | 当前 status 未同步，见 R1；旧报告/JSON 原样保留。所有原 57 P0、1000轮/每轮1000动作、双目标、模型、真人、CI/合并/渠道门仍有效。 |
 
 ## 测试审阅及后续验证
 
@@ -49,26 +49,26 @@ IO 小文件模拟覆盖解析前限额、非 regular、增长、短读、读异
 
 下表仅记本轮静态观察，不作正式关闭；全部维持 **open**，原 M NotPass 保留。
 
-| 原项 | 原级别 | 本轮观察 | 状态 |
-| --- | --- | --- | --- |
-| M-F-A | 高 | v3/外部 case pin/G.6 双向固定已实现；模板拒恢复。 | open |
-| M-F-B | 中 | Q9 source/批准 tuple/freeze pin 已实现。 | open |
-| M-F-C | 中 | evidence 固定 profile/17 路径已实现。 | open |
-| M-F-D | 低 | 八步及 transfer 条件保留，独立成功分记；不采仅七步放宽。 | open |
-| M-F-E | 低 | acceptance 四 skip 与历史结果已澄清；status 待 R1。 | open |
-| M-F-F | 低 | 恢复/逐旧资产具名两项新增 check。 | open |
-| M-F-G | 低 | 主持人与独立验收原件责任明确；工具只 hash record。 | open |
-| M-F-H | 低 | 状态/PE/同包 check 已实现；真实 T03 来源对照待验。 | open |
-| M-F-I | 低 | 结构/声明不等于签名与实质格式的边界明确。 | open |
-| M-F-J | 低 | 当前墙钟及来源/偏差责任明确；工具不认证时钟。 | open |
-| M-F-K | 低 | 旧记录保留；新唯一当前入口待 R1。 | open |
-| M-F-L | 中 | 首 38 raw 缺口须在当前入口分列，待 R1。 | open |
-| Z-F1 | P4 | 重复 schema parse 删除，finite 保留。 | open |
-| Z-F2 | P4 | CLI/普通/大文件/结构同 fd 与限额实现，祖先条件明示。 | open |
-| Z-F3 | P4 | 缺目的资产显式 fail/continue，建议补直接断言。 | open |
-| Z-F4 | P4 | Mac 系统命令绝对路径覆盖最前门与 xcrun。 | open |
-| Z-F5 | P4 | PE 长度/offset 界限与固定错误；真实 Windows 未验。 | open |
-| Z-F6 | P4 | 保半成品/失败原件并拒无 complete；目标运行未验。 | open |
+| 原项  | 原级别 | 本轮观察                                                 | 状态 |
+| ----- | ------ | -------------------------------------------------------- | ---- |
+| M-F-A | 高     | v3/外部 case pin/G.6 双向固定已实现；模板拒恢复。        | open |
+| M-F-B | 中     | Q9 source/批准 tuple/freeze pin 已实现。                 | open |
+| M-F-C | 中     | evidence 固定 profile/17 路径已实现。                    | open |
+| M-F-D | 低     | 八步及 transfer 条件保留，独立成功分记；不采仅七步放宽。 | open |
+| M-F-E | 低     | acceptance 四 skip 与历史结果已澄清；status 待 R1。      | open |
+| M-F-F | 低     | 恢复/逐旧资产具名两项新增 check。                        | open |
+| M-F-G | 低     | 主持人与独立验收原件责任明确；工具只 hash record。       | open |
+| M-F-H | 低     | 状态/PE/同包 check 已实现；真实 T03 来源对照待验。       | open |
+| M-F-I | 低     | 结构/声明不等于签名与实质格式的边界明确。                | open |
+| M-F-J | 低     | 当前墙钟及来源/偏差责任明确；工具不认证时钟。            | open |
+| M-F-K | 低     | 旧记录保留；新唯一当前入口待 R1。                        | open |
+| M-F-L | 中     | 首 38 raw 缺口须在当前入口分列，待 R1。                  | open |
+| Z-F1  | P4     | 重复 schema parse 删除，finite 保留。                    | open |
+| Z-F2  | P4     | CLI/普通/大文件/结构同 fd 与限额实现，祖先条件明示。     | open |
+| Z-F3  | P4     | 缺目的资产显式 fail/continue，建议补直接断言。           | open |
+| Z-F4  | P4     | Mac 系统命令绝对路径覆盖最前门与 xcrun。                 | open |
+| Z-F5  | P4     | PE 长度/offset 界限与固定错误；真实 Windows 未验。       | open |
+| Z-F6  | P4     | 保半成品/失败原件并拒无 complete；目标运行未验。         | open |
 
 owner 修 R1 或追加测试后须以精确新差异补复核；无变化部分不机械重审。随后新同候选两份完整指定审查、真实终态/全文收件/全部意见处理及原 CI、正常合并和远端核验要求均不变。
 

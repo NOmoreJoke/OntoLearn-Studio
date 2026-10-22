@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "timezone": "Asia/Shanghai",
+  "baseSha": "692077da9754a303915798789b7b0c5b4f609125",
+  "implementationTestedSha": "33894063fcf17bc865f4c91556a8ca01845812e7",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes",
+  "branch": "feature/weekly-t11-review-fixes",
+  "currentGuideSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+  "independentReview": {
+    "originalCommit": "add745e851984f2c4f8397c32709278ffd0cd073",
+    "integratedCommit": "ab6b4385",
+    "path": "independent-implementation-review.md",
+    "scope": "All 640cf code/test/docs differences + fixed338 tests/status delta; static only, not runtime-log authentication or designated review",
+    "residualNewFindings": 0,
+    "ownerFormatting": "Only Markdown table padding/delimiter widths; prose and table-cell text compared unchanged; original preserved in source commits"
+  },
+  "commands": [
+    {
+      "command": "T11_FIXED_BASELINE_PROBE=1 node_modules/.bin/vitest run tests/unit/t11-release.test.ts tests/unit/t11-release-io.test.ts",
+      "log": "cli-assertion-repaired-unit.log",
+      "exitCode": 0,
+      "passed": 109,
+      "skipped": 0,
+      "fixedProbes": 4
+    },
+    {
+      "command": "T11_FIXED_BASELINE_PROBE=1 npm run check",
+      "log": "cli-assertion-repaired-full-check.log",
+      "exitCode": 0,
+      "typeScriptPassed": 739,
+      "pythonPassed": 1052,
+      "build": true,
+      "ruff": true,
+      "fixedProbeFlagExplicit": true
+    },
+    {
+      "command": "node_modules/.bin/eslint --no-ignore --ignore-pattern '!scripts/release/**' scripts/release/verify.ts scripts/release/verify-release.mjs tests/unit/t11-release.test.ts tests/unit/t11-release-io.test.ts",
+      "log": "final-explicit-lint.log",
+      "exitCode": 0
+    },
+    {
+      "command": "bash -n scripts/release/collect-macos.sh",
+      "log": "bash-syntax.log",
+      "exitCode": 0
+    },
+    {
+      "command": "Explicit Prettier ignore-path /dev/null for all changed code/tests/fixture/current docs and new process MD/JSON",
+      "log": "final-process-format.log",
+      "exitCode": 0
+    },
+    {
+      "command": "Final explicit eslint command identical to commands[2]",
+      "log": "final-audited-lint.log",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check 692077da..HEAD",
+      "exitCode": 0,
+      "scope": "Through ab6b4385; final authored process diff checked separately before commit"
+    }
+  ],
+  "failuresPreserved": [
+    {
+      "log": "final-expanded-unit.log",
+      "failed": 2,
+      "passed": 107,
+      "cause": "New CLI assertion expected all stderr equal error code; existing Node MODULE_TYPELESS_PACKAGE_JSON warning precedes fixed final error. Exit2 was correct."
+    },
+    {
+      "log": "final-full-check.log",
+      "typeScriptFailed": 2,
+      "cause": "Same new CLI assertion failure before correction; no build/Python success claimed from this failed full check"
+    },
+    {
+      "log": "independent-report-first-format.log",
+      "exitCode": 1,
+      "cause": "New authored review Markdown table formatting; later formatting only, original commit retained"
+    },
+    {
+      "transcriptOnly": true,
+      "cause": "First app create_worktree Not a git repository; incorrect audit relative paths; first report whitespace-only normalizer assertion ignored table delimiter-width changes. Correct path/git worktree and delimiter-aware comparison used. No lost/overwritten logs claimed."
+    }
+  ],
+  "earlierRuns": [
+    {
+      "log": "first-expanded-unit.log",
+      "passed": 105,
+      "skipped": 0
+    },
+    {
+      "log": "first-full-check.log",
+      "typeScriptPassed": 735,
+      "pythonPassed": 1052,
+      "exitCode": 0
+    }
+  ],
+  "releasePathFormat": "Explicit ignore-path /dev/null check, not covered by global ignore alone; final process-format result in raw-logs-index or final tool output",
+  "implementationFilesSha256": {
+    "docs/iterations/T11/acceptance.md": "c83f90adb026c9cb6a6bf10aa883ddc587f7293fe4319753b995be4bb64b565a",
+    "docs/iterations/T11/selection-comparison-v3.md": "3da1af492bf268ac40ba60614501cb994a53c7afbda20471e9bb2888d5bc3dd2",
+    "docs/release/README.md": "890680a0d220103ca83dd5844eac3fb786ac11570e8753620c101fe1a970adde",
+    "docs/release/migration-recovery.md": "d5ac30d8a4426d9bbbd556f964f3f12cb23261d19496ce4ffe6d59f771add4b4",
+    "docs/release/user-study.md": "fb279ddd6d06451ea7352ac54c922bc139acb16f6b4c08f6a3864a3cf5674c2d",
+    "docs/reviews/T11/q9-decision-source-20261023.json": "60f919f93e7ad54930ec24609609bc80bec6ceacfe4decbf13c3bc097e73060e",
+    "scripts/release/collect-macos.sh": "195d8561098b3a282a50af41bc62c81361910d10cafdebe7b99d176023b6965e",
+    "scripts/release/collect-windows.ps1": "cc572372e657fc348cffcdcbc35a2b6e86b236d66118b5c237c98f46da573628",
+    "scripts/release/pe-machine.ps1": "62b8f743a95311bbbe7b20de59dd4fa8a63e6455c544b71f1e0390479e910249",
+    "scripts/release/verify-release.mjs": "6d1e4b81aa622d155d37ddcdc811a7dfd6fb29a894bc6cc7aa17854cc02543ae",
+    "scripts/release/verify.ts": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+    "tests/fixtures/release/comparison.json": "f4ace4230de548447f7c31b862d9c602e62b5708c1b0778f686527c507518095",
+    "tests/unit/t11-release-io.test.ts": "d1aa4c918f8921164f422ad4cb1d8f8d86c9e932864e68f1706ad4c176262182",
+    "tests/unit/t11-release.test.ts": "561b8eedaab8a22ff53701c0268c36bd0cf2533aa9314558c0ee002ee438c4be"
+  },
+  "defaultFixedProbeSkips": 4,
+  "historicalRawVerification": "history-archive-verification.json (48 entries); first38 independent full raw missing",
+  "localLogs": "raw-logs-index.json / raw-logs.tar.gz; only saved logs, not every operation transcript",
+  "notExecuted": [
+    "Real collectors on macOS15/Windows11",
+    "PowerShell syntax/runtime (pwsh unavailable)",
+    "Product native/e2e/install/credentials",
+    "Signing/notarization",
+    "API/network/research",
+    "Real humans",
+    "Fresh designated model sessions",
+    "Shared config/CI/PR/push/merge/distribution",
+    "Performance/capacity measurement"
+  ],
+  "originalFindingsOpen": 18,
+  "originalMNotPassPreserved": true,
+  "designatedDualPass": false,
+  "releaseAuthorized": false,
+  "savedRawLogs": {
+    "count": 14,
+    "archiveSha256": "2e714950bfcba075d2d01d464ed8cbef1c4c3c473e8299419cceb2b5bb67dba0",
+    "rawIndex": "raw-logs-index.json"
+  }
+}

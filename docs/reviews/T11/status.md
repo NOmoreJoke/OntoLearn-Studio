@@ -2,9 +2,9 @@
 
 ## 当前回执：2026-10-23 owned修复窗
 
-当前修复工作树为 `.worktrees/T11-review-fixes`、分支 `feature/weekly-t11-review-fixes`，启动base `692077da9754a303915798789b7b0c5b4f609125`；首个实现候选 `640cf49d627dc4796bc90ee37abf9bb3857eb42b`（含collector修复936a4313），W1–W6实现和新增回归已落地，正在独立内审及流程收尾。冻结后的最新精确候选、命令/计数/hash和内审结论统一见 `owned-fixes-20261023/verification.json` 与 `handoff.md`。下方2026-10-21起的“当前/active/仅计划”等句仅描述各段当时状态，均由此入口取代；原7d28、65/695及v2/旧核验器hash是历史，不能作为新实现验收。旧回执/原报告/triage矩阵不追写或重新归并，同updatedAt的不同来源hash保留各自快照，不能推为同一原件。
+当前修复工作树为 `.worktrees/T11-review-fixes`、分支 `feature/weekly-t11-review-fixes`，启动base `692077da9754a303915798789b7b0c5b4f609125`；首个实现候选 `640cf49d627dc4796bc90ee37abf9bb3857eb42b`（含collector修复936a4313），W1–W6实现和新增回归已落地，已完成独立静态内审及本地验证，当前待全新指定双审。冻结后的最新精确候选、命令/计数/hash和内审结论统一见 `owned-fixes-20261023/verification.json` 与 `handoff.md`。下方2026-10-21起的“当前/active/仅计划”等句仅描述各段当时状态，均由此入口取代；原7d28、65/695及v2/旧核验器hash是历史，不能作为新实现验收。旧回执/原报告/triage矩阵不追写或重新归并，同updatedAt的不同来源hash保留各自快照，不能推为同一原件。
 
-首次修复专项105/105零skip；显式 `T11_FIXED_BASELINE_PROBE=1 npm run check` 通过735 TS/1052 Python、构建、ruff，四个固定输入探针执行。后续新增CLI时钟/限额与目标缺失回归必须再验，最终结果以本轮verification记录为准；默认不启用flag会skip四项，默认通过不作固定输入联验。所有actual仍为合成/固定oracle构造，不是产品50项或实际设备/服务/真人通过。
+最终实现/测试候选 `33894063fcf17bc865f4c91556a8ca01845812e7`：专项109/109零skip；显式 `T11_FIXED_BASELINE_PROBE=1 npm run check` 通过739 TS/1052 Python、构建、ruff，四个固定输入探针执行。此前105/735只对应首版640cf；新增CLI时钟/限额与目标缺失回归已复验。独立内审发现的状态文档R1已在338 delta复核关闭；18原项不由此关闭。最终结果以本轮verification记录为准；默认不启用flag会skip四项，默认通过不作固定输入联验。所有actual仍为合成/固定oracle构造，不是产品50项或实际设备/服务/真人通过。
 
 M原NotPass及12项原高/中/低、Z原P4六项全部保留、18项仍open，owner处置见本轮disposition。独立agent内审不替指定双审；新候选须两个全新完整同版指定任务、全文收件和原CI/合并门。当前GUI资源属T03，本线不启动GUI/真实collector/凭据/API/模型审查；真实同包来源须T03唯一清单和安装/解包原件，marker和声明hash不能替代。F01/F16/Q5不由本线代答，也不阻塞获准工具修复。原完整发布Goal的blocked回执保留，本次不调用Goal状态变更，不把工具修复当完整T11发布完成。
 
