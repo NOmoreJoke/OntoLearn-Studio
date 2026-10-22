@@ -4,14 +4,18 @@ from __future__ import annotations
 
 import copy
 import importlib.machinery
+import importlib.util
 import json
+import marshal
 import os
 import runpy
 import shutil
+import struct
 import subprocess
 import sys
 import types
 import uuid
+import zlib
 from dataclasses import FrozenInstanceError
 from pathlib import Path
 
@@ -1286,3 +1290,1364 @@ def test_distribution_python_identity_uses_one_bounded_snapshot(tmp_path, monkey
         assert row["sha256"] == p._sha(original_raw)
         assert row["codeSha256"] == p._code_sha(p._compiled(original_raw))
     assert source_caps == [p.CODE_CAP]
+
+
+# Standalone profile fixtures contain synthetic code objects; none are executed.
+STANDALONE_CONTRACT_RAW = (REPOSITORY / p.STANDALONE_CONTRACT_SOURCE).read_bytes()
+STANDALONE_CONTRACT = json.loads(STANDALONE_CONTRACT_RAW)
+
+
+def make_standalone_case(monkeypatch, engine):
+    allowed = set(p.SUPPLIER_MODULES + p.PRIVATE_MODULES)
+    for name in tuple(sys.modules):
+        if (
+            name == "ontolearn_engine" or name.startswith("ontolearn_engine.")
+        ) and name not in allowed:
+            monkeypatch.delitem(sys.modules, name)
+    value = make_case(monkeypatch, engine)
+    (engine / "ontolearn-engine").rename(engine / "ontolearn-semantic-parity")
+    manifest = value.manifest
+    manifest["format"] = "i05-semantic-parity-build-provenance/1"
+    manifest["profile"] = p.STANDALONE_PROFILE
+    manifest["contract"] = {
+        "path": p.STANDALONE_CONTRACT_SOURCE,
+        "bytes": len(STANDALONE_CONTRACT_RAW),
+        "sha256": p.STANDALONE_CONTRACT_SHA256,
+    }
+    for source, target in zip(p.FIXED_INPUTS, p.STANDALONE_INPUTS, strict=True):
+        destination = value.root / target["path"]
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        (value.root / source["path"]).rename(destination)
+    manifest["inputs"] = copy.deepcopy(list(p.STANDALONE_INPUTS))
+    value.expectations["inputs"] = copy.deepcopy(manifest["inputs"])
+    probe = next(row for row in manifest["privateModules"] if row["module"] == p.PRIVATE_MODULES[0])
+    manifest["entrypoint"] = {
+        "path": p.STANDALONE_TARGET,
+        "bytes": probe["bytes"],
+        "sha256": probe["sha256"],
+        "codeSha256": probe["codeSha256"],
+    }
+    manifest["buildInputs"] = [
+        {"path": name, "bytes": len(name.encode()), "sha256": p._sha(name.encode())}
+        for name in p.BUILD_INPUTS[:3]
+    ] + [copy.deepcopy(manifest["lock"]), copy.deepcopy(manifest["contract"])]
+    mirrors = []
+    for dist in manifest["distributions"]:
+        for row in dist["licenses"]:
+            relative = "licenses/" + dist["name"] + "/" + row["path"]
+            identity = write(value.root, relative, (value.root / row["path"]).read_bytes())
+            mirrors.append({**identity, "distribution": dist["name"], "sourcePath": row["path"]})
+    manifest["licenseMirrors"] = mirrors
+    (value.root / p.CONTRACT_BUNDLED).unlink()
+    (value.root / p.PROVENANCE_BUNDLED).unlink()
+    write(value.root, p.STANDALONE_CONTRACT_BUNDLED, STANDALONE_CONTRACT_RAW)
+    value.codes.pop(p.ANCHOR)
+
+    def refresh():
+        raw = p._canonical(manifest)
+        write(value.root, p.STANDALONE_PROVENANCE, raw)
+        value.codes[p.STANDALONE_ANCHOR] = p._compiled(
+            p._anchor_source(p._sha(raw), profile=p.STANDALONE_PROFILE)
+        )
+        return raw
+
+    def get_anchor(name):
+        assert name == p.STANDALONE_ANCHOR, "unrelated module discovery"
+        value.anchor_loader.code = value.codes[name]
+        return importlib.machinery.ModuleSpec(
+            name, value.anchor_loader, origin=str(value.root / (name + ".py"))
+        )
+
+    value.refresh = refresh
+    value.load = lambda: p.load_frozen_provenance(
+        expectations=value.expectations, profile=p.STANDALONE_PROFILE
+    )
+    monkeypatch.setattr(p.importlib.util, "find_spec", get_anchor)
+    refresh()
+    return value
+
+
+@pytest.fixture
+def standalone_case(monkeypatch, tmp_path):
+    return make_standalone_case(monkeypatch, tmp_path / "standalone")
+
+
+def test_standalone_contract_uses_real_hash_and_exact_roles():
+    assert p._sha(STANDALONE_CONTRACT_RAW) == p.STANDALONE_CONTRACT_SHA256
+    assert STANDALONE_CONTRACT["format"] == "i05-semantic-parity-private-contract/1"
+    assert STANDALONE_CONTRACT["profile"] == p.STANDALONE_PROFILE
+    assert STANDALONE_CONTRACT["analysisImports"] == [
+        *p.SUPPLIER_MODULES,
+        *p.PRIVATE_MODULES,
+        p.STANDALONE_ANCHOR,
+    ]
+    assert STANDALONE_CONTRACT["fixedInputs"] == list(p.STANDALONE_INPUTS)
+    assert STANDALONE_CONTRACT["buildInputs"] == list(p.BUILD_INPUTS)
+    pins = p._literal_pins((REPOSITORY / p.STANDALONE_TARGET).read_bytes())
+    guards = p._standalone_source_guards(pins)
+    assert tuple(STANDALONE_CONTRACT["sourceGuards"]) == guards
+    assert len(guards) == len(set(guards)) == 35
+    assert guards.count(p.STANDALONE_TARGET) == 1
+    assert "packages/engine/entrypoint.py" not in guards
+    for source, frozen in zip(p.FIXED_INPUTS, p.STANDALONE_INPUTS, strict=True):
+        assert frozen == {
+            **source,
+            "path": "provenance/i05/source-package-parity/" + Path(source["path"]).name,
+        }
+
+
+@pytest.mark.parametrize(
+    "profile", [None, False, 1, {}, "", "parent", "i05-source-package-parity/../x"]
+)
+def test_unknown_profile_rejects_before_any_file_read(monkeypatch, tmp_path, profile):
+    monkeypatch.setattr(p, "_read", lambda *_a: pytest.fail("unexpected file read"))
+    with fault("MODE_INVALID"):
+        p.prepare_build(tmp_path, tmp_path, profile=profile)
+    with fault("MODE_INVALID"):
+        p.finalize_build(tmp_path, tmp_path, tmp_path, profile=profile)
+    with fault("MODE_INVALID"):
+        p.load_frozen_provenance(expectations={}, profile=profile)
+    with fault("MODE_INVALID"):
+        p.verify_external_binding(tmp_path, tmp_path, expected_sha256="0" * 64, profile=profile)
+
+
+def test_standalone_preflight_has_no_imports_and_preserves_runtime_domain(
+    standalone_case, monkeypatch
+):
+    value = standalone_case
+    monkeypatch.setattr(
+        p.importlib, "import_module", lambda *_a, **_k: pytest.fail("target import")
+    )
+    evidence = value.load()
+    assert evidence._profile == p.STANDALONE_PROFILE
+    assert value.anchor_loader.calls == [p.STANDALONE_ANCHOR]
+    with pytest.raises(FrozenInstanceError):
+        evidence._profile = p.PARENT_PROFILE
+    result = p.verify_loaded_modules(evidence, value.modules)
+    assert result["entrypointDomain"] == (
+        "runtime-canonical-PYZ-only; target-CArchive-external-binding-required"
+    )
+    assert result["rootApproval"] == result["semanticParity"] == "unknown"
+    assert {row["module"] for row in result["supplierAndPrivateModules"]} == set(
+        p.SUPPLIER_MODULES + p.PRIVATE_MODULES
+    )
+    with fault("NATIVE_UNAVAILABLE"):
+        p.verify_native_extension(evidence)
+
+
+def test_standalone_unknown_internal_and_distribution_children_are_rejected(
+    standalone_case, monkeypatch
+):
+    value = standalone_case
+    evidence = value.load()
+    for name in ("ontolearn_engine.unrecorded", "pyshacl.unrecorded"):
+        with monkeypatch.context() as scoped:
+            scoped.setitem(sys.modules, name, types.ModuleType(name))
+            with fault("MODULE_MISMATCH"):
+                p.verify_loaded_modules(evidence, value.modules)
+
+
+@pytest.mark.parametrize("changed", ["root", "python", "contract", "anchor", "profile"])
+def test_standalone_evidence_context_is_rechecked(standalone_case, monkeypatch, tmp_path, changed):
+    value = standalone_case
+    evidence = value.load()
+    if changed == "root":
+        monkeypatch.setattr(sys, "_MEIPASS", str(tmp_path))
+    elif changed == "python":
+        original = p._python_identity
+        monkeypatch.setattr(p, "_python_identity", lambda: {**original(), "cacheTag": "changed"})
+    elif changed == "contract":
+        (value.root / p.STANDALONE_CONTRACT_BUNDLED).write_bytes(CONTRACT_RAW)
+    elif changed == "anchor":
+        value.codes[p.STANDALONE_ANCHOR] = p._compiled(b"raise RuntimeError('never executed')")
+    else:
+        # Check accidental cross-profile carrier reuse, not protection from hostile Python.
+        object.__setattr__(evidence, "_profile", p.PARENT_PROFILE)
+    with pytest.raises(p.BuildProvenanceFault):
+        p.verify_loaded_modules(evidence, value.modules)
+
+
+@pytest.mark.parametrize(
+    "field", ["mirrorFile", "missingMirror", "wrongMirror", "oldInput", "buildInput"]
+)
+def test_standalone_paths_and_license_roles_are_exact(standalone_case, field):
+    value = standalone_case
+    if field == "mirrorFile":
+        (value.root / value.manifest["licenseMirrors"][0]["path"]).write_bytes(b"tampered")
+    elif field == "missingMirror":
+        value.manifest["licenseMirrors"].pop()
+    elif field == "wrongMirror":
+        value.manifest["licenseMirrors"][0]["sourcePath"] = "foreign.dist-info/LICENSE"
+    elif field == "oldInput":
+        value.manifest["inputs"] = copy.deepcopy(list(p.FIXED_INPUTS))
+        value.expectations["inputs"] = copy.deepcopy(list(p.FIXED_INPUTS))
+    else:
+        value.manifest["buildInputs"][0]["path"] = "packages/engine/entrypoint.py"
+    value.refresh()
+    with pytest.raises(p.BuildProvenanceFault):
+        value.load()
+
+
+def test_standalone_missing_authors_cannot_be_covered_by_license(standalone_case):
+    value = standalone_case
+    dist = value.manifest["distributions"][-1]
+    dist["licenses"] = dist["licenses"][:1]
+    value.manifest["licenseMirrors"] = [
+        row
+        for row in value.manifest["licenseMirrors"]
+        if not row["sourcePath"].endswith("AUTHORS.rst")
+    ]
+    value.refresh()
+    with fault("DISTRIBUTION_MISMATCH"):
+        value.load()
+
+
+def test_standalone_mirror_caps_not_widened(standalone_case):
+    value = standalone_case
+    value.manifest["licenseMirrors"][0]["bytes"] = p.SMALL_CAP + 1
+    value.refresh()
+    with fault("SCHEMA_INVALID"):
+        value.load()
+
+
+def test_standalone_notice_inventory_covers_undeclared_record_notices(tmp_path, monkeypatch):
+    site = tmp_path / "env/site-packages"
+    info = "html5rdf-1.2.1.dist-info"
+    listed = [info + "/METADATA", info + "/LICENSE", info + "/NOTICE", info + "/AUTHORS.rst"]
+    write(site, listed[0], b"Name: html5rdf\nVersion: 1.2.1\n")
+    for relative in listed[1:]:
+        write(site, relative, relative.encode())
+    write(site, "html5rdf/__init__.py", b"VALUE = 1\n")
+
+    class Distribution:
+        version = "1.2.1"
+        files = [*listed, "html5rdf/__init__.py"]
+
+        def locate_file(self, relative):
+            return site / relative
+
+    monkeypatch.setattr(p.importlib.metadata, "distribution", lambda _name: Distribution())
+    monkeypatch.setattr(p.sysconfig, "get_path", lambda _kind: str(site))
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / "env"))
+    parent = p._dist_inventory("html5rdf", "1.2.1")
+    standalone = p._dist_inventory("html5rdf", "1.2.1", include_notices=True)
+    assert [row["path"] for row in parent["licenses"]] == [info + "/LICENSE"]
+    assert {row["path"] for row in standalone["licenses"]} == set(listed[1:])
+
+
+def test_standalone_prepare_returns_nested_paths_and_preserves_first_output(
+    standalone_case, monkeypatch, tmp_path
+):
+    value = standalone_case
+    repository = tmp_path / "repository"
+    write(repository, p.STANDALONE_CONTRACT_SOURCE, STANDALONE_CONTRACT_RAW)
+    output = repository / "build/i05-semantic-parity" / str(uuid.uuid4())
+    monkeypatch.setattr(p, "_collect_standalone_manifest", lambda *_a: value.manifest)
+    monkeypatch.setattr(p.sysconfig, "get_path", lambda _kind: str(value.root))
+    result = p.prepare_build(repository, output, profile=p.STANDALONE_PROFILE)
+    assert result == {
+        "provenancePath": str(output / p.STANDALONE_PROVENANCE),
+        "contractPath": str(output / p.STANDALONE_CONTRACT_BUNDLED),
+        "generatedDir": str(output / "generated"),
+        "anchorPath": str(output / "generated" / (p.STANDALONE_ANCHOR + ".py")),
+    }
+    assert Path(result["contractPath"]).read_bytes() == STANDALONE_CONTRACT_RAW
+    assert Path(result["anchorPath"]).read_bytes() == p._anchor_source(
+        p._sha(Path(result["provenancePath"]).read_bytes()), profile=p.STANDALONE_PROFILE
+    )
+    for row in value.manifest["licenseMirrors"]:
+        assert (output / row["path"]).read_bytes() == (value.root / row["sourcePath"]).read_bytes()
+    first = Path(result["provenancePath"]).read_bytes()
+    with fault("BUILD_OUTPUT_EXISTS"):
+        p.prepare_build(repository, output, profile=p.STANDALONE_PROFILE)
+    assert Path(result["provenancePath"]).read_bytes() == first
+
+
+@pytest.mark.parametrize("invalid", ["extra", "wrongRequest", "symlink"])
+def test_standalone_prepare_only_accepts_exact_builder_reservation(monkeypatch, tmp_path, invalid):
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    output = repository / "build/i05-semantic-parity" / str(uuid.uuid4())
+    evidence = output / "evidence"
+    evidence.mkdir(parents=True)
+    (evidence / "cache").mkdir()
+    (evidence / "tmp").mkdir()
+    request = {"profile": p.STANDALONE_PROFILE, "token": output.name}
+    if invalid == "wrongRequest":
+        request["token"] = str(uuid.uuid4())
+    write(evidence, "build-request-v1.json", p._canonical(request))
+    write(evidence, "prepare.stdout.log", b"")
+    write(evidence, "prepare.stderr.log", b"")
+    if invalid == "extra":
+        write(output, "unexpected", b"first output")
+    elif invalid == "symlink":
+        (evidence / "prepare.stdout.log").unlink()
+        outside = tmp_path / "outside"
+        outside.write_bytes(b"never write")
+        (evidence / "prepare.stdout.log").symlink_to(outside)
+    monkeypatch.setattr(
+        p, "_collect_standalone_manifest", lambda *_a: pytest.fail("must reject first")
+    )
+    with pytest.raises(p.BuildProvenanceFault):
+        p.prepare_build(repository, output, profile=p.STANDALONE_PROFILE)
+
+
+def test_standalone_layout_rejects_source_ancestor_symlink_and_foreign_prefix(tmp_path):
+    repository = tmp_path / "repo"
+    (repository / "build").mkdir(parents=True)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (repository / "build/i05-semantic-parity").symlink_to(outside, target_is_directory=True)
+    output = repository / "build/i05-semantic-parity" / str(uuid.uuid4())
+    with fault("BUILD_LAYOUT_INVALID"):
+        p.prepare_build(repository, output, profile=p.STANDALONE_PROFILE)
+    assert list(outside.iterdir()) == []
+    with fault("BUILD_LAYOUT_INVALID"):
+        p.prepare_build(
+            repository,
+            repository / "build/i05-provenance" / str(uuid.uuid4()),
+            profile=p.STANDALONE_PROFILE,
+        )
+
+
+def test_standalone_source_guard_dirty_check_is_exact_and_before_source_adoption(
+    monkeypatch, tmp_path
+):
+    repository = tmp_path / "repo"
+    write(repository, p.STANDALONE_TARGET, (REPOSITORY / p.STANDALONE_TARGET).read_bytes())
+    calls = []
+
+    def dirty(_root, *args):
+        calls.append(args)
+        assert args[:4] == ("diff", "--name-only", "HEAD", "--")
+        return b"scripts/build-engine.mjs\n"
+
+    monkeypatch.setattr(p, "_git", dirty)
+    monkeypatch.setattr(p, "_dist_inventory", lambda *_a, **_k: pytest.fail("dirty source adopted"))
+    with fault("BUILD_INPUT_DIRTY"):
+        p._collect_standalone_manifest(repository, STANDALONE_CONTRACT, STANDALONE_CONTRACT_RAW)
+    assert calls == [("diff", "--name-only", "HEAD", "--", *STANDALONE_CONTRACT["sourceGuards"])]
+
+
+def synthetic_pyz(code_rows, *, change_rows=None, packed_overrides=None, toc_suffix=b""):
+    """Build a real PYZ byte layout independently from the product parser."""
+    payload = bytearray()
+    toc = []
+    for name, code, kind in code_rows:
+        if kind == 3:
+            toc.append((name, (kind, 0, 0)))
+            continue
+        packed = zlib.compress(marshal.dumps(code, 4))
+        if packed_overrides and name in packed_overrides:
+            packed = packed_overrides[name]
+        toc.append((name, (kind, 12 + len(payload), len(packed))))
+        payload.extend(packed)
+    if change_rows:
+        toc = change_rows(toc)
+    header = b"PYZ\0" + importlib.util.MAGIC_NUMBER + struct.pack("!i", 12 + len(payload))
+    return header + bytes(payload) + marshal.dumps(toc, 4) + toc_suffix
+
+
+def synthetic_carchive(
+    pyz, target, *, extra=(), change_rows=None, change_toc=None, cookie_overrides=None
+):
+    """Return inert launcher bytes with true CArchive records and cookie."""
+    target_raw = marshal.dumps(target, 4) if type(target) is types.CodeType else target
+    members = [
+        ("PYZ.pyz", b"z", pyz, 0),
+        ("semantic_source_package_probe", b"s", target_raw, 1),
+        *extra,
+    ]
+    payload, rows = bytearray(), []
+    for name, kind, raw, compressed in members:
+        packed = zlib.compress(raw) if compressed else raw
+        rows.append(
+            {
+                "name": name,
+                "kind": kind,
+                "start": 0 if kind == b"o" else len(payload),
+                "packed": len(packed),
+                "unpacked": len(raw),
+                "compressed": compressed,
+            }
+        )
+        payload.extend(packed)
+    if change_rows:
+        rows = change_rows(rows)
+    records = []
+    for row in rows:
+        name = row["name"] if type(row["name"]) is bytes else row["name"].encode("utf-8")
+        name += b"\0"
+        records.append(
+            struct.pack(
+                "!IIIIBc",
+                18 + len(name),
+                row["start"],
+                row["packed"],
+                row["unpacked"],
+                row["compressed"],
+                row["kind"],
+            )
+            + name
+        )
+    toc = b"".join(records)
+    if change_toc:
+        toc = change_toc(toc)
+    values = {
+        "total": len(payload) + len(toc) + struct.calcsize("!8sIIII64s"),
+        "tocOffset": len(payload),
+        "tocSize": len(toc),
+        "python": 312,
+        "library": p.sysconfig.get_config_var("LDLIBRARY").encode().ljust(64, b"\0"),
+    }
+    values.update(cookie_overrides or {})
+    cookie = struct.pack(
+        "!8sIIII64s",
+        b"MEI\014\013\012\013\016",
+        values["total"],
+        values["tocOffset"],
+        values["tocSize"],
+        values["python"],
+        values["library"],
+    )
+    return b"inert unit prefix; never executable\0" + bytes(payload) + toc + cookie
+
+
+def parser_fixture_code():
+    return compile(
+        b"raise RuntimeError('unit parser must never execute this code')",
+        "unit",
+        "exec",
+        flags=0,
+        dont_inherit=True,
+        optimize=0,
+    )
+
+
+def test_bounded_pyz_reads_real_compressed_code_without_execution():
+    code = parser_fixture_code()
+    raw = synthetic_pyz([("safe", code, 0), ("namespace", None, 3)])
+    archive = p._BoundedPYZ(raw)
+    assert set(archive.toc) == {"safe", "namespace"}
+    assert p._code_sha(archive.extract("safe")) == p._code_sha(code)
+    with fault("ARCHIVE_MISMATCH"):
+        archive.extract("namespace")
+    with fault("ARCHIVE_MISMATCH"):
+        archive.extract("missing")
+
+
+@pytest.mark.parametrize(
+    "invalid",
+    ["duplicate", "casefold", "overlap", "kind", "offset", "bool", "unicode", "shape", "empty"],
+)
+def test_bounded_pyz_toc_rejects_ambiguous_or_unbounded_records(invalid):
+    code = parser_fixture_code()
+
+    def changed(rows):
+        first, second = rows
+        if invalid == "duplicate":
+            return [first, first]
+        if invalid == "casefold":
+            return [first, (first[0].upper(), second[1])]
+        if invalid == "overlap":
+            return [first, (second[0], (0, first[1][1], second[1][2]))]
+        if invalid == "kind":
+            return [(first[0], (4, *first[1][1:])), second]
+        if invalid == "offset":
+            return [(first[0], (0, 0, first[1][2])), second]
+        if invalid == "bool":
+            return [(first[0], (False, *first[1][1:])), second]
+        if invalid == "unicode":
+            return [("e\u0301", first[1]), second]
+        if invalid == "shape":
+            return [("bad", (0, 12)), second]
+        return [("", first[1]), second]
+
+    raw = synthetic_pyz([("first", code, 0), ("second", code, 0)], change_rows=changed)
+    with fault("ARCHIVE_MISMATCH"):
+        p._BoundedPYZ(raw)
+
+
+@pytest.mark.parametrize("invalid", ["magic", "python", "tocOffset", "trailing", "short"])
+def test_bounded_pyz_header_and_marshal_eof_are_exact(invalid):
+    raw = synthetic_pyz([("safe", parser_fixture_code(), 0)])
+    if invalid == "magic":
+        raw = b"bad!" + raw[4:]
+    elif invalid == "python":
+        raw = raw[:4] + b"\0" * 4 + raw[8:]
+    elif invalid == "tocOffset":
+        raw = raw[:8] + struct.pack("!i", -1) + raw[12:]
+    elif invalid == "trailing":
+        raw += b"trailing"
+    else:
+        raw = raw[:11]
+    with fault("PYTHON_MISMATCH" if invalid == "python" else "ARCHIVE_MISMATCH"):
+        p._BoundedPYZ(raw)
+
+
+def test_bounded_pyz_limits_toc_records_bytes_and_decompression_before_code(monkeypatch):
+    code = parser_fixture_code()
+    raw = synthetic_pyz([("first", code, 0), ("second", code, 0)])
+    with monkeypatch.context() as scoped:
+        scoped.setattr(p, "ENTRY_CAP", 1)
+        with fault("LIMIT_EXCEEDED"):
+            p._BoundedPYZ(raw)
+    with monkeypatch.context() as scoped:
+        scoped.setattr(p, "MANIFEST_CAP", 8)
+        with fault("ARCHIVE_MISMATCH"):
+            p._BoundedPYZ(raw)
+    bomb = synthetic_pyz([("safe", code, 0)], packed_overrides={"safe": zlib.compress(b"x" * 65)})
+    archive = p._BoundedPYZ(bomb)
+    with monkeypatch.context() as scoped:
+        scoped.setattr(p, "CODE_CAP", 64)
+        with fault("LIMIT_EXCEEDED"):
+            archive.extract("safe")
+
+
+@pytest.mark.parametrize(
+    "invalid",
+    ["garbage", "trailingCompressed", "truncated", "codeTrailing", "wrongObject", "declaredSize"],
+)
+def test_bounded_compressed_members_and_code_eof_are_exact(invalid):
+    code_raw = marshal.dumps(parser_fixture_code(), 4)
+    if invalid == "wrongObject":
+        with fault("ARCHIVE_MISMATCH"):
+            p._marshal_exact(marshal.dumps({"not": "code"}, 4), "code")
+    elif invalid == "codeTrailing":
+        with fault("ARCHIVE_MISMATCH"):
+            p._marshal_exact(code_raw + b"x", "code")
+    else:
+        packed = zlib.compress(code_raw)
+        declared = len(code_raw)
+        if invalid == "garbage":
+            packed = b"not zlib"
+        elif invalid == "trailingCompressed":
+            packed += b"x"
+        elif invalid == "truncated":
+            packed = packed[:-2]
+        else:
+            declared += 1
+        with fault("ARCHIVE_MISMATCH"):
+            p._inflate(packed, p.CODE_CAP, declared)
+
+
+def test_bounded_carchive_compares_logical_cap_separately_from_physical_size(tmp_path):
+    target = compile("VALUE = " + repr("x" * 32768), "unit", "exec", dont_inherit=True, optimize=0)
+    pyz = synthetic_pyz([("safe", parser_fixture_code(), 0)])
+    raw = synthetic_carchive(pyz, target)
+    assert len(marshal.dumps(target, 4)) > len(raw), "fixture must exercise compression size domain"
+    path = tmp_path / "inert-launcher"
+    path.write_bytes(raw)
+    archive, observed = p._bounded_archive(path)
+    assert p._code_sha(observed) == p._code_sha(target)
+    assert p._code_sha(archive.extract("safe")) == p._code_sha(parser_fixture_code())
+
+
+@pytest.mark.parametrize(
+    "invalid",
+    [
+        "missingTarget",
+        "targetType",
+        "duplicateTarget",
+        "duplicatePyz",
+        "overlap",
+        "outside",
+        "unpackedCap",
+        "compressedFlag",
+        "unicode",
+        "invalidUTF8",
+        "unknownType",
+        "zeroRecord",
+    ],
+)
+def test_bounded_carchive_toc_rejects_invalid_actual_members(tmp_path, invalid):
+    def changed(rows):
+        pyz_row, target = rows
+        if invalid == "missingTarget":
+            target["name"] = "different_probe"
+        elif invalid == "targetType":
+            target["kind"] = b"x"
+        elif invalid == "duplicateTarget":
+            return [*rows, copy.deepcopy(target)]
+        elif invalid == "duplicatePyz":
+            return [*rows, copy.deepcopy(pyz_row)]
+        elif invalid == "overlap":
+            target["start"] = pyz_row["start"]
+        elif invalid == "outside":
+            target["start"] = p.FILE_CAP
+        elif invalid == "unpackedCap":
+            target["unpacked"] = p.CODE_CAP + 1
+        elif invalid == "compressedFlag":
+            target["compressed"] = 2
+        elif invalid == "unicode":
+            target["name"] = "e\u0301"
+        elif invalid == "invalidUTF8":
+            target["name"] = b"\xff"
+        elif invalid == "unknownType":
+            target["kind"] = b"?"
+        return rows
+
+    toc_change = (lambda raw: struct.pack("!I", 0) + raw[4:]) if invalid == "zeroRecord" else None
+    raw = synthetic_carchive(
+        synthetic_pyz([("safe", parser_fixture_code(), 0)]),
+        parser_fixture_code(),
+        change_rows=changed,
+        change_toc=toc_change,
+    )
+    path = tmp_path / "inert-launcher"
+    path.write_bytes(raw)
+    with fault("LIMIT_EXCEEDED" if invalid == "unpackedCap" else "ARCHIVE_MISMATCH"):
+        p._bounded_archive(path)
+
+
+def test_bounded_carchive_options_do_not_override_unique_members(tmp_path):
+    raw = synthetic_carchive(
+        synthetic_pyz([("safe", parser_fixture_code(), 0)]),
+        parser_fixture_code(),
+        extra=(
+            ("pyi-contents-directory _internal", b"o", b"", 0),
+            ("pyi-contents-directory _internal", b"o", b"", 0),
+        ),
+    )
+    path = tmp_path / "inert-launcher"
+    path.write_bytes(raw)
+    archive, _target = p._bounded_archive(path)
+    assert "safe" in archive.toc
+
+
+@pytest.mark.parametrize(
+    "invalid",
+    [
+        "fileCap",
+        "tocCap",
+        "tocRange",
+        "python",
+        "libraryPadding",
+        "targetTrailing",
+        "targetNonCode",
+    ],
+)
+def test_bounded_carchive_header_caps_and_target_marshal_are_enforced(
+    tmp_path, monkeypatch, invalid
+):
+    kwargs = {}
+    target = parser_fixture_code()
+    if invalid == "tocRange":
+        kwargs["cookie_overrides"] = {"tocOffset": 0}
+    elif invalid == "python":
+        kwargs["cookie_overrides"] = {"python": 311}
+    elif invalid == "libraryPadding":
+        name = p.sysconfig.get_config_var("LDLIBRARY").encode()
+        kwargs["cookie_overrides"] = {"library": (name + b"\0BAD").ljust(64, b"\0")}
+    elif invalid == "targetTrailing":
+        target = marshal.dumps(target, 4) + b"x"
+    elif invalid == "targetNonCode":
+        target = marshal.dumps([], 4)
+    path = tmp_path / "inert-launcher"
+    path.write_bytes(
+        synthetic_carchive(synthetic_pyz([("safe", parser_fixture_code(), 0)]), target, **kwargs)
+    )
+    if invalid == "fileCap":
+        monkeypatch.setattr(p, "FILE_CAP", 10)
+    elif invalid == "tocCap":
+        monkeypatch.setattr(p, "MANIFEST_CAP", 10)
+    expected = (
+        "LIMIT_EXCEEDED"
+        if invalid == "fileCap"
+        else ("PYTHON_MISMATCH" if invalid == "libraryPadding" else "ARCHIVE_MISMATCH")
+    )
+    with fault(expected):
+        p._bounded_archive(path)
+
+
+def complete_standalone_pyz(value, *, remove=None, changed=None, extra=None):
+    codes = dict(value.codes)
+    if remove:
+        codes.pop(remove)
+    if changed:
+        codes[changed] = p._compiled(b"VALUE = 'tampered, never executed'\n")
+    if extra:
+        codes[extra] = p._compiled(b"VALUE = 'unexpected'\n")
+    return synthetic_pyz([(name, code, 0) for name, code in codes.items()])
+
+
+def test_standalone_archive_binds_exact24_anchor_and_independent_target(standalone_case):
+    value = standalone_case
+    archive = p._BoundedPYZ(complete_standalone_pyz(value))
+    target = value.codes[p.PRIVATE_MODULES[0]]
+    result = p._verify_standalone_archive(archive, target, value.manifest, value.root)
+    assert result == {
+        "archiveEntry": "semantic_source_package_probe",
+        "typecode": "s",
+        "sourcePath": p.STANDALONE_TARGET,
+        "codeSha256": p._code_sha(target),
+    }
+
+
+@pytest.mark.parametrize(
+    "invalid",
+    [
+        "supplier",
+        "private",
+        "anchor",
+        "unknownInternal",
+        "supplierCode",
+        "privateCode",
+        "anchorCode",
+        "targetCode",
+    ],
+)
+def test_standalone_archive_rejects_missing_or_changed_real_code(standalone_case, invalid):
+    value = standalone_case
+    options = {}
+    if invalid == "supplier":
+        options["remove"] = p.SUPPLIER_MODULES[0]
+    elif invalid == "private":
+        options["remove"] = p.PRIVATE_MODULES[1]
+    elif invalid == "anchor":
+        options["remove"] = p.STANDALONE_ANCHOR
+    elif invalid == "unknownInternal":
+        options["extra"] = "ontolearn_engine.unexpected"
+    elif invalid == "supplierCode":
+        options["changed"] = p.SUPPLIER_MODULES[1]
+    elif invalid == "privateCode":
+        options["changed"] = p.PRIVATE_MODULES[0]
+    elif invalid == "anchorCode":
+        options["changed"] = p.STANDALONE_ANCHOR
+    archive = p._BoundedPYZ(complete_standalone_pyz(value, **options))
+    target = value.codes[p.PRIVATE_MODULES[0]]
+    if invalid == "targetCode":
+        target = p._compiled(b"VALUE = 'changed target'\n")
+    with fault("ANCHOR_MISMATCH" if invalid == "anchorCode" else "ARCHIVE_MISMATCH"):
+        p._verify_standalone_archive(archive, target, value.manifest, value.root)
+
+
+def test_standalone_finalize_and_external_binding_use_real_synthetic_archive(monkeypatch, tmp_path):
+    repository = tmp_path / "repository"
+    output = repository / "build/i05-semantic-parity" / str(uuid.uuid4())
+    value = make_standalone_case(monkeypatch, output / "dist/ontolearn-semantic-parity")
+    write(output, p.STANDALONE_PROVENANCE, (value.root / p.STANDALONE_PROVENANCE).read_bytes())
+    write(output, p.STANDALONE_CONTRACT_BUNDLED, STANDALONE_CONTRACT_RAW)
+    launcher = value.engine / "ontolearn-semantic-parity"
+    launcher.write_bytes(
+        synthetic_carchive(complete_standalone_pyz(value), value.codes[p.PRIVATE_MODULES[0]])
+    )
+    launcher.chmod(0o755)
+    result = p.finalize_build(repository, output, value.engine, profile=p.STANDALONE_PROFILE)
+    assert set(result) == {"bindingPath", "bindingSha256", "engineDirectory", "provenanceSha256"}
+    binding_path = Path(result["bindingPath"])
+    binding = json.loads(binding_path.read_bytes())
+    assert binding["profile"] == p.STANDALONE_PROFILE
+    assert binding["rootApproved"] is False
+    assert binding["launcher"] == "ontolearn-semantic-parity"
+    assert binding["targetCode"]["codeSha256"] == value.manifest["entrypoint"]["codeSha256"]
+    assert not binding_path.is_relative_to(value.engine)
+    receipt = p.verify_external_binding(
+        binding_path,
+        value.engine,
+        expected_sha256=result["bindingSha256"],
+        profile=p.STANDALONE_PROFILE,
+    )
+    assert receipt["inventoryVerified"] is True
+    assert "no run executed" in receipt["rootApproval"]
+    with fault("BUILD_OUTPUT_EXISTS"):
+        p.finalize_build(repository, output, value.engine, profile=p.STANDALONE_PROFILE)
+    with fault("EXTERNAL_BINDING_MISMATCH"):
+        p.verify_external_binding(
+            binding_path, value.engine, expected_sha256="0" * 64, profile=p.STANDALONE_PROFILE
+        )
+    with pytest.raises(p.BuildProvenanceFault):
+        p.verify_external_binding(
+            binding_path, value.engine, expected_sha256=result["bindingSha256"]
+        )
+    write(value.engine, "unlisted", b"new output")
+    with fault("ARTIFACT_MISMATCH"):
+        p.verify_external_binding(
+            binding_path,
+            value.engine,
+            expected_sha256=result["bindingSha256"],
+            profile=p.STANDALONE_PROFILE,
+        )
+
+
+STANDALONE_BUILDER_UNIT = r"""import test from 'node:test'
+import assert from 'node:assert/strict'
+import * as fs from 'node:fs'
+import { createHash } from 'node:crypto'
+import { resolve } from 'node:path'
+const { buildEngine, buildSemanticParity, selectBuild } =
+  await import(process.env.BUILDER_MODULE_URL)
+const token = '11111111-2222-3333-4444-555555555555'
+const profile = 'i05-source-package-parity'
+const expectedImports = [
+  'ontolearn_engine', 'ontolearn_engine.quality',
+  ...['rule_calendar', 'rule_comparator', 'rule_firing', 'rule_numbers', 'rule_profile',
+      'rule_revalidation', 'rule_terms'].map(n => 'ontolearn_engine.quality.' + n),
+  ...['resources', 'semantic', 'semantic_error_adapter', 'semantic_execution', 'semantic_offline',
+      'semantic_profile_directsteps', 'semantic_profile_input', 'semantic_profile_production',
+      'semantic_profile_restore', 'semantic_profile_restore_budget', 'semantic_query',
+      'semantic_scopes', 'semantic_turtle', 'semantic_source_package_probe',
+      'semantic_build_provenance'].map(n => 'ontolearn_engine.' + n),
+  '_i05_semantic_parity_build_anchor',
+]
+const exclusions = ['quality.definitions', 'quality.planning', '__main__', 'worker',
+  'coordinator', 'job_store', 'storage', 'storage_probe', 'protocol', 'semantic_samples']
+  .map(n => 'ontolearn_engine.' + n)
+const phases = ['prepare', 'pyinstaller', 'finalize']
+const rootParent = new URL('./standalone-tmp/', import.meta.url)
+fs.mkdirSync(rootParent, { recursive: true })
+const sha = raw => createHash('sha256').update(raw).digest('hex')
+function fixture(t, behavior = {}) {
+  const root = fs.mkdtempSync(new URL('builder-', rootParent))
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }))
+  const runRoot = resolve(root, 'build/i05-semantic-parity', token)
+  const artifact = resolve(runRoot, 'dist/ontolearn-semantic-parity')
+  const evidence = resolve(runRoot, 'evidence')
+  const calls = []
+  const run = (command, args, options) => {
+    const phase = phases[calls.length]
+    if (!phase) throw new Error('unexpected additional subprocess')
+    calls.push({command, args, options, phase})
+    assert.equal(command, 'uv')
+    assert.equal(options.shell, false)
+    assert.equal(options.stdio[0], 'ignore')
+    assert.equal(typeof options.stdio[1], 'number')
+    assert.equal(typeof options.stdio[2], 'number')
+    assert.notEqual(options.stdio[1], options.stdio[2])
+    assert.equal(options.cwd, root)
+    const controls = phase === 'prepare' ? {
+      provenancePath: resolve(runRoot, 'provenance/i05/source-package-parity-build.json'),
+      contractPath: resolve(runRoot,
+        'provenance/i05/source-package-parity-private-contract-v1.json'),
+      generatedDir: resolve(runRoot, 'generated'),
+      anchorPath: resolve(runRoot, 'generated/_i05_semantic_parity_build_anchor.py'),
+    } : {
+      bindingPath: resolve(runRoot, 'artifact-binding-v1.json'), bindingSha256: 'a'.repeat(64),
+      engineDirectory: artifact, provenanceSha256: 'b'.repeat(64),
+    }
+    if (phase === 'prepare') {
+      fs.mkdirSync(resolve(runRoot, 'generated'))
+      fs.mkdirSync(resolve(runRoot, 'provenance/i05'), {recursive:true})
+      fs.mkdirSync(resolve(runRoot, 'licenses'))
+    } else if (phase === 'pyinstaller') {
+      fs.mkdirSync(artifact, {recursive:true})
+      fs.writeFileSync(resolve(artifact, 'ontolearn-semantic-parity'), 'inert unit artifact')
+    } else {
+      fs.writeFileSync(controls.bindingPath, 'unit binding; unapproved')
+    }
+    let stdout = phase === 'pyinstaller' ? 'complete package stdout\n' : JSON.stringify(controls)
+    let stderr = `complete ${phase} stderr\n`
+    if (behavior.stdout) stdout = behavior.stdout(phase, stdout, controls)
+    if (behavior.stderr) stderr = behavior.stderr(phase, stderr)
+    fs.writeSync(options.stdio[1], stdout)
+    fs.writeSync(options.stdio[2], stderr)
+    const result = {status:0, signal:null, pid:2000 + calls.length}
+    return behavior.result ? behavior.result(phase, result) : result
+  }
+  return {root, runRoot, artifact, evidence, calls, run}
+}
+function invoke(f, extra = {}) {
+  return buildSemanticParity({repositoryRoot:f.root, run:f.run, uuid:() => token, ...extra})
+}
+function receipt(f, phase) {
+  return JSON.parse(fs.readFileSync(resolve(f.evidence, `${phase}.receipt.json`), 'utf8'))
+}
+function verifyStreams(f, phase, complete) {
+  const observed = receipt(f, phase)
+  const call = f.calls.find(c => c.phase === phase)
+  assert.deepEqual(Object.keys(observed).sort(), ['format', 'profile', 'phase', 'argv', 'cwd',
+    'environment', 'pid', 'startUtc', 'endUtc', 'status', 'signal', 'error', 'ioError', 'overflow',
+    'complete', 'stdout', 'stderr', 'captureRange'].sort())
+  assert.equal(observed.format, 'i05-semantic-parity-child/1')
+  assert.equal(observed.profile, profile)
+  assert.equal(observed.phase, phase)
+  assert.deepEqual(observed.argv, [call.command, ...call.args])
+  assert.equal(observed.cwd, f.root)
+  assert.deepEqual(observed.environment, call.options.env)
+  const allowedEnv = new Set(['PATH','HOME','LANG','LC_ALL','LC_CTYPE','SYSTEMROOT','WINDIR',
+    'VIRTUAL_ENV','UV_PROJECT_ENVIRONMENT','UV_NO_SYNC','UV_OFFLINE','UV_PYTHON_DOWNLOADS',
+    'UV_CACHE_DIR','PYTHONDONTWRITEBYTECODE','PYTHONNOUSERSITE','PYTHONPATH','TMPDIR',
+    'PYINSTALLER_CONFIG_DIR'])
+  assert(Object.keys(observed.environment).every(key => allowedEnv.has(key)))
+  assert.equal(observed.environment.UV_NO_SYNC, '1')
+  assert.equal(observed.environment.UV_OFFLINE, '1')
+  assert.equal(observed.environment.UV_PYTHON_DOWNLOADS, 'never')
+  assert.equal(observed.environment.UV_CACHE_DIR, resolve(f.evidence,'cache/uv'))
+  assert.equal(observed.environment.PYINSTALLER_CONFIG_DIR, resolve(f.evidence,'cache/pyinstaller'))
+  assert.equal(observed.environment.TMPDIR, resolve(f.evidence,'tmp'))
+  assert.equal(observed.pid, 2000 + f.calls.indexOf(call) + 1)
+  assert.equal(observed.complete, complete)
+  assert(Number.isFinite(Date.parse(observed.startUtc)))
+  assert(Date.parse(observed.endUtc) >= Date.parse(observed.startUtc))
+  for (const channel of ['stdout', 'stderr']) {
+    const expectedPath = resolve(f.evidence, `${phase}.${channel}.log`)
+    const raw = fs.readFileSync(expectedPath)
+    assert.deepEqual(observed[channel], {path: expectedPath, bytes:raw.length, sha256:sha(raw)})
+    assert.deepEqual(observed.captureRange[channel], [0, raw.length])
+  }
+  return observed
+}
+
+test('standalone dispatch is exact and never runs while choosing', () => {
+  assert.equal(selectBuild([]), buildEngine)
+  assert.equal(selectBuild(['--i05-source-package-parity']), buildSemanticParity)
+  for (const argv of [['--unknown'], ['--i05-source-package-parity', 'extra'],
+    ['--i05-source-package-parity=full-v1']]) assert.throws(() => selectBuild(argv))
+})
+
+test('standalone collects exact code and data, returns6, never publishes parent stage', (t) => {
+  const f = fixture(t)
+  const stage = resolve(f.root, 'build/engine/ontolearn-engine')
+  fs.mkdirSync(stage, {recursive:true})
+  fs.writeFileSync(resolve(stage, 'old'), 'original stage')
+  const result = invoke(f)
+  assert.deepEqual(Object.keys(result).sort(), ['profile','artifactDirectory','bindingPath',
+    'bindingSha256','provenanceSha256','rootApproved'].sort())
+  assert.equal(result.profile, profile)
+  assert.equal(result.artifactDirectory, f.artifact)
+  assert.equal(result.bindingPath, resolve(f.runRoot,'artifact-binding-v1.json'))
+  assert.equal(result.bindingSha256, 'a'.repeat(64))
+  assert.equal(result.provenanceSha256, 'b'.repeat(64))
+  assert.equal(result.rootApproved, false)
+  assert.equal(f.calls.length, 3)
+  assert.equal(fs.readFileSync(resolve(stage, 'old'), 'utf8'), 'original stage')
+  const args = f.calls[1].args
+  const values = flag => args.flatMap((x, i) => x === flag ? [args[i+1]] : [])
+  assert.deepEqual(values('--hidden-import'), expectedImports)
+  assert.deepEqual(values('--exclude-module'), exclusions)
+  assert.equal(new Set(values('--hidden-import')).size, 25)
+  assert.equal(args.at(-1), 'packages/engine/src/ontolearn_engine/semantic_source_package_probe.py')
+  assert.deepEqual(values('--name'), ['ontolearn-semantic-parity'])
+  assert.deepEqual(values('--optimize'), ['0'])
+  assert.equal(args.includes('--collect-data'), false)
+  const data = values('--add-data')
+  for (const file of ['schema.json','registry.json','errors.json']) {
+    assert(data.includes(`${resolve(f.root,'packages/contracts/v2',file)}:contracts/v2`))
+  }
+  assert(data.includes(`${resolve(f.root,'packages/contracts/python/contract_v2.py')}:contracts/python`))
+  assert(data.includes(`${resolve(f.runRoot,'provenance/i05/source-package-parity-build.json')}:provenance/i05`))
+  assert(data.includes(`${resolve(f.runRoot,'provenance/i05/source-package-parity-private-contract-v1.json')}:provenance/i05`))
+  for (const file of ['i05-source-package-parity-manifest.json',
+    'i05-source-package-parity-inputs.json']) {
+    assert(data.includes(`${resolve(f.root,'packages/engine/src/ontolearn_engine/probe_inputs',file)}:provenance/i05/source-package-parity`))
+  }
+  assert.equal(data.some(x => x.startsWith(resolve(f.root,'packages/contracts/v2') + ':')), false)
+  for (const phase of phases) {
+    const raw = verifyStreams(f, phase, true)
+    assert.equal(raw.status, 0)
+    assert.equal(raw.error, null)
+    assert.equal(raw.ioError, null)
+    assert.equal(raw.overflow, false)
+    assert(fs.readFileSync(raw.stderr.path, 'utf8').includes(`${phase} stderr`))
+  }
+})
+
+for (const failedPhase of phases) test(
+  `standalone ${failedPhase} nonzero preserves raw first failure`, (t) => {
+  const f = fixture(t, {result:(phase,result) => phase === failedPhase ?
+    {...result,status:7} : result})
+  assert.throws(() => invoke(f), /BUILD_PARITY_CHILD_FAILED/)
+  assert.equal(f.calls.length, phases.indexOf(failedPhase) + 1)
+  const raw = verifyStreams(f, failedPhase, true)
+  assert.equal(raw.status, 7)
+  assert.equal(raw.error, null)
+  assert(fs.readFileSync(raw.stderr.path,'utf8').includes(`${failedPhase} stderr`))
+})
+
+for (const code of ['ENOBUFS','ERR_CHILD_PROCESS_STDIO_MAXBUFFER']) test(
+  `standalone ${code} reports incomplete captured range`, (t) => {
+  const f = fixture(t, {result:(_phase,result) => ({...result,status:null,
+    error:Object.assign(new Error('synthetic overflow'), {code})})})
+  assert.throws(() => invoke(f), /BUILD_PARITY_CHILD_FAILED/)
+  assert.equal(f.calls.length,1)
+  const raw = verifyStreams(f,'prepare',false)
+  assert.equal(raw.overflow,true)
+  assert.equal(raw.error.code,code)
+  assert(raw.stdout.bytes > 0 && raw.stderr.bytes > 0)
+})
+
+test('standalone spawn error preserves both direct raw streams without rerun', (t) => {
+  const f = fixture(t, {result:(_phase,result) => ({...result,status:null,
+    error:Object.assign(new Error('synthetic spawn error'), {code:'ENOENT'})})})
+  assert.throws(() => invoke(f), /BUILD_PARITY_CHILD_FAILED/)
+  assert.equal(f.calls.length,1)
+  const raw = verifyStreams(f,'prepare',false)
+  assert.equal(raw.overflow,false)
+  assert.equal(raw.error.code,'ENOENT')
+})
+
+for (const invalid of ['malformed','oversize','unknownKey','nonString','duplicate','BOM',
+  'nonJSONWhitespace','invalidUTF8']) test(
+  `standalone ${invalid} control preserves full raw`, (t) => {
+  const f = fixture(t, {stdout:(phase,stdout,controls) => {
+    if (phase !== 'prepare') return stdout
+    if (invalid === 'malformed') return '{bad json'
+    if (invalid === 'oversize') return 'x'.repeat(65537)
+    if (invalid === 'unknownKey') return JSON.stringify({...controls, approved:true})
+    if (invalid === 'duplicate') {
+      const {anchorPath, ...rest} = controls
+      return JSON.stringify(rest).slice(0,-1) + ',"anchorPath":"wrong","anchorPath":' +
+        JSON.stringify(anchorPath) + '}'
+    }
+    if (invalid === 'BOM') return '\uFEFF' + stdout
+    if (invalid === 'nonJSONWhitespace') return '\v' + stdout
+    if (invalid === 'invalidUTF8') return Buffer.from([255])
+    return JSON.stringify({...controls, anchorPath:7})
+  }})
+  assert.throws(() => invoke(f), /BUILD_PARITY_HELPER_OUTPUT_INVALID/)
+  assert.equal(f.calls.length,1)
+  const raw = verifyStreams(f,'prepare',true)
+  assert.equal(raw.status,0)
+  if (invalid === 'oversize') assert.equal(raw.stdout.bytes,65537)
+  assert(fs.existsSync(resolve(f.evidence,'prepare.control.json')))
+})
+
+test('standalone exact 64KiB valid control keeps the complete accepted raw range', (t) => {
+  const f = fixture(t, {stdout:(phase,stdout) => phase === 'prepare' ?
+    stdout + ' '.repeat(65536 - Buffer.byteLength(stdout)) : stdout})
+  invoke(f)
+  assert.equal(f.calls.length,3)
+  const raw = verifyStreams(f,'prepare',true)
+  assert.equal(raw.stdout.bytes,65536)
+  const control = JSON.parse(fs.readFileSync(resolve(f.evidence,'prepare.control.json'),'utf8'))
+  assert.equal(control.accepted,true)
+  assert.equal(control.stdout.sha256,raw.stdout.sha256)
+})
+
+test('standalone helper output paths cannot redirect the fixed target layout', (t) => {
+  const f = fixture(t, {stdout:(phase,stdout,controls) => phase === 'prepare' ?
+    JSON.stringify({...controls, provenancePath:resolve(f.root,'outside')}) : stdout})
+  assert.throws(() => invoke(f), /HELPER_PATH_INVALID/)
+  assert.equal(f.calls.length,1)
+  verifyStreams(f,'prepare',true)
+})
+
+test('standalone invalid final binding never publishes or adds a child', (t) => {
+  const f = fixture(t, {stdout:(phase,stdout,controls) => phase === 'finalize' ?
+    JSON.stringify({...controls, engineDirectory:resolve(f.root,'foreign')}) : stdout})
+  assert.throws(() => invoke(f), /BINDING_INVALID/)
+  assert.equal(f.calls.length,3)
+  verifyStreams(f,'finalize',true)
+  assert.equal(fs.existsSync(resolve(f.root,'build/engine')),false)
+})
+
+test('standalone evidence read IO failure keeps actual first raw bytes', (t) => {
+  const f = fixture(t)
+  const stdoutReadHandles = new Set()
+  const io = {...fs, openSync:(path,...args) => {
+    const fd = fs.openSync(path,...args)
+    if (String(path).endsWith('prepare.stdout.log') && args[0] === 'r') stdoutReadHandles.add(fd)
+    return fd
+  }, readSync:(fd,...args) => {
+    if (stdoutReadHandles.has(fd)) throw Object.assign(new Error('synthetic read IO'), {code:'EIO'})
+    return fs.readSync(fd,...args)
+  }, closeSync:fd => {stdoutReadHandles.delete(fd); return fs.closeSync(fd)}}
+  assert.throws(() => invoke(f,{io}), /BUILD_PARITY_EVIDENCE_IO_FAILED/)
+  assert.equal(f.calls.length,1)
+  assert(fs.readFileSync(resolve(f.evidence,'prepare.stdout.log')).length > 0)
+  assert(fs.readFileSync(resolve(f.evidence,'prepare.stderr.log')).length > 0)
+  const raw = receipt(f,'prepare')
+  assert.equal(raw.complete,false)
+  assert.equal(raw.ioError.code,'EIO')
+  assert.equal(raw.stdout,null)
+  assert.equal(raw.captureRange.stdout,null)
+})
+
+test('standalone control read failure is separate from already complete raw capture', (t) => {
+  const f = fixture(t)
+  const io = {...fs, readFileSync:(path,...args) => {
+    if (String(path).endsWith('prepare.stdout.log'))
+      throw Object.assign(new Error('synthetic control read IO'), {code:'EIO'})
+    return fs.readFileSync(path,...args)
+  }}
+  assert.throws(() => invoke(f,{io}), /BUILD_PARITY_EVIDENCE_IO_FAILED/)
+  assert.equal(f.calls.length,1)
+  const raw = verifyStreams(f,'prepare',true)
+  assert.equal(raw.ioError,null)
+  const control = JSON.parse(fs.readFileSync(resolve(f.evidence,'prepare.control.json'),'utf8'))
+  assert.equal(control.accepted,false)
+  assert.equal(control.code,'BUILD_PARITY_EVIDENCE_IO_FAILED')
+  assert.equal(control.error.code,'EIO')
+  assert.equal(control.stdout.sha256,raw.stdout.sha256)
+})
+
+test('standalone receipt write IO failure keeps channels and never returns success', (t) => {
+  const f = fixture(t)
+  const io = {...fs, writeFileSync:(path,...args) => {
+    if (String(path).endsWith('prepare.receipt.json'))
+      throw Object.assign(new Error('synthetic receipt IO'), {code:'EIO'})
+    return fs.writeFileSync(path,...args)
+  }}
+  assert.throws(() => invoke(f,{io}), /BUILD_PARITY_EVIDENCE_IO_FAILED/)
+  assert.equal(f.calls.length,1)
+  assert(fs.readFileSync(resolve(f.evidence,'prepare.stdout.log')).length > 0)
+  assert(fs.readFileSync(resolve(f.evidence,'prepare.stderr.log')).length > 0)
+})
+
+test('standalone opening stderr failure closes the first handle and never launches', (t) => {
+  const f = fixture(t)
+  const closed = [], retained = new Set()
+  const io = {...fs, openSync:(path,...args) => {
+    if (String(path).endsWith('prepare.stderr.log'))
+      throw Object.assign(new Error('synthetic open IO'), {code:'EIO'})
+    const fd = fs.openSync(path,...args)
+    retained.add(fd)
+    return fd
+  }, closeSync:fd => {closed.push(fd); retained.delete(fd); return fs.closeSync(fd)}}
+  assert.throws(() => invoke(f,{io}), /BUILD_PARITY_EVIDENCE_IO_FAILED/)
+  assert.equal(f.calls.length,0)
+  assert(closed.length >= 1)
+  assert.equal(retained.size,0)
+})
+
+test('standalone large raw channels exceed the old pipe buffer without truncation', (t) => {
+  const f = fixture(t, {stdout:(phase,stdout) => phase === 'pyinstaller' ?
+    'O'.repeat(4 * 1024 * 1024 + 17) : stdout,
+    stderr:(_phase,_stderr) => 'E'.repeat(4 * 1024 * 1024 + 31)})
+  invoke(f)
+  const raw = verifyStreams(f,'pyinstaller',true)
+  assert.equal(raw.stdout.bytes,4 * 1024 * 1024 + 17)
+  assert.equal(raw.stderr.bytes,4 * 1024 * 1024 + 31)
+  assert.equal(fs.readFileSync(raw.stdout.path).at(-1),79)
+  assert.equal(fs.readFileSync(raw.stderr.path).at(-1),69)
+})
+
+test('standalone thrown runner preserves partial channels and reports actual failure', (t) => {
+  const f = fixture(t)
+  const throwingRun = (...args) => {
+    f.run(...args)
+    throw Object.assign(new Error('synthetic throw after writes'), {code:'EIO'})
+  }
+  assert.throws(() => invoke(f,{run:throwingRun}), /BUILD_PARITY_CHILD_FAILED/)
+  assert.equal(f.calls.length,1)
+  const raw = receipt(f,'prepare')
+  assert.equal(raw.error.code,'EIO')
+  assert.equal(raw.complete,false)
+  assert.equal(raw.status,null)
+  for (const channel of ['stdout','stderr']) {
+    const bytes = fs.readFileSync(resolve(f.evidence,`prepare.${channel}.log`))
+    assert.equal(raw[channel].sha256,sha(bytes))
+    assert(bytes.length > 0)
+  }
+})
+
+test('standalone signal has no synthetic zero exit and does not finalize', (t) => {
+  const f = fixture(t, {result:(_phase,result) => ({...result,status:null,signal:'SIGTERM'})})
+  assert.throws(() => invoke(f), /BUILD_PARITY_CHILD_FAILED/)
+  assert.equal(f.calls.length,1)
+  const raw = receipt(f,'prepare')
+  assert.equal(raw.status,null)
+  assert.equal(raw.signal,'SIGTERM')
+  assert.equal(raw.stdout.sha256,sha(fs.readFileSync(raw.stdout.path)))
+  assert.equal(raw.stderr.sha256,sha(fs.readFileSync(raw.stderr.path)))
+})
+
+test('standalone repeated UUID preserves all original evidence and artifact', (t) => {
+  const f = fixture(t)
+  const result = invoke(f)
+  const original = fs.readFileSync(result.bindingPath)
+  const originalReceipt = fs.readFileSync(resolve(f.evidence,'prepare.receipt.json'))
+  assert.throws(() => invoke(f), /OUTPUT_EXISTS/)
+  assert.equal(f.calls.length,3)
+  assert.deepEqual(fs.readFileSync(result.bindingPath),original)
+  assert.deepEqual(fs.readFileSync(resolve(f.evidence,'prepare.receipt.json')),originalReceipt)
+})
+
+test('standalone rejects an ancestor symlink before any child or outside write', (t) => {
+  const f = fixture(t)
+  fs.mkdirSync(resolve(f.root,'build'))
+  const outside = resolve(f.root,'outside-not-created')
+  fs.symlinkSync(outside,resolve(f.root,'build/i05-semantic-parity'))
+  assert.throws(() => invoke(f), /DIRECTORY_INVALID/)
+  assert.equal(f.calls.length,0)
+  assert.equal(fs.existsSync(outside),false)
+})
+"""
+
+
+def test_standalone_node_builder_uses_only_fd_run_stubs(tmp_path):
+    script = tmp_path / "standalone-builder-unit.mjs"
+    script.write_text(STANDALONE_BUILDER_UNIT)
+    result = subprocess.run(
+        ["node", "--test", "--test-reporter=tap", str(script)],
+        cwd=REPOSITORY,
+        env={
+            **os.environ,
+            "BUILDER_MODULE_URL": (REPOSITORY / "scripts/build-engine.mjs").as_uri(),
+        },
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "# pass 28" in result.stdout
+    assert "# fail 0" in result.stdout
+
+
+def test_standalone_exact_builder_reservation_keeps_open_stream_evidence(
+    standalone_case, monkeypatch, tmp_path
+):
+    value = standalone_case
+    repository = tmp_path / "repository"
+    write(repository, p.STANDALONE_CONTRACT_SOURCE, STANDALONE_CONTRACT_RAW)
+    output = repository / "build/i05-semantic-parity" / str(uuid.uuid4())
+    evidence = output / "evidence"
+    (evidence / "cache").mkdir(parents=True)
+    (evidence / "tmp").mkdir()
+    request = p._canonical({"profile": p.STANDALONE_PROFILE, "token": output.name})
+    write(evidence, "build-request-v1.json", request)
+    stdout, stderr = b"first stdout", b"first stderr"
+    write(evidence, "prepare.stdout.log", stdout)
+    write(evidence, "prepare.stderr.log", stderr)
+    monkeypatch.setattr(p, "_collect_standalone_manifest", lambda *_a: value.manifest)
+    monkeypatch.setattr(p.sysconfig, "get_path", lambda _kind: str(value.root))
+    result = p.prepare_build(repository, output, profile=p.STANDALONE_PROFILE)
+    assert Path(result["provenancePath"]).parent == output / "provenance/i05"
+    assert (evidence / "build-request-v1.json").read_bytes() == request
+    assert (evidence / "prepare.stdout.log").read_bytes() == stdout
+    assert (evidence / "prepare.stderr.log").read_bytes() == stderr
+
+
+def test_standalone_carchive_unknown_runtimehook_is_not_silently_collected(tmp_path):
+    raw = synthetic_carchive(
+        synthetic_pyz([("safe", parser_fixture_code(), 0)]),
+        parser_fixture_code(),
+        extra=(("pyi_rth_unknown", b"s", marshal.dumps(parser_fixture_code(), 4), 1),),
+    )
+    target = tmp_path / "inert-launcher"
+    target.write_bytes(raw)
+    with fault("ARCHIVE_MISMATCH"):
+        p._bounded_archive(target)
+
+
+@pytest.mark.parametrize("field", ["bytes", "sha256", "codeSha256"])
+def test_standalone_target_identity_must_equal_canonical_private_writer(standalone_case, field):
+    value = standalone_case
+    value.manifest["entrypoint"][field] = (
+        value.manifest["entrypoint"][field] + 1 if field == "bytes" else "0" * 64
+    )
+    value.refresh()
+    with fault("SOURCE_MISMATCH"):
+        value.load()
+
+
+def test_standalone_declared_contract_bytes_must_be_exact(standalone_case):
+    value = standalone_case
+    value.manifest["contract"]["bytes"] += 1
+    value.manifest["buildInputs"][-1] = copy.deepcopy(value.manifest["contract"])
+    value.refresh()
+    with fault("CONTRACT_MISMATCH"):
+        value.load()
+
+
+def test_standalone_rejects_parent_contract_before_using_its_schema(standalone_case):
+    value = standalone_case
+    (value.root / p.STANDALONE_CONTRACT_BUNDLED).write_bytes(CONTRACT_RAW)
+    with fault("CONTRACT_MISMATCH"):
+        value.load()
+
+
+def test_code_graph_depth_and_node_caps_are_checked_before_normalization(monkeypatch):
+    code = parser_fixture_code()
+    with monkeypatch.context() as scoped:
+        scoped.setattr(p, "ENTRY_CAP", 1)
+        with fault("LIMIT_EXCEEDED"):
+            p._marshal_exact(marshal.dumps(code, 4), "code")
+    for _ in range(70):
+        code = code.replace(co_consts=(code,))
+    with fault("LIMIT_EXCEEDED"):
+        p._marshal_exact(marshal.dumps(code, 4), "code")
+
+
+def test_standalone_carchive_known_option_cannot_select_another_layout(tmp_path):
+    raw = synthetic_carchive(
+        synthetic_pyz([("safe", parser_fixture_code(), 0)]),
+        parser_fixture_code(),
+        extra=(("pyi-contents-directory foreign", b"o", b"", 0),),
+    )
+    target = tmp_path / "inert-launcher"
+    target.write_bytes(raw)
+    with fault("ARCHIVE_MISMATCH"):
+        p._bounded_archive(target)
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        b"[" + struct.pack("<i", 2**31 - 1),
+        b"s" + struct.pack("<i", 2**31 - 1),
+        b"(" + struct.pack("<i", -1),
+        b"l" + struct.pack("<i", 2**31 - 1),
+        b"r" + struct.pack("<i", -1),
+        b"r" + struct.pack("<i", 2**31 - 1),
+        bytes([ord("[") | 0x80]) + struct.pack("<i", 1) + b"r" + struct.pack("<i", 0),
+        (b"[" + struct.pack("<i", 1)) * 70 + b"N",
+        b"c" + b"\0" * 20,
+        b"z\xffshort",
+        marshal.dumps({"dictTOC": (0, 12, 1)}, 4),
+    ],
+)
+def test_marshal_allocation_and_reference_preflight_happens_before_load(monkeypatch, raw):
+    monkeypatch.setattr(
+        p.marshal, "load", lambda *_a: pytest.fail("untrusted marshal.load reached")
+    )
+    with pytest.raises(p.BuildProvenanceFault):
+        p._marshal_exact(raw, "toc")
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        b"c" + b"\0" * 20,
+        # A tiny code declaration whose first field is not bytes.
+        b"c" + b"\0" * 20 + b"N",
+        # localsplusnames has one item while localspluskinds has no bytes.
+        b"c"
+        + b"\0" * 20
+        + b"s"
+        + struct.pack("<i", 0)
+        + b")\0"
+        + b")\0"
+        + b")\x01z\x01x"
+        + b"s"
+        + struct.pack("<i", 0)
+        + b"z\x01f" * 3
+        + struct.pack("<i", 0)
+        + (b"s" + struct.pack("<i", 0)) * 2,
+    ],
+)
+def test_code_field_preflight_happens_before_marshal_load(monkeypatch, raw):
+    monkeypatch.setattr(
+        p.marshal, "load", lambda *_a: pytest.fail("malformed code reached marshal.load")
+    )
+    with pytest.raises(p.BuildProvenanceFault):
+        p._marshal_exact(raw, "code")
+
+
+@pytest.mark.parametrize("limit", ["depth", "expandedPayload", "expandedNodes"])
+def test_loader_code_graph_is_bounded_before_normalization(monkeypatch, limit):
+    code = parser_fixture_code()
+    if limit == "depth":
+        nested = None
+        for _ in range(70):
+            nested = (nested,)
+        constants = (nested,)
+    elif limit == "expandedPayload":
+        # Repeated references must count each expansion, not only unique objects.
+        chunk = b"x" * 1024
+        constants = ((chunk,) * 2049,)
+    else:
+        chunk = (None,) * 1000
+        constants = ((chunk,) * 201,)
+    code = code.replace(co_consts=constants)
+    monkeypatch.setattr(
+        p, "_normalized", lambda *_a: pytest.fail("unbounded normalization reached")
+    )
+    with fault("LIMIT_EXCEEDED"):
+        p._bounded_code_sha(code)
+
+
+def test_loader_code_graph_preserves_the_existing_fingerprint():
+    code = parser_fixture_code()
+    assert p._bounded_code_sha(code) == p._code_sha(code)

@@ -1,0 +1,1143 @@
+{
+  "format": "i05-semantic-parity-private-contract/1",
+  "status": "private standalone profile contract; no artifact/runtime/root approval",
+  "owners": {
+    "T03": [
+      "scripts/build-engine.mjs",
+      "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+      "packages/engine/tests/test_semantic_build_provenance.py",
+      "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json"
+    ],
+    "I05Only": [
+      "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "packages/engine/tests/test_semantic_source_package_probe.py"
+    ]
+  },
+  "fixedLayout": {
+    "profile": "i05-source-package-parity",
+    "anchorModule": "_i05_semantic_parity_build_anchor",
+    "anchorConstants": ["PROVENANCE_SHA256", "CONTRACT_SHA256", "PROFILE"],
+    "embeddedProvenance": "provenance/i05/source-package-parity-build.json",
+    "embeddedContract": "provenance/i05/source-package-parity-private-contract-v1.json",
+    "uniqueBuildRoot": "build/i05-semantic-parity/<fresh-uuid>",
+    "generatedAnchor": "generated/_i05_semantic_parity_build_anchor.py",
+    "artifactBinding": "artifact-binding-v1.json",
+    "stagingCopy": null,
+    "target": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+    "launcher": "ontolearn-semantic-parity",
+    "evidence": "evidence/<prepare|pyinstaller|finalize>.<stdout|stderr>.log; builder reserves fresh run root with exact evidence/build-request-v1.json; prepare refuses other preexisting members"
+  },
+  "strictParsing": {
+    "utf8": "strict; no BOM",
+    "duplicateKeys": "reject at every object",
+    "unknownOrMissingKeys": "reject at every typed object",
+    "nonFiniteNumbers": "reject NaN Infinity -Infinity",
+    "integer": "exact int, reject bool and floats",
+    "strings": "exact str, reject NUL and lone surrogate; semantic paths NFC and relative POSIX",
+    "jsonDepthMax": 16,
+    "jsonNodesMax": 200000,
+    "manifestBytesMax": 4194304,
+    "contractBytesMax": 262144,
+    "bindingBytesMax": 8388608,
+    "sourceFileBytesMax": 2097152,
+    "inputFileBytesMax": 8388608,
+    "metadataBytesMax": 1048576,
+    "licenseBytesMax": 1048576,
+    "artifactFilesMax": 16384,
+    "artifactSingleFileBytesMax": 134217728,
+    "artifactTotalBytesMax": 536870912,
+    "meaning": "private verifier read limits; no Q5/whole-H/RSS capacity or hard OS-timeout guarantee"
+  },
+  "fixedDistributions": {
+    "pyparsing": "3.3.3",
+    "pyshacl": "0.30.1",
+    "rdflib": "7.6.0",
+    "owlrl": "7.6.2",
+    "packaging": "26.3",
+    "prettytable": "3.18.0",
+    "wcwidth": "0.9.2",
+    "html5rdf": "1.2.1"
+  },
+  "fixedInputs": [
+    {
+      "path": "provenance/i05/source-package-parity/i05-source-package-parity-manifest.json",
+      "bytes": 21202,
+      "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a"
+    },
+    {
+      "path": "provenance/i05/source-package-parity/i05-source-package-parity-inputs.json",
+      "bytes": 8205267,
+      "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa"
+    }
+  ],
+  "compileDomain": {
+    "algorithm": "i05-code-object-marshal-filename-normalized/1",
+    "source": "compile exact source bytes, flags=0,dont_inherit=True,optimize=0",
+    "normalization": "recursively replace only CodeType.co_filename in code and nested co_consts with <i05-canonical-code>; preserve every other attribute, constants, flags and line/exception metadata",
+    "serialization": "marshal.dumps(normalized_code,4), SHA256",
+    "buildAndRuntime": "exact CPython sys.version/cache_tag/SOABI/MAGIC_NUMBER; sys.flags.optimize==0 required; no adapting hash to unexpected runtime optimization",
+    "entrypoint": "exact source target bound independently to bounded CArchive s entry semantic_source_package_probe and canonical PYZ module; runtime alone cannot prove external target binding"
+  },
+  "runtimeApi": {
+    "BuildProvenanceFault": "ValueError subclass; code fixed whitelist; no path/input details in public failure",
+    "load_frozen_provenance": "keyword-only expectations object containing exact22 supplier source pins,4 public resources,2 fixed input pins,lock pin and fixed8 versions; returns opaque verified evidence; frozen-only; only bounded JSON/anchor/metadata/file checks before observer, no semantic/thirdparty/native imports",
+    "verify_loaded_modules": "(evidence, modules) after I05 audit observer installed; no target imports inside verifier; inspect canonical sys.modules/module/spec/origin and actual loader.get_code for22 suppliers plus2 private modules and all currently-loaded thirdparty Python modules; compare actual normalized code, expected origins and source manifest; unknown loader rejects",
+    "verify_native_extension": "(evidence) after observer and real runtime imports; never import extension itself; require exact wcwidth._wcwidth_c actual ExtensionFileLoader/sys.modules/origin under artifact; return actual file hash and loader facts. Absent/wrong-loader/outside-root fails. Installed-source native SHA vs ad-hoc-signed artifact SHA remain separate; source/native equivalence UNKNOWN unless separately proven by root. No pure-Python fallback success",
+    "externalApproval": "all reader evidence explicitly rootApproval=unknown; packageCodeBoundToSource restricted to verified Python code/identified resources, never whole native artifact or semantic parity",
+    "exactSignatures": {
+      "load_frozen_provenance": "def load_frozen_provenance(*, expectations: dict, profile=\"parent-engine\") -> FrozenBuildEvidence",
+      "verify_loaded_modules": "def verify_loaded_modules(evidence: FrozenBuildEvidence, modules: dict[str, ModuleType]) -> dict",
+      "verify_native_extension": "def verify_native_extension(evidence: FrozenBuildEvidence) -> dict",
+      "buildProgrammatic": "prepare_build(repository_root, output_dir, *, profile=\"parent-engine\"); finalize_build(repository_root, output_dir, engine_dir, *, profile=\"parent-engine\"); verify_external_binding(binding_path, artifact_dir, *, expected_sha256, profile=\"parent-engine\")"
+    },
+    "anchorHandling": "preflight only find_spec/get_code, never import or execute anchor; exact three-assignment template PROVENANCE_SHA256/CONTRACT_SHA256/PROFILE; filename-only normalization; never root approval",
+    "opaqueEvidence": "FrozenBuildEvidence created only by successful load_frozen_provenance; exact class and module-private seal checked on use; keep canonical manifest+expectations as immutable bytes, resolved _MEIPASS and original interpreter identity; post-observer verification rechecks same frozen root/interpreter and actual loader code, no cached runtime success. No public constructor or caller paths/approval bits. This prevents incidental API misuse/mutation, not arbitrary malicious Python code with same-process introspection privilege.",
+    "loadedModulesArgument": "exact dict with exactly the22 supplier module names as keys and their real current ModuleType objects; verify sys.modules object identity, module.__name__, spec.name, resolved __file__/spec.origin equal the artifact-relative expected path and actual get_code; private2 obtained from already-loaded sys.modules only, no importing target code; inspect already-loaded8-distribution Python modules against recorded files. Missing/unknown loader or runtime code mismatch rejects."
+  },
+  "buildApi": {
+    "prepare_build": "exact35 clean Git source guards; separate source/frozen mapping; fresh root or exact builder-reserved evidence only; emit nested provenance/contract/anchor and actual license mirrors without executing semantic target",
+    "finalize_build": "bounded actual CArchive and PYZ parsers, code/resource/license/native identities and complete directory binding; false rootApproved",
+    "inventoryArtifact": "programmatic only; complete regular files/directories/internal relative symlinks, reject outside symlinks/collisions/special files; chunked file hash with before/after stat stable checks; excludes no files inside artifact; binding outside artifact; fixed launcher present and executable"
+  },
+  "externalExecutionContract": {
+    "trustRoot": "root freezes expected binding SHA and complete actual engine-directory inventory before any new CLI comparison; a builder-produced binding rootApproved=false is a proposal only",
+    "executor": "existing external execution owner reads expected SHA from root frozen record, checks binding bytes and actual entire target directory including symlinks/modes/launcher immediately before spawn; refuses missing/wrong/changed binding or artifacts; does not trust package self-description",
+    "receiptFields": [
+      "expectedBindingSha256",
+      "actualBindingSha256",
+      "artifactDirectory",
+      "inventoryVerified",
+      "exactArgv",
+      "sourceCommit",
+      "provenanceSha256",
+      "startUtc",
+      "endUtc",
+      "exitCode",
+      "stdoutIdentity",
+      "stderrIdentity"
+    ],
+    "immutability": "after execution append receipt only; preserve original binding and actual unique artifact directory. Any change produces new immutable candidate/binding and new verification; never backfill approval",
+    "join": "root joins external preflight/actual run receipt with reader actual-loader evidence by same artifact/provenance identity; reader success alone cannot grant root approval",
+    "cli": "source [ownPython3.12,-m,ontolearn_engine.semantic_source_package_probe,--semantic-source-package-probe,selector]; frozen [actual-fixed-engine,--semantic-source-package-probe,selector]; exactly full-v1,b1-semantic-1x-v1,b1-semantic-10x-v1; no generic path/options",
+    "entrypoint": "direct canonical probe script target; no parent entrypoint import; runtime canonical PYZ verification and external targetCode/full-directory approval remain distinct"
+  },
+  "schemas": {
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "source",
+        "contract",
+        "python",
+        "codeAlgorithm",
+        "suppliers",
+        "privateModules",
+        "entrypoint",
+        "publicResources",
+        "inputs",
+        "lock",
+        "distributions",
+        "profile",
+        "buildInputs",
+        "licenseMirrors"
+      ],
+      "properties": {
+        "format": {
+          "const": "i05-semantic-parity-build-provenance/1"
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["commit", "tree"],
+          "properties": {
+            "commit": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "tree": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          }
+        },
+        "contract": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "bytes", "sha256"],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 134217728,
+              "booleanAccepted": false
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "python": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "implementation",
+            "version",
+            "cacheTag",
+            "soabi",
+            "bytecodeMagicHex",
+            "marshalVersion",
+            "compileFlags",
+            "dontInherit",
+            "optimize",
+            "buildExecutable",
+            "buildSharedLibrary"
+          ],
+          "properties": {
+            "implementation": {
+              "const": "cpython"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "cacheTag": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "soabi": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "bytecodeMagicHex": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}$"
+            },
+            "marshalVersion": {
+              "const": 4
+            },
+            "compileFlags": {
+              "const": 0
+            },
+            "dontInherit": {
+              "const": true
+            },
+            "optimize": {
+              "const": 0
+            },
+            "buildExecutable": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["bytes", "sha256"],
+              "properties": {
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 134217728,
+                  "booleanAccepted": false
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            },
+            "buildSharedLibrary": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "bytes", "sha256"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 134217728,
+                  "booleanAccepted": false
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            }
+          }
+        },
+        "codeAlgorithm": {
+          "const": "i05-code-object-marshal-filename-normalized/1"
+        },
+        "suppliers": {
+          "type": "array",
+          "minItems": 22,
+          "maxItems": 22,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["module", "path", "bytes", "sha256", "codeSha256"],
+            "properties": {
+              "module": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2097152,
+                "booleanAccepted": false
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "codeSha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "privateModules": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["module", "path", "bytes", "sha256", "codeSha256"],
+            "properties": {
+              "module": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2097152,
+                "booleanAccepted": false
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "codeSha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "entrypoint": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "bytes", "sha256", "codeSha256"],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 134217728,
+              "booleanAccepted": false
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "codeSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "publicResources": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "bytes", "sha256"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 134217728,
+                "booleanAccepted": false
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "bytes", "sha256"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 134217728,
+                "booleanAccepted": false
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "lock": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "bytes", "sha256"],
+          "properties": {
+            "path": {
+              "const": "uv.lock"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1048576,
+              "booleanAccepted": false
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "distributions": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "version", "metadata", "licenses", "files"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["path", "bytes", "sha256"],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512,
+                    "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 134217728,
+                    "booleanAccepted": false
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                }
+              },
+              "licenses": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 16,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["path", "bytes", "sha256"],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 512,
+                      "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 134217728,
+                      "booleanAccepted": false
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    }
+                  }
+                }
+              },
+              "files": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 4096,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["path", "bytes", "sha256", "kind", "module", "codeSha256"],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 512,
+                      "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 134217728,
+                      "booleanAccepted": false
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "kind": {
+                      "enum": ["python", "data", "native"]
+                    },
+                    "module": {
+                      "type": ["string", "null"],
+                      "maxLength": 256
+                    },
+                    "codeSha256": {
+                      "type": ["string", "null"],
+                      "pattern": "^[0-9a-f]{64}$"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "profile": {
+          "const": "i05-source-package-parity"
+        },
+        "buildInputs": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "bytes", "sha256"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 134217728,
+                "booleanAccepted": false
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "licenseMirrors": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 16384,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "bytes", "sha256", "distribution", "sourcePath"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1048576,
+                "booleanAccepted": false
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "distribution": {
+                "enum": [
+                  "pyparsing",
+                  "pyshacl",
+                  "rdflib",
+                  "owlrl",
+                  "packaging",
+                  "prettytable",
+                  "wcwidth",
+                  "html5rdf"
+                ]
+              },
+              "sourcePath": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+              }
+            }
+          }
+        }
+      }
+    },
+    "artifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "provenanceSha256",
+        "sourceCommit",
+        "artifactDomain",
+        "launcher",
+        "entries",
+        "rootApproved",
+        "profile",
+        "targetCode"
+      ],
+      "properties": {
+        "format": {
+          "const": "i05-semantic-parity-artifact-binding/1"
+        },
+        "provenanceSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "sourceCommit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "artifactDomain": {
+          "const": "complete-semantic-parity-directory"
+        },
+        "launcher": {
+          "const": "ontolearn-semantic-parity"
+        },
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16384,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "kind", "bytes", "sha256", "mode", "target"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+              },
+              "kind": {
+                "enum": ["file", "directory", "symlink"]
+              },
+              "bytes": {
+                "type": ["integer", "null"],
+                "minimum": 0,
+                "maximum": 134217728
+              },
+              "sha256": {
+                "type": ["string", "null"],
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "mode": {
+                "type": ["integer", "null"],
+                "minimum": 0,
+                "maximum": 511
+              },
+              "target": {
+                "type": ["string", "null"],
+                "maxLength": 512
+              }
+            }
+          }
+        },
+        "rootApproved": {
+          "const": false
+        },
+        "profile": {
+          "const": "i05-source-package-parity"
+        },
+        "targetCode": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["archiveEntry", "typecode", "sourcePath", "codeSha256"],
+          "properties": {
+            "archiveEntry": {
+              "const": "semantic_source_package_probe"
+            },
+            "typecode": {
+              "const": "s"
+            },
+            "sourcePath": {
+              "const": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"
+            },
+            "codeSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        }
+      }
+    },
+    "expectations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["suppliers", "publicResources", "inputs", "lock", "distributions"],
+      "properties": {
+        "suppliers": {
+          "type": "array",
+          "minItems": 22,
+          "maxItems": 22,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["module", "path", "bytes", "sha256"],
+            "properties": {
+              "module": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2097152,
+                "booleanAccepted": false
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "publicResources": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "bytes", "sha256"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 134217728,
+                "booleanAccepted": false
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "bytes", "sha256"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pathPolicy": "relative-posix-no-empty-dot-dotdot-backslash-NUL; UTF8-NFC; inside-declared-root; unique"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 134217728,
+                "booleanAccepted": false
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "lock": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "bytes", "sha256"],
+          "properties": {
+            "path": {
+              "const": "uv.lock"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1048576,
+              "booleanAccepted": false
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "distributions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pyparsing",
+            "pyshacl",
+            "rdflib",
+            "owlrl",
+            "packaging",
+            "prettytable",
+            "wcwidth",
+            "html5rdf"
+          ],
+          "properties": {
+            "pyparsing": {
+              "const": "3.3.3"
+            },
+            "pyshacl": {
+              "const": "0.30.1"
+            },
+            "rdflib": {
+              "const": "7.6.0"
+            },
+            "owlrl": {
+              "const": "7.6.2"
+            },
+            "packaging": {
+              "const": "26.3"
+            },
+            "prettytable": {
+              "const": "3.18.0"
+            },
+            "wcwidth": {
+              "const": "0.9.2"
+            },
+            "html5rdf": {
+              "const": "1.2.1"
+            }
+          }
+        }
+      }
+    }
+  },
+  "identityRules": {
+    "orderedUnique": "22 suppliers from final I05 list,4 public resources,2 fixed inputs,8 named distributions exactly once; no omissions/substitutions/duplicates; private modules exactly semantic_source_package_probe and semantic_build_provenance",
+    "pathsAndTypes": "all arrays bounded, path->file role unique within each domain; explicit byte limits applied per role; native/data codeSha null and module null except native module name; python files require module+codeSha; file/directory/symlink binding fields use only corresponding nonnull fields",
+    "finalPins": "current2cf/6891/401a declarations are not final approval; final new I05 repaired source must explicitly integrate before collecting final22/4/probe/entrypoint/reader/lock identities",
+    "noRuntimeExecutionNow": "only static/unit/build helpers permitted; no new source/package CLI comparison or physical claims"
+  },
+  "requiredNegativeTests": [
+    "duplicate/missing/extra/nonfinite/bool-int/depth/byte/count/path/escape/collision",
+    "anchor digest and contract/manifest tamper",
+    "source/resource/input/lock/version/metadata/license omissions or mismatch",
+    "actual loader code and nested const/line/flags changes, module/spec/sys.modules/origin mismatch",
+    "wrong Python full version/cacheTag/SOABI/magic/optimize and unknown get_code",
+    "native missing or fake loader/outside path, no fallback pass",
+    "whole artifact tamper and symlink escape, missing external expectedSHA refused by external-verification helper, reader never root-approved",
+    "entrypoint preserves flag, laziness and nonzero SystemExit without importing canonical semantics in unit tests"
+  ],
+  "pathDomains": {
+    "supplierAndPrivateCode": {
+      "rowPath": "artifact-relative ontolearn_engine/<relative.py>",
+      "sourceRoot": "repository/packages/engine/src",
+      "frozenRoot": "sys._MEIPASS",
+      "i05TupleConversion": "(module,relative,bytes,sha256) -> {module,path:ontolearn_engine/+relative,bytes,sha256}, preserve exact ordered22 list"
+    },
+    "publicResources": {
+      "rowPath": "artifact-relative contracts/<original-path>",
+      "sourceRoot": "repository/packages",
+      "frozenRoot": "sys._MEIPASS",
+      "i05TupleConversion": "(original-path,bytes,sha256) -> {path:contracts/+original-path,bytes,sha256}, preserve ordered4"
+    },
+    "inputs": {
+      "rowPath": "fixed ontolearn_engine/probe_inputs/<name>.json",
+      "sourceRoot": "repository/packages/engine/src",
+      "frozenRoot": "sys._MEIPASS",
+      "conversion": "copy two private contract fixedInputs exactly, names/order/content unchanged"
+    },
+    "lock": {
+      "rowPath": "uv.lock",
+      "sourceRoot": "repository",
+      "frozenPath": "sys._MEIPASS/provenance/uv.lock",
+      "i05TupleConversion": "LOCK_BYTES/LOCK_SHA256 -> {path:uv.lock,bytes,sha256}"
+    },
+    "contract": {
+      "rowPath": "docs/reviews/T03/i05-m08-provenance-20261023/private-contract-v1.json",
+      "sourceRoot": "repository",
+      "frozenPath": "sys._MEIPASS/provenance/i05-private-contract-v1.json"
+    },
+    "entrypoint": {
+      "rowPath": "packages/engine/entrypoint.py",
+      "sourceRoot": "repository",
+      "frozenPath": null,
+      "validationDomain": "source identity plus external launcher/PYZ binding only; no runtime get_code assumption"
+    },
+    "distributionFilesMetadataLicenses": {
+      "rowPath": "installed-site-packages-relative path",
+      "sourceRoot": "distribution.locate_file root inside own environment purelib/platlib; all resolved paths must stay under corresponding site root",
+      "frozenRoot": "sys._MEIPASS",
+      "rules": "Name/Version match exact8; metadata belongs corresponding dist-info; files paths unique per distribution; .py code path -> module (drop.py and final.__init__), native module exact declared extension basename stripping ABI suffix; data module/codeSha null"
+    },
+    "artifactBindingEntries": {
+      "rowPath": "artifact-directory-relative path",
+      "root": "the exact immutable engine directory passed by build helper or root external executor",
+      "rules": "include every entry; no outside symlinks/special files; relative symlink target may contain.. only if full resolution remains inside root; root binding expectedSHA never supplied by package"
+    }
+  },
+  "bindingKindRules": {
+    "file": {
+      "nonnull": ["bytes", "sha256", "mode"],
+      "null": ["target"],
+      "mode": "exact POSIX permission bits0..511",
+      "launcherRule": "ontolearn-engine must regular file and mode&0o111 nonzero"
+    },
+    "directory": {
+      "nonnull": ["mode"],
+      "null": ["bytes", "sha256", "target"]
+    },
+    "symlink": {
+      "nonnull": ["target"],
+      "null": ["bytes", "sha256", "mode"],
+      "target": "relative nonempty <=512 chars, NUL/backslash/absolute forbidden; resolve inside artifact root and target must exist"
+    }
+  },
+  "errorCodes": [
+    "BUILD_PROVENANCE_MODE_INVALID",
+    "BUILD_PROVENANCE_JSON_INVALID",
+    "BUILD_PROVENANCE_SCHEMA_INVALID",
+    "BUILD_PROVENANCE_LIMIT_EXCEEDED",
+    "BUILD_PROVENANCE_PATH_INVALID",
+    "BUILD_PROVENANCE_PATH_ESCAPE",
+    "BUILD_PROVENANCE_IDENTITY_MISMATCH",
+    "BUILD_PROVENANCE_ANCHOR_UNAVAILABLE",
+    "BUILD_PROVENANCE_ANCHOR_MISMATCH",
+    "BUILD_PROVENANCE_CONTRACT_MISMATCH",
+    "BUILD_PROVENANCE_SOURCE_MISMATCH",
+    "BUILD_PROVENANCE_RESOURCE_MISMATCH",
+    "BUILD_PROVENANCE_LOCK_MISMATCH",
+    "BUILD_PROVENANCE_DISTRIBUTION_MISMATCH",
+    "BUILD_PROVENANCE_PYTHON_MISMATCH",
+    "BUILD_PROVENANCE_LOADER_UNAVAILABLE",
+    "BUILD_PROVENANCE_LOADER_MISMATCH",
+    "BUILD_PROVENANCE_MODULE_MISMATCH",
+    "BUILD_PROVENANCE_NATIVE_UNAVAILABLE",
+    "BUILD_PROVENANCE_NATIVE_MISMATCH",
+    "BUILD_PROVENANCE_BUILD_INPUT_DIRTY",
+    "BUILD_PROVENANCE_BUILD_OUTPUT_EXISTS",
+    "BUILD_PROVENANCE_BUILD_LAYOUT_INVALID",
+    "BUILD_PROVENANCE_ARCHIVE_MISMATCH",
+    "BUILD_PROVENANCE_ARTIFACT_MISMATCH",
+    "BUILD_PROVENANCE_EXTERNAL_BINDING_REQUIRED",
+    "BUILD_PROVENANCE_EXTERNAL_BINDING_MISMATCH",
+    "BUILD_PROVENANCE_ARTIFACT_CHANGED",
+    "BUILD_PROVENANCE_STAGING_INVALID"
+  ],
+  "profile": "i05-source-package-parity",
+  "inputMappings": [
+    {
+      "sourcePath": "ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+      "path": "provenance/i05/source-package-parity/i05-source-package-parity-manifest.json",
+      "bytes": 21202,
+      "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a"
+    },
+    {
+      "sourcePath": "ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+      "path": "provenance/i05/source-package-parity/i05-source-package-parity-inputs.json",
+      "bytes": 8205267,
+      "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa"
+    }
+  ],
+  "sourceGuards": [
+    "packages/engine/src/ontolearn_engine/__init__.py",
+    "packages/engine/src/ontolearn_engine/quality/__init__.py",
+    "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+    "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+    "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+    "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+    "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+    "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+    "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+    "packages/engine/src/ontolearn_engine/resources.py",
+    "packages/engine/src/ontolearn_engine/semantic.py",
+    "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+    "packages/engine/src/ontolearn_engine/semantic_execution.py",
+    "packages/engine/src/ontolearn_engine/semantic_offline.py",
+    "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+    "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+    "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+    "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+    "packages/engine/src/ontolearn_engine/semantic_query.py",
+    "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+    "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+    "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+    "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+    "packages/contracts/python/contract_v2.py",
+    "packages/contracts/v2/schema.json",
+    "packages/contracts/v2/registry.json",
+    "packages/contracts/v2/errors.json",
+    "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+    "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+    "scripts/build-engine.mjs",
+    "pyproject.toml",
+    "packages/engine/pyproject.toml",
+    "uv.lock",
+    "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json"
+  ],
+  "buildInputs": [
+    "scripts/build-engine.mjs",
+    "pyproject.toml",
+    "packages/engine/pyproject.toml",
+    "uv.lock",
+    "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json"
+  ],
+  "analysisImports": [
+    "ontolearn_engine",
+    "ontolearn_engine.quality",
+    "ontolearn_engine.quality.rule_calendar",
+    "ontolearn_engine.quality.rule_comparator",
+    "ontolearn_engine.quality.rule_firing",
+    "ontolearn_engine.quality.rule_numbers",
+    "ontolearn_engine.quality.rule_profile",
+    "ontolearn_engine.quality.rule_revalidation",
+    "ontolearn_engine.quality.rule_terms",
+    "ontolearn_engine.resources",
+    "ontolearn_engine.semantic",
+    "ontolearn_engine.semantic_error_adapter",
+    "ontolearn_engine.semantic_execution",
+    "ontolearn_engine.semantic_offline",
+    "ontolearn_engine.semantic_profile_directsteps",
+    "ontolearn_engine.semantic_profile_input",
+    "ontolearn_engine.semantic_profile_production",
+    "ontolearn_engine.semantic_profile_restore",
+    "ontolearn_engine.semantic_profile_restore_budget",
+    "ontolearn_engine.semantic_query",
+    "ontolearn_engine.semantic_scopes",
+    "ontolearn_engine.semantic_turtle",
+    "ontolearn_engine.semantic_source_package_probe",
+    "ontolearn_engine.semantic_build_provenance",
+    "_i05_semantic_parity_build_anchor"
+  ],
+  "excludedModules": [
+    "ontolearn_engine.quality.definitions",
+    "ontolearn_engine.quality.planning",
+    "ontolearn_engine.__main__",
+    "ontolearn_engine.worker",
+    "ontolearn_engine.coordinator",
+    "ontolearn_engine.job_store",
+    "ontolearn_engine.storage",
+    "ontolearn_engine.storage_probe",
+    "ontolearn_engine.protocol",
+    "ontolearn_engine.semantic_samples"
+  ],
+  "licenseMirrors": {
+    "path": "licenses/<distribution>/<original-dist-info-relative-path>",
+    "mapping": "one to one with actual distribution licenses; declared License-File plus discovered LICENSE/COPYING/NOTICE/AUTHORS files; no claim complete platform obligations",
+    "maxItems": 16384,
+    "singleBytes": 1048576,
+    "totalBytes": 536870912
+  },
+  "archivePolicy": {
+    "bootstrapScripts": [
+      "pyiboot01_bootstrap",
+      "pyi_rth_inspect",
+      "pyi_rth_pkgutil",
+      "pyi_rth_multiprocessing"
+    ],
+    "businessScript": "semantic_source_package_probe",
+    "options": ["pyi-contents-directory _internal"],
+    "PYZToc": "bounded marshal list of unique name/entry pairs; no dict duplicate overwrite",
+    "evidenceReservation": [
+      "build-request-v1.json",
+      "prepare.stdout.log",
+      "prepare.stderr.log",
+      "cache",
+      "tmp"
+    ],
+    "meaning": "unknown runtime hooks/dependencies stop for exact delta; not all bootloader/stdlib code source equivalence",
+    "marshalPreflight": "CPython 3.12 marshal4 grammar scan before marshal.load: raw/declaration lengths bounded; containers max 16384; nodes/expanded references max 200000; depth max 64; active/cyclic/invalid references rejected; exact list-of-pairs TOC; code field types and lengths validated before allocation. Loader code graph receives the same depth/node bound and 2 MiB expanded payload budget before normalization."
+  }
+}
