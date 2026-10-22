@@ -41,7 +41,7 @@
       },
       "designated": {
         "zcode": {
-          "state": "accepted_original_turn_terminal_and_full_report_pending",
+          "state": "terminal_original_report_author_pass_process_gate_not_closed",
           "sessionId": "session_6f01f2e4b4e2b589b2c21916110aa5f0",
           "queryId": "01a16510-1174-799f-b66c-0a249f6f83d0",
           "turnId": "turn_cc86ce6d-d84d-42ca-849c-6c37d7274a2e",
@@ -52,10 +52,15 @@
           "fullOriginalInputBytes": 40359,
           "inputSHA256": "74a96e1460d6bb81be3f5697616b93bc6bdfadeb72078ef52cd0664c1697e426",
           "actualNativeFullInputInRequest": true,
-          "verdict": null
+          "verdict": "Pass current private S1 scope",
+          "report": "docs/reviews/T06/round-2/zcode-glm53.md",
+          "reportBytes": 23001,
+          "reportSHA256": "764b62939c30605bfb4d90b56c70469389d3fea5402cf51c3b84dad430290e79",
+          "processGate": "not_closed; independent process audit and author factual/full-owned-diff correction required",
+          "newP3": 0
         },
         "minimax": {
-          "state": "accepted_original_turn_terminal_and_full_report_pending",
+          "state": "terminal_original_report_author_pass_process_gate_not_closed",
           "sessionId": "mvs_055614846c1142d08810f229513d46ca",
           "turnId": "f29ceef1-6c25-4939-99ce-cc498045152e",
           "model": "M3.1-Flash",
@@ -65,10 +70,15 @@
           "fullOriginalInputBytes": 40372,
           "inputSHA256": "38096163d2278fca1def97411d91bd16bfd0813cb5d6f312a56cd3f1f422fac9",
           "actualNativeCompleteInputReadReturned": true,
-          "verdict": null
+          "verdict": "Pass current private S1 scope",
+          "report": "docs/reviews/T06/round-2/minimax-m31flash.md",
+          "reportBytes": 36822,
+          "reportSHA256": "18302fc1f3c267025b0a1435931792301c63140134a1dd03197587e0e1d22b6a",
+          "processGate": "not_closed; independent process audit and author factual/full-owned-diff correction required",
+          "newP3": 4
         }
       },
-      "next": "Collect exact original-turn official terminal, complete actual Read evidence, full original reports and all findings; no new message/GUI or Pass inference.",
+      "next": "Root preflight of two complete original-session correction inputs and internal GUI handoff, then actual author addenda/owned coverage, true followup terminal and all findings dispositions; original author Pass preserved, dual gate not closed.",
       "successorInProgress": {
         "newProduct": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
         "frozen": true,
@@ -124,7 +134,11 @@
         ],
         "guiUsed": "authorized short creation lease then released",
         "sourceCandidateFrozen": true,
-        "startReceipt": "docs/reviews/T06/round-2/desktop-start-receipt-20261023.json"
+        "startReceipt": "docs/reviews/T06/round-2/desktop-start-receipt-20261023.json",
+        "completionReceipt": "docs/reviews/T06/round-2/owner-completion-receipt-20261023.json",
+        "authorReportsBothTerminal": true,
+        "correctionsPreparedOnly": true,
+        "newFollowupTurnsCreated": 0
       }
     },
     {
@@ -439,7 +453,7 @@
     "Full parent 57P0/release and real two OS/human acceptance gates retained"
   ],
   "noSourceChangesOrUnchangedRetestsForInventory": true,
-  "updatedAt": "2026-10-22T19:31:52.070433+00:00",
+  "updatedAt": "2026-10-22T19:48:41.939401+00:00",
   "reviewResourceState": {
     "source": "root actual notification",
     "zcode": "root observed availability restored; reason unknown/no reset consumed; no account-wide hold",

@@ -1,0 +1,39 @@
+{
+  "state": "prepared_only_not_sent_no_GUI_lease",
+  "sessionId": "session_6f01f2e4b4e2b589b2c21916110aa5f0",
+  "originalTurn": "turn_cc86ce6d-d84d-42ca-849c-6c37d7274a2e",
+  "sameFrozenCandidate": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
+  "containsCurrentPeerModelMaterial": false,
+  "requiresRootDesktopHandoffBeforeSending": true,
+  "files": [
+    {
+      "path": "docs/reviews/T06/round-2/zcode-process-correction-full-dispatch-20261023.md",
+      "bytes": 86756,
+      "sha256": "be79cb305a4c3ed7f2056def3e9ccbf8628e8fec0fb148ec66edc78d1a92fc4a"
+    },
+    {
+      "path": "docs/reviews/T06/round-2/zcode-independent-process-review-20261023.md",
+      "bytes": 19115,
+      "sha256": "ee1412684775042abdc3abdb2b042999c1c9a276e25849ec271fc00ed6aa5f95"
+    }
+  ],
+  "originalReportAndInputUnchanged": true,
+  "sourceChanges": false,
+  "productRetests": false,
+  "ownerPreparationFirstFailure": {
+    "type": "SyntaxError",
+    "reason": "non-ASCII bytes literal in first generator; Python parse failed before any file operation",
+    "correction": "use ordinary Unicode string.encode()",
+    "externalTaskMessageSent": false
+  },
+  "staticReviewOriginal": {
+    "bytes": 5670,
+    "sha256": "1c91825dc830c3579d532fc5381ca36a6124bd33978787c69df639eec56de834",
+    "status": "pass; nonblocking preservation note applied and narrow delta independently READY_STATIC"
+  },
+  "staticReviewFinal": {
+    "path": "docs/reviews/T06/round-2/zcode-static-dispatch-delta-audit.json",
+    "bytes": 2369,
+    "sha256": "84d04281a87519a0402df95cb01108a5f6e17d508c321268dfcb6d59fde66800"
+  }
+}

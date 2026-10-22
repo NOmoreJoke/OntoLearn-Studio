@@ -2,6 +2,12 @@
 
 ## 当前状态：blocked，完整目标保留
 
+2026-10-23 03:48+08：S1新版两原turn已正式completed，parent均全文读取原报告并保全原字节：Z23001B/SHA764b6293、M36822B/SHA18302fc1，作者均判3be私有S1 Pass，M新4P3保留并逐项登记当前前置/未来诊断/文档边界，无产品改动。P2-1可避免机制两方独立判修复，P2-2仍P2容量风险/本私有非阻断，Q5/父门不关。13产品源实际全覆盖可接受（12text完整实际Read+大JSON冻结允许全解析/authorcanonical）；两方真实check630TS/1191Python、139行为成立，owner未复测。
+
+两份独立流程审全文parent已读（Z19115B/ee141268，M19121B/76aa4f0a），均建议流程门未关：实际首败遗漏、探针输入/比较覆盖表述过宽、部分原流/child exit缺证，完整base→product owned/历史binary metadata读取尚未证；不得以hash/stat/613局部diff冒称完成。Z probe原child UNKNOWN，M PIPESTATUS确child0，原始不足不补造。全部可得原件/版本/首败纠正已封，Z包2599004B/b056c811、M包718135B/402085e0，独立审计包82642B/4af53292，parent逐项tar读回SHA。具体全部意见/限制见round-2/owner-completion-audit-20261023.md及completion-receipt。
+
+两原session的完整补正输入已分别准备，仅本方原报告+独立流程审+原冻结正文精确后缀，禁止覆盖旧证据或执行被拒脚本，不强制新结论、不盲复测。尚未发补正消息/创建后续turn，待总控核具体文本和内部GUI交接；970UI另组0任务继续排队。保护AGENTS/原5冻结输入/受审源不改，未push/PR/CI/merge，原Goal及完整父门保持。
+
 2026-10-23 03:31+08：根已接收S1/UI完整静态准备及f9699两P3操作定位附录，明确只授3be S1新版一组短GUI窗口。两真实新任务现已受理：Z session_6f01f2e4b4e2b589b2c21916110aa5f0/query01a16510-1174-799f-b66c-0a249f6f83d0/原turn_cc86ce6d-d84d-42ca-849c-6c37d7274a2e；MM mvs_055614846c1142d08810f229513d46ca/原turn f29ceef1-6c25-4939-99ce-cc498045152e。两方原生前后实际GLM5.3/max/完全访问与M3.1Flash/xhigh/始终授权，官方菜单复制SID→本人未发送草稿回读→清空，受理后立即GUI RELEASE；根已交他线，本线不再CUA。
 
 Z官方实际请求含40359B完整编号附件，并有本方cwd/3be HEAD/dirty及附件=冻结=owncopy真实工具返回；M实际消息/工具返回核cwd/HEAD/base、asset与40372B冻结相等，原Read显示截1–101后offset102补102–222，实际可见返文重组40372B/SHA完全一致，末空行223不缺字节。完整产品/相关diff读取链和原turn正式终态、全文报告/全部意见仍收证中，尚无新版Pass。原2P2/Q5/全部父门继续保留；970 UI另组待其独立窗口，冻结输入/候选不改、owner未重跑旧check、无push/PR/CI/merge。首回执round-2/desktop-start-receipt-20261023.json，45次CUA/90原行私密保全不透给reviewer。
