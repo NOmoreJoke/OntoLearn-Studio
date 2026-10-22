@@ -1,0 +1,66 @@
+# D1 验收矩阵与后继运行门
+
+**本票实际执行仅静态读取/JSON/hash/Git与新文档格式检查。** 下表“后继待验”是必须满足的验收条件，不是本票测试结果或启动授权；未获准时不做微验、fixture、模拟或环境能力probe。完整schema/合同优先，列举反例不缩小全集。
+
+## 1. 本票方案验收与所需独立审查
+
+| ID     | 对象 / 方法                                   | 通过条件 / 拒绝条件                                                                                                                  | 本票状态                                          |
+| ------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| D1-P01 | 当前树/branch/HEAD及保护状态；普通Git         | 精确docs分支/c3eb；仅原保护AGENTS M与两个新前缀；不stage/commit/产品修改                                                             | 已静态核，交付前再核范围                          |
+| D1-P02 | D0八完整规范原件、final manifest              | 当前原bytes=固定c3eb；四schema完整读取、所有1241 property pointer唯一/全集/required/shape同；不只看摘要                              | 已静态核；结果field-index-check                   |
+| D1-P03 | 三线四writer与现有refs                        | 5f/docs、a4d/56a、0ad/303/3c各自原bytes/SHA/blob正确；localdevelop1b6另列不是批准；真实current文件核原Git                            | 已静态核；结果baseline-comparison/input manifest  |
+| D1-P04 | 全供源/资源/资产pin                           | 22供源+第23旧祖先+四resources+两assets原Git bytes/SHA/blob=完整descriptor，明确未来新consumer null；源payload只hash不执行            | 已静态核；不声称417业务运行                       |
+| D1-P05 | 两套依赖完整文本与方案                        | 23/21/union26可复核；pyproject/lock角色和6直接依赖无吞S1；all artifacts/markers/extras完整保留；控制技术裁定已收，前向精确采用待完成 | 已静态核；resolver/安装待验                       |
+| D1-P06 | 实施计划与协作边界                            | 四writer逐文件最小delta；D2/caller/T01/旧tests/CI未被抢写；header/receipt/信任入口完整；不预填未来commit/hash                        | 作者文档检查；待fresh独立审                       |
+| D1-P07 | 81条只读输入和交付manifest                    | 现存Git refs/path/原bytes/SHA明确，current-file规则ref=null且不冒已commit；交付自排manifest与字节清单闭合                            | 交付前真实文档核验                                |
+| D1-P08 | 原T03全文接收→实际candidate→fresh agent完整审 | reviewer独立读取完整新交付与固定normative合同，核基线冲突/owner/所有负例/未验边界；发现先保原报告再修delta；root裁定不由作者代签     | 待主agent执行；本作者不stage/commit或启动审查任务 |
+
+## 2. 后继源码 / 依赖 / wrapper 验收（均待授权实施）
+
+| ID / owner          | 验收对象与必需反例         | 成功条件与保错要求                                                                                                                                                                                            |
+| ------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1-I01 root/T03     | 组合base与23/26冲突        | 正式5f按控制方远端实核无需新基线批准；root后继明确dependency精确采用和guard delta；S1三依赖保留；组合明确26，落实显式前向协议delta/完整新schema与descriptor采用、旧D066不改。local refs/currentHEAD不能代批准 |
+| D1-I02 T03+独审     | 真实pyproject/lock         | 精确6或获准隔离3直接依赖；requirements/dependencies/metadata一致；完整workspace/dev/build/markers/extras/artifacts同批准输入；未知resolver变化非零保首错，不手写hash补齐                                      |
+| D1-I03 T03          | wrapper exactflag/默认回归 | 单独新flag进入专用分支；重复/混用/`=…`/多余参数在子进程与metadata前拒绝；旧default/profile/43fixed guard语义、S1collector/入口明确保留；不整文件覆盖                                                          |
+| D1-I04 T03+I05      | canonical与parent argv     | 三对数组各正确；空/多余/重复/错selector/flag任意位置及`=…`前置拒绝exit2；最早guard不先import默认business/types；同canonical main对象/调用签名/mode来源经D2确认                                                |
+| D1-I05 T03+D3       | 精确包收集与资源           | 23模块/四资源/两asset/lock/四writer33路径；descriptor集合严格全同，禁止wholeengine/quality/contracts glob/oracle或额外v2资源；source33before/after clean与5身份同；guard失败不产accepted声明                  |
+| D1-I06 I05/D2       | provenance strictparser    | 缺/多/duplicate/bool-int/BOM/NaN/Infinity/尾数据/错null/错format/version/非法ref/hash/path/超16MiB均拒绝；读cap+1不截断解析；schema与跨字段一项错即拒绝                                                       |
+| D1-I07 I05/D2       | source22/actual23/selfpin  | source声明22，actual23；D2新source23真实pin在包外批，改代码不能复用2cfhash；frozen声明23/actualSource为null；bootstrap/pyshacl独列，重复/缺项/同数异名/dangling/重排拒绝                                      |
+| D1-I08 caller/root  | 验签/受信批准prelaunch     | 缺/错/撤销批准、改source/receipt/manifest/exe/provenance/证据包/组合一项、跨run上下文复用、由bundle locator导入信任均not-started；真正签名算法与key来源若采用须独立审；hash不冒签名                           |
+| D1-I09 caller+I05   | header/失败收据            | 完整18header键、run全部required、raw→payload→run投影一致；漏false/0、重排观察、mask和值共改、malformed伪parsed、unknownkey删掉/回填预期、incomplete改collected都拒绝；真实失败不丢                            |
+| D1-I10 独立reviewer | 实现范围与无自批           | 独立核所有新增源码与调用方、有效采用schema/根信任、异常/预算/停止/释放；D0模拟数据不能作为实现通过；指定外部模型双审后续仍按root门执行                                                                        |
+
+## 3. E0 实际原件闭环验收（本票未读 installed/二进制/witness）
+
+| ID / 关系                      | 必须保留的真实材料 / 反例                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| E0-01 真实工具与Python域       | root批准环境、CPython3.12完整version/hexversion/build/cache/magic/marshal4/flags/optimize0/compiler原件、pyinstaller/hooks/metadata/selected artifacts与lock一致。多解释器、相同cacheTag不同build、非0优化、工具版本或平台不明均拒绝，不用环境probe推能力                                                                                                      |
+| E0-02 根域与完整目录           | bundle-root最终普通files全集含同rootexe+唯一provenance；payload=meipass-root的_internal内全集排provenance，两账前缀/bytes/SHA全同。绝对/反斜杠/drive/URL/!表达式/空dot段/Unicode/casefold/保留名/短名/symlink链/hardlink/escape别名拒绝。rootexe同bootloader，不能伪_internalexe                                                                               |
+| E0-03 archive闭包              | carchive-main=同rootexe/完整TOC，pyz-main=其真实parentMember/完整TOC，parent-first唯一无环depth≤2；archiveId只三封闭值，external-pyc须另root批布局；file XOR parentMember。漏TOC项/重名/伪普通PYZ/乱parent/raw差异/额外层次拒绝。rawWitness是真解码原件，与directory普通files两账                                                                              |
+| E0-04 exactCodeType与四函数    | sourcecompile批准bytes、exec/dont_inherit=True/optimize0、同实际构建解释器；23canonical PYZ+bootstrap CArchive+独立pyshacl模块/四函数同co_consts路径、完整fingerprint真等。算法仅递归co_filename归一，code其余字段全保；sourceSHA或rawarchiveSHA代code、name反射猜函数、越界/非CodeType/错domain拒绝。此compile/extract只在后续E0授权，非本票                  |
+| E0-05 checker分域              | Git source和bundle data独立bytes/hash/compile等expectedBundleSourceCode；build动态checker只build-source-to-bundle-data-only，没有runtimeLoaderCode、无强制PYZ项。不能执行source/newexec来冒原resources.CONTRACT，runtime对象留E1                                                                                                                               |
+| E0-06 artifacts/RECORD/markers | 八runtime及buildTools：全平台lockartifact、真selectedArtifact、原METADATA/Requires-Dist/extras/markerEnvironment、原RECORDbytes/base64及每完整CSV记录rawRow/三个原string/终止符保全；quoted换行不能splitlines丢。每row与installedFiles双向闭合，空hash/size/RECORD自身保原值；规范installed路径另算且在批准环境内，raw上级段不重写/直接打开                    |
+| E0-07 许可与runtime依赖        | 每artifact→installed→RECORD→bundlecode/data/metadata/license/NOTICE/COPYING，runtimeRequired不得omitted；非bundled只有owner实审记录且false。Python/stdlib/bootloader/动态库/platform-runtime sourceArtifacts/licenseSources/bundleFiles/notice/obligation全闭合。不得按basename或version猜分类/费用，缺证即BUILD_LICENSE_MAPPING_INCOMPLETE，不写unknown占通过 |
+| E0-08 有向收据                 | 真实前后source/writer稳定→build/code/log→provenance→最终directoryManifest→immutablebuildReceipt→过程commit。无self/futurehash，无旁原件，无build冒runtimeLoaderCode；buildReceipt始终not-executed/null/unapproved，root另批准。插入data provenance后不重建PYZ或偷偷修改已hash文件                                                                              |
+
+E0每类错误均由其真实actor保首差、完整stdout/stderr/exit/signal、TOC/代码/许可原件与hash；修复新candidate和delta重新审，不能覆写第一失败。没取得实际环境/原件不创建满足schema的假实例。
+
+## 4. E1/E2 runtime 与 native 资源门
+
+| 门 / owner               | 精确前置与验收                                                                                                                                                                                                                                                                                     |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| R0 root资源调度          | 先批准完整composition、OS/architecture、独占输出dist/work/spec/cache/日志/witness根、toolchain、CPU/内存/磁盘/并发预算、网络/缓存/安装范围、费用/超限/停止与回收人。真实native child的时间/信号/释放责任明确；仅desktop新政策取消焦点/静默前置，不把本票纯文档禁令变成运行授权                     |
+| R1 caller prelaunch      | 同一已批buildReceipt和受信root批准记录/exact证据包全亲核，任何缺口not-started不dispatch。source也有root批准新consumer/依赖/解释器上下文，不能利用source模式跳过组合来源                                                                                                                            |
+| R2 I05/caller loader     | source/frozen/parent各本域实际23canonical+pyshacl.validator+四function+原resources.CONTRACT；module/spec/sys.modules/get_code/exactCodeType/函数.**code**/同对象/相同domain真实测量；fresh/cold/warm/cache稳定见证分别保留。缺get_code/alias/引用intern/缓存变化先保失败，不能删域字段或换算法消差 |
+| R3 caller streaming      | 唯一header→全部完整observations→唯一terminal；解析错误、半行、重复header、缺terminal、timeout、native signal、cancel/停/readerjoin/引用释放分态保raw。120s逻辑deadline不冒hardnativekill保证；exit130不冒signal。raw全列manifest                                                                   |
+| R4 full417 source/frozen | 原资产顺序完整417业务JSONL/全部graph/query/SHACL/typed/payload结果，两个各自scope必须真collected并回绑同批准输入；完整性≠等价≠外部oracle≠业务pass。parent是单独scope独立原门，不因独立包通过自动通过                                                                                               |
+| R5 B1                    | fresh source/package × 1x/10x × 各3次=12次真实measurement，四ontology22/184为该B1对象；full10ontology28/190是另scope，不混替。源/包计时/内存/单位/启动条件按获准合同原件，不用单点或采集速度量化未测收益                                                                                           |
+| R6 S1/parent/正式门      | 原12S1真实SQLite snapshotLoad仍HOLD，parent完整包/wholeH仍另验，D1不运行或解除。目标两OS/CI/真人/develop合并前刷新实际批准依赖、冲突和base/head；明确目标平台实际包/工具/执行证据，不能mac截图替Windows或模拟代native                                                                              |
+| R7 caller+独立比较方     | validation为后出不可变原件，全部runs含失败、raw、fresh/cache、scope report列runtime manifest；pending和compared状态分明，比较器/oracle/report来源独立实核。三结果分别boolean可false，未审scope不以局部判true                                                                                       |
+| R8 root / fresh双审      | 产品/依赖/配置/验收或base变更后完成适当验证和指定两模型全新完整只读审查，真实终态报告全文接收、逐项处置；当前方案的fresh内部agent审与未来外审/OS/CI门互不替代。审核原件不得作者自签通过                                                                                                            |
+
+## 5. 首错与状态报告格式
+
+后续每次实际尝试必须独立runId和原顺序，最少保：actor、phase、拟/实际argv、输入既有pin、资源窗/平台、dispatch事实、真实stdout/stderr/header/terminal原件身份、exit/signal、可用性/actual观察/observedPaths、firstEvidence、结束/停止/回收状态、下一步审批缺口。未启动则明确not-started且不造child；已启动失败则不退回“未执行”。schema所需firstEvidence、partial/false/null按原合同。root接受设计、静态检查、运行验证、production/正式门各自单独表述。
+
+本票文档检查首跑和formatter结果另见author-checks；如静态检查首错存在则原列表保留，修复记录追加。作者不会把未执行的源码负例、native/性能、两OS、CLI/模型审查写成通过。

@@ -1,0 +1,182 @@
+{
+  "format": "t03-i05-D1-forward-schema-change-index/1",
+  "status": "proposal only; no schema rewritten; adoption requires root and independent review",
+  "proposedProtocolVersion": "3.0.0",
+  "proposedProfileId": "i05-source-package-parity-v3",
+  "proposedProfileFormat": "i05-semantic-build-protocol-profile/4",
+  "schemaLiteralChanges": [
+    {
+      "schema": "build-provenance.schema.json",
+      "pointer": "#/$id",
+      "old": "urn:ontolearn:i05:source-package-parity-build:2",
+      "proposed": "urn:ontolearn:i05:source-package-parity-build:3"
+    },
+    {
+      "schema": "build-provenance.schema.json",
+      "pointer": "#/properties/format/const",
+      "old": "i05-source-package-parity-build/2",
+      "proposed": "i05-source-package-parity-build/3"
+    },
+    {
+      "schema": "build-provenance.schema.json",
+      "pointer": "#/properties/profileId/const",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "schema": "build-receipt.schema.json",
+      "pointer": "#/$id",
+      "old": "urn:ontolearn:i05:build-receipt:2",
+      "proposed": "urn:ontolearn:i05:build-receipt:3"
+    },
+    {
+      "schema": "build-receipt.schema.json",
+      "pointer": "#/properties/format/const",
+      "old": "i05-build-receipt/2",
+      "proposed": "i05-build-receipt/3"
+    },
+    {
+      "schema": "build-receipt.schema.json",
+      "pointer": "#/properties/profileId/const",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "schema": "runtime-validation-receipt.schema.json",
+      "pointer": "#/properties/format/const",
+      "old": "i05-runtime-validation-receipt/2",
+      "proposed": "i05-runtime-validation-receipt/3"
+    },
+    {
+      "schema": "runtime-validation-receipt.schema.json",
+      "pointer": "#/properties/profileId/const",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "schema": "runtime-validation-receipt.schema.json",
+      "pointer": "#/properties/runs/items/properties/headerPayload/anyOf/0/properties/format/const",
+      "old": "i05-semantic-runtime-header/1",
+      "proposed": "i05-semantic-runtime-header/2"
+    },
+    {
+      "schema": "runtime-validation-receipt.schema.json",
+      "pointer": "#/properties/runs/items/properties/headerPayload/anyOf/0/properties/profileId/const",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "schema": "runtime-validation-receipt.schema.json",
+      "pointer": "#/$id",
+      "old": "urn:ontolearn:i05:runtime-validation-receipt:2",
+      "proposed": "urn:ontolearn:i05:runtime-validation-receipt:3"
+    },
+    {
+      "schema": "runtime-header.schema.json",
+      "pointer": "#/properties/format/const",
+      "old": "i05-semantic-runtime-header/1",
+      "proposed": "i05-semantic-runtime-header/2"
+    },
+    {
+      "schema": "runtime-header.schema.json",
+      "pointer": "#/properties/profileId/const",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "schema": "runtime-header.schema.json",
+      "pointer": "#/$id",
+      "old": "urn:ontolearn:i05:runtime-header:1",
+      "proposed": "urn:ontolearn:i05:runtime-header:2"
+    }
+  ],
+  "fieldResponsibilityLiteralChanges": [
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/0/shape/const",
+      "schema": "build-provenance.schema.json",
+      "schemaPropertyPointer": "#/properties/format",
+      "old": "i05-source-package-parity-build/2",
+      "proposed": "i05-source-package-parity-build/3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/1/shape/const",
+      "schema": "build-provenance.schema.json",
+      "schemaPropertyPointer": "#/properties/profileId",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/669/shape/const",
+      "schema": "build-receipt.schema.json",
+      "schemaPropertyPointer": "#/properties/format",
+      "old": "i05-build-receipt/2",
+      "proposed": "i05-build-receipt/3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/683/shape/const",
+      "schema": "build-receipt.schema.json",
+      "schemaPropertyPointer": "#/properties/profileId",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/725/shape/const",
+      "schema": "runtime-validation-receipt.schema.json",
+      "schemaPropertyPointer": "#/properties/format",
+      "old": "i05-runtime-validation-receipt/2",
+      "proposed": "i05-runtime-validation-receipt/3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/726/shape/const",
+      "schema": "runtime-validation-receipt.schema.json",
+      "schemaPropertyPointer": "#/properties/profileId",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/921/shape/const",
+      "schema": "runtime-validation-receipt.schema.json",
+      "schemaPropertyPointer": "#/properties/runs/items/properties/headerPayload/anyOf/0/properties/format",
+      "old": "i05-semantic-runtime-header/1",
+      "proposed": "i05-semantic-runtime-header/2"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/922/shape/const",
+      "schema": "runtime-validation-receipt.schema.json",
+      "schemaPropertyPointer": "#/properties/runs/items/properties/headerPayload/anyOf/0/properties/profileId",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/1092/shape/const",
+      "schema": "runtime-header.schema.json",
+      "schemaPropertyPointer": "#/properties/format",
+      "old": "i05-semantic-runtime-header/1",
+      "proposed": "i05-semantic-runtime-header/2"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/1093/shape/const",
+      "schema": "runtime-header.schema.json",
+      "schemaPropertyPointer": "#/properties/profileId",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    }
+  ],
+  "proposedPropertyIndexCount": 1241,
+  "propertyPointersAndRequiredAndTypeSetsChanged": false,
+  "unchangedCounts": {
+    "supplierDeclarationsSource": 22,
+    "canonicalModulesActualAndFrozen": 23,
+    "sourceInputs": 33,
+    "resources": 4,
+    "assets": 2,
+    "writers": 4,
+    "runtimeDistributionsDedicatedSemantic": 8,
+    "functionBindings": 4
+  },
+  "newLockPackageCount": 26,
+  "actualNewSchemaFilesProduced": false,
+  "actualNewProfilePin": null,
+  "actualNewConsumerPin": null,
+  "actualNewCompositionRef": null
+}

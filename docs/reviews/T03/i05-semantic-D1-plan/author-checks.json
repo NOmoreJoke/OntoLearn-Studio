@@ -1,0 +1,238 @@
+{
+  "format": "t03-i05-D1-author-checks/1",
+  "status": "author static/document checks; independent review/root adoption not performed",
+  "baseRef": "c3eb0694daad26527cc3a1eb0127ed5033f2be25",
+  "firstErrorsPreserved": [
+    {
+      "id": "F01",
+      "stage": "documentation drafting update",
+      "command": "inline /usr/bin/python3 documentation update; first attempt before any statement ran",
+      "actualExitCode": 1,
+      "stdout": "",
+      "stderr": "SyntaxError: Non-UTF-8 code starting with '\\xe5' in file <stdin> on line 4, but no encoding declared; see http://python.org/dev/peps/pep-0263/ for details\n",
+      "effect": "interpreter rejected stdin before imports/writes; no product/document mutation from failed attempt",
+      "resolution": "same intended documentation update retried with explicit # coding: utf-8, actual exit0; original error retained here"
+    },
+    {
+      "id": "F02",
+      "stage": "author static inspection of lock block comparison",
+      "finding": "Initial draft preservationRule summarized only ontology-engine block difference; full static diff actually identified ontology-engine, rdflib optional html and setuptools trailing blank line.",
+      "resolution": "draft corrected before seal; union-source-audit retains exact three differences; no lock changed; not a runtime test failure"
+    }
+  ],
+  "checks": [
+    {
+      "id": "S01-inputs",
+      "status": "pass",
+      "scope": "documentation/static only",
+      "detail": {
+        "recordCount": 81,
+        "mismatches": [],
+        "method": "existing Git original bytes/SHA and listed current snapshots; protected/controller sources not edited"
+      }
+    },
+    {
+      "id": "S02-lock-lossless",
+      "status": "pass",
+      "scope": "documentation/static only",
+      "detail": [
+        {
+          "label": "formalBase",
+          "count": 18,
+          "reconstructedBytes": 20999,
+          "reconstructedSha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e",
+          "pass": true
+        },
+        {
+          "label": "profileProduct",
+          "count": 23,
+          "reconstructedBytes": 28440,
+          "reconstructedSha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+          "pass": true
+        },
+        {
+          "label": "mappingProduct",
+          "count": 21,
+          "reconstructedBytes": 23393,
+          "reconstructedSha256": "9f5b6d2b93d994a3e4f8a46ce5cccae99d4e024ea7531ab62dd8e85d6aa1152e",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "id": "S03-union",
+      "status": "pass",
+      "scope": "documentation/static only",
+      "detail": {
+        "count": 26,
+        "common": 18,
+        "versions": [],
+        "artifactConflicts": [],
+        "blockDifferences": ["ontolearn-engine", "rdflib", "setuptools"],
+        "notClaimed": "resolver compatibility/installation/license/runtime"
+      }
+    },
+    {
+      "id": "S04-field-index",
+      "status": "pass",
+      "scope": "documentation/static only",
+      "detail": {
+        "actual": 1241,
+        "expected": 1241,
+        "bySchema": {
+          "build-provenance.schema.json": 669,
+          "build-receipt.schema.json": 56,
+          "runtime-validation-receipt.schema.json": 366,
+          "runtime-header.schema.json": 150
+        },
+        "errors": []
+      }
+    },
+    {
+      "id": "S05-source-interface-counts",
+      "status": "pass",
+      "scope": "documentation/static only",
+      "detail": {
+        "supplierDeclarations": 22,
+        "actualCanonical": 23,
+        "resources": 4,
+        "assets": 2,
+        "writers": 4,
+        "distinctSourcePaths": 33,
+        "futureActualConsumerPin": null
+      }
+    },
+    {
+      "id": "S06-forward-delta",
+      "status": "pass",
+      "scope": "documentation/static only",
+      "detail": {
+        "schemaLiteralChanges": 14,
+        "fieldResponsibilityLiteralChanges": 10,
+        "actualNewSchemaFilesProduced": false,
+        "newProtocolVersion": "3.0.0 proposal only"
+      }
+    },
+    {
+      "id": "S07-scope",
+      "status": "pass",
+      "scope": "documentation/static only",
+      "detail": {
+        "trackedChanges": ["AGENTS.md"],
+        "stagedPaths": [],
+        "status": " M AGENTS.md\n?? docs/iterations/T03/i05-semantic-D1-plan/consumer-caller-interface.md\n?? docs/iterations/T03/i05-semantic-D1-plan/dependency-plan.json\n?? docs/iterations/T03/i05-semantic-D1-plan/forward-protocol-delta.md\n?? docs/iterations/T03/i05-semantic-D1-plan/forward-schema-change-index.json\n?? docs/iterations/T03/i05-semantic-D1-plan/implementation-plan.md\n?? docs/iterations/T03/i05-semantic-D1-plan/source-and-interface-plan.json\n?? docs/iterations/T03/i05-semantic-D1-plan/verification-matrix.md\n?? docs/reviews/T03/i05-semantic-D1-plan/baseline-comparison.json\n?? docs/reviews/T03/i05-semantic-D1-plan/develop-writer-diff.md\n?? docs/reviews/T03/i05-semantic-D1-plan/field-index-check.json\n?? docs/reviews/T03/i05-semantic-D1-plan/readonly-input-manifest.json\n?? docs/reviews/T03/i05-semantic-D1-plan/union-source-audit.json\n",
+        "writePrefixes": [
+          "docs/iterations/T03/i05-semantic-D1-plan/",
+          "docs/reviews/T03/i05-semantic-D1-plan/"
+        ]
+      }
+    },
+    {
+      "id": "S08-control-consistency",
+      "status": "pass",
+      "scope": "documentation/static only",
+      "detail": {
+        "staleClaims": [],
+        "controlRemoteCheckAttribution": "control/root performed ls-remote; author did not network",
+        "authorLocalAncestorCheck": "ordinary Git merge-base --is-ancestor local1b6 approved5f exit0"
+      }
+    }
+  ],
+  "formatter": {
+    "tool": "node /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/node_modules/prettier/bin/prettier.cjs",
+    "firstWrite": {
+      "actualExitCode": 0,
+      "result": "7 iteration files formatted; directory-level invocation did not list review prefix. No claim review formatting from this pass."
+    },
+    "reviewExplicitIgnoreOverride": {
+      "actualExitCode": 0,
+      "stdout": "docs/iterations/T03/i05-semantic-D1-plan/consumer-caller-interface.md 41ms (unchanged)\ndocs/iterations/T03/i05-semantic-D1-plan/dependency-plan.json 23ms (unchanged)\ndocs/iterations/T03/i05-semantic-D1-plan/forward-protocol-delta.md 28ms (unchanged)\ndocs/iterations/T03/i05-semantic-D1-plan/forward-schema-change-index.json 3ms (unchanged)\ndocs/iterations/T03/i05-semantic-D1-plan/implementation-plan.md 28ms (unchanged)\ndocs/iterations/T03/i05-semantic-D1-plan/source-and-interface-plan.json 7ms\ndocs/iterations/T03/i05-semantic-D1-plan/verification-matrix.md 14ms (unchanged)\ndocs/reviews/T03/i05-semantic-D1-plan/author-checks.json 2ms\ndocs/reviews/T03/i05-semantic-D1-plan/author-delivery.md 2ms (unchanged)\ndocs/reviews/T03/i05-semantic-D1-plan/baseline-comparison.json 2ms (unchanged)\ndocs/reviews/T03/i05-semantic-D1-plan/develop-writer-diff.md 3ms\ndocs/reviews/T03/i05-semantic-D1-plan/field-index-check.json 1ms (unchanged)\ndocs/reviews/T03/i05-semantic-D1-plan/readonly-input-manifest.json 8ms (unchanged)\ndocs/reviews/T03/i05-semantic-D1-plan/union-source-audit.json 8ms\n",
+      "scope": "exact two new docs prefixes only"
+    },
+    "check": {
+      "actualExitCode": 0,
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+      "scope": "all14 plan/review files before delivery-manifest; author-checks result then updated and final formatting checked externally at seal"
+    }
+  },
+  "notExecuted": [
+    "resolver",
+    "install",
+    "environment/version capability probe",
+    "build",
+    "archive decode",
+    "source compile or pycompile",
+    "product/reader/helper/builder/spec/local source functions",
+    "probe/fixture/simulation",
+    "installed/license/binary/witness/identity payload reads",
+    "native runtime",
+    "417/B1/S1/parent suite",
+    "GUI/network",
+    "specified external model review",
+    "stage/commit/push/PR/merge"
+  ],
+  "pending": [
+    "parent full read and actual candidate commit",
+    "fresh independent agent complete review",
+    "root new protocol/dependency/consumer/caller precise adoption",
+    "all implementation/runtime/platform/CI/human gates"
+  ],
+  "scopeDeviationPreserved": {
+    "description": "Author temporarily wrote static schema/source comparison scratch copies outside the two allowed docs prefixes in /tmp/d1-*. This exceeded literal write-prefix restriction. No scratch content executed, and no product/other-tree file was changed. Parent informed.",
+    "cleanup": "Only the exact39 scratch paths created by this task were unlinked after their contents had been incorporated as raw input identities/plan documents. No broad glob deletion.",
+    "removedCount": 39,
+    "removedPaths": [
+      "/tmp/d1-full-schema-0",
+      "/tmp/d1-full-schema-1",
+      "/tmp/d1-full-schema-2",
+      "/tmp/d1-full-schema-3",
+      "/tmp/d1-profile-full",
+      "/tmp/d1-baselines.json",
+      "/tmp/d1-field-check.json",
+      "/tmp/d1-formalBase-packages_engine_pyproject.toml",
+      "/tmp/d1-formalBase-uv.lock",
+      "/tmp/d1-formalBase-scripts_build-engine.mjs",
+      "/tmp/d1-formalBase-packages_engine_entrypoint.py",
+      "/tmp/d1-docsHead-packages_engine_pyproject.toml",
+      "/tmp/d1-docsHead-uv.lock",
+      "/tmp/d1-docsHead-scripts_build-engine.mjs",
+      "/tmp/d1-docsHead-packages_engine_entrypoint.py",
+      "/tmp/d1-profileProduct-packages_engine_pyproject.toml",
+      "/tmp/d1-profileProduct-uv.lock",
+      "/tmp/d1-profileProduct-scripts_build-engine.mjs",
+      "/tmp/d1-profileProduct-packages_engine_entrypoint.py",
+      "/tmp/d1-profileHead-packages_engine_pyproject.toml",
+      "/tmp/d1-profileHead-uv.lock",
+      "/tmp/d1-profileHead-scripts_build-engine.mjs",
+      "/tmp/d1-profileHead-packages_engine_entrypoint.py",
+      "/tmp/d1-mappingProduct-packages_engine_pyproject.toml",
+      "/tmp/d1-mappingProduct-uv.lock",
+      "/tmp/d1-mappingProduct-scripts_build-engine.mjs",
+      "/tmp/d1-mappingProduct-packages_engine_entrypoint.py",
+      "/tmp/d1-mappingCandidate-packages_engine_pyproject.toml",
+      "/tmp/d1-mappingCandidate-uv.lock",
+      "/tmp/d1-mappingCandidate-scripts_build-engine.mjs",
+      "/tmp/d1-mappingCandidate-packages_engine_entrypoint.py",
+      "/tmp/d1-mappingProcess-packages_engine_pyproject.toml",
+      "/tmp/d1-mappingProcess-uv.lock",
+      "/tmp/d1-mappingProcess-scripts_build-engine.mjs",
+      "/tmp/d1-mappingProcess-packages_engine_entrypoint.py",
+      "/tmp/d1-observedDevelop-packages_engine_pyproject.toml",
+      "/tmp/d1-observedDevelop-uv.lock",
+      "/tmp/d1-observedDevelop-scripts_build-engine.mjs",
+      "/tmp/d1-observedDevelop-packages_engine_entrypoint.py"
+    ],
+    "remainingExactScratchPaths": []
+  },
+  "finalPreManifestStaticCheck": {
+    "inputRecordCount": 81,
+    "inputMismatches": [],
+    "head": "c3eb0694daad26527cc3a1eb0127ed5033f2be25",
+    "branch": "docs/T03-i05-semantic-offer-owner-review",
+    "trackedChanges": ["AGENTS.md"],
+    "stagedPaths": [],
+    "untrackedNewPayloadCount": 14,
+    "unexpectedUntrackedPaths": [],
+    "independentReview": "pending after parent actual candidate; not performed by author"
+  }
+}
