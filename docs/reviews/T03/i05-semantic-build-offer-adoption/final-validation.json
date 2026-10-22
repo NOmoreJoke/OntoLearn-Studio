@@ -1,0 +1,57 @@
+{
+  "format": "t03-i05-owner-design-static-validation/1",
+  "candidateState": "uncommitted helper draft; owner full read/explicit acceptance/commit and subsequent independent review pending",
+  "formatter": "existing Prettier3.9.10 verified from package.json; no version probe",
+  "formatterCheck": {
+    "exit": 0,
+    "files": [
+      "docs/iterations/T03/i05-semantic-build-offer-adoption.md",
+      "docs/reviews/T03/i05-semantic-build-offer-adoption/owner-design-review.md",
+      "docs/reviews/T03/i05-semantic-build-offer-adoption/input-evidence.json"
+    ],
+    "ignorePath": "/dev/null; exact named files only"
+  },
+  "whitespaceChecks": [
+    {
+      "path": "docs/iterations/T03/i05-semantic-build-offer-adoption.md",
+      "exit": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "no whitespace diagnostics; no-index exit1 reflects file difference from /dev/null"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-offer-adoption/owner-design-review.md",
+      "exit": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "no whitespace diagnostics; no-index exit1 reflects file difference from /dev/null"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-offer-adoption/input-evidence.json",
+      "exit": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "no whitespace diagnostics; no-index exit1 reflects file difference from /dev/null"
+    }
+  ],
+  "indexEmpty": true,
+  "HEADUnchanged": true,
+  "AGENTSBytes": 15852,
+  "AGENTSSHA256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+  "protectedMNotStaged": true,
+  "fourWritersEqualBaseAndHEAD": true,
+  "offerOriginalFilesNotEdited": true,
+  "evidenceScope": "static text/JSON/AST literal/hash only; no product/runtime/archive/schema-engine execution",
+  "firstFormattingCall": "default ignore printed only adoption; repeated exact same three files with --ignore-path /dev/null to ensure reviews included",
+  "firstPreparationFailure": {
+    "actualFirstError": "AssertionError: ('docs/iterations/T03/i05-semantic-build-offer-adoption.md', 1, '', '')",
+    "reason": "first recorder incorrectly asserted no-index whitespace command exit must be0; actual empty-output exit1 denotes new-file difference",
+    "downstreamActualErrors": [
+      "Prettier no files matching final-validation.json",
+      "FileNotFoundError reading final-validation.json while making final manifest",
+      "final formatter exit2 missing final-validation.json/final-manifest.json"
+    ],
+    "effect": "no source/product/writer touched; final two files not created during failed recorder; corrected recorder distinguishes no-index difference exit from whitespace diagnostics"
+  },
+  "newOutputFilesAfterThisRecord": "final-manifest.json excludes itself; final formatter/whitespace check reported in tool result, not recursively self-hashed"
+}
