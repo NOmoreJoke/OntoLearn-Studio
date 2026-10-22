@@ -1,0 +1,74 @@
+# T01 C1 remediation A：独立实现复核（B 待 ready）
+
+结论：A 实际落地符合本轮精确授权，当前未发现需要返工的实质缺口。结论只覆盖历史审查原件保护、三份排版副本、root Ruff format 三条精确例外，以及已产生的四次检查记录。不代表完整 npm check、双外审、C1 发布门或 native 恢复链已通过。B 两脚本未 ready，本审未读取其部分源文件，也不提前给 B 结论。
+
+## 1. 独立身份、授权与方法
+
+审查者 `/root/create_core_review` 未编写或应用 A 补丁。本次只读实际文件、Git 对象、已有运行证据，独立使用 stdlib TOML/AST/哈希/统一 diff 重建；没有执行产品 import、数据库、pytest、Ruff、build、verify:sources、native、GUI 或网络，没有改工作树文件、stage 或 commit。唯一输出是本 raw 报告。
+
+树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-remediation-20261022`。实际 HEAD 为 `c0b61fd245c1b3bd2a84e488f00a742a1942fd8c`。已实读本树 AGENTS；本次重新核其 15147B / SHA256 `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4`，与此前实读规则同。全文依据根窗口独审 `/Users/kyle/Documents/工作/知爻/本体/.private/T01-C1-remediation-window-controller-audit-20261022.md`，独立核为 9030B / `1eb42efe030d1adf5918e55f94f3ba134f7af4ab461cb27049a3837faff09c8e`。该授权允许 A 精确六路径和 B 后续两脚本，不允许本次重跑产品或桌面实验。
+
+关键独立工具结果：`2593c0` exit 0 完成 TOML、旧目录38件与副本 AST/正文/链接核同；`f765b5` exit 0 完成四组实际 receipt/流摘要核同及补丁身份；首次该工具的 patch 适配器只识别 diff --git 标头而实际补丁是传统 unified diff，返回 applied 空列表，未将空列表当套用证明。随后 `25887f` exit 0 按实际 ---/+++ 与 @@ 逐行重建全部六路径，确认字节等于当前真实文件，并再次核52件产品。未执行收到的外来验证脚本。
+
+## 2. A 实际配置与套用面
+
+root `pyproject.toml` 从 c0 的 494B / `55674b4f13c4185b5db8629db363aed3e506df836ed0d7e67dcfe7db8154ea63` 变为 967B / `4609baf943571d362d742bea9a5c0509ea7c3d809f3b25961cce9e093f544efd`。实际 Git diff 只新增解释注释和 `[tool.ruff.format]`；独立 tomllib 解析后移除此新增 format 表，其余 TOML 结构与 c0 完全相等。
+
+实际 format.exclude 精确为以下三条，没有通配符或目录排除：
+
+- `docs/reviews/T01/profile-job-artifact-selection-supplier-plan/independent-plan-review.md`
+- `docs/reviews/T01/profile-job-artifact-selection-supplier-plan/revisions/r1/independent-plan-review.md`
+- `docs/reviews/T01/profile-job-artifact-selection-supplier-plan/revisions/r2/independent-plan-review.md`
+
+三份 readable 副本均在另一路径，不在这三条例外内。没有改 lint 表、测试脚本或锁文件。独立核 `packages/engine/pyproject.toml`、`package.json`、`package-lock.json`、`uv.lock` 全部当前字节等于 c0；root 原 engine:check/check 脚本没有被删减。
+
+授权 proposal 原件亦核：`coordination-plan/pyproject-format-only.patch` 600B / `f5fb60ebde875da59d3eea311fbf349b0f2e11eaaa5b339d9e5a5fa7852940a1`；`readable-history-copies.patch` 87387B / `736bc873e7596b9d9e74528fd3688fb102c8594c5ad9891802d3aa99d88efd24`。独立只在内存逐行应用两个统一 diff，所得 root 配置及以下五新文档与实际文件全部逐字节相等。没有将 proposal/mock 的通过字段当实际执行凭据。
+
+新文档均相对本树 `docs/reviews/T01/C1-remediation-20261022/`：
+
+| 文件 | bytes | SHA256 |
+| --- | ---: | --- |
+| README.md | 1167 | 951db455bf4f53391f292811bcf85883042284c7888e74311ef4e667562ceddf |
+| format-copy-manifest.json | 3101 | 3fa1a7acb18345c6af66e1e1da3527b8c09a06597c7ee08d77d1d032c8930cc1 |
+| formatted-history/current-independent-plan-review.md | 32054 | 5d4ee47efb8c7d0636df15b51c478b4ea6f9bd9b4536022f7d83f1fd3c578567 |
+| formatted-history/r1-independent-plan-review.md | 17733 | 72afa1761c514f7f0109aaf4fb255ba8d76ed56b1d488fdd0b825826817edaa0 |
+| formatted-history/r2-independent-plan-review.md | 32067 | fc109cfa6441fb8492d1faa5eaaff99f436da62f4206384df1d82e948c35b678 |
+
+## 3. 原件、历史 manifest/ZIP 与副本语义
+
+从固定 c0 Git ls-tree 枚举旧 `docs/reviews/T01/profile-job-artifact-selection-supplier-plan/`，确为38件；对每件同时读取 c0 blob 和当前文件，完整字节全部相等，包含三份原审查、r1/r2全部快照、final/read-ready/source/预算/处置/索引、两个归档 ZIP 和历史 archive 脚本。未重跑 archive 脚本或重造历史归档。
+
+三份原件中 current/r2 均为 31608B / `2d043a53afe2b588efc894a31e3d98b499f5b0649458f167b18a1b27424f1f27`，r1 为 17274B / `4d25f9ae893aadb812076dd846f4fdba2fac7fda505e8713e035c364190defe0`。首轮暂不通过、后续方案层关闭、原行号/身份表与旧 read-ready 历史绑定均原样保留。
+
+重点历史归档核同：final-manifest.json 40643B / `1a2304879d726dcd3246a36502ed69745f9ec457e984afdf5f353d71de100fd1`；source-input-index.json 72510B / `114a4274367bb394eff4bc03293db5b27156ef69c8050788e8d332b5aac36253`；source-inputs.zip 1173628B / `3a8c9e4bfae1024333b4314c610018172e9324b942ec3fa3f3cb22748408d737`；tool-response-index.json 212676B / `786065333b91c5af7a5514a9647bb11dea566f19ddb21ac43c3d848d6af9505b`；tool-response-items.zip 849290B / `f05620dcd6dce00ed61c1c7287b6fecf2b4c2930202d217141bd4c68781fc727`。此处证明原归档本次未变，不重新宣称其外部来源覆盖或历史运行结果。
+
+三副本每份均仅新增明确的排版阅览身份头，并重排一个 Python fence。分别抽取原件/副本的全部 Python fence（每份各1），ast.parse 后忽略位置的 AST 完全相等；移除副本新增头、对 Python fence body 置同一占位后，其余原件正文完整字节相等，不只是关键词或行数比较。因而没有在排版中改审查结论、时间、反例、预算或限定语。新增头明写旧 identity/hash/行号应定位原件；每份头内相对链接实际解析到对应原件，README 内四个相对文件链接也均存在。副本身份不能替代旧原件身份。
+
+另静态核固定产品：按 `docs/reviews/T01/project-create-core-C1/source-manifest.json`（35652B / `6f7fa50afb84e54236d0db55104a5f72be6ee4bb8939e5546d3163a58d21f1cf`）逐52件，将当前字节与 manifest 及固定 `423b7e4c799f188cf2ce6e8e7121893ce85624cd` 的 Git blob 双重核同，全部一致。52条 canonical receipt SHA256 为 `61f5a8b4b34bb0c80e54690430a150583bf6ea1a1e5b0bee32e6fb7540a04e95`。A 没有形成产品 patch。
+
+## 4. 已产生运行证据的只读复核
+
+证据公共根为 `/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/`。本审读取以下各 raw 子目录的完整 receipt/stdout/stderr，并独立计算两个流的实际长度/SHA256，与 receipt 相等。四项 cwd 均是本轮新树，不是别树；以下时间均为记录 UTC。
+
+| raw 子目录 | 实际 argv | 起止 | exit / stdout |
+| --- | --- | --- | --- |
+| applied-document-static-check-02 | .venv/bin/python + 本轮 scratch/verify_applied_document_format.py 绝对路径 | 15:45:37.986735–15:45:38.240149 | 0；2074B JSON |
+| applied-ruff-format-check | uv run --frozen ruff format --check . | 15:44:47.547846–15:44:48.168604 | 0；238 files already formatted |
+| build-01 | npm run build | 15:43:48.469274–15:43:50.490361 | 0；768B，main/preload/renderer 构建输出 |
+| verify-sources-01 | npm run verify:sources | 15:44:47.545677–15:44:47.756252 | 0；111B，核对12个归档源文件 |
+
+receipt 身份按上述顺序：849B / `b6bfe2ae3827568ed55da2eb5e5349fd67511ed81aa5fc9723536aca14d7c885`；751B / `8702e6c8f8f9e90e1b68e039cd69e9035542e15771a4114aa9c00ccfd70fe956`；683B / `b488c930c5d054fdd83121a9be1e71d603816b7718560a34c0b09c113174b118`；701B / `fc6ed965b147ffc45e3e122304f1d9d790d98a600bc51a0e30558f180ac6e1ef`。
+
+stdout 身份按同序：`8c773a53fda4bbc95f6626fa856ec3f2746c7e2b566156e2e947b3d9e91d3cd4`；`f996212e7c06f8543d4212df37fbcbdd1355ae8e02ca1fbab1c9037817ec908c`；`1c226262cb0abdb27ff70eaa513fe6e543551eb0a0fab32418bbe5f4c2ed2635`；`1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536`。四项 stderr 均实为0B / 空 SHA256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`。
+
+主agent实际 `applied-document-format-verification.json` 2074B / `8c773a53fda4bbc95f6626fa856ec3f2746c7e2b566156e2e947b3d9e91d3cd4` 与 static-check-02 stdout 相同。本审也读其脚本源码2929B / `8f23fcc48455adb787365584982d05a9c5ad2d80dbb8b7de7b0ebe128b19a1b7`，但独立从 Git 枚举38件，不只采用该脚本 pre-snapshot 自报或 manifest 中 mockDocumentationCheckExit 字段。
+
+首次静态检查误用主机 python3，因 `ModuleNotFoundError: No module named 'tomllib'` 在 import 阶段 exit1；后用已锁 Python3.12 的本树 .venv 完成 static-check-02。首次错误记录 `static-document-check-first-failure.md` 当前398B / `78e7da64fcbefadc345ce2287897b0d1f86eeeaf29da4aa3ba45e874db61fbbf` 明示原始精确起止未单独捕获，不补造。本审读到了该错误记录；此次提供的 raw 目录没有首跑独立 receipt，故不把首跑 argv/时间/stream 摘要写成已完整核验，也不把后续0倒填首跑。该记录不影响本审独立静态核同与真正后续0的有限结论。
+
+## 5. 结论与保留边界
+
+A 的两份批准 patch 与实际六路径逐字节对应；仅格式例外生效，38件历史资料及52件固定产品未变；副本 Python AST、其余正文和新增原件链接核同；实际 format/build/verify:sources/static-check-02 四组记录均有上述真实0及完整双流摘要。因此本次 A 实现复核通过，无需因 A 修改产品、扩大例外或改历史原件。
+
+该结论不是原历史独审的重签，不清除先前产品triage/raw输入或首次工具失败；未核定完整 npm check、外部模型复审、native故障恢复或桌面交接。B 尚未 ready，本审未读两脚本部分文件、不等待空转；收到完整文件身份和正式 ready 后再对 B 静态独审，真实桌面运行仍须根交接与具体资源准入。
+
+38件独立核同清单的 canonical JSON（sort_keys=True, separators=(",",":"), UTF-8）SHA256：`ff82f0f2c003f2d718910a56cbfe92cfa238f490ce77c1753f21b12f80328687`；完整逐件输出已在本审工具原结果 `2593c0` 保留。

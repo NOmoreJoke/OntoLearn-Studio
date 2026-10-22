@@ -1,0 +1,67 @@
+# T01 C1 native B 两脚本：独立静态实现审查（首固定版）
+
+结论：本轮两脚本静态实现复核通过，未发现已证、需在运行前修复的实质缺口。该结论仅说明首固定实现符合根9030B窗口与14287B revision2约束，不是GUI运行许可，不是native通过，不关闭原C1外审意见。真实双对话框/两次实际选择、OS unresponsive触发、引擎close及时留证和自有进程自然排空仍未运行；不能凭本报告写成通过。
+
+审查者 `/root/create_core_review`，2026-10-22。独立于两脚本作者，只读文件/固定产品必要切点/既有规则，执行stdlib文件哈希、文本检查；没有运行这两个脚本（包括help/参数检测）、nodecheck、lint、format、产品import、数据库、Electron、GUI、故障注入、网络或模型，没有修改源码或stage/commit。唯一新写本raw。A报告保持原10575B/1fa55cc7身份，本轮不重复全审。
+
+## 1. 精确输入与完整读取
+
+工作树 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-remediation-20261022`。
+
+- `tests/e2e/c1-native-macos-driver.mjs`：24417B / SHA256 `008b7bfd2b580aa3bd32812b0823f0642123280fead527b941cc06e748bf8b6d`，656行。
+- `tests/e2e/c1-native-macos-observer.cjs`：13673B / `33678a1742bcfb2ed9710ed65a7894ee33f9fb047c4fd2d1743207eabcddf22c`，387行。
+- 根窗口 `/Users/kyle/Documents/工作/知爻/本体/.private/T01-C1-remediation-window-controller-audit-20261022.md`：9030B / `1eb42efe030d1adf5918e55f94f3ba134f7af4ab461cb27049a3837faff09c8e`。
+- resource revision2：`/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/coordination-plan/e2e-resource-request-revision2.md.raw`：14287B / `82eb186baf119cf1b62f3bf801672d9bb31080dc0a8431e1af05cc6a7ae63357`。
+- 当前AGENTS 15147B / `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4`，与已全文实读规则同。
+
+先在工具 `9f8293` exit0核两脚本实际身份后开始阅读。第一次批量输出有整体截断，因此未以其截断部分假称driver已读；随后 `c41964`（1–220）、`f35ba8`（221–440）、`6b00c3`（441–656）完整读driver；observer完整见 `7fd588`，root/revision2全文及§5另见 `5b10a8`/`7f9c86`。末次 `42e103` exit0重新核两脚本同上述身份，审查期间未漂移。必要产品路线静态读 `apps/desktop/src/main/index.ts`（before-quit、创建/恢复窗口、真实health路由），无执行。
+
+## 2. 准入、路径、独占目录和有限运行
+
+driver第42–73行的exact参数解析只接受executable/app/run-root/deadline-ms四项，拒绝重复/未知/非规范绝对路径和NUL/换行；deadline只能为120000。executable和app分别必须是从脚本自身位置推导的本树锁定Electron绝对路径和本树apps/desktop。spawn（第473–478行）仍用这些值且cwd设绝对app，未经过Playwright loader；无npx、安装、下载、构建、npm dev/Vite或旧spec调用。
+
+第126–160行核Darwin、已约定Node24、本树node_modules/.venv非借用symlink且realpath同树、Python可执行、Electron包固定44.9.0和built/file必要产物存在；缺项即失败。额外当前静态实查node_modules、.venv、apps/desktop和实际Electron文件均不是symlink，realpath落在同新树；不是把“路径字符串同树”当当前已借树的豁免。
+
+run-root仅接受已授权/tmp父目录下编号native-macos-run；父目录不得为symlink，父realpath绑定授权目录。非recursive mkdir作原子独占claim，即使旧目录为空也拒复用；不删除或覆写首跑目录。其后在canonical runRoot下新建0700的tmp/user-data/evidence，日志wx/0600；Electron实际得到独立user-data绝对路径，TMPDIR/TMP/TEMP也均本run。/tmp在macOS的系统realpath转换由config与observer一致核对，不把`/tmp`和`/private/tmp`纯字符串差异误判为借目录。
+
+第455–471行清除HMR、rendererURL、RUN_AS_NODE、packaged/testfixture、NODE_OPTIONS、ELECTRON_DISABLE_SANDBOX等继承入口，spawn固定三argv：--inspect=0、--user-data-dir=本run、绝对app；不能借额外CLI透传disable-hang-monitor/no-sandbox或business3。
+
+runtime有120000ms失败Promise，observer自身115000ms；bootstrap端点有10000ms，窗口ready/focus各有独立有限等待。所有主要等待用failure race，finally清理另有300000ms窗口并预留尾部5秒；ps每次timeout2000ms和4MiB maxBuffer，日志各4MiB、stdout行64KiB、事件/进程数量和亲缘深度均有限。deadline是上界合同，未实测耗时；正常阶段不允许无限重试。清理遇到身份不明/ps失败则保持失败和未结PID，不以盲杀保证表面排空。
+
+## 3. Inspector与真实产品路径
+
+driver从本方spawn子进程stderr读取127.0.0.1随机main inspector端点；仅为加载本树observer建立该连接，没有renderer CDP或Playwright Electron启动器。Runtime.evaluate通过本地observer固定SHA再次核对后require；没有注入替代IPC handler、health结果、dialog结果或产品cleanup。
+
+observer第344–386行在bootstrap reply的150ms宽限后调用真实 `inspector.close()`，随即要求 `inspector.url()===undefined`，并记录inspectorClosedBeforeFaults；drive入口第204–207行在每一代故障前再核该标记及实际undefined。driver注入答复后也close自己的WebSocket。故障不是在仍附renderer调试器、挂起检测失效的状态下强行证明。
+
+observer启动后读取真实app.getPath(userData)、appPath、process.execPath的realpath，与driver config精确核同，并拒packaged/business3、disable-hang-monitor和no-sandbox。health第159–199行核真实可见页面初始状态、bridge函数、require不可见，以及实际最后webPreferences的contextIsolation=true/sandbox=true/nodeIntegration=false；再通过原preload `window.ontolearn.getEngineHealth()`调用真实main health路径，要求ok=true。没有赋值或stub health。产品原main routes会核sender/mainFrame/trustedURL后执行原supervisor.health。
+
+observer的ChildProcess.prototype.spawn wrapper只Reflect.apply原spawn再登记原ChildProcess对象/原spawnfile/spawnargs，记录spawn/error/exit/close；没有返回伪ChildProcess、修改stdio或代停引擎。该装饰是测试观测，不能当产品自身新增逻辑或业务创建授权。
+
+## 4. 可见恢复链与外部证据边界
+
+observer drive先show/focus并等真实visible+focused，然后每代执行上述真实health。第一代记录fault时间并forcefullyCrashRenderer；第二代要求前代真实render-process-gone理由为killed/crashed且前代已closed，再确认hang monitor未关，executeJavaScript真正infinite loop，并在250ms后对仍visible/focused的窗口发原鼠标输入。第三代要求第二代真实unresponsive事件和closed，且严格3窗口/3health/至少一个真实引擎ChildProcess。
+
+监听记录真实browser-window-created、did-finish-load、closed、render-process-gone、unresponsive与rendererPID，不以单纯新window事件或sleep到时替代恢复。没有第四代兜底掩盖失败，也没有将错误变skip。
+
+两脚本不导入或改写dialog.showMessageBox，不代答选择、不做模拟response、不启动AppleScript/Accessibility子进程；产品原recovery handler仍负责真正对话框和创建/销毁。driver及observer明确把nativeDialogEvidence保为待外部真实截图/动作记录。machineOutcome成功只是一组程序断言，必须另合根指定操作者两次真实“重新打开窗口”截图/时刻/代际才可认native完成。若用户取消、对话框不出现、第二代未实际unresponsive或缺真实点击材料，不能凭机器结果补签。本审没有取得这些材料，也没有新设额外OS矩阵门。
+
+## 5. 被动before-quit、终态与精确自有PID清理
+
+observer第135–157行before-quit只有clear timer、记录和save；没有preventDefault、等待子进程、追加supervisor.stop/child.kill或延迟产品生命周期。失败时安排app.quit是停止本测试，不是成功路径补产品cleanup。will-quit恢复原spawn方法并发result/save，未用hook写succeeded代替真实进程终态。
+
+driver保存真实main ChildProcess的exit和close，只有close Promise结束后才能检查code=0/signal=null、observer result/runId、inspector closure及原子保存的observer证据。第568–574行要求所有observer.children具有原ChildProcess close记录；即使产品自然退出太快使Python close监听来不及留证，也会失败，不用测试hook延长before-quit“修”产品。此分支在校验前已写receipt.recoveryOutcome=observer.outcome，因此“恢复成功但终态证据不足”会留下独立原始outcome而非被overall failed抹去；observer原文件也保留。
+
+PID inventory来自本方ChildProcess.pid、原hook child事件/app.getAppMetrics及当前亲缘；ps先全局读comm而不采无关用户argv，再只对新发现自有PID取完整argv。保pid/ppid/start/command/firstSeen/实际argv与child生命周期；跨reparent也继续跟踪。known上限256、reported128和亲缘32层均有限，遇身份变化标identityChanged并失败，不再signal该PID。
+
+finally先等monitor收束，然后cleanup再次采样，给自然退出短窗口，先记录 `naturalTrackedProcessesAbsent`。后续只对仍被确认的known精确PID按SIGTERM/SIGKILL处理，每次signal前重新ps核同start/command，身份不明或已变化则跳过并保记录。没有pkill/killall、组杀、仅按名字/路径批杀或触碰未归属进程。直接main对象已exit/close时不再对其可能重用PID发送信号。
+
+cleanup最终同时要求真实main close、全部known不活且无identityChanged、自然排空标记且从未testCleanupSignalled。测试发过信号，即使最后都不活，仍然必须失败，不能把人工清理算自然产品成功。无法收束时释放仅本runner pipe/watch句柄、保留runRoot和未结PID供根处理，不清除目录掩盖。此静态路线合理；250ms采样和child-close在实际OS退出顺序中的覆盖仍需真实记录，未在本审宣称已满足。
+
+## 6. 证据与最终限定
+
+本轮没有任何Electron/native argv执行、fault或真实dialog结果。作者声称的nodecheck/lint/format/不spawn参数检测不是本审重新执行结果；本审也未得到对应新增raw receipt，未据此填写产品或GUI通过。报告的静态结论来自上述实际源完整读取和前后hash，而不是mock PASS。
+
+首固定版未发现已证阻断项，因此没有捏造“首Fail”。如后续作者修改，须先保留本两件原字节/本报告，按新真实identity定点续审；不回写首版结论。真实运行必须另由根绑定这两件实际hash、已构建同候选、独占run-root、当前桌面owner交接和两次真实点击操作者，再以完整argv/cwd/start/end/exit/双流/PID/observer+外部截图归档。启动前置若在runRoot claim之前失败，只会走stderr/exitCode，根的外层真实调用捕获仍需保留；不能据本审把该失败自造为已有driver.json。
+
+结论范围为本机默认legacy2 health/crash/unresponsive/recovery runner的静态可用候选，未授business3/createUI、正式创建服务、其他平台、打包、全套兼容或全局资源释放。A未变，不重签A；原C1产品/triage/双指定外审及其所有未完成门保持独立。

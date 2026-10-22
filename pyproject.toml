@@ -22,3 +22,12 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+# Immutable historical review bytes remain at the original paths.
+# Readable copies are separately linked and still checked.
+[tool.ruff.format]
+exclude = [
+    "docs/reviews/T01/profile-job-artifact-selection-supplier-plan/independent-plan-review.md",
+    "docs/reviews/T01/profile-job-artifact-selection-supplier-plan/revisions/r1/independent-plan-review.md",
+    "docs/reviews/T01/profile-job-artifact-selection-supplier-plan/revisions/r2/independent-plan-review.md",
+]

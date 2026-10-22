@@ -9,6 +9,7 @@ import type { TaskUpdate } from '@ontolearn/contracts'
 const execute = promisify(execFile)
 const fixturePath = process.env.I04_TEST_FIXTURE
 const appArgs = () => [
+  `--user-data-dir=${test.info().outputPath('electron-user-data')}`,
   ...(process.env.ONTOLEARN_PACKAGED_EXECUTABLE ? [] : [resolve('apps/desktop')]),
   `--i04-test-fixture=${fixturePath}`,
 ]
@@ -19,7 +20,9 @@ function environment() {
 }
 
 test('I04 reload re-queries the same durable jobs without creating or cancelling them', async () => {
+  const testInfo = test.info()
   test.skip(!fixturePath, 'Requires a fresh trusted fixture backed by actual SQLite jobs.')
+  const expectedUserDataPath = testInfo.outputPath('electron-user-data')
   const application = await electron.launch({
     ...(process.env.ONTOLEARN_PACKAGED_EXECUTABLE
       ? { executablePath: process.env.ONTOLEARN_PACKAGED_EXECUTABLE }
@@ -29,6 +32,18 @@ test('I04 reload re-queries the same durable jobs without creating or cancelling
     env: environment(),
   })
   try {
+    const actualUserDataPath = await application.evaluate(({ app }) => app.getPath('userData'))
+    const userDataEvidencePath = testInfo.outputPath('electron-user-data.json')
+    await writeFile(
+      userDataEvidencePath,
+      JSON.stringify({ expected: expectedUserDataPath, actual: actualUserDataPath }, null, 2) +
+        '\n',
+    )
+    await testInfo.attach('electron-user-data', {
+      path: userDataEvidencePath,
+      contentType: 'application/json',
+    })
+    expect(actualUserDataPath).toBe(expectedUserDataPath)
     const page = await application.firstWindow()
     await expect(page.getByRole('region', { name: '后台任务状态' })).toBeVisible()
     const first = await page.evaluate(() => window.ontolearn!.restoreTasks())
@@ -100,6 +115,7 @@ test('I04 coordinator exit reconciles the open view without replaying jobs', asy
     process.platform !== 'linux' || !fixturePath,
     'Requires a fresh isolated Linux fixture.',
   )
+  const expectedUserDataPath = testInfo.outputPath('electron-user-data')
   const application = await electron.launch({
     ...(process.env.ONTOLEARN_PACKAGED_EXECUTABLE
       ? { executablePath: process.env.ONTOLEARN_PACKAGED_EXECUTABLE }
@@ -109,6 +125,18 @@ test('I04 coordinator exit reconciles the open view without replaying jobs', asy
     env: environment(),
   })
   try {
+    const actualUserDataPath = await application.evaluate(({ app }) => app.getPath('userData'))
+    const userDataEvidencePath = testInfo.outputPath('electron-user-data.json')
+    await writeFile(
+      userDataEvidencePath,
+      JSON.stringify({ expected: expectedUserDataPath, actual: actualUserDataPath }, null, 2) +
+        '\n',
+    )
+    await testInfo.attach('electron-user-data', {
+      path: userDataEvidencePath,
+      contentType: 'application/json',
+    })
+    expect(actualUserDataPath).toBe(expectedUserDataPath)
     const page = await application.firstWindow()
     await expect(page.getByRole('region', { name: '后台任务状态' })).toBeVisible()
     const first = await page.evaluate(() => window.ontolearn!.restoreTasks())

@@ -1,0 +1,56 @@
+# original-e2e userData v2：实际应用独立静态复核
+
+结论：通过本次精确三文件静态复核，未发现需返工的已证缺口。当前文件逐字节等于从固定c0应用批准v2补丁的结果；112个原expect断言链及3个原skip完整保留，五普通launch新增真实main userData读回/文件附件/严格等值guard。此结论不表示e2e或GUI已运行通过，不替代原framework/native差异及C1发布门。
+
+审查者 `/root/create_core_review`，2026-10-23。只读树 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-remediation-20261022`，基准 `c0b61fd245c1b3bd2a84e488f00a742a1942fd8c`。没有修改共享树、运行spec/产品/Electron/GUI/数据库/完整check；仅使用Git读blob、stdlib哈希/内存unified diff及本树TypeScript createSourceFile的纯静态AST解析，不import执行spec。唯一新写本raw文件，不重审产品/A/B。
+
+## 1. 授权与实际身份
+
+总控授权 `/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T01-C1-original-e2e-userdata-exact-window-20261022.json` 已全文读：2181B / SHA256 `bff7c6a14ec442ab311266c62c7fd70ae2ff3165ba749c8df6e1bbc540914d99`，仅三个原spec，明确currentGUIGranted=false。本树AGENTS已全文读；本任务仍按父指令限静态，不据通用桌面政策扩大工作。
+
+批准补丁 `outputs/20261022_review_backlog/T01-C1-remediation-20261022/coordination-plan/original-e2e-userdata-only-v2.patch` 8091B / `1b38b144c7d24990396f58b09d9a094563478db7a2dec334cffc040f2eaee0dd`；配套scope 6523B / `47ccab933ceeeb4953c89014e4ab3ba09e337a6f375f330f123fb1472cd6c13b`；5545B根窄审全文也已读。上述源都在本体根 `/Users/kyle/Documents/工作/知爻/本体/` 下；没有将准备审查中的内存候选字段当实际套用证明。
+
+| tests/e2e 路径 | 固定c0 bytes / SHA256 | 当前实际 bytes / SHA256 |
+| --- | --- | --- |
+| desktop.spec.ts | 7194 / d3b704f0c13627490f7b489bb42da35661c7df40572c18bbf70568334950c9c7 | 8605 / ec7118bc4c2532725e13c1100ff08d937a7b3c66a70205f0fc7fb05e11395eec |
+| csp-lifecycle.spec.ts | 14104 / 9d4389074f5366363a895aef6977aaf5c5b2008b4014c4f868975c912138c7af | 14825 / c2c4503d21e1734b74d290c7a9d88ac2b339e6e0a3945fce6ca5ea061d1f3f00 |
+| i04-jobs.spec.ts | 23914 / babc479a2ff80ead80b3659ddbda6dbe0ce4013ba1b9acfac2aaddf1c575dae5 | 25218 / 23c6788ccb8368a94964a3b56d8242dfeb32a4ed738fbb4219b31d47987183e3 |
+
+独立工具 `2ed646` exit0逐hunk核旧行/上下文并从固定c0仅在内存重建v2，三个结果与当前文件全部字节相等，不是只比预期SHA。补丁只删除/替换desktop两launch和CSP一launch的6条旧args分支行；I04无删除行，其余增量仅本票的路径与读回附件。没有把v1和v2连续叠加，也无批准面外混入此三文件的额外修改。
+
+## 2. 原断言、skip、超时及测试语义
+
+独立纯静态TypeScript AST工具 `0faebd` exit0解析三个固定c0和当前源（parseDiagnostics均0）。对每个expect/expect.poll根调用向外取完整属性与matcher调用链，逐项比较完整原源文本与顺序；从当前集合只去掉本票五个精确新guard后，剩余集合与原件完全相等，保留重复调用，不只是计数。
+
+| 文件 | 原expect | 当前expect | 原skip | 新main读回 / JSON / attach / guard |
+| --- | ---: | ---: | ---: | --- |
+| desktop | 22 | 24 | 0 | 2 / 2 / 2 / 2 |
+| CSP | 39 | 40 | 0 | 1 / 1 / 1 / 1 |
+| I04 | 51 | 53 | 3 | 2 / 2 / 2 / 2 |
+| 合计 | 112 | 117 | 3 | 5 / 5 / 5 / 5 |
+
+同一工具另逐字核test名称、全部test.skip调用文本、test.setTimeout调用文本均与c0一致。没有增加skip、删断言、改变Linux/fixture条件、改timeout/测试名或以grep裁剪suite。原真实health/fixture/renderer隔离/原窗口恢复分支均因精确补丁和完整旧断言链比对得到保留，不以五新guard替换旧需求。
+
+## 3. 五普通launch与共享appArgs
+
+两desktop和一次CSP各在本test取 `testInfo.outputPath('electron-user-data')` 为独立expected，然后构造userDataArg。普通app分支仍带原绝对apps/desktop，packaged分支仍使用原真实ONTOLEARN_PACKAGED_EXECUTABLE，只在其args插入同一userDataArg；cwd/env未改，CSP chromiumSandbox:true未动。
+
+两个I04 framework沿原 `appArgs()`，此函数在调用时从当前活动test.info()取输出路径，没有在模块初始化缓存某个test的目录。expected同样来自当前testInfo.outputPath，因此传CLI路径和严格guard期望来自同一test上下文。该共用函数原app/packaged选择及 --i04-test-fixture=fixturePath 全保，I04 direct-native原 `['--inspect=0', ...appArgs()]` 也自然得到当前test独立CLI目录，未新建替代launcher或修改nativeHook。
+
+五处均在application真实创建成功后的原try/finally内，先执行 `application.evaluate(({ app }) => app.getPath('userData'))` 获取actual，再writeFile原始expected/actual JSON并attach，最后严格 `expect(actualUserDataPath).toBe(expectedUserDataPath)`；没有从actual回填expected，没有默认目录兜底、realpath改写实际字符串、fake userData或catch吞掉不相等。读取/写件/attach/guard失败仍走原application.close；不把新增await放在finally保护之外。既有writeFile导入可直接承载，无新helper/依赖。
+
+I04的两framework仍在原skip之后才建立expected/launch/readback；fresh真实fixture参数及数据库不变，userData隔离没有变为新伪造fixture。实际framework run仍须提供fresh有效fixture使reload不因缺fixture被跳过；当前静态复核不宣称fixture执行或engine运行结果。
+
+## 4. CSP native块、旧framework限制及未扩大项
+
+从CSP注释“Native executable: the test hook closes its main bootstrap inspector before faults.”起直到文件末尾的完整native块/原mkdtemp独立userData/args/helper调用/断言/清理，当前与c0逐字节相等；该完整尾段SHA256 `2fd7ec34922b86de42aac29ad077ef231f585633c10d92d092854249b10cd0f9`。不是只保留mkdtemp一行或helper名。
+
+原framework通过Playwright loader启动、CSP旧dialog stub和原native helper局限仍存在且未被本票改变；这属于批准范围的既有框架兼容路线，不能用五处framework main读回宣称另一只native进程也已读回。I04 direct-native只新增共用appArgs传CLI，未新增其main读回；原Linux/X11/openbox/xdotool及fresh fixture skip保持，未来该路线的实际userData仍须依原资源票核证，本轮不冒称通过，也不发明新Mac阻断门。
+
+本补丁未改真实引擎来源、原health/preload、fixture、sandbox/monitor控制或超时；没有启用HMR、放宽fixture条件或修改产品。CSP原HMR分支未改，本次built/file路线不因本票启用它。新Mac两脚本属于另票，未被本次userData修改或重审。
+
+## 5. 已有full-check证据与结论边界
+
+只读既有 `outputs/20261022_review_backlog/T01-C1-remediation-20261022/raw/full-check-02/`，未重新执行。receipt为689B / `8b61af2be4b14ade3b8f739c90a601bd78c928c18f934afe03227f9d0baa240a`，argv=[npm,run,check]，cwd为本新树，实际UTC 2026-10-22T16:13:06.318446至16:17:56.778175、exitCode=0。工具 `90d3ac` exit0独立核stdout8675B / `81afa6eeda05b6813c760a2deaeac9be143ad6965cc806d2a315815a1e75d7ca`、stderr0B / 空摘要均与receipt相符。末尾实际2969passed/44skipped是该full-check内Python结果；不将其称为e2e结果或本审重跑。本报告不倒写先前full-check-01/准备formatter首败。
+
+因此可以确认已应用v2与获批三路径精确一致，原112/3保留、五实际main读回及附件guard接线完整，没有发现该精确变更造成的已证静态缺口。真实Electron是否按本次参数实际生效、完整原suite的通过/平台skip、新Mac native及双外审/发布门仍按各自真实运行和记录判定，不据静态或full-check0跨界签e2e通过。

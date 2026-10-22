@@ -8,6 +8,7 @@ import { mkdtemp } from 'node:fs/promises'
 
 test('C1 real CSP, normal functionality and renderer recovery', async () => {
   test.setTimeout(90000)
+  const testInfo = test.info()
   const requests: string[] = []
   const server = createServer((request, response) => {
     requests.push(request.url ?? '')
@@ -20,6 +21,8 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
   const target = `http://127.0.0.1:${address.port}`
   const env = { ...process.env }
   delete env.ELECTRON_RUN_AS_NODE
+  const expectedUserDataPath = testInfo.outputPath('electron-user-data')
+  const userDataArg = `--user-data-dir=${expectedUserDataPath}`
   const development = Boolean(env.ELECTRON_RENDERER_URL)
   const evidence: Record<string, unknown> = { development, target }
   const stage = (value: string) => {
@@ -30,8 +33,8 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
   const application = await electron.launch({
     chromiumSandbox: true,
     ...(env.ONTOLEARN_PACKAGED_EXECUTABLE
-      ? { executablePath: env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [] }
-      : { args: [resolve('apps/desktop')] }),
+      ? { executablePath: env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [userDataArg] }
+      : { args: [userDataArg, resolve('apps/desktop')] }),
     cwd: resolve('apps/desktop'),
     env,
   })
@@ -47,6 +50,18 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     await expect(page.getByRole('status')).toContainText('本地引擎已连接')
   }
   try {
+    const actualUserDataPath = await application.evaluate(({ app }) => app.getPath('userData'))
+    const userDataEvidencePath = testInfo.outputPath('electron-user-data.json')
+    await writeFile(
+      userDataEvidencePath,
+      JSON.stringify({ expected: expectedUserDataPath, actual: actualUserDataPath }, null, 2) +
+        '\n',
+    )
+    await testInfo.attach('electron-user-data', {
+      path: userDataEvidencePath,
+      contentType: 'application/json',
+    })
+    expect(actualUserDataPath).toBe(expectedUserDataPath)
     stage('first-window')
     let page = await application.firstWindow()
     stage('normal-ui')

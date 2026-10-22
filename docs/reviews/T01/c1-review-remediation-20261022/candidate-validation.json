@@ -1,0 +1,178 @@
+{
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "remediationParent": "c0b61fd245c1b3bd2a84e488f00a742a1942fd8c",
+  "originalProduct": "423b7e4c799f188cf2ce6e8e7121893ce85624cd",
+  "sourceIdentities": [
+    {
+      "path": "pyproject.toml",
+      "bytes": 967,
+      "sha256": "4609baf943571d362d742bea9a5c0509ea7c3d809f3b25961cce9e093f544efd"
+    },
+    {
+      "path": "tests/e2e/desktop.spec.ts",
+      "bytes": 8605,
+      "sha256": "ec7118bc4c2532725e13c1100ff08d937a7b3c66a70205f0fc7fb05e11395eec"
+    },
+    {
+      "path": "tests/e2e/csp-lifecycle.spec.ts",
+      "bytes": 14825,
+      "sha256": "c2c4503d21e1734b74d290c7a9d88ac2b339e6e0a3945fce6ca5ea061d1f3f00"
+    },
+    {
+      "path": "tests/e2e/i04-jobs.spec.ts",
+      "bytes": 25218,
+      "sha256": "23c6788ccb8368a94964a3b56d8242dfeb32a4ed738fbb4219b31d47987183e3"
+    },
+    {
+      "path": "tests/e2e/c1-native-macos-driver.mjs",
+      "bytes": 24417,
+      "sha256": "008b7bfd2b580aa3bd32812b0823f0642123280fead527b941cc06e748bf8b6d"
+    },
+    {
+      "path": "tests/e2e/c1-native-macos-observer.cjs",
+      "bytes": 13673,
+      "sha256": "33678a1742bcfb2ed9710ed65a7894ee33f9fb047c4fd2d1743207eabcddf22c"
+    }
+  ],
+  "verifiedActualRuns": [
+    {
+      "receiptAbsolutePath": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/raw/full-check-01/receipt.json",
+      "receiptBytes": 689,
+      "receiptSHA256": "0d1ac5a22b987cf9e0a0e769d0257262959e9b554eea6647dc733222c87922c7",
+      "receipt": {
+        "slug": "full-check-01",
+        "argv": ["npm", "run", "check"],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-remediation-20261022",
+        "startedAtUtc": "2026-10-22T15:58:31.971666+00:00",
+        "environmentScript": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/remediation-env.sh",
+        "exitCode": 0,
+        "endedAtUtc": "2026-10-22T16:02:25.217964+00:00",
+        "stdout.raw": {
+          "bytes": 8675,
+          "sha256": "08f28ba217a09731fcf904e49a259cccb6a6ac09ee4a1fba245cbf20d0c1c0fa"
+        },
+        "stderr.raw": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "receiptAbsolutePath": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/raw/full-check-02/receipt.json",
+      "receiptBytes": 689,
+      "receiptSHA256": "8b61af2be4b14ade3b8f739c90a601bd78c928c18f934afe03227f9d0baa240a",
+      "receipt": {
+        "slug": "full-check-02",
+        "argv": ["npm", "run", "check"],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-remediation-20261022",
+        "startedAtUtc": "2026-10-22T16:13:06.318446+00:00",
+        "environmentScript": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/remediation-env.sh",
+        "exitCode": 0,
+        "endedAtUtc": "2026-10-22T16:17:56.778175+00:00",
+        "stdout.raw": {
+          "bytes": 8675,
+          "sha256": "81afa6eeda05b6813c760a2deaeac9be143ad6965cc806d2a315815a1e75d7ca"
+        },
+        "stderr.raw": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "receiptAbsolutePath": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/raw/original-e2e-fixture-01/receipt.json",
+      "receiptBytes": 792,
+      "receiptSHA256": "d60771847c95b8fa09f69934a81cf6717ea7ac169f70bac714ea32488514ace2",
+      "receipt": {
+        "slug": "original-e2e-fixture-01",
+        "argv": [
+          ".venv/bin/python",
+          "scripts/prepare-i04-fixture.py",
+          "/tmp/t01-c1-remediation-20261022/original-e2e-run-01/fixture"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-remediation-20261022",
+        "startedAtUtc": "2026-10-22T16:14:59.340055+00:00",
+        "environmentScript": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/remediation-env.sh",
+        "exitCode": 0,
+        "endedAtUtc": "2026-10-22T16:14:59.750212+00:00",
+        "stdout.raw": {
+          "bytes": 82,
+          "sha256": "768f01581f82f87b5c3e1867947e2a5987717e5778c19c00a5d429f959d0441a"
+        },
+        "stderr.raw": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "receiptAbsolutePath": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/raw/pre-freeze-identities-02/receipt.json",
+      "receiptBytes": 829,
+      "receiptSHA256": "e0008ff1e7439c355b997c5f66891f51c6255e819c2f9c337f473d6e5deb9e51",
+      "receipt": {
+        "slug": "pre-freeze-identities-02",
+        "argv": [
+          "python3",
+          "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/scratch/verify_pre_freeze_identities.py"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-remediation-20261022",
+        "startedAtUtc": "2026-10-22T16:21:10.271620+00:00",
+        "environmentScript": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/remediation-env.sh",
+        "exitCode": 1,
+        "endedAtUtc": "2026-10-22T16:21:11.447392+00:00",
+        "stdout.raw": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr.raw": {
+          "bytes": 568,
+          "sha256": "ae0b9db052e04a1b63d976edc0c27b0d45d77bdbfa16c5243d76e3211a40dd7b"
+        }
+      }
+    },
+    {
+      "receiptAbsolutePath": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/raw/pre-freeze-identities-03/receipt.json",
+      "receiptBytes": 829,
+      "receiptSHA256": "07850c72731edde927c5e21b09997ea05a3b607be2dfc8a21a4111e9ec3e1557",
+      "receipt": {
+        "slug": "pre-freeze-identities-03",
+        "argv": [
+          "python3",
+          "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/scratch/verify_pre_freeze_identities.py"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-remediation-20261022",
+        "startedAtUtc": "2026-10-22T16:21:36.526674+00:00",
+        "environmentScript": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-remediation-20261022/remediation-env.sh",
+        "exitCode": 0,
+        "endedAtUtc": "2026-10-22T16:21:38.026716+00:00",
+        "stdout.raw": {
+          "bytes": 511,
+          "sha256": "efb857365e06da1d46c95a4ef52367f035a110e85f1f4ef50b9f713f40c68adc"
+        },
+        "stderr.raw": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ],
+  "original52ProductTestFilesMatch423": true,
+  "e2eExecuted": false,
+  "nativeExecuted": false,
+  "electronBinaryInitialPrecheck": {
+    "binaryExists": false,
+    "binaryRealPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-remediation-20261022/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron",
+    "binaryBytes": null,
+    "electronPackageVersion": "44.9.0",
+    "nodeVersion": "v24.15.0",
+    "installerIsInstalledChecksPass": false,
+    "guiStarted": false
+  },
+  "freshI04Fixture": "/tmp/t01-c1-remediation-20261022/original-e2e-run-01/fixture/fixture.json",
+  "limitations": [
+    "full-check-01 predates old-e2e-v2; full-check-02 includes it",
+    "actual GUI/native and original complete e2e pending internal resource handoff; binary installation separately authorized",
+    "two fresh complete designated model reviews on final same base/head pending",
+    "no CI, packaging or production pass claimed"
+  ]
+}

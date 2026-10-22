@@ -1,0 +1,71 @@
+# C1 正常处置与自有 surrogate probe 独立产品 triage 审查
+
+结论：**本次所核 M P2-01 两条诊断路径、Z F-2 与 surrogate 线索，未形成要求修改 C1 产品的已证正常可达反例。接受当前“不因这些材料扩大异常捕集、不改共享 digest/canonical、不预认 423 新增正确性缺陷”的有限处置。** 这不是对所有 Store 输入作 NoDefect 证明，不替外部模型关闭原编号/级别，也不使完整 check、e2e、指定双审、CI 或正式创建链通过。
+
+审查者 `/root/create_core_review` 未编写本次三份 triage 文档或自有 probe；当前只读原件/Git/源码，唯一新写本临时报告。没有 import/执行产品、重跑 pytest、运行任何外来 probe、打开运行库、制造 SQLite 损坏、GUI/native/network、stage/commit 或修改工作树。
+
+## 1. 实际审查输入及身份
+
+树 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-remediation-20261022`，HEAD `c0b61fd245c1b3bd2a84e488f00a742a1942fd8c`；产品固定 `423b7e4c799f188cf2ce6e8e7121893ce85624cd`，批准 base `5f910b52c69d86a1076b2032e5d3c63e715947f3`。当前 AGENTS 全文已读：15147B/SHA256 `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4`；采用其2026-10-22桌面新政策，但本子任务仍只读静态，无桌面需求。
+
+| 实读件 | bytes | SHA256 |
+| --- | ---: | --- |
+| issue-disposition.md | 13029 | `544f5e19b5b2912d39920085f5af13cf2e28db3ee82710fe6f33cbc8df8e693e` |
+| surrogate-triage.md | 3607 | `d90578271554dee2edc4d0898cbed1f4271eee2c0b1bd4027db3c338192bd88c` |
+| reproduction-environment.md | 2434 | `f9d99846d750b5fbad2dd9a9b3c676ef60833a48fbe4e8f43bafb60361b1ef30` |
+| 迭代 project-create-core-C1.md，含末尾P2-07澄清 | 11605 | `c4da8bb414e3fe46895e24840bfed487d18978c49ff5ffdd716861e947e7a89a` |
+| 自有 probe_surrogate_own_tmpdb.py，全文静态读 | 1880 | `f59e3526284d9379a7a4b73471bbbaa554bb2d086214256b4afd3a72fbb05508` |
+
+前三件位于本树`docs/reviews/T01/c1-review-remediation-20261022/`；迭代说明位于`docs/iterations/T01/`。原 M 报告从 `outputs/20261022_review_backlog/T01-C1-final-minimax-intake-20261022/minimax-full-review-final.md.raw` 核64831B/`0058f431ea4d12ebbd1d7c20b1e9f3b25abe2709f5f3f87a3a210327bdb3c60b`，定点实读§6 P2-01及相关边界；Z从 `T01-C1-execution-prep/zcode/reports/full-review.md` 核18106B/`a5a425c1b467d9442d601b8c795a3e9147848f08fb71d3495c053d2db8673309`，实读F-2及结论限制。本审没有声称重做两报告完整外审或复审共享契约。
+
+静态工具69cfb0实际exit0：source-manifest中52项逐current=423 Git=批准bytes/SHA；清单35652B/`6f7fa50afb84e54236d0db55104a5f72be6ee4bb8939e5546d3163a58d21f1cf`，逐52记录规范JSON摘要为`61f5a8b4b34bb0c80e54690430a150583bf6ea1a1e5b0bee32e6fb7540a04e95`。这只证产品/测试字节未改，不是52项行级产品审查。实际status只有AGENTS、迭代说明与新增本轮reviews，未发现产品patch。
+
+## 2. M P2-01：两诊断路径应分开记，当前不需产品修复
+
+第一处，`job_store.py:188–264 _validate_job3` 在 application claim 分支调用 `creation_context`，其 `CreationFault(ValueError)` 被末尾宽映射转为 `Format3Fault('structure')`。`project_lifecycle.py:221–267` 对创建namespace、request/origin、claim fingerprint、公私project映射及真实app_origins/app_operations/app_receipts完整typed tuple核同；失败仍拒绝，不修复/补写原件。原M报告275–281行明确称此行为正确、不影响正确性、属于诊断原因被压平。保留固定structure兼容面有依据；不能为日志细分引入未经协调的新公开码或放松原validator。
+
+第二处，`JobStore.apply_application:359–374` 的同operation claim分支先识别创建namespace：正常已核创建claim返回非None，随后IDENTITY_CONFLICT；若创建原证据损坏，`creation_context`先抛CreationFault，未走该fault。`_application:427–444`只专门处理ownership Conflict，CreationFault会从原交易退出；`coordinator.classify:73–96`对该异常兜底固定INTERNAL_ERROR。两条wire结果应保持区分，不把损坏和正常claim写成相同结果。现处置表已正确单列损坏创建证据兜底INTERNAL_ERROR，没有伪称它也得到IDENTITY_CONFLICT。
+
+此触发依赖已损坏/伪造持久原件；不是正常健康库中的合法op冲突反例。该路径无新增写在识别之前，原_transaction异常回滚，固定错误不带原异常文本。M本人认可其安全/回滚；本轮未复做损坏实验，也没有以一个新caller分类偏好改公共语义。若将来确需可诊断固定事件/枚举，应由唯一owner提出消费与版本合同，不能由本次triage自行发行。两条原意见继续作为外审历史，不改原严重度或代签关闭。
+
+## 3. Z F-2：没有当前触发例，不扩大catch合理
+
+Z原文F-2明确标P3硬化建议且“现路径不可达”。实际源码支持其关键前提：creation commit先拒未知外交易，在同一Store._transaction中先执行reader._preflight、reader._validate、_validate_job3，再做候选preflight；原_transaction外层使用BEGIN IMMEDIATE。ProjectHostReader._validate核projects/public/app集合一致，对每个internal调用_identity，要求exact str、有限长度且UTF8有效。于是候选preflight中`row['internal'].encode('utf-8')`读取的是同一健康关系集合的值，正常期间不由另一writer改成非str。
+
+现有catch包含CreationFault、HostReadFault及ValueError/KeyError/TypeError/OverflowError/RecursionError/sqlite3.Error。未发现本次健康库正常输入能绕先行验证、稳定触发AttributeError或IndexError的实例；不为理论损坏或任意mock/hook替换先扩大捕集合理。本结论不证明所有未来reader/shape/connection变更不可触发，也不否认任意内部程序bug可能产生这些异常。出现真正正常可达例后再做定位修复和必要验证。
+
+## 4. surrogate：自有原件确实支持“未证新增回归”，不是全部Unicode证明
+
+69cfb0静态核：base storage.py55364B/`4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842`；scratch/base-engine-source导出的所有文件逐字等base Git。当前源码则在52项中逐字等423。两轮stdout都打印实际storage.__file__，分别落在自有base导出和本工作树packages/engine/src，和各receipt argv的源参数相等。
+
+两轮probe以自己的TemporaryDirectory创建健康Store与project'p'，固定测试高surrogate U+D800和低surrogate U+DFFF。脚本并非只print pass：捕获的类型必须精确为UnicodeEncodeError且同时是ValueError/UnicodeError；同时断言前后iterdump列表相同、revision0/seed marker不存在、in_transaction=False、trace无BEGIN/INSERT/UPDATE/DELETE，随后真实中文及非BMP标量合法提交到revision1。任何未拒绝/类型错/污染/后续失败都会使这些assert不能成立。receipt真实exit0、stderr空，两个case stdout与上述断言一一对应。未把包装器exit0解释成非法commit成功。
+
+重要覆盖限定：这两轮调用的是**默认format2 Store的既有definitions opaque分支**，没有creation参数，不是新JobStore3创建事务的全面Unicode验证。静态 `storage.py:603–608` 显示该计划fingerprint=digest(plan)位于进入_transaction之前；canonical字符串的UTF8编码拒孤立surrogate，解释了base/current共同的交易前错误。未观察到持久污染，不支持把相同legacy拒绝归成423新增写入缺陷。
+
+C1另证据是既有`test_invalid_names_are_strict_and_zero_write`七参数运行。实际测试使用JobStore(target_format=3)，run调用Store.commit(creation=...)，参数为['',' ','\0','\ud800',None,1,True]；fault断言精确CreationFault('input')，zero_write安装只读authorizer并核logical dump及in_transaction。`request_value:64–76`先界exact str/名称和UTF8，UnicodeError转input。故该7pass支持C1名称高surrogate这一具体边界，不能推广为任意嵌套payload/所有scalar、低surrogate在该入口也已实跑或正式wire均已验。
+
+完整logical dump断言不是SQLite文件级bytes/物理保护证明；脚本未序列化全部dump/trace本体，本审核的是保留脚本的断言、源码切点和运行输出/exit一致，不冒称独立重放数据库事实。不存在因此扩大SQL物理损坏研究或共享digest修改的理由。
+
+外来线索只静态核身份：T02固定c61c7f1e的raw-evidence.tar.gz717671B/`0766fb7dcf79d847369908253856288cf343f95ac329e08e458f749a70567f3f`，指定两个member完整bytes/SHA及75–85/15–21行与surrogate-static-origin-check.json逐值相等。没有提取执行其Python脚本，没有检查/打开它的数据库。其EXIT=0同样只证明捕获异常的包装器结束。
+
+## 5. 原始运行与环境证据核验
+
+所有路径以下述外部目录为根：`outputs/20261022_review_backlog/T01-C1-remediation-20261022/`，不是本树同名相对目录。receipt真实argv/cwd/起止/exit与stdout/stderr长度及SHA由本审逐件独立复算，不是只信文档声称。run_capture.py全文静态读过：清除跨树PYTHONPATH/ENV等、以本tree cwd启动并捕获独立双流，再记录实际returncode。
+
+| 原运行 | 原UTC起止 | exit/结果 | stdout bytes/SHA256 |
+| --- | --- | --- | --- |
+| surrogate-base | 15:32:10.426990–15:32:10.780684 | 0，两case断言成功 | 938 / `dcb7423e06ca33ac79d9b103e9342df92a0a7fdeb4207412307fedbcc0638e7a` |
+| surrogate-current | 15:32:10.426979–15:32:10.780700 | 0，两case断言成功 | 910 / `23d293e252bcc2f05de46eb54aa6144497cf4426aa92166776d2939394bb6dfe` |
+| c1-invalid-name-boundary | 15:32:31.471016–15:32:32.304588 | 0，7passed/0.31s | 98 / `4aafbc5ca95f67cbeae74d395cc35b529399cc131f8a7f47c2031a58cc637af8` |
+
+日期均2026-10-22；三个stderr均0B/空SHA e3b0c442…。原argv分别为`.venv/bin/python <自有probe绝对路径> <base导出或当前src绝对路径>`；pytest原argv含唯一具体nodeid、-q及绝对basetemp，均以本树cwd执行。对应receipt.json是完整argv权威件，未用本文缩写重建命令。
+
+f26ad8静态核environment-npm为npm ci、environment-uv为uv sync --frozen，二者各自真实exit0、cwd均本树，双流hash全同；.venv是本树真实目录非跨树目录symlink，editable .pth指本树src。实际Git worktree=true，a816c2d0与5f910b5对象可读取。这支持reproduction-environment的准备处置；不保证未来最终check/e2e已经跑过，也不将可读Git对象当产品采用。
+
+P2-07末尾澄清与52路径清单吻合：C1自写5路径相对a816与最终相对5f的52交付面不是同一集合；main/renderer readonly采纳仍在最终树验收范围。旧轮“不运行”事实未倒写。共享契约结论由另一独审承担，本审仅核其未发生产品改动，不重复判定那五项。
+
+## 6. 收口与未验边界
+
+不提出必须产品修复的新问题；建议保留上述有限triage。当前材料不支持扩大为“Store全Unicode无缺陷”“全部损坏输入可诊断”“52产品完整通过”或“双指定模型已对本轮最终树同版通过”。完整check红灯、真实Electron/e2e/native/平台覆盖、CI/远端与正式create/resolve/scope/binding前提仍由主线按实际候选补证。后续A配置或B新测试若变化，另绑定对应输入/结果，不继承本报告成运行Pass。
+
+本审只执行文件/Git/JSON/tar-member静态比较；69cfb0和f26ad8为审计脚本真实exit0，不是产品或测试运行。最初把外部outputs当成树内路径的定位失败、一次宽文件列表截断均未当有效证据；必要原件随后按精确路径重新读取。全文AGENTS及本报告上述身份是本次审查边界，无固定轮次要求。

@@ -73,3 +73,5 @@ Job3 application dispatcher先识别精确创建namespace并走唯一新validato
 各轮独立命令、完整stdout/stderr/实际exit、首fail与最终代码身份见本阶段reviews目录。首轮两项测试失败为metadata反例阈值选得比合法metadata更大、旧reader临时对照包漏原invalidation资源；修的是新fixture并保首fail，没有把对照包导入失败冒充旧reader对新语义拒绝。旧专项/完整check及独审均按实际最终候选登记，不拿中间结果冒充final。
 
 不运行本机GUI/Electron/e2e/native/HMR/Keychain/模型；不改协议、公开capability、main/preload/UI、默认startup格式。正式create_project_request、resolution、原dispatch物理绑定/当前scope、真实位置首IO、完整Host与I06供方全部后置。原FR-001–006/804、44/57P0、两个目标OS/真人、指定同版双外审、CI/正常develop合并及远端门保留，完整Goal继续。
+
+2026-10-22 审查澄清：上段“不改协议、公开capability、main/preload/UI”只描述 C1 相对直接前置 `a816c2d0` 的五路径自写增量，不描述相对批准 base `5f910b5` 的完整交付面。产品候选 `423b7e4` 的 52 个产品/测试路径包含从前置阶段采纳的 readonly 契约、main 与 renderer 字节，具体路径和身份见 `docs/reviews/T01/project-create-core-C1/source-manifest.json`。采纳字节也属于最终树的验证范围，不能据自写增量较小免除相应 e2e、双审或 CI 门；默认 format2/startup 与 C1 不接公开创建 wire 的阶段边界不变。上段“不运行”记录原 C1 验证轮次的实际范围，后续轮次按自己的候选与证据另记。

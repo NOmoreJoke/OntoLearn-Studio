@@ -4,16 +4,31 @@ import { writeFile } from 'node:fs/promises'
 import type { HealthResult } from '@ontolearn/contracts'
 
 test('desktop calls real engine, keeps isolation and fits minimum window', async () => {
+  const testInfo = test.info()
   const env = { ...process.env }
   delete env.ELECTRON_RUN_AS_NODE
+  const expectedUserDataPath = testInfo.outputPath('electron-user-data')
+  const userDataArg = `--user-data-dir=${expectedUserDataPath}`
   const application = await electron.launch({
     ...(process.env.ONTOLEARN_PACKAGED_EXECUTABLE
-      ? { executablePath: process.env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [] }
-      : { args: [resolve('apps/desktop')] }),
+      ? { executablePath: process.env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [userDataArg] }
+      : { args: [userDataArg, resolve('apps/desktop')] }),
     cwd: resolve('apps/desktop'),
     env,
   })
   try {
+    const actualUserDataPath = await application.evaluate(({ app }) => app.getPath('userData'))
+    const userDataEvidencePath = testInfo.outputPath('electron-user-data.json')
+    await writeFile(
+      userDataEvidencePath,
+      JSON.stringify({ expected: expectedUserDataPath, actual: actualUserDataPath }, null, 2) +
+        '\n',
+    )
+    await testInfo.attach('electron-user-data', {
+      path: userDataEvidencePath,
+      contentType: 'application/json',
+    })
+    expect(actualUserDataPath).toBe(expectedUserDataPath)
     const page = await application.firstWindow()
     await expect(page.getByRole('heading', { level: 1 })).toContainText('转化为可验证的知识')
     await expect(page.getByRole('status')).toContainText('尚未检查')
@@ -58,14 +73,28 @@ test('a health reply from before connection loss cannot replace the current stat
   const replies: { outcome: string; before: string | null; after: string | null }[] = []
   const env = { ...process.env }
   delete env.ELECTRON_RUN_AS_NODE
+  const expectedUserDataPath = testInfo.outputPath('electron-user-data')
+  const userDataArg = `--user-data-dir=${expectedUserDataPath}`
   const application = await electron.launch({
     ...(process.env.ONTOLEARN_PACKAGED_EXECUTABLE
-      ? { executablePath: process.env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [] }
-      : { args: [resolve('apps/desktop')] }),
+      ? { executablePath: process.env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [userDataArg] }
+      : { args: [userDataArg, resolve('apps/desktop')] }),
     cwd: resolve('apps/desktop'),
     env,
   })
   try {
+    const actualUserDataPath = await application.evaluate(({ app }) => app.getPath('userData'))
+    const userDataEvidencePath = testInfo.outputPath('electron-user-data.json')
+    await writeFile(
+      userDataEvidencePath,
+      JSON.stringify({ expected: expectedUserDataPath, actual: actualUserDataPath }, null, 2) +
+        '\n',
+    )
+    await testInfo.attach('electron-user-data', {
+      path: userDataEvidencePath,
+      contentType: 'application/json',
+    })
+    expect(actualUserDataPath).toBe(expectedUserDataPath)
     const page = await application.firstWindow()
     await expect(page.locator('.health-result')).toContainText('尚未检查')
     const health = await page.evaluate(() => window.ontolearn!.getEngineHealth())

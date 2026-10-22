@@ -1,0 +1,89 @@
+# C1 共享契约五项意见：静态处置建议
+
+结论：P2-05/06/08/09/10均不构成当前wire缺陷，不建议为本轮C1修复机械改schema、registry或两端validator。P2-06的辅助属性确有v2投影降级，但wire按profile重建且既有测试明确保留该行为；P2-10已有两端“所有数组显式maxItems”守门测试。可记录目录/profile解释与未来演进约束；不把登记当模型意见已获对方关闭。
+
+本审全文读最终M报告414行/64831B，SHA256为0058f431ea4d12ebbd1d7c20b1e9f3b25abe2709f5f3f87a3a210327bdb3c60b，仅处理其中304–345行五项意见，不重复P2-01或surrogate。源码读取固定423b7e4c799f188cf2ce6e8e7121893ce85624cd；实核T01-project-create-core HEAD=c0b61fd245c1b3bd2a84e488f00a742a1942fd8c，仅M AGENTS.md；本文所引8个源码/契约路径423→c0零差异。base=5f910b52c69d86a1076b2032e5d3c63e715947f3。未执行产品、测试、import、SQL/native，未改受审源。
+
+下文定位均为固定423的完整相对路径及一基行；“验证建议”均未运行。
+
+## 维护责任与冻结边界
+
+已生效唯一维护者可证为原T01（聊天01a15bba-0884-7401-b24f-f50c1fcf60aa）：
+
+- packages/engine/src/ontolearn_engine/coordinator.py、packages/contracts/python/contract_v2.py：I05-T01-format3-ownership-handoff.md:3、9、12–15。
+- packages/contracts/src/v2.ts、packages/contracts/v2/{schema,registry,errors,fixtures,binding-regressions}.json：I06-T01-format3-ownership-handoff.md:3、7、11–18。
+- 最新developer-common-instructions.md:15确认上述生效责任；不能继续按“历史I05/I06原owner”猜归属。
+
+**唯一维护责任不等于C1五writer写面。** 原C1授权:11–19及固定source-manifest.json的initialExactAdoption把上述coordinator/canonical/schema/registry/errors/fixtures全部标readonly，现47只读；改动须由root明确新候选/精确窗口，不回写冻结423。resources.py未随交接释放（I05交接:22、common:15）；本文只读它解释formatter，不建议修改，必要时由root核对/协调owner，不擅称T01。
+
+既有测试不随公共契约交接自动转交（I05交接:22、I06交接:20）。test_project_startup_contract.py与test_project_job_format3.py虽在50采用中，当前也属于47 readonly；test_contract_v2.py、tests/unit/contract-v2.test.ts不在50采用，不能凭本次建议改。若需新专项或修改旧测试，由root按精确路径协调/登记；本审不猜其它开发线。
+
+## P2-05：错误目录的版本常量
+
+**当前行为/可达性。** packages/contracts/v2/errors.json:29–46的codes.VERSION_INCOMPATIBLE.paramsSchema是[2]；同件:450–457已经有foundationProfiles.business3.supportedVersions=[3]及legacyIncompatibleDiagnosis=[2]。schema.json的error（起137行）为[2]、error3（起4820行）为[3]、error_bootstrap3（起5527行）有两种有限分支。这个目录差异存在，但不等于wire降级。
+
+真正构造：packages/contracts/python/contract_v2.py:342–356只从codes取messageKey/retryable，用validate_business3(error)检查params；resources.py:61–75则明确legacy2。coordinator.py:73–80、314–325选择profile formatter。没有发现本链用codes.paramsSchema拒绝v3响应的路径。第三方若忽略profile、直接把v2 paramsSchema当全profile执法者，会误拒v3——这是消费约束。
+
+**建议必要性/最小处置。** 保留codes及旧error不变。在新处置/接口说明中澄清“codes.paramsSchema对应legacy2；business3参数以error3及profile材料为准；startup独立”。已有profile元数据，不必为此重排为codes.v2/codes.v3。重排会破坏现有codes[code]访问；把[2]改[3]或放成[2,3]也非兼容修复。
+
+**v2与验证。** tests/unit/contract-v2.test.ts:83–97刻意要求codes逐项等schema.error。若将来确需目录格式升级，T01统一消费端和版本身份，新候选验证legacy[2]成功/[3]拒绝、business3反向、bootstrap只允两种有限分支，保持messageKey/retryable/2048B错误预算；先做静态目录说明无需执行新产品反例。
+
+## P2-06：ServiceFault.error的legacy辅助投影
+
+**当前行为/可达性。** coordinator.py:66–70确实预构造safe_error；business3的VERSION_INCOMPATIBLE([3])在:272/283可达，所以辅助error属性会成为INTERNAL_ERROR。然而:73–80按code/params/profile重新构造，:314–325的wire走此处，故当前wire保留VERSION_INCOMPATIBLE([3])。本审检索固定engine源码，.error只有:70赋值，未发现运行读取。
+
+**不能直接删的证据。** packages/engine/tests/test_project_startup_contract.py:197–203明确断言error.error为INTERNAL_ERROR、classify(business3)才为正确版本错误；test_project_job_format3.py:277–283直接读取ServiceFault.error的INVALID_STATE。这是已冻结、被测试约束的内部legacy投影，不是无人依赖的属性。M关于“引擎内无读取”可成立，但不能据此推定删除无影响。
+
+**最小处置。** 本轮无需行为变更；记录error仅legacy兼容投影、正式输出必须classify(profile)，禁止未来调用方发fault.error。若root另选删除，则维护者T01须同时明确两个47 readonly测试的新责任/预期，验证所有ServiceFault调用点及两profile wire不变；不要扩大resources.safe_error来接受[3]。惰性按profile也需新接口/调用签名，不优于此处保留现状。
+
+**验证建议。** 若改coordinator，优先既有test_service_fault_keeps_three_version_before_legacy_projection、test_v2_coordinator_cannot_announce_private3_session及t01-startup-supervisor中实际[3]错误跨TaskService的用例；验证error3与legacy error、真实cause不退化。未改代码则不因本记录重复跑测试。
+
+## P2-08：共享registry的method/capability条目
+
+**当前行为/可达性。** registry.json:405–452三个changeset方法已经标exposure=internal-business3-trusted-host-only、implementation=explicit-internal-business3-runtime；:454–483的business3.methods及capabilityImplementations显式区分可用面。coordinator.py:124–127按profile方法白名单，:240拒未知method；schema.json:2504起job.create.capability枚举也不含这三个方法名。因此遍历共享表可看到目录项，但不能据此取得默认2方法执行或Job能力。
+
+混合目录在base5f已存在（hello/health/job.*等方法与query/changeset等业务能力共表），不是本次三项造成的新模式。实际静态比对：base24→当前27条，旧24逐值不变，v2Runtime14项逐值不变，business3.methods17项；tests/unit/t01-changeset-canonical.test.ts:72–85已有默认2不含/显式3包含的断言。
+
+**最小处置。** 无需改registry；现有exposure/profile字段已表达意见要求的核心区分，可在调用说明强调capabilities是描述目录，不能替代profile methods。若未来真拆method/capability表，由T01做独立版本变更，不能只加字段就称消除风险。
+
+**v2与验证。** registry原始字节SHA用于hello绑定；fixtures.json中有50处registryHash字段，包含正常值与故意错误fixture，不能全量字符串替换。任何registry变化要逐语义同步正确/错误golden、startup/business3/changesets身份及双方matcher。若只澄清文档，不改hash或重跑原native/生产路径。
+
+## P2-09：深浅比较与未来schema放宽
+
+**当前行为。** TS v2.ts:151–157、837、879–883、1014用标量键/字符串数组比较；Python contract_v2.py:124–131、712–719、789、892用dict/list值相等。schema.json:38起implementation的三个键全必填字符串、2117起pageBinding六键全必填标量、2351起jobInput全部键必填且derivedResultIds为有限字符串数组，三者additionalProperties:false。相关helper先validate：TS:823–825、853–854；Python:714–715、845–850。当前有效值下，两种写法无上述语义差异；对象键顺序本来就不影响这些比较，数组元素顺序则两侧均重要。
+
+**潜在触发。** 将来新增嵌套对象、可选键或允许额外键时，具体比较方向可能一边忽略另一边多键，或TS比较嵌套对象引用、Python比较内容；结果不总是“TS先放行”，必须针对新shape分析。不能把无效extra-key对象直接绕过validator，当当前wire反例。
+
+**最小处置。** 作为未来schema演进约束记录；本轮不把所有比较替成JSON.stringify（会引入对象键序差异）或仓促通用深比较。若root选择补防漂移专项，可由T01在新精确测试窗口添加：锁定被比较def的strict/required/标量形状前置；合法重排键同判、非法多键/嵌套双拒、字符串数组顺序变化双侧同判。仅“加一个extra样本”不能保证未来所有新可选键已被覆盖。
+
+**验证建议。** 依赖shared fixtures的schema/cursor/response/validation binding双端同判，可沿packages/engine/tests/test_contract_v2.py:24–36、tests/unit/contract-v2.test.ts原遍历及新增T01专项执行；旧测试维护仍需root协调。任何未来放宽同时更新两端语义/fixtures，不允许借C1收口放宽默认2。
+
+## P2-10：maxItems缺省差异
+
+**实际范围。** v2.ts:111–115默认100000，contract_v2.py:94–98默认math.inf，底层实现确不同。静态递归整个固定schema得到25个type=array节点，全部显式maxItems（最大4096），所以当前canonical schema不会使用任一缺省。更重要的是两端已有守门：tests/unit/contract-v2.test.ts:251–287、packages/engine/tests/test_contract_v2.py:286–301均递归要求每个array的maxItems为非负整数且items存在；不是没有漂移哨兵。
+
+**最小处置。** 无需本轮改validator、无需重复增加同一数组守门测试。登记缺省差异，维持“所有canonical数组必须显式限界”；若未来真支持缺省数组，另行统一语义和版本，不能以现在未触发为由悄悄放开。统一Python100000或TS Infinity会改变通用低层checker可接受域，收益不属于本轮C1缺陷修复。
+
+**v2与验证。** 两端public validate另有262144编码预算（v2.ts:311–318，Python:249–263），但它不能代替显式schema资源合同。现有两项全schema守门已覆盖当前前置；若将来重构validator，验证显式maxItems的0/N/N+1、缺省策略及编码预算边界，并保旧66个def同义。
+
+## 汇总与交付边界
+
+|项|本轮建议|可证维护者/写面|
+|---|---|---|
+|05|说明legacy目录与business3执法层；不改[2]|T01 errors/schema/canonical；当前47 readonly|
+|06|保legacy辅助投影、输出只classify；删属性需另列测试合同|T01 coordinator；两个测试当前47 readonly，root协调；resources不属本次释放|
+|08|用已有exposure/profile字段；不拆表、不改registryHash|T01 registry/canonical/fixtures；当前47 readonly|
+|09|记未来演进前置；可另授专项，暂不改深浅比较|T01两端canonical/schema/fixtures；旧test_contract_v2与contract-v2.test需root协调|
+|10|维持显式maxItems与已有双端守门，不统一缺省|T01两端canonical；现有基础测试owner由root确认|
+
+静态与base复算：旧schema66个def全相同，当前94个；errors.codes26项全相同；registry旧24条全相同。该事实支持保v2，不证明完整产品/双模型门通过。本文不改模型原严重度、不给其意见替签关闭，不建议为潜在P2扩大五writer或碰47 readonly；由root将上述处置作为具体回应，再按实际采用改动走新候选和必要验证。
+
+## Read control identities
+
+| path | bytes | SHA256 |
+| --- | ---: | --- |
+| iteration-control/2026-10-21-weekly-release/T01-project-create-core-C1-implementation-authorization.md | 8323 | 93528eb38395856af86a76edf9c26822ef406f8a32315282086a509db235d8b5 |
+| iteration-control/2026-10-21-weekly-release/I05-T01-format3-ownership-handoff.md | 5337 | 7a2cc8b9ef3c102caf56ca3b5d8388c17e0a63bc98cf9c669d7cbbd025b8b0f9 |
+| iteration-control/2026-10-21-weekly-release/I06-T01-format3-ownership-handoff.md | 5943 | eea3eefe86555d585236f603b2ebb01ecac49c1350193c6d83c262b6209f1030 |
+| iteration-control/2026-10-21-weekly-release/developer-common-instructions.md | 16867 | 567b6e7064bf123dac46742aefa57e06f6ed2fe87ceec5225c395049be888fc1 |
+| .worktrees/T01-project-create-core/AGENTS.md | 15147 | de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4 |
