@@ -374,6 +374,159 @@ class OracleTests(unittest.TestCase):
                          for name, key in mapping.items()} for value in expected['requiredResultRows']]
                 self.assertEqual(sorted(report['violations'], key=oracle.canonical), sorted(rows, key=oracle.canonical))
 
+    def test_declared_three_way_split_has_literal_expected_remainders(self):
+        model = oracle.declared_allocation_expectation(['z', 'A', '乙'], ['z'])
+        children = model['children']
+        self.assertEqual([c['ruleId'] for c in children], ['A', 'z', '乙'])
+        self.assertEqual([c['definitionOrdinal'] for c in children], [1, 0, 2])
+        self.assertEqual([c['disabled'] for c in children], [False, True, False])
+        keys = ['work', 'input_bytes', 'output_bytes', 'trace_items', 'firings', 'head_occurrences', 'bindings']
+        self.assertEqual([[c['declaredLimits'][k] for k in keys] for c in children], [
+            [5592406, 87382, 87382, 2731, 342, 5462, 342],
+            [5592405, 87381, 87381, 2731, 341, 5461, 341],
+            [5592405, 87381, 87381, 2730, 341, 5461, 341]])
+
+    def test_declared_all_seven_pools_conserve_totals_for_every_supported_count(self):
+        totals = {'work': 16777216, 'input_bytes': 262144, 'output_bytes': 262144,
+                  'trace_items': 8192, 'firings': 1024, 'head_occurrences': 16384, 'bindings': 1024}
+        for n in range(1, 101):
+            model = oracle.declared_allocation_expectation(['r' + str(i) for i in range(n)], [])
+            self.assertEqual(model['pools'], totals)
+            for key, total in totals.items():
+                values = [c['declaredLimits'][key] for c in model['children']]
+                self.assertEqual(sum(values), total)
+                self.assertLessEqual(max(values) - min(values), 1)
+                self.assertEqual(values, sorted(values, reverse=True))
+                self.assertTrue(all(type(v) is int and 0 <= v <= total for v in values))
+
+    def test_declared_reordering_changes_only_original_ordinals(self):
+        left = oracle.declared_allocation_expectation(['z', 'A', '乙'], ['z'])
+        right = oracle.declared_allocation_expectation(['乙', 'z', 'A'], ['z'])
+        self.assertEqual([c['declaredLimits'] for c in left['children']],
+                         [c['declaredLimits'] for c in right['children']])
+        self.assertEqual([c['definitionOrdinal'] for c in right['children']], [2, 1, 0])
+        for disabled in ([], ['z'], ['A', 'z', '乙']):
+            all_slots = oracle.declared_allocation_expectation(['z', 'A', '乙'], disabled)
+            self.assertEqual(all_slots['slotCount'], 3)
+            self.assertEqual([c['declaredLimits'] for c in all_slots['children']],
+                             [c['declaredLimits'] for c in left['children']])
+            self.assertFalse(all_slots['resetOrReallocationPermitted'])
+            self.assertTrue(all_slots['compileEvaluateSameBudgetRequired'])
+
+    def test_declared_unicode_is_codepoint_order_without_normalization(self):
+        model = oracle.declared_allocation_expectation(['\U00010000', '\ue000', 'é', 'e\u0301'], [])
+        self.assertEqual([c['ruleId'] for c in model['children']], ['e\u0301', 'é', '\ue000', '\U00010000'])
+        self.assertEqual([c['definitionOrdinal'] for c in model['children']], [3, 2, 1, 0])
+
+    def test_declared_ID_preconditions_reject_missing_invalid_and_oversized_universes(self):
+        class StringSubclass(str):
+            pass
+        bad = [None, (), [''], [True], [1], [StringSubclass('r')], ['r', 'r'], ['\ud800'],
+               ['a' * 16385], ['中' * 5462], ['r' + str(i) for i in range(101)]]
+        for value in bad:
+            with self.subTest(valueType=type(value).__name__):
+                with self.assertRaises(ValueError):
+                    oracle.declared_allocation_expectation(value, [])
+        for valid in (['a' * 16384], ['中' * 5461]):
+            self.assertEqual(oracle.declared_allocation_expectation(valid, [])['slotCount'], 1)
+        for disabled in (None, (), ['foreign'], ['r', 'r'], [False]):
+            with self.assertRaises(ValueError):
+                oracle.declared_allocation_expectation(['r'], disabled)
+
+    def test_declared_empty_is_anonymous_dummy_contract_without_fabricated_identity(self):
+        model = oracle.declared_allocation_expectation([], [])
+        self.assertEqual(model['definitionCount'], 0)
+        self.assertEqual(model['slotCount'], 1)
+        child = model['children'][0]
+        self.assertIsNone(child['ruleId'])
+        self.assertIsNone(child['definitionOrdinal'])
+        self.assertNotIn('disabled', child)
+        self.assertEqual(child['declaredLimits'], model['pools'])
+        self.assertTrue(child['dummyContract']['requiresRealEmptyBatch'])
+        self.assertFalse(model['actualAllocationCaptureProvided'])
+        self.assertFalse(model['actualUsageProvided'])
+        self.assertNotIn('planDigest', child)
+        self.assertNotIn('budgetUsage', child)
+
+    def test_declared_relation_rejects_tail_types_fake_capture_and_redistribution(self):
+        rule = next(r for r in oracle.RELATIONS if r['id'] == 'declared-seven-pool-allocation')
+        correct = oracle.declared_allocation_expectation(['z', 'A', '乙'], ['z'])
+        def check(declaration):
+            return oracle.evaluate_relation(rule, {'input': {'ruleIds': ['z', 'A', '乙'], 'disabledRuleIds': ['z']},
+                                                  'declared': {'allocation': declaration}})
+        self.assertTrue(check(correct))
+        for mutation in ('tail', 'extra', 'bool-ordinal', 'bool-limit', 'remainder', 'disabled', 'capture', 'reuse'):
+            bad = copy.deepcopy(correct)
+            if mutation == 'tail':
+                bad['children'].pop()
+            elif mutation == 'extra':
+                bad['children'][0]['budgetUsage'] = 0
+            elif mutation == 'bool-ordinal':
+                bad['children'][0]['definitionOrdinal'] = True
+            elif mutation == 'bool-limit':
+                bad['children'][0]['declaredLimits']['bindings'] = True
+            elif mutation == 'remainder':
+                bad['children'][0]['declaredLimits']['work'] -= 1
+                bad['children'][1]['declaredLimits']['work'] += 1
+            elif mutation == 'disabled':
+                bad['children'][1]['disabled'] = False
+            elif mutation == 'capture':
+                bad['actualAllocationCaptureProvided'] = True
+            else:
+                bad['resetOrReallocationPermitted'] = True
+            with self.subTest(mutation=mutation):
+                with self.assertRaises(ValueError):
+                    check(bad)
+
+    def test_declared_per_ID_classification_never_infers_missing_disabled_or_text_rules(self):
+        coverage = self.artifacts['coverage.json']['declaredAllocation']
+        relevant = {e['id'] for e in self.data['observations']
+                    if e['operation'] in ('profile', 'fullview', 'dag', 'restore-negative')}
+        self.assertEqual(set().union(*map(set, coverage.values())), relevant)
+        self.assertEqual(len(relevant), 116)
+        self.assertEqual({k: len(v) for k, v in coverage.items()}, {'specified': 88, 'pending': 26, 'not-invoked': 2})
+        self.assertEqual(set(coverage['not-invoked']), {'profile-83/transfer:repair', 'dag/turtle-entry'})
+        self.assertIn('fullview/turtle-entry', coverage['pending'])
+        for key in ('dag/type', 'fullview/two-head-occurrences'):
+            declaration = self.entries[key]['declaredAllocationExpectation']
+            self.assertEqual(declaration['status'], 'pending')
+            self.assertIsNone(declaration['expectation'])
+            self.assertIn('disabled_rule_ids', declaration['missingFields'][0])
+        self.assertEqual(self.artifacts['coverage.json']['byStatus'], {'specified': 280, 'pending': 137})
+        self.assertFalse(self.data['wholeOracleComplete'])
+
+    def test_declared_binding_rejects_inconsistent_metadata_without_promoting_failure(self):
+        observation = {'operation': 'profile', 'id': 'owned-test-only'}
+        valid = {'kind': 'profile', 'input': {'definitions': [{'rule_id': 'r', 'enabled': True}], 'disabled_rule_ids': []}}
+        self.assertEqual(oracle.allocation_for_observation(observation, valid)['status'], 'specified')
+        for mutation in ('disabled', 'bool', 'duplicate', 'unknown', 'missing'):
+            bad = copy.deepcopy(valid)
+            if mutation == 'disabled':
+                bad['input']['disabled_rule_ids'] = ['r']
+            elif mutation == 'bool':
+                bad['input']['definitions'][0]['enabled'] = 1
+            elif mutation == 'duplicate':
+                bad['input']['definitions'] *= 2
+            elif mutation == 'unknown':
+                bad['input']['disabled_rule_ids'] = ['foreign']
+            else:
+                del bad['input']['disabled_rule_ids']
+            result = oracle.allocation_for_observation(observation, bad)
+            self.assertEqual(result['status'], 'pending')
+            self.assertIsNone(result['expectation'])
+
+    def test_declared_adoption_is_selective_writer_metadata_not_whole_tree(self):
+        raw = (oracle.EVIDENCE / 'guidance/allocation-selective-adoption.json.raw').read_bytes()
+        adoption = oracle.strict_json(raw)
+        self.assertEqual(len(adoption['files']), 139)
+        self.assertEqual(adoption['files'][51]['sourceRef'], '6c1eec41091a997f898cb448bfc7d4000c154307')
+        self.assertEqual(adoption['files'][51]['access'], 'write-existing')
+        self.assertTrue(adoption['files'][56]['path'].endswith('/semantic_profile_restore.py'))
+        self.assertEqual(adoption['files'][56]['access'], 'write-existing')
+        receipt = oracle.strict_json((oracle.EVIDENCE / 'guidance/allocation-source-receipt.json').read_bytes())
+        self.assertTrue(receipt['selectiveAdoption']['notWholeTreeAncestry'])
+        self.assertFalse(receipt['actualAllocationCaptureOrUsageProvided'])
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

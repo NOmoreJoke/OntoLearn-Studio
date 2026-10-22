@@ -1,4 +1,48 @@
 {
+  "declaredAllocationEntryField": "declaredAllocationExpectation is null outside profile/production/DAG/restore; explicit status and complete model or precise missing metadata inside; never actual OriginalAllocation",
+  "declaredAllocationPolicy": {
+    "formula": "N=max(1,all definition count including disabled); T//N+(j<T%N)",
+    "namespace": "declared-allocation-expectation",
+    "order": "complete rule_id strings by Unicode code point; original ordinal retained only as source position",
+    "poolMeaning": {
+      "bindings": "bindings",
+      "firings": "firings",
+      "head_occurrences": "head occurrences including duplicates",
+      "input_bytes": "mechanism input bytes",
+      "output_bytes": "mechanism output bytes",
+      "trace_items": "trace items",
+      "work": "mechanism work units"
+    },
+    "pools": {
+      "bindings": 1024,
+      "firings": 1024,
+      "head_occurrences": 16384,
+      "input_bytes": 262144,
+      "output_bytes": 262144,
+      "trace_items": 8192,
+      "work": 16777216
+    },
+    "sameChildBudget": "compile/evaluate must share the same original Budget without reset; declaration cannot authenticate this identity",
+    "scope": "seven declared pools only; not full17L, planDigest, capture, actual usage, admissibility or first error",
+    "sources": [
+      {
+        "lines": [
+          72,
+          80
+        ],
+        "local": "guidance/allocation-integration-plan.md.raw"
+      },
+      {
+        "lines": [
+          103,
+          109
+        ],
+        "local": "guidance/allocation-restore-plan.md.raw"
+      }
+    ],
+    "unusedQuota": "never returned, redistributed, or used to increase a later child",
+    "version": "i05-profile-graph-budget/1"
+  },
   "dynamicFieldPolicies": {
     "allFields": "Complete records: exact keys, exact scalar types (int excludes bool), full sequence tails, multiplicity and order; reject omitted/extra/duplicate fields rather than normalize away.",
     "directSteps": {
@@ -63,6 +107,7 @@
     "caseSets",
     "contextStatus",
     "datasetId",
+    "declaredAllocationExpectation",
     "dynamicRules",
     "expected",
     "expectedSourceRefs",

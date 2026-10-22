@@ -39,6 +39,10 @@ DOC_PINS = {
     'directsteps-contract.md': (34958, 'c947430801e6b3cca113c15a856704c3d5bed418efa9083d67819830a6961fba'),
     'native-child-declaration-reference.json': (2087, '71f64ab22f60fe6407e72f97a1296f4863fdcf8dc22e583425366d220a3dba74'),
     'pre-registered-date-assertions.py.raw': (1309, '6e67da970aac72b3d7e56e695d41a3f34ea6e57f7621235c42c589815d194795'),
+    'allocation-integration-plan.md.raw': (36922, '990555ae61b086d40c33212115728bd1914063af25e34b3815345decc85ed66d'),
+    'allocation-restore-plan.md.raw': (45463, '3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b'),
+    'allocation-selective-adoption.json.raw': (57687, 'e5fe75cbf07436660fc475b5ac6c176c40fff35f00e1aad1250b7d967ef149d5'),
+    'allocation-source-receipt.json': (3204, '6e7d747f7afa81b4f522a32b89b10043cf3addf4e9f3a95bf961e5e7e93cfd71'),
 }
 SOURCE_PATHS = {
     ASSET: 'packages/engine/src/ontolearn_engine/probe_inputs/' + ASSET,
@@ -82,6 +86,118 @@ def read_pinned(name):
     if len(raw) != size or digest(raw) != sha:
         raise ValueError('fixed input identity mismatch: ' + name)
     return strict_json(raw)
+
+
+# External declared policy, never an OriginalAllocation or product Budget.
+DECLARED_POOLS = {'work': 16777216, 'input_bytes': 262144, 'output_bytes': 262144,
+                  'trace_items': 8192, 'firings': 1024, 'head_occurrences': 16384,
+                  'bindings': 1024}
+DECLARED_ALLOCATION_POLICY = {
+    'namespace': 'declared-allocation-expectation',
+    'version': 'i05-profile-graph-budget/1',
+    'pools': DECLARED_POOLS,
+    'poolMeaning': {'work': 'mechanism work units', 'input_bytes': 'mechanism input bytes',
+                    'output_bytes': 'mechanism output bytes', 'trace_items': 'trace items',
+                    'firings': 'firings', 'head_occurrences': 'head occurrences including duplicates',
+                    'bindings': 'bindings'},
+    'formula': 'N=max(1,all definition count including disabled); T//N+(j<T%N)',
+    'order': 'complete rule_id strings by Unicode code point; original ordinal retained only as source position',
+    'sameChildBudget': 'compile/evaluate must share the same original Budget without reset; declaration cannot authenticate this identity',
+    'unusedQuota': 'never returned, redistributed, or used to increase a later child',
+    'scope': 'seven declared pools only; not full17L, planDigest, capture, actual usage, admissibility or first error',
+    'sources': [{'local': 'guidance/allocation-integration-plan.md.raw', 'lines': [72, 80]},
+                {'local': 'guidance/allocation-restore-plan.md.raw', 'lines': [103, 109]}],
+}
+
+
+def checked_rule_ids(values):
+    """Validate finite declaration metadata; this does not construct RuleSpec."""
+    if type(values) is not list or len(values) > 100:
+        raise ValueError('complete rule ID list required; at most100 definitions')
+    for value in values:
+        if type(value) is not str or not value or len(value) > 16384:
+            raise ValueError('rule ID must be a nonempty exact string within character cap')
+        try:
+            size = len(value.encode('utf-8'))
+        except UnicodeEncodeError as error:
+            raise ValueError('rule ID must be valid Unicode') from error
+        if size > 16384:
+            raise ValueError('rule ID UTF8 cap')
+    if len(set(values)) != len(values):
+        raise ValueError('duplicate rule ID')
+    return values
+
+
+def declared_allocation_expectation(rule_ids, disabled_rule_ids):
+    """Pure seven-pool relation on a complete explicitly supplied ID universe.
+
+    Empty input has the approved anonymous dummy slot. Its original empty batch
+    must still be captured; no actual object, remaining ten limits, or usage is
+    constructed here. Missing metadata is not equivalent to an empty list.
+    """
+    checked_rule_ids(rule_ids)
+    checked_rule_ids(disabled_rule_ids)
+    if not set(disabled_rule_ids).issubset(rule_ids):
+        raise ValueError('disabled ID outside complete universe')
+    n = max(1, len(rule_ids))
+    children = []
+    for j, rule_id in enumerate(sorted(rule_ids) if rule_ids else [None]):
+        child = {'ruleId': rule_id, 'definitionOrdinal': rule_ids.index(rule_id) if rule_ids else None,
+                 'sortedPosition': j,
+                 'declaredLimits': {key: total // n + int(j < total % n)
+                                    for key, total in DECLARED_POOLS.items()}}
+        if rule_ids:
+            child['disabled'] = rule_id in disabled_rule_ids
+        else:
+            child['dummyContract'] = {'definitionCount': 0, 'originalMatchCount': 0,
+                                      'requiresRealEmptyBatch': True,
+                                      'dummyDisabledFlag': 'not specified by cited paragraphs; not invented'}
+        children.append(child)
+    return {'format': 'T05-declared-allocation-expectation/1', 'namespace': 'declared-only',
+            'policyVersion': 'i05-profile-graph-budget/1', 'originalRuleIds': list(rule_ids),
+            'disabledRuleIds': sorted(disabled_rule_ids), 'definitionCount': len(rule_ids),
+            'slotCount': n, 'children': children, 'pools': dict(DECLARED_POOLS),
+            'compileEvaluateSameBudgetRequired': True, 'resetOrReallocationPermitted': False,
+            'actualAllocationCaptureProvided': False, 'actualUsageProvided': False}
+
+
+def allocation_for_observation(observation, dataset):
+    """Bind only explicit pure input metadata; never infer omitted defaults."""
+    if observation['operation'] not in ('profile', 'fullview', 'dag', 'restore-negative'):
+        return None
+    if observation['id'] == 'profile-83/transfer:repair':
+        return {'status': 'not-invoked', 'reason': 'repair original profile has no execution authority'}
+    if observation['operation'] == 'dag' and dataset['kind'] == 'turtle':
+        return {'status': 'not-invoked', 'reason': 'structured-material-required before allocation'}
+    raw = dataset.get('input', dataset)
+    key = 'definitions' if dataset['kind'] == 'profile' else 'rules'
+    if key not in raw or type(raw[key]) is not list:
+        return {'status': 'pending', 'missingFields': ['complete rule universe', 'disabled IDs', 'original ordinals'],
+                'reason': 'Turtle graph is not an explicit complete RuleSpec universe', 'expectation': None}
+    definitions = raw[key]
+    if not all(type(item) is dict and 'rule_id' in item for item in definitions):
+        return {'status': 'pending', 'missingFields': ['valid complete definition ID metadata'], 'expectation': None}
+    rule_ids = [item['rule_id'] for item in definitions]
+    try:
+        checked_rule_ids(rule_ids)
+    except ValueError as error:
+        return {'status': 'pending', 'missingFields': ['valid unique complete rule IDs'],
+                'reason': str(error), 'expectation': None}
+    if 'disabled_rule_ids' not in raw:
+        return {'status': 'pending', 'knownRuleUniverse': [{'ruleId': name, 'definitionOrdinal': i}
+                                                         for i, name in enumerate(rule_ids)],
+                'missingFields': ['explicit complete disabled_rule_ids; omitted is not declared empty'],
+                'reason': 'No unapproved caller default or dummy disabled identity is inferred', 'expectation': None}
+    try:
+        expected = declared_allocation_expectation(rule_ids, raw['disabled_rule_ids'])
+        for item in definitions:
+            if type(item.get('enabled')) is not bool or item['enabled'] != (item['rule_id'] not in raw['disabled_rule_ids']):
+                raise ValueError('enabled flag and explicit disabled list disagree or have wrong type')
+    except ValueError as error:
+        return {'status': 'pending', 'missingFields': ['valid disabled/ordinal/definition metadata'],
+                'reason': str(error), 'expectation': None}
+    return {'status': 'specified', 'expectation': expected,
+            'applicability': 'complete explicit input metadata only; actual exact RuleSpec objects and original capture remain separate gates'}
 
 
 def iri(value):
@@ -780,7 +896,7 @@ def business_expected(o, dataset, golden):
             return {'semanticState': 'not-executed', 'reason': 'No independent rule execution authority in repair context; do not inherit R-risk', 'mathematicalContextOnly': math}, []
         return {'semanticState': 'normal', 'conditionalBusinessExpected': math,
                 'admission': 'Compare full business math only after independently established logical budget admissibility; resource rejection needs exact authorized ledger, not historical result counts.'}, [
-                    {'field': 'budgetAdmissibility+typedSerializedUsage', 'gap': 'Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.', 'required': 'Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected.'}]
+                    {'field': 'budgetAdmissibility+typedSerializedUsage', 'gap': 'Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.', 'required': 'Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected.'}]
     if op == 'parse':
         return {'semanticState': 'normal', 'graph': turtle(dataset['text'])}, []
     if op == 'query':
@@ -866,6 +982,10 @@ RELATIONS = [
      'left': ['issued', 'expectation'], 'right': ['used', 'expectation']},
     {'id': 'allocation-same-issuance', 'op': 'same-issued-object',
      'left': ['issued', 'allocation'], 'right': ['used', 'allocation']},
+    {'id': 'declared-seven-pool-allocation', 'op': 'declared-allocation-exact',
+     'ruleIds': ['input', 'ruleIds'], 'disabledRuleIds': ['input', 'disabledRuleIds'],
+     'declaration': ['declared', 'allocation'],
+     'scope': 'owned finite declaration model only; not actual capture, usage, or full17L'},
 ]
 
 
@@ -897,6 +1017,9 @@ def evaluate_relation(rule, model):
             raise ValueError('complete wire byte cap')
     elif op == 'exact-model':
         assert_exact_model(at(rule['left']), at(rule['right']))
+    elif op == 'declared-allocation-exact':
+        expected = declared_allocation_expectation(at(rule['ruleIds']), at(rule['disabledRuleIds']))
+        assert_exact_model(expected, at(rule['declaration']))
     elif op == 'same-issued-object':
         left, right = at(rule['left']), at(rule['right'])
         if type(left) in (type(None), bool, int, float, str, bytes, dict, list, tuple, set, frozenset):
@@ -975,6 +1098,20 @@ def construct():
         if digest(canonical(dataset)) != observation['projectionSha256']:
             raise ValueError('projection mismatch: ' + observation['id'])
         expected, pending = business_expected(observation, dataset, golden)
+        allocation = allocation_for_observation(observation, dataset)
+        if allocation is not None and allocation['status'] == 'pending':
+            pending.append({'field': 'declaredAllocationExpectation', 'gap': allocation,
+                            'required': 'Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic.'})
+        sources = expected_sources(observation, expected)
+        if allocation is not None:
+            sources += [
+                {'local': 'guidance/allocation-integration-plan.md.raw', 'pointer': 'lines72-80',
+                 'type': 'explicitly authorized declared seven-pool policy only'},
+                {'local': 'guidance/allocation-restore-plan.md.raw', 'pointer': 'lines103-109',
+                 'type': 'declared sorting/disabled/ordinal/dummy contract; not original capture'},
+                {'local': 'guidance/allocation-selective-adoption.json.raw', 'pointers': ['/files/51', '/files/56'],
+                 'type': 'initial selective6c adoption metadata; writers subsequently changed; no whole-tree ancestry claim'},
+            ]
         entries.append({
             'id': observation['id'], 'inventoryOrdinal': ordinal,
             'family': observation['family'], 'operation': observation['operation'],
@@ -985,7 +1122,7 @@ def construct():
             'expected': expected, 'pendingFields': pending, 'oracleStatus': 'pending' if pending else 'specified',
             'businessComparison': 'exact full canonical business model with fieldPolicies; this is not the future JSONL projection',
             'dynamicRules': ['allFields', 'unknown', 'runtimeIdentity'] + (['wire', 'sameIssue', 'directSteps', 'versions'] if observation['operation'] in ('fullview', 'dag', 'restore-negative') else []),
-            'expectedSourceRefs': expected_sources(observation, expected),
+            'expectedSourceRefs': sources, 'declaredAllocationExpectation': allocation,
         })
     counts = Counter(e['oracleStatus'] for e in entries)
     states = Counter(e['expected']['semanticState'] for e in entries)
@@ -1017,6 +1154,7 @@ def construct():
         'inputIdentity': {'bytes': PINS[ASSET][0], 'sha256': PINS[ASSET][1]},
         'caseSets': manifest['caseSets'], 'fieldPolicies': FIELD_POLICIES, 'dynamicRules': DYNAMIC_RULES,
         'finiteRelations': RELATIONS,
+        'declaredAllocationPolicy': DECLARED_ALLOCATION_POLICY,
         'observations': entries, 'contextLedger': context_ledger,
         'wholeOracleComplete': not counts['pending'],
         'notClaims': ['product executed', 'source/package equivalence', 'formal Job/selected', 'whole-H', 'SQLite/S1 readiness', 'parent T05 acceptance', 'JSONL adapter/build provenance approval'],
@@ -1026,6 +1164,10 @@ def construct():
                 'byStatus': dict(sorted(counts.items())), 'semanticStates': dict(sorted(states.items())),
                 'caseSets': {k: {'orderedIds': v, 'count': len(v), 'orderedIdsSha256': digest(canonical(v))} for k, v in manifest['caseSets'].items()},
                 'pending': [{'id': e['id'], 'fields': e['pendingFields']} for e in entries if e['pendingFields']],
+                'declaredAllocation': {state: [e['id'] for e in entries
+                                              if e['declaredAllocationExpectation'] is not None and
+                                              e['declaredAllocationExpectation']['status'] == state]
+                                       for state in ('specified', 'pending', 'not-invoked')},
                 'wholeOracleComplete': oracle['wholeOracleComplete']}
     budget_items = []
     for e in entries:
@@ -1051,17 +1193,25 @@ def construct():
                 {'operation': 'production payload/rows/source/definition/catalog projection-copy-hash', 'knownRule': 'T05 directsteps section4: full J each copy; new B is not whole-J proxy', 'missingFormula': 'Exact canonical typed encoding/row segmentation, all simultaneous copies and hash scans; graphBudget and budgetUsage full values remain unknown, not zero.'},
             ],
             'allocationRequired': {'source': 'the actual same production issuer', 'ruleIdsAndDisabled': 'must equal full original rule set/disabled list', 'children': 'one exact original child per definition/rule with its actual limits, planDigest, budgetUsage; do not synthesize caps or rebind allocation', 'value': None},
+            'declaredAllocationOnly': {'oracleObservationId': e['id'], 'status': e['declaredAllocationExpectation']['status'],
+                                       'relationId': 'declared-seven-pool-allocation', 'actualCaptureValue': None},
             'firstErrorEntry': {'knownOrder': 'input counts/bytes/structure -> original definition positions/constants/heads -> binding -> all comparisons -> all-true heads -> complete output preflight', 'missingDecision': 'Exact first debit/exhaustion stage cannot be fixed without full independent invoice and actual child cap; a prior resource fault can precede a later lexical/domain error.'},
-            'normativeRefs': ['guidance/q6-mechanism.md sections2-4', 'guidance/directsteps-contract.md sections2,4', 'guidance/contract.md sections3,4.2,4.3,6'],
+            'normativeRefs': ['guidance/q6-mechanism.md sections2-4', 'guidance/directsteps-contract.md sections2,4', 'guidance/contract.md sections3,4.2,4.3,6', 'guidance/allocation-integration-plan.md.raw lines72-80', 'guidance/allocation-restore-plan.md.raw lines103-109'],
             'status': 'pending; no historical or probe failure pattern used as expected',
         })
     budget_gaps = {'format': 'T05-operation-budget-gaps/1', 'scope': '82 eligible profile calls; repair excluded only from execution, not inventory', 'items': budget_items,
                    'additionalProductionRestoreCases': [{'id': e['id'], 'operation': e['operation'], 'entryChain': ['prepare_profile_material', 'execute_profile_explanation' if e['operation'] == 'dag' or e['parameters'].get('explanation') is True else 'execute_admitted_profile_job', 'original-receiver-bytes enum mutation' if e['operation'] == 'restore-negative' else 'unchanged same-issue wire', 'restore_profile_explanation_result' if e['operation'] == 'dag' or e['parameters'].get('explanation') is True else 'restore_profile_result', 'explanation_roots only for actual requestedTargets and successful restored view' if e['operation'] == 'dag' else 'no roots call on failed restore'], 'mutation': e['parameters'].get('mutation'), 'requestedTargets': e['parameters'].get('rootsTargets', []), 'knownFirstBoundary': 'production admissibility precedes any restore-negative A1; malformed receiver bytes must use original held expectation, never rebind', 'missingInvoice': 'complete all-occurrence C0/R0 projection-copy-hash plus separate C_D/R_D/roots charges where explanation selected, and actual original allocation/caps', 'actualAllocation': None, 'normativeRef': 'guidance/directsteps-contract.md section4'} for e in entries if e['operation'] in ('fullview', 'dag', 'restore-negative') and 'businessMath' in e['expected']],
                    'directPools': {'knownAnalyticPolicy': 'T05 directsteps section4 C_D/R_D/S/T/H; per candidate8work, per step32work, per indexed byte16work+2scan_copy; all whole-J copies and repeated receives separately charged', 'notProven': 'complete combined actual invoice/caller allocation and first exhausted pool; analytic sub-bound is not extra wallet or physical CPU/H proof'}}
+    entry_by_id = {e['id']: e for e in entries}
+    for chain in budget_gaps['additionalProductionRestoreCases']:
+        chain['declaredAllocationOnly'] = {'oracleObservationId': chain['id'],
+                                           'status': entry_by_id[chain['id']]['declaredAllocationExpectation']['status'],
+                                           'actualCaptureValue': None}
     source_rows = [{'local': 'docs/reviews/T05/source-package-oracle/inputs/' + n, 'sourcePath': SOURCE_PATHS[n], 'bytes': size, 'sha256': sha,
                     'role': 'sealed pure input, not expected' if n in (ASSET, DESCRIPTOR) else 'previous independently authored external expected, never engine input',
                     'ref': '0e42a0fe349054a92817cb4d463bccdc15f6c042' if n in (ASSET, DESCRIPTOR) else '525c91717c07dc4b386fcec00f897e1e6a75caf1'} for n, (size, sha) in PINS.items()]
     source_rows += strict_json((EVIDENCE / 'guidance/source-identities.json').read_bytes())
+    source_rows += strict_json((EVIDENCE / 'guidance/allocation-source-receipt.json').read_bytes())['sources']
     source_rows += [{'local': 'docs/reviews/T05/source-package-oracle/guidance/' + n, 'bytes': size, 'sha256': sha, 'sourceType': 'approved contract/interface or explicitly reused legacy pre-registration; never a new probe output'} for n, (size, sha) in DOC_PINS.items()]
     sources = {'format': 'T05-oracle-sources/1', 'sources': source_rows,
                'forbiddenAsOracle': ['new I05 probe/tests/generator', 'I05 source/package observations', 'source output as golden'],
@@ -1070,6 +1220,8 @@ def construct():
               'entryKeys': sorted(entries[0]), 'statusValues': ['specified', 'pending'],
               'stateValues': ['normal', 'known-rejection', 'not-executed'],
               'normalization': FIELD_POLICIES, 'dynamicFieldPolicies': DYNAMIC_RULES, 'exactIssuedRecordKeys': {k: v['keys'] for k, v in interface.items()},
+              'declaredAllocationPolicy': DECLARED_ALLOCATION_POLICY,
+              'declaredAllocationEntryField': 'declaredAllocationExpectation is null outside profile/production/DAG/restore; explicit status and complete model or precise missing metadata inside; never actual OriginalAllocation',
               'explanationDispatch': 'explicit /3 version only; reasoning is native15 plus directSteps, child11 unchanged',
               'unknownNotMatched': True, 'missingOrExtraOrDuplicateKeysRejected': True}
     return {'oracle.json': oracle, 'coverage.json': coverage, 'sources.json': sources, 'schema.json': schema,
@@ -1087,6 +1239,11 @@ def validate_oracle(oracle, asset, descriptor):
             raise ValueError('input binding changed')
         if actual['oracleStatus'] != ('pending' if actual['pendingFields'] else 'specified'):
             raise ValueError('pending hidden')
+        declaration = allocation_for_observation(expected, asset['datasets'][expected['datasetId']])
+        assert_exact_model(declaration, actual['declaredAllocationExpectation'])
+        if declaration is not None and declaration['status'] == 'pending' and not any(
+                item['field'] == 'declaredAllocationExpectation' for item in actual['pendingFields']):
+            raise ValueError('declaration metadata gap hidden')
         result = actual['expected']
         if result['semanticState'] not in ('normal', 'known-rejection', 'not-executed'):
             raise ValueError('unknown promoted to matched')

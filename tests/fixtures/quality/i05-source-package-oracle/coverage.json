@@ -471,6 +471,130 @@
     }
   },
   "datasetCount": 320,
+  "declaredAllocation": {
+    "not-invoked": [
+      "profile-83/transfer:repair",
+      "dag/turtle-entry"
+    ],
+    "pending": [
+      "dag/type",
+      "dag/domain-depth2",
+      "dag/range",
+      "dag/subclass",
+      "dag/first-witness",
+      "dag/cross-rule-witness",
+      "dag/range-literal",
+      "fullview/raw-aliases",
+      "dag/raw-aliases",
+      "fullview/two-head-occurrences",
+      "dag/two-head-occurrences",
+      "restore/fullview/payload-unknown-key",
+      "restore/fullview/tail-source-tamper",
+      "restore/fullview/tail-definition-tamper",
+      "restore/fullview/tail-limits-tamper",
+      "restore/fullview/tail-child-tamper",
+      "restore/explanation/payload-unknown-key",
+      "restore/explanation/tail-source-tamper",
+      "restore/explanation/tail-definition-tamper",
+      "restore/explanation/tail-limits-tamper",
+      "restore/explanation/tail-child-tamper",
+      "restore/explanation/dag-depth-plus-one",
+      "restore/explanation/dag-last-premise-forward",
+      "restore/explanation/leaf-rename-all",
+      "restore/explanation/head-occurrence-1023-15",
+      "fullview/turtle-entry"
+    ],
+    "specified": [
+      "profile-83/baseline:G-base",
+      "profile-83/baseline:G-behavior",
+      "profile-83/baseline:G-map-empty",
+      "profile-83/baseline:E.5",
+      "profile-83/A-01:steps:1",
+      "profile-83/B-01:steps:0",
+      "profile-83/B-02:steps:0",
+      "profile-83/B-03:setup:0",
+      "profile-83/B-03:steps:0",
+      "profile-83/B-04:steps:0",
+      "profile-83/B-04:steps:1",
+      "profile-83/B-05:steps:0",
+      "profile-83/B-06:steps:0",
+      "profile-83/B-07:steps:0",
+      "profile-83/B-09:steps:0",
+      "profile-83/B-10:steps:0",
+      "profile-83/B-11:steps:0",
+      "profile-83/M-01:steps:0",
+      "profile-83/M-02:steps:0",
+      "profile-83/M-02:steps:1",
+      "profile-83/M-03:steps:0",
+      "profile-83/M-03:steps:1",
+      "profile-83/M-03:steps:2",
+      "profile-83/M-04:steps:0",
+      "profile-83/M-04:steps:1",
+      "profile-83/M-06:steps:0",
+      "profile-83/M-06:steps:2",
+      "profile-83/O-01:setup:0",
+      "profile-83/O-01:steps:0",
+      "profile-83/Q-01:steps:0",
+      "profile-83/Q-02:setup:0",
+      "profile-83/Q-02:steps:0",
+      "profile-83/R-01:steps:0",
+      "profile-83/R-02:steps:0",
+      "profile-83/R-02:steps:1",
+      "profile-83/R-02:steps:2",
+      "profile-83/R-02:steps:3",
+      "profile-83/R-03:steps:0",
+      "profile-83/R-03:steps:1",
+      "profile-83/R-03:steps:2",
+      "profile-83/R-03:steps:3",
+      "profile-83/R-04:steps:0",
+      "profile-83/R-04:steps:1",
+      "profile-83/R-04:steps:2",
+      "profile-83/R-05:steps:0",
+      "profile-83/R-05:steps:1",
+      "profile-83/R-05:steps:2:order:0",
+      "profile-83/R-06:steps:0",
+      "profile-83/R-06:steps:1",
+      "profile-83/R-06:steps:2:order:0",
+      "profile-83/R-06:steps:2:order:1",
+      "profile-83/V-01:steps:0",
+      "profile-83/V-01:steps:1",
+      "profile-83/V-01:steps:2",
+      "profile-83/V-01:steps:3",
+      "profile-83/extension:CMP-EQ-TRUE",
+      "profile-83/extension:CMP-EQ-FALSE",
+      "profile-83/extension:CMP-NE-TRUE",
+      "profile-83/extension:CMP-NE-FALSE",
+      "profile-83/extension:CMP-LT-TRUE",
+      "profile-83/extension:CMP-LT-FALSE",
+      "profile-83/extension:CMP-LE-TRUE",
+      "profile-83/extension:CMP-LE-FALSE",
+      "profile-83/extension:CMP-GT-TRUE",
+      "profile-83/extension:CMP-GT-FALSE",
+      "profile-83/extension:CMP-GE-TRUE",
+      "profile-83/extension:CMP-GE-FALSE",
+      "profile-83/extension:JOIN-NO-CROSS-ALARM",
+      "profile-83/extension:MULTI-OUTPUT-ONE-FIRING",
+      "profile-83/extension:DISABLED-RULE-NO-OUTPUT",
+      "profile-83/extension:MISSING-PROPERTY-IS-NOT-A-NEGATION",
+      "profile-83/extension:CMP-EQ-ABOVE-FALSE",
+      "profile-83/extension:CMP-NE-ABOVE-TRUE",
+      "profile-83/extension:CMP-LT-ABOVE-FALSE",
+      "profile-83/extension:CMP-LE-BELOW-TRUE",
+      "profile-83/extension:CMP-GT-BELOW-FALSE",
+      "profile-83/extension:CMP-GE-ABOVE-TRUE",
+      "profile-83/transfer:classification",
+      "profile-83/E.5:event-fragment:round:1",
+      "profile-83/E.5:event-fragment:round:2",
+      "profile-83/E.5:event-fragment:round:3",
+      "profile-83/E.5:event-fragment:round:4",
+      "fullview/profile-0",
+      "fullview/profile-55",
+      "fullview/profile-73",
+      "fullview/profile-74",
+      "fullview/profile-75",
+      "fullview/profile-76"
+    ]
+  },
   "format": "T05-oracle-coverage/1",
   "observationCount": 417,
   "pending": [
@@ -478,7 +602,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -488,7 +612,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -498,7 +622,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -508,7 +632,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -518,7 +642,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -528,7 +652,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -538,7 +662,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -548,7 +672,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -558,7 +682,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -568,7 +692,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -578,7 +702,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -588,7 +712,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -598,7 +722,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -608,7 +732,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -618,7 +742,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -628,7 +752,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -638,7 +762,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -648,7 +772,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -658,7 +782,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -668,7 +792,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -678,7 +802,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -688,7 +812,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -698,7 +822,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -708,7 +832,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -718,7 +842,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -728,7 +852,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -738,7 +862,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -748,7 +872,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -758,7 +882,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -768,7 +892,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -778,7 +902,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -788,7 +912,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -798,7 +922,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -808,7 +932,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -818,7 +942,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -828,7 +952,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -838,7 +962,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -848,7 +972,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -858,7 +982,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -868,7 +992,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -878,7 +1002,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -888,7 +1012,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -898,7 +1022,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -908,7 +1032,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -918,7 +1042,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -928,7 +1052,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -938,7 +1062,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -948,7 +1072,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -958,7 +1082,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -968,7 +1092,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -978,7 +1102,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -988,7 +1112,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -998,7 +1122,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1008,7 +1132,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1018,7 +1142,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1028,7 +1152,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1038,7 +1162,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1048,7 +1172,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1058,7 +1182,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1068,7 +1192,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1078,7 +1202,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1088,7 +1212,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1098,7 +1222,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1108,7 +1232,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1118,7 +1242,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1128,7 +1252,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1138,7 +1262,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1148,7 +1272,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1158,7 +1282,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1168,7 +1292,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1178,7 +1302,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1188,7 +1312,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1198,7 +1322,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1208,7 +1332,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1218,7 +1342,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1228,7 +1352,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1238,7 +1362,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1248,7 +1372,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1258,7 +1382,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1268,7 +1392,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1278,7 +1402,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1288,7 +1412,7 @@
       "fields": [
         {
           "field": "budgetAdmissibility+typedSerializedUsage",
-          "gap": "Independent full per-occurrence producer/copy/projection charging and real caller-issued child allocation are not yet specified; static input below maxima cannot prove cumulative run admissibility.",
+          "gap": "Declared seven-pool split is independently constrained in declaredAllocationExpectation; full per-occurrence producer/copy/projection charging, complete17L and genuine same-issue allocation/usage remain unavailable. Static input below maxima cannot prove cumulative run admissibility.",
           "required": "Keep actual resource rejection distinct from a matched normal mathematical result; never reuse historical78/4/1 as expected."
         }
       ],
@@ -1536,6 +1660,19 @@
         {
           "field": "genuineCapture+budgetAdmissibility",
           "gap": "Fresh expectation/allocation and full producer/restore budget ledgers cannot be independently supplied by JSON values; actual provenance gate remains separately required."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "dag/type"
@@ -1588,6 +1725,19 @@
         {
           "field": "genuineCapture+budgetAdmissibility",
           "gap": "Fresh expectation/allocation and full producer/restore budget ledgers cannot be independently supplied by JSON values; actual provenance gate remains separately required."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "dag/domain-depth2"
@@ -1640,6 +1790,19 @@
         {
           "field": "genuineCapture+budgetAdmissibility",
           "gap": "Fresh expectation/allocation and full producer/restore budget ledgers cannot be independently supplied by JSON values; actual provenance gate remains separately required."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "dag/range"
@@ -1692,6 +1855,19 @@
         {
           "field": "genuineCapture+budgetAdmissibility",
           "gap": "Fresh expectation/allocation and full producer/restore budget ledgers cannot be independently supplied by JSON values; actual provenance gate remains separately required."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "dag/subclass"
@@ -1744,6 +1920,19 @@
         {
           "field": "genuineCapture+budgetAdmissibility",
           "gap": "Fresh expectation/allocation and full producer/restore budget ledgers cannot be independently supplied by JSON values; actual provenance gate remains separately required."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "dag/first-witness"
@@ -1796,6 +1985,19 @@
         {
           "field": "genuineCapture+budgetAdmissibility",
           "gap": "Fresh expectation/allocation and full producer/restore budget ledgers cannot be independently supplied by JSON values; actual provenance gate remains separately required."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "dag/cross-rule-witness"
@@ -1848,6 +2050,19 @@
         {
           "field": "genuineCapture+budgetAdmissibility",
           "gap": "Fresh expectation/allocation and full producer/restore budget ledgers cannot be independently supplied by JSON values; actual provenance gate remains separately required."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "dag/range-literal"
@@ -1900,6 +2115,19 @@
         {
           "field": "genuineCapture+budgetAdmissibility",
           "gap": "Fresh expectation/allocation and full producer/restore budget ledgers cannot be independently supplied by JSON values; actual provenance gate remains separately required."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "fullview/raw-aliases"
@@ -1952,6 +2180,19 @@
         {
           "field": "genuineCapture+budgetAdmissibility",
           "gap": "Fresh expectation/allocation and full producer/restore budget ledgers cannot be independently supplied by JSON values; actual provenance gate remains separately required."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "dag/raw-aliases"
@@ -2004,6 +2245,24 @@
         {
           "field": "genuineCapture+budgetAdmissibility",
           "gap": "Fresh expectation/allocation and full producer/restore budget ledgers cannot be independently supplied by JSON values; actual provenance gate remains separately required."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "fullview/two-head-occurrences"
@@ -2056,6 +2315,24 @@
         {
           "field": "genuineCapture+budgetAdmissibility",
           "gap": "Fresh expectation/allocation and full producer/restore budget ledgers cannot be independently supplied by JSON values; actual provenance gate remains separately required."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "dag/two-head-occurrences"
@@ -2112,6 +2389,24 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/fullview/payload-unknown-key"
@@ -2168,6 +2463,24 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/fullview/tail-source-tamper"
@@ -2224,6 +2537,24 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/fullview/tail-definition-tamper"
@@ -2280,6 +2611,24 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/fullview/tail-limits-tamper"
@@ -2336,6 +2685,24 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/fullview/tail-child-tamper"
@@ -2392,6 +2759,24 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/explanation/payload-unknown-key"
@@ -2448,6 +2833,24 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/explanation/tail-source-tamper"
@@ -2504,6 +2907,24 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/explanation/tail-definition-tamper"
@@ -2560,6 +2981,24 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/explanation/tail-limits-tamper"
@@ -2616,6 +3055,24 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/explanation/tail-child-tamper"
@@ -2672,6 +3129,19 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/explanation/dag-depth-plus-one"
@@ -2728,6 +3198,19 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/explanation/dag-last-premise-forward"
@@ -2784,6 +3267,19 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/explanation/leaf-rename-all"
@@ -2840,6 +3336,24 @@
         {
           "field": "A1ExactErrorProjection",
           "gap": "Need independent exact A1 safe error/diagnostic schema; do not use rebinding/deep-DAG golden errors for digest mismatch."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "knownRuleUniverse": [
+              {
+                "definitionOrdinal": 0,
+                "ruleId": "fixture:r"
+              }
+            ],
+            "missingFields": [
+              "explicit complete disabled_rule_ids; omitted is not declared empty"
+            ],
+            "reason": "No unapproved caller default or dummy disabled identity is inferred",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "restore/explanation/head-occurrence-1023-15"
@@ -2892,6 +3406,20 @@
         {
           "field": "genuineCapture+budgetAdmissibility",
           "gap": "Fresh expectation/allocation and full producer/restore budget ledgers cannot be independently supplied by JSON values; actual provenance gate remains separately required."
+        },
+        {
+          "field": "declaredAllocationExpectation",
+          "gap": {
+            "expectation": null,
+            "missingFields": [
+              "complete rule universe",
+              "disabled IDs",
+              "original ordinals"
+            ],
+            "reason": "Turtle graph is not an explicit complete RuleSpec universe",
+            "status": "pending"
+          },
+          "required": "Supply independently approved complete metadata; do not infer missing defaults or actual issuance from arithmetic."
         }
       ],
       "id": "fullview/turtle-entry"
