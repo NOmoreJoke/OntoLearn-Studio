@@ -150,3 +150,9 @@ T01现在唯一维护 `apps/desktop/src/main/jsonl.ts`、`apps/desktop/src/rende
 完整保留候选C1/C2/C3、证据恢复、范围登记、typed纯方案、准备/政策补充及未就绪父功能，逐行依据与缺口见`review-backlog-20261022.md`。历史C1/C2无指定Pass，不倒填；当前S1覆盖全部保留实现与历史闭环，纯方案未实施。后续供方采用/接口实施、父验收、全部指定新审/CI/正常合并/远端门仍待。原Goal仍blocked，未重建/关闭；本次实际GUI创建是外部状态变化后的已授权执行，不改原候选。
 
 独立agent已对创建证据与完整积压台账返回通过，无P级问题，报告`round-1/launch-20261022/independent-creation-backlog-review.md`。这不是指定模型产品审查。只读实际请求另核两真实turn、max/xhigh及完整正文；MiniMax应用仅去掉末尾1换行，全部内容保持。文档格式检查通过；无产品改动，不重复产品验证。
+
+## 2026-10-22 round-1完整终态及待处置意见
+
+两个原任务已真实终态：ZCode model-io finishReason=stop，报告19506B/SHA af43f9ab…d0e4f；MiniMax assistant stop，报告36714B/SHA51e3b498…579f6。均在完整同版493上给有界S1 Pass，分别5项P3、P2-1及P3-1..5共6项，合计11项必须处置；MiniMax摘要误记4P3，原报告保留不改。完整报告、终态回复、原始验证证据分别11和27份已归档`round-1/received-20261022/{zcode,minimax}/`，receipt绑定真实ID/turn/终态及字节hash，两方58受审项终态无漂移。双方全check各独立633 TS/1091 Python，MiniMax另独立重跑11项合成callback UI并复现截图；不当父功能/平台/生产证据。
+
+原T02已全文读取双方报告，MiniMax六项经独立agent静态triage，合并清单见`triage-initial.md`。root明确原493先冻结至两报告到齐；现已收齐，下一步在新独立树沿原T02独占ontology/专tests/harness最小修P2及采纳的P3、其余按事实记延期/部分接受，不改公共契约/共享路径/验收。所有改变须新candidate、必要完整验证、双方全新同版完整复审，不沿用原Pass；未push/PR/merge，父门与原Goal保留。
