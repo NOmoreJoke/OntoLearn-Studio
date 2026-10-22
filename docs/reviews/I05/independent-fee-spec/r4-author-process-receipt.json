@@ -1,0 +1,2102 @@
+{
+  "format": "i05-independent-fee-author-process/4",
+  "revisionBase": "6bb1c1e5a4250468f894033e42864d480ccdb815",
+  "candidate": "f6b886208839037aeae93947549d32fc3ddc6b89",
+  "candidateCommitCommands": [
+    {
+      "argv": ["git", "diff", "--cached", "--name-only"],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "add",
+        "--",
+        "docs/iterations/I05/independent-fee-spec/",
+        "docs/reviews/I05/independent-fee-spec/"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": ["git", "diff", "--cached", "--name-only"],
+      "exit": 0,
+      "stdout": "docs/iterations/I05/independent-fee-spec/README-r4.md\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/all114-fee-programs-r4.json\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/audit_execution_r4.py\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-fee-material-r4.bytes.hex\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-fee-material-r4.json\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-prefix-r4.json\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/bind_per_id.py\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/check_determinism_r4.py\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/complete-entry-programs-r4.json\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/freeze_r4.py\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/metadata-delta-r4.json\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/produce_complete_r4.py\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/reference.py\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/run_reference.py\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/test_complete_failures_r4.py\ndocs/iterations/I05/independent-fee-spec/charge-reference-v4/verify_r4.py\ndocs/iterations/I05/independent-fee-spec/hand-examples-r4.md\ndocs/iterations/I05/independent-fee-spec/handoff-r4.md\ndocs/iterations/I05/independent-fee-spec/per-id-r4.json\ndocs/iterations/I05/independent-fee-spec/per-id-r4.md\ndocs/iterations/I05/independent-fee-spec/specification-r4.md\ndocs/reviews/I05/independent-fee-spec/artifact-manifest-r4.json\ndocs/reviews/I05/independent-fee-spec/r4-baseline-state-first-failure.json\ndocs/reviews/I05/independent-fee-spec/r4-bind-and-audit-01.json\ndocs/reviews/I05/independent-fee-spec/r4-bind-table-02.json\ndocs/reviews/I05/independent-fee-spec/r4-disposition.md\ndocs/reviews/I05/independent-fee-spec/r4-final-delta-audit-04.json\ndocs/reviews/I05/independent-fee-spec/r4-final-delta-audit-05.json\ndocs/reviews/I05/independent-fee-spec/r4-final-delta-audit-06.json\ndocs/reviews/I05/independent-fee-spec/r4-final-determinism-01.json\ndocs/reviews/I05/independent-fee-spec/r4-final-determinism-02.json\ndocs/reviews/I05/independent-fee-spec/r4-final-formatter-new-only.json\ndocs/reviews/I05/independent-fee-spec/r4-final-integrity.json\ndocs/reviews/I05/independent-fee-spec/r4-final-readonly-audit.json\ndocs/reviews/I05/independent-fee-spec/r4-first-failure/audit-before-when-class-completion.py.raw\ndocs/reviews/I05/independent-fee-spec/r4-first-failure/audit-raw-iri-attempt04.py.raw\ndocs/reviews/I05/independent-fee-spec/r4-first-failure/audit-restored-child-attempt05.py.raw\ndocs/reviews/I05/independent-fee-spec/r4-first-failure/audit-variable-class-length-attempt01.py.raw\ndocs/reviews/I05/independent-fee-spec/r4-first-failure/baseline-source-locator-attempt01.json.raw\ndocs/reviews/I05/independent-fee-spec/r4-first-failure/metadata-delta-before-when-class-completion.json.raw\ndocs/reviews/I05/independent-fee-spec/r4-first-failure/reference-before-when-class-completion.py.raw\ndocs/reviews/I05/independent-fee-spec/r4-first-failure/reference-source-locator-attempt01.py.raw\ndocs/reviews/I05/independent-fee-spec/r4-focused-entry-01.json\ndocs/reviews/I05/independent-fee-spec/r4-focused-entry-02.json\ndocs/reviews/I05/independent-fee-spec/r4-focused-entry-03.json\ndocs/reviews/I05/independent-fee-spec/r4-independent-audit-02.json\ndocs/reviews/I05/independent-fee-spec/r4-independent-audit-03.json\ndocs/reviews/I05/independent-fee-spec/r4-initial-query-exit2.json\ndocs/reviews/I05/independent-fee-spec/r4-input-read-receipt.json\ndocs/reviews/I05/independent-fee-spec/r4-pre-execution-static-02.json\ndocs/reviews/I05/independent-fee-spec/r4-pre-execution-static-03.json\ndocs/reviews/I05/independent-fee-spec/r4-pre-execution-static-04.json\ndocs/reviews/I05/independent-fee-spec/r4-pre-execution-static-05.json\ndocs/reviews/I05/independent-fee-spec/r4-pre-execution-static-06.json\ndocs/reviews/I05/independent-fee-spec/r4-pre-execution-static-07.json\ndocs/reviews/I05/independent-fee-spec/r4-pre-execution-static-08.json\ndocs/reviews/I05/independent-fee-spec/r4-pre-execution-static-09.json\ndocs/reviews/I05/independent-fee-spec/r4-pre-execution-static.json\ndocs/reviews/I05/independent-fee-spec/r4-reference-all114-01.json\ndocs/reviews/I05/independent-fee-spec/r4-reference-all114-02.json\ndocs/reviews/I05/independent-fee-spec/r4-reference-baseline-01.json\ndocs/reviews/I05/independent-fee-spec/r4-reference-baseline-02.json\ndocs/reviews/I05/independent-fee-spec/r4-reference-baseline-03.json\ndocs/reviews/I05/independent-fee-spec/r4-revision-record.md\ndocs/reviews/I05/independent-fee-spec/r4-when-clause-scope-read.json\n",
+      "stderr": ""
+    },
+    {
+      "argv": ["git", "diff", "--cached", "--check"],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": ["git", "commit", "-m", "docs(I05): add R4 complete metadata and class fee gates"],
+      "exit": 0,
+      "stdout": "[docs/I05-independent-fee-spec f6b8862] docs(I05): add R4 complete metadata and class fee gates\n 65 files changed, 946510 insertions(+)\n create mode 100644 docs/iterations/I05/independent-fee-spec/README-r4.md\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/all114-fee-programs-r4.json\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/audit_execution_r4.py\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-fee-material-r4.bytes.hex\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-fee-material-r4.json\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-prefix-r4.json\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/bind_per_id.py\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/check_determinism_r4.py\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/complete-entry-programs-r4.json\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/freeze_r4.py\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/metadata-delta-r4.json\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/produce_complete_r4.py\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/reference.py\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/run_reference.py\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/test_complete_failures_r4.py\n create mode 100644 docs/iterations/I05/independent-fee-spec/charge-reference-v4/verify_r4.py\n create mode 100644 docs/iterations/I05/independent-fee-spec/hand-examples-r4.md\n create mode 100644 docs/iterations/I05/independent-fee-spec/handoff-r4.md\n create mode 100644 docs/iterations/I05/independent-fee-spec/per-id-r4.json\n create mode 100644 docs/iterations/I05/independent-fee-spec/per-id-r4.md\n create mode 100644 docs/iterations/I05/independent-fee-spec/specification-r4.md\n create mode 100644 docs/reviews/I05/independent-fee-spec/artifact-manifest-r4.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-baseline-state-first-failure.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-bind-and-audit-01.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-bind-table-02.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-disposition.md\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-final-delta-audit-04.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-final-delta-audit-05.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-final-delta-audit-06.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-final-determinism-01.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-final-determinism-02.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-final-formatter-new-only.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-final-integrity.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-final-readonly-audit.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-first-failure/audit-before-when-class-completion.py.raw\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-first-failure/audit-raw-iri-attempt04.py.raw\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-first-failure/audit-restored-child-attempt05.py.raw\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-first-failure/audit-variable-class-length-attempt01.py.raw\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-first-failure/baseline-source-locator-attempt01.json.raw\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-first-failure/metadata-delta-before-when-class-completion.json.raw\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-first-failure/reference-before-when-class-completion.py.raw\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-first-failure/reference-source-locator-attempt01.py.raw\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-focused-entry-01.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-focused-entry-02.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-focused-entry-03.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-independent-audit-02.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-independent-audit-03.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-initial-query-exit2.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-input-read-receipt.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-02.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-03.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-04.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-05.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-06.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-07.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-08.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-09.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-pre-execution-static.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-reference-all114-01.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-reference-all114-02.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-reference-baseline-01.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-reference-baseline-02.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-reference-baseline-03.json\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-revision-record.md\n create mode 100644 docs/reviews/I05/independent-fee-spec/r4-when-clause-scope-read.json\n",
+      "stderr": ""
+    },
+    {
+      "argv": ["git", "rev-parse", "HEAD"],
+      "exit": 0,
+      "stdout": "f6b886208839037aeae93947549d32fc3ddc6b89\n",
+      "stderr": ""
+    },
+    {
+      "argv": ["git", "rev-parse", "HEAD^"],
+      "exit": 0,
+      "stdout": "6bb1c1e5a4250468f894033e42864d480ccdb815\n",
+      "stderr": ""
+    },
+    {
+      "argv": ["git", "status", "--porcelain"],
+      "exit": 0,
+      "stdout": " M AGENTS.md\n",
+      "stderr": ""
+    },
+    {
+      "argv": ["git", "diff", "--cached", "--name-only"],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "candidateChangedFiles": [
+    "docs/iterations/I05/independent-fee-spec/README-r4.md",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/all114-fee-programs-r4.json",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/audit_execution_r4.py",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-fee-material-r4.bytes.hex",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-fee-material-r4.json",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-prefix-r4.json",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/bind_per_id.py",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/check_determinism_r4.py",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/complete-entry-programs-r4.json",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/freeze_r4.py",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/metadata-delta-r4.json",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/produce_complete_r4.py",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/reference.py",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/run_reference.py",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/test_complete_failures_r4.py",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/verify_r4.py",
+    "docs/iterations/I05/independent-fee-spec/hand-examples-r4.md",
+    "docs/iterations/I05/independent-fee-spec/handoff-r4.md",
+    "docs/iterations/I05/independent-fee-spec/per-id-r4.json",
+    "docs/iterations/I05/independent-fee-spec/per-id-r4.md",
+    "docs/iterations/I05/independent-fee-spec/specification-r4.md",
+    "docs/reviews/I05/independent-fee-spec/artifact-manifest-r4.json",
+    "docs/reviews/I05/independent-fee-spec/r4-baseline-state-first-failure.json",
+    "docs/reviews/I05/independent-fee-spec/r4-bind-and-audit-01.json",
+    "docs/reviews/I05/independent-fee-spec/r4-bind-table-02.json",
+    "docs/reviews/I05/independent-fee-spec/r4-disposition.md",
+    "docs/reviews/I05/independent-fee-spec/r4-final-delta-audit-04.json",
+    "docs/reviews/I05/independent-fee-spec/r4-final-delta-audit-05.json",
+    "docs/reviews/I05/independent-fee-spec/r4-final-delta-audit-06.json",
+    "docs/reviews/I05/independent-fee-spec/r4-final-determinism-01.json",
+    "docs/reviews/I05/independent-fee-spec/r4-final-determinism-02.json",
+    "docs/reviews/I05/independent-fee-spec/r4-final-formatter-new-only.json",
+    "docs/reviews/I05/independent-fee-spec/r4-final-integrity.json",
+    "docs/reviews/I05/independent-fee-spec/r4-final-readonly-audit.json",
+    "docs/reviews/I05/independent-fee-spec/r4-first-failure/audit-before-when-class-completion.py.raw",
+    "docs/reviews/I05/independent-fee-spec/r4-first-failure/audit-raw-iri-attempt04.py.raw",
+    "docs/reviews/I05/independent-fee-spec/r4-first-failure/audit-restored-child-attempt05.py.raw",
+    "docs/reviews/I05/independent-fee-spec/r4-first-failure/audit-variable-class-length-attempt01.py.raw",
+    "docs/reviews/I05/independent-fee-spec/r4-first-failure/baseline-source-locator-attempt01.json.raw",
+    "docs/reviews/I05/independent-fee-spec/r4-first-failure/metadata-delta-before-when-class-completion.json.raw",
+    "docs/reviews/I05/independent-fee-spec/r4-first-failure/reference-before-when-class-completion.py.raw",
+    "docs/reviews/I05/independent-fee-spec/r4-first-failure/reference-source-locator-attempt01.py.raw",
+    "docs/reviews/I05/independent-fee-spec/r4-focused-entry-01.json",
+    "docs/reviews/I05/independent-fee-spec/r4-focused-entry-02.json",
+    "docs/reviews/I05/independent-fee-spec/r4-focused-entry-03.json",
+    "docs/reviews/I05/independent-fee-spec/r4-independent-audit-02.json",
+    "docs/reviews/I05/independent-fee-spec/r4-independent-audit-03.json",
+    "docs/reviews/I05/independent-fee-spec/r4-initial-query-exit2.json",
+    "docs/reviews/I05/independent-fee-spec/r4-input-read-receipt.json",
+    "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-02.json",
+    "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-03.json",
+    "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-04.json",
+    "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-05.json",
+    "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-06.json",
+    "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-07.json",
+    "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-08.json",
+    "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-09.json",
+    "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static.json",
+    "docs/reviews/I05/independent-fee-spec/r4-reference-all114-01.json",
+    "docs/reviews/I05/independent-fee-spec/r4-reference-all114-02.json",
+    "docs/reviews/I05/independent-fee-spec/r4-reference-baseline-01.json",
+    "docs/reviews/I05/independent-fee-spec/r4-reference-baseline-02.json",
+    "docs/reviews/I05/independent-fee-spec/r4-reference-baseline-03.json",
+    "docs/reviews/I05/independent-fee-spec/r4-revision-record.md",
+    "docs/reviews/I05/independent-fee-spec/r4-when-clause-scope-read.json"
+  ],
+  "candidateOnlyAuthorizedDocumentation": true,
+  "manifest": {
+    "path": "docs/reviews/I05/independent-fee-spec/artifact-manifest-r4.json",
+    "bytes": 55402,
+    "sha256": "a3b6d25cfc6541dfea96cfc29659db440b6394b1f143ebe6574410587ccd8516",
+    "memberCount": 267,
+    "selfExclusion": [
+      "docs/reviews/I05/independent-fee-spec/artifact-manifest-r4.json",
+      "docs/reviews/I05/independent-fee-spec/r4-author-process-receipt.json"
+    ]
+  },
+  "candidateCurrentGitShaChecks": [
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/README-r3.md",
+      "bytes": 1045,
+      "sha256": "70b1d2beb30e8c6e12d3c87f01e8b554620099bd005539cde8e8b6d8bb3dd266",
+      "candidateBlob": "08f87a600ceba8302e89aed2d225cd641810e833",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/README-r4.md",
+      "bytes": 876,
+      "sha256": "edac568753c48098099243ae65269543d9a234323267f367c0cfdefd39b957c6",
+      "candidateBlob": "31be88138d4d7c8728b7c534d58ce22b01d05efa",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/README.md",
+      "bytes": 1494,
+      "sha256": "a2630a6c6d45bea7e78d5914bf0e078445e202754d4d4c2af4d478e88fa85926",
+      "candidateBlob": "9c1453de3baa9762ab5850deca4b2d0c0508e39c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/bound-formulas.json",
+      "bytes": 5250,
+      "sha256": "9178b1ea09fc6945fe718923d3cedbd152fa9da6b2c6745dc5754f58f45e07b8",
+      "candidateBlob": "29bf18edcb67f66a5bde5df106ef451f162a056f",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/all114-fee-programs-r2.json",
+      "bytes": 22613377,
+      "sha256": "edba5f7d0f06cd5a0b51334d389dc1c648c1e79c580c75ebc796d24d462ebbea",
+      "candidateBlob": "b0b4e40aec8286e160d6f593339c211ce3c96e15",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/audit_prefixes.py",
+      "bytes": 4163,
+      "sha256": "cfee1ba0ca84769118f173fa7cb3adebfe52a03b1597d65b2fa787efa0f588fd",
+      "candidateBlob": "d5de956ef23cb8cd63b583377b056f15d8f33b49",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/baseline-fee-material-r2.bytes.hex",
+      "bytes": 171907,
+      "sha256": "76f7390d32f5f55911bcfbb9e5f576ae7d48ea729c6743d5ba424df0986ddeac",
+      "candidateBlob": "0b482061f2244244b886925f715f334e85303012",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/baseline-fee-material-r2.json",
+      "bytes": 100143,
+      "sha256": "10850e963c031fb3026a2ee47ade5e0c07dd33b15d4841cc858b48c7affe1aa7",
+      "candidateBlob": "11993cbad626fd7b5da901fbcfb6185633adefc8",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/baseline-fee-material.json",
+      "bytes": 99485,
+      "sha256": "4bc51b52c334c63dff932db5e638a3c2dac2e5d57ffa9a74c4e5cf1dd0cf36f6",
+      "candidateBlob": "18f574fa9bca17b9a1e1c55bbab6c95550fdbe9c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/baseline-prefix-r2.json",
+      "bytes": 2062819,
+      "sha256": "960ad67f643ff81ec999981d544fa5b407f62254751bd68395d9eb97a2c6e3a2",
+      "candidateBlob": "3598581b75f34e544015509735a785653d0db98a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/baseline-prefix.json",
+      "bytes": 1583920,
+      "sha256": "e4b323f854d7632858f81c52ae9a1cf4d15f2d9d0f6b7dba73059c4e97526fb1",
+      "candidateBlob": "a6b1a7e0afe4ff2122a711b518410c2b476d5632",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/bind_per_id.py",
+      "bytes": 3656,
+      "sha256": "8f9c79e7613dcff4c539adbbfb3a153e48e83848f774c6fff1e24ec6cdde5d25",
+      "candidateBlob": "a65a58ef73904d2edf342eacb6753dbd39314519",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/check_determinism.py",
+      "bytes": 1813,
+      "sha256": "a09e3957e974a7edd5f534a6c7e4f1127d86f6b2e1e213037450808df9db5629",
+      "candidateBlob": "927fe50b267ef63e701c47fbb386bb798eeee26f",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/reference.py",
+      "bytes": 72370,
+      "sha256": "5ce34520e51aff88333fb3a09437929651b4d0f8e8f7c5228a1515fe9005758d",
+      "candidateBlob": "46d979cf9fe81cb2889305e8a655a41112844fa8",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/run_reference.py",
+      "bytes": 4783,
+      "sha256": "7eb3017f2a1296ac9d697cac569c0c9078de63506be78e371f8bb8f9bc167108",
+      "candidateBlob": "3ef445fb5dfb0e2da644473db72806d2a9c60095",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/test_reference.py",
+      "bytes": 9635,
+      "sha256": "331b4ed97e53338f6d21f320bcb5e396e1b93153c0b37dfe8be08587063001f6",
+      "candidateBlob": "00a8d3d7f629835b012d17576253cd5f265d7eed",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/all114-fee-programs-r3.json",
+      "bytes": 22693690,
+      "sha256": "64d9ac41927b27d67d4e64060202cb956cc4acac292a2e51a86e32501835cf82",
+      "candidateBlob": "b97625e732f19b199eaf0bfe5253f499a58a0c07",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/audit_execution_r3.py",
+      "bytes": 12687,
+      "sha256": "9d0d6506ff228a497cc7e902eca7295dd0595010838699ee543e2cda4a81b3af",
+      "candidateBlob": "2560280d797e130730e83774cf487faaebc2a38c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/baseline-fee-material-r3.bytes.hex",
+      "bytes": 171907,
+      "sha256": "76f7390d32f5f55911bcfbb9e5f576ae7d48ea729c6743d5ba424df0986ddeac",
+      "candidateBlob": "0b482061f2244244b886925f715f334e85303012",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/baseline-fee-material-r3.json",
+      "bytes": 100143,
+      "sha256": "10850e963c031fb3026a2ee47ade5e0c07dd33b15d4841cc858b48c7affe1aa7",
+      "candidateBlob": "11993cbad626fd7b5da901fbcfb6185633adefc8",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/baseline-prefix-r3.json",
+      "bytes": 4141315,
+      "sha256": "0052707ffa92ea92c4ffafa808a5a10064b4ccc4319ca0ba081bf65b78b1676d",
+      "candidateBlob": "b29cd0e111b00550bebd955018835a0b6a59ca88",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/bind_per_id.py",
+      "bytes": 3850,
+      "sha256": "dc2224de5e31c27daba0877bfa6d73d6712e50f5b2deb6ac33f33fae820f9c4c",
+      "candidateBlob": "336300e990380eff8f225377b49e9566b2797248",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/check_determinism_r3.py",
+      "bytes": 2205,
+      "sha256": "9b9b5b8cb8d2ec6d3d02b8bafd8f8cf1308b50264e419c9ea4195225e9afd31a",
+      "candidateBlob": "b70ac0b660c0c498913adb2a92d12c02027184c5",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/complete-failure-programs-r3.json",
+      "bytes": 1512285,
+      "sha256": "37ffcbf0754eaa327d3b3c451bbfc589313fb0a334f0eb310b8489119f06987e",
+      "candidateBlob": "830b3d108631dfdf2597b1475e191d4803cb1861",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/freeze_r3.py",
+      "bytes": 4420,
+      "sha256": "a5569c61b58c179eb5a3b63f708d41d67f6f5d8b1c7fd9fee9b1a986cde1a966",
+      "candidateBlob": "8e54bc133976052d59c09b0b43b7cf1d2afc5c0c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/produce_failures_r3.py",
+      "bytes": 772,
+      "sha256": "4a3475c7fc1009ae7307dfd7add34201befe0048821ccc0c206974d7ad5e11fd",
+      "candidateBlob": "3bfefe9f6b8237acf0d812cb13b03376628fbf4a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/reference.py",
+      "bytes": 83985,
+      "sha256": "5da6cf11b8876d7823407b05474ec0ce3fe3a33c2f3c3464bfae96c2a87a1118",
+      "candidateBlob": "746eaf8a361c55eb1a139de1e9fbf89fb2615920",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/run_reference.py",
+      "bytes": 4813,
+      "sha256": "edf9e86ecc9b1bb7d4a5edbc0bb95ab64f1093755a78771f5a7e0e6eb5e7bd4d",
+      "candidateBlob": "c50336e46a58ea3b4f6945b49eb8062724aa44da",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/test_complete_failures_r3.py",
+      "bytes": 8198,
+      "sha256": "7bb3083e4ef8b6a996542f9e0f6e8d45506b14911cc2ed90fb8718f09748a8fe",
+      "candidateBlob": "a89687ef924524bec029cbfbc409db92b7cbac50",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/test_reference.py",
+      "bytes": 9635,
+      "sha256": "331b4ed97e53338f6d21f320bcb5e396e1b93153c0b37dfe8be08587063001f6",
+      "candidateBlob": "00a8d3d7f629835b012d17576253cd5f265d7eed",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v3/verify_r3.py",
+      "bytes": 952,
+      "sha256": "14c084a74b06ee70c7b7070b0fa22bf3e46a6af23120e2c06c82eb40de8e239c",
+      "candidateBlob": "62af165969e2714f01f1d2fc81865062380bd1a7",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/all114-fee-programs-r4.json",
+      "bytes": 22742784,
+      "sha256": "bc9a797cbcade5ad3ff23e095c7b53aca2eea8679bcc3d5c82eabeab2e86b244",
+      "candidateBlob": "c0838ddea67749e4ea0eb9a1b43dd1f7469b42c2",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/audit_execution_r4.py",
+      "bytes": 18722,
+      "sha256": "596125051766a46de02dc8cae10bc24cc9ec8e1d8655f16fd70bc999683595c9",
+      "candidateBlob": "e18b4ed4a8a1e7ad94e621e6f083ec2efa37f191",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-fee-material-r4.bytes.hex",
+      "bytes": 171907,
+      "sha256": "76f7390d32f5f55911bcfbb9e5f576ae7d48ea729c6743d5ba424df0986ddeac",
+      "candidateBlob": "0b482061f2244244b886925f715f334e85303012",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-fee-material-r4.json",
+      "bytes": 100143,
+      "sha256": "10850e963c031fb3026a2ee47ade5e0c07dd33b15d4841cc858b48c7affe1aa7",
+      "candidateBlob": "11993cbad626fd7b5da901fbcfb6185633adefc8",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-prefix-r4.json",
+      "bytes": 4215878,
+      "sha256": "2ffa3aa0e05faff59ace504498a9e22dd00063862242f10bd5efecfcf759a582",
+      "candidateBlob": "a4223391fe025cf3ac86d0e92de7c85cfffeb27b",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/bind_per_id.py",
+      "bytes": 4005,
+      "sha256": "2075a4bdf6adfeb94756884b241b48ce93bb90cfb3f15dc71bd3c923fda33399",
+      "candidateBlob": "b3667c7014605fbebb0f1c0a612e7fb87ed9c715",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/check_determinism_r4.py",
+      "bytes": 2263,
+      "sha256": "d7c7d031da8cfcfde6ff0ae0f650455b61e377cb5aa8646b8f357395b752bcba",
+      "candidateBlob": "679deb4c0090878aa8aab5b217ddbfe2e079d791",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/complete-entry-programs-r4.json",
+      "bytes": 5819327,
+      "sha256": "bab335997e56b5fa4804fcb8f69ea643871b52645b23a5e875a847eb2858c6bd",
+      "candidateBlob": "8f7c09e44a8e73edca11e615ee11fea31596e3a2",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/freeze_r4.py",
+      "bytes": 4420,
+      "sha256": "ad4cc6f73738e38cd394ab906352a8bc6d068afb20d686c267279476cf246ca8",
+      "candidateBlob": "8b6b7e9dbce7f0562ede99c1d8dc99feb2d56373",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/metadata-delta-r4.json",
+      "bytes": 99735,
+      "sha256": "6bf1c57495f9fefde3a3d903ba583f61c17e41d455678cee697078105bf58202",
+      "candidateBlob": "f63d2934c8da62c1e8842fce21eed264d17bf04b",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/produce_complete_r4.py",
+      "bytes": 664,
+      "sha256": "16523b3e712c398600608079c7a45e9cbf94df585d65e013563ba85b6fab10e3",
+      "candidateBlob": "84f3a063905bb2ebbb88c949d40829626fe196a0",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/reference.py",
+      "bytes": 90534,
+      "sha256": "bc47b16bf528b973aeebcc0be4a103bf00acbf0f351485f5370510817bf1467c",
+      "candidateBlob": "1cb45834c276e4220d480ce99bd6c201d44c9797",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/run_reference.py",
+      "bytes": 5025,
+      "sha256": "60487e2447391b7994c4ed2f9b0f457d2d22b9358f2192720f401e5f8f198b30",
+      "candidateBlob": "a76acf03260bff5e8def8ca3ac4466e0ab51cf90",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/test_complete_failures_r4.py",
+      "bytes": 9351,
+      "sha256": "8c945f4bc7b289abb6562b90ec59bd638cc702d1324568455ae7f4b9c1d5a1be",
+      "candidateBlob": "13e666be2dc1f9a2a4730a38dfa2ef0c80945a86",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/verify_r4.py",
+      "bytes": 952,
+      "sha256": "307a77b4749c8e17b6af66ef4d4e893d4718228d886c014b179acd32cd9a96dd",
+      "candidateBlob": "63333588c3c9c9f292f8011d59b0966ea7ae62fd",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/f1-pure-normative-request-r2.md",
+      "bytes": 10144,
+      "sha256": "0223babacffaeefc0e3331fe42d9cd9ebe0b8423bdde8bb2e20da100402c1e52",
+      "candidateBlob": "57b0e84230888669ad02351386cafcbf954bc447",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/fee-contract.json",
+      "bytes": 1359,
+      "sha256": "42f5a833f385dfca90cfe572f292c803fe25ef832728bf8e634b3758431343a1",
+      "candidateBlob": "7d99847a2c65298865b94210be5b31d8e0afc14c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/hand-examples-r2.md",
+      "bytes": 12667,
+      "sha256": "9ca3f6de57f0b6dbaaa7e652cb3f89a035b067c3edf49b7d61e26fffd76d4d75",
+      "candidateBlob": "bfba406aef8b188b7a41d044748401fea8bff606",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/hand-examples-r3.md",
+      "bytes": 8984,
+      "sha256": "7d7586b50f99a9b1a8e0e6701284085c64272f0dbdc39e058f9e0d70b69e2b2e",
+      "candidateBlob": "ff098de10d386defb93b0ee2000b7b9d80c15c79",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/hand-examples-r4.md",
+      "bytes": 7000,
+      "sha256": "3d29553dd42c68fdd6ab624ea3debdc8a51c24865ae10dd850daee813309d294",
+      "candidateBlob": "f1a6bb5518d6ff9ea0e83fe0cb253792580c5e6b",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/hand-examples.md",
+      "bytes": 10217,
+      "sha256": "a4e79a1b717469cc624c6f0e33776383c92ac11b5d578f76fdca1214323b1bc6",
+      "candidateBlob": "083729788b2f45df6bac81d596770b3038a7384e",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/hand_vectors.json",
+      "bytes": 17273,
+      "sha256": "3188d927d5002d6758e2dff584f517034ef8b6e1914590722074e800ba36ebbf",
+      "candidateBlob": "01bc10593ebfed38dc24929c014701d9e6403fac",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/handoff-r2.md",
+      "bytes": 6223,
+      "sha256": "684da22beddb480b3218ce28bd2196e5b16b3953779b252240626423c540736d",
+      "candidateBlob": "a9edfb9ca22b522b14c7cac4370e45987e5ce75d",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/handoff-r3.md",
+      "bytes": 3529,
+      "sha256": "7064219bbd7bc70c174edc43edb577998ace56a9c9a1fe699a5d7a0f4242f032",
+      "candidateBlob": "3ab63e650a594f9702fd155b136e8274b35c9e72",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/handoff-r4.md",
+      "bytes": 4102,
+      "sha256": "abcf35b9fb469c1db8f2ea431e9132e1dc789cabd781026f3326ce937bea2ee1",
+      "candidateBlob": "7952f731df244b13eeaff83254223edabf929fbc",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/handoff.md",
+      "bytes": 8462,
+      "sha256": "0cc424adcd117c1cb1f12edb6a930271beff7477c29bf29085c4bc3f8579db05",
+      "candidateBlob": "d5a24dd61a020ce1955f2065d9f7284789f73394",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/invoice_model.py",
+      "bytes": 18754,
+      "sha256": "c24badce933ecdeaf43ede1ade260912121432d3c2d33e708442ddd34181b14c",
+      "candidateBlob": "219adbde1d572ff556eb3aa5f3bce9eea8e57d4b",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/operation-schedule.md",
+      "bytes": 15875,
+      "sha256": "df60bb05bc36a945b70ca641e2a6cf0940e1352eb5d0530400ae8145865de1ae",
+      "candidateBlob": "ab4e2a23f78d805010f8bf56b0b6b06a023125df",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/per-id-r2.json",
+      "bytes": 1548965,
+      "sha256": "fef92bcce9a9fa61291ad611494d77d69d551917d015483970adc78b5d7a1435",
+      "candidateBlob": "577e412fc07353c6c5d6e1d9fcda6806cf172cc9",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/per-id-r2.md",
+      "bytes": 48666,
+      "sha256": "f4d7b058b772c963cd3ec568ffbfa688ec4b9967ec07db696b49c32cb5387242",
+      "candidateBlob": "079ae0895561dee07c7d0efea3787b0a87b7edba",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/per-id-r3.json",
+      "bytes": 1574372,
+      "sha256": "0faa2c0c3e4bdd21a9d0785f7e90fe47628f62d54ef2b4f583de80488f93a273",
+      "candidateBlob": "806e3110d79efaad504bbac13f3bd42adf4e4287",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/per-id-r3.md",
+      "bytes": 48666,
+      "sha256": "b398c16b8f8e6d25a9f21de263430b6c3278a128a07f78f85ed3e71be800598d",
+      "candidateBlob": "e64b2faf6dfd6df9b3da0beec3f3cb1c61b8281f",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/per-id-r4.json",
+      "bytes": 1637535,
+      "sha256": "ab10bf6bbf1b3fe4b43023c5f3df463a639061782b6e1a39932c2e78449fa49b",
+      "candidateBlob": "ea2c221bc997581714e35dc31f540adfb5662e9f",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/per-id-r4.md",
+      "bytes": 48666,
+      "sha256": "e17ff70cb2a324cb0ff416cd9a70dc6444a656e07248fe18b2fb915e2d6607fc",
+      "candidateBlob": "2c5739c0af4356e37d3bd512db85a52aad908d87",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/per-id.json",
+      "bytes": 588043,
+      "sha256": "0705c166599ae49375751b9be987c341bad2ac262d9fa616cd9993b86880ae60",
+      "candidateBlob": "1d76fe8506d4bbfbe5bba8d2206babb12efba103",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/per-id.md",
+      "bytes": 29979,
+      "sha256": "37a9e27976898bcbfbe36f5dd0ce19ae85f9cdce6d6b257296f3a6fb31f4c974",
+      "candidateBlob": "7a7ca2df41d77bfbb3e02c506536f45f09608c01",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/specification-r2.md",
+      "bytes": 23110,
+      "sha256": "c4866b49c4ed8fc180ec38fb6b1d4bd3633bf127f860438a52911b62a96b838f",
+      "candidateBlob": "3c79dd0c1d5915f3c9a3b07c71c924aa591b84b5",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/specification-r3.md",
+      "bytes": 10772,
+      "sha256": "dabb7f7399d016fa3e247279f1eb9d4819131ed0e0a0a69ed4ec5709da557c78",
+      "candidateBlob": "c237e395b50b4436dfeff3e99968e2de72d148b1",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/specification-r4.md",
+      "bytes": 11440,
+      "sha256": "b7cbbdb9edfe6d61c9e91a16d80954860ebb16da82ac4d9d1b107390ad29e416",
+      "candidateBlob": "8361a7878c0e5b73be1e84259c4638e79dc4a660",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/specification.md",
+      "bytes": 23035,
+      "sha256": "edf0f6350f0ba923c0a615e9d64846c8f45b88ad96c144e795e1e532e8b64abf",
+      "candidateBlob": "59e72613fc2bdff365046822093593f8b7cb5c64",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/test_invoice_model.py",
+      "bytes": 8187,
+      "sha256": "518bfc48290cf756f548ddeddee3502f77346ddb4ec16efc6af3fa7f73198a08",
+      "candidateBlob": "4932853892afe7dfc405ebc2233c6345fad9293c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/test_retention_r2.py",
+      "bytes": 7634,
+      "sha256": "eb065c2c2a52aecc75f41ccd0c5806ff03d9fe6b280d428ffaeaa6d0381165d8",
+      "candidateBlob": "208a2ef85066531969ce04c36cd7b61154458412",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/typed-domain-normative-request-r2.md",
+      "bytes": 1896,
+      "sha256": "43a5f5b81739fee06741f809a4936dbe6d5b26650032ff9bd1059fe4b984ac98",
+      "candidateBlob": "1220e7e8b34115bfb2ac5b5ddde30d3f40ac13ad",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/artifact-manifest-r2.json",
+      "bytes": 29745,
+      "sha256": "3ee69b02684a2934e01d67666eb10a11b2c0c328479cf9e95be2a44902ef3ced",
+      "candidateBlob": "c09a67c5fa9bf198e3255a8871f07b8631674009",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/artifact-manifest-r3-attempt-01.json",
+      "bytes": 38237,
+      "sha256": "c6c75118ae171838b282a382aa4dd1e4de4c43bcd1d5ce493dd69803f43a160a",
+      "candidateBlob": "06aba0edbbdac5c7ac9211dee3fb20ef14fd3a2a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/artifact-manifest-r3.json",
+      "bytes": 38854,
+      "sha256": "20814a8d82f8eeeb94699d92941ea7daa00b72c8220c5979227daeb90cf44519",
+      "candidateBlob": "6edbf8d3f3fce62b00ba5cf4983a34f508bdb715",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/artifact-manifest.json",
+      "bytes": 14246,
+      "sha256": "4aba269a56b297b55d27ec01bb55606e508cb129531cadadddbcdd122f6535b4",
+      "candidateBlob": "d116cf6866cf1472501814b81f0b1b4e864b3910",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v1-input-exposure/incident.json",
+      "bytes": 1066,
+      "sha256": "ef4f1d68d34b39cc09244639599339eaff179cef19bc7d905c5ff79b2bc39595",
+      "candidateBlob": "74b7c3ee8fbae0eeb87adab36fe3e445c1ae1df1",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v1-input-exposure/invoice_model.py.unreviewed.raw",
+      "bytes": 11526,
+      "sha256": "bb9ef16b17408d7a87e56a7d8f3e3c8df6faffd44baf1b66f0657bdb05d959a7",
+      "candidateBlob": "90595e5312691f70d64e6ab98c738b180258845d",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/adoption.json",
+      "bytes": 57687,
+      "sha256": "e5fe75cbf07436660fc475b5ac6c176c40fff35f00e1aad1250b7d967ef149d5",
+      "candidateBlob": "a7358ec7e3173763564fae79c469bdad5a9f7fe9",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/api-defaults-reference.json",
+      "bytes": 1037,
+      "sha256": "18a07ea9d3fb5074db368685ae7f126709b2c8c1c1b93f7d1e6f4d37ec7215eb",
+      "candidateBlob": "d67a5921f2176752ccc60264038e85ae2d50e16d",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/budget.md",
+      "bytes": 18643,
+      "sha256": "7262e4301ab77d1f2490366e50cd5f617588cae252b9b0735e9c44b344e053c1",
+      "candidateBlob": "7705047ac834c939779c92f4b77a5f618a69ce3b",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/census.md",
+      "bytes": 16939,
+      "sha256": "3a95202e86b284db92f8aa304d4af89ec21d6c09e51b07634e44568179a6dd0a",
+      "candidateBlob": "66b8ff81d5115f9db3a230e216a9074595920417",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/coverage.json",
+      "bytes": 126099,
+      "sha256": "6a8ba37ee119769f0493622ff7328a348ed03f04c749d8c9622c5987ae814b0a",
+      "candidateBlob": "83f16ada8e28b6f7db0bcd07d75f831e8d604cb7",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/direct.md",
+      "bytes": 34958,
+      "sha256": "c947430801e6b3cca113c15a856704c3d5bed418efa9083d67819830a6961fba",
+      "candidateBlob": "ee78b24def9e8cabbbf44a2459c24178be5f2154",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/dmodel.json",
+      "bytes": 2180,
+      "sha256": "74e03d64e7fb80b1d4340779f842232c46fd7a3333d959e663b4b6fc8f674d51",
+      "candidateBlob": "f20bd653d8b6ce820e56744fed31bdcdbbfcfc27",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/gaps.json",
+      "bytes": 327726,
+      "sha256": "4a0e72d103a156117e461810d1e0f27a4e96c8f69a56d405111cab34b99300e6",
+      "candidateBlob": "309a36a5b1e23a86deb807c1753e49ad7bb039e3",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/input-manifest.json",
+      "bytes": 21202,
+      "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a",
+      "candidateBlob": "7d44d3856ed168c68304c89551a844c7fea16013",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/inputs.json",
+      "bytes": 8205267,
+      "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa",
+      "candidateBlob": "360ac7d9ac819d50d3394a73a505fc5e3de963fd",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/integration.md",
+      "bytes": 36922,
+      "sha256": "990555ae61b086d40c33212115728bd1914063af25e34b3815345decc85ed66d",
+      "candidateBlob": "b25665a67e1d5f36aeb770cdeb1efbb8cce8edfa",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/oracle-schema.json",
+      "bytes": 7350,
+      "sha256": "ddfbbb7f622115ee7698831e1f27333f6e14d8b2d35a5d70ea2aed301cbb012c",
+      "candidateBlob": "5b87748a79ba6d722cfd8e7736215e016b9db07a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/oracle.json",
+      "bytes": 5651115,
+      "sha256": "d8a91a9a1dc99def3187b3f77d9f88e5d2a95def08287fc672c8e5aa0fd5a9ab",
+      "candidateBlob": "7ebd0bb3b65d189550ace84a252a0b9c039c8399",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/parity.md",
+      "bytes": 60953,
+      "sha256": "d2cdc2e6017ad0257f30611d2928a60a116f4dc389cacdfc977c17efe13e2a23",
+      "candidateBlob": "2e4d3c80d940d62d794590b1335ea064c06903b7",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/policies.md",
+      "bytes": 6324,
+      "sha256": "9abaab883296b6085e82eb3b5a44216611a3cdf6d10c0e1589f14ed728684c34",
+      "candidateBlob": "f7c73dc1ad3a29d97c8316b8718b7ad89cf4e0e3",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/producer.md",
+      "bytes": 69523,
+      "sha256": "23a4ae9f7974185db61664fb1db892586140ea20995f1bb5950943717bd0ed4c",
+      "candidateBlob": "443e22f278929717264533081479bb83b18da944",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/q6.md",
+      "bytes": 26782,
+      "sha256": "8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424",
+      "candidateBlob": "87454516980cff39cb2e77672c7298eb784d6644",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/readme.md",
+      "bytes": 3492,
+      "sha256": "ea265f017f704c8e975749de6cf01bebcf9005e7c953a8fdf8a6302d00a7e2ba",
+      "candidateBlob": "5522292206465ddbe48718a7c7645f0201929ab3",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/restore.md",
+      "bytes": 45463,
+      "sha256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
+      "candidateBlob": "ae3cbf02780c831055874f2102bdc97665af184c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/sources.json",
+      "bytes": 7115,
+      "sha256": "5c8d2203706254f000e90fa4d397a9b0873e4cb73720b778791436df22397c3c",
+      "candidateBlob": "a4e65049d40489e75015c748414b3391f7a15394",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/collect_inputs.py",
+      "bytes": 4140,
+      "sha256": "b8238f15fe81e4113c0b9bb263cf0303b16f7126483a6a42378959548c6dc4fa",
+      "candidateBlob": "0f4bd8add247a9c77c782255557317db39ec95db",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/final-format-check.json",
+      "bytes": 1663,
+      "sha256": "89f8e11239959465f4744cfe8ece55f434070882e381b14b9e4d8965bbe85cb9",
+      "candidateBlob": "0b1755d41c62bae7fea5bde6f14fbc0c085e5d59",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/final-format-write.json",
+      "bytes": 2336,
+      "sha256": "ddf6d700c0c666f012c50f3c9d574f8007cfeba4530db86aaefdca981050c313",
+      "candidateBlob": "1c45703f0c3d2cc1047f41c150661c2ba10d90f4",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/format-check.json",
+      "bytes": 1245,
+      "sha256": "ff30921e5b1653883b65eaf584ea7116f9727dbc78104da60b6c52f961a3ff05",
+      "candidateBlob": "f5f0e3c99a699da1969832a1a820d4429295a0d7",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/format-write.json",
+      "bytes": 1766,
+      "sha256": "c705adf2021b97cc0ce3075aecb0a29bd80ca44ce34394f8b28bc1204f69f286",
+      "candidateBlob": "3cfe6ee923eeccd468f2103f1b4dacd7e0d51beb",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/git-diff-check.json",
+      "bytes": 131,
+      "sha256": "c8f4015d2e62b036f1addbd59e78c7d8fbf9aaeb335cd5697fa4cfc7162d492b",
+      "candidateBlob": "ea0ae875071a5b5d755eba1e7c10a9aeb5da9b33",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-proof-r2.json",
+      "bytes": 36263573,
+      "sha256": "5944583c52eb9e7d6374db847dd2ad1bc45918d48af31a6bd31ea779308446e5",
+      "candidateBlob": "7b1c62d67e4cda0759be9f4b4e255d63a5400bc8",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-proof-r3.json",
+      "bytes": 104518,
+      "sha256": "70b45376b9e23a49c415e09ca338932fdf3712a38b8fa26e61e13efe35c80982",
+      "candidateBlob": "aeacc1b7244348a4090c7137b8d2903486c069a8",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r1-command.py",
+      "bytes": 16223,
+      "sha256": "986a31e99ce8abd90db311d471e3c54f1678cf10b2047b303a84027f7bc5e619",
+      "candidateBlob": "91c5a67102b2913b1547e6cd19588382ea46803f",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-adversarial.json",
+      "bytes": 885171,
+      "sha256": "9ff669c97b24cd72a4aa22862dca344dac8cd75ac0ce34d8d8624ee94506f49d",
+      "candidateBlob": "6858f1f000bc7693c1e98d50c242ee3ac4f797a7",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-adversarial.py",
+      "bytes": 6203,
+      "sha256": "e929163c06b702e6d02d83a1c11116a3284618d1ed8154799f0ea96bc1923caf",
+      "candidateBlob": "0e2e42adf4d86b91e3b16316a97287c974066e4f",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-command-log.json",
+      "bytes": 817142,
+      "sha256": "1c347d3fa6d0f8a44d6d61394766ddb09b766c8753cea179e8a373cf257aa653",
+      "candidateBlob": "c4b576a5c284e4795349a65bfdda693d3bc75c90",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-command.py",
+      "bytes": 1312,
+      "sha256": "976e84ade69267d89a13d0a8aa032bbda5bb1356365df332390579e7c6dc4011",
+      "candidateBlob": "2f69025cb0c63e6bd7a1c58b51b269be56ad9317",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-final-check.json",
+      "bytes": 86241953,
+      "sha256": "853e9bc5040ec9fbfca5d63c321b969b2996431675916206b59a35083be29afd",
+      "candidateBlob": "a919f53540d711c7b5185b4d5bdc23cf48a08832",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-finalize.py",
+      "bytes": 8510,
+      "sha256": "e4fdb1660f5cb5a616b6b3ce6355035d1e9fc1218be627f630eced8f5efb41e8",
+      "candidateBlob": "0305f658a78f20e7f5287f6fb832a64f30d6cc7d",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-integrity.json",
+      "bytes": 35402408,
+      "sha256": "d01cb63b53f634516f3d0587d7256ab96516b91cd41c55bf55cabf171d3dda5d",
+      "candidateBlob": "3b91ab895aaf35443c2704455bc34605aaa444c5",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-inventory.json",
+      "bytes": 28025,
+      "sha256": "ffd83640d7c4d9895f726a3fae9a153d1d8b11236c1400a949f1f6045cef7fba",
+      "candidateBlob": "58d8adf7ee36e0b6183cb5a74d77be1ea079fca2",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-numeric-boundaries.json",
+      "bytes": 9369,
+      "sha256": "85e18c85e3452885424eefc8923e623a83c47065f4d77aaaa6603dd670d491bf",
+      "candidateBlob": "6dd303fe0c111675c7fb3dc9fd6c5a0645df7362",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-numeric-boundaries.py",
+      "bytes": 2303,
+      "sha256": "829ae754b9c8c7c72236b2e93ed371f093336b0d3422f9509aada39d4036dc5e",
+      "candidateBlob": "a15257be43f853eb65de032d5324d455d7e407f7",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-recompute-1.json",
+      "bytes": 35587,
+      "sha256": "29f53fa10c5aab9b4d6fb27d56ab3c9c6704538d4d0322fb28aefa524edf9b87",
+      "candidateBlob": "51a0a28d05ab8034a2e315fcaa883d26703f8ce9",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-recompute-2.json",
+      "bytes": 35587,
+      "sha256": "9157659cd3ee177e57da158b05fc46ef29b89b3aa91d5e11b57046c811a616ac",
+      "candidateBlob": "692b6c3760e75ae7512b4af943389a6db9f9b48f",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-static.json",
+      "bytes": 3261,
+      "sha256": "f779b0a133333ec503acb04f214f22e16c194e2068405d87f9afc5bc71cbb85b",
+      "candidateBlob": "5e2b5c7f0b8a9ac55f089a81fe00a0ad52f9110f",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-verify.py",
+      "bytes": 12912,
+      "sha256": "901791615262059dcff92fe0e9e884d6f46ca2fdb4760c7dc29c7a74dda187a3",
+      "candidateBlob": "85c0fdb81533b4722f09849a248c994775a691ef",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-adversarial-audit.json",
+      "bytes": 10287,
+      "sha256": "fc0fbbeac61ffce6a4ee13ed4d328421aa8f469cfbfe5a4ae7cee2c8038c10a3",
+      "candidateBlob": "132308be0df338aa8a052305c31bc65b9fd3099d",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-adversarial.json",
+      "bytes": 3314201,
+      "sha256": "34ac5fac52c20e43aa544798874c36fa0f1307e0e87e32116eb04925f62e6142",
+      "candidateBlob": "7ca79a9177e5479f650be2f087a1e8fe5a308db7",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-adversarial.py",
+      "bytes": 6166,
+      "sha256": "63c0a43e25e1cabfe498c22952787c723f67c2f732f3383061d7c46d8586a905",
+      "candidateBlob": "8b569413ed93dd7873990c5b2c1ef2027c4f4d21",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-command-log.json",
+      "bytes": 611992,
+      "sha256": "01ec2bf2dea8a87c77a6f50ea31d4b69b0e090f26abdc907e1be8b40ea938cc5",
+      "candidateBlob": "401a3ab3d4e5b323a84238c62acd63403a5cc2e5",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-command.py",
+      "bytes": 1209,
+      "sha256": "781985baf177aac9372eaf987a78034f470feb086f0cb07b52dfe75d548a0440",
+      "candidateBlob": "64d914d484cd6b66d73e36ae03fafba6a12c9b70",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-final-check.json",
+      "bytes": 294792,
+      "sha256": "0b0ba358de4d2e17cbbab7c7405c36e0feefa981f16162857ecc07f1aeeee79e",
+      "candidateBlob": "2071479f42b79dc7ed35076e95ba8414ed0a069a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-finalize.py",
+      "bytes": 8529,
+      "sha256": "8658cab8017446632c713bc501ec44e16002bf9997a34abde2e1233d9f621c64",
+      "candidateBlob": "79125dfe8ecda2fd207cc42286a765f81ba6850e",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-integrity.json",
+      "bytes": 308343,
+      "sha256": "a0229273c0c9130c03473fb84a0ba897bfa6f678294b9a8fd1f6ca792f99502e",
+      "candidateBlob": "8e31d3a0be814a99f82091edbe4a6b596d77d616",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-recompute-1.json",
+      "bytes": 86676,
+      "sha256": "5800c9c96c921b608bf19af7fcbb89aa58b329180330e750bb2c4538aa2c9971",
+      "candidateBlob": "8d5fbdfdf5f4f24ac4f44ccd500392a740d03b23",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-recompute-2.json",
+      "bytes": 86676,
+      "sha256": "f9201f32ec758f8eaa975239ac3f70ca5525f11b2407bd5076191500f6b9367b",
+      "candidateBlob": "e9639327ca64f67bdabbd075b70c7472855e6201",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-verify.py",
+      "bytes": 15875,
+      "sha256": "ec086fb2007077e1b799b80d71eb39543ad86ca658f197fe57929ca6fc4e7ac3",
+      "candidateBlob": "60ef82e7528d5749e1bc58d4d2f27c6df1f444ad",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-review-r1.md",
+      "bytes": 12782,
+      "sha256": "1297eaa2d25c2050fc9dfd2201eae990ffce7d91524f3249cae23b0ef169adf3",
+      "candidateBlob": "08fa9f210afd66502b755b67a0185d19b06486b1",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-review-r2.md",
+      "bytes": 12866,
+      "sha256": "1fddcea5a4973faa872299963858eeea4a56dd8830772a6d39e4326ffddfe41e",
+      "candidateBlob": "d522c6136cd20032fb8a0092b787a94ce6dd0761",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-review-r3.md",
+      "bytes": 12799,
+      "sha256": "521dc9104bcb3571973d91427465912ac7ea715a3a61868bade1a991724f6524",
+      "candidateBlob": "cf3968c6d593c8de6c32514e0fd783ce3f7ce0a3",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/input-collection-result.json",
+      "bytes": 7531,
+      "sha256": "bc42dc911cd85b52c8ecaf9c253c27d430d3419010498a208641618498e26577",
+      "candidateBlob": "ddfa4e0eff6dd0543bfb88959397a70521b0a2cd",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/input-manifest.json",
+      "bytes": 8050,
+      "sha256": "f92ff5ffc33bbab38739c56dc8e420510b3e8d450de4b62b0ae9a6a28ef069d6",
+      "candidateBlob": "6a4a3489d76bd59334e8f02b5b28b7b835f58d08",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/inventory_math.py",
+      "bytes": 13414,
+      "sha256": "10b00a48701c320e60e60307ec7c39cbdbebf677304959eb3dd6ca51a9d3f830",
+      "candidateBlob": "82543f53db79796ee5696aa573140a1ef7d03c92",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/local-proof-excerpts.json",
+      "bytes": 3132,
+      "sha256": "7f66f8cdddf35462b55fb226f7ed76fe362ec3c490af3cc461f1aa6b20acf713",
+      "candidateBlob": "c634326481edd6235ac3df1862c1f912ac1483b1",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/math-selftest.json",
+      "bytes": 1312,
+      "sha256": "27c95dfb8cd8506eb3bb43a2bfbac3234c5565d7f15b06a2991f61ce09afd140",
+      "candidateBlob": "cc19d661e774bbaed39fc03994f35276ee769445",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/normative-claims.json",
+      "bytes": 123048,
+      "sha256": "b5963fa74fcc3b21c9fafc6bcff1a327025eb1f675b4d7fff3311c4e36c3d6e6",
+      "candidateBlob": "0163b7de34f478bdfc717225da0261e0695c4c81",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/process.md",
+      "bytes": 2385,
+      "sha256": "1db99b0210c36ec07abe01c4c45fbde09a6a37ce19bed6eaf0d5312f525e69ff",
+      "candidateBlob": "87ce27650ad0d570d4ca3490c660b8067960a9a9",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r1-proof.json",
+      "bytes": 67832,
+      "sha256": "08ef48a713c9db51a75f23a53d86e7b0b58cab0a74701babb1271c21d48a127d",
+      "candidateBlob": "fa1fde2f382f2ecea5f017d68fcb811b2c70c0c0",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r1-root-receipt.json",
+      "bytes": 1323,
+      "sha256": "95eb693e25e40e96c6c9a0831f01c51679060a29933a8d0a92118a70d2489f79",
+      "candidateBlob": "63c3e8fa94e139bff471e010b6d45298c5fd5398",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-author-process-receipt.json",
+      "bytes": 20589,
+      "sha256": "3453a574b4a0ca80d02e69b0f1e80892159a5b5bb14993d6fcef6c2b5043d132",
+      "candidateBlob": "a40aa595a8f3a54db2575d449325ed1b4e6ae218",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-disposition.md",
+      "bytes": 4212,
+      "sha256": "e1df3415810a82d6e7e1d1801b6efc2208bb9b4423fa35023c346741f16630df",
+      "candidateBlob": "8f17036bdb9fb1b6dbae838c451d4bbcf34e63da",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-final-all114-determinism-v2.json",
+      "bytes": 41475,
+      "sha256": "92a11760455589b4bedf2d7fb5ef859549a451222b423b5fb17dc52d9fd954fe",
+      "candidateBlob": "247ab49c95b421b8ed36c574b9b19edc15ba9928",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-final-all114-determinism.json",
+      "bytes": 41475,
+      "sha256": "1867cb7b1a83f9f434cebd4e3cfe2e0aa975b4b31b210b99f41e2577015e74e6",
+      "candidateBlob": "92b463f6a1ee0b5c1a78e10c99c43f1642463506",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-final-format-and-prefix-checks.json",
+      "bytes": 4411,
+      "sha256": "f200e4eaa4b27a21a4381aae75d8b0176abad66e1382d878671d13a0385c87f3",
+      "candidateBlob": "60b5360ea9a49598abe896cc0bee02ab9265b693",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-final-integrity-checks.json",
+      "bytes": 2075,
+      "sha256": "a1f1bb9e39d8d4a6b4fdf98f5c3e7fa6124829907b0f28fdc647e58ebab78524",
+      "candidateBlob": "8dfbe21d06f7779323155b81bffbc614d1a3471f",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-final-pure-math-checks.json",
+      "bytes": 6151,
+      "sha256": "bc4ac9160e0fb23dc8f7b67dabcfaff32d98c5fbcd59802eba163690461ee591",
+      "candidateBlob": "1ced9853f19e28396cd321ca1b7996be7458793b",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-final-typed-literal-checks-v2.json",
+      "bytes": 2501,
+      "sha256": "4ae4b51d6df304f1d8c40d6e31224a5e3dd2ea62f60f87120fd0a337960ad429",
+      "candidateBlob": "40bf1085cea0ed3c158b084837191b3acff75324",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-first-determinism-failure/preservation.json",
+      "bytes": 256,
+      "sha256": "7f67b5e8b60d36538505afa16c7b19b47afb27763c328b3467db02dd9302883b",
+      "candidateBlob": "0405d515442e48ac1b16e2d74b36bfa681b9f18c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-first-determinism-failure/reference-49647a5d.py.raw",
+      "bytes": 61665,
+      "sha256": "49647a5d7857084bc72743ac456c01972148cb169220031d0c9bcbb081181cd1",
+      "candidateBlob": "46578400e189084f7bfe359a9c3f1cadb9fe995b",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-formatter-write.json",
+      "bytes": 2228,
+      "sha256": "0302ec45ad3f1dd14c60c2c249d4eb95b9da9a08e008ba0b5b56e9805502db51",
+      "candidateBlob": "2b1cd8251f2e0cb8e020e6770f22104ea6ced2e5",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-original-math-regression.json",
+      "bytes": 1294,
+      "sha256": "b128234c418f6d7840c1f23969113de08e1b0c6d3fcdc2b97137324968da4410",
+      "candidateBlob": "db4f1f27b8cba740571362eed35bcf1164338f03",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-provenance/I05-fee-F1-proposal-binder-and-charge-interpreter-amendment.md",
+      "bytes": 6146,
+      "sha256": "14af3479be21e58555993e36a74ba6b0637f8ef570fa9e44d5a1c26612ce1977",
+      "candidateBlob": "fc6755f2a62227599a495346d51c9984db63eb06",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-provenance/I05-fee-F1-pure-normative-request-r2.md.raw",
+      "bytes": 10144,
+      "sha256": "0223babacffaeefc0e3331fe42d9cd9ebe0b8423bdde8bb2e20da100402c1e52",
+      "candidateBlob": "57b0e84230888669ad02351386cafcbf954bc447",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-provenance/manifest.json",
+      "bytes": 778,
+      "sha256": "13701997b3954fd7a65665046f06672d2d5084d2f36d563bf70869c50b29cf2f",
+      "candidateBlob": "ac8b70f0668de713b5df9dc9dd327896c8b2f02b",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-provenance/q6-adopted-profile-v1.md.raw",
+      "bytes": 16428,
+      "sha256": "9259f4ac6622857182570509378afb6c96ab5c4dc19d2e887db559c27a282427",
+      "candidateBlob": "bbb74a0207ebba06e848f7197445bad20408a422",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-provenance/q6-permission-and-source.json",
+      "bytes": 390,
+      "sha256": "04268ed626ad580b71d66845ea0ddb260795fd724fee9e5f1029d291803dd113",
+      "candidateBlob": "37224e6b5d71f61c6d56e7984c88c117ccc5d3f8",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-q6-first-test-failure.json",
+      "bytes": 2362,
+      "sha256": "85df160f0a2de6a27995e9a3c96f672cc55c6f289ebcdfdc96f4990c03bbd473",
+      "candidateBlob": "b8652a8558c34b056ec568b0b02c4c4941cfd9ef",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-all114-02.json",
+      "bytes": 29420,
+      "sha256": "c625b34a89cf2ab07cab655dd74e185c5dd413e26a9d7f978fd9b681306da780",
+      "candidateBlob": "e9170dd80a5f3586b9cdc1666e7bc7d5fa27514e",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-all114-03.json",
+      "bytes": 29421,
+      "sha256": "df3efdb7640917957d9234fdc71fae4f02d00fb7c7774d46b38fcfd177816998",
+      "candidateBlob": "ed9583a987fbe561e8a874aa1155c146653aa216",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-all114-04.json",
+      "bytes": 29422,
+      "sha256": "9931f57a3da98d279b2f7758e0bdd215ea821a28b2241d9fb8bfefab785b36ff",
+      "candidateBlob": "187235cc63a5ac6dcfffee73e30295a4c715c345",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-all114-attempt-01.json",
+      "bytes": 14523,
+      "sha256": "68080255f5c81f1058d8cd70d49caa5342cf74f4c50dab405302d00e6cd278ff",
+      "candidateBlob": "bc9eb8384e5b5d1db1a8d2b3e496be7324652bd5",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-all114-final-01.json",
+      "bytes": 29434,
+      "sha256": "dd11386b8074d750690cfc0302d6c97a8ca129bc60241b001855104892f3a531",
+      "candidateBlob": "cdae46b60226653ce782d2d3ff66ce60a0efbe0e",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-all114-final-03.json",
+      "bytes": 29434,
+      "sha256": "732d17a12a050e3fd4cfe5a7765386fb6fbbd2b158a309f46bb68a2c2117467a",
+      "candidateBlob": "6b9f23b4744168f9235800de85494d62a336cfb7",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-all114-final-04.json",
+      "bytes": 29434,
+      "sha256": "639d2ef96340baad92932aa5e6212ba4d2f6b9315d40f7f7adc16d106db12fb7",
+      "candidateBlob": "a76c2f2230e433434d04a2847efed6141f4bb4cf",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-baseline-02.json",
+      "bytes": 863,
+      "sha256": "a511cf5762587f08c341f336f8dc663dfee635bbb47cdb98f76c3b5675df8056",
+      "candidateBlob": "907629579305960f0856a510aa3aa427adeebd79",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-baseline-03.json",
+      "bytes": 863,
+      "sha256": "b1e26b8c0b4783764f6a5e62d5eabc69568edf4d30e82b078f129b1a8d278566",
+      "candidateBlob": "5ca0fc5eb20ef2674324037466effe4047d02462",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-baseline-attempt-01.json",
+      "bytes": 1182,
+      "sha256": "c9255d8b3dfa10d20ec3a08c7279b18e1c1387c245431daccb97f4e57f90ecb5",
+      "candidateBlob": "e29ef275abdd9dcaf05931b5cfcdb7ad1c20f26b",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-baseline-final-01.json",
+      "bytes": 875,
+      "sha256": "306abe1b26bd086eba973947162e07d8d102aded5ae7f29602d48b025be6da75",
+      "candidateBlob": "ea43e637bf040273865734c80db5bde60f0bd2d1",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-baseline-final-02.json",
+      "bytes": 875,
+      "sha256": "a7f3b7b7f0d0f62f665d7a6ca8098a616c2398425b3ef2ad1127f74c193b37b7",
+      "candidateBlob": "9c5e109af9d04d0f97cee0f0ac652bea3cb96eba",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-baseline-final-03.json",
+      "bytes": 875,
+      "sha256": "5bb3a859012be6ef56c7e250ad3902013bb3f572aab5fa27d2a4f79a2b1ba35e",
+      "candidateBlob": "a9819d6a2d2aed2591054a844082e3edd47b831f",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-baseline-final-04.json",
+      "bytes": 875,
+      "sha256": "fe2dd33291ec24d10841148bb0d478dfd5141bb7662aaf48e05901d487d1868d",
+      "candidateBlob": "6008688121ce527231b21c980d163ce10c9f468a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-reference-determinism-first-check.json",
+      "bytes": 2142,
+      "sha256": "93b57bd8208f21ecc7f35d95b08ed5ea8cefa62e6caee179bc22eae1806bea78",
+      "candidateBlob": "19ccbff3cff448acc7b5b253c8b1abe5d2a6276e",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-retention-regression.json",
+      "bytes": 1471,
+      "sha256": "0e48fdf20461acc618f703d2c22ec9e0b7a907053e0713cfe428bb8d9902d05b",
+      "candidateBlob": "ece82bb6b9d9bc3394da7de169480a75361b43c4",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-revision-record.md",
+      "bytes": 3964,
+      "sha256": "040fb0425f858ba00c9d7dd04788c1f22df802a8614241da8770cf40d4fe85be",
+      "candidateBlob": "e36157274bc18544814866da3f4714b519b9db11",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r2-root-review-receipt.json",
+      "bytes": 5605,
+      "sha256": "c1deffb2ab5e35a27abf2314976c408fb7deb5a14bbd6ecce2bfe091f84b6992",
+      "candidateBlob": "408971267b5d3161e7e264cb2c5eeb6bddbbd7f9",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-author-process-receipt.json",
+      "bytes": 77971,
+      "sha256": "be199aeb1a07ac72a4eb90911d5df8f0ae1126ebc23a5b07c1ab9b2ba34c9029",
+      "candidateBlob": "1f2f6573d102b5cda0dafd99faee5a3f01884854",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-bind-table-01.json",
+      "bytes": 451,
+      "sha256": "a9af6a42853484cfa1b70a1295fb0c06989b9c0e2bfab85ad016b531cdd39259",
+      "candidateBlob": "47e3ac4f08da828a68a6995e5e1d00c46eb3a733",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-bind-table-02.json",
+      "bytes": 451,
+      "sha256": "a9af6a42853484cfa1b70a1295fb0c06989b9c0e2bfab85ad016b531cdd39259",
+      "candidateBlob": "47e3ac4f08da828a68a6995e5e1d00c46eb3a733",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-complete-entry-attempt-01.json",
+      "bytes": 2446,
+      "sha256": "e43457ac4ff9c506e7888a2b9068880d49b29029ce929e652701a9847ba7e233",
+      "candidateBlob": "d9707aef659291e0a0ff3474364f2c120c1d1239",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-complete-entry-attempt-02.json",
+      "bytes": 1657,
+      "sha256": "aafe43015aa1d997e26e260b5c9c83690e648e0a57f776fb8c98d9effee33633",
+      "candidateBlob": "92da8c8cfd75fb33f5d1541eee45906e9fc7fe1b",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-current-math-attempt-03.json",
+      "bytes": 4087,
+      "sha256": "280f06b0fb569fc50a07ef3575d53b2eb3466e53f53b37b64c836982b4d4340d",
+      "candidateBlob": "dcc24e811aba4ede230e74f0ddce181f0351d969",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-disposition.md",
+      "bytes": 4421,
+      "sha256": "a266e3a88431d01543950539cbd2b387510d39b4329d499a084ed4312f11f0a6",
+      "candidateBlob": "787ceec9904743c407aa7d6b8dfc13aed34c0abd",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-final-determinism-02.json",
+      "bytes": 103138,
+      "sha256": "4ba63ca38eea100defa1a6841cf442ebcadb24c0caeb78fc53ba048003055a4b",
+      "candidateBlob": "ef334b3a99b8c889ca4bbcd1e04da76430fdb2ae",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-final-determinism.json",
+      "bytes": 103138,
+      "sha256": "fa89154e27cd42ece7d45a9d8339b5d03e8cb19410366372a2a0c55e26137918",
+      "candidateBlob": "d747970b885c7b1d5ad4c3c14372a176ad7b4bcc",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-final-integrity-attempt-01.json",
+      "bytes": 50090,
+      "sha256": "0f71aaaf719b418f772ea6e9e14363d26b28badb3260580638efffa4135e9088",
+      "candidateBlob": "bb66ea531974433a970f4522cad5e101cb6f83e8",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-final-integrity.json",
+      "bytes": 49896,
+      "sha256": "dbe448c8f8a761407d642113bd5c8a2a8fd870f1f26e855d8bd9d64aeb16c333",
+      "candidateBlob": "45a3cf06479a8d19b74a6656a0112abd305af1f1",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-final-math-01.json",
+      "bytes": 4183,
+      "sha256": "548da9ae580c8a5186d4757b12342d2062a015ba14903f1fc55b626a9512c1ce",
+      "candidateBlob": "2ded29bb4199d4a8ae2a6e5d1abf9a82a0c5296a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-final-math-02.json",
+      "bytes": 6280,
+      "sha256": "885efd1d13045abc5b630f18c9811145dbcb1cb803b1738e60fef79b414fa9a0",
+      "candidateBlob": "1673096af5e7c412ad28cb1188aaa00a4a5f699a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-first-failure/audit-execution-attempt-01.py.raw",
+      "bytes": 9823,
+      "sha256": "868eb5811b68f39444c3a583ac852d5b548a89fb1022715b8a3e470bb19893df",
+      "candidateBlob": "e1f5a84b913968738f4dd96e7ef337e0be995a24",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-first-failure/audit-execution-attempt-04.py.raw",
+      "bytes": 11925,
+      "sha256": "7c75cd1b0fe8d31a3a641af4d349f3549afdffa86d4db55f04eb9f1b81946d8c",
+      "candidateBlob": "f3daed12a6a59038af14adb4e44e4f8a5fbe3e0e",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-first-failure/reference-before-source-occurrence-r3.py.raw",
+      "bytes": 83877,
+      "sha256": "af737b83f20fa6637ab1e8255c8068a82947014767db3915250cf0c501e4c865",
+      "candidateBlob": "bbacbf0e5ac770c7858dc01351994f397a3a4a2e",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-first-failure/test-complete-attempt-01.py.raw",
+      "bytes": 6213,
+      "sha256": "4deea94b62517d63d1de48240d749a42d384d9402229d70058899f04d689b205",
+      "candidateBlob": "9ef2353e1712155feaacca7140e6efab016c536d",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-formatter-final-doc-correction.json",
+      "bytes": 1191,
+      "sha256": "4b2bb01dc8a5ffdbd5a5244df602ecf894488e9da35ac1816d21ab6585a6ca3c",
+      "candidateBlob": "f27681a492ed9b8c030a456803848cdd5a01e52e",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-formatter-new-only-02.json",
+      "bytes": 4492,
+      "sha256": "d8ee243f92d17938f805f89a1516a1ed9846d12847c3c71fdef953f2daa31e9a",
+      "candidateBlob": "d5f6e44f59af0d3e10fb1eb6d8136e40e11a6d97",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-formatter-new-only.json",
+      "bytes": 4491,
+      "sha256": "8f1023c47c4f9d8cf8816faa52954ba0a6e91c624d5bf514eae9ea090587de40",
+      "candidateBlob": "983f80ab54f9b94c4d46110aab22d421ff5c3ef5",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-generation-attempt-01.json",
+      "bytes": 7212,
+      "sha256": "2da1fdf4be3a3310ca60c6cb17508be86551cc1a275c3cf7113dcd65c3a4c2ba",
+      "candidateBlob": "cb2480b8f4a3f24410da9ae72995a6bcc558f9e5",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-independent-audit-01.json",
+      "bytes": 3284,
+      "sha256": "fd95dbb6d3dbf8e48e0eab9d9bfc46626fa0bbf6f739f73ff601e6c5a57a9646",
+      "candidateBlob": "c6dd1ce51d75cac5928899b5a6392d31c4022d3e",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-independent-audit-02.json",
+      "bytes": 555,
+      "sha256": "763c3cec0dea1ed3a90eac594f96972895ceaffc8d004acc71af2b7e469385a5",
+      "candidateBlob": "da576db98f0ea06f00d2311573099edc8a9f650c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-independent-audit-03.json",
+      "bytes": 605,
+      "sha256": "c20d119bf8ee342c380713b2b6628b0a79ef9449da70d1652dfc7658caa33665",
+      "candidateBlob": "bb0503f7da7c3f255fd5062e185065c48ff9c34a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-independent-audit-04.json",
+      "bytes": 1380,
+      "sha256": "bc7d18a97115f4336e752056a34e9b2454a4aca7904460ab1391a4554e1e39f8",
+      "candidateBlob": "3be23a0474cceb57ea99e1d01aa14c01989af692",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-independent-audit-05.json",
+      "bytes": 605,
+      "sha256": "c20d119bf8ee342c380713b2b6628b0a79ef9449da70d1652dfc7658caa33665",
+      "candidateBlob": "bb0503f7da7c3f255fd5062e185065c48ff9c34a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-independent-audit-06.json",
+      "bytes": 605,
+      "sha256": "c20d119bf8ee342c380713b2b6628b0a79ef9449da70d1652dfc7658caa33665",
+      "candidateBlob": "bb0503f7da7c3f255fd5062e185065c48ff9c34a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-patch-path-first-failure.json",
+      "bytes": 539,
+      "sha256": "7bd8a09b197908e5b165ac50e4103fbfacaef5654d3d574a72b62a4e80f81dee",
+      "candidateBlob": "0c1181b259a71eb999b1a964806d891054ce06fd",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-reference-all114-01.json",
+      "bytes": 29487,
+      "sha256": "acc29fdffd05783f71d48c3b95572a619d5b0eb5acaddb97c5dbf6749a077e41",
+      "candidateBlob": "dc37c4809192bbb0f9be96c86be67a4764f4e3bc",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-reference-all114-final-01.json",
+      "bytes": 29499,
+      "sha256": "7ade2be7e1fc0b75e99e1c91df08cf13aa541532896377d8aad7c26cae91c85c",
+      "candidateBlob": "bf45e7b3a4ea52d356aa36d7498bf5223263e9b6",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-reference-all114-final-02.json",
+      "bytes": 29499,
+      "sha256": "0a96dfcbf0d8755bcd401d02a2c272ffb49a88c0c07230b0c52a4a37a1f5b446",
+      "candidateBlob": "cf18d301b4ddd952612d808948298b4579a44fc1",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-reference-baseline-01.json",
+      "bytes": 863,
+      "sha256": "bd74b915e272eeadc1fb757b5ac834c83295dc3b6a18c7b4c03f2283086c7c84",
+      "candidateBlob": "b840b6b6a03207dc96824072da1d73486fe91ee5",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-reference-baseline-final-01.json",
+      "bytes": 875,
+      "sha256": "e9ca0c39ef7c463ddacbdc628ce93031324d71ad4b6a3951ce9264ec0d274de8",
+      "candidateBlob": "35f442440ab7e3e391d99a9a50a25ccd39deb2d4",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-reference-baseline-final-02.json",
+      "bytes": 875,
+      "sha256": "d2bf703147dc2fba0e1aff97e9479122e1ce3bc3ded711f7ce3c5d4b4525295d",
+      "candidateBlob": "85e185327f3d566407232584a66e7138cea1f7c7",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-revision-record.md",
+      "bytes": 4823,
+      "sha256": "5adef33f860a64f537af50af7971940a5d32cdc6266a4dce08b6d704421abe99",
+      "candidateBlob": "94df3789eb237913e528be6d9a8a451545061656",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-root-review-receipt.json",
+      "bytes": 4186,
+      "sha256": "65c9f47eaa70037968175c4eab06d2606f5bd67712441addf2201f7dfcab1fe2",
+      "candidateBlob": "f8ea45c0aa20d65279068f4850342c59ec335c5a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r3-title-query-exit2.json",
+      "bytes": 446,
+      "sha256": "a2f8adee146507294bff9c19d3e9aff931bf05d43027b7daecbcb2c4e2dddd7d",
+      "candidateBlob": "1750111b79ba861a251758012a2d7f30db34e990",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-baseline-state-first-failure.json",
+      "bytes": 876,
+      "sha256": "642a8771a029619ef1df8559fa4e856a431bed71f453583a7f8790b0f840d522",
+      "candidateBlob": "9cd4888d7f56c36d6b1b52ab9c01691460e5314e",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-bind-and-audit-01.json",
+      "bytes": 1543,
+      "sha256": "5d9e95776e1648d11cedc2df214ac7fbdb702e15baa19de0104d22fa084f648f",
+      "candidateBlob": "d746973edb35a761724bc744f44035a02a77bf2e",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-bind-table-02.json",
+      "bytes": 451,
+      "sha256": "28322c34660a3ef2bacd146add88c68b1af030543af37235e0bc86d3097e1378",
+      "candidateBlob": "0871e6854cfa6cff46c679e6eb1fb6c6c31604fb",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-disposition.md",
+      "bytes": 4326,
+      "sha256": "a227690cece0fdc2618613a6cd9561aa7374860ba9822028c339795bc61f0bf6",
+      "candidateBlob": "48737eec7b5bf83c7f3fd1c6273aa204a02bd030",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-final-delta-audit-04.json",
+      "bytes": 1024,
+      "sha256": "f7adb57f388ecb9411cceaee2442b351e35fc367a847166de630d343662f2305",
+      "candidateBlob": "00d2c75fce3d5b251ec276475eba4c82ed70487a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-final-delta-audit-05.json",
+      "bytes": 1019,
+      "sha256": "7fb884c1dc6f721b1064c7be5de23c53caf815b2b287ef4c37fb3de6c5e4231d",
+      "candidateBlob": "222450279eed309b813244209d50a56ecbdfa35f",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-final-delta-audit-06.json",
+      "bytes": 517,
+      "sha256": "f70e3bd45f68d1da985d21ecf2ad02d76ef5ec72cb59ad49b4ff45837cd0d0ca",
+      "candidateBlob": "2c3f396736df490f4fc43638e1b2812d90278704",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-final-determinism-01.json",
+      "bytes": 121435,
+      "sha256": "8e30f5a8b45d0bf7b4f46d751fd15468a9ac330ffe13384c8cf5de4500ab24e2",
+      "candidateBlob": "cccbc25777eac96686c8f025cf401607c9f2759c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-final-determinism-02.json",
+      "bytes": 127976,
+      "sha256": "87a78d6cce137c1102141e7027d630c8f369cc5ae14c8f008afb478f71d20f41",
+      "candidateBlob": "847910c659a9d3d93d242ed85cacd0da7b8f6090",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-final-formatter-new-only.json",
+      "bytes": 6906,
+      "sha256": "40a8f50524eef72148447e244d370668be5ade9df4c3f9365994f5f05dcd641d",
+      "candidateBlob": "2ff661a8d347f934b77431a3e0c32dbc573209cb",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-final-integrity.json",
+      "bytes": 74064,
+      "sha256": "72a100ee9b92972caee0e648af734f7566d0cdaadcae3d8f51694a8e27882871",
+      "candidateBlob": "0a782c166b5cd97731962e298eb21d49f9db5638",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-final-readonly-audit.json",
+      "bytes": 637,
+      "sha256": "c953fbd9dcd2a94fbaf48feb72bc7c26a41af9667969795e475bbe27b577e2ba",
+      "candidateBlob": "2edfbf9f1aded89073381ca52db4b2920ab1fb1a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-first-failure/audit-before-when-class-completion.py.raw",
+      "bytes": 15489,
+      "sha256": "a056531e11688086d3c70254e5493540fe83fff0ef8870fe49fbed0ebc899215",
+      "candidateBlob": "31e219831cafe608660bb4bd72b96a2e813d055f",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-first-failure/audit-raw-iri-attempt04.py.raw",
+      "bytes": 18082,
+      "sha256": "aeb6bef4afaabfaedb147701dc53c2993daebc6e875c39b50c4209d53d06edff",
+      "candidateBlob": "d41a0bf00391bcd2f34d8bce74047470681afc28",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-first-failure/audit-restored-child-attempt05.py.raw",
+      "bytes": 18224,
+      "sha256": "efe1db9eaf58292f1131300e1ca43035525456e1e5b9d99776292908ed439fd3",
+      "candidateBlob": "dc1e44a410ed324d20e9a9744b6d6a499aec4b59",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-first-failure/audit-variable-class-length-attempt01.py.raw",
+      "bytes": 15256,
+      "sha256": "72d2c60c63d33e95e76606576a3b13b51b9627e9151bd0a9e337ab842e0a9451",
+      "candidateBlob": "2d2b669be7dc2171f30e0d20fc247987b1fbe024",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-first-failure/baseline-source-locator-attempt01.json.raw",
+      "bytes": 36768,
+      "sha256": "042232a74159cb0c4410e9213e7c69cddd50c2bc08a571b7d22473848cc920e6",
+      "candidateBlob": "5b4dbbd1a95c7a4392fed09459fa2c7e1e5ad4b0",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-first-failure/metadata-delta-before-when-class-completion.json.raw",
+      "bytes": 57845,
+      "sha256": "3c469ac14c4b8eae6e06140ab5b1fd7258cf5866fefabec05c21cf715f4f0cf2",
+      "candidateBlob": "e58382581d795b1a8acbe3c8d5c98f622f8c3c23",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-first-failure/reference-before-when-class-completion.py.raw",
+      "bytes": 89888,
+      "sha256": "1df4e7d9d34f2f182d37d8b445332e33c57dbc444aeb272cf3cdf2a17b0f17e8",
+      "candidateBlob": "b7b39ec8bb8423774a3057af30b74482c2ab5a5a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-first-failure/reference-source-locator-attempt01.py.raw",
+      "bytes": 89735,
+      "sha256": "c92c290a1c7cc78f233c850aa940b56f96661fccd3c4e3d5536620d635e4103e",
+      "candidateBlob": "f047fce0629dc90964a96de01d730817e0a2d221",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-focused-entry-01.json",
+      "bytes": 6691,
+      "sha256": "1c7cca080d71f1d6c438bc76a17fc4df904af42611a02bd75d2d244a1aac275e",
+      "candidateBlob": "28dda4f32e5a7c77659505f60ff1ccfc657d8d8c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-focused-entry-02.json",
+      "bytes": 6691,
+      "sha256": "16f0ff72f865b7043ec2c071630f0ae2add068635c7d5f9cd33da40ea82597dc",
+      "candidateBlob": "388c72ddbcde55eea2709ea1078f88aa6461f818",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-focused-entry-03.json",
+      "bytes": 7870,
+      "sha256": "402217380e6e032ef1337169d4c59f1833f07e856c73d4e8c813dba316b4576f",
+      "candidateBlob": "d42f0f3fac630ac14fa6fd923ff20a64ebe10a02",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-independent-audit-02.json",
+      "bytes": 621,
+      "sha256": "bc3dd0ff97a3d13464fd76a9377edb4ab64a70112025037c3c9f2857ab426d8f",
+      "candidateBlob": "399edfe6b94b8a7a9964a602ad6eba70f869d0aa",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-independent-audit-03.json",
+      "bytes": 621,
+      "sha256": "bc3dd0ff97a3d13464fd76a9377edb4ab64a70112025037c3c9f2857ab426d8f",
+      "candidateBlob": "399edfe6b94b8a7a9964a602ad6eba70f869d0aa",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-initial-query-exit2.json",
+      "bytes": 770,
+      "sha256": "65f3263d9a5a42f2783c13babdf4aee1f34a6bfdd30cd1dfc089b023e731ba12",
+      "candidateBlob": "fb476f9e98b335be878e70335cea3689ff525ad3",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-input-read-receipt.json",
+      "bytes": 1019,
+      "sha256": "eb3234b696c119626acd367fbcf5f6a61de481c316c9626467fdd22966d1f260",
+      "candidateBlob": "32210fc777a227ca3c6d6faafac399727d24b624",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-02.json",
+      "bytes": 1926,
+      "sha256": "8625be0f318fea9ab26ad5048acc0ae9919c8f872e3746a65d583a9803e6c90e",
+      "candidateBlob": "1a910b916143d698662638272a73fcfe632b80b3",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-03.json",
+      "bytes": 720,
+      "sha256": "ace63d0d6d17ed778c7e6b862d803fbbf744d04921aee2bc2767841139df8a59",
+      "candidateBlob": "a197c1ce75ed9961ea4573bbf0330fd4aa059824",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-04.json",
+      "bytes": 448,
+      "sha256": "7641dc2f1bc7d8398c28df0e6dd36f30a113ffc70d7e8b30632d8bfbf2dd3aed",
+      "candidateBlob": "d467b68c5393eb58ae7c2768d48dc8c185e22378",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-05.json",
+      "bytes": 796,
+      "sha256": "8841d0d2d4254bea21050cf805418a4f8c7e1b50b70f8eceec4d835cadc24bb9",
+      "candidateBlob": "323af55bff0b807d0e3e47a18ea3ab2e3bf2ce7c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-06.json",
+      "bytes": 1202,
+      "sha256": "80d869206059271f93315a157405512da13b6334833b23016dcfcd109442b735",
+      "candidateBlob": "eaf04d8af167beff4ae397ad5688d1bf620dff5c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-07.json",
+      "bytes": 479,
+      "sha256": "0434e490f9aabfe25298cd3fcf0bf011e9cdd3d10831645ac3239eb9cc659f4b",
+      "candidateBlob": "f1b1cfb72b9e0920f5cebbe82f744f45ecd53c08",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-08.json",
+      "bytes": 351,
+      "sha256": "ab52a3465d8370de8737fff0e8d085764badf78de75b54b5e39e2f707faf3cb1",
+      "candidateBlob": "328b0982f32a16a103505ecd2118a8b07c815370",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static-09.json",
+      "bytes": 387,
+      "sha256": "d8f17ac66beec140abef936a7f7631ac0a069b4b2807d06b50d633a3d15b1fe3",
+      "candidateBlob": "915e1dc2617ecae7c6589a2ae64dff764e3d38b3",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-pre-execution-static.json",
+      "bytes": 3017,
+      "sha256": "d9f9009663d96db9ab6f38649dc39f01be2821554cd1775610ce2f1f9d26a814",
+      "candidateBlob": "d466bcac23309e605fd0077fc4f48c74b9abc03d",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-reference-all114-01.json",
+      "bytes": 29487,
+      "sha256": "f196948b86abf98161f809859c74638c1cc27a5b0fb31b09687ef9c104951fbd",
+      "candidateBlob": "40027e31942c93d1b6628a1eae8bd844fbcee061",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-reference-all114-02.json",
+      "bytes": 29487,
+      "sha256": "51090169fe64faeab6e9b36ff407235fba26efd96d89583f74e049ab475677ae",
+      "candidateBlob": "458ef5e44260286fcee2e0089be7b7cc057fb7f9",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-reference-baseline-01.json",
+      "bytes": 814,
+      "sha256": "2076f2b004ae8849edd2f9eed3b54e935299f9b51dc643dcd027d5d842d40abe",
+      "candidateBlob": "657b6f4384e4ea137b2fee92a14676ec2b5f2598",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-reference-baseline-02.json",
+      "bytes": 863,
+      "sha256": "cad8e654a4b289ed3a844f325127d38c0a2139d0dabf8900935c3fb17c92dd52",
+      "candidateBlob": "cb15a59843ae0a1f6029ff152dc76514daf1c44a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-reference-baseline-03.json",
+      "bytes": 863,
+      "sha256": "4bb2b94529b8aafcb6a1444e266e94b731513fb06dd6ee41f072bd5c1f7699f5",
+      "candidateBlob": "66e7008cd76076321c61ca97c19afd6cca97f26a",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-revision-record.md",
+      "bytes": 4672,
+      "sha256": "c5b2304782ab609a8b70d668e025baae555f1f3ccae5d693dc51014ffbd4ba47",
+      "candidateBlob": "dd057bf4c6900d05164a6542c74a602b901a681c",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r4-when-clause-scope-read.json",
+      "bytes": 302,
+      "sha256": "818c09b21ef004ec3d2fc41a6b1ab0c65dbcd8ac3526fcb6740adf42eadf9098",
+      "candidateBlob": "99096af33caf5640f8915358a4f93f8dc2a74b51",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/retained-first-failures.json",
+      "bytes": 1639,
+      "sha256": "3fac2ad19bb4f1f43d524bfc372afa545494618b7190e94255addf01800ae358",
+      "candidateBlob": "353b285b4805c49fb507bdbb95e1b1754bf62c0b",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/revision-record.md",
+      "bytes": 2169,
+      "sha256": "98367ada579f512b4e5bb17848f5dde186d9930523eee75f0117ee1f02b0152a",
+      "candidateBlob": "0dc66c90f09f57277663945454f89c98d431c260",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/seal_candidate.py",
+      "bytes": 3058,
+      "sha256": "61ffe7113d80519743fc18c0473ef14936d2a43649bfe1728c16ed0129caaf23",
+      "candidateBlob": "73f74cc82fcea8df4d282feeeafa29ea1ec16a17",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/static-validation.json",
+      "bytes": 275,
+      "sha256": "11dfd6e51dd625e851f43c3c36b0561bd073e3a7126a5ba33d24a470b8401939",
+      "candidateBlob": "b8511a142f05343b1d7076eaeb08a13e5393ce68",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/validate_math.py",
+      "bytes": 4055,
+      "sha256": "1fee74684a35660ccc08419199dbeb3e5b0654baf8b9890ca7629e95f48faa5e",
+      "candidateBlob": "d193653d8d2d4d85e9adccabad822c43fe101801",
+      "currentEqualsGitEqualsSha256": true
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/artifact-manifest-r4.json",
+      "bytes": 55402,
+      "sha256": "a3b6d25cfc6541dfea96cfc29659db440b6394b1f143ebe6574410587ccd8516",
+      "candidateBlob": "de28a300d384af57f41214fae0aa9f33a6a2ec6f",
+      "currentEqualsGitEqualsSha256": true
+    }
+  ],
+  "candidateStatusAfterCommit": " M AGENTS.md\n",
+  "candidateIndexEmpty": true,
+  "protectedAGENTS": {
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+    "notStaged": true
+  },
+  "old203FilesUnchangedToRevisionBase": true,
+  "finalReferenceSha256": "bc47b16bf528b973aeebcc0be4a103bf00acbf0f351485f5370510817bf1467c",
+  "finalVerification": {
+    "focusedMethods": 6,
+    "fullEntryExtraPrograms": 27,
+    "baselineAnalysisExecutionEvents": 2455,
+    "all114AnalysisEvents": 236545,
+    "all114ExecutionEvents": 236484,
+    "twoSeedPrograms": 141,
+    "twoSeedRecord": "r4-final-determinism-02.json",
+    "focusedRecord": "r4-focused-entry-03.json",
+    "all114Record": "r4-reference-all114-02.json",
+    "independentDeltaAuditRecord": "r4-final-delta-audit-06.json",
+    "readOnlyAuditRecord": "r4-final-readonly-audit.json",
+    "allNamedFinalCommandsExit": 0,
+    "formatterNewFileCount": 13,
+    "formatterAllExplicitIgnorePathDevNull": true,
+    "formatterJsonSemanticsAndObjectOrderPreserved": true,
+    "formatterNewWriteCheckExit": [0, 0],
+    "finalHandoffWriteCheckExit": [0, 0],
+    "integrityManifestWriteAndCheckExit": [0, 0, 0],
+    "actualGitDiffCachedCheckExit": 0
+  },
+  "actualFailuresPreserved": {
+    "baselineStateAssertion": {
+      "exit": 1,
+      "record": "r4-baseline-state-first-failure.json",
+      "cause": "raw definitions locator incorrectly treated as typed SourceRecord; preceding driver exit0 only proved generation"
+    },
+    "independentPlanLiteral": {
+      "exit": 1,
+      "record": "r4-bind-and-audit-01.json",
+      "cause": "1121 guessed input bytes; independent encoding5+560+96+439=1100 corrected audit only"
+    },
+    "independentRawIriDelta": {
+      "exit": 1,
+      "record": "r4-final-delta-audit-04.json",
+      "cause": "audit missed fixed bare IRI form"
+    },
+    "independentRestoreDelta": {
+      "exit": 1,
+      "record": "r4-final-delta-audit-05.json",
+      "cause": "audit omitted actual R16-child recompiles"
+    },
+    "initialNamedPathQuery": {
+      "exit": 2,
+      "record": "r4-initial-query-exit2.json",
+      "cause": "nonexistent pure input path guesses"
+    }
+  },
+  "intermediateSuccessScope": "original head-only R4 source1df4 and 135-program proof remain historical; final when+head sourcebc47 has141 proof",
+  "languageAuthority": "integration59+64 already-adopted new RuleSpec when/head clause; ordinary RDF graph and legacy unchanged",
+  "processReceiptExcludedFromManifestToAvoidSelfReference": true,
+  "processCommitNotPreFilled": true,
+  "reviewDisposition": "proposal response to R3 findings; closure pending fresh independent delta review",
+  "pending": [
+    "current source/native/wire/fingerprint/plan codec",
+    "real same-issue 17L capture",
+    "product issuer/actual usage",
+    "real owner H/invocation permission"
+  ],
+  "notExecuted": [
+    "product imports/execution",
+    "old reviewer/collector",
+    "unchanged numeric/Q6 tests or small Ledger",
+    "pytest/npm/build",
+    "native/DB/GUI/network",
+    "install/version probe",
+    "external model",
+    "push"
+  ],
+  "exit": 0
+}
