@@ -1,0 +1,207 @@
+{
+  "scope": "STATIC_DISPOSITION_OF_ALREADY_FROZEN_ORIGINAL_OUTPUTS_ONLY",
+  "sourceProduct": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+  "sourceArchiveSHA256": "6d95d96c8bea923b5f31477b6774d686932389a1c37960602cea2e7eb88cf070",
+  "newProbeRuns": 0,
+  "newNativeReadback": false,
+  "newModelMessages": 0,
+  "originalOutputsUnmodified": true,
+  "newAuthorPrioritiesRetained": {
+    "R2-M-P2-1": "P2",
+    "R2-M-P3-1": "P3"
+  },
+  "rootPriorityDecision": null,
+  "confirmedSourceBug": false,
+  "sourceRepairProposalPaths": [],
+  "cases": [
+    {
+      "case": "006",
+      "originalCallId": "call_01a16586b29a7178bc975239",
+      "sourceArchiveMemberPrefix": "final-minimax/runtime-originals/",
+      "outputs": {
+        "stdout": {
+          "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/.private/T07-r2-native-receiving-20261023/final-minimax/runtime-originals/006-digest-dedupe-probe.stdout.txt",
+          "archiveMember": "final-minimax/runtime-originals/006-digest-dedupe-probe.stdout.txt",
+          "bytes": 257,
+          "sha256": "6182472f728135465178fd7f4333ab94d47c414f8aef9e931cb42e412e44003a",
+          "exactText": "plain_digest = 11503fb2dc1da2d0a23b791bf70daa3fb7b418c108622a5c00c444d28b35e6e6\ndup_digest   = da549aa08ead8ed84d442ff89abb9387f7c9e9d6294262c1bd5ab7f9e26f1775\ndigests_equal = False\nrounds_equal  = False\ncheckpoint_equal = False\nstatus: succeeded succeeded\n"
+        },
+        "stderr": {
+          "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/.private/T07-r2-native-receiving-20261023/final-minimax/runtime-originals/006-digest-dedupe-probe.stderr.txt",
+          "archiveMember": "final-minimax/runtime-originals/006-digest-dedupe-probe.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "exactText": ""
+        },
+        "exit": {
+          "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/.private/T07-r2-native-receiving-20261023/final-minimax/runtime-originals/006-digest-dedupe-probe.exit.txt",
+          "archiveMember": "final-minimax/runtime-originals/006-digest-dedupe-probe.exit.txt",
+          "bytes": 2,
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "exactText": "0\n"
+        }
+      },
+      "sharedVersionLabelsDoNotEstablishFullInputIdentity": true,
+      "originalCommandSHA256": "9c5b93580e82a73505e9a2263152f6c576e8d57d8ce6e5fec3df31ce2facc106",
+      "comparisons": {
+        "Definition.digest equality": false,
+        "complete Result.rounds equality": false,
+        "complete Result.checkpoint equality": false,
+        "status values": [
+          "succeeded",
+          "succeeded"
+        ]
+      },
+      "selectedRoundProjection": null,
+      "crossDefinitionResumeDirectionsObserved": []
+    },
+    {
+      "case": "007",
+      "originalCallId": "call_01a16587a87774779300e2e7",
+      "sourceArchiveMemberPrefix": "final-minimax/runtime-originals/",
+      "outputs": {
+        "stdout": {
+          "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/.private/T07-r2-native-receiving-20261023/final-minimax/runtime-originals/007-resume-digest-probe.stdout.txt",
+          "archiveMember": "final-minimax/runtime-originals/007-resume-digest-probe.stdout.txt",
+          "bytes": 428,
+          "sha256": "e0681e06bd3f8350841b2184e14a6ca420a8d0b718a032b6fa9dcd711c8e4a78",
+          "exactText": "semantic_rounds_equal = True\ncheckpoint_state_equal = True\ncheckpoint_consumed_equal = True\nplain_digest = 11503fb2dc1da2d0a23b791bf70daa3fb7b418c108622a5c00c444d28b35e6e6\ndup_digest   = da549aa08ead8ed84d442ff89abb9387f7c9e9d6294262c1bd5ab7f9e26f1775\nresume_with_dup_definition = REJECTED: Snapshot belongs to another input/configuration\nresume_with_plain_definition = REJECTED: Snapshot belongs to another input/configuration\n"
+        },
+        "stderr": {
+          "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/.private/T07-r2-native-receiving-20261023/final-minimax/runtime-originals/007-resume-digest-probe.stderr.txt",
+          "archiveMember": "final-minimax/runtime-originals/007-resume-digest-probe.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "exactText": ""
+        },
+        "exit": {
+          "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/.private/T07-r2-native-receiving-20261023/final-minimax/runtime-originals/007-resume-digest-probe.exit.txt",
+          "archiveMember": "final-minimax/runtime-originals/007-resume-digest-probe.exit.txt",
+          "bytes": 2,
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "exactText": "0\n"
+        }
+      },
+      "sharedVersionLabelsDoNotEstablishFullInputIdentity": true,
+      "originalCommandSHA256": "29797ffdd5b338e39bdf4d7f57f2fe38ed6de441000e7aca08e8d5e7274d1504",
+      "comparisons": {
+        "selected round projection equality": true,
+        "final checkpoint.state equality": true,
+        "final checkpoint.consumed equality": true,
+        "Definition.digest equality": false
+      },
+      "selectedRoundProjection": [
+        "checkpoint.round",
+        "created",
+        "resource_completed",
+        "backlog",
+        "tuple(metrics.__dict__.values())",
+        "checkpoint.consumed"
+      ],
+      "originalProjectionCode": "def semantic(r):\n    return [(round_.checkpoint.round, tuple(round_.created), tuple(round_.resource_completed),\n             tuple(round_.backlog), tuple(round_.metrics.__dict__.values()),\n             tuple(round_.checkpoint.consumed)) for round_ in r.rounds]\n",
+      "notComparedByProjection": [
+        "checkpoint.definition_digest",
+        "checkpoint.events",
+        "checkpoint.completed",
+        "checkpoint.state per round",
+        "input_events",
+        "before_inference",
+        "end_inference",
+        "trace",
+        "frozen_plan",
+        "Result.definition",
+        "Result.pending",
+        "Result.status"
+      ],
+      "crossDefinitionResumeDirectionsObserved": [
+        "plain checkpoint -> duplicate Definition: rejected",
+        "duplicate checkpoint -> plain Definition: rejected"
+      ],
+      "completeRoundEquality": null,
+      "completeCheckpointEquality": null,
+      "statusNotPrinted": true
+    },
+    {
+      "case": "008",
+      "originalCallId": "call_01a165882f667474a0d117b1",
+      "sourceArchiveMemberPrefix": "final-minimax/runtime-originals/",
+      "outputs": {
+        "stdout": {
+          "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/.private/T07-r2-native-receiving-20261023/final-minimax/runtime-originals/008-digest-order-probe.stdout.txt",
+          "archiveMember": "final-minimax/runtime-originals/008-digest-order-probe.stdout.txt",
+          "bytes": 294,
+          "sha256": "3635b74c20ae5ceda2214b3bb576f66cc7ecfc2b99cca6237cba8fcf86a4cec5",
+          "exactText": "semantic_rounds_equal = True\nnormal_digest   = 11503fb2dc1da2d0a23b791bf70daa3fb7b418c108622a5c00c444d28b35e6e6\nreordered_digest = dee5060f0bf40e99e47a28da3a1f52ed222a7a665a3e1f1b5c53111a99a5f2bf\ndigest_equal = False\nresume_reordered = REJECTED: Snapshot belongs to another input/configuration\n"
+        },
+        "stderr": {
+          "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/.private/T07-r2-native-receiving-20261023/final-minimax/runtime-originals/008-digest-order-probe.stderr.txt",
+          "archiveMember": "final-minimax/runtime-originals/008-digest-order-probe.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "exactText": ""
+        },
+        "exit": {
+          "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/.private/T07-r2-native-receiving-20261023/final-minimax/runtime-originals/008-digest-order-probe.exit.txt",
+          "archiveMember": "final-minimax/runtime-originals/008-digest-order-probe.exit.txt",
+          "bytes": 2,
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "exactText": "0\n"
+        }
+      },
+      "sharedVersionLabelsDoNotEstablishFullInputIdentity": true,
+      "originalCommandSHA256": "8c28291b540328d6b47ee9ff74652e57c1f6c9be934d6084decfe29e8ae71355",
+      "comparisons": {
+        "selected round projection equality": true,
+        "Definition.digest equality": false
+      },
+      "selectedRoundProjection": [
+        "checkpoint.round",
+        "created",
+        "resource_completed",
+        "backlog",
+        "tuple(metrics.__dict__.values())",
+        "checkpoint.consumed"
+      ],
+      "originalProjectionCode": "sem = lambda r: [(x.checkpoint.round, tuple(x.created), tuple(x.resource_completed), tuple(x.backlog),\n                   tuple(x.metrics.__dict__.values()), tuple(x.checkpoint.consumed)) for x in r.rounds]\n",
+      "notComparedByProjection": [
+        "checkpoint.definition_digest",
+        "checkpoint.events",
+        "checkpoint.completed",
+        "checkpoint.state per round",
+        "input_events",
+        "before_inference",
+        "end_inference",
+        "trace",
+        "frozen_plan",
+        "Result.definition",
+        "Result.pending",
+        "Result.status"
+      ],
+      "crossDefinitionResumeDirectionsObserved": [
+        "normal checkpoint -> reordered Definition: rejected"
+      ],
+      "reverseDirectionNotAttempted": true,
+      "completeRoundEquality": null,
+      "completeCheckpointEquality": null,
+      "checkpointStateEquality": null,
+      "statusNotPrinted": true
+    }
+  ],
+  "structuralInterpretation": {
+    "RoundContainsCheckpoint": true,
+    "CheckpointContainsDefinitionDigest": true,
+    "differingDigestSufficientForFullCheckpointAndRoundInequality": true,
+    "otherUnprintedFieldEqualityNotAssumed": true,
+    "checkpointEventsOrder": "event_catalog dict insertion order, first occurrence retained; no sorting at initial/next checkpoint storage",
+    "pendingOrder": "filter checkpoint.events in existing order; not the active-event processing sorted order",
+    "activeProcessingOrder": "sort by event.sequence,event.id",
+    "pendingEqualityObservedIn006To008": null
+  },
+  "preservedGates": {
+    "R1_NR01To05": "unchanged",
+    "originalSevenP3": "unchanged",
+    "R2ReadingAndWriteScopeFindings": "unchanged and separate",
+    "completePairGate": "PROCESS_FAIL / Pair 0",
+    "ZNecessaryVerification": "UNVERIFIED; no retry"
+  }
+}
