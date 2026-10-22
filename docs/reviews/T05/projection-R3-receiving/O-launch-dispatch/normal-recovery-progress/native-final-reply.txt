@@ -1,0 +1,34 @@
+**终稿已写定：`docs/reviews/T05/projection-R3-receiving/launch-O/final-v2.md`（44941 B / SHA256 `9921ffe20f68b1bbf5c7938fa7d45c9b0059cd9c8ed5b0a4afcb5a6e23852df7`，503 行）。**
+
+## 结论（分范围，未改判）
+
+| 范围 | 结论 |
+|---|---|
+| O 工具链自身（builder + self-test） | **Pass**（47/47 OK；`--check` 五件字节相等、280/137、`wholeOracleComplete=false`） |
+| O 包 149 件工程/authoring 静态审查 | **NotPass**（F-01～F-15） |
+| 产品正式能力 | 仍只有 `health` |
+| 运行 / 打包 / 生产 | **无法验证**（本轮授权只允许 O 两条 stdlib 命令，未跑 `check`/`e2e`/`package:dir`/真人桌面） |
+| 全部父门 | **不签署**；137 pending、26 缺件、417/280/137 false whole 均未因续接关闭 |
+
+## 本轮实际补完的覆盖（149 件四档闭合）
+
+**L 逐行读完 124 件**（含上轮明确未完成的约 55 件产品文件：`packages/contracts/src` 5 件 + `contract_v2.py`、desktop main 6 件、renderer 7 件、engine tests 19 件、unit 15 件、e2e 5 件，另加 scripts 6 件、CI/配置/文档）｜**P 完整解析遍历 20 件**（`packages/contracts/v2` 8 件大 JSON + fixtures 5 件）｜**S 仅静态统计 2 件**（两份锁文件）｜**部分 3 件**（PRD 未逐行读全文，两个 allocation `.raw` 只读规范行——未读区间已逐件写明）。
+
+## 三个子审的真实失败
+
+全部因瞬时网络错误终止（`ERR_NETWORK_IO_SUSPENDED` ×1、`ERR_NETWORK_CHANGED` ×2），**零产出、零文件**。按你的要求「子审仍缺的部分由本人补足」，其全部范围已由我本人逐行/完整遍历补完——**未**以子审存在或启动替代覆盖。
+
+## 新增 4 项缺陷（F-12～F-15）
+
+- **F-12（中，本轮新发现，确定性失败）**：`scripts/verify-i01.py:100-115` 仍发 I01 时代 v1 信封（缺 `kind`/`engineSessionId`/`params`，`protocolVersion:1`），撞 `coordinator.py:176-178` 的 `set(value) != required` → 会话致命 `ProtocolFault`，stdout 无响应行、`json.loads` 先抛错。该脚本**不在 CI 路径**上，属潜伏死脚本。
+- **F-13（低-中）**：`job_store.py:832-838` `stateVersion += 1` 绕过 `contract.permits_transition`。
+- **F-14（低-中）**：`storage.py:436-440/629-633` 的 `Conflict` 文本内嵌原值——实际跨边界安全（`classify()` 只取 code+params，ownership 冲突转 opaque `detailRef`），降级为「仅靠调用方自律的未封装危险通道」。
+- **F-15（低-信息）**：Darwin RSS 采样自述非硬限可过冲，父进程采样仅 darwin 分支，跨平台上限语义不等价。
+
+另记录**三项经复核撤销**的怀疑项（`_authorize` 无 `projectId` 越权、`task-presentation.ts:193` 优先级、锁文件越权依赖），避免重复计账。
+
+## 边界遵守情况
+
+未 stage/commit/切分支/Goal/push/PR/merge；受审实现、测试、fixture 的 SHA256 逐件复核与执行前完全相同（`AGENTS.md` 仍为 `de15f6ce…`）；`report.md` 原件保留未覆盖（本树实测 60824 B/`78cdadc3…`，与 owner 记录的两版不一致已如实登记，请确认以哪版为权威）；未读未引用另一指定模型本轮任何意见；未运行会读未知内容的 observe。
+
+<media type="file" src="/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O-minimax-review-e15ce44/docs/reviews/T05/projection-R3-receiving/launch-O/final-v2.md" caption="T05 O 包完整范围独立审查终稿 v2" />
