@@ -1,0 +1,55 @@
+{
+  "format": "T03-T10-supplier-signoff-independent-delta-checks/1",
+  "reviewer": "/root/t10_t03_signoff_review",
+  "firstReviewSealRef": "4591339f87b5a5bb2e4894fddd62f0851ac12472",
+  "fixedRepairRef": "76974caa71064a511e78da0a2e25f71eb6ac15dc",
+  "decision": "DOCUMENT_DELTA_PASS_ONLY",
+  "findingsDisposition": [
+    {
+      "id": "F1",
+      "priority": 3,
+      "state": "closed",
+      "reason": "S5 five actual rejection objects named, missing cache separately S3 semantics only; fixture/execution not fabricated"
+    }
+  ],
+  "newFindings": [],
+  "changedPaths": [
+    "docs/reviews/T03/T10-supplier-signoff-20261022/F1-disposition.json",
+    "docs/reviews/T03/T10-supplier-signoff-20261022/signoff.md"
+  ],
+  "exactOneFragmentReplacement": true,
+  "allOtherSignoffBytesEqual": true,
+  "unchangedCandidateAndFirstReviewFiles": [
+    "input-identities.json",
+    "author-checks.json",
+    "independent-review.md",
+    "independent-review-checks.json"
+  ],
+  "targetedFixedSourceChecks": [
+    {
+      "id": "S3",
+      "bytes": 11487,
+      "sha256": "1cc78023aae09ca2d2975d21e0cd2d71542325fe9c1e9c057ddd409b95f29605",
+      "match": true
+    },
+    {
+      "id": "S5",
+      "bytes": 13123,
+      "sha256": "dd249c93dd23bbfa5dd47293f578251a375bb144da5b25f3e8683f878829106d",
+      "match": true
+    }
+  ],
+  "repairedSignoff": {
+    "bytes": 12962,
+    "sha256": "49cf147ae27deb62dcf926bf4809df67a5636fb9cfbebcbca0d7028a54d9b2b0"
+  },
+  "F1Disposition": {
+    "bytes": 652,
+    "sha256": "7d1286714f736e1e61993817e99d7f2c59daa5a6afb4da392c9b81cd3a6b77de"
+  },
+  "newFixtureProduced": false,
+  "productParserTestsBuildNativeGuiExecuted": false,
+  "sourceCodeRead": false,
+  "schemaOrRuntimeAdoption": false,
+  "firstReportPreserved": true
+}
