@@ -1,0 +1,50 @@
+{
+  "recordKind": "owner-formal-terminal-and-report-reception",
+  "receivedAtUTC": "2026-10-22T20:10:52.603666+00:00",
+  "candidateSha": "036d7172ddba8502fe81e6e7ce375ce09ef7fa1c",
+  "sessionId": "session_8b120f9cd410a68dbf141a7216ac0308",
+  "turnId": "turn_9ee07ab5-c812-41ca-b03e-f83fac40acdb",
+  "formalTerminal": {
+    "timestamp": "2026-10-22T20:01:24.637Z",
+    "level": "info",
+    "event": "turn.completed",
+    "module": "core.runtime",
+    "message": "Turn completed",
+    "traceId": "b90732c7-efb7-4b9d-9419-27dd0c4107d2",
+    "spanId": "ff697263-7b51-4b",
+    "parentSpanId": "49bdd505-8ba7-45",
+    "sessionId": "session_8b120f9cd410a68dbf141a7216ac0308",
+    "turnId": "turn_9ee07ab5-c812-41ca-b03e-f83fac40acdb",
+    "durationMs": 887926,
+    "status": "completed",
+    "context": {
+      "queryId": "01a16526-b00c-7dc0-a852-57e6f62fe489",
+      "turnNumber": 0,
+      "toolCallCount": 95
+    }
+  },
+  "report": {
+    "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/.t11-review-runtime/report/review.md",
+    "bytes": 33375,
+    "sha256": "a2304f8e2d29a20f3391986e2f3c933fbfecc1f30c7a60f9d9703cb15db3ec83",
+    "nativeWriteBinding": [
+      {
+        "callId": "call_491373d19a4647ef88fc4505",
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/.t11-review-runtime/report/review.md",
+        "bytes": 33375,
+        "sha256": "a2304f8e2d29a20f3391986e2f3c933fbfecc1f30c7a60f9d9703cb15db3ec83",
+        "matchesPhysicalBytes": true
+      }
+    ],
+    "fullReception": "152 lines read in bounded chunks 1-38,39-68,69-110,111-152 without truncation; initial 1-110 display truncated and was superseded by complete chunks",
+    "verdictAttributedToReviewer": "完整工程范围：通过；真实平台/发布验收：无法验证/未关闭",
+    "ownerAcceptance": "PENDING_ROOT_BOUNDARY_DISPOSITION"
+  },
+  "provenance": "Creation receipt independently binds own SID/original turn to GLM-5.3/max. Reviewer report keeps own unknown session/backend fields; original not rewritten.",
+  "boundaryException": "../fresh-review-boundary-exceptions-20261023/input-only-incidents.json",
+  "notes": [
+    "No corresponding prohibited tool returns were read or copied. Full original report contains reviewer-authored statements about hook/collector boundaries; these are attributed report claims, not owner-verified execution evidence. Do not infer zero exposure.",
+    "Full report has internal errors: malformed manifest hash in line32; M-F-D severity cell says middle while note118 states original low; line10/151 closure count grouping does not map cleanly to 18 unique findings. Preserve original; owner ledger uses source matrix severity and per-row status.",
+    "No dual Pass, finding closure, release authorization, new candidate, code changes or test rerun."
+  ]
+}

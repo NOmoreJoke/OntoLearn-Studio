@@ -1,0 +1,50 @@
+{
+  "recordKind": "owner-formal-terminal-and-full-report-reception",
+  "receivedAtUTC": "2026-10-22T20:14:08.381521+00:00",
+  "candidateSha": "036d7172ddba8502fe81e6e7ce375ce09ef7fa1c",
+  "sessionId": "mvs_c2a07cc404db489b9e1e5b32c4686c0a",
+  "turnId": "1fff4822-1702-4b24-996b-4c6820b71c44",
+  "formalState": [
+    [
+      "mvs_c2a07cc404db489b9e1e5b32c4686c0a",
+      "1fff4822-1702-4b24-996b-4c6820b71c44",
+      "completed",
+      1792699916792
+    ]
+  ],
+  "report": {
+    "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-036d7172/.t11-review-runtime/report/review.md",
+    "bytes": 48446,
+    "sha256": "60757b59116f5a4446adf6011a9fae445f719168d5709ff396dabf191a9f1b34",
+    "nativeWriteBinding": [
+      {
+        "callId": "call_01a1653c1d777605b4bfc828",
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-036d7172/.t11-review-runtime/report/review.md",
+        "bytes": 48446,
+        "sha256": "60757b59116f5a4446adf6011a9fae445f719168d5709ff396dabf191a9f1b34",
+        "physicalMatchesNativeWrite": true
+      }
+    ],
+    "fullReception": "363 lines: 1-68,69-135,136-192,193-253,254-318,319-363; combined output initially truncated, 136-253 reread in two separate untruncated calls",
+    "verdictAttributedToReviewer": "完整工程范围：不通过；新增F-1中严重度；真实平台/发布门无法验证/未关闭"
+  },
+  "newFinding": {
+    "id": "M036-F1",
+    "originalReportId": "F-1",
+    "severity": "中",
+    "reportLines": [256, 281],
+    "topic": "CLI Node module warning precedes fixed error and exposes local path; last-line-only assertion misses it",
+    "status": "OPEN; independently triage static/historical evidence; no new candidate or tests yet"
+  },
+  "processAcceptance": "PENDING_ROOT_BOUNDARY_DISPOSITION",
+  "designatedDualPass": false,
+  "closedByOwner": 0,
+  "boundaryIncidents": "../fresh-review-boundary-exceptions-20261023/input-only-incidents.json",
+  "scopeQualification": "Corresponding prohibited collector/native tool return not read/copied. Original report includes reviewer-authored C13/gate-result assertions; these remain attributed assertions, not owner verified execution evidence. No zero-exposure claim.",
+  "reportInternalIssues": [
+    "Line258 cites verify-release.mjs:16 for import; actual static import is line1.",
+    "Line337 calls full check including probe, while line199 default check explicitly735+4skip and line202 separate flagged check739+0skip; preserve separate runs.",
+    "Line184 says14/14 all rejected though row169 is consistent=true positive baseline; actual table is1 positive +13negative.",
+    "Scope script counts say4 while includes verify.ts,verify-release.mjs,collect-macos.sh,collect-windows.ps1,pe-machine.ps1 =5; keep physical manifest scope56."
+  ]
+}

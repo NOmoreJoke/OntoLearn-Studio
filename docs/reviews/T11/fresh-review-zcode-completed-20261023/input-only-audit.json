@@ -1,0 +1,636 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "session_8b120f9cd410a68dbf141a7216ac0308",
+  "turnId": "turn_9ee07ab5-c812-41ca-b03e-f83fac40acdb",
+  "source": "/Users/kyle/.zcode/cli/rollout/model-io-session_8b120f9cd410a68dbf141a7216ac0308.jsonl",
+  "scope": "Exact own main_turn tool inputs only; not tool result bodies/system/header/thinking",
+  "calls": [
+    {
+      "callId": "call_4cc87e3505714b2e94140fd3",
+      "tool": "Bash",
+      "description": "Verify cwd, HEAD, full-prompt.md size and SHA-256",
+      "commandChars": 256,
+      "commandSha256": "db9f21e89c8be9ee01b7415964ff3ae7e9bdfef249a6f3075983583019314d25",
+      "flagged": []
+    },
+    {
+      "callId": "call_f70c7748d504480eaa65d426",
+      "tool": "Bash",
+      "description": "Check AGENTS.md size/hash and list own runtime files",
+      "commandChars": 187,
+      "commandSha256": "c45ee0d7de6995c27ce56076e7e8d9a3f088cbf2e3565788f5424995baf62018",
+      "flagged": []
+    },
+    {
+      "callId": "call_08e075f4ecb642ceab211749",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/.t11-review-runtime/input/handoff-manifest.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_4cc0069b75d246ef8866046a",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/.t11-review-runtime/metadata/operator-ui-settings-before-send-20261023.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_59fdc0abd4424d9bbd50ed15",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/.t11-review-runtime/metadata/source-setup.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_9943a5cb80284027bebd63be",
+      "tool": "TodoWrite"
+    },
+    {
+      "callId": "call_596e5a620b124e10a59889d2",
+      "tool": "Bash",
+      "description": "Inspect source-setup.json structure",
+      "commandChars": 536,
+      "commandSha256": "5c9f4b8b5cf2d1932ac82a17f78af5a9c06df5ae642eba802febd532f110d4a0",
+      "flagged": []
+    },
+    {
+      "callId": "call_697c26a009f142cc977e66b7",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/.t11-review-runtime/metadata/setup.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_420496faac874ceda32845ec",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/.t11-review-runtime/metadata/gui-release-before-project-create-20261023.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_c562bede3c524333bdd3be9f",
+      "tool": "Bash",
+      "description": "Verify all 56 requiredFiles bytes+sha256, git diff status, 873 object",
+      "commandChars": 1224,
+      "commandSha256": "3d4ad3f7608f51d82f8b0e03bd936ddc8a587fcc9b2877977d46e02825b502f0",
+      "flagged": []
+    },
+    {
+      "callId": "call_90e2c6edadf746e38be2c78a",
+      "tool": "Bash",
+      "description": "Extract and hash all members of both raw-logs archives",
+      "commandChars": 850,
+      "commandSha256": "cce68b5da8644e4c4a31f22f2696a96ed7bb62c29f6795862f5d79f787d395a7",
+      "flagged": []
+    },
+    {
+      "callId": "call_f13d9f61041a4fbab41aefea",
+      "tool": "Bash",
+      "description": "Cross-check archive indexes against actual member hashes",
+      "commandChars": 1623,
+      "commandSha256": "74eee3675dde82e023a0298b93de9364d637a14a6f2c2febac8d80a66888c5b2",
+      "flagged": []
+    },
+    {
+      "callId": "call_c25d382f408347c089d6c51a",
+      "tool": "Bash",
+      "description": "Extract raw archives into own tmp for reading",
+      "commandChars": 552,
+      "commandSha256": "978065c5077025837ad3453a258117d1fa3e8c3aeeb1929ce960d80cd13b9bb4",
+      "flagged": []
+    },
+    {
+      "callId": "call_e3396eb01abe4a7dacfe8d49",
+      "tool": "Bash",
+      "description": "Read owned-fixes failure logs",
+      "commandChars": 361,
+      "commandSha256": "8a448464ff010513bf47fbd0c3c4d558698d81c0655fe03fe6a914553d268bdc",
+      "flagged": []
+    },
+    {
+      "callId": "call_529399a859af425fa1a6017d",
+      "tool": "Bash",
+      "description": "Read owned-fixes full-check failure logs",
+      "commandChars": 374,
+      "commandSha256": "5df3daece8f4b48344c4f4e4b6cbc85da0944bb0e4ae23af60bb4585ea8e0e06",
+      "flagged": []
+    },
+    {
+      "callId": "call_3fe46582c395463c8d8f5032",
+      "tool": "Bash",
+      "description": "Read owned final-expanded-unit and final-full-check logs",
+      "commandChars": 352,
+      "commandSha256": "1fee5cc66857c4f94da1665031917cb211f13aab8676588fb2aa68bfbcc62708",
+      "flagged": []
+    },
+    {
+      "callId": "call_41427555bacb4f8d92d6f760",
+      "tool": "Bash",
+      "description": "Read round-1 failure logs (heads)",
+      "commandChars": 301,
+      "commandSha256": "f6ac53943b3703982c703e8de400538df096dc99ca740156ae726562c2ac51fe",
+      "flagged": []
+    },
+    {
+      "callId": "call_c76bf387edeb424ab41dc80b",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/scripts/release/verify.ts",
+      "flagged": []
+    },
+    {
+      "callId": "call_9007f58cea244400a90be333",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/scripts/release/verify-release.mjs",
+      "flagged": []
+    },
+    {
+      "callId": "call_ba6cf0c797b941f9b5561fd5",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/tests/unit/t11-release-io.test.ts",
+      "flagged": []
+    },
+    {
+      "callId": "call_c4b6fbdc21444c559f12edb5",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/scripts/release/collect-macos.sh",
+      "flagged": []
+    },
+    {
+      "callId": "call_c5afbe61ca284f0995f7fbd7",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/scripts/release/collect-windows.ps1",
+      "flagged": []
+    },
+    {
+      "callId": "call_8774455a5ddd472a80b322bc",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/scripts/release/pe-machine.ps1",
+      "flagged": []
+    },
+    {
+      "callId": "call_c129c68f4772478e8a1b5a34",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/tests/unit/t11-release.test.ts",
+      "flagged": []
+    },
+    {
+      "callId": "call_a752d69d4f0c4d11bd9ce20a",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/tests/fixtures/release/comparison.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_961013f4da6b492190e90618",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/tests/fixtures/release/synthetic-profile.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_ce6f0d569b514d189afa6f1d",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/q9-decision-source-20261023.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_e0fc1f6f9d4b4cd3813309c0",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/approved-fixed-baseline-probe.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_85cc204cacaf4cf3a19f45f3",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/t09-readonly-alignment.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_35db25b3d9464f38874c67ed",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/first-failure.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_550e5f3bdade4dda8e923a12",
+      "tool": "Bash",
+      "description": "Independently verify 873 fixed baseline manifest, PRD P0/G-structure, coverage/cases",
+      "commandChars": 2927,
+      "commandSha256": "d17f924d864c16b975d54ea3d5878d884058c85da26aa8ef3813ec8ad5ea8649",
+      "flagged": []
+    },
+    {
+      "callId": "call_759d5f8c481e46b38397c227",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/iterations/T11/acceptance.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_983327ed26fd4076a2c48b97",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/iterations/T11/selection-comparison-v2.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_5e6775e7ce2648d3b73d624c",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/iterations/T11/selection-comparison-v3.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_4cbd7d8b44b9429ab5477a04",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/iterations/T11/shared-file-handoff.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_0c58c6fbbc6e42d1bad5f5fb",
+      "tool": "TodoWrite"
+    },
+    {
+      "callId": "call_1615eb946b64464291217ecc",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/release/README.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_79c6c19800994367a24e36e7",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/release/migration-recovery.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_1f9adfaf9a004239a7c07e26",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/release/target-device-runbook.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_b188ac1421a746fa8b5a8912",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/release/user-study.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_3c33d29476a14c0a9eeedddf",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/release/user-observation-template.csv",
+      "flagged": []
+    },
+    {
+      "callId": "call_9df59e7d37144ae38de22ca1",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/status.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_9b22e9a6695741a387ebb29a",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/verification.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_0393271e6cf042a78d11e6fb",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/internal-review.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_68829d8a08e74b23a60ff0b7",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/selection-v2-review.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_48034d3bdb3f4ecdad3480d6",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/completion-audit.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_4e23e696d7d0462781360bff",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/blocked-audit.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_03488c0a66364764a05e8b0e",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/recovery.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_7cac08bcf7394d629d5bd44c",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/operating-policy-receipt.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_77d988c830124aafa0e1dfe8",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/external-review-permissions-receipt.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_80577f7944c44b95bbe39e80",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/format-public-ownership-receipt.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_2c8b9f94a7144b27ac971dc5",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/format-python-ownership-receipt.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_8b3ba301b6f048c8b4e68a87",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/triage-20261023/matrix.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_c847b995e93b49bab309d669",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/triage-20261023/repair-plan.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_2648b6752d324d8da473cf3d",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/owned-fixes-20261023/verification.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_60b47313a6a545f58cdaa30f",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/owned-fixes-20261023/handoff.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_42a1c25fcd664e1a9735758c",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/owned-fixes-20261023/disposition.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_4439f168d91a44d5b8cde3d8",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/owned-fixes-20261023/index.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_6d7fbc179b16411fbd391ea6",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/owned-fixes-20261023/history-archive-verification.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_82476f7b8b554006b5181f59",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/zcode-received-20261023/zcode-report-original.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_6d4b30fa2e214c9e913e2ed6",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/minimax-received-20261023/minimax-report-original.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_0bd14a13b2684a95807e5823",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/round-1/history-disposition.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_5041a0e635534d7180771d66",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/triage-20261023/collector-and-io-independent-analysis.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_da50dce17652411983c1aeea",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/triage-20261023/independent-plan-review.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_159ffda7e3a24fc28655f03a",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/triage-20261023/index.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_16ae9383a353479e994aa2e2",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/owned-fixes-20261023/independent-implementation-review.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_5428c0cc4ab645c08a5306d6",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/owned-fixes-20261023/raw-logs-index.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_e309fa0da05244fd82f67b40",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/triage-20261023/evidence-index.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_726770683e354567bee42439",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/zcode-received-20261023/owner-reception.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_2efe470ea5d448d1bfc5b1f0",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/minimax-received-20261023/owner-reception.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_235cb64966594c26b528bcf9",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/zcode-received-20261023/index.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_b7e8c7c0ba8c4666aff88978",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/minimax-received-20261023/index.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_693c5eb4eb7e4198a678db48",
+      "tool": "Read",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/docs/reviews/T11/round-1/raw-logs-index.json",
+      "flagged": []
+    },
+    {
+      "callId": "call_7da93f0df63945af8c1076cb",
+      "tool": "Bash",
+      "description": "PRD outline and line count",
+      "commandChars": 187,
+      "commandSha256": "4ce9331cd246812baa05d51052996c07f7cad3617936249c91e9d10c7f2b392c",
+      "flagged": []
+    },
+    {
+      "callId": "call_06c624792c5d449da46a71ca",
+      "tool": "Bash",
+      "description": "PRD outline rest",
+      "commandChars": 148,
+      "commandSha256": "94c110e641b99d0ceb80ff9fc507b380be6f9b273ff0034024624f742709b777",
+      "flagged": []
+    },
+    {
+      "callId": "call_d73b53d8aca249d18d3bfb77",
+      "tool": "Bash",
+      "description": "Read FR-105, FR-1000, section 11",
+      "commandChars": 143,
+      "commandSha256": "6a7ef03cbe0e60317368b7b47e2445493abeb2cf1e060d0dc661d5df0e034d91",
+      "flagged": []
+    },
+    {
+      "callId": "call_1730ca68ca04406eb39f18bc",
+      "tool": "Bash",
+      "description": "Read 12.1, E.5, G.6 sections",
+      "commandChars": 147,
+      "commandSha256": "4946500245c2e078c5e174645dc0954fc924b59355d0bd5453e011c07bdb650e",
+      "flagged": []
+    },
+    {
+      "callId": "call_c66aa2285e794093884dcefa",
+      "tool": "Bash",
+      "description": "Read 10.2 capacity, G.1 table head, G.4 list",
+      "commandChars": 147,
+      "commandSha256": "20f353dd946b804b9aba636b0b323769589225ebcdbc1c16d9143309756e7c0b",
+      "flagged": []
+    },
+    {
+      "callId": "call_c7b3435477854262bf54dc26",
+      "tool": "Bash",
+      "description": "Run default T11 unit tests (no probe flag)",
+      "commandChars": 441,
+      "commandSha256": "d14a2aa68594187a463afcd5ebce62049d383eb44f300c99139074bff64ea657",
+      "flagged": []
+    },
+    {
+      "callId": "call_5518f9266f764d119fa7a283",
+      "tool": "Bash",
+      "description": "Run T11 unit tests with fixed baseline probe",
+      "commandChars": 464,
+      "commandSha256": "f40712fd52b7cb9685bae385c4f3bbf3763f7023b7294c45e9563a8b507ff7de",
+      "flagged": []
+    },
+    {
+      "callId": "call_c9ba2a261430406393882005",
+      "tool": "Bash",
+      "description": "bash -n mac collector, pwsh presence, 873 manifest head",
+      "commandChars": 286,
+      "commandSha256": "a0484668758650f77df6ad901f068dbe784c0fbb5ed83c001dadcb2ea429c7bc",
+      "flagged": []
+    },
+    {
+      "callId": "call_e7fd593e12134be4a76a07df",
+      "tool": "Bash",
+      "description": "Probe with missing 873 object must fail explicitly",
+      "commandChars": 640,
+      "commandSha256": "b2ac96a62bec2a73e8763d71e2edd6a3acb3ebab9da5596f7583b1734d35d70a",
+      "flagged": []
+    },
+    {
+      "callId": "call_eb2a34cbc90941b794684e7f",
+      "tool": "Bash",
+      "description": "Missing 873 object probe must fail (empty repo, no commit)",
+      "commandChars": 716,
+      "commandSha256": "69bb5bf1b432a38c0aa4734eb66901286c05b49290a7d6a2f88d521ef796200b",
+      "flagged": []
+    },
+    {
+      "callId": "call_8b6ae1c5a97a472bab57094e",
+      "tool": "TodoWrite"
+    },
+    {
+      "callId": "call_11aad4f2e905464790866b44",
+      "tool": "Bash",
+      "description": "Explicit release lint and format checks",
+      "commandChars": 1238,
+      "commandSha256": "c77422aa5dbd2275e498c19fbaf11d7112f6e0e769f7986568516c36ce582fe5",
+      "flagged": []
+    },
+    {
+      "callId": "call_5e1363534e0d43fdb849b051",
+      "tool": "Bash",
+      "description": "Rerun explicit prettier check per acceptance command list",
+      "commandChars": 614,
+      "commandSha256": "b6a93ee92caaa15a1361f8db940d6d7ef677be386f7a943293cfc74b32fddab8",
+      "flagged": []
+    },
+    {
+      "callId": "call_690ace0b78e9454d84907d9f",
+      "tool": "Bash",
+      "description": "Run full repo check chain",
+      "commandChars": 378,
+      "commandSha256": "6703231a3dd4f92cd6dcec2c58b6e55c0bacae6d010131bd846bef100849e434",
+      "flagged": []
+    },
+    {
+      "callId": "call_a468b084a0f540c88a16d859",
+      "tool": "Bash",
+      "description": "Confirm TS test count in full check log and ignore files",
+      "commandChars": 406,
+      "commandSha256": "bc1a7785e3c8619706bea75cde725b388bbff70d905e6cfe50cd4f95c069f4c2",
+      "flagged": []
+    },
+    {
+      "callId": "call_5ef7858f39ae4cb7b7344009",
+      "tool": "Bash",
+      "description": "Check prettierignore coverage of runtime metadata",
+      "commandChars": 254,
+      "commandSha256": "dc4bf2db76d1a32ee9f8617e759faaeacbfb15112ac7d3061ba3b31efcf7b7a8",
+      "flagged": []
+    },
+    {
+      "callId": "call_31f96e57138b4c9fa4cdd7c1",
+      "tool": "Bash",
+      "description": "Verify 23-path repair diff and 338..036 process-only claim",
+      "commandChars": 1183,
+      "commandSha256": "0028e17921c563416d8a7c14822a4b69a147bb6c90a842653cd938acdc01e4c4",
+      "flagged": []
+    },
+    {
+      "callId": "call_11943148a2fa49518b489218",
+      "tool": "Bash",
+      "description": "Verify setup log hashes and isolated env presence",
+      "commandChars": 397,
+      "commandSha256": "58b72e142487930865d7fde000b26008c526dc4c6667175f19333cca53add605",
+      "flagged": []
+    },
+    {
+      "callId": "call_8ff991048e22484f907473e7",
+      "tool": "Bash",
+      "description": "Count which G sections the 13 list items come from",
+      "commandChars": 489,
+      "commandSha256": "e6ffa3797ab7c161815ae16c003e8fbe69e363e6f8133cb158f0bd5521de1e0a",
+      "flagged": []
+    },
+    {
+      "callId": "call_491373d19a4647ef88fc4505",
+      "tool": "Write",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-036d7172/.t11-review-runtime/report/review.md",
+      "flagged": []
+    },
+    {
+      "callId": "call_3793c444301d40139697b9d1",
+      "tool": "TodoWrite"
+    },
+    {
+      "callId": "call_cefae9568263437f86ff241c",
+      "tool": "Bash",
+      "description": "Final state check: HEAD unchanged, only own runtime outputs",
+      "commandChars": 218,
+      "commandSha256": "21f294e393ca2e9cd483098c293474327a26bd5a26af7132508c15a275ab6792",
+      "flagged": []
+    }
+  ],
+  "flags": [],
+  "regexIsExhaustiveComplianceProof": false,
+  "ownerEarlierExceptionStillOpen": "fresh-review-created-20261023/owner-readback-boundary-exception.json"
+}
