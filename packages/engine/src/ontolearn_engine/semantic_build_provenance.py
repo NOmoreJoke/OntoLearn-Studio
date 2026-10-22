@@ -810,11 +810,13 @@ def _dist_inventory(name, version):
         if not parts or parts[0] != name or "__pycache__" in parts or relative.endswith(".pyc"):
             continue
         _path(relative)
-        row = _identity(site_root, relative)
+        is_python = relative.endswith(".py")
+        raw = _read(_inside(site_root, relative), CODE_CAP if is_python else FILE_CAP)
+        row = {"path": relative, "bytes": len(raw), "sha256": _sha(raw)}
         module, fingerprint, kind = None, None, "data"
-        if relative.endswith(".py"):
+        if is_python:
             module = relative[:-3].replace("/", ".").removesuffix(".__init__")
-            fingerprint = _code_sha(_compiled(_read(_inside(site_root, relative), CODE_CAP)))
+            fingerprint = _code_sha(_compiled(raw))
             kind = "python"
         else:
             suffix = next(

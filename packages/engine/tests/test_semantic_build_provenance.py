@@ -1168,3 +1168,47 @@ def test_entrypoint_existing_dispatch(monkeypatch, flag, target, expected_argv):
     assert observed == [
         (target, [str(REPOSITORY / "packages/engine/entrypoint.py"), *expected_argv[1:]])
     ]
+
+
+@pytest.mark.parametrize("oversized", [False, True])
+def test_distribution_python_identity_uses_one_bounded_snapshot(tmp_path, monkeypatch, oversized):
+    site = tmp_path / "env/site-packages"
+    info = "html5rdf-1.2.1.dist-info"
+    write(site, info + "/METADATA", b"Name: html5rdf\nVersion: 1.2.1\n")
+    write(site, info + "/LICENSE", b"license")
+    relative = "html5rdf/__init__.py"
+    original_raw = b"VALUE = 1\n" if not oversized else b"#" * (p.CODE_CAP + 1)
+    source = site / relative
+    write(site, relative, original_raw)
+
+    class Distribution:
+        version = "1.2.1"
+        files = [info + "/METADATA", info + "/LICENSE", relative]
+
+        def locate_file(self, path):
+            return site / path
+
+    monkeypatch.setattr(p.importlib.metadata, "distribution", lambda _name: Distribution())
+    monkeypatch.setattr(p.sysconfig, "get_path", lambda _kind: str(site))
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / "env"))
+    original_read = p._read
+    source_caps = []
+
+    def observed_read(path, cap):
+        if path == source:
+            source_caps.append(cap)
+            raw = original_read(path, cap)
+            source.write_bytes(b"VALUE = 999\n")
+            return raw
+        return original_read(path, cap)
+
+    monkeypatch.setattr(p, "_read", observed_read)
+    if oversized:
+        with fault("LIMIT_EXCEEDED"):
+            p._dist_inventory("html5rdf", "1.2.1")
+    else:
+        row = p._dist_inventory("html5rdf", "1.2.1")["files"][0]
+        assert row["bytes"] == len(original_raw)
+        assert row["sha256"] == p._sha(original_raw)
+        assert row["codeSha256"] == p._code_sha(p._compiled(original_raw))
+    assert source_caps == [p.CODE_CAP]
