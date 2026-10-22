@@ -1,0 +1,145 @@
+{
+  "format": "T03-T10-supplier-signoff-independent-static-checks/1",
+  "reviewer": "/root/t10_t03_signoff_review",
+  "candidateRef": "5efed4058a7f740d9d92f6788c90166709f40877",
+  "decision": "NEEDS_CHANGE",
+  "findings": [
+    {
+      "id": "F1",
+      "priority": 3,
+      "path": "docs/reviews/T03/T10-supplier-signoff-20261022/signoff.md",
+      "line": 17,
+      "title": "Missing-formula-cache example falsely attributed to S5 actual fixture",
+      "status": "open",
+      "basis": "S5 locatedRejections has five entries and none FORMULA_CACHE_MISSING; S3 documents rejection semantics only"
+    }
+  ],
+  "candidateFullRead": ["signoff.md", "input-identities.json", "author-checks.json"],
+  "fixedInputsVerified": [
+    {
+      "id": "S1",
+      "ref": "4fa5d62eb13269351384527b1f84761c08811e79",
+      "path": "docs/iterations/T03/source-selection/design-and-handoff.md",
+      "bytes": 6142,
+      "sha256": "5ac818da2cc702e2899fb9f10fcc0f0bcdb8a1420b9bf1d71ccc199e055a66cc",
+      "gitBlob": "a1f0b3aeedecc7f5d71b665e6cfb7c7351d4a7db",
+      "match": true
+    },
+    {
+      "id": "S2",
+      "ref": "4fa5d62eb13269351384527b1f84761c08811e79",
+      "path": "docs/iterations/T03/source-selection/t01-interface-response-r1.md",
+      "bytes": 9846,
+      "sha256": "7376353f6230d35a1fc931e096dab8310eae38de015f75a333e3998ec6df761b",
+      "gitBlob": "c82b4ded6c63bbca6339fb06b70d72148b9dc1ba",
+      "match": true
+    },
+    {
+      "id": "S3",
+      "ref": "4fa5d62eb13269351384527b1f84761c08811e79",
+      "path": "docs/iterations/T03/source-selection/table-interface-r2.md",
+      "bytes": 11487,
+      "sha256": "1cc78023aae09ca2d2975d21e0cd2d71542325fe9c1e9c057ddd409b95f29605",
+      "gitBlob": "bb8a12fbaba458963f7f7c24f739a6396cb565d6",
+      "match": true
+    },
+    {
+      "id": "S4",
+      "ref": "4fa5d62eb13269351384527b1f84761c08811e79",
+      "path": "docs/iterations/T03/source-selection/parser-producer-and-options-r3.md",
+      "bytes": 11165,
+      "sha256": "df94bdec2bdb66659941e36bc8ee853bc79b54765527bf4b08b342da93814a6c",
+      "gitBlob": "3ef5b5873612c42ba9825cd8ab940ecc6777b01a",
+      "match": true
+    },
+    {
+      "id": "S5",
+      "ref": "4fa5d62eb13269351384527b1f84761c08811e79",
+      "path": "docs/iterations/T03/source-selection/table-interface-r2/complete-projections.json",
+      "bytes": 13123,
+      "sha256": "dd249c93dd23bbfa5dd47293f578251a375bb144da5b25f3e8683f878829106d",
+      "gitBlob": "a00f269fd310ab1bada0849f874e4197daeb428f",
+      "match": true
+    },
+    {
+      "id": "S6",
+      "ref": "3c396070c74fbf09cf319b0230c6f96ed2858482",
+      "path": "docs/iterations/T03/integration-request.md",
+      "bytes": 8581,
+      "sha256": "61c053c94a9c2609d2ccab17678ee7f987fd53698ddeaebccb50524e35d2c4a5",
+      "gitBlob": "96ca3cf7e5aec35fae903d2803396ecbab79a2b0",
+      "match": true
+    },
+    {
+      "id": "T1",
+      "ref": "7d96b3a71bc3590983a4b4c51942993898805663",
+      "path": "docs/iterations/T10/T08-intake-and-F16-candidates-20261022/next-supplier-signoff.md",
+      "bytes": 7276,
+      "sha256": "a11438658982c4dd89276474e84483f305779a7373d4e268f863096ec0678d00",
+      "gitBlob": "e88e3ee96055dcd8d708318f307817e5c2963c54",
+      "match": true
+    },
+    {
+      "id": "T2",
+      "ref": "7d96b3a71bc3590983a4b4c51942993898805663",
+      "path": "docs/iterations/T10/formal-transfer-proposal-r1-20261022/upstream-T03-intake.md",
+      "bytes": 7116,
+      "sha256": "70e1b19ba03521dc6899a4a76a3d2bd34d7a377b057f59619fb3cb8d4ebeb878",
+      "gitBlob": "b49d531efd8930ce7733caac0c0d919d879f6ee3",
+      "match": true
+    },
+    {
+      "id": "T3",
+      "ref": "7d96b3a71bc3590983a4b4c51942993898805663",
+      "path": "docs/iterations/T10/formal-transfer-r1-clarifications-20261022/clarifications.md",
+      "bytes": 8715,
+      "sha256": "68d52f84efaaf89d8372a163f96f3262efb6df4021e16655ab7ff512f751ce57",
+      "gitBlob": "2456c8217eb35c8b40630108cc256a9c442a98a8",
+      "match": true
+    },
+    {
+      "id": "T4",
+      "ref": "7d96b3a71bc3590983a4b4c51942993898805663",
+      "path": "docs/iterations/T10/formal-transfer-proposal-r1-20261022/import-plan-and-receipt.md",
+      "bytes": 17812,
+      "sha256": "7de10b16c047d2dca30ac349b049b42f176ae211ee178c6f3d468b9db630e342",
+      "gitBlob": "edc55129ace858e53bfea8195512771136e77b06",
+      "match": true
+    },
+    {
+      "id": "T5",
+      "ref": "7d96b3a71bc3590983a4b4c51942993898805663",
+      "path": "docs/iterations/T10/technical-contract-c1-20261022/envelope-contract.md",
+      "bytes": 9559,
+      "sha256": "f143bd5407bd1c7da905431dfbc0be927e5795101dfd55e3963e1fb95d6842fe",
+      "gitBlob": "a6cf5d745062b6fe95288a87e96fd051c0291dcd",
+      "match": true
+    }
+  ],
+  "semanticFullRead": ["S1", "S2", "S3", "S4", "S5", "S6", "T1", "T2", "T3", "T5"],
+  "semanticPartialRead": {
+    "T4": "headings and section4 only"
+  },
+  "checks": {
+    "fixedGitByteShaBlobEquality": true,
+    "historicalFixtureSemanticsVsNewExecutionSeparated": true,
+    "privateProofNotDurablePin": true,
+    "producerUnprovidedNotInferred": true,
+    "twoFullFrameBudgetsRequired": true,
+    "C1RawNotSilentlyChunked": true,
+    "prepareBeforePlanFromLaterClarification": true,
+    "negativeFinalFenceCorrectionRetained": true,
+    "sourceCodeRead": false,
+    "productExecuted": false,
+    "parserOrTestsExecuted": false,
+    "guiExecuted": false,
+    "newExamplesExecuted": false,
+    "schemaOrRuntimeApproved": false
+  },
+  "protectedAGENTS": {
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+    "modifiedPreexisting": true,
+    "written": false
+  }
+}
