@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+    "-B",
+    "-c",
+    "import json;from pathlib import Path;p=json.loads(Path('docs/iterations/I05/independent-fee-spec/charge-reference-v4/baseline-prefix-r4.json').read_text());assert p['state']=='completed',p['firstError']"
+  ],
+  "exit": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nAssertionError: {'event': 26, 'inputPointer': '/datasets/profile-83~1baseline:G-base/input/definitions/0/source', 'kind': 'semantic', 'label': 'real normative check rejected', 'phase': 'entry:rule-metadata', 'reason': 'INVALID_RULE', 'stage': 'entry/whole-rule-metadata', 'wallet': 'C0'}\n",
+  "priorGenerationExit": 0,
+  "priorExit0Scope": "generation finished but did not assert expected successful semantic state"
+}

@@ -1,0 +1,44 @@
+{
+  "exit": 0,
+  "records": [
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/reference.py",
+      "sha256": "bc47b16bf528b973aeebcc0be4a103bf00acbf0f351485f5370510817bf1467c",
+      "imports": [
+        "__future__",
+        "collections",
+        "pathlib",
+        "hashlib",
+        "json",
+        "re"
+      ],
+      "astPass": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/test_complete_failures_r4.py",
+      "sha256": "8c945f4bc7b289abb6562b90ec59bd638cc702d1324568455ae7f4b9c1d5a1be",
+      "imports": [
+        "pathlib",
+        "hashlib",
+        "json",
+        "unittest",
+        "reference"
+      ],
+      "astPass": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/check_determinism_r4.py",
+      "sha256": "d7c7d031da8cfcfde6ff0ae0f650455b61e377cb5aa8646b8f357395b752bcba",
+      "imports": [
+        "pathlib",
+        "hashlib",
+        "json",
+        "os",
+        "subprocess",
+        "sys"
+      ],
+      "astPass": true
+    }
+  ],
+  "scope": "integration59+64 applies to when and head RuleSpec triples; ordinary RDF graph and legacy not changed"
+}

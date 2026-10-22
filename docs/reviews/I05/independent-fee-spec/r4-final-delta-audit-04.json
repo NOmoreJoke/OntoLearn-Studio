@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+    "-B",
+    "docs/iterations/I05/independent-fee-spec/charge-reference-v4/audit_execution_r4.py",
+    "--write-delta"
+  ],
+  "exit": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v4/audit_execution_r4.py\", line 238, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v4/audit_execution_r4.py\", line 224, in main\n    assert value==before['amount'][wallet][domain]+expected,(p['id'],wallet,domain)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ('profile-83/baseline:G-base', 'M0', 'scan_copy')\n",
+  "explicitWriteNewR4DeltaOnly": true
+}

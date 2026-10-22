@@ -1,0 +1,29 @@
+{
+  "exit": 0,
+  "records": [
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/freeze_r4.py",
+      "sha256": "ad4cc6f73738e38cd394ab906352a8bc6d068afb20d686c267279476cf246ca8",
+      "imports": [
+        "pathlib",
+        "ast",
+        "hashlib",
+        "json",
+        "subprocess"
+      ],
+      "astPass": true
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v4/audit_execution_r4.py",
+      "sha256": "a056531e11688086d3c70254e5493540fe83fff0ef8870fe49fbed0ebc899215",
+      "imports": [
+        "pathlib",
+        "hashlib",
+        "json"
+      ],
+      "astPass": true
+    }
+  ],
+  "auditNowReadsExistingDeltaAndNeverWritesCandidate": true,
+  "freezeOnlyOpaqueReadsOldBlobsAndWritesNewR4IntegrityManifest": true
+}

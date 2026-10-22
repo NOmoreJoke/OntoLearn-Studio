@@ -1,0 +1,1359 @@
+"""Proposal-only fee binder and mathematical charge interpreter.
+
+No product imports, producer objects, actual usage, external libraries or business
+output export. Plain mathematical graph/bindings exist only to enumerate fees.
+"""
+from __future__ import annotations
+from collections import Counter
+from pathlib import Path
+import hashlib
+import json
+import re
+
+VERSION='i05-reference-fee-program/4-proposal'
+INPUT_REF='0e42a0fe349054a92817cb4d463bccdc15f6c042'
+PROFILE='OntoLearn-rule-comparison-profile/1'
+RDF='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+RDFS='http://www.w3.org/2000/01/rdf-schema#'
+XSD='http://www.w3.org/2001/XMLSchema#'
+OWL='http://www.w3.org/2002/07/owl#'
+POOLS={'work':16777216,'input_bytes':262144,'output_bytes':262144,'trace_items':8192,
+       'firings':1024,'head_occurrences':16384,'bindings':1024}
+STRUCT={'term_bytes':16384,'source_bytes':65536,'digits':4096,'integer_bits':16384,
+        'temporary_bits':32768,'rules':100,'when':16,'comparisons':32,'heads':16,'variables':64}
+DOMAINS=('work','input_bytes','output_bytes','trace_items','firings','head_occurrences',
+         'bindings','scan_copy','hash_bytes','objects','scalar')
+
+def canonical(v):return json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
+def sha(b):return hashlib.sha256(b).hexdigest()
+def limb(a):return max(1,(abs(a).bit_length()+31)//32)
+def encode(v):
+    """Exact new fee-codec, ordered plain record keys; never current product codec."""
+    def f(n):return n.to_bytes(4,'big')
+    if v is None:return b'N'
+    if type(v) is bool:return b'T' if v else b'F'
+    if type(v) is int:
+        b=hex(v).encode();return b'I'+f(len(b))+b
+    if type(v) is str:
+        b=v.encode();return b'S'+f(len(b))+b
+    if type(v) is bytes:return b'B'+f(len(v))+v
+    if type(v) in (list,tuple):return b'A'+f(len(v))+b''.join(encode(x) for x in v)
+    if type(v) is dict:return b'R'+f(len(v))+b''.join(encode(k)+encode(x) for k,x in v.items())
+    raise ValueError('unsupported exact fee value')
+
+def shape(v):
+    if type(v) is dict:
+        sub=[shape(x) for pair in v.items() for x in pair]
+        return 1+sum(x[0] for x in sub),len(v)*2+sum(x[1] for x in sub)
+    if type(v) in (list,tuple):
+        sub=[shape(x) for x in v];return 1+sum(x[0] for x in sub),len(v)+sum(x[1] for x in sub)
+    return 1,0
+
+def project(v):
+    if type(v) is int:return {'integerHex':hex(v)}
+    if type(v) is bytes:return {'encoding':'hex','bytes':v.hex()}
+    if type(v) is dict:return {k:project(x) for k,x in v.items()}
+    if type(v) in (tuple,list):return [project(x) for x in v]
+    return v
+
+def allocation(defs,disabled):
+    n=max(1,len(defs));out=[]
+    ids=[d['rule_id'] for d in defs]
+    if n>100:raise ValueError('RESOURCE_LIMIT rules')
+    if len(ids)!=len(set(ids)):raise ValueError('INVALID_RULE duplicate rule IDs')
+    for j,(ordinal,d) in enumerate(sorted(enumerate(defs),key=lambda x:x[1]['rule_id']) or [(None,None)]):
+        out.append({'rule_id':d['rule_id'] if d else None,'ordinal':ordinal,
+                    'disabled':bool(d and d['rule_id'] in disabled),
+                    'limits':{**{k:t//n+int(j<t%n) for k,t in POOLS.items()},**STRUCT}})
+    return out
+
+class MetadataFailure(ValueError):
+    def __init__(self,reason,pointer):
+        super().__init__(reason);self.input_pointer=pointer
+
+def metadata_preflight(observation,dataset,context):
+    """Validate the whole source rule table before binding/sort/allocation.
+
+    The provisional tape uses an original C0 lower slice, never an invented
+    allocation. Its actions are retained on both successful and failed entry.
+    """
+    t=Tape(observation['id']);a=8388608+16777216
+    cc=caps(work=128*a+65536,objects=8*a+2048+4096,scalar=16*a+131072)
+    cc['scan_copy']=64*a+65536;cc['hash_bytes']=16*a+65536
+    t.wallet('C0',cc);t.event('C0','fixed bootstrap control64',hold=('control',64,0))
+    t.stage='entry/whole-rule-metadata';t.current_phase='entry:rule-metadata'
+    t.restore_measures=None;t.direct_measures=None;t.mathematical_checks={}
+    dp='/datasets/'+observation['datasetId'].replace('~','~0').replace('/','~1')
+    proof={'state':'checking','inputPointer':dp,'validatedRuleCount':0,'allocationStarted':False}
+    context.update(t=t,metadata=proof)
+    t.binder_measures={'state':'binding-not-completed','inputPointer':dp,'C0CapBasis':'original fixed lower bound A>=24MiB,N>=1'}
+    def fail(pointer,resource=False):
+        proof.update(state='rejected',failurePointer=pointer)
+        raise MetadataFailure('RESOURCE_LIMIT metadata bound' if resource else 'INVALID_RULE metadata structure',pointer)
+    def text(value,pointer,maximum,nullable=False,label='metadata text'):
+        t.item('C0',1,label+' string type guard')
+        if nullable and value is None:return
+        if type(value) is not str:fail(pointer)
+        t.item('C0',min(len(value),maximum+1),label+' bounded scalar/UTF8 preflight')
+        if len(value)>maximum:fail(pointer,True)
+        # The widest possible UTF8 result is reserved before encoding; invalid
+        # surrogates fail before encode and never reach receipt metadata.
+        t.workspace('C0',32,8*len(value)+4096)
+        if any(0xd800<=ord(c)<=0xdfff for c in value):fail(pointer)
+        t.item('C0',1,label+' UTF8 byte bound guard')
+        encoded=value.encode()
+        if len(encoded)>maximum:fail(pointer,True)
+        t.scan('C0',len(encoded),label+' complete UTF8 occurrence scan')
+    t.item('C0',1,'outer dataset mapping guard')
+    if type(dataset) is not dict:fail(dp)
+    t.item('C0',1,'outer input mapping guard')
+    body=dataset.get('input',dataset);bp=dp+('/input' if 'input' in dataset else '')
+    if type(body) is not dict:fail(bp)
+    t.item('C0',1,'whole rule sequence and count guard')
+    if 'definitions' in body and 'rules' in body:fail(bp+'/rules')
+    field='definitions' if 'definitions' in body else 'rules';rules=body.get(field,[])
+    if type(rules) is not list:fail(bp+'/'+field)
+    if len(rules)>100:fail(bp+'/'+field,True)
+    seen=[]
+    for i,rule in enumerate(rules):
+        pointer=bp+'/'+field+'/'+str(i)
+        t.item('C0',1,'whole RuleSpec mapping guard')
+        if type(rule) is not dict:fail(pointer)
+        text(rule.get('rule_id'),pointer+'/rule_id',16384,label='rule_id')
+        rid=rule['rule_id']
+        for previous in seen:
+            t.scan('C0',len(previous.encode())+len(rid.encode()),'whole rule_id uniqueness full comparison')
+            if rid==previous:fail(pointer+'/rule_id')
+        seen.append(rid)
+        for part in ('when','comparisons','heads'):
+            t.item('C0',1,'RuleSpec '+part+' sequence guard')
+            if type(rule.get(part)) is not list:fail(pointer+'/'+part)
+        # Raw source rows and typed RuleSpecs share only these metadata types;
+        # omitted fields remain omitted for the separate proposal binder.
+        for part in ('revision','definition_digest','definitionJsonValueSha256','policy'):
+            text(rule.get(part),pointer+'/'+part,16384 if part=='policy' else 65536,True,part)
+        if rule.get('policy',PROFILE)!=PROFILE:fail(pointer+'/policy')
+        typed=field=='rules'
+        t.item('C0',1,'definition '+('SourceRecord' if typed else 'source locator')+' mapping guard')
+        source=rule.get('source')
+        if source is not None:
+            fields=('reference','digest','revision','text') if typed else ('ref','path','pointer','sha256')
+            if type(source) is not dict or set(source)!=set(fields):fail(pointer+'/source')
+            for part in fields:text(source[part],pointer+'/source/'+part,65536,typed,'source '+part)
+            if typed and len(encode(source))>65536:fail(pointer+'/source',True)
+        proof['validatedRuleCount']+=1
+    t.item('C0',1,'disabled rule IDs sequence guard')
+    disabled=body.get('disabled_rule_ids',[])
+    if type(disabled) is not list:fail(bp+'/disabled_rule_ids')
+    for i,value in enumerate(disabled):text(value,bp+'/disabled_rule_ids/'+str(i),16384,label='disabled rule_id')
+    proof.update(state='validated',ruleCount=len(rules),sourceRulePointer=bp+'/'+field,sourceLocatorIsSourceRecord=False)
+    return t
+
+def source_record(raw,pointer):
+    text=canonical(raw).decode()
+    return {'reference':canonical({'feeAssetRef':INPUT_REF,'datasetField':pointer}).decode(),
+            'digest':sha(text.encode()),'revision':INPUT_REF,'text':text}
+
+def term(raw,source=None):
+    if type(raw) is dict:
+        if 'variable' in raw:return {'variable':raw['variable']}
+        return {k:raw[k] for k in ('kind','lexical_form','datatype_iri','language_raw','source')}
+    if raw.startswith('?'):return {'variable':raw}
+    if raw.startswith('"'):
+        lex,end=json.JSONDecoder().raw_decode(raw);suffix=raw[end:]
+        dt=lang=None
+        if suffix.startswith('^^'):dt=suffix[2:].strip('<>')
+        elif suffix.startswith('@'):lang=suffix[1:]
+        elif suffix:raise ValueError('unsupported literal spelling in fixed input')
+        return {'kind':'literal','lexical_form':lex,'datatype_iri':dt,'language_raw':lang,'source':source}
+    return {'kind':'iri','lexical_form':raw.strip('<>'),'datatype_iri':None,'language_raw':None,'source':source}
+
+def triple(raw,source=None):
+    if type(raw) is dict:raw=[raw[k] for k in ('subject','predicate','object')]
+    return tuple(term(x,source) for x in raw)
+
+def identity(t):
+    if 'variable' in t:return ('variable',t['variable'])
+    if t['kind']=='iri':return ('iri',t['lexical_form'])
+    lang=t['language_raw']
+    dt=t['datatype_iri'] or (RDF+'langString' if lang is not None else XSD+'string')
+    return ('literal',t['lexical_form'],dt,lang.lower() if lang is not None else None)
+
+def tkey(t):return encode(identity(t))
+def gkey(g):return encode(tuple(identity(t) for t in g))
+def iri(t,value):return t['kind']=='iri' and t['lexical_form']==value
+
+def bind(dataset_id,dataset,business):
+    """A-authorized deterministic synthetic mapping; supplied typed sources preserved."""
+    body=dataset.get('input',dataset);origins=[]
+    dp='/datasets/'+dataset_id.replace('~','~0').replace('/','~1')
+    bp=dp+('/input' if 'input' in dataset else '')
+    def origin(path,input_path,value,status=None,input_state=None,recurse=True):
+        state=input_state or ('explicit-None' if value is None else 'explicit-empty' if value in ('',[],{}) else 'supplied')
+        provenance=status or state
+        origins.append({'field':path,'inputPointer':input_path,'inputState':state,'valueOrigin':provenance})
+        children=value.items() if type(value) is dict else enumerate(value) if type(value) in (tuple,list) else ()
+        if recurse:
+            for key,child in children:
+                synthesized=provenance in ('proposal-synthesized','API-default-conditional')
+                origin(path+'/'+str(key),input_path if synthesized else input_path+'/'+str(key),child,provenance,'omitted' if synthesized else None)
+
+    records=[]
+    if 'input' in dataset:
+        for section in ('asserted','ontology'):
+            for i,raw in enumerate(body[section]):
+                ptr=bp+'/'+section+'/'+str(i)
+                src=source_record(raw,ptr)
+                rec=triple(raw['triple'],src);records.append(rec)
+                for j,t in enumerate(rec):
+                    for k,v in t.items():origin(f'/records/{len(records)-1}/{j}/{k}',ptr if k=='source' else ptr+'/triple/'+('subject','predicate','object')[j],v,'proposal-synthesized','omitted')
+    elif 'records' in body:
+        for i,raw in enumerate(body['records']):
+            records.append(triple(raw))
+            for j,t in enumerate(records[-1]):
+                for k,v in t.items():origin(f'/records/{i}/{j}/{k}',f'{bp}/records/{i}/{j}/{k}',v)
+    else:
+        # The text is not reconstructed from a graph. The hand-selected graph is
+        # only a local mathematical parse witness for the finite text fee branch.
+        raw_text=body['text'];src=source_record({'text':raw_text},bp+'/text')
+        for row in business['inputGraph']:
+            terms=[]
+            for q in row:
+                terms.append({'kind':q['kind'],'lexical_form':q.get('value',q.get('lexical')),
+                  'datatype_iri':q.get('datatype'),'language_raw':q.get('language'),'source':src})
+            records.append(tuple(terms))
+        for i,rec in enumerate(records):
+            for j,t in enumerate(rec):
+                for k,v in t.items():origin(f'/records/{i}/{j}/{k}',bp+'/text',v,'proposal-synthesized','omitted')
+    defs=[];rawdefs=body.get('definitions',body.get('rules',[]))
+    for i,raw in enumerate(rawdefs):
+        typed='definitions' not in body
+        src=raw.get('source') if typed else source_record(raw,f'{bp}/definitions/{i}')
+        d={'rule_id':raw['rule_id'],
+           'when':tuple(triple(g,None if typed else src) for g in raw['when']),
+           'comparisons':tuple({'left':term(c['left'],None if typed else src),
+                               'operator':c['operator'],'right':term(c['right'],None if typed else src)}
+                               for c in raw['comparisons']),
+           'heads':tuple(triple(g,None if typed else src) for g in raw['heads']),
+           'source':src,'revision':raw.get('revision'),
+           'definition_digest':raw.get('definition_digest',raw.get('definitionJsonValueSha256')),
+           'policy':raw.get('policy',PROFILE)}
+        for k,v in d.items():
+            origin(f'/definitions/{i}/{k}',bp+'/'+('rules' if typed else 'definitions')+f'/{i}/{k}',v,
+                   'supplied' if k in raw and (typed or k in ('rule_id','revision')) else 'proposal-synthesized',
+                   ('explicit-None' if raw[k] is None else 'explicit-empty' if raw[k] in ('',[],{}) else 'supplied') if k in raw else 'omitted')
+        defs.append(d)
+    disabled=body.get('disabled_rule_ids',[])
+    for name in ('materialMode','disabledRuleIds','definitions'):
+        value={'materialMode':'text' if 'text' in body else 'records','disabledRuleIds':disabled,'definitions':defs}[name]
+        status='API-default-conditional' if 'text' in body and name!='materialMode' else ('supplied' if name=='disabledRuleIds' and 'disabled_rule_ids' in body else 'proposal-synthesized')
+        input_key={'materialMode':'kind','disabledRuleIds':'disabled_rule_ids','definitions':'definitions' if 'input' in dataset else 'rules'}[name]
+        origin('/'+name,bp+'/'+input_key,value,status,'omitted' if input_key not in body else None,recurse=name!='definitions')
+    classes=[];objects=[];data=[]
+    for g in records:
+        if iri(g[1],RDF+'type') and g[0]['kind']=='iri':
+            target=classes if (iri(g[2],OWL+'Class') or iri(g[2],RDFS+'Class')) else objects if iri(g[2],OWL+'ObjectProperty') else data if iri(g[2],OWL+'DatatypeProperty') else None
+            if target is not None:target.append(g[0]['lexical_form'])
+    catalog={'classes':tuple(sorted(set(classes))),'object_properties':tuple(sorted(set(objects))),
+             'data_properties':tuple(sorted(set(data)))}
+    origin('/catalog','input records declaring rdf:type class/property only',catalog,'proposal-synthesized')
+    material={'feeFormat':'proposal-only-fee-material/2','records':tuple(records),'definitions':tuple(defs),
+              'disabledRuleIds':tuple(disabled),'catalog':catalog,
+              'rawText':body.get('text'),'actualSourceAuthority':False}
+    return material,origins
+
+class Tape:
+    def __init__(self,label):
+        self.label=label;self.events=[];self.caps={};self.used={};self.live={};self.peak={};self.handles={}
+        self.first=None;self.stage='entry';self.counter=0;self.count=Counter();self.arenas={}
+    def wallet(self,w,caps):
+        if w in self.caps:return
+        self.caps[w]=caps;self.used[w]={k:0 for k in caps if k not in ('objects','scalar')}
+        self.live[w]={'objects':0,'scalar':0};self.peak[w]={'objects':0,'scalar':0}
+    def event(self,w,label,charges=None,hold=None,release=None):
+        self.current_wallet=w
+        self.counter+=1
+        if self.counter>1000000:raise ValueError('reference charge event hard bound exceeded')
+        charges=charges or {};self.count[w]+=1
+        for k,v in charges.items():
+            if type(v) is not int or v<0 or k not in self.caps[w]:raise ValueError('unknown/invalid fee')
+        attempt={k:self.used[w][k]+v for k,v in charges.items()}
+        if hold:
+            if hold[0] in self.handles:raise ValueError('duplicate fee lifetime handle')
+            attempt|={k:self.live[w][k]+hold[j+1] for j,k in enumerate(('objects','scalar'))}
+        limit=next((k for k in DOMAINS if k in attempt and attempt[k]>self.caps[w][k]),None)
+        if self.first is None and limit:
+            self.first={'event':self.counter,'stage':self.stage,'wallet':w,'label':label,'domain':limit,
+                        'before':self.used[w].copy(),'requested':charges.copy(),
+                        'liveBefore':self.live[w].copy(),'cap':self.caps[w][limit]}
+        for k,v in charges.items():self.used[w][k]+=v
+        if hold:
+            self.handles[hold[0]]=(w,hold[1],hold[2]);
+            for j,k in enumerate(('objects','scalar')):
+                self.live[w][k]+=hold[j+1];self.peak[w][k]=max(self.peak[w][k],self.live[w][k])
+        if release:
+            owner,o,s=self.handles.pop(release)
+            if release=='control' and label!='terminal cleanup control':raise ValueError('control only terminal')
+            self.live[owner]['objects']-=o;self.live[owner]['scalar']-=s
+        self.events.append({'ordinal':self.counter,'stage':self.stage,'wallet':w,'action':label,
+                            'charges':charges,'hold':hold,'release':release,
+                            'requiredPrefix':self.used[w].copy(),'live':self.live[w].copy(),
+                            'peak':self.peak[w].copy(),'afterFirstLimit':bool(self.first and self.counter>self.first['event'])})
+    def workspace(self,w,objects,scalar):
+        # A preflight-sized, prepaid logical arena covers all local temporaries.
+        # Generation may discover the maximum later; replay opens its final size
+        # before the first access. It is never a credit from a later RELEASE.
+        if w not in self.arenas:
+            name='workspace-'+w;self.event(w,'preflight workspace reservation',hold=(name,objects,scalar))
+            self.arenas[w]=len(self.events)-1
+        else:
+            e=self.events[self.arenas[w]];name,o,b=e['hold'];e['hold']=(name,max(o,objects),max(b,scalar))
+    def working_value(self,w,value):
+        n,s=shape(value);self.workspace(w,4*(n+s)+32,8*len(encode(value))+4096)
+    def item(self,w,n=1,label='field/item',**extra):self.event(w,label,{'work':n,**extra})
+    def scan(self,w,n,label='scan/copy'):
+        self.workspace(w,32,2*n+4096);self.event(w,label,{'work':n,'scan_copy':n})
+    def data(self,w,value,direction='input_bytes',label='typed fee encoding'):
+        b=encode(value);self.working_value(w,value);self.event(w,label,{'work':len(b)+shape(value)[0],direction:len(b)})
+        return b
+    def hashing(self,w,b,label='hash'):
+        self.workspace(w,32,2*len(b)+4096);self.event(w,label,{'work':len(b),'hash_bytes':len(b)})
+    def keep(self,w,name,value):
+        n,s=shape(value);self.event(w,'reserve '+name,hold=(name,n+s,len(encode(value))))
+    def drop(self,w,name):self.event(w,'drop '+name,release=name)
+    def shift(self,w,a,k):
+        bound=abs(a).bit_length()+k
+        if bound>32768:raise ValueError('pre-operation shift bit guard')
+        self.item(w,limb(a)+max(1,(bound+31)//32),'prepaid binary shift limbs')
+        self.workspace(w,8*(limb(a)+max(1,(bound+31)//32))+32,4*(limb(a)+max(1,(bound+31)//32))+4096)
+        return a<<k
+    def arithmetic(self,w,op,a,b):
+        bound=abs(a).bit_length()+abs(b).bit_length() if op=='mul' else max(abs(a).bit_length(),abs(b).bit_length())+int(op=='add')
+        if bound>32768:raise ValueError('pre-operation temporary bit guard')
+        self.workspace(w,8*(limb(a)+limb(b))+32,32*(limb(a)+limb(b))+4096)
+        charge=limb(a)*limb(b) if op in ('mul','div') else max(limb(a),limb(b))
+        self.item(w,charge,'limb '+op)
+
+
+def numeric(t,tape,w):
+    """Exact integer/decimal/IEEE rational mathematical fee primitive, not PV."""
+    text=t['lexical_form'];dt=(t['datatype_iri'] or '').rsplit('#',1)[-1]
+    m=re.fullmatch(r'([+-]?)([0-9]*)(?:\.([0-9]*))?(?:[eE]([+-]?[0-9]+))?',text)
+    if not m:
+        if dt in ('float','double') and text in ('INF','+INF','-INF','NaN'):raise ValueError('UNSUPPORTED_NONFINITE_LITERAL')
+        raise ValueError('INVALID_LITERAL_LEXICAL numeric')
+    sign,whole,frac,exp=m.groups();digits=whole+(frac or '')
+    if not digits or (dt in ('integer','int','nonNegativeInteger') and (frac is not None or exp is not None)) or (dt=='decimal' and exp is not None):raise ValueError('numeric lexical grammar')
+    if len(digits)+len((exp or '').lstrip('+-'))>4096:raise ValueError('RESOURCE_LIMIT digits guard')
+    floating=dt in ('float','double')
+    significant=digits.lstrip('0')
+    if floating and not significant:
+        tape.item(w,len(digits)+1,'all-zero coefficient scan and signed-zero target')
+        return {'numerator':0,'denominator':1,'negative_zero':sign=='-'}
+    exp_digits=(exp or '0').lstrip('+-').lstrip('0') or '0'
+    if floating:tape.item(w,len(exp_digits)+1,'bounded exponent textual threshold compare')
+    if floating and len(exp_digits)>5:
+        if exp and exp.startswith('-'):return {'numerator':0,'denominator':1,'negative_zero':sign=='-'}
+        raise ValueError('UNSUPPORTED_NONFINITE_LITERAL far positive exponent')
+    value=0
+    for c in digits:
+        tape.arithmetic(w,'mul',value,10);product=value*10
+        tape.arithmetic(w,'add',product,int(c));value=product+int(c)
+    ev=0
+    for c in (exp or '0').lstrip('+-'):
+        tape.arithmetic(w,'mul',ev,10);v=ev*10;tape.arithmetic(w,'add',v,int(c));ev=v+int(c)
+    exponent=(-ev if exp and exp.startswith('-') else ev)-len(frac or '')
+    if floating:
+        scientific=len(significant)-1+exponent;tape.item(w,3,'scientific decimal order arithmetic')
+        high,low=(50,-61) if dt=='float' else (400,-401)
+        if scientific>=high:raise ValueError('UNSUPPORTED_NONFINITE_LITERAL far overflow')
+        if scientific<=low:return {'numerator':0,'denominator':1,'negative_zero':sign=='-'}
+    if abs(exponent)>9863:raise ValueError('pre-operation ten-power bit guard')
+    power=1
+    # Independent bounded squaring for ten-power; not host decimal conversion.
+    for bit in bin(abs(exponent))[2:]:
+        tape.arithmetic(w,'mul',power,power);power*=power
+        if bit=='1':tape.arithmetic(w,'mul',power,10);power*=10
+        if power.bit_length()>32768:raise ValueError('temporary bit guard')
+    if exponent>=0:tape.arithmetic(w,'mul',value,power)
+    p,q=(value*power,1) if exponent>=0 else (value,power)
+    a,b=abs(p),q
+    while b:tape.arithmetic(w,'div',a,b);a,b=b,a%b
+    tape.arithmetic(w,'div',p,a or 1);tape.arithmetic(w,'div',q,a or 1)
+    p//=a or 1;q//=a or 1
+    if sign=='-':p=-p
+    if dt=='nonNegativeInteger' and p<0:raise ValueError('nonNegativeInteger range')
+    if dt=='int' and not -(1<<31)<=p<(1<<31):raise ValueError('int range')
+    negative_zero=floating and sign=='-' and p==0
+    if dt in ('float','double') and p:
+        bits=24 if dt=='float' else 53;emin=-126 if dt=='float' else -1022
+        emax=127 if dt=='float' else 1023
+        n=abs(p);e=n.bit_length()-q.bit_length()
+        x,y=(n,tape.shift(w,q,e)) if e>=0 else (tape.shift(w,n,-e),q)
+        tape.arithmetic(w,'cmp',x,y)
+        if x<y:e-=1
+        if e>emax:raise ValueError('nonfinite mathematical fee value')
+        scale=max(e,emin)-(bits-1)
+        if max(n.bit_length()+max(0,-scale),q.bit_length()+max(0,scale))>32768:raise ValueError('pre-operation shift bit guard')
+        nn,dd=(n,tape.shift(w,q,scale)) if scale>=0 else (tape.shift(w,n,-scale),q)
+        tape.arithmetic(w,'div',nn,dd);quot,rem=divmod(nn,dd)
+        tape.arithmetic(w,'mul',2,rem);twice=2*rem;tape.arithmetic(w,'cmp',twice,dd)
+        if twice>dd or (twice==dd and quot%2):tape.arithmetic(w,'add',quot,1);quot+=1
+        p,q=(tape.shift(w,quot,scale),1) if scale>=0 else (quot,tape.shift(w,1,-scale))
+        if p and p.bit_length()-q.bit_length()>emax:raise ValueError('rounded nonfinite mathematical fee value')
+        a,b=p,q
+        while b:tape.arithmetic(w,'div',a,b);a,b=b,a%b
+        tape.arithmetic(w,'div',p,a or 1);tape.arithmetic(w,'div',q,a or 1);p//=a or 1;q//=a or 1
+        if sign=='-':p=-p
+        negative_zero=floating and sign=='-' and p==0
+    if max(abs(p).bit_length(),q.bit_length())>16384:raise ValueError('persistent bit guard')
+    return {'numerator':p,'denominator':q,'negative_zero':negative_zero}
+
+
+def calendar_math(t,tape,w):
+    text=t['lexical_form'];datetime=t['datatype_iri']==XSD+'dateTime'
+    grammar=r'(-?(?:[1-9][0-9]{3,}|0[0-9]{3}))-([0-9]{2})-([0-9]{2})'+(r'T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:\.([0-9]+))?' if datetime else '')+r'(Z|[+-][0-9]{2}:[0-9]{2})?'
+    m=re.fullmatch(grammar,text)
+    if not m:raise ValueError('INVALID_LITERAL_LEXICAL calendar')
+    tape.item(w,8*len(text.encode()),'calendar finite syntax checks')
+    def decimal(raw):
+        value=0
+        for c in raw.lstrip('-'):
+            tape.arithmetic(w,'mul',value,10);product=value*10;tape.arithmetic(w,'add',product,int(c));value=product+int(c)
+        return -value if raw.startswith('-') else value
+    def add(a,b):tape.arithmetic(w,'add',a,b);return a+b
+    def mul(a,b):tape.arithmetic(w,'mul',a,b);return a*b
+    def div(a,b):tape.arithmetic(w,'div',a,b);return a//b
+    parts=m.groups()
+    if len(parts[0].lstrip('-'))+(len(parts[6]) if datetime and parts[6] else 0)>4096:raise ValueError('RESOURCE_LIMIT calendar digits')
+    year,month,day=map(decimal,parts[:3]);timezone=parts[-1]
+    if abs(year).bit_length()>16384:raise ValueError('RESOURCE_LIMIT persistent year bits')
+    for divisor in (4,100,400):tape.arithmetic(w,'div',year,divisor)
+    leap=year%4==0 and (year%100!=0 or year%400==0)
+    lengths=(31,29 if leap else 28,31,30,31,30,31,31,30,31,30,31)
+    if not 1<=month<=12 or not 1<=day<=lengths[month-1]:raise ValueError('INVALID_LITERAL_LEXICAL date range')
+    ya=add(year,-int(month<=2));era=div(ya,400);yoe=add(ya,-mul(era,400))
+    mp=add(month,-3 if month>2 else 9);doy=add(add(div(add(mul(153,mp),2),5),day),-1)
+    serial=add(add(add(add(mul(era,146097),mul(yoe,365)),div(yoe,4)),-div(yoe,100)),doy)
+    hour=minute=second=0;fraction=''
+    if datetime:
+        hour,minute,second=map(decimal,parts[3:6]);fraction=parts[6] or ''
+        if hour>24 or minute>59 or second>59 or (hour==24 and (minute or second or any(c!='0' for c in fraction))):raise ValueError('INVALID_LITERAL_LEXICAL time range')
+    if hour==24:serial=add(serial,1);hour=0
+    offset=0
+    if timezone and timezone!='Z':
+        hh,mm=decimal(timezone[1:3]),decimal(timezone[4:6])
+        if hh>14 or mm>59 or (hh==14 and mm):raise ValueError('INVALID_LITERAL_LEXICAL timezone range')
+        offset=add(mul(hh,60),mm)*(-1 if timezone.startswith('-') else 1);tape.item(w,1,'timezone sign')
+    den=1;frac_num=0
+    for c in fraction:
+        frac_num=add(mul(frac_num,10),int(c));den=mul(den,10)
+    clock=add(add(add(mul(hour,3600),mul(minute,60)),second),-mul(offset,60))
+    num=add(mul(clock,den),frac_num);day_den=mul(den,86400);adjust=div(num,day_den)
+    serial=add(serial,adjust);num=add(num,-mul(adjust,day_den))
+    a,b=abs(num),den
+    while b:tape.arithmetic(w,'div',a,b);a,b=b,a%b
+    num=div(num,a or 1);den=div(den,a or 1)
+    if max(abs(serial).bit_length(),num.bit_length(),den.bit_length())>16384:raise ValueError('RESOURCE_LIMIT persistent calendar bits')
+    return {'day':serial,'second':{'numerator':num,'denominator':den,'negative_zero':False}}
+
+
+def language_wellformed(tag):
+    grandfathered={'art-lojban','cel-gaulish','en-gb-oed','i-ami','i-bnn','i-default','i-enochian','i-hak','i-klingon','i-lux','i-mingo','i-navajo','i-pwn','i-tao','i-tay','i-tsu','no-bok','no-nyn','sgn-be-fr','sgn-be-nl','sgn-ch-de','zh-guoyu','zh-hakka','zh-min','zh-min-nan','zh-xiang'}
+    lang=r'(?:[A-Za-z]{2,3}(?:-[A-Za-z]{3}){0,3}|[A-Za-z]{4}|[A-Za-z]{5,8})(?:-[A-Za-z]{4})?(?:-(?:[A-Za-z]{2}|[0-9]{3}))?(?:-(?:[A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(?:-[0-9A-WY-Za-wy-z](?:-[A-Za-z0-9]{2,8})+)*(?:-[xX](?:-[A-Za-z0-9]{1,8})+)?'
+    private=r'[xX](?:-[A-Za-z0-9]{1,8})+'
+    return tag.isascii() and (tag.lower() in grandfathered or re.fullmatch(lang,tag) is not None or re.fullmatch(private,tag) is not None)
+
+
+def parse_math(t,tape,w):
+    tape.current_wallet=w;tape.current_phase='parse_math'
+    if type(t) is not dict or set(t)!=set(('kind','lexical_form','datatype_iri','language_raw','source')) or t['kind'] not in ('iri','literal'):raise ValueError('INVALID_RULE TermInput structure')
+    for field in ('lexical_form','datatype_iri','language_raw'):
+        value=t[field]
+        if value is not None and (type(value) is not str or any(0xd800<=ord(c)<=0xdfff for c in value)):raise ValueError('INVALID_RULE Unicode scalar structure')
+    if type(t['lexical_form']) is not str:raise ValueError('INVALID_RULE lexical form')
+    if len(t['lexical_form'].encode())>16384:raise ValueError('RESOURCE_LIMIT term_bytes')
+    source=t['source']
+    if source is not None:
+        if type(source) is not dict or set(source)!=set(('reference','digest','revision','text')) or any(v is not None and type(v) is not str for v in source.values()):raise ValueError('INVALID_RULE SourceRecord structure')
+        if len(encode(source))>65536:raise ValueError('RESOURCE_LIMIT source_bytes')
+    tape.data(w,t,'input_bytes','term+source occurrence encoding')
+    tape.scan(w,len(t['lexical_form'].encode()),'raw lexical UTF8 scan')
+    dt=t['datatype_iri'] or '';lang=t['language_raw']
+    if t['kind']=='literal' and ((lang is not None and dt not in ('',RDF+'langString')) or (dt==RDF+'langString' and lang is None)):raise ValueError('INVALID_RULE datatype/language contradiction')
+    if t['kind']=='iri':
+        if t['datatype_iri'] is not None or lang is not None or not re.match(r'[A-Za-z][A-Za-z0-9+.-]*:',t['lexical_form']) or any(ord(c)<=32 or c in '<>\"{}|^`\\' for c in t['lexical_form']):raise ValueError('INVALID_RULE minimal absolute IRI precondition')
+        # Exact fee for the normative finite per-byte character/structure checks.
+        tape.item(w,8*len(t['lexical_form'].encode()),'IRI eight finite checks per UTF8 byte')
+        domain,value='I',t['lexical_form']
+    elif dt in {XSD+name for name in ('integer','int','nonNegativeInteger','decimal','float','double')}:
+        domain,value='N',numeric(t,tape,w)
+    elif dt==XSD+'boolean':
+        if t['lexical_form'] not in ('true','false','1','0'):raise ValueError('boolean lexical grammar')
+        domain,value='B',t['lexical_form'] in ('true','1')
+    elif dt in (XSD+'date',XSD+'dateTime'):
+        domain=('T' if dt==XSD+'dateTime' else 'D')+('z' if re.search(r'(?:Z|[+-][0-9]{2}:[0-9]{2})$',t['lexical_form']) else 'l');value=calendar_math(t,tape,w)
+    elif lang is not None:
+        tape.item(w,128*len(lang.encode()),'language finite ABNF segment/grandfathered-trie ticket')
+        if dt not in ('',RDF+'langString') or not language_wellformed(lang):raise ValueError('INVALID_LITERAL_LEXICAL language or INVALID_RULE datatype contradiction')
+        domain,value='L',t['lexical_form']
+    elif not dt or dt==XSD+'string':
+        tape.item(w,8*len(t['lexical_form'].encode()),'XML1.1 scalar range finite checks')
+        if any(ord(c)==0 or ord(c) in (0xfffe,0xffff) for c in t['lexical_form']):raise ValueError('INVALID_LITERAL_LEXICAL XML1.1 Char')
+        domain,value='S',t['lexical_form']
+    else:raise ValueError('datatype requires independently defined primitive')
+    out={'term':t,'domain':domain,'value':value,'language':lang.lower() if lang is not None else None}
+    tape.hashing(w,b'I05-FEE-VALUE/2\0'+encode(out),'mathematical value fingerprint')
+    return out
+
+
+def ordered(items,key,tape,w,label):
+    out=[]
+    for value in items:
+        k=key(value);tape.scan(w,len(k),label+' key encoding')
+        pos=len(out)
+        while pos:
+            prev=key(out[pos-1]);tape.scan(w,len(k)+len(prev),label+' full stable comparison')
+            if prev<=k:break
+            tape.item(w,1,label+' shifted slot');pos-=1
+        out.insert(pos,value);tape.item(w,1,label+' insert slot')
+    return out
+
+
+def trie_lookup(key,tape,w,label):
+    # Independent exact byte-trie reference: eight fixed bit-edge visits/byte.
+    tape.scan(w,len(key),label+' key bytes')
+    tape.item(w,8*len(key)+1,label+' byte-trie path')
+
+
+def finite_math(records,tape,explanation):
+    w='G';graph={};leaves={};depths={};steps=[];all_candidates=0
+    for i,g in enumerate(records):
+        k=gkey(g);trie_lookup(k,tape,w,'seed occurrence lookup')
+        if k not in graph:
+            graph[k]=g;leaves[k]=(k,);depths[k]=0;tape.item(w,4,'seed insertion/object slots')
+    current=ordered(list(graph.values()),gkey,tape,w,'seed graph order')
+    for round_index in range(100001):
+        if len(graph)>100000:raise ValueError('triple guard')
+        tape.item(w,1,'finite round control')
+        tape.working_value(w,(current,tuple((k,tuple(sorted(v))) for k,v in leaves.items()),steps))
+        by_pred={}
+        for g in current:
+            key=tkey(g[1]);trie_lookup(key,tape,w,'predicate index build')
+            by_pred.setdefault(key,[]).append(g)
+        def group(predicate):
+            key=tkey(term(predicate));trie_lookup(key,tape,w,'predicate index query')
+            return by_pred.get(key,[])
+        types,sub,domain,range_=group(RDF+'type'),group(RDFS+'subClassOf'),group(RDFS+'domain'),group(RDFS+'range')
+        candidates=[]
+        def add(tag,a,b,result,left,right,condition=True):
+            tape.item(w,1,'finite pair visited')
+            tape.scan(w,len(tkey(left))+len(tkey(right)),'finite premise equality full bytes')
+            if identity(left)!=identity(right) or not condition:return
+            tape.item(w,4,'finite candidate charge1+append3')
+            candidates.append((result,(a,b),tag))
+            if explanation:tape.item('Dc',8,'all candidate D fixed8')
+        for a in types:
+            for b in sub:add('rdfs9-type-via-subclass',a,b,(a[0],term(RDF+'type'),b[2]),a[2],b[0])
+        for a in sub:
+            for b in sub:add('rdfs11-subclass-transitive',a,b,(a[0],term(RDFS+'subClassOf'),b[2]),a[2],b[0])
+        for a in domain:
+            for b in current:add('rdfs2-domain',a,b,(b[0],term(RDF+'type'),a[2]),a[0],b[1])
+        for a in range_:
+            for b in current:add('rdfs3-range',a,b,(b[2],term(RDF+'type'),a[2]),a[0],b[1],b[2]['kind']=='iri')
+        tape.working_value(w,(current,by_pred,candidates,tuple((k,tuple(sorted(v))) for k,v in leaves.items()),steps))
+        all_candidates+=len(candidates)
+        candidates=ordered(candidates,lambda c:encode((gkey(c[0]),tuple(gkey(g) for g in c[1]))),tape,w,'stable finite candidates')
+        inserted=0
+        for result,premises,tag in candidates:
+            k=gkey(result);trie_lookup(k,tape,w,'closure candidate existence')
+            if k in graph:continue
+            union={}
+            for g in premises:
+                for leaf in sorted(leaves[gkey(g)]):
+                    tape.item(w,1,'proof input leaf occurrence');trie_lookup(leaf,tape,w,'proof leaf union')
+                    union.setdefault(leaf,None)
+            tape.item(w,len(union),'proof output leaf slots')
+            union=tuple(ordered(list(union),lambda k:k,tape,w,'proof union output key order'))
+            graph[k]=result;leaves[k]=union;inserted+=1
+            if explanation:
+                tape.item('Dc',32,'actual step fixed32')
+                keybytes=len(k);tape.event('Dc','direct index key traversal+scan',{'work':18*keybytes,'scan_copy':2*keybytes})
+            depth=1+max(depths[gkey(g)] for g in premises);depths[k]=depth
+            steps.append((result,premises,tag,union,depth))
+        if not inserted:break
+        current=ordered(list(graph.values()),gkey,tape,w,'expanded finite graph order')
+    else:raise ValueError('finite rounds guard')
+    return current,leaves,steps,all_candidates
+
+
+def constants(definition):
+    for g in definition['when']+definition['heads']:
+        for t in g:
+            if 'variable' not in t:yield t
+    for c in definition['comparisons']:
+        for side in ('left','right'):
+            if 'variable' not in c[side]:yield c[side]
+
+
+def matches_math(definition,graph,tape):
+    partial=[({},())]
+    for pattern_index,pattern in enumerate(definition['when']):
+        next_=[]
+        for bindings,when in partial:
+            for fact in graph:
+                tape.item('G',1,'join candidate visit')
+                b=bindings.copy();okay=True
+                for p,t in zip(pattern,fact):
+                    tape.item('G',1,'join field')
+                    if 'variable' in p:
+                        v=p['variable']
+                        if v in b:
+                            tape.scan('G',len(tkey(b[v]))+len(tkey(t)),'repeated-variable term identity compare')
+                            if identity(b[v])!=identity(t):okay=False;break
+                        else:
+                            tape.item('G',1,'binding extension');b[v]=t
+                    else:
+                        tape.scan('G',len(tkey(p))+len(tkey(t)),'constant term identity compare')
+                        if identity(p)!=identity(t):okay=False;break
+                if okay:
+                    tape.item('G',len(b)+len(when)+2,'complete partial binding slots')
+                    next_.append((b,when+(fact,)))
+        tape.working_value('G',(partial,next_,graph));partial=next_
+    return partial
+
+
+def compare_math(left,operator,right,tape,w):
+    tape.current_wallet=w;tape.current_phase='compare_math'
+    tape.item(w,1,'comparison occurrence')
+    for value in (left,right):
+        b=encode(value);tape.scan(w,len(b),'all typed operand fields')
+        tape.hashing(w,b'I05-FEE-CHECK/2\0'+b,'each operand fingerprint recheck')
+    if left['domain']!=right['domain']:raise ValueError('mathematical domain mismatch')
+    if left['domain'] in ('I','B') and operator not in ('eq','ne'):raise ValueError('RULE_COMPARISON_TYPE_MISMATCH ordered IRI/boolean')
+    if left['domain'] in ('N','Dz','Dl','Tz','Tl'):
+        a,b=left['value'],right['value']
+        if left['domain']!='N':
+            tape.arithmetic(w,'cmp',a['day'],b['day'])
+            if a['day']!=b['day']:
+                av,bv=a['day'],b['day']
+                return {'eq':av==bv,'ne':av!=bv,'lt':av<bv,'le':av<=bv,'gt':av>bv,'ge':av>=bv}[operator]
+            a,b=a['second'],b['second']
+        tape.arithmetic(w,'mul',a['numerator'],b['denominator'])
+        tape.arithmetic(w,'mul',b['numerator'],a['denominator'])
+        av,bv=a['numerator']*b['denominator'],b['numerator']*a['denominator']
+        tape.arithmetic(w,'cmp',av,bv)
+    else:
+        av,bv=left['value'],right['value']
+        tape.scan(w,len(encode(av))+len(encode(bv)),'whole value comparison')
+        if left['domain']=='L':
+            tape.scan(w,len(left['language'].encode())+len(right['language'].encode()),'language identity compare')
+            if left['language']!=right['language']:raise ValueError('language comparison mismatch')
+    return {'eq':av==bv,'ne':av!=bv,'lt':av<bv,'le':av<=bv,'gt':av>bv,'ge':av>=bv}[operator]
+
+
+def check_head(g,catalog,tape,w):
+    tape.current_wallet=w;tape.current_phase='evaluate:head'
+    tape.item(w,3,'all head RDF positions checked')
+    if g[0]['kind']!='iri' or g[1]['kind']!='iri':raise ValueError('head subject/predicate position')
+    predicate=g[1]['lexical_form']
+    for field in catalog:
+        for value in catalog[field]:tape.scan(w,len(value.encode())+len(predicate.encode()),'controlled head Catalog full occurrence check')
+    if predicate==RDF+'type':
+        if g[2]['kind']!='iri' or g[2]['lexical_form'] not in catalog['classes']:raise ValueError('undeclared head class')
+    elif predicate in catalog['object_properties']:
+        if g[2]['kind']!='iri':raise ValueError('object-property head literal')
+    elif predicate in catalog['data_properties']:
+        if g[2]['kind']!='literal':raise ValueError('data-property head IRI')
+    else:raise ValueError('unsupported controlled head predicate')
+
+
+def static_positions(g,tape,w,section,catalog=None):
+    tape.current_wallet=w;tape.current_phase='compile:'+section
+    tape.item(w,3,'static '+section+' subject/predicate/object positions')
+    if len(g)!=3:raise ValueError('INVALID_RULE triple arity')
+    if 'variable' in g[1] or g[1].get('kind')!='iri':raise ValueError('INVALID_RULE fixed predicate required')
+    if 'variable' not in g[0] and g[0].get('kind')!='iri':raise ValueError('INVALID_RULE constant subject position')
+    if 'variable' not in g[2] and g[2].get('kind') not in ('iri','literal'):raise ValueError('INVALID_RULE constant object position')
+    if section=='when' and g[1]['lexical_form']==RDF+'type':
+        tape.item(w,1,'static when rdf:type fixed class TermInput guard')
+        if 'variable' in g[2] or g[2].get('kind')!='iri':raise ValueError('INVALID_RULE fixed declared when class TermInput required')
+        value=g[2]['lexical_form']
+        for declared in catalog['classes']:tape.scan(w,len(declared.encode())+len(value.encode()),'static when complete declared class occurrence check')
+        tape.item(w,1,'static when declared class reference')
+        if value not in catalog['classes']:raise ValueError('INVALID_RULE undeclared fixed when class')
+
+
+def static_head(g,catalog,tape,w):
+    static_positions(g,tape,w,'head')
+    predicate=g[1]['lexical_form']
+    for field in catalog:
+        for value in catalog[field]:tape.scan(w,len(value.encode())+len(predicate.encode()),'static controlled head Catalog full occurrence check')
+    tape.item(w,1,'static controlled head predicate/class reference')
+    object_known='variable' not in g[2]
+    if predicate==RDF+'type':
+        if not object_known or g[2]['kind']!='iri' or g[2]['lexical_form'] not in catalog['classes']:raise ValueError('INVALID_RULE fixed declared class TermInput required')
+    elif predicate in catalog['object_properties']:
+        if object_known and g[2]['kind']!='iri':raise ValueError('INVALID_RULE object-property constant head literal')
+    elif predicate in catalog['data_properties']:
+        if object_known and g[2]['kind']!='literal':raise ValueError('INVALID_RULE data-property constant head IRI')
+    else:raise ValueError('INVALID_RULE undeclared constant head predicate')
+
+
+def check_definition(definition,catalog,tape,w):
+    tape.current_wallet=w;tape.current_phase='compile:definition'
+    variables=set()
+    for comparison in definition['comparisons']:
+        tape.item(w,1,'comparison operator guard')
+        if comparison['operator'] not in ('eq','ne','lt','le','gt','ge'):raise ValueError('INVALID_RULE operator')
+    for field,maximum in (('when',16),('comparisons',32),('heads',16)):
+        tape.item(w,1,'definition '+field+' count guard')
+        if len(definition[field])>maximum:raise ValueError('RESOURCE_LIMIT definition structural count')
+    for triple_ in definition['when']:
+        static_positions(triple_,tape,w,'when',catalog)
+        for value in triple_:
+            tape.item(w,1,'when closure slot')
+            if 'variable' in value:
+                name=value['variable'];tape.scan(w,len(name.encode()),'whole variable identifier')
+                if not re.fullmatch(r'\?[A-Za-z][A-Za-z0-9_]{0,63}',name):raise ValueError('INVALID_RULE variable grammar')
+                variables.add(name)
+    if len(variables)>64:raise ValueError('RESOURCE_LIMIT variable count')
+    for group in list(definition['heads'])+[tuple(c[s] for s in ('left','right')) for c in definition['comparisons']]:
+        for value in group:
+            tape.item(w,1,'head/comparison closure slot')
+            if 'variable' in value and value['variable'] not in variables:raise ValueError('INVALID_RULE unclosed variable')
+    for head in definition['heads']:static_head(head,catalog,tape,w)
+
+
+def mechanism(slot,definition,catalog,matches,leaves,tape,w,compile_only=False,compiled_values=None):
+    tape.stage=w+':compile'
+    defs=() if definition is None else (definition,)
+    plan={'definitions':defs,'catalog':catalog,'limits':slot['limits']}
+    compiled={} if compiled_values is None else compiled_values
+    if compile_only != 'already':
+        tape.data(w,plan,'input_bytes','compile complete definitions+Catalog+17L')
+    if definition and compile_only != 'already':
+        check_definition(definition,catalog,tape,w)
+        for constant in constants(definition):
+            tape.item(w,1,'compile constant occurrence')
+            compiled[id(constant)]=parse_math(constant,tape,w)
+    plan_bytes=encode(plan)
+    if compile_only != 'already':tape.hashing(w,b'I05-FEE-PLAN/2\0'+plan_bytes,'proposal-only plan fingerprint')
+    if compile_only is True:return None,(),plan_bytes,compiled
+    tape.stage=w+':evaluate'
+    tape.data(w,plan,'input_bytes','one full plan recheck same child budget')
+    firings=[];facts={}
+    for binding_index,(bindings,when) in enumerate(matches):
+        tape.item(w,1,'binding occurrence',bindings=1)
+        proof_rows=[]
+        for g in when:
+            keys=ordered(list(leaves[gkey(g)]),lambda k:k,tape,w,'proof leaf reference order')
+            proof_rows.append(tuple(sha(k) for k in keys))
+        proof=tuple(proof_rows)
+        ordered_bindings=tuple(ordered(list(bindings.items()),lambda pair:encode(pair[0]),tape,w,'binding variable order'))
+        tape.data(w,{'bindings':ordered_bindings,'when':when,'proof_leaves':proof},'input_bytes','complete binding/when/proof/source input')
+        values={name:parse_math(t,tape,w) for name,t in ordered_bindings}
+        comparisons=[]
+        for index,c in enumerate(definition['comparisons'] if definition else ()):
+            def resolve(t):
+                tape.item(w,1,'bounded compiled/binding operand slot lookup')
+                return values[t['variable']] if 'variable' in t else compiled[id(t)]
+            left,right=resolve(c['left']),resolve(c['right'])
+            result=compare_math(left,c['operator'],right,tape,w)
+            comparisons.append({'index':index,'left':left,'operator':c['operator'],'right':right,'result':result})
+            tape.item(w,1,'comparison trace',trace_items=1)
+        if not all(c['result'] for c in comparisons):continue
+        heads=[]
+        for index,g in enumerate(definition['heads'] if definition else ()):
+            tape.item(w,1,'head occurrence',head_occurrences=1)
+            ground=tuple(bindings[t['variable']] if 'variable' in t else t for t in g)
+            check_head(ground,catalog,tape,w)
+            heads.append({'index':index,'triple':ground});facts[gkey(ground)]=ground
+            tape.item(w,1,'head trace',trace_items=1)
+        tape.item(w,1,'firing occurrence',firings=1)
+        for row in proof:
+            for leaf in row:trie_lookup(leaf.encode(),tape,w,'basis leaf union occurrence')
+        basis=tuple(ordered(list(dict.fromkeys(leaf for row in proof for leaf in row)),lambda v:v.encode(),tape,w,'complete basis order'))
+        tape.item(w,len(basis),'basis output occurrences')
+        firings.append({'rule_id':definition['rule_id'],'bindings':ordered_bindings,'when':when,
+                        'proof_leaves':proof,'comparisons':tuple(comparisons),'heads':tuple(heads),
+                        'basis':basis,'source':definition['source'],'revision':definition['revision'],
+                        'definition_digest':definition['definition_digest'],'policy':PROFILE})
+    facts_order=ordered(list(facts.values()),gkey,tape,w,'complete batch fact order')
+    tape.working_value(w,(plan,tuple(compiled.values()),matches,firings,facts_order))
+    payload=encode({'profile':PROFILE,'firings':tuple(firings),'facts':tuple(facts_order)})
+    tape.event(w,'complete typed batch payload',{'work':len(payload),'output_bytes':len(payload)})
+    tape.hashing(w,b'I05-FEE-BATCH/2\0'+payload,'typed batch digest')
+    batch={'firings':tuple(firings),'facts':tuple(facts_order),
+           'payload':payload,'digest':sha(b'I05-FEE-BATCH/2\0'+payload),'profile':PROFILE}
+    return batch,tuple(firings),plan_bytes,compiled
+
+
+def caps(work=16777216,inp=262144,out=262144,objects=1<<40,scalar=1<<44):
+    return {'work':work,'input_bytes':inp,'output_bytes':out,'trace_items':8192,'firings':1024,
+            'head_occurrences':16384,'bindings':1024,'scan_copy':work,'hash_bytes':work,
+            'objects':objects,'scalar':scalar}
+
+
+def pv_occurrences(v):
+    if type(v) is dict:
+        if set(v)=={'term','domain','value','language'}:yield v
+        for x in v.values():yield from pv_occurrences(x)
+    elif type(v) in (tuple,list):
+        for x in v:yield from pv_occurrences(x)
+
+
+def complete_key(t):
+    src=t['source'];fields=[t[k] for k in ('kind','lexical_form','datatype_iri','language_raw')]
+    fields += [src[k] for k in ('reference','digest','revision','text')] if src is not None else [None]*4
+    out=b'I05RTK1\0'+bytes([int(src is not None)])
+    for value in fields:
+        b=b'' if value is None else value.encode();out+=bytes([int(value is not None)])+len(b).to_bytes(4,'big')+b
+    return out
+
+
+def _r_bounds(b,q,j,n,m,u,s):
+    return {'wire':6*(b+q),'schema':4096*(b+q+j),'walk':512*j+64*m+65536*n,
+            'hex':2048*(b+q),'copy':64*(b+q+s)+65536*m+65536*n,
+            'query':257*(s+m),'split':512*u,'index':320*(2*u+n)+64*u+16*m,
+            'lookup':(1024+2*n+1)*(101*b+n)+65536*n,'pv':1048576*m,
+            'hash':32*b+8*q+s+32*m+65536*n,
+            'scalar':16*(b+q+s+65536*m+65536*n)+4096,
+            'objects':8*j+16*m+2048*n+4096+257*(2*u+n)}
+
+
+def mathematical_checks(records,graph,steps,custom,business):
+    def expected_key(row):
+        terms=[]
+        for v in row:
+            terms.append({'kind':v['kind'],'lexical_form':v.get('value',v.get('lexical')),
+                          'datatype_iri':v.get('datatype'),'language_raw':v.get('language'),'source':None})
+        return gkey(terms)
+    seeds={gkey(g) for g in records};actual={gkey(g) for g in graph}-seeds
+    checks={'completeRdfsSet':actual=={expected_key(g) for g in business['rdfsAdded']},
+            'completeCustomSet':set(custom)=={expected_key(g) for g in business['customOutput']}}
+    if 'selectedDirectSteps' in business:
+        expected=business['selectedDirectSteps']
+        checks['selectedStepCount']=len(steps)==len(expected)
+        checks['completeOrderedWitnesses']=len(steps)==len(expected) and all(
+            gkey(step[0])==expected_key(e['result']) and tuple(gkey(g) for g in step[1])==tuple(expected_key(g) for g in e['orderedDirectInputTriples']) and set(step[3])=={expected_key(g) for g in e['leafUnion']} and step[4]==e['depth']
+            for step,e in zip(steps,expected))
+    return checks
+
+
+def _enumerate_program(observation,dataset,business,code_sha,context):
+    t=metadata_preflight(observation,dataset,context)
+    t.stage='entry/binder';t.current_phase='entry/binder'
+    material,origins=bind(observation['datasetId'],dataset,business)
+    context.update(material=material,origins=origins)
+    origins.append({'field':'/invocation/materialMode','inputSelector':{'observationId':observation['id'],'field':'/parameters/materialMode'},'inputState':'supplied' if 'materialMode' in observation['parameters'] else 'omitted','valueOrigin':'supplied' if 'materialMode' in observation['parameters'] else 'proposal-synthesized','proposalValue':'text' if material['rawText'] is not None else 'records'})
+    records,defs,catalog=material['records'],material['definitions'],material['catalog']
+    context['metadata']['allocationStarted']=True
+    alloc=allocation(defs,material['disabledRuleIds']);n=len(alloc);context['alloc']=alloc
+    input_pre=canonical(project(records));source_pre=canonical(project(tuple(t['source'] for g in records for t in g)))
+    defs_pre=canonical(project(defs));q=len(input_pre)+len(source_pre);dlen=len(defs_pre)
+    context['q']=q
+    if max(len(input_pre),len(source_pre),dlen)>8388608:raise ValueError('preimage byte guard')
+    a=q+dlen+8388608+16777216
+    t.binder_measures={'A':a,'Q':q,'D':dlen,'N':n,'inputPreimageBytes':len(input_pre),'sourcePreimageBytes':len(source_pre),'definitionsPreimageBytes':dlen,'inputPreimageSha256':sha(input_pre),'sourcePreimageSha256':sha(source_pre),'definitionsPreimageSha256':sha(defs_pre)}
+    t.restore_measures=None;t.direct_measures=None
+    cc=caps(work=128*a+65536*n,objects=8*a+2048*n+4096,scalar=16*a+131072*n)
+    cc['scan_copy']=64*a+65536*n;cc['hash_bytes']=16*a+65536*n
+    t.caps['C0']=cc;t.wallet('ENTRY',caps());t.wallet('G',caps(work=1000000,inp=8388608,out=8388608))
+    t.wallet('WIRE8M',caps(work=0,inp=0,out=8388608,objects=0,scalar=0))
+    explanation=observation['operation']=='dag' or observation['parameters'].get('explanation') is True
+    if explanation:
+        for w in ('Dc',)+(('Dr',) if observation['operation']!='profile' else ())+(('ROOTS',) if observation['parameters'].get('rootsTargets') else ()):
+            t.wallet(w,caps(work=581671040,objects=270635588,scalar=50331776))
+            t.caps[w]['scan_copy']=581671040;t.caps[w]['hash_bytes']=581671040
+    for w in tuple(t.caps):
+        if w in ('Dc','Dr','ROOTS'):t.event(w,'fixed D control128',{'work':128},hold=('control:'+w,128,128))
+    t.keep('C0','fee-input-material',material)
+    t.stage='binder/preimages'
+    raw=canonical(dataset);t.scan('C0',len(raw),'complete raw asset JSON read+UTF8')
+    for value,label in ((input_pre,'input preimage'),(source_pre,'source preimage'),(defs_pre,'definitions preimage')):
+        t.scan('C0',2*len(value),label+' encode+copy');t.hashing('C0',value,label+' digest')
+    if material['rawText'] is not None:
+        b=material['rawText'].encode();t.scan('ENTRY',len(b),'entire original Turtle bytes including prefix occurrences')
+        t.item('ENTRY',len(b),'finite lexer per-byte token/structure prepayment')
+    # Binder is its own finite deterministic operation. Full source preimages,
+    # duplicate Catalog declarations and allocation order are paid independently.
+    t.working_value('C0',(dataset,material,origins))
+    t.item('C0',8*shape(material)[0]+len(origins),'binder fixed field/tag/slot table')
+    # Complete binder validation is per SourceRecord occurrence, independent of
+    # Python alias identity; shared backing cannot waive full source fees.
+    sources=[term_['source'] for g in records for term_ in g if term_['source'] is not None]
+    for definition in defs:
+        if definition['source'] is not None:sources.append(definition['source'])
+    for source in sources:
+        t.scan('C0',len(encode(source)),'each original or synthetic SourceRecord full validation/copy')
+        if source.get('revision')==INPUT_REF and source.get('text') is not None:t.hashing('C0',source['text'].encode(),'each synthesized SourceRecord digest, never locator bytes')
+    declarations={name:[] for name in catalog}
+    for g in records:
+        t.item('C0',1,'Catalog declaration occurrence visit')
+        if iri(g[1],RDF+'type') and g[0]['kind']=='iri':
+            name='classes' if iri(g[2],OWL+'Class') or iri(g[2],RDFS+'Class') else 'object_properties' if iri(g[2],OWL+'ObjectProperty') else 'data_properties' if iri(g[2],OWL+'DatatypeProperty') else None
+            if name:declarations[name].append(g[0]['lexical_form'])
+    for name,values in declarations.items():
+        for value in ordered(values,encode,t,'C0','Catalog raw declaration order '+name):trie_lookup(encode(value),t,'C0','Catalog duplicate declaration lookup')
+    ordered(list(defs),lambda d:d['rule_id'].encode(),t,'C0','allocator stable full rule ID order')
+    t.item('C0',7+17*n,'seven divmod and complete seventeen fields each child')
+    for key in sorted({gkey(g) for g in records}):t.hashing('C0',key,'one proposal leaf ID issuance full canonical RDF key')
+    for g in records:
+        for term_ in g:parse_math(term_,t,'ENTRY')
+    # Every child compiles before closure/matching. Plain mathematical plans are
+    # charged here; evaluation below reuses the same per-child wallet.
+    compiled=[]
+    for i,slot in enumerate(alloc):
+        w='M'+str(i);l=slot['limits'];mc=caps(l['work'],l['input_bytes'],l['output_bytes'])
+        for field in ('trace_items','firings','head_occurrences','bindings'):mc[field]=l[field]
+        t.wallet(w,mc)
+        definition=defs[slot['ordinal']] if slot['ordinal'] is not None else None
+        # Compile-only always. Enabled child evaluation below has no second compile.
+        _,_,plan,values=mechanism(slot,definition,catalog,[],{},t,w,compile_only=True)
+        compiled.append((definition,plan,values))
+    t.stage='graph/closure'
+    if explanation:t.workspace('Dc',0,0)
+    graph,leaves,steps,candidates=finite_math(records,t,explanation)
+    batches=[];all_firings=[];all_matches=[]
+    for i,slot in enumerate(alloc):
+        definition,plan,values=compiled[i];w='M'+str(i)
+        if slot['disabled']:
+            batch=None;firings=();matches=None
+        else:
+            matches=matches_math(definition,graph,t) if definition else []
+            # Already compiled once: evaluation is factored into its own primitive.
+            batch,firings,_,_=mechanism(slot,definition,catalog,matches,leaves,t,w,compile_only='already',compiled_values=values)
+        all_matches.append(matches);all_firings.extend(firings)
+        usage={k:t.used[w][k] for k in ('work','input_bytes','output_bytes','trace_items','firings','head_occurrences')}
+        batches.append({'ruleId':slot['rule_id'],'definitionOrdinal':slot['ordinal'],'disabled':slot['disabled'],
+                        'planDigest':sha(b'I05-FEE-PLAN/2\0'+plan),'batch':batch,
+                        'originalMatches':None if matches is None else tuple({'bindings':tuple(sorted(b.items())),
+                            'when':when,'proof':tuple(tuple(sha(k) for k in sorted(leaves[gkey(g)])) for g in when)} for b,when in matches),
+                        'definitions':() if definition is None else (definition,), 'catalog':catalog,
+                        'limits':slot['limits'],'budgetLimits':slot['limits'],'budgetUsage':usage})
+    t.stage='capture/project/whole-wire'
+    seeds={gkey(g) for g in records};rdfs=tuple(g for g in graph if gkey(g) not in seeds)
+    custom={gkey(h['triple']):h['triple'] for f in all_firings for h in f['heads']}
+    checks=mathematical_checks(records,graph,steps,custom,business)
+    t.mathematical_checks=checks
+    rs={'formatVersion':'proposal-fee-view/2','semanticsVersion':PROFILE,'profile':PROFILE,
+        'rdfs':rdfs,'rules':tuple(custom[k] for k in sorted(custom)),'warnings':(),
+        'evidence':tuple({'firingIndex':i,'headIndex':h['index'],'result':h['triple'],'inputs':f['when'],'basis':f['basis']}
+                         for i,f in enumerate(all_firings) for h in f['heads']),
+        'rdfsEvidence':tuple({'result':g,'basis':tuple(sha(k) for k in sorted(leaves[gkey(g)]))} for g in rdfs),
+        'firingGroups':tuple(all_firings),'mechanismBatches':tuple(batches),'definitions':defs,'catalog':catalog,
+        'proofLeaves':tuple({'reference':sha(k),'triple':g} for k,g in sorted({gkey(g):g for g in records}.items())),
+        'termSources':tuple({'value':term_,'ordinal':j,'span':None} for j,term_ in enumerate(z for g in records for z in g)),
+        'graphBudget':{'feeVersion':VERSION,'feeUsage':t.used['G'].copy(),'actualUsageAuthority':False}}
+    if explanation:
+        refs={gkey(g):{'kind':'leaf','reference':sha(gkey(g))} for g in records};direct=[]
+        for i,(result,premises,tag,union,depth) in enumerate(steps):
+            direct.append({'ordinal':i,'rule':tag,'result':result,'premises':tuple(refs[gkey(g)] for g in premises),'depth':depth})
+            refs[gkey(result)]={'kind':'step','ordinal':i}
+        rs['directSteps']=tuple(direct)
+        seed_keys=tuple(sorted({gkey(g) for g in records}));new_keys=tuple(gkey(step[0]) for step in steps)
+        kbytes=sum(map(len,seed_keys+new_keys));carrier_bytes=len(encode(tuple(direct)))
+        if max(kbytes,carrier_bytes)>8388608:raise ValueError('RESOURCE_LIMIT D key/carrier8M')
+        t.direct_measures={'A':candidates,'S':len(steps),'E':2*len(steps),'K':kbytes,'carrierBytes':carrier_bytes}
+        dn,ds=shape(tuple(direct))
+        t.workspace('Dc',4*candidates+12*len(steps)+4*(1+8*kbytes)+4*(dn+ds)+32,2*kbytes+12*carrier_bytes+4096)
+        t.stage='D/canonical seed+premise index/link'
+        for key in seed_keys:t.event('Dc','D seed key traversal+scan',{'work':18*len(key),'scan_copy':2*len(key)})
+        for result,premises,tag,union,depth in steps:
+            for premise in premises:
+                key=gkey(premise);t.event('Dc','D each ordered premise key lookup traversal+scan',{'work':18*len(key),'scan_copy':2*len(key)})
+        for key in seed_keys:t.scan('Dc',len(key)+64,'link each temporary SeedKey to already-issued leaf ID; no second hash')
+        t.scan('Dc',2*carrier_bytes,'complete direct carrier encoding/copy')
+    view={'format':'proposal-only-mathematical-fee-view/2',
+          'implementation':{'feeInterpreter':code_sha,'domainProfile':PROFILE,'actualProducerAuthority':False},
+          'reasoning':rs,'inputDigest':sha(input_pre),'inputDigestDomain':'fee-material-json/2',
+          'sourceDigest':sha(source_pre),'definitionsDigest':sha(defs_pre)}
+    t.keep('C0','native-fee-view',view)
+    projected=project(view);t.keep('C0','projected-fee-tree',projected)
+    payload=canonical(projected);text=payload.decode();rows=[[text[i:i+8192]] for i in range(0,len(text),8192)]
+    rows_bytes=canonical(rows);b=len(payload)+len(rows_bytes)
+    t.event('WIRE8M','exact new fee joint payload+rows hard gate',{'output_bytes':b})
+    t.keep('C0','wire-encoding-buffers',(payload,rows_bytes))
+    t.scan('C0',3*b,'canonical field/UTF8/escape/append/final copy whole streams')
+    t.item('C0',shape(view)[0]+shape(projected)[0],'complete native+projected value/key/slot visits')
+    t.hashing('C0',payload,'fee payload digest');t.hashing('C0',rows_bytes,'fee rows digest')
+    t.hashing('C0',encode(catalog),'top Catalog digest')
+    t.drop('C0','projected-fee-tree')
+    context.update(view=view,payload=payload,rows_bytes=rows_bytes,b=b,steps=steps,candidates=candidates)
+    restore=observation['operation']!='profile'
+    if restore:
+        restore_fee(view,payload,rows_bytes,input_pre,source_pre,alloc,all_matches,compiled,leaves,t,explanation,
+                    observation['operation']=='restore-negative',observation['parameters'],steps)
+    # H01 and all remaining responsibility are explicit even for profile/no roots.
+    return finish_program(t,origins,material,observation,alloc,b,q,view,payload,rows_bytes,steps,candidates,code_sha)
+
+
+def mutate_fee_view(projected,mutation):
+    v=json.loads(canonical(projected))
+    rs=v['reasoning'];children=rs['mechanismBatches']
+    if mutation=='payload-unknown-key':v['feeUnknown']=True
+    elif mutation=='tail-source-tamper':rs['termSources'][-1]['value']['source']={'feeTampered':mutation}
+    elif mutation=='tail-definition-tamper':rs['definitions'][-1]['policy']='feeTampered'
+    elif mutation=='tail-limits-tamper':children[-1]['budgetLimits']['work']={'integerHex':'0x1'}
+    elif mutation=='tail-child-tamper':children[-1]['ruleId']='feeTampered'
+    elif mutation=='dag-depth-plus-one':
+        old=rs['directSteps'][-1]['depth']['integerHex'];rs['directSteps'][-1]['depth']={'integerHex':hex(int(old,16)+1)}
+    elif mutation=='dag-last-premise-forward':rs['directSteps'][-1]['premises'][-1]={'kind':'step','ordinal':{'integerHex':hex(len(rs['directSteps']))}}
+    elif mutation=='leaf-rename-all':
+        for leaf in rs['proofLeaves']:leaf['reference']='fee-renamed-'+leaf['reference']
+    elif mutation=='head-occurrence-1023-15':
+        rs['evidence'][-1]['firingIndex']={'integerHex':'0x3ff'};rs['evidence'][-1]['headIndex']={'integerHex':'0xf'}
+    else:raise ValueError('unknown fixed mutation enum')
+    return canonical(v)
+
+
+def restore_fee(view,payload,rows_bytes,input_pre,source_pre,alloc,all_matches,compiled,leaves,t,explanation,negative,parameters,source_steps):
+    t.current_phase='restore:receiver'
+    b=len(payload)+len(rows_bytes);q=len(input_pre)+len(source_pre);n=len(alloc)
+    projected=project(view);j=shape(projected)[0]+shape(json.loads(rows_bytes))[0]+shape(json.loads(input_pre))[0]+shape(json.loads(source_pre))[0]
+    saved_pv=list(pv_occurrences(view));keys=[complete_key(pv['term']) for pv in saved_pv]
+    m=len(keys);u=len(set(keys));s=sum(map(len,keys))
+    if j>25165824 or m>131072 or u>m or s>16777216 or s>b+64*m:raise ValueError('RESOURCE_LIMIT restore proof counters')
+    default=_r_bounds(8388608,16777216,25165824,n,131072,131072,16777216)
+    t.restore_measures={'B':b,'Q':q,'J':j,'N':n,'M':m,'U':u,'S':s,'heldNativeProjectionNodes':shape(projected)[0],'originalDefaultBoundPrices':default}
+    for name,bound in default.items():
+        if name in ('objects','scalar'):continue
+        t.wallet('R0-'+name,caps(work=bound,inp=262144,out=262144))
+    t.wallet('R0',caps(work=default['walk'],objects=default['objects'],scalar=default['scalar']))
+    t.stage='restore/original held wire'
+    t.keep('R0','received-wire+preimages',(payload,rows_bytes,input_pre,source_pre))
+    received=mutate_fee_view(projected,parameters['mutation']) if negative else payload
+    for raw in (received,rows_bytes):
+        t.scan('R0-wire',len(raw),'received UTF8+strict lexical before allocation')
+        t.hashing('R0-hash',raw,'receiver complete original-held-domain digest')
+    t.scan('R0-wire',len(received)+len(payload),'byte-exact held payload compare; hash collision does not authorize')
+    if negative:
+        if received==payload:raise ValueError('mutation failed to change canonical fee stream')
+        t.item('R0-schema',1,'fee stream integrity reject; no fullview/roots success prefix')
+        return
+    t.keep('R0','restored-native-fee-view',view)
+    for stage in range(1,17):
+        t.stage='restore/A'+str(stage)
+        t.item('R0-walk',32*j,'fixed tree/field/slot visit allowance')
+        t.scan('R0-copy',4*(b+q),'whole canonical/preimage encode-copy allowance')
+        if stage in (1,2,11,12):t.scan('R0-wire',b+q,'whole original wire pass')
+        if stage==2:
+            t.item('R0-schema',4096*j,'32 fixed key candidates; two64-byte full comparisons per candidate')
+            for node in integers(view):
+                h=len(hex(abs(node)))-2;chunks=(h+7)//8
+                t.item('R0-hex',chunks*(chunks+1)+8*h+16,'bounded integerHex8-digit decode/shift/reencode allowance')
+        if stage==4:
+            caches={i:{} for i in range(n)}
+            for i,child in enumerate(view['reasoning']['mechanismBatches']):
+                saved=list(pv_occurrences(child['batch'])) if child['batch'] else []
+                # Top firingGroups is a second occurrence of each child saved value.
+                for occurrence in saved+saved:
+                    key=complete_key(occurrence['term']);t.scan('R0-copy',2*len(key),'complete49B-framed key scan+write each occurrence')
+                    t.item('R0-query',257*(len(key)+1),'compressed-byte-query upper-bound ticket exact price')
+                    t.hashing('R0-hash',b'I05RKEY1'+b'\0'*24+key,'cache audit fullkey every occurrence')
+                    if key not in caches[i]:
+                        t.item('R0-split',512,'new-key split branch references allowance')
+                        t.item('R0-index',704,'new-key two nodes+metadata update allowance')
+                        slot=alloc[i];w='Rp'+str(i);l=slot['limits'];t.wallet(w,caps(l['work'],l['input_bytes'],0))
+                        t.event('R0','opaque canonical arithmetic peak',hold=('parse-opaque-'+str(t.counter),8*(l['input_bytes']+l['output_bytes'])+4096,8*(l['input_bytes']+l['output_bytes'])+(1<<29)))
+                        handle=list(t.handles)[-1];fresh=parse_math(occurrence['term'],t,w);t.drop('R0',handle)
+                        caches[i][key]=fresh
+                        t.working_value('R0',tuple(tuple(cache.items()) for cache in caches.values()))
+                    fresh=caches[i][key]
+                    if fresh!=occurrence:raise ValueError('independent mathematical value differs')
+                    t.item('R0-index',16,'per-lookup metadata allowance')
+                    t.scan('R0-pv',2*len(encode(occurrence)),'all saved/fresh fields every occurrence including hit')
+        if stage==14:
+            for raw in (payload,rows_bytes,input_pre,source_pre):t.hashing('R0-hash',raw,'all whole-stream hashes separately')
+            t.hashing('R0-hash',encode(view['reasoning']['catalog']),'top Catalog full digest')
+    for i,slot in enumerate(alloc):
+        t.stage='restore/revalidation-child-'+str(i)
+        l=slot['limits'];k=203+33*l['firings']+4*l['output_bytes'];w='R16-'+str(i)
+        rc=caps(3*l['work']+k,2*l['input_bytes'],2*l['output_bytes'])
+        for name in ('trace_items','firings','head_occurrences','bindings'):rc[name]=l[name]
+        t.wallet(w,rc);definition,_,_=compiled[i]
+        batch,_,_,_=mechanism(slot,definition,view['reasoning']['catalog'],all_matches[i] or [],leaves,t,w,compile_only=slot['disabled'])
+        saved=view['reasoning']['mechanismBatches'][i]['batch']
+        if saved is not None:
+            t.event(w,'saved typed bytes full second output encoding',{'work':len(saved['payload']),'output_bytes':len(saved['payload'])})
+            t.hashing(w,saved['payload'],'saved typed bytes digest separate')
+            if batch['payload']!=saved['payload']:raise ValueError('fee typed replay inconsistency')
+    if explanation:
+        t.stage='restore/direct-DAG'
+        steps=view['reasoning']['directSteps']
+        t.working_value('Dr',(steps,tuple((key,tuple(sorted(value))) for key,value in leaves.items())))
+        for step in steps:
+            for p in step['premises']:
+                t.item('Dr',len(p)+1,'premise kind/ref/ordinal fields')
+                key=encode(p);t.event('Dr','direct ref byte traversal+scan',{'work':18*len(key),'scan_copy':2*len(key)})
+            t.item('Dr',len(step)+1,'all step/result/depth/template fields')
+            t.scan('Dr',len(encode(step)),'every step carrier byte')
+        # Local DP charges each input/output leaf occurrence, never all paths.
+        for i,step in enumerate(steps):
+            result=step['result'];leafset=leaves[gkey(result)]
+            inputs=[leaf for premise in source_steps[i][1] for leaf in sorted(leaves[gkey(premise)])]
+            t.item('Dr',len(inputs)+len(leafset),'DP every actual input/output leaf occurrence')
+            for leaf in inputs:trie_lookup(leaf,t,'Dr','DP full input key union lookup')
+            for leaf in sorted(leafset):t.scan('Dr',len(leaf),'DP full output key copy')
+        targets=parameters.get('rootsTargets',[])
+        if targets:
+            t.stage='roots'
+            t.keep('ROOTS','roots-borrows-entire-view',view)
+            root_groups=[]
+            for target in targets:
+                root_refs=[]
+                key=gkey(triple(target));trie_lookup(key,t,'ROOTS','each requested target occurrence')
+                for leaf in view['reasoning']['proofLeaves']:
+                    t.scan('ROOTS',len(key)+len(gkey(leaf['triple'])),'leaf root index compare')
+                    if gkey(leaf['triple'])==key:
+                        t.item('ROOTS',1,'leaf root reference output');root_refs.append(('leaf',leaf['reference']))
+                for step in steps:
+                    t.scan('ROOTS',len(key)+len(gkey(step['result'])),'step root index compare')
+                    if gkey(step['result'])==key:
+                        t.item('ROOTS',1,'step root reference output');root_refs.append(('step',step['ordinal']))
+                for firing_index,f in enumerate(view['reasoning']['firingGroups']):
+                    for head in f['heads']:
+                        t.scan('ROOTS',len(key)+len(gkey(head['triple'])),'all head occurrence root compare')
+                        if gkey(head['triple'])==key:
+                            t.item('ROOTS',1,'ruleHead reference output; duplicates preserved');root_refs.append(('ruleHead',firing_index,head['index']))
+                root_groups.append(tuple(root_refs))
+            t.keep('ROOTS','roots-return-buffer',tuple(root_groups))
+            t.scan('ROOTS',2*len(encode(tuple(root_groups))),'complete roots grouping/result encoding+publication')
+            t.drop('ROOTS','roots-borrows-entire-view')
+    t.drop('R0','received-wire+preimages')
+
+
+def integers(v):
+    if type(v) is int:yield v
+    elif type(v) is dict:
+        for x in v.values():yield from integers(x)
+    elif type(v) in (tuple,list):
+        for x in v:yield from integers(x)
+
+
+# R3 failure algebra is finite and private. Messages/source/tracebacks never enter
+# the failure receipt. Primitive functions still expose their exact local errors
+# to independent mathematical callers; the complete entry always closes them.
+REASONS=('NONE','INVALID_RULE','INVALID_LITERAL_LEXICAL','UNSUPPORTED_LITERAL_DATATYPE',
+         'UNSUPPORTED_NONFINITE_LITERAL','RULE_COMPARISON_TYPE_MISMATCH','RESOURCE_LIMIT',
+         'INTERNAL_MATHEMATICAL_CHECK')
+
+def failure_reason(exc):
+    text=str(exc)
+    if isinstance(exc,(KeyError,TypeError,IndexError,AttributeError,UnicodeError)):return 'INVALID_RULE'
+    if 'NONFINITE' in text or 'nonfinite' in text:return 'UNSUPPORTED_NONFINITE_LITERAL'
+    if 'domain mismatch' in text or 'language comparison mismatch' in text or 'TYPE_MISMATCH' in text:return 'RULE_COMPARISON_TYPE_MISMATCH'
+    if 'independently defined primitive' in text:return 'UNSUPPORTED_LITERAL_DATATYPE'
+    if 'RESOURCE_LIMIT' in text or 'guard' in text or 'bit ' in text or 'hard bound' in text:return 'RESOURCE_LIMIT'
+    if 'LEXICAL' in text or 'lexical grammar' in text or text in ('int range','nonNegativeInteger range','boolean lexical grammar'):return 'INVALID_LITERAL_LEXICAL'
+    if 'inconsistency' in text or 'differs' in text or 'mutation failed' in text:return 'INTERNAL_MATHEMATICAL_CHECK'
+    return 'INVALID_RULE'
+
+
+def _entry_observation(observation,dataset):
+    # ASCII fallback is only an invalid-entry binding, never a current projection.
+    result=dict(observation) if type(observation) is dict else {}
+    result.setdefault('id','proposal-invalid-entry');result.setdefault('datasetId','proposal-invalid-dataset')
+    result.setdefault('operation','profile');result.setdefault('parameters',{})
+    for key in ('id','datasetId','operation'):
+        if type(result[key]) is not str or len(result[key])>1024 or any(0xd800<=ord(c)<=0xdfff for c in result[key]):result[key]='proposal-invalid-'+key
+    digest=result.get('projectionSha256')
+    if type(digest) is not str or re.fullmatch('[0-9a-f]{64}',digest) is None:
+        raw=json.dumps(dataset,ensure_ascii=True,sort_keys=True,separators=(',',':')).encode()
+        result['projectionSha256']=sha(b'I05-FEE-INVALID-ENTRY/3\0'+raw)
+        result['projectionBindingOrigin']='proposal-synthesized-invalid-entry-ascii-hash'
+    return result
+
+
+def _fallback_tape(observation,dataset):
+    # Q,D are unavailable before successful binding, not assigned zero. The
+    # fixed nonnegative lower bound A>=8MiB+16MiB,N>=1 gives an existing C0 slice
+    # sufficient for bounded entry rejection without raising any original cap.
+    t=Tape(observation['id']);a=8388608+16777216
+    cc=caps(work=128*a+65536,objects=8*a+2048+4096,scalar=16*a+131072)
+    cc['scan_copy']=64*a+65536;cc['hash_bytes']=16*a+65536
+    t.wallet('C0',cc);t.event('C0','fixed bootstrap control64',hold=('control',64,0))
+    t.stage='entry/binder-guard'
+    raw=json.dumps(dataset,ensure_ascii=True,sort_keys=True,separators=(',',':')).encode()
+    t.scan('C0',len(raw),'invalid-entry complete ASCII input guard scan')
+    t.binder_measures={'state':'binding-not-completed','C0CapBasis':'original fixed lower bound A>=24MiB,N>=1','invalidEntryAsciiBytes':len(raw)}
+    t.restore_measures=None;t.direct_measures=None;t.mathematical_checks={}
+    return t
+
+
+def make_program(observation,dataset,business,code_sha):
+    """Complete pure entry: real mathematical errors -> closed failed invoice."""
+    observation=_entry_observation(observation,dataset)
+    context={'material':None,'origins':[],'alloc':(),'t':None}
+    try:
+        result,material=_enumerate_program(observation,dataset,business,code_sha,context)
+    except (ValueError,KeyError,TypeError,IndexError,AttributeError,UnicodeError) as exc:
+        t=context['t'] or _fallback_tape(observation,dataset)
+        if context['material'] is None and not isinstance(exc,MetadataFailure) and context['t'] is not None:
+            # Keep the prior binder-failure complete raw input scan, after the
+            # new metadata gate rather than dropping it on the early tape.
+            raw=json.dumps(dataset,ensure_ascii=True,sort_keys=True,separators=(',',':')).encode()
+            t.stage='entry/binder-guard';t.current_phase='entry/binder'
+            t.scan('C0',len(raw),'invalid-entry complete ASCII input guard scan')
+            t.binder_measures['invalidEntryAsciiBytes']=len(raw)
+        reason=failure_reason(exc)
+        w=getattr(t,'current_wallet','C0');w=w if w in t.caps else 'C0'
+        t.event(w,'real normative check rejected')
+        t.events[-1]['semanticError']={'reason':reason,'phase':getattr(t,'current_phase','entry/binder'),'classification':'resource-guard' if reason=='RESOURCE_LIMIT' else 'internal' if reason=='INTERNAL_MATHEMATICAL_CHECK' else 'semantic'}
+        if isinstance(exc,MetadataFailure):t.events[-1]['semanticError']['inputPointer']=exc.input_pointer
+        result,material=finish_program(t,context['origins'],context['material'],observation,context['alloc'],context.get('b'),context.get('q'),context.get('view'),context.get('payload'),context.get('rows_bytes'),context.get('steps',()),context.get('candidates'),code_sha)
+    result['entryMetadata']=context.get('metadata',{'state':'not-completed'})
+    return result,material
+
+
+def validate_lifetimes(plan):
+    """Whole mathematical program proof BEFORE constructing the execution state."""
+    seen=set();active={};h=slots=0
+    for event in plan:
+        hold=event.get('hold');release=event.get('release')
+        if hold:
+            name,o,s=hold
+            if name in seen or type(o) is not int or type(s) is not int or min(o,s)<0:raise AssertionError('invalid generated lifetime')
+            seen.add(name);active[name]=(event['wallet'],o,s)
+            if name!='receipt' and not name.startswith('control'):h+=1;slots+=o
+        if release:
+            if release not in active:raise AssertionError('unknown generated release')
+            if release.startswith('control') and event['action']!='terminal cleanup control':raise AssertionError('early generated control release')
+            active.pop(release)
+    if h>=1<<32 or slots>=1<<64:raise AssertionError('finite cleanup proof width')
+    return h,slots
+
+
+def _annotate_h(tape):
+    peak={'objects':0,'scalar':0};live={w:{'objects':0,'scalar':0} for w in tape.caps}
+    for event in tape.events:
+        live[event['wallet']]=event['live'].copy()
+        total={k:sum(v[k] for v in live.values()) for k in peak}
+        for key in peak:peak[key]=max(peak[key],total[key])
+        event['wholeOwnerHLive']=total;event['wholeOwnerHPeak']=peak.copy()
+    return peak
+
+
+def _prepay_failure(tape,event):
+    w=event['wallet'];attempt={k:tape.used[w][k]+n for k,n in event['charges'].items()}
+    if event.get('hold'):
+        _,o,s=event['hold'];attempt.update(objects=tape.live[w]['objects']+o,scalar=tape.live[w]['scalar']+s)
+    domain=next((k for k in DOMAINS if k in attempt and attempt[k]>tape.caps[w][k]),None)
+    if not domain:return None
+    return {'kind':'resource','reason':'RESOURCE_LIMIT','event':event['ordinal'],'wallet':w,'domain':domain,
+            'stage':event['stage'],'label':event['action'],'before':tape.used[w].copy(),
+            'liveBefore':tape.live[w].copy(),'requested':event['charges'].copy(),
+            'attemptedHold':event.get('hold'),'cap':tape.caps[w][domain]}
+
+
+def _copy_action(tape,event):
+    tape.stage=event['stage'];tape.event(event['wallet'],event['action'],event['charges'],event.get('hold'),event.get('release'))
+    if event.get('semanticError'):tape.events[-1]['semanticError']=event['semanticError'].copy()
+
+
+def _terminal_cleanup(tape,published,failure=False):
+    tape.stage='terminal/H01-failed-cleanup' if failure else 'terminal/H01-cleanup'
+    for name in list(tape.handles):
+        if not failure and (name=='receipt' or name in published):continue
+        if name.startswith('control'):continue
+        owner,_,_=tape.handles[name];tape.drop(owner,name)
+        tape.events[-1]['cleanupPrepaidBy']='H01'
+    for name in list(tape.handles):
+        if name.startswith('control'):
+            owner,_,_=tape.handles[name];tape.event(owner,'terminal cleanup control',release=name)
+            tape.events[-1]['cleanupPrepaidBy']='H01'
+
+
+def receipt_encoding(observation,alloc,wallets,amounts,peaks,handles,slots,program_hash,status,reason,ordinal):
+    def u(n,k):
+        if type(n) is not int or not 0<=n<(1<<(8*k)):raise AssertionError('receipt fixed-width proof')
+        return n.to_bytes(k,'big')
+    def lp(text):
+        b=text.encode();return u(len(b),4)+b
+    body=b'IFR3'+b'\3'+lp(observation['id'])+bytes.fromhex(observation['projectionSha256'])
+    body+=u(handles,4)+u(slots,8)+b'\0\0'+u(len(wallets),4)
+    for w in wallets:
+        body+=lp(w)
+        for domain in DOMAINS:body+=u(peaks[w][domain] if domain in ('objects','scalar') else amounts[w][domain],8)
+    body+=u(len(alloc),4)
+    for child in alloc:
+        rid=child['rule_id'];body+=lp(rid or '')+bytes([int(rid is not None)])
+        body+=u(child['ordinal'] if child['ordinal'] is not None else 0xffffffff,4)+bytes([int(child['disabled'])])
+        for field in tuple(POOLS)+tuple(STRUCT):body+=u(child['limits'][field],8)
+    body+=u(status,1)+u(REASONS.index(reason),2)+u(ordinal,8)+bytes.fromhex(program_hash)
+    digest=hashlib.sha256(b'I05-FEE-RECEIPT/3\0'+body+b'\0'*32).digest()
+    return body+digest
+
+
+def finish_program(t,origins,material,observation,alloc,b,q,view,payload,rows_bytes,steps,candidates,code_sha):
+    original=[]
+    for event in t.events:
+        e={k:v for k,v in event.items() if k in ('stage','wallet','action','charges','hold','release','semanticError')}
+        if e.get('hold') and e['hold'][0].startswith('workspace-R0-'):e['wallet']='R0'
+        original.append(e)
+    h,slots=validate_lifetimes(original)
+    wallets=tuple(t.caps);fields=14+12*len(wallets)+20*len(alloc)
+    receipt_bytes=4+1+4+len(observation['id'].encode())+32+4+8+2+4+sum(4+len(w.encode())+11*8 for w in wallets)+4+sum(4+len((a['rule_id'] or '').encode())+1+4+1+17*8 for a in alloc)+1+2+8+32+32
+    fcharges={'work':fields+3*h+slots+4*receipt_bytes,'scan_copy':4*receipt_bytes,'hash_bytes':18+receipt_bytes}
+    prepay={'stage':'entry/finalization-prepay','wallet':'C0','action':'receipt+all cumulative cleanup prepayment','charges':fcharges,'hold':('receipt',fields+1,2*receipt_bytes+32),'release':None}
+    plan=original[:1]+[prepay]+original[1:]
+    for ordinal,event in enumerate(plan,1):event['ordinal']=ordinal
+    validate_lifetimes(plan) # includes receipt and all unexecuted-tail lifetimes
+    analysis=Tape(t.label)
+    for w,c in t.caps.items():analysis.wallet(w,c)
+    semantic=next((e for e in plan if e.get('semanticError')),None)
+    for event in plan:_copy_action(analysis,event)
+    published={'native-fee-view'} if observation['operation']=='profile' else set() if observation['operation']=='restore-negative' else {'restored-native-fee-view','roots-return-buffer'}
+    _terminal_cleanup(analysis,published,failure=semantic is not None)
+    h_peak=_annotate_h(analysis)
+    # The execution state is first created only after complete proof/prepayment
+    # shape is known. It never performs a rejected action or any semantic tail.
+    execution=Tape(t.label)
+    for w,c in t.caps.items():execution.wallet(w,c)
+    first=None;h01_paid=False
+    for event in plan:
+        first=_prepay_failure(execution,event)
+        if first:
+            w=event['wallet'];execution.stage=event['stage']
+            execution.event(w,'atomic vector rejected before action')
+            execution.events[-1].update(rejectedPlanOrdinal=event['ordinal'],attemptedCharges=event['charges'],attemptedHold=event.get('hold'),failure=first.copy(),debited=False)
+            break
+        _copy_action(execution,event)
+        execution.events[-1]['planOrdinal']=event['ordinal'];execution.events[-1]['debited']=True
+        if event is prepay:h01_paid=True
+        if event.get('semanticError'):
+            detail=event['semanticError'];first={'kind':detail['classification'],'reason':detail['reason'],'event':event['ordinal'],'wallet':event['wallet'],'stage':event['stage'],'label':event['action'],'phase':detail['phase']}
+            if 'inputPointer' in detail:first['inputPointer']=detail['inputPointer']
+            execution.events[-1]['failure']=first.copy();break
+    _terminal_cleanup(execution,published,failure=first is not None)
+    paid_h_peak=_annotate_h(execution)
+    for event in analysis.events:
+        event['executionDisposition']='analytic-unexecuted-tail' if first and event['ordinal']>first['event'] else 'rejected-atomic-vector' if first and first['kind']=='resource' and event['ordinal']==first['event'] else 'semantic-rejected' if first and event['ordinal']==first['event'] else 'admitted-prefix'
+    execution_hash=sha(canonical(execution.events));program_hash=sha(canonical(analysis.events))
+    reason=first['reason'] if first else 'NONE';status=2 if first and reason=='RESOURCE_LIMIT' else 3 if first and first['kind']=='internal' else 1 if first else 0
+    receipt=receipt_encoding(observation,alloc,wallets,execution.used,execution.peak,h,slots,execution_hash,status,reason,first['event'] if first else 0)
+    if len(receipt)!=receipt_bytes:raise AssertionError('receipt fixed-width length proof')
+    try:native=encode(material) if material is not None else None
+    except (ValueError,TypeError,KeyError,UnicodeError):native=None
+    counts={'state':'not-completed-at-real-check','seedRawOccurrences':len(material['records']) if material is not None else None}
+    if view is not None:
+        counts={'seedRawOccurrences':len(material['records']),'finiteCandidates':candidates,'steps':len(steps),'matches':sum(len(c['originalMatches'] or ()) for c in view['reasoning']['mechanismBatches']),'acceptedFirings':len(view['reasoning']['firingGroups']),'headOccurrences':len(view['reasoning']['evidence']),'rdfsTriples':len(view['reasoning']['rdfs']),'customTriples':len(view['reasoning']['rules'])}
+    result={'version':VERSION,'id':observation['id'],'operation':observation['operation'],'sourceInputRef':INPUT_REF,'datasetId':observation['datasetId'],'proposalOnly':True,
+       'binderMeasures':t.binder_measures,'restoreMeasures':t.restore_measures,'directMeasures':t.direct_measures,'fieldOrigins':origins,
+       'feeMaterialSha256':sha(native) if native is not None else None,
+       'feeCodec':{'nativeBytes':len(native) if native is not None else None,'nativeSha256':sha(native) if native is not None else None,'payloadBytes':len(payload) if payload is not None else None,'payloadSha256':sha(payload) if payload is not None else None,'rowsBytes':len(rows_bytes) if rows_bytes is not None else None,'rowsSha256':sha(rows_bytes) if rows_bytes is not None else None,'jointBytes':b,'preimageBytes':q,'actualCurrentWireClaim':False,'unconstructedOutputsAreNotZero':True},
+       'programSourceSha256':code_sha,'programEventCount':len(analysis.events),'programSha256':program_hash,'executionEventCount':len(execution.events),'executionSha256':execution_hash,
+       'amount':analysis.used,'caps':t.caps,'peak':analysis.peak,'wholeOwnerHRequiredPeak':h_peak,'paidWholeOwnerHPeak':paid_h_peak,
+       'finalization':{'handles':h,'cumulativeSlots':slots,'fields':fields,'receiptBytes':receipt_bytes,'vector':fcharges,'receiptObjects':fields+1,'receiptScalar':2*receipt_bytes+32,'fixedCounterWidthBits':64,'authority':False,'receiptHex':receipt.hex(),'receiptSha256':sha(receipt),'hashPreimageBytes':18+receipt_bytes,'H01Paid':h01_paid,'staticProofBeforeExecution':True,'receiptCounters':'paid execution, never analytic demand'},
+       'executionLifetime':{'handles':sum(1 for e in execution.events if e.get('hold') and e['hold'][0]!='receipt' and not e['hold'][0].startswith('control')),'slots':sum(e['hold'][1] for e in execution.events if e.get('hold') and e['hold'][0]!='receipt' and not e['hold'][0].startswith('control')),'releasedSlotsDoNotReturnCredit':True},
+       'terminalRetainedHandles':dict(execution.handles),'publishedRetentionIsLogicalProposalNotIssuerAuthority':True,
+       'paidPrefix':execution.used,'paidPrefixPeak':execution.peak,'terminalLive':execution.live,'state':'failed' if first else 'completed','firstError':first,'firstLimit':first if first and first['reason']=='RESOURCE_LIMIT' else None,
+       'semanticAnalysis':{'observed':semantic['semanticError'],'planOrdinal':semantic['ordinal'],'reachedByExecution':bool(first and first['event']==semantic['ordinal'] and first['kind']!='resource')} if semantic else None,
+       'feeAdmission':'resource-refusal-at-exact-prefix' if first and first['reason']=='RESOURCE_LIMIT' else 'semantic-rejection-at-exact-prefix' if first else 'fee-program-fits-declared-component-caps',
+       'demandCompleteness':'stops-at-real-semantic-check; no invented output/tail fees' if semantic else 'complete-mathematical-program','fullProgramDemandAfterFirstLimitIsNotExecuted':True,'noSuccessPrefix':first is not None,
+       'actualSameIssueAuthority':{'limits':None,'usage':None,'issuer':None,'jobOrSourcePermission':None},'ownerQuotaPredicate':'real owner must reserve H; no Q5/RSS quota inferred',
+       'independentMathematicalChecks':getattr(t,'mathematical_checks',{}),'H01Required':True,'mathematicalCounts':counts,
+       'negativeFeeResult':'held byte equality rejects before view; roots not called' if observation['operation']=='restore-negative' else None,
+       'events':analysis.events,'executionEvents':execution.events}
+    return result,material

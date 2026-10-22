@@ -1,0 +1,18 @@
+{
+  "exit": 2,
+  "argv": [
+    "rg",
+    "-n",
+    "rule_id|ruleId|16384|65536",
+    "docs/reviews/I05/independent-fee-spec/author-v2-inputs/profile-contract.md",
+    "docs/reviews/I05/independent-fee-spec/author-v2-inputs/schema.json",
+    "docs/reviews/I05/independent-fee-spec/author-v2-inputs/integration.md",
+    "docs/iterations/I05/independent-fee-spec/specification-r2.md"
+  ],
+  "actualStderr": [
+    "rg: docs/reviews/I05/independent-fee-spec/author-v2-inputs/profile-contract.md: No such file or directory (os error 2)",
+    "rg: docs/reviews/I05/independent-fee-spec/author-v2-inputs/schema.json: No such file or directory (os error 2)"
+  ],
+  "writeOccurred": false,
+  "followup": "rg --files located actual named pure inputs; did not broaden read scope"
+}
