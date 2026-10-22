@@ -107,8 +107,8 @@ STANDALONE_PROFILE = "i05-source-package-parity"
 STANDALONE_CONTRACT_SOURCE = (
     "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json"
 )
-STANDALONE_CONTRACT_SHA256 = "4708d5ae4b0b9cedc71e23e33cbfd3efbb710fe3d5edcce1a6f00ece2c7c649f"
-STANDALONE_CONTRACT_BYTES = 45744
+STANDALONE_CONTRACT_SHA256 = "a93a5dc5b0b002482db8e99e072aab6d27d3a0cf58f59bfd9b0a7643305ead0d"
+STANDALONE_CONTRACT_BYTES = 55577
 STANDALONE_CONTRACT_BUNDLED = "provenance/i05/source-package-parity-private-contract-v1.json"
 STANDALONE_PROVENANCE = "provenance/i05/source-package-parity-build.json"
 STANDALONE_TARGET = "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"

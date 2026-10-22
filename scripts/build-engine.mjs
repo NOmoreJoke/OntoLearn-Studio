@@ -473,6 +473,9 @@ function parityChild({ run, io, root, runRoot, env, phase, args, keys = null }) 
     ioError: parityError(ioError),
     overflow,
     complete,
+    stdoutPath,
+    stderrPath,
+    receiptPath,
     stdout,
     stderr,
     captureRange: {

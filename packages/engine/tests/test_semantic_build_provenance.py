@@ -2079,6 +2079,9 @@ const { buildEngine, buildSemanticParity, selectBuild } =
   await import(process.env.BUILDER_MODULE_URL)
 const token = '11111111-2222-3333-4444-555555555555'
 const profile = 'i05-source-package-parity'
+const contract = JSON.parse(fs.readFileSync(new URL(
+  '../docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json',
+  process.env.BUILDER_MODULE_URL), 'utf8'))
 const expectedImports = [
   'ontolearn_engine', 'ontolearn_engine.quality',
   ...['rule_calendar', 'rule_comparator', 'rule_firing', 'rule_numbers', 'rule_profile',
@@ -2157,7 +2160,11 @@ function verifyStreams(f, phase, complete) {
   const call = f.calls.find(c => c.phase === phase)
   assert.deepEqual(Object.keys(observed).sort(), ['format', 'profile', 'phase', 'argv', 'cwd',
     'environment', 'pid', 'startUtc', 'endUtc', 'status', 'signal', 'error', 'ioError', 'overflow',
-    'complete', 'stdout', 'stderr', 'captureRange'].sort())
+    'complete', 'stdout', 'stderr', 'captureRange',
+    'stdoutPath', 'stderrPath', 'receiptPath'].sort())
+  for (const channel of ['stdout','stderr'])
+    assert.equal(observed[channel + 'Path'], resolve(f.evidence,`${phase}.${channel}.log`))
+  assert.equal(observed.receiptPath, resolve(f.evidence,`${phase}.receipt.json`))
   assert.equal(observed.format, 'i05-semantic-parity-child/1')
   assert.equal(observed.profile, profile)
   assert.equal(observed.phase, phase)
@@ -2314,6 +2321,65 @@ test('standalone exact 64KiB valid control keeps the complete accepted raw range
   assert.equal(control.stdout.sha256,raw.stdout.sha256)
 })
 
+test('standalone machine scratch map agrees with actual argv env paths and receipts', (t) => {
+  const f = fixture(t)
+  const result = invoke(f)
+  const scratch = contract.buildScratch
+  assert.equal(scratch.repositoryRelativeRunRoot,contract.fixedLayout.uniqueBuildRoot)
+  assert.equal(resolve(f.root,scratch.repositoryRelativeRunRoot.replace('<fresh-uuid>',token)),
+    f.runRoot)
+  assert.equal(scratch.pathBase,'runRoot')
+  for (const relative of Object.values(scratch.paths)) {
+    assert.equal(typeof relative,'string')
+    assert(!relative.startsWith('/') && !relative.split('/').includes('..'))
+    assert(resolve(f.runRoot,relative).startsWith(f.runRoot + '/'))
+  }
+  const actualPath = key => resolve(f.runRoot,scratch.paths[key])
+  const packageArgs = f.calls[1].args
+  for (const [option,key] of Object.entries(scratch.argv)) {
+    const index = packageArgs.indexOf(option)
+    assert(index >= 0)
+    assert.equal(packageArgs[index+1],actualPath(key))
+  }
+  assert.equal(result.artifactDirectory,actualPath('artifactDirectory'))
+  assert.equal(result.bindingPath,actualPath('binding'))
+  assert.equal(f.evidence,actualPath('evidence'))
+  assert.deepEqual(JSON.parse(fs.readFileSync(actualPath('buildRequest'),'utf8')),
+    {profile,token})
+  assert.equal(f.calls[0].args.at(-1),f.runRoot)
+  assert.deepEqual(f.calls[2].args.slice(-2),[f.runRoot,actualPath('artifactDirectory')])
+  assert(packageArgs.includes(actualPath('licenses') + ':licenses'))
+  for (const key of ['provenance','contract']) {
+    assert(packageArgs.includes(actualPath(key) + ':provenance/i05'))
+    assert.equal(scratch.paths[key],contract.fixedLayout[
+      key === 'provenance' ? 'embeddedProvenance' : 'embeddedContract'])
+  }
+  assert.equal(scratch.paths.provenanceRoot,'provenance')
+  assert(actualPath('provenance').startsWith(actualPath('provenanceRoot') + '/'))
+  assert.equal(scratch.paths.generatedAnchor,contract.fixedLayout.generatedAnchor)
+  for (const call of f.calls) {
+    for (const [env,key] of Object.entries(scratch.environment))
+      assert.equal(call.options.env[env],actualPath(key))
+    for (const [kind,template] of Object.entries(scratch.phasePaths)) {
+      const path = resolve(f.runRoot,template.replace('<phase>',call.phase))
+      if (kind === 'control') {
+        assert.equal(fs.existsSync(path),scratch.controlPhases.includes(call.phase))
+      } else {
+        assert(fs.existsSync(path))
+        const raw = receipt(f,call.phase)
+        assert.equal(raw[kind + 'Path'],path)
+      }
+    }
+  }
+  assert.deepEqual(scratch.phases,f.calls.map(call => call.phase))
+  assert.deepEqual(packageArgs.flatMap((x,i) => x === '--hidden-import' ?
+    [packageArgs[i+1]] : []),contract.analysisImports)
+  for (const mapping of contract.inputMappings) {
+    const source = resolve(f.root,'packages/engine/src',mapping.sourcePath)
+    assert(packageArgs.includes(source + ':' + mapping.path.slice(0,mapping.path.lastIndexOf('/'))))
+  }
+})
+
 test('standalone helper output paths cannot redirect the fixed target layout', (t) => {
   const f = fixture(t, {stdout:(phase,stdout,controls) => phase === 'prepare' ?
     JSON.stringify({...controls, provenancePath:resolve(f.root,'outside')}) : stdout})
@@ -2331,26 +2397,35 @@ test('standalone invalid final binding never publishes or adds a child', (t) => 
   assert.equal(fs.existsSync(resolve(f.root,'build/engine')),false)
 })
 
-test('standalone evidence read IO failure keeps actual first raw bytes', (t) => {
+for (const failedPhase of phases) test(
+  `standalone ${failedPhase} hash IO failure keeps actual paths and first raw bytes`, (t) => {
   const f = fixture(t)
   const stdoutReadHandles = new Set()
   const io = {...fs, openSync:(path,...args) => {
     const fd = fs.openSync(path,...args)
-    if (String(path).endsWith('prepare.stdout.log') && args[0] === 'r') stdoutReadHandles.add(fd)
+    if (String(path).endsWith(`${failedPhase}.stdout.log`) && args[0] === 'r')
+      stdoutReadHandles.add(fd)
     return fd
   }, readSync:(fd,...args) => {
     if (stdoutReadHandles.has(fd)) throw Object.assign(new Error('synthetic read IO'), {code:'EIO'})
     return fs.readSync(fd,...args)
   }, closeSync:fd => {stdoutReadHandles.delete(fd); return fs.closeSync(fd)}}
   assert.throws(() => invoke(f,{io}), /BUILD_PARITY_EVIDENCE_IO_FAILED/)
-  assert.equal(f.calls.length,1)
-  assert(fs.readFileSync(resolve(f.evidence,'prepare.stdout.log')).length > 0)
-  assert(fs.readFileSync(resolve(f.evidence,'prepare.stderr.log')).length > 0)
-  const raw = receipt(f,'prepare')
+  assert.equal(f.calls.length,phases.indexOf(failedPhase) + 1)
+  assert(fs.readFileSync(resolve(f.evidence,`${failedPhase}.stdout.log`)).length > 0)
+  assert(fs.readFileSync(resolve(f.evidence,`${failedPhase}.stderr.log`)).length > 0)
+  const raw = receipt(f,failedPhase)
   assert.equal(raw.complete,false)
   assert.equal(raw.ioError.code,'EIO')
   assert.equal(raw.stdout,null)
   assert.equal(raw.captureRange.stdout,null)
+  assert.equal(raw.stdoutPath,resolve(f.evidence,`${failedPhase}.stdout.log`))
+  assert.equal(raw.stderrPath,resolve(f.evidence,`${failedPhase}.stderr.log`))
+  assert.equal(raw.receiptPath,resolve(f.evidence,`${failedPhase}.receipt.json`))
+  assert(fs.existsSync(raw.stdoutPath) && fs.existsSync(raw.stderrPath))
+  assert(fs.readFileSync(raw.stdoutPath).length > 0)
+  assert.equal(raw.stderr.sha256,sha(fs.readFileSync(raw.stderrPath)))
+  assert.deepEqual(raw.captureRange.stderr,[0,fs.readFileSync(raw.stderrPath).length])
 })
 
 test('standalone control read failure is separate from already complete raw capture', (t) => {
@@ -2481,7 +2556,7 @@ def test_standalone_node_builder_uses_only_fd_run_stubs(tmp_path):
         check=False,
     )
     assert result.returncode == 0, result.stdout + result.stderr
-    assert "# pass 28" in result.stdout
+    assert "# pass 31" in result.stdout
     assert "# fail 0" in result.stdout
 
 
@@ -2651,3 +2726,233 @@ def test_loader_code_graph_is_bounded_before_normalization(monkeypatch, limit):
 def test_loader_code_graph_preserves_the_existing_fingerprint():
     code = parser_fixture_code()
     assert p._bounded_code_sha(code) == p._code_sha(code)
+
+
+def test_standalone_contract_source_and_frozen_domains_are_relational():
+    contract = STANDALONE_CONTRACT
+    layout = contract["fixedLayout"]
+    domains = contract["pathDomains"]
+    mappings = contract["inputMappings"]
+    assert domains["inputs"]["mappingField"] == "inputMappings"
+    assert domains["inputs"]["sourceRoot"] == "repository/packages/engine/src"
+    assert domains["inputs"]["frozenRoot"] == "sys._MEIPASS"
+    assert domains["inputs"]["sourcePaths"] == [row["path"] for row in p.FIXED_INPUTS]
+    assert domains["inputs"]["rowPaths"] == [row["path"] for row in p.STANDALONE_INPUTS]
+    assert len(mappings) == len(contract["fixedInputs"]) == 2
+    for mapping, source, frozen in zip(mappings, p.FIXED_INPUTS, p.STANDALONE_INPUTS, strict=True):
+        assert mapping == {"sourcePath": source["path"], **frozen}
+        assert mapping["sourcePath"] != mapping["path"]
+        assert mapping["bytes"] == source["bytes"]
+        assert mapping["sha256"] == source["sha256"]
+    assert domains["contract"]["rowPath"] == p.STANDALONE_CONTRACT_SOURCE
+    assert domains["contract"]["frozenRoot"] == "sys._MEIPASS"
+    assert domains["contract"]["frozenPath"] == layout["embeddedContract"]
+    assert layout["embeddedContract"] == p.STANDALONE_CONTRACT_BUNDLED
+    assert p.CONTRACT_SOURCE != domains["contract"]["rowPath"]
+    assert p.CONTRACT_BUNDLED != domains["contract"]["frozenPath"]
+    assert domains["provenance"]["rowPath"] == domains["provenance"]["frozenPath"]
+    assert domains["provenance"]["frozenPath"] == layout["embeddedProvenance"]
+    assert layout["embeddedProvenance"] == p.STANDALONE_PROVENANCE
+    assert domains["anchor"]["module"] == layout["anchorModule"] == p.STANDALONE_ANCHOR
+    assert domains["anchor"]["generatedPath"] == layout["generatedAnchor"]
+    assert domains["anchor"]["constants"] == layout["anchorConstants"]
+    assert layout["anchorConstants"] == ["PROVENANCE_SHA256", "CONTRACT_SHA256", "PROFILE"]
+    assert domains["licenseMirrors"]["sourceRow"] == "distributions[].licenses[]"
+    assert domains["licenseMirrors"]["rowPath"] == (
+        "licenses/<distribution>/<original-dist-info-relative-path>"
+    )
+    assert domains["licenseMirrors"]["frozenRoot"] == "sys._MEIPASS"
+    assert "sha256" not in contract  # The source identity cannot be self-embedded.
+
+
+def test_standalone_contract_target_and_launcher_domains_match_archive_and_runtime(standalone_case):
+    contract = STANDALONE_CONTRACT
+    domains = contract["pathDomains"]
+    target = domains["entrypoint"]
+    layout = contract["fixedLayout"]
+    schema = contract["schemas"]["artifactBinding"]
+    target_schema = schema["properties"]["targetCode"]
+    assert target["rowPath"] == layout["target"] == p.STANDALONE_TARGET
+    assert target["canonicalModule"] == p.PRIVATE_MODULES[0]
+    assert target["frozenPath"] is None
+    assert target["runtimeDomain"] == "canonical-PYZ-loader-code-only"
+    assert target["externalDomain"] == "target-CArchive-code-plus-complete-directory-binding"
+    assert target["archiveEntry"] == contract["archivePolicy"]["businessScript"]
+    assert target["archiveTypecode"] == "s"
+    assert target["targetCodeKeys"] == target_schema["required"]
+    assert set(target_schema["properties"]) == set(target["targetCodeKeys"])
+    for key, value in {
+        "archiveEntry": target["archiveEntry"],
+        "typecode": target["archiveTypecode"],
+        "sourcePath": target["rowPath"],
+    }.items():
+        assert target_schema["properties"][key]["const"] == value
+    assert layout["launcher"] == schema["properties"]["launcher"]["const"]
+    assert layout["launcher"] == "ontolearn-semantic-parity"
+    assert contract["bindingKindRules"]["file"]["launcherRule"] == (
+        layout["launcher"] + " must be a regular file and mode&0o111 nonzero"
+    )
+    assert contract["analysisImports"] == [
+        *p.SUPPLIER_MODULES,
+        *p.PRIVATE_MODULES,
+        p.STANDALONE_ANCHOR,
+    ]
+    assert len(p.SUPPLIER_MODULES + p.PRIVATE_MODULES) == 24
+    assert len(set(contract["analysisImports"])) == 25
+    evidence = standalone_case.load()
+    runtime = p.verify_loaded_modules(evidence, standalone_case.modules)
+    assert runtime["entrypointDomain"] == (
+        "runtime-canonical-PYZ-only; target-CArchive-external-binding-required"
+    )
+    assert runtime["rootApproval"] == "unknown"
+    pyz = p._BoundedPYZ(complete_standalone_pyz(standalone_case))
+    actual_target = standalone_case.codes[target["canonicalModule"]]
+    external_target = p._verify_standalone_archive(
+        pyz, actual_target, standalone_case.manifest, standalone_case.root
+    )
+    assert set(external_target) == set(target["targetCodeKeys"])
+    assert external_target["archiveEntry"] == target["archiveEntry"]
+    assert external_target["sourcePath"] == target["rowPath"]
+    assert external_target["typecode"] == target["archiveTypecode"]
+    assert external_target["codeSha256"] == p._code_sha(actual_target)
+
+
+def test_standalone_contract_separates_actual_base_historical_components_and_root_approval():
+    pins = STANDALONE_CONTRACT["identityRules"]["finalPins"]
+    assert type(pins) is dict
+    assert pins["implementationBase"] == "c706f8f581785053278f26e48d21d7bebadf09f6"
+    assert pins["adoptedM08"] == "a633ef391344cce60807638ecd942d4e2183c7b4"
+    assert pins["implementationBase"] != pins["adoptedM08"]
+    assert pins["historicalComponentReferences"] == ["2cf", "6891", "401a"]
+    assert pins["implementationBase"] not in pins["historicalComponentReferences"]
+    assert pins["adoptedM08"] not in pins["historicalComponentReferences"]
+    assert "not the current implementation base" in pins["historicalMeaning"]
+    assert "never self-approved" in pins["candidateIdentity"]
+    assert "Root externally freezes" in pins["finalApproval"]
+    assert "packages/engine/entrypoint.py" not in STANDALONE_CONTRACT["sourceGuards"]
+    assert STANDALONE_CONTRACT["schemas"]["artifactBinding"]["properties"]["rootApproved"] == {
+        "const": False
+    }
+
+
+def test_standalone_contract_defines_conditional_unit_without_granting_build_execution():
+    scope = STANDALONE_CONTRACT["identityRules"]["noRuntimeExecutionNow"]
+    assert type(scope) is dict
+    assert "exact four product paths" in scope["currentScope"]
+    assert "zero new blocking P1/P2" in scope["conditionalUnit"]
+    assert "separate exact START" in scope["conditionalUnit"]
+    assert scope["apiDoesNotAuthorizeExecution"] is True
+    assert scope["notGranted"] == [
+        "standalone product imports or import smoke outside the separately started designated unit",
+        "actual prepare_build or finalize_build",
+        "actual PyInstaller or build/CLI/help/version",
+        "source/frozen probe comparison or target/native/archive execution",
+        "OS probes or physical capacity/runtime guarantees",
+    ]
+    assert (
+        "neither permit digest nor unit/static success grants build execution"
+        in scope["laterExecution"]
+    )
+
+
+def test_standalone_contract_requires_all_sixteen_negative_test_domains():
+    rows = STANDALONE_CONTRACT["requiredNegativeTests"]
+    categories = [row.split(":", 1)[0] for row in rows]
+    assert categories == [
+        "strict-json",
+        "profile",
+        "source-domains",
+        "contract-relations",
+        "resources",
+        "license-mirrors",
+        "loader",
+        "python-native",
+        "carchive",
+        "pyz",
+        "marshal-budget",
+        "binding",
+        "child-raw",
+        "control-json",
+        "scratch-contract",
+        "parent-compatibility",
+    ]
+    assert len(rows) == len(set(categories)) == 16
+    descriptions = dict(row.split(": ", 1) for row in rows)
+    for category, required in {
+        "marshal-budget": (
+            "pre-load",
+            "active/cyclic",
+            "before allocation",
+            "before normalization",
+        ),
+        "child-raw": ("all three", "without replay", "known paths"),
+        "control-json": ("64KiB inclusive", "exact helper4", "public6"),
+        "scratch-contract": ("exact8589934592", "BUILD_SCRATCH_GUARD_REQUIRED", "cannot bypass"),
+    }.items():
+        assert all(term in descriptions[category] for term in required)
+
+
+def test_standalone_scratch_policy_is_single_external_accounting_domain_without_quota_claims():
+    contract = STANDALONE_CONTRACT
+    scratch = contract["buildScratch"]
+    assert scratch["format"] == "i05-semantic-parity-build-scratch-map/1"
+    assert scratch["repositoryRelativeRunRoot"] == contract["fixedLayout"]["uniqueBuildRoot"]
+    assert scratch["repositoryRelativeRunRoot"] == "build/i05-semantic-parity/<fresh-uuid>"
+    assert scratch["pathBase"] == "runRoot"
+    assert scratch["paths"] == {
+        "work": "pyinstaller",
+        "spec": "spec",
+        "dist": "dist",
+        "artifactDirectory": "dist/ontolearn-semantic-parity",
+        "uvCache": "evidence/cache/uv",
+        "pyinstallerCache": "evidence/cache/pyinstaller",
+        "tmp": "evidence/tmp",
+        "generated": "generated",
+        "generatedAnchor": "generated/_i05_semantic_parity_build_anchor.py",
+        "licenses": "licenses",
+        "provenance": p.STANDALONE_PROVENANCE,
+        "contract": p.STANDALONE_CONTRACT_BUNDLED,
+        "binding": "artifact-binding-v1.json",
+        "evidence": "evidence",
+        "buildRequest": "evidence/build-request-v1.json",
+        "provenanceRoot": "provenance",
+    }
+    assert scratch["environment"] == {
+        "UV_CACHE_DIR": "uvCache",
+        "PYINSTALLER_CONFIG_DIR": "pyinstallerCache",
+        "TMPDIR": "tmp",
+    }
+    assert scratch["argv"] == {
+        "--workpath": "work",
+        "--specpath": "spec",
+        "--distpath": "dist",
+        "--paths": "generated",
+    }
+    assert scratch["phases"] == ["prepare", "pyinstaller", "finalize"]
+    assert scratch["controlPhases"] == ["prepare", "finalize"]
+    assert scratch["phasePaths"] == {
+        "stdout": "evidence/<phase>.stdout.log",
+        "stderr": "evidence/<phase>.stderr.log",
+        "receipt": "evidence/<phase>.receipt.json",
+        "control": "evidence/<phase>.control.json",
+    }
+    sampling = scratch["sampling"]
+    assert sampling["owner"] == "I05 external caller"
+    assert sampling["root"] == "runRoot"
+    assert sampling["rootTemplate"] == scratch["repositoryRelativeRunRoot"]
+    assert type(sampling["thresholdBytes"]) is int
+    assert sampling["thresholdBytes"] == 8 * 1024**3 == 8589934592
+    assert sampling["recursive"] is True
+    assert sampling["scope"] == "entire own runRoot and all descendants as one accounting domain"
+    assert "do not sum child domains again" in sampling["accounting"]
+    assert sampling["builderEnforced"] is False
+    assert sampling["osHardLimitImplemented"] is False
+    assert sampling["runtimeGuarantee"] is False
+    assert "no sample" in sampling["evidenceMeaning"]
+    assert "does not enforce" in sampling["thresholdMeaning"]
+    guard = scratch["executionGuard"]
+    assert guard["owner"] == "I05 external caller"
+    assert guard["guardRequired"] is True
+    assert guard["missingOutcome"] == "BUILD_SCRATCH_GUARD_REQUIRED"
+    assert guard["permitDigestMayBypass"] is False
+    assert "does not implement OS hard limits" in guard["implementation"]

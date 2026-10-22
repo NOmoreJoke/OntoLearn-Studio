@@ -906,18 +906,45 @@
   "identityRules": {
     "orderedUnique": "22 suppliers from final I05 list,4 public resources,2 fixed inputs,8 named distributions exactly once; no omissions/substitutions/duplicates; private modules exactly semantic_source_package_probe and semantic_build_provenance",
     "pathsAndTypes": "all arrays bounded, path->file role unique within each domain; explicit byte limits applied per role; native/data codeSha null and module null except native module name; python files require module+codeSha; file/directory/symlink binding fields use only corresponding nonnull fields",
-    "finalPins": "current2cf/6891/401a declarations are not final approval; final new I05 repaired source must explicitly integrate before collecting final22/4/probe/entrypoint/reader/lock identities",
-    "noRuntimeExecutionNow": "only static/unit/build helpers permitted; no new source/package CLI comparison or physical claims"
+    "finalPins": {
+      "implementationBase": "c706f8f581785053278f26e48d21d7bebadf09f6",
+      "adoptedM08": "a633ef391344cce60807638ecd942d4e2183c7b4",
+      "historicalComponentReferences": ["2cf", "6891", "401a"],
+      "historicalMeaning": "Component provenance only; these historical abbreviated references are not the current implementation base, final source combination, artifact identity or root approval.",
+      "candidateIdentity": "prepare records the actual clean source commit/tree and exact35 guarded source identities, including canonical probe, reader, builder, new contract and lock. Parent entrypoint is excluded from standalone source guards. An arbitrary clean HEAD is a candidate, never self-approved.",
+      "finalApproval": "Root externally freezes the final selectively integrated I05 consumer/source candidate and actual complete artifact/binding identity under separate tickets; source pins or this contract do not approve it."
+    },
+    "noRuntimeExecutionNow": {
+      "currentScope": "Only the exact four product paths may be implemented and statically parsed/formatted/linted/syntax-checked under the source ticket.",
+      "conditionalUnit": "Only after a frozen actual-code independent review has zero new blocking P1/P2 and the controller gives a separate exact START may the designated single-file unit run in the own environment with controlled run/io/uuid stubs.",
+      "notGranted": [
+        "standalone product imports or import smoke outside the separately started designated unit",
+        "actual prepare_build or finalize_build",
+        "actual PyInstaller or build/CLI/help/version",
+        "source/frozen probe comparison or target/native/archive execution",
+        "OS probes or physical capacity/runtime guarantees"
+      ],
+      "apiDoesNotAuthorizeExecution": true,
+      "laterExecution": "I05 consumer/adoption, actual standalone A and source/frozen B, external binding approval and runtime receipts each remain separately owned and gated; neither permit digest nor unit/static success grants build execution."
+    }
   },
   "requiredNegativeTests": [
-    "duplicate/missing/extra/nonfinite/bool-int/depth/byte/count/path/escape/collision",
-    "anchor digest and contract/manifest tamper",
-    "source/resource/input/lock/version/metadata/license omissions or mismatch",
-    "actual loader code and nested const/line/flags changes, module/spec/sys.modules/origin mismatch",
-    "wrong Python full version/cacheTag/SOABI/magic/optimize and unknown get_code",
-    "native missing or fake loader/outside path, no fallback pass",
-    "whole artifact tamper and symlink escape, missing external expectedSHA refused by external-verification helper, reader never root-approved",
-    "entrypoint preserves flag, laziness and nonzero SystemExit without importing canonical semantics in unit tests"
+    "strict-json: duplicate/missing/extra/nonfinite/bool-int/depth/byte/count/path/escape/collision",
+    "profile: unknown profile before IO; parent/standalone cross-use and old-contract rejection; sealed evidence and changed root/interpreter/anchor rechecked",
+    "source-domains: exact35 source guards and five buildInputs; dirty/symlink/existing-output rejection; distinct source/frozen input mappings, real contract source/bundle SHA and canonical target identity",
+    "contract-relations: fixedLayout/pathDomains/inputMappings/launcher/targetCode/25 imports/internal24 agree with actual reader/builder; historical components never current base or root approval",
+    "resources: source/public-resource/input/lock/version/metadata mismatches and omissions",
+    "license-mirrors: declared License-File plus actual LICENSE/COPYING/NOTICE/AUTHORS; exact one-to-one source/mirror identity, path/count/single/total caps; omissions/substitution rejected",
+    "loader: actual code including nested const/line/flags; sys.modules/module/spec/origin/loader mismatch; unknown internal and eight-package Python child rejection",
+    "python-native: exact full version/cacheTag/SOABI/magic/optimize; missing/fake/outside native ExtensionFileLoader; no fallback or native source-equivalence approval",
+    "carchive: cookie/PKG/TOC/member/type/unique target/duplicate/casefold/Unicode/overlap/nonprogress/trailing/logical-versus-physical caps; unknown hooks/layout option rejected",
+    "pyz: actual header/TOC list/name/type/member bounds, duplicate/casefold/Unicode/overlap/trailing/missing/internal24/anchor/canonical code mismatch",
+    "marshal-budget: bounded compressed and decompressed sizes and exact EOF; pre-load length/container/node/depth/reference/code-field validation; invalid/active/cyclic refs and expansion bombs rejected before allocation; runtime code graph budgets before normalization",
+    "binding: independent target-CArchive targetCode plus canonical PYZ code; whole-directory tamper/symlink escape/missing or changed external expectedSHA; rootApproved stays false and runtime evidence alone never approves",
+    "child-raw: all three child FD stdout/stderr remain separate and complete beyond legacy pipe cap; actual argv/cwd/fixedenv/PID/UTC/status/signal/error/overflow/IO and captured ranges; nonzero/throw/signal/overflow/open/read/hash/receipt IO preserve first raw without replay; known paths remain even if identities/ranges unknown",
+    "control-json: raw file retained separately; exact four string keys and 64KiB inclusive bound; duplicate decoded keys/BOM/invalid UTF8/nonJSON whitespace/trailing/nonstring/unknown/missing rejected; exact helper4 and public6 returns unchanged",
+    "scratch-contract: actual builder path/env/argv relationships match complete own runRoot mapping; external single-domain recursive sampling has exact8589934592-byte policy without double counting; missing external guard remains BUILD_SCRATCH_GUARD_REQUIRED and permit digest cannot bypass; no OS hard-limit or runtime claim",
+    "parent-compatibility: original entrypoint flag/laziness/nonzero behavior, parent default helper/paths/returns/publish rollback and original security/resource/assertions preserved; stubs do not import canonical semantics or execute real build"
   ],
   "pathDomains": {
     "supplierAndPrivateCode": {
@@ -933,10 +960,18 @@
       "i05TupleConversion": "(original-path,bytes,sha256) -> {path:contracts/+original-path,bytes,sha256}, preserve ordered4"
     },
     "inputs": {
-      "rowPath": "fixed ontolearn_engine/probe_inputs/<name>.json",
+      "rowPaths": [
+        "provenance/i05/source-package-parity/i05-source-package-parity-manifest.json",
+        "provenance/i05/source-package-parity/i05-source-package-parity-inputs.json"
+      ],
       "sourceRoot": "repository/packages/engine/src",
+      "sourcePaths": [
+        "ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+        "ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json"
+      ],
       "frozenRoot": "sys._MEIPASS",
-      "conversion": "copy two private contract fixedInputs exactly, names/order/content unchanged"
+      "conversion": "Use inputMappings sourcePath only under sourceRoot; emit each fixedInputs row at its distinct frozen path, preserving order, bytes and SHA256. No package-data copy of the source probe_inputs domain.",
+      "mappingField": "inputMappings"
     },
     "lock": {
       "rowPath": "uv.lock",
@@ -945,15 +980,23 @@
       "i05TupleConversion": "LOCK_BYTES/LOCK_SHA256 -> {path:uv.lock,bytes,sha256}"
     },
     "contract": {
-      "rowPath": "docs/reviews/T03/i05-m08-provenance-20261023/private-contract-v1.json",
+      "rowPath": "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json",
       "sourceRoot": "repository",
-      "frozenPath": "sys._MEIPASS/provenance/i05-private-contract-v1.json"
+      "frozenRoot": "sys._MEIPASS",
+      "frozenPath": "provenance/i05/source-package-parity-private-contract-v1.json",
+      "conversion": "Source identity belongs to buildInputs/manifest.contract; exact actual bytes and SHA256 are bundled at fixedLayout.embeddedContract. No self-hash inside this contract."
     },
     "entrypoint": {
-      "rowPath": "packages/engine/entrypoint.py",
+      "rowPath": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
       "sourceRoot": "repository",
       "frozenPath": null,
-      "validationDomain": "source identity plus external launcher/PYZ binding only; no runtime get_code assumption"
+      "canonicalModule": "ontolearn_engine.semantic_source_package_probe",
+      "runtimeDomain": "canonical-PYZ-loader-code-only",
+      "externalDomain": "target-CArchive-code-plus-complete-directory-binding",
+      "archiveEntry": "semantic_source_package_probe",
+      "archiveTypecode": "s",
+      "targetCodeKeys": ["archiveEntry", "typecode", "sourcePath", "codeSha256"],
+      "validationDomain": "The same exact source target is both the private canonical PYZ module and the separately validated CArchive script. Runtime loader evidence covers canonical PYZ code; only external targetCode plus full-directory binding covers the launch target. Neither grants root approval."
     },
     "distributionFilesMetadataLicenses": {
       "rowPath": "installed-site-packages-relative path",
@@ -963,8 +1006,27 @@
     },
     "artifactBindingEntries": {
       "rowPath": "artifact-directory-relative path",
-      "root": "the exact immutable engine directory passed by build helper or root external executor",
+      "root": "runRoot/dist/ontolearn-semantic-parity for the exact immutable standalone artifact directory; separately supplied by the root external executor",
       "rules": "include every entry; no outside symlinks/special files; relative symlink target may contain.. only if full resolution remains inside root; root binding expectedSHA never supplied by package"
+    },
+    "provenance": {
+      "rowPath": "provenance/i05/source-package-parity-build.json",
+      "source": "prepared canonical manifest bytes under runRoot",
+      "frozenRoot": "sys._MEIPASS",
+      "frozenPath": "provenance/i05/source-package-parity-build.json"
+    },
+    "anchor": {
+      "module": "_i05_semantic_parity_build_anchor",
+      "generatedPath": "generated/_i05_semantic_parity_build_anchor.py",
+      "frozenDomain": "separate PYZ anchor module; not one of the exact24 internal ontolearn_engine modules",
+      "constants": ["PROVENANCE_SHA256", "CONTRACT_SHA256", "PROFILE"]
+    },
+    "licenseMirrors": {
+      "sourceRoot": "actual corresponding installed distribution root",
+      "sourceRow": "distributions[].licenses[]",
+      "frozenRoot": "sys._MEIPASS",
+      "rowPath": "licenses/<distribution>/<original-dist-info-relative-path>",
+      "relation": "exact one-to-one licenseMirrors entries preserve original distribution, sourcePath, byte length and SHA256; no substituted LICENSE may cover declared AUTHORS/NOTICE"
     }
   },
   "bindingKindRules": {
@@ -972,7 +1034,7 @@
       "nonnull": ["bytes", "sha256", "mode"],
       "null": ["target"],
       "mode": "exact POSIX permission bits0..511",
-      "launcherRule": "ontolearn-engine must regular file and mode&0o111 nonzero"
+      "launcherRule": "ontolearn-semantic-parity must be a regular file and mode&0o111 nonzero"
     },
     "directory": {
       "nonnull": ["mode"],
@@ -1139,5 +1201,70 @@
     ],
     "meaning": "unknown runtime hooks/dependencies stop for exact delta; not all bootloader/stdlib code source equivalence",
     "marshalPreflight": "CPython 3.12 marshal4 grammar scan before marshal.load: raw/declaration lengths bounded; containers max 16384; nodes/expanded references max 200000; depth max 64; active/cyclic/invalid references rejected; exact list-of-pairs TOC; code field types and lengths validated before allocation. Loader code graph receives the same depth/node bound and 2 MiB expanded payload budget before normalization."
+  },
+  "buildScratch": {
+    "format": "i05-semantic-parity-build-scratch-map/1",
+    "repositoryRelativeRunRoot": "build/i05-semantic-parity/<fresh-uuid>",
+    "token": "fresh UUID generated by the builder; the placeholder is not an actual run identity",
+    "pathBase": "runRoot",
+    "paths": {
+      "work": "pyinstaller",
+      "spec": "spec",
+      "dist": "dist",
+      "artifactDirectory": "dist/ontolearn-semantic-parity",
+      "uvCache": "evidence/cache/uv",
+      "pyinstallerCache": "evidence/cache/pyinstaller",
+      "tmp": "evidence/tmp",
+      "generated": "generated",
+      "generatedAnchor": "generated/_i05_semantic_parity_build_anchor.py",
+      "licenses": "licenses",
+      "provenance": "provenance/i05/source-package-parity-build.json",
+      "contract": "provenance/i05/source-package-parity-private-contract-v1.json",
+      "binding": "artifact-binding-v1.json",
+      "evidence": "evidence",
+      "buildRequest": "evidence/build-request-v1.json",
+      "provenanceRoot": "provenance"
+    },
+    "environment": {
+      "UV_CACHE_DIR": "uvCache",
+      "PYINSTALLER_CONFIG_DIR": "pyinstallerCache",
+      "TMPDIR": "tmp"
+    },
+    "argv": {
+      "--workpath": "work",
+      "--specpath": "spec",
+      "--distpath": "dist",
+      "--paths": "generated"
+    },
+    "phases": ["prepare", "pyinstaller", "finalize"],
+    "phasePaths": {
+      "stdout": "evidence/<phase>.stdout.log",
+      "stderr": "evidence/<phase>.stderr.log",
+      "receipt": "evidence/<phase>.receipt.json",
+      "control": "evidence/<phase>.control.json"
+    },
+    "controlPhases": ["prepare", "finalize"],
+    "sampling": {
+      "owner": "I05 external caller",
+      "root": "runRoot",
+      "recursive": true,
+      "accounting": "Sample the entire own runRoot once as one recursive domain, including work/spec/dist/caches/tmp/generated/licenses/provenance/binding/all raw streams and receipts; do not sum child domains again.",
+      "strategyOwner": "I05 owns actual before/after sampling and monitoring policy and receipts.",
+      "osHardLimitImplemented": false,
+      "runtimeGuarantee": false,
+      "evidenceMeaning": "A machine mapping and external policy only; no sample, actual UUID, measured size, execution receipt or physical capacity proof is asserted.",
+      "rootTemplate": "build/i05-semantic-parity/<fresh-uuid>",
+      "thresholdBytes": 8589934592,
+      "scope": "entire own runRoot and all descendants as one accounting domain",
+      "builderEnforced": false,
+      "thresholdMeaning": "External caller accounting threshold; I05 controller implements sampling, monitoring and over-threshold refusal. T03 builder does not enforce this threshold or a hard quota."
+    },
+    "executionGuard": {
+      "owner": "I05 external caller",
+      "missingOutcome": "BUILD_SCRATCH_GUARD_REQUIRED",
+      "permitDigestMayBypass": false,
+      "implementation": "This contract defines the required external guard; the four-path source change does not implement OS hard limits or authorize actual build/OS execution.",
+      "guardRequired": true
+    }
   }
 }
