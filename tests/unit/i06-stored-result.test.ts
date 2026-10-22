@@ -376,6 +376,54 @@ async function service(f: Awaited<ReturnType<typeof fixture>>, observer?: Privat
 }
 
 describe('I06 named main model service with actual Store/worker and verified HTTPS receiver', () => {
+  it('keeps the same configuration version and usable grant after a display-name-only edit', async () => {
+    const f = await fixture(fieldRows()),
+      s = await service(f),
+      { contextId } = s
+    const catalog = await s.call('getModelFieldCatalog', {
+      contextId,
+      resultId: f.result.resultId,
+      selection: 'current',
+    })
+    const selected = await s.call('selectModelFields', {
+      contextId,
+      catalogId: catalog.catalogId,
+      fieldIds: [catalog.fields[0].fieldId],
+    })
+    await s.call('setModelPrivacy', { contextId, privacy: 'minimal' })
+    const input = {
+      contextId,
+      configurationId: s.configuration.configurationId,
+      selectionIds: [selected.selectionId],
+    }
+    const preview = await s.call('previewModelExplanation', input)
+    expect(preview.authorization.state).toBe('required')
+    const confirmation = await s.call('confirmModelAuthorization', {
+      contextId,
+      previewId: preview.previewId,
+    })
+    const renamed = await s.call('configureModel', {
+      contextId,
+      configurationId: s.configuration.configurationId,
+      configurationVersion: s.configuration.configurationVersion,
+      displayName: 'Renamed synthetic receiver',
+      endpoint: s.endpoint,
+      model: s.configuration.model,
+    })
+    expect(renamed).toEqual({
+      ...s.configuration,
+      displayName: 'Renamed synthetic receiver',
+    })
+    const reused = await s.call('previewModelExplanation', input)
+    expect(reused.authorization).toEqual({ state: 'reusable', grantId: confirmation.grantId })
+    const invocation = await s.call('startModelExplanation', {
+      ...input,
+      grantId: confirmation.grantId,
+    })
+    expect(await s.terminal(invocation.invocationId)).toMatchObject({ state: 'completed' })
+    expect(s.received).toHaveLength(1)
+  })
+
   it('requires explicit consent, reuses public-field grant after a new actual worker result and restores only reads', async () => {
     const f = await fixture(fieldRows()),
       s = await service(f),

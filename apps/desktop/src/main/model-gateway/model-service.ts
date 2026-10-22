@@ -405,39 +405,44 @@ export class ModelGatewayService {
       purpose: 'explain',
       selectionIds: input.selectionIds,
     })
-    this.same(context)
-    if (
-      configuration !== this.configuration(input.configurationId) ||
-      choices.some((value, index) => this.choices(context, input.selectionIds)[index] !== value)
-    ) {
-      context.application.discardPreview(preview.previewId)
-      throw new GatewayFailure('CONFIGURATION_CHANGED')
-    }
-    const key = materialCanonical({
-      version: preview.configVersion,
-      scopes: preview.scopes,
-      privacy: preview.privacy,
-      purpose: 'explain',
-    })
-    const reusable = context.grants.get(key)
-    if (reusable) context.application.discardPreview(preview.previewId)
-    else
-      context.previews.set(preview.previewId, {
-        configurationId: configuration.configurationId,
-        version: configuration.configurationVersion,
-        key,
+    try {
+      this.same(context)
+      if (
+        configuration !== this.configuration(input.configurationId) ||
+        choices.some((value, index) => this.choices(context, input.selectionIds)[index] !== value)
+      ) {
+        throw new GatewayFailure('CONFIGURATION_CHANGED')
+      }
+      const key = materialCanonical({
+        version: preview.configVersion,
+        scopes: preview.scopes,
+        privacy: preview.privacy,
+        purpose: 'explain',
       })
-    return {
-      previewId: preview.previewId,
-      configurationId: configuration.configurationId,
-      configurationVersion: configuration.configurationVersion,
-      endpoint: preview.endpoint,
-      model: configuration.model,
-      principal: preview.principal,
-      purpose: 'explain',
-      privacy: preview.privacy as 'minimal' | 'project',
-      selections: structuredClone(choices),
-      authorization: reusable ? { state: 'reusable', grantId: reusable } : { state: 'required' },
+      const reusable = context.grants.get(key)
+      if (reusable) context.application.discardPreview(preview.previewId)
+      else
+        context.previews.set(preview.previewId, {
+          configurationId: configuration.configurationId,
+          version: configuration.configurationVersion,
+          key,
+        })
+      return {
+        previewId: preview.previewId,
+        configurationId: configuration.configurationId,
+        configurationVersion: configuration.configurationVersion,
+        endpoint: preview.endpoint,
+        model: configuration.model,
+        principal: preview.principal,
+        purpose: 'explain',
+        privacy: preview.privacy as 'minimal' | 'project',
+        selections: structuredClone(choices),
+        authorization: reusable ? { state: 'reusable', grantId: reusable } : { state: 'required' },
+      }
+    } catch (error) {
+      context.previews.delete(preview.previewId)
+      context.application.discardPreview(preview.previewId)
+      throw error
     }
   }
   confirm(

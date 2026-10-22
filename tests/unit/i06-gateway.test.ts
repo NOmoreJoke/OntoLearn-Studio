@@ -289,7 +289,7 @@ describe('I06 main-owned synthetic gateway with real loopback receivers', () => 
     )
     expect(f.received).toEqual([])
   })
-  it('unchanged normalized config and presentation-only rename preserve authorization', async () => {
+  it('unchanged normalized security config preserves authorization', async () => {
     const f = await fixture()
     const first = f.gateway.configure(f.config)
     const second = f.gateway.configure({
@@ -622,10 +622,10 @@ describe('I06 main-owned synthetic gateway with real loopback receivers', () => 
     expect(await next).toEqual({ ok: false, code: 'CANCELLED' })
   })
 
-  it('stops after the single permitted retry instead of replaying indefinitely', async () => {
+  it.each([429, 503])('stops after the single permitted retry for HTTP %i', async (status) => {
     const f = await fixture({
       handler: (_req, res) => {
-        res.statusCode = 503
+        res.statusCode = status
         res.end('synthetic-upstream-error')
       },
     })
