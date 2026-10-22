@@ -1,0 +1,51 @@
+{
+  "review": "R7 fresh independent structural review",
+  "candidate_gitref": "68ffbb9dfab5790a1c076cf770e208b17eaa8d1b",
+  "base_gitref": "4fc8ea8c089d85c101dc11cf1494bd7a4808d492",
+  "independent_of_old_ticket": true,
+  "metadata_fixed_prepaid": 8000,
+  "metadata_actual": null,
+  "metadata_borrow_return_overrun_allowed": false,
+  "read_bytes_cap": 4194304,
+  "read_bytes_actual": null,
+  "stages": [
+    {
+      "name": "pins",
+      "metadata_fixed": 1200,
+      "read_bytes_cap": 262144,
+      "metadata_actual": null,
+      "read_bytes_actual": null
+    },
+    {
+      "name": "full_source_and_model",
+      "metadata_fixed": 3300,
+      "read_bytes_cap": 1310720,
+      "metadata_actual": null,
+      "read_bytes_actual": null
+    },
+    {
+      "name": "delta1",
+      "metadata_fixed": 1000,
+      "read_bytes_cap": 524288,
+      "metadata_actual": null,
+      "read_bytes_actual": null
+    },
+    {
+      "name": "delta2",
+      "metadata_fixed": 1000,
+      "read_bytes_cap": 524288,
+      "metadata_actual": null,
+      "read_bytes_actual": null
+    },
+    {
+      "name": "closure",
+      "metadata_fixed": 1500,
+      "read_bytes_cap": 524288,
+      "metadata_actual": null,
+      "read_bytes_actual": null
+    }
+  ],
+  "read_bytes_reserve": 1048576,
+  "closure_allocation_reserved": true,
+  "execution": "ordinary file and Git / stdlib AST syntax / JSON format / text literal fields / arithmetic / hashes only; no candidate execution"
+}
