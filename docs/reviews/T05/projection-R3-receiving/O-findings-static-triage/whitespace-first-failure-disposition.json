@@ -1,0 +1,48 @@
+{
+  "recordedUtc": "2026-10-22T16:20:38.179485+00:00",
+  "initialTriageDocsCommit": "f1c0e2cd164c56eef6d136dfca6dde5104d8ca6f",
+  "initialParent": "5168c1480a8548217202e134073b507fd77a26ab",
+  "initialBatchFailure": "git diff --cached --check printed new blank line at EOF; surrounding shell did not stop and proceeded to local docs commit",
+  "initialBatchPerCommandExitWasNotSeparatelyCaptured": true,
+  "fixedHistoricalCommitRecheck": {
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "5168c1480a8548217202e134073b507fd77a26ab",
+      "f1c0e2cd164c56eef6d136dfca6dde5104d8ca6f",
+      "--",
+      "docs/reviews/T05/projection-R3-receiving/O-findings-static-triage"
+    ],
+    "exit": 2,
+    "stdout": "docs/reviews/T05/projection-R3-receiving/O-findings-static-triage/independent-static-triage-plan-review.md:77: new blank line at EOF.\n",
+    "stderr": ""
+  },
+  "independentAuthorOnlyRemovedOneEOFLine": true,
+  "oldReport": {
+    "bytes": 14186,
+    "sha256": "a0eeeb8d5dc456c1f242c81a8808105aea4f9f09c9f66b03afae6307ab12fc0d",
+    "preservedInGitCommit": "f1c0e2cd164c56eef6d136dfca6dde5104d8ca6f"
+  },
+  "newReport": {
+    "bytes": 14185,
+    "sha256": "a6433c7e89fe950828c439450ba2489f44df28f4cb513797875423eeb336aeaf"
+  },
+  "exactByteRelation": "old == new + single LF",
+  "bodyConclusionAndSixInputFingerprintUnchanged": true,
+  "currentWholeTriagePrefixAgainstPreTriageParent": {
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "5168c1480a8548217202e134073b507fd77a26ab",
+      "--",
+      "docs/reviews/T05/projection-R3-receiving/O-findings-static-triage"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "noProductOrOracleRunOrReviewRepeated": true,
+  "noWhitespaceIgnoreOrGitConfigurationChanged": true
+}
