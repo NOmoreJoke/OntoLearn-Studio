@@ -1,0 +1,76 @@
+{
+  "format": "t03-i05-D1-repair-input-snapshot/1",
+  "repairBaseRef": "d014b925e2c9bb246a71621a919d7f9a412f6c57",
+  "oldCandidateRef": "ae28572c91b78933c35996f0d80e81c03b96edf0",
+  "oldReadonlyManifestPreserved": true,
+  "old81ObservedResult": {
+    "matchedCount": 80,
+    "driftCount": 1,
+    "matchedRecordIndexes": [
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+      26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48,
+      49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71,
+      72, 73, 74, 76, 77, 78, 79, 80
+    ],
+    "drifts": [
+      {
+        "recordIndex": 75,
+        "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/desktop-operation-policy-20261022.md",
+        "originRef": null,
+        "recordedBytes": 3172,
+        "recordedSHA256": "7b54d589d39bfe71c0f67d61c00995bb4d60b5156a74a6ae25ac69a2f491f5eb",
+        "observedBytes": 3160,
+        "observedSHA256": "2032bd9e1cdbf398a0d505e092e1a08b80ff15df26b1d06c7d7e1c2e0a5a8ec1"
+      }
+    ]
+  },
+  "currentFullReadInputs": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-semantic-offer-owner-review/AGENTS.md",
+      "bytes": 15147,
+      "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+      "readMethod": "full text read in repair turn",
+      "originRef": null
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/desktop-operation-policy-20261022.md",
+      "bytes": 3160,
+      "sha256": "2032bd9e1cdbf398a0d505e092e1a08b80ff15df26b1d06c7d7e1c2e0a5a8ec1",
+      "readMethod": "full text read in repair turn",
+      "originRef": null
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+      "bytes": 16867,
+      "sha256": "567b6e7064bf123dac46742aefa57e06f6ed2fe87ceec5225c395049be888fc1",
+      "readMethod": "full text read in repair turn",
+      "originRef": null
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-semantic-offer-owner-review/docs/reviews/T03/i05-semantic-D1-plan/independent-review.md",
+      "bytes": 11655,
+      "sha256": "50d83cba279ab3eb048b2676ead4eb17068e68106f424d8a47b86f065e80d346",
+      "readMethod": "full text read in repair turn",
+      "originRef": "d014b925e2c9bb246a71621a919d7f9a412f6c57"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-semantic-offer-owner-review/docs/reviews/T03/i05-semantic-D1-plan/independent-checks.json",
+      "bytes": 10400,
+      "sha256": "30167a72bd00030c87bf354399488b176a69ac648721a6fe45fd0e31aabcb3a5",
+      "readMethod": "full text read in repair turn",
+      "originRef": "d014b925e2c9bb246a71621a919d7f9a412f6c57"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-semantic-offer-owner-review/docs/reviews/T03/i05-semantic-D1-plan/independent-seal.json",
+      "bytes": 1744,
+      "sha256": "6d6ff14475c4d40ec62b2c187b6d2d4b567638fdb021110d26b3d8c63dc73409",
+      "readMethod": "full text read in repair turn",
+      "originRef": "d014b925e2c9bb246a71621a919d7f9a412f6c57"
+    }
+  ],
+  "guardFullSourceOrigins": "guard-scope-matrix.json contains exact actuala4d43, new33 and mapping4 source refs/bytes/SHA/blob; all static; no source call",
+  "policyDisposition": "current3160/2032 full-read; T06 foreground release/current short leases observed from policy only, no GUI/lease probe performed; pure-document scope remains; no product retest for guidance drift",
+  "externalNetworkFactAttribution": "approved remote5f from control actual ls-remote report; author did not network/fetch/reset/checkout",
+  "temporaryScratchCreated": false,
+  "executionAuthorization": false
+}

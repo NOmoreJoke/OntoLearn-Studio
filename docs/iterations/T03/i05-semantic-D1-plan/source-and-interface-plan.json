@@ -624,5 +624,33 @@
     "callerTrustedApprovalSourceAndAuthentication": null,
     "collectorToolSourceAndCLI": null,
     "nativePlatformWindow": null
+  },
+  "guardMigration": {
+    "matrix": "guard-scope-matrix.json",
+    "strategy": "guard-migration-strategy.md",
+    "historicalFixedInputs": 43,
+    "historicalWithTwoWriters": 45,
+    "semanticPaths": 33,
+    "parentDefaultPaths": 58,
+    "sharedOldNew": 22,
+    "same": 13,
+    "conflicts": 9,
+    "conflictDependencyPaths": ["packages/engine/pyproject.toml", "uv.lock"],
+    "conflictSourceResourcePaths": [
+      "packages/contracts/python/contract_v2.py",
+      "packages/contracts/v2/errors.json",
+      "packages/contracts/v2/registry.json",
+      "packages/contracts/v2/schema.json",
+      "packages/engine/src/ontolearn_engine/resources.py",
+      "packages/engine/src/ontolearn_engine/semantic.py",
+      "packages/engine/src/ontolearn_engine/semantic_execution.py"
+    ],
+    "oldOnly": 21,
+    "newOnly": 11,
+    "mappingAdditional": 4,
+    "oldProfileCaseCount": 83,
+    "ownerMigrationRequiredBeforeNewParentBuild": true,
+    "futureActualGuardPin": null,
+    "futureActualParentPin": null
   }
 }

@@ -1,0 +1,187 @@
+{
+  "format": "t03-i05-D1-repair-checks/1",
+  "repairBaseRef": "d014b925e2c9bb246a71621a919d7f9a412f6c57",
+  "oldCandidateRef": "ae28572c91b78933c35996f0d80e81c03b96edf0",
+  "candidateRef": null,
+  "status": "author repair static checks complete; independent delta and root acceptance pending",
+  "checks": [
+    {
+      "id": "R01-old43-exact",
+      "status": "pass",
+      "detail": {
+        "actualGuardLiteralRows": 43,
+        "unique": 43,
+        "mismatches": [],
+        "method": "re/ast.literal_eval data literal + ordinary Git/hash, not wrapper/source execution"
+      }
+    },
+    {
+      "id": "R02-all-existing-source-identities",
+      "status": "pass",
+      "detail": {
+        "identityOccurrencesIncludingExactRepeatedPins": 161,
+        "mismatches": [],
+        "futureObjectsNotInvented": true
+      }
+    },
+    {
+      "id": "R03-scope-sets",
+      "status": "pass",
+      "detail": {
+        "classificationCounts": {
+          "old-only": 21,
+          "shared-source-resource-conflict": 7,
+          "new-only": 11,
+          "shared-dependency-conflict": 2,
+          "shared-same-bytes": 13,
+          "mapping-only": 4
+        },
+        "historicalIncludingWriters": 45,
+        "dedicatedSemantic": 33,
+        "parentDefault": 58,
+        "oldNewShared": 22,
+        "oldNewUnion": 54,
+        "lockCanonicalDeclarationsDistributions": [26, 23, 22, 8]
+      }
+    },
+    {
+      "id": "R04-pins-owner-boundary",
+      "status": "pass",
+      "detail": {
+        "allFutureActualPinsNull": true,
+        "all58OwnerAndRootDecisionPresent": true,
+        "T01AndI05RetainSourceOwnership": true,
+        "parentOldFlag83MigrationBeforeEligibility": true
+      }
+    },
+    {
+      "id": "R05-unchanged-large-contract-data",
+      "status": "pass",
+      "detail": {
+        "sourceAndInterfaceAllOtherFieldsEqualOldCandidate": true,
+        "dependencyAllOtherFieldsEqualOldCandidate": true,
+        "schemaChangeIndexUnchanged": true
+      }
+    },
+    {
+      "id": "R06-exact-literal",
+      "status": "pass",
+      "detail": {
+        "backtickedFunctionCodeAttribute": true,
+        "oldRenderedBadLiteralAbsentFromVerification": true,
+        "CodeTypeCoConstsCanonicalDomainPreserved": true
+      }
+    },
+    {
+      "id": "R07-history-and-scope",
+      "status": "pass",
+      "detail": {
+        "modifiedOldPlanFiles": [
+          "docs/iterations/T03/i05-semantic-D1-plan/verification-matrix.md",
+          "docs/iterations/T03/i05-semantic-D1-plan/consumer-caller-interface.md",
+          "docs/iterations/T03/i05-semantic-D1-plan/source-and-interface-plan.json",
+          "docs/iterations/T03/i05-semantic-D1-plan/dependency-plan.json",
+          "docs/iterations/T03/i05-semantic-D1-plan/forward-protocol-delta.md",
+          "docs/iterations/T03/i05-semantic-D1-plan/implementation-plan.md"
+        ],
+        "unchangedOldPayloadAndReviewFiles": [
+          "docs/iterations/T03/i05-semantic-D1-plan/forward-schema-change-index.json",
+          "docs/reviews/T03/i05-semantic-D1-plan/delivery-manifest.json",
+          "docs/reviews/T03/i05-semantic-D1-plan/author-delivery.md",
+          "docs/reviews/T03/i05-semantic-D1-plan/baseline-comparison.json",
+          "docs/reviews/T03/i05-semantic-D1-plan/independent-review.md",
+          "docs/reviews/T03/i05-semantic-D1-plan/author-checks.json",
+          "docs/reviews/T03/i05-semantic-D1-plan/field-index-check.json",
+          "docs/reviews/T03/i05-semantic-D1-plan/develop-writer-diff.md",
+          "docs/reviews/T03/i05-semantic-D1-plan/union-source-audit.json",
+          "docs/reviews/T03/i05-semantic-D1-plan/independent-checks.json",
+          "docs/reviews/T03/i05-semantic-D1-plan/independent-seal.json",
+          "docs/reviews/T03/i05-semantic-D1-plan/readonly-input-manifest.json"
+        ],
+        "trackedChanges": [
+          "AGENTS.md",
+          "docs/iterations/T03/i05-semantic-D1-plan/consumer-caller-interface.md",
+          "docs/iterations/T03/i05-semantic-D1-plan/dependency-plan.json",
+          "docs/iterations/T03/i05-semantic-D1-plan/forward-protocol-delta.md",
+          "docs/iterations/T03/i05-semantic-D1-plan/implementation-plan.md",
+          "docs/iterations/T03/i05-semantic-D1-plan/source-and-interface-plan.json",
+          "docs/iterations/T03/i05-semantic-D1-plan/verification-matrix.md"
+        ],
+        "stagedPaths": [],
+        "outsideAllowedPaths": [],
+        "newScratchCreated": false
+      }
+    },
+    {
+      "id": "R08-policy-forward-record",
+      "status": "pass",
+      "detail": {
+        "matched": 80,
+        "livePolicyDrift": 1,
+        "currentPolicyBytes": 3160,
+        "currentPolicySha256": "2032bd9e1cdbf398a0d505e092e1a08b80ff15df26b1d06c7d7e1c2e0a5a8ec1",
+        "old81ManifestUnchanged": true,
+        "policyFullRead": true,
+        "noProductRetestForGuidance": true
+      }
+    }
+  ],
+  "readback": {
+    "reviewThreeOriginalsFullRead": true,
+    "currentAGENTSCommonAndPolicyFullRead": true,
+    "allSixModifiedOrNewMarkdownFullReadback": true,
+    "guardJSONAllValuesParsedAndReadback": {
+      "method": "lossless exact same-subtree/long-string pointer references; contiguous bounded character windows completed after initial large/combined output truncation",
+      "compactCharacters": 95744,
+      "completeWindowCoverage": [
+        [0, 14000],
+        [14000, 28000],
+        [28000, 42000],
+        [42000, 56000],
+        [56000, 70000],
+        [70000, 84000],
+        [84000, 95744]
+      ],
+      "truncatedMiddle70000To84000ReReadAlone": true
+    },
+    "largeSourceInterfaceDependencyUnchangedSubtrees": "all values parsed; exact equal to old fixed candidate except new guard references; no re-audit of unchanged business payload claimed"
+  },
+  "firstDraftFindingsPreserved": [
+    {
+      "id": "RD1",
+      "finding": "Prettier rendered new strategy __main__ shorthand as **main**; corrected to exact backticked filenames before seal; no source execution."
+    },
+    {
+      "id": "RD2",
+      "finding": "Initial full compact JSON output and later combined windows exceeded output budget; unseen data not treated as read; completed contiguous bounded windows including separately re-read truncated middle. No scratch files used."
+    }
+  ],
+  "formatter": {
+    "tool": "node /Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/node_modules/prettier/bin/prettier.cjs",
+    "writePass1": {
+      "actualExitCode": 0,
+      "stdout": "docs/iterations/T03/i05-semantic-D1-plan/implementation-plan.md 62ms\ndocs/iterations/T03/i05-semantic-D1-plan/forward-protocol-delta.md 20ms (unchanged)\ndocs/iterations/T03/i05-semantic-D1-plan/source-and-interface-plan.json 30ms\ndocs/iterations/T03/i05-semantic-D1-plan/dependency-plan.json 10ms\ndocs/iterations/T03/i05-semantic-D1-plan/consumer-caller-interface.md 18ms (unchanged)\ndocs/iterations/T03/i05-semantic-D1-plan/verification-matrix.md 20ms\ndocs/iterations/T03/i05-semantic-D1-plan/guard-scope-matrix.json 32ms (unchanged)\ndocs/iterations/T03/i05-semantic-D1-plan/guard-migration-strategy.md 11ms\ndocs/reviews/T03/i05-semantic-D1-plan/repair-input-snapshot.json 2ms\ndocs/reviews/T03/i05-semantic-D1-plan/repair-disposition.md 5ms (unchanged)\n"
+    },
+    "scope": "only six changed plan files and newly created repair docs; historical15/review3 unchanged files excluded",
+    "finalCheck": {
+      "actualExitCode": 0,
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+      "scope": "11 repair payload docs before delta-manifest; log then formatted and externally checked again at seal"
+    }
+  },
+  "findingsDisposition": {
+    "F1": "author plan repaired with full43/33/58 matrix; independent delta required, not self-closed",
+    "F2": "exact backticked literal repaired; independent delta required, not self-closed"
+  },
+  "notExecuted": [
+    "product functions or tests",
+    "wrapper/probe/main/resource_manifest/execute_profile_records",
+    "resolver/install/build/sourcecompile/pycompile",
+    "native/archive decode/installed/license/binary/witness/identity/SDK",
+    "fixture/simulation",
+    "network/GUI/external model tasks",
+    "Goal/stage/commit/push/PR/merge"
+  ],
+  "temporaryScratchCreated": false,
+  "executionAuthorization": false
+}

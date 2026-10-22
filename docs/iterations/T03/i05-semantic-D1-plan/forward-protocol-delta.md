@@ -48,12 +48,14 @@
 
 source33账本中的pyproject/lock两项必须在inputs和四writers两账同步新身份；D2新第23、wrapper/entrypoint也由真实候选供pin，前后clean核实际原bytes。新descriptor/schema/collector/runtime-witness工具源作为附加已批元数据输入，不算进33，不能漏保。
 
-root正式parent组合还须为S1新增mapping包四个源码建立精确guard输入：`mapping/{__init__.py,plan.py,probe.py,source.py}`。原0ad固定bytes/SHA/blob已静态列union-source-audit并列入81条输入manifest；这里只核原bytes，没import/运行。它们是parent build输入候选，**不是新semantic canonical23新增模块**，不得因此把新profile隐藏导入或source声明扩成27/26。旧profile43fixed输入涉及变更pyproject/lock及需parent新增guard，应前向建立经root批准的新guard表并保全部原43来源责任，不借“保43”删四个mapping来源或以旧43全部仍通过冒新组合。
+root正式parent组合还须为S1新增mapping包四个源码建立精确guard输入：`mapping/{__init__.py,plan.py,probe.py,source.py}`。原0ad固定bytes/SHA/blob已静态列union-source-audit并列入81条输入manifest；这里只核原bytes，没import/运行。它们是parent build输入候选，**不是新semantic canonical23新增模块**，不得因此把新profile隐藏导入或source声明扩成27/26。完整旧43→新33关系为共享22（13相同、9冲突=2依赖+7源资源）、old-only21/new-only11；并集54加mapping4为拟parent/default58。逐项原ref/bytes/SHA/owner/三scope采用见guard-scope-matrix.json；7源资源冲突为CONTRACT python与v2 errors/registry/schema及engine resources/semantic/semantic_execution，不能只改两依赖。历史a4d独立root保旧43+两writer45 guard及原无参build/83项旧profileflag；新parent58逐owner兼容迁移供实际pin，新semantic仍33。旧profile入口/83报告/限额/非claims的必要回归和未批门见guard-migration-strategy.md，不能删guard或永久拒旧flag称兼容。
 
 新依赖artifact三项需真实selected/all-platform身份与实际安装/许可证据，不能只给一个requirements字符串；新root审批记录/原件根由后继资源门明确。任何新增输入（如parent另有运行时data或toolchain布置）只有获准精确source清单/用途后加入，不能wholepackage discovery扩写。
 
+新增三scope guard/profile关联字段须在新descriptor明确guardVersion、scope、sourceGuardPaths、guardManifest身份与入口/owner采用状态，未来真实pin=null；这是拟定新profile元数据，不在本票生成新schema或扩大23/22模块。parent58有独立parent完整profile/许可及批准，不能混进专用semantic provenance33或借其8distribution证明wholeparent。源路径数、26lockpackages和实际23canonical/声明22分别核对。
+
 ## 6. 验收与独立审查
 
-本票只核静态26表/来源和新版本delta完整性；既有D0作者check、fresh review和指定模型Pass均不继承。后继完整新规范与consumer/四writer候选实际产出后：逐字核全schema/descriptor、全1241索引、26锁各package源/artifact/marker/extra与六直接项、23/22/8/33计数不混改、全部source/consumer/receipt映射及negative cases。fresh独立agent完整读回并保首报告，原T03/root按实际候选接收；若产品/配置/依赖变化，指定双方全新审查与真实OS/CI等原门另做。
+首审F1指出旧43迁移缺7源资源冲突；本修订另核全43字面与Git、58 scope矩阵和9冲突/旧入口责任，只申请原fresh reviewer独立delta，原NEEDS_CHANGE不覆盖。本文同时保静态26表/来源和新版本delta完整性要求；既有D0作者check、fresh review和指定模型Pass均不继承。后继完整新规范与consumer/四writer候选实际产出后：逐字核全schema/descriptor、全1241索引、26锁各package源/artifact/marker/extra与六直接项、23/22/8/33计数不混改、全部source/consumer/receipt映射及negative cases。fresh独立agent完整读回并保首报告，原T03/root按实际候选接收；若产品/配置/依赖变化，指定双方全新审查与真实OS/CI等原门另做。
 
 新协议格式本身不是运行授权；本票停在方案和静态检查。resolver/安装/环境probe/build/archive解码/sourcecompile/get_code/native/417/B1/S1/parent/GUI/外审均未执行，不能出运行Pass或预填实际pin。

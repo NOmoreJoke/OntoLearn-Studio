@@ -2,6 +2,8 @@
 
 此处列c3eb固定v2合同的完整协作验收面；26包组合后继实现必须另按forward-protocol-delta的v3/header2/receipt3精确升级全部映射，不能用旧version配新26锁启动。完整四schema、descriptor、protocol/consumer固定身份在readonly-input-manifest。字段名称、required/type/null/enum/unknown规则均以**完整固定schema**为准，不能用本清单覆盖或简化。D2/I05维护consumer；caller/root维护外部信任、运行原件、验签/绑定与validation；T03只协调四writer接口。
 
+三scope guard关联见guard-scope-matrix/guard-migration-strategy：专用semantic33不变，拟parent/default58与历史45另有完整owner采用/旧profile83迁移门；caller必须按批准scope选择实际exe/root，不能把历史83报告当new417/header2或把9冲突两版bytes混用。
+
 ## 1. strict 入口与外部输入界限
 
 D2后继先落 strict UTF-8 原字节解析：最大provenance16MiB，读取至cap+1判超限，不截断后解析；拒BOM、任何层duplicate key、NaN/Infinity、尾数据、unknown/missing字段、错类型、bool作为integer、非允许null、错误ref/hash大小写长度、越界/重复/逃逸路径。JSON Schema形状之外须实现CR-S/A1/A2/C/A3/A4/R/H全部关系。所有schema与exact已收采用身份由owner/root锁定，不能运行时任选schema路径或下载远程$ref。
