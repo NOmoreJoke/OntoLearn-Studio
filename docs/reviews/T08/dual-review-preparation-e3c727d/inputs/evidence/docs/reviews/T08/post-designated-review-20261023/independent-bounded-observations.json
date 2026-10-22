@@ -1,0 +1,79 @@
+{
+  "kind": "bounded in-memory pure-module observations; no API/domain engine/network",
+  "sourceHead": "7476dae2d622fc965efe4a8c4340a33ea70dd050",
+  "sourceHashes": {
+    "apps/desktop/src/main/agent/conversation.ts": "dca459044105cbb119179d10313c6634ff7c624f4bed29ae7e69371ebbf1918a",
+    "apps/desktop/src/main/agent/errors.ts": "34b2e9b862cbeb6d82d45b73adac977dec05a872e2059231ae5ea73a715bf56e",
+    "apps/desktop/src/main/agent/agent-service.ts": "1d85c1f85f1a81e48f960405950240cafb55123e0823682d42edc927a0f9d659",
+    "apps/desktop/src/main/agent/tools.ts": "be30f3d9a88e23ed3cacc6c63de9ebba2668283be98ee1933b5dc213ce2370c8",
+    "apps/desktop/src/main/agent/deepseek-codec.ts": "399ed11640b9c0433ac3627e83fec39b28cd05bc26b9a999895481d36dc21074",
+    "apps/desktop/src/renderer/src/agent/sidebar-presentation.ts": "7eae95dec4a50d7ad44434d0f802e053493f59d2a1562c4a1be9e58540638db6"
+  },
+  "results": [
+    {
+      "case": "M-P2-2 returned identity drift",
+      "returnedModel": "different-returned-model",
+      "phase": "ready",
+      "domainExecutions": 1
+    },
+    {
+      "case": "M-P2-3 no tools missing reasoning",
+      "previousAnswerAccepted": true,
+      "nextRequestedThinking": {
+        "type": "enabled"
+      },
+      "nextRequestedEffort": "high",
+      "historyReasoningPresent": false
+    },
+    {
+      "case": "M-P2-4 large input only",
+      "maxTokens": 1,
+      "maxTotalRequestedTokens": 4,
+      "usage": {
+        "prompt_tokens": 1699999,
+        "completion_tokens": 1,
+        "total_tokens": 1700000
+      },
+      "phase": "answered",
+      "requestedTokenCeiling": 1
+    },
+    {
+      "case": "M-P2-4 completion above requested max",
+      "maxTokens": 1,
+      "maxTotalRequestedTokens": 4,
+      "usage": {
+        "prompt_tokens": 10,
+        "completion_tokens": 100,
+        "total_tokens": 110
+      },
+      "phase": "answered",
+      "requestedTokenCeiling": 1
+    },
+    {
+      "case": "M-P2-5 failure projection",
+      "projected": {
+        "role": "tool",
+        "tool_call_id": "call1",
+        "content": "{\"kind\":\"failure\"}"
+      }
+    },
+    {
+      "case": "M-P3-9 ordered selection",
+      "mainSame": false,
+      "sidebarSame": false
+    },
+    {
+      "case": "Z-P3-1 M-P3-10 concurrency",
+      "errorCode": "BUDGET_EXCEEDED"
+    },
+    {
+      "case": "Z-P3-2 duplicate plus invalid args",
+      "errorCode": "INVALID_TOOL_ARGUMENTS",
+      "domainExecutions": 0
+    },
+    {
+      "case": "M-P3-10 history repeated ID",
+      "errorCode": "TOOL_NOT_ALLOWED"
+    }
+  ]
+}

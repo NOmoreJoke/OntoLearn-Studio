@@ -1,0 +1,245 @@
+{
+  "source": "/Users/kyle/.minimax/v2/sessions/2026/10/22/19-18-08-741-session_bXZzXzY4MzAxYWQ1MTk3ZDQ2ZWQ5MWJmOWFlZTdlYzM5ZjE5/messages.jsonl",
+  "sessionId": "mvs_68301ad5197d46ed91bf9aee7ec39f19",
+  "originalTurn": "eb566335-2a7c-40ad-bc6e-d0e5aff754c3",
+  "scope": "Only exact original-turn validation tool calls/results; no thinking, headers, system or other turns exported. Raw line SHA-256 includes terminal LF.",
+  "records": [
+    {
+      "label": "npm-check-start",
+      "callSourceLine": 82,
+      "callSourceLineSha256": "fb4754184c579eb0a93a252befec26ebce683c9294cd13a47b1dca42ca355192",
+      "callMessageId": "msg-SmVfPduWsMwIAeiSlb1DCOmJ0jLO40iuXrvgSfCGlSw",
+      "call": {
+        "type": "toolCall",
+        "id": "call_RqsNMStX3AShAhuhdS0ljuyB",
+        "name": "bash",
+        "arguments": {
+          "command": "cd \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa\" && RUN=run-20261023-01 && ROOT=\"$PWD\" && mkdir -p \"docs/reviews/T08/review-runtime/scratch/tmp/$RUN\" \"docs/reviews/T08/review-runtime/scratch/pytest/$RUN\" && echo \"run dir ready\" && { echo \"# command: npm run check\"; echo \"# cwd: $ROOT\"; echo \"# run: $RUN\"; echo \"# started: $(date -u +%Y-%m-%dT%H:%M:%SZ)\"; echo; env -u ROOT_SOURCE_PATH -u ONTOLEARN_TEST_ENGINE -u PYTHONPATH \\\n  UV_PROJECT_ENVIRONMENT=\"$ROOT/.venv\" \\\n  VIRTUAL_ENV=\"$ROOT/.venv\" \\\n  TMPDIR=\"$ROOT/docs/reviews/T08/review-runtime/scratch/tmp/$RUN\" \\\n  PYTEST_ADDOPTS=\"--basetemp=$ROOT/docs/reviews/T08/review-runtime/scratch/pytest/$RUN\" \\\n  npm run check; echo \"EXIT_CODE=$?\"; echo \"# finished: $(date -u +%Y-%m-%dT%H:%M:%SZ)\"; } > \"docs/reviews/T08/review-runtime/raw/minimax-m31flash-$RUN-npm-check.txt\" 2>&1; echo \"exit=$?\" ; tail -40 \"docs/reviews/T08/review-runtime/raw/minimax-m31flash-$RUN-npm-check.txt\"",
+          "description": "Run the full authorized npm run check in isolation",
+          "timeout": 1800,
+          "run_in_background": true
+        }
+      },
+      "resultSourceLine": 83,
+      "resultSourceLineSha256": "a027c57a41e7f11fa021cef02192528bd2469578b2e54663f9a99364a9757326",
+      "resultMessageId": "msg-xTx7_oNoEWmVjmvkMzIEp9HnOROEhVCCUOEHR4b7pUk",
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "call_RqsNMStX3AShAhuhdS0ljuyB",
+        "toolName": "bash",
+        "isError": false,
+        "text": "<bash_background task_id=\"bg_22a46728-9516-433a-98a3-4c4c3a2730ed\">\nPurpose: Run the full authorized npm run check in isolation\nBackground Bash task accepted; command startup may still be in progress. Command limit: 1800s total; yielding does not reset it. The owning conversation will automatically resume when it finishes; use task_output to inspect incremental output, and task_stop to cancel if that tool is available.\n</bash_background>",
+        "status": "started",
+        "task_id": "bg_22a46728-9516-433a-98a3-4c4c3a2730ed"
+      }
+    },
+    {
+      "label": "npm-check-poll-1",
+      "callSourceLine": 87,
+      "callSourceLineSha256": "5e60b3d0d49a0acc4feb8966827f0e99ae3fa226e050b92ad9908120ef86ecd5",
+      "callMessageId": "msg-yZM-946ElDEP7rCvxnv3X6u6Xk09ylI_5t3t1t9dt6U",
+      "call": {
+        "type": "toolCall",
+        "id": "call_CGz7ajZIrx9drK4yyEsab14s",
+        "name": "task_output",
+        "arguments": {
+          "task_id": "bg_22a46728-9516-433a-98a3-4c4c3a2730ed",
+          "wait_ms": 30000
+        }
+      },
+      "resultSourceLine": 88,
+      "resultSourceLineSha256": "52fb8a42aa6fa81959ebb99e27b7108f746b41c4275444ef814fdf963181da4c",
+      "resultMessageId": "msg-5ahmNngDx_AT3a5SujZULOt2gW-I5I7QGDw5TRqmM3s",
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "call_CGz7ajZIrx9drK4yyEsab14s",
+        "toolName": "task_output",
+        "isError": false,
+        "text": "<task_output status=\"running\">\n<task_output_cursor next_offset=\"14\" truncated=\"false\" timed_out=\"false\" />\nrun dir ready\n\n</task_output>",
+        "status": "running",
+        "task_id": "bg_22a46728-9516-433a-98a3-4c4c3a2730ed"
+      }
+    },
+    {
+      "label": "npm-check-poll-2",
+      "callSourceLine": 102,
+      "callSourceLineSha256": "ddebf2d9044cd72d2e1d21535df2e7f4c51298b70c30e13b02bf64ca1b82b16d",
+      "callMessageId": "msg-7JJl4YtLgTrisnclmhyI2I2TpG3xudLasFYVhcs5DM4",
+      "call": {
+        "type": "toolCall",
+        "id": "call_2aVC1zDmCZ9WXPANKWpReqdI",
+        "name": "task_output",
+        "arguments": {
+          "task_id": "bg_22a46728-9516-433a-98a3-4c4c3a2730ed",
+          "wait_ms": 30000
+        }
+      },
+      "resultSourceLine": 103,
+      "resultSourceLineSha256": "e13887a0a48210b694c34fde39f7332d80435f0fb5ea5c102be89deba7601d6a",
+      "resultMessageId": "msg-vTM25iXQBUq12CE9STy-pkmxi_AZuQSiEIGAPWLr0J8",
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "call_2aVC1zDmCZ9WXPANKWpReqdI",
+        "toolName": "task_output",
+        "isError": false,
+        "text": "<task_output status=\"running\">\n<task_output_cursor next_offset=\"21\" truncated=\"false\" timed_out=\"false\" />\nexit=0\n\n</task_output>",
+        "status": "running",
+        "task_id": "bg_22a46728-9516-433a-98a3-4c4c3a2730ed"
+      }
+    },
+    {
+      "label": "t08-targeted",
+      "callSourceLine": 112,
+      "callSourceLineSha256": "8e160b7d0b621357d1031efd587f94b2b46a31bb24274536dca11424963cb915",
+      "callMessageId": "msg-VQE2YAmd8Up0DVHosH1Fh4qwgp0to4kB3ZH5P29YbnM",
+      "call": {
+        "type": "toolCall",
+        "id": "call_QpDfHrTor95PygUItr3t1VNz",
+        "name": "bash",
+        "arguments": {
+          "command": "cd \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa\" && RUN=run-20261023-01 && ROOT=\"$PWD\" && { echo \"# command: ./node_modules/.bin/vitest run tests/unit/t08-agent.test.ts tests/unit/t08-codec.test.ts tests/unit/t08-conversation.test.ts tests/unit/t08-evaluation.test.ts tests/unit/t08-fixed-input.test.ts tests/unit/t08-sidebar.test.ts\"; echo \"# cwd: $ROOT\"; echo; env -u ROOT_SOURCE_PATH -u ONTOLEARN_TEST_ENGINE -u PYTHONPATH \\\n  UV_PROJECT_ENVIRONMENT=\"$ROOT/.venv\" VIRTUAL_ENV=\"$ROOT/.venv\" \\\n  TMPDIR=\"$ROOT/docs/reviews/T08/review-runtime/scratch/tmp/$RUN\" \\\n  PYTEST_ADDOPTS=\"--basetemp=$ROOT/docs/reviews/T08/review-runtime/scratch/pytest/$RUN\" \\\n  ./node_modules/.bin/vitest run tests/unit/t08-agent.test.ts tests/unit/t08-codec.test.ts tests/unit/t08-conversation.test.ts tests/unit/t08-evaluation.test.ts tests/unit/t08-fixed-input.test.ts tests/unit/t08-sidebar.test.ts; echo \"EXIT_CODE=$?\"; } > \"docs/reviews/T08/review-runtime/raw/minimax-m31flash-$RUN-vitest-t08.txt\" 2>&1; echo \"wrapper exit=$?\"; grep -E \"Test Files|Tests  |EXIT_CODE|✓|×\" \"docs/reviews/T08/review-runtime/raw/minimax-m31flash-$RUN-vitest-t08.txt\" | tail -20",
+          "description": "Run targeted T08 six-file vitest"
+        }
+      },
+      "resultSourceLine": 113,
+      "resultSourceLineSha256": "12d4005f7bede464645401dfef7d0bae183d6cfc269065fe8206cd03c2ca3c93",
+      "resultMessageId": "msg-MiDAkArHxNc5oMbMpQft-Hp09obIQakJTDuUpYsOiqI",
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "call_QpDfHrTor95PygUItr3t1VNz",
+        "toolName": "bash",
+        "isError": false,
+        "text": "wrapper exit=0\n Test Files  6 passed (6)\n      Tests  87 passed (87)\nEXIT_CODE=0\n",
+        "execution": {
+          "status": "succeeded",
+          "reason": "exited",
+          "exitCode": 0
+        },
+        "status": "succeeded",
+        "task_id": "bg_9ac3397e-4296-40c0-b0e1-0cfd2ab3732b",
+        "output": {
+          "rawBytes": 81,
+          "persistence": "complete",
+          "omittedBytes": 0
+        }
+      }
+    },
+    {
+      "label": "verify-sources-pipeline",
+      "callSourceLine": 112,
+      "callSourceLineSha256": "8e160b7d0b621357d1031efd587f94b2b46a31bb24274536dca11424963cb915",
+      "callMessageId": "msg-VQE2YAmd8Up0DVHosH1Fh4qwgp0to4kB3ZH5P29YbnM",
+      "call": {
+        "type": "toolCall",
+        "id": "call_5HqmYmQyoGF3OstucMNawv50",
+        "name": "bash",
+        "arguments": {
+          "command": "cd \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa\" && echo \"=== esbuild present? ===\" && ls node_modules/.bin/ | grep -i esbuild; node -e \"console.log(require('esbuild/package.json').version)\" 2>&1 | head -2; echo \"=== verify:sources ===\" && env -u ROOT_SOURCE_PATH -u ONTOLEARN_TEST_ENGINE -u PYTHONPATH npm run verify:sources 2>&1 | tail -25; echo \"EXIT=$?\"",
+          "description": "Check esbuild and run source archive verification"
+        }
+      },
+      "resultSourceLine": 114,
+      "resultSourceLineSha256": "e4040656a0d956040089d2f6cb533e7d57b9de22653d98bbae32a736d4e07398",
+      "resultMessageId": "msg-kmoNPjDSn9hsCAae3eOnWtglIQFSFhxxDttmif6OMcs",
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "call_5HqmYmQyoGF3OstucMNawv50",
+        "toolName": "bash",
+        "isError": false,
+        "text": "=== esbuild present? ===\nnode:internal/modules/cjs/loader:1479\n  throw err;\n=== verify:sources ===\n\n> ontolearn-studio@0.1.0 verify:sources\n> node scripts/verify-sources.mjs\n\n已核对 12 个归档源文件。\nEXIT=0\n",
+        "execution": {
+          "status": "succeeded",
+          "reason": "exited",
+          "exitCode": 0
+        },
+        "status": "succeeded",
+        "task_id": "bg_70667867-3c4f-4450-8bbf-80a878fd8b4c",
+        "output": {
+          "rawBytes": 217,
+          "persistence": "complete",
+          "omittedBytes": 0
+        }
+      }
+    },
+    {
+      "label": "reviewer-probe-first-failure",
+      "callSourceLine": 119,
+      "callSourceLineSha256": "d11b81d53e828e2293e0e3d92992ffb43ba7159daccfc3956499764a033504ea",
+      "callMessageId": "msg-pfea380xlGpULen1eOy-808suXQJSEg9MyMsmgx4Nwg",
+      "call": {
+        "type": "toolCall",
+        "id": "call_W98N0Rpy07YV8tFJmBoI8k4X",
+        "name": "bash",
+        "arguments": {
+          "command": "cd \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa\" && S=docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01 && cat > \"$S/vitest.probe.config.mts\" <<'EOF'\nimport { defineConfig } from 'vitest/config'\nexport default defineConfig({\n  test: {\n    root: process.cwd(),\n    include: [\n      'docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/*.probe.test.ts',\n    ],\n  },\n})\nEOF\n{ echo \"# command: ./node_modules/.bin/vitest run --config docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/vitest.probe.config.mts\"; echo \"# cwd: $PWD\"; echo \"# NOTE: reviewer scratch probe, not a product test file\"; echo; env -u ROOT_SOURCE_PATH -u ONTOLEARN_TEST_ENGINE -u PYTHONPATH TMPDIR=\"$PWD/$S/tmp\" ./node_modules/.bin/vitest run --config \"$S/vitest.probe.config.mts\" --reporter=verbose; echo \"EXIT_CODE=$?\"; } > \"docs/reviews/T08/review-runtime/raw/minimax-m31flash-run-20261023-01-reviewer-probe.txt\" 2>&1; echo \"wrapper=$?\"; cat \"docs/reviews/T08/review-runtime/raw/minimax-m31flash-run-20261023-01-reviewer-probe.txt\" | tail -50",
+          "description": "Execute reviewer probe"
+        }
+      },
+      "resultSourceLine": 120,
+      "resultSourceLineSha256": "358ea8e1c0ba0823c0586704bddfd5afbab5b48fdea2f15720858f8eb1900d1c",
+      "resultMessageId": "msg-uZMPTQMl-YiCHGxsQDi_NJ1ZS77EvqjTuSF5pe6Nufc",
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "call_W98N0Rpy07YV8tFJmBoI8k4X",
+        "toolName": "bash",
+        "isError": false,
+        "text": "wrapper=0\n# command: ./node_modules/.bin/vitest run --config docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/vitest.probe.config.mts\n# cwd: /Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa\n# NOTE: reviewer scratch probe, not a product test file\n\n\n RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa\n\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P1: query_execute accepts SERVICE / remote FROM / UPDATE at the T08 tool boundary 3ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P2: decodeChatResponse accepts a response whose model differs from REQUEST_MODEL 2ms\n × docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P3: thinking mode is NOT enforced when no tool is installed 5ms\n   → expected { model: 'deepseek-v4-pro', …(6) } to not have property \"reasoning_effort\"\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P4: reasoning_content null IS rejected when tools are present 1ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P5: sameContext is sensitive to selectedObjectIds ordering 0ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P6: failure receipts projected to the provider lose the error code 0ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P7: conversation never compares actual provider usage against the token ceiling 3ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P8: toolDefinitions advertises only parameter names, no read-only/no-egress constraint 1ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P9: AgentSession with no ports exposes zero tools and no fallback 0ms\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P3: thinking mode is NOT enforced when no tool is installed\nAssertionError: expected { model: 'deepseek-v4-pro', …(6) } to not have property \"reasoning_effort\"\n\n- Expected:\nundefined\n\n+ Received:\n\"high\"\n\n ❯ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts:90:22\n     88|     const body = encodeChatRequest(req(messages, { availableTools: [] …\n     89|     expect(body.thinking.type).toBe('enabled')\n     90|     expect(body).not.toHaveProperty('reasoning_effort')\n       |                      ^\n     91|   })\n     92|\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\n\n\n Test Files  1 failed (1)\n      Tests  1 failed | 8 passed (9)\n   Start at  03:25:18\n   Duration  286ms (import 48%, transform 40%, tests 10%, worker 2%)\n\nEXIT_CODE=1\n",
+        "execution": {
+          "status": "succeeded",
+          "reason": "exited",
+          "exitCode": 0
+        },
+        "status": "succeeded",
+        "task_id": "bg_b710431b-abb9-403c-bf1d-58942fafb9ea",
+        "output": {
+          "rawBytes": 3224,
+          "persistence": "complete",
+          "omittedBytes": 0
+        }
+      }
+    },
+    {
+      "label": "reviewer-probe-corrected",
+      "callSourceLine": 123,
+      "callSourceLineSha256": "e26b80868126d70a52b4a990759c68d6eaf802a003d0dff04ab014743e29d8c7",
+      "callMessageId": "msg-xylOuBa_zOUrC0hqyQSPg6hqaPyTeMETcgD2qH5oZ6w",
+      "call": {
+        "type": "toolCall",
+        "id": "call_50bEuuGPl6QNH7ZlA00CkkWD",
+        "name": "bash",
+        "arguments": {
+          "command": "cd \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa\" && S=docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01 && { echo \"# command: ./node_modules/.bin/vitest run --config docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/vitest.probe.config.mts\"; echo \"# cwd: $PWD\"; echo \"# NOTE: reviewer scratch probe, not a product test file\"; echo \"# NOTE: P3 assertion corrected after first probe run showed reasoning_effort IS present when mode=enabled (product behaviour correct; my first assertion was wrong)\"; echo; env -u ROOT_SOURCE_PATH -u ONTOLEARN_TEST_ENGINE -u PYTHONPATH TMPDIR=\"$PWD/$S/tmp\" ./node_modules/.bin/vitest run --config \"$S/vitest.probe.config.mts\" --reporter=verbose; echo \"EXIT_CODE=$?\"; } > \"docs/reviews/T08/review-runtime/raw/minimax-m31flash-run-20261023-01-reviewer-probe.txt\" 2>&1; echo \"wrapper=$?\"; tail -25 \"docs/reviews/T08/review-runtime/raw/minimax-m31flash-run-20261023-01-reviewer-probe.txt\"; echo; echo \"=== raw sha ===\"; shasum -a 256 docs/reviews/T08/review-runtime/raw/minimax-m31flash-run-20261023-01-reviewer-probe.txt",
+          "description": "Re-run corrected reviewer probe"
+        }
+      },
+      "resultSourceLine": 124,
+      "resultSourceLineSha256": "1a2c52b119a922b881053578d9e1d87bf0a70a11c84c86c05271a31b4fff9e20",
+      "resultMessageId": "msg-Ok4WOZVAYYF7rh_jw-maihzmcstpFW0-2BLpGtqJsdg",
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "call_50bEuuGPl6QNH7ZlA00CkkWD",
+        "toolName": "bash",
+        "isError": false,
+        "text": "wrapper=0\n# command: ./node_modules/.bin/vitest run --config docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/vitest.probe.config.mts\n# cwd: /Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa\n# NOTE: reviewer scratch probe, not a product test file\n# NOTE: P3 assertion corrected after first probe run showed reasoning_effort IS present when mode=enabled (product behaviour correct; my first assertion was wrong)\n\n\n RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa\n\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P1: query_execute accepts SERVICE / remote FROM / UPDATE at the T08 tool boundary 3ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P2: decodeChatResponse accepts a response whose model differs from REQUEST_MODEL 2ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P3: assistant reasoning_content requirement is skipped when no tool is installed 1ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P3b: conversation also accepts a thinking-mode response without reasoning_content when no tool is installed 3ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P4: reasoning_content null IS rejected when tools are present 1ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P5: sameContext is sensitive to selectedObjectIds ordering 0ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P6: failure receipts projected to the provider lose the error code 0ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P7: conversation never compares actual provider usage against the token ceiling 2ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P8: toolDefinitions advertises only parameter names, no read-only/no-egress constraint 2ms\n ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P9: AgentSession with no ports exposes zero tools and no fallback 1ms\n\n Test Files  1 passed (1)\n      Tests  10 passed (10)\n   Start at  03:25:37\n   Duration  218ms (import 58%, transform 27%, tests 12%, worker 3%)\n\nEXIT_CODE=0\n\n=== raw sha ===\n0232a119e731a31fc5ddf95ab111b23fdad63e09873c0ce2a6016f2f4314dd88  docs/reviews/T08/review-runtime/raw/minimax-m31flash-run-20261023-01-reviewer-probe.txt\n",
+        "execution": {
+          "status": "succeeded",
+          "reason": "exited",
+          "exitCode": 0
+        },
+        "status": "succeeded",
+        "task_id": "bg_21a2bf64-7aaa-4d5c-83f7-ef7248331334",
+        "output": {
+          "rawBytes": 2876,
+          "persistence": "complete",
+          "omittedBytes": 0
+        }
+      }
+    }
+  ],
+  "evidenceLimits": [
+    "npm-check task_output records remained running; command EXIT_CODE=0 is preserved in the separately archived raw.",
+    "verify:sources command pipes npm output to tail without pipefail; EXIT=0 is the pipeline/tail wrapper status, not independently captured npm exit code.",
+    "First reviewer probe native tool result preserves 1 failed / 8 passed (9), EXIT_CODE=1; later raw overwrote that path and retains successful rerun plus a note. This is a native result export, not the original failed raw file.",
+    "Corrected probe contains 10 tests; test count changed from first run. No code triage or reproduction performed."
+  ]
+}

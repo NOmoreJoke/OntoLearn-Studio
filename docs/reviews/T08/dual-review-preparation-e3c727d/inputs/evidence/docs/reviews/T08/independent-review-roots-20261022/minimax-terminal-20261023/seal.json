@@ -1,0 +1,59 @@
+{
+  "sealedAt": "2026-10-22T19:35:40.277615+00:00",
+  "records": [
+    {
+      "path": "minimax-m31flash.report.md",
+      "bytes": 37123,
+      "sha256": "a707127833feff9b22291ffd5a3cb8fa0b944608950a172df424e104f75ea44c"
+    },
+    {
+      "path": "native-validation-results.json",
+      "bytes": 21204,
+      "sha256": "5bc51b94cf749c7a07498680998423e5e35e8ffb0b3dc20069cc3cd91b4e8efd"
+    },
+    {
+      "path": "original-turn-final-response.json",
+      "bytes": 4914,
+      "sha256": "d007d54264c1946bb3cb5238e1ee54525282f6febeff6ed84f78d101fd3eef76"
+    },
+    {
+      "path": "reviewer-run-metadata.json",
+      "bytes": 7672,
+      "sha256": "586887cf0cf31a900aede597c53659a04ca083b20a567ef3505584bf2090a6e0"
+    },
+    {
+      "path": "terminal-receipt.json",
+      "bytes": 2217,
+      "sha256": "fd2f386d46d3c5c25f0c1f63f00538ad96447b6ddc7fa36923eaf502fd0535ea"
+    },
+    {
+      "path": "validation-raw/minimax-m31flash-run-20261023-01-npm-check.txt",
+      "bytes": 5286,
+      "sha256": "93d9733dc3aa83bc6de0cc4b29d07c52bae286cfdbfcf4bf8207612032bc31f1"
+    },
+    {
+      "path": "validation-raw/minimax-m31flash-run-20261023-01-reviewer-probe.txt",
+      "bytes": 2695,
+      "sha256": "0232a119e731a31fc5ddf95ab111b23fdad63e09873c0ce2a6016f2f4314dd88"
+    },
+    {
+      "path": "validation-raw/minimax-m31flash-run-20261023-01-vitest-t08.txt",
+      "bytes": 579,
+      "sha256": "10022861d8d910d3ab72de55b11ebb4da4fdf8e9d14ec70b758a81299bf33f21"
+    },
+    {
+      "path": "validation-raw-manifest.json",
+      "bytes": 1289,
+      "sha256": "41d5cbcb6d7cc565a53959a2ae954f0ace346299dc3698dd4fa50c73ef4205b5"
+    }
+  ],
+  "officialOriginalTurnTerminal": "completed",
+  "reportVerdict": "NotPass",
+  "findingDisposition": "1P1/7P2/3P3 are reviewer findings only; owner triage pending",
+  "qualifications": [
+    "report Ruff179 vs raw224",
+    "verify:sources npm exit unknown due missing pipefail;12-source success text observed",
+    "first reviewer probe9tests1fail8pass exit1 preserved as native result; corrected run10passed exit0; original raw path overwritten by reviewer"
+  ],
+  "boundary": "archive/identity audit and existing native validation readback only; no owner product test rerun or source fix"
+}

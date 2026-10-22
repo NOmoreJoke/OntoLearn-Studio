@@ -1,0 +1,31 @@
+{
+  "archivedAt": "2026-10-22T19:28:18.218332+00:00",
+  "sessionId": "session_cd996c3a9b47f03713b41eaae59a83b0",
+  "originalTurn": "turn_cd14dccd-3356-41ea-acb6-1b8db45132c0",
+  "officialTerminalEvents": [
+    {
+      "sourceLine": 10204,
+      "sourceLineSha256": "c78a006877fdde2220fcac29e471094b709181c54a758adc98ba7800467b64cf",
+      "eventScalars": {
+        "timestamp": "2026-10-22T19:27:15.851Z",
+        "event": "turn.completed",
+        "sessionId": "session_cd996c3a9b47f03713b41eaae59a83b0",
+        "turnId": "turn_cd14dccd-3356-41ea-acb6-1b8db45132c0",
+        "status": "completed"
+      }
+    }
+  ],
+  "sourceReport": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-zcode-review-93516fa/docs/reviews/T08/review-runtime/reports/zcode-glm53.md",
+  "reportRegularNonSymlink": true,
+  "reportBytes": 27221,
+  "reportSha256": "d97250234022978231d34430ecd7914ce13d5b65c7cb34cf096d7879b4d3e4c8",
+  "reportFullRead": "owner read all 189 lines / 27221 bytes of archived report; full final assistant response also read",
+  "modelFinalResponseFile": "original-main-turn-final-response.json",
+  "boundary": "official completed is execution terminal; report verdict and full acceptance assessed separately; MiniMax still pending",
+  "reportVerdict": "NotPass",
+  "newBlockingCodeFindings": "reviewer reports none P0/P1/P2 in implemented pure modules",
+  "newNonblockingObservations": "3 P3 in report section 7",
+  "notPassBasis": "missing key original full acceptance and dependencies; preserve exact report wording",
+  "reviewerReadLimitations": "report section 3.5 says three gzip originals and two intermediate verification JSON were not fully expanded; owner does not silently upgrade coverage",
+  "validationEvidence": "three report-referenced exact raw files copied byte-exact; original execution/exit receipt under audit; owner did not rerun validation"
+}

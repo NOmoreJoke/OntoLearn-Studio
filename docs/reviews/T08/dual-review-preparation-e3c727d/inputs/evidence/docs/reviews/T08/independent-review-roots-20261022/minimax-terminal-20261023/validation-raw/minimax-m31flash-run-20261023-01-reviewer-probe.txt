@@ -1,0 +1,25 @@
+# command: ./node_modules/.bin/vitest run --config docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/vitest.probe.config.mts
+# cwd: /Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa
+# NOTE: reviewer scratch probe, not a product test file
+# NOTE: P3 assertion corrected after first probe run showed reasoning_effort IS present when mode=enabled (product behaviour correct; my first assertion was wrong)
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa
+
+ ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P1: query_execute accepts SERVICE / remote FROM / UPDATE at the T08 tool boundary 3ms
+ ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P2: decodeChatResponse accepts a response whose model differs from REQUEST_MODEL 2ms
+ ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P3: assistant reasoning_content requirement is skipped when no tool is installed 1ms
+ ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P3b: conversation also accepts a thinking-mode response without reasoning_content when no tool is installed 3ms
+ ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P4: reasoning_content null IS rejected when tools are present 1ms
+ ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P5: sameContext is sensitive to selectedObjectIds ordering 0ms
+ ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P6: failure receipts projected to the provider lose the error code 0ms
+ ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P7: conversation never compares actual provider usage against the token ceiling 2ms
+ ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P8: toolDefinitions advertises only parameter names, no read-only/no-egress constraint 2ms
+ ✓ docs/reviews/T08/review-runtime/scratch/minimax-m31flash-run-20261023-01/probe.probe.test.ts > reviewer probe > P9: AgentSession with no ports exposes zero tools and no fallback 1ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  03:25:37
+   Duration  218ms (import 58%, transform 27%, tests 12%, worker 3%)
+
+EXIT_CODE=0

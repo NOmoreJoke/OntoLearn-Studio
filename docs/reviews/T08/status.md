@@ -203,3 +203,12 @@ Goal工具实际回执：已调用 `update_goal(status="blocked")` 并返回bloc
 最终候选 `e3c727dd90e22e7add5f0db94cefb57901af61f0`：原26字节同7a33，新增两fixture共28；run03真实六组（含14模块模式组合、七上下文轴、双submit、迟到回调、草稿原文/更新、文本安全、纯模块取消）pass/exit0，28源、2固定输入、9依赖前后相同，页面请求/pageerror为空。symlink负例实际拒绝exit1、外部未创建。该e3另跑原完整check752TS/1052Python、exit0/28前后相同；实现增量、DOM原件与新check分别独立核验。详见 [真实交接](mounted-harness-preparation-20261023/handoff.md) 与 [完整索引](mounted-harness-preparation-20261023/controller-handoff-index.json)。
 
 组件事件证据现已存在，待指定模型复核，不由owner关闭原P2-6；P1仍缺获批供方，T04 QueryPage消费及T00/I04真实job取消/ACK、I06/T01/T09真实链条、原11.3/12.2/平台/真人/新同候选指定双审仍待。原两NotPass、P1/P2、Goal blocked保持；无provider/API/key/spend/Q5默认，未push/PR/merge。所有profile/raw/cache/DB留own runtime，不stage、不删除或ignore求绿，保留全部实际失败。
+
+
+## e3 完整同候选指定双审材料准备（2026-10-23）
+
+仅准备T08流程文档，见[准备包](dual-review-preparation-e3c727d/README.md)。源候选e3及28源冻结，证据过程0932268；原101输入逐字保留，本次298输入成员、完整1061项Git树及base到候选277项差异均已静态核验。双方完整公共正文SHA `a49974c9aa06ee4dcf8b13c95e30f413d9f4a64fed6b215beb42dd6a2de7fa62`，input-manifest SHA `7662a8c084e7182f868db75caccfe92b0d479d2c87a6245e02aebc42618e57d4`；原PRD/所有旧P1/P2、双方NotPass、全部失败与新六组raw均保留，未以delta缩范围。原5032B总控限定收件已逐字入包，其PNG仅hash、Node历史binary SHA UNKNOWN、页面空请求不等于OS审计、纯模块合成取消不等于I04真实job等边界保持。
+
+实际新review roots、任务和设置读回仍为null；未创建、未setup、未重跑产品/测试/浏览器/CUA、未改Goal。T01真实后端票正在实现，尚无交给T08的固定获批供方；P1、旧NotPass和所有父验收继续保持。独立材料审查与最终暂存字节回执另列包内，不冒充指定审或产品Pass。
+
+随后只读核验T04固定507消费包：owner79d45ca68523d83056bb0bae244a221f6658608d的README9344B/SHA3674fc8b4ea86ec615b9d402860a50cde3a451771094bad41f06824282ecf45a、manifest10259B/SHA2ffd48fd30a6e9e733f29416021d8993d1304663aad1afce880db25a0605cdad均一致，5份源码副本与16项依赖bytes/SHA/GitOID符合固定507。真实QueryPage props与reader签名已读：页面不直接import reader，reader的Promise<boolean>不能直接作页面Promise<void>；权威presentation、ASK/零列、F-R3-01未冻结。此为后到设计事实观察，未加入本次298输入或更改冻结公共正文，未消费docs副本、接线、编译或新增接口，也不当作成熟供方/正式integration验收；后续正式派发若要引用它，双方必须共同纳入并重绑输入身份。

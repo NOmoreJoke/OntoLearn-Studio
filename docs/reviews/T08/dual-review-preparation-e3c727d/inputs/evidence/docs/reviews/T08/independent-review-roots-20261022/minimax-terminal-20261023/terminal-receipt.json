@@ -1,0 +1,38 @@
+{
+  "archivedAt": "2026-10-22T19:31:32.042675+00:00",
+  "sessionId": "mvs_68301ad5197d46ed91bf9aee7ec39f19",
+  "originalTurn": "eb566335-2a7c-40ad-bc6e-d0e5aff754c3",
+  "officialStatusRoute": "runtime-state.sqlite mode=ro timeout=1 PRAGMA query_only=ON; exactly approved four-scalar agent_state SID+turn and sessions SID queries",
+  "agentState": [
+    [
+      "mvs_68301ad5197d46ed91bf9aee7ec39f19",
+      "eb566335-2a7c-40ad-bc6e-d0e5aff754c3",
+      "completed",
+      1792697433248
+    ]
+  ],
+  "session": [
+    [
+      "mvs_68301ad5197d46ed91bf9aee7ec39f19",
+      "idle",
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa",
+      "/Users/kyle/Documents/工作/知爻/本体"
+    ]
+  ],
+  "reportSource": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-minimax-review-93516fa/docs/reviews/T08/review-runtime/reports/minimax-m31flash.md",
+  "reportRegularNonSymlink": true,
+  "reportBytes": 37123,
+  "reportSha256": "a707127833feff9b22291ffd5a3cb8fa0b944608950a172df424e104f75ea44c",
+  "reportLines": 282,
+  "matchesPriorFullReadObservation": true,
+  "ownerFullRead": "all 282 lines read when first observed; exact final bytes unchanged",
+  "reportVerdict": "NotPass",
+  "reviewerNewFindings": "1 P1 / 7 P2 / 3 P3; unadjudicated findings, not owner-confirmed defects",
+  "rawCapture": "three exact report/metadata-referenced raw files verified length/hash; see manifest",
+  "boundary": "official completed is execution terminal, not Pass; preserve first reviewer probe failure; no product change/validation rerun",
+  "reportEvidenceQualifications": [
+    "Report and original reviewer metadata say ruff format 179 files; check raw says 224 files already formatted. Preserve originals; owner correction here.",
+    "verify:sources native wrapper uses pipeline to tail without pipefail: output says 12 archived sources verified, but wrapper EXIT=0 does not independently establish npm exit code; npm exit UNKNOWN.",
+    "First reviewer scratch probe original turn result has 1 failed / 8 passed / total9, exit1; corrected later run total10 passed exit0. Initial wrong assertion is reviewer error, not product failure; preserve native first result separately."
+  ]
+}

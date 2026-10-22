@@ -1,0 +1,107 @@
+[
+  {
+    "requirement": "FR-800",
+    "originalObligation": "可信项目/模块/选择对象与导入文本数据边界",
+    "existingLocalEvidence": "agent-service.ts, conversation.ts, sidebar context",
+    "missingRealEvidence": "实际项目与导入/工具路径、权威scope来源未接线",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "FR-801",
+    "originalObligation": "每页最多4动作、无模型转离线",
+    "existingLocalEvidence": "context-actions.ts, AgentSidebar.tsx",
+    "missingRealEvidence": "App挂载和T09真实离线handler未验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "FR-802",
+    "originalObligation": "导师/项目两模式及修改/权限边界",
+    "existingLocalEvidence": "TrustedContext/mode, context-actions",
+    "missingRealEvidence": "真实模型两模式质量及辅助学习记录未验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "FR-803",
+    "originalObligation": "受控白名单、读写分类及工具结果不自动外发",
+    "existingLocalEvidence": "tools.ts, agent-service.ts",
+    "missingRealEvidence": "唯一公共注册映射及全部实际领域端口未验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "FR-804;A-01/02",
+    "originalObligation": "版本化Diff、确认复验、结构引用检查、原子取消/失败、撤销/快照独立确认",
+    "existingLocalEvidence": "version-stamped draft/preview handler only",
+    "missingRealEvidence": "T01真实Diff/真人确认/事务/撤销/恢复均未联验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "FR-805;A-09",
+    "originalObligation": "查询/推理/质量/沙盘真实依据，失败/过期/无依据准确",
+    "existingLocalEvidence": "host receipts/fixed educational templates",
+    "missingRealEvidence": "真实领域完整集合/轨迹与实际API联验未验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "FR-806",
+    "originalObligation": "模型失败保留操作/本地数据并有重试/本地入口",
+    "existingLocalEvidence": "conversation localReceipts, sidebar SSR",
+    "missingRealEvidence": "真实页面事件、持久草稿及模型失败后离线连续性未验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "FR-900;Q9",
+    "originalObligation": "配置CRUD/启停删除，连接/结构化/工具能力分开，正式受测模式/漂移",
+    "existingLocalEvidence": "codec/capabilities, no network",
+    "missingRealEvidence": "I06配置UI/受控传输、真实DeepSeek和正式模式未验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "FR-901",
+    "originalObligation": "OS安全存储、不进项目/日志/报告/会话",
+    "existingLocalEvidence": "T08 no credentials",
+    "missingRealEvidence": "I06真实安全存储及两OS保护/失败/升级未验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "FR-902;A-03/04/05",
+    "originalObligation": "三隐私档、最终所有字段授权、端点主体配置变更失效、完全本地禁发",
+    "existingLocalEvidence": "projection/local UI guards are not authorization",
+    "missingRealEvidence": "I06最终body逐字节溯源授权、在途切本地、真实注入路径未验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "FR-904",
+    "originalObligation": "最小目标/用途/范围/授权/时间记录，无业务正文/完整结果/密钥",
+    "existingLocalEvidence": "reuse I06 proposed only",
+    "missingRealEvidence": "真实最小外发日志未验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "FR-204/302/400;11.3",
+    "originalObligation": "本体建议/旧基准/撤销；NL SPARQL语法+完整集合+语义反例；映射真实样本",
+    "existingLocalEvidence": "v1 synthetic, v2 RDFLib/CSV real library with hand-authored protocol",
+    "missingRealEvidence": "真实模型建议/映射/NL生成和获批领域执行未验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "11.3;A-10",
+    "originalObligation": "真实推理轨迹/开放世界/domain-range、沙盘记录/公式/假设、授权、权限提升反例、零伪造且失败可定位",
+    "existingLocalEvidence": "protocol/evidence tests, not provider quality",
+    "missingRealEvidence": "全部相关领域与实际Q9服务固定版本评估未验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "12.2",
+    "originalObligation": "七项真实Agent闭环全部保留",
+    "existingLocalEvidence": "full PRD supplied; local evidence only",
+    "missingRealEvidence": "真实Diff接受/冲突/半批失败/撤销恢复/查询/推理沙盘/外发/离线连续性均待验",
+    "overallAcceptance": "not-passed"
+  },
+  {
+    "requirement": "PRD10-12;F;C-G",
+    "originalObligation": "原非功能、标准支持深度、固定输入/完整输出、两OS/真人与发布门",
+    "existingLocalEvidence": "approved baseline + full PRD/context supplied",
+    "missingRealEvidence": "必要e2e/native/package/Win11x64/macOS15arm64/真人/CI/远端未取得本线通过",
+    "overallAcceptance": "not-passed"
+  }
+]

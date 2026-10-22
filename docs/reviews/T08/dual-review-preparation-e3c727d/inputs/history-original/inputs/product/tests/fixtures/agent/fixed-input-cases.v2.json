@@ -1,0 +1,106 @@
+{
+  "version": "t08-fixed-input-eval-2",
+  "sourceCommit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+  "originManifestSha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+  "sourceCasesSha256": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa",
+  "queryCases": [
+    {
+      "id": "Q-01",
+      "stage": "Q-01-1",
+      "question": "查询未闭环高危告警",
+      "expected": {
+        "variables": ["alarm"],
+        "rows": [
+          {
+            "alarm": "<urn:ontolearn:learning:alarm/A01>"
+          }
+        ],
+        "scope": "current-asserted"
+      },
+      "expectedSemanticMatch": true
+    },
+    {
+      "id": "Q-02",
+      "stage": "Q-02-1",
+      "question": "A01改Closed后查询未闭环高危告警",
+      "expected": {
+        "variables": ["alarm"],
+        "rows": [],
+        "scope": "current-asserted"
+      },
+      "expectedSemanticMatch": true
+    },
+    {
+      "id": "Q-01-semantic-wrong",
+      "stage": "Q-01-1",
+      "question": "查询未闭环高危告警",
+      "expected": {
+        "variables": ["alarm"],
+        "rows": [
+          {
+            "alarm": "<urn:ontolearn:learning:alarm/A01>"
+          }
+        ],
+        "scope": "current-asserted"
+      },
+      "expectedObservedRows": [
+        {
+          "alarm": "<urn:ontolearn:learning:alarm/A02>"
+        }
+      ],
+      "expectedSemanticMatch": false
+    },
+    {
+      "id": "Q-01-syntax-wrong",
+      "stage": "Q-01-1",
+      "question": "查询未闭环高危告警",
+      "expectedCode": "QUERY_SYNTAX",
+      "expectedSemanticMatch": false
+    }
+  ],
+  "csvCandidateCases": [
+    {
+      "id": "mapping-string-identity",
+      "candidate": [
+        {
+          "equipment_id": "001",
+          "equipment_name": "泵站A"
+        },
+        {
+          "equipment_id": "002",
+          "equipment_name": "泵站B"
+        }
+      ],
+      "expectedConsistent": true
+    },
+    {
+      "id": "mapping-leading-zero-loss",
+      "candidate": [
+        {
+          "equipment_id": "1",
+          "equipment_name": "泵站A"
+        },
+        {
+          "equipment_id": "2",
+          "equipment_name": "泵站B"
+        }
+      ],
+      "expectedConsistent": false
+    },
+    {
+      "id": "mapping-name-swapped",
+      "candidate": [
+        {
+          "equipment_id": "001",
+          "equipment_name": "泵站B"
+        },
+        {
+          "equipment_id": "002",
+          "equipment_name": "泵站A"
+        }
+      ],
+      "expectedConsistent": false
+    }
+  ],
+  "scope": "Actual read-only RDFLib/CSV observation with hand-authored candidate protocol messages. No actual model, approved domain adapter, Store, reasoning or scenario execution. Not product Q/A acceptance."
+}

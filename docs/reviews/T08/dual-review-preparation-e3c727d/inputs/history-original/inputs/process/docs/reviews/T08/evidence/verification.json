@@ -1,0 +1,58 @@
+{
+  "candidate": "9bfd3105a2f847771d8039b93e6615fa94c4fdfa",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "date": "2026-10-21",
+  "timezone": "Asia/Shanghai",
+  "environment": {
+    "node": "24.15.0",
+    "npm": "11.12.1",
+    "python": "3.12.12",
+    "setup": ["npm ci --ignore-scripts --no-audit --no-fund", "uv sync --frozen"]
+  },
+  "checks": [
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "typescriptFiles": 18,
+      "typescriptTests": 679,
+      "pythonTests": 1052,
+      "logSha256": "b2379828a80c766289a48b35ae417bc46cb2d4c3f5d6558c9a49518a056cdad1"
+    },
+    {
+      "command": "npm run verify:sources",
+      "exitCode": 0,
+      "logSha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+    }
+  ],
+  "firstFailure": {
+    "file": "check-first-failure.txt.gz",
+    "sha256": "872d85a4ba9c2e5425a802913eb55a0ef142a0ba6320fbb7f0c3608a36a78f94",
+    "reason": "worktree .venv/bin/python did not exist; eight baseline task-runtime cases ENOENT",
+    "preservationReason": "Original first failure retained verbatim for environment audit; synthetic task payloads only.",
+    "originalSha256": "6f8e8f3d58638d867319457853547a8af6fd19eefa10a597cb8dde0c100d985a",
+    "compression": "gzip; decompressed bytes equal exact original first log"
+  },
+  "files": {
+    "apps/desktop/src/main/agent/agent-service.ts": "61a7a327c54425bd73ad88d461e7112028fb4b4de0a57c4227fb5638623d71a7",
+    "apps/desktop/src/main/agent/capabilities.ts": "30d1e6079b3f16d01f080a1dca9fb10a14d24357bbfc39a5ea2bfb2deb3612e4",
+    "apps/desktop/src/main/agent/deepseek-codec.ts": "399ed11640b9c0433ac3627e83fec39b28cd05bc26b9a999895481d36dc21074",
+    "apps/desktop/src/main/agent/errors.ts": "34b2e9b862cbeb6d82d45b73adac977dec05a872e2059231ae5ea73a715bf56e",
+    "apps/desktop/src/main/agent/tools.ts": "2061a09873456b6d9337cefee1227561eb415dacf607b565fce70b29e23b8fc1",
+    "apps/desktop/src/renderer/src/agent/context-actions.ts": "c4b743dc94869ecf088ae892b7996b50f25da225e1235e0d9456f0b61696a1d0",
+    "tests/fixtures/agent/manifest.v1.json": "19fe2e407368a21a081b83cbd92c70478cbbf3f45006148d02d404724ce4100f",
+    "tests/fixtures/agent/synthetic-cases.v1.json": "38f332e4f2d1e7cb59817f66c4db9b4d73defa04149650074fd890e1f0ad1f88",
+    "tests/unit/t08-agent.test.ts": "b509bed523c7919709bc9616b74ca25eaf8f16baa19751566466549384829641",
+    "tests/unit/t08-codec.test.ts": "56bdedd1de5bbe1a8613c5d407134bc731fc34ddd7e0202de0907e677f327a1a",
+    "tests/unit/t08-evaluation.test.ts": "ab5a3705eddcda7e30efa5d5feb589a153296e35888019e0ffdd0e7afe8b7b3c"
+  },
+  "notRun": [
+    "Electron/e2e/native/HMR",
+    "actual DeepSeek API",
+    "actual domain tools",
+    "T01 ChangeSet atomicity/undo",
+    "actual final-byte gateway authorization",
+    "UI integration",
+    "specified dual external review",
+    "push/PR/CI/merge"
+  ]
+}

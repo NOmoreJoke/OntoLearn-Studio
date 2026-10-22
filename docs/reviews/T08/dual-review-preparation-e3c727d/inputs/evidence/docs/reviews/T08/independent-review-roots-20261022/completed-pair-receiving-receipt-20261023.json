@@ -1,0 +1,65 @@
+{
+  "recordedAt": "2026-10-22T19:32:29.179088+00:00",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "product": "93516fa8455cf4b195cbfb699aa7a6652d428b6f",
+  "reviewHead": "5b64bfea538b638310cd3ce79e595c3b482e003d",
+  "fullInputProof": "native-input-chain-20261023/seal.json",
+  "tasks": [
+    {
+      "role": "zcode",
+      "sessionId": "session_cd996c3a9b47f03713b41eaae59a83b0",
+      "originalTurn": "turn_cd14dccd-3356-41ea-acb6-1b8db45132c0",
+      "officialOriginalTurnTerminal": "completed",
+      "terminalReceipt": "zcode-terminal-20261023/terminal-receipt.json",
+      "terminalReceiptSha256": "fa5a345dd902b25bf8a4f50b1cc259a3044fe8483e2adf08bac24eb50770ac4f",
+      "report": "zcode-terminal-20261023/zcode-glm53.report.md",
+      "reportBytes": 27221,
+      "reportSha256": "d97250234022978231d34430ecd7914ce13d5b65c7cb34cf096d7879b4d3e4c8",
+      "reportVerdict": "NotPass",
+      "ownerFullRead": true,
+      "reviewerFindings": "0 new P0/P1/P2; 3 P3",
+      "terminalSeal": "zcode-terminal-20261023/seal.json",
+      "terminalSealSha256": "9781093cf7c6041348c1f8d66b39527a5b4b6aaf6dd3123f2f8964e2ba2d5064"
+    },
+    {
+      "role": "minimax",
+      "sessionId": "mvs_68301ad5197d46ed91bf9aee7ec39f19",
+      "originalTurn": "eb566335-2a7c-40ad-bc6e-d0e5aff754c3",
+      "officialOriginalTurnTerminal": "completed",
+      "terminalReceipt": "minimax-terminal-20261023/terminal-receipt.json",
+      "terminalReceiptSha256": "fd2f386d46d3c5c25f0c1f63f00538ad96447b6ddc7fa36923eaf502fd0535ea",
+      "report": "minimax-terminal-20261023/minimax-m31flash.report.md",
+      "reportBytes": 37123,
+      "reportSha256": "a707127833feff9b22291ffd5a3cb8fa0b944608950a172df424e104f75ea44c",
+      "reportVerdict": "NotPass",
+      "ownerFullRead": true,
+      "reviewerFindings": "1 P1 / 7 P2 / 3 P3; not yet adjudicated",
+      "terminalSeal": "minimax-terminal-20261023/seal.json",
+      "terminalSealSha256": "d07e6e0f66a14684e5f5cfd7d180ac4acab309f07654ae91bc617625f7ef097a"
+    }
+  ],
+  "pairVerdict": "NotPass / NotPass; no designated Pass",
+  "scope": "complete original cumulative requirements submitted to both; 25 implementation/test/fixture, 44 product diff, 828 product tree; no narrowed S1",
+  "ownerActions": "read-only exact native/status sources and own exported report/raw; no CUA after release, no product tests rerun, no source/lock/config edits, no Goal restart/change, no push/PR/merge",
+  "unresolved": "reviewer findings require separate evidence-bound disposition; original full integration/API/platform/user/release acceptance remains unverified; rootverified counts for controller only",
+  "evidenceQualifications": {
+    "ZCode": [
+      "report section3.5: three gzip originals/two intermediate verification JSON not fully expanded",
+      "257 blob independent sample, not all941 independently rehashed"
+    ],
+    "MiniMax": [
+      "Ruff count report179 versus raw224",
+      "verify:sources npm exit unknown because pipeline lacks pipefail; stdout says12 sources verified",
+      "reviewer probe first9 tests:1failed8passed exit1; corrected rerun10passed exit0; failure native result preserved separately"
+    ],
+    "formatting": [
+      "default prettier commands ignore docs/reviews under repository policy; do not treat ignored files as actual formatting verification",
+      "current new receiving receipt and M audit checked with --ignore-path /dev/null; byte-exact copied originals remain unformatted"
+    ]
+  },
+  "staticAudits": [
+    "native-input-chain-static-review-20261023.md",
+    "zcode-terminal-static-review-20261023.md",
+    "minimax-terminal-static-review-20261023.md"
+  ]
+}

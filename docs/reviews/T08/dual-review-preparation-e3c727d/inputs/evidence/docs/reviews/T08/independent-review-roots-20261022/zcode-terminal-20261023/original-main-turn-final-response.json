@@ -1,0 +1,12 @@
+{
+  "source": "/Users/kyle/.zcode/cli/rollout/model-io-session_cd996c3a9b47f03713b41eaae59a83b0.jsonl",
+  "sourceLine": 41,
+  "sourceLineSha256": "6dcbdff297e98dcfeb472831de727b9b1945dcd54f7175dc7d908428cde92496",
+  "sessionId": "session_cd996c3a9b47f03713b41eaae59a83b0",
+  "originalTurn": "turn_cd14dccd-3356-41ea-acb6-1b8db45132c0",
+  "querySource": "main_turn",
+  "startedAt": "2026-10-22T19:27:03.900Z",
+  "modelCallCompletedAt": "2026-10-22T19:27:15.561Z",
+  "finishReason": "stop",
+  "assistantText": "T08 全量独立审查已完成，**最终结论：不通过（NotPass）**，报告已写入 [docs/reviews/T08/review-runtime/reports/zcode-glm53.md](/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-zcode-review-93516fa/docs/reviews/T08/review-runtime/reports/zcode-glm53.md)。\n\n**受理与完整性核验（全部通过）**\n- cwd、detached HEAD=5b64bfea、base=5f910b52、product=93516fa 均实测确认；官方附件 59804 bytes / 373 行 / SHA256 `8951b0e3…` 与本方副本逐字节一致并全文读取。\n- 旧 input-manifest（`33deedd2…`）、dispatch-manifest、source-git-bytes 三份 SHA 实测吻合；25 项包文件快照＝产品 Git 对象字节 25/25 全等；44 项差异、828 项产品树、verification-93516fa 的 25 项文件哈希、source-git-bytes 抽查 257 项 blob 全部核对无漂移。受理记录在 `metadata/zcode-glm53-acceptance-20261023.json`（session `session_cd996c3a…`，turnId 留待官方菜单补记）。\n\n**审查范围**：PRD 1255 行全文（含 11.3 九类、12.2 七项、附录 C–G）、25 项源码/测试/fixture 全文、其余 19 项差异（内审 1–8、status、backlog、设计文档、全部 evidence 元数据与归档原件）、控制器 requirements/acceptance-baselines。\n\n**本方独立运行（raw + metadata 落盘）**：run-001 全量 `npm run check` exit 0（lint/format/typecheck/build/ruff + vitest 717 项 + pytest 1052 项）；run-002 五例固定输入探针直连复现（Q-01→仅 A01、Q-02→空、同数量语义错→A02、语法错→QUERY_SYNTAX、CSV 001/002 字符串身份）；run-003 t08 定向 6 文件 87 项全过。未启动 Electron/e2e/打包，未调用付费 API，未读 peer 任何材料。\n\n**核心发现**\n- 已实现纯模块层（严格 codec、会话编排、工具白名单/证据保真、侧栏 SSR、固定输入评估）静态与受控运行均**未发现新 P0/P1/P2 缺陷**；历史内审 1–8 的全部不通过问题在固定代码中逐项核实关闭。仅 3 条 P3 观察（如 `executeCalls` 并发时错误码语义混淆为 BUDGET_EXCEEDED）。\n- 不通过的原因是**关键验收缺失而非代码缺陷**：真实 I06 最终字节授权/安全存储/最小调用记录、T01 真实 Diff/真人确认/事务/撤销、T02–T07 真实领域端口、App 挂载、真实 DeepSeek 主体与消费上限、11.3 真实模型评估、12.2 七项端到端闭环、A-01..A-10 真实路径、e2e/native/两 OS/真人/CI 发布门全部缺前置。报告第 8 节逐项区分了“真实通过 / 仅合成层 / 无法验证”，第 9 节区分了缺前置与可修代码问题。\n\n边界遵守：仅写本方 runtime 证据与报告；源码、锁、配置、AGENTS 未动（AGENTS 保持 M 未暂存），未 stage/commit/push；Git 状态与受理时一致。"
+}

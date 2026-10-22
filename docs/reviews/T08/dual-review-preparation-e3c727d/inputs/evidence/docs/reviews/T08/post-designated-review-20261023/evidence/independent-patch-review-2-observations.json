@@ -1,0 +1,127 @@
+{
+  "kind": "bounded synthetic in-memory observations; no API or full suite",
+  "sourceHashes": {
+    "apps/desktop/src/main/agent/agent-service.ts": "915b334c0cd0e35f683750f148d331b9e14f7d0d3344e54fd532619b789ebded",
+    "apps/desktop/src/main/agent/errors.ts": "9269319454eb6ed640789e24420cd5e0516057697b2b97e2e0e733ec6ec92c45",
+    "apps/desktop/src/main/agent/tools.ts": "be30f3d9a88e23ed3cacc6c63de9ebba2668283be98ee1933b5dc213ce2370c8",
+    "apps/desktop/src/main/agent/deepseek-codec.ts": "f89db7df0298f2fd56cb7c98adccbfc3d42709f75e96f47d0372c541cac07065"
+  },
+  "results": [
+    {
+      "variant": "mutated-code",
+      "normalized": {
+        "code": "TOOL_FAILED",
+        "message": "TOOL_FAILED",
+        "sameInstance": false
+      },
+      "receipt": {
+        "callId": "c1",
+        "tool": "query_execute",
+        "outcome": {
+          "kind": "failure",
+          "code": "TOOL_FAILED"
+        }
+      },
+      "snapshot": {
+        "callId": "c1",
+        "tool": "query_execute",
+        "outcome": {
+          "kind": "failure",
+          "code": "TOOL_FAILED"
+        }
+      },
+      "projection": {
+        "role": "tool",
+        "tool_call_id": "c1",
+        "content": "{\"kind\":\"failure\",\"code\":\"TOOL_FAILED\"}"
+      }
+    },
+    {
+      "variant": "throwing-getter",
+      "normalized": {
+        "code": "TOOL_FAILED",
+        "message": "TOOL_FAILED",
+        "sameInstance": false
+      },
+      "receipt": {
+        "callId": "c1",
+        "tool": "query_execute",
+        "outcome": {
+          "kind": "failure",
+          "code": "TOOL_FAILED"
+        }
+      },
+      "snapshot": {
+        "callId": "c1",
+        "tool": "query_execute",
+        "outcome": {
+          "kind": "failure",
+          "code": "TOOL_FAILED"
+        }
+      },
+      "projection": {
+        "role": "tool",
+        "tool_call_id": "c1",
+        "content": "{\"kind\":\"failure\",\"code\":\"TOOL_FAILED\"}"
+      }
+    },
+    {
+      "variant": "throwing-prototype",
+      "normalized": {
+        "code": "TOOL_FAILED",
+        "message": "TOOL_FAILED",
+        "sameInstance": false
+      },
+      "receipt": {
+        "callId": "c1",
+        "tool": "query_execute",
+        "outcome": {
+          "kind": "failure",
+          "code": "TOOL_FAILED"
+        }
+      },
+      "snapshot": {
+        "callId": "c1",
+        "tool": "query_execute",
+        "outcome": {
+          "kind": "failure",
+          "code": "TOOL_FAILED"
+        }
+      },
+      "projection": {
+        "role": "tool",
+        "tool_call_id": "c1",
+        "content": "{\"kind\":\"failure\",\"code\":\"TOOL_FAILED\"}"
+      }
+    },
+    {
+      "variant": "valid-code-foreign-message",
+      "normalized": {
+        "code": "TIMED_OUT",
+        "message": "TIMED_OUT",
+        "sameInstance": false
+      },
+      "receipt": {
+        "callId": "c1",
+        "tool": "query_execute",
+        "outcome": {
+          "kind": "failure",
+          "code": "TIMED_OUT"
+        }
+      },
+      "snapshot": {
+        "callId": "c1",
+        "tool": "query_execute",
+        "outcome": {
+          "kind": "failure",
+          "code": "TIMED_OUT"
+        }
+      },
+      "projection": {
+        "role": "tool",
+        "tool_call_id": "c1",
+        "content": "{\"kind\":\"failure\",\"code\":\"TIMED_OUT\"}"
+      }
+    }
+  ]
+}

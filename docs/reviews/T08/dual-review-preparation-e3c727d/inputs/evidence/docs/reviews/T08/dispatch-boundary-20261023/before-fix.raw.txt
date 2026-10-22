@@ -1,0 +1,92 @@
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-agent-model
+
+ ❯ tests/unit/t08-review-regressions.test.ts (24 tests | 3 failed | 21 skipped) 14ms
+   ❯ T08 designated review regressions: synthetic pure-module boundaries (24)
+     × rechecks context at the deferred port invocation before executing the first call 10ms
+     × rechecks each deferred call and retains the preceding completed receipt 2ms
+     × fails closed with a safe context code when authority becomes unreadable before dispatch 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/t08-review-regressions.test.ts > T08 designated review regressions: synthetic pure-module boundaries > rechecks context at the deferred port invocation before executing the first call
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "inputSnapshotId": "s1",
+        "mode": "tutor",
+        "module": "query",
+        "projectId": "p1",
+        "projectRevision": 1,
+        "scopeRef": "scope1",
+        "selectedObjectIds": Array [
+          "001",
+          "002",
+        ],
+      },
+      Object {
+        "instruction": "建立设备类",
+      },
+      AbortSignal {
+        Symbol(kEvents): Map {},
+        Symbol(events.maxEventTargetListeners): 0,
+        Symbol(events.maxEventTargetListenersWarned): false,
+        Symbol(kHandlers): Map {},
+        Symbol(kAborted): false,
+        Symbol(kReason): undefined,
+        Symbol(kComposite): false,
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/t08-review-regressions.test.ts:89:25
+     87|     active = { ...context, projectId: 'p2' }
+     88|     await expect(pending).rejects.toThrow('STALE_CONTEXT')
+     89|     expect(execute).not.toHaveBeenCalled()
+       |                         ^
+     90|     expect(session.currentTurnReceipts()).toEqual([])
+     91|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/t08-review-regressions.test.ts > T08 designated review regressions: synthetic pure-module boundaries > rechecks each deferred call and retains the preceding completed receipt
+AssertionError: expected "vi.fn()" to be called 1 times, but got 2 times
+ ❯ tests/unit/t08-review-regressions.test.ts:109:21
+    107|       session.executeCalls([call, { ...call, id: 'review.call/2' }], r…
+    108|     ).rejects.toThrow('STALE_CONTEXT')
+    109|     expect(execute).toHaveBeenCalledTimes(1)
+       |                     ^
+    110|     expect(session.currentTurnReceipts()).toMatchObject([{ callId: cal…
+    111|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/t08-review-regressions.test.ts > T08 designated review regressions: synthetic pure-module boundaries > fails closed with a safe context code when authority becomes unreadable before dispatch
+AssertionError: expected [Function] to throw error including 'STALE_CONTEXT' but got 'private-path/private-cell'
+
+Expected: "STALE_CONTEXT"
+Received: "private-path/private-cell"
+
+ ❯ tests/unit/t08-review-regressions.test.ts:125:26
+    123|     )
+    124|     readable = false
+    125|     await expect(pending).rejects.toThrow('STALE_CONTEXT')
+       |                          ^
+    126|     expect(execute).not.toHaveBeenCalled()
+    127|     expect(session.currentTurnReceipts()).toEqual([])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 21 skipped (24)
+   Start at  04:41:03
+   Duration  228ms (import 56%, transform 29%, tests 11%, worker 3%)
+
