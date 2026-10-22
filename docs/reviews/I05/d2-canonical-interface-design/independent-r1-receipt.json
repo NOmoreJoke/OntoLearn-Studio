@@ -1,0 +1,118 @@
+{
+  "format": "i05-d2-canonical-independent-r1-seal/1",
+  "at": "2026-10-22T16:41:35.023332+00:00",
+  "reviewScope": "fixed R1 document-only independent review; no new R2/type supplements",
+  "conclusion": "limited design coverage FAIL pending one P2 with two triggers; identity/listed fields/codec distinctions/digests/proposal and authority boundaries Limited Pass",
+  "findings": [
+    {
+      "id": "IR1-P2-01",
+      "severity": "P2",
+      "subcases": [
+        "selectedFacts per-item triple/sources wrapper missing explicit bridge",
+        "known optional mutation entrance missing explicit branch mapping"
+      ],
+      "dataLossObserved": false
+    }
+  ],
+  "candidateRef": "eb5d4017e7dba86b568e879e34531e49d1b79920",
+  "processRef": "6b94c152a8fca0f0e26d377b0e4d79ff4d64b8b5",
+  "revisionBase": "0841ffbe7a4599fbea96f4ff998808f3f4e00972",
+  "protectedIdentity": {
+    "old176CurrentEqualsFixedGitShaVerified": true,
+    "new29CurrentEqualsFixedGitShaVerified": true,
+    "exactAllowlist11CurrentSnapshotFixedGitShaVerified": true,
+    "finalProtected205CurrentShaEqual": true,
+    "mismatches": []
+  },
+  "actualChecks": {
+    "independentStaticExit": 0,
+    "staticInvariants": 949,
+    "failedInvariantCount": 0,
+    "findingsKeptSeparateFromPassCount": true,
+    "formatWriteExit": 0,
+    "formatCheckExit": 0,
+    "reviewerReadOnlyIntrospectionFailureExit": 1,
+    "authorBootstrapParseFailureExit": 1
+  },
+  "files": [
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-bootstrap-boundaries.json",
+      "bytes": 2273,
+      "sha256": "461ddfaa16ed386b8d53175059bcf77cccab928b3fc0ca5994f85821286d7779"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-check-01-execution.json",
+      "bytes": 1198,
+      "sha256": "abaa19cc4aa01f975b9cead1251942934bff9052679cc32d3ad0deb60f85ff2e"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-check-01.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-check-01.stdout.json",
+      "bytes": 350568,
+      "sha256": "e4ce84a31ddb87a9586a0151ea651901ed4d530d1f6d136c6581bb8e9ecf5e80"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-check.py",
+      "bytes": 16993,
+      "sha256": "ace1fdd842f74add410f2d9e6c39c5a2824580c469b97f47faf6240a9c94bc4d"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-counterexamples.json",
+      "bytes": 2470,
+      "sha256": "ab36dd5059f2ee0d548959b3b7526845b064f822f0ac16d06e664e4e8718523c"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-format-check-execution.json",
+      "bytes": 1123,
+      "sha256": "b26b1edd820adb2e312f30165f9fc26567bdb8dee5065935a028dffc62adb56f"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-format-check.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-format-check.stdout.txt",
+      "bytes": 66,
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-format-write-execution.json",
+      "bytes": 1068,
+      "sha256": "20ec2afcd3e4d69d411da41ad5d2a538103878e5670ae47fbccbdcd0a0db6742"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-format-write.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-format-write.stdout.txt",
+      "bytes": 281,
+      "sha256": "fa8c79901e7ff004fa6b1e77166333d3a43f5cbbc469cbdf8a899f66377f4b0c"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-report.md",
+      "bytes": 11122,
+      "sha256": "35b1d913c4baf3bbe07d3a582ae16fd9ed76479d77841e865b89b0ec5efc5b11"
+    }
+  ],
+  "selfExcluded": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-receipt.json",
+  "selfHash": "not embedded; caller final readback supplies exact bytesSHA",
+  "evidenceBoundaries": [
+    "initial interactive combined outputs remain original transcript, no retroactive split streams",
+    "reviewer96c860 KeyError exit1 retained in bootstrap-boundaries, not candidate defect",
+    "author initial parse exit1 retained, minimal static0 does not replace it",
+    "post-author-receipt15 only root transcript f7b997; not separately inspected/reconstructed here",
+    "Git show stdout is losslessly bound by immutable object spec plus bytesSHA; no product content executed",
+    "new R2 legal WIP not read or counted as fixed R1 dirt",
+    "runtime/schema engine/full417/old383/old1241 not executed"
+  ],
+  "allRuntimeAuthorityGatesClosed": false,
+  "stageCommitPush": false,
+  "onlyReviewerPrefixCreated": true
+}

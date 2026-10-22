@@ -1,0 +1,47 @@
+{
+  "format": "i05-d2-canonical-independent-r1-declarative-counterexamples/1",
+  "evidenceClass": "synthetic design fixtures only; static membership inspection, no product or old codec executed",
+  "candidate": "eb5d4017e7dba86b568e879e34531e49d1b79920",
+  "cases": [
+    {
+      "id": "IR1-P2-01a",
+      "factPointer": "api-layouts.json#/layouts/1/selectedFacts",
+      "fixture": {
+        "selectedFacts": [
+          {
+            "triple": ["<urn:synthetic:s>", "<urn:synthetic:p>", "<urn:synthetic:o>"],
+            "sources": [
+              {
+                "kind": "asserted"
+              }
+            ]
+          }
+        ]
+      },
+      "fixtureIsActualOrGolden": false,
+      "requiredDesignPaths": [
+        "selectedFacts[*].triple",
+        "selectedFacts[*].sources",
+        "selectedFacts[*].sources[*].kind"
+      ],
+      "candidateExplicitKnownWrapperDirectory": null,
+      "candidateAvailableSourceBranch": "legacy-selected-source:asserted/kind",
+      "trigger": "even the asserted branch has a known wrapper containing both triple and sources, but the explicit bridge stops at the outer selectedFacts slot and jumps to source variants",
+      "requiredDecision": "explicitly retain both wrapper fields and their order/occurrences; unknown nested value grammar stays pending; no new source read needed"
+    },
+    {
+      "id": "IR1-P2-01b",
+      "factPointer": "api-layouts.json#/layouts/11/optionalBranch",
+      "fixture": {
+        "declaredKnownOptionalOuterName": "mutation",
+        "innerValueState": "not-specified-by-received-pure-facts"
+      },
+      "fixtureIsActualOrGolden": false,
+      "requiredDesignPaths": ["probe-production-observation.mutation (only when returned)"],
+      "candidateExplicitOptionalBranch": null,
+      "trigger": "a known mutation-branch observation adds mutation to the ordinary 13 names; the directory cannot distinguish this known variant from an arbitrary unreceived extra field",
+      "requiredDecision": "record known optional mutation entrance separately from unconditional orderedKeys; retain full actually returned branch originals, block unclosed inner layout and request its owner pure field contract; do not invent subkeys"
+    }
+  ],
+  "preservationBoundary": "The candidate already requires complete original preservation when available and blocks completeness on extras; these fixtures demonstrate inaccurate explicit-coverage claims, not observed data loss or product behavior."
+}

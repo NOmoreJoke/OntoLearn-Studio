@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "-B",
+    "-c",
+    "import json,hashlib,subprocess,sys,base64\nfrom pathlib import Path\nr=Path(\"docs/reviews/I05/d2-canonical-interface-design-r2\")\np=json.loads((r/\"independent-r2-check01.stdout.json\").read_text())\nresults=[]\nfor m in p[\"protected205\"]+p[\"new23\"]:\n a=[\"git\",\"show\",m[\"ref\"]+\":\"+m[\"path\"]]\n t=subprocess.run(a,capture_output=True)\n b=Path(m[\"path\"]).read_bytes()\n results.append({\"path\":m[\"path\"],\"ref\":m[\"ref\"],\"argv\":a,\"exit\":t.returncode,\"bytes\":len(b),\"sha256\":hashlib.sha256(b).hexdigest(),\"currentEqualsFixedGit\":b==t.stdout,\"matchesExpectedIdentity\":len(b)==m[\"bytes\"] and hashlib.sha256(b).hexdigest()==m[\"sha256\"],\"gitStdoutBytes\":len(t.stdout),\"gitStdoutSHA256\":hashlib.sha256(t.stdout).hexdigest(),\"gitStdoutImmutableRef\":m[\"ref\"]+\":\"+m[\"path\"],\"gitStderrBytes\":len(t.stderr),\"gitStderrBase64\":base64.b64encode(t.stderr).decode()})\nfailed=[x for x in results if x[\"exit\"] or not x[\"currentEqualsFixedGit\"] or not x[\"matchesExpectedIdentity\"]]\nhead=subprocess.run([\"git\",\"rev-parse\",\"HEAD\"],capture_output=True)\nstatus=subprocess.run([\"git\",\"status\",\"--short\"],capture_output=True)\nprint(json.dumps({\"format\":\"independent-r2-final-protection/1\",\"count\":len(results),\"oldCount\":205,\"newCount\":23,\"mismatches\":failed,\"observedHead\":head.stdout.decode().strip(),\"gitHeadExit\":head.returncode,\"gitHeadStderrBase64\":base64.b64encode(head.stderr).decode(),\"statusExit\":status.returncode,\"statusStdout\":status.stdout.decode(),\"statusStderrBase64\":base64.b64encode(status.stderr).decode(),\"results\":results,\"scope\":\"identity-only final check; no semantic/old-codec replay\"},ensure_ascii=False,indent=2))\nsys.exit(1 if failed else 0)"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+  "exit": 0,
+  "stdoutFile": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-final-protection.stdout.json",
+  "stderrFile": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-final-protection.stderr.txt",
+  "stdoutBytes": 200610,
+  "stderrBytes": 0,
+  "stdoutSHA256": "68a13f15807580c95f156a8eb6959004f463c50fb3f0613be1ea1a62d08d0360",
+  "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrBase64": "",
+  "rawStreamsSeparate": true,
+  "receiptOwnFormattingExcluded": "separately observed in tool transcript"
+}

@@ -1,0 +1,149 @@
+{
+  "format": "independent-r2-limited-design-seal/1",
+  "at": "2026-10-22T16:58:50.633912+00:00",
+  "result": "Limited Pass for fixed R2 document-only delta; P1=0 P2=0; original R1 Fail unchanged",
+  "fixedRefs": {
+    "old205": "6b94c152a8fca0f0e26d377b0e4d79ff4d64b8b5",
+    "old176": "0841ffbe7a4599fbea96f4ff998808f3f4e00972",
+    "candidate": "92352c581d958300d566037e5df7a1cbde660f61",
+    "process": "e2125ef17a901e70bd83b2e7d48373eba7bf6b92"
+  },
+  "candidate22PlusProcessReceipt1": 23,
+  "authorManifest": {
+    "bytes": 5339,
+    "sha256": "f6bbc95cef3d0b588739b7a332d50cf15e63d3aa0dda3736477fdbdff502a18c"
+  },
+  "authorProcessReceipt": {
+    "bytes": 81542,
+    "sha256": "b9a3246e11eee57489f46d09e82ed41e84da6136b80a0991ab8423d16a5162bd"
+  },
+  "closedPriorFindings": [
+    {
+      "id": "IR1-P2-01",
+      "scope": "R2 only",
+      "triggers": [
+        "selectedFacts[*].triple/sources with complete i/j parent-child links",
+        "known optional mutation entry with absent/present/null distinctions and unchanged ordinary13 required keys"
+      ],
+      "runtimeDataLossObserved": false
+    }
+  ],
+  "newFindings": [],
+  "actualVerification": {
+    "independentStdlibExit": 0,
+    "assertions": 2419,
+    "failures": 0,
+    "assertionCountDoesNotCertifySemanticCompleteness": true,
+    "sourceInputs13ExactIdentity": true,
+    "fullNineR2DesignsRead": true,
+    "seventeen86FieldwiseAnnotationDefaultSourceLineOrderPinMatched": true,
+    "effectiveDirectories": 64,
+    "effectiveRows": 325,
+    "remainingFrozenRows": 236,
+    "formatWriteExit": 0,
+    "formatCheckExit": 0,
+    "finalProtectionExit": 0,
+    "finalProtected228": 228,
+    "finalIdentityMismatches": [],
+    "reviewerBootstrapFailureExit": 1,
+    "bootstrapFailurePreserved": "76ed20 guessed nonexistent receipt path; no writes; original tool transcript only"
+  },
+  "outputFilesBeforeSelf": [
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-bootstrap-boundaries.json",
+      "bytes": 2151,
+      "sha256": "ab1433689805adfe0bf0bb4ca7a7884a0185eb593d1defb5c660801e89e7f61a"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-check.py",
+      "bytes": 15022,
+      "sha256": "6ecdb5c0a839761f5493d28988cc31479863cb0a149bfdf0b621b2bffa6b96ed"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-check01-execution.json",
+      "bytes": 854,
+      "sha256": "76f3e73217b6248697a521dacce7af0c4707a0090a94c4e7b9841aa56c816cce"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-check01.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-check01.stdout.json",
+      "bytes": 650604,
+      "sha256": "30a47233f789f1076af24d5229a5f0b3df3ebc13f7b1211191b07b5078c0a013"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-declarative-cases.json",
+      "bytes": 2849,
+      "sha256": "dd3133feb7650930971d007cd6d52b620d65b6b89df195c1f15c4bd276c51344"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-final-protection-execution.json",
+      "bytes": 2536,
+      "sha256": "074862353b7efc4fedf8472d9a6e29c04612d301b6f0e08afe5405d47bb8daae"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-final-protection.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-final-protection.stdout.json",
+      "bytes": 200610,
+      "sha256": "68a13f15807580c95f156a8eb6959004f463c50fb3f0613be1ea1a62d08d0360"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-format-check-execution.json",
+      "bytes": 1293,
+      "sha256": "47d621a7966ba5e45c128d358c9a9977d7dddec1a45c3510212ff938b94e554a"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-format-check.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-format-check.stdout.txt",
+      "bytes": 66,
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-format-write-execution.json",
+      "bytes": 1593,
+      "sha256": "fc0be25c3bcb4751c4901552740ff09b8ae638955bb693589e73d3de5b59fc35"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-format-write.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-format-write.stdout.txt",
+      "bytes": 372,
+      "sha256": "b40543c630bafdbb40d70d2743deafb82b9df782e4d130f41e0903a097316a13"
+    },
+    {
+      "path": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-report.md",
+      "bytes": 11566,
+      "sha256": "9d1026c9cb505b84f8d67ed3768bcc9596ed27d75f775be77c2927b356c6313a"
+    }
+  ],
+  "selfExcluded": "docs/reviews/I05/d2-canonical-interface-design-r2/independent-r2-receipt.json",
+  "selfHash": "not embedded; parent final readback supplies exact bytesSHA",
+  "protectedIdentityFinalObservedHead": "e2125ef17a901e70bd83b2e7d48373eba7bf6b92",
+  "limitations": [
+    "Initial direct read-only tool outputs were not separately persisted; no reconstructed fake streams",
+    "Large initial display clips recovered through smaller source intervals; full JSON also independently parsed",
+    "All Git blob stdout bound by exact immutable ref:path and sizeSHA; independent Git stderr base64 retained; top-level proof stdout/stderr separately preserved",
+    "No product/legacy codec/model/source-index/method/algorithm/resource/actual/expected/probe_inputs/policy body/retained peer content read or executed",
+    "No old103/383/949/1241/417, pytest/npm/build/package/install/network/DB/native/GUI/Goal execution",
+    "Final receipt formatting and its check occur after self inventory and are observed only in tool transcript; no recursive command receipt",
+    "No adoption/runtime/source/issuer/capture17L/wholeH/SQLiteHOLD/twoOS/human/CI/develop authority certified"
+  ],
+  "stageCommitPush": false,
+  "indexHeadWrites": false,
+  "originalInputsEdited": false,
+  "memoryUsed": false
+}

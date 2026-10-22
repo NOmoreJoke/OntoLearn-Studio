@@ -1,0 +1,90 @@
+{
+  "format": "independent-r2-declarative-cases/1",
+  "scope": "synthetic document obligations only; no actual/expected/product input or legacy validation decision",
+  "selectedFacts": {
+    "selectedFacts": [
+      {
+        "triple": ["synthetic-s0", "synthetic-p0", "synthetic-o0"],
+        "sources": [
+          {
+            "kind": "asserted"
+          },
+          {
+            "kind": "rdfs",
+            "basis": ["synthetic-b", "synthetic-b"]
+          },
+          {
+            "kind": "rule",
+            "rule": "synthetic-rule",
+            "inputs": ["synthetic-input", null, false],
+            "basis": ["synthetic-tail"]
+          },
+          {
+            "kind": "asserted"
+          }
+        ]
+      },
+      {
+        "triple": ["synthetic-s0", "synthetic-p0", "synthetic-o0"],
+        "sources": [
+          {
+            "kind": "rule",
+            "rule": "synthetic-rule2",
+            "inputs": [false, false],
+            "basis": ["synthetic-end"]
+          },
+          {
+            "kind": "rdfs",
+            "basis": ["synthetic-last"]
+          }
+        ]
+      }
+    ]
+  },
+  "selectedObligations": [
+    "Both wrappers each need triple and sources mapped, even repeated identical triples",
+    "All six source occurrences retain original order and all keys/values; assert/rdfs/rule need explicit parent i,j linkage",
+    "The second wrapper and its last source cannot be dropped on a count-only success",
+    "inputs/basis values remain unknown-inner; synthetic null/false are preservation markers, not original grammar acceptance"
+  ],
+  "mutationFragments": [
+    {
+      "presence": "absent",
+      "value": {}
+    },
+    {
+      "presence": "present",
+      "value": {
+        "mutation": null
+      }
+    },
+    {
+      "presence": "present",
+      "value": {
+        "mutation": {
+          "syntheticUnknownInner": [false, null, "synthetic-tail"]
+        }
+      }
+    }
+  ],
+  "mutationObligations": [
+    "No absent->null default; no present-null->absent collapse",
+    "Preserve complete present original value without guessed inner keys or accept/reject expectation",
+    "Ordinary thirteen required keys remain frozen; these fragments are not complete observations"
+  ],
+  "metadataMutants": [
+    "86-count-preserving duplicate-first/drop-last",
+    "change default literal None to JSON null",
+    "change str to invented enum",
+    "swap source order while keeping count",
+    "alter sourceLine or pureFactPointer"
+  ],
+  "transitivePendingPaths": [
+    "ProfileValue.value:object",
+    "ComparisonEvidence.left/right->ProfileValue.value",
+    "PreparedFiring.comparisons[*]->ComparisonEvidence.left/right->ProfileValue.value",
+    "PreparedFiringBatch.firings[*]->PreparedFiring.comparisons[*]->ProfileValue.value"
+  ],
+  "runtimeCasesExecuted": 0,
+  "productLegalExpectedInvented": false
+}
