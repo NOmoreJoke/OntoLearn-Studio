@@ -21,6 +21,7 @@ SELF = STAGE / 'run-once.py'
 PLAN = STAGE / 'call-plan.json'
 METER_PLAN = STAGE / 'meter-plan.json'
 HISTORY = STAGE / 'meter-history.json'
+REVIEW_METHOD = STAGE / 'meter-remedy-after-controller-review/review-methods/method-plan.json'
 AUTH = Path('/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T03-metadata-contract-probe-one-build-authorization.json')
 PINS = STAGE / 'approved-identity-pins.json'
 SOURCE = STAGE / 'inputs/location_metadata_contract_probe.cc.raw'
@@ -31,8 +32,7 @@ SDK = '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Deve
 INTERPRETER_REAL = '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9'
 OUT_BASE = WORKSPACE / 'build/native-location/metadata-contract-probe/darwin-arm64'
 CAP = 16 * 1024 * 1024
-IDENTITY_CAP = 144 * 1024 * 1024
-EVIDENCE_CAP = 48 * 1024 * 1024
+PREPARED_IDENTITY_CAP = 144 * 1024 * 1024
 PRIOR_USED = WORKSPACE / 'docs/reviews/T03/native-location-N0-build/host-core-build/sixth-acl-remedy-input-build/used-dependencies.json'
 PRIOR_USED_SHA = 'c7a1c91c0d6cbb0e9f1daf087c79413c65973d5cc2c128b03a22c2196b2d3357'
 CANCELLED = False
@@ -56,7 +56,7 @@ class MeterLimit(Stop):
 
 
 class PhaseMeter:
-    LIMIT = 96000
+    LIMIT = 146000
 
     def __init__(self):
         self.reserved = 3000  # Emergency is reserved before any input access.
@@ -73,7 +73,7 @@ class PhaseMeter:
     def enter(self, phase):
         if phase == 'preflight':
             if not self.prepaid_pre:
-                self.reserved += 20000
+                self.reserved += 22000
                 self.prepaid_pre = True
         elif phase == 'dependency':
             if not self.prepaid_dep:
@@ -81,7 +81,7 @@ class PhaseMeter:
                 self.prepaid_dep = True
         elif phase == 'control':
             if not self.prepaid_ctl:
-                self.reserved += 12000
+                self.reserved += 60000
                 self.prepaid_ctl = True
         elif phase != 'emergency':
             raise MeterLimit('unknown-meter-phase')
@@ -94,7 +94,7 @@ class PhaseMeter:
             raise MeterLimit('invalid-meter-debit')
         # Only fixed scalar fields: no iteration of records or meter history.
         if self.active == 'preflight':
-            if units > 20000 - self.pre_used:
+            if units > 22000 - self.pre_used:
                 raise MeterLimit('preflight-work-bound')
             self.pre_used += units
         elif self.active == 'dependency':
@@ -102,7 +102,7 @@ class PhaseMeter:
                 raise MeterLimit('dependency-work-bound')
             self.dep_used += units
         elif self.active == 'control':
-            if units > 12000 - self.ctl_used:
+            if units > 60000 - self.ctl_used:
                 raise MeterLimit('control-work-bound')
             self.ctl_used += units
         elif self.active == 'emergency':
@@ -132,11 +132,12 @@ class CaptureBytes:
     def __init__(self):
         self.captured_bytes = 0
         self.select_calls = 0
+        self.loop_checks = 0
 
 
 class ByteMeter:
-    # Runtime owner 40MiB; separate external owner closure 24MiB is not callable
-    # by this helper. Together 64MiB; author/root each have separate 32MiB.
+    # Runtime40MiB, independent owner closure52MiB, each peer36MiB.
+    # Total164MiB proposal; none is borrowed from historical preparation.
     def __init__(self):
         self.inputs = 0
         self.outputs = 0
@@ -475,8 +476,8 @@ def identity_preflight(authorization, pin_raw, pin_document):
         else:
             unique[key] = sha
             payload_sum += size
-    demand(payload_sum + 20278 + 65536 + 2097152 <= IDENTITY_CAP, 'prepared-identity-ticket-insufficient')
-    demand(authorization['identityReadCapBytes'] == IDENTITY_CAP, 'identity-authority-cap')
+    demand(payload_sum + 20278 + 65536 + 2097152 <= PREPARED_IDENTITY_CAP, 'prepared-identity-ticket-insufficient')
+    demand(authorization['preparedIdentityHistoricalCapBytes'] == PREPARED_IDENTITY_CAP, 'identity-authority-cap')
     demand(authorization['reusePreparedIdentityHashesMetadataOnly'] is True, 'prepared-hash-reuse-not-accepted')
     demand(pin_document['payloadHashesPerformedInPreparation'] is True, 'prepared-hashes-missing')
     demand(pin_document['payloadHashRepeatPermitted'] is False, 'identity-ticket-must-not-reset')
@@ -525,20 +526,21 @@ def capture(argv, env, output, number, label, seconds, ledger):
     global CANCELLED
     METER.enter('control')
     BYTE_METER.reserve(CAP, 'capture')
-    METER.work(48)  # Fixed command construction, descriptors and final cleanup.
+    METER.work(48)  # Original fixed command fields.
+    METER.work(1024)  # Kqueue construction/register/rollback/unregister/close.
     stem = '%02d-%s' % (number, label)
     stdout = output / (stem + '.stdout')
     stderr = output / (stem + '.stderr')
     record = {'index': number, 'label': label, 'argv': argv, 'cwd': str(output), 'environment': env,
               'stdout': str(stdout), 'stderr': str(stderr), 'captureRemainingAtStart': RAW_CAPTURE_CAP - ledger.captured_bytes,
-              'timeoutSeconds': seconds, 'phase': 'planned', 'dispatchAttempted': False, 'pid': None,
+              'timeoutSeconds': seconds, 'selectorBackend': 'KqueueSelector', 'phase': 'planned', 'dispatchAttempted': False, 'pid': None,
               'leaderReturnCode': None, 'firstFailure': None, 'ownedLeaderControl': [],
               'captureEOF': {'stdout': False, 'stderr': False}, 'descendantDrain': 'UNKNOWN_NOT_MEASURED'}
     write_json(output / (stem + '.planned.json'), record)
     fds = {}
     pipes = {}
     process = None
-    sel = selectors.DefaultSelector()
+    sel = selectors.KqueueSelector()  # Fixed Darwin backend; no fallback/probe.
     started = time.monotonic()
     try:
         for name, path in [('stdout', stdout), ('stderr', stderr)]:
@@ -560,7 +562,12 @@ def capture(argv, env, output, number, label, seconds, ledger):
             os.set_blocking(pipe.fileno(), False)
             sel.register(pipe, selectors.EVENT_READ, name)
         deadline = started + seconds
-        while sel.get_map() or process.poll() is None:
+        while True:
+            demand(ledger.loop_checks < 134, 'selector-loop-check-cap-incomplete')
+            METER.work(16)  # Before get_map/bool/len and leader-state condition.
+            ledger.loop_checks += 1
+            if not (sel.get_map() or process.poll() is None):
+                break
             if CANCELLED:
                 raise Stop('cancelled')
             if time.monotonic() >= deadline:
@@ -569,7 +576,7 @@ def capture(argv, env, output, number, label, seconds, ledger):
             # Only stdout/stderr are registered: at most two returned events.
             # Pay before native collection creation, including an empty wakeup.
             demand(ledger.select_calls < 128, 'select-call-cap-incomplete')
-            METER.work(8)
+            METER.work(256)  # Backend + <=2 complete caller/event paths.
             ledger.select_calls += 1
             for key, events in sel.select(min(0.1, max(0.0, deadline - time.monotonic()))):
                 remaining = RAW_CAPTURE_CAP - ledger.captured_bytes
@@ -621,6 +628,7 @@ def capture(argv, env, output, number, label, seconds, ledger):
         record['elapsedSeconds'] = time.monotonic() - started
         record['captureCombinedBytesAfter'] = ledger.captured_bytes
         record['selectCallsCombinedAfter'] = ledger.select_calls
+        record['selectorLoopChecksCombinedAfter'] = ledger.loop_checks
         record['outputComplete'] = record['phase'] == 'completed'
         # Failure to persist terminal leaves earlier exclusive intent as evidence;
         # it never authorizes redispatch or directory reuse.
@@ -841,19 +849,24 @@ def main():
         demand(auth['schema'] == 'T03_METADATA_PROBE_BUILD_AUTH_V1' and auth['authorized'] is True, 'no-build-authority')
         demand(auth['scope'] == 'ONE_COMPILE_AND_FIVE_STATIC_CHECKS_NO_EXPERIMENT_EXECUTION', 'wrong-authority-scope')
         demand(auth['sourceRef'] == SOURCE_REF and auth['sourceSHA256'] == SOURCE_SHA, 'source-authority')
-        demand(auth['identityReallocationAccepted'] is True and auth['evidenceReadCapBytes'] == EVIDENCE_CAP, 'budget-authority')
         meter_raw = bounded_read(METER_PLAN, 32768)
         history_raw = bounded_read(HISTORY, 16384)
         demand(digest(meter_raw) == auth['meterPlanSHA256'] and digest(history_raw) == auth['historyLedgerSHA256'], 'meter-history-authority')
         meter_plan = decode_metadata(meter_raw, 256)
         history = decode_metadata(history_raw, 128)
-        proof_raw = bounded_read(STAGE / 'meter-preparation/meter-proof.md', 32768)
+        proof_raw = bounded_read(STAGE / 'meter-remedy-after-controller-review/meter-proof.md', 32768)
         demand(digest(proof_raw) == meter_plan['proofSHA256'] == auth['countingProofSHA256'], 'counting-proof-authority')
-        demand(meter_plan['runtimeMetadataReserved'] == 96000 and meter_plan['futureAllPartiesMetadataProposal'] == 176000, 'fixed-runtime-ticket')
-        demand(auth['runtimeMetadataReserved'] == 96000 and auth['freshFutureAllPartiesMetadataAccepted'] == 176000, 'fresh-runtime-ticket-not-accepted')
+        method_raw = bounded_read(REVIEW_METHOD, 32768)
+        demand(digest(method_raw) == meter_plan['reviewMethodPlanSHA256'] == auth['reviewMethodPlanSHA256'], 'review-method-authority')
+        method = decode_metadata(method_raw, 256)
+        METER.work(128)  # Method/joint/byte/entity profile scalar validation.
+        demand(method['ownerMetadata'] == 48000 and method['peerMetadataEach'] == 102000, 'external-method-tickets')
+        demand(meter_plan['runtimeMetadataReserved'] == 146000 and meter_plan['futureAllPartiesMetadataProposal'] == 398000, 'fixed-runtime-ticket')
+        demand(auth['runtimeMetadataReserved'] == 146000 and auth['freshFutureAllPartiesMetadataAccepted'] == 398000, 'fresh-runtime-ticket-not-accepted')
         demand(meter_plan['futureAllPartiesMetadataProposal'] <= history['currentMetadataRemaining'], 'joint-future-ticket-does-not-fit-declared-remainder')
-        demand(meter_plan['futureEntityProposal'] == 4096 and auth['freshFutureEntityAccepted'] == 4096, 'fresh-entity-ticket-not-accepted')
-        demand(auth['freshFutureByteProposalAccepted'] == 134217728 and auth['runtimeOwnerBytes'] == 41943040, 'fresh-byte-ticket-not-accepted')
+        demand(meter_plan['futureEntityProposal'] == 57344 and auth['freshFutureEntityAccepted'] == 57344, 'fresh-entity-ticket-not-accepted')
+        demand(auth['ownerClosureMetadataAccepted'] == 48000 and auth['peerMetadataEachAccepted'] == 102000, 'joint-component-authority')
+        demand(auth['freshFutureByteProposalAccepted'] == 171966464 and auth['runtimeOwnerBytes'] == 41943040, 'fresh-byte-ticket-not-accepted')
         demand(history['historicalOwnerActual'] is None and history['oldOwner1000Reusable'] is False and history['oldRoot4000Reusable'] is False, 'historical-unknown-must-remain')
         demand(auth['dependencyMode'] == 'CAPTURE_REUSE_PINNED_WITNESS_AND_DEFER_UNKNOWN_NO_INDEX_READ', 'dependency-method-not-accepted')
         plan_raw = bounded_read(PLAN, 65536)

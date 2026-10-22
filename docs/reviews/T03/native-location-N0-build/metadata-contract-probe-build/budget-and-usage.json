@@ -65,7 +65,7 @@
   "compilerRunnerExperimentCalls": 0,
   "metadataGuardOrEntityGuardIncreased": false,
   "withdrawnUniqueBasedFuturePreflightEstimate": 512,
-  "futurePreflightActualUpperBound": "20000 PHASE RESERVATION; sufficiency proof meter-preparation/meter-proof.md, not actual count",
+  "futurePreflightActualUpperBound": "20292 semantic fee proof /22000 phase, not actual",
   "knownExplicitFuturePreflightPartialVisits": 583,
   "withdrawnForwardPreflightOriginalTicketGapEstimate": 512,
   "knownExplicitDependencyPartialVisitsAtIndividualCaps": 8055,
@@ -103,15 +103,15 @@
     "entityRemaining": 78544
   },
   "rootAllocatedCumulative": {
-    "buildDeclarationBytes": 109027642408,
+    "buildDeclarationBytes": 109042322472,
     "buildGuardBytes": 137438953472,
-    "buildRemainingBytes": 28411311064,
-    "combinedDeclarationBytes": 118773369493,
+    "buildRemainingBytes": 28396631000,
+    "combinedDeclarationBytes": 118788049557,
     "combinedGuardBytes": 147184680557,
     "oldSupplySeparateBytes": 9745727085,
-    "metadataDeclaration": 2145263,
-    "metadataGuard": 2250000,
-    "metadataRemaining": 104737,
+    "metadataDeclaration": 2201263,
+    "metadataGuard": 2600000,
+    "metadataRemaining": 398737,
     "entityConservative": 521456,
     "entityGuard": 600000,
     "entityRemaining": 78544
@@ -150,7 +150,62 @@
     "entityRemainingIfAccepted": 78032,
     "status": "WITHDRAWN_NO_COMPLETE_JOINT_PROOF"
   },
-  "freshFutureProposalNotApplied": {
+  "currentAuthorPreparationAnomaly": {
+    "fullActual": null,
+    "retainedTickets": {
+      "witness": 4600,
+      "delta": 1100,
+      "report": 300
+    },
+    "twoKnownLibraryTraversalsMinimum": 5280,
+    "witnessSubticketExcessAtLeast": 680,
+    "otherWitnessVisits": "UNKNOWN_NOT_ZERO",
+    "author6000NotProvenUpper": true,
+    "knownAuthorFileReadsIncludingReport": 3336739,
+    "conservativeAuthorBytesWithReportWrite": 3348536,
+    "authorByteCap": 4194304,
+    "noBorrowNoRefundNoRetroactiveAuthorization": true,
+    "ownerAdvised4600AndAcknowledgesInsufficientProof": true
+  },
+  "rootAllocatedCumulativeBeforeRemedy": {
+    "buildDeclarationBytes": 109027642408,
+    "buildGuardBytes": 137438953472,
+    "buildRemainingBytes": 28411311064,
+    "combinedDeclarationBytes": 118773369493,
+    "combinedGuardBytes": 147184680557,
+    "oldSupplySeparateBytes": 9745727085,
+    "metadataDeclaration": 2145263,
+    "metadataGuard": 2250000,
+    "metadataRemaining": 104737,
+    "entityConservative": 521456,
+    "entityGuard": 600000,
+    "entityRemaining": 78544
+  },
+  "forwardLogicalGuardAmendment": {
+    "previous": 2250000,
+    "new": 2600000,
+    "explicitRootSHA256": "1703de056754a40a474c7d0761e4dd67c609409539c91f4111e90c3bb042a9ac",
+    "physicalProtectionsChanged": false,
+    "historicalViolationsRetroactivelyAuthorized": false
+  },
+  "historicalUnknownIsolation": {
+    "retained": 24000,
+    "actual": null,
+    "isProvenHistoricalUpper": false,
+    "futureBorrowable": false
+  },
+  "currentRemedyStaticPreparation": {
+    "metadata": 24000,
+    "owner": 12000,
+    "newAuthor": 8000,
+    "rootSeparate": 4000,
+    "readBytes": 12582912,
+    "ownerReadBytes": 6291456,
+    "authorReadBytes": 4194304,
+    "rootReadBytes": 2097152,
+    "appliedExactlyOnceByRoot": true
+  },
+  "withdrawn176000Proposal": {
     "bytes": 134217728,
     "ownerBytes": 67108864,
     "authorBytes": 33554432,
@@ -174,21 +229,28 @@
     "entityRemainingIfAccepted": 74448,
     "status": "NOT_APPLIED_METADATA_PROPOSAL_EXCEEDS_GUARD; CURRENT_PREPARATION_UNKNOWN_ADDITIONAL"
   },
-  "currentAuthorPreparationAnomaly": {
-    "fullActual": null,
-    "retainedTickets": {
-      "witness": 4600,
-      "delta": 1100,
-      "report": 300
-    },
-    "twoKnownLibraryTraversalsMinimum": 5280,
-    "witnessSubticketExcessAtLeast": 680,
-    "otherWitnessVisits": "UNKNOWN_NOT_ZERO",
-    "author6000NotProvenUpper": true,
-    "knownAuthorFileReadsIncludingReport": 3336739,
-    "conservativeAuthorBytesWithReportWrite": 3348536,
-    "authorByteCap": 4194304,
-    "noBorrowNoRefundNoRetroactiveAuthorization": true,
-    "ownerAdvised4600AndAcknowledgesInsufficientProof": true
-  }
+  "freshFutureProposalNotApplied": {
+    "metadata": 398000,
+    "runtime": 146000,
+    "ownerClosure": 48000,
+    "peerA": 102000,
+    "peerB": 102000,
+    "bytes": 171966464,
+    "runtimeBytes": 41943040,
+    "ownerClosureBytes": 54525952,
+    "peerBytesEach": 37748736,
+    "entities": 57344,
+    "wideEntityCandidateUpper": 54014,
+    "metadataIfAccepted": 2599263,
+    "metadataRemainingIfAccepted": 737,
+    "buildIfAccepted": 109214288936,
+    "buildRemainingIfAccepted": 28224664536,
+    "combinedIfAccepted": 118960016021,
+    "entitiesIfAccepted": 578800,
+    "entityRemainingIfAccepted": 21200,
+    "status": "PROPOSAL_ONLY_NOT_ADDED_NO_EXECUTION_AUTH"
+  },
+  "futureControlUpperBound": 51690,
+  "futureOwnerClosureUpperBound": 46576,
+  "futurePeerUpperBoundEach": 101520
 }
