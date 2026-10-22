@@ -12,6 +12,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { execFileSync, spawnSync } from 'node:child_process'
 import {
+  APPROVED_MODEL,
   compareComplete,
   compareProductComplete,
   DEVICE_CHECKS,
@@ -175,10 +176,15 @@ function fixture(
     baselineSha256: baseline.sha256,
     expectedResults: {},
     recoverySnapshotSha256: '0'.repeat(64),
+    recoveryComparisonCase: 'g6-conflict',
+    migrationComparisonCases: { 'windows11-x64': 'g6-conflict', 'macos15-arm64': 'g6-conflict' },
     migrationSnapshotSha256: { 'windows11-x64': '0'.repeat(64), 'macos15-arm64': '0'.repeat(64) },
     previousAssets: [],
     now: profile.now,
     candidateFrozenAt: profile.frozenAt,
+    modelEndpoint: APPROVED_MODEL.endpoint,
+    requestedModel: APPROVED_MODEL.requestedModel,
+    modelDecisionSha256: APPROVED_MODEL.decisionSha256,
     modelMode: 'thinking' as const,
     evaluationSha256: '',
     returnedModel: 'synthetic-model',
@@ -211,6 +217,25 @@ function fixture(
     const file = put(binary)
 
     const r = (ids: string[]) => report(ids, file.sha256)
+    const collectorStatus = put({
+      schemaVersion: 1,
+      status: 'complete',
+      step: 'complete',
+      exitCode: 0,
+    })
+    const packageSource = put({
+      packageSha256: file.sha256,
+      inventory: raw,
+      app: raw,
+      engine: raw,
+      method: 'extracted',
+      provenance: raw,
+    })
+    const deviceReport = r(DEVICE_CHECKS)
+    for (const c of deviceReport.checks) {
+      if (c.id === 'collector-complete') c.expected = c.actual = collectorStatus
+      if (c.id === 'installed-components-match-package') c.expected = c.actual = packageSource
+    }
     return {
       target,
       appVersion: profile.version,
@@ -260,7 +285,8 @@ function fixture(
         nodeInstalled: false,
         pythonInstalled: false,
         dockerRequired: false,
-        report: r(DEVICE_CHECKS),
+        collectorStatus,
+        report: deviceReport,
       },
       download: {
         url: `https://example.invalid/${target}`,
@@ -335,7 +361,8 @@ function fixture(
       }),
     },
     model: {
-      endpoint: 'https://api.deepseek.com/chat/completions',
+      endpoint: APPROVED_MODEL.endpoint,
+      decisionSha256: APPROVED_MODEL.decisionSha256,
       requestedModel: 'deepseek-v4-pro',
       returnedModel: 'synthetic-model',
       serviceVersion: 'synthetic-1',
@@ -401,6 +428,8 @@ function fixture(
                 'previous-signature',
                 'rollback-format-compatible',
                 'rollback-install',
+                'rollback-retain-new-version-copy',
+                'rollback-refuse-incompatible-format',
               ],
               oldFile.sha256,
             ),
@@ -611,6 +640,188 @@ describe('T11 evidence consistency (all fixtures are synthetic)', () => {
     expect(result.consistent).toBe(false)
     expect(result.issues).toContain('PRODUCT_RESULT')
   })
+  it('permits empty generic query/definition layers while retaining carried facts and ownership', () => {
+    const { root, m, expected, put } = fixture()
+    const current = JSON.parse(readFileSync(join(root, m.recovery.backup.path), 'utf8'))
+    current.comparisonCase = 'current-state'
+    for (const field of ['definitions', 'mappingState', 'queries', 'results']) current[field] = []
+    m.recovery.backup = m.recovery.restored = put(current)
+    expected.recoverySnapshotSha256 = m.recovery.backup.sha256
+    expected.recoveryComparisonCase = 'current-state'
+    expect(verifyManifest(m, root, expected).issues).toEqual([])
+  })
+  it.each(['facts', 'ownership'])(
+    'refuses a template as current recovery even with both pins updated: %s',
+    (field) => {
+      const { root, m, expected, put } = fixture()
+      const current = JSON.parse(readFileSync(join(root, m.recovery.backup.path), 'utf8'))
+      current.comparisonCase = 'current-state'
+      current[field] = []
+      m.recovery.backup = m.recovery.restored = put(current)
+      expected.recoverySnapshotSha256 = m.recovery.backup.sha256
+      expected.recoveryComparisonCase = 'current-state'
+      expect(verifyManifest(m, root, expected).issues).toContain('RECOVERY_BACKUP_SCHEMA')
+    },
+  )
+  it.each(['facts', 'definitions', 'ownership', 'mappingState', 'queries', 'results'])(
+    'keeps every G.6 layer nonempty in both directions: %s',
+    (field) => {
+      const { root, m, expected, put } = fixture()
+      for (const x of m.migration) {
+        const current = JSON.parse(readFileSync(join(root, x.before.path), 'utf8'))
+        current[field] = []
+        x.before = x.after = put(current)
+        expected.migrationSnapshotSha256[x.from] = x.before.sha256
+      }
+      const issues = verifyManifest(m, root, expected).issues
+      expect(issues).toContain('MIGRATION_BEFORE_SCHEMA')
+      expect(issues).toContain('MIGRATION_AFTER_SCHEMA')
+    },
+  )
+  it('rejects migration case downgrade even if source snapshots and both case pins are changed', () => {
+    const { root, m, expected, put } = fixture()
+    const current = JSON.parse(readFileSync(join(root, m.migration[0].before.path), 'utf8'))
+    current.comparisonCase = 'current-state'
+    m.migration[0].before = m.migration[0].after = put(current)
+    expected.migrationSnapshotSha256['windows11-x64'] = m.migration[0].before.sha256
+    expect(verifyManifest(m, root, expected).issues).toContain('MIGRATION_BEFORE_CASE')
+    const badFreeze = structuredClone(expected) as unknown as {
+      migrationComparisonCases: Record<string, string>
+    }
+    badFreeze.migrationComparisonCases['windows11-x64'] = 'current-state'
+    expect(verifyManifest(m, root, badFreeze as unknown as Expected).issues).toEqual([
+      'EXPECTED_IDENTITY',
+    ])
+  })
+  it.each(['t11-comparison-v2', 't11-comparison-v1'])(
+    'does not convert historical comparison format %s',
+    (format) => {
+      const { root, m, expected, put } = fixture()
+      const current = JSON.parse(readFileSync(join(root, m.recovery.backup.path), 'utf8'))
+      current.format = format
+      m.recovery.restored = put(current)
+      expect(verifyManifest(m, root, expected).issues).toContain('RECOVERY_RESTORED_SCHEMA')
+    },
+  )
+  it('rejects an approved-case drift between before and after even when payload is otherwise equal', () => {
+    const { root, m, expected, put } = fixture()
+    const current = JSON.parse(readFileSync(join(root, m.recovery.backup.path), 'utf8'))
+    current.comparisonCase = 'current-state'
+    m.recovery.restored = put(current)
+    expect(verifyManifest(m, root, expected).issues).toEqual(
+      expect.arrayContaining(['RECOVERY_RESTORED_CASE', 'RECOVERY_DATA']),
+    )
+  })
+  it.each(['modelEndpoint', 'requestedModel', 'modelDecisionSha256'] as const)(
+    'requires independent service pin %s',
+    (field) => {
+      const { root, m, expected } = fixture()
+      const missing = { ...expected }
+      delete (missing as Partial<Expected>)[field]
+      expect(verifyManifest(m, root, missing).issues).toEqual(['EXPECTED_IDENTITY'])
+    },
+  )
+  it('rejects arbitrary service tuples even if the actual and freeze agree', () => {
+    const { root, m, expected } = fixture()
+    m.model.endpoint = expected.modelEndpoint =
+      'https://unapproved.example.invalid/chat/completions'
+    m.model.requestedModel = expected.requestedModel = 'unapproved-model'
+    expect(verifyManifest(m, root, expected).issues).toContain('MODEL_PROFILE_DRIFT')
+  })
+  it('rejects the Base URL in a field explicitly defined as the Chat Completions route', () => {
+    const { root, m, expected } = fixture()
+    m.model.endpoint = expected.modelEndpoint = 'https://api.deepseek.com'
+    expect(verifyManifest(m, root, expected).issues).toContain('MODEL_PROFILE_DRIFT')
+  })
+  it.each(['pending', 'failed', 'missing', 'malformed'])(
+    'rejects incomplete collector state: %s',
+    (status) => {
+      const { root, m, expected, put } = fixture()
+      const d = m.artifacts[0].device
+      if (status === 'missing') rmSync(join(root, d.collectorStatus.path))
+      else
+        d.collectorStatus = put(
+          status === 'malformed'
+            ? { status: 'complete' }
+            : { schemaVersion: 1, status, step: 'signature', exitCode: 1 },
+        )
+      expect(verifyManifest(m, root, expected).issues).toContain('WIN_COLLECTOR_INCOMPLETE')
+    },
+  )
+  it.each(['collector-complete', 'installed-components-match-package'])(
+    'requires device evidence %s',
+    (id) => {
+      const { root, m, expected } = fixture()
+      m.artifacts[0].device.report.checks = m.artifacts[0].device.report.checks.filter(
+        (c) => c.id !== id,
+      )
+      expect(verifyManifest(m, root, expected).issues).toContain('WIN_DEVICE_COVERAGE')
+    },
+  )
+  it('rejects package-source drift despite an unchanged complete marker', () => {
+    const { root, m, expected, put } = fixture()
+    const c = m.artifacts[0].device.report.checks.find(
+      (c) => c.id === 'installed-components-match-package',
+    )!
+    const payload = JSON.parse(readFileSync(join(root, c.actual.path), 'utf8'))
+    payload.packageSha256 = '0'.repeat(64)
+    c.actual = put(payload)
+    expect(verifyManifest(m, root, expected).issues).toContain('WIN_PACKAGE_SOURCE')
+  })
+  it.each(['rollback-retain-new-version-copy', 'rollback-refuse-incompatible-format'])(
+    'requires explicit recovery and per-asset rollback evidence %s',
+    (id) => {
+      const { root, m, expected } = fixture()
+      m.recovery.report.checks = m.recovery.report.checks.filter((c) => c.id !== id)
+      m.recovery.rollbackInstallers[0].signature.report.checks =
+        m.recovery.rollbackInstallers[0].signature.report.checks.filter((c) => c.id !== id)
+      expect(verifyManifest(m, root, expected).issues).toEqual(
+        expect.arrayContaining(['RECOVERY_COVERAGE', 'ROLLBACK_windows11-x64_COVERAGE']),
+      )
+    },
+  )
+  it('retains eight-step completion at 4/5 and rejects 3/5 or core/transfer contradictions', () => {
+    const { root, m, expected } = fixture()
+    expect(verifyManifest(m, root, expected).issues).toEqual([])
+    m.users[3].coreCompleted = false
+    expect(verifyManifest(m, root, expected).issues).toContain('USER_COMPLETION_RATE')
+    m.users[0].transferCompleted = false
+    expect(verifyManifest(m, root, expected).issues).toContain('USER_CORE_TRANSFER_CONTRADICTION')
+  })
+  it('counts product guidance for operation completion but records it separately from independence', () => {
+    const { root, m, expected } = fixture()
+    m.users[0].assistance = 'product-hints'
+    m.users[0].transferIndependent = false
+    expect(verifyManifest(m, root, expected).issues).toEqual([])
+    m.users[0].transferIndependent = true
+    expect(verifyManifest(m, root, expected).issues).toContain('USER_ASSISTANCE')
+    m.users[0].assistance = 'agent-full'
+    expect(verifyManifest(m, root, expected).issues).toContain('USER_ASSISTANCE')
+  })
+  it('refuses unapproved production profiles even when both manifest and freeze pin the same bytes', () => {
+    const { root, m, expected } = fixture()
+    m.mode = 'evidence'
+    expect(verifyManifest(m, root, expected).issues).toContain('BASELINE_APPROVED_PROFILE')
+  })
+  it.runIf(fixedBaselineProbe)(
+    'enforces the approved 17-path production profile/version/hash independently of the freeze',
+    () => {
+      const { root, m, expected, put } = fixture({ fixedBaseline: true })
+      m.mode = 'evidence'
+      expect(verifyManifest(m, root, expected).issues).not.toContain('BASELINE_APPROVED_PROFILE')
+      const original = JSON.parse(readFileSync(join(root, m.baseline.path), 'utf8'))
+      for (const mutation of ['missing', 'extra', 'version']) {
+        const value = structuredClone(original)
+        if (mutation === 'missing') delete value.files['content/learning/checks.json']
+        if (mutation === 'extra')
+          value.files['unapproved.json'] = put('unapproved', 'unapproved.json').sha256
+        if (mutation === 'version') value.version = 'unapproved-version'
+        m.baseline = put(value, 'tests/fixtures/product-baselines/manifest.json')
+        expected.baselineSha256 = m.baseline.sha256
+        expect(verifyManifest(m, root, expected).issues).toContain('BASELINE_APPROVED_PROFILE')
+      }
+    },
+  )
   const negatives: [string, (m: Manifest) => void, string][] = [
     [
       'missing signature',

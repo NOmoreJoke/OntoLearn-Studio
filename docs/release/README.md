@@ -12,7 +12,7 @@ T11 的版本化证据工具入口是 `scripts/release/verify-release.mjs`；它
 node scripts/release/verify-release.mjs MANIFEST.json EVIDENCE_ROOT TRUSTED_FREEZE.json
 ```
 
-TRUSTED_FREEZE.json 必须从总控冻结候选独立取得，不能从待检清单复制作为信任依据。字段为 candidateSha、prdSha256、baselineSha256、candidateFrozenAt、modelMode、evaluationSha256、returnedModel、serviceVersion、recoverySnapshotSha256、migrationSnapshotSha256、previousAssets、expectedResults；不填 now，CLI使用当前时间。冻结时刻、模型/评估版本、恢复/双向迁移源快照、上一版双平台版本/源码/资产哈希和每项预期结果哈希都由外部pin约束，不能自填两边相同假数据绕过重验。所有 source/candidate/reviewed/build/report SHA 必须与该候选一致，报告时间在冻结之后且不在未来；任何实现、配置、依赖、验收、基线或模型变化都按原规则重验。测试模式 `synthetic` 的 CLI 总是退出 1；`evidence` 一致时退出 0，也不授予发布权限；不一致退出 1，无法读取或格式错退出 2。工具不调用网络、不启动产品、不签名或触碰凭据。
+TRUSTED_FREEZE.json 必须从总控冻结候选独立取得，不能从待检清单复制作为信任依据。字段为 candidateSha、prdSha256、baselineSha256、candidateFrozenAt、modelEndpoint、requestedModel、modelDecisionSha256、modelMode、evaluationSha256、returnedModel、serviceVersion、recoverySnapshotSha256、recoveryComparisonCase、migrationSnapshotSha256、migrationComparisonCases、previousAssets、expectedResults；不填 now，CLI使用当前时间。冻结时刻、模型/评估版本、恢复/双向迁移源快照、上一版双平台版本/源码/资产哈希和每项预期结果哈希都由外部pin约束，不能自填两边相同假数据绕过重验。所有 source/candidate/reviewed/build/report SHA 必须与该候选一致，报告时间在冻结之后且不在未来；任何实现、配置、依赖、验收、基线或模型变化都按原规则重验。测试模式 `synthetic` 的 CLI 总是退出 1；`evidence` 一致时退出 0，也不授予发布权限；不一致退出 1，无法读取或格式错退出 2。工具不调用网络、不启动产品、不签名或触碰凭据。
 
 expectedResults 键为报告 label 加冒号加 check id（如 `PRODUCT:FR-001`），值为该完整预期文件SHA256。各验收owner冻结预期后交总控，不能从待验manifest生成真实freeze；测试自动生成只供合成fixture。迁移label为 `MIGRATION_<from>_<to>`，回退label为 `ROLLBACK_<target>`；其余label见核验器中evidence调用。migrationSnapshotSha256按源target索引；previousAssets每条包含target/version/sourceSha/sha256，必须覆盖双平台。
 
@@ -22,7 +22,13 @@ expectedResults 键为报告 label 加冒号加 check id（如 `PRODUCT:FR-001`�
 
 总控已允许固定T09 `873c8c0` 输入只读引用，独立工具联验通过显式 `T11_FIXED_BASELINE_PROBE=1` 启用，具体固定SHA、17文件核验和默认skip边界见 `docs/iterations/T11/acceptance.md`。它仅证明本核验器能读取批准输入和拒绝错误，不消费T09未批准服务，不证明领域实际输出或50项产品通过。
 
-回退资产同时记录双平台上一版版本/来源SHA/签名报告，检查文件格式与独立上一版记录，不接受任意文本或当前资产冒充上一版。恢复/迁移比较使用 `t11-comparison-v2` 只读选择投影：projectId/sourceSnapshotId/revision、当前必需层及selection/capabilities/dependencies。源投影哈希须与总控独立freeze一致，集合项必须是唯一稳定id与完整payload；前后全部所选内容相同。未选择的推导/历史/原文件/Agent会话必须为空；当前状态可恢复、原映射可重跑、沙盘可重放三项分别依据齐全性判定，不能因历史未选而拒绝完整当前项目。仅固定G.6冲突场景的事实/定义/来源/映射/查询核对必需层不可为空，无身份行、模板冒充恢复、数量摘要和错误能力宣称仍拒绝。它不是项目格式或可变权威，T01/T10实际只读适配器仍待交接。v2取代本工具先前过度强制所有层非空的v1；旧证据保留历史，不静默升级。字段见合成 `tests/fixtures/release/comparison.json`，细则见migration-recovery.md。
+回退资产同时记录双平台上一版版本/来源SHA/签名报告，检查文件格式与独立上一版记录，不接受任意文本或当前资产冒充上一版。恢复和每个回退资产报告都必须有 `rollback-retain-new-version-copy`、`rollback-refuse-incompatible-format`，保留其余原check。恢复/迁移使用新的 `t11-comparison-v3`；旧v2不静默转换，历史规范/报告原样保留。通用恢复允许合法空定义/映射/查询层，事实及来源所有权仍须齐全；正式双向迁移固定 `g6-conflict`，六必需层非空，全部22项迁移check保留。独立freeze同时pin源字节和case，不能用通用场景替代G.6。完整规范见 [v3](../iterations/T11/selection-comparison-v3.md) 与 [迁移流程](migration-recovery.md)。不修改T01/T10权威格式或决定F01。
+
+Q9批准元组来自2026-10-21总控决定，原件SHA与采用段落见 [来源记录](../reviews/T11/q9-decision-source-20261023.json)。`model.endpoint` 和freeze的 `modelEndpoint` 均指具体Chat Completions请求路由 `https://api.deepseek.com/chat/completions`，其Base URL是 `https://api.deepseek.com`；requestedModel固定 `deepseek-v4-pro`，两边decisionSha256固定同份批准来源。任意URL/模型即使与freeze相同仍拒绝。返回标识、服务版本、模式、评估哈希继续独立冻结。这里只固化已有选型，不接API或推断服务可用。
+
+生产 `mode=evidence` 另强制批准T09的873提交manifest SHA、`prd-v0.6-learning-1`、PRD SHA及17个精确路径；每文件内容hash仍来自唯一manifest，不复制第二产品基线。`synthetic` 允许工具用自标合成baseline；它永远不授发布权限。改变freeze不能扩大生产批准profile。
+
+每设备需 `collectorStatus` 文件引用，其JSON严格为 `{schemaVersion:1,status:"complete",step:"complete",exitCode:0}`，并与 `collector-complete` 实际check绑定；缺失、pending、failed或异常结构均拒绝。collector新目录内先写pending/步骤，失败保留failed/步骤/有限退出码及首次raw/半成品，成功最后才complete；重跑用新目录。marker只表示采集流程结束。`installed-components-match-package` 的完整JSON为 `{packageSha256,inventory,app,engine,method,provenance}`，inventory/app/engine/provenance文件引用均为path/sha256，method为installed或extracted。它绑定候选包、声明的唯一包内清单、组件字节和安装/解包原件；全部预期hash独立冻结。真实同包成员关系及安装/解包来源仍须T03唯一清单与独立审者对照原件，本工具只核引用字节及声明的一致性，不能因同目录或marker通过关闭该门。
 
 ## 核验的实际边界
 
@@ -31,3 +37,9 @@ expectedResults 键为报告 label 加冒号加 check id（如 `PRODUCT:FR-001`�
 ## 官方协议依据与唯一配置交接
 
 2026-10-21 核对：[Electron 签名说明](https://www.electronjs.org/docs/latest/tutorial/code-signing) 区分签名、公证，并说明代码身份对 Keychain 升级识别的影响；[Apple 公证说明](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution) 与 [Microsoft SignTool](https://learn.microsoft.com/en-us/windows/win32/seccrypto/signtool) 用于原生验证。electron.build 旧签名页此次返回 404，改以实际锁定 `electron-builder@26.15.3` 自带类型/实现核对可用配置字段；不根据失效链接猜配置。具体共享变更见 `docs/iterations/T11/shared-file-handoff.md`。
+
+## 取证目录与时钟
+
+普通文件和CLI manifest/freeze限16MiB，安装/下载/回退包及组件流式hash限8GiB；这是工具工程边界，不是Q5业务容量或性能指标。读取先打开受控fd并fstat核普通非空文件及限额，再分配/解析；同fd做完整读取、hash和PE/koly结构检查，结束检查增长、短读及文件元数据漂移，异常关闭自有fd。叶节点无跟随/非阻塞打开依赖平台提供的flag；证据根及祖先目录须可信且在读取期间不受不可信并发修改，此实现未消除全部TOCTOU。
+
+CLI用审查机当前墙钟覆盖freeze.now，没有生产任意时间开关。操作者须核对该机日期/时区/同步来源和可知偏差，并将无法核实的偏差作为未验证限制；本工具既不认证时钟，也不伪称发生过网络校时。签名valid等声明与时间戳链仍依赖原生原件审查。PE仅检查DOS/PE标记、偏移界限及允许机器字段，DMG仅检查尾部koly；这些均不能证明NSIS/DMG实质有效或签名可信。

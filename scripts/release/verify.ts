@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { closeSync, openSync, readFileSync, readSync, realpathSync, statSync } from 'node:fs'
+import { closeSync, constants, fstatSync, openSync, readSync, realpathSync } from 'node:fs'
 import { isAbsolute, relative, resolve, sep } from 'node:path'
 import { z } from 'zod'
 
@@ -9,6 +9,48 @@ const commit = z.string().regex(/^[a-f0-9]{40}$/)
 const date = z.iso.datetime({ offset: true })
 const ref = z.object({ path: text, sha256: sha }).strict()
 const target = z.enum(['windows11-x64', 'macos15-arm64'])
+const comparisonCase = z.enum(['current-state', 'g6-conflict'])
+// Adopted controller decision, not a live service claim. endpoint means the request route.
+export const APPROVED_MODEL = {
+  endpoint: 'https://api.deepseek.com/chat/completions',
+  requestedModel: 'deepseek-v4-pro',
+  decisionSha256: 'def9817dc35c11514335fce5ecf859878e00cdfccc259659edb7925fee9d84a7',
+} as const
+export const APPROVED_BASELINE = {
+  commit: '873c8c051b9870aa12fc7e1dbbd3e0c358e7c380',
+  sha256: 'aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e',
+  prdSha256: '7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb',
+  version: 'prd-v0.6-learning-1',
+  paths: [
+    'content/learning/checks.json',
+    'content/learning/course.json',
+    'content/learning/glossary.json',
+    'content/learning/transfer-inputs.json',
+    ...[
+      'E.5.json',
+      'G-base.json',
+      'G-behavior.json',
+      'G-map-empty.json',
+      'alarms.csv',
+      'cases.json',
+      'conventions.json',
+      'coverage.json',
+      'equipment-duplicate-key.csv',
+      'equipment-missing-key.csv',
+      'equipment-updated.csv',
+      'equipment.csv',
+      'unclosed-high.rq',
+    ].map((name) => `tests/fixtures/product-baselines/${name}`),
+  ],
+} as const
+const collectorStatus = z
+  .object({
+    schemaVersion: z.literal(1),
+    status: z.literal('complete'),
+    step: z.literal('complete'),
+    exitCode: z.literal(0),
+  })
+  .strict()
 const check = z.object({ id: text, expected: ref, actual: ref }).strict()
 const report = z
   .object({
@@ -64,6 +106,7 @@ const artifact = z
         nodeInstalled: z.boolean(),
         pythonInstalled: z.boolean(),
         dockerRequired: z.boolean(),
+        collectorStatus: ref,
         report,
       })
       .strict(),
@@ -111,8 +154,9 @@ export const manifestSchema = z
     product: report,
     model: z
       .object({
-        endpoint: z.literal('https://api.deepseek.com/chat/completions'),
-        requestedModel: z.literal('deepseek-v4-pro'),
+        endpoint: z.url(),
+        requestedModel: text,
+        decisionSha256: sha,
         returnedModel: text,
         serviceVersion: text,
         mode: z.enum(['thinking', 'non-thinking']),
@@ -177,11 +221,21 @@ export const expectedSchema = z
     prdSha256: sha,
     baselineSha256: sha,
     candidateFrozenAt: date,
+    modelEndpoint: z.url(),
+    requestedModel: text,
+    modelDecisionSha256: sha,
     modelMode: z.enum(['thinking', 'non-thinking']),
     evaluationSha256: sha,
     returnedModel: text,
     serviceVersion: text,
     recoverySnapshotSha256: sha,
+    recoveryComparisonCase: comparisonCase,
+    migrationComparisonCases: z
+      .object({
+        'windows11-x64': z.literal('g6-conflict'),
+        'macos15-arm64': z.literal('g6-conflict'),
+      })
+      .strict(),
     migrationSnapshotSha256: z.object({ 'windows11-x64': sha, 'macos15-arm64': sha }).strict(),
     previousAssets: z
       .array(z.object({ target, version: text, sourceSha: commit, sha256: sha }).strict())
@@ -192,6 +246,8 @@ export const expectedSchema = z
   .strict()
 export type Expected = z.infer<typeof expectedSchema>
 export const DEVICE_CHECKS = [
+  'collector-complete',
+  'installed-components-match-package',
   'install',
   'first-start',
   'offline-core',
@@ -254,6 +310,8 @@ export const RECOVERY_CHECKS = [
   'restore-complete',
   'rollback-format-compatible',
   'rollback-install',
+  'rollback-retain-new-version-copy',
+  'rollback-refuse-incompatible-format',
   'no-uncommitted-data',
   'no-auto-write-replay',
 ]
@@ -284,8 +342,8 @@ export const MIGRATION_CHECKS = [
 export const digest = (value: Uint8Array | string) =>
   createHash('sha256').update(value).digest('hex')
 
-// Bound every read to a regular, nonempty file within the supplied evidence root.
-function boundPath(root: string, file: z.infer<typeof ref>, limit: number): string {
+// Resolve containment first. Ancestor directories must remain trusted and stable while reading.
+function boundPath(root: string, file: z.infer<typeof ref>): string {
   if (
     isAbsolute(file.path) ||
     file.path.includes('\\') ||
@@ -297,63 +355,99 @@ function boundPath(root: string, file: z.infer<typeof ref>, limit: number): stri
   const rel = relative(base, path)
   if (!rel || rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel))
     throw new Error('UNSAFE_PATH')
-  const info = statSync(path)
-  if (!info.isFile() || info.size === 0 || info.size > limit) throw new Error('FILE_BOUNDS')
   return path
+}
+
+// No-follow protects the resolved leaf; nonblocking permits rejecting FIFOs without blocking.
+// Neither protects concurrently replaced ancestors. One fd supplies size, bytes, hash and format.
+function withFile<T>(path: string, limit: number, consume: (fd: number, size: number) => T): T {
+  const fd = openSync(
+    path,
+    constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0) | (constants.O_NONBLOCK ?? 0),
+  )
+  try {
+    const before = fstatSync(fd)
+    if (!before.isFile() || before.size < 1 || before.size > limit) throw new Error('FILE_BOUNDS')
+    const result = consume(fd, before.size)
+    const extra = Buffer.alloc(1)
+    if (readSync(fd, extra, 0, 1, before.size) !== 0) throw new Error('FILE_CHANGED')
+    const after = fstatSync(fd)
+    if (
+      !after.isFile() ||
+      after.size !== before.size ||
+      after.ino !== before.ino ||
+      after.dev !== before.dev ||
+      after.mtimeMs !== before.mtimeMs ||
+      after.ctimeMs !== before.ctimeMs
+    )
+      throw new Error('FILE_CHANGED')
+    return result
+  } finally {
+    closeSync(fd)
+  }
+}
+function readExact(fd: number, buffer: Buffer, position: number): void {
+  let offset = 0
+  while (offset < buffer.length) {
+    const count = readSync(fd, buffer, offset, buffer.length - offset, position + offset)
+    if (count === 0) throw new Error('FILE_SHORT_READ')
+    offset += count
+  }
+}
+function readSmallFile(path: string, limit: number): Buffer {
+  return withFile(path, limit, (fd, size) => {
+    const bytes = Buffer.alloc(size)
+    readExact(fd, bytes, 0)
+    return bytes
+  })
+}
+export function readJsonFile(path: string): unknown {
+  // Limit is enforced before allocation and JSON.parse, including the CLI's trusted freeze.
+  return JSON.parse(readSmallFile(path, 16 * 1024 * 1024).toString('utf8'))
 }
 export function readBound(
   root: string,
   file: z.infer<typeof ref>,
   limit = 16 * 1024 * 1024,
 ): Buffer {
-  const bytes = readFileSync(boundPath(root, file, limit))
+  const bytes = readSmallFile(boundPath(root, file), limit)
   if (digest(bytes) !== file.sha256) throw new Error('FILE_HASH')
   return bytes
 }
-function verifyLargeFile(root: string, file: z.infer<typeof ref>): number {
-  const path = boundPath(root, file, 8 * 1024 ** 3)
-  const fd = openSync(path, 'r')
-  const hash = createHash('sha256')
-  let size = 0
-  try {
-    const buffer = Buffer.alloc(1024 * 1024)
-    let length: number
-    while ((length = readSync(fd, buffer)) > 0) {
-      hash.update(buffer.subarray(0, length))
-      size += length
-      if (size > 8 * 1024 ** 3) throw new Error('FILE_BOUNDS')
+function installerFormat(fd: number, size: number, mac: boolean): boolean {
+  if (mac) {
+    if (size < 512) return false
+    const tail = Buffer.alloc(4)
+    readExact(fd, tail, size - 512)
+    return tail.toString() === 'koly'
+  }
+  if (size < 64) return false
+  const head = Buffer.alloc(64)
+  readExact(fd, head, 0)
+  if (head.readUInt16LE(0) !== 0x5a4d) return false
+  const offset = head.readUInt32LE(0x3c)
+  if (offset < 64 || offset > size - 6) return false
+  const pe = Buffer.alloc(6)
+  readExact(fd, pe, offset)
+  return pe.readUInt32LE(0) === 0x4550 && [0x14c, 0x8664].includes(pe.readUInt16LE(4))
+}
+export function verifyLargeFile(
+  root: string,
+  file: z.infer<typeof ref>,
+  mac?: boolean,
+): { size: number; format: boolean } {
+  return withFile(boundPath(root, file), 8 * 1024 ** 3, (fd, size) => {
+    const hash = createHash('sha256')
+    const buffer = Buffer.alloc(Math.min(size, 1024 * 1024))
+    for (let position = 0; position < size;) {
+      const part = buffer.subarray(0, Math.min(buffer.length, size - position))
+      readExact(fd, part, position)
+      hash.update(part)
+      position += part.length
     }
     if (hash.digest('hex') !== file.sha256) throw new Error('FILE_HASH')
-    return size
-  } finally {
-    closeSync(fd)
-  }
-}
-
-function installerFormat(root: string, file: z.infer<typeof ref>, mac: boolean): boolean {
-  const path = boundPath(root, file, 8 * 1024 ** 3)
-  const fd = openSync(path, 'r')
-  try {
-    const size = statSync(path).size
-    const head = Buffer.alloc(64)
-    if (mac) {
-      return (
-        size >= 512 &&
-        readSync(fd, head, 0, 4, size - 512) === 4 &&
-        head.subarray(0, 4).toString() === 'koly'
-      )
-    }
-    if (readSync(fd, head, 0, 64, 0) !== 64 || head.readUInt16LE(0) !== 0x5a4d) return false
-    const offset = head.readUInt32LE(0x3c)
-    return (
-      offset <= size - 6 &&
-      readSync(fd, head, 0, 6, offset) === 6 &&
-      head.readUInt32LE(0) === 0x4550 &&
-      [0x14c, 0x8664].includes(head.readUInt16LE(4))
-    )
-  } finally {
-    closeSync(fd)
-  }
+    return { size, format: mac === undefined || installerFormat(fd, size, mac) }
+  })
 }
 
 function canonical(value: unknown): string {
@@ -420,8 +514,7 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
       issues: ['EXPECTED_IDENTITY'],
     }
   const now = Date.parse(expected.now)
-  if (!expectedSchema.safeParse(expected).success || !Number.isFinite(now))
-    fail('EXPECTED_IDENTITY')
+  if (!Number.isFinite(now)) fail('EXPECTED_IDENTITY')
   if ([m.sourceSha, m.candidateSha, m.reviewedSha].some((s) => s !== expected.candidateSha))
     fail('CANDIDATE_SHA')
   if (m.prd.sha256 !== expected.prdSha256 || m.baseline.sha256 !== expected.baselineSha256)
@@ -437,9 +530,9 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
       return undefined
     }
   }
-  const large = (r: z.infer<typeof ref>, code: string) => {
+  const large = (r: z.infer<typeof ref>, code: string, mac?: boolean) => {
     try {
-      return verifyLargeFile(root, r)
+      return verifyLargeFile(root, r, mac)
     } catch {
       fail(code)
       return undefined
@@ -469,6 +562,18 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
   const fixedExpected = new Map<string, unknown>()
   if (!baseline.success) fail('BASELINE_SCHEMA')
   else {
+    if (
+      m.mode === 'evidence' &&
+      (m.baseline.path !== 'tests/fixtures/product-baselines/manifest.json' ||
+        m.baseline.sha256 !== APPROVED_BASELINE.sha256 ||
+        m.prd.sha256 !== APPROVED_BASELINE.prdSha256 ||
+        baseline.data.version !== APPROVED_BASELINE.version ||
+        !compareComplete(
+          Object.keys(baseline.data.files).sort(),
+          [...APPROVED_BASELINE.paths].sort(),
+        ))
+    )
+      fail('BASELINE_APPROVED_PROFILE')
     if (baseline.data.source.sha256 !== m.prd.sha256) fail('BASELINE_PRD')
     read(baseline.data.source, 'BASELINE_SOURCE')
     for (const [path, sha256] of Object.entries(baseline.data.files))
@@ -615,13 +720,9 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
     const mac = a.target === 'macos15-arm64'
     const label = mac ? 'MAC' : 'WIN'
     const arch = mac ? 'arm64' : 'x64'
-    const bytes = large(a.file, `${label}_ARTIFACT`)
-    try {
-      if (!installerFormat(root, a.file, mac)) fail(`${label}_BINARY_FORMAT`)
-    } catch {
-      fail(`${label}_BINARY_FORMAT`)
-    }
-    if (bytes !== undefined && bytes !== a.bytes) fail(`${label}_SIZE`)
+    const binary = large(a.file, `${label}_ARTIFACT`, mac)
+    if (binary && !binary.format) fail(`${label}_BINARY_FORMAT`)
+    if (binary && binary.size !== a.bytes) fail(`${label}_SIZE`)
     if (a.appArch !== arch || a.engineArch !== arch || a.device.arch !== arch) fail(`${label}_ARCH`)
     if (a.appVersion !== m.version) fail(`${label}_VERSION`)
     if (a.format !== (mac ? 'dmg' : 'nsis')) fail(`${label}_FORMAT`)
@@ -673,6 +774,33 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
       d.dockerRequired
     )
       fail(`${label}_CLEAN_TARGET`)
+    if (!collectorStatus.safeParse(json(d.collectorStatus, `${label}_COLLECTOR_STATUS`)).success)
+      fail(`${label}_COLLECTOR_INCOMPLETE`)
+    const complete = d.report.checks.find((c) => c.id === 'collector-complete')
+    if (!complete || complete.actual.sha256 !== d.collectorStatus.sha256)
+      fail(`${label}_COLLECTOR_BINDING`)
+    const samePackage = d.report.checks.find((c) => c.id === 'installed-components-match-package')
+    const installedSchema = z
+      .object({
+        packageSha256: sha,
+        inventory: ref,
+        app: ref,
+        engine: ref,
+        method: z.enum(['installed', 'extracted']),
+        provenance: ref,
+      })
+      .strict()
+    const installed =
+      samePackage && installedSchema.safeParse(json(samePackage.actual, `${label}_PACKAGE_SOURCE`))
+    if (!installed || !installed.success || installed.data.packageSha256 !== a.file.sha256)
+      fail(`${label}_PACKAGE_SOURCE`)
+    else {
+      // This binds the declared bytes, not the truth of the installation/extraction transcript.
+      read(installed.data.inventory, `${label}_PACKAGE_INVENTORY`)
+      read(installed.data.provenance, `${label}_PACKAGE_PROVENANCE`)
+      large(installed.data.app, `${label}_INSTALLED_APP`)
+      large(installed.data.engine, `${label}_INSTALLED_ENGINE`)
+    }
     evidence(d.report, DEVICE_CHECKS, `${label}_DEVICE`, a.file.sha256)
     const url = new URL(a.download.url)
     if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash)
@@ -712,6 +840,15 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
   evidence(m.model.report, MODEL_CHECKS, 'MODEL')
   read(m.model.evaluation, 'MODEL_EVALUATION')
   if (
+    m.model.endpoint !== APPROVED_MODEL.endpoint ||
+    m.model.requestedModel !== APPROVED_MODEL.requestedModel ||
+    m.model.decisionSha256 !== APPROVED_MODEL.decisionSha256 ||
+    expected.modelEndpoint !== APPROVED_MODEL.endpoint ||
+    expected.requestedModel !== APPROVED_MODEL.requestedModel ||
+    expected.modelDecisionSha256 !== APPROVED_MODEL.decisionSha256 ||
+    m.model.endpoint !== expected.modelEndpoint ||
+    m.model.requestedModel !== expected.requestedModel ||
+    m.model.decisionSha256 !== expected.modelDecisionSha256 ||
     m.model.mode !== expected.modelMode ||
     m.model.returnedModel !== expected.returnedModel ||
     m.model.serviceVersion !== expected.serviceVersion ||
@@ -748,11 +885,11 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
     if (!u.human || u.developer || !u.ontologyNovice || !assets.has(u.artifactSha256))
       fail('USER_ELIGIBILITY')
     if (u.blockers.length) fail('USER_BLOCKER')
+    if (u.coreCompleted && !u.transferCompleted) fail('USER_CORE_TRANSFER_CONTRADICTION')
     if (
       !u.agentFullCounterexample ||
       u.agentMarkedIndependent ||
-      (u.transferIndependent &&
-        (!u.transferCompleted || !['independent', 'product-hints'].includes(u.assistance)))
+      (u.transferIndependent && (!u.transferCompleted || u.assistance !== 'independent'))
     )
       fail('USER_ASSISTANCE')
     if (
@@ -774,10 +911,10 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
   const rows = z
     .array(row)
     .refine((items) => new Set(items.map((item) => item.id)).size === items.length)
-  const coreRows = rows.min(1)
   const snapshotSchema = z
     .object({
-      format: z.literal('t11-comparison-v2'),
+      format: z.literal('t11-comparison-v3'),
+      comparisonCase,
       projectId: text,
       sourceSnapshotId: sha,
       projectRevision: z.number().int().nonnegative(),
@@ -805,13 +942,12 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
           replaySemantics: z.enum(['supported', 'missing', 'unsupported']),
         })
         .strict(),
-      // The G.6 comparison scenario includes facts, mapping ownership and a real query.
-      facts: coreRows,
-      definitions: coreRows,
-      ownership: coreRows,
-      mappingState: coreRows,
-      queries: coreRows,
-      results: coreRows,
+      facts: rows,
+      definitions: rows,
+      ownership: rows,
+      mappingState: rows,
+      queries: rows,
+      results: rows,
       derivedResults: rows,
       history: rows,
       rounds: rows,
@@ -823,6 +959,15 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
     .strict()
     .superRefine((value, ctx) => {
       const reject = (message: string) => ctx.addIssue({ code: 'custom', message })
+      // PRD G.6 template boundary remains mandatory, including generic recovery.
+      if (!value.facts.length || !value.ownership.length) reject('TEMPLATE_NOT_RESTORABLE')
+      if (
+        value.comparisonCase === 'g6-conflict' &&
+        ['facts', 'definitions', 'ownership', 'mappingState', 'queries', 'results'].some(
+          (key) => !value[key as 'facts'].length,
+        )
+      )
+        reject('G6_REQUIRED_LAYER')
       if (
         (!value.selection.currentDerived && value.derivedResults.length > 0) ||
         (!value.selection.historicalRuns &&
@@ -849,14 +994,20 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
         value.dependencies.replaySemantics === 'supported'
       if (value.capabilities.replaySandbox !== canReplay) reject('REPLAY_CAPABILITY')
     })
-  const snapshot = (r: z.infer<typeof ref>, code: string) => {
+  const snapshot = (
+    r: z.infer<typeof ref>,
+    code: string,
+    requiredCase: z.infer<typeof comparisonCase>,
+  ) => {
     const value = json(r, code)
-    if (!snapshotSchema.safeParse(value).success) fail(`${code}_SCHEMA`)
+    const parsed = snapshotSchema.safeParse(value)
+    if (!parsed.success) fail(`${code}_SCHEMA`)
+    else if (parsed.data.comparisonCase !== requiredCase) fail(`${code}_CASE`)
     return value
   }
   if (m.recovery.backup.sha256 !== expected.recoverySnapshotSha256) fail('RECOVERY_SOURCE_PIN')
-  const before = snapshot(m.recovery.backup, 'RECOVERY_BACKUP')
-  const after = snapshot(m.recovery.restored, 'RECOVERY_RESTORED')
+  const before = snapshot(m.recovery.backup, 'RECOVERY_BACKUP', expected.recoveryComparisonCase)
+  const after = snapshot(m.recovery.restored, 'RECOVERY_RESTORED', expected.recoveryComparisonCase)
   if (before === undefined || after === undefined || !compareComplete(before, after))
     fail('RECOVERY_DATA')
   if (new Set(m.recovery.rollbackInstallers.map((a) => a.target)).size !== 2)
@@ -871,13 +1022,8 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
       m.artifacts.some((a) => a.file.sha256 === old.file.sha256)
     )
       fail('ROLLBACK_IDENTITY_PIN')
-    large(old.file, 'ROLLBACK_INSTALLER')
-    try {
-      if (!installerFormat(root, old.file, old.target === 'macos15-arm64'))
-        fail('ROLLBACK_BINARY_FORMAT')
-    } catch {
-      fail('ROLLBACK_BINARY_FORMAT')
-    }
+    const binary = large(old.file, 'ROLLBACK_INSTALLER', old.target === 'macos15-arm64')
+    if (binary && !binary.format) fail('ROLLBACK_BINARY_FORMAT')
     if (
       old.version === m.version ||
       old.sourceSha === m.candidateSha ||
@@ -899,6 +1045,8 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
         'previous-signature',
         'rollback-format-compatible',
         'rollback-install',
+        'rollback-retain-new-version-copy',
+        'rollback-refuse-incompatible-format',
       ],
       `ROLLBACK_${old.target}`,
       old.file.sha256,
@@ -913,11 +1061,15 @@ export function verifyManifest(input: unknown, root: string, expected: Expected)
     fail('MIGRATION_DIRECTIONS')
   for (const x of m.migration) {
     if (x.before.sha256 !== expected.migrationSnapshotSha256[x.from]) fail('MIGRATION_SOURCE_PIN')
-    const a = snapshot(x.before, 'MIGRATION_BEFORE')
-    const b = snapshot(x.after, 'MIGRATION_AFTER')
+    const a = snapshot(x.before, 'MIGRATION_BEFORE', expected.migrationComparisonCases[x.from])
+    const b = snapshot(x.after, 'MIGRATION_AFTER', expected.migrationComparisonCases[x.from])
     if (a === undefined || b === undefined || !compareComplete(a, b)) fail('MIGRATION_DATA')
     const dest = m.artifacts.find((a) => a.target === x.to)
-    evidence(x.report, MIGRATION_CHECKS, `MIGRATION_${x.from}_${x.to}`, dest?.file.sha256)
+    if (!dest) {
+      fail('MIGRATION_DESTINATION')
+      continue
+    }
+    evidence(x.report, MIGRATION_CHECKS, `MIGRATION_${x.from}_${x.to}`, dest.file.sha256)
   }
   return { consistent: issues.length === 0, releaseAuthorized: false, mode: m.mode, issues }
 }
