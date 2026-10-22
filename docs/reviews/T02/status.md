@@ -142,3 +142,11 @@ root此前另已主动read_thread读取本线blocked终态，并指示后续直�
 T01现在唯一维护 `apps/desktop/src/main/jsonl.ts`、`apps/desktop/src/renderer/src/task-presentation.ts`、`apps/desktop/src/main/task-service.ts`、`apps/desktop/src/main/index.ts`，仅沿批准5f。I06保留 `apps/desktop/src/preload/index.ts` 与renderer的env.d.ts/App.tsx/style.css四路径及私有模块；其他责任不扩。原协议待门文本保留为历史，本生效登记控制当前责任；固定C4/e2c/961原字节只读，精确返还前须T01停写、保全SHA/WIP及root唯一owner登记。
 
 此通知仅转维护责任，未授权startup/schema/新代码/runtime3/ready；原第九节、无桌面、指定双审及发布门不变。AGENTS仍78df未暂存。本线未改产品候选或共享文件、不复测/操作GUI、不重建或恢复原blocked Goal；未重复跨聊发送，供总控直接文件读回。
+
+## 2026-10-22 指定双审已实际创建，完整积压保持
+
+原T02 owner按总控短GUI窗口，通过CUA在两独立树实际新建并启动同版完整S1审查。ZCode `session_8fdff47bb96963af157c498504a58c72`／GLM-5.3／最高／完全访问；MiniMax `mvs_06002009bb614b3bb56905f07eb5b240`／M3.1-Flash／xhigh／始终授权。两树HEAD均ce1，产品493/base5f，当前AGENTS de15；58原delta逐项hash通过，原提示完整保留。实际正文、长附件/AX接收、设置/ID及运行证据见`round-1/launch-20261022/creation-receipt.json`和`foreground-release.md`。两任务尚未终态，不计Pass。原T06 session/stdio保持，前台已实际释放；原owner继续监控/读取完整报告和全部意见处置。
+
+完整保留候选C1/C2/C3、证据恢复、范围登记、typed纯方案、准备/政策补充及未就绪父功能，逐行依据与缺口见`review-backlog-20261022.md`。历史C1/C2无指定Pass，不倒填；当前S1覆盖全部保留实现与历史闭环，纯方案未实施。后续供方采用/接口实施、父验收、全部指定新审/CI/正常合并/远端门仍待。原Goal仍blocked，未重建/关闭；本次实际GUI创建是外部状态变化后的已授权执行，不改原候选。
+
+独立agent已对创建证据与完整积压台账返回通过，无P级问题，报告`round-1/launch-20261022/independent-creation-backlog-review.md`。这不是指定模型产品审查。只读实际请求另核两真实turn、max/xhigh及完整正文；MiniMax应用仅去掉末尾1换行，全部内容保持。文档格式检查通过；无产品改动，不重复产品验证。

@@ -1,0 +1,624 @@
+{
+  "zcode": {
+    "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-zcode-review-4932122",
+    "head": "ce1c3df41a233a07de4ef8fad54d5f201b222a23",
+    "originalPrompt": "zcode-glm53-input.md",
+    "originalBytes": 28991,
+    "originalSha256": "58a62654038514f80528b147e73631acb70ddeaaa7a607f920dfccc76f761f35",
+    "submittedBytes": 31959,
+    "submittedSha256": "2342bf340a2bff63e5362e18c194f7ecd30868cc6d71689a675b6059a7675f2f",
+    "originalExactlyIncluded": true,
+    "originalOccurrences": 1,
+    "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-zcode-review-4932122/docs/reviews/T02/round-1/zcode-glm53.md",
+    "verifiedFiles": [
+      {
+        "path": "apps/desktop/src/renderer/src/ontology/OntologyPage.tsx",
+        "sha256": "127e0f5b746f7c7140f4e92b4d423b920ee9422df3cc87f8945ad799a1626ef1",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "apps/desktop/src/renderer/src/ontology/ontology.css",
+        "sha256": "000a16875e2155c0ec7bd0b704dde4103af4754e41550bf88c4756a27c366a62",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "apps/desktop/src/renderer/src/ontology/view-model.ts",
+        "sha256": "5a3c6c3bf95bc2cc6219f7cf24e5d337c8381ae6fc392b460895b002e0c2e405",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "docs/iterations/T02/acceptance.md",
+        "sha256": "0cc530704d1373b85a1c3bdee4ac2592ef04659b98fcc9ba596725ccf83ed682",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/iterations/T02/controller-message-draft.md",
+        "sha256": "7adfc8cbcb271d1a84e73d5092f7fcc47048c1af37e31b246adf40b59bdddbba",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/iterations/T02/delivery.md",
+        "sha256": "2a8c814afddf769eb43b7a68aa5d1c2a86cea7b14fd5bf81ff5fff4c19ad8213",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/iterations/T02/interface-handoff.md",
+        "sha256": "fd2239404473ae48f73f45199d84fc1976e12ec9ab1a7468161b2f84a737c186",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/iterations/T02/source-projection.md",
+        "sha256": "60b2f5226985874d5dc74fb886faead4c9be5ccbe6d92bdee5e03d4268ca1153",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/iterations/T02/stage-registration-request.md",
+        "sha256": "70c94baba5a637281019c95feb265d0cd05042cf4534b9cdc8e7c53d9c2ecc32",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/iterations/T02/typed-changeset-integration-plan.md",
+        "sha256": "6b88b1f7a8e9b7b08719f6b48dda16905a3eb800a7b8baef21f4b7a26b06983c",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/iterations/T02/ui-probe/build.mjs",
+        "sha256": "0f953b219d1e1306d372727f8ade16cbe5786e4efb3edb4ddeaaf4eecf4dbf08",
+        "role": "S1-headless-harness"
+      },
+      {
+        "path": "docs/iterations/T02/ui-probe/check.mjs",
+        "sha256": "b0b199ea01cf900bd8cd07a224c1f14f43ec3b233f53275783975415b6cc2d06",
+        "role": "S1-headless-harness"
+      },
+      {
+        "path": "docs/iterations/T02/ui-probe/fixture.json",
+        "sha256": "55f1b9c9b74149c34efc238f2c9772dc39c20434439aa283fa6870a7b2adc331",
+        "role": "S1-headless-harness"
+      },
+      {
+        "path": "docs/iterations/T02/ui-probe/harness.tsx",
+        "sha256": "f12984e000d411609ac11abc79d462ca54b89f36757ca55669d09a20c314bc32",
+        "role": "S1-headless-harness"
+      },
+      {
+        "path": "docs/iterations/T02/ui-probe/index.html",
+        "sha256": "b8262fcd67ddb5e429f095e29086f6de2ed621c1a3779892f0ec9e1827b7490a",
+        "role": "S1-headless-harness"
+      },
+      {
+        "path": "docs/reviews/T02/controller-message-receipt.json",
+        "sha256": "4eb6b515ec162fe800906a9b52cff7906c6592243e028f63b732a47e45380dac",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/README.md",
+        "sha256": "afe5324266bf68d0d9a009c6f96874be8224e8817a2cff447798c0e124e7a22f",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/archive-index.json",
+        "sha256": "62879518e3c03987f0c74bccc86b932bd91acb6950d7ac15df28932a9a9f1395",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/git-readback.json",
+        "sha256": "c69651b00e758781eef5940b5b66d2457661f9430d147ac86ce42a82f481ca2c",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/independent-review.md",
+        "sha256": "b3a57e6841eef6e8d0f31f94bad54cc897d31f820cb35b684b8164491c331e75",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/manifest.json",
+        "sha256": "ee9585f7d1960ef70808c09cf67e51d377970c3c8f8e8b8a348f706384c9e4f2",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/raw-evidence-c1-c3-20261021.tar.gz",
+        "sha256": "43d9e20533885828a03c34392e8ae42ada23663c1cc338986c795c236f2a6b86",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/readback.json",
+        "sha256": "981703cfb263eb75c2996c447ce4f991cce3fafb1712d25965b6e98d3d2b7718",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/independent-review-c1.md",
+        "sha256": "b681ed1d1ab8a217a35b866d1d2efede2c070b5bb4956564b2a1ed9feba19034",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/independent-review-c2.md",
+        "sha256": "5fdafe16dab0a8de7f7cfbc5a90cec278675ccec53e7ab671ea74d4d0b4919f7",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/independent-review-c3.md",
+        "sha256": "7cf61a7e02cf85bbf0f8371e2ea82cc8a3e6ca05d4a6ec75ef988406a2a0492c",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/stage-registration-review.md",
+        "sha256": "084065535aa2762efcf9c7bc31981d05d783b65c53aa4915a460ca6c948c11ec",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/status.md",
+        "sha256": "260a7020985cf66c2dd040cde798a6e43ccbb503c58ed45d0a26c334d081d20e",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/t09-input-verification.json",
+        "sha256": "e66a3a8d23f4c6e722ef26d7e3a40e96f776b35756b0dda4eb15981171a9b8e8",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/delivery-manifest.json",
+        "sha256": "f5a9ac444246b0ade3ec4f556a93aa3b5029c28d5a4f951839464e427147378b",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/disposition.md",
+        "sha256": "619b810148e1eda25b7e2ee0931e2344a6198c1bb949f543a7e251a17460d667",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/independent-review-final.md",
+        "sha256": "e6ed2166337a5f88845716aba32546d2e382d6e014629381c1cef7768f0b487b",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/independent-review-initial.md",
+        "sha256": "22e6071370c01807e486d0ccba7b0ed5c79183ba91081106110abc1612fa5d3b",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/intake.json",
+        "sha256": "e9815f69ecac31333f58ebd5544e5463cf0e11052b7c6b9e10dbc6259e4f4d95",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/review-input.json",
+        "sha256": "fe2469973c11dd42b353b066225635850102cfb9b03abb775c6cfd14706baed2",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/source-manifest.json",
+        "sha256": "7b5bfa123871e4985b667ddd50b341de51ce90aac042f703cdf12ec793119894",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/static-verification-final.json",
+        "sha256": "6f6cbe16a14efc665115f844f95c3f114457dc495c4e1cd7b21b352dbbb735b2",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/static-verification.json",
+        "sha256": "dd3fcdff0d8bbe03d5eaf77361d5cd3f76f791ada23ccce91eb6eea20d2b7ab8",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/ui-probe.json",
+        "sha256": "148db4e82e6b68701b5a96b3a48af83cc8b85e2daa0bc2e186adc44e22da11ae",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/verification-c2.json",
+        "sha256": "79fdcf149ddcee440f6a607da13d26c13aabf3438767e31305a09b2d499924f5",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/verification-c3.json",
+        "sha256": "7e558411f00dc4847eda37090a2e0c16291ca7f52380c29c19963dde4d4a32c8",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/verification.json",
+        "sha256": "08de812f0b39681aea79c315b44ec9c22f0aeac5c51ea98dc1ec4a115fb12db3",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/ontology/__init__.py",
+        "sha256": "dd89c5685444fdca5a3fd37acb3d0cc05be3dbb77a935a39feb298503b7e7a7d",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/ontology/model.py",
+        "sha256": "26cb5c55c10e0611b5610b53ca3ca129ad4e371e6186b026d74c791a15573c23",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/ontology/service.py",
+        "sha256": "fa49220fbc812f6e94f6c0c19b6ceff82cb00fa9843f1e7238f6c196f7c839cf",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/ontology/source_projection.py",
+        "sha256": "919e6f055c84ddb55de985c66093d585b53ea9f78e167c2aa85dabb224c0c8e2",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "packages/engine/tests/test_ontology_editor.py",
+        "sha256": "75e7a810b6d3dd1049b621072d7c858146136b4bb77560f2942d54936478343b",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "packages/engine/tests/test_ontology_fixed_inputs.py",
+        "sha256": "09ad1826425a4e0f1b68347ffe407a069b8fb7bf7c08a3d9fbfa62b97bf72739",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "packages/engine/tests/test_ontology_source_projection.py",
+        "sha256": "000a489696ad29ff88e0f422a67b0a4de168c7d681fe61961979a5c7eb94d2cd",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/invalid-turtle.ttl",
+        "sha256": "8f003454f79b131b82853cb763685fab447e5cd02018b69eb56ba1d2636851ed",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/manifest.json",
+        "sha256": "bdd9bb6d5d318ac76fb1c674dc3b916c17d56ecc010ee6cfacdcf24dc1096d03",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/manual-supported.ttl",
+        "sha256": "fea927fa9393e82ba0a6d0b71c6387d4892b8599384edba26db8ad8d49e3d49b",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/supported-shacl-template.ttl",
+        "sha256": "44684f7d49e33cc4c9b7a28b11549715df0f4f73843bc69455702134cf2202c2",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/t09-fixed-inputs/G-base.json",
+        "sha256": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/t09-fixed-inputs/manifest.json",
+        "sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/unsupported-owl.ttl",
+        "sha256": "7fb25d98e1968e444675f783d6128562fb8f082725d6202136bdeecd9e8a8006",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/unsupported-shacl-path.ttl",
+        "sha256": "d864d43a223baaf3762816a1ba591da157e973058ec7987fbce4a0b3088de8de",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/unit/t02-ontology-views.test.ts",
+        "sha256": "11f021b7a6e8a9a7c1f13288c7153d78f7cb931fd13c37ab5100c7af90a99a2d",
+        "role": "S1-product-test-fixture"
+      }
+    ],
+    "roles": {
+      "S1-product-test-fixture": 19,
+      "S1-process-evidence": 24,
+      "later-plan-context-only-not-implemented": 10,
+      "S1-headless-harness": 5
+    },
+    "agentSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "minimax": {
+    "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-minimax-review-4932122",
+    "head": "ce1c3df41a233a07de4ef8fad54d5f201b222a23",
+    "originalPrompt": "minimax-m31flash-input.md",
+    "originalBytes": 29048,
+    "originalSha256": "20e90310c471bb46ddb24dc1df31969be657382d13af2dac6498be7eedc94e5f",
+    "submittedBytes": 32029,
+    "submittedSha256": "5c4317d0700a87b18aa8d9f018e91dac98a68de9a4a6b828711756de143f6a3d",
+    "originalExactlyIncluded": true,
+    "originalOccurrences": 1,
+    "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-minimax-review-4932122/docs/reviews/T02/round-1/minimax-m31flash.md",
+    "verifiedFiles": [
+      {
+        "path": "apps/desktop/src/renderer/src/ontology/OntologyPage.tsx",
+        "sha256": "127e0f5b746f7c7140f4e92b4d423b920ee9422df3cc87f8945ad799a1626ef1",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "apps/desktop/src/renderer/src/ontology/ontology.css",
+        "sha256": "000a16875e2155c0ec7bd0b704dde4103af4754e41550bf88c4756a27c366a62",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "apps/desktop/src/renderer/src/ontology/view-model.ts",
+        "sha256": "5a3c6c3bf95bc2cc6219f7cf24e5d337c8381ae6fc392b460895b002e0c2e405",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "docs/iterations/T02/acceptance.md",
+        "sha256": "0cc530704d1373b85a1c3bdee4ac2592ef04659b98fcc9ba596725ccf83ed682",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/iterations/T02/controller-message-draft.md",
+        "sha256": "7adfc8cbcb271d1a84e73d5092f7fcc47048c1af37e31b246adf40b59bdddbba",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/iterations/T02/delivery.md",
+        "sha256": "2a8c814afddf769eb43b7a68aa5d1c2a86cea7b14fd5bf81ff5fff4c19ad8213",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/iterations/T02/interface-handoff.md",
+        "sha256": "fd2239404473ae48f73f45199d84fc1976e12ec9ab1a7468161b2f84a737c186",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/iterations/T02/source-projection.md",
+        "sha256": "60b2f5226985874d5dc74fb886faead4c9be5ccbe6d92bdee5e03d4268ca1153",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/iterations/T02/stage-registration-request.md",
+        "sha256": "70c94baba5a637281019c95feb265d0cd05042cf4534b9cdc8e7c53d9c2ecc32",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/iterations/T02/typed-changeset-integration-plan.md",
+        "sha256": "6b88b1f7a8e9b7b08719f6b48dda16905a3eb800a7b8baef21f4b7a26b06983c",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/iterations/T02/ui-probe/build.mjs",
+        "sha256": "0f953b219d1e1306d372727f8ade16cbe5786e4efb3edb4ddeaaf4eecf4dbf08",
+        "role": "S1-headless-harness"
+      },
+      {
+        "path": "docs/iterations/T02/ui-probe/check.mjs",
+        "sha256": "b0b199ea01cf900bd8cd07a224c1f14f43ec3b233f53275783975415b6cc2d06",
+        "role": "S1-headless-harness"
+      },
+      {
+        "path": "docs/iterations/T02/ui-probe/fixture.json",
+        "sha256": "55f1b9c9b74149c34efc238f2c9772dc39c20434439aa283fa6870a7b2adc331",
+        "role": "S1-headless-harness"
+      },
+      {
+        "path": "docs/iterations/T02/ui-probe/harness.tsx",
+        "sha256": "f12984e000d411609ac11abc79d462ca54b89f36757ca55669d09a20c314bc32",
+        "role": "S1-headless-harness"
+      },
+      {
+        "path": "docs/iterations/T02/ui-probe/index.html",
+        "sha256": "b8262fcd67ddb5e429f095e29086f6de2ed621c1a3779892f0ec9e1827b7490a",
+        "role": "S1-headless-harness"
+      },
+      {
+        "path": "docs/reviews/T02/controller-message-receipt.json",
+        "sha256": "4eb6b515ec162fe800906a9b52cff7906c6592243e028f63b732a47e45380dac",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/README.md",
+        "sha256": "afe5324266bf68d0d9a009c6f96874be8224e8817a2cff447798c0e124e7a22f",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/archive-index.json",
+        "sha256": "62879518e3c03987f0c74bccc86b932bd91acb6950d7ac15df28932a9a9f1395",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/git-readback.json",
+        "sha256": "c69651b00e758781eef5940b5b66d2457661f9430d147ac86ce42a82f481ca2c",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/independent-review.md",
+        "sha256": "b3a57e6841eef6e8d0f31f94bad54cc897d31f820cb35b684b8164491c331e75",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/manifest.json",
+        "sha256": "ee9585f7d1960ef70808c09cf67e51d377970c3c8f8e8b8a348f706384c9e4f2",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/raw-evidence-c1-c3-20261021.tar.gz",
+        "sha256": "43d9e20533885828a03c34392e8ae42ada23663c1cc338986c795c236f2a6b86",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/evidence-archive/readback.json",
+        "sha256": "981703cfb263eb75c2996c447ce4f991cce3fafb1712d25965b6e98d3d2b7718",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/independent-review-c1.md",
+        "sha256": "b681ed1d1ab8a217a35b866d1d2efede2c070b5bb4956564b2a1ed9feba19034",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/independent-review-c2.md",
+        "sha256": "5fdafe16dab0a8de7f7cfbc5a90cec278675ccec53e7ab671ea74d4d0b4919f7",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/independent-review-c3.md",
+        "sha256": "7cf61a7e02cf85bbf0f8371e2ea82cc8a3e6ca05d4a6ec75ef988406a2a0492c",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/stage-registration-review.md",
+        "sha256": "084065535aa2762efcf9c7bc31981d05d783b65c53aa4915a460ca6c948c11ec",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/status.md",
+        "sha256": "260a7020985cf66c2dd040cde798a6e43ccbb503c58ed45d0a26c334d081d20e",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/t09-input-verification.json",
+        "sha256": "e66a3a8d23f4c6e722ef26d7e3a40e96f776b35756b0dda4eb15981171a9b8e8",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/delivery-manifest.json",
+        "sha256": "f5a9ac444246b0ade3ec4f556a93aa3b5029c28d5a4f951839464e427147378b",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/disposition.md",
+        "sha256": "619b810148e1eda25b7e2ee0931e2344a6198c1bb949f543a7e251a17460d667",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/independent-review-final.md",
+        "sha256": "e6ed2166337a5f88845716aba32546d2e382d6e014629381c1cef7768f0b487b",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/independent-review-initial.md",
+        "sha256": "22e6071370c01807e486d0ccba7b0ed5c79183ba91081106110abc1612fa5d3b",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/intake.json",
+        "sha256": "e9815f69ecac31333f58ebd5544e5463cf0e11052b7c6b9e10dbc6259e4f4d95",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/review-input.json",
+        "sha256": "fe2469973c11dd42b353b066225635850102cfb9b03abb775c6cfd14706baed2",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/source-manifest.json",
+        "sha256": "7b5bfa123871e4985b667ddd50b341de51ce90aac042f703cdf12ec793119894",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/static-verification-final.json",
+        "sha256": "6f6cbe16a14efc665115f844f95c3f114457dc495c4e1cd7b21b352dbbb735b2",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/typed-changeset-integration-plan/static-verification.json",
+        "sha256": "dd3fcdff0d8bbe03d5eaf77361d5cd3f76f791ada23ccce91eb6eea20d2b7ab8",
+        "role": "later-plan-context-only-not-implemented"
+      },
+      {
+        "path": "docs/reviews/T02/ui-probe.json",
+        "sha256": "148db4e82e6b68701b5a96b3a48af83cc8b85e2daa0bc2e186adc44e22da11ae",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/verification-c2.json",
+        "sha256": "79fdcf149ddcee440f6a607da13d26c13aabf3438767e31305a09b2d499924f5",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/verification-c3.json",
+        "sha256": "7e558411f00dc4847eda37090a2e0c16291ca7f52380c29c19963dde4d4a32c8",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "docs/reviews/T02/verification.json",
+        "sha256": "08de812f0b39681aea79c315b44ec9c22f0aeac5c51ea98dc1ec4a115fb12db3",
+        "role": "S1-process-evidence"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/ontology/__init__.py",
+        "sha256": "dd89c5685444fdca5a3fd37acb3d0cc05be3dbb77a935a39feb298503b7e7a7d",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/ontology/model.py",
+        "sha256": "26cb5c55c10e0611b5610b53ca3ca129ad4e371e6186b026d74c791a15573c23",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/ontology/service.py",
+        "sha256": "fa49220fbc812f6e94f6c0c19b6ceff82cb00fa9843f1e7238f6c196f7c839cf",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/ontology/source_projection.py",
+        "sha256": "919e6f055c84ddb55de985c66093d585b53ea9f78e167c2aa85dabb224c0c8e2",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "packages/engine/tests/test_ontology_editor.py",
+        "sha256": "75e7a810b6d3dd1049b621072d7c858146136b4bb77560f2942d54936478343b",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "packages/engine/tests/test_ontology_fixed_inputs.py",
+        "sha256": "09ad1826425a4e0f1b68347ffe407a069b8fb7bf7c08a3d9fbfa62b97bf72739",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "packages/engine/tests/test_ontology_source_projection.py",
+        "sha256": "000a489696ad29ff88e0f422a67b0a4de168c7d681fe61961979a5c7eb94d2cd",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/invalid-turtle.ttl",
+        "sha256": "8f003454f79b131b82853cb763685fab447e5cd02018b69eb56ba1d2636851ed",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/manifest.json",
+        "sha256": "bdd9bb6d5d318ac76fb1c674dc3b916c17d56ecc010ee6cfacdcf24dc1096d03",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/manual-supported.ttl",
+        "sha256": "fea927fa9393e82ba0a6d0b71c6387d4892b8599384edba26db8ad8d49e3d49b",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/supported-shacl-template.ttl",
+        "sha256": "44684f7d49e33cc4c9b7a28b11549715df0f4f73843bc69455702134cf2202c2",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/t09-fixed-inputs/G-base.json",
+        "sha256": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/t09-fixed-inputs/manifest.json",
+        "sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/unsupported-owl.ttl",
+        "sha256": "7fb25d98e1968e444675f783d6128562fb8f082725d6202136bdeecd9e8a8006",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/fixtures/ontology/unsupported-shacl-path.ttl",
+        "sha256": "d864d43a223baaf3762816a1ba591da157e973058ec7987fbce4a0b3088de8de",
+        "role": "S1-product-test-fixture"
+      },
+      {
+        "path": "tests/unit/t02-ontology-views.test.ts",
+        "sha256": "11f021b7a6e8a9a7c1f13288c7153d78f7cb931fd13c37ab5100c7af90a99a2d",
+        "role": "S1-product-test-fixture"
+      }
+    ],
+    "roles": {
+      "S1-product-test-fixture": 19,
+      "S1-process-evidence": 24,
+      "later-plan-context-only-not-implemented": 10,
+      "S1-headless-harness": 5
+    },
+    "agentSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  }
+}
