@@ -1,0 +1,83 @@
+{
+  "recordedAt": "2026-10-22T18:36:39.522311+00:00",
+  "fixedProduct": "5070004ec8e3219bea33960bd88f57f1976e9cf8",
+  "reviewHead": "f2102f0738706d7ed29907ac84f10ad0a506555a",
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "guiReleasedAtOwnerCallback": "2026-10-22T18:13:21Z",
+  "guiMayBeUsed": false,
+  "actualNewTasks": 2,
+  "fullInputsNativeVerified": true,
+  "old554PassTransferred": false,
+  "zcode": {
+    "sessionId": "session_17ab107de1b57d5bb5eaa88a997731d0",
+    "originalTurnId": "turn_aadae121-702d-4abc-9abb-e8adc94aaf43",
+    "officialOriginalTurnTerminal": {
+      "sessionId": "session_17ab107de1b57d5bb5eaa88a997731d0",
+      "turnId": "turn_aadae121-702d-4abc-9abb-e8adc94aaf43",
+      "event": "turn.completed",
+      "timestamp": "2026-10-22T18:23:59.230Z",
+      "status": "completed"
+    },
+    "report": {
+      "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004/docs/reviews/T04/round-2/zcode-glm53.md",
+      "bytes": 27064,
+      "sha256": "bbe76da2f2654d8aeecce72d0dd93f5cae5e707165ef007d5d9044e25adc57a8",
+      "lines": 131,
+      "ownerFullRead": true,
+      "fullReadNote": "Initial tool print had one middle truncation; omitted D1/D3/D4 portion read in separate smaller range before full-read claim."
+    },
+    "modelConclusion": "Pass complete bounded same507 S1",
+    "ownerDisposition": "zcode-owner-disposition.md",
+    "independentCollectionReview": "zcode-collection-review.md"
+  },
+  "minimax": {
+    "sessionId": "mvs_be9afd3ec94f4d05935086be63c127b7",
+    "originalTurnId": "9faa1d9d-6d75-4958-beeb-9c0cc82051d7",
+    "officialOriginalTurnTerminal": {
+      "observedAt": "2026-10-22T18:31:36.543906+00:00",
+      "strictOriginalTurnFourScalars": {
+        "session_id": "mvs_be9afd3ec94f4d05935086be63c127b7",
+        "turn_id": "9faa1d9d-6d75-4958-beeb-9c0cc82051d7",
+        "terminal_outcome": "completed",
+        "updated_at_ms": 1792693627829
+      },
+      "currentFallbackUsed": false,
+      "reportExists": true,
+      "reportBytes": 38855
+    },
+    "report": {
+      "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/docs/reviews/T04/round-2/minimax-m31flash.md",
+      "bytes": 38855,
+      "sha256": "7a63268ae5ef0c1ea078180406dfeaa59f820f13b5bbedf73afd9564ccb2d765",
+      "lines": 418,
+      "ownerFullRead": true,
+      "readRanges": [
+        "1-55",
+        "56-140",
+        "141-240",
+        "241-340",
+        "341-440"
+      ]
+    },
+    "modelConclusion": "Pass complete bounded same507 S1",
+    "ownerDisposition": "minimax-owner-disposition.md",
+    "processAcceptance": "FAIL independent exact-original-turn audit: out-of-scope config/peer runtime/session search requests and operator receipt overwrite; controller intake/remediation decision pending"
+  },
+  "sameCandidateTwoModelBoundedPassReportsReceived": true,
+  "controllerAcceptedDualPass": false,
+  "parentAcceptance": false,
+  "pushPRCIMergeRemoteRelease": false,
+  "goalStatusLastObserved": "blocked",
+  "noProductRetestForProcessOnly": true,
+  "originalsPolicy": "All model reports/overwritten settings/operator pre-overwrite settings immutable; summary/status only added; no runtime restoration.",
+  "independentProcessAudit": "minimax-process-audit.md; minimax-native-request-audit.json",
+  "acceptedSameCandidateDualPass": false,
+  "controllerDecision": {
+    "sourceThreadId": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+    "decision": "Current MiniMax process fails; do not accept this same507 complete dualPass; model productPass original preserved. Prepare next round with two fresh complete independent tasks and clean cwd; no unchanged product checks rerun, no GUI until queued lease, no push/merge.",
+    "source": "Actual controller message received in owner chat after independent exact-turn key findings",
+    "nextRoundOldZPassTransfers": false,
+    "mayRestoreOverwrittenRuntimeInPlace": false,
+    "mayReadConfigOrPeerResultForAudit": false
+  }
+}

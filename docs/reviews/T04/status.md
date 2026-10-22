@@ -1,6 +1,10 @@
 # T04 查询状态
 
-2026-10-23 固定后过程更新：**产品候选 5070004 已固定；完整验证、固定候选内审及新双审准备包独审通过，两个新审查树已部署，等待总控内部创建窗口。新指定任务、报告和实际设置读回均未产生。**
+2026-10-23 当前过程状态：**固定507两项全新完整指定审查均已正式completed并交付有界S1 Pass；全文报告、完整输入与原turn终态已收件。全部意见已逐项记录；最小独审已证实MiniMax存在越界工具请求和收据覆盖，流程不通过，不能接收为完整同版双Pass。后续补审由总控决定，发布门未通过。**
+
+当前证据入口：[实际双审收件](p3-repair/actual-launch-20261023/)、[Z逐意见处置](p3-repair/actual-launch-20261023/zcode-owner-disposition.md)、[M逐意见处置](p3-repair/actual-launch-20261023/minimax-owner-disposition.md)。Z原报告27064B/bbe76da2…dc57a8、M原报告38855B/7a63268a…b2d765，原文保持。双方完整check各自实际719 TS/1167 Python、SSR14、真实组件DOM5；M完整check先缺平台绑定exit1后补装锁内包exit0，首败保留。GUI已于18:13:21Z释放。固定507的历史evidence/final-verification.json和verification-summary.json描述早期候选；507原实现终态看p3-repair/verification.json，不能将历史证据误作当前。
+
+以下“未创建/排队”等为创建前历史状态，按对应时点读取；本开发树过程追加不改变两个冻结review树的507产品字节。实际Goal仍blocked，父P0/跨模块/两OS/真人及push/PR/CI/正常合并/远端均未完成或获本轮授权。
 
 - 固定产品：`5070004ec8e3219bea33960bd88f57f1976e9cf8`；共享批准基线仍为 5f。
 - 两个新 review 树实际 HEAD：`f2102f0738706d7ed29907ac84f10ad0a506555a`（detached）；名称为 `T04-s1-zcode-review-5070004`、`T04-s1-minimax-review-5070004`，位于同一 `.worktrees/`。42 项产品字节均等固定 507，23 项支持 payload 均等过程 Git；各自独立依赖，仅 de15 指南保护 M。

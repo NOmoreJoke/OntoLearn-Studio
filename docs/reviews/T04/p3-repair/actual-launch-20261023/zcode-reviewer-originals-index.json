@@ -1,0 +1,202 @@
+{
+  "capturedAt": "2026-10-22T18:27:39.447923+00:00",
+  "sourceWorkspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004",
+  "report": {
+    "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004/docs/reviews/T04/round-2/zcode-glm53.md",
+    "bytes": 27064,
+    "sha256": "bbe76da2f2654d8aeecce72d0dd93f5cae5e707165ef007d5d9044e25adc57a8",
+    "lines": 131,
+    "ownerFullRead": true,
+    "fullReadNote": "Initial tool print had one middle truncation; omitted D1/D3/D4 portion read in separate smaller range before full-read claim."
+  },
+  "officialOriginalTurnTerminal": {
+    "sessionId": "session_17ab107de1b57d5bb5eaa88a997731d0",
+    "turnId": "turn_aadae121-702d-4abc-9abb-e8adc94aaf43",
+    "event": "turn.completed",
+    "timestamp": "2026-10-22T18:23:59.230Z",
+    "status": "completed"
+  },
+  "modelConclusion": "Pass complete bounded same507 S1; no new P1/P2/P3; not parent or other reviewer",
+  "archive": {
+    "path": "zcode-reviewer-originals.tar.gz",
+    "bytes": 30410,
+    "sha256": "7ed4e8f413b0709424da4a342e2de0bdd0103aa27dec47650e5818c059f605f5"
+  },
+  "commands": [
+    {
+      "reviewer": "zcode",
+      "label": "targeted-ts",
+      "argv": [
+        "npx",
+        "vitest",
+        "run",
+        "tests/unit/t04-query-authoring.test.ts",
+        "tests/unit/t04-query-results.test.ts",
+        "tests/unit/t04-query-reader.test.ts"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004",
+      "startedAt": "2026-10-22T18:16:22.331922+00:00",
+      "finishedAt": "2026-10-22T18:16:25.365617+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004/test-results/t04-review-runtime/zcode/raw/targeted-ts.log",
+      "rawBytes": 419,
+      "rawSHA256": "5760e999b870550429f5b091c49d5dd58ea40883633b4a5c09cd875d52205ca2"
+    },
+    {
+      "reviewer": "zcode",
+      "label": "targeted-python",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "packages/engine/tests/test_query_service_authoring.py",
+        "packages/engine/tests/test_query_service_approved_baseline.py",
+        "-q"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004",
+      "startedAt": "2026-10-22T18:16:25.636583+00:00",
+      "finishedAt": "2026-10-22T18:16:26.942444+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004/test-results/t04-review-runtime/zcode/raw/targeted-python.log",
+      "rawBytes": 180,
+      "rawSHA256": "e2d40232ee5409deb613477b52e99939b06e7f573eb11e177e08202b4a2d63e1"
+    },
+    {
+      "reviewer": "zcode",
+      "label": "ssr",
+      "argv": [
+        "node",
+        "docs/iterations/T04/ssr-probe.mjs"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004",
+      "startedAt": "2026-10-22T18:16:37.878565+00:00",
+      "finishedAt": "2026-10-22T18:16:38.370468+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004/test-results/t04-review-runtime/zcode/raw/ssr.log",
+      "rawBytes": 423,
+      "rawSHA256": "f730e85970c4fff87784f8d377da18f50da85de9487a4a0080fedc38a0f80874"
+    },
+    {
+      "reviewer": "zcode",
+      "label": "full-check",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004",
+      "startedAt": "2026-10-22T18:16:48.267780+00:00",
+      "finishedAt": "2026-10-22T18:18:11.578331+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004/test-results/t04-review-runtime/zcode/raw/full-check.log",
+      "rawBytes": 7638,
+      "rawSHA256": "d77aa825959b62b74f38a57ea4caf352af8a62b1490ea3dc0af693bc563c7e09"
+    },
+    {
+      "reviewer": "zcode",
+      "label": "component",
+      "argv": [
+        "node",
+        "docs/iterations/T04/p3-interaction-probe.mjs",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "review-zcode"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004",
+      "startedAt": "2026-10-22T18:18:24.608691+00:00",
+      "finishedAt": "2026-10-22T18:18:33.669465+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004/test-results/t04-review-runtime/zcode/raw/component.log",
+      "rawBytes": 1027,
+      "rawSHA256": "998b5596f7788cf439a3b47f5ad81d423e17cb97c12db424529484b2f3897b22"
+    }
+  ],
+  "members": [
+    {
+      "path": "zcode-glm53.md",
+      "bytes": 27064,
+      "sha256": "bbe76da2f2654d8aeecce72d0dd93f5cae5e707165ef007d5d9044e25adc57a8"
+    },
+    {
+      "path": "metadata/targeted-ts.json",
+      "bytes": 741,
+      "sha256": "aa35b461a94d91959c5e6abf6481418df29006fbbff3e241b89574e638f046ed"
+    },
+    {
+      "path": "raw/targeted-ts.log",
+      "bytes": 419,
+      "sha256": "5760e999b870550429f5b091c49d5dd58ea40883633b4a5c09cd875d52205ca2"
+    },
+    {
+      "path": "metadata/targeted-python.json",
+      "bytes": 771,
+      "sha256": "a01995466ba23225e6d43e17936c9ad87fa8665ee26263fcd262feb3dc03c65f"
+    },
+    {
+      "path": "raw/targeted-python.log",
+      "bytes": 180,
+      "sha256": "e2d40232ee5409deb613477b52e99939b06e7f573eb11e177e08202b4a2d63e1"
+    },
+    {
+      "path": "metadata/ssr.json",
+      "bytes": 609,
+      "sha256": "fe96875ed2b7bf55190c10f4806878d898865307374672c5abccb3e956635c24"
+    },
+    {
+      "path": "raw/ssr.log",
+      "bytes": 423,
+      "sha256": "f730e85970c4fff87784f8d377da18f50da85de9487a4a0080fedc38a0f80874"
+    },
+    {
+      "path": "metadata/full-check.json",
+      "bytes": 606,
+      "sha256": "ee75c4c26834c4342be63124e7fa2159a84db9392efa873dfb805bf95bccec43"
+    },
+    {
+      "path": "raw/full-check.log",
+      "bytes": 7638,
+      "sha256": "d77aa825959b62b74f38a57ea4caf352af8a62b1490ea3dc0af693bc563c7e09"
+    },
+    {
+      "path": "metadata/component.json",
+      "bytes": 721,
+      "sha256": "81d062e72b040c9fa3e968cf75df795a0a529537bbb99f3a21bfd8a00c78e7f8"
+    },
+    {
+      "path": "raw/component.log",
+      "bytes": 1027,
+      "sha256": "998b5596f7788cf439a3b47f5ad81d423e17cb97c12db424529484b2f3897b22"
+    },
+    {
+      "path": "counterexamples/cross-lang-boundary.mjs",
+      "bytes": 3790,
+      "sha256": "d4ed2268d09fcd03778dce883e9a988f086776cb4e4f83e9cca413a8c4f11f69"
+    },
+    {
+      "path": "counterexamples/cross-lang-boundary.py",
+      "bytes": 2380,
+      "sha256": "d3cc32050ee3c07c119f44e19085e1dfa32c7743466ff2658e9115055a635392"
+    },
+    {
+      "path": "counterexamples/first-failure-probe-harness.md",
+      "bytes": 1162,
+      "sha256": "ebedb99f619815bce98080e1ba10773e8ccac7149c1e44773d76f9b2644d2ad6"
+    },
+    {
+      "path": "counterexamples/py-results.json",
+      "bytes": 1986847,
+      "sha256": "848e31d2de93dcbc9d6ebc1bcc13114a8e0f178dc201c3309d181a11842a380a"
+    },
+    {
+      "path": "counterexamples/ts-results.json",
+      "bytes": 671661,
+      "sha256": "98a90fdb819e181096cd20eacbc2614c905a02da25444fffbdd1d5c1609cefe0"
+    },
+    {
+      "path": "raw/first-failure-python3-version.md",
+      "bytes": 1717,
+      "sha256": "f4ba2180db676bc9e3ed47513afe6c9c54f33276b856aa7cebe68f9be8ba4e46"
+    }
+  ],
+  "firstPackagingFailure": "Owner first invoked packaging inline from review cwd, so destination actual-launch directory did not exist; FileNotFound before any writes, not a successful archive. Overall multi-command shell later returned0 because subsequent read-only cat succeeded; this is not treated as packaging exit0. Retried from asserted owner repair cwd; original tool output preserved."
+}

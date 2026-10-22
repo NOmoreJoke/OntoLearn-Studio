@@ -1,0 +1,384 @@
+{
+  "capturedAt": "2026-10-22T18:35:16.177920+00:00",
+  "sourceWorkspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004",
+  "report": {
+    "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/docs/reviews/T04/round-2/minimax-m31flash.md",
+    "bytes": 38855,
+    "sha256": "7a63268ae5ef0c1ea078180406dfeaa59f820f13b5bbedf73afd9564ccb2d765",
+    "lines": 418,
+    "ownerFullRead": true,
+    "readRanges": [
+      "1-55",
+      "56-140",
+      "141-240",
+      "241-340",
+      "341-440"
+    ]
+  },
+  "officialOriginalTurnSnapshot": {
+    "observedAt": "2026-10-22T18:31:36.543906+00:00",
+    "strictOriginalTurnFourScalars": {
+      "session_id": "mvs_be9afd3ec94f4d05935086be63c127b7",
+      "turn_id": "9faa1d9d-6d75-4958-beeb-9c0cc82051d7",
+      "terminal_outcome": "completed",
+      "updated_at_ms": 1792693627829
+    },
+    "currentFallbackUsed": false,
+    "reportExists": true,
+    "reportBytes": 38855
+  },
+  "modelConclusion": "Pass complete bounded same507 S1; N1-N7 disposition separate; controller process intake pending",
+  "archive": {
+    "path": "minimax-reviewer-originals.tar.gz",
+    "bytes": 31031,
+    "sha256": "882900ddff01a9bdfcb3ff5f70400078ed08179ec75ce1a333834b92b4d5c857"
+  },
+  "commands": [
+    {
+      "reviewer": "minimax",
+      "label": "d1-parity-ts",
+      "argv": [
+        "node",
+        "test-results/t04-review-runtime/minimax/counterexamples/d1-parity.mjs"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004",
+      "startedAt": "2026-10-22T18:16:23.962260+00:00",
+      "finishedAt": "2026-10-22T18:16:24.087278+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/test-results/t04-review-runtime/minimax/raw/d1-parity-ts.log",
+      "rawBytes": 8782,
+      "rawSHA256": "f1e863e972b385d147b2d18df9bd77e3e7d7f081ca8555203f4cca6ce7b8cdde"
+    },
+    {
+      "reviewer": "minimax",
+      "label": "d1-parity-py",
+      "argv": [
+        ".venv/bin/python3",
+        "test-results/t04-review-runtime/minimax/counterexamples/d1-parity.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004",
+      "startedAt": "2026-10-22T18:16:44.321981+00:00",
+      "finishedAt": "2026-10-22T18:16:44.365043+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/test-results/t04-review-runtime/minimax/raw/d1-parity-py.log",
+      "rawBytes": 7715,
+      "rawSHA256": "ea650c0a249b1e335c87456f255257d4bfe85a67ca399d6dcf6ec11e31ce725a"
+    },
+    {
+      "reviewer": "minimax",
+      "label": "d1-parity-compare",
+      "argv": [
+        ".venv/bin/python3",
+        "test-results/t04-review-runtime/minimax/counterexamples/d1-parity-compare.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004",
+      "startedAt": "2026-10-22T18:16:57.744176+00:00",
+      "finishedAt": "2026-10-22T18:16:57.779399+00:00",
+      "exitCode": 1,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/test-results/t04-review-runtime/minimax/raw/d1-parity-compare.log",
+      "rawBytes": 395,
+      "rawSHA256": "da882c7e3105f1c8368561a709a929acc6957a276393fd09747c92f68b59215f"
+    },
+    {
+      "reviewer": "minimax",
+      "label": "d1-parity-compare2",
+      "argv": [
+        ".venv/bin/python3",
+        "test-results/t04-review-runtime/minimax/counterexamples/d1-parity-compare.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004",
+      "startedAt": "2026-10-22T18:17:03.454261+00:00",
+      "finishedAt": "2026-10-22T18:17:03.489306+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/test-results/t04-review-runtime/minimax/raw/d1-parity-compare2.log",
+      "rawBytes": 904,
+      "rawSHA256": "a752cc84ea46b4d2add0ad5aed26167012f2ba59ae9b3c6019cb5307f0e00f44"
+    },
+    {
+      "reviewer": "minimax",
+      "label": "full-check",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004",
+      "startedAt": "2026-10-22T18:17:10.795469+00:00",
+      "finishedAt": "2026-10-22T18:17:24.128722+00:00",
+      "exitCode": 1,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/test-results/t04-review-runtime/minimax/raw/full-check.log",
+      "rawBytes": 3179,
+      "rawSHA256": "10699e2cbdd5a590e04f5a06d1e629472f38e7e9b51ab9e6e77aceac000360ad"
+    },
+    {
+      "reviewer": "minimax",
+      "label": "rolldown-binding-pack",
+      "argv": [
+        "npm",
+        "pack",
+        "@rolldown/binding-darwin-arm64@1.2.14",
+        "--pack-destination",
+        "test-results/t04-review-runtime/minimax/tmp"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004",
+      "startedAt": "2026-10-22T18:17:56.692463+00:00",
+      "finishedAt": "2026-10-22T18:18:02.358294+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/test-results/t04-review-runtime/minimax/raw/rolldown-binding-pack.log",
+      "rawBytes": 633,
+      "rawSHA256": "8214f7bd728a97ed1c0ac9f7a3f2a934825c314e781e0032c18cfbb5f4999b4d"
+    },
+    {
+      "reviewer": "minimax",
+      "label": "rolldown-binding-install",
+      "argv": [
+        "bash",
+        "-c",
+        "mkdir -p node_modules/@rolldown/binding-darwin-arm64 && tar -xzf test-results/t04-review-runtime/minimax/tmp/rolldown-binding-darwin-arm64-1.2.14.tgz -C node_modules/@rolldown/binding-darwin-arm64 --strip-components=1 && ls node_modules/@rolldown/binding-darwin-arm64"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004",
+      "startedAt": "2026-10-22T18:18:05.676386+00:00",
+      "finishedAt": "2026-10-22T18:18:05.732854+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/test-results/t04-review-runtime/minimax/raw/rolldown-binding-install.log",
+      "rawBytes": 58,
+      "rawSHA256": "58b7fd0ab7c3bcadc9ccc7735b21f3b067c731b56edb0fac12f56ca1545e62d1"
+    },
+    {
+      "reviewer": "minimax",
+      "label": "full-check-after-binding-repair",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004",
+      "startedAt": "2026-10-22T18:18:09.142236+00:00",
+      "finishedAt": "2026-10-22T18:19:28.189942+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/test-results/t04-review-runtime/minimax/raw/full-check-after-binding-repair.log",
+      "rawBytes": 5397,
+      "rawSHA256": "b1e43731afba12c2b34a57cdac06c5c297fccdcfe983ac2fb69abe8434f33622"
+    },
+    {
+      "reviewer": "minimax",
+      "label": "ssr",
+      "argv": [
+        "node",
+        "docs/iterations/T04/ssr-probe.mjs"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004",
+      "startedAt": "2026-10-22T18:19:42.027176+00:00",
+      "finishedAt": "2026-10-22T18:19:42.516109+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/test-results/t04-review-runtime/minimax/raw/ssr.log",
+      "rawBytes": 423,
+      "rawSHA256": "f730e85970c4fff87784f8d377da18f50da85de9487a4a0080fedc38a0f80874"
+    },
+    {
+      "reviewer": "minimax",
+      "label": "component",
+      "argv": [
+        "node",
+        "docs/iterations/T04/p3-interaction-probe.mjs",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "review-minimax"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004",
+      "startedAt": "2026-10-22T18:19:46.767998+00:00",
+      "finishedAt": "2026-10-22T18:19:52.112263+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/test-results/t04-review-runtime/minimax/raw/component.log",
+      "rawBytes": 1031,
+      "rawSHA256": "61da5291fae0d4609f8ccb1c4a5266bc0e26cac03c0a39220e6c50746c5fede0"
+    }
+  ],
+  "members": [
+    {
+      "path": "minimax-m31flash.md",
+      "bytes": 38855,
+      "sha256": "7a63268ae5ef0c1ea078180406dfeaa59f820f13b5bbedf73afd9564ccb2d765"
+    },
+    {
+      "path": "metadata/d1-parity-ts.json",
+      "bytes": 672,
+      "sha256": "8d6c42c691b139297724349b85326d1c63caa3c7b051bc54c33fdfe2fff02dee"
+    },
+    {
+      "path": "raw/d1-parity-ts.log",
+      "bytes": 8782,
+      "sha256": "f1e863e972b385d147b2d18df9bd77e3e7d7f081ca8555203f4cca6ce7b8cdde"
+    },
+    {
+      "path": "metadata/d1-parity-py.json",
+      "bytes": 684,
+      "sha256": "655917ecae385dc43ebc61818dbc3205b1dc3f9d4f0a8139af5e8d1aef235163"
+    },
+    {
+      "path": "raw/d1-parity-py.log",
+      "bytes": 7715,
+      "sha256": "ea650c0a249b1e335c87456f255257d4bfe85a67ca399d6dcf6ec11e31ce725a"
+    },
+    {
+      "path": "metadata/d1-parity-compare.json",
+      "bytes": 701,
+      "sha256": "ba7567200ea9b4377ccedf98edfda05a9576185039c1b0a83c579f6478a229eb"
+    },
+    {
+      "path": "raw/d1-parity-compare.log",
+      "bytes": 395,
+      "sha256": "da882c7e3105f1c8368561a709a929acc6957a276393fd09747c92f68b59215f"
+    },
+    {
+      "path": "metadata/d1-parity-compare2.json",
+      "bytes": 703,
+      "sha256": "d742f1d72719e1582fa22a432ab0a4040d3c44641e4400cb05eb1f9a819a2fb0"
+    },
+    {
+      "path": "raw/d1-parity-compare2.log",
+      "bytes": 904,
+      "sha256": "a752cc84ea46b4d2add0ad5aed26167012f2ba59ae9b3c6019cb5307f0e00f44"
+    },
+    {
+      "path": "metadata/full-check.json",
+      "bytes": 614,
+      "sha256": "ae42be105193d9667b6a3a03f7acfd2a2fdc89994004bcc9861495bae494d8a9"
+    },
+    {
+      "path": "raw/full-check.log",
+      "bytes": 3179,
+      "sha256": "10699e2cbdd5a590e04f5a06d1e629472f38e7e9b51ab9e6e77aceac000360ad"
+    },
+    {
+      "path": "metadata/rolldown-binding-pack.json",
+      "bytes": 745,
+      "sha256": "8c3ef2face633987affb537e59c0970cf5f474cf5e5507671f10be031cdaecc9"
+    },
+    {
+      "path": "raw/rolldown-binding-pack.log",
+      "bytes": 633,
+      "sha256": "8214f7bd728a97ed1c0ac9f7a3f2a934825c314e781e0032c18cfbb5f4999b4d"
+    },
+    {
+      "path": "metadata/rolldown-binding-install.json",
+      "bytes": 902,
+      "sha256": "997139bdc47f15e469ab7c0c555f9ad208ba6e596809143bdb1644e1c674abc7"
+    },
+    {
+      "path": "raw/rolldown-binding-install.log",
+      "bytes": 58,
+      "sha256": "58b7fd0ab7c3bcadc9ccc7735b21f3b067c731b56edb0fac12f56ca1545e62d1"
+    },
+    {
+      "path": "metadata/full-check-after-binding-repair.json",
+      "bytes": 656,
+      "sha256": "9f17b3b233088b6f172485966f670b73b16c861c97e353e0a613b3b47c4247f8"
+    },
+    {
+      "path": "raw/full-check-after-binding-repair.log",
+      "bytes": 5397,
+      "sha256": "b1e43731afba12c2b34a57cdac06c5c297fccdcfe983ac2fb69abe8434f33622"
+    },
+    {
+      "path": "metadata/ssr.json",
+      "bytes": 617,
+      "sha256": "1e770b009a40dc1c98ebe2348a8d48a57211177dc280842825c2f2c9bf3696f0"
+    },
+    {
+      "path": "raw/ssr.log",
+      "bytes": 423,
+      "sha256": "f730e85970c4fff87784f8d377da18f50da85de9487a4a0080fedc38a0f80874"
+    },
+    {
+      "path": "metadata/component.json",
+      "bytes": 731,
+      "sha256": "66d91bb028194e99ca548b38d062b955ebb8f2a6d1f28a5e00ecb0ff41ac4b30"
+    },
+    {
+      "path": "raw/component.log",
+      "bytes": 1031,
+      "sha256": "61da5291fae0d4609f8ccb1c4a5266bc0e26cac03c0a39220e6c50746c5fede0"
+    },
+    {
+      "path": "counterexamples/d1-parity-compare.py",
+      "bytes": 2268,
+      "sha256": "f35cb54d5c5f05fdf718a8d60f2a7facccecd43383ad84e5cae113a4e17c2678"
+    },
+    {
+      "path": "counterexamples/d1-parity.compare.json",
+      "bytes": 904,
+      "sha256": "a752cc84ea46b4d2add0ad5aed26167012f2ba59ae9b3c6019cb5307f0e00f44"
+    },
+    {
+      "path": "counterexamples/d1-parity.mjs",
+      "bytes": 4233,
+      "sha256": "1320b2c4bfe450e699b9cccbeefb01f16dcc1f00bc11ae56782413c7a5c354e5"
+    },
+    {
+      "path": "counterexamples/d1-parity.py",
+      "bytes": 2821,
+      "sha256": "1bf66b466f8dd5dc84ce81c980c9ad23bb6b90e75dd209d4ef1bc02ae5bde160"
+    },
+    {
+      "path": "counterexamples/d1-parity.py.json",
+      "bytes": 7715,
+      "sha256": "ea650c0a249b1e335c87456f255257d4bfe85a67ca399d6dcf6ec11e31ce725a"
+    },
+    {
+      "path": "counterexamples/d1-parity.ts.json",
+      "bytes": 8162,
+      "sha256": "478dcda3def6c8167db9281c4df64dad942c72ee9ea9186d939eff1e1184728c"
+    },
+    {
+      "path": "owner-task-settings.json",
+      "bytes": 4532,
+      "sha256": "440bab734ec7ba0d0398ecae905f100f1d933ced4e232650f80f425b0b95acd3"
+    },
+    {
+      "path": "reviewer-task-settings-readback.json",
+      "bytes": 3540,
+      "sha256": "d10f776223b85e096818ef632f2b926c9fd99ba529af776f2e7ab896b8e26a7f"
+    },
+    {
+      "path": "raw/d1-parity-ts-attempt1.toolcall-failure.log",
+      "bytes": 825,
+      "sha256": "0831821eac0eb1ac51768f43d1c766435477fb368990bf205f6c9556c0d5ea75"
+    },
+    {
+      "path": "browser/interaction-results.json",
+      "bytes": 807,
+      "sha256": "bd16e983d9079fb15360153b566244c404733b4c6319f2251c4c94dd40dd1c76"
+    }
+  ],
+  "reviewTrees": [
+    {
+      "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-5070004",
+      "head": "f2102f0738706d7ed29907ac84f10ad0a506555a",
+      "statusShort": " M AGENTS.md\n?? docs/reviews/T04/round-2/\n",
+      "productFilesMatched": 42,
+      "protectedAGENTSSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+    },
+    {
+      "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004",
+      "head": "f2102f0738706d7ed29907ac84f10ad0a506555a",
+      "statusShort": " M AGENTS.md\n?? docs/reviews/T04/round-2/\n",
+      "productFilesMatched": 42,
+      "protectedAGENTSSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+    }
+  ],
+  "preOverwriteOperatorReceipt": {
+    "path": "minimax-owner-task-settings.json",
+    "bytes": 3349,
+    "sha256": "8c9cb6f0e629ab94f642bbf031e53ba5f979c781adeb3cad2722dee135eaeec0",
+    "matchesOriginalCreationArchiveMember": "minimax/owner-task-settings.json",
+    "restoredReviewRuntimeInPlace": false
+  },
+  "largeLocalArtifact": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-5070004/test-results/t04-p3-repair/browser/review-minimax/interaction-trace.zip",
+    "bytes": 1806380,
+    "sha256": "7a4383198d5f972088a62df5cb2072425dd11446ee4c8bb3b062de1659d2a368",
+    "archived": false,
+    "reason": "Large trace remains isolated local ignored runtime under policy; small result JSON archived."
+  },
+  "evidenceLimit": "Initial ERR_MODULE_NOT_FOUND attempt has no separate raw/receipt in current own runtime; preserve model narrative only, do not claim all initial probe failures fully receipted. Report root-cause attribution to npm optional-dependency bug is reviewer inference; observed binding failure/repair success only."
+}
