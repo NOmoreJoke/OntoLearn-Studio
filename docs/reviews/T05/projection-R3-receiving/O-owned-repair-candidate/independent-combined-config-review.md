@@ -81,3 +81,15 @@ TOML 成功解析。`[tool.ruff.format].exclude` 恰八个精确历史文件，`
 本次只做 Git diff/blob/parent/path 核对、SHA/bytes、JSON 完整解析及序列化关系、AST 解析、TOML 结构比较。没有重新运行原 oracle、产品测试、完整 npm check、旧 helper、native/GUI、模型、网络、安装或 DB。owner 当前完整 check 的结果须由其实际流另行记录，本报告不提前宣布它通过。
 
 精确 15 根锚路径、八历史 Python 的 26 规则 membership 与已授权范围一致；原 77/15 B023 仅作为保留的档案风险，活跃语义检查与四源/五 JSON 未改变。组合配置未发现新的越界或业务 delta。全新同候选完整输入双指定审查、原 finding 最终处理、包内/生产及父/发布门继续按各自实际证据执行。
+
+## 固定 first 报告单路径后继配置复核（2026-10-23）
+
+**后继单 literal 配置 delta 未发现阻断项，原组合静态结论保留。** 上文 8794B / SHA256 `27749db4e150dd5e70568c7c6e4caeae85969476bc0cd7addd101a8a5f587a40` 原版已由 Git `24d750dc` 保留；本节是其后继追加，不覆盖原时间/提交身份。
+
+本次唯一配置 owner 来源提交为 `6fb8889fe13dc7b4bf3f732aa459e3e21892dfa1`，本线实际组合提交 `b88be226501703f1d5365734dd0e56066bd1bffb`，parent `0a5f6ffefb5c8de29eb78a4fc327d0c51a526370`。Git delta 确认只在 `[tool.ruff.format].exclude` 增加完整 literal：`docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/independent-owned-repair-review-first.md`。当前 pyproject 2705B / SHA256 `16cbffd46280d4b38b457c6d9e5c3afad71eb9ff56bbe5a50384b0e40249c154`，current = 来源 Git = 组合 Git；删除该唯一一行后，逐字等于 `a982df8e` 与组合 parent 的 2593B pyproject。
+
+TOML 解析核实当前 format 路径数为 **9 = 八份历史 Python + 一份 first Markdown**；lint 仍是八文件、26 规则 membership；Prettier 仍是上文 15 个根锚精确文件。没有新增目录/glob、全局 lint ignore、active 源码或命令豁免。first Markdown 只获格式例外，没有新增任何 lint 规则或把旧 Python block 当可执行验收。
+
+本轮再次逐字核四源、五 JSON、package.json、package-lock.json、uv.lock：current = 组合 parent Git = 组合后 Git，hash 继续与上文表格相等。first 原件保持 9672B / `abbe714a90a341d00af0103737feba597eb4fb35a1878f129e97a6f770b0ffc0`；active 报告保持 14132B / `e7cc56d9838bc1258788fdcb10556791893bcbf172b5b60210a07647811dad6b`；style 前原文 `.md.raw` 保持 14157B / `0809441bf5d1a06157c372fce18fdb0b4c1bb96604cda354c1f3c5bb31d67e24`，该 raw 亦与 0a5f6ffe Git 相等。未改任何上述文件。
+
+原 77 条档案诊断含 15 条 B023 仍未被修复，原 15 审查意见及 137/26 缺口也不由这条格式例外关闭。本次只做静态 Git/hash/TOML 复核，没有重复运行正在进行的 full-check-03、oracle check04、产品、旧 helper 或模型。结论限于实际后继配置的精确 scope，不提前签完整 check、新同版双指定审查或父/发布门。

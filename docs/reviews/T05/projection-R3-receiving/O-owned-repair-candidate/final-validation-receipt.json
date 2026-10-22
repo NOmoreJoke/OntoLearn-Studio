@@ -1,0 +1,76 @@
+{
+  "format": "T05-O15-final-validation/1",
+  "sourceCommit": "b88be226501703f1d5365734dd0e56066bd1bffb",
+  "wholeCommand": {
+    "argv": [
+      "/usr/local/bin/npm",
+      "run",
+      "check"
+    ],
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle",
+    "actualExit": 0,
+    "record": {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/full-check-03/result.json",
+      "bytes": 4487,
+      "sha256": "7784c53d335e61909458d5bfa0ea380f3ead1ee1d27bd49d8ffdd2cbc42bb6c1"
+    },
+    "stdout": {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/full-check-03/stdout.raw",
+      "bytes": 5068,
+      "sha256": "0808a69e07fe4c59a912e26b9dcce4977c7e80a3fa86fad58e2d9b6ea5baa86b"
+    },
+    "stderr": {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/full-check-03/stderr.raw",
+      "bytes": 209,
+      "sha256": "c14b1f3a104414856ee7c9a157e0a6ed0259185cea104693187df34534fd49c1"
+    },
+    "passedStages": [
+      "eslint",
+      "prettier",
+      "3typechecks",
+      "15files/630vitestTests",
+      "electron-vite build",
+      "ruff lint",
+      "ruff format",
+      "1052pytest"
+    ],
+    "sourceLocksUnchanged": true,
+    "configsBeforeAfterEqualFixedGit": [
+      {
+        "path": ".prettierignore",
+        "bytes": 1538,
+        "sha256": "d3b8fe262361e4bdb5fa0950d91b45974ea08853d0fb52e2f8cab5ba799969ef"
+      },
+      {
+        "path": "pyproject.toml",
+        "bytes": 2705,
+        "sha256": "16cbffd46280d4b38b457c6d9e5c3afad71eb9ff56bbe5a50384b0e40249c154"
+      }
+    ]
+  },
+  "ownOracleSelftest": {
+    "tag": "o15-owned-candidate-test-03",
+    "actualExit": 0,
+    "tests": 57,
+    "sourceVersion": "0de7c2fa before report-format-only configuration successor; four own sources and all five outputs byte-identical to final b88be226",
+    "python": "actual isolated3.12.14"
+  },
+  "finalOracleByteCheck": {
+    "tag": "o15-owned-candidate-check-04",
+    "actualExit": 0,
+    "exactSourceCommit": "b88be226501703f1d5365734dd0e56066bd1bffb",
+    "allFiveGeneratedBytesExact": true
+  },
+  "allFirstFailuresPreserved": [
+    "build01",
+    "build02",
+    "style-transform-first-error",
+    "fullcheck01",
+    "components-test01-build01-enginecheck01",
+    "fullcheck02",
+    "raw-evidence-whitespace2"
+  ],
+  "noProductionOrNativeGUIEvidenceAdded": true,
+  "original15ExternalOpinionsClosed": false,
+  "parentClosed": false
+}
