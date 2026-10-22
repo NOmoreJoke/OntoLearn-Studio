@@ -1,0 +1,216 @@
+SOURCE bsd/man/man2/getattrlist.2 L34-L98
+.Fn fgetattrlist "int fd" "struct attrlist * attrList" "void * attrBuf" "size_t attrBufSize" "unsigned long options"
+.Ft int
+.Fo getattrlistat
+.Fa "int fd" "const char *path" "struct attrlist * attrList" "void * attrBuf"
+.Fa "size_t attrBufSize" "unsigned long options"
+.Fc
+.Sh DESCRIPTION
+The
+.Fn getattrlist
+function returns attributes (that is, metadata) of file system objects.
+.Fn getattrlist
+works on the file system object named by
+.Fa path ,
+while
+.Fn fgetattrlist
+works on the provided file descriptor
+.Fa fd .
+.Pp
+The
+.Fn getattrlistat
+system call is equivalent to
+.Fn getattrlist
+except in the case where
+.Fa path
+specifies a relative path.
+In this case the attributes are returned for the file system object named by
+path relative to the directory associated with the file descriptor
+.Fa fd
+instead of the current working directory.
+If
+.Fn getattrlistat
+is passed the special value
+.Dv AT_FDCWD
+in the
+.Fa fd
+parameter, the current working directory is used and the behavior is
+identical to a call to
+.Fn getattrlist .
+.Pp
+You can think of
+.Fn getattrlist
+as a seriously enhanced version of
+.Xr stat 2 .
+The functions return attributes about the specified file system object
+into the buffer specified by
+.Fa attrBuf
+and
+.Fa attrBufSize .
+The
+.Fa attrList
+parameter determines what attributes are returned.
+The
+.Fa options
+parameter lets you control specific aspects of the function's behavior.
+.Pp
+.
+Not all volumes support all attributes.
+See the discussion of
+.Dv ATTR_VOL_ATTRIBUTES
+for a discussion of how to determine whether a particular volume supports a
+particular attribute.
+.Pp
+Furthermore, you should only request the attributes that you need.
+Some attributes are expensive to calculate on some volume formats.
+For example,
+
+SOURCE bsd/man/man2/getattrlist.2 L245-L252
+.It FSOPT_REPORT_FULLSIZE
+The size of the attributes reported (in the first
+.Vt u_int32_t
+field in the attribute buffer) will be the size needed to hold all the
+requested attributes; if not set, only the attributes actually returned
+will be reported.  This allows the caller to determine if any truncation
+occurred.
+.
+
+SOURCE bsd/man/man2/getattrlist.2 L253-L259
+.It FSOPT_PACK_INVAL_ATTRS
+If this is bit is set, then all requested attributes, even ones that are
+not supported by the object or file system, will be returned.  Default values
+will be used for the invalid ones.  Requires that
+.Dv ATTR_CMN_RETURNED_ATTRS
+be requested.
+.
+
+SOURCE bsd/man/man2/getattrlist.2 L276-L340
+.Sh ATTRIBUTE BUFFER
+.
+The data returned in the buffer described by
+.Fa attrBuf
+and
+.Fa attrBufSize
+is formatted as follows.
+.Pp
+.
+.Bl -enum
+.
+.It
+The first element of the buffer is a
+.Vt u_int32_t
+that contains the overall length, in bytes, of the attributes returned.
+This size includes the length field itself.
+.
+.It
+Following the length field is a list of attributes.
+Each attribute is represented by a field of its type,
+where the type is given as part of the attribute description (below).
+.
+.It
+The attributes are placed into the attribute buffer in the order
+that they are described below.
+.
+.It
+Each attribute is aligned to a 4-byte boundary (including 64-bit data types).
+.El
+.Pp
+.
+If the attribute is of variable length, it is represented
+in the list by an
+.Vt attrreference
+structure, as defined by
+.Aq Pa sys/attr.h
+(shown below).
+.
+.Bd -literal
+typedef struct attrreference {
+    int32_t        attr_dataoffset;
+    u_int32_t      attr_length;
+} attrreference_t;
+.Ed
+.Pp
+.
+This structure contains a 'pointer' to the variable length attribute data.
+The
+.Fa attr_length
+field is the length of the attribute data (in bytes).
+The
+.Fa attr_dataoffset
+field is the offset in bytes from the
+.Vt attrreference
+structure
+to the attribute data.
+This offset will always be a multiple of sizeof(u_int32_t) bytes,
+so you can safely access common data types without fear of alignment
+exceptions.
+.Pp
+.
+The
+.Fn getattrlist
+function will silently truncate attribute data if
+.Fa attrBufSize
+
+SOURCE bsd/man/man2/getattrlist.2 L391-L402
+.It ATTR_CMN_RETURNED_ATTRS
+An
+.Vt attribute_set_t
+structure which is used to report which of the requested attributes
+were actually returned. This attribute, when requested, will always
+be the first attribute returned. By default, unsupported attributes
+will be skipped (i.e. not packed into the output buffer). This behavior
+can be over-ridden using the FSOPT_PACK_INVAL_ATTRS option flag. Both
+.Xr getattrlist 2 and
+.Xr getattrlistbulk 2 support this attribute while
+.Xr searchfs 2 does not.
+.
+
+SOURCE bsd/man/man2/getattrlist.2 L684-L690
+.It ATTR_CMN_EXTENDED_SECURITY
+A variable-length object (thus an
+.Vt attrreference
+structure) containing a
+.Vt kauth_filesec
+structure, of which only the ACL entry is used.
+.
+
+SOURCE bsd/man/man2/getattrlist.2 L608-L623
+.It ATTR_CMN_ACCESSMASK
+(read/write) A
+.Vt u_int32_t
+containing the access permissions of the file system object.
+Equivalent to the
+.Fa st_mode
+field of the
+.Vt stat
+structure returned by
+.Xr stat 2 .
+Only the permission bits of
+.Fa st_mode
+are valid; other bits should be ignored,
+e.g., by masking with
+.Dv ~S_IFMT .
+.
+
+SOURCE bsd/man/man2/getattrlist.2 L1006-L1013
+.It ATTR_DIR_LINKCOUNT
+A
+.Vt u_int32_t
+containing the number of hard links to the directory;
+this does not include the historical "." and ".." entries.
+For file systems that do not support hard links to directories,
+this value will be 1.
+.
+
+SOURCE bsd/man/man2/getattrlist.2 L1056-L1066
+.It ATTR_FILE_LINKCOUNT
+A
+.Vt u_int32_t
+containing the number of hard links to this file.
+Equivalent to the
+.Fa st_nlink
+field of the
+.Vt stat
+structure returned by
+.Xr stat 2 .
+.

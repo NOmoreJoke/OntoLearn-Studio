@@ -1,0 +1,60 @@
+{
+  "baselineRef": "0c20804537cca79578e0344870b4a3f24eb76998",
+  "scope": "Static process archive only; no product test/build/native/API execution.",
+  "defaultCachedCheck": {
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "returncode": 2,
+    "stdout": "docs/reviews/I06/native-location-N0/acl-envelope-004-static/sources/xnu-security-pack.excerpts.txt:90: new blank line at EOF.\n",
+    "stderr": ""
+  },
+  "allOtherNewPathsDefaultCheck": {
+    "pathCount": 15,
+    "returncode": 0
+  },
+  "rawExcerptSingleCommandException": {
+    "path": "docs/reviews/I06/native-location-N0/acl-envelope-004-static/sources/xnu-security-pack.excerpts.txt",
+    "argv": [
+      "git",
+      "-c",
+      "core.whitespace=-blank-at-eof",
+      "diff",
+      "--cached",
+      "--check",
+      "--",
+      "docs/reviews/I06/native-location-N0/acl-envelope-004-static/sources/xnu-security-pack.excerpts.txt"
+    ],
+    "returncode": 0,
+    "persistentConfigurationChanged": false,
+    "rawBytesModified": false,
+    "pin": {
+      "bytes": 3309,
+      "sha256": "14d0c615d2a7ddb9a6bf4898ec04e227737a765f0cc84278e64785051f57ef82"
+    }
+  },
+  "humanDocsPrettierCheck": {
+    "toolChunk": "efeb13",
+    "paths": [
+      "proposal.md",
+      "handoff.md",
+      "controller-criteria.md",
+      "independent-design-review.md"
+    ],
+    "returncode": 0
+  },
+  "firstWhitespaceProbe": {
+    "toolChunk": "4361ef",
+    "method": "git diff --no-index --check /dev/null exact raw path",
+    "subcommandExit": 3,
+    "stdout": "docs/reviews/I06/native-location-N0/acl-envelope-004-static/sources/xnu-security-pack.excerpts.txt:90: new blank line at EOF.\n"
+  },
+  "independentReview": {
+    "bytes": 7728,
+    "sha256": "3460c0af5cf20a5c3dcb25b272ce7257ef382b213f520814b3b195b049549f72"
+  },
+  "sourceProtection": "Nine current files and protected AGENTS remain equal to evidence pins; final commit scope checked separately."
+}

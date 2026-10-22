@@ -1,0 +1,140 @@
+SOURCE sys/attr.h L38-L107
+#include <sys/appleapiopts.h>
+
+#ifdef __APPLE_API_UNSTABLE
+#include <sys/types.h>
+#include <sys/ucred.h>
+#include <sys/time.h>
+#include <sys/cdefs.h>
+
+#define FSOPT_NOFOLLOW          0x00000001
+#define FSOPT_NOINMEMUPDATE     0x00000002
+#define FSOPT_REPORT_FULLSIZE   0x00000004
+/* The following option only valid when requesting ATTR_CMN_RETURNED_ATTRS */
+#define FSOPT_PACK_INVAL_ATTRS  0x00000008
+
+
+#define FSOPT_ATTR_CMN_EXTENDED  0x00000020
+#define FSOPT_RETURN_REALDEV     0x00000200
+#define FSOPT_NOFOLLOW_ANY       0x00000800
+#define FSOPT_RESOLVE_BENEATH    0x00001000
+#define FSOPT_UNIQUE             0x00002000
+
+
+/* we currently aren't anywhere near this amount for a valid
+ * fssearchblock.sizeofsearchparams1 or fssearchblock.sizeofsearchparams2
+ * but we put a sanity check in to avoid abuse of the value passed in from
+ * user land.
+ */
+#define SEARCHFS_MAX_SEARCHPARMS  4096
+
+typedef u_int32_t text_encoding_t;
+
+typedef u_int32_t fsobj_type_t;
+
+typedef u_int32_t fsobj_tag_t;
+
+typedef u_int32_t fsfile_type_t;
+
+typedef u_int32_t fsvolid_t;
+
+#include <sys/_types/_fsobj_id_t.h> /* file object id type */
+
+typedef u_int32_t attrgroup_t;
+
+struct attrlist {
+	u_short bitmapcount;                    /* number of attr. bit sets in list (should be 5) */
+	u_int16_t reserved;                     /* (to maintain 4-byte alignment) */
+	attrgroup_t commonattr;                 /* common attribute group */
+	attrgroup_t volattr;                    /* Volume attribute group */
+	attrgroup_t dirattr;                    /* directory attribute group */
+	attrgroup_t fileattr;                   /* file attribute group */
+	attrgroup_t forkattr;                   /* fork attribute group */
+};
+
+#define ATTR_BIT_MAP_COUNT 5
+
+typedef struct attribute_set {
+	attrgroup_t commonattr;                 /* common attribute group */
+	attrgroup_t volattr;                    /* Volume attribute group */
+	attrgroup_t dirattr;                    /* directory attribute group */
+	attrgroup_t fileattr;                   /* file attribute group */
+	attrgroup_t forkattr;                   /* fork attribute group */
+} attribute_set_t;
+
+#define ATTRIBUTE_SET_INIT(a)               do {(a)->commonattr = (a)->volattr = (a)->dirattr = (a)->fileattr = (a)->forkattr = 0; } while(0)
+
+
+typedef struct attrreference {
+	int32_t     attr_dataoffset;
+	u_int32_t   attr_length;
+} attrreference_t;
+
+SOURCE sys/attr.h L410-L456
+#define ATTR_CMN_DEVID                          0x00000002
+#define ATTR_CMN_FSID                           0x00000004
+#define ATTR_CMN_OBJTYPE                        0x00000008
+#define ATTR_CMN_OBJTAG                         0x00000010
+#define ATTR_CMN_OBJID                          0x00000020
+#define ATTR_CMN_OBJPERMANENTID                 0x00000040
+#define ATTR_CMN_PAROBJID                       0x00000080
+#define ATTR_CMN_SCRIPT                         0x00000100
+#define ATTR_CMN_CRTIME                         0x00000200
+#define ATTR_CMN_MODTIME                        0x00000400
+#define ATTR_CMN_CHGTIME                        0x00000800
+#define ATTR_CMN_ACCTIME                        0x00001000
+#define ATTR_CMN_BKUPTIME                       0x00002000
+#define ATTR_CMN_FNDRINFO                       0x00004000
+#define ATTR_CMN_OWNERID                        0x00008000
+#define ATTR_CMN_GRPID                          0x00010000
+#define ATTR_CMN_ACCESSMASK                     0x00020000
+#define ATTR_CMN_FLAGS                          0x00040000
+
+/* The following were defined as:				*/
+/*      #define ATTR_CMN_NAMEDATTRCOUNT		0x00080000	*/
+/*      #define ATTR_CMN_NAMEDATTRLIST		0x00100000	*/
+/* These bits have been salvaged for use as:			*/
+/*	#define ATTR_CMN_GEN_COUNT		0x00080000	*/
+/*	#define ATTR_CMN_DOCUMENT_ID		0x00100000	*/
+/* They can only be used with the  FSOPT_ATTR_CMN_EXTENDED	*/
+/* option flag.                                                 */
+
+#define ATTR_CMN_GEN_COUNT                      0x00080000
+#define ATTR_CMN_DOCUMENT_ID                    0x00100000
+
+#define ATTR_CMN_USERACCESS                     0x00200000
+#define ATTR_CMN_EXTENDED_SECURITY              0x00400000
+#define ATTR_CMN_UUID                           0x00800000
+#define ATTR_CMN_GRPUUID                        0x01000000
+#define ATTR_CMN_FILEID                         0x02000000
+#define ATTR_CMN_PARENTID                       0x04000000
+#define ATTR_CMN_FULLPATH                       0x08000000
+#define ATTR_CMN_ADDEDTIME                      0x10000000
+#define ATTR_CMN_ERROR                          0x20000000
+#define ATTR_CMN_DATA_PROTECT_FLAGS             0x40000000
+
+/*
+ * ATTR_CMN_RETURNED_ATTRS is only valid with getattrlist(2) and
+ * getattrlistbulk(2). It is always the first attribute in the return buffer.
+ */
+#define ATTR_CMN_RETURNED_ATTRS                 0x80000000
+
+SOURCE sys/attr.h L525-L542
+#define ATTR_DIR_LINKCOUNT                      0x00000001
+#define ATTR_DIR_ENTRYCOUNT                     0x00000002
+#define ATTR_DIR_MOUNTSTATUS                    0x00000004
+#define ATTR_DIR_ALLOCSIZE                      0x00000008
+#define ATTR_DIR_IOBLOCKSIZE                    0x00000010
+#define ATTR_DIR_DATALENGTH                     0x00000020
+
+/* ATTR_DIR_MOUNTSTATUS Flags: */
+#define   DIR_MNTSTATUS_MNTPOINT                0x00000001
+#define   DIR_MNTSTATUS_TRIGGER                 0x00000002
+
+#define ATTR_DIR_VALIDMASK                      0x0000003f
+#define ATTR_DIR_SETMASK                        0x00000000
+
+#define ATTR_FILE_LINKCOUNT                     0x00000001
+#define ATTR_FILE_TOTALSIZE                     0x00000002
+#define ATTR_FILE_ALLOCSIZE                     0x00000004
+#define ATTR_FILE_IOBLOCKSIZE                   0x00000008

@@ -1,0 +1,90 @@
+SOURCE bsd/vfs/vfs_attrlist.c L2051-L2074
+	if (alp->commonattr & ATTR_CMN_EXTENDED_SECURITY) {
+		if (VATTR_IS_SUPPORTED(vap, va_acl) && (vap->va_acl != NULL)) {
+			struct kauth_filesec fsec;
+			/*
+			 * We want to return a kauth_filesec (for now), but all we have is a kauth_acl.
+			 */
+			fsec.fsec_magic = KAUTH_FILESEC_MAGIC;
+			fsec.fsec_owner = kauth_null_guid;
+			fsec.fsec_group = kauth_null_guid;
+			attrlist_pack_variable2(abp, &fsec, __offsetof(struct kauth_filesec, fsec_acl), vap->va_acl, KAUTH_ACL_COPYSIZE(vap->va_acl));
+			abp->actual.commonattr |= ATTR_CMN_EXTENDED_SECURITY;
+		} else if (!return_valid || pack_invalid) {
+			attrlist_pack_variable(abp, NULL, 0);
+		}
+	}
+	if (alp->commonattr & ATTR_CMN_UUID) {
+		if (VATTR_IS_SUPPORTED(vap, va_uuuid)) {
+			ATTR_PACK(abp, vap->va_uuuid);
+			abp->actual.commonattr |= ATTR_CMN_UUID;
+		} else if (!return_valid || pack_invalid) {
+			ATTR_PACK(abp, kauth_null_guid);
+		}
+	}
+	if (alp->commonattr & ATTR_CMN_GRPUUID) {
+
+SOURCE bsd/vfs/vfs_attrlist.c L2792-L2813
+	/*
+	 * We have a kauth_acl_t but we will be returning a kauth_filesec_t.
+	 *
+	 * XXX This needs to change at some point; since the blob is opaque in
+	 * user-space this is OK.
+	 */
+	if ((alp->commonattr & ATTR_CMN_EXTENDED_SECURITY) &&
+	    VATTR_IS_SUPPORTED(vap, va_acl) &&
+	    (vap->va_acl != NULL)) {
+		/*
+		 * Since we have a kauth_acl_t (not a kauth_filesec_t), we have to check against
+		 * KAUTH_FILESEC_NOACL ourselves
+		 */
+		if (vap->va_acl->acl_entrycount == KAUTH_FILESEC_NOACL) {
+			*varsizep += roundup((KAUTH_FILESEC_SIZE(0)), 4);
+		} else {
+			*varsizep += roundup((KAUTH_FILESEC_SIZE(vap->va_acl->acl_entrycount)), 4);
+		}
+	}
+
+out:
+	return error;
+
+SOURCE bsd/vfs/vfs_attrlist.c L3043-L3059
+	 * Pack results into the destination buffer.
+	 */
+	ab.fixedcursor = ab.base + sizeof(uint32_t);
+	if (return_valid) {
+		ab.fixedcursor += sizeof(attribute_set_t);
+		bzero(&ab.actual, sizeof(ab.actual));
+	}
+	ab.varcursor = ab.base + fixedsize;
+	ab.needed = ab.allocated;
+
+	/* common attributes ************************************************/
+	error = attr_pack_common(ctx, (options & FSOPT_RETURN_REALDEV ? mp : NULL),
+	    vp, alp, &ab, vap, proc_is64, cnp, cnl, fullpathptr, fullpathlen,
+	    return_valid, pack_invalid, vtype, is_bulk);
+
+	/* directory attributes *********************************************/
+	if (!error && alp->dirattr && (vtype == VDIR)) {
+
+SOURCE bsd/vfs/vfs_attrlist.c L3088-L3107
+	/*
+	 * In the compatible case, we report the smaller of the required and returned sizes.
+	 * If the FSOPT_REPORT_FULLSIZE option is supplied, we report the full (required) size
+	 * of the result buffer, even if we copied less out.  The caller knows how big a buffer
+	 * they gave us, so they can always check for truncation themselves.
+	 */
+	*(uint32_t *)ab.base = (options & FSOPT_REPORT_FULLSIZE) ? (uint32_t)ab.needed : (uint32_t)lmin(ab.allocated, ab.needed);
+
+	/* Return attribute set output if requested. */
+	if (return_valid) {
+		ab.actual.commonattr |= ATTR_CMN_RETURNED_ATTRS;
+		if (pack_invalid) {
+			/* Only report the attributes that are valid */
+			ab.actual.commonattr &= ab.valid.commonattr;
+			ab.actual.dirattr &= ab.valid.dirattr;
+			ab.actual.fileattr &= ab.valid.fileattr;
+		}
+		bcopy(&ab.actual, ab.base + sizeof(uint32_t), sizeof(ab.actual));
+	}
+

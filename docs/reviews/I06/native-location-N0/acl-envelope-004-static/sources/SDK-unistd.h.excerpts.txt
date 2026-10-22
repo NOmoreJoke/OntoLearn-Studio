@@ -1,0 +1,17 @@
+SOURCE unistd.h L757-L772
+int	 getsubopt(char *_LIBC_CSTR *, char *_LIBC_CSTR const *_LIBC_NULL_TERMINATED, char *_LIBC_CSTR *);
+
+/*  HFS & HFS Plus semantics system calls go here */
+#ifdef __LP64__
+int    fgetattrlist(int,void*,void *_LIBC_SIZE(__attrBufSize),size_t __attrBufSize,unsigned int) __OSX_AVAILABLE_STARTING(__MAC_10_6, __IPHONE_3_0);
+int    fsetattrlist(int,void*,void *_LIBC_SIZE(__attrBufSize),size_t __attrBufSize,unsigned int) __OSX_AVAILABLE_STARTING(__MAC_10_6, __IPHONE_3_0);
+int    getattrlist(const char*,void*,void *_LIBC_SIZE(__attrBufSize),size_t __attrBufSize,unsigned int) __DARWIN_ALIAS(getattrlist);
+int    setattrlist(const char*,void*,void *_LIBC_SIZE(__attrBufSize),size_t __attrBufSize,unsigned int) __DARWIN_ALIAS(setattrlist);
+int exchangedata(const char*,const char*,unsigned int) __WATCHOS_PROHIBITED __TVOS_PROHIBITED;
+int    getdirentriesattr(int,void*,void *_LIBC_SIZE(__attrBufSize),size_t __attrBufSize,unsigned int*,unsigned int*,unsigned int*,unsigned int) __WATCHOS_PROHIBITED __TVOS_PROHIBITED;
+
+#else /* __LP64__ */
+int	fgetattrlist(int,void*,void *_LIBC_SIZE(__attrBufSize),size_t __attrBufSize,unsigned long) __OSX_AVAILABLE_STARTING(__MAC_10_6, __IPHONE_3_0);
+int	fsetattrlist(int,void*,void *_LIBC_SIZE(__attrBufSize),size_t __attrBufSize,unsigned long) __OSX_AVAILABLE_STARTING(__MAC_10_6, __IPHONE_3_0);
+int	getattrlist(const char*,void*,void *_LIBC_SIZE(__attrBufSize),size_t __attrBufSize,unsigned long) __DARWIN_ALIAS(getattrlist);
+int	setattrlist(const char*,void*,void *_LIBC_SIZE(__attrBufSize),size_t __attrBufSize,unsigned long) __DARWIN_ALIAS(setattrlist);

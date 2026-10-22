@@ -1,0 +1,102 @@
+SOURCE bsd/man/man2/getattrlist.2 L276-L376
+.Sh ATTRIBUTE BUFFER
+.
+The data returned in the buffer described by
+.Fa attrBuf
+and
+.Fa attrBufSize
+is formatted as follows.
+.Pp
+.
+.Bl -enum
+.
+.It
+The first element of the buffer is a
+.Vt u_int32_t
+that contains the overall length, in bytes, of the attributes returned.
+This size includes the length field itself.
+.
+.It
+Following the length field is a list of attributes.
+Each attribute is represented by a field of its type,
+where the type is given as part of the attribute description (below).
+.
+.It
+The attributes are placed into the attribute buffer in the order
+that they are described below.
+.
+.It
+Each attribute is aligned to a 4-byte boundary (including 64-bit data types).
+.El
+.Pp
+.
+If the attribute is of variable length, it is represented
+in the list by an
+.Vt attrreference
+structure, as defined by
+.Aq Pa sys/attr.h
+(shown below).
+.
+.Bd -literal
+typedef struct attrreference {
+    int32_t        attr_dataoffset;
+    u_int32_t      attr_length;
+} attrreference_t;
+.Ed
+.Pp
+.
+This structure contains a 'pointer' to the variable length attribute data.
+The
+.Fa attr_length
+field is the length of the attribute data (in bytes).
+The
+.Fa attr_dataoffset
+field is the offset in bytes from the
+.Vt attrreference
+structure
+to the attribute data.
+This offset will always be a multiple of sizeof(u_int32_t) bytes,
+so you can safely access common data types without fear of alignment
+exceptions.
+.Pp
+.
+The
+.Fn getattrlist
+function will silently truncate attribute data if
+.Fa attrBufSize
+is too small.
+The length field at the front of the attribute list always represents
+the length of the data actually copied into the attribute buffer.
+If the data is truncated, there is no easy way to determine the
+buffer size that's required to get all of the requested attributes.
+You should always pass an
+.Fa attrBufSize
+that is large enough to accommodate the known size of the attributes
+in the attribute list (including the leading length field).
+.Pp
+.
+Because the returned attributes are simply truncated if the buffer is
+too small, it's possible for a variable length attribute to reference
+data beyond the end of the attribute buffer.  That is, it's possible
+for the attribute data to start beyond the end of the attribute buffer
+(that is, if
+.Fa attrRef
+is a pointer to the
+.Vt attrreference_t ,
+( ( (char *)
+.Fa attrRef
+) +
+.Fa attr_dataoffset
+) > ( ( (char *)
+.Fa attrBuf
+) +
+.Fa attrSize
+) ) or, indeed, for the attribute data to extend beyond the end of the attribute buffer (that is,
+( ( (char *)
+.Fa attrRef
+) +
+.Fa attr_dataoffset
++
+.Fa attr_length
+) > ( ( (char *)
+.Fa attrBuf

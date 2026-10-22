@@ -1,0 +1,70 @@
+SOURCE sys/kauth.h L190-L200
+struct kauth_acl {
+	u_int32_t       acl_entrycount;
+	u_int32_t       acl_flags;
+
+	struct kauth_ace acl_ace[1];
+};
+
+/*
+ * XXX this value needs to be raised - 3893388
+ */
+#define KAUTH_ACL_MAX_ENTRIES           128
+
+SOURCE sys/kauth.h L219-L274
+/* acl_entrycount that tells us the ACL is not valid */
+#define KAUTH_FILESEC_NOACL ((u_int32_t)(-1))
+
+/*
+ * If the acl_entrycount field is KAUTH_FILESEC_NOACL, then the size is the
+ * same as a kauth_acl structure; the intent is to put an actual entrycount of
+ * KAUTH_FILESEC_NOACL on disk to distinguish a kauth_filesec_t with an empty
+ * entry (Windows treats this as "deny all") from one that merely indicates a
+ * file group and/or owner guid values.
+ */
+#define KAUTH_ACL_SIZE(c)       (__offsetof(struct kauth_acl, acl_ace) + ((u_int32_t)(c) != KAUTH_FILESEC_NOACL ? ((c) * sizeof(struct kauth_ace)) : 0))
+#define KAUTH_ACL_COPYSIZE(p)   KAUTH_ACL_SIZE((p)->acl_entrycount)
+
+
+#ifndef _KAUTH_ACL
+#define _KAUTH_ACL
+typedef struct kauth_acl *kauth_acl_t;
+#endif
+
+
+
+/*
+ * Extended File Security.
+ */
+
+/* File Security information */
+struct kauth_filesec {
+	u_int32_t       fsec_magic;
+#define KAUTH_FILESEC_MAGIC     0x012cc16d
+	guid_t          fsec_owner;
+	guid_t          fsec_group;
+
+	struct kauth_acl fsec_acl;
+};
+
+/* backwards compatibility */
+#define fsec_entrycount fsec_acl.acl_entrycount
+#define fsec_flags      fsec_acl.acl_flags
+#define fsec_ace        fsec_acl.acl_ace
+#define KAUTH_FILESEC_FLAGS_PRIVATE     KAUTH_ACL_FLAGS_PRIVATE
+#define KAUTH_FILESEC_DEFER_INHERIT     KAUTH_ACL_DEFER_INHERIT
+#define KAUTH_FILESEC_NO_INHERIT        KAUTH_ACL_NO_INHERIT
+#define KAUTH_FILESEC_NONE      ((kauth_filesec_t)0)
+#define KAUTH_FILESEC_WANTED    ((kauth_filesec_t)1)
+
+#ifndef _KAUTH_FILESEC
+#define _KAUTH_FILESEC
+typedef struct kauth_filesec *kauth_filesec_t;
+#endif
+
+#define KAUTH_FILESEC_SIZE(c)           (__offsetof(struct kauth_filesec, fsec_acl) + __offsetof(struct kauth_acl, acl_ace) + (c) * sizeof(struct kauth_ace))
+#define KAUTH_FILESEC_COPYSIZE(p)       KAUTH_FILESEC_SIZE(((p)->fsec_entrycount == KAUTH_FILESEC_NOACL) ? 0 : (p)->fsec_entrycount)
+#define KAUTH_FILESEC_COUNT(s)          (((s)  - KAUTH_FILESEC_SIZE(0)) / sizeof(struct kauth_ace))
+#define KAUTH_FILESEC_VALID(s)          ((s) >= KAUTH_FILESEC_SIZE(0) && (((s) - KAUTH_FILESEC_SIZE(0)) % sizeof(struct kauth_ace)) == 0)
+
+#define KAUTH_FILESEC_XATTR     "com.apple.system.Security"
