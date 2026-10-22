@@ -1,0 +1,17 @@
+from pathlib import Path
+import os,subprocess,json,hashlib,datetime,sys,shlex
+ROOT=Path('/Users/kyle/Documents/工作/知爻/本体');OUT=ROOT/'outputs/20261022_review_backlog/T01-C1-execution-prep';MODEL=sys.argv[1];TOOL=sys.argv[2];assert MODEL in ['zcode','minimax'] and TOOL in ['npm','uv']
+TREE=ROOT/'.worktrees'/('T01-c1-'+MODEL+'-review-423b7e4');LOCAL=OUT/MODEL
+for d in ['raw/environment','raw/review','scratch','scratch/tmp','scratch/pytest','scratch/counterexamples','cache/npm','cache/uv','cache/xdg','cache/pycache','inputs','reports']:(LOCAL/d).mkdir(parents=True,exist_ok=True)
+env=os.environ.copy();env.update({'TMPDIR':str(LOCAL/'scratch/tmp'),'UV_CACHE_DIR':str(LOCAL/'cache/uv'),'UV_PROJECT_ENVIRONMENT':str(TREE/'.venv'),'UV_PYTHON_DOWNLOADS':'never','XDG_CACHE_HOME':str(LOCAL/'cache/xdg'),'npm_config_cache':str(LOCAL/'cache/npm'),'PYTHONPYCACHEPREFIX':str(LOCAL/'cache/pycache'),'PYTHONDONTWRITEBYTECODE':'1','ELECTRON_SKIP_BINARY_DOWNLOAD':'1'})
+if TOOL=='npm':argv=['/usr/local/bin/npm','ci','--ignore-scripts','--no-audit','--no-fund','--cache',str(LOCAL/'cache/npm')]
+else:argv=['/Users/kyle/.local/bin/uv','sync','--frozen','--python','/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12','--no-python-downloads','--link-mode','copy']
+files=['package.json','package-lock.json','pyproject.toml','uv.lock','packages/engine/pyproject.toml','apps/desktop/package.json','packages/contracts/package.json']
+def identities():
+ return [{'path':p,'bytes':len((TREE/p).read_bytes()),'sha256':hashlib.sha256((TREE/p).read_bytes()).hexdigest()} for p in files]
+before=identities();stamp=datetime.datetime.now(datetime.timezone.utc).isoformat();base=LOCAL/'raw/environment'/TOOL
+with base.with_suffix('.stdout.raw').open('wb') as out,base.with_suffix('.stderr.raw').open('wb') as err:
+ p=subprocess.run(argv,cwd=TREE,env=env,stdout=out,stderr=err)
+after=identities();record={'model':MODEL,'purpose':'Environment installation only; no product verification/test executed','argv':argv,'cwd':str(TREE),'startedAtUtc':stamp,'endedAtUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'exit':p.returncode,'trackedDependencyInputsBefore':before,'trackedDependencyInputsAfter':after,'unchanged':before==after,'environmentIsolation':{k:env[k] for k in ['TMPDIR','UV_CACHE_DIR','UV_PROJECT_ENVIRONMENT','XDG_CACHE_HOME','npm_config_cache','PYTHONPYCACHEPREFIX','ELECTRON_SKIP_BINARY_DOWNLOAD']},'logs':{s:{'path':str(base.with_suffix('.'+s+'.raw')),'bytes':base.with_suffix('.'+s+'.raw').stat().st_size,'sha256':hashlib.sha256(base.with_suffix('.'+s+'.raw').read_bytes()).hexdigest()} for s in ['stdout','stderr']}}
+base.with_suffix('.receipt.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n');print(json.dumps({'model':MODEL,'tool':TOOL,'exit':p.returncode,'unchanged':before==after,'receipt':str(base.with_suffix('.receipt.json'))},ensure_ascii=False));assert before==after
+sys.exit(p.returncode)

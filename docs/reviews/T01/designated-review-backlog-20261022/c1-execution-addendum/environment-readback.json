@@ -1,0 +1,83 @@
+{
+  "scope": "Tool/distribution metadata only; no engine import/test/runtime verification",
+  "models": [
+    {
+      "model": "zcode",
+      "metadataOnlyCommand": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-zcode-review-423b7e4/.venv/bin/python",
+        "-c",
+        "import sys,json,importlib.metadata as m; print(json.dumps({\"python\":sys.version,\"executable\":sys.executable,\"prefix\":sys.prefix,\"packages\":{n:m.version(n) for n in [\"pytest\",\"ruff\",\"rdflib\",\"pyinstaller\",\"ontolearn-engine\"]}}))"
+      ],
+      "exit": 0,
+      "installed": {
+        "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+        "executable": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-zcode-review-423b7e4/.venv/bin/python",
+        "prefix": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-zcode-review-423b7e4/.venv",
+        "packages": {
+          "pytest": "9.1.1",
+          "ruff": "0.17.1",
+          "rdflib": "7.6.0",
+          "pyinstaller": "6.22.3",
+          "ontolearn-engine": "0.1.0"
+        }
+      },
+      "pth": [
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-zcode-review-423b7e4/.venv/lib/python3.12/site-packages/distutils-precedence.pth",
+          "text": "import os; var = 'SETUPTOOLS_USE_DISTUTILS'; enabled = os.environ.get(var, 'local') == 'local'; enabled and __import__('_distutils_hack').add_shim(); \n"
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-zcode-review-423b7e4/.venv/lib/python3.12/site-packages/_virtualenv.pth",
+          "text": "import _virtualenv"
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-zcode-review-423b7e4/.venv/lib/python3.12/site-packages/_editable_impl_ontolearn_engine.pth",
+          "text": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-zcode-review-423b7e4/packages/engine/src"
+        }
+      ],
+      "gitStatus": [" M AGENTS.md"],
+      "stagingEmpty": true,
+      "npmAndUvReceiptExit": [0, 0],
+      "productTestsRun": false
+    },
+    {
+      "model": "minimax",
+      "metadataOnlyCommand": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-minimax-review-423b7e4/.venv/bin/python",
+        "-c",
+        "import sys,json,importlib.metadata as m; print(json.dumps({\"python\":sys.version,\"executable\":sys.executable,\"prefix\":sys.prefix,\"packages\":{n:m.version(n) for n in [\"pytest\",\"ruff\",\"rdflib\",\"pyinstaller\",\"ontolearn-engine\"]}}))"
+      ],
+      "exit": 0,
+      "installed": {
+        "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+        "executable": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-minimax-review-423b7e4/.venv/bin/python",
+        "prefix": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-minimax-review-423b7e4/.venv",
+        "packages": {
+          "pytest": "9.1.1",
+          "ruff": "0.17.1",
+          "rdflib": "7.6.0",
+          "pyinstaller": "6.22.3",
+          "ontolearn-engine": "0.1.0"
+        }
+      },
+      "pth": [
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-minimax-review-423b7e4/.venv/lib/python3.12/site-packages/distutils-precedence.pth",
+          "text": "import os; var = 'SETUPTOOLS_USE_DISTUTILS'; enabled = os.environ.get(var, 'local') == 'local'; enabled and __import__('_distutils_hack').add_shim(); \n"
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-minimax-review-423b7e4/.venv/lib/python3.12/site-packages/_virtualenv.pth",
+          "text": "import _virtualenv"
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-minimax-review-423b7e4/.venv/lib/python3.12/site-packages/_editable_impl_ontolearn_engine.pth",
+          "text": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-minimax-review-423b7e4/packages/engine/src"
+        }
+      ],
+      "gitStatus": [" M AGENTS.md"],
+      "stagingEmpty": true,
+      "npmAndUvReceiptExit": [0, 0],
+      "productTestsRun": false
+    }
+  ]
+}
