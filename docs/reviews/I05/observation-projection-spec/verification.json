@@ -1,0 +1,71 @@
+{
+  "format": "i05-observation-author-verification/1",
+  "records": [
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "docs/iterations/I05/observation-projection-spec/selftest.py"
+      ],
+      "actualExitCode": 0,
+      "outputPath": "docs/reviews/I05/observation-projection-spec/selftest-final.txt",
+      "outputSHA256": "95aded1f5849f664ebe76c7f5ded939b7c4f6beb6d0d88359bae7974a03b3ae0"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+        "--write",
+        "docs/iterations/I05/observation-projection-spec/cases.json",
+        "docs/iterations/I05/observation-projection-spec/coverage.md",
+        "docs/iterations/I05/observation-projection-spec/pure-sources.json",
+        "docs/iterations/I05/observation-projection-spec/schema.json",
+        "docs/iterations/I05/observation-projection-spec/spec.md",
+        "docs/reviews/I05/observation-projection-spec/author-validation.md",
+        "docs/reviews/I05/observation-projection-spec/literal-excerpts.json",
+        "docs/reviews/I05/observation-projection-spec/preparation-errors.json",
+        "docs/reviews/I05/observation-projection-spec/source-ledger.json"
+      ],
+      "actualExitCode": 0,
+      "outputPath": "docs/reviews/I05/observation-projection-spec/prettier-write.txt",
+      "outputSHA256": "64714c25e5d727b47df653911849c696ca175063572711951c0de77d3b7899fc"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "docs/iterations/I05/observation-projection-spec/cases.json",
+        "docs/iterations/I05/observation-projection-spec/coverage.md",
+        "docs/iterations/I05/observation-projection-spec/pure-sources.json",
+        "docs/iterations/I05/observation-projection-spec/schema.json",
+        "docs/iterations/I05/observation-projection-spec/spec.md",
+        "docs/reviews/I05/observation-projection-spec/author-validation.md",
+        "docs/reviews/I05/observation-projection-spec/literal-excerpts.json",
+        "docs/reviews/I05/observation-projection-spec/preparation-errors.json",
+        "docs/reviews/I05/observation-projection-spec/source-ledger.json"
+      ],
+      "actualExitCode": 0,
+      "outputPath": "docs/reviews/I05/observation-projection-spec/prettier-check.txt",
+      "outputSHA256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "actualExitCode": 0,
+      "output": ""
+    }
+  ],
+  "staticChecks": {
+    "37ExactIdsAndInputParameters": true,
+    "10LegacyNormalPlus1Unbound": true,
+    "14RestoreExactTargets": true,
+    "sealedInputAndManifestSHA256": true
+  },
+  "scope": "design-only; no product, parser/library execution, or fee/capture/issuer proof",
+  "firstPreparationErrors": "preparation-errors.json; both actual exit1 remain recorded",
+  "testMethods": 20,
+  "productExecuted": false
+}

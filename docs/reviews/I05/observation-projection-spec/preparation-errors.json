@@ -1,0 +1,35 @@
+{
+  "format": "i05-design-preparation-errors/1",
+  "productFailuresObserved": false,
+  "firstErrorsPreserved": true,
+  "scope": "Exact traceback tails and actual exit codes transcribed from tool results; not claimed complete byte streams. The full displayed tool transcripts remain in this chat; first output had tool truncation, so no complete raw output file is invented. No rerun/repair rewrites these first records.",
+  "errors": [
+    {
+      "ordinal": 1,
+      "toolChunkId": "6871be",
+      "commandExecutable": "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+      "argv": [
+        "-"
+      ],
+      "purpose": "pure JSON inspection; erroneous datasets dict [0] indexing",
+      "actualExitCode": 1,
+      "failureTail": "Traceback (most recent call last):\n  File \"<stdin>\", line 8, in <module>\nKeyError: 0\n",
+      "completeStdoutUnavailable": true,
+      "toolOutputTruncated": true
+    },
+    {
+      "ordinal": 2,
+      "toolChunkId": "21870b",
+      "commandExecutable": "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+      "argv": [
+        "-"
+      ],
+      "purpose": "pure oracle inspection; erroneous assumption that all 11 legacy IDs contain math",
+      "actualExitCode": 1,
+      "failureTail": "Traceback (most recent call last):\n  File \"<stdin>\", line 9, in <module>\nKeyError: 'math'\n",
+      "completeStdoutUnavailable": true,
+      "toolOutputTruncated": false
+    }
+  ],
+  "externalWindowPreparation": "Window itself records earlier root stdin encoding/file-missing preparation errors. They are not product failures and are not attributed to this author."
+}

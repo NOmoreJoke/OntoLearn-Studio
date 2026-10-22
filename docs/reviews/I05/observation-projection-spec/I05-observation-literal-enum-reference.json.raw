@@ -1,0 +1,105 @@
+{
+  "at": "2026-10-22T15:20:09.721319+08:00",
+  "ref": "6891a5842302859a531cf82767c5a482417bc274",
+  "scope": "four module-level declaration initializers only, without execution; unresolved compound expression stays explicit",
+  "declarations": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "sourceBytes": 37889,
+      "sourceSHA256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+      "name": "_STAGES",
+      "lineStart": 135,
+      "lineEnd": 135,
+      "fragment": "_STAGES = (\"entry\",) + tuple(\"A\" + str(i) for i in range(1, 17))\n",
+      "fragmentSHA256": "c84ded86e2d75d1cb11d641318c567d66b94f46750e769ce61e42b89e03d5fc3",
+      "initializerExpression": "('entry',) + tuple(('A' + str(i) for i in range(1, 17)))",
+      "literalResolved": false,
+      "referencedNames": ["i", "range", "str", "tuple"]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "sourceBytes": 37889,
+      "sourceSHA256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+      "name": "_DOMAINS",
+      "lineStart": 166,
+      "lineEnd": 166,
+      "fragment": "_DOMAINS = _WORK_DOMAINS + _LIVE_DOMAINS\n",
+      "fragmentSHA256": "83ba88235351a17f7b2c2c80ff1f1647d6e9f50772ad2185db886752cae16a13",
+      "initializerExpression": "_WORK_DOMAINS + _LIVE_DOMAINS",
+      "literalResolved": false,
+      "referencedNames": ["_LIVE_DOMAINS", "_WORK_DOMAINS"]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "sourceBytes": 40378,
+      "sourceSHA256": "f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74",
+      "name": "_WORK",
+      "lineStart": 20,
+      "lineEnd": 20,
+      "fragment": "_WORK = (\"traversal\", \"scan_copy\", \"hash\")\n",
+      "fragmentSHA256": "82fa3930128ab676bfeadb33b4370defba2e674ed0a96cbf6d8e86e36547f56c",
+      "initializerExpression": "('traversal', 'scan_copy', 'hash')",
+      "literalValue": ["traversal", "scan_copy", "hash"],
+      "literalResolved": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "sourceBytes": 40378,
+      "sourceSHA256": "f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74",
+      "name": "_LIVE",
+      "lineStart": 21,
+      "lineEnd": 21,
+      "fragment": "_LIVE = (\"scalar\", \"objects\")\n",
+      "fragmentSHA256": "4ed4e8a80398aa4c9ac28c94e7444966bdfe00163f1ae770ba3c7392ec4ca65d",
+      "initializerExpression": "('scalar', 'objects')",
+      "literalValue": ["scalar", "objects"],
+      "literalResolved": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "sourceBytes": 37889,
+      "sourceSHA256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+      "name": "_WORK_DOMAINS",
+      "lineStart": 145,
+      "lineEnd": 157,
+      "fragment": "_WORK_DOMAINS = (\n    \"wire\",\n    \"schema\",\n    \"traversal\",\n    \"integer\",\n    \"copy\",\n    \"cache_query\",\n    \"cache_split\",\n    \"cache_alloc\",\n    \"rule\",\n    \"pv_compare\",\n    \"hash\",\n)\n",
+      "fragmentSHA256": "c637945a48a0fd1b5e789f91ada5c8ff0aefd80cd26f5348c631b77376925593",
+      "literalValue": [
+        "wire",
+        "schema",
+        "traversal",
+        "integer",
+        "copy",
+        "cache_query",
+        "cache_split",
+        "cache_alloc",
+        "rule",
+        "pv_compare",
+        "hash"
+      ],
+      "literalResolved": true,
+      "reasonAdded": "exact pure module-level tuple dependencies referenced by requested _DOMAINS initializer"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "sourceBytes": 37889,
+      "sourceSHA256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+      "name": "_LIVE_DOMAINS",
+      "lineStart": 158,
+      "lineEnd": 165,
+      "fragment": "_LIVE_DOMAINS = (\n    \"scalar\",\n    \"objects\",\n    \"trie_nodes\",\n    \"trie_slots\",\n    \"opaque_scalar\",\n    \"opaque_objects\",\n)\n",
+      "fragmentSHA256": "698674f1fddddb21fef6d594ca2284f608087b13f86bcfc6727dff82504f4f56",
+      "literalValue": [
+        "scalar",
+        "objects",
+        "trie_nodes",
+        "trie_slots",
+        "opaque_scalar",
+        "opaque_objects"
+      ],
+      "literalResolved": true,
+      "reasonAdded": "exact pure module-level tuple dependencies referenced by requested _DOMAINS initializer"
+    }
+  ],
+  "rootFirstLiteralEvalFailed": "ast.literal_eval rejects compound tuple initializer; no artifact written in first attempt; corrected to preserve exact expression rather than execute it"
+}
