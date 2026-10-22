@@ -1,0 +1,160 @@
+# 可独立验收服务子阶段登记
+
+依据原 plan.md 第46行及 tasks.json.stage_constraints：可独立合并的功能服务须先登记精确范围、完整验收和原双审门；服务合并、父模块验收、完整发布分别记录。这里拆分集成步骤，保留所有57项P0及原跨模块要求，不把准备/替身变成正式产品能力。原功能聊天/Goal不重建。
+
+所有子阶段只从实际批准develop施工，下一最终候选前同步真实基线/解决冲突/完成实际依赖联验，固定同base/head。正在审查的队列前方未释放前不擅自合并后方改变其基线。下列登记均不等于当前已获指定审查通过、推送或合并。
+
+| 子阶段                                     | 精确功能范围与对应文件                                                                                                                                                                                                                                                     | 完整有界验收                                                                                                                                                                                                                                                                                                                                                       | 明确保留的父功能缺口与当前状态                                                                                                                                                                                                                                                                                 |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| T06-S1 私有行为计划与固定输入适配          | 本线behavior/三源码、四test_behavior测试、fixture作者脚本/完整JSON、T06接口/adapter/probe及全部相关证据；产品61396a598b2dffc1d3d2fd4660f9af1d5c93d266，原root预检流程11d66ea267c56e1436f1f916dd6319a1914d9a59，后续流程点见T06-S1-controller-review-preflight.json实际记录 | E.1冻结条件、四层排序、跨实例单值竞争/同值幂等、稳定event/create/通知身份、准确失败位置、完整facts/Diff/轨迹和消费隔离；122实际测试、全check、同固定输入九例完整比较，所有历史意见处置；人工推导边界披露                                                                                                                                                           | 不含真实推理/Store round写入/取消恢复、资源B07/AgentB08/UI联验及完整G3。root已核验源码/diff/20日志；原T06已获唯一后台恢复lease，MiniMax完整任务已受理1、ZCode未提交；后台官方完整CLI继续，旧GUI许可过期；UI子树排除                                                                                                                                          |
+| T03-S1 CSV/XLSX与确定性映射准备服务        | mapping/私有服务、受控私有mapping页面和专属测试/fixtures/证据，已生效四依赖构建文件的最小增量；不注册新业务方法                                                                                                                                                            | 真CSV/XLSX保存值/缓存公式/工作表/稀疏值、宏拒绝；外部引用只读已保存缓存/文本且零网络及资源限额；稳定单复合键/关系/显式转换；完整RDF/源行/owner-managed/人工漂移/墓碑/重跑/旧预览；真实批准Store原子计划及取消/真退出反例；页面代次隔离；唯一frozen锁/许可证、正常check和正式产品包内同11正反例、固定错误/额外参数拒绝、旧storage probe回归，独立内审与证据同版绑定 | 不含正式受信文件选择、T02语义定义、主进程业务bridge/App、T01人类确认/Job/对账、T08草稿/T10迁移及完整FR300–304。原owner已请求范围；新固定SHA/全部证据root读取及独立边界复核前不派外审。当前macOS27 arm64目录包CLI不代目标双平台/签名发布                                                                        |
+| T04-S1 离线查询编写与批准读取客户端        | query私有authoring/visual生成、私有页面与结果reader，专属Python/TS测试/fixtures/SSR/文档；仅调用批准5f受限getResult/getResultPage/getJob/cancelJob                                                                                                                         | 受控查询生成/模板与SPARQL编写完整输出、同数量错义反例、固定G-base真实只读库互操作；RDF term/表格安全显示、当前页CSV、保存新旧definitionId/代次隔离；仅同项目query job取消、ACK与终态分开、旧游标/切项目/迟到读隔离、完整错误配对；正常全check、独立内审/首失败保全                                                                                                 | 不含真实query.execute/执行身份和实际ASK/SPARQL元数据、T01保存、T08草稿、局部关系图及真实Q01/02分页/取消/外联/历史/跨设备。原owner已请求，554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6产品/验收候选，19ef25259e6304949cef4a1993b006de11fb885b流程证据；待终态新完整证据/root核验后排队，不消费未批执行器，不激活App |
+| T09-S1 离线内容、学习检查reducer与独立页面 | 固定manifest17输入/课程/术语/分级提示、learning私有服务/真实批准I04基础设施测试、独占learning页面和专属测试/证据；76596656908ed84e577e8202a602e3256d5febcc实现，74b17a43fd51b0fa89d810c664d185583a140e48流程                                                               | 完整PRD源/17输入hash/reset隔离、精确集合/顺序/类型及typed evidence归类、最高辅助不洗与独立迁移标记；真实批准I04七项有界联验；页面同context/input/attempt/代次/辅助恢复拒绝、实际headless组件交互/双尺寸与正常check，所有独立意见关闭                                                                                                                               | 不含实际领域工具/stage evidence/T01 durable跨attempt账本/正式bridge/App、包内课程布局/T08/T10或5名真人80%。旧873固定阶段审计只覆盖其本身，新增UI必须单独核验；等待root读取当前完整证据/独立边界复核后才取得实际审查时段                                                                                        |
+
+外审当前T06-S1原会话唯一owner：MiniMax16:10:14+08已实际接收完整任务，root已核设置/提示/12source及完整diff，实际指定任务1，报告/终态待收；ZCode仍未提交，官方完整CLI恢复继续。当前无新GUI许可，旧答复误认和客户端旧proc超时已纠正保留。旧I05-C4 523已确认撤出最新发布队列，完整I05组合未就绪；T02/T03/T04/T09/T10现有S1已实际回执，前四只准备冻结双方提示、T10复用已备packet，不抢建外审。所有同版指定双审/CI/集成门保留，见external-review-recovery-20261022.md。
+
+## T02-S1 新增登记（范围与候选已核验，现存原始证据恢复已补）
+
+root已实际全文读取原T02 `stage-registration-request.md`、delivery/status和verification-c3，接受按原plan46拆分独立服务的方向。固定产品49321221733ea927484647352e05e7d833cebc86；原批准base5f不变，具体流程HEAD由后续审计实际核验。精确范围为ontology四个私有Python模块及test_ontology三测试、ontology独立renderer三文件及t02专属测试、ontology fixtures和全部本线流程/探针证据，不包含任何现有公共契约/Store/Job/main/preload/App/锁/构建/CI。
+
+完整有界验收包括定义/断言不可变编辑与完整RDF/metadata Diff、多语言多行、完整引用删除影响、旧project/revision/内容拒绝；批准Store2完整RDF来源的只读绑定、原fact ID/owner/source_row/managed_value/墓碑及重叠支持；11项独立headless合成回调呈现/迟到/跨项目/错误，C3新增13真实SQLite只读反例和正常全check。root已全文读取独立T02-controller-service-candidate-audit.md，633TS/1091Py、39本线Python及固定源身份均相符；11UI为未变C2脚本的沿用。原线51bec/c309已将41日志（含原32索引）和2当前截图/4索引封存为Git内48成员归档；root全文读独立恢复审计ca9bad，全部原件hash/成员对应，R1在现存原件范围关闭。旧C1截图被覆盖只保留hash，无法恢复，如实披露；不宣称远端副本已核。此处不授予指定双审、推送或父验收通过。
+
+正式T01当前投影/metadata授权/人类确认/唯一原子提交与撤销、I05批准Turtle导入支持检查和完整往返、实际named bridge/App路由、T08模型草稿、FR200–204/附录C/F/G/12.1/12.4及所有父平台/发布门完整保留。来源hash正确不授删除/保存权，样本存在不等于Turtle支持通过。原Goal保留，当前owner已报告blocked；本登记不制造实际接口或审查桌面，也不要求为纯登记重建目标、无变化复测或立即唤醒外审。
+
+## T10-S1 私有包检查与安全报告文件服务（已登记待审）
+
+root已全文读原请求和独立 T10-controller-private-stage-native-readback.md（SHA01a286be73c1ae3127f7edc1ff7593d418e84df440dee2af7c3a143eb7c3c919），固定base5f、产品d3546af3b6fe895957f9626fd4de28bf59dc600a/c3c7e90f721344113c4279d663127f9c8d5bda59、流程66eeedd735370576b49eb39cd4b14cdef9c0d55b，接受原功能Goal内的精确独立阶段登记。范围限已授权transfer/project-transfer/renderer-transfer与专属test/fixture/docs：有界只读draft ZIP信封检查、安全HTML与未接线页面、不可变报告文件发布。未修改Store/公共协议/main/preload/App/共享锁/CI。
+
+完整有界验收保持危险路径/保留名/符号链接/隐藏成员/重叠及长度压缩尾部拒绝、角色/选项/内容hash；严格报告输入/所有栏目/逐attempt辅助和独立表现/12攻击文本与固定CSP；真实FS排他暂存、完整字节与inode/path核验、原子不覆盖、取消、发布后不明状态/耐久与清理。60Python、18报告TS、43文件TS及独立意见闭环，最后完整check691TS/1112Py。55原生证据全部固定Git：隔离Linux arm64真实Electron/GTK保存与取消，3896B/ad367实物和原运行0600；失败attempt1/2、共享测试一次TIMEOUT/单文件8通过/完整retry通过均保留，原因未明。旧browser检查3900B/26af为另一实物，不能拼成同一native运行；源码health/临时编译不称正式包。旧browser及11raw/HTML等40现存原件已在a1e7ef按原字节Git封存；root全文读E1独立审计1bbfc43，关闭现存材料恢复事项。两旧snapshot仍缺失；三cjs仅事后保全，不倒贴运行前hash或完整镜像承诺；无重复测试。
+
+不批准内部draft格式、checkpoint或可信业务投影，不开放导入/恢复/重跑/重放；父FR1000/1001/104、A06–08、G6、12.4/12.5、唯一writer、原来源所有权/可选历史与会话、T09/T08真实联验、App/bridge/同代次、正式包/目标双平台、完整57及同候选指定双审/CI/正常develop合并/远端门全部保留。新I06受信transfer合同尚待原线内审/冻结/总控协调，不由登记生效。
+
+本阶段排在实际ready/依赖决定的后续条件队列，不占用当前Mac，不使指定任务自动创建或Goal自动恢复；指定两任务当前0。任何新基线/产品/测试/依赖/验收变化均按原门重验与全新双审。
+
+每个子阶段完整验收和独立内审后，由原功能开发聊天经实际合规computer use为ZCode GLM-5.3/最高和MiniMax M3.1-Flash/xhigh各创建全新完整独立任务，核验实际路径/模式/模型/版本。双方真实终态、全文报告读回、所有意见有处置、同候选双方明确通过，且待推实现精确一致，才可push/PR（attach）/实际CI/正常合并/远端核验。新基线或产品/测试/依赖/验收变化均重新必要验证与双方新完整任务。不得把条件Pass或Codex内部审查当双Pass。
+
+仅文档/操作政策或流程证据追加不触发无变化产品重审；保留前后身份、原始失败与限定结论。子阶段合并后父Goal继续active，最终真实接线及全部原模块/跨模块验收、完整同版指定双审和发布门仍另行完成，不能用多个局部Pass拼成产品上线证明。
+
+## T01 内部纯来源表材料机制（不进入完整功能通过）
+
+固定产品及专属测试 `bf04169d400378084e8fea87b6a8e3915135987d`：仅两个 canonical helper 源、fixtures 和两份专属测试。root 已全文读独立报告 `T01-controller-source-table-material-readback.md`（16336B / SHA `c88aa1252e8c9b2f5b0ab835762bfbaa1e1a748f96979322b917c9a12a0428d4`），五个 Git blob、旧区域及旧 fixture 顶层值、14 成员原件和最终 session67934 的真实 exit0 相符。最终126TS/132Py专项及952TS/2628Py/44原不适用skip分开归属；未运行额外产品测试。
+
+原最初预算反例漏封 E1 由 `27a0d17149ffdaf013233b4ac7fc861ccb0e38c2` 单独补封，1802B / SHA `9c325c4ef0e93b43d4a09159618505daff0b6abe592698b215e519155268ab95`；原会话两原行与固定 prefix/offset/长度/hash逐字核验，E1关闭。旧39000B证据包、原索引与旧stdout-only退出对象缺失边界全部保留，没有重跑或改产品。
+
+只允许登记受控 data-only 完整表 canonical 编码/摘要的内部阶段收口。真实 parser implementation、五编码实际解码、受信来源授权、source运输/配额/GC/pin、worker、学习/完整恢复、runtime3/ready、包/native、父T01、指定同版双审/CI/合并均未由此通过。四个新增文件未来维护交接已另行生效；startup实现仍待精确阶段计划与独立复核/总控授权。用户Q6已采用具体推荐规则与REC pin，其他未决与真实验收不受此内部阶段替代。
+
+## 当前两项精确实施阶段已授权（尚无实现通过）
+
+2026-10-21T12:40:54.344668+08:00，根按固定计划与独立闭环一次下达 T01-startup-implementation-phase-authorization.md（17产品/7测试）及 T05-profile-mechanism-phase-authorization.md（7代码/7测试/6fixture、budget1/N2）。原T01新turn01a15cc0与原T05新turn01a15cbf已由官方wait实际核active，T05已全文读授权并开始实现。两树无共享文件争写；当前没有新候选通过或公有业务ready声明。此为先前独立维护权之后的精确施工许可，实际实现/包内/目标平台/指定双审/CI/合并及父功能门保留，不消费他线未批准实现。
+
+两已授阶段最新实测/审查观察（2026-10-21T12:56:36.944733+08:00）：T05首候选完整check由owner报635TS/2119Py exit0，但root独立预读R1/R2/R3未关闭，原线其他真实边界问题集中修复，需修后固定输入和原始终态绑定；T01独立审查修wrong-session且Job视图事件断言失败未闭。两线仍同原活动turn，授权不等于阶段/父功能/外审通过。
+
+T05私有profile/给定binding机制阶段于2026-10-21T13:21:06.023786+08:00实际根收口：固定1e3e0ee/7e8672，官方1408专项及635TS2608Py exit0、完整原件/Git及独审绑定，详见T05-profile-mechanism-stage-root-closure.md。只结束这一内部阶段，完整FR500–505/真实图/producer/公共链/目标平台/指定双方外审/CI/合并门保留。T01临时单路径旧test窗口另生效且仍开，P2嵌套guard和原raw配对修补继续；当前没有新公共ready或合并通过。
+
+T01内部显式business3/startup阶段于2026-10-21T14:05:33.058469+08:00根最终收口，固定fd3944a/17产品8测试；完整check1030TS2706Py44原skip、重建unsigned当前平台目录包5真实引擎session、61原件301工具对和25Git全部核验。详见T01-startup-stage-root-closure.md。旧task-runtime窗口同时明确关闭返I05未来维护，冻结C4/T01版本各自保留；此非正式domain/source/default3/真实IPC/目标平台/父功能或双审/CI/合并完成。T05下一真实执行计划已技术接受但无E1实现权，真实接口依赖正在原owner提供。
+
+## T01 正式 ChangeSet 后端阶段（已授权、实际实施中）
+
+2026-10-21T14:26:19.110247+08:00：固定计划f51a9e/27888B/39ebbf，根独立c33915两计划P2关闭，已向原T01发8818B/421f974c实施授权。精确10产品+4新增测试，实际official wait见新turn01a15d21-5d58-7440-a839-8c0be6c2d446 active；不是仅排期。范围为typed人工asserted/ontology子集、完整Diff/受信确认机制/正式Job提交与undo、故障重开/对账，C01–C08不缩。底层/worker/resources/main/UI/build/锁/CI/旧test不扩；未来task-runtime仍I05唯一维护。当前尚无新阶段运行/内部实现审查/指定双审/包/CI/合并通过，完整父范围与真人确认/恢复/领域依赖继续保留。
+
+## I05 隔离P1与T03依赖A（实际编码中）
+
+2026-10-21T14:49:23.587433+08:00：I05原会话在新I05-profile-integration从5f开始真实图计算P1，8756B/ae99f6f9精确10自有产品+七机制只读采用/六固定夹具+十旧测试原字节+五新测试，32输入逐Git核准；selected第六测试待真正新接口，不占位。T03原会话在新T03-profile-build从5f开始A面两配置路径实际依赖/锁，4518B/ec8f授权，D2只读/原B面不变。两线均实际新树+官方活跃，并非计划即完成；对应环境/完整oracle/包/正式领域/父要求与原门保留。T05最终oracle候选3已接收、根实际delta审计中，未作E1通过。
+
+## 2026-10-21T15:11:24.836874+08:00 实际候选与预期准备收口
+
+T05独立预期candidate3/f9已根独审与原件核验收口，4829B收口文件及22项固定输入清单已实际交I05/T03/T05；I05已确认只读消费。此为预期准备，不是E1或父验收。T03 D1 fd87实际两配置候选、T01 ChangeSet5de实际10产品4测试候选均已交根独立审查，根已全文读实施/供方独审并保原失败；尚不登记根阶段通过。T05 IRI两路径最小修复已实际新建1e3隔离树和原会话新turn。I05实际四项事实揭示false matches未保留/JSON恢复未实现、按child默认复核池会放大总预算；已交T05只改提案，API仍未授权。T01下一可信host/项目选择合同只授权一份方案与其证据，无shared代码。Goal active/progress，未push/PR/merge/新指定双审，既有桌面与完整范围门不变。
+
+## 2026-10-21T15:14:27.581072+08:00 D1依赖精确采用已放行
+
+根全文读T03独立12982B报告并核官方resolver/source/完整check终态，fd87 D1内部依赖阶段收口。2819B精确许可已实际交I05和T03：仅pyproject398B/bcc882与uv.lock28440B/86dfe8原字节，维护权不转、D2仍只读，组合实际运行待I05。T05批量提案根17078B静态报告全文读后已交原供方，三池条件可行但需可信child限额新合同与独立恢复成本；I05仅临时保原false/true tuple/defs/catalog/limits的增量已精准允许，未授selected/恢复器/Store。IRI dbb两路径候选供方报635TS/2739Py与source12通过，独审/收据和根核验仍待完成。
+
+## 2026-10-21T15:17:07.728908+08:00 ChangeSet内部服务已核验
+
+T01固定5de内部typed ChangeSet根收口3483B/ebffe412，已实际交原T01及边界告知I05。根全文读15609B独立报告和原完整check/包CLI/资源JSON，另核22固定Git=current、14源码ZIP原字节并封存8docs；两P2修复和包内3正式Job/选择undo/重开对账证据成立。1125TS/2789Py/44既有skip如实保留；27os_exit与13authorizer不代物理断电或自然取消。下一可信项目选择/命名桥/完整Diff只准精确方案，未授共享产品，不移交rule/worker/producer载体。T03已实际确认D1根收口，产品fd87不变，e08仅接收流程docs；I05新树两配置hash实际相符，环境与组合检查尚待原件。IRI根初始静态读回无代码阻断，仍等最终供方收据/Git绑定，不先授权跨线消费。
+
+## 2026-10-21T15:21:54.134682+08:00 IRI修复独立收口并放行一文件
+
+T05 dbb最小IRI实现/9a0证据已根核验，13320B独立报告最终追加全文读回、8615B供方收据及5851B独审原文读回。根另核11件核心固定Git=current和七模块新组合，并读取官方check/source原命令completed/exit0及完整正常check635TS/2739Py。3034B根收口和2435B七模块清单已实际交I05/T05/T03，只准I05采用terms6176B/218c，不wholecommit/维护权转移；其余六原样。旧红74/57/exit1、首I001和完整staged whitespace exit2/223诊断均保真，三精确raw排除scope0不称全量绿。源码修复内部阶段通过，真实I05组合/包/目标平台/父范围与指定双审均未通过。Goal active/progress，继续实际P1、可信host方案和按child batch提案，未push/PR/merge。
+
+## 2026-10-21T15:29:19.948812+08:00 批次复核纯模块授权与下一方案送审
+
+T05 fixed330f32769B提案及12853B供方独审、根26970B报告原前缀和完整追加均全文读回，17docs固定Git=current、13成员bundle安全并保快照。5884B纯实施授权已实际交原T05：从刚核远端5f新建隔离树，精确只读采用dbb的21输入，再仅新写API/test/fixture三路径；先真实source40000旧成功→逐组失败→新成功及同dbb Unicode/预算/伪造边界，正常check与独审。此为授权已派发，尚未核实际新树或实现，更不是I05消费/restore/selected许可。I05当前实际七模块原字节已根全部核同新清单。T01 fixed427ba29575B可信host方案及16976B供方独审已交付，根独审已派发，根自身尚未全文读，未授新shared实现。远端develop实际ls-remote exit0仍5f。Goal active/progress，未push/PR/merge，全部原父与发布门保持。
+
+## 2026-10-21T15:45:28.540677+08:00 可信宿主后续阶段已作有限决定
+
+根全文读固定427ba计划29575B、自审16976B及根独审14032B，16docs固定Git=current/14成员ZIP安全，方案阶段接受。7435B精确授权已交原T01并全文接收：新5f隔离树逐48继承5de后只读，新写project_host.py和一份真实Store单测；完整目录冻结分页、同读事务workspace、零补写/零snapshot创建及authorizer禁写证明，未授主进程/公开RPC/任意位置或创建DDL。创建/unknown选择engine真UUID+单Store claim/receipt、优先现claims/context只读resolution而非新main账本，精确合同并行。根另将3994B projectlocation purpose/私有inventory/cohort合同准备实际派发原I06并官方核新live turn，产品/凭据/GUI均未授权。I05、T05纯批次同句柄仍实际运行，未推送/合并/正式父验收，Goal active/progress。
+
+## 2026-10-21T16:07:12.329409+08:00 纯批量复核收口与固定 I05 续接
+
+T05 pure16c/ca0990独立读回13695B/2462c8全文核，技术收口见T05-batch-revalidation-pure-source-stage-root-closure.md；不授权正式I05消费/restoreR/selected。I05固定0475、118路径，630TS/2582Py/source12，真实probe83=78成功/4资源拒绝/1缺规则exit1；14050B/91e837聚焦来源报告已读并绑定11项Git，最终全候选独审另在运行。T03只文档D2固定输入包合同3959B/ceb03c准备已实际发送并官方确认active，代码仍readonly。中断后原开发会话新cursor已登记；缺失独审句柄实际替补，不虚称原agent仍运行。T01只读服务与I06能力offer仍在实际推进。无根产品写/GUI/push/合并，父Goal继续active。
+
+## 2026-10-21T16:21:36.786820+08:00 固定计算读回与 I06 A 调度
+
+I05最终14233B/4eb0e9独立报告已全文读、1902B/32d13c受限收口实际送原I05/T03；根117清单项当前/固定Git逐hash无差异。原I05已实际active准备3845B/2f2ce2 strict恢复与独立整次R方案，仅docs，0475产品冻结。I06固定1f3 46365B/561ec272方案及12219B/556c6b根独审已全文读，31inputs/14docs范围闭环，无阻断纯A新问题；7045B/20c9c0精确4新文件A授权已实际发原I06，新5f树启动待回执，不复制e2c/961。真实供方/持久retired/native/VFS/首IO/宿主接线均未批。T03 D2仍仅docs；T01最后游标复活反例修复中，未提前freezepass。remote develop实查仍5f，64原保护字节全同。
+
+## 2026-10-21T16:30:06.548812+08:00 D2 两文件真实包实施已调度
+
+根全文读固定b341合同30281B/ae53df、内审9831B/a3b526及独立11759B/8e2f79，逐42项Git字节核同并读全部路径，20169B/777830清单与8088B/5c9739授权实际发原T03，官方新turn active。采用18运行资产+24验证，唯一build-engine/entrypoint两writer，完整46+docs差异；真实78/4/1 exit1及所有包/identity/平台门保留。I06纯A新树HEAD5f/branch/AGENTS15852/78df已根实际核，官方active写4新路径；非真实首IO能力。T01最终52用例/1125TS2841Py44skip已owner回执，固定只读代码先交付与create合同两P2分开，根独审已实际启动，未提前accept。原I05 strict恢复R仍onlydocs在推进。
+
+## 2026-10-21T16:38:25.104670+08:00 T01 内部读取阶段技术收口
+
+固定a816实际56路径（48继承+2新code/test+6docs），根全文读14875B/c97ae474独审、实施与验证并实际发送2270B/ccb26cc收口。最终check04独立session5551/70ca9d exit0，1125TS/2841Py/44既有skip/52新用例；header与旧cursor复活两P2真实关闭。source60f3c4仅整shell0，未单捕npm子exit，成功尾log核12且独审逐12源SHA全同；owner将另process澄清，不改原raw不重测。create/resolution39602合同及14753独审另固定交根，未准schema/write/公开宿主。T03fbf367独立adoption42项根实际Git/current/hash全同，D2两writer已在推进；I06A与I05R方案仍实际active。无推送/PR/合并、父Goal保持active。
+
+## 2026-10-21T16:58:51.600338+08:00 C1 新树已启动与真实包差异审查
+
+T01固定379916合同39602B/ff725及根18372B/517b29全文读，6docs与原56字节闭环，原两P2合同层关闭。正式发送8323B/93528e C1内部事务五writer授权，50输入manifest14299B/c87fd0，实际新树ba2c独立adoption50逐Git/current/hash根全核；47保持readonly，不准真实scope/binding/create/resolution/首IO。T03实际a4d新unsigned包/源包83深比/CLI矩阵已owner回执，根对wcwidth原生签名域具体pair及missing闭包另做独立静态裁定，未扩大9项业务JSON或Python指纹规则。根/owner的width默认及C/pure导出概括错误已明确撤回并按实际binary嵌入docstringFalse分层核，不基于错误扩包。I06固定6a38纯A70专项/700TS1052Py已交，根独立代码/raw读回正在收口，production unsupported。16:54实际remote仍5f、64保护全hash同，未push/merge，父Goal继续active。
+
+## 2026-10-21T17:17:49.820804+08:00 纯恢复实施调度、A收口与精确包差异裁定
+
+根全文读I05 45463B/3f72方案、15713B/fb6eed根独审及b770两支持docs补充；原70缺2绑定输入已补为72。68原字节根逐Git/hash核同，18077B/e6fbe9清单与8469B/0477ef新strict恢复四writer授权已实际发原I05，fresh5f实际启动待核；只纯bytes+exec+同原L API，不正式selected/producer。根全文读I06A13636B/b1d30a并1791B/30a4fc受限收口实际发送，4183B/869e9c真实ownerB仅docs准备实际发送，生产仍unsupported。根全文读T03native17664B/d8afa6含保留原17102前缀的函数名勘误，2981B/d1cb81仅精确385bcc->f5e36签名域裁定已送，不改JSON9或Python指纹规则；最终D2 process2a0cfdf已交，整包读回仍实际进行。父门/指定双审/两OS/CI/正常合并未关闭，未push/PR/merge。
+
+2026-10-21 D2受限源码／最终unsigned目录包技术收口：a4d产品、2a0cfdf过程，根T03-profile-D2-package-root-closure.md；83=78成功/4资源/1缺规则不变。非完整P1/P2、目标OS、T03父或指定双审/CI/合并。I05恢复68原字节采用ddcf已根核，新四writer实施中；I06 B只docs ffb送根独审，未授权代码。
+
+2026-10-21 C1内部空白创建事务423b受限收口，根T01-project-create-core-C1-root-closure.md；128专项/check1125TS2969Py44skip/source12。非正式create/resolution/physicalbinding/父FR通过。C2当前只授权精确只读证据核心docs方案，产品未授；full目标/双审/平台/CI/合并保留。
+
+2026-10-21 跨模块readiness根17048B/6f86d84c全文读：T01 dispatch/permanentdrain、T02真实typed ChangeSet适配、I06 native首IO三项onlydocs精确调度已发送；native方案协调I06，T01真实消费/T03构建唯一权保持，尚无native产品writer授权。BMfa8固定4+60待根最终读回；I05bbd旧139/23exec因S1未通过，修后新候选待验。
+
+2026-10-21 BM真实私有metadata受控临时目录子集fa8技术收口，根I06-real-private-metadata-BM-root-closure.md；47pass2skip/正常713TS2skip1052Py/source12。Node路径竞态/ABA未解，production unsupported，非native首IO/两OS/父/指定双审/CI/合并通过。后续native方案onlydocs独立于fa8原件。
+
+2026-10-21 I05 strictrestore3ef/4be受限收口（145/23新exec、630TS2873Py零skip/source12实际exit0），正式producer/selected下一方案onlydocs；T02 d597计划技术接收，T01真实S1/S2/Entitymetadata供方onlydocs。T01 C2仅内部证据机制已8820/e170授权新5f树52只读+2新writer，产品待实现，非formalresolved。I06 native9ff1静态方案接收，N0六产品三测试仅源码窗口fc4a已送；T03构建onlydocs eb27已送，尚无native编译运行权。指定双审/平台/父功能/CI/merge门不变。
+
+## 2026-10-22T00:16:40.062808+08:00 真实producer实现与供方合同衔接
+
+I05最终a359/496的69523B整稿、两delta及两editorial与35841B根报告已全文读，原计划阻断仅方案层闭合。9754B/2517a322精确授权及38921B/bb2519清单已实际送原I05；e446新树135受控输入逐sourceGit/adoption/current/bytes/SHA根全核同，实际相对5f为126差异、9同base，无额外路径，九writer实施继续。target AGENTS保持5f1056/1b3，最新15852/78df外部全文读取并保留有效，不擅自复制。8800B/8957aa T01 S1–S5真实供方仅docs合同已送原T01，不授共享源码；C2/dispatch分树实际修复不打断。本体编辑775固定24docs与T03 c7固定3build+64过程/官方材料已派独立根静态审，尚未接收代码或开放CMake/native运行。无根产品测试、push/PR/merge；父、指定同版双审、位置、两OS/真人/CI/develop门保持，Goal active/progress。
+
+## 2026-10-22T00:29:52.661538+08:00 固定源码独审与可先行工具供应
+
+T03根15279B/d7a311报告全文读：67路径和官方归档/许可静态闭环，R5未来进程history丢失已根读driver确认并送原owner精确修复，尚未批准构建。6465B/1e47f7新材料窗口实际送原T03，只准固定官方CMake安全提取、全inventory与精确版本/Apple只读供应探针，所有configure/编译/native实验仍未授。I06 fa1九源已交根独立审，过程ff0仅docs收尾；Win测试guard接受盘符相对路径P3已根实际读241–242确认并送原owner修复或明确延期，不升级为mac/core阻断。T05原chat已发M1独立数学golden/真实图及源缺口精确合同准备，仅新docs/JSON，不动原f9af/16c或产品。T01 ontology81538主稿及23030原审根已全文读完，根独审收尾后作技术选择/S1精确窗；未冒真实非空全链成本已证。Goal active/progress，无push/PR/merge。
+
+## 2026-10-22T00:38:26.480247+08:00 S1真实只读来源已授与原件/远端实核
+
+T01固定775的81538主/23030原审及24648B/81f642根独审均全文读，24docs/69源与原件绑定静态闭环。根选择L1+L3、project跨四类exact-case identifier唯一、单payload home与显式profile2方向（保CP1/migration_id/全历史碰撞拒升级）；仅方向，不授M/S2或生产迁移。9912B/727fb2授权及14848B/e7f4ee精确52readonly清单已实际送原T01，只新projection/专测两writer、完整54，无T02四模块runtime采用。C2最终129专项reported/check运行，dispatch固定04ed/4f已交根独立源码审，未提前accept。00:35:36原64资料/原型全bytes/SHA同；本轮ls-remote session94635真实exit0仍5f（开始时间未捕获，观察完成记录如实保留）。Goal active/progress，无push/PR/merge。
+
+## 2026-10-22T00:51:13+08:00 Fixed source repair and exact supply delta
+
+T03 R5 fe98 parent c7: root verified all 89 manifest records plus self, exactly 90 full paths current=Git=bytes/SHA. Root read the full 22486B/c43ad499 appended independent report and full driver diff; R5 closes at source/static level, no fault/build run. Root parsed all 81 named arm64e cache paths/realpaths/sizes (7046515706B) and all 21 direct map-match summaries; 2347B/b9da0964 precise cumulative read delta 8->10GiB actually sent, old consumption retained, no broader cache scan or compile approval. I06 22204B/6d708fe report fully read; P3 Windows test relative-path guard repair active, no native execution. S1 new tree/branch actual at 5f; exact52 adoption remains pending. Dispatch independent audit found reserveOperation reentrant stop then returned reservation never cancelled; root read actual engine/lifecycle branches and routed minimal repair within existing three writers, new candidate/revalidation required. Control serialization had a non-UTF8 stdin error before any write and was corrected with ASCII-only script; not a product failure. Goal remains active/progress; no push/PR/merge, full parent gates remain open.
+
+## 2026-10-22T01:14:13+08:00 Fixed source adoption and independent mathematical inputs
+
+S1 3f5fe adoption: root independently verified 52 source/adoption/current byte hashes and exact delta; two new writers continue. I06 P3 fixed b1c/0534 accepted only at source/static level after root fully read 33160B/c3cfa6 report and latest handoff. T03 exact nine-source adoption a026 parent fb40 independently verified all nine source/current/Git pins; 5965B/a783158 authorization permits only readonly adoption/source lock/API3/testAssembly static preparation, all compile/native execution still unauthorized. Root read full 34738B/767ead material report and 13923B independent supply report; 109 material docs/13 version probes/81 identity hashes are evidence-bound host supply, not used/dependency/runtime certification. Actual backend and fixed environment candidate needs precise small delta; installed host development terms versus redistribution notices are separated. T05 9333 main30594 and root16096 math/source review fully read; original49/24/16 and78/4/1 unchanged; root separately read fixed W3C consumer operator/datatype/inclusive sections and recorded links. Readonly M1 contract routed originalI05 without newcarrier/version/budget/test adoption. C2 product256/process5b118 final71+430raw/215pairs received; root actual source/ledger/archive audit active. Dispatch P2 reservation reentry repair/newcandidate pending and29ps/28argv clarification routed. No product code by root, no push/PR/merge; Goal active/progress.
+
+## 2026-10-22T01:38:57.172537+08:00 C2 internal closure and first core build continuation
+
+Root accepted C2 fixed256/product and5b/process only as finite internal fact reader after full main/own/root independent reports and actual71 current=Git proof. Raw430/215pairs and129ledgers preserve134runs/128normal rollback summaries; no formal resolution or profile2 adoption. Original T01 actually received2864B/b676ac closure. Dispatch fixed7dfa source C01/DI01 repairs have no new code blockers in29116B/cc03155 root append; final raw/Git collection remains pending. T03 received7961B/697ed first two-target core build authorization and1879B/2279b exact gnumake supply delta; fixed Developer/make remains a selector, only named gnumake pin/static identity is added, no selector state read or artifact execution. Actual build not yet evidenced. S1 received2443B/913f25 two-writer UTF16 algorithm trial window, all caps unchanged; proposed linear charge still unapproved pending actual SQL/materialization-copy upper bound and independent review. Official I05 snapshot31 reports1125TS/4887Py44skip/source12 and both budget findings repaired; final original raw/source binding pending. T05 ordinary M1 turn completed/idle verified, old blocked Goal not recreated. No root product run, push/PR/merge; parent gates remain and Goal active/progress.
+
+## 2026-10-22T01:58:10.971093+08:00 I05 fixed delivery accepted and actual T05 math implementation
+
+Root fully read29447B/5eeb97 independent final audit plus12898 main and6464/9549 deltas; fixed6c/2d5 internal producer capture/fullview phase accepted via2907B/e192160 closure actually sent originalI05. Root actual300Git proof is complete;38fresh exec/153ZIP originals independently bound, BRF01/F02 closed,09check1125TS/4887Py44skip/242special/sources12 evidence-bound. Normal09/10/11 do not each contain139 before-after snapshots; evidence attribution retained. Main checkout original64 independently still same at01:43:29; historical91e35 prototype WIP differs from archive by design. T05 received5151B/b2af26 math fixture/test authorization plus61054B/fe4c08 fixed149 inputs, actual newturn01a15f99 active. Its newtree adopts6eb4d from5f; root at01:57:16 independently verified149current/Git/approvedhashes,140actualdelta+9samebase, baseAGENTS1056/1b3 unchanged. Onlytwo newpaths; no productcore/source/Job/carrier/selected permission. T03 first actual core configure still pending original600000ms, no artifacts or build success claimed; root44522B/4f826 prebuild static review accepted exactenvironment/gnumake. S1 alternativeUTF16 proof assigned independent root auditor;160u charge remains candidate. Remote ls-remote session95835/a42908 exit0 still5f; no push/PR/merge. Parent and specified dual/OS/human/CI gates remain open; Goal active/progress.
+
+## 2026-10-22T02:05:01.965291+08:00 Explicit correction and actual first configure timeout
+
+New focused SQLite source audit exposed C2/S1 metadata length/instr scans before u-based work admission. Root read C2 actual_cost283-284/_raw and confirmed the static sequence; historical C2internal acceptance is preserved but future supplier adoption is now held. Root appended explicit correction to originalclosure and actually sent2868B/2c66cff C2 two-writer preprobe repair window, all old52/caps/profile1/transaction protections unchanged. Physical record-header copy up to98307B is a separate SQLite-source issue under independent report, no malicious DB run claimed. T05 new149 contains noC2 and I05internal acceptance remains unaffected. T03 actual c80 firstdriver17:46:19Z..17:56:35Z exit1:configure ETIMEDOUT/statusnull/SIGTERM PID73337;0-10Git exit0,12buildnotattempted, noartifacts/testexecution. Owner fixed7bfd firstfailureprocess85logs; root final archiveaudit assigned, raw metadata and progressunknown kept. Root actually sent3192B/a2b2bc77 original3writer inventorymetadata repair scope; fullpin checks/roots/caps/R5/timeout remain, no secondbuild or40GiB yetapproved. JSON parse/list complexity is statically observed, not measured rootcause or performanceclaim. Parent dual-model/CI/OS/human/remote gates remain; no push/PR/merge, Goal active/progress.
+
+## 2026-10-22T02:10:33.096912+08:00 Current recovery checkpoint
+
+Root fully read S1 focused16292B/c07476 review: pre-u length/instr and physicalheader items remain open; C2 same preprobe issue is explicit, root2c66 repair window active with originalprimary as soleauthor. Root did not grant wholeDB serialize/Btreeparser expansion; originaltwo-writer narrower metadata batching/paid schema cache trial routed with allcaps retained. S1 author disclosed overwriting old4690374B/435697 ledger; root recorded1507B/e706ee preservation gap, no known exactcopy after bounded path search, old tool/hash facts kept separate from missingfullbytes, no fabricatedreconstruction. T05 b0f actual1331 observations+corpus resulted2fail/1330pass; relativeIRI/invalidoperator differ between puregolden and typedmaterial/producerlayers, independentroot layerreview assigned, fourgoldens/149 unchanged and newtesttrueoperandassertion ownP2 strengthening underway. T03 root54238B/ae4f72 firstfailureappend fullyread:377Git/85original/61snapshots bound, inputc80 and failure7bfd preserve ETIMEDOUT/buildnotattempted, no artifacts/processdrain claim; metadatarepair source active under3192window, nextbuild/40GiB stillnotapproved. Dispatch final8ecc75paths/188rawpairs received, rootindependentraw/source binding assigned. All originalGoal/newthread state changes remain actual only; no push/PR/merge or root productrun, overallGoal active/progress.
+
+## 2026-10-22T02:15:09.598233+08:00 Dispatch fixed internal closure and exact errorlayer decision
+
+Root fully read38840B/9a6ee final dispatch report and personally verified75current/Git/manifest plus51readonly423b at02:14:35;2119B/eadd418 closure actually sent originalT01. Fixed7dfa/8ecc internal mechanism accepted only, no formalissuer/terminalproducer/Storeworker or C2combination. C2remainsheld for preprobe resource defect. T05 exact2case layer decision2461B/c10a07 actually sent originalT05 after rootsource read and independent static confirmation:relativeIRI producerdiagnostic distinct from pureparser, nonstringoperator rejected typedmaterial before directcomparator; preservefourgoldens and firstfail, fixedstage/DTO assertions only in newtest, pureunreachable reasons not claimedtested. Root did not modify products or run tests; newtypedvalueassertion P2repair ongoing. All current gates/unknowns remain in execution-state; Goal active/progress, no pushPRmerge.

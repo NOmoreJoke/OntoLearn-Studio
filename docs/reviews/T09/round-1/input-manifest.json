@@ -1,0 +1,968 @@
+{
+  "schemaVersion": 1,
+  "stage": "T09-S1",
+  "round": 1,
+  "preparationOnly": true,
+  "date": "2026-10-22",
+  "timezone": "Asia/Shanghai",
+  "repository": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines",
+  "branch": "feature/weekly-t09-learning-baselines",
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "approvedBaseTree": "0a23f708a3d59f3e2a0353d6f069169ff8e26b3f",
+  "productCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+  "productTree": "8b646570108026a8deabe8330c548cab0280122d",
+  "evidenceProcessCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+  "scope": "complete frozen content + reducer + isolated UI + approved I04 infrastructure, all base-to-product files; no later stage prototype or formal product integration",
+  "productChangedPaths": [
+    "apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+    "apps/desktop/src/renderer/src/learning/content.ts",
+    "apps/desktop/src/renderer/src/learning/learning.css",
+    "apps/desktop/src/renderer/src/learning/presentation.ts",
+    "apps/desktop/src/renderer/src/learning/types.ts",
+    "content/learning/checks.json",
+    "content/learning/course.json",
+    "content/learning/glossary.json",
+    "content/learning/transfer-inputs.json",
+    "docs/iterations/T09/handoff.md",
+    "docs/iterations/T09/learning-ui-contract.md",
+    "docs/iterations/T09/user-acceptance.md",
+    "docs/reviews/T09/controller-delivery.json",
+    "docs/reviews/T09/coordination-authorization.json",
+    "docs/reviews/T09/evidence/baseline-verification.json",
+    "docs/reviews/T09/evidence/first-learning-pytest.txt",
+    "docs/reviews/T09/evidence/first-npm-check.txt.gz",
+    "docs/reviews/T09/evidence/first-ruff.txt",
+    "docs/reviews/T09/evidence/jobstore-after-id-fix-pytest.txt",
+    "docs/reviews/T09/evidence/jobstore-first-pytest.txt.gz",
+    "docs/reviews/T09/evidence/jobstore-verification.json",
+    "docs/reviews/T09/evidence/learning-42-pytest.txt",
+    "docs/reviews/T09/evidence/learning-pytest-after-review.txt",
+    "docs/reviews/T09/evidence/learning-pytest-final.txt",
+    "docs/reviews/T09/evidence/npm-check-after-review.txt",
+    "docs/reviews/T09/evidence/npm-check-final.txt",
+    "docs/reviews/T09/evidence/npm-check-jobstore-final.txt",
+    "docs/reviews/T09/evidence/verification-summary.json",
+    "docs/reviews/T09/independent-review.md",
+    "docs/reviews/T09/jobstore-integration-review.md",
+    "docs/reviews/T09/recovery.json",
+    "docs/reviews/T09/status.md",
+    "packages/engine/src/ontolearn_engine/learning/__init__.py",
+    "packages/engine/src/ontolearn_engine/learning/baselines.py",
+    "packages/engine/src/ontolearn_engine/learning/service.py",
+    "packages/engine/tests/test_learning_baselines.py",
+    "packages/engine/tests/test_learning_jobstore_integration.py",
+    "packages/engine/tests/test_learning_service.py",
+    "scripts/verify-product-baselines.py",
+    "tests/fixtures/product-baselines/E.5.json",
+    "tests/fixtures/product-baselines/G-base.json",
+    "tests/fixtures/product-baselines/G-behavior.json",
+    "tests/fixtures/product-baselines/G-map-empty.json",
+    "tests/fixtures/product-baselines/alarms.csv",
+    "tests/fixtures/product-baselines/cases.json",
+    "tests/fixtures/product-baselines/conventions.json",
+    "tests/fixtures/product-baselines/coverage.json",
+    "tests/fixtures/product-baselines/equipment-duplicate-key.csv",
+    "tests/fixtures/product-baselines/equipment-missing-key.csv",
+    "tests/fixtures/product-baselines/equipment-updated.csv",
+    "tests/fixtures/product-baselines/equipment.csv",
+    "tests/fixtures/product-baselines/manifest.json",
+    "tests/fixtures/product-baselines/unclosed-high.rq",
+    "tests/unit/learning-presentation.test.ts",
+    "tests/unit/learning-workspace.test.ts"
+  ],
+  "productSourceAndDataPaths": [
+    "apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+    "apps/desktop/src/renderer/src/learning/content.ts",
+    "apps/desktop/src/renderer/src/learning/learning.css",
+    "apps/desktop/src/renderer/src/learning/presentation.ts",
+    "apps/desktop/src/renderer/src/learning/types.ts",
+    "content/learning/checks.json",
+    "content/learning/course.json",
+    "content/learning/glossary.json",
+    "content/learning/transfer-inputs.json",
+    "packages/engine/src/ontolearn_engine/learning/__init__.py",
+    "packages/engine/src/ontolearn_engine/learning/baselines.py",
+    "packages/engine/src/ontolearn_engine/learning/service.py",
+    "packages/engine/tests/test_learning_baselines.py",
+    "packages/engine/tests/test_learning_jobstore_integration.py",
+    "packages/engine/tests/test_learning_service.py",
+    "scripts/verify-product-baselines.py",
+    "tests/fixtures/product-baselines/E.5.json",
+    "tests/fixtures/product-baselines/G-base.json",
+    "tests/fixtures/product-baselines/G-behavior.json",
+    "tests/fixtures/product-baselines/G-map-empty.json",
+    "tests/fixtures/product-baselines/alarms.csv",
+    "tests/fixtures/product-baselines/cases.json",
+    "tests/fixtures/product-baselines/conventions.json",
+    "tests/fixtures/product-baselines/coverage.json",
+    "tests/fixtures/product-baselines/equipment-duplicate-key.csv",
+    "tests/fixtures/product-baselines/equipment-missing-key.csv",
+    "tests/fixtures/product-baselines/equipment-updated.csv",
+    "tests/fixtures/product-baselines/equipment.csv",
+    "tests/fixtures/product-baselines/manifest.json",
+    "tests/fixtures/product-baselines/unclosed-high.rq",
+    "tests/unit/learning-presentation.test.ts",
+    "tests/unit/learning-workspace.test.ts"
+  ],
+  "productSourceAndDataDiffFromWorktree": "empty verified when preparing",
+  "fixedFixtureManifest": {
+    "path": "tests/fixtures/product-baselines/manifest.json",
+    "sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+    "manifest": {
+      "version": "prd-v0.6-learning-1",
+      "source": {
+        "path": "docs/prd/PRD-本体学习与落地Agent工作台.md",
+        "sha256": "7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb"
+      },
+      "files": {
+        "content/learning/checks.json": "c32159000cdad9e63081379564dc710f824823ca3fa3626fa135aec3daf63d90",
+        "content/learning/course.json": "c1f3cf080d6192ad528d4fa9318d18fd7baeef3beb6fd9a217dfe0080b2a439b",
+        "content/learning/glossary.json": "a1a588683e11ad84940e2bb9a558f8c6684c712ada44d160ecb541df2fd0d0c1",
+        "content/learning/transfer-inputs.json": "3ae8b7fd952680283b9e2b2573afee94ba88357efa4849da4e4b3e0d7e681aa6",
+        "tests/fixtures/product-baselines/E.5.json": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5",
+        "tests/fixtures/product-baselines/G-base.json": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+        "tests/fixtures/product-baselines/G-behavior.json": "d5e7645cfaa1c4e0de527a7c7c121644e4f78e24af94292deab26eee478d0780",
+        "tests/fixtures/product-baselines/G-map-empty.json": "e80076ae445dbe88ba36fa4f4ef26809c6d12253d018e5661a0a6f7e8efb0864",
+        "tests/fixtures/product-baselines/alarms.csv": "7967e4520493261e764035a2387450f1df1c0c8433be2519fdebeabe40197aa3",
+        "tests/fixtures/product-baselines/cases.json": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa",
+        "tests/fixtures/product-baselines/conventions.json": "26c03d12be2ea4f0e09c15f8bc1ade161233487f254da0c947f680ae9f533b47",
+        "tests/fixtures/product-baselines/coverage.json": "c8bb5ab210be5f1b6f3e6413adce3ad7749393f8d978098185facf58709aaeea",
+        "tests/fixtures/product-baselines/equipment-duplicate-key.csv": "e1017dfdcd6396f41b9b54d786caff712d733cf6a461da218dbdfa4be56dae86",
+        "tests/fixtures/product-baselines/equipment-missing-key.csv": "c02d6e9b85b91d8431e37269aa68e535997583555b6874d2f6d7015070dee42b",
+        "tests/fixtures/product-baselines/equipment-updated.csv": "f513469aa39a37603bf367d4e94d2de680f5303eb1a8e1163eadfc83487ce171",
+        "tests/fixtures/product-baselines/equipment.csv": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+        "tests/fixtures/product-baselines/unclosed-high.rq": "8efbacd589c42ac40abbb55475cdd088e407a88a23e0db61dc8375e04e4dd386"
+      }
+    }
+  },
+  "operatingSources": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines/AGENTS.md",
+      "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+      "snapshot": "inputs/agents-snapshot.txt"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+      "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0",
+      "snapshot": "inputs/common-instructions-snapshot.txt"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T06-supported-background-external-review-window.md",
+      "sha256": "9a2d722dc86c64d66929cadd12631cc85042bdd820aba9ec76de882fa3ed5de4",
+      "snapshot": "inputs/background-route-snapshot.md"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/service-stage-register.md",
+      "sha256": "44b5ab49eb8ef1e40f83913fd2da8f169f9267eb9d455b5e294d18acbe823b55",
+      "snapshot": "inputs/registered-scope.md",
+      "snapshotIsT09Excerpt": true,
+      "fullDocumentSnapshot": "inputs/service-stage-register-snapshot.txt",
+      "liveAggregateMayChangeAfterFreeze": true
+    }
+  ],
+  "taskState": {
+    "actualExternalTasksCreated": false,
+    "zcodeTaskId": null,
+    "minimaxTaskId": null,
+    "leaseGrantedToT09": false,
+    "workspaceMapping": null,
+    "notAReviewPass": true
+  },
+  "expectedReports": {
+    "ZCode": "docs/reviews/T09/round-1/zcode-glm53.md",
+    "MiniMax": "docs/reviews/T09/round-1/minimax-m31flash.md"
+  },
+  "entries": [
+    {
+      "role": "product-diff",
+      "path": "apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "181de0efa87b2b9671b93f740f3d2a20b519cb9f",
+      "bytes": 18386,
+      "sha256": "e11e970092b2412be8e5ced8bf77aa4f7a7311a7d1197aa6298da4a5f7cdfd40"
+    },
+    {
+      "role": "product-diff",
+      "path": "apps/desktop/src/renderer/src/learning/content.ts",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "72d03611035759a370f9d7ae739321282726ba14",
+      "bytes": 398,
+      "sha256": "83bbf24aa27e14d721731fc108de2179be5d220f13139101dafb0ede3f7ba70a"
+    },
+    {
+      "role": "product-diff",
+      "path": "apps/desktop/src/renderer/src/learning/learning.css",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "9872f21bf71649c45eaecbca8e6b212fa69794fe",
+      "bytes": 10765,
+      "sha256": "34c48260f9819ae82eb8b30243c32fec5997065d1740443142d4acadc631a83c"
+    },
+    {
+      "role": "product-diff",
+      "path": "apps/desktop/src/renderer/src/learning/presentation.ts",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "4002d75cbaf24ac9bf84bb49af905b1fdd9232eb",
+      "bytes": 6215,
+      "sha256": "5ff4fa501a710c4d1384ad7917feca3273bcd57b7fb783af4272894077719c3b"
+    },
+    {
+      "role": "product-diff",
+      "path": "apps/desktop/src/renderer/src/learning/types.ts",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "5dff5be9bab73fe304fbeabbfaa8791fa57e16f8",
+      "bytes": 2407,
+      "sha256": "49526151f9a29fef3f440e55c45a080667fbf9ec3b5fbf00afa7c3fa53ffb373"
+    },
+    {
+      "role": "product-diff",
+      "path": "content/learning/checks.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "6c3b03a95a4f441a863250a1a9e0d90c327304d6",
+      "bytes": 881942,
+      "sha256": "c32159000cdad9e63081379564dc710f824823ca3fa3626fa135aec3daf63d90"
+    },
+    {
+      "role": "product-diff",
+      "path": "content/learning/course.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "b7b027f76cfcdff03ec396bfae523ec769df166e",
+      "bytes": 15178,
+      "sha256": "c1f3cf080d6192ad528d4fa9318d18fd7baeef3beb6fd9a217dfe0080b2a439b"
+    },
+    {
+      "role": "product-diff",
+      "path": "content/learning/glossary.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "416ab1c860428713f52e68a70fc1fe502cf0ad3e",
+      "bytes": 5173,
+      "sha256": "a1a588683e11ad84940e2bb9a558f8c6684c712ada44d160ecb541df2fd0d0c1"
+    },
+    {
+      "role": "product-diff",
+      "path": "content/learning/transfer-inputs.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "e5c710f26399b12ff4958d44ad137fe98281d86c",
+      "bytes": 9091,
+      "sha256": "3ae8b7fd952680283b9e2b2573afee94ba88357efa4849da4e4b3e0d7e681aa6"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/iterations/T09/handoff.md",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "a6af3b9bb351ed77a2126054b465b24f4c86b44e",
+      "bytes": 5984,
+      "sha256": "1f3881cadb5f735418af0d64181fc0a9d57b4bd37c51965a31cd49554e2a4100"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/iterations/T09/learning-ui-contract.md",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "c3ef3bd9055a2510fae873fcf29d249fe2cebf31",
+      "bytes": 3049,
+      "sha256": "0fb4982377c2904663e1f3ac625281a663d5cfaccefcdc368003eb23f96367ce"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/iterations/T09/user-acceptance.md",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "882bebe66c64fad54108bd20c41be28a10f1bd9b",
+      "bytes": 1846,
+      "sha256": "58db452f5cdf3ed371ef9fe26f6eedc1cff998e2d4b22f63561bb6c96e310e4b"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/controller-delivery.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "eb865bf4fc60cec27bc9333ab63bd2a18c4b57b6",
+      "bytes": 959,
+      "sha256": "b6dfb074223d4a27bb204f7e6ad9afdcc4de3546867a9485436350b93518579f"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/coordination-authorization.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "885ebd8ac1226bcd4e5d0d57f6a6a8718192e319",
+      "bytes": 712,
+      "sha256": "6f0ce9b5d3d5981e31d5cfcc14368ba7e627a1f8471667a50dbd5e84e9f8a392"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/baseline-verification.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "d9963b6694f0d78ecde3f154e193a3744db2a2c8",
+      "bytes": 876,
+      "sha256": "e3cf790a4e1f3cdb3616a8690d106cea59998f4260733535d93c1ec3551758fb"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/first-learning-pytest.txt",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "1f714748bde354c834198667a24fd991411b87f4",
+      "bytes": 99,
+      "sha256": "4a9570256aa3bdb8aeee7a4c68b5b61967a69334a7de4d49c1f16f6db5606af9"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/first-npm-check.txt.gz",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "3dfbbc3fc4dca9bf8e9e1a449513de4db8c2fa26",
+      "bytes": 5664,
+      "sha256": "a4117a43311bf1712e3acd06622d80fc8794b0450e7b22590a65680d8f54a234"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/first-ruff.txt",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "dd5efcea7f202baee781a4270808ef7b730d2c8b",
+      "bytes": 12579,
+      "sha256": "9e594a33ba2caa7f582b08a24e1f66dc5eb3cbbe87346535ffe47faebd3484d2"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/jobstore-after-id-fix-pytest.txt",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "38ce4fd5a13ea263366ce5cec3e7a8b36788f81f",
+      "bytes": 98,
+      "sha256": "ab17401158ca0ec5dd511428ed2929f0ee2c1cb2fa0cdc832ca91d50a955503e"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/jobstore-first-pytest.txt.gz",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "9e6580589c3d89bb8bd5c10d817c8d229725e8a0",
+      "bytes": 1636,
+      "sha256": "0ff5c1b8b4bbc45ed0510007aa9ee5db5c03bcf67b965ba46210a2b35631ebbb"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/jobstore-verification.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "41e2a92b89e0f958831e197752f4c15a9172ec6e",
+      "bytes": 2781,
+      "sha256": "7a30b974c14a1c11449a965450c29279c566cfa0d0f47c029208d6bfadc5d96d"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/learning-42-pytest.txt",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "78b54cf6a86da0bb1224a850cbf582ad4a624e5f",
+      "bytes": 99,
+      "sha256": "2c24775de471bd6ec8a587376b1d1406c7dfbd58a89d10c1a63d300da0f621ba"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/learning-pytest-after-review.txt",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "b2e23d9b61cfaae1c6aa4dc1289fc43680a26824",
+      "bytes": 99,
+      "sha256": "63f4d60d03f934060c793ddaef0feb11de246c6058ff303d8437deb53047859b"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/learning-pytest-final.txt",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "b2e23d9b61cfaae1c6aa4dc1289fc43680a26824",
+      "bytes": 99,
+      "sha256": "63f4d60d03f934060c793ddaef0feb11de246c6058ff303d8437deb53047859b"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/npm-check-after-review.txt",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "8d0f4da7f9d0636d230585662557306efdd01957",
+      "bytes": 5222,
+      "sha256": "fa97b8f2d1cd43b2548386e97993fb34456dc9436fcd3468fe95986d738de281"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/npm-check-final.txt",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "b2ca9b19a9490560d27e66a3eff811948904173b",
+      "bytes": 5222,
+      "sha256": "0f58ea8f1161dccf8f9db4b39a8517ab0e9db163f734e1b41ee105ac7647509e"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/npm-check-jobstore-final.txt",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "b8180ae902416015175783e17b31571941c87f25",
+      "bytes": 5302,
+      "sha256": "88d2554a98db7821be1ff9a1eb6870a0e54a6870199fd94fa5422ee79eeb784c"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/evidence/verification-summary.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "3e5a6d0d6d501e05e64e30434b79e939303b4f90",
+      "bytes": 3972,
+      "sha256": "0acc4fafe1e334118afdb440295ca14d755babaff0494035aeeb087a9f789fa1"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/independent-review.md",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "90e4e6f3771f33ae60ea816eeebdd108e117fc79",
+      "bytes": 2990,
+      "sha256": "f39e4512a9593dcd1d1211827bf13c7f737b81f2ed201c09ffd91fd43a665368"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/jobstore-integration-review.md",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "78c690a925f4e7f9238d5382a24e946f49ee2fba",
+      "bytes": 2166,
+      "sha256": "dfcbc64a1ad97391b52ff377594884ddfdb41b6fb86d1691f65f5914052a3b6f"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/recovery.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "8c03dcb28826063f7a1f476de564da1d9ec2250e",
+      "bytes": 1802,
+      "sha256": "89fb20c008377129c76cffb2b939b6fa83ceebcc3cf1eca6e26afe709896b37b"
+    },
+    {
+      "role": "product-diff",
+      "path": "docs/reviews/T09/status.md",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "27b75b7c450345f45b7fc6c1d00e7b0e18806684",
+      "bytes": 7332,
+      "sha256": "3b75792036d77f22e720ffc255a56495b1dd1ffac261588b2489734d7ce76e16"
+    },
+    {
+      "role": "product-diff",
+      "path": "packages/engine/src/ontolearn_engine/learning/__init__.py",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "6eb806367e471a458cbff43c74e441dc1d77d24d",
+      "bytes": 89,
+      "sha256": "daad19bb53b8341d69f62c25374f0f60a2aa313a4ebea485cd9a4d65fe0c7b1b"
+    },
+    {
+      "role": "product-diff",
+      "path": "packages/engine/src/ontolearn_engine/learning/baselines.py",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "1651f2f880f053153971ff8331ca045d9c760038",
+      "bytes": 9201,
+      "sha256": "a2b8921903f460fa1128c45e8c92f2b14e2a493d9d1e99901bf6d9b707e04d94"
+    },
+    {
+      "role": "product-diff",
+      "path": "packages/engine/src/ontolearn_engine/learning/service.py",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "5ec4cafbb13315ca92df925dfb4b65b8da0ea0d7",
+      "bytes": 9559,
+      "sha256": "87d26be67856b66a19c212e820b0f29e76af5d51cc11e8b3b2bce4aa6b7344f4"
+    },
+    {
+      "role": "product-diff",
+      "path": "packages/engine/tests/test_learning_baselines.py",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "d28024abc7aef552074d94efe6e0c3048d2f388b",
+      "bytes": 11784,
+      "sha256": "4b8fbf3c8d7abe076b0d619a89596404777fb21332c4c6b507895f191fe0c3c9"
+    },
+    {
+      "role": "product-diff",
+      "path": "packages/engine/tests/test_learning_jobstore_integration.py",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "239a690478804a5c968be79f7632f5a5f7d0a532",
+      "bytes": 8383,
+      "sha256": "43f69686bbde294bd177ae9389d05372a2e9e0611b7b527574ce7d674b4816b0"
+    },
+    {
+      "role": "product-diff",
+      "path": "packages/engine/tests/test_learning_service.py",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "734117fe163dc7c8ea89a8fc9d66aa92fabb13a7",
+      "bytes": 9207,
+      "sha256": "9d301fedaa8582599541a3fed4351a60921889706bf799431cce60ecb8a0f40e"
+    },
+    {
+      "role": "product-diff",
+      "path": "scripts/verify-product-baselines.py",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "36c3794560890625d0ed10ece5f0a24c35597864",
+      "bytes": 921,
+      "sha256": "7df27bfc8f4ff8c096a684b9a70a846e6af2048a36a49a2f98c8892e7a8b10aa"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/E.5.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "925f772b6831d6951eb395b961119f59e372ecbe",
+      "bytes": 169895,
+      "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/G-base.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "31c11c833ccb5e2a54f48c2d1fbe1459a60302f3",
+      "bytes": 8219,
+      "sha256": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/G-behavior.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "e9a0f87adbd5950a6bb1660a20281b3ba1ea4715",
+      "bytes": 12868,
+      "sha256": "d5e7645cfaa1c4e0de527a7c7c121644e4f78e24af94292deab26eee478d0780"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/G-map-empty.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "f055bd388aa1920f8185bf7fa830a2c204edf2a7",
+      "bytes": 4404,
+      "sha256": "e80076ae445dbe88ba36fa4f4ef26809c6d12253d018e5661a0a6f7e8efb0864"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/alarms.csv",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "8ae7ecdf0507dbdfd76ea17ed609c6a0a357d684",
+      "bytes": 90,
+      "sha256": "7967e4520493261e764035a2387450f1df1c0c8433be2519fdebeabe40197aa3"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/cases.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "2bad92dc2cf146c729e06bb58b341b9dde2ab848",
+      "bytes": 188023,
+      "sha256": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/conventions.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "01c0c501f2bd7dab6c2330e40d95d857e116a541",
+      "bytes": 1165,
+      "sha256": "26c03d12be2ea4f0e09c15f8bc1ade161233487f254da0c947f680ae9f533b47"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/coverage.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "366d92faa07f9ed7ad891349684853e295429020",
+      "bytes": 10824,
+      "sha256": "c8bb5ab210be5f1b6f3e6413adce3ad7749393f8d978098185facf58709aaeea"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/equipment-duplicate-key.csv",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "cf5d171834151630c1bc65ce9e69ae86dba10d2c",
+      "bytes": 69,
+      "sha256": "e1017dfdcd6396f41b9b54d786caff712d733cf6a461da218dbdfa4be56dae86"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/equipment-missing-key.csv",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "8cd63ecc645b481e782c539172404c69fdb2ecbe",
+      "bytes": 69,
+      "sha256": "c02d6e9b85b91d8431e37269aa68e535997583555b6874d2f6d7015070dee42b"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/equipment-updated.csv",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "3dee0fa2c2477af7f4e0487578d66c6f93f0c28e",
+      "bytes": 60,
+      "sha256": "f513469aa39a37603bf367d4e94d2de680f5303eb1a8e1163eadfc83487ce171"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/equipment.csv",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "68b3cb85e60337946db1d1bf81eef90f8015cdb5",
+      "bytes": 52,
+      "sha256": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/manifest.json",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "c8188d8fad0e49308310a558b2eeb7fbd3a68081",
+      "bytes": 2268,
+      "sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/fixtures/product-baselines/unclosed-high.rq",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "dcc33df303f8c4be6fc58e8d34bca6aa66706b4e",
+      "bytes": 162,
+      "sha256": "8efbacd589c42ac40abbb55475cdd088e407a88a23e0db61dc8375e04e4dd386"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/unit/learning-presentation.test.ts",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "64e934ac68fd91121a4bfadb66ee2bce6d6bb7f4",
+      "bytes": 6791,
+      "sha256": "ccbbd501a6987511c14f1ac38e24ceae2fa69569428a7fa2030d744e8b242474"
+    },
+    {
+      "role": "product-diff",
+      "path": "tests/unit/learning-workspace.test.ts",
+      "gitCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "gitBlob": "8da4cd467dcb1f143a7649de012f18636b3343e6",
+      "bytes": 21193,
+      "sha256": "bd1fdf6b770fbe985cecfeea4fa8a359904e5c16e9e85cbede247585fbf8286b"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/iterations/T09/handoff.md",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 7526,
+      "sha256": "cf45274f1a297e1fbca66d9f447f10cbe56bed8ecead80af5d907eb7c5c159e5"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/iterations/T09/learning-ui-contract.md",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 3049,
+      "sha256": "0fb4982377c2904663e1f3ac625281a663d5cfaccefcdc368003eb23f96367ce"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/iterations/T09/user-acceptance.md",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 1846,
+      "sha256": "58db452f5cdf3ed371ef9fe26f6eedc1cff998e2d4b22f63561bb6c96e310e4b"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/.gitignore",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 10,
+      "sha256": "c740db8c5771bc53deca3faf16465ffd78a57c5bc6df70143f0a8f422fb469ab"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/controller-delivery.json",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 959,
+      "sha256": "b6dfb074223d4a27bb204f7e6ad9afdcc4de3546867a9485436350b93518579f"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/coordination-authorization.json",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 712,
+      "sha256": "6f0ce9b5d3d5981e31d5cfcc14368ba7e627a1f8471667a50dbd5e84e9f8a392"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/baseline-verification.json",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 876,
+      "sha256": "e3cf790a4e1f3cdb3616a8690d106cea59998f4260733535d93c1ec3551758fb"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/first-learning-pytest.txt",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 99,
+      "sha256": "4a9570256aa3bdb8aeee7a4c68b5b61967a69334a7de4d49c1f16f6db5606af9"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/first-npm-check.txt.gz",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 5664,
+      "sha256": "a4117a43311bf1712e3acd06622d80fc8794b0450e7b22590a65680d8f54a234"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/first-ruff.txt",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 12579,
+      "sha256": "9e594a33ba2caa7f582b08a24e1f66dc5eb3cbbe87346535ffe47faebd3484d2"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/jobstore-after-id-fix-pytest.txt",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 98,
+      "sha256": "ab17401158ca0ec5dd511428ed2929f0ee2c1cb2fa0cdc832ca91d50a955503e"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/jobstore-first-pytest.txt.gz",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 1636,
+      "sha256": "0ff5c1b8b4bbc45ed0510007aa9ee5db5c03bcf67b965ba46210a2b35631ebbb"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/jobstore-verification.json",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 2781,
+      "sha256": "7a30b974c14a1c11449a965450c29279c566cfa0d0f47c029208d6bfadc5d96d"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/learning-42-pytest.txt",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 99,
+      "sha256": "2c24775de471bd6ec8a587376b1d1406c7dfbd58a89d10c1a63d300da0f621ba"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/learning-pytest-after-review.txt",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 99,
+      "sha256": "63f4d60d03f934060c793ddaef0feb11de246c6058ff303d8437deb53047859b"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/learning-pytest-final.txt",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 99,
+      "sha256": "63f4d60d03f934060c793ddaef0feb11de246c6058ff303d8437deb53047859b"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/learning-ui-verification.json",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 6987,
+      "sha256": "0cf7c7af56db8b6dad5d05b0b44cb18592f71b1cb2803e8b6a901e2357256c23"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/npm-check-after-review.txt",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 5222,
+      "sha256": "fa97b8f2d1cd43b2548386e97993fb34456dc9436fcd3468fe95986d738de281"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/npm-check-final.txt",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 5222,
+      "sha256": "0f58ea8f1161dccf8f9db4b39a8517ab0e9db163f734e1b41ee105ac7647509e"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/npm-check-jobstore-final.txt",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 5302,
+      "sha256": "88d2554a98db7821be1ff9a1eb6870a0e54a6870199fd94fa5422ee79eeb784c"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/npm-check-ui-final.txt",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 5314,
+      "sha256": "210d3d9bc7254e059f9bc031988226f946251f9d359a577b8a54470a996241e5"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/npm-check-ui-first.txt.gz",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 400,
+      "sha256": "e8239921844f023e938fe701bbd0d674ca4e4582cfe9ff5f9050d626291582cb"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/npm-check-ui-intermediate-661.txt.gz",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 1322,
+      "sha256": "93d73c77d26db0924252db241b66b680fbfc445b88790cb35863ec4b84b2bd0b"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/npm-check-ui-type-failure.txt.gz",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 382,
+      "sha256": "ab953419a1b2d643eab9f26f9301443061e41bcf2159e100eac1ddb48cff93d0"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/ui-browser-install.txt.gz",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 592,
+      "sha256": "5d1574507e91edf9c5f95cc4dbe42b0bfc40cdf8dea760f43fcd0102dcad788a"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/ui-eslint.txt.gz",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/ui-first-vitest.txt.gz",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 704,
+      "sha256": "9a8894c57d5d03450a5a9a9ab38bc7dc31498734fb787524d43610394fa9bc9d"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/ui-fixed-baseline-check.json",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 876,
+      "sha256": "e3cf790a4e1f3cdb3616a8690d106cea59998f4260733535d93c1ec3551758fb"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/ui-fourth-vitest.txt.gz",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 215,
+      "sha256": "a9e8e869581d28a5f06d40230aa8d35b59db147c1db54ab6279710a9ee4f5045"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/ui-second-vitest.txt.gz",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 677,
+      "sha256": "20054a73a726d68ceca55a015e7191f0e0cf40047fbd365d9fce2f2feba42392"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/ui-third-vitest.txt.gz",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 2213,
+      "sha256": "7c5707d46f0dc7ccd64184891e01a91a66b8b71f7de63f9cca7f572e9224472d"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/ui-typecheck.txt.gz",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 163,
+      "sha256": "78de9eb1d9ec491fda53df471321d3b859a8b52e0fd0b744260dc2e4e5b5da94"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/ui/desktop-course.png",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 175507,
+      "sha256": "eee450333f00bc3e060da4878a72127f1e5fbb255079f96886f4f2a34482c077"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/ui/mobile-behavior.png",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 145051,
+      "sha256": "8fb74a101351e5183670cd63d7912a739be60ec891bbdfe35cbd618b8bf8b9b8"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/evidence/verification-summary.json",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 3972,
+      "sha256": "0acc4fafe1e334118afdb440295ca14d755babaff0494035aeeb087a9f789fa1"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/independent-review.md",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 2990,
+      "sha256": "f39e4512a9593dcd1d1211827bf13c7f737b81f2ed201c09ffd91fd43a665368"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/jobstore-integration-review.md",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 2166,
+      "sha256": "dfcbc64a1ad97391b52ff377594884ddfdb41b6fb86d1691f65f5914052a3b6f"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/learning-ui-independent-review.md",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 10807,
+      "sha256": "c9816686940eece6cf4334fc7ba3f3cb61a80f88186074ce93ec9546259e250d"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/operation-policy-receipt.md",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 1364,
+      "sha256": "66761beb32d25920ffc52b049e5d3f2064b0d6639a68c189e715a49141cb453d"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/recovery.json",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 2001,
+      "sha256": "3a05647af94244f5006823b886cd4e87a19265237ca24a23e9e0e29ee6647eff"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/status.md",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 10400,
+      "sha256": "330594d16b4b172041a7fa2ef7594fbd1e6fb6255a5c9ba0596bc62366736753"
+    },
+    {
+      "role": "existing-process-evidence",
+      "path": "docs/reviews/T09/ui-controller-delivery.json",
+      "gitCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "bytes": 2297,
+      "sha256": "d65f007acf2673df584adfb75fca9b2d7b49e35cffe1c67e70eb2ad242e1968d"
+    },
+    {
+      "role": "approved-prd-context",
+      "path": "docs/prd/PRD-本体学习与落地Agent工作台.md",
+      "gitCommit": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 93584,
+      "sha256": "7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb"
+    },
+    {
+      "role": "frozen-round-input",
+      "path": "docs/reviews/T09/round-1/inputs/agents-snapshot.txt",
+      "bytes": 15852,
+      "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+    },
+    {
+      "role": "frozen-round-input",
+      "path": "docs/reviews/T09/round-1/inputs/background-route-snapshot.md",
+      "bytes": 5446,
+      "sha256": "9a2d722dc86c64d66929cadd12631cc85042bdd820aba9ec76de882fa3ed5de4"
+    },
+    {
+      "role": "frozen-round-input",
+      "path": "docs/reviews/T09/round-1/inputs/common-instructions-snapshot.txt",
+      "bytes": 17891,
+      "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0"
+    },
+    {
+      "role": "frozen-round-input",
+      "path": "docs/reviews/T09/round-1/inputs/registered-scope.md",
+      "bytes": 1992,
+      "sha256": "0f2092adc5226267029a36cbc274436ba47235e1bb2efe8c71e6f74f2c8eb021"
+    },
+    {
+      "role": "frozen-round-input",
+      "path": "docs/reviews/T09/round-1/minimax-m31flash-input.md",
+      "bytes": 21017,
+      "sha256": "f13421911c6dd1b72898dbb145ba10c98f4f20879971cbcbc2a574a3f5b88f16"
+    },
+    {
+      "role": "frozen-round-input",
+      "path": "docs/reviews/T09/round-1/verification-and-history-index.md",
+      "bytes": 7470,
+      "sha256": "1b77a37904550bc84e0207137df6bf86fd93449cf945179291f1db334a165d54"
+    },
+    {
+      "role": "frozen-round-input",
+      "path": "docs/reviews/T09/round-1/zcode-glm53-input.md",
+      "bytes": 21006,
+      "sha256": "3739457dd391a75e67358ffc77492fcde774f667e85c9ca8c7014ab3b326b5e8"
+    },
+    {
+      "role": "frozen-round-input",
+      "path": "docs/reviews/T09/round-1/inputs/service-stage-register-snapshot.txt",
+      "bytes": 42691,
+      "sha256": "44b5ab49eb8ef1e40f83913fd2da8f169f9267eb9d455b5e294d18acbe823b55"
+    }
+  ],
+  "hashRule": "sha256 hashes exact UTF-8 or binary bytes. input-manifest does not hash itself; freeze-receipt binds its final bytes and both prompts. Future mapping is a separate hashed attachment; original prompts remain unchanged.",
+  "parentGoalStatus": "blocked retained; no automatic resume or new Goal"
+}

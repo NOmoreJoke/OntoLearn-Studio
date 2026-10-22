@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "stage": "T09-S1",
+  "round": 1,
+  "date": "2026-10-22",
+  "timezone": "Asia/Shanghai",
+  "purpose": "Freeze complete review inputs and preparation evidence only; no external review or product acceptance is implied.",
+  "repository": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines",
+  "branch": "feature/weekly-t09-learning-baselines",
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "approvedBaseTree": "0a23f708a3d59f3e2a0353d6f069169ff8e26b3f",
+  "productCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+  "productTree": "8b646570108026a8deabe8330c548cab0280122d",
+  "evidenceProcessCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+  "preparationParentCommit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+  "files": {
+    "input-manifest.json": {
+      "bytes": 42846,
+      "sha256": "11171ff00c9ef67ad11dc55ab80384ad694e3219282dbeb654e4677a0223c774"
+    },
+    "inputs/agents-snapshot.txt": {
+      "bytes": 15852,
+      "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+    },
+    "inputs/background-route-snapshot.md": {
+      "bytes": 5446,
+      "sha256": "9a2d722dc86c64d66929cadd12631cc85042bdd820aba9ec76de882fa3ed5de4"
+    },
+    "inputs/common-instructions-snapshot.txt": {
+      "bytes": 17891,
+      "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0"
+    },
+    "inputs/registered-scope.md": {
+      "bytes": 1992,
+      "sha256": "0f2092adc5226267029a36cbc274436ba47235e1bb2efe8c71e6f74f2c8eb021"
+    },
+    "inputs/service-stage-register-snapshot.txt": {
+      "bytes": 42691,
+      "sha256": "44b5ab49eb8ef1e40f83913fd2da8f169f9267eb9d455b5e294d18acbe823b55"
+    },
+    "minimax-m31flash-input.md": {
+      "bytes": 21017,
+      "sha256": "f13421911c6dd1b72898dbb145ba10c98f4f20879971cbcbc2a574a3f5b88f16"
+    },
+    "prompt-preparation-review.md": {
+      "bytes": 7586,
+      "sha256": "44b78db73d87a78735d7f6d33632e6098d6530cce9edd6109c7d64a6a5cd4189"
+    },
+    "verification-and-history-index.md": {
+      "bytes": 7470,
+      "sha256": "1b77a37904550bc84e0207137df6bf86fd93449cf945179291f1db334a165d54"
+    },
+    "zcode-glm53-input.md": {
+      "bytes": 21006,
+      "sha256": "3739457dd391a75e67358ffc77492fcde774f667e85c9ca8c7014ab3b326b5e8"
+    }
+  },
+  "staticVerification": {
+    "inputEntryCount": 106,
+    "completeProductDiffPaths": 55,
+    "productSourceAndDataPaths": 32,
+    "fixedFixtureHashCount": 17,
+    "allInputBytesHashesAndGitBlobs": "pass",
+    "sourceDataDiffFromProduct": "empty",
+    "promptsUnchanged": "pass",
+    "independentPreparationReview": "pass; no unresolved preparation blocker",
+    "historicalGzipRawAndArchiveHashes": "12 records checked by independent preparation reviewer",
+    "productTestsExecutedDuringPreparation": false,
+    "productBuildExecutedDuringPreparation": false,
+    "guiOrExternalAppInvoked": false
+  },
+  "externalTaskState": {
+    "actualExternalTasksCreated": false,
+    "zcodeTaskId": null,
+    "minimaxTaskId": null,
+    "leaseGrantedToT09": false,
+    "workspaceMapping": null,
+    "notAReviewPass": true
+  },
+  "executionGate": {
+    "parentGoal": "blocked retained",
+    "externalReview": "not started; neither designated report exists",
+    "t09ExclusiveLease": "not granted",
+    "backgroundRecoveryOwner": "T06 only; no competing recovery",
+    "nextAction": "Wait for controller exclusive lease and actual supported route/settings receipts before creating two independent complete tasks.",
+    "futureWorkspaceMapping": "Additional independently hashed attachment must map the fixed Git trees and exact prompt bytes; do not rewrite either original prompt."
+  },
+  "limitations": [
+    "Static preparation pass is not GLM-5.3 or M3.1-Flash product review pass.",
+    "No push, merge, release, formal integration, product thaw, or parent acceptance is authorized by this receipt.",
+    "Live aggregate registration may change; frozen full source and exact T09-S1 excerpt remain recoverable."
+  ],
+  "hashRule": "Each files entry hashes exact bytes relative to this directory. The outer receipt intentionally excludes itself and is bound by the resulting local Git process commit; no hash or commit self-reference."
+}
