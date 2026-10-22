@@ -1,0 +1,189 @@
+{
+  "synthetic": true,
+  "view": {
+    "project": "synthetic-preview-only",
+    "revision": 1,
+    "objects": [
+      {
+        "iri": "https://stage.example/Device",
+        "kind": "class",
+        "identifier": "Device",
+        "labels": [
+          [
+            "设备",
+            "zh"
+          ]
+        ],
+        "definitions": [
+          [
+            "设备（合成验收样例）",
+            "zh"
+          ]
+        ],
+        "synonyms": [],
+        "examples": [],
+        "parents": [],
+        "domain": [],
+        "range": [],
+        "types": []
+      },
+      {
+        "iri": "https://stage.example/Sensor",
+        "kind": "class",
+        "identifier": "Sensor",
+        "labels": [
+          [
+            "传感器",
+            "zh"
+          ]
+        ],
+        "definitions": [
+          [
+            "传感器（合成验收样例）",
+            "zh"
+          ]
+        ],
+        "synonyms": [],
+        "examples": [],
+        "parents": [
+          "https://stage.example/Device"
+        ],
+        "domain": [],
+        "range": [],
+        "types": []
+      },
+      {
+        "iri": "https://stage.example/Alarm",
+        "kind": "class",
+        "identifier": "Alarm",
+        "labels": [
+          [
+            "告警",
+            "zh"
+          ]
+        ],
+        "definitions": [
+          [
+            "告警（合成验收样例）",
+            "zh"
+          ]
+        ],
+        "synonyms": [],
+        "examples": [],
+        "parents": [],
+        "domain": [],
+        "range": [],
+        "types": []
+      },
+      {
+        "iri": "https://stage.example/sensor01",
+        "kind": "individual",
+        "identifier": "sensor01",
+        "labels": [
+          [
+            "温度传感器01",
+            "zh"
+          ]
+        ],
+        "definitions": [
+          [
+            "温度传感器01（合成验收样例）",
+            "zh"
+          ]
+        ],
+        "synonyms": [],
+        "examples": [],
+        "parents": [],
+        "domain": [],
+        "range": [],
+        "types": [
+          "https://stage.example/Sensor"
+        ]
+      },
+      {
+        "iri": "https://stage.example/hasAlarm",
+        "kind": "objectProperty",
+        "identifier": "hasAlarm",
+        "labels": [
+          [
+            "具有关联告警",
+            "zh"
+          ]
+        ],
+        "definitions": [
+          [
+            "具有关联告警（合成验收样例）",
+            "zh"
+          ]
+        ],
+        "synonyms": [],
+        "examples": [],
+        "parents": [],
+        "domain": [],
+        "range": [],
+        "types": []
+      },
+      {
+        "iri": "https://stage.example/temperature",
+        "kind": "dataProperty",
+        "identifier": "temperature",
+        "labels": [
+          [
+            "温度",
+            "zh"
+          ]
+        ],
+        "definitions": [
+          [
+            "温度（合成验收样例）",
+            "zh"
+          ]
+        ],
+        "synonyms": [],
+        "examples": [],
+        "parents": [],
+        "domain": [],
+        "range": [],
+        "types": []
+      }
+    ],
+    "triples": [
+      {
+        "subject": "https://stage.example/sensor01",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<https://stage.example/Sensor>"
+      },
+      {
+        "subject": "https://stage.example/Sensor",
+        "predicate": "http://www.w3.org/2000/01/rdf-schema#subClassOf",
+        "object": "<https://stage.example/Device>"
+      }
+    ]
+  },
+  "catalog": {
+    "classes": [
+      {
+        "iri": "https://stage.example/Device",
+        "label": "设备"
+      },
+      {
+        "iri": "https://stage.example/Sensor",
+        "label": "传感器"
+      },
+      {
+        "iri": "https://stage.example/Alarm",
+        "label": "告警"
+      }
+    ],
+    "predicates": [
+      {
+        "iri": "https://stage.example/temperature",
+        "label": "温度"
+      },
+      {
+        "iri": "https://stage.example/hasAlarm",
+        "label": "具有关联告警"
+      }
+    ]
+  }
+}

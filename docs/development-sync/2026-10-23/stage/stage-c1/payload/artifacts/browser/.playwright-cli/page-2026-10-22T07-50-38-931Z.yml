@@ -1,0 +1,122 @@
+- generic [ref=f1e3]:
+  - banner [ref=f1e4]:
+    - generic [ref=f1e5]:
+      - generic [ref=f1e6]: ONTOLEARN STUDIO · 2026.10.22
+      - heading "阶段验收工作台" [level=1] [ref=f1e7]
+      - paragraph [ref=f1e8]: 现有真实组件 · 离线交互 · 合成样例 · 待指定双审
+    - generic [ref=f1e9]: STAGE 01
+  - complementary [ref=f1e10]:
+    - strong [ref=f1e11]: 本入口验收界面与本地编辑体验。
+    - text: 所有样例均为合成展示数据；没有正式项目、真实隔离副本、业务执行器或数据库写入。退出 / 刷新 / 重置后草稿与验收勾选会丢失，请先下载记录。此处不连接模型，也不发送数据。
+  - navigation "阶段验收模块" [ref=f1e12]:
+    - button "本体构建" [ref=f1e13] [cursor=pointer]
+    - button "本体查询" [active] [pressed] [ref=f1e14] [cursor=pointer]
+    - button "行为定义" [ref=f1e15] [cursor=pointer]
+    - button "离线学习" [ref=f1e16] [cursor=pointer]
+  - generic [ref=f1e17]:
+    - generic [ref=f1e18]:
+      - heading "本体查询 · 本轮检查" [level=2] [ref=f1e141]
+      - paragraph [ref=f1e20]: 现在可做：使用合成目录选择类、字段、条件，运行现有确定性编写器生成 SPARQL 草稿，编辑查询文本。
+      - paragraph [ref=f1e21]: 尚未接通：真实查询执行、保存查询、结果分页、取消及历史快照未接通。
+    - list [ref=f1e22]:
+      - listitem [ref=f1e142]:
+        - text: 在可视化编写区选择“传感器”，勾选“温度”。
+        - combobox "本体查询步骤1结果" [ref=f1e143]:
+          - option "未验" [selected]
+          - option "符合预期"
+          - option "发现问题"
+          - option "不适用"
+      - listitem [ref=f1e144]:
+        - text: 点击“生成可见 SPARQL 草稿”，文本应包含类与属性 IRI。
+        - combobox "本体查询步骤2结果" [ref=f1e145]:
+          - option "未验" [selected]
+          - option "符合预期"
+          - option "发现问题"
+          - option "不适用"
+      - listitem [ref=f1e146]:
+        - text: 编辑名称和查询文本；“执行查询”“保存”保持不可用，不出现模拟结果。
+        - combobox "本体查询步骤3结果" [ref=f1e147]:
+          - option "未验" [selected]
+          - option "符合预期"
+          - option "发现问题"
+          - option "不适用"
+  - generic [ref=f1e29]:
+    - text: 来源：固定 Git 组件快照；完整版本与哈希见 manifest.json。切换模块会清空该页内存草稿。
+    - button "重置当前页草稿" [ref=f1e30] [cursor=pointer]
+  - main [ref=f1e148]:
+    - region "本体查询" [ref=f1e149]:
+      - generic [ref=f1e150]:
+        - paragraph [ref=f1e151]: 项目内 · 只读查询
+        - heading "把业务问题变成可核对的查询" [level=1] [ref=f1e152]
+        - paragraph [ref=f1e153]: 先选择范围，再查看 SPARQL；执行结果始终保留自己的输入版本。
+      - generic [ref=f1e154]:
+        - generic [ref=f1e155]:
+          - text: 数据范围
+          - combobox "数据范围" [ref=f1e156]:
+            - option "断言事实" [selected]
+            - option "断言事实＋当前推导结果"
+        - generic [ref=f1e157]:
+          - text: 执行输入
+          - combobox "执行输入" [ref=f1e158]:
+            - option "当前已提交输入" [selected]
+        - paragraph [ref=f1e159]: 下一次执行将使用当前已提交输入。
+      - generic [ref=f1e160]:
+        - region "查询构建" [ref=f1e161]:
+          - heading "离线构建" [level=2] [ref=f1e162]
+          - button "模板：未闭环高危告警" [ref=f1e163] [cursor=pointer]
+          - generic [ref=f1e164]:
+            - text: 选择对象
+            - combobox "选择对象" [ref=f1e165]:
+              - option "请选择对象类" [selected]
+              - option "设备"
+              - option "传感器"
+              - option "告警"
+          - group "返回字段（对象 IRI 始终保留）" [ref=f1e166]:
+            - generic [ref=f1e168]:
+              - checkbox "温度" [ref=f1e169]
+              - text: 温度
+            - generic [ref=f1e170]:
+              - checkbox "具有关联告警" [ref=f1e171]
+              - text: 具有关联告警
+          - group "筛选条件（全部满足）" [ref=f1e172]:
+            - button "添加条件" [ref=f1e174] [cursor=pointer]
+          - button "生成可见 SPARQL 草稿" [ref=f1e175] [cursor=pointer]
+        - region "查询草稿" [ref=f1e176]:
+          - heading "查询草稿" [level=2] [ref=f1e177]
+          - generic [ref=f1e178]:
+            - text: 名称
+            - textbox "名称" [ref=f1e179]
+          - generic [ref=f1e180]:
+            - text: 说明
+            - textbox "说明" [ref=f1e181]
+          - generic [ref=f1e182]:
+            - text: 关联能力问题
+            - textbox "关联能力问题" [ref=f1e183]
+          - generic [ref=f1e184]:
+            - text: SPARQL
+            - textbox "SPARQL" [ref=f1e185]
+          - paragraph [ref=f1e186]: 仅支持项目内 SELECT / ASK；SERVICE、FROM、更新及其他外联能力由正式执行器拒绝。编辑草稿不代表已经执行。
+          - generic [ref=f1e187]:
+            - button "执行查询" [disabled] [ref=f1e188]
+            - button "保存到项目（新查询）" [disabled] [ref=f1e189]
+          - paragraph [ref=f1e190]: 真实查询服务尚未接入，当前可编写草稿。
+          - paragraph [ref=f1e191]: 项目事务服务尚未接入，草稿尚未持久化。
+          - heading "自然语言草稿" [level=3] [ref=f1e192]
+          - paragraph [ref=f1e193]: 模型生成内容先进入可见编辑器，仍需用户执行。
+          - button "查看 T08 提供的模型草稿" [disabled] [ref=f1e194]
+          - button "新建查询" [ref=f1e195] [cursor=pointer]
+          - heading "复用已保存查询" [level=3] [ref=f1e196]
+      - status
+      - region "查询结果" [ref=f1e197]:
+        - heading "结果" [level=2] [ref=f1e198]
+        - paragraph [ref=f1e199]: 尚未取得实际执行结果。模板和草稿不会生成示例结果。
+  - generic [ref=f1e132]:
+    - heading "记录本次验收" [level=2] [ref=f1e133]
+    - generic [ref=f1e134]:
+      - text: 问题、期望与操作步骤
+      - textbox "问题、期望与操作步骤" [ref=f1e135]:
+        - /placeholder: 例如：查询 → 选择传感器 → 生成草稿；实际……，期望……
+    - generic [ref=f1e136]:
+      - button "下载验收记录" [ref=f1e137] [cursor=pointer]
+      - button "下载合成样例" [ref=f1e138] [cursor=pointer]
+  - contentinfo [ref=f1e139]: 数据映射、质量与推理、沙盘、Agent、迁移和完整项目生命周期未纳入此界面入口。正式应用仍需真实接线、同候选双审与整体验收。

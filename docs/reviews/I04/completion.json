@@ -1,0 +1,862 @@
+{
+  "iteration": "I04",
+  "deliveryAchieved": true,
+  "completedAtUtc": "2026-10-20T19:33:59.295756+00:00",
+  "sameGoalThread": "01a15899-4318-7522-8035-353e88d34de4",
+  "reviewedBase": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+  "reviewedHead": "8f8eda1e24c0425ea2a65d2566978913ee310b8b",
+  "pushedHead": "5014631c38aa0a637e9c09f4368b62b1880ecddc",
+  "merge": {
+    "observedAtUtc": "2026-10-20T19:33:32.408461+00:00",
+    "remoteDevelop": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "normalMergeCommit": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "parents": [
+      "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+      "5014631c38aa0a637e9c09f4368b62b1880ecddc"
+    ],
+    "reviewedHead": "8f8eda1e24c0425ea2a65d2566978913ee310b8b",
+    "pushedHead": "5014631c38aa0a637e9c09f4368b62b1880ecddc",
+    "mergeTree": "0a23f708a3d59f3e2a0353d6f069169ff8e26b3f",
+    "pushedTree": "0a23f708a3d59f3e2a0353d6f069169ff8e26b3f",
+    "treesEqual": true,
+    "runtimeInputsVerified": 124,
+    "runtimeDifferences": [],
+    "reportsVerified": {
+      "ZCode": {
+        "path": "docs/reviews/I04/round-4/zcode-glm53.md",
+        "sha256": "e191aa47c7f03018f169d4ba54eb32b818b17ab5ff961e4090c0a2abaf488052",
+        "bytes": 40068,
+        "lines": 206,
+        "model": "GLM-5.3",
+        "thinking": "highest",
+        "conclusion": "Pass",
+        "actualOriginalTaskAndFactualContinuationsTerminal": true,
+        "completeFinalReportRead": true
+      },
+      "MiniMax": {
+        "path": "docs/reviews/I04/round-4/minimax-m31flash.md",
+        "sha256": "056b79f76e6e1234cc768737442ffae58cce067ec00b373d69bd80f898de5121",
+        "bytes": 74697,
+        "lines": 532,
+        "model": "M3.1-Flash (subscription free)",
+        "thinking": "xhigh",
+        "conclusion": "Pass",
+        "actualOriginalTaskAndFactualContinuationsTerminal": true,
+        "completeFinalReportRead": true
+      }
+    },
+    "scope": "Actual remote merge/source proof. Postmerge CI is a separate required gate; this record alone does not establish its success."
+  },
+  "PR": "https://github.com/NOmoreJoke/OntoLearn-Studio/pull/5",
+  "reports": {
+    "ZCode": {
+      "path": "docs/reviews/I04/round-4/zcode-glm53.md",
+      "sha256": "e191aa47c7f03018f169d4ba54eb32b818b17ab5ff961e4090c0a2abaf488052",
+      "bytes": 40068,
+      "lines": 206,
+      "model": "GLM-5.3",
+      "thinking": "highest",
+      "conclusion": "Pass",
+      "actualOriginalTaskAndFactualContinuationsTerminal": true,
+      "completeFinalReportRead": true
+    },
+    "MiniMax": {
+      "path": "docs/reviews/I04/round-4/minimax-m31flash.md",
+      "sha256": "056b79f76e6e1234cc768737442ffae58cce067ec00b373d69bd80f898de5121",
+      "bytes": 74697,
+      "lines": 532,
+      "model": "M3.1-Flash (subscription free)",
+      "thinking": "xhigh",
+      "conclusion": "Pass",
+      "actualOriginalTaskAndFactualContinuationsTerminal": true,
+      "completeFinalReportRead": true
+    }
+  },
+  "opinionDisposition": {
+    "path": "docs/reviews/I04/round-4-processing.json",
+    "sha256": "6784de72a1aedaad7aa4dfb8fd7d28473b538f37692133b35de11c620c81e341",
+    "bytes": 29423
+  },
+  "independentCountBoundary": {
+    "ZCode": "21 closed + Z3 agreed deferral, original22; no blockers.",
+    "MiniMax": "20 closed + Z3 agreed deferral + P1-3 core blocking defect closed with M2 P3 literal-remediation residual, original22; no blockers. Final table6.1, count6.4, conclusion9 item6 and actual terminal agree. Conclusion9 item5 retains stale R1 19+2+1 shorthand; preserved as a report summary inconsistency, not used instead of detailed judgments and not silently edited by root.",
+    "root": "Retain independent counting and original severities; do not fabricate identical closure counts or downgrade original P1. M2 is separately accepted deferrable by reviewer. Seven new open P3 suggestions individually disposed, M8 withdrawn."
+  },
+  "newP3Boundary": "Seven MiniMax nonblocking suggestions individually adopted/partially adopted/deferred as expressly permitted; M8 withdrawn; ZCode C4-Z1 same lineage correction accepted. Original22 severities retained; no root downgrade of P1.",
+  "PRCI": {
+    "observedAtUtc": "2026-10-20T19:00:48.403107+00:00",
+    "run": 39476291905,
+    "attempt": 2,
+    "head": "5014631c38aa0a637e9c09f4368b62b1880ecddc",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/NOmoreJoke/OntoLearn-Studio/actions/runs/39476291905",
+    "rawRun": "build/I04-evidence/ci-c4-pr-20261020T190048Z-run.json",
+    "rawJobs": "build/I04-evidence/ci-c4-pr-20261020T190048Z-jobs.json",
+    "jobs": [
+      {
+        "id": 118821092429,
+        "name": "Desktop (macos-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "runner_id": 1000000432,
+        "run_attempt": 2,
+        "created_at": "2026-10-20T18:53:07Z",
+        "started_at": "2026-10-20T18:58:11Z",
+        "completed_at": "2026-10-20T19:00:36Z",
+        "currentOrFailedSteps": []
+      },
+      {
+        "id": 118821094661,
+        "name": "Desktop (windows-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "runner_id": 1000000426,
+        "run_attempt": 2,
+        "created_at": "2026-10-20T18:53:07Z",
+        "started_at": "2026-10-20T18:37:00Z",
+        "completed_at": "2026-10-20T18:43:59Z",
+        "currentOrFailedSteps": []
+      },
+      {
+        "id": 118821095164,
+        "name": "Quality",
+        "status": "completed",
+        "conclusion": "success",
+        "runner_id": 1000000427,
+        "run_attempt": 2,
+        "created_at": "2026-10-20T18:53:07Z",
+        "started_at": "2026-10-20T18:36:59Z",
+        "completed_at": "2026-10-20T18:42:45Z",
+        "currentOrFailedSteps": []
+      }
+    ]
+  },
+  "postMergeCI": {
+    "observedAtUtc": "2026-10-20T19:33:09.483290+00:00",
+    "run": 39479891374,
+    "attempt": 2,
+    "head": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/NOmoreJoke/OntoLearn-Studio/actions/runs/39479891374",
+    "rawRun": "build/I04-evidence/ci-c4-postmerge-20261020T193309Z-run.json",
+    "rawJobs": "build/I04-evidence/ci-c4-postmerge-20261020T193309Z-jobs.json",
+    "jobs": [
+      {
+        "id": 118833848967,
+        "name": "Desktop (macos-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "runner_id": 1000000445,
+        "run_attempt": 2,
+        "created_at": "2026-10-20T19:18:36Z",
+        "started_at": "2026-10-20T19:30:20Z",
+        "completed_at": "2026-10-20T19:32:47Z",
+        "currentOrFailedSteps": []
+      },
+      {
+        "id": 118833851064,
+        "name": "Desktop (windows-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "runner_id": 1000000435,
+        "run_attempt": 2,
+        "created_at": "2026-10-20T19:18:36Z",
+        "started_at": "2026-10-20T19:01:43Z",
+        "completed_at": "2026-10-20T19:09:04Z",
+        "currentOrFailedSteps": []
+      },
+      {
+        "id": 118833852301,
+        "name": "Quality",
+        "status": "completed",
+        "conclusion": "success",
+        "runner_id": 1000000434,
+        "run_attempt": 2,
+        "created_at": "2026-10-20T19:18:37Z",
+        "started_at": "2026-10-20T19:01:43Z",
+        "completed_at": "2026-10-20T19:06:22Z",
+        "currentOrFailedSteps": []
+      }
+    ]
+  },
+  "artifactAudits": {
+    "pr": {
+      "linux": {
+        "path": "build/I04-evidence/ci-c4-pr-linux-artifact-audit.json",
+        "sha256": "91c2fd28a086fda11133c3e9a658b2c6be861098259215f2770eeabc99361706",
+        "bytes": 8716
+      },
+      "windows": {
+        "path": "build/I04-evidence/ci-c4-pr-windows-artifact-audit.json",
+        "sha256": "84d1261965b973bc8b1458c9faa55f910050106a5d0e59d80dc2d3a70e6317b9",
+        "bytes": 1944
+      },
+      "macos": {
+        "path": "build/I04-evidence/ci-c4-pr-macos-artifact-audit.json",
+        "sha256": "9527488ccb69e88b27e00bab899d0531a71c45dcf427bd30ec3c75d4040d9f92",
+        "bytes": 1926
+      }
+    },
+    "postmerge": {
+      "linux": {
+        "path": "build/I04-evidence/ci-c4-postmerge-linux-artifact-audit.json",
+        "sha256": "0cbbbc428bd47ca6ae56e1a7a74b0a2c9788a276c415e720402a024181775776",
+        "bytes": 8898
+      },
+      "windows": {
+        "path": "build/I04-evidence/ci-c4-postmerge-windows-artifact-audit.json",
+        "sha256": "c59092b42af9b60b70559d074328261cbd65111fc1ee05144d427db6ec5a5d73",
+        "bytes": 2007
+      },
+      "macos": {
+        "path": "build/I04-evidence/ci-c4-postmerge-macos-artifact-audit.json",
+        "sha256": "8ded84e3d7299c9b7cd40a31a4ee94ec5412647b7ecbe6504e50ee7ffde07f2a",
+        "bytes": 1989
+      }
+    }
+  },
+  "sourceAudit": {
+    "path": "build/I04-evidence/c4-completion-source-audit.json",
+    "sha256": "9236f95caf9f3122e12aa14c6b9a8fc78839f3a962e4c82ea2f06270e74c8755",
+    "bytes": 598
+  },
+  "CIHistoryAndFailures": "C3 actual Windows39 failures/Linux success/Mac no runner retained. C4 PR initial Mac no runner retained; exactly one same-head/config exact-job diagnostic rerun succeeded; Linux/Windows retained original execution successes. Postmerge actual develop push status above, not a substitute background PR. Root audit path-normalization and transient API EOF errors retained separately.",
+  "localEvidenceBoundary": "This completion.json, integration.json and postmerge status append are local process evidence outside pushed/merged tree; runtime inputs, archived reports and dispositions in remote commit are hash verified. No source/test/config/dependency/acceptance alteration after reviewed freeze. No controller state edit. Worktrees/raw local evidence retained.",
+  "remainingOutsideI04": [
+    "Z3/I03 O1 original future vocabulary/default bounds",
+    "I03 O3/I01 R6 historical growth/capacity policy",
+    "F5/O2 future semantic/business producer mappings; current I04 fixed chain satisfied",
+    "F6 domain E.2/E.5/G.4/FR-704 business; only infrastructure subset closed",
+    "I05 semantics/I06 gateway integration",
+    "Future Mac/Windows full native visibility/external focus/crash-hang matrix is unverified, not covered by configured desktop CI and not an original per-OS I04 gate",
+    "Signing/clean-device install/production/release and Q2 platform decisions",
+    "Current owner monitor proof does not establish future onefile/broker/arbitrary native GIL workloads"
+  ],
+  "rawCIRecords": [
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T190219Z-jobs.json",
+      "sha256": "91e56ff1c8b944edbada1a7f71251449bc5d8f3e5373ef0e90215e85c01fe6e5",
+      "bytes": 8814
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T190219Z-run.json",
+      "sha256": "fdac2b0e64be03b5424253b2d17d56bded6fc02b78cf60969944290ae8be547c",
+      "bytes": 13430
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T190251Z-jobs.json",
+      "sha256": "64e06ac91b13594690ecde30e430715b6856f5df80aad991b044982513ef9e46",
+      "bytes": 8900
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T190251Z-run.json",
+      "sha256": "fdac2b0e64be03b5424253b2d17d56bded6fc02b78cf60969944290ae8be547c",
+      "bytes": 13430
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T190406Z-jobs.json",
+      "sha256": "0e8b285591fe8333cef3e50693ff998d2b07d896f14d36fb8f2eb20fb9670dd3",
+      "bytes": 9029
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T190406Z-run.json",
+      "sha256": "fdac2b0e64be03b5424253b2d17d56bded6fc02b78cf60969944290ae8be547c",
+      "bytes": 13430
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T190528Z-jobs.json",
+      "sha256": "f16ed03be85b538f6d25d83a84854fe7759ac4690bc9cab65aad151e19ea9a12",
+      "bytes": 9287
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T190528Z-run.json",
+      "sha256": "fdac2b0e64be03b5424253b2d17d56bded6fc02b78cf60969944290ae8be547c",
+      "bytes": 13430
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T190722Z-jobs.json",
+      "sha256": "83b4f59d51fbbab531f5a3ce134bf10290658ac4b24f411e508e04482d6591a2",
+      "bytes": 9870
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T190722Z-run.json",
+      "sha256": "fdac2b0e64be03b5424253b2d17d56bded6fc02b78cf60969944290ae8be547c",
+      "bytes": 13430
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T190958Z-jobs.json",
+      "sha256": "f65d61781365bf48c1a3027fdbaf33900380a5568b957310e15c7092905fdee4",
+      "bytes": 10324
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T190958Z-run.json",
+      "sha256": "fdac2b0e64be03b5424253b2d17d56bded6fc02b78cf60969944290ae8be547c",
+      "bytes": 13430
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191131Z-jobs.json",
+      "sha256": "f65d61781365bf48c1a3027fdbaf33900380a5568b957310e15c7092905fdee4",
+      "bytes": 10324
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191131Z-run.json",
+      "sha256": "fdac2b0e64be03b5424253b2d17d56bded6fc02b78cf60969944290ae8be547c",
+      "bytes": 13430
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191219Z-jobs.json",
+      "sha256": "f65d61781365bf48c1a3027fdbaf33900380a5568b957310e15c7092905fdee4",
+      "bytes": 10324
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191219Z-run.json",
+      "sha256": "fdac2b0e64be03b5424253b2d17d56bded6fc02b78cf60969944290ae8be547c",
+      "bytes": 13430
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191327Z-jobs.json",
+      "sha256": "f65d61781365bf48c1a3027fdbaf33900380a5568b957310e15c7092905fdee4",
+      "bytes": 10324
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191327Z-run.json",
+      "sha256": "fdac2b0e64be03b5424253b2d17d56bded6fc02b78cf60969944290ae8be547c",
+      "bytes": 13430
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191440Z-jobs.json",
+      "sha256": "f65d61781365bf48c1a3027fdbaf33900380a5568b957310e15c7092905fdee4",
+      "bytes": 10324
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191440Z-run.json",
+      "sha256": "fdac2b0e64be03b5424253b2d17d56bded6fc02b78cf60969944290ae8be547c",
+      "bytes": 13430
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191556Z-jobs.json",
+      "sha256": "f65d61781365bf48c1a3027fdbaf33900380a5568b957310e15c7092905fdee4",
+      "bytes": 10324
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191556Z-run.json",
+      "sha256": "fdac2b0e64be03b5424253b2d17d56bded6fc02b78cf60969944290ae8be547c",
+      "bytes": 13430
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191747Z-jobs.json",
+      "sha256": "a056617eb165848078425d7f032cc5337897818d86ea912332253b47d0104ff4",
+      "bytes": 10342
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191747Z-run.json",
+      "sha256": "943deef0718d0213eaa9ad569cb3cc81887ea39513150fc4b1652504f332bcbc",
+      "bytes": 13438
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191835Z-jobs.json",
+      "sha256": "b3dab5870ff3a8209160335de7c1077b89e461d875d9041ac9d8b8ed7c1666f6",
+      "bytes": 27
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T191835Z-run.json",
+      "sha256": "ce38fb76f840928220bf0cee7f4bf55bacec0525923529883ea5809b9d9f601f",
+      "bytes": 13430
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192053Z-jobs.json",
+      "sha256": "9595dbd13483f9e14a59e7b0edbc6ea3bdd0204eeb0036f86a4cbc7a931e89b3",
+      "bytes": 10330
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192053Z-run.json",
+      "sha256": "8ddc4aaf052327466b6d8feb61ed18397b0a5588af02ad3a4c1a8cbbca7eb4a2",
+      "bytes": 13520
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192219Z-jobs.json",
+      "sha256": "9595dbd13483f9e14a59e7b0edbc6ea3bdd0204eeb0036f86a4cbc7a931e89b3",
+      "bytes": 10330
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192219Z-run.json",
+      "sha256": "8ddc4aaf052327466b6d8feb61ed18397b0a5588af02ad3a4c1a8cbbca7eb4a2",
+      "bytes": 13520
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192320Z-jobs.json",
+      "sha256": "9595dbd13483f9e14a59e7b0edbc6ea3bdd0204eeb0036f86a4cbc7a931e89b3",
+      "bytes": 10330
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192320Z-run.json",
+      "sha256": "8ddc4aaf052327466b6d8feb61ed18397b0a5588af02ad3a4c1a8cbbca7eb4a2",
+      "bytes": 13520
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192434Z-jobs.json",
+      "sha256": "9595dbd13483f9e14a59e7b0edbc6ea3bdd0204eeb0036f86a4cbc7a931e89b3",
+      "bytes": 10330
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192434Z-run.json",
+      "sha256": "8ddc4aaf052327466b6d8feb61ed18397b0a5588af02ad3a4c1a8cbbca7eb4a2",
+      "bytes": 13520
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192558Z-jobs.json",
+      "sha256": "9595dbd13483f9e14a59e7b0edbc6ea3bdd0204eeb0036f86a4cbc7a931e89b3",
+      "bytes": 10330
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192558Z-run.json",
+      "sha256": "8ddc4aaf052327466b6d8feb61ed18397b0a5588af02ad3a4c1a8cbbca7eb4a2",
+      "bytes": 13520
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192754Z-jobs.json",
+      "sha256": "9595dbd13483f9e14a59e7b0edbc6ea3bdd0204eeb0036f86a4cbc7a931e89b3",
+      "bytes": 10330
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192754Z-run.json",
+      "sha256": "8ddc4aaf052327466b6d8feb61ed18397b0a5588af02ad3a4c1a8cbbca7eb4a2",
+      "bytes": 13520
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192940Z-jobs.json",
+      "sha256": "9595dbd13483f9e14a59e7b0edbc6ea3bdd0204eeb0036f86a4cbc7a931e89b3",
+      "bytes": 10330
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T192940Z-run.json",
+      "sha256": "8ddc4aaf052327466b6d8feb61ed18397b0a5588af02ad3a4c1a8cbbca7eb4a2",
+      "bytes": 13520
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T193053Z-jobs.json",
+      "sha256": "a9f6955a4baebe4d642859517961b52a63501717ce0ebab57a66efef6bf8aa5c",
+      "bytes": 12914
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T193053Z-run.json",
+      "sha256": "716803df4c976a1885011552fe93023859bb44b0a7a9899b5122a99ebc7ca427",
+      "bytes": 13525
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T193216Z-jobs.json",
+      "sha256": "82e4891326a73076ab431f6b09e46709eb68b2e3d48719436cdb5940dffbc10d",
+      "bytes": 13086
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T193216Z-run.json",
+      "sha256": "716803df4c976a1885011552fe93023859bb44b0a7a9899b5122a99ebc7ca427",
+      "bytes": 13525
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T193309Z-jobs.json",
+      "sha256": "4a7c0b98f3eb61d09123242d9d23fe0cfe9a8f7514d190dc9b4fbebe8217696f",
+      "bytes": 13497
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-20261020T193309Z-run.json",
+      "sha256": "24ee846ed68b7c9d5c98f820666b3b0ae55895fa5869c067610daf5bc0d74199",
+      "bytes": 13528
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-attempt1-final-jobs.json",
+      "sha256": "a056617eb165848078425d7f032cc5337897818d86ea912332253b47d0104ff4",
+      "bytes": 10342
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-attempt1-final-run.json",
+      "sha256": "943deef0718d0213eaa9ad569cb3cc81887ea39513150fc4b1652504f332bcbc",
+      "bytes": 13438
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-final-jobs.json",
+      "sha256": "4a7c0b98f3eb61d09123242d9d23fe0cfe9a8f7514d190dc9b4fbebe8217696f",
+      "bytes": 13497
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-final-run.json",
+      "sha256": "24ee846ed68b7c9d5c98f820666b3b0ae55895fa5869c067610daf5bc0d74199",
+      "bytes": 13528
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-latest.json",
+      "sha256": "3c2b29c6319e3eab7264cb0717a868ba99b7583a60c37a304743bc8bb948675b",
+      "bytes": 1545
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-linux-artifact-audit.json",
+      "sha256": "0cbbbc428bd47ca6ae56e1a7a74b0a2c9788a276c415e720402a024181775776",
+      "bytes": 8898
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-linux-job.log",
+      "sha256": "a5bbb23e727a462b314eea43a1c74367f4e67c4e49371af26be1b5012547581b",
+      "bytes": 110594
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-macos-artifact-audit.json",
+      "sha256": "8ded84e3d7299c9b7cd40a31a4ee94ec5412647b7ecbe6504e50ee7ffde07f2a",
+      "bytes": 1989
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-macos-attempt1-annotations.json",
+      "sha256": "b8da363097f2a9814713cc3441f1fb182388eb34efa3061a6b1760920ff37c8b",
+      "bytes": 1450
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-macos-job.log",
+      "sha256": "edfa8ee4a221930563829b28d0bd5927727dd3f0eabbfc72088770ee7c6b203a",
+      "bytes": 59002
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-macos-rerun-decision.json",
+      "sha256": "9f90a38fe6a529c27588f0fb49a9d5f92686886a3213f4118bb27f0ec706de76",
+      "bytes": 632
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-macos-rerun-response.json",
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-windows-artifact-audit.json",
+      "sha256": "c59092b42af9b60b70559d074328261cbd65111fc1ee05144d427db6ec5a5d73",
+      "bytes": 2007
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-postmerge-windows-job.log",
+      "sha256": "e7acebbe341104510a506e8d41aa6751334bc32d6613c69b11c4357c222e9c4e",
+      "bytes": 59927
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T183727Z-jobs.json",
+      "sha256": "74967b2cdb7453fbbc9bc427fe6ce17ea0e29385bc7a3b82812a53216a78f721",
+      "bytes": 8825
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T183727Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T183849Z-jobs.json",
+      "sha256": "fa2fe71acd9b49a9a6f87c09b98b4d288a8a51f1a04864efcc03d57d92772446",
+      "bytes": 8954
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T183849Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T183944Z-jobs.json",
+      "sha256": "5c794f0f5a4ce28a0342e1c14809420b767bb7587403d40cd0a358bdc319e592",
+      "bytes": 9040
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T183944Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184041Z-jobs.json",
+      "sha256": "94925b0b3140791bb0bd36f319b0ff0c2eebde4ed21b28ad17d63f708dd2e66c",
+      "bytes": 9126
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184041Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184151Z-jobs.json",
+      "sha256": "73c2a471c460ee4e0b4ea62190edfcaec8a55cae68ba3209fee6578335c3fc04",
+      "bytes": 9341
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184151Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184215Z-jobs.json",
+      "sha256": "fcee2f3a40156f6be4cacdf08d761f0eaf5d9b0fb238eb7e447d1d674dd8b86c",
+      "bytes": 9513
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184215Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184417Z-jobs.json",
+      "sha256": "0708f98ee93b73dfdb2aede6bdd0495d678a1ae0180833174448d3dca4ff82e7",
+      "bytes": 10378
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184417Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184451Z-jobs.json",
+      "sha256": "0708f98ee93b73dfdb2aede6bdd0495d678a1ae0180833174448d3dca4ff82e7",
+      "bytes": 10378
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184451Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184720Z-jobs.json",
+      "sha256": "0708f98ee93b73dfdb2aede6bdd0495d678a1ae0180833174448d3dca4ff82e7",
+      "bytes": 10378
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184720Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184842Z-jobs.json",
+      "sha256": "0708f98ee93b73dfdb2aede6bdd0495d678a1ae0180833174448d3dca4ff82e7",
+      "bytes": 10378
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184842Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184915Z-jobs.json",
+      "sha256": "0708f98ee93b73dfdb2aede6bdd0495d678a1ae0180833174448d3dca4ff82e7",
+      "bytes": 10378
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T184915Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185019Z-jobs.json",
+      "sha256": "0708f98ee93b73dfdb2aede6bdd0495d678a1ae0180833174448d3dca4ff82e7",
+      "bytes": 10378
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185019Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185136Z-jobs.json",
+      "sha256": "0708f98ee93b73dfdb2aede6bdd0495d678a1ae0180833174448d3dca4ff82e7",
+      "bytes": 10378
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185136Z-run.json",
+      "sha256": "c1f64c0aa6b2325e1ffe091b27b80006d454ed31bf65dbb56ed64c16e9137bf7",
+      "bytes": 13397
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185241Z-jobs.json",
+      "sha256": "3b84bb081ffc4538d13b13bc8a0d41bb4e39f4534e8d934fdfa10741fc9dd493",
+      "bytes": 10396
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185241Z-run.json",
+      "sha256": "706f27235e46ed34f9136efd6c32bb7cd8d140a1970c3e5cdf19a05b6e879b6f",
+      "bytes": 13405
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185305Z-jobs.json",
+      "sha256": "b3dab5870ff3a8209160335de7c1077b89e461d875d9041ac9d8b8ed7c1666f6",
+      "bytes": 27
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185305Z-run.json",
+      "sha256": "ef97108c99ea4321761797da1878e4a08e567a107264429e22ec046a98fa4267",
+      "bytes": 13487
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185422Z-jobs.json",
+      "sha256": "65761db88403e1705f1ae7e19186473e81e722d83caaf68dbd7603c034d58a71",
+      "bytes": 10384
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185422Z-run.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185422Z-run.stderr",
+      "sha256": "6eb79dd6708f9532493050b8aff2eaea56b8f05f686be62c8b573e15b295b13b",
+      "bytes": 93
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185638Z-jobs.json",
+      "sha256": "65761db88403e1705f1ae7e19186473e81e722d83caaf68dbd7603c034d58a71",
+      "bytes": 10384
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185638Z-run.json",
+      "sha256": "ef97108c99ea4321761797da1878e4a08e567a107264429e22ec046a98fa4267",
+      "bytes": 13487
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185717Z-jobs.json",
+      "sha256": "65761db88403e1705f1ae7e19186473e81e722d83caaf68dbd7603c034d58a71",
+      "bytes": 10384
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185717Z-run.json",
+      "sha256": "ef97108c99ea4321761797da1878e4a08e567a107264429e22ec046a98fa4267",
+      "bytes": 13487
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185902Z-jobs.json",
+      "sha256": "448499bde3b2d2d661da5fe7cd7a6a73a95b48342c844b7da11b9a8a12fba711",
+      "bytes": 12968
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185902Z-run.json",
+      "sha256": "c7d1dd2dddfe228de0992b2911289c7a0132dc27ded8f1fbf56c903837b52f09",
+      "bytes": 13492
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185958Z-jobs.json",
+      "sha256": "14729332b7bcd4fd153a57935b36d749523369706dee3838326ef012761d55a4",
+      "bytes": 13097
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T185958Z-run.json",
+      "sha256": "c7d1dd2dddfe228de0992b2911289c7a0132dc27ded8f1fbf56c903837b52f09",
+      "bytes": 13492
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T190048Z-jobs.json",
+      "sha256": "0ca6691c7bd0e921b1245d92343e66857517b279761e1a99c7cfacaef21d6d7d",
+      "bytes": 13551
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-20261020T190048Z-run.json",
+      "sha256": "6cdca5a03ef709df9a74087ed25a2becb282cdcefc9aa255f1067de262ebc126",
+      "bytes": 13495
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-artifact-audit-method.json",
+      "sha256": "1295a1227c78a0f1bb787bc72ef4e00d89734716f7f164977371598bb8be143b",
+      "bytes": 1260
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-attempt1-final-jobs.json",
+      "sha256": "3b84bb081ffc4538d13b13bc8a0d41bb4e39f4534e8d934fdfa10741fc9dd493",
+      "bytes": 10396
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-attempt1-final-run.json",
+      "sha256": "706f27235e46ed34f9136efd6c32bb7cd8d140a1970c3e5cdf19a05b6e879b6f",
+      "bytes": 13405
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-final-jobs.json",
+      "sha256": "0ca6691c7bd0e921b1245d92343e66857517b279761e1a99c7cfacaef21d6d7d",
+      "bytes": 13551
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-final-run.json",
+      "sha256": "6cdca5a03ef709df9a74087ed25a2becb282cdcefc9aa255f1067de262ebc126",
+      "bytes": 13495
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-latest.json",
+      "sha256": "60ced757abfd3dc4de304a73bf13d6c845f23b6f5f56aeb6508594bf619ef7b0",
+      "bytes": 1539
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-linux-artifact-audit.json",
+      "sha256": "91c2fd28a086fda11133c3e9a658b2c6be861098259215f2770eeabc99361706",
+      "bytes": 8716
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-linux-job.log",
+      "sha256": "6f77331647e9f0e34d8a277dba4b6561283b3a4b042fe217fc6ae87c8432c1be",
+      "bytes": 112332
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-macos-artifact-audit.json",
+      "sha256": "9527488ccb69e88b27e00bab899d0531a71c45dcf427bd30ec3c75d4040d9f92",
+      "bytes": 1926
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-macos-attempt1-annotations.json",
+      "sha256": "58093deb06debe335525b2352d4de84c190f8f2b451fb33eb5a5faf36223c385",
+      "bytes": 1450
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-macos-job.log",
+      "sha256": "23f49a0b4f00606559e89366fe2c072ce550474cbe289dcb05c1c3cc06179124",
+      "bytes": 59170
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-macos-rerun-decision.json",
+      "sha256": "a85fe660bb2dabb8b5e8dd49b5b32a02a372b8c4fdcdc002fafe250cb105ec7a",
+      "bytes": 1149
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-macos-rerun-response.json",
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-windows-artifact-audit.json",
+      "sha256": "84d1261965b973bc8b1458c9faa55f910050106a5d0e59d80dc2d3a70e6317b9",
+      "bytes": 1944
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-pr-windows-job.log",
+      "sha256": "8b96b154fe6943c7391d0ef705eebb70f9b2aa5bf8ad11ef939294a46204b227",
+      "bytes": 60485
+    },
+    {
+      "path": "build/I04-evidence/ci-c4-windows-owner-proof.json",
+      "sha256": "c1e8aacac439ad1f5fadf0c67bc92d269ed0f27255d7c19cc9604be997990eb5",
+      "bytes": 1921
+    }
+  ],
+  "goalToolReceipt": "build/I04-evidence/i04-goal-completion-receipt.json",
+  "evidenceLimits": {
+    "ZCodeFailureLogs": "Original reporter/venv/probe failure files were overwritten by reviewer. Model-attributed session reconstruction/excerpts are retained, not byte-exact originals. Successful final logs/probe and original first report separately retained; no fake recovery claim.",
+    "MiniMaxWriteBoundary": "Reviewer wrote final report plus nine uniquely named ignored probe-evidence copies under build/I04-evidence/minimax-r4-probe-corrections. This exceeds a literal report-only primary write description; disclose actual process-data copying, no product/test/config/dependency/acceptance/runtime-output change, no shared mutable build interference. Report2.3/appendixB disclose copies.",
+    "MiniMaxSummaryCount": "Report9 item5 retains stale R1 shorthand19+2+1; detailed table6.1/count6.4/conclusion9 item6 and actual terminal agree20+1+1. Preserved and explicitly indexed in committed round-4-processing; no root rewrite of independent report."
+  },
+  "postMergeCIBoundedRerun": {
+    "firstAttempt": "build/I04-evidence/ci-c4-postmerge-attempt1-final-jobs.json",
+    "annotations": "build/I04-evidence/ci-c4-postmerge-macos-attempt1-annotations.json",
+    "decision": "build/I04-evidence/ci-c4-postmerge-macos-rerun-decision.json",
+    "response": "build/I04-evidence/ci-c4-postmerge-macos-rerun-response.json",
+    "status": "Exactly one same-merge-head/config macOS diagnostic rerun after no-runner capacity cancellation completed success; Linux/Windows original execution successes retained, no repeated execution claim from copied metadata IDs.",
+    "attempt": 2,
+    "exactRerunJob": 118833848967,
+    "runner_id": 1000000445
+  },
+  "goalTool": {
+    "status": "complete",
+    "sameOriginalThread": "01a15899-4318-7522-8035-353e88d34de4",
+    "receipt": "build/I04-evidence/i04-goal-completion-receipt.json",
+    "receiptSha256": "aaa893825745c7425243f3bea09b2fb73704492fb43597f90233ffe7a93dfedf",
+    "registeredAtUtc": "2026-10-20T19:34:36.714021+00:00",
+    "recordedTokensUsed": 1736422,
+    "recordedTimeUsedSeconds": 2823,
+    "accountingBoundary": "Recorded counters equal the previous paused-state counters and are not presented as total wall-clock time or complete accounting of manual resumed work. No token budget was configured."
+  }
+}

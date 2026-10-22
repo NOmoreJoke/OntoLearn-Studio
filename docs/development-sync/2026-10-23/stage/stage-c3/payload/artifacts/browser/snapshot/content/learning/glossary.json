@@ -1,0 +1,143 @@
+{
+  "version": "glossary-1",
+  "entries": [
+    {
+      "term": "本体",
+      "plain": "业务对象与关系的说明书。",
+      "example": "设备、告警及设备关联告警。",
+      "technical": "用RDF/OWL表达受支持的类与属性。"
+    },
+    {
+      "term": "类",
+      "plain": "一类对象。",
+      "example": "Equipment表示设备这一类。",
+      "technical": "可作为rdf:type的对象。"
+    },
+    {
+      "term": "个体",
+      "plain": "一个具体对象。",
+      "example": "equipment/001是泵站A。",
+      "technical": "具有稳定IRI的实例资源。"
+    },
+    {
+      "term": "属性",
+      "plain": "对象的特征或联系。",
+      "example": "设备名称或设备关联告警。",
+      "technical": "数据属性连接字面量，对象属性连接资源。"
+    },
+    {
+      "term": "关系",
+      "plain": "两个对象之间的联系。",
+      "example": "001关联A01。",
+      "technical": "RDF谓语连接主语和资源对象。"
+    },
+    {
+      "term": "RDF",
+      "plain": "用三部分说清一件事。",
+      "example": "001—名称—泵站A。",
+      "technical": "主语、谓语、对象组成三元组。"
+    },
+    {
+      "term": "OWL",
+      "plain": "表达本体语义的语言。",
+      "example": "定义Equipment类。",
+      "technical": "本产品仅支持附录C中的子集。"
+    },
+    {
+      "term": "SPARQL",
+      "plain": "查询RDF数据的语言。",
+      "example": "查High且Open的告警。",
+      "technical": "P0仅项目内只读SELECT/ASK。"
+    },
+    {
+      "term": "SHACL",
+      "plain": "检查记录是否符合明确要求。",
+      "example": "设备名称必须填写。",
+      "technical": "targetClass/path/minCount等受支持模板，必须说明数据范围。"
+    },
+    {
+      "term": "数据映射",
+      "plain": "把表格行变成有稳定身份的事实。",
+      "example": "CSV的001转为equipment/001。",
+      "technical": "保留源行、所有权、转换与身份规则。"
+    },
+    {
+      "term": "推理",
+      "plain": "依事实和规则计算新的结论。",
+      "example": "A01让001成为高风险设备。",
+      "technical": "先RDFS闭包，再一阶段规则，输出不继续触发。"
+    },
+    {
+      "term": "能力问题",
+      "plain": "用来检验模型能回答什么的业务问题。",
+      "example": "有哪些未闭环高危告警？",
+      "technical": "将业务目标落实为可执行查询与验收。"
+    },
+    {
+      "term": "断言事实",
+      "plain": "直接录入或映射提交的信息。",
+      "example": "001名称为泵站A。",
+      "technical": "存于当前断言层，不由推理产生。"
+    },
+    {
+      "term": "当前推导结果",
+      "plain": "基于当前输入计算出的结论。",
+      "example": "001属于HighRiskEquipment。",
+      "technical": "输入改变会过期，重算可撤回，不能误删断言。"
+    },
+    {
+      "term": "行为",
+      "plain": "遇到事件且满足条件时执行动作。",
+      "example": "高危告警创建巡检单。",
+      "technical": "条件使用冻结快照，写入意图先做竞争检查。"
+    },
+    {
+      "term": "沙盘",
+      "plain": "在副本里比较条件变化的结果。",
+      "example": "产能3与4的积压对比。",
+      "technical": "固定轮次、隔离状态、已提交轮次不可改写。"
+    },
+    {
+      "term": "快照",
+      "plain": "某个时刻完整可恢复的状态。",
+      "example": "行为运行前的状态。",
+      "technical": "绑定版本；恢复会覆盖后续操作，应与撤销一次修改区分。"
+    },
+    {
+      "term": "ChangeSet",
+      "plain": "一批可预览、确认与撤销的修改。",
+      "example": "Agent建议改两台设备。",
+      "technical": "绑定基准版本并原子提交，旧基准拒绝覆盖。"
+    },
+    {
+      "term": "已过期",
+      "plain": "结果所用输入已有变化。",
+      "example": "改A01后旧风险结论。",
+      "technical": "可查看但不能无标识作为当前结论。"
+    },
+    {
+      "term": "Diff",
+      "plain": "修改前后的差异。",
+      "example": "新增、变更、删除哪些事实。",
+      "technical": "确认前展示ChangeSet的完整差异。"
+    },
+    {
+      "term": "开放世界假设",
+      "plain": "没记录不等于证明不存在。",
+      "example": "删除A03后003显示未记录告警。",
+      "technical": "RDF缺少陈述不能推出其否定；SHACL只检查选定数据范围。"
+    },
+    {
+      "term": "定义域",
+      "plain": "某关系的主语可推导成什么类型。",
+      "example": "若assignedTo的domain为Equipment，关联的主语可推为设备。",
+      "technical": "rdfs:domain是类型推理，不是填写校验或禁止其他主语。"
+    },
+    {
+      "term": "值域",
+      "plain": "某关系的对象可推导成什么类型。",
+      "example": "若assignedTo的range为Person，关联对象可推为人员。",
+      "technical": "rdfs:range是类型推理；必填、数据类型和允许值校验应使用SHACL。"
+    }
+  ]
+}

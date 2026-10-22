@@ -1,0 +1,165 @@
+{
+  "iteration": "I03",
+  "observedAt": "2026-10-20T16:56:40.931541+08:00",
+  "reviewedBase": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
+  "reviewedHead": "30c10d8ad1b9156b1fa5317c6b41b179f927c761",
+  "pushedEvidenceHead": "4e9a6fc11ada8fba5511fd5c457052a9a500fa96",
+  "pureProcessPaths": "docs/reviews/I03/**",
+  "pullRequest": {
+    "baseRefName": "develop",
+    "headRefOid": "4e9a6fc11ada8fba5511fd5c457052a9a500fa96",
+    "mergeCommit": {
+      "oid": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500"
+    },
+    "mergedAt": "2026-10-20T08:52:16Z",
+    "state": "MERGED",
+    "url": "https://github.com/NOmoreJoke/OntoLearn-Studio/pull/4"
+  },
+  "remoteDevelop": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+  "ancestorExitCode": 0,
+  "mergeTreeEqualsPrHead": true,
+  "prCI": {
+    "runId": 39395415448,
+    "head": "4e9a6fc11ada8fba5511fd5c457052a9a500fa96",
+    "attempt1": {
+      "conclusion": "failure",
+      "Quality": "failure",
+      "macOS": "success",
+      "Windows": "success",
+      "failure": "native recovery test bootstrap: require(electron).app undefined reading isPackaged; before native fault assertions",
+      "artifactId": 12251791914
+    },
+    "attempt2": {
+      "conclusion": "success",
+      "Quality": "success; actual rerun",
+      "macOS": "inherited attempt1 success; not rerun",
+      "Windows": "inherited attempt1 success; not rerun",
+      "typescriptTests": 424,
+      "pythonTests": 626,
+      "e2eTests": 2,
+      "codeConfigAcceptanceChanged": false
+    },
+    "retryCount": 1,
+    "diagnosis": "Inherited driver has no Electron API readiness synchronization after inspector endpoint. Startup race hypothesis fits; actual export value/root cause unproven; not claimed fixed. Independent reviewer supported one unchanged diagnostic retry."
+  },
+  "postMergeCI": {
+    "runId": 39396529386,
+    "head": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 118540536611,
+        "name": "Quality",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-20T08:52:23Z",
+        "completed_at": "2026-10-20T08:53:44Z"
+      },
+      {
+        "id": 118540536829,
+        "name": "Desktop (windows-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-20T08:52:24Z",
+        "completed_at": "2026-10-20T08:55:18Z"
+      },
+      {
+        "id": 118540537063,
+        "name": "Desktop (macos-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-20T08:52:27Z",
+        "completed_at": "2026-10-20T08:53:30Z"
+      }
+    ],
+    "url": "https://github.com/NOmoreJoke/OntoLearn-Studio/actions/runs/39396529386"
+  },
+  "openObligations": [
+    "MM R2-F1 P3 malformed trusted Python binding must safe-reject before I04 consumer wiring; future code changes newcandidate and dual review",
+    "Native bootstrap timing risk remains open; first failure retained, retry does not establish repair",
+    "Other historical/future observations remain as round-2/processing.md"
+  ],
+  "localRawEvidence": [
+    {
+      "path": "build/I03-integration/attempt1-jobs.json",
+      "bytes": 10926,
+      "sha256": "8847511e03a575db2671d9c8d475dac296b6c9d96cb5090e53d717b41fd29e8c"
+    },
+    {
+      "path": "build/I03-integration/attempt1-linux/csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery/error-context.md",
+      "bytes": 8748,
+      "sha256": "fadcb8f8e200ae3d953cb03bf0ebc46be40b30dd1d19d76951ab4322c54e4a04"
+    },
+    {
+      "path": "build/I03-integration/attempt1-linux/csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery/trace.zip",
+      "bytes": 12283,
+      "sha256": "19b12903a26e10ad9dd99ee1cbbc762b5746e90414b6ee85b8108e4e3410c684"
+    },
+    {
+      "path": "build/I03-integration/attempt1-linux/desktop-1024.png",
+      "bytes": 27510,
+      "sha256": "9d33e026dba4c0a2076779f51e84269626e662e7dc75adaf596c1a5760f98150"
+    },
+    {
+      "path": "build/I03-integration/attempt1-linux/desktop-1280.png",
+      "bytes": 29431,
+      "sha256": "c8e989b14d3f9ffc7130448a50be1759a120f3778df38ff1f01a06e9d4602427"
+    },
+    {
+      "path": "build/I03-integration/attempt1-linux/i02-linux-evidence.json",
+      "bytes": 6315,
+      "sha256": "39fea8ed42fe40b57bc678131fd5323fd0cb4bb467ec728515ad6571b313c702"
+    },
+    {
+      "path": "build/I03-integration/attempt1-run.json",
+      "bytes": 8923,
+      "sha256": "e4ff7ca831f49eae95823d1865a282b3fe7e2bea08bdd3daff2b44b3c2e675ff"
+    },
+    {
+      "path": "build/I03-integration/attempt2-jobs.json",
+      "bytes": 10932,
+      "sha256": "1fe3e1e300747256ec2a00c1aaa52969d428ace57e0318cd03e396ae59812bf9"
+    },
+    {
+      "path": "build/I03-integration/attempt2-run.json",
+      "bytes": 13501,
+      "sha256": "486e9345816c8b654d020dad9b6e3ccbb9600f64b821ff353bd9307e4f6c4778"
+    },
+    {
+      "path": "build/I03-integration/merged-pr.json",
+      "bytes": 260,
+      "sha256": "d6156a12b32d72671dc15a865c17547a5a4eb467fd249493659b2566e5fda42a"
+    },
+    {
+      "path": "build/I03-integration/postmerge-jobs.json",
+      "bytes": 10857,
+      "sha256": "312ed40a2abf493c60cd25649545c0e8d9ec2a4634c241b109cddcdc52fff578"
+    },
+    {
+      "path": "build/I03-integration/postmerge-quality-118540536611.log",
+      "bytes": 45712,
+      "sha256": "24ad873348ab0906f72a92865693bbba62f14852336ed365e344afe2f20a043f"
+    },
+    {
+      "path": "build/I03-integration/postmerge-run.json",
+      "bytes": 13437,
+      "sha256": "51d7342dfd54c5d9310aff02084f1a4e6e39a36c4148ce44d073429d38aee06f"
+    },
+    {
+      "path": "build/I03-integration/quality-job-118536831641.log",
+      "bytes": 52589,
+      "sha256": "03536c040c005ceacaf23e518250931a22b8927758216b48a0b21615a020529e"
+    },
+    {
+      "path": "build/I03-integration/quality-job-118539260243.log",
+      "bytes": 46453,
+      "sha256": "882f36ec915e287e123be340021f95b01f1aaafe8f7425ecbf2fb434a3e9d21a"
+    }
+  ],
+  "protectedGuidanceSha256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+  "recordBoundary": "Integration record and subsequent status append are local process evidence after reviewed/pushed head; no implementation/test/config/dependency/acceptance change; no new GUI launch.",
+  "phase": "merged_remote_verified_postmerge_ci_success",
+  "completionBoundary": "I03 only; I04 runtime and all future obligations remain open. Local integration.json and status tail are postmerge process evidence, uncommitted; remote PR body retains merge/CI result and failure boundary. No code or reviewed-file repair after dual approval."
+}

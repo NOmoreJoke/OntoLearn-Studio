@@ -1,0 +1,246 @@
+{
+  "version": "2026-10-22.stage.1",
+  "testedAt": "2026-10-22T15:57:46.890273+08:00",
+  "browser": "Chrome via Playwright CLI, headless; file:// local entry",
+  "indexSha256": "adff7f408e1844392d550a7e0a3bdacb5e1c1cd167b24d3b236a517456033a81",
+  "sourceFiles": 34,
+  "snapshotSourceByteIdentical": true,
+  "method": "Fixed source component reuse, no service callbacks, no mock business execution",
+  "runtime": {
+    "passed": true,
+    "results": [
+      {
+        "check": "真实查询编写器生成草稿，执行/保存禁用",
+        "sparql": "SELECT DISTINCT ?item ?field0 WHERE {\n  ?item a <https://stage.example/Sensor> .\n  OPTIONAL { ?item <https://stage.example/temperature> ?field0 . }\n}\nORDER BY ?item ?field0"
+      },
+      {
+        "check": "本体搜索/类树/关系图/表单/重置；无预览服务"
+      },
+      {
+        "check": "行为事件编辑/条件增删，缺真实服务"
+      },
+      {
+        "check": "离线课程任务/术语切换，学习进度不伪造"
+      },
+      {
+        "check": "本地JSON验收记录与合成样例下载"
+      },
+      {
+        "check": "布局无页面横向溢出",
+        "width": 1440,
+        "module": "本体构建"
+      },
+      {
+        "check": "布局无页面横向溢出",
+        "width": 1440,
+        "module": "本体查询"
+      },
+      {
+        "check": "布局无页面横向溢出",
+        "width": 1440,
+        "module": "行为定义"
+      },
+      {
+        "check": "布局无页面横向溢出",
+        "width": 1440,
+        "module": "离线学习"
+      },
+      {
+        "check": "布局无页面横向溢出",
+        "width": 390,
+        "module": "本体构建"
+      },
+      {
+        "check": "布局无页面横向溢出",
+        "width": 390,
+        "module": "本体查询"
+      },
+      {
+        "check": "布局无页面横向溢出",
+        "width": 390,
+        "module": "行为定义"
+      },
+      {
+        "check": "布局无页面横向溢出",
+        "width": 390,
+        "module": "离线学习"
+      }
+    ],
+    "pageErrors": []
+  },
+  "downloadJSONContentVerified": true,
+  "consoleErrorsAfterFinalReload": 0,
+  "network": "No HTTP service or external requests; inline file entry; connect-src none",
+  "visualInspection": [
+    "1440px query fullpage",
+    "390px behavior fullpage"
+  ],
+  "artifacts": [
+    {
+      "path": "output/playwright/1440-本体构建.png",
+      "bytes": 321936,
+      "sha256": "ac1758250f5041c06faacea18fbe3a94984625d7956d681d19904e141eeb8b7a"
+    },
+    {
+      "path": "output/playwright/1440-本体查询.png",
+      "bytes": 309588,
+      "sha256": "93b594cf844dbbf26a03964b15e774a323513b55e92dc8ea2bcbd8925fe0c3eb"
+    },
+    {
+      "path": "output/playwright/1440-离线学习.png",
+      "bytes": 323414,
+      "sha256": "929a2caa6c5a20d5435ee9132bc59d556bdca6813ed52a528dba89c43a060fa5"
+    },
+    {
+      "path": "output/playwright/1440-行为定义.png",
+      "bytes": 344303,
+      "sha256": "7d76eba02077d5e70e901add73f06835b1bfa98b06c4c285be02e5783c38aeaf"
+    },
+    {
+      "path": "output/playwright/390-本体构建.png",
+      "bytes": 290688,
+      "sha256": "09fe6454eaa5874070eff35ee49388c991344f2b8f99401226335679482daa50"
+    },
+    {
+      "path": "output/playwright/390-本体查询.png",
+      "bytes": 276072,
+      "sha256": "5ed5743d58feceae4c0f6e3582e0500e32c4d00db96ecd597ea342fda1d43fe6"
+    },
+    {
+      "path": "output/playwright/390-离线学习.png",
+      "bytes": 257697,
+      "sha256": "f598cd122c40437ca37405a7e58c719271f07efd1ef753f1aa224bb8838949cd"
+    },
+    {
+      "path": "output/playwright/390-行为定义.png",
+      "bytes": 317858,
+      "sha256": "6dcf89faebd34823c8f80e87c55303642c0569b0dcb819deb25f8c31ab489790"
+    },
+    {
+      "path": "output/playwright/behavior-snapshot.txt",
+      "bytes": 9770,
+      "sha256": "2912ddd7d7ea08ffb40014669e00ece1b4bcbf67601999e8cfa20caed7102c5e"
+    },
+    {
+      "path": "output/playwright/build-final.txt",
+      "bytes": 379,
+      "sha256": "c2b271dda84fadae932ff0ce52fee48a2e16e22333e543172389db7561f50f65"
+    },
+    {
+      "path": "output/playwright/feedback.json",
+      "bytes": 283,
+      "sha256": "ecfe6c4052e4271509b21d918f5ecbd53c303588f686679656d7ab7310532e42"
+    },
+    {
+      "path": "output/playwright/reload-final.txt",
+      "bytes": 339,
+      "sha256": "c973a08e982e060f33aaae4a4f899f84fa122c806256fd342943e0d6973a64b6"
+    },
+    {
+      "path": "output/playwright/reload.txt",
+      "bytes": 339,
+      "sha256": "50d5252d130c6116e129fcb204098cf4f5fad9bf591a8f549de3af9d1677f842"
+    },
+    {
+      "path": "output/playwright/samples.json",
+      "bytes": 4089,
+      "sha256": "799f12d5c0151abba2d7c83d6e1d9de60939a8eec4286d7d44177ec9a76264bf"
+    },
+    {
+      "path": "output/playwright/verification-output.txt",
+      "bytes": 6952,
+      "sha256": "a9e9521075f110e722a3a50388e957888cc18e34ccef1a5f20a6a648a2f546b6"
+    }
+  ],
+  "limitations": [
+    "No native GUI or user device testing",
+    "No Store/bridge/executor/model integration",
+    "No ZCode/MiniMax specified approval for this shell"
+  ],
+  "earlierIssues": [
+    "First build missing fixed contracts JSON, fixed by exporting same candidate JSON",
+    "Library bundle process.env.NODE_ENV unresolved, fixed with production build define",
+    "First automation used wrong behavior button exact label, corrected without changing component",
+    "Independent review caught 390 learning inner-grid clipping despite document width pass; fixed shell and targeted retested."
+  ],
+  "previousCandidateIndexSha256": "c323ad6a2b71363b95d83b7baa3817f79e810e18540ec5f65f65b0ca314e276f",
+  "previousRuntimeScope": "Initial four-module checks on previous bundle remain historical; full-page width assertions missed inner learning-grid clipping.",
+  "mobileLayoutRemedy": {
+    "independentFinding": "P2 at 390px learning-grid children exceeded viewport but document width was concealed by parent overflow:hidden; earlier document-only check insufficient.",
+    "rootCause": "Shell media query overrode component minmax(0,1fr) with intrinsic-min-width 1fr.",
+    "changedFiles": [
+      "shell.css",
+      "rebuilt index.html and build outputs; manifest refreshed"
+    ],
+    "snapshotChanged": false,
+    "remedy": "Use minmax(0,1fr) and min-width:0 for direct learning-grid children in shell media query.",
+    "limitedRetest": "New bundle load plus 390 learning containers bbox/inner widths, task switching, glossary selection/technical definition and screenshot; unrelated modules not repeated.",
+    "result": {
+      "passed": true,
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "boxes": [
+        {
+          "selector": ".stage-surface",
+          "left": 14,
+          "right": 376,
+          "width": 362,
+          "scrollWidth": 360,
+          "clientWidth": 360
+        },
+        {
+          "selector": ".learning-grid",
+          "left": 41,
+          "right": 349,
+          "width": 308,
+          "scrollWidth": 308,
+          "clientWidth": 308
+        },
+        {
+          "selector": ".learning-path",
+          "left": 41,
+          "right": 349,
+          "width": 308,
+          "scrollWidth": 308,
+          "clientWidth": 308
+        },
+        {
+          "selector": ".learning-task",
+          "left": 41,
+          "right": 349,
+          "width": 308,
+          "scrollWidth": 306,
+          "clientWidth": 306
+        },
+        {
+          "selector": ".learning-reference",
+          "left": 41,
+          "right": 349,
+          "width": 308,
+          "scrollWidth": 308,
+          "clientWidth": 308
+        },
+        {
+          "selector": "#learning-term",
+          "left": 62,
+          "right": 328,
+          "width": 266,
+          "scrollWidth": 264,
+          "clientWidth": 264
+        }
+      ],
+      "glossary": {
+        "x": 62,
+        "y": 308.53125,
+        "width": 266,
+        "height": 40
+      },
+      "taskSwitch": true,
+      "glossarySwitch": true,
+      "technicalDefinitionExpanded": true
+    },
+    "consoleErrors": 0
+  }
+}

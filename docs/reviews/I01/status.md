@@ -7,12 +7,12 @@
 - 依赖：无前置实施依赖；已读取 PRD FR-006/304/604/700–705/804/1000、附录 C/D/E/G 和采纳计划。
 - 仓库：/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio。origin https://github.com/NOmoreJoke/OntoLearn-Studio.git。
 - 分支：feature/I01-storage-invalidation，base：e628f5e7b6c09e10e15644552a6171c4a9a3072e，head：1e3b179de1e1f9f7ad4b6556f292ef769c113d18。
-- 阶段：Round 3双方已实际完成并同版本明确通过，原始报告已完整读回；正归档纯流程证据并推进PR/CI门禁。最近fetch时origin/develop仍为base。
+- 阶段：I01完成；第三轮同版本双模型明确通过，PR #2已合并develop，PR与合并后两次三平台CI全部success；远端树与受审实现一致。
 - 原有文件：61 项逐个 SHA-256 与外部初始快照一致，均非本次实现，不修改或暂存。来源清单保存在父目录 iteration-control/2026-10-19。必要输入逐字副本及哈希在 docs/iterations/I01/inputs，供远端重现。
-- 验证及独立agent已完成，详见下文最终证据；指定第三方Round 1已完成，修复及最终内部复核完成；待Round 2新任务。
-- push / PR / merge / origin/develop 核验：未执行，双审前禁止。
+- 验证：198项Python（187项S1）、4项TS；静态/类型/构建、来源、e2e、真实macOS打包及12条包内/开发测量；独立agent与第三轮双模型通过。实际CI含Ubuntu Quality、macOS及Windows打包，详见最终记录。
+- push / PR / merge / origin/develop：已完成；PR https://github.com/NOmoreJoke/OntoLearn-Studio/pull/2 ，推送61b3ad3885ed23010f40c39465c079176a06de8d，合并1b6df7a220fc9a67d7046133a340085f03f0a96c。
 - 未决：Q5 容量与设备、Q2平台等产品决定不由 spike 代定。
-- 下一步：冻结Round 2候选后，经UI分别创建双方新任务；需Mac保持解锁。
+- 收尾：停止于I01；不启动I02。非阻断建议逐项保留I03/I04接入前处理要求，未冒称业务G/E或M0/生产完成。以下为按时序保留的历史记录，当前结论以上方及最终核验为准。
 
 ## 2026-10-20 实际进展
 
@@ -131,3 +131,17 @@ ZCode最终标题“I01 Round 3 存储失效spike对抗性复审”，GLM-5.3/�
 原阻断关闭、S1六退出条件双方确认成立。新低优先级身份/错误面及契约边界按原报告允许延期，逐项指定I03/I04接入前要求，特别保留非法kind=NULL会写派生NULL指针这一事实，不把“正式数据未损坏”说成“零写入”。当前仅health产品能力，不直接对UI/Agent开放内部spike。
 
 准备仅提交docs/reviews/I01纯流程证据，受审实现/测试/配置/依赖/ADR/验收无差异；61预存文件及4组冻结输入哈希再次一致。fetch及远端develop保护状态待当前查询结束后读回；无push/PR/merge，下一步证据commit一致性验证后push/PR→develop、实际CI，全部通过才合并。
+
+## PR 已创建 / 跨平台 CI 待验
+
+2026-10-20T07:11:35.925384+08:00：已推送61b3ad3885ed23010f40c39465c079176a06de8d，PR https://github.com/NOmoreJoke/OntoLearn-Studio/pull/2 ，base明确develop。证据提交仅六项docs/reviews/I01文件；实现与受审1e3b179完全一致。推送前61项保护哈希一致、index空；远端develop仍e628f5e。PR已附加当前任务。实际CI待全部通过才可合并，未启动I02。
+
+## PR CI 全通过 / 已合并 develop
+
+2026-10-20T07:15:08.119832+08:00：PR CI 39339996124 对head61b3ad3885ed23010f40c39465c079176a06de8d三项success（Quality、Desktop macos-latest、Desktop windows-latest）。合并前基线仍e628f5e、PR CLEAN、61项保护哈希一致，实现与受审1e3b179一致，门禁原始JSON保留pr-ci.json。gh pr merge --merge --match-head-commit已成功；远端PR确认MERGED，merge commit 1b6df7a220fc9a67d7046133a340085f03f0a96c，2026-10-19T23:15:00Z。下一步核验远端树和合并后的push CI；未启动I02。
+
+## 最终远端核验 / I01完成
+
+2026-10-20T07:18:56.466751+08:00：PR #2已合并；远端develop为1b6df7a220fc9a67d7046133a340085f03f0a96c，父提交恰为原base e628f5e及已审等价推送head61b3ad3，树与推送head完全一致；除docs/reviews/I01流程证据外，与受审1e3b179无差异。PR CI 39339996124、合并后push CI 39340381146全部三项success，均非跳过或仅模拟。61项既有文件和4组输入原件/副本SHA一致，双模型原始报告hash一致，index空。本地保留feature分支及原有未提交文件，不切换或覆盖；最终流程JSON位于pr-ci.json、completion.json，远端可恢复记录更新在PR正文。
+
+第三轮两报告均明确通过；全部新意见接受/延期边界在round-3/processing.md。非法kind派生NULL指针、历史异常输入错误面、缓存/恢复/组合顺序及依赖粒度的后续契约尚未修复，不能提前向UI/Agent开放内部spike。完整G/E业务、RDFS/SHACL/执行器、容量Q5、签名与干净设备发布仍未验收。I01闭环完成，不启动I02。

@@ -1,7 +1,7 @@
 # I02 / C1 状态
 
 - 会话：01a15677-7ea3-7da1-b77b-c253d5815815；唯一功能：显式 CSP 与窗口生命周期。
-- 当前阶段：Round3 同版双审实际通过，原报告勘误及最终独立核验完成，流程证据提交/推送中；PR#3尚未合并，新版真实CI尚待。用户最新允许续接原审查应用，双方已收到禁止新增本机测试窗口的约束。最新详情见本文末。
+- 当前阶段：I02/C1已完成。PR3正常合并远端develop（c2f9b03），PR及合并后develop push CI均三项全绿，远端包含/树一致性与16冻结/64保护最终核验通过。完整验收回执见completion.json及本文末。
 - 分支：feature/I02-csp-window-lifecycle；base：1b6df7a220fc9a67d7046133a340085f03f0a96c；Round2 head见下方实际冻结记录。
 - 需求：../../iterations/I01/inputs/goal-objective.md 第四节完整提示词，scope.md I02，m0-review-and-update-plan-2026-10-19.md C1；PRD V0.6 8.7/10.3/10.4/12.5。
 - 已核验 origin 与 develop；已安全快进本地 develop 后新建分支。唯一冲突 I01/status.md 按 before-I02 备份恢复，64 项哈希全部一致。
@@ -158,3 +158,24 @@
 - 当前无受审代码变更；仅准备提交本轮流程证据。须最终核对16冻结/64保护/报告hash/归档/远端base，再正常push产生新CI；不沿用旧失败run，不提前merge。
 
 - 已精确提交50个本任务流程文件，未混入64保护项、AGENTS或其他会话内容。暂存后核验脚本曾误用绝对路径读取Git blob而中断，流程提交当时已产生但未push；现已用正确相对路径复核提交树19份运行归档及两份最终报告SHA均匹配，candidate后50个改动路径全部限于docs/reviews/I02。git diff --check的4处告警仅为原始unified diff空白上下文标记，按原文保留，无受审源码变更。
+
+## Round3 已正常推送，真实CI执行中
+
+- 流程head e6ed8101cb79833e267403880efe0c67156c5201已正常push，PR#3正文已替换为当前完整实现/验证/双审/证据边界；09a2e66后仍仅50个本任务流程文件。未强推、未修改受审内容。
+- 新CI run39364497557（同head）：Desktop (macos-latest) (118438083887) / Quality (118438084040) / Desktop (windows-latest) (118438084154)目前均真实执行中。最终以current-pr-ci.json实时读回为准；没有把旧run失败或排队状态记通过。
+- 必须该head全部实际成功并再次核对远端develop基线后才正常merge，随后核验merge SHA/parents与远端包含。
+
+## 已正常合并并核验远端
+
+- PR#3实际MERGED，merge SHA c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3；父提交严格为原base1b6df7a与已全绿的feature head e6ed810。合并树与受审CI的feature树完全一致，远端develop目前正指向该merge，09a2e66/e6ed810均为其祖先。
+- 合并前run39364497557三项实际全部成功；正常gh pr merge --merge --match-head-commit完成，无admin/bypass。16冻结与64保护合并后再次0差异。证据见round-3/pre-merge-verification.json、post-merge-verification.json。
+- develop自动push CI39364825646正在执行；同merge还因已有develop对其他目标的PR自动触发另一个pull_request CI39364830503，不改动/合并该其他PR、不触碰main。当前仅观察本次develop push CI，未手动重复派发。
+
+## I02/C1 最终闭环
+
+- 实现：开发/生产CSP同源，生产资源前meta与开发nonce header分离；统一窗口安全和IPC来源校验；真实崩溃/无响应后仅显式恢复，新窗手动health，不重放写入。
+- 验证：本轮完整check 15 TS/198 Python，开发1/1、构建2/2、真实macOS arm64 packaged 2/2；HMR与真实native sheet按同一产品源码的历史证据关联，不冒称本轮新拍。失焦失败与未归因事件保留。
+- 同版双审：GLM-5.3/最高与M3.1-Flash/xhigh均实际结束并Pass，无阻断；完整报告、逐项处理及原稿勘误链已提交。执行政策已实际送达，两审查者均停止新增本机窗口测试。
+- 合并前CI：[39364497557](https://github.com/NOmoreJoke/OntoLearn-Studio/actions/runs/39364497557)三项成功；合并后develop push CI：[39364825646](https://github.com/NOmoreJoke/OntoLearn-Studio/actions/runs/39364825646)三项成功。PR#3实际MERGED，merge `c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3`，远端develop指向该提交，原candidate与已全绿feature head均被包含。
+- 最终16冻结/64保护哈希与报告哈希均未改变。合并树等同通过CI的feature树；未admin/bypass，未强推，未实施其他迭代，未改总控state或混入AGENTS/其他会话资料。
+- completion.json按原目标逐项审计；post-merge/current-CI等最终回执保存在本地，不为追加回执再次推送或触发一轮无变化CI。未签名/安装器/干净设备/正式发布仍未验证；当前正式能力仅health，I04任务重连后续联验。

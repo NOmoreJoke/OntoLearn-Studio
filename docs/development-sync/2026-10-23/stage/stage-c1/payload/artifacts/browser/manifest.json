@@ -1,0 +1,251 @@
+{
+  "version": "2026-10-22.stage.1",
+  "purpose": "现有真实组件的离线交互验收，未连接业务服务，待指定双审",
+  "sources": [
+    {
+      "worktree": "T02-ontology",
+      "commit": "d597b3c00980652042163d250c875d660d4d371e",
+      "path": "apps/desktop/src/renderer/src/ontology/OntologyPage.tsx",
+      "sha256": "127e0f5b746f7c7140f4e92b4d423b920ee9422df3cc87f8945ad799a1626ef1",
+      "bytes": 23671
+    },
+    {
+      "worktree": "T02-ontology",
+      "commit": "d597b3c00980652042163d250c875d660d4d371e",
+      "path": "apps/desktop/src/renderer/src/ontology/ontology.css",
+      "sha256": "000a16875e2155c0ec7bd0b704dde4103af4754e41550bf88c4756a27c366a62",
+      "bytes": 2899
+    },
+    {
+      "worktree": "T02-ontology",
+      "commit": "d597b3c00980652042163d250c875d660d4d371e",
+      "path": "apps/desktop/src/renderer/src/ontology/view-model.ts",
+      "sha256": "5a3c6c3bf95bc2cc6219f7cf24e5d337c8381ae6fc392b460895b002e0c2e405",
+      "bytes": 3945
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "apps/desktop/src/renderer/src/query/QueryPage.tsx",
+      "sha256": "984eeeb985a6d47a392b474769664de5c3b8d2383303d24160f5381d5b1f930a",
+      "bytes": 26550
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "apps/desktop/src/renderer/src/query/draft.ts",
+      "sha256": "c4289a019ff4ee2f1d5bfb69c1d285c6a25ddf8f0223aa148e301f6f1d1dbdf7",
+      "bytes": 5394
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "apps/desktop/src/renderer/src/query/query.css",
+      "sha256": "29c062a96247082058c20cb4c1667dc5f552f92fb5ec28f425943e465c1c6b03",
+      "bytes": 2104
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "apps/desktop/src/renderer/src/query/reader.ts",
+      "sha256": "4223086b299695a22b5b978ff1475634910d840df7b0304183c9db2e725e15b6",
+      "bytes": 14095
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "apps/desktop/src/renderer/src/query/results.ts",
+      "sha256": "18aba90ff6867c6e83ae8b04222225180454b519065f8e9b4992270f14adc21d",
+      "bytes": 4100
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "apps/desktop/src/renderer/src/task-presentation.ts",
+      "sha256": "5ddcd33a9e00e367597d20d8d2449062df577a1f3cdb53dfae2318a173858751",
+      "bytes": 8446
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/src/dependencies-v2.ts",
+      "sha256": "7080ac623b1a19b9e4958dd47d071ffd3f7df38c8a85a0ce6166aea43067c17a",
+      "bytes": 2205
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/src/design-v2.ts",
+      "sha256": "0e9adaaa1d5f2b55e9ecf793cc9e3cb9a39ceb3dd91b599d4b58741c7ca17ce1",
+      "bytes": 153
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/src/index.ts",
+      "sha256": "e105ebcf8263e0b513992ff80cb8ea0396f485b2156f5360fb63274162b6066c",
+      "bytes": 4881
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/src/states-v2.ts",
+      "sha256": "cb82e8e5a047c875c93c4807b8a5f32f4174584d6d2e7b06b17d0f9f0e02b601",
+      "bytes": 578
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/src/v2.ts",
+      "sha256": "eebc99f3502f44b1e37fa3e7b7da88122a0469a86dd668a6c864a4cc83db29e2",
+      "bytes": 20514
+    },
+    {
+      "worktree": "T06-behavior-ui",
+      "commit": "3b3af941c73b7a5d416fda50ec6fb8102992551f",
+      "path": "apps/desktop/src/renderer/src/behavior/BehaviorWorkspace.tsx",
+      "sha256": "0e7012e1a5d2791fda1aafd5eea0a8248d78d7329e8513ea7ad2062ae39f671b",
+      "bytes": 30196
+    },
+    {
+      "worktree": "T06-behavior-ui",
+      "commit": "3b3af941c73b7a5d416fda50ec6fb8102992551f",
+      "path": "apps/desktop/src/renderer/src/behavior/behavior.css",
+      "sha256": "869ebea1be9dcbfb839814c5c610bd7bc698420edc5f4c05e315ad37347c1465",
+      "bytes": 6224
+    },
+    {
+      "worktree": "T06-behavior-ui",
+      "commit": "3b3af941c73b7a5d416fda50ec6fb8102992551f",
+      "path": "apps/desktop/src/renderer/src/behavior/controller.ts",
+      "sha256": "36d59ea11907fe44e73bb84849b20839944a02b8d538f602dc88ef82657217d3",
+      "bytes": 8218
+    },
+    {
+      "worktree": "T06-behavior-ui",
+      "commit": "3b3af941c73b7a5d416fda50ec6fb8102992551f",
+      "path": "apps/desktop/src/renderer/src/behavior/model.ts",
+      "sha256": "b246491a46387f4b33079266c10d2a41f36648875e240330191ff3ba8a09f90f",
+      "bytes": 12622
+    },
+    {
+      "worktree": "T06-behavior-ui",
+      "commit": "3b3af941c73b7a5d416fda50ec6fb8102992551f",
+      "path": "apps/desktop/src/renderer/src/behavior/presentation.ts",
+      "sha256": "5966010c9a052cc2bbd7524e759fe06d9806c698259e84039aae54fcb28fa1d2",
+      "bytes": 2091
+    },
+    {
+      "worktree": "T09-learning-baselines",
+      "commit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "path": "apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+      "sha256": "e11e970092b2412be8e5ced8bf77aa4f7a7311a7d1197aa6298da4a5f7cdfd40",
+      "bytes": 18386
+    },
+    {
+      "worktree": "T09-learning-baselines",
+      "commit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "path": "apps/desktop/src/renderer/src/learning/content.ts",
+      "sha256": "83bbf24aa27e14d721731fc108de2179be5d220f13139101dafb0ede3f7ba70a",
+      "bytes": 398
+    },
+    {
+      "worktree": "T09-learning-baselines",
+      "commit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "path": "apps/desktop/src/renderer/src/learning/learning.css",
+      "sha256": "34c48260f9819ae82eb8b30243c32fec5997065d1740443142d4acadc631a83c",
+      "bytes": 10765
+    },
+    {
+      "worktree": "T09-learning-baselines",
+      "commit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "path": "apps/desktop/src/renderer/src/learning/presentation.ts",
+      "sha256": "5ff4fa501a710c4d1384ad7917feca3273bcd57b7fb783af4272894077719c3b",
+      "bytes": 6215
+    },
+    {
+      "worktree": "T09-learning-baselines",
+      "commit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "path": "apps/desktop/src/renderer/src/learning/types.ts",
+      "sha256": "49526151f9a29fef3f440e55c45a080667fbf9ec3b5fbf00afa7c3fa53ffb373",
+      "bytes": 2407
+    },
+    {
+      "worktree": "T09-learning-baselines",
+      "commit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "path": "content/learning/course.json",
+      "sha256": "c1f3cf080d6192ad528d4fa9318d18fd7baeef3beb6fd9a217dfe0080b2a439b",
+      "bytes": 15178
+    },
+    {
+      "worktree": "T09-learning-baselines",
+      "commit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "path": "content/learning/glossary.json",
+      "sha256": "a1a588683e11ad84940e2bb9a558f8c6684c712ada44d160ecb541df2fd0d0c1",
+      "bytes": 5173
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/v2/binding-regressions.json",
+      "sha256": "9601d6d0a31e3e71078ac2562c6b8501c1292bc2be71de742e40c2fc54512a24",
+      "bytes": 123964
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/v2/dependencies.json",
+      "sha256": "dee118b368915df4172a77b875d31ce29ad8374cb5fce3915678f7f950cedad4",
+      "bytes": 1438
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/v2/errors.json",
+      "sha256": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+      "bytes": 14400
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/v2/fixtures.json",
+      "sha256": "32031804abf3283e87f070ffbfc3f95cf627f6b71e7bc49711faaff52ec31ad6",
+      "bytes": 472098
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/v2/frame-fixtures.json",
+      "sha256": "8e9a142ff04e908cc286c15702cd18b6c2ce9453490585d0855c3f62995dd2e5",
+      "bytes": 17537
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/v2/registry.json",
+      "sha256": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+      "bytes": 13039
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/v2/schema.json",
+      "sha256": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+      "bytes": 122889
+    },
+    {
+      "worktree": "T04-query",
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "path": "packages/contracts/v2/states.json",
+      "sha256": "ab54cac024f0f6b31a8a229198ae1c4ab13f63ff88184cdcef78113b9e893416",
+      "bytes": 716
+    }
+  ],
+  "build": {
+    "entrySha256": "829c23ae37855f1a35ba2acb340ac2ac7aa26ef1a0d380dd71e0b93fd49a5226",
+    "cssSha256": "d2e2235911b704939f64316f04519bf8b3bcb220811b2a84eedb003a2ea54864",
+    "indexSha256": "adff7f408e1844392d550a7e0a3bdacb5e1c1cd167b24d3b236a517456033a81",
+    "vite": "8.3.4",
+    "react": "19.3.1"
+  }
+}

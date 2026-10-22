@@ -1,0 +1,18 @@
+### Result
+{"passed":true,"viewport":{"width":390,"height":1000},"boxes":[{"selector":".stage-surface","left":14,"right":376,"width":362,"scrollWidth":360,"clientWidth":360},{"selector":".learning-grid","left":41,"right":349,"width":308,"scrollWidth":308,"clientWidth":308},{"selector":".learning-path","left":41,"right":349,"width":308,"scrollWidth":308,"clientWidth":308},{"selector":".learning-task","left":41,"right":349,"width":308,"scrollWidth":306,"clientWidth":306},{"selector":".learning-reference","left":41,"right":349,"width":308,"scrollWidth":308,"clientWidth":308},{"selector":"#learning-term","left":62,"right":328,"width":266,"scrollWidth":264,"clientWidth":264}],"glossary":{"x":62,"y":308.53125,"width":266,"height":40},"taskSwitch":true,"glossarySwitch":true,"technicalDefinitionExpanded":true}
+### Ran Playwright code
+```js
+await (async page=>{
+await page.getByRole('button',{name:'离线学习',exact:true}).click();
+await page.setViewportSize({width:390,height:1000});
+const boxes=await page.evaluate(()=>{const selectors=['.stage-surface','.learning-grid','.learning-path','.learning-task','.learning-reference','#learning-term'];return selectors.map(s=>{const el=document.querySelector(s);if(!el)return {selector:s,missing:true};const r=el.getBoundingClientRect();return {selector:s,left:r.left,right:r.right,width:r.width,scrollWidth:el.scrollWidth,clientWidth:el.clientWidth}})});
+for(const box of boxes){if(box.missing)continue;if(box.left<0||box.right>390)throw Error('clipped '+JSON.stringify(box));}
+const tasks=page.getByRole('complementary',{name:'学习路径',exact:true}).getByRole('button');
+await tasks.nth(1).click();
+await page.getByRole('combobox',{name:'选择一个术语',exact:true}).selectOption({index:1});
+await page.getByText('查看技术定义',{exact:true}).click();
+const controls=await page.getByRole('combobox',{name:'选择一个术语',exact:true}).boundingBox();if(!controls||controls.x<0||controls.x+controls.width>390)throw Error('glossary unreachable');
+await page.screenshot({path:'output/playwright/390-learning-mobile-fix.png',fullPage:true});
+return {passed:true,viewport:{width:390,height:1000},boxes,glossary:controls,taskSwitch:true,glossarySwitch:true,technicalDefinitionExpanded:true};
+})(page);
+```

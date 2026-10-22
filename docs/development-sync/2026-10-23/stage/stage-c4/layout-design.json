@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "status": "TOOLS_PREPARATION_ONLY_NO_MOUNT_OR_PRODUCT_EXECUTION",
+  "sourceRound": "C3",
+  "parties": {
+    "zcode": {
+      "c3Source": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_stage_review_c3/zcode",
+      "c3Manifest": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_stage_review_c3/zcode/input-manifest.json",
+      "preparedVolumeTree": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/prepared/zcode/volume-root",
+      "volumeRoot": "/Volumes/OntoLearn-Stage-C4-zcode-20261023",
+      "inputRoot": "/Volumes/OntoLearn-Stage-C4-zcode-20261023/input",
+      "taskRoot": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/runtime/zcode",
+      "imagePath": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/images/stage-c4-zcode.dmg",
+      "externalRootReceipt": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/owner-evidence/zcode/root-receipt.json"
+    },
+    "minimax": {
+      "c3Source": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_stage_review_c3/minimax",
+      "c3Manifest": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_stage_review_c3/minimax/input-manifest.json",
+      "preparedVolumeTree": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/prepared/minimax/volume-root",
+      "volumeRoot": "/Volumes/OntoLearn-Stage-C4-minimax-20261023",
+      "inputRoot": "/Volumes/OntoLearn-Stage-C4-minimax-20261023/input",
+      "taskRoot": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/runtime/minimax",
+      "imagePath": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/images/stage-c4-minimax.dmg",
+      "externalRootReceipt": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/owner-evidence/minimax/root-receipt.json"
+    }
+  },
+  "immutableTrustChain": [
+    "c3-input/* (exact716 original declared files, no live walk)",
+    "AGENTS.md",
+    "prompt.md",
+    "review-scope.md",
+    "check-inputs.py",
+    "run-tool.py",
+    "tooling/verify-browser-c4.py",
+    "tooling/owned-browser-runner.mjs",
+    "coverage-required.json",
+    "config/*",
+    "input-manifest.json externally pinned, excludes only its own self-reference"
+  ],
+  "mutableRoots": [
+    "runtime/{party}/owner-evidence",
+    "runtime/{party}/environment",
+    "runtime/{party}/runs",
+    "runtime/{party}/reports",
+    "application metadata observed only as allowed paths/stat; not input authority"
+  ],
+  "mirrorFiles": [
+    "AGENTS.md",
+    "prompt.md",
+    "review-scope.md"
+  ],
+  "noFilesystemIgnore": true,
+  "exactSetScope": "Complete input subtree including all original scope and full new authority chain. Volume infrastructure namespace outside /input is separately inventoried; never ignored inside /input.",
+  "imagePinCycle": "External owner root receipt pins final image, input-manifest, checker/helper/runner and mount-source observation; immutable prompt does not embed its own enclosing final image or manifest hash. Receipt hash supplied in separate actual launch.",
+  "commands": [
+    "browserBuild",
+    "browserVerify",
+    "nativeCLI"
+  ],
+  "limits": {
+    "perSideRunsBytes": 67108864,
+    "perSideCapturedLogBytes": 4194304,
+    "browserSeconds": 180,
+    "nativeSeconds": 150,
+    "nativeBuildAllowed": false
+  },
+  "spacePlan": {
+    "bothPreparedInputTreesMaxBytes": 67108864,
+    "bothReadOnlyImagesMaxBytes": 268435456,
+    "imageCreationScratchMaxBytes": 134217728,
+    "canaryImageMaxBytes": 16777216,
+    "ownRuntimeRunsBothMaxBytes": 134217728,
+    "ownAdapterRefusalReceiptsBothMaxBytes": 1048576,
+    "ownerEvidenceAndMetadataObservedSeparately": true,
+    "sealedSharedDependencyBytesReferencedNotCopied": 63472878,
+    "notAnOSDiskQuota": true
+  },
+  "currentUnproven": [
+    "actual image/mount RO route",
+    "official Z Read route",
+    "Bash/helper route",
+    "MiniMax route",
+    "new full candidate reviews"
+  ],
+  "controllerScopeClarifications": {
+    "conditionReorder": "Not required by original scope, controller explicitly accepted 2026-10-23; remains unverified absent control, no product addition.",
+    "template": "Pinned actual entry/index already supply synthetic Alarm/severity/status vocabulary; verify actual existing generation, no injection."
+  }
+}

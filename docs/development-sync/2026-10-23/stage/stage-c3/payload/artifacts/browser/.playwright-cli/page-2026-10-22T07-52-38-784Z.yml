@@ -1,0 +1,176 @@
+- generic [ref=f3e3]:
+  - banner [ref=f3e4]:
+    - generic [ref=f3e5]:
+      - generic [ref=f3e6]: ONTOLEARN STUDIO · 2026.10.22
+      - heading "阶段验收工作台" [level=1] [ref=f3e7]
+      - paragraph [ref=f3e8]: 现有真实组件 · 离线交互 · 合成样例 · 待指定双审
+  - complementary [ref=f3e9]:
+    - strong [ref=f3e10]: 本入口验收界面与本地编辑体验。
+    - text: 所有样例均为合成展示数据；没有正式项目、真实隔离副本、业务执行器或数据库写入。切换模块或重置会清空当前草稿；刷新 / 关闭会清空全部草稿与验收记录，请先下载记录。此处不连接模型，也不发送数据。
+  - navigation "阶段验收模块" [ref=f3e11]:
+    - button "本体构建" [pressed] [ref=f3e12] [cursor=pointer]
+    - button "本体查询" [ref=f3e13] [cursor=pointer]
+    - button "行为定义" [ref=f3e14] [cursor=pointer]
+    - button "离线学习" [ref=f3e15] [cursor=pointer]
+  - generic [ref=f3e16]:
+    - generic [ref=f3e17]:
+      - heading "本体构建 · 本轮检查" [level=2] [ref=f3e18]
+      - paragraph [ref=f3e19]: 现在可做：浏览合成对象、查找概念、切换表格 / 类树 / 局部关系图、编辑内存表单。
+      - paragraph [ref=f3e20]: 尚未接通：预览服务、导入、真实保存、删除影响分析与事务提交未接通。
+    - list [ref=f3e21]:
+      - listitem [ref=f3e22]:
+        - text: 在“查找概念”输入“传感器”，应筛选出相关对象。
+        - combobox "本体构建步骤1结果" [ref=f3e23]:
+          - option "未验" [selected]
+          - option "符合预期"
+          - option "发现问题"
+          - option "不适用"
+      - listitem [ref=f3e24]:
+        - text: 清空搜索，点击“查看 Sensor”，再切换“类树”和“局部关系图”。
+        - combobox "本体构建步骤2结果" [ref=f3e25]:
+          - option "未验" [selected]
+          - option "符合预期"
+          - option "发现问题"
+          - option "不适用"
+      - listitem [ref=f3e26]:
+        - text: 点击“新建概念”并编辑表单；预览 / 保存能力保持不可用。
+        - combobox "本体构建步骤3结果" [ref=f3e27]:
+          - option "未验" [selected]
+          - option "符合预期"
+          - option "发现问题"
+          - option "不适用"
+  - generic [ref=f3e28]:
+    - text: 来源：固定 Git 组件快照；完整版本与哈希见 manifest.json。切换模块会清空该页内存草稿。
+    - button "重置当前页草稿" [ref=f3e29] [cursor=pointer]
+  - main [ref=f3e30]:
+    - region "本体构建" [ref=f3e31]:
+      - generic [ref=f3e32]:
+        - generic [ref=f3e33]:
+          - paragraph [ref=f3e34]: 定义业务概念
+          - heading "本体构建" [level=1] [ref=f3e35]
+          - paragraph [ref=f3e36]: 项目版本 1 · 当前断言与结构定义
+        - button "新建概念" [ref=f3e37] [cursor=pointer]
+      - paragraph [ref=f3e38]: 结构关系描述适用类型，不表示每个对象都存在该关系，也不等同必填校验。
+      - status [ref=f3e39]: 编辑预览服务尚未接入。可浏览已提供的对象；正式提交须经项目事务确认。
+      - generic [ref=f3e40]:
+        - region "对象浏览" [ref=f3e41]:
+          - navigation "本体视图" [ref=f3e42]:
+            - button "表格" [pressed] [ref=f3e43] [cursor=pointer]
+            - button "类树" [ref=f3e44] [cursor=pointer]
+            - button "局部关系图" [ref=f3e45] [cursor=pointer]
+          - generic [ref=f3e46]:
+            - text: 查找概念
+            - textbox "查找概念" [ref=f3e47]
+          - table [ref=f3e48]:
+            - caption [ref=f3e49]: 对象表 · 共 6 项 · 每页 20 项
+            - rowgroup [ref=f3e50]:
+              - row [ref=f3e51]:
+                - columnheader "名称 / 英文标识" [ref=f3e52]
+                - columnheader "类型" [ref=f3e53]
+                - columnheader "选择" [ref=f3e54]
+            - rowgroup [ref=f3e55]:
+              - row [ref=f3e56]:
+                - cell "告警 Alarm" [ref=f3e57]:
+                  - text: 告警
+                  - generic [ref=f3e58]: Alarm
+                - cell "类" [ref=f3e59]
+                - cell [ref=f3e60]:
+                  - button "查看 Alarm" [ref=f3e61] [cursor=pointer]
+              - row [ref=f3e62]:
+                - cell "设备 Device" [ref=f3e63]:
+                  - text: 设备
+                  - generic [ref=f3e64]: Device
+                - cell "类" [ref=f3e65]
+                - cell [ref=f3e66]:
+                  - button "查看 Device" [ref=f3e67] [cursor=pointer]
+              - row [ref=f3e68]:
+                - cell "传感器 Sensor" [ref=f3e69]:
+                  - text: 传感器
+                  - generic [ref=f3e70]: Sensor
+                - cell "类" [ref=f3e71]
+                - cell [ref=f3e72]:
+                  - button "查看 Sensor" [ref=f3e73] [cursor=pointer]
+              - row [ref=f3e74]:
+                - cell "具有关联告警 hasAlarm" [ref=f3e75]:
+                  - text: 具有关联告警
+                  - generic [ref=f3e76]: hasAlarm
+                - cell "对象属性" [ref=f3e77]
+                - cell [ref=f3e78]:
+                  - button "查看 hasAlarm" [ref=f3e79] [cursor=pointer]
+              - row [ref=f3e80]:
+                - cell "温度传感器01 sensor01" [ref=f3e81]:
+                  - text: 温度传感器01
+                  - generic [ref=f3e82]: sensor01
+                - cell "个体" [ref=f3e83]
+                - cell [ref=f3e84]:
+                  - button "查看 sensor01" [ref=f3e85] [cursor=pointer]
+              - row [ref=f3e86]:
+                - cell "温度 temperature" [ref=f3e87]:
+                  - text: 温度
+                  - generic [ref=f3e88]: temperature
+                - cell "数据属性" [ref=f3e89]
+                - cell [ref=f3e90]:
+                  - button "查看 temperature" [ref=f3e91] [cursor=pointer]
+          - button "上一页" [disabled] [ref=f3e92]
+          - generic [ref=f3e93]: 第 1 页
+          - button "下一页" [disabled] [ref=f3e94]
+        - region "本体编辑表单" [ref=f3e95]:
+          - heading "新建定义" [level=2] [ref=f3e96]
+          - generic [ref=f3e97]:
+            - generic [ref=f3e98]:
+              - text: 类型
+              - combobox "类型" [ref=f3e99]:
+                - option "类" [selected]
+                - option "对象属性"
+                - option "数据属性"
+                - option "个体"
+            - generic [ref=f3e100]:
+              - text: 类声明
+              - combobox "类声明" [ref=f3e101]:
+                - option "rdfs:Class" [selected]
+                - option "owl:Class"
+            - generic [ref=f3e102]:
+              - text: 稳定 IRI
+              - textbox "稳定 IRI" [ref=f3e103]
+            - generic [ref=f3e104]:
+              - text: 英文标识
+              - textbox "英文标识" [ref=f3e105]
+            - group "名称（保留所有语言）" [ref=f3e106]:
+              - button "添加名称" [ref=f3e108] [cursor=pointer]
+            - group "定义（保留所有语言）" [ref=f3e109]:
+              - button "添加定义" [ref=f3e111] [cursor=pointer]
+            - generic [ref=f3e112]:
+              - text: 同义词（每行一项）
+              - textbox "同义词（每行一项）" [ref=f3e113]
+            - generic [ref=f3e114]:
+              - text: 示例（每行一项）
+              - textbox "示例（每行一项）" [ref=f3e115]
+            - generic [ref=f3e116]:
+              - text: 上级类 IRI（每行一项）
+              - textbox "上级类 IRI（每行一项）" [ref=f3e117]
+            - button "预览定义修改" [disabled] [ref=f3e118]
+          - heading "创建实例事实" [level=2] [ref=f3e119]
+          - button "清空事实表单并读取当前版本" [ref=f3e120] [cursor=pointer]
+          - paragraph [ref=f3e121]: 选择具体个体，记录实际发生的关系或属性值。RDF 对象使用 <IRI> 或带引号的字面量。
+          - generic [ref=f3e122]:
+            - generic [ref=f3e123]:
+              - text: 主体个体 IRI
+              - textbox "主体个体 IRI" [ref=f3e124]
+            - generic [ref=f3e125]:
+              - text: 属性 IRI
+              - textbox "属性 IRI" [ref=f3e126]
+            - generic [ref=f3e127]:
+              - text: RDF 对象
+              - textbox "RDF 对象" [ref=f3e128]
+            - button "预览新增事实" [disabled] [ref=f3e129]
+            - button "预览移除事实" [disabled] [ref=f3e130]
+  - generic [ref=f3e131]:
+    - heading "记录本次验收" [level=2] [ref=f3e132]
+    - generic [ref=f3e133]:
+      - text: 问题、期望与操作步骤
+      - textbox "问题、期望与操作步骤" [ref=f3e134]:
+        - /placeholder: 例如：查询 → 选择传感器 → 生成草稿；实际……，期望……
+    - generic [ref=f3e135]:
+      - button "下载验收记录" [ref=f3e136] [cursor=pointer]
+      - button "下载合成样例" [ref=f3e137] [cursor=pointer]
+  - contentinfo [ref=f3e138]: 数据映射、质量与推理、沙盘、Agent、迁移和完整项目生命周期未纳入此界面入口。正式应用仍需真实接线、同候选双审与整体验收。

@@ -1,0 +1,208 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: ONTOLEARN STUDIO · 2026.10.22
+      - heading "阶段验收工作台" [level=1] [ref=e7]
+      - paragraph [ref=e8]: 现有真实组件 · 离线交互 · 合成样例 · 待指定双审
+    - generic [ref=e9]: STAGE 01
+  - complementary [ref=e10]:
+    - strong [ref=e11]: 本入口验收界面与本地编辑体验。
+    - text: 所有样例均为合成展示数据；没有正式项目、真实隔离副本、业务执行器或数据库写入。切换模块或重置会清空当前草稿；刷新 / 关闭会清空全部草稿与验收记录，请先下载记录。此处不连接模型，也不发送数据。
+  - navigation "阶段验收模块" [ref=e12]:
+    - button "本体构建" [ref=e13] [cursor=pointer]
+    - button "本体查询" [ref=e14] [cursor=pointer]
+    - button "行为定义" [ref=e15] [cursor=pointer]
+    - button "离线学习" [pressed] [ref=e16] [cursor=pointer]
+  - generic [ref=e17]:
+    - generic [ref=e18]:
+      - heading "离线学习 · 本轮检查" [level=2] [ref=e347]
+      - paragraph [ref=e20]: 现在可做：阅读已开发课程、切换学习任务、查阅术语与技术定义。
+      - paragraph [ref=e21]: 尚未接通：没有真实任务上下文；提示留痕、任务检查、成果导出和学习进度持久化未接通。
+    - list [ref=e22]:
+      - listitem [ref=e348]:
+        - text: 在左侧切换两个任务，任务目标与检查要求应改变。
+        - combobox "离线学习步骤1结果" [ref=e349]:
+          - option "未验" [selected]
+          - option "符合预期"
+          - option "发现问题"
+          - option "不适用"
+      - listitem [ref=e350]:
+        - text: 切换术语并展开技术定义。
+        - combobox "离线学习步骤2结果" [ref=e351]:
+          - option "未验" [selected]
+          - option "符合预期"
+          - option "发现问题"
+          - option "不适用"
+      - listitem [ref=e352]:
+        - text: 检查进度为0、任务无已通过标记；不能伪造学习完成。
+        - combobox "离线学习步骤3结果" [ref=e353]:
+          - option "未验" [selected]
+          - option "符合预期"
+          - option "发现问题"
+          - option "不适用"
+  - generic [ref=e29]:
+    - text: 来源：固定 Git 组件快照；完整版本与哈希见 manifest.json。切换模块会清空该页内存草稿。
+    - button "重置当前页草稿" [ref=e30] [cursor=pointer]
+  - main [ref=e354]:
+    - generic [ref=e355]:
+      - generic [ref=e356]:
+        - generic [ref=e357]: 学习 / 设备运维
+        - generic [ref=e358]: 离线课程 · 无需模型 API
+      - generic [ref=e359]:
+        - generic [ref=e360]:
+          - paragraph [ref=e361]: 从业务问题开始
+          - heading "一步一步，把知识用起来。" [level=1] [ref=e362]
+          - paragraph [ref=e363]: 哪些设备存在未闭环高危告警，怎样安排巡检并比较处理能力？
+        - generic "当前输入学习进度" [ref=e364]:
+          - strong [ref=e365]:
+            - text: "0"
+            - generic [ref=e366]: / 9
+          - generic [ref=e367]: 任务经实际检查完成
+          - generic [ref=e368]: 独立迁移成功 0 / 2
+      - generic [ref=e369]:
+        - complementary "学习路径" [ref=e370]:
+          - heading "你的学习路径" [level=2] [ref=e371]
+          - list [ref=e372]:
+            - listitem [ref=e373]:
+              - button "01 本体构建 尚未检查" [ref=e374] [cursor=pointer]:
+                - generic [ref=e375]: "01"
+                - generic [ref=e376]:
+                  - generic [ref=e377]: 本体构建
+                  - generic [ref=e378]: 尚未检查
+            - listitem [ref=e379]:
+              - button "02 数据映射 尚未检查" [ref=e380] [cursor=pointer]:
+                - generic [ref=e381]: "02"
+                - generic [ref=e382]:
+                  - generic [ref=e383]: 数据映射
+                  - generic [ref=e384]: 尚未检查
+            - listitem [ref=e385]:
+              - button "03 本体查询 尚未检查" [ref=e386] [cursor=pointer]:
+                - generic [ref=e387]: "03"
+                - generic [ref=e388]:
+                  - generic [ref=e389]: 本体查询
+                  - generic [ref=e390]: 尚未检查
+            - listitem [ref=e391]:
+              - button "04 质量与推理 尚未检查" [ref=e392] [cursor=pointer]:
+                - generic [ref=e393]: "04"
+                - generic [ref=e394]:
+                  - generic [ref=e395]: 质量与推理
+                  - generic [ref=e396]: 尚未检查
+            - listitem [ref=e397]:
+              - button "05 行为定义 尚未检查" [ref=e398] [cursor=pointer]:
+                - generic [ref=e399]: "05"
+                - generic [ref=e400]:
+                  - generic [ref=e401]: 行为定义
+                  - generic [ref=e402]: 尚未检查
+            - listitem [ref=e403]:
+              - button "06 沙盘预测 尚未检查" [ref=e404] [cursor=pointer]:
+                - generic [ref=e405]: "06"
+                - generic [ref=e406]:
+                  - generic [ref=e407]: 沙盘预测
+                  - generic [ref=e408]: 尚未检查
+            - listitem [ref=e409]:
+              - button "07 迁移任务 尚未检查" [ref=e410] [cursor=pointer]:
+                - generic [ref=e411]: "07"
+                - generic [ref=e412]:
+                  - generic [ref=e413]: 迁移任务
+                  - generic [ref=e414]: 尚未检查
+            - listitem [ref=e415]:
+              - button "08 迁移任务 尚未检查" [ref=e416] [cursor=pointer]:
+                - generic [ref=e417]: "08"
+                - generic [ref=e418]:
+                  - generic [ref=e419]: 迁移任务
+                  - generic [ref=e420]: 尚未检查
+            - listitem [ref=e421]:
+              - button "09 学习成果 尚未检查" [ref=e422] [cursor=pointer]:
+                - generic [ref=e423]: "09"
+                - generic [ref=e424]:
+                  - generic [ref=e425]: 学习成果
+                  - generic [ref=e426]: 尚未检查
+          - paragraph [ref=e427]: 提示随时可用。任务是否完成，以实际检查结果为准。
+        - region [ref=e428]:
+          - generic [ref=e429]:
+            - generic [ref=e430]: 任务 01 / 本体构建
+            - generic [ref=e431]: 尚未检查
+          - heading "把业务问题变成概念、属性、个体与关系。" [level=2] [ref=e432]
+          - paragraph [ref=e433]: 在设备运维案例中新增 Person 类和 assignedTo 对象属性；建立设备001与人员L01的关系，预览RDF后确认。
+          - paragraph [ref=e434]: 课程预览 · 提示可阅读，当前不会保存学习进度。
+          - button "检查我的操作" [active] [ref=e436] [cursor=pointer]
+          - region "离线分级提示" [ref=e437]:
+            - generic [ref=e438]:
+              - heading "需要一点帮助？" [level=3] [ref=e439]
+              - generic [ref=e440]: 从概念开始，也可直接查看完整示范
+            - generic [ref=e441]:
+              - button "01 概念提示" [ref=e442] [cursor=pointer]:
+                - generic [ref=e443]: "01"
+                - text: 概念提示
+              - button "02 操作提示" [ref=e444] [cursor=pointer]:
+                - generic [ref=e445]: "02"
+                - text: 操作提示
+              - button "03 部分示范" [ref=e446] [cursor=pointer]:
+                - generic [ref=e447]: "03"
+                - text: 部分示范
+              - button "04 完整示范" [ref=e448] [cursor=pointer]:
+                - generic [ref=e449]: "04"
+                - text: 完整示范
+            - paragraph [ref=e451]: 先试着完成操作，再选择你需要的提示层级。
+          - region "检查反馈" [ref=e452]:
+            - heading "检查反馈" [level=3] [ref=e453]
+            - status [ref=e479]: 此任务的检查暂不可用，可先查看离线提示。
+            - paragraph [ref=e454]: 完成操作后运行检查，反馈将来自实际结果。
+          - group [ref=e455]:
+            - generic "常见错误与完成条件" [ref=e456] [cursor=pointer]
+          - generic "相关知识点" [ref=e457]:
+            - generic [ref=e458]: 本体构建
+            - generic [ref=e459]: 断言与推导
+            - generic [ref=e460]: 当前版本
+          - button "下一步：数据映射 →" [ref=e462] [cursor=pointer]
+        - complementary "术语与学习说明" [ref=e463]:
+          - generic [ref=e464]:
+            - paragraph [ref=e465]: 随用随查
+            - heading "术语帮助" [level=2] [ref=e466]
+            - generic [ref=e467]: 选择一个术语
+            - combobox "选择一个术语" [ref=e468] [cursor=pointer]:
+              - option "本体" [selected]
+              - option "类"
+              - option "个体"
+              - option "属性"
+              - option "关系"
+              - option "RDF"
+              - option "OWL"
+              - option "SPARQL"
+              - option "SHACL"
+              - option "数据映射"
+              - option "推理"
+              - option "能力问题"
+              - option "断言事实"
+              - option "当前推导结果"
+              - option "行为"
+              - option "沙盘"
+              - option "快照"
+              - option "ChangeSet"
+              - option "已过期"
+              - option "Diff"
+              - option "开放世界假设"
+              - option "定义域"
+              - option "值域"
+            - heading "本体" [level=3] [ref=e469]
+            - paragraph [ref=e470]: 业务对象与关系的说明书。
+            - paragraph [ref=e471]:
+              - generic [ref=e472]: 在这个项目里
+              - text: 设备、告警及设备关联告警。
+            - group [ref=e473]:
+              - generic "查看技术定义" [ref=e474] [cursor=pointer]
+          - generic [ref=e475]:
+            - heading "完成，不等于独立掌握" [level=2] [ref=e476]
+            - paragraph [ref=e477]: 独立完成、部分提示、完整示范会分别记录。接受 Agent 完整修改后，操作可以完成，该次尝试不计独立迁移成功。
+            - paragraph [ref=e478]: 沙盘展示给定条件下的结果，不代表真实未来。
+  - generic [ref=e132]:
+    - heading "记录本次验收" [level=2] [ref=e133]
+    - generic [ref=e134]:
+      - text: 问题、期望与操作步骤
+      - textbox "问题、期望与操作步骤" [ref=e135]:
+        - /placeholder: 例如：查询 → 选择传感器 → 生成草稿；实际……，期望……
+        - text: 独审下载验证
+    - generic [ref=e136]:
+      - button "下载验收记录" [ref=e137] [cursor=pointer]
+      - button "下载合成样例" [ref=e138] [cursor=pointer]
+  - contentinfo [ref=e139]: 数据映射、质量与推理、沙盘、Agent、迁移和完整项目生命周期未纳入此界面入口。正式应用仍需真实接线、同候选双审与整体验收。

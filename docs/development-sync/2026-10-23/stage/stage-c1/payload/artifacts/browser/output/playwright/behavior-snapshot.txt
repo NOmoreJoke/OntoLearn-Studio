@@ -1,0 +1,168 @@
+### Page
+- Page URL: file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/outputs/20261022_stage_acceptance/browser/index.html
+- Page Title: OntoLearn Studio · 阶段验收
+### Snapshot
+```yaml
+- generic [ref=f1e3]:
+  - banner [ref=f1e4]:
+    - generic [ref=f1e5]:
+      - generic [ref=f1e6]: ONTOLEARN STUDIO · 2026.10.22
+      - heading "阶段验收工作台" [level=1] [ref=f1e7]
+      - paragraph [ref=f1e8]: 现有真实组件 · 离线交互 · 合成样例 · 待指定双审
+    - generic [ref=f1e9]: STAGE 01
+  - complementary [ref=f1e10]:
+    - strong [ref=f1e11]: 本入口验收界面与本地编辑体验。
+    - text: 所有样例均为合成展示数据；没有正式项目、真实隔离副本、业务执行器或数据库写入。退出 / 刷新 / 重置后草稿与验收勾选会丢失，请先下载记录。此处不连接模型，也不发送数据。
+  - navigation "阶段验收模块" [ref=f1e12]:
+    - button "本体构建" [ref=f1e13] [cursor=pointer]
+    - button "本体查询" [ref=f1e14] [cursor=pointer]
+    - button "行为定义" [pressed] [ref=f1e15] [cursor=pointer]
+    - button "离线学习" [ref=f1e16] [cursor=pointer]
+  - generic [ref=f1e17]:
+    - generic [ref=f1e18]:
+      - heading "行为定义 · 本轮检查" [level=2] [ref=f1e200]
+      - paragraph [ref=f1e20]: 现在可做：编辑当 / 如果 / 那么、添加与移除条件和安全动作，编辑事件输入。
+      - paragraph [ref=f1e21]: 尚未接通：未创建真实项目或隔离副本；未接入行为执行器、推理、提交、刷新和取消服务。
+    - list [ref=f1e22]:
+      - listitem [ref=f1e201]:
+        - text: 修改行为名称与触发事件类型。
+        - combobox "行为定义步骤1结果" [ref=f1e202]:
+          - option "未验" [selected]
+          - option "符合预期"
+          - option "发现问题"
+          - option "不适用"
+      - listitem [ref=f1e203]:
+        - text: 添加一条条件和一条动作，再移除，观察草稿变化。
+        - combobox "行为定义步骤2结果" [ref=f1e204]:
+          - option "未验" [selected]
+          - option "符合预期"
+          - option "发现问题"
+          - option "不适用"
+      - listitem [ref=f1e205]:
+        - text: 检查试跑入口禁用且没有结果；此处不验证算法、竞争或回滚。
+        - combobox "行为定义步骤3结果" [ref=f1e206]:
+          - option "未验" [selected]
+          - option "符合预期"
+          - option "发现问题"
+          - option "不适用"
+  - generic [ref=f1e29]:
+    - text: 来源：固定 Git 组件快照；完整版本与哈希见 manifest.json。切换模块会清空该页内存草稿。
+    - button "重置当前页草稿" [ref=f1e30] [cursor=pointer]
+  - main [ref=f1e207]:
+    - region [ref=f1e208]:
+      - generic [ref=f1e209]:
+        - generic [ref=f1e210]:
+          - paragraph [ref=f1e211]: 05 / 行为定义
+          - heading "把业务规则，写成可验证的行动。" [level=1] [ref=f1e212]
+          - paragraph [ref=f1e213]: 先描述「当、如果、那么」，再在隔离副本中核对每一步。
+        - generic [ref=f1e214]: 内部安全动作
+      - complementary "隔离范围" [ref=f1e215]:
+        - strong [ref=f1e216]: 仅测试副本 / 沙盘快照
+        - paragraph [ref=f1e217]: 正式项目数据不在执行范围内。失败或取消须由真实服务确认收尾。
+        - generic [ref=f1e218]:
+          - generic [ref=f1e219]:
+            - term [ref=f1e220]: 项目
+            - definition [ref=f1e221]: 合成展示 · 非真实项目
+          - generic [ref=f1e222]:
+            - term [ref=f1e223]: 输入版本
+            - definition [ref=f1e224]: preview-v1
+          - generic [ref=f1e225]:
+            - term [ref=f1e226]: 行为版本
+            - definition [ref=f1e227]: preview-v1
+          - generic [ref=f1e228]:
+            - term [ref=f1e229]: 隔离副本
+            - definition [ref=f1e230]: 未创建真实隔离副本 · 仅内存表单
+      - generic [ref=f1e231]:
+        - generic "行为草稿编辑" [ref=f1e232]:
+          - generic [ref=f1e233]:
+            - generic [ref=f1e234]:
+              - heading "行为草稿" [level=2] [ref=f1e235]
+              - generic [ref=f1e236]: 本地编辑 · 尚未保存
+            - generic [ref=f1e237]:
+              - generic [ref=f1e238]:
+                - generic [ref=f1e239]: 唯一行为 ID
+                - textbox "唯一行为 ID" [ref=f1e240]
+              - generic [ref=f1e241]:
+                - generic [ref=f1e242]: 行为名称
+                - textbox "行为名称" [ref=f1e243]
+              - generic [ref=f1e244]:
+                - generic [ref=f1e245]: 业务说明
+                - textbox "业务说明" [ref=f1e246]
+              - generic [ref=f1e247]:
+                - generic [ref=f1e248]: 优先级（高值先执行）
+                - spinbutton "优先级（高值先执行）" [ref=f1e249]: "0"
+              - generic [ref=f1e250]:
+                - generic [ref=f1e251]: 草稿版本
+                - spinbutton "草稿版本" [ref=f1e252]: "1"
+              - generic [ref=f1e253]:
+                - checkbox "启用此行为" [checked] [ref=f1e254]
+                - text: 启用此行为
+          - generic [ref=f1e255]:
+            - paragraph [ref=f1e256]: 当
+            - heading "发生什么事件？" [level=2] [ref=f1e257]
+            - generic [ref=f1e258]:
+              - generic [ref=f1e259]: 触发事件类型
+              - textbox "触发事件类型" [active] [ref=f1e260]: SyntheticTemperatureChanged
+          - generic [ref=f1e261]:
+            - paragraph [ref=f1e262]: 如果
+            - generic [ref=f1e263]:
+              - heading "满足这一组条件" [level=2] [ref=f1e264]
+              - generic [ref=f1e265]: 全部满足 · 仅一组
+            - paragraph [ref=f1e266]: 所有实例读取同一份行为前「断言＋推导」冻结快照。未知对象不会当作已验证。
+            - button "＋ 添加条件" [ref=f1e267] [cursor=pointer]
+          - generic [ref=f1e268]:
+            - paragraph [ref=f1e269]: 那么
+            - heading "依次执行安全动作" [level=2] [ref=f1e270]
+            - paragraph [ref=f1e271]: 仅创建个体、更新属性、添加关系、生成内部通知记录。没有邮件、消息或外部数据库操作。
+            - button "＋ 添加动作" [ref=f1e272] [cursor=pointer]
+            - generic [ref=f1e273]:
+              - generic [ref=f1e274]: 预期业务效果
+              - textbox "预期业务效果" [ref=f1e275]
+        - generic [ref=f1e276]:
+          - generic [ref=f1e277]:
+            - generic [ref=f1e278]:
+              - heading "样本事件" [level=2] [ref=f1e279]
+              - generic [ref=f1e280]: 按输入次序
+            - paragraph [ref=f1e281]: 输入项目内对象和事件载荷；此私有编辑器的载荷为 JSON 键值对象，不执行代码。重复运行原事件用于核对幂等，不自动换 ID。
+            - group "事件 1" [ref=f1e282]:
+              - generic [ref=f1e284]:
+                - generic [ref=f1e285]: 唯一事件 ID
+                - textbox "唯一事件 ID" [ref=f1e286]
+              - generic [ref=f1e287]:
+                - generic [ref=f1e288]: 事件类型
+                - textbox "事件类型" [ref=f1e289]
+              - generic [ref=f1e290]:
+                - generic [ref=f1e291]: 事件内容（JSON 对象）
+                - textbox "事件内容（JSON 对象）" [ref=f1e292]: "{}"
+              - generic [ref=f1e293]:
+                - paragraph [ref=f1e294]: 场景断言变更（按顺序应用）
+                - button "＋ 添加事实变更" [ref=f1e295] [cursor=pointer]
+              - generic [ref=f1e296]:
+                - button "事件上移" [disabled] [ref=f1e297]
+                - button "事件下移" [disabled] [ref=f1e298]
+                - button "移除事件 1" [ref=f1e299] [cursor=pointer]
+            - button "＋ 添加样本事件" [ref=f1e300] [cursor=pointer]
+            - generic [ref=f1e301]:
+              - button "检查本地结构" [ref=f1e302] [cursor=pointer]
+              - button "在隔离副本中测试" [disabled] [ref=f1e303]
+            - paragraph [ref=f1e304]: 隔离执行能力待接入。当前可编辑并检查本地结构，不能取得行为通过结论。
+            - status
+          - region "执行结果" [ref=f1e305]:
+            - generic [ref=f1e306]:
+              - heading "执行依据与轨迹" [level=2] [ref=f1e307]
+              - button "刷新此运行" [disabled] [ref=f1e308]
+            - paragraph [ref=f1e309]: 稳定顺序：优先级高→低，行为 ID 升序，事件输入序号升序，事件 ID 升序；实例内按动作序号执行。
+            - generic [ref=f1e310]:
+              - strong [ref=f1e311]: 尚无可核验的运行结果
+              - paragraph [ref=f1e312]: 真实服务返回后显示触发原因、动作顺序、差异和通知记录。
+  - generic [ref=f1e132]:
+    - heading "记录本次验收" [level=2] [ref=f1e133]
+    - generic [ref=f1e134]:
+      - text: 问题、期望与操作步骤
+      - textbox "问题、期望与操作步骤" [ref=f1e135]:
+        - /placeholder: 例如：查询 → 选择传感器 → 生成草稿；实际……，期望……
+    - generic [ref=f1e136]:
+      - button "下载验收记录" [ref=f1e137] [cursor=pointer]
+      - button "下载合成样例" [ref=f1e138] [cursor=pointer]
+  - contentinfo [ref=f1e139]: 数据映射、质量与推理、沙盘、Agent、迁移和完整项目生命周期未纳入此界面入口。正式应用仍需真实接线、同候选双审与整体验收。
+```

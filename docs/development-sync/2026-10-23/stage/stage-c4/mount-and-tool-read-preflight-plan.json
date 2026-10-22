@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "status": "PLAN_ONLY_NOT_EXECUTION_AUTHORIZATION",
+  "currentActionsPerformed": {
+    "imageCreated": false,
+    "mounted": false,
+    "officialReadPerformed": false,
+    "osCapabilityResearchPerformed": false
+  },
+  "ownershipPrefix": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/canary-preflight",
+  "canary": {
+    "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/canary-preflight/volume-source/input/canary.txt",
+    "mountedPath": "/Volumes/OntoLearn-Stage-C4-ReadCanary-20261023/input/canary.txt",
+    "expectedUTF8": "C4-RO-CANARY-20261023-v1\n",
+    "bytes": 25,
+    "sha256": "57def57de722fb2fcd572df4c1137e74cbe033e18d74fecc80e1a05982b985fa",
+    "productOrPrivateData": false
+  },
+  "mount": {
+    "imagePath": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/canary-preflight/stage-c4-read-canary.dmg",
+    "volumeRoot": "/Volumes/OntoLearn-Stage-C4-ReadCanary-20261023",
+    "inputRoot": "/Volumes/OntoLearn-Stage-C4-ReadCanary-20261023/input",
+    "format": "UDRO",
+    "shadowAllowed": false,
+    "overlayAllowed": false,
+    "readOnlyRequired": true,
+    "imageSHA256": "UNKNOWN_UNTIL_CREATED",
+    "device": "UNKNOWN_UNTIL_ACTUAL_ATTACH",
+    "mountDevIno": "UNKNOWN_UNTIL_ACTUAL_STAT"
+  },
+  "proposedSetupArgvNotExecutedOrOSVerified": [
+    [
+      "/usr/bin/hdiutil",
+      "create",
+      "-srcfolder",
+      "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/canary-preflight/volume-source",
+      "-volname",
+      "OntoLearn-Stage-C4-ReadCanary-20261023",
+      "-format",
+      "UDRO",
+      "-o",
+      "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/canary-preflight/stage-c4-read-canary.dmg"
+    ],
+    [
+      "/usr/bin/hdiutil",
+      "attach",
+      "-readonly",
+      "-nobrowse",
+      "-mountpoint",
+      "/Volumes/OntoLearn-Stage-C4-ReadCanary-20261023",
+      "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_stage_review_c4/canary-preflight/stage-c4-read-canary.dmg"
+    ]
+  ],
+  "ownerInfrastructureReceiptRequired": {
+    "image": "actual bytes and SHA256, independently externally pinned",
+    "mount": "actual attach device, source image, unique volume mountpoint, readonly flag, no shadow/overlay, current statvfs ST_RDONLY plus dev/ino",
+    "projection": "only exact own image/source/mount match from actual setup observations; no global log/config dumps",
+    "inputSet": "complete input/ subtree exact canary set, infrastructure volume namespace separate; no ignore inside input",
+    "beforeAfter": "same source image/canary known bytes and mount dev/ino/readonly; new own unknown metadata path/stat only, no unknown body read/hash"
+  },
+  "officialToolWindow": {
+    "owner": "current stage owner; controller sole GUI allocator",
+    "app": "ZCode",
+    "settings": "GLM-5.3/max and existing authorized task permission, no hook/security changes",
+    "taskPrompt": "Only make one explicit Read tool request for /Volumes/OntoLearn-Stage-C4-ReadCanary-20261023/input/canary.txt. Do not call Bash, another Read, task discovery or identity lookup. Do not access product or previous metadata. Report the public returned text and any error without guessing.",
+    "expectedExplicitToolRequest": {
+      "name": "Read",
+      "input": {
+        "file_path": "/Volumes/OntoLearn-Stage-C4-ReadCanary-20261023/input/canary.txt"
+      }
+    },
+    "capture": "Exact own actual session/turn, accepted prompt, tool call input and complete returned public canary/isError plus formal terminal, owner settings and mount before/after; never dump headers/system/thinking.",
+    "failureRule": "Any setup/Read error, extra explicit tool or wrong content/source is a preserved failure. Stop; no hook off, privilege widening, writable fallback, retries with altered source or ignore."
+  },
+  "allowedConclusionOnSuccess": "Only this exact ZCode Read route to this actual RO public canary; no Bash/helper/MiniMax/product/full input permission or success implied.",
+  "separateFutureGates": [
+    "readonly helper/Bash route",
+    "MiniMax Read and actual runtime route",
+    "complete image input/resource identity",
+    "all new code independent review and actual windowed validations",
+    "new full same-version review task in each designated tool"
+  ],
+  "space": {
+    "canaryTextBytes": 25,
+    "canaryStagingMaxBytes": 1048576,
+    "canaryImageMaxBytes": 16777216,
+    "setupObservationReceiptsMaxBytes": 1048576,
+    "notPartOfPerSideRun64MiBOrLog4MiB": true,
+    "actualAllocatedSizeUnknownUntilSetup": true,
+    "exceedRule": "preserve evidence and stop, no silent size increase"
+  },
+  "cleanup": {
+    "when": "only after owner binds actual own task terminal and no remaining own read/child uses mount; only within controller setup/cleanup ticket",
+    "detachArgvTemplate": [
+      "/usr/bin/hdiutil",
+      "detach",
+      "ACTUAL_OWN_ATTACH_DEVICE_FROM_RECEIPT"
+    ],
+    "noForceByDefault": true,
+    "onFailure": "preserve actual error; do not unmount any other volume or delete unknown metadata",
+    "preserve": "source public text, image SHA/source/RO receipts, task/tool public result and first failures retained; old C3 untouched"
+  },
+  "controllerAuthorizationNeededBeforeActualSetup": true
+}

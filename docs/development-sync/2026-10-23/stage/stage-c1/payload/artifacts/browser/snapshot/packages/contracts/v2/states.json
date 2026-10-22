@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 2,
+  "terminal": ["succeeded", "failed", "cancelled"],
+  "transitions": {
+    "queued": ["running", "cancelled", "failed"],
+    "running": ["cancelling", "succeeded", "failed"],
+    "cancelling": ["cancelled", "failed", "succeeded"],
+    "succeeded": [],
+    "failed": [],
+    "cancelled": []
+  },
+  "queuedFailure": "admission accepted durably but coordinator recovery cannot safely start; no replay",
+  "cancellingSuccessRequires": "whole task final result/commit and terminal evidence persisted before cancellation linearization; partial rounds insufficient",
+  "stateVersion": "strictly increases on every durable transition; repeated identical terminal query is a read, not a transition"
+}

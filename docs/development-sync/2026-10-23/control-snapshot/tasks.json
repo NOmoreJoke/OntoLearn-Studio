@@ -1,0 +1,1095 @@
+{
+  "schema_version": 1,
+  "deadline": "2026-10-25T23:59:00+08:00",
+  "execution_state": "dependency-ordered integration and bounded independent work; full parent gates open",
+  "controller_thread_id": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+  "initial_observed_develop": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "queue_policy": "parallel development and prevalidation; dependency-ordered final baseline freeze, two-model review, protected merge",
+  "resource_note": "Official per-chat observations recorded with actual cursors; do not infer all chats active. Independent root audits are readonly.",
+  "tasks": [
+    {
+      "id": "T00",
+      "name": "契约与集成",
+      "status": "owned_and_preparing",
+      "actual_owner": "controller with independently assigned read-only audit agents",
+      "actual_agent_or_thread": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+      "actual_worktree": null,
+      "actual_branch": null,
+      "actual_base_sha": null,
+      "actual_head_sha": null,
+      "candidate_branch_pattern": "feature/weekly-t00-<topic>",
+      "preparation_without_formal_dependencies": "collect versioned interface proposals; no writes to frozen/shared files",
+      "proposed_exclusive_boundaries": [
+        "packages/contracts/",
+        "main/preload public bridge wiring"
+      ],
+      "verification_evidence": [],
+      "dual_review_reports": [],
+      "pr": null,
+      "merged_sha": null,
+      "next_action": "T01 sole foundation owner;route precise interface facts/requests;verify exact shared handoffs and actual staged evidence without consuming unapproved runtime",
+      "shared_file_ownership_conditions": [
+        "Current I05/I06 owners release each specific shared path at safe boundary and acknowledge handoff; no need to wait for whole iteration for unrelated path",
+        "Frozen review worktrees remain unchanged; all changes in independently owned worktree",
+        "Semantic methods need actual approved I05 implementation; gateway methods need actual approved I06 implementation; unrelated project-method design can proceed earlier"
+      ],
+      "integration_prerequisites": ["I03", "I04"],
+      "acceptance_cross_links": [
+        "Public methods map only to approved actual implementation; no design-only method registered as product runtime"
+      ],
+      "local_service_acceptance": "strict success/failure corpus; source/project/identity/cursor/cancel validation",
+      "exclusive_write_paths": [
+        "iteration-control/2026-10-21-weekly-release/T00-interface-preparation.md"
+      ],
+      "actual_runtime_status": "Read-only interface/format proposals completed; separate independent challenge reviewer actually assigned; no functional shared implementation dispatched",
+      "functional_implementation_not_dispatched": true,
+      "preparation_result": {
+        "file": "T00-interface-preparation.md",
+        "sha256": "ab7fc5b927e9444e686600d0247a52e72d2a7fed92128446f570c2b58a0d8ba1",
+        "status": "completed_readonly_proposal",
+        "notPublicContractApproval": true
+      },
+      "format_design": {
+        "status": "proposal_complete_independent_challenge_and_owner_judgment_pending",
+        "file": "T00-project-format-version-proposal.md",
+        "sha256": "c4f32d24367929d137ac49be7c3a8610135116cb70e26340a41864145a1610a4",
+        "rootFullRead": true,
+        "independentReviewer": "/root/weekly_dispatch_audit",
+        "reviewFile": "T00-project-format-version-review.md",
+        "originalOwnersActuallyNotified": ["T01", "I06"],
+        "authorityBoundary": "No schema/format/shared-file authorization beyond effective storage.py handoff; no metadata capability enabled"
+      },
+      "parent_acceptance_complete": false
+    },
+    {
+      "id": "T01",
+      "name": "项目与事务",
+      "status": "owned_and_preparing",
+      "actual_owner": "original functional development chat",
+      "actual_agent_or_thread": "01a15bba-0884-7401-b24f-f50c1fcf60aa",
+      "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-profile-job-artifact-selection",
+      "actual_branch": "feature/weekly-t01-profile-job-artifact-selection",
+      "actual_base_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "actual_head_sha": "b054b2cd805027c723e5673c9eed58bde9cf2ac7",
+      "candidate_branch_pattern": "feature/weekly-t01-<topic>",
+      "preparation_without_formal_dependencies": "project/changeset/undo design and private pure service with no shared writes",
+      "proposed_exclusive_boundaries": [
+        "project services",
+        "storage schema/migrations after explicit ownership handoff",
+        "shell/draft/cache services"
+      ],
+      "verification_evidence": [],
+      "dual_review_reports": [],
+      "pr": null,
+      "merged_sha": null,
+      "next_action": "User explicitly retains damaged-input physical protection and HOLD; no A reduction or B/C implementation, no rejected analysis retry. Original blocked Goal/WIP preserved; actual wholeH/owner/physical proof unresolved.",
+      "integration_prerequisites": ["I01", "I04", "T00"],
+      "acceptance_cross_links": [
+        "FR-804: T08 uses real ChangeSet preview/confirm/undo; A-01/A-02 exercised through actual Agent path"
+      ],
+      "local_service_acceptance": "FR-001..006/804; stale Diff, atomic failures, undo/snapshot, dependency invalidation and persistence",
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/project/",
+        "packages/engine/tests/test_project_*.py",
+        "tests/unit/t01-*.test.ts",
+        "docs/reviews/T01/",
+        "docs/iterations/T01/",
+        "packages/engine/src/ontolearn_engine/storage.py",
+        "packages/engine/src/ontolearn_engine/job_store.py",
+        "packages/engine/src/ontolearn_engine/coordinator.py",
+        "packages/engine/src/ontolearn_engine/__main__.py",
+        "packages/contracts/python/contract_v2.py",
+        "packages/contracts/src/index.ts",
+        "packages/contracts/src/v2.ts",
+        "packages/contracts/v2/schema.json",
+        "packages/contracts/v2/registry.json",
+        "packages/contracts/v2/errors.json",
+        "packages/contracts/v2/fixtures.json",
+        "packages/contracts/v2/binding-regressions.json",
+        "apps/desktop/src/main/engine.ts",
+        "apps/desktop/src/main/jsonl.ts",
+        "apps/desktop/src/renderer/src/task-presentation.ts",
+        "apps/desktop/src/main/task-service.ts",
+        "apps/desktop/src/main/index.ts"
+      ],
+      "actual_turn": "01a15ddc-6a0d-74e3-a479-66d8eb720619",
+      "wait_cursor": "aea0c1ae-09b3-4370-a79a-9e94bf917dcd:24",
+      "actual_runtime_status": "owner reports original Goal blocked;nondependent repairs complete;wholeH/physical admission unresolved;WIP preserved",
+      "launch_prompt": "iteration-control/2026-10-21-weekly-release/T01-launch-prompt.md",
+      "verification_commands_planned": [
+        "npm run check",
+        "uv run --frozen pytest packages/engine/tests/test_project_*.py"
+      ],
+      "no_implementation_pass_yet": false,
+      "ownership_handoff": "I05-T01-storage-ownership-handoff.md; effective in execution-state.json",
+      "latestOwnerReportedCheckpoint": {
+        "source": "Actual original owner callback and fixed Git source; independent raw audit in progress",
+        "productStageTwo": "d9d7138f8838474038bd856e3cd2460af25d9eaf",
+        "processHead": "0a2a4372dc64f9f6d90a18938f9a42ddc5721af7",
+        "stageTwo": "630TS/1196Python; 496 related; root independent audit in progress",
+        "laterDraftStage": "20 dedicated reported; fullcheck underway; uncommitted, not covered by stage2",
+        "limits": "No final T01 product, external dual/CI/merge yet"
+      },
+      "uncommitted_stage_two_owner_reported": false,
+      "format_python_handoff": "I05-T01-format3-ownership-handoff.md effective",
+      "format_public_handoff": "I06-T01-format3-ownership-handoff.md effective",
+      "historical_observations": [
+        {
+          "context": "prior launch/runtime metadata superseded by bounded current observation;original time not re-invented",
+          "actual_head_sha": "0a2a4372dc64f9f6d90a18938f9a42ddc5721af7",
+          "actual_runtime_status": "active/inProgress; official immediate wait verified",
+          "actual_turn": "01a15bec-469a-7402-891b-434a3adaf4c9",
+          "wait_cursor": "d92c15b4-3d76-4860-948b-86a9a7d08d35:18"
+        },
+        {
+          "actual_head_sha": "33a55907c2f4835d79701c8d5609ed6ffabaf208",
+          "actual_runtime_status": "active/inProgress; timestamped observation only",
+          "actual_turn": "01a15c52-1d9d-7b20-9ad3-e571df58972d",
+          "wait_cursor": "d92c15b4-3d76-4860-948b-86a9a7d08d35:44"
+        },
+        {
+          "actual_head_sha": "092dfbe8d198d68e87a8781c9ab6fd2fdff4fc55",
+          "actual_runtime_status": "active/inProgress; timestamped observation only",
+          "actual_turn": "01a15c52-1d9d-7b20-9ad3-e571df58972d",
+          "wait_cursor": "d92c15b4-3d76-4860-948b-86a9a7d08d35:54"
+        },
+        {
+          "actual_head_sha": "27a0d17149ffdaf013233b4ac7fc861ccb0e38c2",
+          "actual_runtime_status": "active/inProgress; timestamped observation only",
+          "actual_turn": "01a15c52-1d9d-7b20-9ad3-e571df58972d",
+          "wait_cursor": "d92c15b4-3d76-4860-948b-86a9a7d08d35:54"
+        },
+        {
+          "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-project-transactions",
+          "actual_branch": "feature/weekly-t01-project-transactions",
+          "actual_head_sha": "f51a9e10647d75cd07fe28007ab73c0e65451f63",
+          "actual_turn": "01a15d21-5d58-7440-a839-8c0be6c2d446",
+          "wait_cursor": "d92c15b4-3d76-4860-948b-86a9a7d08d35:116",
+          "actual_runtime_status": "active/inProgress actualbusinessservice; ownerreportedCLIcases, firstNodehellomatchingfailure beingrepaired",
+          "superseded_at": "2026-10-21T16:07:12.329409+08:00"
+        }
+      ],
+      "actual_head_role": "actual52exactreadonlyadoption;C2two writerimplementation active;not completedproduct",
+      "current_runtime_observation": {
+        "turn": "01a15cc0-a369-72f3-8194-f07740d3d225",
+        "cursor": "d92c15b4-3d76-4860-948b-86a9a7d08d35:95",
+        "source": "official wait_threads actual live observation",
+        "observed_at": "2026-10-21T13:26:13.213065+08:00",
+        "goal_status_directly_verified": false
+      },
+      "current_git_observation": {
+        "head": "79d6bc4998ef49f8401636166b7e9fa7193c6b21",
+        "branch_matches_registered": true,
+        "status_count": 26,
+        "observed_at": "2026-10-21T12:59:59.488241+08:00",
+        "new_candidate_claimed": false,
+        "unexpectedPaths": []
+      },
+      "parent_acceptance_complete": false,
+      "observation_at": "2026-10-21T13:26:13.213065+08:00",
+      "actual_internal_material_candidate": "a816c2d018772ce8b172101d9debec787ffa434a",
+      "actual_internal_material_evidence_supplement": "27a0d17149ffdaf013233b4ac7fc861ccb0e38c2",
+      "internal_material_stage_root_readback": "T01-controller-source-table-material-readback.md",
+      "phase_authorization": "T01-startup-implementation-phase-authorization.md",
+      "phase_authorization_sha256": "3054a5ca2393ce6178e537c150f31b8fc0c63f3d28527a61b53cadeebfd6f334",
+      "latest_current_phase_observation": "Final17+8 exact4500/6ef21895 ZIP175431/d3927873 root captured; P2 repair+escapedpair independently closed by owner, root actual4delta review active; finalfullcheck20694 passedTS/build Python running, new package/Git/raw pending",
+      "four_file_ownership_authority": "foundation-four-file-handoff-effective.json; exact phase separately T01-startup-implementation-phase-authorization.md",
+      "temporary_exclusive_write_window": {
+        "path": "tests/unit/task-runtime.test.ts",
+        "authority": "T01-runtime-test-single-window-effective.json",
+        "writer": "I05",
+        "permanent": false,
+        "closed": true,
+        "futureOwner": "I05",
+        "T01Readonly": true
+      },
+      "current_private_phase_root_closed": true,
+      "private_phase_closure": "T01-startup-stage-root-closure.md",
+      "no_parent_acceptance_pass_yet": true,
+      "current_stage_authorization": "T01-changeset-business-service-implementation-authorization.md",
+      "changeset_internal_root_closure": "T01-changeset-business-service-stage-root-closure.md",
+      "host_read_services_authorization": "T01-project-host-read-services-implementation-authorization.md",
+      "host_read_services_root_closure": "T01-project-host-read-services-root-closure.md",
+      "C1_root_closure": "T01-project-create-core-C1-root-closure.md",
+      "parallelApprovedImplementation": {
+        "C2": "originalC2tree/twoPythonnewwriters",
+        "dispatch": "newdispatchtree/e79 exact52adoption/threeTSwriters",
+        "combinedCandidateNotYetApproved": 56
+      },
+      "actual_owner_goal_status_reported": "blocked"
+    },
+    {
+      "id": "T02",
+      "name": "本体编辑",
+      "status": "owned_and_preparing",
+      "actual_owner": "original functional development chat",
+      "actual_agent_or_thread": "01a15bcd-f40b-7c91-81fa-7c481d2030d5",
+      "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-ontology",
+      "actual_branch": "feature/weekly-t02-ontology",
+      "actual_base_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "actual_head_sha": "d597b3c00980652042163d250c875d660d4d371e",
+      "candidate_branch_pattern": "feature/weekly-t02-<topic>",
+      "preparation_without_formal_dependencies": "supported ontology editing and views; Turtle boundary corpus",
+      "proposed_exclusive_boundaries": ["ontology services", "ontology page"],
+      "verification_evidence": [],
+      "dual_review_reports": [],
+      "pr": null,
+      "merged_sha": null,
+      "next_action": "Keep fixed493+d597/AGENTS/PNGs;wait T01 realS1/S2 supplier+exactcodeadoption approval;no unchangedtests.",
+      "integration_prerequisites": ["T01", "T00", "I05"],
+      "acceptance_cross_links": [
+        "FR-204: T08 real modeling draft routed to T01 preview/confirm; unsupported imports tested against final approved Q6 matrix"
+      ],
+      "local_service_acceptance": "FR-200..204; appendix C; complete facts and unsupported-input refusal",
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/ontology/",
+        "packages/engine/tests/test_ontology_*.py",
+        "apps/desktop/src/renderer/src/ontology/",
+        "tests/unit/t02-*.test.ts",
+        "tests/fixtures/ontology/",
+        "docs/reviews/T02/",
+        "docs/iterations/T02/"
+      ],
+      "launch_prompt": "iteration-control/2026-10-21-weekly-release/T02-launch-prompt.md",
+      "actual_runtime_status": "idle/completed supplier-waitack;originalGoaltool blocked",
+      "verification_commands_planned": [
+        "npm run check",
+        "dedicated tests per actual task status"
+      ],
+      "no_implementation_pass_yet": true,
+      "actual_turn": "01a15e90-742c-72b0-a1fe-e0da7a08815d",
+      "wait_cursor": "4b3a993c-4692-44e2-a51f-f863271a7a09:5",
+      "identity_status_sha256": "cf364428a1e315b9c399e4de4352d21688987932e926a1f4e64abb1bdfd03187",
+      "actual_owner_goal_status_reported": "blocked",
+      "parent_acceptance_complete": false,
+      "latest_real_recovery_note": "official thread idle/final reports blocked; stage request now received, external conditions still unmet",
+      "actual_product_candidate": "49321221733ea927484647352e05e7d833cebc86",
+      "original_goal_runtime_observation": "official thread idle/final reports blocked; stage request now received, external conditions still unmet",
+      "historical_observations": [
+        {
+          "context": "prior launch/runtime metadata superseded by bounded current observation;original time not re-invented",
+          "actual_head_sha": "44e6e927fb0a073c1cdf1573a751a698a7579dae",
+          "actual_runtime_status": "active/inProgress; official immediate wait verified",
+          "actual_turn": "01a15bcd-f65d-7f41-a500-2200d777f19f",
+          "wait_cursor": "daba58b7-d483-4e3e-943e-37ff6972aa34:2"
+        }
+      ],
+      "actual_head_role": "fixed10plan/deliverydocs;493productunchanged",
+      "current_runtime_observation": {
+        "turn": "01a15c43-da86-7d82-89aa-bf87a38fd955",
+        "cursor": "daba58b7-d483-4e3e-943e-37ff6972aa34:5",
+        "source": "official single-target wait_threads(timeoutMs=0);independent report rootfullread",
+        "observation_batch": "2026-10-21T10:58:08.702390+08:00 Git metadata batch;polls in same bounded audit,not atomic",
+        "report": "task-status-reconciliation-readback.md",
+        "goal_status_directly_verified": false
+      },
+      "current_git_observation": {
+        "head": "614340f1a12da53a685b9ef921dc9e0125d2c2a4",
+        "branch_matches_registered": true,
+        "status_count": 3,
+        "observed_at": "2026-10-21T10:58:08.702390+08:00",
+        "new_candidate_claimed": false
+      },
+      "ownerReportedPlanRootAccepted": true
+    },
+    {
+      "id": "T03",
+      "name": "数据映射",
+      "status": "owned_and_preparing",
+      "actual_owner": "original functional development chat",
+      "actual_agent_or_thread": "01a15bcd-f838-75a2-b2c3-692915cc91c3",
+      "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+      "actual_branch": "feature/T03-native-location-N0-build",
+      "actual_base_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "actual_head_sha": "37fe056e5d1716a10237de20f79042db54aa0549",
+      "candidate_branch_pattern": "feature/weekly-t03-<topic>",
+      "preparation_without_formal_dependencies": "real CSV/XLSX parsers, mapping preview and ownership plan",
+      "proposed_exclusive_boundaries": ["mapping services", "mapping page"],
+      "verification_evidence": [],
+      "dual_review_reports": [],
+      "pr": null,
+      "merged_sha": null,
+      "next_action": "Keep pair/source/lock frozen;no seventh build/native. OriginalI06 prepares fixed004 and root separately grants runtime.",
+      "integration_prerequisites": ["T01", "T02", "T00"],
+      "acceptance_cross_links": [
+        "FR-302: T08 model enhancement where enabled; deterministic offline suggestions remain available; T10 source ownership retained"
+      ],
+      "local_service_acceptance": "FR-300..304; G M-01..06",
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/mapping/",
+        "packages/engine/tests/test_mapping_*.py",
+        "apps/desktop/src/renderer/src/mapping/",
+        "tests/unit/t03-*.test.ts",
+        "tests/fixtures/mapping/",
+        "docs/reviews/T03/",
+        "docs/iterations/T03/",
+        "packages/engine/pyproject.toml",
+        "uv.lock",
+        "scripts/build-engine.mjs",
+        "packages/engine/entrypoint.py",
+        "apps/desktop/src/main/mapping/"
+      ],
+      "launch_prompt": "iteration-control/2026-10-21-weekly-release/T03-launch-prompt.md",
+      "actual_runtime_status": "sixth build archive accepted and pair frozen;I06 preparing004",
+      "verification_commands_planned": [
+        "npm run check",
+        "dedicated tests per actual task status"
+      ],
+      "no_implementation_pass_yet": true,
+      "actual_turn": "01a16077-aa28-73b3-9d59-37b8f3152df7",
+      "wait_cursor": "db986c0c-20b7-40a5-a27e-2ca69a885614:76",
+      "identity_status_sha256": "1fb3365292909ede2606dfd49a1c04d62417d3f1ee1f70ae7f0f727ea9169273",
+      "build_ownership_handoff": "I05-T03-build-ownership-handoff.md effective",
+      "source_selection_subtree_authorized": "T03SourceSelectionAuthorization in execution-state; actual tree creation pending verification",
+      "original_goal_runtime_observation": "Original owner explicitly reports actual update_goal blocked after three same interface/resource turns;source8c904/S1 303 unchanged;no pending local test or audit;noGoal recreation",
+      "historical_observations": [
+        {
+          "context": "prior launch/runtime metadata superseded by bounded current observation;original time not re-invented",
+          "actual_head_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+          "actual_runtime_status": "active/inProgress; official immediate wait verified",
+          "actual_turn": "01a15bf4-4a0b-7290-bbbe-c44ecb2f2def",
+          "wait_cursor": "43f1b229-d912-4b51-a9ea-eef723d75e64:2"
+        },
+        {
+          "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build",
+          "actual_branch": "feature/T03-profile-build",
+          "actual_head_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+          "actual_turn": "01a15d34-ce16-74d0-99b5-198d248fa4cd",
+          "wait_cursor": "43f1b229-d912-4b51-a9ea-eef723d75e64:13",
+          "actual_runtime_status": "active/inProgress officialverified D1 dependencyA only twofiles",
+          "superseded_at": "2026-10-21T16:07:12.329409+08:00"
+        },
+        {
+          "context": "fourth accepted before fifth current archive",
+          "actual_head_sha": "d51a0555e6feb062fc935173222cc142687901a5",
+          "actual_head_role": "root accepted fourth new-input pure process; parent fixed d98",
+          "superseded_at": "2026-10-22T06:14:27.757967+08:00"
+        }
+      ],
+      "actual_head_role": "accepted sixth new-input built-unverified/NOT_RUN, parent fixedbfe",
+      "current_runtime_observation": {
+        "turn": "01a15c5a-34e2-7540-ad06-c9cb840fdd16",
+        "cursor": "43f1b229-d912-4b51-a9ea-eef723d75e64:6",
+        "source": "official single-target wait_threads(timeoutMs=0);independent report rootfullread",
+        "observation_batch": "2026-10-21T10:58:08.702390+08:00 Git metadata batch;polls in same bounded audit,not atomic",
+        "report": "task-status-reconciliation-readback.md",
+        "goal_status_directly_verified": false
+      },
+      "current_git_observation": {
+        "head": "0b3ccdeb0732610b1483993c0cb70ab888b19ce3",
+        "branch_matches_registered": true,
+        "status_count": 1,
+        "observed_at": "2026-10-21T10:58:08.702390+08:00",
+        "new_candidate_claimed": false
+      },
+      "parent_acceptance_complete": false,
+      "actual_owner_goal_status_reported": "blocked",
+      "historicalProductWorktrees": [
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping",
+          "scope": "frozen originalXLSX candidate"
+        },
+        {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection",
+          "head": "4fa5d62eb13269351384527b1f84761c08811e79",
+          "scope": "source selection preserved; latestdocs-only dependencyoffer"
+        }
+      ],
+      "actual_internal_material_candidate": "fd87fd148dc9e26d2c041ccb9fb61e3a80c51821",
+      "D1_root_closure": "T03-profile-dependency-A-root-closure-and-I05-consumption.md",
+      "actual_D2_process_head_sha": "2a0cfdf87fc9c59bb111cb0add5c9e08d03f8af9",
+      "D2_root_closure": "T03-profile-D2-package-root-closure.md",
+      "D2_internal_technical_stage_closed": true
+    },
+    {
+      "id": "T04",
+      "name": "查询",
+      "status": "owned_and_preparing",
+      "actual_owner": "original functional development chat",
+      "actual_agent_or_thread": "01a15bcd-fcba-7583-a307-56497cdde347",
+      "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query",
+      "actual_branch": "feature/weekly-t04-query",
+      "actual_base_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "actual_head_sha": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "candidate_branch_pattern": "feature/weekly-t04-<topic>",
+      "preparation_without_formal_dependencies": "templates, visual conditions and SPARQL editor; no fake runtime",
+      "proposed_exclusive_boundaries": ["query services", "query page"],
+      "verification_evidence": [],
+      "dual_review_reports": [],
+      "pr": null,
+      "merged_sha": null,
+      "next_action": "Identity acceptance then assigned pure domain/UI implementation and complete counterexamples; actual dependencies later",
+      "integration_prerequisites": ["I05", "T01", "T00"],
+      "acceptance_cross_links": [
+        "FR-400: T08 actual natural-language query draft displayed with SPARQL and actual result; T10 saved query migration"
+      ],
+      "local_service_acceptance": "FR-400..404; G Q-01/02; read-only/no-network scope and complete results",
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/query_service/",
+        "packages/engine/tests/test_query_service_*.py",
+        "apps/desktop/src/renderer/src/query/",
+        "tests/unit/t04-*.test.ts",
+        "tests/fixtures/query/",
+        "docs/reviews/T04/",
+        "docs/iterations/T04/"
+      ],
+      "launch_prompt": "iteration-control/2026-10-21-weekly-release/T04-launch-prompt.md",
+      "actual_runtime_status": "idle/completed; timestamped observation only",
+      "verification_commands_planned": [
+        "npm run check",
+        "dedicated tests per actual task status"
+      ],
+      "no_implementation_pass_yet": true,
+      "actual_turn": "01a15c43-dd96-7da0-aecc-d522df436df9",
+      "wait_cursor": "7a0e41cc-ac4b-4d81-b82f-5cb4725c2f27:3",
+      "identity_status_sha256": "2e1cae08176e6eb130c29668c04c6d384251e4698955d40b426868245011fb7a",
+      "actual_owner_goal_status_reported": "blocked",
+      "parent_acceptance_complete": false,
+      "latest_real_recovery_note": "official idle/final reports Goal blocked, S1 R1 closed no true interfaces/UI window",
+      "original_goal_runtime_observation": "official idle/final reports Goal blocked, S1 R1 closed no true interfaces/UI window",
+      "historical_observations": [
+        {
+          "context": "prior launch/runtime metadata superseded by bounded current observation;original time not re-invented",
+          "actual_head_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+          "actual_runtime_status": "active/inProgress; official immediate wait verified",
+          "actual_turn": "01a15bf4-e89b-7883-87c9-4b988bc21570",
+          "wait_cursor": "7a0e41cc-ac4b-4d81-b82f-5cb4725c2f27:2"
+        }
+      ],
+      "actual_head_role": "observed parent checkout process HEAD;not frozen product candidate or runtime approval",
+      "current_runtime_observation": {
+        "turn": "01a15c43-dd96-7da0-aecc-d522df436df9",
+        "cursor": "7a0e41cc-ac4b-4d81-b82f-5cb4725c2f27:3",
+        "source": "official single-target wait_threads(timeoutMs=0);independent report rootfullread",
+        "observation_batch": "2026-10-21T10:58:08.702390+08:00 Git metadata batch;polls in same bounded audit,not atomic",
+        "report": "task-status-reconciliation-readback.md",
+        "goal_status_directly_verified": false
+      },
+      "current_git_observation": {
+        "head": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+        "branch_matches_registered": true,
+        "status_count": 1,
+        "observed_at": "2026-10-21T10:58:08.702390+08:00",
+        "new_candidate_claimed": false
+      }
+    },
+    {
+      "id": "T05",
+      "name": "质量与推理",
+      "status": "owned_and_preparing",
+      "actual_owner": "original functional development chat",
+      "actual_agent_or_thread": "01a15bce-021c-74e0-a7ac-a899380b424a",
+      "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers",
+      "actual_branch": "feature/weekly-t05-profile-m1-graph-consumers",
+      "actual_base_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "actual_head_sha": "525c91717c07dc4b386fcec00f897e1e6a75caf1",
+      "candidate_branch_pattern": "feature/weekly-t05-<topic>",
+      "preparation_without_formal_dependencies": "constraint/rule editing and comparison/trace views",
+      "proposed_exclusive_boundaries": [
+        "quality/reasoning services",
+        "quality page"
+      ],
+      "verification_evidence": [],
+      "dual_review_reports": [],
+      "pr": null,
+      "merged_sha": null,
+      "next_action": "Keep date/B components and original history frozen;await actual formal Job/selected/H interfaces;no repeated tests or oldD recapture.",
+      "integration_prerequisites": ["I05", "T01", "T00"],
+      "acceptance_cross_links": [
+        "FR-502: T08 explanation uses actual trace; R-02/03 run after T01 real changes; T06 consumes fresh reasoning snapshot"
+      ],
+      "local_service_acceptance": "FR-500..505; G V/R/O; final Q6 support matrix",
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/quality/",
+        "packages/engine/tests/test_quality_*.py",
+        "apps/desktop/src/renderer/src/quality/",
+        "tests/unit/t05-*.test.ts",
+        "tests/fixtures/quality/",
+        "docs/reviews/T05/",
+        "docs/iterations/T05/"
+      ],
+      "launch_prompt": "iteration-control/2026-10-21-weekly-release/T05-launch-prompt.md",
+      "actual_runtime_status": "component accepted/frozen;formal interfaces and parent gates remain open",
+      "verification_commands_planned": [
+        "npm run check",
+        "dedicated tests per actual task status"
+      ],
+      "no_implementation_pass_yet": false,
+      "actual_turn": "01a15f99-fc1d-7de0-ae19-8cf48bb7a91b",
+      "wait_cursor": "caf3b90a-8452-489c-8fb5-1d43d3e79086:4",
+      "identity_status_sha256": "3dd9e48018eb90bd013c9c4808ec078272ce4d7c8bf88cb3156e83b1bada35dd",
+      "original_goal_runtime_observation": "Historical owner Goal tool status blocked; ordinary same original implementation turn currently active by official wait; no Goal recreation or implied tool resume",
+      "parent_acceptance_complete": false,
+      "historical_observations": [
+        {
+          "context": "prior launch/runtime metadata superseded by bounded current observation;original time not re-invented",
+          "actual_head_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+          "actual_runtime_status": "active/inProgress; official immediate wait verified",
+          "actual_turn": "01a15bce-052a-7f61-8d1c-501c69dd41a6",
+          "wait_cursor": "2300c7bf-9fd8-47b3-853d-ee66cce74cb0:2"
+        },
+        {
+          "actual_head_sha": "46403e339e1abe1085e9923b45c05da7b921de13",
+          "actual_runtime_status": "idle/completed; timestamped observation only",
+          "actual_turn": "01a15c62-d455-7391-8259-9128fc2983fd",
+          "wait_cursor": "2300c7bf-9fd8-47b3-853d-ee66cce74cb0:8"
+        },
+        {
+          "actual_head_sha": "90c5c72a3ddbf0710ee20388c44b36660c514a79",
+          "actual_runtime_status": "active/inProgress; timestamped observation only",
+          "actual_turn": "01a15c8a-df0c-7772-8e5f-03c05ce9ab9c",
+          "wait_cursor": "2300c7bf-9fd8-47b3-853d-ee66cce74cb0:9"
+        },
+        {
+          "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-quality-reasoning",
+          "actual_branch": "feature/weekly-t05-quality-reasoning",
+          "actual_head_sha": "6e4f19bd95d6b8850879ebb770ef003ffd9d9a61",
+          "actual_turn": "01a15d1a-8ddb-7b62-88a0-fa8347f967ca",
+          "wait_cursor": "2300c7bf-9fd8-47b3-853d-ee66cce74cb0:62",
+          "actual_runtime_status": "active/inProgress oracle fixes and separateauthorizedbatchproposal",
+          "superseded_at": "2026-10-21T16:07:12.329409+08:00"
+        }
+      ],
+      "actual_head_role": "accepted explicit date consumer component with exact old-process format exception;not parent",
+      "current_runtime_observation": {
+        "turn": "01a15ce6-ae62-7093-a6bb-930bb6c8bd82",
+        "cursor": "2300c7bf-9fd8-47b3-853d-ee66cce74cb0:54",
+        "source": "official wait_threads actual live observation",
+        "observed_at": "2026-10-21T13:26:13.213065+08:00",
+        "goal_status_directly_verified": false
+      },
+      "current_git_observation": {
+        "head": "e6ea0f77411d71ac3b226b2d7e00280628848bca",
+        "branch_matches_registered": true,
+        "status_count": 36,
+        "observed_at": "2026-10-21T12:59:59.488241+08:00",
+        "new_candidate_claimed": false,
+        "unexpectedPaths": []
+      },
+      "actual_owner_goal_status_reported": "blocked",
+      "observation_at": "2026-10-21T13:26:13.213065+08:00",
+      "phase_authorization": "T05-profile-mechanism-phase-authorization.md",
+      "phase_authorization_sha256": "210f31b1406fb13fb616e1f94b026feea2f3437c270f709185d890715512d1f0",
+      "latest_current_phase_observation": "Active same docs-only turn: next full realgraph via unique I05 executor and T01 definition/task actual contracts identified; plan not yet fixed, no new product authorization",
+      "actual_internal_material_candidate": "16c58c6d0ca56491c7134c4866f9bed5e0f722c5",
+      "current_private_phase_root_closed": true,
+      "private_phase_closure": "T05-profile-mechanism-stage-root-closure.md",
+      "no_parent_acceptance_pass_yet": true,
+      "iri_fix_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-iri-fix",
+      "iri_fix_root_closure": "T05-profile-iri-fix-root-closure-and-I05-consumption.md",
+      "batch_implementation_authorization": "T05-batch-revalidation-pure-implementation-authorization.md",
+      "batch_root_closure": "T05-batch-revalidation-pure-source-stage-root-closure.md"
+    },
+    {
+      "id": "T06",
+      "name": "行为",
+      "status": "owned_and_preparing",
+      "actual_owner": "original functional development chat",
+      "actual_agent_or_thread": "01a15bba-0c8a-7dc2-b612-5b5c4ec4a4b9",
+      "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+      "actual_branch": "feature/weekly-t06-behavior",
+      "actual_base_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "actual_head_sha": "97ee530d9aa0d851bf916d5b34f3d8fb568a0029",
+      "candidate_branch_pattern": "feature/weekly-t06-<topic>",
+      "preparation_without_formal_dependencies": "E.1 pure event/condition/action/conflict algorithm and exact fixtures",
+      "proposed_exclusive_boundaries": ["behavior services", "behavior page"],
+      "verification_evidence": [],
+      "dual_review_reports": [],
+      "pr": null,
+      "merged_sha": null,
+      "next_action": "Pure behavior plan/conflict/ordering/frozen-condition exact cases; real inference/Store integration remains pending.",
+      "integration_prerequisites": ["T01", "T05", "T00"],
+      "acceptance_cross_links": [
+        "B-08: T08 accurately reports actual behavior tool failure; G.3 tests use T05 actual before-action inference snapshot"
+      ],
+      "local_service_acceptance": "FR-600..604; G B-01..11 with real before-action reasoning snapshot",
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/behavior/",
+        "packages/engine/tests/test_behavior_*.py",
+        "tests/fixtures/behavior/",
+        "docs/reviews/T06/",
+        "docs/iterations/T06/",
+        "apps/desktop/src/renderer/src/behavior/",
+        "tests/unit/t06-*.test.ts"
+      ],
+      "actual_turn": "01a15c58-7a55-7d43-a626-1da3200143b4",
+      "wait_cursor": "7eaa7ad7-6c7d-49f9-9b74-65ba5572c787:30",
+      "actual_runtime_status": "idle/completed; timestamped observation only",
+      "launch_prompt": "iteration-control/2026-10-21-weekly-release/T06-launch-prompt.md",
+      "verification_commands_planned": [
+        "npm run check",
+        "uv run --frozen pytest packages/engine/tests/test_behavior_*.py"
+      ],
+      "no_implementation_pass_yet": true,
+      "reviewReadinessObservation": {
+        "historicalCandidate": "e81cfc973d251b76d8b9537adae150e8d2f930af",
+        "rootReadinessAndValidationFullRead": true,
+        "rootFullCheckLogRead": "630TS/1135Python old candidate only",
+        "currentStatus": "not frozen: actual planner dirty and new test_behavior_creation.py observed; original owner notified to finish necessary fix and new fixed verification before slot",
+        "manifestPlannerSHA": "cf9da2ba14b114b64c15a0e1cf434d9c8c145bf5e96a76454c3548dde8df0a41",
+        "workingPlannerSHAAtObservation": "946d684d0103ef2851c1dc0e96e7e76c3acb7bedb3793afb63fe6f5ebff23f17",
+        "partialSnapshot": "private/T06-S1-e81cfc9-preflight only first file saved before assertion stopped; not a complete successful snapshot",
+        "actualExternalTaskStarted": false
+      },
+      "UIOwnershipGrant": {
+        "actualNoticeSent": true,
+        "rule": "Use independent child worktree/feature for new UI while S1 external frozen; do not alter same S1 review tree or use unapproved dependency as actual runtime"
+      },
+      "original_goal_runtime_observation": "Official completed turn01a15c12 reports actual Goalblocked;UI da377/3b3 and main evidencee2fca19, wait true interfaces and safe desktop",
+      "parent_acceptance_complete": false,
+      "historical_observations": [
+        {
+          "context": "prior launch/runtime metadata superseded by bounded current observation;original time not re-invented",
+          "actual_head_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+          "actual_runtime_status": "active/inProgress; official immediate wait verified",
+          "actual_turn": "01a15bca-dcf4-7ee1-9a44-22a6192ac25c",
+          "wait_cursor": "7eaa7ad7-6c7d-49f9-9b74-65ba5572c787:12"
+        }
+      ],
+      "actual_head_role": "observed parent checkout process HEAD;not frozen product candidate or runtime approval",
+      "current_runtime_observation": {
+        "turn": "01a15c58-7a55-7d43-a626-1da3200143b4",
+        "cursor": "7eaa7ad7-6c7d-49f9-9b74-65ba5572c787:30",
+        "source": "official single-target wait_threads(timeoutMs=0);independent report rootfullread",
+        "observation_batch": "2026-10-21T10:58:08.702390+08:00 Git metadata batch;polls in same bounded audit,not atomic",
+        "report": "task-status-reconciliation-readback.md",
+        "goal_status_directly_verified": false
+      },
+      "current_git_observation": {
+        "head": "97ee530d9aa0d851bf916d5b34f3d8fb568a0029",
+        "branch_matches_registered": true,
+        "status_count": 1,
+        "observed_at": "2026-10-21T10:58:08.702390+08:00",
+        "new_candidate_claimed": false
+      },
+      "actual_owner_goal_status_reported": "blocked"
+    },
+    {
+      "id": "T07",
+      "name": "沙盘",
+      "status": "owned_and_preparing",
+      "actual_owner": "original functional development chat",
+      "actual_agent_or_thread": "01a15bce-0706-7360-8e99-df8fe9b15ad2",
+      "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario",
+      "actual_branch": "feature/weekly-t07-scenario",
+      "actual_base_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "actual_head_sha": "982e4535e864c17275e51ed67664c0b7fac367bc",
+      "candidate_branch_pattern": "feature/weekly-t07-<topic>",
+      "preparation_without_formal_dependencies": "E.2..5 pure round/resource/metrics algorithm and views",
+      "proposed_exclusive_boundaries": ["scenario services", "scenario page"],
+      "verification_evidence": [],
+      "dual_review_reports": [],
+      "pr": null,
+      "merged_sha": null,
+      "next_action": "Identity acceptance then assigned pure domain/UI implementation and complete counterexamples; actual dependencies later",
+      "integration_prerequisites": ["T01", "T05", "T06", "T00", "I04"],
+      "acceptance_cross_links": [
+        "T10 exports/reimports replay-complete versions; T08 explanations match actual round records; actual I04 cancel/recovery and late-result identity boundaries"
+      ],
+      "local_service_acceptance": "FR-700..705; G.4/E.5/G.6; committed rounds, cancel, replay and isolation",
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/scenario/",
+        "packages/engine/tests/test_scenario_*.py",
+        "apps/desktop/src/renderer/src/scenario/",
+        "tests/unit/t07-*.test.ts",
+        "tests/fixtures/scenario/",
+        "docs/reviews/T07/",
+        "docs/iterations/T07/"
+      ],
+      "launch_prompt": "iteration-control/2026-10-21-weekly-release/T07-launch-prompt.md",
+      "actual_runtime_status": "idle/completed; timestamped observation only",
+      "verification_commands_planned": [
+        "npm run check",
+        "dedicated tests per actual task status"
+      ],
+      "no_implementation_pass_yet": true,
+      "actual_turn": "01a15c43-e0da-7463-958e-33dee0ad5a43",
+      "wait_cursor": "24288bbd-bbbc-4d34-b2aa-58a2b499568a:5",
+      "identity_status_sha256": "468b8641742657ba3785578654a3c442b6e84fd1e08422be9a794929a17563a4",
+      "actual_owner_goal_status_reported": "blocked",
+      "parent_acceptance_complete": false,
+      "latest_real_recovery_note": "official idle/final reports Goal blocked,90privatePython readiness no true interfaces/UI window",
+      "original_goal_runtime_observation": "official idle/final reports Goal blocked,90privatePython readiness no true interfaces/UI window",
+      "historical_observations": [
+        {
+          "context": "prior launch/runtime metadata superseded by bounded current observation;original time not re-invented",
+          "actual_head_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+          "actual_runtime_status": "active/inProgress; official immediate wait verified",
+          "actual_turn": "01a15bce-097d-7b32-8442-c44e64d66569",
+          "wait_cursor": "24288bbd-bbbc-4d34-b2aa-58a2b499568a:2"
+        }
+      ],
+      "actual_head_role": "observed parent checkout process HEAD;not frozen product candidate or runtime approval",
+      "current_runtime_observation": {
+        "turn": "01a15c43-e0da-7463-958e-33dee0ad5a43",
+        "cursor": "24288bbd-bbbc-4d34-b2aa-58a2b499568a:5",
+        "source": "official single-target wait_threads(timeoutMs=0);independent report rootfullread",
+        "observation_batch": "2026-10-21T10:58:08.702390+08:00 Git metadata batch;polls in same bounded audit,not atomic",
+        "report": "task-status-reconciliation-readback.md",
+        "goal_status_directly_verified": false
+      },
+      "current_git_observation": {
+        "head": "982e4535e864c17275e51ed67664c0b7fac367bc",
+        "branch_matches_registered": true,
+        "status_count": 1,
+        "observed_at": "2026-10-21T10:58:08.702390+08:00",
+        "new_candidate_claimed": false
+      }
+    },
+    {
+      "id": "T08",
+      "name": "Agent 与模型",
+      "status": "owned_and_preparing",
+      "actual_owner": "original functional development chat",
+      "actual_agent_or_thread": "01a15bc2-40dd-7393-a1cb-1e87086e6993",
+      "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-agent-model",
+      "actual_branch": "feature/weekly-t08-agent-model",
+      "actual_base_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "actual_head_sha": "ca3c8b017afefe7b5514a944192f4fbb0a3c2914",
+      "candidate_branch_pattern": "feature/weekly-t08-<topic>",
+      "preparation_without_formal_dependencies": "tool adapters/prompts/evaluation set; each tool waits its actual domain service",
+      "proposed_exclusive_boundaries": [
+        "agent services/sidebar",
+        "model settings"
+      ],
+      "verification_evidence": [],
+      "dual_review_reports": [],
+      "pr": null,
+      "merged_sha": null,
+      "next_action": "Pure provider codec and agent trusted-evidence/evaluation tests; I06 approved gateway and domain tools required later",
+      "integration_prerequisites": ["I06", "T01", "T00"],
+      "acceptance_cross_links": [
+        "Each declared domain tool requires its relevant approved T02..T07 actual runtime and T01 write boundary",
+        "Full Agent evaluation covers all required domains, truthful failure/staleness, field authorization and no fabricated results using actual Q9 service",
+        "T09 records full-assistance transfer attempt without counting it as independent success"
+      ],
+      "local_service_acceptance": "FR-800..806/900..902/904; A-01..05/09/10; Q9 actual service; tools remain unavailable until each relevant T02..T07 runtime is approved",
+      "actual_turn": "01a15c43-e201-7fd2-999f-56d2129af074",
+      "wait_cursor": "82a4bdd3-363b-4f91-8951-606411bbd696:12",
+      "exclusive_write_paths": [
+        "apps/desktop/src/main/agent/",
+        "apps/desktop/src/renderer/src/agent/",
+        "tests/unit/t08-*.test.ts",
+        "tests/fixtures/agent/",
+        "docs/reviews/T08/",
+        "docs/iterations/T08/"
+      ],
+      "actual_runtime_status": "idle/completed; timestamped observation only",
+      "launch_prompt": "iteration-control/2026-10-21-weekly-release/T08-launch-prompt.md",
+      "functional_implementation_not_dispatched": false,
+      "no_implementation_pass_yet": true,
+      "verification_commands_planned": [
+        "npm run check",
+        "dedicated t08 protocol/evaluation unit tests"
+      ],
+      "actual_owner_goal_status_reported": "blocked",
+      "parent_acceptance_complete": false,
+      "latest_real_recovery_note": "official idle/final reports existing Goal blocked; exact93516 source current30e0 policy only",
+      "original_goal_runtime_observation": "official idle/final reports existing Goal blocked; exact93516 source current30e0 policy only",
+      "historical_observations": [
+        {
+          "context": "prior launch/runtime metadata superseded by bounded current observation;original time not re-invented",
+          "actual_head_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+          "actual_runtime_status": "active/inProgress; official immediate wait verified",
+          "actual_turn": "01a15bf1-5f2d-7522-a0bf-8c1dc48282a7",
+          "wait_cursor": "82a4bdd3-363b-4f91-8951-606411bbd696:10"
+        }
+      ],
+      "actual_head_role": "observed parent checkout process HEAD;not frozen product candidate or runtime approval",
+      "current_runtime_observation": {
+        "turn": "01a15c43-e201-7fd2-999f-56d2129af074",
+        "cursor": "82a4bdd3-363b-4f91-8951-606411bbd696:12",
+        "source": "official single-target wait_threads(timeoutMs=0);independent report rootfullread",
+        "observation_batch": "2026-10-21T10:58:08.702390+08:00 Git metadata batch;polls in same bounded audit,not atomic",
+        "report": "task-status-reconciliation-readback.md",
+        "goal_status_directly_verified": false
+      },
+      "current_git_observation": {
+        "head": "ca3c8b017afefe7b5514a944192f4fbb0a3c2914",
+        "branch_matches_registered": true,
+        "status_count": 1,
+        "observed_at": "2026-10-21T10:58:08.702390+08:00",
+        "new_candidate_claimed": false
+      }
+    },
+    {
+      "id": "T09",
+      "name": "离线学习",
+      "status": "owned_and_preparing",
+      "actual_owner": "original functional development chat",
+      "actual_agent_or_thread": "01a15bba-1133-7933-9c6f-156f70f60c60",
+      "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines",
+      "actual_branch": "feature/weekly-t09-learning-baselines",
+      "actual_base_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "actual_head_sha": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+      "candidate_branch_pattern": "feature/weekly-t09-<topic>",
+      "preparation_without_formal_dependencies": "G baseline/content/glossary/hints/transfer tasks; pure result check definitions",
+      "proposed_exclusive_boundaries": [
+        "course and fixture content",
+        "learning services/page"
+      ],
+      "verification_evidence": [],
+      "dual_review_reports": [],
+      "pr": null,
+      "merged_sha": null,
+      "next_action": "Real versioned G0/E5 inputs/expected/reset/hash then offline course/check services; actual domain execution remains pending.",
+      "integration_prerequisites": ["T01", "T00"],
+      "acceptance_cross_links": [
+        "Offline learning uses actual approved T02..T07 functions without requiring model API",
+        "Assistance tracking uses T01 records; actual T08 full-assistance path checked in transfer-task acceptance",
+        "FR-104 learning report produced by T10; PRD11.2 independent five-user acceptance applies"
+      ],
+      "local_service_acceptance": "FR-100..105/003; appendix G; 11.2 five-user/80% criteria and assisted-transfer distinction; offline path must run without model",
+      "capability_specific_dependencies": {
+        "offline_course_steps": "T01 and each relevant actual domain capability as it arrives; no model API dependency",
+        "assistance_tracking": "T01 assistance contract; actual T08 full-assistance path checked once ready",
+        "complete_end_to_end_acceptance": "All relevant T02..T07 domain capabilities plus actual T08 full-assistance path and T10 report; not an all-modules startup gate"
+      },
+      "exclusive_write_paths": [
+        "content/learning/",
+        "tests/fixtures/product-baselines/",
+        "scripts/verify-product-baselines.py",
+        "packages/engine/src/ontolearn_engine/learning/",
+        "packages/engine/tests/test_learning_*.py",
+        "docs/reviews/T09/",
+        "docs/iterations/T09/",
+        "apps/desktop/src/renderer/src/learning/",
+        "tests/unit/learning-*.test.ts"
+      ],
+      "actual_turn": "01a15c43-e32e-7791-89eb-cb4bda22162f",
+      "wait_cursor": "5517c651-7af5-41be-bf16-9658371af7b4:16",
+      "actual_runtime_status": "idle/completed; timestamped observation only",
+      "launch_prompt": "iteration-control/2026-10-21-weekly-release/T09-launch-prompt.md",
+      "verification_commands_planned": [
+        "python3 scripts/verify-product-baselines.py",
+        "npm run check",
+        "uv run --frozen pytest packages/engine/tests/test_learning_*.py"
+      ],
+      "no_implementation_pass_yet": true,
+      "UIOwnershipGrant": {
+        "rootApprovedTreeConflictCheck": "No tracked match at approved5f",
+        "actualNoticeSent": true,
+        "notSharedAppWiring": true
+      },
+      "actual_owner_goal_status_reported": "blocked",
+      "parent_acceptance_complete": false,
+      "latest_real_recovery_note": "owner reports actualupdate_goal blocked, stage12699 recovered0923; originalS1 remains765+d969",
+      "original_goal_runtime_observation": "owner reports actualupdate_goal blocked, stage12699 recovered0923; originalS1 remains765+d969",
+      "historical_observations": [
+        {
+          "context": "prior launch/runtime metadata superseded by bounded current observation;original time not re-invented",
+          "actual_head_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+          "actual_runtime_status": "active/inProgress; official immediate wait verified",
+          "actual_turn": "01a15bcf-5b1e-7042-8efb-ba803b74795e",
+          "wait_cursor": "5517c651-7af5-41be-bf16-9658371af7b4:15"
+        }
+      ],
+      "actual_head_role": "observed parent checkout process HEAD;not frozen product candidate or runtime approval",
+      "current_runtime_observation": {
+        "turn": "01a15c43-e32e-7791-89eb-cb4bda22162f",
+        "cursor": "5517c651-7af5-41be-bf16-9658371af7b4:16",
+        "source": "official single-target wait_threads(timeoutMs=0);independent report rootfullread",
+        "observation_batch": "2026-10-21T10:58:08.702390+08:00 Git metadata batch;polls in same bounded audit,not atomic",
+        "report": "task-status-reconciliation-readback.md",
+        "goal_status_directly_verified": false
+      },
+      "current_git_observation": {
+        "head": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+        "branch_matches_registered": true,
+        "status_count": 1,
+        "observed_at": "2026-10-21T10:58:08.702390+08:00",
+        "new_candidate_claimed": false
+      }
+    },
+    {
+      "id": "T10",
+      "name": "导出与迁移",
+      "status": "owned_and_preparing",
+      "actual_owner": "original functional development chat",
+      "actual_agent_or_thread": "01a15bce-0a94-7870-9694-f100e78f406a",
+      "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-transfer-export",
+      "actual_branch": "feature/weekly-t10-transfer-export",
+      "actual_base_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "actual_head_sha": "f00e1b74213a76ba573dd38bde20191eb39d1cfa",
+      "candidate_branch_pattern": "feature/weekly-t10-<topic>",
+      "preparation_without_formal_dependencies": "manifest/format version/safe HTML renderer/adversarial inputs",
+      "proposed_exclusive_boundaries": [
+        "export/import services",
+        "report templates"
+      ],
+      "verification_evidence": [],
+      "dual_review_reports": [],
+      "pr": null,
+      "merged_sha": null,
+      "next_action": "Identity acceptance then assigned pure domain/UI implementation and complete counterexamples; actual dependencies later",
+      "integration_prerequisites": ["T01", "T07", "T08", "T00"],
+      "acceptance_cross_links": [
+        "FR-104: T09 actual learning/assistance evidence accurately reported",
+        "G.6: imported project continues real T02 editing/T04 query/T03 conflict detection/T01 undo; replay uses T07 exact versions"
+      ],
+      "local_service_acceptance": "FR-1000/1001/104; A-06..08/G.6; missing dependencies, ownership, no credentials",
+      "exclusive_write_paths": [
+        "packages/engine/src/ontolearn_engine/transfer/",
+        "packages/engine/tests/test_transfer_*.py",
+        "apps/desktop/src/main/project-transfer/",
+        "apps/desktop/src/renderer/src/transfer/",
+        "tests/unit/t10-*.test.ts",
+        "tests/fixtures/transfer/",
+        "docs/reviews/T10/",
+        "docs/iterations/T10/"
+      ],
+      "launch_prompt": "iteration-control/2026-10-21-weekly-release/T10-launch-prompt.md",
+      "actual_runtime_status": "idle/completed; timestamped observation only",
+      "verification_commands_planned": [
+        "npm run check",
+        "dedicated tests per actual task status"
+      ],
+      "no_implementation_pass_yet": true,
+      "actual_turn": "01a15c50-fbdb-75e0-94f3-8cfbbaecf3bb",
+      "wait_cursor": "1da4e77a-6640-4fd7-a008-11576ec4b819:6",
+      "identity_status_sha256": "894bf88a46a1b3d061d970f5aa44998d0e16413698f7d8d4637dd22c77233c05",
+      "original_goal_runtime_observation": "Owner actual update_goal blocked reported;fixed7e537978c609210feff5c2bb2b81f4658f9c01f9;real native/E1/contract/offline packet complete;no approved format/projection/lease/importreceipt or safe GUI;dependenciesstillactivelyworking",
+      "historical_observations": [
+        {
+          "context": "prior launch/runtime metadata superseded by bounded current observation;original time not re-invented",
+          "actual_head_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+          "actual_runtime_status": "active/inProgress; official immediate wait verified",
+          "actual_turn": "01a15bf4-617b-7170-8613-eea4ef661f47",
+          "wait_cursor": "1da4e77a-6640-4fd7-a008-11576ec4b819:2"
+        }
+      ],
+      "actual_head_role": "observed parent checkout process HEAD;not frozen product candidate or runtime approval",
+      "current_runtime_observation": {
+        "turn": "01a15c50-fbdb-75e0-94f3-8cfbbaecf3bb",
+        "cursor": "1da4e77a-6640-4fd7-a008-11576ec4b819:6",
+        "source": "official single-target wait_threads(timeoutMs=0);independent report rootfullread",
+        "observation_batch": "2026-10-21T10:58:08.702390+08:00 Git metadata batch;polls in same bounded audit,not atomic",
+        "report": "task-status-reconciliation-readback.md",
+        "goal_status_directly_verified": false
+      },
+      "current_git_observation": {
+        "head": "f00e1b74213a76ba573dd38bde20191eb39d1cfa",
+        "branch_matches_registered": true,
+        "status_count": 1,
+        "observed_at": "2026-10-21T10:58:08.702390+08:00",
+        "new_candidate_claimed": false
+      },
+      "parent_acceptance_complete": false,
+      "actual_owner_goal_status_reported": "blocked"
+    },
+    {
+      "id": "T11",
+      "name": "发布与整体验收",
+      "status": "owned_and_preparing",
+      "actual_owner": "original functional development chat",
+      "actual_agent_or_thread": "01a15bc2-4551-7b51-8453-add1943f3b6e",
+      "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-release",
+      "actual_branch": "feature/weekly-t11-release",
+      "actual_base_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "actual_head_sha": "9f12f17b74f1e26f310c8298232a7fe66cb026ad",
+      "candidate_branch_pattern": "feature/weekly-t11-<topic>",
+      "preparation_without_formal_dependencies": "platform matrix, signing/clean-device/user-testing resources and release evidence design",
+      "proposed_exclusive_boundaries": [
+        "release/installer configuration after unique ownership",
+        "release verification evidence"
+      ],
+      "verification_evidence": [],
+      "dual_review_reports": [],
+      "pr": null,
+      "merged_sha": null,
+      "next_action": "Versioned release evidence validator and exact-platform/human test preparation; real resources remain pending",
+      "integration_prerequisites": [
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T10"
+      ],
+      "acceptance_cross_links": [
+        "Every P0 and C..G plus PRD10..12 closed on complete candidate, both platforms, actual signing/distribution and final artifact identity"
+      ],
+      "local_service_acceptance": "all P0 plus sections10..12 and C..G; actual dual-platform packages, user tests, model evaluation, double review, CI, source/artifact identity",
+      "exclusive_write_paths": [
+        "scripts/release/",
+        "tests/unit/t11-*.test.ts",
+        "tests/fixtures/release/",
+        "docs/reviews/T11/",
+        "docs/iterations/T11/",
+        "docs/release/"
+      ],
+      "actual_runtime_status": "notLoaded/completed; timestamped observation only",
+      "functional_implementation_not_dispatched": false,
+      "preparation_result": {
+        "file": "T11-release-resource-preflight.md",
+        "sha256": "c87e9cddb8b5e37f72c1483bb9eabd315c705416251340dd38af0e8bf9e6e3bc",
+        "rootFullRead": true,
+        "status": "completed_metadata_preflight_with_genuine_external_gaps",
+        "noSecretsOrAPIRequestOrGUI": true,
+        "externalResourceQuestionsActuallyAsked": true
+      },
+      "actual_turn": "01a15c43-e5cf-7a90-8093-1c89719429c2",
+      "wait_cursor": "e4eefa4e-94c0-49ba-bab9-c23a415cb444:16",
+      "launch_prompt": "iteration-control/2026-10-21-weekly-release/T11-launch-prompt.md",
+      "no_implementation_pass_yet": true,
+      "verification_commands_planned": [
+        "npm run check",
+        "dedicated t11 release-manifest positive/negative unit tests"
+      ],
+      "actual_owner_goal_status_reported": "blocked",
+      "parent_acceptance_complete": false,
+      "latest_real_recovery_note": "official idle/final reports existing Goal blocked;9f12 policy only",
+      "original_goal_runtime_observation": "official idle/final reports existing Goal blocked;9f12 policy only",
+      "historical_observations": [
+        {
+          "context": "prior launch/runtime metadata superseded by bounded current observation;original time not re-invented",
+          "actual_head_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+          "actual_runtime_status": "active/inProgress; official immediate wait verified",
+          "actual_turn": "01a15bed-1db3-7720-968c-4b486589ec19",
+          "wait_cursor": "e4eefa4e-94c0-49ba-bab9-c23a415cb444:14"
+        }
+      ],
+      "actual_head_role": "observed parent checkout process HEAD;not frozen product candidate or runtime approval",
+      "current_runtime_observation": {
+        "turn": "01a15c43-e5cf-7a90-8093-1c89719429c2",
+        "cursor": "e4eefa4e-94c0-49ba-bab9-c23a415cb444:16",
+        "source": "official single-target wait_threads(timeoutMs=0);independent report rootfullread",
+        "observation_batch": "2026-10-21T10:58:08.702390+08:00 Git metadata batch;polls in same bounded audit,not atomic",
+        "report": "task-status-reconciliation-readback.md",
+        "goal_status_directly_verified": false
+      },
+      "current_git_observation": {
+        "head": "9f12f17b74f1e26f310c8298232a7fe66cb026ad",
+        "branch_matches_registered": true,
+        "status_count": 1,
+        "observed_at": "2026-10-21T10:58:08.702390+08:00",
+        "new_candidate_claimed": false
+      }
+    }
+  ],
+  "dependency_semantics": "integration_prerequisites are core approved service/interface prerequisites, not an exhaustive definition of complete module acceptance and not a ban on independent work; acceptance_cross_links describe cross-feature end-to-end closure requirements without circular whole-module scheduling edges. Full module closure requires all applicable FR, original acceptance and complete-candidate evidence.",
+  "stages": [
+    "planned_not_dispatched",
+    "owned_and_preparing",
+    "private_implementation_validated",
+    "actual_integration_validated",
+    "same_candidate_dual_review_passed",
+    "merged_remote_verified",
+    "full_module_acceptance_verified",
+    "release_verified"
+  ],
+  "stage_constraints": [
+    "Do not infer a later stage from an earlier stage",
+    "A merged independently scoped service is not a completed FR/module unless all original acceptance requirements are satisfied",
+    "If a task is split into independent functional services, record exact new subtask scope, fixed candidate, full verification and original dual review/merge gates; retain original task and FR acceptance without shrinking it",
+    "Links in acceptance_cross_links are acceptance relationships, not authorization to consume unapproved code"
+  ],
+  "updated_at": "2026-10-22T09:12:39.215344+08:00",
+  "state_owner": "root controller only",
+  "current_execution_record": "execution-state.json",
+  "current_status_observation_report": "task-status-reconciliation-readback.md",
+  "controller_current_checkpoint": "Fifth native diagnostic build accepted under original independent review and root205 current/Git/hash proof; NOT_RUN. Original I06 third-call preparation actually dispatched; T01 whole-worker object proof still open."
+}

@@ -1,0 +1,221 @@
+{
+  "iteration": "I02 / C1",
+  "status": "complete",
+  "scope": "Explicit CSP and window lifecycle only; no other iteration implemented.",
+  "baseSha": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+  "candidateSha": "09a2e6648edfb465debe47bc9fb15e2c6f23e088",
+  "pushedFlowHead": "e6ed8101cb79833e267403880efe0c67156c5201",
+  "pr": {
+    "baseRefOid": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+    "headRefOid": "e6ed8101cb79833e267403880efe0c67156c5201",
+    "mergeCommit": {
+      "oid": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3"
+    },
+    "mergedAt": "2026-10-20T03:32:22Z",
+    "state": "MERGED",
+    "url": "https://github.com/NOmoreJoke/OntoLearn-Studio/pull/3"
+  },
+  "mergeSha": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
+  "requirements": [
+    {
+      "requirement": "CSP implementation and frozen C1 requirements",
+      "state": "proven",
+      "evidence": [
+        "docs/iterations/I02/design.md",
+        "docs/iterations/I02/acceptance.md",
+        "docs/reviews/I02/round-3/frozen-files.json",
+        "docs/reviews/I02/round-3/zcode-glm53.md",
+        "docs/reviews/I02/round-3/minimax-m31flash.md"
+      ]
+    },
+    {
+      "requirement": "Window security, real crash/unresponsive and explicit recovery with manual health/no replay",
+      "state": "proven_with_documented_scope",
+      "evidence": [
+        {
+          "path": "docs/reviews/I02/round-3/I02-r3-build-matrix.json",
+          "sha256": "7f57b44e801a723d7d7a7f55ed65bf7e0e51764e47a404212f4f7003ed82abfb",
+          "result": "PASS",
+          "development": false,
+          "packaged": false,
+          "events": ["killed", "unresponsive"]
+        },
+        {
+          "path": "docs/reviews/I02/round-3/I02-r3-packaged-matrix.json",
+          "sha256": "5c159f5c739526c4c65f07cbdfca3601442440fd308452c64b0b9408a73c3fb1",
+          "result": "PASS",
+          "development": false,
+          "packaged": true,
+          "events": ["killed", "unresponsive"]
+        },
+        {
+          "path": "docs/reviews/I02/round-3/I02-r3-development-matrix.json",
+          "sha256": "aa21d60deb5ee7917577ea576c1ad82939b88d76684149a1549d21a8e64624b3",
+          "result": "PASS",
+          "development": true,
+          "packaged": false,
+          "events": ["killed", "unresponsive"]
+        }
+      ],
+      "nativeSheetEvidence": "docs/reviews/I02/native-dialog-probe/README.md Run2; actual sheet/button observations are historical macOS evidence, product apps/packages unchanged since2cc03da. Automated matrices stub the whole dialog API and do not prove visual sheets."
+    },
+    {
+      "requirement": "Actual development, build and packaged validation",
+      "state": "proven",
+      "check": {
+        "TS": 15,
+        "Python": 198,
+        "exit": 0
+      },
+      "buildE2E": {
+        "exit": 0,
+        "passed": 2
+      },
+      "packagedE2E": {
+        "exit": 0,
+        "passed": 2
+      },
+      "developmentE2E": {
+        "exit": 0,
+        "passed": 1,
+        "HMRWriteProbe": false
+      },
+      "HMR": "Historical HMR css/reactRefresh/documentAndStateRetained all true; no write probe rerun during freeze. Product source unchanged.",
+      "matrices": [
+        {
+          "path": "docs/reviews/I02/round-3/I02-r3-build-matrix.json",
+          "sha256": "7f57b44e801a723d7d7a7f55ed65bf7e0e51764e47a404212f4f7003ed82abfb",
+          "result": "PASS",
+          "development": false,
+          "packaged": false,
+          "events": ["killed", "unresponsive"]
+        },
+        {
+          "path": "docs/reviews/I02/round-3/I02-r3-packaged-matrix.json",
+          "sha256": "5c159f5c739526c4c65f07cbdfca3601442440fd308452c64b0b9408a73c3fb1",
+          "result": "PASS",
+          "development": false,
+          "packaged": true,
+          "events": ["killed", "unresponsive"]
+        },
+        {
+          "path": "docs/reviews/I02/round-3/I02-r3-development-matrix.json",
+          "sha256": "aa21d60deb5ee7917577ea576c1ad82939b88d76684149a1549d21a8e64624b3",
+          "result": "PASS",
+          "development": true,
+          "packaged": false,
+          "events": ["killed", "unresponsive"]
+        }
+      ]
+    },
+    {
+      "requirement": "Same-version designated independent reviews and findings disposition",
+      "state": "proven",
+      "reports": [
+        {
+          "task": "I02-R3-ZCode-GLM53-20261020-1040",
+          "model": "GLM-5.3",
+          "thinking": "最高",
+          "path": "docs/reviews/I02/round-3/zcode-glm53.md",
+          "sha256": "5fe258dd9a3696712e0011b61937e4e37e00a580b57ce47b999b83187bcb8341",
+          "conclusion": "Pass",
+          "actualCompletionVerified": true
+        },
+        {
+          "task": "I02-R3-MiniMax-M31Flash-20261020-1040",
+          "model": "M3.1-Flash",
+          "thinking": "xhigh",
+          "path": "docs/reviews/I02/round-3/minimax-m31flash.md",
+          "sha256": "5a775dbcce43de6fe6cc6763f3dbb846980717a11164688217317a0ed68bada0",
+          "conclusion": "Pass",
+          "actualCompletionVerified": true
+        }
+      ],
+      "processing": "docs/reviews/I02/round-3/processing.md",
+      "internalReadOnlyReview": "docs/reviews/I02/round-3/internal-final-review.md"
+    },
+    {
+      "requirement": "Push only after dual approval; new actual PR CI all green",
+      "state": "proven",
+      "ciRun": 39364497557,
+      "ciConclusion": "success",
+      "ciHead": "e6ed8101cb79833e267403880efe0c67156c5201",
+      "source": "docs/reviews/I02/round-3/pre-merge-verification.json"
+    },
+    {
+      "requirement": "Normal develop merge and remote containment",
+      "state": "proven",
+      "source": "docs/reviews/I02/round-3/post-merge-verification.json",
+      "mergeParents": [
+        "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+        "e6ed8101cb79833e267403880efe0c67156c5201"
+      ],
+      "mergedTreeEqualsCiReviewedFlowTree": true
+    },
+    {
+      "requirement": "Protect64 pre-existing files and frozen16",
+      "state": "proven_at_post_merge",
+      "source": {
+        "frozen16": {
+          "count": 16,
+          "mismatches": []
+        },
+        "protected64": {
+          "count": 64,
+          "mismatches": []
+        }
+      }
+    },
+    {
+      "requirement": "Current iteration closure with automatic integration CI",
+      "state": "proven",
+      "developPushRun": 39364825646,
+      "evidence": "docs/reviews/I02/round-3/develop-ci-final.json"
+    }
+  ],
+  "boundaries": [
+    "Only current health capability; future I04 task reconnection not implemented.",
+    "Unsigned macOS app-directory evidence; signing/installers/clean-device/production release not verified.",
+    "Original timeouts and unclassified failures preserved; no determinism or performance guarantee.",
+    "No new local desktop tests after actual policy receipt; review-app operations used current direct user instruction.",
+    "No quota reset, purchase, model substitution, admin merge or check bypass."
+  ],
+  "closureEvidenceFilesLocalOnly": "Post-push/merge receipts and final local status are not committed or pushed again; preserves the exact green PR and merge trees without generating another CI cycle.",
+  "observedAt": "2026-10-20T11:35:21.666601+08:00",
+  "completedAt": "2026-10-20T11:36:04.785277+08:00",
+  "remoteRefsFinal": {
+    "refs/heads/develop": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
+    "refs/heads/feature/I02-csp-window-lifecycle": "e6ed8101cb79833e267403880efe0c67156c5201"
+  },
+  "finalPR": {
+    "headRefOid": "e6ed8101cb79833e267403880efe0c67156c5201",
+    "mergeCommit": {
+      "oid": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3"
+    },
+    "mergedAt": "2026-10-20T03:32:22Z",
+    "state": "MERGED",
+    "url": "https://github.com/NOmoreJoke/OntoLearn-Studio/pull/3"
+  },
+  "developCI": {
+    "source": "docs/reviews/I02/round-3/develop-ci-final.json",
+    "id": 39364825646,
+    "url": "https://github.com/NOmoreJoke/OntoLearn-Studio/actions/runs/39364825646",
+    "headSha": "c2f9b038b23f9f48cdbb8f433a89b55a00edc9d3",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Quality",
+        "conclusion": "success"
+      },
+      {
+        "name": "Desktop (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Desktop (windows-latest)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "finalIntegrity": "64 protected and16 frozen hashes still matched after all remote CI completed; report hashes unchanged."
+}

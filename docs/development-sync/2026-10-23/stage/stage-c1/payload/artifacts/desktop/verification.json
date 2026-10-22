@@ -1,0 +1,61 @@
+{
+  "observedAt": "2026-10-22T15:51:29.372930+08:00",
+  "static": {
+    "typecheckExit": 0,
+    "compiledStockStageCodeParityFiles": 5,
+    "sourceStatus": " M AGENTS.md\n",
+    "mainUsesDefaultUserData": true,
+    "mainOverridesUserDataOrAppName": false,
+    "packagedProductNameVerified": true,
+    "bundleIdVerified": true,
+    "userDataRuntimePathVerified": false
+  },
+  "build": {
+    "npmCiExit": 0,
+    "uvSyncFrozenExit": 0,
+    "packageDirExit": 0,
+    "stageMetadataPackageExit": 0,
+    "zipCreateExit": 0,
+    "zipIntegrityExit": 0
+  },
+  "runtime": {
+    "packagedEngineProbeExit": 0,
+    "protocolHello": true,
+    "sameSessionHealthReplies": 10,
+    "fixedStorageProbeScale": 1,
+    "fixedStorageProbeTriples": 18,
+    "expectedFullResult": [
+      "urn:case:0:alarm/A01"
+    ],
+    "guiLaunched": false,
+    "formalProjectDataUsed": false
+  },
+  "notRun": [
+    "Electron UI launch/interaction",
+    "native crash/hang recovery",
+    "task creation or cancellation through UI",
+    "cross-module business integration",
+    "signed/notarized installation",
+    "Windows or other target device runtime"
+  ],
+  "firstAttempts": [
+    {
+      "check": "storage probe wrapper",
+      "outcome": "exit2 because positional arguments supplied to --scale/--trial parser",
+      "productChanged": false,
+      "correctedInvocationRetested": true
+    },
+    {
+      "check": "ASAR comparison wrapper",
+      "outcome": "leading slash passed to statFile; wrapper error before comparison",
+      "productChanged": false,
+      "correctedPathRetested": true
+    }
+  ],
+  "signature": {
+    "developerDistributionSignature": false,
+    "notarized": false,
+    "mainBinary": "linker-signed adhoc; identifier Electron; no TeamIdentifier; Info.plist not bound; no sealed resources",
+    "evidence": "signature-observation.log"
+  }
+}

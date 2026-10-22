@@ -1,0 +1,197 @@
+{
+  "observedAt": "2026-10-22T15:59:09.228442+08:00",
+  "reviewer": "/root/background_entry",
+  "verdict": "limited_pass_for_manual_stage_acceptance_only",
+  "remainingP1P2": [],
+  "closedFindings": [
+    {
+      "id": "P2-MOBILE-LEARNING-CLIP",
+      "firstCandidate": "c323ad6a2b71363b95d83b7baa3817f79e810e18540ec5f65f65b0ca314e276f",
+      "firstSurfaceScrollWidth": 1424,
+      "firstGridChildrenWidth": 1398,
+      "remedy": "shell CSS minmax(0,1fr) and direct children min-width:0",
+      "finalCandidate": "adff7f408e1844392d550a7e0a3bdacb5e1c1cd167b24d3b236a517456033a81",
+      "retest": {
+        "viewport": 390,
+        "surfaceClientWidth": 360,
+        "surfaceScrollWidth": 360,
+        "gridChildrenWidth": 308,
+        "gridChildrenRight": 349,
+        "maxHintRight": 332,
+        "termRight": 328,
+        "pathScrollerClientWidth": 308,
+        "pathScrollerScrollWidth": 1398,
+        "pathScrollerOverflowX": "auto"
+      }
+    },
+    {
+      "id": "P2-RESET-COPY",
+      "resolution": "copy now separates current draft reset from refresh/close record loss; actual reset preserved checks/notes"
+    },
+    {
+      "id": "P2-LEARNING-CHECK-COPY",
+      "resolution": "root README now permits accurate unavailable feedback; actual learning check leaves 0/9"
+    }
+  ],
+  "static": {
+    "sourceSnapshotsComparedToFixedGitBlob": 34,
+    "sourceMismatches": [],
+    "desktopAppFileHashesChecked": 429,
+    "desktopSymlinksAndModesChecked": 14,
+    "desktopArtifactHashesChecked": 9,
+    "desktopLocksComparedTo5fAndWorkingTree": 2,
+    "desktopPackagedCompiledOutputsChecked": 5,
+    "desktopMismatches": [],
+    "desktopSourceWorktreeStatus": " M AGENTS.md\n",
+    "rootDeliveryFilesChecked": 7,
+    "rootDeliveryMismatches": []
+  },
+  "runtime": {
+    "browser": "own Playwright CLI headless Chrome, actual file:// entry",
+    "ontologySearchTreeGraphEditReset": true,
+    "resetPreservesFeedback": true,
+    "queryFullExactSparqlExpected": true,
+    "queryExecutionAndSaveDisabled": true,
+    "behaviorConditionActionAddRemove": true,
+    "behaviorExecutionDisabled": true,
+    "learningTaskGlossaryAndDefinition": true,
+    "learningUnavailableDoesNotComplete": true,
+    "feedbackJsonActualDownloadedAndRead": true,
+    "syntheticJsonActualDownloadedAndRead": true,
+    "layoutInitialPassing": {
+      "1440": [
+        "ontology",
+        "query",
+        "behavior",
+        "learning"
+      ],
+      "390": [
+        "ontology",
+        "query",
+        "behavior"
+      ]
+    },
+    "layoutFinalAffectedRetest": [
+      "390 learning"
+    ],
+    "consoleErrorsFinal": 0,
+    "externalRequestsObserved": 0,
+    "nativeProbeEvidenceRead": {
+      "hello": true,
+      "sameSessionHealthReplies": 10,
+      "storageTriples": 18,
+      "expectedFullResult": [
+        "urn:case:0:alarm/A01"
+      ],
+      "exit": 0,
+      "independentlyRerun": false
+    },
+    "ownBrowserClosed": true
+  },
+  "toolFirstAttempt": {
+    "fileNavigationBlockedByCliDefault": true,
+    "retryUsedDocumentedEnvironment": "PLAYWRIGHT_MCP_ALLOW_UNRESTRICTED_FILE_ACCESS=1",
+    "productChangedForToolRetry": false
+  },
+  "notVerified": [
+    "native Electron UI/runtime userData path",
+    "formal project/Store/bridge/executor/model business integration",
+    "specified ZCode/MiniMax dual approval",
+    "Windows/clean target devices",
+    "signing/notarization/distribution/product release"
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4176,
+      "sha256": "e8e97eee9fd1beaae8bac8a1746455b8fffdfe4a3dac63a21f85d0380a080c50"
+    },
+    {
+      "path": "打开阶段验收.command",
+      "bytes": 257,
+      "sha256": "ab50b3f45613dc6fcf8198f068c3fe65b5007095a9fc9d3610df69a1653b4380"
+    },
+    {
+      "path": "stage-delivery.json",
+      "bytes": 1611,
+      "sha256": "74e998392664a383da351d985d97f5c9af55848df045c4a362990325252996e8"
+    },
+    {
+      "path": "browser/index.html",
+      "bytes": 523252,
+      "sha256": "adff7f408e1844392d550a7e0a3bdacb5e1c1cd167b24d3b236a517456033a81"
+    },
+    {
+      "path": "browser/entry.tsx",
+      "bytes": 7380,
+      "sha256": "829c23ae37855f1a35ba2acb340ac2ac7aa26ef1a0d380dd71e0b93fd49a5226"
+    },
+    {
+      "path": "browser/shell.css",
+      "bytes": 3363,
+      "sha256": "d2e2235911b704939f64316f04519bf8b3bcb220811b2a84eedb003a2ea54864"
+    },
+    {
+      "path": "browser/build.mjs",
+      "bytes": 3159,
+      "sha256": "f211802bcd1e49808e718c06acc33eda1b875276120537bcd3e9e244b3385f62"
+    },
+    {
+      "path": "browser/manifest.json",
+      "bytes": 9788,
+      "sha256": "87b2c714c993ef2d15706e00f0526bab07b5602b5b2b07c6e4a391f06dca292e"
+    },
+    {
+      "path": "browser/verification.json",
+      "bytes": 8101,
+      "sha256": "ca6a9f39a0133ba1fc15baf8bb3231b9ad7abf3a670b05b64f318e3f004ea4c5"
+    },
+    {
+      "path": "desktop/manifest.json",
+      "bytes": 3328,
+      "sha256": "ad02d8100c6e42c29697d5abd48757f40582bcad201525a6ddd4692ac5ac29eb"
+    },
+    {
+      "path": "desktop/verification.json",
+      "bytes": 1830,
+      "sha256": "bd7c5592025f4cf3e7f1ec67e32b67abefaba712c52d10599d78d26624d2aff0"
+    },
+    {
+      "path": "desktop/packaged-engine-probe.json",
+      "bytes": 7654,
+      "sha256": "a94949c898803b77f5065114af7ebb5877458e576c0c63824ec87d3d0e5d1ae0"
+    },
+    {
+      "path": "desktop/packaged-code-parity.json",
+      "bytes": 884,
+      "sha256": "596b397e9ec145803e337d38e5cc98ad25f03fee5222b7cadd950b1d4a097fa9"
+    },
+    {
+      "path": "desktop/app-files.json",
+      "bytes": 114708,
+      "sha256": "0f3c0c00a77ba1e21374b956d5082ca9597697ca4cd7d2fc0860b8f8f7b56e5e"
+    },
+    {
+      "path": "desktop/README.md",
+      "bytes": 3479,
+      "sha256": "90fd726e23bfc70c47db7b7ec7f458c1526588bdd4343889bde4de06cdc87170"
+    },
+    {
+      "path": "review-coordination/background-entry-findings.md",
+      "bytes": 4747,
+      "sha256": "4a1187e380cc12770aedb0a28dd4a3b7e80b7321db5b08ef9ef0ea12061147a2"
+    }
+  ],
+  "independentDownloadedArtifacts": [
+    {
+      "path": ".playwright-cli/OntoLearn-stage-feedback.json",
+      "bytes": 235,
+      "sha256": "273ed4c4d80bed43219edc05c629a6792613831130f70644ce50700d5e9dbb26"
+    },
+    {
+      "path": ".playwright-cli/OntoLearn-synthetic-samples.json",
+      "bytes": 4089,
+      "sha256": "799f12d5c0151abba2d7c83d6e1d9de60939a8eec4286d7d44177ec9a76264bf"
+    }
+  ]
+}

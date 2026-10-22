@@ -67,3 +67,13 @@ ZCode优先共享build/out；MiniMax先只读/类型/单元/引擎，尚未释�
 ## 候选5双模型及必要澄清实际终结（仅流程追加）
 
 固定c2f9b038→30c10d8，Z最终184行SHAf32867b7e3050f19ec8cdface374141c27c295886dca9f83cecd2da853fc234e、MM最终285行SHA873d9a17f39a5bf8c8c10040187369d79f75d52a569f54544ceb37d33c5cbc11，原应用实际终态均明确通过，模型/思考保持。所有本轮意见、历史开放项、合法控制补核与失败输出覆盖边界见round-2/processing.md。MM畸形可信binding P3明确I04消费者接线前闭环，未来修复仍须新候选双审；Z三观察按原边界延期/保留。独立agent最终流程审核无必须修正项；原101文件仅status流程追加不同，AGENTS保护哈希与index空核对成立。当前只追加流程证据，不改受审实现/测试/配置/依赖/验收；后续证据提交按该映射核对，再push/PR/真实CI/正常develop合并与远端验证，不预先声称完成。
+
+## I03 集成完成与远端核验（合并后本地流程记录）
+
+候选5受审 base c2f9b038→head30c10d8，证据提交4e9a6fc只改docs/reviews/I03/**；完整映射、两份最终报告及189项artifact清单均经独立复核。push成功，PR #4：https://github.com/NOmoreJoke/OntoLearn-Studio/pull/4，以普通merge及match-head4e9a6fc合入develop，未admin/force、未删除分支/worktree。实际merge e45e6038b5e0f8f4adc69ed55aafccd75b3d3500，2026-10-20T08:52:16Z；fetch后origin/develop为该SHA，受审及证据提交均为祖先，merge文件树与4e9a6fc逐字节一致。
+
+PR CI39395415448首跑Linux Quality失败：native驱动注入时app未定义、读取isPackaged抛错；此前完整check/来源和另一health e2e成功，macOS/Windows全成功。首败原job日志、trace、artifact12251791914及attempt快照已保全。源码无Electron API就绪同步，启动时序只是吻合假设，未确认根因或声称已修。独立查因支持仅一次原头/原配置失败job诊断重试：attempt2 Quality成功，424TS/626Python/2e2e通过，macOS/Windows是继承首跑成功；没有降低断言或改任何代码/配置/依赖/验收。不能把这写成首跑全绿或race已修复。
+
+合并后develop自动CI39396529386针对e45e6038，首次运行Quality/macOS/Windows三job均实际success（含e2e与桌面package:dir）；最终run/jobs与Linux日志已保留并哈希登记于integration.json。I03闭环完成；I04常驻JSONL/任务/重连等运行设施尚未实施，MM R2-F1可信binding P3仍须在Python消费者接线前安全拒绝及回归，未来代码修复需新候选双审。Z未来schema演进/文案/性能、全部历史开放义务继续按round-2/processing.md移交。native启动夹具时序风险保持开放，未把一次失败重跑成功当作修复。
+
+本节与integration.json为合并后本地流程追加，未冒称已经包含于受审30c、已推4e9或merge e45；远端PR说明同步保留CI/合并与首败边界。原AGENTS唯一既有修改受保护未stage，产品实现/测试/配置/依赖/验收在双审后没有改动。

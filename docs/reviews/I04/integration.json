@@ -1,0 +1,378 @@
+{
+  "iteration": "I04",
+  "observedAtUtc": "2026-10-20T19:33:59.272584+00:00",
+  "stage": "I04 delivery achieved: same complete candidate dual designated Pass, all opinions disposed, normal PR5 merge, remote tree/124inputs/reports verified, actual PR and develop push three-platform CI success",
+  "reviewedBase": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+  "reviewedHead": "8f8eda1e24c0425ea2a65d2566978913ee310b8b",
+  "pushedHead": "5014631c38aa0a637e9c09f4368b62b1880ecddc",
+  "PR": "https://github.com/NOmoreJoke/OntoLearn-Studio/pull/5",
+  "PRBase": "develop",
+  "pushVerified": true,
+  "artifactAttached": true,
+  "prepushGate": "build/I04-evidence/prepush-c4-gate.json",
+  "PRCI": {
+    "observedAtUtc": "2026-10-20T19:00:48.403107+00:00",
+    "run": 39476291905,
+    "attempt": 2,
+    "head": "5014631c38aa0a637e9c09f4368b62b1880ecddc",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/NOmoreJoke/OntoLearn-Studio/actions/runs/39476291905",
+    "rawRun": "build/I04-evidence/ci-c4-pr-20261020T190048Z-run.json",
+    "rawJobs": "build/I04-evidence/ci-c4-pr-20261020T190048Z-jobs.json",
+    "jobs": [
+      {
+        "id": 118821092429,
+        "name": "Desktop (macos-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "runner_id": 1000000432,
+        "run_attempt": 2,
+        "created_at": "2026-10-20T18:53:07Z",
+        "started_at": "2026-10-20T18:58:11Z",
+        "completed_at": "2026-10-20T19:00:36Z",
+        "currentOrFailedSteps": []
+      },
+      {
+        "id": 118821094661,
+        "name": "Desktop (windows-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "runner_id": 1000000426,
+        "run_attempt": 2,
+        "created_at": "2026-10-20T18:53:07Z",
+        "started_at": "2026-10-20T18:37:00Z",
+        "completed_at": "2026-10-20T18:43:59Z",
+        "currentOrFailedSteps": []
+      },
+      {
+        "id": 118821095164,
+        "name": "Quality",
+        "status": "completed",
+        "conclusion": "success",
+        "runner_id": 1000000427,
+        "run_attempt": 2,
+        "created_at": "2026-10-20T18:53:07Z",
+        "started_at": "2026-10-20T18:36:59Z",
+        "completed_at": "2026-10-20T18:42:45Z",
+        "currentOrFailedSteps": []
+      }
+    ]
+  },
+  "branchProtection": {
+    "protected": false,
+    "actualDevelopSha": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+    "normalMergeOnly": true,
+    "adminBypassAllowed": false,
+    "rulesReadStatus": "unavailable: HTTP403 account-plan feature restriction",
+    "rules": null,
+    "rulesReadError": {
+      "message": "Upgrade to GitHub Pro or make this repository public to enable this feature.",
+      "documentation_url": "https://docs.github.com/rest/repos/rules#get-rules-for-a-branch",
+      "status": "403"
+    },
+    "boundary": "Branch API protected=false is observed; active-rules endpoint is unavailable and no empty-rules claim is made. Normal non-admin merge must still pass server enforcement and all explicitly required CI."
+  },
+  "merge": {
+    "commit": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "mergedAt": "2026-10-20T19:01:35Z",
+    "method": "normal gh pr merge --merge with exact5014631 head guard; no admin/bypass/force",
+    "premergeGate": "build/I04-evidence/premerge-c4-gate.json"
+  },
+  "postMergeCI": {
+    "observedAtUtc": "2026-10-20T19:33:09.483290+00:00",
+    "run": 39479891374,
+    "attempt": 2,
+    "head": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/NOmoreJoke/OntoLearn-Studio/actions/runs/39479891374",
+    "rawRun": "build/I04-evidence/ci-c4-postmerge-20261020T193309Z-run.json",
+    "rawJobs": "build/I04-evidence/ci-c4-postmerge-20261020T193309Z-jobs.json",
+    "jobs": [
+      {
+        "id": 118833848967,
+        "name": "Desktop (macos-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "runner_id": 1000000445,
+        "run_attempt": 2,
+        "created_at": "2026-10-20T19:18:36Z",
+        "started_at": "2026-10-20T19:30:20Z",
+        "completed_at": "2026-10-20T19:32:47Z",
+        "currentOrFailedSteps": []
+      },
+      {
+        "id": 118833851064,
+        "name": "Desktop (windows-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "runner_id": 1000000435,
+        "run_attempt": 2,
+        "created_at": "2026-10-20T19:18:36Z",
+        "started_at": "2026-10-20T19:01:43Z",
+        "completed_at": "2026-10-20T19:09:04Z",
+        "currentOrFailedSteps": []
+      },
+      {
+        "id": 118833852301,
+        "name": "Quality",
+        "status": "completed",
+        "conclusion": "success",
+        "runner_id": 1000000434,
+        "run_attempt": 2,
+        "created_at": "2026-10-20T19:18:37Z",
+        "started_at": "2026-10-20T19:01:43Z",
+        "completed_at": "2026-10-20T19:06:22Z",
+        "currentOrFailedSteps": []
+      }
+    ]
+  },
+  "remoteVerification": {
+    "observedAtUtc": "2026-10-20T19:33:32.408461+00:00",
+    "remoteDevelop": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "normalMergeCommit": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "parents": [
+      "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+      "5014631c38aa0a637e9c09f4368b62b1880ecddc"
+    ],
+    "reviewedHead": "8f8eda1e24c0425ea2a65d2566978913ee310b8b",
+    "pushedHead": "5014631c38aa0a637e9c09f4368b62b1880ecddc",
+    "mergeTree": "0a23f708a3d59f3e2a0353d6f069169ff8e26b3f",
+    "pushedTree": "0a23f708a3d59f3e2a0353d6f069169ff8e26b3f",
+    "treesEqual": true,
+    "runtimeInputsVerified": 124,
+    "runtimeDifferences": [],
+    "reportsVerified": {
+      "ZCode": {
+        "path": "docs/reviews/I04/round-4/zcode-glm53.md",
+        "sha256": "e191aa47c7f03018f169d4ba54eb32b818b17ab5ff961e4090c0a2abaf488052",
+        "bytes": 40068,
+        "lines": 206,
+        "model": "GLM-5.3",
+        "thinking": "highest",
+        "conclusion": "Pass",
+        "actualOriginalTaskAndFactualContinuationsTerminal": true,
+        "completeFinalReportRead": true
+      },
+      "MiniMax": {
+        "path": "docs/reviews/I04/round-4/minimax-m31flash.md",
+        "sha256": "056b79f76e6e1234cc768737442ffae58cce067ec00b373d69bd80f898de5121",
+        "bytes": 74697,
+        "lines": 532,
+        "model": "M3.1-Flash (subscription free)",
+        "thinking": "xhigh",
+        "conclusion": "Pass",
+        "actualOriginalTaskAndFactualContinuationsTerminal": true,
+        "completeFinalReportRead": true
+      }
+    },
+    "scope": "Actual remote merge/source proof. Postmerge CI is a separate required gate; this record alone does not establish its success."
+  },
+  "scope": "S2 infrastructure and test-only jobs; no I05/I06/domain completion. No release/signing/production verification.",
+  "localEvidenceBoundary": "This integration record is local process evidence, not part of reviewed implementation or remote pushed tree; its final claims require actual merge/CI/remote readback.",
+  "C4": {
+    "head": "8f8eda1e24c0425ea2a65d2566978913ee310b8b",
+    "fileCount": 121,
+    "status": "Both actual NEW full same-base/head tasks and same-task factual continuations terminal Pass; final reports fully read and all opinions disposed.",
+    "dispatch": "docs/reviews/I04/round-4/dispatch.json",
+    "localVerification": "docs/reviews/I04/c4-verification.json",
+    "freshCompleteDualReviewsRequired": true,
+    "oldPassReuseAllowed": false,
+    "sourcePushed": true,
+    "pushHead": "5014631c38aa0a637e9c09f4368b62b1880ecddc",
+    "processing": "docs/reviews/I04/round-4-processing.json",
+    "reports": {
+      "ZCode": {
+        "path": "docs/reviews/I04/round-4/zcode-glm53.md",
+        "sha256": "e191aa47c7f03018f169d4ba54eb32b818b17ab5ff961e4090c0a2abaf488052",
+        "bytes": 40068,
+        "lines": 206,
+        "model": "GLM-5.3",
+        "thinking": "highest",
+        "conclusion": "Pass",
+        "actualOriginalTaskAndFactualContinuationsTerminal": true,
+        "completeFinalReportRead": true
+      },
+      "MiniMax": {
+        "path": "docs/reviews/I04/round-4/minimax-m31flash.md",
+        "sha256": "056b79f76e6e1234cc768737442ffae58cce067ec00b373d69bd80f898de5121",
+        "bytes": 74697,
+        "lines": 532,
+        "model": "M3.1-Flash (subscription free)",
+        "thinking": "xhigh",
+        "conclusion": "Pass",
+        "actualOriginalTaskAndFactualContinuationsTerminal": true,
+        "completeFinalReportRead": true
+      }
+    },
+    "actualPRCI": {
+      "observedAtUtc": "2026-10-20T19:00:48.403107+00:00",
+      "run": 39476291905,
+      "attempt": 2,
+      "head": "5014631c38aa0a637e9c09f4368b62b1880ecddc",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/NOmoreJoke/OntoLearn-Studio/actions/runs/39476291905",
+      "rawRun": "build/I04-evidence/ci-c4-pr-20261020T190048Z-run.json",
+      "rawJobs": "build/I04-evidence/ci-c4-pr-20261020T190048Z-jobs.json",
+      "jobs": [
+        {
+          "id": 118821092429,
+          "name": "Desktop (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "runner_id": 1000000432,
+          "run_attempt": 2,
+          "created_at": "2026-10-20T18:53:07Z",
+          "started_at": "2026-10-20T18:58:11Z",
+          "completed_at": "2026-10-20T19:00:36Z",
+          "currentOrFailedSteps": []
+        },
+        {
+          "id": 118821094661,
+          "name": "Desktop (windows-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "runner_id": 1000000426,
+          "run_attempt": 2,
+          "created_at": "2026-10-20T18:53:07Z",
+          "started_at": "2026-10-20T18:37:00Z",
+          "completed_at": "2026-10-20T18:43:59Z",
+          "currentOrFailedSteps": []
+        },
+        {
+          "id": 118821095164,
+          "name": "Quality",
+          "status": "completed",
+          "conclusion": "success",
+          "runner_id": 1000000427,
+          "run_attempt": 2,
+          "created_at": "2026-10-20T18:53:07Z",
+          "started_at": "2026-10-20T18:36:59Z",
+          "completed_at": "2026-10-20T18:42:45Z",
+          "currentOrFailedSteps": []
+        }
+      ]
+    },
+    "CIArtifacts": {
+      "pr": {
+        "linux": "build/I04-evidence/ci-c4-pr-linux-artifact-audit.json",
+        "windows": "build/I04-evidence/ci-c4-pr-windows-artifact-audit.json",
+        "macos": "build/I04-evidence/ci-c4-pr-macos-artifact-audit.json"
+      },
+      "postmerge": {
+        "linux": "build/I04-evidence/ci-c4-postmerge-linux-artifact-audit.json",
+        "windows": "build/I04-evidence/ci-c4-postmerge-windows-artifact-audit.json",
+        "macos": "build/I04-evidence/ci-c4-postmerge-macos-artifact-audit.json"
+      }
+    },
+    "macOSAttempt1": {
+      "run": 39476291905,
+      "job": 118812995795,
+      "conclusion": "cancelled",
+      "runner_id": 0,
+      "steps": [],
+      "annotations": "build/I04-evidence/ci-c4-pr-macos-attempt1-annotations.json"
+    },
+    "macOSBoundedRerun": {
+      "decision": "build/I04-evidence/ci-c4-pr-macos-rerun-decision.json",
+      "response": "build/I04-evidence/ci-c4-pr-macos-rerun-response.json",
+      "attempt": 2,
+      "job": 118821092429,
+      "runner_id": 1000000432,
+      "status": "completed success; actual arm64 engine1052, ordinarye2e3, package17; first cancellation retained"
+    },
+    "runnerFallbackInvestigation": {
+      "officialDocs": "https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
+      "implementation": "none; original macos-latest rerun acquired runner, no CI source/configuration/acceptance change or C5 was made",
+      "readOnlyScopeReview": "bridge finite review only, not a replacement for designated dual review",
+      "finiteReviewCopies": {
+        "folder": "build/I04-evidence/ci-runner-fallback-scope",
+        "hashes": {
+          "review.md": "f0e8dd0253d694fad7a8fc169f10899e2b0147109f9f169f220fad9345e9acbb",
+          "review.json": "b48567526b7dfbe7d075549d38bad05ec31801e93c4e99db01e9e23f8f3acf3d"
+        },
+        "decision": "No runner replacement implemented; original same-head/config rerun actually acquired Mac runner. This is limited scope advice, not C4 implementation approval."
+      }
+    },
+    "PRCIAttemptBoundary": "Attempt2 metadata copies Linux/Windows success with new metadata job IDs but original execution timestamps; they were not rerun. Actual original job logs retained. Only macOS was exactly rerun once."
+  },
+  "C3PRCI": {
+    "id": 39462746525,
+    "url": "https://github.com/NOmoreJoke/OntoLearn-Studio/actions/runs/39462746525",
+    "status": "completed",
+    "conclusion": "failure",
+    "attempt": 1,
+    "jobs": [
+      {
+        "id": 118766147292,
+        "name": "Desktop (windows-latest)",
+        "status": "completed",
+        "conclusion": "failure",
+        "started_at": "2026-10-20T17:03:13Z",
+        "completed_at": "2026-10-20T17:07:42Z",
+        "runner_id": 1000000421
+      },
+      {
+        "id": 118766147622,
+        "name": "Quality",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-20T17:03:13Z",
+        "completed_at": "2026-10-20T17:08:27Z",
+        "runner_id": 1000000422
+      },
+      {
+        "id": 118766147851,
+        "name": "Desktop (macos-latest)",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "started_at": "2026-10-20T17:03:11Z",
+        "completed_at": "2026-10-20T17:18:13Z",
+        "runner_id": 0
+      }
+    ],
+    "macOSBoundary": "Cancelled before any steps; runner_id=0. Official annotations report hosted runner not acquired and macOS arm64 capacity. No code validation occurred; no user cancellation claim.",
+    "windowsFailure": "39 failed, 978 passed, 3 skipped: 36 UTF-8 expected-fixture locale failures; native stderr CRLF; exited-pipe close EINVAL; worker outlives actual coordinator (parent identity under investigation).",
+    "linuxBoundary": "Actual complete Quality job succeeded; does not substitute for Windows/macOS."
+  },
+  "postMergeCIBoundedRerun": {
+    "firstAttempt": "build/I04-evidence/ci-c4-postmerge-attempt1-final-jobs.json",
+    "annotations": "build/I04-evidence/ci-c4-postmerge-macos-attempt1-annotations.json",
+    "decision": "build/I04-evidence/ci-c4-postmerge-macos-rerun-decision.json",
+    "response": "build/I04-evidence/ci-c4-postmerge-macos-rerun-response.json",
+    "status": "Exactly one same-merge-head/config macOS diagnostic rerun after no-runner capacity cancellation completed success; Linux/Windows original execution successes retained, no repeated execution claim from copied metadata IDs.",
+    "attempt": 2,
+    "exactRerunJob": 118833848967,
+    "runner_id": 1000000445
+  },
+  "originalProtection": {
+    "count": 64,
+    "differences": [],
+    "protectedAGENTSSHA256": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+    "controllerStateNotEditedByThisLine": true
+  },
+  "evidenceLimits": {
+    "ZCodeFailureLogs": "Original reporter/venv/probe failure files were overwritten by reviewer. Model-attributed session reconstruction/excerpts are retained, not byte-exact originals. Successful final logs/probe and original first report separately retained; no fake recovery claim.",
+    "MiniMaxWriteBoundary": "Reviewer wrote final report plus nine uniquely named ignored probe-evidence copies under build/I04-evidence/minimax-r4-probe-corrections. This exceeds a literal report-only primary write description; disclose actual process-data copying, no product/test/config/dependency/acceptance/runtime-output change, no shared mutable build interference. Report2.3/appendixB disclose copies.",
+    "MiniMaxSummaryCount": "Report9 item5 retains stale R1 shorthand19+2+1; detailed table6.1/count6.4/conclusion9 item6 and actual terminal agree20+1+1. Preserved and explicitly indexed in committed round-4-processing; no root rewrite of independent report."
+  },
+  "goalToolRegistration": {
+    "receipt": "build/I04-evidence/i04-goal-completion-receipt.json",
+    "boundary": "Objective is actually achieved; tool completion registered separately after final evidence checks. Same original Goal, never recreated."
+  },
+  "goalTool": {
+    "status": "complete",
+    "sameOriginalThread": "01a15899-4318-7522-8035-353e88d34de4",
+    "receipt": "build/I04-evidence/i04-goal-completion-receipt.json",
+    "receiptSha256": "aaa893825745c7425243f3bea09b2fb73704492fb43597f90233ffe7a93dfedf",
+    "registeredAtUtc": "2026-10-20T19:34:36.713335+00:00",
+    "recordedTokensUsed": 1736422,
+    "recordedTimeUsedSeconds": 2823,
+    "accountingBoundary": "Recorded counters equal the previous paused-state counters and are not presented as total wall-clock time or complete accounting of manual resumed work. No token budget was configured."
+  }
+}

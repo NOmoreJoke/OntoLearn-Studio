@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 2,
+  "rules": [
+    {
+      "appendixRow": 1,
+      "family": "ontology",
+      "staleReason": "ONTOLOGY_CHANGED"
+    },
+    {
+      "appendixRow": 2,
+      "family": "facts",
+      "staleReason": "FACTS_CHANGED"
+    },
+    {
+      "appendixRow": 3,
+      "family": "mapping",
+      "staleReason": "MAPPING_INPUT_CHANGED"
+    },
+    {
+      "appendixRow": 4,
+      "family": "constraint",
+      "staleReason": "VALIDATION_DEFINITION_CHANGED"
+    },
+    {
+      "appendixRow": 5,
+      "family": "rule",
+      "staleReason": "RULE_CHANGED"
+    },
+    {
+      "appendixRow": 6,
+      "family": "behavior",
+      "staleReason": "BEHAVIOR_CHANGED"
+    },
+    {
+      "appendixRow": 7,
+      "family": "scenario",
+      "staleReason": "SCENARIO_CHANGED"
+    },
+    {
+      "appendixRow": 8,
+      "family": "query",
+      "staleReason": "QUERY_CHANGED"
+    },
+    {
+      "appendixRow": 9,
+      "family": "model",
+      "staleReason": null
+    }
+  ],
+  "implementationCompatibility": {
+    "identityKeys": ["executionSemanticsVersion", "engineVersion", "dependencyLockHash"],
+    "default": "isolate",
+    "reuse": "disabled_in_S1",
+    "futureReusePrerequisites": [
+      "recorded_equivalence_tests",
+      "explicit_cache_compatibility_version",
+      "actual_dependency_revalidation"
+    ],
+    "staleReason": null
+  },
+  "publicationPolicy": {
+    "scope": "project_derived_results",
+    "registeredDependenciesRequired": true,
+    "emptyDependenciesAllowed": false,
+    "currentRequiresLatestProjectRevision": true,
+    "lateResult": "preserve_as_historical",
+    "unrelatedOrModelChange": "do_not_invalidate_existing_domain_result",
+    "implementationMismatch": "isolated_current_pointer",
+    "staleReason": null
+  }
+}
